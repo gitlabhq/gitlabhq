@@ -13,6 +13,20 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
     let tokensContainer;
     const placeholder = 'Search or filter results...';
 
+    function dispatchBackspaceEvent(element, eventType) {
+      const backspaceKey = 8;
+      const event = new Event(eventType);
+      event.keyCode = backspaceKey;
+      element.dispatchEvent(event);
+    }
+
+    function dispatchDeleteEvent(element, eventType) {
+      const deleteKey = 46;
+      const event = new Event(eventType);
+      event.keyCode = deleteKey;
+      element.dispatchEvent(event);
+    }
+
     beforeEach(() => {
       setFixtures(`
         <form>
@@ -99,9 +113,6 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
     });
 
     describe('checkForBackspace', () => {
-      const backspaceKey = 8;
-      const deleteKey = 46;
-
       describe('tokens and no input', () => {
         beforeEach(() => {
           tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug');
@@ -109,20 +120,14 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
 
         it('removes last token', () => {
           spyOn(gl.FilteredSearchVisualTokens, 'removeLastTokenPartial').and.callThrough();
-
-          const event = new Event('keyup');
-          event.keyCode = backspaceKey;
-          input.dispatchEvent(event);
+          dispatchBackspaceEvent(input, 'keyup');
 
           expect(gl.FilteredSearchVisualTokens.removeLastTokenPartial).toHaveBeenCalled();
         });
 
         it('sets the input', () => {
           spyOn(gl.FilteredSearchVisualTokens, 'getLastTokenPartial').and.callThrough();
-
-          const event = new Event('keyup');
-          event.keyCode = deleteKey;
-          input.dispatchEvent(event);
+          dispatchDeleteEvent(input, 'keyup');
 
           expect(gl.FilteredSearchVisualTokens.getLastTokenPartial).toHaveBeenCalled();
           expect(input.value).toEqual('~bug');
@@ -134,14 +139,61 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
         spyOn(gl.FilteredSearchVisualTokens, 'getLastTokenPartial').and.callThrough();
 
         input.value = 'text';
-
-        const event = new Event('keyup');
-        event.keyCode = deleteKey;
-        input.dispatchEvent(event);
+        dispatchDeleteEvent(input, 'keyup');
 
         expect(gl.FilteredSearchVisualTokens.removeLastTokenPartial).not.toHaveBeenCalled();
         expect(gl.FilteredSearchVisualTokens.getLastTokenPartial).not.toHaveBeenCalled();
         expect(input.value).toEqual('text');
+      });
+    });
+
+    describe('removeSelectedToken', () => {
+      beforeEach(() => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true);
+      });
+
+      it('removes selected token when the backspace key is pressed', () => {
+        expect(tokensContainer.children.length).toEqual(1);
+
+        dispatchBackspaceEvent(document, 'keydown');
+
+        expect(tokensContainer.children.length).toEqual(0);
+      });
+
+      it('removes selected token when the delete key is pressed', () => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true);
+
+        expect(tokensContainer.children.length).toEqual(1);
+
+        dispatchDeleteEvent(document, 'keydown');
+
+        expect(tokensContainer.children.length).toEqual(0);
+      });
+
+      it('updates the input placeholder after removal', () => {
+        manager.handleInputPlaceholder();
+
+        expect(input.placeholder).toEqual('');
+        expect(tokensContainer.children.length).toEqual(1);
+
+        dispatchBackspaceEvent(document, 'keydown');
+
+        expect(input.placeholder).not.toEqual('');
+        expect(tokensContainer.children.length).toEqual(0);
+      });
+
+      it('updates the clear button after removal', () => {
+        manager.toggleClearSearchButton();
+
+        const clearButton = document.querySelector('.clear-search');
+
+        expect(clearButton.classList.contains('hidden')).toEqual(false);
+        expect(tokensContainer.children.length).toEqual(1);
+
+        dispatchBackspaceEvent(document, 'keydown');
+
+        expect(clearButton.classList.contains('hidden')).toEqual(true);
+        expect(tokensContainer.children.length).toEqual(0);
       });
     });
 

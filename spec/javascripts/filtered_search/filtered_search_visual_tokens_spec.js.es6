@@ -138,6 +138,28 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
       });
     });
 
+    describe('removeSelectedToken', () => {
+      it('does not remove when there are no selected tokens', () => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none');
+
+        expect(tokensContainer.querySelector('.js-visual-token .selectable')).not.toEqual(null);
+
+        gl.FilteredSearchVisualTokens.removeSelectedToken();
+
+        expect(tokensContainer.querySelector('.js-visual-token .selectable')).not.toEqual(null);
+      });
+
+      it('removes selected token', () => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true);
+
+        expect(tokensContainer.querySelector('.js-visual-token .selectable')).not.toEqual(null);
+
+        gl.FilteredSearchVisualTokens.removeSelectedToken();
+
+        expect(tokensContainer.querySelector('.js-visual-token .selectable')).toEqual(null);
+      });
+    });
+
     describe('addVisualTokenElement', () => {
       it('renders search visual tokens', () => {
         gl.FilteredSearchVisualTokens.addVisualTokenElement('search term', null, true);

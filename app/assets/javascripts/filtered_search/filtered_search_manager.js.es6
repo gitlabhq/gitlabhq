@@ -33,6 +33,7 @@
       this.checkForEnterWrapper = this.checkForEnter.bind(this);
       this.clearSearchWrapper = this.clearSearch.bind(this);
       this.checkForBackspaceWrapper = this.checkForBackspace.bind(this);
+      this.removeSelectedTokenWrapper = this.removeSelectedToken.bind(this);
       this.tokenChange = this.tokenChange.bind(this);
 
       this.filteredSearchInput.form.addEventListener('submit', this.handleFormSubmit);
@@ -47,6 +48,7 @@
       this.tokensContainer.addEventListener('click', FilteredSearchManager.selectToken);
       this.clearSearchButton.addEventListener('click', this.clearSearchWrapper);
       document.addEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
+      document.addEventListener('keydown', this.removeSelectedTokenWrapper);
     }
 
     unbindEvents() {
@@ -62,6 +64,7 @@
       this.tokensContainer.removeEventListener('click', FilteredSearchManager.selectToken);
       this.clearSearchButton.removeEventListener('click', this.clearSearchWrapper);
       document.removeEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
+      document.removeEventListener('keydown', this.removeSelectedTokenWrapper);
     }
 
     checkForBackspace(e) {
@@ -135,6 +138,16 @@
         this.filteredSearchInput.placeholder = placeholder;
       } else if (query.length > 0 && currentPlaceholder !== '') {
         this.filteredSearchInput.placeholder = '';
+      }
+    }
+
+    removeSelectedToken(e) {
+      // 8 = Backspace Key
+      // 46 = Delete Key
+      if (e.keyCode === 8 || e.keyCode === 46) {
+        gl.FilteredSearchVisualTokens.removeSelectedToken();
+        this.handleInputPlaceholder();
+        this.toggleClearSearchButton();
       }
     }
 

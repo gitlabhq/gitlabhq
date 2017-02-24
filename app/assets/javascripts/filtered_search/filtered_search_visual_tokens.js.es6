@@ -23,6 +23,15 @@ class FilteredSearchVisualTokens {
     }
   }
 
+  static removeSelectedToken() {
+    const selected = document.querySelector('.js-visual-token .selected');
+
+    if (selected) {
+      const li = selected.closest('.js-visual-token');
+      li.parentElement.removeChild(li);
+    }
+  }
+
   static addVisualTokenElement(name, value, isSearchTerm) {
     const li = document.createElement('li');
     li.classList.add('js-visual-token');
