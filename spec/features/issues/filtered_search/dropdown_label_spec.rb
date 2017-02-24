@@ -51,8 +51,8 @@ describe 'Dropdown label', js: true, feature: true do
 
       filtered_search.native.send_keys(:down, :down, :enter)
 
-      expect_tokens([{ 'Name' => 'label', 'Value' => "~#{bug_label.title}" }])
-      expect_filtered_search_input_empty()
+      expect_tokens([{ name: 'label', value: "~#{bug_label.title}" }])
+      expect_filtered_search_input_empty
     end
   end
 
@@ -181,8 +181,8 @@ describe 'Dropdown label', js: true, feature: true do
       click_label(bug_label.title)
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([{ 'Name' => 'label', 'Value' => "~#{bug_label.title}" }])
-      expect_filtered_search_input_empty()
+      expect_tokens([{ name: 'label', value: "~#{bug_label.title}" }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in the label name when the label is partially filled' do
@@ -190,56 +190,56 @@ describe 'Dropdown label', js: true, feature: true do
       click_label(bug_label.title)
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([{ 'Name' => 'label', 'Value' => "~#{bug_label.title}" }])
-      expect_filtered_search_input_empty()
+      expect_tokens([{ name: 'label', value: "~#{bug_label.title}" }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in the label name that contains multiple words' do
       click_label(two_words_label.title)
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([{ 'Name' => 'label', 'Value' => "\"#{two_words_label.title}\"" }])
-      expect_filtered_search_input_empty()
+      expect_tokens([{ name: 'label', value: "\"#{two_words_label.title}\"" }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in the label name that contains multiple words and is very long' do
       click_label(long_label.title)
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([{ 'Name' => 'label', 'Value' => "\"#{long_label.title}\"" }])
-      expect_filtered_search_input_empty()
+      expect_tokens([{ name: 'label', value: "\"#{long_label.title}\"" }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in the label name that contains double quotes' do
       click_label(wont_fix_label.title)
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([{ 'Name' => 'label', 'Value' => "~'#{wont_fix_label.title}'" }])
-      expect_filtered_search_input_empty()
+      expect_tokens([{ name: 'label', value: "~'#{wont_fix_label.title}'" }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in the label name with the correct capitalization' do
       click_label(uppercase_label.title)
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([{ 'Name' => 'label', 'Value' => "~#{uppercase_label.title}" }])
-      expect_filtered_search_input_empty()
+      expect_tokens([{ name: 'label', value: "~#{uppercase_label.title}" }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in the label name with special characters' do
       click_label(special_label.title)
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([{ 'Name' => 'label', 'Value' => "~#{special_label.title}" }])
-      expect_filtered_search_input_empty()
+      expect_tokens([{ name: 'label', value: "~#{special_label.title}" }])
+      expect_filtered_search_input_empty
     end
 
     it 'selects `no label`' do
       find("#{js_dropdown_label} .filter-dropdown-item", text: 'No Label').click
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([{ 'Name' => 'label', 'Value' => 'none' }])
-      expect_filtered_search_input_empty()
+      expect_tokens([{ name: 'label', value: 'none' }])
+      expect_filtered_search_input_empty
     end
   end
 
