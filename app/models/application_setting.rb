@@ -80,8 +80,7 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
-  validates :default_artifacts_expire_in, presence: true
-  validate  :check_default_artifacts_expire_in
+  validates :default_artifacts_expire_in, presence: true, duration: true
 
   validates :container_registry_token_expire_delay,
             presence: true,
@@ -304,11 +303,5 @@ class ApplicationSetting < ActiveRecord::Base
     invalid = repository_storages - Gitlab.config.repositories.storages.keys
     errors.add(:repository_storages, "can't include: #{invalid.join(", ")}") unless
       invalid.empty?
-  end
-
-  def check_default_artifacts_expire_in
-    ChronicDuration.parse(default_artifacts_expire_in)
-  rescue ChronicDuration::DurationParseError
-    errors.add(:default_artifacts_expire_in, "is not a correct duration")
   end
 end
