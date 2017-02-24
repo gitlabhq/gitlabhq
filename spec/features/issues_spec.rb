@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'Issues', feature: true do
+  include DropzoneHelper
   include IssueHelpers
   include SortingHelper
   include WaitForAjax
@@ -570,19 +571,13 @@ describe 'Issues', feature: true do
       end
 
       it 'uploads file when dragging into textarea' do
-        drop_in_dropzone test_image_file
-
-        # Wait for the file to upload
-        sleep 1
+        dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
 
         expect(page.find_field("issue_description").value).to have_content 'banana_sample'
       end
 
       it 'adds double newline to end of attachment markdown' do
-        drop_in_dropzone test_image_file
-
-        # Wait for the file to upload
-        sleep 1
+        dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
 
         expect(page.find_field("issue_description").value).to match /\n\n$/
       end
@@ -664,26 +659,5 @@ describe 'Issues', feature: true do
         end
       end
     end
-  end
-
-  def drop_in_dropzone(file_path)
-    # Generate a fake input selector
-    page.execute_script <<-JS
-      var fakeFileInput = window.$('<input/>').attr(
-        {id: 'fakeFileInput', type: 'file'}
-      ).appendTo('body');
-    JS
-    # Attach the file to the fake input selector with Capybara
-    attach_file("fakeFileInput", file_path)
-    # Add the file to a fileList array and trigger the fake drop event
-    page.execute_script <<-JS
-      var fileList = [$('#fakeFileInput')[0].files[0]];
-      var e = jQuery.Event('drop', { dataTransfer : { files : fileList } });
-      $('.div-dropzone')[0].dropzone.listeners[0].events.drop(e);
-    JS
-  end
-
-  def test_image_file
-    File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
   end
 end
