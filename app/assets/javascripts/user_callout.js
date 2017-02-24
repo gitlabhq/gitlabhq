@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 /* global Cookies */
 
 const userCalloutElementName = '.user-callout';
@@ -16,15 +15,15 @@ const USER_CALLOUT_TEMPLATE = `
     <div class="row">
       <div class="col-sm-3 col-xs-12 svg-container">
       </div>
-    <div class="col-sm-8 col-xs-12 inner-content">
-      <h4>
-        Customize your experience
-      </h4>
-      <p>
-        Change syntax themes, default project pages, and more in preferences.
-      </p>
-      <a class="btn user-callout-btn" href="/profile/preferences">Check it out</a>
-    </div>
+      <div class="col-sm-8 col-xs-12 inner-content">
+        <h4>
+          Customize your experience
+        </h4>
+        <p>
+          Change syntax themes, default project pages, and more in preferences.
+        </p>
+        <a class="btn user-callout-btn" href="/profile/preferences">Check it out</a>
+      </div>
   </div>
 </div>`;
 
