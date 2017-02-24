@@ -20,4 +20,25 @@ describe API::V3::Branches, api: true  do
       expect(branch_names).to match_array(project.repository.branch_names)
     end
   end
+
+  describe "DELETE /projects/:id/repository/merged_branches" do
+    before do
+      allow_any_instance_of(Repository).to receive(:rm_branch).and_return(true)
+    end
+
+    it 'returns 200' do
+      delete v3_api("/projects/#{project.id}/repository/merged_branches", user)
+
+      expect(response).to have_http_status(200)
+    end
+
+    it 'returns a 403 error if guest' do
+      user_b = create :user
+      create(:project_member, :guest, user: user_b, project: project)
+
+      delete v3_api("/projects/#{project.id}/repository/merged_branches", user_b)
+
+      expect(response).to have_http_status(403)
+    end
+  end
 end
