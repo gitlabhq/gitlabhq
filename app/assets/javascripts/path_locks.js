@@ -12,7 +12,7 @@
         return $.post(url, {
           path: path
         }, function() {
-          return Turbolinks.visit(location.href);
+          location.reload();
         });
       });
     };
