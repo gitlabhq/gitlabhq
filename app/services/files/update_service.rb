@@ -18,7 +18,7 @@ module Files
     def validate
       super
 
-      if @file_content.empty?
+      if @file_content.nil?
         raise_error("You must provide content.")
       end
 

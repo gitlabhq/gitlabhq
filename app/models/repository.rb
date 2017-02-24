@@ -746,99 +746,43 @@ class Repository
     @tags ||= raw_repository.tags
   end
 
-  # rubocop:disable Metrics/ParameterLists
-  def create_dir(
-    user, path,
-    message:, branch_name:,
-    author_email: nil, author_name: nil,
-    start_branch_name: nil, start_project: project)
+  def create_dir(user, path, **options)
+    options[:user] = user
+    options[:actions] = [{ action: :create_dir, file_path: path }]
 
-    multi_action(
-      user: user,
-      message: message,
-      branch_name: branch_name,
-      author_email: author_email,
-      author_name: author_name,
-      start_branch_name: start_branch_name,
-      start_project: start_project,
-      actions: [{ action: :create_dir,
-                  file_path: path }])
+    multi_action(**options)
   end
-  # rubocop:enable Metrics/ParameterLists
 
-  # rubocop:disable Metrics/ParameterLists
-  def create_file(
-    user, path, content,
-    message:, branch_name:,
-    author_email: nil, author_name: nil,
-    start_branch_name: nil, start_project: project)
+  def create_file(user, path, content, **options)
+    options[:user] = user
+    options[:actions] = [{ action: :create, file_path: path, content: content }]
 
-    multi_action(
-      user: user,
-      message: message,
-      branch_name: branch_name,
-      author_email: author_email,
-      author_name: author_name,
-      start_branch_name: start_branch_name,
-      start_project: start_project,
-      actions: [{ action: :create,
-                  file_path: path,
-                  content: content }])
+    multi_action(**options)
   end
-  # rubocop:enable Metrics/ParameterLists
 
-  # rubocop:disable Metrics/ParameterLists
-  def update_file(
-    user, path, content,
-    message:, branch_name:, previous_path: nil,
-    author_email: nil, author_name: nil,
-    start_branch_name: nil, start_project: project)
-    action = if previous_path && previous_path != path
-               :move
-             else
-               :update
-             end
+  def update_file(user, path, content, **options)
+    previous_path = options.delete(:previous_path)
+    action = previous_path && previous_path != path ? :move : :update
 
-    multi_action(
-      user: user,
-      message: message,
-      branch_name: branch_name,
-      author_email: author_email,
-      author_name: author_name,
-      start_branch_name: start_branch_name,
-      start_project: start_project,
-      actions: [{ action: action,
-                  file_path: path,
-                  content: content,
-                  previous_path: previous_path }])
+    options[:user] = user
+    options[:actions] = [{ action: action, file_path: path, previous_path: previous_path, content: content }]
+
+    multi_action(**options)
   end
-  # rubocop:enable Metrics/ParameterLists
 
-  # rubocop:disable Metrics/ParameterLists
-  def delete_file(
-    user, path,
-    message:, branch_name:,
-    author_email: nil, author_name: nil,
-    start_branch_name: nil, start_project: project)
+  def delete_file(user, path, **options)
+    options[:user] = user
+    options[:actions] = [{ action: :delete, file_path: path }]
 
-    multi_action(
-      user: user,
-      message: message,
-      branch_name: branch_name,
-      author_email: author_email,
-      author_name: author_name,
-      start_branch_name: start_branch_name,
-      start_project: start_project,
-      actions: [{ action: :delete,
-                  file_path: path }])
+    multi_action(**options)
   end
-  # rubocop:enable Metrics/ParameterLists
 
   # rubocop:disable Metrics/ParameterLists
   def multi_action(
     user:, branch_name:, message:, actions:,
     author_email: nil, author_name: nil,
     start_branch_name: nil, start_project: project)
+
     GitOperationService.new(user, self).with_branch(
       branch_name,
       start_branch_name: start_branch_name,
