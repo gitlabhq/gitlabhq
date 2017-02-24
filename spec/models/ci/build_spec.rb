@@ -162,8 +162,14 @@ describe Ci::Build, :models do
       is_expected.to be_nil
     end
 
-    it 'when resseting value' do
+    it 'when resetting value' do
       build.artifacts_expire_in = nil
+
+      is_expected.to be_nil
+    end
+
+    it 'when setting to 0' do
+      build.artifacts_expire_in = '0'
 
       is_expected.to be_nil
     end
