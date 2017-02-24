@@ -30,6 +30,11 @@ FactoryGirl.define do
       two_factor_via_otp
     end
 
+    trait :ghost do
+      ghost true
+      after(:build) { |user, _| user.block! }
+    end
+
     trait :two_factor_via_otp do
       before(:create) do |user|
         user.otp_required_for_login = true

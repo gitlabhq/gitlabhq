@@ -22,7 +22,7 @@ describe User, models: true do
     it { is_expected.to have_many(:deploy_keys).dependent(:destroy) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
     it { is_expected.to have_many(:recent_events).class_name('Event') }
-    it { is_expected.to have_many(:issues).dependent(:destroy) }
+    it { is_expected.to have_many(:issues).dependent(:restrict_with_exception) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:assigned_issues).dependent(:nullify) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
@@ -214,6 +214,22 @@ describe User, models: true do
       user = build(:user, :admin, :auditor)
 
       expect(user).to be_invalid
+    end
+
+    describe 'ghost users' do
+      it 'does not allow a non-blocked ghost user' do
+        user = build(:user, :ghost)
+        user.state = 'active'
+
+        expect(user).to be_invalid
+      end
+
+      it 'allows a blocked ghost user' do
+        user = build(:user, :ghost)
+        user.state = 'blocked'
+
+        expect(user).to be_valid
+      end
     end
   end
 
@@ -1661,6 +1677,43 @@ describe User, models: true do
         allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { true }
 
         expect(build(:user)).not_to be_auditor
+      end
+    end
+  end
+
+  describe '.ghost' do
+    it "creates a ghost user if one isn't already present" do
+      ghost = User.ghost
+
+      expect(ghost).to be_ghost
+      expect(ghost).to be_persisted
+    end
+
+    it "does not create a second ghost user if one is already present" do
+      expect do
+        User.ghost
+        User.ghost
+      end.to change { User.count }.by(1)
+      expect(User.ghost).to eq(User.ghost)
+    end
+
+    context "when a regular user exists with the username 'ghost'" do
+      it "creates a ghost user with a non-conflicting username" do
+        create(:user, username: 'ghost')
+        ghost = User.ghost
+
+        expect(ghost).to be_persisted
+        expect(ghost.username).to eq('ghost1')
+      end
+    end
+
+    context "when a regular user exists with the email 'ghost@example.com'" do
+      it "creates a ghost user with a non-conflicting email" do
+        create(:user, email: 'ghost@example.com')
+        ghost = User.ghost
+
+        expect(ghost).to be_persisted
+        expect(ghost.email).to eq('ghost1@example.com')
       end
     end
   end

@@ -1470,6 +1470,7 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.boolean "authorized_projects_populated"
     t.boolean "auditor", default: false, null: false
     t.boolean "notified_of_own_activity", default: false, null: false
+    t.boolean "ghost"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
