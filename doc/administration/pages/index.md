@@ -26,22 +26,24 @@ it works.
 
 ---
 
-In the case of custom domains, the Pages daemon needs to listen on ports `80`
-and/or `443`. For that reason, there is some flexibility in the way which you
-can set it up:
+In the case of [custom domains](#custom-domains) (but not 
+[wildcard domains](#wildcard-domains)), the Pages daemon needs to listen on 
+ports `80` and/or `443`. For that reason, there is some flexibility in the way 
+which you can set it up:
 
-1. Run the pages daemon in the same server as GitLab, listening on a secondary IP.
-1. Run the pages daemon in a separate server. In that case, the
+1. Run the Pages daemon in the same server as GitLab, listening on a secondary IP.
+1. Run the Pages daemon in a separate server. In that case, the
    [Pages path](#change-storage-path) must also be present in the server that
-   the pages daemon is installed, so you will have to share it via network.
-1. Run the pages daemon in the same server as GitLab, listening on the same IP
+   the Pages daemon is installed, so you will have to share it via network.
+1. Run the Pages daemon in the same server as GitLab, listening on the same IP
    but on different ports. In that case, you will have to proxy the traffic with
    a loadbalancer. If you choose that route note that you should use TCP load
    balancing for HTTPS. If you use TLS-termination (HTTPS-load balancing) the
    pages will not be able to be served with user provided certificates. For
    HTTP it's OK to use HTTP or TCP load balancing.
 
-In this document, we will proceed assuming the first option.
+In this document, we will proceed assuming the first option. If you are not
+supporting custom domains a secondary IP is not needed.
 
 ## Prerequisites
 
@@ -54,6 +56,7 @@ Before proceeding with the Pages configuration, you will need to:
    serve Pages under HTTPS.
 1. (Optional but recommended) Enable [Shared runners](../../ci/runners/README.md)
    so that your users don't have to bring their own.
+1. (Only for custom domains) Have a **secondary IP**.
 
 ### DNS configuration
 
@@ -150,7 +153,7 @@ that without TLS certificates.
 >
 URL scheme: `http://page.example.io` and `http://domain.com`
 
-In that case, the pages daemon is running, Nginx still proxies requests to
+In that case, the Pages daemon is running, Nginx still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside
 world. Custom domains are supported, but no TLS.
 
@@ -179,7 +182,7 @@ world. Custom domains are supported, but no TLS.
 >
 URL scheme: `https://page.example.io` and `https://domain.com`
 
-In that case, the pages daemon is running, Nginx still proxies requests to
+In that case, the Pages daemon is running, Nginx still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside
 world. Custom domains and TLS are supported.
 
