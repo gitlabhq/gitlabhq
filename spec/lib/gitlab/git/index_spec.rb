@@ -92,6 +92,16 @@ describe Gitlab::Git::Index, seed_helper: true do
         expect { index.create_dir(options) }.to raise_error('Directory already exists as a file')
       end
     end
+
+    context 'when a directory at that path exists' do
+      before do
+        options[:file_path] = 'files/executables'
+      end
+
+      it 'raises an error' do
+        expect { index.create_dir(options) }.to raise_error('Directory already exists')
+      end
+    end
   end
 
   describe '#update' do
