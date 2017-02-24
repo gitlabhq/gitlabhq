@@ -15,7 +15,7 @@
         %li
           To migrate an SVN repository, check out #{link_to "this document", help_page_path('workflow/importing/migrating_from_svn')}.
         %li
-          The Git LFS/Annex objects will <strong>not</strong> be imported.
+          The Git LFS objects will <strong>not</strong> be imported.
 
 .form-group
   .col-sm-offset-2.col-sm-10
@@ -26,6 +26,6 @@
           Mirror repository
       .help-block
         Automatically update this project's branches and tags from the upstream
-        repository every hour. The Git LFS/Annex objects will not be synced.
+        repository every hour. The Git LFS objects will not be synced.
 
 = f.hidden_field :mirror_user_id, value: current_user.id

@@ -102,8 +102,6 @@ module Gitlab
           return if Gitlab::Git.blank_ref?(@newrev) || !(commit_validation || validate_path_locks?)
 
           commits.each do |commit|
-            next if commit_from_annex_sync?(commit.safe_message)
-
             if commit_validation
               error = check_commit(commit, push_rule)
               return error if error
@@ -225,13 +223,6 @@ module Gitlab
 
       def commits
         project.repository.new_commits(@newrev)
-      end
-
-      def commit_from_annex_sync?(commit_message)
-        return false unless Gitlab.config.gitlab_shell.git_annex_enabled
-
-        # Commit message starting with <git-annex in > so avoid push rules on this
-        commit_message.start_with?('git-annex in')
       end
     end
   end

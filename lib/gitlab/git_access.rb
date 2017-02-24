@@ -16,8 +16,7 @@ module Gitlab
 
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
     PUSH_COMMANDS = %w{ git-receive-pack }.freeze
-    GIT_ANNEX_COMMANDS = %w{ git-annex-shell }.freeze
-    ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS + GIT_ANNEX_COMMANDS
+    ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
     attr_reader :actor, :project, :protocol, :user_access, :authentication_abilities
 
@@ -44,8 +43,6 @@ module Gitlab
         check_download_access!
       when *PUSH_COMMANDS
         check_push_access!(changes)
-      when *GIT_ANNEX_COMMANDS
-        git_annex_access_check(project, changes)
       end
 
       build_status_object(true)
@@ -130,8 +127,6 @@ module Gitlab
       if Gitlab::Geo.secondary?
         raise UnauthorizedError, "You can't push code on a secondary GitLab Geo node."
       end
-
-      return if git_annex_branch_sync?(changes)
 
       if deploy_key
         check_deploy_key_push_access!
@@ -246,40 +241,6 @@ module Gitlab
 
     def build_status_object(status, message = '')
       Gitlab::GitAccessStatus.new(status, message)
-    end
-
-    def git_annex_access_check(project, changes)
-      raise UnauthorizedError, "git-annex is disabled" unless Gitlab.config.gitlab_shell.git_annex_enabled
-
-      unless user && user_access.allowed?
-        raise UnauthorizedError, "You don't have access"
-      end
-
-      if Gitlab::Geo.enabled? && Gitlab::Geo.secondary?
-        raise UnauthorizedError, "You can't use git-annex with a secondary GitLab Geo node."
-      end
-
-      unless user.can?(:push_code, project)
-        raise UnauthorizedError, "You don't have permission"
-      end
-    end
-
-    def git_annex_branch_sync?(changes)
-      return false unless Gitlab.config.gitlab_shell.git_annex_enabled
-      return false if changes.blank?
-
-      changes = changes.lines if changes.is_a?(String)
-
-      # Iterate over all changes to find if user allowed all of them to be applied
-      # 0000000000000000000000000000000000000000 3073696294ddd52e9e6b6fc3f429109cac24626f refs/heads/synced/git-annex
-      # 0000000000000000000000000000000000000000 65be9df0e995d36977e6d76fc5801b7145ce19c9 refs/heads/synced/master
-      changes.map(&:strip).reject(&:blank?).each do |change|
-        unless change.end_with?("refs/heads/synced/git-annex") || change.include?("refs/heads/synced/")
-          return false
-        end
-      end
-
-      true
     end
   end
 end
