@@ -22,12 +22,12 @@ const { serverData, deployBoardMockData } = require('./mock_data');
         expect(store.state.environments.length).toEqual(serverData.length);
       });
 
-      it('should store a non folder environment with deploy board if rollout_status key is provided', () => {
+      it('should store a non folder environment with deploy board if rollout_status_path key is provided', () => {
         const environment = {
           name: 'foo',
           size: 1,
           id: 1,
-          rollout_status: 'url',
+          rollout_status_path: 'url',
         };
 
         store.storeEnvironments([environment]);

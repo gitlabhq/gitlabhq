@@ -36,7 +36,7 @@ describe('Environment item', () => {
       size: 1,
       environment_path: 'url',
       id: 1,
-      rollout_status: 'url',
+      rollout_status_path: 'url',
       hasDeployBoard: true,
       deployBoardData: {
         instances: [
@@ -74,7 +74,7 @@ describe('Environment item', () => {
       size: 1,
       environment_path: 'url',
       id: 1,
-      rollout_status: 'url',
+      rollout_status_path: 'url',
       hasDeployBoard: true,
       deployBoardData: {
         instances: [

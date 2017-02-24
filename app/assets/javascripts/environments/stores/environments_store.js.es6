@@ -30,7 +30,7 @@ class EnvironmentsStore {
    * If the `size` is bigger than 1, it means it should be rendered as a folder.
    * In those cases we add `isFolder` key in order to render it properly.
    *
-   * Top level environments - when the size is 1 - with `rollout_status`
+   * Top level environments - when the size is 1 - with `rollout_status_path`
    * can render a deploy board. We add `isDeployBoardVisible` and `deployBoardData`
    * keys to those environments.
    * The first key will let's us know if we should or not render the deploy board.
@@ -54,7 +54,7 @@ class EnvironmentsStore {
 
       if (filtered.size > 1) {
         filtered = Object.assign(filtered, env, { isFolder: true, folderName: env.name });
-      } else if (filtered.size === 1 && filtered.rollout_status) {
+      } else if (filtered.size === 1 && filtered.rollout_status_path) {
         filtered = Object.assign(filtered, env, {
           hasDeployBoard: true,
           isDeployBoardVisible: false,
