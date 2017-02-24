@@ -21,6 +21,7 @@ module Files
 
     def validate
       super
+      
       params[:actions].each_with_index do |action, index|
         if ACTIONS.include?(action[:action].to_s)
           action[:action] = action[:action].to_sym
