@@ -21,7 +21,7 @@ module Files
 
     def validate
       super
-      
+
       params[:actions].each_with_index do |action, index|
         if ACTIONS.include?(action[:action].to_s)
           action[:action] = action[:action].to_sym
@@ -102,13 +102,13 @@ module Files
         raise_error("Your changes could not be committed because a file with the name `#{action[:file_path]}` already exists.")
       end
 
-      if action[:content].empty?
+      if action[:content].nil?
         raise_error("You must provide content.")
       end
     end
 
     def validate_update(action)
-      if action[:content].empty?
+      if action[:content].nil?
         raise_error("You must provide content.")
       end
 
