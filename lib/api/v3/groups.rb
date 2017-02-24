@@ -19,7 +19,7 @@ module API
 
         def present_groups(groups, options = {})
           options = options.reverse_merge(
-            with: Entities::Group,
+            with: ::API::V3::Entities::Group,
             current_user: current_user,
           )
 
@@ -30,7 +30,7 @@ module API
 
       resource :groups do
         desc 'Get a groups list' do
-          success Entities::Group
+          success ::API::V3::Entities::Group
         end
         params do
           use :statistics_params
@@ -58,7 +58,7 @@ module API
         end
 
         desc 'Get list of owned groups for authenticated user' do
-          success Entities::Group
+          success ::API::V3::Entities::Group
         end
         params do
           use :pagination
@@ -69,7 +69,7 @@ module API
         end
 
         desc 'Create a group. Available only for users who can create groups.' do
-          success Entities::Group
+          success ::API::V3::Entities::Group
         end
         params do
           requires :name, type: String, desc: 'The name of the group'
@@ -83,7 +83,7 @@ module API
           group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
           if group.persisted?
-            present group, with: Entities::Group, current_user: current_user
+            present group, with: ::API::V3::Entities::Group, current_user: current_user
           else
             render_api_error!("Failed to save group #{group.errors.messages}", 400)
           end
@@ -95,7 +95,7 @@ module API
       end
       resource :groups do
         desc 'Update a group. Available only for users who can administrate groups.' do
-          success Entities::Group
+          success ::API::V3::Entities::Group
         end
         params do
           optional :name, type: String, desc: 'The name of the group'
@@ -109,29 +109,29 @@ module API
           authorize! :admin_group, group
 
           if ::Groups::UpdateService.new(group, current_user, declared_params(include_missing: false)).execute
-            present group, with: Entities::GroupDetail, current_user: current_user
+            present group, with: ::API::V3::Entities::GroupDetail, current_user: current_user
           else
             render_validation_error!(group)
           end
         end
 
         desc 'Get a single group, with containing projects.' do
-          success Entities::GroupDetail
+          success ::API::V3::Entities::GroupDetail
         end
         get ":id" do
           group = find_group!(params[:id])
-          present group, with: Entities::GroupDetail, current_user: current_user
+          present group, with: ::API::V3::Entities::GroupDetail, current_user: current_user
         end
 
         desc 'Remove a group.'
         delete ":id" do
           group = find_group!(params[:id])
           authorize! :admin_group, group
-          present ::Groups::DestroyService.new(group, current_user).execute, with: Entities::GroupDetail, current_user: current_user
+          present ::Groups::DestroyService.new(group, current_user).execute, with: ::API::V3::Entities::GroupDetail, current_user: current_user
         end
 
         desc 'Get a list of projects in this group.' do
-          success Entities::Project
+          success V3::Entities::Project
         end
         params do
           optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
@@ -153,12 +153,12 @@ module API
           group = find_group!(params[:id])
           projects = GroupProjectsFinder.new(group).execute(current_user)
           projects = filter_projects(projects)
-          entity = params[:simple] ? ::API::Entities::BasicProjectDetails : Entities::Project
+          entity = params[:simple] ? ::API::Entities::BasicProjectDetails : ::API::V3::Entities::Project
           present paginate(projects), with: entity, current_user: current_user
         end
 
         desc 'Transfer a project to the group namespace. Available only for admin.' do
-          success Entities::GroupDetail
+          success ::API::V3::Entities::GroupDetail
         end
         params do
           requires :project_id, type: String, desc: 'The ID or path of the project'
@@ -170,7 +170,7 @@ module API
           result = ::Projects::TransferService.new(project, current_user).execute(group)
 
           if result
-            present group, with: Entities::GroupDetail, current_user: current_user
+            present group, with: ::API::V3::Entities::GroupDetail, current_user: current_user
           else
             render_api_error!("Failed to transfer project #{project.errors.messages}", 400)
           end

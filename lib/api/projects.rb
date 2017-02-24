@@ -98,6 +98,7 @@ module API
       end
       post do
         attrs = declared_params(include_missing: false)
+
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
         if project.saved?

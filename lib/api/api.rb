@@ -12,11 +12,13 @@ module API
       mount ::API::V3::Builds
       mount ::API::V3::Commits
       mount ::API::V3::DeployKeys
+      mount ::API::V3::Deployments
       mount ::API::V3::Environments
       mount ::API::V3::Files
       mount ::API::V3::Groups
       mount ::API::V3::Issues
       mount ::API::V3::Labels
+      mount ::API::V3::Groups
       mount ::API::V3::Members
       mount ::API::V3::MergeRequestDiffs
       mount ::API::V3::MergeRequests

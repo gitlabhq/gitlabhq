@@ -88,7 +88,7 @@ describe API::Groups, api: true  do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response)
-          .to satisfy_one { |group| group['statistics'] == attributes }
+          .to satisfy_one { |group| group['statistics'] == exposed_attributes }
       end
     end
 

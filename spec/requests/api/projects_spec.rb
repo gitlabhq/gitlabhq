@@ -490,9 +490,10 @@ describe API::Projects, api: true  do
       expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_falsey
     end
 
-    it 'sets a project as allowing merge only if merge_when_pipeline_succeeds' do
+    it 'sets a project as allowing merge only if build succeeds' do
       project = attributes_for(:project, { only_allow_merge_if_pipeline_succeeds: true })
       post api("/projects/user/#{user.id}", admin), project
+
       expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_truthy
     end
 
@@ -569,7 +570,7 @@ describe API::Projects, api: true  do
         expect(json_response['issues_enabled']).to be_present
         expect(json_response['merge_requests_enabled']).to be_present
         expect(json_response['wiki_enabled']).to be_present
-        expect(json_response['builds_enabled']).to be_present
+        expect(json_response['jobs_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present
         expect(json_response['container_registry_enabled']).to be_present
         expect(json_response['created_at']).to be_present
@@ -580,7 +581,7 @@ describe API::Projects, api: true  do
         expect(json_response['avatar_url']).to be_nil
         expect(json_response['star_count']).to be_present
         expect(json_response['forks_count']).to be_present
-        expect(json_response['public_builds']).to be_present
+        expect(json_response['public_jobs']).to be_present
         expect(json_response['shared_with_groups']).to be_an Array
         expect(json_response['shared_with_groups'].length).to eq(1)
         expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)

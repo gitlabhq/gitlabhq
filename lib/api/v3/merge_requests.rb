@@ -134,12 +134,12 @@ module API
           end
 
           desc 'Show the merge request changes' do
-            success ::API::Entities::MergeRequestChanges
+            success ::API::V3::Entities::MergeRequestChanges
           end
           get "#{path}/changes" do
             merge_request = find_merge_request_with_access(params[:merge_request_id])
 
-            present merge_request, with: ::API::Entities::MergeRequestChanges, current_user: current_user
+            present merge_request, with: ::API::V3::Entities::MergeRequestChanges, current_user: current_user
           end
 
           desc 'Update a merge request' do
@@ -160,6 +160,7 @@ module API
 
             mr_params = declared_params(include_missing: false)
             mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch) if mr_params[:remove_source_branch].present?
+            mr_params[:merge_when_pipeline_succeeds] = mr_params.delete(:merge_when_build_succeeds) if mr_params[:merge_when_build_succeeds].present?
 
             merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, mr_params).execute(merge_request)
 
@@ -214,7 +215,7 @@ module API
             present merge_request, with: ::API::V3::Entities::MergeRequest, current_user: current_user, project: user_project
           end
 
-          desc 'Cancel merge if "Merge When Build succeeds" is enabled' do
+          desc 'Cancel merge if "Merge When Pipeline Succeeds" is enabled' do
             success ::API::V3::Entities::MergeRequest
           end
           post "#{path}/cancel_merge_when_build_succeeds" do

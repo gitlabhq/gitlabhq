@@ -169,7 +169,7 @@ module API
         optional :should_remove_source_branch, type: Boolean,
                                                desc: 'When true, the source branch will be deleted if possible'
         optional :merge_when_pipeline_succeeds, type: Boolean,
-                                                desc: 'When true, this merge request will be merged when the pipeline succeeds'
+                                               desc: 'When true, this merge request will be merged when the pipeline succeeds'
         optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
       end
       put ':id/merge_requests/:merge_request_id/merge' do

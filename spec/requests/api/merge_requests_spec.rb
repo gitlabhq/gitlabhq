@@ -487,7 +487,7 @@ describe API::MergeRequests, api: true  do
 
       expect(response).to have_http_status(200)
       expect(json_response['title']).to eq('Test')
-      expect(json_response['merge_when_pipeline_succeeds']).to eq(true)
+      expect(json_response['merge_when_pipeline_succeeds']).to be_truthy
     end
   end
 

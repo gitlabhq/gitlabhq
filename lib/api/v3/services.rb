@@ -146,7 +146,11 @@ module API
             name: :room,
             type: String,
             desc: 'Campfire room'
+<<<<<<< HEAD
           }
+=======
+          },
+>>>>>>> 629355a06c... WIP
         ],
         'custom-issue-tracker' => [
           {
@@ -535,8 +539,30 @@ module API
             desc: 'The password of the user'
           }
         ]
+<<<<<<< HEAD
       }
 
+=======
+      }.freeze
+
+      trigger_services = {
+        'mattermost-slash-commands' => [
+          {
+            name: :token,
+            type: String,
+            desc: 'The Mattermost token'
+          }
+        ],
+        'slack-slash-commands' => [
+          {
+            name: :token,
+            type: String,
+            desc: 'The Slack token'
+          }
+        ]
+      }.freeze
+
+>>>>>>> 629355a06c... WIP
       resource :projects do
         before { authenticate! }
         before { authorize_admin_project }
@@ -549,6 +575,7 @@ module API
           end
         end
 
+<<<<<<< HEAD
         desc "Delete a service for project"
         params do
           requires :service_slug, type: String, values: services.keys, desc: 'The name of the service'
@@ -556,6 +583,38 @@ module API
         delete ":id/services/:service_slug" do
           service = user_project.find_or_initialize_service(params[:service_slug].underscore)
 
+=======
+        services.each do |service_slug, settings|
+          desc "Set #{service_slug} service for project"
+          params do
+            settings.each do |setting|
+              if setting[:required]
+                requires setting[:name], type: setting[:type], desc: setting[:desc]
+              else
+                optional setting[:name], type: setting[:type], desc: setting[:desc]
+              end
+            end
+          end
+          put ":id/services/#{service_slug}" do
+            service = user_project.find_or_initialize_service(service_slug.underscore)
+            service_params = declared_params(include_missing: false).merge(active: true)
+
+            if service.update_attributes(service_params)
+              true
+            else
+              render_api_error!('400 Bad Request', 400)
+            end
+          end
+        end
+
+        desc "Delete a service for project"
+        params do
+          requires :service_slug, type: String, values: services.keys, desc: 'The name of the service'
+        end
+        delete ":id/services/:service_slug" do
+          service = user_project.find_or_initialize_service(params[:service_slug].underscore)
+
+>>>>>>> 629355a06c... WIP
           attrs = service_attributes(service).inject({}) do |hash, key|
             hash.merge!(key => nil)
           end

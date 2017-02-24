@@ -158,6 +158,7 @@ module API
           use :statistics_params
         end
         get '/all' do
+          byebug
           authenticated_as_admin!
 
           present_projects Project.all, with: ::API::V3::Entities::ProjectWithAccess, statistics: params[:statistics]
