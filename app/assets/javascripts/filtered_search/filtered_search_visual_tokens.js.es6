@@ -45,6 +45,34 @@ class FilteredSearchVisualTokens {
   static addSearchVisualToken(searchTerm) {
     FilteredSearchVisualTokens.addVisualTokenElement(searchTerm, null, true);
   }
+
+  static getLastTokenPartial() {
+    const { lastVisualToken } = FilteredSearchVisualTokens.getLastVisualToken();
+
+    if (!lastVisualToken) return '';
+
+    const value = lastVisualToken.querySelector('.value');
+    const name = lastVisualToken.querySelector('.name');
+
+    const valueText = value ? value.innerText : '';
+    const nameText = name ? name.innerText : '';
+
+    return valueText || nameText;
+  }
+
+  static removeLastTokenPartial() {
+    const { lastVisualToken } = FilteredSearchVisualTokens.getLastVisualToken();
+
+    if (lastVisualToken) {
+      const value = lastVisualToken.querySelector('.value');
+
+      if (value) {
+        lastVisualToken.removeChild(value);
+      } else {
+        lastVisualToken.parentElement.removeChild(lastVisualToken);
+      }
+    }
+  }
 }
 
 window.gl = window.gl || {};

@@ -63,6 +63,13 @@
       // 8 = Backspace Key
       // 46 = Delete Key
       if (e.keyCode === 8 || e.keyCode === 46) {
+        const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualToken();
+
+        if (this.filteredSearchInput.value === '' && lastVisualToken) {
+          this.filteredSearchInput.value = gl.FilteredSearchVisualTokens.getLastTokenPartial();
+          gl.FilteredSearchVisualTokens.removeLastTokenPartial();
+        }
+
         // Reposition dropdown so that it is aligned with cursor
         this.dropdownManager.updateCurrentDropdownOffset();
       }

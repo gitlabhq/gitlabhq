@@ -1,4 +1,5 @@
 require('~/filtered_search/filtered_search_visual_tokens');
+const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper');
 
 (() => {
   describe('Filtered Search Visual Tokens', () => {
@@ -25,12 +26,7 @@ require('~/filtered_search/filtered_search_visual_tokens');
       });
 
       it('returns when there is one visual token', () => {
-        tokensContainer.innerHTML = `
-          <li class="js-visual-token filtered-search-token">
-            <div class="name">label</div>
-            <div class="value">~bug</div>
-          </li>
-        `;
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug');
 
         const { lastVisualToken, isLastVisualTokenValid }
           = gl.FilteredSearchVisualTokens.getLastVisualToken();
@@ -40,11 +36,7 @@ require('~/filtered_search/filtered_search_visual_tokens');
       });
 
       it('returns when there is an incomplete visual token', () => {
-        tokensContainer.innerHTML = `
-          <li class="js-visual-token filtered-search-token">
-            <div class="name">Author</div>
-          </li>
-        `;
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('Author');
 
         const { lastVisualToken, isLastVisualTokenValid }
           = gl.FilteredSearchVisualTokens.getLastVisualToken();
@@ -55,17 +47,9 @@ require('~/filtered_search/filtered_search_visual_tokens');
 
       it('returns when there are multiple visual tokens', () => {
         tokensContainer.innerHTML = `
-          <li class="js-visual-token filtered-search-token">
-            <div class="name">label</div>
-            <div class="value">~bug</div>
-          </li>
-          <li class="js-visual-token filtered-search-term">
-            <div class="name">search term</div>
-          </li>
-          <li class="js-visual-token filtered-search-token">
-            <div class="name">author</div>
-            <div class="value">@root</div>
-          </li>
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+          ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
         `;
 
         const { lastVisualToken, isLastVisualTokenValid }
@@ -78,16 +62,9 @@ require('~/filtered_search/filtered_search_visual_tokens');
 
       it('returns when there are multiple visual tokens and an incomplete visual token', () => {
         tokensContainer.innerHTML = `
-          <li class="js-visual-token filtered-search-token">
-            <div class="name">label</div>
-            <div class="value">~bug</div>
-          </li>
-          <li class="js-visual-token filtered-search-term">
-            <div class="name">search term</div>
-          </li>
-          <li class="js-visual-token filtered-search-token">
-            <div class="name">assignee</div>
-          </li>
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+          ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
+          ${FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('assignee')}
         `;
 
         const { lastVisualToken, isLastVisualTokenValid }
@@ -180,6 +157,55 @@ require('~/filtered_search/filtered_search_visual_tokens');
         expect(token.classList.contains('filtered-search-term')).toEqual(true);
         expect(token.querySelector('.name').innerText).toEqual('search term');
         expect(token.querySelector('.value')).toEqual(null);
+      });
+    });
+
+    describe('getLastTokenPartial', () => {
+      it('should get last token value', () => {
+        const value = '~bug';
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', value);
+
+        expect(gl.FilteredSearchVisualTokens.getLastTokenPartial()).toEqual(value);
+      });
+
+      it('should get last token name if there is no value', () => {
+        const name = 'assignee';
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createNameFilterVisualTokenHTML(name);
+
+        expect(gl.FilteredSearchVisualTokens.getLastTokenPartial()).toEqual(name);
+      });
+
+      it('should return empty when there are no tokens', () => {
+        expect(gl.FilteredSearchVisualTokens.getLastTokenPartial()).toEqual('');
+      });
+    });
+
+    describe('removeLastTokenPartial', () => {
+      it('should remove the last token value if it exists', () => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~"Community Contribution"');
+
+        expect(tokensContainer.querySelector('.js-visual-token .value')).not.toEqual(null);
+
+        gl.FilteredSearchVisualTokens.removeLastTokenPartial();
+
+        expect(tokensContainer.querySelector('.js-visual-token .value')).toEqual(null);
+      });
+
+      it('should remove the last token name if there is no value', () => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('milestone');
+
+        expect(tokensContainer.querySelector('.js-visual-token .name')).not.toEqual(null);
+
+        gl.FilteredSearchVisualTokens.removeLastTokenPartial();
+
+        expect(tokensContainer.querySelector('.js-visual-token .name')).toEqual(null);
+      });
+
+      it('should not remove anything when there are no tokens', () => {
+        const html = tokensContainer.innerHTML;
+        gl.FilteredSearchVisualTokens.removeLastTokenPartial();
+
+        expect(tokensContainer.innerHTML).toEqual(html);
       });
     });
   });

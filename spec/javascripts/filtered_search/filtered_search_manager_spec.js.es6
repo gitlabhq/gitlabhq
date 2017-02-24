@@ -4,6 +4,7 @@ require('~/filtered_search/filtered_search_token_keys');
 require('~/filtered_search/filtered_search_tokenizer');
 require('~/filtered_search/filtered_search_dropdown_manager');
 require('~/filtered_search/filtered_search_manager');
+const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper');
 
 (() => {
   describe('Filtered Search Manager', () => {
@@ -107,17 +108,89 @@ require('~/filtered_search/filtered_search_manager');
       });
 
       it('should not render placeholder when there are tokens and no input', () => {
-        tokensContainer.innerHTML = `
-          <li class="js-visual-token filtered-search-token">
-            <div class="name">label</div>
-            <div class="value">~bug</div>
-          </li>
-        `;
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug');
 
         const event = new Event('input');
         input.dispatchEvent(event);
 
         expect(input.placeholder).toEqual('');
+      });
+    });
+
+    describe('checkForBackspace', () => {
+      let tokensContainer;
+      const backspaceKey = 8;
+      const deleteKey = 46;
+
+      beforeEach(() => {
+        setFixtures(`
+          <form>
+            <ul class="tokens-container list-unstyled"></ul>
+            <input type='text' class='filtered-search' />
+            <button class="clear-search" type="button">
+              <i class="fa fa-times"></i>
+            </button>
+          </form>
+        `);
+
+        spyOn(gl.FilteredSearchManager.prototype, 'cleanup').and.callFake(() => {});
+        spyOn(gl.FilteredSearchManager.prototype, 'loadSearchParamsFromURL').and.callFake(() => {});
+        spyOn(gl.FilteredSearchManager.prototype, 'tokenChange').and.callFake(() => {});
+        spyOn(gl.FilteredSearchDropdownManager.prototype, 'setDropdown').and.callFake(() => {});
+        spyOn(gl.FilteredSearchDropdownManager.prototype, 'updateDropdownOffset').and.callFake(() => {});
+
+        spyOn(gl.utils, 'getParameterByName').and.returnValue(null);
+
+        input = document.querySelector('.filtered-search');
+        tokensContainer = document.querySelector('.tokens-container');
+        return new gl.FilteredSearchManager();
+      });
+
+      afterEach(() => {
+        input.outerHTML = '';
+        tokensContainer.innerHTML = '';
+      });
+
+      describe('tokens and no input', () => {
+        beforeEach(() => {
+          tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug');
+        });
+
+        it('removes last token', () => {
+          spyOn(gl.FilteredSearchVisualTokens, 'removeLastTokenPartial').and.callThrough();
+
+          const event = new Event('keyup');
+          event.keyCode = backspaceKey;
+          input.dispatchEvent(event);
+
+          expect(gl.FilteredSearchVisualTokens.removeLastTokenPartial).toHaveBeenCalled();
+        });
+
+        it('sets the input', () => {
+          spyOn(gl.FilteredSearchVisualTokens, 'getLastTokenPartial').and.callThrough();
+
+          const event = new Event('keyup');
+          event.keyCode = deleteKey;
+          input.dispatchEvent(event);
+
+          expect(gl.FilteredSearchVisualTokens.getLastTokenPartial).toHaveBeenCalled();
+          expect(input.value).toEqual('~bug');
+        });
+      });
+
+      it('does not remove token or change input when there is existing input', () => {
+        spyOn(gl.FilteredSearchVisualTokens, 'removeLastTokenPartial').and.callThrough();
+        spyOn(gl.FilteredSearchVisualTokens, 'getLastTokenPartial').and.callThrough();
+
+        input.value = 'text';
+
+        const event = new Event('keyup');
+        event.keyCode = deleteKey;
+        input.dispatchEvent(event);
+
+        expect(gl.FilteredSearchVisualTokens.removeLastTokenPartial).not.toHaveBeenCalled();
+        expect(gl.FilteredSearchVisualTokens.getLastTokenPartial).not.toHaveBeenCalled();
+        expect(input.value).toEqual('text');
       });
     });
   });
