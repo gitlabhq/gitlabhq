@@ -61,7 +61,6 @@ module API
           ## EE specific
 
           member = source.members.find_by(user_id: params[:user_id])
-
           conflict!('Member already exists') if member
 
           member = source.add_user(params[:user_id], params[:access_level], current_user: current_user, expires_at: params[:expires_at])
@@ -69,9 +68,6 @@ module API
           if member.persisted? && member.valid?
             present member.user, with: Entities::Member, member: member
           else
-            # This is to ensure back-compatibility but 400 behavior should be used
-            # for all validation errors in 9.0!
-            render_api_error!('Access level is not known', 422) if member.errors.key?(:access_level)
             render_validation_error!(member)
           end
         end
@@ -93,9 +89,6 @@ module API
           if member.update_attributes(declared_params(include_missing: false))
             present member.user, with: Entities::Member, member: member
           else
-            # This is to ensure back-compatibility but 400 behavior should be used
-            # for all validation errors in 9.0!
-            render_api_error!('Access level is not known', 422) if member.errors.key?(:access_level)
             render_validation_error!(member)
           end
         end
