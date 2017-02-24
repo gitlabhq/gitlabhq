@@ -46,21 +46,6 @@ module.exports = Vue.component('environment-item', {
       required: false,
       default: false,
     },
-
-    commitIconSvg: {
-      type: String,
-      required: false,
-    },
-
-    playIconSvg: {
-      type: String,
-      required: false,
-    },
-
-    terminalIconSvg: {
-      type: String,
-      required: false,
-    },
   },
 
   computed: {
@@ -507,7 +492,6 @@ module.exports = Vue.component('environment-item', {
         <div v-if="!model.isFolder">
           <div class="btn-group" role="group">
             <actions-component v-if="hasManualActions && canCreateDeployment"
-              :play-icon-svg="playIconSvg"
               :actions="manualActions">
             </actions-component>
 
@@ -520,7 +504,6 @@ module.exports = Vue.component('environment-item', {
             </stop-component>
 
             <terminal-button-component v-if="model && model.terminal_path"
-              :terminal-icon-svg="terminalIconSvg"
               :terminal-path="model.terminal_path">
             </terminal-button-component>
 

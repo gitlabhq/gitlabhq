@@ -3,6 +3,7 @@
  * Used in environments table.
  */
 const Vue = require('vue');
+const terminalIconSvg = require('../../../../views/shared/icons/_icon_terminal.svg');
 
 module.exports = Vue.component('terminal-button-component', {
   props: {
@@ -10,10 +11,10 @@ module.exports = Vue.component('terminal-button-component', {
       type: String,
       default: '',
     },
-    terminalIconSvg: {
-      type: String,
-      default: '',
-    },
+  },
+
+  data() {
+    return { terminalIconSvg };
   },
 
   template: `

@@ -1,5 +1,6 @@
 /* global Vue */
 window.Vue = require('vue');
+const commitIconSvg = require('../../../../views/shared/icons/_icon_commit.svg');
 
 (() => {
   window.gl = window.gl || {};
@@ -69,11 +70,6 @@ window.Vue = require('vue');
         required: false,
         default: () => ({}),
       },
-
-      commitIconSvg: {
-        type: String,
-        required: false,
-      },
     },
 
     computed: {
@@ -114,6 +110,10 @@ window.Vue = require('vue');
         return this.author &&
           this.author.username ? `${this.author.username}'s avatar` : null;
       },
+    },
+
+    data() {
+      return { commitIconSvg };
     },
 
     template: `

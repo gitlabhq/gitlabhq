@@ -1,4 +1,5 @@
 const Vue = require('vue');
+const playIconSvg = require('../../../../views/shared/icons/_icon_play.svg');
 
 module.exports = Vue.component('actions-component', {
   props: {
@@ -7,11 +8,10 @@ module.exports = Vue.component('actions-component', {
       required: false,
       default: () => [],
     },
+  },
 
-    playIconSvg: {
-      type: String,
-      required: false,
-    },
+  data() {
+    return { playIconSvg };
   },
 
   template: `
