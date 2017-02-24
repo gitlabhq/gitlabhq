@@ -2,7 +2,8 @@
 /* global ContributorsGraph */
 /* global ContributorsAuthorGraph */
 /* global ContributorsMasterGraph */
-/* global ContributorsStatGraphUtil */
+import ContributorsStatGraphUtil from './stat_graph_contributors_util';
+
 /* global d3 */
 
 window.d3 = require('d3');
