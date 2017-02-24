@@ -46,8 +46,10 @@
       this.filteredSearchInput.addEventListener('click', this.tokenChange);
       this.filteredSearchInput.addEventListener('keyup', this.tokenChange);
       this.tokensContainer.addEventListener('click', FilteredSearchManager.selectToken);
+      this.tokensContainer.addEventListener('dblclick', FilteredSearchManager.editToken);
       this.clearSearchButton.addEventListener('click', this.clearSearchWrapper);
       document.addEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
+      document.addEventListener('click', FilteredSearchManager.unselectEditTokens);
       document.addEventListener('keydown', this.removeSelectedTokenWrapper);
     }
 
@@ -62,8 +64,10 @@
       this.filteredSearchInput.removeEventListener('click', this.tokenChange);
       this.filteredSearchInput.removeEventListener('keyup', this.tokenChange);
       this.tokensContainer.removeEventListener('click', FilteredSearchManager.selectToken);
+      this.tokensContainer.removeEventListener('dblclick', FilteredSearchManager.editToken);
       this.clearSearchButton.removeEventListener('click', this.clearSearchWrapper);
       document.removeEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
+      document.removeEventListener('click', FilteredSearchManager.unselectEditTokens);
       document.removeEventListener('keydown', this.removeSelectedTokenWrapper);
     }
 
@@ -117,6 +121,24 @@
       }
     }
 
+    static unselectEditTokens(e) {
+      const isElementInFilteredSearch = document.querySelector('.filtered-search-input-container').contains(e.target);
+      const isElementInFilterDropdown = e.target.closest('.filter-dropdown') !== null;
+      const isElementScrollContainer = e.target.classList.contains('scroll-container');
+
+      if ((!isElementInFilteredSearch && !isElementInFilterDropdown) || isElementScrollContainer) {
+        gl.FilteredSearchVisualTokens.moveInputToTheRight();
+      }
+    }
+
+    static editToken(e) {
+      const token = e.target.closest('.js-visual-token');
+
+      if (token) {
+        gl.FilteredSearchVisualTokens.editToken(token);
+      }
+    }
+
     toggleClearSearchButton() {
       const query = gl.DropdownUtils.getSearchQuery();
       const hidden = 'hidden';
@@ -155,7 +177,19 @@
       e.preventDefault();
 
       this.filteredSearchInput.value = '';
-      this.filteredSearchInput.parentElement.querySelector('.tokens-container').innerHTML = '';
+
+      const removeElements = [];
+
+      [].forEach.call(this.tokensContainer.children, (t) => {
+        if (t.classList.contains('js-visual-token')) {
+          removeElements.push(t);
+        }
+      });
+
+      removeElements.forEach((el) => {
+        el.parentElement.removeChild(el);
+      });
+
       this.clearSearchButton.classList.add('hidden');
       this.handleInputPlaceholder();
 

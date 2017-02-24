@@ -58,11 +58,15 @@
       };
     }
 
-    static addWordToInput(tokenName, tokenValue = '') {
+    static addWordToInput(tokenName, tokenValue = '', clicked) {
       const input = document.querySelector('.filtered-search');
 
       gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue);
       input.value = '';
+
+      if (clicked) {
+        gl.FilteredSearchVisualTokens.moveInputToTheRight();
+      }
 
       // Get the string to replace
       // let newCaretPosition = input.selectionStart;

@@ -1,11 +1,11 @@
 class FilteredSearchVisualTokens {
   static getLastVisualToken() {
-    const tokensContainer = document.querySelector('.tokens-container');
-    const visualTokens = tokensContainer.children;
-    const lastVisualToken = visualTokens[visualTokens.length - 1];
+    const input = document.querySelector('.filtered-search');
+    const lastVisualToken = input.parentElement.previousElementSibling;
+
     return {
       lastVisualToken,
-      isLastVisualTokenValid: visualTokens.length === 0 || lastVisualToken.className.indexOf('filtered-search-term') !== -1 || (lastVisualToken && lastVisualToken.querySelector('.value') !== null),
+      isLastVisualTokenValid: lastVisualToken === null || lastVisualToken.className.indexOf('filtered-search-term') !== -1 || (lastVisualToken && lastVisualToken.querySelector('.value') !== null),
     };
   }
 
@@ -32,18 +32,22 @@ class FilteredSearchVisualTokens {
     }
   }
 
+  static createVisualTokenElementHTML() {
+    return `
+      <div class="selectable" role="button">
+        <div class="name"></div>
+        <div class="value"></div>
+      </div>
+    `;
+  }
+
   static addVisualTokenElement(name, value, isSearchTerm) {
     const li = document.createElement('li');
     li.classList.add('js-visual-token');
     li.classList.add(isSearchTerm ? 'filtered-search-term' : 'filtered-search-token');
 
     if (value) {
-      li.innerHTML = `
-        <div class="selectable" role="button">
-          <div class="name"></div>
-          <div class="value"></div>
-        </div>
-      `;
+      li.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML();
       li.querySelector('.value').innerText = value;
     } else {
       li.innerHTML = '<div class="name"></div>';
@@ -51,7 +55,19 @@ class FilteredSearchVisualTokens {
     li.querySelector('.name').innerText = name;
 
     const tokensContainer = document.querySelector('.tokens-container');
-    tokensContainer.appendChild(li);
+    const input = document.querySelector('.filtered-search');
+    tokensContainer.insertBefore(li, input.parentElement);
+  }
+
+  static addValueToPreviousVisualTokenElement(value) {
+    const { lastVisualToken } = FilteredSearchVisualTokens.getLastVisualToken();
+
+    if (lastVisualToken.classList.contains('filtered-search-token')) {
+      const name = FilteredSearchVisualTokens.getLastTokenPartial();
+      lastVisualToken.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML();
+      lastVisualToken.querySelector('.name').innerText = name;
+      lastVisualToken.querySelector('.value').innerText = value;
+    }
   }
 
   static addFilterVisualToken(tokenName, tokenValue) {
@@ -72,7 +88,13 @@ class FilteredSearchVisualTokens {
   }
 
   static addSearchVisualToken(searchTerm) {
-    FilteredSearchVisualTokens.addVisualTokenElement(searchTerm, null, true);
+    const { lastVisualToken } = FilteredSearchVisualTokens.getLastVisualToken();
+
+    if (lastVisualToken.classList.contains('filtered-search-term')) {
+      lastVisualToken.querySelector('.name').value += ` ${searchTerm}`;
+    } else {
+      FilteredSearchVisualTokens.addVisualTokenElement(searchTerm, null, true);
+    }
   }
 
   static getLastTokenPartial() {
@@ -102,6 +124,67 @@ class FilteredSearchVisualTokens {
       } else {
         lastVisualToken.closest('.tokens-container').removeChild(lastVisualToken);
       }
+    }
+  }
+
+  static tokenizeInput() {
+    const input = document.querySelector('.filtered-search');
+    const { isLastVisualTokenValid } = gl.FilteredSearchVisualTokens.getLastVisualToken();
+
+    if (input.value) {
+      if (isLastVisualTokenValid) {
+        gl.FilteredSearchVisualTokens.addSearchVisualToken(input.value);
+      } else {
+        FilteredSearchVisualTokens.addValueToPreviousVisualTokenElement(input.value);
+      }
+    }
+
+    input.value = '';
+  }
+
+  static editToken(token) {
+    const input = document.querySelector('.filtered-search');
+
+    FilteredSearchVisualTokens.tokenizeInput();
+
+    const name = token.querySelector('.name');
+    const value = token.querySelector('.value');
+
+    const tokenContainer = token.parentElement;
+    const inputLi = input.parentElement;
+    tokenContainer.replaceChild(inputLi, token);
+
+    if (token.classList.contains('filtered-search-token')) {
+      FilteredSearchVisualTokens.addFilterVisualToken(name.innerText);
+    } else {
+      input.value = name.innerText;
+    }
+
+    if (value) {
+      input.value = value.innerText;
+    }
+
+    input.focus();
+    input.click();
+  }
+
+  static moveInputToTheRight() {
+    const input = document.querySelector('.filtered-search');
+    const inputLi = input.parentElement;
+    const tokenContainer = document.querySelector('.tokens-container');
+
+    if (tokenContainer.lastChild !== inputLi) {
+      FilteredSearchVisualTokens.tokenizeInput();
+
+      const { isLastVisualTokenValid } = gl.FilteredSearchVisualTokens.getLastVisualToken();
+      if (!isLastVisualTokenValid) {
+        const lastPartial = gl.FilteredSearchVisualTokens.getLastTokenPartial();
+        gl.FilteredSearchVisualTokens.removeLastTokenPartial();
+        gl.FilteredSearchVisualTokens.addSearchVisualToken(lastPartial);
+      }
+
+      tokenContainer.removeChild(inputLi);
+      tokenContainer.appendChild(inputLi);
     }
   }
 }

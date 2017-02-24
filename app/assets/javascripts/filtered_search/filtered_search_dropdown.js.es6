@@ -35,7 +35,7 @@
 
         if (!dataValueSet) {
           const value = getValueFunction(selected);
-          gl.FilteredSearchDropdownManager.addWordToInput(this.filter, value);
+          gl.FilteredSearchDropdownManager.addWordToInput(this.filter, value, true);
         }
 
         this.dismissDropdown();
