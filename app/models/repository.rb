@@ -769,7 +769,7 @@ class Repository
     author_email: nil, author_name: nil,
     start_branch_name: nil, start_project: project)
 
-    entry = tree_entry_at(start_branch_name || branch_name, path)
+    entry = start_project.repository.tree_entry_at(start_branch_name || branch_name, path)
     if entry
       if entry[:type] == :blob
         raise Gitlab::Git::Repository::InvalidBlobName.new(
@@ -881,7 +881,7 @@ class Repository
       end
 
       actions.each do |options|
-        index.__send__(options.delete(:action), options)
+        index.public_send(options.delete(:action), options)
       end
 
       options = {

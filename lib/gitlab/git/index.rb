@@ -10,20 +10,20 @@ module Gitlab
         @raw_index = repository.rugged.index
       end
 
-      delegate :read_tree, to: :raw_index
+      delegate :read_tree, :get, to: :raw_index
 
       def write_tree
         raw_index.write_tree(repository.rugged)
       end
 
-      def get(*args)
-        raw_index.get(*args)
+      def dir_exists?(path)
+        raw_index.find { |entry| entry[:path].start_with?("#{path}/") }
       end
 
       def create(options)
-        normalize_options!(options)
+        options = normalize_options(options)
 
-        file_entry = raw_index.get(options[:file_path])
+        file_entry = get(options[:file_path])
         if file_entry
           raise Gitlab::Git::Repository::InvalidBlobName.new("Filename already exists")
         end
@@ -32,11 +32,15 @@ module Gitlab
       end
 
       def create_dir(options)
-        normalize_options!(options)
+        options = normalize_options(options)
 
-        file_entry = raw_index.get(options[:file_path])
+        file_entry = get(options[:file_path])
         if file_entry
           raise Gitlab::Git::Repository::InvalidBlobName.new("Directory already exists as a file")
+        end
+
+        if dir_exists?(options[:file_path])
+          raise Gitlab::Git::Repository::InvalidBlobName.new("Directory already exists")
         end
 
         options = options.dup
@@ -47,9 +51,9 @@ module Gitlab
       end
 
       def update(options)
-        normalize_options!(options)
+        options = normalize_options(options)
 
-        file_entry = raw_index.get(options[:file_path])
+        file_entry = get(options[:file_path])
         unless file_entry
           raise Gitlab::Git::Repository::InvalidBlobName.new("File doesn't exist")
         end
@@ -58,9 +62,9 @@ module Gitlab
       end
 
       def move(options)
-        normalize_options!(options)
+        options = normalize_options(options)
 
-        file_entry = raw_index.get(options[:previous_path])
+        file_entry = get(options[:previous_path])
         unless file_entry
           raise Gitlab::Git::Repository::InvalidBlobName.new("File doesn't exist")
         end
@@ -71,9 +75,9 @@ module Gitlab
       end
 
       def delete(options)
-        normalize_options!(options)
+        options = normalize_options(options)
 
-        file_entry = raw_index.get(options[:file_path])
+        file_entry = get(options[:file_path])
         unless file_entry
           raise Gitlab::Git::Repository::InvalidBlobName.new("File doesn't exist")
         end
@@ -83,13 +87,15 @@ module Gitlab
 
       private
 
-      def normalize_options!(options)
+      def normalize_options(options)
+        options = options.dup
         options[:file_path] = normalize_path(options[:file_path]) if options[:file_path]
         options[:previous_path] = normalize_path(options[:previous_path]) if options[:previous_path]
+        options
       end
 
       def normalize_path(path)
-        pathname = Gitlab::Git::PathHelper.normalize_path(path)
+        pathname = Gitlab::Git::PathHelper.normalize_path(path.dup)
 
         if pathname.each_filename.include?('..')
           raise Gitlab::Git::Repository::InvalidBlobName.new('Invalid path')

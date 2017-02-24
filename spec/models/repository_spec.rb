@@ -291,7 +291,7 @@ describe Repository, models: true do
     end
   end
 
-  describe "#commit_dir" do
+  describe "#create_dir" do
     it "commits a change that creates a new directory" do
       expect do
         repository.create_dir(user, 'newdir',
@@ -424,7 +424,7 @@ describe Repository, models: true do
     end
   end
 
-  describe "#remove_file" do
+  describe "#delete_file" do
     it 'removes file successfully' do
       expect do
         repository.delete_file(user, 'README',
