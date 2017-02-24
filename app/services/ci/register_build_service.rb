@@ -22,7 +22,7 @@ module Ci
 
       builds = builds.includes(:tags)
 
-      build = builds.find_each do |build|
+      build = builds.find do |build|
         runner.can_pick?(build)
       end
 
