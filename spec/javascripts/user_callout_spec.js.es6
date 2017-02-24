@@ -3,11 +3,11 @@ const UserCallout = require('~/user_callout');
 const USER_CALLOUT_COOKIE = 'user_callout_dismissed';
 const Cookie = window.Cookies;
 
-describe('UserCallout', function () {
+describe('UserCallout', () => {
   const fixtureName = 'static/user_callout.html.raw';
   preloadFixtures(fixtureName);
 
-  beforeEach(() => {
+  beforeEach(function () {
     loadFixtures(fixtureName);
     this.userCallout = new UserCallout();
     this.closeButton = $('.close-user-callout');
@@ -16,17 +16,21 @@ describe('UserCallout', function () {
     Cookie.set(USER_CALLOUT_COOKIE, 'false');
   });
 
-  fit('shows when cookie is set to false', () => {
+  afterEach(function () {
+    Cookie.set(USER_CALLOUT_COOKIE, 'false');
+  });
+
+  it('shows when cookie is set to false', function () {
     expect(Cookie.get(USER_CALLOUT_COOKIE)).toBeDefined();
     expect(this.userCalloutContainer.is(':visible')).toBe(true);
   });
 
-  fit('hides when user clicks on the dismiss-icon', () => {
+  it('hides when user clicks on the dismiss-icon', function () {
     this.closeButton.click();
     expect(Cookie.get(USER_CALLOUT_COOKIE)).toBe('true');
   });
 
-  fit('hides when user clicks on the "check it out" button', () => {
+  it('hides when user clicks on the "check it out" button', function () {
     this.userCalloutBtn.click();
     expect(Cookie.get(USER_CALLOUT_COOKIE)).toBe('true');
   });
