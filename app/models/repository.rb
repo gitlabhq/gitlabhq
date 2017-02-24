@@ -769,17 +769,6 @@ class Repository
     author_email: nil, author_name: nil,
     start_branch_name: nil, start_project: project)
 
-    entry = start_project.repository.tree_entry_at(start_branch_name || branch_name, path)
-    if entry
-      if entry[:type] == :blob
-        raise Gitlab::Git::Repository::InvalidBlobName.new(
-          "Directory already exists as a file")
-      else
-        raise Gitlab::Git::Repository::InvalidBlobName.new(
-          "Directory already exists")
-      end
-    end
-
     multi_action(
       user: user,
       message: message,
@@ -1247,14 +1236,6 @@ class Repository
 
   def gitlab_ci_yml_for(sha)
     blob_data_at(sha, '.gitlab-ci.yml')
-  end
-
-  protected
-
-  def tree_entry_at(branch_name, path)
-    branch_exists?(branch_name) &&
-      # tree_entry is private
-      raw_repository.send(:tree_entry, commit(branch_name), path)
   end
 
   private
