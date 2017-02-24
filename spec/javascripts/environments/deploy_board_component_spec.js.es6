@@ -1,13 +1,13 @@
 const Vue = require('vue');
-const DeployBoardComponent = require('~/environments/components/deploy_board_component');
+const DeployBoard = require('~/environments/components/deploy_board_component');
 const Service = require('~/environments/services/environments_service');
 const { deployBoardMockData } = require('./mock_data');
 
 describe('Deploy Board', () => {
-  preloadFixtures('static/environments/element.html.raw');
+  let DeployBoardComponent;
 
   beforeEach(() => {
-    loadFixtures('static/environments/element.html.raw');
+    DeployBoardComponent = Vue.extend(DeployBoard);
   });
 
   describe('successfull request', () => {
@@ -25,14 +25,13 @@ describe('Deploy Board', () => {
       this.service = new Service('environments');
 
       component = new DeployBoardComponent({
-        el: document.querySelector('.test-dom-element'),
         propsData: {
           store: {},
           service: this.service,
           deployBoardData: deployBoardMockData,
           environmentID: 1,
         },
-      });
+      }).$mount();
     });
 
     afterEach(() => {
@@ -92,14 +91,13 @@ describe('Deploy Board', () => {
       this.service = new Service('environments');
 
       component = new DeployBoardComponent({
-        el: document.querySelector('.test-dom-element'),
         propsData: {
           store: {},
           service: this.service,
           deployBoardData: {},
           environmentID: 1,
         },
-      });
+      }).$mount();
     });
 
     afterEach(() => {
