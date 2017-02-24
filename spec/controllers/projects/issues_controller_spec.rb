@@ -12,7 +12,7 @@ describe Projects::IssuesController do
         allow(project).to receive(:external_issue_tracker).and_return(external)
         controller.instance_variable_set(:@project, project)
 
-        get :index, namespace_id: project.namespace.path, project_id: project
+        get :index, namespace_id: project.namespace, project_id: project
 
         expect(response).to redirect_to('https://example.com/project')
       end
@@ -27,13 +27,13 @@ describe Projects::IssuesController do
       it_behaves_like "issuables list meta-data", :issue
 
       it "returns index" do
-        get :index, namespace_id: project.namespace.path, project_id: project.path
+        get :index, namespace_id: project.namespace, project_id: project
 
         expect(response).to have_http_status(200)
       end
 
       it "returns 301 if request path doesn't match project path" do
-        get :index, namespace_id: project.namespace.path, project_id: project.path.upcase
+        get :index, namespace_id: project.namespace, project_id: project.path.upcase
 
         expect(response).to redirect_to(namespace_project_issues_path(project.namespace, project))
       end
@@ -42,7 +42,7 @@ describe Projects::IssuesController do
         project.issues_enabled = false
         project.save
 
-        get :index, namespace_id: project.namespace.path, project_id: project.path
+        get :index, namespace_id: project.namespace, project_id: project
         expect(response).to have_http_status(404)
       end
 
@@ -50,7 +50,7 @@ describe Projects::IssuesController do
         controller.instance_variable_set(:@project, project)
         allow(project).to receive(:default_issues_tracker?).and_return(false)
 
-        get :index, namespace_id: project.namespace.path, project_id: project.path
+        get :index, namespace_id: project.namespace, project_id: project
         expect(response).to have_http_status(404)
       end
     end
@@ -67,8 +67,8 @@ describe Projects::IssuesController do
 
       it 'redirects to last_page if page number is larger than number of pages' do
         get :index,
-          namespace_id: project.namespace.path.to_param,
-          project_id: project.path.to_param,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
           page: (last_page + 1).to_param
 
         expect(response).to redirect_to(namespace_project_issues_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
@@ -76,8 +76,8 @@ describe Projects::IssuesController do
 
       it 'redirects to specified page' do
         get :index,
-          namespace_id: project.namespace.path.to_param,
-          project_id: project.path.to_param,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
           page: last_page.to_param
 
         expect(assigns(:issues).current_page).to eq(last_page)
@@ -94,7 +94,7 @@ describe Projects::IssuesController do
       end
 
       it 'builds a new issue' do
-        get :new, namespace_id: project.namespace.path, project_id: project
+        get :new, namespace_id: project.namespace, project_id: project
 
         expect(assigns(:issue)).to be_a_new(Issue)
       end
@@ -104,7 +104,7 @@ describe Projects::IssuesController do
         project_with_repository.team << [user, :developer]
         mr = create(:merge_request_with_diff_notes, source_project: project_with_repository)
 
-        get :new, namespace_id: project_with_repository.namespace.path, project_id: project_with_repository, merge_request_for_resolving_discussions: mr.iid
+        get :new, namespace_id: project_with_repository.namespace, project_id: project_with_repository, merge_request_for_resolving_discussions: mr.iid
 
         expect(assigns(:issue).title).not_to be_empty
         expect(assigns(:issue).description).not_to be_empty
@@ -117,7 +117,7 @@ describe Projects::IssuesController do
         allow(project).to receive(:external_issue_tracker).and_return(external)
         controller.instance_variable_set(:@project, project)
 
-        get :new, namespace_id: project.namespace.path, project_id: project
+        get :new, namespace_id: project.namespace, project_id: project
 
         expect(response).to redirect_to('https://example.com/issues/new')
       end
@@ -251,7 +251,7 @@ describe Projects::IssuesController do
       def update_issue(issue_params = {}, additional_params = {})
         params = {
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           id: issue.iid,
           issue: issue_params
         }.merge(additional_params)
@@ -262,7 +262,7 @@ describe Projects::IssuesController do
       def move_issue
         put :update,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           id: issue.iid,
           issue: { title: 'New title' },
           move_to_project_id: another_project.id
@@ -342,7 +342,7 @@ describe Projects::IssuesController do
       def get_issues
         get :index,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param
+          project_id: project
       end
     end
 
@@ -405,7 +405,7 @@ describe Projects::IssuesController do
       def go(id:)
         get :show,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           id: id
       end
     end
@@ -416,7 +416,7 @@ describe Projects::IssuesController do
       def go(id:)
         get :edit,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           id: id
       end
     end
@@ -427,7 +427,7 @@ describe Projects::IssuesController do
       def go(id:)
         put :update,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           id: id,
           issue: { title: 'New title' }
       end
@@ -442,7 +442,7 @@ describe Projects::IssuesController do
 
       post :create, {
         namespace_id: project.namespace.to_param,
-        project_id: project.to_param,
+        project_id: project,
         issue: { title: 'Title', description: 'Description' }.merge(issue_attrs)
       }.merge(additional_params)
 
@@ -464,7 +464,7 @@ describe Projects::IssuesController do
       end
 
       def post_issue(issue_params)
-        post :create, namespace_id: project.namespace.to_param, project_id: project.to_param, issue: issue_params, merge_request_for_resolving_discussions: merge_request.iid
+        post :create, namespace_id: project.namespace.to_param, project_id: project, issue: issue_params, merge_request_for_resolving_discussions: merge_request.iid
       end
 
       it 'creates an issue for the project' do
@@ -607,8 +607,8 @@ describe Projects::IssuesController do
         project.team << [admin, :master]
         sign_in(admin)
         post :mark_as_spam, {
-          namespace_id: project.namespace.path,
-          project_id: project.path,
+          namespace_id: project.namespace,
+          project_id: project,
           id: issue.iid
         }
       end
@@ -624,7 +624,7 @@ describe Projects::IssuesController do
     context "when the user is a developer" do
       before { sign_in(user) }
       it "rejects a developer to destroy an issue" do
-        delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: issue.iid
+        delete :destroy, namespace_id: project.namespace, project_id: project, id: issue.iid
         expect(response).to have_http_status(404)
       end
     end
@@ -637,7 +637,7 @@ describe Projects::IssuesController do
       before { sign_in(owner) }
 
       it "deletes the issue" do
-        delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: issue.iid
+        delete :destroy, namespace_id: project.namespace, project_id: project, id: issue.iid
 
         expect(response).to have_http_status(302)
         expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./).now
@@ -646,7 +646,7 @@ describe Projects::IssuesController do
       it 'delegates the update of the todos count cache to TodoService' do
         expect_any_instance_of(TodoService).to receive(:destroy_issue).with(issue, owner).once
 
-        delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: issue.iid
+        delete :destroy, namespace_id: project.namespace, project_id: project, id: issue.iid
       end
     end
   end
@@ -659,8 +659,8 @@ describe Projects::IssuesController do
 
     it "toggles the award emoji" do
       expect do
-        post(:toggle_award_emoji, namespace_id: project.namespace.path,
-                                  project_id: project.path, id: issue.iid, name: "thumbsup")
+        post(:toggle_award_emoji, namespace_id: project.namespace,
+                                  project_id: project, id: issue.iid, name: "thumbsup")
       end.to change { issue.award_emoji.count }.by(1)
 
       expect(response).to have_http_status(200)

@@ -22,8 +22,8 @@ describe Projects::BranchesController do
         sign_in(user)
 
         post :create,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          namespace_id: project.namespace,
+          project_id: project,
           branch_name: branch,
           ref: ref
       end
@@ -76,8 +76,8 @@ describe Projects::BranchesController do
 
       it 'redirects' do
         post :create,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          namespace_id: project.namespace,
+          project_id: project,
           branch_name: branch,
           issue_iid: issue.iid
 
@@ -89,8 +89,8 @@ describe Projects::BranchesController do
         expect(SystemNoteService).to receive(:new_issue_branch).with(issue, project, user, "1-feature-branch")
 
         post :create,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          namespace_id: project.namespace,
+          project_id: project,
           branch_name: branch,
           issue_iid: issue.iid
       end
@@ -143,8 +143,8 @@ describe Projects::BranchesController do
           expect(SystemNoteService).not_to receive(:new_issue_branch)
 
           post :create,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
+            namespace_id: project.namespace,
+            project_id: project,
             branch_name: branch,
             issue_iid: issue.iid
         end
@@ -163,8 +163,8 @@ describe Projects::BranchesController do
       post :destroy,
            format: :html,
            id: 'foo/bar/baz',
-           namespace_id: project.namespace.to_param,
-           project_id: project.to_param
+           namespace_id: project.namespace,
+           project_id: project
 
       expect(response).to have_http_status(303)
     end
@@ -179,8 +179,8 @@ describe Projects::BranchesController do
       post :destroy,
            format: :js,
            id: branch,
-           namespace_id: project.namespace.to_param,
-           project_id: project.to_param
+           namespace_id: project.namespace,
+           project_id: project
     end
 
     context "valid branch name, valid source" do
@@ -210,8 +210,8 @@ describe Projects::BranchesController do
   describe "DELETE destroy_all_merged" do
     def destroy_all_merged
       delete :destroy_all_merged,
-             namespace_id: project.namespace.to_param,
-             project_id: project.to_param
+             namespace_id: project.namespace,
+             project_id: project
     end
 
     context 'when user is allowed to push' do
