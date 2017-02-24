@@ -421,7 +421,7 @@ module Ci
     end
 
     def has_tags?
-      tags.any?
+      tag_list.any?
     end
 
     def any_runners_online?
