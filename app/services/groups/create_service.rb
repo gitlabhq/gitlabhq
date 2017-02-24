@@ -32,11 +32,5 @@ module Groups
       @group.add_owner(current_user)
       @group
     end
-
-    private
-
-    def create_chat_team?
-      @chat_team && Gitlab.config.mattermost.enabled
-    end
   end
 end

@@ -40,8 +40,12 @@ describe Groups::CreateService, '#execute', services: true do
   end
 
   describe 'creating a mattermost team' do
-    let!(:params) { group_params.merge(create_chat_team: true) }
+    let!(:params) { group_params.merge(create_chat_team: "true") }
     let!(:service) { described_class.new(user, params) }
+
+    before do
+      Settings.mattermost['enabled'] = true
+    end
 
     it 'triggers the service' do
       expect_any_instance_of(Mattermost::CreateTeamService).to receive(:execute)

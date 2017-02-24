@@ -1,10 +1,7 @@
 module Groups
   class UpdateService < Groups::BaseService
     def execute
-      if params.delete(:create_chat_team) == '1'
-        chat_name = params[:chat_team_name]
-        options = chat_name ? { name: chat_name } : {}
-      end
+      @chat_team = params.delete(:create_chat_team)
 
       # check that user is allowed to set specified visibility_level
       new_visibility = params[:visibility_level]
@@ -19,6 +16,12 @@ module Groups
 
       group.assign_attributes(params)
 
+      if create_chat_team?
+        Mattermost::CreateTeamService.new(group, current_user).execute
+
+        return group if group.errors.any?
+      end
+
       begin
         group.save
       rescue Gitlab::UpdatePathError => e
@@ -26,6 +29,12 @@ module Groups
 
         false
       end
+    end
+
+    private
+
+    def create_chat_team?
+      super && group.chat_team.nil?
     end
   end
 end
