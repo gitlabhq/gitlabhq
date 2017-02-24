@@ -76,6 +76,12 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
+  validates :max_artifacts_size,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
+  validates :default_artifacts_expire_in, presence: true, duration: true
+
   validates :container_registry_token_expire_delay,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
@@ -168,6 +174,7 @@ class ApplicationSetting < ActiveRecord::Base
       after_sign_up_text: nil,
       akismet_enabled: false,
       container_registry_token_expire_delay: 5,
+      default_artifacts_expire_in: '30 days',
       default_branch_protection: Settings.gitlab['default_branch_protection'],
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_projects_limit: Settings.gitlab['default_projects_limit'],
@@ -201,9 +208,9 @@ class ApplicationSetting < ActiveRecord::Base
       sign_in_text: nil,
       signin_enabled: Settings.gitlab['signin_enabled'],
       signup_enabled: Settings.gitlab['signup_enabled'],
+      terminal_max_session_time: 0,
       two_factor_grace_period: 48,
-      user_default_external: false,
-      terminal_max_session_time: 0
+      user_default_external: false
     }
   end
 
@@ -213,6 +220,14 @@ class ApplicationSetting < ActiveRecord::Base
 
   def self.create_from_defaults
     create(defaults)
+  end
+
+  def self.human_attribute_name(attr, _options = {})
+    if attr == :default_artifacts_expire_in
+      'Default artifacts expiration'
+    else
+      super
+    end
   end
 
   def home_page_url_column_exist

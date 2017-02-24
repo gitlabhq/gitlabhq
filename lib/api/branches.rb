@@ -137,7 +137,7 @@ module API
       delete ":id/repository/merged_branches" do
         DeleteMergedBranchesService.new(user_project, current_user).async_execute
 
-        status(200)
+        accepted!
       end
     end
   end

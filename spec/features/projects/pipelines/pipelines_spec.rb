@@ -328,6 +328,18 @@ describe 'Pipelines', :feature, :js do
             expect(build.reload).to be_canceled
           end
         end
+
+        context 'dropdown jobs list' do
+          it 'should keep the dropdown open when the user ctr/cmd + clicks in the job name' do
+            find('.js-builds-dropdown-button').trigger('click')
+
+            execute_script('var e = $.Event("keydown", { keyCode: 64 }); $("body").trigger(e);')
+
+            find('.mini-pipeline-graph-dropdown-item').trigger('click')
+
+            expect(page).to have_selector('.js-ci-action-icon')
+          end
+        end
       end
 
       context 'with pagination' do
