@@ -833,12 +833,6 @@ describe MergeRequest, models: true do
       it 'becomes unmergeable' do
         expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
       end
-
-      it 'creates Todo on unmergeability' do
-        expect_any_instance_of(TodoService).to receive(:merge_request_became_unmergeable).with(subject)
-
-        subject.check_if_can_be_merged
-      end
     end
 
     context 'when it has conflicts' do
