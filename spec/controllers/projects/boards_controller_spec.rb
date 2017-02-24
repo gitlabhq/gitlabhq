@@ -65,8 +65,8 @@ describe Projects::BoardsController do
     end
 
     def list_boards(format: :html)
-      get :index, namespace_id: project.namespace.to_param,
-                  project_id: project.to_param,
+      get :index, namespace_id: project.namespace,
+                  project_id: project,
                   format: format
     end
   end
@@ -130,8 +130,8 @@ describe Projects::BoardsController do
     end
 
     def read_board(board:, format: :html)
-      get :show, namespace_id: project.namespace.to_param,
-                 project_id: project.to_param,
+      get :show, namespace_id: project.namespace,
+                 project_id: project,
                  id: board.to_param,
                  format: format
     end

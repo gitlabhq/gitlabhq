@@ -5,17 +5,18 @@ module Gitlab
     # The namespace regex is used in Javascript to validate usernames in the "Register" form. However, Javascript
     # does not support the negative lookbehind assertion (?<!) that disallows usernames ending in `.git` and `.atom`.
     # Since this is a non-trivial problem to solve in Javascript (heavily complicate the regex, modify view code to
-    # allow non-regex validatiions, etc), `NAMESPACE_REGEX_STR_SIMPLE` serves as a Javascript-compatible version of
+    # allow non-regex validatiions, etc), `NAMESPACE_REGEX_STR_JS` serves as a Javascript-compatible version of
     # `NAMESPACE_REGEX_STR`, with the negative lookbehind assertion removed. This means that the client-side validation
     # will pass for usernames ending in `.atom` and `.git`, but will be caught by the server-side validation.
     PATH_REGEX_STR = '[a-zA-Z0-9_\.][a-zA-Z0-9_\-\.]*'.freeze
-    NAMESPACE_REGEX_STR_SIMPLE = PATH_REGEX_STR + '[a-zA-Z0-9_\-]|[a-zA-Z0-9_]'.freeze
-    NAMESPACE_REGEX_STR = '(?:' + NAMESPACE_REGEX_STR_SIMPLE + ')(?<!\.git|\.atom)'.freeze
-    PROJECT_REGEX_STR = PATH_REGEX_STR + '(?<!\.git|\.atom)'.freeze
+    NAMESPACE_REGEX_STR_JS = PATH_REGEX_STR + '[a-zA-Z0-9_\-]|[a-zA-Z0-9_]'.freeze
+    NO_SUFFIX_REGEX_STR = '(?<!\.git|\.atom)'.freeze
+    NAMESPACE_REGEX_STR = "(?:#{NAMESPACE_REGEX_STR_JS})#{NO_SUFFIX_REGEX_STR}".freeze
+    PROJECT_REGEX_STR = "(?:#{PATH_REGEX_STR})#{NO_SUFFIX_REGEX_STR}".freeze
 
     # Same as NAMESPACE_REGEX_STR but allows `/` in the path.
     # So `group/subgroup` will match this regex but not NAMESPACE_REGEX_STR
-    NAMESPACE_REF_REGEX_STR = '(?:[a-zA-Z0-9_\.][a-zA-Z0-9_\-\.\/]*[a-zA-Z0-9_\-]|[a-zA-Z0-9_])(?<!\.git|\.atom)'.freeze
+    FULL_NAMESPACE_REGEX_STR = "(?:#{NAMESPACE_REGEX_STR}/)*#{NAMESPACE_REGEX_STR}".freeze
 
     def namespace_regex
       @namespace_regex ||= /\A#{NAMESPACE_REGEX_STR}\z/.freeze

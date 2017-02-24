@@ -90,7 +90,7 @@ describe Projects::Boards::IssuesController do
 
       params = {
         namespace_id: project.namespace.to_param,
-        project_id: project.to_param,
+        project_id: project,
         board_id: board.to_param,
         list_id: list.try(:to_param)
       }
@@ -162,7 +162,7 @@ describe Projects::Boards::IssuesController do
       sign_in(user)
 
       post :create, namespace_id: project.namespace.to_param,
-                    project_id: project.to_param,
+                    project_id: project,
                     board_id: board.to_param,
                     list_id: list.to_param,
                     issue: { title: title },
@@ -225,7 +225,7 @@ describe Projects::Boards::IssuesController do
       sign_in(user)
 
       patch :update, namespace_id: project.namespace.to_param,
-                     project_id: project.to_param,
+                     project_id: project,
                      board_id: board.to_param,
                      id: issue.to_param,
                      from_list_id: from_list_id,

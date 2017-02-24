@@ -16,8 +16,8 @@ describe Projects::CommitsController do
       context "when the ref does not exist with the suffix" do
         it "renders as atom" do
           get(:show,
-              namespace_id: project.namespace.to_param,
-              project_id: project.to_param,
+              namespace_id: project.namespace,
+              project_id: project,
               id: "master.atom")
 
           expect(response).to be_success
@@ -33,8 +33,8 @@ describe Projects::CommitsController do
           allow_any_instance_of(Repository).to receive(:commit).with('master.atom').and_return(commit)
 
           get(:show,
-              namespace_id: project.namespace.to_param,
-              project_id: project.to_param,
+              namespace_id: project.namespace,
+              project_id: project,
               id: "master.atom")
         end
 

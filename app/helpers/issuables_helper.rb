@@ -52,7 +52,7 @@ module IssuablesHelper
         field_name: 'issuable_template',
         selected: selected_template(issuable),
         project_path: ref_project.path,
-        namespace_path: ref_project.namespace.path
+        namespace_path: ref_project.namespace.full_path
       }
     }
 

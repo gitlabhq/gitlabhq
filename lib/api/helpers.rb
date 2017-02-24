@@ -216,6 +216,10 @@ module API
       render_api_error!('204 No Content', 204)
     end
 
+    def accepted!
+      render_api_error!('202 Accepted', 202)
+    end
+
     def render_validation_error!(model)
       if model.errors.any?
         render_api_error!(model.errors.messages || '400 Bad Request', 400)

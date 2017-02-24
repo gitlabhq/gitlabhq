@@ -64,8 +64,7 @@ class Project < ActiveRecord::Base
 
   after_validation :check_pending_delete
 
-  ActsAsTaggableOn.strict_case_match = true
-  acts_as_taggable_on :tags
+  acts_as_taggable
 
   attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
@@ -399,7 +398,7 @@ class Project < ActiveRecord::Base
     end
 
     def reference_pattern
-      name_pattern = Gitlab::Regex::NAMESPACE_REGEX_STR
+      name_pattern = Gitlab::Regex::FULL_NAMESPACE_REGEX_STR
 
       %r{
         ((?<namespace>#{name_pattern})\/)?
@@ -958,10 +957,6 @@ class Project < ActiveRecord::Base
     gitlab_shell.url_to_repo(path_with_namespace)
   end
 
-  def namespace_dir
-    namespace.try(:path) || ''
-  end
-
   def repo_exists?
     @repo_exists ||= repository.exists?
   rescue
@@ -1015,8 +1010,8 @@ class Project < ActiveRecord::Base
 
   def rename_repo
     path_was = previous_changes['path'].first
-    old_path_with_namespace = File.join(namespace_dir, path_was)
-    new_path_with_namespace = File.join(namespace_dir, path)
+    old_path_with_namespace = File.join(namespace.full_path, path_was)
+    new_path_with_namespace = File.join(namespace.full_path, path)
 
     Rails.logger.error "Attempting to rename #{old_path_with_namespace} -> #{new_path_with_namespace}"
 

@@ -210,12 +210,15 @@ describe User, models: true do
       end
     end
 
+<<<<<<< HEAD
     it 'does not allow a user to be both an auditor and an admin' do
       user = build(:user, :admin, :auditor)
 
       expect(user).to be_invalid
     end
 
+=======
+>>>>>>> ce/master
     describe 'ghost users' do
       it 'does not allow a non-blocked ghost user' do
         user = build(:user, :ghost)
@@ -231,6 +234,7 @@ describe User, models: true do
         expect(user).to be_valid
       end
     end
+<<<<<<< HEAD
   end
 
   describe "non_ldap" do
@@ -244,6 +248,8 @@ describe User, models: true do
       expect(users.count).to eq 2
       expect(users.detect { |user| user.username == ldap_user.username }).to be_nil
     end
+=======
+>>>>>>> ce/master
   end
 
   describe "scopes" do
@@ -1677,6 +1683,43 @@ describe User, models: true do
         allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { true }
 
         expect(build(:user)).not_to be_auditor
+      end
+    end
+  end
+
+  describe '.ghost' do
+    it "creates a ghost user if one isn't already present" do
+      ghost = User.ghost
+
+      expect(ghost).to be_ghost
+      expect(ghost).to be_persisted
+    end
+
+    it "does not create a second ghost user if one is already present" do
+      expect do
+        User.ghost
+        User.ghost
+      end.to change { User.count }.by(1)
+      expect(User.ghost).to eq(User.ghost)
+    end
+
+    context "when a regular user exists with the username 'ghost'" do
+      it "creates a ghost user with a non-conflicting username" do
+        create(:user, username: 'ghost')
+        ghost = User.ghost
+
+        expect(ghost).to be_persisted
+        expect(ghost.username).to eq('ghost1')
+      end
+    end
+
+    context "when a regular user exists with the email 'ghost@example.com'" do
+      it "creates a ghost user with a non-conflicting email" do
+        create(:user, email: 'ghost@example.com')
+        ghost = User.ghost
+
+        expect(ghost).to be_persisted
+        expect(ghost.email).to eq('ghost1@example.com')
       end
     end
   end

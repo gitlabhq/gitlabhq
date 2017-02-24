@@ -28,7 +28,7 @@ describe DroneCiService, models: true, caching: true do
   shared_context :drone_ci_service do
     let(:drone)      { DroneCiService.new }
     let(:project)    { create(:project, :repository, name: 'project') }
-    let(:path)       { "#{project.namespace.path}/#{project.path}" }
+    let(:path)       { project.full_path }
     let(:drone_url)  { 'http://drone.example.com' }
     let(:sha)        { '2ab7834c' }
     let(:branch)     { 'dev' }

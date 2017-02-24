@@ -35,7 +35,7 @@ describe ProjectsController do
         let(:private_project) { create(:empty_project, :private) }
 
         it "does not initialize notification setting" do
-          get :show, namespace_id: private_project.namespace.path, id: private_project.path
+          get :show, namespace_id: private_project.namespace, id: private_project
           expect(assigns(:notification_setting)).to be_nil
         end
       end
@@ -43,7 +43,7 @@ describe ProjectsController do
       context "user has access to project" do
         context "and does not have notification setting" do
           it "initializes notification as disabled" do
-            get :show, namespace_id: public_project.namespace.path, id: public_project.path
+            get :show, namespace_id: public_project.namespace, id: public_project
             expect(assigns(:notification_setting).level).to eq("global")
           end
         end
@@ -56,7 +56,7 @@ describe ProjectsController do
           end
 
           it "shows current notification setting" do
-            get :show, namespace_id: public_project.namespace.path, id: public_project.path
+            get :show, namespace_id: public_project.namespace, id: public_project
             expect(assigns(:notification_setting).level).to eq("watch")
           end
         end
@@ -71,7 +71,7 @@ describe ProjectsController do
         end
 
         it 'shows wiki homepage' do
-          get :show, namespace_id: project.namespace.path, id: project.path
+          get :show, namespace_id: project.namespace, id: project
 
           expect(response).to render_template('projects/_wiki')
         end
@@ -79,7 +79,7 @@ describe ProjectsController do
         it 'shows issues list page if wiki is disabled' do
           project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
 
-          get :show, namespace_id: project.namespace.path, id: project.path
+          get :show, namespace_id: project.namespace, id: project
 
           expect(response).to render_template('projects/issues/_issues')
         end
@@ -88,7 +88,7 @@ describe ProjectsController do
           project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
           project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
 
-          get :show, namespace_id: project.namespace.path, id: project.path
+          get :show, namespace_id: project.namespace, id: project
 
           expect(response).to render_template("projects/_customize_workflow")
         end
@@ -96,7 +96,7 @@ describe ProjectsController do
         it 'shows activity if enabled by user' do
           user.update_attribute(:project_view, 'activity')
 
-          get :show, namespace_id: project.namespace.path, id: project.path
+          get :show, namespace_id: project.namespace, id: project
 
           expect(response).to render_template("projects/_activity")
         end
@@ -113,7 +113,7 @@ describe ProjectsController do
           before do
             user.update_attributes(project_view: project_view)
 
-            get :show, namespace_id: empty_project.namespace.path, id: empty_project.path
+            get :show, namespace_id: empty_project.namespace, id: empty_project
           end
 
           it "renders the empty project view" do
@@ -133,7 +133,7 @@ describe ProjectsController do
           before do
             user.update_attributes(project_view: project_view)
 
-            get :show, namespace_id: empty_project.namespace.path, id: empty_project.path
+            get :show, namespace_id: empty_project.namespace, id: empty_project
           end
 
           it "renders the empty project view" do
@@ -154,7 +154,7 @@ describe ProjectsController do
         allow(controller).to receive(:current_user).and_return(user)
         allow(user).to receive(:project_view).and_return('activity')
 
-        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+        get :show, namespace_id: public_project.namespace, id: public_project
         expect(response).to render_template('_activity')
       end
 
@@ -162,7 +162,7 @@ describe ProjectsController do
         allow(controller).to receive(:current_user).and_return(user)
         allow(user).to receive(:project_view).and_return('readme')
 
-        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+        get :show, namespace_id: public_project.namespace, id: public_project
         expect(response).to render_template('_readme')
       end
 
@@ -170,7 +170,7 @@ describe ProjectsController do
         allow(controller).to receive(:current_user).and_return(user)
         allow(user).to receive(:project_view).and_return('files')
 
-        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+        get :show, namespace_id: public_project.namespace, id: public_project
         expect(response).to render_template('_files')
       end
 
@@ -199,7 +199,7 @@ describe ProjectsController do
     context "when requested with case sensitive namespace and project path" do
       context "when there is a match with the same casing" do
         it "loads the project" do
-          get :show, namespace_id: public_project.namespace.path, id: public_project.path
+          get :show, namespace_id: public_project.namespace, id: public_project
 
           expect(assigns(:project)).to eq(public_project)
           expect(response).to have_http_status(200)
@@ -208,10 +208,10 @@ describe ProjectsController do
 
       context "when there is a match with different casing" do
         it "redirects to the normalized path" do
-          get :show, namespace_id: public_project.namespace.path, id: public_project.path.upcase
+          get :show, namespace_id: public_project.namespace, id: public_project.path.upcase
 
           expect(assigns(:project)).to eq(public_project)
-          expect(response).to redirect_to("/#{public_project.path_with_namespace}")
+          expect(response).to redirect_to("/#{public_project.full_path}")
         end
       end
     end
@@ -229,7 +229,7 @@ describe ProjectsController do
         project = create(:empty_project, pending_delete: true)
         sign_in(user)
 
-        get :show, namespace_id: project.namespace.path, id: project.path
+        get :show, namespace_id: project.namespace, id: project
 
         expect(response.status).to eq 404
       end
@@ -239,7 +239,7 @@ describe ProjectsController do
       it 'redirects to project page (format.html)' do
         project = create(:project, :public)
 
-        get :show, namespace_id: project.namespace.path, id: project.path, format: :git
+        get :show, namespace_id: project.namespace, id: project, format: :git
 
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(namespace_project_path)
@@ -260,7 +260,7 @@ describe ProjectsController do
       sign_in(admin)
 
       put :update,
-          namespace_id: project.namespace.to_param,
+          namespace_id: project.namespace,
           id: project.id,
           project: project_params
 
@@ -278,7 +278,7 @@ describe ProjectsController do
       sign_in(admin)
 
       orig_id = project.id
-      delete :destroy, namespace_id: project.namespace.path, id: project.path
+      delete :destroy, namespace_id: project.namespace, id: project
 
       expect { Project.find(orig_id) }.to raise_error(ActiveRecord::RecordNotFound)
       expect(response).to have_http_status(302)
@@ -298,7 +298,7 @@ describe ProjectsController do
         project.merge_requests << merge_request
         sign_in(admin)
 
-        delete :destroy, namespace_id: fork_project.namespace.path, id: fork_project.path
+        delete :destroy, namespace_id: fork_project.namespace, id: fork_project
 
         expect(merge_request.reload.state).to eq('closed')
       end
@@ -308,8 +308,8 @@ describe ProjectsController do
   describe 'PUT #new_issue_address' do
     subject do
       put :new_issue_address,
-        namespace_id: project.namespace.to_param,
-        id: project.to_param
+        namespace_id: project.namespace,
+        id: project
       user.reload
     end
 
@@ -337,23 +337,23 @@ describe ProjectsController do
       sign_in(user)
       expect(user.starred?(public_project)).to be_falsey
       post(:toggle_star,
-           namespace_id: public_project.namespace.to_param,
-           id: public_project.to_param)
+           namespace_id: public_project.namespace,
+           id: public_project)
       expect(user.starred?(public_project)).to be_truthy
       post(:toggle_star,
-           namespace_id: public_project.namespace.to_param,
-           id: public_project.to_param)
+           namespace_id: public_project.namespace,
+           id: public_project)
       expect(user.starred?(public_project)).to be_falsey
     end
 
     it "does nothing if user is not signed in" do
       post(:toggle_star,
-           namespace_id: project.namespace.to_param,
-           id: public_project.to_param)
+           namespace_id: project.namespace,
+           id: public_project)
       expect(user.starred?(public_project)).to be_falsey
       post(:toggle_star,
-           namespace_id: project.namespace.to_param,
-           id: public_project.to_param)
+           namespace_id: project.namespace,
+           id: public_project)
       expect(user.starred?(public_project)).to be_falsey
     end
   end
@@ -387,8 +387,8 @@ describe ProjectsController do
 
         it 'does nothing if project was not forked' do
           delete(:remove_fork,
-              namespace_id: unforked_project.namespace.to_param,
-              id: unforked_project.to_param, format: :js)
+              namespace_id: unforked_project.namespace,
+              id: unforked_project, format: :js)
 
           expect(flash[:notice]).to be_nil
           expect(response).to render_template(:remove_fork)
@@ -398,8 +398,8 @@ describe ProjectsController do
 
     it "does nothing if user is not signed in" do
       delete(:remove_fork,
-          namespace_id: project.namespace.to_param,
-          id: project.to_param, format: :js)
+          namespace_id: project.namespace,
+          id: project, format: :js)
       expect(response).to have_http_status(401)
     end
   end
@@ -408,7 +408,7 @@ describe ProjectsController do
     let(:public_project) { create(:project, :public) }
 
     it "gets a list of branches and tags" do
-      get :refs, namespace_id: public_project.namespace.path, id: public_project.path
+      get :refs, namespace_id: public_project.namespace, id: public_project
 
       parsed_body = JSON.parse(response.body)
       expect(parsed_body["Branches"]).to include("master")
@@ -417,7 +417,7 @@ describe ProjectsController do
     end
 
     it "gets a list of branches, tags and commits" do
-      get :refs, namespace_id: public_project.namespace.path, id: public_project.path, ref: "123456"
+      get :refs, namespace_id: public_project.namespace, id: public_project, ref: "123456"
 
       parsed_body = JSON.parse(response.body)
       expect(parsed_body["Branches"]).to include("master")

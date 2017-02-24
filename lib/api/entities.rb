@@ -610,6 +610,7 @@ module API
       expose :default_project_visibility
       expose :default_snippet_visibility
       expose :default_group_visibility
+      expose :default_artifacts_expire_in
       expose :domain_whitelist
       expose :domain_blacklist_enabled
       expose :domain_blacklist

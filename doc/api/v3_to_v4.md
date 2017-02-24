@@ -42,3 +42,5 @@ changes are in V4:
 - Remove `public` param from create and edit actions of projects [!8736](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8736)
 - Remove the ProjectGitHook API. Use the ProjectPushRule API instead [!1301](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1301)
 - Notes do not return deprecated field `upvote` and `downvote` [!9384](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9384)
+- Remove `GET /groups/owned`. Use `GET /groups?owned=true` instead [!9505](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9505)
+- Return 202 with JSON body on async removals on V4 API (DELETE `/projects/:id/repository/merged_branches` and DELETE `/projects/:id`) [!9449](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9449)
