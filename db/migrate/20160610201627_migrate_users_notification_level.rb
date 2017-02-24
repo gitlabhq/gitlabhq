@@ -1,6 +1,9 @@
 class MigrateUsersNotificationLevel < ActiveRecord::Migration
   # Migrates only users who changed their default notification level :participating
   # creating a new record on notification settings table
+  include Gitlab::Database::MigrationHelpers
+
+  DOWNTIME = false
 
   def up
     execute(%Q{
