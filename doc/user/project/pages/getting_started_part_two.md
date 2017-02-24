@@ -1,14 +1,9 @@
 # GitLab Pages from A to Z: Part 2
 
-> Type: user guide
->
-> Level: beginner
-
-- _[Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](getting_started_part_one.md)_
-- **Part 2: Quick Start Guide - Setting Up GitLab Pages**
-- _[Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_three.md)_
-
-----
+- [Part 1: Static sites and GitLab Pages domains](getting_started_part_one.md)
+- **Part 2: Quick start guide - Setting up GitLab Pages**
+- [Part 3: Setting Up Custom Domains - DNS Records and SSL/TLS Certificates](getting_started_part_three.md)
+- [Part 4: Creating and tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_four.md)
 
 ## Setting up GitLab Pages
 
@@ -29,6 +24,8 @@ Optional Features:
 1. A DNS pointing your (sub)domain to your Pages site
    1. **Optional**: an SSL/TLS certificate so your custom
    domain is accessible under HTTPS.
+
+The optional settings, custom domain, DNS records, and SSL/TLS certificates, are described in [Part 3](getting_started_part_three.md)).
 
 ## Project
 
@@ -106,7 +103,7 @@ where you'll find its default URL.
 > - GitLab Pages [supports any SSG](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/), but,
 if you don't find yours among the templates, you'll need
 to configure your own `.gitlab-ci.yml`. Do do that, please
-read through the article [Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_three.md). New SSGs are very welcome among
+read through the article [Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_four.md). New SSGs are very welcome among
 the [example projects](https://gitlab.com/pages). If you set
 up a new one, please
 [contribute](https://gitlab.com/pages/pages.gitlab.io/blob/master/CONTRIBUTING.md)
@@ -147,6 +144,11 @@ example we've just mentioned, you'd have to change Jekyll's `_config.yml` to:
 baseurl: ""
 ```
 
+### Custom Domains
+
+GitLab Pages supports custom domains and subdomains, served under HTTPS or HTTPS.
+Please check the [next part](getting_started_part_three.md) of this series for an overview.
+
 |||
 |:--|--:|
-|[**← Part 1: Static sites, domains, DNS records, and SSL/TLS certificates**](getting_started_part_one.md)|[**Part 3: Creating and tweaking `.gitlab-ci.yml` for GitLab Pages →**](getting_started_part_three.md)|
+|[**← Part 1: Static sites, domains, DNS records, and SSL/TLS certificates**](getting_started_part_one.md)|[**Setting Up Custom Domains - DNS Records and SSL/TLS Certificates →**](getting_started_part_three.md)|
