@@ -127,7 +127,7 @@ describe API::Files, api: true  do
     end
 
     it "returns a 400 if editor fails to create file" do
-      allow_any_instance_of(Repository).to receive(:commit_file).
+      allow_any_instance_of(Repository).to receive(:create_file).
         and_return(false)
 
       post api("/projects/#{project.id}/repository/files", user), valid_params
@@ -215,7 +215,7 @@ describe API::Files, api: true  do
     end
 
     it "returns a 400 if fails to create file" do
-      allow_any_instance_of(Repository).to receive(:remove_file).and_return(false)
+      allow_any_instance_of(Repository).to receive(:delete_file).and_return(false)
 
       delete api("/projects/#{project.id}/repository/files", user), valid_params
 
