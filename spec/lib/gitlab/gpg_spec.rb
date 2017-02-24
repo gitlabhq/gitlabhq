@@ -15,6 +15,20 @@ describe Gitlab::Gpg do
     end
   end
 
+  describe '.emails_from_key' do
+    it 'returns the emails' do
+      expect(
+        described_class.emails_from_key(GpgHelpers::User1.public_key)
+      ).to eq GpgHelpers::User1.emails
+    end
+
+    it 'returns an empty array when the key is invalid' do
+      expect(
+        described_class.emails_from_key('bogus')
+      ).to eq []
+    end
+  end
+
   describe '.add_to_keychain', :gpg do
     it 'stores the key in the keychain' do
       expect(GPGME::Key.find(:public, GpgHelpers::User1.fingerprint)).to eq []
@@ -33,6 +47,18 @@ describe Gitlab::Gpg do
       Gitlab::Gpg.remove_from_keychain(GpgHelpers::User1.fingerprint)
 
       expect(GPGME::Key.find(:public, GpgHelpers::User1.fingerprint)).to eq []
+    end
+  end
+end
+
+describe Gitlab::Gpg::CurrentKeyChain, :gpg do
+  describe '.emails' do
+    it 'returns the emails' do
+      Gitlab::Gpg.add_to_keychain(GpgHelpers::User2.public_key)
+
+      expect(
+        described_class.emails(GpgHelpers::User2.fingerprint)
+      ).to match_array GpgHelpers::User2.emails
     end
   end
 end

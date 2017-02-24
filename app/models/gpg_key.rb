@@ -28,8 +28,7 @@ class GpgKey < ActiveRecord::Base
   end
 
   def emails
-    raw_key = GPGME::Key.get(fingerprint)
-    raw_key.uids.map(&:email)
+    Gitlab::Gpg::CurrentKeyChain.emails(fingerprint)
   end
 
   private

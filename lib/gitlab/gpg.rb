@@ -2,6 +2,14 @@ module Gitlab
   module Gpg
     extend self
 
+    module CurrentKeyChain
+      extend self
+
+      def emails(fingerprint)
+        GPGME::Key.find(:public, fingerprint).flat_map { |raw_key| raw_key.uids.map(&:email) }
+      end
+    end
+
     def fingerprints_from_key(key)
       using_tmp_keychain do
         import = GPGME::Key.import(key)
@@ -9,6 +17,18 @@ module Gitlab
         return [] if import.imported == 0
 
         import.imports.map(&:fingerprint)
+      end
+    end
+
+    def emails_from_key(key)
+      using_tmp_keychain do
+        import = GPGME::Key.import(key)
+
+        return [] if import.imported == 0
+
+        fingerprints = import.imports.map(&:fingerprint)
+
+        GPGME::Key.find(:public, fingerprints).flat_map { |raw_key| raw_key.uids.map(&:email) }
       end
     end
 
