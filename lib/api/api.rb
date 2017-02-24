@@ -16,6 +16,7 @@ module API
       mount ::API::V3::MergeRequestDiffs
       mount ::API::V3::MergeRequests
       mount ::API::V3::Notes
+      mount ::API::V3::ProjectGitHook
       mount ::API::V3::ProjectHooks
       mount ::API::V3::Projects
       mount ::API::V3::ProjectSnippets
@@ -90,7 +91,6 @@ module API
     mount ::API::Notes
     mount ::API::NotificationSettings
     mount ::API::Pipelines
-    mount ::API::ProjectGitHook # TODO: Should be removed after 8.11 is released
     mount ::API::ProjectHooks
     mount ::API::ProjectPushRule
     mount ::API::Projects
