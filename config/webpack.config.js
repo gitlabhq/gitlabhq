@@ -63,6 +63,10 @@ var config = {
             'stage-2'
           ]
         }
+      },
+      {
+        test: /\.svg$/,
+        use: 'raw-loader'
       }
     ]
   },
