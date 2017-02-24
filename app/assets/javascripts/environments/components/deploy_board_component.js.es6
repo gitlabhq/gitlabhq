@@ -20,8 +20,8 @@
 
 const Vue = require('vue');
 const instanceComponent = require('./deploy_board_instance_component');
-require('../../lib/utils/common_utils');
-const Flash = require('../../flash');
+require('~/lib/utils/common_utils');
+const Flash = require('~/flash');
 
 module.exports = Vue.component('deploy_boards_components', {
 

@@ -1,14 +1,14 @@
-/* eslint-disable no-param-reassign, no-new */
-/* global Flash */
+/* eslint-disable no-new */
 
 const Vue = window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
-const EnvironmentsService = require('../services/environments_service');
-const EnvironmentTable = require('../components/environments_table');
-const EnvironmentsStore = require('../stores/environments_store');
-require('../../vue_shared/components/table_pagination');
-require('../../lib/utils/common_utils');
-require('../../vue_shared/vue_resource_interceptor');
+const EnvironmentsService = require('~/environments//services/environments_service');
+const EnvironmentTable = require('~/environments/components/environments_table');
+const EnvironmentsStore = require('~/environments//stores/environments_store');
+const Flash = require('~/flash');
+require('~/vue_shared/components/table_pagination');
+require('~/lib/utils/common_utils');
+require('~/vue_shared/vue_resource_interceptor');
 
 module.exports = Vue.component('environment-folder-view', {
 
@@ -113,6 +113,17 @@ module.exports = Vue.component('environment-folder-view', {
   },
 
   methods: {
+
+    /**
+     * Toggles the visibility of the deploy boards of the clicked environment.
+     *
+     * @param  {Object} model
+     * @return {Object}
+     */
+    toggleDeployBoard(model) {
+      return this.store.toggleDeployBoard(model.id);
+    },
+
     /**
      * Will change the page number and update the URL.
      *
@@ -168,7 +179,10 @@ module.exports = Vue.component('environment-folder-view', {
             :can-read-environment="canReadEnvironmentParsed"
             :play-icon-svg="playIconSvg"
             :terminal-icon-svg="terminalIconSvg"
-            :commit-icon-svg="commitIconSvg">
+            :commit-icon-svg="commitIconSvg"
+            :toggleDeployBoard="toggleDeployBoard"
+            :store="store"
+            :service="service>
           </environment-table>
 
           <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"

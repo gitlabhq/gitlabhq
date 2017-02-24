@@ -3,12 +3,12 @@
 
 const Vue = window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
-const EnvironmentsService = require('../services/environments_service');
+const EnvironmentsService = require('~/environments/services/environments_service');
 const EnvironmentTable = require('./environments_table');
-const EnvironmentsStore = require('../stores/environments_store');
-require('../../vue_shared/components/table_pagination');
-require('../../lib/utils/common_utils');
-require('../../vue_shared/vue_resource_interceptor');
+const EnvironmentsStore = require('~/environments/stores/environments_store');
+require('~/vue_shared/components/table_pagination');
+require('~/lib/utils/common_utils');
+require('~/vue_shared/vue_resource_interceptor');
 
 module.exports = Vue.component('environment-component', {
 
