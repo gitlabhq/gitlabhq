@@ -27,7 +27,7 @@ const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_s
         pageRequest: false,
       };
     },
-    props: ['scope', 'store', 'svgs'],
+    props: ['scope', 'store'],
     created() {
       const pagenum = gl.utils.getParameterByName('page');
       const scope = gl.utils.getParameterByName('scope');
@@ -73,10 +73,7 @@ const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_s
         </div>
 
         <div class="table-holder" v-if='!pageRequest && pipelines.length'>
-          <pipelines-table-component
-            :pipelines='pipelines'
-            :svgs='svgs'>
-          </pipelines-table-component>
+          <pipelines-table-component :pipelines='pipelines'/>
         </div>
 
         <gl-pagination

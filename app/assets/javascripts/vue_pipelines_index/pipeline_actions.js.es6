@@ -1,9 +1,10 @@
 /* global Vue, Flash, gl */
 /* eslint-disable no-param-reassign */
+const playIconSvg = require('../../../views/shared/icons/_icon_play.svg');
 
 ((gl) => {
   gl.VuePipelineActions = Vue.extend({
-    props: ['pipeline', 'svgs'],
+    props: ['pipeline'],
     computed: {
       actions() {
         return this.pipeline.details.manual_actions.length > 0;
@@ -17,6 +18,11 @@
         return `Download ${name} artifacts`;
       },
     },
+
+    data() {
+      return { playIconSvg };
+    },
+
     template: `
       <td class="pipeline-actions hidden-xs">
         <div class="controls pull-right">
@@ -30,7 +36,7 @@
                 data-placement="top"
                 aria-label="Manual job"
               >
-                <span v-html='svgs.iconPlay' aria-hidden="true"></span>
+                <span v-html="playIconSvg" aria-hidden="true"></span>
                 <i class="fa fa-caret-down" aria-hidden="true"></i>
               </button>
               <ul class="dropdown-menu dropdown-menu-align-right">
@@ -40,7 +46,7 @@
                     data-method="post"
                     :href='action.path'
                   >
-                    <span v-html='svgs.iconPlay' aria-hidden="true"></span>
+                    <span v-html="playIconSvg" aria-hidden="true"></span>
                     <span>{{action.name}}</span>
                   </a>
                 </li>

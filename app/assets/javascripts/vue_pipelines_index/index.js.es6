@@ -11,15 +11,10 @@ $(() => new Vue({
 
   data() {
     const project = document.querySelector('.pipelines');
-    const svgs = document.querySelector('.pipeline-svgs').dataset;
-
-    // Transform svgs DOMStringMap to a plain Object.
-    const svgsObject = gl.utils.DOMStringMapToObject(svgs);
 
     return {
       scope: project.dataset.url,
       store: new gl.PipelineStore(),
-      svgs: svgsObject,
     };
   },
   components: {
@@ -27,10 +22,8 @@ $(() => new Vue({
   },
   template: `
     <vue-pipelines
-      :scope='scope'
-      :store='store'
-      :svgs='svgs'
-    >
+      :scope="scope"
+      :store="store">
     </vue-pipelines>
   `,
 }));

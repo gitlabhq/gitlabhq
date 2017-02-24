@@ -4,14 +4,17 @@
 window.Vue = require('vue');
 require('../lib/utils/datetime_utility');
 
+const iconTimerSvg = require('../../../views/shared/icons/_icon_timer.svg');
+
 ((gl) => {
   gl.VueTimeAgo = Vue.extend({
     data() {
       return {
         currentTime: new Date(),
+        iconTimerSvg,
       };
     },
-    props: ['pipeline', 'svgs'],
+    props: ['pipeline'],
     computed: {
       timeAgo() {
         return gl.utils.getTimeago();
@@ -56,7 +59,7 @@ require('../lib/utils/datetime_utility');
     template: `
       <td>
         <p class="duration" v-if='duration'>
-          <span v-html='svgs.iconTimer'></span>
+          <span v-html="iconTimerSvg"></span>
           {{duration}}
         </p>
         <p class="finished-at" v-if='timeStopped'>
