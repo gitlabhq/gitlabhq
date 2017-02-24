@@ -175,7 +175,7 @@
       tokens.forEach((token) => {
         const condition = gl.FilteredSearchTokenKeys
           .searchByConditionKeyValue(token.key, token.value.toLowerCase());
-        const { param } = gl.FilteredSearchTokenKeys.searchByKey(token.key) || {};
+        const { param } = gl.FilteredSearchTokenKeys.searchByKey(token.key);
         const keyParam = param ? `${token.key}_${param}` : token.key;
         let tokenPath = '';
 
