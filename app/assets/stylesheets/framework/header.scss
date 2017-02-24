@@ -148,11 +148,16 @@ header {
     }
 
     .header-logo {
-      display: inline-block;
-      margin: 0 8px 0 3px;
-      position: relative;
+      position: absolute;
+      left: 50%;
       top: 7px;
       transition-duration: .3s;
+      z-index: 999;
+
+      #logo {
+        position: relative;
+        left: -50%;
+      }
 
       svg,
       img {
@@ -162,6 +167,15 @@ header {
       &:hover {
         cursor: pointer;
       }
+
+      @media (max-width: $screen-xs-max) {
+        right: 20px;
+        left: auto;
+
+        #logo {
+          left: auto;
+        }
+      }
     }
 
     .title {
@@ -169,7 +183,7 @@ header {
       padding-right: 20px;
       margin: 0;
       font-size: 18px;
-      max-width: 450px;
+      max-width: 385px;
       display: inline-block;
       line-height: $header-height;
       font-weight: normal;
@@ -178,6 +192,10 @@ header {
       text-overflow: ellipsis;
       vertical-align: top;
       white-space: nowrap;
+
+      @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+        max-width: 300px;
+      }
 
       @media (max-width: $screen-xs-max) {
         max-width: 190px;

@@ -110,6 +110,9 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:compare:show':
           new gl.Diff();
           break;
+        case 'projects:branches:index':
+          gl.AjaxLoadingSpinner.init();
+          break;
         case 'projects:issues:new':
         case 'projects:issues:edit':
           shortcut_handler = new ShortcutsNavigation();

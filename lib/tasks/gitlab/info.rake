@@ -40,7 +40,7 @@ namespace :gitlab do
       http_clone_url = project.http_url_to_repo
       ssh_clone_url  = project.ssh_url_to_repo
 
-      geo_node_type = 
+      geo_node_type =
         if Gitlab::Geo.current_node
           Gitlab::Geo.current_node.primary ? 'Primary' : 'Secondary'
         else

@@ -1,6 +1,6 @@
 module Gitlab
   module OptimisticLocking
-    extend self
+    module_function
 
     def retry_lock(subject, retries = 100, &block)
       loop do
@@ -15,5 +15,7 @@ module Gitlab
         end
       end
     end
+
+    alias_method :retry_optimistic_lock, :retry_lock
   end
 end

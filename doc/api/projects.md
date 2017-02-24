@@ -1201,6 +1201,20 @@ Parameters:
 | `order_by` | string | no | Return requests ordered by `id`, `name`, `created_at` or `last_activity_at` fields |
 | `sort` | string | no | Return requests sorted in `asc` or `desc` order |
 
+## Start the Housekeeping task for a Project
+
+>**Note:** This feature was introduced in GitLab 9.0
+
+```
+POST /projects/:id/housekeeping
+>>>>>>> ce/master
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ## Push Rules (EE only)
 

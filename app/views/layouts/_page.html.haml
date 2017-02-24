@@ -1,7 +1,7 @@
 .page-with-sidebar{ class: page_gutter_class }
   - if defined?(nav) && nav
     .layout-nav
-      %div{ class: container_class }
+      .container-fluid
         = render "layouts/nav/#{nav}"
   .content-wrapper{ class: "#{layout_nav_class}" }
     = yield :sub_nav

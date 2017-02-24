@@ -1,3 +1,4 @@
-// require everything else in this directory
-function requireAll(context) { return context.keys().map(context); }
-requireAll(require.context('.', false, /^\.\/(?!graphs_bundle).*\.(js|es6)$/));
+require('./stat_graph_contributors_graph');
+require('./stat_graph_contributors_util');
+require('./stat_graph_contributors');
+require('./stat_graph');

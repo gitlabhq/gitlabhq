@@ -96,16 +96,6 @@ ul.unstyled-list > li {
   border-bottom: none;
 }
 
-ul.task-list {
-  li.task-list-item {
-    list-style-type: none;
-  }
-
-  ul:not(.task-list) {
-    padding-left: 1.3em;
-  }
-}
-
 // Generic content list
 ul.content-list {
   @include basic-list;
