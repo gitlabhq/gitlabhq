@@ -215,3 +215,14 @@ you may have cases where authorization always fails because of time differences.
 [Google Authenticator]: https://support.google.com/accounts/answer/1066447?hl=en
 [FreeOTP]: https://freeotp.github.io/
 [YubiKey]: https://www.yubico.com/products/yubikey-hardware/
+
+- The GitLab U2F implementation does _not_ work when the GitLab instance is accessed from
+multiple hostnames, or FQDNs. Each U2F registration is linked to the _current hostname_ at 
+the time of registration, and cannot be used for other hostnames/FQDNs.
+
+    For example, if a user is trying to access a GitLab instance from `first.host.xyz` and `second.host.xyz`:
+
+    - The user logs in via `first.host.xyz` and registers their U2F key.
+    - The user logs out and attempts to log in via `first.host.xyz` - U2F authentication suceeds.
+    - The user logs out and attempts to log in via `second.host.xyz` - U2F authentication fails, because 
+    the U2F key has only been registered on `first.host.xyz`.
