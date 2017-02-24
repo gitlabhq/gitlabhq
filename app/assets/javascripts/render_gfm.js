@@ -12,4 +12,4 @@
   $(document).on('ready load', function() {
     return $('body').renderGFM();
   });
-}).call(this);
+}).call(window);

@@ -63,8 +63,8 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def log_audit_event(key_title, options = {})
-    AuditEventService.new(current_user, @project, options).
-      for_deploy_key(key_title).security_event
+    AuditEventService.new(current_user, @project, options)
+      .for_deploy_key(key_title).security_event
   end
 
   def load_key

@@ -937,4 +937,4 @@ require('./task_list');
 
     return Notes;
   })();
-}).call(this);
+}).call(window);

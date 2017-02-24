@@ -151,9 +151,11 @@ describe Gitlab::OAuth::User, lib: true do
                 expect(gl_user.identities.length).to eql 2
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
                 expect(identities_as_hash).to match_array(
-                  [ { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                  [
+                    { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
                     { provider: 'twitter', extern_uid: uid }
-                  ])
+                  ]
+                )
               end
             end
 
@@ -170,9 +172,11 @@ describe Gitlab::OAuth::User, lib: true do
                 expect(gl_user.identities.length).to eql 2
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
                 expect(identities_as_hash).to match_array(
-                  [ { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                  [
+                    { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
                     { provider: 'twitter', extern_uid: uid }
-                  ])
+                  ]
+                )
               end
             end
 

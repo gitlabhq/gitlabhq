@@ -9,7 +9,7 @@ variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
   # retry tests only in CI environment
   RSPEC_RETRY_RETRY_COUNT: "3"
-  ELASTIC_HOST: "registry.gitlab.com-gitlab-org-test-elastic-image"
+  ELASTIC_HOST: "elasticsearch"
   RAILS_ENV: "test"
   SIMPLECOV: "true"
   SETUP_DB: "true"
@@ -17,6 +17,8 @@ variables:
   GIT_DEPTH: "20"
   PHANTOMJS_VERSION: "2.1.1"
   GET_SOURCES_ATTEMPTS: "3"
+  # This hack is needed to make ES not that memory hungry
+  ES_JAVA_OPTS: "-Xms600m -Xmx600m"
 
 before_script:
   - source ./scripts/prepare_build.sh
@@ -55,7 +57,7 @@ stages:
   services:
     - mysql:latest
     - redis:alpine
-    - registry.gitlab.com/gitlab-org/test-elastic-image
+    - elasticsearch:5.1
 
 .rspec-knapsack: &rspec-knapsack
   stage: test
@@ -222,7 +224,26 @@ rake db:seed_fu:
     paths:
       - log/development.log
 
-karma:
+rake gitlab:assets:compile:
+  stage: test
+  <<: *dedicated-runner
+  dependencies: []
+  variables:
+    NODE_ENV: "production"
+    RAILS_ENV: "production"
+    SETUP_DB: "false"
+    USE_DB: "false"
+    SKIP_STORAGE_VALIDATION: "true"
+    WEBPACK_REPORT: "true"
+  script:
+    - bundle exec rake yarn:install gitlab:assets:compile
+  artifacts:
+    name: webpack-report
+    expire_in: 31d
+    paths:
+    - webpack-report/
+
+rake karma:
   cache:
     paths:
       - vendor/ruby
@@ -263,7 +284,7 @@ bundler:audit:
     - master@gitlab/gitlabhq
     - master@gitlab/gitlab-ee
   script:
-    - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
+    - "bundle exec bundle-audit check --update --ignore OSVDB-115941 CVE-2016-6316 CVE-2016-6317"
 
 migration paths:
   stage: test
@@ -369,7 +390,8 @@ pages:
   <<: *dedicated-runner
   dependencies:
     - coverage
-    - karma
+    - rake karma
+    - rake gitlab:assets:compile
     - lint:javascript:report
   script:
     - mv public/ .public/
@@ -377,6 +399,7 @@ pages:
     - mv coverage/ public/coverage-ruby/ || true
     - mv coverage-javascript/ public/coverage-javascript/ || true
     - mv eslint-report.html public/ || true
+    - mv webpack-report/ public/webpack-report/ || true
   artifacts:
     paths:
       - public

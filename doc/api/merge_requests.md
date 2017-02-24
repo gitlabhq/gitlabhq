@@ -810,7 +810,7 @@ Subscribes the authenticated user to a merge request to receive notification. If
 status code `304` is returned.
 
 ```
-POST /projects/:id/merge_requests/:merge_request_id/subscription
+POST /projects/:id/merge_requests/:merge_request_id/subscribe
 ```
 
 | Attribute | Type | Required | Description |
@@ -819,7 +819,7 @@ POST /projects/:id/merge_requests/:merge_request_id/subscription
 | `merge_request_id` | integer | yes   | The ID of the merge request |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/subscription
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/subscribe
 ```
 
 Example response:
@@ -884,7 +884,7 @@ notifications from that merge request. If the user is
 not subscribed to the merge request, the status code `304` is returned.
 
 ```
-DELETE /projects/:id/merge_requests/:merge_request_id/subscription
+POST /projects/:id/merge_requests/:merge_request_id/unsubscribe
 ```
 
 | Attribute | Type | Required | Description |
@@ -893,7 +893,7 @@ DELETE /projects/:id/merge_requests/:merge_request_id/subscription
 | `merge_request_id` | integer | yes   | The ID of the merge request |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/subscription
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/unsubscribe
 ```
 
 Example response:

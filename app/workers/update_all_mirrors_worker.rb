@@ -15,9 +15,9 @@ class UpdateAllMirrorsWorker
   end
 
   def fail_stuck_mirrors!
-    stuck = Project.mirror.
-      with_import_status(:started).
-      where('mirror_last_update_at < ?', 2.hours.ago)
+    stuck = Project.mirror
+      .with_import_status(:started)
+      .where('mirror_last_update_at < ?', 2.hours.ago)
 
     stuck.find_each(batch_size: 50) do |project|
       project.mark_import_as_failed('The mirror update took too long to complete.')
@@ -27,7 +27,7 @@ class UpdateAllMirrorsWorker
   private
 
   def mirrors_to_sync
-    Project.mirror.where(sync_time: Gitlab::Mirror.sync_times)
+    Project.mirror.where("mirror_last_successful_update_at + #{Gitlab::Database.minute_interval('sync_time')} <= ? OR sync_time IN (?)", DateTime.now, Gitlab::Mirror.sync_times)
   end
 
   def try_obtain_lease

@@ -82,14 +82,14 @@ module Gitlab
     def import_repository(storage, name, url)
       # Timeout should be less than 900 ideally, to prevent the memory killer
       # to silently kill the process without knowing we are timing out here.
-      output, status = Popen::popen([gitlab_shell_projects_path, 'import-project',
-                                     storage, "#{name}.git", url, '800'])
+      output, status = Popen.popen([gitlab_shell_projects_path, 'import-project',
+                                    storage, "#{name}.git", url, '800'])
       raise Error, output unless status.zero?
       true
     end
 
     def list_remote_tags(storage, name, remote)
-      output, status = Popen::popen([gitlab_shell_projects_path, 'list-remote-tags', storage, "#{name}.git", remote])
+      output, status = Popen.popen([gitlab_shell_projects_path, 'list-remote-tags', storage, "#{name}.git", remote])
       tags_with_targets = []
 
       raise Error, output unless status.zero?
@@ -130,7 +130,7 @@ module Gitlab
       args << '--force' if forced
       args << '--no-tags' if no_tags
 
-      output, status = Popen::popen(args)
+      output, status = Popen.popen(args)
       raise Error, output unless status.zero?
       true
     end
@@ -206,7 +206,7 @@ module Gitlab
     #   batch_add_keys { |adder| adder.add_key("key-42", "sha-rsa ...") }
     def batch_add_keys(&block)
       IO.popen(%W(#{gitlab_shell_path}/bin/gitlab-keys batch-add-keys), 'w') do |io|
-        block.call(KeyAdder.new(io))
+        yield(KeyAdder.new(io))
       end
     end
 
@@ -308,7 +308,7 @@ module Gitlab
     #
     def push_remote_branches(storage, project_name, remote_name, branch_names)
       args = [gitlab_shell_projects_path, 'push-branches', storage, "#{project_name}.git", remote_name, *branch_names]
-      output, status = Popen::popen(args)
+      output, status = Popen.popen(args)
       raise Error, output unless status.zero?
       true
     end
@@ -324,7 +324,7 @@ module Gitlab
     #
     def delete_remote_branches(storage, project_name, remote_name, branch_names)
       args = [gitlab_shell_projects_path, 'delete-remote-branches', storage, "#{project_name}.git", remote_name, *branch_names]
-      output, status = Popen::popen(args)
+      output, status = Popen.popen(args)
       raise Error, output unless status.zero?
       true
     end

@@ -20,7 +20,8 @@ module API
           optional :visibility_level, type: Integer, values: [
             Gitlab::VisibilityLevel::PRIVATE,
             Gitlab::VisibilityLevel::INTERNAL,
-            Gitlab::VisibilityLevel::PUBLIC ], desc: 'Create a public project. The same as visibility_level = 20.'
+            Gitlab::VisibilityLevel::PUBLIC
+          ], desc: 'Create a public project. The same as visibility_level = 20.'
           optional :public_builds, type: Boolean, desc: 'Perform public builds'
           optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
           optional :only_allow_merge_if_build_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
@@ -236,13 +237,13 @@ module API
         end
 
         desc 'Get events for a single project' do
-          success ::API::Entities::Event
+          success ::API::V3::Entities::Event
         end
         params do
           use :pagination
         end
         get ":id/events" do
-          present paginate(user_project.events.recent), with: ::API::Entities::Event
+          present paginate(user_project.events.recent), with: ::API::V3::Entities::Event
         end
 
         desc 'Fork new project for the current user or provided namespace.' do

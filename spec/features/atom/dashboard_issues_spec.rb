@@ -23,7 +23,7 @@ describe "Dashboard Issues Feed", feature: true  do
         visit issues_dashboard_path(:atom, private_token: user.private_token, state: 'opened', assignee_id: user.id)
 
         link = find('link[type="application/atom+xml"]')
-        params = CGI::parse(URI.parse(link[:href]).query)
+        params = CGI.parse(URI.parse(link[:href]).query)
 
         expect(params).to include('private_token' => [user.private_token])
         expect(params).to include('state' => ['opened'])

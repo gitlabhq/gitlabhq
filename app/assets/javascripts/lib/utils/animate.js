@@ -46,4 +46,4 @@
       return dfd.promise();
     };
   })(window);
-}).call(this);
+}).call(window);

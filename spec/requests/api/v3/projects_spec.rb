@@ -84,7 +84,7 @@ describe API::V3::Projects, api: true do
 
       context 'GET /projects?simple=true' do
         it 'returns a simplified version of all the projects' do
-          expected_keys = ["id", "http_url_to_repo", "web_url", "name", "name_with_namespace", "path", "path_with_namespace"]
+          expected_keys = %w(id http_url_to_repo web_url name name_with_namespace path path_with_namespace)
 
           get v3_api('/projects?simple=true', user)
 

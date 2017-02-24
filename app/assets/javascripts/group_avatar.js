@@ -17,4 +17,4 @@
 
     return GroupAvatar;
   })();
-}).call(this);
+}).call(window);

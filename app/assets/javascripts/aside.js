@@ -22,4 +22,4 @@
 
     return Aside;
   })();
-}).call(this);
+}).call(window);

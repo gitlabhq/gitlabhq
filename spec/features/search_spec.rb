@@ -186,7 +186,7 @@ describe "Search", feature: true  do
           sleep 2
 
           expect(page).to have_selector('.merge-requests-holder')
-          expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
+          expect(find('.filtered-search').value).to eq("assignee:@#{user.username}")
         end
 
         it 'takes user to her MR page when MR authored is clicked' do
@@ -194,7 +194,7 @@ describe "Search", feature: true  do
           sleep 2
 
           expect(page).to have_selector('.merge-requests-holder')
-          expect(find('.js-author-search .dropdown-toggle-text')).to have_content(user.name)
+          expect(find('.filtered-search').value).to eq("author:@#{user.username}")
         end
       end
 

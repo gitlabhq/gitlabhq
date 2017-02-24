@@ -713,9 +713,7 @@ describe User, models: true do
   end
 
   describe '.search_with_secondary_emails' do
-    def search_with_secondary_emails(query)
-      described_class.search_with_secondary_emails(query)
-    end
+    delegate :search_with_secondary_emails, to: :described_class
 
     let!(:user) { create(:user) }
     let!(:email) { create(:email) }
@@ -1458,7 +1456,7 @@ describe User, models: true do
 
     it 'returns the projects when using an ActiveRecord relation' do
       projects = user.
-                   projects_with_reporter_access_limited_to(Project.select(:id))
+        projects_with_reporter_access_limited_to(Project.select(:id))
 
       expect(projects).to eq([project1])
     end

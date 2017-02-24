@@ -2,7 +2,7 @@ module Gitlab
   module Geo
     class UpdateQueue
       BATCH_SIZE = 250
-      NAMESPACE = 'geo:gitlab'
+      NAMESPACE = 'geo:gitlab'.freeze
 
       def initialize(queue)
         @queue = queue

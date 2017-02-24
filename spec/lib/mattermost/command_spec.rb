@@ -13,8 +13,7 @@ describe Mattermost::Command do
   describe '#create' do
     let(:params) do
       { team_id: 'abc',
-        trigger: 'gitlab'
-      }
+        trigger: 'gitlab' }
     end
 
     subject { described_class.new(nil).create(params) }
@@ -24,7 +23,8 @@ describe Mattermost::Command do
         stub_request(:post, 'http://mattermost.example.com/api/v3/teams/abc/commands/create').
           with(body: {
             team_id: 'abc',
-            trigger: 'gitlab' }.to_json).
+            trigger: 'gitlab'
+          }.to_json).
           to_return(
             status: 200,
             headers: { 'Content-Type' => 'application/json' },

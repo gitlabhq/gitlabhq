@@ -55,7 +55,7 @@ describe AuthHelper do
     context 'all the button based providers are disabled via application_setting' do
       it 'returns false' do
         stub_application_setting(
-          disabled_oauth_sign_in_sources: ['github', 'twitter']
+          disabled_oauth_sign_in_sources: %w(github twitter)
         )
 
         expect(helper.button_based_providers_enabled?).to be false

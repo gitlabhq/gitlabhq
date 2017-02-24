@@ -102,6 +102,8 @@ The Pages daemon doesn't listen to the outside world.
 
 1. [Reconfigure GitLab][reconfigure]
 
+Watch the [video tutorial][video-admin] for this configuration.
+
 ### Wildcard domains with TLS support
 
 >**Requirements:**
@@ -270,3 +272,4 @@ latest previous version.
 [reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart]: ../restart_gitlab.md#installations-from-source
 [gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.2.4
+[video-admin]: https://youtu.be/dD8c7WNcc6s

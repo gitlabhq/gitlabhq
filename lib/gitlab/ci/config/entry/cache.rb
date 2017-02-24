@@ -8,7 +8,7 @@ module Gitlab
         class Cache < Node
           include Configurable
 
-          ALLOWED_KEYS = %i[key untracked paths]
+          ALLOWED_KEYS = %i[key untracked paths].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS

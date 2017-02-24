@@ -43,4 +43,4 @@
 
     return Labels;
   })();
-}).call(this);
+}).call(window);

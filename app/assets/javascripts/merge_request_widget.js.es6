@@ -150,6 +150,11 @@ require('./smart_interval');
 
         $('.mr-widget-body').replaceWith($html.find('.mr-widget-body'));
         $('.mr-widget-footer').replaceWith($html.find('.mr-widget-footer'));
+        $('.approvals-components').replaceWith($html.find('.approvals-components'));
+
+        if (gl.compileApprovalsWidget) {
+          gl.compileApprovalsWidget();
+        }
       });
     };
 
@@ -269,7 +274,6 @@ require('./smart_interval');
         $('.ci_widget.ci-error').show();
         this.setMergeButtonClass('btn-danger');
       }
-      this.initMiniPipelineGraph();
     };
 
     MergeRequestWidget.prototype.showCICoverage = function(coverage) {

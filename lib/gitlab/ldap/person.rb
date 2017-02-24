@@ -45,9 +45,7 @@ module Gitlab
         attribute_value(:email)
       end
 
-      def dn
-        entry.dn
-      end
+      delegate :dn, to: :entry
 
       private
 

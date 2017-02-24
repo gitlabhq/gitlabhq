@@ -95,7 +95,7 @@ class Projects::BlobController < Projects::ApplicationController
     else
       if tree = @repository.tree(@commit.id, @path)
         if tree.entries.any?
-          redirect_to namespace_project_tree_path(@project.namespace, @project, File.join(@ref, @path)) and return
+          return redirect_to namespace_project_tree_path(@project.namespace, @project, File.join(@ref, @path))
         end
       end
 

@@ -1,6 +1,4 @@
 unless Rails.env.production?
-  Rake::Task['karma'].clear if Rake::Task.task_defined?('karma')
-
   namespace :karma do
     desc 'GitLab | Karma | Generate fixtures for JavaScript tests'
     RSpec::Core::RakeTask.new(:fixtures) do |t|
@@ -10,7 +8,7 @@ unless Rails.env.production?
     end
 
     desc 'GitLab | Karma | Run JavaScript tests'
-    task :tests do
+    task tests: ['yarn:check'] do
       sh "yarn run karma" do |ok, res|
         abort('rake karma:tests failed') unless ok
       end
@@ -18,8 +16,5 @@ unless Rails.env.production?
   end
 
   desc 'GitLab | Karma | Shortcut for karma:fixtures and karma:tests'
-  task :karma do
-    Rake::Task['karma:fixtures'].invoke
-    Rake::Task['karma:tests'].invoke
-  end
+  task karma: ['karma:fixtures', 'karma:tests']
 end

@@ -1,0 +1,4 @@
+---
+title: Fixed merge request state not updating when approvals feature is active
+merge_request:
+author:

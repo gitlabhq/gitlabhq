@@ -111,14 +111,8 @@ header {
     }
 
     li {
-      .active a {
+      &.active a {
         font-weight: bold;
-      }
-
-      &:hover {
-        .badge {
-          background-color: $white-light;
-        }
       }
     }
   }
@@ -132,7 +126,11 @@ header {
 
     &:hover {
       background-color: $white-normal;
-      color: $gl-header-nav-hover-color;
+    }
+
+    &:focus {
+      outline: none;
+      background-color: $white-normal;
     }
   }
 

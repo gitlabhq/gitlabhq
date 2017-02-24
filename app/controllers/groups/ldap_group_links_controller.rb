@@ -32,9 +32,7 @@ class Groups::LdapGroupLinksController < Groups::ApplicationController
   private
 
   def require_ldap_enabled
-    unless Gitlab.config.ldap.enabled
-      render_404 and return
-    end
+    render_404 unless Gitlab.config.ldap.enabled
   end
 
   def ldap_group_link_params

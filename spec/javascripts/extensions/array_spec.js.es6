@@ -42,4 +42,4 @@ require('~/extensions/array');
       });
     });
   });
-}).call(this);
+}).call(window);

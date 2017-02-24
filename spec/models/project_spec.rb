@@ -729,6 +729,44 @@ describe Project, models: true do
         project.cache_has_external_issue_tracker
       end.to change { project.has_external_issue_tracker}.to(false)
     end
+
+    it 'does not cache data when in a secondary gitlab geo node' do
+      allow(Gitlab::Geo).to receive(:secondary?) { true }
+
+      expect do
+        project.cache_has_external_issue_tracker
+      end.not_to change { project.has_external_issue_tracker }
+    end
+  end
+
+  describe '#cache_has_external_wiki' do
+    let(:project) { create(:empty_project, has_external_wiki: nil) }
+
+    it 'stores true if there is any external_wikis' do
+      services = double(:service, external_wikis: [ExternalWikiService.new])
+      expect(project).to receive(:services).and_return(services)
+
+      expect do
+        project.cache_has_external_wiki
+      end.to change { project.has_external_wiki}.to(true)
+    end
+
+    it 'stores false if there is no external_wikis' do
+      services = double(:service, external_wikis: [])
+      expect(project).to receive(:services).and_return(services)
+
+      expect do
+        project.cache_has_external_wiki
+      end.to change { project.has_external_wiki}.to(false)
+    end
+
+    it 'does not cache data when in a secondary gitlab geo node' do
+      allow(Gitlab::Geo).to receive(:secondary?) { true }
+
+      expect do
+        project.cache_has_external_wiki
+      end.not_to change { project.has_external_wiki }
+    end
   end
 
   describe '#has_wiki?' do
@@ -1658,14 +1696,14 @@ describe Project, models: true do
     let(:mirror) { false }
 
     before do
-      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository).
-        with(project.repository_storage_path, project.path_with_namespace, project.import_url).
-        and_return(true)
+      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository)
+        .with(project.repository_storage_path, project.path_with_namespace, project.import_url)
+        .and_return(true)
 
       allow(project).to receive(:repository_exists?).and_return(true)
 
-      expect_any_instance_of(Repository).to receive(:after_import).
-        and_call_original
+      expect_any_instance_of(Repository).to receive(:after_import)
+        .and_call_original
     end
 
     it 'imports a project' do

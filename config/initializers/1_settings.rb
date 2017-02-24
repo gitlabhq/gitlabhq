@@ -15,12 +15,15 @@ class Settings < Settingslogic
     end
 
     def build_gitlab_ci_url
-      if on_standard_port?(gitlab)
-        custom_port = nil
-      else
-        custom_port = ":#{gitlab.port}"
-      end
-      [ gitlab.protocol,
+      custom_port =
+        if on_standard_port?(gitlab)
+          nil
+        else
+          ":#{gitlab.port}"
+        end
+
+      [
+        gitlab.protocol,
         "://",
         gitlab.host,
         custom_port,
@@ -66,7 +69,8 @@ class Settings < Settingslogic
     # By inserting in the Kerberos dedicated URL ":@", we give to curl an empty username and password and GSS auth goes ahead
     # Known bug reported in http://sourceforge.net/p/curl/bugs/440/ and http://curl.haxx.se/docs/knownbugs.html
     def build_gitlab_kerberos_url
-      [ kerberos_protocol,
+      [
+        kerberos_protocol,
         "://:@",
         gitlab.host,
         ":#{kerberos_port}",
@@ -105,7 +109,9 @@ class Settings < Settingslogic
 
     def base_url(config)
       custom_port = on_standard_port?(config) ? nil : ":#{config.port}"
-      [ config.protocol,
+      
+      [
+        config.protocol,
         "://",
         config.host,
         custom_port
@@ -201,15 +207,16 @@ if github_settings
 
   github_settings["args"] ||= Settingslogic.new({})
 
-  if github_settings["url"].include?(github_default_url)
-    github_settings["args"]["client_options"] = OmniAuth::Strategies::GitHub.default_options[:client_options]
-  else
-    github_settings["args"]["client_options"] = {
-      "site"          => File.join(github_settings["url"], "api/v3"),
-      "authorize_url" => File.join(github_settings["url"], "login/oauth/authorize"),
-      "token_url"     => File.join(github_settings["url"], "login/oauth/access_token")
-    }
-  end
+  github_settings["args"]["client_options"] =
+    if github_settings["url"].include?(github_default_url)
+      OmniAuth::Strategies::GitHub.default_options[:client_options]
+    else
+      {
+        "site"          => File.join(github_settings["url"], "api/v3"),
+        "authorize_url" => File.join(github_settings["url"], "login/oauth/authorize"),
+        "token_url"     => File.join(github_settings["url"], "login/oauth/access_token")
+      }
+    end
 end
 
 Settings['shared'] ||= Settingslogic.new({})

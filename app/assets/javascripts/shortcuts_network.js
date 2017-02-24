@@ -25,4 +25,4 @@ require('./shortcuts_navigation');
 
     return ShortcutsNetwork;
   })(ShortcutsNavigation);
-}).call(this);
+}).call(window);

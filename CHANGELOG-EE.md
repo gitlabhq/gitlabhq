@@ -1,11 +1,30 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.17.0 (2017-02-22)
+
+- Read-only "auditor" user role. !998
+- Also reset approvals on push when merge request is closed. !1051
+- Copy commit SHA to clipboard. !1066
+- Pull EE specific Gitlab::Auth code in to its own module. !1112
+- Geo: Added `gitlab:geo:check` and improved `gitlab:envinfo` rake tasks. !1120
+- Geo: send the new event type with the backfill function. !1157
+- Re-add removed params from projects and issues V3 API. !1209
+- Add configurable minimum mirror sync time in admin section. !1217
+- Move RepositoryUpdateRemoteMirrorWorker jobs to project_mirror Sidekiq queue. !1234
+- Change Builds word to Pipelines in Mirror settings page.
+- Fix bundle tag in anaytics page.
+- Support v4 API for GitLab Geo endpoints.
+- Fixed merge request environment link not displaying.
+- Reduce queries needed to check if node is a primary or secondary Geo node.
+- Allow squashing merge requests into a single commit.
+
 ## 8.16.6 (2017-02-17)
 
 - Geo: send the new event type with the backfill function. !1157
 - Move RepositoryUpdateRemoteMirrorWorker jobs to project_mirror Sidekiq queue. !1234
 - Fixed merge request environment link not displaying.
 - Reduce queries needed to check if node is a primary or secondary Geo node.
+- Read true-up info from license and validate it. !1159
 
 ## 8.16.5 (2017-02-14)
 

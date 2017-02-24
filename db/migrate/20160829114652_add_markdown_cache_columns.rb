@@ -26,7 +26,7 @@ class AddMarkdownCacheColumns < ActiveRecord::Migration
     projects: [:description],
     releases: [:description],
     snippets: [:title, :content],
-  }
+  }.freeze
 
   def change
     COLUMNS.each do |table, columns|

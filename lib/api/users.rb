@@ -174,7 +174,7 @@ module API
           end
         end
 
-        user_params.merge!(password_expires_at: Time.now) if user_params[:password].present?
+        user_params[:password_expires_at] = Time.now if user_params[:password].present?
 
         if user.update_attributes(user_params.except(:extern_uid, :provider))
           present user, with: Entities::UserPublic
@@ -316,7 +316,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
-      put ':id/block' do
+      post ':id/block' do
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
@@ -332,7 +332,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
-      put ':id/unblock' do
+      post ':id/unblock' do
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
         not_found!('User') unless user

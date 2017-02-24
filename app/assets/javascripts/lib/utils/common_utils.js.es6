@@ -349,4 +349,4 @@
       });
     };
   })(window);
-}).call(this);
+}).call(window);

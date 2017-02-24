@@ -11,19 +11,19 @@ module EE
         return super unless shared_runner_build_limits_feature_enabled?
 
         # select projects which have allowed number of shared runner minutes or are public
-        super.
-          where("projects.visibility_level=? OR (#{builds_check_limit.to_sql})=1",
+        super
+          .where("projects.visibility_level=? OR (#{builds_check_limit.to_sql})=1",
                 ::Gitlab::VisibilityLevel::PUBLIC)
       end
 
       def builds_check_limit
-        ::Namespace.reorder(nil).
-          where('namespaces.id = projects.namespace_id').
-          joins('LEFT JOIN namespace_statistics ON namespace_statistics.namespace_id = namespaces.id').
-          where('COALESCE(namespaces.shared_runners_minutes_limit, ?, 0) = 0 OR ' \
+        ::Namespace.reorder(nil)
+          .where('namespaces.id = projects.namespace_id')
+          .joins('LEFT JOIN namespace_statistics ON namespace_statistics.namespace_id = namespaces.id')
+          .where('COALESCE(namespaces.shared_runners_minutes_limit, ?, 0) = 0 OR ' \
             'COALESCE(namespace_statistics.shared_runners_seconds, 0) < COALESCE(namespaces.shared_runners_minutes_limit, ?, 0) * 60',
-                application_shared_runners_minutes, application_shared_runners_minutes).
-          select('1')
+                application_shared_runners_minutes, application_shared_runners_minutes)
+          .select('1')
       end
 
       def application_shared_runners_minutes

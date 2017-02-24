@@ -227,4 +227,4 @@ require('~/line_highlighter');
       });
     });
   });
-}).call(this);
+}).call(window);

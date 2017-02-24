@@ -71,4 +71,4 @@
 
   })();
 
-}).call(this);
+}).call(window);

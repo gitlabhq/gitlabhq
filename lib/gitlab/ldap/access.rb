@@ -155,9 +155,7 @@ module Gitlab
         user.update(email: ldap_email)
       end
 
-      def sync_ssh_keys?
-        ldap_config.sync_ssh_keys?
-      end
+      delegate :sync_ssh_keys?, to: :ldap_config
 
       def import_kerberos_identities?
         # Kerberos may be enabled for Git HTTP access and/or as an Omniauth provider

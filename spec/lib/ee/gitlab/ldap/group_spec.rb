@@ -122,6 +122,45 @@ describe EE::Gitlab::LDAP::Group, lib: true do
         expect(group.member_dns).not_to include('uid=foo,ou=users,dc=other,dc=com')
         expect(group.member_dns).to include('uid=bar,ou=users,dc=example , dc=com')
       end
+
+      it 'logs an error when the LDAP base is invalid' do
+        stub_ldap_config(
+          active_directory: true,
+          base: 'invalid,dc=example,dc=com'
+        )
+        nested_groups = [group2_entry]
+        stub_ldap_adapter_nested_groups(group.dn, nested_groups, adapter)
+        stub_ldap_adapter_nested_groups(group2_entry.dn, [], adapter)
+
+        expect(Rails.logger)
+          .to receive(:error).with("Configured LDAP `base` is invalid: 'invalid,dc=example,dc=com'")
+        # Users in the top-level group always get added - they're not filtered
+        # through the nested groups shenanigans.
+        expect(group.member_dns).to match_array(
+          %w(
+            uid=user1,ou=users,dc=example,dc=com
+            uid=user2,ou=users,dc=example,dc=com
+          )
+        )
+      end
+
+      it 'logs a warning when an invalid member DN is found in an LDAP group' do
+        group3_entry = ldap_group_entry(
+          ['invalid,ou=user,ou=groups,dc=example,dc=com'],
+          cn: 'ldap_group3',
+          objectclass: 'group',
+          member_attr: 'member',
+          member_of: group1_entry.dn
+        )
+        nested_groups = [group2_entry, group3_entry]
+        stub_ldap_adapter_nested_groups(group.dn, nested_groups, adapter)
+        stub_ldap_adapter_nested_groups(group2_entry.dn, [], adapter)
+        stub_ldap_adapter_nested_groups(group3_entry.dn, [], adapter)
+
+        expect(Rails.logger)
+          .to receive(:warn).with(/Received invalid member/)
+        expect(group.member_dns).not_to include('invalid,ou=user,ou=groups,dc=example,dc=com')
+      end
     end
   end
 end

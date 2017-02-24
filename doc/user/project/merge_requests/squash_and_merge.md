@@ -35,8 +35,8 @@ This can then be overridden at the time of accepting the merge request:
 
 The squashed commit has the following metadata:
 
-* Message: taken from the last commit in the source branch.
-* Author: taken from the last commit in the source branch.
+* Message: the title of the merge request.
+* Author: the author of the merge request.
 * Committer: the user who initiated the squash.
 
 ## Squashing and [fast-forward merge][ff-merge]

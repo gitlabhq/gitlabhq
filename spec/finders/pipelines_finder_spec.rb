@@ -39,8 +39,8 @@ describe PipelinesFinder do
       end
     end
 
-    # Scoping to running will speed up the test as it doesn't hit the FS
-    let(:params) { { scope: 'running' } }
+    # Scoping to pending will speed up the test as it doesn't hit the FS
+    let(:params) { { scope: 'pending' } }
 
     it 'orders in descending order on ID' do
       feature_pipeline = create(:ci_pipeline, project: project, ref: 'feature')

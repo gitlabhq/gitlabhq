@@ -90,18 +90,43 @@ inside GitLab that make that possible.
 It is possible to download the latest artifacts of a job via a well known URL
 so you can use it for scripting purposes.
 
-The structure of the URL is the following:
+The structure of the URL to download the whole artifacts archive is the following:
 
 ```
 https://example.com/<namespace>/<project>/builds/artifacts/<ref>/download?job=<job_name>
 ```
 
-For example, to download the latest artifacts of the job named `rspec 6 20` of
+To download a single file from the artifacts use the following URL:
+
+```
+https://example.com/<namespace>/<project>/builds/artifacts/<ref>/file/<path_to_file>?job=<job_name>
+```
+
+For example, to download the latest artifacts of the job named `coverage` of
 the `master` branch of the `gitlab-ce` project that belongs to the `gitlab-org`
 namespace, the URL would be:
 
 ```
-https://gitlab.com/gitlab-org/gitlab-ce/builds/artifacts/master/download?job=rspec+6+20
+https://gitlab.com/gitlab-org/gitlab-ce/builds/artifacts/master/download?job=coverage
+```
+
+To download the file `coverage/index.html` from the same
+artifacts use the following URL:
+
+```
+https://gitlab.com/gitlab-org/gitlab-ce/builds/artifacts/master/file/coverage/index.html?job=coverage
+```
+
+There is also a URL to browse the latest job artifacts:
+
+```
+https://example.com/<namespace>/<project>/builds/artifacts/<ref>/browse?job=<job_name>
+```
+
+For example:
+
+```
+https://gitlab.com/gitlab-org/gitlab-ce/builds/artifacts/master/browse?job=coverage
 ```
 
 The latest builds are also exposed in the UI in various places. Specifically,

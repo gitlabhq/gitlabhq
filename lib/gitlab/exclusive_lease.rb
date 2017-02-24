@@ -10,7 +10,7 @@ module Gitlab
   # ExclusiveLease.
   #
   class ExclusiveLease
-    LUA_CANCEL_SCRIPT = <<-EOS
+    LUA_CANCEL_SCRIPT = <<-EOS.freeze
       local key, uuid = KEYS[1], ARGV[1]
       if redis.call("get", key) == uuid then
         redis.call("del", key)

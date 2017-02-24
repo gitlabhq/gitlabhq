@@ -21,8 +21,8 @@ describe Ci::Build, models: true do
       end
 
       it do
-        expect(build.project).to receive(:shared_runners_minutes_limit_enabled?).
-          and_return(true)
+        expect(build.project).to receive(:shared_runners_minutes_limit_enabled?)
+          .and_return(true)
 
         is_expected.to be_truthy
       end
@@ -46,8 +46,8 @@ describe Ci::Build, models: true do
 
     %w(success drop cancel).each do |event|
       it "for event #{event}" do
-        expect(UpdateBuildMinutesService).
-          to receive(:new).and_call_original
+        expect(UpdateBuildMinutesService)
+          .to receive(:new).and_call_original
 
         build.public_send(event)
       end
