@@ -173,7 +173,7 @@
         .panel-heading
           Remove user
         .panel-body
-          - if @user.can_be_removed?
+          - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
             %p Deleting a user has the following effects:
             %ul
               %li All user content like authored issues, snippets, comments will be removed
@@ -189,3 +189,6 @@
                 %strong= @user.solo_owned_groups.map(&:name).join(', ')
               %p
                 You must transfer ownership or delete these groups before you can delete this user.
+            - else
+              %p
+                You don't have access to delete this user.
