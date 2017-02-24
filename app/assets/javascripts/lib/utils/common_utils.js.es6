@@ -307,40 +307,37 @@
      * @example
      * ```
      *  backOff(function (next, stop) {
-     *    // Let's perform this function repeatedly for 60s
-     *    doSomething()
-     *      .then(function (importantValue) {
-     *        // importantValue is not exactly what we
-     *        // need so we need to try again
+     *    // Let's perform this function repeatedly for 60s or for the timeout provided.
+     *
+     *    ourFunction()
+     *      .then(function (result) {
+     *        // continue if result is not what we need
      *        next();
      *
-     *        // importantValue is exactly what we are expecting so
-     *        // let's stop with the repetions and jump out of the cycle
-     *        stop(importantValue);
+     *        // when result is what we need let's stop with the repetions and jump out of the cycle
+     *        stop(result);
      *      })
      *      .catch(function (error) {
-     *        // there was an error, let's stop this with an error too
+     *        // if there is an error, we need to stop this with an error.
      *        stop(error);
      *      })
      *  }, 60000)
-     *  .then(function (importantValue) {})
+     *  .then(function (result) {})
      *  .catch(function (error) {
      *    // deal with errors passed to stop()
      *  })
      * ```
      */
-    w.gl.utils.backOff = (fn, timeout = 600000) => {
+    w.gl.utils.backOff = (fn, timeout = 60000) => {
       let nextInterval = 2000;
 
-      const checkTimedOut = (timeoutMax, startTime) => currentTime =>
-      (currentTime - startTime > timeoutMax);
-      const hasTimedOut = checkTimedOut(timeout, (+new Date()));
+      const startTime = (+new Date());
 
       return new Promise((resolve, reject) => {
         const stop = arg => ((arg instanceof Error) ? reject(arg) : resolve(arg));
 
         const next = () => {
-          if (!hasTimedOut((+new Date()))) {
+          if ((+new Date()) - startTime < timeout) {
             setTimeout(fn.bind(null, next, stop), nextInterval);
             nextInterval *= 2;
           } else {
