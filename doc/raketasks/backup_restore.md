@@ -38,23 +38,6 @@ If you are running GitLab within a Docker container, you can run the backup from
 docker exec -t <container name> gitlab-rake gitlab:backup:create
 ```
 
-You can specify that portions of the application data be skipped using the
-environment variable `SKIP`. You can skip:
-
-- `db` (database)
-- `uploads` (attachments)
-- `repositories` (Git repositories data)
-- `builds` (CI job output logs)
-- `artifacts` (CI job artifacts)
-- `lfs` (LFS objects)
-- `registry` (Container Registry images)
-
-Separate multiple data types to skip using a comma. For example:
-
-```
-sudo gitlab-rake gitlab:backup:create SKIP=db,uploads
-```
-
 Example output:
 
 ```
@@ -111,13 +94,14 @@ To use the `copy` strategy instead of the default streaming strategy, specify
 You can choose what should be backed up by adding the environment variable `SKIP`.
 The available options are:
 
-* `db`
-* `uploads` (attachments)
-* `repositories`
-* `builds` (CI build output logs)
-* `artifacts` (CI build artifacts)
-* `lfs` (LFS objects)
-* `pages` (pages content)
+- `db` (database)
+- `uploads` (attachments)
+- `repositories` (Git repositories data)
+- `builds` (CI job output logs)
+- `artifacts` (CI job artifacts)
+- `lfs` (LFS objects)
+- `registry` (Container Registry images)
+- `pages` (Pages content)
 
 Use a comma to specify several options at the same time:
 
