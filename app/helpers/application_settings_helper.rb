@@ -1,26 +1,13 @@
 module ApplicationSettingsHelper
-  def gravatar_enabled?
-    current_application_settings.gravatar_enabled?
-  end
-
-  def signup_enabled?
-    current_application_settings.signup_enabled?
-  end
-
-  def signin_enabled?
-    current_application_settings.signin_enabled?
-  end
+  delegate  :gravatar_enabled?,
+            :signup_enabled?,
+            :signin_enabled?,
+            :akismet_enabled?,
+            :koding_enabled?,
+            to: :current_application_settings
 
   def user_oauth_applications?
     current_application_settings.user_oauth_applications
-  end
-
-  def askimet_enabled?
-    current_application_settings.akismet_enabled?
-  end
-
-  def koding_enabled?
-    current_application_settings.koding_enabled?
   end
 
   def allowed_protocols_present?

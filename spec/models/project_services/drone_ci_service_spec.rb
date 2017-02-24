@@ -50,7 +50,7 @@ describe DroneCiService, models: true, caching: true do
     end
 
     def stub_request(status: 200, body: nil)
-      body ||= %Q({"status":"success"})
+      body ||= %q({"status":"success"})
 
       WebMock.stub_request(:get, commit_status_path).to_return(
         status: status,
@@ -95,12 +95,12 @@ describe DroneCiService, models: true, caching: true do
         is_expected.to eq(:error)
       end
 
-      { "killed"  => :canceled,
+      {
+        "killed"  => :canceled,
         "failure" => :failed,
         "error"   => :failed,
-        "success" => "success",
+        "success" => "success"
       }.each do |drone_status, our_status|
-
         it "sets commit status to #{our_status.inspect} when returned status is #{drone_status.inspect}" do
           stub_request(body: %Q({"status":"#{drone_status}"}))
 

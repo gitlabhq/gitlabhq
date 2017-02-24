@@ -35,7 +35,7 @@
               = link_to dashboard_todos_path, title: 'Todos', aria: { label: "Todos" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = icon('bell fw')
                 %span.badge.todos-pending-count{ class: ("hidden" if todos_pending_count == 0) }
-                  = todos_pending_count
+                  = todos_count_format(todos_pending_count)
             - if Gitlab::Sherlock.enabled?
               %li
                 = link_to sherlock_transactions_path, title: 'Sherlock Transactions',
@@ -61,11 +61,11 @@
               %div
                 = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-success'
 
+      %h1.title= title
+
       .header-logo
         = link_to root_path, class: 'home', title: 'Dashboard', id: 'logo' do
           = brand_header_logo
-
-      %h1.title= title
 
       = yield :header_content
 

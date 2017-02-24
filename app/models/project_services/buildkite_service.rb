@@ -3,7 +3,7 @@ require "addressable/uri"
 class BuildkiteService < CiService
   include ReactiveService
 
-  ENDPOINT = "https://buildkite.com"
+  ENDPOINT = "https://buildkite.com".freeze
 
   prop_accessor :project_url, :token
   boolean_accessor :enable_ssl_verification

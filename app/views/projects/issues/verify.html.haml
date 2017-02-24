@@ -1,20 +1,4 @@
-- page_title "Anti-spam verification"
+- form = [@project.namespace.becomes(Namespace), @project, @issue]
 
-%h3.page-title
-  Anti-spam verification
-%hr
-
-%p
-  We detected potential spam in the issue description. Please verify that you are not a robot to submit the issue.
-
-= form_for [@project.namespace.becomes(Namespace), @project, @issue] do |f|
-  .recaptcha
-    - params[:issue].each do |field, value|
-      = hidden_field(:issue, field, value: value)
-    = hidden_field_tag(:merge_request_for_resolving_discussions, params[:merge_request_for_resolving_discussions])
-    = hidden_field_tag(:spam_log_id, @issue.spam_log.id)
-    = hidden_field_tag(:recaptcha_verification, true)
-    = recaptcha_tags
-
-  .row-content-block.footer-block
-    = f.submit "Submit #{@issue.class.model_name.human.downcase}", class: 'btn btn-create'
+= render layout: 'layouts/recaptcha_verification', locals: { spammable: @issue, form: form } do
+  = hidden_field_tag(:merge_request_for_resolving_discussions, params[:merge_request_for_resolving_discussions])

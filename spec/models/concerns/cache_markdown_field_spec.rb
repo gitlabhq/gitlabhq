@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe CacheMarkdownField do
-  CacheMarkdownField::CACHING_CLASSES << "ThingWithMarkdownFields"
+  caching_classes = CacheMarkdownField::CACHING_CLASSES
+  CacheMarkdownField::CACHING_CLASSES = ["ThingWithMarkdownFields"].freeze
 
   # The minimum necessary ActiveModel to test this concern
   class ThingWithMarkdownFields
@@ -54,7 +55,7 @@ describe CacheMarkdownField do
     end
   end
 
-  CacheMarkdownField::CACHING_CLASSES.delete("ThingWithMarkdownFields")
+  CacheMarkdownField::CACHING_CLASSES = caching_classes
 
   def thing_subclass(new_attr)
     Class.new(ThingWithMarkdownFields) { add_attr(new_attr) }

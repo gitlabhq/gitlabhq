@@ -7,7 +7,7 @@ module API
     ISSUABLE_TYPES = {
       'merge_requests' => ->(id) { find_merge_request_with_access(id) },
       'issues' => ->(id) { find_project_issue(id) }
-    }
+    }.freeze
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
@@ -58,7 +58,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of the todo being marked as done'
       end
-      delete ':id' do
+      post ':id/mark_as_done' do
         todo = current_user.todos.find(params[:id])
         TodoService.new.mark_todos_as_done([todo], current_user)
 
@@ -66,9 +66,11 @@ module API
       end
 
       desc 'Mark all todos as done'
-      delete do
+      post '/mark_as_done' do
         todos = find_todos
         TodoService.new.mark_todos_as_done(todos, current_user)
+
+        no_content!
       end
     end
   end

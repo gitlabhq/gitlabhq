@@ -1,4 +1,0 @@
----
-title: Don't require lib/gitlab/request_profiler/middleware.rb in config/initializers/request_profiler.rb
-merge_request:
-author:

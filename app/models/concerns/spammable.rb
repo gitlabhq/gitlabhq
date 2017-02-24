@@ -13,7 +13,7 @@ module Spammable
     attr_accessor :spam
     attr_accessor :spam_log
 
-    after_validation :check_for_spam, on: :create
+    after_validation :check_for_spam, on: [:create, :update]
 
     cattr_accessor :spammable_attrs, instance_accessor: false do
       []

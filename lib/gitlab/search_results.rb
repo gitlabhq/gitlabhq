@@ -56,11 +56,12 @@ module Gitlab
     def issues
       issues = IssuesFinder.new(current_user).execute.where(project_id: project_ids_relation)
 
-      if query =~ /#(\d+)\z/
-        issues = issues.where(iid: $1)
-      else
-        issues = issues.full_search(query)
-      end
+      issues =
+        if query =~ /#(\d+)\z/
+          issues.where(iid: $1)
+        else
+          issues.full_search(query)
+        end
 
       issues.order('updated_at DESC')
     end
@@ -73,11 +74,12 @@ module Gitlab
 
     def merge_requests
       merge_requests = MergeRequestsFinder.new(current_user).execute.in_projects(project_ids_relation)
-      if query =~ /[#!](\d+)\z/
-        merge_requests = merge_requests.where(iid: $1)
-      else
-        merge_requests = merge_requests.full_search(query)
-      end
+      merge_requests =
+        if query =~ /[#!](\d+)\z/
+          merge_requests.where(iid: $1)
+        else
+          merge_requests.full_search(query)
+        end
       merge_requests.order('updated_at DESC')
     end
 

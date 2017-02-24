@@ -92,7 +92,7 @@ describe BuildkiteService, models: true, caching: true do
         end
 
         it 'passes through build status untouched when status is 200' do
-          stub_request(body: %Q({"status":"Great Success"}))
+          stub_request(body: %q({"status":"Great Success"}))
 
           is_expected.to eq('Great Success')
         end
@@ -101,7 +101,7 @@ describe BuildkiteService, models: true, caching: true do
   end
 
   def stub_request(status: 200, body: nil)
-    body ||= %Q({"status":"success"})
+    body ||= %q({"status":"success"})
     buildkite_full_url = 'https://gitlab.buildkite.com/status/secret-sauce-status-token.json?commit=123'
 
     WebMock.stub_request(:get, buildkite_full_url).to_return(

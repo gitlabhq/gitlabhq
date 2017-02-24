@@ -339,9 +339,6 @@ module API
       expose :created_at, :updated_at
       expose :system?, as: :system
       expose :noteable_id, :noteable_type
-      # upvote? and downvote? are deprecated, always return false
-      expose(:upvote?)    { |note| false }
-      expose(:downvote?)  { |note| false }
     end
 
     class AwardEmoji < Grape::Entity

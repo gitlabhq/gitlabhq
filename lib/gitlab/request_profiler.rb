@@ -2,7 +2,7 @@ require 'fileutils'
 
 module Gitlab
   module RequestProfiler
-    PROFILES_DIR = "#{Gitlab.config.shared.path}/tmp/requests_profiles"
+    PROFILES_DIR = "#{Gitlab.config.shared.path}/tmp/requests_profiles".freeze
 
     def profile_token
       Rails.cache.fetch('profile-token') do

@@ -3,6 +3,10 @@ module TodosHelper
     @todos_pending_count ||= current_user.todos_pending_count
   end
 
+  def todos_count_format(count)
+    count > 99 ? '99+' : count
+  end
+
   def todos_done_count
     @todos_done_count ||= current_user.todos_done_count
   end
@@ -146,6 +150,6 @@ module TodosHelper
   private
 
   def show_todo_state?(todo)
-    (todo.target.is_a?(MergeRequest) || todo.target.is_a?(Issue)) && ['closed', 'merged'].include?(todo.target.state)
+    (todo.target.is_a?(MergeRequest) || todo.target.is_a?(Issue)) && %w(closed merged).include?(todo.target.state)
   end
 end

@@ -59,8 +59,8 @@ describe MergeRequests::ResolveService do
 
         it 'creates a commit with the correct parents' do
           expect(merge_request.source_branch_head.parents.map(&:id)).
-            to eq(['1450cd639e0bc6721eb02800169e464f212cde06',
-                   '824be604a34828eb682305f0d963056cfac87b2d'])
+            to eq(%w(1450cd639e0bc6721eb02800169e464f212cde06
+                     824be604a34828eb682305f0d963056cfac87b2d))
         end
       end
 
@@ -125,8 +125,8 @@ describe MergeRequests::ResolveService do
 
       it 'creates a commit with the correct parents' do
         expect(merge_request.source_branch_head.parents.map(&:id)).
-          to eq(['1450cd639e0bc6721eb02800169e464f212cde06',
-                 '824be604a34828eb682305f0d963056cfac87b2d'])
+          to eq(%w(1450cd639e0bc6721eb02800169e464f212cde06
+                   824be604a34828eb682305f0d963056cfac87b2d))
       end
 
       it 'sets the content to the content given' do

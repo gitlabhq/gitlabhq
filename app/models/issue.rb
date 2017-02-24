@@ -15,8 +15,6 @@ class Issue < ActiveRecord::Base
   DueThisWeek   = DueDateStruct.new('Due This Week', 'week').freeze
   DueThisMonth  = DueDateStruct.new('Due This Month', 'month').freeze
 
-  ActsAsTaggableOn.strict_case_match = true
-
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
 

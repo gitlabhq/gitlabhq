@@ -775,7 +775,7 @@ describe API::Issues, api: true  do
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
-      expect(json_response['labels']).to eq(['label', 'label2'])
+      expect(json_response['labels']).to eq(%w(label label2))
       expect(json_response['confidential']).to be_falsy
     end
 
@@ -1028,6 +1028,33 @@ describe API::Issues, api: true  do
     end
   end
 
+  describe 'PUT /projects/:id/issues/:issue_id with spam filtering' do
+    let(:params) do
+      {
+        title: 'updated title',
+        description: 'content here',
+        labels: 'label, label2'
+      }
+    end
+
+    it "does not create a new project issue" do
+      allow_any_instance_of(SpamService).to receive_messages(check_for_spam?: true)
+      allow_any_instance_of(AkismetService).to receive_messages(is_spam?: true)
+
+      put api("/projects/#{project.id}/issues/#{issue.id}", user), params
+
+      expect(response).to have_http_status(400)
+      expect(json_response['message']).to eq({ "error" => "Spam detected" })
+
+      spam_logs = SpamLog.all
+      expect(spam_logs.count).to eq(1)
+      expect(spam_logs[0].title).to eq('updated title')
+      expect(spam_logs[0].description).to eq('content here')
+      expect(spam_logs[0].user).to eq(user)
+      expect(spam_logs[0].noteable_type).to eq('Issue')
+    end
+  end
+
   describe 'PUT /projects/:id/issues/:issue_id to update labels' do
     let!(:label) { create(:label, title: 'dummy', project: project) }
     let!(:label_link) { create(:label_link, label: label, target: issue) }
@@ -1232,55 +1259,55 @@ describe API::Issues, api: true  do
     end
   end
 
-  describe 'POST :id/issues/:issue_id/subscription' do
+  describe 'POST :id/issues/:issue_id/subscribe' do
     it 'subscribes to an issue' do
-      post api("/projects/#{project.id}/issues/#{issue.id}/subscription", user2)
+      post api("/projects/#{project.id}/issues/#{issue.id}/subscribe", user2)
 
       expect(response).to have_http_status(201)
       expect(json_response['subscribed']).to eq(true)
     end
 
     it 'returns 304 if already subscribed' do
-      post api("/projects/#{project.id}/issues/#{issue.id}/subscription", user)
+      post api("/projects/#{project.id}/issues/#{issue.id}/subscribe", user)
 
       expect(response).to have_http_status(304)
     end
 
     it 'returns 404 if the issue is not found' do
-      post api("/projects/#{project.id}/issues/123/subscription", user)
+      post api("/projects/#{project.id}/issues/123/subscribe", user)
 
       expect(response).to have_http_status(404)
     end
 
     it 'returns 404 if the issue is confidential' do
-      post api("/projects/#{project.id}/issues/#{confidential_issue.id}/subscription", non_member)
+      post api("/projects/#{project.id}/issues/#{confidential_issue.id}/subscribe", non_member)
 
       expect(response).to have_http_status(404)
     end
   end
 
-  describe 'DELETE :id/issues/:issue_id/subscription' do
+  describe 'POST :id/issues/:issue_id/unsubscribe' do
     it 'unsubscribes from an issue' do
-      delete api("/projects/#{project.id}/issues/#{issue.id}/subscription", user)
+      post api("/projects/#{project.id}/issues/#{issue.id}/unsubscribe", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(201)
       expect(json_response['subscribed']).to eq(false)
     end
 
     it 'returns 304 if not subscribed' do
-      delete api("/projects/#{project.id}/issues/#{issue.id}/subscription", user2)
+      post api("/projects/#{project.id}/issues/#{issue.id}/unsubscribe", user2)
 
       expect(response).to have_http_status(304)
     end
 
     it 'returns 404 if the issue is not found' do
-      delete api("/projects/#{project.id}/issues/123/subscription", user)
+      post api("/projects/#{project.id}/issues/123/unsubscribe", user)
 
       expect(response).to have_http_status(404)
     end
 
     it 'returns 404 if the issue is confidential' do
-      delete api("/projects/#{project.id}/issues/#{confidential_issue.id}/subscription", non_member)
+      post api("/projects/#{project.id}/issues/#{confidential_issue.id}/unsubscribe", non_member)
 
       expect(response).to have_http_status(404)
     end

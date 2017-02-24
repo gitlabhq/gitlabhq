@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.7.1'
+gem 'rails', '4.2.8'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Responders respond_to and respond_with
@@ -201,7 +201,7 @@ gem 'babosa', '~> 1.0.2'
 gem 'loofah', '~> 2.0.3'
 
 # Working with license
-gem 'licensee', '~> 8.0.0'
+gem 'licensee', '~> 8.7.0'
 
 # Protect against bruteforcing
 gem 'rack-attack', '~> 4.4.1'
@@ -301,10 +301,10 @@ group :development, :test do
   gem 'spring-commands-rspec',    '~> 1.0.4'
   gem 'spring-commands-spinach',  '~> 1.1.0'
 
-  gem 'rubocop', '~> 0.46.0', require: false
-  gem 'rubocop-rspec', '~> 1.9.1', require: false
+  gem 'rubocop', '~> 0.47.1', require: false
+  gem 'rubocop-rspec', '~> 1.12.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
-  gem 'haml_lint', '~> 0.18.2', require: false
+  gem 'haml_lint', '~> 0.21.0', require: false
   gem 'simplecov', '0.12.0', require: false
   gem 'flay', '~> 2.6.1', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
@@ -333,7 +333,7 @@ gem 'newrelic_rpm', '~> 3.16'
 
 gem 'octokit', '~> 4.6.2'
 
-gem 'mail_room', '~> 0.9.0'
+gem 'mail_room', '~> 0.9.1'
 
 gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'

@@ -20,6 +20,8 @@ feature 'Ref switcher', feature: true, js: true do
       input.set 'binary'
       wait_for_ajax
 
+      expect(find('.dropdown-content ul')).to have_selector('li', count: 6)
+
       page.within '.dropdown-content ul' do
         input.native.send_keys :enter
       end

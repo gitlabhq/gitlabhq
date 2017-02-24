@@ -23,13 +23,14 @@ class SnippetsController < ApplicationController
     if params[:username].present?
       @user = User.find_by(username: params[:username])
 
-      render_404 and return unless @user
+      return render_404 unless @user
 
       @snippets = SnippetsFinder.new.execute(current_user, {
         filter: :by_user,
         user: @user,
-        scope: params[:scope] }).
-      page(params[:page])
+        scope: params[:scope]
+      })
+      .page(params[:page])
 
       render 'index'
     else
@@ -42,16 +43,19 @@ class SnippetsController < ApplicationController
   end
 
   def create
-    create_params = snippet_params.merge(request: request)
+    create_params = snippet_params.merge(spammable_params)
+
     @snippet = CreateSnippetService.new(nil, current_user, create_params).execute
 
-    respond_with @snippet.becomes(Snippet)
+    recaptcha_check_with_fallback { render :new }
   end
 
   def update
-    UpdateSnippetService.new(nil, current_user, @snippet,
-                             snippet_params).execute
-    respond_with @snippet.becomes(Snippet)
+    update_params = snippet_params.merge(spammable_params)
+
+    UpdateSnippetService.new(nil, current_user, @snippet, update_params).execute
+
+    recaptcha_check_with_fallback { render :edit }
   end
 
   def show

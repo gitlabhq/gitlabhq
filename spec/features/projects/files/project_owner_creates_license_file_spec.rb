@@ -25,7 +25,7 @@ feature 'project owner creates a license file', feature: true, js: true do
     select_template('MIT License')
 
     file_content = first('.file-editor')
-    expect(file_content).to have_content('The MIT License (MIT)')
+    expect(file_content).to have_content('MIT License')
     expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
 
     fill_in :commit_message, with: 'Add a LICENSE file', visible: true
@@ -33,7 +33,7 @@ feature 'project owner creates a license file', feature: true, js: true do
 
     expect(current_path).to eq(
       namespace_project_blob_path(project.namespace, project, 'master/LICENSE'))
-    expect(page).to have_content('The MIT License (MIT)')
+    expect(page).to have_content('MIT License')
     expect(page).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
   end
 
@@ -49,7 +49,7 @@ feature 'project owner creates a license file', feature: true, js: true do
     select_template('MIT License')
 
     file_content = first('.file-editor')
-    expect(file_content).to have_content('The MIT License (MIT)')
+    expect(file_content).to have_content('MIT License')
     expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
 
     fill_in :commit_message, with: 'Add a LICENSE file', visible: true
@@ -57,7 +57,7 @@ feature 'project owner creates a license file', feature: true, js: true do
 
     expect(current_path).to eq(
       namespace_project_blob_path(project.namespace, project, 'master/LICENSE'))
-    expect(page).to have_content('The MIT License (MIT)')
+    expect(page).to have_content('MIT License')
     expect(page).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
   end
 

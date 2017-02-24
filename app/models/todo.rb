@@ -17,7 +17,7 @@ class Todo < ActiveRecord::Base
     APPROVAL_REQUIRED => :approval_required,
     UNMERGEABLE => :unmergeable,
     DIRECTLY_ADDRESSED => :directly_addressed
-  }
+  }.freeze
 
   belongs_to :author, class_name: "User"
   belongs_to :note

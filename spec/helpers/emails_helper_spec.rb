@@ -43,4 +43,36 @@ describe EmailsHelper do
       end
     end
   end
+
+  describe '#header_logo' do
+    context 'there is a brand item with a logo' do
+      it 'returns the brand header logo' do
+        appearance = create :appearance, header_logo: fixture_file_upload(
+          Rails.root.join('spec/fixtures/dk.png')
+        )
+
+        expect(header_logo).to eq(
+          %{<img style="height: 50px" src="/uploads/appearance/header_logo/#{appearance.id}/dk.png" alt="Dk" />}
+        )
+      end
+    end
+
+    context 'there is a brand item without a logo' do
+      it 'returns the default header logo' do
+        create :appearance, header_logo: nil
+
+        expect(header_logo).to eq(
+          %{<img alt="GitLab" src="/images/mailers/gitlab_header_logo.gif" width="55" height="50" />}
+        )
+      end
+    end
+
+    context 'there is no brand item' do
+      it 'returns the default header logo' do
+        expect(header_logo).to eq(
+          %{<img alt="GitLab" src="/images/mailers/gitlab_header_logo.gif" width="55" height="50" />}
+        )
+      end
+    end
+  end
 end

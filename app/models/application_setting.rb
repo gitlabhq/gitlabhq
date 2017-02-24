@@ -5,7 +5,7 @@ class ApplicationSetting < ActiveRecord::Base
   add_authentication_token_field :runners_registration_token
   add_authentication_token_field :health_check_access_token
 
-  CACHE_KEY = 'application_setting.last'
+  CACHE_KEY = 'application_setting.last'.freeze
   DOMAIN_LIST_SEPARATOR = %r{\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
                             |               # or
                             \s              # any whitespace character

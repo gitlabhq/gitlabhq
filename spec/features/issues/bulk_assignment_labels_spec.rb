@@ -55,7 +55,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
         context 'to all issues' do
           before do
             check 'check_all_issues'
-            open_labels_dropdown ['bug', 'feature']
+            open_labels_dropdown %w(bug feature)
             update_issues
           end
 
@@ -70,7 +70,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
         context 'to a issue' do
           before do
             check "selected_issue_#{issue1.id}"
-            open_labels_dropdown ['bug', 'feature']
+            open_labels_dropdown %w(bug feature)
             update_issues
           end
 
@@ -112,7 +112,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
           visit namespace_project_issues_path(project.namespace, project)
 
           check 'check_all_issues'
-          unmark_labels_in_dropdown ['bug', 'feature']
+          unmark_labels_in_dropdown %w(bug feature)
           update_issues
         end
 

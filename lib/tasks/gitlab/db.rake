@@ -23,7 +23,7 @@ namespace :gitlab do
     end
 
     desc 'Drop all tables'
-    task :drop_tables => :environment do
+    task drop_tables: :environment do
       connection = ActiveRecord::Base.connection
 
       # If MySQL, turn off foreign key checks
@@ -62,9 +62,9 @@ namespace :gitlab do
 
       ref = Shellwords.escape(args[:ref])
 
-      migrations = `git diff #{ref}.. --name-only -- db/migrate`.lines.
-        map { |file| Rails.root.join(file.strip).to_s }.
-        select { |file| File.file?(file) }
+      migrations = `git diff #{ref}.. --name-only -- db/migrate`.lines
+        .map { |file| Rails.root.join(file.strip).to_s }
+        .select { |file| File.file?(file) }
 
       Gitlab::DowntimeCheck.new.check_and_print(migrations)
     end
