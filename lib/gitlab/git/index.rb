@@ -106,8 +106,6 @@ module Gitlab
 
       def add_blob(options, mode: nil)
         content = options[:content]
-        return unless content
-
         content = Base64.decode64(content) if options[:encoding] == 'base64'
 
         detect = CharlockHolmes::EncodingDetector.new.detect(content)
