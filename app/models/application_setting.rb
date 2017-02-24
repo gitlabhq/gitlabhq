@@ -77,17 +77,15 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
-<<<<<<< HEAD
   validates :repository_size_limit,
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-=======
+
   validates :max_artifacts_size,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
   validates :default_artifacts_expire_in, presence: true, duration: true
->>>>>>> ce/master
 
   validates :container_registry_token_expire_delay,
             presence: true,
@@ -252,7 +250,14 @@ class ApplicationSetting < ActiveRecord::Base
     create(defaults)
   end
 
-<<<<<<< HEAD
+  def self.human_attribute_name(attr, _options = {})
+    if attr == :default_artifacts_expire_in
+      'Default artifacts expiration'
+    else
+      super
+    end
+  end
+
   def update_mirror_cron_jobs
     Project.mirror.where('sync_time < ?', minimum_mirror_sync_time)
       .update_all(sync_time: minimum_mirror_sync_time)
@@ -264,14 +269,6 @@ class ApplicationSetting < ActiveRecord::Base
 
   def elasticsearch_host
     read_attribute(:elasticsearch_host).split(',').map(&:strip)
-=======
-  def self.human_attribute_name(attr, _options = {})
-    if attr == :default_artifacts_expire_in
-      'Default artifacts expiration'
-    else
-      super
-    end
->>>>>>> ce/master
   end
 
   def home_page_url_column_exist

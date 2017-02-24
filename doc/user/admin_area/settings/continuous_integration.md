@@ -16,7 +16,27 @@ that this setting is set for each job.
 
 1. Hit **Save** for the changes to take effect.
 
-<<<<<<< HEAD
+## Default artifacts expiration
+
+The default expiration time of the [job artifacts][art-yml] can be set in
+the Admin area of your GitLab instance. The syntax of duration is described
+in [artifacts:expire_in][duration-syntax]. The default is `30 days`. Note that
+this setting is set for each job. Set it to 0 if you don't want default
+expiration.
+
+1. Go to **Admin area > Settings** (`/admin/application_settings`).
+
+    ![Admin area settings button](img/admin_area_settings_button.png)
+
+1. Change the value of default expiration time ([syntax][duration-syntax]):
+
+    ![Admin area default artifacts expiration](img/admin_area_default_artifacts_expiration.png)
+
+1. Hit **Save** for the changes to take effect.
+
+[art-yml]: ../../../administration/job_artifacts.md
+[duration-syntax]: ../../../ci/yaml/README.md#artifactsexpire_in
+
 ## Shared Runners build minutes quota
 
 > [Introduced][ee-1078] in GitLab Enterprise Edition 8.16.
@@ -73,25 +93,3 @@ the group.
 
 [art-yml]: ../../../administration/job_artifacts.md
 [ee-1078]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1078
-=======
-## Default artifacts expiration
-
-The default expiration time of the [job artifacts][art-yml] can be set in
-the Admin area of your GitLab instance. The syntax of duration is described
-in [artifacts:expire_in][duration-syntax]. The default is `30 days`. Note that
-this setting is set for each job. Set it to 0 if you don't want default
-expiration.
-
-1. Go to **Admin area > Settings** (`/admin/application_settings`).
-
-    ![Admin area settings button](img/admin_area_settings_button.png)
-
-1. Change the value of default expiration time ([syntax][duration-syntax]):
-
-    ![Admin area default artifacts expiration](img/admin_area_default_artifacts_expiration.png)
-
-1. Hit **Save** for the changes to take effect.
-
-[art-yml]: ../../../administration/job_artifacts.md
-[duration-syntax]: ../../../ci/yaml/README.md#artifactsexpire_in
->>>>>>> ce/master

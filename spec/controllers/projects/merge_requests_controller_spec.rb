@@ -386,17 +386,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'closes MR without errors' do
-<<<<<<< HEAD
         update_merge_request(state_event: 'close')
-=======
-        post :update,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: merge_request.iid,
-            merge_request: {
-              state_event: 'close'
-            }
->>>>>>> ce/master
 
         expect(response).to redirect_to([merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request])
         expect(merge_request.reload.closed?).to be_truthy

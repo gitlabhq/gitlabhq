@@ -210,15 +210,12 @@ describe User, models: true do
       end
     end
 
-<<<<<<< HEAD
     it 'does not allow a user to be both an auditor and an admin' do
       user = build(:user, :admin, :auditor)
 
       expect(user).to be_invalid
     end
 
-=======
->>>>>>> ce/master
     describe 'ghost users' do
       it 'does not allow a non-blocked ghost user' do
         user = build(:user, :ghost)
@@ -234,7 +231,6 @@ describe User, models: true do
         expect(user).to be_valid
       end
     end
-<<<<<<< HEAD
   end
 
   describe "non_ldap" do
