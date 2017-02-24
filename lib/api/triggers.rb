@@ -21,14 +21,9 @@ module API
         unauthorized! unless trigger.project == project
 
         # validate variables
-        variables = params[:variables]
-        if variables
-          unless variables.all? { |key, value| key.is_a?(String) && value.is_a?(String) }
-            render_api_error!('variables needs to be a map of key-valued strings', 400)
-          end
-
-          # convert variables from Mash to Hash
-          variables = variables.to_h
+        variables = params[:variables].to_h
+        unless variables.all? { |key, value| key.is_a?(String) && value.is_a?(String) }
+          render_api_error!('variables needs to be a map of key-valued strings', 400)
         end
 
         # create request and trigger builds
