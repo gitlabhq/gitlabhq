@@ -121,7 +121,7 @@ class EnvironmentsStore {
    * @return {Array}
    */
   toggleDeployBoard(environmentID) {
-    const environments = Object.assign([], this.state.environments);
+    const environments = this.state.environments.slice();
 
     this.state.environments = environments.map((env) => {
       let updated = Object.assign({}, env);
