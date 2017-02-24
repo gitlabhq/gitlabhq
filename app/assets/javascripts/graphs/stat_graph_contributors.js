@@ -1,7 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, camelcase, one-var-declaration-per-line, quotes, no-param-reassign, quote-props, comma-dangle, prefer-template, max-len, no-return-assign */
-/* global ContributorsGraph */
-/* global ContributorsAuthorGraph */
-/* global ContributorsMasterGraph */
+
+import { ContributorsGraph, ContributorsAuthorGraph, ContributorsMasterGraph } from './stat_graph_contributors_graph';
 import ContributorsStatGraphUtil from './stat_graph_contributors_util';
 
 /* global d3 */
