@@ -5,6 +5,14 @@ module Gitlab
     module CurrentKeyChain
       extend self
 
+      def add(key)
+        GPGME::Key.import(key)
+      end
+
+      def remove(fingerprint)
+        GPGME::Key.get(fingerprint).delete!
+      end
+
       def emails(fingerprint)
         GPGME::Key.find(:public, fingerprint).flat_map { |raw_key| raw_key.uids.map(&:email) }
       end
@@ -30,14 +38,6 @@ module Gitlab
 
         GPGME::Key.find(:public, fingerprints).flat_map { |raw_key| raw_key.uids.map(&:email) }
       end
-    end
-
-    def add_to_keychain(key)
-      GPGME::Key.import(key)
-    end
-
-    def remove_from_keychain(fingerprint)
-      GPGME::Key.get(fingerprint).delete!
     end
 
     def using_tmp_keychain

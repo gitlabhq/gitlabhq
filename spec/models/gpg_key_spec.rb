@@ -24,17 +24,19 @@ describe GpgKey do
 
     describe 'add_to_keychain' do
       it 'calls add_to_keychain after create' do
-        expect(Gitlab::Gpg).to receive(:add_to_keychain).with(GpgHelpers::User1.public_key)
+        expect(Gitlab::Gpg::CurrentKeyChain).to receive(:add).with(GpgHelpers::User1.public_key)
         create :gpg_key
       end
     end
 
     describe 'remove_from_keychain' do
       it 'calls remove_from_keychain after destroy' do
-        allow(Gitlab::Gpg).to receive :add_to_keychain
+        allow(Gitlab::Gpg::CurrentKeyChain).to receive :add
         gpg_key = create :gpg_key
 
-        expect(Gitlab::Gpg).to receive(:remove_from_keychain).with(GpgHelpers::User1.fingerprint)
+        expect(
+          Gitlab::Gpg::CurrentKeyChain
+        ).to receive(:remove).with(GpgHelpers::User1.fingerprint)
 
         gpg_key.destroy!
       end

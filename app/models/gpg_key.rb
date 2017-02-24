@@ -40,10 +40,10 @@ class GpgKey < ActiveRecord::Base
   end
 
   def add_to_keychain
-    Gitlab::Gpg.add_to_keychain(key)
+    Gitlab::Gpg::CurrentKeyChain.add(key)
   end
 
   def remove_from_keychain
-    Gitlab::Gpg.remove_from_keychain(fingerprint)
+    Gitlab::Gpg::CurrentKeyChain.remove(fingerprint)
   end
 end
