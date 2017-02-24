@@ -93,7 +93,7 @@ module.exports = Vue.component('environment-folder-view', {
 
     this.isLoading = true;
 
-    return this.service.all()
+    return this.service.get()
       .then(resp => ({
         headers: resp.headers,
         body: resp.json(),

@@ -7,7 +7,7 @@ class EnvironmentsService {
     this.deployBoard = Vue.resource('environments/{id}/status.json');
   }
 
-  all() {
+  get() {
     return this.environments.get();
   }
 

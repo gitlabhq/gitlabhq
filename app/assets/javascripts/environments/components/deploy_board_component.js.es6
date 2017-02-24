@@ -1,4 +1,4 @@
-/* eslint-disable no-new */
+/* eslint-disable no-new, import/first */
 /**
  * Renders a deploy board.
  *
@@ -18,12 +18,12 @@
  * for more information
  */
 
-const Vue = require('vue');
-const instanceComponent = require('./deploy_board_instance_component');
-require('~/lib/utils/common_utils');
-const Flash = require('~/flash');
+import instanceComponent from './deploy_board_instance_component.js.es6';
+import statusCodes from '~/lib/utils/http_status';
+import Flash from '~/flash';
+import '~/lib/utils/common_utils.js.es6';
 
-module.exports = Vue.component('deploy_boards_components', {
+module.exports = {
 
   components: {
     instanceComponent,
@@ -63,13 +63,12 @@ module.exports = Vue.component('deploy_boards_components', {
     this.isLoading = true;
 
     const maxNumberOfRequests = 3;
-    const noContentStatus = 204;
 
     // If the response is 204, we make 3 more requests.
     gl.utils.backOff((next, stop) => {
       this.service.getDeployBoard(this.environmentID)
         .then((resp) => {
-          if (resp.status === noContentStatus) {
+          if (resp.status === statusCodes.NO_CONTENT) {
             this.backOffRequestCounter = this.backOffRequestCounter += 1;
 
             if (this.backOffRequestCounter < maxNumberOfRequests) {
@@ -84,7 +83,7 @@ module.exports = Vue.component('deploy_boards_components', {
         .catch(stop);
     })
     .then((resp) => {
-      if (resp.status === noContentStatus) {
+      if (resp.status === statusCodes.NO_CONTENT) {
         this.hasError = true;
         return resp;
       }
@@ -126,7 +125,7 @@ module.exports = Vue.component('deploy_boards_components', {
     <div class="js-deploy-board deploy-board">
 
       <div v-if="isLoading">
-        <i class="fa fa-spinner fa-spin"></i>
+        <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
       </div>
 
       <div v-if="canRenderDeployBoard">
@@ -175,4 +174,4 @@ module.exports = Vue.component('deploy_boards_components', {
       </div>
     </div>
   `,
-});
+};
