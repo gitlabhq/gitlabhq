@@ -9,6 +9,7 @@ module Ci
 
     has_many :builds
     has_many :runner_projects, dependent: :destroy
+    has_many :pending_builds, class_name: 'Ci::RunnerBuild', dependent: :destroy
     has_many :projects, through: :runner_projects, foreign_key: :gl_project_id
 
     has_one :last_build, ->() { order('id DESC') }, class_name: 'Ci::Build'

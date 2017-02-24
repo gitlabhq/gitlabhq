@@ -160,6 +160,7 @@ class Project < ActiveRecord::Base
   has_many :commit_statuses, dependent: :destroy, foreign_key: :gl_project_id
   has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline', foreign_key: :gl_project_id
   has_many :builds, class_name: 'Ci::Build', foreign_key: :gl_project_id # the builds are created from the commit_statuses
+  has_many :runner_builds, class_name: 'Ci::RunnerBuild', dependent: :destroy
   has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject', foreign_key: :gl_project_id
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, dependent: :destroy, class_name: 'Ci::Variable', foreign_key: :gl_project_id

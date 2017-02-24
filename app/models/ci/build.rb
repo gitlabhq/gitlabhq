@@ -9,6 +9,7 @@ module Ci
     belongs_to :erased_by, class_name: 'User'
 
     has_many :deployments, as: :deployable
+    has_many :pending_runners, class_name: 'RunnerBuild', dependent: :destroy
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
 
     # The "environment" field for builds is a String, and is the unexpanded name
@@ -75,6 +76,12 @@ module Ci
       after_transition any => [:pending] do |build|
         build.run_after_commit do
           BuildQueueWorker.perform_async(id)
+        end
+      end
+
+      after_transition :pending => any - [:pending] do |build|
+        build.run_after_commit do
+          build.pending_runners.destroy_all
         end
       end
 
@@ -418,7 +425,7 @@ module Ci
     end
 
     def any_runners_online?
-      project.any_runners? { |runner| runner.active? && runner.online? && runner.can_pick?(self) }
+      pending_runners.any? { |runner| runner.active? && runner.online? }
     end
 
     def stuck?
