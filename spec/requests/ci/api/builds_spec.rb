@@ -668,14 +668,28 @@ describe Ci::API::Builds do
               end
 
               context 'with application default' do
-                let(:default_artifacts_expire_in) { '5 days' }
+                context 'default to 5 days' do
+                  let(:default_artifacts_expire_in) { '5 days' }
 
-                it 'sets to application default' do
-                  build.reload
-                  expect(response).to have_http_status(201)
-                  expect(json_response['artifacts_expire_at']).not_to be_empty
-                  expect(build.artifacts_expire_at).
-                    to be_within(5.minutes).of(5.days.from_now)
+                  it 'sets to application default' do
+                    build.reload
+                    expect(response).to have_http_status(201)
+                    expect(json_response['artifacts_expire_at'])
+                      .not_to be_empty
+                    expect(build.artifacts_expire_at)
+                      .to be_within(5.minutes).of(5.days.from_now)
+                  end
+                end
+
+                context 'default to 0' do
+                  let(:default_artifacts_expire_in) { '0' }
+
+                  it 'does not set expire_in' do
+                    build.reload
+                    expect(response).to have_http_status(201)
+                    expect(json_response['artifacts_expire_at']).to be_nil
+                    expect(build.artifacts_expire_at).to be_nil
+                  end
                 end
               end
             end
