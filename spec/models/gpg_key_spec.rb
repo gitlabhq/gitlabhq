@@ -59,7 +59,7 @@ describe GpgKey do
     it 'returns the emails from the gpg key' do
       gpg_key = create :gpg_key, key: GpgHelpers::User1.public_key
 
-      expect(gpg_key.emails).to eq [GpgHelpers::User1.email]
+      expect(gpg_key.emails).to eq GpgHelpers::User1.emails
     end
   end
 end

@@ -98,8 +98,8 @@ module GpgHelpers
       '5F7EA3981A5845B141ABD522CCFBE19F00AC8B1D'
     end
 
-    def email
-      'nannie.bernhard@example.com'
+    def emails
+      ['nannie.bernhard@example.com']
     end
   end
 
@@ -161,15 +161,20 @@ module GpgHelpers
         iLgEEwECACIFAliuqioCGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEL+d
         kl+RHv1lQhsD/0LDi008hCeoZdGMuwy2N5FMUusYg/X1tRQ6E0JcYYjvvE5oIZoX
         bVN0yLLD99P0rt6TSlt05CC7RPVPCNpKxKbF+TZMjMJiOi13XmY5Yti77ZMdBZtD
-        7HeBzjkWCVuR6k8eIwy83niHGI6p6G87Q6XxvDjQ7wdBCNBpwkzmTYIBuI0EWK6q
-        KgEEAN7mdR1U5xtmWfE6OXQoEBP4DlubIEtRPQGYs+yYDg+5cNK2Hta+Js8LzBwJ
-        0JhWTQhExid5lSJar+jlziu2F8tHiODySu6+iZDgTh3iHIjpHQwvFdhndcy7rtW5
-        JwWBstRHDV5FnXoA13c1zVW4VbuazS8IbSJ0HyJJkGhQtorxABEBAAGInwQYAQIA
-        CQUCWK6qKgIbDAAKCRC/nZJfkR79ZUIIBADVsEMK5U9gRS1lfBcfsJYN9fpnI5E6
-        tC2lrt6LngJbqEpfd9gek6K7jIeuiaMaUg1OOMdyWwmmf+qaImLOQH3/GXshFZX5
-        FWkOyFnebKY6V2kuIqAjn5GXqZm07hO0z0FjOIgQLbiH4iRosHKVljPiiB9vNcoX
-        wnG0c8xS7AlUMQ==
-        =Erp5
+        7HeBzjkWCVuR6k8eIwy83niHGI6p6G87Q6XxvDjQ7wdBCNBpwkzmTYIBtC9CZXR0
+        ZSBDYXJ0d3JpZ2h0IDxiZXR0ZS5jYXJ0d3JpZ2h0QGV4YW1wbGUubmV0Poi4BBMB
+        AgAiBQJYrwLFAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRC/nZJfkR79
+        ZVzsBADYe3Hv71I7+lTJDvKOTmV7M4ShOfjEpmDvL/5JB3FzXHAucCOlReCv/6+N
+        afAspPTc1uys47dvtePwQalroAsd8Y1grn/PCh+Tx27kpn1WG8yZjUsuq3z5rrGR
+        uXj6g8aeZdqkMTHUVF9Gd+g/5KDODdJbOjwH+l63b/bOiATDFbiNBFiuqioBBADe
+        5nUdVOcbZlnxOjl0KBAT+A5bmyBLUT0BmLPsmA4PuXDSth7WvibPC8wcCdCYVk0I
+        RMYneZUiWq/o5c4rthfLR4jg8kruvomQ4E4d4hyI6R0MLxXYZ3XMu67VuScFgbLU
+        Rw1eRZ16ANd3Nc1VuFW7ms0vCG0idB8iSZBoULaK8QARAQABiJ8EGAECAAkFAliu
+        qioCGwwACgkQv52SX5Ee/WVCCAQA1bBDCuVPYEUtZXwXH7CWDfX6ZyOROrQtpa7e
+        i54CW6hKX3fYHpOiu4yHromjGlINTjjHclsJpn/qmiJizkB9/xl7IRWV+RVpDshZ
+        3mymOldpLiKgI5+Rl6mZtO4TtM9BYziIEC24h+IkaLBylZYz4ogfbzXKF8JxtHPM
+        UuwJVDE=
+        =0vYo
         -----END PGP PUBLIC KEY BLOCK-----
       KEY
     end
@@ -182,8 +187,8 @@ module GpgHelpers
       '6D494CA6FC90C0CAE0910E42BF9D925F911EFD65'
     end
 
-    def email
-      'bette.cartwright@example.com'
+    def emails
+      ['bette.cartwright@example.com', 'bette.cartwright@example.net']
     end
   end
 end

@@ -16,7 +16,7 @@ feature 'Profile > GPG Keys', :gpg do
       fill_in('Key', with: attributes_for(:gpg_key)[:key])
       click_button('Add key')
 
-      expect(page).to have_content(GpgHelpers::User1.email)
+      expect(page).to have_content(GpgHelpers::User1.emails.join)
       expect(page).to have_content(GpgHelpers::User1.fingerprint)
     end
   end
@@ -25,7 +25,7 @@ feature 'Profile > GPG Keys', :gpg do
     create(:gpg_key, user: user)
     visit profile_gpg_keys_path
 
-    expect(page).to have_content(GpgHelpers::User1.email)
+    expect(page).to have_content(GpgHelpers::User1.emails.join)
     expect(page).to have_content(GpgHelpers::User1.fingerprint)
   end
 
