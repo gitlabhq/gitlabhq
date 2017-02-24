@@ -23,9 +23,20 @@ describe GpgKey do
     end
 
     describe 'add_to_keychain' do
-      it 'calls add_to_keychain after create' do
-        expect(Gitlab::Gpg::CurrentKeyChain).to receive(:add).with(GpgHelpers::User1.public_key)
-        create :gpg_key
+      context "user's email matches one of the key's emails" do
+        it 'calls .add after create' do
+          expect(Gitlab::Gpg::CurrentKeyChain).to receive(:add).with(GpgHelpers::User2.public_key)
+          user = create :user, email: GpgHelpers::User2.emails.first
+          create :gpg_key, user: user, key: GpgHelpers::User2.public_key
+        end
+      end
+
+      context "user's email does not match one of the key's emails" do
+        it 'does not call .add after create' do
+          expect(Gitlab::Gpg::CurrentKeyChain).not_to receive(:add)
+          user = create :user
+          create :gpg_key, user: user, key: GpgHelpers::User2.public_key
+        end
       end
     end
 
@@ -62,6 +73,34 @@ describe GpgKey do
       gpg_key = create :gpg_key, key: GpgHelpers::User1.public_key
 
       expect(gpg_key.emails).to eq GpgHelpers::User1.emails
+    end
+  end
+
+  describe '#emails_with_verified_status', :gpg do
+    context 'key is in the keychain' do
+      it 'email is verified if the user has the matching email' do
+        user = create :user, email: 'bette.cartwright@example.com'
+        gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key, user: user
+
+        expect(gpg_key.emails_with_verified_status).to match_array [
+          ['bette.cartwright@example.com', true],
+          ['bette.cartwright@example.net', false]
+        ]
+      end
+    end
+
+    context 'key is in not the keychain' do
+      it 'emails are unverified' do
+        user = create :user, email: 'bette.cartwright@example.com'
+        gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key, user: user
+
+        Gitlab::Gpg::CurrentKeyChain.remove(GpgHelpers::User2.fingerprint)
+
+        expect(gpg_key.emails_with_verified_status).to match_array [
+          ['bette.cartwright@example.com', false],
+          ['bette.cartwright@example.net', false]
+        ]
+      end
     end
   end
 end

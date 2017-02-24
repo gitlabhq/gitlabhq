@@ -31,6 +31,18 @@ class GpgKey < ActiveRecord::Base
     Gitlab::Gpg::CurrentKeyChain.emails(fingerprint)
   end
 
+  def emails_with_verified_status
+    emails_in_key_chain = emails
+    emails_from_key = Gitlab::Gpg.emails_from_key(key)
+
+    emails_from_key.map do |email|
+      [
+        email,
+        email == user.email && emails_in_key_chain.include?(email)
+      ]
+    end
+  end
+
   private
 
   def extract_fingerprint
@@ -40,6 +52,10 @@ class GpgKey < ActiveRecord::Base
   end
 
   def add_to_keychain
+    emails_from_key = Gitlab::Gpg.emails_from_key(key)
+
+    return unless emails_from_key.include?(user.email)
+
     Gitlab::Gpg::CurrentKeyChain.add(key)
   end
 
