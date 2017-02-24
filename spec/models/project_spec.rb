@@ -2156,7 +2156,7 @@ describe Project, models: true do
     end
 
     before do
-      project.repository.commit_file(User.last, '.gitlab/route-map.yml', route_map, message: 'Add .gitlab/route-map.yml', branch_name: 'master', update: false)
+      project.repository.create_file(User.last, '.gitlab/route-map.yml', route_map, message: 'Add .gitlab/route-map.yml', branch_name: 'master')
     end
 
     context 'when there is a .gitlab/route-map.yml at the commit' do

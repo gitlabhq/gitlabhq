@@ -52,13 +52,6 @@ module API
 
         attrs = declared_params.merge(start_branch: declared_params[:branch], target_branch: declared_params[:branch])
 
-        attrs[:actions].map! do |action|
-          action[:action] = action[:action].to_sym
-          action[:file_path].slice!(0) if action[:file_path] && action[:file_path].start_with?('/')
-          action[:previous_path].slice!(0) if action[:previous_path] && action[:previous_path].start_with?('/')
-          action
-        end
-
         result = ::Files::MultiService.new(user_project, current_user, attrs).execute
 
         if result[:status] == :success

@@ -762,136 +762,63 @@ class Repository
     @tags ||= raw_repository.tags
   end
 
-  # rubocop:disable Metrics/ParameterLists
-  def commit_dir(
-    user, path,
-    message:, branch_name:,
-    author_email: nil, author_name: nil,
-    start_branch_name: nil, start_project: project)
-    check_tree_entry_for_dir(branch_name, path)
+  def create_dir(user, path, **options)
+    options[:user] = user
+    options[:actions] = [{ action: :create_dir, file_path: path }]
 
-    if start_branch_name
-      start_project.repository.
-        check_tree_entry_for_dir(start_branch_name, path)
-    end
-
-    commit_file(
-      user,
-      "#{path}/.gitkeep",
-      '',
-      message: message,
-      branch_name: branch_name,
-      update: false,
-      author_email: author_email,
-      author_name: author_name,
-      start_branch_name: start_branch_name,
-      start_project: start_project)
+    multi_action(**options)
   end
-  # rubocop:enable Metrics/ParameterLists
 
-  # rubocop:disable Metrics/ParameterLists
-  def commit_file(
-    user, path, content,
-    message:, branch_name:, update: true,
-    author_email: nil, author_name: nil,
-    start_branch_name: nil, start_project: project)
-    unless update
-      error_message = "Filename already exists; update not allowed"
+  def create_file(user, path, content, **options)
+    options[:user] = user
+    options[:actions] = [{ action: :create, file_path: path, content: content }]
 
-      if tree_entry_at(branch_name, path)
-        raise Gitlab::Git::Repository::InvalidBlobName.new(error_message)
-      end
-
-      if start_branch_name &&
-          start_project.repository.tree_entry_at(start_branch_name, path)
-        raise Gitlab::Git::Repository::InvalidBlobName.new(error_message)
-      end
-    end
-
-    multi_action(
-      user: user,
-      message: message,
-      branch_name: branch_name,
-      author_email: author_email,
-      author_name: author_name,
-      start_branch_name: start_branch_name,
-      start_project: start_project,
-      actions: [{ action: :create,
-                  file_path: path,
-                  content: content }])
+    multi_action(**options)
   end
-  # rubocop:enable Metrics/ParameterLists
 
-  # rubocop:disable Metrics/ParameterLists
-  def update_file(
-    user, path, content,
-    message:, branch_name:, previous_path:,
-    author_email: nil, author_name: nil,
-    start_branch_name: nil, start_project: project)
-    action = if previous_path && previous_path != path
-               :move
-             else
-               :update
-             end
+  def update_file(user, path, content, **options)
+    previous_path = options.delete(:previous_path)
+    action = previous_path && previous_path != path ? :move : :update
 
-    multi_action(
-      user: user,
-      message: message,
-      branch_name: branch_name,
-      author_email: author_email,
-      author_name: author_name,
-      start_branch_name: start_branch_name,
-      start_project: start_project,
-      actions: [{ action: action,
-                  file_path: path,
-                  content: content,
-                  previous_path: previous_path }])
+    options[:user] = user
+    options[:actions] = [{ action: action, file_path: path, previous_path: previous_path, content: content }]
+
+    multi_action(**options)
   end
-  # rubocop:enable Metrics/ParameterLists
 
-  # rubocop:disable Metrics/ParameterLists
-  def remove_file(
-    user, path,
-    message:, branch_name:,
-    author_email: nil, author_name: nil,
-    start_branch_name: nil, start_project: project)
-    multi_action(
-      user: user,
-      message: message,
-      branch_name: branch_name,
-      author_email: author_email,
-      author_name: author_name,
-      start_branch_name: start_branch_name,
-      start_project: start_project,
-      actions: [{ action: :delete,
-                  file_path: path }])
+  def delete_file(user, path, **options)
+    options[:user] = user
+    options[:actions] = [{ action: :delete, file_path: path }]
+
+    multi_action(**options)
   end
-  # rubocop:enable Metrics/ParameterLists
 
   # rubocop:disable Metrics/ParameterLists
   def multi_action(
     user:, branch_name:, message:, actions:,
     author_email: nil, author_name: nil,
     start_branch_name: nil, start_project: project)
+
     GitOperationService.new(user, self).with_branch(
       branch_name,
       start_branch_name: start_branch_name,
       start_project: start_project) do |start_commit|
-      index = rugged.index
 
-      parents = if start_commit
-                  index.read_tree(start_commit.raw_commit.tree)
-                  [start_commit.sha]
-                else
-                  []
-                end
+      index = Gitlab::Git::Index.new(raw_repository)
 
-      actions.each do |act|
-        git_action(index, act)
+      if start_commit
+        index.read_tree(start_commit.raw_commit.tree)
+        parents = [start_commit.sha]
+      else
+        parents = []
+      end
+
+      actions.each do |options|
+        index.public_send(options.delete(:action), options)
       end
 
       options = {
-        tree: index.write_tree(rugged),
+        tree: index.write_tree,
         message: message,
         parents: parents
       }
@@ -1255,30 +1182,6 @@ class Repository
     blob_data_at(sha, '.gitlab-ci.yml')
   end
 
-  protected
-
-  def tree_entry_at(branch_name, path)
-    branch_exists?(branch_name) &&
-      # tree_entry is private
-      raw_repository.send(:tree_entry, commit(branch_name), path)
-  end
-
-  def check_tree_entry_for_dir(branch_name, path)
-    return unless branch_exists?(branch_name)
-
-    entry = tree_entry_at(branch_name, path)
-
-    return unless entry
-
-    if entry[:type] == :blob
-      raise Gitlab::Git::Repository::InvalidBlobName.new(
-        "Directory already exists as a file")
-    else
-      raise Gitlab::Git::Repository::InvalidBlobName.new(
-        "Directory already exists")
-    end
-  end
-
   private
 
   def blob_data_at(sha, path)
@@ -1287,58 +1190,6 @@ class Repository
 
     blob.load_all_data!(self)
     blob.data
-  end
-
-  def git_action(index, action)
-    path = normalize_path(action[:file_path])
-
-    if action[:action] == :move
-      previous_path = normalize_path(action[:previous_path])
-    end
-
-    case action[:action]
-    when :create, :update, :move
-      mode =
-        case action[:action]
-        when :update
-          index.get(path)[:mode]
-        when :move
-          index.get(previous_path)[:mode]
-        end
-      mode ||= 0o100644
-
-      index.remove(previous_path) if action[:action] == :move
-
-      content = if action[:encoding] == 'base64'
-                  Base64.decode64(action[:content])
-                else
-                  action[:content]
-                end
-
-      detect = CharlockHolmes::EncodingDetector.new.detect(content) if content
-
-      unless detect && detect[:type] == :binary
-        # When writing to the repo directly as we are doing here,
-        # the `core.autocrlf` config isn't taken into account.
-        content.gsub!("\r\n", "\n") if self.autocrlf
-      end
-
-      oid = rugged.write(content, :blob)
-
-      index.add(path: path, oid: oid, mode: mode)
-    when :delete
-      index.remove(path)
-    end
-  end
-
-  def normalize_path(path)
-    pathname = Gitlab::Git::PathHelper.normalize_path(path)
-
-    if pathname.each_filename.include?('..')
-      raise Gitlab::Git::Repository::InvalidBlobName.new('Invalid path')
-    end
-
-    pathname.to_s
   end
 
   def refs_directory_exists?
