@@ -13,7 +13,7 @@ module Ci
       5 => 'magenta',
       6 => 'cyan',
       7 => 'white', # not that this is gray in the dark (aka default) color table
-    }
+    }.freeze
 
     STYLE_SWITCHES = {
       bold:       0x01,
@@ -21,7 +21,7 @@ module Ci
       underline:  0x04,
       conceal:    0x08,
       cross:      0x10,
-    }
+    }.freeze
 
     def self.convert(ansi, state = nil)
       Converter.new.convert(ansi, state)
@@ -29,64 +29,108 @@ module Ci
 
     class Converter
       def on_0(s) reset()                            end
+
       def on_1(s) enable(STYLE_SWITCHES[:bold])      end
+
       def on_3(s) enable(STYLE_SWITCHES[:italic])    end
+
       def on_4(s) enable(STYLE_SWITCHES[:underline]) end
+
       def on_8(s) enable(STYLE_SWITCHES[:conceal])   end
+
       def on_9(s) enable(STYLE_SWITCHES[:cross])     end
 
       def on_21(s) disable(STYLE_SWITCHES[:bold])      end
+
       def on_22(s) disable(STYLE_SWITCHES[:bold])      end
+
       def on_23(s) disable(STYLE_SWITCHES[:italic])    end
+
       def on_24(s) disable(STYLE_SWITCHES[:underline]) end
+
       def on_28(s) disable(STYLE_SWITCHES[:conceal])   end
+
       def on_29(s) disable(STYLE_SWITCHES[:cross])     end
 
       def on_30(s) set_fg_color(0) end
+
       def on_31(s) set_fg_color(1) end
+
       def on_32(s) set_fg_color(2) end
+
       def on_33(s) set_fg_color(3) end
+
       def on_34(s) set_fg_color(4) end
+
       def on_35(s) set_fg_color(5) end
+
       def on_36(s) set_fg_color(6) end
+
       def on_37(s) set_fg_color(7) end
+
       def on_38(s) set_fg_color_256(s) end
+
       def on_39(s) set_fg_color(9) end
 
       def on_40(s) set_bg_color(0) end
+
       def on_41(s) set_bg_color(1) end
+
       def on_42(s) set_bg_color(2) end
+
       def on_43(s) set_bg_color(3) end
+
       def on_44(s) set_bg_color(4) end
+
       def on_45(s) set_bg_color(5) end
+
       def on_46(s) set_bg_color(6) end
+
       def on_47(s) set_bg_color(7) end
+
       def on_48(s) set_bg_color_256(s) end
+
       def on_49(s) set_bg_color(9) end
 
       def on_90(s) set_fg_color(0, 'l') end
+
       def on_91(s) set_fg_color(1, 'l') end
+
       def on_92(s) set_fg_color(2, 'l') end
+
       def on_93(s) set_fg_color(3, 'l') end
+
       def on_94(s) set_fg_color(4, 'l') end
+
       def on_95(s) set_fg_color(5, 'l') end
+
       def on_96(s) set_fg_color(6, 'l') end
+
       def on_97(s) set_fg_color(7, 'l') end
+
       def on_99(s) set_fg_color(9, 'l') end
 
       def on_100(s) set_bg_color(0, 'l') end
+
       def on_101(s) set_bg_color(1, 'l') end
+
       def on_102(s) set_bg_color(2, 'l') end
+
       def on_103(s) set_bg_color(3, 'l') end
+
       def on_104(s) set_bg_color(4, 'l') end
+
       def on_105(s) set_bg_color(5, 'l') end
+
       def on_106(s) set_bg_color(6, 'l') end
+
       def on_107(s) set_bg_color(7, 'l') end
+
       def on_109(s) set_bg_color(9, 'l') end
 
       attr_accessor :offset, :n_open_tags, :fg_color, :bg_color, :style_mask
 
-      STATE_PARAMS = [:offset, :n_open_tags, :fg_color, :bg_color, :style_mask]
+      STATE_PARAMS = [:offset, :n_open_tags, :fg_color, :bg_color, :style_mask].freeze
 
       def convert(raw, new_state)
         reset_state
@@ -126,7 +170,7 @@ module Ci
         # We are only interested in color and text style changes - triggered by
         # sequences starting with '\e[' and ending with 'm'. Any other control
         # sequence gets stripped (including stuff like "delete last line")
-        return unless indicator == '[' and terminator == 'm'
+        return unless indicator == '[' && terminator == 'm'
 
         close_open_tags()
 

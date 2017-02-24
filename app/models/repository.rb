@@ -18,7 +18,7 @@ class Repository
   CACHED_METHODS = %i(size commit_count readme version contribution_guide
                       changelog license_blob license_key gitignore koding_yml
                       gitlab_ci_yml branch_names tag_names branch_count
-                      tag_count avatar exists? empty? root_ref)
+                      tag_count avatar exists? empty? root_ref).freeze
 
   # Certain method caches should be refreshed when certain types of files are
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
@@ -33,7 +33,7 @@ class Repository
     koding: :koding_yml,
     gitlab_ci: :gitlab_ci_yml,
     avatar: :avatar
-  }
+  }.freeze
 
   # Wraps around the given method and caches its output in Redis and an instance
   # variable.
@@ -487,9 +487,7 @@ class Repository
   end
   cache_method :exists?
 
-  def empty?
-    raw_repository.empty?
-  end
+  delegate :empty?, to: :raw_repository
   cache_method :empty?
 
   # The size of this repository in megabytes.
@@ -508,9 +506,7 @@ class Repository
   end
   cache_method :branch_names, fallback: []
 
-  def tag_names
-    raw_repository.tag_names
-  end
+  delegate :tag_names, to: :raw_repository
   cache_method :tag_names, fallback: []
 
   def branch_count
@@ -892,7 +888,7 @@ class Repository
 
   def get_committer_and_author(user, email: nil, name: nil)
     committer = user_to_committer(user)
-    author = Gitlab::Git::committer_hash(email: email, name: name) || committer
+    author = Gitlab::Git.committer_hash(email: email, name: name) || committer
 
     {
       author: author,

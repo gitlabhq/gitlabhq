@@ -4,10 +4,20 @@
 
 window.Vue = require('vue');
 window.Cookies = require('js-cookie');
-
-function requireAll(context) { return context.keys().map(context); }
-requireAll(require.context('./svg', false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('.', true, /^\.\/(?!cycle_analytics_bundle).*\.(js|es6)$/));
+require('./svg/icon_branch');
+require('./svg/icon_build_status');
+require('./svg/icon_commit');
+require('./components/stage_code_component');
+require('./components/stage_issue_component');
+require('./components/stage_plan_component');
+require('./components/stage_production_component');
+require('./components/stage_review_component');
+require('./components/stage_staging_component');
+require('./components/stage_test_component');
+require('./components/total_time_component');
+require('./cycle_analytics_service');
+require('./cycle_analytics_store');
+require('./default_event_objects');
 
 $(() => {
   const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';

@@ -38,7 +38,7 @@ module TestEnv
     'deleted-image-test'                 => '6c17798',
     'wip'                                => 'b9238ee',
     'csv'                                => '3dd0896'
-  }
+  }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
   # need to keep all the branches in sync.
@@ -48,7 +48,7 @@ module TestEnv
     'master'                     => '5937ac0',
     'remove-submodule'           => '2a33e0c',
     'conflict-resolvable-fork'   => '404fa3f'
-  }
+  }.freeze
 
   # Test environment
   #

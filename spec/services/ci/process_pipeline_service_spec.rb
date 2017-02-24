@@ -377,9 +377,7 @@ describe Ci::ProcessPipelineService, :services do
     builds.pending.update_all(status: 'success')
   end
 
-  def manual_actions
-    pipeline.manual_actions
-  end
+  delegate :manual_actions, to: :pipeline
 
   def create_build(name, stage_idx, when_value = nil)
     create(:ci_build,

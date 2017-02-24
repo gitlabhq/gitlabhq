@@ -32,7 +32,8 @@
     "underscore": "^1.8.3",
     "vue": "^2.0.3",
     "vue-resource": "^0.9.3",
-    "webpack": "^2.2.1"
+    "webpack": "^2.2.1",
+    "webpack-bundle-analyzer": "^2.3.0"
   },
   "devDependencies": {
     "babel-plugin-istanbul": "^4.0.0",

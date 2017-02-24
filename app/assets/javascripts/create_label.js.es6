@@ -107,9 +107,9 @@
           if (typeof label.message === 'string') {
             errors = label.message;
           } else {
-            errors = label.message.map(function (value, key) {
-              return key + " " + value[0];
-            }).join("<br/>");
+            errors = Object.keys(label.message).map(key =>
+              `${gl.text.humanize(key)} ${label.message[key].join(', ')}`
+            ).join("<br/>");
           }
 
           this.$newLabelError

@@ -1382,13 +1382,13 @@ describe Repository, models: true do
 
   describe '#branch_count' do
     it 'returns the number of branches' do
-      expect(repository.branch_count).to be_an_instance_of(Fixnum)
+      expect(repository.branch_count).to be_an(Integer)
     end
   end
 
   describe '#tag_count' do
     it 'returns the number of tags' do
-      expect(repository.tag_count).to be_an_instance_of(Fixnum)
+      expect(repository.tag_count).to be_an(Integer)
     end
   end
 
@@ -1738,7 +1738,7 @@ describe Repository, models: true do
 
     context 'with an existing repository' do
       it 'returns the commit count' do
-        expect(repository.commit_count).to be_an_instance_of(Fixnum)
+        expect(repository.commit_count).to be_an(Integer)
       end
     end
   end

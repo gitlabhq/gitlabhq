@@ -46,7 +46,7 @@ namespace :gitlab do
               group = Namespace.find_by(path: group_name)
               # create group namespace
               unless group
-                group = Group.new(:name => group_name)
+                group = Group.new(name: group_name)
                 group.path = group_name
                 group.owner = user
                 if group.save

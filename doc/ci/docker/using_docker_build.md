@@ -308,6 +308,30 @@ push to the Registry connected to your project. Its password is provided in the
 `$CI_BUILD_TOKEN` variable. This allows you to automate building and deployment
 of your Docker images.
 
+You can also make use of [other variables](../variables/README.md) to avoid hardcoding:
+
+```yaml
+services:
+  - docker:dind
+
+variables:
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+
+build:
+  stage: build
+  script:
+    - docker build -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+```
+
+Here, `$CI_REGISTRY_IMAGE` would be resolved to the address of the registry tied
+to this project, and `$CI_BUILD_REF_NAME` would be resolved to the branch or
+tag name for this particular job. We also declare our own variable, `$IMAGE_TAG`,
+combining the two to save us some typing in the `script` section.
+
 Here's a more elaborate example that splits up the tasks into 4 pipeline stages,
 including two tests that run in parallel. The `build` is stored in the container
 registry and used by subsequent stages, downloading the image

@@ -1,4 +1,0 @@
----
-title: Preserve backward compatibility CI/CD and disallow setting `coverage` regexp in global context
-merge_request: 8981
-author:

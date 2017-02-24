@@ -1,4 +1,6 @@
 class Dashboard::TodosController < Dashboard::ApplicationController
+  include ActionView::Helpers::NumberHelper
+
   before_action :find_todos, only: [:index, :destroy_all]
 
   def index
@@ -35,6 +37,11 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     render json: todos_counts
   end
 
+  # Used in TodosHelper also
+  def self.todos_count_format(count)
+    count >= 100 ? '99+' : count
+  end
+
   private
 
   def find_todos
@@ -43,8 +50,8 @@ class Dashboard::TodosController < Dashboard::ApplicationController
 
   def todos_counts
     {
-      count: current_user.todos_pending_count,
-      done_count: current_user.todos_done_count
+      count: number_with_delimiter(current_user.todos_pending_count),
+      done_count: number_with_delimiter(current_user.todos_done_count)
     }
   end
 end

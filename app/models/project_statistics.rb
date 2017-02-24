@@ -4,7 +4,7 @@ class ProjectStatistics < ActiveRecord::Base
 
   before_save :update_storage_size
 
-  STORAGE_COLUMNS = [:repository_size, :lfs_objects_size, :build_artifacts_size]
+  STORAGE_COLUMNS = [:repository_size, :lfs_objects_size, :build_artifacts_size].freeze
   STATISTICS_COLUMNS = [:commit_count] + STORAGE_COLUMNS
 
   def total_repository_size

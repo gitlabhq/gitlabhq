@@ -16,7 +16,8 @@ in a simple dashboard.
 
 You can quickly access the Todos dashboard using the bell icon next to the
 search bar in the upper right corner. The number in blue is the number of Todos
-you still have open.
+you still have open if the count is < 100, else it's 99+. The exact number
+will still be shown in the body of the _To do_ tab.
 
 ![Todos icon](img/todos_icon.png)
 

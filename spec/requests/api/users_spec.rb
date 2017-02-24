@@ -1003,69 +1003,69 @@ describe API::Users, api: true  do
     end
   end
 
-  describe 'PUT /users/:id/block' do
+  describe 'POST /users/:id/block' do
     before { admin }
     it 'blocks existing user' do
-      put api("/users/#{user.id}/block", admin)
-      expect(response).to have_http_status(200)
+      post api("/users/#{user.id}/block", admin)
+      expect(response).to have_http_status(201)
       expect(user.reload.state).to eq('blocked')
     end
 
     it 'does not re-block ldap blocked users' do
-      put api("/users/#{ldap_blocked_user.id}/block", admin)
+      post api("/users/#{ldap_blocked_user.id}/block", admin)
       expect(response).to have_http_status(403)
       expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
     end
 
     it 'does not be available for non admin users' do
-      put api("/users/#{user.id}/block", user)
+      post api("/users/#{user.id}/block", user)
       expect(response).to have_http_status(403)
       expect(user.reload.state).to eq('active')
     end
 
     it 'returns a 404 error if user id not found' do
-      put api('/users/9999/block', admin)
+      post api('/users/9999/block', admin)
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end
   end
 
-  describe 'PUT /users/:id/unblock' do
+  describe 'POST /users/:id/unblock' do
     let(:blocked_user)  { create(:user, state: 'blocked') }
     before { admin }
 
     it 'unblocks existing user' do
-      put api("/users/#{user.id}/unblock", admin)
-      expect(response).to have_http_status(200)
+      post api("/users/#{user.id}/unblock", admin)
+      expect(response).to have_http_status(201)
       expect(user.reload.state).to eq('active')
     end
 
     it 'unblocks a blocked user' do
-      put api("/users/#{blocked_user.id}/unblock", admin)
-      expect(response).to have_http_status(200)
+      post api("/users/#{blocked_user.id}/unblock", admin)
+      expect(response).to have_http_status(201)
       expect(blocked_user.reload.state).to eq('active')
     end
 
     it 'does not unblock ldap blocked users' do
-      put api("/users/#{ldap_blocked_user.id}/unblock", admin)
+      post api("/users/#{ldap_blocked_user.id}/unblock", admin)
       expect(response).to have_http_status(403)
       expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
     end
 
     it 'does not be available for non admin users' do
-      put api("/users/#{user.id}/unblock", user)
+      post api("/users/#{user.id}/unblock", user)
       expect(response).to have_http_status(403)
       expect(user.reload.state).to eq('active')
     end
 
     it 'returns a 404 error if user id not found' do
-      put api('/users/9999/block', admin)
+      post api('/users/9999/block', admin)
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
     it "returns a 404 for invalid ID" do
-      put api("/users/ASDF/block", admin)
+      post api("/users/ASDF/block", admin)
 
       expect(response).to have_http_status(404)
     end
@@ -1093,13 +1093,13 @@ describe API::Users, api: true  do
     end
 
     context "as a user than can see the event's project" do
-      it_behaves_like 'a paginated resources' do
-        let(:request) { get api("/users/#{user.id}/events", user) }
-      end
-
       context 'joined event' do
         it 'returns the "joined" event' do
           get api("/users/#{user.id}/events", user)
+
+          expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
 
           comment_event = json_response.find { |e| e['action_name'] == 'commented on' }
 

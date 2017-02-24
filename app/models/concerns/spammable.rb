@@ -13,13 +13,17 @@ module Spammable
     attr_accessor :spam
     attr_accessor :spam_log
 
-    after_validation :check_for_spam, on: :create
+    after_validation :check_for_spam, on: [:create, :update]
 
     cattr_accessor :spammable_attrs, instance_accessor: false do
       []
     end
 
     delegate :ip_address, :user_agent, to: :user_agent_detail, allow_nil: true
+  end
+
+  def submittable_as_spam_by?(current_user)
+    current_user && current_user.admin? && submittable_as_spam?
   end
 
   def submittable_as_spam?

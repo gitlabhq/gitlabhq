@@ -119,9 +119,24 @@ describe Gitlab::Database, lib: true do
     it 'creates a new connection pool with specific pool size' do
       pool = described_class.create_connection_pool(5)
 
-      expect(pool)
-        .to be_kind_of(ActiveRecord::ConnectionAdapters::ConnectionPool)
-      expect(pool.spec.config[:pool]).to eq(5)
+      begin
+        expect(pool)
+          .to be_kind_of(ActiveRecord::ConnectionAdapters::ConnectionPool)
+
+        expect(pool.spec.config[:pool]).to eq(5)
+      ensure
+        pool.disconnect!
+      end
+    end
+
+    it 'allows setting of a custom hostname' do
+      pool = described_class.create_connection_pool(5, '127.0.0.1')
+
+      begin
+        expect(pool.spec.config[:host]).to eq('127.0.0.1')
+      ensure
+        pool.disconnect!
+      end
     end
   end
 

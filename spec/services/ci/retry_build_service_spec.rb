@@ -12,7 +12,7 @@ describe Ci::RetryBuildService, :services do
 
   shared_examples 'build duplication' do
     let(:build) do
-      create(:ci_build, :failed, :artifacts, :erased, :trace,
+      create(:ci_build, :failed, :artifacts_expired, :erased, :trace,
              :queued, :coverage, pipeline: pipeline)
     end
 
@@ -38,7 +38,7 @@ describe Ci::RetryBuildService, :services do
         described_class::IGNORE_ATTRIBUTES +
         described_class::REJECT_ATTRIBUTES
 
-      expect(attributes.size).to eq build.attributes.size
+      expect(build.attributes.size).to eq(attributes.size)
     end
   end
 

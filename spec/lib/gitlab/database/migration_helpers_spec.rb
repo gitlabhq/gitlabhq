@@ -101,6 +101,16 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
     end
   end
 
+  describe '#concurrent_foreign_key_name' do
+    it 'returns the name for a foreign key' do
+      name = model.concurrent_foreign_key_name(:this_is_a_very_long_table_name,
+                                               :with_a_very_long_column_name)
+
+      expect(name).to be_an_instance_of(String)
+      expect(name.length).to eq(13)
+    end
+  end
+
   describe '#disable_statement_timeout' do
     context 'using PostgreSQL' do
       it 'disables statement timeouts' do

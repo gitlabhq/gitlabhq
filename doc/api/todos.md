@@ -184,7 +184,7 @@ Marks a single pending todo given by its ID for the current user as done. The
 todo marked as done is returned in the response.
 
 ```
-DELETE /todos/:id
+POST /todos/:id/mark_as_done
 ```
 
 Parameters:
@@ -194,7 +194,7 @@ Parameters:
 | `id` | integer | yes | The ID of a todo |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/todos/130
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/todos/130/mark_as_done
 ```
 
 Example Response:
@@ -277,20 +277,15 @@ Example Response:
 
 ## Mark all todos as done
 
-Marks all pending todos for the current user as done. It returns the number of marked todos.
+Marks all pending todos for the current user as done. It returns the HTTP status code `204` with an empty response.
 
 ```
-DELETE /todos
+POST /todos/mark_as_done
 ```
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/todos
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/todos/donmark_as_donee
 ```
 
-Example Response:
-
-```json
-3
-```
 
 [ce-3188]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3188

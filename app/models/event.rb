@@ -47,7 +47,7 @@ class Event < ActiveRecord::Base
     def contributions
       where("action = ? OR (target_type IN (?) AND action IN (?)) OR (target_type = ? AND action = ?)",
             Event::PUSHED,
-            ["MergeRequest", "Issue"], [Event::CREATED, Event::CLOSED, Event::MERGED],
+            %w(MergeRequest Issue), [Event::CREATED, Event::CLOSED, Event::MERGED],
             "Note", Event::COMMENTED)
     end
 

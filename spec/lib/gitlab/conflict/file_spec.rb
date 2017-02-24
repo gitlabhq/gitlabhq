@@ -44,7 +44,7 @@ describe Gitlab::Conflict::File, lib: true do
 
       it 'returns a file containing only the chosen parts of the resolved sections' do
         expect(resolved_lines.chunk { |line| line.type || 'both' }.map(&:first)).
-          to eq(['both', 'new', 'both', 'old', 'both', 'new', 'both'])
+          to eq(%w(both new both old both new both))
       end
     end
 
@@ -123,7 +123,7 @@ describe Gitlab::Conflict::File, lib: true do
     it 'sets conflict to true for sections with only changed lines' do
       conflict_file.sections.select { |section| section[:conflict] }.each do |section|
         section[:lines].each do |line|
-          expect(line.type).to be_in(['new', 'old'])
+          expect(line.type).to be_in(%w(new old))
         end
       end
     end

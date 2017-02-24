@@ -64,6 +64,8 @@ module API
 
           snippet = CreateSnippetService.new(user_project, current_user, snippet_params).execute
 
+          render_spam_error! if snippet.spam?
+
           if snippet.persisted?
             present snippet, with: ::API::V3::Entities::ProjectSnippet
           else
@@ -93,12 +95,16 @@ module API
           authorize! :update_project_snippet, snippet
 
           snippet_params = declared_params(include_missing: false)
+            .merge(request: request, api: true)
+
           snippet_params[:content] = snippet_params.delete(:code) if snippet_params[:code].present?
 
           UpdateSnippetService.new(user_project, current_user, snippet,
                                    snippet_params).execute
 
-          if snippet.persisted?
+          render_spam_error! if snippet.spam?
+
+          if snippet.valid?
             present snippet, with: ::API::V3::Entities::ProjectSnippet
           else
             render_validation_error!(snippet)

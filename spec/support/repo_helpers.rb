@@ -42,7 +42,7 @@ Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
 eos
     )
   end
-  
+
   def another_sample_commit
     OpenStruct.new(
       id: "e56497bb5f03a90a51293fc6d516788730953899",
@@ -100,13 +100,13 @@ eos
       }
     ]
 
-    commits = [
-      '5937ac0a7beb003549fc5fd26fc247adbce4a52e',
-      '570e7b2abdd848b95f2f578043fc23bd6f6fd24d',
-      '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9',
-      'd14d6c0abdd253381df51a723d58691b2ee1ab08',
-      'c1acaa58bbcbc3eafe538cb8274ba387047b69f8',
-    ].reverse # last commit is recent one
+    commits = %w(
+      5937ac0a7beb003549fc5fd26fc247adbce4a52e
+      570e7b2abdd848b95f2f578043fc23bd6f6fd24d
+      6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+      d14d6c0abdd253381df51a723d58691b2ee1ab08
+      c1acaa58bbcbc3eafe538cb8274ba387047b69f8
+    ).reverse # last commit is recent one
 
     OpenStruct.new(
       source_branch: 'master',

@@ -32,10 +32,10 @@ describe Profiles::PersonalAccessTokensController do
 
     context "scopes" do
       it "allows creation of a token with scopes" do
-        post :create, personal_access_token: { name: FFaker::Product.brand, scopes: ['api', 'read_user'] }
+        post :create, personal_access_token: { name: FFaker::Product.brand, scopes: %w(api read_user) }
 
         expect(created_token).not_to be_nil
-        expect(created_token.scopes).to eq(['api', 'read_user'])
+        expect(created_token.scopes).to eq(%w(api read_user))
       end
 
       it "allows creation of a token with no scopes" do

@@ -5,7 +5,7 @@ class JwtController < ApplicationController
 
   SERVICES = {
     Auth::ContainerRegistryAuthenticationService::AUDIENCE => Auth::ContainerRegistryAuthenticationService,
-  }
+  }.freeze
 
   def auth
     service = SERVICES[params[:service]]
@@ -39,7 +39,8 @@ class JwtController < ApplicationController
           message: "HTTP Basic: Access denied\n" \
                    "You have 2FA enabled, please use a personal access token for Git over HTTP.\n" \
                    "You can generate one at #{profile_personal_access_tokens_url}" }
-      ] }, status: 401
+      ]
+    }, status: 401
   end
 
   def render_unauthorized
@@ -47,7 +48,8 @@ class JwtController < ApplicationController
       errors: [
         { code: 'UNAUTHORIZED',
           message: 'HTTP Basic: Access denied' }
-      ] }, status: 401
+      ]
+    }, status: 401
   end
 
   def auth_params

@@ -14,6 +14,9 @@ require('vendor/latinise');
     gl.text.addDelimiter = function(text) {
       return text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : text;
     };
+    gl.text.highCountTrim = function(count) {
+      return count > 99 ? '99+' : count;
+    };
     gl.text.randomString = function() {
       return Math.random().toString(36).substring(7);
     };
