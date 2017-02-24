@@ -148,6 +148,18 @@
 .error-alert > .alert {
   margin-top: 5px;
   margin-bottom: 5px;
+
+  &.alert-dismissable {
+    .close {
+      color: $white-light;
+      opacity: 0.85;
+      font-weight: normal;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
 }
 
 .discussion-body,
