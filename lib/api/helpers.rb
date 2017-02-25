@@ -86,12 +86,12 @@ module API
       IssuesFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
 
-    def find_project_merge_request(id)
-      MergeRequestsFinder.new(current_user, project_id: user_project.id).find(id)
+    def find_project_merge_request(iid)
+      MergeRequestsFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
 
-    def find_merge_request_with_access(id, access_level = :read_merge_request)
-      merge_request = user_project.merge_requests.find(id)
+    def find_merge_request_with_access(iid, access_level = :read_merge_request)
+      merge_request = user_project.merge_requests.find_by!(iid: iid)
       authorize! access_level, merge_request
       merge_request
     end
