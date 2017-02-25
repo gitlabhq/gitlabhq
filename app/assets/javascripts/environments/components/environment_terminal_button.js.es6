@@ -20,7 +20,7 @@ module.exports = Vue.component('terminal-button-component', {
   template: `
     <a class="btn terminal-button"
       :href="terminalPath">
-      <span class="js-terminal-icon-container" v-html="terminalIconSvg"></span>
+      ${terminalIconSvg}
     </a>
   `,
 });

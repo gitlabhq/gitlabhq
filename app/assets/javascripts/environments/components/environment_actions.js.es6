@@ -28,9 +28,7 @@ module.exports = Vue.component('actions-component', {
             data-method="post"
             rel="nofollow"
             class="js-manual-action-link">
-
-            <span class="js-action-play-icon-container" v-html="playIconSvg"></span>
-
+            ${playIconSvg}
             <span>
               {{action.name}}
             </span>

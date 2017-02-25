@@ -173,8 +173,7 @@ module.exports = Vue.component('environment-component', {
           <environment-table
             :environments="state.environments"
             :can-create-deployment="canCreateDeploymentParsed"
-            :can-read-environment="canReadEnvironmentParsed">
-          </environment-table>
+            :can-read-environment="canReadEnvironmentParsed"/>
 
           <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
             :change="changePage"
