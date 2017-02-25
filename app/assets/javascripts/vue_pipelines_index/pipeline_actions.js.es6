@@ -2,7 +2,6 @@
 /* eslint-disable no-param-reassign,  no-alert */
 const playIconSvg = require('../../../views/shared/icons/_icon_play.svg');
 
-
 ((gl) => {
   gl.VuePipelineActions = Vue.extend({
     props: ['pipeline'],
