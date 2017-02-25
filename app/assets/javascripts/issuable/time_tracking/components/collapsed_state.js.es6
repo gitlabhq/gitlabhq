@@ -1,4 +1,6 @@
 /* global Vue */
+import stopwatchSvg from '../../../../../views/shared/icons/_icon_stopwatch.svg';
+
 require('../../../lib/utils/pretty_time');
 
 (() => {
@@ -11,7 +13,6 @@ require('../../../lib/utils/pretty_time');
       'showNoTimeTrackingState',
       'timeSpentHumanReadable',
       'timeEstimateHumanReadable',
-      'stopwatchSvg',
     ],
     methods: {
       abbreviateTime(timeStr) {
@@ -20,7 +21,7 @@ require('../../../lib/utils/pretty_time');
     },
     template: `
       <div class='sidebar-collapsed-icon'>
-        <div v-html='stopwatchSvg'></div>
+        ${stopwatchSvg}
         <div class='time-tracking-collapsed-summary'>
           <div class='compare' v-if='showComparisonState'>
             <span>{{ abbreviateTime(timeSpentHumanReadable) }} / {{ abbreviateTime(timeEstimateHumanReadable) }}</span>

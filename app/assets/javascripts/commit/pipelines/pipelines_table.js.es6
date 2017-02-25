@@ -39,15 +39,10 @@ const PipelineStore = require('./pipelines_store');
      */
     data() {
       const pipelinesTableData = document.querySelector('#commit-pipeline-table-view').dataset;
-      const svgsData = document.querySelector('.pipeline-svgs').dataset;
       const store = new PipelineStore();
-
-      // Transform svgs DOMStringMap to a plain Object.
-      const svgsObject = gl.utils.DOMStringMapToObject(svgsData);
 
       return {
         endpoint: pipelinesTableData.endpoint,
-        svgs: svgsObject,
         store,
         state: store.state,
         isLoading: false,
@@ -99,10 +94,7 @@ const PipelineStore = require('./pipelines_store');
 
         <div class="table-holder pipelines"
           v-if="!isLoading && state.pipelines.length > 0">
-          <pipelines-table-component
-            :pipelines="state.pipelines"
-            :svgs="svgs">
-          </pipelines-table-component>
+          <pipelines-table-component :pipelines="state.pipelines"/>
         </div>
       </div>
     `,
