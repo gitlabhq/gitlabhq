@@ -472,9 +472,7 @@ module.exports = Vue.component('environment-item', {
             :commit-url="commitUrl"
             :short-sha="commitShortSha"
             :title="commitTitle"
-            :author="commitAuthor"
-            :commit-icon-svg="commitIconSvg">
-          </commit-component>
+            :author="commitAuthor"/>
         </div>
         <p v-if="!model.isFolder && !hasLastDeploymentKey" class="commit-title">
           No deployments yet
@@ -492,25 +490,20 @@ module.exports = Vue.component('environment-item', {
         <div v-if="!model.isFolder">
           <div class="btn-group" role="group">
             <actions-component v-if="hasManualActions && canCreateDeployment"
-              :actions="manualActions">
-            </actions-component>
+              :actions="manualActions"/>
 
             <external-url-component v-if="externalURL && canReadEnvironment"
-              :external-url="externalURL">
-            </external-url-component>
+              :external-url="externalURL"/>
 
             <stop-component v-if="hasStopAction && canCreateDeployment"
-              :stop-url="model.stop_path">
-            </stop-component>
+              :stop-url="model.stop_path"/>
 
             <terminal-button-component v-if="model && model.terminal_path"
-              :terminal-path="model.terminal_path">
-            </terminal-button-component>
+              :terminal-path="model.terminal_path"/>
 
             <rollback-component v-if="canRetry && canCreateDeployment"
               :is-last-deployment="isLastDeployment"
-              :retry-url="retryUrl">
-              </rollback-component>
+              :retry-url="retryUrl"/>
           </div>
         </div>
       </td>
