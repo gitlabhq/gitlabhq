@@ -18,6 +18,10 @@ module Files
     def validate
       super
 
+      if @file_content.nil?
+        raise_error("You must provide content.")
+      end
+
       if file_has_changed?
         raise FileChangedError.new("You are attempting to update a file that has changed since you started editing it.")
       end

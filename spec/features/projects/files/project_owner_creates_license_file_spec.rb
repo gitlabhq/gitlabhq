@@ -6,7 +6,7 @@ feature 'project owner creates a license file', feature: true, js: true do
   let(:project_master) { create(:user) }
   let(:project) { create(:project) }
   background do
-    project.repository.remove_file(project_master, 'LICENSE',
+    project.repository.delete_file(project_master, 'LICENSE',
       message: 'Remove LICENSE', branch_name: 'master')
     project.team << [project_master, :master]
     login_as(project_master)

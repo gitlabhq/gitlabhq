@@ -837,57 +837,6 @@ module Gitlab
         rugged.config['core.autocrlf'] = AUTOCRLF_VALUES.invert[value]
       end
 
-      # Create a new directory with a .gitkeep file. Creates
-      # all required nested directories (i.e. mkdir -p behavior)
-      #
-      # options should contain next structure:
-      #   author: {
-      #     email: 'user@example.com',
-      #     name: 'Test User',
-      #     time: Time.now
-      #   },
-      #   committer: {
-      #     email: 'user@example.com',
-      #     name: 'Test User',
-      #     time: Time.now
-      #   },
-      #   commit: {
-      #     message: 'Wow such commit',
-      #     branch: 'master',
-      #     update_ref: false
-      #   }
-      def mkdir(path, options = {})
-        # Check if this directory exists; if it does, then don't bother
-        # adding .gitkeep file.
-        ref = options[:commit][:branch]
-        path = Gitlab::Git::PathHelper.normalize_path(path).to_s
-        rugged_ref = rugged.ref(ref)
-
-        raise InvalidRef.new("Invalid ref") if rugged_ref.nil?
-
-        target_commit = rugged_ref.target
-
-        raise InvalidRef.new("Invalid target commit") if target_commit.nil?
-
-        entry = tree_entry(target_commit, path)
-
-        if entry
-          if entry[:type] == :blob
-            raise InvalidBlobName.new("Directory already exists as a file")
-          else
-            raise InvalidBlobName.new("Directory already exists")
-          end
-        end
-
-        options[:file] = {
-          content: '',
-          path: "#{path}/.gitkeep",
-          update: true
-        }
-
-        Gitlab::Git::Blob.commit(self, options)
-      end
-
       # Returns result like "git ls-files" , recursive and full file path
       #
       # Ex.
