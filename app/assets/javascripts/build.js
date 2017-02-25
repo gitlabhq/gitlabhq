@@ -86,7 +86,7 @@
           if (window.location.hash === DOWN_BUILD_TRACE) {
             $("html,body").scrollTop(this.$buildTrace.height());
           }
-          if (removeRefreshStatuses.indexOf(buildData.status) >= 0) {
+          if (removeRefreshStatuses.indexOf(buildData.status) !== -1) {
             this.$buildRefreshAnimation.remove();
             return this.initScrollMonitor();
           }
