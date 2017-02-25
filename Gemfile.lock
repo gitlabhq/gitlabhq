@@ -1,3 +1,11 @@
+GIT
+  remote: https://github.com/prometheus/client_ruby.git
+  revision: 30dc5987c6bf574044d75d97362bd3bd27d542f2
+  branch: exchangeable-value-types
+  specs:
+    prometheus-client (0.7.0.beta1)
+      quantile (~> 0.2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -570,6 +578,7 @@ GEM
     pry-rails (0.3.5)
       pry (>= 0.9.10)
     pyu-ruby-sasl (0.0.3.3)
+    quantile (0.2.0)
     rack (1.6.5)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -995,6 +1004,7 @@ DEPENDENCIES
   pg (~> 0.18.2)
   poltergeist (~> 1.9.0)
   premailer-rails (~> 1.9.0)
+  prometheus-client!
   pry-byebug (~> 3.4.1)
   pry-rails (~> 0.3.4)
   rack-attack (~> 4.4.1)
