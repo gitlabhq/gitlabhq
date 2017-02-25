@@ -82,8 +82,8 @@ module API
       label || not_found!('Label')
     end
 
-    def find_project_issue(id)
-      IssuesFinder.new(current_user, project_id: user_project.id).find(id)
+    def find_project_issue(iid)
+      IssuesFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
 
     def find_project_merge_request(id)

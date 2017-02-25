@@ -5,6 +5,8 @@ module API
     version %w(v3 v4), using: :path
 
     version 'v3', using: :path do
+      helpers ::API::V3::Helpers
+
       mount ::API::V3::AwardEmoji
       mount ::API::V3::Boards
       mount ::API::V3::Branches
