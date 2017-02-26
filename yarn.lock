@@ -4410,9 +4410,9 @@ vue-resource@^0.9.3:
   version "0.9.3"
   resolved "https://registry.yarnpkg.com/vue-resource/-/vue-resource-0.9.3.tgz#ab46e1c44ea219142dcc28ae4043b3b04c80959d"
 
-vue@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/vue/-/vue-2.0.3.tgz#3f7698f83d6ad1f0e35955447901672876c63fde"
+vue@^2.1.10:
+  version "2.1.10"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.1.10.tgz#c9235ca48c7925137be5807832ac4e3ac180427b"
 
 watchpack@^1.2.0:
   version "1.2.1"
