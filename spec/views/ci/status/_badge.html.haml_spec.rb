@@ -6,26 +6,29 @@ describe 'ci/status/_badge', :view do
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   context 'when rendering status for build' do
-    let(:resource) { create(:ci_build, :success, pipeline: pipeline) }
-
-    let(:details_path) do
-      namespace_project_build_path(resource.project.namespace,
-                                   resource.project,
-                                   resource)
+    let(:build) do
+      create(:ci_build, :success, pipeline: pipeline)
     end
 
     context 'when status has details' do
       before do
-        user_with_role(:developer) { render_status }
+        project.add_developer(user)
       end
 
       it 'has link to build details page' do
+        details_path =  namespace_project_build_path(
+          project.namespace, project, build)
+
+        render_status(build)
+
         expect(rendered).to have_link 'passed', href: details_path
       end
     end
 
     context 'when status does not have details' do
-      before { render_status }
+      before do
+        render_status(build)
+      end
 
       it 'contains build status text' do
         expect(rendered).to have_content 'passed'
@@ -39,11 +42,13 @@ describe 'ci/status/_badge', :view do
 
   context 'when rendering status for external job' do
     before do
-      user_with_role(:developer) { render_status }
+      project.add_developer(use)
+
+      render_status(external_job)
     end
 
     context 'status has external target url' do
-      let(:resource) do
+      let(:external_job) do
         create(:generic_commit_status, status: :running,
                                        pipeline: pipeline,
                                        target_url: 'http://gitlab.com')
@@ -59,7 +64,7 @@ describe 'ci/status/_badge', :view do
     end
 
     context 'status do not have external target url' do
-      let(:resource) do
+      let(:external_job) do
         create(:generic_commit_status, status: :canceled)
       end
 
@@ -73,13 +78,7 @@ describe 'ci/status/_badge', :view do
     end
   end
 
-  def render_status
+  def render_status(resource)
     render 'ci/status/badge', status: resource.detailed_status(user)
-  end
-
-  def user_with_role(role)
-    project.team << [user, role]
-
-    yield if block_given?
   end
 end
