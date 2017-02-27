@@ -8,10 +8,10 @@ module RuboCop
       class AddColumn < RuboCop::Cop::Cop
         include MigrationHelpers
 
-        WHITELISTED_TABLES = [:application_settings]
+        WHITELISTED_TABLES = [:application_settings].freeze
 
         MSG = '`add_column` with a default value requires downtime, ' \
-          'use `add_column_with_default` instead'
+          'use `add_column_with_default` instead'.freeze
 
         def on_send(node)
           return unless in_migration?(node)

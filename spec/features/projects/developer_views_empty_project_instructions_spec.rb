@@ -56,8 +56,14 @@ feature 'Developer views empty project instructions', feature: true do
   end
 
   def expect_instructions_for(protocol)
-    msg = :"#{protocol.downcase}_url_to_repo"
+    url = 
+      case protocol
+      when 'ssh'
+        project.ssh_url_to_repo
+      when 'http'
+        project.http_url_to_repo(developer)
+      end
 
-    expect(page).to have_content("git clone #{project.send(msg)}")
+    expect(page).to have_content("git clone #{url}")
   end
 end

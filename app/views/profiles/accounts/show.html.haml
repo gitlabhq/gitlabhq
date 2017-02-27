@@ -115,7 +115,7 @@
       %h4.prepend-top-0.danger-title
         Remove account
     .col-lg-9
-      - if @user.can_be_removed?
+      - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
         %p
           Deleting an account has the following effects:
         %ul
@@ -131,4 +131,7 @@
             %strong= @user.solo_owned_groups.map(&:name).join(', ')
           %p
             You must transfer ownership or delete these groups before you can delete your account.
+        - else
+          %p
+            You don't have access to delete this user.
 .append-bottom-default

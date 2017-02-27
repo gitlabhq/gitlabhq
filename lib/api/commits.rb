@@ -52,13 +52,6 @@ module API
 
         attrs = declared_params.merge(start_branch: declared_params[:branch], target_branch: declared_params[:branch])
 
-        attrs[:actions].map! do |action|
-          action[:action] = action[:action].to_sym
-          action[:file_path].slice!(0) if action[:file_path] && action[:file_path].start_with?('/')
-          action[:previous_path].slice!(0) if action[:previous_path] && action[:previous_path].start_with?('/')
-          action
-        end
-
         result = ::Files::MultiService.new(user_project, current_user, attrs).execute
 
         if result[:status] == :success
@@ -157,7 +150,7 @@ module API
         optional :path, type: String, desc: 'The file path'
         given :path do
           requires :line, type: Integer, desc: 'The line number'
-          requires :line_type, type: String, values: ['new', 'old'], default: 'new', desc: 'The type of the line'
+          requires :line_type, type: String, values: %w(new old), default: 'new', desc: 'The type of the line'
         end
       end
       post ':id/repository/commits/:sha/comments' do

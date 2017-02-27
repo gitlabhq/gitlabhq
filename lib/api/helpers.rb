@@ -3,7 +3,7 @@ module API
     include Gitlab::Utils
     include Helpers::Pagination
 
-    SUDO_HEADER = "HTTP_SUDO"
+    SUDO_HEADER = "HTTP_SUDO".freeze
     SUDO_PARAM = :sudo
 
     def declared_params(options = {})
@@ -207,6 +207,10 @@ module API
 
     def no_content!
       render_api_error!('204 No Content', 204)
+    end
+
+    def accepted!
+      render_api_error!('202 Accepted', 202)
     end
 
     def render_validation_error!(model)

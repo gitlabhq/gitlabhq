@@ -24,7 +24,7 @@ feature 'project owner sees a link to create a license file in empty project', f
     select_template('MIT License')
 
     file_content = first('.file-editor')
-    expect(file_content).to have_content('The MIT License (MIT)')
+    expect(file_content).to have_content('MIT License')
     expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
 
     fill_in :commit_message, with: 'Add a LICENSE file', visible: true
@@ -34,7 +34,7 @@ feature 'project owner sees a link to create a license file in empty project', f
 
     expect(current_path).to eq(
       namespace_project_blob_path(project.namespace, project, 'master/LICENSE'))
-    expect(page).to have_content('The MIT License (MIT)')
+    expect(page).to have_content('MIT License')
     expect(page).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
   end
 

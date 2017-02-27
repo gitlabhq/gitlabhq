@@ -55,7 +55,6 @@ module API
           authorize_admin_source!(source_type, source)
 
           member = source.members.find_by(user_id: params[:user_id])
-
           conflict!('Member already exists') if member
 
           member = source.add_user(params[:user_id], params[:access_level], current_user: current_user, expires_at: params[:expires_at])
@@ -63,9 +62,6 @@ module API
           if member.persisted? && member.valid?
             present member.user, with: Entities::Member, member: member
           else
-            # This is to ensure back-compatibility but 400 behavior should be used
-            # for all validation errors in 9.0!
-            render_api_error!('Access level is not known', 422) if member.errors.key?(:access_level)
             render_validation_error!(member)
           end
         end
@@ -79,18 +75,14 @@ module API
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
         end
         put ":id/members/:user_id" do
-          source = find_source(source_type, params[:id])
+          source = find_source(source_type, params.delete(:id))
           authorize_admin_source!(source_type, source)
 
-          member = source.members.find_by!(user_id: params[:user_id])
-          attrs = attributes_for_keys [:access_level, :expires_at]
+          member = source.members.find_by!(user_id: params.delete(:user_id))
 
-          if member.update_attributes(attrs)
+          if member.update_attributes(declared_params(include_missing: false))
             present member.user, with: Entities::Member, member: member
           else
-            # This is to ensure back-compatibility but 400 behavior should be used
-            # for all validation errors in 9.0!
-            render_api_error!('Access level is not known', 422) if member.errors.key?(:access_level)
             render_validation_error!(member)
           end
         end

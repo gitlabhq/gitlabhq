@@ -228,7 +228,7 @@ from it. If the user is not subscribed to the label, the
 status code `304` is returned.
 
 ```
-DELETE /projects/:id/labels/:label_id/unsubscribe
+POST /projects/:id/labels/:label_id/unsubscribe
 ```
 
 | Attribute  | Type              | Required | Description                          |

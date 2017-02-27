@@ -143,7 +143,7 @@ describe TeamcityService, models: true, caching: true do
       end
 
       it 'returns a build URL when teamcity_url has no trailing slash' do
-        stub_request(body: %Q({"build":{"id":"666"}}))
+        stub_request(body: %q({"build":{"id":"666"}}))
 
         is_expected.to eq('http://gitlab.com/teamcity/viewLog.html?buildId=666&buildTypeId=foo')
       end
@@ -152,7 +152,7 @@ describe TeamcityService, models: true, caching: true do
         let(:teamcity_url) { 'http://gitlab.com/teamcity/' }
 
         it 'returns a build URL' do
-          stub_request(body: %Q({"build":{"id":"666"}}))
+          stub_request(body: %q({"build":{"id":"666"}}))
 
           is_expected.to eq('http://gitlab.com/teamcity/viewLog.html?buildId=666&buildTypeId=foo')
         end

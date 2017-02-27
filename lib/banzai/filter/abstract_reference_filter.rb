@@ -160,11 +160,12 @@ module Banzai
 
             data = data_attributes_for(link_content || match, project, object, link: !!link_content)
 
-            if matches.names.include?("url") && matches[:url]
-              url = matches[:url]
-            else
-              url = url_for_object_cached(object, project)
-            end
+            url =
+              if matches.names.include?("url") && matches[:url]
+                matches[:url]
+              else
+                url_for_object_cached(object, project)
+              end
 
             content = link_content || object_link_text(object, matches)
 

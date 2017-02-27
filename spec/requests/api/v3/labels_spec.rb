@@ -21,11 +21,11 @@ describe API::V3::Labels, api: true  do
       create(:labeled_issue, project: project, labels: [label1], author: user, state: :closed)
       create(:labeled_merge_request, labels: [priority_label], author: user, source_project: project )
 
-      expected_keys = [
-        'id', 'name', 'color', 'description',
-        'open_issues_count', 'closed_issues_count', 'open_merge_requests_count',
-        'subscribed', 'priority'
-      ]
+      expected_keys = %w(
+        id name color description
+        open_issues_count closed_issues_count open_merge_requests_count
+        subscribed priority
+      )
 
       get v3_api("/projects/#{project.id}/labels", user)
 

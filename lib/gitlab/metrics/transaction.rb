@@ -5,7 +5,7 @@ module Gitlab
       THREAD_KEY = :_gitlab_metrics_transaction
 
       # The series to store events (e.g. Git pushes) in.
-      EVENT_SERIES = 'events'
+      EVENT_SERIES = 'events'.freeze
 
       attr_reader :tags, :values, :method, :metrics
 

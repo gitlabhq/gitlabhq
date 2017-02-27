@@ -181,7 +181,7 @@ class ApplicationController < ActionController::Base
   end
 
   def gitlab_ldap_access(&block)
-    Gitlab::LDAP::Access.open { |access| block.call(access) }
+    Gitlab::LDAP::Access.open { |access| yield(access) }
   end
 
   # JSON for infinite scroll via Pager object

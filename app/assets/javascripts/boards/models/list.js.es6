@@ -123,12 +123,16 @@ class List {
 
       if (listFrom) {
         this.issuesSize += 1;
-        gl.boardService.moveIssue(issue.id, listFrom.id, this.id)
-          .then(() => {
-            listFrom.getIssues(false);
-          });
+        this.updateIssueLabel(issue, listFrom);
       }
     }
+  }
+
+  updateIssueLabel(issue, listFrom) {
+    gl.boardService.moveIssue(issue.id, listFrom.id, this.id)
+      .then(() => {
+        listFrom.getIssues(false);
+      });
   }
 
   findIssue (id) {

@@ -5,7 +5,7 @@ class ProjectWiki
     'Markdown' => :markdown,
     'RDoc'     => :rdoc,
     'AsciiDoc' => :asciidoc
-  } unless defined?(MARKUPS)
+  }.freeze unless defined?(MARKUPS)
 
   class CouldNotCreateWikiError < StandardError; end
 
@@ -18,6 +18,9 @@ class ProjectWiki
     @project = project
     @user = user
   end
+
+  delegate :empty?, to: :pages
+  delegate :repository_storage_path, to: :project
 
   def path
     @project.path + '.wiki'
@@ -58,10 +61,6 @@ class ProjectWiki
 
   def repository_exists?
     !!repository.exists?
-  end
-
-  def empty?
-    pages.empty?
   end
 
   # Returns an Array of Gitlab WikiPage instances or an
@@ -158,10 +157,6 @@ class ProjectWiki
       path_with_namespace: path_with_namespace,
       default_branch: default_branch
     }
-  end
-
-  def repository_storage_path
-    project.repository_storage_path
   end
 
   private

@@ -199,7 +199,9 @@ describe Gitlab::GitAccess, lib: true do
 
     def stub_git_hooks
       # Running the `pre-receive` hook is expensive, and not necessary for this test.
-      allow_any_instance_of(GitHooksService).to receive(:execute).and_yield
+      allow_any_instance_of(GitHooksService).to receive(:execute) do |service, &block|
+        block.call(service)
+      end
     end
 
     def merge_into_protected_branch
@@ -207,13 +209,12 @@ describe Gitlab::GitAccess, lib: true do
         stub_git_hooks
         project.repository.add_branch(user, unprotected_branch, 'feature')
         target_branch = project.repository.lookup('feature')
-        source_branch = project.repository.commit_file(
+        source_branch = project.repository.create_file(
           user,
           FFaker::InternetSE.login_user_name,
           FFaker::HipsterIpsum.paragraph,
           message: FFaker::HipsterIpsum.sentence,
-          branch_name: unprotected_branch,
-          update: false)
+          branch_name: unprotected_branch)
         rugged = project.repository.rugged
         author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
 
@@ -232,11 +233,18 @@ describe Gitlab::GitAccess, lib: true do
             else
               project.team << [user, role]
             end
+          end
 
-            permissions_matrix[role].each do |action, allowed|
-              context action do
-                subject { access.send(:check_push_access!, changes[action]) }
-                it { expect(subject.allowed?).to allowed ? be_truthy : be_falsey }
+          permissions_matrix[role].each do |action, allowed|
+            context action do
+              subject { access.send(:check_push_access!, changes[action]) }
+
+              it do
+                if allowed
+                  expect { subject }.not_to raise_error
+                else
+                  expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError)
+                end
               end
             end
           end
@@ -301,7 +309,7 @@ describe Gitlab::GitAccess, lib: true do
       }
     }
 
-    [['feature', 'exact'], ['feat*', 'wildcard']].each do |protected_branch_name, protected_branch_type|
+    [%w(feature exact), ['feat*', 'wildcard']].each do |protected_branch_name, protected_branch_type|
       context do
         before { create(:protected_branch, name: protected_branch_name, project: project) }
 

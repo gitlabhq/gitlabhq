@@ -22,16 +22,16 @@ describe Gitlab::ImportSources do
   describe '.values' do
     it 'returns an array' do
       expected =
-        [
-          'github',
-          'bitbucket',
-          'gitlab',
-          'google_code',
-          'fogbugz',
-          'git',
-          'gitlab_project',
-          'gitea'
-        ]
+        %w(
+          github
+          bitbucket
+          gitlab
+          google_code
+          fogbugz
+          git
+          gitlab_project
+          gitea
+        )
 
       expect(described_class.values).to eq(expected)
     end
@@ -40,15 +40,15 @@ describe Gitlab::ImportSources do
   describe '.importer_names' do
     it 'returns an array of importer names' do
       expected =
-        [
-          'github',
-          'bitbucket',
-          'gitlab',
-          'google_code',
-          'fogbugz',
-          'gitlab_project',
-          'gitea'
-        ]
+        %w(
+          github
+          bitbucket
+          gitlab
+          google_code
+          fogbugz
+          gitlab_project
+          gitea
+        )
 
       expect(described_class.importer_names).to eq(expected)
     end

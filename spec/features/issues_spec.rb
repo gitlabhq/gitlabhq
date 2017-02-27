@@ -150,7 +150,7 @@ describe 'Issues', feature: true do
 
   describe 'Filter issue' do
     before do
-      ['foobar', 'barbaz', 'gitlab'].each do |title|
+      %w(foobar barbaz gitlab).each do |title|
         create(:issue,
                author: @user,
                assignee: @user,

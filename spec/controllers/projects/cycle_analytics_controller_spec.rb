@@ -13,8 +13,8 @@ describe Projects::CycleAnalyticsController do
     context 'with no data' do
       it 'is true' do
         get(:show,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param)
+            namespace_id: project.namespace,
+            project_id: project)
 
         expect(response).to be_success
         expect(assigns(:cycle_analytics_no_data)).to eq(true)
@@ -32,8 +32,8 @@ describe Projects::CycleAnalyticsController do
 
       it 'is false' do
         get(:show,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param)
+            namespace_id: project.namespace,
+            project_id: project)
 
         expect(response).to be_success
         expect(assigns(:cycle_analytics_no_data)).to eq(false)

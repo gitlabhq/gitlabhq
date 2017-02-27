@@ -7,9 +7,7 @@ module Gitlab
         raise NotImplementedError
       end
 
-      def number
-        raw_data.number
-      end
+      delegate :number, to: :raw_data
 
       def find_condition
         { iid: number }

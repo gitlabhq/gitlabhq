@@ -121,7 +121,7 @@ describe API::Projects, api: true  do
 
       context 'and with simple=true' do
         it 'returns a simplified version of all the projects' do
-          expected_keys = ["id", "http_url_to_repo", "web_url", "name", "name_with_namespace", "path", "path_with_namespace"]
+          expected_keys = %w(id http_url_to_repo web_url name name_with_namespace path path_with_namespace)
 
           get api('/projects?simple=true', user)
 
@@ -1263,7 +1263,9 @@ describe API::Projects, api: true  do
     context 'when authenticated as user' do
       it 'removes project' do
         delete api("/projects/#{project.id}", user)
-        expect(response).to have_http_status(200)
+
+        expect(response).to have_http_status(202)
+        expect(json_response['message']).to eql('202 Accepted')
       end
 
       it 'does not remove a project if not an owner' do
@@ -1287,7 +1289,9 @@ describe API::Projects, api: true  do
     context 'when authenticated as admin' do
       it 'removes any existing project' do
         delete api("/projects/#{project.id}", admin)
-        expect(response).to have_http_status(200)
+
+        expect(response).to have_http_status(202)
+        expect(json_response['message']).to eql('202 Accepted')
       end
 
       it 'does not remove a non existing project' do

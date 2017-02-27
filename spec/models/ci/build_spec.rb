@@ -162,8 +162,14 @@ describe Ci::Build, :models do
       is_expected.to be_nil
     end
 
-    it 'when resseting value' do
+    it 'when resetting value' do
       build.artifacts_expire_in = nil
+
+      is_expected.to be_nil
+    end
+
+    it 'when setting to 0' do
+      build.artifacts_expire_in = '0'
 
       is_expected.to be_nil
     end
@@ -1239,8 +1245,8 @@ describe Ci::Build, :models do
         { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
         { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true },
         { key: 'CI_PROJECT_NAME', value: project.path, public: true },
-        { key: 'CI_PROJECT_PATH', value: project.path_with_namespace, public: true },
-        { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.path, public: true },
+        { key: 'CI_PROJECT_PATH', value: project.full_path, public: true },
+        { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true }
       ]
@@ -1262,8 +1268,8 @@ describe Ci::Build, :models do
 
     context 'when build has user' do
       let(:user_variables) do
-        [ { key: 'GITLAB_USER_ID',    value: user.id.to_s, public: true },
-          { key: 'GITLAB_USER_EMAIL', value: user.email,   public: true } ]
+        [{ key: 'GITLAB_USER_ID',    value: user.id.to_s, public: true },
+         { key: 'GITLAB_USER_EMAIL', value: user.email,   public: true }]
       end
 
       before do
@@ -1420,7 +1426,7 @@ describe Ci::Build, :models do
     end
 
     context 'when runner is assigned to build' do
-      let(:runner) { create(:ci_runner, description: 'description', tag_list: ['docker', 'linux']) }
+      let(:runner) { create(:ci_runner, description: 'description', tag_list: %w(docker linux)) }
 
       before do
         build.update(runner: runner)

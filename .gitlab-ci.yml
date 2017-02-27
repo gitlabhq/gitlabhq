@@ -240,6 +240,25 @@ rake db:seed_fu:
     paths:
       - log/development.log
 
+rake gitlab:assets:compile:
+  stage: test
+  <<: *dedicated-runner
+  dependencies: []
+  variables:
+    NODE_ENV: "production"
+    RAILS_ENV: "production"
+    SETUP_DB: "false"
+    USE_DB: "false"
+    SKIP_STORAGE_VALIDATION: "true"
+    WEBPACK_REPORT: "true"
+  script:
+    - bundle exec rake yarn:install gitlab:assets:compile
+  artifacts:
+    name: webpack-report
+    expire_in: 31d
+    paths:
+    - webpack-report/
+
 rake karma:
   cache:
     paths:
@@ -388,6 +407,7 @@ pages:
   dependencies:
     - coverage
     - rake karma
+    - rake gitlab:assets:compile
     - lint:javascript:report
   script:
     - mv public/ .public/
@@ -395,6 +415,7 @@ pages:
     - mv coverage/ public/coverage-ruby/ || true
     - mv coverage-javascript/ public/coverage-javascript/ || true
     - mv eslint-report.html public/ || true
+    - mv webpack-report/ public/webpack-report/ || true
   artifacts:
     paths:
       - public

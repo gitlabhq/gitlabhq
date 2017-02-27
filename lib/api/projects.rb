@@ -19,7 +19,8 @@ module API
         optional :visibility_level, type: Integer, values: [
           Gitlab::VisibilityLevel::PRIVATE,
           Gitlab::VisibilityLevel::INTERNAL,
-          Gitlab::VisibilityLevel::PUBLIC ], desc: 'Create a public project. The same as visibility_level = 20.'
+          Gitlab::VisibilityLevel::PUBLIC
+        ], desc: 'Create a public project. The same as visibility_level = 20.'
         optional :public_builds, type: Boolean, desc: 'Perform public builds'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
         optional :only_allow_merge_if_build_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
@@ -281,6 +282,8 @@ module API
       delete ":id" do
         authorize! :remove_project, user_project
         ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
+
+        accepted!
       end
 
       desc 'Mark this project as forked from another'

@@ -29,6 +29,40 @@ describe ApplicationSetting, models: true do
       it { is_expected.not_to allow_value(['test']).for(:disabled_oauth_sign_in_sources) }
     end
 
+    describe 'default_artifacts_expire_in' do
+      it 'sets an error if it cannot parse' do
+        setting.update(default_artifacts_expire_in: 'a')
+
+        expect_invalid
+      end
+
+      it 'sets an error if it is blank' do
+        setting.update(default_artifacts_expire_in: ' ')
+
+        expect_invalid
+      end
+
+      it 'sets the value if it is valid' do
+        setting.update(default_artifacts_expire_in: '30 days')
+
+        expect(setting).to be_valid
+        expect(setting.default_artifacts_expire_in).to eq('30 days')
+      end
+
+      it 'sets the value if it is 0' do
+        setting.update(default_artifacts_expire_in: '0')
+
+        expect(setting).to be_valid
+        expect(setting.default_artifacts_expire_in).to eq('0')
+      end
+
+      def expect_invalid
+        expect(setting).to be_invalid
+        expect(setting.errors.messages)
+          .to have_key(:default_artifacts_expire_in)
+      end
+    end
+
     it { is_expected.to validate_presence_of(:max_attachment_size) }
 
     it do
@@ -62,9 +96,9 @@ describe ApplicationSetting, models: true do
 
       describe 'inclusion' do
         it { is_expected.to allow_value('custom1').for(:repository_storages) }
-        it { is_expected.to allow_value(['custom2', 'custom3']).for(:repository_storages) }
+        it { is_expected.to allow_value(%w(custom2 custom3)).for(:repository_storages) }
         it { is_expected.not_to allow_value('alternative').for(:repository_storages) }
-        it { is_expected.not_to allow_value(['alternative', 'custom1']).for(:repository_storages) }
+        it { is_expected.not_to allow_value(%w(alternative custom1)).for(:repository_storages) }
       end
 
       describe 'presence' do
@@ -83,7 +117,7 @@ describe ApplicationSetting, models: true do
 
         describe '#repository_storage' do
           it 'returns the first storage' do
-            setting.repository_storages = ['good', 'bad']
+            setting.repository_storages = %w(good bad)
 
             expect(setting.repository_storage).to eq('good')
           end
