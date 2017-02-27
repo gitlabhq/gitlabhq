@@ -18,6 +18,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Reduce queries needed to check if node is a primary or secondary Geo node.
 - Allow squashing merge requests into a single commit.
 
+## 8.16.7 (2017-02-27)
+
+- Fixed merge request state not updating when approvals feature is active.
+
 ## 8.16.6 (2017-02-17)
 
 - Geo: send the new event type with the backfill function. !1157
