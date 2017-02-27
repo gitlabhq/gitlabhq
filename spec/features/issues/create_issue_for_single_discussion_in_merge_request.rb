@@ -42,14 +42,14 @@ feature 'Resolve an open discussion in a merge request by creating an issue', fe
   end
 
   it 'has a link to create a new issue for a discussion' do
-    new_issue_link = new_namespace_project_issue_path(project.namespace, project, discussion_to_resolve: discussion.id)
+    new_issue_link = new_namespace_project_issue_path(project.namespace, project, discussion_to_resolve: discussion.id, merge_request_for_resolving_discussions: merge_request.iid)
 
     expect(page).to have_link 'Resolve this discussion in a new issue', href: new_issue_link
   end
 
   context 'creating the issue' do
     before do
-      click_link 'Resolve this discussion in a new issue', href: new_namespace_project_issue_path(project.namespace, project, discussion_to_resolve: discussion.id)
+      click_link 'Resolve this discussion in a new issue', href: new_namespace_project_issue_path(project.namespace, project, discussion_to_resolve: discussion.id, merge_request_for_resolving_discussions: merge_request.iid)
     end
 
     it 'has a hidden field for the discussion' do

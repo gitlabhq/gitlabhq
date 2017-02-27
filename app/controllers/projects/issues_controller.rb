@@ -66,11 +66,14 @@ class Projects::IssuesController < Projects::ApplicationController
     )
 
     build_params = issue_params.merge(
-      merge_request_for_resolving_discussions: merge_request_for_resolving_discussions,
-      discussion_to_resolve: discussion_to_resolve
+      merge_request_for_resolving_discussions: params[:merge_request_for_resolving_discussions],
+      discussion_to_resolve: params[:discussion_to_resolve]
     )
+    service = Issues::BuildService.new(project, current_user, build_params)
+    @merge_request_for_resolving_discussions = service.merge_request_for_resolving_discussions
+    @discussion_to_resolve = service.discussions_to_resolve.first if params[:discussion_to_resolve]
 
-    @issue = @noteable = Issues::BuildService.new(project, current_user, build_params).execute
+    @issue = @noteable = service.execute
 
     respond_with(@issue)
   end
@@ -99,12 +102,11 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create
-    create_params = issue_params.
-                      merge(
-                        merge_request_for_resolving_discussions: merge_request_for_resolving_discussions,
-                        discussion_to_resolve: discussion_to_resolve
-                      ).
-                      merge(spammable_params)
+    create_params = issue_params.merge(spammable_params).merge(
+      merge_request_for_resolving_discussions: params[:merge_request_for_resolving_discussions],
+      discussion_to_resolve: params[:discussion_to_resolve]
+    )
+
     @issue = Issues::CreateService.new(project, current_user, create_params).execute
 
     respond_to do |format|
@@ -192,21 +194,6 @@ class Projects::IssuesController < Projects::ApplicationController
   alias_method :awardable, :issue
   alias_method :spammable, :issue
 
-  def merge_request_for_resolving_discussions
-    return unless merge_request_iid = params[:merge_request_for_resolving_discussions]
-
-    @merge_request_for_resolving_discussions ||= MergeRequestsFinder.new(current_user, project_id: project.id).
-                                                   execute.
-                                                   find_by(iid: merge_request_iid)
-  end
-
-  def discussion_to_resolve
-    return unless discussion_id = params[:discussion_to_resolve]
-
-    @discussion_to_resolve ||= NotesFinder.new(project, current_user, discussion_id: discussion_id).
-                                 first_discussion
-  end
-
   def authorize_read_issue!
     return render_404 unless can?(current_user, :read_issue, @issue)
   end
@@ -253,6 +240,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def issue_params
     params.require(:issue).permit(
       :title, :assignee_id, :position, :description, :confidential,
+      :discussion_to_resolve, :merge_request_for_resolving_discussions,
       :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: []
     )
   end

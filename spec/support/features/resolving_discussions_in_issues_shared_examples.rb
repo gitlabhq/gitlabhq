@@ -22,4 +22,10 @@ shared_examples 'creating an issue for a discussion' do
 
     expect(discussion.resolved?).to eq(true)
   end
+
+  it 'has a hidden field for the merge request' do
+    merge_request_field = find('#merge_request_for_resolving_discussions', visible: false)
+
+    expect(merge_request_field.value).to eq(merge_request.iid.to_s)
+  end
 end

@@ -6,8 +6,8 @@ module Issues
       filter_spam_check_params
 
       issue_attributes = params.merge(
-        merge_request_for_resolving_discussions: merge_request_for_resolving_discussions,
-        discussion_to_resolve: discussion_to_resolve
+        merge_request_for_resolving_discussions: merge_request_for_resolving_discussions_iid,
+        discussion_to_resolve: discussion_to_resolve_id
       )
 
       @issue = BuildService.new(project, current_user, issue_attributes).execute

@@ -1,12 +1,11 @@
 module Issues
   class BaseService < ::IssuableBaseService
-    attr_reader :merge_request_for_resolving_discussions, :discussion_to_resolve
-
+    attr_reader :merge_request_for_resolving_discussions_iid, :discussion_to_resolve_id
     def initialize(*args)
       super
 
-      @merge_request_for_resolving_discussions ||= params.delete(:merge_request_for_resolving_discussions)
-      @discussion_to_resolve ||= params.delete(:discussion_to_resolve)
+      @merge_request_for_resolving_discussions_iid ||= params.delete(:merge_request_for_resolving_discussions)
+      @discussion_to_resolve_id ||= params.delete(:discussion_to_resolve)
     end
 
     def hook_data(issue, action)
@@ -17,25 +16,22 @@ module Issues
     end
 
     def merge_request_for_resolving_discussions
-      @merge_request_for_resolving_discussions ||= discussion_to_resolve.try(:noteable)
-    end
-
-    def for_all_discussions_in_a_merge_request?
-      discussion_to_resolve.nil? && merge_request_for_resolving_discussions
-    end
-
-    def for_single_discussion?
-      discussion_to_resolve && discussion_to_resolve.noteable == merge_request_for_resolving_discussions
+      @merge_request_for_resolving_discussions ||= MergeRequestsFinder.new(current_user, project_id: project.id).
+                                                     execute.
+                                                     find_by(iid: merge_request_for_resolving_discussions_iid)
     end
 
     def discussions_to_resolve
-      @discussions_to_resolve ||= if for_all_discussions_in_a_merge_request?
-                                    merge_request_for_resolving_discussions.resolvable_discussions
-                                  elsif for_single_discussion?
-                                    Array(discussion_to_resolve)
-                                  else
-                                    []
-                                  end
+      return [] unless merge_request_for_resolving_discussions
+
+      @discussions_to_resolve ||= NotesFinder.new(project, current_user, {
+                                                    discussion_id: discussion_to_resolve_id,
+                                                    target_type: MergeRequest.name.underscore,
+                                                    target_id: merge_request_for_resolving_discussions.id
+                                                  }).
+                                    execute.
+                                    discussions.
+                                    select(&:to_be_resolved?)
     end
 
     private

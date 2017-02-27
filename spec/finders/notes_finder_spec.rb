@@ -157,28 +157,6 @@ describe NotesFinder do
     end
   end
 
-  describe "#first_discussion" do
-    let!(:discussion_note) { create(:note_on_merge_request, project: project) }
-
-    it 'returns a discussion' do
-      discussion = described_class.new(project, user, discussion_id: discussion_note.discussion_id).first_discussion
-
-      expect(discussion).is_a? Discussion
-    end
-
-    it 'includes the notes in the discussion' do
-      discussion = described_class.new(project, user, discussion_id: discussion_note.discussion_id).first_discussion
-
-      expect(discussion.notes).to include(discussion_note)
-    end
-
-    it 'returns nil when no notes are found' do
-      discussion = described_class.new(project, user, discussion_id: 'non-existant').first_discussion
-
-      expect(discussion).to be(nil)
-    end
-  end
-
   describe '.search' do
     let(:project) { create(:empty_project, :public) }
     let(:note) { create(:note_on_issue, note: 'WoW', project: project) }

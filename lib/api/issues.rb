@@ -119,7 +119,7 @@ module API
         optional :merge_request_for_resolving_discussions, type: Integer,
                                                            desc: 'The IID of a merge request for which to resolve discussions'
         optional :discussion_to_resolve, type: String,
-                                         desc: 'The ID of a discussion to resolve'
+                                         desc: 'The ID of a discussion to resolve, also pass `merge_request_for_resolving_discussions`'
         use :issue_params
       end
       post ':id/issues' do
@@ -129,17 +129,6 @@ module API
         end
 
         issue_params = declared_params(include_missing: false)
-
-        if merge_request_iid = params[:merge_request_for_resolving_discussions]
-          issue_params[:merge_request_for_resolving_discussions] = MergeRequestsFinder.new(current_user, project_id: user_project.id).
-            execute.
-            find_by(iid: merge_request_iid)
-        end
-
-        if discussion_id = params[:discussion_to_resolve]
-          issue_params[:discussion_to_resolve] = NotesFinder.new(user_project, current_user, discussion_id: discussion_id).
-                                                   first_discussion
-        end
 
         issue = ::Issues::CreateService.new(user_project,
                                             current_user,

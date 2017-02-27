@@ -951,6 +951,7 @@ describe API::Issues, api: true  do
         before do
           post api("/projects/#{project.id}/issues", user),
                title: 'New Issue',
+               merge_request_for_resolving_discussions: merge_request.iid,
                discussion_to_resolve: discussion.id
         end
 

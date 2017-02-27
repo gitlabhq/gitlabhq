@@ -113,7 +113,7 @@ describe Projects::IssuesController do
       it 'fills in an issue for a discussion' do
         note = create(:note_on_merge_request, project: project)
 
-        get :new, namespace_id: project.namespace.path, project_id: project, discussion_to_resolve: note.discussion_id
+        get :new, namespace_id: project.namespace.path, project_id: project, merge_request_for_resolving_discussions: note.noteable.iid, discussion_to_resolve: note.discussion_id
 
         expect(assigns(:issue).title).not_to be_empty
         expect(assigns(:issue).description).not_to be_empty
@@ -474,8 +474,8 @@ describe Projects::IssuesController do
         { merge_request_for_resolving_discussions: merge_request.iid }
       end
 
-      def post_issue(issue_params)
-        post :create, namespace_id: project.namespace.to_param, project_id: project, issue: issue_params, merge_request_for_resolving_discussions: merge_request.iid
+      def post_issue(issue_params, other_params: {})
+        post :create, { namespace_id: project.namespace.to_param, project_id: project, issue: issue_params, merge_request_for_resolving_discussions: merge_request.iid }.merge(other_params)
       end
 
       it 'creates an issue for the project' do
@@ -490,6 +490,13 @@ describe Projects::IssuesController do
 
       it 'resolves the discussion in the merge_request' do
         post_issue(title: 'Hello')
+        discussion.first_note.reload
+
+        expect(discussion.resolved?).to eq(true)
+      end
+
+      it "resolves a single discussion" do
+        post_issue(other_params: { discussion_to_resolve: discussion.id })
         discussion.first_note.reload
 
         expect(discussion.resolved?).to eq(true)

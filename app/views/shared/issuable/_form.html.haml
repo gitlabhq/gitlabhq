@@ -50,29 +50,19 @@
     .col-sm-10.col-sm-offset-2
       = icon('exclamation-triangle')
       - if @merge_request_for_resolving_discussions.discussions_can_be_resolved_by?(current_user)
-        Creating this issue will mark all discussions in
-        = link_to @merge_request_for_resolving_discussions.to_reference, merge_request_path(@merge_request_for_resolving_discussions)
-        as resolved.
         = hidden_field_tag 'merge_request_for_resolving_discussions', @merge_request_for_resolving_discussions.iid
+        - if @discussion_to_resolve
+          = hidden_field_tag 'discussion_to_resolve', @discussion_to_resolve.id
+          Creating this issue will mark the discussion at
+          = link_to @discussion_to_resolve.noteable.to_reference, Gitlab::UrlBuilder.build(@discussion_to_resolve.first_note)
+        - else
+          Creating this issue will mark all discussions in
+          = link_to @merge_request_for_resolving_discussions.to_reference, merge_request_path(@merge_request_for_resolving_discussions)
+        as resolved.
       - else
         You can't automatically mark all discussions in
         = link_to @merge_request_for_resolving_discussions.to_reference, merge_request_path(@merge_request_for_resolving_discussions)
         as resolved. Ask someone with sufficient rights to resolve the them.
-
-- if @discussion_to_resolve
-  .form-group
-    .col-sm-10.col-sm-offset-2
-      = icon('exclamation-triangle')
-      - if @discussion_to_resolve.can_resolve?(current_user)
-        Creating this issue will mark the discussion at
-        = link_to @discussion_to_resolve.noteable.to_reference, Gitlab::UrlBuilder.build(@discussion_to_resolve.first_note)
-        as resolved.
-        = hidden_field_tag 'discussion_to_resolve', @discussion_to_resolve.id
-      - else
-        You can't automatically mark the discussion at
-        = link_to @discussion_to_resolve.noteable.to_reference, Gitlab::UrlBuilder.build(@discussion_to_resolve.first_note)
-        as resolved. Ask someone with sufficient rights to resolve it.
-
 
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
 .row-content-block{ class: (is_footer ? "footer-block" : "middle-block") }

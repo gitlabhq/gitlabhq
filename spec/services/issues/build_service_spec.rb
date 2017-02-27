@@ -10,20 +10,17 @@ describe Issues::BuildService, services: true do
 
   context 'for a single discussion' do
     describe '#execute' do
-      it 'references the noteable title in the issue title' do
-        merge_request = create(:merge_request, title: "Hello world", source_project: project)
-        discussion = Discussion.new([create(:note_on_merge_request, project: project, noteable: merge_request)])
-        service = described_class.new(project, user, discussion_to_resolve: discussion)
+      let(:merge_request) { create(:merge_request, title: "Hello world", source_project: project) }
+      let(:discussion) { Discussion.new([create(:diff_note_on_merge_request, project: project, noteable: merge_request, note: "Almost done")]) }
+      let(:service) { described_class.new(project, user, merge_request_for_resolving_discussions: merge_request.iid, discussion_to_resolve: discussion.id) }
 
+      it 'references the noteable title in the issue title' do
         issue = service.execute
 
         expect(issue.title).to include('Hello world')
       end
 
       it 'adds the note content to the description' do
-        discussion = Discussion.new([create(:note_on_merge_request, project: project, note: "Almost done")])
-        service = described_class.new(project, user, discussion_to_resolve: discussion)
-
         issue = service.execute
 
         expect(issue.description).to include('Almost done')
@@ -33,12 +30,12 @@ describe Issues::BuildService, services: true do
 
   context 'for discussions in a merge request' do
     let(:merge_request) { create(:merge_request_with_diff_notes, source_project: project) }
-    let(:issue) { described_class.new(project, user, merge_request_for_resolving_discussions: merge_request).execute }
+    let(:issue) { described_class.new(project, user, merge_request_for_resolving_discussions: merge_request.iid).execute }
 
     describe '#items_for_discussions' do
       it 'has an item for each discussion' do
         create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.source_project, line_number: 13)
-        service = described_class.new(project, user, merge_request_for_resolving_discussions: merge_request)
+        service = described_class.new(project, user, merge_request_for_resolving_discussions: merge_request.iid)
 
         service.execute
 
@@ -47,7 +44,7 @@ describe Issues::BuildService, services: true do
     end
 
     describe '#item_for_discussion' do
-      let(:service) { described_class.new(project, user, merge_request_for_resolving_discussions: merge_request) }
+      let(:service) { described_class.new(project, user, merge_request_for_resolving_discussions: merge_request.iid) }
 
       it 'mentions the author of the note' do
         discussion = Discussion.new([create(:diff_note_on_merge_request, author: create(:user, username: 'author'))])
@@ -125,7 +122,7 @@ describe Issues::BuildService, services: true do
 
     describe '#execute' do
       it 'mentions the merge request in the description' do
-        issue = described_class.new(project, user, merge_request_for_resolving_discussions: merge_request).execute
+        issue = described_class.new(project, user, merge_request_for_resolving_discussions: merge_request.iid).execute
 
         expect(issue.description).to include("Review the conversation in #{merge_request.to_reference}")
       end

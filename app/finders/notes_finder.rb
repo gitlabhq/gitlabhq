@@ -27,10 +27,6 @@ class NotesFinder
     @notes
   end
 
-  def first_discussion
-    execute.discussions.first
-  end
-
   private
 
   def init_collection
