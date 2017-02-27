@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   name: 'MRWidgetArchived',
   template: `
     <div class="mr-widget-body">

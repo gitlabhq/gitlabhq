@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   name: 'MRWidgetLocked',
   props: {
     targetBranch: { type: Object, required: true, default: () => ({}) },

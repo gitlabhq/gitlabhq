@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   name: 'MRWidgetAuthorTime',
   props: {
     actionText: { type: String, required: true, default: '' },
@@ -13,7 +13,7 @@ module.exports = {
         <img :src="author.avatarUrl" width="16" class="avatar avatar-inline s16" />
         <span class="author">{{author.name}}</span>
       </a>
-      <time :data-original-title='dateTitle' data-toggle="tooltip" data-placement="top" data-container="body">
+      <time :title='dateTitle' data-toggle="tooltip" data-placement="top" data-container="body">
         {{dateReadable}}
       </time>
     </h4>

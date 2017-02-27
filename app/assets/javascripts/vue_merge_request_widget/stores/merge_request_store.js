@@ -1,8 +1,12 @@
-module.exports = class MergeRequestStore {
+import Timeago from 'timeago.js';
+
+export default class MergeRequestStore {
 
   constructor(data) {
     // TODO: Remove this
     this.rawData = data || {};
+
+    const currentUser = data.current_user;
 
     this.state = data.state;
     this.targetBranch = data.target_branch;
@@ -10,15 +14,15 @@ module.exports = class MergeRequestStore {
 
     this.updatedAt = data.updated_at;
     this.mergedAt = MergeRequestStore.getEventDate(data.merge_event);
-    this.mergedBy = MergeRequestStore.getUserObject(data.author); // FIXME: replace it with merge_event.author
+    // FIXME: replace it with merge_event.author
+    this.mergedBy = MergeRequestStore.getUserObject(data.author);
 
-    this.closedBy = MergeRequestStore.getUserObject(data.author); // FIXME: replace it with close_event.author
+    // FIXME: replace it with close_event.author
+    this.closedBy = MergeRequestStore.getUserObject(data.author);
     this.closedAt = MergeRequestStore.getEventDate(data.closed_event);
 
     this.targetBranchPath = data.target_branch_path;
     this.sourceBranchRemoved = !data.source_branch_exists;
-
-    const currentUser = data.current_user;
 
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
     this.canRevert = currentUser.can_revert || false;
@@ -41,11 +45,13 @@ module.exports = class MergeRequestStore {
   }
 
   static getEventDate(event) {
+    const timeagoInstance = new Timeago();
+
     if (!event) {
       return '';
     }
 
-    return gl.mrWidget.timeagoInstance.format(event.updated_at);
+    return timeagoInstance.format(event.updated_at);
   }
 
-};
+}

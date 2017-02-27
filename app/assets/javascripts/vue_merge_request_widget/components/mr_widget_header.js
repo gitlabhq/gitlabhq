@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   name: 'MRWidgetHeader',
   props: {
     targetBranch: { type: String, default: '', required: true },

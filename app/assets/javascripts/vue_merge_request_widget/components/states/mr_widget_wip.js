@@ -1,6 +1,6 @@
-const mrWidgetMergeHelp = require('../../components/mr_widget_merge_help.js');
+import mrWidgetMergeHelp from '../../components/mr_widget_merge_help';
 
-module.exports = {
+export default {
   name: 'MRWidgetWIP',
   components: {
     'mr-widget-merge-help': mrWidgetMergeHelp,

@@ -1,6 +1,6 @@
-const mrWidgetAuthorTime = require('../../components/mr_widget_author_time.js');
+import mrWidgetAuthorTime from '../../components/mr_widget_author_time';
 
-module.exports = {
+export default {
   name: 'MRWidgetMerged',
   props: {
     mr: { type: Object, required: true, default: () => ({}) },
