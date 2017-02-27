@@ -53,12 +53,18 @@ are resolved.
 
 ## Move all unresolved discussions in a merge request to an issue
 
-> [Introduced][ce-7180] in GitLab 8.15.
+> [Introduced][ce-8266]
 
-To delegate unresolved discussions to a new issue you can click the link **open
-an issue to resolve them later**.
+To continue all open discussions in a merge request, click the button **Resolve
+all discussions in new issue**
 
-![Open new issue from unresolved discussions](img/resolve_discussion_open_issue.png)
+![Open new issue for all unresolved discussions](img/btn_new_issue_for_all_discussions.png)
+
+Alternatively, when your project only accepts merge requests when all discussions
+are resolved, there will be an **open an issue to resolve them later** link in
+the merge request-widget.
+
+![Link in merge request widget](img/resolve_discussion_open_issue.png)
 
 This will prepare an issue with content referring to the merge request and
 discussions.

@@ -510,6 +510,7 @@ ul.notes {
 }
 
 .line-resolve-all-container {
+
   .btn-group {
     margin-left: -4px;
   }
@@ -518,6 +519,25 @@ ul.notes {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
+
+  .btn.discussion-create-issue-btn {
+    margin-left: 4px;
+
+    a {
+      padding: 0;
+      line-height: 0;
+
+      &:hover {
+        text-decoration: none;
+        border: 0;
+      }
+    }
+
+    .new-issue-for-discussion path {
+      fill: $gray-darkest;
+    }
+  }
+
 }
 
 .line-resolve-all {

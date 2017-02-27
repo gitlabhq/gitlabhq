@@ -83,6 +83,7 @@
                   %span.line-resolve-text
                     {{ resolvedDiscussionCount }}/{{ discussionCount }} {{ resolvedCountText }} resolved
                 = render "discussions/jump_to_next"
+                = render "discussions/new_issue_for_all_discussions", merge_request: @merge_request
 
     .tab-content#diff-notes-app
       #notes.notes.tab-pane.voting_notes
