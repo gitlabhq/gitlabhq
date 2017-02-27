@@ -6,6 +6,8 @@ module MergeRequests
   # Executed when you do merge via GitLab UI
   #
   class MergeService < MergeRequests::BaseService
+    MergeError = Class.new(StandardError)
+
     attr_reader :merge_request, :source
 
     def execute(merge_request)
@@ -38,6 +40,8 @@ module MergeRequests
           success
         end
       end
+    rescue MergeError => e
+      log_merge_error(e.message, save_message_on_model: true)
     end
 
     def hooks_validation_pass?(merge_request)
@@ -119,12 +123,11 @@ module MergeRequests
 
       squash_result = SquashService.new(project, current_user, params).execute(merge_request)
 
-      if squash_result[:status] == :success
+      case squash_result[:status]
+      when :success
         squash_result[:squash_sha]
-      else
-        log_merge_error("Squashing #{merge_request_info} failed")
-
-        nil
+      when :error
+        raise MergeError, squash_result[:message]
       end
     end
   end
