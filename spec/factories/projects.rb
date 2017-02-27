@@ -171,27 +171,24 @@ FactoryGirl.define do
 
         project.add_user(args[:user], args[:access])
 
-        project.repository.commit_file(
+        project.repository.create_file(
           args[:user],
           ".gitlab/#{args[:path]}/bug.md",
           'something valid',
           message: 'test 3',
-          branch_name: 'master',
-          update: false)
-        project.repository.commit_file(
+          branch_name: 'master')
+        project.repository.create_file(
           args[:user],
           ".gitlab/#{args[:path]}/template_test.md",
           'template_test',
           message: 'test 1',
-          branch_name: 'master',
-          update: false)
-        project.repository.commit_file(
+          branch_name: 'master')
+        project.repository.create_file(
           args[:user],
           ".gitlab/#{args[:path]}/feature_proposal.md",
           'feature_proposal',
           message: 'test 2',
-          branch_name: 'master',
-          update: false)
+          branch_name: 'master')
       end
     end
   end

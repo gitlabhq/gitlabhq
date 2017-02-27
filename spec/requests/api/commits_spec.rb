@@ -146,16 +146,6 @@ describe API::Commits, api: true  do
 
         expect(response).to have_http_status(400)
       end
-
-      context 'with project path in URL' do
-        let(:url) { "/projects/#{project.namespace.path}%2F#{project.path}/repository/commits" }
-
-        it 'a new file in project repo' do
-          post api(url, user), valid_c_params
-
-          expect(response).to have_http_status(201)
-        end
-      end
     end
 
     context :delete do

@@ -41,9 +41,9 @@ changes are in V4:
 - Renamed `branch_name` to `branch` on DELETE `id/repository/branches/:branch` response [!8936](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8936)
 - Remove `public` param from create and edit actions of projects [!8736](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8736)
 - Notes do not return deprecated field `upvote` and `downvote` [!9384](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9384)
+- Return HTTP status code `400` for all validation errors when creating or updating a member instead of sometimes `422` error. [!9523](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9523)
 
 #### EE-specific
 
 - Remove the ProjectGitHook API. Use the ProjectPushRule API instead [!1301](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1301)
 - Removed `repository_storage` from `PUT /application/settings` and `GET /application/settings` (use `repository_storages` instead) [!1307](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1307)
-

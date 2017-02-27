@@ -193,7 +193,7 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
             white_listed.each do |file_path|
               old_rev = 'be93687618e4b132087f430a4d8fc3a609c9b77c'
               old_rev = new_rev if new_rev
-              new_rev = project.repository.commit_file(user, file_path, "commit #{file_path}", message: "commit #{file_path}", branch_name: "master", update: false)
+              new_rev = project.repository.create_file(user, file_path, "commit #{file_path}", message: "commit #{file_path}", branch_name: "master")
 
               allow(project.repository).to receive(:new_commits).and_return(
                 project.repository.commits_between(old_rev, new_rev)
@@ -216,7 +216,7 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
             black_listed.each do |file_path|
               old_rev = 'be93687618e4b132087f430a4d8fc3a609c9b77c'
               old_rev = new_rev if new_rev
-              new_rev = project.repository.commit_file(user, file_path, "commit #{file_path}", message: "commit #{file_path}", branch_name: "master", update: false)
+              new_rev = project.repository.create_file(user, file_path, "commit #{file_path}", message: "commit #{file_path}", branch_name: "master")
 
               allow(project.repository).to receive(:new_commits).and_return(
                 project.repository.commits_between(old_rev, new_rev)
