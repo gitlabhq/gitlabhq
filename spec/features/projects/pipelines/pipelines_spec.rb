@@ -371,8 +371,14 @@ describe 'Pipelines', :feature, :js do
         visit new_namespace_project_pipeline_path(project.namespace, project)
       end
 
-      context 'for valid commit' do
-        before { fill_in('pipeline[ref]', with: 'master') }
+      context 'for valid commit', js: true do
+        before do
+          click_button project.default_branch
+
+          page.within '.dropdown-menu' do
+            click_link 'master'
+          end
+        end
 
         context 'with gitlab-ci.yml' do
           before { stub_ci_pipeline_to_return_yaml_file }
@@ -389,15 +395,6 @@ describe 'Pipelines', :feature, :js do
           it { expect(page).to have_content('Missing .gitlab-ci.yml file') }
         end
       end
-
-      context 'for invalid commit' do
-        before do
-          fill_in('pipeline[ref]', with: 'invalid-reference')
-          click_on 'Create pipeline'
-        end
-
-        it { expect(page).to have_content('Reference not found') }
-      end
     end
 
     describe 'Create pipelines' do
@@ -409,18 +406,22 @@ describe 'Pipelines', :feature, :js do
 
       describe 'new pipeline page' do
         it 'has field to add a new pipeline' do
-          expect(page).to have_field('pipeline[ref]')
+          expect(page).to have_selector('.js-branch-select')
+          expect(find('.js-branch-select')).to have_content project.default_branch
           expect(page).to have_content('Create for')
         end
       end
 
       describe 'find pipelines' do
         it 'shows filtered pipelines', js: true do
-          fill_in('pipeline[ref]', with: 'fix')
-          find('input#ref').native.send_keys(:keydown)
+          click_button project.default_branch
 
-          within('.ui-autocomplete') do
-            expect(page).to have_selector('li', text: 'fix')
+          page.within '.dropdown-menu' do
+            find('.dropdown-input-field').native.send_keys('fix')
+
+            page.within '.dropdown-content' do
+              expect(page).to have_content('fix')
+            end
           end
         end
       end

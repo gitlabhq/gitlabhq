@@ -683,6 +683,10 @@ module API
       end
     end
 
+    class RunnerRegistrationDetails < Grape::Entity
+      expose :id, :token
+    end
+
     class BuildArtifactFile < Grape::Entity
       expose :filename, :size
     end

@@ -93,6 +93,9 @@
           $.scrollTo(0);
           new Flash('Failed to update branch!');
         }
+      }).always(() => {
+        this.$allowedToMergeDropdown.enable();
+        this.$allowedToPushDropdown.enable();
       });
     }
 
