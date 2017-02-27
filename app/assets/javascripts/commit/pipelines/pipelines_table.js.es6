@@ -69,7 +69,9 @@ const PipelineStore = require('./pipelines_store');
       return pipelinesService.all()
         .then(response => response.json())
         .then((json) => {
-          this.store.storePipelines(json);
+          // depending of the endpoint the response can either bring a `pipelines` key or not.
+          const pipelines = json.pipelines || json;
+          this.store.storePipelines(pipelines);
           this.isLoading = false;
         })
         .catch(() => {
