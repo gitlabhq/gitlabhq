@@ -291,10 +291,10 @@ describe Repository, models: true do
     end
   end
 
-  describe "#commit_dir" do
+  describe "#create_dir" do
     it "commits a change that creates a new directory" do
       expect do
-        repository.commit_dir(user, 'newdir',
+        repository.create_dir(user, 'newdir',
           message: 'Create newdir', branch_name: 'master')
       end.to change { repository.commits('master').count }.by(1)
 
@@ -307,7 +307,7 @@ describe Repository, models: true do
 
       it "creates a fork and commit to the forked project" do
         expect do
-          repository.commit_dir(user, 'newdir',
+          repository.create_dir(user, 'newdir',
             message: 'Create newdir', branch_name: 'patch',
             start_branch_name: 'master', start_project: forked_project)
         end.to change { repository.commits('master').count }.by(0)
@@ -323,7 +323,7 @@ describe Repository, models: true do
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
         expect do
-          repository.commit_dir(user, 'newdir',
+          repository.create_dir(user, 'newdir',
             message: 'Add newdir',
             branch_name: 'master',
             author_email: author_email, author_name: author_name)
@@ -337,25 +337,23 @@ describe Repository, models: true do
     end
   end
 
-  describe "#commit_file" do
-    it 'commits change to a file successfully' do
+  describe "#create_file" do
+    it 'commits new file successfully' do
       expect do
-        repository.commit_file(user, 'CHANGELOG', 'Changelog!',
-                               message: 'Updates file content',
-                               branch_name: 'master',
-                               update: true)
+        repository.create_file(user, 'NEWCHANGELOG', 'Changelog!',
+                               message: 'Create changelog',
+                               branch_name: 'master')
       end.to change { repository.commits('master').count }.by(1)
 
-      blob = repository.blob_at('master', 'CHANGELOG')
+      blob = repository.blob_at('master', 'NEWCHANGELOG')
 
       expect(blob.data).to eq('Changelog!')
     end
 
     it 'respects the autocrlf setting' do
-      repository.commit_file(user, 'hello.txt', "Hello,\r\nWorld",
+      repository.create_file(user, 'hello.txt', "Hello,\r\nWorld",
                              message: 'Add hello world',
-                             branch_name: 'master',
-                             update: true)
+                             branch_name: 'master')
 
       blob = repository.blob_at('master', 'hello.txt')
 
@@ -365,10 +363,9 @@ describe Repository, models: true do
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
         expect do
-          repository.commit_file(user, 'README', 'README!',
+          repository.create_file(user, 'NEWREADME', 'README!',
                                  message: 'Add README',
                                  branch_name: 'master',
-                                 update: true,
                                  author_email: author_email,
                                  author_name: author_name)
         end.to change { repository.commits('master').count }.by(1)
@@ -382,6 +379,18 @@ describe Repository, models: true do
   end
 
   describe "#update_file" do
+    it 'updates file successfully' do
+      expect do
+        repository.update_file(user, 'CHANGELOG', 'Changelog!',
+                               message: 'Update changelog',
+                               branch_name: 'master')
+      end.to change { repository.commits('master').count }.by(1)
+
+      blob = repository.blob_at('master', 'CHANGELOG')
+
+      expect(blob.data).to eq('Changelog!')
+    end
+
     it 'updates filename successfully' do
       expect do
         repository.update_file(user, 'NEWLICENSE', 'Copyright!',
@@ -398,9 +407,6 @@ describe Repository, models: true do
 
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
-        repository.commit_file(user, 'README', 'README!',
-          message: 'Add README', branch_name: 'master', update: true)
-
         expect do
           repository.update_file(user, 'README', 'Updated README!',
                                  branch_name: 'master',
@@ -418,13 +424,10 @@ describe Repository, models: true do
     end
   end
 
-  describe "#remove_file" do
+  describe "#delete_file" do
     it 'removes file successfully' do
-      repository.commit_file(user, 'README', 'README!',
-        message: 'Add README', branch_name: 'master', update: true)
-
       expect do
-        repository.remove_file(user, 'README',
+        repository.delete_file(user, 'README',
           message: 'Remove README', branch_name: 'master')
       end.to change { repository.commits('master').count }.by(1)
 
@@ -433,11 +436,8 @@ describe Repository, models: true do
 
     context "when an author is specified" do
       it "uses the given email/name to set the commit's author" do
-        repository.commit_file(user, 'README', 'README!',
-          message: 'Add README', branch_name: 'master', update: true)
-
         expect do
-          repository.remove_file(user, 'README',
+          repository.delete_file(user, 'README',
             message: 'Remove README', branch_name: 'master',
             author_email: author_email, author_name: author_name)
         end.to change { repository.commits('master').count }.by(1)
@@ -587,14 +587,14 @@ describe Repository, models: true do
 
   describe "#license_blob", caching: true do
     before do
-      repository.remove_file(
+      repository.delete_file(
         user, 'LICENSE', message: 'Remove LICENSE', branch_name: 'master')
     end
 
     it 'handles when HEAD points to non-existent ref' do
-      repository.commit_file(
+      repository.create_file(
         user, 'LICENSE', 'Copyright!',
-        message: 'Add LICENSE', branch_name: 'master', update: false)
+        message: 'Add LICENSE', branch_name: 'master')
 
       allow(repository).to receive(:file_on_head).
         and_raise(Rugged::ReferenceError)
@@ -603,27 +603,27 @@ describe Repository, models: true do
     end
 
     it 'looks in the root_ref only' do
-      repository.remove_file(user, 'LICENSE',
+      repository.delete_file(user, 'LICENSE',
         message: 'Remove LICENSE', branch_name: 'markdown')
-      repository.commit_file(user, 'LICENSE',
+      repository.create_file(user, 'LICENSE',
         Licensee::License.new('mit').content,
-        message: 'Add LICENSE', branch_name: 'markdown', update: false)
+        message: 'Add LICENSE', branch_name: 'markdown')
 
       expect(repository.license_blob).to be_nil
     end
 
     it 'detects license file with no recognizable open-source license content' do
-      repository.commit_file(user, 'LICENSE', 'Copyright!',
-        message: 'Add LICENSE', branch_name: 'master', update: false)
+      repository.create_file(user, 'LICENSE', 'Copyright!',
+        message: 'Add LICENSE', branch_name: 'master')
 
       expect(repository.license_blob.name).to eq('LICENSE')
     end
 
     %w[LICENSE LICENCE LiCensE LICENSE.md LICENSE.foo COPYING COPYING.md].each do |filename|
       it "detects '#{filename}'" do
-        repository.commit_file(user, filename,
+        repository.create_file(user, filename,
           Licensee::License.new('mit').content,
-          message: "Add #{filename}", branch_name: 'master', update: false)
+          message: "Add #{filename}", branch_name: 'master')
 
         expect(repository.license_blob.name).to eq(filename)
       end
@@ -632,7 +632,7 @@ describe Repository, models: true do
 
   describe '#license_key', caching: true do
     before do
-      repository.remove_file(user, 'LICENSE',
+      repository.delete_file(user, 'LICENSE',
         message: 'Remove LICENSE', branch_name: 'master')
     end
 
@@ -647,16 +647,16 @@ describe Repository, models: true do
     end
 
     it 'detects license file with no recognizable open-source license content' do
-      repository.commit_file(user, 'LICENSE', 'Copyright!',
-        message: 'Add LICENSE', branch_name: 'master', update: false)
+      repository.create_file(user, 'LICENSE', 'Copyright!',
+        message: 'Add LICENSE', branch_name: 'master')
 
       expect(repository.license_key).to be_nil
     end
 
     it 'returns the license key' do
-      repository.commit_file(user, 'LICENSE',
+      repository.create_file(user, 'LICENSE',
         Licensee::License.new('mit').content,
-        message: 'Add LICENSE', branch_name: 'master', update: false)
+        message: 'Add LICENSE', branch_name: 'master')
 
       expect(repository.license_key).to eq('mit')
     end
@@ -913,10 +913,9 @@ describe Repository, models: true do
         expect(empty_repository).to receive(:expire_emptiness_caches)
         expect(empty_repository).to receive(:expire_branches_cache)
 
-        empty_repository.commit_file(user, 'CHANGELOG', 'Changelog!',
+        empty_repository.create_file(user, 'CHANGELOG', 'Changelog!',
                                      message: 'Updates file content',
-                                     branch_name: 'master',
-                                     update: false)
+                                     branch_name: 'master')
       end
     end
   end
@@ -1939,7 +1938,7 @@ describe Repository, models: true do
 
   describe '#gitlab_ci_yml_for' do
     before do
-      repository.commit_file(User.last, '.gitlab-ci.yml', 'CONTENT', message: 'Add .gitlab-ci.yml', branch_name: 'master', update: false)
+      repository.create_file(User.last, '.gitlab-ci.yml', 'CONTENT', message: 'Add .gitlab-ci.yml', branch_name: 'master')
     end
 
     context 'when there is a .gitlab-ci.yml at the commit' do
@@ -1957,7 +1956,7 @@ describe Repository, models: true do
 
   describe '#route_map_for' do
     before do
-      repository.commit_file(User.last, '.gitlab/route-map.yml', 'CONTENT', message: 'Add .gitlab/route-map.yml', branch_name: 'master', update: false)
+      repository.create_file(User.last, '.gitlab/route-map.yml', 'CONTENT', message: 'Add .gitlab/route-map.yml', branch_name: 'master')
     end
 
     context 'when there is a .gitlab/route-map.yml at the commit' do

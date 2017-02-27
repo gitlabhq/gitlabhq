@@ -2,6 +2,8 @@ module Files
   class MultiService < Files::BaseService
     class FileChangedError < StandardError; end
 
+    ACTIONS = %w[create update delete move].freeze
+
     def commit
       repository.multi_action(
         user: current_user,
@@ -21,9 +23,18 @@ module Files
       super
 
       params[:actions].each_with_index do |action, index|
+        if ACTIONS.include?(action[:action].to_s)
+          action[:action] = action[:action].to_sym
+        else
+          raise_error("Unknown action type `#{action[:action]}`.")
+        end
+
         unless action[:file_path].present?
           raise_error("You must specify a file_path.")
         end
+
+        action[:file_path].slice!(0) if action[:file_path] && action[:file_path].start_with?('/')
+        action[:previous_path].slice!(0) if action[:previous_path] && action[:previous_path].start_with?('/')
 
         regex_check(action[:file_path])
         regex_check(action[:previous_path]) if action[:previous_path]
@@ -43,8 +54,6 @@ module Files
           validate_delete(action)
         when :move
           validate_move(action, index)
-        else
-          raise_error("Unknown action type `#{action[:action]}`.")
         end
       end
     end
@@ -92,6 +101,20 @@ module Files
       if repository.blob_at_branch(params[:branch], action[:file_path])
         raise_error("Your changes could not be committed because a file with the name `#{action[:file_path]}` already exists.")
       end
+
+      if action[:content].nil?
+        raise_error("You must provide content.")
+      end
+    end
+
+    def validate_update(action)
+      if action[:content].nil?
+        raise_error("You must provide content.")
+      end
+
+      if file_has_changed?
+        raise FileChangedError.new("You are attempting to update a file `#{action[:file_path]}` that has changed since you started editing it.")
+      end
     end
 
     def validate_delete(action)
@@ -112,12 +135,6 @@ module Files
         blob = repository.blob_at_branch(params[:branch], action[:previous_path])
         blob.load_all_data!(repository) if blob.truncated?
         params[:actions][index][:content] = blob.data
-      end
-    end
-
-    def validate_update(action)
-      if file_has_changed?
-        raise FileChangedError.new("You are attempting to update a file `#{action[:file_path]}` that has changed since you started editing it.")
       end
     end
   end

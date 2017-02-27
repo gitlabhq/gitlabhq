@@ -222,16 +222,21 @@ describe Gitlab::GitAccess, lib: true do
 
     def merge_into_protected_branch
       @protected_branch_merge_commit ||= begin
-                                           stub_git_hooks
-                                           project.repository.add_branch(user, unprotected_branch, 'feature')
-                                           target_branch = project.repository.lookup('feature')
-                                           source_branch = project.repository.commit_file(user, FFaker::InternetSE.login_user_name, FFaker::HipsterIpsum.paragraph, message: FFaker::HipsterIpsum.sentence, branch_name: unprotected_branch, update: false)
-                                           rugged = project.repository.rugged
-                                           author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
+        stub_git_hooks
+        project.repository.add_branch(user, unprotected_branch, 'feature')
+        target_branch = project.repository.lookup('feature')
+        source_branch = project.repository.create_file(
+          user,
+          FFaker::InternetSE.login_user_name,
+          FFaker::HipsterIpsum.paragraph,
+          message: FFaker::HipsterIpsum.sentence,
+          branch_name: unprotected_branch)
+        rugged = project.repository.rugged
+        author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
 
-                                           merge_index = rugged.merge_commits(target_branch, source_branch)
-                                           Rugged::Commit.create(rugged, author: author, committer: author, message: "commit message", parents: [target_branch, source_branch], tree: merge_index.write_tree(rugged))
-                                         end
+        merge_index = rugged.merge_commits(target_branch, source_branch)
+        Rugged::Commit.create(rugged, author: author, committer: author, message: "commit message", parents: [target_branch, source_branch], tree: merge_index.write_tree(rugged))
+      end
     end
 
     # Run permission checks for a user

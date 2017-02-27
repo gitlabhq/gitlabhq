@@ -43,6 +43,24 @@ feature 'Path Locks', feature: true, js: true do
     end
   end
 
+  scenario 'Unlocking files' do
+    within find('.tree-content-holder') do
+      click_link "VERSION"
+    end
+
+    within '.file-actions' do
+      click_link "Lock"
+
+      expect(page).to have_link('Unlock')
+    end
+
+    within '.file-actions' do
+      click_link "Unlock"
+
+      expect(page).to have_link('Lock')
+    end
+  end
+
   scenario 'Managing of lock list' do
     create :path_lock, path: 'encoding', user: user, project: project
 

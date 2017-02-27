@@ -55,13 +55,6 @@ module API
           branch = attrs.delete(:branch_name)
           attrs.merge!(branch: branch, start_branch: branch, target_branch: branch)
 
-          attrs[:actions].map! do |action|
-            action[:action] = action[:action].to_sym
-            action[:file_path].slice!(0) if action[:file_path] && action[:file_path].start_with?('/')
-            action[:previous_path].slice!(0) if action[:previous_path] && action[:previous_path].start_with?('/')
-            action
-          end
-
           result = ::Files::MultiService.new(user_project, current_user, attrs).execute
 
           if result[:status] == :success
