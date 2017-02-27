@@ -16,6 +16,7 @@ describe PersonalAccessToken, models: true do
       expect(invalid_personal_access_token.token).not_to be_nil
     end
   end
+
   describe ".active?" do
     let(:active_personal_access_token) { build(:personal_access_token) }
     let(:revoked_personal_access_token) { build(:revoked_personal_access_token) }

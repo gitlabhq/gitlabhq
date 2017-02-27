@@ -2,11 +2,19 @@
 
 ## List
 
+This function takes pagination parameters `page` and `per_page` to restrict the list of personal access tokens.
+
 ```
 GET /personal_access_tokens
 ```
 
-An example:
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `state`   | string | no | filter tokens based on state (all, active, inactive) |
+
+Example response:
 ```json
 [
   {
@@ -18,20 +26,6 @@ An example:
     "active": true
   }
 ]
-```
-
-In addition, you can filter tokens based on state: `all`, `active` and `inactive`
-
-```
-GET /personal_access_tokens?state=all
-```
-
-```
-GET /personal_access_tokens?state=active
-```
-
-```
-GET /personal_access_tokens?state=inactive
 ```
 
 ## Show

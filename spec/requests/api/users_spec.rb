@@ -12,6 +12,7 @@ describe API::Users, api: true  do
   let(:ldap_blocked_user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
   let(:not_existing_user_id) { (User.maximum('id') || 0 ) + 10 }
   let(:not_existing_pat_id) { (PersonalAccessToken.maximum('id') || 0 ) + 10 }
+  let(:finder) { PersonalAccessTokensFinder.new(user: user) }
 
   describe "GET /users" do
     context "when unauthenticated" do
@@ -1178,41 +1179,60 @@ describe API::Users, api: true  do
       expect(json_response['message']).to eq('403 Forbidden')
     end
 
-    it 'returns an array of non impersonated personal access tokens' do
+    it 'returns an array of all impersonated and non-impersonated tokens' do
       get api("/users/#{user.id}/personal_access_tokens", admin)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.size).to eq(user.personal_access_tokens.count)
+      expect(json_response.size).to eq(finder.execute.count)
+    end
+
+    it 'returns an array of non impersonated personal access tokens' do
+      finder.params[:impersonation] = false
+
+      get api("/users/#{user.id}/personal_access_tokens?impersonation=false", admin)
+
+      expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.size).to eq(finder.execute.count)
       expect(json_response.detect do |personal_access_token|
         personal_access_token['id'] == active_personal_access_token.id
       end['token']).to eq(active_personal_access_token.token)
     end
 
     it 'returns an array of active personal access tokens if active is set to true' do
-      get api("/users/#{user.id}/personal_access_tokens?state=active", admin)
+      finder.params.merge!(state: 'active', impersonation: false)
+
+      get api("/users/#{user.id}/personal_access_tokens?state=active&impersonation=false", admin)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.size).to eq(user.personal_access_tokens.active.count)
+      expect(json_response.size).to eq(finder.execute.count)
       expect(json_response).to all(include('active' => true))
     end
 
     it 'returns an array of inactive personal access tokens if active is set to false' do
-      get api("/users/#{user.id}/personal_access_tokens?state=inactive", admin)
+      finder.params.merge!(state: 'inactive', impersonation: false)
+      get api("/users/#{user.id}/personal_access_tokens?impersonation=false&state=inactive", admin)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
-      expect(json_response.size).to eq(user.personal_access_tokens.inactive.count)
+      expect(json_response.size).to eq(finder.execute.count)
       expect(json_response).to all(include('active' => false))
     end
 
     it 'returns an array of impersonation personal access tokens if impersonation is set to true' do
+      finder.params[:impersonation] = true
+
       get api("/users/#{user.id}/personal_access_tokens?impersonation=true", admin)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.size).to eq(user.personal_access_tokens.impersonation.count)
+      expect(json_response.size).to eq(finder.execute.count)
       expect(json_response).to all(include('impersonation' => true))
     end
   end
@@ -1220,7 +1240,7 @@ describe API::Users, api: true  do
   describe 'POST /users/:id/personal_access_tokens' do
     let(:name) { 'my new pat' }
     let(:expires_at) { '2016-12-28' }
-    let(:scopes) { ['api', 'read_user'] }
+    let(:scopes) { %w(api read_user) }
     let(:impersonation) { true }
 
     it 'returns validation error if personal access token misses some attributes' do
@@ -1265,7 +1285,7 @@ describe API::Users, api: true  do
       expect(json_response['revoked']).to be_falsey
       expect(json_response['token']).to be_present
       expect(json_response['impersonation']).to eq(impersonation)
-      expect(PersonalAccessToken.with_impersonation_tokens.find(json_response['id'])).not_to be_nil
+      expect(finder.execute(id: json_response['id'])).not_to be_nil
     end
   end
 
@@ -1301,19 +1321,6 @@ describe API::Users, api: true  do
       expect(json_response['token']).to be_present
       expect(json_response['impersonation']).to be_falsey
     end
-
-    it 'does not return an impersonation token without the specified field' do
-      get api("/users/#{user.id}/personal_access_tokens/#{impersonation_token.id}", admin)
-
-      expect(response).to have_http_status(404)
-    end
-
-    it 'returns an impersonation token' do
-      get api("/users/#{user.id}/personal_access_tokens/#{impersonation_token.id}?impersonation=true", admin)
-
-      expect(response).to have_http_status(200)
-      expect(json_response['impersonation']).to be_truthy
-    end
   end
 
   describe 'DELETE /users/:id/personal_access_tokens/:personal_access_token_id' do
@@ -1347,22 +1354,6 @@ describe API::Users, api: true  do
       expect(response).to have_http_status(204)
       expect(personal_access_token.revoked).to be_falsey
       expect(personal_access_token.reload.revoked).to be_truthy
-    end
-
-    it 'does not find impersonated token without specified field' do
-      delete api("/users/#{user.id}/personal_access_tokens/#{impersonation_token.id}", admin)
-
-      expect(response).to have_http_status(404)
-      expect(impersonation_token.revoked).to be_falsey
-      expect(impersonation_token.reload.revoked).to be_falsey
-    end
-
-    it 'revokes an impersonation token' do
-      delete api("/users/#{user.id}/personal_access_tokens/#{impersonation_token.id}?impersonation=true", admin)
-
-      expect(response).to have_http_status(204)
-      expect(impersonation_token.revoked).to be_falsey
-      expect(impersonation_token.reload.revoked).to be_truthy
     end
   end
 end

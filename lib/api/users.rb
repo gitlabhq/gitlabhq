@@ -373,7 +373,11 @@ module API
       end
       segment ':id' do
         resource :personal_access_tokens do
-          before { authenticated_as_admin! }
+          before do
+            authenticated_as_admin!
+            user = find_user(params)
+            @finder = PersonalAccessTokensFinder.new(user: user)
+          end
 
           desc 'Retrieve personal access tokens. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
@@ -381,11 +385,12 @@ module API
           end
           params do
             optional :state, type: String, default: 'all', values: %w[all active inactive], desc: 'Filters (all|active|inactive) personal_access_tokens'
-            optional :impersonation, type: Boolean, default: false, desc: 'Filters only impersonation personal_access_tokens'
+            optional :impersonation, type: Boolean, desc: 'Filters only impersonation personal_access_tokens'
+            use :pagination
           end
           get do
-            user = find_user(params)
-            present PersonalAccessTokensFinder.new(user, params).execute, with: Entities::ImpersonationToken
+            @finder.params.merge!(declared_params(include_missing: false))
+            present paginate(@finder.execute), with: Entities::ImpersonationToken
           end
 
           desc 'Create a personal access token. Available only for admins.' do
@@ -396,11 +401,10 @@ module API
             requires :name, type: String, desc: 'The name of the personal access token'
             optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
             optional :scopes, type: Array, desc: 'The array of scopes of the personal access token'
-            optional :impersonation, type: Boolean, default: false, desc: 'The impersonation flag of the personal access token'
+            optional :impersonation, type: Boolean, desc: 'The impersonation flag of the personal access token'
           end
           post do
-            user = find_user(params)
-            personal_access_token = PersonalAccessTokensFinder.new(user).execute.build(declared_params(include_missing: false))
+            personal_access_token = @finder.execute.build(declared_params(include_missing: false))
 
             if personal_access_token.save
               present personal_access_token, with: Entities::ImpersonationToken
@@ -415,12 +419,9 @@ module API
           end
           params do
             requires :personal_access_token_id, type: Integer, desc: 'The ID of the personal access token'
-            optional :impersonation, type: Boolean, default: false, desc: 'The impersonation flag of the personal access token'
           end
           get ':personal_access_token_id' do
-            user = find_user(params)
-
-            personal_access_token = PersonalAccessTokensFinder.new(user, declared_params(include_missing: false)).execute
+            personal_access_token = @finder.execute(id: declared_params[:personal_access_token_id])
             not_found!('Personal Access Token') unless personal_access_token
 
             present personal_access_token, with: Entities::ImpersonationToken
@@ -431,17 +432,12 @@ module API
           end
           params do
             requires :personal_access_token_id, type: Integer, desc: 'The ID of the personal access token'
-            optional :impersonation, type: Boolean, default: false, desc: 'The impersonation flag of the personal access token'
           end
           delete ':personal_access_token_id' do
-            user = find_user(params)
-
-            personal_access_token = PersonalAccessTokensFinder.new(user, declared_params(include_missing: false)).execute
+            personal_access_token = @finder.execute(id: declared_params[:personal_access_token_id])
             not_found!('Personal Access Token') unless personal_access_token
 
             personal_access_token.revoke!
-
-            no_content!
           end
         end
       end

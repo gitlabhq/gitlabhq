@@ -5,8 +5,10 @@ describe API::PersonalAccessTokens, api: true  do
 
   let(:user)  { create(:user) }
   let(:not_found_token) { (PersonalAccessToken.maximum('id') || 0) + 10 }
+  let(:finder) { PersonalAccessTokensFinder.new(user: user, impersonation: false) }
 
   describe "GET /personal_access_tokens" do
+    let!(:active_impersonation_token) { create(:impersonation_personal_access_token, user: user) }
     let!(:active_personal_access_token) { create(:personal_access_token, user: user) }
     let!(:revoked_personal_access_token) { create(:revoked_personal_access_token, user: user) }
     let!(:expired_personal_access_token) { create(:expired_personal_access_token, user: user) }
@@ -16,7 +18,7 @@ describe API::PersonalAccessTokens, api: true  do
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
-      expect(json_response.size).to eq(user.personal_access_tokens.count)
+      expect(json_response.size).to eq(finder.execute.count)
 
       json_personal_access_token = json_response.detect do |personal_access_token|
         personal_access_token['id'] == active_personal_access_token.id
@@ -27,18 +29,24 @@ describe API::PersonalAccessTokens, api: true  do
     end
 
     it 'returns an array of active personal access tokens if active is set to true' do
+      finder.params[:state] = 'active'
+
       get api("/personal_access_tokens?state=active", user)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
+      expect(json_response.size).to eq(finder.execute.count)
       expect(json_response).to all(include('active' => true))
     end
 
     it 'returns an array of inactive personal access tokens if active is set to false' do
+      finder.params[:state] = 'inactive'
+
       get api("/personal_access_tokens?state=inactive", user)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
+      expect(json_response.size).to eq(finder.execute.count)
       expect(json_response).to all(include('active' => false))
     end
   end
@@ -46,7 +54,7 @@ describe API::PersonalAccessTokens, api: true  do
   describe 'POST /personal_access_tokens' do
     let(:name) { 'my new pat' }
     let(:expires_at) { '2016-12-28' }
-    let(:scopes) { ['api', 'read_user'] }
+    let(:scopes) { %w(api read_user) }
 
     it 'returns validation error if personal access token miss some attributes' do
       post api("/personal_access_tokens", user)
@@ -73,7 +81,8 @@ describe API::PersonalAccessTokens, api: true  do
       expect(json_response['active']).to eq(false)
       expect(json_response['revoked']).to eq(false)
       expect(json_response['token']).to be_present
-      expect(PersonalAccessToken.find(personal_access_token_id)).not_to be_nil
+      expect(json_response['impersonation']).not_to be_present
+      expect(finder.execute(id: personal_access_token_id)).not_to be_nil
     end
   end
 

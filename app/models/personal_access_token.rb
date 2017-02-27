@@ -9,11 +9,10 @@ class PersonalAccessToken < ActiveRecord::Base
 
   before_save :ensure_token
 
-  default_scope { where(impersonation: false) }
-  scope :active, -> { where(revoked: false).where("expires_at >= NOW() OR expires_at IS NULL") }
+  scope :active, -> { where("revoked = false AND (expires_at >= NOW() OR expires_at IS NULL)") }
   scope :inactive, -> { where("revoked = true OR expires_at < NOW()") }
-  scope :impersonation, -> { unscoped.where(impersonation: true) }
-  scope :with_impersonation_tokens, ->  { unscoped }
+  scope :with_impersonation, -> { where(impersonation: true) }
+  scope :without_impersonation, -> { where(impersonation: false) }
 
   def revoke!
     self.revoked = true

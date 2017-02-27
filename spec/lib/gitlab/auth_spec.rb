@@ -118,10 +118,10 @@ describe Gitlab::Auth, lib: true do
       end
 
       it 'succeeds if it is an impersonation token' do
-        personal_access_token = create(:personal_access_token, impersonation: true, scopes: [])
+        impersonation_token = create(:personal_access_token, impersonation: true, scopes: ['api'])
 
         expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')
-        expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(personal_access_token.user, nil, :personal_token, full_authentication_abilities))
+        expect(gl_auth.find_for_git_client('', impersonation_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(impersonation_token.user, nil, :personal_token, full_authentication_abilities))
       end
 
       it 'fails for personal access tokens with other scopes' do
@@ -129,6 +129,13 @@ describe Gitlab::Auth, lib: true do
 
         expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
         expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(nil, nil))
+      end
+
+      it 'fails for impersonation token with other scopes' do
+        impersonation_token = create(:personal_access_token, scopes: ['read_user'])
+
+        expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
+        expect(gl_auth.find_for_git_client('', impersonation_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(nil, nil))
       end
 
       it 'fails if password is nil' do

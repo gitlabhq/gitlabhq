@@ -4,22 +4,12 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
   let(:admin) { create(:admin) }
   let!(:user) { create(:user) }
 
-  def active_personal_access_tokens
+  def active_impersonation_tokens
     find(".table.active-impersonation-tokens")
   end
 
-  def inactive_personal_access_tokens
+  def inactive_impersonation_tokens
     find(".table.inactive-impersonation-tokens")
-  end
-
-  def created_personal_access_token
-    find("#created-impersonation-token").value
-  end
-
-  def disallow_personal_access_token_saves!
-    allow_any_instance_of(PersonalAccessToken).to receive(:save).and_return(false)
-    errors = ActiveModel::Errors.new(PersonalAccessToken.new).tap { |e| e.add(:name, "cannot be nil") }
-    allow_any_instance_of(PersonalAccessToken).to receive(:errors).and_return(errors)
   end
 
   before { login_as(admin) }
@@ -40,44 +30,43 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
       check "api"
       check "read_user"
 
-      expect { click_on "Create Impersonation Token" }.to change { PersonalAccessToken.impersonation.count }
-      expect(active_personal_access_tokens).to have_text(name)
-      expect(active_personal_access_tokens).to have_text('In')
-      expect(active_personal_access_tokens).to have_text('api')
-      expect(active_personal_access_tokens).to have_text('read_user')
+      expect { click_on "Create Impersonation Token" }.to change { PersonalAccessToken.with_impersonation.count }
+      expect(active_impersonation_tokens).to have_text(name)
+      expect(active_impersonation_tokens).to have_text('In')
+      expect(active_impersonation_tokens).to have_text('api')
+      expect(active_impersonation_tokens).to have_text('read_user')
+    end
+  end
+
+  describe 'active tokens' do
+    let!(:impersonation_token) { create(:impersonation_personal_access_token, user: user) }
+    let!(:personal_access_token) { create(:personal_access_token, user: user) }
+
+    it 'only shows impersonation tokens' do
+      visit admin_user_impersonation_tokens_path(user_id: user.username)
+
+      expect(active_impersonation_tokens).to have_text(impersonation_token.name)
+      expect(active_impersonation_tokens).not_to have_text(personal_access_token.name)
     end
   end
 
   describe "inactive tokens" do
-    let!(:personal_access_token) { create(:impersonation_personal_access_token, user: user) }
+    let!(:impersonation_token) { create(:impersonation_personal_access_token, user: user) }
 
     it "allows revocation of an active impersonation token" do
       visit admin_user_impersonation_tokens_path(user_id: user.username)
 
       click_on "Revoke"
 
-      expect(inactive_personal_access_tokens).to have_text(personal_access_token.name)
+      expect(inactive_impersonation_tokens).to have_text(impersonation_token.name)
     end
 
     it "moves expired tokens to the 'inactive' section" do
-      personal_access_token.update(expires_at: 5.days.ago)
+      impersonation_token.update(expires_at: 5.days.ago)
 
       visit admin_user_impersonation_tokens_path(user_id: user.username)
 
-      expect(inactive_personal_access_tokens).to have_text(personal_access_token.name)
-    end
-
-    context "when revocation fails" do
-      before { disallow_personal_access_token_saves! }
-
-      it "displays an error message" do
-        visit admin_user_impersonation_tokens_path(user_id: user.username)
-
-        click_on "Revoke"
-
-        expect(active_personal_access_tokens).to have_text(personal_access_token.name)
-        expect(page).to have_content("Could not revoke")
-      end
+      expect(inactive_impersonation_tokens).to have_text(impersonation_token.name)
     end
   end
 end
