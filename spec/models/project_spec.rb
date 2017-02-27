@@ -1894,4 +1894,25 @@ describe Project, models: true do
       end
     end
   end
+
+  describe '#http_url_to_repo' do
+    let(:project) { create :empty_project }
+
+    context 'when no user is given' do
+      it 'returns the url to the repo without a username' do
+        url = project.http_url_to_repo
+
+        expect(url).to eq(project.http_url_to_repo)
+        expect(url).not_to include('@')
+      end
+    end
+
+    context 'when user is given' do
+      it 'returns the url to the repo with the username' do
+        user = build_stubbed(:user)
+
+        expect(project.http_url_to_repo(user)).to match(%r{https?:\/\/#{user.username}@})
+      end
+    end
+  end
 end
