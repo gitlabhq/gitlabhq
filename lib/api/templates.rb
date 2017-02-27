@@ -1,5 +1,7 @@
 module API
   class Templates < Grape::API
+    include PaginationParams
+
     GLOBAL_TEMPLATE_TYPES = {
       gitignores: {
         klass: Gitlab::Template::GitignoreTemplate,
@@ -51,12 +53,14 @@ module API
     end
     params do
       optional :popular, type: Boolean, desc: 'If passed, returns only popular licenses'
+      use :pagination
     end
     get "templates/licenses" do
       options = {
         featured: declared(params).popular.present? ? true : nil
       }
-      present Licensee::License.all(options), with: ::API::Entities::RepoLicense
+      licences = ::Kaminari.paginate_array(Licensee::License.all(options))
+      present paginate(licences), with: Entities::RepoLicense
     end
 
     desc 'Get the text for a specific license' do
@@ -82,8 +86,12 @@ module API
         detail "This feature was introduced in GitLab #{gitlab_version}."
         success Entities::TemplatesList
       end
+      params do
+        use :pagination
+      end
       get "templates/#{template_type}" do
-        present klass.all, with: Entities::TemplatesList
+        templates = ::Kaminari.paginate_array(klass.all)
+        present paginate(templates), with: Entities::TemplatesList
       end
 
       desc 'Get the text for a specific template present in local filesystem' do

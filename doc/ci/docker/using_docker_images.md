@@ -39,13 +39,15 @@ accessible during the build process.
 
 ## What is an image
 
-The `image` keyword is the name of the docker image that is present in the
-local Docker Engine (list all images with `docker images`) or any image that
-can be found at [Docker Hub][hub]. For more information about images and Docker
-Hub please read the [Docker Fundamentals][] documentation.
+The `image` keyword is the name of the docker image the docker executor
+will run to perform the CI tasks.  
 
-In short, with `image` we refer to the docker image, which will be used to
-create a container on which your job will run.
+By default the executor will only pull images from [Docker Hub][hub],
+but this can be configured in the `gitlab-runner/config.toml` by setting
+the [docker pull policy][] to allow using local images.
+
+For more information about images and Docker Hub please read
+the [Docker Fundamentals][] documentation.
 
 ## What is a service
 
@@ -271,6 +273,7 @@ containers as well as all volumes (`-v`) that were created with the container
 creation.
 
 [Docker Fundamentals]: https://docs.docker.com/engine/understanding-docker/
+[docker pull policy]: https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work
 [hub]: https://hub.docker.com/
 [linking-containers]: https://docs.docker.com/engine/userguide/networking/default_network/dockerlinks/
 [tutum/wordpress]: https://hub.docker.com/r/tutum/wordpress/

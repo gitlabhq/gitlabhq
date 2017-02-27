@@ -43,7 +43,8 @@
         - discussion_left, discussion_right = parallel_diff_discussions(left, right, diff_file)
         - if discussion_left || discussion_right
           = render "discussions/parallel_diff_discussion", discussion_left: discussion_left, discussion_right: discussion_right
-    - if !diff_file.new_file && diff_file.diff_lines.any?
+    - if !diff_file.new_file && !diff_file.deleted_file && diff_file.diff_lines.any?
       - last_line = diff_file.diff_lines.last
-      %tr.line_holder.parallel
-        = diff_match_line last_line.old_pos, last_line.new_pos, bottom: true, view: :parallel
+      - if last_line.new_pos < total_lines
+        %tr.line_holder.parallel
+          = diff_match_line last_line.old_pos, last_line.new_pos, bottom: true, view: :parallel

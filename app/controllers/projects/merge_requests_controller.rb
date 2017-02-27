@@ -39,7 +39,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @collection_type    = "MergeRequest"
     @merge_requests     = merge_requests_collection
     @merge_requests     = @merge_requests.page(params[:page])
-    @issuable_meta_data = issuable_meta_data(@merge_requests)
+    @issuable_meta_data = issuable_meta_data(@merge_requests, @collection_type)
 
     if @merge_requests.out_of_range? && @merge_requests.total_pages != 0
       return redirect_to url_for(params.merge(page: @merge_requests.total_pages))
@@ -48,6 +48,17 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     if params[:label_name].present?
       labels_params = { project_id: @project.id, title: params[:label_name] }
       @labels = LabelsFinder.new(current_user, labels_params).execute
+    end
+
+    @users = []
+    if params[:assignee_id].present?
+      assignee = User.find_by_id(params[:assignee_id])
+      @users.push(assignee) if assignee
+    end
+
+    if params[:author_id].present?
+      author = User.find_by_id(params[:author_id])
+      @users.push(author) if author
     end
 
     respond_to do |format|
@@ -245,6 +256,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         define_new_vars
+        @show_changes_tab = true
         render "new"
       end
       format.json do
@@ -284,22 +296,21 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def update
     @merge_request = MergeRequests::UpdateService.new(project, current_user, merge_request_params).execute(@merge_request)
 
-    if @merge_request.valid?
-      respond_to do |format|
-        format.html do
-          redirect_to([@merge_request.target_project.namespace.becomes(Namespace),
-                       @merge_request.target_project, @merge_request])
-        end
-        format.json do
-          render json: @merge_request.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
+    respond_to do |format|
+      format.html do
+        if @merge_request.valid?
+          redirect_to([@merge_request.target_project.namespace.becomes(Namespace), @merge_request.target_project, @merge_request])
+        else
+          render :edit
         end
       end
-    else
-      render "edit"
+
+      format.json do
+        render json: @merge_request.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
+      end
     end
   rescue ActiveRecord::StaleObjectError
-    @conflict = true
-    render :edit
+    render_conflict_response
   end
 
   def remove_wip
@@ -369,14 +380,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_widget_refresh
-    if merge_request.merge_when_build_succeeds
-      @status = :merge_when_build_succeeds
-    else
-      # Only MRs that can be merged end in this action
-      # MR can be already picked up for merge / merged already or can be waiting for worker to be picked up
-      # in last case it does not have any special status. Possible error is handled inside widget js function
-      @status = :success
-    end
+    @status =
+      if merge_request.merge_when_build_succeeds
+        :merge_when_build_succeeds
+      else
+        # Only MRs that can be merged end in this action
+        # MR can be already picked up for merge / merged already or can be waiting for worker to be picked up
+        # in last case it does not have any special status. Possible error is handled inside widget js function
+        :success
+      end
 
     render 'merge'
   end
@@ -615,6 +627,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       group(:commit_id).count
 
     @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
+
+    @show_changes_tab = params[:show_changes].present?
 
     define_pipelines_vars
   end

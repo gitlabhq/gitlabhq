@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'Issues', feature: true do
+  include DropzoneHelper
   include IssueHelpers
   include SortingHelper
   include WaitForAjax
@@ -150,7 +151,7 @@ describe 'Issues', feature: true do
 
   describe 'Filter issue' do
     before do
-      ['foobar', 'barbaz', 'gitlab'].each do |title|
+      %w(foobar barbaz gitlab).each do |title|
         create(:issue,
                author: @user,
                assignee: @user,
@@ -382,7 +383,9 @@ describe 'Issues', feature: true do
     it 'changes incoming email address token', js: true do
       find('.issue-email-modal-btn').click
       previous_token = find('input#issue_email').value
-      find('.incoming-email-token-reset').click
+      find('.incoming-email-token-reset').trigger('click')
+
+      wait_for_ajax
 
       expect(page).to have_no_field('issue_email', with: previous_token)
       new_token = project1.new_issue_address(@user.reload)
@@ -568,12 +571,15 @@ describe 'Issues', feature: true do
       end
 
       it 'uploads file when dragging into textarea' do
-        drop_in_dropzone test_image_file
-
-        # Wait for the file to upload
-        sleep 1
+        dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
 
         expect(page.find_field("issue_description").value).to have_content 'banana_sample'
+      end
+
+      it 'adds double newline to end of attachment markdown' do
+        dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
+
+        expect(page.find_field("issue_description").value).to match /\n\n$/
       end
     end
   end
@@ -636,7 +642,7 @@ describe 'Issues', feature: true do
 
       it 'removes due date from issue' do
         date = Date.today.at_beginning_of_month + 2.days
-        
+
         page.within '.due_date' do
           click_link 'Edit'
 
@@ -653,26 +659,5 @@ describe 'Issues', feature: true do
         end
       end
     end
-  end
-
-  def drop_in_dropzone(file_path)
-    # Generate a fake input selector
-    page.execute_script <<-JS
-      var fakeFileInput = window.$('<input/>').attr(
-        {id: 'fakeFileInput', type: 'file'}
-      ).appendTo('body');
-    JS
-    # Attach the file to the fake input selector with Capybara
-    attach_file("fakeFileInput", file_path)
-    # Add the file to a fileList array and trigger the fake drop event
-    page.execute_script <<-JS
-      var fileList = [$('#fakeFileInput')[0].files[0]];
-      var e = jQuery.Event('drop', { dataTransfer : { files : fileList } });
-      $('.div-dropzone')[0].dropzone.listeners[0].events.drop(e);
-    JS
-  end
-
-  def test_image_file
-    File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
   end
 end

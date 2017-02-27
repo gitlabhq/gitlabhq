@@ -16,12 +16,15 @@ describe API::Builds, api: true do
     let(:query) { '' }
 
     before do
+      create(:ci_build, :skipped, pipeline: pipeline)
+
       get api("/projects/#{project.id}/builds?#{query}", api_user)
     end
 
     context 'authorized user' do
       it 'returns project builds' do
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
       end
 
@@ -45,6 +48,18 @@ describe API::Builds, api: true do
         it do
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
+        end
+      end
+
+      context 'filter project with scope skipped' do
+        let(:query) { 'scope=skipped' }
+        let(:json_build) { json_response.first }
+
+        it 'return builds with status skipped' do
+          expect(response).to have_http_status 200
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq 1
+          expect(json_build['status']).to eq 'skipped'
         end
       end
 
@@ -97,6 +112,7 @@ describe API::Builds, api: true do
 
           it 'returns project jobs for specific commit' do
             expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(json_response.size).to eq 2
           end

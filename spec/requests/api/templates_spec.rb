@@ -22,6 +22,7 @@ describe API::Templates, api: true  do
       get api('/templates/gitignores')
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.size).to be > 15
     end
@@ -32,6 +33,7 @@ describe API::Templates, api: true  do
       get api('/templates/gitlab_ci_ymls')
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.first['name']).not_to be_nil
     end
@@ -56,11 +58,11 @@ describe API::Templates, api: true  do
       expect(json_response['popular']).to be true
       expect(json_response['html_url']).to eq('http://choosealicense.com/licenses/mit/')
       expect(json_response['source_url']).to eq('https://opensource.org/licenses/MIT')
-      expect(json_response['description']).to include('A permissive license that is short and to the point.')
+      expect(json_response['description']).to include('A short and simple permissive license with conditions')
       expect(json_response['conditions']).to eq(%w[include-copyright])
       expect(json_response['permissions']).to eq(%w[commercial-use modifications distribution private-use])
       expect(json_response['limitations']).to eq(%w[no-liability])
-      expect(json_response['content']).to include('The MIT License (MIT)')
+      expect(json_response['content']).to include('MIT License')
     end
   end
 
@@ -69,8 +71,9 @@ describe API::Templates, api: true  do
       get api('/templates/licenses')
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.size).to eq(15)
+      expect(json_response.size).to eq(12)
       expect(json_response.map { |l| l['key'] }).to include('agpl-3.0')
     end
 
@@ -80,6 +83,7 @@ describe API::Templates, api: true  do
           get api('/templates/licenses?popular=1')
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(3)
           expect(json_response.map { |l| l['key'] }).to include('apache-2.0')
@@ -98,7 +102,7 @@ describe API::Templates, api: true  do
         let(:license_type) { 'mit' }
 
         it 'returns the license text' do
-          expect(json_response['content']).to include('The MIT License (MIT)')
+          expect(json_response['content']).to include('MIT License')
         end
 
         it 'replaces placeholder values' do

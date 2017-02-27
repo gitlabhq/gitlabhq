@@ -76,4 +76,4 @@
 
     return IssuableContext;
   })();
-}).call(this);
+}).call(window);

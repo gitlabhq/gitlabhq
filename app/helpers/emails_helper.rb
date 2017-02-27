@@ -1,4 +1,6 @@
 module EmailsHelper
+  include AppearancesHelper
+
   # Google Actions
   # https://developers.google.com/gmail/markup/reference/go-to-action
   def email_action(url)
@@ -22,7 +24,7 @@ module EmailsHelper
 
   def action_title(url)
     return unless url
-    ["merge_requests", "issues", "commit"].each do |action|
+    %w(merge_requests issues commit).each do |action|
       if url.split("/").include?(action)
         return "View #{action.humanize.singularize}"
       end
@@ -48,5 +50,20 @@ module EmailsHelper
     link_tag = link_to('request a new one', new_user_password_url(user_email: @user.email))
     msg = "This link is valid for #{password_reset_token_valid_time}.  "
     msg << "After it expires, you can #{link_tag}."
+  end
+
+  def header_logo
+    if brand_item && brand_item.header_logo?
+      image_tag(
+        brand_item.header_logo,
+        style: 'height: 50px'
+      )
+    else
+      image_tag(
+        image_url('mailers/gitlab_header_logo.gif'),
+        size: "55x50",
+        alt: "GitLab"
+      )
+    end
   end
 end

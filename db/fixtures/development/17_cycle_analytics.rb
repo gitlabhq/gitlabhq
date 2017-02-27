@@ -155,16 +155,8 @@ class Gitlab::Seeder::CycleAnalytics
 
       issue.project.repository.add_branch(@user, branch_name, 'master')
 
-      options = {
-        committer: issue.project.repository.user_to_committer(@user),
-        author: issue.project.repository.user_to_committer(@user),
-        commit: { message: "Commit for ##{issue.iid}", branch: branch_name, update_ref: true },
-        file: { content: "content", path: filename, update: false }
-      }
-
-      commit_sha = Gitlab::Git::Blob.commit(issue.project.repository, options)
+      commit_sha = issue.project.repository.create_file(@user, filename, "content", options, message: "Commit for ##{issue.iid}", branch_name: branch_name)
       issue.project.repository.commit(commit_sha)
-
 
       GitPushService.new(issue.project,
                          @user,

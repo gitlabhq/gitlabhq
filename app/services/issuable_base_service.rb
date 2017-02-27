@@ -191,14 +191,12 @@ class IssuableBaseService < BaseService
     # To be overridden by subclasses
   end
 
-  def after_update(issuable)
+  def before_update(issuable)
     # To be overridden by subclasses
   end
 
-  def update_issuable(issuable, attributes)
-    issuable.with_transaction_returning_status do
-      issuable.update(attributes.merge(updated_by: current_user))
-    end
+  def after_update(issuable)
+    # To be overridden by subclasses
   end
 
   def update(issuable)
@@ -212,16 +210,22 @@ class IssuableBaseService < BaseService
     label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
     params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
 
-    if params.present? && update_issuable(issuable, params)
-      # We do not touch as it will affect a update on updated_at field
-      ActiveRecord::Base.no_touching do
-        handle_common_system_notes(issuable, old_labels: old_labels)
-      end
+    if params.present?
+      issuable.assign_attributes(params.merge(updated_by: current_user))
 
-      handle_changes(issuable, old_labels: old_labels, old_mentioned_users: old_mentioned_users)
-      after_update(issuable)
-      issuable.create_new_cross_references!(current_user)
-      execute_hooks(issuable, 'update')
+      before_update(issuable)
+
+      if issuable.with_transaction_returning_status { issuable.save }
+        # We do not touch as it will affect a update on updated_at field
+        ActiveRecord::Base.no_touching do
+          handle_common_system_notes(issuable, old_labels: old_labels)
+        end
+
+        handle_changes(issuable, old_labels: old_labels, old_mentioned_users: old_mentioned_users)
+        after_update(issuable)
+        issuable.create_new_cross_references!(current_user)
+        execute_hooks(issuable, 'update')
+      end
     end
 
     issuable

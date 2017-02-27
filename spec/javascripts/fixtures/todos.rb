@@ -39,8 +39,8 @@ describe 'Todos (JavaScript fixtures)' do
 
     it 'todos/todos.json' do |example|
       post :create,
-        namespace_id: namespace.path,
-        project_id: project.path,
+        namespace_id: namespace,
+        project_id: project,
         issuable_type: 'issue',
         issuable_id: issue_2.id,
         format: 'json'

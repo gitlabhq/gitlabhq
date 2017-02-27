@@ -24,4 +24,4 @@
 
     return U2FError;
   })();
-}).call(this);
+}).call(window);

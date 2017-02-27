@@ -6,9 +6,7 @@ class BasePolicy
       @cannot_set = cannot_set
     end
 
-    def size
-      to_set.size
-    end
+    delegate :size, to: :to_set
 
     def self.empty
       new(Set.new, Set.new)

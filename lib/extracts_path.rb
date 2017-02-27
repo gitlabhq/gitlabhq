@@ -42,7 +42,7 @@ module ExtractsPath
 
     return pair unless @project
 
-    if id.match(/^([[:alnum:]]{40})(.+)/)
+    if id =~ /^(\h{40})(.+)/
       # If the ref appears to be a SHA, we're done, just split the string
       pair = $~.captures
     else

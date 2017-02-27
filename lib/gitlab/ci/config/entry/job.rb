@@ -11,7 +11,7 @@ module Gitlab
 
           ALLOWED_KEYS = %i[tags script only except type image services allow_failure
                             type stage when artifacts cache dependencies before_script
-                            after_script variables environment coverage]
+                            after_script variables environment coverage].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS

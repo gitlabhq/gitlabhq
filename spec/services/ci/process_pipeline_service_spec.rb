@@ -1,8 +1,16 @@
 require 'spec_helper'
 
-describe Ci::ProcessPipelineService, services: true do
-  let(:pipeline) { create(:ci_empty_pipeline, ref: 'master') }
+describe Ci::ProcessPipelineService, :services do
   let(:user) { create(:user) }
+  let(:project) { create(:empty_project) }
+
+  let(:pipeline) do
+    create(:ci_empty_pipeline, ref: 'master', project: project)
+  end
+
+  before do
+    project.add_developer(user)
+  end
 
   describe '#execute' do
     context 'start queuing next builds' do
@@ -285,7 +293,7 @@ describe Ci::ProcessPipelineService, services: true do
           expect(builds.pluck(:name))
             .to contain_exactly('build:1', 'build:2', 'test:1', 'test:2')
 
-          Ci::Build.retry(pipeline.builds.find_by(name: 'test:2')).success
+          Ci::Build.retry(pipeline.builds.find_by(name: 'test:2'), user).success
 
           expect(builds.pluck(:name)).to contain_exactly(
             'build:1', 'build:2', 'test:1', 'test:2', 'test:2', 'deploy:1', 'deploy:2')
@@ -369,9 +377,7 @@ describe Ci::ProcessPipelineService, services: true do
     builds.pending.update_all(status: 'success')
   end
 
-  def manual_actions
-    pipeline.manual_actions
-  end
+  delegate :manual_actions, to: :pipeline
 
   def create_build(name, stage_idx, when_value = nil)
     create(:ci_build,

@@ -503,45 +503,30 @@ module.exports = Vue.component('environment-item', {
         </span>
       </td>
 
-      <td class="hidden-xs">
-        <div v-if="!model.isFolder">
-          <div v-if="hasManualActions && canCreateDeployment"
-            class="inline js-manual-actions-container">
-            <actions-component
-              :play-icon-svg="playIconSvg"
-              :actions="manualActions">
-            </actions-component>
-          </div>
+      <td class="hidden-xs environments-actions">
+        <div v-if="!model.isFolder" class="btn-group pull-right" role="group">
+          <actions-component v-if="hasManualActions && canCreateDeployment"
+            :play-icon-svg="playIconSvg"
+            :actions="manualActions">
+          </actions-component>
 
-          <div v-if="externalURL && canReadEnvironment"
-            class="inline js-external-url-container">
-            <external-url-component
-              :external-url="externalURL">
-            </external-url-component>
-          </div>
+          <external-url-component v-if="externalURL && canReadEnvironment"
+            :external-url="externalURL">
+          </external-url-component>
 
-          <div v-if="hasStopAction && canCreateDeployment"
-            class="inline js-stop-component-container">
-            <stop-component
-              :stop-url="model.stop_path">
-            </stop-component>
-          </div>
+          <stop-component v-if="hasStopAction && canCreateDeployment"
+            :stop-url="model.stop_path">
+          </stop-component>
 
-          <div v-if="model && model.terminal_path"
-            class="inline js-terminal-button-container">
-            <terminal-button-component
-              :terminal-icon-svg="terminalIconSvg"
-              :terminal-path="model.terminal_path">
-            </terminal-button-component>
-          </div>
+          <terminal-button-component v-if="model && model.terminal_path"
+            :terminal-icon-svg="terminalIconSvg"
+            :terminal-path="model.terminal_path">
+          </terminal-button-component>
 
-          <div v-if="canRetry && canCreateDeployment"
-            class="inline js-rollback-component-container">
-            <rollback-component
-              :is-last-deployment="isLastDeployment"
-              :retry-url="retryUrl">
-              </rollback-component>
-          </div>
+          <rollback-component v-if="canRetry && canCreateDeployment"
+            :is-last-deployment="isLastDeployment"
+            :retry-url="retryUrl">
+            </rollback-component>
         </div>
       </td>
     </tr>

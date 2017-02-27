@@ -13,4 +13,4 @@
       return $(this).removeAttr('disabled').removeClass('disabled');
     }
   });
-}).call(this);
+}).call(window);

@@ -22,7 +22,7 @@ describe User, models: true do
     it { is_expected.to have_many(:deploy_keys).dependent(:destroy) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
     it { is_expected.to have_many(:recent_events).class_name('Event') }
-    it { is_expected.to have_many(:issues).dependent(:destroy) }
+    it { is_expected.to have_many(:issues).dependent(:restrict_with_exception) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:assigned_issues).dependent(:nullify) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
@@ -206,6 +206,22 @@ describe User, models: true do
           user = build(:user, email: "temp-email-for-oauth@example.com")
           expect(user).to be_valid
         end
+      end
+    end
+
+    describe 'ghost users' do
+      it 'does not allow a non-blocked ghost user' do
+        user = build(:user, :ghost)
+        user.state = 'active'
+
+        expect(user).to be_invalid
+      end
+
+      it 'allows a blocked ghost user' do
+        user = build(:user, :ghost)
+        user.state = 'blocked'
+
+        expect(user).to be_valid
       end
     end
   end
@@ -582,18 +598,16 @@ describe User, models: true do
       it "applies defaults to user" do
         expect(user.projects_limit).to eq(Gitlab.config.gitlab.default_projects_limit)
         expect(user.can_create_group).to eq(Gitlab.config.gitlab.default_can_create_group)
-        expect(user.theme_id).to eq(Gitlab.config.gitlab.default_theme)
         expect(user.external).to be_falsey
       end
     end
 
     describe 'with default overrides' do
-      let(:user) { User.new(projects_limit: 123, can_create_group: false, can_create_team: true, theme_id: 1) }
+      let(:user) { User.new(projects_limit: 123, can_create_group: false, can_create_team: true) }
 
       it "applies defaults to user" do
         expect(user.projects_limit).to eq(123)
         expect(user.can_create_group).to be_falsey
-        expect(user.theme_id).to eq(1)
       end
     end
 
@@ -695,9 +709,7 @@ describe User, models: true do
   end
 
   describe '.search_with_secondary_emails' do
-    def search_with_secondary_emails(query)
-      described_class.search_with_secondary_emails(query)
-    end
+    delegate :search_with_secondary_emails, to: :described_class
 
     let!(:user) { create(:user) }
     let!(:email) { create(:email) }
@@ -1492,6 +1504,43 @@ describe User, models: true do
 
       expect(user.access_level).to eq(:admin)
       expect(user.admin).to be true
+    end
+  end
+
+  describe '.ghost' do
+    it "creates a ghost user if one isn't already present" do
+      ghost = User.ghost
+
+      expect(ghost).to be_ghost
+      expect(ghost).to be_persisted
+    end
+
+    it "does not create a second ghost user if one is already present" do
+      expect do
+        User.ghost
+        User.ghost
+      end.to change { User.count }.by(1)
+      expect(User.ghost).to eq(User.ghost)
+    end
+
+    context "when a regular user exists with the username 'ghost'" do
+      it "creates a ghost user with a non-conflicting username" do
+        create(:user, username: 'ghost')
+        ghost = User.ghost
+
+        expect(ghost).to be_persisted
+        expect(ghost.username).to eq('ghost1')
+      end
+    end
+
+    context "when a regular user exists with the email 'ghost@example.com'" do
+      it "creates a ghost user with a non-conflicting email" do
+        create(:user, email: 'ghost@example.com')
+        ghost = User.ghost
+
+        expect(ghost).to be_persisted
+        expect(ghost.email).to eq('ghost1@example.com')
+      end
     end
   end
 end

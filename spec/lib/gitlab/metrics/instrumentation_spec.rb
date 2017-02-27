@@ -197,11 +197,13 @@ describe Gitlab::Metrics::Instrumentation do
 
       @child1 = Class.new(@dummy) do
         def self.child1_foo; end
+
         def child1_bar; end
       end
 
       @child2 = Class.new(@child1) do
         def self.child2_foo; end
+
         def child2_bar; end
       end
     end

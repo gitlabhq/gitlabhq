@@ -18,7 +18,8 @@
     "sandbox": false,
     "setFixtures": false,
     "setStyleFixtures": false,
-    "spyOnEvent": false
+    "spyOnEvent": false,
+    "ClassSpecHelper": false
   },
   "plugins": ["jasmine"],
   "rules": {

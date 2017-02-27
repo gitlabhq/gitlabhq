@@ -104,7 +104,7 @@ describe API::Files, api: true  do
     let(:valid_params) do
       {
         file_path: 'newfile.rb',
-        branch_name: 'master',
+        branch: 'master',
         content: 'puts 8',
         commit_message: 'Added newfile'
       }
@@ -127,7 +127,7 @@ describe API::Files, api: true  do
     end
 
     it "returns a 400 if editor fails to create file" do
-      allow_any_instance_of(Repository).to receive(:commit_file).
+      allow_any_instance_of(Repository).to receive(:create_file).
         and_return(false)
 
       post api("/projects/#{project.id}/repository/files", user), valid_params
@@ -153,7 +153,7 @@ describe API::Files, api: true  do
     let(:valid_params) do
       {
         file_path: file_path,
-        branch_name: 'master',
+        branch: 'master',
         content: 'puts 8',
         commit_message: 'Changed file'
       }
@@ -193,7 +193,7 @@ describe API::Files, api: true  do
     let(:valid_params) do
       {
         file_path: file_path,
-        branch_name: 'master',
+        branch: 'master',
         commit_message: 'Changed file'
       }
     end
@@ -215,7 +215,7 @@ describe API::Files, api: true  do
     end
 
     it "returns a 400 if fails to create file" do
-      allow_any_instance_of(Repository).to receive(:remove_file).and_return(false)
+      allow_any_instance_of(Repository).to receive(:delete_file).and_return(false)
 
       delete api("/projects/#{project.id}/repository/files", user), valid_params
 
@@ -241,7 +241,7 @@ describe API::Files, api: true  do
     let(:put_params) do
       {
         file_path: file_path,
-        branch_name: 'master',
+        branch: 'master',
         content: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=',
         commit_message: 'Binary file with a \n should not be touched',
         encoding: 'base64'

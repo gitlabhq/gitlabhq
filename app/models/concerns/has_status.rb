@@ -1,12 +1,12 @@
 module HasStatus
   extend ActiveSupport::Concern
 
-  DEFAULT_STATUS = 'created'
-  AVAILABLE_STATUSES = %w[created pending running success failed canceled skipped]
-  STARTED_STATUSES = %w[running success failed skipped]
-  ACTIVE_STATUSES = %w[pending running]
-  COMPLETED_STATUSES = %w[success failed canceled skipped]
-  ORDERED_STATUSES = %w[failed pending running canceled success skipped]
+  DEFAULT_STATUS = 'created'.freeze
+  AVAILABLE_STATUSES = %w[created pending running success failed canceled skipped].freeze
+  STARTED_STATUSES = %w[running success failed skipped].freeze
+  ACTIVE_STATUSES = %w[pending running].freeze
+  COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
+  ORDERED_STATUSES = %w[failed pending running canceled success skipped].freeze
 
   class_methods do
     def status_sql

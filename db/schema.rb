@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170214111112) do
+ActiveRecord::Schema.define(version: 20170216141440) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(version: 20170214111112) do
     t.boolean "plantuml_enabled"
     t.integer "max_pages_size", default: 100, null: false
     t.integer "terminal_max_session_time", default: 0, null: false
+    t.string "default_artifacts_expire_in", default: '0', null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -251,8 +252,8 @@ ActiveRecord::Schema.define(version: 20170214111112) do
     t.integer "lock_version"
   end
 
+  add_index "ci_commits", ["gl_project_id", "ref", "status"], name: "index_ci_commits_on_gl_project_id_and_ref_and_status", using: :btree
   add_index "ci_commits", ["gl_project_id", "sha"], name: "index_ci_commits_on_gl_project_id_and_sha", using: :btree
-  add_index "ci_commits", ["gl_project_id", "status"], name: "index_ci_commits_on_gl_project_id_and_status", using: :btree
   add_index "ci_commits", ["gl_project_id"], name: "index_ci_commits_on_gl_project_id", using: :btree
   add_index "ci_commits", ["status"], name: "index_ci_commits_on_status", using: :btree
   add_index "ci_commits", ["user_id"], name: "index_ci_commits_on_user_id", using: :btree
@@ -1218,6 +1219,8 @@ ActiveRecord::Schema.define(version: 20170214111112) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "user_agent_details", ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -1238,7 +1241,6 @@ ActiveRecord::Schema.define(version: 20170214111112) do
     t.string "linkedin", default: "", null: false
     t.string "twitter", default: "", null: false
     t.string "authentication_token"
-    t.integer "theme_id", default: 1, null: false
     t.string "bio"
     t.integer "failed_attempts", default: 0
     t.datetime "locked_at"
@@ -1276,10 +1278,11 @@ ActiveRecord::Schema.define(version: 20170214111112) do
     t.datetime "otp_grace_period_started_at"
     t.boolean "ldap_email", default: false, null: false
     t.boolean "external", default: false
-    t.string "organization"
     t.string "incoming_email_token"
+    t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "notified_of_own_activity", default: false, null: false
+    t.boolean "ghost"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

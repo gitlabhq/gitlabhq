@@ -14,7 +14,7 @@ module Gitlab
       koding: '.koding.yml',
       gitlab_ci: '.gitlab-ci.yml',
       avatar: /\Alogo\.(png|jpg|gif)\z/
-    }
+    }.freeze
 
     # Returns an Array of file types based on the given paths.
     #

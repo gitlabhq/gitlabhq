@@ -8,7 +8,7 @@ module Gitlab
         class Environment < Node
           include Validatable
 
-          ALLOWED_KEYS = %i[name url action on_stop]
+          ALLOWED_KEYS = %i[name url action on_stop].freeze
 
           validations do
             validate do
@@ -21,12 +21,14 @@ module Gitlab
             validates :name,
               type: {
                 with: String,
-                message: Gitlab::Regex.environment_name_regex_message }
+                message: Gitlab::Regex.environment_name_regex_message
+              }
 
             validates :name,
               format: {
                 with: Gitlab::Regex.environment_name_regex,
-                message: Gitlab::Regex.environment_name_regex_message }
+                message: Gitlab::Regex.environment_name_regex_message
+              }
 
             with_options if: :hash? do
               validates :config, allowed_keys: ALLOWED_KEYS

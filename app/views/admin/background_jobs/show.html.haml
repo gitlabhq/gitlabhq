@@ -35,7 +35,7 @@
         .clearfix
           %p
             %i.fa.fa-exclamation-circle
-            If '[25 of 25 busy]' is shown, restart GitLab with 'sudo service gitlab reload'.
+            If '[#{@concurrency} of #{@concurrency} busy]' is shown, restart GitLab with 'sudo service gitlab reload'.
           %p
             %i.fa.fa-exclamation-circle
             If more than one sidekiq process is listed, stop GitLab, kill the remaining sidekiq processes (sudo pkill -u #{gitlab_config.user} -f sidekiq) and restart GitLab.

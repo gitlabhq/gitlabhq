@@ -2,10 +2,12 @@
 
 (() => {
   class FilteredSearchDropdownManager {
-    constructor(baseEndpoint = '') {
+    constructor(baseEndpoint = '', page) {
       this.baseEndpoint = baseEndpoint.replace(/\/$/, '');
       this.tokenizer = gl.FilteredSearchTokenizer;
+      this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
       this.filteredSearchInput = document.querySelector('.filtered-search');
+      this.page = page;
 
       this.setupMapping();
 
@@ -150,7 +152,7 @@
         this.droplab = new DropLab();
       }
 
-      const match = gl.FilteredSearchTokenKeys.searchByKey(dropdownName.toLowerCase());
+      const match = this.filteredSearchTokenKeys.searchByKey(dropdownName.toLowerCase());
       const shouldOpenFilterDropdown = match && this.currentDropdown !== match.key
         && this.mapping[match.key];
       const shouldOpenHintDropdown = !match && this.currentDropdown !== 'hint';

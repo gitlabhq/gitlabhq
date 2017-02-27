@@ -26,7 +26,7 @@ module API
       expose :last_sign_in_at
       expose :confirmed_at
       expose :email
-      expose :theme_id, :color_scheme_id, :projects_limit, :current_sign_in_at
+      expose :color_scheme_id, :projects_limit, :current_sign_in_at
       expose :identities, using: Entities::Identity
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
@@ -339,9 +339,6 @@ module API
       expose :created_at, :updated_at
       expose :system?, as: :system
       expose :noteable_id, :noteable_type
-      # upvote? and downvote? are deprecated, always return false
-      expose(:upvote?)    { |note| false }
-      expose(:downvote?)  { |note| false }
     end
 
     class AwardEmoji < Grape::Entity
@@ -560,6 +557,7 @@ module API
       expose :default_project_visibility
       expose :default_snippet_visibility
       expose :default_group_visibility
+      expose :default_artifacts_expire_in
       expose :domain_whitelist
       expose :domain_blacklist_enabled
       expose :domain_blacklist
@@ -618,6 +616,10 @@ module API
           options[:current_user].authorized_projects.where(id: runner.projects)
         end
       end
+    end
+
+    class RunnerRegistrationDetails < Grape::Entity
+      expose :id, :token
     end
 
     class BuildArtifactFile < Grape::Entity

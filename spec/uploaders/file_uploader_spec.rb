@@ -1,57 +1,35 @@
 require 'spec_helper'
 
 describe FileUploader do
-  let(:project) { create(:project) }
+  let(:uploader) { described_class.new(build_stubbed(:project)) }
 
-  before do
-    @previous_enable_processing = FileUploader.enable_processing
-    FileUploader.enable_processing = false
-    @uploader = FileUploader.new(project)
-  end
+  describe 'initialize' do
+    it 'generates a secret if none is provided' do
+      expect(SecureRandom).to receive(:hex).and_return('secret')
 
-  after do
-    FileUploader.enable_processing = @previous_enable_processing
-    @uploader.remove!
-  end
+      uploader = described_class.new(double)
 
-  describe '#image_or_video?' do
-    context 'given an image file' do
-      before do
-        @uploader.store!(fixture_file_upload(Rails.root.join('spec', 'fixtures', 'rails_sample.jpg')))
-      end
-
-      it 'detects an image based on file extension' do
-        expect(@uploader.image_or_video?).to be true
-      end
+      expect(uploader.secret).to eq 'secret'
     end
 
-    context 'given an video file' do
-      before do
-        video_file = fixture_file_upload(Rails.root.join('spec', 'fixtures', 'video_sample.mp4'))
-        @uploader.store!(video_file)
-      end
+    it 'accepts a secret parameter' do
+      expect(SecureRandom).not_to receive(:hex)
 
-      it 'detects a video based on file extension' do
-        expect(@uploader.image_or_video?).to be true
-      end
-    end
+      uploader = described_class.new(double, 'secret')
 
-    it 'does not return image_or_video? for other types' do
-      @uploader.store!(fixture_file_upload(Rails.root.join('spec', 'fixtures', 'doc_sample.txt')))
-
-      expect(@uploader.image_or_video?).to be false
+      expect(uploader.secret).to eq 'secret'
     end
   end
 
   describe '#move_to_cache' do
     it 'is true' do
-      expect(@uploader.move_to_cache).to eq(true)
+      expect(uploader.move_to_cache).to eq(true)
     end
   end
 
   describe '#move_to_store' do
     it 'is true' do
-      expect(@uploader.move_to_store).to eq(true)
+      expect(uploader.move_to_store).to eq(true)
     end
   end
 end

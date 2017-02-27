@@ -24,7 +24,7 @@ describe Projects::BuildsController, '(JavaScript fixtures)', type: :controller 
   it 'builds/build-with-artifacts.html.raw' do |example|
     get :show,
       namespace_id: project.namespace.to_param,
-      project_id: project.to_param,
+      project_id: project,
       id: build_with_artifacts.to_param
 
     expect(response).to be_success

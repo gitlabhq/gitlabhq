@@ -16,9 +16,10 @@
 #     label_name: string
 #     sort: string
 #     non_archived: boolean
+#     iids: integer[]
 #
 class IssuableFinder
-  NONE = '0'
+  NONE = '0'.freeze
 
   attr_accessor :current_user, :params
 
@@ -40,6 +41,7 @@ class IssuableFinder
     items = by_label(items)
     items = by_due_date(items)
     items = by_non_archived(items)
+    items = by_iids(items)
     sort(items)
   end
 
@@ -266,16 +268,11 @@ class IssuableFinder
   end
 
   def by_search(items)
-    if search
-      items =
-        if search =~ iid_pattern
-          items.where(iid: $~[:iid])
-        else
-          items.full_search(search)
-        end
-    end
+    search ? items.full_search(search) : items
+  end
 
-    items
+  def by_iids(items)
+    params[:iids].present? ? items.where(iid: params[:iids]) : items
   end
 
   def sort(items)

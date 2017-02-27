@@ -1,44 +1,36 @@
 module Ci
   module API
-    # Runners API
     class Runners < Grape::API
       resource :runners do
-        # Delete runner
-        # Parameters:
-        #   token (required) - The unique token of runner
-        #
-        # Example Request:
-        #   GET /runners/delete
+        desc 'Delete a runner'
+        params do
+          requires :token, type: String, desc: 'The unique token of the runner'
+        end
         delete "delete" do
-          required_attributes! [:token]
           authenticate_runner!
           Ci::Runner.find_by_token(params[:token]).destroy
         end
 
-        # Register a new runner
-        #
-        # Note: This is an "internal" API called when setting up
-        # runners, so it is authenticated differently.
-        #
-        # Parameters:
-        #   token (required) - The unique token of runner
-        #
-        # Example Request:
-        #   POST /runners/register
+        desc 'Register a new runner' do
+          success Entities::Runner
+        end
+        params do
+          requires :token, type: String, desc: 'The unique token of the runner'
+          optional :description, type: String, desc: 'The description of the runner'
+          optional :tag_list, type: Array[String], desc: 'A list of tags the runner should run for'
+          optional :run_untagged, type: Boolean, desc: 'Flag if the runner should execute untagged jobs'
+          optional :locked, type: Boolean, desc: 'Lock this runner for this specific project'
+        end
         post "register" do
-          required_attributes! [:token]
-
-          attributes = attributes_for_keys(
-            [:description, :tag_list, :run_untagged, :locked]
-          )
+          runner_params = declared(params, include_missing: false)
 
           runner =
             if runner_registration_token_valid?
               # Create shared runner. Requires admin access
-              Ci::Runner.create(attributes.merge(is_shared: true))
-            elsif project = Project.find_by(runners_token: params[:token])
+              Ci::Runner.create(runner_params.merge(is_shared: true))
+            elsif project = Project.find_by(runners_token: runner_params[:token])
               # Create a specific runner for project.
-              project.runners.create(attributes)
+              project.runners.create(runner_params)
             end
 
           return forbidden! unless runner

@@ -504,4 +504,4 @@
 
     return LabelsSelect;
   })();
-}).call(this);
+}).call(window);

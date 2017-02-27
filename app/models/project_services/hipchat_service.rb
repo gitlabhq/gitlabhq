@@ -6,7 +6,7 @@ class HipchatService < Service
     a b i strong em br img pre code
     table th tr td caption colgroup col thead tbody tfoot
     ul ol li dl dt dd
-  ]
+  ].freeze
 
   prop_accessor :token, :room, :server, :color, :api_version
   boolean_accessor :notify_only_broken_builds, :notify
@@ -36,7 +36,7 @@ class HipchatService < Service
       { type: 'text', name: 'token',     placeholder: 'Room token' },
       { type: 'text', name: 'room',      placeholder: 'Room name or ID' },
       { type: 'checkbox', name: 'notify' },
-      { type: 'select', name: 'color', choices: ['yellow', 'red', 'green', 'purple', 'gray', 'random'] },
+      { type: 'select', name: 'color', choices: %w(yellow red green purple gray random) },
       { type: 'text', name: 'api_version',
         placeholder: 'Leave blank for default (v2)' },
       { type: 'text', name: 'server',

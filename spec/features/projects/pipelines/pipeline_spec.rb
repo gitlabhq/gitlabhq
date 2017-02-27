@@ -54,7 +54,7 @@ describe 'Pipeline', :feature, :js do
       expect(page).to have_content('Build')
       expect(page).to have_content('Test')
       expect(page).to have_content('Deploy')
-      expect(page).to have_content('Retry failed')
+      expect(page).to have_content('Retry')
       expect(page).to have_content('Cancel running')
     end
 
@@ -164,9 +164,9 @@ describe 'Pipeline', :feature, :js do
       it { expect(page).not_to have_content('retried') }
 
       context 'when retrying' do
-        before { click_on 'Retry failed' }
+        before { find('.js-retry-button').trigger('click') }
 
-        it { expect(page).not_to have_content('Retry failed') }
+        it { expect(page).not_to have_content('Retry') }
       end
     end
 
@@ -198,7 +198,7 @@ describe 'Pipeline', :feature, :js do
       expect(page).to have_content(build_failed.id)
       expect(page).to have_content(build_running.id)
       expect(page).to have_content(build_external.id)
-      expect(page).to have_content('Retry failed')
+      expect(page).to have_content('Retry')
       expect(page).to have_content('Cancel running')
       expect(page).to have_link('Play')
     end
@@ -226,9 +226,9 @@ describe 'Pipeline', :feature, :js do
       it { expect(page).not_to have_content('retried') }
 
       context 'when retrying' do
-        before { click_on 'Retry failed' }
+        before { find('.js-retry-button').trigger('click') }
 
-        it { expect(page).not_to have_content('Retry failed') }
+        it { expect(page).not_to have_content('Retry') }
         it { expect(page).to have_selector('.retried') }
       end
     end

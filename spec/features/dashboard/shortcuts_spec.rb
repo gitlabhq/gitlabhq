@@ -10,20 +10,20 @@ feature 'Dashboard shortcuts', feature: true, js: true do
     find('body').native.send_key('g')
     find('body').native.send_key('p')
 
-    ensure_active_main_tab('Projects')
+    check_page_title('Projects')
 
     find('body').native.send_key('g')
     find('body').native.send_key('i')
 
-    ensure_active_main_tab('Issues')
+    check_page_title('Issues')
 
     find('body').native.send_key('g')
     find('body').native.send_key('m')
 
-    ensure_active_main_tab('Merge Requests')
+    check_page_title('Merge Requests')
   end
 
-  def ensure_active_main_tab(content)
-    expect(find('.nav-sidebar li.active')).to have_content(content)
+  def check_page_title(title)
+    expect(find('.header-content .title')).to have_content(title)
   end
 end

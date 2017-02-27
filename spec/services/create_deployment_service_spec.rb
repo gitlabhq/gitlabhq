@@ -9,7 +9,8 @@ describe CreateDeploymentService, services: true do
   describe '#execute' do
     let(:options) { nil }
     let(:params) do
-      { environment: 'production',
+      {
+        environment: 'production',
         ref: 'master',
         tag: false,
         sha: '97de212e80737a608d939f648d959671fb0a0142',
@@ -83,10 +84,11 @@ describe CreateDeploymentService, services: true do
 
     context 'for environment with invalid name' do
       let(:params) do
-        { environment: 'name,with,commas',
+        {
+          environment: 'name,with,commas',
           ref: 'master',
           tag: false,
-          sha: '97de212e80737a608d939f648d959671fb0a0142',
+          sha: '97de212e80737a608d939f648d959671fb0a0142'
         }
       end
 
@@ -101,7 +103,8 @@ describe CreateDeploymentService, services: true do
 
     context 'when variables are used' do
       let(:params) do
-        { environment: 'review-apps/$CI_BUILD_REF_NAME',
+        {
+          environment: 'review-apps/$CI_BUILD_REF_NAME',
           ref: 'master',
           tag: false,
           sha: '97de212e80737a608d939f648d959671fb0a0142',
@@ -234,7 +237,11 @@ describe CreateDeploymentService, services: true do
 
       context 'when build is retried' do
         it_behaves_like 'does create environment and deployment' do
-          let(:deployable) { Ci::Build.retry(build) }
+          before do
+            project.add_developer(user)
+          end
+
+          let(:deployable) { Ci::Build.retry(build, user) }
 
           subject { deployable.success }
         end

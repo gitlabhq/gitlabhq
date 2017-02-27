@@ -29,7 +29,7 @@ describe Gitlab::Ci::Config::Entry::Variables do
     end
 
     context 'when entry value is not correct' do
-      let(:config) { [ :VAR, 'test' ] }
+      let(:config) { [:VAR, 'test'] }
 
       describe '#errors' do
         it 'saves errors' do

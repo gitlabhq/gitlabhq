@@ -3,7 +3,9 @@
 /* global boardsMockInterceptor */
 /* global BoardService */
 /* global List */
+/* global ListIssue */
 /* global listObj */
+/* global listObjDuplicate */
 
 require('~/lib/utils/url_utility');
 require('~/boards/models/issue');
@@ -83,5 +85,24 @@ describe('List model', () => {
       expect(list.issues.length).toBe(0);
       done();
     }, 0);
+  });
+
+  it('sends service request to update issue label', () => {
+    const listDup = new List(listObjDuplicate);
+    const issue = new ListIssue({
+      title: 'Testing',
+      iid: 1,
+      confidential: false,
+      labels: [list.label, listDup.label]
+    });
+
+    list.issues.push(issue);
+    listDup.issues.push(issue);
+
+    spyOn(gl.boardService, 'moveIssue').and.callThrough();
+
+    listDup.updateIssueLabel(list, issue);
+
+    expect(gl.boardService.moveIssue).toHaveBeenCalledWith(issue.id, list.id, listDup.id);
   });
 });

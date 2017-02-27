@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe Users::DestroyService, services: true do
   describe "Deletes a user and all their personal projects" do
-    let!(:user)         { create(:user) }
-    let!(:current_user) { create(:user) }
-    let!(:namespace)    { create(:namespace, owner: user) }
-    let!(:project)      { create(:project, namespace: namespace) }
-    let(:service)       { described_class.new(current_user) }
+    let!(:user)      { create(:user) }
+    let!(:admin)     { create(:admin) }
+    let!(:namespace) { create(:namespace, owner: user) }
+    let!(:project)   { create(:project, namespace: namespace) }
+    let(:service)    { described_class.new(admin) }
 
     context 'no options are given' do
       it 'deletes the user' do
@@ -21,6 +21,54 @@ describe Users::DestroyService, services: true do
         expect_any_instance_of(Projects::DestroyService).to receive(:async_execute).once
 
         service.execute(user)
+      end
+    end
+
+    context "a deleted user's issues" do
+      let(:project) { create :project }
+
+      before do
+        project.add_developer(user)
+      end
+
+      context "for an issue the user has created" do
+        let!(:issue) { create(:issue, project: project, author: user) }
+
+        before do
+          service.execute(user)
+        end
+
+        it 'does not delete the issue' do
+          expect(Issue.find_by_id(issue.id)).to be_present
+        end
+
+        it 'migrates the issue so that the "Ghost User" is the issue owner' do
+          migrated_issue = Issue.find_by_id(issue.id)
+
+          expect(migrated_issue.author).to eq(User.ghost)
+        end
+
+        it 'blocks the user before migrating issues to the "Ghost User' do
+          expect(user).to be_blocked
+        end
+      end
+
+      context "for an issue the user was assigned to" do
+        let!(:issue) { create(:issue, project: project, assignee: user) }
+
+        before do
+          service.execute(user)
+        end
+
+        it 'does not delete issues the user is assigned to' do
+          expect(Issue.find_by_id(issue.id)).to be_present
+        end
+
+        it 'migrates the issue so that it is "Unassigned"' do
+          migrated_issue = Issue.find_by_id(issue.id)
+
+          expect(migrated_issue.assignee).to be_nil
+        end
       end
     end
 
@@ -55,6 +103,27 @@ describe Users::DestroyService, services: true do
 
       it 'deletes the user' do
         expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context "deletion permission checks" do
+      it 'does not delete the user when user is not an admin' do
+        other_user = create(:user)
+
+        expect { described_class.new(other_user).execute(user) }.to raise_error(Gitlab::Access::AccessDeniedError)
+        expect(User.exists?(user.id)).to be(true)
+      end
+
+      it 'allows admins to delete anyone' do
+        described_class.new(admin).execute(user)
+
+        expect(User.exists?(user.id)).to be(false)
+      end
+
+      it 'allows users to delete their own account' do
+        described_class.new(user).execute(user)
+
+        expect(User.exists?(user.id)).to be(false)
       end
     end
   end

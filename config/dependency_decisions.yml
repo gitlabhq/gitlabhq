@@ -320,3 +320,9 @@
     :why: https://github.com/shinnn/spdx-license-ids/blob/v1.2.2/LICENSE
     :versions: []
     :when: 2017-02-08 22:35:00.225232000 Z
+- - :approve
+  - opener
+  - :who: Mike Greiling
+    :why: https://github.com/domenic/opener/blob/1.4.3/LICENSE.txt
+    :versions: []
+    :when: 2017-02-21 22:33:41.729629000 Z

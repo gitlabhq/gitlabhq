@@ -32,9 +32,7 @@ module API
         use :pagination
       end
       get ":id/hooks" do
-        hooks = paginate user_project.hooks
-
-        present hooks, with: Entities::ProjectHook
+        present paginate(user_project.hooks), with: Entities::ProjectHook
       end
 
       desc 'Get a project hook' do

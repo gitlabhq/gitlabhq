@@ -54,7 +54,7 @@ require('../lib/utils/datetime_utility');
       },
     },
     template: `
-      <td>
+      <td class="pipelines-time-ago">
         <p class="duration" v-if='duration'>
           <span v-html='svgs.iconTimer'></span>
           {{duration}}
@@ -65,8 +65,7 @@ require('../lib/utils/datetime_utility');
             data-toggle="tooltip"
             data-placement="top"
             data-container="body"
-            :data-original-title='localTimeFinished'
-          >
+            :data-original-title='localTimeFinished'>
             {{timeStopped.words}}
           </time>
         </p>

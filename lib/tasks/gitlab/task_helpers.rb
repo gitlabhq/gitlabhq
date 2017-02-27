@@ -19,23 +19,20 @@ module Gitlab
     # It will primarily use lsb_relase to determine the OS.
     # It has fallbacks to Debian, SuSE, OS X and systems running systemd.
     def os_name
-      os_name = run_command(%W(lsb_release -irs))
-      os_name ||= if File.readable?('/etc/system-release')
-        File.read('/etc/system-release')
-      end
-      os_name ||= if File.readable?('/etc/debian_version')
-        debian_version = File.read('/etc/debian_version')
-        "Debian #{debian_version}"
-      end
-      os_name ||= if File.readable?('/etc/SuSE-release')
-        File.read('/etc/SuSE-release')
-      end
-      os_name ||= if os_x_version = run_command(%W(sw_vers -productVersion))
-        "Mac OS X #{os_x_version}"
-      end
-      os_name ||= if File.readable?('/etc/os-release')
-        File.read('/etc/os-release').match(/PRETTY_NAME=\"(.+)\"/)[1]
-      end
+      os_name = run_command(%w(lsb_release -irs))
+      os_name ||=
+        if File.readable?('/etc/system-release')
+          File.read('/etc/system-release')
+        elsif File.readable?('/etc/debian_version')
+          "Debian #{File.read('/etc/debian_version')}"
+        elsif File.readable?('/etc/SuSE-release')
+          File.read('/etc/SuSE-release')
+        elsif os_x_version = run_command(%w(sw_vers -productVersion))
+          "Mac OS X #{os_x_version}"
+        elsif File.readable?('/etc/os-release')
+          File.read('/etc/os-release').match(/PRETTY_NAME=\"(.+)\"/)[1]
+        end
+
       os_name.try(:squish!)
     end
 
@@ -104,7 +101,7 @@ module Gitlab
     def warn_user_is_not_gitlab
       unless @warned_user_not_gitlab
         gitlab_user = Gitlab.config.gitlab.user
-        current_user = run_command(%W(whoami)).chomp
+        current_user = run_command(%w(whoami)).chomp
         unless current_user == gitlab_user
           puts " Warning ".color(:black).background(:yellow)
           puts "  You are running as user #{current_user.color(:magenta)}, we hope you know what you are doing."
@@ -171,14 +168,14 @@ module Gitlab
 
     def reset_to_tag(tag_wanted, target_dir)
       tag =
-      begin
-        # First try to checkout without fetching
-        # to avoid stalling tests if the Internet is down.
-        run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} describe -- #{tag_wanted}])
-      rescue Gitlab::TaskFailedError
-        run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} fetch origin])
-        run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} describe -- origin/#{tag_wanted}])
-      end
+        begin
+          # First try to checkout without fetching
+          # to avoid stalling tests if the Internet is down.
+          run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} describe -- #{tag_wanted}])
+        rescue Gitlab::TaskFailedError
+          run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} fetch origin])
+          run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} describe -- origin/#{tag_wanted}])
+        end
 
       if tag
         run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} reset --hard #{tag.strip}])

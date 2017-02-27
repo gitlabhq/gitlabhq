@@ -4,15 +4,12 @@ class FileUploader < GitlabUploader
 
   storage :file
 
-  attr_accessor :project, :secret
+  attr_accessor :project
+  attr_reader :secret
 
   def initialize(project, secret = nil)
     @project = project
-    @secret = secret || self.class.generate_secret
-  end
-
-  def base_dir
-    "uploads"
+    @secret = secret || generate_secret
   end
 
   def store_dir
@@ -23,10 +20,6 @@ class FileUploader < GitlabUploader
     File.join(base_dir, 'tmp', @project.path_with_namespace, @secret)
   end
 
-  def secure_url
-    File.join("/uploads", @secret, file.filename)
-  end
-
   def to_markdown
     to_h[:markdown]
   end
@@ -35,17 +28,23 @@ class FileUploader < GitlabUploader
     filename = image_or_video? ? self.file.basename : self.file.filename
     escaped_filename = filename.gsub("]", "\\]")
 
-    markdown = "[#{escaped_filename}](#{self.secure_url})"
+    markdown = "[#{escaped_filename}](#{secure_url})"
     markdown.prepend("!") if image_or_video? || dangerous?
 
     {
       alt:      filename,
-      url:      self.secure_url,
+      url:      secure_url,
       markdown: markdown
     }
   end
 
-  def self.generate_secret
+  private
+
+  def generate_secret
     SecureRandom.hex
+  end
+
+  def secure_url
+    File.join('/uploads', @secret, file.filename)
   end
 end

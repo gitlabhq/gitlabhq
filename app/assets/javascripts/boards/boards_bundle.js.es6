@@ -1,16 +1,20 @@
-/* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren, import/newline-after-import, no-multi-spaces, max-len */
+/* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
 /* global Vue */
 /* global BoardService */
 
-function requireAll(context) { return context.keys().map(context); }
-
 window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
-requireAll(require.context('./models',   true, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./stores',   true, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./services', true, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./mixins',   true, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./filters',  true, /^\.\/.*\.(js|es6)$/));
+require('./models/issue');
+require('./models/label');
+require('./models/list');
+require('./models/milestone');
+require('./models/user');
+require('./stores/boards_store');
+require('./stores/modal_store');
+require('./services/board_service');
+require('./mixins/modal_mixins');
+require('./mixins/sortable_default_options');
+require('./filters/due_date_filters');
 require('./components/board');
 require('./components/board_sidebar');
 require('./components/new_list_dropdown');
@@ -93,17 +97,53 @@ $(() => {
       modal: ModalStore.store,
       store: Store.state,
     },
+    watch: {
+      disabled() {
+        this.updateTooltip();
+      },
+    },
     computed: {
       disabled() {
         return !this.store.lists.filter(list => list.type !== 'blank' && list.type !== 'done').length;
       },
+      tooltipTitle() {
+        if (this.disabled) {
+          return 'Please add a list to your board first';
+        }
+
+        return '';
+      },
+    },
+    methods: {
+      updateTooltip() {
+        const $tooltip = $(this.$el);
+
+        this.$nextTick(() => {
+          if (this.disabled) {
+            $tooltip.tooltip();
+          } else {
+            $tooltip.tooltip('destroy');
+          }
+        });
+      },
+      openModal() {
+        if (!this.disabled) {
+          this.toggleModal(true);
+        }
+      },
+    },
+    mounted() {
+      this.updateTooltip();
     },
     template: `
       <button
-        class="btn btn-create pull-right prepend-left-10 has-tooltip"
+        class="btn btn-create pull-right prepend-left-10"
         type="button"
-        :disabled="disabled"
-        @click="toggleModal(true)">
+        data-placement="bottom"
+        :class="{ 'disabled': disabled }"
+        :title="tooltipTitle"
+        :aria-disabled="disabled"
+        @click="openModal">
         Add issues
       </button>
     `,

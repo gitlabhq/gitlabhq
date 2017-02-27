@@ -10,10 +10,10 @@
 
     - if diff_file.renamed_file
       - old_path, new_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
-      %strong.file-title-name.has-tooltip{ data: { title: old_path, container: 'body' } }
+      %strong.file-title-name.has-tooltip{ data: { title: diff_file.old_path, container: 'body' } }
         = old_path
       &rarr;
-      %strong.file-title-name.has-tooltip{ data: { title: new_path, container: 'body' } }
+      %strong.file-title-name.has-tooltip{ data: { title: diff_file.new_path, container: 'body' } }
         = new_path
     - else
       %strong.file-title-name.has-tooltip{ data: { title: diff_file.new_path, container: 'body' } }

@@ -4,7 +4,7 @@ describe Gitlab::Ci::Config::Entry::Commands do
   let(:entry) { described_class.new(config) }
 
   context 'when entry config value is an array' do
-    let(:config) { ['ls', 'pwd'] }
+    let(:config) { %w(ls pwd) }
 
     describe '#value' do
       it 'returns array of strings' do

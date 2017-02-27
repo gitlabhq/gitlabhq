@@ -3,7 +3,7 @@ include ImportExport::CommonUtil
 
 describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
   describe 'restore project tree' do
-    before(:all) do
+    before(:context) do
       @user = create(:user)
 
       RSpec::Mocks.with_temporary_scope do
@@ -13,10 +13,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
         @restored_project_json = project_tree_restorer.restore
       end
-    end
-
-    after(:all) do
-      @user.destroy!
     end
 
     context 'JSON' do

@@ -32,15 +32,12 @@ describe API::Notes, api: true  do
   before { project.team << [user, :reporter] }
 
   describe "GET /projects/:id/noteable/:noteable_id/notes" do
-    it_behaves_like 'a paginated resources' do
-      let(:request) { get api("/projects/#{project.id}/issues/#{issue.id}/notes", user) }
-    end
-
     context "when noteable is an Issue" do
       it "returns an array of issue notes" do
         get api("/projects/#{project.id}/issues/#{issue.id}/notes", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['body']).to eq(issue_note.note)
       end
@@ -56,6 +53,7 @@ describe API::Notes, api: true  do
           get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes", user)
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response).to be_empty
         end
@@ -75,6 +73,7 @@ describe API::Notes, api: true  do
             get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes", private_user)
 
             expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(json_response.first['body']).to eq(cross_reference_note.note)
           end
@@ -87,6 +86,7 @@ describe API::Notes, api: true  do
         get api("/projects/#{project.id}/snippets/#{snippet.id}/notes", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['body']).to eq(snippet_note.note)
       end
@@ -109,6 +109,7 @@ describe API::Notes, api: true  do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/notes", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['body']).to eq(merge_request_note.note)
       end

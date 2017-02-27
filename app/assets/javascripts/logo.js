@@ -4,4 +4,4 @@
   window.addEventListener('beforeunload', function() {
     $('.tanuki-logo').addClass('animate');
   });
-}).call(this);
+}).call(window);

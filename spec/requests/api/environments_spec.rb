@@ -14,14 +14,11 @@ describe API::Environments, api: true  do
 
   describe 'GET /projects/:id/environments' do
     context 'as member of the project' do
-      it_behaves_like 'a paginated resources' do
-        let(:request) { get api("/projects/#{project.id}/environments", user) }
-      end
-
       it 'returns project environments' do
         get api("/projects/#{project.id}/environments", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
         expect(json_response.first['name']).to eq(environment.name)

@@ -14,9 +14,11 @@ module Ci
     has_many :builds, foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
 
-    validates_presence_of :sha, unless: :importing?
-    validates_presence_of :ref, unless: :importing?
-    validates_presence_of :status, unless: :importing?
+    delegate :id, to: :project, prefix: true
+
+    validates :sha, presence: { unless: :importing? }
+    validates :ref, presence: { unless: :importing? }
+    validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
 
     after_create :keep_around_commits, unless: :importing?
@@ -93,8 +95,11 @@ module Ci
         .select("max(#{quoted_table_name}.id)")
         .group(:ref, :sha)
 
-      relation = ref ? where(ref: ref) : self
-      relation.where(id: max_id)
+      if ref
+        where(ref: ref, id: max_id.where(ref: ref))
+      else
+        where(id: max_id)
+      end
     end
 
     def self.latest_status(ref = nil)
@@ -148,10 +153,6 @@ module Ci
 
     def artifacts
       builds.latest.with_artifacts_not_expired.includes(project: [:namespace])
-    end
-
-    def project_id
-      project.id
     end
 
     # For now the only user who participates is the user who triggered
@@ -214,21 +215,17 @@ module Ci
     def cancel_running
       Gitlab::OptimisticLocking.retry_lock(
         statuses.cancelable) do |cancelable|
-          cancelable.each(&:cancel)
+          cancelable.find_each(&:cancel)
         end
     end
 
-    def retry_failed(user)
-      Gitlab::OptimisticLocking.retry_lock(
-        builds.latest.failed_or_canceled) do |failed_or_canceled|
-          failed_or_canceled.select(&:retryable?).each do |build|
-            Ci::Build.retry(build, user)
-          end
-        end
+    def retry_failed(current_user)
+      Ci::RetryPipelineService.new(project, current_user)
+        .execute(self)
     end
 
     def mark_as_processable_after_stage(stage_idx)
-      builds.skipped.where('stage_idx > ?', stage_idx).find_each(&:process)
+      builds.skipped.after_stage(stage_idx).find_each(&:process)
     end
 
     def latest?
