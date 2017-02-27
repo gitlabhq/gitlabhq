@@ -244,8 +244,6 @@ describe User, models: true do
       expect(users.count).to eq 2
       expect(users.detect { |user| user.username == ldap_user.username }).to be_nil
     end
-=======
->>>>>>> ce/master
   end
 
   describe "scopes" do
