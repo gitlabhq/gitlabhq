@@ -8,6 +8,7 @@ module Projects
       def index
         issues = ::Boards::Issues::ListService.new(project, current_user, filter_params).execute
         issues = issues.page(params[:page]).per(params[:per] || 20)
+        make_sure_position_is_set(issues)
 
         render json: {
           issues: serialize_as_json(issues),
@@ -37,6 +38,12 @@ module Projects
       end
 
       private
+
+      def make_sure_position_is_set(issues)
+        issues.each do |issue|
+          issue.move_to_end unless issue.relative_position
+        end
+      end
 
       def issue
         @issue ||=
