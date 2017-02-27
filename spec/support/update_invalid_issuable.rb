@@ -33,7 +33,7 @@ shared_examples 'update invalid issuable' do |klass|
     end
 
     it 'renders json error message when format is json' do
-      params.merge!(format: "json")
+      params[:format] = "json"
 
       put :update, params
 
