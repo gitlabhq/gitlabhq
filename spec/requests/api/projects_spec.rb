@@ -1323,7 +1323,9 @@ describe API::Projects, api: true  do
     context 'when authenticated as user' do
       it 'removes project' do
         delete api("/projects/#{project.id}", user)
-        expect(response).to have_http_status(200)
+
+        expect(response).to have_http_status(202)
+        expect(json_response['message']).to eql('202 Accepted')
       end
 
       it 'does not remove a project if not an owner' do
@@ -1347,7 +1349,9 @@ describe API::Projects, api: true  do
     context 'when authenticated as admin' do
       it 'removes any existing project' do
         delete api("/projects/#{project.id}", admin)
-        expect(response).to have_http_status(200)
+
+        expect(response).to have_http_status(202)
+        expect(json_response['message']).to eql('202 Accepted')
       end
 
       it 'does not remove a non existing project' do

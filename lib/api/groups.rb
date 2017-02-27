@@ -44,12 +44,15 @@ module API
         optional :skip_groups, type: Array[Integer], desc: 'Array of group ids to exclude from list'
         optional :all_available, type: Boolean, desc: 'Show all group that you have access to'
         optional :search, type: String, desc: 'Search for a specific group'
+        optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
         optional :order_by, type: String, values: %w[name path], default: 'name', desc: 'Order by name or path'
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
         use :pagination
       end
       get do
-        groups = if current_user.admin
+        groups = if params[:owned]
+                   current_user.owned_groups
+                 elsif current_user.admin
                    Group.all
                  elsif params[:all_available]
                    GroupsFinder.new.execute(current_user)
@@ -62,17 +65,6 @@ module API
         groups = groups.reorder(params[:order_by] => params[:sort])
 
         present_groups groups, statistics: params[:statistics] && current_user.is_admin?
-      end
-
-      desc 'Get list of owned groups for authenticated user' do
-        success Entities::Group
-      end
-      params do
-        use :pagination
-        use :statistics_params
-      end
-      get '/owned' do
-        present_groups current_user.owned_groups, statistics: params[:statistics]
       end
 
       desc 'Create a group. Available only for users who can create groups.' do

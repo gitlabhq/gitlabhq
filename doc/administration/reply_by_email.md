@@ -69,7 +69,9 @@ please consult [RFC 5322](https://tools.ietf.org/html/rfc5322#section-3.6.4).
 
 If you want to use Gmail / Google Apps with Reply by email, make sure you have
 [IMAP access enabled](https://support.google.com/mail/troubleshooter/1668960?hl=en#ts=1665018)
-and [allowed less secure apps to access the account](https://support.google.com/accounts/answer/6010255).
+and [allowed less secure apps to access the account](https://support.google.com/accounts/answer/6010255)
+or [turn-on 2-step validation](https://support.google.com/accounts/answer/185839)
+and use [an application password](https://support.google.com/mail/answer/185833).
 
 To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
 [Postfix setup documentation](reply_by_email_postfix_setup.md).

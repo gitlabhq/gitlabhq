@@ -17,16 +17,16 @@ describe Projects::SnippetsController do
 
       it 'redirects to last_page if page number is larger than number of pages' do
         get :index,
-          namespace_id: project.namespace.path,
-          project_id: project.path, page: (last_page + 1).to_param
+          namespace_id: project.namespace,
+          project_id: project, page: (last_page + 1).to_param
 
         expect(response).to redirect_to(namespace_project_snippets_path(page: last_page))
       end
 
       it 'redirects to specified page' do
         get :index,
-          namespace_id: project.namespace.path,
-          project_id: project.path, page: last_page.to_param
+          namespace_id: project.namespace,
+          project_id: project, page: last_page.to_param
 
         expect(assigns(:snippets).current_page).to eq(last_page)
         expect(response).to have_http_status(200)
@@ -38,7 +38,7 @@ describe Projects::SnippetsController do
 
       context 'when anonymous' do
         it 'does not include the private snippet' do
-          get :index, namespace_id: project.namespace.path, project_id: project.path
+          get :index, namespace_id: project.namespace, project_id: project
 
           expect(assigns(:snippets)).not_to include(project_snippet)
           expect(response).to have_http_status(200)
@@ -49,7 +49,7 @@ describe Projects::SnippetsController do
         before { sign_in(user) }
 
         it 'renders the snippet' do
-          get :index, namespace_id: project.namespace.path, project_id: project.path
+          get :index, namespace_id: project.namespace, project_id: project
 
           expect(assigns(:snippets)).to include(project_snippet)
           expect(response).to have_http_status(200)
@@ -60,7 +60,7 @@ describe Projects::SnippetsController do
         before { sign_in(user2) }
 
         it 'renders the snippet' do
-          get :index, namespace_id: project.namespace.path, project_id: project.path
+          get :index, namespace_id: project.namespace, project_id: project
 
           expect(assigns(:snippets)).to include(project_snippet)
           expect(response).to have_http_status(200)
@@ -77,7 +77,7 @@ describe Projects::SnippetsController do
 
       post :create, {
         namespace_id: project.namespace.to_param,
-        project_id: project.to_param,
+        project_id: project,
         project_snippet: { title: 'Title', content: 'Content' }.merge(snippet_params)
       }.merge(additional_params)
     end
@@ -152,7 +152,7 @@ describe Projects::SnippetsController do
 
       put :update, {
         namespace_id: project.namespace.to_param,
-        project_id: project.to_param,
+        project_id: project,
         id: snippet.id,
         project_snippet: { title: 'Title', content: 'Content' }.merge(snippet_params)
       }.merge(additional_params)
@@ -281,8 +281,8 @@ describe Projects::SnippetsController do
       sign_in(admin)
 
       post :mark_as_spam,
-           namespace_id: project.namespace.path,
-           project_id: project.path,
+           namespace_id: project.namespace,
+           project_id: project,
            id: snippet.id
     end
 
@@ -300,7 +300,7 @@ describe Projects::SnippetsController do
 
         context 'when anonymous' do
           it 'responds with status 404' do
-            get action, namespace_id: project.namespace.path, project_id: project.path, id: project_snippet.to_param
+            get action, namespace_id: project.namespace, project_id: project, id: project_snippet.to_param
 
             expect(response).to have_http_status(404)
           end
@@ -310,7 +310,7 @@ describe Projects::SnippetsController do
           before { sign_in(user) }
 
           it 'renders the snippet' do
-            get action, namespace_id: project.namespace.path, project_id: project.path, id: project_snippet.to_param
+            get action, namespace_id: project.namespace, project_id: project, id: project_snippet.to_param
 
             expect(assigns(:snippet)).to eq(project_snippet)
             expect(response).to have_http_status(200)
@@ -321,7 +321,7 @@ describe Projects::SnippetsController do
           before { sign_in(user2) }
 
           it 'renders the snippet' do
-            get action, namespace_id: project.namespace.path, project_id: project.path, id: project_snippet.to_param
+            get action, namespace_id: project.namespace, project_id: project, id: project_snippet.to_param
 
             expect(assigns(:snippet)).to eq(project_snippet)
             expect(response).to have_http_status(200)
@@ -332,7 +332,7 @@ describe Projects::SnippetsController do
       context 'when the project snippet does not exist' do
         context 'when anonymous' do
           it 'responds with status 404' do
-            get action, namespace_id: project.namespace.path, project_id: project.path, id: 42
+            get action, namespace_id: project.namespace, project_id: project, id: 42
 
             expect(response).to have_http_status(404)
           end
@@ -342,7 +342,7 @@ describe Projects::SnippetsController do
           before { sign_in(user) }
 
           it 'responds with status 404' do
-            get action, namespace_id: project.namespace.path, project_id: project.path, id: 42
+            get action, namespace_id: project.namespace, project_id: project, id: 42
 
             expect(response).to have_http_status(404)
           end
@@ -364,8 +364,8 @@ describe Projects::SnippetsController do
     context 'CRLF line ending' do
       let(:params) do
         {
-          namespace_id: project.namespace.path,
-          project_id: project.path,
+          namespace_id: project.namespace,
+          project_id: project,
           id: project_snippet.to_param
         }
       end

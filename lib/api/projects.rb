@@ -288,6 +288,8 @@ module API
       delete ":id" do
         authorize! :remove_project, user_project
         ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
+
+        accepted!
       end
 
       desc 'Mark this project as forked from another'

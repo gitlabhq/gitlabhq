@@ -9,7 +9,11 @@
   .form-group
     = f.label :ref, 'Create for', class: 'control-label'
     .col-sm-10
-      = f.text_field :ref, required: true, tabindex: 2, class: 'form-control js-branch-name ui-autocomplete-input', autocomplete: :false, id: :ref
+      = hidden_field_tag 'pipeline[ref]', params[:ref] || @project.default_branch
+      = dropdown_tag(params[:ref] || @project.default_branch,
+                     options: { toggle_class: 'js-branch-select wide',
+                                filter: true, dropdown_class: "dropdown-menu-selectable", placeholder: "Search branches",
+                                data: { selected: params[:ref] || @project.default_branch, field_name: 'pipeline[ref]' } })
       .help-block Existing branch name, tag
   .form-actions
     = f.submit 'Create pipeline', class: 'btn btn-create', tabindex: 3

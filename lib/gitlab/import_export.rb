@@ -35,7 +35,7 @@ module Gitlab
     end
 
     def export_filename(project:)
-      basename = "#{Time.now.strftime('%Y-%m-%d_%H-%M-%3N')}_#{project.namespace.full_path}_#{project.path}"
+      basename = "#{Time.now.strftime('%Y-%m-%d_%H-%M-%3N')}_#{project.full_path.tr('/', '_')}"
 
       "#{basename[0..FILENAME_LIMIT]}_export.tar.gz"
     end
