@@ -79,7 +79,6 @@
           protected_branch: formData
         },
         success: (response) => {
-          this.$wrap.effect('highlight');
           this.hasChanges = false;
 
           for (const ACCESS_LEVEL in ACCESS_LEVELS) {
