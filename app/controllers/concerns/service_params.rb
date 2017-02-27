@@ -33,6 +33,7 @@ module ServiceParams
     :issues_url,
     :jira_issue_transition_id,
     :merge_requests_events,
+    :mock_service_url,
     :namespace,
     :new_issue_url,
     :notify,
