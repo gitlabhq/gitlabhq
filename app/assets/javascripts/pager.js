@@ -1,11 +1,15 @@
+require('~/lib/utils/common_utils');
+require('~/lib/utils/url_utility');
+
 (() => {
   const ENDLESS_SCROLL_BOTTOM_PX = 400;
   const ENDLESS_SCROLL_FIRE_DELAY_MS = 1000;
 
   const Pager = {
     init(limit = 0, preload = false, disable = false, callback = $.noop) {
+      this.url = $('.content_list').data('href') || gl.utils.removeParams(['limit', 'offset']);
       this.limit = limit;
-      this.offset = this.limit;
+      this.offset = parseInt(gl.utils.getParameterByName('offset'), 10) || this.limit;
       this.disable = disable;
       this.callback = callback;
       this.loading = $('.loading').first();
@@ -20,7 +24,7 @@
       this.loading.show();
       $.ajax({
         type: 'GET',
-        url: $('.content_list').data('href') || window.location.href,
+        url: this.url,
         data: `limit=${this.limit}&offset=${this.offset}`,
         dataType: 'json',
         error: () => this.loading.hide(),
