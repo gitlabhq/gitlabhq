@@ -141,7 +141,8 @@ $dark-il: #de935f;
     }
 
     .diff-line-num {
-      &.is-over {
+      &.is-over,
+      &.hll:not(.empty-cell).is-over {
         background-color: $dark-over-bg;
         border-color: darken($dark-over-bg, 5%);
 

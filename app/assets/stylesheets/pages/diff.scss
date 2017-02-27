@@ -89,6 +89,10 @@
 
       .diff-line-num {
         width: 50px;
+
+        a {
+          transition: none;
+        }
       }
 
       .line_holder td {

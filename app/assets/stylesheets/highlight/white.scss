@@ -124,7 +124,8 @@ $white-gc-bg: #eaf2f5;
         }
       }
 
-      &.is-over {
+      &.is-over,
+      &.hll:not(.empty-cell).is-over {
         background-color: $white-over-bg;
         border-color: darken($white-over-bg, 5%);
 

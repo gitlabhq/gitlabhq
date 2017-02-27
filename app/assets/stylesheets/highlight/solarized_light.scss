@@ -152,7 +152,8 @@ $solarized-light-il: #2aa198;
     }
 
     .diff-line-num {
-      &.is-over {
+      &.is-over,
+      &.hll:not(.empty-cell).is-over {
         background-color: $solarized-light-over-bg;
         border-color: darken($solarized-light-over-bg, 5%);
 

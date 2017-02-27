@@ -141,7 +141,8 @@ $monokai-gi: #a6e22e;
     }
 
     .diff-line-num {
-      &.is-over {
+      &.is-over,
+      &.hll:not(.empty-cell).is-over {
         background-color: $monokai-over-bg;
         border-color: darken($monokai-over-bg, 5%);
 
