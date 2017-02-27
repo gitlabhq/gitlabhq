@@ -2,8 +2,13 @@ require 'spec_helper'
 
 describe CsvBuilder, lib: true do
   let(:object) { double(question: :answer) }
-  let(:subject) { CsvBuilder.new([object], 'Q & A' => :question, 'Reversed' => -> (o) { o.question.to_s.reverse }) }
+  let(:fake_relation) { [object] }
+  let(:subject) { CsvBuilder.new(fake_relation, 'Q & A' => :question, 'Reversed' => -> (o) { o.question.to_s.reverse }) }
   let(:csv_data) { subject.render }
+
+  before do
+    allow(fake_relation).to receive(:find_each).and_yield(object)
+  end
 
   it 'generates a csv' do
     expect(csv_data.scan(/(,|\n)/).join).to include ",\n,"

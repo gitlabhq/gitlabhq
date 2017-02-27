@@ -29,7 +29,7 @@ class CsvBuilder
     CSV.generate do |csv|
       csv << headers
 
-      @collection.each do |object|
+      @collection.find_each do |object|
         csv << row(object)
       end
     end
