@@ -7,7 +7,7 @@
   var DOWN_BUILD_TRACE = '#down-build-trace';
 
   this.Build = (function() {
-    Build.interval = null;
+    Build.timeout = null;
 
     Build.state = null;
 
@@ -31,7 +31,7 @@
       this.$scrollBottomBtn = $('#scroll-bottom');
       this.$buildRefreshAnimation = $('.js-build-refresh');
 
-      clearInterval(Build.interval);
+      clearTimeout(Build.timeout);
       // Init breakpoint checker
       this.bp = Breakpoints.get();
 
@@ -52,17 +52,7 @@
         this.getInitialBuildTrace();
         this.initScrollButtonAffix();
       }
-      if (this.buildStatus === "running" || this.buildStatus === "pending") {
-        Build.interval = setInterval((function(_this) {
-          // Check for new build output if user still watching build page
-          // Only valid for runnig build when output changes during time
-          return function() {
-            if (_this.location() === _this.pageUrl) {
-              return _this.getBuildTrace();
-            }
-          };
-        })(this), 4000);
-      }
+      this.invokeBuildTrace();
     }
 
     Build.prototype.initSidebar = function() {
@@ -81,6 +71,22 @@
 
     Build.prototype.location = function() {
       return window.location.href.split("#")[0];
+    };
+
+    Build.prototype.invokeBuildTrace = function() {
+      var continueRefreshStatuses = ['running', 'pending'];
+      // Continue to update build trace when build is running or pending
+      if (continueRefreshStatuses.indexOf(this.buildStatus) !== -1) {
+        // Check for new build output if user still watching build page
+        // Only valid for runnig build when output changes during time
+        Build.timeout = setTimeout((function(_this) {
+          return function() {
+            if (_this.location() === _this.pageUrl) {
+              return _this.getBuildTrace();
+            }
+          };
+        })(this), 4000);
+      }
     };
 
     Build.prototype.getInitialBuildTrace = function() {
@@ -113,6 +119,7 @@
             if (log.state) {
               _this.state = log.state;
             }
+            _this.invokeBuildTrace();
             if (log.status === "running") {
               if (log.append) {
                 $('.js-build-output').append(log.html);
