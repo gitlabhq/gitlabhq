@@ -9,7 +9,7 @@ module Gitlab
         @proxy_port = opts.fetch(:proxy_port, 3808)
         @proxy_path = opts[:proxy_path] if opts[:proxy_path]
 
-        super(app, backend: "http://#{proxy_host}:#{proxy_port}", **opts)
+        super(app, backend: "http://#{@proxy_host}:#{@proxy_port}", **opts)
       end
 
       def perform_request(env)
