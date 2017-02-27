@@ -118,8 +118,6 @@ module API
         requires :elasticsearch_port, type: Integer, desc: 'The TCP/IP port that Elasticsearch listens to. The default value is 9200'
       end
       optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
-      # TODO: Remove repository_storage in 9.0
-      optional :repository_storage, type: String, desc: 'The first entry in `repository_storages`. Deprecated, but retained for compatibility reasons'
       optional :repository_storages, type: Array[String], desc: 'A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random.'
       optional :repository_size_limit, type: Integer, desc: 'Size limit per repository (MB)'
       at_least_one_of :default_branch_protection, :default_project_visibility, :default_snippet_visibility,
@@ -137,7 +135,7 @@ module API
                       :version_check_enabled, :email_author_in_body, :html_emails_enabled,
                       # GitLab-EE specific settings
                       :help_text, :elasticsearch_indexing, :usage_ping_enabled,
-                      :repository_storage, :repository_storages, :repository_size_limit
+                      :repository_storages, :repository_size_limit
     end
     put "application/settings" do
       if current_settings.update_attributes(declared_params(include_missing: false))
