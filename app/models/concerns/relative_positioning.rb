@@ -9,11 +9,11 @@ module RelativePositioning
   end
 
   def min_relative_position
-    self.class.minimum(:relative_position)
+    self.class.in_projects(project.id).minimum(:relative_position)
   end
 
   def max_relative_position
-    self.class.maximum(:relative_position)
+    self.class.in_projects(project.id).maximum(:relative_position)
   end
 
   def prev_relative_position
@@ -21,6 +21,7 @@ module RelativePositioning
 
     if self.relative_position
       prev_pos = self.class.
+        in_projects(project.id).
         where('relative_position < ?', self.relative_position).
         maximum(:relative_position)
     end
@@ -33,6 +34,7 @@ module RelativePositioning
 
     if self.relative_position
       next_pos = self.class.
+        in_projects(project.id).
         where('relative_position > ?', self.relative_position).
         minimum(:relative_position)
     end
