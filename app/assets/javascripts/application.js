@@ -44,6 +44,7 @@ require('./shortcuts_issuable');
 require('./shortcuts_network');
 require('vendor/jquery.nicescroll');
 require('./geo/geo_bundle');
+require('./ajax_loading_spinner');
 
 // behaviors
 require('./behaviors/autosize');
