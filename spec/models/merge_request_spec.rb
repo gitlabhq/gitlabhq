@@ -232,10 +232,9 @@ describe MergeRequest, models: true do
 
     context 'when there are no MR diffs' do
       before do
-        merge_request.compare = CompareService.new(
+        merge_request.compare = CompareService.new.execute(
           merge_request.source_project,
-          merge_request.source_branch
-        ).execute(
+          merge_request.source_branch,
           merge_request.target_project,
           merge_request.target_branch
         )
