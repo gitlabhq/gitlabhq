@@ -108,6 +108,6 @@ class NotesFinder
   end
 
   def for_discussion(discussion_id)
-    @notes.where(Note.arel_table[:discussion_id].eq(discussion_id))
+    @notes.where(discussion_id: discussion_id)
   end
 end
