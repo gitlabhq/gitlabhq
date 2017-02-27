@@ -57,7 +57,7 @@ const iconTimerSvg = require('../../../views/shared/icons/_icon_timer.svg');
       },
     },
     template: `
-      <td>
+      <td class="pipelines-time-ago">
         <p class="duration" v-if='duration'>
           <span v-html="iconTimerSvg"></span>
           {{duration}}
@@ -68,8 +68,7 @@ const iconTimerSvg = require('../../../views/shared/icons/_icon_timer.svg');
             data-toggle="tooltip"
             data-placement="top"
             data-container="body"
-            :data-original-title='localTimeFinished'
-          >
+            :data-original-title='localTimeFinished'>
             {{timeStopped.words}}
           </time>
         </p>

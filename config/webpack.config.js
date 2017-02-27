@@ -92,7 +92,7 @@ var config = {
       'emoji-aliases$': path.join(ROOT_PATH, 'fixtures/emojis/aliases.json'),
       'icons':          path.join(ROOT_PATH, 'app/views/shared/icons'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
-      'vue$':           IS_PRODUCTION ? 'vue/dist/vue.min.js' : 'vue/dist/vue.js',
+      'vue$':           'vue/dist/vue.common.js',
     }
   }
 }
