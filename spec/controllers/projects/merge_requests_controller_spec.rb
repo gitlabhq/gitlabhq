@@ -51,7 +51,7 @@ describe Projects::MergeRequestsController do
     def submit_new_merge_request(format: :html)
       get :new,
           namespace_id: fork_project.namespace.to_param,
-          project_id: fork_project.to_param,
+          project_id: fork_project,
           merge_request: {
             source_branch: 'remove-submodule',
             target_branch: 'master'
@@ -64,7 +64,7 @@ describe Projects::MergeRequestsController do
     it "loads labels into the @labels variable" do
       get action,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           id: merge_request.iid,
           format: 'html'
       expect(assigns(:labels)).not_to be_nil
@@ -76,7 +76,7 @@ describe Projects::MergeRequestsController do
       it "does generally work" do
         get(:show,
             namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
+            project_id: project,
             id: merge_request.iid,
             format: format)
 
@@ -90,7 +90,7 @@ describe Projects::MergeRequestsController do
 
         get(:show,
             namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
+            project_id: project,
             id: merge_request.iid,
             format: format)
       end
@@ -98,7 +98,7 @@ describe Projects::MergeRequestsController do
       it "renders it" do
         get(:show,
             namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
+            project_id: project,
             id: merge_request.iid,
             format: format)
 
@@ -111,7 +111,7 @@ describe Projects::MergeRequestsController do
 
         get(:show,
             namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
+            project_id: project,
             id: merge_request.iid,
             format: format)
 
@@ -126,7 +126,7 @@ describe Projects::MergeRequestsController do
       it "triggers workhorse to serve the request" do
         get(:show,
             namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
+            project_id: project,
             id: merge_request.iid,
             format: :diff)
 
@@ -138,7 +138,7 @@ describe Projects::MergeRequestsController do
       it 'triggers workhorse to serve the request' do
         get(:show,
             namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
+            project_id: project,
             id: merge_request.iid,
             format: :patch)
 
@@ -153,7 +153,7 @@ describe Projects::MergeRequestsController do
     def get_merge_requests(page = nil)
       get :index,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           state: 'opened', page: page.to_param
     end
 
@@ -216,8 +216,8 @@ describe Projects::MergeRequestsController do
 
       it 'closes MR without errors' do
         post :update,
-            namespace_id: project.namespace.path,
-            project_id: project.path,
+            namespace_id: project.namespace,
+            project_id: project,
             id: merge_request.iid,
             merge_request: {
               state_event: 'close'
@@ -231,8 +231,8 @@ describe Projects::MergeRequestsController do
         merge_request.close!
 
         put :update,
-            namespace_id: project.namespace.path,
-            project_id: project.path,
+            namespace_id: project.namespace,
+            project_id: project,
             id: merge_request.iid,
             merge_request: {
               title: 'New title'
@@ -246,8 +246,8 @@ describe Projects::MergeRequestsController do
         merge_request.close!
 
         put :update,
-            namespace_id: project.namespace.path,
-            project_id: project.path,
+            namespace_id: project.namespace,
+            project_id: project,
             id: merge_request.iid,
             merge_request: {
               target_branch: 'new_branch'
@@ -261,8 +261,8 @@ describe Projects::MergeRequestsController do
   describe 'POST merge' do
     let(:base_params) do
       {
-        namespace_id: project.namespace.path,
-        project_id: project.path,
+        namespace_id: project.namespace,
+        project_id: project,
         id: merge_request.iid,
         format: 'raw'
       }
@@ -426,7 +426,7 @@ describe Projects::MergeRequestsController do
 
   describe "DELETE destroy" do
     it "denies access to users unless they're admin or project owner" do
-      delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
+      delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
 
       expect(response).to have_http_status(404)
     end
@@ -439,7 +439,7 @@ describe Projects::MergeRequestsController do
       before { sign_in owner }
 
       it "deletes the merge request" do
-        delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
+        delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
 
         expect(response).to have_http_status(302)
         expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./).now
@@ -448,7 +448,7 @@ describe Projects::MergeRequestsController do
       it 'delegates the update of the todos count cache to TodoService' do
         expect_any_instance_of(TodoService).to receive(:destroy_merge_request).with(merge_request, owner).once
 
-        delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
+        delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
       end
     end
   end
@@ -457,7 +457,7 @@ describe Projects::MergeRequestsController do
     def go(extra_params = {})
       params = {
         namespace_id: project.namespace.to_param,
-        project_id: project.to_param,
+        project_id: project,
         id: merge_request.iid
       }
 
@@ -537,7 +537,7 @@ describe Projects::MergeRequestsController do
     def diff_for_path(extra_params = {})
       params = {
         namespace_id: project.namespace.to_param,
-        project_id: project.to_param
+        project_id: project
       }
 
       get :diff_for_path, params.merge(extra_params)
@@ -601,7 +601,7 @@ describe Projects::MergeRequestsController do
 
         before do
           other_project.team << [user, :master]
-          diff_for_path(id: merge_request.iid, old_path: existing_path, new_path: existing_path, project_id: other_project.to_param)
+          diff_for_path(id: merge_request.iid, old_path: existing_path, new_path: existing_path, project_id: other_project)
         end
 
         it 'returns a 404' do
@@ -667,7 +667,7 @@ describe Projects::MergeRequestsController do
     def go(format: 'html')
       get :commits,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           id: merge_request.iid,
           format: format
     end
@@ -707,7 +707,7 @@ describe Projects::MergeRequestsController do
       before do
         get :pipelines,
             namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
+            project_id: project,
             id: merge_request.iid,
             format: :json
       end
@@ -726,7 +726,7 @@ describe Projects::MergeRequestsController do
 
         get :conflicts,
             namespace_id: merge_request_with_conflicts.project.namespace.to_param,
-            project_id: merge_request_with_conflicts.project.to_param,
+            project_id: merge_request_with_conflicts.project,
             id: merge_request_with_conflicts.iid,
             format: 'json'
       end
@@ -744,7 +744,7 @@ describe Projects::MergeRequestsController do
       before do
         get :conflicts,
             namespace_id: merge_request_with_conflicts.project.namespace.to_param,
-            project_id: merge_request_with_conflicts.project.to_param,
+            project_id: merge_request_with_conflicts.project,
             id: merge_request_with_conflicts.iid,
             format: 'json'
       end
@@ -807,7 +807,7 @@ describe Projects::MergeRequestsController do
 
       post :remove_wip,
            namespace_id: merge_request.project.namespace.to_param,
-           project_id: merge_request.project.to_param,
+           project_id: merge_request.project,
            id: merge_request.iid
 
       expect(merge_request.reload.title).to eq(merge_request.wipless_title)
@@ -818,7 +818,7 @@ describe Projects::MergeRequestsController do
     def conflict_for_path(path)
       get :conflict_for_path,
           namespace_id: merge_request_with_conflicts.project.namespace.to_param,
-          project_id: merge_request_with_conflicts.project.to_param,
+          project_id: merge_request_with_conflicts.project,
           id: merge_request_with_conflicts.iid,
           old_path: path,
           new_path: path,
@@ -874,7 +874,7 @@ describe Projects::MergeRequestsController do
     def resolve_conflicts(files)
       post :resolve_conflicts,
            namespace_id: merge_request_with_conflicts.project.namespace.to_param,
-           project_id: merge_request_with_conflicts.project.to_param,
+           project_id: merge_request_with_conflicts.project,
            id: merge_request_with_conflicts.iid,
            format: 'json',
            files: files,
@@ -1025,7 +1025,7 @@ describe Projects::MergeRequestsController do
 
       post :assign_related_issues,
            namespace_id: project.namespace.to_param,
-           project_id: project.to_param,
+           project_id: project,
            id: merge_request.iid
     end
 
@@ -1080,7 +1080,7 @@ describe Projects::MergeRequestsController do
 
         get :ci_environments_status,
           namespace_id: merge_request.project.namespace.to_param,
-          project_id: merge_request.project.to_param,
+          project_id: merge_request.project,
           id: merge_request.iid, format: 'json'
       end
 
@@ -1093,8 +1093,8 @@ describe Projects::MergeRequestsController do
   describe 'GET merge_widget_refresh' do
     let(:params) do
       {
-        namespace_id: project.namespace.path,
-        project_id: project.path,
+        namespace_id: project.namespace,
+        project_id: project,
         id: merge_request.iid,
         format: :raw
       }

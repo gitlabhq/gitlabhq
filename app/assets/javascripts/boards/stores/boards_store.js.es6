@@ -92,9 +92,12 @@
       const issueLists = issue.getLists();
       const listLabels = issueLists.map(listIssue => listIssue.label);
 
-      // Add to new lists issues if it doesn't already exist
       if (!issueTo) {
+        // Add to new lists issues if it doesn't already exist
         listTo.addIssue(issue, listFrom, newIndex);
+      } else {
+        listTo.updateIssueLabel(issue, listFrom);
+        issueTo.removeLabel(listFrom.label);
       }
 
       if (listTo.type === 'done') {

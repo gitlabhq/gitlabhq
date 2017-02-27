@@ -12,7 +12,7 @@ describe Projects::VariablesController do
   describe 'POST #create' do
     context 'variable is valid' do
       it 'shows a success flash message' do
-        post :create, namespace_id: project.namespace.to_param, project_id: project.to_param,
+        post :create, namespace_id: project.namespace.to_param, project_id: project,
                       variable: { key: "one", value: "two" }
 
         expect(flash[:notice]).to include 'Variables were successfully updated.'
@@ -22,7 +22,7 @@ describe Projects::VariablesController do
 
     context 'variable is invalid' do
       it 'shows an alert flash message' do
-        post :create, namespace_id: project.namespace.to_param, project_id: project.to_param,
+        post :create, namespace_id: project.namespace.to_param, project_id: project,
                       variable: { key: "..one", value: "two" }
 
         expect(response).to render_template("projects/variables/show")
@@ -40,7 +40,7 @@ describe Projects::VariablesController do
       end
 
       it 'shows a success flash message' do
-        post :update, namespace_id: project.namespace.to_param, project_id: project.to_param,
+        post :update, namespace_id: project.namespace.to_param, project_id: project,
                       id: variable.id, variable: { key: variable.key, value: 'two' }
 
         expect(flash[:notice]).to include 'Variable was successfully updated.'
@@ -48,7 +48,7 @@ describe Projects::VariablesController do
       end
 
       it 'renders the action #show if the variable key is invalid' do
-        post :update, namespace_id: project.namespace.to_param, project_id: project.to_param,
+        post :update, namespace_id: project.namespace.to_param, project_id: project,
                       id: variable.id, variable: { key: '?', value: variable.value }
 
         expect(response).to have_http_status(200)

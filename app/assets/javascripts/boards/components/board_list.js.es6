@@ -2,7 +2,7 @@
 /* global Vue */
 /* global Sortable */
 
-require('./board_card');
+const boardCard = require('./board_card');
 require('./board_new_issue');
 
 (() => {
@@ -14,7 +14,7 @@ require('./board_new_issue');
   gl.issueBoards.BoardList = Vue.extend({
     template: '#js-board-list-template',
     components: {
-      'board-card': gl.issueBoards.BoardCard,
+      boardCard,
       'board-new-issue': gl.issueBoards.BoardNewIssue
     },
     props: {

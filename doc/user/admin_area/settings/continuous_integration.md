@@ -16,8 +16,6 @@ that this setting is set for each job.
 
 1. Hit **Save** for the changes to take effect.
 
-[art-yml]: ../../../administration/build_artifacts
-
 ## Default artifacts expiration
 
 The default expiration time of the [job artifacts][art-yml] can be set in
@@ -36,5 +34,5 @@ expiration.
 
 1. Hit **Save** for the changes to take effect.
 
-[art-yml]: ../../../administration/job_artifacts
-[duration-syntax]: ../../../ci/yaml/README#artifactsexpire_in
+[art-yml]: ../../../administration/job_artifacts.md
+[duration-syntax]: ../../../ci/yaml/README.md#artifactsexpire_in

@@ -150,20 +150,10 @@ describe API::Groups, api: true  do
         expect(response_groups).to eq([group1.name, group3.name])
       end
     end
-  end
 
-  describe 'GET /groups/owned' do
-    context 'when unauthenticated' do
-      it 'returns authentication error' do
-        get api('/groups/owned')
-
-        expect(response).to have_http_status(401)
-      end
-    end
-
-    context 'when authenticated as group owner' do
+    context 'when using owned in the request' do
       it 'returns an array of groups the user owns' do
-        get api('/groups/owned', user2)
+        get api('/groups', user2), owned: true
 
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
@@ -519,7 +509,7 @@ describe API::Groups, api: true  do
 
   describe "POST /groups/:id/projects/:project_id" do
     let(:project) { create(:empty_project) }
-    let(:project_path) { "#{project.namespace.path}%2F#{project.path}" }
+    let(:project_path) { project.full_path.gsub('/', '%2F') }
 
     before(:each) do
       allow_any_instance_of(Projects::TransferService).

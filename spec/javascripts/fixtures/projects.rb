@@ -20,7 +20,7 @@ describe ProjectsController, '(JavaScript fixtures)', type: :controller do
   it 'projects/dashboard.html.raw' do |example|
     get :show,
       namespace_id: project.namespace.to_param,
-      id: project.to_param
+      id: project
 
     expect(response).to be_success
     store_frontend_fixture(response, example.description)

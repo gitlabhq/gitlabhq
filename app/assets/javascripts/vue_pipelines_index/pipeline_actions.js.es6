@@ -1,5 +1,5 @@
 /* global Vue, Flash, gl */
-/* eslint-disable no-param-reassign */
+/* eslint-disable no-param-reassign, no-alert */
 
 ((gl) => {
   gl.VuePipelineActions = Vue.extend({
@@ -15,6 +15,20 @@
     methods: {
       download(name) {
         return `Download ${name} artifacts`;
+      },
+
+      /**
+       * Shows a dialog when the user clicks in the cancel button.
+       * We need to prevent the default behavior and stop propagation because the
+       * link relies on UJS.
+       *
+       * @param  {Event} event
+       */
+      confirmAction(event) {
+        if (!confirm('Are you sure you want to cancel this pipeline?')) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
       },
     },
     template: `
@@ -87,6 +101,7 @@
             </a>
             <a
               v-if='pipeline.flags.cancelable'
+              @click="confirmAction"
               class="btn btn-remove has-tooltip"
               title="Cancel"
               rel="nofollow"

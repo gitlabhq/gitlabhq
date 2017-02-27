@@ -134,19 +134,31 @@ class List {
 
       if (listFrom) {
         this.issuesSize += 1;
+<<<<<<< HEAD
         gl.boardService.moveIssue(issue.id, listFrom.id, this.id, moveBeforeIid, moveAfterIid)
           .then(() => {
             listFrom.getIssues(false);
           });
+=======
+        this.updateIssueLabel(issue, listFrom);
+>>>>>>> 82f6c0f5ac4ed29390ed90592d2c431f3494d93f
       }
     }
   }
 
+<<<<<<< HEAD
   moveIssue (issue, oldIndex, newIndex, moveBeforeIid, moveAfterIid) {
     this.issues.splice(oldIndex, 1);
     this.issues.splice(newIndex, 0, issue);
 
     gl.boardService.moveIssue(issue.id, null, null, moveBeforeIid, moveAfterIid);
+=======
+  updateIssueLabel(issue, listFrom) {
+    gl.boardService.moveIssue(issue.id, listFrom.id, this.id)
+      .then(() => {
+        listFrom.getIssues(false);
+      });
+>>>>>>> 82f6c0f5ac4ed29390ed90592d2c431f3494d93f
   }
 
   findIssue (id) {

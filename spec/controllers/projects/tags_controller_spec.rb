@@ -6,7 +6,7 @@ describe Projects::TagsController do
   let!(:invalid_release) { create(:release, project: project, tag: 'does-not-exist') }
 
   describe 'GET index' do
-    before { get :index, namespace_id: project.namespace.to_param, project_id: project.to_param }
+    before { get :index, namespace_id: project.namespace.to_param, project_id: project }
 
     it 'returns the tags for the page' do
       expect(assigns(:tags).map(&:name)).to eq(['v1.1.0', 'v1.0.0'])
@@ -19,7 +19,7 @@ describe Projects::TagsController do
   end
 
   describe 'GET show' do
-    before { get :show, namespace_id: project.namespace.to_param, project_id: project.to_param, id: id }
+    before { get :show, namespace_id: project.namespace.to_param, project_id: project, id: id }
 
     context "valid tag" do
       let(:id) { 'v1.0.0' }

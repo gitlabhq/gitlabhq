@@ -17,8 +17,8 @@ describe Projects::PipelinesController do
       create(:ci_empty_pipeline, status: 'created', project: project)
       create(:ci_empty_pipeline, status: 'success', project: project)
 
-      get :index, namespace_id: project.namespace.path,
-                  project_id: project.path,
+      get :index, namespace_id: project.namespace,
+                  project_id: project,
                   format: :json
     end
 
@@ -62,8 +62,8 @@ describe Projects::PipelinesController do
     end
 
     def get_stage(name)
-      get :stage, namespace_id: project.namespace.path,
-                  project_id: project.path,
+      get :stage, namespace_id: project.namespace,
+                  project_id: project,
                   id: pipeline.id,
                   stage: name,
                   format: :json

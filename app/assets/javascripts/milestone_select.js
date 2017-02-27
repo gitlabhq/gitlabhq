@@ -39,7 +39,7 @@
         $value = $block.find('.value');
         $loading = $block.find('.block-loading').fadeOut();
         if (issueUpdateURL) {
-          milestoneLinkTemplate = _.template('<a href="/<%- namespace %>/<%- path %>/milestones/<%- iid %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>');
+          milestoneLinkTemplate = _.template('<a href="/<%- full_path %>/milestones/<%- iid %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>');
           milestoneLinkNoneTemplate = '<span class="no-value">None</span>';
           collapsedSidebarLabelTemplate = _.template('<span class="has-tooltip" data-container="body" title="<%- remaining %>" data-placement="left"> <%- title %> </span>');
         }
@@ -181,8 +181,7 @@
                 $selectbox.hide();
                 $value.css('display', '');
                 if (data.milestone != null) {
-                  data.milestone.namespace = _this.currentProject.namespace;
-                  data.milestone.path = _this.currentProject.path;
+                  data.milestone.full_path = _this.currentProject.full_path;
                   data.milestone.remaining = gl.utils.timeFor(data.milestone.due_date);
                   $value.html(milestoneLinkTemplate(data.milestone));
                   return $sidebarCollapsedValue.find('span').html(collapsedSidebarLabelTemplate(data.milestone));
