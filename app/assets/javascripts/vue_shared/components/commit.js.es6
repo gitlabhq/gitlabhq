@@ -1,6 +1,6 @@
 /* global Vue */
 window.Vue = require('vue');
-const commitIconSvg = require('../../../../views/shared/icons/_icon_commit.svg');
+const commitIconSvg = require('icons/_icon_commit.svg');
 
 (() => {
   window.gl = window.gl || {};

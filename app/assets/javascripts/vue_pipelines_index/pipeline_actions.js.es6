@@ -1,6 +1,6 @@
 /* global Vue, Flash, gl */
 /* eslint-disable no-param-reassign,  no-alert */
-const playIconSvg = require('../../../views/shared/icons/_icon_play.svg');
+const playIconSvg = require('icons/_icon_play.svg');
 
 ((gl) => {
   gl.VuePipelineActions = Vue.extend({

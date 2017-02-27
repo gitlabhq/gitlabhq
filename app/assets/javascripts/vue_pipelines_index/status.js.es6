@@ -1,15 +1,15 @@
 /* global Vue, gl */
 /* eslint-disable no-param-reassign */
 
-import canceledSvg from '../../../views/shared/icons/_icon_status_canceled.svg';
-import createdSvg from '../../../views/shared/icons/_icon_status_created.svg';
-import failedSvg from '../../../views/shared/icons/_icon_status_failed.svg';
-import manualSvg from '../../../views/shared/icons/_icon_status_manual.svg';
-import pendingSvg from '../../../views/shared/icons/_icon_status_pending.svg';
-import runningSvg from '../../../views/shared/icons/_icon_status_running.svg';
-import skippedSvg from '../../../views/shared/icons/_icon_status_skipped.svg';
-import successSvg from '../../../views/shared/icons/_icon_status_success.svg';
-import warningSvg from '../../../views/shared/icons/_icon_status_warning.svg';
+import canceledSvg from 'icons/_icon_status_canceled.svg';
+import createdSvg from 'icons/_icon_status_created.svg';
+import failedSvg from 'icons/_icon_status_failed.svg';
+import manualSvg from 'icons/_icon_status_manual.svg';
+import pendingSvg from 'icons/_icon_status_pending.svg';
+import runningSvg from 'icons/_icon_status_running.svg';
+import skippedSvg from 'icons/_icon_status_skipped.svg';
+import successSvg from 'icons/_icon_status_success.svg';
+import warningSvg from 'icons/_icon_status_warning.svg';
 
 ((gl) => {
   gl.VueStatusScope = Vue.extend({

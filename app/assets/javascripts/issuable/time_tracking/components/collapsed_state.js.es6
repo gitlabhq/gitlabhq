@@ -1,5 +1,5 @@
 /* global Vue */
-import stopwatchSvg from '../../../../../views/shared/icons/_icon_stopwatch.svg';
+import stopwatchSvg from 'icons/_icon_stopwatch.svg';
 
 require('../../../lib/utils/pretty_time');
 

@@ -1,14 +1,14 @@
 /* global Vue, Flash, gl */
 /* eslint-disable no-param-reassign */
-import canceledSvg from '../../../views/shared/icons/_icon_status_canceled_borderless.svg';
-import createdSvg from '../../../views/shared/icons/_icon_status_created_borderless.svg';
-import failedSvg from '../../../views/shared/icons/_icon_status_failed_borderless.svg';
-import manualSvg from '../../../views/shared/icons/_icon_status_manual_borderless.svg';
-import pendingSvg from '../../../views/shared/icons/_icon_status_pending_borderless.svg';
-import runningSvg from '../../../views/shared/icons/_icon_status_running_borderless.svg';
-import skippedSvg from '../../../views/shared/icons/_icon_status_skipped_borderless.svg';
-import successSvg from '../../../views/shared/icons/_icon_status_success_borderless.svg';
-import warningSvg from '../../../views/shared/icons/_icon_status_warning_borderless.svg';
+import canceledSvg from 'icons/_icon_status_canceled_borderless.svg';
+import createdSvg from 'icons/_icon_status_created_borderless.svg';
+import failedSvg from 'icons/_icon_status_failed_borderless.svg';
+import manualSvg from 'icons/_icon_status_manual_borderless.svg';
+import pendingSvg from 'icons/_icon_status_pending_borderless.svg';
+import runningSvg from 'icons/_icon_status_running_borderless.svg';
+import skippedSvg from 'icons/_icon_status_skipped_borderless.svg';
+import successSvg from 'icons/_icon_status_success_borderless.svg';
+import warningSvg from 'icons/_icon_status_warning_borderless.svg';
 
 ((gl) => {
   gl.VueStage = Vue.extend({

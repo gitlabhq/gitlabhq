@@ -1,5 +1,5 @@
 const Vue = require('vue');
-const playIconSvg = require('../../../../views/shared/icons/_icon_play.svg');
+const playIconSvg = require('icons/_icon_play.svg');
 
 module.exports = Vue.component('actions-component', {
   props: {
