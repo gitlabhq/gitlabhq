@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.16.7 (2017-02-27)
+
+- Fix MR changes tab size count when there are over 100 files in the diff.
+
 ## 8.16.6 (2017-02-17)
 
 - API: Fix file downloading. !0 (8267)
