@@ -110,7 +110,7 @@ module API
       expose :shared_with_groups do |project, options|
         SharedGroup.represent(project.project_group_links.all, options)
       end
-      expose :repository_storage, if: lambda { |_project, options| options[:user].try(:admin?) }
+      expose :repository_storage, if: lambda { |_project, options| options[:current_user].try(:admin?) }
       expose :only_allow_merge_if_build_succeeds
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
@@ -616,7 +616,6 @@ module API
       expose :user_oauth_applications
       expose :after_sign_out_path
       expose :container_registry_token_expire_delay
-      expose :repository_storage
       expose :repository_storages
       expose :koding_enabled
       expose :koding_url

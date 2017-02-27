@@ -173,11 +173,11 @@ describe API::Members, api: true  do
         expect(response).to have_http_status(400)
       end
 
-      it 'returns 422 when access_level is not valid' do
+      it 'returns 400  when access_level is not valid' do
         post api("/#{source_type.pluralize}/#{source.id}/members", master),
              user_id: stranger.id, access_level: 1234
 
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(400)
       end
     end
   end
@@ -247,11 +247,11 @@ describe API::Members, api: true  do
         expect(response).to have_http_status(400)
       end
 
-      it 'returns 422 when access level is not valid' do
+      it 'returns 400  when access level is not valid' do
         put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master),
             access_level: 1234
 
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(400)
       end
     end
   end
@@ -363,7 +363,7 @@ describe API::Members, api: true  do
         post api("/projects/#{project.id}/members", master),
              user_id: stranger.id, access_level: Member::OWNER
 
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(400)
       end.to change { project.members.count }.by(0)
     end
   end
