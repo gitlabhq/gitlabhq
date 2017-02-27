@@ -91,6 +91,7 @@ module API
     mount ::API::Projects
     mount ::API::ProjectSnippets
     mount ::API::Repositories
+    mount ::API::Runner
     mount ::API::Runners
     mount ::API::Services
     mount ::API::Session
