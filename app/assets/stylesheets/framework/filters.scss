@@ -26,6 +26,11 @@
 .filtered-search-container {
   display: -webkit-flex;
   display: flex;
+
+  @media (max-width: $screen-xs-min) {
+    -webkit-flex-direction: column;
+    flex-direction: column;
+  }
 }
 
 .filtered-search-input-container {
@@ -33,6 +38,20 @@
   display: flex;
   position: relative;
   width: 100%;
+
+  @media (max-width: $screen-xs-min) {
+    -webkit-flex: 1 1 100%;
+    flex: 1 1 100%;
+    margin-bottom: 10px;
+
+    .dropdown-menu {
+      width: auto;
+      left: 0;
+      right: 0;
+      max-width: none;
+      min-width: 100%;
+    }
+  }
 
   .form-control {
     padding-left: 25px;
@@ -77,6 +96,31 @@
 .filter-dropdown {
   max-height: 215px;
   overflow: auto;
+}
+
+@media (max-width: $screen-xs-min) {
+  .issues-details-filters {
+    padding: 0 0 10px;
+    background-color: $white-light;
+    border-top: 0;
+  }
+
+  .filter-dropdown-container {
+    .dropdown-toggle,
+    .dropdown {
+      width: 100%;
+    }
+
+    .dropdown {
+      margin-left: 0;
+    }
+
+    .fa-chevron-down {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+    }
+  }
 }
 
 %filter-dropdown-item-btn-hover {
