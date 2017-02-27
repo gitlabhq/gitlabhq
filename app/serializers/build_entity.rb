@@ -19,6 +19,12 @@ class BuildEntity < Grape::Entity
   expose :created_at
   expose :updated_at
 
+  expose :status do |build, options|
+    StatusEntity.represent(
+      build.detailed_status(request.user),
+      options)
+  end
+
   private
 
   def path_to(route, build)

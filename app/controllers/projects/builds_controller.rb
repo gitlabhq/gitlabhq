@@ -91,6 +91,12 @@ class Projects::BuildsController < Projects::ApplicationController
     end
   end
 
+  def ci_cd_status
+    render json: BuildSerializer
+      .new(project: @project, user: @current_user)
+      .represent(@build)
+  end
+
   private
 
   def build

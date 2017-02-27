@@ -102,6 +102,7 @@ constraints(ProjectUrlConstrainer.new) do
           get :merge_widget_refresh
           post :cancel_merge_when_pipeline_succeeds
           get :ci_status
+          get :ci_cd_status
           get :ci_environments_status
           post :toggle_subscription
           post :remove_wip
@@ -152,6 +153,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :cancel
           post :retry
           get :builds
+          get :ci_cd_status
         end
       end
 
@@ -203,6 +205,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :erase
           get :trace
           get :raw
+          get :ci_cd_status
         end
 
         resource :artifacts, only: [] do

@@ -13,6 +13,10 @@ module Gitlab
         def icon
           'icon_status_running'
         end
+
+        def favicon
+          'build_status_running'
+        end
       end
     end
   end
