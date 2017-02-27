@@ -1,9 +1,11 @@
 module Issues
   class CreateService < Issues::BaseService
     include SpamCheckService
+    include ResolveDiscussions
 
     def execute
       filter_spam_check_params
+      filter_resolve_discussion_params
 
       issue_attributes = params.merge(
         merge_request_for_resolving_discussions: merge_request_for_resolving_discussions_iid,
@@ -26,15 +28,6 @@ module Issues
       todo_service.new_issue(issuable, current_user)
       user_agent_detail_service.create
       resolve_discussions_with_issue(issuable)
-    end
-
-    def resolve_discussions_with_issue(issue)
-      return if discussions_to_resolve.empty?
-
-      Discussions::ResolveService.new(project, current_user,
-                                      merge_request: merge_request_for_resolving_discussions,
-                                      follow_up_issue: issue).
-          execute(discussions_to_resolve)
     end
 
     private

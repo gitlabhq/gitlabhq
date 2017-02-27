@@ -1,6 +1,9 @@
 module Issues
   class BuildService < Issues::BaseService
+    include ResolveDiscussions
+
     def execute
+      filter_resolve_discussion_params
       @issue = project.issues.new(issue_params)
     end
 

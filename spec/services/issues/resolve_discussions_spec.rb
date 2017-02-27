@@ -1,6 +1,15 @@
 require 'spec_helper.rb'
 
-describe Issues::BaseService, services: true do
+class DummyService < Issues::BaseService
+  include ::Issues::ResolveDiscussions
+
+  def initialize(*args)
+    super
+    filter_resolve_discussion_params
+  end
+end
+
+describe DummyService, services: true do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
@@ -46,11 +55,11 @@ describe Issues::BaseService, services: true do
       end
 
       it "contains only unresolved discussions" do
-        second_discussion = Discussion.new([create(:diff_note_on_merge_request, :resolved,
+        _second_discussion = Discussion.new([create(:diff_note_on_merge_request, :resolved,
                                                    noteable: merge_request,
                                                    project: merge_request.target_project,
                                                    line_number: 15,
-                                                  )])
+                                                   )])
         service = described_class.new(
           project,
           user,

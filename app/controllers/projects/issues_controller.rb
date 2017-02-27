@@ -64,16 +64,15 @@ class Projects::IssuesController < Projects::ApplicationController
     params[:issue] ||= ActionController::Parameters.new(
       assignee_id: ""
     )
-
     build_params = issue_params.merge(
       merge_request_for_resolving_discussions: params[:merge_request_for_resolving_discussions],
       discussion_to_resolve: params[:discussion_to_resolve]
     )
     service = Issues::BuildService.new(project, current_user, build_params)
-    @merge_request_for_resolving_discussions = service.merge_request_for_resolving_discussions
-    @discussion_to_resolve = service.discussions_to_resolve.first if params[:discussion_to_resolve]
 
     @issue = @noteable = service.execute
+    @merge_request_for_resolving_discussions = service.merge_request_for_resolving_discussions
+    @discussion_to_resolve = service.discussions_to_resolve.first if params[:discussion_to_resolve]
 
     respond_with(@issue)
   end
