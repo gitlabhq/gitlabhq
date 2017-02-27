@@ -18,8 +18,7 @@ module MergeRequests
       end
 
       if merge_request.squash_in_progress?
-        log_error('Squash task canceled: Another squash is already in progress')
-        return false
+        return error('Squash task canceled: another squash is already in progress')
       end
 
       run_git_command(
