@@ -55,6 +55,8 @@ module API
       end
       params do
         requires :token, type: String, desc: %q(Runner's authentication token)
+        optional :last_update, type: String, desc: %q(Runner's queue last_update token)
+        optional :info, type: Hash, desc: %q(Runner's metadata)
       end
       post '/request' do
         authenticate_runner!
