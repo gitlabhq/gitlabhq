@@ -41,7 +41,7 @@ module Projects
 
       def make_sure_position_is_set(issues)
         issues.each do |issue|
-          issue.move_to_end unless issue.relative_position
+          issue.move_to_end && issue.save unless issue.relative_position
         end
       end
 

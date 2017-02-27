@@ -79,6 +79,8 @@ describe Boards::Issues::MoveService, services: true do
 
     context 'when moving to same list' do
       let(:issue)  { create(:labeled_issue, project: project, labels: [bug, development]) }
+      let(:issue1)  { create(:labeled_issue, project: project, labels: [bug, development]) }
+      let(:issue2)  { create(:labeled_issue, project: project, labels: [bug, development]) }
       let(:params) { { board_id: board1.id, from_list_id: list1.id, to_list_id: list1.id } }
 
       it 'returns false' do
@@ -89,6 +91,16 @@ describe Boards::Issues::MoveService, services: true do
         described_class.new(project, user, params).execute(issue)
 
         expect(issue.reload.labels).to contain_exactly(bug, development)
+      end
+
+      it 'sorts issues' do
+        issue.move_between(issue1, issue2)
+
+        params.merge! move_after_iid: issue1.iid, move_before_iid: issue2.iid
+
+        described_class.new(project, user, params).execute(issue1)
+
+        expect(issue1.relative_position).to be_between(issue.relative_position, issue2.relative_position)
       end
     end
   end

@@ -103,10 +103,6 @@ module RelativePositioning
     self.relative_position = nil
   end
 
-  def move_to_front
-    self.relative_position = position_between(MIN_POSITION, min_relative_position || MAX_POSITION)
-  end
-
   def move_to_end
     self.relative_position = position_between(max_relative_position || MIN_POSITION, MAX_POSITION)
   end

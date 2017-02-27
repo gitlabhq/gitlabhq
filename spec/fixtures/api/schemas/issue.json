@@ -11,6 +11,7 @@
     "title": { "type": "string" },
     "confidential": { "type": "boolean" },
     "due_date": { "type": ["date", "null"] },
+    "relative_position": { "type": "integer" },
     "labels": {
       "type": "array",
       "items": {
