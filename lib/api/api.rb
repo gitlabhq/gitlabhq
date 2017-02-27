@@ -16,6 +16,7 @@ module API
       mount ::API::V3::Groups
       mount ::API::V3::Issues
       mount ::API::V3::Labels
+      mount ::API::V3::LdapGroupLinks
       mount ::API::V3::Members
       mount ::API::V3::MergeRequestDiffs
       mount ::API::V3::MergeRequests
