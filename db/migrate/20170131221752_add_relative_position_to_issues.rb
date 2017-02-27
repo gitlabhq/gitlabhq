@@ -24,7 +24,7 @@ class AddRelativePositionToIssues < ActiveRecord::Migration
   # disable_ddl_transaction!
 
   def change
-    add_column :issues, :relative_position, :float
+    add_column :issues, :relative_position, :integer
 
     add_index :issues, :relative_position
   end

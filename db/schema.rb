@@ -515,7 +515,7 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.text "title_html"
     t.text "description_html"
     t.integer "time_estimate"
-    t.float "relative_position"
+    t.integer "relative_position"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree

@@ -1,8 +1,8 @@
 module RelativePositioning
   extend ActiveSupport::Concern
 
-  MIN_POSITION = Float::MIN
-  MAX_POSITION = Float::MAX
+  MIN_POSITION = 0
+  MAX_POSITION = Gitlab::Database::MAX_INT_VALUE
 
   included do
     after_save :save_positionable_neighbours
@@ -120,7 +120,7 @@ module RelativePositioning
   def position_between(pos_before, pos_after)
     pos_before, pos_after = [pos_before, pos_after].sort
 
-    rand(pos_before.next_float..pos_after.prev_float)
+    rand(pos_before.next..pos_after.pred)
   end
 
   def save_positionable_neighbours
