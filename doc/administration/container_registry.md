@@ -466,6 +466,46 @@ If Registry is enabled in your GitLab instance, but you don't need it for your
 project, you can disable it from your project's settings. Read the user guide
 on how to achieve that.
 
+## Disable Container Registry but use GitLab as an auth endpoint
+
+You can disable the embedded Container Registry to use an external one, but
+still use GitLab as an auth endpoint.
+
+**Omnibus GitLab**
+1. Open `/etc/gitlab/gitlab.rb` and set necessary configurations:
+
+    ```ruby
+    registry['enable'] = false
+    gitlab_rails['registry_enabled'] = true
+    gitlab_rails['registry_host'] = "registry.gitlab.example.com"
+    gitlab_rails['registry_port'] = "5005"
+    gitlab_rails['registry_api_url'] = "http://localhost:5000"
+    gitlab_rails['registry_key_path'] = "/var/opt/gitlab/gitlab-rails/certificate.key"
+    gitlab_rails['registry_path'] = "/var/opt/gitlab/gitlab-rails/shared/registry"
+    gitlab_rails['registry_issuer'] = "omnibus-gitlab-issuer"
+    ```
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+
+**Installations from source**
+
+1. Open `/home/git/gitlab/config/gitlab.yml`, and edit the configuration settings under `registry`:
+
+    ```
+    ## Container Registry
+
+    registry:
+      enabled: true
+      host: "registry.gitlab.example.com"
+      port: "5005"
+      api_url: "http://localhost:5000"
+      path: /var/opt/gitlab/gitlab-rails/shared/registry
+      key: /var/opt/gitlab/gitlab-rails/certificate.key
+      issuer: omnibus-gitlab-issuer
+    ```
+
+1. Save the file and [restart GitLab][] for the changes to take effect.
+
 ## Storage limitations
 
 Currently, there is no storage limitation, which means a user can upload an
