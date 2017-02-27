@@ -123,6 +123,7 @@ describe API::Runner do
       context 'when no token is provided' do
         it 'returns 400 error' do
           delete api('/runners')
+
           expect(response).to have_http_status 400
         end
       end
@@ -130,6 +131,7 @@ describe API::Runner do
       context 'when invalid token is provided' do
         it 'returns 403 error' do
           delete api('/runners'), token: 'invalid'
+
           expect(response).to have_http_status 403
         end
       end
@@ -139,7 +141,8 @@ describe API::Runner do
 
         it 'deletes Runner' do
           delete api('/runners'), token: runner.token
-          expect(response).to have_http_status 200
+
+          expect(response).to have_http_status 204
           expect(Ci::Runner.count).to eq(0)
         end
       end
