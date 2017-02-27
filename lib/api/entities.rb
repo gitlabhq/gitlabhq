@@ -720,7 +720,7 @@ module API
       end
 
       class Step < Grape::Entity
-        expose :name, :script, :timeout, :condition, :result
+        expose :name, :script, :timeout, :when, :allow_failure
       end
 
       class Image < Grape::Entity

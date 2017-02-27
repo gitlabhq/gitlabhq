@@ -283,8 +283,8 @@ describe API::Runner do
             expect(json_response['steps']).to include({ 'name' => 'after_script',
                                                         'script' => ['ls', 'date'],
                                                         'timeout' => job.timeout,
-                                                        'condition' => Gitlab::Ci::Build::Response::Step::CONDITION_ALWAYS,
-                                                        'result' => Gitlab::Ci::Build::Response::Step::RESULT_DOESNT_FAIL_JOB })
+                                                        'when' => 'always',
+                                                        'allow_failure' => true })
             expect(json_response['variables']).to include({ 'key' => 'CI_BUILD_NAME', 'value' => 'spinach', 'public' => true },
                                                           { 'key' => 'CI_BUILD_STAGE', 'value' => 'test', 'public' => true },
                                                           { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true })

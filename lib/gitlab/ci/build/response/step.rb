@@ -3,21 +3,19 @@ module Gitlab
     module Build
       module Response
         class Step
-          CONDITION_IF_SUCCEEDED = 'run_if_succeeded'
-          CONDITION_ALWAYS = 'run_always'
+          CONDITION_ON_FAILURE = 'on_failure'
+          CONDITION_ON_SUCCESS = 'on_success'
+          CONDITION_ALWAYS = 'always'
 
-          RESULT_FAILS_JOB = 'fails_job'
-          RESULT_DOESNT_FAIL_JOB = 'doesnt_fail_job'
-
-          attr_reader :name, :script, :condition, :result, :timeout
+          attr_reader :name, :script, :when, :allow_failure, :timeout
 
           class << self
             def from_commands(build)
               self.new(:script,
                        build.commands,
                        build.timeout,
-                       CONDITION_IF_SUCCEEDED,
-                       RESULT_FAILS_JOB)
+                       CONDITION_ON_SUCCESS,
+                       false)
             end
 
             def from_after_script(build)
@@ -28,16 +26,16 @@ module Gitlab
                        after_script,
                        build.timeout,
                        CONDITION_ALWAYS,
-                       RESULT_DOESNT_FAIL_JOB)
+                       true)
             end
           end
 
-          def initialize(name, script, timeout, condition = CONDITION_IF_SUCCEEDED, result = RESULT_FAILS_JOB)
+          def initialize(name, script, timeout, when_condition = CONDITION_ON_SUCCESS, allow_failure = true)
             @name = name
             @script = script.split("\n")
             @timeout = timeout
-            @condition = condition
-            @result = result
+            @when = when_condition
+            @allow_failure = allow_failure
           end
         end
       end
