@@ -36,6 +36,7 @@
 /* global Shortcuts */
 
 const ShortcutsBlob = require('./shortcuts_blob');
+const PrometheusGraph = require('./monitoring/prometheus_graph'); //TODO: Make this a bundle
 const UserCallout = require('./user_callout');
 
 (function() {
@@ -278,6 +279,8 @@ const UserCallout = require('./user_callout');
         case 'ci:lints:show':
           new gl.CILintEditor();
           break;
+        case 'projects:environments:metrics':
+          new PrometheusGraph();
         case 'users:show':
           new UserCallout();
           break;

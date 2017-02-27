@@ -160,3 +160,35 @@
     }
   }
 }
+
+.prometheus-graph-overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+.rect-text-metric {
+  fill: white;
+  stroke-width: 1;
+  stroke: black;
+}
+
+.rect-axis-text {
+  fill: white;
+}
+
+.text-metric {
+  fill: black;
+}
+
+.text-metric-date {
+  fill: black;
+  font-weight: 200;
+}
+
+.text-metric-usage {
+  fill: black;
+}
+
+.text-median-metric {
+  fill: black;
+}
