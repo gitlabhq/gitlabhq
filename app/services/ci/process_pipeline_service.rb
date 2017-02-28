@@ -35,6 +35,9 @@ module Ci
       if valid_statuses_for_when(build.when).include?(current_status)
         build.enqueue
         true
+      elsif build.can_block?
+        build.block
+        build.is_blocking?
       else
         build.skip
         false

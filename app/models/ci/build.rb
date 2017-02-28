@@ -63,6 +63,10 @@ module Ci
     end
 
     state_machine :status do
+      event :block do
+        transition :created => :manual, if: () -> { self.when == 'manual' }
+      end
+
       after_transition any => [:pending] do |build|
         build.run_after_commit do
           BuildQueueWorker.perform_async(id)
@@ -94,16 +98,16 @@ module Ci
         .fabricate!
     end
 
-    def manual?
-      self.when == 'manual'
-    end
-
     def other_actions
       pipeline.manual_actions.where.not(name: name)
     end
 
     def playable?
-      project.builds_enabled? && commands.present? && manual? && skipped?
+      project.builds_enabled? && commands.present? && manual?
+    end
+
+    def is_blocking?
+      playable? && !allow_failure?
     end
 
     def play(current_user)
