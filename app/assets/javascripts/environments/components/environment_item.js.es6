@@ -486,25 +486,23 @@ module.exports = Vue.component('environment-item', {
         </span>
       </td>
 
-      <td class="hidden-xs">
-        <div v-if="!model.isFolder">
-          <div class="btn-group" role="group">
-            <actions-component v-if="hasManualActions && canCreateDeployment"
-              :actions="manualActions"/>
+      <td class="hidden-xs environments-actions">
+        <div v-if="!model.isFolder" class="btn-group" role="group">
+          <actions-component v-if="hasManualActions && canCreateDeployment"
+            :actions="manualActions"/>
 
-            <external-url-component v-if="externalURL && canReadEnvironment"
-              :external-url="externalURL"/>
+          <external-url-component v-if="externalURL && canReadEnvironment"
+            :external-url="externalURL"/>
 
-            <stop-component v-if="hasStopAction && canCreateDeployment"
-              :stop-url="model.stop_path"/>
+          <stop-component v-if="hasStopAction && canCreateDeployment"
+            :stop-url="model.stop_path"/>
 
-            <terminal-button-component v-if="model && model.terminal_path"
-              :terminal-path="model.terminal_path"/>
+          <terminal-button-component v-if="model && model.terminal_path"
+            :terminal-path="model.terminal_path"/>
 
-            <rollback-component v-if="canRetry && canCreateDeployment"
-              :is-last-deployment="isLastDeployment"
-              :retry-url="retryUrl"/>
-          </div>
+          <rollback-component v-if="canRetry && canCreateDeployment"
+            :is-last-deployment="isLastDeployment"
+            :retry-url="retryUrl"/>
         </div>
       </td>
     </tr>
