@@ -3,8 +3,8 @@ class PostReceive
   include DedicatedSidekiqQueue
 
   def perform(repo_path, identifier, changes)
-    if path = Gitlab.config.repositories.storages.find { |p| repo_path.start_with?(p[1].to_s) }
-      repo_path.gsub!(path[1].to_s, "")
+    if repository_storage = Gitlab.config.repositories.storages.find { |p| repo_path.start_with?(p[1]['path'].to_s) }
+      repo_path.gsub!(repository_storage[1]['path'].to_s, "")
     else
       log("Check gitlab.yml config for correct repositories.storages values. No repository storage path matches \"#{repo_path}\"")
     end

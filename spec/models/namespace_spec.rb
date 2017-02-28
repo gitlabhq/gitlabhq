@@ -151,7 +151,7 @@ describe Namespace, models: true do
 
   describe :rm_dir do
     let!(:project) { create(:empty_project, namespace: namespace) }
-    let!(:path) { File.join(Gitlab.config.repositories.storages.default, namespace.full_path) }
+    let!(:path) { File.join(Gitlab.config.repositories.storages.default['path'], namespace.full_path) }
 
     it "removes its dirs when deleted" do
       namespace.destroy
