@@ -63,7 +63,7 @@ module Gitlab
     private
 
     def no_user_or_blocked?
-      user.nil? || user.blocked?
+      user.nil? || !user.can?(:access_git)
     end
   end
 end
