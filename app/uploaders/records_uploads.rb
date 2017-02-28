@@ -22,11 +22,7 @@ module RecordsUploads
     Upload.record(self)
   end
 
-  # When removing an attachment, destroy any Upload records at the same path
-  #
-  # Note: this _will not work_ for Uploaders which relativize paths, such as
-  # `FileUploader`, but because that uploader uses different paths for every
-  # upload, that's an acceptable caveat.
+  # Before removing an attachment, destroy any Upload records at the same path
   #
   # Called `before :remove`
   def destroy_upload(*args)

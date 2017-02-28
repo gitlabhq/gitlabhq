@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe RecordsUploads do
   let(:uploader) do
-    example_uploader = Class.new(GitlabUploader) do
+    class RecordsUploadsExampleUploader < GitlabUploader
       include RecordsUploads
 
       storage :file
@@ -12,7 +12,7 @@ describe RecordsUploads do
       end
     end
 
-    example_uploader.new
+    RecordsUploadsExampleUploader.new
   end
 
   def upload_fixture(filename)
@@ -59,10 +59,10 @@ describe RecordsUploads do
 
     it 'it destroys Upload records at the same path before recording' do
       existing = Upload.create!(
-        path: File.join(CarrierWave.root, 'uploads', 'rails_sample.jpg'),
+        path: File.join('uploads', 'rails_sample.jpg'),
         size: 512.kilobytes,
         model: build_stubbed(:user),
-        uploader: described_class.to_s
+        uploader: uploader.class.to_s
       )
 
       uploader.store!(upload_fixture('rails_sample.jpg'))
