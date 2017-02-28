@@ -94,7 +94,7 @@ module API
       end
       params do
         requires :token, type: String, desc: %q(Runners's authentication token)
-        requires :id, type: Fixnum, desc: %q(Job's ID)
+        requires :id, type: Integer, desc: %q(Job's ID)
         optional :trace, type: String, desc: %q(Job's full trace)
         optional :state, type: String, desc: %q(Job's status: success, failed)
       end
@@ -122,7 +122,7 @@ module API
                     [416, 'Range not satisfiable']]
       end
       params do
-        requires :id, type: Fixnum, desc: %q(Job's ID)
+        requires :id, type: Integer, desc: %q(Job's ID)
         optional :token, type: String, desc: %q(Job's authentication token)
       end
       patch '/:id/trace' do
@@ -152,9 +152,9 @@ module API
                     [413, 'File too large']]
       end
       params do
-        requires :id, type: Fixnum, desc: %q(Job's ID)
+        requires :id, type: Integer, desc: %q(Job's ID)
         optional :token, type: String, desc: %q(Job's authentication token)
-        optional :filesize, type: Fixnum, desc: %q(ARtifacts filesize)
+        optional :filesize, type: Integer, desc: %q(Artifacts filesize)
       end
       post '/:id/artifacts/authorize' do
         not_allowed! unless Gitlab.config.artifacts.enabled
@@ -183,7 +183,7 @@ module API
                     [413, 'File too large']]
       end
       params do
-        requires :id, type: Fixnum, desc: %q(Job's ID)
+        requires :id, type: Integer, desc: %q(Job's ID)
         optional :token, type: String, desc: %q(Job's authentication token)
         optional :expire_in, type: String, desc: %q(Specify when artifacts should expire)
         optional 'file', type: File, desc: %q(Artifact's file)
@@ -211,9 +211,7 @@ module API
         job.artifacts_file = artifacts
         job.artifacts_metadata = metadata
         job.artifacts_expire_in = params['expire_in'] ||
-                                    Gitlab::CurrentSettings
-                                      .current_application_settings
-                                      .default_artifacts_expire_in
+          Gitlab::CurrentSettings.current_application_settings.default_artifacts_expire_in
 
         if job.save
           present job, with: Entities::JobRequest::Response
@@ -228,7 +226,7 @@ module API
                     [404, 'Artifact not found']]
       end
       params do
-        requires :id, type: Fixnum, desc: %q(Job's ID)
+        requires :id, type: Integer, desc: %q(Job's ID)
         optional :token, type: String, desc: %q(Job's authentication token)
       end
       get '/:id/artifacts' do

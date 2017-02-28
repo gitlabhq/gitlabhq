@@ -281,7 +281,7 @@ describe API::Runner do
             expect(json_response['image']).to include({ 'name' => 'ruby:2.1' })
             expect(json_response['services']).to include({ 'name' => 'postgres' })
             expect(json_response['steps']).to include({ 'name' => 'after_script',
-                                                        'script' => ['ls', 'date'],
+                                                        'script' => %w(ls date),
                                                         'timeout' => job.timeout,
                                                         'when' => 'always',
                                                         'allow_failure' => true })
@@ -889,9 +889,11 @@ describe API::Runner do
         end
 
         def upload_artifacts(file, headers = {}, accelerated = true)
-          params = accelerated ?
-                     { 'file.path' => file.path, 'file.name' => file.original_filename } :
+          params = if accelerated
+                     { 'file.path' => file.path, 'file.name' => file.original_filename }
+                   else
                      { 'file' => file }
+                   end
           post api("/jobs/#{job.id}/artifacts"), params, headers
         end
       end

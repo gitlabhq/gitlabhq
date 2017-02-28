@@ -3,9 +3,9 @@ module Gitlab
     module Build
       module Response
         class Step
-          CONDITION_ON_FAILURE = 'on_failure'
-          CONDITION_ON_SUCCESS = 'on_success'
-          CONDITION_ALWAYS = 'always'
+          CONDITION_ON_FAILURE = 'on_failure'.freeze
+          CONDITION_ON_SUCCESS = 'on_success'.freeze
+          CONDITION_ALWAYS = 'always'.freeze
 
           attr_reader :name, :script, :when, :allow_failure, :timeout
 

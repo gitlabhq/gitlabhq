@@ -1,7 +1,7 @@
 module API
   module Helpers
     module Runner
-      JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'
+      JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'.freeze
       JOB_TOKEN_PARAM = :token
       UPDATE_RUNNER_EVERY = 10 * 60
 
@@ -42,7 +42,7 @@ module API
       end
 
       def job_not_found!
-        if headers['User-Agent'].to_s.match(/gitlab(-ci-multi)?-runner \d+\.\d+\.\d+(~beta\.\d+\.g[0-9a-f]+)? /)
+        if headers['User-Agent'].to_s =~ /gitlab(-ci-multi)?-runner \d+\.\d+\.\d+(~beta\.\d+\.g[0-9a-f]+)? /
           no_content!
         else
           not_found!
