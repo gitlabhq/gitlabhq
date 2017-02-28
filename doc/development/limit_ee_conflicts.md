@@ -50,6 +50,12 @@ Notes:
   asking a GitLab developer to do it once the merge request is merged.
 - If you branch is more than 500 commits behind `master`, the job will fail and
   you should rebase your branch upon latest `master`.
+- Code reviews for merge requests often consist of multiple iterations of
+  feedback and fixes. There is no need to update your EE MR after each
+  iteration. Instead, create an EE MR as soon as you see the
+  `rake ee_compat_check` job failing and update it after the CE MR is merged.
+  This helps to identify significant conflicts sooner, but also reduces the
+  number of times you have to resolve conflicts.
 
 ## Possible type of conflicts
 
