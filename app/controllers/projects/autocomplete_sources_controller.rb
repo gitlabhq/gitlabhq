@@ -1,9 +1,5 @@
 class Projects::AutocompleteSourcesController < Projects::ApplicationController
-  before_action :load_autocomplete_service, except: [:emojis, :members]
-
-  def emojis
-    render json: Gitlab::AwardEmoji.urls
-  end
+  before_action :load_autocomplete_service, except: [:members]
 
   def members
     render json: ::Projects::ParticipantsService.new(@project, current_user).execute(noteable)

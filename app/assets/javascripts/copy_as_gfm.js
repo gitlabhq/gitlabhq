@@ -46,8 +46,8 @@ require('./lib/utils/common_utils');
       },
     },
     EmojiFilter: {
-      'img.emoji'(el, text) {
-        return el.getAttribute('alt');
+      'gl-emoji'(el, text) {
+        return `:${el.getAttribute('data-name')}:`;
       },
     },
     ImageLinkFilter: {

@@ -57,7 +57,7 @@ describe "User Feed", feature: true  do
       end
 
       it 'has XHTML summaries in notes' do
-        expect(body).to match /Bug confirmed <img[^>]*\/>/
+        expect(body).to match /Bug confirmed <gl-emoji[^>]*>/
       end
 
       it 'has XHTML summaries in merge request descriptions' do

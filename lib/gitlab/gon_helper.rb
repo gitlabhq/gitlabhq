@@ -7,7 +7,6 @@ module Gitlab
       gon.relative_url_root      = Gitlab.config.gitlab.relative_url_root
       gon.shortcuts_path         = help_page_path('shortcuts')
       gon.user_color_scheme      = Gitlab::ColorSchemes.for_user(current_user).css_class
-      gon.award_menu_url         = emojis_path
       gon.katex_css_url          = ActionController::Base.helpers.asset_path('katex.css')
       gon.katex_js_url           = ActionController::Base.helpers.asset_path('katex.js')
 
