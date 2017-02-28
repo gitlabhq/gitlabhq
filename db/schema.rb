@@ -87,9 +87,9 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.boolean "send_user_confirmation_email", default: false
     t.integer "container_registry_token_expire_delay", default: 5
     t.text "after_sign_up_text"
+    t.boolean "user_default_external", default: false, null: false
     t.string "repository_storages", default: "default"
     t.string "enabled_git_access_protocol"
-    t.boolean "user_default_external", default: false, null: false
     t.boolean "domain_blacklist_enabled", default: false
     t.text "domain_blacklist"
     t.boolean "koding_enabled"
@@ -403,22 +403,22 @@ ActiveRecord::Schema.define(version: 20170216141440) do
   add_index "deploy_keys_projects", ["project_id"], name: "index_deploy_keys_projects_on_project_id", using: :btree
 
   create_table "deployments", force: :cascade do |t|
-    t.integer "iid"
-    t.integer "project_id"
-    t.integer "environment_id"
-    t.string "ref"
-    t.boolean "tag"
-    t.string "sha"
+    t.integer "iid", null: false
+    t.integer "project_id", null: false
+    t.integer "environment_id", null: false
+    t.string "ref", null: false
+    t.boolean "tag", null: false
+    t.string "sha", null: false
     t.integer "user_id"
-    t.integer "deployable_id", null: false
-    t.string "deployable_type", null: false
+    t.integer "deployable_id"
+    t.string "deployable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "on_stop"
   end
 
   add_index "deployments", ["project_id", "environment_id", "iid"], name: "index_deployments_on_project_id_and_environment_id_and_iid", using: :btree
-  add_index "deployments", ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", using: :btree
+  add_index "deployments", ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", unique: true, using: :btree
 
   create_table "emails", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -695,8 +695,8 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.integer "merge_user_id"
     t.string "merge_commit_sha"
     t.datetime "deleted_at"
-    t.integer "lock_version"
     t.string "in_progress_merge_commit_sha"
+    t.integer "lock_version"
     t.text "title_html"
     t.text "description_html"
     t.integer "time_estimate"
@@ -773,16 +773,6 @@ ActiveRecord::Schema.define(version: 20170216141440) do
   add_index "namespaces", ["path"], name: "index_namespaces_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
 
-  create_table "note_templates", force: :cascade do |t|
-    t.integer "user_id"
-    t.string "title"
-    t.text "note"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "note_templates", ["user_id"], name: "index_note_templates_on_user_id", using: :btree
-
   create_table "notes", force: :cascade do |t|
     t.text "note"
     t.string "noteable_type"
@@ -798,7 +788,6 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.text "st_diff"
     t.integer "updated_by_id"
     t.string "type"
-    t.string "system_type"
     t.text "position"
     t.text "original_position"
     t.datetime "resolved_at"
@@ -992,7 +981,7 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.boolean "has_external_wiki"
     t.boolean "lfs_enabled"
     t.text "description_html"
-    t.boolean "only_allow_merge_if_all_discussions_are_resolved", default: false, null: false
+    t.boolean "only_allow_merge_if_all_discussions_are_resolved"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
