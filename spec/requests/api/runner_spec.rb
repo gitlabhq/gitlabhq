@@ -614,5 +614,82 @@ describe API::Runner do
         2.times { patch_the_trace('') }
       end
     end
+
+    describe 'artifacts' do
+      let(:jwt_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
+      let(:headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => jwt_token } }
+      let(:headers_with_token) { headers.merge(API::Helpers::Runner::JOB_TOKEN_HEADER => job.token) }
+
+      before { job.run! }
+
+      describe 'POST /api/v4/jobs/:id/artifacts/authorize' do
+        context 'when using token as parameter' do
+          it 'authorizes posting artifacts to running job' do
+            authorize_artifacts_with_token_in_params
+
+            expect(response).to have_http_status(200)
+            expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+            expect(json_response['TempPath']).not_to be_nil
+          end
+
+          it 'fails to post too large artifact' do
+            stub_application_setting(max_artifacts_size: 0)
+            authorize_artifacts_with_token_in_params(filesize: 100)
+
+            expect(response).to have_http_status(413)
+          end
+        end
+
+        context 'when using token as header' do
+          it 'authorizes posting artifacts to running job' do
+            authorize_artifacts_with_token_in_headers
+
+            expect(response).to have_http_status(200)
+            expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+            expect(json_response['TempPath']).not_to be_nil
+          end
+
+          it 'fails to post too large artifact' do
+            stub_application_setting(max_artifacts_size: 0)
+            authorize_artifacts_with_token_in_headers(filesize: 100)
+
+            expect(response).to have_http_status(413)
+          end
+        end
+
+        context 'when using runners token' do
+          it 'fails to authorize artifacts posting' do
+            authorize_artifacts(token: job.project.runners_token)
+            expect(response).to have_http_status(403)
+          end
+        end
+
+        it 'reject requests that did not go through gitlab-workhorse' do
+          headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
+          authorize_artifacts
+          expect(response).to have_http_status(500)
+        end
+
+        context 'authorization token is invalid' do
+          it 'responds with forbidden' do
+            authorize_artifacts(token: 'invalid', filesize: 100 )
+            expect(response).to have_http_status(403)
+          end
+        end
+
+        def authorize_artifacts(params = {}, request_headers = headers)
+          post api("/jobs/#{job.id}/artifacts/authorize"), params, request_headers
+        end
+
+        def authorize_artifacts_with_token_in_params(params = {}, request_headers = headers)
+          params = params.merge(token: job.token)
+          authorize_artifacts(params, request_headers)
+        end
+
+        def authorize_artifacts_with_token_in_headers(params = {}, request_headers = headers_with_token)
+          authorize_artifacts(params, request_headers)
+        end
+      end
+    end
   end
 end

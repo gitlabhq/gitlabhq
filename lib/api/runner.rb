@@ -144,6 +144,36 @@ module API
         header 'Job-Status', job.status
         header 'Range', "0-#{job.trace_length}"
       end
+
+      desc 'Authorize artifacts uploading for job' do
+        http_codes [[200, 'Upload allowed'],
+                    [403, 'Forbidden'],
+                    [405, 'Artifacts support not enabled'],
+                    [413, 'File too large']]
+      end
+      params do
+        requires :id, type: Fixnum, desc: %q(Job's ID)
+        optional :token, type: String, desc: %q(Job's authentication token)
+        optional :filesize, type: Fixnum, desc: %q(ARtifacts filesize)
+      end
+      post '/:id/artifacts/authorize' do
+        not_allowed! unless Gitlab.config.artifacts.enabled
+        require_gitlab_workhorse!
+        Gitlab::Workhorse.verify_api_request!(headers)
+
+        job = Ci::Build.find_by_id(params[:id])
+        authenticate_job!(job)
+        forbidden!('Job is not running') unless job.running?
+
+        if params[:filesize]
+          file_size = params[:filesize].to_i
+          file_to_large! unless file_size < max_artifacts_size
+        end
+
+        status 200
+        content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
+        Gitlab::Workhorse.artifact_upload_ok
+      end
     end
   end
 end

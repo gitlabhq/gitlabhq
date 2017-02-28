@@ -68,6 +68,10 @@ module API
         token = (params[JOB_TOKEN_PARAM] || env[JOB_TOKEN_HEADER]).to_s
         token && job.valid_token?(token)
       end
+
+      def max_artifacts_size
+        current_application_settings.max_artifacts_size.megabytes.to_i
+      end
     end
   end
 end
