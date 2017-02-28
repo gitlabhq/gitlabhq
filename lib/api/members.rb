@@ -93,24 +93,10 @@ module API
         end
         delete ":id/members/:user_id" do
           source = find_source(source_type, params[:id])
+          # Ensure that memeber exists
+          source.members.find_by!(user_id: params[:user_id])
 
-          # This is to ensure back-compatibility but find_by! should be used
-          # in that casse in 9.0!
-          member = source.members.find_by(user_id: params[:user_id])
-
-          # This is to ensure back-compatibility but this should be removed in
-          # favor of find_by! in 9.0!
-          not_found!("Member: user_id:#{params[:user_id]}") if source_type == 'group' && member.nil?
-
-          # This is to ensure back-compatibility but 204 behavior should be used
-          # for all DELETE endpoints in 9.0!
-          if member.nil?
-            { message: "Access revoked", id: params[:user_id].to_i }
-          else
-            ::Members::DestroyService.new(source, current_user, declared_params).execute
-
-            present member.user, with: Entities::Member, member: member
-          end
+          ::Members::DestroyService.new(source, current_user, declared_params).execute
         end
       end
     end

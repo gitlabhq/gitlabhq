@@ -31,7 +31,7 @@ module.exports = Vue.component('environment-table-component', {
   },
 
   template: `
-    <table class="table ci-table environments">
+    <table class="table ci-table">
       <thead>
         <tr>
           <th class="environments-name">Environment</th>
@@ -39,7 +39,7 @@ module.exports = Vue.component('environment-table-component', {
           <th class="environments-build">Job</th>
           <th class="environments-commit">Commit</th>
           <th class="environments-date">Updated</th>
-          <th class="hidden-xs environments-actions"></th>
+          <th class="environments-actions"></th>
         </tr>
       </thead>
       <tbody>

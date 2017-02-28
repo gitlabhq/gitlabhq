@@ -78,9 +78,8 @@ module API
       delete ':id' do
         runner = get_runner(params[:id])
         authenticate_delete_runner!(runner)
-        runner.destroy!
 
-        present runner, with: Entities::Runner
+        runner.destroy!
       end
     end
 
@@ -136,8 +135,6 @@ module API
         forbidden!("Only one project associated with the runner. Please remove the runner instead") if runner.projects.count == 1
 
         runner_project.destroy
-
-        present runner, with: Entities::Runner
       end
     end
 

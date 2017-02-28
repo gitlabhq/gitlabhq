@@ -6,6 +6,8 @@ module MergeRequests
   # Executed when you do merge via GitLab UI
   #
   class MergeService < MergeRequests::BaseService
+    MergeError = Class.new(StandardError)
+
     attr_reader :merge_request, :source
 
     def execute(merge_request)
@@ -27,6 +29,8 @@ module MergeRequests
           success
         end
       end
+    rescue MergeError => e
+      log_merge_error(e.message, save_message_on_model: true)
     end
 
     private
@@ -42,19 +46,13 @@ module MergeRequests
 
       commit_id = repository.merge(current_user, source, merge_request, options)
 
-      if commit_id
-        merge_request.update(merge_commit_sha: commit_id)
-      else
-        log_merge_error('Conflicts detected during merge', save_message_on_model: true)
-        false
-      end
+      raise MergeError, 'Conflicts detected during merge' unless commit_id
+
+      merge_request.update(merge_commit_sha: commit_id)
     rescue GitHooksService::PreReceiveError => e
-      log_merge_error(e.message, save_message_on_model: true)
-      false
+      raise MergeError, e.message
     rescue StandardError => e
-      merge_request.update(merge_error: "Something went wrong during merge: #{e.message}")
-      log_merge_error(e.message)
-      false
+      raise MergeError, "Something went wrong during merge: #{e.message}"
     ensure
       merge_request.update(in_progress_merge_commit_sha: nil)
     end

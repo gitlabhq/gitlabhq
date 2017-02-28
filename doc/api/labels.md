@@ -131,22 +131,6 @@ DELETE /projects/:id/labels
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels?name=bug"
 ```
 
-Example response:
-
-```json
-{
-  "id" : 1,
-  "name" : "bug",
-  "color" : "#d9534f",
-  "description": "Bug reported by user",
-  "open_issues_count": 1,
-  "closed_issues_count": 0,
-  "open_merge_requests_count": 1,
-  "subscribed": false,
-  "priority": null
-}
-```
-
 ## Edit an existing label
 
 Updates an existing label with new name or new color. At least one parameter
@@ -238,20 +222,4 @@ POST /projects/:id/labels/:label_id/unsubscribe
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/labels/1/unsubscribe
-```
-
-Example response:
-
-```json
-{
-  "id" : 1,
-  "name" : "bug",
-  "color" : "#d9534f",
-  "description": "Bug reported by user",
-  "open_issues_count": 1,
-  "closed_issues_count": 0,
-  "open_merge_requests_count": 1,
-  "subscribed": false,
-  "priority": null
-}
 ```

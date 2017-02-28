@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.17.1 (2017-02-28)
+
+- Replace setInterval with setTimeout to prevent highly frequent requests. !9271 (Takuya Noguchi)
+- Disable unused tags count cache for Projects, Builds and Runners.
+- Spam check and reCAPTCHA improvements.
+- Allow searching issues for strings containing colons.
+- Disabled tooltip on add issues button in usse boards.
+- Fixed commit search UI.
+- Fix MR changes tab size count when there are over 100 files in the diff.
+- Disable invalid service templates.
+- Use default branch as target_branch when parameter is missing.
+- Upgrade GitLab Pages to v0.3.2.
+- Add performance query regression fix for !9088 affecting #27267.
+- Chat slash commands show labels correctly.
+
 ## 8.17.0 (2017-02-22)
 
 - API: Fix file downloading. !0 (8267)
