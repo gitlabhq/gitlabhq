@@ -45,4 +45,7 @@ RSpec.describe 'Dashboard Issues', feature: true do
     expect(page).to have_content(assigned_issue.title)
     expect(page).to have_content(other_issue.title)
   end
+
+  it_behaves_like "it has an RSS button with current_user's private token"
+  it_behaves_like "an autodiscoverable RSS feed with current_user's private token"
 end
