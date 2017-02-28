@@ -583,7 +583,7 @@ GEM
     recaptcha (3.0.0)
       json
     recursive-open-struct (1.0.0)
-    redcarpet (3.3.3)
+    redcarpet (3.4.0)
     redis (3.2.2)
     redis-actionpack (5.0.1)
       actionpack (>= 4.0, < 6)
@@ -955,7 +955,7 @@ DEPENDENCIES
   rblineprof (~> 0.3.6)
   rdoc (~> 4.2)
   recaptcha (~> 3.0)
-  redcarpet (~> 3.3.3)
+  redcarpet (~> 3.4)
   redis (~> 3.2)
   redis-namespace (~> 1.5.2)
   redis-rails (~> 5.0.1)
