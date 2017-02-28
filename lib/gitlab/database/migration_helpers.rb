@@ -87,7 +87,7 @@ module Gitlab
       # the database. Disable the session's statement timeout to ensure
       # migrations don't get killed prematurely. (PostgreSQL only)
       def disable_statement_timeout
-        ActiveRecord::Base.connection.execute('SET statement_timeout TO 0') if Database.postgresql?
+        execute('SET statement_timeout TO 0') if Database.postgresql?
       end
 
       # Updates the value of a column in batches.
