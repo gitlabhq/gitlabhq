@@ -1288,6 +1288,6 @@ describe API::V3::Issues, api: true  do
   describe 'time tracking endpoints' do
     let(:issuable) { issue }
 
-    include_examples 'time tracking endpoints', 'issue'
+    include_examples 'V3 time tracking endpoints', 'issue'
   end
 end
