@@ -22,33 +22,16 @@ describe GpgKey do
       end
     end
 
-    describe 'add_to_keychain' do
-      context "user's email matches one of the key's emails" do
-        it 'calls .add after create' do
-          expect(Gitlab::Gpg::CurrentKeyChain).to receive(:add).with(GpgHelpers::User2.public_key)
-          user = create :user, email: GpgHelpers::User2.emails.first
-          create :gpg_key, user: user, key: GpgHelpers::User2.public_key
-        end
+    describe 'synchronize_keychain' do
+      it 'calls #synchronize_keychain after create' do
+        gpg_key = build :gpg_key
+        expect(gpg_key).to receive(:synchronize_keychain)
+        gpg_key.save!
       end
 
-      context "user's email does not match one of the key's emails" do
-        it 'does not call .add after create' do
-          expect(Gitlab::Gpg::CurrentKeyChain).not_to receive(:add)
-          user = create :user
-          create :gpg_key, user: user, key: GpgHelpers::User2.public_key
-        end
-      end
-    end
-
-    describe 'remove_from_keychain' do
-      it 'calls remove_from_keychain after destroy' do
-        allow(Gitlab::Gpg::CurrentKeyChain).to receive :add
+      it 'calls #remove_from_keychain after destroy' do
         gpg_key = create :gpg_key
-
-        expect(
-          Gitlab::Gpg::CurrentKeyChain
-        ).to receive(:remove).with(GpgHelpers::User1.fingerprint)
-
+        expect(gpg_key).to receive(:synchronize_keychain)
         gpg_key.destroy!
       end
     end
@@ -73,6 +56,15 @@ describe GpgKey do
       gpg_key = create :gpg_key, key: GpgHelpers::User1.public_key
 
       expect(gpg_key.emails).to eq GpgHelpers::User1.emails
+    end
+  end
+
+  describe '#emails_in_keychain', :gpg do
+    it 'returns the emails from the keychain' do
+      user = create :user, email: GpgHelpers::User1.emails.first
+      gpg_key = create :gpg_key, key: GpgHelpers::User1.public_key, user: user
+
+      expect(gpg_key.emails_in_keychain).to eq GpgHelpers::User1.emails
     end
   end
 
@@ -101,6 +93,46 @@ describe GpgKey do
           ['bette.cartwright@example.net', false]
         ]
       end
+    end
+  end
+
+  describe '#synchronize_keychain', :gpg do
+    context "user's email matches one of the key's emails" do
+      it 'adds the key to the keychain' do
+        user = create :user, email: GpgHelpers::User1.emails.first
+        gpg_key = create :gpg_key, user: user
+
+        expect(gpg_key).to receive(:add_to_keychain)
+
+        gpg_key.synchronize_keychain
+      end
+    end
+
+    context "user's email does not match one of the key's emails" do
+      it 'does not add the key to the keychain' do
+        user = create :user, email: 'stepanie@cole.us'
+        gpg_key = create :gpg_key, user: user
+
+        expect(gpg_key).to receive(:remove_from_keychain)
+
+        gpg_key.synchronize_keychain
+      end
+    end
+  end
+
+  describe '#add_to_keychain', :gpg do
+    it 'calls .add_to_keychain' do
+      expect(Gitlab::Gpg::CurrentKeyChain).to receive(:add).with(GpgHelpers::User2.public_key)
+      gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key
+      gpg_key.send(:add_to_keychain)
+    end
+  end
+
+  describe '#remove_from_keychain', :gpg do
+    it 'calls .remove_from_keychain' do
+      allow(Gitlab::Gpg::CurrentKeyChain).to receive(:remove).with(GpgHelpers::User2.fingerprint)
+      gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key
+      gpg_key.send(:remove_from_keychain)
     end
   end
 

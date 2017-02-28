@@ -206,7 +206,8 @@ describe 'Commits' do
   end
 
   describe 'GPG signed commits' do
-    let(:user) { create(:user) }
+    let!(:user) { create :user, email: GpgHelpers::User1.emails.first }
+    let!(:gpg_key) { create :gpg_key, key: GpgHelpers::User1.public_key, user: user }
 
     before do
       project.team << [user, :master]
@@ -214,8 +215,6 @@ describe 'Commits' do
     end
 
     it 'shows the signed status', :gpg do
-      GPGME::Key.import(GpgHelpers::User1.public_key)
-
       # FIXME: add this to the test repository directly
       remote_path = project.repository.path_to_repo
       Dir.mktmpdir do |dir|
@@ -232,6 +231,17 @@ describe 'Commits' do
       within '#commits-list' do
         expect(page).to have_content 'Unverified'
         expect(page).to have_content 'Verified'
+      end
+
+      # user changes his email which makes the gpg key unverified
+      user.skip_reconfirmation!
+      user.update_attributes!(email: 'bette.cartwright@example.org')
+
+      visit namespace_project_commits_path(project.namespace, project, :master)
+
+      within '#commits-list' do
+        expect(page).to have_content 'Unverified'
+        expect(page).not_to have_content 'Verified'
       end
     end
   end

@@ -10,7 +10,9 @@ module Gitlab
       end
 
       def remove(fingerprint)
-        GPGME::Key.get(fingerprint).delete!
+        # `#get` raises an EOFError if the keychain is empty, which is why we
+        # use the friendlier `#find`
+        GPGME::Key.find(:public, fingerprint).each(&:delete!)
       end
 
       def emails(fingerprint)
