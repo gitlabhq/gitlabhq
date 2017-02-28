@@ -75,8 +75,11 @@ const DEFAULT_EVENT_OBJECTS = require('./default_event_objects');
         const eventItem = Object.assign({}, DEFAULT_EVENT_OBJECTS[stage.slug], item);
 
         eventItem.totalTime = eventItem.total_time;
-        eventItem.author.webUrl = eventItem.author.web_url;
-        eventItem.author.avatarUrl = eventItem.author.avatar_url;
+
+        if (eventItem.author) {
+          eventItem.author.webUrl = eventItem.author.web_url;
+          eventItem.author.avatarUrl = eventItem.author.avatar_url;
+        }
 
         if (eventItem.created_at) eventItem.createdAt = eventItem.created_at;
         if (eventItem.short_sha) eventItem.shortSha = eventItem.short_sha;
