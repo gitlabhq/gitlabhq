@@ -503,7 +503,7 @@ module.exports = Vue.component('environment-item', {
         </span>
       </td>
 
-      <td class="hidden-xs environments-actions">
+      <td class="environments-actions">
         <div v-if="!model.isFolder" class="btn-group pull-right" role="group">
           <actions-component v-if="hasManualActions && canCreateDeployment"
             :play-icon-svg="playIconSvg"
