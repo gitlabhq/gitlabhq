@@ -74,7 +74,7 @@ in your SAML IdP:
                    idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
                    idp_sso_target_url: 'https://login.example.com/idp',
                    issuer: 'https://gitlab.example.com',
-                   name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+                   name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
                  },
           label: 'Company Login' # optional label for SAML login button, defaults to "Saml"
         }
@@ -91,7 +91,7 @@ in your SAML IdP:
                  idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
                  idp_sso_target_url: 'https://login.example.com/idp',
                  issuer: 'https://gitlab.example.com',
-                 name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+                 name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
                },
           label: 'Company Login' # optional label for SAML login button, defaults to "Saml"
         }
@@ -172,7 +172,7 @@ tell GitLab which groups are external via the `external_groups:` element:
           idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
           idp_sso_target_url: 'https://login.example.com/idp',
           issuer: 'https://gitlab.example.com',
-          name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+          name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
         } }
 ```
 
@@ -251,7 +251,7 @@ args: {
         idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
         idp_sso_target_url: 'https://login.example.com/idp',
         issuer: 'https://gitlab.example.com',
-        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
+        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
         attribute_statements: { email: ['EmailAddress'] }
 }
 ```
@@ -269,7 +269,7 @@ args: {
         idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
         idp_sso_target_url: 'https://login.example.com/idp',
         issuer: 'https://gitlab.example.com',
-        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
+        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
         attribute_statements: { email: ['EmailAddress'] },
         allowed_clock_drift: 1 # for one second clock drift
 }

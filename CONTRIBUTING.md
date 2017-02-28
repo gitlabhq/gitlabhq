@@ -426,7 +426,7 @@ merge request:
 1.  [Ruby](https://github.com/bbatsov/ruby-style-guide).
     Important sections include [Source Code Layout][rss-source] and
     [Naming][rss-naming]. Use:
-    - multi-line method chaining style **Option B**: dot `.` on previous line
+    - multi-line method chaining style **Option A**: dot `.` on the second line
     - string literal quoting style **Option A**: single quoted by default
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
 1.  [Newlines styleguide][newlines-styleguide]

@@ -373,9 +373,11 @@ describe API::Branches, api: true  do
       allow_any_instance_of(Repository).to receive(:rm_branch).and_return(true)
     end
 
-    it 'returns 200' do
+    it 'returns 202 with json body' do
       delete api("/projects/#{project.id}/repository/merged_branches", user)
-      expect(response).to have_http_status(200)
+
+      expect(response).to have_http_status(202)
+      expect(json_response['message']).to eql('202 Accepted')
     end
 
     it 'returns a 403 error if guest' do

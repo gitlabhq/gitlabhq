@@ -36,7 +36,7 @@ class Event < ActiveRecord::Base
   scope :code_push, -> { where(action: PUSHED) }
 
   scope :in_projects, ->(projects) do
-    where(project_id: projects).recent
+    where(project_id: projects.pluck(:id)).recent
   end
 
   scope :with_associations, -> { includes(:author, :project, project: :namespace).preload(:target) }

@@ -1018,7 +1018,7 @@ A simple example:
 
 ```yaml
 job1:
-  coverage: /Code coverage: \d+\.\d+/
+  coverage: '/Code coverage: \d+\.\d+/'
 ```
 
 ## Git Strategy

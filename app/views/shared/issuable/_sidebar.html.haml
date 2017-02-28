@@ -200,7 +200,7 @@
     :javascript
       gl.IssuableResource = new gl.SubbableResource('#{issuable_json_path(issuable)}');
       new gl.IssuableTimeTracking("#{escape_javascript(serialize_issuable(issuable))}");
-      new MilestoneSelect('{"namespace":"#{@project.namespace.path}","path":"#{@project.path}"}');
+      new MilestoneSelect('{"full_path":"#{@project.full_path}"}');
       new LabelsSelect();
       new WeightSelect();
       new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');

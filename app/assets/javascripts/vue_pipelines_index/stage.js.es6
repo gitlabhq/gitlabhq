@@ -23,6 +23,13 @@
         required: true,
       },
     },
+
+    updated() {
+      if (this.builds) {
+        this.stopDropdownClickPropagation();
+      }
+    },
+
     methods: {
       fetchBuilds(e) {
         const areaExpanded = e.currentTarget.attributes['aria-expanded'];
@@ -37,17 +44,19 @@
             return flash;
           });
       },
-      keepGraph(e) {
-        const { target } = e;
 
-        if (target.className.indexOf('js-ci-action-icon') >= 0) return null;
-
-        if (
-          target.parentElement &&
-          (target.parentElement.className.indexOf('js-ci-action-icon') >= 0)
-        ) return null;
-
-        return e.stopPropagation();
+      /**
+       * When the user right clicks or cmd/ctrl + click in the job name
+       * the dropdown should not be closed and the link should open in another tab,
+       * so we stop propagation of the click event inside the dropdown.
+       *
+       * Since this component is rendered multiple times per page we need to guarantee we only
+       * target the click event of this component.
+       */
+      stopDropdownClickPropagation() {
+        $(this.$el.querySelectorAll('.js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item')).on('click', (e) => {
+          e.stopPropagation();
+        });
       },
     },
     computed: {
@@ -76,13 +85,13 @@
     template: `
       <div>
         <button
-          @click='fetchBuilds($event)'
+          @click="fetchBuilds($event)"
           :class="triggerButtonClass"
-          :title='stage.title'
+          :title="stage.title"
           data-placement="top"
           data-toggle="dropdown"
           type="button"
-          :aria-label='stage.title'
+          :aria-label="stage.title"
         >
           <span v-html="svg" aria-hidden="true"></span>
           <i class="fa fa-caret-down" aria-hidden="true"></i>
@@ -90,7 +99,6 @@
         <ul class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container">
           <div class="arrow-up" aria-hidden="true"></div>
           <div
-            @click='keepGraph($event)'
             :class="dropdownClass"
             class="js-builds-dropdown-list scrollable-menu"
             v-html="buildsOrSpinner"

@@ -121,6 +121,7 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.integer "repository_size_limit", limit: 8, default: 0
     t.integer "terminal_max_session_time", default: 0, null: false
     t.integer "minimum_mirror_sync_time", default: 15, null: false
+    t.string "default_artifacts_expire_in", default: '0', null: false
   end
 
   create_table "approvals", force: :cascade do |t|

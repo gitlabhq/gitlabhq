@@ -148,7 +148,7 @@ describe API::V3::Commits, api: true do
       end
 
       context 'with project path in URL' do
-        let(:url) { "/projects/#{project.namespace.path}%2F#{project.path}/repository/commits" }
+        let(:url) { "/projects/#{project.full_path.gsub('/', '%2F')}/repository/commits" }
 
         it 'a new file in project repo' do
           post v3_api(url, user), valid_c_params

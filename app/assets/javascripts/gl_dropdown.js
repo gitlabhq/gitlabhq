@@ -63,7 +63,7 @@
     }
 
     GitLabDropdownFilter.prototype.shouldBlur = function(keyCode) {
-      return BLUR_KEYCODES.indexOf(keyCode) >= 0;
+      return BLUR_KEYCODES.indexOf(keyCode) !== -1;
     };
 
     GitLabDropdownFilter.prototype.filter = function(search_text) {
@@ -605,7 +605,7 @@
       var occurrences;
       occurrences = fuzzaldrinPlus.match(text, term);
       return text.split('').map(function(character, i) {
-        if (indexOf.call(occurrences, i) >= 0) {
+        if (indexOf.call(occurrences, i) !== -1) {
           return "<b>" + character + "</b>";
         } else {
           return character;
@@ -748,7 +748,7 @@
         return function(e) {
           var $listItems, PREV_INDEX, currentKeyCode;
           currentKeyCode = e.which;
-          if (ARROW_KEY_CODES.indexOf(currentKeyCode) >= 0) {
+          if (ARROW_KEY_CODES.indexOf(currentKeyCode) !== -1) {
             e.preventDefault();
             e.stopImmediatePropagation();
             PREV_INDEX = currentIndex;

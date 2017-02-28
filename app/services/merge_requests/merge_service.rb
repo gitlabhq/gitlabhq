@@ -6,6 +6,8 @@ module MergeRequests
   # Executed when you do merge via GitLab UI
   #
   class MergeService < MergeRequests::BaseService
+    MergeError = Class.new(StandardError)
+
     attr_reader :merge_request, :source
 
     def execute(merge_request)
@@ -20,11 +22,7 @@ module MergeRequests
         return log_merge_error('Merge request is not mergeable', save_message_on_model: true)
       end
 
-      if @merge_request.target_project.above_size_limit?
-        message = Gitlab::RepositorySizeError.new(@merge_request.target_project).merge_error
-
-        return log_merge_error(message, save_message_on_model: true)
-      end
+      check_size_limit
 
       @source = find_merge_source
 
@@ -38,6 +36,8 @@ module MergeRequests
           success
         end
       end
+    rescue MergeError => e
+      log_merge_error(e.message, save_message_on_model: true)
     end
 
     def hooks_validation_pass?(merge_request)
@@ -74,19 +74,13 @@ module MergeRequests
 
       commit_id = repository.merge(current_user, source, merge_request, options)
 
-      if commit_id
-        merge_request.update(merge_commit_sha: commit_id)
-      else
-        log_merge_error('Conflicts detected during merge', save_message_on_model: true)
-        false
-      end
+      raise MergeError, 'Conflicts detected during merge' unless commit_id
+
+      merge_request.update(merge_commit_sha: commit_id)
     rescue GitHooksService::PreReceiveError => e
-      log_merge_error(e.message, save_message_on_model: true)
-      false
+      raise MergeError, e.message
     rescue StandardError => e
-      merge_request.update(merge_error: "Something went wrong during merge: #{e.message}")
-      log_merge_error(e.message)
-      false
+      raise MergeError, "Something went wrong during merge: #{e.message}"
     ensure
       merge_request.update(in_progress_merge_commit_sha: nil)
     end
@@ -114,17 +108,24 @@ module MergeRequests
       merge_request.to_reference(full: true)
     end
 
+    def check_size_limit
+      if @merge_request.target_project.above_size_limit?
+        message = Gitlab::RepositorySizeError.new(@merge_request.target_project).merge_error
+
+        raise MergeError, message
+      end
+    end
+
     def find_merge_source
       return merge_request.diff_head_sha unless merge_request.squash
 
       squash_result = SquashService.new(project, current_user, params).execute(merge_request)
 
-      if squash_result[:status] == :success
+      case squash_result[:status]
+      when :success
         squash_result[:squash_sha]
-      else
-        log_merge_error("Squashing #{merge_request_info} failed")
-
-        nil
+      when :error
+        raise MergeError, squash_result[:message]
       end
     end
   end

@@ -137,7 +137,7 @@ module TestEnv
 
   def copy_repo(project)
     base_repo_path = File.expand_path(factory_repo_path_bare)
-    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.namespace.path}/#{project.path}.git")
+    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.full_path}.git")
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
@@ -154,7 +154,7 @@ module TestEnv
 
   def copy_forked_repo_with_submodules(project)
     base_repo_path = File.expand_path(forked_repo_path_bare)
-    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.namespace.path}/#{project.path}.git")
+    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.full_path}.git")
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
