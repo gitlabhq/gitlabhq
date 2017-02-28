@@ -33,6 +33,10 @@ class Admin::UsersController < Admin::ApplicationController
       flash[:alert] = "You cannot impersonate a blocked user"
 
       redirect_to admin_user_path(user)
+    elsif user.internal?
+      flash[:alert] = "You cannot impersonate an internal user"
+
+      redirect_to admin_user_path(user)
     else
       session[:impersonator_id] = current_user.id
 
