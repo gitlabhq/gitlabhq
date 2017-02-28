@@ -15,6 +15,7 @@ module CreatesCommit
       @mr_source_project, current_user, commit_params).execute
 
     if result[:status] == :success
+      @mr_source_branch = result[:source_branch]
       update_flash_notice(success_notice)
 
       respond_to do |format|

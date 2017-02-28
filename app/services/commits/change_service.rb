@@ -48,7 +48,7 @@ module Commits
           start_project: @start_project,
           start_branch_name: @start_branch)
 
-        success
+        success.merge(source_branch: into)
       else
         error_msg = "Sorry, we cannot #{action.to_s.dasherize} this #{@commit.change_type_title(current_user)} automatically.
                      A #{action.to_s.dasherize} may have already been performed with this #{@commit.change_type_title(current_user)}, or a more recent commit may have updated some of its content."
