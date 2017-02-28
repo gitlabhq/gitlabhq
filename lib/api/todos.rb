@@ -5,8 +5,8 @@ module API
     before { authenticate! }
 
     ISSUABLE_TYPES = {
-      'merge_requests' => ->(id) { find_merge_request_with_access(id) },
-      'issues' => ->(id) { find_project_issue(id) }
+      'merge_requests' => ->(iid) { find_merge_request_with_access(iid) },
+      'issues' => ->(iid) { find_project_issue(iid) }
     }.freeze
 
     params do
@@ -14,13 +14,13 @@ module API
     end
     resource :projects do
       ISSUABLE_TYPES.each do |type, finder|
-        type_id_str = "#{type.singularize}_id".to_sym
+        type_id_str = "#{type.singularize}_iid".to_sym
 
         desc 'Create a todo on an issuable' do
           success Entities::Todo
         end
         params do
-          requires type_id_str, type: Integer, desc: 'The ID of an issuable'
+          requires type_id_str, type: Integer, desc: 'The IID of an issuable'
         end
         post ":id/#{type}/:#{type_id_str}/todo" do
           issuable = instance_exec(params[type_id_str], &finder)
