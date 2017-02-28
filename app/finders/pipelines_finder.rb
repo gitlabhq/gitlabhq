@@ -12,9 +12,8 @@ class PipelinesFinder
     items = by_scope(items)
     items = by_status(items)
     items = by_ref(items)
-    items = by_user(items)
-    items = by_duration(items)
-    items = by_yaml_error(items)
+    items = by_username(items)
+    items = by_yaml_errors(items)
     order_and_sort(items)
   end
 
@@ -80,24 +79,16 @@ class PipelinesFinder
     end
   end
 
-  def by_user(items)
-    if params[:user_id].present?
-      items.where(user_id: params[:user_id])
+  def by_username(items)
+    if params[:username].present?
+      items.joins(:user).where("users.name = ?", params[:username])
     else
       items
     end
   end
 
-  def by_duration(items)
-    if params[:duration].present?
-      items.where("duration > ?", params[:duration])
-    else
-      items
-    end
-  end
-
-  def by_yaml_error(items)
-    if params[:yaml_error].present? && params[:yaml_error]
+  def by_yaml_errors(items)
+    if params[:yaml_errors].present? && params[:yaml_errors]
       items.where("yaml_errors IS NOT NULL")
     else
       items
@@ -105,7 +96,9 @@ class PipelinesFinder
   end
 
   def order_and_sort(items)
-    if params[:order_by].present? && params[:sort].present?
+    if params[:order_by].present? && params[:sort].present? && 
+       items.column_names.include?(params[:order_by]) && 
+       (params[:sort].downcase == 'asc' || params[:sort].downcase == 'desc')
       items.order("#{params[:order_by]} #{params[:sort]}")
     else
       items.order(id: :desc)
