@@ -51,7 +51,8 @@ module Backup
 
       if directory.files.create(key: tar_file, body: File.open(tar_file), public: false,
                                 multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
-                                encryption: Gitlab.config.backup.upload.encryption)
+                                encryption: Gitlab.config.backup.upload.encryption,
+                                storage_class: Gitlab.config.backup.upload.storage_class)
         $progress.puts "done".color(:green)
       else
         puts "uploading backup to #{remote_directory} failed".color(:red)

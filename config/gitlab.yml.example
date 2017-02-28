@@ -483,6 +483,8 @@ production: &base
     #   multipart_chunk_size: 104857600
     #   # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
     #   # encryption: 'AES256'
+    #   # Specifies Amazon S3 storage class to use for backups, this is optional
+    #   # storage_class: 'STANDARD'
 
   ## GitLab Shell settings
   gitlab_shell:
