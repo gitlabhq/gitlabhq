@@ -148,17 +148,10 @@ class Projects::NotesController < Projects::ApplicationController
 
   def note_json(note)
     attrs = {
-      award: false,
       id: note.id
     }
 
-    if note.is_a?(AwardEmoji)
-      attrs.merge!(
-        valid:  note.valid?,
-        award:  true,
-        name:   note.name
-      )
-    elsif note.persisted?
+    if note.persisted?
       Banzai::NoteRenderer.render([note], @project, current_user)
 
       attrs.merge!(
@@ -198,7 +191,7 @@ class Projects::NotesController < Projects::ApplicationController
       )
     end
 
-    attrs[:commands_changes] = note.commands_changes unless attrs[:award]
+    attrs[:commands_changes] = note.commands_changes
     attrs
   end
 
