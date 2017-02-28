@@ -172,8 +172,9 @@ module API
           success ::API::Entities::Project
         end
         params do
-          requires :name, type: String, desc: 'The name of the project'
+          optional :name, type: String, desc: 'The name of the project'
           optional :path, type: String, desc: 'The path of the repository'
+          at_least_one_of :name, :path
           use :optional_params
           use :create_params
         end
