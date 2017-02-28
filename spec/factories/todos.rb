@@ -18,11 +18,6 @@ FactoryGirl.define do
       action { Todo::DIRECTLY_ADDRESSED }
     end
 
-    trait :on_commit do
-      commit_id RepoHelpers.sample_commit.id
-      target_type "Commit"
-    end
-
     trait :build_failed do
       action { Todo::BUILD_FAILED }
       target factory: :merge_request
