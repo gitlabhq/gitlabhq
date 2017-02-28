@@ -305,24 +305,28 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request = MergeRequests::UpdateService.new(project, current_user, update_params).execute(@merge_request)
 
-    if @merge_request.valid?
-      respond_to do |format|
-        format.html do
-          redirect_to([@merge_request.target_project.namespace.becomes(Namespace),
-                       @merge_request.target_project, @merge_request])
-        end
-        format.json do
-          render json: @merge_request.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
+    respond_to do |format|
+      format.html do
+        if @merge_request.valid?
+          redirect_to([@merge_request.target_project.namespace.becomes(Namespace), @merge_request.target_project, @merge_request])
+        else
+          render :edit
         end
       end
+<<<<<<< HEAD
     else
       set_suggested_approvers
 
       render "edit"
+=======
+
+      format.json do
+        render json: @merge_request.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
+      end
+>>>>>>> 7733f285aca97d444382a59eda0ea3e303539c26
     end
   rescue ActiveRecord::StaleObjectError
-    @conflict = true
-    render :edit
+    render_conflict_response
   end
 
   def remove_wip

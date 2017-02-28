@@ -116,7 +116,7 @@
         formData = $.param(formData);
         formAction = form.attr('action');
         issuesUrl = formAction;
-        issuesUrl += "" + (formAction.indexOf('?') < 0 ? '?' : '&');
+        issuesUrl += "" + (formAction.indexOf('?') === -1 ? '?' : '&');
         issuesUrl += formData;
         return gl.utils.visitUrl(issuesUrl);
       };

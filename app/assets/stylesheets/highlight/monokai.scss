@@ -13,6 +13,7 @@ $monokai-line-empty-bg: #49483e;
 $monokai-line-empty-border: darken($monokai-line-empty-bg, 15%);
 $monokai-diff-border: #808080;
 $monokai-highlight-bg: #ffe792;
+$monokai-over-bg: #9f9ab5;
 
 $monokai-new-bg: rgba(166, 226, 46, 0.1);
 $monokai-new-idiff: rgba(166, 226, 46, 0.15);
@@ -136,6 +137,18 @@ $monokai-gi: #a6e22e;
       &::before,
       a {
         color: $monokai-line-num-color-old;
+      }
+    }
+
+    .diff-line-num {
+      &.is-over,
+      &.hll:not(.empty-cell).is-over {
+        background-color: $monokai-over-bg;
+        border-color: darken($monokai-over-bg, 5%);
+
+        a {
+          color: darken($monokai-over-bg, 15%);
+        }
       }
     }
 

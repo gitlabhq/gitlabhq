@@ -420,6 +420,8 @@ describe Projects::MergeRequestsController do
 
         expect { merge_request.reload.target_branch }.not_to change { merge_request.target_branch }
       end
+
+      it_behaves_like 'update invalid issuable', MergeRequest
     end
 
     context 'the approvals_before_merge param' do

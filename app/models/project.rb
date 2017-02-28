@@ -979,8 +979,14 @@ class Project < ActiveRecord::Base
     url_to_repo
   end
 
-  def http_url_to_repo
-    "#{web_url}.git"
+  def http_url_to_repo(user = nil)
+    url = web_url
+
+    if user
+      url.sub!(%r{\Ahttps?://}) { |protocol| "#{protocol}#{user.username}@" }
+    end
+
+    "#{url}.git"
   end
 
   # No need to have a Kerberos Web url. Kerberos URL will be used only to clone

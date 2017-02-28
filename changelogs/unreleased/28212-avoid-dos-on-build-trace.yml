@@ -1,0 +1,4 @@
+---
+title: Replace setInterval with setTimeout to prevent highly frequent requests
+merge_request: 9271
+author: Takuya Noguchi

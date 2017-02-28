@@ -27,6 +27,8 @@ module UploaderHelper
     extension_match?(DANGEROUS_EXT)
   end
 
+  private
+
   def extension_match?(extensions)
     return false unless file
 
@@ -39,9 +41,5 @@ module UploaderHelper
       end
 
     extensions.include?(extension.downcase)
-  end
-
-  def file_storage?
-    self.class.storage == CarrierWave::Storage::File
   end
 end

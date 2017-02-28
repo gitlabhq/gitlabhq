@@ -48,7 +48,11 @@
     }
 
     setOffset(offset = 0) {
-      this.dropdown.style.left = `${offset}px`;
+      if (window.innerWidth > 480) {
+        this.dropdown.style.left = `${offset}px`;
+      } else {
+        this.dropdown.style.left = '0px';
+      }
     }
 
     renderContent(forceShowList = false) {

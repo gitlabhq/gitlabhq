@@ -81,7 +81,7 @@
       var errorMessage, errors, formatter, unique, validator;
       this.branchNameError.empty();
       unique = function(values, value) {
-        if (indexOf.call(values, value) < 0) {
+        if (indexOf.call(values, value) === -1) {
           values.push(value);
         }
         return values;
