@@ -18,7 +18,7 @@ module SpamCheckService
     spam_service = SpamService.new(spammable, @request)
 
     spam_service.when_recaptcha_verified(@recaptcha_verified, @api) do
-      user.spam_logs.find_by(id: @spam_log_id)&.update!(recaptcha_verified: true)
+      user.spam_logs.find_by(id: @spam_log_id).try(:update!, recaptcha_verified: true)
     end
   end
 end
