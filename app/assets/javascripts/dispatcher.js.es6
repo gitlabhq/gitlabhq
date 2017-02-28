@@ -215,11 +215,13 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new UsersSelect();
           break;
         case 'groups:new':
+        case 'admin:groups:new':
+          gl.BindInOut.initAll();
+        case 'groups:new':
+        case 'admin:groups:new':
         case 'groups:edit':
         case 'admin:groups:edit':
-        case 'admin:groups:new':
           new GroupAvatar();
-          gl.BindInOut.initAll();
           break;
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();

@@ -9,7 +9,7 @@ module Groups
     private
 
     def create_chat_team?
-      @chat_team == "true" && Gitlab.config.mattermost.enabled
+      @chat_team == true && Gitlab.config.mattermost.enabled
     end
   end
 end

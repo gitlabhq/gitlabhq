@@ -22,8 +22,6 @@
 
       = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
 
-      = render 'create_chat_team', f: f if Gitlab.config.mattermost.enabled
-
       .form-group
         .col-sm-offset-2.col-sm-10
           = render 'shared/allow_request_access', form: f

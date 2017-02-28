@@ -6,7 +6,7 @@
   .col-sm-10
     .checkbox.js-toggle-container
       = f.label :create_chat_team do
-        .js-toggle-button= f.check_box(:create_chat_team, { checked: true }, 'true', 'false')
+        .js-toggle-button= f.check_box(:create_chat_team, { checked: true }, true, false)
         Create a Mattermost team for this group
       %br
       %small.light.js-toggle-content
