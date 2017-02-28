@@ -107,7 +107,10 @@ setup-test-env:
   <<: *dedicated-runner
   stage: prepare
   script:
-    - npm install
+    - node --version
+    - yarn --version
+    - yarn install --pure-lockfile
+    - yarn check # ensure that yarn.lock matches package.json
     - bundle exec rake gitlab:assets:compile
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
   artifacts:
@@ -302,7 +305,6 @@ karma:
   <<: *use-db
   <<: *dedicated-runner
   script:
-    - npm link istanbul
     - bundle exec rake karma
   artifacts:
     name: coverage-javascript
@@ -381,11 +383,9 @@ lint:javascript:
     paths:
       - node_modules/
   stage: test
-  image: "node:7.1"
-  before_script:
-    - npm install
+  before_script: []
   script:
-    - npm --silent run eslint
+    - yarn run eslint
 
 lint:javascript:report:
   <<: *dedicated-runner
@@ -393,12 +393,10 @@ lint:javascript:report:
     paths:
       - node_modules/
   stage: post-test
-  image: "node:7.1"
-  before_script:
-    - npm install
+  before_script: []
   script:
     - find app/ spec/ -name '*.js' -or -name '*.js.es6' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
-    - npm --silent run eslint-report || true # ignore exit code
+    - yarn run eslint-report || true # ignore exit code
   artifacts:
     name: eslint-report
     expire_in: 31d

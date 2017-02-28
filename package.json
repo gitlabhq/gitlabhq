@@ -3,12 +3,12 @@
   "scripts": {
     "dev-server": "webpack-dev-server --config config/webpack.config.js",
     "eslint": "eslint --max-warnings 0 --ext .js,.js.es6 .",
-    "eslint-fix": "npm run eslint -- --fix",
-    "eslint-report": "npm run eslint -- --format html --output-file ./eslint-report.html",
+    "eslint-fix": "eslint --max-warnings 0 --ext .js,.js.es6 --fix .",
+    "eslint-report": "eslint --max-warnings 0 --ext .js,.js.es6 --format html --output-file ./eslint-report.html .",
     "karma": "karma start config/karma.config.js --single-run",
     "karma-start": "karma start config/karma.config.js",
     "webpack": "webpack --config config/webpack.config.js",
-    "webpack-prod": "NODE_ENV=production npm run webpack"
+    "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
     "babel-core": "^6.22.1",
