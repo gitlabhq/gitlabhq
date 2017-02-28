@@ -22,11 +22,7 @@ module MergeRequests
         return log_merge_error('Merge request is not mergeable', save_message_on_model: true)
       end
 
-      if @merge_request.target_project.above_size_limit?
-        message = Gitlab::RepositorySizeError.new(@merge_request.target_project).merge_error
-
-        return log_merge_error(message, save_message_on_model: true)
-      end
+      check_size_limit
 
       @source = find_merge_source
 
@@ -78,19 +74,13 @@ module MergeRequests
 
       commit_id = repository.merge(current_user, source, merge_request, options)
 
-      if commit_id
-        merge_request.update(merge_commit_sha: commit_id)
-      else
-        log_merge_error('Conflicts detected during merge', save_message_on_model: true)
-        false
-      end
+      raise MergeError, 'Conflicts detected during merge' unless commit_id
+
+      merge_request.update(merge_commit_sha: commit_id)
     rescue GitHooksService::PreReceiveError => e
-      log_merge_error(e.message, save_message_on_model: true)
-      false
+      raise MergeError, e.message
     rescue StandardError => e
-      merge_request.update(merge_error: "Something went wrong during merge: #{e.message}")
-      log_merge_error(e.message)
-      false
+      raise MergeError, "Something went wrong during merge: #{e.message}"
     ensure
       merge_request.update(in_progress_merge_commit_sha: nil)
     end
@@ -116,6 +106,14 @@ module MergeRequests
 
     def merge_request_info
       merge_request.to_reference(full: true)
+    end
+
+    def check_size_limit
+      if @merge_request.target_project.above_size_limit?
+        message = Gitlab::RepositorySizeError.new(@merge_request.target_project).merge_error
+
+        raise MergeError, message
+      end
     end
 
     def find_merge_source
