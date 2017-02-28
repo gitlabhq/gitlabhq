@@ -1,4 +1,8 @@
 /* global Vue */
+/* global boardsMockInterceptor */
+/* global BoardService */
+/* global List */
+/* global listObj */
 
 import boardNewIssue from '~/boards/components/board_new_issue';
 
@@ -6,7 +10,7 @@ require('~/boards/models/list');
 require('./mock_data');
 require('es6-promise').polyfill();
 
-fdescribe('Issue boards new issue form', () => {
+describe('Issue boards new issue form', () => {
   let vm;
   let list;
   const promiseReturn = {
@@ -31,15 +35,13 @@ fdescribe('Issue boards new issue form', () => {
     setTimeout(() => {
       list = new List(listObj);
 
-      spyOn(gl.boardService, 'newIssue').and.callFake(() => {
-        return new Promise((resolve, reject) => {
-          if (vm.title === 'error') {
-            reject();
-          } else {
-            resolve(promiseReturn);
-          }
-        });
-      });
+      spyOn(gl.boardService, 'newIssue').and.callFake(() => new Promise((resolve, reject) => {
+        if (vm.title === 'error') {
+          reject();
+        } else {
+          resolve(promiseReturn);
+        }
+      }));
 
       vm = new BoardNewIssueComp({
         propsData: {
@@ -101,7 +103,7 @@ fdescribe('Issue boards new issue form', () => {
     });
 
     it('enables button after submit', (done) => {
-      vm.title= 'submit issue';
+      vm.title = 'submit issue';
 
       setTimeout(() => {
         submitIssue();
