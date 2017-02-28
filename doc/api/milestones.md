@@ -10,6 +10,7 @@ GET /projects/:id/milestones?iid=42
 GET /projects/:id/milestones?iid[]=42&iid[]=43
 GET /projects/:id/milestones?state=active
 GET /projects/:id/milestones?state=closed
+GET /projects/:id/milestones?search=version
 ```
 
 Parameters:
@@ -18,7 +19,8 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of a project |
 | `iid` | Array[integer] | optional | Return only the milestone having the given `iid` |
-| `state` | string | optional | Return  only `active` or `closed` milestones` |
+| `state` | string | optional | Return only `active` or `closed` milestones` |
+| `search` | string | optional | Return only milestones with a title or description matching the provided string |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/milestones
