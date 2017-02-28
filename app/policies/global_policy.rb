@@ -9,6 +9,7 @@ class GlobalPolicy < BasePolicy
       can! :log_in unless @user.access_locked?
       can! :access_api
       can! :access_git
+      can! :receive_notifications
     end
   end
 end

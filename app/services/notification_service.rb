@@ -465,7 +465,7 @@ class NotificationService
     end
 
     users = users.to_a.compact.uniq
-    users = users.reject(&:blocked?)
+    users = users.select { |u| u.can?(:receive_notifications) }
 
     users.reject do |user|
       global_notification_setting = user.global_notification_setting
