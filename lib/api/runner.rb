@@ -66,7 +66,7 @@ module API
         if current_runner.is_runner_queue_value_latest?(params[:last_update])
           header 'X-GitLab-Last-Update', params[:last_update]
           Gitlab::Metrics.add_event(:build_not_found_cached)
-          return build_not_found!
+          return job_not_found!
         end
 
         new_update = current_runner.ensure_runner_queue_value
@@ -80,12 +80,38 @@ module API
           else
             Gitlab::Metrics.add_event(:build_not_found)
             header 'X-GitLab-Last-Update', new_update
-            build_not_found!
+            job_not_found!
           end
         else
           # We received build that is invalid due to concurrency conflict
           Gitlab::Metrics.add_event(:build_invalid)
           conflict!
+        end
+      end
+
+      desc 'Updates a job' do
+        http_codes [[200, 'Job was updated'], [403, 'Forbidden']]
+      end
+      params do
+        requires :token, type: String, desc: %q(Job's authentication token)
+        requires :id, type: Fixnum, desc: %q(Job's ID)
+        optional :trace, type: String, desc: %q(Job's full trace)
+        optional :state, type: String, desc: %q(Job's status: success, failed)
+      end
+      put '/:id' do
+        job = Ci::Build.find_by_id(params[:id])
+        authenticate_job!(job)
+
+        job.update_attributes(trace: params[:trace]) if params[:trace]
+
+        Gitlab::Metrics.add_event(:update_build,
+                                  project: job.project.path_with_namespace)
+
+        case params[:state].to_s
+        when 'success'
+          job.success
+        when 'failed'
+          job.drop
         end
       end
     end

@@ -432,5 +432,53 @@ describe API::Runner do
         end
       end
     end
+
+    describe 'PUT /api/v4/jobs/:id' do
+      let(:job) { create(:ci_build, :pending, :trace, pipeline: pipeline, runner_id: runner.id) }
+
+      before { job.run! }
+
+      context 'when status is given' do
+        it 'mark job as succeeded' do
+          update_job(state: 'success')
+          expect(job.reload.status).to eq 'success'
+        end
+
+        it 'mark job as failed' do
+          update_job(state: 'failed')
+          expect(job.reload.status).to eq 'failed'
+        end
+      end
+
+      context 'when tace is given' do
+        it 'updates a running build' do
+          update_job(trace: 'BUILD TRACE UPDATED')
+
+          expect(response).to have_http_status(200)
+          expect(job.reload.trace).to eq 'BUILD TRACE UPDATED'
+        end
+      end
+
+      context 'when no trace is given' do
+        it 'does not override trace information' do
+          update_job
+          expect(job.reload.trace).to eq 'BUILD TRACE'
+        end
+      end
+
+      context 'when job has been erased' do
+        let(:job) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
+
+        it 'responds with forbidden' do
+          update_job
+          expect(response).to have_http_status(403)
+        end
+      end
+
+      def update_job(token = job.token, **params)
+        new_params = params.merge(token: token)
+        put api("/jobs/#{job.id}"), new_params
+      end
+    end
   end
 end
