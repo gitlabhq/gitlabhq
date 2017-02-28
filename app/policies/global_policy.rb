@@ -6,7 +6,7 @@ class GlobalPolicy < BasePolicy
     can! :read_users_list
 
     unless @user.blocked? || @user.internal?
-      can! :log_in
+      can! :log_in unless @user.access_locked?
       can! :access_api
       can! :access_git
     end

@@ -97,7 +97,7 @@ module API
     end
 
     def authenticate!
-      unauthorized! unless current_user
+      unauthorized! unless current_user && can?(current_user, :access_api)
     end
 
     def authenticate_non_get!

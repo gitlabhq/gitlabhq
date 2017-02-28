@@ -67,7 +67,7 @@ class ApplicationController < ActionController::Base
     token_string = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
     user = User.find_by_authentication_token(token_string) || User.find_by_personal_access_token(token_string)
 
-    if user
+    if user && can?(user, :log_in)
       # Notice we are passing store false, so the user is not
       # actually stored in the session and a token is needed
       # for every request. If you want the token to work as a
