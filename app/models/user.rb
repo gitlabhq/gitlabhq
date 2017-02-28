@@ -563,14 +563,14 @@ class User < ActiveRecord::Base
   end
 
   def can_create_group?
-    can?(:create_group, nil)
+    can?(:create_group)
   end
 
   def can_select_namespace?
     several_namespaces? || admin
   end
 
-  def can?(action, subject)
+  def can?(action, subject = :global)
     Ability.allowed?(self, action, subject)
   end
 

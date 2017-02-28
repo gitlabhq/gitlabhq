@@ -210,7 +210,7 @@ module Banzai
           grouped_objects_for_nodes(nodes, Project, 'data-project')
       end
 
-      def can?(user, permission, subject)
+      def can?(user, permission, subject = :global)
         Ability.allowed?(user, permission, subject)
       end
 

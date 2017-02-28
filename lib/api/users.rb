@@ -45,7 +45,7 @@ module API
         use :pagination
       end
       get do
-        unless can?(current_user, :read_users_list, nil)
+        unless can?(current_user, :read_users_list)
           render_api_error!("Not authorized.", 403)
         end
 

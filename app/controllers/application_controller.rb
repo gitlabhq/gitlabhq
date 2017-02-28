@@ -90,7 +90,7 @@ class ApplicationController < ActionController::Base
     current_application_settings.after_sign_out_path.presence || new_user_session_path
   end
 
-  def can?(object, action, subject)
+  def can?(object, action, subject = :global)
     Ability.allowed?(object, action, subject)
   end
 
