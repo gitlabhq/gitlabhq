@@ -209,6 +209,7 @@ require('./version_check_image');
 require('./visibility_select');
 require('./wikis');
 require('./zen_mode');
+require('./eggs');
 
 require('vendor/fuzzaldrin-plus');
 require('es6-promise').polyfill();
@@ -397,5 +398,6 @@ require('es6-promise').polyfill();
     new Aside();
 
     gl.utils.initTimeagoTimeout();
+    gl.eggs.initialize();
   });
 }).call(window);
