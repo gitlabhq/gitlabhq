@@ -1429,7 +1429,7 @@ describe User, models: true do
     it { expect(user.nested_groups).to eq([nested_group]) }
   end
 
-  describe '#nested_projects' do
+  describe '#nested_groups_projects' do
     let!(:user) { create(:user) }
     let!(:group) { create(:group) }
     let!(:nested_group) { create(:group, parent: group) }
@@ -1444,7 +1444,7 @@ describe User, models: true do
       other_project.add_developer(create(:user))
     end
 
-    it { expect(user.nested_projects).to eq([nested_project]) }
+    it { expect(user.nested_groups_projects).to eq([nested_project]) }
   end
 
   describe '#refresh_authorized_projects', redis: true do
