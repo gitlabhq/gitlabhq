@@ -126,7 +126,6 @@ class User < ActiveRecord::Base
   validate :unique_email, if: ->(user) { user.email_changed? }
   validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
   validate :owns_public_email, if: ->(user) { user.public_email_changed? }
-  validate :ghost_users_must_be_blocked
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
@@ -453,12 +452,6 @@ class User < ActiveRecord::Base
     return if public_email.blank?
 
     errors.add(:public_email, "is not an email you own") unless all_emails.include?(public_email)
-  end
-
-  def ghost_users_must_be_blocked
-    if ghost? && !blocked?
-      errors.add(:ghost, 'cannot be enabled for a user who is not blocked.')
-    end
   end
 
   def update_emails_with_primary_email
