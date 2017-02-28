@@ -61,4 +61,18 @@ describe 'Profile account page', feature: true do
       expect(find('#incoming-email-token').value).not_to eq(previous_token)
     end
   end
+
+  describe 'when I change my username' do
+    before do
+      visit profile_account_path
+    end
+
+    it 'changes my username' do
+      fill_in 'user_username', with: 'new-username'
+
+      click_button('Update username')
+
+      expect(page).to have_content('new-username')
+    end
+  end
 end

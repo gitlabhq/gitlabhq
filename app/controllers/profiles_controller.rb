@@ -47,11 +47,14 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def update_username
-    @user.update_attributes(username: user_params[:username])
-
-    respond_to do |format|
-      format.js
+    if @user.update_attributes(username: user_params[:username])
+      options = { notice: "Username successfully changed" }
+    else
+      message = @user.errors.full_messages.uniq.join('. ')
+      options = { alert: "Username change failed - #{message}" }
     end
+
+    redirect_back_or_default(default: { action: 'show' }, options: options)
   end
 
   private
