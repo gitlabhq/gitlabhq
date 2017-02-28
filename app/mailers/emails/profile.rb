@@ -22,5 +22,15 @@ module Emails
       @target_url = user_url(@user)
       mail(to: @user.notification_email, subject: subject("SSH key was added to your account"))
     end
+
+    def new_gpg_key_email(gpg_key_id)
+      @gpg_key = GpgKey.find_by_id(gpg_key_id)
+
+      return unless @gpg_key
+
+      @current_user = @user = @gpg_key.user
+      @target_url = user_url(@user)
+      mail(to: @user.notification_email, subject: subject("GPG key was added to your account"))
+    end
   end
 end

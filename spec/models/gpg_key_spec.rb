@@ -103,4 +103,18 @@ describe GpgKey do
       end
     end
   end
+
+  describe 'notification' do
+    include EmailHelpers
+
+    let(:user) { create(:user) }
+
+    it 'sends a notification' do
+      perform_enqueued_jobs do
+        create(:gpg_key, user: user)
+      end
+
+      should_email(user)
+    end
+  end
 end

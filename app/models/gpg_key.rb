@@ -1,4 +1,6 @@
 class GpgKey < ActiveRecord::Base
+  include AfterCommitQueue
+
   KEY_PREFIX = '-----BEGIN PGP PUBLIC KEY BLOCK-----'.freeze
 
   belongs_to :user
@@ -20,6 +22,7 @@ class GpgKey < ActiveRecord::Base
 
   before_validation :extract_fingerprint
   after_create :add_to_keychain
+  after_create :notify_user
   after_destroy :remove_from_keychain
 
   def key=(value)
@@ -61,5 +64,9 @@ class GpgKey < ActiveRecord::Base
 
   def remove_from_keychain
     Gitlab::Gpg::CurrentKeyChain.remove(fingerprint)
+  end
+
+  def notify_user
+    run_after_commit { NotificationService.new.new_gpg_key(self) }
   end
 end
