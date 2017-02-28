@@ -67,9 +67,14 @@
       events.forEach((item) => {
         if (!item) return;
 
-        item.totalTime = item.total_time;
-        item.author.webUrl = item.author.web_url;
-        item.author.avatarUrl = item.author.avatar_url;
+        const eventItem = Object.assign({}, DEFAULT_EVENT_OBJECTS[stage.slug], item);
+
+        eventItem.totalTime = eventItem.total_time;
+
+        if (eventItem.author) {
+          eventItem.author.webUrl = eventItem.author.web_url;
+          eventItem.author.avatarUrl = eventItem.author.avatar_url;
+        }
 
         if (item.created_at) item.createdAt = item.created_at;
         if (item.short_sha) item.shortSha = item.short_sha;
