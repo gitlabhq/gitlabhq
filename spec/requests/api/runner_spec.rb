@@ -480,5 +480,139 @@ describe API::Runner do
         put api("/jobs/#{job.id}"), new_params
       end
     end
+
+    describe 'PATCH /api/v4/jobs/:id/trace' do
+      let(:job) { create(:ci_build, :running, :trace, runner_id: runner.id, pipeline: pipeline) }
+      let(:headers) { { API::Helpers::Runner::JOB_TOKEN_HEADER => job.token, 'Content-Type' => 'text/plain' } }
+      let(:headers_with_range) { headers.merge({ 'Content-Range' => '11-20' }) }
+      let(:update_interval) { 10.seconds.to_i }
+
+      before { initial_patch_the_trace }
+
+      context 'when request is valid' do
+        it 'gets correct response' do
+          expect(response.status).to eq 202
+          expect(job.reload.trace).to eq 'BUILD TRACE appended'
+          expect(response.header).to have_key 'Range'
+          expect(response.header).to have_key 'Job-Status'
+        end
+
+        context 'when job has been updated recently' do
+          it { expect{ patch_the_trace }.not_to change { job.updated_at }}
+
+          it "changes the job's trace" do
+            patch_the_trace
+            expect(job.reload.trace).to eq 'BUILD TRACE appended appended'
+          end
+
+          context 'when Runner makes a force-patch' do
+            it { expect{ force_patch_the_trace }.not_to change { job.updated_at }}
+
+            it "doesn't change the build.trace" do
+              force_patch_the_trace
+              expect(job.reload.trace).to eq 'BUILD TRACE appended'
+            end
+          end
+        end
+
+        context 'when job was not updated recently' do
+          let(:update_interval) { 15.minutes.to_i }
+
+          it { expect { patch_the_trace }.to change { job.updated_at } }
+
+          it 'changes the job.trace' do
+            patch_the_trace
+            expect(job.reload.trace).to eq 'BUILD TRACE appended appended'
+          end
+
+          context 'when Runner makes a force-patch' do
+            it { expect { force_patch_the_trace }.to change { job.updated_at } }
+
+            it "doesn't change the job.trace" do
+              force_patch_the_trace
+              expect(job.reload.trace).to eq 'BUILD TRACE appended'
+            end
+          end
+        end
+
+        context 'when project for the build has been deleted' do
+          let(:job) do
+            create(:ci_build, :running, :trace, runner_id: runner.id, pipeline: pipeline) do |job|
+              job.project.update(pending_delete: true)
+            end
+          end
+
+          it 'responds with forbidden' do
+            expect(response.status).to eq(403)
+          end
+        end
+      end
+
+      context 'when Runner makes a force-patch' do
+        before do
+          force_patch_the_trace
+        end
+
+        it 'gets correct response' do
+          expect(response.status).to eq 202
+          expect(job.reload.trace).to eq 'BUILD TRACE appended'
+          expect(response.header).to have_key 'Range'
+          expect(response.header).to have_key 'Job-Status'
+        end
+      end
+
+      context 'when content-range start is too big' do
+        let(:headers_with_range) { headers.merge({ 'Content-Range' => '15-20' }) }
+
+        it 'gets 416 error response with range headers' do
+          expect(response.status).to eq 416
+          expect(response.header).to have_key 'Range'
+          expect(response.header['Range']).to eq '0-11'
+        end
+      end
+
+      context 'when content-range start is too small' do
+        let(:headers_with_range) { headers.merge({ 'Content-Range' => '8-20' }) }
+
+        it 'gets 416 error response with range headers' do
+          expect(response.status).to eq 416
+          expect(response.header).to have_key 'Range'
+          expect(response.header['Range']).to eq '0-11'
+        end
+      end
+
+      context 'when Content-Range header is missing' do
+        let(:headers_with_range) { headers }
+
+        it { expect(response.status).to eq 400 }
+      end
+
+      context 'when job has been errased' do
+        let(:job) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
+
+        it { expect(response.status).to eq 403 }
+      end
+
+      def patch_the_trace(content = ' appended', request_headers = nil)
+        unless request_headers
+          offset = job.trace_length
+          limit = offset + content.length - 1
+          request_headers = headers.merge({ 'Content-Range' => "#{offset}-#{limit}" })
+        end
+
+        Timecop.travel(job.updated_at + update_interval) do
+          patch api("/jobs/#{job.id}/trace"), content, request_headers
+          job.reload
+        end
+      end
+
+      def initial_patch_the_trace
+        patch_the_trace(' appended', headers_with_range)
+      end
+
+      def force_patch_the_trace
+        2.times { patch_the_trace('') }
+      end
+    end
   end
 end

@@ -93,7 +93,7 @@ module API
         http_codes [[200, 'Job was updated'], [403, 'Forbidden']]
       end
       params do
-        requires :token, type: String, desc: %q(Job's authentication token)
+        requires :token, type: String, desc: %q(Runners's authentication token)
         requires :id, type: Fixnum, desc: %q(Job's ID)
         optional :trace, type: String, desc: %q(Job's full trace)
         optional :state, type: String, desc: %q(Job's status: success, failed)
@@ -113,6 +113,36 @@ module API
         when 'failed'
           job.drop
         end
+      end
+
+      desc 'Appends a patch to the job.trace' do
+        http_codes [[202, 'Trace was patched'],
+                    [400, 'Missing Content-Range header'],
+                    [403, 'Forbidden'],
+                    [416, 'Range not satisfiable']]
+      end
+      params do
+        requires :id, type: Fixnum, desc: %q(Job's ID)
+        optional :token, type: String, desc: %q(Job's authentication token)
+      end
+      patch '/:id/trace' do
+        job = Ci::Build.find_by_id(params[:id])
+        authenticate_job!(job)
+
+        error!('400 Missing header Content-Range', 400) unless request.headers.has_key?('Content-Range')
+        content_range = request.headers['Content-Range']
+        content_range = content_range.split('-')
+
+        current_length = job.trace_length
+        unless current_length == content_range[0].to_i
+          return error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{current_length}" })
+        end
+
+        job.append_trace(request.body.read, content_range[0].to_i)
+
+        status 202
+        header 'Job-Status', job.status
+        header 'Range', "0-#{job.trace_length}"
       end
     end
   end

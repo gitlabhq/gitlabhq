@@ -1,6 +1,8 @@
 module API
   module Helpers
     module Runner
+      JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'
+      JOB_TOKEN_PARAM = :token
       UPDATE_RUNNER_EVERY = 10 * 60
 
       def runner_registration_token_valid?
@@ -54,6 +56,17 @@ module API
 
         forbidden!('Project has been deleted!') unless job.project
         forbidden!('Job has been erased!') if job.erased?
+      end
+
+      def authenticate_job!(job)
+        validate_job!(job) do
+          forbidden! unless job_token_valid?(job)
+        end
+      end
+
+      def job_token_valid?(job)
+        token = (params[JOB_TOKEN_PARAM] || env[JOB_TOKEN_HEADER]).to_s
+        token && job.valid_token?(token)
       end
     end
   end
