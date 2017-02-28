@@ -30,6 +30,7 @@ changes are in V4:
 - Moved `DELETE /todos` to `POST /todos/mark_as_done` and `DELETE /todos/:todo_id` to `POST /todos/:todo_id/mark_as_done` [!9410](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9410)
 - Endpoints `/projects/owned`, `/projects/visible`, `/projects/starred` & `/projects/all` are consolidated into `/projects` using query parameters [!8962](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8962)
 - Return pagination headers for all endpoints that return an array [!8606](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8606)
+- Added `POST /environments/:environment_id/stop` to stop an environment [!8808](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8808)
 - Removed `DELETE projects/:id/deploy_keys/:key_id/disable`. Use `DELETE projects/:id/deploy_keys/:key_id` instead [!9366](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9366)
 - Moved `PUT /users/:id/(block|unblock)` to `POST /users/:id/(block|unblock)` [!9371](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9371)
 - Make subscription API more RESTful. Use `post ":project_id/:subscribable_type/:subscribable_id/subscribe"` to subscribe and `post ":project_id/:subscribable_type/:subscribable_id/unsubscribe"` to unsubscribe from a resource. [!9325](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9325)
