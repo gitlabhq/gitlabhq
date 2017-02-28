@@ -26,10 +26,10 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('img.emoji', count: 10)
+      expect(actual).to have_selector('gl-emoji', count: 10)
 
-      image = actual.at_css('img.emoji')
-      expect(image['src'].to_s).to start_with(Gitlab.config.gitlab.url + '/assets')
+      emoji_element = actual.at_css('gl-emoji')
+      expect(emoji_element['data-fallback-src'].to_s).to start_with('/assets')
     end
   end
 
