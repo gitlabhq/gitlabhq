@@ -15,8 +15,7 @@
       Enabled deploy keys for this project (#{@deploy_keys.enabled_keys_size})
     - if @deploy_keys.any_keys_enabled?
       %ul.well-list
-        - @deploy_keys.enabled_keys.each do |enabled_key|
-          = render partial: 'projects/deploy_keys/deploy_key', locals: {deploy_key: enabled_key}
+        = render partial: 'projects/deploy_keys/deploy_key', collection: @deploy_keys.enabled_keys, as: :deploy_key
     - else
       .settings-message.text-center
         No deploy keys found. Create one with the form above.
@@ -24,8 +23,7 @@
       Deploy keys from projects you have access to (#{@deploy_keys.available_project_keys_size})
     - if @deploy_keys.any_available_project_keys_enabled?
       %ul.well-list
-        - @deploy_keys.available_project_keys.each do |available_key|
-          = render partial: 'projects/deploy_keys/deploy_key', locals: {deploy_key: available_key}
+        = render partial: 'projects/deploy_keys/deploy_key', collection: @deploy_keys.available_project_keys, as: :deploy_key
     - else
       .settings-message.text-center
         No deploy keys from your projects could be found. Create one with the form above or add existing one below.
@@ -33,5 +31,4 @@
       %h5.prepend-top-default
         Public deploy keys available to any project (#{@deploy_keys.available_public_keys_size})
       %ul.well-list
-        - @deploy_keys.available_public_keys.each do |available_key|
-          = render partial: 'projects/deploy_keys/deploy_key', locals: {deploy_key: available_key}
+        = render partial: 'projects/deploy_keys/deploy_key', collection: @deploy_keys.available_public_keys, as: :deploy_key

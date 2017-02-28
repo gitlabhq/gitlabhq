@@ -15,9 +15,8 @@ module RepositoryHelper
   end
 
   def load_gon_index
-    params = { open_branches: @project.open_branches.map do |br| 
-      { text: br.name, id: br.name, title: br.name } 
-    end }
+    open_branches = @project.open_branches.map { |br| { text: br.name, id: br.name, title: br.name } }
+    params = { open_branches: open_branches }
     gon.push(params.merge(access_levels_options))
   end
 end
