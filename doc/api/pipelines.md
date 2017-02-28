@@ -16,7 +16,7 @@ GET /projects/:id/pipelines
 | `ref`     | string  | no       | The ref of pipelines |
 | `yaml_errors`| string  | no       | If true, Returns only yaml error pipelines |
 | `username`| string  | no       | The name of user who triggered pipelines |
-| `order_by`| string  | no       | The order_by which is combined with a `sort`, one of: `id`, `status`, `ref`, `user_id`, `started_at`, `finished_at`, `created_at`, `updated_at`; |
+| `order_by`| string  | no       | The order_by which is combined with a `sort`, one of: `id`, `status`, `ref`, `username`, `started_at`, `finished_at`, `created_at`, `updated_at`; |
 | `sort`    | string  | no       | The sort method which is combined with an `order_by`, one of: `asc`, `desc`; |
 
 ```

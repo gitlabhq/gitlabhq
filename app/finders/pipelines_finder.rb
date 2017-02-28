@@ -88,8 +88,12 @@ class PipelinesFinder
   end
 
   def by_yaml_errors(items)
-    if params[:yaml_errors].present? && params[:yaml_errors]
-      items.where("yaml_errors IS NOT NULL")
+    if params[:yaml_errors].present? 
+      if params[:yaml_errors]
+        items.where("yaml_errors IS NOT NULL")
+      else
+        items.where("yaml_errors IS NULL")
+      end
     else
       items
     end
