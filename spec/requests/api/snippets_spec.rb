@@ -74,7 +74,7 @@ describe API::Snippets, api: true do
     end
 
     it 'returns 404 for invalid snippet id' do
-      delete api("/snippets/1234", user)
+      get api("/snippets/1234/raw", user)
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')

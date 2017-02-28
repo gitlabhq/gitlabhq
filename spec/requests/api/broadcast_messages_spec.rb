@@ -174,8 +174,11 @@ describe API::BroadcastMessages, api: true do
     end
 
     it 'deletes the broadcast message for admins' do
-      expect { delete api("/broadcast_messages/#{message.id}", admin) }
-        .to change { BroadcastMessage.count }.by(-1)
+      expect do
+        delete api("/broadcast_messages/#{message.id}", admin)
+
+        expect(response).to have_http_status(204)
+      end.to change { BroadcastMessage.count }.by(-1)
     end
   end
 end

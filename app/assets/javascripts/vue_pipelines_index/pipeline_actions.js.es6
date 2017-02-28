@@ -32,19 +32,17 @@
       },
     },
     template: `
-      <td class="pipeline-actions hidden-xs">
-        <div class="controls pull-right">
-          <div class="btn-group inline">
-            <div class="btn-group">
+      <td class="pipeline-actions">
+        <div class="pull-right">
+          <div class="btn-group">
+            <div class="btn-group" v-if="actions">
               <button
-                v-if='actions'
                 class="dropdown-toggle btn btn-default has-tooltip js-pipeline-dropdown-manual-actions"
                 data-toggle="dropdown"
                 title="Manual job"
                 data-placement="top"
-                aria-label="Manual job"
-              >
-                <span v-html='svgs.iconPlay' aria-hidden="true"></span>
+                aria-label="Manual job">
+                <span v-html="svgs.iconPlay" aria-hidden="true"></span>
                 <i class="fa fa-caret-down" aria-hidden="true"></i>
               </button>
               <ul class="dropdown-menu dropdown-menu-align-right">
@@ -52,23 +50,21 @@
                   <a
                     rel="nofollow"
                     data-method="post"
-                    :href='action.path'
-                  >
-                    <span v-html='svgs.iconPlay' aria-hidden="true"></span>
+                    :href="action.path">
+                    <span v-html="svgs.iconPlay" aria-hidden="true"></span>
                     <span>{{action.name}}</span>
                   </a>
                 </li>
               </ul>
             </div>
-            <div class="btn-group">
+
+            <div class="btn-group" v-if="artifacts">
               <button
-                v-if='artifacts'
                 class="dropdown-toggle btn btn-default build-artifacts has-tooltip js-pipeline-dropdown-download"
                 title="Artifacts"
                 data-placement="top"
                 data-toggle="dropdown"
-                aria-label="Artifacts"
-              >
+                aria-label="Artifacts">
                 <i class="fa fa-download" aria-hidden="true"></i>
                 <i class="fa fa-caret-down" aria-hidden="true"></i>
               </button>
@@ -76,42 +72,39 @@
                 <li v-for='artifact in pipeline.details.artifacts'>
                   <a
                     rel="nofollow"
-                    download
-                    :href='artifact.path'
-                  >
+                    :href="artifact.path">
                     <i class="fa fa-download" aria-hidden="true"></i>
                     <span>{{download(artifact.name)}}</span>
                   </a>
                 </li>
               </ul>
             </div>
-          </div>
-          <div class="cancel-retry-btns inline">
-            <a
-              v-if='pipeline.flags.retryable'
-              class="btn has-tooltip"
-              title="Retry"
-              rel="nofollow"
-              data-method="post"
-              data-placement="top"
-              data-toggle="dropdown"
-              :href='pipeline.retry_path'
-              aria-label="Retry">
-              <i class="fa fa-repeat" aria-hidden="true"></i>
-            </a>
-            <a
-              v-if='pipeline.flags.cancelable'
-              @click="confirmAction"
-              class="btn btn-remove has-tooltip"
-              title="Cancel"
-              rel="nofollow"
-              data-method="post"
-              data-placement="top"
-              data-toggle="dropdown"
-              :href='pipeline.cancel_path'
-              aria-label="Cancel">
-              <i class="fa fa-remove" aria-hidden="true"></i>
-            </a>
+            <div class="btn-group" v-if="pipeline.flags.retryable">
+              <a
+                class="btn btn-default btn-retry has-tooltip"
+                title="Retry"
+                rel="nofollow"
+                data-method="post"
+                data-placement="top"
+                data-toggle="dropdown"
+                :href='pipeline.retry_path'
+                aria-label="Retry">
+                <i class="fa fa-repeat" aria-hidden="true"></i>
+              </a>
+            </div>
+            <div class="btn-group" v-if="pipeline.flags.cancelable">
+              <a
+                class="btn btn-remove has-tooltip"
+                title="Cancel"
+                rel="nofollow"
+                data-method="post"
+                data-placement="top"
+                data-toggle="dropdown"
+                :href='pipeline.cancel_path'
+                aria-label="Cancel">
+                <i class="fa fa-remove" aria-hidden="true"></i>
+              </a>
+            </div>
           </div>
         </div>
       </td>

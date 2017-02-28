@@ -2,11 +2,12 @@
 
 This document describes what services we use for testing GitLab and GitLab CI.
 
-We currently use three CI services to test GitLab:
+We currently use four CI services to test GitLab:
 
 1. GitLab CI on [GitHost.io](https://gitlab-ce.githost.io/projects/4/) for the [GitLab.com repo](https://gitlab.com/gitlab-org/gitlab-ce)
 2. GitLab CI at ci.gitlab.org to test the private GitLab B.V. repo at dev.gitlab.org
 3. [Semephore](https://semaphoreapp.com/gitlabhq/gitlabhq/) for [GitHub.com repo](https://github.com/gitlabhq/gitlabhq)
+4. [Mock CI Service](user/project/integrations/mock_ci.md) for local development
 
 | Software @ configuration being tested | GitLab CI (ci.gitlab.org) | GitLab CI (GitHost.io) | Semaphore |
 |---------------------------------------|---------------------------|---------------------------------------------------------------------------|-----------|

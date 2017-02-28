@@ -503,32 +503,30 @@ module.exports = Vue.component('environment-item', {
         </span>
       </td>
 
-      <td class="hidden-xs">
-        <div v-if="!model.isFolder">
-          <div class="btn-group" role="group">
-            <actions-component v-if="hasManualActions && canCreateDeployment"
-              :play-icon-svg="playIconSvg"
-              :actions="manualActions">
-            </actions-component>
+      <td class="environments-actions">
+        <div v-if="!model.isFolder" class="btn-group pull-right" role="group">
+          <actions-component v-if="hasManualActions && canCreateDeployment"
+            :play-icon-svg="playIconSvg"
+            :actions="manualActions">
+          </actions-component>
 
-            <external-url-component v-if="externalURL && canReadEnvironment"
-              :external-url="externalURL">
-            </external-url-component>
+          <external-url-component v-if="externalURL && canReadEnvironment"
+            :external-url="externalURL">
+          </external-url-component>
 
-            <stop-component v-if="hasStopAction && canCreateDeployment"
-              :stop-url="model.stop_path">
-            </stop-component>
+          <stop-component v-if="hasStopAction && canCreateDeployment"
+            :stop-url="model.stop_path">
+          </stop-component>
 
-            <terminal-button-component v-if="model && model.terminal_path"
-              :terminal-icon-svg="terminalIconSvg"
-              :terminal-path="model.terminal_path">
-            </terminal-button-component>
+          <terminal-button-component v-if="model && model.terminal_path"
+            :terminal-icon-svg="terminalIconSvg"
+            :terminal-path="model.terminal_path">
+          </terminal-button-component>
 
-            <rollback-component v-if="canRetry && canCreateDeployment"
-              :is-last-deployment="isLastDeployment"
-              :retry-url="retryUrl">
-              </rollback-component>
-          </div>
+          <rollback-component v-if="canRetry && canCreateDeployment"
+            :is-last-deployment="isLastDeployment"
+            :retry-url="retryUrl">
+            </rollback-component>
         </div>
       </td>
     </tr>

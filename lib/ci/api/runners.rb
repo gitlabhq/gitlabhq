@@ -8,6 +8,8 @@ module Ci
         end
         delete "delete" do
           authenticate_runner!
+
+          status(200)
           Ci::Runner.find_by_token(params[:token]).destroy
         end
 

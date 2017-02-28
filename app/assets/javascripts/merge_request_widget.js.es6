@@ -83,7 +83,7 @@ require('./smart_interval');
         return function() {
           var page;
           page = $('body').data('page').split(':').last();
-          if (allowedPages.indexOf(page) < 0) {
+          if (allowedPages.indexOf(page) === -1) {
             return _this.clearEventListeners();
           }
         };
@@ -233,7 +233,7 @@ require('./smart_interval');
       }
       $('.ci_widget').hide();
       allowed_states = ["failed", "canceled", "running", "pending", "success", "success_with_warnings", "skipped", "not_found"];
-      if (indexOf.call(allowed_states, state) >= 0) {
+      if (indexOf.call(allowed_states, state) !== -1) {
         $('.ci_widget.ci-' + state).show();
         switch (state) {
           case "failed":

@@ -373,7 +373,7 @@ describe API::Notes, api: true  do
         delete api("/projects/#{project.id}/issues/#{issue.id}/"\
                    "notes/#{issue_note.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
         # Check if note is really deleted
         delete api("/projects/#{project.id}/issues/#{issue.id}/"\
                    "notes/#{issue_note.id}", user)
@@ -392,7 +392,7 @@ describe API::Notes, api: true  do
         delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                    "notes/#{snippet_note.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
         # Check if note is really deleted
         delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                    "notes/#{snippet_note.id}", user)
@@ -412,7 +412,7 @@ describe API::Notes, api: true  do
         delete api("/projects/#{project.id}/merge_requests/"\
                    "#{merge_request.id}/notes/#{merge_request_note.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
         # Check if note is really deleted
         delete api("/projects/#{project.id}/merge_requests/"\
                    "#{merge_request.id}/notes/#{merge_request_note.id}", user)

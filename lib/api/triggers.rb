@@ -93,8 +93,6 @@ module API
         return not_found!('Trigger') unless trigger
 
         trigger.destroy
-
-        present trigger, with: Entities::Trigger
       end
     end
   end

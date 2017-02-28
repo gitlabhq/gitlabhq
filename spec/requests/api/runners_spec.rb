@@ -277,8 +277,9 @@ describe API::Runners, api: true  do
         it 'deletes runner' do
           expect do
             delete api("/runners/#{shared_runner.id}", admin)
+
+            expect(response).to have_http_status(204)
           end.to change{ Ci::Runner.shared.count }.by(-1)
-          expect(response).to have_http_status(200)
         end
       end
 
@@ -286,15 +287,17 @@ describe API::Runners, api: true  do
         it 'deletes unused runner' do
           expect do
             delete api("/runners/#{unused_specific_runner.id}", admin)
+
+            expect(response).to have_http_status(204)
           end.to change{ Ci::Runner.specific.count }.by(-1)
-          expect(response).to have_http_status(200)
         end
 
         it 'deletes used runner' do
           expect do
             delete api("/runners/#{specific_runner.id}", admin)
+
+            expect(response).to have_http_status(204)
           end.to change{ Ci::Runner.specific.count }.by(-1)
-          expect(response).to have_http_status(200)
         end
       end
 
@@ -327,8 +330,9 @@ describe API::Runners, api: true  do
         it 'deletes runner for one owned project' do
           expect do
             delete api("/runners/#{specific_runner.id}", user)
+
+            expect(response).to have_http_status(204)
           end.to change{ Ci::Runner.specific.count }.by(-1)
-          expect(response).to have_http_status(200)
         end
       end
     end
@@ -457,8 +461,9 @@ describe API::Runners, api: true  do
         it "disables project's runner" do
           expect do
             delete api("/projects/#{project.id}/runners/#{two_projects_runner.id}", user)
+
+            expect(response).to have_http_status(204)
           end.to change{ project.runners.count }.by(-1)
-          expect(response).to have_http_status(200)
         end
       end
 

@@ -121,6 +121,8 @@ module API
 
           authorize! :admin_project_snippet, snippet
           snippet.destroy
+
+          status(200)
         end
 
         desc 'Get a raw project snippet'

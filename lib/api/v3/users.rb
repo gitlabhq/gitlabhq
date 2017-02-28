@@ -92,6 +92,25 @@ module API
 
           present paginate(events), with: ::API::V3::Entities::Event
         end
+
+        desc 'Delete an existing SSH key from a specified user. Available only for admins.' do
+          success ::API::Entities::SSHKey
+        end
+        params do
+          requires :id, type: Integer, desc: 'The ID of the user'
+          requires :key_id, type: Integer, desc: 'The ID of the SSH key'
+        end
+        delete ':id/keys/:key_id' do
+          authenticated_as_admin!
+
+          user = User.find_by(id: params[:id])
+          not_found!('User') unless user
+
+          key = user.keys.find_by(id: params[:key_id])
+          not_found!('Key') unless key
+
+          present key.destroy, with: ::API::Entities::SSHKey
+        end
       end
 
       resource :user do
@@ -110,6 +129,19 @@ module API
         end
         get "emails" do
           present current_user.emails, with: ::API::Entities::Email
+        end
+
+        desc 'Delete an SSH key from the currently authenticated user' do
+          success ::API::Entities::SSHKey
+        end
+        params do
+          requires :key_id, type: Integer, desc: 'The ID of the SSH key'
+        end
+        delete "keys/:key_id" do
+          key = current_user.keys.find_by(id: params[:key_id])
+          not_found!('Key') unless key
+
+          present key.destroy, with: ::API::Entities::SSHKey
         end
       end
     end

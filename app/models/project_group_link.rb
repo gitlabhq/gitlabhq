@@ -33,8 +33,15 @@ class ProjectGroupLink < ActiveRecord::Base
   private
 
   def different_group
-    if self.group && self.project && self.project.group == self.group
-      errors.add(:base, "Project cannot be shared with the project it is in.")
+    return unless self.group && self.project
+
+    project_group = self.project.group
+    return unless project_group
+
+    group_ids = project_group.ancestors.map(&:id).push(project_group.id)
+
+    if group_ids.include?(self.group.id)
+      errors.add(:base, "Project cannot be shared with the group it is in or one of its ancestors.")
     end
   end
 

@@ -325,15 +325,14 @@ describe API::Branches, api: true  do
 
     it "removes branch" do
       delete api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
-      expect(response).to have_http_status(200)
-      expect(json_response['branch']).to eq(branch_name)
+
+      expect(response).to have_http_status(204)
     end
 
     it "removes a branch with dots in the branch name" do
       delete api("/projects/#{project.id}/repository/branches/with.1.2.3", user)
 
-      expect(response).to have_http_status(200)
-      expect(json_response['branch']).to eq("with.1.2.3")
+      expect(response).to have_http_status(204)
     end
 
     it 'returns 404 if branch not exists' do

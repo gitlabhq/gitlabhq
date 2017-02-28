@@ -79,7 +79,7 @@ module API
 
         environment = user_project.environments.find(params[:environment_id])
 
-        present environment.destroy, with: Entities::Environment
+        environment.destroy
       end
     end
   end
