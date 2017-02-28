@@ -12,7 +12,7 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
     end
 
     def repository_storage_path
-      Gitlab.config.repositories.storages[repository_storage]
+      Gitlab.config.repositories.storages[repository_storage]['path']
     end
 
     def repository_path

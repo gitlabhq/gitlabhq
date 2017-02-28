@@ -58,10 +58,6 @@ class Repository
     end
   end
 
-  def self.storages
-    Gitlab.config.repositories.storages
-  end
-
   def initialize(path_with_namespace, project)
     @path_with_namespace = path_with_namespace
     @project = project

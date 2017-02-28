@@ -227,8 +227,8 @@ describe 'gitlab:app namespace rake task' do
         FileUtils.mkdir('tmp/tests/default_storage')
         FileUtils.mkdir('tmp/tests/custom_storage')
         storages = {
-          'default' => 'tmp/tests/default_storage',
-          'custom' => 'tmp/tests/custom_storage'
+          'default' => { 'path' => 'tmp/tests/default_storage' },
+          'custom' => { 'path' => 'tmp/tests/custom_storage' }
         }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
 
