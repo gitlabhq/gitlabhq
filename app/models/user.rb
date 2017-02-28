@@ -1028,7 +1028,7 @@ class User < ActiveRecord::Base
   def self.create_unique_internal(scope, username, email_pattern, &creation_block)
     # Since we only want a single one of these in an instance, we use an
     # exclusive lease to ensure than this block is never run concurrently.
-    lease_key = "unique_internal_#{username}"
+    lease_key = "user:unique_internal:#{username}"
     lease = Gitlab::ExclusiveLease.new(lease_key, timeout: 1.minute.to_i)
 
     until uuid = lease.try_obtain
