@@ -103,6 +103,8 @@ module API
           merge_request = find_project_merge_request(params[:merge_request_id])
 
           authorize!(:destroy_merge_request, merge_request)
+
+          status(200)
           merge_request.destroy
         end
 

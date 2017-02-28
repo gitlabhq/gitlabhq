@@ -91,6 +91,8 @@ describe API::SystemHooks, api: true  do
     it "deletes a hook" do
       expect do
         delete api("/hooks/#{hook.id}", admin)
+
+        expect(response).to have_http_status(204)
       end.to change { SystemHook.count }.by(-1)
     end
 

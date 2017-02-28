@@ -125,22 +125,3 @@ Example request:
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/hooks/2
 ```
-
-Example response:
-
-```json
-{
-   "note_events" : false,
-   "project_id" : null,
-   "enable_ssl_verification" : true,
-   "url" : "https://gitlab.example.com/hook",
-   "updated_at" : "2015-11-04T20:12:15.931Z",
-   "issues_events" : false,
-   "merge_requests_events" : false,
-   "created_at" : "2015-11-04T20:12:15.931Z",
-   "service_id" : null,
-   "id" : 2,
-   "push_events" : true,
-   "tag_push_events" : false
-}
-```

@@ -189,7 +189,7 @@ describe API::ProjectSnippets, api: true do
 
       delete api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(204)
     end
 
     it 'returns 404 for invalid snippet id' do
@@ -212,7 +212,7 @@ describe API::ProjectSnippets, api: true do
     end
 
     it 'returns 404 for invalid snippet id' do
-      delete api("/projects/#{snippet.project.id}/snippets/1234", admin)
+      get api("/projects/#{snippet.project.id}/snippets/1234/raw", admin)
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')

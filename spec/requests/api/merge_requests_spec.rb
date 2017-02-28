@@ -411,7 +411,7 @@ describe API::MergeRequests, api: true  do
       it "destroys the merge request owners can destroy" do
         delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
       end
     end
   end

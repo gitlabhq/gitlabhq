@@ -210,18 +210,6 @@ DELETE /runners/:id
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners/6"
 ```
 
-Example response:
-
-```json
-{
-    "active": true,
-    "description": "test-1-20150125-test",
-    "id": 6,
-    "is_shared": false,
-    "name": null,
-}
-```
-
 ## List project's runners
 
 List all runners (specific and shared) available in the project. Shared runners
@@ -307,16 +295,4 @@ DELETE /projects/:id/runners/:runner_id
 
 ```
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/9/runners/9"
-```
-
-Example response:
-
-```json
-{
-    "active": true,
-    "description": "test-2016-02-01",
-    "id": 9,
-    "is_shared": false,
-    "name": null
-}
 ```

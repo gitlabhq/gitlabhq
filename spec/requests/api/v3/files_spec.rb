@@ -2,17 +2,6 @@ require 'spec_helper'
 
 describe API::V3::Files, api: true  do
   include ApiHelpers
-  let(:user) { create(:user) }
-  let!(:project) { create(:project, :repository, namespace: user.namespace ) }
-  let(:guest) { create(:user) { |u| project.add_guest(u) } }
-  let(:file_path) { 'files/ruby/popen.rb' }
-  let(:params) do
-    {
-      file_path: file_path,
-      ref: 'master'
-    }
-  end
-  let(:author_email) { FFaker::Internet.email }
 
   # I have to remove periods from the end of the name
   # This happened when the user's name had a suffix (i.e. "Sr.")
@@ -26,6 +15,18 @@ describe API::V3::Files, api: true  do
   # ...
   # Author: Foo Sr <foo@example.com>
   # ...
+
+  let(:user) { create(:user) }
+  let!(:project) { create(:project, :repository, namespace: user.namespace ) }
+  let(:guest) { create(:user) { |u| project.add_guest(u) } }
+  let(:file_path) { 'files/ruby/popen.rb' }
+  let(:params) do
+    {
+      file_path: file_path,
+      ref: 'master'
+    }
+  end
+  let(:author_email) { FFaker::Internet.email }
   let(:author_name) { FFaker::Name.name.chomp("\.") }
 
   before { project.team << [user, :developer] }

@@ -359,6 +359,8 @@ module API
         desc 'Remove a project'
         delete ":id" do
           authorize! :remove_project, user_project
+
+          status(200)
           ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
         end
 
@@ -384,6 +386,7 @@ module API
           authorize! :remove_fork_project, user_project
 
           if user_project.forked?
+            status(200)
             user_project.forked_project_link.destroy
           else
             not_modified!

@@ -353,7 +353,6 @@ module API
         not_found!('Group Link') unless link
 
         link.destroy
-        no_content!
       end
 
       desc 'Upload a file'
