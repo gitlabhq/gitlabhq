@@ -616,9 +616,12 @@ describe API::Runner do
     end
 
     describe 'artifacts' do
+      let(:job) { create(:ci_build, :pending, pipeline: pipeline, runner_id: runner.id) }
       let(:jwt_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
       let(:headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => jwt_token } }
       let(:headers_with_token) { headers.merge(API::Helpers::Runner::JOB_TOKEN_HEADER => job.token) }
+      let(:file_upload) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
+      let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }
 
       before { job.run! }
 
@@ -688,6 +691,208 @@ describe API::Runner do
 
         def authorize_artifacts_with_token_in_headers(params = {}, request_headers = headers_with_token)
           authorize_artifacts(params, request_headers)
+        end
+      end
+
+      describe 'POST /api/v4/jobs/:id/artifacts' do
+        context 'when artifacts are being stored inside of tmp path' do
+          before do
+            # by configuring this path we allow to pass temp file from any path
+            allow(ArtifactUploader).to receive(:artifacts_upload_path).and_return('/')
+          end
+
+          context 'when job has been erased' do
+            let(:job) { create(:ci_build, erased_at: Time.now) }
+
+            before do
+              upload_artifacts(file_upload, headers_with_token)
+            end
+
+            it 'responds with forbidden' do
+              upload_artifacts(file_upload, headers_with_token)
+              expect(response).to have_http_status(403)
+            end
+          end
+
+          context 'when job is running' do
+            shared_examples 'successful artifacts upload' do
+              it 'updates successfully' do
+                expect(response).to have_http_status(201)
+              end
+            end
+
+            context 'when uses regular file post' do
+              before { upload_artifacts(file_upload, headers_with_token, false) }
+
+              it_behaves_like 'successful artifacts upload'
+            end
+
+            context 'when uses accelerated file post' do
+              before { upload_artifacts(file_upload, headers_with_token, true) }
+
+              it_behaves_like 'successful artifacts upload'
+            end
+
+            context 'when updates artifact' do
+              before do
+                upload_artifacts(file_upload2, headers_with_token)
+                upload_artifacts(file_upload, headers_with_token)
+              end
+
+              it_behaves_like 'successful artifacts upload'
+            end
+
+            context 'when using runners token' do
+              it 'responds with forbidden' do
+                upload_artifacts(file_upload, headers.merge(API::Helpers::Runner::JOB_TOKEN_HEADER => job.project.runners_token))
+                expect(response).to have_http_status(403)
+              end
+            end
+          end
+
+          context 'when artifacts file is too large' do
+            it 'fails to post too large artifact' do
+              stub_application_setting(max_artifacts_size: 0)
+              upload_artifacts(file_upload, headers_with_token)
+              expect(response).to have_http_status(413)
+            end
+          end
+
+          context 'when artifacts post request does not contain file' do
+            it 'fails to post artifacts without file' do
+              post api("/jobs/#{job.id}/artifacts"), {}, headers_with_token
+              expect(response).to have_http_status(400)
+            end
+          end
+
+          context 'GitLab Workhorse is not configured' do
+            it 'fails to post artifacts without GitLab-Workhorse' do
+              post api("/jobs/#{job.id}/artifacts"), { token: job.token }, {}
+              expect(response).to have_http_status(403)
+            end
+          end
+
+          context 'when setting an expire date' do
+            let(:default_artifacts_expire_in) {}
+            let(:post_data) do
+              { 'file.path' => file_upload.path,
+                'file.name' => file_upload.original_filename,
+                'expire_in' => expire_in }
+            end
+
+            before do
+              stub_application_setting(default_artifacts_expire_in: default_artifacts_expire_in)
+              post(api("/jobs/#{job.id}/artifacts"), post_data, headers_with_token)
+            end
+
+            context 'when an expire_in is given' do
+              let(:expire_in) { '7 days' }
+
+              it 'updates when specified' do
+                job.reload
+                expect(response).to have_http_status(201)
+                expect(job.artifacts_expire_at).to be_within(5.minutes).of(7.days.from_now)
+              end
+            end
+
+            context 'when no expire_in is given' do
+              let(:expire_in) { nil }
+
+              it 'ignores if not specified' do
+                job.reload
+                expect(response).to have_http_status(201)
+                expect(job.artifacts_expire_at).to be_nil
+              end
+
+              context 'with application default' do
+                context 'when default is 5 days' do
+                  let(:default_artifacts_expire_in) { '5 days' }
+
+                  it 'sets to application default' do
+                    job.reload
+                    expect(response).to have_http_status(201)
+                    expect(job.artifacts_expire_at).to be_within(5.minutes).of(5.days.from_now)
+                  end
+                end
+
+                context 'when default is 0' do
+                  let(:default_artifacts_expire_in) { '0' }
+
+                  it 'does not set expire_in' do
+                    job.reload
+                    expect(response).to have_http_status(201)
+                    expect(job.artifacts_expire_at).to be_nil
+                  end
+                end
+              end
+            end
+          end
+
+          context 'posts artifacts file and metadata file' do
+            let!(:artifacts) { file_upload }
+            let!(:metadata) { file_upload2 }
+
+            let(:stored_artifacts_file) { job.reload.artifacts_file.file }
+            let(:stored_metadata_file) { job.reload.artifacts_metadata.file }
+            let(:stored_artifacts_size) { job.reload.artifacts_size }
+
+            before do
+              post(api("/jobs/#{job.id}/artifacts"), post_data, headers_with_token)
+            end
+
+            context 'when posts data accelerated by workhorse is correct' do
+              let(:post_data) do
+                { 'file.path' => artifacts.path,
+                  'file.name' => artifacts.original_filename,
+                  'metadata.path' => metadata.path,
+                  'metadata.name' => metadata.original_filename }
+              end
+
+              it 'stores artifacts and artifacts metadata' do
+                expect(response).to have_http_status(201)
+                expect(stored_artifacts_file.original_filename).to eq(artifacts.original_filename)
+                expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
+                expect(stored_artifacts_size).to eq(71759)
+              end
+            end
+
+            context 'when there is no artifacts file in post data' do
+              let(:post_data) do
+                { 'metadata' => metadata }
+              end
+
+              it 'is expected to respond with bad request' do
+                expect(response).to have_http_status(400)
+              end
+
+              it 'does not store metadata' do
+                expect(stored_metadata_file).to be_nil
+              end
+            end
+          end
+        end
+
+        context 'when artifacts are being stored outside of tmp path' do
+          before do
+            # by configuring this path we allow to pass file from @tmpdir only
+            # but all temporary files are stored in system tmp directory
+            @tmpdir = Dir.mktmpdir
+            allow(ArtifactUploader).to receive(:artifacts_upload_path).and_return(@tmpdir)
+          end
+
+          after { FileUtils.remove_entry @tmpdir }
+
+          it' "fails to post artifacts for outside of tmp path"' do
+            upload_artifacts(file_upload, headers_with_token)
+            expect(response).to have_http_status(400)
+          end
+        end
+
+        def upload_artifacts(file, headers = {}, accelerated = true)
+          params = accelerated ?
+                     { 'file.path' => file.path, 'file.name' => file.original_filename } :
+                     { 'file' => file }
+          post api("/jobs/#{job.id}/artifacts"), params, headers
         end
       end
     end
