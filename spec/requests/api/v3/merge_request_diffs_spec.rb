@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe API::MergeRequestDiffs, 'MergeRequestDiffs', api: true  do
+describe API::V3::MergeRequestDiffs, 'MergeRequestDiffs', api: true  do
   include ApiHelpers
 
   let!(:user)          { create(:user) }
@@ -15,7 +15,7 @@ describe API::MergeRequestDiffs, 'MergeRequestDiffs', api: true  do
 
   describe 'GET /projects/:id/merge_requests/:merge_request_id/versions' do
     it 'returns 200 for a valid merge request' do
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/versions", user)
+      get v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/versions", user)
       merge_request_diff = merge_request.merge_request_diffs.first
 
       expect(response.status).to eq 200
@@ -25,7 +25,7 @@ describe API::MergeRequestDiffs, 'MergeRequestDiffs', api: true  do
     end
 
     it 'returns a 404 when merge_request_id not found' do
-      get api("/projects/#{project.id}/merge_requests/999/versions", user)
+      get v3_api("/projects/#{project.id}/merge_requests/999/versions", user)
       expect(response).to have_http_status(404)
     end
   end
@@ -33,7 +33,7 @@ describe API::MergeRequestDiffs, 'MergeRequestDiffs', api: true  do
   describe 'GET /projects/:id/merge_requests/:merge_request_id/versions/:version_id' do
     it 'returns a 200 for a valid merge request' do
       merge_request_diff = merge_request.merge_request_diffs.first
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/versions/#{merge_request_diff.id}", user)
+      get v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/versions/#{merge_request_diff.id}", user)
 
       expect(response.status).to eq 200
       expect(json_response['id']).to eq(merge_request_diff.id)
@@ -42,7 +42,8 @@ describe API::MergeRequestDiffs, 'MergeRequestDiffs', api: true  do
     end
 
     it 'returns a 404 when merge_request_id not found' do
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/versions/999", user)
+      get v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/versions/999", user)
+
       expect(response).to have_http_status(404)
     end
   end
