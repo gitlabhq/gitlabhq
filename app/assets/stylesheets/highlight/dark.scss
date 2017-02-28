@@ -20,6 +20,7 @@ $dark-highlight-bg: #ffe792;
 $dark-highlight-color: $black;
 $dark-pre-hll-bg: #373b41;
 $dark-hll-bg: #373b41;
+$dark-over-bg: #9f9ab5;
 $dark-c: #969896;
 $dark-err: #c66;
 $dark-k: #b294bb;
@@ -136,6 +137,18 @@ $dark-il: #de935f;
       &::before,
       a {
         color: $dark-line-num-color-old;
+      }
+    }
+
+    .diff-line-num {
+      &.is-over,
+      &.hll:not(.empty-cell).is-over {
+        background-color: $dark-over-bg;
+        border-color: darken($dark-over-bg, 5%);
+
+        a {
+          color: darken($dark-over-bg, 15%);
+        }
       }
     }
 

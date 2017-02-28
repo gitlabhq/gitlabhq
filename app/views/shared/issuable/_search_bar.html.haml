@@ -97,8 +97,8 @@
                   %li.filter-dropdown-item{ 'data-value' => "#{weight}" }
                     %button.btn.btn-link= weight
 
-        .pull-right
-          = render 'shared/sort_dropdown', type: local_assigns[:type]
+        .pull-right.filter-dropdown-container
+          = render 'shared/sort_dropdown'
 
     - if @bulk_edit
       .issues_bulk_update.hide

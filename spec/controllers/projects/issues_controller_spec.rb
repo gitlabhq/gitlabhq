@@ -125,13 +125,15 @@ describe Projects::IssuesController do
   end
 
   describe 'PUT #update' do
+    before do
+      sign_in(user)
+      project.team << [user, :developer]
+    end
+
+    it_behaves_like 'update invalid issuable', Issue
+
     context 'when moving issue to another private project' do
       let(:another_project) { create(:empty_project, :private) }
-
-      before do
-        sign_in(user)
-        project.team << [user, :developer]
-      end
 
       context 'when user has access to move issue' do
         before { another_project.team << [user, :reporter] }

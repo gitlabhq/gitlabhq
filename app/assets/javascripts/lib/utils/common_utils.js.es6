@@ -329,17 +329,18 @@
      * ```
      */
     w.gl.utils.backOff = (fn, timeout = 60000) => {
+      const maxInterval = 32000;
       let nextInterval = 2000;
 
-      const startTime = (+new Date());
+      const startTime = Date.now();
 
       return new Promise((resolve, reject) => {
         const stop = arg => ((arg instanceof Error) ? reject(arg) : resolve(arg));
 
         const next = () => {
-          if (new Date().getTime() - startTime < timeout) {
+          if (Date.now() - startTime < timeout) {
             setTimeout(fn.bind(null, next, stop), nextInterval);
-            nextInterval *= 2;
+            nextInterval = Math.min(nextInterval + nextInterval, maxInterval);
           } else {
             reject(new Error('BACKOFF_TIMEOUT'));
           }
