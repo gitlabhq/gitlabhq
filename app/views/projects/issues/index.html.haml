@@ -8,6 +8,7 @@
 
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('filtered_search')
+  = page_specific_javascript_bundle_tag('issues')
 
 = content_for :meta_tags do
   - if current_user

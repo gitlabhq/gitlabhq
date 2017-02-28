@@ -125,7 +125,7 @@ ul.related-merge-requests > li {
 }
 
 .issues-export-modal {
-  .export-svg {
+  .export-svg-container {
     height: 56px;
     padding: 10px 10px 0;
   }
@@ -135,7 +135,7 @@ ul.related-merge-requests > li {
   }
 
   .export-checkmark {
-    color: $green-light
+    color: $green-light;
   }
 }
 
