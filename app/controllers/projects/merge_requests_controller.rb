@@ -248,7 +248,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         render json: {
           pipelines: PipelineSerializer
           .new(project: @project, user: @current_user)
-          .represent(@pipelines) }
+          .represent(@pipelines)
+        }
       end
     end
   end
