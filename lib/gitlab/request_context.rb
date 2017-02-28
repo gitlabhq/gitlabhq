@@ -1,6 +1,5 @@
 module Gitlab
-  class RequestStoreNotActive < StandardError
-  end
+  RequestStoreNotActive = Class.new(StandardError)
 
   class RequestContext
     class << self

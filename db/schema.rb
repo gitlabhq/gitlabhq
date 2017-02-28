@@ -111,10 +111,11 @@ ActiveRecord::Schema.define(version: 20170305203726) do
     t.boolean "plantuml_enabled"
     t.integer "max_pages_size", default: 100, null: false
     t.integer "terminal_max_session_time", default: 0, null: false
-    t.string "default_artifacts_expire_in", default: "0", null: false
+(??)    t.string "default_artifacts_expire_in", default: '0', null: false
     t.integer "unique_ips_limit_per_user", default: 10, null: false
     t.integer "unique_ips_limit_time_window", default: 3600, null: false
     t.boolean "unique_ips_limit_enabled", default: false, null: false
+    t.string "default_artifacts_expire_in", default: "0", null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -255,8 +256,8 @@ ActiveRecord::Schema.define(version: 20170305203726) do
     t.integer "lock_version"
   end
 
+  add_index "ci_commits", ["gl_project_id", "ref", "status"], name: "index_ci_commits_on_gl_project_id_and_ref_and_status", using: :btree
   add_index "ci_commits", ["gl_project_id", "sha"], name: "index_ci_commits_on_gl_project_id_and_sha", using: :btree
-  add_index "ci_commits", ["gl_project_id", "status"], name: "index_ci_commits_on_gl_project_id_and_status", using: :btree
   add_index "ci_commits", ["gl_project_id"], name: "index_ci_commits_on_gl_project_id", using: :btree
   add_index "ci_commits", ["status"], name: "index_ci_commits_on_status", using: :btree
   add_index "ci_commits", ["user_id"], name: "index_ci_commits_on_user_id", using: :btree

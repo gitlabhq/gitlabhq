@@ -1,7 +1,7 @@
 module Gitlab
   module Auth
     class UniqueIpsLimiter
-      USER_UNIQUE_IPS_PREFIX = 'user_unique_ips'
+      USER_UNIQUE_IPS_PREFIX = 'user_unique_ips'.freeze
 
       class << self
         def limit_user_id!(user_id)
