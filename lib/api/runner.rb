@@ -221,6 +221,31 @@ module API
           render_validation_error!(job)
         end
       end
+
+      desc 'Download the artifacts file for job' do
+        http_codes [[200, 'Upload allowed'],
+                    [403, 'Forbidden'],
+                    [404, 'Artifact not found']]
+      end
+      params do
+        requires :id, type: Fixnum, desc: %q(Job's ID)
+        optional :token, type: String, desc: %q(Job's authentication token)
+      end
+      get '/:id/artifacts' do
+        job = Ci::Build.find_by_id(params[:id])
+        authenticate_job!(job)
+
+        artifacts_file = job.artifacts_file
+        unless artifacts_file.file_storage?
+          return redirect_to job.artifacts_file.url
+        end
+
+        unless artifacts_file.exists?
+          not_found!
+        end
+
+        present_file!(artifacts_file.path, artifacts_file.filename)
+      end
     end
   end
 end

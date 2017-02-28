@@ -895,6 +895,46 @@ describe API::Runner do
           post api("/jobs/#{job.id}/artifacts"), params, headers
         end
       end
+
+      describe 'GET /api/v4/jobs/:id/artifacts' do
+        let(:token) { job.token }
+
+        before { download_artifact }
+
+        context 'when job has artifacts' do
+          let(:job) { create(:ci_build, :artifacts) }
+          let(:download_headers) do
+            { 'Content-Transfer-Encoding' => 'binary',
+              'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+          end
+
+          context 'when using job token' do
+            it 'download artifacts' do
+              expect(response).to have_http_status(200)
+              expect(response.headers).to include download_headers
+            end
+          end
+
+          context 'when using runnners token' do
+            let(:token) { job.project.runners_token }
+
+            it 'responds with forbidden' do
+              expect(response).to have_http_status(403)
+            end
+          end
+        end
+
+        context 'when job does not has artifacts' do
+          it 'responds with not found' do
+            expect(response).to have_http_status(404)
+          end
+        end
+
+        def download_artifact(params = {}, request_headers = headers)
+          params = params.merge(token: token)
+          get api("/jobs/#{job.id}/artifacts"), params, request_headers
+        end
+      end
     end
   end
 end
