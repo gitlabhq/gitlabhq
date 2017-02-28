@@ -350,10 +350,13 @@ class User < ActiveRecord::Base
     def ghost
       unique_internal(where(ghost: true), 'ghost', 'ghost%s@example.com') do |u|
         u.bio = 'This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.'
-        u.state = :blocked
         u.name = 'Ghost User'
       end
     end
+  end
+
+  def internal?
+    ghost?
   end
 
   #
