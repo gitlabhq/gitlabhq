@@ -102,6 +102,11 @@
     @media (max-width: $screen-xs-max) {
       flex-wrap: wrap;
     }
+
+    .ci-status-icon > .icon-link > svg {
+      width: 22px;
+      height: 22px;
+    }
   }
 
   .mr-widget-body,
