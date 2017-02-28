@@ -1,5 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.17.1 (2017-02-28)
+
+- Fix admin email notification recipient group select list.
+- Add repository_storage field back to projects API for admin users.
+- Don't try to update a project's external service caches on a secondary Geo node.
+- Fixed merge request state not updating when approvals feature is active.
+- Improve error messages when squashing fails.
+
 ## 8.17.0 (2017-02-22)
 
 - Read-only "auditor" user role. !998
