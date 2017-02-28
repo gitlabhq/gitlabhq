@@ -310,20 +310,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         if @merge_request.valid?
           redirect_to([@merge_request.target_project.namespace.becomes(Namespace), @merge_request.target_project, @merge_request])
         else
+          set_suggested_approvers
+
           render :edit
         end
       end
-<<<<<<< HEAD
-    else
-      set_suggested_approvers
-
-      render "edit"
-=======
-
+      
       format.json do
         render json: @merge_request.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
       end
->>>>>>> 7733f285aca97d444382a59eda0ea3e303539c26
     end
   rescue ActiveRecord::StaleObjectError
     render_conflict_response

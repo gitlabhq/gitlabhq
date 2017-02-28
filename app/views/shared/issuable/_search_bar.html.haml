@@ -82,7 +82,6 @@
                   %span.dropdown-label-box{ style: 'background: {{color}}' }
                   %span.label-title.js-data-value
                     {{title}}
-<<<<<<< HEAD
           - if type == :issues
             #js-dropdown-weight.dropdown-menu{ data: { icon: 'balance-scale', hint: 'weight', tag: 'weight' } }
               %ul{ 'data-dropdown' => true }
@@ -98,12 +97,8 @@
                   %li.filter-dropdown-item{ 'data-value' => "#{weight}" }
                     %button.btn.btn-link= weight
 
-        .pull-right
-          = render 'shared/sort_dropdown', type: local_assigns[:type]
-=======
         .pull-right.filter-dropdown-container
           = render 'shared/sort_dropdown'
->>>>>>> 7733f285aca97d444382a59eda0ea3e303539c26
 
     - if @bulk_edit
       .issues_bulk_update.hide
