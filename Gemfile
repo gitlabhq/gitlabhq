@@ -329,8 +329,6 @@ group :test do
   gem 'timecop', '~> 0.8.0'
 end
 
-gem 'newrelic_rpm', '~> 3.16'
-
 gem 'octokit', '~> 4.6.2'
 
 gem 'mail_room', '~> 0.9.1'
