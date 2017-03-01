@@ -87,6 +87,12 @@ var config = {
     // prevent pikaday from including moment.js
     new webpack.IgnorePlugin(/moment/, /pikaday/),
 
+    // fix legacy jQuery plugins which depend on globals
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+    }),
+
     // use deterministic module ids in all environments
     IS_PRODUCTION ?
       new webpack.HashedModuleIdsPlugin() :

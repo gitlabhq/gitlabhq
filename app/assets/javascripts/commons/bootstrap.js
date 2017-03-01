@@ -1,10 +1,10 @@
-require('./jquery');
+import 'jquery';
 
-// twitter bootstrap plugins
-require('bootstrap-sass/assets/javascripts/bootstrap/affix');
-require('bootstrap-sass/assets/javascripts/bootstrap/alert');
-require('bootstrap-sass/assets/javascripts/bootstrap/dropdown');
-require('bootstrap-sass/assets/javascripts/bootstrap/modal');
-require('bootstrap-sass/assets/javascripts/bootstrap/tab');
-require('bootstrap-sass/assets/javascripts/bootstrap/transition');
-require('bootstrap-sass/assets/javascripts/bootstrap/tooltip');
+// bootstrap jQuery plugins
+import 'bootstrap-sass/assets/javascripts/bootstrap/affix';
+import 'bootstrap-sass/assets/javascripts/bootstrap/alert';
+import 'bootstrap-sass/assets/javascripts/bootstrap/dropdown';
+import 'bootstrap-sass/assets/javascripts/bootstrap/modal';
+import 'bootstrap-sass/assets/javascripts/bootstrap/tab';
+import 'bootstrap-sass/assets/javascripts/bootstrap/transition';
+import 'bootstrap-sass/assets/javascripts/bootstrap/tooltip';

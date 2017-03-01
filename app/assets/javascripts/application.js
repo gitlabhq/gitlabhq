@@ -6,14 +6,29 @@
 /* global AwardsHandler */
 /* global Aside */
 
-// common libraries
-window.Cookies = require('js-cookie');
-window.Pikaday = require('pikaday');
-window._ = require('underscore');
-window.Dropzone = require('dropzone');
-window.Sortable = require('vendor/Sortable');
+import jQuery from 'jquery';
+import _ from 'underscore';
+import Cookies from 'js-cookie';
+import Pikaday from 'pikaday';
+import Dropzone from 'dropzone';
+import Sortable from 'vendor/Sortable';
+
+// libraries with import side-effects
 require('mousetrap');
 require('mousetrap/plugins/pause/mousetrap-pause');
+require('vendor/fuzzaldrin-plus');
+require('es6-promise').polyfill();
+
+// expose common libraries as globals (TODO: remove these)
+window.jQuery = jQuery;
+window.$ = jQuery;
+window._ = _;
+window.Cookies = Cookies;
+window.Pikaday = Pikaday;
+window.Dropzone = Dropzone;
+window.Sortable = Sortable;
+
+// shortcuts
 require('./shortcuts');
 require('./shortcuts_navigation');
 require('./shortcuts_dashboard_navigation');
@@ -189,9 +204,6 @@ require('./visibility_select');
 require('./wikis');
 require('./zen_mode');
 
-require('vendor/fuzzaldrin-plus');
-require('es6-promise').polyfill();
-
 (function () {
   document.addEventListener('beforeunload', function () {
     // Unbind scroll events
@@ -269,7 +281,7 @@ require('es6-promise').polyfill();
     $.fn.tooltip.Constructor.DEFAULTS.trigger = 'hover';
     $body.tooltip({
       selector: '.has-tooltip, [data-toggle="tooltip"]',
-      placement: function (_, el) {
+      placement: function (tip, el) {
         return $(el).data('placement') || 'bottom';
       }
     });

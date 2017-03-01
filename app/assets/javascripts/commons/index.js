@@ -1,2 +1,2 @@
-require('./jquery');
-require('./bootstrap');
+import './jquery';
+import './bootstrap';
