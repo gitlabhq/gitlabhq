@@ -1,5 +1,5 @@
 class RepositoryUpdateMirrorWorker
-  class UpdateMirrorError < StandardError; end
+  UpdateMirrorError = Class.new(StandardError)
 
   include Sidekiq::Worker
   include Gitlab::ShellAdapter

@@ -5,7 +5,7 @@ class Projects::BlobController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
 
   # Raised when given an invalid file path
-  class InvalidPathError < StandardError; end
+  InvalidPathError = Class.new(StandardError)
 
   before_action :require_non_empty_project, except: [:new, :create]
   before_action :authorize_download_code!

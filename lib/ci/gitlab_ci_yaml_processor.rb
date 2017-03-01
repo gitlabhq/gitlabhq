@@ -1,6 +1,6 @@
 module Ci
   class GitlabCiYamlProcessor
-    class ValidationError < StandardError; end
+    ValidationError = Class.new(StandardError)
 
     include Gitlab::Ci::Config::Entry::LegacyValidationHelpers
 

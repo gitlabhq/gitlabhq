@@ -1,6 +1,6 @@
 module MergeRequests
   class WorkingCopyBaseService < MergeRequests::BaseService
-    class GitCommandError < StandardError; end
+    GitCommandError = Class.new(StandardError)
 
     include Gitlab::Popen
 

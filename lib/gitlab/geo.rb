@@ -1,6 +1,6 @@
 module Gitlab
   module Geo
-    class OauthApplicationUndefinedError < StandardError; end
+    OauthApplicationUndefinedError = Class.new(StandardError)
 
     def self.current_node
       self.cache_value(:geo_node_current) do
