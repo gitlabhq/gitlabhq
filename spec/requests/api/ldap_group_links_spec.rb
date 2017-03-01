@@ -110,9 +110,9 @@ describe API::LdapGroupLinks, api: true  do
       it "removes ldap group link" do
         expect do
           delete api("/groups/#{group_with_ldap_links.id}/ldap_group_links/ldap-group1", owner)
-        end.to change { group_with_ldap_links.ldap_group_links.count }.by(-1)
 
-        expect(response.status).to eq(200)
+          expect(response.status).to eq(204)
+        end.to change { group_with_ldap_links.ldap_group_links.count }.by(-1)
       end
 
       it "returns 404 if LDAP group cn not used for a LDAP group link" do
@@ -155,9 +155,9 @@ describe API::LdapGroupLinks, api: true  do
       it "removes ldap group link" do
         expect do
           delete api("/groups/#{group_with_ldap_links.id}/ldap_group_links/ldap2/ldap-group2", owner)
-        end.to change { group_with_ldap_links.ldap_group_links.count }.by(-1)
 
-        expect(response.status).to eq(200)
+          expect(response.status).to eq(204)
+        end.to change { group_with_ldap_links.ldap_group_links.count }.by(-1)
       end
     end
   end
