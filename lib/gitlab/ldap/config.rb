@@ -4,7 +4,7 @@ module Gitlab
     class Config
       attr_accessor :provider, :options
 
-      class InvalidProvider < StandardError; end
+      InvalidProvider = Class.new(StandardError)
 
       def self.enabled?
         Gitlab.config.ldap.enabled

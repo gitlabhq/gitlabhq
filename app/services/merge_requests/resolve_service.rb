@@ -1,7 +1,6 @@
 module MergeRequests
   class ResolveService < MergeRequests::BaseService
-    class MissingFiles < Gitlab::Conflict::ResolutionError
-    end
+    MissingFiles = Class.new(Gitlab::Conflict::ResolutionError)
 
     attr_accessor :conflicts, :rugged, :merge_index, :merge_request
 

@@ -1,7 +1,7 @@
 module Projects
   class UpdateMirrorService < BaseService
-    class Error < StandardError; end
-    class UpdateError < Error; end
+    Error = Class.new(StandardError)
+    UpdateError = Class.new(Error)
 
     def execute
       unless project.mirror?

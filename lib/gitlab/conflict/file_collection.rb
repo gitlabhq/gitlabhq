@@ -1,8 +1,7 @@
 module Gitlab
   module Conflict
     class FileCollection
-      class ConflictSideMissing < StandardError
-      end
+      ConflictSideMissing = Class.new(StandardError)
 
       attr_reader :merge_request, :our_commit, :their_commit
 
