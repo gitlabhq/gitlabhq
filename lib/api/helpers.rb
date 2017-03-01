@@ -11,6 +11,14 @@ module API
       declared(params, options).to_h.symbolize_keys
     end
 
+    def check_unmodified_since(last_modified)
+      if_unmodified_since = Time.parse(headers['If-Unmodified-Since']) if headers.key?('If-Unmodified-Since') rescue nil
+
+      if if_unmodified_since && if_unmodified_since < last_modified
+        render_api_error!('412 Precondition Failed', 412)
+      end
+    end
+
     def current_user
       return @current_user if defined?(@current_user)
 
