@@ -5,6 +5,7 @@
 /* global Cookies */
 /* global listObj */
 /* global listObjDuplicate */
+/* global ListIssue */
 
 require('~/lib/utils/url_utility');
 require('~/boards/models/issue');
@@ -22,11 +23,9 @@ describe('Store', () => {
     gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
     gl.issueBoards.BoardsStore.create();
 
-    spyOn(gl.boardService, 'moveIssue').and.callFake(() => {
-      return new Promise((resolve) => {
-        resolve();
-      });
-    });
+    spyOn(gl.boardService, 'moveIssue').and.callFake(() => new Promise((resolve) => {
+      resolve();
+    }));
 
     Cookies.set('issue_board_welcome_hidden', 'false', {
       expires: 365 * 10,
