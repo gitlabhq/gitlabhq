@@ -268,6 +268,14 @@ module API
       projects.reorder(params[:order_by] => params[:sort])
     end
 
+    def map_visibility_level(attrs)
+      visibility = attrs.delete(:visibility)
+      if visibility
+        attrs[:visibility_level] = Gitlab::VisibilityLevel.string_options[visibility]
+      end
+      attrs
+    end
+
     # file helpers
 
     def uploaded_file(field, uploads_path)

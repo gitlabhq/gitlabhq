@@ -69,9 +69,9 @@ module API
 
     class Project < Grape::Entity
       expose :id, :description, :default_branch, :tag_list
-      expose :public?, as: :public
       expose :archived?, as: :archived
-      expose :visibility_level, :ssh_url_to_repo, :http_url_to_repo, :web_url
+      expose :ssh_url_to_repo, :http_url_to_repo, :web_url
+      expose(:visibility) { |project, _options| Gitlab::VisibilityLevel.string_level(project.visibility_level) }
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace

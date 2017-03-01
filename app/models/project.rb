@@ -334,7 +334,7 @@ class Project < ActiveRecord::Base
     end
 
     def search_by_visibility(level)
-      where(visibility_level: Gitlab::VisibilityLevel.const_get(level.upcase))
+      where(visibility_level: Gitlab::VisibilityLevel.string_options[level])
     end
 
     def search_by_title(query)
