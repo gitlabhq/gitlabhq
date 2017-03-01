@@ -9,6 +9,7 @@ import ConflictsState from './components/states/mr_widget_conflicts';
 import NothingToMergeState from './components/states/mr_widget_nothing_to_merge';
 import MissingBranchState from './components/states/mr_widget_missing_branch';
 import NotAllowedState from './components/states/mr_widget_not_allowed';
+import stateToComponentMap from './stores/state_to_component_map';
 import MRWidgetStore from './stores/merge_request_store';
 
 const mrWidgetOptions = () => ({
@@ -19,6 +20,11 @@ const mrWidgetOptions = () => ({
     return {
       mr: store,
     };
+  },
+  computed: {
+    componentName() {
+      return stateToComponentMap[this.mr.state];
+    },
   },
   components: {
     'mr-widget-header': WidgetHeader,
@@ -39,15 +45,7 @@ const mrWidgetOptions = () => ({
         :sourceBranch="mr.sourceBranch"
       />
 
-      <mr-widget-merged :mr="mr" v-if="mr.state === 'merged'" />
-      <mr-widget-closed :mr="mr" v-if="mr.state === 'closed'" />
-      <mr-widget-locked :mr="mr" v-if="mr.state === 'locked'" />
-      <mr-widget-conflicts :mr="mr" v-if="mr.state === 'conflicts'" />
-      <mr-widget-missing-branch :mr="mr" v-if="mr.state === 'missingBranch'" />
-      <mr-widget-wip :mr="mr" v-if="mr.state === 'workInProgress'" />
-      <mr-widget-nothing-to-merge v-if="mr.state === 'nothingToMerge'" />
-      <mr-widget-not-allowed v-if="mr.state === 'notAllowedToMerge'" />
-      <mr-widget-archived v-if="mr.state === 'archived'" />
+      <component :is="componentName" :mr="mr"></component>
     </div>
   `,
 });

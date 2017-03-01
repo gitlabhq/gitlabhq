@@ -11,7 +11,7 @@ export default {
   data() {
     return {
       isSourceBranchRemoving: false,
-    }
+    };
   },
   methods: {
     removeSourceBranch() {
