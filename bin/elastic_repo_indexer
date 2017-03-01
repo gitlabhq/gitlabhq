@@ -8,9 +8,9 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'benchmark'
 
-load File.join(File.dirname(__FILE__), '..', '/lib/gitlab/elastic/client.rb')
+require File.expand_path('../lib/gitlab/elastic/client', File.dirname(__FILE__))
 
-path_to_log_file = File.expand_path('../../log/es-indexer.log', __FILE__)
+path_to_log_file = File.expand_path('../log/es-indexer.log', File.dirname(__FILE__))
 LOGGER = Logger.new(path_to_log_file)
 
 PROJECT_ID = ARGV.shift
