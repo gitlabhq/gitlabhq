@@ -147,6 +147,20 @@ describe API::Files, api: true  do
         expect(last_commit.author_name).to eq(author_name)
       end
     end
+
+    context 'when the repo is empty' do
+      let!(:project) { create(:project_empty_repo, namespace: user.namespace ) }
+
+      it "creates a new file in project repo" do
+        post api("/projects/#{project.id}/repository/files", user), valid_params
+
+        expect(response).to have_http_status(201)
+        expect(json_response['file_path']).to eq('newfile.rb')
+        last_commit = project.repository.commit.raw
+        expect(last_commit.author_email).to eq(user.email)
+        expect(last_commit.author_name).to eq(user.name)
+      end
+    end
   end
 
   describe "PUT /projects/:id/repository/files" do
