@@ -121,7 +121,7 @@
         .block.light.subscription{ data: { url: toggle_subscription_path(issuable) } }
           .sidebar-collapsed-icon
             = icon('rss', 'aria-hidden': 'true')
-          %span.issuable-header-text.hide-collapsed.pull-left
+          %span.toggle-text.hide-collapsed.pull-left
             Notifications
           %button.btn.toggle-button.pull-right.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" , class: (subscribed ? "subscribed" : "unsubscribed") }
             %span.subscription-label= subscribed ? 'Unsubscribe' : 'Subscribe'
