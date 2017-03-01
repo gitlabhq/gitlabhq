@@ -56,7 +56,7 @@ class GitOperationService
     start_project: repository.project,
     &block)
 
-    start_branch ||= branch_name
+    start_branch_name ||= branch_name
 
     verify_start_branch_exists!(start_project.repository, start_branch_name)
 
@@ -154,7 +154,7 @@ class GitOperationService
   def verify_start_branch_exists!(start_repository, start_branch_name)
     return if start_repository.empty_repo?
     return if start_repository.branch_exists?(start_branch_name)
-      
+
     raise ArgumentError, "Cannot find branch #{start_branch_name} in #{start_repository.path_with_namespace}"
   end
 end

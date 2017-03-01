@@ -63,7 +63,7 @@ module Files
       end
 
       if !project.empty_repo? && different_branch? && repository.branch_exists?(@branch_name)
-        raise ValidationError, 'Branch with such name already exists. You need to switch to this branch in order to make changes'
+        raise ValidationError, "A branch called #{@branch_name} already exists. Switch to that branch in order to make changes"
       end
     end
 
