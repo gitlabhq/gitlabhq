@@ -1,383 +1,189 @@
 # GitLab Pages from A to Z: Part 3
 
-- _[Part 1: Static Sites, Domains, DNS Records, and SSL/TLS Certificates](getting_started_part_one.md)_
-- _[Part 2: Quick Start Guide - Setting Up GitLab Pages](getting_started_part_two.md)_
-- **Part 3: Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages**
+- [Part 1: Static sites and GitLab Pages domains](getting_started_part_one.md)
+- [Part 2: Quick start guide - Setting up GitLab Pages](getting_started_part_two.md)
+- **Part 3: Setting Up Custom Domains - DNS Records and SSL/TLS Certificates**
+- [Part 4: Creating and tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_four.md)
 
----
+## Setting Up Custom Domains - DNS Records and SSL/TLS Certificates
 
-## Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages
+As described in the previous part of this series, setting up GitLab Pages with custom domains, and adding SSL/TLS certificates to them, are optional features of GitLab Pages.
 
-[GitLab CI](https://about.gitlab.com/gitlab-ci/) serves
-numerous purposes, to build, test, and deploy your app
-from GitLab through
-[Continuous Integration, Continuous Delivery, and Continuous Deployment](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/)
-methods. You will need it to build your website with GitLab Pages,
-and deploy it to the Pages server.
+These steps assume you've already [set your site up](getting_started_part_two.md) and and it's served under the default Pages domain `namespace.gitlab.io`, or `namespace.gitlab.io/project-name`.
 
-What this file actually does is telling the
-[GitLab Runner](https://docs.gitlab.com/runner/) to run scripts
-as you would do from the command line. The Runner acts as your
-terminal. GitLab CI tells the Runner which commands to run.
-Both are built-in in GitLab, and you don't need to set up
-anything for them to work.
+### DNS Records
 
-Explaining [every detail of GitLab CI](https://docs.gitlab.com/ce/ci/yaml/README.html)
-and GitLab Runner is out of the scope of this guide, but we'll
-need to understand just a few things to be able to write our own
-`.gitlab-ci.yml` or tweak an existing one. It's an
-[Yaml](http://docs.ansible.com/ansible/YAMLSyntax.html) file,
-with its own syntax. You can always check your CI syntax with
-the [GitLab CI Lint Tool](https://gitlab.com/ci/lint).
+A Domain Name System (DNS) web service routes visitors to websites
+by translating domain names (such as `www.example.com`) into the
+numeric IP addresses (such as `192.0.2.1`) that computers use to
+connect to each other.
+
+A DNS record is created to point a (sub)domain to a certain location,
+which can be an IP address or another domain. In case you want to use
+GitLab Pages with your own (sub)domain, you need to access your domain's
+registrar control panel to add a DNS record pointing it back to your
+GitLab Pages site.
+
+Note that **how to** add DNS records depends on which server your domain
+is hosted on. Every control panel has its own place to do it. If you are
+not an admin of your domain, and don't have access to your registrar,
+you'll need to ask for the technical support of your hosting service
+to do it for you.
+
+To help you out, we've gathered some instructions on how to do that
+for the most popular hosting services:
+
+- [Amazon](http://docs.aws.amazon.com/gettingstarted/latest/swh/getting-started-configure-route53.html)
+- [Bluehost](https://my.bluehost.com/cgi/help/559)
+- [CloudFlare](https://support.cloudflare.com/hc/en-us/articles/200169096-How-do-I-add-A-records-)
+- [cPanel](https://documentation.cpanel.net/display/ALD/Edit+DNS+Zone)
+- [DreamHost](https://help.dreamhost.com/hc/en-us/articles/215414867-How-do-I-add-custom-DNS-records-)
+- [Go Daddy](https://www.godaddy.com/help/add-an-a-record-19238)
+- [Hostgator](http://support.hostgator.com/articles/changing-dns-records)
+- [Inmotion hosting](https://my.bluehost.com/cgi/help/559)
+- [Media Temple](https://mediatemple.net/community/products/dv/204403794/how-can-i-change-the-dns-records-for-my-domain)
+- [Microsoft](https://msdn.microsoft.com/en-us/library/bb727018.aspx)
+
+If your hosting service is not listed above, you can just try to
+search the web for "how to add dns record on <my hosting service>".
+
+#### DNS A record
+
+In case you want to point a root domain (`example.com`) to your
+GitLab Pages site, deployed to `namespace.gitlab.io`, you need to
+log into your domain's admin control panel and add a DNS `A` record
+pointing your domain to Pages' server IP address. For projects on
+GitLab.com, this IP is `104.208.235.32`. For projects leaving in
+other GitLab instances (CE or EE), please contact your sysadmin
+asking for this information (which IP address is Pages server
+running on your instance).
 
 **Practical Example:**
 
-Let's consider you have a [Jekyll](https://jekyllrb.com/) site.
-To build it locally, you would open your terminal, and run `jekyll build`.
-Of course, before building it, you had to install Jekyll in your computer.
-For that, you had to open your terminal and run `gem install jekyll`.
-Right? GitLab CI + GitLab Runner do the same thing. But you need to
-write in the `.gitlab-ci.yml` the script you want to run so
-GitLab Runner will do it for you. It looks more complicated then it
-is. What you need to tell the Runner:
+![DNS A record pointing to GitLab.com Pages server](img/dns_a_record_example.png)
 
-```
-$ gem install jekyll
-$ jekyll build
-```
+#### DNS CNAME record
 
-### Script
+In case you want to point a subdomain (`hello-world.example.com`)
+to your GitLab Pages site initially deployed to `namespace.gitlab.io`,
+you need to log into your domain's admin control panel and add a DNS
+`CNAME` record pointing your subdomain to your website URL
+(`namespace.gitlab.io`) address.
 
-To transpose this script to Yaml, it would be like this:
+Notice that, despite it's a user or project website, the `CNAME`
+should point to your Pages domain (`namespace.gitlab.io`),
+without any `/project-name`.
 
-```yaml
-script:
-  - gem install jekyll
-  - jekyll build
-```
+**Practical Example:**
 
-### Job
+![DNS CNAME record pointing to GitLab.com project](img/dns_cname_record_example.png)
 
-So far so good. Now, each `script`, in GitLab is organized by
-a `job`, which is a bunch of scripts and settings you want to
-apply to that specific task.
+#### TL;DR
 
-```yaml
-job:
-  script:
-  - gem install jekyll
-  - jekyll build
-```
+| From | DNS Record | To |
+| ---- | ---------- | -- |
+| domain.com | A | 104.208.235.32 |
+| subdomain.domain.com | CNAME | namespace.gitlab.io |
 
-For GitLab Pages, this `job` has a specific name, called `pages`,
-which tells the Runner you want that task to deploy your website
-with GitLab Pages:
+> **Notes**:
+>
+> - **Do not** use a CNAME record if you want to point your
+`domain.com` to your GitLab Pages site. Use an `A` record instead.
+> - **Do not** add any special chars after the default Pages
+domain. E.g., **do not** point your `subdomain.domain.com` to
+`namespace.gitlab.io.` or `namespace.gitlab.io/`.
 
-```yaml
-pages:
-  script:
-  - gem install jekyll
-  - jekyll build
-```
+### SSL/TLS Certificates
 
-### The `public` directory
-
-We also need to tell Jekyll where do you want the website to build,
-and GitLab Pages will only consider files in a directory called `public`.
-To do that with Jekyll, we need to add a flag specifying the
-[destination (`-d`)](https://jekyllrb.com/docs/usage/) of the
-built website: `jekyll build -d public`. Of course, we need
-to tell this to our Runner:
-
-```yaml
-pages:
-  script:
-  - gem install jekyll
-  - jekyll build -d public
-```
-
-### Artifacts
-
-We also need to tell the Runner that this _job_ generates
-_artifacts_, which is the site built by Jekyll.
-Where are these artifacts stored? In the `public` directory:
-
-```yaml
-pages:
-  script:
-  - gem install jekyll
-  - jekyll build -d public
-  artifacts:
-    paths:
-    - public
-```
-
-The script above would be enough to build your Jekyll
-site with GitLab Pages. But, from Jekyll 3.4.0 on, its default
-template originated by `jekyll new project` requires
-[Bundler](http://bundler.io/) to install Jekyll dependencies
-and the default theme. To adjust our script to meet these new
-requirements, we only need to install and build Jekyll with Bundler:
-
-```yaml
-pages:
-  script:
-  - bundle install
-  - bundle exec jekyll build -d public
-  artifacts:
-    paths:
-    - public
-```
-
-That's it! A `.gitlab-ci.yml` with the content above would deploy
-your Jekyll 3.4.0 site with GitLab Pages. This is the minimum
-configuration for our example. On the steps below, we'll refine
-the script by adding extra options to our GitLab CI.
-
-### Image
-
-At this point, you probably ask yourself: "okay, but to install Jekyll
-I need Ruby. Where is Ruby on that script?". The answer is simple: the
-first thing GitLab Runner will look for in your `.gitlab-ci.yml` is a
-[Docker](https://www.docker.com/) image specifying what do you need in
-your container to run that script:
-
-```yaml
-image: ruby:2.3
-
-pages:
-  script:
-  - bundle install
-  - bundle exec jekyll build -d public
-  artifacts:
-    paths:
-    - public
-```
-
-In this case, you're telling the Runner to pull this image, which
-contains Ruby 2.3 as part of its file system. When you don't specify
-this image in your configuration, the Runner will use a default
-image, which is Ruby 2.1.
-
-If your SSG needs [NodeJS](https://nodejs.org/) to build, you'll
-need to specify which image you want to use, and this image should
-contain NodeJS as part of its file system. E.g., for a
-[Hexo](https://gitlab.com/pages/hexo) site, you can use `image: node:4.2.2`.
+Every GitLab Pages project on GitLab.com will be available under
+HTTPS for the default Pages domain (`*.gitlab.io`). Once you set
+up your Pages project with your custom (sub)domain, if you want
+it secured by HTTPS, you will have to issue a certificate for that
+(sub)domain and install it on your project.
 
 >**Note:**
-We're not trying to explain what a Docker image is,
-we just need to introduce the concept with a minimum viable
-explanation. To know more about Docker images, please visit
-their website or take a look at a
-[summarized explanation](http://paislee.io/how-to-automate-docker-deployments/) here.
+Certificates are NOT required to add to your custom
+(sub)domain on your GitLab Pages project, though they are
+highly recommendable.
 
-Let's go a little further.
+The importance of having any website securely served under HTTPS
+is explained on the introductory section of the blog post
+[Secure GitLab Pages with StartSSL](https://about.gitlab.com/2016/06/24/secure-gitlab-pages-with-startssl/#https-a-quick-overview).
 
-### Branching
+The reason why certificates are so important is that they encrypt
+the connection between the **client** (you, me, your visitors)
+and the **server** (where you site lives), through a keychain of
+authentications and validations.
 
-If you use GitLab as a version control platform, you will have your
-branching strategy to work on your project. Meaning, you will have
-other branches in your project, but you'll want only pushes to the
-default branch (usually `master`) to be deployed to your website.
-To do that, we need to add another line to our CI, telling the Runner
-to only perform that _job_ called `pages` on the `master` branch `only`:
+### Issuing Certificates
 
-```yaml
-image: ruby:2.3
+GitLab Pages accepts [PEM](https://support.quovadisglobal.com/kb/a37/what-is-pem-format.aspx) certificates issued by
+[Certificate Authorities (CA)](https://en.wikipedia.org/wiki/Certificate_authority)
+and self-signed certificates. Of course,
+[you'd rather issue a certificate than generate a self-signed](https://en.wikipedia.org/wiki/Self-signed_certificate),
+for security reasons and for having browsers trusting your
+site's certificate.
 
-pages:
-  script:
-  - bundle install
-  - bundle exec jekyll build -d public
-  artifacts:
-    paths:
-    - public
-  only:
-  - master
-```
+There are several different kinds of certificates, each one
+with certain security level. A static personal website will
+not require the same security level as an online banking web app,
+for instance. There are a couple Certificate Authorities that
+offer free certificates, aiming to make the internet more secure
+to everyone. The most popular is [Let's Encrypt](https://letsencrypt.org/),
+which issues certificates trusted by most of browsers, it's open
+source, and free to use. Please read through this tutorial to
+understand [how to secure your GitLab Pages website with Let's Encrypt](https://about.gitlab.com/2016/04/11/tutorial-securing-your-gitlab-pages-with-tls-and-letsencrypt/).
 
-### Stages
+With the same popularity, there are [certificates issued by CloudFlare](https://www.cloudflare.com/ssl/),
+which also offers a [free CDN service](https://blog.cloudflare.com/cloudflares-free-cdn-and-you/).
+Their certs are valid up to 15 years. Read through the tutorial on
+[how to add a CloudFlare Certificate to your GitLab Pages website](https://about.gitlab.com/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/).
 
-Another interesting concept to keep in mind are build stages.
-Your web app can pass through a lot of tests and other tasks
-until it's deployed to staging or production environments.
-There are three default stages on GitLab CI: build, test,
-and deploy. To specify which stage your _job_ is running,
-simply add another line to your CI:
+### Adding certificates to your project
 
-```yaml
-image: ruby:2.3
+Regardless the CA you choose, the steps to add your certificate to
+your Pages project are the same.
 
-pages:
-  stage: deploy
-  script:
-  - bundle install
-  - bundle exec jekyll build -d public
-  artifacts:
-    paths:
-    - public
-  only:
-  - master
-```
+#### What do you need
 
-You might ask yourself: "why should I bother with stages
-at all?" Well, let's say you want to be able to test your
-script and check the built site before deploying your site
-to production. You want to run the test exactly as your
-script will do when you push to `master`. It's simple,
-let's add another task (_job_) to our CI, telling it to
-test every push to other branches, `except` the `master` branch:
+1. A PEM certificate
+1. An intermediate certificate
+1. A public key
 
-```yaml
-image: ruby:2.3
+![Pages project - adding certificates](img/add_certificate_to_pages.png)
 
-pages:
-  stage: deploy
-  script:
-  - bundle install
-  - bundle exec jekyll build -d public
-  artifacts:
-    paths:
-    - public
-  only:
-  - master
+These fields are found under your **Project**'s **Settings** > **Pages** > **New Domain**.
 
-test:
-  stage: test
-  script:
-  - bundle install
-  - bundle exec jekyll build -d test
-  artifacts:
-    paths:
-    - test
-  except:
-  - master
-```
+#### What's what?
 
-The `test` job is running on the stage `test`, Jekyll
-will build the site in a directory called `test`, and
-this job will affect all the branches except `master`.
+- A PEM certificate is the certificate generated by the CA,
+which needs to be added to the field **Certificate (PEM)**.
+- An [intermediate certificate](https://en.wikipedia.org/wiki/Intermediate_certificate_authority) (aka "root certificate") is
+the part of the encryption keychain that identifies the CA.
+Usually it's combined with the PEM certificate, but there are
+some cases in which you need to add them manually.
+[CloudFlare certs](https://about.gitlab.com/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/)
+are one of these cases.
+- A public key is an encrypted key which validates
+your PEM against your domain.
 
-The best benefit of applying _stages_ to different
-_jobs_ is that every job in the same stage builds in
-parallel. So, if your web app needs more than one test
-before being deployed, you can run all your test at the
-same time, it's not necessary to wait one test to finish
-to run the other. Of course, this is just a brief
-introduction of GitLab CI and GitLab Runner, which are
-tools much more powerful than that. This is what you
-need to be able to create and tweak your builds for
-your GitLab Pages site.
+#### Now what?
 
-### Before Script
+Now that you hopefully understand why you need all
+of this, it's simple:
 
-To avoid running the same script multiple times across
-your _jobs_, you can add the parameter `before_script`,
-in which you specify which commands you want to run for
-every single _job_. In our example, notice that we run
-`bundle install` for both jobs, `pages` and `test`.
-We don't need to repeat it:
+- Your PEM certificate needs to be added to the first field
+- If your certificate is missing its intermediate, copy
+and paste the root certificate (usually available from your CA website)
+and paste it in the [same field as your PEM certificate](https://about.gitlab.com/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/),
+just jumping a line between them.
+- Copy your public key and paste it in the last field
 
-```yaml
-image: ruby:2.3
-
-before_script:
-  - bundle install
-
-pages:
-  stage: deploy
-  script:
-  - bundle exec jekyll build -d public
-  artifacts:
-    paths:
-    - public
-  only:
-  - master
-
-test:
-  stage: test
-  script:
-  - bundle exec jekyll build -d test
-  artifacts:
-    paths:
-    - test
-  except:
-  - master
-```
-
-### Caching Dependencies
-
-If you want to cache the installation files for your
-projects dependencies, for building faster, you can
-use the parameter `cache`. For this example, we'll
-cache Jekyll dependencies in a `vendor` directory
-when we run `bundle install`:
-
-```yaml
-image: ruby:2.3
-
-cache:
-  paths:
-  - vendor/
-
-before_script:
-  - bundle install --path vendor
-
-pages:
-  stage: deploy
-  script:
-  - bundle exec jekyll build -d public
-  artifacts:
-    paths:
-    - public
-  only:
-  - master
-
-test:
-  stage: test
-  script:
-  - bundle exec jekyll build -d test
-  artifacts:
-    paths:
-    - test
-  except:
-  - master
-```
-
-For this specific case, we need to exclude `/vendor`
-from Jekyll `_config.yml` file, otherwise Jekyll will
-understand it as a regular directory to build
-together with the site:
-
-```yml
-exclude:
-  - vendor
-```
-
-There we go! Now our GitLab CI not only builds our website,
-but also **continuously test** pushes to feature-branches,
-**caches** dependencies installed with Bundler, and
-**continuously deploy** every push to the `master` branch.
-
-## Advanced GitLab CI for GitLab Pages
-
-What you can do with GitLab CI is pretty much up to your
-creativity. Once you get used to it, you start creating
-awesome scripts that automate most of tasks you'd do
-manually in the past. Read through the
-[documentation of GitLab CI](https://docs.gitlab.com/ce/ci/yaml/README.html)
-to understand how to go even further on your scripts.
-
-- On this blog post, understand the concept of
-[using GitLab CI `environments` to deploy your
-web app to staging and production](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/).
-- On this post, learn [how to run jobs sequentially,
-in parallel, or build a custom pipeline](https://about.gitlab.com/2016/07/29/the-basics-of-gitlab-ci/)
-- On this blog post, we go through the process of
-[pulling specific directories from different projects](https://about.gitlab.com/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
-to deploy this website you're looking at, docs.gitlab.com.
-- On this blog post, we teach you [how to use GitLab Pages to produce a code coverage report](https://about.gitlab.com/2016/11/03/publish-code-coverage-report-with-gitlab-pages/).
+>**Note:**
+**Do not** open certificates or encryption keys in
+regular text editors. Always use code editors (such as
+Sublime Text, Atom, Dreamweaver, Brackets, etc).
 
 |||
 |:--|--:|
-|[**← Part 2: Quick start guide - Setting up GitLab Pages**](getting_started_part_two.md)||
+|[**← Part 2: Quick start guide - Setting up GitLab Pages**](getting_started_part_two.md)|[**Part 4: Creating and tweaking `.gitlab-ci.yml` for GitLab Pages →**](getting_started_part_four.md)|
