@@ -8,7 +8,6 @@ export default class MergeRequestStore {
 
     const currentUser = data.current_user;
 
-    this.state = data.state;
     this.targetBranch = data.target_branch;
     this.sourceBranch = data.source_branch;
 
@@ -26,13 +25,44 @@ export default class MergeRequestStore {
 
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
     this.canRevert = currentUser.can_revert || false;
+    this.canResolveConflicts = currentUser.can_resolve_conflicts || false;
+    this.canMerge = currentUser.can_merge || false;
+    this.canResolveConflictsInUI = data.conflicts_can_be_resolved_in_ui || false;
     this.canBeCherryPicked = data.can_be_cherry_picked || false;
 
-    this.isMerged = this.state === 'merged';
-    this.isClosed = this.state === 'closed';
-    this.isLocked = this.state === 'locked';
-    this.isWip = this.state === 'opened' && data.work_in_progress && data.merge_status === 'can_be_merged';
-    this.isArchived = data.project_archived;
+    this.setState(data);
+  }
+
+  setState(data) {
+    if (data.state === 'opened') {
+      if (data.project_archived) {
+        this.state = 'archived';
+      } else if (data.branch_missing) {
+        this.state = 'missingBranch';
+      } else if (data.has_no_commits) {
+        this.state = 'nothingToMerge';
+      } else if (data.has_conflicts) {
+        this.state = 'conflicts';
+      } else if (data.work_in_progress) {
+        this.state = 'workInProgress';
+      } else if (!this.canMerge) {
+        this.state = 'notAllowedToMerge';
+      }
+    } else {
+      switch (data.state) {
+        case 'merged':
+          this.state = 'merged';
+          break;
+        case 'closed':
+          this.state = 'closed';
+          break;
+        case 'locked':
+          this.state = 'locked';
+          break;
+        default:
+          this.state = null;
+      }
+    }
   }
 
   static getUserObject(user) {
