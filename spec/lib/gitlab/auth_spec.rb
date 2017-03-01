@@ -118,7 +118,7 @@ describe Gitlab::Auth, lib: true do
       end
 
       it 'succeeds if it is an impersonation token' do
-        impersonation_token = create(:personal_access_token, impersonation: true, scopes: ['api'])
+        impersonation_token = create(:personal_access_token, :impersonation, scopes: ['api'])
 
         expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')
         expect(gl_auth.find_for_git_client('', impersonation_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(impersonation_token.user, nil, :personal_token, full_authentication_abilities))

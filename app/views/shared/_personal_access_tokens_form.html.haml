@@ -1,10 +1,13 @@
-- impersonation = impersonation || false
-- personal_access_token = local_assigns.fetch(:personal_access_token)
-- scopes = local_assigns.fetch(:scopes)
+- type = impersonation ? "Impersonation" : "Personal Access"
 
-= form_for personal_access_token, url: path, method: :post, html: { class: 'js-requires-input' } do |f|
+%h5.prepend-top-0
+  Add a #{type} Token
+%p.profile-settings-content
+  Pick a name for the application, and we'll give you a unique #{type} Token.
 
-  = form_errors(personal_access_token)
+= form_for token, url: path, method: :post, html: { class: 'js-requires-input' } do |f|
+
+  = form_errors(token)
 
   .form-group
     = f.label :name, class: 'label-light'
@@ -16,10 +19,9 @@
 
   .form-group
     = f.label :scopes, class: 'label-light'
-    = render 'shared/tokens/scopes_form', prefix: 'personal_access_token', token: personal_access_token, scopes: scopes
+    = render 'shared/tokens/scopes_form', prefix: 'personal_access_token', token: token, scopes: scopes
 
   .prepend-top-default
-    - type = impersonation ? "Impersonation" : "Personal Access"
     = f.submit "Create #{type} Token", class: "btn btn-create"
 
 :javascript

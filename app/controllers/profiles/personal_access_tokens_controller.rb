@@ -1,12 +1,10 @@
 class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
-  before_action :finder
-
   def index
     set_index_vars
   end
 
   def create
-    @personal_access_token = finder.execute.build(personal_access_token_params)
+    @personal_access_token = finder.build(personal_access_token_params)
 
     if @personal_access_token.save
       flash[:personal_access_token] = @personal_access_token.token
@@ -18,7 +16,7 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   end
 
   def revoke
-    @personal_access_token = finder.execute(id: params[:id])
+    @personal_access_token = finder.find(params[:id])
 
     if @personal_access_token.revoke!
       flash[:notice] = "Revoked personal access token #{@personal_access_token.name}!"
@@ -31,8 +29,8 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
 
   private
 
-  def finder
-    @finder ||= PersonalAccessTokensFinder.new(user: current_user, impersonation: false)
+  def finder(options = {})
+    PersonalAccessTokensFinder.new({ user: current_user, impersonation: false }.merge(options))
   end
 
   def personal_access_token_params
@@ -40,12 +38,10 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   end
 
   def set_index_vars
-    finder.params[:state] = 'active'
-    @personal_access_token ||= finder.execute.build
     @scopes = Gitlab::Auth::SCOPES
-    finder.params[:order] = :expires_at
-    @active_personal_access_tokens = finder.execute
-    finder.params[:state] = 'inactive'
-    @inactive_personal_access_tokens = finder.execute
+
+    @personal_access_token = finder.build
+    @inactive_personal_access_tokens = finder(state: 'inactive').execute
+    @active_personal_access_tokens = finder(state: 'active').execute.order(:expires_at)
   end
 end

@@ -1,12 +1,12 @@
 class Admin::ImpersonationTokensController < Admin::ApplicationController
-  before_action :user, :finder
+  before_action :user
 
   def index
     set_index_vars
   end
 
   def create
-    @impersonation_token = finder.execute.build(impersonation_token_params)
+    @impersonation_token = finder.build(impersonation_token_params)
 
     if @impersonation_token.save
       flash[:impersonation_token] = @impersonation_token.token
@@ -18,7 +18,7 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
   end
 
   def revoke
-    @impersonation_token = finder.execute(id: params[:id])
+    @impersonation_token = finder.find(params[:id])
 
     if @impersonation_token.revoke!
       flash[:notice] = "Revoked impersonation token #{@impersonation_token.name}!"
@@ -35,8 +35,8 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
     @user ||= User.find_by!(username: params[:user_id])
   end
 
-  def finder
-    @finder ||= PersonalAccessTokensFinder.new(user: user, impersonation: true)
+  def finder(options = {})
+    PersonalAccessTokensFinder.new({ user: user, impersonation: true }.merge(options))
   end
 
   def impersonation_token_params
@@ -44,12 +44,10 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
   end
 
   def set_index_vars
-    finder.params[:state] = 'active'
-    @impersonation_token ||= finder.execute.build
     @scopes = Gitlab::Auth::SCOPES
-    finder.params[:order] = :expires_at
-    @active_impersonation_tokens = finder.execute
-    finder.params[:state] = 'inactive'
-    @inactive_impersonation_tokens = finder.execute
+
+    @impersonation_token ||= finder.build
+    @inactive_impersonation_tokens = finder(state: 'inactive').execute
+    @active_impersonation_tokens = finder(state: 'active').execute.order(:expires_at)
   end
 end

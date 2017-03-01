@@ -10,8 +10,8 @@ module API
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
       helpers do
         def find_user(params)
-          user = User.find_by(id: params[:id])
-          user ? user : not_found!('User')
+          id = params[:user_id] || params[:id]
+          User.find_by(id: id) || not_found!('User')
         end
 
         params :optional_attributes do
@@ -369,75 +369,71 @@ module API
       end
 
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :user_id, type: Integer, desc: 'The ID of the user'
       end
-      segment ':id' do
-        resource :personal_access_tokens do
-          before do
-            authenticated_as_admin!
-            user = find_user(params)
-            @finder = PersonalAccessTokensFinder.new(user: user)
-          end
+      segment ':user_id' do
+        resource :impersonation_tokens do
+          helpers do
+            def finder(options = {})
+              user = find_user(params)
+              PersonalAccessTokensFinder.new({ user: user, impersonation: true }.merge(options))
+            end
 
-          desc 'Retrieve personal access tokens. Available only for admins.' do
-            detail 'This feature was introduced in GitLab 9.0'
-            success Entities::ImpersonationToken
-          end
-          params do
-            optional :state, type: String, default: 'all', values: %w[all active inactive], desc: 'Filters (all|active|inactive) personal_access_tokens'
-            optional :impersonation, type: Boolean, desc: 'Filters only impersonation personal_access_tokens'
-            use :pagination
-          end
-          get do
-            @finder.params.merge!(declared_params(include_missing: false))
-            present paginate(@finder.execute), with: Entities::ImpersonationToken
-          end
-
-          desc 'Create a personal access token. Available only for admins.' do
-            detail 'This feature was introduced in GitLab 9.0'
-            success Entities::ImpersonationToken
-          end
-          params do
-            requires :name, type: String, desc: 'The name of the personal access token'
-            optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
-            optional :scopes, type: Array, desc: 'The array of scopes of the personal access token'
-            optional :impersonation, type: Boolean, desc: 'The impersonation flag of the personal access token'
-          end
-          post do
-            personal_access_token = @finder.execute.build(declared_params(include_missing: false))
-
-            if personal_access_token.save
-              present personal_access_token, with: Entities::ImpersonationToken
-            else
-              render_validation_error!(personal_access_token)
+            def find_impersonation_token
+              finder.find_by(id: declared_params[:impersonation_token_id]) || not_found!('Impersonation Token')
             end
           end
 
-          desc 'Retrieve personal access token. Available only for admins.' do
+          before { authenticated_as_admin! }
+
+          desc 'Retrieve impersonation tokens. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
             success Entities::ImpersonationToken
           end
           params do
-            requires :personal_access_token_id, type: Integer, desc: 'The ID of the personal access token'
+            use :pagination
+            optional :state, type: String, default: 'all', values: %w[all active inactive], desc: 'Filters (all|active|inactive) impersonation_tokens'
           end
-          get ':personal_access_token_id' do
-            personal_access_token = @finder.execute(id: declared_params[:personal_access_token_id])
-            not_found!('Personal Access Token') unless personal_access_token
+          get { present paginate(finder(declared_params(include_missing: false)).execute), with: Entities::ImpersonationToken }
 
-            present personal_access_token, with: Entities::ImpersonationToken
+          desc 'Create a impersonation token. Available only for admins.' do
+            detail 'This feature was introduced in GitLab 9.0'
+            success Entities::ImpersonationToken
+          end
+          params do
+            requires :name, type: String, desc: 'The name of the impersonation token'
+            optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the impersonation token'
+            optional :scopes, type: Array, desc: 'The array of scopes of the impersonation token'
+          end
+          post do
+            impersonation_token = finder.build(declared_params(include_missing: false))
+
+            if impersonation_token.save
+              present impersonation_token, with: Entities::ImpersonationToken
+            else
+              render_validation_error!(impersonation_token)
+            end
           end
 
-          desc 'Revoke a personal access token. Available only for admins.' do
+          desc 'Retrieve impersonation token. Available only for admins.' do
+            detail 'This feature was introduced in GitLab 9.0'
+            success Entities::ImpersonationToken
+          end
+          params do
+            requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
+          end
+          get ':impersonation_token_id' do
+            present find_impersonation_token, with: Entities::ImpersonationToken
+          end
+
+          desc 'Revoke a impersonation token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
           end
           params do
-            requires :personal_access_token_id, type: Integer, desc: 'The ID of the personal access token'
+            requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
           end
-          delete ':personal_access_token_id' do
-            personal_access_token = @finder.execute(id: declared_params[:personal_access_token_id])
-            not_found!('Personal Access Token') unless personal_access_token
-
-            personal_access_token.revoke!
+          delete ':impersonation_token_id' do
+            find_impersonation_token.revoke!
           end
         end
       end

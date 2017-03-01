@@ -1,36 +1,34 @@
 class PersonalAccessTokensFinder
   attr_accessor :params
 
+  delegate :build, :find, :find_by, to: :execute
+
   def initialize(params = {})
     @params = params
   end
 
-  def execute(token: nil, id: nil)
-    tokens = by_impersonation
-
-    return tokens.find_by_token(token) if token
-    return tokens.find_by_id(id) if id
-
-    tokens = by_state(tokens)
-    tokens.order(@params[:order]) if @params[:order]
-
-    tokens
+  def execute
+    tokens = PersonalAccessToken.all
+    tokens = by_user(tokens)
+    tokens = by_impersonation(tokens)
+    by_state(tokens)
   end
 
   private
 
-  def personal_access_tokens
-    @params[:user] ? @params[:user].personal_access_tokens : PersonalAccessToken.all
+  def by_user(tokens)
+    return tokens unless @params[:user]
+    tokens.where(user: @params[:user])
   end
 
-  def by_impersonation
+  def by_impersonation(tokens)
     case @params[:impersonation]
     when true
-      personal_access_tokens.with_impersonation
+      tokens.with_impersonation
     when false
-      personal_access_tokens.without_impersonation
+      tokens.without_impersonation
     else
-      personal_access_tokens
+      tokens
     end
   end
 

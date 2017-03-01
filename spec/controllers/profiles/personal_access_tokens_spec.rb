@@ -49,8 +49,8 @@ describe Profiles::PersonalAccessTokensController do
 
   describe '#index' do
     let!(:active_personal_access_token) { create(:personal_access_token, user: user) }
-    let!(:inactive_personal_access_token) { create(:revoked_personal_access_token, user: user) }
-    let!(:impersonation_personal_access_token) { create(:impersonation_personal_access_token, user: user) }
+    let!(:inactive_personal_access_token) { create(:personal_access_token, :revoked, user: user) }
+    let!(:impersonation_personal_access_token) { create(:personal_access_token, :impersonation, user: user) }
 
     before { get :index }
 

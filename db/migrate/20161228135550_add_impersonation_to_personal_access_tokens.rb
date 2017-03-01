@@ -9,7 +9,7 @@ class AddImpersonationToPersonalAccessTokens < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
-    add_column_with_default :personal_access_tokens, :impersonation, :boolean, default: false, null: false
+    add_column_with_default :personal_access_tokens, :impersonation, :boolean, default: false, allow_null: false
   end
 
   def down

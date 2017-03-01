@@ -5,11 +5,11 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
   let!(:user) { create(:user) }
 
   def active_impersonation_tokens
-    find(".table.active-impersonation-tokens")
+    find(".table.active-tokens")
   end
 
   def inactive_impersonation_tokens
-    find(".table.inactive-impersonation-tokens")
+    find(".table.inactive-tokens")
   end
 
   before { login_as(admin) }
@@ -30,7 +30,7 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
       check "api"
       check "read_user"
 
-      expect { click_on "Create Impersonation Token" }.to change { PersonalAccessToken.with_impersonation.count }
+      expect { click_on "Create Impersonation Token" }.to change { PersonalAccessTokensFinder.new(impersonation: true).execute.count }
       expect(active_impersonation_tokens).to have_text(name)
       expect(active_impersonation_tokens).to have_text('In')
       expect(active_impersonation_tokens).to have_text('api')
@@ -39,7 +39,7 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
   end
 
   describe 'active tokens' do
-    let!(:impersonation_token) { create(:impersonation_personal_access_token, user: user) }
+    let!(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
     let!(:personal_access_token) { create(:personal_access_token, user: user) }
 
     it 'only shows impersonation tokens' do
@@ -51,7 +51,7 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
   end
 
   describe "inactive tokens" do
-    let!(:impersonation_token) { create(:impersonation_personal_access_token, user: user) }
+    let!(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
 
     it "allows revocation of an active impersonation token" do
       visit admin_user_impersonation_tokens_path(user_id: user.username)

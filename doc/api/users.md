@@ -828,22 +828,21 @@ Example response:
 ]
 ```
 
-## Retrieve user personal access tokens
+## Retrieve user impersonation tokens
 
-It retrieves every personal access token of the user. Note that only administrators can do this.
-This function takes pagination parameters `page` and `per_page` to restrict the list of personal access tokens.
+It retrieves every impersonation token of the user. Note that only administrators can do this.
+This function takes pagination parameters `page` and `per_page` to restrict the list of impersonation tokens.
 
 ```
-GET /users/:id/personal_access_tokens
+GET /users/:user_id/impersonation_tokens
 ```
 
 Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of the user |
+| `user_id` | integer | yes | The ID of the user |
 | `state`   | string | no | filter tokens based on state (all, active, inactive) |
-| `impersonation` | boolean | no | The impersonation flag of the personal access token |
 
 Example response:
 ```json
@@ -861,53 +860,66 @@ Example response:
 ]
 ```
 
-## Show a user personal access token
+## Show a user's impersonation token
 
-It shows a user's personal access token. Note that only administrators can do this.
+It shows a user's impersonation token. Note that only administrators can do this.
 
 ```
-GET /users/:id/personal_access_tokens/:personal_access_token_id
+GET /users/:user_id/impersonation_tokens/:impersonation_token_id
 ```
 
 Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of the user |
-| `personal_access_token_id` | integer | yes | The ID of the personal access token |
+| `user_id` | integer | yes | The ID of the user |
+| `impersonation_token_id` | integer | yes | The ID of the impersonation token |
 
-## Create a personal access token
+## Create a impersonation token
 
-It creates a new personal access token. Note that only administrators can do this.
+It creates a new impersonation token. Note that only administrators can do this.
 You are only able to create impersonation tokens to impersonate the user and perform
 both API calls and Git reads and writes. The user will not see these tokens in his profile
 settings page.
 
 ```
-POST /users/:id/personal_access_tokens
+POST /users/:user_id/impersonation_tokens
 ```
 
 Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of the user |
-| `name` | string | yes | The name of the personal access token |
-| `expires_at` | date | no | The expiration date of the personal access token |
-| `scopes` | array | no | The array of scopes of the personal access token |
-| `impersonation` | boolean | no | The impersonation flag of the personal access token |
+| `user_id` | integer | yes | The ID of the user |
+| `name` | string | yes | The name of the impersonation token |
+| `expires_at` | date | no | The expiration date of the impersonation token |
+| `scopes` | array | no | The array of scopes of the impersonation token (api, read_user) |
 
-## Revoke a personal access token
+Example response:
+```json
+{
+  "id": 1,
+  "name": "mytoken",
+  "revoked": false,
+  "expires_at": "2017-01-04",
+  "scopes": ['api'],
+  "active": true,
+  "impersonation": true,
+  "token": "9koXpg98eAheJpvBs5tK"
+}
+```
 
-It revokes a personal access token. Note that only administrators can revoke impersonation tokens.
+## Revoke an impersonation token
+
+It revokes an impersonation token. Note that only administrators can revoke impersonation tokens.
 
 ```
-DELETE /users/:id/personal_access_tokens/:personal_access_token_id
+DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id
 ```
 
 Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of the user |
-| `personal_access_token_id` | integer | yes | The ID of the personal access token |
+| `user_id` | integer | yes | The ID of the user |
+| `impersonation_token_id` | integer | yes | The ID of the impersonation token |

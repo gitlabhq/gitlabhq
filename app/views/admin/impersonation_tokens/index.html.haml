@@ -3,63 +3,6 @@
 
 .row.prepend-top-default
   .col-lg-12
-    %h5.prepend-top-0
-      Add a Impersonation Token
-    %p.profile-settings-content
-      Pick a name for the application, and we'll give the respective user a unique token.
-    = render "shared/personal_access_tokens_form", path: admin_user_impersonation_tokens_path, impersonation: true, personal_access_token: @impersonation_token, scopes: @scopes
+    = render "shared/personal_access_tokens_form", path: admin_user_impersonation_tokens_path, impersonation: true, token: @impersonation_token, scopes: @scopes
 
-    %hr
-
-    %h5 Active Impersonation Tokens (#{@active_impersonation_tokens.length})
-    %p.profile-settings-content
-      To see all the user's personal access tokens you must impersonate first
-    - if @active_impersonation_tokens.present?
-      .table-responsive
-        %table.table.active-impersonation-tokens
-          %thead
-            %tr
-              %th Name
-              %th Created
-              %th Expires
-              %th Scopes
-              %th Token
-              %th
-          %tbody
-            - @active_impersonation_tokens.each do |impersonation_token|
-              %tr
-                %td= impersonation_token.name
-                %td= impersonation_token.created_at.to_date.to_s(:medium)
-                %td
-                  - if impersonation_token.expires?
-                    %span{ class: ('text-warning' if impersonation_token.expires_soon?) }
-                      In #{distance_of_time_in_words_to_now(impersonation_token.expires_at)}
-                  - else
-                    %span.impersonation_tokens-never-expires-label Never
-                %td= impersonation_token.scopes.present? ? impersonation_token.scopes.join(", ") : "<no scopes selected>"
-                %td.impersonation-token-token-container
-                  = text_field_tag 'impersonation-token-token', impersonation_token.token, readonly: true, class: "form-control"
-                  = clipboard_button(clipboard_text: impersonation_token.token)
-                %td= link_to "Revoke", revoke_admin_user_impersonation_token_path(id: impersonation_token.id, user_id: impersonation_token.user.username), method: :put, class: "btn btn-danger pull-right", data: { confirm: "Are you sure you want to revoke this impersonation token? This action cannot be undone." }
-    - else
-      .settings-message.text-center
-        This user has no active impersonation tokens.
-
-    %hr
-
-    %h5 Inactive Impersonation Tokens (#{@inactive_impersonation_tokens.length})
-    - if @inactive_impersonation_tokens.present?
-      .table-responsive
-        %table.table.inactive-impersonation-tokens
-          %thead
-            %tr
-              %th Name
-              %th Created
-          %tbody
-            - @inactive_impersonation_tokens.each do |token|
-              %tr
-                %td= token.name
-                %td= token.created_at.to_date.to_s(:medium)
-    - else
-      .settings-message.text-center
-        This user has no inactive impersonation tokens.
+    = render "shared/personal_access_tokens_table", impersonation: true, active_tokens: @active_impersonation_tokens, inactive_tokens: @inactive_impersonation_tokens

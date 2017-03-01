@@ -8,16 +8,20 @@ FactoryGirl.define do
     scopes ['api']
     impersonation false
 
-    factory :revoked_personal_access_token do
+    trait :impersonation do
+      impersonation true
+    end
+
+    trait :revoked do
       revoked true
     end
 
-    factory :expired_personal_access_token do
+    trait :expired do
       expires_at { 1.day.ago }
     end
 
-    factory :impersonation_personal_access_token do
-      impersonation true
+    trait :invalid do
+      token nil
     end
   end
 end

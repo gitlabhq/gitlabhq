@@ -4,11 +4,11 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
   let(:user) { create(:user) }
 
   def active_personal_access_tokens
-    find(".table.active-personal-access-tokens")
+    find(".table.active-tokens")
   end
 
   def inactive_personal_access_tokens
-    find(".table.inactive-personal-access-tokens")
+    find(".table.inactive-tokens")
   end
 
   def created_personal_access_token
@@ -26,7 +26,7 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
   end
 
   describe "token creation" do
-    it "allows creation of a non impersonation token" do
+    it "allows creation of a personal access token" do
       name = FFaker::Product.brand
 
       visit profile_personal_access_tokens_path
@@ -61,10 +61,10 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
   end
 
   describe 'active tokens' do
-    let!(:impersonation_token) { create(:impersonation_personal_access_token, user: user) }
+    let!(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
     let!(:personal_access_token) { create(:personal_access_token, user: user) }
 
-    it 'only shows non impersonated tokens' do
+    it 'only shows personal access tokens' do
       visit profile_personal_access_tokens_path
 
       expect(active_personal_access_tokens).to have_text(personal_access_token.name)
