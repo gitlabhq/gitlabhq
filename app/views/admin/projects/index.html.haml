@@ -8,6 +8,7 @@
   .top-area
     .prepend-top-default
       = form_tag admin_projects_path, method: :get do |f|
+        = render "shared/projects/filter_fields"
         .search-holder
           .search-field-holder
             = search_field_tag :name, params[:name], class: "form-control search-text-input js-search-input", id: "dashboard_search", autofocus: true, spellcheck: false, placeholder: 'Search by name'
@@ -15,20 +16,12 @@
             - if params[:visibility_level].present?
               = hidden_field_tag 'visibility_level', params[:visibility_level]
 
-            - if params[:sort].present?
-              = hidden_field_tag 'sort', params[:sort]
-
-            - if params[:personal].present?
-              = hidden_field_tag 'visibility_level', 'true'
-
-            - if params[:archived].present?
-              = hidden_field_tag 'archived', 'true'
-
             = icon("search", class: "search-icon")
 
           .dropdown
             - toggle_text = 'Namespace'
             - if params[:namespace_id].present?
+              = hidden_field_tag :namespace_id, params[:namespace_id]
               - namespace = Namespace.find(params[:namespace_id])
               - toggle_text = "#{namespace.kind}: #{namespace.full_path}"
             = dropdown_toggle(toggle_text, { toggle: 'dropdown' }, { toggle_class: 'js-namespace-select large' })
