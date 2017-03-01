@@ -14,7 +14,7 @@
 ### Nazim Ramesh
 - Small to medium size organisations using GitLab CE
 
-<img src="img/steven-lyons.png" width="300px">
+<img src="img/nazim-ramesh.png" width="300px">
 
 #### Demographics 
 
@@ -131,7 +131,7 @@ James and his team use CI quite heavily for several projects. Whilst they’ve w
 - Would like to use GitLab at work
 - Working for a medium to large size organisation   
 
-<img src="img/harry-robison.png" width="300px">
+<img src="img/karolina-plaskaty.png" width="300px">
 
 #### Demographics
 
