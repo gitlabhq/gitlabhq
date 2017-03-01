@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe Projects::Settings::IntegrationsController do
-  let(:project) { create(:empty_project, :public) }
+describe Projects::Settings::RepositoryController do
+  let(:project) { create(:project_empty_repo, :public) }
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 

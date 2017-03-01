@@ -58,6 +58,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
                                              push_access_levels_attributes: [:access_level, :id, :user_id, :_destroy, :group_id])
   end
 
+
   def load_protected_branches
     @protected_branches = @project.protected_branches.order(:name).page(params[:page])
   end

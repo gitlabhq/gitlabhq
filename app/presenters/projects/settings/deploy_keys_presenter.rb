@@ -2,6 +2,9 @@ module Projects
   module Settings
     class DeployKeysPresenter < Gitlab::View::Presenter::Simple
       presents :project
+      delegate :size, to: :enabled_keys, prefix: true
+      delegate :size, to: :available_project_keys, prefix: true
+      delegate :size, to: :available_public_keys, prefix: true
 
       def new_key
         @key ||= DeployKey.new
@@ -15,10 +18,6 @@ module Projects
         enabled_keys.any?
       end
 
-      def enabled_keys_size
-        enabled_keys.size
-      end
-
       def available_keys
         @available_keys ||= current_user.accessible_deploy_keys - enabled_keys
       end
@@ -29,10 +28,6 @@ module Projects
 
       def any_available_project_keys_enabled?
         available_project_keys.any?
-      end
-
-      def available_project_keys_size
-        available_project_keys.size
       end
 
       def key_available?(deploy_key)
@@ -51,10 +46,6 @@ module Projects
 
       def any_available_public_keys_enabled?
         available_public_keys.any?
-      end
-
-      def available_public_keys_size
-        available_public_keys.size
       end
 
       def to_partial_path
