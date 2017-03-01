@@ -177,6 +177,7 @@ require('./project_select');
 require('./project_show');
 require('./project_variables');
 require('./projects_list');
+require('./groups_list');
 require('./render_gfm');
 require('./render_math');
 require('./right_sidebar');
