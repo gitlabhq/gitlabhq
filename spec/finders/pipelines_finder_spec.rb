@@ -34,16 +34,15 @@ describe PipelinesFinder do
       end
 
       it 'orders in descending order on ID' do
-        expected_ids = [
-          tag_pipeline.id, 
-          created_pipeline.id, 
-          pending_pipeline.id,
-          running_pipeline.id,
-          success_pipeline.id,
-          failed_pipeline.id,
-          canceled_pipeline.id,
-          skipped_pipeline.id,
-          yaml_errors_pipeline.id].sort.reverse
+        expected_ids = [tag_pipeline.id, 
+                        created_pipeline.id, 
+                        pending_pipeline.id,
+                        running_pipeline.id,
+                        success_pipeline.id,
+                        failed_pipeline.id,
+                        canceled_pipeline.id,
+                        skipped_pipeline.id,
+                        yaml_errors_pipeline.id].sort.reverse
         expect(subject.map(&:id)).to eq expected_ids
       end
     end
@@ -214,21 +213,21 @@ describe PipelinesFinder do
     end
 
     context 'when a order_by and sort are passed' do
-      context 'when order by started_at asc' do
+      context 'when order by created_at asc' do
         let(:params) { { order_by: 'created_at', sort: 'asc' } }
 
-        it 'sorts by started_at asc' do
-          expected_created_at = [
-            tag_pipeline.created_at, 
-            created_pipeline.created_at, 
-            pending_pipeline.created_at,
-            running_pipeline.created_at,
-            success_pipeline.created_at,
-            failed_pipeline.created_at,
-            canceled_pipeline.created_at,
-            skipped_pipeline.created_at,
-            yaml_errors_pipeline.created_at].sort
-          expect(subject.map(&:created_at)).to eq expected_created_at
+        it 'sorts by created_at asc' do
+          expect(subject.first).to eq(tag_pipeline)
+          expect(subject.last).to eq(yaml_errors_pipeline)
+        end
+      end
+
+      context 'when order by created_at desc' do
+        let(:params) { { order_by: 'created_at', sort: 'desc' } }
+
+        it 'sorts by created_at desc' do
+          expect(subject.first).to eq(yaml_errors_pipeline)
+          expect(subject.last).to eq(tag_pipeline)
         end
       end
     end

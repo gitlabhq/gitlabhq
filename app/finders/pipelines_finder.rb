@@ -101,8 +101,8 @@ class PipelinesFinder
 
   def order_and_sort(items)
     if params[:order_by].present? && params[:sort].present? && 
-       items.column_names.include?(params[:order_by]) && 
-       (params[:sort].downcase == 'asc' || params[:sort].downcase == 'desc')
+        items.column_names.include?(params[:order_by]) && 
+        (params[:sort].casecmp('ASC') || params[:sort].casecmp('DESC'))
       items.order("#{params[:order_by]} #{params[:sort]}")
     else
       items.order(id: :desc)
