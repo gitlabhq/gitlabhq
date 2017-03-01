@@ -22,7 +22,7 @@ Parameters:
 | `type` | string | no | The type of a todo. Can be either `Issue` or `MergeRequest` |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/todos
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/todos
 ```
 
 Example Response:
@@ -194,7 +194,7 @@ Parameters:
 | `id` | integer | yes | The ID of a todo |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/todos/130/mark_as_done
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/todos/130/mark_as_done
 ```
 
 Example Response:
@@ -284,7 +284,7 @@ POST /todos/mark_as_done
 ```
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/todos/donmark_as_donee
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/todos/donmark_as_donee
 ```
 
 
