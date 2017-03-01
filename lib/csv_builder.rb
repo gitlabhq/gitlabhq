@@ -26,7 +26,7 @@ class CsvBuilder
 
   # Renders the csv to a string
   def render
-    CSV.generate do |csv|
+    generate_csv_with_tempfile do |csv|
       csv << headers
 
       @collection.find_each do |object|
@@ -38,11 +38,11 @@ class CsvBuilder
   private
 
   def headers
-    @header_to_value_hash.keys
+    @headers ||= @header_to_value_hash.keys
   end
 
   def attributes
-    @header_to_value_hash.values
+    @attributes ||= @header_to_value_hash.values
   end
 
   def row(object)
@@ -53,5 +53,18 @@ class CsvBuilder
         object.send(attribute)
       end
     end
+  end
+
+  def generate_csv_with_tempfile
+    tempfile = Tempfile.new('issues_csv')
+    csv = CSV.new(tempfile)
+
+    yield(csv)
+
+    tempfile.rewind
+    tempfile.read
+  ensure
+    tempfile.close
+    tempfile.unlink
   end
 end

@@ -5,7 +5,6 @@ describe Issues::ExportCsvService, services: true do
   let(:project) { create(:empty_project, :public) }
   let!(:issue)  { create(:issue, project: project, author: user) }
   let(:subject) { described_class.new(Issue.all) }
-  let(:email) { subject.email(user, project) }
 
   it 'renders csv to string' do
     expect(subject.render).to be_a String
@@ -13,15 +12,12 @@ describe Issues::ExportCsvService, services: true do
 
   describe '#email' do
     it 'emails csv' do
-      expect{ email }.to change(ActionMailer::Base.deliveries, :count)
+      expect{ subject.email(user, project) }.to change(ActionMailer::Base.deliveries, :count)
     end
   end
 
-  it 'renders csv to temporary file'
-
   def csv
-    attachment = email.attachments[0]
-    CSV.parse(attachment.decode_body, headers: true)
+    CSV.parse(subject.render, headers: true)
   end
 
   context 'includes' do

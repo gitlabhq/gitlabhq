@@ -14,6 +14,18 @@ describe CsvBuilder, lib: true do
     expect(csv_data.scan(/(,|\n)/).join).to include ",\n,"
   end
 
+  it 'uses a temporary file to reduce memory allocation' do
+    expect(CSV).to receive(:new).with(instance_of(Tempfile)).and_call_original
+
+    subject.render
+  end
+
+  it 'avoids loading all data in a single query' do
+    expect(fake_relation).to receive(:find_each)
+
+    subject.render
+  end
+
   it 'uses hash keys as headers' do
     expect(csv_data).to start_with 'Q & A'
   end

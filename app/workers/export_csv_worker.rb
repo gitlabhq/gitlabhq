@@ -10,6 +10,6 @@ class ExportCsvWorker
 
     issues = IssuesFinder.new(@current_user, params.symbolize_keys).execute
 
-    Issues::ExportCsvService.new(issues.limit(100)).email(@current_user, @project)
+    Issues::ExportCsvService.new(issues).email(@current_user, @project)
   end
 end
