@@ -161,8 +161,48 @@
   }
 }
 
+.prometheus-graph {
+  text {
+    fill: #AAA;
+  }  
+}
+
+.x-axis path,
+.y-axis path{
+  fill: none;
+  stroke: #AAA;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.y-axis {
+  line {
+    stroke: #AAA;
+    stroke-width: 1;
+  }
+}
+
+.label-x-axis-line,
+.label-y-axis-line{
+  fill: none;
+  stroke: #E6E6E6;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.cpu-area {
+  opacity: 0.8;
+  fill: #EDF3FC;
+}
+
+.upper-circle-metric,
+.lower-circle-metric {
+  fill: #5b99f7;
+}
+
 .prometheus-graph-overlay {
   fill: none;
+  opacity: 0.0;
   pointer-events: all;
 }
 

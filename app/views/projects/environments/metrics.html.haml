@@ -15,4 +15,4 @@
           = render 'projects/deployments/actions', deployment: @environment.last_deployment
   .row
     .col-sm-12
-      %svg.prometheus-graph{ 'data-base-endpoint' => namespace_project_path(@project.namespace, @project) }
+      %svg.prometheus-graph{ 'data-base-endpoint' => metrics_namespace_project_environment_path(@project.namespace, @project, @environment) }
