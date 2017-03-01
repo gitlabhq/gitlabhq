@@ -489,7 +489,7 @@ Parameters:
 | `merge_request_id` | integer | yes | The ID of the merge request |
 | `merge_commit_message` | string | no | Custom merge commit message |
 | `should_remove_source_branch` | boolean | no | Remove the source branch after merge |
-| `merge_when_build_succeeds` | boolean | no | Merge when build succeeds, rather than immediately |
+| `merge_when_pipeline_succeeds` | boolean | no | Merge when pipeline succeeds, rather than immediately |
 | `sha` | string | no  | If present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail |
 | `squash` | boolean | no | Squash the merge request into a single commit |
 
