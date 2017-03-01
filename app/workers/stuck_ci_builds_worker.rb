@@ -45,7 +45,7 @@ class StuckCiBuildsWorker
 
   def search(status, timeout)
     builds = Ci::Build.where(status: status).where('ci_builds.updated_at < ?', timeout.ago)
-    builds.joins(:project).includes(project: :namespace).includes(:tags).includes(:runner).find_each(batch_size: 50).each do |build|
+    builds.joins(:project).includes(:tags, :runner, project: :namespace).find_each(batch_size: 50).each do |build|
       yield(build)
     end
   end
