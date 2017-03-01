@@ -113,7 +113,7 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
               urlSuffix = deleteSourceBranch ? '?deleted_source_branch=true' : '';
               return window.location.href = window.location.pathname + urlSuffix;
             } else if (data.merge_error) {
-              return $('.mr-widget-body').html("<h4>" + data.merge_error + "</h4>");
+              return $('.mr-widget-body:eq(0)').html("<h4>" + data.merge_error + "</h4>");
             } else {
               callback = function() {
                 return merge_request_widget.mergeInProgress(deleteSourceBranch);
@@ -132,11 +132,11 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
     };
 
     MergeRequestWidget.prototype.getMergeStatus = function() {
-      return $.get(this.opts.merge_check_url, (data) => {
+      return $.get(this.opts.merge_check_url, function(data) {
         var $html = $(data);
         this.updateMergeButton(this.status, this.hasCi, $html);
-        $('.mr-widget-body').replaceWith($html.find('.mr-widget-body'));
-        $('.mr-widget-footer').replaceWith($html.find('.mr-widget-footer'));
+        $('.mr-widget-body:eq(0)').replaceWith($html.find('.mr-widget-body'));
+        $('.mr-widget-footer:eq(0)').replaceWith($html.find('.mr-widget-footer'));
       });
     };
 
