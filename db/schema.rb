@@ -443,6 +443,17 @@ ActiveRecord::Schema.define(version: 20180418053107) do
   add_index "ci_pipelines", ["status"], name: "index_ci_pipelines_on_status", using: :btree
   add_index "ci_pipelines", ["user_id"], name: "index_ci_pipelines_on_user_id", using: :btree
 
+  create_table "ci_runner_groups", force: :cascade do |t|
+    t.integer "runner_id"
+    t.integer "group_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "ci_runner_groups", ["group_id"], name: "index_ci_runner_groups_on_group_id", using: :btree
+  add_index "ci_runner_groups", ["runner_id", "group_id"], name: "index_ci_runner_groups_on_runner_id_and_group_id", unique: true, using: :btree
+  add_index "ci_runner_groups", ["runner_id"], name: "index_ci_runner_groups_on_runner_id", using: :btree
+
   create_table "ci_runner_projects", force: :cascade do |t|
     t.integer "runner_id", null: false
     t.datetime "created_at"
@@ -2078,6 +2089,8 @@ ActiveRecord::Schema.define(version: 20180418053107) do
   add_foreign_key "ci_pipelines", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_3d34ab2e06", on_delete: :nullify
   add_foreign_key "ci_pipelines", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_262d4c2d19", on_delete: :nullify
   add_foreign_key "ci_pipelines", "projects", name: "fk_86635dbd80", on_delete: :cascade
+  add_foreign_key "ci_runner_groups", "ci_runners", column: "runner_id", name: "fk_d8a0baa93b", on_delete: :cascade
+  add_foreign_key "ci_runner_groups", "namespaces", column: "group_id", name: "fk_cdafb3bbba", on_delete: :cascade
   add_foreign_key "ci_runner_projects", "projects", name: "fk_4478a6f1e4", on_delete: :cascade
   add_foreign_key "ci_stages", "ci_pipelines", column: "pipeline_id", name: "fk_fb57e6cc56", on_delete: :cascade
   add_foreign_key "ci_stages", "projects", name: "fk_2360681d1d", on_delete: :cascade
