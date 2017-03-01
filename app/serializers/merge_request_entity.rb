@@ -32,6 +32,11 @@ class MergeRequestEntity < IssuableEntity
         can?(request.current_user, :create_issue, merge_request.project)
     end
 
+    expose :can_update_merge_request do |merge_request|
+      merge_request.project.merge_requests_enabled? &&
+        can?(request.current_user, :update_merge_request, merge_request.project)
+    end
+
     expose :can_resolve_conflicts do |merge_request|
       merge_request.conflicts_can_be_resolved_by?(request.current_user)
     end
@@ -75,5 +80,11 @@ class MergeRequestEntity < IssuableEntity
     conflicts_namespace_project_merge_request_path(merge_request.project.namespace,
                                                    merge_request.project,
                                                    merge_request)
+  end
+
+  expose :remove_wip_path do |merge_request|
+    remove_wip_namespace_project_merge_request_path(merge_request.project.namespace,
+                                                    merge_request.project,
+                                                    merge_request)
   end
 end

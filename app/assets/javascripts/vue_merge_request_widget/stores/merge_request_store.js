@@ -22,12 +22,14 @@ export default class MergeRequestStore {
 
     this.targetBranchPath = data.target_branch_path;
     this.conflictResolutionPath = data.conflict_resolution_ui_path;
+    this.removeWIPPath = data.remove_wip_path;
     this.sourceBranchRemoved = !data.source_branch_exists;
 
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
     this.canRevert = currentUser.can_revert || false;
     this.canResolveConflicts = currentUser.can_resolve_conflicts || false;
     this.canMerge = currentUser.can_merge || false;
+    this.canUpdateMergeRequest = currentUser.can_update_merge_request || false;
     this.canResolveConflictsInUI = data.conflicts_can_be_resolved_in_ui || false;
     this.canBeCherryPicked = data.can_be_cherry_picked || false;
 

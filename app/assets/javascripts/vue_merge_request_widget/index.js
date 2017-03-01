@@ -44,10 +44,10 @@ const mrWidgetOptions = () => ({
       <mr-widget-locked :mr="mr" v-if="mr.state === 'locked'" />
       <mr-widget-conflicts :mr="mr" v-if="mr.state === 'conflicts'" />
       <mr-widget-missing-branch :mr="mr" v-if="mr.state === 'missingBranch'" />
+      <mr-widget-wip :mr="mr" v-if="mr.state === 'workInProgress'" />
       <mr-widget-nothing-to-merge v-if="mr.state === 'nothingToMerge'" />
       <mr-widget-not-allowed v-if="mr.state === 'notAllowedToMerge'" />
       <mr-widget-archived v-if="mr.state === 'archived'" />
-      <mr-widget-wip v-if="mr.state === 'workInProgress'" />
     </div>
   `,
 });
