@@ -78,6 +78,7 @@ module API
         authorize! :update_environment, user_project
 
         environment = user_project.environments.find(params[:environment_id])
+        check_unmodified_since(environment.updated_at)
 
         environment.destroy
       end

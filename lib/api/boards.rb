@@ -124,6 +124,7 @@ module API
           authorize!(:admin_list, user_project)
 
           list = board_lists.find(params[:list_id])
+          check_unmodified_since(list.updated_at)
 
           service = ::Boards::Lists::DestroyService.new(user_project, current_user)
 

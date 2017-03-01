@@ -117,7 +117,10 @@ module API
       desc 'Remove a group.'
       delete ":id" do
         group = find_group!(params[:id])
+
         authorize! :admin_group, group
+        check_unmodified_since(group.updated_at)
+
         ::Groups::DestroyService.new(group, current_user).execute
       end
 

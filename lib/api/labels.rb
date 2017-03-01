@@ -56,6 +56,8 @@ module API
         label = user_project.labels.find_by(title: params[:name])
         not_found!('Label') unless label
 
+        check_unmodified_since(label.updated_at)
+
         label.destroy
       end
 

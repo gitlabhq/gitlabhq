@@ -282,6 +282,8 @@ module API
       desc 'Remove a project'
       delete ":id" do
         authorize! :remove_project, user_project
+        check_unmodified_since(user_project.updated_at)
+
         ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
 
         accepted!

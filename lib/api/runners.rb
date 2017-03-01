@@ -77,7 +77,9 @@ module API
       end
       delete ':id' do
         runner = get_runner(params[:id])
+
         authenticate_delete_runner!(runner)
+        check_unmodified_since(runner.updated_at)
 
         runner.destroy!
       end

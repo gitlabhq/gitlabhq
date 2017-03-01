@@ -92,6 +92,8 @@ module API
       delete ":id/hooks/:hook_id" do
         hook = user_project.hooks.find(params.delete(:hook_id))
 
+        check_unmodified_since(hook.updated_at)
+
         hook.destroy
       end
     end

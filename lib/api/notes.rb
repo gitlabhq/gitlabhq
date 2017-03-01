@@ -129,7 +129,9 @@ module API
         end
         delete ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
           note = user_project.notes.find(params[:note_id])
+
           authorize! :admin_note, note
+          check_unmodified_since(note.updated_at)
 
           ::Notes::DestroyService.new(user_project, current_user).execute(note)
         end

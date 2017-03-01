@@ -236,6 +236,8 @@ module API
         key = user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
+        check_unmodified_since(key.updated_at)
+
         key.destroy
       end
 
@@ -292,6 +294,8 @@ module API
         email = user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
+        check_unmodified_since(email.updated_at)
+
         email.destroy
         user.update_secondary_emails!
       end
@@ -304,8 +308,11 @@ module API
       end
       delete ":id" do
         authenticated_as_admin!
+
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
+
+        check_unmodified_since(user.updated_at)
 
         ::Users::DestroyService.new(current_user).execute(user)
       end
@@ -422,6 +429,8 @@ module API
         key = current_user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
+        check_unmodified_since(key.updated_at)
+
         key.destroy
       end
 
@@ -472,6 +481,8 @@ module API
       delete "emails/:email_id" do
         email = current_user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
+
+        check_unmodified_since(email.updated_at)
 
         email.destroy
         current_user.update_secondary_emails!

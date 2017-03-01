@@ -92,6 +92,8 @@ module API
         trigger = user_project.triggers.find_by(token: params[:token].to_s)
         return not_found!('Trigger') unless trigger
 
+        check_unmodified_since(trigger.updated_at)
+
         trigger.destroy
       end
     end

@@ -215,6 +215,8 @@ module API
         not_found!('Issue') unless issue
 
         authorize!(:destroy_issue, issue)
+        check_unmodified_since(issue.updated_at)
+
         issue.destroy
       end
     end
