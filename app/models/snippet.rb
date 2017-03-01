@@ -120,7 +120,7 @@ class Snippet < ActiveRecord::Base
   end
 
   def visibility_level_field
-    visibility_level
+    :visibility_level
   end
 
   def no_highlighting?

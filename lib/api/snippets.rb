@@ -64,7 +64,7 @@ module API
                               desc: 'The visibility of the snippet'
       end
       post do
-        attrs = map_visibility_level(declared_params(include_missing: false)).merge(request: request, api: true)
+        attrs = declared_params(include_missing: false).merge(request: request, api: true)
         snippet = CreateSnippetService.new(nil, current_user, attrs).execute
 
         render_spam_error! if snippet.spam?
@@ -95,7 +95,7 @@ module API
         return not_found!('Snippet') unless snippet
         authorize! :update_personal_snippet, snippet
 
-        attrs = map_visibility_level(declared_params(include_missing: false).merge(request: request, api: true))
+        attrs = declared_params(include_missing: false).merge(request: request, api: true)
 
         UpdateSnippetService.new(nil, current_user, snippet, attrs).execute
 
