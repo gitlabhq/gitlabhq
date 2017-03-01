@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170216141440) do
+ActiveRecord::Schema.define(version: 20170217151947) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,7 +61,6 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.boolean "shared_runners_enabled", default: true, null: false
     t.integer "max_artifacts_size", default: 100, null: false
     t.string "runners_registration_token"
-    t.integer "max_pages_size", default: 100, null: false
     t.boolean "require_two_factor_authentication", default: false
     t.integer "two_factor_grace_period", default: 48
     t.boolean "metrics_enabled", default: false
@@ -110,7 +109,9 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.boolean "html_emails_enabled", default: true
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
+    t.integer "max_pages_size", default: 100, null: false
     t.integer "terminal_max_session_time", default: 0, null: false
+    t.string "default_artifacts_expire_in", default: "0", null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -698,7 +699,7 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.integer "updated_by_id"
     t.text "merge_error"
     t.text "merge_params"
-    t.boolean "merge_when_build_succeeds", default: false, null: false
+    t.boolean "merge_when_pipeline_succeeds", default: false, null: false
     t.integer "merge_user_id"
     t.string "merge_commit_sha"
     t.datetime "deleted_at"
@@ -765,8 +766,8 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.integer "visibility_level", default: 20, null: false
     t.boolean "request_access_enabled", default: false, null: false
     t.datetime "deleted_at"
-    t.text "description_html"
     t.boolean "lfs_enabled"
+    t.text "description_html"
     t.integer "parent_id"
   end
 
@@ -981,7 +982,7 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.boolean "last_repository_check_failed"
     t.datetime "last_repository_check_at"
     t.boolean "container_registry_enabled"
-    t.boolean "only_allow_merge_if_build_succeeds", default: false, null: false
+    t.boolean "only_allow_merge_if_pipeline_succeeds", default: false, null: false
     t.boolean "has_external_issue_tracker"
     t.string "repository_storage", default: "default", null: false
     t.boolean "request_access_enabled", default: false, null: false
@@ -1291,6 +1292,7 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "notified_of_own_activity", default: false, null: false
+    t.boolean "ghost"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1341,7 +1343,7 @@ ActiveRecord::Schema.define(version: 20170216141440) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
   add_foreign_key "boards", "projects"
-  add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
+  add_foreign_key "chat_teams", "namespaces", name: "fk_3b543909cb", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade

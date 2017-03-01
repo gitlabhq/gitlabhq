@@ -47,12 +47,6 @@ describe Groups::CreateService, '#execute', services: true do
       Settings.mattermost['enabled'] = true
     end
 
-    it 'triggers the service' do
-      expect_any_instance_of(Mattermost::CreateTeamService).to receive(:execute)
-
-      subject
-    end
-
     it 'create the chat team with the group' do
       allow_any_instance_of(Mattermost::Team).to receive(:create)
         .and_return({ 'name' => 'tanuki', 'id' => 'lskdjfwlekfjsdifjj' })

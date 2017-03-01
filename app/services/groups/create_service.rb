@@ -23,7 +23,11 @@ module Groups
       @group.name ||= @group.path.dup
 
       if create_chat_team?
-        Mattermost::CreateTeamService.new(@group, current_user).execute
+        begin
+          response = Mattermost::CreateTeamService.new(@group, current_user).execute
+
+          @group.build_chat_team(name: response['name'], team_id: response['id'])
+        end
 
         return @group if @group.errors.any?
       end
@@ -31,6 +35,12 @@ module Groups
       @group.save
       @group.add_owner(current_user)
       @group
+    end
+
+    private
+
+    def create_chat_team?
+      Gitlab.config.mattermost.enabled && @chat_team && group.chat_team.nil?
     end
   end
 end

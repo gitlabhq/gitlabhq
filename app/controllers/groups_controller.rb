@@ -32,7 +32,13 @@ class GroupsController < Groups::ApplicationController
     @group = Groups::CreateService.new(current_user, group_params).execute
 
     if @group.persisted?
-      redirect_to @group, notice: "Group '#{@group.name}' was successfully created."
+      notice = if @group.chat_team.present?
+                 "Group '#{@group.name}' and its Mattermost team were successfully created."
+               else
+                  "Group '#{@group.name}' was successfully created."
+               end
+
+      redirect_to @group, notice: notice
     else
       render action: "new"
     end

@@ -6,10 +6,9 @@ module Mattermost
 
     def execute
       # The user that creates the team will be Team Admin
-      response = Mattermost::Team.new(current_user).create(@group)
-      @group.build_chat_team(name: response['name'], team_id: response['id'])
+      Mattermost::Team.new(current_user).create(@group.mattermost_team_params)
     rescue Mattermost::ClientError => e
-      @group.errors.add(:chat_team, e.message)
+      @group.errors.add(:mattermost_team, e.message)
     end
   end
 end
