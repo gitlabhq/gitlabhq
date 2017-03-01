@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170216141440) do
+ActiveRecord::Schema.define(version: 20170228212410) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,20 +98,20 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.text "help_page_text_html"
     t.text "shared_runners_text_html"
     t.text "after_sign_up_text_html"
+    t.boolean "sidekiq_throttling_enabled", default: false
+    t.string "sidekiq_throttling_queues"
+    t.decimal "sidekiq_throttling_factor"
     t.boolean "housekeeping_enabled", default: true, null: false
     t.boolean "housekeeping_bitmaps_enabled", default: true, null: false
     t.integer "housekeeping_incremental_repack_period", default: 10, null: false
     t.integer "housekeeping_full_repack_period", default: 50, null: false
     t.integer "housekeeping_gc_period", default: 200, null: false
-    t.boolean "sidekiq_throttling_enabled", default: false
-    t.string "sidekiq_throttling_queues"
-    t.decimal "sidekiq_throttling_factor"
     t.boolean "html_emails_enabled", default: true
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
-    t.integer "max_pages_size", default: 100, null: false
     t.integer "terminal_max_session_time", default: 0, null: false
-    t.string "default_artifacts_expire_in", default: '0', null: false
+    t.integer "max_pages_size", default: 100, null: false
+    t.string "default_artifacts_expire_in", default: "0", null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -515,6 +515,7 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.text "title_html"
     t.text "description_html"
     t.integer "time_estimate"
+    t.integer "relative_position"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -526,6 +527,7 @@ ActiveRecord::Schema.define(version: 20170216141440) do
   add_index "issues", ["due_date"], name: "index_issues_on_due_date", using: :btree
   add_index "issues", ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
   add_index "issues", ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true, using: :btree
+  add_index "issues", ["relative_position"], name: "index_issues_on_relative_position", using: :btree
   add_index "issues", ["state"], name: "index_issues_on_state", using: :btree
   add_index "issues", ["title"], name: "index_issues_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
 
@@ -554,7 +556,7 @@ ActiveRecord::Schema.define(version: 20170216141440) do
   end
 
   add_index "label_links", ["label_id"], name: "index_label_links_on_label_id", using: :btree
-  add_index "label_links", ["target_id", "target_type"], name: "index_label_links_on_target_id_and_target_type", using: :btree
+  add_index "label_links", ["target_id", "target_type", "label_id"], name: "index_label_links_on_target_id_and_target_type_and_label_id", unique: true, using: :btree
 
   create_table "label_priorities", force: :cascade do |t|
     t.integer "project_id", null: false
@@ -581,9 +583,9 @@ ActiveRecord::Schema.define(version: 20170216141440) do
   end
 
   add_index "labels", ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true, using: :btree
-  add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
   add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
+  add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|
     t.string "oid", null: false
@@ -1278,8 +1280,8 @@ ActiveRecord::Schema.define(version: 20170216141440) do
     t.datetime "otp_grace_period_started_at"
     t.boolean "ldap_email", default: false, null: false
     t.boolean "external", default: false
-    t.string "incoming_email_token"
     t.string "organization"
+    t.string "incoming_email_token"
     t.boolean "authorized_projects_populated"
     t.boolean "notified_of_own_activity", default: false, null: false
     t.boolean "ghost"
