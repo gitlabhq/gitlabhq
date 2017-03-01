@@ -149,6 +149,8 @@ module API
       delete ":id" do
         group = find_group!(params[:id])
         authorize! :admin_group, group
+        
+        check_unmodified_since(group.updated_at)
 
         status 204
         ::Groups::DestroyService.new(group, current_user).execute

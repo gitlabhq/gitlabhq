@@ -122,6 +122,7 @@ module API
         return not_found!('Snippet') unless snippet
 
         authorize! :destroy_personal_snippet, snippet
+        check_unmodified_since(snippet.updated_at)
 
         status 204
         snippet.destroy

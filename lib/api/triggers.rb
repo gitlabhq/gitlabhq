@@ -140,6 +140,8 @@ module API
         trigger = user_project.triggers.find(params.delete(:trigger_id))
         return not_found!('Trigger') unless trigger
 
+        check_unmodified_since(trigger.updated_at)
+
         status 204
         trigger.destroy
       end
