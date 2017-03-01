@@ -21,6 +21,7 @@ export default class MergeRequestStore {
     this.closedAt = MergeRequestStore.getEventDate(data.closed_event);
 
     this.targetBranchPath = data.target_branch_path;
+    this.conflictResolutionPath = data.conflict_resolution_ui_path;
     this.sourceBranchRemoved = !data.source_branch_exists;
 
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;

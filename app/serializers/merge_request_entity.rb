@@ -70,4 +70,10 @@ class MergeRequestEntity < IssuableEntity
   expose :has_conflicts do |merge_request|
     merge_request.cannot_be_merged?
   end
+
+  expose :conflict_resolution_ui_path do |merge_request|
+    conflicts_namespace_project_merge_request_path(merge_request.project.namespace,
+                                                   merge_request.project,
+                                                   merge_request)
+  end
 end

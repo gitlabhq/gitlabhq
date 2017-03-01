@@ -23,6 +23,7 @@ export default {
       </span>
 
       <a
+        :href="mr.conflictResolutionPath"
         v-if="showResolveConflictsButton"
         class="btn btn-default btn-xs how_to_merge_link vlink"
       >Resolve conflicts</a>
