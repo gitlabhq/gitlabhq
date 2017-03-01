@@ -20,6 +20,7 @@ export default class MergeRequestStore {
     this.closedBy = MergeRequestStore.getUserObject(data.author);
     this.closedAt = MergeRequestStore.getEventDate(data.closed_event);
 
+    this.sourceBranchPath = data.source_branch_path;
     this.targetBranchPath = data.target_branch_path;
     this.conflictResolutionPath = data.conflict_resolution_ui_path;
     this.removeWIPPath = data.remove_wip_path;

@@ -8,6 +8,16 @@ export default {
   components: {
     'mr-widget-author-and-time': mrWidgetAuthorTime,
   },
+  data() {
+    return {
+      isSourceBranchRemoving: false,
+    }
+  },
+  methods: {
+    removeSourceBranch() {
+      this.isSourceBranchRemoving = true;
+    },
+  },
   template: `
     <div class="mr-widget-body">
       <mr-widget-author-and-time
@@ -25,7 +35,16 @@ export default {
         <p v-if="mr.sourceBranchRemoved">The source branch has been removed.</p>
         <p v-if="mr.canRemoveSourceBranch">
           You can remove source branch now.
-          <a class="btn btn-default remove_source_branch">Remove Source Branch</a>
+          <a
+            :href="mr.sourceBranchPath"
+            :class="{ disabled: isSourceBranchRemoving }"
+            @click="removeSourceBranch"
+            class="btn btn-default remove_source_branch"
+            data-remote="true" data-method="delete">Remove Source Branch</a>
+        </p>
+        <p v-if="isSourceBranchRemoving">
+          The source branch is being removed.
+          <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
         </p>
       </section>
       <div class="merged-buttons clearfix">

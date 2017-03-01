@@ -68,6 +68,12 @@ class MergeRequestEntity < IssuableEntity
                                    merge_request.target_branch)
   end
 
+  expose :source_branch_path do |merge_request|
+    namespace_project_branch_path(merge_request.source_project.namespace,
+                                  merge_request.source_project,
+                                  merge_request.source_branch)
+  end
+
   expose :project_archived do |merge_request|
     merge_request.project.archived?
   end
