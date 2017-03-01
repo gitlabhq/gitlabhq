@@ -1,12 +1,12 @@
 module Geo
   class RepositoryBackfillService
-    attr_reader :project, :backfill_lease
+    attr_reader :project_id, :backfill_lease
 
     LEASE_TIMEOUT    = 8.hours.freeze
     LEASE_KEY_PREFIX = 'repository_backfill_service'.freeze
 
     def initialize(project_id, backfill_lease)
-      @project = Project.find(project_id)
+      @project_id = project_id
       @backfill_lease = backfill_lease
     end
 
@@ -21,9 +21,17 @@ module Geo
           log('Finished repository sync')
         end
       end
+    rescue ActiveRecord::RecordNotFound
+      logger.error("Couldn't find project with ID=#{project_id}, skipping syncing")
+    ensure
+      Gitlab::ExclusiveLease.cancel(LEASE_KEY_PREFIX, backfill_lease)
     end
 
     private
+
+    def project
+      @project ||= Project.find(project_id)
+    end
 
     def fetch_repositories
       started_at  = DateTime.now
@@ -67,7 +75,6 @@ module Geo
 
       log('Releasing leases to sync repository')
       Gitlab::ExclusiveLease.cancel(lease_key, repository_lease)
-      Gitlab::ExclusiveLease.cancel(LEASE_KEY_PREFIX, backfill_lease)
     end
 
     def lease_key

@@ -12,14 +12,19 @@ class GeoBackfillWorker
     logger.info "Started Geo backfilling for #{project_ids.length} project(s)"
 
     project_ids.each do |project_id|
-      break if Time.now - start >= RUN_TIME
-      break unless node_enabled?
+      begin
+        break if Time.now - start >= RUN_TIME
+        break unless node_enabled?
 
-      project = Project.find(project_id)
-      next if project.repository_exists?
+        project = Project.find(project_id)
+        next if project.repository_exists?
 
-      try_obtain_lease do |lease|
-        GeoSingleRepositoryBackfillWorker.new.perform(project_id, lease)
+        try_obtain_lease do |lease|
+          GeoSingleRepositoryBackfillWorker.new.perform(project_id, lease)
+        end
+      rescue ActiveRecord::RecordNotFound
+        logger.error("Couldn't find project with ID=#{project_id}, skipping syncing")
+        next
       end
     end
 
