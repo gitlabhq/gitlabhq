@@ -25,12 +25,9 @@ module API
       mount ::API::V3::Projects
       mount ::API::V3::ProjectSnippets
       mount ::API::V3::Repositories
-<<<<<<< HEAD
-      mount ::API::V3::Settings
-=======
       mount ::API::V3::Runners
       mount ::API::V3::Services
->>>>>>> ce/master
+      mount ::API::V3::Settings
       mount ::API::V3::Subscriptions
       mount ::API::V3::SystemHooks
       mount ::API::V3::Tags

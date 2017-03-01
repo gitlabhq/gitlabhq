@@ -21,14 +21,12 @@
           Merge Requests
           - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute
           %span.badge.count= number_with_delimiter(merge_requests.count)
-<<<<<<< HEAD
-    = nav_link(controller: [:stats]) do
-      = link_to group_analytics_path(@group), title: 'Contribution Analytics', data: {placement: 'right'} do
-        %span
-          Contribution Analytics
-=======
     = nav_link(path: 'group_members#index') do
       = link_to group_group_members_path(@group), title: 'Members' do
         %span
           Members
->>>>>>> ce/master
+
+    = nav_link(controller: [:stats]) do
+      = link_to group_analytics_path(@group), title: 'Contribution Analytics', data: {placement: 'right'} do
+        %span
+          Contribution Analytics

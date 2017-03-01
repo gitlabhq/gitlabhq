@@ -38,7 +38,6 @@ module MergeRequests
       end
     rescue MergeError => e
       log_merge_error(e.message, save_message_on_model: true)
-<<<<<<< HEAD
     end
 
     def hooks_validation_pass?(merge_request)
@@ -60,8 +59,6 @@ module MergeRequests
       end
 
       true
-=======
->>>>>>> ce/master
     end
 
     private

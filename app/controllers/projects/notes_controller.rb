@@ -191,12 +191,7 @@ class Projects::NotesController < Projects::ApplicationController
       )
     end
 
-<<<<<<< HEAD
-    attrs[:commands_changes] = note.commands_changes unless attrs[:award]
-
-=======
     attrs[:commands_changes] = note.commands_changes
->>>>>>> ce/master
     attrs
   end
 

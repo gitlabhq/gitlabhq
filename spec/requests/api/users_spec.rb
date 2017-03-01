@@ -888,14 +888,9 @@ describe API::Users, api: true do
 
       expect do
         delete api("/user/keys/#{key.id}", user)
-<<<<<<< HEAD
-      end.to change { user.keys.count }.by(-1)
-      expect(response).to have_http_status(200)
-=======
 
         expect(response).to have_http_status(204)
       end.to change{user.keys.count}.by(-1)
->>>>>>> ce/master
     end
 
     it "returns 404 if key ID not found" do
@@ -1002,14 +997,9 @@ describe API::Users, api: true do
 
       expect do
         delete api("/user/emails/#{email.id}", user)
-<<<<<<< HEAD
-      end.to change { user.emails.count }.by(-1)
-      expect(response).to have_http_status(200)
-=======
 
         expect(response).to have_http_status(204)
       end.to change{user.emails.count}.by(-1)
->>>>>>> ce/master
     end
 
     it "returns 404 if email ID not found" do

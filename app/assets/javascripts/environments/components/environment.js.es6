@@ -202,14 +202,6 @@ module.exports = Vue.component('environment-component', {
             :store="store"
             :service="service">
           </environment-table>
-<<<<<<< HEAD
-
-          <table-pagination v-if="shouldRenderPagination"
-            :change="changePage"
-            :pageInfo="state.paginationInformation">
-          </table-pagination>
-=======
->>>>>>> ce/master
         </div>
 
         <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
