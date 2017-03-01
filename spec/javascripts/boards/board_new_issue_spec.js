@@ -1,9 +1,9 @@
-/* global Vue */
 /* global boardsMockInterceptor */
 /* global BoardService */
 /* global List */
 /* global listObj */
 
+import Vue from 'vue';
 import boardNewIssue from '~/boards/components/board_new_issue';
 
 require('~/boards/models/list');
