@@ -8,7 +8,7 @@
 require('~/boards/models/list');
 require('~/boards/models/label');
 require('~/boards/stores/boards_store');
-const boardCard = require('~/boards/components/board_card');
+const boardCard = require('~/boards/components/board_card').default;
 require('./mock_data');
 
 describe('Issue card', () => {
