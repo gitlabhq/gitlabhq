@@ -72,14 +72,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def authenticate_user!(*args)
-    if redirect_to_home_page_url?
-      redirect_to current_application_settings.home_page_url and return
-    end
-
-    super(*args)
-  end
-
   def log_exception(exception)
     application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
     application_trace.map!{ |t| "  #{t}\n" }
@@ -285,19 +277,6 @@ class ApplicationController < ActionController::Base
 
   def skip_two_factor?
     session[:skip_tfa] && session[:skip_tfa] > Time.current
-  end
-
-  def redirect_to_home_page_url?
-    # If user is not signed-in and tries to access root_path - redirect him to landing page
-    # Don't redirect to the default URL to prevent endless redirections
-    return false unless current_application_settings.home_page_url.present?
-
-    home_page_url = current_application_settings.home_page_url.chomp('/')
-    root_urls = [Gitlab.config.gitlab['url'].chomp('/'), root_url.chomp('/')]
-
-    return false if root_urls.include?(home_page_url)
-
-    current_user.nil? && root_path == request.path
   end
 
   # U2F (universal 2nd factor) devices need a unique identifier for the application
