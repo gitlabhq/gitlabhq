@@ -17,6 +17,18 @@ module API
           end
           not_found!
         end
+
+        def assign_blob_vars!
+          @repo = user_project.repository
+
+          begin
+            @blob = Gitlab::Git::Blob.raw(@repo, params[:sha])
+          rescue
+            not_found! 'Blob'
+          end
+
+          not_found! 'Blob' unless @blob
+        end
       end
 
       desc 'Get a project repository tree' do
@@ -45,7 +57,7 @@ module API
         requires :sha, type: String, desc: 'The commit, branch name, or tag name'
         requires :filepath, type: String, desc: 'The path to the file to display'
       end
-      get [":id/repository/blobs/:sha", ":id/repository/commits/:sha/blob"] do
+      get ":id/repository/commits/:sha/blob" do
         repo = user_project.repository
 
         commit = repo.commit(params[:sha])
@@ -57,22 +69,33 @@ module API
         send_git_blob repo, blob
       end
 
-      desc 'Get a raw blob contents by blob sha'
+      desc 'Get raw blob by sha'
       params do
         requires :sha, type: String, desc: 'The commit, branch name, or tag name'
       end
-      get ':id/repository/raw_blobs/:sha' do
-        repo = user_project.repository
+      get ':id/repository/blobs/:sha/:raw' do
+        assign_blob_vars!
 
-        begin
-          blob = Gitlab::Git::Blob.raw(repo, params[:sha])
-        rescue
-          not_found! 'Blob'
-        end
+        status(200)
 
-        not_found! 'Blob' unless blob
+        send_git_blob @repo, @blob
+      end
 
-        send_git_blob repo, blob
+      desc 'Get blob base4 encoded content by sha'
+      params do
+        requires :sha, type: String, desc: 'The commit, branch name, or tag name'
+      end
+      get ':id/repository/blobs/:sha' do
+        assign_blob_vars!
+
+        status(200)
+
+        {
+          size: @blob.size,
+          encoding: "base64",
+          content: Base64.strict_encode64(@blob.data),
+          sha: @blob.id
+        }
       end
 
       desc 'Get an archive of the repository'

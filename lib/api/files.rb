@@ -14,6 +14,19 @@ module API
         }
       end
 
+      def assign_file_vars!
+        @commit = user_project.commit(params[:ref])
+        not_found!('Commit') unless @commit
+
+        @repo      = user_project.repository
+        @file_path = params[:file_path]
+        @file_path = [params[:file_path], params[:format]].join('.') if params[:format].present?
+        @blob      = @repo.blob_at(@commit.sha, @file_path)
+
+        not_found!('File') unless @blob
+        @blob.load_all_data!(@repo)
+      end
+
       def commit_response(attrs)
         {
           file_path: attrs[:file_path],
@@ -22,7 +35,7 @@ module API
       end
 
       params :simple_file_params do
-        requires :file_path, type: String, desc: 'The path to new file. Ex. lib/class.rb'
+        requires :file_path, type: String, desc: 'The path to the file. Ex. lib/class.rb'
         requires :branch, type: String, desc: 'The name of branch'
         requires :commit_message, type: String, desc: 'Commit Message'
         optional :author_email, type: String, desc: 'The email of the author'
@@ -40,34 +53,41 @@ module API
       requires :id, type: String, desc: 'The project ID'
     end
     resource :projects do
-      desc 'Get a file from repository'
+      desc 'Get a file from repository in raw format'
       params do
-        requires :file_path, type: String, desc: 'The path to the file. Ex. lib/class.rb'
         requires :ref, type: String, desc: 'The name of branch, tag, or commit'
       end
-      get ":id/repository/files" do
+      get ":id/repository/files/:file_path/raw" do
         authorize! :download_code, user_project
 
-        commit = user_project.commit(params[:ref])
-        not_found!('Commit') unless commit
+        assign_file_vars!
 
-        repo = user_project.repository
-        blob = repo.blob_at(commit.sha, params[:file_path])
-        not_found!('File') unless blob
+        status(200)
 
-        blob.load_all_data!(repo)
+        send_git_blob @repo, @blob
+      end
+
+      desc 'Get a file from repository in base64 format'
+      params do
+        requires :ref, type: String, desc: 'The name of branch, tag, or commit'
+      end
+      get ":id/repository/files/:file_path" do
+        authorize! :download_code, user_project
+
+        assign_file_vars!
+
         status(200)
 
         {
-          file_name: blob.name,
-          file_path: blob.path,
-          size: blob.size,
+          file_name: @blob.name,
+          file_path: @blob.path,
+          size: @blob.size,
           encoding: "base64",
-          content: Base64.strict_encode64(blob.data),
+          content: Base64.strict_encode64(@blob.data),
           ref: params[:ref],
-          blob_id: blob.id,
-          commit_id: commit.id,
-          last_commit_id: repo.last_commit_id_for_path(commit.sha, params[:file_path])
+          blob_id: @blob.id,
+          commit_id: @commit.id,
+          last_commit_id: @repo.last_commit_id_for_path(@commit.sha, @file_path)
         }
       end
 
@@ -75,7 +95,7 @@ module API
       params do
         use :extended_file_params
       end
-      post ":id/repository/files" do
+      post ":id/repository/files/:file_path", requirements: { file_path: /.+/ } do
         authorize! :push_code, user_project
 
         file_params = declared_params(include_missing: false)
@@ -93,7 +113,7 @@ module API
       params do
         use :extended_file_params
       end
-      put ":id/repository/files" do
+      put ":id/repository/files/:file_path", requirements: { file_path: /.+/ } do
         authorize! :push_code, user_project
 
         file_params = declared_params(include_missing: false)
@@ -112,7 +132,7 @@ module API
       params do
         use :simple_file_params
       end
-      delete ":id/repository/files" do
+      delete ":id/repository/files/:file_path", requirements: { file_path: /.+/ } do
         authorize! :push_code, user_project
 
         file_params = declared_params(include_missing: false)

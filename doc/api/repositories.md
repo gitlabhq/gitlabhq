@@ -72,10 +72,11 @@ Parameters:
 ]
 ```
 
-## Raw file content
+## Get file from repository
 
-Get the raw file contents for a file by commit SHA and path. This endpoint can
-be accessed without authentication if the repository is publicly accessible.
+Allows you to receive information about file in repository like size and
+content. Note that file content is Base64 encoded. This endpoint can be accessed
+without authentication if the repository is publicly accessible.
 
 ```
 GET /projects/:id/repository/blobs/:sha
@@ -85,7 +86,6 @@ Parameters:
 
 - `id` (required) - The ID of a project
 - `sha` (required) - The commit or branch name
-- `filepath` (required) - The path the file
 
 ## Raw blob content
 
@@ -93,7 +93,7 @@ Get the raw file contents for a blob by blob SHA. This endpoint can be accessed
 without authentication if the repository is publicly accessible.
 
 ```
-GET /projects/:id/repository/raw_blobs/:sha
+GET /projects/:id/repository/blobs/:sha/raw
 ```
 
 Parameters:
