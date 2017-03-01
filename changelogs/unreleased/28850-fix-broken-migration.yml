@@ -1,0 +1,4 @@
+---
+title: Fix broken migration when upgrading straight to 8.17.1
+merge_request: 9613
+author:
