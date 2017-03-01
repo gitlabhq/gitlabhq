@@ -159,7 +159,8 @@ describe API::CommitStatuses, api: true do
               ref: 'develop',
               description: 'test',
               coverage: 80.0,
-              target_url: 'http://gitlab.com/status' }
+              target_url: 'http://gitlab.com/status'
+            }
 
             expect(response).to have_http_status(201)
             expect(json_response['sha']).to eq(commit.id)
@@ -180,14 +181,16 @@ describe API::CommitStatuses, api: true do
               ref: 'develop',
               description: 'coverage test',
               coverage: 0.0,
-              target_url: 'http://gitlab.com/status' }
+              target_url: 'http://gitlab.com/status'
+            }
 
             post api(post_url, developer), {
               state: 'success',
               name: 'coverage',
               ref: 'develop',
               description: 'new description',
-              coverage: 90.0 }
+              coverage: 90.0
+            }
           end
 
           it 'updates a commit status' do
