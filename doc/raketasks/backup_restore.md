@@ -416,7 +416,7 @@ sudo gitlab-rake gitlab:check SANITIZE=true
 
 If there is a GitLab version mismatch between your backup tar file and the installed
 version of GitLab, the restore command will abort with an error. Install the
-[correct GitLab version](https://www.gitlab.com/downloads/archives/) and try again.
+[correct GitLab version](https://about.gitlab.com/downloads/archives/) and try again.
 
 ## Configure cron to make daily backups
 
