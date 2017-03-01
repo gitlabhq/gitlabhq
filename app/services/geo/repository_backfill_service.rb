@@ -12,14 +12,17 @@ module Geo
 
     def execute
       try_obtain_lease do
+        log('Started repository sync')
+
         fetch_repositories do |started_at, finished_at|
           log('Tracking sync information')
           registry = Geo::ProjectRegistry.find_or_create_by(project_id: project.id)
           registry.last_repository_synced_at = started_at
           registry.last_repository_successful_sync_at = finished_at if finished_at
           registry.save
-          log('Finished repository sync')
         end
+
+        log('Finished repository sync')
       end
     rescue ActiveRecord::RecordNotFound
       logger.error("Couldn't find project with ID=#{project_id}, skipping syncing")
@@ -36,8 +39,6 @@ module Geo
     def fetch_repositories
       started_at  = DateTime.now
       finished_at = nil
-
-      log('Started repository sync')
 
       begin
         project.create_repository unless project.repository_exists?
