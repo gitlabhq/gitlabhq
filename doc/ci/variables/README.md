@@ -131,6 +131,16 @@ job_name:
   variables: []
 ```
 
+You are able to use other variables inside your variable definition (or escape them with `$$`):
+
+```yaml
+variables:
+  LS_CMD: 'ls $FLAGS $$TMP_DIR'
+  FLAGS: '-al'
+script:
+  - 'eval $LS_CMD'  # will execute 'ls -al $TMP_DIR'
+```
+
 ## Secret variables
 
 >**Notes:**
