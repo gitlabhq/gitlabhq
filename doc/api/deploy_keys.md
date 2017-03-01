@@ -152,18 +152,6 @@ DELETE /projects/:id/deploy_keys/:key_id
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/deploy_keys/13"
 ```
 
-Example response:
-
-```json
-{
-  "id": 6,
-  "deploy_key_id": 14,
-  "project_id": 1,
-  "created_at" : "2015-08-29T12:50:57.259Z",
-  "updated_at" : "2015-08-29T12:50:57.259Z"
-}
-```
-
 ## Enable a deploy key
 
 Enables a deploy key for a project so this can be used. Returns the enabled key, with a status code 201 when successful.

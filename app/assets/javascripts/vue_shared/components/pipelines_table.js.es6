@@ -44,7 +44,7 @@ require('./pipelines_table_row');
             <th class="js-pipeline-commit pipeline-commit">Commit</th>
             <th class="js-pipeline-stages pipeline-stages">Stages</th>
             <th class="js-pipeline-date pipeline-date"></th>
-            <th class="js-pipeline-actions pipeline-actions hidden-xs"></th>
+            <th class="js-pipeline-actions pipeline-actions"></th>
           </tr>
         </thead>
         <tbody>

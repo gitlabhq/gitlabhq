@@ -32,7 +32,7 @@
       },
     },
     template: `
-      <td class="pipeline-actions hidden-xs">
+      <td class="pipeline-actions">
         <div class="pull-right">
           <div class="btn-group">
             <div class="btn-group" v-if="actions">

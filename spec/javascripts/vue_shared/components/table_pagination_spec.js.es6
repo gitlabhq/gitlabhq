@@ -6,12 +6,10 @@ describe('Pagination component', () => {
 
   const changeChanges = {
     one: '',
-    two: '',
   };
 
-  const change = (one, two) => {
+  const change = (one) => {
     changeChanges.one = one;
-    changeChanges.two = two;
   };
 
   it('should render and start at page 1', () => {
@@ -34,7 +32,6 @@ describe('Pagination component', () => {
     component.changePage({ target: { innerText: '1' } });
 
     expect(changeChanges.one).toEqual(1);
-    expect(changeChanges.two).toEqual(null);
   });
 
   it('should go to the previous page', () => {
@@ -55,7 +52,6 @@ describe('Pagination component', () => {
     component.changePage({ target: { innerText: 'Prev' } });
 
     expect(changeChanges.one).toEqual(1);
-    expect(changeChanges.two).toEqual(null);
   });
 
   it('should go to the next page', () => {
@@ -76,7 +72,6 @@ describe('Pagination component', () => {
     component.changePage({ target: { innerText: 'Next' } });
 
     expect(changeChanges.one).toEqual(5);
-    expect(changeChanges.two).toEqual(null);
   });
 
   it('should go to the last page', () => {
@@ -97,7 +92,6 @@ describe('Pagination component', () => {
     component.changePage({ target: { innerText: 'Last >>' } });
 
     expect(changeChanges.one).toEqual(10);
-    expect(changeChanges.two).toEqual(null);
   });
 
   it('should go to the first page', () => {
@@ -118,7 +112,6 @@ describe('Pagination component', () => {
     component.changePage({ target: { innerText: '<< First' } });
 
     expect(changeChanges.one).toEqual(1);
-    expect(changeChanges.two).toEqual(null);
   });
 
   it('should do nothing', () => {
@@ -139,7 +132,6 @@ describe('Pagination component', () => {
     component.changePage({ target: { innerText: '...' } });
 
     expect(changeChanges.one).toEqual(1);
-    expect(changeChanges.two).toEqual(null);
   });
 });
 

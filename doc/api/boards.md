@@ -226,16 +226,3 @@ DELETE /projects/:id/boards/:board_id/lists/:list_id
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/boards/1/lists/1
 ```
-Example response:
-
-```json
-{
-  "id" : 1,
-  "label" : {
-    "name" : "Testing",
-    "color" : "#F0AD4E",
-    "description" : null
-  },
-  "position" : 1
-}
-```

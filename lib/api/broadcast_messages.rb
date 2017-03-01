@@ -91,7 +91,7 @@ module API
       delete ':id' do
         message = find_message
 
-        present message.destroy, with: Entities::BroadcastMessage
+        message.destroy
       end
     end
   end

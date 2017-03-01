@@ -591,6 +591,7 @@ POST /projects/:id/issues/:issue_id/unsubscribe
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/unsubscribe
 ```
 
+<<<<<<< HEAD
 Example response:
 
 ```json
@@ -629,6 +630,8 @@ Example response:
 }
 ```
 
+=======
+>>>>>>> ce/master
 ## Create a todo
 
 Manually creates a todo for the current user on an issue. If

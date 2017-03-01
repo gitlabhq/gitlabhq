@@ -195,8 +195,7 @@ describe API::Boards, api: true  do
       it "deletes the list if an admin requests it" do
         delete api("#{base_url}/#{dev_list.id}", owner)
 
-        expect(response).to have_http_status(200)
-        expect(json_response['position']).to eq(1)
+        expect(response).to have_http_status(204)
       end
     end
   end

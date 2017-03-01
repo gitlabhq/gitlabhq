@@ -19,6 +19,26 @@ module API
           present branches, with: ::API::Entities::RepoBranch, project: user_project
         end
 
+        desc 'Delete a branch'
+        params do
+          requires :branch, type: String, desc: 'The name of the branch'
+        end
+        delete ":id/repository/branches/:branch", requirements: { branch: /.+/ } do
+          authorize_push_project
+
+          result = DeleteBranchService.new(user_project, current_user).
+                   execute(params[:branch])
+
+          if result[:status] == :success
+            status(200)
+            {
+              branch_name: params[:branch]
+            }
+          else
+            render_api_error!(result[:message], result[:return_code])
+          end
+        end
+
         desc 'Delete all merged branches'
         delete ":id/repository/merged_branches" do
           DeleteMergedBranchesService.new(user_project, current_user).async_execute

@@ -499,7 +499,7 @@ class User < ActiveRecord::Base
     Group.member_descendants(id)
   end
 
-  def nested_projects
+  def nested_groups_projects
     Project.joins(:namespace).where('namespaces.parent_id IS NOT NULL').
       member_descendants(id)
   end
