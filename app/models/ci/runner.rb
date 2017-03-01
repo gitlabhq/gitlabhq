@@ -14,6 +14,8 @@ module Ci
     has_many :builds
     has_many :runner_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :projects, through: :runner_projects
+    has_many :runner_groups
+    has_many :groups, through: :runner_groups
 
     has_one :last_build, ->() { order('id DESC') }, class_name: 'Ci::Build'
 
@@ -27,8 +29,33 @@ module Ci
     scope :ordered, ->() { order(id: :desc) }
 
     scope :owned_or_shared, ->(project_id) do
-      joins('LEFT JOIN ci_runner_projects ON ci_runner_projects.runner_id = ci_runners.id')
-        .where("ci_runner_projects.project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
+      joins(
+        %{
+          -- project runners
+          LEFT JOIN ci_runner_projects ON ci_runner_projects.runner_id = ci_runners.id
+
+          -- group runners
+          LEFT JOIN ci_runner_groups ON ci_runner_groups.runner_id = ci_runners.id
+          LEFT JOIN namespaces ON namespaces.id = ci_runner_groups.group_id
+          LEFT JOIN projects group_projects ON group_projects.namespace_id = namespaces.id
+        }
+      ).where(
+        %{
+          -- project runners
+          ci_runner_projects.project_id = :project_id
+
+            OR
+
+          -- group runners
+          group_projects.id = :project_id
+
+            OR
+
+          -- shared runners
+          ci_runners.is_shared = true
+        },
+        project_id: project_id
+      )
     end
 
     scope :assignable_for, ->(project) do
