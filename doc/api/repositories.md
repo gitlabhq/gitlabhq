@@ -5,6 +5,8 @@
 Get a list of repository files and directories in a project. This endpoint can
 be accessed without authentication if the repository is publicly accessible.
 
+This command provides essentially the same functionality as the `git ls-tree` command. For more information, see the section _Tree Objects_ in the [Git internals documentation](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects/#_tree_objects).
+
 ```
 GET /projects/:id/repository/tree
 ```
