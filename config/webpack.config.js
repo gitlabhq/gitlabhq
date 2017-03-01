@@ -82,7 +82,10 @@ var config = {
       modules: false,
       assets: true
     }),
+
+    // prevent pikaday from including moment.js
     new webpack.IgnorePlugin(/moment/, /pikaday/),
+
     // use deterministic module ids in all environments
     IS_PRODUCTION ?
       new webpack.HashedModuleIdsPlugin() :
