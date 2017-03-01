@@ -3,7 +3,7 @@ module Geo
     include HTTParty
 
     # HTTParty timeout
-    default_timeout Gitlab.config.gitlab.webhook_timeout
+    default_timeout Gitlab.config.gitlab.geo_status_timeout
 
     def call(status_url)
       response = self.class.get(status_url,

@@ -109,7 +109,7 @@ class Settings < Settingslogic
 
     def base_url(config)
       custom_port = on_standard_port?(config) ? nil : ":#{config.port}"
-      
+
       [
         config.protocol,
         "://",
@@ -329,6 +329,11 @@ Settings.pages['protocol']        ||= Settings.pages.https ? "https" : "http"
 Settings.pages['url']             ||= Settings.send(:build_pages_url)
 Settings.pages['external_http']   ||= false if Settings.pages['external_http'].nil?
 Settings.pages['external_https']  ||= false if Settings.pages['external_https'].nil?
+
+#
+# Geo
+#
+Settings.gitlab['geo_status_timeout'] ||= 10
 
 #
 # Git LFS
