@@ -101,7 +101,7 @@ module API
         use :create_params
       end
       post do
-        attrs = map_visibility_level(declared_params(include_missing: false))
+        attrs = declared_params(include_missing: false)
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
         if project.saved?
@@ -130,7 +130,7 @@ module API
         user = User.find_by(id: params.delete(:user_id))
         not_found!('User') unless user
 
-        attrs = map_visibility_level(declared_params(include_missing: false))
+        attrs = declared_params(include_missing: false)
         project = ::Projects::CreateService.new(user, attrs).execute
 
         if project.saved?
@@ -217,9 +217,9 @@ module API
       end
       put ':id' do
         authorize_admin_project
-        attrs = map_visibility_level(declared_params(include_missing: false))
+        attrs = declared_params(include_missing: false)
         authorize! :rename_project, user_project if attrs[:name].present?
-        authorize! :change_visibility_level, user_project if attrs[:visibility_level].present?
+        authorize! :change_visibility_level, user_project if attrs[:visibility].present?
 
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 

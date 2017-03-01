@@ -56,7 +56,7 @@ module API
       end
       post ":id/snippets" do
         authorize! :create_project_snippet, user_project
-        snippet_params = map_visibility_level(declared_params).merge(request: request, api: true)
+        snippet_params = declared_params.merge(request: request, api: true)
         snippet_params[:content] = snippet_params.delete(:code)
 
         snippet = CreateSnippetService.new(user_project, current_user, snippet_params).execute
@@ -89,7 +89,7 @@ module API
 
         authorize! :update_project_snippet, snippet
 
-        snippet_params = map_visibility_level(declared_params(include_missing: false))
+        snippet_params = declared_params(include_missing: false)
           .merge(request: request, api: true)
 
         snippet_params[:content] = snippet_params.delete(:code) if snippet_params[:code].present?
