@@ -13,11 +13,11 @@ describe Ci::RetryBuildService, :services do
   shared_examples 'build duplication' do
     let(:build) do
       create(:ci_build, :failed, :artifacts_expired, :erased, :trace,
-             :queued, :coverage, pipeline: pipeline)
+             :queued, :coverage, :tags, pipeline: pipeline)
     end
 
     describe 'clone attributes' do
-      described_class::CLONE_ATTRIBUTES.each do |attribute|
+      described_class::CLONE_ACCESSORS.each do |attribute|
         it "clones #{attribute} build attribute" do
           expect(new_build.send(attribute)).to eq build.send(attribute)
         end
@@ -25,7 +25,7 @@ describe Ci::RetryBuildService, :services do
     end
 
     describe 'reject attributes' do
-      described_class::REJECT_ATTRIBUTES.each do |attribute|
+      described_class::REJECT_ACCESSORS.each do |attribute|
         it "does not clone #{attribute} build attribute" do
           expect(new_build.send(attribute)).not_to eq build.send(attribute)
         end
@@ -33,12 +33,23 @@ describe Ci::RetryBuildService, :services do
     end
 
     it 'has correct number of known attributes' do
-      attributes =
-        described_class::CLONE_ATTRIBUTES +
-        described_class::IGNORE_ATTRIBUTES +
-        described_class::REJECT_ATTRIBUTES
+      known_accessors =
+        described_class::CLONE_ACCESSORS +
+        described_class::IGNORE_ACCESSORS +
+        described_class::REJECT_ACCESSORS
 
-      expect(build.attributes.size).to eq(attributes.size)
+      # :tag_list is a special case, this accessor does not exist
+      # in reflected associations, comes from `act_as_taggable` and
+      # we use it to copy tags, instead of reusing tags.
+      #
+      current_accessors =
+        build.attribute_names.map.map(&:to_sym) +
+        build._reflections.map { |assoc| assoc.first.to_sym } +
+        [:tag_list]
+
+      current_accessors.uniq!
+
+      expect(known_accessors).to contain_exactly(*current_accessors)
     end
   end
 

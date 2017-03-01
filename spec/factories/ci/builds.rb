@@ -76,6 +76,10 @@ FactoryGirl.define do
       manual
     end
 
+    trait :tags do
+      tag_list [:docker, :ruby]
+    end
+
     after(:build) do |build, evaluator|
       build.project = build.pipeline.project
     end
