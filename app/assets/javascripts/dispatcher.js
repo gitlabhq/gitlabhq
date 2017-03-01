@@ -37,6 +37,7 @@ import PrometheusGraph from './monitoring/prometheus_graph'; // TODO: Maybe Make
 import Issue from './issue';
 
 import BindInOut from './behaviors/bind_in_out';
+import GroupName from './group_name';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
@@ -342,6 +343,9 @@ const UserCallout = require('./user_callout');
           shortcut_handler = new ShortcutsDashboardNavigation();
           new UserCallout();
           break;
+        case 'groups':
+          new GroupName();
+          break;
         case 'profiles':
           new NotificationsForm();
           new NotificationsDropdown();
@@ -349,6 +353,7 @@ const UserCallout = require('./user_callout');
         case 'projects':
           new Project();
           new ProjectAvatar();
+          new GroupName();
           switch (path[1]) {
             case 'compare':
               new CompareAutocomplete();
