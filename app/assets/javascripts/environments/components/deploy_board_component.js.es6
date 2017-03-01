@@ -49,6 +49,11 @@ module.exports = {
       type: Number,
       required: true,
     },
+
+    endpoint: {
+      type: String,
+      required: true,
+    },
   },
 
   data() {
@@ -66,7 +71,7 @@ module.exports = {
 
     // If the response is 204, we make 3 more requests.
     gl.utils.backOff((next, stop) => {
-      this.service.getDeployBoard(this.environmentID)
+      this.service.getDeployBoard(this.endpoint)
         .then((resp) => {
           if (resp.status === statusCodes.NO_CONTENT) {
             this.backOffRequestCounter = this.backOffRequestCounter += 1;

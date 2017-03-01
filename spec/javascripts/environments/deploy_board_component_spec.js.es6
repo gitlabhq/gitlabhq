@@ -30,6 +30,7 @@ describe('Deploy Board', () => {
           service: this.service,
           deployBoardData: deployBoardMockData,
           environmentID: 1,
+          endpoint: 'endpoint',
         },
       }).$mount();
     });
@@ -96,6 +97,7 @@ describe('Deploy Board', () => {
           service: this.service,
           deployBoardData: {},
           environmentID: 1,
+          endpoint: 'endpoint',
         },
       }).$mount();
     });
