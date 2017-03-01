@@ -293,7 +293,7 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.4'
 
-  gem 'capybara',            '~> 2.6.2'
+  gem 'capybara',            '~> 2.12'
   gem 'capybara-screenshot', '~> 1.0.0'
   gem 'poltergeist',         '~> 1.9.0'
 
