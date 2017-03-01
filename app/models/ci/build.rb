@@ -64,7 +64,7 @@ module Ci
 
     state_machine :status do
       event :block do
-        transition :created => :manual, if: () -> { self.when == 'manual' }
+        transition :created => :manual, if: ->() { self.when == 'manual' }
       end
 
       after_transition any => [:pending] do |build|
