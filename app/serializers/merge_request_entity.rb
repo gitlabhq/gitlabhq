@@ -47,19 +47,21 @@ class MergeRequestEntity < IssuableEntity
     end
 
     expose :can_revert do |merge_request|
-      true
+      merge_request.can_be_reverted?(request.current_user)
     end
   end
 
   expose :can_be_cherry_picked do |merge_request|
-    true
+    merge_request.can_be_cherry_picked?
   end
 
   expose :target_branch_path do |merge_request|
-    '/gitlab-org/gitlab-ce/commits/wiki-doc'
+    namespace_project_commits_path(merge_request.project.namespace,
+                                   merge_request.project,
+                                   merge_request.target_branch)
   end
 
   expose :project_archived do |merge_request|
-    false
+    merge_request.project.archived?
   end
 end
