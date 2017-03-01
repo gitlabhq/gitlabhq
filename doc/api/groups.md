@@ -123,7 +123,7 @@ Parameters:
 | `id` | integer/string | yes | The ID or path of a group |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/4
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/4
 ```
 
 Example response:
@@ -325,7 +325,7 @@ PUT /groups/:id
 | `request_access_enabled` | boolean | no | Allow users to request member access. |
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/groups/5?name=Experimental"
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/groups/5?name=Experimental"
 
 ```
 
