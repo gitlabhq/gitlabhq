@@ -1,6 +1,8 @@
 # Elasticsearch integration
 
->[Introduced][ee-109] in GitLab EE 8.4.
+> Elasticsearch was [Introduced][ee-109] in GitLab EE 8.4. Support for
+> [Amazon Elasticsearch][aws-elasticsearch] was [introduced][ee-1305] in GitLab
+> EE 9.0.
 
 [Elasticsearch] is a flexible, scalable and powerful search service.
 
@@ -23,7 +25,8 @@ searching in:
 Once the data is added to the database or repository and [Elasticsearch is
 enabled in the admin area](#enable-elasticsearch) the search index will be
 updated automatically. Elasticsearch can be installed on the same machine as
-GitLab, or on a separate server.
+GitLab, or on a separate server, or you can use the [Amazon Elasticsearch][aws-elastic]
+service.
 
 ## Requirements
 
@@ -53,10 +56,11 @@ The following Elasticsearch settings are available:
 | ---------                           | ----------- |
 | `Elasticsearch indexing`            | Enables/disables Elasticsearch indexing. You may want to enable indexing but disable search in order to give the index time to be fully completed, for example. Also keep in mind that this option doesn't have any impact on existing data, this only enables/disables background indexer which tracks data changes. So by enabling this you will not get your existing data indexed, use special rake task for that as explained in [Add GitLab's data to the Elasticsearch index](#add-gitlabs-data-to-the-elasticsearch-index). |
 | `Search with Elasticsearch enabled` | Enables/disables using Elasticsearch in search. |
-| `Host`                              | The TCP/IP host to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "host1, host2"). |
-| `Port`                              | The TCP port that Elasticsearch listens to. The default value is 9200  |
-
-
+| `URL`                              | The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://host1, https://host2:9200"). |
+| `AWS` | Sign your Elasticsearch requests using [AWS IAM authorization][aws-iam]. The access key must be allowed to perform `es:*` actions. |
+| `Region` | The AWS region your Elasticsearch service is located in. |
+| `Access Key` | The AWS access key. |
+| `Secret Access Key` | The AWS secret access key. |
 
 ## Add GitLab's data to the Elasticsearch index
 
@@ -302,8 +306,9 @@ There is also an easy way to check it automatically with `sudo gitlab-rake gitla
 
 Make sure you indexed all the database data as stated above (`sudo gitlab-rake gitlab:elastic:index`)
 
-
-
+[ee-1305]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1305
+[aws-elasticsearch]: http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-gsg.html
+[aws-iam]: http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html
 [ee-109]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/109 "Elasticsearch Merge Request"
 [elasticsearch]: https://www.elastic.co/products/elasticsearch "Elasticsearch website"
 [install]: https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html "Elasticsearch installation documentation"
