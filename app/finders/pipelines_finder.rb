@@ -103,9 +103,9 @@ class PipelinesFinder
     if params[:order_by].present? && params[:sort].present? && 
         items.column_names.include?(params[:order_by]) && 
         (params[:sort].casecmp('ASC') || params[:sort].casecmp('DESC'))
-      items.order("#{params[:order_by]} #{params[:sort]}")
+      items.reorder(params[:order_by] => params[:sort])
     else
-      items.order(id: :desc)
+      items.reorder(id: :desc)
     end
   end
 end
