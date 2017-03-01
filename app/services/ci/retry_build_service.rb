@@ -12,7 +12,7 @@ module Ci
                            queued_at erased_by erased_at].freeze
 
     IGNORE_ATTRIBUTES = %i[type lock_version gl_project_id target_url
-                           deploy job_id description].freeze
+                           description].freeze
 
     def execute(build)
       reprocess(build).tap do |new_build|

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170217151947) do
+ActiveRecord::Schema.define(version: 20170301205639) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -172,13 +172,6 @@ ActiveRecord::Schema.define(version: 20170217151947) do
   add_index "chat_names", ["service_id", "team_id", "chat_id"], name: "index_chat_names_on_service_id_and_team_id_and_chat_id", unique: true, using: :btree
   add_index "chat_names", ["user_id", "service_id"], name: "index_chat_names_on_user_id_and_service_id", unique: true, using: :btree
 
-  create_table "ci_application_settings", force: :cascade do |t|
-    t.boolean "all_broken_builds"
-    t.boolean "add_pusher"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "ci_builds", force: :cascade do |t|
     t.integer "project_id"
     t.string "status"
@@ -191,9 +184,7 @@ ActiveRecord::Schema.define(version: 20170217151947) do
     t.float "coverage"
     t.integer "commit_id"
     t.text "commands"
-    t.integer "job_id"
     t.string "name"
-    t.boolean "deploy", default: false
     t.text "options"
     t.boolean "allow_failure", default: false, null: false
     t.string "stage"
@@ -237,7 +228,6 @@ ActiveRecord::Schema.define(version: 20170217151947) do
     t.string "ref"
     t.string "sha"
     t.string "before_sha"
-    t.text "push_data"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "tag", default: false
@@ -257,29 +247,6 @@ ActiveRecord::Schema.define(version: 20170217151947) do
   add_index "ci_commits", ["gl_project_id"], name: "index_ci_commits_on_gl_project_id", using: :btree
   add_index "ci_commits", ["status"], name: "index_ci_commits_on_status", using: :btree
   add_index "ci_commits", ["user_id"], name: "index_ci_commits_on_user_id", using: :btree
-
-  create_table "ci_events", force: :cascade do |t|
-    t.integer "project_id"
-    t.integer "user_id"
-    t.integer "is_admin"
-    t.text "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "ci_jobs", force: :cascade do |t|
-    t.integer "project_id", null: false
-    t.text "commands"
-    t.boolean "active", default: true, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string "name"
-    t.boolean "build_branches", default: true, null: false
-    t.boolean "build_tags", default: false, null: false
-    t.string "job_type", default: "parallel"
-    t.string "refs"
-    t.datetime "deleted_at"
-  end
 
   create_table "ci_projects", force: :cascade do |t|
     t.string "name"
@@ -335,30 +302,6 @@ ActiveRecord::Schema.define(version: 20170217151947) do
   add_index "ci_runners", ["is_shared"], name: "index_ci_runners_on_is_shared", using: :btree
   add_index "ci_runners", ["locked"], name: "index_ci_runners_on_locked", using: :btree
   add_index "ci_runners", ["token"], name: "index_ci_runners_on_token", using: :btree
-
-  create_table "ci_sessions", force: :cascade do |t|
-    t.string "session_id", null: false
-    t.text "data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "ci_taggings", force: :cascade do |t|
-    t.integer "tag_id"
-    t.integer "taggable_id"
-    t.string "taggable_type"
-    t.integer "tagger_id"
-    t.string "tagger_type"
-    t.string "context", limit: 128
-    t.datetime "created_at"
-  end
-
-  add_index "ci_taggings", ["taggable_id", "taggable_type", "context"], name: "index_ci_taggings_on_taggable_id_and_taggable_type_and_context", using: :btree
-
-  create_table "ci_tags", force: :cascade do |t|
-    t.string "name"
-    t.integer "taggings_count", default: 0
-  end
 
   create_table "ci_trigger_requests", force: :cascade do |t|
     t.integer "trigger_id", null: false
