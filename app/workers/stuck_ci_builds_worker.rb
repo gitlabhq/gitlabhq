@@ -2,7 +2,7 @@ class StuckCiBuildsWorker
   include Sidekiq::Worker
   include CronjobQueue
 
-  EXCLUSIVE_LEASE_KEY = 'stuck_ci_builds_worker_lease'
+  EXCLUSIVE_LEASE_KEY = 'stuck_ci_builds_worker_lease'.freeze
 
   BUILD_RUNNING_OUTDATED_TIMEOUT = 1.hour
   BUILD_PENDING_OUTDATED_TIMEOUT = 1.day
@@ -23,10 +23,7 @@ class StuckCiBuildsWorker
   private
 
   def try_obtain_lease
-    @uuid = Gitlab::ExclusiveLease.new(
-        EXCLUSIVE_LEASE_KEY,
-        timeout: 30.minutes
-    ).try_obtain
+    @uuid = Gitlab::ExclusiveLease.new(EXCLUSIVE_LEASE_KEY, timeout: 30.minutes).try_obtain
   end
 
   def remove_lease
