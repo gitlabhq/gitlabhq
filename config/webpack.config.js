@@ -42,7 +42,7 @@ var config = {
   output: {
     path: path.join(ROOT_PATH, 'public/assets/webpack'),
     publicPath: '/assets/webpack/',
-    filename: IS_PRODUCTION ? '[name]-[chunkhash].js' : '[name].js'
+    filename: IS_PRODUCTION ? '[name]-[chunkhash]-v2.js' : '[name].js'
   },
 
   devtool: 'inline-source-map',
