@@ -18,7 +18,7 @@ class GeoNodePresenter < Gitlab::View::Presenter::Delegated
   end
 
   def repositories_synced_in_percentage
-    return 0 if repositories === 0
+    return 0 if repositories.zero?
 
     (repositories_synced.to_f / repositories.to_f) * 100.0
   end
