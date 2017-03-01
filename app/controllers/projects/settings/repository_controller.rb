@@ -5,7 +5,7 @@ module Projects
 
       def show
         @deploy_keys = DeployKeysPresenter
-          .new(@project, current_user: @current_user)
+          .new(@project, current_user: current_user)
 
         define_protected_branches
       end
@@ -37,10 +37,13 @@ module Projects
         }
       end
 
+      def open_branches
+        branches = @project.open_branches.map { |br| { text: br.name, id: br.name, title: br.name } }
+        { open_branches: branches }
+      end
+
       def load_gon_index
-        open_branches = @project.open_branches.map { |br| { text: br.name, id: br.name, title: br.name } }
-        params = { open_branches: open_branches }
-        gon.push(params.merge(access_levels_options))
+        gon.push(open_branches.merge(access_levels_options))
       end
     end
   end
