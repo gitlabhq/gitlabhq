@@ -7,28 +7,18 @@ module Elasticsearch
     module Client
       module ClassMethods
         include Gitlab::CurrentSettings
-        include Gitlab::Elastic
+
         def client(client = nil)
           if @client.nil? || es_configuration_changed?
-            @es_url = current_application_settings.elasticsearch_url
-            @es_aws = current_application_settings.elasticsearch_aws
-
-            if @es_aws
-              # AWS specific handling
-              @es_region = current_application_settings.elasticsearch_aws_region
-              @es_access_key = current_application_settings.elasticsearch_aws_access_key
-              @es_secret_access_key = current_application_settings.elasticsearch_aws_secret_access_key
-              @client = AWSClient.new(@es_url, @es_region, @es_access_key, @es_secret_access_key).client
-            else
-              @client = BaseClient.new(@es_url).client
-            end
+            @es_config = current_application_settings.elasticsearch_config
+            @client = ::Gitlab::Elastic::Client.build(@es_config)
           end
+
           @client
         end
 
         def es_configuration_changed?
-          @es_url != current_application_settings.elasticsearch_url ||
-            @es_aws != current_application_settings.elasticsearch_aws
+          @es_config != current_application_settings.elasticsearch_config
         end
       end
     end

@@ -1072,16 +1072,7 @@ namespace :gitlab do
   end
 
   def check_elasticsearch
-    if ApplicationSetting.current.elasticsearch_aws
-      client = Gitlab::Elastic::AWSClient.new(
-        ApplicationSetting.current.elasticsearch_url,
-        ApplicationSetting.current.elasticsearch_aws_region,
-        ApplicationSetting.current.elasticsearch_aws_access_key,
-        ApplicationSetting.current.elasticsearch_aws_secret_access_key
-      ).client
-    else
-      client = Gitlab::Elastic::BaseClient.new(ApplicationSetting.current.elasticsearch_url).client
-    end
+    client = Gitlab::Elastic::Client.build(ApplicationSetting.current.elasticsearch_config)
 
     print "Elasticsearch version 5.1.x? ... "
 

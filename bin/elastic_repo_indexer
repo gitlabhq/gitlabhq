@@ -19,27 +19,20 @@ FROM_SHA = ENV['FROM_SHA']
 TO_SHA = ENV['TO_SHA']
 RAILS_ENV = ENV['RAILS_ENV']
 
-LOGGER.info("Has been scheduled for project #{REPO_PATH} with SHA range #{FROM_SHA}:#{TO_SHA}")
+# Symbols get stringified when passed through JSON
+elastic = {}
+JSON.parse(ENV['ELASTIC_CONNECTION_INFO']).each { |k, v| elastic[k.to_sym] = v }
+ELASTIC_CONFIG = elastic
 
-elastic_connection_info = JSON.parse ENV['ELASTIC_CONNECTION_INFO']
-ELASTIC_URL = elastic_connection_info['url']
-ELASTIC_AWS = elastic_connection_info['aws']
-ELASTIC_AWS_ACCESS_KEY = elastic_connection_info['aws_access_key']
-ELASTIC_AWS_SECRET_ACCESS_KEY = elastic_connection_info['aws_secret_access_key']
-ELASTIC_AWS_REGION = elastic_connection_info['aws_region']
+LOGGER.info("Has been scheduled for project #{REPO_PATH} with SHA range #{FROM_SHA}:#{TO_SHA}")
 
 class Repository
   include Elasticsearch::Git::Repository
-  include Gitlab::Elastic
 
   index_name ['gitlab', RAILS_ENV].compact.join('-')
 
   def initialize
-    if ELASTIC_AWS
-      self.__elasticsearch__.client = AWSClient(ELASTIC_URL, ELASTIC_REGION, ELASTIC_AWS_ACCESS_KEY, ELASTIC_AWS_SECRET_ACCESS_KEY).client
-    else
-      self.__elasticsearch__.client = BaseClient.new(ELASTIC_URL).client
-    end
+    self.__elasticsearch__.client = ::Gitlab::Elastic::Client.build(ELASTIC_CONFIG)
   end
 
   def client_for_indexing

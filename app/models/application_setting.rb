@@ -273,6 +273,16 @@ class ApplicationSetting < ActiveRecord::Base
     read_attribute(:elasticsearch_url).split(',').map(&:strip)
   end
 
+  def elasticsearch_config
+    {
+      url:                   elasticsearch_url,
+      aws:                   elasticsearch_aws,
+      aws_access_key:        elasticsearch_aws_access_key,
+      aws_secret_access_key: elasticsearch_aws_secret_access_key,
+      aws_region:            elasticsearch_aws_region,
+    }
+  end
+
   def home_page_url_column_exist
     ActiveRecord::Base.connection.column_exists?(:application_settings, :home_page_url)
   end

@@ -5,13 +5,12 @@ describe ElasticIndexerWorker, elastic: true do
   subject { described_class.new }
 
   before do
-    Elasticsearch::Model.client = Elasticsearch::Client.new(
-      url: current_application_settings.elasticsearch_url
-    )
+    stub_application_setting(elasticsearch_indexing: true)
+
+    Elasticsearch::Model.client =
+      Gitlab::Elastic::Client.build(current_application_settings.elasticsearch_config)
 
     Gitlab::Elastic::Helper.create_empty_index
-
-    stub_application_setting(elasticsearch_indexing: true)
   end
 
   after do

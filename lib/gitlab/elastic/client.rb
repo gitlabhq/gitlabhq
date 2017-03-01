@@ -4,37 +4,21 @@ require 'faraday_middleware/aws_signers_v4'
 
 module Gitlab
   module Elastic
-    class BaseClient
-      attr_accessor :client
+    module Client
+      # Takes a hash as returned by `ApplicationSetting#elasticsearch_config`,
+      # and configures itself based on those parameters
+      def self.build(config)
+        base_config = { urls: config[:url] }
 
-      def initialize(urls)
-        @urls = urls
-        @client = Elasticsearch::Client.new urls: @urls
-      end
-    end
-  end
-end
+        if config[:aws]
+          creds = Aws::Credentials.new(config[:aws_access_key], config[:aws_secret_access_key])
+          region = config[:aws_region]
 
-module Gitlab
-  module Elastic
-    class AWSClient < BaseClient
-      def initialize(urls, region, access_key = nil, secret_access_key = nil)
-        @urls = urls
-        @region = region
-        @access_key = access_key
-        @secret_access_key = secret_access_key
-
-        if @access_key.nil? || @secret_access_key.nil?
-          @credentials = Aws::Credentials.new()
+          ::Elasticsearch::Client.new(base_config) do |fmid|
+            fmid.request(:aws_signers_v4, credentials: creds, service_name: 'es', region: region)
+          end
         else
-          @credentials = Aws::Credentials.new(@access_key, @secret_access_key)
-        end
-
-        @client = Elasticsearch::Client.new urls: @urls do |fmid|
-          fmid.request :aws_signers_v4,
-            credentials: @credentials,
-            service_name: 'es',
-            region: @region
+          ::Elasticsearch::Client.new(base_config)
         end
       end
     end

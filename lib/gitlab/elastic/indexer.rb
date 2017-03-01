@@ -13,18 +13,10 @@ module Gitlab
       def initialize(project)
         @project = project
 
-        connection_info = {
-          url: current_application_settings.elasticsearch_url,
-          aws: current_application_settings.elasticsearch_aws,
-          aws_access_key: current_application_settings.elasticsearch_aws_access_key,
-          aws_secret_access_key: current_application_settings.elasticsearch_aws_secret_access_key,
-          aws_region: current_application_settings.elasticsearch_aws_region
-        }.to_json
-
         # We accept any form of settings, including string and array
         # This is why JSON is needed
         @vars = {
-          'ELASTIC_CONNECTION_INFO' => connection_info,
+          'ELASTIC_CONNECTION_INFO' => current_application_settings.elasticsearch_config.to_json,
           'RAILS_ENV'               => Rails.env
         }
       end
