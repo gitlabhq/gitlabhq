@@ -49,6 +49,25 @@ describe Ci::Runner do
     end
   end
 
+  describe 'scopes' do
+    describe 'owned_or_shared' do
+      it 'returns the specific project runner' do
+        specific_project = create :project
+        other_project = create :project
+        specific_runner = create :ci_runner, :specific, projects: [specific_project]
+        other_runner = create :ci_runner, :specific, projects: [other_project]
+
+        expect(described_class.owned_or_shared(specific_project.id)).to eq [specific_runner]
+      end
+
+      it 'returns the shared projects' do
+        runner = create :ci_runner, :shared
+
+        expect(described_class.owned_or_shared(0)).to eq [runner]
+      end
+    end
+  end
+
   describe '#display_name' do
     it 'returns the description if it has a value' do
       runner = FactoryBot.build(:ci_runner, description: 'Linux/Ruby-1.9.3-p448')
