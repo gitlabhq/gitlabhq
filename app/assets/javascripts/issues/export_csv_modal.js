@@ -1,19 +1,20 @@
+/* eslint-disable no-new */
+
 $(() => {
   class ExportCSVModal {
     constructor() {
-      this.$el = $('.issues-export-modal');
-      this.$btn = $('.csv_download_link');
-      this.$close = $('.modal-header .close');
+      this.$modal = $('.issues-export-modal');
+      this.$downloadBtn = $('.csv_download_link');
+      this.$closeBtn = $('.modal-header .close');
       this.init();
     }
 
     init() {
-      this.$el.modal({ show: false });
-      this.$btn.on('click', () => this.$el.modal('show'));
-      this.$close.on('click', () => this.$el.modal('hide'));
+      this.$modal.modal({ show: false });
+      this.$downloadBtn.on('click', () => this.$modal.modal('show'));
+      this.$closeBtn.on('click', () => this.$modal.modal('hide'));
     }
   }
 
-  window.gl = window.gl || {};
-  gl.ExportCSVModal = new ExportCSVModal();
+  new ExportCSVModal();
 });
