@@ -1,9 +1,15 @@
-AccessTokenValidationService = Struct.new(:token) do
+class AccessTokenValidationService
   # Results:
   VALID = :valid
   EXPIRED = :expired
   REVOKED = :revoked
   INSUFFICIENT_SCOPE = :insufficient_scope
+
+  attr_reader :token
+
+  def initialize(token)
+    @token = token
+  end
 
   def validate(scopes: [])
     if token.expired?
