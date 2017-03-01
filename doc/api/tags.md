@@ -26,7 +26,7 @@ Parameters:
       "committer_email": "jack@example.com",
       "id": "2695effb5807a22ff3d138d593fd856244e155e7",
       "message": "Initial commit",
-      "parents_ids": [
+      "parent_ids": [
         "2a4b78934375d7f53875269ffd4f45fd83a84ebe"
       ]
     },
@@ -110,7 +110,7 @@ Parameters:
     "committer_email": "jack@example.com",
     "id": "2695effb5807a22ff3d138d593fd856244e155e7",
     "message": "Initial commit",
-    "parents_ids": [
+    "parent_ids": [
       "2a4b78934375d7f53875269ffd4f45fd83a84ebe"
     ]
   },
