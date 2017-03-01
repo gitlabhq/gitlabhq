@@ -2,7 +2,7 @@
 module Gitlab
   module Git
     class Diff
-      class TimeoutError < StandardError; end
+      TimeoutError = Class.new(StandardError)
       include Gitlab::Git::EncodingHelper
 
       # Diff properties

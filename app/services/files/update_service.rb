@@ -1,6 +1,6 @@
 module Files
   class UpdateService < Files::BaseService
-    class FileChangedError < StandardError; end
+    FileChangedError = Class.new(StandardError)
 
     def commit
       repository.update_file(current_user, @file_path, @file_content,

@@ -2,7 +2,7 @@ module Projects
   class DestroyService < BaseService
     include Gitlab::ShellAdapter
 
-    class DestroyError < StandardError; end
+    DestroyError = Class.new(StandardError)
 
     DELETED_FLAG = '+deleted'.freeze
 

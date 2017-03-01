@@ -7,7 +7,7 @@ class ProjectWiki
     'AsciiDoc' => :asciidoc
   }.freeze unless defined?(MARKUPS)
 
-  class CouldNotCreateWikiError < StandardError; end
+  CouldNotCreateWikiError = Class.new(StandardError)
 
   # Returns a string describing what went wrong after
   # an operation fails.

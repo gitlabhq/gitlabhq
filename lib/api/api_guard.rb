@@ -160,13 +160,10 @@ module API
     # Exceptions
     #
 
-    class MissingTokenError < StandardError; end
-
-    class TokenNotFoundError < StandardError; end
-
-    class ExpiredError < StandardError; end
-
-    class RevokedError < StandardError; end
+    MissingTokenError = Class.new(StandardError)
+    TokenNotFoundError = Class.new(StandardError)
+    ExpiredError = Class.new(StandardError)
+    RevokedError = Class.new(StandardError)
 
     class InsufficientScopeError < StandardError
       attr_reader :scopes

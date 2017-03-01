@@ -1,6 +1,6 @@
 module Files
   class MultiService < Files::BaseService
-    class FileChangedError < StandardError; end
+    FileChangedError = Class.new(StandardError)
 
     ACTIONS = %w[create update delete move].freeze
 
