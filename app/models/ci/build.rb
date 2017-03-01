@@ -55,15 +55,6 @@ module Ci
         pending.unstarted.order('created_at ASC').first
       end
 
-      def create_from(build)
-        new_build = build.dup
-        new_build.status = 'pending'
-        new_build.runner_id = nil
-        new_build.trigger_request_id = nil
-        new_build.token = nil
-        new_build.save
-      end
-
       def retry(build, current_user)
         Ci::RetryBuildService
           .new(build.project, current_user)
