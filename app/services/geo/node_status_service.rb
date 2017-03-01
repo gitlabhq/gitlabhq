@@ -22,7 +22,7 @@ module Geo
 
       GeoNode::Status.new(*values)
     rescue HTTParty::Error, Errno::ECONNREFUSED => e
-      GeoNode::Status.new(ActionView::Base.full_sanitizer.sanitize(e.message))
+      GeoNode::Status.new(e.message)
     end
 
     private
