@@ -12,13 +12,16 @@ describe Ci::RetryBuildService, :services do
 
   shared_examples 'build duplication' do
     let(:build) do
-      create(:ci_build, :failed, :artifacts_expired, :erased, :trace,
-             :queued, :coverage, :tags, pipeline: pipeline)
+      create(:ci_build, :failed, :artifacts_expired, :erased,
+             :queued, :coverage, :tags, :allowed_to_fail, :on_tag,
+             :teardown_environment, :triggered, :trace,
+             description: 'some build', pipeline: pipeline)
     end
 
     describe 'clone attributes' do
       described_class::CLONE_ACCESSORS.each do |attribute|
         it "clones #{attribute} build attribute" do
+          expect(new_build.send(attribute)).to be_present
           expect(new_build.send(attribute)).to eq build.send(attribute)
         end
       end

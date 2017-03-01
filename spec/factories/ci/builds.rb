@@ -80,6 +80,14 @@ FactoryGirl.define do
       tag_list [:docker, :ruby]
     end
 
+    trait :on_tag do
+      tag true
+    end
+
+    trait :triggered do
+      trigger_request factory: :ci_trigger_request_with_variables
+    end
+
     after(:build) do |build, evaluator|
       build.project = build.pipeline.project
     end
