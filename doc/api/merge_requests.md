@@ -82,13 +82,13 @@ Parameters:
 Shows information about a single merge request.
 
 ```
-GET /projects/:id/merge_requests/:merge_request_id
+GET /projects/:id/merge_requests/:merge_request_iid
 ```
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `merge_request_id` (required) - The ID of MR
+- `iid` (required) - The ID of a project
+- `merge_request_iid` (required) - The internal ID of the merge request
 
 ```json
 {
@@ -150,13 +150,13 @@ Parameters:
 Get a list of merge request commits.
 
 ```
-GET /projects/:id/merge_requests/:merge_request_id/commits
+GET /projects/:id/merge_requests/:merge_request_iid/commits
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
-- `merge_request_id` (required) - The ID of MR
+- `merge_request_iid` (required) - The internal ID of the merge request
 
 
 ```json
@@ -187,13 +187,13 @@ Parameters:
 Shows information about the merge request including its files and changes.
 
 ```
-GET /projects/:id/merge_requests/:merge_request_id/changes
+GET /projects/:id/merge_requests/:merge_request_iid/changes
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
-- `merge_request_id` (required) - The ID of MR
+- `merge_request_iid` (required) - The internal ID of the merge request
 
 ```json
 {
@@ -269,18 +269,18 @@ Creates a new merge request.
 POST /projects/:id/merge_requests
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`            | string  | yes | The ID of a project |
-| `source_branch` | string  | yes | The source branch |
-| `target_branch` | string  | yes | The target branch |
-| `title`         | string  | yes | Title of MR |
-| `assignee_id`   | integer | no  | Assignee user ID |
-| `description`   | string  | no  | Description of MR |
-| `target_project_id` | integer  | no | The target project (numeric id) |
-| `labels` | string  | no | Labels for MR as a comma-separated list |
-| `milestone_id` | integer  | no | The ID of a milestone |
-| `remove_source_branch` | boolean  | no | Flag indicating if a merge request should remove the source branch when merging |
+| Attribute              | Type    | Required | Description                                                                     |
+| ---------              | ----    | -------- | -----------                                                                     |
+| `id`                   | string  | yes      | The ID of a project                                                             |
+| `source_branch`        | string  | yes      | The source branch                                                               |
+| `target_branch`        | string  | yes      | The target branch                                                               |
+| `title`                | string  | yes      | Title of MR                                                                     |
+| `assignee_id`          | integer | no       | Assignee user ID                                                                |
+| `description`          | string  | no       | Description of MR                                                               |
+| `target_project_id`    | integer | no       | The target project (numeric id)                                                 |
+| `labels`               | string  | no       | Labels for MR as a comma-separated list                                         |
+| `milestone_id`         | integer | no       | The ID of a milestone                                                           |
+| `remove_source_branch` | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
 
 ```json
 {
@@ -342,21 +342,21 @@ POST /projects/:id/merge_requests
 Updates an existing merge request. You can change the target branch, title, or even close the MR.
 
 ```
-PUT /projects/:id/merge_requests/:merge_request_id
+PUT /projects/:id/merge_requests/:merge_request_iid
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`            | string  | yes | The ID of a project |
-| `merge_request_id` | integer  | yes | The ID of a merge request |
-| `target_branch` | string  | no | The target branch |
-| `title`         | string  | no | Title of MR |
-| `assignee_id`   | integer | no  | Assignee user ID |
-| `description`   | string  | no  | Description of MR |
-| `state_event` | string  | no | New state (close/reopen) |
-| `labels` | string  | no | Labels for MR as a comma-separated list |
-| `milestone_id` | integer  | no | The ID of a milestone |
-| `remove_source_branch` | boolean  | no | Flag indicating if a merge request should remove the source branch when merging |
+| Attribute              | Type    | Required | Description                                                                     |
+| ---------              | ----    | -------- | -----------                                                                     |
+| `id`                   | string  | yes      | The ID of a project                                                             |
+| `merge_request_iid`    | integer | yes      | The ID of a merge request                                                       |
+| `target_branch`        | string  | no       | The target branch                                                               |
+| `title`                | string  | no       | Title of MR                                                                     |
+| `assignee_id`          | integer | no       | Assignee user ID                                                                |
+| `description`          | string  | no       | Description of MR                                                               |
+| `state_event`          | string  | no       | New state (close/reopen)                                                        |
+| `labels`               | string  | no       | Labels for MR as a comma-separated list                                         |
+| `milestone_id`         | integer | no       | The ID of a milestone                                                           |
+| `remove_source_branch` | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
 
 Must include at least one non-required attribute from above.
 
@@ -419,13 +419,13 @@ Must include at least one non-required attribute from above.
 Only for admins and project owners. Soft deletes the merge request in question.
 
 ```
-DELETE /projects/:id/merge_requests/:merge_request_id
+DELETE /projects/:id/merge_requests/:merge_request_iid
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`            | integer | yes | The ID of a project |
-| `merge_request_id` | integer | yes | The ID of a project's merge request |
+| Attribute           | Type    | Required | Description                          |
+| ---------           | ----    | -------- | -----------                          |
+| `id`                | integer | yes      | The ID of a project                  |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/merge_requests/85
@@ -445,13 +445,13 @@ If the `sha` parameter is passed and does not match the HEAD of the source - you
 If you don't have permissions to accept this merge request - you'll get a `401`
 
 ```
-PUT /projects/:id/merge_requests/:merge_request_id/merge
+PUT /projects/:id/merge_requests/:merge_request_iid/merge
 ```
 
 Parameters:
 
 - `id` (required)                           - The ID of a project
-- `merge_request_id` (required)             - ID of MR
+- `merge_request_iid` (required)            - Internal ID of MR
 - `merge_commit_message` (optional)         - Custom merge commit message
 - `should_remove_source_branch` (optional)  - if `true` removes the source branch
 - `merge_when_pipeline_succeeds` (optional)    - if `true` the MR is merged when the pipeline succeeds
@@ -520,12 +520,12 @@ If the merge request is already merged or closed - you get `405` and error messa
 
 In case the merge request is not set to be merged when the pipeline succeeds, you'll also get a `406` error.
 ```
-PUT /projects/:id/merge_requests/:merge_request_id/cancel_merge_when_pipeline_succeeds
+PUT /projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds
 ```
 Parameters:
 
 - `id` (required)                           - The ID of a project
-- `merge_request_id` (required)             - ID of MR
+- `merge_request_iid` (required)            - Internal ID of MR
 
 ```json
 {
@@ -591,13 +591,13 @@ Comments are done via the [notes](notes.md) resource.
 Get all the issues that would be closed by merging the provided merge request.
 
 ```
-GET /projects/:id/merge_requests/:merge_request_id/closes_issues
+GET /projects/:id/merge_requests/:merge_request_iid/closes_issues
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of a project |
-| `merge_request_id` | integer | yes   | The ID of the merge request |
+| Attribute           | Type    | Required | Description                          |
+| ---------           | ----    | -------- | -----------                          |
+| `id`                | integer | yes      | The ID of a project                  |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/closes_issues
@@ -666,13 +666,13 @@ Subscribes the authenticated user to a merge request to receive notification. If
 status code `304` is returned.
 
 ```
-POST /projects/:id/merge_requests/:merge_request_id/subscribe
+POST /projects/:id/merge_requests/:merge_request_iid/subscribe
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `merge_request_id` | integer | yes   | The ID of the merge request |
+| Attribute           | Type    | Required | Description                 |
+| ---------           | ----    | -------- | -----------                 |
+| `id`                | integer | yes      | The ID of a project         |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/17/subscribe
@@ -740,13 +740,13 @@ notifications from that merge request. If the user is
 not subscribed to the merge request, the status code `304` is returned.
 
 ```
-POST /projects/:id/merge_requests/:merge_request_id/unsubscribe
+POST /projects/:id/merge_requests/:merge_request_iid/unsubscribe
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `merge_request_id` | integer | yes   | The ID of the merge request |
+| Attribute           | Type    | Required | Description                          |
+| ---------           | ----    | -------- | -----------                          |
+| `id`                | integer | yes      | The ID of a project                  |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/17/unsubscribe
@@ -814,13 +814,13 @@ If there already exists a todo for the user on that merge request,
 status code `304` is returned.
 
 ```
-POST /projects/:id/merge_requests/:merge_request_id/todo
+POST /projects/:id/merge_requests/:merge_request_iid/todo
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `merge_request_id` | integer | yes   | The ID of the merge request |
+| Attribute           | Type    | Required | Description                          |
+| ---------           | ----    | -------- | -----------                          |
+| `id`                | integer | yes      | The ID of a project                  |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/27/todo
@@ -914,13 +914,13 @@ Example response:
 Get a list of merge request diff versions.
 
 ```
-GET /projects/:id/merge_requests/:merge_request_id/versions
+GET /projects/:id/merge_requests/:merge_request_iid/versions
 ```
 
-| Attribute | Type    | Required | Description           |
-| --------- | ------- | -------- | --------------------- |
-| `id`      | String  | yes      | The ID of the project |
-| `merge_request_id` | integer | yes | The ID of the merge request |
+| Attribute           | Type    | Required | Description                 |
+| ---------           | ------- | -------- | ---------------------       |
+| `id`                | String  | yes      | The ID of the project       |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions
@@ -955,14 +955,14 @@ Example response:
 Get a single merge request diff version.
 
 ```
-GET /projects/:id/merge_requests/:merge_request_id/versions/:version_id
+GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id
 ```
 
-| Attribute | Type    | Required | Description           |
-| --------- | ------- | -------- | --------------------- |
-| `id`      | String  | yes      | The ID of the project |
-| `merge_request_id` | integer | yes | The ID of the merge request |
-| `version_id` | integer | yes | The ID of the merge request diff version |
+| Attribute           | Type    | Required | Description                              |
+| ---------           | ------- | -------- | ---------------------                    |
+| `id`                | String  | yes      | The ID of the project                    |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request     |
+| `version_id`        | integer | yes      | The ID of the merge request diff version |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions/1
@@ -1022,14 +1022,14 @@ Example response:
 Sets an estimated time of work for this merge request.
 
 ```
-POST /projects/:id/merge_requests/:merge_request_id/time_estimate
+POST /projects/:id/merge_requests/:merge_request_iid/time_estimate
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of a project |
-| `merge_request_id` | integer | yes | The ID of a project's merge request |
-| `duration` | string | yes | The duration in human format. e.g: 3h30m |
+| Attribute           | Type    | Required | Description                              |
+| ---------           | ----    | -------- | -----------                              |
+| `id`                | integer | yes      | The ID of a project                      |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request     |
+| `duration`          | string  | yes      | The duration in human format. e.g: 3h30m |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_estimate?duration=3h30m
@@ -1051,13 +1051,13 @@ Example response:
 Resets the estimated time for this merge request to 0 seconds.
 
 ```
-POST /projects/:id/merge_requests/:merge_request_id/reset_time_estimate
+POST /projects/:id/merge_requests/:merge_request_iid/reset_time_estimate
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of a project |
-| `merge_request_id` | integer | yes | The ID of a project's merge_request |
+| Attribute           | Type    | Required | Description                                  |
+| ---------           | ----    | -------- | -----------                                  |
+| `id`                | integer | yes      | The ID of a project                          |
+| `merge_request_iid` | integer | yes      | The internal ID of a project's merge_request |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_time_estimate
@@ -1079,14 +1079,14 @@ Example response:
 Adds spent time for this merge request
 
 ```
-POST /projects/:id/merge_requests/:merge_request_id/add_spent_time
+POST /projects/:id/merge_requests/:merge_request_iid/add_spent_time
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of a project |
-| `merge_request_id` | integer | yes | The ID of a project's merge request |
-| `duration` | string | yes | The duration in human format. e.g: 3h30m |
+| Attribute           | Type    | Required | Description                              |
+| ---------           | ----    | -------- | -----------                              |
+| `id`                | integer | yes      | The ID of a project                      |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request     |
+| `duration`          | string  | yes      | The duration in human format. e.g: 3h30m |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/add_spent_time?duration=1h
@@ -1108,13 +1108,13 @@ Example response:
 Resets the total spent time for this merge request to 0 seconds.
 
 ```
-POST /projects/:id/merge_requests/:merge_request_id/reset_spent_time
+POST /projects/:id/merge_requests/:merge_request_iid/reset_spent_time
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of a project |
-| `merge_request_id` | integer | yes | The ID of a project's merge_request |
+| Attribute           | Type    | Required | Description                                  |
+| ---------           | ----    | -------- | -----------                                  |
+| `id`                | integer | yes      | The ID of a project                          |
+| `merge_request_iid` | integer | yes      | The internal ID of a project's merge_request |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_spent_time
@@ -1134,13 +1134,13 @@ Example response:
 ## Get time tracking stats
 
 ```
-GET /projects/:id/merge_requests/:merge_request_id/time_stats
+GET /projects/:id/merge_requests/:merge_request_iid/time_stats
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of a project |
-| `merge_request_id` | integer | yes | The ID of a project's merge request |
+| Attribute           | Type    | Required | Description                          |
+| ---------           | ----    | -------- | -----------                          |
+| `id`                | integer | yes      | The ID of a project                  |
+| `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
 curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_stats
