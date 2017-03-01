@@ -21,9 +21,9 @@
     });
 
     $(document)
-    .off('click', '.merge_when_build_succeeds')
-    .on('click', '.merge_when_build_succeeds', () => {
-      $('#merge_when_build_succeeds').val('1');
+    .off('click', '.merge_when_pipeline_succeeds')
+    .on('click', '.merge_when_pipeline_succeeds', () => {
+      $('#merge_when_pipeline_succeeds').val('1');
     });
 
     $(document)

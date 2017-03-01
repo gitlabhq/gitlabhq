@@ -680,7 +680,7 @@ describe TodoService, services: true do
       end
 
       it 'creates a pending todo for merge_user' do
-        mr_unassigned.update(merge_when_build_succeeds: true, merge_user: admin)
+        mr_unassigned.update(merge_when_pipeline_succeeds: true, merge_user: admin)
         service.merge_request_build_failed(mr_unassigned)
 
         should_create_todo(user: admin, author: admin, target: mr_unassigned, action: Todo::BUILD_FAILED)
@@ -700,7 +700,7 @@ describe TodoService, services: true do
 
     describe '#merge_request_became_unmergeable' do
       it 'creates a pending todo for a merge_user' do
-        mr_unassigned.update(merge_when_build_succeeds: true, merge_user: admin)
+        mr_unassigned.update(merge_when_pipeline_succeeds: true, merge_user: admin)
         service.merge_request_became_unmergeable(mr_unassigned)
 
         should_create_todo(user: admin, author: admin, target: mr_unassigned, action: Todo::UNMERGEABLE)

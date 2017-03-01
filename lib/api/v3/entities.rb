@@ -45,6 +45,86 @@ module API
         expose :created_at, :updated_at
         expose :awardable_id, :awardable_type
       end
+
+      class Project < Grape::Entity
+        expose :id, :description, :default_branch, :tag_list
+        expose :public?, as: :public
+        expose :archived?, as: :archived
+        expose :visibility_level, :ssh_url_to_repo, :http_url_to_repo, :web_url
+        expose :owner, using: ::API::Entities::UserBasic, unless: ->(project, options) { project.group }
+        expose :name, :name_with_namespace
+        expose :path, :path_with_namespace
+        expose :container_registry_enabled
+
+        # Expose old field names with the new permissions methods to keep API compatible
+        expose(:issues_enabled) { |project, options| project.feature_available?(:issues, options[:current_user]) }
+        expose(:merge_requests_enabled) { |project, options| project.feature_available?(:merge_requests, options[:current_user]) }
+        expose(:wiki_enabled) { |project, options| project.feature_available?(:wiki, options[:current_user]) }
+        expose(:builds_enabled) { |project, options| project.feature_available?(:builds, options[:current_user]) }
+        expose(:snippets_enabled) { |project, options| project.feature_available?(:snippets, options[:current_user]) }
+
+        expose :created_at, :last_activity_at
+        expose :shared_runners_enabled
+        expose :lfs_enabled?, as: :lfs_enabled
+        expose :creator_id
+        expose :namespace, using: 'API::Entities::Namespace'
+        expose :forked_from_project, using: ::API::Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
+        expose :avatar_url
+        expose :star_count, :forks_count
+        expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) && project.default_issues_tracker? }
+        expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
+        expose :public_builds
+        expose :shared_with_groups do |project, options|
+          ::API::Entities::SharedGroup.represent(project.project_group_links.all, options)
+        end
+        expose :only_allow_merge_if_pipeline_succeeds, as: :only_allow_merge_if_build_succeeds
+        expose :request_access_enabled
+        expose :only_allow_merge_if_all_discussions_are_resolved
+
+        expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
+      end
+
+      class ProjectWithAccess < Project
+        expose :permissions do
+          expose :project_access, using: ::API::Entities::ProjectAccess do |project, options|
+            project.project_members.find_by(user_id: options[:current_user].id)
+          end
+
+          expose :group_access, using: ::API::Entities::GroupAccess do |project, options|
+            if project.group
+              project.group.group_members.find_by(user_id: options[:current_user].id)
+            end
+          end
+        end
+      end
+
+      class MergeRequest < Grape::Entity
+        expose :id, :iid
+        expose(:project_id) { |entity| entity.project.id }
+        expose :title, :description
+        expose :state, :created_at, :updated_at
+        expose :target_branch, :source_branch
+        expose :upvotes, :downvotes
+        expose :author, :assignee, using: ::API::Entities::UserBasic
+        expose :source_project_id, :target_project_id
+        expose :label_names, as: :labels
+        expose :work_in_progress?, as: :work_in_progress
+        expose :milestone, using: ::API::Entities::Milestone
+        expose :merge_when_pipeline_succeeds, as: :merge_when_build_succeeds
+        expose :merge_status
+        expose :diff_head_sha, as: :sha
+        expose :merge_commit_sha
+        expose :subscribed do |merge_request, options|
+          merge_request.subscribed?(options[:current_user], options[:project])
+        end
+        expose :user_notes_count
+        expose :should_remove_source_branch?, as: :should_remove_source_branch
+        expose :force_remove_source_branch?, as: :force_remove_source_branch
+
+        expose :web_url do |merge_request, options|
+          Gitlab::UrlBuilder.build(merge_request)
+        end
+      end
     end
   end
 end

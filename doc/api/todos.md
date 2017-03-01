@@ -92,7 +92,7 @@ Example Response:
         "updated_at": "2016-06-17T07:47:34.163Z",
         "due_date": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_status": "cannot_be_merged",
       "subscribed": true,
       "user_notes_count": 7
@@ -165,7 +165,7 @@ Example Response:
         "updated_at": "2016-06-17T07:47:34.163Z",
         "due_date": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_status": "cannot_be_merged",
       "subscribed": true,
       "user_notes_count": 7
@@ -263,7 +263,7 @@ Example Response:
         "updated_at": "2016-06-17T07:47:34.163Z",
         "due_date": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_status": "cannot_be_merged",
       "subscribed": true,
       "user_notes_count": 7

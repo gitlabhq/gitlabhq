@@ -2,8 +2,8 @@
 
 .form-group
   .checkbox.builds-feature
-    = form.label :only_allow_merge_if_build_succeeds do
-      = form.check_box :only_allow_merge_if_build_succeeds
+    = form.label :only_allow_merge_if_pipeline_succeeds do
+      = form.check_box :only_allow_merge_if_pipeline_succeeds
       %strong Only allow merge requests to be merged if the pipeline succeeds
       %br
       %span.descr
