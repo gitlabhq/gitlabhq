@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170217151947) do
+ActiveRecord::Schema.define(version: 20170301195939) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -232,32 +232,6 @@ ActiveRecord::Schema.define(version: 20170217151947) do
   add_index "ci_builds", ["status"], name: "index_ci_builds_on_status", using: :btree
   add_index "ci_builds", ["token"], name: "index_ci_builds_on_token", unique: true, using: :btree
 
-  create_table "ci_commits", force: :cascade do |t|
-    t.integer "project_id"
-    t.string "ref"
-    t.string "sha"
-    t.string "before_sha"
-    t.text "push_data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean "tag", default: false
-    t.text "yaml_errors"
-    t.datetime "committed_at"
-    t.integer "gl_project_id"
-    t.string "status"
-    t.datetime "started_at"
-    t.datetime "finished_at"
-    t.integer "duration"
-    t.integer "user_id"
-    t.integer "lock_version"
-  end
-
-  add_index "ci_commits", ["gl_project_id", "ref", "status"], name: "index_ci_commits_on_gl_project_id_and_ref_and_status", using: :btree
-  add_index "ci_commits", ["gl_project_id", "sha"], name: "index_ci_commits_on_gl_project_id_and_sha", using: :btree
-  add_index "ci_commits", ["gl_project_id"], name: "index_ci_commits_on_gl_project_id", using: :btree
-  add_index "ci_commits", ["status"], name: "index_ci_commits_on_status", using: :btree
-  add_index "ci_commits", ["user_id"], name: "index_ci_commits_on_user_id", using: :btree
-
   create_table "ci_events", force: :cascade do |t|
     t.integer "project_id"
     t.integer "user_id"
@@ -280,6 +254,32 @@ ActiveRecord::Schema.define(version: 20170217151947) do
     t.string "refs"
     t.datetime "deleted_at"
   end
+
+  create_table "ci_pipelines", force: :cascade do |t|
+    t.integer "project_id"
+    t.string "ref"
+    t.string "sha"
+    t.string "before_sha"
+    t.text "push_data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean "tag", default: false
+    t.text "yaml_errors"
+    t.datetime "committed_at"
+    t.integer "gl_project_id"
+    t.string "status"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.integer "duration"
+    t.integer "user_id"
+    t.integer "lock_version"
+  end
+
+  add_index "ci_pipelines", ["gl_project_id", "ref", "status"], name: "index_ci_pipelines_on_gl_project_id_and_ref_and_status", using: :btree
+  add_index "ci_pipelines", ["gl_project_id", "sha"], name: "index_ci_pipelines_on_gl_project_id_and_sha", using: :btree
+  add_index "ci_pipelines", ["gl_project_id"], name: "index_ci_pipelines_on_gl_project_id", using: :btree
+  add_index "ci_pipelines", ["status"], name: "index_ci_pipelines_on_status", using: :btree
+  add_index "ci_pipelines", ["user_id"], name: "index_ci_pipelines_on_user_id", using: :btree
 
   create_table "ci_projects", force: :cascade do |t|
     t.string "name"
@@ -1339,7 +1339,7 @@ ActiveRecord::Schema.define(version: 20170217151947) do
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "lists", "boards"
   add_foreign_key "lists", "labels"
-  add_foreign_key "merge_request_metrics", "ci_commits", column: "pipeline_id", on_delete: :cascade
+  add_foreign_key "merge_request_metrics", "ci_pipelines", column: "pipeline_id", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade

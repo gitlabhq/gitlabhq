@@ -5,8 +5,6 @@ module Ci
     include Importable
     include AfterCommitQueue
 
-    self.table_name = 'ci_commits'
-
     belongs_to :project, foreign_key: :gl_project_id
     belongs_to :user
 

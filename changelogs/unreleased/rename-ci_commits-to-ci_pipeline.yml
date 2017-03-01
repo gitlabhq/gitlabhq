@@ -1,0 +1,4 @@
+---
+title: Rename table ci_commits to ci_pipelines
+merge_request: 9638
+author:
