@@ -5,7 +5,7 @@ more CI jobs running, you can set it to be merged automatically when the
 jobs pipeline succeeds. This way, you don't have to wait for the jobs to
 finish and remember to merge the request manually.
 
-![Enable](img/merge_when_build_succeeds_enable.png)
+![Enable](img/merge_when_pipeline_succeeds_enable.png)
 
 When you hit the "Merge When Pipeline Succeeds" button, the status of the merge
 request will be updated to represent the impending merge. If you cannot wait
@@ -16,7 +16,7 @@ Both team developers and the author of the merge request have the option to
 cancel the automatic merge if they find a reason why it shouldn't be merged
 after all.
 
-![Status](img/merge_when_build_succeeds_status.png)
+![Status](img/merge_when_pipeline_succeeds_status.png)
 
 When the pipeline succeeds, the merge request will automatically be merged.
 When the pipeline fails, the author gets a chance to retry any failed jobs,
@@ -32,15 +32,16 @@ changes to be reviewed.
 > **Note:**
 You need to have jobs configured to enable this feature.
 
-You can prevent merge requests from being merged if their pipeline did not succeed.
+You can prevent merge requests from being merged if their pipeline did not succeed
+or if there are discussions to be resolved.
 
 Navigate to your project's settings page, select the
 **Only allow merge requests to be merged if the pipeline succeeds** check box and
 hit **Save** for the changes to take effect.
 
-![Only allow merge if pipeline succeeds settings](img/merge_when_build_succeeds_only_if_succeeds_settings.png)
+![Only allow merge if pipeline succeeds settings](img/merge_when_pipeline_succeeds_only_if_succeeds_settings.png)
 
 From now on, every time the pipeline fails you will not be able to merge the
 merge request from the UI, until you make all relevant jobs pass.
 
-![Only allow merge if pipeline succeeds message](img/merge_when_build_succeeds_only_if_succeeds_msg.png)
+![Only allow merge if pipeline succeeds message](img/merge_when_pipeline_succeeds_only_if_succeeds_msg.png)

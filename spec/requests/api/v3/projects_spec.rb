@@ -400,7 +400,7 @@ describe API::V3::Projects, api: true do
       expect(json_response['only_allow_merge_if_build_succeeds']).to be_falsey
     end
 
-    it 'sets a project as allowing merge only if build succeeds' do
+    it 'sets a project as allowing merge only if merge_when_pipeline_succeeds' do
       project = attributes_for(:project, { only_allow_merge_if_build_succeeds: true })
       post v3_api('/projects', user), project
       expect(json_response['only_allow_merge_if_build_succeeds']).to be_truthy
@@ -545,7 +545,7 @@ describe API::V3::Projects, api: true do
       expect(json_response['only_allow_merge_if_build_succeeds']).to be_falsey
     end
 
-    it 'sets a project as allowing merge only if build succeeds' do
+    it 'sets a project as allowing merge only if merge_when_pipeline_succeeds' do
       project = attributes_for(:project, { only_allow_merge_if_build_succeeds: true })
       post v3_api("/projects/user/#{user.id}", admin), project
       expect(json_response['only_allow_merge_if_build_succeeds']).to be_truthy
@@ -639,7 +639,7 @@ describe API::V3::Projects, api: true do
         expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
         expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
-        expect(json_response['only_allow_merge_if_build_succeeds']).to eq(project.only_allow_merge_if_build_succeeds)
+        expect(json_response['only_allow_merge_if_build_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['repository_storage']).to eq(project.repository_storage)
       end
@@ -692,7 +692,7 @@ describe API::V3::Projects, api: true do
         expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
         expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
-        expect(json_response['only_allow_merge_if_build_succeeds']).to eq(project.only_allow_merge_if_build_succeeds)
+        expect(json_response['only_allow_merge_if_build_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response).not_to have_key('repository_storage')
       end
