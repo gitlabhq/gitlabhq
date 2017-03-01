@@ -4,14 +4,14 @@ describe PipelinesFinder do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
-  let!(:tag_pipeline)         { create(:ci_pipeline, project: project, user: user, ref: 'v1.0.0') }
-  let!(:created_pipeline)     { create(:ci_pipeline, project: project, user: user, status: 'created') }
-  let!(:pending_pipeline)     { create(:ci_pipeline, project: project, user: user, status: 'pending') }
-  let!(:running_pipeline)     { create(:ci_pipeline, project: project, user: user, status: 'running') }
-  let!(:success_pipeline)     { create(:ci_pipeline, project: project, user: user, status: 'success') }
-  let!(:failed_pipeline)      { create(:ci_pipeline, project: project, user: user, status: 'failed') }
-  let!(:canceled_pipeline)    { create(:ci_pipeline, project: project, user: user, status: 'canceled') }
-  let!(:skipped_pipeline)     { create(:ci_pipeline, project: project, user: user, status: 'skipped') }
+  let!(:tag_pipeline)         { create(:ci_pipeline, project: project, user: user, created_at: 10.minutes.ago, ref: 'v1.0.0') }
+  let!(:created_pipeline)     { create(:ci_pipeline, project: project, user: user, created_at:  9.minutes.ago, status: 'created') }
+  let!(:pending_pipeline)     { create(:ci_pipeline, project: project, user: user, created_at:  8.minutes.ago, status: 'pending') }
+  let!(:running_pipeline)     { create(:ci_pipeline, project: project, user: user, created_at:  7.minutes.ago, status: 'running') }
+  let!(:success_pipeline)     { create(:ci_pipeline, project: project, user: user, created_at:  6.minutes.ago, status: 'success') }
+  let!(:failed_pipeline)      { create(:ci_pipeline, project: project, user: user, created_at:  5.minutes.ago, status: 'failed') }
+  let!(:canceled_pipeline)    { create(:ci_pipeline, project: project, user: user, created_at:  2.minutes.ago, status: 'canceled') }
+  let!(:skipped_pipeline)     { create(:ci_pipeline, project: project, user: user, created_at:  1.minute.ago,  status: 'skipped') }
   let!(:yaml_errors_pipeline) { create(:ci_pipeline, project: project, user: user, yaml_errors: 'Syntax error') }
 
   subject { described_class.new(project, params).execute }
