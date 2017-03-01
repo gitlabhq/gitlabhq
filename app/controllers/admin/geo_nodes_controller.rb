@@ -44,7 +44,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
     if @node.primary?
       flash[:alert] = "Primary node can't be disabled."
     else
-      @node.toggle!
+      @node.toggle!(:enabled)
 
       new_status = @node.enabled? ? 'enabled' : 'disabled'
       flash[:notice] = "Node #{@node.url} was successfully #{new_status}."

@@ -39,10 +39,6 @@ class GeoNode < ActiveRecord::Base
     !primary
   end
 
-  def toggle!
-    update_attribute(:enabled, !enabled)
-  end
-
   def uri
     if relative_url_root
       relative_url = relative_url_root.starts_with?('/') ? relative_url_root : "/#{relative_url_root}"
