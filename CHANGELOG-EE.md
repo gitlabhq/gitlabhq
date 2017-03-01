@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.17.2 (2017-03-01)
+
+- No changes.
+
 ## 8.17.1 (2017-02-28)
 
 - Fix admin email notification recipient group select list.
