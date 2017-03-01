@@ -5,23 +5,12 @@ jasmine.getFixtures().fixturesPath = 'base/spec/javascripts/fixtures';
 jasmine.getJSONFixtures().fixturesPath = 'base/spec/javascripts/fixtures';
 
 // include common libraries
+require('~/commons/index.js');
 window.$ = window.jQuery = require('jquery');
 window._ = require('underscore');
 window.Cookies = require('js-cookie');
 window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
-require('jquery-ujs');
-require('bootstrap/js/affix');
-require('bootstrap/js/alert');
-require('bootstrap/js/button');
-require('bootstrap/js/collapse');
-require('bootstrap/js/dropdown');
-require('bootstrap/js/modal');
-require('bootstrap/js/scrollspy');
-require('bootstrap/js/tab');
-require('bootstrap/js/transition');
-require('bootstrap/js/tooltip');
-require('bootstrap/js/popover');
 
 // stub expected globals
 window.gl = window.gl || {};

@@ -6,23 +6,8 @@
 /* global AwardsHandler */
 /* global Aside */
 
-window.$ = window.jQuery = require('jquery');
-require('jquery-ujs');
-require('vendor/jquery.endless-scroll');
-require('vendor/jquery.waitforimages');
-require('vendor/jquery.caret');
-require('vendor/jquery.atwho');
-require('vendor/jquery.scrollTo');
+// common libraries
 window.Cookies = require('js-cookie');
-require('./autosave');
-require('bootstrap/js/affix');
-require('bootstrap/js/alert');
-require('bootstrap/js/dropdown');
-require('bootstrap/js/modal');
-require('bootstrap/js/tab');
-require('bootstrap/js/transition');
-require('bootstrap/js/tooltip');
-require('select2/select2.js');
 window.Pikaday = require('pikaday');
 window._ = require('underscore');
 window.Dropzone = require('dropzone');
@@ -34,7 +19,6 @@ require('./shortcuts_navigation');
 require('./shortcuts_dashboard_navigation');
 require('./shortcuts_issuable');
 require('./shortcuts_network');
-require('vendor/jquery.nicescroll');
 
 // behaviors
 require('./behaviors/autosize');

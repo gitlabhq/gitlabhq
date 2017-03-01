@@ -17,6 +17,7 @@ var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
+    common:               './commons/index.js',
     application:          './application.js',
     blob_edit:            './blob_edit/blob_edit_bundle.js',
     boards:               './boards/boards_bundle.js',
@@ -90,13 +91,18 @@ var config = {
     IS_PRODUCTION ?
       new webpack.HashedModuleIdsPlugin() :
       new webpack.NamedModulesPlugin(),
+
+    // create a common.js bundle to be loaded on every page
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common',
+      minChunks: Infinity,
+    }),
   ],
 
   resolve: {
     extensions: ['.js', '.es6', '.js.es6'],
     alias: {
       '~':              path.join(ROOT_PATH, 'app/assets/javascripts'),
-      'bootstrap/js':   'bootstrap-sass/assets/javascripts/bootstrap',
       'emoji-aliases$': path.join(ROOT_PATH, 'fixtures/emojis/aliases.json'),
       'icons':          path.join(ROOT_PATH, 'app/views/shared/icons'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
