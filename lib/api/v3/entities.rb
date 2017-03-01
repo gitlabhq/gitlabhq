@@ -111,8 +111,10 @@ module API
           ::API::Entities::SharedGroup.represent(project.project_group_links.all, options)
         end
         expose :only_allow_merge_if_pipeline_succeeds, as: :only_allow_merge_if_build_succeeds
+        expose :repository_storage, if: lambda { |_project, options| options[:current_user].try(:admin?) }
         expose :request_access_enabled
         expose :only_allow_merge_if_all_discussions_are_resolved
+        expose :approvals_before_merge
 
         expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
       end
@@ -147,12 +149,16 @@ module API
         expose :merge_status
         expose :diff_head_sha, as: :sha
         expose :merge_commit_sha
+
         expose :subscribed do |merge_request, options|
           merge_request.subscribed?(options[:current_user], options[:project])
         end
+
         expose :user_notes_count
+        expose :approvals_before_merge
         expose :should_remove_source_branch?, as: :should_remove_source_branch
         expose :force_remove_source_branch?, as: :force_remove_source_branch
+        expose :squash
 
         expose :web_url do |merge_request, options|
           Gitlab::UrlBuilder.build(merge_request)

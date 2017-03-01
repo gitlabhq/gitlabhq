@@ -220,7 +220,7 @@ module API
             present merge_request, with: ::API::V3::Entities::MergeRequest, current_user: current_user, project: user_project
           end
 
-          desc 'Cancel merge if "Merge When Pipeline succeeds" is enabled' do
+          desc 'Cancel merge if "Merge When Pipeline Succeeds" is enabled' do
             success ::API::V3::Entities::MergeRequest
           end
           post "#{path}/cancel_merge_when_build_succeeds" do
