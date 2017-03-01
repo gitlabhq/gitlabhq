@@ -8,14 +8,6 @@ module Notes
       note.author  = current_user
       note.system  = false
 
-      if note.award_emoji?
-        noteable = note.noteable
-        if noteable.user_can_award?(current_user, note.award_emoji_name)
-          todo_service.new_award_emoji(noteable, current_user)
-          return noteable.create_award_emoji(note.award_emoji_name, current_user)
-        end
-      end
-
       # We execute commands (extracted from `params[:note]`) on the noteable
       # **before** we save the note because if the note consists of commands
       # only, there is no need be create a note!
@@ -48,7 +40,7 @@ module Notes
           note.errors.add(:commands_only, 'Commands applied')
         end
 
-        note.commands_changes = command_params.keys
+        note.commands_changes = command_params
       end
 
       note

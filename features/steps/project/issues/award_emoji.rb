@@ -44,6 +44,10 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
     end
   end
 
+  step 'I have new comment with emoji added' do
+    expect(page).to have_selector ".emoji[title=':smile:']"
+  end
+
   step 'I have award added' do
     page.within '.awards' do
       expect(page).to have_selector '.js-emoji-btn'
