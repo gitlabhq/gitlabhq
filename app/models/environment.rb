@@ -137,12 +137,16 @@ class Environment < ActiveRecord::Base
     end
   end
 
-  def has_terminals?
+  def deployment_service_ready?
     project.deployment_service.present? && available? && last_deployment.present?
   end
 
   def terminals
-    project.deployment_service.terminals(self) if has_terminals?
+    project.deployment_service.terminals(self) if deployment_service_ready?
+  end
+
+  def rollout_status
+    project.deployment_service.rollout_status(self) if deployment_service_ready?
   end
 
   # An environment name is not necessarily suitable for use in URLs, DNS
