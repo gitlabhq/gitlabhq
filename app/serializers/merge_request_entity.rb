@@ -23,6 +23,8 @@ class MergeRequestEntity < IssuableEntity
   expose :source_branch_exists?, as: :source_branch_exists
   expose :mergeable_discussions_state?, as: :mergeable_discussions_state
   expose :conflicts_can_be_resolved_in_ui?, as: :conflicts_can_be_resolved_in_ui
+  expose :branch_missing?, as: :branch_missing
+  expose :has_no_commits?, as: :has_no_commits
 
   expose :current_user do
     expose :can_create_issue do |merge_request|
@@ -63,5 +65,9 @@ class MergeRequestEntity < IssuableEntity
 
   expose :project_archived do |merge_request|
     merge_request.project.archived?
+  end
+
+  expose :has_conflicts do |merge_request|
+    merge_request.cannot_be_merged?
   end
 end

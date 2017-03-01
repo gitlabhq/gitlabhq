@@ -5,6 +5,10 @@ import ClosedState from './components/states/mr_widget_closed';
 import LockedState from './components/states/mr_widget_locked';
 import WipState from './components/states/mr_widget_wip';
 import ArchivedState from './components/states/mr_widget_archived';
+import ConflictsState from './components/states/mr_widget_conflicts';
+import NothingToMergeState from './components/states/mr_widget_nothing_to_merge';
+import MissingBranchState from './components/states/mr_widget_missing_branch';
+import NotAllowedState from './components/states/mr_widget_not_allowed';
 import MRWidgetStore from './stores/merge_request_store';
 
 const mrWidgetOptions = () => ({
@@ -23,6 +27,10 @@ const mrWidgetOptions = () => ({
     'mr-widget-locked': LockedState,
     'mr-widget-wip': WipState,
     'mr-widget-archived': ArchivedState,
+    'mr-widget-conflicts': ConflictsState,
+    'mr-widget-nothing-to-merge': NothingToMergeState,
+    'mr-widget-not-allowed': NotAllowedState,
+    'mr-widget-missing-branch': MissingBranchState,
   },
   template: `
     <div class="mr-state-widget">
@@ -31,12 +39,15 @@ const mrWidgetOptions = () => ({
         :sourceBranch="mr.sourceBranch"
       />
 
-      <mr-widget-merged :mr="mr" v-if="mr.isMerged" />
-      <mr-widget-closed :mr="mr" v-if="mr.isClosed" />
-      <mr-widget-locked :mr="mr" v-if="mr.isLocked" />
-      <mr-widget-archived v-if="mr.isArchived" />
-      <mr-widget-wip v-if="mr.isWip" />
-
+      <mr-widget-merged :mr="mr" v-if="mr.state === 'merged'" />
+      <mr-widget-closed :mr="mr" v-if="mr.state === 'closed'" />
+      <mr-widget-locked :mr="mr" v-if="mr.state === 'locked'" />
+      <mr-widget-conflicts :mr="mr" v-if="mr.state === 'conflicts'" />
+      <mr-widget-missing-branch :mr="mr" v-if="mr.state === 'missingBranch'" />
+      <mr-widget-nothing-to-merge v-if="mr.state === 'nothingToMerge'" />
+      <mr-widget-not-allowed v-if="mr.state === 'notAllowedToMerge'" />
+      <mr-widget-archived v-if="mr.state === 'archived'" />
+      <mr-widget-wip v-if="mr.state === 'workInProgress'" />
     </div>
   `,
 });
