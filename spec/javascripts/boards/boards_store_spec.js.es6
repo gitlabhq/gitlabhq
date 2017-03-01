@@ -1,5 +1,3 @@
-window.ES6Promise = require('vendor/es6-promise.auto');
-window.ES6Promise.polyfill();
 /* eslint-disable comma-dangle, one-var, no-unused-vars */
 /* global Vue */
 /* global BoardService */
@@ -16,6 +14,7 @@ require('~/boards/models/user');
 require('~/boards/services/board_service');
 require('~/boards/stores/boards_store');
 require('./mock_data');
+require('es6-promise').polyfill();
 
 describe('Store', () => {
   beforeEach(() => {

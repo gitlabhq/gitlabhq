@@ -9,9 +9,9 @@ describe 'Issue Boards', :feature, :js do
   let(:user) { create(:user) }
   let(:label) { create(:label, project: project) }
   let!(:list1) { create(:list, board: board, label: label, position: 0) }
-  let!(:issue1) { create(:labeled_issue, project: project, title: 'testing 1', labels: [label], relative_position: 3.0) }
-  let!(:issue2) { create(:labeled_issue, project: project, title: 'testing 2', labels: [label], relative_position: 2.0) }
-  let!(:issue3) { create(:labeled_issue, project: project, title: 'testing 3', labels: [label], relative_position: 1.0) }
+  let!(:issue1) { create(:labeled_issue, project: project, title: 'testing 1', labels: [label], relative_position: 3) }
+  let!(:issue2) { create(:labeled_issue, project: project, title: 'testing 2', labels: [label], relative_position: 2) }
+  let!(:issue3) { create(:labeled_issue, project: project, title: 'testing 3', labels: [label], relative_position: 1) }
 
   before do
     project.team << [user, :master]

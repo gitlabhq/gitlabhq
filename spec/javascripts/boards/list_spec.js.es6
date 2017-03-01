@@ -103,6 +103,7 @@ describe('List model', () => {
 
     listDup.updateIssueLabel(list, issue);
 
-    expect(gl.boardService.moveIssue).toHaveBeenCalledWith(issue.id, list.id, listDup.id);
+    expect(gl.boardService.moveIssue)
+      .toHaveBeenCalledWith(issue.id, list.id, listDup.id, undefined, undefined);
   });
 });
