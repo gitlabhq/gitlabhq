@@ -18,13 +18,16 @@ class MergeRequestEntity < IssuableEntity
   expose :merge_commit_sha
   expose :merge_event
   expose :closed_event
+  expose :diff_head_sha
   expose :head_pipeline
+  expose :merge_commit_message
   expose :work_in_progress?, as: :work_in_progress
   expose :source_branch_exists?, as: :source_branch_exists
   expose :mergeable_discussions_state?, as: :mergeable_discussions_state
   expose :conflicts_can_be_resolved_in_ui?, as: :conflicts_can_be_resolved_in_ui
   expose :branch_missing?, as: :branch_missing
   expose :has_no_commits?, as: :has_no_commits
+  expose :can_be_merged?, as: :can_be_merged
 
   expose :current_user do
     expose :can_create_issue do |merge_request|
@@ -93,4 +96,9 @@ class MergeRequestEntity < IssuableEntity
                                                     merge_request.project,
                                                     merge_request)
   end
+
+  expose :merge_commit_message_with_description do |merge_request|
+    merge_request.merge_commit_message(include_description: true)
+  end
+
 end

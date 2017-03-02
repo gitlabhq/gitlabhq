@@ -10,6 +10,9 @@ export default class MergeRequestStore {
 
     this.targetBranch = data.target_branch;
     this.sourceBranch = data.source_branch;
+    this.sha = data.diff_head_sha;
+    this.commitMessage = data.merge_commit_message;
+    this.commitMessageWithDescription = data.merge_commit_message_with_description;
 
     this.updatedAt = data.updated_at;
     this.mergedAt = MergeRequestStore.getEventDate(data.merge_event);
@@ -33,6 +36,7 @@ export default class MergeRequestStore {
     this.canUpdateMergeRequest = currentUser.can_update_merge_request || false;
     this.canResolveConflictsInUI = data.conflicts_can_be_resolved_in_ui || false;
     this.canBeCherryPicked = data.can_be_cherry_picked || false;
+    this.canBeMerged = data.can_be_merged || false;
 
     this.setState(data);
   }
@@ -51,6 +55,8 @@ export default class MergeRequestStore {
         this.state = 'workInProgress';
       } else if (!this.canMerge) {
         this.state = 'notAllowedToMerge';
+      } else if (this.canBeMerged) {
+        this.state = 'readyToMerge';
       }
     } else {
       switch (data.state) {
