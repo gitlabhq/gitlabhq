@@ -1,3 +1,6 @@
-- if environment.has_metrics? && can?(current_user, :read_environment, @project)
-  = link_to metrics_namespace_project_environment_path(@project.namespace, @project, environment), class: 'btn metrics-button' do
-    = icon('metrics')
+- environment = local_assigns.fetch(:environment)
+
+- return unless environment.has_metrics? && can?(current_user, :read_environment, environment)
+
+= link_to environment_metrics_path(environment), class: 'btn metrics-button' do
+  = icon('tachometer')

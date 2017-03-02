@@ -112,12 +112,12 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def metrics
     # Currently, this acts as a hint to load the metrics details into the cache
     # if they aren't there already
-    @metrics = environment.metrics
+    @metrics = environment.metrics || {}
 
     respond_to do |format|
       format.html
       format.json do
-        render json: @metrics, status: @metrics ? 200 : 204
+        render json: @metrics, status: @metrics.any? ? :ok : :no_content
       end
     end
   end

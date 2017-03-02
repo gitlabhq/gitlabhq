@@ -70,10 +70,10 @@ class PrometheusService < MonitoringService
     {
       success: true,
       metrics: {
-        #Memory used in MB
+        # Memory used in MB
         memory_values: query_range("sum(container_memory_usage_bytes{container_name=\"app\", environment=\"#{environment}\"})/1024/1024", 8.hours.ago),
         memory_current: query("sum(container_memory_usage_bytes{container_name=\"app\", environment=\"#{environment}\"})/1024/1024"),
-        #CPU Usage rate in cores.
+        # CPU Usage rate in cores.
         cpu_values: query_range("sum(rate(container_cpu_usage_seconds_total{container_name=\"app\",environment=\"#{environment}\"}[2m]))", 8.hours.ago),
         cpu_current: query("sum(rate(container_cpu_usage_seconds_total{container_name=\"app\",environment=\"#{environment}\"}[2m]))"),
       },
