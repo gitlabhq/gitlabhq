@@ -12,10 +12,6 @@ module SharedProjectTab
     ensure_active_main_tab('Repository')
   end
 
-  step 'the active main tab should be Graphs' do
-    ensure_active_main_tab('Graphs')
-  end
-
   step 'the active main tab should be Issues' do
     ensure_active_main_tab('Issues')
   end
@@ -40,12 +36,8 @@ module SharedProjectTab
     expect(page).to have_selector('.layout-nav .nav-links > li.active', count: 0)
   end
 
-  step 'the active main tab should be Activity' do
-    ensure_active_main_tab('Activity')
-  end
-
-  step 'the active sub tab should be Network' do
-    ensure_active_sub_tab('Network')
+  step 'the active sub tab should be Graph' do
+    ensure_active_sub_tab('Graph')
   end
 
   step 'the active sub tab should be Files' do

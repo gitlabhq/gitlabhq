@@ -178,3 +178,29 @@
     margin-left: $btn-side-margin;
   }
 }
+
+.repo-charts {
+  .sub-header {
+    margin: 20px 0;
+  }
+
+  .sub-header-block.border-top {
+    margin-top: 20px;
+    padding: 0;
+    border-top: 1px solid $white-dark;
+    border-bottom: none;
+  }
+
+  .commit-stats li {
+    font-size: 16px;
+  }
+
+  .tree-ref-header {
+    margin-bottom: 20px;
+
+    h4 {
+      margin: 0;
+      line-height: 36px;
+    }
+  }
+}

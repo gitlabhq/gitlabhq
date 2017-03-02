@@ -3,7 +3,7 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('cycle_analytics')
 
-= render "projects/pipelines/head"
+= render "projects/head"
 
 #cycle-analytics{ class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) } }
   - if @cycle_analytics_no_data

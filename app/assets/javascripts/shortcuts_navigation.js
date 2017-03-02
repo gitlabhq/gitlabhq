@@ -16,9 +16,6 @@ require('./shortcuts');
       Mousetrap.bind('g p', function() {
         return ShortcutsNavigation.findAndFollowLink('.shortcuts-project');
       });
-      Mousetrap.bind('g e', function() {
-        return ShortcutsNavigation.findAndFollowLink('.shortcuts-project-activity');
-      });
       Mousetrap.bind('g f', function() {
         return ShortcutsNavigation.findAndFollowLink('.shortcuts-tree');
       });
@@ -30,9 +27,6 @@ require('./shortcuts');
       });
       Mousetrap.bind('g n', function() {
         return ShortcutsNavigation.findAndFollowLink('.shortcuts-network');
-      });
-      Mousetrap.bind('g g', function() {
-        return ShortcutsNavigation.findAndFollowLink('.shortcuts-graphs');
       });
       Mousetrap.bind('g i', function() {
         return ShortcutsNavigation.findAndFollowLink('.shortcuts-issues');
