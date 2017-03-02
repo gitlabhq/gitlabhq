@@ -122,7 +122,8 @@
     }
 
     static unselectEditTokens(e) {
-      const isElementInFilteredSearch = document.querySelector('.filtered-search-input-container').contains(e.target);
+      const inputContainer = document.querySelector('.filtered-search-input-container');
+      const isElementInFilteredSearch = inputContainer && inputContainer.contains(e.target);
       const isElementInFilterDropdown = e.target.closest('.filter-dropdown') !== null;
       const isElementScrollContainer = e.target.classList.contains('scroll-container');
 

@@ -29,13 +29,16 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
 
     beforeEach(() => {
       setFixtures(`
-        <form>
-          <ul class="tokens-container list-unstyled"></ul>
-          <input type='text' class='filtered-search' placeholder='${placeholder}' />
-          <button class="clear-search" type="button">
-            <i class="fa fa-times"></i>
-          </button>
-        </form>
+        <div class="filtered-search-input-container">
+          <form>
+            <ul class="tokens-container list-unstyled">
+              ${FilteredSearchSpecHelper.createInputHTML(placeholder)}
+            </ul>
+            <button class="clear-search" type="button">
+              <i class="fa fa-times"></i>
+            </button>
+          </form>
+        </div>
       `);
 
       spyOn(gl.FilteredSearchManager.prototype, 'cleanup').and.callFake(() => {});
@@ -44,44 +47,44 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
       spyOn(gl.FilteredSearchDropdownManager.prototype, 'setDropdown').and.callFake(() => {});
       spyOn(gl.FilteredSearchDropdownManager.prototype, 'updateDropdownOffset').and.callFake(() => {});
       spyOn(gl.utils, 'getParameterByName').and.returnValue(null);
+      spyOn(gl.FilteredSearchVisualTokens, 'unselectTokens').and.callThrough();
 
       input = document.querySelector('.filtered-search');
       tokensContainer = document.querySelector('.tokens-container');
       manager = new gl.FilteredSearchManager();
     });
 
-    afterEach(() => {
-      tokensContainer.innerHTML = '';
-    });
-
     describe('search', () => {
       const defaultParams = '?scope=all&utf8=✓&state=opened';
 
-      it('should search with a single word', () => {
+      it('should search with a single word', (done) => {
         input.value = 'searchTerm';
 
         spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
           expect(url).toEqual(`${defaultParams}&search=searchTerm`);
+          done();
         });
 
         manager.search();
       });
 
-      it('should search with multiple words', () => {
+      it('should search with multiple words', (done) => {
         input.value = 'awesome search terms';
 
         spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
           expect(url).toEqual(`${defaultParams}&search=awesome+search+terms`);
+          done();
         });
 
         manager.search();
       });
 
-      it('should search with special characters', () => {
+      it('should search with special characters', (done) => {
         input.value = '~!@#$%^&*()_+{}:<>,.?/';
 
         spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
           expect(url).toEqual(`${defaultParams}&search=~!%40%23%24%25%5E%26*()_%2B%7B%7D%3A%3C%3E%2C.%3F%2F`);
+          done();
         });
 
         manager.search();
@@ -103,7 +106,9 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
       });
 
       it('should not render placeholder when there are tokens and no input', () => {
-        tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug');
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug'),
+        );
 
         const event = new Event('input');
         input.dispatchEvent(event);
@@ -115,7 +120,9 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
     describe('checkForBackspace', () => {
       describe('tokens and no input', () => {
         beforeEach(() => {
-          tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug');
+          tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+            FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug'),
+          );
         });
 
         it('removes last token', () => {
@@ -148,38 +155,42 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
     });
 
     describe('removeSelectedToken', () => {
+      function getVisualTokens() {
+        return tokensContainer.querySelectorAll('.js-visual-token');
+      }
+
       beforeEach(() => {
-        tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true);
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true),
+        );
       });
 
       it('removes selected token when the backspace key is pressed', () => {
-        expect(tokensContainer.children.length).toEqual(1);
+        expect(getVisualTokens().length).toEqual(1);
 
         dispatchBackspaceEvent(document, 'keydown');
 
-        expect(tokensContainer.children.length).toEqual(0);
+        expect(getVisualTokens().length).toEqual(0);
       });
 
       it('removes selected token when the delete key is pressed', () => {
-        tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true);
-
-        expect(tokensContainer.children.length).toEqual(1);
+        expect(getVisualTokens().length).toEqual(1);
 
         dispatchDeleteEvent(document, 'keydown');
 
-        expect(tokensContainer.children.length).toEqual(0);
+        expect(getVisualTokens().length).toEqual(0);
       });
 
       it('updates the input placeholder after removal', () => {
         manager.handleInputPlaceholder();
 
         expect(input.placeholder).toEqual('');
-        expect(tokensContainer.children.length).toEqual(1);
+        expect(getVisualTokens().length).toEqual(1);
 
         dispatchBackspaceEvent(document, 'keydown');
 
         expect(input.placeholder).not.toEqual('');
-        expect(tokensContainer.children.length).toEqual(0);
+        expect(getVisualTokens().length).toEqual(0);
       });
 
       it('updates the clear button after removal', () => {
@@ -188,31 +199,35 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
         const clearButton = document.querySelector('.clear-search');
 
         expect(clearButton.classList.contains('hidden')).toEqual(false);
-        expect(tokensContainer.children.length).toEqual(1);
+        expect(getVisualTokens().length).toEqual(1);
 
         dispatchBackspaceEvent(document, 'keydown');
 
         expect(clearButton.classList.contains('hidden')).toEqual(true);
-        expect(tokensContainer.children.length).toEqual(0);
+        expect(getVisualTokens().length).toEqual(0);
       });
     });
 
     describe('unselects token', () => {
       beforeEach(() => {
-        tokensContainer.innerHTML = `
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
           ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug', true)}
           ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
           ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~awesome')}
-        `;
+        `);
       });
 
       it('unselects token when input is clicked', () => {
         const selectedToken = tokensContainer.querySelector('.js-visual-token .selected');
 
         expect(selectedToken.classList.contains('selected')).toEqual(true);
+        expect(gl.FilteredSearchVisualTokens.unselectTokens).not.toHaveBeenCalled();
 
-        input.click();
+        // Click directly on input attached to document
+        // so that the click event will propagate properly
+        document.querySelector('.filtered-search').click();
 
+        expect(gl.FilteredSearchVisualTokens.unselectTokens).toHaveBeenCalled();
         expect(selectedToken.classList.contains('selected')).toEqual(false);
       });
 
@@ -220,10 +235,12 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
         const selectedToken = tokensContainer.querySelector('.js-visual-token .selected');
 
         expect(selectedToken.classList.contains('selected')).toEqual(true);
+        expect(gl.FilteredSearchVisualTokens.unselectTokens).not.toHaveBeenCalled();
 
         document.body.click();
 
         expect(selectedToken.classList.contains('selected')).toEqual(false);
+        expect(gl.FilteredSearchVisualTokens.unselectTokens).toHaveBeenCalled();
       });
     });
   });

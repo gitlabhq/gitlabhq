@@ -1,7 +1,8 @@
 class FilteredSearchVisualTokens {
   static getLastVisualToken() {
     const input = document.querySelector('.filtered-search');
-    const lastVisualToken = input.parentElement.previousElementSibling;
+    const lastVisualToken = input && input.parentElement
+      && input.parentElement.previousElementSibling;
 
     return {
       lastVisualToken,
@@ -90,7 +91,7 @@ class FilteredSearchVisualTokens {
   static addSearchVisualToken(searchTerm) {
     const { lastVisualToken } = FilteredSearchVisualTokens.getLastVisualToken();
 
-    if (lastVisualToken.classList.contains('filtered-search-term')) {
+    if (lastVisualToken && lastVisualToken.classList.contains('filtered-search-term')) {
       lastVisualToken.querySelector('.name').value += ` ${searchTerm}`;
     } else {
       FilteredSearchVisualTokens.addVisualTokenElement(searchTerm, null, true);

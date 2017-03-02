@@ -25,6 +25,21 @@ class FilteredSearchSpecHelper {
       </li>
     `;
   }
+
+  static createInputHTML(placeholder) {
+    return `
+      <li>
+        <input type='text' class='filtered-search' placeholder='${placeholder || ''}' />
+      </li>
+    `;
+  }
+
+  static createTokensContainerHTML(html, inputPlaceholder) {
+    return `
+      ${html}
+      ${FilteredSearchSpecHelper.createInputHTML(inputPlaceholder)}
+    `;
+  }
 }
 
 module.exports = FilteredSearchSpecHelper;

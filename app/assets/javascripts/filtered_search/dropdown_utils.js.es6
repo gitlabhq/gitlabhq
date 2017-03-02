@@ -100,8 +100,8 @@
         }
       });
 
-      const inputValue = document.querySelector('.filtered-search').value;
-      values.push(inputValue);
+      const input = document.querySelector('.filtered-search');
+      values.push(input && input.value);
 
       return values.join(' ');
     }

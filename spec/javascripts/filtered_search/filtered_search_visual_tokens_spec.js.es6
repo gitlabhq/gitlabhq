@@ -7,13 +7,11 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
 
     beforeEach(() => {
       setFixtures(`
-        <ul class="tokens-container"></ul>
+        <ul class="tokens-container">
+          ${FilteredSearchSpecHelper.createInputHTML()}
+        </ul>
       `);
       tokensContainer = document.querySelector('.tokens-container');
-    });
-
-    afterEach(() => {
-      tokensContainer.innerHTML = '';
     });
 
     describe('getLastVisualToken', () => {
@@ -21,12 +19,14 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
         const { lastVisualToken, isLastVisualTokenValid }
           = gl.FilteredSearchVisualTokens.getLastVisualToken();
 
-        expect(lastVisualToken).toEqual(undefined);
+        expect(lastVisualToken).toEqual(null);
         expect(isLastVisualTokenValid).toEqual(true);
       });
 
       it('returns when there is one visual token', () => {
-        tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug');
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug'),
+        );
 
         const { lastVisualToken, isLastVisualTokenValid }
           = gl.FilteredSearchVisualTokens.getLastVisualToken();
@@ -36,7 +36,9 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
       });
 
       it('returns when there is an incomplete visual token', () => {
-        tokensContainer.innerHTML = FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('Author');
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('Author'),
+        );
 
         const { lastVisualToken, isLastVisualTokenValid }
           = gl.FilteredSearchVisualTokens.getLastVisualToken();
@@ -46,32 +48,32 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
       });
 
       it('returns when there are multiple visual tokens', () => {
-        tokensContainer.innerHTML = `
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
           ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
           ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
           ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
-        `;
+        `);
 
         const { lastVisualToken, isLastVisualTokenValid }
           = gl.FilteredSearchVisualTokens.getLastVisualToken();
-        const items = document.querySelectorAll('.tokens-container li');
+        const items = document.querySelectorAll('.tokens-container .js-visual-token');
 
-        expect(lastVisualToken).toEqual(items[items.length - 1]);
+        expect(lastVisualToken.isEqualNode(items[items.length - 1])).toEqual(true);
         expect(isLastVisualTokenValid).toEqual(true);
       });
 
       it('returns when there are multiple visual tokens and an incomplete visual token', () => {
-        tokensContainer.innerHTML = `
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
           ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
           ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
           ${FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('assignee')}
-        `;
+        `);
 
         const { lastVisualToken, isLastVisualTokenValid }
           = gl.FilteredSearchVisualTokens.getLastVisualToken();
-        const items = document.querySelectorAll('.tokens-container li');
+        const items = document.querySelectorAll('.tokens-container .js-visual-token');
 
-        expect(lastVisualToken).toEqual(items[items.length - 1]);
+        expect(lastVisualToken.isEqualNode(items[items.length - 1])).toEqual(true);
         expect(isLastVisualTokenValid).toEqual(false);
       });
     });
@@ -85,10 +87,10 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
       });
 
       it('removes the selected class from buttons', () => {
-        tokensContainer.innerHTML = `
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
           ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@author')}
           ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', '%123', true)}
-        `;
+        `);
 
         const selected = tokensContainer.querySelector('.js-visual-token .selected');
         expect(selected.classList.contains('selected')).toEqual(true);
@@ -101,11 +103,11 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
 
     describe('selectToken', () => {
       beforeEach(() => {
-        tokensContainer.innerHTML = `
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
           ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
           ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
           ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~awesome')}
-        `;
+        `);
       });
 
       it('removes the selected class if it has selected class', () => {
@@ -140,7 +142,9 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
 
     describe('removeSelectedToken', () => {
       it('does not remove when there are no selected tokens', () => {
-        tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none');
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none'),
+        );
 
         expect(tokensContainer.querySelector('.js-visual-token .selectable')).not.toEqual(null);
 
@@ -150,7 +154,9 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
       });
 
       it('removes selected token', () => {
-        tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true);
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true),
+        );
 
         expect(tokensContainer.querySelector('.js-visual-token .selectable')).not.toEqual(null);
 
@@ -163,10 +169,8 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
     describe('addVisualTokenElement', () => {
       it('renders search visual tokens', () => {
         gl.FilteredSearchVisualTokens.addVisualTokenElement('search term', null, true);
-        const token = tokensContainer.children[0];
+        const token = tokensContainer.querySelector('.js-visual-token');
 
-        expect(tokensContainer.children.length).toEqual(1);
-        expect(token.classList.contains('js-visual-token')).toEqual(true);
         expect(token.classList.contains('filtered-search-term')).toEqual(true);
         expect(token.querySelector('.name').innerText).toEqual('search term');
         expect(token.querySelector('.value')).toEqual(null);
@@ -174,10 +178,8 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
 
       it('renders filter visual token name', () => {
         gl.FilteredSearchVisualTokens.addVisualTokenElement('milestone');
-        const token = tokensContainer.children[0];
+        const token = tokensContainer.querySelector('.js-visual-token');
 
-        expect(tokensContainer.children.length).toEqual(1);
-        expect(token.classList.contains('js-visual-token')).toEqual(true);
         expect(token.classList.contains('filtered-search-token')).toEqual(true);
         expect(token.querySelector('.name').innerText).toEqual('milestone');
         expect(token.querySelector('.value')).toEqual(null);
@@ -185,10 +187,8 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
 
       it('renders filter visual token name and value', () => {
         gl.FilteredSearchVisualTokens.addVisualTokenElement('label', 'Frontend');
-        const token = tokensContainer.children[0];
+        const token = tokensContainer.querySelector('.js-visual-token');
 
-        expect(tokensContainer.children.length).toEqual(1);
-        expect(token.classList.contains('js-visual-token')).toEqual(true);
         expect(token.classList.contains('filtered-search-token')).toEqual(true);
         expect(token.querySelector('.name').innerText).toEqual('label');
         expect(token.querySelector('.value').innerText).toEqual('Frontend');
@@ -198,10 +198,8 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
     describe('addFilterVisualToken', () => {
       it('creates visual token with just tokenName', () => {
         gl.FilteredSearchVisualTokens.addFilterVisualToken('milestone');
-        const token = tokensContainer.children[0];
+        const token = tokensContainer.querySelector('.js-visual-token');
 
-        expect(tokensContainer.children.length).toEqual(1);
-        expect(token.classList.contains('js-visual-token')).toEqual(true);
         expect(token.classList.contains('filtered-search-token')).toEqual(true);
         expect(token.querySelector('.name').innerText).toEqual('milestone');
         expect(token.querySelector('.value')).toEqual(null);
@@ -210,10 +208,8 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
       it('creates visual token with just tokenValue', () => {
         gl.FilteredSearchVisualTokens.addFilterVisualToken('milestone');
         gl.FilteredSearchVisualTokens.addFilterVisualToken('%8.17');
-        const token = tokensContainer.children[0];
+        const token = tokensContainer.querySelector('.js-visual-token');
 
-        expect(tokensContainer.children.length).toEqual(1);
-        expect(token.classList.contains('js-visual-token')).toEqual(true);
         expect(token.classList.contains('filtered-search-token')).toEqual(true);
         expect(token.querySelector('.name').innerText).toEqual('milestone');
         expect(token.querySelector('.value').innerText).toEqual('%8.17');
@@ -221,10 +217,8 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
 
       it('creates full visual token', () => {
         gl.FilteredSearchVisualTokens.addFilterVisualToken('assignee', '@john');
-        const token = tokensContainer.children[0];
+        const token = tokensContainer.querySelector('.js-visual-token');
 
-        expect(tokensContainer.children.length).toEqual(1);
-        expect(token.classList.contains('js-visual-token')).toEqual(true);
         expect(token.classList.contains('filtered-search-token')).toEqual(true);
         expect(token.querySelector('.name').innerText).toEqual('assignee');
         expect(token.querySelector('.value').innerText).toEqual('@john');
@@ -234,10 +228,8 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
     describe('addSearchVisualToken', () => {
       it('creates search visual token', () => {
         gl.FilteredSearchVisualTokens.addSearchVisualToken('search term');
-        const token = tokensContainer.children[0];
+        const token = tokensContainer.querySelector('.js-visual-token');
 
-        expect(tokensContainer.children.length).toEqual(1);
-        expect(token.classList.contains('js-visual-token')).toEqual(true);
         expect(token.classList.contains('filtered-search-term')).toEqual(true);
         expect(token.querySelector('.name').innerText).toEqual('search term');
         expect(token.querySelector('.value')).toEqual(null);
@@ -247,14 +239,18 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
     describe('getLastTokenPartial', () => {
       it('should get last token value', () => {
         const value = '~bug';
-        tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', value);
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', value),
+        );
 
         expect(gl.FilteredSearchVisualTokens.getLastTokenPartial()).toEqual(value);
       });
 
       it('should get last token name if there is no value', () => {
         const name = 'assignee';
-        tokensContainer.innerHTML = FilteredSearchSpecHelper.createNameFilterVisualTokenHTML(name);
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createNameFilterVisualTokenHTML(name),
+        );
 
         expect(gl.FilteredSearchVisualTokens.getLastTokenPartial()).toEqual(name);
       });
@@ -266,7 +262,9 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
 
     describe('removeLastTokenPartial', () => {
       it('should remove the last token value if it exists', () => {
-        tokensContainer.innerHTML = FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~"Community Contribution"');
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~"Community Contribution"'),
+        );
 
         expect(tokensContainer.querySelector('.js-visual-token .value')).not.toEqual(null);
 
@@ -276,7 +274,9 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
       });
 
       it('should remove the last token name if there is no value', () => {
-        tokensContainer.innerHTML = FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('milestone');
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('milestone'),
+        );
 
         expect(tokensContainer.querySelector('.js-visual-token .name')).not.toEqual(null);
 
