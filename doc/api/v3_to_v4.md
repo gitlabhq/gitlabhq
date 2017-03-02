@@ -53,3 +53,4 @@ changes are in V4:
 - Remove `GET /groups/owned`. Use `GET /groups?owned=true` instead [!9505](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9505)
 - Return 202 with JSON body on async removals on V4 API (DELETE `/projects/:id/repository/merged_branches` and DELETE `/projects/:id`) [!9449](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9449)
 - `projects/:id/milestones?iid[]=x&iid[]=y` array filter has been renamed to `iids` [!9096](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9096)
+- Enable filtering user's authorized projects with boolean param `authorized` on `/projects` endpoint [!9674](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9674)
