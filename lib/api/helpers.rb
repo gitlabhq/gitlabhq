@@ -164,6 +164,10 @@ module API
       items.where(iid: iid)
     end
 
+    def filter_by_search(items, text)
+      items.search(text)
+    end
+
     # error helpers
 
     def forbidden!(reason = nil)
