@@ -89,16 +89,16 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see that I am subscribed' do
-    expect(find('.issuable-subscribe-button span')).to have_content 'Unsubscribe'
+    page.find('.issuable-subscribe-button')[:class].include?('subscribed')
   end
 
   step 'I should see that I am unsubscribed' do
-    expect(find('.issuable-subscribe-button span')).to have_content 'Subscribe'
+    page.find('.issuable-subscribe-button')[:class].include?('unsubscribed')
   end
 
   step 'I click button "Unsubscribe"' do
-    click_on "Unsubscribe"
-    wait_for_requests
+    page.find('.issuable-subscribe-button').click
+    wait_for_ajax
   end
 
   step 'I click link "Close"' do

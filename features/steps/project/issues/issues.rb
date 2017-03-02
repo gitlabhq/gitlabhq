@@ -20,11 +20,11 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see that I am subscribed' do
-    expect(find('.issuable-subscribe-button span')).to have_content 'Unsubscribe'
+    page.find('.issuable-subscribe-button')[:class].include?('subscribed')
   end
 
   step 'I should see that I am unsubscribed' do
-    expect(find('.issuable-subscribe-button span')).to have_content 'Subscribe'
+    page.find('.issuable-subscribe-button')[:class].include?('unsubscribed')
   end
 
   step 'I click link "Closed"' do
@@ -32,7 +32,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click button "Unsubscribe"' do
-    click_on "Unsubscribe"
+    page.find('.issuable-subscribe-button').click
   end
 
   step 'I should see "Release 0.3" in issues' do

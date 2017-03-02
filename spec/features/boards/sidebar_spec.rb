@@ -302,7 +302,7 @@ describe 'Issue Boards', feature: true, js: true do
       click_card(card)
 
       page.within('.subscription') do
-        click_button 'Subscribe'
+        page.find('.issuable-subscribe-button').click
         wait_for_ajax
         expect(page).to have_selector('.subscribed')
       end

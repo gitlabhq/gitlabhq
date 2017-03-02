@@ -13,26 +13,17 @@
 
     toggleSubscription(event) {
       const button = event.currentTarget;
-      const buttonSpan = button.querySelector('span');
       const toggleButton = $('.toggle-button');
-      if (!buttonSpan || button.classList.contains('disabled')) {
+      if (button.classList.contains('disabled')) {
         return;
       }
       button.classList.add('disabled');
 
-      const isSubscribed = buttonSpan.innerHTML.trim().toLowerCase() !== 'subscribe';
       const toggleActionUrl = this.containerElm.dataset.url;
 
       $.post(toggleActionUrl, () => {
         button.classList.remove('disabled');
-
-        if (isSubscribed) {
-          toggleButton.addClass('unsubscribed');
-          toggleButton.removeClass('subscribed');
-        } else {
-          toggleButton.addClass('subscribed');
-          toggleButton.removeClass('unsubscribed');
-        }
+        toggleButton.toggleClass('subscribed unsubscribed');
 
         // hack to allow this to work with the issue boards Vue object
         if (document.querySelector('html').classList.contains('issue-boards-page')) {
@@ -40,8 +31,6 @@
             'subscribed',
             !gl.issueBoards.BoardsStore.detail.issue.subscribed,
           );
-        } else {
-          buttonSpan.innerHTML = isSubscribed ? 'Subscribe' : 'Unsubscribe';
         }
       });
     }
