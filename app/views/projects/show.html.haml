@@ -8,7 +8,8 @@
     = render 'shared/no_ssh'
     = render 'shared/no_password'
 
-= render 'projects/last_push'
+= render "projects/head"
+= render "projects/last_push"
 = render "home_panel"
 
 - if current_user && can?(current_user, :download_code, @project)

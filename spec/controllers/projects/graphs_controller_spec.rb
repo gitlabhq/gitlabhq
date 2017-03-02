@@ -9,7 +9,23 @@ describe Projects::GraphsController do
     project.team << [user, :master]
   end
 
-  describe 'GET #languages' do
+  describe 'GET languages' do
+    it "redirects_to action charts" do
+      get(:commits, namespace_id: project.namespace.path, project_id: project.path, id: 'master')
+
+      expect(response).to redirect_to action: :charts
+    end
+  end
+
+  describe 'GET commits' do
+    it "redirects_to action charts" do
+      get(:commits, namespace_id: project.namespace.path, project_id: project.path, id: 'master')
+
+      expect(response).to redirect_to action: :charts
+    end
+  end
+
+  describe 'GET charts' do
     let(:linguist_repository) do
       double(languages: {
                'Ruby'         => 1000,
@@ -34,7 +50,7 @@ describe Projects::GraphsController do
     end
 
     it 'sets the correct colour according to language' do
-      get(:languages, namespace_id: project.namespace, project_id: project, id: 'master')
+      get(:charts, namespace_id: project.namespace, project_id: project, id: 'master')
 
       expected_values.each do |val|
         expect(assigns(:languages)).to include(a_hash_including(val))
