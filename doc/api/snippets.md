@@ -5,15 +5,15 @@
 ### Snippet visibility level
 
 Snippets in GitLab can be either private, internal, or public.
-You can set it with the `visibility_level` field in the snippet.
+You can set it with the `visibility` field in the snippet.
 
 Constants for snippet visibility levels are:
 
-| Visibility | Visibility level | Description |
-| ---------- | ---------------- | ----------- |
-| Private    | `0`  | The snippet is visible only to the snippet creator |
-| Internal   | `10` | The snippet is visible for any logged in user |
-| Public     | `20` | The snippet can be accessed without any authentication |
+| Visibility | Description |
+| ---------- | ----------- |
+| `private`  | The snippet is visible only to the snippet creator |
+| `internal` | The snippet is visible for any logged in user |
+| `public`   | The snippet can be accessed without any authentication |
 
 ## List snippets
 
@@ -78,11 +78,11 @@ Parameters:
 | `title`            | String  | yes      | The title of a snippet     |
 | `file_name`        | String  | yes      | The name of a snippet file |
 | `content`          | String  | yes      | The content of a snippet   |
-| `visibility_level` | Integer | yes      | The snippet's visibility   |
+| `visibility`       | String  | yes      | The snippet's visibility   |
 
 
 ``` bash
-curl --request POST --data '{"title": "This is a snippet", "content": "Hello world", "file_name": "test.txt", "visibility_level": 10 }' --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/snippets
+curl --request POST --data '{"title": "This is a snippet", "content": "Hello world", "file_name": "test.txt", "visibility": "internal" }' --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/snippets
 ```
 
 Example response:
@@ -123,7 +123,7 @@ Parameters:
 | `title`            | String  | no       | The title of a snippet     |
 | `file_name`        | String  | no       | The name of a snippet file |
 | `content`          | String  | no       | The content of a snippet   |
-| `visibility_level` | Integer | no       | The snippet's visibility   |
+| `visibility`       | String  | no       | The snippet's visibility   |
 
 
 ``` bash
@@ -154,7 +154,7 @@ Example response:
 
 ## Delete snippet
 
-Deletes an existing snippet. 
+Deletes an existing snippet.
 
 ```
 DELETE /snippets/:id
@@ -229,4 +229,3 @@ Example response:
     }
 ]
 ```
-

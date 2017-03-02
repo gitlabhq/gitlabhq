@@ -24,6 +24,7 @@ describe API::Environments, api: true  do
         expect(json_response.first['name']).to eq(environment.name)
         expect(json_response.first['external_url']).to eq(environment.external_url)
         expect(json_response.first['project']['id']).to eq(project.id)
+        expect(json_response.first['project']['visibility']).to be_present
       end
     end
 

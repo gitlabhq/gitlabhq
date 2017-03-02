@@ -19,6 +19,9 @@ describe API::Settings, 'Settings', api: true  do
       expect(json_response['koding_url']).to be_nil
       expect(json_response['plantuml_enabled']).to be_falsey
       expect(json_response['plantuml_url']).to be_nil
+      expect(json_response['default_project_visibility']).to be_a String
+      expect(json_response['default_snippet_visibility']).to be_a String
+      expect(json_response['default_group_visibility']).to be_a String
     end
   end
 
@@ -38,6 +41,8 @@ describe API::Settings, 'Settings', api: true  do
           koding_url: 'http://koding.example.com',
           plantuml_enabled: true,
           plantuml_url: 'http://plantuml.example.com',
+          default_snippet_visibility: 'internal',
+          restricted_visibility_levels: ['public'],
           default_artifacts_expire_in: '2 days'
 
         expect(response).to have_http_status(200)
@@ -48,6 +53,8 @@ describe API::Settings, 'Settings', api: true  do
         expect(json_response['koding_url']).to eq('http://koding.example.com')
         expect(json_response['plantuml_enabled']).to be_truthy
         expect(json_response['plantuml_url']).to eq('http://plantuml.example.com')
+        expect(json_response['default_snippet_visibility']).to eq('internal')
+        expect(json_response['restricted_visibility_levels']).to eq(['public'])
         expect(json_response['default_artifacts_expire_in']).to eq('2 days')
       end
     end

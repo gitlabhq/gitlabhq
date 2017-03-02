@@ -7,7 +7,7 @@ module API
     helpers do
       params :optional_params do
         optional :description, type: String, desc: 'The description of the group'
-        optional :visibility_level, type: Integer, desc: 'The visibility level of the group'
+        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the group'
         optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
         optional :membership_lock, type: Boolean, desc: 'Prevent adding new members to project membership within this group'
@@ -114,7 +114,7 @@ module API
         optional :name, type: String, desc: 'The name of the group'
         optional :path, type: String, desc: 'The path of the group'
         use :optional_params
-        at_least_one_of :name, :path, :description, :visibility_level,
+        at_least_one_of :name, :path, :description, :visibility,
                         :lfs_enabled, :request_access_enabled
       end
       put ':id' do
@@ -148,7 +148,7 @@ module API
       end
       params do
         optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
-        optional :visibility, type: String, values: %w[public internal private],
+        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
                               desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
         optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at],
