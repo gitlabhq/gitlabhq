@@ -50,4 +50,5 @@
   .content-list.pipelines{ data: { url: namespace_project_pipelines_path(@project.namespace, @project, format: :json) } }
     .vue-pipelines-index
 
+= page_specific_javascript_bundle_tag('common_vue')
 = page_specific_javascript_bundle_tag('vue_pipelines')

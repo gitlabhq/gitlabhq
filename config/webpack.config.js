@@ -18,6 +18,7 @@ var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
     common:               './commons/index.js',
+    common_vue:           ['vue', 'vue-resource'],
     application:          './application.js',
     blob_edit:            './blob_edit/blob_edit_bundle.js',
     boards:               './boards/boards_bundle.js',
@@ -41,7 +42,6 @@ var config = {
     users:                './users/users_bundle.js',
     lib_chart:            './lib/chart.js',
     lib_d3:               './lib/d3.js',
-    lib_vue:              './lib/vue_resource.js',
     vue_pipelines:        './vue_pipelines_index/index.js',
   },
 
@@ -97,6 +97,23 @@ var config = {
     IS_PRODUCTION ?
       new webpack.HashedModuleIdsPlugin() :
       new webpack.NamedModulesPlugin(),
+
+    // create cacheable common library bundle for all vue chunks
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common_vue',
+      chunks: [
+        'boards',
+        'commit_pipelines',
+        'cycle_analytics',
+        'diff_notes',
+        'environments',
+        'environments_folder',
+        'issuable',
+        'merge_conflicts',
+        'vue_pipelines',
+      ],
+      minChunks: Infinity,
+    }),
 
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
