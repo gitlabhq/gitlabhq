@@ -77,13 +77,13 @@ You can now make requests to the API with the access token returned.
 The access token allows you to make requests to the API on a behalf of a user.
 
 ```
-GET https://gitlab.example.com/api/v3/user?access_token=OAUTH-TOKEN
+GET https://gitlab.example.com/api/v4/user?access_token=OAUTH-TOKEN
 ```
 
 Or you can put the token to the Authorization header:
 
 ```
-curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api/v3/user
+curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api/v4/user
 ```
 
 ## Resource Owner Password Credentials
