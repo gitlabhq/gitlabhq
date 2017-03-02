@@ -67,7 +67,7 @@ describe Issues::UpdateService, services: true do
           issue.save
         end
 
-        opts.merge! move_between_iids: [issue1.iid, issue2.iid]
+        opts[:move_between_iids] = [issue1.iid, issue2.iid]
 
         update_issue(opts)
 
