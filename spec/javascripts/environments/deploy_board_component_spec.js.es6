@@ -1,7 +1,7 @@
 const Vue = require('vue');
 const DeployBoard = require('~/environments/components/deploy_board_component');
 const Service = require('~/environments/services/environments_service');
-const { deployBoardMockData } = require('./mock_data');
+const { deployBoardMockData, invalidDeployBoardMockData } = require('./mock_data');
 
 describe('Deploy Board', () => {
   let DeployBoardComponent;
@@ -77,6 +77,46 @@ describe('Deploy Board', () => {
     });
   });
 
+  describe('successfull request without valid data', () => {
+    const deployBoardInterceptorInvalidData = (request, next) => {
+      next(request.respondWith(JSON.stringify(invalidDeployBoardMockData), {
+        status: 200,
+      }));
+    };
+
+    let component;
+
+    beforeEach(() => {
+      Vue.http.interceptors.push(deployBoardInterceptorInvalidData);
+
+      this.service = new Service('environments');
+
+      component = new DeployBoardComponent({
+        propsData: {
+          store: {},
+          service: new Service('environments'),
+          deployBoardData: invalidDeployBoardMockData,
+          environmentID: 1,
+          endpoint: 'endpoint',
+        },
+      }).$mount();
+    });
+
+    afterEach(() => {
+      Vue.http.interceptors = _.without(
+        Vue.http.interceptors, deployBoardInterceptorInvalidData,
+      );
+    });
+
+    it('should render the empty state', (done) => {
+      setTimeout(() => {
+        expect(component.$el.querySelector('.deploy-board-empty-state-svg svg')).toBeDefined();
+        expect(component.$el.querySelector('.deploy-board-empty-state-text .title').textContent).toContain('Kubernetes deployment not found');
+        done();
+      }, 0);
+    });
+  });
+
   describe('unsuccessfull request', () => {
     const deployBoardErrorInterceptor = (request, next) => {
       next(request.respondWith(JSON.stringify({}), {
@@ -108,7 +148,7 @@ describe('Deploy Board', () => {
 
     it('should render empty state', (done) => {
       setTimeout(() => {
-        expect(component.$el.children.length).toEqual(0);
+        expect(component.$el.children.length).toEqual(1);
         done();
       }, 0);
     });
