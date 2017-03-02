@@ -20,7 +20,7 @@ var config = {
     common:               './commons/index.js',
     common_vue:           ['vue', 'vue-resource'],
     common_d3:            ['d3'],
-    application:          './application.js',
+    main:                 './main.js',
     blob_edit:            './blob_edit/blob_edit_bundle.js',
     boards:               './boards/boards_bundle.js',
     simulate_drag:        './test_utils/simulate_drag.js',
@@ -47,7 +47,7 @@ var config = {
   output: {
     path: path.join(ROOT_PATH, 'public/assets/webpack'),
     publicPath: '/assets/webpack/',
-    filename: IS_PRODUCTION ? '[name]-[chunkhash].js' : '[name].js'
+    filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js'
   },
 
   devtool: 'inline-source-map',
@@ -124,7 +124,7 @@ var config = {
 
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['application', 'common', 'manifest'],
+      names: ['main', 'common', 'runtime'],
     }),
   ],
 
