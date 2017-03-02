@@ -100,6 +100,8 @@ require('./board_new_form');
         const $milestoneDropdown = $('.dropdown-menu-milestone');
         const hideElements = this.board.milestone === undefined || this.board.milestone_id === null;
 
+        $('#milestone_title').val(this.board.milestone ? this.board.milestone.title : '');
+
         if (glDropdown.fullData) {
           glDropdown.parseData(glDropdown.fullData);
         }
@@ -112,7 +114,8 @@ require('./board_new_form');
           .toggle(hideElements);
 
         $('.js-milestone-select .dropdown-toggle-text')
-          .text(hideElements ? 'Milestone' : this.board.milestone.title);
+          .text(hideElements ? 'Milestone' : this.board.milestone.title)
+          .toggleClass('is-default', hideElements);
       },
     },
     created() {
