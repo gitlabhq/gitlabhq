@@ -37,10 +37,9 @@ module Issues
     def item_for_discussion(discussion)
       first_note = discussion.first_note_to_resolve || discussion.first_note
       other_note_count = discussion.notes.size - 1
-      creation_time = first_note.created_at.to_s(:medium)
       note_url = Gitlab::UrlBuilder.build(first_note)
 
-      discussion_info = "- [ ] #{first_note.author.to_reference} commented in a discussion on [#{creation_time}](#{note_url}): "
+      discussion_info = "- [ ] #{first_note.author.to_reference} commented in a [discussion](#{note_url}): "
       discussion_info << " (+#{other_note_count} #{'comment'.pluralize(other_note_count)})" if other_note_count > 0
 
       note_without_block_quotes = Banzai::Filter::BlockquoteFenceFilter.new(first_note.note).call
