@@ -46,7 +46,7 @@ module Geo
         project.repository.fetch_geo_mirror(ssh_url_to_repo)
 
         # Second .wiki call returns a Gollum::Wiki, and it will always create the physical repository when not found
-        if project.wiki_enabled? && project.wiki.wiki.exist?
+        if project.wiki.wiki.exist?
           log('Fetching wiki repository')
           project.wiki.repository.fetch_geo_mirror(ssh_url_to_wiki)
         end
