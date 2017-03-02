@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-/* global Vue */
+import Vue from 'vue';
 import iconCommit from '../svg/icon_commit.svg';
 
 ((global) => {
@@ -10,6 +10,11 @@ import iconCommit from '../svg/icon_commit.svg';
       items: Array,
       stage: Object,
     },
+
+    data() {
+      return { iconCommit };
+    },
+
     template: `
       <div>
         <div class="events-description">

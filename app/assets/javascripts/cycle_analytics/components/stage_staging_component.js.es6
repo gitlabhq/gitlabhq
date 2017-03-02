@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-/* global Vue */
+import Vue from 'vue';
 import iconBranch from '../svg/icon_branch.svg';
 
 ((global) => {
@@ -9,6 +9,9 @@ import iconBranch from '../svg/icon_branch.svg';
     props: {
       items: Array,
       stage: Object,
+    },
+    data() {
+      return { iconBranch };
     },
     template: `
       <div>

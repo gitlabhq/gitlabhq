@@ -46,13 +46,17 @@ import warningSvg from 'icons/_icon_status_warning.svg';
         const { status } = this.pipeline.details;
         return status.has_details ? status.details_path : false;
       },
+
+      content() {
+        return `${this.svg} ${this.pipeline.details.status.text}`;
+      },
     },
     template: `
       <td class="commit-link">
         <a
-          :class='cssClasses'
-          :href='detailsPath'
-          v-html="svg + pipeline.details.status.text">
+          :class="cssClasses"
+          :href="detailsPath"
+          v-html="content">
         </a>
       </td>
     `,

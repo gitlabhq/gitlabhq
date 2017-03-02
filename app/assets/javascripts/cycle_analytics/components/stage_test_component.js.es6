@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-/* global Vue */
+import Vue from 'vue';
 import iconBuildStatus from '../svg/icon_build_status.svg';
 import iconBranch from '../svg/icon_branch.svg';
 
@@ -10,6 +10,9 @@ import iconBranch from '../svg/icon_branch.svg';
     props: {
       items: Array,
       stage: Object,
+    },
+    data() {
+      return { iconBuildStatus, iconBranch };
     },
     template: `
       <div>
