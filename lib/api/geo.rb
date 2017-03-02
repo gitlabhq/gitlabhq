@@ -36,14 +36,7 @@ module API
         authenticated_as_admin!
         require_node_to_be_secondary!
 
-        status = GeoNode::Status.new(
-          HealthCheck::Utils.process_checks(['geo']),
-          Project.count,
-          ::Geo::ProjectRegistry.synced.count,
-          ::Geo::ProjectRegistry.failed.count
-        )
-
-        present status, with: Entities::GeoNodeStatus
+        present GeoNodeStatus.new, with: Entities::GeoNodeStatus
       end
 
       # Enqueue a batch of IDs of wiki's projects to have their

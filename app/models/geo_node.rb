@@ -1,8 +1,6 @@
 class GeoNode < ActiveRecord::Base
   include Presentable
 
-  Status = Struct.new(:health, :repositories, :repositories_synced, :repositories_failed)
-
   belongs_to :geo_node_key, dependent: :destroy
   belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy
   belongs_to :system_hook, dependent: :destroy

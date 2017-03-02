@@ -6,23 +6,25 @@ module Geo
     default_timeout Gitlab.config.gitlab.geo_status_timeout
 
     def call(status_url)
-      response = self.class.get(status_url,
-                                headers: {
-                                  'Content-Type' => 'application/json',
-                                  'PRIVATE-TOKEN' => private_token
-                                })
-
+      keys = %w(health repositories repositories_synced repositories_failed)
       values =
-        if response.code >= 200 && response.code < 300
-          keys = GeoNode::Status.members.map(&:to_s)
-          response.parsed_response.values_at(*keys)
-        else
-          ["Could not connect to Geo node - HTTP Status Code: #{response.code}"]
+        begin
+          response = self.class.get(status_url,
+                                    headers: {
+                                      'Content-Type' => 'application/json',
+                                      'PRIVATE-TOKEN' => private_token
+                                    })
+
+          if response.code >= 200 && response.code < 300
+            response.parsed_response.values_at(*keys)
+          else
+            ["Could not connect to Geo node - HTTP Status Code: #{response.code}"]
+          end
+        rescue HTTParty::Error, Errno::ECONNREFUSED => e
+          [e.message]
         end
 
-      GeoNode::Status.new(*values)
-    rescue HTTParty::Error, Errno::ECONNREFUSED => e
-      GeoNode::Status.new(e.message)
+      GeoNodeStatus.new(keys.zip(values).to_h)
     end
 
     private
