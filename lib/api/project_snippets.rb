@@ -50,11 +50,9 @@ module API
         requires :title, type: String, desc: 'The title of the snippet'
         requires :file_name, type: String, desc: 'The file name of the snippet'
         requires :code, type: String, desc: 'The content of the snippet'
-        requires :visibility_level, type: Integer,
-                                    values: [Gitlab::VisibilityLevel::PRIVATE,
-                                             Gitlab::VisibilityLevel::INTERNAL,
-                                             Gitlab::VisibilityLevel::PUBLIC],
-                                    desc: 'The visibility level of the snippet'
+        requires :visibility, type: String,
+                              values: Gitlab::VisibilityLevel.string_values,
+                              desc: 'The visibility of the snippet'
       end
       post ":id/snippets" do
         authorize! :create_project_snippet, user_project
@@ -80,11 +78,9 @@ module API
         optional :title, type: String, desc: 'The title of the snippet'
         optional :file_name, type: String, desc: 'The file name of the snippet'
         optional :code, type: String, desc: 'The content of the snippet'
-        optional :visibility_level, type: Integer,
-                                    values: [Gitlab::VisibilityLevel::PRIVATE,
-                                             Gitlab::VisibilityLevel::INTERNAL,
-                                             Gitlab::VisibilityLevel::PUBLIC],
-                                    desc: 'The visibility level of the snippet'
+        optional :visibility, type: String,
+                              values: Gitlab::VisibilityLevel.string_values,
+                              desc: 'The visibility of the snippet'
         at_least_one_of :title, :file_name, :code, :visibility_level
       end
       put ":id/snippets/:snippet_id" do

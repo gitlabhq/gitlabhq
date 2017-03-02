@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::Settings, 'Settings', api: true  do
+describe API::V3::Settings, 'Settings', api: true  do
   include ApiHelpers
 
   let(:user) { create(:user) }
@@ -8,7 +8,7 @@ describe API::Settings, 'Settings', api: true  do
 
   describe "GET /application/settings" do
     it "returns application settings" do
-      get api("/application/settings", admin)
+      get v3_api("/application/settings", admin)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Hash
       expect(json_response['default_projects_limit']).to eq(42)
@@ -18,9 +18,6 @@ describe API::Settings, 'Settings', api: true  do
       expect(json_response['koding_url']).to be_nil
       expect(json_response['plantuml_enabled']).to be_falsey
       expect(json_response['plantuml_url']).to be_nil
-      expect(json_response['default_project_visibility']).to be_a String
-      expect(json_response['default_snippet_visibility']).to be_a String
-      expect(json_response['default_group_visibility']).to be_a String
     end
   end
 
@@ -32,17 +29,9 @@ describe API::Settings, 'Settings', api: true  do
       end
 
       it "updates application settings" do
-        put api("/application/settings", admin),
-          default_projects_limit: 3,
-          signin_enabled: false,
-          repository_storage: 'custom',
-          koding_enabled: true,
-          koding_url: 'http://koding.example.com',
-          plantuml_enabled: true,
-          plantuml_url: 'http://plantuml.example.com',
-          default_snippet_visibility: 'internal',
-          restricted_visibility_levels: ['public'],
-          default_artifacts_expire_in: '2 days'
+        put v3_api("/application/settings", admin),
+          default_projects_limit: 3, signin_enabled: false, repository_storage: 'custom', koding_enabled: true, koding_url: 'http://koding.example.com',
+          plantuml_enabled: true, plantuml_url: 'http://plantuml.example.com'
         expect(response).to have_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
         expect(json_response['signin_enabled']).to be_falsey
@@ -52,15 +41,12 @@ describe API::Settings, 'Settings', api: true  do
         expect(json_response['koding_url']).to eq('http://koding.example.com')
         expect(json_response['plantuml_enabled']).to be_truthy
         expect(json_response['plantuml_url']).to eq('http://plantuml.example.com')
-        expect(json_response['default_snippet_visibility']).to eq('internal')
-        expect(json_response['restricted_visibility_levels']).to eq(['public'])
-        expect(json_response['default_artifacts_expire_in']).to eq('2 days')
       end
     end
 
     context "missing koding_url value when koding_enabled is true" do
       it "returns a blank parameter error message" do
-        put api("/application/settings", admin), koding_enabled: true
+        put v3_api("/application/settings", admin), koding_enabled: true
 
         expect(response).to have_http_status(400)
         expect(json_response['error']).to eq('koding_url is missing')
@@ -69,7 +55,7 @@ describe API::Settings, 'Settings', api: true  do
 
     context "missing plantuml_url value when plantuml_enabled is true" do
       it "returns a blank parameter error message" do
-        put api("/application/settings", admin), plantuml_enabled: true
+        put v3_api("/application/settings", admin), plantuml_enabled: true
 
         expect(response).to have_http_status(400)
         expect(json_response['error']).to eq('plantuml_url is missing')

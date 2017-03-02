@@ -334,7 +334,7 @@ class Project < ActiveRecord::Base
     end
 
     def search_by_visibility(level)
-      where(visibility_level: Gitlab::VisibilityLevel.const_get(level.upcase))
+      where(visibility_level: Gitlab::VisibilityLevel.string_options[level])
     end
 
     def search_by_title(query)
@@ -1003,7 +1003,7 @@ class Project < ActiveRecord::Base
   end
 
   def visibility_level_field
-    visibility_level
+    :visibility_level
   end
 
   def archive!
