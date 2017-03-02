@@ -261,20 +261,15 @@ header {
 
     .navbar-nav {
       margin: 0;
-      float: none !important;
-
-      .visible-xs,
-      .visible-sm {
-        display: table-cell !important;
-      }
+      padding-right: 10px;
+      text-align: right;
     }
 
     .navbar-collapse {
       padding-left: 5px;
 
       .nav > li {
-        display: table-cell;
-        width: 1%;
+        display: inline-block;
       }
     }
   }
