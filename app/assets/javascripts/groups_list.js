@@ -1,50 +1,47 @@
-/* eslint-disable func-names, space-before-function-paren, object-shorthand, quotes, no-var, one-var, one-var-declaration-per-line, prefer-arrow-callback, consistent-return, no-unused-vars, camelcase, prefer-template, comma-dangle, max-len */
+/**
+ * Based on project list search.
+ * Makes search request for groups when user types a value in the search input.
+ * Updates the html content of the page with the received one.
+ */
+export default class GroupsList {
+  constructor() {
+    this.groupsListFilterElement = document.querySelector('.js-groups-list-filter');
+    this.groupsListHolderElement = document.querySelector('.js-groups-list-holder');
 
-(function() {
-  window.GroupsList = {
-    init: function() {
-      $(".groups-list-filter").off('keyup');
-      this.initSearch();
-      return this.initPagination();
-    },
-    initSearch: function() {
-      var debounceFilter, groupsListFilter;
-      groupsListFilter = $('.groups-list-filter');
-      debounceFilter = _.debounce(window.GroupsList.filterResults, 500);
-      return groupsListFilter.on('keyup', function(e) {
-        if (groupsListFilter.val() !== '') {
-          return debounceFilter();
-        }
-      });
-    },
-    filterResults: function() {
-      var form, group_filter_url, search;
-      $('.groups-list-holder').fadeTo(250, 0.5);
-      form = null;
-      form = $("form#group-filter-form");
-      search = $(".groups-list-filter").val();
-      group_filter_url = form.attr('action') + '?' + form.serialize();
-      return $.ajax({
-        type: "GET",
-        url: form.attr('action'),
-        data: form.serialize(),
-        complete: function() {
-          return $('.groups-list-holder').fadeTo(250, 1);
-        },
-        success: function(data) {
-          $('.groups-list-holder').replaceWith(data.html);
-          return history.replaceState({
-            page: group_filter_url
-          // Change url so if user reload a page - search results are saved
-          }, document.title, group_filter_url);
-        },
-        dataType: "json"
-      });
-    },
-    initPagination: function() {
-      return $('.groups-list-holder .pagination').on('ajax:success', function(e, data) {
-        return $('.groups-list-holder').replaceWith(data.html);
-      });
-    }
-  };
-}).call(window);
+    this.initSearch();
+  }
+
+  initSearch() {
+    this.debounceFilter = _.debounce(this.filterResults.bind(this), 500);
+
+    this.groupsListFilterElement.removeEventListener('input', this.debounceFilter);
+    this.groupsListFilterElement.addEventListener('input', this.debounceFilter);
+  }
+
+  filterResults() {
+    const form = document.querySelector('form#group-filter-form');
+    const groupFilterUrl = `${form.getAttribute('action')}?${$(form).serialize()}`;
+
+    $(this.groupsListHolderElement).fadeTo(250, 0.5);
+
+    return $.ajax({
+      url: form.getAttribute('action'),
+      data: $(form).serialize(),
+      type: 'GET',
+      dataType: 'json',
+      context: this,
+      complete() {
+        $(this.groupsListHolderElement).fadeTo(250, 1);
+      },
+      success(data) {
+        this.groupsListHolderElement.innerHTML = data.html;
+
+       // Change url so if user reload a page - search results are saved
+        return window.history.replaceState({
+          page: groupFilterUrl,
+
+        }, document.title, groupFilterUrl);
+      },
+    });
+  }
+}
