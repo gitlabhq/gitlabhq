@@ -1,5 +1,5 @@
-const BindInOut = require('~/behaviors/bind_in_out');
-const ClassSpecHelper = require('../helpers/class_spec_helper');
+import BindInOut from '~/behaviors/bind_in_out.js.es6';
+import ClassSpecHelper from '../helpers/class_spec_helper.js.es6';
 
 describe('BindInOut', function () {
   describe('.constructor', function () {

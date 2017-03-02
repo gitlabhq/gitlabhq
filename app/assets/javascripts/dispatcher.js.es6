@@ -35,6 +35,8 @@
 /* global Labels */
 /* global Shortcuts */
 
+import BindInOut from './behaviors/bind_in_out.js.es6';
+
 const ShortcutsBlob = require('./shortcuts_blob');
 const UserCallout = require('./user_callout');
 
@@ -217,7 +219,9 @@ const UserCallout = require('./user_callout');
           break;
         case 'groups:new':
         case 'admin:groups:new':
-          gl.BindInOut.initAll();
+        case 'groups:create':
+        case 'admin:groups:create':
+        BindInOut.initAll();
         case 'groups:new':
         case 'admin:groups:new':
         case 'groups:edit':

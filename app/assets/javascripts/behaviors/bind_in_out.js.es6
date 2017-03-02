@@ -41,8 +41,4 @@ class BindInOut {
   }
 }
 
-const global = window.gl || (window.gl = {});
-
-global.BindInOut = BindInOut;
-
-module.exports = BindInOut;
+export default BindInOut;
