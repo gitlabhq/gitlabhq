@@ -114,7 +114,7 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
 
     context 'when the merge request is not mergeable' do
       let(:mr_conflict) do
-        create(:merge_request, merge_when_build_succeeds: true, merge_user: user,
+        create(:merge_request, merge_when_pipeline_succeeds: true, merge_user: user,
                                source_branch: 'master', target_branch: 'feature-conflict',
                                source_project: project, target_project: project)
       end
