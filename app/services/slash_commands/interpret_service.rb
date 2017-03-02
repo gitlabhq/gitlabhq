@@ -59,7 +59,7 @@ module SlashCommands
       @updates[:state_event] = 'reopen'
     end
 
-    desc 'Merge (when build succeeds)'
+    desc 'Merge (when the pipeline succeeds)'
     condition do
       last_diff_sha = params && params[:merge_request_diff_head_sha]
       issuable.is_a?(MergeRequest) &&

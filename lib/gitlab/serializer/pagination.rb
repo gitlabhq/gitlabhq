@@ -1,7 +1,7 @@
 module Gitlab
   module Serializer
     class Pagination
-      class InvalidResourceError < StandardError; end
+      InvalidResourceError = Class.new(StandardError)
       include ::API::Helpers::Pagination
 
       def initialize(request, response)

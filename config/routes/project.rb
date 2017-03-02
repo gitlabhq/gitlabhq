@@ -100,7 +100,7 @@ constraints(ProjectUrlConstrainer.new) do
           get :merge_check
           post :merge
           get :merge_widget_refresh
-          post :cancel_merge_when_build_succeeds
+          post :cancel_merge_when_pipeline_succeeds
           get :ci_status
           get :ci_environments_status
           post :toggle_subscription
@@ -191,6 +191,7 @@ constraints(ProjectUrlConstrainer.new) do
         member do
           post :stop
           get :terminal
+          get :status, constraints: { format: :json }
           get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
         end
 

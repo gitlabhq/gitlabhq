@@ -7,24 +7,6 @@ describe KubernetesService, models: true, caching: true do
   let(:project) { create(:kubernetes_project) }
   let(:service) { project.kubernetes_service }
 
-  # We use Kubeclient to interactive with the Kubernetes API. It will
-  # GET /api/v1 for a list of resources the API supports. This must be stubbed
-  # in addition to any other HTTP requests we expect it to perform.
-  let(:discovery_url) { service.api_url + '/api/v1' }
-  let(:discovery_response) { { body: kube_discovery_body.to_json } }
-
-  let(:pods_url) { service.api_url + "/api/v1/namespaces/#{service.namespace}/pods" }
-  let(:pods_response) { { body: kube_pods_body(kube_pod).to_json } }
-
-  def stub_kubeclient_discover
-    WebMock.stub_request(:get, discovery_url).to_return(discovery_response)
-  end
-
-  def stub_kubeclient_pods
-    stub_kubeclient_discover
-    WebMock.stub_request(:get, pods_url).to_return(pods_response)
-  end
-
   describe "Associations" do
     it { is_expected.to belong_to :project }
   end
@@ -87,6 +69,8 @@ describe KubernetesService, models: true, caching: true do
   end
 
   describe '#test' do
+    let(:discovery_url) { 'https://kubernetes.example.com/api/v1' }
+
     before do
       stub_kubeclient_discover
     end
@@ -95,7 +79,8 @@ describe KubernetesService, models: true, caching: true do
       let(:discovery_url) { 'https://kubernetes.example.com/prefix/api/v1' }
 
       it 'tests with the prefix' do
-        service.api_url = 'https://kubernetes.example.com/prefix/'
+        service.api_url = 'https://kubernetes.example.com/prefix'
+        stub_kubeclient_discover
 
         expect(service.test[:success]).to be_truthy
         expect(WebMock).to have_requested(:get, discovery_url).once
@@ -123,9 +108,9 @@ describe KubernetesService, models: true, caching: true do
     end
 
     context 'failure' do
-      let(:discovery_response) { { status: 404 } }
-
       it 'fails to read the discovery endpoint' do
+        WebMock.stub_request(:get, service.api_url + '/api/v1').to_return(status: 404)
+
         expect(service.test[:success]).to be_falsy
         expect(WebMock).to have_requested(:get, discovery_url).once
       end
@@ -201,8 +186,26 @@ describe KubernetesService, models: true, caching: true do
     end
   end
 
+  describe '#rollout_status' do
+    let(:environment) { build(:environment, project: project, name: "env", slug: "env-000000") }
+    subject(:rollout_status) { service.rollout_status(environment) }
+
+    context 'with valid deployments' do
+      before do
+        stub_reactive_cache(
+          service,
+          deployments: [kube_deployment(app: environment.slug), kube_deployment]
+        )
+      end
+
+      it 'creates a matching RolloutStatus' do
+        expect(rollout_status).to be_kind_of(::Gitlab::Kubernetes::RolloutStatus)
+        expect(rollout_status.deployments.map(&:labels)).to eq([{ 'app' => 'env-000000' }])
+      end
+    end
+  end
+
   describe '#calculate_reactive_cache' do
-    before { stub_kubeclient_pods }
     subject { service.calculate_reactive_cache }
 
     context 'when service is inactive' do
@@ -211,20 +214,31 @@ describe KubernetesService, models: true, caching: true do
       it { is_expected.to be_nil }
     end
 
-    context 'when kubernetes responds with valid pods' do
-      it { is_expected.to eq(pods: [kube_pod]) }
+    context 'when kubernetes responds with valid pods and deployments' do
+      before do
+        stub_kubeclient_pods
+        stub_kubeclient_deployments
+      end
+
+      it { is_expected.to eq(pods: [kube_pod], deployments: [kube_deployment]) }
     end
 
-    context 'when kubernetes responds with 500' do
-      let(:pods_response) { { status: 500 } }
+    context 'when kubernetes responds with 500s' do
+      before do
+        stub_kubeclient_pods(status: 500)
+        stub_kubeclient_deployments(status: 500)
+      end
 
       it { expect { subject }.to raise_error(KubeException) }
     end
 
-    context 'when kubernetes responds with 404' do
-      let(:pods_response) { { status: 404 } }
+    context 'when kubernetes responds with 404s' do
+      before do
+        stub_kubeclient_pods(status: 404)
+        stub_kubeclient_deployments(status: 404)
+      end
 
-      it { is_expected.to eq(pods: []) }
+      it { is_expected.to eq(pods: [], deployments: []) }
     end
   end
 end

@@ -4,8 +4,7 @@ module Gitlab
       include Gitlab::Routing.url_helpers
       include IconsHelper
 
-      class MissingResolution < ResolutionError
-      end
+      MissingResolution = Class.new(ResolutionError)
 
       CONTEXT_LINES = 3
 

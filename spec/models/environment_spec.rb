@@ -247,8 +247,8 @@ describe Environment, models: true do
     end
   end
 
-  describe '#has_terminals?' do
-    subject { environment.has_terminals? }
+  describe '#deployment_service_ready?' do
+    subject { environment.deployment_service_ready? }
 
     context 'when the enviroment is available' do
       context 'with a deployment service' do
@@ -281,7 +281,7 @@ describe Environment, models: true do
     subject { environment.terminals }
 
     context 'when the environment has terminals' do
-      before { allow(environment).to receive(:has_terminals?).and_return(true) }
+      before { allow(environment).to receive(:deployment_service_ready?).and_return(true) }
 
       it 'returns the terminals from the deployment service' do
         expect(project.deployment_service).
@@ -293,7 +293,29 @@ describe Environment, models: true do
     end
 
     context 'when the environment does not have terminals' do
-      before { allow(environment).to receive(:has_terminals?).and_return(false) }
+      before { allow(environment).to receive(:deployment_service_ready?).and_return(false) }
+      it { is_expected.to eq(nil) }
+    end
+  end
+
+  describe '#rollout_status' do
+    let(:project) { create(:kubernetes_project) }
+    subject { environment.rollout_status }
+
+    context 'when the environment has rollout status' do
+      before { allow(environment).to receive(:deployment_service_ready?).and_return(true) }
+
+      it 'returns the rollout status from the deployment service' do
+        expect(project.deployment_service).
+          to receive(:rollout_status).with(environment).
+          and_return(:fake_rollout_status)
+
+        is_expected.to eq(:fake_rollout_status)
+      end
+    end
+
+    context 'when the environment does not have rollout status' do
+      before { allow(environment).to receive(:deployment_service_ready?).and_return(false) }
       it { is_expected.to eq(nil) }
     end
   end

@@ -65,7 +65,7 @@ Parameters:
       "updated_at": "2015-02-02T19:49:26.013Z",
       "due_date": null
     },
-    "merge_when_build_succeeds": true,
+    "merge_when_pipeline_succeeds": true,
     "merge_status": "can_be_merged",
     "subscribed" : false,
     "sha": "8888888888888888888888888888888888888888",
@@ -136,7 +136,7 @@ Parameters:
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
-  "merge_when_build_succeeds": true,
+  "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "sha": "8888888888888888888888888888888888888888",
@@ -243,7 +243,7 @@ Parameters:
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
-  "merge_when_build_succeeds": true,
+  "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "sha": "8888888888888888888888888888888888888888",
@@ -343,7 +343,7 @@ order for it to take effect:
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
-  "merge_when_build_succeeds": true,
+  "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "sha": "8888888888888888888888888888888888888888",
@@ -425,7 +425,7 @@ Must include at least one non-required attribute from above.
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
-  "merge_when_build_succeeds": true,
+  "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "sha": "8888888888888888888888888888888888888888",
@@ -479,7 +479,7 @@ Parameters:
 - `merge_request_id` (required)             - ID of MR
 - `merge_commit_message` (optional)         - Custom merge commit message
 - `should_remove_source_branch` (optional)  - if `true` removes the source branch
-- `merge_when_build_succeeds` (optional)    - if `true` the MR is merged when the build succeeds
+- `merge_when_pipeline_succeeds` (optional)    - if `true` the MR is merged when the pipeline succeeds
 - `sha` (optional)                          - if present, then this SHA must
 
 
@@ -489,7 +489,7 @@ Parameters:
 | `merge_request_id` | integer | yes | The ID of the merge request |
 | `merge_commit_message` | string | no | Custom merge commit message |
 | `should_remove_source_branch` | boolean | no | Remove the source branch after merge |
-| `merge_when_build_succeeds` | boolean | no | Merge when build succeeds, rather than immediately |
+| `merge_when_pipeline_succeeds` | boolean | no | Merge when pipeline succeeds, rather than immediately |
 | `sha` | string | no  | If present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail |
 | `squash` | boolean | no | Squash the merge request into a single commit |
 
@@ -537,7 +537,7 @@ Parameters:
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
-  "merge_when_build_succeeds": true,
+  "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "sha": "8888888888888888888888888888888888888888",
@@ -659,9 +659,9 @@ If you don't have permissions to accept this merge request - you'll get a `401`
 
 If the merge request is already merged or closed - you get `405` and error message 'Method Not Allowed'
 
-In case the merge request is not set to be merged when the build succeeds, you'll also get a `406` error.
+In case the merge request is not set to be merged when the pipeline succeeds, you'll also get a `406` error.
 ```
-PUT /projects/:id/merge_requests/:merge_request_id/cancel_merge_when_build_succeeds
+PUT /projects/:id/merge_requests/:merge_request_id/cancel_merge_when_pipeline_succeeds
 ```
 Parameters:
 
@@ -711,7 +711,7 @@ Parameters:
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
-  "merge_when_build_succeeds": true,
+  "merge_when_pipeline_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "sha": "8888888888888888888888888888888888888888",
@@ -869,7 +869,7 @@ Example response:
     "updated_at": "2016-04-05T21:41:40.905Z",
     "due_date": null
   },
-  "merge_when_build_succeeds": false,
+  "merge_when_pipeline_succeeds": false,
   "merge_status": "cannot_be_merged",
   "subscribed": true,
   "sha": "8888888888888888888888888888888888888888",
@@ -943,7 +943,7 @@ Example response:
     "updated_at": "2016-04-05T21:41:40.905Z",
     "due_date": null
   },
-  "merge_when_build_succeeds": false,
+  "merge_when_pipeline_succeeds": false,
   "merge_status": "cannot_be_merged",
   "subscribed": false,
   "sha": "8888888888888888888888888888888888888888",
@@ -1036,7 +1036,7 @@ Example response:
       "updated_at": "2016-06-17T07:47:33.840Z",
       "due_date": null
     },
-    "merge_when_build_succeeds": false,
+    "merge_when_pipeline_succeeds": false,
     "merge_status": "unchecked",
     "subscribed": true,
     "sha": "8888888888888888888888888888888888888888",

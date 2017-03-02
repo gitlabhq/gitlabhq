@@ -17,7 +17,8 @@
               group_result = Api.groups(query.term, {}, function(groups) {
                 return groups;
               });
-              project_result = Api.projects(query.term, 'id', function(projects) {
+              // Should be replaced with "Api.projects" when API v4 is frozen (9.1)
+              project_result = Api.allProjects(query.term, 'id', function(projects) {
                 return projects;
               });
               return $.when(project_result, group_result).done(function(projects, groups) {

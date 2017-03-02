@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.17.2 (2017-03-01)
+
+- Expire all webpack assets after 8.17.1 included a badly compiled asset. !9602
+
 ## 8.17.1 (2017-02-28)
 
 - Replace setInterval with setTimeout to prevent highly frequent requests. !9271 (Takuya Noguchi)

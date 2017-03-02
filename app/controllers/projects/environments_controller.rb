@@ -5,7 +5,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :authorize_create_deployment!, only: [:stop]
   before_action :authorize_update_environment!, only: [:edit, :update]
   before_action :authorize_admin_environment!, only: [:terminal, :terminal_websocket_authorize]
-  before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize]
+  before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :status]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
 
   def index
@@ -106,6 +106,23 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       render json: Gitlab::Workhorse.terminal_websocket(terminal)
     else
       render text: 'Not found', status: 404
+    end
+  end
+
+  # The rollout status of an enviroment
+  def status
+    unless @environment.deployment_service_ready?
+      render text: 'Not found', status: 404
+      return
+    end
+
+    rollout_status = @environment.rollout_status
+
+    if rollout_status.nil?
+      render body: nil, status: 204 # no result yet
+    else
+      serializer = RolloutStatusSerializer.new(project: @project, user: @current_user)
+      render json: serializer.represent(rollout_status)
     end
   end
 

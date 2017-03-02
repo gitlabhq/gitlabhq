@@ -1,6 +1,6 @@
 module Files
   class BaseService < ::BaseService
-    class ValidationError < StandardError; end
+    ValidationError = Class.new(StandardError)
 
     def execute
       @start_project = params[:start_project] || @project
