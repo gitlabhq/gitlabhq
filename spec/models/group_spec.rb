@@ -13,6 +13,7 @@ describe Group, models: true do
     it { is_expected.to have_many(:shared_projects).through(:project_group_links) }
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
     it { is_expected.to have_many(:labels).class_name('GroupLabel') }
+    it { is_expected.to have_many(:uploads).dependent(:destroy) }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }

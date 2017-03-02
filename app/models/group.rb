@@ -28,6 +28,7 @@ class Group < Namespace
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   mount_uploader :avatar, AvatarUploader
+  has_many :uploads, as: :model, dependent: :destroy
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
