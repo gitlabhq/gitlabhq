@@ -5,11 +5,5 @@ namespace :ci do
 
   resource :lint, only: [:show, :create]
 
-  resources :projects, only: [:index, :show] do
-    member do
-      get :status, to: 'projects#badge'
-    end
-  end
-
-  root to: 'projects#index'
+  root to: redirect('/')
 end

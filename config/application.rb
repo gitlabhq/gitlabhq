@@ -120,7 +120,7 @@ module Gitlab
           credentials: true,
           headers: :any,
           methods: :any,
-          expose: ['Link']
+          expose: ['Link', 'X-Total', 'X-Total-Pages', 'X-Per-Page', 'X-Page', 'X-Next-Page', 'X-Prev-Page']
       end
 
       # Cross-origin requests must not have the session cookie available
@@ -130,7 +130,7 @@ module Gitlab
           credentials: false,
           headers: :any,
           methods: :any,
-          expose: ['Link']
+          expose: ['Link', 'X-Total', 'X-Total-Pages', 'X-Per-Page', 'X-Page', 'X-Next-Page', 'X-Prev-Page']
       end
     end
 

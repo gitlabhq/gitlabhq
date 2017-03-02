@@ -47,7 +47,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe :branch_names do
+  describe '#branch_names' do
     subject { repository.branch_names }
 
     it 'has SeedRepo::Repo::BRANCHES.size elements' do
@@ -57,7 +57,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.not_to include("branch-from-space") }
   end
 
-  describe :tag_names do
+  describe '#tag_names' do
     subject { repository.tag_names }
 
     it { is_expected.to be_kind_of Array }
@@ -78,49 +78,63 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { expect(metadata['ArchivePath']).to end_with extenstion }
   end
 
-  describe :archive do
+  describe '#archive_prefix' do
+    let(:project_name) { 'project-name'}
+
+    before do
+      expect(repository).to receive(:name).once.and_return(project_name)
+    end
+
+    it 'returns parameterised string for a ref containing slashes' do
+      prefix = repository.archive_prefix('test/branch', 'SHA')
+
+      expect(prefix).to eq("#{project_name}-test-branch-SHA")
+    end
+  end
+
+  describe '#archive' do
     let(:metadata) { repository.archive_metadata('master', '/tmp') }
 
     it_should_behave_like 'archive check', '.tar.gz'
   end
 
-  describe :archive_zip do
+  describe '#archive_zip' do
     let(:metadata) { repository.archive_metadata('master', '/tmp', 'zip') }
 
     it_should_behave_like 'archive check', '.zip'
   end
 
-  describe :archive_bz2 do
+  describe '#archive_bz2' do
     let(:metadata) { repository.archive_metadata('master', '/tmp', 'tbz2') }
 
     it_should_behave_like 'archive check', '.tar.bz2'
   end
 
-  describe :archive_fallback do
+  describe '#archive_fallback' do
     let(:metadata) { repository.archive_metadata('master', '/tmp', 'madeup') }
 
     it_should_behave_like 'archive check', '.tar.gz'
   end
 
-  describe :size do
+  describe '#size' do
     subject { repository.size }
 
     it { is_expected.to be < 2 }
   end
 
-  describe :has_commits? do
+  describe '#has_commits?' do
     it { expect(repository.has_commits?).to be_truthy }
   end
 
-  describe :empty? do
+  describe '#empty?' do
     it { expect(repository.empty?).to be_falsey }
   end
 
-  describe :bare? do
+  describe '#bare?' do
     it { expect(repository.bare?).to be_truthy }
   end
 
-  describe :heads do
+  describe '#heads' do
     let(:heads) { repository.heads }
     subject { heads }
 
@@ -147,7 +161,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe :ref_names do
+  describe '#ref_names' do
     let(:ref_names) { repository.ref_names }
     subject { ref_names }
 
@@ -164,7 +178,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe :search_files do
+  describe '#search_files' do
     let(:results) { repository.search_files('rails', 'master') }
     subject { results }
 
@@ -200,7 +214,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  context :submodules do
+  context '#submodules' do
     let(:repository) { Gitlab::Git::Repository.new(TEST_REPO_PATH) }
 
     context 'where repo has submodules' do
@@ -264,7 +278,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe :commit_count do
+  describe '#commit_count' do
     it { expect(repository.commit_count("master")).to eq(25) }
     it { expect(repository.commit_count("feature")).to eq(9) }
   end
