@@ -1,4 +1,4 @@
-class StuckCiBuildsWorker
+class StuckCiJobsWorker
   include Sidekiq::Worker
   include CronjobQueue
 
