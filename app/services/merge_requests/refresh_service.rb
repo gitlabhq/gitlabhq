@@ -79,6 +79,7 @@ module MergeRequests
       end
     end
 
+<<<<<<< HEAD
     # Note: Closed merge requests also need approvals reset.
     def reset_approvals_for_merge_requests
       merge_requests = merge_requests_for(@branch_name, mr_states: [:opened, :reopened, :closed])
@@ -95,6 +96,8 @@ module MergeRequests
       end
     end
 
+=======
+>>>>>>> ce/master
     def reset_merge_when_pipeline_succeeds
       merge_requests_for_source_branch.each(&:reset_merge_when_pipeline_succeeds)
     end

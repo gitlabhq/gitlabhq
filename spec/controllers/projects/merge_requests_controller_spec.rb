@@ -43,7 +43,8 @@ describe Projects::MergeRequestsController do
           submit_new_merge_request(format: :json)
 
           expect(response).to be_ok
-          expect(json_response).not_to be_empty
+          expect(json_response).to have_key 'pipelines'
+          expect(json_response['pipelines']).not_to be_empty
         end
       end
     end

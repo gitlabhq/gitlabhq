@@ -104,6 +104,7 @@ class TodoService
   def merge_request_build_failed(merge_request)
     create_build_failed_todo(merge_request, merge_request.author)
     create_build_failed_todo(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
+<<<<<<< HEAD
   end
 
   # When new approvers are added for a merge request:
@@ -112,6 +113,8 @@ class TodoService
   #
   def add_merge_request_approvers(merge_request, approvers)
     create_approval_required_todos(merge_request, approvers, merge_request.author)
+=======
+>>>>>>> ce/master
   end
 
   # When a new commit is pushed to a merge request we should:

@@ -10,9 +10,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :pipelines, :merge, :merge_check,
+<<<<<<< HEAD
     :ci_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues,
     # EE
     :approve, :approvals, :unapprove, :rebase
+=======
+    :ci_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues
+>>>>>>> ce/master
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
@@ -248,9 +252,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       format.json do
         define_pipelines_vars
 
-        render json: PipelineSerializer
+        render json: {
+          pipelines: PipelineSerializer
           .new(project: @project, user: @current_user)
           .represent(@pipelines)
+        }
       end
     end
   end

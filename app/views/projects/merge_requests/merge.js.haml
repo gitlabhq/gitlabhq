@@ -5,9 +5,12 @@
 - when :merge_when_pipeline_succeeds
   :plain
     $('.mr-widget-body').html("#{escape_javascript(render('projects/merge_requests/widget/open/merge_when_pipeline_succeeds'))}");
+<<<<<<< HEAD
 - when :hook_validation_error
   :plain
     $('.mr-widget-body').html("#{escape_javascript(render('projects/merge_requests/widget/open/error'))}");
+=======
+>>>>>>> ce/master
 - when :sha_mismatch
   :plain
     $('.mr-widget-body').html("#{escape_javascript(render('projects/merge_requests/widget/open/sha_mismatch'))}");

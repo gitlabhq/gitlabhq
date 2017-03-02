@@ -8,8 +8,11 @@ class MergeRequestEntity < IssuableEntity
   expose :merge_status
   expose :merge_user_id
   expose :merge_when_pipeline_succeeds
+<<<<<<< HEAD
   expose :rebase_commit_sha
   expose :rebase_in_progress?, if: { type: :full }
+=======
+>>>>>>> ce/master
   expose :source_branch
   expose :source_project_id
   expose :target_branch

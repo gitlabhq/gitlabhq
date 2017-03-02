@@ -181,20 +181,6 @@ describe Ci::Build, :models do
     end
   end
 
-  describe '#create_from' do
-    before do
-      build.status = 'success'
-      build.save
-    end
-    let(:create_from_build) { Ci::Build.create_from build }
-
-    it 'exists a pending task' do
-      expect(Ci::Build.pending.count(:all)).to eq 0
-      create_from_build
-      expect(Ci::Build.pending.count(:all)).to be > 0
-    end
-  end
-
   describe '#depends_on_builds' do
     let!(:build) { create(:ci_build, pipeline: pipeline, name: 'build', stage_idx: 0, stage: 'build') }
     let!(:rspec_test) { create(:ci_build, pipeline: pipeline, name: 'rspec', stage_idx: 1, stage: 'test') }
