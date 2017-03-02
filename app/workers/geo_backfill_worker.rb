@@ -6,6 +6,8 @@ class GeoBackfillWorker
   BATCH_SIZE = 100.freeze
 
   def perform
+    return unless Gitlab::Geo.primary_node.present?
+
     start = Time.now
     project_ids = find_project_ids
 
