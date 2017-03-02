@@ -28,6 +28,7 @@ export default class MergeRequestStore {
     this.conflictResolutionPath = data.conflict_resolution_ui_path;
     this.removeWIPPath = data.remove_wip_path;
     this.sourceBranchRemoved = !data.source_branch_exists;
+    this.mergePath = data.merge_path;
 
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
     this.canRevert = currentUser.can_revert || false;

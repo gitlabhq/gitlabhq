@@ -97,6 +97,11 @@ class MergeRequestEntity < IssuableEntity
                                                     merge_request)
   end
 
+  # FIXME: @dzaporozhets We should implement this
+  expose :merge_path do |merge_request|
+    '/gitlab-org/gitlab-test/merge_requests/2/merge'
+  end
+
   expose :merge_commit_message_with_description do |merge_request|
     merge_request.merge_commit_message(include_description: true)
   end
