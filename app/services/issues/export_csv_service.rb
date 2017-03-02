@@ -5,13 +5,12 @@ module Issues
       @labels = @issues.labels_hash
     end
 
-    def render
+    def csv_data
       csv_builder.render
     end
 
     def email(user, project)
-      content = render
-      Notify.issues_csv_email(user, project, content, @issues.count).deliver_now
+      Notify.issues_csv_email(user, project, csv_data, @issues.count).deliver_now
     end
 
     private

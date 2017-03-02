@@ -20,7 +20,7 @@
 #
 class IssuableFinder
   NONE = '0'.freeze
-  VALID_PARAMS = %i(scope state group_id project_id milestone_title assignee_id search label_name sort)
+  VALID_PARAMS = %i(scope state group_id project_id milestone_title assignee_id search label_name sort).freeze
 
   attr_accessor :current_user, :params
 

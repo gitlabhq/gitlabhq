@@ -7,7 +7,7 @@ describe Issues::ExportCsvService, services: true do
   let(:subject) { described_class.new(Issue.all) }
 
   it 'renders csv to string' do
-    expect(subject.render).to be_a String
+    expect(subject.csv_data).to be_a String
   end
 
   describe '#email' do
@@ -17,7 +17,7 @@ describe Issues::ExportCsvService, services: true do
   end
 
   def csv
-    CSV.parse(subject.render, headers: true)
+    CSV.parse(subject.csv_data, headers: true)
   end
 
   context 'includes' do
