@@ -59,7 +59,7 @@ module SlashCommands
       @updates[:state_event] = 'reopen'
     end
 
-    desc 'Merge (when build succeeds)'
+    desc 'Merge (when the pipeline succeeds)'
     condition do
       last_diff_sha = params && params[:merge_request_diff_head_sha]
       issuable.is_a?(MergeRequest) &&
@@ -255,6 +255,18 @@ module SlashCommands
       @updates[:wip_event] = issuable.work_in_progress? ? 'unwip' : 'wip'
     end
 
+    desc 'Toggle emoji reward'
+    params ':emoji:'
+    condition do
+      issuable.persisted?
+    end
+    command :award do |emoji|
+      name = award_emoji_name(emoji)
+      if name && issuable.user_can_award?(current_user, name)
+        @updates[:emoji_award] = name
+      end
+    end
+
     desc 'Set time estimate'
     params '<1w 3d 2h 14m>'
     condition do
@@ -316,6 +328,29 @@ module SlashCommands
       @updates[:target_branch] = branch_name if project.repository.branch_names.include?(branch_name)
     end
 
+    desc 'Set weight'
+    params Issue::WEIGHT_RANGE.to_s.squeeze('.').tr('.', '-')
+    condition do
+      issuable.respond_to?(:weight) &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
+    end
+    command :weight do |weight|
+      if Issue.weight_filter_options.include?(weight.to_i)
+        @updates[:weight] = weight.to_i
+      end
+    end
+
+    desc 'Clear weight'
+    condition do
+      issuable.persisted? &&
+        issuable.respond_to?(:weight) &&
+        issuable.weight? &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
+    end
+    command :clear_weight do
+      @updates[:weight] = nil
+    end
+
     def find_label_ids(labels_param)
       label_ids_by_reference = extract_references(labels_param, :label).map(&:id)
       labels_ids_by_name = LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split).execute.select(:id)
@@ -328,6 +363,11 @@ module SlashCommands
       ext.analyze(arg, author: current_user)
 
       ext.references(type)
+    end
+
+    def award_emoji_name(emoji)
+      match = emoji.match(Banzai::Filter::EmojiFilter.emoji_pattern)
+      match[1] if match
     end
   end
 end

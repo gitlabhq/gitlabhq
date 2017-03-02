@@ -19,11 +19,6 @@
     type: 'array',
     param: 'name[]',
     symbol: '~',
-  }, {
-    key: 'weight',
-    type: 'string',
-    param: '',
-    symbol: '',
   }];
 
   const alternativeTokenKeys = [{
@@ -51,14 +46,6 @@
     url: 'label_name[]=No+Label',
     tokenKey: 'label',
     value: 'none',
-  }, {
-    url: 'weight=No+Weight',
-    tokenKey: 'weight',
-    value: 'none',
-  }, {
-    url: 'weight=Any+Weight',
-    tokenKey: 'weight',
-    value: 'any',
   }];
 
   class FilteredSearchTokenKeys {

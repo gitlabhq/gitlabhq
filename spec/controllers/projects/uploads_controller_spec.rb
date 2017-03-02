@@ -16,7 +16,7 @@ describe Projects::UploadsController do
       it "returns an error" do
         post :create,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           format: :json
         expect(response).to have_http_status(422)
       end
@@ -26,7 +26,7 @@ describe Projects::UploadsController do
       before do
         post :create,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           file: jpg,
           format: :json
       end
@@ -41,7 +41,7 @@ describe Projects::UploadsController do
       before do
         post :create,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           file: txt,
           format: :json
       end
@@ -57,7 +57,7 @@ describe Projects::UploadsController do
     let(:go) do
       get :show,
         namespace_id: project.namespace.to_param,
-        project_id:   project.to_param,
+        project_id:   project,
         secret:       "123456",
         filename:     "image.jpg"
     end

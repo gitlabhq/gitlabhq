@@ -50,7 +50,7 @@
               .col-md-9
                 %label.label-light
                   = label_tag :project_visibility, 'Project Visibility', class: 'label-light'
-                  = link_to "(?)", help_page_path("public_access/public_access")
+                  = link_to icon('question-circle'), help_page_path("public_access/public_access")
                 %span.help-block
               .col-md-3.visibility-select-container
                 = render('projects/visibility_select', model_method: :visibility_level, form: f, selected_level: @project.visibility_level)
@@ -131,7 +131,7 @@
           .form-group
             - if @project.avatar?
               .avatar-container.s160
-                = project_icon("#{@project.namespace.to_param}/#{@project.to_param}", alt: '', class: 'avatar project-avatar s160')
+                = project_icon(@project.full_path, alt: '', class: 'avatar project-avatar s160')
             %p.light
               - if @project.avatar_in_git
                 Project avatar in repository: #{ @project.avatar_in_git }

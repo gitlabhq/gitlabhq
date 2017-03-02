@@ -1,5 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, quotes, one-var, one-var-declaration-per-line, operator-assignment, no-else-return, prefer-template, prefer-arrow-callback, no-empty, max-len, consistent-return, no-unused-vars, no-return-assign, max-len */
 
+require('vendor/latinise');
+
 (function() {
   (function(w) {
     var base;
@@ -11,6 +13,9 @@
     }
     gl.text.addDelimiter = function(text) {
       return text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : text;
+    };
+    gl.text.highCountTrim = function(count) {
+      return count > 99 ? '99+' : count;
     };
     gl.text.randomString = function() {
       return Math.random().toString(36).substring(7);
@@ -164,8 +169,14 @@
     gl.text.pluralize = function(str, count) {
       return str + (count > 1 || count === 0 ? 's' : '');
     };
-    return gl.text.truncate = function(string, maxLength) {
+    gl.text.truncate = function(string, maxLength) {
       return string.substr(0, (maxLength - 3)) + '...';
     };
+    gl.text.dasherize = function(str) {
+      return str.replace(/[_\s]+/g, '-');
+    };
+    gl.text.slugify = function(str) {
+      return str.trim().toLowerCase().latinise();
+    };
   })(window);
-}).call(this);
+}).call(window);

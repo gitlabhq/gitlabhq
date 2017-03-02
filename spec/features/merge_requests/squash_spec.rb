@@ -12,11 +12,10 @@ feature 'Squashing merge requests', js: true, feature: true do
   shared_examples 'squash' do
     it 'squashes the commits into a single commit, and adds a merge commit' do
       latest_master_commits = project.repository.commits_between(original_head.sha, 'master').map(&:raw)
-      last_mr_commit = project.repository.commit(source_branch)
 
       squash_commit = an_object_having_attributes(sha: a_string_matching(/\h{40}/),
-                                                  message: "#{last_mr_commit.message}\n",
-                                                  author_name: last_mr_commit.author_name,
+                                                  message: "Csv\n",
+                                                  author_name: user.name,
                                                   committer_name: user.name)
 
       merge_commit = an_object_having_attributes(sha: a_string_matching(/\h{40}/),

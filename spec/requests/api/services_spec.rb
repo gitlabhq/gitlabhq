@@ -55,7 +55,7 @@ describe API::Services, api: true  do
       it "deletes #{service}" do
         delete api("/projects/#{project.id}/services/#{dashed_service}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
         project.send(service_method).reload
         expect(project.send(service_method).activated?).to be_falsey
       end

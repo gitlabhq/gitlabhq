@@ -203,7 +203,7 @@ But the advantages of having stable identifiers outweigh this drawback.
 And to understand a change in context one can always look at the merge commit that groups all the commits together when the code is merged into the master branch.
 
 After you merge multiple commits from a feature branch into the master branch this is harder to undo.
-If you would have squashed all the commits into one you could have just reverted this commit but as we indicated you should not rebase commits after they are pushed.
+If you had squashed all the commits into one you could have just reverted this commit but as we indicated you should not rebase commits after they are pushed.
 Fortunately [reverting a merge made some time ago](https://git-scm.com/blog/2010/03/02/undoing-merges.html) can be done with git.
 This however, requires having specific merge commits for the commits your want to revert.
 If you revert a merge and you change your mind, revert the revert instead of merging again since git will not allow you to merge the code again otherwise.

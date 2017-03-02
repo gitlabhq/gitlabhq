@@ -17,4 +17,4 @@
 
     return ProjectAvatar;
   })();
-}).call(this);
+}).call(window);

@@ -76,6 +76,13 @@
   #{$property}: $value;
 }
 
+/* http://phrappe.com/css/conditional-css-for-webkit-based-browsers/ */
+@mixin on-webkit-only {
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
+    @content;
+  }
+}
+
 @mixin keyframes($animation-name) {
   @-webkit-keyframes #{$animation-name} {
     @content;

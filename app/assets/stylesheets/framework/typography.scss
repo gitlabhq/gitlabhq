@@ -134,7 +134,7 @@
   ul,
   ol {
     padding: 0;
-    margin: 3px 0 3px 28px !important;
+    margin: 3px 0 !important;
   }
 
   ul:dir(rtl),
@@ -144,6 +144,29 @@
 
   li {
     line-height: 1.6em;
+    margin-left: 25px;
+    padding-left: 3px;
+
+    /* Normalize the bullet position on webkit. */
+    @include on-webkit-only {
+      margin-left: 28px;
+      padding-left: 0;
+    }
+  }
+
+  ul.task-list {
+    li.task-list-item {
+      list-style-type: none;
+      position: relative;
+      padding-left: 28px;
+      margin-left: 0 !important;
+
+      input.task-list-item-checkbox {
+        position: absolute;
+        left: 8px;
+        top: 5px;
+      }
+    }
   }
 
   a[href*="/uploads/"],

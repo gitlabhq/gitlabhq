@@ -20,7 +20,7 @@ module EE
             attributes: %w(dn cn memberuid member submember uniquemember memberof)
           }
 
-          options.merge!(size: size) if size
+          options[:size] = size if size
 
           ldap_search(options).map do |entry|
             LDAP::Group.new(entry, self)

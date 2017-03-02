@@ -10,9 +10,9 @@ class Issue < ActiveRecord::Base
   include FasterCacheKeys
 
   WEIGHT_RANGE = 1..9
-  WEIGHT_ALL = 'Everything'
-  WEIGHT_ANY = 'Any Weight'
-  WEIGHT_NONE = 'No Weight'
+  WEIGHT_ALL = 'Everything'.freeze
+  WEIGHT_ANY = 'Any Weight'.freeze
+  WEIGHT_NONE = 'No Weight'.freeze
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -20,8 +20,6 @@ class Issue < ActiveRecord::Base
   Overdue       = DueDateStruct.new('Overdue', 'overdue').freeze
   DueThisWeek   = DueDateStruct.new('Due This Week', 'week').freeze
   DueThisMonth  = DueDateStruct.new('Due This Month', 'month').freeze
-
-  ActsAsTaggableOn.strict_case_match = true
 
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'

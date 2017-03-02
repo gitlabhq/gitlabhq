@@ -79,4 +79,4 @@ require('~/shortcuts_issuable');
       });
     });
   });
-}).call(this);
+}).call(window);

@@ -74,7 +74,7 @@ class Note < ActiveRecord::Base
   scope :inc_author, ->{ includes(:author) }
   scope :inc_relations_for_view, ->{ includes(:project, :author, :updated_by, :resolved_by, :award_emoji) }
 
-  scope :diff_notes, ->{ where(type: ['LegacyDiffNote', 'DiffNote']) }
+  scope :diff_notes, ->{ where(type: %w(LegacyDiffNote DiffNote)) }
   scope :non_diff_notes, ->{ where(type: ['Note', nil]) }
 
   scope :with_associations, -> do
@@ -235,10 +235,6 @@ class Note < ActiveRecord::Base
 
   def contains_emoji_only?
     note =~ /\A#{Banzai::Filter::EmojiFilter.emoji_pattern}\s?\Z/
-  end
-
-  def award_emoji_name
-    note.match(Banzai::Filter::EmojiFilter.emoji_pattern)[1]
   end
 
   def to_ability_name

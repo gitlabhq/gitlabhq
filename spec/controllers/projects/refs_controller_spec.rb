@@ -13,7 +13,7 @@ describe Projects::RefsController do
     def default_get(format = :html)
       get :logs_tree,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           id: 'master',
           path: 'foo/bar/baz.html',
           format: format
@@ -23,7 +23,7 @@ describe Projects::RefsController do
       xhr :get,
           :logs_tree,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param, id: 'master',
+          project_id: project, id: 'master',
           path: 'foo/bar/baz.html', format: format
     end
 

@@ -1,11 +1,13 @@
 require 'rails_helper'
 
 describe 'Filter merge requests', feature: true do
+  include FilteredSearchHelpers
+  include MergeRequestHelpers
   include WaitForAjax
 
   let!(:project)   { create(:project) }
   let!(:group)     { create(:group) }
-  let!(:user)      { create(:user)}
+  let!(:user)      { create(:user) }
   let!(:milestone) { create(:milestone, project: project) }
   let!(:label)     { create(:label, project: project) }
   let!(:wontfix)   { create(:label, project: project, title: "Won't fix") }
@@ -15,183 +17,134 @@ describe 'Filter merge requests', feature: true do
     group.add_developer(user)
     login_as(user)
     create(:merge_request, source_project: project, target_project: project)
+
+    visit namespace_project_merge_requests_path(project.namespace, project)
   end
 
   describe 'for assignee from mr#index' do
+    let(:search_query) { "assignee:@#{user.username}" }
+
     before do
-      visit namespace_project_merge_requests_path(project.namespace, project)
+      input_filtered_search(search_query)
 
-      find('.js-assignee-search').click
-
-      find('.dropdown-menu-user-link', text: user.username).click
-
-      wait_for_ajax
+      expect_mr_list_count(0)
     end
 
     context 'assignee', js: true do
       it 'updates to current user' do
-        expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
+        expect_filtered_search_input(search_query)
       end
 
       it 'does not change when closed link is clicked' do
         find('.issues-state-filters a', text: "Closed").click
 
-        expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
+        expect_filtered_search_input(search_query)
       end
 
       it 'does not change when all link is clicked' do
         find('.issues-state-filters a', text: "All").click
 
-        expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
+        expect_filtered_search_input(search_query)
       end
     end
   end
 
   describe 'for milestone from mr#index' do
+    let(:search_query) { "milestone:%#{milestone.title}" }
+
     before do
-      visit namespace_project_merge_requests_path(project.namespace, project)
+      input_filtered_search(search_query)
 
-      find('.js-milestone-select').click
-
-      find('.milestone-filter .dropdown-content a', text: milestone.title).click
-
-      wait_for_ajax
+      expect_mr_list_count(0)
     end
 
     context 'milestone', js: true do
       it 'updates to current milestone' do
-        expect(find('.js-milestone-select .dropdown-toggle-text')).to have_content(milestone.title)
+        expect_filtered_search_input(search_query)
       end
 
       it 'does not change when closed link is clicked' do
         find('.issues-state-filters a', text: "Closed").click
 
-        expect(find('.js-milestone-select .dropdown-toggle-text')).to have_content(milestone.title)
+        expect_filtered_search_input(search_query)
       end
 
       it 'does not change when all link is clicked' do
         find('.issues-state-filters a', text: "All").click
 
-        expect(find('.js-milestone-select .dropdown-toggle-text')).to have_content(milestone.title)
+        expect_filtered_search_input(search_query)
       end
     end
   end
 
   describe 'for label from mr#index', js: true do
-    before do
-      visit namespace_project_merge_requests_path(project.namespace, project)
-      find('.js-label-select').click
-      wait_for_ajax
-    end
-
-    it 'filters by any label' do
-      find('.dropdown-menu-labels a', text: 'Any Label').click
-      page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      wait_for_ajax
-
-      expect(find('.labels-filter')).to have_content 'Label'
-    end
-
     it 'filters by no label' do
-      find('.dropdown-menu-labels a', text: 'No Label').click
-      page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-      wait_for_ajax
+      input_filtered_search('label:none')
 
-      page.within '.labels-filter' do
-        expect(page).to have_content 'Labels'
-      end
-      expect(find('.js-label-select .dropdown-toggle-text')).to have_content('Labels')
+      expect_mr_list_count(1)
+      expect_filtered_search_input('label:none')
     end
 
     it 'filters by a label' do
-      find('.dropdown-menu-labels a', text: label.title).click
-      page.within '.labels-filter' do
-        expect(page).to have_content label.title
-      end
-      expect(find('.js-label-select .dropdown-toggle-text')).to have_content(label.title)
+      input_filtered_search("label:~#{label.title}")
+
+      expect_mr_list_count(0)
+      expect_filtered_search_input("label:~#{label.title}")
     end
 
     it "filters by `won't fix` and another label" do
-      page.within '.labels-filter' do
-        click_link wontfix.title
-        expect(page).to have_content wontfix.title
-        click_link label.title
-      end
+      input_filtered_search("label:~\"#{wontfix.title}\" label:~#{label.title}")
 
-      expect(find('.js-label-select .dropdown-toggle-text')).to have_content("#{wontfix.title} +1 more")
+      expect_mr_list_count(0)
+      expect_filtered_search_input("label:~\"#{wontfix.title}\" label:~#{label.title}")
     end
 
     it "filters by `won't fix` label followed by another label after page load" do
-      page.within '.labels-filter' do
-        click_link wontfix.title
-        expect(page).to have_content wontfix.title
-      end
+      input_filtered_search("label:~\"#{wontfix.title}\"")
 
-      find('body').click
+      expect_mr_list_count(0)
+      expect_filtered_search_input("label:~\"#{wontfix.title}\"")
 
-      expect(find('.filtered-labels')).to have_content(wontfix.title)
+      input_filtered_search_keys(" label:~#{label.title}")
 
-      find('.js-label-select').click
-      wait_for_ajax
-      find('.dropdown-menu-labels a', text: label.title).click
+      expect_filtered_search_input("label:~\"#{wontfix.title}\" label:~#{label.title}")
 
-      find('body').click
-
-      expect(find('.filtered-labels')).to have_content(wontfix.title)
-      expect(find('.filtered-labels')).to have_content(label.title)
-
-      find('.js-label-select').click
-      wait_for_ajax
-
-      expect(find('.dropdown-menu-labels li', text: wontfix.title)).to have_css('.is-active')
-      expect(find('.dropdown-menu-labels li', text: label.title)).to have_css('.is-active')
-    end
-
-    it "selects and unselects `won't fix`" do
-      find('.dropdown-menu-labels a', text: wontfix.title).click
-      find('.dropdown-menu-labels a', text: wontfix.title).click
-      # Close label dropdown to load
-      find('body').click
-      expect(page).not_to have_css('.filtered-labels')
+      expect_mr_list_count(0)
+      expect_filtered_search_input("label:~\"#{wontfix.title}\" label:~#{label.title}")
     end
   end
 
   describe 'for assignee and label from issues#index' do
+    let(:search_query) { "assignee:@#{user.username} label:~#{label.title}" }
+
     before do
-      visit namespace_project_merge_requests_path(project.namespace, project)
+      input_filtered_search("assignee:@#{user.username}")
 
-      find('.js-assignee-search').click
+      expect_mr_list_count(1)
+      expect_filtered_search_input("assignee:@#{user.username}")
 
-      find('.dropdown-menu-user-link', text: user.username).click
+      input_filtered_search_keys(" label:~#{label.title}")
 
-      expect(page).not_to have_selector('.mr-list .merge-request')
+      expect_mr_list_count(1)
 
-      find('.js-label-select').click
-
-      find('.dropdown-menu-labels .dropdown-content a', text: label.title).click
-      page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
-
-      wait_for_ajax
+      find("#state-opened[href=\"#{URI.parse(current_url).path}?assignee_username=#{user.username}&label_name%5B%5D=#{label.title}&scope=all&state=opened\"]")
     end
 
     context 'assignee and label', js: true do
       it 'updates to current assignee and label' do
-        expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
-        expect(find('.js-label-select .dropdown-toggle-text')).to have_content(label.title)
+        expect_filtered_search_input(search_query)
       end
 
       it 'does not change when closed link is clicked' do
         find('.issues-state-filters a', text: "Closed").click
 
-        expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
-        expect(find('.js-label-select .dropdown-toggle-text')).to have_content(label.title)
+        expect_filtered_search_input(search_query)
       end
 
       it 'does not change when all link is clicked' do
         find('.issues-state-filters a', text: "All").click
 
-        expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
-        expect(find('.js-label-select .dropdown-toggle-text')).to have_content(label.title)
+        expect_filtered_search_input(search_query)
       end
     end
   end
@@ -203,11 +156,11 @@ describe 'Filter merge requests', feature: true do
       bug_label = create(:label, project: project, title: 'bug')
       milestone = create(:milestone, title: "8", project: project)
 
-      mr = create(:merge_request, 
-        title: "Bug 2", 
-        source_project: project, 
-        target_project: project, 
-        source_branch: "bug2", 
+      mr = create(:merge_request,
+        title: "Bug 2",
+        source_project: project,
+        target_project: project,
+        source_branch: "bug2",
         milestone: milestone,
         author: user,
         assignee: user)
@@ -218,15 +171,13 @@ describe 'Filter merge requests', feature: true do
 
     context 'only text', js: true do
       it 'filters merge requests by searched text' do
-        fill_in 'issuable_search', with: 'Bug'
+        input_filtered_search('bug')
 
-        page.within '.mr-list' do
-          expect(page).to have_selector('.merge-request', count: 2)
-        end
+        expect_mr_list_count(2)
       end
 
       it 'does not show any merge requests' do
-        fill_in 'issuable_search', with: 'testing'
+        input_filtered_search('testing')
 
         page.within '.mr-list' do
           expect(page).not_to have_selector('.merge-request')
@@ -234,82 +185,49 @@ describe 'Filter merge requests', feature: true do
       end
     end
 
-    context 'text and dropdown options', js: true do
+    context 'filters and searches', js: true do
       it 'filters by text and label' do
-        fill_in 'issuable_search', with: 'Bug'
+        input_filtered_search('Bug')
 
-        expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
-        page.within '.mr-list' do
-          expect(page).to have_selector('.merge-request', count: 2)
-        end
+        expect_mr_list_count(2)
+        expect_filtered_search_input('Bug')
 
-        click_button 'Label'
-        page.within '.labels-filter' do
-          click_link 'bug'
-        end
-        find('.dropdown-menu-close-icon').click
+        input_filtered_search_keys(' label:~bug')
 
-        expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
-        page.within '.mr-list' do
-          expect(page).to have_selector('.merge-request', count: 1)
-        end
+        expect_mr_list_count(1)
       end
 
       it 'filters by text and milestone' do
-        fill_in 'issuable_search', with: 'Bug'
+        input_filtered_search('Bug')
 
-        expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
-        page.within '.mr-list' do
-          expect(page).to have_selector('.merge-request', count: 2)
-        end
+        expect_mr_list_count(2)
+        expect_filtered_search_input('Bug')
 
-        click_button 'Milestone'
-        page.within '.milestone-filter' do
-          click_link '8'
-        end
+        input_filtered_search_keys(' milestone:%8')
 
-        expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
-        page.within '.mr-list' do
-          expect(page).to have_selector('.merge-request', count: 1)
-        end
+        expect_mr_list_count(1)
       end
 
       it 'filters by text and assignee' do
-        fill_in 'issuable_search', with: 'Bug'
+        input_filtered_search('Bug')
 
-        expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
-        page.within '.mr-list' do
-          expect(page).to have_selector('.merge-request', count: 2)
-        end
+        expect_mr_list_count(2)
+        expect_filtered_search_input('Bug')
 
-        click_button 'Assignee'
-        page.within '.dropdown-menu-assignee' do
-          click_link user.name
-        end
+        input_filtered_search_keys(" assignee:@#{user.username}")
 
-        expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
-        page.within '.mr-list' do
-          expect(page).to have_selector('.merge-request', count: 1)
-        end
+        expect_mr_list_count(1)
       end
 
       it 'filters by text and author' do
-        fill_in 'issuable_search', with: 'Bug'
+        input_filtered_search('Bug')
 
-        expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
-        page.within '.mr-list' do
-          expect(page).to have_selector('.merge-request', count: 2)
-        end
+        expect_mr_list_count(2)
+        expect_filtered_search_input('Bug')
 
-        click_button 'Author'
-        page.within '.dropdown-menu-author' do
-          click_link user.name
-        end
+        input_filtered_search_keys(" author:@#{user.username}")
 
-        expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
-        page.within '.mr-list' do
-          expect(page).to have_selector('.merge-request', count: 1)
-        end
+        expect_mr_list_count(1)
       end
     end
   end
@@ -328,18 +246,9 @@ describe 'Filter merge requests', feature: true do
     end
 
     it 'is able to filter and sort merge requests' do
-      click_button 'Label'
-      wait_for_ajax
-      page.within '.labels-filter' do
-        click_link 'bug'
-      end
-      find('.dropdown-menu-close-icon').click
-      wait_for_ajax
+      input_filtered_search('label:~bug')
 
-      expect(page).to have_issuable_counts(open: 2, closed: 0, all: 2)
-      page.within '.mr-list' do
-        expect(page).to have_selector('.merge-request', count: 2)
-      end
+      expect_mr_list_count(2)
 
       click_button 'Last created'
       page.within '.dropdown-menu-sort' do
@@ -350,6 +259,40 @@ describe 'Filter merge requests', feature: true do
       page.within '.mr-list' do
         expect(page).to have_content('Frontend')
       end
+    end
+  end
+
+  describe 'filter by assignee id', js: true do
+    it 'filter by current user' do
+      visit namespace_project_merge_requests_path(project.namespace, project, assignee_id: user.id)
+
+      expect_filtered_search_input("assignee:@#{user.username}")
+    end
+
+    it 'filter by new user' do
+      new_user = create(:user)
+      project.add_developer(new_user)
+
+      visit namespace_project_merge_requests_path(project.namespace, project, assignee_id: new_user.id)
+
+      expect_filtered_search_input("assignee:@#{new_user.username}")
+    end
+  end
+
+  describe 'filter by author id', js: true do
+    it 'filter by current user' do
+      visit namespace_project_merge_requests_path(project.namespace, project, author_id: user.id)
+
+      expect_filtered_search_input("author:@#{user.username}")
+    end
+
+    it 'filter by new user' do
+      new_user = create(:user)
+      project.add_developer(new_user)
+
+      visit namespace_project_merge_requests_path(project.namespace, project, author_id: new_user.id)
+
+      expect_filtered_search_input("author:@#{new_user.username}")
     end
   end
 end

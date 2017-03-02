@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::Todos, api: true do
   include ApiHelpers
 
-  let(:project_1) { create(:empty_project) }
+  let(:project_1) { create(:empty_project, :test_repo) }
   let(:project_2) { create(:empty_project) }
   let(:author_1) { create(:user) }
   let(:author_2) { create(:user) }
@@ -11,7 +11,7 @@ describe API::Todos, api: true do
   let(:merge_request) { create(:merge_request, source_project: project_1) }
   let!(:pending_1) { create(:todo, :mentioned, project: project_1, author: author_1, user: john_doe) }
   let!(:pending_2) { create(:todo, project: project_2, author: author_2, user: john_doe) }
-  let!(:pending_3) { create(:todo, project: project_1, author: author_2, user: john_doe) }
+  let!(:pending_3) { create(:on_commit_todo, project: project_1, author: author_2, user: john_doe) }
   let!(:done) { create(:todo, :done, project: project_1, author: author_1, user: john_doe) }
 
   before do
@@ -107,46 +107,47 @@ describe API::Todos, api: true do
     end
   end
 
-  describe 'DELETE /todos/:id' do
+  describe 'POST /todos/:id/mark_as_done' do
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        delete api("/todos/#{pending_1.id}")
+        post api("/todos/#{pending_1.id}/mark_as_done")
 
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
 
     context 'when authenticated' do
       it 'marks a todo as done' do
-        delete api("/todos/#{pending_1.id}", john_doe)
+        post api("/todos/#{pending_1.id}/mark_as_done", john_doe)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(201)
+        expect(json_response['id']).to eq(pending_1.id)
+        expect(json_response['state']).to eq('done')
         expect(pending_1.reload).to be_done
       end
 
       it 'updates todos cache' do
         expect_any_instance_of(User).to receive(:update_todos_count_cache).and_call_original
 
-        delete api("/todos/#{pending_1.id}", john_doe)
+        post api("/todos/#{pending_1.id}/mark_as_done", john_doe)
       end
     end
   end
 
-  describe 'DELETE /todos' do
+  describe 'POST /mark_as_done' do
     context 'when unauthenticated' do
       it 'returns authentication error' do
-        delete api('/todos')
+        post api('/todos/mark_as_done')
 
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
 
     context 'when authenticated' do
       it 'marks all todos as done' do
-        delete api('/todos', john_doe)
+        post api('/todos/mark_as_done', john_doe)
 
-        expect(response.status).to eq(200)
-        expect(response.body).to eq('3')
+        expect(response).to have_http_status(204)
         expect(pending_1.reload).to be_done
         expect(pending_2.reload).to be_done
         expect(pending_3.reload).to be_done
@@ -155,7 +156,7 @@ describe API::Todos, api: true do
       it 'updates todos cache' do
         expect_any_instance_of(User).to receive(:update_todos_count_cache).and_call_original
 
-        delete api("/todos", john_doe)
+        post api("/todos/mark_as_done", john_doe)
       end
     end
   end

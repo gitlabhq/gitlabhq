@@ -1,6 +1,6 @@
 module Gitlab
   module Geo
-    class OauthApplicationUndefinedError < StandardError; end
+    OauthApplicationUndefinedError = Class.new(StandardError)
 
     def self.current_node
       self.cache_value(:geo_node_current) do
@@ -50,7 +50,7 @@ module Gitlab
       return false unless Gitlab::Geo.secondary?
 
       self.cache_value(:geo_oauth_application) do
-        Gitlab::Geo.current_node.oauth_application or raise OauthApplicationUndefinedError
+        Gitlab::Geo.current_node.oauth_application || raise(OauthApplicationUndefinedError)
       end
     end
 

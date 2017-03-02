@@ -48,12 +48,17 @@
     }
 
     setOffset(offset = 0) {
-      this.dropdown.style.left = `${offset}px`;
+      if (window.innerWidth > 480) {
+        this.dropdown.style.left = `${offset}px`;
+      } else {
+        this.dropdown.style.left = '0px';
+      }
     }
 
     renderContent(forceShowList = false) {
-      if (forceShowList && this.getCurrentHook().list.hidden) {
-        this.getCurrentHook().list.show();
+      const currentHook = this.getCurrentHook();
+      if (forceShowList && currentHook && currentHook.list.hidden) {
+        currentHook.list.show();
       }
     }
 
@@ -92,18 +97,24 @@
     }
 
     hideDropdown() {
-      this.getCurrentHook().list.hide();
+      const currentHook = this.getCurrentHook();
+      if (currentHook) {
+        currentHook.list.hide();
+      }
     }
 
     resetFilters() {
       const hook = this.getCurrentHook();
-      const data = hook.list.data;
-      const results = data.map((o) => {
-        const updated = o;
-        updated.droplab_hidden = false;
-        return updated;
-      });
-      hook.list.render(results);
+
+      if (hook) {
+        const data = hook.list.data;
+        const results = data.map((o) => {
+          const updated = o;
+          updated.droplab_hidden = false;
+          return updated;
+        });
+        hook.list.render(results);
+      }
     }
   }
 

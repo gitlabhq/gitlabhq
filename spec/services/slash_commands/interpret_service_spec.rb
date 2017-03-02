@@ -267,6 +267,31 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
+    shared_examples 'award command' do
+      it 'toggle award 100 emoji if content containts /award :100:' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(emoji_award: "100")
+      end
+    end
+
+    shared_examples 'weight command' do
+      it 'populates weight: 5 if content contains /weight 5' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(weight: 5)
+      end
+    end
+
+    shared_examples 'clear weight command' do
+      it 'populates weight: nil if content contains /clear_weight' do
+        issuable.update(weight: 5)
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(weight: nil)
+      end
+    end
+
     it_behaves_like 'reopen command' do
       let(:content) { '/reopen' }
       let(:issuable) { issue }
@@ -603,6 +628,16 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { issue }
     end
 
+    it_behaves_like 'weight command' do
+      let(:content) { '/weight 5'}
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'clear weight command' do
+      let(:content) { '/clear_weight' }
+      let(:issuable) { issue }
+    end
+
     context 'when current_user cannot :admin_issue' do
       let(:visitor) { create(:user) }
       let(:issue) { create(:issue, project: project, author: visitor) }
@@ -651,6 +686,37 @@ describe SlashCommands::InterpretService, services: true do
       it_behaves_like 'empty command' do
         let(:content) { '/remove_due_date' }
         let(:issuable) { issue }
+      end
+    end
+
+    context '/award command' do
+      it_behaves_like 'award command' do
+        let(:content) { '/award :100:' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'award command' do
+        let(:content) { '/award :100:' }
+        let(:issuable) { merge_request }
+      end
+
+      context 'ignores command with no argument' do
+        it_behaves_like 'empty command' do
+          let(:content) { '/award' }
+          let(:issuable) { issue }
+        end
+      end
+
+      context 'ignores non-existing / invalid  emojis' do
+        it_behaves_like 'empty command' do
+          let(:content) { '/award noop' }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:content) { '/award :lorem_ipsum:' }
+          let(:issuable) { issue }
+        end
       end
     end
 

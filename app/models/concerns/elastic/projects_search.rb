@@ -7,16 +7,16 @@ module Elastic
 
       mappings do
         indexes :id,                  type: :integer
-        indexes :name,                type: :string,
+        indexes :name,                type: :text,
                                       index_options: 'offsets'
-        indexes :path,                type: :string,
+        indexes :path,                type: :text,
                                       index_options: 'offsets'
-        indexes :name_with_namespace, type: :string,
+        indexes :name_with_namespace, type: :text,
                                       index_options: 'offsets',
                                       analyzer: :my_ngram_analyzer
-        indexes :path_with_namespace, type: :string,
+        indexes :path_with_namespace, type: :text,
                                       index_options: 'offsets'
-        indexes :description,         type: :string,
+        indexes :description,         type: :text,
                                       index_options: 'offsets'
         indexes :namespace_id,        type: :integer
         indexes :created_at,          type: :date
@@ -91,7 +91,7 @@ module Elastic
           }
         end
 
-        query_hash[:query][:bool][:filter] = { and: filters }
+        query_hash[:query][:bool][:filter] = filters
 
         query_hash[:sort] = [:_score]
 

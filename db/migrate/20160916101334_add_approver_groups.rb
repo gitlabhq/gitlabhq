@@ -6,7 +6,7 @@ class AddApproverGroups < ActiveRecord::Migration
 
   DOWNTIME = true
 
-  DOWNTIME_REASON = 'Adding foreign key'
+  DOWNTIME_REASON = 'Adding foreign key'.freeze
 
   def change
     create_table :approver_groups do |t|

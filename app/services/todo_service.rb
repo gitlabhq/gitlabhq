@@ -103,7 +103,7 @@ class TodoService
   #
   def merge_request_build_failed(merge_request)
     create_build_failed_todo(merge_request, merge_request.author)
-    create_build_failed_todo(merge_request, merge_request.merge_user) if merge_request.merge_when_build_succeeds?
+    create_build_failed_todo(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
   end
 
   # When new approvers are added for a merge request:
@@ -129,17 +129,17 @@ class TodoService
   #
   def merge_request_build_retried(merge_request)
     mark_pending_todos_as_done(merge_request, merge_request.author)
-    mark_pending_todos_as_done(merge_request, merge_request.merge_user) if merge_request.merge_when_build_succeeds?
+    mark_pending_todos_as_done(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
   end
-  
+
   # When a merge request could not be automatically merged due to its unmergeable state we should:
   #
   #  * create a todo for a merge_user
   #
   def merge_request_became_unmergeable(merge_request)
-    create_unmergeable_todo(merge_request, merge_request.merge_user) if merge_request.merge_when_build_succeeds?
+    create_unmergeable_todo(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
   end
-  
+
   # When create a note we should:
   #
   #  * mark all pending todos related to the noteable for the note author as done
@@ -178,16 +178,20 @@ class TodoService
 
   # When user marks some todos as done
   def mark_todos_as_done(todos, current_user)
-    mark_todos_as_done_by_ids(todos.select(&:id), current_user)
+    update_todos_state_by_ids(todos.select(&:id), current_user, :done)
   end
 
   def mark_todos_as_done_by_ids(ids, current_user)
-    todos = current_user.todos.where(id: ids)
+    update_todos_state_by_ids(ids, current_user, :done)
+  end
 
-    # Only return those that are not really on that state
-    marked_todos = todos.where.not(state: :done).update_all(state: :done)
-    current_user.update_todos_count_cache
-    marked_todos
+  # When user marks some todos as pending
+  def mark_todos_as_pending(todos, current_user)
+    update_todos_state_by_ids(todos.select(&:id), current_user, :pending)
+  end
+
+  def mark_todos_as_pending_by_ids(ids, current_user)
+    update_todos_state_by_ids(ids, current_user, :pending)
   end
 
   # When user marks an issue as todo
@@ -201,6 +205,15 @@ class TodoService
   end
 
   private
+
+  def update_todos_state_by_ids(ids, current_user, state)
+    todos = current_user.todos.where(id: ids)
+
+    # Only return those that are not really on that state
+    marked_todos = todos.where.not(state: state).update_all(state: state)
+    current_user.update_todos_count_cache
+    marked_todos
+  end
 
   def create_todos(users, attributes)
     Array(users).map do |user|

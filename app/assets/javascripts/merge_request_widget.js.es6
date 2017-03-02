@@ -82,7 +82,7 @@ require('./smart_interval');
         return function() {
           var page;
           page = $('body').data('page').split(':').last();
-          if (allowedPages.indexOf(page) < 0) {
+          if (allowedPages.indexOf(page) === -1) {
             return _this.clearEventListeners();
           }
         };
@@ -150,6 +150,11 @@ require('./smart_interval');
 
         $('.mr-widget-body').replaceWith($html.find('.mr-widget-body'));
         $('.mr-widget-footer').replaceWith($html.find('.mr-widget-footer'));
+        $('.approvals-components').replaceWith($html.find('.approvals-components'));
+
+        if (gl.compileApprovalsWidget) {
+          gl.compileApprovalsWidget();
+        }
       });
     };
 
@@ -250,7 +255,7 @@ require('./smart_interval');
       }
       $('.ci_widget').hide();
       allowed_states = ["failed", "canceled", "running", "pending", "success", "success_with_warnings", "skipped", "not_found"];
-      if (indexOf.call(allowed_states, state) >= 0) {
+      if (indexOf.call(allowed_states, state) !== -1) {
         $('.ci_widget.ci-' + state).show();
         switch (state) {
           case "failed":
@@ -269,7 +274,6 @@ require('./smart_interval');
         $('.ci_widget.ci-error').show();
         this.setMergeButtonClass('btn-danger');
       }
-      this.initMiniPipelineGraph();
     };
 
     MergeRequestWidget.prototype.showCICoverage = function(coverage) {

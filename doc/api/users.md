@@ -661,14 +661,14 @@ Will return `200 OK` on success, or `404 Not found` if either user or email cann
 Blocks the specified user.  Available only for admin.
 
 ```
-PUT /users/:id/block
+POST /users/:id/block
 ```
 
 Parameters:
 
 - `id` (required) - id of specified user
 
-Will return `200 OK` on success, `404 User Not Found` is user cannot be found or
+Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to block an already blocked user by LDAP synchronization.
 
 ## Unblock user
@@ -676,14 +676,14 @@ Will return `200 OK` on success, `404 User Not Found` is user cannot be found or
 Unblocks the specified user.  Available only for admin.
 
 ```
-PUT /users/:id/unblock
+POST /users/:id/unblock
 ```
 
 Parameters:
 
 - `id` (required) - id of specified user
 
-Will return `200 OK` on success, `404 User Not Found` is user cannot be found or
+Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to unblock a user blocked by LDAP synchronization.
 
 ### Get user contribution events
@@ -701,7 +701,7 @@ Parameters:
 | `id` | integer | yes | The ID of the user |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/users/:id/events
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/:id/events
 ```
 
 Example response:
@@ -814,8 +814,6 @@ Example response:
       },
       "created_at": "2015-12-04T10:33:56.698Z",
       "system": false,
-      "upvote": false,
-      "downvote": false,
       "noteable_id": 377,
       "noteable_type": "Issue"
     },
@@ -843,13 +841,13 @@ The activities that update the timestamp are:
 
   - Git HTTP/SSH activities (such as clone, push)
   - User logging in into GitLab
-  
+
 The data is stored in Redis and it depends on it for being recorded and displayed
 over time. This means that we will lose the data if Redis gets flushed, or a custom
 TTL is reached.
 
 By default, it shows the activity for all users in the last 6 months, but this can be
-amended by using the `from` parameter. 
+amended by using the `from` parameter.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 
@@ -865,7 +863,7 @@ Parameters:
 | `from` | string | no | Date string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`. Defaults to 6 months ago. |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/user/activities
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/user/activities
 ```
 
 Example response:

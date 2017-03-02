@@ -1,10 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var, quotes, max-len */
 /* global ace */
 
-// require everything else in this directory
-function requireAll(context) { return context.keys().map(context); }
-requireAll(require.context('.', false, /^\.\/(?!snippet_bundle).*\.(js|es6)$/));
-
 (function() {
   $(function() {
     var editor = ace.edit("editor");
@@ -13,4 +9,4 @@ requireAll(require.context('.', false, /^\.\/(?!snippet_bundle).*\.(js|es6)$/));
       $(".snippet-file-content").val(editor.getValue());
     });
   });
-}).call(this);
+}).call(window);

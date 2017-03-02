@@ -1,8 +1,6 @@
 # Elasticsearch integration
 
-_**Note:** This feature was [introduced][ee-109] in GitLab EE 8.4._
-
----
+>[Introduced][ee-109] in GitLab EE 8.4.
 
 [Elasticsearch] is a flexible, scalable and powerful search service.
 
@@ -29,12 +27,10 @@ GitLab, or on a separate server.
 
 ## Requirements
 
-These are the requirements needed for Elasticsearch to work:
-
-- GitLab 8.4+
-- Elasticsearch 2.4.x (with [Delete By Query Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/plugins-delete-by-query.html) installed)
-
-Please note that we don't support Elasticsearch 5.x at this time.
+| GitLab version | Elasticsearch version |
+| -------------- | --------------------- |
+| GitLab Enterprise Edition 8.4 - 8.17  | Elasticsearch 2.4 with [Delete By Query Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/plugins-delete-by-query.html) installed |
+| GitLab Enterprise Edition 9.0+        | Elasticsearch 5.1 |
 
 ## Install Elasticsearch
 
@@ -301,6 +297,10 @@ see details in the [8-11-to-8-12 update guide](https://gitlab.com/gitlab-org/git
 
 If you have this exception (just like in the case above but the actual message is different) please check if you have the correct Elasticsearch version and you met the other [requirements](#requirements).
 There is also an easy way to check it automatically with `sudo gitlab-rake gitlab:check` command.
+
+### I indexed all the repositories but I can't find anything
+
+Make sure you indexed all the database data as stated above (`sudo gitlab-rake gitlab:elastic:index`)
 
 
 

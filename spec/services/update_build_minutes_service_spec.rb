@@ -19,11 +19,11 @@ describe UpdateBuildMinutesService, services: true do
       it "creates a statistics and sets duration" do
         subject
 
-        expect(project.statistics.reload.shared_runners_seconds).
-          to eq(build.duration.to_i)
+        expect(project.statistics.reload.shared_runners_seconds)
+          .to eq(build.duration.to_i)
 
-        expect(namespace.namespace_statistics.reload.shared_runners_seconds).
-          to eq(build.duration.to_i)
+        expect(namespace.namespace_statistics.reload.shared_runners_seconds)
+          .to eq(build.duration.to_i)
       end
 
       context 'when statistics are created' do
@@ -35,11 +35,11 @@ describe UpdateBuildMinutesService, services: true do
         it "updates statistics and adds duration" do
           subject
 
-          expect(project.statistics.reload.shared_runners_seconds).
-            to eq(100 + build.duration.to_i)
+          expect(project.statistics.reload.shared_runners_seconds)
+            .to eq(100 + build.duration.to_i)
 
-          expect(namespace.namespace_statistics.reload.shared_runners_seconds).
-            to eq(100 + build.duration.to_i)
+          expect(namespace.namespace_statistics.reload.shared_runners_seconds)
+            .to eq(100 + build.duration.to_i)
         end
       end
     end

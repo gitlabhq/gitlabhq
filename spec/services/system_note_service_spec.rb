@@ -215,13 +215,13 @@ describe SystemNoteService, services: true do
     end
   end
 
-  describe '.merge_when_build_succeeds' do
+  describe '.merge_when_pipeline_succeeds' do
     let(:pipeline) { build(:ci_pipeline_without_jobs )}
     let(:noteable) do
       create(:merge_request, source_project: project, target_project: project)
     end
 
-    subject { described_class.merge_when_build_succeeds(noteable, project, author, noteable.diff_head_commit) }
+    subject { described_class.merge_when_pipeline_succeeds(noteable, project, author, noteable.diff_head_commit) }
 
     it_behaves_like 'a system note'
 
@@ -230,12 +230,12 @@ describe SystemNoteService, services: true do
     end
   end
 
-  describe '.cancel_merge_when_build_succeeds' do
+  describe '.cancel_merge_when_pipeline_succeeds' do
     let(:noteable) do
       create(:merge_request, source_project: project, target_project: project)
     end
 
-    subject { described_class.cancel_merge_when_build_succeeds(noteable, project, author) }
+    subject { described_class.cancel_merge_when_pipeline_succeeds(noteable, project, author) }
 
     it_behaves_like 'a system note'
 
@@ -638,7 +638,7 @@ describe SystemNoteService, services: true do
       jira_service_settings
     end
 
-    noteable_types = ["merge_requests", "commit"]
+    noteable_types = %w(merge_requests commit)
 
     noteable_types.each do |type|
       context "when noteable is a #{type}" do

@@ -113,7 +113,7 @@ describe Ci::Runner, models: true do
 
     context 'when runner has tags' do
       before do
-        runner.tag_list = ['bb', 'cc']
+        runner.tag_list = %w(bb cc)
       end
 
       shared_examples 'tagged build picker' do
@@ -169,7 +169,7 @@ describe Ci::Runner, models: true do
 
         context 'when having runner tags' do
           before do
-            runner.tag_list = ['bb', 'cc']
+            runner.tag_list = %w(bb cc)
           end
 
           it 'cannot handle it for builds without matching tags' do
@@ -189,7 +189,7 @@ describe Ci::Runner, models: true do
 
         context 'when having runner tags' do
           before do
-            runner.tag_list = ['bb', 'cc']
+            runner.tag_list = %w(bb cc)
             build.tag_list = ['bb']
           end
 
@@ -212,7 +212,7 @@ describe Ci::Runner, models: true do
 
         context 'when having runner tags' do
           before do
-            runner.tag_list = ['bb', 'cc']
+            runner.tag_list = %w(bb cc)
             build.tag_list = ['bb']
           end
 

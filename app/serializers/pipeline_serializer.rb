@@ -1,5 +1,5 @@
 class PipelineSerializer < BaseSerializer
-  class InvalidResourceError < StandardError; end
+  InvalidResourceError = Class.new(StandardError)
 
   entity PipelineEntity
 

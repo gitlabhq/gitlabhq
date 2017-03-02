@@ -1,16 +1,17 @@
 module Ci
   class RetryBuildService < ::BaseService
-    CLONE_ATTRIBUTES = %i[pipeline ref tag options commands tag_list name
+    CLONE_ATTRIBUTES = %i[pipeline project ref tag options commands name
                           allow_failure stage stage_idx trigger_request
                           yaml_variables when environment coverage_regex]
                             .freeze
 
     REJECT_ATTRIBUTES = %i[id status user token coverage trace runner
-                           artifacts_file artifacts_metadata artifacts_size
+                           artifacts_expire_at artifacts_file
+                           artifacts_metadata artifacts_size
                            created_at updated_at started_at finished_at
                            queued_at erased_by erased_at].freeze
 
-    IGNORE_ATTRIBUTES = %i[trace type lock_version project target_url
+    IGNORE_ATTRIBUTES = %i[type lock_version gl_project_id target_url
                            deploy job_id description].freeze
 
     def execute(build)

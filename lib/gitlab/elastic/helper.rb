@@ -29,7 +29,8 @@ module Gitlab
         client.indices.create index: index_name,
                               body: {
                                 settings: settings.to_hash,
-                                mappings: mappings.to_hash }
+                                mappings: mappings.to_hash
+                              }
       end
 
       def self.delete_index

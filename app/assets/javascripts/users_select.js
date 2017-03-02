@@ -432,4 +432,4 @@
 
     return UsersSelect;
   })();
-}).call(this);
+}).call(window);

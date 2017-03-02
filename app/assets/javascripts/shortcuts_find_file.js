@@ -35,4 +35,4 @@ require('./shortcuts_navigation');
 
     return ShortcutsFindFile;
   })(ShortcutsNavigation);
-}).call(this);
+}).call(window);

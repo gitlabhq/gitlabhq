@@ -99,6 +99,29 @@ require('~/filtered_search/filtered_search_tokenizer');
         expect(results.tokens[2].value).toBe('Doing');
         expect(results.tokens[2].symbol).toBe('~');
       });
+
+      it('returns search value for invalid tokens', () => {
+        const results = gl.FilteredSearchTokenizer.processTokens('fake:token');
+        expect(results.lastToken).toBe('fake:token');
+        expect(results.searchToken).toBe('fake:token');
+        expect(results.tokens.length).toEqual(0);
+      });
+
+      it('returns search value and token for mix of valid and invalid tokens', () => {
+        const results = gl.FilteredSearchTokenizer.processTokens('label:real fake:token');
+        expect(results.tokens.length).toEqual(1);
+        expect(results.tokens[0].key).toBe('label');
+        expect(results.tokens[0].value).toBe('real');
+        expect(results.tokens[0].symbol).toBe('');
+        expect(results.lastToken).toBe('fake:token');
+        expect(results.searchToken).toBe('fake:token');
+      });
+
+      it('returns search value for invalid symbols', () => {
+        const results = gl.FilteredSearchTokenizer.processTokens('std::includes');
+        expect(results.lastToken).toBe('std::includes');
+        expect(results.searchToken).toBe('std::includes');
+      });
     });
   });
 })();

@@ -21,10 +21,6 @@ describe API::CommitStatuses, api: true do
       let!(:master) { project.pipelines.create(sha: commit.id, ref: 'master') }
       let!(:develop) { project.pipelines.create(sha: commit.id, ref: 'develop') }
 
-      it_behaves_like 'a paginated resources' do
-        let(:request) { get api(get_url, reporter) }
-      end
-
       context "reporter user" do
         let(:statuses_id) { json_response.map { |status| status['id'] } }
 
@@ -45,6 +41,7 @@ describe API::CommitStatuses, api: true do
           it 'returns latest commit statuses' do
             expect(response).to have_http_status(200)
 
+            expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(statuses_id).to contain_exactly(status3.id, status4.id, status5.id, status6.id)
             json_response.sort_by!{ |status| status['id'] }
@@ -154,26 +151,62 @@ describe API::CommitStatuses, api: true do
       end
 
       context 'with all optional parameters' do
-        before do
-          optional_params = { state: 'success',
-                              context: 'coverage',
-                              ref: 'develop',
-                              description: 'test',
-                              coverage: 80.0,
-                              target_url: 'http://gitlab.com/status' }
+        context 'when creating a commit status' do
+          it 'creates commit status' do
+            post api(post_url, developer), {
+              state: 'success',
+              context: 'coverage',
+              ref: 'develop',
+              description: 'test',
+              coverage: 80.0,
+              target_url: 'http://gitlab.com/status'
+            }
 
-          post api(post_url, developer), optional_params
+            expect(response).to have_http_status(201)
+            expect(json_response['sha']).to eq(commit.id)
+            expect(json_response['status']).to eq('success')
+            expect(json_response['name']).to eq('coverage')
+            expect(json_response['ref']).to eq('develop')
+            expect(json_response['coverage']).to eq(80.0)
+            expect(json_response['description']).to eq('test')
+            expect(json_response['target_url']).to eq('http://gitlab.com/status')
+          end
         end
 
-        it 'creates commit status' do
-          expect(response).to have_http_status(201)
-          expect(json_response['sha']).to eq(commit.id)
-          expect(json_response['status']).to eq('success')
-          expect(json_response['name']).to eq('coverage')
-          expect(json_response['ref']).to eq('develop')
-          expect(json_response['coverage']).to eq(80.0)
-          expect(json_response['description']).to eq('test')
-          expect(json_response['target_url']).to eq('http://gitlab.com/status')
+        context 'when updatig a commit status' do
+          before do
+            post api(post_url, developer), {
+              state: 'running',
+              context: 'coverage',
+              ref: 'develop',
+              description: 'coverage test',
+              coverage: 0.0,
+              target_url: 'http://gitlab.com/status'
+            }
+
+            post api(post_url, developer), {
+              state: 'success',
+              name: 'coverage',
+              ref: 'develop',
+              description: 'new description',
+              coverage: 90.0
+            }
+          end
+
+          it 'updates a commit status' do
+            expect(response).to have_http_status(201)
+            expect(json_response['sha']).to eq(commit.id)
+            expect(json_response['status']).to eq('success')
+            expect(json_response['name']).to eq('coverage')
+            expect(json_response['ref']).to eq('develop')
+            expect(json_response['coverage']).to eq(90.0)
+            expect(json_response['description']).to eq('new description')
+            expect(json_response['target_url']).to eq('http://gitlab.com/status')
+          end
+
+          it 'does not create a new commit status' do
+            expect(CommitStatus.count).to eq 1
+          end
         end
       end
 

@@ -123,7 +123,7 @@
             if ($('input[name="ref"]').length) {
               var $form = $dropdown.closest('form');
               var action = $form.attr('action');
-              var divider = action.indexOf('?') < 0 ? '?' : '&';
+              var divider = action.indexOf('?') === -1 ? '?' : '&';
               gl.utils.visitUrl(action + '' + divider + '' + $form.serialize());
             }
           }
@@ -133,4 +133,4 @@
 
     return Project;
   })();
-}).call(this);
+}).call(window);

@@ -95,4 +95,4 @@
       }
     });
   };
-}).call(this);
+}).call(window);

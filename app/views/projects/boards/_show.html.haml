@@ -9,14 +9,12 @@
 
   %script#js-board-template{ type: "text/x-template" }= render "projects/boards/components/board"
   %script#js-board-list-template{ type: "text/x-template" }= render "projects/boards/components/board_list"
-  %script#js-board-list-card{ type: "text/x-template" }= render "projects/boards/components/card"
 
 = render "projects/issues/head"
 
-= render 'shared/issuable/filter', type: :boards
+= render 'shared/issuable/filter', type: :boards, board: board
 
 #board-app.boards-app{ "v-cloak" => true, data: board_data }
-  = render "title", board: board
   .boards-list{ ":class" => "{ 'is-compact': detailIssueVisible }" }
     .boards-app-loading.text-center{ "v-if" => "loading" }
       = icon("spinner spin")

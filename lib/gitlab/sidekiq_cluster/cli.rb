@@ -5,7 +5,7 @@ require 'time'
 module Gitlab
   module SidekiqCluster
     class CLI
-      class CommandError < StandardError; end
+      CommandError = Class.new(StandardError)
 
       def initialize(log_output = STDERR)
         @environment = ENV['RAILS_ENV'] || 'development'

@@ -557,13 +557,12 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     context 'Commits' do
       it 'finds right set of commits' do
         [internal_project, private_project1, private_project2, public_project].each do |project|
-          project.repository.commit_file(
+          project.repository.create_file(
             user,
             'test-file',
             'search test',
             message: 'search test',
-            branch_name: 'master',
-            update: false
+            branch_name: 'master'
           )
 
           project.repository.index_commits
@@ -590,13 +589,12 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     context 'Blobs' do
       it 'finds right set of blobs' do
         [internal_project, private_project1, private_project2, public_project].each do |project|
-          project.repository.commit_file(
+          project.repository.create_file(
             user,
             'test-file',
             'tesla',
             message: 'search test',
-            branch_name: 'master',
-            update: false
+            branch_name: 'master'
           )
 
           project.repository.index_blobs

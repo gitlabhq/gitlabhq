@@ -55,8 +55,8 @@ describe IssuesHelper do
   describe "merge_requests_sentence" do
     subject { merge_requests_sentence(merge_requests)}
     let(:merge_requests) do
-      [ build(:merge_request, iid: 1), build(:merge_request, iid: 2),
-        build(:merge_request, iid: 3)]
+      [build(:merge_request, iid: 1), build(:merge_request, iid: 2),
+       build(:merge_request, iid: 3)]
     end
 
     it { is_expected.to eq("!1, !2, or !3") }
@@ -113,7 +113,7 @@ describe IssuesHelper do
   describe "awards_sort" do
     it "sorts a hash so thumbsup and thumbsdown are always on top" do
       data = { "thumbsdown" => "some value", "lifter" => "some value", "thumbsup" => "some value" }
-      expect(awards_sort(data).keys).to eq(["thumbsup", "thumbsdown", "lifter"])
+      expect(awards_sort(data).keys).to eq(%w(thumbsup thumbsdown lifter))
     end
   end
 

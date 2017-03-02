@@ -2,10 +2,16 @@
 
 (() => {
   class FilteredSearchDropdownManager {
-    constructor(baseEndpoint = '') {
+    constructor(baseEndpoint = '', page) {
       this.baseEndpoint = baseEndpoint.replace(/\/$/, '');
       this.tokenizer = gl.FilteredSearchTokenizer;
+      this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
       this.filteredSearchInput = document.querySelector('.filtered-search');
+      this.page = page;
+
+      if (this.page === 'issues') {
+        this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
+      }
 
       this.setupMapping();
 
@@ -48,17 +54,20 @@
           extraArguments: [`${this.baseEndpoint}/labels.json`, '~'],
           element: document.querySelector('#js-dropdown-label'),
         },
-        weight: {
-          reference: null,
-          gl: 'DropdownNonUser',
-          element: document.querySelector('#js-dropdown-weight'),
-        },
         hint: {
           reference: null,
           gl: 'DropdownHint',
           element: document.querySelector('#js-dropdown-hint'),
         },
       };
+
+      if (this.page === 'issues') {
+        this.mapping.weight = {
+          reference: null,
+          gl: 'DropdownNonUser',
+          element: document.querySelector('#js-dropdown-weight'),
+        };
+      }
     }
 
     static addWordToInput(tokenName, tokenValue = '') {
@@ -155,7 +164,7 @@
         this.droplab = new DropLab();
       }
 
-      const match = gl.FilteredSearchTokenKeys.searchByKey(dropdownName.toLowerCase());
+      const match = this.filteredSearchTokenKeys.searchByKey(dropdownName.toLowerCase());
       const shouldOpenFilterDropdown = match && this.currentDropdown !== match.key
         && this.mapping[match.key];
       const shouldOpenHintDropdown = !match && this.currentDropdown !== 'hint';

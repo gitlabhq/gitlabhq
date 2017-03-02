@@ -881,3 +881,38 @@ GET /projects/:id/services/jenkins-deprecated
 
 [jira-doc]: ../user/project/integrations/jira.md
 [old-jira-api]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-13-stable/doc/api/services.md#jira
+
+
+## MockCI
+
+Mock an external CI. See [`gitlab-org/gitlab-mock-ci-service`](https://gitlab.com/gitlab-org/gitlab-mock-ci-service) for an example of a companion mock service.
+
+This service is only available when your environment is set to development.
+
+### Create/Edit MockCI service
+
+Set MockCI service for a project.
+
+```
+PUT /projects/:id/services/mock-ci
+```
+
+Parameters:
+
+- `mock_service_url` (**required**) - http://localhost:4004
+
+### Delete MockCI service
+
+Delete MockCI service for a project.
+
+```
+DELETE /projects/:id/services/mock-ci
+```
+
+### Get MockCI service settings
+
+Get MockCI service settings for a project.
+
+```
+GET /projects/:id/services/mock-ci
+```

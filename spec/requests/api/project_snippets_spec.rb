@@ -78,43 +78,33 @@ describe API::ProjectSnippets, api: true do
         allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
       end
 
-      context 'when the project is private' do
-        let(:private_project) { create(:project_empty_repo, :private) }
-
-        context 'when the snippet is public' do
-          it 'creates the snippet' do
-            expect { create_snippet(private_project, visibility_level: Snippet::PUBLIC) }.
-              to change { Snippet.count }.by(1)
-          end
+      context 'when the snippet is private' do
+        it 'creates the snippet' do
+          expect { create_snippet(project, visibility_level: Snippet::PRIVATE) }.
+            to change { Snippet.count }.by(1)
         end
       end
 
-      context 'when the project is public' do
-        context 'when the snippet is private' do
-          it 'creates the snippet' do
-            expect { create_snippet(project, visibility_level: Snippet::PRIVATE) }.
-              to change { Snippet.count }.by(1)
-          end
+      context 'when the snippet is public' do
+        it 'rejects the shippet' do
+          expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
+            not_to change { Snippet.count }
+
+          expect(response).to have_http_status(400)
+          expect(json_response['message']).to eq({ "error" => "Spam detected" })
         end
 
-        context 'when the snippet is public' do
-          it 'rejects the shippet' do
-            expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
-              not_to change { Snippet.count }
-            expect(response).to have_http_status(400)
-          end
-
-          it 'creates a spam log' do
-            expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
-              to change { SpamLog.count }.by(1)
-          end
+        it 'creates a spam log' do
+          expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
+            to change { SpamLog.count }.by(1)
         end
       end
     end
   end
 
   describe 'PUT /projects/:project_id/snippets/:id/' do
-    let(:snippet) { create(:project_snippet, author: admin) }
+    let(:visibility_level) { Snippet::PUBLIC }
+    let(:snippet) { create(:project_snippet, author: admin, visibility_level: visibility_level) }
 
     it 'updates snippet' do
       new_content = 'New content'
@@ -138,6 +128,56 @@ describe API::ProjectSnippets, api: true do
 
       expect(response).to have_http_status(400)
     end
+
+    context 'when the snippet is spam' do
+      def update_snippet(snippet_params = {})
+        put api("/projects/#{snippet.project.id}/snippets/#{snippet.id}", admin), snippet_params
+      end
+
+      before do
+        allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+      end
+
+      context 'when the snippet is private' do
+        let(:visibility_level) { Snippet::PRIVATE }
+
+        it 'creates the snippet' do
+          expect { update_snippet(title: 'Foo') }.
+            to change { snippet.reload.title }.to('Foo')
+        end
+      end
+
+      context 'when the snippet is public' do
+        let(:visibility_level) { Snippet::PUBLIC }
+
+        it 'rejects the snippet' do
+          expect { update_snippet(title: 'Foo') }.
+            not_to change { snippet.reload.title }
+        end
+
+        it 'creates a spam log' do
+          expect { update_snippet(title: 'Foo') }.
+            to change { SpamLog.count }.by(1)
+        end
+      end
+
+      context 'when the private snippet is made public' do
+        let(:visibility_level) { Snippet::PRIVATE }
+
+        it 'rejects the snippet' do
+          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
+            not_to change { snippet.reload.title }
+
+          expect(response).to have_http_status(400)
+          expect(json_response['message']).to eq({ "error" => "Spam detected" })
+        end
+
+        it 'creates a spam log' do
+          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
+            to change { SpamLog.count }.by(1)
+        end
+      end
+    end
   end
 
   describe 'DELETE /projects/:project_id/snippets/:id/' do
@@ -149,7 +189,7 @@ describe API::ProjectSnippets, api: true do
 
       delete api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(204)
     end
 
     it 'returns 404 for invalid snippet id' do
@@ -172,7 +212,7 @@ describe API::ProjectSnippets, api: true do
     end
 
     it 'returns 404 for invalid snippet id' do
-      delete api("/projects/#{snippet.project.id}/snippets/1234", admin)
+      get api("/projects/#{snippet.project.id}/snippets/1234/raw", admin)
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')

@@ -1,7 +1,7 @@
 module Commits
   class ChangeService < ::BaseService
-    class ValidationError < StandardError; end
-    class ChangeError < StandardError; end
+    ValidationError = Class.new(StandardError)
+    ChangeError = Class.new(StandardError)
 
     def execute
       @start_project = params[:start_project] || @project

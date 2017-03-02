@@ -7,7 +7,7 @@ namespace :gitlab do
 
     desc "GitLab | Display exported DB structure"
     task data: :environment do
-      puts YAML.load_file(Gitlab::ImportExport.config_file)['project_tree'].to_yaml(:SortKeys => true)
+      puts YAML.load_file(Gitlab::ImportExport.config_file)['project_tree'].to_yaml(SortKeys: true)
     end
   end
 end

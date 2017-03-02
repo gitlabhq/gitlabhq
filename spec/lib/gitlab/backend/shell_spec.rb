@@ -56,16 +56,16 @@ describe Gitlab::Shell, lib: true do
 
     describe 'mv_repository' do
       it 'executes the command' do
-        expect(Gitlab::Utils).to receive(:system_silent).
-          with([projects_path, 'mv-project', 'storage/path', 'project/path.git', 'new/path.git'])
+        expect(Gitlab::Utils).to receive(:system_silent)
+          .with([projects_path, 'mv-project', 'storage/path', 'project/path.git', 'new/path.git'])
         gitlab_shell.mv_repository('storage/path', 'project/path', 'new/path')
       end
     end
 
     describe 'mv_storage' do
       it 'executes the command' do
-        expect(Gitlab::Utils).to receive(:system_silent).
-          with([projects_path, 'mv-storage', 'current/storage', 'project/path.git', 'new/storage'])
+        expect(Gitlab::Utils).to receive(:system_silent)
+          .with([projects_path, 'mv-storage', 'current/storage', 'project/path.git', 'new/storage'])
         gitlab_shell.mv_storage('current/storage', 'project/path', 'new/storage')
       end
     end

@@ -23,8 +23,10 @@ module Ci
     serialize :options
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables
 
+    delegate :name, to: :project, prefix: true
+
     validates :coverage, numericality: true, allow_blank: true
-    validates_presence_of :ref
+    validates :ref, presence: true
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
@@ -52,15 +54,6 @@ module Ci
     class << self
       def first_pending
         pending.unstarted.order('created_at ASC').first
-      end
-
-      def create_from(build)
-        new_build = build.dup
-        new_build.status = 'pending'
-        new_build.runner_id = nil
-        new_build.trigger_request_id = nil
-        new_build.token = nil
-        new_build.save
       end
 
       def retry(build, current_user)
@@ -234,10 +227,6 @@ module Ci
       gl_project_id
     end
 
-    def project_name
-      project.name
-    end
-
     def repo_url
       auth = "gitlab-ci-token:#{ensure_token!}@"
       project.http_url_to_repo.sub(/^https?:\/\//) do |prefix|
@@ -258,7 +247,7 @@ module Ci
       return unless regex
 
       matches = text.scan(Regexp.new(regex)).last
-      matches = matches.last if matches.kind_of?(Array)
+      matches = matches.last if matches.is_a?(Array)
       coverage = matches.gsub(/\d+(\.\d+)?/).first
 
       if coverage.present?
@@ -487,7 +476,7 @@ module Ci
     def artifacts_expire_in=(value)
       self.artifacts_expire_at =
         if value
-          Time.now + ChronicDuration.parse(value)
+          ChronicDuration.parse(value)&.seconds&.from_now
         end
     end
 

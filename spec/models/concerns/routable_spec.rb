@@ -86,7 +86,7 @@ describe Group, 'Routable' do
     let(:nested_group) { create(:group, parent: group) }
 
     it { expect(group.full_path).to eq(group.path) }
-    it { expect(nested_group.full_path).to eq("#{group.path}/#{nested_group.path}") }
+    it { expect(nested_group.full_path).to eq("#{group.full_path}/#{nested_group.path}") }
   end
 
   describe '#full_name' do
@@ -102,7 +102,7 @@ describe Project, 'Routable' do
   describe '#full_path' do
     let(:project) { build_stubbed(:empty_project) }
 
-    it { expect(project.full_path).to eq "#{project.namespace.path}/#{project.path}" }
+    it { expect(project.full_path).to eq "#{project.namespace.full_path}/#{project.path}" }
   end
 
   describe '#full_name' do

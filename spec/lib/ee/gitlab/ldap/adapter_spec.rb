@@ -29,7 +29,7 @@ describe Gitlab::LDAP::Adapter, lib: true do
     end
 
     it 'returns a group object if search returns a result' do
-      entry = ldap_group_entry(['john', 'mary'], cn: 'group1')
+      entry = ldap_group_entry(%w(john mary), cn: 'group1')
       allow(adapter).to receive(:ldap_search).and_return([entry])
 
       results = adapter.groups('group1')

@@ -5,11 +5,14 @@ var path = require('path');
 var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
 var CompressionPlugin = require('compression-webpack-plugin');
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 var ROOT_PATH = path.resolve(__dirname, '..');
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
 var IS_DEV_SERVER = process.argv[1].indexOf('webpack-dev-server') !== -1;
 var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
+var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
+var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 
 var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
@@ -62,12 +65,6 @@ var config = {
             'stage-2'
           ]
         }
-      },
-      {
-        test: /\.(js|es6)$/,
-        exclude: /node_modules/,
-        loader: 'imports-loader',
-        options: 'this=>window'
       }
     ]
   },
@@ -92,8 +89,7 @@ var config = {
       'bootstrap/js':   'bootstrap-sass/assets/javascripts/bootstrap',
       'emoji-aliases$': path.join(ROOT_PATH, 'fixtures/emojis/aliases.json'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
-      'vue$':           'vue/dist/vue.js',
-      'vue-resource$':  'vue-resource/dist/vue-resource.js'
+      'vue$':           'vue/dist/vue.common.js',
     }
   }
 }
@@ -123,8 +119,21 @@ if (IS_DEV_SERVER) {
     port: DEV_SERVER_PORT,
     headers: { 'Access-Control-Allow-Origin': '*' },
     stats: 'errors-only',
+    inline: DEV_SERVER_LIVERELOAD
   };
   config.output.publicPath = '//localhost:' + DEV_SERVER_PORT + config.output.publicPath;
+}
+
+if (WEBPACK_REPORT) {
+  config.plugins.push(
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      generateStatsFile: true,
+      openAnalyzer: false,
+      reportFilename: path.join(ROOT_PATH, 'webpack-report/index.html'),
+      statsFilename: path.join(ROOT_PATH, 'webpack-report/stats.json'),
+    })
+  );
 }
 
 module.exports = config;

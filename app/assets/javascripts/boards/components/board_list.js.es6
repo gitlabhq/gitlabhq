@@ -2,8 +2,8 @@
 /* global Vue */
 /* global Sortable */
 
-require('./board_card');
-require('./board_new_issue');
+import boardNewIssue from './board_new_issue';
+import boardCard from './board_card';
 
 (() => {
   const Store = gl.issueBoards.BoardsStore;
@@ -14,8 +14,8 @@ require('./board_new_issue');
   gl.issueBoards.BoardList = Vue.extend({
     template: '#js-board-list-template',
     components: {
-      'board-card': gl.issueBoards.BoardCard,
-      'board-new-issue': gl.issueBoards.BoardNewIssue
+      boardCard,
+      boardNewIssue,
     },
     props: {
       disabled: Boolean,
@@ -81,6 +81,12 @@ require('./board_new_issue');
           });
         }
       },
+      toggleForm() {
+        this.showIssueForm = !this.showIssueForm;
+      },
+    },
+    created() {
+      gl.IssueBoardsApp.$on(`hide-issue-form-${this.list.id}`, this.toggleForm);
     },
     mounted () {
       const options = gl.issueBoards.getBoardSortableDefaultOptions({
@@ -115,6 +121,9 @@ require('./board_new_issue');
           this.loadNextPage();
         }
       };
-    }
+    },
+    beforeDestroy() {
+      gl.IssueBoardsApp.$off(`hide-issue-form-${this.list.id}`, this.toggleForm);
+    },
   });
 })();

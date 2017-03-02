@@ -8,8 +8,8 @@ class ProtectedBranch < ActiveRecord::Base
   has_many :merge_access_levels, dependent: :destroy
   has_many :push_access_levels, dependent: :destroy
 
-  validates_length_of :merge_access_levels, minimum: 0
-  validates_length_of :push_access_levels, minimum: 0
+  validates :merge_access_levels, length: { minimum: 0 }
+  validates :push_access_levels, length: { minimum: 0 }
 
   accepts_nested_attributes_for :push_access_levels, allow_destroy: true
   accepts_nested_attributes_for :merge_access_levels, allow_destroy: true

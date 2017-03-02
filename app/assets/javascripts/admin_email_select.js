@@ -17,7 +17,8 @@
               group_result = Api.groups(query.term, {}, function(groups) {
                 return groups;
               });
-              project_result = Api.projects(query.term, 'id', function(projects) {
+              // Should be replaced with "Api.projects" when API v4 is frozen (9.1)
+              project_result = Api.allProjects(query.term, 'id', function(projects) {
                 return projects;
               });
               return $.when(project_result, group_result).done(function(projects, groups) {
@@ -25,7 +26,7 @@
                 all = {
                   id: "all"
                 };
-                data = $.merge([all], groups[0], projects[0]);
+                data = [all].concat(groups[0], projects[0]);
                 return query.callback({
                   results: data
                 });
@@ -83,4 +84,4 @@
 
   })();
 
-}).call(this);
+}).call(window);

@@ -73,8 +73,8 @@ describe Project, models: true do
     subject { project.shared_runners_minutes_limit_enabled? }
 
     before do
-      allow(project.namespace).to receive(:shared_runners_minutes_limit_enabled?).
-        and_return(true)
+      allow(project.namespace).to receive(:shared_runners_minutes_limit_enabled?)
+        .and_return(true)
     end
 
     context 'with shared runners enabled' do

@@ -25,9 +25,7 @@ module Gitlab
       settings || in_memory_application_settings
     end
 
-    def sidekiq_throttling_enabled?
-      current_application_settings.sidekiq_throttling_enabled?
-    end
+    delegate :sidekiq_throttling_enabled?, to: :current_application_settings
 
     def in_memory_application_settings
       @in_memory_application_settings ||= ::ApplicationSetting.new(::ApplicationSetting.defaults)

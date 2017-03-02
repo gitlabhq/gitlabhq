@@ -171,7 +171,7 @@ describe API::MergeRequests, api: true  do
       expect(json_response['source_project_id']).to eq(merge_request.source_project.id)
       expect(json_response['target_project_id']).to eq(merge_request.target_project.id)
       expect(json_response['work_in_progress']).to be_falsy
-      expect(json_response['merge_when_build_succeeds']).to be_falsy
+      expect(json_response['merge_when_pipeline_succeeds']).to be_falsy
       expect(json_response['merge_status']).to eq('can_be_merged')
       expect(json_response['should_close_merge_request']).to be_falsy
       expect(json_response['force_close_merge_request']).to be_falsy
@@ -252,7 +252,7 @@ describe API::MergeRequests, api: true  do
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
-        expect(json_response['labels']).to eq(['label', 'label2'])
+        expect(json_response['labels']).to eq(%w(label label2))
         expect(json_response['milestone']['id']).to eq(milestone.id)
         expect(json_response['force_remove_source_branch']).to be_truthy
         expect(json_response['squash']).to be_truthy
@@ -474,7 +474,7 @@ describe API::MergeRequests, api: true  do
       it "destroys the merge request owners can destroy" do
         delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
       end
     end
   end
@@ -554,11 +554,11 @@ describe API::MergeRequests, api: true  do
       allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
 
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), merge_when_build_succeeds: true
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), merge_when_pipeline_succeeds: true
 
       expect(response).to have_http_status(200)
       expect(json_response['title']).to eq('Test')
-      expect(json_response['merge_when_build_succeeds']).to eq(true)
+      expect(json_response['merge_when_pipeline_succeeds']).to eq(true)
     end
   end
 
@@ -740,22 +740,22 @@ describe API::MergeRequests, api: true  do
     end
   end
 
-  describe 'POST :id/merge_requests/:merge_request_id/subscription' do
+  describe 'POST :id/merge_requests/:merge_request_id/subscribe' do
     it 'subscribes to a merge request' do
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", admin)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscribe", admin)
 
       expect(response).to have_http_status(201)
       expect(json_response['subscribed']).to eq(true)
     end
 
     it 'returns 304 if already subscribed' do
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", user)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscribe", user)
 
       expect(response).to have_http_status(304)
     end
 
     it 'returns 404 if the merge request is not found' do
-      post api("/projects/#{project.id}/merge_requests/123/subscription", user)
+      post api("/projects/#{project.id}/merge_requests/123/subscribe", user)
 
       expect(response).to have_http_status(404)
     end
@@ -764,28 +764,28 @@ describe API::MergeRequests, api: true  do
       guest = create(:user)
       project.team << [guest, :guest]
 
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", guest)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscribe", guest)
 
       expect(response).to have_http_status(403)
     end
   end
 
-  describe 'DELETE :id/merge_requests/:merge_request_id/subscription' do
+  describe 'POST :id/merge_requests/:merge_request_id/unsubscribe' do
     it 'unsubscribes from a merge request' do
-      delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", user)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/unsubscribe", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(201)
       expect(json_response['subscribed']).to eq(false)
     end
 
     it 'returns 304 if not subscribed' do
-      delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", admin)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/unsubscribe", admin)
 
       expect(response).to have_http_status(304)
     end
 
     it 'returns 404 if the merge request is not found' do
-      post api("/projects/#{project.id}/merge_requests/123/subscription", user)
+      post api("/projects/#{project.id}/merge_requests/123/unsubscribe", user)
 
       expect(response).to have_http_status(404)
     end
@@ -794,7 +794,7 @@ describe API::MergeRequests, api: true  do
       guest = create(:user)
       project.team << [guest, :guest]
 
-      delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", guest)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/unsubscribe", guest)
 
       expect(response).to have_http_status(403)
     end

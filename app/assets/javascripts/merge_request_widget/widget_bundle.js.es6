@@ -6,11 +6,22 @@ require('./approvals/approvals_bundle');
 window.gl = window.gl || {};
 
 $(() => {
-  const rootEl = document.getElementById('merge-request-widget-app');
-  const widgetSharedStore = new gl.MergeRequestWidgetStore(rootEl);
+  let widgetSharedStore;
 
-  gl.MergeRequestWidgetApp = new Vue({
-    el: rootEl,
-    data: widgetSharedStore.data,
-  });
+  gl.compileApprovalsWidget = () => {
+    const rootEl = document.getElementById('merge-request-widget-app');
+
+    if (gl.MergeRequestWidgetApp) {
+      gl.MergeRequestWidgetApp.$destroy();
+    } else {
+      widgetSharedStore = new gl.MergeRequestWidgetStore(rootEl);
+    }
+
+    gl.MergeRequestWidgetApp = new Vue({
+      el: rootEl,
+      data: widgetSharedStore.data,
+    });
+  };
+
+  gl.compileApprovalsWidget();
 });

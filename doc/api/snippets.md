@@ -38,7 +38,7 @@ Parameters:
 | `id`               | Integer | yes      | The ID of a snippet           |
 
 ``` bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/snippets/1
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/snippets/1
 ```
 
 Example response:
@@ -82,7 +82,7 @@ Parameters:
 
 
 ``` bash
-curl --request POST --data '{"title": "This is a snippet", "content": "Hello world", "file_name": "test.txt", "visibility_level": 10 }' --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/snippets
+curl --request POST --data '{"title": "This is a snippet", "content": "Hello world", "file_name": "test.txt", "visibility_level": 10 }' --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/snippets
 ```
 
 Example response:
@@ -127,7 +127,7 @@ Parameters:
 
 
 ``` bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data '{"title": "foo", "content": "bar"}' https://gitlab.example.com/api/v3/snippets/1
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data '{"title": "foo", "content": "bar"}' https://gitlab.example.com/api/v4/snippets/1
 ```
 
 Example response:
@@ -168,7 +168,7 @@ Parameters:
 
 
 ```
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/snippets/1"
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/snippets/1"
 ```
 
 upon successful delete a `204 No content` HTTP code shall be expected, with no data,
@@ -186,7 +186,7 @@ GET /snippets/public
 | `page`     | Integer | no       | the page to retrieve                  |
 
 ``` bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/snippets/public?per_page=2&page=1
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/snippets/public?per_page=2&page=1
 ```
 
 Example response:

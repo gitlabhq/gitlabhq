@@ -121,7 +121,7 @@ describe API::Projects, api: true  do
 
       context 'and with simple=true' do
         it 'returns a simplified version of all the projects' do
-          expected_keys = ["id", "http_url_to_repo", "web_url", "name", "name_with_namespace", "path", "path_with_namespace"]
+          expected_keys = %w(id http_url_to_repo web_url name name_with_namespace path path_with_namespace)
 
           get api('/projects?simple=true', user)
 
@@ -269,10 +269,37 @@ describe API::Projects, api: true  do
       end
     end
 
-    it 'creates new project without path and return 201' do
-      expect { post api('/projects', user), name: 'foo' }.
+    it 'creates new project without path but with name and returns 201' do
+      expect { post api('/projects', user), name: 'Foo Project' }.
         to change { Project.count }.by(1)
       expect(response).to have_http_status(201)
+
+      project = Project.first
+
+      expect(project.name).to eq('Foo Project')
+      expect(project.path).to eq('foo-project')
+    end
+
+    it 'creates new project without name but with path and returns 201' do
+      expect { post api('/projects', user), path: 'foo_project' }.
+        to change { Project.count }.by(1)
+      expect(response).to have_http_status(201)
+
+      project = Project.first
+
+      expect(project.name).to eq('foo_project')
+      expect(project.path).to eq('foo_project')
+    end
+
+    it 'creates new project name and path and returns 201' do
+      expect { post api('/projects', user), path: 'foo-Project', name: 'Foo Project' }.
+        to change { Project.count }.by(1)
+      expect(response).to have_http_status(201)
+
+      project = Project.first
+
+      expect(project.name).to eq('Foo Project')
+      expect(project.path).to eq('foo-Project')
     end
 
     it 'creates last project before reaching project limit' do
@@ -281,7 +308,7 @@ describe API::Projects, api: true  do
       expect(response).to have_http_status(201)
     end
 
-    it 'does not create new project without name and return 400' do
+    it 'does not create new project without name or path and returns 400' do
       expect { post api('/projects', user) }.not_to change { Project.count }
       expect(response).to have_http_status(400)
     end
@@ -293,7 +320,7 @@ describe API::Projects, api: true  do
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
-        only_allow_merge_if_build_succeeds: false,
+        only_allow_merge_if_pipeline_succeeds: false,
         request_access_enabled: true,
         only_allow_merge_if_all_discussions_are_resolved: false
       })
@@ -334,15 +361,15 @@ describe API::Projects, api: true  do
     end
 
     it 'sets a project as allowing merge even if build fails' do
-      project = attributes_for(:project, { only_allow_merge_if_build_succeeds: false })
+      project = attributes_for(:project, { only_allow_merge_if_pipeline_succeeds: false })
       post api('/projects', user), project
-      expect(json_response['only_allow_merge_if_build_succeeds']).to be_falsey
+      expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_falsey
     end
 
-    it 'sets a project as allowing merge only if build succeeds' do
-      project = attributes_for(:project, { only_allow_merge_if_build_succeeds: true })
+    it 'sets a project as allowing merge only if merge_when_pipeline_succeeds' do
+      project = attributes_for(:project, { only_allow_merge_if_pipeline_succeeds: true })
       post api('/projects', user), project
-      expect(json_response['only_allow_merge_if_build_succeeds']).to be_truthy
+      expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_truthy
     end
 
     it 'sets a project as allowing merge even if discussions are unresolved' do
@@ -457,15 +484,15 @@ describe API::Projects, api: true  do
     end
 
     it 'sets a project as allowing merge even if build fails' do
-      project = attributes_for(:project, { only_allow_merge_if_build_succeeds: false })
+      project = attributes_for(:project, { only_allow_merge_if_pipeline_succeeds: false })
       post api("/projects/user/#{user.id}", admin), project
-      expect(json_response['only_allow_merge_if_build_succeeds']).to be_falsey
+      expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_falsey
     end
 
-    it 'sets a project as allowing merge only if build succeeds' do
-      project = attributes_for(:project, { only_allow_merge_if_build_succeeds: true })
+    it 'sets a project as allowing merge only if merge_when_pipeline_succeeds' do
+      project = attributes_for(:project, { only_allow_merge_if_pipeline_succeeds: true })
       post api("/projects/user/#{user.id}", admin), project
-      expect(json_response['only_allow_merge_if_build_succeeds']).to be_truthy
+      expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_truthy
     end
 
     it 'sets a project as allowing merge even if discussions are unresolved' do
@@ -512,7 +539,57 @@ describe API::Projects, api: true  do
       end
     end
 
-    context 'when authenticated' do
+    context 'when authenticated as an admin' do
+      it 'returns a project by id including repository_storage' do
+        project
+        project_member
+        group = create(:group)
+        link = create(:project_group_link, project: project, group: group)
+
+        get api("/projects/#{project.id}", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['id']).to eq(project.id)
+        expect(json_response['description']).to eq(project.description)
+        expect(json_response['default_branch']).to eq(project.default_branch)
+        expect(json_response['tag_list']).to be_an Array
+        expect(json_response['public']).to be_falsey
+        expect(json_response['archived']).to be_falsey
+        expect(json_response['visibility_level']).to be_present
+        expect(json_response['ssh_url_to_repo']).to be_present
+        expect(json_response['http_url_to_repo']).to be_present
+        expect(json_response['web_url']).to be_present
+        expect(json_response['owner']).to be_a Hash
+        expect(json_response['owner']).to be_a Hash
+        expect(json_response['name']).to eq(project.name)
+        expect(json_response['path']).to be_present
+        expect(json_response['issues_enabled']).to be_present
+        expect(json_response['merge_requests_enabled']).to be_present
+        expect(json_response['wiki_enabled']).to be_present
+        expect(json_response['builds_enabled']).to be_present
+        expect(json_response['snippets_enabled']).to be_present
+        expect(json_response['container_registry_enabled']).to be_present
+        expect(json_response['created_at']).to be_present
+        expect(json_response['last_activity_at']).to be_present
+        expect(json_response['shared_runners_enabled']).to be_present
+        expect(json_response['creator_id']).to be_present
+        expect(json_response['namespace']).to be_present
+        expect(json_response['avatar_url']).to be_nil
+        expect(json_response['star_count']).to be_present
+        expect(json_response['forks_count']).to be_present
+        expect(json_response['public_builds']).to be_present
+        expect(json_response['shared_with_groups']).to be_an Array
+        expect(json_response['shared_with_groups'].length).to eq(1)
+        expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
+        expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
+        expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
+        expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
+        expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
+        expect(json_response['repository_storage']).to eq(project.repository_storage)
+      end
+    end
+
+    context 'when authenticated as a regular user' do
       before do
         project
         project_member
@@ -559,8 +636,9 @@ describe API::Projects, api: true  do
         expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
         expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
-        expect(json_response['only_allow_merge_if_build_succeeds']).to eq(project.only_allow_merge_if_build_succeeds)
+        expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
+        expect(json_response).not_to have_key('repository_storage')
       end
 
       it 'returns a project by path name' do
@@ -820,8 +898,9 @@ describe API::Projects, api: true  do
     it 'deletes existing project snippet' do
       expect do
         delete api("/projects/#{project.id}/snippets/#{snippet.id}", user)
+
+        expect(response).to have_http_status(204)
       end.to change { Snippet.count }.by(-1)
-      expect(response).to have_http_status(200)
     end
 
     it 'returns 404 when deleting unknown snippet id' do
@@ -905,8 +984,10 @@ describe API::Projects, api: true  do
           project_fork_target.reload
           expect(project_fork_target.forked_from_project).not_to be_nil
           expect(project_fork_target.forked?).to be_truthy
+
           delete api("/projects/#{project_fork_target.id}/fork", admin)
-          expect(response).to have_http_status(200)
+
+          expect(response).to have_http_status(204)
           project_fork_target.reload
           expect(project_fork_target.forked_from_project).to be_nil
           expect(project_fork_target.forked?).not_to be_truthy
@@ -1244,7 +1325,7 @@ describe API::Projects, api: true  do
     end
   end
 
-  describe 'DELETE /projects/:id/star' do
+  describe 'POST /projects/:id/unstar' do
     context 'on a starred project' do
       before do
         user.toggle_star(project)
@@ -1252,16 +1333,16 @@ describe API::Projects, api: true  do
       end
 
       it 'unstars the project' do
-        expect { delete api("/projects/#{project.id}/star", user) }.to change { project.reload.star_count }.by(-1)
+        expect { post api("/projects/#{project.id}/unstar", user) }.to change { project.reload.star_count }.by(-1)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(201)
         expect(json_response['star_count']).to eq(0)
       end
     end
 
     context 'on an unstarred project' do
       it 'does not modify the star count' do
-        expect { delete api("/projects/#{project.id}/star", user) }.not_to change { project.reload.star_count }
+        expect { post api("/projects/#{project.id}/unstar", user) }.not_to change { project.reload.star_count }
 
         expect(response).to have_http_status(304)
       end
@@ -1272,7 +1353,9 @@ describe API::Projects, api: true  do
     context 'when authenticated as user' do
       it 'removes project' do
         delete api("/projects/#{project.id}", user)
-        expect(response).to have_http_status(200)
+
+        expect(response).to have_http_status(202)
+        expect(json_response['message']).to eql('202 Accepted')
       end
 
       it 'does not remove a project if not an owner' do
@@ -1296,7 +1379,9 @@ describe API::Projects, api: true  do
     context 'when authenticated as admin' do
       it 'removes any existing project' do
         delete api("/projects/#{project.id}", admin)
-        expect(response).to have_http_status(200)
+
+        expect(response).to have_http_status(202)
+        expect(json_response['message']).to eql('202 Accepted')
       end
 
       it 'does not remove a non existing project' do
@@ -1428,6 +1513,55 @@ describe API::Projects, api: true  do
 
         expect(response).to have_http_status(401)
         expect(json_response['message']).to eq('401 Unauthorized')
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/housekeeping' do
+    let(:housekeeping) { Projects::HousekeepingService.new(project) }
+
+    before do
+      allow(Projects::HousekeepingService).to receive(:new).with(project).and_return(housekeeping)
+    end
+
+    context 'when authenticated as owner' do
+      it 'starts the housekeeping process' do
+        expect(housekeeping).to receive(:execute).once
+
+        post api("/projects/#{project.id}/housekeeping", user)
+
+        expect(response).to have_http_status(201)
+      end
+
+      context 'when housekeeping lease is taken' do
+        it 'returns conflict' do
+          expect(housekeeping).to receive(:execute).once.and_raise(Projects::HousekeepingService::LeaseTaken)
+
+          post api("/projects/#{project.id}/housekeeping", user)
+
+          expect(response).to have_http_status(409)
+          expect(json_response['message']).to match(/Somebody already triggered housekeeping for this project/)
+        end
+      end
+    end
+
+    context 'when authenticated as developer' do
+      before do
+        project_member2
+      end
+
+      it 'returns forbidden error' do
+        post api("/projects/#{project.id}/housekeeping", user3)
+
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        post api("/projects/#{project.id}/housekeeping")
+
+        expect(response).to have_http_status(401)
       end
     end
   end

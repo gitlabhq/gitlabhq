@@ -1,3 +1,9 @@
+/**
+ * Environment Item Component
+ *
+ * Renders a table row for each environment.
+ */
+
 const Vue = require('vue');
 const Timeago = require('timeago.js');
 
@@ -8,12 +14,6 @@ const ExternalUrlComponent = require('./environment_external_url');
 const StopComponent = require('./environment_stop');
 const RollbackComponent = require('./environment_rollback');
 const TerminalButtonComponent = require('./environment_terminal_button');
-
-/**
- * Envrionment Item Component
- *
- * Renders a table row for each environment.
- */
 
 const timeagoInstance = new Timeago();
 
@@ -61,11 +61,16 @@ module.exports = Vue.component('environment-item', {
       type: String,
       required: false,
     },
+
+    toggleDeployBoard: {
+      type: Function,
+      required: false,
+    },
   },
 
   computed: {
     /**
-     * Verifies if `last_deployment` key exists in the current Envrionment.
+     * Verifies if `last_deployment` key exists in the current Environment.
      * This key is required to render most of the html - this method works has
      * an helper.
      *
@@ -414,7 +419,6 @@ module.exports = Vue.component('environment-item', {
     folderUrl() {
       return `${window.location.pathname}/folders/${this.model.folderName}`;
     },
-
   },
 
   /**
@@ -435,11 +439,27 @@ module.exports = Vue.component('environment-item', {
   template: `
     <tr>
       <td>
+        <span class="deploy-board-icon"
+          v-if="model.hasDeployBoard"
+          @click="toggleDeployBoard(model)">
+
+          <i v-show="!model.isDeployBoardVisible"
+            class="fa fa-caret-right"
+            aria-hidden="true">
+          </i>
+
+          <i v-show="model.isDeployBoardVisible"
+            class="fa fa-caret-down"
+            aria-hidden="true">
+          </i>
+        </span>
+
         <a v-if="!model.isFolder"
           class="environment-name"
           :href="environmentPath">
           {{model.name}}
         </a>
+
         <a v-else class="folder-name" :href="folderUrl">
           <span class="folder-icon">
             <i class="fa fa-folder" aria-hidden="true"></i>
@@ -503,45 +523,30 @@ module.exports = Vue.component('environment-item', {
         </span>
       </td>
 
-      <td class="hidden-xs">
-        <div v-if="!model.isFolder">
-          <div v-if="hasManualActions && canCreateDeployment"
-            class="inline js-manual-actions-container">
-            <actions-component
-              :play-icon-svg="playIconSvg"
-              :actions="manualActions">
-            </actions-component>
-          </div>
+      <td class="environments-actions">
+        <div v-if="!model.isFolder" class="btn-group pull-right" role="group">
+          <actions-component v-if="hasManualActions && canCreateDeployment"
+            :play-icon-svg="playIconSvg"
+            :actions="manualActions">
+          </actions-component>
 
-          <div v-if="externalURL && canReadEnvironment"
-            class="inline js-external-url-container">
-            <external-url-component
-              :external-url="externalURL">
-            </external-url-component>
-          </div>
+          <external-url-component v-if="externalURL && canReadEnvironment"
+            :external-url="externalURL">
+          </external-url-component>
 
-          <div v-if="hasStopAction && canCreateDeployment"
-            class="inline js-stop-component-container">
-            <stop-component
-              :stop-url="model.stop_path">
-            </stop-component>
-          </div>
+          <stop-component v-if="hasStopAction && canCreateDeployment"
+            :stop-url="model.stop_path">
+          </stop-component>
 
-          <div v-if="model && model.terminal_path"
-            class="inline js-terminal-button-container">
-            <terminal-button-component
-              :terminal-icon-svg="terminalIconSvg"
-              :terminal-path="model.terminal_path">
-            </terminal-button-component>
-          </div>
+          <terminal-button-component v-if="model && model.terminal_path"
+            :terminal-icon-svg="terminalIconSvg"
+            :terminal-path="model.terminal_path">
+          </terminal-button-component>
 
-          <div v-if="canRetry && canCreateDeployment"
-            class="inline js-rollback-component-container">
-            <rollback-component
-              :is-last-deployment="isLastDeployment"
-              :retry-url="retryUrl">
-              </rollback-component>
-          </div>
+          <rollback-component v-if="canRetry && canCreateDeployment"
+            :is-last-deployment="isLastDeployment"
+            :retry-url="retryUrl">
+            </rollback-component>
         </div>
       </td>
     </tr>

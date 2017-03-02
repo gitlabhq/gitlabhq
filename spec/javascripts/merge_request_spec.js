@@ -26,4 +26,4 @@ require('~/merge_request');
       });
     });
   });
-}).call(this);
+}).call(window);

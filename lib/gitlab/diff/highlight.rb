@@ -50,7 +50,7 @@ module Gitlab
         # Only update text if line is found. This will prevent
         # issues with submodules given the line only exists in diff content.
         if rich_line
-          line_prefix = diff_line.text.match(/\A(.)/) ? $1 : ' '
+          line_prefix = diff_line.text =~ /\A(.)/ ? $1 : ' '
           "#{line_prefix}#{rich_line}".html_safe
         end
       end

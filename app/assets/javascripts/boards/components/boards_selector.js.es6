@@ -64,6 +64,7 @@ require('./board_new_form');
     },
     methods: {
       showPage(page) {
+        this.state.reload = false;
         this.state.currentPage = page;
       },
       toggleDropdown() {

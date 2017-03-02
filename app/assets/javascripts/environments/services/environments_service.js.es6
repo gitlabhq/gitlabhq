@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this*/
 const Vue = require('vue');
 
 class EnvironmentsService {
@@ -5,8 +6,12 @@ class EnvironmentsService {
     this.environments = Vue.resource(endpoint);
   }
 
-  all() {
+  get() {
     return this.environments.get();
+  }
+
+  getDeployBoard(endpoint) {
+    return Vue.http.get(endpoint);
   }
 }
 

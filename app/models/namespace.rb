@@ -99,14 +99,8 @@ class Namespace < ActiveRecord::Base
       # Work around that by setting their username to "blank", followed by a counter.
       path = "blank" if path.blank?
 
-      counter = 0
-      base = path
-      while Namespace.find_by_path_or_name(path)
-        counter += 1
-        path = "#{base}#{counter}"
-      end
-
-      path
+      uniquify = Uniquify.new
+      uniquify.string(path) { |s| Namespace.find_by_path_or_name(s) }
     end
   end
 

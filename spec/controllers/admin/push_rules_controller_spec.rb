@@ -12,8 +12,7 @@ describe Admin::PushRulesController do
       params =
         { deny_delete_tag: true, delete_branch_regex: "any", commit_message_regex: "any",
           force_push_regex: "any", author_email_regex: "any", member_check: true, file_name_regex: "any",
-          max_file_size: "0", prevent_secrets: true
-        }
+          max_file_size: "0", prevent_secrets: true }
 
       expect_any_instance_of(PushRule).to receive(:update_attributes).with(params)
 

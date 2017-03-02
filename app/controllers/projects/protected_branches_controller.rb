@@ -76,7 +76,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
   def load_gon_index
     params = { open_branches: @project.open_branches.map { |br| { text: br.name, id: br.name, title: br.name } } }
-    params.merge!(current_project_id: @project.id) if @project
+    params[:current_project_id] = @project.id if @project
     gon.push(params.merge(access_levels_options))
   end
 end

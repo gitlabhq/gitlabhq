@@ -3,12 +3,12 @@
 
 const Vue = window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
-const EnvironmentsService = require('../services/environments_service');
+const EnvironmentsService = require('~/environments/services/environments_service');
 const EnvironmentTable = require('./environments_table');
-const EnvironmentsStore = require('../stores/environments_store');
-require('../../vue_shared/components/table_pagination');
-require('../../lib/utils/common_utils');
-require('../../vue_shared/vue_resource_interceptor');
+const EnvironmentsStore = require('~/environments/stores/environments_store');
+require('~/vue_shared/components/table_pagination');
+require('~/lib/utils/common_utils');
+require('~/vue_shared/vue_resource_interceptor');
 
 module.exports = Vue.component('environment-component', {
 
@@ -23,6 +23,7 @@ module.exports = Vue.component('environment-component', {
 
     return {
       store,
+      service: {},
       state: store.state,
       visibility: 'available',
       isLoading: false,
@@ -62,6 +63,16 @@ module.exports = Vue.component('environment-component', {
       return gl.utils.convertPermissionToBoolean(this.canCreateEnvironment);
     },
 
+    /**
+     * Pagination should only be rendered when we have information about it and when the
+     * number of total pages is bigger than 1.
+     *
+     * @return {Boolean}
+     */
+    shouldRenderPagination() {
+      return this.state.paginationInformation && this.state.paginationInformation.totalPages > 1;
+    },
+
   },
 
   /**
@@ -74,11 +85,11 @@ module.exports = Vue.component('environment-component', {
 
     const endpoint = `${this.endpoint}?scope=${scope}&page=${pageNumber}`;
 
-    const service = new EnvironmentsService(endpoint);
+    this.service = new EnvironmentsService(endpoint);
 
     this.isLoading = true;
 
-    return service.all()
+    return this.service.get()
       .then(resp => ({
         headers: resp.headers,
         body: resp.json(),
@@ -99,8 +110,15 @@ module.exports = Vue.component('environment-component', {
   },
 
   methods: {
-    toggleRow(model) {
-      return this.store.toggleFolder(model.name);
+
+    /**
+     * Toggles the visibility of the deploy boards of the clicked environment.
+     *
+     * @param  {Object} model
+     * @return {Object}
+     */
+    toggleDeployBoard(model) {
+      return this.store.toggleDeployBoard(model.id);
     },
 
     /**
@@ -145,7 +163,7 @@ module.exports = Vue.component('environment-component', {
         </div>
       </div>
 
-      <div class="environments-container">
+      <div class="content-list environments-container">
         <div class="environments-list-loading text-center" v-if="isLoading">
           <i class="fa fa-spinner fa-spin"></i>
         </div>
@@ -179,14 +197,17 @@ module.exports = Vue.component('environment-component', {
             :can-read-environment="canReadEnvironmentParsed"
             :play-icon-svg="playIconSvg"
             :terminal-icon-svg="terminalIconSvg"
-            :commit-icon-svg="commitIconSvg">
+            :commit-icon-svg="commitIconSvg"
+            :toggleDeployBoard="toggleDeployBoard"
+            :store="store"
+            :service="service">
           </environment-table>
-
-          <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
-            :change="changePage"
-            :pageInfo="state.paginationInformation">
-          </table-pagination>
         </div>
+
+        <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
+          :change="changePage"
+          :pageInfo="state.paginationInformation">
+        </table-pagination>
       </div>
     </div>
   `,

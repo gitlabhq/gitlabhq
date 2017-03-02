@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170215200045) do
+ActiveRecord::Schema.define(version: 20170217151947) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -121,6 +121,7 @@ ActiveRecord::Schema.define(version: 20170215200045) do
     t.integer "repository_size_limit", limit: 8, default: 0
     t.integer "terminal_max_session_time", default: 0, null: false
     t.integer "minimum_mirror_sync_time", default: 15, null: false
+    t.string "default_artifacts_expire_in", default: '0', null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -291,8 +292,8 @@ ActiveRecord::Schema.define(version: 20170215200045) do
     t.integer "lock_version"
   end
 
+  add_index "ci_commits", ["gl_project_id", "ref", "status"], name: "index_ci_commits_on_gl_project_id_and_ref_and_status", using: :btree
   add_index "ci_commits", ["gl_project_id", "sha"], name: "index_ci_commits_on_gl_project_id_and_sha", using: :btree
-  add_index "ci_commits", ["gl_project_id", "status"], name: "index_ci_commits_on_gl_project_id_and_status", using: :btree
   add_index "ci_commits", ["gl_project_id"], name: "index_ci_commits_on_gl_project_id", using: :btree
   add_index "ci_commits", ["status"], name: "index_ci_commits_on_status", using: :btree
   add_index "ci_commits", ["user_id"], name: "index_ci_commits_on_user_id", using: :btree
@@ -779,7 +780,7 @@ ActiveRecord::Schema.define(version: 20170215200045) do
     t.integer "updated_by_id"
     t.text "merge_error"
     t.text "merge_params"
-    t.boolean "merge_when_build_succeeds", default: false, null: false
+    t.boolean "merge_when_pipeline_succeeds", default: false, null: false
     t.integer "merge_user_id"
     t.string "merge_commit_sha"
     t.datetime "deleted_at"
@@ -1108,7 +1109,7 @@ ActiveRecord::Schema.define(version: 20170215200045) do
     t.boolean "last_repository_check_failed"
     t.datetime "last_repository_check_at"
     t.boolean "container_registry_enabled"
-    t.boolean "only_allow_merge_if_build_succeeds", default: false, null: false
+    t.boolean "only_allow_merge_if_pipeline_succeeds", default: false, null: false
     t.boolean "has_external_issue_tracker"
     t.string "repository_storage", default: "default", null: false
     t.boolean "repository_read_only"
@@ -1127,6 +1128,7 @@ ActiveRecord::Schema.define(version: 20170215200045) do
   add_index "projects", ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
   add_index "projects", ["last_repository_check_failed"], name: "index_projects_on_last_repository_check_failed", using: :btree
+  add_index "projects", ["mirror_last_successful_update_at"], name: "index_projects_on_mirror_last_successful_update_at", using: :btree
   add_index "projects", ["name"], name: "index_projects_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
@@ -1216,6 +1218,7 @@ ActiveRecord::Schema.define(version: 20170215200045) do
     t.integer "sync_time", default: 60, null: false
   end
 
+  add_index "remote_mirrors", ["last_successful_update_at"], name: "index_remote_mirrors_on_last_successful_update_at", using: :btree
   add_index "remote_mirrors", ["project_id"], name: "index_remote_mirrors_on_project_id", using: :btree
   add_index "remote_mirrors", ["sync_time"], name: "index_remote_mirrors_on_sync_time", using: :btree
 
@@ -1402,6 +1405,8 @@ ActiveRecord::Schema.define(version: 20170215200045) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "user_agent_details", ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -1466,6 +1471,7 @@ ActiveRecord::Schema.define(version: 20170215200045) do
     t.boolean "authorized_projects_populated"
     t.boolean "auditor", default: false, null: false
     t.boolean "notified_of_own_activity", default: false, null: false
+    t.boolean "ghost"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

@@ -15,96 +15,97 @@
   padding-top: 20px;
 }
 
-@media (max-width: $screen-xs-max) {
-  .environments-container {
+.environments-container {
+  .table-holder {
     width: 100%;
     overflow: auto;
   }
-}
 
-.environments {
-  table-layout: fixed;
-
-  .environments-commit,
-  .environments-actions,
-  .environments-deploy,
-  .environments-build,
-  .environments-date {
-    position: static;
-    float: none;
-    display: table-cell;
-  }
-
-  .environments-name,
-  .environments-commit,
-  .environments-actions {
-    width: 20%;
-  }
-
-  .environments-date {
-    width: 10%;
-  }
-
-  .environments-deploy,
-  .environments-build {
-    width: 15%;
-  }
-
-  .environment-name,
-  .environments-build-cell,
-  .deployment-column {
-    word-break: break-all;
-  }
-
-  .deployment-column {
-    .avatar {
-      float: none;
+  .table.ci-table {
+    .environments-actions {
+      min-width: 200px;
     }
-  }
 
-  .commit-title {
-    margin: 0;
-  }
+    .environments-commit,
+    .environments-actions {
+      width: 20%;
+    }
 
-  .avatar-image-container {
-    text-decoration: none;
-  }
+    .environments-date {
+      width: 10%;
+    }
 
-  .icon-play {
-    height: 13px;
-    width: 12px;
-  }
+    .environments-name,
+    .environments-deploy,
+    .environments-build {
+      width: 15%;
+    }
 
-  .external-url,
-  .dropdown-new {
-    color: $gl-text-color-secondary;
-  }
+    .deployment-column {
+      > span {
+        word-break: break-all;
+      }
 
-  .dropdown-menu {
+      .avatar {
+        float: none;
+      }
+    }
 
-    .fa {
-      margin-right: 6px;
+    .btn-group {
+
+      > a {
+        color: $gl-text-color-secondary;
+      }
+
+      svg path {
+        fill: $gl-text-color-secondary;
+      }
+
+      .dropdown {
+        outline: none;
+      }
+    }
+
+    .commit-title {
+      margin: 0;
+    }
+
+    .avatar-image-container {
+      text-decoration: none;
+    }
+
+    .icon-play {
+      height: 13px;
+      width: 12px;
+    }
+
+    .external-url,
+    .dropdown-new {
       color: $gl-text-color-secondary;
     }
-  }
 
-  .build-link,
-  .branch-name {
-    color: $gl-text-color;
-  }
-
-  .stop-env-link,
-  .external-url {
-    color: $gl-text-color-secondary;
-
-    .stop-env-icon {
-      font-size: 14px;
+    .dropdown-menu {
+      .fa {
+        margin-right: 6px;
+        color: $gl-text-color-secondary;
+      }
     }
-  }
 
-  .deployment {
-    .build-column {
+    .build-link,
+    .branch-name {
+      color: $gl-text-color;
+    }
 
+    .stop-env-link,
+    .external-url {
+      color: $gl-text-color-secondary;
+
+      .stop-env-icon {
+        font-size: 14px;
+      }
+    }
+
+    .deployment .build-column {
       .build-link {
         color: $gl-text-color;
       }
@@ -113,34 +114,146 @@
         float: none;
       }
     }
-  }
 
-  .folder-icon {
-    margin-right: 3px;
-    color: $gl-text-color-secondary;
-    display: inline-block;
-
-    .fa:nth-child(1) {
+    .folder-icon {
       margin-right: 3px;
-    }
-  }
+      color: $gl-text-color-secondary;
+      display: inline-block;
 
-  .folder-name {
-    cursor: pointer;
-    color: $gl-text-color-secondary;
-    display: inline-block;
+      .fa:nth-child(1) {
+        margin-right: 3px;
+      }
+    }
+
+    .folder-name {
+      cursor: pointer;
+      color: $gl-text-color-secondary;
+      display: inline-block;
+    }
+
+    .icon-container {
+      width: 20px;
+      text-align: center;
+    }
+
+    .branch-commit {
+      .commit-id {
+        margin-right: 0;
+      }
+    }
   }
 }
 
-.table.ci-table.environments {
-  .icon-container {
-    width: 20px;
-    text-align: center;
+/**
+ * Deploy boards
+ */
+
+.deploy-board > div {
+  display: flex;
+  justify-content: space-between;
+
+  .deploy-board-information {
+    order: 1;
+    display: flex;
+    width: 70px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0 20px 10px;
+
+    > span {
+      text-align: center;
+    }
+
+    .percentage {
+      color: $gl-text-color;
+    }
+
+    .text {
+      color: $gl-text-color-secondary;
+    }
   }
 
-  .branch-commit {
-    .commit-id {
-      margin-right: 0;
+  .deploy-board-instances {
+    order: 2;
+    width: 75%;
+
+    .text {
+      color: $gl-text-color-secondary;
+      font-size: 12px;
     }
+
+    .deploy-board-instances-container {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+      margin-top: -8px;
+    }
+  }
+
+  .deploy-board-actions {
+    order: 3;
+    align-self: center;
+  }
+
+  &.deploy-board-error-message {
+    justify-content: center;
+  }
+}
+
+.deploy-board-instance {
+  width: 15px;
+  height: 15px;
+  border-radius: 3px;
+  border-width: 1px;
+  border-style: solid;
+  margin: 1px;
+
+  &-finished {
+    background-color: lighten($green-light, 25%);
+    border-color: $green-light;
+  }
+
+  &-deploying {
+    background-color: lighten($green-light, 40%);
+    border-color: $green-light;
+  }
+
+  &-failed {
+    background-color: lighten($red-light, 20%);
+    border-color: $red-normal;
+  }
+
+  &-ready {
+    background-color: lighten($border-color, 1%);
+    border-color: $border-color;
+  }
+
+  &-preparing {
+    background-color: lighten($border-color, 5%);
+    border-color: $border-color;
+  }
+
+  &-waiting {
+    background-color: $white-light;
+    border-color: $border-color;
+  }
+}
+
+.deploy-board-icon i {
+  cursor: pointer;
+  color: $layout-link-gray;
+  padding-right: 10px;
+}
+
+.deploy-board {
+  padding: 10px;
+  background-color: $gray-light;
+  min-height: 20px;
+
+  .fa-spinner {
+    margin: 0 auto;
+    width: 20px;
+    display: block;
+    font-size: 20px;
   }
 }

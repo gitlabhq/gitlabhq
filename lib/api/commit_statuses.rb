@@ -40,7 +40,7 @@ module API
         requires :id,          type: String,  desc: 'The ID of a project'
         requires :sha,         type: String,  desc: 'The commit hash'
         requires :state,       type: String,  desc: 'The state of the status',
-                               values: ['pending', 'running', 'success', 'failed', 'canceled']
+                               values: %w(pending running success failed canceled)
         optional :ref,         type: String,  desc: 'The ref'
         optional :target_url,  type: String,  desc: 'The target URL to associate with this status'
         optional :description, type: String,  desc: 'A short description of the status'
@@ -72,14 +72,15 @@ module API
         status = GenericCommitStatus.running_or_pending.find_or_initialize_by(
           project: @project,
           pipeline: pipeline,
-          user: current_user,
           name: name,
           ref: ref,
-          target_url: params[:target_url],
-          description: params[:description],
-          coverage: params[:coverage]
+          user: current_user
         )
 
+        optional_attributes =
+          attributes_for_keys(%w[target_url description coverage])
+
+        status.update(optional_attributes) if optional_attributes.any?
         render_validation_error!(status) if status.invalid?
 
         begin

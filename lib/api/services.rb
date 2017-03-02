@@ -611,7 +611,20 @@ module API
       TeamcityService,
       JenkinsService,
       JenkinsDeprecatedService
-    ].freeze
+    ]
+
+    if Rails.env.development?
+      services['mock-ci'] = [
+        {
+          required: true,
+          name: :mock_service_url,
+          type: String,
+          desc: 'URL to the mock service'
+        }
+      ]
+
+      service_classes << MockCiService
+    end
 
     trigger_services = {
       'mattermost-slash-commands' => [
@@ -689,9 +702,7 @@ module API
           hash.merge!(key => nil)
         end
 
-        if service.update_attributes(attrs.merge(active: false))
-          true
-        else
+        unless service.update_attributes(attrs.merge(active: false))
           render_api_error!('400 Bad Request', 400)
         end
       end

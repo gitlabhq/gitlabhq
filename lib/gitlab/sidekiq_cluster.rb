@@ -1,10 +1,10 @@
 module Gitlab
   module SidekiqCluster
     # The signals that should terminate both the master and workers.
-    TERMINATE_SIGNALS = %i(INT TERM)
+    TERMINATE_SIGNALS = %i(INT TERM).freeze
 
     # The signals that should simply be forwarded to the workers.
-    FORWARD_SIGNALS = %i(TTIN USR1 USR2 HUP)
+    FORWARD_SIGNALS = %i(TTIN USR1 USR2 HUP).freeze
 
     # Traps the given signals and yields the block whenever these signals are
     # received.

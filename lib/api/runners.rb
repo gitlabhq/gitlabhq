@@ -14,7 +14,7 @@ module API
         use :pagination
       end
       get do
-        runners = filter_runners(current_user.ci_authorized_runners, params[:scope], without: ['specific', 'shared'])
+        runners = filter_runners(current_user.ci_authorized_runners, params[:scope], without: %w(specific shared))
         present paginate(runners), with: Entities::Runner
       end
 
@@ -78,9 +78,8 @@ module API
       delete ':id' do
         runner = get_runner(params[:id])
         authenticate_delete_runner!(runner)
-        runner.destroy!
 
-        present runner, with: Entities::Runner
+        runner.destroy!
       end
     end
 
@@ -136,8 +135,6 @@ module API
         forbidden!("Only one project associated with the runner. Please remove the runner instead") if runner.projects.count == 1
 
         runner_project.destroy
-
-        present runner, with: Entities::Runner
       end
     end
 

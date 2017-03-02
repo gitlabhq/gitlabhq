@@ -552,10 +552,12 @@ describe API::Users, api: true do
       it 'deletes existing key' do
         user.keys << key
         user.save
+
         expect do
           delete api("/users/#{user.id}/keys/#{key.id}", admin)
+
+          expect(response).to have_http_status(204)
         end.to change { user.keys.count }.by(-1)
-        expect(response).to have_http_status(200)
       end
 
       it 'returns 404 error if user not found' do
@@ -649,10 +651,12 @@ describe API::Users, api: true do
       it 'deletes existing email' do
         user.emails << email
         user.save
+
         expect do
           delete api("/users/#{user.id}/emails/#{email.id}", admin)
+
+          expect(response).to have_http_status(204)
         end.to change { user.emails.count }.by(-1)
-        expect(response).to have_http_status(200)
       end
 
       it 'returns 404 error if user not found' do
@@ -683,10 +687,10 @@ describe API::Users, api: true do
 
     it "deletes user" do
       delete api("/users/#{user.id}", admin)
-      expect(response).to have_http_status(200)
+
+      expect(response).to have_http_status(204)
       expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
       expect { Namespace.find(namespace.id) }.to raise_error ActiveRecord::RecordNotFound
-      expect(json_response['email']).to eq(user.email)
     end
 
     it "does not delete for unauthenticated user" do
@@ -881,10 +885,12 @@ describe API::Users, api: true do
     it "deletes existed key" do
       user.keys << key
       user.save
+
       expect do
         delete api("/user/keys/#{key.id}", user)
-      end.to change { user.keys.count }.by(-1)
-      expect(response).to have_http_status(200)
+
+        expect(response).to have_http_status(204)
+      end.to change{user.keys.count}.by(-1)
     end
 
     it "returns 404 if key ID not found" do
@@ -988,10 +994,12 @@ describe API::Users, api: true do
     it "deletes existed email" do
       user.emails << email
       user.save
+
       expect do
         delete api("/user/emails/#{email.id}", user)
-      end.to change { user.emails.count }.by(-1)
-      expect(response).to have_http_status(200)
+
+        expect(response).to have_http_status(204)
+      end.to change{user.emails.count}.by(-1)
     end
 
     it "returns 404 if email ID not found" do
@@ -1015,69 +1023,69 @@ describe API::Users, api: true do
     end
   end
 
-  describe 'PUT /users/:id/block' do
+  describe 'POST /users/:id/block' do
     before { admin }
     it 'blocks existing user' do
-      put api("/users/#{user.id}/block", admin)
-      expect(response).to have_http_status(200)
+      post api("/users/#{user.id}/block", admin)
+      expect(response).to have_http_status(201)
       expect(user.reload.state).to eq('blocked')
     end
 
     it 'does not re-block ldap blocked users' do
-      put api("/users/#{ldap_blocked_user.id}/block", admin)
+      post api("/users/#{ldap_blocked_user.id}/block", admin)
       expect(response).to have_http_status(403)
       expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
     end
 
     it 'does not be available for non admin users' do
-      put api("/users/#{user.id}/block", user)
+      post api("/users/#{user.id}/block", user)
       expect(response).to have_http_status(403)
       expect(user.reload.state).to eq('active')
     end
 
     it 'returns a 404 error if user id not found' do
-      put api('/users/9999/block', admin)
+      post api('/users/9999/block', admin)
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end
   end
 
-  describe 'PUT /users/:id/unblock' do
-    let(:blocked_user) { create(:user, state: 'blocked') }
+  describe 'POST /users/:id/unblock' do
+    let(:blocked_user)  { create(:user, state: 'blocked') }
     before { admin }
 
     it 'unblocks existing user' do
-      put api("/users/#{user.id}/unblock", admin)
-      expect(response).to have_http_status(200)
+      post api("/users/#{user.id}/unblock", admin)
+      expect(response).to have_http_status(201)
       expect(user.reload.state).to eq('active')
     end
 
     it 'unblocks a blocked user' do
-      put api("/users/#{blocked_user.id}/unblock", admin)
-      expect(response).to have_http_status(200)
+      post api("/users/#{blocked_user.id}/unblock", admin)
+      expect(response).to have_http_status(201)
       expect(blocked_user.reload.state).to eq('active')
     end
 
     it 'does not unblock ldap blocked users' do
-      put api("/users/#{ldap_blocked_user.id}/unblock", admin)
+      post api("/users/#{ldap_blocked_user.id}/unblock", admin)
       expect(response).to have_http_status(403)
       expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
     end
 
     it 'does not be available for non admin users' do
-      put api("/users/#{user.id}/unblock", user)
+      post api("/users/#{user.id}/unblock", user)
       expect(response).to have_http_status(403)
       expect(user.reload.state).to eq('active')
     end
 
     it 'returns a 404 error if user id not found' do
-      put api('/users/9999/block', admin)
+      post api('/users/9999/block', admin)
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
     it "returns a 404 for invalid ID" do
-      put api("/users/ASDF/block", admin)
+      post api("/users/ASDF/block", admin)
 
       expect(response).to have_http_status(404)
     end
@@ -1105,13 +1113,13 @@ describe API::Users, api: true do
     end
 
     context "as a user than can see the event's project" do
-      it_behaves_like 'a paginated resources' do
-        let(:request) { get api("/users/#{user.id}/events", user) }
-      end
-
       context 'joined event' do
         it 'returns the "joined" event' do
           get api("/users/#{user.id}/events", user)
+
+          expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
 
           comment_event = json_response.find { |e| e['action_name'] == 'commented on' }
 
@@ -1161,10 +1169,6 @@ describe API::Users, api: true do
   end
 
   context "user activities", :redis do
-    it_behaves_like 'a paginated resources' do
-      let(:request) { get api("/user/activities", admin) }
-    end
-
     context 'last activity as normal user' do
       it 'has no permission' do
         user.record_activity
@@ -1185,6 +1189,7 @@ describe API::Users, api: true do
 
         activity = json_response.last
 
+        expect(response).to include_pagination_headers
         expect(activity['username']).to eq(user.username)
         expect(activity['last_activity_at']).to eq('2000-01-01 00:00:00')
       end

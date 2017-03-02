@@ -5,22 +5,39 @@ module API
     version %w(v3 v4), using: :path
 
     version 'v3', using: :path do
+      mount ::API::V3::AwardEmoji
       mount ::API::V3::Boards
       mount ::API::V3::Branches
+      mount ::API::V3::BroadcastMessages
+      mount ::API::V3::Commits
       mount ::API::V3::DeployKeys
+      mount ::API::V3::Environments
+      mount ::API::V3::Files
+      mount ::API::V3::Groups
       mount ::API::V3::Issues
       mount ::API::V3::Labels
+      mount ::API::V3::LdapGroupLinks
       mount ::API::V3::Members
       mount ::API::V3::MergeRequestDiffs
       mount ::API::V3::MergeRequests
+      mount ::API::V3::Notes
+      mount ::API::V3::ProjectGitHook
       mount ::API::V3::ProjectHooks
+      mount ::API::V3::ProjectPushRule
       mount ::API::V3::Projects
       mount ::API::V3::ProjectSnippets
       mount ::API::V3::Repositories
+      mount ::API::V3::Runners
+      mount ::API::V3::Services
+      mount ::API::V3::Settings
+      mount ::API::V3::Subscriptions
       mount ::API::V3::SystemHooks
       mount ::API::V3::Tags
       mount ::API::V3::Templates
+      mount ::API::V3::Todos
+      mount ::API::V3::Triggers
       mount ::API::V3::Users
+      mount ::API::V3::Variables
     end
 
     before { allow_access_with_scope :api }
@@ -85,12 +102,12 @@ module API
     mount ::API::Notes
     mount ::API::NotificationSettings
     mount ::API::Pipelines
-    mount ::API::ProjectGitHook # TODO: Should be removed after 8.11 is released
     mount ::API::ProjectHooks
     mount ::API::ProjectPushRule
     mount ::API::Projects
     mount ::API::ProjectSnippets
     mount ::API::Repositories
+    mount ::API::Runner
     mount ::API::Runners
     mount ::API::Services
     mount ::API::Session

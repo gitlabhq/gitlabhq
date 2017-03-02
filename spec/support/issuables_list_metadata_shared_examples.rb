@@ -3,11 +3,12 @@ shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
     @issuable_ids = []
 
     2.times do
-      if issuable_type == :issue
-        issuable = create(issuable_type, project: project)
-      else
-        issuable = create(issuable_type, title: FFaker::Lorem.sentence, source_project: project, source_branch: FFaker::Name.name)
-      end
+      issuable =
+        if issuable_type == :issue
+          create(issuable_type, project: project)
+        else
+          create(issuable_type, title: FFaker::Lorem.sentence, source_project: project, source_branch: FFaker::Name.name)
+        end
 
       @issuable_ids << issuable.id
 
@@ -21,7 +22,7 @@ shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
     if action
       get action
     else
-      get :index, namespace_id: project.namespace.path, project_id: project.path
+      get :index, namespace_id: project.namespace, project_id: project
     end
 
     meta_data = assigns(:issuable_meta_data)

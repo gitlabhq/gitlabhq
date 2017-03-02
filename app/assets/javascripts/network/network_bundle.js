@@ -2,9 +2,8 @@
 /* global Network */
 /* global ShortcutsNetwork */
 
-// require everything else in this directory
-function requireAll(context) { return context.keys().map(context); }
-requireAll(require.context('.', false, /^\.\/(?!network_bundle).*\.(js|es6)$/));
+require('./branch_graph');
+require('./network');
 
 (function() {
   $(function() {
@@ -19,4 +18,4 @@ requireAll(require.context('.', false, /^\.\/(?!network_bundle).*\.(js|es6)$/));
     });
     return new ShortcutsNetwork(network_graph.branch_graph);
   });
-}).call(this);
+}).call(window);

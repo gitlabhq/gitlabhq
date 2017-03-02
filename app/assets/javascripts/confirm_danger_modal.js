@@ -32,4 +32,4 @@
 
     return ConfirmDangerModal;
   })();
-}).call(this);
+}).call(window);

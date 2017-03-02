@@ -8,18 +8,18 @@ module Elastic
       mappings _parent: { type: 'project' } do
         indexes :id,                type: :integer
         indexes :iid,               type: :integer
-        indexes :target_branch,     type: :string,
+        indexes :target_branch,     type: :text,
                                     index_options: 'offsets'
-        indexes :source_branch,     type: :string,
+        indexes :source_branch,     type: :text,
                                     index_options: 'offsets'
-        indexes :title,             type: :string,
+        indexes :title,             type: :text,
                                     index_options: 'offsets'
-        indexes :description,       type: :string,
+        indexes :description,       type: :text,
                                     index_options: 'offsets'
         indexes :created_at,        type: :date
         indexes :updated_at,        type: :date
-        indexes :state,             type: :string
-        indexes :merge_status,      type: :string
+        indexes :state,             type: :text
+        indexes :merge_status,      type: :text
         indexes :source_project_id, type: :integer
         indexes :target_project_id, type: :integer
         indexes :author_id,         type: :integer
@@ -60,11 +60,12 @@ module Elastic
       end
 
       def self.elastic_search(query, options: {})
-        if query =~ /#(\d+)\z/
-          query_hash = iid_query_hash(query_hash, $1)
-        else
-          query_hash = basic_query_hash(%w(title^2 description), query)
-        end
+        query_hash =
+          if query =~ /#(\d+)\z/
+            iid_query_hash(query_hash, $1)
+          else
+            basic_query_hash(%w(title^2 description), query)
+          end
 
         query_hash = project_ids_filter(query_hash, options)
 

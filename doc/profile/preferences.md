@@ -3,13 +3,6 @@
 Settings in the **Profile > Preferences** page allow the user to customize
 various aspects of the site to their liking.
 
-## Application theme
-
-Changing this setting allows the user to customize the color scheme used for the
-navigation bar on the left side of the screen.
-
-The default is **Charcoal**.
-
 ## Syntax highlighting theme
 
 _GitLab uses the [rouge ruby library][rouge] for syntax highlighting. For a

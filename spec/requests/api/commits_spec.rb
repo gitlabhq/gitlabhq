@@ -72,7 +72,7 @@ describe API::Commits, api: true  do
         get api("/projects/#{project.id}/repository/commits?since=invalid-date", user)
 
         expect(response).to have_http_status(400)
-        expect(json_response['message']).to include "\"since\" must be a timestamp in ISO 8601 format"
+        expect(json_response['error']).to eq('since is invalid')
       end
     end
 
@@ -107,7 +107,7 @@ describe API::Commits, api: true  do
       let(:message) { 'Created file' }
       let!(:invalid_c_params) do
         {
-          branch_name: 'master',
+          branch: 'master',
           commit_message: message,
           actions: [
             {
@@ -120,7 +120,7 @@ describe API::Commits, api: true  do
       end
       let!(:valid_c_params) do
         {
-          branch_name: 'master',
+          branch: 'master',
           commit_message: message,
           actions: [
             {
@@ -146,23 +146,13 @@ describe API::Commits, api: true  do
 
         expect(response).to have_http_status(400)
       end
-
-      context 'with project path in URL' do
-        let(:url) { "/projects/#{project.namespace.path}%2F#{project.path}/repository/commits" }
-
-        it 'a new file in project repo' do
-          post api(url, user), valid_c_params
-
-          expect(response).to have_http_status(201)
-        end
-      end
     end
 
     context :delete do
       let(:message) { 'Deleted file' }
       let!(:invalid_d_params) do
         {
-          branch_name: 'markdown',
+          branch: 'markdown',
           commit_message: message,
           actions: [
             {
@@ -174,7 +164,7 @@ describe API::Commits, api: true  do
       end
       let!(:valid_d_params) do
         {
-          branch_name: 'markdown',
+          branch: 'markdown',
           commit_message: message,
           actions: [
             {
@@ -203,7 +193,7 @@ describe API::Commits, api: true  do
       let(:message) { 'Moved file' }
       let!(:invalid_m_params) do
         {
-          branch_name: 'feature',
+          branch: 'feature',
           commit_message: message,
           actions: [
             {
@@ -217,7 +207,7 @@ describe API::Commits, api: true  do
       end
       let!(:valid_m_params) do
         {
-          branch_name: 'feature',
+          branch: 'feature',
           commit_message: message,
           actions: [
             {
@@ -248,7 +238,7 @@ describe API::Commits, api: true  do
       let(:message) { 'Updated file' }
       let!(:invalid_u_params) do
         {
-          branch_name: 'master',
+          branch: 'master',
           commit_message: message,
           actions: [
             {
@@ -261,7 +251,7 @@ describe API::Commits, api: true  do
       end
       let!(:valid_u_params) do
         {
-          branch_name: 'master',
+          branch: 'master',
           commit_message: message,
           actions: [
             {
@@ -291,7 +281,7 @@ describe API::Commits, api: true  do
       let(:message) { 'Multiple actions' }
       let!(:invalid_mo_params) do
         {
-          branch_name: 'master',
+          branch: 'master',
           commit_message: message,
           actions: [
             {
@@ -319,7 +309,7 @@ describe API::Commits, api: true  do
       end
       let!(:valid_mo_params) do
         {
-          branch_name: 'master',
+          branch: 'master',
           commit_message: message,
           actions: [
             {

@@ -14,10 +14,6 @@ describe API::Deployments, api: true  do
 
   describe 'GET /projects/:id/deployments' do
     context 'as member of the project' do
-      it_behaves_like 'a paginated resources' do
-        let(:request) { get api("/projects/#{project.id}/deployments", user) }
-      end
-
       it 'returns projects deployments' do
         get api("/projects/#{project.id}/deployments", user)
 

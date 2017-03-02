@@ -23,8 +23,8 @@ window.Vue = require('vue');
 
         Here is an example `change` method:
 
-        change(pagenum, apiScope) {
-          gl.utils.visitUrl(`?scope=${apiScope}&p=${pagenum}`);
+        change(pagenum) {
+          gl.utils.visitUrl(`?page=${pagenum}`);
         },
       */
 
@@ -57,8 +57,6 @@ window.Vue = require('vue');
     },
     methods: {
       changePage(e) {
-        const apiScope = gl.utils.getParameterByName('scope');
-
         const text = e.target.innerText;
         const { totalPages, nextPage, previousPage } = this.pageInfo;
 
@@ -66,19 +64,19 @@ window.Vue = require('vue');
           case SPREAD:
             break;
           case LAST:
-            this.change(totalPages, apiScope);
+            this.change(totalPages);
             break;
           case NEXT:
-            this.change(nextPage, apiScope);
+            this.change(nextPage);
             break;
           case PREV:
-            this.change(previousPage, apiScope);
+            this.change(previousPage);
             break;
           case FIRST:
-            this.change(1, apiScope);
+            this.change(1);
             break;
           default:
-            this.change(+text, apiScope);
+            this.change(+text);
             break;
         }
       },

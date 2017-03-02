@@ -86,13 +86,12 @@ module API
             optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
           end
           put ":id/members/:user_id" do
-            source = find_source(source_type, params[:id])
+            source = find_source(source_type, params.delete(:id))
             authorize_admin_source!(source_type, source)
 
-            member = source.members.find_by!(user_id: params[:user_id])
-            attrs = attributes_for_keys [:access_level, :expires_at]
+            member = source.members.find_by!(user_id: params.delete(:user_id))
 
-            if member.update_attributes(attrs)
+            if member.update_attributes(declared_params(include_missing: false))
               present member.user, with: ::API::Entities::Member, member: member
             else
               # This is to ensure back-compatibility but 400 behavior should be used
@@ -120,6 +119,7 @@ module API
             # This is to ensure back-compatibility but 204 behavior should be used
             # for all DELETE endpoints in 9.0!
             if member.nil?
+              status(200  )
               { message: "Access revoked", id: params[:user_id].to_i }
             else
               ::Members::DestroyService.new(source, current_user, declared_params).execute

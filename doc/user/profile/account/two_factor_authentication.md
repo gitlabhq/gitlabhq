@@ -213,5 +213,5 @@ your GitLab server's time is synchronized via a service like NTP.  Otherwise,
 you may have cases where authorization always fails because of time differences.
 
 [Google Authenticator]: https://support.google.com/accounts/answer/1066447?hl=en
-[FreeOTP]: https://fedorahosted.org/freeotp/
+[FreeOTP]: https://freeotp.github.io/
 [YubiKey]: https://www.yubico.com/products/yubikey-hardware/

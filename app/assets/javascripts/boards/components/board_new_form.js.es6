@@ -47,6 +47,9 @@
             Store.state.reload = true;
           });
       },
+      cancel() {
+        Store.state.currentPage = '';
+      },
     },
   });
 })();

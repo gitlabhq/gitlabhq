@@ -37,7 +37,7 @@
             - if user.access_locked?
               %li
                 = link_to 'Unlock', unlock_admin_user_path(user), method: :put, class: 'btn-grouped btn btn-xs btn-success', data: { confirm: 'Are you sure?' }
-          - if user.can_be_removed?
+          - if user.can_be_removed? && can?(current_user, :destroy_user, @user)
             %li.divider
             %li
               = link_to 'Delete User', [:admin, user], data: { confirm: "USER #{user.name} WILL BE REMOVED! All issues, merge requests and groups linked to this user will also be removed! Consider cancelling this deletion and blocking the user instead. Are you sure?" },

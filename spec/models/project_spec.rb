@@ -414,7 +414,7 @@ describe Project, models: true do
     let(:project) { create(:empty_project, path: "somewhere") }
 
     it 'returns the full web URL for this repo' do
-      expect(project.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.namespace.path}/somewhere")
+      expect(project.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.namespace.full_path}/somewhere")
     end
   end
 
@@ -729,6 +729,44 @@ describe Project, models: true do
         project.cache_has_external_issue_tracker
       end.to change { project.has_external_issue_tracker}.to(false)
     end
+
+    it 'does not cache data when in a secondary gitlab geo node' do
+      allow(Gitlab::Geo).to receive(:secondary?) { true }
+
+      expect do
+        project.cache_has_external_issue_tracker
+      end.not_to change { project.has_external_issue_tracker }
+    end
+  end
+
+  describe '#cache_has_external_wiki' do
+    let(:project) { create(:empty_project, has_external_wiki: nil) }
+
+    it 'stores true if there is any external_wikis' do
+      services = double(:service, external_wikis: [ExternalWikiService.new])
+      expect(project).to receive(:services).and_return(services)
+
+      expect do
+        project.cache_has_external_wiki
+      end.to change { project.has_external_wiki}.to(true)
+    end
+
+    it 'stores false if there is no external_wikis' do
+      services = double(:service, external_wikis: [])
+      expect(project).to receive(:services).and_return(services)
+
+      expect do
+        project.cache_has_external_wiki
+      end.to change { project.has_external_wiki}.to(false)
+    end
+
+    it 'does not cache data when in a secondary gitlab geo node' do
+      allow(Gitlab::Geo).to receive(:secondary?) { true }
+
+      expect do
+        project.cache_has_external_wiki
+      end.not_to change { project.has_external_wiki }
+    end
   end
 
   describe '#has_wiki?' do
@@ -937,7 +975,7 @@ describe Project, models: true do
       end
 
       let(:avatar_path) do
-        "/#{project.namespace.name}/#{project.path}/avatar"
+        "/#{project.full_path}/avatar"
       end
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
@@ -1329,16 +1367,14 @@ describe Project, models: true do
     end
 
     it 'renames a repository' do
-      ns = project.namespace_dir
-
       expect(gitlab_shell).to receive(:mv_repository).
         ordered.
-        with(project.repository_storage_path, "#{ns}/foo", "#{ns}/#{project.path}").
+        with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}").
         and_return(true)
 
       expect(gitlab_shell).to receive(:mv_repository).
         ordered.
-        with(project.repository_storage_path, "#{ns}/foo.wiki", "#{ns}/#{project.path}.wiki").
+        with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki").
         and_return(true)
 
       expect_any_instance_of(SystemHooksService).
@@ -1347,7 +1383,7 @@ describe Project, models: true do
 
       expect_any_instance_of(Gitlab::UploadsTransfer).
         to receive(:rename_project).
-        with('foo', project.path, ns)
+        with('foo', project.path, project.namespace.full_path)
 
       expect(project).to receive(:expire_caches_before_rename)
 
@@ -1658,14 +1694,14 @@ describe Project, models: true do
     let(:mirror) { false }
 
     before do
-      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository).
-        with(project.repository_storage_path, project.path_with_namespace, project.import_url).
-        and_return(true)
+      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository)
+        .with(project.repository_storage_path, project.path_with_namespace, project.import_url)
+        .and_return(true)
 
       allow(project).to receive(:repository_exists?).and_return(true)
 
-      expect_any_instance_of(Repository).to receive(:after_import).
-        and_call_original
+      expect_any_instance_of(Repository).to receive(:after_import)
+        .and_call_original
     end
 
     it 'imports a project' do
@@ -1779,7 +1815,7 @@ describe Project, models: true do
       it 'schedules a RepositoryForkWorker job' do
         expect(RepositoryForkWorker).to receive(:perform_async).
           with(project.id, forked_from_project.repository_storage_path,
-              forked_from_project.path_with_namespace, project.namespace.path)
+              forked_from_project.path_with_namespace, project.namespace.full_path)
 
         project.add_import_job
       end
@@ -2103,7 +2139,7 @@ describe Project, models: true do
   describe 'inside_path' do
     let!(:project1) { create(:empty_project) }
     let!(:project2) { create(:empty_project) }
-    let!(:path) { project1.namespace.path }
+    let!(:path) { project1.namespace.full_path }
 
     it { expect(Project.inside_path(path)).to eq([project1]) }
   end
@@ -2118,7 +2154,7 @@ describe Project, models: true do
     end
 
     before do
-      project.repository.commit_file(User.last, '.gitlab/route-map.yml', route_map, message: 'Add .gitlab/route-map.yml', branch_name: 'master', update: false)
+      project.repository.create_file(User.last, '.gitlab/route-map.yml', route_map, message: 'Add .gitlab/route-map.yml', branch_name: 'master')
     end
 
     context 'when there is a .gitlab/route-map.yml at the commit' do
@@ -2244,6 +2280,27 @@ describe Project, models: true do
         let(:project_name) { 'Project' }
 
         it { is_expected.to eq(expected_url) }
+      end
+    end
+  end
+
+  describe '#http_url_to_repo' do
+    let(:project) { create :empty_project }
+
+    context 'when no user is given' do
+      it 'returns the url to the repo without a username' do
+        url = project.http_url_to_repo
+
+        expect(url).to eq(project.http_url_to_repo)
+        expect(url).not_to include('@')
+      end
+    end
+
+    context 'when user is given' do
+      it 'returns the url to the repo with the username' do
+        user = build_stubbed(:user)
+
+        expect(project.http_url_to_repo(user)).to match(%r{https?:\/\/#{user.username}@})
       end
     end
   end

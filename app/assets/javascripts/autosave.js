@@ -59,4 +59,4 @@
 
     return Autosave;
   })();
-}).call(this);
+}).call(window);

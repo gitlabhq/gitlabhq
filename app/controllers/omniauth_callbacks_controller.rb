@@ -88,6 +88,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     handle_omniauth
   end
 
+  def authentiq
+    if params['sid']
+      handle_service_ticket oauth['provider'], params['sid']
+    end
+
+    handle_omniauth
+  end
+
   private
 
   def handle_omniauth
@@ -125,7 +133,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     else
       error_message = @user.errors.full_messages.to_sentence
 
-      redirect_to omniauth_error_path(oauth['provider'], error: error_message) and return
+      return redirect_to omniauth_error_path(oauth['provider'], error: error_message)
     end
   end
 

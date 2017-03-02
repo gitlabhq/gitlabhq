@@ -89,4 +89,4 @@ require('./shortcuts_navigation');
 
     return ShortcutsIssuable;
   })(ShortcutsNavigation);
-}).call(this);
+}).call(window);

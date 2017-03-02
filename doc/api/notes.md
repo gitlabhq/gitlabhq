@@ -34,8 +34,6 @@ Parameters:
     "created_at": "2013-10-02T09:22:45Z",
     "updated_at": "2013-10-02T10:22:45Z",
     "system": true,
-    "upvote": false,
-    "downvote": false,
     "noteable_id": 377,
     "noteable_type": "Issue"
   },
@@ -54,8 +52,6 @@ Parameters:
     "created_at": "2013-10-02T09:56:03Z",
     "updated_at": "2013-10-02T09:56:03Z",
     "system": true,
-    "upvote": false,
-    "downvote": false,
     "noteable_id": 121,
     "noteable_type": "Issue"
   }
@@ -124,33 +120,7 @@ Parameters:
 | `note_id` | integer | yes | The ID of a note |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/11/notes/636
-```
-
-Example Response:
-
-```json
-{
-  "id": 636,
-  "body": "This is a good idea.",
-  "attachment": null,
-  "author": {
-    "id": 1,
-    "username": "pipin",
-    "email": "admin@example.com",
-    "name": "Pip",
-    "state": "active",
-    "created_at": "2013-09-30T13:46:01Z",
-    "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/pipin"
-  },
-  "created_at": "2016-04-05T22:10:44.164Z",
-  "system": false,
-  "noteable_id": 11,
-  "noteable_type": "Issue",
-  "upvote": false,
-  "downvote": false
-}
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/11/notes/636
 ```
 
 ## Snippets
@@ -248,33 +218,7 @@ Parameters:
 | `note_id` | integer | yes | The ID of a note |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/snippets/52/notes/1659
-```
-
-Example Response:
-
-```json
-{
-  "id": 1659,
-  "body": "This is a good idea.",
-  "attachment": null,
-  "author": {
-    "id": 1,
-    "username": "pipin",
-    "email": "admin@example.com",
-    "name": "Pip",
-    "state": "active",
-    "created_at": "2013-09-30T13:46:01Z",
-    "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/pipin"
-  },
-  "created_at": "2016-04-06T16:51:53.239Z",
-  "system": false,
-  "noteable_id": 52,
-  "noteable_type": "Snippet",
-  "upvote": false,
-  "downvote": false
-}
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/snippets/52/notes/1659
 ```
 
 ## Merge Requests
@@ -322,8 +266,6 @@ Parameters:
   "created_at": "2013-10-02T08:57:14Z",
   "updated_at": "2013-10-02T08:57:14Z",
   "system": false,
-  "upvote": false,
-  "downvote": false,
   "noteable_id": 2,
   "noteable_type": "MergeRequest"
 }
@@ -377,31 +319,5 @@ Parameters:
 | `note_id` | integer | yes | The ID of a note |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/7/notes/1602
-```
-
-Example Response:
-
-```json
-{
-  "id": 1602,
-  "body": "This is a good idea.",
-  "attachment": null,
-  "author": {
-    "id": 1,
-    "username": "pipin",
-    "email": "admin@example.com",
-    "name": "Pip",
-    "state": "active",
-    "created_at": "2013-09-30T13:46:01Z",
-    "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
-    "web_url": "https://gitlab.example.com/pipin"
-  },
-  "created_at": "2016-04-05T22:11:59.923Z",
-  "system": false,
-  "noteable_id": 7,
-  "noteable_type": "MergeRequest",
-  "upvote": false,
-  "downvote": false
-}
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/7/notes/1602
 ```

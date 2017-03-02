@@ -9,8 +9,8 @@ describe 'OmniAuth Kerberos SPNEGO', lib: true do
     # In production user_kerberos_spnego_omniauth_callback_path is defined
     # dynamically early when the app boots. Because this is hard to set up
     # during testing we stub out this path helper on the controller.
-    allow_any_instance_of(controller_class).to receive(:user_kerberos_spnego_omniauth_callback_path).
-      and_return(OmniAuth::Strategies::KerberosSpnego.new(:app).callback_path)
+    allow_any_instance_of(controller_class).to receive(:user_kerberos_spnego_omniauth_callback_path)
+      .and_return(OmniAuth::Strategies::KerberosSpnego.new(:app).callback_path)
   end
 
   it 'asks for an SPNEGO token' do
@@ -22,8 +22,8 @@ describe 'OmniAuth Kerberos SPNEGO', lib: true do
 
   context 'when an SPNEGO token is provided' do
     it 'passes the token to spnego_negotiate!' do
-      expect_any_instance_of(controller_class).to receive(:spnego_credentials!).
-        with('fake spnego token')
+      expect_any_instance_of(controller_class).to receive(:spnego_credentials!)
+        .with('fake spnego token')
 
       get path, {}, spnego_header
     end
@@ -31,8 +31,8 @@ describe 'OmniAuth Kerberos SPNEGO', lib: true do
 
   context 'when the final SPNEGO token is provided' do
     before do
-      expect_any_instance_of(controller_class).to receive(:spnego_credentials!).
-        with('fake spnego token').and_return('janedoe@EXAMPLE.COM')
+      expect_any_instance_of(controller_class).to receive(:spnego_credentials!)
+        .with('fake spnego token').and_return('janedoe@EXAMPLE.COM')
     end
 
     it 'redirects to the omniauth callback' do
@@ -48,8 +48,8 @@ describe 'OmniAuth Kerberos SPNEGO', lib: true do
     end
 
     it 'send the final SPNEGO response' do
-      allow_any_instance_of(controller_class).to receive(:spnego_response_token).
-        and_return("it's the final token")
+      allow_any_instance_of(controller_class).to receive(:spnego_response_token)
+        .and_return("it's the final token")
 
       get path, {}, spnego_header
 

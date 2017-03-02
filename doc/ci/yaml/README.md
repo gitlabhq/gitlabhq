@@ -1003,6 +1003,9 @@ job:
 
 ### coverage
 
+**Notes:**
+- [Introduced][ce-7447] in GitLab 8.17.
+
 `coverage` allows you to configure how code coverage will be extracted from the
 job output.
 
@@ -1015,7 +1018,7 @@ A simple example:
 
 ```yaml
 job1:
-  coverage: /Code coverage: \d+\.\d+/
+  coverage: '/Code coverage: \d+\.\d+/'
 ```
 
 ## Git Strategy
@@ -1361,3 +1364,4 @@ CI with various languages.
 [ce-6669]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6669
 [variables]: ../variables/README.md
 [ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
+[ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447

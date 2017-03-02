@@ -153,16 +153,17 @@ module BlobHelper
     # Because we are opionated we set the cache headers ourselves.
     response.cache_control[:public] = @project.public?
 
-    if @ref && @commit && @ref == @commit.id
-      # This is a link to a commit by its commit SHA. That means that the blob
-      # is immutable. The only reason to invalidate the cache is if the commit
-      # was deleted or if the user lost access to the repository.
-      response.cache_control[:max_age] = Blob::CACHE_TIME_IMMUTABLE
-    else
-      # A branch or tag points at this blob. That means that the expected blob
-      # value may change over time.
-      response.cache_control[:max_age] = Blob::CACHE_TIME
-    end
+    response.cache_control[:max_age] =
+      if @ref && @commit && @ref == @commit.id
+        # This is a link to a commit by its commit SHA. That means that the blob
+        # is immutable. The only reason to invalidate the cache is if the commit
+        # was deleted or if the user lost access to the repository.
+        Blob::CACHE_TIME_IMMUTABLE
+      else
+        # A branch or tag points at this blob. That means that the expected blob
+        # value may change over time.
+        Blob::CACHE_TIME
+      end
 
     response.etag = @blob.id
     !stale
