@@ -34,21 +34,6 @@ module.exports = Vue.component('environment-table-component', {
       default: false,
     },
 
-    commitIconSvg: {
-      type: String,
-      required: false,
-    },
-
-    playIconSvg: {
-      type: String,
-      required: false,
-    },
-
-    terminalIconSvg: {
-      type: String,
-      required: false,
-    },
-
     toggleDeployBoard: {
       type: Function,
       required: false,
@@ -88,9 +73,6 @@ module.exports = Vue.component('environment-table-component', {
             :model="model"
             :can-create-deployment="canCreateDeployment"
             :can-read-environment="canReadEnvironment"
-            :play-icon-svg="playIconSvg"
-            :terminal-icon-svg="terminalIconSvg"
-            :commit-icon-svg="commitIconSvg"
             :toggleDeployBoard="toggleDeployBoard"></tr>
 
           <tr v-if="model.hasDeployBoard && model.isDeployBoardVisible" class="js-deploy-board-row">

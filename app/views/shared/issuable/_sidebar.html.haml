@@ -77,7 +77,7 @@
           = dropdown_tag('Milestone', options: { title: 'Assign milestone', toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search milestones', data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable), use_id: true }})
       - if issuable.has_attribute?(:time_estimate)
         #issuable-time-tracker.block
-          %issuable-time-tracker{ ':time_estimate' => 'issuable.time_estimate', ':time_spent' => 'issuable.total_time_spent', ':human_time_estimate' => 'issuable.human_time_estimate', ':human_time_spent' => 'issuable.human_total_time_spent', 'stopwatch-svg' => custom_icon('icon_stopwatch'), 'docs-url' => help_page_path('workflow/time_tracking.md') }
+          %issuable-time-tracker{ ':time_estimate' => 'issuable.time_estimate', ':time_spent' => 'issuable.total_time_spent', ':human_time_estimate' => 'issuable.human_time_estimate', ':human_time_spent' => 'issuable.human_total_time_spent', 'docs-url' => help_page_path('workflow/time_tracking.md') }
             // Fallback while content is loading
             .title.hide-collapsed
               Time tracking

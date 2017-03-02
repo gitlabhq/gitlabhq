@@ -36,9 +36,6 @@ module.exports = Vue.component('environment-component', {
       projectStoppedEnvironmentsPath: environmentsData.projectStoppedEnvironmentsPath,
       newEnvironmentPath: environmentsData.newEnvironmentPath,
       helpPagePath: environmentsData.helpPagePath,
-      commitIconSvg: environmentsData.commitIconSvg,
-      playIconSvg: environmentsData.playIconSvg,
-      terminalIconSvg: environmentsData.terminalIconSvg,
 
       // Pagination Properties,
       paginationInformation: {},
@@ -195,13 +192,9 @@ module.exports = Vue.component('environment-component', {
             :environments="state.environments"
             :can-create-deployment="canCreateDeploymentParsed"
             :can-read-environment="canReadEnvironmentParsed"
-            :play-icon-svg="playIconSvg"
-            :terminal-icon-svg="terminalIconSvg"
-            :commit-icon-svg="commitIconSvg"
             :toggleDeployBoard="toggleDeployBoard"
             :store="store"
-            :service="service">
-          </environment-table>
+            :service="service"/>
         </div>
 
         <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"

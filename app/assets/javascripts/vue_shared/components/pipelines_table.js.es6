@@ -21,14 +21,6 @@ require('./pipelines_table_row');
         default: () => ([]),
       },
 
-      /**
-       * TODO: Remove this when we have webpack.
-       */
-      svgs: {
-        type: Object,
-        required: true,
-        default: () => ({}),
-      },
     },
 
     components: {
@@ -51,8 +43,7 @@ require('./pipelines_table_row');
           <template v-for="model in pipelines"
             v-bind:model="model">
             <tr is="pipelines-table-row-component"
-              :pipeline="model"
-              :svgs="svgs"></tr>
+              :pipeline="model"></tr>
           </template>
         </tbody>
       </table>
