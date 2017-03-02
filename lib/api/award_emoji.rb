@@ -4,15 +4,15 @@ module API
 
     before { authenticate! }
     AWARDABLES = [
-      { type: 'issue', reference_by: :iid },
-      { type: 'merge_request', reference_by: :iid },
-      { type: 'snippet', reference_by: :id }
+      { type: 'issue', find_by: :iid },
+      { type: 'merge_request', find_by: :iid },
+      { type: 'snippet', find_by: :id }
     ].freeze
 
     resource :projects do
       AWARDABLES.each do |awardable_params|
         awardable_string = awardable_params[:type].pluralize
-        awardable_id_string = "#{awardable_params[:type]}_#{awardable_params[:reference_by]}"
+        awardable_id_string = "#{awardable_params[:type]}_#{awardable_params[:find_by]}"
 
         params do
           requires :id, type: String, desc: 'The ID of a project'
