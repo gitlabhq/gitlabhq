@@ -168,36 +168,34 @@
 }
 
 .x-axis path,
-.y-axis path{
+.y-axis path,
+.label-x-axis-line,
+.label-y-axis-line
+{
   fill: none;
-  stroke: #AAA;
   stroke-width: 1;
   shape-rendering: crispEdges;
 }
 
-.y-axis {
-  line {
-    stroke: #AAA;
-    stroke-width: 1;
-  }
+.x-axis path,
+.y-axis path {
+  stroke: $stat-graph-axis-fill;
 }
 
 .label-x-axis-line,
 .label-y-axis-line{
-  fill: none;
   stroke: #E6E6E6;
-  stroke-width: 1;
-  shape-rendering: crispEdges;
 }
 
-.cpu-area {
+.y-axis {
+  line {
+    stroke: $stat-graph-axis-fill;
+    stroke-width: 1;
+  }
+}
+
+.metric-area {
   opacity: 0.8;
-  fill: #EDF3FC;
-}
-
-.upper-circle-metric,
-.lower-circle-metric {
-  fill: #5b99f7;
 }
 
 .prometheus-graph-overlay {
@@ -207,28 +205,27 @@
 }
 
 .rect-text-metric {
-  fill: white;
+  fill: $white-light;
   stroke-width: 1;
   stroke: black;
 }
 
 .rect-axis-text {
-  fill: white;
+  fill: $white-light;
 }
 
-.text-metric {
-  fill: black;
+.text-metric,
+.text-median-metric,
+.text-metric-usage,
+.text-metric-date {
+  fill: $black;
 }
 
 .text-metric-date {
-  fill: black;
   font-weight: 200;
 }
 
-.text-metric-usage {
-  fill: black;
-}
-
-.text-median-metric {
-  fill: black;
+.selected-metric-line {
+  stroke: $black;
+  stroke-width: 1;
 }
