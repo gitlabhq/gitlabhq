@@ -574,7 +574,7 @@ describe API::MergeRequests, api: true  do
 
     it "updates the MR's squash attribute" do
       expect do
-        put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), squash: true
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), squash: true
       end.to change { merge_request.reload.squash }
 
       expect(response).to have_http_status(200)
@@ -633,7 +633,7 @@ describe API::MergeRequests, api: true  do
     end
 
     it "updates squash and returns merge_request" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), squash: true
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), squash: true
 
       expect(response).to have_http_status(200)
       expect(json_response['squash']).to be_truthy

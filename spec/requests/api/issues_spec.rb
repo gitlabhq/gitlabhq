@@ -1180,7 +1180,7 @@ describe API::Issues, api: true  do
 
   describe 'PUT /projects/:id/issues/:issue_id to update weight' do
     it 'updates an issue with no weight' do
-      put api("/projects/#{project.id}/issues/#{issue.id}", user), weight: 5
+      put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: 5
 
       expect(response).to have_http_status(200)
       expect(json_response['weight']).to eq(5)
@@ -1189,21 +1189,21 @@ describe API::Issues, api: true  do
     it 'removes a weight from an issue' do
       weighted_issue = create(:issue, project: project, weight: 2)
 
-      put api("/projects/#{project.id}/issues/#{weighted_issue.id}", user), weight: nil
+      put api("/projects/#{project.id}/issues/#{weighted_issue.iid}", user), weight: nil
 
       expect(response).to have_http_status(200)
       expect(json_response['weight']).to be_nil
     end
 
     it 'returns 400 if weight is less than minimum weight' do
-      put api("/projects/#{project.id}/issues/#{issue.id}", user), weight: -1
+      put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: -1
 
       expect(response).to have_http_status(400)
       expect(json_response['error']).to eq('weight does not have a valid value')
     end
 
     it 'returns 400 if weight is more than maximum weight' do
-      put api("/projects/#{project.id}/issues/#{issue.id}", user), weight: 10
+      put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: 10
 
       expect(response).to have_http_status(400)
       expect(json_response['error']).to eq('weight does not have a valid value')
