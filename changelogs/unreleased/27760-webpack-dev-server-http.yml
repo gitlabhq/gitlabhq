@@ -1,0 +1,4 @@
+---
+title: Do not indiscriminately overwrite the webpack.dev_server.https config value
+merge_request: 9656
+author:
