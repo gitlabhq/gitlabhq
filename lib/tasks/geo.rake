@@ -24,13 +24,19 @@ namespace :geo do
 
     # append and prepend proper tasks to all the tasks defined above
     ns.tasks.each do |task|
-      task.enhance ['geo:config:set'] do
+      task.enhance ['geo:config:check', 'geo:config:set'] do
         Rake::Task['geo:config:restore'].invoke
       end
     end
   end
 
   namespace :config do
+    task :check do
+      unless File.exist?(Rails.root.join('config/database_geo.yml'))
+        abort('You should run these tasks only when GitLab Geo is enabled, and only if it is a secondary node')
+      end
+    end
+
     task :set do
       # save current configuration
       @previous_config = {

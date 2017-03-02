@@ -158,5 +158,8 @@ module Gitlab
     config.generators do |g|
       g.factory_girl false
     end
+
+    # This is needed for GitLab Geo
+    config.assets.initialize_on_precompile = false
   end
 end

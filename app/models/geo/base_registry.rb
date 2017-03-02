@@ -1,5 +1,7 @@
 class Geo::BaseRegistry < ActiveRecord::Base
   self.abstract_class = true
 
-  establish_connection Rails.configuration.geo_database
+  if Gitlab::Geo.secondary?
+    establish_connection Rails.configuration.geo_database
+  end
 end
