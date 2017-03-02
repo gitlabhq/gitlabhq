@@ -79,12 +79,12 @@ require('./comparison_pane');
           <div class='help-button pull-right'
             v-if='!showHelpState'
             @click='toggleHelpState(true)'>
-            <i class='fa fa-question-circle'></i>
+            <i class='fa fa-question-circle' aria-hidden='true'></i>
           </div>
           <div class='close-help-button pull-right'
             v-if='showHelpState'
             @click='toggleHelpState(false)'>
-            <i class='fa fa-close'></i>
+            <i class='fa fa-close' aria-hidden='true'></i>
           </div>
         </div>
         <div class='time-tracking-content hide-collapsed'>

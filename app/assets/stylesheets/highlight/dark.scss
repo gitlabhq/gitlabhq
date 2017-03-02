@@ -21,6 +21,7 @@ $dark-highlight-color: $black;
 $dark-pre-hll-bg: #373b41;
 $dark-hll-bg: #373b41;
 $dark-over-bg: #9f9ab5;
+$dark-expanded-bg: #3e3e3e;
 $dark-c: #969896;
 $dark-err: #c66;
 $dark-k: #b294bb;
@@ -154,6 +155,22 @@ $dark-il: #de935f;
 
     .line_content.match {
       @include dark-diff-match-line;
+    }
+
+    &:not(.diff-expanded) + .diff-expanded,
+    &.diff-expanded + .line_holder:not(.diff-expanded) {
+      > .diff-line-num,
+      > .line_content {
+        border-top: 1px solid $black;
+      }
+    }
+
+    &.diff-expanded {
+      > .diff-line-num,
+      > .line_content {
+        background: $dark-expanded-bg;
+        border-color: $dark-expanded-bg;
+      }
     }
   }
 

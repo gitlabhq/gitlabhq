@@ -18,6 +18,7 @@ $solarized-dark-line-color-old: #7a6c71;
 $solarized-dark-highlight: #094554;
 $solarized-dark-hll-bg: #174652;
 $solarized-dark-over-bg: #9f9ab5;
+$solarized-dark-expanded-bg: #010d10;
 $solarized-dark-c: #586e75;
 $solarized-dark-err: #93a1a1;
 $solarized-dark-g: #93a1a1;
@@ -158,6 +159,22 @@ $solarized-dark-il: #2aa198;
 
     .line_content.match {
       @include dark-diff-match-line;
+    }
+
+    &:not(.diff-expanded) + .diff-expanded,
+    &.diff-expanded + .line_holder:not(.diff-expanded) {
+      > .diff-line-num,
+      > .line_content {
+        border-top: 1px solid $black;
+      }
+    }
+
+    &.diff-expanded {
+      > .diff-line-num,
+      > .line_content {
+        background: $solarized-dark-expanded-bg;
+        border-color: $solarized-dark-expanded-bg;
+      }
     }
   }
 

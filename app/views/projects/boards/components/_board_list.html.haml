@@ -2,28 +2,8 @@
   .board-list-loading.text-center{ "v-if" => "loading" }
     = icon("spinner spin")
   - if can? current_user, :create_issue, @project
-    %board-new-issue{ "inline-template" => true,
-      ":list" => "list",
+    %board-new-issue{ ":list" => "list",
       "v-if" => 'list.type !== "done" && showIssueForm' }
-      .card.board-new-issue-form
-        %form{ "@submit" => "submit($event)" }
-          .flash-container{ "v-if" => "error" }
-            .flash-alert
-              An error occured. Please try again.
-          %label.label-light{ ":for" => 'list.id + "-title"' }
-            Title
-          %input.form-control{ type: "text",
-            "v-model" => "title",
-            "ref" => "input",
-            ":id" => 'list.id + "-title"' }
-          .clearfix.prepend-top-10
-            %button.btn.btn-success.pull-left{ type: "submit",
-              ":disabled" => 'title === ""',
-              "ref" => "submit-button" }
-              Submit issue
-            %button.btn.btn-default.pull-right{ type: "button",
-              "@click" => "cancel" }
-              Cancel
   %ul.board-list{ "ref" => "list",
     "v-show" => "!loading",
     ":data-board" => "list.id",

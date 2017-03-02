@@ -1,6 +1,7 @@
 .calender-block {
   padding-left: 0;
   padding-right: 0;
+  border-top: 0;
   direction: rtl;
 
   @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) {

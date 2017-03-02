@@ -133,8 +133,13 @@
         width: 35px;
         font-weight: normal;
 
-        &:hover {
-          text-decoration: underline;
+        &[disabled] {
+          cursor: default;
+
+          &:hover,
+          &:active {
+            text-decoration: none;
+          }
         }
       }
     }

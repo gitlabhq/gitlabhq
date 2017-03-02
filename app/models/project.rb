@@ -22,6 +22,9 @@ class Project < ActiveRecord::Base
 
   extend Gitlab::ConfigHelper
 
+  BoardLimitExceeded = Class.new(StandardError)
+
+  NUMBER_OF_PERMITTED_BOARDS = 1
   UNKNOWN_IMPORT_URL = 'http://unknown.git'.freeze
 
   cache_markdown_field :description, pipeline: :description

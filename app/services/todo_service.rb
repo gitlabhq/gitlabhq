@@ -131,7 +131,7 @@ class TodoService
     mark_pending_todos_as_done(merge_request, merge_request.author)
     mark_pending_todos_as_done(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
   end
-  
+
   # When a merge request could not be automatically merged due to its unmergeable state we should:
   #
   #  * create a todo for a merge_user
@@ -139,7 +139,7 @@ class TodoService
   def merge_request_became_unmergeable(merge_request)
     create_unmergeable_todo(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
   end
-  
+
   # When create a note we should:
   #
   #  * mark all pending todos related to the noteable for the note author as done

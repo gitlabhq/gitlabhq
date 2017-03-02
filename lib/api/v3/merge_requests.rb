@@ -68,8 +68,7 @@ module API
             end
 
           merge_requests = merge_requests.reorder(params[:order_by] => params[:sort])
-
-          present paginate(merge_requests), with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
+          present paginate(merge_requests), with: ::API::V3::Entities::MergeRequest, current_user: current_user, project: user_project
         end
 
         desc 'Create a merge request' do
@@ -181,7 +180,7 @@ module API
             optional :should_remove_source_branch, type: Boolean,
                                                    desc: 'When true, the source branch will be deleted if possible'
             optional :merge_when_build_succeeds, type: Boolean,
-                                                 desc: 'When true, this merge request will be merged when the pipeline succeeds'
+                                                 desc: 'When true, this merge request will be merged when the build succeeds'
             optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
             optional :squash, type: Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'
           end
@@ -222,7 +221,7 @@ module API
             present merge_request, with: ::API::V3::Entities::MergeRequest, current_user: current_user, project: user_project
           end
 
-          desc 'Cancel merge if "Merge When Pipeline Succeeds" is enabled' do
+          desc 'Cancel merge if "Merge When Build succeeds" is enabled' do
             success ::API::V3::Entities::MergeRequest
           end
           post "#{path}/cancel_merge_when_build_succeeds" do
