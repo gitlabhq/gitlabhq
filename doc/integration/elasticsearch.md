@@ -302,6 +302,21 @@ see details in the [8-11-to-8-12 update guide](https://gitlab.com/gitlab-org/git
 If you have this exception (just like in the case above but the actual message is different) please check if you have the correct Elasticsearch version and you met the other [requirements](#requirements).
 There is also an easy way to check it automatically with `sudo gitlab-rake gitlab:check` command.
 
+### Exception Elasticsearch::Transport::Transport::Errors::RequestEntityTooLarge
+
+```
+[413] {"Message":"Request size exceeded 10485760 bytes"}
+```
+
+This exception is seen when your Elasticsearch cluster is configured to reject
+requests above a certain size (10MiB in this case). This corresponds to the
+`http.max_content_length` setting in `elasticsearch.yml`. Increase it to a
+larger size and restart your Elasticsearch cluster.
+
+AWS has [fixed limits](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html)
+for this setting ("Maximum Size of HTTP Request Payloads"), based on the size of
+the underlying instance.
+
 ### I indexed all the repositories but I can't find anything
 
 Make sure you indexed all the database data as stated above (`sudo gitlab-rake gitlab:elastic:index`)
