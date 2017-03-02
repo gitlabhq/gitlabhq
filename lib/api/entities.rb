@@ -728,7 +728,7 @@ module API
     end
 
     class Environment < EnvironmentBasic
-      expose :project, using: Entities::Project
+      expose :project, using: Entities::BasicProjectDetails
     end
 
     class Deployment < Grape::Entity
