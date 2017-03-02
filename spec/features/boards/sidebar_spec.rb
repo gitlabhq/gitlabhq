@@ -303,8 +303,8 @@ describe 'Issue Boards', feature: true, js: true do
 
       page.within('.subscription') do
         click_button 'Subscribe'
-        wait_for_requests
-        expect(page).to have_content("Unsubscribe")
+        wait_for_ajax
+        expect(page).to have_selector('.subscribed')
       end
     end
   end
