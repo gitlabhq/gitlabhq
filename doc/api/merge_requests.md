@@ -480,23 +480,7 @@ Parameters:
 - `merge_commit_message` (optional)         - Custom merge commit message
 - `should_remove_source_branch` (optional)  - if `true` removes the source branch
 - `merge_when_pipeline_succeeds` (optional)    - if `true` the MR is merged when the pipeline succeeds
-<<<<<<< HEAD
-- `sha` (optional)                          - if present, then this SHA must
-
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | string | yes | The ID of a project |
-| `merge_request_id` | integer | yes | The ID of the merge request |
-| `merge_commit_message` | string | no | Custom merge commit message |
-| `should_remove_source_branch` | boolean | no | Remove the source branch after merge |
-| `merge_when_pipeline_succeeds` | boolean | no | Merge when pipeline succeeds, rather than immediately |
-| `sha` | string | no  | If present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail |
-| `squash` | boolean | no | Squash the merge request into a single commit |
-
-=======
 - `sha` (optional)                          - if present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail
->>>>>>> ce/master
 
 ```json
 {

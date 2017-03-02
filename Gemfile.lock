@@ -346,11 +346,8 @@ GEM
     grpc (1.1.2)
       google-protobuf (~> 3.1)
       googleauth (~> 0.5.1)
-<<<<<<< HEAD
     gssapi (1.2.0)
       ffi (>= 1.0.1)
-=======
->>>>>>> ce/master
     haml (4.0.7)
       tilt
     haml_lint (0.21.0)

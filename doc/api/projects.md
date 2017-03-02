@@ -241,10 +241,7 @@ Parameters:
       "group_access_level": 10
     }
   ],
-<<<<<<< HEAD
   "repository_storage": "default",
-=======
->>>>>>> ce/master
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false

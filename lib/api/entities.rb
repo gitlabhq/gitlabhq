@@ -111,10 +111,7 @@ module API
         SharedGroup.represent(project.project_group_links.all, options)
       end
       expose :only_allow_merge_if_pipeline_succeeds
-<<<<<<< HEAD
       expose :repository_storage, if: lambda { |_project, options| options[:current_user].try(:admin?) }
-=======
->>>>>>> ce/master
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
       expose :approvals_before_merge

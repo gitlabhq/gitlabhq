@@ -68,12 +68,7 @@ module API
             end
 
           merge_requests = merge_requests.reorder(params[:order_by] => params[:sort])
-<<<<<<< HEAD
-
-          present paginate(merge_requests), with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
-=======
           present paginate(merge_requests), with: ::API::V3::Entities::MergeRequest, current_user: current_user, project: user_project
->>>>>>> ce/master
         end
 
         desc 'Create a merge request' do
@@ -226,11 +221,7 @@ module API
             present merge_request, with: ::API::V3::Entities::MergeRequest, current_user: current_user, project: user_project
           end
 
-<<<<<<< HEAD
-          desc 'Cancel merge if "Merge When Pipeline Succeeds" is enabled' do
-=======
           desc 'Cancel merge if "Merge When Build succeeds" is enabled' do
->>>>>>> ce/master
             success ::API::V3::Entities::MergeRequest
           end
           post "#{path}/cancel_merge_when_build_succeeds" do
