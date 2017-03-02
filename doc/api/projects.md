@@ -1207,7 +1207,6 @@ Parameters:
 
 ```
 POST /projects/:id/housekeeping
->>>>>>> ce/master
 ```
 
 Parameters:
@@ -1300,6 +1299,3 @@ DELETE /projects/:id/push_rule
 Parameters:
 
 - `id` (required) - The ID of a project
-
-Note the JSON response differs if the push rule is available or not. If the project push rule
-is available before it is returned in the JSON response or an empty response is returned.
