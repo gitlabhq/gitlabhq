@@ -52,9 +52,7 @@ module Geo
         end
 
         log('Expiring caches')
-        project.repository.expire_all_method_caches
-        project.repository.expire_branch_cache
-        project.repository.expire_content_cache
+        project.after_sync
 
         finished_at = DateTime.now
       rescue Gitlab::Shell::Error => e

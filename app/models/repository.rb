@@ -426,6 +426,13 @@ class Repository
     expire_branches_cache
   end
 
+  # Runs code after a repository has been synced.
+  def after_sync
+    expire_all_method_caches
+    expire_branch_cache
+    expire_content_cache
+  end
+
   # Runs code after a new commit has been pushed.
   def after_push_commit(branch_name)
     expire_statistics_caches
