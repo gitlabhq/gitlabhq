@@ -87,7 +87,7 @@ GET /projects/:id/merge_requests/:merge_request_iid
 
 Parameters:
 
-- `iid` (required) - The ID of a project
+- `id` (required) - The ID of a project
 - `merge_request_iid` (required) - The internal ID of the merge request
 
 ```json

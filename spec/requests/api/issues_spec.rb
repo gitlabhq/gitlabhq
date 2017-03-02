@@ -799,16 +799,19 @@ describe API::Issues, api: true  do
     context 'confidential issues' do
       it "returns 404 for non project members" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", non_member)
+
         expect(response).to have_http_status(404)
       end
 
       it "returns 404 for project members with guest role" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", guest)
+
         expect(response).to have_http_status(404)
       end
 
       it "returns confidential issue for project members" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", user)
+
         expect(response).to have_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
@@ -816,6 +819,7 @@ describe API::Issues, api: true  do
 
       it "returns confidential issue for author" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", author)
+
         expect(response).to have_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
@@ -823,6 +827,7 @@ describe API::Issues, api: true  do
 
       it "returns confidential issue for assignee" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", assignee)
+
         expect(response).to have_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
@@ -830,6 +835,7 @@ describe API::Issues, api: true  do
 
       it "returns confidential issue for admin" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", admin)
+
         expect(response).to have_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
