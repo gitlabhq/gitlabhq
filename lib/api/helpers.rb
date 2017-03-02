@@ -11,11 +11,21 @@ module API
       declared(params, options).to_h.symbolize_keys
     end
 
-    def check_unmodified_since(last_modified)
-      if_unmodified_since = Time.parse(headers['If-Unmodified-Since']) if headers.key?('If-Unmodified-Since') rescue nil
+    def check_unmodified_since!(last_modified)
+      if_unmodified_since = Time.parse(headers['If-Unmodified-Since']) rescue nil
 
-      if if_unmodified_since && if_unmodified_since < last_modified
+      if if_unmodified_since && last_modified > if_unmodified_since
         render_api_error!('412 Precondition Failed', 412)
+      end
+    end
+
+    def destroy_conditionally!(resource, last_update_field: :updated_at)
+      check_unmodified_since!(resource.public_send(last_update_field))
+
+      if block_given?
+        yield resource
+      else
+        resource.destroy
       end
     end
 

@@ -45,7 +45,10 @@ module API
       end
       delete '/' do
         authenticate_runner!
-        Ci::Runner.find_by_token(params[:token]).destroy
+
+        runner = Ci::Runner.find_by_token(params[:token])
+
+        destroy_conditionally!(runner)
       end
     end
   end

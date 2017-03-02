@@ -79,11 +79,10 @@ module API
           end
           delete "#{endpoint}/:award_id" do
             award = awardable.award_emoji.find(params[:award_id])
-            check_unmodified_since(award.updated_at)
 
             unauthorized! unless award.user == current_user || current_user.admin?
 
-            award.destroy
+            destroy_conditionally!(award)
           end
         end
       end

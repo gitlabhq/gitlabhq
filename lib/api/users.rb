@@ -236,9 +236,7 @@ module API
         key = user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
-        check_unmodified_since(key.updated_at)
-
-        key.destroy
+        destroy_conditionally!(key)
       end
 
       desc 'Add an email address to a specified user. Available only for admins.' do
@@ -294,9 +292,8 @@ module API
         email = user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
-        check_unmodified_since(email.updated_at)
+        destroy_conditionally!(email)
 
-        email.destroy
         user.update_secondary_emails!
       end
 
@@ -312,9 +309,9 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
-        check_unmodified_since(user.updated_at)
-
-        ::Users::DestroyService.new(current_user).execute(user)
+        destroy_conditionally!(user) do |user|
+          ::Users::DestroyService.new(current_user).execute(user)
+        end
       end
 
       desc 'Block a user. Available only for admins.'
@@ -429,9 +426,7 @@ module API
         key = current_user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
-        check_unmodified_since(key.updated_at)
-
-        key.destroy
+        destroy_conditionally!(key)
       end
 
       desc "Get the currently authenticated user's email addresses" do
@@ -482,9 +477,8 @@ module API
         email = current_user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
-        check_unmodified_since(email.updated_at)
+        destroy_conditionally!(email)
 
-        email.destroy
         current_user.update_secondary_emails!
       end
     end

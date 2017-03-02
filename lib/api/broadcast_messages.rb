@@ -90,9 +90,8 @@ module API
       end
       delete ':id' do
         message = find_message
-        check_unmodified_since(message.updated_at)
 
-        message.destroy
+        destroy_conditionally!(message)
       end
     end
   end

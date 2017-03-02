@@ -103,9 +103,7 @@ module API
         key = user_project.deploy_keys_projects.find_by(deploy_key_id: params[:key_id])
         not_found!('Deploy Key') unless key
 
-        check_unmodified_since(key.updated_at)
-
-        key.destroy
+        destroy_conditionally!(key)
       end
     end
   end

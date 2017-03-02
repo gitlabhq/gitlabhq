@@ -122,14 +122,13 @@ module API
         end
         delete "/lists/:list_id" do
           authorize!(:admin_list, user_project)
-
           list = board_lists.find(params[:list_id])
-          check_unmodified_since(list.updated_at)
 
-          service = ::Boards::Lists::DestroyService.new(user_project, current_user)
-
-          unless service.execute(list)
-            render_api_error!({ error: 'List could not be deleted!' }, 400)
+          destroy_conditionally!(list) do |list|
+            service = ::Boards::Lists::DestroyService.new(user_project, current_user)
+            unless service.execute(list)
+              render_api_error!({ error: 'List could not be deleted!' }, 400)
+            end
           end
         end
       end

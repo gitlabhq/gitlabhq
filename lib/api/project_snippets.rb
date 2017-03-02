@@ -119,9 +119,8 @@ module API
         not_found!('Snippet') unless snippet
 
         authorize! :admin_project_snippet, snippet
-        check_unmodified_since(snippet.updated_at)
 
-        snippet.destroy
+        destroy_conditionally!(snippet)
       end
 
       desc 'Get a raw project snippet'

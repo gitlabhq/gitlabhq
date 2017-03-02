@@ -67,12 +67,12 @@ module API
         end
         delete ":id/access_requests/:user_id" do
           source = find_source(source_type, params[:id])
-          member = source.public_send(:requesters).find_by!(user_id: params[:user_id])
+          member = source.requesters.find_by!(user_id: params[:user_id])
 
-          check_unmodified_since(member.updated_at)
-
-          ::Members::DestroyService.new(source, current_user, params).
-            execute(:requesters)
+          destroy_conditionally!(member) do
+            ::Members::DestroyService.new(source, current_user, params).
+              execute(:requesters)
+          end
         end
       end
     end

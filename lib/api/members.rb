@@ -93,11 +93,11 @@ module API
         end
         delete ":id/members/:user_id" do
           source = find_source(source_type, params[:id])
-          # Ensure that memeber exists
           member = source.members.find_by!(user_id: params[:user_id])
-          check_unmodified_since(member.updated_at)
 
-          ::Members::DestroyService.new(source, current_user, declared_params).execute
+          destroy_conditionally!(member) do
+            ::Members::DestroyService.new(source, current_user, declared_params).execute
+          end
         end
       end
     end
