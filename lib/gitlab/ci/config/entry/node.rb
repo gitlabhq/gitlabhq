@@ -76,8 +76,18 @@ module Gitlab
           end
 
           def inspect
-            val = if leaf? then config else descendants end
-            unspecified = if specified? then '' else '(unspecified) ' end
+            val = if leaf?
+                    config
+                  else
+                    descendants
+                  end
+
+            unspecified = if specified?
+                            ''
+                          else
+                            '(unspecified) '
+                          end
+
             "#<#{self.class.name} #{unspecified}{#{key}: #{val.inspect}}>"
           end
 
