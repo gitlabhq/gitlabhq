@@ -461,14 +461,13 @@
           The url to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://localhost:9200, http://localhost:9201").
 
   %fieldset
-    %legend Elasticsearch AWS
+    %legend Elasticsearch AWS IAM credentials
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :elasticsearch_aws do
             = f.check_box :elasticsearch_aws
-            Using AWS hosted Elasticsearch
-
+            Using AWS hosted Elasticsearch with IAM credentials
     .form-group
       = f.label :elasticsearch_aws_region, 'AWS region', class: 'control-label col-sm-2'
       .col-sm-10
