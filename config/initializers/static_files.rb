@@ -24,13 +24,13 @@ if app.config.serve_static_files
       port: dev_server.port,
       manifest_host: dev_server.host,
       manifest_port: dev_server.port,
+      https: dev_server.https || Gitlab.config.gitlab.https,
     }
 
     if Rails.env.development?
       settings.merge!(
         host: Gitlab.config.gitlab.host,
         port: Gitlab.config.gitlab.port,
-        https: Gitlab.config.gitlab.https,
       )
       app.config.middleware.insert_before(
         Gitlab::Middleware::Static,
