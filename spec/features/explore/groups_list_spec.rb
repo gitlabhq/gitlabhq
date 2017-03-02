@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'Explore Groups page', js: true, feature: true do
+describe 'Explore Groups page', js: true, feature: true do
   include WaitForAjax
 
   let!(:user) { create :user }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Groups page', js: true, feature: true do
+describe 'Dashboard Groups page', js: true, feature: true do
   include WaitForAjax
 
   let!(:user) { create :user }
@@ -40,8 +40,8 @@ RSpec.describe 'Dashboard Groups page', js: true, feature: true do
     wait_for_ajax
 
     expect(page).to have_content(group.full_name)
-    expect(page).to have_content(public_group.full_name)
-    expect(page).not_to have_content(private_group.full_name)
+    expect(page).to have_content(nested_group.full_name)
+    expect(page).not_to have_content(another_group.full_name)
     expect(page.all('.js-groups-list-holder .content-list li').length).to eq 2
   end
 end
