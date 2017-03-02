@@ -112,7 +112,9 @@ var config = {
         'merge_conflicts',
         'vue_pipelines',
       ],
-      minChunks: Infinity,
+      minChunks: function(module, count) {
+        return module.resource && (/vue_shared/).test(module.resource);
+      },
     }),
 
     // create cacheable common library bundles
