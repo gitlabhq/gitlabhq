@@ -394,7 +394,7 @@ describe API::Tags do
 
         it_behaves_like '404 response' do
           let(:request) { put api(route, current_user), description: new_description }
-          let(:message) { '404 Tag Not Found' }
+          let(:message) { 'Tag does not exist' }
         end
       end
 
