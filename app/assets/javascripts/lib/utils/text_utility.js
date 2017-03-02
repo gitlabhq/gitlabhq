@@ -65,9 +65,10 @@ require('vendor/latinise');
       }
     };
     gl.text.insertText = function(textArea, text, tag, blockTag, selected, wrap) {
-      var insertText, inserted, selectedSplit, startChar, removedLastNewLine, removedFirstNewLine;
+      var insertText, inserted, selectedSplit, startChar, removedLastNewLine, removedFirstNewLine, currentLineEmpty, lastNewLine;
       removedLastNewLine = false;
       removedFirstNewLine = false;
+      currentLineEmpty = false;
 
       // Remove the first newline
       if (selected.indexOf('\n') === 0) {
@@ -82,7 +83,17 @@ require('vendor/latinise');
       }
 
       selectedSplit = selected.split('\n');
-      startChar = !wrap && textArea.selectionStart > 0 ? '\n' : '';
+
+      if (!wrap) {
+        lastNewLine = textArea.value.substr(0, textArea.selectionStart).lastIndexOf('\n');
+
+        // Check whether the current line is empty or consists only of spaces(=handle as empty)
+        if (/^\s*$/.test(textArea.value.substring(lastNewLine, textArea.selectionStart))) {
+          currentLineEmpty = true;
+        }
+      }
+
+      startChar = !wrap && !currentLineEmpty && textArea.selectionStart > 0 ? '\n' : '';
 
       if (selectedSplit.length > 1 && (!wrap || (blockTag != null))) {
         if (blockTag != null) {
@@ -142,9 +153,8 @@ require('vendor/latinise');
       }
     };
     gl.text.updateText = function(textArea, tag, blockTag, wrap) {
-      var $textArea, oldVal, selected, text;
+      var $textArea, selected, text;
       $textArea = $(textArea);
-      oldVal = $textArea.val();
       textArea = $textArea.get(0);
       text = $textArea.val();
       selected = this.selectedText(text, textArea);
