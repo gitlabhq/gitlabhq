@@ -15,6 +15,7 @@ module Gitlab
             @config = config
             @metadata = metadata
             @entries = {}
+            @specified = true
 
             @validator = self.class.validator.new(self)
             @validator.validate(:new)
@@ -62,12 +63,22 @@ module Gitlab
             end
           end
 
+          def unspecify
+            @specified = false
+          end
+
           def specified?
-            true
+            @specified
           end
 
           def relevant?
             true
+          end
+
+          def inspect
+            val = if leaf? then config else descendants end
+            unspecified = if specified? then '' else '(unspecified) ' end
+            "#<#{self.class.name} #{unspecified}{#{key}: #{val.inspect}}>"
           end
 
           def self.default

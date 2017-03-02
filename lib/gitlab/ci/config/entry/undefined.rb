@@ -29,6 +29,10 @@ module Gitlab
           def relevant?
             false
           end
+
+          def inspect
+            "#<#{self.class.name}>"
+          end
         end
       end
     end

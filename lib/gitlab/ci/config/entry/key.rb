@@ -11,6 +11,10 @@ module Gitlab
           validations do
             validates :config, key: true
           end
+
+          def self.default
+            'default'
+          end
         end
       end
     end

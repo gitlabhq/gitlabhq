@@ -37,9 +37,7 @@ module Gitlab
             # See issue #18775.
             #
             if @value.nil?
-              Entry::Unspecified.new(
-                fabricate_unspecified
-              )
+              fabricate_unspecified
             else
               fabricate(@entry, @value)
             end
@@ -56,7 +54,7 @@ module Gitlab
               fabricate(Entry::Undefined)
             else
               fabricate(@entry, @entry.default)
-            end
+            end.tap(&:unspecify)
           end
 
           def fabricate(entry, value = nil)

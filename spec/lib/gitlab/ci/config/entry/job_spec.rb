@@ -144,7 +144,8 @@ describe Gitlab::Ci::Config::Entry::Job do
                    script: %w[rspec],
                    commands: "ls\npwd\nrspec",
                    stage: 'test',
-                   after_script: %w[cleanup])
+                   after_script: %w[cleanup],
+                   cache: { key: 'default' })
         end
       end
     end

@@ -62,11 +62,13 @@ describe Gitlab::Ci::Config::Entry::Jobs do
           rspec: { name: :rspec,
                    script: %w[rspec],
                    commands: 'rspec',
-                   stage: 'test' },
+                   stage: 'test',
+                   cache: { key: 'default' } },
           spinach: { name: :spinach,
                      script: %w[spinach],
                      commands: 'spinach',
-                     stage: 'test' })
+                     stage: 'test',
+                     cache: { key: 'default' } })
       end
     end
 
