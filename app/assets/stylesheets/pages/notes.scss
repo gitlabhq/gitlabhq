@@ -188,9 +188,6 @@ ul.notes {
     .note-body {
       overflow-x: auto;
       overflow-y: hidden;
-      // Help with emoji cut-off (most noticable in Safari)
-      // See https://i.imgur.com/0dg87Y9.png
-      padding-top: 1px;
 
       .note-text {
         word-wrap: break-word;
