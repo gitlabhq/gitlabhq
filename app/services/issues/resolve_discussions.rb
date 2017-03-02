@@ -25,11 +25,15 @@ module Issues
     def discussions_to_resolve
       return [] unless merge_request_for_resolving_discussions
 
-      @discussions_to_resolve ||= NotesFinder.new(project, current_user, {
-                                                    discussion_id: discussion_to_resolve_id,
-                                                    target_type: MergeRequest.name.underscore,
-                                                    target_id: merge_request_for_resolving_discussions.id
-                                                  }).execute.discussions.select(&:to_be_resolved?)
+      @discussions_to_resolve ||= begin
+                                    if discussion_to_resolve_id
+                                      Array(merge_request_for_resolving_discussions.
+                                              find_diff_discussion(discussion_to_resolve_id))
+                                    else
+                                      merge_request_for_resolving_discussions
+                                        .resolvable_discussions
+                                    end
+                                  end
     end
   end
 end
