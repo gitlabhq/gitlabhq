@@ -40,7 +40,6 @@ var config = {
     snippet:              './snippet/snippet_bundle.js',
     terminal:             './terminal/terminal_bundle.js',
     users:                './users/users_bundle.js',
-    lib_chart:            './lib/chart.js',
     lib_d3:               './lib/d3.js',
     vue_pipelines:        './vue_pipelines_index/index.js',
   },
