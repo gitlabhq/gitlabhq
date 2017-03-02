@@ -64,7 +64,7 @@ module Ci
 
     state_machine :status do
       event :block do
-        transition :created => :manual, if: ->() { self.when == 'manual' }
+        transition :created => :blocked
       end
 
       after_transition any => [:pending] do |build|
@@ -103,11 +103,20 @@ module Ci
     end
 
     def playable?
-      project.builds_enabled? && commands.present? && manual?
+      project.builds_enabled? && has_commands? && manual? &&
+        (skipped? || blocked?)
     end
 
-    def is_blocking?
-      playable? && !allow_failure?
+    def manual?
+      self.when == 'manual'
+    end
+
+    def barrier?
+      manual? && !allow_failure?
+    end
+
+    def has_commands?
+      commands.present?
     end
 
     def play(current_user)
@@ -126,7 +135,7 @@ module Ci
     end
 
     def retryable?
-      project.builds_enabled? && commands.present? &&
+      project.builds_enabled? && has_commands? &&
         (success? || failed? || canceled?)
     end
 

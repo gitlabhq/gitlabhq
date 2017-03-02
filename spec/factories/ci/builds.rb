@@ -71,6 +71,10 @@ FactoryGirl.define do
       allow_failure true
     end
 
+    trait :ignored do
+      allowed_to_fail
+    end
+
     trait :playable do
       skipped
       manual

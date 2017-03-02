@@ -104,10 +104,6 @@ module Gitlab
             (before_script_value.to_a + script_value.to_a).join("\n")
           end
 
-          def allow_failure
-            super || self.when == 'manual'
-          end
-
           private
 
           def inherit!(deps)

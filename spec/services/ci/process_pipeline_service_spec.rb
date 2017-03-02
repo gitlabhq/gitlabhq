@@ -68,9 +68,9 @@ describe Ci::ProcessPipelineService, :services do
         create(:ci_build, :created, pipeline: pipeline, name: 'test', stage_idx: 1)
         create(:ci_build, :created, pipeline: pipeline, name: 'test_failure', stage_idx: 2, when: 'on_failure')
         create(:ci_build, :created, pipeline: pipeline, name: 'deploy', stage_idx: 3)
-        create(:ci_build, :created, pipeline: pipeline, name: 'production', stage_idx: 3, when: 'manual')
+        create(:ci_build, :created, pipeline: pipeline, name: 'production', stage_idx: 3, when: 'manual', allow_failure: true)
         create(:ci_build, :created, pipeline: pipeline, name: 'cleanup', stage_idx: 4, when: 'always')
-        create(:ci_build, :created, pipeline: pipeline, name: 'clear cache', stage_idx: 4, when: 'manual')
+        create(:ci_build, :created, pipeline: pipeline, name: 'clear cache', stage_idx: 4, when: 'manual', allow_failure: true)
       end
 
       context 'when builds are successful' do
