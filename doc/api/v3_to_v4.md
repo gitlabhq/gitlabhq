@@ -68,3 +68,5 @@ changes are in V4:
 - Rename Build Triggers to be Pipeline Triggers API [!9713](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9713)
   - `POST /projects/:id/trigger/builds` to `POST /projects/:id/trigger/pipeline`
   - Require description when creating a new trigger `POST /projects/:id/triggers`
+- Simplify project payload exposed on Environment endpoints [!9675](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9675)
+
