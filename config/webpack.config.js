@@ -98,10 +98,9 @@ var config = {
       new webpack.HashedModuleIdsPlugin() :
       new webpack.NamedModulesPlugin(),
 
-    // create a common.js bundle to be loaded on every page
+    // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
-      minChunks: Infinity,
+      names: ['application', 'common', 'manifest'],
     }),
   ],
 

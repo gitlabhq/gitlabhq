@@ -28,6 +28,7 @@
   = stylesheet_link_tag "application", media: "all"
   = stylesheet_link_tag "print",       media: "print"
 
+  = javascript_include_tag(*webpack_asset_paths("manifest"))
   = javascript_include_tag(*webpack_asset_paths("common"))
   = javascript_include_tag(*webpack_asset_paths("application"))
 
