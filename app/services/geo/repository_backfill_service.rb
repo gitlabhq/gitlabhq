@@ -42,7 +42,6 @@ module Geo
 
       begin
         project.create_repository unless project.repository_exists?
-        project.repository.after_create if project.empty_repo?
         log('Fetching repository')
         project.repository.fetch_geo_mirror(ssh_url_to_repo)
 
