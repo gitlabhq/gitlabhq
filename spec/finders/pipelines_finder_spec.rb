@@ -13,6 +13,17 @@ describe PipelinesFinder do
   let!(:canceled_pipeline)    { create(:ci_pipeline, project: project, user: user, created_at:  2.minutes.ago, status: 'canceled') }
   let!(:skipped_pipeline)     { create(:ci_pipeline, project: project, user: user, created_at:  1.minute.ago,  status: 'skipped') }
   let!(:yaml_errors_pipeline) { create(:ci_pipeline, project: project, user: user, yaml_errors: 'Syntax error') }
+  let(:dummy_pipelines) do
+    [tag_pipeline,
+    created_pipeline,
+    pending_pipeline,
+    running_pipeline,
+    success_pipeline,
+    failed_pipeline,
+    canceled_pipeline,
+    skipped_pipeline,
+    yaml_errors_pipeline]
+  end
 
   subject { described_class.new(project, params).execute }
 
@@ -21,29 +32,12 @@ describe PipelinesFinder do
       let(:params) { {} }
 
       it 'selects all pipelines' do
-        expect(subject.count).to be 9
-        expect(subject).to include tag_pipeline
-        expect(subject).to include created_pipeline
-        expect(subject).to include pending_pipeline
-        expect(subject).to include running_pipeline
-        expect(subject).to include success_pipeline
-        expect(subject).to include failed_pipeline
-        expect(subject).to include canceled_pipeline
-        expect(subject).to include skipped_pipeline
-        expect(subject).to include yaml_errors_pipeline
+        expect(subject.count).to be dummy_pipelines.count
+        expect(subject).to match_array(dummy_pipelines)
       end
 
       it 'orders in descending order on ID' do
-        expected_ids = [tag_pipeline.id, 
-                        created_pipeline.id, 
-                        pending_pipeline.id,
-                        running_pipeline.id,
-                        success_pipeline.id,
-                        failed_pipeline.id,
-                        canceled_pipeline.id,
-                        skipped_pipeline.id,
-                        yaml_errors_pipeline.id].sort.reverse
-        expect(subject.map(&:id)).to eq expected_ids
+        expect(subject.map(&:id)).to eq dummy_pipelines.map(&:id).sort.reverse
       end
     end
 
@@ -210,6 +204,15 @@ describe PipelinesFinder do
           expect(subject).to include skipped_pipeline
         end
       end
+
+      context 'when an argument is invalid' do
+        let(:params) { { yaml_errors: "UnexpectedValue" } }
+
+        it 'selects all pipelines' do
+          expect(subject.count).to be dummy_pipelines.count
+          expect(subject).to match_array(dummy_pipelines)
+        end
+      end
     end
 
     context 'when a order_by and sort are passed' do
@@ -228,6 +231,22 @@ describe PipelinesFinder do
         it 'sorts by created_at desc' do
           expect(subject.first).to eq(yaml_errors_pipeline)
           expect(subject.last).to eq(tag_pipeline)
+        end
+      end
+
+      context 'when order_by does not exist' do
+        let(:params) { { order_by: 'abnormal_column', sort: 'desc' } }
+
+        it 'sorts by default' do
+          expect(subject.map(&:id)).to eq dummy_pipelines.map(&:id).sort.reverse
+        end
+      end
+
+      context 'when sort does not exist' do
+        let(:params) { { order_by: 'created_at', sort: 'abnormal_sort' } }
+
+        it 'sorts by default' do
+          expect(subject.map(&:id)).to eq dummy_pipelines.map(&:id).sort.reverse
         end
       end
     end

@@ -88,8 +88,9 @@ class PipelinesFinder
   end
 
   def by_yaml_errors(items)
-    if params[:yaml_errors].present? 
-      if params[:yaml_errors]
+    flg = Gitlab::Utils.to_boolean(params[:yaml_errors])
+    if flg.present?
+      if flg
         items.where("yaml_errors IS NOT NULL")
       else
         items.where("yaml_errors IS NULL")
@@ -102,7 +103,7 @@ class PipelinesFinder
   def order_and_sort(items)
     if params[:order_by].present? && params[:sort].present? && 
         items.column_names.include?(params[:order_by]) && 
-        (params[:sort].casecmp('ASC') || params[:sort].casecmp('DESC'))
+        params[:sort] =~ /\A(ASC|DESC)\Z/i
       items.reorder(params[:order_by] => params[:sort])
     else
       items.reorder(id: :desc)
