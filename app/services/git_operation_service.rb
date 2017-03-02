@@ -56,14 +56,17 @@ class GitOperationService
     start_project: repository.project,
     &block)
 
-    start_branch_name ||= branch_name
+    start_repository = start_project.repository
+    start_branch_name = nil if start_repository.empty_repo?
 
-    verify_start_branch_exists!(start_project.repository, start_branch_name)
+    if start_branch_name && !start_repository.branch_exists?(start_branch_name)
+      raise ArgumentError, "Cannot find branch #{start_branch_name} in #{start_repository.path_with_namespace}"
+    end
 
     update_branch_with_hooks(branch_name) do
       repository.with_repo_branch_commit(
-        start_project.repository,
-        start_branch_name,
+        start_repository,
+        start_branch_name || branch_name,
         &block)
     end
   end
@@ -149,12 +152,5 @@ class GitOperationService
     if repository.raw_repository.autocrlf != :input
       repository.raw_repository.autocrlf = :input
     end
-  end
-
-  def verify_start_branch_exists!(start_repository, start_branch_name)
-    return if start_repository.empty_repo?
-    return if start_repository.branch_exists?(start_branch_name)
-
-    raise ArgumentError, "Cannot find branch #{start_branch_name} in #{start_repository.path_with_namespace}"
   end
 end
