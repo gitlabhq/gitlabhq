@@ -25,14 +25,6 @@ require('./commit');
         default: () => ({}),
       },
 
-      /**
-       * TODO: Remove this when we have webpack;
-       */
-      svgs: {
-        type: Object,
-        required: true,
-        default: () => ({}),
-      },
     },
 
     components: {
@@ -174,30 +166,9 @@ require('./commit');
       },
     },
 
-    methods: {
-      /**
-       * FIXME: This should not be in this component but in the components that
-       * need this function.
-       *
-       * Used to render SVGs in the following components:
-       * - status-scope
-       * - dropdown-stage
-       *
-       * @param  {String} string
-       * @return {String}
-       */
-      match(string) {
-        return string.replace(/_([a-z])/g, (m, w) => w.toUpperCase());
-      },
-    },
-
     template: `
       <tr class="commit">
-        <status-scope
-          :pipeline="pipeline"
-          :svgs="svgs"
-          :match="match">
-        </status-scope>
+        <status-scope :pipeline="pipeline"/>
 
         <pipeline-url :pipeline="pipeline"></pipeline-url>
 
@@ -208,26 +179,20 @@ require('./commit');
             :commit-url="commitUrl"
             :short-sha="commitShortSha"
             :title="commitTitle"
-            :author="commitAuthor"
-            :commit-icon-svg="svgs.commitIconSvg">
-          </commit-component>
+            :author="commitAuthor"/>
         </td>
 
         <td class="stage-cell">
           <div class="stage-container dropdown js-mini-pipeline-graph"
             v-if="pipeline.details.stages.length > 0"
             v-for="stage in pipeline.details.stages">
-            <dropdown-stage
-              :stage="stage"
-              :svgs="svgs"
-              :match="match">
-            </dropdown-stage>
+            <dropdown-stage :stage="stage"/>
           </div>
         </td>
 
-        <time-ago :pipeline="pipeline" :svgs="svgs"></time-ago>
+        <time-ago :pipeline="pipeline"/>
 
-        <pipeline-actions :pipeline="pipeline" :svgs="svgs"></pipeline-actions>
+        <pipeline-actions :pipeline="pipeline" />
       </tr>
     `,
   });

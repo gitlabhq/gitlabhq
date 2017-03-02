@@ -1,9 +1,10 @@
 /* global Vue, Flash, gl */
-/* eslint-disable no-param-reassign, no-alert */
+/* eslint-disable no-param-reassign,  no-alert */
+const playIconSvg = require('icons/_icon_play.svg');
 
 ((gl) => {
   gl.VuePipelineActions = Vue.extend({
-    props: ['pipeline', 'svgs'],
+    props: ['pipeline'],
     computed: {
       actions() {
         return this.pipeline.details.manual_actions.length > 0;
@@ -31,6 +32,11 @@
         }
       },
     },
+
+    data() {
+      return { playIconSvg };
+    },
+
     template: `
       <td class="pipeline-actions">
         <div class="pull-right">
@@ -42,7 +48,7 @@
                 title="Manual job"
                 data-placement="top"
                 aria-label="Manual job">
-                <span v-html="svgs.iconPlay" aria-hidden="true"></span>
+                <span v-html="playIconSvg" aria-hidden="true"></span>
                 <i class="fa fa-caret-down" aria-hidden="true"></i>
               </button>
               <ul class="dropdown-menu dropdown-menu-align-right">
@@ -50,8 +56,8 @@
                   <a
                     rel="nofollow"
                     data-method="post"
-                    :href="action.path">
-                    <span v-html="svgs.iconPlay" aria-hidden="true"></span>
+                    :href="action.path" >
+                    <span v-html="playIconSvg" aria-hidden="true"></span>
                     <span>{{action.name}}</span>
                   </a>
                 </li>

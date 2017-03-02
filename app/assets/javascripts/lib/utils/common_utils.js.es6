@@ -247,17 +247,6 @@
     });
 
     /**
-     * Transforms a DOMStringMap into a plain object.
-     *
-     * @param {DOMStringMap} DOMStringMapObject
-     * @returns {Object}
-     */
-    w.gl.utils.DOMStringMapToObject = DOMStringMapObject => Object.keys(DOMStringMapObject).reduce((acc, element) => {
-      acc[element] = DOMStringMapObject[element];
-      return acc;
-    }, {});
-
-    /**
      * Updates the search parameter of a URL given the parameter and values provided.
      *
      * If no search params are present we'll add it.
