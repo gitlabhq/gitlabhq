@@ -5,7 +5,7 @@ class EnvironmentsService {
     this.environments = Vue.resource(endpoint);
   }
 
-  all() {
+  get() {
     return this.environments.get();
   }
 }
