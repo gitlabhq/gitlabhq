@@ -19,7 +19,6 @@ require('bootstrap/js/affix');
 require('bootstrap/js/alert');
 require('bootstrap/js/dropdown');
 require('bootstrap/js/modal');
-require('bootstrap/js/scrollspy');
 require('bootstrap/js/tab');
 require('bootstrap/js/transition');
 require('bootstrap/js/tooltip');
