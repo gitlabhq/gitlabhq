@@ -16,7 +16,8 @@ const glEmojiTagDefaults = {
 };
 function glEmojiTag(inputName, options) {
   const opts = Object.assign({}, glEmojiTagDefaults, options);
-  const name = emojiAliases[inputName] || inputName;
+  const name = Object.prototype.hasOwnProperty.call(emojiAliases, inputName) ?
+    emojiAliases[inputName] : inputName;
   const emojiInfo = emojiMap[name];
   const fallbackImageSrc = `${gon.relative_url_root || ''}/assets/emoji/${name}-${emojiInfo.digest}.png`;
   const fallbackSpriteClass = `emoji-${name}`;

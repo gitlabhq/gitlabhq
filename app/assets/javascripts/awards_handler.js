@@ -444,7 +444,7 @@ AwardsHandler.prototype.scrollToAwards = function scrollToAwards() {
 };
 
 AwardsHandler.prototype.normalizeEmojiName = function normalizeEmojiName(emoji) {
-  return this.aliases[emoji] || emoji;
+  return Object.prototype.hasOwnProperty.call(this.aliases, emoji) ? this.aliases[emoji] : emoji;
 };
 
 AwardsHandler
