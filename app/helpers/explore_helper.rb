@@ -9,12 +9,20 @@ module ExploreHelper
     }
 
     options = exist_opts.merge(options)
-    path = request.path
-    path << "?#{options.to_param}"
-    path
+    request_path_with_options(options)
+  end
+
+  def filter_groups_path(options = {})
+    request_path_with_options(options)
   end
 
   def explore_controller?
     controller.class.name.split("::").first == "Explore"
+  end
+
+  private
+
+  def request_path_with_options(options = {})
+    request.path + "?#{options.to_param}"
   end
 end

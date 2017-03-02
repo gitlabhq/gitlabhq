@@ -1,0 +1,6 @@
+.js-groups-list-holder
+  %ul.content-list
+    - @groups.each do |group|
+      = render 'shared/groups/group', group: group
+
+  = paginate @groups, theme: 'gitlab'
