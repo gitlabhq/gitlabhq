@@ -4,6 +4,8 @@ module CreatesCommit
   def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil)
     set_commit_variables
 
+
+    start_branch = @mr_target_branch
     commit_params = @commit_params.merge(
       start_project: @mr_target_project,
       start_branch: @mr_target_branch,
@@ -117,8 +119,23 @@ module CreatesCommit
 
     # Merge request to this project
     @mr_target_project = @project
-    @mr_target_branch ||= @ref || @target_branch
 
-    @mr_source_branch = @target_branch
+    @mr_target_branch = @ref || @target_branch
+
+    @mr_source_branch = guess_mr_source_branch
+  end
+
+  def guess_mr_source_branch
+    # XXX: Happens when viewing a commit without a branch. In this case,
+    # @target_branch would be the default branch for @mr_source_project,
+    # however we want a generated new branch here. Thus we can't use
+    # @target_branch, but should pass nil to indicate that we want a new
+    # branch instead of @target_branch.
+    return if
+      create_merge_request? &&
+          # XXX: Don't understand why rubocop prefers this indention
+          @mr_source_project.repository.branch_exists?(@target_branch)
+
+    @target_branch
   end
 end

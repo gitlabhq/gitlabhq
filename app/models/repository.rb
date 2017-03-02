@@ -1075,6 +1075,8 @@ class Repository
   end
 
   def with_repo_branch_commit(start_repository, start_branch_name)
+    return yield(nil) if start_repository.empty_repo?
+
     branch_name_or_sha =
       if start_repository == self
         start_branch_name
