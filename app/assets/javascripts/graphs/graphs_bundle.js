@@ -1,4 +1,4 @@
-require('./stat_graph_contributors_graph');
-require('./stat_graph_contributors_util');
-require('./stat_graph_contributors');
-require('./stat_graph');
+import ContributorsStatGraph from './stat_graph_contributors';
+
+// export to global scope
+window.ContributorsStatGraph = ContributorsStatGraph;

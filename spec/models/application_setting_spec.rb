@@ -29,6 +29,40 @@ describe ApplicationSetting, models: true do
       it { is_expected.not_to allow_value(['test']).for(:disabled_oauth_sign_in_sources) }
     end
 
+    describe 'default_artifacts_expire_in' do
+      it 'sets an error if it cannot parse' do
+        setting.update(default_artifacts_expire_in: 'a')
+
+        expect_invalid
+      end
+
+      it 'sets an error if it is blank' do
+        setting.update(default_artifacts_expire_in: ' ')
+
+        expect_invalid
+      end
+
+      it 'sets the value if it is valid' do
+        setting.update(default_artifacts_expire_in: '30 days')
+
+        expect(setting).to be_valid
+        expect(setting.default_artifacts_expire_in).to eq('30 days')
+      end
+
+      it 'sets the value if it is 0' do
+        setting.update(default_artifacts_expire_in: '0')
+
+        expect(setting).to be_valid
+        expect(setting.default_artifacts_expire_in).to eq('0')
+      end
+
+      def expect_invalid
+        expect(setting).to be_invalid
+        expect(setting.errors.messages)
+          .to have_key(:default_artifacts_expire_in)
+      end
+    end
+
     it { is_expected.to validate_presence_of(:max_attachment_size) }
 
     it do

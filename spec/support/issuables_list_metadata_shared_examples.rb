@@ -22,7 +22,7 @@ shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
     if action
       get action
     else
-      get :index, namespace_id: project.namespace.path, project_id: project.path
+      get :index, namespace_id: project.namespace, project_id: project
     end
 
     meta_data = assigns(:issuable_meta_data)

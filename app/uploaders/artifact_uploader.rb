@@ -27,10 +27,6 @@ class ArtifactUploader < GitlabUploader
     File.join(self.class.artifacts_cache_path, @build.artifacts_path)
   end
 
-  def file_storage?
-    self.class.storage == CarrierWave::Storage::File
-  end
-
   def filename
     file.try(:filename)
   end

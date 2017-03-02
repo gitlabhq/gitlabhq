@@ -79,7 +79,24 @@ module API
 
         environment = user_project.environments.find(params[:environment_id])
 
-        present environment.destroy, with: Entities::Environment
+        environment.destroy
+      end
+
+      desc 'Stops an existing environment' do
+        success Entities::Environment
+      end
+      params do
+        requires :environment_id, type: Integer,  desc: 'The environment ID'
+      end
+      post ':id/environments/:environment_id/stop' do
+        authorize! :create_deployment, user_project
+
+        environment = user_project.environments.find(params[:environment_id])
+
+        environment.stop_with_action!(current_user)
+
+        status 200
+        present environment, with: Entities::Environment
       end
     end
   end

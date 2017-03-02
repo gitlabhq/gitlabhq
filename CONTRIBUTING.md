@@ -1,32 +1,48 @@
+## Contributor license agreement
+
+By submitting code as an individual you agree to the
+[individual contributor license agreement](doc/legal/individual_contributor_license_agreement.md).
+By submitting code as an entity you agree to the
+[corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
+
+_This notice should stay as the first item in the CONTRIBUTING.MD file._
+
+---
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+- [Contributor license agreement](#contributor-license-agreement)
 - [Contribute to GitLab](#contribute-to-gitlab)
-    - [Contributor license agreement](#contributor-license-agreement)
-    - [Security vulnerability disclosure](#security-vulnerability-disclosure)
-    - [Closing policy for issues and merge requests](#closing-policy-for-issues-and-merge-requests)
-    - [Helping others](#helping-others)
-    - [I want to contribute!](#i-want-to-contribute)
-    - [Implement design & UI elements](#implement-design-ui-elements)
-    - [Issue tracker](#issue-tracker)
-        - [Feature proposals](#feature-proposals)
-        - [Issue tracker guidelines](#issue-tracker-guidelines)
-        - [Issue weight](#issue-weight)
-        - [Regression issues](#regression-issues)
-        - [Technical debt](#technical-debt)
-        - [Stewardship](#stewardship)
-    - [Merge requests](#merge-requests)
-        - [Merge request guidelines](#merge-request-guidelines)
-        - [Contribution acceptance criteria](#contribution-acceptance-criteria)
-    - [Changes for Stable Releases](#changes-for-stable-releases)
-    - [Definition of done](#definition-of-done)
-    - [Style guides](#style-guides)
-    - [Code of conduct](#code-of-conduct)
+- [Security vulnerability disclosure](#security-vulnerability-disclosure)
+- [Closing policy for issues and merge requests](#closing-policy-for-issues-and-merge-requests)
+- [Helping others](#helping-others)
+- [I want to contribute!](#i-want-to-contribute)
+- [Implement design & UI elements](#implement-design-ui-elements)
+- [Release retrospective and kickoff](#release-retrospective-and-kickoff)
+    - [Retrospective](#retrospective)
+    - [Kickoff](#kickoff)
+- [Issue tracker](#issue-tracker)
+    - [Feature proposals](#feature-proposals)
+    - [Issue tracker guidelines](#issue-tracker-guidelines)
+    - [Issue weight](#issue-weight)
+    - [Regression issues](#regression-issues)
+    - [Technical debt](#technical-debt)
+    - [Stewardship](#stewardship)
+- [Merge requests](#merge-requests)
+    - [Merge request guidelines](#merge-request-guidelines)
+    - [Contribution acceptance criteria](#contribution-acceptance-criteria)
+- [Changes for Stable Releases](#changes-for-stable-releases)
+- [Definition of done](#definition-of-done)
+- [Style guides](#style-guides)
+- [Code of conduct](#code-of-conduct)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Contribute to GitLab
+---
+
+## Contribute to GitLab
 
 Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to GitLab in a way that is efficient for everyone.
@@ -40,13 +56,6 @@ If you have read this guide and want to know how the GitLab [core team]
 operates please see [the GitLab contributing process](PROCESS.md).
 
 - [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
-
-## Contributor license agreement
-
-By submitting code as an individual you agree to the
-[individual contributor license agreement](doc/legal/individual_contributor_license_agreement.md).
-By submitting code as an entity you agree to the
-[corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
 
 ## Security vulnerability disclosure
 

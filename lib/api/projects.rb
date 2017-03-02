@@ -23,7 +23,7 @@ module API
         ], desc: 'Create a public project. The same as visibility_level = 20.'
         optional :public_builds, type: Boolean, desc: 'Perform public builds'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
-        optional :only_allow_merge_if_build_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
+        optional :only_allow_merge_if_pipeline_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
       end
     end
@@ -94,8 +94,9 @@ module API
         success Entities::Project
       end
       params do
-        requires :name, type: String, desc: 'The name of the project'
+        optional :name, type: String, desc: 'The name of the project'
         optional :path, type: String, desc: 'The path of the repository'
+        at_least_one_of :name, :path
         use :optional_params
         use :create_params
       end
@@ -208,7 +209,7 @@ module API
                         :wiki_enabled, :builds_enabled, :snippets_enabled,
                         :shared_runners_enabled, :container_registry_enabled,
                         :lfs_enabled, :visibility_level, :public_builds,
-                        :request_access_enabled, :only_allow_merge_if_build_succeeds,
+                        :request_access_enabled, :only_allow_merge_if_pipeline_succeeds,
                         :only_allow_merge_if_all_discussions_are_resolved, :path,
                         :default_branch
       end
@@ -282,6 +283,8 @@ module API
       delete ":id" do
         authorize! :remove_project, user_project
         ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
+
+        accepted!
       end
 
       desc 'Mark this project as forked from another'
@@ -351,7 +354,6 @@ module API
         not_found!('Group Link') unless link
 
         link.destroy
-        no_content!
       end
 
       desc 'Upload a file'

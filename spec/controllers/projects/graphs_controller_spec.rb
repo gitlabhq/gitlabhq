@@ -34,7 +34,7 @@ describe Projects::GraphsController do
     end
 
     it 'sets the correct colour according to language' do
-      get(:languages, namespace_id: project.namespace.path, project_id: project.path, id: 'master')
+      get(:languages, namespace_id: project.namespace, project_id: project, id: 'master')
 
       expected_values.each do |val|
         expect(assigns(:languages)).to include(a_hash_including(val))

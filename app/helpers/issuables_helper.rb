@@ -1,6 +1,6 @@
 module IssuablesHelper
   def sidebar_gutter_toggle_icon
-    sidebar_gutter_collapsed? ? icon('angle-double-left') : icon('angle-double-right')
+    sidebar_gutter_collapsed? ? icon('angle-double-left', { 'aria-hidden': 'true' }) : icon('angle-double-right', { 'aria-hidden': 'true' })
   end
 
   def sidebar_gutter_collapsed_class
@@ -52,7 +52,7 @@ module IssuablesHelper
         field_name: 'issuable_template',
         selected: selected_template(issuable),
         project_path: ref_project.path,
-        namespace_path: ref_project.namespace.path
+        namespace_path: ref_project.namespace.full_path
       }
     }
 

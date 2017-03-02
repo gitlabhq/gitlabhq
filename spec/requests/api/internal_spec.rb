@@ -409,6 +409,34 @@ describe API::Internal, api: true  do
     end
   end
 
+  describe 'POST /notify_post_receive' do
+    let(:valid_params) do
+      { repo_path: project.repository.path, secret_token: secret_token }
+    end
+
+    before do
+      allow(Gitlab.config.gitaly).to receive(:socket_path).and_return('path/to/gitaly.socket')
+    end
+
+    it "calls the Gitaly client if it's enabled" do
+      expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+        to receive(:post_receive).with(project.repository.path)
+
+      post api("/internal/notify_post_receive"), valid_params
+
+      expect(response).to have_http_status(200)
+    end
+
+    it "returns 500 if the gitaly call fails" do
+      expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+        to receive(:post_receive).with(project.repository.path).and_raise(GRPC::Unavailable)
+
+      post api("/internal/notify_post_receive"), valid_params
+
+      expect(response).to have_http_status(500)
+    end
+  end
+
   def project_with_repo_path(path)
     double().tap do |fake_project|
       allow(fake_project).to receive_message_chain('repository.path_to_repo' => path)

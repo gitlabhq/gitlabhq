@@ -167,7 +167,10 @@ module Ci
 
           build.artifacts_file = artifacts
           build.artifacts_metadata = metadata
-          build.artifacts_expire_in = params['expire_in']
+          build.artifacts_expire_in =
+            params['expire_in'] ||
+            Gitlab::CurrentSettings.current_application_settings
+              .default_artifacts_expire_in
 
           if build.save
             present(build, with: Entities::BuildDetails)
@@ -214,6 +217,7 @@ module Ci
           build = Ci::Build.find_by_id(params[:id])
           authenticate_build!(build)
 
+          status(200)
           build.erase_artifacts!
         end
       end

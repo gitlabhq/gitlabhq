@@ -135,7 +135,7 @@ class NotificationService
       merge_request.target_project,
       current_user,
       :merged_merge_request_email,
-      skip_current_user: !merge_request.merge_when_build_succeeds?
+      skip_current_user: !merge_request.merge_when_pipeline_succeeds?
     )
   end
 

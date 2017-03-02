@@ -37,12 +37,12 @@ describe MergeRequest, models: true do
       end
 
       it "is invalid without merge user" do
-        subject.merge_when_build_succeeds = true
+        subject.merge_when_pipeline_succeeds = true
         expect(subject).not_to be_valid
       end
 
       it "is valid with merge user" do
-        subject.merge_when_build_succeeds = true
+        subject.merge_when_pipeline_succeeds = true
         subject.merge_user = build(:user)
 
         expect(subject).to be_valid
@@ -55,7 +55,7 @@ describe MergeRequest, models: true do
     it { is_expected.to respond_to(:can_be_merged?) }
     it { is_expected.to respond_to(:cannot_be_merged?) }
     it { is_expected.to respond_to(:merge_params) }
-    it { is_expected.to respond_to(:merge_when_build_succeeds) }
+    it { is_expected.to respond_to(:merge_when_pipeline_succeeds) }
   end
 
   describe '.in_projects' do
@@ -508,17 +508,17 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#reset_merge_when_build_succeeds" do
+  describe "#reset_merge_when_pipeline_succeeds" do
     let(:merge_if_green) do
-      create :merge_request, merge_when_build_succeeds: true, merge_user: create(:user),
+      create :merge_request, merge_when_pipeline_succeeds: true, merge_user: create(:user),
                              merge_params: { "should_remove_source_branch" => "1", "commit_message" => "msg" }
     end
 
     it "sets the item to false" do
-      merge_if_green.reset_merge_when_build_succeeds
+      merge_if_green.reset_merge_when_pipeline_succeeds
       merge_if_green.reload
 
-      expect(merge_if_green.merge_when_build_succeeds).to be_falsey
+      expect(merge_if_green.merge_when_pipeline_succeeds).to be_falsey
       expect(merge_if_green.merge_params["should_remove_source_branch"]).to be_nil
       expect(merge_if_green.merge_params["commit_message"]).to be_nil
     end
@@ -812,7 +812,7 @@ describe MergeRequest, models: true do
   end
 
   describe '#check_if_can_be_merged' do
-    let(:project) { create(:empty_project, only_allow_merge_if_build_succeeds: true) }
+    let(:project) { create(:empty_project, only_allow_merge_if_pipeline_succeeds: true) }
 
     subject { create(:merge_request, source_project: project, merge_status: :unchecked) }
 
@@ -832,12 +832,6 @@ describe MergeRequest, models: true do
 
       it 'becomes unmergeable' do
         expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
-      end
-
-      it 'creates Todo on unmergeability' do
-        expect_any_instance_of(TodoService).to receive(:merge_request_became_unmergeable).with(subject)
-
-        subject.check_if_can_be_merged
       end
     end
 
@@ -933,7 +927,7 @@ describe MergeRequest, models: true do
   end
 
   describe '#mergeable_ci_state?' do
-    let(:project) { create(:empty_project, only_allow_merge_if_build_succeeds: true) }
+    let(:project) { create(:empty_project, only_allow_merge_if_pipeline_succeeds: true) }
     let(:pipeline) { create(:ci_empty_pipeline) }
 
     subject { build(:merge_request, target_project: project) }
@@ -976,7 +970,7 @@ describe MergeRequest, models: true do
     end
 
     context 'when merges are not restricted to green builds' do
-      subject { build(:merge_request, target_project: build(:empty_project, only_allow_merge_if_build_succeeds: false)) }
+      subject { build(:merge_request, target_project: build(:empty_project, only_allow_merge_if_pipeline_succeeds: false)) }
 
       context 'and a failed pipeline is associated' do
         before do
@@ -1581,7 +1575,7 @@ describe MergeRequest, models: true do
         status:  status)
     end
 
-    let(:project)       { create(:project, :public, :repository, only_allow_merge_if_build_succeeds: true) }
+    let(:project)       { create(:project, :public, :repository, only_allow_merge_if_pipeline_succeeds: true) }
     let(:developer)     { create(:user) }
     let(:user)          { create(:user) }
     let(:merge_request) { create(:merge_request, source_project: project) }

@@ -88,7 +88,7 @@ Parameters:
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "public_builds": true,
     "shared_with_groups": [],
-    "only_allow_merge_if_build_succeeds": false,
+    "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false
   },
@@ -149,7 +149,7 @@ Parameters:
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "public_builds": true,
     "shared_with_groups": [],
-    "only_allow_merge_if_build_succeeds": false,
+    "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false
   }
@@ -241,7 +241,7 @@ Parameters:
       "group_access_level": 10
     }
   ],
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
@@ -435,8 +435,8 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `name` | string | yes | The name of the new project |
-| `path` | string | no | Custom repository name for new project. By default generated based on name |
+| `name` | string | yes if path is not provided | The name of the new project. Equals path if not provided. |
+| `path` | string | yes if name is not provided | Repository name for new project. Generated based on name if not provided (generated lowercased with dashes). |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
@@ -449,7 +449,7 @@ Parameters:
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
-| `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
@@ -482,7 +482,7 @@ Parameters:
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
-| `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
@@ -514,7 +514,7 @@ Parameters:
 | `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
-| `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
@@ -549,7 +549,7 @@ Parameters:
 | `id` | integer/string | yes | The ID or NAMESPACE/PROJECT_NAME of the project |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/star"
 ```
 
 Example response:
@@ -596,7 +596,7 @@ Example response:
   "star_count": 1,
   "public_builds": true,
   "shared_with_groups": [],
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
@@ -615,7 +615,7 @@ POST /projects/:id/unstar
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/unstar"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/unstar"
 ```
 
 Example response:
@@ -662,7 +662,7 @@ Example response:
   "star_count": 0,
   "public_builds": true,
   "shared_with_groups": [],
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
@@ -682,7 +682,7 @@ POST /projects/:id/archive
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/archive"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/archive"
 ```
 
 Example response:
@@ -745,7 +745,7 @@ Example response:
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "public_builds": true,
   "shared_with_groups": [],
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
@@ -765,7 +765,7 @@ POST /projects/:id/unarchive
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/unarchive"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/unarchive"
 ```
 
 Example response:
@@ -828,7 +828,7 @@ Example response:
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "public_builds": true,
   "shared_with_groups": [],
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
@@ -914,7 +914,7 @@ Parameters:
 | `group_id` | integer | yes | The ID of the group |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/share/17
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/share/17
 ```
 
 ## Hooks

@@ -45,18 +45,15 @@ const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_s
 
     methods: {
       /**
-       * Changes the URL according to the pagination component.
+       * Will change the page number and update the URL.
        *
-       * If no scope is provided, 'all' is assumed.
-       *
-       * Pagination component sends "null" when no scope is provided.
-       *
-       * @param  {Number} pagenum
-       * @param  {String} apiScope = 'all'
+       * @param  {Number} pageNumber desired page to go to.
        */
-      change(pagenum, apiScope) {
-        if (!apiScope) apiScope = 'all';
-        gl.utils.visitUrl(`?scope=${apiScope}&page=${pagenum}`);
+      change(pageNumber) {
+        const param = gl.utils.setParamInURL('page', pageNumber);
+
+        gl.utils.visitUrl(param);
+        return param;
       },
     },
     template: `

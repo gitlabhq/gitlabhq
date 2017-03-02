@@ -131,6 +131,16 @@ job_name:
   variables: []
 ```
 
+You are able to use other variables inside your variable definition (or escape them with `$$`):
+
+```yaml
+variables:
+  LS_CMD: 'ls $FLAGS $$TMP_DIR'
+  FLAGS: '-al'
+script:
+  - 'eval $LS_CMD'  # will execute 'ls -al $TMP_DIR'
+```
+
 ## Secret variables
 
 >**Notes:**
@@ -148,7 +158,8 @@ available in the build environment. It's the recommended method to use for
 storing things like passwords, secret keys and credentials.
 
 Secret variables can be added by going to your project's
-**Settings ➔ Variables ➔ Add variable**.
+**Settings ➔ CI/CD Pipelines**, then finding the section called
+**Secret Variables**.
 
 Once you set them, they will be available for all subsequent jobs.
 

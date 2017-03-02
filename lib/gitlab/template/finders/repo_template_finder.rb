@@ -4,7 +4,7 @@ module Gitlab
     module Finders
       class RepoTemplateFinder < BaseTemplateFinder
         # Raised when file is not found
-        class FileNotFoundError < StandardError; end
+        FileNotFoundError = Class.new(StandardError)
 
         def initialize(project, base_dir, extension, categories = {})
           @categories     = categories

@@ -296,5 +296,58 @@
      * @returns {Boolean}
      */
     w.gl.utils.convertPermissionToBoolean = permission => permission === 'true';
+
+    /**
+     * Back Off exponential algorithm
+     * backOff :: (Function<next, stop>, Number) -> Promise<Any, Error>
+     *
+     * @param {Function<next, stop>} fn function to be called
+     * @param {Number} timeout
+     * @return {Promise<Any, Error>}
+     * @example
+     * ```
+     *  backOff(function (next, stop) {
+     *    // Let's perform this function repeatedly for 60s or for the timeout provided.
+     *
+     *    ourFunction()
+     *      .then(function (result) {
+     *        // continue if result is not what we need
+     *        next();
+     *
+     *        // when result is what we need let's stop with the repetions and jump out of the cycle
+     *        stop(result);
+     *      })
+     *      .catch(function (error) {
+     *        // if there is an error, we need to stop this with an error.
+     *        stop(error);
+     *      })
+     *  }, 60000)
+     *  .then(function (result) {})
+     *  .catch(function (error) {
+     *    // deal with errors passed to stop()
+     *  })
+     * ```
+     */
+    w.gl.utils.backOff = (fn, timeout = 60000) => {
+      const maxInterval = 32000;
+      let nextInterval = 2000;
+
+      const startTime = Date.now();
+
+      return new Promise((resolve, reject) => {
+        const stop = arg => ((arg instanceof Error) ? reject(arg) : resolve(arg));
+
+        const next = () => {
+          if (Date.now() - startTime < timeout) {
+            setTimeout(fn.bind(null, next, stop), nextInterval);
+            nextInterval = Math.min(nextInterval + nextInterval, maxInterval);
+          } else {
+            reject(new Error('BACKOFF_TIMEOUT'));
+          }
+        };
+
+        fn(next, stop);
+      });
+    };
   })(window);
 }).call(window);

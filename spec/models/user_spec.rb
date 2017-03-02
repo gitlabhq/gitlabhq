@@ -22,7 +22,7 @@ describe User, models: true do
     it { is_expected.to have_many(:deploy_keys).dependent(:destroy) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
     it { is_expected.to have_many(:recent_events).class_name('Event') }
-    it { is_expected.to have_many(:issues).dependent(:destroy) }
+    it { is_expected.to have_many(:issues).dependent(:restrict_with_exception) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:assigned_issues).dependent(:nullify) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
@@ -206,6 +206,22 @@ describe User, models: true do
           user = build(:user, email: "temp-email-for-oauth@example.com")
           expect(user).to be_valid
         end
+      end
+    end
+
+    describe 'ghost users' do
+      it 'does not allow a non-blocked ghost user' do
+        user = build(:user, :ghost)
+        user.state = 'active'
+
+        expect(user).to be_invalid
+      end
+
+      it 'allows a blocked ghost user' do
+        user = build(:user, :ghost)
+        user.state = 'blocked'
+
+        expect(user).to be_valid
       end
     end
   end
@@ -1413,7 +1429,7 @@ describe User, models: true do
     it { expect(user.nested_groups).to eq([nested_group]) }
   end
 
-  describe '#nested_projects' do
+  describe '#nested_groups_projects' do
     let!(:user) { create(:user) }
     let!(:group) { create(:group) }
     let!(:nested_group) { create(:group, parent: group) }
@@ -1428,7 +1444,7 @@ describe User, models: true do
       other_project.add_developer(create(:user))
     end
 
-    it { expect(user.nested_projects).to eq([nested_project]) }
+    it { expect(user.nested_groups_projects).to eq([nested_project]) }
   end
 
   describe '#refresh_authorized_projects', redis: true do
@@ -1488,6 +1504,43 @@ describe User, models: true do
 
       expect(user.access_level).to eq(:admin)
       expect(user.admin).to be true
+    end
+  end
+
+  describe '.ghost' do
+    it "creates a ghost user if one isn't already present" do
+      ghost = User.ghost
+
+      expect(ghost).to be_ghost
+      expect(ghost).to be_persisted
+    end
+
+    it "does not create a second ghost user if one is already present" do
+      expect do
+        User.ghost
+        User.ghost
+      end.to change { User.count }.by(1)
+      expect(User.ghost).to eq(User.ghost)
+    end
+
+    context "when a regular user exists with the username 'ghost'" do
+      it "creates a ghost user with a non-conflicting username" do
+        create(:user, username: 'ghost')
+        ghost = User.ghost
+
+        expect(ghost).to be_persisted
+        expect(ghost.username).to eq('ghost1')
+      end
+    end
+
+    context "when a regular user exists with the email 'ghost@example.com'" do
+      it "creates a ghost user with a non-conflicting email" do
+        create(:user, email: 'ghost@example.com')
+        ghost = User.ghost
+
+        expect(ghost).to be_persisted
+        expect(ghost.email).to eq('ghost1@example.com')
+      end
     end
   end
 end

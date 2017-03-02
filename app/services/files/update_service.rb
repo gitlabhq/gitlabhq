@@ -1,6 +1,6 @@
 module Files
   class UpdateService < Files::BaseService
-    class FileChangedError < StandardError; end
+    FileChangedError = Class.new(StandardError)
 
     def commit
       repository.update_file(current_user, @file_path, @file_content,
@@ -17,6 +17,10 @@ module Files
 
     def validate
       super
+
+      if @file_content.nil?
+        raise_error("You must provide content.")
+      end
 
       if file_has_changed?
         raise FileChangedError.new("You are attempting to update a file that has changed since you started editing it.")

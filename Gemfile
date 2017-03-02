@@ -20,7 +20,7 @@ gem 'rugged', '~> 0.24.0'
 # Authentication libraries
 gem 'devise',                 '~> 4.2'
 gem 'doorkeeper',             '~> 4.2.0'
-gem 'omniauth',               '~> 1.3.2'
+gem 'omniauth',               '~> 1.4.2'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
 gem 'omniauth-cas3',          '~> 1.1.2'
@@ -68,7 +68,7 @@ gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape',        '~> 0.18.0'
+gem 'grape',        '~> 0.19.0'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
@@ -329,8 +329,6 @@ group :test do
   gem 'timecop', '~> 0.8.0'
 end
 
-gem 'newrelic_rpm', '~> 3.16'
-
 gem 'octokit', '~> 4.6.2'
 
 gem 'mail_room', '~> 0.9.1'
@@ -352,3 +350,6 @@ gem 'health_check', '~> 2.2.0'
 # System information
 gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
+
+# Gitaly GRPC client
+gem 'gitaly', '~> 0.2.1'

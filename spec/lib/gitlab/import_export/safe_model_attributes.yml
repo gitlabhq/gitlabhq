@@ -142,7 +142,7 @@ MergeRequest:
 - updated_by_id
 - merge_error
 - merge_params
-- merge_when_build_succeeds
+- merge_when_pipeline_succeeds
 - merge_user_id
 - merge_commit_sha
 - deleted_at

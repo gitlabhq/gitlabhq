@@ -1175,8 +1175,8 @@ describe API::Issues, api: true  do
 
       it "deletes the issue if an admin requests it" do
         delete api("/projects/#{project.id}/issues/#{issue.id}", owner)
-        expect(response).to have_http_status(200)
-        expect(json_response['state']).to eq 'opened'
+
+        expect(response).to have_http_status(204)
       end
     end
 

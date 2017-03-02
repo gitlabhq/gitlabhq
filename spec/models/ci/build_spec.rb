@@ -162,8 +162,14 @@ describe Ci::Build, :models do
       is_expected.to be_nil
     end
 
-    it 'when resseting value' do
+    it 'when resetting value' do
       build.artifacts_expire_in = nil
+
+      is_expected.to be_nil
+    end
+
+    it 'when setting to 0' do
+      build.artifacts_expire_in = '0'
 
       is_expected.to be_nil
     end
@@ -172,20 +178,6 @@ describe Ci::Build, :models do
   describe '#commit' do
     it 'returns commit pipeline has been created for' do
       expect(build.commit).to eq project.commit
-    end
-  end
-
-  describe '#create_from' do
-    before do
-      build.status = 'success'
-      build.save
-    end
-    let(:create_from_build) { Ci::Build.create_from build }
-
-    it 'exists a pending task' do
-      expect(Ci::Build.pending.count(:all)).to eq 0
-      create_from_build
-      expect(Ci::Build.pending.count(:all)).to be > 0
     end
   end
 
@@ -1239,8 +1231,8 @@ describe Ci::Build, :models do
         { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
         { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true },
         { key: 'CI_PROJECT_NAME', value: project.path, public: true },
-        { key: 'CI_PROJECT_PATH', value: project.path_with_namespace, public: true },
-        { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.path, public: true },
+        { key: 'CI_PROJECT_PATH', value: project.full_path, public: true },
+        { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true }
       ]

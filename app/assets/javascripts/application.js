@@ -6,13 +6,7 @@
 /* global AwardsHandler */
 /* global Aside */
 
-function requireAll(context) { return context.keys().map(context); }
-
 window.$ = window.jQuery = require('jquery');
-require('jquery-ui/ui/autocomplete');
-require('jquery-ui/ui/draggable');
-require('jquery-ui/ui/effect-highlight');
-require('jquery-ui/ui/sortable');
 require('jquery-ujs');
 require('vendor/jquery.endless-scroll');
 require('vendor/jquery.highlight');
@@ -46,15 +40,176 @@ require('./shortcuts_dashboard_navigation');
 require('./shortcuts_issuable');
 require('./shortcuts_network');
 require('vendor/jquery.nicescroll');
-requireAll(require.context('./behaviors',  false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./blob',       false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./templates',  false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./commit',     false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./extensions', false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./lib/utils',  false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./u2f',        false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('./droplab',    false, /^\.\/.*\.(js|es6)$/));
-requireAll(require.context('.',            false, /^\.\/(?!application\.js).*\.(js|es6)$/));
+
+// behaviors
+require('./behaviors/autosize');
+require('./behaviors/details_behavior');
+require('./behaviors/quick_submit');
+require('./behaviors/requires_input');
+require('./behaviors/toggler_behavior');
+
+// blob
+require('./blob/blob_ci_yaml');
+require('./blob/blob_dockerfile_selector');
+require('./blob/blob_dockerfile_selectors');
+require('./blob/blob_file_dropzone');
+require('./blob/blob_gitignore_selector');
+require('./blob/blob_gitignore_selectors');
+require('./blob/blob_license_selector');
+require('./blob/blob_license_selectors');
+require('./blob/template_selector');
+
+// templates
+require('./templates/issuable_template_selector');
+require('./templates/issuable_template_selectors');
+
+// commit
+require('./commit/file.js');
+require('./commit/image_file.js');
+
+// extensions
+require('./extensions/array');
+require('./extensions/custom_event');
+require('./extensions/element');
+require('./extensions/jquery');
+require('./extensions/object');
+
+// lib/utils
+require('./lib/utils/animate');
+require('./lib/utils/bootstrap_linked_tabs');
+require('./lib/utils/common_utils');
+require('./lib/utils/datetime_utility');
+require('./lib/utils/notify');
+require('./lib/utils/pretty_time');
+require('./lib/utils/text_utility');
+require('./lib/utils/type_utility');
+require('./lib/utils/url_utility');
+
+// u2f
+require('./u2f/authenticate');
+require('./u2f/error');
+require('./u2f/register');
+require('./u2f/util');
+
+// droplab
+require('./droplab/droplab');
+require('./droplab/droplab_ajax');
+require('./droplab/droplab_ajax_filter');
+require('./droplab/droplab_filter');
+
+// everything else
+require('./abuse_reports');
+require('./activities');
+require('./admin');
+require('./ajax_loading_spinner');
+require('./api');
+require('./aside');
+require('./autosave');
+require('./awards_handler');
+require('./breakpoints');
+require('./broadcast_message');
+require('./build');
+require('./build_artifacts');
+require('./build_variables');
+require('./ci_lint_editor');
+require('./commit');
+require('./commits');
+require('./compare');
+require('./compare_autocomplete');
+require('./confirm_danger_modal');
+require('./copy_as_gfm');
+require('./copy_to_clipboard');
+require('./create_label');
+require('./diff');
+require('./dispatcher');
+require('./dropzone_input');
+require('./due_date_select');
+require('./files_comment_button');
+require('./flash');
+require('./gfm_auto_complete');
+require('./gl_dropdown');
+require('./gl_field_error');
+require('./gl_field_errors');
+require('./gl_form');
+require('./group_avatar');
+require('./group_label_subscription');
+require('./groups_select');
+require('./header');
+require('./importer_status');
+require('./issuable');
+require('./issuable_context');
+require('./issuable_form');
+require('./issue');
+require('./issue_status_select');
+require('./issues_bulk_assignment');
+require('./label_manager');
+require('./labels');
+require('./labels_select');
+require('./layout_nav');
+require('./line_highlighter');
+require('./logo');
+require('./member_expiration_date');
+require('./members');
+require('./merge_request');
+require('./merge_request_tabs');
+require('./merge_request_widget');
+require('./merged_buttons');
+require('./milestone');
+require('./milestone_select');
+require('./mini_pipeline_graph_dropdown');
+require('./namespace_select');
+require('./new_branch_form');
+require('./new_commit_form');
+require('./notes');
+require('./notifications_dropdown');
+require('./notifications_form');
+require('./pager');
+require('./pipelines');
+require('./preview_markdown');
+require('./project');
+require('./project_avatar');
+require('./project_find_file');
+require('./project_fork');
+require('./project_import');
+require('./project_label_subscription');
+require('./project_new');
+require('./project_select');
+require('./project_show');
+require('./project_variables');
+require('./projects_list');
+require('./render_gfm');
+require('./render_math');
+require('./right_sidebar');
+require('./search');
+require('./search_autocomplete');
+require('./shortcuts');
+require('./shortcuts_blob');
+require('./shortcuts_dashboard_navigation');
+require('./shortcuts_find_file');
+require('./shortcuts_issuable');
+require('./shortcuts_navigation');
+require('./shortcuts_network');
+require('./signin_tabs_memoizer');
+require('./single_file_diff');
+require('./smart_interval');
+require('./snippets_list');
+require('./star');
+require('./subbable_resource');
+require('./subscription');
+require('./subscription_select');
+require('./syntax_highlight');
+require('./task_list');
+require('./todos');
+require('./tree');
+require('./user');
+require('./user_tabs');
+require('./username_validator');
+require('./users_select');
+require('./version_check_image');
+require('./visibility_select');
+require('./wikis');
+require('./zen_mode');
+
 require('vendor/fuzzaldrin-plus');
 require('es6-promise').polyfill();
 

@@ -7,6 +7,9 @@ $white-code-color: $gl-text-color;
 $white-highlight: #fafe3d;
 $white-pre-hll-bg: #f8eec7;
 $white-hll-bg: #f8f8f8;
+$white-over-bg: #ded7fc;
+$white-expanded-border: #e0e0e0;
+$white-expanded-bg: #f7f7f7;
 $white-c: #998;
 $white-err: #a61717;
 $white-err-bg: #e3d2d2;
@@ -123,9 +126,35 @@ $white-gc-bg: #eaf2f5;
         }
       }
 
+      &.is-over,
+      &.hll:not(.empty-cell).is-over {
+        background-color: $white-over-bg;
+        border-color: darken($white-over-bg, 5%);
+
+        a {
+          color: darken($white-over-bg, 15%);
+        }
+      }
+
       &.hll:not(.empty-cell) {
         background-color: $line-number-select;
         border-color: $line-select-yellow-dark;
+      }
+    }
+
+    &:not(.diff-expanded) + .diff-expanded,
+    &.diff-expanded + .line_holder:not(.diff-expanded) {
+      > .diff-line-num,
+      > .line_content {
+        border-top: 1px solid $white-expanded-border;
+      }
+    }
+
+    &.diff-expanded {
+      > .diff-line-num,
+      > .line_content {
+        background: $white-expanded-bg;
+        border-color: $white-expanded-bg;
       }
     }
 
