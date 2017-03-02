@@ -10,17 +10,15 @@
   = page_specific_javascript_bundle_tag('filtered_search')
 
 = content_for :meta_tags do
-  - if current_user
-    = auto_discovery_link_tag(:atom, url_for(params.merge(format: :atom, private_token: current_user.private_token)), title: "#{@project.name} issues")
+  = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{@project.name} issues")
 
 - if project_issues(@project).exists?
   %div{ class: (container_class) }
     .top-area
       = render 'shared/issuable/nav', type: :issues
       .nav-controls
-        - if current_user
-          = link_to url_for(params.merge(format: :atom, private_token: current_user.private_token)), class: 'btn append-right-10 has-tooltip', title: 'Subscribe' do
-            = icon('rss')
+        = link_to params.merge(rss_url_options), class: 'btn append-right-10 has-tooltip', title: 'Subscribe' do
+          = icon('rss')
         - if can? current_user, :create_issue, @project
           = link_to new_namespace_project_issue_path(@project.namespace,
                                                      @project,
