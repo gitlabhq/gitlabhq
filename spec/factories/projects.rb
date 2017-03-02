@@ -39,6 +39,10 @@ FactoryGirl.define do
     trait :empty_repo do
       after(:create) do |project|
         project.create_repository
+
+        # We delete hooks so that gitlab-shell will not try to authenticate with
+        # an API that isn't running
+        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.path_with_namespace}.git", 'hooks'))
       end
     end
 

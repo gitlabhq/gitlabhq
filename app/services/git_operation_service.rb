@@ -56,12 +56,16 @@ class GitOperationService
     start_project: repository.project,
     &block)
 
-    check_with_branch_arguments!(
-      branch_name, start_branch_name, start_project)
+    start_repository = start_project.repository
+    start_branch_name = nil if start_repository.empty_repo?
+
+    if start_branch_name && !start_repository.branch_exists?(start_branch_name)
+      raise ArgumentError, "Cannot find branch #{start_branch_name} in #{start_repository.path_with_namespace}"
+    end
 
     update_branch_with_hooks(branch_name) do
       repository.with_repo_branch_commit(
-        start_project.repository,
+        start_repository,
         start_branch_name || branch_name,
         &block)
     end
@@ -147,33 +151,6 @@ class GitOperationService
   def update_autocrlf_option
     if repository.raw_repository.autocrlf != :input
       repository.raw_repository.autocrlf = :input
-    end
-  end
-
-  def check_with_branch_arguments!(
-    branch_name, start_branch_name, start_project)
-    return if repository.branch_exists?(branch_name)
-
-    if repository.project != start_project
-      unless start_branch_name
-        raise ArgumentError,
-          'Should also pass :start_branch_name if' +
-          ' :start_project is different from current project'
-      end
-
-      unless start_project.repository.branch_exists?(start_branch_name)
-        raise ArgumentError,
-          "Cannot find branch #{branch_name} nor" \
-          " #{start_branch_name} from" \
-          " #{start_project.path_with_namespace}"
-      end
-    elsif start_branch_name
-      unless repository.branch_exists?(start_branch_name)
-        raise ArgumentError,
-          "Cannot find branch #{branch_name} nor" \
-          " #{start_branch_name} from" \
-          " #{repository.project.path_with_namespace}"
-      end
     end
   end
 end
