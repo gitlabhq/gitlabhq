@@ -15,11 +15,11 @@ describe Ci::ProcessPipelineService, :services do
   describe '#execute' do
     context 'start queuing next builds' do
       before do
-        create(:ci_build, :created, pipeline: pipeline, name: 'linux', stage_idx: 0)
-        create(:ci_build, :created, pipeline: pipeline, name: 'mac', stage_idx: 0)
-        create(:ci_build, :created, pipeline: pipeline, name: 'rspec', stage_idx: 1)
-        create(:ci_build, :created, pipeline: pipeline, name: 'rubocop', stage_idx: 1)
-        create(:ci_build, :created, pipeline: pipeline, name: 'deploy', stage_idx: 2)
+        create_build('linux', stage_idx: 0)
+        create_build('mac', stage_idx: 0)
+        create_build('rspec', stage_idx: 1)
+        create_build('rubocop', stage_idx: 1)
+        create_build('deploy', stage_idx: 2)
       end
 
       it 'processes a pipeline' do
@@ -49,8 +49,8 @@ describe Ci::ProcessPipelineService, :services do
 
     context 'custom stage with first job allowed to fail' do
       before do
-        create(:ci_build, :created, pipeline: pipeline, name: 'clean_job', stage_idx: 0, allow_failure: true)
-        create(:ci_build, :created, pipeline: pipeline, name: 'test_job', stage_idx: 1, allow_failure: true)
+        create_build('clean_job', stage_idx: 0, allow_failure: true)
+        create_build('test_job', stage_idx: 1, allow_failure: true)
       end
 
       it 'automatically triggers a next stage when build finishes' do
@@ -64,13 +64,13 @@ describe Ci::ProcessPipelineService, :services do
 
     context 'properly creates builds when "when" is defined' do
       before do
-        create(:ci_build, :created, pipeline: pipeline, name: 'build', stage_idx: 0)
-        create(:ci_build, :created, pipeline: pipeline, name: 'test', stage_idx: 1)
-        create(:ci_build, :created, pipeline: pipeline, name: 'test_failure', stage_idx: 2, when: 'on_failure')
-        create(:ci_build, :created, pipeline: pipeline, name: 'deploy', stage_idx: 3)
-        create(:ci_build, :created, pipeline: pipeline, name: 'production', stage_idx: 3, when: 'manual', allow_failure: true)
-        create(:ci_build, :created, pipeline: pipeline, name: 'cleanup', stage_idx: 4, when: 'always')
-        create(:ci_build, :created, pipeline: pipeline, name: 'clear cache', stage_idx: 4, when: 'manual', allow_failure: true)
+        create_build('build', stage_idx: 0)
+        create_build('test', stage_idx: 1)
+        create_build('test_failure', stage_idx: 2, when: 'on_failure')
+        create_build('deploy', stage_idx: 3)
+        create_build('production', stage_idx: 3, when: 'manual', allow_failure: true)
+        create_build('cleanup', stage_idx: 4, when: 'always')
+        create_build('clear cache', stage_idx: 4, when: 'manual', allow_failure: true)
       end
 
       context 'when builds are successful' do
@@ -222,9 +222,9 @@ describe Ci::ProcessPipelineService, :services do
 
       context 'when first stage has only manual jobs' do
         let(:builds) do
-          [create_build('build', 0, 'manual'),
-           create_build('check', 1),
-           create_build('test', 2)]
+          [create_build('build', stage_idx: 0, when: 'manual'),
+           create_build('check', stage_idx: 1),
+           create_build('test', stage_idx: 2)]
         end
 
         it 'starts from the second stage' do
@@ -234,9 +234,9 @@ describe Ci::ProcessPipelineService, :services do
 
       context 'when second stage has only manual jobs' do
         let(:builds) do
-          [create_build('check', 0),
-           create_build('build', 1, 'manual'),
-           create_build('test', 2)]
+          [create_build('check', stage_idx: 0),
+           create_build('build', stage_idx: 1, when: 'manual'),
+           create_build('test', stage_idx: 2)]
         end
 
         it 'skips second stage and continues on third stage' do
@@ -251,9 +251,9 @@ describe Ci::ProcessPipelineService, :services do
 
       context 'when second stage has only on_failure jobs' do
         let(:builds) do
-          [create_build('check', 0),
-           create_build('build', 1, 'on_failure'),
-           create_build('test', 2)]
+          [create_build('check', stage_idx: 0),
+           create_build('build', stage_idx: 1, when: 'on_failure'),
+           create_build('test', stage_idx: 2)]
         end
 
         it 'skips second stage and continues on third stage' do
@@ -270,12 +270,12 @@ describe Ci::ProcessPipelineService, :services do
     context 'when failed build in the middle stage is retried' do
       context 'when failed build is the only unsuccessful build in the stage' do
         before do
-          create(:ci_build, :created, pipeline: pipeline, name: 'build:1', stage_idx: 0)
-          create(:ci_build, :created, pipeline: pipeline, name: 'build:2', stage_idx: 0)
-          create(:ci_build, :created, pipeline: pipeline, name: 'test:1', stage_idx: 1)
-          create(:ci_build, :created, pipeline: pipeline, name: 'test:2', stage_idx: 1)
-          create(:ci_build, :created, pipeline: pipeline, name: 'deploy:1', stage_idx: 2)
-          create(:ci_build, :created, pipeline: pipeline, name: 'deploy:2', stage_idx: 2)
+          create_build('build:1', stage_idx: 0)
+          create_build('build:2', stage_idx: 0)
+          create_build('test:1', stage_idx: 1)
+          create_build('test:2', stage_idx: 1)
+          create_build('deploy:1', stage_idx: 2)
+          create_build('deploy:2', stage_idx: 2)
         end
 
         it 'does trigger builds in the next stage' do
@@ -312,8 +312,8 @@ describe Ci::ProcessPipelineService, :services do
       end
 
       before do
-        create(:ci_build, :created, pipeline: pipeline, name: 'linux', stage: 'build', stage_idx: 0)
-        create(:ci_build, :created, pipeline: pipeline, name: 'mac', stage: 'build', stage_idx: 0)
+        create_build('linux', stage: 'build', stage_idx: 0)
+        create_build('mac', stage: 'build', stage_idx: 0)
       end
 
       it 'processes the pipeline' do
@@ -379,12 +379,7 @@ describe Ci::ProcessPipelineService, :services do
 
   delegate :manual_actions, to: :pipeline
 
-  def create_build(name, stage_idx, when_value = nil)
-    create(:ci_build,
-           :created,
-           pipeline: pipeline,
-           name: name,
-           stage_idx: stage_idx,
-           when: when_value)
+  def create_build(name, **opts)
+    create(:ci_build, :created, pipeline: pipeline, name: name, **opts)
   end
 end
