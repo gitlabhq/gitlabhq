@@ -131,8 +131,7 @@ describe API::ProjectPushRule, 'ProjectPushRule', api: true  do
       it "deletes push rule from project" do
         delete api("/projects/#{project.id}/push_rule", user)
 
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Hash
+        expect(response).to have_http_status(204)
       end
     end
 
