@@ -43,7 +43,6 @@ module RelativePositioning
   end
 
   def move_between(before, after)
-    return move_nowhere unless before || after
     return move_after(before) if before && !after
     return move_before(after) if after && !before
 
@@ -52,11 +51,10 @@ module RelativePositioning
 
     if pos_before && pos_after
       if pos_before == pos_after
-        pos = pos_before
-
-        self.relative_position = pos
+        self.relative_position = pos_before
         before.move_before(self)
         after.move_after(self)
+
         @positionable_neighbours = [before, after]
       else
         self.relative_position = position_between(pos_before, pos_after)
@@ -64,47 +62,50 @@ module RelativePositioning
     elsif pos_before
       self.move_after(before)
       after.move_after(self)
+
       @positionable_neighbours = [after]
     elsif pos_after
       self.move_before(after)
       before.move_before(self)
+
       @positionable_neighbours = [before]
     else
       move_to_end
       before.move_before(self)
       after.move_after(self)
+
       @positionable_neighbours = [before, after]
     end
   end
 
   def move_before(after)
     pos_after = after.relative_position
+
     if pos_after
       self.relative_position = position_between(MIN_POSITION, pos_after)
     else
       move_to_end
       after.move_after(self)
+
       @positionable_neighbours = [after]
     end
   end
 
   def move_after(before)
     pos_before = before.relative_position
+
     if pos_before
       self.relative_position = position_between(pos_before, MAX_POSITION)
     else
       move_to_end
       before.move_before(self)
+
       @positionable_neighbours = [before]
     end
   end
 
-  def move_nowhere
-    self.relative_position = nil
-  end
-
   def move_to_end
-    self.relative_position = position_between(max_relative_position || MIN_POSITION, MAX_POSITION)
+    self.relative_position = position_between(max_relative_position, MAX_POSITION)
   end
 
   def move_between!(*args)
@@ -114,6 +115,9 @@ module RelativePositioning
   private
 
   def position_between(pos_before, pos_after)
+    pos_before ||= MIN_POSITION
+    pos_after ||= MAX_POSITION
+
     pos_before, pos_after = [pos_before, pos_after].sort
 
     rand(pos_before.next..pos_after.pred)
@@ -122,9 +126,9 @@ module RelativePositioning
   def save_positionable_neighbours
     return unless @positionable_neighbours
 
-    @positionable_neighbours.each(&:save)
+    status = @positionable_neighbours.all?(&:save)
     @positionable_neighbours = nil
 
-    true
+    status
   end
 end

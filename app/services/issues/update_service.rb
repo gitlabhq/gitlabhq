@@ -37,11 +37,13 @@ module Issues
       end
 
       added_labels = issue.labels - old_labels
+
       if added_labels.present?
         notification_service.relabeled_issue(issue, added_labels, current_user)
       end
 
       added_mentions = issue.mentioned_users - old_mentioned_users
+
       if added_mentions.present?
         notification_service.new_mentions_in_issue(issue, added_mentions, current_user)
       end
@@ -56,26 +58,22 @@ module Issues
     end
 
     def handle_move_between_iids(issue)
-      if move_between_iids = params.delete(:move_between_iids)
-        after_iid, before_iid = move_between_iids
+      return unless move_between_iids = params.delete(:move_between_iids)
 
-        issue_before = nil
-        if before_iid
-          issue_before = issue.project.issues.find_by(iid: before_iid)
-          issue_before = nil unless can?(current_user, :update_issue, issue_before)
-        end
+      after_iid, before_iid = move_between_iids
 
-        issue_after = nil
-        if after_iid
-          issue_after = issue.project.issues.find_by(iid: after_iid)
-          issue_after = nil unless can?(current_user, :update_issue, issue_after)
-        end
+      issue_before = get_issue_if_allowed(issue.project, before_iid) if before_iid
+      issue_after = get_issue_if_allowed(issue.project, after_iid) if after_iid
 
-        issue.move_between(issue_before, issue_after)
-      end
+      issue.move_between(issue_before, issue_after)
     end
 
     private
+
+    def get_issue_if_allowed(project, iid)
+      issue = project.issues.find_by(iid: iid)
+      issue if can?(current_user, :update_issue, issue)
+    end
 
     def create_confidentiality_note(issue)
       SystemNoteService.change_issue_confidentiality(issue, issue.project, current_user)

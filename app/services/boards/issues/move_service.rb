@@ -71,6 +71,7 @@ module Boards
         move_after_iid = params[:move_after_iid]
         move_before_iid = params[:move_before_iid]
         return unless move_after_iid || move_before_iid
+
         [move_after_iid, move_before_iid]
       end
     end
