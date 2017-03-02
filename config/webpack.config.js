@@ -19,6 +19,7 @@ var config = {
   entry: {
     common:               './commons/index.js',
     common_vue:           ['vue', 'vue-resource'],
+    common_d3:            ['d3'],
     application:          './application.js',
     blob_edit:            './blob_edit/blob_edit_bundle.js',
     boards:               './boards/boards_bundle.js',
@@ -40,7 +41,6 @@ var config = {
     snippet:              './snippet/snippet_bundle.js',
     terminal:             './terminal/terminal_bundle.js',
     users:                './users/users_bundle.js',
-    lib_d3:               './lib/d3.js',
     vue_pipelines:        './vue_pipelines_index/index.js',
   },
 
@@ -114,6 +114,12 @@ var config = {
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);
       },
+    }),
+
+    // create cacheable common library bundle for all d3 chunks
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common_d3',
+      chunks: ['graphs', 'users'],
     }),
 
     // create cacheable common library bundles
