@@ -193,10 +193,8 @@ module API
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
         authorize!(:destroy_merge_request, merge_request)
-        check_unmodified_since(merge_request.updated_at)
 
-        status 204
-        merge_request.destroy
+        destroy_conditionally!(merge_request)
       end
 
       params do

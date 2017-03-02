@@ -66,10 +66,7 @@ module API
         hook = SystemHook.find_by(id: params[:id])
         not_found!('System hook') unless hook
 
-        check_unmodified_since(hook.updated_at)
-
-        status 204
-        hook.destroy
+        destroy_conditionally!(hook)
       end
     end
   end
