@@ -63,11 +63,18 @@ module API
       delete ":id/repository/tags/:tag_name", requirements: { tag_name: /.+/ } do
         authorize_push_project
 
-        result = ::Tags::DestroyService.new(user_project, current_user).
-          execute(params[:tag_name])
+        tag = user_project.repository.find_tag(params[:tag_name])
+        not_found!('Tag') unless tag
 
-        if result[:status] != :success
-          render_api_error!(result[:message], result[:return_code])
+        commit = user_project.repository.commit(tag.dereferenced_target)
+
+        destroy_conditionally!(commit, last_update_field: :authored_date) do
+          result = ::Tags::DestroyService.new(user_project, current_user).
+            execute(params[:tag_name])
+
+          if result[:status] != :success
+            render_api_error!(result[:message], result[:return_code])
+          end
         end
       end
 
