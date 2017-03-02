@@ -107,11 +107,12 @@
 
     &.fa-spinner {
       font-size: 16px;
-      margin-top: -8px;
+      margin-top: -3px;
     }
   }
 
-  .fa-chevron-down {
+  .fa-chevron-down,
+  .fa-spinner {
     position: absolute;
     top: 11px;
     right: 8px;
