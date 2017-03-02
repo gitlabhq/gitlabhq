@@ -3,19 +3,7 @@ module Ci
     CLONE_ACCESSORS = %i[pipeline project ref tag options commands name
                          allow_failure stage stage_idx trigger_request
                          yaml_variables when environment coverage_regex
-                         description tag_list].freeze
-
-    REJECT_ACCESSORS = %i[id status user token coverage trace runner
-                          artifacts_expire_at artifacts_file
-                          artifacts_metadata artifacts_size
-                          created_at updated_at started_at finished_at
-                          queued_at erased_by erased_at].freeze
-
-    IGNORE_ACCESSORS = %i[type lock_version target_url gl_project_id
-                          deploy job_id base_tags commit_id deployments
-                          erased_by_id last_deployment project_id runner_id
-                          tag_taggings taggings tags trigger_request_id
-                          user_id].freeze
+                        description tag_list].freeze
 
     def execute(build)
       reprocess(build).tap do |new_build|
