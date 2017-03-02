@@ -37,7 +37,7 @@ POST /license
 | `license` | string | yes | The license string |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/license?license=eyJkYXRhIjoiMHM5Q...S01Udz09XG4ifQ=="
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/license?license=eyJkYXRhIjoiMHM5Q...S01Udz09XG4ifQ=="
 ```
 
 Example response:
