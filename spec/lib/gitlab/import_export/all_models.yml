@@ -153,6 +153,7 @@ project:
 - gitlab_issue_tracker_service
 - external_wiki_service
 - kubernetes_service
+- mock_ci_service
 - forked_project_link
 - forked_from_project
 - forked_project_links
