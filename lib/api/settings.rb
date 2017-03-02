@@ -7,20 +7,6 @@ module API
         @current_setting ||=
           (ApplicationSetting.current || ApplicationSetting.create_from_defaults)
       end
-
-      def map_setting_visibility_levels(attrs)
-        [:default_project_visibility, :default_snippet_visibility, :default_group_visibility].each do |param|
-          visibility = attrs.delete(param)
-          if visibility
-            attrs[param] = Gitlab::VisibilityLevel.string_options[visibility]
-          end
-        end
-        restricted_levels = attrs.delete(:restricted_visibility_levels)
-        if restricted_levels
-          attrs[:restricted_visibility_levels] = Gitlab::VisibilityLevel.string_options.values_at(*restricted_levels)
-        end
-        attrs
-      end
     end
 
     desc 'Get the current application settings' do
@@ -142,7 +128,7 @@ module API
                       :housekeeping_enabled, :terminal_max_session_time
     end
     put "application/settings" do
-      attrs = map_setting_visibility_levels(declared_params(include_missing: false))
+      attrs = declared_params(include_missing: false)
 
       if current_settings.update_attributes(attrs)
         present current_settings, with: Entities::ApplicationSetting
