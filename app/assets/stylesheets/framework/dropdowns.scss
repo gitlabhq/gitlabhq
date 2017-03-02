@@ -193,6 +193,10 @@
     &.is-focused {
       background-color: $dropdown-link-hover-bg;
       text-decoration: none;
+
+      .badge {
+        background-color: darken($row-hover, 5%);
+      }
     }
 
     &.dropdown-menu-empty-link {
@@ -228,6 +232,12 @@
     cursor: not-allowed;
     padding: 5px 8px;
     color: $gl-text-color-secondary;
+  }
+
+  .badge {
+    position: absolute;
+    right: 8px;
+    top: 5px;
   }
 }
 
