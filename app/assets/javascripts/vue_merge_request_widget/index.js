@@ -12,14 +12,17 @@ import NotAllowedState from './components/states/mr_widget_not_allowed';
 import ReadyToMergeState from './components/states/mr_widget_ready_to_merge';
 import stateToComponentMap from './stores/state_to_component_map';
 import MRWidgetStore from './stores/merge_request_store';
+import MRWidgetService from './services/merge_request_service';
 
 const mrWidgetOptions = () => ({
   el: '#js-vue-mr-widget',
   name: 'MRWidget',
   data() {
     const store = new MRWidgetStore(gl.mrWidgetData);
+    const service = new MRWidgetService(store);
     return {
       mr: store,
+      service
     };
   },
   computed: {
@@ -47,7 +50,7 @@ const mrWidgetOptions = () => ({
         :sourceBranch="mr.sourceBranch"
       />
 
-      <component :is="componentName" :mr="mr"></component>
+      <component :is="componentName" :mr="mr" :service="service"></component>
     </div>
   `,
 });
