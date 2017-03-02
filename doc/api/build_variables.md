@@ -119,10 +119,3 @@ DELETE /projects/:id/variables/:key
 ```
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/variables/VARIABLE_1"
 ```
-
-```json
-{
-    "key": "VARIABLE_1",
-    "value": "VALUE_1"
-}
-```

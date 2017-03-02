@@ -24,7 +24,11 @@ module MergeRequests
 
       pipeline_merge_requests(pipeline) do |merge_request|
         next unless merge_request.merge_when_pipeline_succeeds?
-        next unless merge_request.mergeable?
+
+        unless merge_request.mergeable?
+          todo_service.merge_request_became_unmergeable(merge_request)
+          next
+        end
 
         MergeWorker.perform_async(merge_request.id, merge_request.merge_user_id, merge_request.merge_params)
       end

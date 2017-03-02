@@ -436,8 +436,8 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `name` | string | yes | The name of the new project |
-| `path` | string | no | Custom repository name for new project. By default generated based on name |
+| `name` | string | yes if path is not provided | The name of the new project. Equals path if not provided. |
+| `path` | string | yes if name is not provided | Repository name for new project. Generated based on name if not provided (generated lowercased with dashes). |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
 | `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |

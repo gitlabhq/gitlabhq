@@ -203,6 +203,7 @@ class IssuableBaseService < BaseService
     change_state(issuable)
     change_subscription(issuable)
     change_todo(issuable)
+    toggle_award(issuable)
     filter_params(issuable)
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
@@ -260,6 +261,14 @@ class IssuableBaseService < BaseService
     when 'done'
       todo = TodosFinder.new(current_user).execute.find_by(target: issuable)
       todo_service.mark_todos_as_done([todo], current_user) if todo
+    end
+  end
+
+  def toggle_award(issuable)
+    award = params.delete(:emoji_award)
+    if award
+      todo_service.new_award_emoji(issuable, current_user)
+      issuable.toggle_award_emoji(award, current_user)
     end
   end
 

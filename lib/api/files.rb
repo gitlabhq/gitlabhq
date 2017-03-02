@@ -118,10 +118,7 @@ module API
         file_params = declared_params(include_missing: false)
         result = ::Files::DestroyService.new(user_project, current_user, commit_params(file_params)).execute
 
-        if result[:status] == :success
-          status(200)
-          commit_response(file_params)
-        else
+        if result[:status] != :success
           render_api_error!(result[:message], 400)
         end
       end

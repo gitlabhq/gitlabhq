@@ -163,7 +163,7 @@ module.exports = Vue.component('environment-component', {
         </div>
       </div>
 
-      <div class="environments-container">
+      <div class="content-list environments-container">
         <div class="environments-list-loading text-center" v-if="isLoading">
           <i class="fa fa-spinner fa-spin"></i>
         </div>
@@ -202,12 +202,12 @@ module.exports = Vue.component('environment-component', {
             :store="store"
             :service="service">
           </environment-table>
-
-          <table-pagination v-if="shouldRenderPagination"
-            :change="changePage"
-            :pageInfo="state.paginationInformation">
-          </table-pagination>
         </div>
+
+        <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
+          :change="changePage"
+          :pageInfo="state.paginationInformation">
+        </table-pagination>
       </div>
     </div>
   `,

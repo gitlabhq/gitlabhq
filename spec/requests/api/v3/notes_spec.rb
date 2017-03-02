@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe API::V3::Notes, api: true  do
   include ApiHelpers
+
   let(:user) { create(:user) }
   let!(:project) { create(:empty_project, :public, namespace: user.namespace) }
   let!(:issue) { create(:issue, project: project, author: user) }
@@ -227,11 +228,11 @@ describe API::V3::Notes, api: true  do
       context 'when the user is posting an award emoji on an issue created by someone else' do
         let(:issue2) { create(:issue, project: project) }
 
-        it 'returns an award emoji' do
+        it 'creates a new issue note' do
           post v3_api("/projects/#{project.id}/issues/#{issue2.id}/notes", user), body: ':+1:'
 
           expect(response).to have_http_status(201)
-          expect(json_response['awardable_id']).to eq issue2.id
+          expect(json_response['body']).to eq(':+1:')
         end
       end
 
@@ -373,12 +374,12 @@ describe API::V3::Notes, api: true  do
     context 'when noteable is an Issue' do
       it 'deletes a note' do
         delete v3_api("/projects/#{project.id}/issues/#{issue.id}/"\
-                   "notes/#{issue_note.id}", user)
+                      "notes/#{issue_note.id}", user)
 
         expect(response).to have_http_status(200)
         # Check if note is really deleted
         delete v3_api("/projects/#{project.id}/issues/#{issue.id}/"\
-                   "notes/#{issue_note.id}", user)
+                      "notes/#{issue_note.id}", user)
         expect(response).to have_http_status(404)
       end
 
@@ -392,18 +393,18 @@ describe API::V3::Notes, api: true  do
     context 'when noteable is a Snippet' do
       it 'deletes a note' do
         delete v3_api("/projects/#{project.id}/snippets/#{snippet.id}/"\
-                   "notes/#{snippet_note.id}", user)
+                      "notes/#{snippet_note.id}", user)
 
         expect(response).to have_http_status(200)
         # Check if note is really deleted
         delete v3_api("/projects/#{project.id}/snippets/#{snippet.id}/"\
-                   "notes/#{snippet_note.id}", user)
+                      "notes/#{snippet_note.id}", user)
         expect(response).to have_http_status(404)
       end
 
       it 'returns a 404 error when note id not found' do
         delete v3_api("/projects/#{project.id}/snippets/#{snippet.id}/"\
-                   "notes/12345", user)
+                      "notes/12345", user)
 
         expect(response).to have_http_status(404)
       end
@@ -412,18 +413,18 @@ describe API::V3::Notes, api: true  do
     context 'when noteable is a Merge Request' do
       it 'deletes a note' do
         delete v3_api("/projects/#{project.id}/merge_requests/"\
-                   "#{merge_request.id}/notes/#{merge_request_note.id}", user)
+                      "#{merge_request.id}/notes/#{merge_request_note.id}", user)
 
         expect(response).to have_http_status(200)
         # Check if note is really deleted
         delete v3_api("/projects/#{project.id}/merge_requests/"\
-                   "#{merge_request.id}/notes/#{merge_request_note.id}", user)
+                      "#{merge_request.id}/notes/#{merge_request_note.id}", user)
         expect(response).to have_http_status(404)
       end
 
       it 'returns a 404 error when note id not found' do
         delete v3_api("/projects/#{project.id}/merge_requests/"\
-                   "#{merge_request.id}/notes/12345", user)
+                      "#{merge_request.id}/notes/12345", user)
 
         expect(response).to have_http_status(404)
       end

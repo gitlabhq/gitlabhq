@@ -38,4 +38,20 @@ describe API::V3::SystemHooks, api: true  do
       end
     end
   end
+
+  describe "DELETE /hooks/:id" do
+    it "deletes a hook" do
+      expect do
+        delete v3_api("/hooks/#{hook.id}", admin)
+
+        expect(response).to have_http_status(200)
+      end.to change { SystemHook.count }.by(-1)
+    end
+
+    it 'returns 404 if the system hook does not exist' do
+      delete v3_api('/hooks/12345', admin)
+
+      expect(response).to have_http_status(404)
+    end
+  end
 end

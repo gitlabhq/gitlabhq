@@ -124,11 +124,7 @@ module API
         result = DeleteBranchService.new(user_project, current_user).
                  execute(params[:branch])
 
-        if result[:status] == :success
-          {
-            branch: params[:branch]
-          }
-        else
+        if result[:status] != :success
           render_api_error!(result[:message], result[:return_code])
         end
       end

@@ -35,5 +35,6 @@ do.
 | <code>/spend &lt;1h 30m &#124; -1h 5m&gt;</code> | Add or subtract spent time |
 | `/remove_time_spent`       | Remove time spent |
 | `/target_branch <Branch Name>` | Set target branch for current merge request |
+| `/award :emoji:`  | Toggle award for :emoji: |
 | `/weight <1-9>` | Set the weight of the issue |
 | `/clear_weight` | Clears the issue weight |
