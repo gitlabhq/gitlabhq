@@ -163,15 +163,14 @@
 
 .prometheus-graph {
   text {
-    fill: #AAA;
-  }  
+    fill: $stat-graph-axis-fill;
+  }
 }
 
 .x-axis path,
 .y-axis path,
 .label-x-axis-line,
-.label-y-axis-line
-{
+.label-y-axis-line {
   fill: none;
   stroke-width: 1;
   shape-rendering: crispEdges;
@@ -183,8 +182,8 @@
 }
 
 .label-x-axis-line,
-.label-y-axis-line{
-  stroke: #E6E6E6;
+.label-y-axis-line {
+  stroke: $border-color;
 }
 
 .y-axis {
@@ -207,7 +206,7 @@
 .rect-text-metric {
   fill: $white-light;
   stroke-width: 1;
-  stroke: black;
+  stroke: $black;
 }
 
 .rect-axis-text {

@@ -309,44 +309,31 @@ class PrometheusGraph {
     };
   }
 
-  metricsService() {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', metricsEndpoint, true);
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-          if (xhr.status === statusCodes.OK || xhr.status === statusCodes.NO_CONTENT) {
-            const data = JSON.parse(xhr.responseText);
-            return resolve({
-              status: xhr.status,
-              metrics: data,
-            });
-          } else {
-            return reject([xhr.responseText, xhr.status]);
-          }
-        }
-      };
-      xhr.send();
-    });
-  }
-
   getData() {
     const maxNumberOfRequests = 3;
-    const self = this;
     return gl.utils.backOff((next, stop) => {
-      self.metricsService()
-      .then((resp) => {
+      $.ajax({
+        url: metricsEndpoint,
+        dataType: 'json',
+      })
+      .done((data, statusText, resp) => {
         if (resp.status === statusCodes.NO_CONTENT) {
           this.backOffRequestCounter = this.backOffRequestCounter += 1;
           if (this.backOffRequestCounter < maxNumberOfRequests) {
             next();
           } else {
-            stop(resp);
+            stop({
+              status: resp.status,
+              metrics: data,
+            });
           }
         } else {
-          stop(resp);
+          stop({
+            status: resp.status,
+            metrics: data,
+          });
         }
-      }).catch(stop);
+      }).fail(stop);
     })
     .then((resp) => {
       if (resp.status === statusCodes.NO_CONTENT) {
