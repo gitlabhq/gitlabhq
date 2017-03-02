@@ -19,6 +19,31 @@ describe 'Issue Boards', :feature, :js do
     login_as(user)
   end
 
+  context 'un-ordered issues' do
+    let!(:issue4) { create(:labeled_issue, project: project, labels: [label]) }
+
+    before do
+      visit namespace_project_board_path(project.namespace, project, board)
+      wait_for_vue_resource
+
+      expect(page).to have_selector('.board', count: 2)
+    end
+
+    it 'has un-ordered issue as last issue' do
+      page.within(first('.board')) do
+        expect(all('.card').last).to have_content(issue4.title)
+      end
+    end
+
+    it 'moves un-ordered issue to top of list' do
+      drag(from_index: 3, to_index: 0)
+
+      page.within(first('.board')) do
+        expect(first('.card')).to have_content(issue4.title)
+      end
+    end
+  end
+
   context 'ordering in list' do
     before do
       visit namespace_project_board_path(project.namespace, project, board)
