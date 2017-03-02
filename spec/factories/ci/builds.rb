@@ -173,5 +173,9 @@ FactoryGirl.define do
         }
       end
     end
+
+    trait :no_options do
+      options { {} }
+    end
   end
 end

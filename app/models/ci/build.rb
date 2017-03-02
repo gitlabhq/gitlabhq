@@ -510,23 +510,17 @@ module Ci
 
     def steps
       [
-          Gitlab::Ci::Build::Response::Step.from_commands(self),
-          Gitlab::Ci::Build::Response::Step.from_after_script(self)
+          Gitlab::Ci::Build::Step.from_commands(self),
+          Gitlab::Ci::Build::Step.from_after_script(self)
       ].compact
     end
 
     def image
-      image = Gitlab::Ci::Build::Response::Image.new(options[:image])
-      return unless image.valid?
-      image
+      Gitlab::Ci::Build::Image.from_image(self)
     end
 
     def services
-      services = options[:services].map do |service|
-        Gitlab::Ci::Build::Response::Image.new(service)
-      end
-
-      services.select(&:valid?).compact
+      Gitlab::Ci::Build::Image.from_services(self)
     end
 
     def artifacts
