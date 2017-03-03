@@ -3,8 +3,8 @@ require 'rails_helper'
 describe 'Merge request', :feature, :js do
   include WaitForAjax
 
-  let(:project) { create(:project) }
   let(:user) { create(:user) }
+  let(:project) { create(:project) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   before do
@@ -31,7 +31,7 @@ describe 'Merge request', :feature, :js do
 
       wait_for_ajax
 
-      expect(page).to have_selector('.accept_merge_request')
+      expect(page).to have_selector('.accept-merge-request')
     end
   end
 
@@ -50,6 +50,69 @@ describe 'Merge request', :feature, :js do
         expect(page).to have_content("Deployed to #{environment.name}")
         expect(find('.js-environment-link')[:href]).to include(environment.formatted_external_url)
       end
+    end
+
+    it 'shows green accept merge request button' do
+      # Wait for the `ci_status` and `merge_check` requests
+      wait_for_ajax
+      expect(page).to have_selector('.accept-merge-request.btn-create')
+    end
+  end
+
+  context 'view merge request with external CI service' do
+    before do
+      create(:service, project: project,
+                       active: true,
+                       type: 'CiService',
+                       category: 'ci')
+
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    end
+
+    it 'has danger button while waiting for external CI status' do
+      # Wait for the `ci_status` and `merge_check` requests
+      wait_for_ajax
+      expect(page).to have_selector('.accept-merge-request.btn-danger')
+    end
+  end
+
+  context 'view merge request with failed GitLab CI pipelines' do
+    before do
+      commit_status = create(:commit_status, project: project, status: 'failed')
+      pipeline = create(:ci_pipeline, project: project,
+                                      sha: merge_request.diff_head_sha,
+                                      ref: merge_request.source_branch,
+                                      status: 'failed',
+                                      statuses: [commit_status])
+      create(:ci_build, :pending, pipeline: pipeline)
+
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    end
+
+    it 'has danger button when not succeeded' do
+      # Wait for the `ci_status` and `merge_check` requests
+      wait_for_ajax
+      expect(page).to have_selector('.accept-merge-request.btn-danger')
+    end
+  end
+
+  context 'view merge request with MWBS button' do
+    before do
+      commit_status = create(:commit_status, project: project, status: 'pending')
+      pipeline = create(:ci_pipeline, project: project,
+                                      sha: merge_request.diff_head_sha,
+                                      ref: merge_request.source_branch,
+                                      status: 'pending',
+                                      statuses: [commit_status])
+      create(:ci_build, :pending, pipeline: pipeline)
+
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    end
+
+    it 'has info button when MWBS button' do
+      # Wait for the `ci_status` and `merge_check` requests
+      wait_for_ajax
+      expect(page).to have_selector('.merge-when-pipeline-succeeds.btn-info')
     end
   end
 
