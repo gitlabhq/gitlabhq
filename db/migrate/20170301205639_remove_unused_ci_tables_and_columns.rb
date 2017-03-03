@@ -41,7 +41,7 @@ class RemoveUnusedCiTablesAndColumns < ActiveRecord::Migration
       t.datetime "created_at"
     end
 
-    add_index "ci_taggings", ["taggable_id", "taggable_type", "context"]
+    add_index "ci_taggings", %w[taggable_id taggable_type context]
 
     create_table "ci_sessions", force: :cascade do |t|
       t.string "session_id", null: false
