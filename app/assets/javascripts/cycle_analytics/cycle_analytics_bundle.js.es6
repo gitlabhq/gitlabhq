@@ -4,9 +4,6 @@
 
 window.Vue = require('vue');
 window.Cookies = require('js-cookie');
-require('./svg/icon_branch');
-require('./svg/icon_build_status');
-require('./svg/icon_commit');
 require('./components/stage_code_component');
 require('./components/stage_issue_component');
 require('./components/stage_plan_component');

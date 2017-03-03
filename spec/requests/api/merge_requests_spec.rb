@@ -170,7 +170,7 @@ describe API::MergeRequests, api: true  do
       expect(json_response['source_project_id']).to eq(merge_request.source_project.id)
       expect(json_response['target_project_id']).to eq(merge_request.target_project.id)
       expect(json_response['work_in_progress']).to be_falsy
-      expect(json_response['merge_when_build_succeeds']).to be_falsy
+      expect(json_response['merge_when_pipeline_succeeds']).to be_falsy
       expect(json_response['merge_status']).to eq('can_be_merged')
       expect(json_response['should_close_merge_request']).to be_falsy
       expect(json_response['force_close_merge_request']).to be_falsy
@@ -483,11 +483,11 @@ describe API::MergeRequests, api: true  do
       allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
 
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), merge_when_build_succeeds: true
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), merge_when_pipeline_succeeds: true
 
       expect(response).to have_http_status(200)
       expect(json_response['title']).to eq('Test')
-      expect(json_response['merge_when_build_succeeds']).to eq(true)
+      expect(json_response['merge_when_pipeline_succeeds']).to eq(true)
     end
   end
 

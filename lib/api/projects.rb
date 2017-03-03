@@ -16,14 +16,10 @@ module API
         optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
         optional :container_registry_enabled, type: Boolean, desc: 'Flag indication if the container registry is enabled for that project'
         optional :lfs_enabled, type: Boolean, desc: 'Flag indication if Git LFS is enabled for that project'
-        optional :visibility_level, type: Integer, values: [
-          Gitlab::VisibilityLevel::PRIVATE,
-          Gitlab::VisibilityLevel::INTERNAL,
-          Gitlab::VisibilityLevel::PUBLIC
-        ], desc: 'Create a public project. The same as visibility_level = 20.'
+        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the project.'
         optional :public_builds, type: Boolean, desc: 'Perform public builds'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
-        optional :only_allow_merge_if_build_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
+        optional :only_allow_merge_if_pipeline_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
       end
     end
@@ -48,11 +44,12 @@ module API
 
         params :filter_params do
           optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
-          optional :visibility, type: String, values: %w[public internal private],
+          optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
                                 desc: 'Limit by visibility'
-          optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
+          optional :search, type: String, desc: 'Return list of projects matching the search criteria'
           optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
           optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
+          optional :membership, type: Boolean, default: false, desc: 'Limit by projects that the current user is a member of'
         end
 
         params :statistics_params do
@@ -208,8 +205,8 @@ module API
         at_least_one_of :name, :description, :issues_enabled, :merge_requests_enabled,
                         :wiki_enabled, :builds_enabled, :snippets_enabled,
                         :shared_runners_enabled, :container_registry_enabled,
-                        :lfs_enabled, :visibility_level, :public_builds,
-                        :request_access_enabled, :only_allow_merge_if_build_succeeds,
+                        :lfs_enabled, :visibility, :public_builds,
+                        :request_access_enabled, :only_allow_merge_if_pipeline_succeeds,
                         :only_allow_merge_if_all_discussions_are_resolved, :path,
                         :default_branch
       end
@@ -217,7 +214,7 @@ module API
         authorize_admin_project
         attrs = declared_params(include_missing: false)
         authorize! :rename_project, user_project if attrs[:name].present?
-        authorize! :change_visibility_level, user_project if attrs[:visibility_level].present?
+        authorize! :change_visibility_level, user_project if attrs[:visibility].present?
 
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 

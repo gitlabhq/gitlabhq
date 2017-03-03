@@ -245,6 +245,9 @@ GEM
       json
     get_process_mem (0.2.0)
     gherkin-ruby (0.3.2)
+    gitaly (0.2.1)
+      google-protobuf (~> 3.1)
+      grpc (~> 1.0)
     github-linguist (4.7.6)
       charlock_holmes (~> 0.7.3)
       escape_utils (~> 1.1.0)
@@ -296,6 +299,7 @@ GEM
       multi_json (~> 1.10)
       retriable (~> 1.4)
       signet (~> 0.6)
+    google-protobuf (3.2.0)
     googleauth (0.5.1)
       faraday (~> 0.9)
       jwt (~> 1.4)
@@ -317,6 +321,9 @@ GEM
     grape-entity (0.6.0)
       activesupport
       multi_json (>= 1.3.2)
+    grpc (1.1.2)
+      google-protobuf (~> 3.1)
+      googleauth (~> 0.5.1)
     haml (4.0.7)
       tilt
     haml_lint (0.21.0)
@@ -367,8 +374,6 @@ GEM
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
-    jquery-ui-rails (5.0.5)
-      railties (>= 3.2.16)
     json (1.8.6)
     json-schema (2.6.2)
       addressable (~> 2.3.8)
@@ -427,7 +432,6 @@ GEM
     net-ldap (0.12.1)
     net-ssh (3.0.1)
     netrc (0.11.0)
-    newrelic_rpm (3.16.0.318)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
     numerizer (0.1.1)
@@ -660,7 +664,7 @@ GEM
       sexp_processor (~> 4.1)
     rubyntlm (0.5.2)
     rubypants (0.2.0)
-    rubyzip (1.2.0)
+    rubyzip (1.2.1)
     rufus-scheduler (3.1.10)
     rugged (0.24.0)
     safe_yaml (1.0.4)
@@ -878,6 +882,7 @@ DEPENDENCIES
   fuubar (~> 2.0.0)
   gemnasium-gitlab-service (~> 0.2)
   gemojione (~> 3.0)
+  gitaly (~> 0.2.1)
   github-linguist (~> 4.7.0)
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-markup (~> 1.5.1)
@@ -899,7 +904,6 @@ DEPENDENCIES
   jira-ruby (~> 1.1.2)
   jquery-atwho-rails (~> 1.3.2)
   jquery-rails (~> 4.1.0)
-  jquery-ui-rails (~> 5.0.0)
   json-schema (~> 2.6.2)
   jwt (~> 1.5.6)
   kaminari (~> 0.17.0)
@@ -915,7 +919,6 @@ DEPENDENCIES
   mousetrap-rails (~> 1.4.6)
   mysql2 (~> 0.3.16)
   net-ssh (~> 3.0.1)
-  newrelic_rpm (~> 3.16)
   nokogiri (~> 1.6.7, >= 1.6.7.2)
   oauth2 (~> 1.2.0)
   octokit (~> 4.6.2)
@@ -1011,4 +1014,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.14.4
+   1.14.5

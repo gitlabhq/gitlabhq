@@ -25,6 +25,10 @@ require('./lib/utils/url_utility');
         isBound = true;
       }
 
+      if (gl.utils.getLocationHash()) {
+        this.highlightSelectedLine();
+      }
+
       this.openAnchoredDiff();
     }
 
@@ -78,7 +82,7 @@ require('./lib/utils/url_utility');
       if (nothingHereBlock.length) {
         const clickTarget = $('.js-file-title, .click-to-expand', diffFile);
         diffFile.data('singleFileDiff').toggleDiff(clickTarget, () => {
-          this.highlighSelectedLine();
+          this.highlightSelectedLine();
           if (cb) cb();
         });
       } else if (cb) {
@@ -94,7 +98,7 @@ require('./lib/utils/url_utility');
       } else {
         window.location.hash = hash;
       }
-      this.highlighSelectedLine();
+      this.highlightSelectedLine();
     }
 
     diffViewType() {
@@ -108,7 +112,7 @@ require('./lib/utils/url_utility');
       return line.find('.diff-line-num').map((i, elm) => parseInt($(elm).data('linenumber'), 10));
     }
 
-    highlighSelectedLine() {
+    highlightSelectedLine() {
       const hash = gl.utils.getLocationHash();
       const $diffFiles = $('.diff-file');
       $diffFiles.find('.hll').removeClass('hll');

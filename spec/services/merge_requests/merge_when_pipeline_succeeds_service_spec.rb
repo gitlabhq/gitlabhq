@@ -5,7 +5,7 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
   let(:project) { create(:project) }
 
   let(:mr_merge_if_green_enabled) do
-    create(:merge_request, merge_when_build_succeeds: true, merge_user: user,
+    create(:merge_request, merge_when_pipeline_succeeds: true, merge_user: user,
                            source_branch: "master", target_branch: 'feature',
                            source_project: project, target_project: project, state: "opened")
   end
@@ -36,7 +36,7 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
 
       it 'sets the params, merge_user, and flag' do
         expect(merge_request).to be_valid
-        expect(merge_request.merge_when_build_succeeds).to be_truthy
+        expect(merge_request.merge_when_pipeline_succeeds).to be_truthy
         expect(merge_request.merge_params).to eq commit_message: 'Awesome message'
         expect(merge_request.merge_user).to be user
       end
@@ -62,7 +62,7 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
       end
 
       it 'updates the merge params' do
-        expect(SystemNoteService).not_to receive(:merge_when_build_succeeds)
+        expect(SystemNoteService).not_to receive(:merge_when_pipeline_succeeds)
 
         service.execute(mr_merge_if_green_enabled)
         expect(mr_merge_if_green_enabled.merge_params).to have_key(:new_key)
@@ -82,7 +82,7 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
                              sha: merge_request_head, status: 'success')
       end
 
-      it "merges all merge requests with merge when build succeeds enabled" do
+      it "merges all merge requests with merge when the pipeline succeeds enabled" do
         expect(MergeWorker).to receive(:perform_async)
         service.trigger(triggering_pipeline)
       end
@@ -114,7 +114,7 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
 
     context 'when the merge request is not mergeable' do
       let(:mr_conflict) do
-        create(:merge_request, merge_when_build_succeeds: true, merge_user: user,
+        create(:merge_request, merge_when_pipeline_succeeds: true, merge_user: user,
                                source_branch: 'master', target_branch: 'feature-conflict',
                                source_project: project, target_project: project)
       end
@@ -143,8 +143,8 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
       service.cancel(mr_merge_if_green_enabled)
     end
 
-    it "resets all the merge_when_build_succeeds params" do
-      expect(mr_merge_if_green_enabled.merge_when_build_succeeds).to be_falsey
+    it "resets all the pipeline succeeds params" do
+      expect(mr_merge_if_green_enabled.merge_when_pipeline_succeeds).to be_falsey
       expect(mr_merge_if_green_enabled.merge_params).to eq({})
       expect(mr_merge_if_green_enabled.merge_user).to be nil
     end

@@ -43,7 +43,8 @@ describe Projects::MergeRequestsController do
           submit_new_merge_request(format: :json)
 
           expect(response).to be_ok
-          expect(json_response).not_to be_empty
+          expect(json_response).to have_key 'pipelines'
+          expect(json_response['pipelines']).not_to be_empty
         end
       end
     end
@@ -319,41 +320,41 @@ describe Projects::MergeRequestsController do
         merge_with_sha
       end
 
-      context 'when merge_when_build_succeeds is passed' do
-        def merge_when_build_succeeds
-          post :merge, base_params.merge(sha: merge_request.diff_head_sha, merge_when_build_succeeds: '1')
+      context 'when the pipeline succeeds is passed' do
+        def merge_when_pipeline_succeeds
+          post :merge, base_params.merge(sha: merge_request.diff_head_sha, merge_when_pipeline_succeeds: '1')
         end
 
         before do
           create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
         end
 
-        it 'returns :merge_when_build_succeeds' do
-          merge_when_build_succeeds
+        it 'returns :merge_when_pipeline_succeeds' do
+          merge_when_pipeline_succeeds
 
-          expect(assigns(:status)).to eq(:merge_when_build_succeeds)
+          expect(assigns(:status)).to eq(:merge_when_pipeline_succeeds)
         end
 
-        it 'sets the MR to merge when the build succeeds' do
-          service = double(:merge_when_build_succeeds_service)
+        it 'sets the MR to merge when the pipeline succeeds' do
+          service = double(:merge_when_pipeline_succeeds_service)
 
           expect(MergeRequests::MergeWhenPipelineSucceedsService)
             .to receive(:new).with(project, anything, anything)
             .and_return(service)
           expect(service).to receive(:execute).with(merge_request)
 
-          merge_when_build_succeeds
+          merge_when_pipeline_succeeds
         end
 
-        context 'when project.only_allow_merge_if_build_succeeds? is true' do
+        context 'when project.only_allow_merge_if_pipeline_succeeds? is true' do
           before do
-            project.update_column(:only_allow_merge_if_build_succeeds, true)
+            project.update_column(:only_allow_merge_if_pipeline_succeeds, true)
           end
 
-          it 'returns :merge_when_build_succeeds' do
-            merge_when_build_succeeds
+          it 'returns :merge_when_pipeline_succeeds' do
+            merge_when_pipeline_succeeds
 
-            expect(assigns(:status)).to eq(:merge_when_build_succeeds)
+            expect(assigns(:status)).to eq(:merge_when_pipeline_succeeds)
           end
         end
       end
@@ -1134,14 +1135,14 @@ describe Projects::MergeRequestsController do
     end
 
     context 'when waiting for build' do
-      let(:merge_request) { create(:merge_request, source_project: project, merge_when_build_succeeds: true, merge_user: user) }
+      let(:merge_request) { create(:merge_request, source_project: project, merge_when_pipeline_succeeds: true, merge_user: user) }
 
       it 'returns an OK response' do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'sets status to :merge_when_build_succeeds' do
-        expect(assigns(:status)).to eq(:merge_when_build_succeeds)
+      it 'sets status to :merge_when_pipeline_succeeds' do
+        expect(assigns(:status)).to eq(:merge_when_pipeline_succeeds)
         expect(response).to render_template('merge')
       end
     end

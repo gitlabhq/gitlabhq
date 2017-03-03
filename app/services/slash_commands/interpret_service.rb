@@ -59,7 +59,7 @@ module SlashCommands
       @updates[:state_event] = 'reopen'
     end
 
-    desc 'Merge (when build succeeds)'
+    desc 'Merge (when the pipeline succeeds)'
     condition do
       last_diff_sha = params && params[:merge_request_diff_head_sha]
       issuable.is_a?(MergeRequest) &&
@@ -255,6 +255,18 @@ module SlashCommands
       @updates[:wip_event] = issuable.work_in_progress? ? 'unwip' : 'wip'
     end
 
+    desc 'Toggle emoji reward'
+    params ':emoji:'
+    condition do
+      issuable.persisted?
+    end
+    command :award do |emoji|
+      name = award_emoji_name(emoji)
+      if name && issuable.user_can_award?(current_user, name)
+        @updates[:emoji_award] = name
+      end
+    end
+
     desc 'Set time estimate'
     params '<1w 3d 2h 14m>'
     condition do
@@ -328,6 +340,11 @@ module SlashCommands
       ext.analyze(arg, author: current_user)
 
       ext.references(type)
+    end
+
+    def award_emoji_name(emoji)
+      match = emoji.match(Banzai::Filter::EmojiFilter.emoji_pattern)
+      match[1] if match
     end
   end
 end

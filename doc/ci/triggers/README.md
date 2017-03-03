@@ -71,7 +71,7 @@ To trigger a job from webhook of another project you need to add the following
 webhook url for Push and Tag push events:
 
 ```
-https://gitlab.example.com/api/v3/projects/:id/ref/:ref/trigger/builds?token=TOKEN
+https://gitlab.example.com/api/v4/projects/:id/ref/:ref/trigger/builds?token=TOKEN
 ```
 
 > **Note**:
@@ -105,7 +105,7 @@ Using cURL you can trigger a rebuild with minimal effort, for example:
 curl --request POST \
      --form token=TOKEN \
      --form ref=master \
-     https://gitlab.example.com/api/v3/projects/9/trigger/builds
+     https://gitlab.example.com/api/v4/projects/9/trigger/builds
 ```
 
 In this case, the project with ID `9` will get rebuilt on `master` branch.
@@ -114,7 +114,7 @@ Alternatively, you can pass the `token` and `ref` arguments in the query string:
 
 ```bash
 curl --request POST \
-    "https://gitlab.example.com/api/v3/projects/9/trigger/builds?token=TOKEN&ref=master"
+    "https://gitlab.example.com/api/v4/projects/9/trigger/builds?token=TOKEN&ref=master"
 ```
 
 ### Triggering a job within `.gitlab-ci.yml`
@@ -128,7 +128,7 @@ need to add in project's A `.gitlab-ci.yml`:
 build_docs:
   stage: deploy
   script:
-  - "curl --request POST --form token=TOKEN --form ref=master https://gitlab.example.com/api/v3/projects/9/trigger/builds"
+  - "curl --request POST --form token=TOKEN --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/builds"
   only:
   - tags
 ```
@@ -187,7 +187,7 @@ curl --request POST \
   --form token=TOKEN \
   --form ref=master \
   --form "variables[UPLOAD_TO_S3]=true" \
-  https://gitlab.example.com/api/v3/projects/9/trigger/builds
+  https://gitlab.example.com/api/v4/projects/9/trigger/builds
 ```
 
 ### Using webhook to trigger job
@@ -195,7 +195,7 @@ curl --request POST \
 You can add the following webhook to another project in order to trigger a job:
 
 ```
-https://gitlab.example.com/api/v3/projects/9/ref/master/trigger/builds?token=TOKEN&variables[UPLOAD_TO_S3]=true
+https://gitlab.example.com/api/v4/projects/9/ref/master/trigger/builds?token=TOKEN&variables[UPLOAD_TO_S3]=true
 ```
 
 ### Using cron to trigger nightly jobs
@@ -205,7 +205,7 @@ in conjunction with cron. The example below triggers a job on the `master`
 branch of project with ID `9` every night at `00:30`:
 
 ```bash
-30 0 * * * curl --request POST --form token=TOKEN --form ref=master https://gitlab.example.com/api/v3/projects/9/trigger/builds
+30 0 * * * curl --request POST --form token=TOKEN --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/builds
 ```
 
 [ci-229]: https://gitlab.com/gitlab-org/gitlab-ci/merge_requests/229

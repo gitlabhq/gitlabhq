@@ -120,7 +120,7 @@ Parameters:
 | `note_id` | integer | yes | The ID of a note |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/11/notes/636
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/11/notes/636
 ```
 
 ## Snippets
@@ -218,7 +218,7 @@ Parameters:
 | `note_id` | integer | yes | The ID of a note |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/snippets/52/notes/1659
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/snippets/52/notes/1659
 ```
 
 ## Merge Requests
@@ -319,5 +319,5 @@ Parameters:
 | `note_id` | integer | yes | The ID of a note |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/7/notes/1602
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/7/notes/1602
 ```

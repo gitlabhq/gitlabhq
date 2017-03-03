@@ -53,9 +53,12 @@ Notes:
 - Code reviews for merge requests often consist of multiple iterations of
   feedback and fixes. There is no need to update your EE MR after each
   iteration. Instead, create an EE MR as soon as you see the
-  `rake ee_compat_check` job failing and update it after the CE MR is merged.
+  `rake ee_compat_check` job failing. After you receive the final acceptance
+  from a Maintainer (but before the CE MR is merged) update the EE MR.
   This helps to identify significant conflicts sooner, but also reduces the
   number of times you have to resolve conflicts.
+- You can use [`git rerere`](https://git-scm.com/blog/2010/03/08/rerere.html)
+  to avoid resolving the same conflicts multiple times.
 
 ## Possible type of conflicts
 

@@ -5,7 +5,7 @@
 #
 module Gitlab
   module Access
-    class AccessDeniedError < StandardError; end
+    AccessDeniedError = Class.new(StandardError)
 
     NO_ACCESS = 0
     GUEST     = 10

@@ -6,6 +6,7 @@ class Repository
   attr_accessor :path_with_namespace, :project
 
   CommitError = Class.new(StandardError)
+  CreateTreeError = Class.new(StandardError)
 
   # Methods that cache data from the Git repository.
   #
@@ -862,16 +863,17 @@ class Repository
   end
 
   def revert(
-    user, commit, branch_name, revert_tree_id = nil,
+    user, commit, branch_name,
     start_branch_name: nil, start_project: project)
-    revert_tree_id ||= check_revert_content(commit, branch_name)
-
-    return false unless revert_tree_id
-
     GitOperationService.new(user, self).with_branch(
       branch_name,
       start_branch_name: start_branch_name,
       start_project: start_project) do |start_commit|
+
+      revert_tree_id = check_revert_content(commit, start_commit.sha)
+      unless revert_tree_id
+        raise Repository::CreateTreeError.new('Failed to revert commit')
+      end
 
       committer = user_to_committer(user)
 
@@ -885,16 +887,17 @@ class Repository
   end
 
   def cherry_pick(
-    user, commit, branch_name, cherry_pick_tree_id = nil,
+    user, commit, branch_name,
     start_branch_name: nil, start_project: project)
-    cherry_pick_tree_id ||= check_cherry_pick_content(commit, branch_name)
-
-    return false unless cherry_pick_tree_id
-
     GitOperationService.new(user, self).with_branch(
       branch_name,
       start_branch_name: start_branch_name,
       start_project: start_project) do |start_commit|
+
+      cherry_pick_tree_id = check_cherry_pick_content(commit, start_commit.sha)
+      unless cherry_pick_tree_id
+        raise Repository::CreateTreeError.new('Failed to cherry-pick commit')
+      end
 
       committer = user_to_committer(user)
 
@@ -919,9 +922,8 @@ class Repository
     end
   end
 
-  def check_revert_content(target_commit, branch_name)
-    source_sha = commit(branch_name).sha
-    args       = [target_commit.sha, source_sha]
+  def check_revert_content(target_commit, source_sha)
+    args = [target_commit.sha, source_sha]
     args << { mainline: 1 } if target_commit.merge_commit?
 
     revert_index = rugged.revert_commit(*args)
@@ -933,9 +935,8 @@ class Repository
     tree_id
   end
 
-  def check_cherry_pick_content(target_commit, branch_name)
-    source_sha = commit(branch_name).sha
-    args       = [target_commit.sha, source_sha]
+  def check_cherry_pick_content(target_commit, source_sha)
+    args = [target_commit.sha, source_sha]
     args << 1 if target_commit.merge_commit?
 
     cherry_pick_index = rugged.cherrypick_commit(*args)
@@ -995,6 +996,8 @@ class Repository
   end
 
   def with_repo_branch_commit(start_repository, start_branch_name)
+    return yield(nil) if start_repository.empty_repo?
+
     branch_name_or_sha =
       if start_repository == self
         start_branch_name

@@ -267,6 +267,14 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
+    shared_examples 'award command' do
+      it 'toggle award 100 emoji if content containts /award :100:' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(emoji_award: "100")
+      end
+    end
+
     it_behaves_like 'reopen command' do
       let(:content) { '/reopen' }
       let(:issuable) { issue }
@@ -651,6 +659,37 @@ describe SlashCommands::InterpretService, services: true do
       it_behaves_like 'empty command' do
         let(:content) { '/remove_due_date' }
         let(:issuable) { issue }
+      end
+    end
+
+    context '/award command' do
+      it_behaves_like 'award command' do
+        let(:content) { '/award :100:' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'award command' do
+        let(:content) { '/award :100:' }
+        let(:issuable) { merge_request }
+      end
+
+      context 'ignores command with no argument' do
+        it_behaves_like 'empty command' do
+          let(:content) { '/award' }
+          let(:issuable) { issue }
+        end
+      end
+
+      context 'ignores non-existing / invalid  emojis' do
+        it_behaves_like 'empty command' do
+          let(:content) { '/award noop' }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:content) { '/award :lorem_ipsum:' }
+          let(:issuable) { issue }
+        end
       end
     end
 

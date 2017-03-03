@@ -225,11 +225,11 @@ describe API::Notes, api: true  do
       context 'when the user is posting an award emoji on an issue created by someone else' do
         let(:issue2) { create(:issue, project: project) }
 
-        it 'returns an award emoji' do
+        it 'creates a new issue note' do
           post api("/projects/#{project.id}/issues/#{issue2.id}/notes", user), body: ':+1:'
 
           expect(response).to have_http_status(201)
-          expect(json_response['awardable_id']).to eq issue2.id
+          expect(json_response['body']).to eq(':+1:')
         end
       end
 

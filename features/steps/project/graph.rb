@@ -18,6 +18,10 @@ class Spinach::Features::ProjectGraph < Spinach::FeatureSteps
     visit languages_namespace_project_graph_path(project.namespace, project, "master")
   end
 
+  step 'I visit project "Shop" chart page' do
+    visit charts_namespace_project_graph_path(project.namespace, project, "master")
+  end
+
   step 'page should have languages graphs' do
     expect(page).to have_content /Ruby 66.* %/
     expect(page).to have_content /JavaScript 22.* %/

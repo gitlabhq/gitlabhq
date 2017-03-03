@@ -6,7 +6,7 @@ module Gitlab
         # Base abstract class for each configuration entry node.
         #
         class Node
-          class InvalidError < StandardError; end
+          InvalidError = Class.new(StandardError)
 
           attr_reader :config, :metadata
           attr_accessor :key, :parent, :description

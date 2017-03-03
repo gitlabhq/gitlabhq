@@ -10,22 +10,39 @@ describe Ci::RetryBuildService, :services do
     described_class.new(project, user)
   end
 
+  CLONE_ACCESSORS = described_class::CLONE_ACCESSORS
+
+  REJECT_ACCESSORS =
+    %i[id status user token coverage trace runner artifacts_expire_at
+       artifacts_file artifacts_metadata artifacts_size created_at
+       updated_at started_at finished_at queued_at erased_by
+       erased_at].freeze
+
+  IGNORE_ACCESSORS =
+    %i[type lock_version target_url gl_project_id deploy job_id base_tags
+       commit_id deployments erased_by_id last_deployment project_id
+       runner_id tag_taggings taggings tags trigger_request_id
+       user_id].freeze
+
   shared_examples 'build duplication' do
     let(:build) do
-      create(:ci_build, :failed, :artifacts_expired, :erased, :trace,
-             :queued, :coverage, pipeline: pipeline)
+      create(:ci_build, :failed, :artifacts_expired, :erased,
+             :queued, :coverage, :tags, :allowed_to_fail, :on_tag,
+             :teardown_environment, :triggered, :trace,
+             description: 'some build', pipeline: pipeline)
     end
 
-    describe 'clone attributes' do
-      described_class::CLONE_ATTRIBUTES.each do |attribute|
+    describe 'clone accessors' do
+      CLONE_ACCESSORS.each do |attribute|
         it "clones #{attribute} build attribute" do
+          expect(new_build.send(attribute)).to be_present
           expect(new_build.send(attribute)).to eq build.send(attribute)
         end
       end
     end
 
-    describe 'reject attributes' do
-      described_class::REJECT_ATTRIBUTES.each do |attribute|
+    describe 'reject acessors' do
+      REJECT_ACCESSORS.each do |attribute|
         it "does not clone #{attribute} build attribute" do
           expect(new_build.send(attribute)).not_to eq build.send(attribute)
         end
@@ -33,12 +50,20 @@ describe Ci::RetryBuildService, :services do
     end
 
     it 'has correct number of known attributes' do
-      attributes =
-        described_class::CLONE_ATTRIBUTES +
-        described_class::IGNORE_ATTRIBUTES +
-        described_class::REJECT_ATTRIBUTES
+      known_accessors = CLONE_ACCESSORS + REJECT_ACCESSORS + IGNORE_ACCESSORS
 
-      expect(build.attributes.size).to eq(attributes.size)
+      # :tag_list is a special case, this accessor does not exist
+      # in reflected associations, comes from `act_as_taggable` and
+      # we use it to copy tags, instead of reusing tags.
+      #
+      current_accessors =
+        Ci::Build.attribute_names.map(&:to_sym) +
+        Ci::Build.reflect_on_all_associations.map(&:name) +
+        [:tag_list]
+
+      current_accessors.uniq!
+
+      expect(known_accessors).to contain_exactly(*current_accessors)
     end
   end
 

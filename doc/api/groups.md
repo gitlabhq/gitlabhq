@@ -27,7 +27,7 @@ GET /groups
     "name": "Foobar Group",
     "path": "foo-bar",
     "description": "An interesting group",
-    "visibility_level": 20,
+    "visibility": "public",
     "lfs_enabled": true,
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
@@ -72,9 +72,8 @@ Example response:
     "description": "foo",
     "default_branch": "master",
     "tag_list": [],
-    "public": false,
     "archived": false,
-    "visibility_level": 10,
+    "visibility": "internal",
     "ssh_url_to_repo": "git@gitlab.example.com/html5-boilerplate.git",
     "http_url_to_repo": "http://gitlab.example.com/h5bp/html5-boilerplate.git",
     "web_url": "http://gitlab.example.com/h5bp/html5-boilerplate",
@@ -123,7 +122,7 @@ Parameters:
 | `id` | integer/string | yes | The ID or path of a group |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/4
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/4
 ```
 
 Example response:
@@ -134,7 +133,7 @@ Example response:
   "name": "Twitter",
   "path": "twitter",
   "description": "Aliquid qui quis dignissimos distinctio ut commodi voluptas est.",
-  "visibility_level": 20,
+  "visibility": "public",
   "avatar_url": null,
   "web_url": "https://gitlab.example.com/groups/twitter",
   "request_access_enabled": false,
@@ -147,9 +146,8 @@ Example response:
       "description": "Voluptas veniam qui et beatae voluptas doloremque explicabo facilis.",
       "default_branch": "master",
       "tag_list": [],
-      "public": true,
       "archived": false,
-      "visibility_level": 20,
+      "visibility": "public",
       "ssh_url_to_repo": "git@gitlab.example.com:twitter/typeahead-js.git",
       "http_url_to_repo": "https://gitlab.example.com/twitter/typeahead-js.git",
       "web_url": "https://gitlab.example.com/twitter/typeahead-js",
@@ -186,9 +184,8 @@ Example response:
       "description": "Aspernatur omnis repudiandae qui voluptatibus eaque.",
       "default_branch": "master",
       "tag_list": [],
-      "public": false,
       "archived": false,
-      "visibility_level": 10,
+      "visibility": "internal",
       "ssh_url_to_repo": "git@gitlab.example.com:twitter/flight.git",
       "http_url_to_repo": "https://gitlab.example.com/twitter/flight.git",
       "web_url": "https://gitlab.example.com/twitter/flight",
@@ -227,9 +224,8 @@ Example response:
       "description": "Velit eveniet provident fugiat saepe eligendi autem.",
       "default_branch": "master",
       "tag_list": [],
-      "public": false,
       "archived": false,
-      "visibility_level": 0,
+      "visibility": "private",
       "ssh_url_to_repo": "git@gitlab.example.com:h5bp/html5-boilerplate.git",
       "http_url_to_repo": "https://gitlab.example.com/h5bp/html5-boilerplate.git",
       "web_url": "https://gitlab.example.com/h5bp/html5-boilerplate",
@@ -288,7 +284,7 @@ Parameters:
 - `name` (required) - The name of the group
 - `path` (required) - The path of the group
 - `description` (optional) - The group's description
-- `visibility_level` (optional) - The group's visibility. 0 for private, 10 for internal, 20 for public.
+- `visibility` (optional) - The group's visibility. Can be `private`, `internal`, or `public`.
 - `lfs_enabled` (optional)      - Enable/disable Large File Storage (LFS) for the projects in this group
 - `request_access_enabled` (optional) - Allow users to request member access.
 - `parent_id` (optional) - The parent group id for creating nested group.
@@ -320,12 +316,12 @@ PUT /groups/:id
 | `name` | string | no | The name of the group |
 | `path` | string | no | The path of the group |
 | `description` | string | no | The description of the group |
-| `visibility_level` | integer | no | The visibility level of the group. 0 for private, 10 for internal, 20 for public. |
+| `visibility` | string | no | The visibility level of the group. Can be `private`, `internal`, or `public`. |
 | `lfs_enabled` (optional) | boolean | no | Enable/disable Large File Storage (LFS) for the projects in this group |
 | `request_access_enabled` | boolean | no | Allow users to request member access. |
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/groups/5?name=Experimental"
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/groups/5?name=Experimental"
 
 ```
 
@@ -337,7 +333,7 @@ Example response:
   "name": "Experimental",
   "path": "h5bp",
   "description": "foo",
-  "visibility_level": 10,
+  "visibility": "internal",
   "avatar_url": null,
   "web_url": "http://gitlab.example.com/groups/h5bp",
   "request_access_enabled": false,
@@ -352,7 +348,7 @@ Example response:
       "tag_list": [],
       "public": false,
       "archived": false,
-      "visibility_level": 10,
+      "visibility": "internal",
       "ssh_url_to_repo": "git@gitlab.example.com/html5-boilerplate.git",
       "http_url_to_repo": "http://gitlab.example.com/h5bp/html5-boilerplate.git",
       "web_url": "http://gitlab.example.com/h5bp/html5-boilerplate",

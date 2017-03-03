@@ -19,7 +19,7 @@ module ButtonHelper
     title = data[:title] || 'Copy to clipboard'
     data = { toggle: 'tooltip', placement: 'bottom', container: 'body' }.merge(data)
     content_tag :button,
-      icon('clipboard'),
+      icon('clipboard', 'aria-hidden': 'true'),
       class: "btn #{css_class}",
       data: data,
       type: :button,

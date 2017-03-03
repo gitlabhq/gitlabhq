@@ -24,12 +24,13 @@
 
 #blob-content-holder.blob-content-holder
   %article.file-holder
-    .js-file-title.file-title
-      = blob_icon blob.mode, blob.name
-      %strong
-        = blob.name
-      %small
-        = number_to_human_size(blob_size(blob))
+    .js-file-title.file-title-flex-parent
+      .file-header-content
+        = blob_icon blob.mode, blob.name
+        %strong.file-title-name
+          = blob.name
+        %small
+          = number_to_human_size(blob_size(blob))
       .file-actions.hidden-xs
         = render "actions"
     = render blob, blob: blob

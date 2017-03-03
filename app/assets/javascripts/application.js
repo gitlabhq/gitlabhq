@@ -9,7 +9,6 @@
 window.$ = window.jQuery = require('jquery');
 require('jquery-ujs');
 require('vendor/jquery.endless-scroll');
-require('vendor/jquery.highlight');
 require('vendor/jquery.waitforimages');
 require('vendor/jquery.caret');
 require('vendor/jquery.atwho');
@@ -18,15 +17,11 @@ window.Cookies = require('js-cookie');
 require('./autosave');
 require('bootstrap/js/affix');
 require('bootstrap/js/alert');
-require('bootstrap/js/button');
-require('bootstrap/js/collapse');
 require('bootstrap/js/dropdown');
 require('bootstrap/js/modal');
-require('bootstrap/js/scrollspy');
 require('bootstrap/js/tab');
 require('bootstrap/js/transition');
 require('bootstrap/js/tooltip');
-require('bootstrap/js/popover');
 require('select2/select2.js');
 window.Pikaday = require('pikaday');
 window._ = require('underscore');
@@ -235,6 +230,10 @@ require('es6-promise').polyfill();
     var $flash = $('.flash-container');
     var bootstrapBreakpoint = bp.getBreakpointSize();
     var fitSidebarForSize;
+
+    $(document).on('scroll', function() {
+      $('.has-tooltip').tooltip('hide');
+    });
 
     // Set the default path for all cookies to GitLab's root directory
     Cookies.defaults.path = gon.relative_url_root || '/';

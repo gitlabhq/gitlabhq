@@ -2,7 +2,7 @@ require 'securerandom'
 
 module Gitlab
   class Shell
-    class Error < StandardError; end
+    Error = Class.new(StandardError)
 
     KeyAdder = Struct.new(:io) do
       def add_key(id, key)

@@ -20,21 +20,33 @@ module Ci
           builds_for_specific_runner
         end
 
-      build = builds.find do |build|
-        runner.can_pick?(build)
+      valid = true
+
+      builds.find do |build|
+        next unless runner.can_pick?(build)
+
+        begin
+          # In case when 2 runners try to assign the same build, second runner will be declined
+          # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
+          build.runner_id = runner.id
+          build.run!
+
+          return Result.new(build, true)
+        rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
+          # We are looping to find another build that is not conflicting
+          # It also indicates that this build can be picked and passed to runner.
+          # If we don't do it, basically a bunch of runners would be competing for a build
+          # and thus we will generate a lot of 409. This will increase
+          # the number of generated requests, also will reduce significantly
+          # how many builds can be picked by runner in a unit of time.
+          # In case we hit the concurrency-access lock,
+          # we still have to return 409 in the end,
+          # to make sure that this is properly handled by runner.
+          valid = false
+        end
       end
 
-      if build
-        # In case when 2 runners try to assign the same build, second runner will be declined
-        # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
-        build.runner_id = runner.id
-        build.run!
-      end
-
-      Result.new(build, true)
-
-    rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
-      Result.new(build, false)
+      Result.new(nil, valid)
     end
 
     private

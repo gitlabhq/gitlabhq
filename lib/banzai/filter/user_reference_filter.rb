@@ -133,7 +133,7 @@ module Banzai
         data = data_attribute(group: namespace.id)
         content = link_content || Group.reference_prefix + group
 
-        link_tag(url, data, content, namespace.name)
+        link_tag(url, data, content, namespace.full_name)
       end
 
       def link_to_user(user, namespace, link_content: nil)

@@ -17,7 +17,7 @@ describe MilestonesHelper do
     it { expect(result_for(due_date: yesterday)).to eq("expired on #{yesterday_formatted}") }
     it { expect(result_for(start_date: tomorrow)).to eq("starts on #{tomorrow_formatted}") }
     it { expect(result_for(start_date: yesterday)).to eq("started on #{yesterday_formatted}") }
-    it { expect(result_for(start_date: yesterday, due_date: tomorrow)).to eq("#{yesterday_formatted} - #{tomorrow_formatted}") }
+    it { expect(result_for(start_date: yesterday, due_date: tomorrow)).to eq("#{yesterday_formatted}–#{tomorrow_formatted}") }
   end
 
   describe '#milestone_counts' do

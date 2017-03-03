@@ -5,7 +5,7 @@
 #
 module Gitlab
   module OAuth
-    class SignupDisabledError < StandardError; end
+    SignupDisabledError = Class.new(StandardError)
 
     class User
       attr_accessor :auth_hash, :gl_user

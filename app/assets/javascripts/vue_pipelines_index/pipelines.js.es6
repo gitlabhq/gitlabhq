@@ -27,7 +27,7 @@ const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_s
         pageRequest: false,
       };
     },
-    props: ['scope', 'store', 'svgs'],
+    props: ['scope', 'store'],
     created() {
       const pagenum = gl.utils.getParameterByName('page');
       const scope = gl.utils.getParameterByName('scope');
@@ -45,18 +45,15 @@ const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_s
 
     methods: {
       /**
-       * Changes the URL according to the pagination component.
+       * Will change the page number and update the URL.
        *
-       * If no scope is provided, 'all' is assumed.
-       *
-       * Pagination component sends "null" when no scope is provided.
-       *
-       * @param  {Number} pagenum
-       * @param  {String} apiScope = 'all'
+       * @param  {Number} pageNumber desired page to go to.
        */
-      change(pagenum, apiScope) {
-        if (!apiScope) apiScope = 'all';
-        gl.utils.visitUrl(`?scope=${apiScope}&page=${pagenum}`);
+      change(pageNumber) {
+        const param = gl.utils.setParamInURL('page', pageNumber);
+
+        gl.utils.visitUrl(param);
+        return param;
       },
     },
     template: `
@@ -73,10 +70,7 @@ const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_s
         </div>
 
         <div class="table-holder" v-if='!pageRequest && pipelines.length'>
-          <pipelines-table-component
-            :pipelines='pipelines'
-            :svgs='svgs'>
-          </pipelines-table-component>
+          <pipelines-table-component :pipelines='pipelines'/>
         </div>
 
         <gl-pagination

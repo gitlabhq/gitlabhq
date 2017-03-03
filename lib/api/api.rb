@@ -21,11 +21,14 @@ module API
       mount ::API::V3::MergeRequests
       mount ::API::V3::Notes
       mount ::API::V3::ProjectHooks
+      mount ::API::V3::Milestones
       mount ::API::V3::Projects
       mount ::API::V3::ProjectSnippets
       mount ::API::V3::Repositories
       mount ::API::V3::Runners
       mount ::API::V3::Services
+      mount ::API::V3::Settings
+      mount ::API::V3::Snippets
       mount ::API::V3::Subscriptions
       mount ::API::V3::SystemHooks
       mount ::API::V3::Tags
