@@ -1,4 +1,4 @@
-module RedirectRequest
+module RepositorySettingsRedirect
   extend ActiveSupport::Concern
 
   def redirect_to_repository_settings(project)
