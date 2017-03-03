@@ -18,22 +18,32 @@ module API
         optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
         optional :since,    type: DateTime, desc: 'Only commits after or on this date will be returned'
         optional :until,    type: DateTime, desc: 'Only commits before or on this date will be returned'
-        optional :page,     type: Integer, default: 0, desc: 'The page for pagination'
-        optional :per_page, type: Integer, default: 20, desc: 'The number of results per page'
         optional :path,     type: String, desc: 'The file path'
+        use :pagination
       end
       get ":id/repository/commits" do
-        ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
+        path   = params[:path]
+        before = params[:until]
+        after  = params[:since]
+        ref    = params[:ref_name] || user_project.try(:default_branch) || 'master'
         offset = (params[:page] - 1) * params[:per_page]
 
         commits = user_project.repository.commits(ref,
-                                                  path: params[:path],
+                                                  path: path,
                                                   limit: params[:per_page],
                                                   offset: offset,
-                                                  after: params[:since],
-                                                  before: params[:until])
+                                                  before: before,
+                                                  after: after)
 
-        paginated_commits = Kaminari.paginate_array(commits, total_count: commits.size)
+        commit_count =
+          if path || before || after
+            user_project.repository.count_commits(ref: ref, path: path, before: before, after: after)
+          else
+            # Cacheable commit count.
+            user_project.repository.commit_count_for_ref(ref)
+          end
+
+        paginated_commits = Kaminari.paginate_array(commits, total_count: commit_count)
 
         present paginate(paginated_commits), with: Entities::RepoCommit
       end

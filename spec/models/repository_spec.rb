@@ -1743,10 +1743,18 @@ describe Repository, models: true do
   end
 
   describe '#commit_count_for_ref' do
+    let(:project) { create :empty_project }
+
     context 'with a non-existing repository' do
       it 'returns 0' do
-        expect(repository).to receive(:raw_repository).and_return(nil)
-        expect(repository.commit_count).to eq(0)
+        expect(project.repository.commit_count_for_ref('master')).to eq(0)
+      end
+    end
+
+    context 'with empty repository' do
+      it 'returns 0' do
+        project.create_repository
+        expect(project.repository.commit_count_for_ref('master')).to eq(0)
       end
     end
 

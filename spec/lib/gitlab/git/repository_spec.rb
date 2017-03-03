@@ -826,29 +826,26 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#count_commits' do
     context 'with after timestamp' do
-      options = { ref: 'master', limit: nil, after: Time.iso8601('2013-03-03T20:15:01+00:00') }
       it 'returns the number of commits after timestamp' do
-        commits = repository.log(options)
+        options = { ref: 'master', limit: nil, after: Time.iso8601('2013-03-03T20:15:01+00:00') }
 
-        expect(repository.count_commits(options)).to eq(commits.size)
+        expect(repository.count_commits(options)).to eq(25)
       end
     end
 
     context 'with before timestamp' do
-      options = { ref: 'feature', limit: nil, before: Time.iso8601('2015-03-03T20:15:01+00:00') }
       it 'returns the number of commits after timestamp' do
-        commits = repository.log(options)
+        options = { ref: 'feature', limit: nil, before: Time.iso8601('2015-03-03T20:15:01+00:00') }
 
-        expect(repository.count_commits(options)).to eq(commits.size)
+        expect(repository.count_commits(options)).to eq(9)
       end
     end
 
     context 'with path' do
-      options = { ref: 'master', limit: nil, path: "encoding" }
       it 'returns the number of commits with path ' do
-        commits = repository.log(options)
+        options = { ref: 'master', limit: nil, path: "encoding" }
 
-        expect(repository.count_commits(options)).to eq(commits.size)
+        expect(repository.count_commits(options)).to eq(2)
       end
     end
   end

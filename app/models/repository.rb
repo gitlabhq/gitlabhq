@@ -499,10 +499,12 @@ class Repository
   cache_method :commit_count, fallback: 0
 
   def commit_count_for_ref(ref)
-    return 0 if empty?
+    return 0 unless exists?
 
-    cache.fetch(:"commit_count_#{ref}") do
-      raw_repository.commit_count(ref)
+    begin
+      cache.fetch(:"commit_count_#{ref}") { raw_repository.commit_count(ref) }
+    rescue Rugged::ReferenceError
+      0
     end
   end
 
