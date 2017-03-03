@@ -22,7 +22,7 @@ describe Gitlab::RequestContext, lib: true do
         it { is_expected.to eq(ip) }
       end
 
-      context 'before RequestContext mw run' do
+      context 'before RequestContext middleware run' do
         it { is_expected.to be_nil }
       end
     end

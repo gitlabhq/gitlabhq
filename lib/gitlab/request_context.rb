@@ -1,6 +1,4 @@
 module Gitlab
-  RequestStoreNotActive = Class.new(StandardError)
-
   class RequestContext
     class << self
       def client_ip

@@ -8,12 +8,13 @@ module Gitlab
           if config.unique_ips_limit_enabled
             ip = RequestContext.client_ip
             unique_ips = update_and_return_ips_count(user_id, ip)
+
             raise TooManyIps.new(user_id, ip, unique_ips) if unique_ips > config.unique_ips_limit_per_user
           end
         end
 
         def limit_user!(user = nil)
-          user = yield if user.nil? && block_given?
+          user ||= yield if block_given?
           limit_user_id!(user.id) unless user.nil?
           user
         end
