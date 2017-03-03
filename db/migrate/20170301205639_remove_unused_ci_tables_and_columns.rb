@@ -1,7 +1,10 @@
 class RemoveUnusedCiTablesAndColumns < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
-  DOWNTIME = false
+  DOWNTIME = true
+  DOWNTIME_REASON =
+    'Remove unused columns in used tables.' \
+    ' Downtime required in case Rails caches them'
 
   def change
     %w[ci_application_settings
