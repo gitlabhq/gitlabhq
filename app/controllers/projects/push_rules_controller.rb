@@ -1,5 +1,6 @@
 class Projects::PushRulesController < Projects::ApplicationController
-  include RedirectRequest
+  include RepositorySettingsRedirect
+  
   # Authorize
   before_action :authorize_admin_project!
 

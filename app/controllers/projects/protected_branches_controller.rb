@@ -1,5 +1,5 @@
 class Projects::ProtectedBranchesController < Projects::ApplicationController
-  include RedirectRequest
+  include RepositorySettingsRedirect
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_admin_project!

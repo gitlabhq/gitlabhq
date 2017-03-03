@@ -1,5 +1,5 @@
 class Projects::MirrorsController < Projects::ApplicationController
-  include RedirectRequest
+  include RepositorySettingsRedirect
   # Authorize
   before_action :authorize_admin_project!, except: [:update_now]
   before_action :authorize_push_code!, only: [:update_now]

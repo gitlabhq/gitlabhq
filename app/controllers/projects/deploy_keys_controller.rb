@@ -1,5 +1,5 @@
 class Projects::DeployKeysController < Projects::ApplicationController
-  include RedirectRequest
+  include RepositorySettingsRedirect
   respond_to :html
 
   # Authorize
