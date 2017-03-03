@@ -15,7 +15,7 @@ module Gitlab
         end
 
         def favicon
-          'build_status_pending'
+          'favicon_status_pending'
         end
       end
     end

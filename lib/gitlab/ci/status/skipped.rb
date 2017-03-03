@@ -15,7 +15,7 @@ module Gitlab
         end
 
         def favicon
-          'build_status_skipped'
+          'favicon_status_skipped'
         end
       end
     end

@@ -14,7 +14,7 @@ module Gitlab
           end
 
           def favicon
-            'build_status_warning'
+            'favicon_status_warning'
           end
 
           def group

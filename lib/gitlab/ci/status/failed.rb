@@ -15,7 +15,7 @@ module Gitlab
         end
 
         def favicon
-          'build_status_failed'
+          'favicon_status_failed'
         end
       end
     end
