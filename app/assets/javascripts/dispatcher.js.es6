@@ -226,7 +226,7 @@ const UserCallout = require('./user_callout');
         case 'admin:groups:new':
         case 'groups:create':
         case 'admin:groups:create':
-        BindInOut.initAll();
+          BindInOut.initAll();
         case 'groups:new':
         case 'admin:groups:new':
         case 'groups:edit':

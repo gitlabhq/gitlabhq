@@ -35,7 +35,7 @@ class GroupsController < Groups::ApplicationController
       notice = if @group.chat_team.present?
                  "Group '#{@group.name}' and its Mattermost team were successfully created."
                else
-                  "Group '#{@group.name}' was successfully created."
+                 "Group '#{@group.name}' was successfully created."
                end
 
       redirect_to @group, notice: notice
