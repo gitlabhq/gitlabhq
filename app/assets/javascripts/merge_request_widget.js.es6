@@ -129,8 +129,9 @@ require('./smart_interval');
     };
 
     MergeRequestWidget.prototype.getMergeStatus = function() {
-      return $.get(this.opts.merge_check_url, function(data) {
+      return $.get(this.opts.merge_check_url, (data) => {
         var $html = $(data);
+        this.updateMergeButton(this.status, this.hasCi, $html);
         $('.mr-widget-body').replaceWith($html.find('.mr-widget-body'));
         $('.mr-widget-footer').replaceWith($html.find('.mr-widget-footer'));
       });
@@ -154,9 +155,9 @@ require('./smart_interval');
       return $.getJSON(this.opts.ci_status_url, (function(_this) {
         return function(data) {
           var message, status, title;
-          if (!data.status) {
-            return;
-          }
+          _this.status = data.status;
+          _this.hasCi = data.has_ci;
+          _this.updateMergeButton(_this.status, _this.hasCi);
           if (data.environments && data.environments.length) _this.renderEnvironments(data.environments);
           if (data.status !== _this.opts.ci_status ||
               data.sha !== _this.opts.ci_sha ||
@@ -227,42 +228,51 @@ require('./smart_interval');
     };
 
     MergeRequestWidget.prototype.showCIStatus = function(state) {
+      // TODO: Can this variable be removed? - Felipe Artur
       var allowed_states;
       if (state == null) {
         return;
       }
       $('.ci_widget').hide();
-      allowed_states = ["failed", "canceled", "running", "pending", "success", "success_with_warnings", "skipped", "not_found"];
-      if (indexOf.call(allowed_states, state) >= 0) {
-        $('.ci_widget.ci-' + state).show();
-        switch (state) {
-          case "failed":
-          case "canceled":
-          case "not_found":
-            this.setMergeButtonClass('btn-danger');
-            break;
-          case "running":
-            this.setMergeButtonClass('btn-info');
-            break;
-          case "success":
-          case "success_with_warnings":
-            this.setMergeButtonClass('btn-create');
-        }
-      } else {
-        $('.ci_widget.ci-error').show();
-        this.setMergeButtonClass('btn-danger');
-      }
+      $('.ci_widget.ci-' + state).show();
+
       this.initMiniPipelineGraph();
     };
 
     MergeRequestWidget.prototype.showCICoverage = function(coverage) {
-      var text;
-      text = 'Coverage ' + coverage + '%';
+      var text = `Coverage ${coverage}%`;
       return $('.ci_widget:visible .ci-coverage').text(text);
     };
 
-    MergeRequestWidget.prototype.setMergeButtonClass = function(css_class) {
-      return $('.js-merge-button,.accept-action .dropdown-toggle').removeClass('btn-danger btn-info btn-create').addClass(css_class);
+    MergeRequestWidget.prototype.updateMergeButton = function(state, hasCi, $html) {
+      const allowed_states = ["failed", "canceled", "running", "pending", "success", "success_with_warnings", "skipped", "not_found"];
+      let stateClass = 'btn-danger';
+      if (!hasCi) {
+        stateClass = 'btn-create';
+      } else if (indexOf.call(allowed_states, state) !== -1) {
+        switch (state) {
+          case "failed":
+          case "canceled":
+          case "not_found":
+            stateClass = 'btn-danger';
+            break;
+          case "running":
+            stateClass = 'btn-info';
+            break;
+          case "success":
+          case "success_with_warnings":
+            stateClass = 'btn-create';
+        }
+      } else {
+        $('.ci_widget.ci-error').show();
+        stateClass = 'btn-danger';
+      }
+
+      this.setMergeButtonClass(stateClass, $html);
+    };
+
+    MergeRequestWidget.prototype.setMergeButtonClass = function(css_class, $html = $('.mr-state-widget')) {
+      return $html.find('.js-merge-button').removeClass('btn-danger btn-info btn-create').addClass(css_class);
     };
 
     MergeRequestWidget.prototype.updatePipelineUrls = function(id) {
