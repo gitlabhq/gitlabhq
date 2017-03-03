@@ -74,6 +74,7 @@ function testUnicodeSupportMap(testMap) {
     .reduce((list, testKey) => list.concat(testMap[testKey]), []).length;
 
   const canvas = document.createElement('canvas');
+  (window.gl || window).testEmojiUnicodeSupportMapCanvas = canvas;
   const ctx = canvas.getContext('2d');
   canvas.width = (2 * fontSize);
   canvas.height = (numTestEntries * fontSize);
@@ -95,7 +96,9 @@ function testUnicodeSupportMap(testMap) {
   let readIndex = 0;
   testMapKeys.forEach((testKey) => {
     const testEntry = testMap[testKey];
-    const isTestSatisfied = [].concat(testEntry).every(() => {
+    // This needs to be a `reduce` instead of `every` because we need to
+    // keep the `readIndex` in sync from the writes by running all entries
+    const isTestSatisfied = [].concat(testEntry).reduce((isSatisfied) => {
       // Sample along the vertical-middle for a couple of characters
       const imageData = ctx.getImageData(
           0,
@@ -121,8 +124,8 @@ function testUnicodeSupportMap(testMap) {
       }
 
       readIndex += 1;
-      return isValidEmoji;
-    });
+      return isSatisfied && isValidEmoji;
+    }, true);
 
     resultMap[testKey] = isTestSatisfied;
   });
