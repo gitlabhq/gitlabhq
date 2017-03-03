@@ -155,18 +155,15 @@ page](https://golang.org/dl).
 ## 4. Node
 
 Since GitLab 8.17, GitLab requires the use of node >= v4.3.0 to compile
-javascript assets, and yarn >= v0.17.0 to manage javascript dependencies.
-In many distros the versions provided by the official package  repositories
-are out of date, so we'll need to install through the following commands:
+javascript assets. In many distros the version provided by the official package
+repositories is out of date, so we'll need to install through the following
+commands:
 
     # install node v7.x
     curl --location https://deb.nodesource.com/setup_7.x | bash -
     sudo apt-get install -y nodejs
 
-    # install yarn
-    curl --location https://yarnpkg.com/install.sh | bash -
-
-Visit the official websites for [node](https://nodejs.org/en/download/package-manager/) and [yarn](https://yarnpkg.com/en/docs/install/) if you have any trouble with these steps.
+Visit the official website for [node](https://nodejs.org/en/download/package-manager/) if you have any trouble with this step.
 
 ## 5. System Users
 
@@ -468,7 +465,7 @@ Check if GitLab and its environment are configured correctly:
 
 ### Compile Assets
 
-    sudo -u git -H yarn install --production --pure-lockfile
+    sudo -u git -H npm install --production
     sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
 
 ### Start Your GitLab Instance
