@@ -16,7 +16,7 @@ module Gitlab
       private
 
       def decode_geo_request
-        # A Geo transfer request has an Authorization header:
+        # A Geo request has an Authorization header:
         # Authorization: GL-Geo: <Geo Access Key>:<JWT payload>
         #
         # For example:
@@ -41,7 +41,7 @@ module Gitlab
           data&.deep_symbolize_keys!
           data
         rescue JWT::DecodeError => e
-          Rails.logger.error("Error decoding Geo transfer request: #{e}")
+          Rails.logger.error("Error decoding Geo request: #{e}")
         end
       end
 
@@ -58,7 +58,7 @@ module Gitlab
         tokens = auth_header.split(' ')
 
         return unless tokens.count == 2
-        return unless tokens[0] == Gitlab::Geo::TransferRequest::GITLAB_GEO_AUTH_TOKEN_TYPE
+        return unless tokens[0] == Gitlab::Geo::BaseRequest::GITLAB_GEO_AUTH_TOKEN_TYPE
 
         # Split at the first occurence of a colon
         geo_tokens = tokens[1].split(':', 2)

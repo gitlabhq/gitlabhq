@@ -10,7 +10,7 @@ describe API::Geo, api: true do
   end
 
   before(:each) do
-    allow(Gitlab::Geo).to receive(:current_node) { geo_node }
+    allow(Gitlab::Geo).to receive(:current_node) { primary_node }
   end
 
   describe 'POST /geo/receive_events authentication' do
