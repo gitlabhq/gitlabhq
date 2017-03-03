@@ -16,14 +16,16 @@ module Geo
       project.expire_caches_before_rename(old_path_with_namespace)
 
       # Make sure target directory exists (used when transfering repositories)
-      project.namespace.ensure_dir_exist
+      project.ensure_dir_exist
 
-      if gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
+      if gitlab_shell.mv_repository(project.repository_storage_path,
+                                    old_path_with_namespace, new_path_with_namespace)
         # If repository moved successfully we need to send update instructions to users.
         # However we cannot allow rollback since we moved repository
         # So we basically we mute exceptions in next actions
         begin
-          gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
+          gitlab_shell.mv_repository(project.repository_storage_path,
+                                     "#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         rescue
           # Returning false does not rollback after_* transaction but gives
           # us information about failing some of tasks
@@ -34,6 +36,8 @@ module Geo
         # db changes in order to prevent out of sync between db and fs
         raise Exception.new('repository cannot be renamed')
       end
+
+      true
     end
   end
 end
