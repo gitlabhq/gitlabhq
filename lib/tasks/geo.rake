@@ -2,7 +2,7 @@ task spec: ['geo:db:test:prepare']
 
 namespace :geo do
   namespace :db do |ns|
-    %i(drop create setup migrate rollback seed version).each do |task_name|
+    %i(drop create setup migrate rollback seed version reset).each do |task_name|
       task task_name do
         Rake::Task["db:#{task_name}"].invoke
       end
@@ -12,6 +12,14 @@ namespace :geo do
       %i(load dump).each do |task_name|
         task task_name do
           Rake::Task["db:schema:#{task_name}"].invoke
+        end
+      end
+    end
+
+    namespace :migrate do
+      %i(up down redo).each do |task_name|
+        task task_name do
+          Rake::Task["db:migrate:#{task_name}"].invoke
         end
       end
     end
