@@ -133,7 +133,7 @@ module.exports = {
       return title;
     },
 
-    projecName() {
+    projectName() {
       return '<projectname>';
     },
   },
@@ -194,7 +194,7 @@ module.exports = {
           <span class="title">Kubernetes deployment not found</span>
           <span>
             To see deployment progress for your environments, make sure your deployments are in Kubernetes namespace
-            <code>{{projecName}}</code> and labeled with <code>app=$CI_ENVIRONMENT_SLUG</code>.
+            <code>{{projectName}}</code> and labeled with <code>app=$CI_ENVIRONMENT_SLUG</code>.
           </span>
         </section>
       </div>
