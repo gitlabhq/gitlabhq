@@ -1,6 +1,7 @@
-const Vue = require('vue');
-const DeployBoard = require('~/environments/components/deploy_board_component');
-const Service = require('~/environments/services/environments_service');
+import Vue from 'vue';
+import DeployBoard from '~/environments/components/deploy_board_component';
+import Service from '~/environments/services/environments_service.js.es6';
+
 const { deployBoardMockData, invalidDeployBoardMockData } = require('./mock_data');
 
 describe('Deploy Board', () => {

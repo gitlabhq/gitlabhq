@@ -1,5 +1,5 @@
-const Vue = require('vue');
-const DeployBoardInstance = require('~/environments/components/deploy_board_instance_component');
+import Vue from 'vue';
+import DeployBoardInstance from '~/environments/components/deploy_board_instance_component';
 
 describe('Deploy Board Instance', () => {
   let DeployBoardInstanceComponent;

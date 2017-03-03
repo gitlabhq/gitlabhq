@@ -22,7 +22,7 @@ import statusCodes from '~/lib/utils/http_status';
 import '~/flash';
 import '~/lib/utils/common_utils.js.es6';
 import deployBoardSvg from 'empty_states/icons/_deploy_board.svg';
-import instanceComponent from './deploy_board_instance_component.js.es6';
+import instanceComponent from './deploy_board_instance_component';
 
 export default {
 
