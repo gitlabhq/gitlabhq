@@ -34,10 +34,10 @@ Parameters:
 | `visibility` | string | no | Limit by visibility `public`, `internal`, or `private` |
 | `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
-| `search` | string | no | Return list of authorized projects matching the search criteria |
+| `search` | string | no | Return list of projects matching the search criteria |
 | `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
 | `owned` | boolean | no | Limit by projects owned by the current user |
-| `authorized` | boolean | no | Limit by projects authorized for the current user |
+| `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 
 ```json

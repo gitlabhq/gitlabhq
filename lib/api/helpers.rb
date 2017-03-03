@@ -259,7 +259,7 @@ module API
     # project helpers
 
     def filter_projects(projects)
-      if params[:authorized]
+      if params[:membership]
         projects = projects.merge(current_user.authorized_projects)
       end
 

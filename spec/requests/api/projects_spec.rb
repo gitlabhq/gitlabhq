@@ -143,9 +143,9 @@ describe API::Projects, api: true  do
         end
       end
 
-      context 'and authorized=true' do
+      context 'and membership=true' do
         it_behaves_like 'projects response' do
-          let(:filter) { { authorized: true } }
+          let(:filter) { { membership: true } }
           let(:current_user) { user }
           let(:projects) { [project, project2, project3] }
         end
@@ -235,7 +235,7 @@ describe API::Projects, api: true  do
         end
 
         context 'including owned filter' do
-          it 'returns only projects that satify all query parameters' do
+          it 'returns only projects that satisfy all query parameters' do
             get api('/projects', user), { visibility: 'public', owned: true, starred: true, search: 'gitlab' }
 
             expect(response).to have_http_status(200)
@@ -246,7 +246,7 @@ describe API::Projects, api: true  do
           end
         end
 
-        context 'including authorized filter' do
+        context 'including membership filter' do
           before do
             create(:project_member,
                    user: user,
@@ -254,14 +254,14 @@ describe API::Projects, api: true  do
                    access_level: ProjectMember::MASTER)
           end
 
-          it 'returns only projects that satify all query parameters' do
-            get api('/projects', user), { visibility: 'public', authorized: true, starred: true, search: 'gitlab' }
+          it 'returns only projects that satisfy all query parameters' do
+            get api('/projects', user), { visibility: 'public', membership: true, starred: true, search: 'gitlab' }
 
             expect(response).to have_http_status(200)
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(json_response.size).to eq(2)
-            expect(json_response.map { |project| project.fetch('id') }).to contain_exactly(project5.id, project7.id)
+            expect(json_response.map { |project| project['id'] }).to contain_exactly(project5.id, project7.id)
           end
         end
       end
