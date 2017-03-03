@@ -1,13 +1,13 @@
 module Gitlab
   module Ci
     module Status
-      class Blocked < Status::Core
+      class Manual < Status::Core
         def text
-          'blocked'
+          'manual'
         end
 
         def label
-          'blocked action'
+          'manual action'
         end
 
         def icon

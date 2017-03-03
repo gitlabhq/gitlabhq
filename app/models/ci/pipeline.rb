@@ -50,7 +50,7 @@ module Ci
       end
 
       event :block do
-        transition any - [:blocked] => :blocked
+        transition any - [:manual] => :manual
       end
 
       # IMPORTANT
@@ -325,7 +325,7 @@ module Ci
         when 'failed' then drop
         when 'canceled' then cancel
         when 'skipped' then skip
-        when 'blocked' then block
+        when 'manual' then block
         end
       end
     end

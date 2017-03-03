@@ -63,8 +63,8 @@ module Ci
     end
 
     state_machine :status do
-      event :block do
-        transition created: :blocked
+      event :actionize do
+        transition created: :manual
       end
 
       after_transition any => [:pending] do |build|
@@ -103,16 +103,16 @@ module Ci
     end
 
     def playable?
-      project.builds_enabled? && has_commands? && manual? &&
-        (skipped? || blocked?)
+      project.builds_enabled? && has_commands? &&
+        action? && manual?
     end
 
-    def manual?
+    def action?
       self.when == 'manual'
     end
 
     def barrier?
-      manual? && !allow_failure?
+      action? && !allow_failure?
     end
 
     def has_commands?
@@ -565,7 +565,7 @@ module Ci
       ]
       variables << { key: 'CI_BUILD_TAG', value: ref, public: true } if tag?
       variables << { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true } if trigger_request
-      variables << { key: 'CI_BUILD_MANUAL', value: 'true', public: true } if manual?
+      variables << { key: 'CI_BUILD_MANUAL', value: 'true', public: true } if action?
       variables
     end
 

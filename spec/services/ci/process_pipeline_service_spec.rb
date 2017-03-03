@@ -285,8 +285,8 @@ describe Ci::ProcessPipelineService, '#execute', :services do
       succeed_running_or_pending
 
       expect(builds_names).to eq %w[code:test staging:deploy]
-      expect(builds_statuses).to eq %w[success blocked]
-      expect(pipeline.reload.status).to eq 'blocked'
+      expect(builds_statuses).to eq %w[success manual]
+      expect(pipeline.reload).to be_manual
     end
   end
 

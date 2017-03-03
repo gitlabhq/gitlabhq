@@ -682,12 +682,12 @@ describe Ci::Build, :models do
       end
     end
 
-    describe '#manual?' do
+    describe '#action?' do
       before do
         build.update(when: value)
       end
 
-      subject { build.manual? }
+      subject { build.action? }
 
       context 'when is set to manual' do
         let(:value) { 'manual' }
