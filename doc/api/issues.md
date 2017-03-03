@@ -25,6 +25,7 @@ GET /issues?labels=foo,bar
 GET /issues?labels=foo,bar&state=opened
 GET /issues?milestone=1.0.0
 GET /issues?milestone=1.0.0&state=opened
+GET /issues?iids[]=42&iids[]=43
 ```
 
 | Attribute | Type | Required | Description |
@@ -32,6 +33,7 @@ GET /issues?milestone=1.0.0&state=opened
 | `state`   | string  | no    | Return all issues or just those that are `opened` or `closed`|
 | `labels`  | string  | no    | Comma-separated list of label names, issues must have all labels to be returned |
 | `milestone` | string| no    | The milestone title |
+| `iids`    | Array[integer] | no | Return only the issues having the given `iid` |
 | `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
 | `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
 
@@ -102,6 +104,7 @@ GET /groups/:id/issues?labels=foo,bar
 GET /groups/:id/issues?labels=foo,bar&state=opened
 GET /groups/:id/issues?milestone=1.0.0
 GET /groups/:id/issues?milestone=1.0.0&state=opened
+GET /groups/:id/issues?iids[]=42&iids[]=43
 ```
 
 | Attribute | Type | Required | Description |
@@ -109,6 +112,7 @@ GET /groups/:id/issues?milestone=1.0.0&state=opened
 | `id`      | integer | yes   | The ID of a group |
 | `state`   | string  | no    | Return all issues or just those that are `opened` or `closed`|
 | `labels`  | string  | no    | Comma-separated list of label names, issues must have all labels to be returned |
+| `iids`    | Array[integer] | no | Return only the issues having the given `iid` |
 | `milestone` | string| no    | The milestone title |
 | `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
 | `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
@@ -181,12 +185,13 @@ GET /projects/:id/issues?labels=foo,bar
 GET /projects/:id/issues?labels=foo,bar&state=opened
 GET /projects/:id/issues?milestone=1.0.0
 GET /projects/:id/issues?milestone=1.0.0&state=opened
+GET /projects/:id/issues?iids[]=42&iids[]=43
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer | yes   | The ID of a project |
-| `iid`     | integer | no    | Return the issue having the given `iid` |
+| `iids`    | Array[integer] | no | Return only the milestone having the given `iid` |
 | `state`   | string  | no    | Return all issues or just those that are `opened` or `closed`|
 | `labels`  | string  | no    | Comma-separated list of label names, issues must have all labels to be returned |
 | `milestone` | string| no    | The milestone title |

@@ -1,4 +1,5 @@
 const Vue = require('vue');
+const playIconSvg = require('icons/_icon_play.svg');
 
 module.exports = Vue.component('actions-component', {
   props: {
@@ -7,11 +8,10 @@ module.exports = Vue.component('actions-component', {
       required: false,
       default: () => [],
     },
+  },
 
-    playIconSvg: {
-      type: String,
-      required: false,
-    },
+  data() {
+    return { playIconSvg };
   },
 
   template: `
@@ -28,9 +28,7 @@ module.exports = Vue.component('actions-component', {
             data-method="post"
             rel="nofollow"
             class="js-manual-action-link">
-
-            <span class="js-action-play-icon-container" v-html="playIconSvg"></span>
-
+            ${playIconSvg}
             <span>
               {{action.name}}
             </span>

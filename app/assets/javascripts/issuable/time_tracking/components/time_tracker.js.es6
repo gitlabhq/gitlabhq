@@ -15,7 +15,6 @@ require('./comparison_pane');
       'time_spent',
       'human_time_estimate',
       'human_time_spent',
-      'stopwatchSvg',
       'docsUrl',
     ],
     data() {
@@ -71,8 +70,7 @@ require('./comparison_pane');
           :show-spent-only-state='showSpentOnlyState'
           :show-estimate-only-state='showEstimateOnlyState'
           :time-spent-human-readable='timeSpentHumanReadable'
-          :time-estimate-human-readable='timeEstimateHumanReadable'
-          :stopwatch-svg='stopwatchSvg'>
+          :time-estimate-human-readable='timeEstimateHumanReadable'>
         </time-tracking-collapsed-state>
         <div class='title hide-collapsed'>
           Time tracking

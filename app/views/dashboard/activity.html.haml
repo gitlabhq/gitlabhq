@@ -1,6 +1,5 @@
 = content_for :meta_tags do
-  - if current_user
-    = auto_discovery_link_tag(:atom, dashboard_projects_url(format: :atom, private_token: current_user.private_token), title: "All activity")
+  = auto_discovery_link_tag(:atom, dashboard_projects_url(rss_url_options), title: "All activity")
 
 - page_title    "Activity"
 - header_title  "Activity", activity_dashboard_path

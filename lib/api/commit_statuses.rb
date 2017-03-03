@@ -72,14 +72,15 @@ module API
         status = GenericCommitStatus.running_or_pending.find_or_initialize_by(
           project: @project,
           pipeline: pipeline,
-          user: current_user,
           name: name,
           ref: ref,
-          target_url: params[:target_url],
-          description: params[:description],
-          coverage: params[:coverage]
+          user: current_user
         )
 
+        optional_attributes =
+          attributes_for_keys(%w[target_url description coverage])
+
+        status.update(optional_attributes) if optional_attributes.any?
         render_validation_error!(status) if status.invalid?
 
         begin

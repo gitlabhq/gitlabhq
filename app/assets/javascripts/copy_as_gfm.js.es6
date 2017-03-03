@@ -25,6 +25,9 @@ require('./lib/utils/common_utils');
       },
     },
     ReferenceFilter: {
+      '.tooltip'(el, text) {
+        return '';
+      },
       'a.gfm:not([data-link=true])'(el, text) {
         return el.dataset.original || text;
       },

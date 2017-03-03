@@ -2,8 +2,7 @@
 
 - page_title "Commits", @ref
 = content_for :meta_tags do
-  - if current_user
-    = auto_discovery_link_tag(:atom, namespace_project_commits_url(@project.namespace, @project, @ref, format: :atom, private_token: current_user.private_token), title: "#{@project.name}:#{@ref} commits")
+  = auto_discovery_link_tag(:atom, namespace_project_commits_url(@project.namespace, @project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 
 = content_for :sub_nav do
   = render "head"
@@ -27,10 +26,9 @@
       .control
         = form_tag(namespace_project_commits_path(@project.namespace, @project, @id), method: :get, class: 'commits-search-form') do
           = search_field_tag :search, params[:search], { placeholder: 'Filter by commit message', id: 'commits-search', class: 'form-control search-text-input input-short', spellcheck: false }
-      - if current_user && current_user.private_token
-        .control
-          = link_to namespace_project_commits_path(@project.namespace, @project, @ref, { format: :atom, private_token: current_user.private_token }), title: "Commits Feed", class: 'btn' do
-            = icon("rss")
+      .control
+        = link_to namespace_project_commits_path(@project.namespace, @project, @ref, rss_url_options), title: "Commits Feed", class: 'btn' do
+          = icon("rss")
 
   %div{ id: dom_id(@project) }
     %ol#commits-list.list-unstyled.content_list

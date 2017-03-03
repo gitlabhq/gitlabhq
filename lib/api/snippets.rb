@@ -58,10 +58,10 @@ module API
         requires :title, type: String, desc: 'The title of a snippet'
         requires :file_name, type: String, desc: 'The name of a snippet file'
         requires :content, type: String, desc: 'The content of a snippet'
-        optional :visibility_level, type: Integer,
-                                    values: Gitlab::VisibilityLevel.values,
-                                    default: Gitlab::VisibilityLevel::INTERNAL,
-                                    desc: 'The visibility level of the snippet'
+        optional :visibility, type: String,
+                              values: Gitlab::VisibilityLevel.string_values,
+                              default: 'internal',
+                              desc: 'The visibility of the snippet'
       end
       post do
         attrs = declared_params(include_missing: false).merge(request: request, api: true)
@@ -85,10 +85,10 @@ module API
         optional :title, type: String, desc: 'The title of a snippet'
         optional :file_name, type: String, desc: 'The name of a snippet file'
         optional :content, type: String, desc: 'The content of a snippet'
-        optional :visibility_level, type: Integer,
-                                    values: Gitlab::VisibilityLevel.values,
-                                    desc: 'The visibility level of the snippet'
-        at_least_one_of :title, :file_name, :content, :visibility_level
+        optional :visibility, type: String,
+                              values: Gitlab::VisibilityLevel.string_values,
+                              desc: 'The visibility of the snippet'
+        at_least_one_of :title, :file_name, :content, :visibility
       end
       put ':id' do
         snippet = snippets_for_current_user.find_by(id: params.delete(:id))

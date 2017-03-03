@@ -4,7 +4,7 @@ module CreatesCommit
   def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil)
     set_commit_variables
 
-    start_branch = @mr_target_branch unless initial_commit?
+    start_branch = @mr_target_branch
     commit_params = @commit_params.merge(
       start_project: @mr_target_project,
       start_branch: start_branch,
@@ -115,11 +115,6 @@ module CreatesCommit
     @mr_target_branch = @ref || @target_branch
 
     @mr_source_branch = guess_mr_source_branch
-  end
-
-  def initial_commit?
-    @mr_target_branch.nil? ||
-      !@mr_target_project.repository.branch_exists?(@mr_target_branch)
   end
 
   def guess_mr_source_branch

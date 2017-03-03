@@ -149,14 +149,14 @@ header {
 
     .header-logo {
       display: inline-block;
-      margin: 0 8px 0 3px;
+      margin: 0 7px 0 2px;
       position: relative;
-      top: 7px;
+      top: 10px;
       transition-duration: .3s;
 
       svg,
       img {
-        height: 36px;
+        height: 28px;
       }
 
       &:hover {

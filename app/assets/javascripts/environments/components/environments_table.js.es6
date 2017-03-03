@@ -28,21 +28,6 @@ module.exports = Vue.component('environment-table-component', {
       required: false,
       default: false,
     },
-
-    commitIconSvg: {
-      type: String,
-      required: false,
-    },
-
-    playIconSvg: {
-      type: String,
-      required: false,
-    },
-
-    terminalIconSvg: {
-      type: String,
-      required: false,
-    },
   },
 
   template: `
@@ -63,10 +48,7 @@ module.exports = Vue.component('environment-table-component', {
           <tr is="environment-item"
             :model="model"
             :can-create-deployment="canCreateDeployment"
-            :can-read-environment="canReadEnvironment"
-            :play-icon-svg="playIconSvg"
-            :terminal-icon-svg="terminalIconSvg"
-            :commit-icon-svg="commitIconSvg"></tr>
+            :can-read-environment="canReadEnvironment"></tr>
         </template>
       </tbody>
     </table>

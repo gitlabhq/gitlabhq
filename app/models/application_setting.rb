@@ -179,6 +179,7 @@ class ApplicationSetting < ActiveRecord::Base
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_projects_limit: Settings.gitlab['default_projects_limit'],
       default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+      default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       disabled_oauth_sign_in_sources: [],
       domain_whitelist: Settings.gitlab['domain_whitelist'],
       gravatar_enabled: Settings.gravatar['enabled'],
@@ -275,6 +276,22 @@ class ApplicationSetting < ActiveRecord::Base
 
   def repository_storage=(value)
     self.repository_storages = [value]
+  end
+
+  def default_project_visibility=(level)
+    super(Gitlab::VisibilityLevel.level_value(level))
+  end
+
+  def default_snippet_visibility=(level)
+    super(Gitlab::VisibilityLevel.level_value(level))
+  end
+
+  def default_group_visibility=(level)
+    super(Gitlab::VisibilityLevel.level_value(level))
+  end
+
+  def restricted_visibility_levels=(levels)
+    super(levels.map { |level| Gitlab::VisibilityLevel.level_value(level) })
   end
 
   # Choose one of the available repository storage options. Currently all have
