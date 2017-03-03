@@ -25,10 +25,6 @@ module Gitlab
 
           helpers :key
 
-          def self.default
-            { key: Entry::Key.default }
-          end
-
           def value
             super.merge(key: key_value)
           end

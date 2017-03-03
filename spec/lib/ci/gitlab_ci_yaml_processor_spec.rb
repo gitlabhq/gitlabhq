@@ -51,7 +51,7 @@ module Ci
           commands: "pwd\nrspec",
           coverage_regex: nil,
           tag_list: [],
-          options: { cache: { key: 'default' } },
+          options: {},
           allow_failure: false,
           when: "on_success",
           environment: nil,
@@ -468,8 +468,7 @@ module Ci
           tag_list: [],
           options: {
             image: "ruby:2.1",
-            services: ["mysql"],
-            cache: { key: 'default' }
+            services: ["mysql"]
           },
           allow_failure: false,
           when: "on_success",
@@ -498,8 +497,7 @@ module Ci
           tag_list: [],
           options: {
             image: "ruby:2.5",
-            services: ["postgresql"],
-            cache: { key: 'default' }
+            services: ["postgresql"]
           },
           allow_failure: false,
           when: "on_success",
@@ -740,7 +738,6 @@ module Ci
           options: {
             image: "ruby:2.1",
             services: ["mysql"],
-            cache: { key: 'default' },
             artifacts: {
               name: "custom_name",
               paths: ["logs/", "binaries/"],
@@ -950,7 +947,7 @@ module Ci
             commands: "test",
             coverage_regex: nil,
             tag_list: [],
-            options: { cache: { key: 'default' } },
+            options: {},
             when: "on_success",
             allow_failure: false,
             environment: nil,
@@ -996,7 +993,7 @@ module Ci
             commands: "execute-script-for-job",
             coverage_regex: nil,
             tag_list: [],
-            options: { cache: { key: 'default' } },
+            options: {},
             when: "on_success",
             allow_failure: false,
             environment: nil,
@@ -1009,7 +1006,7 @@ module Ci
             commands: "execute-script-for-job",
             coverage_regex: nil,
             tag_list: [],
-            options: { cache: { key: 'default' } },
+            options: {},
             when: "on_success",
             allow_failure: false,
             environment: nil,
