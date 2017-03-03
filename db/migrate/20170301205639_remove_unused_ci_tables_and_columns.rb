@@ -16,8 +16,8 @@ class RemoveUnusedCiTablesAndColumns < ActiveRecord::Migration
       drop_table(table)
     end
 
-    remove_column :ci_commits, :push_data
-    remove_column :ci_builds, :job_id
-    remove_column :ci_builds, :deploy
+    remove_column :ci_commits, :push_data, :text
+    remove_column :ci_builds, :job_id, :integer
+    remove_column :ci_builds, :deploy, :boolean
   end
 end
