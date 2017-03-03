@@ -4,8 +4,8 @@ module Gitlab
       def self.perform_checks
         return '' unless Gitlab::Geo.secondary?
 
-        database_version  = self.get_database_version.to_i
-        migration_version = self.get_migration_version.to_i
+        database_version  = self.get_database_version
+        migration_version = self.get_migration_version
 
         if database_version != migration_version
           "Current Geo database version (#{database_version}) does not match latest migration (#{migration_version})."
@@ -18,7 +18,7 @@ module Gitlab
 
       def self.db_migrate_path
         # Lazy initialisation so Rails.root will be defined
-        @@db_migrate_path ||= File.join(Rails.root, 'db_geo', 'migrate')
+        @db_migrate_path ||= File.join(Rails.root, 'db_geo', 'migrate')
       end
 
       def self.get_database_version
@@ -30,6 +30,7 @@ module Gitlab
             connection.execute("SELECT MAX(version) AS version FROM #{schema_migrations_table_name}")
                       .first
                       .fetch('version')
+                      .to_i
           else
             0
           end
@@ -47,7 +48,7 @@ module Gitlab
           end
         end
 
-        latest_migration
+        latest_migration.to_i
       end
     end
   end
