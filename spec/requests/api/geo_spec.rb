@@ -4,13 +4,9 @@ describe API::Geo, api: true do
   include ApiHelpers
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
-  let(:geo_node) { build(:geo_node) }
+  let!(:geo_node) { create(:geo_node, :primary) }
   let(:geo_token_header) do
     { 'X-Gitlab-Token' => geo_node.system_hook.token }
-  end
-
-  before(:each) do
-    allow(Gitlab::Geo).to receive(:current_node) { geo_node }
   end
 
   describe 'POST /geo/receive_events authentication' do
@@ -105,6 +101,43 @@ describe API::Geo, api: true do
     it 'starts refresh process if admin and correct params' do
       post api('/geo/receive_events'), tag_push_payload, geo_token_header
       expect(response.status).to eq 201
+    end
+  end
+
+  describe 'GET /geo/transfers/lfs/1' do
+    let!(:secondary_node) { create(:geo_node) }
+    let(:lfs_object) { create(:lfs_object, :with_file) }
+    let(:req_header) do
+      transfer = Gitlab::Geo::LfsTransfer.new(lfs_object)
+      Gitlab::Geo::TransferRequest.new(transfer.request_data).header
+    end
+
+    before do
+      allow_any_instance_of(Gitlab::Geo::TransferRequest).to receive(:requesting_node).and_return(secondary_node)
+    end
+
+    it 'responds with 401 with invalid auth header' do
+      get api("/geo/transfers/lfs/#{lfs_object.id}"), nil, Authorization: 'Test'
+
+      expect(response.status).to eq 401
+    end
+
+    context 'LFS file exists' do
+      it 'responds with 200 with X-Sendfile' do
+        get api("/geo/transfers/lfs/#{lfs_object.id}"), nil, req_header
+
+        expect(response.status).to eq 200
+        expect(response.headers['Content-Type']).to eq('application/octet-stream')
+        expect(response.headers['X-Sendfile']).to eq(lfs_object.file.path)
+      end
+    end
+
+    context 'LFS object does not exist' do
+      it 'responds with 404' do
+        get api("/geo/transfers/lfs/100000"), nil, req_header
+
+        expect(response.status).to eq 404
+      end
     end
   end
 end

@@ -15,11 +15,21 @@ class GeoNode < ActiveRecord::Base
   validates :primary, uniqueness: { message: 'node already exists' }, if: :primary
   validates :schema, inclusion: %w(http https)
   validates :relative_url_root, length: { minimum: 0, allow_nil: false }
+  validates :access_key, presence: true
+  validates :encrypted_secret_access_key, presence: true
 
   after_initialize :build_dependents
   after_save :refresh_bulk_notify_worker_status
   after_destroy :refresh_bulk_notify_worker_status
   before_validation :update_dependents_attributes
+
+  before_validation :ensure_access_keys!
+
+  attr_encrypted :secret_access_key,
+                 key: Gitlab::Application.secrets.db_key_base,
+                 algorithm: 'aes-256-gcm',
+                 mode: :per_attribute_iv,
+                 encode: true
 
   def uri
     if relative_url_root
@@ -42,15 +52,19 @@ class GeoNode < ActiveRecord::Base
   end
 
   def notify_projects_url
-    URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/refresh_projects").to_s
+    geo_api_url('refresh_projects')
   end
 
   def notify_wikis_url
-    URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/refresh_wikis").to_s
+    geo_api_url('refresh_wikis')
   end
 
   def geo_events_url
-    URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/receive_events").to_s
+    geo_api_url('receive_events')
+  end
+
+  def geo_transfers_url(file_type, file_id)
+    geo_api_url("transfers/#{file_type}/#{file_id}")
   end
 
   def oauth_callback_url
@@ -72,6 +86,19 @@ class GeoNode < ActiveRecord::Base
   end
 
   private
+
+  def geo_api_url(suffix)
+    URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/#{suffix}").to_s
+  end
+
+  def ensure_access_keys!
+    return if self.access_key.present? && self.encrypted_secret_access_key.present?
+
+    keys = Gitlab::Geo.generate_access_keys
+
+    self.access_key = keys[:access_key]
+    self.secret_access_key = keys[:secret_access_key]
+  end
 
   def url_helper_args
     if relative_url_root
