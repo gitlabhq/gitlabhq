@@ -33,7 +33,7 @@ module API
       # Example request:
       #   GET /geo/status
       get 'status' do
-        authenticated_as_admin!
+        authenticate_by_gitlab_geo_node_token!
         require_node_to_be_secondary!
 
         present GeoNodeStatus.new, with: Entities::GeoNodeStatus
@@ -90,12 +90,20 @@ module API
     end
 
     helpers do
+      def authenticate_by_gitlab_geo_node_token!
+        auth_header = headers['Authorization']
+
+        unless auth_header && Gitlab::Geo::JwtRequestDecoder.new(auth_header).decode
+          unauthorized!
+        end
+      end
+
       def require_node_to_be_enabled!
-        forbidden! 'Geo node is disabled.' unless Gitlab::Geo.current_node.enabled?
+        forbidden! 'Geo node is disabled.' unless Gitlab::Geo.current_node&.enabled?
       end
 
       def require_node_to_be_secondary!
-        forbidden! 'Geo node is disabled.' unless Gitlab::Geo.current_node.secondary?
+        forbidden! 'Geo node is not secondary node.' unless Gitlab::Geo.current_node&.secondary?
       end
     end
   end

@@ -2,18 +2,15 @@ module Geo
   class NodeStatusService
     include HTTParty
 
+    KEYS = %w(health repositories repositories_synced repositories_failed).freeze
+
     # HTTParty timeout
     default_timeout Gitlab.config.gitlab.geo_status_timeout
 
     def call(status_url)
-      keys = %w(health repositories repositories_synced repositories_failed)
       values =
         begin
-          response = self.class.get(status_url,
-                                    headers: {
-                                      'Content-Type' => 'application/json',
-                                      'PRIVATE-TOKEN' => private_token
-                                    })
+          response = self.class.get(status_url, headers: headers)
 
           if response.success? || response.redirection?
             response.parsed_response.values_at(*keys)
@@ -24,14 +21,13 @@ module Geo
           [e.message]
         end
 
-      GeoNodeStatus.new(keys.zip(values).to_h)
+      GeoNodeStatus.new(KEYS.zip(values).to_h)
     end
 
     private
 
-    def private_token
-      # TODO: should we ask admin user to be defined as part of configuration?
-      @private_token ||= User.find_by(admin: true).authentication_token
+    def headers
+      Gitlab::Geo::BaseRequest.new.headers
     end
   end
 end

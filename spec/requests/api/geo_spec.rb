@@ -2,11 +2,12 @@ require 'spec_helper'
 
 describe API::Geo, api: true do
   include ApiHelpers
+
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
-  let!(:geo_node) { create(:geo_node, :primary) }
+  let!(:primary_node) { create(:geo_node, :primary) }
   let(:geo_token_header) do
-    { 'X-Gitlab-Token' => geo_node.system_hook.token }
+    { 'X-Gitlab-Token' => primary_node.system_hook.token }
   end
 
   before(:each) do
@@ -27,7 +28,7 @@ describe API::Geo, api: true do
 
   describe 'POST /geo/refresh_wikis disabled node' do
     it 'responds with forbidden' do
-      geo_node.enabled = false
+      primary_node.enabled = false
 
       post api('/geo/refresh_wikis', admin), nil
 
@@ -37,7 +38,7 @@ describe API::Geo, api: true do
 
   describe 'POST /geo/receive_events disabled node' do
     it 'responds with forbidden' do
-      geo_node.enabled = false
+      primary_node.enabled = false
 
       post api('/geo/receive_events'), nil, geo_token_header
 
@@ -125,7 +126,7 @@ describe API::Geo, api: true do
     let(:lfs_object) { create(:lfs_object, :with_file) }
     let(:req_header) do
       transfer = Gitlab::Geo::LfsTransfer.new(lfs_object)
-      Gitlab::Geo::TransferRequest.new(transfer.request_data).header
+      Gitlab::Geo::TransferRequest.new(transfer.request_data).headers
     end
 
     before do
@@ -153,6 +154,44 @@ describe API::Geo, api: true do
         get api("/geo/transfers/lfs/100000"), nil, req_header
 
         expect(response.status).to eq 404
+      end
+    end
+  end
+
+  describe 'GET /geo/status' do
+    let!(:secondary_node) { create(:geo_node) }
+    let(:request) { Gitlab::Geo::BaseRequest.new }
+
+    it 'responds with 401 with invalid auth header' do
+      get api('/geo/status'), nil, Authorization: 'Test'
+
+      expect(response.status).to eq 401
+    end
+
+    context 'when requesting secondary node with valid auth header' do
+      before(:each) do
+        allow(Gitlab::Geo).to receive(:current_node) { secondary_node }
+        allow(request).to receive(:requesting_node) { primary_node }
+      end
+
+      it 'responds with 200' do
+        get api('/geo/status'), nil, request.headers
+
+        expect(response.status).to eq 200
+        expect(response.headers['Content-Type']).to eq('application/json')
+      end
+    end
+
+    context 'when requesting primary node with valid auth header' do
+      before(:each) do
+        allow(Gitlab::Geo).to receive(:current_node) { primary_node }
+        allow(request).to receive(:requesting_node) { secondary_node }
+      end
+
+      it 'responds with 403' do
+        get api('/geo/status'), nil, request.headers
+
+        expect(response).to have_http_status(403)
       end
     end
   end
