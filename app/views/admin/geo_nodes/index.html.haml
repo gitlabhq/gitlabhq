@@ -25,9 +25,11 @@
               %span.help-block Primary node
             - else
               %p
-                %span.help-block= "Repositories synced: #{node.repositories_synced}/#{node.repositories} (#{number_to_percentage(node.repositories_synced_in_percentage, precision: 2)})"
+                %span.help-block
+                  Repositories synced: #{node.repositories_synced}/#{node.repositories} (#{number_to_percentage(node.repositories_synced_in_percentage, precision: 2)})
               %p
-                %span.help-block= "Repositories failed: #{node.repositories_failed}"
+                %span.help-block
+                  Repositories failed: #{node.repositories_failed}
               %p
                 %span.help-block= node.healthy? ? 'No Health Problems Detected' : node.health
 
