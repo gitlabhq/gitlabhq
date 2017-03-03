@@ -231,10 +231,6 @@ require('es6-promise').polyfill();
     var bootstrapBreakpoint = bp.getBreakpointSize();
     var fitSidebarForSize;
 
-    $(document).on('scroll', function() {
-      $('.has-tooltip').tooltip('hide');
-    });
-
     // Set the default path for all cookies to GitLab's root directory
     Cookies.defaults.path = gon.relative_url_root || '/';
 
