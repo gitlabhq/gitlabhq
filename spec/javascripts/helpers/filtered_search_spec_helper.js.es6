@@ -1,13 +1,21 @@
 class FilteredSearchSpecHelper {
-  static createFilterVisualTokenHTML(name, value, isSelected = false) {
-    return `
-      <li class="js-visual-token filtered-search-token">
-        <div class="selectable ${isSelected ? 'selected' : ''}" role="button">
-          <div class="name">${name}</div>
-          <div class="value">${value}</div>
-        </div>
-      </li>
+  static createFilterVisualTokenHTML(name, value, isSelected) {
+    return FilteredSearchSpecHelper.createFilterVisualToken(name, value, isSelected).outerHTML;
+  }
+
+  static createFilterVisualToken(name, value, isSelected = false) {
+    const li = document.createElement('li');
+    li.classList.add('js-visual-token');
+    li.classList.add('filtered-search-token');
+
+    li.innerHTML = `
+      <div class="selectable ${isSelected ? 'selected' : ''}" role="button">
+        <div class="name">${name}</div>
+        <div class="value">${value}</div>
+      </div>
     `;
+
+    return li;
   }
 
   static createNameFilterVisualTokenHTML(name) {

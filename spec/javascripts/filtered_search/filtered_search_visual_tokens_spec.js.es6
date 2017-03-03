@@ -23,58 +23,90 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
         expect(isLastVisualTokenValid).toEqual(true);
       });
 
-      it('returns when there is one visual token', () => {
-        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-          FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug'),
-        );
+      describe('input is the last item in tokensContainer', () => {
+        it('returns when there is one visual token', () => {
+          tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+            FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug'),
+          );
 
-        const { lastVisualToken, isLastVisualTokenValid }
-          = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+          const { lastVisualToken, isLastVisualTokenValid }
+            = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
-        expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
-        expect(isLastVisualTokenValid).toEqual(true);
+          expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
+          expect(isLastVisualTokenValid).toEqual(true);
+        });
+
+        it('returns when there is an incomplete visual token', () => {
+          tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+            FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('Author'),
+          );
+
+          const { lastVisualToken, isLastVisualTokenValid }
+            = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+
+          expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
+          expect(isLastVisualTokenValid).toEqual(false);
+        });
+
+        it('returns when there are multiple visual tokens', () => {
+          tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
+            ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+            ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
+            ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
+          `);
+
+          const { lastVisualToken, isLastVisualTokenValid }
+            = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+          const items = document.querySelectorAll('.tokens-container .js-visual-token');
+
+          expect(lastVisualToken.isEqualNode(items[items.length - 1])).toEqual(true);
+          expect(isLastVisualTokenValid).toEqual(true);
+        });
+
+        it('returns when there are multiple visual tokens and an incomplete visual token', () => {
+          tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
+            ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+            ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
+            ${FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('assignee')}
+          `);
+
+          const { lastVisualToken, isLastVisualTokenValid }
+            = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+          const items = document.querySelectorAll('.tokens-container .js-visual-token');
+
+          expect(lastVisualToken.isEqualNode(items[items.length - 1])).toEqual(true);
+          expect(isLastVisualTokenValid).toEqual(false);
+        });
       });
 
-      it('returns when there is an incomplete visual token', () => {
-        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
-          FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('Author'),
-        );
+      describe('input is a middle item in tokensContainer', () => {
+        it('returns last token before input', () => {
+          tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
+            ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+            ${FilteredSearchSpecHelper.createInputHTML()}
+            ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
+          `);
 
-        const { lastVisualToken, isLastVisualTokenValid }
-          = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+          const { lastVisualToken, isLastVisualTokenValid }
+            = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
-        expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
-        expect(isLastVisualTokenValid).toEqual(false);
-      });
+          expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
+          expect(isLastVisualTokenValid).toEqual(true);
+        });
 
-      it('returns when there are multiple visual tokens', () => {
-        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
-          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
-          ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
-          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
-        `);
+        it('returns last partial token before input', () => {
+          tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
+            ${FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('label')}
+            ${FilteredSearchSpecHelper.createInputHTML()}
+            ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
+          `);
 
-        const { lastVisualToken, isLastVisualTokenValid }
-          = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
-        const items = document.querySelectorAll('.tokens-container .js-visual-token');
+          const { lastVisualToken, isLastVisualTokenValid }
+            = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
-        expect(lastVisualToken.isEqualNode(items[items.length - 1])).toEqual(true);
-        expect(isLastVisualTokenValid).toEqual(true);
-      });
-
-      it('returns when there are multiple visual tokens and an incomplete visual token', () => {
-        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
-          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
-          ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
-          ${FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('assignee')}
-        `);
-
-        const { lastVisualToken, isLastVisualTokenValid }
-          = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
-        const items = document.querySelectorAll('.tokens-container .js-visual-token');
-
-        expect(lastVisualToken.isEqualNode(items[items.length - 1])).toEqual(true);
-        expect(isLastVisualTokenValid).toEqual(false);
+          expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
+          expect(isLastVisualTokenValid).toEqual(false);
+        });
       });
     });
 
@@ -166,6 +198,36 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
       });
     });
 
+    describe('createVisualTokenElementHTML', () => {
+      let tokenElement;
+
+      beforeEach(() => {
+        setFixtures(`
+          <div class="test-area">
+          ${gl.FilteredSearchVisualTokens.createVisualTokenElementHTML()}
+          </div>
+        `);
+
+        tokenElement = document.querySelector('.test-area').firstElementChild;
+      });
+
+      it('contains name div', () => {
+        expect(tokenElement.querySelector('.name')).toEqual(jasmine.anything());
+      });
+
+      it('contains value div', () => {
+        expect(tokenElement.querySelector('.value')).toEqual(jasmine.anything());
+      });
+
+      it('contains selectable class', () => {
+        expect(tokenElement.classList.contains('selectable')).toEqual(true);
+      });
+
+      it('contains button role', () => {
+        expect(tokenElement.getAttribute('role')).toEqual('button');
+      });
+    });
+
     describe('addVisualTokenElement', () => {
       it('renders search visual tokens', () => {
         gl.FilteredSearchVisualTokens.addVisualTokenElement('search term', null, true);
@@ -192,6 +254,62 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
         expect(token.classList.contains('filtered-search-token')).toEqual(true);
         expect(token.querySelector('.name').innerText).toEqual('label');
         expect(token.querySelector('.value').innerText).toEqual('Frontend');
+      });
+
+      it('inserts visual token before input', () => {
+        tokensContainer.appendChild(FilteredSearchSpecHelper.createFilterVisualToken('assignee', '@root'));
+
+        gl.FilteredSearchVisualTokens.addVisualTokenElement('label', 'Frontend');
+        const tokens = tokensContainer.querySelectorAll('.js-visual-token');
+        const labelToken = tokens[0];
+        const assigneeToken = tokens[1];
+
+        expect(labelToken.classList.contains('filtered-search-token')).toEqual(true);
+        expect(labelToken.querySelector('.name').innerText).toEqual('label');
+        expect(labelToken.querySelector('.value').innerText).toEqual('Frontend');
+
+        expect(assigneeToken.classList.contains('filtered-search-token')).toEqual(true);
+        expect(assigneeToken.querySelector('.name').innerText).toEqual('assignee');
+        expect(assigneeToken.querySelector('.value').innerText).toEqual('@root');
+      });
+    });
+
+    describe('addValueToPreviousVisualTokenElement', () => {
+      it('does not add when previous visual token element has no value', () => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root'),
+        );
+
+        const original = tokensContainer.innerHTML;
+        gl.FilteredSearchVisualTokens.addValueToPreviousVisualTokenElement('value');
+
+        expect(original).toEqual(tokensContainer.innerHTML);
+      });
+
+      it('does not add when previous visual token element is a search', () => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
+          ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
+        `);
+
+        const original = tokensContainer.innerHTML;
+        gl.FilteredSearchVisualTokens.addValueToPreviousVisualTokenElement('value');
+
+        expect(original).toEqual(tokensContainer.innerHTML);
+      });
+
+      it('adds value to previous visual filter token', () => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('label'),
+        );
+
+        const original = tokensContainer.innerHTML;
+        gl.FilteredSearchVisualTokens.addValueToPreviousVisualTokenElement('value');
+        const updatedToken = tokensContainer.querySelector('.js-visual-token');
+
+        expect(updatedToken.querySelector('.name').innerText).toEqual('label');
+        expect(updatedToken.querySelector('.value').innerText).toEqual('value');
+        expect(original).not.toEqual(tokensContainer.innerHTML);
       });
     });
 
@@ -232,6 +350,19 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
 
         expect(token.classList.contains('filtered-search-term')).toEqual(true);
         expect(token.querySelector('.name').innerText).toEqual('search term');
+        expect(token.querySelector('.value')).toEqual(null);
+      });
+
+      it('appends to previous search visual token if previous token was a search token', () => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('author', '@root')}
+          ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
+        `);
+
+        gl.FilteredSearchVisualTokens.addSearchVisualToken('append this');
+        const token = tokensContainer.querySelector('.filtered-search-term');
+
+        expect(token.querySelector('.name').innerText).toEqual('search term append this');
         expect(token.querySelector('.value')).toEqual(null);
       });
     });
@@ -290,6 +421,168 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
         gl.FilteredSearchVisualTokens.removeLastTokenPartial();
 
         expect(tokensContainer.innerHTML).toEqual(html);
+      });
+    });
+
+    describe('tokenizeInput', () => {
+      it('does not do anything if there is no input', () => {
+        const original = tokensContainer.innerHTML;
+        gl.FilteredSearchVisualTokens.tokenizeInput();
+
+        expect(tokensContainer.innerHTML).toEqual(original);
+      });
+
+      it('adds search visual token if previous visual token is valid', () => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createFilterVisualTokenHTML('assignee', 'none'),
+        );
+
+        const input = document.querySelector('.filtered-search');
+        input.value = 'some value';
+        gl.FilteredSearchVisualTokens.tokenizeInput();
+
+        const newToken = tokensContainer.querySelector('.filtered-search-term');
+
+        expect(input.value).toEqual('');
+        expect(newToken.querySelector('.name').innerText).toEqual('some value');
+        expect(newToken.querySelector('.value')).toEqual(null);
+      });
+
+      it('adds value to previous visual token element if previous visual token is invalid', () => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('assignee'),
+        );
+
+        const input = document.querySelector('.filtered-search');
+        input.value = '@john';
+        gl.FilteredSearchVisualTokens.tokenizeInput();
+
+        const updatedToken = tokensContainer.querySelector('.filtered-search-token');
+
+        expect(input.value).toEqual('');
+        expect(updatedToken.querySelector('.name').innerText).toEqual('assignee');
+        expect(updatedToken.querySelector('.value').innerText).toEqual('@john');
+      });
+    });
+
+    describe('editToken', () => {
+      let input;
+      let token;
+
+      beforeEach(() => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', 'none')}
+          ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search')}
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'upcoming')}
+        `);
+
+        input = document.querySelector('.filtered-search');
+        token = document.querySelector('.js-visual-token');
+      });
+
+      it('tokenize\'s existing input', () => {
+        input.value = 'some text';
+        spyOn(gl.FilteredSearchVisualTokens, 'tokenizeInput').and.callThrough();
+
+        gl.FilteredSearchVisualTokens.editToken(token);
+
+        expect(gl.FilteredSearchVisualTokens.tokenizeInput).toHaveBeenCalled();
+        expect(input.value).not.toEqual('some text');
+      });
+
+      it('moves input to the token position', () => {
+        expect(tokensContainer.children[3].querySelector('.filtered-search')).not.toEqual(null);
+
+        gl.FilteredSearchVisualTokens.editToken(token);
+
+        expect(tokensContainer.children[1].querySelector('.filtered-search')).not.toEqual(null);
+        expect(tokensContainer.children[3].querySelector('.filtered-search')).toEqual(null);
+      });
+
+      it('input contains the visual token value', () => {
+        gl.FilteredSearchVisualTokens.editToken(token);
+
+        expect(input.value).toEqual('none');
+      });
+
+      describe('selected token is a search term token', () => {
+        beforeEach(() => {
+          token = document.querySelector('.filtered-search-term');
+        });
+
+        it('token is removed', () => {
+          expect(tokensContainer.querySelector('.filtered-search-term')).not.toEqual(null);
+
+          gl.FilteredSearchVisualTokens.editToken(token);
+
+          expect(tokensContainer.querySelector('.filtered-search-term')).toEqual(null);
+        });
+
+        it('input has the same value as removed token', () => {
+          expect(input.value).toEqual('');
+
+          gl.FilteredSearchVisualTokens.editToken(token);
+
+          expect(input.value).toEqual('search');
+        });
+      });
+    });
+
+    describe('moveInputTotheRight', () => {
+      it('does nothing if the input is already the right most element', () => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
+          FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', 'none'),
+        );
+
+        spyOn(gl.FilteredSearchVisualTokens, 'tokenizeInput').and.callThrough();
+        spyOn(gl.FilteredSearchVisualTokens, 'getLastVisualTokenBeforeInput').and.callThrough();
+
+        gl.FilteredSearchVisualTokens.moveInputToTheRight();
+
+        expect(gl.FilteredSearchVisualTokens.tokenizeInput).not.toHaveBeenCalled();
+        expect(gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput).not.toHaveBeenCalled();
+      });
+
+      it('tokenize\'s input', () => {
+        tokensContainer.innerHTML = `
+          ${FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('label')}
+          ${FilteredSearchSpecHelper.createInputHTML()}
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+        `;
+
+        document.querySelector('.filtered-search').value = 'none';
+
+        gl.FilteredSearchVisualTokens.moveInputToTheRight();
+        const value = tokensContainer.querySelector('.js-visual-token .value');
+
+        expect(value.innerText).toEqual('none');
+      });
+
+      it('converts input into search term token if last token is valid', () => {
+        tokensContainer.innerHTML = `
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', 'none')}
+          ${FilteredSearchSpecHelper.createInputHTML()}
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+        `;
+
+        document.querySelector('.filtered-search').value = 'test';
+
+        gl.FilteredSearchVisualTokens.moveInputToTheRight();
+        const searchValue = tokensContainer.querySelector('.filtered-search-term .name');
+
+        expect(searchValue.innerText).toEqual('test');
+      });
+
+      it('moves the input to the right most element', () => {
+        tokensContainer.innerHTML = `
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', 'none')}
+          ${FilteredSearchSpecHelper.createInputHTML()}
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+        `;
+
+        gl.FilteredSearchVisualTokens.moveInputToTheRight();
+
+        expect(tokensContainer.children[2].querySelector('.filtered-search')).not.toEqual(null);
       });
     });
   });

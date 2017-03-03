@@ -61,9 +61,10 @@ class FilteredSearchVisualTokens {
   }
 
   static addValueToPreviousVisualTokenElement(value) {
-    const { lastVisualToken } = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+    const { lastVisualToken, isLastVisualTokenValid } =
+      FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
-    if (lastVisualToken.classList.contains('filtered-search-token')) {
+    if (!isLastVisualTokenValid && lastVisualToken.classList.contains('filtered-search-token')) {
       const name = FilteredSearchVisualTokens.getLastTokenPartial();
       lastVisualToken.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML();
       lastVisualToken.querySelector('.name').innerText = name;
@@ -92,7 +93,7 @@ class FilteredSearchVisualTokens {
     const { lastVisualToken } = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
     if (lastVisualToken && lastVisualToken.classList.contains('filtered-search-term')) {
-      lastVisualToken.querySelector('.name').value += ` ${searchTerm}`;
+      lastVisualToken.querySelector('.name').innerText += ` ${searchTerm}`;
     } else {
       FilteredSearchVisualTokens.addVisualTokenElement(searchTerm, null, true);
     }
@@ -130,7 +131,8 @@ class FilteredSearchVisualTokens {
 
   static tokenizeInput() {
     const input = document.querySelector('.filtered-search');
-    const { isLastVisualTokenValid } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+    const { isLastVisualTokenValid } =
+      gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
     if (input.value) {
       if (isLastVisualTokenValid) {
@@ -138,9 +140,9 @@ class FilteredSearchVisualTokens {
       } else {
         FilteredSearchVisualTokens.addValueToPreviousVisualTokenElement(input.value);
       }
-    }
 
-    input.value = '';
+      input.value = '';
+    }
   }
 
   static editToken(token) {
@@ -148,25 +150,27 @@ class FilteredSearchVisualTokens {
 
     FilteredSearchVisualTokens.tokenizeInput();
 
-    const name = token.querySelector('.name');
-    const value = token.querySelector('.value');
-
+    // Replace token with input field
     const tokenContainer = token.parentElement;
     const inputLi = input.parentElement;
     tokenContainer.replaceChild(inputLi, token);
 
+    const name = token.querySelector('.name');
+    const value = token.querySelector('.value');
+
     if (token.classList.contains('filtered-search-token')) {
       FilteredSearchVisualTokens.addFilterVisualToken(name.innerText);
+      input.value = value.innerText;
     } else {
+      // token is a search term
       input.value = name.innerText;
     }
 
-    if (value) {
-      input.value = value.innerText;
-    }
-
-    input.focus();
+    // Opens dropdown
     input.click();
+
+    // Adds cursor to input
+    input.focus();
   }
 
   static moveInputToTheRight() {
@@ -174,10 +178,12 @@ class FilteredSearchVisualTokens {
     const inputLi = input.parentElement;
     const tokenContainer = document.querySelector('.tokens-container');
 
-    if (tokenContainer.lastChild !== inputLi) {
+    if (!tokenContainer.lastElementChild.isSameNode(inputLi)) {
       FilteredSearchVisualTokens.tokenizeInput();
 
-      const { isLastVisualTokenValid } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+      const { isLastVisualTokenValid } =
+        gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+
       if (!isLastVisualTokenValid) {
         const lastPartial = gl.FilteredSearchVisualTokens.getLastTokenPartial();
         gl.FilteredSearchVisualTokens.removeLastTokenPartial();
