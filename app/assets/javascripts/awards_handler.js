@@ -154,8 +154,7 @@ AwardsHandler.prototype.showEmojiMenu = function showEmojiMenu($addBtn) {
 };
 
 // Create the emoji menu with the first category of emojis.
-// Then after the emoji menu has been expanded(and CSS transition has ended),
-// render the remaining categories of emojis one by one to avoid jank.
+// Then render the remaining categories of emojis one by one to avoid jank.
 AwardsHandler.prototype.createEmojiMenu = function createEmojiMenu(callback) {
   if (this.isCreatingEmojiMenu) {
     return;
@@ -199,7 +198,8 @@ AwardsHandler
 
     // Avoid the jank and render the remaining categories separately
     // This will take more time, but makes UI more responsive
-    const emojiContentElement = document.querySelector('.emoji-menu .emoji-menu-content');
+    const menu = document.querySelector('.emoji-menu');
+    const emojiContentElement = menu.querySelector('.emoji-menu-content');
     const remainingCategories = Object.keys(categoryMap).slice(1);
     const allCategoriesAddedPromise = remainingCategories.reduce(
       (promiseChain, categoryNameKey) =>
@@ -222,7 +222,6 @@ AwardsHandler
     allCategoriesAddedPromise.then(() => {
       // Used for tests
       // We check for the menu in case it was destroyed in the meantime
-      const menu = document.querySelector('.emoji-menu');
       if (menu) {
         menu.dispatchEvent(new CustomEvent('build-emoji-menu-finish'));
       }

@@ -216,7 +216,7 @@ const AwardsHandler = require('~/awards_handler');
       });
     });
     describe('emoji menu', function() {
-      const emojiSelector = '[data-name=sunglasses]';
+      const emojiSelector = '[data-name="sunglasses"]';
       const openEmojiMenuAndAddEmoji = function() {
         return openAndWaitForEmojiMenu()
           .then(() => {
