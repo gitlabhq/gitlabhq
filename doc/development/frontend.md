@@ -238,6 +238,9 @@ readability.
 See the relevant style guides for our guidelines and for information on linting:
 
 - [SCSS][scss-style-guide]
+- JavaScript - We defer to [AirBnb][airbnb-js-style-guide] on most style-related 
+conventions and enforce them with eslint. See [our current .eslintrc][eslistrc] 
+for specific rules and patterns.
 
 ## Testing
 
@@ -434,3 +437,5 @@ Scenario: Developer can approve merge request
 [state-management]: https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch
 [vue-resource-repo]: https://github.com/pagekit/vue-resource
 [issue-boards-service]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/boards/services/board_service.js.es6
+[airbnb-js-style-guide]: https://github.com/airbnb/javascript
+[eslintrc]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.eslintrc

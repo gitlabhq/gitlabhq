@@ -105,6 +105,7 @@
 @media (max-width: $screen-md-max) {
   .content-list {
     &.pipelines,
+    &.environments-container,
     &.builds-content-list {
       width: 100%;
       overflow: auto;

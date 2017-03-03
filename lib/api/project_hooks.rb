@@ -90,12 +90,9 @@ module API
         requires :hook_id, type: Integer, desc: 'The ID of the hook to delete'
       end
       delete ":id/hooks/:hook_id" do
-        begin
-          present user_project.hooks.destroy(params[:hook_id]), with: Entities::ProjectHook
-        rescue
-          # ProjectHook can raise Error if hook_id not found
-          not_found!("Error deleting hook #{params[:hook_id]}")
-        end
+        hook = user_project.hooks.find(params.delete(:hook_id))
+
+        hook.destroy
       end
     end
   end

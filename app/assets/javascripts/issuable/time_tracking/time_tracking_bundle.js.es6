@@ -39,8 +39,9 @@ require('../../subbable_resource');
           listenForSlashCommands() {
             $(document).on('ajax:success', '.gfm-form', (e, data) => {
               const subscribedCommands = ['spend_time', 'time_estimate'];
-              const changedCommands = data.commands_changes;
-
+              const changedCommands = data.commands_changes
+                ? Object.keys(data.commands_changes)
+                : [];
               if (changedCommands && _.intersection(subscribedCommands, changedCommands).length) {
                 this.fetchIssuable();
               }

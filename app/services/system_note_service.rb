@@ -187,14 +187,14 @@ module SystemNoteService
   end
 
   # Called when 'merge when pipeline succeeds' is executed
-  def merge_when_build_succeeds(noteable, project, author, last_commit)
+  def merge_when_pipeline_succeeds(noteable, project, author, last_commit)
     body = "enabled an automatic merge when the pipeline for #{last_commit.to_reference(project)} succeeds"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
   # Called when 'merge when pipeline succeeds' is canceled
-  def cancel_merge_when_build_succeeds(noteable, project, author)
+  def cancel_merge_when_pipeline_succeeds(noteable, project, author)
     body = 'canceled the automatic merge'
 
     create_note(noteable: noteable, project: project, author: author, note: body)
@@ -385,7 +385,6 @@ module SystemNoteService
   # Returns Boolean
   def cross_reference_disallowed?(noteable, mentioner)
     return true if noteable.is_a?(ExternalIssue) && !noteable.project.jira_tracker_active?
-    return true if noteable.is_a?(Issuable) && (noteable.try(:closed?) || noteable.try(:merged?))
     return false unless mentioner.is_a?(MergeRequest)
     return false unless noteable.is_a?(Commit)
 

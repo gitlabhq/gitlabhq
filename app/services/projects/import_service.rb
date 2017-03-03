@@ -2,7 +2,7 @@ module Projects
   class ImportService < BaseService
     include Gitlab::ShellAdapter
 
-    class Error < StandardError; end
+    Error = Class.new(StandardError)
 
     def execute
       add_repository_to_project unless project.gitlab_project_import?

@@ -5,7 +5,7 @@
   .fade-right
     = icon('angle-right')
   %ul.nav-links.scrolling-tabs
-    = nav_link(path: ['groups#show', 'groups#activity', 'group_members#index'], html_options: { class: 'home' }) do
+    = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups'], html_options: { class: 'home' }) do
       = link_to group_path(@group), title: 'Home' do
         %span
           Group
@@ -21,3 +21,7 @@
           Merge Requests
           - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute
           %span.badge.count= number_with_delimiter(merge_requests.count)
+    = nav_link(path: 'group_members#index') do
+      = link_to group_group_members_path(@group), title: 'Members' do
+        %span
+          Members

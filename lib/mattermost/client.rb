@@ -1,5 +1,5 @@
 module Mattermost
-  class ClientError < Mattermost::Error; end
+  ClientError = Class.new(Mattermost::Error)
 
   class Client
     attr_reader :user

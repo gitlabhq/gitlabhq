@@ -97,7 +97,7 @@ module MilestonesHelper
 
   def milestone_date_range(milestone)
     if milestone.start_date && milestone.due_date
-      "#{milestone.start_date.to_s(:medium)} - #{milestone.due_date.to_s(:medium)}"
+      "#{milestone.start_date.to_s(:medium)}–#{milestone.due_date.to_s(:medium)}"
     elsif milestone.due_date
       if milestone.due_date.past?
         "expired on #{milestone.due_date.to_s(:medium)}"

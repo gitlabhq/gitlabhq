@@ -137,8 +137,8 @@ describe API::Tags, api: true  do
       context 'delete tag' do
         it 'deletes an existing tag' do
           delete api("/projects/#{project.id}/repository/tags/#{tag_name}", user)
-          expect(response).to have_http_status(200)
-          expect(json_response['tag_name']).to eq(tag_name)
+
+          expect(response).to have_http_status(204)
         end
 
         it 'raises 404 if the tag does not exist' do

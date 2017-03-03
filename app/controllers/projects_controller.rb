@@ -314,7 +314,7 @@ class ProjectsController < Projects::ApplicationController
       :name,
       :namespace_id,
       :only_allow_merge_if_all_discussions_are_resolved,
-      :only_allow_merge_if_build_succeeds,
+      :only_allow_merge_if_pipeline_succeeds,
       :path,
       :public_builds,
       :request_access_enabled,

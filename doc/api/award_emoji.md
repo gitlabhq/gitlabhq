@@ -27,7 +27,7 @@ Parameters:
 | `awardable_id` | integer | yes | The ID of an awardable |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji
 ```
 
 Example Response:
@@ -88,7 +88,7 @@ Parameters:
 | `award_id` | integer | yes | The ID of the award emoji |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/1
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/1
 ```
 
 Example Response:
@@ -131,7 +131,7 @@ Parameters:
 | `name` | string | yes | The name of the emoji, without colons |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji?name=blowfish
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji?name=blowfish
 ```
 
 Example Response:
@@ -175,28 +175,7 @@ Parameters:
 | `award_id` | integer | yes | The ID of a award_emoji |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/344
-```
-
-Example Response:
-
-```json
-{
-  "id": 344,
-  "name": "blowfish",
-  "user": {
-    "name": "Administrator",
-    "username": "root",
-    "id": 1,
-    "state": "active",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/root"
-  },
-  "created_at": "2016-06-17T17:47:29.266Z",
-  "updated_at": "2016-06-17T17:47:29.266Z",
-  "awardable_id": 80,
-  "awardable_type": "Issue"
-}
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/344
 ```
 
 ## Award Emoji on Notes
@@ -222,7 +201,7 @@ Parameters:
 
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji
 ```
 
 Example Response:
@@ -264,7 +243,7 @@ Parameters:
 | `award_id` | integer | yes | The ID of the award emoji |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji/2
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji/2
 ```
 
 Example Response:
@@ -304,7 +283,7 @@ Parameters:
 | `name` | string | yes | The name of the emoji, without colons |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji?name=rocket
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/notes/1/award_emoji?name=rocket
 ```
 
 Example Response:
@@ -347,28 +326,7 @@ Parameters:
 | `award_id` | integer | yes | The ID of a award_emoji |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/345
-```
-
-Example Response:
-
-```json
-{
-  "id": 345,
-  "name": "rocket",
-  "user": {
-    "name": "Administrator",
-    "username": "root",
-    "id": 1,
-    "state": "active",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://gitlab.example.com/root"
-  },
-  "created_at": "2016-06-17T19:59:55.888Z",
-  "updated_at": "2016-06-17T19:59:55.888Z",
-  "awardable_id": 1,
-  "awardable_type": "Note"
-}
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/issues/80/award_emoji/345
 ```
 
 [ce-4575]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4575

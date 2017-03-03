@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
-/* global Vue */
+import Vue from 'vue';
+import iconCommit from '../svg/icon_commit.svg';
 
 ((global) => {
   global.cycleAnalytics = global.cycleAnalytics || {};
@@ -9,6 +10,11 @@
       items: Array,
       stage: Object,
     },
+
+    data() {
+      return { iconCommit };
+    },
+
     template: `
       <div>
         <div class="events-description">
@@ -31,7 +37,7 @@
               </h5>
               <span>
                 First
-                <span class="commit-icon">${global.cycleAnalytics.svgs.iconCommit}</span>
+                <span class="commit-icon">${iconCommit}</span>
                 <a :href="commit.commitUrl" class="commit-hash-link monospace">{{ commit.shortSha }}</a>
                 pushed by
                 <a :href="commit.author.webUrl" class="commit-author-link">

@@ -35,9 +35,6 @@ module.exports = Vue.component('environment-component', {
       projectStoppedEnvironmentsPath: environmentsData.projectStoppedEnvironmentsPath,
       newEnvironmentPath: environmentsData.newEnvironmentPath,
       helpPagePath: environmentsData.helpPagePath,
-      commitIconSvg: environmentsData.commitIconSvg,
-      playIconSvg: environmentsData.playIconSvg,
-      terminalIconSvg: environmentsData.terminalIconSvg,
 
       // Pagination Properties,
       paginationInformation: {},
@@ -78,7 +75,7 @@ module.exports = Vue.component('environment-component', {
 
     this.isLoading = true;
 
-    return service.all()
+    return service.get()
       .then(resp => ({
         headers: resp.headers,
         body: resp.json(),
@@ -145,7 +142,7 @@ module.exports = Vue.component('environment-component', {
         </div>
       </div>
 
-      <div class="environments-container">
+      <div class="content-list environments-container">
         <div class="environments-list-loading text-center" v-if="isLoading">
           <i class="fa fa-spinner fa-spin"></i>
         </div>
@@ -176,17 +173,13 @@ module.exports = Vue.component('environment-component', {
           <environment-table
             :environments="state.environments"
             :can-create-deployment="canCreateDeploymentParsed"
-            :can-read-environment="canReadEnvironmentParsed"
-            :play-icon-svg="playIconSvg"
-            :terminal-icon-svg="terminalIconSvg"
-            :commit-icon-svg="commitIconSvg">
-          </environment-table>
-
-          <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
-            :change="changePage"
-            :pageInfo="state.paginationInformation">
-          </table-pagination>
+            :can-read-environment="canReadEnvironmentParsed"/>
         </div>
+
+        <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
+          :change="changePage"
+          :pageInfo="state.paginationInformation">
+        </table-pagination>
       </div>
     </div>
   `,

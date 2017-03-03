@@ -170,6 +170,51 @@ module Ci
         end
       end
 
+      context 'when first build is stalled' do
+        before do
+          pending_build.lock_version = 10
+        end
+
+        subject { described_class.new(specific_runner).execute }
+
+        context 'with multiple builds are in queue' do
+          let!(:other_build) { create :ci_build, pipeline: pipeline }
+
+          before do
+            allow_any_instance_of(Ci::RegisterBuildService).to receive(:builds_for_specific_runner)
+              .and_return([pending_build, other_build])
+          end
+
+          it "receives second build from the queue" do
+            expect(subject).to be_valid
+            expect(subject.build).to eq(other_build)
+          end
+        end
+
+        context 'when single build is in queue' do
+          before do
+            allow_any_instance_of(Ci::RegisterBuildService).to receive(:builds_for_specific_runner)
+              .and_return([pending_build])
+          end
+
+          it "does not receive any valid result" do
+            expect(subject).not_to be_valid
+          end
+        end
+
+        context 'when there is no build in queue' do
+          before do
+            allow_any_instance_of(Ci::RegisterBuildService).to receive(:builds_for_specific_runner)
+              .and_return([])
+          end
+
+          it "does not receive builds but result is valid" do
+            expect(subject).to be_valid
+            expect(subject.build).to be_nil
+          end
+        end
+      end
+
       def execute(runner)
         described_class.new(runner).execute.build
       end

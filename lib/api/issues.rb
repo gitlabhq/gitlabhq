@@ -25,6 +25,7 @@ module API
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return issues sorted in `asc` or `desc` order.'
         optional :milestone, type: String, desc: 'Return issues for a specific milestone'
+        optional :iids, type: Array[Integer], desc: 'The IID array of issues'
         use :pagination
       end
 

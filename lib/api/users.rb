@@ -236,7 +236,7 @@ module API
         key = user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
-        present key.destroy, with: Entities::SSHKey
+        key.destroy
       end
 
       desc 'Add an email address to a specified user. Available only for admins.' do
@@ -422,7 +422,7 @@ module API
         key = current_user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
-        present key.destroy, with: Entities::SSHKey
+        key.destroy
       end
 
       desc "Get the currently authenticated user's email addresses" do

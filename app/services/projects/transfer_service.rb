@@ -9,7 +9,7 @@
 module Projects
   class TransferService < BaseService
     include Gitlab::ShellAdapter
-    class TransferError < StandardError; end
+    TransferError = Class.new(StandardError)
 
     def execute(new_namespace)
       if allowed_transfer?(current_user, project, new_namespace)

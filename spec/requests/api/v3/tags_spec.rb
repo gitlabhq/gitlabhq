@@ -64,4 +64,26 @@ describe API::V3::Tags, api: true  do
       end
     end
   end
+
+  describe 'DELETE /projects/:id/repository/tags/:tag_name' do
+    let(:tag_name) { project.repository.tag_names.sort.reverse.first }
+
+    before do
+      allow_any_instance_of(Repository).to receive(:rm_tag).and_return(true)
+    end
+
+    context 'delete tag' do
+      it 'deletes an existing tag' do
+        delete v3_api("/projects/#{project.id}/repository/tags/#{tag_name}", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['tag_name']).to eq(tag_name)
+      end
+
+      it 'raises 404 if the tag does not exist' do
+        delete v3_api("/projects/#{project.id}/repository/tags/foobar", user)
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
 end

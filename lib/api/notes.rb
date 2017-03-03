@@ -132,8 +132,6 @@ module API
           authorize! :admin_note, note
 
           ::Notes::DestroyService.new(user_project, current_user).execute(note)
-
-          present note, with: Entities::Note
         end
       end
     end

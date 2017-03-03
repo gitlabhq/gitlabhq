@@ -341,7 +341,7 @@ describe Ci::ProcessPipelineService, :services do
         expect(builds.pending.count).to eq(1)
         expect(all_builds.count).to eq(4)
 
-        # When pending build succeeds in stage test, we enqueue deploy stage.
+        # When pending merge_when_pipeline_succeeds in stage test, we enqueue deploy stage.
         #
         succeed_pending
         process_pipeline

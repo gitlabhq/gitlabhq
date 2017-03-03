@@ -18,7 +18,7 @@ describe MergeRequests::RefreshService, services: true do
                               source_branch: 'master',
                               target_branch: 'feature',
                               target_project: @project,
-                              merge_when_build_succeeds: true,
+                              merge_when_pipeline_succeeds: true,
                               merge_user: @user)
 
       @fork_merge_request = create(:merge_request,
@@ -62,7 +62,7 @@ describe MergeRequests::RefreshService, services: true do
 
       it { expect(@merge_request.notes).not_to be_empty }
       it { expect(@merge_request).to be_open }
-      it { expect(@merge_request.merge_when_build_succeeds).to be_falsey }
+      it { expect(@merge_request.merge_when_pipeline_succeeds).to be_falsey }
       it { expect(@merge_request.diff_head_sha).to eq(@newrev) }
       it { expect(@fork_merge_request).to be_open }
       it { expect(@fork_merge_request.notes).to be_empty }

@@ -59,8 +59,8 @@ FactoryGirl.define do
       target_branch "master"
     end
 
-    trait :merge_when_build_succeeds do
-      merge_when_build_succeeds true
+    trait :merge_when_pipeline_succeeds do
+      merge_when_pipeline_succeeds true
       merge_user author
     end
 

@@ -38,7 +38,7 @@ module API
       end
 
       desc 'Deletes a registered Runner' do
-        http_codes [[200, 'Runner was deleted'], [403, 'Forbidden']]
+        http_codes [[204, 'Runner was deleted'], [403, 'Forbidden']]
       end
       params do
         requires :token, type: String, desc: %q(Runner's authentication token)

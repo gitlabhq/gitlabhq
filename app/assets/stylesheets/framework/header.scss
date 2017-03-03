@@ -148,33 +148,19 @@ header {
     }
 
     .header-logo {
-      position: absolute;
-      left: 50%;
-      top: 7px;
+      display: inline-block;
+      margin: 0 7px 0 2px;
+      position: relative;
+      top: 10px;
       transition-duration: .3s;
-      z-index: 999;
-
-      #logo {
-        position: relative;
-        left: -50%;
-      }
 
       svg,
       img {
-        height: 36px;
+        height: 28px;
       }
 
       &:hover {
         cursor: pointer;
-      }
-
-      @media (max-width: $screen-xs-max) {
-        right: 20px;
-        left: auto;
-
-        #logo {
-          left: auto;
-        }
       }
     }
 
@@ -183,7 +169,6 @@ header {
       padding-right: 20px;
       margin: 0;
       font-size: 18px;
-      max-width: 385px;
       display: inline-block;
       line-height: $header-height;
       font-weight: normal;
@@ -193,12 +178,16 @@ header {
       vertical-align: top;
       white-space: nowrap;
 
-      @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-        max-width: 300px;
-      }
-
       @media (max-width: $screen-xs-max) {
         max-width: 190px;
+      }
+
+      @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) {
+        max-width: 428px;
+      }
+
+      @media (min-width: $screen-lg-min) {
+        max-width: 685px;
       }
 
       a {

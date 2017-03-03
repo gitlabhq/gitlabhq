@@ -346,7 +346,11 @@ class User < ActiveRecord::Base
     # Return (create if necessary) the ghost user. The ghost user
     # owns records previously belonging to deleted users.
     def ghost
-      User.find_by_ghost(true) || create_ghost_user
+      unique_internal(where(ghost: true), 'ghost', 'ghost%s@example.com') do |u|
+        u.bio = 'This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.'
+        u.state = :blocked
+        u.name = 'Ghost User'
+      end
     end
   end
 
@@ -474,7 +478,7 @@ class User < ActiveRecord::Base
     Group.member_descendants(id)
   end
 
-  def nested_projects
+  def nested_groups_projects
     Project.joins(:namespace).where('namespaces.parent_id IS NOT NULL').
       member_descendants(id)
   end
@@ -1017,10 +1021,14 @@ class User < ActiveRecord::Base
     end
   end
 
-  def self.create_ghost_user
-    # Since we only want a single ghost user in an instance, we use an
+  def self.unique_internal(scope, username, email_pattern, &b)
+    scope.first || create_unique_internal(scope, username, email_pattern, &b)
+  end
+
+  def self.create_unique_internal(scope, username, email_pattern, &creation_block)
+    # Since we only want a single one of these in an instance, we use an
     # exclusive lease to ensure than this block is never run concurrently.
-    lease_key = "ghost_user_creation"
+    lease_key = "user:unique_internal:#{username}"
     lease = Gitlab::ExclusiveLease.new(lease_key, timeout: 1.minute.to_i)
 
     until uuid = lease.try_obtain
@@ -1029,25 +1037,25 @@ class User < ActiveRecord::Base
       sleep(1)
     end
 
-    # Recheck if a ghost user is already present. One might have been
+    # Recheck if the user is already present. One might have been
     # added between the time we last checked (first line of this method)
     # and the time we acquired the lock.
-    ghost_user = User.find_by_ghost(true)
-    return ghost_user if ghost_user.present?
+    existing_user = uncached { scope.first }
+    return existing_user if existing_user.present?
 
     uniquify = Uniquify.new
 
-    username = uniquify.string("ghost") { |s| User.find_by_username(s) }
+    username = uniquify.string(username) { |s| User.find_by_username(s) }
 
-    email = uniquify.string(-> (n) { "ghost#{n}@example.com" }) do |s|
+    email = uniquify.string(-> (n) { Kernel.sprintf(email_pattern, n) }) do |s|
       User.find_by_email(s)
     end
 
-    bio = 'This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.'
-
-    User.create(
-      username: username, password: Devise.friendly_token, bio: bio,
-      email: email, name: "Ghost User", state: :blocked, ghost: true
+    scope.create(
+      username: username,
+      password: Devise.friendly_token,
+      email: email,
+      &creation_block
     )
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)

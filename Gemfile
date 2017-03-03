@@ -68,7 +68,7 @@ gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape',        '~> 0.18.0'
+gem 'grape',        '~> 0.19.0'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
@@ -236,7 +236,6 @@ gem 'gemojione',          '~> 3.0'
 gem 'gon',                '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 4.1.0'
-gem 'jquery-ui-rails',    '~> 5.0.0'
 gem 'request_store',      '~> 1.3'
 gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
@@ -329,8 +328,6 @@ group :test do
   gem 'timecop', '~> 0.8.0'
 end
 
-gem 'newrelic_rpm', '~> 3.16'
-
 gem 'octokit', '~> 4.6.2'
 
 gem 'mail_room', '~> 0.9.1'
@@ -352,3 +349,6 @@ gem 'health_check', '~> 2.2.0'
 # System information
 gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
+
+# Gitaly GRPC client
+gem 'gitaly', '~> 0.2.1'

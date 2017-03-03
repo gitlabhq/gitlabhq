@@ -200,7 +200,7 @@ describe API::AccessRequests, api: true  do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", access_requester)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_http_status(204)
           end.to change { source.requesters.count }.by(-1)
         end
       end
@@ -210,7 +210,7 @@ describe API::AccessRequests, api: true  do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", master)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_http_status(204)
           end.to change { source.requesters.count }.by(-1)
         end
 

@@ -28,25 +28,10 @@ module.exports = Vue.component('environment-table-component', {
       required: false,
       default: false,
     },
-
-    commitIconSvg: {
-      type: String,
-      required: false,
-    },
-
-    playIconSvg: {
-      type: String,
-      required: false,
-    },
-
-    terminalIconSvg: {
-      type: String,
-      required: false,
-    },
   },
 
   template: `
-    <table class="table ci-table environments">
+    <table class="table ci-table">
       <thead>
         <tr>
           <th class="environments-name">Environment</th>
@@ -54,7 +39,7 @@ module.exports = Vue.component('environment-table-component', {
           <th class="environments-build">Job</th>
           <th class="environments-commit">Commit</th>
           <th class="environments-date">Updated</th>
-          <th class="hidden-xs environments-actions"></th>
+          <th class="environments-actions"></th>
         </tr>
       </thead>
       <tbody>
@@ -63,10 +48,7 @@ module.exports = Vue.component('environment-table-component', {
           <tr is="environment-item"
             :model="model"
             :can-create-deployment="canCreateDeployment"
-            :can-read-environment="canReadEnvironment"
-            :play-icon-svg="playIconSvg"
-            :terminal-icon-svg="terminalIconSvg"
-            :commit-icon-svg="commitIconSvg"></tr>
+            :can-read-environment="canReadEnvironment"></tr>
         </template>
       </tbody>
     </table>

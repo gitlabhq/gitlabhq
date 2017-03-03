@@ -3,7 +3,7 @@ require('./issue_card_inner');
 
 const Store = gl.issueBoards.BoardsStore;
 
-module.exports = {
+export default {
   name: 'BoardsIssueCard',
   template: `
     <li class="card"

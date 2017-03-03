@@ -149,4 +149,23 @@ describe API::V3::Labels, api: true  do
       end
     end
   end
+
+  describe 'DELETE /projects/:id/labels' do
+    it 'returns 200 for existing label' do
+      delete v3_api("/projects/#{project.id}/labels", user), name: 'label1'
+
+      expect(response).to have_http_status(200)
+    end
+
+    it 'returns 404 for non existing label' do
+      delete v3_api("/projects/#{project.id}/labels", user), name: 'label2'
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 Label Not Found')
+    end
+
+    it 'returns 400 for wrong parameters' do
+      delete v3_api("/projects/#{project.id}/labels", user)
+      expect(response).to have_http_status(400)
+    end
+  end
 end

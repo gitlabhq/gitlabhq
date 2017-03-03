@@ -83,7 +83,6 @@ module API
             unauthorized! unless award.user == current_user || current_user.admin?
 
             award.destroy
-            present award, with: Entities::AwardEmoji
           end
         end
       end

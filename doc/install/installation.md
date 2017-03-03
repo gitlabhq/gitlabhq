@@ -155,10 +155,9 @@ page](https://golang.org/dl).
 ## 4. Node
 
 Since GitLab 8.17, GitLab requires the use of node >= v4.3.0 to compile
-javascript assets, and starting in GitLab 9.0, yarn >= v0.17.0 is required to
-manage javascript dependencies. In many distros the versions provided by the
-official package repositories are out of date, so we'll need to install through
-the following commands:
+javascript assets, and yarn >= v0.17.0 to manage javascript dependencies.
+In many distros the versions provided by the official package  repositories
+are out of date, so we'll need to install through the following commands:
 
     # install node v7.x
     curl --location https://deb.nodesource.com/setup_7.x | bash -

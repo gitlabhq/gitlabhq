@@ -23,6 +23,7 @@ AllCops:
     - 'tmp/**/*'
     - 'bin/**/*'
     - 'generator_templates/**/*'
+    - 'builds/**/*'
 
 # Gems in consecutive lines should be alphabetically sorted
 Bundler/OrderedGems:

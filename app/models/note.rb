@@ -231,10 +231,6 @@ class Note < ActiveRecord::Base
     note =~ /\A#{Banzai::Filter::EmojiFilter.emoji_pattern}\s?\Z/
   end
 
-  def award_emoji_name
-    note.match(Banzai::Filter::EmojiFilter.emoji_pattern)[1]
-  end
-
   def to_ability_name
     for_personal_snippet? ? 'personal_snippet' : noteable_type.underscore
   end

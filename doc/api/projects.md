@@ -4,17 +4,17 @@
 ### Project visibility level
 
 Project in GitLab has be either private, internal or public.
-You can determine it by `visibility_level` field in project.
+You can determine it by `visibility` field in project.
 
 Constants for project visibility levels are next:
 
-* Private. `visibility_level` is `0`.
+* `private`:
   Project access must be granted explicitly for each user.
 
-* Internal. `visibility_level` is `10`.
+* `internal`:
   The project can be cloned by any logged in user.
 
-* Public. `visibility_level` is `20`.
+* `public`:
   The project can be cloned without any authentication.
 
 
@@ -34,9 +34,10 @@ Parameters:
 | `visibility` | string | no | Limit by visibility `public`, `internal`, or `private` |
 | `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
-| `search` | string | no | Return list of authorized projects matching the search criteria |
+| `search` | string | no | Return list of projects matching the search criteria |
 | `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
 | `owned` | boolean | no | Limit by projects owned by the current user |
+| `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 
 ```json
@@ -45,8 +46,7 @@ Parameters:
     "id": 4,
     "description": null,
     "default_branch": "master",
-    "public": false,
-    "visibility_level": 0,
+    "visibility": "private",
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
@@ -88,7 +88,7 @@ Parameters:
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "public_builds": true,
     "shared_with_groups": [],
-    "only_allow_merge_if_build_succeeds": false,
+    "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false
   },
@@ -96,8 +96,7 @@ Parameters:
     "id": 6,
     "description": null,
     "default_branch": "master",
-    "public": false,
-    "visibility_level": 0,
+    "visibility": "private",
     "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
     "http_url_to_repo": "http://example.com/brightbox/puppet.git",
     "web_url": "http://example.com/brightbox/puppet",
@@ -149,7 +148,7 @@ Parameters:
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "public_builds": true,
     "shared_with_groups": [],
-    "only_allow_merge_if_build_succeeds": false,
+    "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false
   }
@@ -177,8 +176,7 @@ Parameters:
   "id": 3,
   "description": null,
   "default_branch": "master",
-  "public": false,
-  "visibility_level": 0,
+  "visibility": "private",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
@@ -241,7 +239,7 @@ Parameters:
       "group_access_level": 10
     }
   ],
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
@@ -435,8 +433,8 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `name` | string | yes | The name of the new project |
-| `path` | string | no | Custom repository name for new project. By default generated based on name |
+| `name` | string | yes if path is not provided | The name of the new project. Equals path if not provided. |
+| `path` | string | yes if name is not provided | Repository name for new project. Generated based on name if not provided (generated lowercased with dashes). |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
@@ -446,10 +444,10 @@ Parameters:
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
-| `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
+| `visibility` | String | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
-| `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
@@ -479,10 +477,10 @@ Parameters:
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
-| `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
+| `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
-| `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
@@ -511,10 +509,10 @@ Parameters:
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
-| `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
+| `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
-| `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
@@ -549,7 +547,7 @@ Parameters:
 | `id` | integer/string | yes | The ID or NAMESPACE/PROJECT_NAME of the project |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/star"
 ```
 
 Example response:
@@ -559,8 +557,7 @@ Example response:
   "id": 3,
   "description": null,
   "default_branch": "master",
-  "public": false,
-  "visibility_level": 10,
+  "visibility": "internal",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
@@ -596,7 +593,7 @@ Example response:
   "star_count": 1,
   "public_builds": true,
   "shared_with_groups": [],
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
@@ -615,7 +612,7 @@ POST /projects/:id/unstar
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/unstar"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/unstar"
 ```
 
 Example response:
@@ -625,8 +622,7 @@ Example response:
   "id": 3,
   "description": null,
   "default_branch": "master",
-  "public": false,
-  "visibility_level": 10,
+  "visibility": "internal",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
@@ -662,7 +658,7 @@ Example response:
   "star_count": 0,
   "public_builds": true,
   "shared_with_groups": [],
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
@@ -682,7 +678,7 @@ POST /projects/:id/archive
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/archive"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/archive"
 ```
 
 Example response:
@@ -692,8 +688,7 @@ Example response:
   "id": 3,
   "description": null,
   "default_branch": "master",
-  "public": false,
-  "visibility_level": 0,
+  "visibility": "private",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
@@ -745,7 +740,7 @@ Example response:
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "public_builds": true,
   "shared_with_groups": [],
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
@@ -765,7 +760,7 @@ POST /projects/:id/unarchive
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/unarchive"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/unarchive"
 ```
 
 Example response:
@@ -775,8 +770,7 @@ Example response:
   "id": 3,
   "description": null,
   "default_branch": "master",
-  "public": false,
-  "visibility_level": 0,
+  "visibility": "private",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
@@ -828,7 +822,7 @@ Example response:
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "public_builds": true,
   "shared_with_groups": [],
-  "only_allow_merge_if_build_succeeds": false,
+  "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "request_access_enabled": false
 }
@@ -914,7 +908,7 @@ Parameters:
 | `group_id` | integer | yes | The ID of the group |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/share/17
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/share/17
 ```
 
 ## Hooks

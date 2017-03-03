@@ -3,6 +3,7 @@
  * Used in environments table.
  */
 const Vue = require('vue');
+const terminalIconSvg = require('icons/_icon_terminal.svg');
 
 module.exports = Vue.component('terminal-button-component', {
   props: {
@@ -10,16 +11,16 @@ module.exports = Vue.component('terminal-button-component', {
       type: String,
       default: '',
     },
-    terminalIconSvg: {
-      type: String,
-      default: '',
-    },
+  },
+
+  data() {
+    return { terminalIconSvg };
   },
 
   template: `
     <a class="btn terminal-button"
       :href="terminalPath">
-      <span class="js-terminal-icon-container" v-html="terminalIconSvg"></span>
+      ${terminalIconSvg}
     </a>
   `,
 });

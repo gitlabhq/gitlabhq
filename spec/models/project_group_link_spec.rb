@@ -7,12 +7,27 @@ describe ProjectGroupLink do
   end
 
   describe "Validation" do
-    let!(:project_group_link) { create(:project_group_link) }
+    let(:parent_group) { create(:group) }
+    let(:group) { create(:group, parent: parent_group) }
+    let(:project) { create(:project, group: group) }
+    let!(:project_group_link) { create(:project_group_link, project: project) }
 
     it { should validate_presence_of(:project_id) }
     it { should validate_uniqueness_of(:group_id).scoped_to(:project_id).with_message(/already shared/) }
     it { should validate_presence_of(:group) }
     it { should validate_presence_of(:group_access) }
+
+    it "doesn't allow a project to be shared with the group it is in" do
+      project_group_link.group = group
+
+      expect(project_group_link).not_to be_valid
+    end
+
+    it "doesn't allow a project to be shared with an ancestor of the group it is in" do
+      project_group_link.group = parent_group
+
+      expect(project_group_link).not_to be_valid
+    end
   end
 
   describe "destroying a record", truncate: true do

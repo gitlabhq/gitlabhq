@@ -146,7 +146,7 @@ module MergeRequestsHelper
 
   def merge_params(merge_request)
     {
-      merge_when_build_succeeds: true,
+      merge_when_pipeline_succeeds: true,
       should_remove_source_branch: true,
       sha: merge_request.diff_head_sha
     }.merge(merge_params_ee(merge_request))

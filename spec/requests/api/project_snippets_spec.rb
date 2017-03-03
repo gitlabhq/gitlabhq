@@ -44,7 +44,7 @@ describe API::ProjectSnippets, api: true do
         title: 'Test Title',
         file_name: 'test.rb',
         code: 'puts "hello world"',
-        visibility_level: Snippet::PUBLIC
+        visibility: 'public'
       }
     end
 
@@ -56,7 +56,7 @@ describe API::ProjectSnippets, api: true do
       expect(snippet.content).to eq(params[:code])
       expect(snippet.title).to eq(params[:title])
       expect(snippet.file_name).to eq(params[:file_name])
-      expect(snippet.visibility_level).to eq(params[:visibility_level])
+      expect(snippet.visibility_level).to eq(Snippet::PUBLIC)
     end
 
     it 'returns 400 for missing parameters' do
@@ -80,14 +80,14 @@ describe API::ProjectSnippets, api: true do
 
       context 'when the snippet is private' do
         it 'creates the snippet' do
-          expect { create_snippet(project, visibility_level: Snippet::PRIVATE) }.
+          expect { create_snippet(project, visibility: 'private') }.
             to change { Snippet.count }.by(1)
         end
       end
 
       context 'when the snippet is public' do
-        it 'rejects the shippet' do
-          expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
+        it 'rejects the snippet' do
+          expect { create_snippet(project, visibility: 'public') }.
             not_to change { Snippet.count }
 
           expect(response).to have_http_status(400)
@@ -95,7 +95,7 @@ describe API::ProjectSnippets, api: true do
         end
 
         it 'creates a spam log' do
-          expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
+          expect { create_snippet(project, visibility: 'public') }.
             to change { SpamLog.count }.by(1)
         end
       end
@@ -165,7 +165,7 @@ describe API::ProjectSnippets, api: true do
         let(:visibility_level) { Snippet::PRIVATE }
 
         it 'rejects the snippet' do
-          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
+          expect { update_snippet(title: 'Foo', visibility: 'public') }.
             not_to change { snippet.reload.title }
 
           expect(response).to have_http_status(400)
@@ -173,7 +173,7 @@ describe API::ProjectSnippets, api: true do
         end
 
         it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
+          expect { update_snippet(title: 'Foo', visibility: 'public') }.
             to change { SpamLog.count }.by(1)
         end
       end
@@ -189,7 +189,7 @@ describe API::ProjectSnippets, api: true do
 
       delete api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(204)
     end
 
     it 'returns 404 for invalid snippet id' do
@@ -212,7 +212,7 @@ describe API::ProjectSnippets, api: true do
     end
 
     it 'returns 404 for invalid snippet id' do
-      delete api("/projects/#{snippet.project.id}/snippets/1234", admin)
+      get api("/projects/#{snippet.project.id}/snippets/1234/raw", admin)
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')

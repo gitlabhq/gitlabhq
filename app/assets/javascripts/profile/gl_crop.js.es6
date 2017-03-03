@@ -13,7 +13,7 @@
       this.onPickImageClick = this.onPickImageClick.bind(this);
       this.fileInput = $(input);
       this.modalCropImg = _.isString(this.modalCropImg) ? $(this.modalCropImg) : this.modalCropImg;
-      this.fileInput.attr('name', `${this.fileInput.attr('name')}-trigger`).attr('id', `this.fileInput.attr('id')-trigger`);
+      this.fileInput.attr('name', `${this.fileInput.attr('name')}-trigger`).attr('id', `${this.fileInput.attr('id')}-trigger`);
       this.exportWidth = exportWidth;
       this.exportHeight = exportHeight;
       this.cropBoxWidth = cropBoxWidth;

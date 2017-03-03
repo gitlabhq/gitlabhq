@@ -28,7 +28,7 @@
         background-color: $gl-success;
       }
 
-      .accept_merge_request {
+      .accept-merge-request {
         &.ci-pending,
         &.ci-running {
           @include btn-blue;
@@ -39,6 +39,12 @@
         &.ci-canceled,
         &.ci-error {
           @include btn-red;
+        }
+      }
+
+      .dropdown-toggle {
+        .fa {
+          color: inherit;
         }
       }
     }

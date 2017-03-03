@@ -212,6 +212,25 @@ describe API::Issues, api: true  do
         expect(json_response.first['id']).to eq(confidential_issue.id)
       end
 
+      it 'returns an array of issues found by iids' do
+        get api('/issues', user), iids: [closed_issue.iid]
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(closed_issue.id)
+      end
+
+      it 'returns an empty array if iid does not exist' do
+        get api("/issues", user), iids: [99999]
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(0)
+      end
+
       it 'sorts by created_at descending by default' do
         get api('/issues', user)
 
@@ -375,6 +394,25 @@ describe API::Issues, api: true  do
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['labels']).to eq([label_c.title, label_b.title, group_label.title])
+    end
+
+    it 'returns an array of issues found by iids' do
+      get api(base_url, user), iids: [group_issue.iid]
+
+      expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(group_issue.id)
+    end
+
+    it 'returns an empty array if iid does not exist' do
+      get api(base_url, user), iids: [99999]
+
+      expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
     end
 
     it 'returns an empty array if no group issue matches labels' do
@@ -584,6 +622,25 @@ describe API::Issues, api: true  do
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['labels']).to eq([label_c.title, label_b.title, label.title])
+    end
+
+    it 'returns an array of issues found by iids' do
+      get api("#{base_url}/issues", user), iids: [issue.iid]
+
+      expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(issue.id)
+    end
+
+    it 'returns an empty array if iid does not exist' do
+      get api("#{base_url}/issues", user), iids: [99999]
+
+      expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
     end
 
     it 'returns an empty array if not all labels matches' do
@@ -1175,8 +1232,8 @@ describe API::Issues, api: true  do
 
       it "deletes the issue if an admin requests it" do
         delete api("/projects/#{project.id}/issues/#{issue.id}", owner)
-        expect(response).to have_http_status(200)
-        expect(json_response['state']).to eq 'opened'
+
+        expect(response).to have_http_status(204)
       end
     end
 

@@ -24,7 +24,7 @@ feature 'Milestone', feature: true do
       find('input[name="commit"]').click
 
       expect(find('.alert-success')).to have_content('Assign some issues to this milestone.')
-      expect(page).to have_content('Nov 16, 2016 - Dec 16, 2016')
+      expect(page).to have_content('Nov 16, 2016–Dec 16, 2016')
     end
   end
 

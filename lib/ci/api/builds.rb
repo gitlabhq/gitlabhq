@@ -217,6 +217,7 @@ module Ci
           build = Ci::Build.find_by_id(params[:id])
           authenticate_build!(build)
 
+          status(200)
           build.erase_artifacts!
         end
       end

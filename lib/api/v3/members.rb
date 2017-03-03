@@ -119,6 +119,7 @@ module API
             # This is to ensure back-compatibility but 204 behavior should be used
             # for all DELETE endpoints in 9.0!
             if member.nil?
+              status(200  )
               { message: "Access revoked", id: params[:user_id].to_i }
             else
               ::Members::DestroyService.new(source, current_user, declared_params).execute

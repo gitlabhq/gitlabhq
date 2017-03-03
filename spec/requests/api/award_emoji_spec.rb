@@ -242,9 +242,9 @@ describe API::AwardEmoji, api: true  do
       it 'deletes the award' do
         expect do
           delete api("/projects/#{project.id}/issues/#{issue.id}/award_emoji/#{award_emoji.id}", user)
-        end.to change { issue.award_emoji.count }.from(1).to(0)
 
-        expect(response).to have_http_status(200)
+          expect(response).to have_http_status(204)
+        end.to change { issue.award_emoji.count }.from(1).to(0)
       end
 
       it 'returns a 404 error when the award emoji can not be found' do
@@ -258,9 +258,9 @@ describe API::AwardEmoji, api: true  do
       it 'deletes the award' do
         expect do
           delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/award_emoji/#{downvote.id}", user)
-        end.to change { merge_request.award_emoji.count }.from(1).to(0)
 
-        expect(response).to have_http_status(200)
+          expect(response).to have_http_status(204)
+        end.to change { merge_request.award_emoji.count }.from(1).to(0)
       end
 
       it 'returns a 404 error when note id not found' do
@@ -277,9 +277,9 @@ describe API::AwardEmoji, api: true  do
       it 'deletes the award' do
         expect do
           delete api("/projects/#{project.id}/snippets/#{snippet.id}/award_emoji/#{award.id}", user)
-        end.to change { snippet.award_emoji.count }.from(1).to(0)
 
-        expect(response).to have_http_status(200)
+          expect(response).to have_http_status(204)
+        end.to change { snippet.award_emoji.count }.from(1).to(0)
       end
     end
   end
@@ -290,9 +290,9 @@ describe API::AwardEmoji, api: true  do
     it 'deletes the award' do
       expect do
         delete api("/projects/#{project.id}/issues/#{issue.id}/notes/#{note.id}/award_emoji/#{rocket.id}", user)
-      end.to change { note.award_emoji.count }.from(1).to(0)
 
-      expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
+      end.to change { note.award_emoji.count }.from(1).to(0)
     end
   end
 end

@@ -15,4 +15,11 @@ module BuildsHelper
       log_state: @build.trace_with_state[:state].to_s
     }
   end
+
+  def build_failed_issue_options
+    {
+      title: "Build Failed ##{@build.id}",
+      description: namespace_project_build_url(@project.namespace, @project, @build)
+    }
+  end
 end

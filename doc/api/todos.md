@@ -22,7 +22,7 @@ Parameters:
 | `type` | string | no | The type of a todo. Can be either `Issue` or `MergeRequest` |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/todos
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/todos
 ```
 
 Example Response:
@@ -92,7 +92,7 @@ Example Response:
         "updated_at": "2016-06-17T07:47:34.163Z",
         "due_date": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_status": "cannot_be_merged",
       "subscribed": true,
       "user_notes_count": 7
@@ -165,7 +165,7 @@ Example Response:
         "updated_at": "2016-06-17T07:47:34.163Z",
         "due_date": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_status": "cannot_be_merged",
       "subscribed": true,
       "user_notes_count": 7
@@ -194,7 +194,7 @@ Parameters:
 | `id` | integer | yes | The ID of a todo |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/todos/130/mark_as_done
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/todos/130/mark_as_done
 ```
 
 Example Response:
@@ -263,7 +263,7 @@ Example Response:
         "updated_at": "2016-06-17T07:47:34.163Z",
         "due_date": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_status": "cannot_be_merged",
       "subscribed": true,
       "user_notes_count": 7
@@ -284,7 +284,7 @@ POST /todos/mark_as_done
 ```
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/todos/donmark_as_donee
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/todos/donmark_as_donee
 ```
 
 

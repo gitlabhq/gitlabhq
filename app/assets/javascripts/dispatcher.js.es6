@@ -35,6 +35,8 @@
 /* global Labels */
 /* global Shortcuts */
 
+import GroupsList from './groups_list';
+
 const ShortcutsBlob = require('./shortcuts_blob');
 const UserCallout = require('./user_callout');
 
@@ -95,6 +97,10 @@ const UserCallout = require('./user_callout');
           break;
         case 'dashboard:todos:index':
           new gl.Todos();
+          break;
+        case 'dashboard:groups:index':
+        case 'explore:groups:index':
+          new GroupsList();
           break;
         case 'projects:milestones:new':
         case 'projects:milestones:edit':

@@ -10,9 +10,9 @@ module Gitlab
 
       SEARCH_CONTEXT_LINES = 3
 
-      class NoRepository < StandardError; end
-      class InvalidBlobName < StandardError; end
-      class InvalidRef < StandardError; end
+      NoRepository = Class.new(StandardError)
+      InvalidBlobName = Class.new(StandardError)
+      InvalidRef = Class.new(StandardError)
 
       # Full path to repo
       attr_reader :path
@@ -199,13 +199,17 @@ module Gitlab
         nil
       end
 
+      def archive_prefix(ref, sha)
+        project_name = self.name.chomp('.git')
+        "#{project_name}-#{ref.parameterize}-#{sha}"
+      end
+
       def archive_metadata(ref, storage_path, format = "tar.gz")
         ref ||= root_ref
         commit = Gitlab::Git::Commit.find(self, ref)
         return {} if commit.nil?
 
-        project_name = self.name.chomp('.git')
-        prefix = "#{project_name}-#{ref}-#{commit.id}"
+        prefix = archive_prefix(ref, commit.id)
 
         {
           'RepoPath' => path,

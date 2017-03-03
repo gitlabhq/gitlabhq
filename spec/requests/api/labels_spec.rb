@@ -175,9 +175,10 @@ describe API::Labels, api: true  do
   end
 
   describe 'DELETE /projects/:id/labels' do
-    it 'returns 200 for existing label' do
+    it 'returns 204 for existing label' do
       delete api("/projects/#{project.id}/labels", user), name: 'label1'
-      expect(response).to have_http_status(200)
+
+      expect(response).to have_http_status(204)
     end
 
     it 'returns 404 for non existing label' do
