@@ -15,7 +15,7 @@ module Geo
                                       'PRIVATE-TOKEN' => private_token
                                     })
 
-          if response.code >= 200 && response.code < 300
+          if response.success? || response.redirection?
             response.parsed_response.values_at(*keys)
           else
             ["Could not connect to Geo node - HTTP Status Code: #{response.code}"]
