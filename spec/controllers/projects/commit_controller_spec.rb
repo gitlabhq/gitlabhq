@@ -164,9 +164,9 @@ describe Projects::CommitController do
     context 'when the revert was successful' do
       it 'redirects to the commits page' do
         post(:revert,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            target_branch: 'master',
+            namespace_id: project.namespace,
+            project_id: project,
+            start_branch: 'master',
             id: commit.id)
 
         expect(response).to redirect_to namespace_project_commits_path(project.namespace, project, 'master')
@@ -177,18 +177,18 @@ describe Projects::CommitController do
     context 'when the revert failed' do
       before do
         post(:revert,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            target_branch: 'master',
+            namespace_id: project.namespace,
+            project_id: project,
+            start_branch: 'master',
             id: commit.id)
       end
 
       it 'redirects to the commit page' do
         # Reverting a commit that has been already reverted.
         post(:revert,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            target_branch: 'master',
+            namespace_id: project.namespace,
+            project_id: project,
+            start_branch: 'master',
             id: commit.id)
 
         expect(response).to redirect_to namespace_project_commit_path(project.namespace, project, commit.id)
@@ -213,9 +213,9 @@ describe Projects::CommitController do
     context 'when the cherry-pick was successful' do
       it 'redirects to the commits page' do
         post(:cherry_pick,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            target_branch: 'master',
+            namespace_id: project.namespace,
+            project_id: project,
+            start_branch: 'master',
             id: master_pickable_commit.id)
 
         expect(response).to redirect_to namespace_project_commits_path(project.namespace, project, 'master')
@@ -226,18 +226,18 @@ describe Projects::CommitController do
     context 'when the cherry_pick failed' do
       before do
         post(:cherry_pick,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            target_branch: 'master',
+            namespace_id: project.namespace,
+            project_id: project,
+            start_branch: 'master',
             id: master_pickable_commit.id)
       end
 
       it 'redirects to the commit page' do
         # Cherry-picking a commit that has been already cherry-picked.
         post(:cherry_pick,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            target_branch: 'master',
+            namespace_id: project.namespace,
+            project_id: project,
+            start_branch: 'master',
             id: master_pickable_commit.id)
 
         expect(response).to redirect_to namespace_project_commit_path(project.namespace, project, master_pickable_commit.id)

@@ -24,7 +24,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def create
     create_commit(Files::CreateService, success_notice: "The file has been successfully created.",
-                                        success_path: namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @file_path)),
+                                        success_path: -> { namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @file_path)) },
                                         failure_view: :new,
                                         failure_path: namespace_project_new_blob_path(@project.namespace, @project, @ref))
   end
@@ -40,7 +40,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def update
     @path = params[:file_path] if params[:file_path].present?
-    create_commit(Files::UpdateService, success_path: after_edit_path,
+    create_commit(Files::UpdateService, success_path: -> { after_edit_path },
                                         failure_view: :edit,
                                         failure_path: namespace_project_blob_path(@project.namespace, @project, @id))
 
@@ -61,10 +61,10 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def destroy
-    create_commit(Files::DeleteService, success_notice: "The file has been successfully deleted.",
-                                        success_path: namespace_project_tree_path(@project.namespace, @project, @target_branch),
-                                        failure_view: :show,
-                                        failure_path: namespace_project_blob_path(@project.namespace, @project, @id))
+    create_commit(Files::DestroyService, success_notice: "The file has been successfully deleted.",
+                                         success_path: -> { namespace_project_tree_path(@project.namespace, @project, @target_branch) },
+                                         failure_view: :show,
+                                         failure_path: namespace_project_blob_path(@project.namespace, @project, @id))
   end
 
   def diff

@@ -4,10 +4,9 @@ module CreatesCommit
   def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil)
     set_commit_variables
 
-    start_branch = @mr_target_branch unless initial_commit?
     commit_params = @commit_params.merge(
       start_project: @mr_target_project,
-      start_branch: start_branch,
+      start_branch: @mr_target_branch,
       target_branch: @mr_source_branch
     )
 
@@ -17,12 +16,16 @@ module CreatesCommit
     if result[:status] == :success
       update_flash_notice(success_notice)
 
+      success_path = final_success_path(success_path)
+
       respond_to do |format|
-        format.html { redirect_to final_success_path(success_path) }
-        format.json { render json: { message: "success", filePath: final_success_path(success_path) } }
+        format.html { redirect_to success_path }
+        format.json { render json: { message: "success", filePath: success_path } }
       end
     else
       flash[:alert] = result[:message]
+      failure_path = failure_path.call if failure_path.respond_to?(:call)
+
       respond_to do |format|
         format.html do
           if failure_view
@@ -58,9 +61,13 @@ module CreatesCommit
   end
 
   def final_success_path(success_path)
-    return success_path unless create_merge_request?
+    if create_merge_request?
+      merge_request_exists? ? existing_merge_request_path : new_merge_request_path
+    else
+      success_path = success_path.call if success_path.respond_to?(:call)
 
-    merge_request_exists? ? existing_merge_request_path : new_merge_request_path
+      success_path
+    end
   end
 
   def new_merge_request_path
@@ -92,46 +99,26 @@ module CreatesCommit
   end
 
   def create_merge_request?
-    # XXX: Even if the field is set, if we're checking the same branch
+    # Even if the field is set, if we're checking the same branch
     # as the target branch in the same project,
     # we don't want to create a merge request.
     params[:create_merge_request].present? &&
-      (different_project? || @ref != @target_branch)
+      (different_project? || @mr_target_branch != @mr_source_branch)
   end
 
-  # TODO: We should really clean this up
   def set_commit_variables
     if can?(current_user, :push_code, @project)
-      # Edit file in this project
       @mr_source_project = @project
+      @target_branch ||= @ref
     else
-      # Merge request from fork to this project
       @mr_source_project = current_user.fork_of(@project)
+      @target_branch ||= @mr_source_project.repository.next_branch('patch')
     end
 
     # Merge request to this project
     @mr_target_project = @project
-    @mr_target_branch = @ref || @target_branch
+    @mr_target_branch ||= @ref || @target_branch
 
-    @mr_source_branch = guess_mr_source_branch
-  end
-
-  def initial_commit?
-    @mr_target_branch.nil? ||
-      !@mr_target_project.repository.branch_exists?(@mr_target_branch)
-  end
-
-  def guess_mr_source_branch
-    # XXX: Happens when viewing a commit without a branch. In this case,
-    # @target_branch would be the default branch for @mr_source_project,
-    # however we want a generated new branch here. Thus we can't use
-    # @target_branch, but should pass nil to indicate that we want a new
-    # branch instead of @target_branch.
-    return if
-      create_merge_request? &&
-          # XXX: Don't understand why rubocop prefers this indention
-          @mr_source_project.repository.branch_exists?(@target_branch)
-
-    @target_branch
+    @mr_source_branch = @target_branch
   end
 end

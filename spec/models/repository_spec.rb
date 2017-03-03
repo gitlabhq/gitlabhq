@@ -1113,16 +1113,16 @@ describe Repository, models: true do
     let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
 
     context 'when there is a conflict' do
-      it 'aborts the operation' do
-        expect(repository.revert(user, new_image_commit, 'master')).to eq(false)
+      it 'raises an error' do
+        expect { repository.revert(user, new_image_commit, 'master') }.to raise_error(/Failed to/)
       end
     end
 
     context 'when commit was already reverted' do
-      it 'aborts the operation' do
+      it 'raises an error' do
         repository.revert(user, update_image_commit, 'master')
 
-        expect(repository.revert(user, update_image_commit, 'master')).to eq(false)
+        expect { repository.revert(user, update_image_commit, 'master') }.to raise_error(/Failed to/)
       end
     end
 
@@ -1149,16 +1149,16 @@ describe Repository, models: true do
     let(:pickable_merge) { repository.commit('e56497bb5f03a90a51293fc6d516788730953899') }
 
     context 'when there is a conflict' do
-      it 'aborts the operation' do
-        expect(repository.cherry_pick(user, conflict_commit, 'master')).to eq(false)
+      it 'raises an error' do
+        expect { repository.cherry_pick(user, conflict_commit, 'master') }.to raise_error(/Failed to/)
       end
     end
 
     context 'when commit was already cherry-picked' do
-      it 'aborts the operation' do
+      it 'raises an error' do
         repository.cherry_pick(user, pickable_commit, 'master')
 
-        expect(repository.cherry_pick(user, pickable_commit, 'master')).to eq(false)
+        expect { repository.cherry_pick(user, pickable_commit, 'master') }.to raise_error(/Failed to/)
       end
     end
 
