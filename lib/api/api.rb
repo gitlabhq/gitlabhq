@@ -20,6 +20,7 @@ module API
       mount ::API::V3::MergeRequestDiffs
       mount ::API::V3::MergeRequests
       mount ::API::V3::Notes
+      mount ::API::V3::Pipelines
       mount ::API::V3::ProjectHooks
       mount ::API::V3::Milestones
       mount ::API::V3::Projects
