@@ -15,7 +15,8 @@
     = auto_discovery_link_tag(:atom, url_for(params.merge(format: :atom, private_token: current_user.private_token)), title: "#{@project.name} issues")
 
 - if project_issues(@project).exists?
-  = render "projects/issues/export_issues/csv_download"
+  - if current_user
+    = render "projects/issues/export_issues/csv_download"
   %div{ class: (container_class) }
     .top-area
       = render 'shared/issuable/nav', type: :issues
