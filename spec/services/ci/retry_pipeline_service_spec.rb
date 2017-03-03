@@ -100,7 +100,7 @@ describe Ci::RetryPipelineService, '#execute', :services do
           service.execute(pipeline)
 
           expect(build('rspec 1')).to be_pending
-          expect(build('staging')).to be_skipped
+          expect(build('staging')).to be_manual
           expect(build('rspec 2')).to be_created
           expect(pipeline.reload).to be_running
         end
@@ -117,7 +117,7 @@ describe Ci::RetryPipelineService, '#execute', :services do
           service.execute(pipeline)
 
           expect(build('rspec 1')).to be_pending
-          expect(build('rspec 2')).to be_skipped
+          expect(build('rspec 2')).to be_manual
           expect(build('staging')).to be_created
           expect(pipeline.reload).to be_running
         end
@@ -144,11 +144,11 @@ describe Ci::RetryPipelineService, '#execute', :services do
           create_build('staging', :created, 0, when: :manual, allow_failure: true)
         end
 
-        it 'retries canceled job and skipps the manual action' do
+        it 'retries canceled job and processes the manual action' do
           service.execute(pipeline)
 
           expect(build('rspec 1')).to be_pending
-          expect(build('staging')).to be_skipped
+          expect(build('staging')).to be_manual
           expect(pipeline.reload).to be_running
         end
       end
