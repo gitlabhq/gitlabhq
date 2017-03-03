@@ -119,11 +119,12 @@
       - if current_user
         - subscribed = issuable.subscribed?(current_user, @project)
         .block.light.subscription{ data: { url: toggle_subscription_path(issuable) } }
-          .sidebar-collapsed-icon
-            = icon('rss', 'aria-hidden': 'true')
+          .sidebar-collapsed-icon.subscription-collapsed-icon{ class: (subscribed ? "subscribed" : "unsubscribed") }
+            = icon('rss', 'aria-hidden': 'true', class: 'unsubscribed-icon')
+            = icon('bell', 'aria-hidden': 'true', class: 'subscribed-icon')
           %span.toggle-text.hide-collapsed.pull-left
             Notifications
-          %a.btn.toggle-button.pull-right.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button", href: '#', class: (subscribed ? "subscribed" : "unsubscribed") }
+          %a.btn.toggle-button.pull-right.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button", role: "button", class: (subscribed ? "subscribed" : "unsubscribed") }
 
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference

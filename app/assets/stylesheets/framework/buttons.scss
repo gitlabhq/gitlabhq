@@ -372,3 +372,41 @@
     outline: 0;
   }
 }
+
+.toggle-button {
+  @include transition(background-color .1s ease-in-out);
+  border: 0;
+  position: relative;
+  height: 25px;
+  width: 46px;
+  border-radius: 50px;
+
+  &::before {
+    @include transition(left 0.2s ease-in-out);
+    content: '';
+    display: block;
+    position: absolute;
+    top: 1px;
+    z-index: 1;
+    border-radius: 50%;
+    background-color: $white-light;
+    height: 23px;
+    width: 23px;
+  }
+
+  &.unsubscribed {
+    background-color: $gl-text-color-disabled;
+
+    &::before {
+      left: 1px;
+    }
+  }
+
+  &.subscribed {
+    background-color: $active-item-blue;
+
+    &::before {
+      left: 22px;
+    }
+  }
+}

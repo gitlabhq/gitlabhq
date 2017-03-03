@@ -362,6 +362,23 @@
       border-radius: 12px;
     }
 
+
+    .subscription-collapsed-icon {
+      .subscribed-icon {
+        display: none;
+      }
+
+      &.subscribed {
+        .subscribed-icon {
+          display: block;
+        }
+
+        .unsubscribed-icon {
+          display: none;
+        }
+      }
+    }
+
     .sidebar-collapsed-user {
       padding-bottom: 0;
       margin-bottom: 10px;
