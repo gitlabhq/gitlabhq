@@ -5,7 +5,6 @@
 - header_title  "Projects", dashboard_projects_path
 
 .user-callout{ 'callout-svg' => custom_icon('icon_customization') }
-
 - if @projects.any? || params[:name]
   = render 'dashboard/projects_head'
 

@@ -11,9 +11,7 @@
   .top-area
     = render 'groups/show_nav'
     .nav-controls
-      = form_tag request.fullpath, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
-        = render "shared/projects/filter_fields"
-        = search_field_tag :name, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control', spellcheck: false
+      = render 'shared/projects/search_form'
       = render 'shared/projects/dropdown'
       - if can? current_user, :create_projects, @group
         = link_to new_project_path(namespace_id: @group.id), class: 'btn btn-new pull-right' do

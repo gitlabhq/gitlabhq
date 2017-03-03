@@ -13,9 +13,7 @@
         Explore projects
 
   .nav-controls
-    = form_tag request.fullpath, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
-      = render "shared/projects/filter_fields"
-      = search_field_tag :name, params[:name], placeholder: 'Filter by name...', class: 'project-filter-form-field form-control input-short projects-list-filter', spellcheck: false, id: 'project-filter-form-field', tabindex: "2"
+    = render 'shared/projects/search_form'
     = render 'shared/projects/dropdown'
     - if current_user.can_create_project?
       = link_to new_project_path, class: 'btn btn-new' do
