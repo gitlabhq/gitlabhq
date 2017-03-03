@@ -1,38 +1,28 @@
 import '~/lib/utils/common_utils.js.es6';
 import PrometheusGraph from '~/monitoring/prometheus_graph';
 import { prometheusMockData } from './prometheus_mock_data';
+import 'jquery';
+import es6Promise from 'es6-promise';
 
-require('es6-promise').polyfill();
+es6Promise.polyfill();
 
 fdescribe('PrometheusGraph', () => {
   const fixtureName = 'static/environments/metrics.html.raw';
-  // let promiseHelper = {};
-  // let getDataPromise = {};
+  const prometheusGraphContainer = '.prometheus-graph';
+  const prometheusGraphContents = `${prometheusGraphContainer}[graph-type=cpu_values]`;
+  let originalTimeout = {};
 
   preloadFixtures(fixtureName);
 
   beforeEach(() => {
     loadFixtures(fixtureName);
     this.prometheusGraph = new PrometheusGraph();
-
-    this.ajaxSpy = spyOn($, 'ajax').and.callFake((req) => {
-      req.success(prometheusMockData);
-    });
-
-    // const fetchPromise = new Promise((res, rej) => {
-    //   promiseHelper = {
-    //     resolve: res,
-    //     reject: rej,
-    //   };
-    // });
-
-    // spyOn(this.prometheusGraph, 'getData').and.returnValue(fetchPromise);
-    // getDataPromise = this.prometheusGraph.getData();
-    spyOn(gl.utils, 'backOff').and.callFake(() => {
-      const promise = new Promise();
-      promise.resolve(prometheusMockData.metrics);
-      return promise;
-    });
+    const self = this;
+    const fakeInit = function(metricsResponse) {
+      self.prometheusGraph.transformData(metricsResponse);
+      self.prometheusGraph.createGraph();
+    }
+    spyOn(this.prometheusGraph, 'init').and.callFake(fakeInit);
   });
 
   it('initializes graph properties', () => {
@@ -49,33 +39,42 @@ fdescribe('PrometheusGraph', () => {
     expect(this.prometheusGraph.commonGraphProperties).toBeDefined();
   });
 
-  it('getData should be called', () => {
+  it('transforms the data', () => {
+    this.prometheusGraph.init(prometheusMockData.metrics);
+    expect(this.prometheusGraph.data).toBeDefined();
+    expect(this.prometheusGraph.data.cpu_values.length).toBe(121);
+    expect(this.prometheusGraph.data.memory_values.length).toBe(121);
   });
 
+  it('creates two graphs', () => {
+    this.prometheusGraph.init(prometheusMockData.metrics);
+    expect($(prometheusGraphContainer).length).toBe(2);
+  });
 
+  describe('Graph contents', () => {
+    beforeEach(() => {
+      this.prometheusGraph.init(prometheusMockData.metrics);
+    });
 
-  // describe('fetches the data from the prometheus integration', () => {
-  //   beforeEach((done) => {
-  //     promiseHelper.resolve(prometheusMockData.metrics);
-  //     done();
-  //   });
+    it('has axis, an area, a line and a overlay', () => {
+      const $prometheusGraphContents = $(prometheusGraphContents);
+      const $graphContainer = $(prometheusGraphContents).find('.x-axis').parent();
+      expect($graphContainer.find('.x-axis')).toBeDefined();
+      expect($graphContainer.find('.y-axis')).toBeDefined();
+      expect($graphContainer.find('.prometheus-graph-overlay')).toBeDefined();
+      expect($graphContainer.find('.metric-line')).toBeDefined();
+      expect($graphContainer.find('.metric-area')).toBeDefined();
+    });
 
-  //   it('calls the getData method', () => {
-  //     expect(this.prometheusGraph.getData).toHaveBeenCalled();
-  //   });
-
-  //   it('resolves the getData promise', (done) => {
-  //     getDataPromise.then((metricsResponse) => {
-  //       expect(metricsResponse).toBeDefined();
-  //       done();
-  //     });
-  //   });
-
-  //   it('transforms the data after fetch', () => {
-  //     getDataPromise.then((metricsResponse) => {
-  //       this.transformData(metricsResponse.metrics);
-  //       expect(this.data).toBeDefined();
-  //     });
-  //   });
-  // });
+    it('has legends, labels and an extra axis that labels the metrics', () => {
+      const $prometheusGraphContents = $(prometheusGraphContents);
+      const $axisLabelContainer = $(prometheusGraphContents).find('.label-x-axis-line').parent();
+      expect($prometheusGraphContents.find('.label-x-axis-line')).toBeDefined();
+      expect($prometheusGraphContents.find('.label-y-axis-line')).toBeDefined();
+      expect($prometheusGraphContents.find('.label-axis-text')).toBeDefined();
+      expect($prometheusGraphContents.find('.rect-axis-text')).toBeDefined();
+      expect($axisLabelContainer.find('rect').length).toBe(3);
+      expect($axisLabelContainer.find('text').length).toBe(6);
+    });
+  });
 });

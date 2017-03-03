@@ -24,16 +24,7 @@ class PrometheusGraph {
     this.height = 400 - this.margin.top - this.margin.bottom;
     this.backOffRequestCounter = 0;
     this.configureGraph();
-
-    const self = this;
-    this.getData().then((metricsResponse) => {
-      if (metricsResponse === {}) {
-        new Flash('Empty metrics', 'alert');
-      } else {
-        self.transformData(metricsResponse);
-        self.createGraph();
-      }
-    });
+    this.init();
   }
 
   createGraph() {
@@ -41,6 +32,18 @@ class PrometheusGraph {
     _.each(this.data, (value, key) => {
       if (value.length > 0 && (key === 'cpu_values' || key === 'memory_values')) {
         self.plotValues(value, key);
+      }
+    });
+  }
+
+  init() {
+    const self = this;
+    this.getData().then((metricsResponse) => {
+      if (metricsResponse === {}) {
+        new Flash('Empty metrics', 'alert');
+      } else {
+        self.transformData(metricsResponse);
+        self.createGraph();
       }
     });
   }
