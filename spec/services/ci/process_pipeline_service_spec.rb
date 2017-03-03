@@ -61,7 +61,7 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
       fail_running_or_pending
 
-      expect(builds_statuses).to eq ['failed', 'pending']
+      expect(builds_statuses).to eq %w(failed pending)
     end
   end
 
@@ -84,22 +84,22 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
         succeed_running_or_pending
 
-        expect(builds_names).to eq ['build', 'test']
-        expect(builds_statuses).to eq ['success', 'pending']
+        expect(builds_names).to eq %w(build test)
+        expect(builds_statuses).to eq %w(success pending)
 
         succeed_running_or_pending
 
-        expect(builds_names).to eq ['build', 'test', 'deploy']
-        expect(builds_statuses).to eq ['success', 'success', 'pending']
+        expect(builds_names).to eq %w(build test deploy)
+        expect(builds_statuses).to eq %w(success success pending)
 
         succeed_running_or_pending
 
-        expect(builds_names).to eq ['build', 'test', 'deploy', 'cleanup']
-        expect(builds_statuses).to eq ['success', 'success', 'success', 'pending']
+        expect(builds_names).to eq %w(build test deploy cleanup)
+        expect(builds_statuses).to eq %w(success success success pending)
 
         succeed_running_or_pending
 
-        expect(builds_statuses).to eq ['success', 'success', 'success', 'success']
+        expect(builds_statuses).to eq %w(success success success success)
         expect(pipeline.reload.status).to eq 'success'
       end
     end
@@ -112,22 +112,22 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
         succeed_running_or_pending
 
-        expect(builds_names).to eq ['build', 'test']
-        expect(builds_statuses).to eq ['success', 'pending']
+        expect(builds_names).to eq %w(build test)
+        expect(builds_statuses).to eq %w(success pending)
 
         fail_running_or_pending
 
-        expect(builds_names).to eq ['build', 'test', 'test_failure']
-        expect(builds_statuses).to eq ['success', 'failed', 'pending']
+        expect(builds_names).to eq %w(build test test_failure)
+        expect(builds_statuses).to eq %w(success failed pending)
 
         succeed_running_or_pending
 
-        expect(builds_names).to eq ['build', 'test', 'test_failure', 'cleanup']
-        expect(builds_statuses).to eq ['success', 'failed', 'success', 'pending']
+        expect(builds_names).to eq %w(build test test_failure cleanup)
+        expect(builds_statuses).to eq %w(success failed success pending)
 
         succeed_running_or_pending
 
-        expect(builds_statuses).to eq ['success', 'failed', 'success', 'success']
+        expect(builds_statuses).to eq %w(success failed success success)
         expect(pipeline.reload.status).to eq 'failed'
       end
     end
@@ -140,23 +140,23 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
         succeed_running_or_pending
 
-        expect(builds_names).to eq ['build', 'test']
-        expect(builds_statuses).to eq ['success', 'pending']
+        expect(builds_names).to eq %w(build test)
+        expect(builds_statuses).to eq %w(success pending)
 
         fail_running_or_pending
 
-        expect(builds_names).to eq ['build', 'test', 'test_failure']
-        expect(builds_statuses).to eq ['success', 'failed', 'pending']
+        expect(builds_names).to eq %w(build test test_failure)
+        expect(builds_statuses).to eq %w(success failed pending)
 
         fail_running_or_pending
 
-        expect(builds_names).to eq ['build', 'test', 'test_failure', 'cleanup']
-        expect(builds_statuses).to eq ['success', 'failed', 'failed', 'pending']
+        expect(builds_names).to eq %w(build test test_failure cleanup)
+        expect(builds_statuses).to eq %w(success failed failed pending)
 
         succeed_running_or_pending
 
-        expect(builds_names).to eq ['build', 'test', 'test_failure', 'cleanup']
-        expect(builds_statuses).to eq ['success', 'failed', 'failed', 'success']
+        expect(builds_names).to eq %w(build test test_failure cleanup)
+        expect(builds_statuses).to eq %w(success failed failed success)
         expect(pipeline.reload.status).to eq('failed')
       end
     end
@@ -169,22 +169,22 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
         succeed_running_or_pending
 
-        expect(builds_names).to eq ['build', 'test']
-        expect(builds_statuses).to eq ['success', 'pending']
+        expect(builds_names).to eq %w(build test)
+        expect(builds_statuses).to eq %w(success pending)
 
         succeed_running_or_pending
 
-        expect(builds_names).to eq ['build', 'test', 'deploy']
-        expect(builds_statuses).to eq ['success', 'success', 'pending']
+        expect(builds_names).to eq %w(build test deploy)
+        expect(builds_statuses).to eq %w(success success pending)
 
         fail_running_or_pending
 
-        expect(builds_names).to eq ['build', 'test', 'deploy', 'cleanup']
-        expect(builds_statuses).to eq ['success', 'success', 'failed', 'pending']
+        expect(builds_names).to eq %w(build test deploy cleanup)
+        expect(builds_statuses).to eq %w(success success failed pending)
 
         succeed_running_or_pending
 
-        expect(builds_statuses).to eq ['success', 'success', 'failed', 'success']
+        expect(builds_statuses).to eq %w(success success failed success)
         expect(pipeline.reload.status).to eq('failed')
       end
     end
@@ -198,8 +198,8 @@ describe Ci::ProcessPipelineService, '#execute', :services do
         succeed_running_or_pending
 
         expect(builds.running_or_pending).not_to be_empty
-        expect(builds_names).to eq ['build', 'test']
-        expect(builds_statuses).to eq ['success', 'pending']
+        expect(builds_names).to eq %w(build test)
+        expect(builds_statuses).to eq %w(success pending)
 
         cancel_running_or_pending
 
