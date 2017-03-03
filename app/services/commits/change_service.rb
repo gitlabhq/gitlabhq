@@ -37,14 +37,10 @@ module Commits
         start_branch_name: @start_branch)
 
       success
-    rescue Repository::CommitError => e
-      if e.message =~ /Failed to/
-        error_msg = "Sorry, we cannot #{action.to_s.dasherize} this #{@commit.change_type_title(current_user)} automatically.
+    rescue Repository::CreateTreeError => e
+      error_msg = "Sorry, we cannot #{action.to_s.dasherize} this #{@commit.change_type_title(current_user)} automatically.
                      A #{action.to_s.dasherize} may have already been performed with this #{@commit.change_type_title(current_user)}, or a more recent commit may have updated some of its content."
-        raise ChangeError, error_msg
-      else
-        raise
-      end
+      raise ChangeError, error_msg
     end
 
     def check_push_permissions
@@ -58,8 +54,8 @@ module Commits
     end
 
     def validate_target_branch
-      result = ValidateNewBranchService.new(@project, current_user).
-        execute(@target_branch)
+      result = ValidateNewBranchService.new(@project, current_user)
+        .execute(@target_branch)
 
       if result[:status] == :error
         raise ChangeError, "There was an error creating the source branch: #{result[:message]}"

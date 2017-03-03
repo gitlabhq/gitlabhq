@@ -6,6 +6,7 @@ class Repository
   attr_accessor :path_with_namespace, :project
 
   CommitError = Class.new(StandardError)
+  CreateTreeError = Class.new(StandardError)
 
   # Methods that cache data from the Git repository.
   #
@@ -871,7 +872,7 @@ class Repository
 
       revert_tree_id = check_revert_content(commit, start_commit.sha)
       unless revert_tree_id
-        raise Repository::CommitError.new('Failed to revert commit')
+        raise Repository::CreateTreeError.new('Failed to revert commit')
       end
 
       committer = user_to_committer(user)
@@ -895,7 +896,7 @@ class Repository
 
       cherry_pick_tree_id = check_cherry_pick_content(commit, start_commit.sha)
       unless cherry_pick_tree_id
-        raise Repository::CommitError.new('Failed to cherry-pick commit')
+        raise Repository::CreateTreeError.new('Failed to cherry-pick commit')
       end
 
       committer = user_to_committer(user)
