@@ -73,7 +73,7 @@ describe Ci::ProcessPipelineService, '#execute', :services do
       create_build('deploy', stage_idx: 3)
       create_build('production', stage_idx: 3, when: 'manual', allow_failure: true)
       create_build('cleanup', stage_idx: 4, when: 'always')
-      create_build('clear cache', stage_idx: 4, when: 'manual', allow_failure: true)
+      create_build('clear:cache', stage_idx: 4, when: 'manual', allow_failure: true)
     end
 
     context 'when builds are successful' do
@@ -89,17 +89,17 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
         succeed_running_or_pending
 
-        expect(builds_names).to eq %w(build test deploy)
-        expect(builds_statuses).to eq %w(success success pending)
+        expect(builds_names).to eq %w(build test deploy production)
+        expect(builds_statuses).to eq %w(success success pending manual)
 
         succeed_running_or_pending
 
-        expect(builds_names).to eq %w(build test deploy cleanup)
-        expect(builds_statuses).to eq %w(success success success pending)
+        expect(builds_names).to eq %w(build test deploy production cleanup clear:cache)
+        expect(builds_statuses).to eq %w(success success success manual pending manual)
 
         succeed_running_or_pending
 
-        expect(builds_statuses).to eq %w(success success success success)
+        expect(builds_statuses).to eq %w(success success success manual success manual)
         expect(pipeline.reload.status).to eq 'success'
       end
     end
@@ -174,18 +174,18 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
         succeed_running_or_pending
 
-        expect(builds_names).to eq %w(build test deploy)
-        expect(builds_statuses).to eq %w(success success pending)
+        expect(builds_names).to eq %w(build test deploy production)
+        expect(builds_statuses).to eq %w(success success pending manual)
 
         fail_running_or_pending
 
-        expect(builds_names).to eq %w(build test deploy cleanup)
-        expect(builds_statuses).to eq %w(success success failed pending)
+        expect(builds_names).to eq %w(build test deploy production cleanup)
+        expect(builds_statuses).to eq %w(success success failed manual pending)
 
         succeed_running_or_pending
 
-        expect(builds_statuses).to eq %w(success success failed success)
-        expect(pipeline.reload.status).to eq('failed')
+        expect(builds_statuses).to eq %w(success success failed manual success)
+        expect(pipeline.reload).to be_failed
       end
     end
 
@@ -204,7 +204,9 @@ describe Ci::ProcessPipelineService, '#execute', :services do
         cancel_running_or_pending
 
         expect(builds.running_or_pending).to be_empty
-        expect(pipeline.reload.status).to eq 'canceled'
+        expect(builds_names).to eq %w[build test]
+        expect(builds_statuses).to eq %w[success canceled]
+        expect(pipeline.reload).to be_canceled
       end
     end
 
@@ -243,7 +245,7 @@ describe Ci::ProcessPipelineService, '#execute', :services do
       end
 
       it 'starts from the second stage' do
-        expect(all_builds_statuses).to eq %w[skipped pending created]
+        expect(all_builds_statuses).to eq %w[manual pending created]
       end
     end
 
@@ -261,7 +263,7 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
         builds.first.success
 
-        expect(all_builds_statuses).to eq(%w[success skipped pending])
+        expect(all_builds_statuses).to eq(%w[success manual pending])
       end
     end
   end
@@ -275,18 +277,40 @@ describe Ci::ProcessPipelineService, '#execute', :services do
       create_build('production:test', stage_idx: 4, when: 'always')
     end
 
-    it 'blocks pipeline on stage with first manual action' do
-      process_pipeline
+    context 'when first stage succeeds' do
+      it 'blocks pipeline on stage with first manual action' do
+        process_pipeline
 
-      expect(builds_names).to eq %w[code:test]
-      expect(builds_statuses).to eq %w[pending]
-      expect(pipeline.reload.status).to eq 'pending'
+        expect(builds_names).to eq %w[code:test]
+        expect(builds_statuses).to eq %w[pending]
+        expect(pipeline.reload.status).to eq 'pending'
 
-      succeed_running_or_pending
+        succeed_running_or_pending
 
-      expect(builds_names).to eq %w[code:test staging:deploy]
-      expect(builds_statuses).to eq %w[success manual]
-      expect(pipeline.reload).to be_manual
+        expect(builds_names).to eq %w[code:test staging:deploy]
+        expect(builds_statuses).to eq %w[success manual]
+        expect(pipeline.reload).to be_manual
+      end
+    end
+
+    context 'when first stage fails' do
+      it 'does not take blocking action into account' do
+        process_pipeline
+
+        expect(builds_names).to eq %w[code:test]
+        expect(builds_statuses).to eq %w[pending]
+        expect(pipeline.reload.status).to eq 'pending'
+
+        fail_running_or_pending
+
+        expect(builds_names).to eq %w[code:test production:test]
+        expect(builds_statuses).to eq %w[failed pending]
+
+        succeed_running_or_pending
+
+        expect(builds_statuses).to eq %w[failed success]
+        expect(pipeline.reload).to be_failed
+      end
     end
   end
 
