@@ -2,7 +2,7 @@ class PrometheusService < MonitoringService
   include Gitlab::Prometheus
   include ReactiveCaching
 
-  self.reactive_cache_key = ->(service) { [ service.class.model_name.singular, service.project_id ] }
+  self.reactive_cache_key = ->(service) { [service.class.model_name.singular, service.project_id] }
   self.reactive_cache_lease_timeout = 30.seconds
   self.reactive_cache_refresh_interval = 30.seconds
   self.reactive_cache_lifetime = 1.minute
@@ -39,7 +39,8 @@ class PrometheusService < MonitoringService
 
   def fields
     [
-        { type: 'text',
+        {
+          type: 'text',
           name: 'api_url',
           title: 'API URL',
           placeholder: 'Prometheus API Base URL, like http://prometheus.example.com/',

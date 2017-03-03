@@ -45,7 +45,7 @@ module Gitlab
     end
 
     def api_parse_response(response)
-      if response.code == 200 and response['status'] == 'success'
+      if response.code == 200 && response['status'] == 'success'
         response
       elsif response.code == 400
         raise PrometheusError.new(response['error'] || 'bad data received')
