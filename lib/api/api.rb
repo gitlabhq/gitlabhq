@@ -21,6 +21,7 @@ module API
       mount ::API::V3::MergeRequests
       mount ::API::V3::Notes
       mount ::API::V3::ProjectHooks
+      mount ::API::V3::Milestones
       mount ::API::V3::Projects
       mount ::API::V3::ProjectSnippets
       mount ::API::V3::Repositories
