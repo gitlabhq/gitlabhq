@@ -86,8 +86,11 @@ PUT /application/settings
 | `help_text` | string | no | GitLab server administrator information |
 | `elasticsearch_indexing` | boolean | no | Enable Elasticsearch indexing |
 | `elasticsearch_search` | boolean | no | Enable Elasticsearch search |
-| `elasticsearch_host` | string | no | The TCP/IP host to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "host1, host2") |
-| `elasticsearch_port` | integer | no | The TCP/IP port that Elasticsearch listens to. The default value is 9200 |
+| `elasticsearch_url` | string | no | The url to use for connecting to Elasticsearch. Use a comma-separated list to support cluster (e.g., "http://localhost:9200, http://localhost:9201") |
+| `elasticsearch_aws` | boolean | no | Enable the use of AWS hosted Elasticsearch |
+| `elasticsearch_aws_region` | string | no | The AWS region the elasticsearch domain is configured |
+| `elasticsearch_aws_access_key` | string | no | AWS IAM access key |
+| `elasticsearch_aws_secret_access_key` | string | no | AWS IAM secret access key |
 | `usage_ping_enabled` | boolean | no | Every week GitLab will report license usage back to GitLab, Inc.|
 | `repository_size_limit` | integer | no | Size limit per repository (MB) |
 | `plantuml_enabled` | boolean | no | Enable PlantUML integration. Default is `false`. |

@@ -10,21 +10,15 @@ module Elasticsearch
 
         def client(client = nil)
           if @client.nil? || es_configuration_changed?
-            @es_host = current_application_settings.elasticsearch_host
-            @es_port = current_application_settings.elasticsearch_port
-
-            @client = Elasticsearch::Client.new(
-              host: current_application_settings.elasticsearch_host,
-              port: current_application_settings.elasticsearch_port
-            )
+            @es_config = current_application_settings.elasticsearch_config
+            @client = ::Gitlab::Elastic::Client.build(@es_config)
           end
 
           @client
         end
 
         def es_configuration_changed?
-          @es_host != current_application_settings.elasticsearch_host ||
-            @es_port != current_application_settings.elasticsearch_port
+          @es_config != current_application_settings.elasticsearch_config
         end
       end
     end

@@ -454,16 +454,40 @@
             Search with Elasticsearch enabled
 
     .form-group
-      = f.label :elasticsearch_host, 'Host', class: 'control-label col-sm-2'
+      = f.label :elasticsearch_url, 'URL', class: 'control-label col-sm-2'
       .col-sm-10
-        = f.text_field :elasticsearch_host, value: @application_setting.elasticsearch_host.join(', '), class: 'form-control', placeholder: 'localhost'
+        = f.text_field :elasticsearch_url, value: @application_setting.elasticsearch_url.join(', '), class: 'form-control', placeholder: 'http://localhost:9200'
         .help-block
-          The TCP/IP host to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "host1, host2").
+          The url to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://localhost:9200, http://localhost:9201").
+
+  %fieldset
+    %legend Elasticsearch AWS IAM credentials
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :elasticsearch_aws do
+            = f.check_box :elasticsearch_aws
+            Using AWS hosted Elasticsearch with IAM credentials
+    .form-group
+      = f.label :elasticsearch_aws_region, 'AWS region', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :elasticsearch_aws_region, value: @application_setting.elasticsearch_aws_region, class: 'form-control'
+        .help-block
+          Region that elasticsearch is configured
 
     .form-group
-      = f.label :elasticsearch_port, 'Port', class: 'control-label col-sm-2'
+      = f.label :elasticsearch_aws_access_key, 'AWS Access Key', class: 'control-label col-sm-2'
       .col-sm-10
-        = f.text_field :elasticsearch_port, class: 'form-control', placeholder: ApplicationSetting.current.elasticsearch_port
+        = f.text_field :elasticsearch_aws_access_key, value: @application_setting.elasticsearch_aws_access_key, class: 'form-control'
+        .help-block
+          AWS Access Key.  Only required if not using role instance credentials
+
+    .form-group
+      = f.label :elasticsearch_aws_secret_access_key, 'AWS Secret Access Key', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.password_field :elasticsearch_aws_secret_access_key, value: @application_setting.elasticsearch_aws_secret_access_key, class: 'form-control'
+        .help-block
+          AWS Secret Access Key.  Only required if not using role instance credentials
 
   %fieldset
     %legend Koding

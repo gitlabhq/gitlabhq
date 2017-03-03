@@ -277,8 +277,7 @@ Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config'
 #
 Settings['elasticsearch'] ||= Settingslogic.new({})
 Settings.elasticsearch['enabled'] = false if Settings.elasticsearch['enabled'].nil?
-Settings.elasticsearch['host'] ||=  ENV['ELASTIC_HOST'] || "localhost"
-Settings.elasticsearch['port'] ||= ENV['ELASTIC_PORT'] || 9200
+Settings.elasticsearch['url'] = ENV['ELASTIC_URL'] || "http://localhost:9200"
 
 #
 # CI

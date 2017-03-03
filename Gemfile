@@ -108,6 +108,8 @@ gem 'elasticsearch-model', '~> 0.1.9'
 gem 'elasticsearch-rails', '~> 0.1.9'
 gem 'elasticsearch-api',   '5.0.3'
 gem 'gitlab-elasticsearch-git', '1.1.1', require: "elasticsearch/git"
+gem 'aws-sdk'
+gem 'faraday_middleware-aws-signers-v4'
 
 # Markdown and HTML processing
 gem 'html-pipeline',        '~> 1.11.0'

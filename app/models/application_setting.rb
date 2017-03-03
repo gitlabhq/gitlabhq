@@ -91,13 +91,13 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
-  validates :elasticsearch_host,
+  validates :elasticsearch_url,
             presence: { message: "can't be blank when indexing is enabled" },
             if: :elasticsearch_indexing?
 
-  validates :elasticsearch_port,
-            presence: { message: "can't be blank when indexing is enabled" },
-            if: :elasticsearch_indexing?
+  validates :elasticsearch_aws_region,
+            presence: { message: "can't be blank when using aws hosted elasticsearch" },
+            if: ->(setting) { setting.elasticsearch_indexing? && setting.elasticsearch_aws? }
 
   validates :repository_storages, presence: true
   validate :check_repository_storages
@@ -236,8 +236,9 @@ class ApplicationSetting < ActiveRecord::Base
 
   def self.defaults_ee
     {
-      elasticsearch_host: ENV['ELASTIC_HOST'] || 'localhost',
-      elasticsearch_port: ENV['ELASTIC_PORT'] || '9200',
+      elasticsearch_url: ENV['ELASTIC_URL'] || 'http://localhost:9200',
+      elasticsearch_aws: false,
+      elasticsearch_aws_region: ENV['ELASTIC_REGION'] || 'us-east-1',
       usage_ping_enabled: true,
       minimum_mirror_sync_time: Gitlab::Mirror::FIFTEEN
     }
@@ -268,8 +269,18 @@ class ApplicationSetting < ActiveRecord::Base
     Gitlab::Mirror.configure_cron_jobs!
   end
 
-  def elasticsearch_host
-    read_attribute(:elasticsearch_host).split(',').map(&:strip)
+  def elasticsearch_url
+    read_attribute(:elasticsearch_url).split(',').map(&:strip)
+  end
+
+  def elasticsearch_config
+    {
+      url:                   elasticsearch_url,
+      aws:                   elasticsearch_aws,
+      aws_access_key:        elasticsearch_aws_access_key,
+      aws_secret_access_key: elasticsearch_aws_secret_access_key,
+      aws_region:            elasticsearch_aws_region,
+    }
   end
 
   def home_page_url_column_exist

@@ -8,7 +8,9 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'benchmark'
 
-path_to_log_file = File.expand_path('../../log/es-indexer.log', __FILE__)
+require File.expand_path('../lib/gitlab/elastic/client', File.dirname(__FILE__))
+
+path_to_log_file = File.expand_path('../log/es-indexer.log', File.dirname(__FILE__))
 LOGGER = Logger.new(path_to_log_file)
 
 PROJECT_ID = ARGV.shift
@@ -17,21 +19,21 @@ FROM_SHA = ENV['FROM_SHA']
 TO_SHA = ENV['TO_SHA']
 RAILS_ENV = ENV['RAILS_ENV']
 
-LOGGER.info("Has been scheduled for project #{REPO_PATH} with SHA range #{FROM_SHA}:#{TO_SHA}")
+# Symbols get stringified when passed through JSON
+elastic = {}
+JSON.parse(ENV['ELASTIC_CONNECTION_INFO']).each { |k, v| elastic[k.to_sym] = v }
+ELASTIC_CONFIG = elastic
 
-elastic_connection_info = JSON.parse ENV['ELASTIC_CONNECTION_INFO']
-ELASTIC_HOST = elastic_connection_info['host']
-ELASTIC_PORT = elastic_connection_info['port']
+LOGGER.info("Has been scheduled for project #{REPO_PATH} with SHA range #{FROM_SHA}:#{TO_SHA}")
 
 class Repository
   include Elasticsearch::Git::Repository
 
   index_name ['gitlab', RAILS_ENV].compact.join('-')
 
-  self.__elasticsearch__.client = Elasticsearch::Client.new(
-    host: ELASTIC_HOST,
-    port: ELASTIC_PORT
-  )
+  def initialize
+    self.__elasticsearch__.client = ::Gitlab::Elastic::Client.build(ELASTIC_CONFIG)
+  end
 
   def client_for_indexing
     self.__elasticsearch__.client

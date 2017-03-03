@@ -5,7 +5,7 @@ describe Gitlab::Elastic::Indexer do
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'true')
-    stub_application_setting(es_host: ['elastic-host1', 'elastic-host2'])
+    stub_application_setting(elasticsearch_url: ['http://localhost:9200'])
   end
 
   let(:project)  { create(:project) }
@@ -15,13 +15,6 @@ describe Gitlab::Elastic::Indexer do
 
   let(:popen_success) { [[''], 0] }
   let(:popen_failure) { [['error'], 1] }
-
-  let(:elastic_connection_info) do
-    {
-      host: current_application_settings.elasticsearch_host,
-      port: current_application_settings.elasticsearch_port,
-    }
-  end
 
   context 'empty project' do
     let(:project) { create(:empty_project) }
@@ -58,7 +51,7 @@ describe Gitlab::Elastic::Indexer do
         ],
         nil,
         hash_including(
-          'ELASTIC_CONNECTION_INFO' => elastic_connection_info.to_json,
+          'ELASTIC_CONNECTION_INFO' => current_application_settings.elasticsearch_config.to_json,
           'RAILS_ENV'               => Rails.env,
           'FROM_SHA'                => from_sha,
           'TO_SHA'                  => to_sha

@@ -1072,8 +1072,7 @@ namespace :gitlab do
   end
 
   def check_elasticsearch
-    client = Elasticsearch::Client.new(host: ApplicationSetting.current.elasticsearch_host,
-                                       port: ApplicationSetting.current.elasticsearch_port)
+    client = Gitlab::Elastic::Client.build(ApplicationSetting.current.elasticsearch_config)
 
     print "Elasticsearch version 5.1.x? ... "
 

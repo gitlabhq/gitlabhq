@@ -161,9 +161,12 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def application_setting_params_ee
     [
       :help_text,
-      :elasticsearch_host,
+      :elasticsearch_url,
       :elasticsearch_indexing,
-      :elasticsearch_port,
+      :elasticsearch_aws,
+      :elasticsearch_aws_access_key,
+      :elasticsearch_aws_secret_access_key,
+      :elasticsearch_aws_region,
       :elasticsearch_search,
       :repository_size_limit,
       :shared_runners_minutes,
