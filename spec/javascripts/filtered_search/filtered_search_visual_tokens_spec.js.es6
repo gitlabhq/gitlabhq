@@ -14,10 +14,10 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
       tokensContainer = document.querySelector('.tokens-container');
     });
 
-    describe('getLastVisualToken', () => {
+    describe('getLastVisualTokenBeforeInput', () => {
       it('returns when there are no visual tokens', () => {
         const { lastVisualToken, isLastVisualTokenValid }
-          = gl.FilteredSearchVisualTokens.getLastVisualToken();
+          = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
         expect(lastVisualToken).toEqual(null);
         expect(isLastVisualTokenValid).toEqual(true);
@@ -29,7 +29,7 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
         );
 
         const { lastVisualToken, isLastVisualTokenValid }
-          = gl.FilteredSearchVisualTokens.getLastVisualToken();
+          = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
         expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
         expect(isLastVisualTokenValid).toEqual(true);
@@ -41,7 +41,7 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
         );
 
         const { lastVisualToken, isLastVisualTokenValid }
-          = gl.FilteredSearchVisualTokens.getLastVisualToken();
+          = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
         expect(lastVisualToken).toEqual(document.querySelector('.filtered-search-token'));
         expect(isLastVisualTokenValid).toEqual(false);
@@ -55,7 +55,7 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
         `);
 
         const { lastVisualToken, isLastVisualTokenValid }
-          = gl.FilteredSearchVisualTokens.getLastVisualToken();
+          = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
         const items = document.querySelectorAll('.tokens-container .js-visual-token');
 
         expect(lastVisualToken.isEqualNode(items[items.length - 1])).toEqual(true);
@@ -70,7 +70,7 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
         `);
 
         const { lastVisualToken, isLastVisualTokenValid }
-          = gl.FilteredSearchVisualTokens.getLastVisualToken();
+          = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
         const items = document.querySelectorAll('.tokens-container .js-visual-token');
 
         expect(lastVisualToken.isEqualNode(items[items.length - 1])).toEqual(true);

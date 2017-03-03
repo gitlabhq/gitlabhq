@@ -75,7 +75,7 @@
       // 8 = Backspace Key
       // 46 = Delete Key
       if (e.keyCode === 8 || e.keyCode === 46) {
-        const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualToken();
+        const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
         if (this.filteredSearchInput.value === '' && lastVisualToken) {
           this.filteredSearchInput.value = gl.FilteredSearchVisualTokens.getLastTokenPartial();
@@ -202,7 +202,7 @@
       const { tokens, searchToken }
         = gl.FilteredSearchTokenizer.processTokens(input.value);
       const { isLastVisualTokenValid }
-        = gl.FilteredSearchVisualTokens.getLastVisualToken();
+        = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
       if (isLastVisualTokenValid) {
         tokens.forEach((t) => {
