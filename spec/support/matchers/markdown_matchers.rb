@@ -29,7 +29,8 @@ module MarkdownMatchers
       expect(actual).to have_selector('gl-emoji', count: 10)
 
       emoji_element = actual.at_css('gl-emoji')
-      expect(emoji_element['data-fallback-src'].to_s).to start_with('/assets')
+      expect(emoji_element['data-name'].to_s).not_to be_empty
+      expect(emoji_element['data-unicode-version'].to_s).not_to be_empty
     end
   end
 

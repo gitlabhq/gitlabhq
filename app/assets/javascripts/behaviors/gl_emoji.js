@@ -10,6 +10,14 @@ function emojiImageTag(name, src) {
   return `<img class="emoji" title=":${name}:" alt=":${name}:" src="${src}" width="20" height="20" align="absmiddle" />`;
 }
 
+function assembleFallbackImageSrc(inputName) {
+  const name = Object.prototype.hasOwnProperty.call(emojiAliases, inputName) ?
+    emojiAliases[inputName] : inputName;
+  const emojiInfo = emojiMap[name];
+  const fallbackImageSrc = `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/emoji/${name}-${emojiInfo.digest}.png`;
+
+  return fallbackImageSrc;
+}
 const glEmojiTagDefaults = {
   sprite: false,
   forceFallback: false,
@@ -19,7 +27,7 @@ function glEmojiTag(inputName, options) {
   const name = Object.prototype.hasOwnProperty.call(emojiAliases, inputName) ?
     emojiAliases[inputName] : inputName;
   const emojiInfo = emojiMap[name];
-  const fallbackImageSrc = `${gon.relative_url_root || ''}/assets/emoji/${name}-${emojiInfo.digest}.png`;
+  const fallbackImageSrc = assembleFallbackImageSrc(name);
   const fallbackSpriteClass = `emoji-${name}`;
 
   const classList = [];
@@ -162,6 +170,7 @@ const GlEmojiElementProto = Object.create(HTMLElement.prototype);
 GlEmojiElementProto.createdCallback = function createdCallback() {
   const emojiUnicode = this.textContent.trim();
   const {
+    name,
     unicodeVersion,
     fallbackSrc,
     fallbackSpriteClass,
@@ -184,8 +193,10 @@ GlEmojiElementProto.createdCallback = function createdCallback() {
       this.classList.add('emoji-icon');
       this.classList.add(fallbackSpriteClass);
     } else if (hasImageFallback) {
-      const emojiName = this.dataset.name;
-      this.innerHTML = emojiImageTag(emojiName, fallbackSrc);
+      this.innerHTML = emojiImageTag(name, fallbackSrc);
+    } else {
+      const src = assembleFallbackImageSrc(name);
+      this.innerHTML = emojiImageTag(name, src);
     }
   }
 };

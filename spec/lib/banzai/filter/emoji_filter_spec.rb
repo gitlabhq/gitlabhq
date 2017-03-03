@@ -88,11 +88,6 @@ describe Banzai::Filter::EmojiFilter, lib: true do
     expect(doc.css('gl-emoji').first.attr('data-name')).to eq 'thumbsdown'
   end
 
-  it 'has a data-fallback-src attribute' do
-    doc = filter(':-1:')
-    expect(doc.css('gl-emoji').first.attr('data-fallback-src')).to end_with '.png'
-  end
-
   it 'has a data-unicode-version attribute' do
     doc = filter(':-1:')
     expect(doc.css('gl-emoji').first.attr('data-unicode-version')).to eq '6.0'
@@ -108,19 +103,5 @@ describe Banzai::Filter::EmojiFilter, lib: true do
     doc = filter('This deserves a 🎱, big time.')
 
     expect(doc.to_html).to match(/^This deserves a <gl-emoji.+>, big time\.\z/)
-  end
-
-  it 'uses a custom asset_host context' do
-    ActionController::Base.asset_host = 'https://cdn.example.com'
-
-    doc = filter(':frowning:', asset_host: 'https://this-is-ignored-i-guess?')
-    expect(doc.css('gl-emoji').first.attr('data-fallback-src')).to start_with('https://cdn.example.com')
-  end
-
-  it 'uses a custom asset_host context' do
-    ActionController::Base.asset_host = 'https://cdn.example.com'
-
-    doc = filter("'🎱'", asset_host: 'https://this-is-ignored-i-guess?')
-    expect(doc.css('gl-emoji').first.attr('data-fallback-src')).to start_with('https://cdn.example.com')
   end
 end
