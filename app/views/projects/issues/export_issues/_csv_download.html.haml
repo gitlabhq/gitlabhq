@@ -2,9 +2,9 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %a.close{ href: "#", "data-dismiss" => "modal" } ×
+        %a.close{ href: '#', 'data-dismiss' => 'modal' } ×
         .export-svg-container.pull-right
-          = render "projects/issues/export_issues/export_issues_list.svg"
+          = render 'projects/issues/export_issues/export_issues_list.svg'
         %h3
           Export issues list
       .modal-header
@@ -16,4 +16,4 @@
           After we finish preparing your .csv export, we'll email it to
           %strong= @current_user.email
       .modal-footer
-        = link_to 'Request export', export_csv_namespace_project_issues_path(@project.namespace, @project, params.permit(IssuableFinder::VALID_PARAMS)), method: :post, class: "btn btn-success pull-left", title: "Request export"
+        = link_to 'Request export', export_csv_namespace_project_issues_path(@project.namespace, @project, params.permit(IssuableFinder::VALID_PARAMS)), method: :post, class: 'btn btn-success pull-left', title: 'Request export'
