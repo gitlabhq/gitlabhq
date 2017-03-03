@@ -1032,6 +1032,11 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo)
   end
 
+  def fetch_refs(source_path, refspecs)
+    args = %W(#{Gitlab.config.git.bin_path} fetch --no-tags -f #{source_path}) +  refspecs
+    Gitlab::Popen.popen(args, path_to_repo)
+  end
+
   def create_ref(ref, ref_path)
     fetch_ref(path_to_repo, ref, ref_path)
   end

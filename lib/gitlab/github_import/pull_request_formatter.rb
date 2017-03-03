@@ -39,7 +39,7 @@ module Gitlab
       def source_branch_name
         @source_branch_name ||= begin
           if cross_project?
-            "pull/#{number}/#{source_branch_repo.full_name}/#{source_branch_ref}"
+            "pull-source/#{number}/#{source_branch_repo.full_name}/#{source_branch_ref}"
           else
             source_branch_exists? ? source_branch_ref : "pull/#{number}/#{source_branch_ref}"
           end
@@ -52,7 +52,7 @@ module Gitlab
 
       def target_branch_name
         @target_branch_name ||= begin
-          target_branch_exists? ? target_branch_ref : "pull/#{number}/#{target_branch_ref}"
+          target_branch_exists? ? target_branch_ref : "pull-target/#{number}/#{target_branch_ref}"
         end
       end
 

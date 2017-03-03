@@ -130,13 +130,23 @@ module Gitlab
 
       def import_pull_requests
         fetch_resources(:pull_requests, repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |pull_requests|
+          project.repository.expire_branches_cache
+
+          refspecs = pull_requests.map do |raw|
+            gh_pull_request = PullRequestFormatter.new(project, raw, client)
+            next if gh_pull_request.source_branch_exists?
+
+            "pull/#{gh_pull_request.number}/head:#{gh_pull_request.source_branch_name}"
+          end
+
+          project.repository.fetch_refs(repo_url, refspecs.compact)
+
           pull_requests.each do |raw|
             gh_pull_request = PullRequestFormatter.new(project, raw, client)
 
             next unless gh_pull_request.valid?
 
             begin
-              restore_source_branch(gh_pull_request) unless gh_pull_request.source_branch_exists?
               restore_target_branch(gh_pull_request) unless gh_pull_request.target_branch_exists?
 
               merge_request = gh_pull_request.create!
