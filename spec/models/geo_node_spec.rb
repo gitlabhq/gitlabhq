@@ -190,6 +190,14 @@ describe GeoNode, type: :model do
     end
   end
 
+  describe '#geo_status_url' do
+    let(:status_url) { "https://localhost:3000/gitlab/api/#{api_version}/geo/status" }
+
+    it 'returns api url based on node uri' do
+      expect(new_node.status_url).to eq(status_url)
+    end
+  end
+
   describe '#oauth_callback_url' do
     let(:oauth_callback_url) { 'https://localhost:3000/gitlab/oauth/geo/callback' }
 
