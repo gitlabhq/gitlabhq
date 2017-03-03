@@ -64,7 +64,7 @@ module Ci
 
     state_machine :status do
       event :block do
-        transition :created => :blocked
+        transition created: :blocked
       end
 
       after_transition any => [:pending] do |build|
