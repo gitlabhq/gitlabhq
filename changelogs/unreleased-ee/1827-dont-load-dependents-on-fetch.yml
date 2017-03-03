@@ -1,0 +1,5 @@
+---
+title: 'Geo: Don''t load dependent models when fetching an existing GeoNode from the
+  database'
+merge_request: 1348
+author:
