@@ -33,9 +33,8 @@ describe Gitlab::Ci::Config::Entry::Cache do
 
         describe '#value' do
           it 'sets key with the default' do
-            value = config.merge(key: Gitlab::Ci::Config::Entry::Key.default)
-
-            expect(entry.value).to eq(value)
+            expect(entry.value[:key])
+              .to eq(Gitlab::Ci::Config::Entry::Key.default)
           end
         end
       end
