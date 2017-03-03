@@ -92,7 +92,7 @@ describe Ci::RetryPipelineService, '#execute', :services do
       context 'when there is a canceled manual action in first stage' do
         before do
           create_build('rspec 1', :failed, 0)
-          create_build('staging', :canceled, 0, :manual)
+          create_build('staging', :canceled, 0, when: :manual, allow_failure: true)
           create_build('rspec 2', :canceled, 1)
         end
 
@@ -109,8 +109,8 @@ describe Ci::RetryPipelineService, '#execute', :services do
       context 'when there is a skipped manual action in last stage' do
         before do
           create_build('rspec 1', :canceled, 0)
-          create_build('rspec 2', :skipped, 0, :manual)
-          create_build('staging', :skipped, 1, :manual)
+          create_build('rspec 2', :skipped, 0, when: :manual, allow_failure: true)
+          create_build('staging', :skipped, 1, when: :manual, allow_failure: true)
         end
 
         it 'retries canceled job and reprocesses manual actions' do
@@ -126,7 +126,7 @@ describe Ci::RetryPipelineService, '#execute', :services do
       context 'when there is a created manual action in the last stage' do
         before do
           create_build('rspec 1', :canceled, 0)
-          create_build('staging', :created, 1, :manual)
+          create_build('staging', :created, 1, when: :manual, allow_failure: true)
         end
 
         it 'retries canceled job and does not update the manual action' do
@@ -141,7 +141,7 @@ describe Ci::RetryPipelineService, '#execute', :services do
       context 'when there is a created manual action in the first stage' do
         before do
           create_build('rspec 1', :canceled, 0)
-          create_build('staging', :created, 0, :manual)
+          create_build('staging', :created, 0, when: :manual, allow_failure: true)
         end
 
         it 'retries canceled job and skipps the manual action' do
@@ -183,13 +183,12 @@ describe Ci::RetryPipelineService, '#execute', :services do
     statuses.latest.find_by(name: name)
   end
 
-  def create_build(name, status, stage_num, on = 'on_success')
+  def create_build(name, status, stage_num, **opts)
     create(:ci_build, name: name,
                       status: status,
                       stage: "stage_#{stage_num}",
                       stage_idx: stage_num,
-                      when: on,
-                      pipeline: pipeline) do |build|
+                      pipeline: pipeline, **opts) do |build|
       pipeline.update_status
     end
   end
