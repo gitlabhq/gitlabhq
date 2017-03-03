@@ -84,7 +84,7 @@ module API
       end
       get do
         entity = current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails
-        present_projects ProjectsFinder.new.execute(current_user), with: entity, statistics: params[:statistics]
+        present_projects ProjectsFinder.new(current_user: current_user).execute, with: entity, statistics: params[:statistics]
       end
 
       desc 'Create new project' do

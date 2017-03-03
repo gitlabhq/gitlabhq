@@ -349,10 +349,15 @@ class Project < ActiveRecord::Base
     end
 
     def sort(method)
-      if method == 'storage_size_desc'
+      case method.to_s
+      when 'storage_size_desc'
         # storage_size is a joined column so we need to
         # pass a string to avoid AR adding the table name
         reorder('project_statistics.storage_size DESC, projects.id DESC')
+      when 'latest_activity_desc'
+        reorder(last_activity_at: :desc)
+      when 'latest_activity_asc'
+        reorder(last_activity_at: :asc)
       else
         order_by(method)
       end
