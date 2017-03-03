@@ -94,9 +94,9 @@ describe Boards::Issues::MoveService, services: true do
       end
 
       it 'sorts issues' do
-        issue.move_between(issue1, issue2)
+        issue.move_between!(issue1, issue2)
 
-        params.merge! move_after_iid: issue1.iid, move_before_iid: issue2.iid
+        params.merge! move_after_iid: issue.iid, move_before_iid: issue2.iid
 
         described_class.new(project, user, params).execute(issue1)
 

@@ -21,6 +21,7 @@ Issue:
 - milestone_id
 - weight
 - time_estimate
+- relative_position
 Event:
 - id
 - target_type
