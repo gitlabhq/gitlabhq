@@ -21,9 +21,9 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
   describe "GET /projects/:id/hooks" do
     context "authorized user" do
       it "returns project hooks" do
-        get api("/projects/#{project.id}/hooks", user)
-        expect(response).to have_http_status(200)
+        get v3_api("/projects/#{project.id}/hooks", user)
 
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.count).to eq(1)
         expect(json_response.first['url']).to eq("http://example.com")
@@ -41,7 +41,8 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
 
     context "unauthorized user" do
       it "does not access project hooks" do
-        get api("/projects/#{project.id}/hooks", user3)
+        get v3_api("/projects/#{project.id}/hooks", user3)
+
         expect(response).to have_http_status(403)
       end
     end
@@ -50,7 +51,7 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
   describe "GET /projects/:id/hooks/:hook_id" do
     context "authorized user" do
       it "returns a project hook" do
-        get api("/projects/#{project.id}/hooks/#{hook.id}", user)
+        get v3_api("/projects/#{project.id}/hooks/#{hook.id}", user)
         expect(response).to have_http_status(200)
         expect(json_response['url']).to eq(hook.url)
         expect(json_response['issues_events']).to eq(hook.issues_events)
@@ -65,20 +66,20 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
       end
 
       it "returns a 404 error if hook id is not available" do
-        get api("/projects/#{project.id}/hooks/1234", user)
+        get v3_api("/projects/#{project.id}/hooks/1234", user)
         expect(response).to have_http_status(404)
       end
     end
 
     context "unauthorized user" do
       it "does not access an existing hook" do
-        get api("/projects/#{project.id}/hooks/#{hook.id}", user3)
+        get v3_api("/projects/#{project.id}/hooks/#{hook.id}", user3)
         expect(response).to have_http_status(403)
       end
     end
 
     it "returns a 404 error if hook id is not available" do
-      get api("/projects/#{project.id}/hooks/1234", user)
+      get v3_api("/projects/#{project.id}/hooks/1234", user)
       expect(response).to have_http_status(404)
     end
   end
@@ -86,7 +87,7 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
   describe "POST /projects/:id/hooks" do
     it "adds hook to project" do
       expect do
-        post api("/projects/#{project.id}/hooks", user),
+        post v3_api("/projects/#{project.id}/hooks", user),
           url: "http://example.com", issues_events: true, wiki_page_events: true
       end.to change {project.hooks.count}.by(1)
 
@@ -108,7 +109,7 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
       token = "secret token"
 
       expect do
-        post api("/projects/#{project.id}/hooks", user), url: "http://example.com", token: token
+        post v3_api("/projects/#{project.id}/hooks", user), url: "http://example.com", token: token
       end.to change {project.hooks.count}.by(1)
 
       expect(response).to have_http_status(201)
@@ -122,19 +123,19 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
     end
 
     it "returns a 400 error if url not given" do
-      post api("/projects/#{project.id}/hooks", user)
+      post v3_api("/projects/#{project.id}/hooks", user)
       expect(response).to have_http_status(400)
     end
 
     it "returns a 422 error if url not valid" do
-      post api("/projects/#{project.id}/hooks", user), "url" => "ftp://example.com"
+      post v3_api("/projects/#{project.id}/hooks", user), "url" => "ftp://example.com"
       expect(response).to have_http_status(422)
     end
   end
 
   describe "PUT /projects/:id/hooks/:hook_id" do
     it "updates an existing project hook" do
-      put api("/projects/#{project.id}/hooks/#{hook.id}", user),
+      put v3_api("/projects/#{project.id}/hooks/#{hook.id}", user),
         url: 'http://example.org', push_events: false
       expect(response).to have_http_status(200)
       expect(json_response['url']).to eq('http://example.org')
@@ -152,7 +153,7 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
     it "adds the token without including it in the response" do
       token = "secret token"
 
-      put api("/projects/#{project.id}/hooks/#{hook.id}", user), url: "http://example.org", token: token
+      put v3_api("/projects/#{project.id}/hooks/#{hook.id}", user), url: "http://example.org", token: token
 
       expect(response).to have_http_status(200)
       expect(json_response["url"]).to eq("http://example.org")
@@ -163,17 +164,17 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
     end
 
     it "returns 404 error if hook id not found" do
-      put api("/projects/#{project.id}/hooks/1234", user), url: 'http://example.org'
+      put v3_api("/projects/#{project.id}/hooks/1234", user), url: 'http://example.org'
       expect(response).to have_http_status(404)
     end
 
     it "returns 400 error if url is not given" do
-      put api("/projects/#{project.id}/hooks/#{hook.id}", user)
+      put v3_api("/projects/#{project.id}/hooks/#{hook.id}", user)
       expect(response).to have_http_status(400)
     end
 
     it "returns a 422 error if url is not valid" do
-      put api("/projects/#{project.id}/hooks/#{hook.id}", user), url: 'ftp://example.com'
+      put v3_api("/projects/#{project.id}/hooks/#{hook.id}", user), url: 'ftp://example.com'
       expect(response).to have_http_status(422)
     end
   end
@@ -181,23 +182,23 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
   describe "DELETE /projects/:id/hooks/:hook_id" do
     it "deletes hook from project" do
       expect do
-        delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
+        delete v3_api("/projects/#{project.id}/hooks/#{hook.id}", user)
       end.to change {project.hooks.count}.by(-1)
       expect(response).to have_http_status(200)
     end
 
     it "returns success when deleting hook" do
-      delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
+      delete v3_api("/projects/#{project.id}/hooks/#{hook.id}", user)
       expect(response).to have_http_status(200)
     end
 
     it "returns a 404 error when deleting non existent hook" do
-      delete api("/projects/#{project.id}/hooks/42", user)
+      delete v3_api("/projects/#{project.id}/hooks/42", user)
       expect(response).to have_http_status(404)
     end
 
     it "returns a 404 error if hook id not given" do
-      delete api("/projects/#{project.id}/hooks", user)
+      delete v3_api("/projects/#{project.id}/hooks", user)
 
       expect(response).to have_http_status(404)
     end
@@ -207,7 +208,7 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
       other_project = create(:project)
       other_project.team << [test_user, :master]
 
-      delete api("/projects/#{other_project.id}/hooks/#{hook.id}", test_user)
+      delete v3_api("/projects/#{other_project.id}/hooks/#{hook.id}", test_user)
       expect(response).to have_http_status(404)
       expect(WebHook.exists?(hook.id)).to be_truthy
     end

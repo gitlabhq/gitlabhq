@@ -12,21 +12,21 @@ module API
         helpers do
           params :optional_scope do
             optional :scope, types: [String, Array[String]], desc: 'The scope of builds to show',
-              values:  ['pending', 'running', 'failed', 'success', 'canceled'],
-              coerce_with: ->(scope) {
-                if scope.is_a?(String)
-                  [scope]
-                elsif scope.is_a?(Hashie::Mash)
-                  scope.values
-                else
-                  ['unknown']
-                end
-              }
+                             values:  %w(pending running failed success canceled skipped),
+                             coerce_with: ->(scope) {
+                                            if scope.is_a?(String)
+                                              [scope]
+                                            elsif   scope.is_a?(Hashie::Mash)
+                                              scope.values
+                                            else
+                                              ['unknown']
+                                            end
+                                          }
           end
         end
 
         desc 'Get a project builds' do
-          success V3::Entities::Build
+          success ::API::V3::Entities::Build
         end
         params do
           use :optional_scope
@@ -36,12 +36,12 @@ module API
           builds = user_project.builds.order('id DESC')
           builds = filter_builds(builds, params[:scope])
 
-          present paginate(builds), with: Entities::Build,
-            user_can_download_artifacts: can?(current_user, :read_build, user_project)
+          present paginate(builds), with: ::API::V3::Entities::Build,
+                                    user_can_download_artifacts: can?(current_user, :read_build, user_project)
         end
 
         desc 'Get builds for a specific commit of a project' do
-          success Entities::Build
+          success ::API::V3::Entities::Build
         end
         params do
           requires :sha, type: String, desc: 'The SHA id of a commit'
@@ -57,12 +57,12 @@ module API
           builds = user_project.builds.where(pipeline: pipelines).order('id DESC')
           builds = filter_builds(builds, params[:scope])
 
-          present paginate(builds), with: Entities::Build,
-            user_can_download_artifacts: can?(current_user, :read_build, user_project)
+          present paginate(builds), with: ::API::V3::Entities::Build,
+                                    user_can_download_artifacts: can?(current_user, :read_build, user_project)
         end
 
         desc 'Get a specific build of a project' do
-          success Entities::Build
+          success ::API::V3::Entities::Build
         end
         params do
           requires :build_id, type: Integer, desc: 'The ID of a build'
@@ -72,8 +72,8 @@ module API
 
           build = get_build!(params[:build_id])
 
-          present build, with: Entities::Build,
-            user_can_download_artifacts: can?(current_user, :read_build, user_project)
+          present build, with: ::API::V3::Entities::Build,
+                         user_can_download_artifacts: can?(current_user, :read_build, user_project)
         end
 
         desc 'Download the artifacts file from build' do
@@ -128,7 +128,7 @@ module API
         end
 
         desc 'Cancel a specific build of a project' do
-          success Entities::Build
+          success ::API::V3::Entities::Build
         end
         params do
           requires :build_id, type: Integer, desc: 'The ID of a build'
@@ -140,12 +140,12 @@ module API
 
           build.cancel
 
-          present build, with: Entities::Build,
-            user_can_download_artifacts: can?(current_user, :read_build, user_project)
+          present build, with: ::API::V3::Entities::Build,
+                         user_can_download_artifacts: can?(current_user, :read_build, user_project)
         end
 
         desc 'Retry a specific build of a project' do
-          success Entities::Build
+          success ::API::V3::Entities::Build
         end
         params do
           requires :build_id, type: Integer, desc: 'The ID of a build'
@@ -158,12 +158,12 @@ module API
 
           build = Ci::Build.retry(build, current_user)
 
-          present build, with: Entities::Build,
-            user_can_download_artifacts: can?(current_user, :read_build, user_project)
+          present build, with: ::API::V3::Entities::Build,
+                         user_can_download_artifacts: can?(current_user, :read_build, user_project)
         end
 
         desc 'Erase build (remove artifacts and build trace)' do
-          success Entities::Build
+          success ::API::V3::Entities::Build
         end
         params do
           requires :build_id, type: Integer, desc: 'The ID of a build'
@@ -175,12 +175,12 @@ module API
           return forbidden!('Build is not erasable!') unless build.erasable?
 
           build.erase(erased_by: current_user)
-          present build, with: Entities::Build,
-            user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
+          present build, with: ::API::V3::Entities::Build,
+                         user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
         end
 
         desc 'Keep the artifacts to prevent them from being deleted' do
-          success Entities::Build
+          success ::API::V3::Entities::Build
         end
         params do
           requires :build_id, type: Integer, desc: 'The ID of a build'
@@ -194,12 +194,12 @@ module API
           build.keep_artifacts!
 
           status 200
-          present build, with: Entities::Build,
-            user_can_download_artifacts: can?(current_user, :read_build, user_project)
+          present build, with: ::API::V3::Entities::Build,
+                         user_can_download_artifacts: can?(current_user, :read_build, user_project)
         end
 
         desc 'Trigger a manual build' do
-          success Entities::Build
+          success ::API::V3::Entities::Build
           detail 'This feature was added in GitLab 8.11'
         end
         params do
@@ -215,8 +215,8 @@ module API
           build.play(current_user)
 
           status 200
-          present build, with: Entities::Build,
-            user_can_download_artifacts: can?(current_user, :read_build, user_project)
+          present build, with: ::API::V3::Entities::Build,
+                         user_can_download_artifacts: can?(current_user, :read_build, user_project)
         end
       end
 

@@ -77,8 +77,7 @@ describe API::Groups, api: true  do
           build_artifacts_size: 345,
         }.stringify_keys
         exposed_attributes = attributes.dup
-        exposed_attributes['job_artifacts_size'] = exposed_attributes['build_artifacts_size']
-        exposed_attributes.delete('build_artifacts_size')
+        exposed_attributes['job_artifacts_size'] = exposed_attributes.delete('build_artifacts_size')
 
         project1.statistics.update!(attributes)
 
@@ -88,7 +87,7 @@ describe API::Groups, api: true  do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response)
-          .to satisfy_one { |group| group['statistics'] == attributes }
+          .to satisfy_one { |group| group['statistics'] == exposed_attributes }
       end
     end
 
