@@ -178,10 +178,6 @@
       }
     }
 
-    p:last-child {
-      margin-bottom: 0;
-    }
-
     .btn-grouped {
       margin-left: 0;
       margin-right: 7px;
@@ -346,41 +342,45 @@
 
 .remove-message-pipes {
   ul {
-    margin-left: 6px;
-    margin-bottom: 20px;
-    padding-left: 0;
+    margin: 10px 0 0 12px;
+    padding: 0;
     list-style: none;
-    border-left: 3px solid $border-color;
-  }
-
-  ul li:last-child {
-    margin-bottom: 0;
+    border-left: 2px solid $border-color;
+    display: inline-block;
   }
 
   li {
-    height: 30px;
     position: relative;
-    margin: -3px;
-    padding-bottom: 3px;
-  }
-
-  li span {
-    width: 20px;
-    display: inline-block;
-    height: 3px;
-    background: $border-color;
-    margin-right: 5px;
-    top: 16px;
-    position: relative;
-  }
-
-  li p {
-    display: inline-block;
     margin: 0;
-    margin-bottom: -3px;
     padding: 0;
-    position: relative;
-    top: 20px;
+    display: block;
+
+    span {
+      margin-left: 15px;
+      max-height: 20px;
+    }
+  }
+
+  li:before {
+    content: '';
+    position: absolute;
+    border-top: 2px solid #e5e5e5;
+    height: 1px;
+    top: 8px;
+    width: 8px;
+  }
+
+  li:last-child {
+    &:before {
+      top: 18px;
+    }
+
+    span {
+      display: block;
+      position: relative;
+      top: 5px;
+      margin-top: 5px;
+    }
   }
 }
 
@@ -390,8 +390,7 @@
   border-style: solid;
   border-width: 1px;
   border-color: $border-color;
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
+  border-radius: 3px;
   padding: 10px;
   margin-bottom: -1px;
 }
@@ -489,6 +488,8 @@
 }
 
 .merged-buttons {
+  margin-top: 20px;
+
   .btn {
     float: left;
 
