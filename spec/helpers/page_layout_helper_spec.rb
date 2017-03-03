@@ -48,7 +48,7 @@ describe PageLayoutHelper do
 
     it 'has blue favicon for development' do
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
-      expect(helper.favicon).to eq 'favicon-blue.ico'
+      expect(helper.favicon).to eq 'favicon-green.ico'
     end
   end
 
