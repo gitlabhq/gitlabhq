@@ -160,7 +160,7 @@ module Gitlab
           result = redis.set(key, value, ex: expire, nx: !overwrite)
           if result
             payload = "#{key}=#{value}"
-            redis.publish(RUNNER_NOTIFICATION_CHANNEL, payload)
+            redis.publish(NOTIFICATION_CHANNEL, payload)
             value
           else
             redis.get(key)

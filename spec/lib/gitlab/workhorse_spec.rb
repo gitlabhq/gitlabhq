@@ -199,4 +199,58 @@ describe Gitlab::Workhorse, lib: true do
       end
     end
   end
+
+  describe '.ensure_and_notify' do
+    let(:key) { 'test-key' }
+    let(:value) { 'test-value' }
+
+    subject { described_class.ensure_and_notify(key, value, overwrite: overwrite) }
+
+    shared_examples 'set and notify' do
+      it 'set and return the same value' do
+        is_expected.to eq(value)
+      end
+
+      it 'set and notify' do
+        expect_any_instance_of(Redis).to receive(:publish)
+          .with(described_class::NOTIFICATION_CHANNEL, "test-key=test-value")
+
+        subject
+      end
+    end
+
+    context 'when we set a new key' do
+      let(:overwrite) { true }
+
+      it_behaves_like 'set and notify'
+    end
+
+    context 'when we set an existing key' do
+      let(:old_value) { 'existing-key' }
+
+      before do
+        described_class.ensure_and_notify(key, old_value, overwrite: true)
+      end
+
+      context 'and overwrite' do
+        let(:overwrite) { true }
+
+        it_behaves_like 'set and notify'
+      end
+
+      context 'and do not overwrite' do
+        let(:overwrite) { false }
+
+        it 'try to set but return the previous value' do
+          is_expected.to eq(old_value)
+        end
+
+        it 'set and notify' do
+          expect_any_instance_of(Redis).not_to receive(:publish)
+
+          subject
+        end
+      end
+    end
+  end
 end
