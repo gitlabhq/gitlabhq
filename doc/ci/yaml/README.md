@@ -166,10 +166,11 @@ which can be set in GitLab's UI.
 cached between jobs. You can only use paths that are within the project
 workspace.
 
-**By default the caching is enabled per-job and per-branch.**
+**By default caching is enabled and shared between each pipelines and
+each jobs, starting from GitLab 9.0**
 
-If `cache` is defined outside the scope of the jobs, it means it is set
-globally and all jobs will use its definition.
+If `cache` is defined outside the scope of jobs, it means it is set
+globally and all jobs will use that definition.
 
 Cache all files in `binaries` and `.config`:
 
@@ -202,7 +203,7 @@ rspec:
     - binaries/
 ```
 
-Locally defined cache overwrites globally defined options. The following `rspec`
+Locally defined cache overrides globally defined options. The following `rspec`
 job will cache only `binaries/`:
 
 ```yaml
@@ -213,9 +214,14 @@ cache:
 rspec:
   script: test
   cache:
+    key: rspec
     paths:
     - binaries/
 ```
+
+Note that since cache is shared between each jobs, if you're using different
+paths for different jobs, you should also set a different *cache:key*
+otherwise they could be overwriting to each other.
 
 The cache is provided on a best-effort basis, so don't expect that the cache
 will be always present. For implementation details, please check GitLab Runner.
@@ -232,6 +238,9 @@ This allows you to fine tune caching, allowing you to cache data between
 different jobs or even different branches.
 
 The `cache:key` variable can use any of the [predefined variables](../variables/README.md).
+
+The default key is **default** across the project, therefore everything is
+shared between each pipelines and jobs by default, starting from GitLab 9.0.
 
 ---
 
