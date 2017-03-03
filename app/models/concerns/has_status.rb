@@ -2,11 +2,12 @@ module HasStatus
   extend ActiveSupport::Concern
 
   DEFAULT_STATUS = 'created'.freeze
+  BLOCKED_STATUS = 'blocked'.freeze
   AVAILABLE_STATUSES = %w[created pending running success failed canceled skipped blocked].freeze
   STARTED_STATUSES = %w[running success failed skipped].freeze
   ACTIVE_STATUSES = %w[pending running blocked].freeze
   COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
-  ORDERED_STATUSES = %w[failed pending running canceled success skipped].freeze
+  ORDERED_STATUSES = %w[blocked failed pending running canceled success skipped].freeze
 
   class_methods do
     def status_sql
@@ -28,7 +29,7 @@ module HasStatus
         WHEN (#{builds})=(#{success})+(#{skipped}) THEN 'success'
         WHEN (#{builds})=(#{success})+(#{skipped})+(#{canceled}) THEN 'canceled'
         WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN 'pending'
-        WHEN (#{running})+(#{pending})+(#{created})>0 THEN 'running'
+        WHEN (#{running})+(#{pending})>0 THEN 'running'
         WHEN (#{blocked})>0 THEN 'blocked'
         ELSE 'failed'
       END)"

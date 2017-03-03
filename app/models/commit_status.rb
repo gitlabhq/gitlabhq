@@ -86,7 +86,7 @@ class CommitStatus < ActiveRecord::Base
 
       commit_status.run_after_commit do
         pipeline.try do |pipeline|
-          if complete?
+          if complete? || blocked?
             PipelineProcessWorker.perform_async(pipeline.id)
           else
             PipelineUpdateWorker.perform_async(pipeline.id)

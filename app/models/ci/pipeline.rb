@@ -49,6 +49,10 @@ module Ci
         transition any - [:canceled] => :canceled
       end
 
+      event :block do
+        transition any - [:blocked] => :blocked
+      end
+
       # IMPORTANT
       # Do not add any operations to this state_machine
       # Create a separate worker for each new operation
@@ -321,6 +325,7 @@ module Ci
         when 'failed' then drop
         when 'canceled' then cancel
         when 'skipped' then skip
+        when 'blocked' then block
         end
       end
     end

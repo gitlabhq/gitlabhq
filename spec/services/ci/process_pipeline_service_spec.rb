@@ -12,7 +12,7 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     project.add_developer(user)
   end
 
-  context 'start queuing next builds' do
+  context 'when simple pipeline is defined' do
     before do
       create_build('linux', stage_idx: 0)
       create_build('mac', stage_idx: 0)
@@ -65,7 +65,7 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
   end
 
-  context 'properly creates builds when optional actions are defined' do
+  context 'when optional manual actions are defined' do
     before do
       create_build('build', stage_idx: 0)
       create_build('test', stage_idx: 1)
@@ -77,7 +77,7 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
 
     context 'when builds are successful' do
-      it 'properly creates builds' do
+      it 'properly processes the pipeline' do
         expect(process_pipeline).to be_truthy
         expect(builds_names).to eq ['build']
         expect(builds_statuses).to eq ['pending']
@@ -105,7 +105,7 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
 
     context 'when test job fails' do
-      it 'properly creates builds' do
+      it 'properly processes the pipeline' do
         expect(process_pipeline).to be_truthy
         expect(builds_names).to eq ['build']
         expect(builds_statuses).to eq ['pending']
@@ -133,7 +133,7 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
 
     context 'when test and test_failure jobs fail' do
-      it 'properly creates builds' do
+      it 'properly processes the pipeline' do
         expect(process_pipeline).to be_truthy
         expect(builds_names).to eq ['build']
         expect(builds_statuses).to eq ['pending']
@@ -162,7 +162,7 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
 
     context 'when deploy job fails' do
-      it 'properly creates builds' do
+      it 'properly processes the pipeline' do
         expect(process_pipeline).to be_truthy
         expect(builds_names).to eq ['build']
         expect(builds_statuses).to eq ['pending']
@@ -232,7 +232,7 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
   end
 
-  context 'when there are manual/on_failure jobs in earlier stages' do
+  context 'when there are manual action in earlier stages' do
     context 'when first stage has only optional manual actions' do
       before do
         create_build('build', stage_idx: 0, when: 'manual', allow_failure: true)
@@ -264,23 +264,47 @@ describe Ci::ProcessPipelineService, '#execute', :services do
         expect(all_builds_statuses).to eq(%w[success skipped pending])
       end
     end
+  end
 
-    context 'when second stage has only on_failure jobs' do
-      before do
-        create_build('check', stage_idx: 0)
-        create_build('build', stage_idx: 1, when: 'on_failure')
-        create_build('test', stage_idx: 2)
+  context 'when blocking manual actions are defined' do
+    before do
+      create_build('code:test', stage_idx: 0)
+      create_build('staging:deploy', stage_idx: 1, when: 'manual')
+      create_build('staging:test', stage_idx: 2, when: 'on_success')
+      create_build('production:deploy', stage_idx: 3, when: 'manual')
+      create_build('production:test', stage_idx: 4, when: 'always')
+    end
 
-        process_pipeline
-      end
+    it 'blocks pipeline on stage with first manual action' do
+      process_pipeline
 
-      it 'skips second stage and continues on third stage' do
-        expect(all_builds_statuses).to eq(%w[pending created created])
+      expect(builds_names).to eq %w[code:test]
+      expect(builds_statuses).to eq %w[pending]
+      expect(pipeline.reload.status).to eq 'pending'
 
-        builds.first.success
+      succeed_running_or_pending
 
-        expect(all_builds_statuses).to eq(%w[success skipped pending])
-      end
+      expect(builds_names).to eq %w[code:test staging:deploy]
+      expect(builds_statuses).to eq %w[success blocked]
+      expect(pipeline.reload.status).to eq 'blocked'
+    end
+  end
+
+  context 'when second stage has only on_failure jobs' do
+    before do
+      create_build('check', stage_idx: 0)
+      create_build('build', stage_idx: 1, when: 'on_failure')
+      create_build('test', stage_idx: 2)
+
+      process_pipeline
+    end
+
+    it 'skips second stage and continues on third stage' do
+      expect(all_builds_statuses).to eq(%w[pending created created])
+
+      builds.first.success
+
+      expect(all_builds_statuses).to eq(%w[success skipped pending])
     end
   end
 
@@ -375,6 +399,10 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
   end
 
+  def process_pipeline
+    described_class.new(pipeline.project, user).execute(pipeline)
+  end
+
   def all_builds
     pipeline.builds.order(:stage_idx, :id)
   end
@@ -393,10 +421,6 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
   def all_builds_statuses
     all_builds.pluck(:status)
-  end
-
-  def process_pipeline
-    described_class.new(pipeline.project, user).execute(pipeline)
   end
 
   def succeed_pending
