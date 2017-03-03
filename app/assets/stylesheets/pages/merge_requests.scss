@@ -344,15 +344,54 @@
   }
 }
 
+.remove-message-pipes {
+  ul {
+    margin-left: 6px;
+    margin-bottom: 20px;
+    padding-left: 0;
+    list-style: none;
+    border-left: 3px solid $border-color;
+  }
+
+  ul li:last-child {
+    margin-bottom: 0;
+  }
+
+  li {
+    height: 30px;
+    position: relative;
+    margin: -3px;
+    padding-bottom: 3px;
+  }
+
+  li span {
+    width: 20px;
+    display: inline-block;
+    height: 3px;
+    background: $border-color;
+    margin-right: 5px;
+    top: 16px;
+    position: relative;
+  }
+
+  li p {
+    display: inline-block;
+    margin: 0;
+    margin-bottom: -3px;
+    padding: 0;
+    position: relative;
+    top: 20px;
+  }
+}
+
 .mr-source-target {
-  background-color: #FAFAFA;
+  background-color: $gray-light;
   line-height: 31px;
   border-style: solid;
   border-width: 1px;
   border-color: $border-color;
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
-  border--radius: 0px;
   padding: 10px;
   margin-bottom: -1px;
 }

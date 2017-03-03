@@ -9,6 +9,6 @@
         = icon('trash-o')
         Remove Source Branch
     - if mr_can_be_reverted
-      = revert_commit_link(@merge_request.merge_commit, namespace_project_merge_request_path(@project.namespace, @project, @merge_request), btn_class: "warning")
+      = revert_commit_link(@merge_request.merge_commit, namespace_project_merge_request_path(@project.namespace, @project, @merge_request), btn_class: "close")
     - if mr_can_be_cherry_picked
       = cherry_pick_commit_link(@merge_request.merge_commit, namespace_project_merge_request_path(@project.namespace, @project, @merge_request), btn_class: "default")
