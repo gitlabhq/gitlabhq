@@ -336,7 +336,7 @@ GEM
       thor
       tilt
     hashie (3.5.5)
-    health_check (2.2.1)
+    health_check (2.6.0)
       rails (>= 4.0)
     hipchat (1.5.2)
       httparty
@@ -895,7 +895,7 @@ DEPENDENCIES
   grape-entity (~> 0.6.0)
   haml_lint (~> 0.21.0)
   hamlit (~> 2.6.1)
-  health_check (~> 2.2.0)
+  health_check (~> 2.6.0)
   hipchat (~> 1.5.0)
   html-pipeline (~> 1.11.0)
   html2text
