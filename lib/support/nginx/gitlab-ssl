@@ -82,6 +82,9 @@ server {
   ##
   # ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
+  ## [Optional] Enable HTTP Strict Transport Security
+  # add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
+
   ## Individual nginx logs for this GitLab vhost
   access_log  /var/log/nginx/gitlab_access.log;
   error_log   /var/log/nginx/gitlab_error.log;
