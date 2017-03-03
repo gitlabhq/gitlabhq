@@ -1,5 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, comma-dangle, one-var, one-var-declaration-per-line, no-mixed-operators, new-cap, no-loop-func, no-floating-decimal, consistent-return, no-unused-vars, prefer-template, prefer-arrow-callback, camelcase, max-len */
-/* global Raphael */
+
+import Raphael from 'raphael/raphael';
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
