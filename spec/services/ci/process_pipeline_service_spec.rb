@@ -62,7 +62,7 @@ describe Ci::ProcessPipelineService, :services do
       end
     end
 
-    context 'properly creates builds when "when" is defined' do
+    context 'properly creates builds when optional actions are defined' do
       before do
         create_build('build', stage_idx: 0)
         create_build('test', stage_idx: 1)
@@ -192,7 +192,7 @@ describe Ci::ProcessPipelineService, :services do
         end
       end
 
-      context 'when listing manual actions' do
+      context 'when listing optional manual actions' do
         it 'returns only for skipped builds' do
           # currently all builds are created
           expect(process_pipeline).to be_truthy
@@ -220,9 +220,9 @@ describe Ci::ProcessPipelineService, :services do
         builds.each(&:reload)
       end
 
-      context 'when first stage has only manual jobs' do
+      context 'when first stage has only optional manual actions' do
         let(:builds) do
-          [create_build('build', stage_idx: 0, when: 'manual'),
+          [create_build('build', stage_idx: 0, when: 'manual', allow_failure: true),
            create_build('check', stage_idx: 1),
            create_build('test', stage_idx: 2)]
         end
@@ -232,10 +232,10 @@ describe Ci::ProcessPipelineService, :services do
         end
       end
 
-      context 'when second stage has only manual jobs' do
+      context 'when second stage has only optional manual actions' do
         let(:builds) do
           [create_build('check', stage_idx: 0),
-           create_build('build', stage_idx: 1, when: 'manual'),
+           create_build('build', stage_idx: 1, when: 'manual', allow_failure: true),
            create_build('test', stage_idx: 2)]
         end
 
