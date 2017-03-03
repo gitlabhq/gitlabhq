@@ -73,8 +73,14 @@ class Projects::BuildsController < Projects::ApplicationController
     redirect_to build_path(@build)
   end
 
+  # def status
+  #   render json: @build.to_json(only: [:status, :id, :sha, :coverage], methods: :sha)
+  # end
   def status
-    render json: @build.to_json(only: [:status, :id, :sha, :coverage], methods: :sha)
+    render json: BuildSerializer
+      .new(project: @project, user: @current_user)
+      .with_status
+      .represent(@build)
   end
 
   def erase
@@ -89,12 +95,6 @@ class Projects::BuildsController < Projects::ApplicationController
     else
       render_404
     end
-  end
-
-  def ci_cd_status
-    render json: BuildSerializer
-      .new(project: @project, user: @current_user)
-      .represent(@build)
   end
 
   private

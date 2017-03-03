@@ -72,9 +72,10 @@ class Projects::PipelinesController < Projects::ApplicationController
     end
   end
 
-  def ci_cd_status
+  def status
     render json: PipelineSerializer
       .new(project: @project, user: @current_user)
+      .with_status
       .represent(@pipeline)
   end
 

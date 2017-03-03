@@ -10,7 +10,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :pipelines, :merge, :merge_check,
-    :ci_status, :ci_cd_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues
+    :ci_status, :status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
@@ -473,9 +473,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     render json: response
   end
 
-  def ci_cd_status
+  def status
     render json: PipelineSerializer
       .new(project: @project, user: @current_user)
+      .with_status
       .represent(@merge_request.head_pipeline)
   end
 

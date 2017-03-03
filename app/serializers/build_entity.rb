@@ -19,15 +19,21 @@ class BuildEntity < Grape::Entity
   expose :created_at
   expose :updated_at
 
-  expose :status do |build, options|
-    StatusEntity.represent(
-      build.detailed_status(request.user),
-      options)
+  expose :details do
+    expose :detailed_status,
+        as: :status,
+        with: StatusEntity
   end
 
   private
 
+  alias_method :build, :object
+
   def path_to(route, build)
     send("#{route}_path", build.project.namespace, build.project, build)
+  end
+
+  def detailed_status
+    build.detailed_status(request.user)
   end
 end
