@@ -11,7 +11,6 @@
   %ul
     %li
       %span
-      %p
         To merge this request, resolve these conflicts
         - if can_resolve && !can_resolve_in_ui
           locally
@@ -21,7 +20,7 @@
         merge it locally.
 
 - if (can_resolve && can_resolve_in_ui) || can_merge
-  .btn-group
+  .merged-buttons.clearfix
     - if can_resolve && can_resolve_in_ui
       = link_to "Resolve conflicts", conflicts_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "btn"
     - if can_merge
