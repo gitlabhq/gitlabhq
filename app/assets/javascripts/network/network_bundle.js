@@ -1,8 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, quotes, no-var, vars-on-top, camelcase, comma-dangle, consistent-return, max-len */
-/* global Network */
 /* global ShortcutsNetwork */
 
-require('./network');
+import Network from './network';
 
 (function() {
   $(function() {
