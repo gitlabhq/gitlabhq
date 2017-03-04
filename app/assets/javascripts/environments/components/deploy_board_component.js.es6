@@ -155,7 +155,7 @@ module.exports = {
           </div>
         </section>
 
-        <section class="deploy-board-actions">
+        <section class="deploy-board-actions" v-if="deployBoardData.rollback_url || deployBoardData.abort_url">
           <a class="btn"
             data-method="post"
             rel="nofollow"
