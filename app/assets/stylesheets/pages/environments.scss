@@ -158,7 +158,7 @@
     width: 70px;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 20px 0 20px 10px;
+    margin: 20px 0 20px 5px;
 
     > span {
       text-align: center;
@@ -175,7 +175,7 @@
 
   .deploy-board-instances {
     order: 2;
-    width: 75%;
+    margin-left: 20px;
 
     .text {
       color: $gl-text-color-secondary;
@@ -193,6 +193,8 @@
   .deploy-board-actions {
     order: 3;
     align-self: center;
+    min-width: 150px;
+    margin-left: 10px;
   }
 
   &.deploy-board-error-message {
