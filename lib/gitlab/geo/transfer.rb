@@ -60,7 +60,7 @@ module Gitlab
         file_size = -1
 
         begin
-          File.open(filename, "w") do |file|
+          File.open(filename, "wb") do |file|
             response = HTTParty.get(url, headers: req_header, stream_body: true) do |fragment|
               file.write(fragment)
             end
