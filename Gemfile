@@ -344,7 +344,7 @@ gem 'oauth2', '~> 1.2.0'
 gem 'paranoia', '~> 2.2'
 
 # Health check
-gem 'health_check', '~> 2.2.0'
+gem 'health_check', '~> 2.6.0'
 
 # System information
 gem 'vmstat', '~> 2.3.0'
