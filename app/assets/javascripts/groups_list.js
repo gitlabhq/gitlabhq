@@ -6,10 +6,13 @@ import FilterableList from './filterable_list';
  */
 export default class GroupsList {
   constructor() {
-    var form = document.querySelector('form#group-filter-form');
-    var filter = document.querySelector('.js-groups-list-filter');
-    var holder = document.querySelector('.js-groups-list-holder');
+    const form = document.querySelector('form#group-filter-form');
+    const filter = document.querySelector('.js-groups-list-filter');
+    const holder = document.querySelector('.js-groups-list-holder');
 
-    new FilterableList(form, filter, holder);
+    if (form && filter && holder) {
+      const list = new FilterableList(form, filter, holder);
+      list.initSearch();
+    }
   }
 }

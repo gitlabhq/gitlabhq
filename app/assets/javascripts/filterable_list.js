@@ -7,8 +7,6 @@ export default class FilterableList {
     this.filterForm = form;
     this.listFilterElement = filter;
     this.listHolderElement = holder;
-
-    this.initSearch();
   }
 
   initSearch() {
