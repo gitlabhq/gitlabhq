@@ -9,7 +9,7 @@ describe Gitlab::Geo::Transfer do
   let(:size) { File.stat(lfs_object.file.path).size }
 
   before do
-    allow(File).to receive(:open).with(lfs_object.file.path, "w").and_yield(content)
+    allow(File).to receive(:open).with(lfs_object.file.path, "wb").and_yield(content)
   end
 
   subject do
