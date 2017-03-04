@@ -192,7 +192,7 @@ describe Gitlab::Ci::Status::Build::Factory do
       let(:build) { create(:ci_build, :playable) }
 
       it 'matches correct core status' do
-        expect(factory.core_status).to be_a Gitlab::Ci::Status::Skipped
+        expect(factory.core_status).to be_a Gitlab::Ci::Status::Manual
       end
 
       it 'matches correct extended statuses' do
@@ -218,7 +218,7 @@ describe Gitlab::Ci::Status::Build::Factory do
       let(:build) { create(:ci_build, :playable, :teardown_environment) }
 
       it 'matches correct core status' do
-        expect(factory.core_status).to be_a Gitlab::Ci::Status::Skipped
+        expect(factory.core_status).to be_a Gitlab::Ci::Status::Manual
       end
 
       it 'matches correct extended statuses' do

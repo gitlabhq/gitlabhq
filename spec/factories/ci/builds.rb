@@ -76,7 +76,6 @@ FactoryGirl.define do
     end
 
     trait :playable do
-      skipped
       manual
     end
 

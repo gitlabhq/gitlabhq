@@ -4,8 +4,8 @@ module HasStatus
   DEFAULT_STATUS = 'created'.freeze
   BLOCKED_STATUS = 'manual'.freeze
   AVAILABLE_STATUSES = %w[created pending running success failed canceled skipped manual].freeze
-  STARTED_STATUSES = %w[running success failed skipped].freeze
-  ACTIVE_STATUSES = %w[pending running manual].freeze
+  STARTED_STATUSES = %w[running success failed skipped manual].freeze
+  ACTIVE_STATUSES = %w[pending running].freeze
   COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
   ORDERED_STATUSES = %w[manual failed pending running canceled success skipped].freeze
 
