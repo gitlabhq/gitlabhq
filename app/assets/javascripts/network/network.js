@@ -1,5 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, quotes, quote-props, prefer-template, comma-dangle, max-len */
-/* global BranchGraph */
+
+import BranchGraph from './branch_graph';
 
 (function() {
   this.Network = (function() {

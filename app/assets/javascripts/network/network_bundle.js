@@ -2,7 +2,6 @@
 /* global Network */
 /* global ShortcutsNetwork */
 
-require('./branch_graph');
 require('./network');
 
 (function() {
