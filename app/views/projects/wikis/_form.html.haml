@@ -2,6 +2,8 @@
   = form_errors(@page)
 
   = f.hidden_field :title, value: @page.title
+  - if @page.persisted?
+    = f.hidden_field :last_commit_sha, value: @page.commit.sha
   .form-group
     = f.label :format, class: 'control-label'
     .col-sm-10

@@ -8,7 +8,7 @@ feature 'Projects > Wiki > User updates wiki page', feature: true do
     login_as(user)
 
     visit namespace_project_path(project.namespace, project)
-    WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
+    @wiki_page = WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
     click_link 'Wiki'
   end
 
@@ -24,6 +24,16 @@ feature 'Projects > Wiki > User updates wiki page', feature: true do
       expect(page).to have_content('Home')
       expect(page).to have_content("Last edited by #{user.name}")
       expect(page).to have_content('My awesome wiki!')
+    end
+
+    scenario 'page has been updated since the user opened the edit page' do
+      click_link 'Edit'
+
+      @wiki_page.update("Update")
+
+      click_button 'Save changes'
+
+      expect(page).to have_content 'Someone edited the page the same time you did.'
     end
   end
 
