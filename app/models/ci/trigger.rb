@@ -10,7 +10,6 @@ module Ci
     has_many :trigger_requests, dependent: :destroy
 
     validates :token, presence: true, uniqueness: true
-    validates :owner, presence: true
 
     before_validation :set_default_values
 
