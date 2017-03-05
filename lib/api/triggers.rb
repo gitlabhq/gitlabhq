@@ -7,7 +7,7 @@ module API
     end
     resource :projects do
       desc 'Trigger a GitLab project pipeline' do
-        success Entities::TriggerRequest
+        success Entities::Pipeline
       end
       params do
         requires :ref, type: String, desc: 'The commit sha or name of a branch or tag'
@@ -31,7 +31,7 @@ module API
         if trigger_request
           present trigger_request.pipeline, with: Entities::Pipeline
         else
-          errors = 'No pipeline create'
+          errors = 'No pipeline created'
           render_api_error!(errors, 400)
         end
       end
@@ -61,7 +61,7 @@ module API
         authenticate!
         authorize! :admin_build, user_project
 
-        trigger = user_project.triggers.find(params[:trigger_id])
+        trigger = user_project.triggers.find(params.delete(:trigger_id))
         return not_found!('Trigger') unless trigger
 
         present trigger, with: Entities::Trigger
@@ -94,15 +94,18 @@ module API
         requires :trigger_id, type: Integer,  desc: 'The trigger ID'
         optional :description, type: String,  desc: 'The trigger description'
       end
-      delete ':id/triggers/:trigger_id' do
+      put ':id/triggers/:trigger_id' do
         authenticate!
         authorize! :admin_build, user_project
 
-        trigger = user_project.triggers.find(params[:trigger_id])
+        trigger = user_project.triggers.find(params.delete(:trigger_id))
         return not_found!('Trigger') unless trigger
 
-        trigger = trigger.update(declared_params(include_missing: false))
-        present trigger, with: Entities::Trigger
+        if trigger.update(declared_params(include_missing: false))
+          present trigger, with: Entities::Trigger
+        else
+          render_validation_error!(trigger)
+        end
       end
 
       desc 'Take ownership of trigger' do
@@ -115,10 +118,11 @@ module API
         authenticate!
         authorize! :admin_build, user_project
 
-        trigger = user_project.triggers.find(params[:trigger_id])
+        trigger = user_project.triggers.find(params.delete(:trigger_id))
         return not_found!('Trigger') unless trigger
 
         if trigger.update(owner: current_user)
+          status :ok
           present trigger, with: Entities::Trigger
         else
           render_validation_error!(trigger)
@@ -135,7 +139,7 @@ module API
         authenticate!
         authorize! :admin_build, user_project
 
-        trigger = user_project.triggers.find(params[:trigger_id])
+        trigger = user_project.triggers.find(params.delete(:trigger_id))
         return not_found!('Trigger') unless trigger
 
         trigger.destroy
