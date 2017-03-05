@@ -438,3 +438,4 @@ cache gems:
       - vendor/cache
   only:
     - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
