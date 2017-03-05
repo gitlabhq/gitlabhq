@@ -1,4 +1,5 @@
 - content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('mr_widget_ee')
 
 #merge-request-widget-app.mr-state-widget{ 'data-endpoint'=> merge_request_path(@merge_request), 'data-approval-pending' => (!@merge_request.approved?).to_s }
