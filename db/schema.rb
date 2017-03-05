@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170217151949) do
+ActiveRecord::Schema.define(version: 20170305203726) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1335,7 +1335,7 @@ ActiveRecord::Schema.define(version: 20170217151949) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
   add_foreign_key "boards", "projects"
-  add_foreign_key "ci_triggers", "users", column: "owner_id", on_delete: :cascade
+  add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
