@@ -312,6 +312,61 @@ describe Ci::ProcessPipelineService, '#execute', :services do
         expect(pipeline.reload).to be_failed
       end
     end
+
+    context 'when pipeline is promoted sequentially up to the end' do
+      it 'properly processes entire pipeline' do
+        process_pipeline
+
+        expect(builds_names).to eq %w[code:test]
+        expect(builds_statuses).to eq %w[pending]
+
+        succeed_running_or_pending
+
+        expect(builds_names).to eq %w[code:test staging:deploy]
+        expect(builds_statuses).to eq %w[success manual]
+        expect(pipeline.reload).to be_manual
+
+        play_manual_action('staging:deploy')
+
+        expect(builds_statuses).to eq %w[success pending]
+
+        succeed_running_or_pending
+
+        expect(builds_names).to eq %w[code:test staging:deploy staging:test]
+        expect(builds_statuses).to eq %w[success success pending]
+
+        succeed_running_or_pending
+
+        expect(builds_names).to eq %w[code:test staging:deploy staging:test
+                                      production:deploy]
+        expect(builds_statuses).to eq %w[success success success manual]
+
+        expect(pipeline.reload).to be_manual
+        # TODO, expect(pipeline.reload).to be_started
+        expect(pipeline.reload).to be_blocked
+        expect(pipeline.reload).not_to be_active
+        expect(pipeline.reload).not_to be_complete
+
+        play_manual_action('production:deploy')
+
+        expect(builds_statuses).to eq %w[success success success pending]
+        expect(pipeline.reload).to be_running
+
+        succeed_running_or_pending
+
+        expect(builds_names).to eq %w[code:test staging:deploy staging:test
+                                      production:deploy production:test]
+        expect(builds_statuses).to eq %w[success success success success pending]
+        expect(pipeline.reload).to be_running
+
+        succeed_running_or_pending
+
+        expect(builds_names).to eq %w[code:test staging:deploy staging:test
+                                      production:deploy production:test]
+        expect(builds_statuses).to eq %w[success success success success success]
+        expect(pipeline.reload).to be_success
+      end
+    end
   end
 
   context 'when second stage has only on_failure jobs' do
@@ -461,6 +516,10 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
   def cancel_running_or_pending
     pipeline.builds.running_or_pending.each(&:cancel)
+  end
+
+  def play_manual_action(name)
+    builds.find_by(name: name).play(user)
   end
 
   delegate :manual_actions, to: :pipeline

@@ -96,6 +96,10 @@ module HasStatus
     COMPLETED_STATUSES.include?(status)
   end
 
+  def blocked?
+    BLOCKED_STATUS == status
+  end
+
   private
 
   def calculate_duration
