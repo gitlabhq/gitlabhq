@@ -6,7 +6,7 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
     end
     resource :projects do
-      desc 'Trigger a GitLab project build' do
+      desc 'Trigger a GitLab project pipeline' do
         success Entities::TriggerRequest
       end
       params do
@@ -14,7 +14,7 @@ module API
         requires :token, type: String, desc: 'The unique token of trigger'
         optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
       end
-      post ":id/(ref/:ref/)trigger/builds" do
+      post ":id/(ref/:ref/)trigger/pipeline" do
         project = find_project(params[:id])
         trigger = Ci::Trigger.find_by_token(params[:token].to_s)
         not_found! unless project && trigger
@@ -29,9 +29,9 @@ module API
         # create request and trigger builds
         trigger_request = Ci::CreateTriggerRequestService.new.execute(project, trigger, params[:ref].to_s, variables)
         if trigger_request
-          present trigger_request, with: Entities::TriggerRequest
+          present trigger_request.pipeline, with: Entities::Pipeline
         else
-          errors = 'No builds created'
+          errors = 'No pipeline create'
           render_api_error!(errors, 400)
         end
       end
@@ -55,13 +55,13 @@ module API
         success Entities::Trigger
       end
       params do
-        requires :token, type: String, desc: 'The unique token of trigger'
+        requires :trigger_id, type: Integer,  desc: 'The trigger ID'
       end
-      get ':id/triggers/:token' do
+      get ':id/triggers/:trigger_id' do
         authenticate!
         authorize! :admin_build, user_project
 
-        trigger = user_project.triggers.find_by(token: params[:token].to_s)
+        trigger = user_project.triggers.find(params[:trigger_id])
         return not_found!('Trigger') unless trigger
 
         present trigger, with: Entities::Trigger
@@ -70,26 +70,72 @@ module API
       desc 'Create a trigger' do
         success Entities::Trigger
       end
+      params do
+        requires :description, type: String,  desc: 'The trigger description'
+      end
       post ':id/triggers' do
         authenticate!
         authorize! :admin_build, user_project
 
-        trigger = user_project.triggers.create
+        trigger = user_project.triggers.create(
+          declared_params(include_missing: false).merge(owner: current_user))
 
+        if trigger.valid?
+          present trigger, with: Entities::Trigger
+        else
+          render_validation_error!(trigger)
+        end
+      end
+
+      desc 'Update a trigger' do
+        success Entities::Trigger
+      end
+      params do
+        requires :trigger_id, type: Integer,  desc: 'The trigger ID'
+        optional :description, type: String,  desc: 'The trigger description'
+      end
+      delete ':id/triggers/:trigger_id' do
+        authenticate!
+        authorize! :admin_build, user_project
+
+        trigger = user_project.triggers.find(params[:trigger_id])
+        return not_found!('Trigger') unless trigger
+
+        trigger = trigger.update(declared_params(include_missing: false))
         present trigger, with: Entities::Trigger
+      end
+
+      desc 'Take ownership of trigger' do
+        success Entities::Trigger
+      end
+      params do
+        requires :trigger_id, type: Integer,  desc: 'The trigger ID'
+      end
+      post ':id/triggers/:trigger_id/take' do
+        authenticate!
+        authorize! :admin_build, user_project
+
+        trigger = user_project.triggers.find(params[:trigger_id])
+        return not_found!('Trigger') unless trigger
+
+        if trigger.update(owner: current_user)
+          present trigger, with: Entities::Trigger
+        else
+          render_validation_error!(trigger)
+        end
       end
 
       desc 'Delete a trigger' do
         success Entities::Trigger
       end
       params do
-        requires :token, type: String, desc: 'The unique token of trigger'
+        requires :trigger_id, type: Integer,  desc: 'The trigger ID'
       end
-      delete ':id/triggers/:token' do
+      delete ':id/triggers/:trigger_id' do
         authenticate!
         authorize! :admin_build, user_project
 
-        trigger = user_project.triggers.find_by(token: params[:token].to_s)
+        trigger = user_project.triggers.find(params[:trigger_id])
         return not_found!('Trigger') unless trigger
 
         trigger.destroy
