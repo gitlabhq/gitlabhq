@@ -20,7 +20,7 @@ class Projects::BranchesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @repository.branch_names
+        render json: @branches.map(&:name)
       end
     end
   end
