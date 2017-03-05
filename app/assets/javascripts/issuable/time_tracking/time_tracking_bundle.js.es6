@@ -1,5 +1,7 @@
 /* global Vue */
 
+window.Vue = require('vue');
+window.Vue.use(require('vue-resource'));
 require('./components/time_tracker');
 require('../../smart_interval');
 require('../../subbable_resource');

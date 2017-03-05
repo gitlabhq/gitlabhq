@@ -3,6 +3,7 @@
 = render "projects/pipelines/head"
 
 - content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag("environments")
 
 #environments-list-view{ data: { environments_data: environments_list_data,
