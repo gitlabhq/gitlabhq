@@ -97,6 +97,7 @@ variables:
 triggers:
 - project
 - trigger_requests
+- owner
 deploy_keys:
 - user
 - deploy_keys_projects
