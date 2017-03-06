@@ -181,6 +181,13 @@ describe API::V3::Milestones, api: true  do
       expect(json_response.first['milestone']['title']).to eq(milestone.title)
     end
 
+    it 'matches V3 response schema for a list of issues' do
+      get v3_api("/projects/#{project.id}/milestones/#{milestone.id}/issues", user)
+
+      expect(response).to have_http_status(200)
+      expect(response).to match_response_schema('public_api/v3/issues')
+    end
+
     it 'returns a 401 error if user not authenticated' do
       get v3_api("/projects/#{project.id}/milestones/#{milestone.id}/issues")
 

@@ -249,14 +249,11 @@ module API
       expose :start_date
     end
 
-    class Issue < ProjectEntity
+    class IssueBasic < ProjectEntity
       expose :label_names, as: :labels
       expose :milestone, using: Entities::Milestone
       expose :assignee, :author, using: Entities::UserBasic
 
-      expose :subscribed do |issue, options|
-        issue.subscribed?(options[:current_user], options[:project] || issue.project)
-      end
       expose :user_notes_count
       expose :upvotes, :downvotes
       expose :due_date
@@ -264,6 +261,12 @@ module API
 
       expose :web_url do |issue, options|
         Gitlab::UrlBuilder.build(issue)
+      end
+    end
+
+    class Issue < IssueBasic
+      expose :subscribed do |issue, options|
+        issue.subscribed?(options[:current_user], options[:project] || issue.project)
       end
     end
 
@@ -279,7 +282,7 @@ module API
       expose :id
     end
 
-    class MergeRequest < ProjectEntity
+    class MergeRequestBasic < ProjectEntity
       expose :target_branch, :source_branch
       expose :upvotes, :downvotes
       expose :author, :assignee, using: Entities::UserBasic
@@ -291,15 +294,18 @@ module API
       expose :merge_status
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
-      expose :subscribed do |merge_request, options|
-        merge_request.subscribed?(options[:current_user], options[:project])
-      end
       expose :user_notes_count
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
 
       expose :web_url do |merge_request, options|
         Gitlab::UrlBuilder.build(merge_request)
+      end
+    end
+
+    class MergeRequest < MergeRequestBasic
+      expose :subscribed do |merge_request, options|
+        merge_request.subscribed?(options[:current_user], options[:project])
       end
     end
 

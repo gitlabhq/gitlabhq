@@ -28,6 +28,14 @@ module API
             render_api_error!(errors, 400)
           end
 
+          def issue_entity(project)
+            if project.has_external_issue_tracker?
+              ::API::Entities::ExternalIssue
+            else
+              ::API::Entities::Issue
+            end
+          end
+
           params :optional_params do
             optional :description, type: String, desc: 'The description of the merge request'
             optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
