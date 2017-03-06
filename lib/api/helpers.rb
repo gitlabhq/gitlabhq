@@ -399,14 +399,6 @@ module API
       header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
     end
 
-    def issue_entity(project)
-      if project.has_external_issue_tracker?
-        Entities::ExternalIssue
-      else
-        Entities::Issue
-      end
-    end
-
     # The Grape Error Middleware only has access to env but no params. We workaround this by
     # defining a method that returns the right value.
     def define_params_for_grape_middleware
