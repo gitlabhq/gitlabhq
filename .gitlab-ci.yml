@@ -425,6 +425,7 @@ pages:
 
 # Insurance in case a gem needed by one of our releases gets yanked from
 # rubygems.org in the future.
+# Better to be safe than sorry.
 cache gems:
   <<: *dedicated-runner
   only:
