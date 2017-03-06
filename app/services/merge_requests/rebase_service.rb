@@ -26,7 +26,8 @@ module MergeRequests
       run_git_command(
         %W(pull --rebase #{target_project.repository.path_to_repo} #{merge_request.target_branch}),
         tree_path,
-        git_env,
+        git_env.merge('GIT_COMMITTER_NAME' => current_user.name,
+                      'GIT_COMMITTER_EMAIL' => current_user.email),
         'rebase branch'
       )
 

@@ -50,9 +50,10 @@ module API
           optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
           optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
                                 desc: 'Limit by visibility'
-          optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
+          optional :search, type: String, desc: 'Return list of projects matching the search criteria'
           optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
           optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
+          optional :membership, type: Boolean, default: false, desc: 'Limit by projects that the current user is a member of'
         end
 
         params :statistics_params do
