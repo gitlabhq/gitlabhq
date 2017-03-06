@@ -2,7 +2,7 @@ const Vue = require('vue');
 const Timeago = require('timeago.js');
 
 require('../../lib/utils/text_utility');
-require('../../vue_shared/components/commit');
+import CommitComponent from '../../vue_shared/components/commit';
 const ActionsComponent = require('./environment_actions');
 const ExternalUrlComponent = require('./environment_external_url');
 const StopComponent = require('./environment_stop');
@@ -20,7 +20,7 @@ const timeagoInstance = new Timeago();
 module.exports = Vue.component('environment-item', {
 
   components: {
-    'commit-component': gl.CommitComponent,
+    'commit-component': CommitComponent,
     'actions-component': ActionsComponent,
     'external-url-component': ExternalUrlComponent,
     'stop-component': StopComponent,

@@ -1,12 +1,12 @@
 /* eslint-disable no-param-reassign */
 /* global Vue */
+import CommitComponent from './commit';
 
 require('../../vue_pipelines_index/status');
 require('../../vue_pipelines_index/pipeline_url');
 require('../../vue_pipelines_index/stage');
 require('../../vue_pipelines_index/pipeline_actions');
 require('../../vue_pipelines_index/time_ago');
-require('./commit');
 /**
  * Pipeline table row.
  *
@@ -28,7 +28,7 @@ require('./commit');
     },
 
     components: {
-      'commit-component': gl.CommitComponent,
+      'commit-component': CommitComponent,
       'pipeline-actions': gl.VuePipelineActions,
       'dropdown-stage': gl.VueStage,
       'pipeline-url': gl.VuePipelineUrl,
