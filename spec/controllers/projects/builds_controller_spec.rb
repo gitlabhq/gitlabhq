@@ -16,9 +16,9 @@ describe Projects::BuildsController do
         pipeline = create(:ci_pipeline, project: project)
         build = create(:ci_build, pipeline: pipeline, status: 'success')
         get :status, namespace_id: project.namespace,
-                  project_id: project,
-                  id: build.id,
-                  format: :json
+                     project_id: project,
+                     id: build.id,
+                     format: :json
       end
 
       it 'returns pipeline status via BuildSerializer' do

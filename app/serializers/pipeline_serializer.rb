@@ -12,7 +12,7 @@ class PipelineSerializer < BaseSerializer
   end
 
   def with_status
-    tap { @status_only = {only: [{details: [:status]}]} }
+    tap { @status_only = { only: [{ details: [:status] }] } }
   end
 
   def represent(resource, opts = {})

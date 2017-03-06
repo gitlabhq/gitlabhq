@@ -1183,13 +1183,13 @@ describe Projects::MergeRequestsController do
     context 'when accessing status' do
       before do
         create(:ci_pipeline, project: merge_request.source_project,
-          ref: merge_request.source_branch,
-          sha: merge_request.diff_head_sha,
-          status: 'success')
+                             ref: merge_request.source_branch,
+                             sha: merge_request.diff_head_sha,
+                             status: 'success')
         get :status, namespace_id: project.namespace,
-                  project_id: project,
-                  id: merge_request.iid,
-                  format: :json
+                     project_id: project,
+                     id: merge_request.iid,
+                     format: :json
       end
 
       it 'returns pipeline status via PipelineSerializer' do

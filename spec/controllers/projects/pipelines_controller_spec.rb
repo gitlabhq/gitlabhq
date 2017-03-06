@@ -75,9 +75,9 @@ describe Projects::PipelinesController do
       before do
         pipeline = create(:ci_pipeline, project: project, status: 'success')
         get :status, namespace_id: project.namespace,
-                  project_id: project,
-                  id: pipeline.id,
-                  format: :json
+                     project_id: project,
+                     id: pipeline.id,
+                     format: :json
       end
 
       it 'returns pipeline status via PipelineSerializer' do
