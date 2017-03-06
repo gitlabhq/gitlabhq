@@ -8,18 +8,18 @@ class GeoBackfillWorker
   def perform
     return unless Gitlab::Geo.primary_node.present?
 
-    start = Time.now
+    start_time  = Time.now
     project_ids = find_project_ids
 
     logger.info "Started Geo backfilling for #{project_ids.length} project(s)"
 
     project_ids.each do |project_id|
       begin
-        break if Time.now - start >= RUN_TIME
+        break if over_time?(start_time)
         break unless node_enabled?
 
         project = Project.find(project_id)
-        next if project.repository_exists?
+        next if synced?(project)
 
         try_obtain_lease do |lease|
           GeoSingleRepositoryBackfillWorker.new.perform(project_id, lease)
@@ -41,6 +41,20 @@ class GeoBackfillWorker
     Project.where.not(id: Geo::ProjectRegistry.pluck(:project_id))
            .limit(BATCH_SIZE)
            .pluck(:id)
+  end
+
+  def over_time?(start_time)
+    Time.now - start_time >= RUN_TIME
+  end
+
+  def synced?(project)
+    project.repository_exists? || registry_exists?(project)
+  end
+
+  def registry_exists?(project)
+    Geo::ProjectRegistry.where(project_id: project.id)
+                        .where.not(last_repository_synced_at: nil)
+                        .any?
   end
 
   def try_obtain_lease
