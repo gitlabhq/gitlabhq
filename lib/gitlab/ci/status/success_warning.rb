@@ -19,7 +19,7 @@ module Gitlab
         def icon
           'icon_status_warning'
         end
-        
+
         def group
           'success_with_warnings'
         end
