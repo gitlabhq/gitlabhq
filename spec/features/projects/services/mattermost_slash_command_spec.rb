@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Setup Mattermost slash commands', feature: true do
+feature 'Setup Mattermost slash commands', :feature, :js do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:service) { project.create_mattermost_slash_commands_service }
@@ -62,11 +62,11 @@ feature 'Setup Mattermost slash commands', feature: true do
 
       click_link 'Add to Mattermost'
 
-      team_name = teams.first[1]['display_name']
-      select_element = find('select#mattermost_team_id')
+      team_name = teams.first['display_name']
+      select_element = find('#mattermost_team_id')
       selected_option = select_element.find('option[selected]')
 
-      expect(select_element['disabled']).to eq('disabled')
+      expect(select_element['disabled']).to be(true)
       expect(selected_option).to have_content(team_name.to_s)
     end
 
@@ -75,7 +75,7 @@ feature 'Setup Mattermost slash commands', feature: true do
 
       click_link 'Add to Mattermost'
 
-      expect(find('input#mattermost_team_id', visible: false).value).to eq(teams.first[0].to_s)
+      expect(find('input#mattermost_team_id', visible: false).value).to eq(teams.first['id'])
     end
 
     it 'shows an explanation user is a member of multiple teams' do
@@ -92,12 +92,9 @@ feature 'Setup Mattermost slash commands', feature: true do
 
       click_link 'Add to Mattermost'
 
-      select_element = find('select#mattermost_team_id')
-      selected_option = select_element.find('option[selected]')
+      select_element = find('#mattermost_team_id')
 
-      expect(select_element['disabled']).to be(nil)
-      expect(selected_option).to have_content('Select team...')
-      # The 'Select team...' placeholder is item `0`.
+      expect(select_element['disabled']).to be(false)
       expect(select_element.all('option').count).to eq(3)
     end
 
@@ -110,20 +107,37 @@ feature 'Setup Mattermost slash commands', feature: true do
       expect(page).to have_content('test mattermost error message')
     end
 
+    it 'enables the submit button if the required fields are provided', :js do
+      stub_teams(count: 1)
+
+      click_link 'Add to Mattermost'
+
+      expect(find('input[type="submit"]')['disabled']).not_to be(true)
+    end
+
+    it 'disables the submit button if the required fields are not provided', :js do
+      stub_teams(count: 1)
+
+      click_link 'Add to Mattermost'
+
+      fill_in('mattermost_trigger', with: '')
+
+      expect(find('input[type="submit"]')['disabled']).to be(true)
+    end
+
     def stub_teams(count: 0)
       teams = create_teams(count)
 
-      allow_any_instance_of(MattermostSlashCommandsService).to receive(:list_teams) { teams }
+      allow_any_instance_of(MattermostSlashCommandsService).to receive(:list_teams) { [teams, nil] }
 
       teams
     end
 
     def create_teams(count = 0)
-      teams = {}
+      teams = []
 
       count.times do |i|
-        i += 1
-        teams[i] = { id: i, display_name: i }
+        teams.push({ "id" => "x#{i}", "display_name" => "x#{i}-name" })
       end
 
       teams
