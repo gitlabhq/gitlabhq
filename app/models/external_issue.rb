@@ -24,6 +24,11 @@ class ExternalIssue
   def ==(other)
     other.is_a?(self.class) && (to_s == other.to_s)
   end
+  alias_method :eql?, :==
+
+  def hash
+    [self.class, to_s].hash
+  end
 
   def project
     @project

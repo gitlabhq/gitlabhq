@@ -346,6 +346,23 @@ describe MergeRequest, models: true do
 
       expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue])
     end
+
+    context 'when the project has an external issue tracker' do
+      before do
+        subject.project.team << [subject.author, :developer]
+        commit = double(:commit, safe_message: 'Fixes TEST-3')
+
+        create(:jira_service, project: subject.project)
+
+        allow(subject).to receive(:commits).and_return([commit])
+        allow(subject).to receive(:description).and_return('Is related to TEST-2 and TEST-3')
+        allow(subject.project).to receive(:default_branch).and_return(subject.target_branch)
+      end
+
+      it 'detects issues mentioned in description but not closed' do
+        expect(subject.issues_mentioned_but_not_closing(subject.author).map(&:to_s)).to match_array(['TEST-2'])
+      end
+    end
   end
 
   describe "#work_in_progress?" do
