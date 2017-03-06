@@ -6,7 +6,7 @@ describe Gitlab::Ci::Status::Created do
   end
 
   describe '#text' do
-    it { expect(subject.label).to eq 'created' }
+    it { expect(subject.text).to eq 'created' }
   end
 
   describe '#label' do

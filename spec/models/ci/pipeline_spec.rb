@@ -643,6 +643,14 @@ describe Ci::Pipeline, models: true do
       end
     end
 
+    context 'when pipeline is blocked' do
+      let(:pipeline) { create(:ci_pipeline, status: :manual) }
+
+      it 'returns detailed status for blocked pipeline' do
+        expect(subject.text).to eq 'manual'
+      end
+    end
+
     context 'when pipeline is successful but with warnings' do
       let(:pipeline) { create(:ci_pipeline, status: :success) }
 
