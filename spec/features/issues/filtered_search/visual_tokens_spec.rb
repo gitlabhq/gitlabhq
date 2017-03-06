@@ -206,7 +206,7 @@ describe 'Visual tokens', js: true, feature: true do
 
       filtered_search.send_keys(:backspace)
 
-      find('#js-dropdown-label .filter-dropdown .filter-dropdown-item')
+      filter_label_dropdown.find('.filter-dropdown-item')
 
       expect(page.all('#js-dropdown-label .filter-dropdown .filter-dropdown-item').size).to eq(1)
     end
