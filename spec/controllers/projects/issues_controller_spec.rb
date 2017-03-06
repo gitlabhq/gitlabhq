@@ -87,6 +87,12 @@ describe Projects::IssuesController do
   end
 
   describe 'GET #new' do
+    it 'redirects to signin if not logged in' do
+      get :new, namespace_id: project.namespace, project_id: project
+
+      expect(response).to redirect_to(new_user_session_path)
+    end
+
     context 'internal issue tracker' do
       before do
         sign_in(user)
@@ -112,6 +118,11 @@ describe Projects::IssuesController do
     end
 
     context 'external issue tracker' do
+      before do
+        sign_in(user)
+        project.team << [user, :developer]
+      end
+
       it 'redirects to the external issue tracker' do
         external = double(new_issue_path: 'https://example.com/issues/new')
         allow(project).to receive(:external_issue_tracker).and_return(external)
