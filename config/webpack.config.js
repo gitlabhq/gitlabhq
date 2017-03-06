@@ -41,6 +41,7 @@ var config = {
     snippet:              './snippet/snippet_bundle.js',
     terminal:             './terminal/terminal_bundle.js',
     users:                './users/users_bundle.js',
+    vue_geo_ee:           './geo/geo_bundle.js',
     vue_pipelines:        './vue_pipelines_index/index.js',
   },
 
@@ -106,6 +107,7 @@ var config = {
         'issuable',
         'merge_conflicts',
         'mr_widget_ee',
+        'vue_geo_ee',
         'vue_pipelines',
       ],
       minChunks: function(module, count) {
