@@ -15,15 +15,15 @@
     });
 
     $(document)
-    .off('click', '.accept-merge-request')
-    .on('click', '.accept-merge-request', () => {
-      $('.js-merge-button, .js-merge-when-pipeline-succeeds-button').html('<i class="fa fa-spinner fa-spin"></i> Merge in progress');
+    .off('click', '.accept_merge_request')
+    .on('click', '.accept_merge_request', () => {
+      $('.js-merge-button').html('<i class="fa fa-spinner fa-spin"></i> Merge in progress');
     });
 
     $(document)
-    .off('click', '.merge-when-pipeline-succeeds')
-    .on('click', '.merge-when-pipeline-succeeds', () => {
-      $('#merge_when_pipeline_succeeds').val('1');
+    .off('click', '.merge_when_build_succeeds')
+    .on('click', '.merge_when_build_succeeds', () => {
+      $('#merge_when_build_succeeds').val('1');
     });
 
     $(document)

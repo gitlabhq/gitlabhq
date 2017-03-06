@@ -692,10 +692,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def has_ci?
-    has_ci_integration = source_project.try(:ci_service)
-    uses_gitlab_ci = all_pipelines.any?
-
-    (has_ci_integration || uses_gitlab_ci) && commits.any?
+    source_project.try(:ci_service) && commits.any?
   end
 
   def branch_missing?
