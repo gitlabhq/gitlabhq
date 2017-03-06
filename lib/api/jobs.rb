@@ -40,27 +40,6 @@ module API
                                   user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
-      desc 'Get jobs for a specific commit of a project' do
-        success Entities::Job
-      end
-      params do
-        requires :sha, type: String, desc: 'The SHA id of a commit'
-        use :optional_scope
-        use :pagination
-      end
-      get ':id/repository/commits/:sha/jobs' do
-        authorize_read_builds!
-
-        return not_found! unless user_project.commit(params[:sha])
-
-        pipelines = user_project.pipelines.where(sha: params[:sha])
-        builds = user_project.builds.where(pipeline: pipelines).order('id DESC')
-        builds = filter_builds(builds, params[:scope])
-
-        present paginate(builds), with: Entities::Job,
-                                  user_can_download_artifacts: can?(current_user, :read_build, user_project)
-      end
-
       desc 'Get a specific job of a project' do
         success Entities::Job
       end

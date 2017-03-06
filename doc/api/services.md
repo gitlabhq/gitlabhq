@@ -70,7 +70,7 @@ GET /projects/:id/services/assembla
 
 ## Atlassian Bamboo CI
 
-A continuous integration and job server
+A continuous integration and build server
 
 ### Create/Edit Atlassian Bamboo CI service
 
@@ -85,7 +85,7 @@ PUT /projects/:id/services/bamboo
 Parameters:
 
 - `bamboo_url` (**required**) - Bamboo root URL like https://bamboo.example.com
-- `job_key` (**required**) - Bamboo job plan key like KEY
+- `build_key` (**required**) - Bamboo build plan key like KEY
 - `username` (**required**) - A user with API access, if applicable
 - `password` (**required**)
 
@@ -114,13 +114,13 @@ Continuous integration and deployments
 Set Buildkite service for a project.
 
 ```
-PUT /projects/:id/services/jobkite
+PUT /projects/:id/services/buildkite
 ```
 
 Parameters:
 
 - `token` (**required**) - Buildkite project GitLab token
-- `project_url` (**required**) - https://jobkite.com/example/project
+- `project_url` (**required**) - https://buildkite.com/example/project
 - `enable_ssl_verification` (optional) - Enable SSL verification
 
 ### Delete Buildkite service
@@ -128,7 +128,7 @@ Parameters:
 Delete Buildkite service for a project.
 
 ```
-DELETE /projects/:id/services/jobkite
+DELETE /projects/:id/services/buildkite
 ```
 
 ### Get Buildkite service settings
@@ -136,12 +136,12 @@ DELETE /projects/:id/services/jobkite
 Get Buildkite service settings for a project.
 
 ```
-GET /projects/:id/services/jobkite
+GET /projects/:id/services/buildkite
 ```
 
 ## Build-Emails
 
-Get emails for GitLab CI jobs.
+Get emails for GitLab CI builds.
 
 ### Create/Edit Build-Emails service
 

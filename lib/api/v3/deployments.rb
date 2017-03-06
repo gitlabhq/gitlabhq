@@ -11,7 +11,7 @@ module API
     resource :projects do
       desc 'Get all deployments of the project' do
         detail 'This feature was introduced in GitLab 8.11.'
-        success Entities::Deployment
+        success ::API::V3::Deployments
       end
       params do
         use :pagination
@@ -19,12 +19,12 @@ module API
       get ':id/deployments' do
         authorize! :read_deployment, user_project
 
-        present paginate(user_project.deployments), with: Entities::Deployment
+        present paginate(user_project.deployments), with: ::API::V3::Deployments
       end
 
       desc 'Gets a specific deployment' do
         detail 'This feature was introduced in GitLab 8.11.'
-        success Entities::Deployment
+        success ::API::V3::Deployments
       end
       params do
         requires :deployment_id, type: Integer,  desc: 'The deployment ID'
@@ -34,7 +34,7 @@ module API
 
         deployment = user_project.deployments.find(params[:deployment_id])
 
-        present deployment, with: Entities::Deployment
+        present deployment, with: ::API::V3::Deployments
       end
     end
   end
