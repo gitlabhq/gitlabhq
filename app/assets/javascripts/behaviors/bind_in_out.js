@@ -36,7 +36,7 @@ class BindInOut {
   static init(anIn, anOut) {
     const out = anOut || document.querySelector(`*[data-bind-out="${anIn.dataset.bindIn}"]`);
 
-    if (!out) return;
+    if (!out) return null;
 
     const bindInOut = new BindInOut(anIn, out);
 
