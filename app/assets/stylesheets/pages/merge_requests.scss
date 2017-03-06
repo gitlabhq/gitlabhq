@@ -390,7 +390,8 @@
   border-style: solid;
   border-width: 1px;
   border-color: $border-color;
-  border-radius: 3px;
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
   padding: 10px;
   margin-bottom: -1px;
 }
