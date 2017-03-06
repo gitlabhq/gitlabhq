@@ -1178,4 +1178,24 @@ describe Projects::MergeRequestsController do
       end
     end
   end
+
+  describe 'GET status.json' do
+    context 'when accessing status' do
+      before do
+        create(:ci_pipeline, project: merge_request.source_project,
+          ref: merge_request.source_branch,
+          sha: merge_request.diff_head_sha,
+          status: 'success')
+        get :status, namespace_id: project.namespace,
+                  project_id: project,
+                  id: merge_request.iid,
+                  format: :json
+      end
+
+      it 'returns pipeline status via PipelineSerializer' do
+        expect(response).to have_http_status(:ok)
+        expect(json_response['details']['status']['text']).to eq 'passed'
+      end
+    end
+  end
 end

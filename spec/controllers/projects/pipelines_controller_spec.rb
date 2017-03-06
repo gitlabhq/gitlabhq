@@ -69,4 +69,21 @@ describe Projects::PipelinesController do
                   format: :json
     end
   end
+
+  describe 'GET status.json' do
+    context 'when accessing status' do
+      before do
+        pipeline = create(:ci_pipeline, project: project, status: 'success')
+        get :status, namespace_id: project.namespace,
+                  project_id: project,
+                  id: pipeline.id,
+                  format: :json
+      end
+
+      it 'returns pipeline status via PipelineSerializer' do
+        expect(response).to have_http_status(:ok)
+        expect(json_response['details']['status']['text']).to eq 'passed'
+      end
+    end
+  end
 end
