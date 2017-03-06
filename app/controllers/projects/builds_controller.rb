@@ -73,9 +73,6 @@ class Projects::BuildsController < Projects::ApplicationController
     redirect_to build_path(@build)
   end
 
-  # def status
-  #   render json: @build.to_json(only: [:status, :id, :sha, :coverage], methods: :sha)
-  # end
   def status
     render json: BuildSerializer
       .new(project: @project, user: @current_user)
