@@ -12,4 +12,13 @@ FactoryGirl.define do
       token: 'a' * 40,
     })
   end
+
+  factory :jira_service do
+    project factory: :empty_project
+    active true
+    properties(
+      url: 'https://jira.example.com',
+      project_key: 'jira-key'
+    )
+  end
 end

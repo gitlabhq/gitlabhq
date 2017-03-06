@@ -421,6 +421,7 @@ pages:
       - public
   only:
     - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
 
 # Insurance in case a gem needed by one of our releases gets yanked from
 # rubygems.org in the future.
@@ -437,3 +438,4 @@ cache gems:
       - vendor/cache
   only:
     - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee

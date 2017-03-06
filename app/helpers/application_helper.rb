@@ -167,7 +167,7 @@ module ApplicationHelper
     css_classes = short_format ? 'js-short-timeago' : 'js-timeago'
     css_classes << " #{html_class}" unless html_class.blank?
 
-    element = content_tag :time, time.to_s,
+    element = content_tag :time, time.strftime("%b %d, %Y"),
       class: css_classes,
       title: time.to_time.in_time_zone.to_s(:medium),
       datetime: time.to_time.getutc.iso8601,

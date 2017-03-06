@@ -92,7 +92,7 @@ describe MattermostSlashCommandsService, :models do
             to_return(
               status: 200,
               headers: { 'Content-Type' => 'application/json' },
-              body: ['list'].to_json
+              body: { 'list' => true }.to_json
             )
         end
 

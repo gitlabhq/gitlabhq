@@ -227,6 +227,13 @@ describe API::Milestones, api: true  do
       expect(json_response.first['milestone']['title']).to eq(milestone.title)
     end
 
+    it 'matches V4 response schema for a list of issues' do
+      get api("/projects/#{project.id}/milestones/#{milestone.id}/issues", user)
+
+      expect(response).to have_http_status(200)
+      expect(response).to match_response_schema('public_api/v4/issues')
+    end
+
     it 'returns a 401 error if user not authenticated' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}/issues")
 

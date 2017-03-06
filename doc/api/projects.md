@@ -66,7 +66,7 @@ Parameters:
     "issues_enabled": true,
     "open_issues_count": 1,
     "merge_requests_enabled": true,
-    "builds_enabled": true,
+    "jobs_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
     "container_registry_enabled": false,
@@ -86,7 +86,7 @@ Parameters:
     "forks_count": 0,
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
-    "public_builds": true,
+    "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
@@ -116,7 +116,7 @@ Parameters:
     "issues_enabled": true,
     "open_issues_count": 1,
     "merge_requests_enabled": true,
-    "builds_enabled": true,
+    "jobs_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
     "container_registry_enabled": false,
@@ -146,7 +146,7 @@ Parameters:
     "forks_count": 0,
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
-    "public_builds": true,
+    "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
@@ -196,7 +196,7 @@ Parameters:
   "issues_enabled": true,
   "open_issues_count": 1,
   "merge_requests_enabled": true,
-  "builds_enabled": true,
+  "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
   "container_registry_enabled": false,
@@ -226,7 +226,7 @@ Parameters:
   "forks_count": 0,
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
-  "public_builds": true,
+  "public_jobs": true,
   "shared_with_groups": [
     {
       "group_id": 4,
@@ -439,15 +439,15 @@ Parameters:
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
 | `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
-| `builds_enabled` | boolean | no | Enable builds for this project |
+| `jobs_enabled` | boolean | no | Enable jobs for this project |
 | `wiki_enabled` | boolean | no | Enable wiki for this project |
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | String | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
-| `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
-| `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `public_jobs` | boolean | no | If `true`, jobs can be viewed by non-project-members |
+| `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
@@ -472,15 +472,15 @@ Parameters:
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
 | `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
-| `builds_enabled` | boolean | no | Enable builds for this project |
+| `jobs_enabled` | boolean | no | Enable jobs for this project |
 | `wiki_enabled` | boolean | no | Enable wiki for this project |
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
-| `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
-| `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `public_jobs` | boolean | no | If `true`, jobs can be viewed by non-project-members |
+| `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
@@ -504,15 +504,15 @@ Parameters:
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
 | `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
-| `builds_enabled` | boolean | no | Enable builds for this project |
+| `jobs_enabled` | boolean | no | Enable jobs for this project |
 | `wiki_enabled` | boolean | no | Enable wiki for this project |
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
-| `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
-| `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
+| `public_jobs` | boolean | no | If `true`, jobs can be viewed by non-project-members |
+| `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
@@ -572,7 +572,7 @@ Example response:
   "issues_enabled": true,
   "open_issues_count": 1,
   "merge_requests_enabled": true,
-  "builds_enabled": true,
+  "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
   "container_registry_enabled": false,
@@ -591,7 +591,7 @@ Example response:
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 1,
-  "public_builds": true,
+  "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
@@ -637,7 +637,7 @@ Example response:
   "issues_enabled": true,
   "open_issues_count": 1,
   "merge_requests_enabled": true,
-  "builds_enabled": true,
+  "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
   "container_registry_enabled": false,
@@ -656,7 +656,7 @@ Example response:
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
-  "public_builds": true,
+  "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
@@ -708,7 +708,7 @@ Example response:
   "issues_enabled": true,
   "open_issues_count": 1,
   "merge_requests_enabled": true,
-  "builds_enabled": true,
+  "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
   "container_registry_enabled": false,
@@ -738,7 +738,7 @@ Example response:
   "forks_count": 0,
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
-  "public_builds": true,
+  "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
@@ -790,7 +790,7 @@ Example response:
   "issues_enabled": true,
   "open_issues_count": 1,
   "merge_requests_enabled": true,
-  "builds_enabled": true,
+  "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
   "container_registry_enabled": false,
@@ -820,7 +820,7 @@ Example response:
   "forks_count": 0,
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
-  "public_builds": true,
+  "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
@@ -955,7 +955,7 @@ Parameters:
   "merge_requests_events": true,
   "tag_push_events": true,
   "note_events": true,
-  "build_events": true,
+  "job_events": true,
   "pipeline_events": true,
   "wiki_page_events": true,
   "enable_ssl_verification": true,
@@ -982,7 +982,7 @@ Parameters:
 | `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
 | `tag_push_events` | boolean | no | Trigger hook on tag push events |
 | `note_events` | boolean | no | Trigger hook on note events |
-| `build_events` | boolean | no | Trigger hook on build events |
+| `job_events` | boolean | no | Trigger hook on job events |
 | `pipeline_events` | boolean | no | Trigger hook on pipeline events |
 | `wiki_events` | boolean | no | Trigger hook on wiki events |
 | `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |
@@ -1008,7 +1008,7 @@ Parameters:
 | `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
 | `tag_push_events` | boolean | no | Trigger hook on tag push events |
 | `note_events` | boolean | no | Trigger hook on note events |
-| `build_events` | boolean | no | Trigger hook on build events |
+| `job_events` | boolean | no | Trigger hook on job events |
 | `pipeline_events` | boolean | no | Trigger hook on pipeline events |
 | `wiki_events` | boolean | no | Trigger hook on wiki events |
 | `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |

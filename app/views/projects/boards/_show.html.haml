@@ -3,6 +3,7 @@
 - page_title "Boards"
 
 - content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('boards')
   = page_specific_javascript_bundle_tag('simulate_drag') if Rails.env.test?
 

@@ -180,9 +180,8 @@ module Backup
       return unless Dir.exist?(path)
 
       dir_entries = Dir.entries(path)
-      %w[annex custom_hooks].each do |entry|
-        yield(entry) if dir_entries.include?(entry)
-      end
+
+      yield('custom_hooks') if dir_entries.include?('custom_hooks')
     end
 
     def prepare
