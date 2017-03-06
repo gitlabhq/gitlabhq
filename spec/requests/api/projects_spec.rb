@@ -43,9 +43,10 @@ describe API::Projects, api: true  do
   describe 'GET /projects' do
     shared_examples_for 'projects response' do
       it 'returns an array of projects' do
-        get api('/projects', current_user)
+        get api('/projects', current_user), filter
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.map { |p| p['id'] }).to contain_exactly(*projects.map(&:id))
       end
@@ -61,6 +62,7 @@ describe API::Projects, api: true  do
 
     context 'when unauthenticated' do
       it_behaves_like 'projects response' do
+        let(:filter) { {} }
         let(:current_user) { nil }
         let(:projects) { [public_project] }
       end
@@ -68,6 +70,7 @@ describe API::Projects, api: true  do
 
     context 'when authenticated as regular user' do
       it_behaves_like 'projects response' do
+        let(:filter) { {} }
         let(:current_user) { user }
         let(:projects) { [public_project, project, project2, project3] }
       end
@@ -133,13 +136,18 @@ describe API::Projects, api: true  do
       end
 
       context 'and using search' do
-        it 'returns searched project' do
-          get api('/projects', user), { search: project.name }
+        it_behaves_like 'projects response' do
+          let(:filter) { { search: project.name } }
+          let(:current_user) { user }
+          let(:projects) { [project] }
+        end
+      end
 
-          expect(response).to have_http_status(200)
-          expect(response).to include_pagination_headers
-          expect(json_response).to be_an Array
-          expect(json_response.length).to eq(1)
+      context 'and membership=true' do
+        it_behaves_like 'projects response' do
+          let(:filter) { { membership: true } }
+          let(:current_user) { user }
+          let(:projects) { [project, project2, project3] }
         end
       end
 
@@ -216,36 +224,52 @@ describe API::Projects, api: true  do
       end
 
       context 'and with all query parameters' do
-        # |         | project5 | project6 | project7 | project8 | project9 |
-        # |---------+----------+----------+----------+----------+----------|
-        # | search  | x        |          | x        | x        | x        |
-        # | starred | x        | x        |          | x        | x        |
-        # | public  | x        | x        | x        |          | x        |
-        # | owned   | x        | x        | x        | x        |          |
-        let!(:project5) { create(:empty_project, :public, path: 'gitlab5', namespace: user.namespace) }
+        let!(:project5) { create(:empty_project, :public, path: 'gitlab5', namespace: create(:namespace)) }
         let!(:project6) { create(:empty_project, :public, path: 'project6', namespace: user.namespace) }
         let!(:project7) { create(:empty_project, :public, path: 'gitlab7', namespace: user.namespace) }
         let!(:project8) { create(:empty_project, path: 'gitlab8', namespace: user.namespace) }
         let!(:project9) { create(:empty_project, :public, path: 'gitlab9') }
 
         before do
-          user.update_attributes(starred_projects: [project5, project6, project8, project9])
+          user.update_attributes(starred_projects: [project5, project7, project8, project9])
         end
 
-        it 'returns only projects that satify all query parameters' do
-          get api('/projects', user), { visibility: 'public', owned: true, starred: true, search: 'gitlab' }
+        context 'including owned filter' do
+          it 'returns only projects that satisfy all query parameters' do
+            get api('/projects', user), { visibility: 'public', owned: true, starred: true, search: 'gitlab' }
 
-          expect(response).to have_http_status(200)
-          expect(response).to include_pagination_headers
-          expect(json_response).to be_an Array
-          expect(json_response.size).to eq(1)
-          expect(json_response.first['id']).to eq(project5.id)
+            expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
+            expect(json_response).to be_an Array
+            expect(json_response.size).to eq(1)
+            expect(json_response.first['id']).to eq(project7.id)
+          end
+        end
+
+        context 'including membership filter' do
+          before do
+            create(:project_member,
+                   user: user,
+                   project: project5,
+                   access_level: ProjectMember::MASTER)
+          end
+
+          it 'returns only projects that satisfy all query parameters' do
+            get api('/projects', user), { visibility: 'public', membership: true, starred: true, search: 'gitlab' }
+
+            expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
+            expect(json_response).to be_an Array
+            expect(json_response.size).to eq(2)
+            expect(json_response.map { |project| project['id'] }).to contain_exactly(project5.id, project7.id)
+          end
         end
       end
     end
 
     context 'when authenticated as a different user' do
       it_behaves_like 'projects response' do
+        let(:filter) { {} }
         let(:current_user) { user2 }
         let(:projects) { [public_project] }
       end
@@ -253,6 +277,7 @@ describe API::Projects, api: true  do
 
     context 'when authenticated as admin' do
       it_behaves_like 'projects response' do
+        let(:filter) { {} }
         let(:current_user) { admin }
         let(:projects) { Project.all }
       end
