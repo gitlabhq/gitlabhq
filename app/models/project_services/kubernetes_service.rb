@@ -36,7 +36,7 @@ class KubernetesService < DeploymentService
   def initialize_properties
     if properties.nil?
       self.properties = {}
-      self.namespace = project.path if project.present?
+      self.namespace = "#{project.path}-#{project.id}" if project.present?
     end
   end
 
