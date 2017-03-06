@@ -70,7 +70,7 @@ GET /projects/:id/services/assembla
 
 ## Atlassian Bamboo CI
 
-A continuous integration and build server
+A continuous integration and job server
 
 ### Create/Edit Atlassian Bamboo CI service
 
@@ -85,7 +85,7 @@ PUT /projects/:id/services/bamboo
 Parameters:
 
 - `bamboo_url` (**required**) - Bamboo root URL like https://bamboo.example.com
-- `build_key` (**required**) - Bamboo build plan key like KEY
+- `job_key` (**required**) - Bamboo job plan key like KEY
 - `username` (**required**) - A user with API access, if applicable
 - `password` (**required**)
 
@@ -114,13 +114,13 @@ Continuous integration and deployments
 Set Buildkite service for a project.
 
 ```
-PUT /projects/:id/services/buildkite
+PUT /projects/:id/services/jobkite
 ```
 
 Parameters:
 
 - `token` (**required**) - Buildkite project GitLab token
-- `project_url` (**required**) - https://buildkite.com/example/project
+- `project_url` (**required**) - https://jobkite.com/example/project
 - `enable_ssl_verification` (optional) - Enable SSL verification
 
 ### Delete Buildkite service
@@ -128,7 +128,7 @@ Parameters:
 Delete Buildkite service for a project.
 
 ```
-DELETE /projects/:id/services/buildkite
+DELETE /projects/:id/services/jobkite
 ```
 
 ### Get Buildkite service settings
@@ -136,19 +136,19 @@ DELETE /projects/:id/services/buildkite
 Get Buildkite service settings for a project.
 
 ```
-GET /projects/:id/services/buildkite
+GET /projects/:id/services/jobkite
 ```
 
 ## Build-Emails
 
-Get emails for GitLab CI builds.
+Get emails for GitLab CI jobs.
 
 ### Create/Edit Build-Emails service
 
 Set Build-Emails service for a project.
 
 ```
-PUT /projects/:id/services/builds-email
+PUT /projects/:id/services/jobs-email
 ```
 
 Parameters:
@@ -157,23 +157,23 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `recipients` | string | yes | Comma-separated list of recipient email addresses |
 | `add_pusher` | boolean | no | Add pusher to recipients list |
-| `notify_only_broken_builds` | boolean | no | Notify only broken builds |
+| `notify_only_broken_jobs` | boolean | no | Notify only broken jobs |
 
 
-### Delete Build-Emails service
+### Delete Job-Emails service
 
 Delete Build-Emails service for a project.
 
 ```
-DELETE /projects/:id/services/builds-email
+DELETE /projects/:id/services/jobs-email
 ```
 
-### Get Build-Emails service settings
+### Get Job-Emails service settings
 
 Get Build-Emails service settings for a project.
 
 ```
-GET /projects/:id/services/builds-email
+GET /projects/:id/services/jobs-email
 ```
 
 ## Campfire
@@ -580,7 +580,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `recipients` | string | yes | Comma-separated list of recipient email addresses |
 | `add_pusher` | boolean | no | Add pusher to recipients list |
-| `notify_only_broken_builds` | boolean | no | Notify only broken pipelines |
+| `notify_only_broken_jobs` | boolean | no | Notify only broken pipelines |
 
 
 ### Delete Pipeline-Emails service

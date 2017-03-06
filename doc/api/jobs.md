@@ -1,20 +1,20 @@
-# Builds API
+# Jobs API
 
-## List project builds
+## List project jobs 
 
-Get a list of builds in a project.
+Get a list of jobs in a project.
 
 ```
-GET /projects/:id/builds
+GET /projects/:id/jobs
 ```
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `id`      | integer | yes      | The ID of a project |
-| `scope`   | string **or** array of strings | no | The scope of builds to show, one or array of: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`; showing all builds if none provided |
+| `scope`   | string **or** array of strings | no | The scope of jobs to show, one or array of: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`; showing all jobs if none provided |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/1/builds?scope%5B0%5D=pending&scope%5B1%5D=running'
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/1/jobs?scope%5B0%5D=pending&scope%5B1%5D=running'
 ```
 
 Example of response
@@ -115,27 +115,27 @@ Example of response
 ]
 ```
 
-## List commit builds
+## List commit jobs
 
-Get a list of builds for specific commit in a project.
+Get a list of jobs for specific commit in a project.
 
-This endpoint will return all builds, from all pipelines for a given commit.
+This endpoint will return all jobs, from all pipelines for a given commit.
 If the commit SHA is not found, it will respond with 404, otherwise it will
-return an array of builds (an empty array if there are no builds for this
+return an array of jobs (an empty array if there are no jobs for this
 particular commit).
 
 ```
-GET /projects/:id/repository/commits/:sha/builds
+GET /projects/:id/repository/commits/:sha/jobs
 ```
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `id`      | integer | yes      | The ID of a project |
 | `sha`     | string  | yes      | The SHA id of a commit |
-| `scope`   | string **or** array of strings | no | The scope of builds to show, one or array of: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`; showing all builds if none provided |
+| `scope`   | string **or** array of strings | no | The scope of jobs to show, one or array of: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`; showing all jobs if none provided |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/1/repository/commits/0ff3ae198f8601a285adcf5c0fff204ee6fba5fd/builds?scope%5B0%5D=pending&scope%5B1%5D=running'
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/1/repository/commits/0ff3ae198f8601a285adcf5c0fff204ee6fba5fd/jobs?scope%5B0%5D=pending&scope%5B1%5D=running'
 ```
 
 Example of response
@@ -219,21 +219,21 @@ Example of response
 ]
 ```
 
-## Get a single build
+## Get a single job
 
-Get a single build of a project
+Get a single job of a project
 
 ```
-GET /projects/:id/builds/:build_id
+GET /projects/:id/jobs/:job_id
 ```
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
 | `id`       | integer | yes      | The ID of a project |
-| `build_id` | integer | yes      | The ID of a build   |
+| `job_id` | integer | yes      | The ID of a job   |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/builds/8"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/8"
 ```
 
 Example of response
@@ -285,23 +285,23 @@ Example of response
 }
 ```
 
-## Get build artifacts
+## Get job artifacts
 
 > [Introduced][ce-2893] in GitLab 8.5
 
-Get build artifacts of a project
+Get job artifacts of a project
 
 ```
-GET /projects/:id/builds/:build_id/artifacts
+GET /projects/:id/jobs/:job_id/artifacts
 ```
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
 | `id`       | integer | yes      | The ID of a project |
-| `build_id` | integer | yes      | The ID of a build   |
+| `job_id` | integer | yes      | The ID of a job   |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/builds/8/artifacts"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
 ```
 
 Response:
@@ -318,10 +318,10 @@ Response:
 > [Introduced][ce-5347] in GitLab 8.10.
 
 Download the artifacts file from the given reference name and job provided the
-build finished successfully.
+job finished successfully.
 
 ```
-GET /projects/:id/builds/artifacts/:ref_name/download?job=name
+GET /projects/:id/jobs/artifacts/:ref_name/download?job=name
 ```
 
 Parameters
@@ -335,7 +335,7 @@ Parameters
 Example request:
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/builds/artifacts/master/download?job=test"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"
 ```
 
 Example response:
@@ -349,19 +349,19 @@ Example response:
 
 ## Get a trace file
 
-Get a trace of a specific build of a project
+Get a trace of a specific job of a project
 
 ```
-GET /projects/:id/builds/:build_id/trace
+GET /projects/:id/jobs/:job_id/trace
 ```
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
 | id         | integer | yes      | The ID of a project |
-| build_id   | integer | yes      | The ID of a build   |
+| job_id     | integer | yes      | The ID of a job     |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/builds/8/trace"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/8/trace"
 ```
 
 Response:
@@ -371,21 +371,21 @@ Response:
 | 200       | Serves the trace file             |
 | 404       | Build not found or no trace file  |
 
-## Cancel a build
+## Cancel a job
 
-Cancel a single build of a project
+Cancel a single job of a project
 
 ```
-POST /projects/:id/builds/:build_id/cancel
+POST /projects/:id/jobs/:job_id/cancel
 ```
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
 | `id`       | integer | yes      | The ID of a project |
-| `build_id` | integer | yes      | The ID of a build   |
+| `job_id`   | integer | yes      | The ID of a job     |
 
 ```
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/builds/1/cancel"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/1/cancel"
 ```
 
 Example of response
@@ -417,21 +417,21 @@ Example of response
 }
 ```
 
-## Retry a build
+## Retry a job
 
-Retry a single build of a project
+Retry a single job of a project
 
 ```
-POST /projects/:id/builds/:build_id/retry
+POST /projects/:id/jobs/:job_id/retry
 ```
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
 | `id`       | integer | yes      | The ID of a project |
-| `build_id` | integer | yes      | The ID of a build   |
+| `job_id`   | integer | yes      | The ID of a job     |
 
 ```
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/builds/1/retry"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/1/retry"
 ```
 
 Example of response
@@ -463,12 +463,12 @@ Example of response
 }
 ```
 
-## Erase a build
+## Erase a job
 
-Erase a single build of a project (remove build artifacts and a build trace)
+Erase a single job of a project (remove job artifacts and a job trace)
 
 ```
-POST /projects/:id/builds/:build_id/erase
+POST /projects/:id/jobs/:job_id/erase
 ```
 
 Parameters
@@ -476,12 +476,12 @@ Parameters
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
 | `id`        | integer | yes      | The ID of a project |
-| `build_id`  | integer | yes      | The ID of a build   |
+| `job_id`    | integer | yes      | The ID of a job     |
 
 Example of request
 
 ```
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/builds/1/erase"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/1/erase"
 ```
 
 Example of response
@@ -518,7 +518,7 @@ Example of response
 Prevents artifacts from being deleted when expiration is set.
 
 ```
-POST /projects/:id/builds/:build_id/artifacts/keep
+POST /projects/:id/jobs/:job_id/artifacts/keep
 ```
 
 Parameters
@@ -526,12 +526,12 @@ Parameters
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
 | `id`        | integer | yes      | The ID of a project |
-| `build_id`  | integer | yes      | The ID of a build   |
+| `job_id`    | integer | yes      | The ID of a job     |
 
 Example request:
 
 ```
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/builds/1/artifacts/keep"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/1/artifacts/keep"
 ```
 
 Example response:
@@ -563,21 +563,21 @@ Example response:
 }
 ```
 
-## Play a build
+## Play a job
 
-Triggers a manual action to start a build.
-
-```
-POST /projects/:id/builds/:build_id/play
-```
-
-| Attribute  | Type    | Required | Description         |
-|------------|---------|----------|---------------------|
-| `id`       | integer | yes      | The ID of a project |
-| `build_id` | integer | yes      | The ID of a build   |
+Triggers a manual action to start a job.
 
 ```
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/builds/1/play"
+POST /projects/:id/jobs/:job_id/play
+```
+
+| Attribute | Type    | Required | Description         |
+|-----------|---------|----------|---------------------|
+| `id`      | integer | yes      | The ID of a project |
+| `job_id`  | integer | yes      | The ID of a job     |
+
+```
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/1/play"
 ```
 
 Example of response
