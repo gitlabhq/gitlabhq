@@ -58,7 +58,7 @@ module Ci
         commands: job[:commands],
         tag_list: job[:tags] || [],
         name: job[:name].to_s,
-        allow_failure: job[:allow_failure] || false,
+        allow_failure: job[:ignore],
         when: job[:when] || 'on_success',
         environment: job[:environment_name],
         coverage_regex: job[:coverage],
