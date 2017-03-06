@@ -185,11 +185,13 @@ describe CommitStatus, :models do
        create_status(allow_failure: true, status: 'success'),
        create_status(allow_failure: true, status: 'failed'),
        create_status(allow_failure: false, status: 'success'),
-       create_status(allow_failure: false, status: 'failed')]
+       create_status(allow_failure: false, status: 'failed'),
+       create_status(allow_failure: true, status: 'manual'),
+       create_status(allow_failure: false, status: 'manual')]
     end
 
     it 'returns statuses without what we want to ignore' do
-      is_expected.to eq(statuses.values_at(0, 1, 2, 3, 4, 5, 6, 8, 9))
+      is_expected.to eq(statuses.values_at(0, 1, 2, 3, 4, 5, 6, 8, 9, 11))
     end
   end
 
