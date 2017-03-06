@@ -111,10 +111,6 @@ module Ci
       self.when == 'manual'
     end
 
-    def barrier?
-      action? && !allow_failure?
-    end
-
     def has_commands?
       commands.present?
     end
