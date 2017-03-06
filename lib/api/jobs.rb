@@ -40,6 +40,23 @@ module API
                                   user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
+      desc 'Get pipeline jobs' do
+        success Entities::Job
+      end
+      params do
+        requires :pipeline_id, type: Integer,  desc: 'The pipeline ID'
+        use :optional_scope
+        use :pagination
+      end
+      get ':id/pipelines/:pipeline_id/jobs' do
+        pipeline = user_project.pipelines.find(params[:pipeline_id])
+        builds = pipeline.builds
+        builds = filter_builds(builds, params[:scope])
+
+        present paginate(builds), with: Entities::Job,
+                                  user_can_download_artifacts: can?(current_user, :read_build, user_project)
+      end
+
       desc 'Get a specific job of a project' do
         success Entities::Job
       end
