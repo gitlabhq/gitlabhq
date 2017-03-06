@@ -34,6 +34,8 @@ module Projects
       end
     rescue => e
       error(e.message)
+    ensure
+      build.erase_artifacts! unless build.has_expiring_artifacts?
     end
 
     private
