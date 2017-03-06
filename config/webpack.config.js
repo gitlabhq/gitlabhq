@@ -110,10 +110,7 @@ var config = {
         'environments_folder',
         'issuable',
         'merge_conflicts',
-<<<<<<< HEAD
         'mr_widget_ee',
-=======
->>>>>>> ce-com/master
         'vue_pipelines',
       ],
       minChunks: function(module, count) {

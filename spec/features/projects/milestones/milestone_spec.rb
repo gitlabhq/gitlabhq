@@ -1,7 +1,14 @@
 require 'spec_helper'
 
-<<<<<<< HEAD
-describe 'Milestones', feature: true do
+feature 'Project milestone', :feature do
+  let(:user) { create(:user) }
+  let(:project) { create(:empty_project, name: 'test', namespace: user.namespace) }
+  let(:milestone) { create(:milestone, project: project) }
+
+  before do
+    login_as(user)
+  end
+
   context 'milestone summary' do
     let(:project) { create(:empty_project, :public) }
     let(:milestone) { create(:milestone, project: project) }
@@ -10,7 +17,7 @@ describe 'Milestones', feature: true do
       create(:issue, project: project, milestone: milestone, weight: 3)
       create(:issue, project: project,  milestone: milestone, weight: 1)
 
-      visit_milestone_page
+      visit milestone_path
 
       within '.milestone-summary' do
         expect(page).to have_content 'Total weight: 4'
@@ -21,28 +28,17 @@ describe 'Milestones', feature: true do
       create(:issue, project: project, milestone: milestone, weight: nil)
       create(:issue, project: project,  milestone: milestone, weight: nil)
 
-      visit_milestone_page
+      visit milestone_path
 
       within '.milestone-summary' do
         expect(page).not_to have_content 'Total weight:'
       end
     end
-
-    def visit_milestone_page
-      visit namespace_project_milestone_path(project.namespace.to_param, project.to_param, milestone.to_param)
-=======
-feature 'Project milestone', :feature do
-  let(:user) { create(:user) }
-  let(:project) { create(:empty_project, name: 'test', namespace: user.namespace) }
-  let(:milestone) { create(:milestone, project: project) }
-
-  before do
-    login_as(user)
   end
 
   context 'when project has enabled issues' do
     before do
-      visit namespace_project_milestone_path(project.namespace, project, milestone)
+      visit milestone_path
     end
 
     it 'shows issues tab' do
@@ -67,7 +63,7 @@ feature 'Project milestone', :feature do
   context 'when project has disabled issues' do
     before do
       project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
-      visit namespace_project_milestone_path(project.namespace, project, milestone)
+      visit milestone_path
     end
 
     it 'hides issues tab' do
@@ -90,7 +86,10 @@ feature 'Project milestone', :feature do
 
     it 'does not show an informative message' do
       expect(page).not_to have_content('Assign some issues to this milestone.')
->>>>>>> ce-com/master
     end
+  end
+
+  def milestone_path
+    visit namespace_project_milestone_path(project.namespace, project, milestone)
   end
 end
