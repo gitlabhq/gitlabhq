@@ -288,7 +288,7 @@ describe API::Runner do
               'ref' => job.ref,
               'sha' => job.sha,
               'before_sha' => job.before_sha,
-              'ref_type' => 'branch'}
+              'ref_type' => 'branch' }
           end
           let(:expected_steps) do
             [{ 'name' => 'script',
