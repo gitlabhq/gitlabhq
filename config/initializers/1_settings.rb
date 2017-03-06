@@ -399,6 +399,7 @@ if Settings.backup['upload']['connection']
 end
 Settings.backup['upload']['multipart_chunk_size'] ||= 104857600
 Settings.backup['upload']['encryption'] ||= nil
+Settings.backup['upload']['storage_class'] ||= nil
 
 #
 # Git
