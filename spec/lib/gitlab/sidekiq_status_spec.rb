@@ -39,6 +39,32 @@ describe Gitlab::SidekiqStatus do
     end
   end
 
+  describe '.num_running', :redis do
+    it 'returns 0 if all jobs have been completed' do
+      expect(described_class.num_running(%w(123))).to eq(0)
+    end
+
+    it 'returns 2 if two jobs are still running' do
+      described_class.set('123')
+      described_class.set('456')
+
+      expect(described_class.num_running(%w(123 456 789))).to eq(2)
+    end
+  end
+
+  describe '.num_completed', :redis do
+    it 'returns 1 if all jobs have been completed' do
+      expect(described_class.num_completed(%w(123))).to eq(1)
+    end
+
+    it 'returns 1 if a job has not yet been completed' do
+      described_class.set('123')
+      described_class.set('456')
+
+      expect(described_class.num_completed(%w(123 456 789))).to eq(1)
+    end
+  end
+
   describe '.key_for' do
     it 'returns the key for a job ID' do
       key = described_class.key_for('123')

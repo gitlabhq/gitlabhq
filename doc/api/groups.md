@@ -284,6 +284,7 @@ Parameters:
 - `name` (required) - The name of the group
 - `path` (required) - The path of the group
 - `description` (optional) - The group's description
+<<<<<<< HEAD
 - `membership_lock` (optional, boolean) - Prevent adding new members to project membership within this group
 - `share_with_group_lock` (optional, boolean) - Prevent sharing a project with another group within this group
 
@@ -302,6 +303,8 @@ Parameters:
 - `description` (optional) - The group's description
 - `membership_lock` (optional, boolean) - Prevent adding new members to project membership within this group
 - `share_with_group_lock` (optional, boolean) - Prevent sharing a project with another group within this group
+=======
+>>>>>>> ce-com/master
 - `visibility` (optional) - The group's visibility. Can be `private`, `internal`, or `public`.
 - `lfs_enabled` (optional)      - Enable/disable Large File Storage (LFS) for the projects in this group
 - `request_access_enabled` (optional) - Allow users to request member access.

@@ -34,8 +34,6 @@ class GroupPolicy < BasePolicy
     if globally_viewable && @subject.request_access_enabled && !member
       can! :request_access
     end
-
-    additional_rules!(master)
   end
 
   def can_read_group?
@@ -47,6 +45,7 @@ class GroupPolicy < BasePolicy
 
     GroupProjectsFinder.new(@subject).execute(@user).any?
   end
+<<<<<<< HEAD
 
   def additional_rules!(master)
     if @subject.ldap_synced?
@@ -54,4 +53,6 @@ class GroupPolicy < BasePolicy
       can! :override_group_member if master
     end
   end
+=======
+>>>>>>> ce-com/master
 end

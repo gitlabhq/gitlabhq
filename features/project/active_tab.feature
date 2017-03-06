@@ -80,9 +80,9 @@ Feature: Project Active Tab
     And no other sub tabs should be active
     And the active main tab should be Repository
 
-  Scenario: On Project Repository/Network
-    Given I visit my project's network page
-    Then the active sub tab should be Network
+  Scenario: On Project Repository/Graph
+    Given I visit my project's graph page
+    Then the active sub tab should be Graph
     And no other sub tabs should be active
     And the active main tab should be Repository
 

@@ -9,7 +9,10 @@ describe API::V3::Settings, 'Settings', api: true  do
   describe "GET /application/settings" do
     it "returns application settings" do
       get v3_api("/application/settings", admin)
+<<<<<<< HEAD
 
+=======
+>>>>>>> ce-com/master
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Hash
       expect(json_response['default_projects_limit']).to eq(42)
@@ -33,7 +36,10 @@ describe API::V3::Settings, 'Settings', api: true  do
         put v3_api("/application/settings", admin),
           default_projects_limit: 3, signin_enabled: false, repository_storage: 'custom', koding_enabled: true, koding_url: 'http://koding.example.com',
           plantuml_enabled: true, plantuml_url: 'http://plantuml.example.com'
+<<<<<<< HEAD
 
+=======
+>>>>>>> ce-com/master
         expect(response).to have_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
         expect(json_response['signin_enabled']).to be_falsey

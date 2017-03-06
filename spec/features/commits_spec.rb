@@ -192,7 +192,7 @@ describe 'Commits' do
       commits = project.repository.commits(branch_name)
 
       commits.each do |commit|
-        expect(page).to have_content("committed #{commit.committed_date}")
+        expect(page).to have_content("committed #{commit.committed_date.strftime("%b %d, %Y")}")
       end
     end
   end

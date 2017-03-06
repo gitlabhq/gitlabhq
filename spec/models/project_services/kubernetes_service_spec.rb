@@ -148,6 +148,12 @@ describe KubernetesService, models: true, caching: true do
         { key: 'KUBE_CA_PEM', value: 'CA PEM DATA', public: true }
       )
     end
+
+    it 'sets KUBE_CA_PEM_FILE' do
+      expect(subject.predefined_variables).to include(
+        { key: 'KUBE_CA_PEM_FILE', value: 'CA PEM DATA', public: true, file: true }
+      )
+    end
   end
 
   describe '#terminals' do

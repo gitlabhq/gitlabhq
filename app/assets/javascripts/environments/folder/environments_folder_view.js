@@ -93,7 +93,11 @@ module.exports = Vue.component('environment-folder-view', {
 
     this.isLoading = true;
 
+<<<<<<< HEAD:app/assets/javascripts/environments/folder/environments_folder_view.js
     return this.service.get()
+=======
+    return service.get()
+>>>>>>> ce-com/master:app/assets/javascripts/environments/folder/environments_folder_view.js
       .then(resp => ({
         headers: resp.headers,
         body: resp.json(),

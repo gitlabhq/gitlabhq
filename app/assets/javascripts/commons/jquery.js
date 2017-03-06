@@ -9,6 +9,9 @@ import 'vendor/jquery.scrollTo';
 import 'vendor/jquery.nicescroll';
 import 'vendor/jquery.waitforimages';
 import 'select2/select2';
+<<<<<<< HEAD
 
 // EE-only
 import 'vendor/jquery.tablesorter';
+=======
+>>>>>>> ce-com/master

@@ -33,6 +33,7 @@ module.exports = Vue.component('environment-table-component', {
       required: false,
       default: false,
     },
+<<<<<<< HEAD:app/assets/javascripts/environments/components/environments_table.js
 
     commitIconSvg: {
       type: String,
@@ -66,6 +67,8 @@ module.exports = Vue.component('environment-table-component', {
       required: false,
       default: () => ({}),
     },
+=======
+>>>>>>> ce-com/master:app/assets/javascripts/environments/components/environments_table.js
   },
 
   template: `
@@ -87,6 +90,7 @@ module.exports = Vue.component('environment-table-component', {
           <tr is="environment-item"
             :model="model"
             :can-create-deployment="canCreateDeployment"
+<<<<<<< HEAD:app/assets/javascripts/environments/components/environments_table.js
             :can-read-environment="canReadEnvironment"
             :play-icon-svg="playIconSvg"
             :terminal-icon-svg="terminalIconSvg"
@@ -104,6 +108,9 @@ module.exports = Vue.component('environment-table-component', {
               </deploy-board>
             </td>
           </tr>
+=======
+            :can-read-environment="canReadEnvironment"></tr>
+>>>>>>> ce-com/master:app/assets/javascripts/environments/components/environments_table.js
         </template>
       </tbody>
     </table>

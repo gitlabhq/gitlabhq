@@ -259,6 +259,10 @@ module API
     # project helpers
 
     def filter_projects(projects)
+      if params[:membership]
+        projects = projects.merge(current_user.authorized_projects)
+      end
+
       if params[:owned]
         projects = projects.merge(current_user.owned_projects)
       end
