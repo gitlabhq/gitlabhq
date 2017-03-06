@@ -1,6 +1,6 @@
 class GeoBackfillWorker
   include Sidekiq::Worker
-  include GeoBackfillQueue
+  include CronjobQueue
 
   RUN_TIME = 5.minutes.to_i.freeze
   BATCH_SIZE = 100.freeze

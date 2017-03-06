@@ -59,4 +59,3 @@
   - [admin_emails, 1]
   - [geo_repository_update, 1]
   - [elastic_batch_project_indexer, 1]
-  - [geo_backfill, 3]
