@@ -53,14 +53,14 @@ In case you want to point a root domain (`example.com`) to your
 GitLab Pages site, deployed to `namespace.gitlab.io`, you need to
 log into your domain's admin control panel and add a DNS `A` record
 pointing your domain to Pages' server IP address. For projects on
-GitLab.com, this IP is `104.208.235.32`. For projects leaving in
+GitLab.com, this IP is `52.167.214.135`. For projects leaving in
 other GitLab instances (CE or EE), please contact your sysadmin
 asking for this information (which IP address is Pages server
 running on your instance).
 
 **Practical Example:**
 
-![DNS A record pointing to GitLab.com Pages server](img/dns_a_record_example.png)
+![DNS A record pointing to GitLab.com Pages server](img/dns_add_new_a_record_example_updated.png)
 
 #### DNS CNAME record
 
@@ -82,7 +82,7 @@ without any `/project-name`.
 
 | From | DNS Record | To |
 | ---- | ---------- | -- |
-| domain.com | A | 104.208.235.32 |
+| domain.com | A | 52.167.214.135 |
 | subdomain.domain.com | CNAME | namespace.gitlab.io |
 
 > **Notes**:
@@ -92,6 +92,7 @@ without any `/project-name`.
 > - **Do not** add any special chars after the default Pages
 domain. E.g., **do not** point your `subdomain.domain.com` to
 `namespace.gitlab.io.` or `namespace.gitlab.io/`.
+> - GitLab Pages IP on GitLab.com [has been changed](https://about.gitlab.com/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/) from `104.208.235.32` to `52.167.214.135`.
 
 ### SSL/TLS Certificates
 
