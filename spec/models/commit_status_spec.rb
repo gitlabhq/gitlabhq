@@ -199,14 +199,14 @@ describe CommitStatus, :models do
     subject { described_class.failed_but_allowed.order(:id) }
 
     let(:statuses) do
-       [create_status(allow_failure: true, status: 'success'),
-        create_status(allow_failure: true, status: 'failed'),
-        create_status(allow_failure: false, status: 'success'),
-        create_status(allow_failure: false, status: 'failed'),
-        create_status(allow_failure: true, status: 'canceled'),
-        create_status(allow_failure: false, status: 'canceled'),
-        create_status(allow_failure: true, status: 'manual'),
-        create_status(allow_failure: false, status: 'manual')]
+      [create_status(allow_failure: true, status: 'success'),
+       create_status(allow_failure: true, status: 'failed'),
+       create_status(allow_failure: false, status: 'success'),
+       create_status(allow_failure: false, status: 'failed'),
+       create_status(allow_failure: true, status: 'canceled'),
+       create_status(allow_failure: false, status: 'canceled'),
+       create_status(allow_failure: true, status: 'manual'),
+       create_status(allow_failure: false, status: 'manual')]
     end
 
     it 'returns statuses without what we want to ignore' do

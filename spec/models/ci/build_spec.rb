@@ -767,20 +767,18 @@ describe Ci::Build, :models do
         end
       end
     end
-
-    context 'when build does not have script or before script' do
-    end
   end
-
 
   describe '#has_tags?' do
     context 'when build has tags' do
       subject { create(:ci_build, tag_list: ['tag']) }
+
       it { is_expected.to have_tags }
     end
 
     context 'when build does not have tags' do
       subject { create(:ci_build, tag_list: []) }
+
       it { is_expected.not_to have_tags }
     end
   end
