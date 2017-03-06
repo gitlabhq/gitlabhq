@@ -94,13 +94,15 @@ describe Boards::Issues::MoveService, services: true do
       end
 
       it 'sorts issues' do
+        [issue1, issue2].each(&:move_to_end)
+
         issue.move_between!(issue1, issue2)
 
         params.merge! move_after_iid: issue.iid, move_before_iid: issue2.iid
 
         described_class.new(project, user, params).execute(issue1)
 
-        expect(issue1.relative_position).to be_between(issue.relative_position, issue2.relative_position)
+        expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
       end
     end
   end
