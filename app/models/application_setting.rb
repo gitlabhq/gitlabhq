@@ -64,6 +64,16 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             if: :akismet_enabled
 
+  validates :unique_ips_limit_per_user,
+            numericality: { greater_than_or_equal_to: 1 },
+            presence: true,
+            if: :unique_ips_limit_enabled
+
+  validates :unique_ips_limit_time_window,
+            numericality: { greater_than_or_equal_to: 0 },
+            presence: true,
+            if: :unique_ips_limit_enabled
+
   validates :koding_url,
             presence: true,
             if: :koding_enabled
@@ -184,6 +194,9 @@ class ApplicationSetting < ActiveRecord::Base
       domain_whitelist: Settings.gitlab['domain_whitelist'],
       gravatar_enabled: Settings.gravatar['enabled'],
       help_page_text: nil,
+      unique_ips_limit_per_user: 10,
+      unique_ips_limit_time_window: 3600,
+      unique_ips_limit_enabled: false,
       housekeeping_bitmaps_enabled: true,
       housekeeping_enabled: true,
       housekeeping_full_repack_period: 50,

@@ -112,6 +112,9 @@ ActiveRecord::Schema.define(version: 20170305203726) do
     t.integer "max_pages_size", default: 100, null: false
     t.integer "terminal_max_session_time", default: 0, null: false
     t.string "default_artifacts_expire_in", default: "0", null: false
+    t.integer "unique_ips_limit_per_user"
+    t.integer "unique_ips_limit_time_window"
+    t.boolean "unique_ips_limit_enabled", default: false, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
