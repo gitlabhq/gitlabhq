@@ -107,8 +107,12 @@ import boardCard from './board_card';
           });
         },
         onUpdate: (e) => {
-          gl.issueBoards.BoardsStore.moveIssueInList(this.list, Store.moving.issue, e.oldIndex, e.newIndex, this.sortable.toArray());
+          const sortedArray = this.sortable.toArray().filter(id => id !== '-1');
+          gl.issueBoards.BoardsStore.moveIssueInList(this.list, Store.moving.issue, e.oldIndex, e.newIndex, sortedArray);
         },
+        onMove(e) {
+          return !e.related.classList.contains('board-list-count');
+        }
       });
 
       this.sortable = Sortable.create(this.$refs.list, options);
