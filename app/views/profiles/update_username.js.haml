@@ -1,7 +1,0 @@
-- if @user.valid?
-  :plain
-    new Flash("Username successfully changed", "notice")
-- else
-  - error = @user.errors.full_messages.first
-  :plain
-    new Flash("Username change failed - #{escape_javascript error.html_safe}", "alert")

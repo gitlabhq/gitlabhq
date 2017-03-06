@@ -211,6 +211,11 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def find_current_user_notes
-    @notes = NotesFinder.new(project, current_user, params).execute.inc_author
+    @notes = NotesFinder.new(project, current_user, params.merge(last_fetched_at: last_fetched_at))
+      .execute.inc_author
+  end
+
+  def last_fetched_at
+    request.headers['X-Last-Fetched-At']
   end
 end

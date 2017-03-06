@@ -3,16 +3,6 @@ require 'spec_helper'
 describe Profiles::KeysController do
   let(:user) { create(:user) }
 
-  describe '#new' do
-    before { sign_in(user) }
-
-    it 'redirects to #index' do
-      get :new
-
-      expect(response).to redirect_to(profile_keys_path)
-    end
-  end
-
   describe "#get_keys" do
     describe "non existant user" do
       it "does not generally work" do

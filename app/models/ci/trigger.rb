@@ -5,10 +5,11 @@ module Ci
     acts_as_paranoid
 
     belongs_to :project, foreign_key: :gl_project_id
+    belongs_to :owner, class_name: "User"
+
     has_many :trigger_requests, dependent: :destroy
 
-    validates :token, presence: true
-    validates :token, uniqueness: true
+    validates :token, presence: true, uniqueness: true
 
     before_validation :set_default_values
 
@@ -25,7 +26,11 @@ module Ci
     end
 
     def short_token
-      token[0...10]
+      token[0...4]
+    end
+
+    def can_show_token?(user)
+      owner.blank? || owner == user
     end
   end
 end

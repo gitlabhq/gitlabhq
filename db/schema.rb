@@ -111,7 +111,7 @@ ActiveRecord::Schema.define(version: 20170306090835) do
     t.boolean "plantuml_enabled"
     t.integer "max_pages_size", default: 100, null: false
     t.integer "terminal_max_session_time", default: 0, null: false
-    t.string "default_artifacts_expire_in", default: '0', null: false
+    t.string "default_artifacts_expire_in", default: "0", null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -377,6 +377,8 @@ ActiveRecord::Schema.define(version: 20170306090835) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "gl_project_id"
+    t.integer "owner_id"
+    t.string "description"
   end
 
   add_index "ci_triggers", ["gl_project_id"], name: "index_ci_triggers_on_gl_project_id", using: :btree
@@ -581,9 +583,9 @@ ActiveRecord::Schema.define(version: 20170306090835) do
   end
 
   add_index "labels", ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true, using: :btree
-  add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
   add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
+  add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|
     t.string "oid", null: false
@@ -1333,6 +1335,7 @@ ActiveRecord::Schema.define(version: 20170306090835) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
   add_foreign_key "boards", "projects"
+  add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade

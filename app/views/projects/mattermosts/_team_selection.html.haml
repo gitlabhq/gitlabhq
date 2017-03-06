@@ -2,16 +2,15 @@
   This service will be installed on the Mattermost instance at
   %strong= link_to Gitlab.config.mattermost.host, Gitlab.config.mattermost.host
 %hr
-= form_for(:mattermost, method: :post, url: namespace_project_mattermost_path(@project.namespace, @project)) do |f|
+= form_for(:mattermost, method: :post, url: namespace_project_mattermost_path(@project.namespace, @project), html: { class: 'js-requires-input'} ) do |f|
   %h4 Team
   %p
     = @teams.one? ? 'The team' : 'Select the team'
     where the slash commands will be used in
-  - selected_id = @teams.one? ? @teams.keys.first : 0
-  - options = mattermost_teams_options(@teams)
-  - options = options_for_select(options, selected_id)
-  = f.select(:team_id, options, {}, { class: 'form-control', disabled: @teams.one?, selected: selected_id })
-  = f.hidden_field(:team_id, value: selected_id) if @teams.one?
+  - selected_id = @teams.one? ? @teams.first['id'] : nil
+  - options = options_for_select(mattermost_teams_options(@teams), selected_id)
+  = f.select(:team_id, options, { include_blank: 'Select team...'}, { class: 'form-control', disabled: @teams.one?, selected: selected_id, required: true })
+  = f.hidden_field(:team_id, value: selected_id, required: true) if @teams.one?
   .help-block
     - if @teams.one?
       This is the only available team.
@@ -25,7 +24,7 @@
   %hr
   %h4 Command trigger word
   %p Choose the word that will trigger commands
-  = f.text_field(:trigger, value: @project.path, class: 'form-control')
+  = f.text_field(:trigger, value: @project.path, class: 'form-control', required: true)
   .help-block
     %p
       Trigger word must be unique, and can't begin with a slash or contain any spaces.

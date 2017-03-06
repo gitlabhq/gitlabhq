@@ -186,6 +186,15 @@ module API
       class Environment < ::API::Entities::EnvironmentBasic
         expose :project, using: Entities::Project
       end
+
+      class Trigger < Grape::Entity
+        expose :token, :created_at, :updated_at, :deleted_at, :last_used
+        expose :owner, using: ::API::Entities::UserBasic
+      end
+
+      class TriggerRequest < Grape::Entity
+        expose :id, :variables
+      end
     end
   end
 end

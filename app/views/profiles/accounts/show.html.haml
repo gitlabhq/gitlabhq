@@ -93,7 +93,7 @@
       %p
         Changing your username will change path to all personal projects!
     .col-lg-9
-      = form_for @user, url: update_username_profile_path, method: :put, remote: true, html: {class: "update-username"} do |f|
+      = form_for @user, url: update_username_profile_path, method: :put, html: {class: "update-username"} do |f|
         .form-group
           = f.label :username, "Path", class: "label-light"
           .input-group

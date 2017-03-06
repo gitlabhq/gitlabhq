@@ -95,6 +95,7 @@ class User < ActiveRecord::Base
   has_many :todos,                    dependent: :destroy
   has_many :notification_settings,    dependent: :destroy
   has_many :award_emoji,              dependent: :destroy
+  has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id
 
   has_many :assigned_issues,          dependent: :nullify, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"
