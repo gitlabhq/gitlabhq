@@ -67,7 +67,6 @@ Parameters:
     },
     "merge_when_pipeline_succeeds": true,
     "merge_status": "can_be_merged",
-    "subscribed" : false,
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
     "user_notes_count": 1,

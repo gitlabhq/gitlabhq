@@ -728,7 +728,7 @@ describe API::Users, api: true  do
         get api("/user", user)
 
         expect(response).to have_http_status(200)
-        expect(response).to match_response_schema('user/public')
+        expect(response).to match_response_schema('public_api/v4/user/public')
         expect(json_response['id']).to eq(user.id)
       end
     end
@@ -747,7 +747,7 @@ describe API::Users, api: true  do
           get api("/user?private_token=#{admin_personal_access_token}")
 
           expect(response).to have_http_status(200)
-          expect(response).to match_response_schema('user/public')
+          expect(response).to match_response_schema('public_api/v4/user/public')
           expect(json_response['id']).to eq(admin.id)
         end
       end
@@ -757,7 +757,7 @@ describe API::Users, api: true  do
           get api("/user?private_token=#{admin.private_token}&sudo=#{user.id}")
 
           expect(response).to have_http_status(200)
-          expect(response).to match_response_schema('user/login')
+          expect(response).to match_response_schema('public_api/v4/user/login')
           expect(json_response['id']).to eq(user.id)
         end
 
@@ -765,7 +765,7 @@ describe API::Users, api: true  do
           get api("/user?private_token=#{admin.private_token}")
 
           expect(response).to have_http_status(200)
-          expect(response).to match_response_schema('user/public')
+          expect(response).to match_response_schema('public_api/v4/user/public')
           expect(json_response['id']).to eq(admin.id)
         end
       end
