@@ -5,4 +5,6 @@
     .panel-body
       %p
         Learn how to upload your static site and have it served by
-        GitLab by following the #{link_to "documentation on GitLab Pages", "http://doc.gitlab.com/ee/pages/README.html", target: :blank}.
+        GitLab by following the
+        = succeed '.' do
+          = link_to 'documentation on GitLab Pages', help_page_path('user/project/pages/index'), target: '_blank'
