@@ -20,4 +20,10 @@ class MergeRequestsFinder < IssuableFinder
   def klass
     MergeRequest
   end
+
+  private
+
+  def item_project_ids(items)
+    items&.reorder(nil)&.select(:target_project_id)
+  end
 end
