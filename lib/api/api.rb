@@ -9,6 +9,7 @@ module API
       mount ::API::V3::Boards
       mount ::API::V3::Branches
       mount ::API::V3::BroadcastMessages
+      mount ::API::V3::Builds
       mount ::API::V3::Commits
       mount ::API::V3::DeployKeys
       mount ::API::V3::Environments
@@ -81,7 +82,6 @@ module API
     mount ::API::Boards
     mount ::API::Branches
     mount ::API::BroadcastMessages
-    mount ::API::Builds
     mount ::API::Commits
     mount ::API::CommitStatuses
     mount ::API::DeployKeys
@@ -91,6 +91,7 @@ module API
     mount ::API::Groups
     mount ::API::Internal
     mount ::API::Issues
+    mount ::API::Jobs
     mount ::API::Keys
     mount ::API::Labels
     mount ::API::Lint
