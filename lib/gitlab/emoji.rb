@@ -1,8 +1,6 @@
 module Gitlab
   module Emoji
     extend self
-    @emoji_unicode_version = JSON.parse(File.read(File.absolute_path(File.dirname(__FILE__) + '/../../node_modules/emoji-unicode-version/emoji-unicode-version-map.json')))
-    @emoji_aliases = JSON.parse(File.read(File.join(Rails.root, 'fixtures', 'emojis', 'aliases.json')))
 
     def emojis
       Gemojione.index.instance_variable_get(:@emoji_by_name)
@@ -21,7 +19,7 @@ module Gitlab
     end
 
     def emojis_aliases
-      @emoji_aliases
+      @emoji_aliases ||= JSON.parse(File.read(Rails.root.join('fixtures', 'emojis', 'aliases.json')))
     end
 
     def emoji_filename(name)
@@ -33,7 +31,12 @@ module Gitlab
     end
 
     def emoji_unicode_version(name)
-      @emoji_unicode_version[name]
+      @emoji_unicode_versions_by_name ||= JSON.parse(File.read(Rails.root.join('node_modules', 'emoji-unicode-version', 'emoji-unicode-version-map.json')))
+      @emoji_unicode_versions_by_name[name]
+    end
+
+    def normalize_emoji_name(name)
+      emojis_aliases[name] || name
     end
 
     def emoji_image_tag(name, src)
@@ -46,7 +49,22 @@ module Gitlab
       emoji_info = emojis[emoji_name]
       emoji_fallback_image_source = ActionController::Base.helpers.url_to_image("emoji/#{emoji_info['name']}.png")
       emoji_fallback_sprite_class = "emoji-#{emoji_name}"
-      "<gl-emoji #{force_fallback && sprite ? "class='emoji-icon #{emoji_fallback_sprite_class}'" : ""} data-name='#{emoji_name}' #{image ? "data-fallback-src='#{emoji_fallback_image_source}'" : ""} #{sprite ? "data-fallback-sprite-class='#{emoji_fallback_sprite_class}'" : ""} data-unicode-version='#{emoji_unicode_version(emoji_name)}'>#{force_fallback && sprite === false ? emoji_image_tag(emoji_name, emoji_fallback_image_source) : emoji_info['moji']}</gl-emoji>"
+
+      data = {
+        name: emoji_name,
+        unicode_version: emoji_unicode_version(emoji_name)
+      }
+      data[:fallback_src] = emoji_fallback_image_source if image
+      data[:fallback_sprite_class] = emoji_fallback_sprite_class if sprite
+      ActionController::Base.helpers.content_tag 'gl-emoji',
+        class: ("emoji-icon #{emoji_fallback_sprite_class}" if force_fallback && sprite),
+        data: data do
+        if force_fallback && !sprite
+          emoji_image_tag(emoji_name, emoji_fallback_image_source)
+        else
+          emoji_info['moji']
+        end
+      end
     end
   end
 end

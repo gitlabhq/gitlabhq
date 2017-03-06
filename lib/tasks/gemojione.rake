@@ -7,7 +7,7 @@ namespace :gemojione do
     dir = Gemojione.images_path
     resultant_emoji_map = {}
 
-    Gitlab::Emoji.emojis.map do |name, emoji_hash|
+    Gitlab::Emoji.emojis.each do |name, emoji_hash|
       # Ignore aliases
       unless Gitlab::Emoji.emojis_aliases.key?(name)
         fpath = File.join(dir, "#{emoji_hash['unicode']}.png")
@@ -56,11 +56,11 @@ namespace :gemojione do
     SPRITESHEET_HEIGHT = 840
 
     # Setup a map to rename image files
-    emoji_uncicode_string_to_name_map = {}
-    Gitlab::Emoji.emojis.map do |name, emoji_hash|
+    emoji_unicode_string_to_name_map = {}
+    Gitlab::Emoji.emojis.each do |name, emoji_hash|
       # Ignore aliases
       unless Gitlab::Emoji.emojis_aliases.key?(name)
-        emoji_uncicode_string_to_name_map[emoji_hash['unicode']] = name
+        emoji_unicode_string_to_name_map[emoji_hash['unicode']] = name
       end
     end
 
@@ -69,11 +69,9 @@ namespace :gemojione do
     FileUtils.rm_rf(emoji_dir)
     FileUtils.mkdir_p(emoji_dir, mode: 0700)
     FileUtils.cp_r(File.join(Gemojione.images_path, '.'), emoji_dir)
-    Dir.chdir(emoji_dir) do
-      Dir["**/*.png"].each do |png|
-        image_path = File.join(Dir.pwd, png)
-        rename_to_named_emoji_image!(emoji_uncicode_string_to_name_map, image_path)
-      end
+    Dir[File.join(emoji_dir, "**/*.png")].each do |png|
+      image_path = png
+      rename_to_named_emoji_image!(emoji_unicode_string_to_name_map, image_path)
     end
 
     Dir.mktmpdir do |tmpdir|
@@ -181,18 +179,18 @@ namespace :gemojione do
   end
 
   EMOJI_IMAGE_PATH_RE = /(.*?)(([0-9a-f]-?)+)\.png$/i
-  def rename_to_named_emoji_image!(emoji_uncicode_string_to_name_map, image_path)
+  def rename_to_named_emoji_image!(emoji_unicode_string_to_name_map, image_path)
     # Rename file from unicode to emoji name
     matches = EMOJI_IMAGE_PATH_RE.match(image_path)
     preceding_path = matches[1]
     unicode_string = matches[2]
-    name = emoji_uncicode_string_to_name_map[unicode_string]
+    name = emoji_unicode_string_to_name_map[unicode_string]
     if name
       new_png_path = File.join(preceding_path, "#{name}.png")
       FileUtils.mv(image_path, new_png_path)
       new_png_path
     else
-      puts "Warning: emoji_uncicode_string_to_name_map missing entry for #{unicode_string}. Full path: #{image_path}"
+      puts "Warning: emoji_unicode_string_to_name_map missing entry for #{unicode_string}. Full path: #{image_path}"
     end
   end
 end
