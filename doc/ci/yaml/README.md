@@ -166,8 +166,8 @@ which can be set in GitLab's UI.
 cached between jobs. You can only use paths that are within the project
 workspace.
 
-**By default caching is enabled and shared between each pipelines and
-each jobs, starting from GitLab 9.0**
+**By default caching is enabled and shared between pipelines and jobs,
+starting from GitLab 9.0**
 
 If `cache` is defined outside the scope of jobs, it means it is set
 globally and all jobs will use that definition.
@@ -219,9 +219,9 @@ rspec:
     - binaries/
 ```
 
-Note that since cache is shared between each jobs, if you're using different
+Note that since cache is shared between jobs, if you're using different
 paths for different jobs, you should also set a different *cache:key*
-otherwise they could be overwriting to each other.
+otherwise cache content can be overwritten.
 
 The cache is provided on a best-effort basis, so don't expect that the cache
 will be always present. For implementation details, please check GitLab Runner.
