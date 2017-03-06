@@ -36,20 +36,27 @@ describe Projects::Settings::DeployKeysPresenter do
   end
 
   describe '#available_keys/#available_project_keys' do
+    let(:other_deploy_key) { create(:another_deploy_key) }
+
+    before do
+      project_key = create(:deploy_keys_project, deploy_key: other_deploy_key)
+      project_key.project.add_developer(user)
+    end
+
     it 'returns the current available_keys' do
-      expect(presenter.available_keys).to be_empty
+      expect(presenter.available_keys).not_to be_empty
     end
 
     it 'returns the current available_project_keys' do
-      expect(presenter.available_project_keys).to be_empty
+      expect(presenter.available_project_keys).not_to be_empty
     end
 
     it 'returns false if any available_project_keys are enabled' do
-      expect(presenter.any_available_project_keys_enabled?).to eq(false)
+      expect(presenter.any_available_project_keys_enabled?).to eq(true)
     end
 
     it 'returns the available_project_keys size' do
-      expect(presenter.available_project_keys_size).to eq(0)
+      expect(presenter.available_project_keys_size).to eq(1)
     end
 
     it 'shows if there is an available key' do
