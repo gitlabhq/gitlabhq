@@ -20,6 +20,7 @@ AllCops:
     - 'node_modules/**/*'
     - 'db/*'
     - 'db/fixtures/**/*'
+    - 'db_geo/*'
     - 'tmp/**/*'
     - 'bin/**/*'
     - 'generator_templates/**/*'
