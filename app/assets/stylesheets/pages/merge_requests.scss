@@ -361,17 +361,17 @@
     }
   }
 
-  li:before {
+  li::before {
     content: '';
     position: absolute;
-    border-top: 2px solid #e5e5e5;
+    border-top: 2px solid $border-color;
     height: 1px;
     top: 8px;
     width: 8px;
   }
 
   li:last-child {
-    &:before {
+    &::before {
       top: 18px;
     }
 
