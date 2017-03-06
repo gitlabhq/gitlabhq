@@ -25,7 +25,7 @@
       this.isAllowedToPushDropdown = false;
       this.groups = [];
       this.accessLevel = accessLevel;
-      this.accessLevelsData = accessLevelsData;
+      this.accessLevelsData = accessLevelsData.roles;
       this.$dropdown = $dropdown;
       this.$wrap = this.$dropdown.closest(`.${this.accessLevel}-container`);
       this.usersPath = '/autocomplete/users.json';
@@ -275,8 +275,7 @@
       let consolidatedData = [];
       const map = [];
       let roles = [];
-      const selectedUsers = [];
-      const unselectedUsers = [];
+      const users = [];
       let groups = [];
       const selectedItems = this.getSelectedItems();
 
@@ -319,12 +318,12 @@
         if (current.type !== LEVEL_TYPES.USER) { continue; }
 
         // Collect selected users
-        selectedUsers.push({
+        users.push({
           id: current.user_id,
           name: current.name,
           username: current.username,
           avatar_url: current.avatar_url,
-          type: LEVEL_TYPES.USER
+          type: LEVEL_TYPES.USER,
         });
 
         // Save identifiers for easy-checking more later
@@ -339,32 +338,24 @@
         // Add is it has not been added
         if (map.indexOf(LEVEL_TYPES.USER + u.id) === -1) {
           u.type = LEVEL_TYPES.USER;
-          unselectedUsers.push(u);
+          users.push(u);
         }
-      }
-
-      if (groups.length) {
-        consolidatedData = consolidatedData.concat(groups);
       }
 
       if (roles.length) {
-        if (groups.length) {
+        consolidatedData = consolidatedData.concat([{ header: 'Roles', }], roles);
+      }
+
+      if (groups.length) {
+        if (roles.length) {
           consolidatedData = consolidatedData.concat(['divider']);
         }
 
-        consolidatedData = consolidatedData.concat(roles);
+        consolidatedData = consolidatedData.concat([{ header: 'Groups', }], groups);
       }
 
-      if (selectedUsers.length) {
-        consolidatedData = consolidatedData.concat(['divider'], selectedUsers);
-      }
-
-      if (unselectedUsers.length) {
-        if (!selectedUsers.length) {
-          consolidatedData = consolidatedData.concat(['divider']);
-        }
-
-        consolidatedData = consolidatedData.concat(unselectedUsers);
+      if (users.length) {
+        consolidatedData = consolidatedData.concat(['divider'], [{ header: 'Users', }], users);
       }
 
       return consolidatedData;
@@ -434,9 +425,8 @@
 
     groupRowHtml(group, isActive) {
       const avatarHtml = group.avatar_url ? `<img src='${group.avatar_url}' class='avatar avatar-inline' width='30'>` : '';
-      const nameHtml = `<strong class='dropdown-menu-group-full-name'>${group.name}</strong>`;
       const groupnameHtml = `<span class='dropdown-menu-group-groupname'>${group.name}</span>`;
-      return `<li><a href='#' class='${isActive ? 'is-active' : ''}'>${avatarHtml} ${nameHtml} ${groupnameHtml}</a></li>`;
+      return `<li><a href='#' class='${isActive ? 'is-active' : ''}'>${avatarHtml} ${groupnameHtml}</a></li>`;
     }
 
     roleRowHtml(role, isActive) {

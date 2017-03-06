@@ -4,14 +4,13 @@
  *
  * Each instance has a state and a tooltip.
  * The state needs to be represented in different colors,
- * see more information about this in https://gitlab.com/gitlab-org/gitlab-ee/uploads/5fff049fd88336d9ee0c6ef77b1ba7e3/monitoring__deployboard--key.png
+ * see more information about this in
+ * https://gitlab.com/gitlab-org/gitlab-ee/uploads/5fff049fd88336d9ee0c6ef77b1ba7e3/monitoring__deployboard--key.png
  *
  */
 
-module.exports = {
-
+export default {
   props: {
-
     /**
      * Represents the status of the pod. Each state is represented with a different
      * color.

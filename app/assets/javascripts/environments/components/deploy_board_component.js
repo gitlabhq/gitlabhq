@@ -1,4 +1,5 @@
-/* eslint-disable no-new, import/first */
+/* eslint-disable no-new */
+/* global Flash */
 /**
  * Renders a deploy board.
  *
@@ -17,13 +18,13 @@
  * Please refer to this [comment](https://gitlab.com/gitlab-org/gitlab-ee/issues/1589#note_23630610)
  * for more information
  */
+import statusCodes from '~/lib/utils/http_status';
+import '~/flash';
+import '~/lib/utils/common_utils';
+import deployBoardSvg from 'empty_states/icons/_deploy_board.svg';
+import instanceComponent from './deploy_board_instance_component';
 
-const instanceComponent = require('./deploy_board_instance_component');
-const statusCodes = require('~/lib/utils/http_status');
-const Flash = require('~/flash');
-require('~/lib/utils/common_utils');
-
-module.exports = {
+export default {
 
   components: {
     instanceComponent,
@@ -61,6 +62,7 @@ module.exports = {
       isLoading: false,
       hasError: false,
       backOffRequestCounter: 0,
+      deployBoardSvg,
     };
   },
 
@@ -110,7 +112,15 @@ module.exports = {
 
   computed: {
     canRenderDeployBoard() {
-      return !this.isLoading && !this.hasError && Object.keys(this.deployBoardData).length;
+      return !this.isLoading && !this.hasError && this.deployBoardData.valid;
+    },
+
+    canRenderEmptyState() {
+      return !this.isLoading && !this.hasError && !this.deployBoardData.valid;
+    },
+
+    canRenderErrorState() {
+      return !this.isLoading && this.hasError;
     },
 
     instanceTitle() {
@@ -123,6 +133,10 @@ module.exports = {
       }
 
       return title;
+    },
+
+    projectName() {
+      return '<projectname>';
     },
   },
 
@@ -149,8 +163,7 @@ module.exports = {
             <template v-for="instance in deployBoardData.instances">
               <instance-component
                 :status="instance.status"
-                :tooltipText="instance.tooltip">
-              </instance-component>
+                :tooltipText="instance.tooltip"/>
             </template>
           </div>
         </section>
@@ -174,7 +187,21 @@ module.exports = {
         </section>
       </div>
 
-      <div v-if="!isLoading && hasError" class="deploy-board-error-message">
+      <div v-if="canRenderEmptyState">
+        <section class="deploy-board-empty-state-svg">
+          ${deployBoardSvg}
+        </section>
+
+        <section class="deploy-board-empty-state-text">
+          <span class="title">Kubernetes deployment not found</span>
+          <span>
+            To see deployment progress for your environments, make sure your deployments are in Kubernetes namespace
+            <code>{{projectName}}</code> and labeled with <code>app=$CI_ENVIRONMENT_SLUG</code>.
+          </span>
+        </section>
+      </div>
+
+      <div v-if="canRenderErrorState" class="deploy-board-error-message">
         We can't fetch the data right now. Please try again later.
       </div>
     </div>
