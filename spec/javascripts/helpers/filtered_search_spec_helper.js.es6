@@ -5,8 +5,7 @@ class FilteredSearchSpecHelper {
 
   static createFilterVisualToken(name, value, isSelected = false) {
     const li = document.createElement('li');
-    li.classList.add('js-visual-token');
-    li.classList.add('filtered-search-token');
+    li.classList.add('js-visual-token', 'filtered-search-token');
 
     li.innerHTML = `
       <div class="selectable ${isSelected ? 'selected' : ''}" role="button">
@@ -34,10 +33,10 @@ class FilteredSearchSpecHelper {
     `;
   }
 
-  static createInputHTML(placeholder) {
+  static createInputHTML(placeholder = '') {
     return `
       <li>
-        <input type='text' class='filtered-search' placeholder='${placeholder || ''}' />
+        <input type='text' class='filtered-search' placeholder='${placeholder}' />
       </li>
     `;
   }

@@ -1,8 +1,7 @@
 class FilteredSearchVisualTokens {
   static getLastVisualTokenBeforeInput() {
-    const input = document.querySelector('.filtered-search');
-    const lastVisualToken = input && input.parentElement
-      && input.parentElement.previousElementSibling;
+    const inputLi = document.querySelector('.input-token');
+    const lastVisualToken = inputLi && inputLi.previousElementSibling;
 
     return {
       lastVisualToken,
