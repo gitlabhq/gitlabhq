@@ -134,37 +134,51 @@ update-knapsack:
     - master@gitlab/gitlabhq
     - master@gitlab/gitlab-ee
 
-rspec 0 20: *rspec-knapsack
-rspec 1 20: *rspec-knapsack
-rspec 2 20: *rspec-knapsack
-rspec 3 20: *rspec-knapsack
-rspec 4 20: *rspec-knapsack
-rspec 5 20: *rspec-knapsack
-rspec 6 20: *rspec-knapsack
-rspec 7 20: *rspec-knapsack
-rspec 8 20: *rspec-knapsack
-rspec 9 20: *rspec-knapsack
-rspec 10 20: *rspec-knapsack
-rspec 11 20: *rspec-knapsack
-rspec 12 20: *rspec-knapsack
-rspec 13 20: *rspec-knapsack
-rspec 14 20: *rspec-knapsack
-rspec 15 20: *rspec-knapsack
-rspec 16 20: *rspec-knapsack
-rspec 17 20: *rspec-knapsack
-rspec 18 20: *rspec-knapsack
-rspec 19 20: *rspec-knapsack
+# rspec 0 20: *rspec-knapsack
+# rspec 1 20: *rspec-knapsack
+# rspec 2 20: *rspec-knapsack
+# rspec 3 20: *rspec-knapsack
+# rspec 4 20: *rspec-knapsack
+# rspec 5 20: *rspec-knapsack
+# rspec 6 20: *rspec-knapsack
+# rspec 7 20: *rspec-knapsack
+# rspec 8 20: *rspec-knapsack
+# rspec 9 20: *rspec-knapsack
+# rspec 10 20: *rspec-knapsack
+# rspec 11 20: *rspec-knapsack
+# rspec 12 20: *rspec-knapsack
+# rspec 13 20: *rspec-knapsack
+# rspec 14 20: *rspec-knapsack
+# rspec 15 20: *rspec-knapsack
+# rspec 16 20: *rspec-knapsack
+# rspec 17 20: *rspec-knapsack
+# rspec 18 20: *rspec-knapsack
+# rspec 19 20: *rspec-knapsack
 
-spinach 0 10: *spinach-knapsack
-spinach 1 10: *spinach-knapsack
-spinach 2 10: *spinach-knapsack
-spinach 3 10: *spinach-knapsack
-spinach 4 10: *spinach-knapsack
-spinach 5 10: *spinach-knapsack
-spinach 6 10: *spinach-knapsack
-spinach 7 10: *spinach-knapsack
-spinach 8 10: *spinach-knapsack
-spinach 9 10: *spinach-knapsack
+# spinach 0 10: *spinach-knapsack
+# spinach 1 10: *spinach-knapsack
+# spinach 2 10: *spinach-knapsack
+# spinach 3 10: *spinach-knapsack
+# spinach 4 10: *spinach-knapsack
+# spinach 5 10: *spinach-knapsack
+# spinach 6 10: *spinach-knapsack
+# spinach 7 10: *spinach-knapsack
+# spinach 8 10: *spinach-knapsack
+# spinach 9 10: *spinach-knapsack
+
+rspec:
+  stage: test
+  <<: *dedicated-runner
+  <<: *use-db
+  script:
+    - JOB_NAME=( $CI_BUILD_NAME )
+    - export CI_NODE_INDEX=${JOB_NAME[1]}
+    - export CI_NODE_TOTAL=${JOB_NAME[2]}
+    - rspec spec/features/issues/filtered_search/visual_tokens_spec.rb
+  artifacts:
+    expire_in: 31d
+    paths:
+    - coverage/
 
 # Other generic tests
 .ruby-static-analysis: &ruby-static-analysis

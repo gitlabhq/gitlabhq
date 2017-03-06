@@ -200,13 +200,15 @@ describe 'Visual tokens', js: true, feature: true do
       expect_filtered_search_input("~#{label.title}")
     end
 
+    # THIS FAILS
     it 'filters value' do
       expect(filter_label_dropdown.find('.filter-dropdown-item', text: label.title)).to be_visible
       expect(filter_label_dropdown.find('.filter-dropdown-item', text: cc_label.title)).to be_visible
 
       filtered_search.send_keys(:backspace)
 
-      filter_label_dropdown.find('.filter-dropdown-item')
+      sleep 20
+      find('#js-dropdown-label .filter-dropdown .filter-dropdown-item')
 
       expect(page.all('#js-dropdown-label .filter-dropdown .filter-dropdown-item').size).to eq(1)
     end
