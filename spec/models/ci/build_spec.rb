@@ -611,12 +611,20 @@ describe Ci::Build, :models do
         it { is_expected.to be_falsey }
       end
 
-      context 'and build.status is failed' do
+      context 'and build status is failed' do
         before do
           build.status = 'failed'
         end
 
         it { is_expected.to be_truthy }
+      end
+
+      context 'when build is a manual action' do
+        before do
+          build.status = 'manual'
+        end
+
+        it { is_expected.to be_falsey }
       end
     end
   end

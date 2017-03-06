@@ -195,6 +195,25 @@ describe CommitStatus, :models do
     end
   end
 
+  describe '.failed_but_allowed' do
+    subject { described_class.failed_but_allowed.order(:id) }
+
+    let(:statuses) do
+       [create_status(allow_failure: true, status: 'success'),
+        create_status(allow_failure: true, status: 'failed'),
+        create_status(allow_failure: false, status: 'success'),
+        create_status(allow_failure: false, status: 'failed'),
+        create_status(allow_failure: true, status: 'canceled'),
+        create_status(allow_failure: false, status: 'canceled'),
+        create_status(allow_failure: true, status: 'manual'),
+        create_status(allow_failure: false, status: 'manual')]
+    end
+
+    it 'returns statuses without what we want to ignore' do
+      is_expected.to eq(statuses.values_at(1, 4))
+    end
+  end
+
   describe '#before_sha' do
     subject { commit_status.before_sha }
 
