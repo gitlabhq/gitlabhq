@@ -125,6 +125,67 @@ module API
           Gitlab::UrlBuilder.build(merge_request)
         end
       end
+
+      class Group < Grape::Entity
+        expose :id, :name, :path, :description, :visibility_level
+        expose :lfs_enabled?, as: :lfs_enabled
+        expose :avatar_url
+        expose :web_url
+        expose :request_access_enabled
+        expose :full_name, :full_path
+        expose :parent_id
+
+        expose :statistics, if: :statistics do
+          with_options format_with: -> (value) { value.to_i } do
+            expose :storage_size
+            expose :repository_size
+            expose :lfs_objects_size
+            expose :build_artifacts_size
+          end
+        end
+      end
+
+      class GroupDetail < Group
+        expose :projects, using: Entities::Project
+        expose :shared_projects, using: Entities::Project
+      end
+
+      class ApplicationSetting < Grape::Entity
+        expose :id
+        expose :default_projects_limit
+        expose :signup_enabled
+        expose :signin_enabled
+        expose :gravatar_enabled
+        expose :sign_in_text
+        expose :after_sign_up_text
+        expose :created_at
+        expose :updated_at
+        expose :home_page_url
+        expose :default_branch_protection
+        expose :restricted_visibility_levels
+        expose :max_attachment_size
+        expose :session_expire_delay
+        expose :default_project_visibility
+        expose :default_snippet_visibility
+        expose :default_group_visibility
+        expose :domain_whitelist
+        expose :domain_blacklist_enabled
+        expose :domain_blacklist
+        expose :user_oauth_applications
+        expose :after_sign_out_path
+        expose :container_registry_token_expire_delay
+        expose :repository_storage
+        expose :repository_storages
+        expose :koding_enabled
+        expose :koding_url
+        expose :plantuml_enabled
+        expose :plantuml_url
+        expose :terminal_max_session_time
+      end
+
+      class Environment < ::API::Entities::EnvironmentBasic
+        expose :project, using: Entities::Project
+      end
     end
   end
 end

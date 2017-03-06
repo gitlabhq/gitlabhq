@@ -114,7 +114,7 @@ class GroupsController < Groups::ApplicationController
     @projects = @projects.sorted_by_activity
     @projects = filter_projects(@projects)
     @projects = @projects.sort(@sort = params[:sort])
-    @projects = @projects.page(params[:page]) if params[:filter_projects].blank?
+    @projects = @projects.page(params[:page]) if params[:name].blank?
   end
 
   def authorize_create_group!

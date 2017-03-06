@@ -182,7 +182,8 @@ input[type="checkbox"]:hover {
     display: flex;
   }
 
-  .search-field-holder {
+  .search-field-holder,
+  .project-filter-form {
     -webkit-flex: 1 0 auto;
     flex: 1 0 auto;
     position: relative;
@@ -201,7 +202,8 @@ input[type="checkbox"]:hover {
     pointer-events: none;
   }
 
-  .search-text-input {
+  .search-text-input,
+  .project-filter-form-field {
     padding-left: $gl-padding + 15px;
     padding-right: $gl-padding + 15px;
   }

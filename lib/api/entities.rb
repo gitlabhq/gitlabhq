@@ -69,9 +69,8 @@ module API
 
     class Project < Grape::Entity
       expose :id, :description, :default_branch, :tag_list
-      expose :public?, as: :public
       expose :archived?, as: :archived
-      expose :visibility_level, :ssh_url_to_repo, :http_url_to_repo, :web_url
+      expose :visibility, :ssh_url_to_repo, :http_url_to_repo, :web_url
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
@@ -132,7 +131,7 @@ module API
     end
 
     class Group < Grape::Entity
-      expose :id, :name, :path, :description, :visibility_level
+      expose :id, :name, :path, :description, :visibility
       expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url
       expose :web_url
@@ -552,12 +551,14 @@ module API
       expose :updated_at
       expose :home_page_url
       expose :default_branch_protection
-      expose :restricted_visibility_levels
+      expose(:restricted_visibility_levels) do |setting, _options|
+        setting.restricted_visibility_levels.map { |level| Gitlab::VisibilityLevel.string_level(level) }
+      end
       expose :max_attachment_size
       expose :session_expire_delay
-      expose :default_project_visibility
-      expose :default_snippet_visibility
-      expose :default_group_visibility
+      expose(:default_project_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_project_visibility) }
+      expose(:default_snippet_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_snippet_visibility) }
+      expose(:default_group_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_group_visibility) }
       expose :default_artifacts_expire_in
       expose :domain_whitelist
       expose :domain_blacklist_enabled

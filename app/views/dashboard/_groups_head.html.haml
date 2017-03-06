@@ -7,8 +7,7 @@
       = link_to explore_groups_path, title: 'Explore groups' do
         Explore Groups
   .nav-controls
-    = form_tag request.path, method: :get, class: 'group-filter-form', id: 'group-filter-form' do |f|
-      = search_field_tag :filter_groups, params[:filter_groups], placeholder: 'Filter by name...', class: 'group-filter-form-field form-control input-short js-groups-list-filter', spellcheck: false, id: 'group-filter-form-field', tabindex: "2"
+    = render 'shared/groups/search_form'
     = render 'shared/groups/dropdown'
     - if current_user.can_create_group?
       = link_to new_group_path, class: "btn btn-new" do

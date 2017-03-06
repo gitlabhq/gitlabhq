@@ -87,7 +87,7 @@ describe API::Snippets, api: true do
         title: 'Test Title',
         file_name: 'test.rb',
         content: 'puts "hello world"',
-        visibility_level: Snippet::PUBLIC
+        visibility: 'public'
       }
     end
 
@@ -120,14 +120,14 @@ describe API::Snippets, api: true do
 
       context 'when the snippet is private' do
         it 'creates the snippet' do
-          expect { create_snippet(visibility_level: Snippet::PRIVATE) }.
+          expect { create_snippet(visibility: 'private') }.
             to change { Snippet.count }.by(1)
         end
       end
 
       context 'when the snippet is public' do
         it 'rejects the shippet' do
-          expect { create_snippet(visibility_level: Snippet::PUBLIC) }.
+          expect { create_snippet(visibility: 'public') }.
             not_to change { Snippet.count }
 
           expect(response).to have_http_status(400)
@@ -135,7 +135,7 @@ describe API::Snippets, api: true do
         end
 
         it 'creates a spam log' do
-          expect { create_snippet(visibility_level: Snippet::PUBLIC) }.
+          expect { create_snippet(visibility: 'public') }.
             to change { SpamLog.count }.by(1)
         end
       end
@@ -218,12 +218,12 @@ describe API::Snippets, api: true do
         let(:visibility_level) { Snippet::PRIVATE }
 
         it 'rejects the snippet' do
-          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
+          expect { update_snippet(title: 'Foo', visibility: 'public') }.
             not_to change { snippet.reload.title }
         end
 
         it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
+          expect { update_snippet(title: 'Foo', visibility: 'public') }.
             to change { SpamLog.count }.by(1)
         end
       end

@@ -64,8 +64,8 @@ describe HealthCheckController do
 
     context 'when a service is down and an access token is provided' do
       before do
-        allow(HealthCheck::Utils).to receive(:process_checks).with('standard').and_return('The server is on fire')
-        allow(HealthCheck::Utils).to receive(:process_checks).with('email').and_return('Email is on fire')
+        allow(HealthCheck::Utils).to receive(:process_checks).with(['standard']).and_return('The server is on fire')
+        allow(HealthCheck::Utils).to receive(:process_checks).with(['email']).and_return('Email is on fire')
       end
 
       it 'supports passing the token in the header' do

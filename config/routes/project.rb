@@ -58,6 +58,7 @@ constraints(ProjectUrlConstrainer.new) do
 
         resources :graphs, only: [:show], constraints: { id: Gitlab::Regex.git_reference_regex } do
           member do
+            get :charts
             get :commits
             get :ci
             get :languages
@@ -140,6 +141,7 @@ constraints(ProjectUrlConstrainer.new) do
       resources :pipelines, only: [:index, :new, :create, :show] do
         collection do
           resource :pipelines_settings, path: 'settings', only: [:show, :update]
+          get :charts
         end
 
         member do

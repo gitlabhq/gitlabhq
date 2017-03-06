@@ -60,6 +60,7 @@ describe 'Cherry-pick Commits' do
         click_button 'Cherry-pick'
       end
       expect(page).to have_content('The commit has been successfully cherry-picked. You can now submit a merge request to get this change into the original branch.')
+      expect(page).to have_content("From cherry-pick-#{master_pickable_commit.short_id} into master")
     end
   end
 

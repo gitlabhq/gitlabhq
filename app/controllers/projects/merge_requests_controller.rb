@@ -324,6 +324,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def merge_check
     @merge_request.check_if_can_be_merged
+    @pipelines = @merge_request.all_pipelines
 
     render partial: "projects/merge_requests/widget/show.html.haml", layout: false
   end
@@ -446,6 +447,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def ci_status
     pipeline = @merge_request.head_pipeline
+    @pipelines = @merge_request.all_pipelines
 
     if pipeline
       status = pipeline.status
@@ -464,7 +466,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       sha: (merge_request.diff_head_commit.short_id if merge_request.diff_head_sha),
       status: status,
       coverage: coverage,
-      pipeline: pipeline.try(:id)
+      pipeline: pipeline.try(:id),
+      has_ci: @merge_request.has_ci?
     }
 
     render json: response

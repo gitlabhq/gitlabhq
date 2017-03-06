@@ -1,9 +1,10 @@
 var path = require('path');
+var webpack = require('webpack');
 var webpackConfig = require('./webpack.config.js');
 var ROOT_PATH = path.resolve(__dirname, '..');
 
 // add coverage instrumentation to babel config
-if (webpackConfig && webpackConfig.module && webpackConfig.module.rules) {
+if (webpackConfig.module && webpackConfig.module.rules) {
   var babelConfig = webpackConfig.module.rules.find(function (rule) {
     return rule.loader === 'babel-loader';
   });
@@ -11,6 +12,16 @@ if (webpackConfig && webpackConfig.module && webpackConfig.module.rules) {
   babelConfig.options = babelConfig.options || {};
   babelConfig.options.plugins = babelConfig.options.plugins || [];
   babelConfig.options.plugins.push('istanbul');
+}
+
+// remove problematic plugins
+if (webpackConfig.plugins) {
+  webpackConfig.plugins = webpackConfig.plugins.filter(function (plugin) {
+    return !(
+      plugin instanceof webpack.optimize.CommonsChunkPlugin ||
+      plugin instanceof webpack.DefinePlugin
+    );
+  });
 }
 
 // Karma configuration
