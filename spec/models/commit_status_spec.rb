@@ -158,7 +158,7 @@ describe CommitStatus, :models do
     end
   end
 
-  describe '.exclude_ignored' do
+  describe '.after_stage' do
     subject { described_class.after_stage(0) }
 
     let(:statuses) do

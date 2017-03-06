@@ -29,7 +29,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   scope :exclude_ignored, -> do
-    # We want to ignore failed_but_allowed jobs
+    # We want to ignore failed but allowed to fail jobs
     where("allow_failure = ? OR status IN (?)",
       false, all_state_names - [:failed, :canceled, :manual])
   end
