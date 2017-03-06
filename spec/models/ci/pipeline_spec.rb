@@ -24,6 +24,14 @@ describe Ci::Pipeline, models: true do
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
 
+  describe '#block' do
+    it 'changes pipeline status to manual' do
+      expect(pipeline.block).to be true
+      expect(pipeline.reload).to be_manual
+      expect(pipeline.reload).to be_blocked
+    end
+  end
+
   describe '#valid_commit_sha' do
     context 'commit.sha can not start with 00000000' do
       before do

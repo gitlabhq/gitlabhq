@@ -342,7 +342,6 @@ describe Ci::ProcessPipelineService, '#execute', :services do
         expect(builds_statuses).to eq %w[success success success manual]
 
         expect(pipeline.reload).to be_manual
-        # TODO, expect(pipeline.reload).to be_started
         expect(pipeline.reload).to be_blocked
         expect(pipeline.reload).not_to be_active
         expect(pipeline.reload).not_to be_complete
