@@ -38,7 +38,11 @@ module Gitlab
 
       def source_branch_name
         @source_branch_name ||= begin
-          source_branch_exists? ? source_branch_ref : "pull/#{number}/#{source_branch_ref}"
+          if source_branch.repo.id != target_branch.repo.id
+            "pull/#{number}/#{source_branch.repo.full_name}/#{source_branch_ref}"
+          else
+            source_branch_exists? ? source_branch_ref : "pull/#{number}/#{source_branch_ref}"
+          end
         end
       end
 
