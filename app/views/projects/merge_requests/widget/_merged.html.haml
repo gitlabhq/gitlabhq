@@ -49,4 +49,4 @@
             %span
               The changes were merged into
               #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
-            = render 'projects/merge_requests/widget/merged_buttons'
+        = render 'projects/merge_requests/widget/merged_buttons'
