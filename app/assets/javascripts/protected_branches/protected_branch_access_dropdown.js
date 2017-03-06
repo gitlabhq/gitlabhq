@@ -25,7 +25,7 @@
       this.isAllowedToPushDropdown = false;
       this.groups = [];
       this.accessLevel = accessLevel;
-      this.accessLevelsData = accessLevelsData.Roles;
+      this.accessLevelsData = accessLevelsData.roles;
       this.$dropdown = $dropdown;
       this.$wrap = this.$dropdown.closest(`.${this.accessLevel}-container`);
       this.usersPath = '/autocomplete/users.json';
