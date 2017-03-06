@@ -20,6 +20,30 @@ describe Ci::Build, :models do
   it { is_expected.to validate_presence_of :ref }
   it { is_expected.to respond_to :trace_html }
 
+  describe '#actionize' do
+    context 'when build is a created' do
+      before do
+        build.update_column(:status, :created)
+      end
+
+      it 'makes build a manual action' do
+        expect(build.actionize).to be true
+        expect(build.reload).to be_manual
+      end
+    end
+
+    context 'when build is not created' do
+      before do
+        build.update_column(:status, :pending)
+      end
+
+      it 'does not change build status' do
+        expect(build.actionize).to be false
+        expect(build.reload).to be_pending
+      end
+    end
+  end
+
   describe '#any_runners_online?' do
     subject { build.any_runners_online? }
 
@@ -587,12 +611,20 @@ describe Ci::Build, :models do
         it { is_expected.to be_falsey }
       end
 
-      context 'and build.status is failed' do
+      context 'and build status is failed' do
         before do
           build.status = 'failed'
         end
 
         it { is_expected.to be_truthy }
+      end
+
+      context 'when build is a manual action' do
+        before do
+          build.status = 'manual'
+        end
+
+        it { is_expected.to be_falsey }
       end
     end
   end
@@ -682,12 +714,12 @@ describe Ci::Build, :models do
       end
     end
 
-    describe '#manual?' do
+    describe '#action?' do
       before do
         build.update(when: value)
       end
 
-      subject { build.manual? }
+      subject { build.action? }
 
       context 'when is set to manual' do
         let(:value) { 'manual' }
@@ -703,14 +735,50 @@ describe Ci::Build, :models do
     end
   end
 
+  describe '#has_commands?' do
+    context 'when build has commands' do
+      let(:build) do
+        create(:ci_build, commands: 'rspec')
+      end
+
+      it 'has commands' do
+        expect(build).to have_commands
+      end
+    end
+
+    context 'when does not have commands' do
+      context 'when commands are an empty string' do
+        let(:build) do
+          create(:ci_build, commands: '')
+        end
+
+        it 'has no commands' do
+          expect(build).not_to have_commands
+        end
+      end
+
+      context 'when commands are not set at all' do
+        let(:build) do
+          create(:ci_build, commands: nil)
+        end
+
+        it 'has no commands' do
+          expect(build).not_to have_commands
+        end
+      end
+    end
+  end
+
   describe '#has_tags?' do
     context 'when build has tags' do
       subject { create(:ci_build, tag_list: ['tag']) }
+
       it { is_expected.to have_tags }
     end
 
     context 'when build does not have tags' do
       subject { create(:ci_build, tag_list: []) }
+
       it { is_expected.not_to have_tags }
     end
   end

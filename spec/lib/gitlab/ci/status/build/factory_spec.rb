@@ -192,7 +192,7 @@ describe Gitlab::Ci::Status::Build::Factory do
       let(:build) { create(:ci_build, :playable) }
 
       it 'matches correct core status' do
-        expect(factory.core_status).to be_a Gitlab::Ci::Status::Skipped
+        expect(factory.core_status).to be_a Gitlab::Ci::Status::Manual
       end
 
       it 'matches correct extended statuses' do
@@ -200,12 +200,13 @@ describe Gitlab::Ci::Status::Build::Factory do
           .to eq [Gitlab::Ci::Status::Build::Play]
       end
 
-      it 'fabricates a core skipped status' do
+      it 'fabricates a play detailed status' do
         expect(status).to be_a Gitlab::Ci::Status::Build::Play
       end
 
       it 'fabricates status with correct details' do
         expect(status.text).to eq 'manual'
+        expect(status.group).to eq 'manual'
         expect(status.icon).to eq 'icon_status_manual'
         expect(status.label).to eq 'manual play action'
         expect(status).to have_details
@@ -218,7 +219,7 @@ describe Gitlab::Ci::Status::Build::Factory do
       let(:build) { create(:ci_build, :playable, :teardown_environment) }
 
       it 'matches correct core status' do
-        expect(factory.core_status).to be_a Gitlab::Ci::Status::Skipped
+        expect(factory.core_status).to be_a Gitlab::Ci::Status::Manual
       end
 
       it 'matches correct extended statuses' do
@@ -226,12 +227,13 @@ describe Gitlab::Ci::Status::Build::Factory do
           .to eq [Gitlab::Ci::Status::Build::Stop]
       end
 
-      it 'fabricates a core skipped status' do
+      it 'fabricates a stop detailed status' do
         expect(status).to be_a Gitlab::Ci::Status::Build::Stop
       end
 
       it 'fabricates status with correct details' do
         expect(status.text).to eq 'manual'
+        expect(status.group).to eq 'manual'
         expect(status.icon).to eq 'icon_status_manual'
         expect(status.label).to eq 'manual stop action'
         expect(status).to have_details

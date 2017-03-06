@@ -15,9 +15,9 @@ module Ci
     end
 
     describe '#build_attributes' do
-      describe 'coverage entry' do
-        subject { described_class.new(config, path).build_attributes(:rspec) }
+      subject { described_class.new(config, path).build_attributes(:rspec) }
 
+      describe 'coverage entry' do
         describe 'code coverage regexp' do
           let(:config) do
             YAML.dump(rspec: { script: 'rspec',
@@ -27,6 +27,56 @@ module Ci
           it 'includes coverage regexp in build attributes' do
             expect(subject)
               .to include(coverage_regex: 'Code coverage: \d+\.\d+')
+          end
+        end
+      end
+
+      describe 'allow failure entry' do
+        context 'when job is a manual action' do
+          context 'when allow_failure is defined' do
+            let(:config) do
+              YAML.dump(rspec: { script: 'rspec',
+                                 when: 'manual',
+                                 allow_failure: false })
+            end
+
+            it 'is not allowed to fail' do
+              expect(subject[:allow_failure]).to be false
+            end
+          end
+
+          context 'when allow_failure is not defined' do
+            let(:config) do
+              YAML.dump(rspec: { script: 'rspec',
+                                 when: 'manual' })
+            end
+
+            it 'is allowed to fail' do
+              expect(subject[:allow_failure]).to be true
+            end
+          end
+        end
+
+        context 'when job is not a manual action' do
+          context 'when allow_failure is defined' do
+            let(:config) do
+              YAML.dump(rspec: { script: 'rspec',
+                                 allow_failure: false })
+            end
+
+            it 'is not allowed to fail' do
+              expect(subject[:allow_failure]).to be false
+            end
+          end
+
+          context 'when allow_failure is not defined' do
+            let(:config) do
+              YAML.dump(rspec: { script: 'rspec' })
+            end
+
+            it 'is not allowed to fail' do
+              expect(subject[:allow_failure]).to be false
+            end
           end
         end
       end

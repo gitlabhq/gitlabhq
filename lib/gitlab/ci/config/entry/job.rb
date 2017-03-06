@@ -104,6 +104,14 @@ module Gitlab
             (before_script_value.to_a + script_value.to_a).join("\n")
           end
 
+          def manual_action?
+            self.when == 'manual'
+          end
+
+          def ignored?
+            allow_failure.nil? ? manual_action? : allow_failure
+          end
+
           private
 
           def inherit!(deps)
@@ -135,7 +143,8 @@ module Gitlab
               environment_name: environment_defined? ? environment_value[:name] : nil,
               coverage: coverage_defined? ? coverage_value : nil,
               artifacts: artifacts_value,
-              after_script: after_script_value }
+              after_script: after_script_value,
+              ignore: ignored? }
           end
         end
       end
