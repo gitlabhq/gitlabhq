@@ -46,9 +46,7 @@ feature 'Group', feature: true do
 
     describe 'Mattermost team creation' do
       before do
-        mash = Hashie::Mash.new
-        mash.enabled = mattermost_enabled
-        allow(Settings).to receive(:mattermost).and_return(mash)
+        allow(Settings.mattermost).to receive_messages(enabled: mattermost_enabled)
 
         visit new_group_path
       end
