@@ -12,20 +12,27 @@ module Gitlab
         completion == 100
       end
 
+      def valid?
+        @valid
+      end
+
       def self.from_specs(*specs)
+        return new([], valid: false) if specs.empty?
+
         deployments = specs.map { |spec| ::Gitlab::Kubernetes::Deployment.new(spec) }
         new(deployments)
       end
 
-      def initialize(deployments)
-        @deployments = deployments
-        @instances = deployments.flat_map(&:instances)
+      def initialize(deployments, valid: true)
+        @valid        = valid
+        @deployments  = deployments
+        @instances    = deployments.flat_map(&:instances)
 
         @completion =
           if @instances.empty?
             100
           else
-            finished = @instances.select {|instance| instance[:status] == 'finished' }.count
+            finished = @instances.select { |instance| instance[:status] == 'finished' }.count
 
             (finished / @instances.count.to_f * 100).to_i
           end

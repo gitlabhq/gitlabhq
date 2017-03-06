@@ -1,7 +1,8 @@
 - page_title "Contribution Analytics"
 - header_title group_title(@group, "Contribution Analytics", group_analytics_path(@group))
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('lib_chart')
+  = page_specific_javascript_bundle_tag('common_d3')
+  = page_specific_javascript_bundle_tag('graphs')
 
 .sub-header-block
   .pull-right
