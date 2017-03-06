@@ -204,7 +204,6 @@ require('./visibility_select');
 require('./wikis');
 require('./zen_mode');
 
-<<<<<<< HEAD:app/assets/javascripts/main.js
 // EE-only scripts
 require('./geo/geo_bundle');
 require('./admin_email_select');
@@ -214,8 +213,6 @@ require('./ldap_groups_select');
 require('./path_locks');
 require('./weight_select');
 
-=======
->>>>>>> ce-com/master:app/assets/javascripts/main.js
 (function () {
   document.addEventListener('beforeunload', function () {
     // Unbind scroll events
