@@ -191,6 +191,7 @@ class User < ActiveRecord::Base
   end
 
   mount_uploader :avatar, AvatarUploader
+  has_many :uploads, as: :model, dependent: :destroy
 
   # Scopes
   scope :admins, -> { where(admin: true) }

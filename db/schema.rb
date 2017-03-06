@@ -1224,6 +1224,20 @@ ActiveRecord::Schema.define(version: 20170306170512) do
   add_index "u2f_registrations", ["key_handle"], name: "index_u2f_registrations_on_key_handle", using: :btree
   add_index "u2f_registrations", ["user_id"], name: "index_u2f_registrations_on_user_id", using: :btree
 
+  create_table "uploads", force: :cascade do |t|
+    t.integer "size", limit: 8, null: false
+    t.string "path", null: false
+    t.string "checksum", limit: 64
+    t.integer "model_id"
+    t.string "model_type"
+    t.string "uploader", null: false
+    t.datetime "created_at", null: false
+  end
+
+  add_index "uploads", ["checksum"], name: "index_uploads_on_checksum", using: :btree
+  add_index "uploads", ["model_id", "model_type"], name: "index_uploads_on_model_id_and_model_type", using: :btree
+  add_index "uploads", ["path"], name: "index_uploads_on_path", using: :btree
+
   create_table "user_agent_details", force: :cascade do |t|
     t.string "user_agent", null: false
     t.string "ip_address", null: false

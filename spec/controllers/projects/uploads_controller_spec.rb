@@ -35,6 +35,19 @@ describe Projects::UploadsController do
         expect(response.body).to match '\"alt\":\"rails_sample\"'
         expect(response.body).to match "\"url\":\"/uploads"
       end
+
+      # NOTE: This is as close as we're getting to an Integration test for this
+      # behavior. We're avoiding a proper Feature test because those should be
+      # testing things entirely user-facing, which the Upload model is very much
+      # not.
+      it 'creates a corresponding Upload record' do
+        upload = Upload.last
+
+        aggregate_failures do
+          expect(upload).to exist
+          expect(upload.model).to eq project
+        end
+      end
     end
 
     context 'with valid non-image file' do
