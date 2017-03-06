@@ -545,12 +545,25 @@ The above script will:
 
 Manual actions are a special type of job that are not executed automatically;
 they need to be explicitly started by a user. Manual actions can be started
-from pipeline, build, environment, and deployment views. You can execute the
-same manual action multiple times.
+from pipeline, build, environment, and deployment views.
 
 An example usage of manual actions is deployment to production.
 
 Read more at the [environments documentation][env-manual].
+
+Manual actions can be either optional or blocking. Blocking manual action will
+block execution of the pipeline at stage this action is defined in. It is
+possible to resume execution of the pipeline when someone executes a blocking
+manual actions by clicking a _play_ button.
+
+When pipeline is blocked it will not be merged if Merge When Pipeline Succeeds
+is set. Blocked pipelines also do have a special status, called _manual_.
+
+Manual actions are non-blocking by default. If you want to make manual action
+blocking, it is necessary to add `allow_failure: false` to the job's definition
+in `.gitlab-ci.yml`.
+
+> Blocking manual actions were introduced in GitLab 9.0
 
 ### environment
 
