@@ -15,11 +15,7 @@ module Geo
         log('Started repository sync')
 
         fetch_repositories do |started_at, finished_at|
-          log('Tracking sync information')
-          registry = Geo::ProjectRegistry.find_or_create_by(project_id: project.id)
-          registry.last_repository_synced_at = started_at
-          registry.last_repository_successful_sync_at = finished_at if finished_at
-          registry.save
+          update_tracking_database(started_at, finished_at)
         end
 
         log('Finished repository sync')
@@ -41,18 +37,9 @@ module Geo
       finished_at = nil
 
       begin
-        project.create_repository unless project.repository_exists?
-        log('Fetching repository')
-        project.repository.fetch_geo_mirror(ssh_url_to_repo)
-
-        # Second .wiki call returns a Gollum::Wiki, and it will always create the physical repository when not found
-        if project.wiki.wiki.exist?
-          log('Fetching wiki repository')
-          project.wiki.repository.fetch_geo_mirror(ssh_url_to_wiki)
-        end
-
-        log('Expiring caches')
-        project.repository.after_sync
+        fetch_project_repository
+        fetch_wiki_repository
+        expire_repository_caches
 
         finished_at = DateTime.now
       rescue Gitlab::Shell::Error => e
@@ -60,6 +47,25 @@ module Geo
       end
 
       yield started_at, finished_at
+    end
+
+    def fetch_project_repository
+      log('Fetching project repository')
+      project.create_repository unless project.repository_exists?
+      project.repository.fetch_geo_mirror(ssh_url_to_repo)
+    end
+
+    def fetch_wiki_repository
+      # Second .wiki call returns a Gollum::Wiki, and it will always create the physical repository when not found
+      if project.wiki.wiki.exist?
+        log('Fetching wiki repository')
+        project.wiki.repository.fetch_geo_mirror(ssh_url_to_wiki)
+      end
+    end
+
+    def expire_repository_caches
+      log('Expiring caches')
+      project.repository.after_sync
     end
 
     def try_obtain_lease
@@ -76,6 +82,14 @@ module Geo
 
       log('Releasing leases to sync repository')
       Gitlab::ExclusiveLease.cancel(lease_key, repository_lease)
+    end
+
+    def update_tracking_database(started_at, finished_at)
+      log('Tracking sync information')
+      registry = Geo::ProjectRegistry.find_or_create_by(project_id: project.id)
+      registry.last_repository_synced_at = started_at
+      registry.last_repository_successful_sync_at = finished_at if finished_at
+      registry.save
     end
 
     def lease_key
