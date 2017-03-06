@@ -128,7 +128,7 @@ curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form descrip
 Update an owner of a project trigger.
 
 ```
-POST /projects/:id/triggers/:trigger_id/take
+POST /projects/:id/triggers/:trigger_id/take_ownership
 ```
 
 | Attribute     | Type    | required | Description              |
@@ -136,7 +136,7 @@ POST /projects/:id/triggers/:trigger_id/take
 | `trigger_id`  | integer | yes      | The trigger id           |
 
 ```
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/triggers/10/take"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/triggers/10/take_ownership"
 ```
 
 ```json

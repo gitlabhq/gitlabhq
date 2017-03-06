@@ -238,12 +238,12 @@ describe API::Triggers do
     end
   end
 
-  describe 'POST /projects/:id/triggers/:trigger_id/take' do
+  describe 'POST /projects/:id/triggers/:trigger_id/take_ownership' do
     context 'authenticated user with valid permissions' do
       it 'updates owner' do
         expect(trigger.owner).to be_nil
 
-        post api("/projects/#{project.id}/triggers/#{trigger.id}/take", user)
+        post api("/projects/#{project.id}/triggers/#{trigger.id}/take_ownership", user)
 
         expect(response).to have_http_status(200)
         expect(json_response).to include('owner')
@@ -253,7 +253,7 @@ describe API::Triggers do
 
     context 'authenticated user with invalid permissions' do
       it 'does not update owner' do
-        post api("/projects/#{project.id}/triggers/#{trigger.id}/take", user2)
+        post api("/projects/#{project.id}/triggers/#{trigger.id}/take_ownership", user2)
 
         expect(response).to have_http_status(403)
       end
@@ -261,7 +261,7 @@ describe API::Triggers do
 
     context 'unauthenticated user' do
       it 'does not update owner' do
-        post api("/projects/#{project.id}/triggers/#{trigger.id}/take")
+        post api("/projects/#{project.id}/triggers/#{trigger.id}/take_ownership")
 
         expect(response).to have_http_status(401)
       end

@@ -114,7 +114,7 @@ module API
       params do
         requires :trigger_id, type: Integer,  desc: 'The trigger ID'
       end
-      post ':id/triggers/:trigger_id/take' do
+      post ':id/triggers/:trigger_id/take_ownership' do
         authenticate!
         authorize! :admin_build, user_project
 
