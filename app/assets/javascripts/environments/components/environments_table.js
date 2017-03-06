@@ -33,22 +33,6 @@ module.exports = Vue.component('environment-table-component', {
       required: false,
       default: false,
     },
-<<<<<<< HEAD:app/assets/javascripts/environments/components/environments_table.js
-
-    commitIconSvg: {
-      type: String,
-      required: false,
-    },
-
-    playIconSvg: {
-      type: String,
-      required: false,
-    },
-
-    terminalIconSvg: {
-      type: String,
-      required: false,
-    },
 
     toggleDeployBoard: {
       type: Function,
@@ -67,8 +51,6 @@ module.exports = Vue.component('environment-table-component', {
       required: false,
       default: () => ({}),
     },
-=======
->>>>>>> ce-com/master:app/assets/javascripts/environments/components/environments_table.js
   },
 
   template: `
@@ -90,11 +72,7 @@ module.exports = Vue.component('environment-table-component', {
           <tr is="environment-item"
             :model="model"
             :can-create-deployment="canCreateDeployment"
-<<<<<<< HEAD:app/assets/javascripts/environments/components/environments_table.js
             :can-read-environment="canReadEnvironment"
-            :play-icon-svg="playIconSvg"
-            :terminal-icon-svg="terminalIconSvg"
-            :commit-icon-svg="commitIconSvg"
             :toggleDeployBoard="toggleDeployBoard"></tr>
 
           <tr v-if="model.hasDeployBoard && model.isDeployBoardVisible" class="js-deploy-board-row">
@@ -108,9 +86,6 @@ module.exports = Vue.component('environment-table-component', {
               </deploy-board>
             </td>
           </tr>
-=======
-            :can-read-environment="canReadEnvironment"></tr>
->>>>>>> ce-com/master:app/assets/javascripts/environments/components/environments_table.js
         </template>
       </tbody>
     </table>

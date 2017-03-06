@@ -86,11 +86,7 @@ module.exports = Vue.component('environment-component', {
 
     this.isLoading = true;
 
-<<<<<<< HEAD:app/assets/javascripts/environments/components/environment.js
     return this.service.get()
-=======
-    return service.get()
->>>>>>> ce-com/master:app/assets/javascripts/environments/components/environment.js
       .then(resp => ({
         headers: resp.headers,
         body: resp.json(),
@@ -195,18 +191,10 @@ module.exports = Vue.component('environment-component', {
           <environment-table
             :environments="state.environments"
             :can-create-deployment="canCreateDeploymentParsed"
-<<<<<<< HEAD:app/assets/javascripts/environments/components/environment.js
             :can-read-environment="canReadEnvironmentParsed"
-            :play-icon-svg="playIconSvg"
-            :terminal-icon-svg="terminalIconSvg"
-            :commit-icon-svg="commitIconSvg"
             :toggleDeployBoard="toggleDeployBoard"
             :store="store"
-            :service="service">
-          </environment-table>
-=======
-            :can-read-environment="canReadEnvironmentParsed"/>
->>>>>>> ce-com/master:app/assets/javascripts/environments/components/environment.js
+            :service="service"/>
         </div>
 
         <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"

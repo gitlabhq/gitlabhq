@@ -46,29 +46,11 @@ module.exports = Vue.component('environment-item', {
       required: false,
       default: false,
     },
-<<<<<<< HEAD:app/assets/javascripts/environments/components/environment_item.js
-
-    commitIconSvg: {
-      type: String,
-      required: false,
-    },
-
-    playIconSvg: {
-      type: String,
-      required: false,
-    },
-
-    terminalIconSvg: {
-      type: String,
-      required: false,
-    },
 
     toggleDeployBoard: {
       type: Function,
       required: false,
     },
-=======
->>>>>>> ce-com/master:app/assets/javascripts/environments/components/environment_item.js
   },
 
   computed: {
