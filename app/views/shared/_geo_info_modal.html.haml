@@ -1,6 +1,44 @@
-#geo-clone{ data: { clone_url_secondary: h(default_url_to_repo(project)), clone_url_primary: h(geo_primary_default_url_to_repo(project)) } }
-  %geo-clone-dialog{ id: 'modal-geo-info', title: 'How to work faster with Geo' }
-    %span{ slot: 'clipboard-1' }
-      = clipboard_button(clipboard_target: 'pre#geo-info-1')
-    %span{ slot: 'clipboard-2' }
-      = clipboard_button(clipboard_target: 'pre#geo-info-2')
+#modal-geo-info.modal.in{ tabindex: '-1', data: { clone_url_secondary: h(default_url_to_repo(project)), clone_url_primary: h(geo_primary_default_url_to_repo(project)) } }
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{ href: '#', data: { dismiss: 'modal' } }
+        %h3= 'How to work faster with Geo'
+      .modal-body
+        %p
+          %strong= 'Step 1.'
+          Clone the repository from your secondary node:
+        = clipboard_button(clipboard_target: 'pre#geo-info-1')
+        %pre#geo-info-1.dark
+          git clone
+          = default_url_to_repo()
+        %p
+          %strong= 'Step 2.'
+          Go to the new directory and define
+          %strong= "primary node's"
+          repository URL as the
+          %strong= 'push'
+          remote:
+        = clipboard_button(clipboard_target: 'pre#geo-info-2')
+        %pre#geo-info-2.dark
+          git remote set-url --push origin &lt;clone url for primary repository&gt;
+
+        %p
+          %strong= 'Done.'
+          You can now commit and push code as you normally do, but with increased speed.
+
+:javascript
+  $('#modal-geo-info')
+    .appendTo('body')
+    .modal({ modal: true, show: false })
+    .on('show.bs.modal', function() {
+      var data = $(this).data();
+      $('#geo-info-1').text(
+        'git clone ' +
+        (data.cloneUrlSecondary || '<clone url for secondary repository>')
+      );
+      $('geo-info-2').text(
+        'git remote set-url --push origin ' +
+        (data.cloneUrlPrimary || '<clone url for primary repository>')
+      );
+    });
