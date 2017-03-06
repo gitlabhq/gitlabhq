@@ -35,7 +35,7 @@ Using this method is in general preferred over directly calling the various
 instrumentation methods.
 
 Method instrumentation should be added in the initializer
-`config/initializers/metrics.rb`.
+`config/initializers/8_metrics.rb`.
 
 ### Examples
 

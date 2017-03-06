@@ -13,7 +13,7 @@ describe Mattermost::Team do
 
     context 'for valid request' do
       let(:response) do
-        [{
+        { "xiyro8huptfhdndadpz8r3wnbo" => {
           "id" => "xiyro8huptfhdndadpz8r3wnbo",
           "create_at" => 1482174222155,
           "update_at" => 1482174222155,
@@ -26,7 +26,7 @@ describe Mattermost::Team do
           "allowed_domains" => "",
           "invite_id" => "o4utakb9jtb7imctdfzbf9r5ro",
           "allow_open_invite" => false
-        }]
+        } }
       end
 
       before do
@@ -39,7 +39,7 @@ describe Mattermost::Team do
       end
 
       it 'returns a token' do
-        is_expected.to eq(response)
+        is_expected.to eq(response.values)
       end
     end
 

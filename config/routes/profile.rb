@@ -21,7 +21,7 @@ resource :profile, only: [:show, :update] do
       end
     end
     resource :preferences, only: [:show, :update]
-    resources :keys, only: [:index, :show, :new, :create, :destroy]
+    resources :keys, only: [:index, :show, :create, :destroy]
     resources :emails, only: [:index, :create, :destroy]
     resources :chat_names, only: [:index, :new, :create, :destroy] do
       collection do

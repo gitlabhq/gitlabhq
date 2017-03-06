@@ -167,7 +167,6 @@ Some tickets need specific knowledge or a deep understanding of a particular com
 
 Move on to understanding some of GitLab's more advanced features. You can make use of GitLab.com to understand the features from an end-user perspective and then use your own instance to understand setup and configuration of the feature from an Administrative perspective
 
-- Set up and try [Git Annex](https://docs.gitlab.com/ee/workflow/git_annex.html)
 - Set up and try [Git LFS](https://docs.gitlab.com/ee/workflow/lfs/manage_large_binaries_with_git_lfs.html)
 - Get to know the [GitLab API](https://docs.gitlab.com/ee/api/README.html), its capabilities and shortcomings
 - Learn how to [migrate from SVN to Git](https://docs.gitlab.com/ee/workflow/importing/migrating_from_svn.html)

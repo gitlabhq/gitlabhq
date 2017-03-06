@@ -592,10 +592,6 @@ module API
       end
     end
 
-    class TriggerRequest < Grape::Entity
-      expose :id, :variables
-    end
-
     class Runner < Grape::Entity
       expose :id
       expose :description
@@ -643,7 +639,10 @@ module API
     end
 
     class Trigger < Grape::Entity
-      expose :token, :created_at, :updated_at, :deleted_at, :last_used
+      expose :id
+      expose :token, :description
+      expose :created_at, :updated_at, :deleted_at, :last_used
+      expose :owner, using: Entities::UserBasic
     end
 
     class Variable < Grape::Entity
