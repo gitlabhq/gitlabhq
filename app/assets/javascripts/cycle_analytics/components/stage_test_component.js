@@ -1,5 +1,7 @@
 /* eslint-disable no-param-reassign */
-/* global Vue */
+import Vue from 'vue';
+import iconBuildStatus from '../svg/icon_build_status.svg';
+import iconBranch from '../svg/icon_branch.svg';
 
 ((global) => {
   global.cycleAnalytics = global.cycleAnalytics || {};
@@ -8,6 +10,9 @@
     props: {
       items: Array,
       stage: Object,
+    },
+    data() {
+      return { iconBuildStatus, iconBranch };
     },
     template: `
       <div>
@@ -18,13 +23,13 @@
           <li v-for="build in items" class="stage-event-item item-build-component">
             <div class="item-details">
               <h5 class="item-title">
-                <span class="icon-build-status">${global.cycleAnalytics.svgs.iconBuildStatus}</span>
+                <span class="icon-build-status">${iconBuildStatus}</span>
                 <a :href="build.url" class="item-build-name">{{ build.name }}</a>
                 &middot;
                 <a :href="build.url" class="pipeline-id">#{{ build.id }}</a>
                 <i class="fa fa-code-fork"></i>
                 <a :href="build.branch.url" class="branch-name monospace">{{ build.branch.name }}</a>
-                <span class="icon-branch">${global.cycleAnalytics.svgs.iconBranch}</span>
+                <span class="icon-branch">${iconBranch}</span>
                 <a :href="build.commitUrl" class="short-sha monospace">{{ build.shortSha }}</a>
               </h5>
               <span>

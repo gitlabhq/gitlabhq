@@ -19,7 +19,6 @@ window.Vue = require('vue');
 
       /**
         This function will take the information given by the pagination component
-        And make a new Turbolinks call
 
         Here is an example `change` method:
 

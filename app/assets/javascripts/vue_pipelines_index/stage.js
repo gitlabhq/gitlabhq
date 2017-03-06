@@ -1,25 +1,40 @@
 /* global Vue, Flash, gl */
 /* eslint-disable no-param-reassign */
+import canceledSvg from 'icons/_icon_status_canceled_borderless.svg';
+import createdSvg from 'icons/_icon_status_created_borderless.svg';
+import failedSvg from 'icons/_icon_status_failed_borderless.svg';
+import manualSvg from 'icons/_icon_status_manual_borderless.svg';
+import pendingSvg from 'icons/_icon_status_pending_borderless.svg';
+import runningSvg from 'icons/_icon_status_running_borderless.svg';
+import skippedSvg from 'icons/_icon_status_skipped_borderless.svg';
+import successSvg from 'icons/_icon_status_success_borderless.svg';
+import warningSvg from 'icons/_icon_status_warning_borderless.svg';
 
 ((gl) => {
   gl.VueStage = Vue.extend({
     data() {
+      const svgsDictionary = {
+        icon_status_canceled: canceledSvg,
+        icon_status_created: createdSvg,
+        icon_status_failed: failedSvg,
+        icon_status_manual: manualSvg,
+        icon_status_pending: pendingSvg,
+        icon_status_running: runningSvg,
+        icon_status_skipped: skippedSvg,
+        icon_status_success: successSvg,
+        icon_status_warning: warningSvg,
+      };
+
       return {
         builds: '',
         spinner: '<span class="fa fa-spinner fa-spin"></span>',
+        svg: svgsDictionary[this.stage.status.icon],
       };
     },
+
     props: {
       stage: {
         type: Object,
-        required: true,
-      },
-      svgs: {
-        type: Object,
-        required: true,
-      },
-      match: {
-        type: Function,
         required: true,
       },
     },
@@ -73,11 +88,6 @@
       tooltip() {
         return `has-tooltip ci-status-icon ci-status-icon-${this.stage.status.group}`;
       },
-      svg() {
-        const { icon } = this.stage.status;
-        const stageIcon = icon.replace(/icon/i, 'stage_icon');
-        return this.svgs[this.match(stageIcon)];
-      },
       triggerButtonClass() {
         return `mini-pipeline-graph-dropdown-toggle has-tooltip js-builds-dropdown-button ci-status-icon-${this.stage.status.group}`;
       },
@@ -91,8 +101,7 @@
           data-placement="top"
           data-toggle="dropdown"
           type="button"
-          :aria-label="stage.title"
-        >
+          :aria-label="stage.title">
           <span v-html="svg" aria-hidden="true"></span>
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
@@ -101,8 +110,7 @@
           <div
             :class="dropdownClass"
             class="js-builds-dropdown-list scrollable-menu"
-            v-html="buildsOrSpinner"
-          >
+            v-html="buildsOrSpinner">
           </div>
         </ul>
       </div>
