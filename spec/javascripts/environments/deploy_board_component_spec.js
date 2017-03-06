@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import DeployBoard from '~/environments/components/deploy_board_component';
-import Service from '~/environments/services/environments_service.js.es6';
+import Service from '~/environments/services/environments_service';
 
 const { deployBoardMockData, invalidDeployBoardMockData } = require('./mock_data');
 
