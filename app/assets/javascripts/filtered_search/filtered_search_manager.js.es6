@@ -34,6 +34,7 @@
       this.clearSearchWrapper = this.clearSearch.bind(this);
       this.checkForBackspaceWrapper = this.checkForBackspace.bind(this);
       this.removeSelectedTokenWrapper = this.removeSelectedToken.bind(this);
+      this.unselectEditTokensWrapper = this.unselectEditTokens.bind(this);
       this.tokenChange = this.tokenChange.bind(this);
 
       this.filteredSearchInput.form.addEventListener('submit', this.handleFormSubmit);
@@ -49,7 +50,7 @@
       this.tokensContainer.addEventListener('dblclick', FilteredSearchManager.editToken);
       this.clearSearchButton.addEventListener('click', this.clearSearchWrapper);
       document.addEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
-      document.addEventListener('click', FilteredSearchManager.unselectEditTokens);
+      document.addEventListener('click', this.unselectEditTokensWrapper);
       document.addEventListener('keydown', this.removeSelectedTokenWrapper);
     }
 
@@ -67,7 +68,7 @@
       this.tokensContainer.removeEventListener('dblclick', FilteredSearchManager.editToken);
       this.clearSearchButton.removeEventListener('click', this.clearSearchWrapper);
       document.removeEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
-      document.removeEventListener('click', FilteredSearchManager.unselectEditTokens);
+      document.removeEventListener('click', this.unselectEditTokensWrapper);
       document.removeEventListener('keydown', this.removeSelectedTokenWrapper);
     }
 
@@ -121,7 +122,7 @@
       }
     }
 
-    static unselectEditTokens(e) {
+    unselectEditTokens(e) {
       const inputContainer = document.querySelector('.filtered-search-input-container');
       const isElementInFilteredSearch = inputContainer && inputContainer.contains(e.target);
       const isElementInFilterDropdown = e.target.closest('.filter-dropdown') !== null;
@@ -129,6 +130,7 @@
 
       if ((!isElementInFilteredSearch && !isElementInFilterDropdown) || isElementScrollContainer) {
         gl.FilteredSearchVisualTokens.moveInputToTheRight();
+        this.dropdownManager.resetDropdowns();
       }
     }
 

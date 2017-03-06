@@ -37,11 +37,14 @@ require('../window')(function(w){
         }
       }
 
-      self.hook.list[config.method].call(self.hook.list, data);
+      if (!self.destroyed) {
+        self.hook.list[config.method].call(self.hook.list, data);
+      }
     },
 
     init: function init(hook) {
       var self = this;
+      self.destroyed = false;
       self.cache = self.cache || {};
       var config = hook.config.droplabAjax;
       this.hook = hook;
@@ -79,6 +82,7 @@ require('../window')(function(w){
 
     destroy: function() {
       var dynamicList = this.hook.list.list.querySelector('[data-dynamic]');
+      this.destroyed = true;
       if (this.listTemplate && dynamicList) {
         dynamicList.outerHTML = this.listTemplate;
       }

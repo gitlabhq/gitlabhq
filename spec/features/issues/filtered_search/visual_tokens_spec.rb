@@ -188,7 +188,6 @@ describe 'Visual tokens', js: true, feature: true do
     end
 
     it 'selects option from dropdown' do
-      pending('Need to investigate further why this fails when this is run after "opens label dropdown"')
 
       expect(filter_label_dropdown.find('.filter-dropdown-item', text: label.title)).to be_visible
       expect(filter_label_dropdown.find('.filter-dropdown-item', text: cc_label.title)).to be_visible
@@ -204,6 +203,9 @@ describe 'Visual tokens', js: true, feature: true do
     end
 
     it 'filters value' do
+      expect(filter_label_dropdown.find('.filter-dropdown-item', text: label.title)).to be_visible
+      expect(filter_label_dropdown.find('.filter-dropdown-item', text: cc_label.title)).to be_visible
+
       filtered_search.send_keys(:backspace)
 
       expect(page).to have_css('#js-dropdown-label .filter-dropdown .filter-dropdown-item', count: 1)
