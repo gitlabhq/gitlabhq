@@ -229,7 +229,7 @@ describe Gitlab::Workhorse, lib: true do
       let(:old_value) { 'existing-key' }
 
       before do
-        described_class.ensure_and_notify(key, old_value, overwrite: true)
+        described_class.set_key_and_notify(key, old_value, overwrite: true)
       end
 
       context 'and overwrite' do
