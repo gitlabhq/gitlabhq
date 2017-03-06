@@ -415,6 +415,17 @@ describe API::V3::Groups, api: true  do
         expect(response).to have_http_status(404)
       end
     end
+
+    context "when authenticated as user with group permissions" do
+      it "updates group" do
+        group2.update(owner: user2)
+
+        put v3_api("/groups/#{group2.id}", user2), { name: 'Renamed' }
+
+        expect(response.status).to eq(200)
+        expect(group2.reload.name).to eq('Renamed')
+      end
+    end
   end
 
   describe "GET /groups/:id/projects" do
@@ -585,32 +596,11 @@ describe API::V3::Groups, api: true  do
 
         expect(response).to have_http_status(400)
       end
-<<<<<<< HEAD
 
       it "creates an ldap_group_link if ldap_cn and ldap_access are supplied" do
         group_attributes = attributes_for(:group, ldap_cn: 'ldap-group', ldap_access: Gitlab::Access::DEVELOPER)
         expect { post v3_api("/groups", admin), group_attributes }.to change{ LdapGroupLink.count }.by(1)
       end
-    end
-  end
-
-  describe "PUT /groups" do
-    context "when authenticated as user without group permissions" do
-      it "does not create group" do
-        put v3_api("/groups/#{group2.id}", user1), attributes_for(:group)
-        expect(response.status).to eq(404)
-      end
-    end
-
-    context "when authenticated as user with group permissions" do
-      it "updates group" do
-        group2.update(owner: user2)
-        put v3_api("/groups/#{group2.id}", user2), { name: 'Renamed' }
-        expect(response.status).to eq(200)
-        expect(group2.reload.name).to eq('Renamed')
-      end
-=======
->>>>>>> ce-com/master
     end
   end
 
