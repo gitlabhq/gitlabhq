@@ -11,7 +11,7 @@ class Board < ActiveRecord::Base
   end
 
   def milestone
-    if milestone_id === Milestone::Upcoming.id
+    if milestone_id == Milestone::Upcoming.id
       Milestone::Upcoming
     else
       super
