@@ -167,15 +167,14 @@ module API
 
       class Group < Grape::Entity
         expose :id, :name, :path, :description, :visibility_level
-<<<<<<< HEAD
 
+        # EE-only
         expose :ldap_cn, :ldap_access
         expose :ldap_group_links,
                using: ::API::Entities::LdapGroupLink,
                if: lambda { |group, options| group.ldap_group_links.any? }
+        # EE-only
 
-=======
->>>>>>> ce-com/master
         expose :lfs_enabled?, as: :lfs_enabled
         expose :avatar_url
         expose :web_url

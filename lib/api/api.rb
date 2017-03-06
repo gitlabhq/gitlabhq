@@ -21,14 +21,10 @@ module API
       mount ::API::V3::MergeRequestDiffs
       mount ::API::V3::MergeRequests
       mount ::API::V3::Notes
-<<<<<<< HEAD
       mount ::API::V3::ProjectGitHook
-      mount ::API::V3::ProjectHooks
       mount ::API::V3::ProjectPushRule
-=======
       mount ::API::V3::Pipelines
       mount ::API::V3::ProjectHooks
->>>>>>> ce-com/master
       mount ::API::V3::Milestones
       mount ::API::V3::Projects
       mount ::API::V3::ProjectSnippets
