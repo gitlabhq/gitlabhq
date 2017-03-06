@@ -34,6 +34,12 @@ class GroupPolicy < BasePolicy
     if globally_viewable && @subject.request_access_enabled && !member
       can! :request_access
     end
+
+    # EE-only
+    if @subject.ldap_synced?
+      cannot! :admin_group_member
+      can! :override_group_member if master
+    end
   end
 
   def can_read_group?
@@ -44,12 +50,5 @@ class GroupPolicy < BasePolicy
     return true if @subject.users.include?(@user)
 
     GroupProjectsFinder.new(@subject).execute(@user).any?
-  end
-
-  def additional_rules!(master)
-    if @subject.ldap_synced?
-      cannot! :admin_group_member
-      can! :override_group_member if master
-    end
   end
 end
