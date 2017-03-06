@@ -180,7 +180,7 @@ describe API::Triggers do
       end
 
       context 'without required parameters' do
-        it 'creates trigger' do
+        it 'does not create trigger' do
           post api("/projects/#{project.id}/triggers", user)
 
           expect(response).to have_http_status(:bad_request)
