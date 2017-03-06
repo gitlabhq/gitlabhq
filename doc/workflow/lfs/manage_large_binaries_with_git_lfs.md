@@ -4,13 +4,6 @@ Managing large files such as audio, video and graphics files has always been one
 of the shortcomings of Git. The general recommendation is to not have Git repositories
 larger than 1GB to preserve performance.
 
-GitLab already supports [managing large files with git annex](http://docs.gitlab.com/ee/workflow/git_annex.html)
-(EE only), however in certain environments it is not always convenient to use
-different commands to differentiate between the large files and regular ones.
-
-Git LFS makes this simpler for the end user by removing the requirement to
-learn new commands.
-
 ## How it works
 
 Git LFS client talks with the GitLab server over HTTPS. It uses HTTP Basic Authentication
