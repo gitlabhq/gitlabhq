@@ -85,6 +85,17 @@ list of approvers that will need to approve every merge request in a project.
 
 [Read more about merge request approvals.](merge_request_approvals.md)
 
+## Semi-linear history merge requests
+
+> Included in [GitLab Enterprise Edition Starter][products].
+
+A merge commit is created for every merge, but the branch is only merged if
+a fast-forward merge is possible. This ensures that if the merge request build
+suceedeed, the target branch build will also succeed after merging.
+
+Navigate to a project's settings, select the **Merge commit with semi-linear
+history** option under **Merge Requests: Merge method** and save your changes.
+
 ## Fast-forward merge requests
 
 > Included in [GitLab Enterprise Edition Starter][products].
