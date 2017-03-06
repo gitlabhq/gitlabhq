@@ -110,7 +110,7 @@ require('./lib/utils/common_utils');
 
         return `<dl>\n${lines.join('\n')}\n</dl>`;
       },
-      'sub, dt, dd, kbd, q, samp, var, ruby, rt, rp, abbr'(el, text) {
+      'sub, dt, dd, kbd, q, samp, var, ruby, rt, rp, abbr, summary, details'(el, text) {
         const tag = el.nodeName.toLowerCase();
         return `<${tag}>${text}</${tag}>`;
       },
