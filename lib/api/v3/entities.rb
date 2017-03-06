@@ -189,7 +189,7 @@ module API
 
       class Trigger < Grape::Entity
         expose :token, :created_at, :updated_at, :deleted_at, :last_used
-        expose :owner, using: Entities::UserBasic
+        expose :owner, using: ::API::Entities::UserBasic
       end
 
       class TriggerRequest < Grape::Entity
