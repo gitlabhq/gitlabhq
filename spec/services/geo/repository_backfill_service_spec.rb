@@ -28,7 +28,7 @@ describe Geo::RepositoryBackfillService, services: true do
     end
 
     it 'releases leases' do
-      expect(Gitlab::ExclusiveLease).to receive(:cancel).exactly(2).and_call_original
+      expect(Gitlab::ExclusiveLease).to receive(:cancel).twice.and_call_original
 
       subject.execute
     end
