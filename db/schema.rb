@@ -173,14 +173,14 @@ ActiveRecord::Schema.define(version: 20170217151947) do
   add_index "chat_names", ["user_id", "service_id"], name: "index_chat_names_on_user_id_and_service_id", unique: true, using: :btree
 
   create_table "chat_teams", force: :cascade do |t|
-    t.integer "namespace_id"
+    t.integer "namespace_id", null: false
     t.string "team_id"
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  add_index "chat_teams", ["namespace_id"], name: "index_chat_teams_on_namespace_id", using: :btree
+  add_index "chat_teams", ["namespace_id"], name: "index_chat_teams_on_namespace_id", unique: true, using: :btree
 
   create_table "ci_application_settings", force: :cascade do |t|
     t.boolean "all_broken_builds"
@@ -1343,7 +1343,7 @@ ActiveRecord::Schema.define(version: 20170217151947) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
   add_foreign_key "boards", "projects"
-  add_foreign_key "chat_teams", "namespaces", name: "fk_3b543909cb", on_delete: :cascade
+  add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
