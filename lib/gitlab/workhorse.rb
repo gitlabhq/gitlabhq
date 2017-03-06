@@ -155,12 +155,11 @@ module Gitlab
         Rails.root.join('.gitlab_workhorse_secret')
       end
 
-      def ensure_and_notify(key, value, expire: nil, overwrite: true)
+      def set_key_and_notify(key, value, expire: nil, overwrite: true)
         Gitlab::Redis.with do |redis|
           result = redis.set(key, value, ex: expire, nx: !overwrite)
           if result
-            payload = "#{key}=#{value}"
-            redis.publish(NOTIFICATION_CHANNEL, payload)
+            redis.publish(NOTIFICATION_CHANNEL, "#{key}=#{value}")
             value
           else
             redis.get(key)

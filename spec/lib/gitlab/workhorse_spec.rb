@@ -200,11 +200,11 @@ describe Gitlab::Workhorse, lib: true do
     end
   end
 
-  describe '.ensure_and_notify' do
+  describe '.set_key_and_notify' do
     let(:key) { 'test-key' }
     let(:value) { 'test-value' }
 
-    subject { described_class.ensure_and_notify(key, value, overwrite: overwrite) }
+    subject { described_class.set_key_and_notify(key, value, overwrite: overwrite) }
 
     shared_examples 'set and notify' do
       it 'set and return the same value' do
@@ -245,7 +245,7 @@ describe Gitlab::Workhorse, lib: true do
           is_expected.to eq(old_value)
         end
 
-        it 'set and notify' do
+        it 'does not notify' do
           expect_any_instance_of(Redis).not_to receive(:publish)
 
           subject
