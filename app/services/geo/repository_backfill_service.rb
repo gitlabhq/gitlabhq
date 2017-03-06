@@ -15,7 +15,7 @@ module Geo
         log('Started repository sync')
 
         fetch_repositories do |started_at, finished_at|
-          update_tracking_database(started_at, finished_at)
+          update_registry(started_at, finished_at)
         end
 
         log('Finished repository sync')
@@ -84,8 +84,8 @@ module Geo
       Gitlab::ExclusiveLease.cancel(lease_key, repository_lease)
     end
 
-    def update_tracking_database(started_at, finished_at)
-      log('Tracking sync information')
+    def update_registry(started_at, finished_at)
+      log('Updating registry information')
       registry = Geo::ProjectRegistry.find_or_create_by(project_id: project.id)
       registry.last_repository_synced_at = started_at
       registry.last_repository_successful_sync_at = finished_at if finished_at
