@@ -19,12 +19,6 @@
           = link_to namespace_project_tags_path(@project.namespace, @project) do
             Tags
 
-<<<<<<< HEAD
-        - if license_allows_file_locks?
-          = nav_link(controller: [:path_locks]) do
-            = link_to namespace_project_path_locks_path(@project.namespace, @project) do
-              Locked Files
-=======
         = nav_link(path: 'graphs#show') do
           = link_to namespace_project_graph_path(@project.namespace, @project, current_ref) do
             Contributors
@@ -40,4 +34,8 @@
         = nav_link(path: 'graphs#charts') do
           = link_to charts_namespace_project_graph_path(@project.namespace, @project, current_ref) do
             Charts
->>>>>>> ce-com/master
+
+        - if license_allows_file_locks?
+          = nav_link(controller: [:path_locks]) do
+            = link_to namespace_project_path_locks_path(@project.namespace, @project) do
+              Locked Files

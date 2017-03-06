@@ -45,7 +45,6 @@ class GroupPolicy < BasePolicy
 
     GroupProjectsFinder.new(@subject).execute(@user).any?
   end
-<<<<<<< HEAD
 
   def additional_rules!(master)
     if @subject.ldap_synced?
@@ -53,6 +52,4 @@ class GroupPolicy < BasePolicy
       can! :override_group_member if master
     end
   end
-=======
->>>>>>> ce-com/master
 end
