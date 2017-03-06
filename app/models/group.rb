@@ -213,4 +213,14 @@ class Group < Namespace
   def users_with_parents
     User.where(id: members_with_parents.select(:user_id))
   end
+
+  def mattermost_team_params
+    max_length = 59
+
+    {
+      name: path[0..max_length],
+      display_name: name[0..max_length],
+      type: public? ? 'O' : 'I' # Open vs Invite-only
+    }
+  end
 end
