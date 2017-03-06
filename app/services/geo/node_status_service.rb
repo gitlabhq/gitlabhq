@@ -17,7 +17,7 @@ module Geo
           else
             ["Could not connect to Geo node - HTTP Status Code: #{response.code}"]
           end
-        rescue HTTParty::Error, Errno::ECONNREFUSED => e
+        rescue HTTParty::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED => e
           [e.message]
         end
 
