@@ -524,11 +524,11 @@ module Ci
     end
 
     def artifacts
-      options[:artifacts]
+      [options[:artifacts]]
     end
 
     def cache
-      options[:cache]
+      [options[:cache]]
     end
 
     def credentials

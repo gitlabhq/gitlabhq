@@ -308,11 +308,16 @@ describe API::Runner do
              { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true }]
           end
           let(:expected_artifacts) do
-            { 'name' => 'artifacts_file',
-              'untracked' => false,
-              'paths' => %w(out/),
-              'when' => 'always',
-              'expire_in' => '7d' }
+            [{ 'name' => 'artifacts_file',
+               'untracked' => false,
+               'paths' => %w(out/),
+               'when' => 'always',
+               'expire_in' => '7d' }]
+          end
+          let(:expected_cache) do
+            [{ 'key' => 'cache_key',
+               'untracked' => false,
+               'paths' => ['vendor/*'] }]
           end
 
           it 'starts a job' do
@@ -329,6 +334,7 @@ describe API::Runner do
             expect(json_response['services']).to eq([{ 'name' => 'postgres' }])
             expect(json_response['steps']).to eq(expected_steps)
             expect(json_response['artifacts']).to eq(expected_artifacts)
+            expect(json_response['cache']).to eq(expected_cache)
             expect(json_response['variables']).to include(*expected_variables)
           end
 
