@@ -563,6 +563,10 @@ Manual actions are non-blocking by default. If you want to make manual action
 blocking, it is necessary to add `allow_failure: false` to the job's definition
 in `.gitlab-ci.yml`.
 
+Optional manual actions have `allow_failure: true` set by default.
+
+**Statuses of optional actions do not contribute to overall pipeline status.**
+
 > Blocking manual actions were introduced in GitLab 9.0
 
 ### environment
