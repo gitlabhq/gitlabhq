@@ -48,10 +48,7 @@ describe 'Visual tokens', js: true, feature: true do
     it 'filters value' do
       filtered_search.send_keys(:backspace)
 
-      # Use find to force capybara to wait for droplab ajax to load
-      find('#js-dropdown-author .filter-dropdown .filter-dropdown-item')
-
-      expect(page.all('#js-dropdown-author .filter-dropdown .filter-dropdown-item').size).to eq(1)
+      expect(page).to have_css('#js-dropdown-author .filter-dropdown .filter-dropdown-item', count: 1)
     end
 
     it 'ends editing mode when document is clicked' do
@@ -100,10 +97,7 @@ describe 'Visual tokens', js: true, feature: true do
     it 'filters value' do
       filtered_search.send_keys(:backspace)
 
-      # Use find to force capybara to wait for droplab ajax to load
-      find('#js-dropdown-assignee .filter-dropdown .filter-dropdown-item')
-
-      expect(page.all('#js-dropdown-assignee .filter-dropdown .filter-dropdown-item').size).to eq(1)
+      expect(page).to have_css('#js-dropdown-assignee .filter-dropdown .filter-dropdown-item', count: 1)
     end
 
     it 'ends editing mode when document is clicked' do
@@ -162,10 +156,7 @@ describe 'Visual tokens', js: true, feature: true do
     it 'filters value' do
       filtered_search.send_keys(:backspace)
 
-      # Use find to force capybara to wait for droplab ajax to load
-      find('#js-dropdown-milestone .filter-dropdown .filter-dropdown-item')
-
-      expect(page.all('#js-dropdown-milestone .filter-dropdown .filter-dropdown-item').size).to eq(1)
+      expect(page).to have_css('#js-dropdown-milestone .filter-dropdown .filter-dropdown-item', count: 1)
     end
 
     it 'ends editing mode when document is clicked' do
@@ -215,10 +206,7 @@ describe 'Visual tokens', js: true, feature: true do
     it 'filters value' do
       filtered_search.send_keys(:backspace)
 
-      # Use find to force capybara to wait for droplab ajax to load
-      find('#js-dropdown-label .filter-dropdown .filter-dropdown-item')
-
-      expect(page.all('#js-dropdown-label .filter-dropdown .filter-dropdown-item').size).to eq(1)
+      expect(page).to have_css('#js-dropdown-label .filter-dropdown .filter-dropdown-item', count: 1)
     end
 
     it 'ends editing mode when document is clicked' do

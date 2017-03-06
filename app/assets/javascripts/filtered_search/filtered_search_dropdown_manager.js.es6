@@ -58,7 +58,7 @@
       };
     }
 
-    static addWordToInput(tokenName, tokenValue = '', clicked) {
+    static addWordToInput(tokenName, tokenValue = '', clicked = false) {
       const input = document.querySelector('.filtered-search');
 
       gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue);
