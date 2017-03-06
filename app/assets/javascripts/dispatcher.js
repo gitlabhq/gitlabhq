@@ -35,7 +35,7 @@
 /* global Labels */
 /* global Shortcuts */
 
-import BindInOut from './behaviors/bind_in_out.js.es6';
+import BindInOut from './behaviors/bind_in_out';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 

@@ -23,13 +23,10 @@ module Groups
       @group.name ||= @group.path.dup
 
       if create_chat_team?
-        begin
-          response = Mattermost::CreateTeamService.new(@group, current_user).execute
-
-          @group.build_chat_team(name: response['name'], team_id: response['id'])
-        end
-
+        response = Mattermost::CreateTeamService.new(@group, current_user).execute
         return @group if @group.errors.any?
+
+        @group.build_chat_team(name: response['name'], team_id: response['id'])
       end
 
       @group.save
