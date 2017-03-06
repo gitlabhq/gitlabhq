@@ -59,3 +59,6 @@ changes are in V4:
 - Return 202 with JSON body on async removals on V4 API (DELETE `/projects/:id/repository/merged_branches` and DELETE `/projects/:id`) [!9449](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9449)
 - `projects/:id/milestones?iid[]=x&iid[]=y` array filter has been renamed to `iids` [!9096](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9096)
 - Return basic info about pipeline in `GET /projects/:id/pipelines` [!8875](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8875)
+- Rename Build Triggers to be Pipeline Triggers API [!9713](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9713)
+  - `POST /projects/:id/trigger/builds` to `POST /projects/:id/trigger/pipeline`
+  - Require description when creating a new trigger `POST /projects/:id/triggers`
