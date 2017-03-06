@@ -52,6 +52,10 @@ changes are in V4:
   - PUT `projects/:id`
 - Renamed `branch_name` to `branch` on DELETE `id/repository/branches/:branch` response [!8936](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8936)
 - Remove `public` param from create and edit actions of projects [!8736](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8736)
+- Remove `subscribed` field from responses returning list of issues or merge
+  requests. Fetch individual issues or merge requests to obtain the value
+  of `subscribed`
+  [!9661](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9661)
 - Use `visibility` as string parameter everywhere [!9337](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9337)
 - Notes do not return deprecated field `upvote` and `downvote` [!9384](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9384)
 - Return HTTP status code `400` for all validation errors when creating or updating a member instead of sometimes `422` error. [!9523](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9523)
