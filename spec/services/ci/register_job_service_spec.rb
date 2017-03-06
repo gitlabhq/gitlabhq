@@ -181,7 +181,7 @@ module Ci
           let!(:other_build) { create :ci_build, pipeline: pipeline }
 
           before do
-            allow_any_instance_of(Ci::RegisterBuildService).to receive(:builds_for_specific_runner)
+            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_specific_runner)
               .and_return([pending_build, other_build])
           end
 
@@ -193,7 +193,7 @@ module Ci
 
         context 'when single build is in queue' do
           before do
-            allow_any_instance_of(Ci::RegisterBuildService).to receive(:builds_for_specific_runner)
+            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_specific_runner)
               .and_return([pending_build])
           end
 
@@ -204,7 +204,7 @@ module Ci
 
         context 'when there is no build in queue' do
           before do
-            allow_any_instance_of(Ci::RegisterBuildService).to receive(:builds_for_specific_runner)
+            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_specific_runner)
               .and_return([])
           end
 
