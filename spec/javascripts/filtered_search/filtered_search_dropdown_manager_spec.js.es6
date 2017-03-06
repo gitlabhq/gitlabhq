@@ -17,7 +17,7 @@ require('~/filtered_search/filtered_search_dropdown_manager');
       beforeEach(() => {
         setFixtures(`
           <ul class="tokens-container">
-            <li>
+            <li class="input-token">
               <input class="filtered-search">
             </li>
           </ul>

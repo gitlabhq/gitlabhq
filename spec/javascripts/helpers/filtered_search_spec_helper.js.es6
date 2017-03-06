@@ -35,7 +35,7 @@ class FilteredSearchSpecHelper {
 
   static createInputHTML(placeholder = '') {
     return `
-      <li>
+      <li class="input-token">
         <input type='text' class='filtered-search' placeholder='${placeholder}' />
       </li>
     `;
