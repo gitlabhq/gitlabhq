@@ -634,7 +634,7 @@ module API
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
       expose :user, with: User
-      expose :artifacts_file, using: JobArtifactFile, if: -> (build, opts) { build.artifacts? }
+      expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
       expose :commit, with: RepoCommit
       expose :runner, with: Runner
       expose :pipeline, with: PipelineBasic
