@@ -20,7 +20,7 @@
  */
 import statusCodes from '~/lib/utils/http_status';
 import '~/flash';
-import '~/lib/utils/common_utils.js.es6';
+import '~/lib/utils/common_utils';
 import deployBoardSvg from 'empty_states/icons/_deploy_board.svg';
 import instanceComponent from './deploy_board_instance_component';
 
