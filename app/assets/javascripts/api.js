@@ -51,15 +51,15 @@ var Api = {
     });
   },
   // Return projects list. Filtered by query
-  projects: function(query, order, callback) {
+  projects: function(query, options, callback) {
     var url = Api.buildUrl(Api.projectsPath);
     return $.ajax({
       url: url,
-      data: {
+      data: $.extend({
         search: query,
-        order_by: order,
-        per_page: 20
-      },
+        per_page: 20,
+        membership: true
+      }, options),
       dataType: "json"
     }).done(function(projects) {
       return callback(projects);
