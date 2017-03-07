@@ -1,5 +1,5 @@
 %p{ style: 'font-size:18px; text-align:center;  line-height:30px;' }
-  Your CSV export of #{ @issues_count } issues from project
+  Your CSV export of #{ pluralize(@written_count, 'issue') } from project
   %a{ href: project_url(@project), style: "color:#3777b0; text-decoration:none; display:block;" }
     = @project.full_name
   has been added to this email as an attachment.
