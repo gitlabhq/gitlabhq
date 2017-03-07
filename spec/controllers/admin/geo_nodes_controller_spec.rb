@@ -117,14 +117,12 @@ describe Admin::GeoNodesController do
   end
 
   describe '#toggle' do
-    subject { post :toggle, id: geo_node }
-
     context 'without add-on license' do
       let(:geo_node) { create(:geo_node) }
 
       before do
         allow(Gitlab::Geo).to receive(:license_allows?).and_return(false)
-        subject
+        post :toggle, id: geo_node
       end
 
       it_behaves_like 'unlicensed geo action'
@@ -133,7 +131,7 @@ describe Admin::GeoNodesController do
     context 'with add-on license' do
       before do
         allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)
-        subject
+        post :toggle, id: geo_node
       end
 
       context 'with a primary node' do
