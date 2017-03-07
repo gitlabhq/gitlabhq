@@ -972,10 +972,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def record_activity
-    Gitlab::UserActivities::ActivitySet.record(self)
-  end
-
   def access_level
     if admin?
       :admin

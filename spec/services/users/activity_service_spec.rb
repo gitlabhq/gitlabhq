@@ -14,18 +14,18 @@ describe Users::ActivityService, services: true do
       end
 
       it 'sets the last activity timestamp for the user' do
-        expect(last_hour_members).to eq([user.username])
+        expect(last_hour_user_ids).to eq([user.id])
       end
 
       it 'updates the same user' do
         service.execute
 
-        expect(last_hour_members).to eq([user.username])
+        expect(last_hour_user_ids).to eq([user.id])
       end
 
       it 'updates the timestamp of an existing user' do
         Timecop.freeze(Date.tomorrow) do
-          expect { service.execute }.to change { user_score }.to(Time.now.to_i)
+          expect { service.execute }.to change { user_activity(user) }.to(Time.now.to_i.to_s)
         end
       end
 
@@ -34,7 +34,7 @@ describe Users::ActivityService, services: true do
           other_user = create(:user)
           described_class.new(other_user, 'type').execute
 
-          expect(last_hour_members).to match_array([user.username, other_user.username])
+          expect(last_hour_user_ids).to match_array([user.id, other_user.id])
         end
       end
     end
@@ -45,8 +45,14 @@ describe Users::ActivityService, services: true do
       it 'does not update last_activity_at' do
         service.execute
 
-        expect(last_hour_members).to eq([])
+        expect(last_hour_user_ids).to eq([])
       end
     end
+  end
+
+  def last_hour_user_ids
+    Gitlab::UserActivities.new.
+      select { |k, v| v >= 1.hour.ago.to_i.to_s }.
+      map { |k, _| k.to_i }
   end
 end
