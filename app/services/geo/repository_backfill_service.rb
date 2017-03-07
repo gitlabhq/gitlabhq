@@ -86,7 +86,7 @@ module Geo
 
     def update_registry(started_at, finished_at)
       log('Updating registry information')
-      registry = Geo::ProjectRegistry.find_or_create_by(project_id: project.id)
+      registry = Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id)
       registry.last_repository_synced_at = started_at
       registry.last_repository_successful_sync_at = finished_at if finished_at
       registry.save
