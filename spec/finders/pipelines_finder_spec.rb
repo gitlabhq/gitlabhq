@@ -1,22 +1,20 @@
 require 'spec_helper'
 
 describe PipelinesFinder do
-  let!(:user1) { create(:user) }
-  let!(:user2) { create(:user) }
-  let!(:project) { create(:project, :repository) }
+  let(:user1) { create(:user) }
+  let(:user2) { create(:user) }
+  let(:project) { create(:project, :repository) }
 
-  let!(:dummy_pipelines) do
-    {
-      tag:          create(:ci_pipeline, project: project, user: user1, created_at:  9.minutes.ago, ref: 'v1.0.0', tag: true),
-      created:      create(:ci_pipeline, project: project, user: user1, created_at:  8.minutes.ago, status: 'created'),
-      pending:      create(:ci_pipeline, project: project, user: user1, created_at:  7.minutes.ago, status: 'pending'),
-      running:      create(:ci_pipeline, project: project, user: user1, created_at:  6.minutes.ago, status: 'running'),
-      success:      create(:ci_pipeline, project: project, user: user1, created_at:  5.minutes.ago, status: 'success'),
-      failed:       create(:ci_pipeline, project: project, user: user2, created_at:  4.minutes.ago, status: 'failed'),
-      canceled:     create(:ci_pipeline, project: project, user: user2, created_at:  3.minutes.ago, status: 'canceled'),
-      skipped:      create(:ci_pipeline, project: project, user: user2, created_at:  2.minutes.ago, status: 'skipped'),
-      yaml_errors:  create(:ci_pipeline, project: project, user: user2, created_at:  1.minute.ago,  yaml_errors: 'Syntax error'),
-    }
+  before do
+    create(:ci_pipeline, project: project, user: user1, ref: 'v1.0.0', tag: true)
+    create(:ci_pipeline, project: project, user: user1, status: 'created')
+    create(:ci_pipeline, project: project, user: user1, status: 'pending')
+    create(:ci_pipeline, project: project, user: user1, status: 'running')
+    create(:ci_pipeline, project: project, user: user1, status: 'success')
+    create(:ci_pipeline, project: project, user: user2, status: 'failed')
+    create(:ci_pipeline, project: project, user: user2, status: 'canceled')
+    create(:ci_pipeline, project: project, user: user2, status: 'skipped')
+    create(:ci_pipeline, project: project, user: user2, yaml_errors: 'Syntax error')
   end
 
   subject { described_class.new(project, params).execute }
@@ -26,12 +24,11 @@ describe PipelinesFinder do
       let(:params) { {} }
 
       it 'selects all pipelines' do
-        expect(subject.count).to be dummy_pipelines.count
-        expect(subject).to match_array dummy_pipelines.values
+        expect(subject).to match_array(Ci::Pipeline.all)
       end
 
       it 'orders in descending order on ID' do
-        expect(subject.map(&:id)).to eq dummy_pipelines.values.map(&:id).sort.reverse
+        expect(subject).to match_array(Ci::Pipeline.order(id: :desc))
       end
     end
 
@@ -40,7 +37,7 @@ describe PipelinesFinder do
         let(:params) { { scope: 'running' } }
 
         it 'has only running status' do
-          expect(subject.map(&:status)).to all(eq('running'))
+          expect(subject).to match_array(Ci::Pipeline.running)
         end
       end
 
@@ -48,7 +45,7 @@ describe PipelinesFinder do
         let(:params) { { scope: 'pending' } }
 
         it 'has only pending status' do
-          expect(subject.map(&:status)).to all(eq('pending'))
+          expect(subject).to match_array(Ci::Pipeline.pending)
         end
       end
 
@@ -56,7 +53,7 @@ describe PipelinesFinder do
         let(:params) { { scope: 'finished' } }
 
         it 'has only finished status' do
-          expect(subject.map(&:status)).to match_array %w[success canceled failed]
+          expect(subject).to match_array(Ci::Pipeline.finished)
         end
       end
 
@@ -64,9 +61,7 @@ describe PipelinesFinder do
         let(:params) { { scope: 'branches' } }
 
         it 'excludes tags' do
-          expect(subject.count).to be 1
-          expect(subject).not_to include dummy_pipelines[:tag]
-          expect(subject.map(&:ref)).to all(eq('master'))
+          expect(subject).to eq([Ci::Pipeline.where(tag: false).last])
         end
       end
 
@@ -74,9 +69,7 @@ describe PipelinesFinder do
         let(:params) { { scope: 'tags' } }
 
         it 'excludes branches' do
-          expect(subject.count).to be 1
-          expect(subject).to include dummy_pipelines[:tag]
-          expect(subject.map(&:ref)).not_to include('master')
+          expect(subject).to eq([Ci::Pipeline.where(tag: true).last])
         end
       end
     end
@@ -86,7 +79,7 @@ describe PipelinesFinder do
         let(:params) { { status: 'running' } }
 
         it 'has only running status' do
-          expect(subject.map(&:status)).to all(eq('running'))
+          expect(subject).to match_array(Ci::Pipeline.running)
         end
       end
 
@@ -94,7 +87,7 @@ describe PipelinesFinder do
         let(:params) { { status: 'pending' } }
 
         it 'has only pending status' do
-          expect(subject.map(&:status)).to all(eq('pending'))
+          expect(subject).to match_array(Ci::Pipeline.pending)
         end
       end
 
@@ -102,7 +95,7 @@ describe PipelinesFinder do
         let(:params) { { status: 'success' } }
 
         it 'has only success status' do
-          expect(subject.map(&:status)).to all(eq('success'))
+          expect(subject).to match_array(Ci::Pipeline.success)
         end
       end
 
@@ -110,7 +103,7 @@ describe PipelinesFinder do
         let(:params) { { status: 'failed' } }
 
         it 'has only failed status' do
-          expect(subject.map(&:status)).to all(eq('failed'))
+          expect(subject).to match_array(Ci::Pipeline.failed)
         end
       end
 
@@ -118,7 +111,7 @@ describe PipelinesFinder do
         let(:params) { { status: 'canceled' } }
 
         it 'has only canceled status' do
-          expect(subject.map(&:status)).to all(eq('canceled'))
+          expect(subject).to match_array(Ci::Pipeline.canceled)
         end
       end
 
@@ -126,7 +119,7 @@ describe PipelinesFinder do
         let(:params) { { status: 'skipped' } }
 
         it 'has only skipped status' do
-          expect(subject.map(&:status)).to all(eq('skipped'))
+          expect(subject).to match_array(Ci::Pipeline.skipped)
         end
       end
     end 
@@ -136,8 +129,7 @@ describe PipelinesFinder do
         let(:params) { { ref: 'master' } }
 
         it 'selects all pipelines which belong to the ref' do
-          expected = dummy_pipelines.except(:tag)
-          expect(subject).to match_array expected.values
+          expect(subject).to match_array(Ci::Pipeline.where(ref: 'master'))
         end
       end
 
@@ -155,8 +147,7 @@ describe PipelinesFinder do
         let(:params) { { username: user1.name } }
 
         it 'selects all pipelines which belong to the username' do
-          expected = dummy_pipelines.except(:failed).except(:canceled).except(:skipped).except(:yaml_errors)
-          expect(subject).to match_array expected.values
+          expect(subject).to match_array(Ci::Pipeline.where(user: user1))
         end
       end
 
@@ -174,8 +165,7 @@ describe PipelinesFinder do
         let(:params) { { yaml_errors: true } }
 
         it 'selects only pipelines have yaml_errors' do
-          expect(subject.count).to be 1
-          expect(subject.first).to eq dummy_pipelines[:yaml_errors]
+          expect(subject).to match_array(Ci::Pipeline.where("yaml_errors IS NOT NULL"))
         end
       end
 
@@ -183,9 +173,7 @@ describe PipelinesFinder do
         let(:params) { { yaml_errors: false } }
 
         it 'selects only pipelines do not have yaml_errors' do
-          expected = dummy_pipelines.except(:yaml_errors)
-          expect(subject.count).to be expected.count
-          expect(subject).to match_array expected.values
+          expect(subject).to match_array(Ci::Pipeline.where("yaml_errors IS NULL"))
         end
       end
 
@@ -193,7 +181,7 @@ describe PipelinesFinder do
         let(:params) { { yaml_errors: "UnexpectedValue" } }
 
         it 'selects all pipelines' do
-          expect(subject).to match_array dummy_pipelines.values
+          expect(subject).to match_array(Ci::Pipeline.all)
         end
       end
     end
@@ -203,8 +191,7 @@ describe PipelinesFinder do
         let(:params) { { order_by: 'created_at', sort: 'asc' } }
 
         it 'sorts by created_at asc' do
-          expect(subject.first).to eq dummy_pipelines[:tag]
-          expect(subject.last).to eq dummy_pipelines[:yaml_errors]
+          expect(subject).to match_array(Ci::Pipeline.order(created_at: :asc))
         end
       end
 
@@ -212,8 +199,7 @@ describe PipelinesFinder do
         let(:params) { { order_by: 'created_at', sort: 'desc' } }
 
         it 'sorts by created_at desc' do
-          expect(subject.first).to eq dummy_pipelines[:yaml_errors]
-          expect(subject.last).to eq dummy_pipelines[:tag]
+          expect(subject).to match_array(Ci::Pipeline.order(created_at: :desc))
         end
       end
 
@@ -221,7 +207,7 @@ describe PipelinesFinder do
         let(:params) { { order_by: 'abnormal_column', sort: 'desc' } }
 
         it 'sorts by default' do
-          expect(subject.map(&:id)).to eq dummy_pipelines.values.map(&:id).sort.reverse
+          expect(subject).to match_array(Ci::Pipeline.order(id: :desc))
         end
       end
 
@@ -229,7 +215,7 @@ describe PipelinesFinder do
         let(:params) { { order_by: 'created_at', sort: 'abnormal_sort' } }
 
         it 'sorts by default' do
-          expect(subject.map(&:id)).to eq dummy_pipelines.values.map(&:id).sort.reverse
+          expect(subject).to match_array(Ci::Pipeline.order(id: :desc))
         end
       end
     end
