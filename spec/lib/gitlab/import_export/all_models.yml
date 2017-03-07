@@ -136,6 +136,7 @@ project:
 - slack_slash_commands_service
 - irker_service
 - pivotaltracker_service
+- prometheus_service
 - hipchat_service
 - flowdock_service
 - assembla_service

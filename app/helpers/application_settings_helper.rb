@@ -81,8 +81,8 @@ module ApplicationSettingsHelper
   end
 
   def repository_storages_options_for_select
-    options = Gitlab.config.repositories.storages.map do |name, path|
-      ["#{name} - #{path}", name]
+    options = Gitlab.config.repositories.storages.map do |name, storage|
+      ["#{name} - #{storage['path']}", name]
     end
 
     options_for_select(options, @application_setting.repository_storages)

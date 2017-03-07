@@ -37,7 +37,12 @@ describe 'Merge request', :feature, :js do
 
   context 'view merge request' do
     let!(:environment) { create(:environment, project: project) }
-    let!(:deployment) { create(:deployment, environment: environment, ref: 'feature', sha: merge_request.diff_head_sha) }
+
+    let!(:deployment) do
+      create(:deployment, environment: environment,
+                          ref: 'feature',
+                          sha: merge_request.diff_head_sha)
+    end
 
     before do
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
@@ -93,6 +98,26 @@ describe 'Merge request', :feature, :js do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_ajax
       expect(page).to have_selector('.accept-merge-request.btn-danger')
+    end
+  end
+
+  context 'when merge request is in the blocked pipeline state' do
+    before do
+      create(:ci_pipeline, project: project,
+                           sha: merge_request.diff_head_sha,
+                           ref: merge_request.source_branch,
+                           status: :manual)
+
+      visit namespace_project_merge_request_path(project.namespace,
+                                                 project,
+                                                 merge_request)
+    end
+
+    it 'shows information about blocked pipeline' do
+      expect(page).to have_content("Pipeline blocked")
+      expect(page).to have_content(
+        "The pipeline for this merge request requires a manual action")
+      expect(page).to have_css('.ci-status-icon-manual')
     end
   end
 

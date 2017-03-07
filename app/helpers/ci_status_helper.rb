@@ -48,6 +48,8 @@ module CiStatusHelper
         'icon_status_created'
       when 'skipped'
         'icon_status_skipped'
+      when 'manual'
+        'icon_status_manual'
       else
         'icon_status_canceled'
       end

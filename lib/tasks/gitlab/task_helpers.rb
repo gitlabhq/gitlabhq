@@ -130,8 +130,8 @@ module Gitlab
     end
 
     def all_repos
-      Gitlab.config.repositories.storages.each do |name, path|
-        IO.popen(%W(find #{path} -mindepth 2 -maxdepth 2 -type d -name *.git)) do |find|
+      Gitlab.config.repositories.storages.each_value do |repository_storage|
+        IO.popen(%W(find #{repository_storage['path']} -mindepth 2 -maxdepth 2 -type d -name *.git)) do |find|
           find.each_line do |path|
             yield path.chomp
           end
@@ -140,7 +140,7 @@ module Gitlab
     end
 
     def repository_storage_paths_args
-      Gitlab.config.repositories.storages.values
+      Gitlab.config.repositories.storages.values.map { |rs| rs['path'] }
     end
 
     def user_home

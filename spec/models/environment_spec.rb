@@ -271,7 +271,11 @@ describe Environment, models: true do
 
     context 'when the environment is unavailable' do
       let(:project) { create(:kubernetes_project) }
-      before { environment.stop }
+
+      before do
+        environment.stop
+      end
+
       it { is_expected.to be_falsy }
     end
   end
@@ -281,20 +285,85 @@ describe Environment, models: true do
     subject { environment.terminals }
 
     context 'when the environment has terminals' do
-      before { allow(environment).to receive(:has_terminals?).and_return(true) }
+      before do
+        allow(environment).to receive(:has_terminals?).and_return(true)
+      end
 
       it 'returns the terminals from the deployment service' do
-        expect(project.deployment_service).
-          to receive(:terminals).with(environment).
-          and_return(:fake_terminals)
+        expect(project.deployment_service)
+          .to receive(:terminals).with(environment)
+          .and_return(:fake_terminals)
 
         is_expected.to eq(:fake_terminals)
       end
     end
 
     context 'when the environment does not have terminals' do
-      before { allow(environment).to receive(:has_terminals?).and_return(false) }
-      it { is_expected.to eq(nil) }
+      before do
+        allow(environment).to receive(:has_terminals?).and_return(false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#has_metrics?' do
+    subject { environment.has_metrics? }
+
+    context 'when the enviroment is available' do
+      context 'with a deployment service' do
+        let(:project) { create(:prometheus_project) }
+
+        context 'and a deployment' do
+          let!(:deployment) { create(:deployment, environment: environment) }
+          it { is_expected.to be_truthy }
+        end
+
+        context 'but no deployments' do
+          it { is_expected.to be_falsy }
+        end
+      end
+
+      context 'without a monitoring service' do
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'when the environment is unavailable' do
+      let(:project) { create(:prometheus_project) }
+
+      before do
+        environment.stop
+      end
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#metrics' do
+    let(:project) { create(:prometheus_project) }
+    subject { environment.metrics }
+
+    context 'when the environment has metrics' do
+      before do
+        allow(environment).to receive(:has_metrics?).and_return(true)
+      end
+
+      it 'returns the metrics from the deployment service' do
+        expect(project.monitoring_service)
+          .to receive(:metrics).with(environment)
+          .and_return(:fake_metrics)
+
+        is_expected.to eq(:fake_metrics)
+      end
+    end
+
+    context 'when the environment does not have metrics' do
+      before do
+        allow(environment).to receive(:has_metrics?).and_return(false)
+      end
+
+      it { is_expected.to be_nil }
     end
   end
 

@@ -135,7 +135,11 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :protected_branches, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
       resources :variables, only: [:index, :show, :update, :create, :destroy]
-      resources :triggers, only: [:index, :create, :destroy]
+      resources :triggers, only: [:index, :create, :edit, :update, :destroy] do
+        member do
+          post :take_ownership
+        end
+      end
 
       resources :pipelines, only: [:index, :new, :create, :show] do
         collection do
@@ -155,6 +159,7 @@ constraints(ProjectUrlConstrainer.new) do
         member do
           post :stop
           get :terminal
+          get :metrics
           get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
         end
 
@@ -324,6 +329,7 @@ constraints(ProjectUrlConstrainer.new) do
         resource :members, only: [:show]
         resource :ci_cd, only: [:show], controller: 'ci_cd'
         resource :integrations, only: [:show]
+        resource :repository, only: [:show], controller: :repository
       end
 
       # Since both wiki and repository routing contains wildcard characters

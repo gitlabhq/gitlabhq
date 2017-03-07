@@ -102,10 +102,10 @@ module API
         success Entities::Issue
       end
       params do
-        requires :issue_id, type: Integer, desc: 'The ID of a project issue'
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
-      get ":id/issues/:issue_id" do
-        issue = find_project_issue(params[:issue_id])
+      get ":id/issues/:issue_iid" do
+        issue = find_project_issue(params[:issue_iid])
         present issue, with: Entities::Issue, current_user: current_user, project: user_project
       end
 
@@ -152,7 +152,7 @@ module API
         success Entities::Issue
       end
       params do
-        requires :issue_id, type: Integer, desc: 'The ID of a project issue'
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
         optional :title, type: String, desc: 'The title of an issue'
         optional :updated_at, type: DateTime,
                               desc: 'Date time when the issue was updated. Available only for admins and project owners.'
@@ -161,8 +161,8 @@ module API
         at_least_one_of :title, :description, :assignee_id, :milestone_id,
                         :labels, :created_at, :due_date, :confidential, :state_event
       end
-      put ':id/issues/:issue_id' do
-        issue = user_project.issues.find(params.delete(:issue_id))
+      put ':id/issues/:issue_iid' do
+        issue = user_project.issues.find_by!(iid: params.delete(:issue_iid))
         authorize! :update_issue, issue
 
         # Setting created_at time only allowed for admins and project owners
@@ -189,11 +189,11 @@ module API
         success Entities::Issue
       end
       params do
-        requires :issue_id, type: Integer, desc: 'The ID of a project issue'
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
         requires :to_project_id, type: Integer, desc: 'The ID of the new project'
       end
-      post ':id/issues/:issue_id/move' do
-        issue = user_project.issues.find_by(id: params[:issue_id])
+      post ':id/issues/:issue_iid/move' do
+        issue = user_project.issues.find_by(iid: params[:issue_iid])
         not_found!('Issue') unless issue
 
         new_project = Project.find_by(id: params[:to_project_id])
@@ -209,10 +209,10 @@ module API
 
       desc 'Delete a project issue'
       params do
-        requires :issue_id, type: Integer, desc: 'The ID of a project issue'
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
-      delete ":id/issues/:issue_id" do
-        issue = user_project.issues.find_by(id: params[:issue_id])
+      delete ":id/issues/:issue_iid" do
+        issue = user_project.issues.find_by(iid: params[:issue_iid])
         not_found!('Issue') unless issue
 
         authorize!(:destroy_issue, issue)

@@ -5,7 +5,11 @@ class AddIndexToLabelsForTypeAndProject < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def change
+  def up
     add_concurrent_index :labels, [:type, :project_id]
+  end
+
+  def down
+    remove_index :labels, [:type, :project_id] if index_exists? :labels, [:type, :project_id]
   end
 end

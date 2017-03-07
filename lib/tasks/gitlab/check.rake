@@ -354,7 +354,8 @@ namespace :gitlab do
     def check_repo_base_exists
       puts "Repo base directory exists?"
 
-      Gitlab.config.repositories.storages.each do |name, repo_base_path|
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        repo_base_path = repository_storage['path']
         print "#{name}... "
 
         if File.exist?(repo_base_path)
@@ -378,7 +379,8 @@ namespace :gitlab do
     def check_repo_base_is_not_symlink
       puts "Repo storage directories are symlinks?"
 
-      Gitlab.config.repositories.storages.each do |name, repo_base_path|
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        repo_base_path = repository_storage['path']
         print "#{name}... "
 
         unless File.exist?(repo_base_path)
@@ -401,7 +403,8 @@ namespace :gitlab do
     def check_repo_base_permissions
       puts "Repo paths access is drwxrws---?"
 
-      Gitlab.config.repositories.storages.each do |name, repo_base_path|
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        repo_base_path = repository_storage['path']
         print "#{name}... "
 
         unless File.exist?(repo_base_path)
@@ -431,7 +434,8 @@ namespace :gitlab do
       gitlab_shell_owner_group = Gitlab.config.gitlab_shell.owner_group
       puts "Repo paths owned by #{gitlab_shell_ssh_user}:#{gitlab_shell_owner_group}?"
 
-      Gitlab.config.repositories.storages.each do |name, repo_base_path|
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        repo_base_path = repository_storage['path']
         print "#{name}... "
 
         unless File.exist?(repo_base_path)
@@ -810,8 +814,8 @@ namespace :gitlab do
   namespace :repo do
     desc "GitLab | Check the integrity of the repositories managed by GitLab"
     task check: :environment do
-      Gitlab.config.repositories.storages.each do |name, path|
-        namespace_dirs = Dir.glob(File.join(path, '*'))
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        namespace_dirs = Dir.glob(File.join(repository_storage['path'], '*'))
 
         namespace_dirs.each do |namespace_dir|
           repo_dirs = Dir.glob(File.join(namespace_dir, '*'))

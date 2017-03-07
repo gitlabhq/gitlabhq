@@ -50,7 +50,7 @@ module SortingHelper
   end
 
   def sort_title_priority
-    'Priority'
+    'Label priority'
   end
 
   def sort_title_oldest_updated

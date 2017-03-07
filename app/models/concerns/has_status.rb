@@ -7,7 +7,7 @@ module HasStatus
   STARTED_STATUSES = %w[running success failed skipped manual].freeze
   ACTIVE_STATUSES = %w[pending running].freeze
   COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
-  ORDERED_STATUSES = %w[manual failed pending running canceled success skipped].freeze
+  ORDERED_STATUSES = %w[failed pending running manual canceled success skipped created].freeze
 
   class_methods do
     def status_sql

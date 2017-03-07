@@ -331,6 +331,10 @@ ul.notes {
 
     &:hover {
       color: $gl-link-color;
+    }
+
+    &:focus,
+    &:hover {
       text-decoration: none;
     }
   }
