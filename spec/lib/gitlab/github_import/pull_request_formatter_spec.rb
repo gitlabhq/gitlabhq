@@ -7,7 +7,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   let(:target_sha) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit).id }
   let(:repository) { double(id: 1, fork: false) }
   let(:source_repo) { repository }
-  let(:source_branch) { double(ref: 'feature', repo: source_repo, sha: source_sha) }
+  let(:source_branch) { double(ref: 'branch-merged', repo: source_repo, sha: source_sha) }
   let(:target_repo) { repository }
   let(:target_branch) { double(ref: 'master', repo: target_repo, sha: target_sha) }
   let(:removed_branch) { double(ref: 'removed-branch', repo: source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b') }
@@ -49,7 +49,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           title: 'New feature',
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
-          source_branch: 'feature',
+          source_branch: 'branch-merged',
           source_branch_sha: source_sha,
           target_project: project,
           target_branch: 'master',
@@ -75,7 +75,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           title: 'New feature',
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
-          source_branch: 'feature',
+          source_branch: 'branch-merged',
           source_branch_sha: source_sha,
           target_project: project,
           target_branch: 'master',
@@ -102,7 +102,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           title: 'New feature',
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
-          source_branch: 'feature',
+          source_branch: 'branch-merged',
           source_branch_sha: source_sha,
           target_project: project,
           target_branch: 'master',
@@ -194,7 +194,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
       let(:raw_data) { double(base_data) }
 
       it 'returns branch ref' do
-        expect(pull_request.source_branch_name).to eq 'feature'
+        expect(pull_request.source_branch_name).to eq 'branch-merged'
       end
     end
 
@@ -208,7 +208,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   end
 
   shared_examples 'Gitlab::GithubImport::PullRequestFormatter#target_branch_name' do
-    context 'when source branch exists' do
+    context 'when target branch exists' do
       let(:raw_data) { double(base_data) }
 
       it 'returns branch ref' do
