@@ -43,7 +43,7 @@ describe SessionsController do
         it 'updates the user activity' do
           expect do
             post(:create, user: { login: user.username, password: user.password })
-          end.to change { user_score }.from(0)
+          end.to change { user_activity(user) }
         end
       end
     end
