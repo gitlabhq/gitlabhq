@@ -35,14 +35,27 @@ describe Issues::ExportCsvService, services: true do
       issue.update!(milestone: milestone,
                     assignee: user,
                     description: 'Issue with details',
+                    state: :reopened,
                     due_date: DateTime.new(2014, 3, 2),
                     created_at: DateTime.new(2015, 4, 3, 2, 1, 0),
                     updated_at: DateTime.new(2016, 5, 4, 3, 2, 1),
                     labels: [feature_label, idea_label])
     end
 
+    specify 'iid' do
+      expect(csv[0]['Issue ID']).to eq issue.iid.to_s
+    end
+
+    specify 'url' do
+      expect(csv[0]['URL']).to match(/http.*#{project.full_path}.*#{issue.iid}/)
+    end
+
     specify 'title' do
       expect(csv[0]['Title']).to eq issue.title
+    end
+
+    specify 'state' do
+      expect(csv[0]['State']).to eq 'Open'
     end
 
     specify 'description' do
@@ -53,12 +66,20 @@ describe Issues::ExportCsvService, services: true do
       expect(csv[0]['Author']).to eq issue.author_name
     end
 
+    specify 'author username' do
+      expect(csv[0]['Author Username']).to eq issue.author.username
+    end
+
     specify 'assignee name' do
       expect(csv[0]['Assignee']).to eq issue.assignee_name
     end
 
+    specify 'assignee username' do
+      expect(csv[0]['Assignee Username']).to eq issue.assignee.username
+    end
+
     specify 'confidential' do
-      expect(csv[0]['Confidential']).to eq 'false'
+      expect(csv[0]['Confidential']).to eq 'No'
     end
 
     specify 'milestone' do

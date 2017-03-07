@@ -1,5 +1,8 @@
 module Issues
   class ExportCsvService
+    include Rails.application.routes.url_helpers
+    include GitlabRoutingHelper
+
     # Target attachment size before base64 encoding
     TARGET_FILESIZE = 15000000
 
@@ -26,12 +29,15 @@ module Issues
     def header_to_value_hash
       {
        'Issue ID' => 'iid',
+       'URL' => -> (issue) { issue_url(issue) },
        'Title' => 'title',
-       'State' => 'state',
+       'State' => -> (issue) { issue.closed? ? 'Closed' : 'Open' },
        'Description' => 'description',
        'Author' => 'author_name',
+       'Author Username' => -> (issue) { issue.author&.username },
        'Assignee' => 'assignee_name',
-       'Confidential' => 'confidential',
+       'Assignee Username' => -> (issue) { issue.assignee&.username },
+       'Confidential' => -> (issue) { issue.confidential? ? 'Yes' : 'No' },
        'Due Date' => -> (issue) { issue.due_date&.to_s(:csv) },
        'Created At (UTC)' => -> (issue) { issue.created_at&.to_s(:csv) },
        'Updated At (UTC)' => -> (issue) { issue.updated_at&.to_s(:csv) },
