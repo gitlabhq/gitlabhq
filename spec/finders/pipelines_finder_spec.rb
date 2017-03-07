@@ -56,7 +56,7 @@ describe PipelinesFinder do
         let(:params) { { scope: 'finished' } }
 
         it 'has only finished status' do
-          expect(subject.map(&:status)).to match_array %w(success canceled failed)
+          expect(subject.map(&:status)).to match_array %[success canceled failed]
         end
       end
 
