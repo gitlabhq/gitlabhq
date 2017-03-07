@@ -2,7 +2,7 @@ module Geo
   class NodeStatusService
     include HTTParty
 
-    KEYS = %w(health repositories repositories_synced repositories_failed).freeze
+    KEYS = %w(health repositories_count repositories_synced_count repositories_failed_count).freeze
 
     # HTTParty timeout
     default_timeout Gitlab.config.gitlab.geo_status_timeout

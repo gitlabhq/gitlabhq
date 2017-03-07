@@ -771,9 +771,9 @@ module API
 
     class GeoNodeStatus < Grape::Entity
       expose :health
-      expose :repositories
-      expose :repositories_synced
-      expose :repositories_failed
+      expose :repositories_count
+      expose :repositories_synced_count
+      expose :repositories_failed_count
     end
   end
 end
