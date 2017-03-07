@@ -8,5 +8,6 @@ export default class FilteredSearchBoards extends gl.FilteredSearchManager {
 
   updateObject(path) {
     this.store.path = path.substr(1);
+    gl.issueBoards.BoardsStore.updateFiltersUrl();
   }
 }

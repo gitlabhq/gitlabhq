@@ -120,7 +120,7 @@
       })[0];
     },
     updateFiltersUrl () {
-      history.pushState(null, null, `?${$.param(this.state.filters)}`);
+      history.pushState(null, null, `?${this.filter.path}`);
     }
   };
 })();
