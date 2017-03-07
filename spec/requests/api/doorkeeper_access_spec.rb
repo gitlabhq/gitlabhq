@@ -39,4 +39,22 @@ describe API::API, api: true do
       end
     end
   end
+
+  describe "when user is blocked" do
+    it "returns authentication error" do
+      user.block
+      get api("/user"), access_token: token.token
+
+      expect(response).to have_http_status(401)
+    end
+  end
+
+  describe "when user is ldap_blocked" do
+    it "returns authentication error" do
+      user.ldap_block
+      get api("/user"), access_token: token.token
+
+      expect(response).to have_http_status(401)
+    end
+  end
 end

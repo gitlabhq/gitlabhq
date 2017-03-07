@@ -70,7 +70,7 @@ There are a few reserved `keywords` that **cannot** be used as job names:
 | image         | no | Use docker image, covered in [Use Docker](../docker/README.md) |
 | services      | no | Use docker services, covered in [Use Docker](../docker/README.md) |
 | stages        | no | Define build stages |
-| types         | no | Alias for `stages` |
+| types         | no | Alias for `stages` (deprecated) |
 | before_script | no | Define commands that run before each job's script |
 | after_script  | no | Define commands that run after each job's script |
 | variables     | no | Define build variables |
@@ -129,6 +129,8 @@ There are also two edge cases worth mentioning:
 2. If a job doesn't specify a `stage`, the job is assigned the `test` stage.
 
 ### types
+
+> Deprecated, and will be removed in 10.0. Use [stages](#stages) instead.
 
 Alias for [stages](#stages).
 

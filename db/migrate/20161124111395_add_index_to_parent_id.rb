@@ -8,7 +8,11 @@ class AddIndexToParentId < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def change
+  def up
     add_concurrent_index(:namespaces, [:parent_id, :id], unique: true)
+  end
+
+  def down
+    remove_index :namespaces, [:parent_id, :id] if index_exists? :namespaces, [:parent_id, :id]
   end
 end

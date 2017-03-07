@@ -3,6 +3,24 @@ require 'spec_helper'
 describe Gitlab::Auth, lib: true do
   let(:gl_auth) { described_class }
 
+  describe 'constants' do
+    it 'API_SCOPES contains all scopes for API access' do
+      expect(subject::API_SCOPES).to eq [:api, :read_user]
+    end
+
+    it 'OPENID_SCOPES contains all scopes for OpenID Connect' do
+      expect(subject::OPENID_SCOPES).to eq [:openid]
+    end
+
+    it 'DEFAULT_SCOPES contains all default scopes' do
+      expect(subject::DEFAULT_SCOPES).to eq [:api]
+    end
+
+    it 'OPTIONAL_SCOPES contains all non-default scopes' do
+      expect(subject::OPTIONAL_SCOPES).to eq [:read_user, :openid]
+    end
+  end
+
   describe 'find_for_git_client' do
     context 'build token' do
       subject { gl_auth.find_for_git_client('gitlab-ci-token', build.token, project: project, ip: 'ip') }
@@ -220,6 +238,18 @@ describe Gitlab::Auth, lib: true do
       def operation
         expect(gl_auth.find_with_user_password(username, password)).to eq(user)
       end
+    end
+
+    it "does not find user in blocked state" do
+      user.block
+
+      expect( gl_auth.find_with_user_password(username, password) ).not_to eql user
+    end
+
+    it "does not find user in ldap_blocked state" do
+      user.ldap_block
+
+      expect( gl_auth.find_with_user_password(username, password) ).not_to eql user
     end
 
     context "with ldap enabled" do

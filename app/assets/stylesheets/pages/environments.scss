@@ -143,3 +143,71 @@
     }
   }
 }
+
+.prometheus-graph {
+  text {
+    fill: $stat-graph-axis-fill;
+  }
+}
+
+.x-axis path,
+.y-axis path,
+.label-x-axis-line,
+.label-y-axis-line {
+  fill: none;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.x-axis path,
+.y-axis path {
+  stroke: $stat-graph-axis-fill;
+}
+
+.label-x-axis-line,
+.label-y-axis-line {
+  stroke: $border-color;
+}
+
+.y-axis {
+  line {
+    stroke: $stat-graph-axis-fill;
+    stroke-width: 1;
+  }
+}
+
+.metric-area {
+  opacity: 0.8;
+}
+
+.prometheus-graph-overlay {
+  fill: none;
+  opacity: 0.0;
+  pointer-events: all;
+}
+
+.rect-text-metric {
+  fill: $white-light;
+  stroke-width: 1;
+  stroke: $black;
+}
+
+.rect-axis-text {
+  fill: $white-light;
+}
+
+.text-metric,
+.text-median-metric,
+.text-metric-usage,
+.text-metric-date {
+  fill: $black;
+}
+
+.text-metric-date {
+  font-weight: 200;
+}
+
+.selected-metric-line {
+  stroke: $black;
+  stroke-width: 1;
+}

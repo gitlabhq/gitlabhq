@@ -2,9 +2,17 @@ module Gitlab
   module Auth
     MissingPersonalTokenError = Class.new(StandardError)
 
-    SCOPES = [:api, :read_user].freeze
+    # Scopes used for GitLab API access
+    API_SCOPES = [:api, :read_user].freeze
+
+    # Scopes used for OpenID Connect
+    OPENID_SCOPES = [:openid].freeze
+
+    # Default scopes for OAuth applications that don't define their own
     DEFAULT_SCOPES = [:api].freeze
-    OPTIONAL_SCOPES = SCOPES - DEFAULT_SCOPES
+
+    # Other available scopes
+    OPTIONAL_SCOPES = (API_SCOPES + OPENID_SCOPES - DEFAULT_SCOPES).freeze
 
     class << self
       def find_for_git_client(login, password, project:, ip:)
@@ -40,7 +48,7 @@ module Gitlab
 
             Gitlab::LDAP::Authentication.login(login, password)
           else
-            user if user.valid_password?(password)
+            user if user.active? && user.valid_password?(password)
           end
         end
       end

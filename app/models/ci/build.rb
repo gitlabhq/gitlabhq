@@ -564,10 +564,35 @@ module Ci
       @unscoped_project ||= Project.unscoped.find_by(id: gl_project_id)
     end
 
+    CI_REGISTRY_USER = 'gitlab-ci-token'.freeze
+
     def predefined_variables
       variables = [
         { key: 'CI', value: 'true', public: true },
         { key: 'GITLAB_CI', value: 'true', public: true },
+        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
+        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
+        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
+        { key: 'CI_JOB_ID', value: id.to_s, public: true },
+        { key: 'CI_JOB_NAME', value: name, public: true },
+        { key: 'CI_JOB_STAGE', value: stage, public: true },
+        { key: 'CI_JOB_TOKEN', value: token, public: false },
+        { key: 'CI_COMMIT_SHA', value: sha, public: true },
+        { key: 'CI_COMMIT_REF_NAME', value: ref, public: true },
+        { key: 'CI_COMMIT_REF_SLUG', value: ref_slug, public: true },
+        { key: 'CI_REGISTRY_USER', value: CI_REGISTRY_USER, public: true },
+        { key: 'CI_REGISTRY_PASSWORD', value: token, public: false },
+        { key: 'CI_REPOSITORY_URL', value: repo_url, public: false }
+      ]
+
+      variables << { key: "CI_COMMIT_TAG", value: ref, public: true } if tag?
+      variables << { key: "CI_PIPELINE_TRIGGERED", value: 'true', public: true } if trigger_request
+      variables << { key: "CI_JOB_MANUAL", value: 'true', public: true } if action?
+      variables.concat(legacy_variables)
+    end
+
+    def legacy_variables
+      variables = [
         { key: 'CI_BUILD_ID', value: id.to_s, public: true },
         { key: 'CI_BUILD_TOKEN', value: token, public: false },
         { key: 'CI_BUILD_REF', value: sha, public: true },
@@ -575,14 +600,12 @@ module Ci
         { key: 'CI_BUILD_REF_NAME', value: ref, public: true },
         { key: 'CI_BUILD_REF_SLUG', value: ref_slug, public: true },
         { key: 'CI_BUILD_NAME', value: name, public: true },
-        { key: 'CI_BUILD_STAGE', value: stage, public: true },
-        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
-        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
-        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true }
+        { key: 'CI_BUILD_STAGE', value: stage, public: true }
       ]
-      variables << { key: 'CI_BUILD_TAG', value: ref, public: true } if tag?
-      variables << { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true } if trigger_request
-      variables << { key: 'CI_BUILD_MANUAL', value: 'true', public: true } if action?
+
+      variables << { key: "CI_BUILD_TAG", value: ref, public: true } if tag?
+      variables << { key: "CI_BUILD_TRIGGERED", value: 'true', public: true } if trigger_request
+      variables << { key: "CI_BUILD_MANUAL", value: 'true', public: true } if action?
       variables
     end
 

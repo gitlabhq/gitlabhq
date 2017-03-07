@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Profiles::PersonalAccessTokensController do
   let(:user) { create(:user) }
+  let(:token_attributes) { attributes_for(:personal_access_token) }
 
   before { sign_in(user) }
 
@@ -10,40 +11,25 @@ describe Profiles::PersonalAccessTokensController do
       PersonalAccessToken.order(:created_at).last
     end
 
-    it "allows creation of a token" do
+    it "allows creation of a token with scopes" do
       name = FFaker::Product.brand
+      scopes = %w[api read_user]
 
-      post :create, personal_access_token: { name: name }
+      post :create, personal_access_token: token_attributes.merge(scopes: scopes, name: name)
 
       expect(created_token).not_to be_nil
       expect(created_token.name).to eq(name)
-      expect(created_token.expires_at).to be_nil
+      expect(created_token.scopes).to eq(scopes)
       expect(PersonalAccessToken.active).to include(created_token)
     end
 
     it "allows creation of a token with an expiry date" do
       expires_at = 5.days.from_now.to_date
 
-      post :create, personal_access_token: { name: FFaker::Product.brand, expires_at: expires_at }
+      post :create, personal_access_token: token_attributes.merge(expires_at: expires_at)
 
       expect(created_token).not_to be_nil
       expect(created_token.expires_at).to eq(expires_at)
-    end
-
-    context "scopes" do
-      it "allows creation of a token with scopes" do
-        post :create, personal_access_token: { name: FFaker::Product.brand, scopes: %w(api read_user) }
-
-        expect(created_token).not_to be_nil
-        expect(created_token.scopes).to eq(%w(api read_user))
-      end
-
-      it "allows creation of a token with no scopes" do
-        post :create, personal_access_token: { name: FFaker::Product.brand, scopes: [] }
-
-        expect(created_token).not_to be_nil
-        expect(created_token.scopes).to eq([])
-      end
     end
   end
 

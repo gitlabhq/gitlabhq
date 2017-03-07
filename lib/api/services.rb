@@ -422,6 +422,14 @@ module API
           desc: 'Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.'
         }
       ],
+      'prometheus' => [
+        {
+          required: true,
+          name: :api_url,
+          type: String,
+          desc: 'Prometheus API Base URL, like http://prometheus.example.com/'
+        }
+      ],
       'pushover' => [
         {
           required: true,
@@ -558,6 +566,7 @@ module API
       SlackSlashCommandsService,
       PipelinesEmailService,
       PivotaltrackerService,
+      PrometheusService,
       PushoverService,
       RedmineService,
       SlackService,

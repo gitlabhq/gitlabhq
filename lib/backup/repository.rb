@@ -68,7 +68,8 @@ module Backup
     end
 
     def restore
-      Gitlab.config.repositories.storages.each do |name, path|
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        path = repository_storage['path']
         next unless File.exist?(path)
 
         # Move repos dir to 'repositories.old' dir
@@ -199,7 +200,7 @@ module Backup
     private
 
     def repository_storage_paths_args
-      Gitlab.config.repositories.storages.values
+      Gitlab.config.repositories.storages.values.map { |rs| rs['path'] }
     end
   end
 end

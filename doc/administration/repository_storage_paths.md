@@ -52,9 +52,12 @@ respectively.
       # Paths where repositories can be stored. Give the canonicalized absolute pathname.
       # NOTE: REPOS PATHS MUST NOT CONTAIN ANY SYMLINK!!!
       storages: # You must have at least a 'default' storage path.
-        default: /home/git/repositories
-        nfs: /mnt/nfs/repositories
-        cephfs: /mnt/cephfs/repositories
+        default:
+          path: /home/git/repositories
+        nfs:
+          path: /mnt/nfs/repositories
+        cephfs:
+          path: /mnt/cephfs/repositories
     ```
 
 1. [Restart GitLab] for the changes to take effect.
@@ -75,9 +78,9 @@ working, you can remove the `repos_path` line.
 
     ```ruby
     git_data_dirs({
-      "default" => "/var/opt/gitlab/git-data",
-      "nfs" => "/mnt/nfs/git-data",
-      "cephfs" => "/mnt/cephfs/git-data"
+      "default" => { "path" => "/var/opt/gitlab/git-data" },
+      "nfs" => { "path" => "/mnt/nfs/git-data" },
+      "cephfs" => { "path" => "/mnt/cephfs/git-data" }
     })
     ```
 
