@@ -1483,6 +1483,7 @@ ActiveRecord::Schema.define(version: 20170405080720) do
     t.boolean "authorized_projects_populated"
     t.boolean "auditor", default: false, null: false
     t.boolean "ghost"
+    t.date "last_activity_on"
     t.boolean "notified_of_own_activity"
     t.boolean "support_bot"
   end
