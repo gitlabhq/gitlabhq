@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Multiple Issue Boards', :feature, :js do
+describe 'Board with milestone', :feature, :js do
   include WaitForAjax
   include WaitForVueResource
 
