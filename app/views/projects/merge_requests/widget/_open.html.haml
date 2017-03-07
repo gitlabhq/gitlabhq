@@ -27,6 +27,8 @@
       = render 'projects/merge_requests/widget/open/build_failed'
     - elsif !@merge_request.mergeable_discussions_state?
       = render 'projects/merge_requests/widget/open/unresolved_discussions'
+    - elsif @pipeline&.blocked?
+      = render 'projects/merge_requests/widget/open/manual'
     - elsif @merge_request.can_be_merged? || resolved_conflicts
       = render 'projects/merge_requests/widget/open/accept'
 
