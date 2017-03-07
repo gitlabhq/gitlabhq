@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20170224075132) do
-=======
 ActiveRecord::Schema.define(version: 20170306170512) do
->>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -122,9 +118,11 @@ ActiveRecord::Schema.define(version: 20170306170512) do
     t.integer "shared_runners_minutes", default: 0, null: false
     t.integer "repository_size_limit", limit: 8, default: 0
     t.integer "terminal_max_session_time", default: 0, null: false
-<<<<<<< HEAD
     t.integer "minimum_mirror_sync_time", default: 15, null: false
     t.string "default_artifacts_expire_in", default: "0", null: false
+    t.integer "unique_ips_limit_per_user"
+    t.integer "unique_ips_limit_time_window"
+    t.boolean "unique_ips_limit_enabled", default: false, null: false
     t.string "elasticsearch_url", default: "http://localhost:9200"
     t.boolean "elasticsearch_aws", default: false, null: false
     t.string "elasticsearch_aws_region", default: "us-east-1"
@@ -156,12 +154,6 @@ ActiveRecord::Schema.define(version: 20170306170512) do
     t.integer "user_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-=======
-    t.string "default_artifacts_expire_in", default: "0", null: false
-    t.integer "unique_ips_limit_per_user"
-    t.integer "unique_ips_limit_time_window"
-    t.boolean "unique_ips_limit_enabled", default: false, null: false
->>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
   end
 
   add_index "approvers", ["target_id", "target_type"], name: "index_approvers_on_target_id_and_target_type", using: :btree

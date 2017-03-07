@@ -312,13 +312,9 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-<<<<<<< HEAD
-      resources :boards, only: [:index, :show, :create, :update, :destroy] do
-=======
       get 'noteable/:target_type/:target_id/notes' => 'notes#index', as: 'noteable_notes'
 
-      resources :boards, only: [:index, :show] do
->>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
+      resources :boards, only: [:index, :show, :create, :update, :destroy] do
         scope module: :boards do
           resources :issues, only: [:index, :update]
 

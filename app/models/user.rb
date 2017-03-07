@@ -101,15 +101,12 @@ class User < ActiveRecord::Base
   has_many :todos,                    dependent: :destroy
   has_many :notification_settings,    dependent: :destroy
   has_many :award_emoji,              dependent: :destroy
-<<<<<<< HEAD
   has_many :path_locks,               dependent: :destroy
 
   # Protected Branch Access
   has_many :protected_branch_merge_access_levels, dependent: :destroy, class_name: ProtectedBranch::MergeAccessLevel
   has_many :protected_branch_push_access_levels, dependent: :destroy, class_name: ProtectedBranch::PushAccessLevel
-=======
   has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id
->>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
 
   has_many :assigned_issues,          dependent: :nullify, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"

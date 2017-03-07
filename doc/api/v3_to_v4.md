@@ -63,21 +63,15 @@ changes are in V4:
 - Return 202 with JSON body on async removals on V4 API (DELETE `/projects/:id/repository/merged_branches` and DELETE `/projects/:id`) [!9449](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9449)
 - `projects/:id/milestones?iid[]=x&iid[]=y` array filter has been renamed to `iids` [!9096](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9096)
 - Return basic info about pipeline in `GET /projects/:id/pipelines` [!8875](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8875)
-<<<<<<< HEAD
 - Simplify project payload exposed on Environment endpoints [!9675](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9675)
+- Renamed all `build` references to `job` [!9463](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9463)
+- Drop GET '/projects/:id/repository/commits/:sha/jobs' [!9463](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9463)
+- Rename Build Triggers to be Pipeline Triggers API [!9713](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9713)
+  - `POST /projects/:id/trigger/builds` to `POST /projects/:id/trigger/pipeline`
+  - Require description when creating a new trigger `POST /projects/:id/triggers`
 
 #### EE-specific
 
 - Remove the ProjectGitHook API. Use the ProjectPushRule API instead [!1301](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1301)
 - Removed `repository_storage` from `PUT /application/settings` and `GET /application/settings` (use `repository_storages` instead) [!1307](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1307)
 - Removed `elasticsearch_host` and `elasticsearch_port` from `PUT /application/settings` (use `elasticsearch_url` instead) [!1305](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1305)
-
-=======
-- Renamed all `build` references to `job` [!9463](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9463)
-- Drop GET '/projects/:id/repository/commits/:sha/jobs' [!9463](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9463)
-- Rename Build Triggers to be Pipeline Triggers API [!9713](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9713)
-  - `POST /projects/:id/trigger/builds` to `POST /projects/:id/trigger/pipeline`
-  - Require description when creating a new trigger `POST /projects/:id/triggers`
-- Simplify project payload exposed on Environment endpoints [!9675](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9675)
-
->>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb

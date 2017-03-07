@@ -51,13 +51,10 @@ module Gitlab
 
     def self.random
       postgresql? ? "RANDOM()" : "RAND()"
-<<<<<<< HEAD
     end
 
     def self.minute_interval(value)
       postgresql? ? "#{value} * '1 minute'::interval" : "INTERVAL #{value} MINUTE"
-=======
->>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
     end
 
     def true_value

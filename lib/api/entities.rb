@@ -652,7 +652,6 @@ module API
       end
     end
 
-<<<<<<< HEAD
     class License < Grape::Entity
       expose :starts_at, :expires_at, :licensee, :add_ons
 
@@ -669,8 +668,6 @@ module API
       expose :id, :variables
     end
 
-=======
->>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
     class Runner < Grape::Entity
       expose :id
       expose :description
