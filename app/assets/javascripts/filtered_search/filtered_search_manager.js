@@ -107,6 +107,7 @@
         if (!activeElements.length) {
           if (this.isHandledAsync) {
             e.stopImmediatePropagation();
+
             this.filteredSearchInput.blur();
             this.dropdownManager.resetDropdowns();
           } else {
@@ -205,6 +206,10 @@
       this.handleInputPlaceholder();
 
       this.dropdownManager.resetDropdowns();
+
+      if (this.isHandledAsync) {
+        this.search();
+      }
     }
 
     handleInputVisualToken() {
