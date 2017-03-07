@@ -231,7 +231,7 @@ gem 'uglifier', '~> 2.7.2'
 
 gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.3.0'
-gem 'font-awesome-rails', '~> 4.6.1'
+gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione',          '~> 3.0'
 gem 'gon',                '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
