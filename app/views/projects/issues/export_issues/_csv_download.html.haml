@@ -10,7 +10,7 @@
       .modal-header
         = icon('check', { class: 'export-checkmark' })
         %strong
-          #{@issues_count} issues selected
+          #{cached_issuables_count_for_state(:issues, params['state'])} issues selected
       .modal-body
         %div
           The CSV export will be created in the background. Once it is finished, it will be attached to an email sent to

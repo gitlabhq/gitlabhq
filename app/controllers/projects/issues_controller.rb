@@ -25,7 +25,6 @@ class Projects::IssuesController < Projects::ApplicationController
   def index
     @collection_type    = "Issue"
     @issues             = issues_collection
-    @issues_count       = @issues.count
 
     @issues             = @issues.page(params[:page])
     @issuable_meta_data = issuable_meta_data(@issues, @collection_type)

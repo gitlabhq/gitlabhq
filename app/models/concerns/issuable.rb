@@ -179,8 +179,9 @@ module Issuable
     end
 
     def labels_hash
-      eager_load(:labels).pluck(:id, 'labels.title').inject(Hash.new([])) do |memo, (issue_id, label)|
-        memo[issue_id] += [label]
+      eager_load(:labels).pluck(:id, 'labels.title').inject({}) do |memo, (issue_id, label)|
+        memo[issue_id] ||= []
+        memo[issue_id] << label
         memo
       end
     end
