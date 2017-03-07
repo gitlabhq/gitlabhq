@@ -194,14 +194,25 @@ module CommitsHelper
     end
   end
 
-  def view_file_btn(commit_sha, diff_new_path, project)
+  def view_file_button(commit_sha, diff_new_path, project)
     link_to(
       namespace_project_blob_path(project.namespace, project,
                                   tree_join(commit_sha, diff_new_path)),
-      class: 'btn view-file js-view-file btn-file-option'
+      class: 'btn view-file js-view-file'
     ) do
       raw('View file @') + content_tag(:span, commit_sha[0..6],
                                        class: 'commit-short-id')
+    end
+  end
+
+  def view_on_environment_button(commit_sha, diff_new_path, environment)
+    return unless environment && commit_sha
+
+    external_url = environment.external_url_for(diff_new_path, commit_sha)
+    return unless external_url
+
+    link_to(external_url, class: 'btn btn-file-option has-tooltip', target: '_blank', title: "View on #{environment.formatted_external_url}", data: { container: 'body' }) do
+      icon('external-link')
     end
   end
 

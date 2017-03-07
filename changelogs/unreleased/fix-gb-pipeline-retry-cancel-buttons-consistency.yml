@@ -1,0 +1,4 @@
+---
+title: Fix pipeline retry and cancel buttons on pipeline details page
+merge_request: 9225
+author:

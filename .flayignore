@@ -1,3 +1,4 @@
 *.erb
 lib/gitlab/sanitizers/svg/whitelist.rb
 lib/gitlab/diff/position_tracer.rb
+app/policies/project_policy.rb

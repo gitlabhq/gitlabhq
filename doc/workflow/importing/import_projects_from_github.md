@@ -28,7 +28,7 @@ still be able to import their GitHub repositories with a
 When issues/pull requests are being imported, the GitHub importer tries to find
 the GitHub author/assignee in GitLab's database using the GitHub ID. For this
 to work, the GitHub author/assignee should have signed in beforehand in GitLab
-and [**associated their GitHub account**][social sign-in]. If the user is not
+and **associated their GitHub account**. If the user is not
 found in GitLab's database, the project creator (most of the times the current
 user that started the import process) is set as the author, but a reference on
 the issue about the original GitHub author is kept.
@@ -60,8 +60,7 @@ If the [GitHub integration][gh-import] is enabled by your GitLab administrator,
 you can use it instead of the personal access token.
 
 1. First you may want to connect your GitHub account to GitLab in order for
-   the username mapping to be correct. Follow the [social sign-in] documentation
-   on how to do so.
+   the username mapping to be correct.
 1. Once you connect GitHub, click the **List your GitHub repositories** button
    and you will be redirected to GitHub for permission to access your projects.
 1. After accepting, you'll be automatically redirected to the importer.
@@ -115,4 +114,3 @@ if you have the privileges to do so.
 [gh-import]: ../../integration/github.md "GitHub integration"
 [gh-integration]: #authorize-access-to-your-repositories-using-the-github-integration
 [gh-token]: #authorize-access-to-your-repositories-using-a-personal-access-token
-[social sign-in]: ../../profile/account/social_sign_in.md

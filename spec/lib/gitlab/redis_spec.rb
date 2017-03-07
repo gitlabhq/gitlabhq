@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Redis do
-  let(:redis_config) { Rails.root.join('config', 'resque.yml').to_s }
+  include StubENV
 
   before(:each) { clear_raw_config }
   after(:each) { clear_raw_config }
@@ -71,6 +71,20 @@ describe Gitlab::Redis do
       url1 << 'foobar'
 
       expect(url2).not_to end_with('foobar')
+    end
+
+    context 'when yml file with env variable' do
+      let(:redis_config) { Rails.root.join('spec/fixtures/config/redis_config_with_env.yml') }
+
+      before  do
+        stub_env('TEST_GITLAB_REDIS_URL', 'redis://redishost:6379')
+      end
+
+      it 'reads redis url from env variable' do
+        stub_const("#{described_class}::CONFIG_FILE", redis_config)
+
+        expect(described_class.url).to eq 'redis://redishost:6379'
+      end
     end
   end
 

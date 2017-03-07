@@ -13,8 +13,22 @@ describe Ci::CreateTriggerRequestService, services: true do
     context 'valid params' do
       subject { service.execute(project, trigger, 'master') }
 
-      it { expect(subject).to be_kind_of(Ci::TriggerRequest) }
-      it { expect(subject.builds.first).to be_kind_of(Ci::Build) }
+      context 'without owner' do
+        it { expect(subject).to be_kind_of(Ci::TriggerRequest) }
+        it { expect(subject.pipeline).to be_kind_of(Ci::Pipeline) }
+        it { expect(subject.builds.first).to be_kind_of(Ci::Build) }
+      end
+
+      context 'with owner' do
+        let(:owner) { create(:user) }
+        let(:trigger) { create(:ci_trigger, project: project, owner: owner) }
+
+        it { expect(subject).to be_kind_of(Ci::TriggerRequest) }
+        it { expect(subject.pipeline).to be_kind_of(Ci::Pipeline) }
+        it { expect(subject.pipeline.user).to eq(owner) }
+        it { expect(subject.builds.first).to be_kind_of(Ci::Build) }
+        it { expect(subject.builds.first.user).to eq(owner) }
+      end
     end
 
     context 'no commit for ref' do

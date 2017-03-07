@@ -3,6 +3,7 @@ require 'rails_helper'
 describe 'New/edit issue', feature: true, js: true do
   let!(:project)   { create(:project) }
   let!(:user)      { create(:user)}
+  let!(:user2)     { create(:user)}
   let!(:milestone) { create(:milestone, project: project) }
   let!(:label)     { create(:label, project: project) }
   let!(:label2)    { create(:label, project: project) }
@@ -10,6 +11,7 @@ describe 'New/edit issue', feature: true, js: true do
 
   before do
     project.team << [user, :master]
+    project.team << [user2, :master]
     login_as(user)
   end
 
@@ -22,14 +24,23 @@ describe 'New/edit issue', feature: true, js: true do
       fill_in 'issue_title', with: 'title'
       fill_in 'issue_description', with: 'title'
 
+      expect(find('a', text: 'Assign to me')).to be_visible
       click_button 'Assignee'
       page.within '.dropdown-menu-user' do
-        click_link user.name
+        click_link user2.name
       end
+      expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user2.id.to_s)
+      page.within '.js-assignee-search' do
+        expect(page).to have_content user2.name
+      end
+      expect(find('a', text: 'Assign to me')).to be_visible
+
+      click_link 'Assign to me'
       expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user.id.to_s)
       page.within '.js-assignee-search' do
         expect(page).to have_content user.name
       end
+      expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
 
       click_button 'Milestone'
       page.within '.issue-milestone' do
@@ -68,6 +79,22 @@ describe 'New/edit issue', feature: true, js: true do
         end
       end
     end
+
+    it 'correctly updates the dropdown toggle when removing a label' do
+      click_button 'Labels'
+
+      page.within '.dropdown-menu-labels' do
+        click_link label.title
+      end
+
+      expect(find('.js-label-select')).to have_content(label.title)
+
+      page.within '.dropdown-menu-labels' do
+        click_link label.title
+      end
+
+      expect(find('.js-label-select')).to have_content('Labels')
+    end
   end
 
   context 'edit issue' do
@@ -78,6 +105,7 @@ describe 'New/edit issue', feature: true, js: true do
     it 'allows user to update issue' do
       expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user.id.to_s)
       expect(find('input[name="issue[milestone_id]"]', visible: false).value).to match(milestone.id.to_s)
+      expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
 
       page.within '.js-user-search' do
         expect(page).to have_content user.name

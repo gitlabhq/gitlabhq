@@ -215,13 +215,13 @@ describe SystemNoteService, services: true do
     end
   end
 
-  describe '.merge_when_build_succeeds' do
+  describe '.merge_when_pipeline_succeeds' do
     let(:pipeline) { build(:ci_pipeline_without_jobs )}
     let(:noteable) do
       create(:merge_request, source_project: project, target_project: project)
     end
 
-    subject { described_class.merge_when_build_succeeds(noteable, project, author, noteable.diff_head_commit) }
+    subject { described_class.merge_when_pipeline_succeeds(noteable, project, author, noteable.diff_head_commit) }
 
     it_behaves_like 'a system note'
 
@@ -230,12 +230,12 @@ describe SystemNoteService, services: true do
     end
   end
 
-  describe '.cancel_merge_when_build_succeeds' do
+  describe '.cancel_merge_when_pipeline_succeeds' do
     let(:noteable) do
       create(:merge_request, source_project: project, target_project: project)
     end
 
-    subject { described_class.cancel_merge_when_build_succeeds(noteable, project, author) }
+    subject { described_class.cancel_merge_when_pipeline_succeeds(noteable, project, author) }
 
     it_behaves_like 'a system note'
 
@@ -245,6 +245,8 @@ describe SystemNoteService, services: true do
   end
 
   describe '.change_title' do
+    let(:noteable) { create(:issue, project: project, title: 'Lorem ipsum') }
+
     subject { described_class.change_title(noteable, project, author, 'Old title') }
 
     context 'when noteable responds to `title`' do
@@ -252,7 +254,7 @@ describe SystemNoteService, services: true do
 
       it 'sets the note text' do
         expect(subject.note).
-          to eq "changed title from **{-Old title-}** to **{+#{noteable.title}+}**"
+          to eq "changed title from **{-Old title-}** to **{+Lorem ipsum+}**"
       end
     end
   end
@@ -590,7 +592,7 @@ describe SystemNoteService, services: true do
       jira_service_settings
     end
 
-    noteable_types = ["merge_requests", "commit"]
+    noteable_types = %w(merge_requests commit)
 
     noteable_types.each do |type|
       context "when noteable is a #{type}" do
@@ -738,6 +740,94 @@ describe SystemNoteService, services: true do
       note = SystemNoteService.discussion_continued_in_issue(discussion, project, user, issue)
 
       expect(note.note).to include(issue.to_reference)
+    end
+  end
+
+  describe '.change_time_estimate' do
+    subject { described_class.change_time_estimate(noteable, project, author) }
+
+    it_behaves_like 'a system note'
+
+    context 'with a time estimate' do
+      it 'sets the note text' do
+        noteable.update_attribute(:time_estimate, 277200)
+
+        expect(subject.note).to eq "changed time estimate to 1w 4d 5h"
+      end
+    end
+
+    context 'without a time estimate' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "removed time estimate"
+      end
+    end
+  end
+
+  describe '.change_time_spent' do
+    # We need a custom noteable in order to the shared examples to be green.
+    let(:noteable) do
+      mr = create(:merge_request, source_project: project)
+      mr.spend_time(duration: 360000, user: author)
+      mr.save!
+      mr
+    end
+
+    subject do
+      described_class.change_time_spent(noteable, project, author)
+    end
+
+    it_behaves_like 'a system note'
+
+    context 'when time was added' do
+      it 'sets the note text' do
+        spend_time!(277200)
+
+        expect(subject.note).to eq "added 1w 4d 5h of time spent"
+      end
+    end
+
+    context 'when time was subtracted' do
+      it 'sets the note text' do
+        spend_time!(-277200)
+
+        expect(subject.note).to eq "subtracted 1w 4d 5h of time spent"
+      end
+    end
+
+    context 'when time was removed' do
+      it 'sets the note text' do
+        spend_time!(:reset)
+
+        expect(subject.note).to eq "removed time spent"
+      end
+    end
+
+    def spend_time!(seconds)
+      noteable.spend_time(duration: seconds, user: author)
+      noteable.save!
+    end
+  end
+
+  describe '.add_merge_request_wip_from_commit' do
+    let(:noteable) do
+      create(:merge_request, source_project: project, target_project: project)
+    end
+
+    subject do
+      described_class.add_merge_request_wip_from_commit(
+        noteable,
+        project,
+        author,
+        noteable.diff_head_commit
+      )
+    end
+
+    it_behaves_like 'a system note'
+
+    it "posts the 'marked as a Work In Progress from commit' system note" do
+      expect(subject.note).to match(
+        /marked as a \*\*Work In Progress\*\* from #{Commit.reference_pattern}/
+      )
     end
   end
 end

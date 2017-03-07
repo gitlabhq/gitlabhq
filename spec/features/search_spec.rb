@@ -169,16 +169,16 @@ describe "Search", feature: true  do
           find('.dropdown-menu').click_link 'Issues assigned to me'
           sleep 2
 
-          expect(page).to have_selector('.issues-holder')
-          expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
+          expect(page).to have_selector('.filtered-search')
+          expect(find('.filtered-search').value).to eq("assignee:@#{user.username}")
         end
 
         it 'takes user to her issues page when issues authored is clicked' do
           find('.dropdown-menu').click_link "Issues I've created"
           sleep 2
 
-          expect(page).to have_selector('.issues-holder')
-          expect(find('.js-author-search .dropdown-toggle-text')).to have_content(user.name)
+          expect(page).to have_selector('.filtered-search')
+          expect(find('.filtered-search').value).to eq("author:@#{user.username}")
         end
 
         it 'takes user to her MR page when MR assigned is clicked' do
@@ -186,7 +186,7 @@ describe "Search", feature: true  do
           sleep 2
 
           expect(page).to have_selector('.merge-requests-holder')
-          expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
+          expect(find('.filtered-search').value).to eq("assignee:@#{user.username}")
         end
 
         it 'takes user to her MR page when MR authored is clicked' do
@@ -194,7 +194,7 @@ describe "Search", feature: true  do
           sleep 2
 
           expect(page).to have_selector('.merge-requests-holder')
-          expect(find('.js-author-search .dropdown-toggle-text')).to have_content(user.name)
+          expect(find('.filtered-search').value).to eq("author:@#{user.username}")
         end
       end
 
@@ -209,6 +209,46 @@ describe "Search", feature: true  do
           expect(page).not_to have_selector('.dropdown-header', text: /#{project.name}/i)
         end
       end
+    end
+  end
+
+  describe 'search for commits' do
+    before do
+      visit search_path(project_id: project.id)
+    end
+
+    it 'redirects to commit page when search by sha and only commit found' do
+      fill_in 'search', with: '6d394385cf567f80a8fd85055db1ab4c5295806f'
+
+      click_button 'Search'
+
+      expect(page).to have_current_path(namespace_project_commit_path(project.namespace, project, '6d394385cf567f80a8fd85055db1ab4c5295806f'))
+    end
+
+    it 'redirects to single commit regardless of query case' do
+      fill_in 'search', with: '6D394385cf'
+
+      click_button 'Search'
+
+      expect(page).to have_current_path(namespace_project_commit_path(project.namespace, project, '6d394385cf567f80a8fd85055db1ab4c5295806f'))
+    end
+
+    it 'holds on /search page when the only commit is found by message' do
+      create_commit('Message referencing another sha: "deadbeef" ', project, user, 'master')
+
+      fill_in 'search', with: 'deadbeef'
+      click_button 'Search'
+
+      expect(page).to have_current_path('/search', only_path: true)
+    end
+
+    it 'shows multiple matching commits' do
+      fill_in 'search', with: 'See merge request'
+
+      click_button 'Search'
+      click_link 'Commits'
+
+      expect(page).to have_selector('.commit-row-description', count: 9)
     end
   end
 end

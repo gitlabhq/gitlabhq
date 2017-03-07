@@ -110,6 +110,28 @@ module GitlabMarkdownHelper
     end
   end
 
+  # Returns the text necessary to reference `entity` across projects
+  #
+  # project - Project to reference
+  # entity  - Object that responds to `to_reference`
+  #
+  # Examples:
+  #
+  #   cross_project_reference(project, project.issues.first)
+  #   # => 'namespace1/project1#123'
+  #
+  #   cross_project_reference(project, project.merge_requests.first)
+  #   # => 'namespace1/project1!345'
+  #
+  # Returns a String
+  def cross_project_reference(project, entity)
+    if entity.respond_to?(:to_reference)
+      entity.to_reference(project, full: true)
+    else
+      ''
+    end
+  end
+
   private
 
   # Return +text+, truncated to +max_chars+ characters, excluding any HTML
@@ -155,28 +177,6 @@ module GitlabMarkdownHelper
       true
     else
       truncated
-    end
-  end
-
-  # Returns the text necessary to reference `entity` across projects
-  #
-  # project - Project to reference
-  # entity  - Object that responds to `to_reference`
-  #
-  # Examples:
-  #
-  #   cross_project_reference(project, project.issues.first)
-  #   # => 'namespace1/project1#123'
-  #
-  #   cross_project_reference(project, project.merge_requests.first)
-  #   # => 'namespace1/project1!345'
-  #
-  # Returns a String
-  def cross_project_reference(project, entity)
-    if entity.respond_to?(:to_reference)
-      entity.to_reference(project)
-    else
-      ''
     end
   end
 

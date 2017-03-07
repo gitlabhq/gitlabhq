@@ -148,7 +148,7 @@ Get emails for GitLab CI builds.
 Set Build-Emails service for a project.
 
 ```
-PUT /projects/:id/services/builds-email
+PUT /projects/:id/services/jobs-email
 ```
 
 Parameters:
@@ -157,23 +157,23 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `recipients` | string | yes | Comma-separated list of recipient email addresses |
 | `add_pusher` | boolean | no | Add pusher to recipients list |
-| `notify_only_broken_builds` | boolean | no | Notify only broken builds |
+| `notify_only_broken_jobs` | boolean | no | Notify only broken jobs |
 
 
-### Delete Build-Emails service
+### Delete Job-Emails service
 
 Delete Build-Emails service for a project.
 
 ```
-DELETE /projects/:id/services/builds-email
+DELETE /projects/:id/services/jobs-email
 ```
 
-### Get Build-Emails service settings
+### Get Job-Emails service settings
 
 Get Build-Emails service settings for a project.
 
 ```
-GET /projects/:id/services/builds-email
+GET /projects/:id/services/jobs-email
 ```
 
 ## Campfire
@@ -580,7 +580,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `recipients` | string | yes | Comma-separated list of recipient email addresses |
 | `add_pusher` | boolean | no | Add pusher to recipients list |
-| `notify_only_broken_builds` | boolean | no | Notify only broken pipelines |
+| `notify_only_broken_jobs` | boolean | no | Notify only broken pipelines |
 
 
 ### Delete Pipeline-Emails service
@@ -808,5 +808,40 @@ Get JetBrains TeamCity CI service settings for a project.
 GET /projects/:id/services/teamcity
 ```
 
-[jira-doc]: ../project_services/jira.md
+[jira-doc]: ../user/project/integrations/jira.md
 [old-jira-api]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-13-stable/doc/api/services.md#jira
+
+
+## MockCI
+
+Mock an external CI. See [`gitlab-org/gitlab-mock-ci-service`](https://gitlab.com/gitlab-org/gitlab-mock-ci-service) for an example of a companion mock service.
+
+This service is only available when your environment is set to development.
+
+### Create/Edit MockCI service
+
+Set MockCI service for a project.
+
+```
+PUT /projects/:id/services/mock-ci
+```
+
+Parameters:
+
+- `mock_service_url` (**required**) - http://localhost:4004
+
+### Delete MockCI service
+
+Delete MockCI service for a project.
+
+```
+DELETE /projects/:id/services/mock-ci
+```
+
+### Get MockCI service settings
+
+Get MockCI service settings for a project.
+
+```
+GET /projects/:id/services/mock-ci
+```

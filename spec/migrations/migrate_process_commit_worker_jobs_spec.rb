@@ -62,7 +62,7 @@ describe MigrateProcessCommitWorkerJobs do
     end
 
     def pop_job
-      JSON.load(Sidekiq.redis { |r| r.lpop('queue:process_commit') })
+      JSON.parse(Sidekiq.redis { |r| r.lpop('queue:process_commit') })
     end
 
     before do
@@ -198,7 +198,7 @@ describe MigrateProcessCommitWorkerJobs do
       let(:job) do
         migration.down
 
-        JSON.load(Sidekiq.redis { |r| r.lpop('queue:process_commit') })
+        JSON.parse(Sidekiq.redis { |r| r.lpop('queue:process_commit') })
       end
 
       it 'includes the project ID' do

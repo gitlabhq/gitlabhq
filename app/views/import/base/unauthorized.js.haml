@@ -4,7 +4,7 @@
   import_button = tr.find(".btn-import")
   origin_target = target_field.text()
   project_name = "#{@project_name}"
-  origin_namespace = "#{@target_namespace.path}"
+  origin_namespace = "#{@target_namespace.full_path}"
   target_field.empty()
   target_field.append("<p class='alert alert-danger'>This namespace has already been taken! Please choose another one.</p>")
   target_field.append("<input type='text' name='target_namespace' />")

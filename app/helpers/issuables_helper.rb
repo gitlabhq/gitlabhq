@@ -1,6 +1,6 @@
 module IssuablesHelper
   def sidebar_gutter_toggle_icon
-    sidebar_gutter_collapsed? ? icon('angle-double-left') : icon('angle-double-right')
+    sidebar_gutter_collapsed? ? icon('angle-double-left', { 'aria-hidden': 'true' }) : icon('angle-double-right', { 'aria-hidden': 'true' })
   end
 
   def sidebar_gutter_collapsed_class
@@ -23,10 +23,19 @@ module IssuablesHelper
   def issuable_json_path(issuable)
     project = issuable.project
 
-    if issuable.kind_of?(MergeRequest)
+    if issuable.is_a?(MergeRequest)
       namespace_project_merge_request_path(project.namespace, project, issuable.iid, :json)
     else
       namespace_project_issue_path(project.namespace, project, issuable.iid, :json)
+    end
+  end
+
+  def serialize_issuable(issuable)
+    case issuable
+    when Issue
+      IssueSerializer.new.represent(issuable).to_json
+    when MergeRequest
+      MergeRequestSerializer.new.represent(issuable).to_json
     end
   end
 
@@ -43,7 +52,7 @@ module IssuablesHelper
         field_name: 'issuable_template',
         selected: selected_template(issuable),
         project_path: ref_project.path,
-        namespace_path: ref_project.namespace.path
+        namespace_path: ref_project.namespace.full_path
       }
     }
 
@@ -153,6 +162,10 @@ module IssuablesHelper
     ]
   end
 
+  def issuable_reference(issuable)
+    @show_full_reference ? issuable.to_reference(full: true) : issuable.to_reference(@group || @project)
+  end
+
   def issuable_filter_present?
     issuable_filter_params.any? { |k| params.key?(k) }
   end
@@ -185,7 +198,7 @@ module IssuablesHelper
     @counts[issuable_type][state]
   end
 
-  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page]
+  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page].freeze
   private_constant :IRRELEVANT_PARAMS_FOR_CACHE_KEY
 
   def issuables_state_counter_cache_key(issuable_type, state)

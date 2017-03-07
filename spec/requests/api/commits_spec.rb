@@ -5,7 +5,7 @@ describe API::Commits, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let!(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
+  let!(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:guest) { create(:project_member, :guest, user: user2, project: project) }
   let!(:note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'a comment on a commit') }
@@ -72,7 +72,7 @@ describe API::Commits, api: true  do
         get api("/projects/#{project.id}/repository/commits?since=invalid-date", user)
 
         expect(response).to have_http_status(400)
-        expect(json_response['message']).to include "\"since\" must be a timestamp in ISO 8601 format"
+        expect(json_response['error']).to eq('since is invalid')
       end
     end
 
@@ -107,7 +107,7 @@ describe API::Commits, api: true  do
       let(:message) { 'Created file' }
       let!(:invalid_c_params) do
         {
-          branch_name: 'master',
+          branch: 'master',
           commit_message: message,
           actions: [
             {
@@ -120,7 +120,7 @@ describe API::Commits, api: true  do
       end
       let!(:valid_c_params) do
         {
-          branch_name: 'master',
+          branch: 'master',
           commit_message: message,
           actions: [
             {
@@ -146,13 +146,23 @@ describe API::Commits, api: true  do
 
         expect(response).to have_http_status(400)
       end
+
+      context 'with project path in URL' do
+        let(:url) { "/projects/#{project.full_path.gsub('/', '%2F')}/repository/commits" }
+
+        it 'a new file in project repo' do
+          post api(url, user), valid_c_params
+
+          expect(response).to have_http_status(201)
+        end
+      end
     end
 
     context :delete do
       let(:message) { 'Deleted file' }
       let!(:invalid_d_params) do
         {
-          branch_name: 'markdown',
+          branch: 'markdown',
           commit_message: message,
           actions: [
             {
@@ -164,7 +174,7 @@ describe API::Commits, api: true  do
       end
       let!(:valid_d_params) do
         {
-          branch_name: 'markdown',
+          branch: 'markdown',
           commit_message: message,
           actions: [
             {
@@ -193,7 +203,7 @@ describe API::Commits, api: true  do
       let(:message) { 'Moved file' }
       let!(:invalid_m_params) do
         {
-          branch_name: 'feature',
+          branch: 'feature',
           commit_message: message,
           actions: [
             {
@@ -207,7 +217,7 @@ describe API::Commits, api: true  do
       end
       let!(:valid_m_params) do
         {
-          branch_name: 'feature',
+          branch: 'feature',
           commit_message: message,
           actions: [
             {
@@ -238,7 +248,7 @@ describe API::Commits, api: true  do
       let(:message) { 'Updated file' }
       let!(:invalid_u_params) do
         {
-          branch_name: 'master',
+          branch: 'master',
           commit_message: message,
           actions: [
             {
@@ -251,7 +261,7 @@ describe API::Commits, api: true  do
       end
       let!(:valid_u_params) do
         {
-          branch_name: 'master',
+          branch: 'master',
           commit_message: message,
           actions: [
             {
@@ -281,7 +291,7 @@ describe API::Commits, api: true  do
       let(:message) { 'Multiple actions' }
       let!(:invalid_mo_params) do
         {
-          branch_name: 'master',
+          branch: 'master',
           commit_message: message,
           actions: [
             {
@@ -309,7 +319,7 @@ describe API::Commits, api: true  do
       end
       let!(:valid_mo_params) do
         {
-          branch_name: 'master',
+          branch: 'master',
           commit_message: message,
           actions: [
             {
@@ -357,11 +367,21 @@ describe API::Commits, api: true  do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
 
         expect(response).to have_http_status(200)
-        expect(json_response['id']).to eq(project.repository.commit.id)
-        expect(json_response['title']).to eq(project.repository.commit.title)
-        expect(json_response['stats']['additions']).to eq(project.repository.commit.stats.additions)
-        expect(json_response['stats']['deletions']).to eq(project.repository.commit.stats.deletions)
-        expect(json_response['stats']['total']).to eq(project.repository.commit.stats.total)
+        commit = project.repository.commit
+        expect(json_response['id']).to eq(commit.id)
+        expect(json_response['short_id']).to eq(commit.short_id)
+        expect(json_response['title']).to eq(commit.title)
+        expect(json_response['message']).to eq(commit.safe_message)
+        expect(json_response['author_name']).to eq(commit.author_name)
+        expect(json_response['author_email']).to eq(commit.author_email)
+        expect(json_response['authored_date']).to eq(commit.authored_date.iso8601(3))
+        expect(json_response['committer_name']).to eq(commit.committer_name)
+        expect(json_response['committer_email']).to eq(commit.committer_email)
+        expect(json_response['committed_date']).to eq(commit.committed_date.iso8601(3))
+        expect(json_response['parent_ids']).to eq(commit.parent_ids)
+        expect(json_response['stats']['additions']).to eq(commit.stats.additions)
+        expect(json_response['stats']['deletions']).to eq(commit.stats.deletions)
+        expect(json_response['stats']['total']).to eq(commit.stats.total)
       end
 
       it "returns a 404 error if not found" do
@@ -436,6 +456,7 @@ describe API::Commits, api: true  do
       it 'returns merge_request comments' do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user)
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
         expect(json_response.first['note']).to eq('a comment on a commit')
@@ -452,6 +473,20 @@ describe API::Commits, api: true  do
       it 'does not return the diff of the selected commit' do
         get api("/projects/#{project.id}/repository/commits/1234ab/comments")
         expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'when the commit is present on two projects' do
+      let(:forked_project) { create(:project, :repository, creator: user2, namespace: user2.namespace) }
+      let!(:forked_project_note) { create(:note_on_commit, author: user2, project: forked_project, commit_id: forked_project.repository.commit.id, note: 'a comment on a commit for fork') }
+
+      it 'returns the comments for the target project' do
+        get api("/projects/#{forked_project.id}/repository/commits/#{forked_project.repository.commit.id}/comments", user2)
+
+        expect(response).to have_http_status(200)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['note']).to eq('a comment on a commit for fork')
+        expect(json_response.first['author']['id']).to eq(user2.id)
       end
     end
   end

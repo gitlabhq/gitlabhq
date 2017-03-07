@@ -17,7 +17,7 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
     described_class.new(project, user, commit_message: 'Awesome message')
   end
 
-  let(:todo_service) { TodoService.new }
+  let(:todo_service) { spy('todo service') }
 
   let(:merge_request) do
     create(:merge_request, merge_user: user,
@@ -104,6 +104,29 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
       it 'does not notify the todo service' do
         expect(todo_service).not_to receive(:merge_request_build_retried)
         service.close(commit_status)
+      end
+    end
+  end
+
+  describe '#close_all' do
+    context 'when using pipeline that belongs to merge request' do
+      it 'resolves todos about failed builds for pipeline' do
+        service.close_all(pipeline)
+
+        expect(todo_service)
+          .to have_received(:merge_request_build_retried)
+          .with(merge_request)
+      end
+    end
+
+    context 'when pipeline is not related to merge request' do
+      let(:pipeline) { create(:ci_empty_pipeline) }
+
+      it 'does not resolve any todos about failed builds' do
+        service.close_all(pipeline)
+
+        expect(todo_service)
+          .not_to have_received(:merge_request_build_retried)
       end
     end
   end

@@ -42,10 +42,10 @@ class FixupEnvironmentNameUniqueness < ActiveRecord::Migration
     conflicts.each do |id, name|
       update_sql =
         Arel::UpdateManager.new(ActiveRecord::Base).
-        table(environments).
-        set(environments[:name] => name + "-" + id.to_s).
-        where(environments[:id].eq(id)).
-        to_sql
+          table(environments).
+          set(environments[:name] => name + "-" + id.to_s).
+          where(environments[:id].eq(id)).
+          to_sql
 
       connection.exec_update(update_sql, self.class.name, [])
     end

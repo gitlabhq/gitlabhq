@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, one-var-declaration-per-line, quotes, no-shadow, prefer-arrow-callback, prefer-template, consistent-return, padded-blocks, no-return-assign, new-parens, no-param-reassign, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, one-var-declaration-per-line, quotes, no-shadow, prefer-arrow-callback, prefer-template, consistent-return, no-return-assign, new-parens, no-param-reassign, max-len */
 
 (function() {
   var Breakpoints = (function() {
@@ -43,6 +43,7 @@
       BreakpointInstance.prototype.getBreakpointSize = function() {
         var $visibleDevice;
         $visibleDevice = this.visibleDevice;
+        // TODO: Consider refactoring in light of turbolinks removal.
         // the page refreshed via turbolinks
         if (!$visibleDevice().length) {
           this.setup();
@@ -52,7 +53,6 @@
       };
 
       return BreakpointInstance;
-
     })();
 
     Breakpoints.get = function() {
@@ -60,7 +60,6 @@
     };
 
     return Breakpoints;
-
   })();
 
   $((function(_this) {
@@ -70,4 +69,4 @@
   })(this));
 
   window.Breakpoints = Breakpoints;
-}).call(this);
+}).call(window);

@@ -79,66 +79,53 @@ describe Ci::CreatePipelineService, services: true do
 
     context 'when commit contains a [ci skip] directive' do
       let(:message) { "some message[ci skip]" }
-      let(:messageFlip) { "some message[skip ci]" }
-      let(:capMessage) { "some message[CI SKIP]" }
-      let(:capMessageFlip) { "some message[SKIP CI]" }
+
+      ci_messages = [
+        "some message[ci skip]",
+        "some message[skip ci]",
+        "some message[CI SKIP]",
+        "some message[SKIP CI]",
+        "some message[ci_skip]",
+        "some message[skip_ci]",
+        "some message[ci-skip]",
+        "some message[skip-ci]"
+      ]
 
       before do
         allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { message }
       end
 
-      it "skips builds creation if there is [ci skip] tag in commit message" do
-        commits = [{ message: message }]
-        pipeline = execute(ref: 'refs/heads/master',
-                           before: '00000000',
-                           after: project.commit.id,
-                           commits: commits)
+      ci_messages.each do |ci_message|
+        it "skips builds creation if the commit message is #{ci_message}" do
+          commits = [{ message: ci_message }]
+          pipeline = execute(ref: 'refs/heads/master',
+                             before: '00000000',
+                             after: project.commit.id,
+                             commits: commits)
 
-        expect(pipeline).to be_persisted
-        expect(pipeline.builds.any?).to be false
-        expect(pipeline.status).to eq("skipped")
-      end
-
-      it "skips builds creation if there is [skip ci] tag in commit message" do
-        commits = [{ message: messageFlip }]
-        pipeline = execute(ref: 'refs/heads/master',
-                           before: '00000000',
-                           after: project.commit.id,
-                           commits: commits)
-
-        expect(pipeline).to be_persisted
-        expect(pipeline.builds.any?).to be false
-        expect(pipeline.status).to eq("skipped")
-      end
-
-      it "skips builds creation if there is [CI SKIP] tag in commit message" do
-        commits = [{ message: capMessage }]
-        pipeline = execute(ref: 'refs/heads/master',
-                           before: '00000000',
-                           after: project.commit.id,
-                           commits: commits)
-
-        expect(pipeline).to be_persisted
-        expect(pipeline.builds.any?).to be false
-        expect(pipeline.status).to eq("skipped")
-      end
-
-      it "skips builds creation if there is [SKIP CI] tag in commit message" do
-        commits = [{ message: capMessageFlip }]
-        pipeline = execute(ref: 'refs/heads/master',
-                           before: '00000000',
-                           after: project.commit.id,
-                           commits: commits)
-
-        expect(pipeline).to be_persisted
-        expect(pipeline.builds.any?).to be false
-        expect(pipeline.status).to eq("skipped")
+          expect(pipeline).to be_persisted
+          expect(pipeline.builds.any?).to be false
+          expect(pipeline.status).to eq("skipped")
+        end
       end
 
       it "does not skips builds creation if there is no [ci skip] or [skip ci] tag in commit message" do
         allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { "some message" }
 
         commits = [{ message: "some message" }]
+        pipeline = execute(ref: 'refs/heads/master',
+                           before: '00000000',
+                           after: project.commit.id,
+                           commits: commits)
+
+        expect(pipeline).to be_persisted
+        expect(pipeline.builds.first.name).to eq("rspec")
+      end
+
+      it "does not skip builds creation if the commit message is nil" do
+        allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { nil }
+
+        commits = [{ message: nil }]
         pipeline = execute(ref: 'refs/heads/master',
                            before: '00000000',
                            after: project.commit.id,

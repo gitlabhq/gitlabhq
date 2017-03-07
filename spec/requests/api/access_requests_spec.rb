@@ -9,7 +9,7 @@ describe API::AccessRequests, api: true  do
   let(:stranger) { create(:user) }
 
   let(:project) do
-    create(:project, :public, :access_requestable, creator_id: master.id, namespace: master.namespace) do |project|
+    create(:empty_project, :public, :access_requestable, creator_id: master.id, namespace: master.namespace) do |project|
       project.team << [developer, :developer]
       project.team << [master, :master]
       project.request_access(access_requester)
@@ -48,6 +48,7 @@ describe API::AccessRequests, api: true  do
           get api("/#{source_type.pluralize}/#{source.id}/access_requests", master)
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(1)
         end
@@ -199,7 +200,7 @@ describe API::AccessRequests, api: true  do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", access_requester)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_http_status(204)
           end.to change { source.requesters.count }.by(-1)
         end
       end
@@ -209,7 +210,7 @@ describe API::AccessRequests, api: true  do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", master)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_http_status(204)
           end.to change { source.requesters.count }.by(-1)
         end
 

@@ -4,7 +4,7 @@
 
 - content_for :page_specific_javascripts do
   = stylesheet_link_tag "xterm/xterm"
-  = page_specific_javascript_tag("terminal/terminal_bundle.js")
+  = page_specific_javascript_bundle_tag("terminal")
 
 %div{ class: container_class }
   .top-area
@@ -16,6 +16,8 @@
 
       .col-sm-6
         .nav-controls
+          = link_to @environment.external_url, class: 'btn btn-default' do
+            = icon('external-link')
           = render 'projects/deployments/actions', deployment: @environment.last_deployment
 
 .terminal-container{ class: container_class }

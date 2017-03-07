@@ -1,6 +1,6 @@
 # System hooks
 
-Your GitLab instance can perform HTTP POST requests on the following events: `project_create`, `project_destroy`, `project_rename`, `project_transfer`, `user_add_to_team`, `user_remove_from_team`, `user_create`, `user_destroy`, `key_create`, `key_destroy`, `group_create`, `group_destroy`, `user_add_to_group` and `user_remove_from_group`.
+Your GitLab instance can perform HTTP POST requests on the following events: `project_create`, `project_destroy`, `project_rename`, `project_transfer`, `project_update`, `user_add_to_team`, `user_remove_from_team`, `user_create`, `user_destroy`, `key_create`, `key_destroy`, `group_create`, `group_destroy`, `user_add_to_group` and `user_remove_from_group`.
 
 System hooks can be used, e.g. for logging or changing information in a LDAP server.
 
@@ -85,6 +85,23 @@ X-Gitlab-Event: System Hook
               "owner_email": "johnsmith@gmail.com",
        "project_visibility": "internal",
   "old_path_with_namespace": "jsmith/overscore",
+}
+```
+
+**Project updated:**
+
+```json
+{
+          "created_at": "2012-07-21T07:30:54Z",
+          "updated_at": "2012-07-21T07:38:22Z",
+          "event_name": "project_update",
+                "name": "StoreCloud",
+         "owner_email": "johnsmith@gmail.com",
+          "owner_name": "John Smith",
+                "path": "storecloud",
+ "path_with_namespace": "jsmith/storecloud",
+          "project_id": 74,
+  "project_visibility": "private",
 }
 ```
 

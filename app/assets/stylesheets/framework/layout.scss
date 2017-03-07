@@ -8,6 +8,19 @@ body {
   &.navless {
     background-color: $white-light !important;
   }
+
+  &.card-content {
+    background-color: $gray-darker;
+
+    .content-wrapper {
+      padding: 0;
+
+      .container-fluid,
+      .container-limited {
+        background-color: $gray-darker;
+      }
+    }
+  }
 }
 
 .container {
@@ -38,6 +51,21 @@ body {
 
     &:last-child {
       margin-bottom: $gl-padding;
+    }
+  }
+
+  .alert-link-group {
+    float: right;
+  }
+
+  /* Center alert text and alert action links on smaller screens */
+  @media (max-width: $screen-sm-max) {
+    .alert {
+      text-align: center;
+    }
+
+    .alert-link-group {
+      float: none;
     }
   }
 

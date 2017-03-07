@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, wrap-iife, one-var, camelcase, one-var-declaration-per-line, quotes, object-shorthand, prefer-arrow-callback, comma-dangle, consistent-return, yoda, prefer-rest-params, prefer-spread, no-unused-vars, prefer-template, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, wrap-iife, one-var, camelcase, one-var-declaration-per-line, quotes, object-shorthand, prefer-arrow-callback, comma-dangle, consistent-return, yoda, prefer-rest-params, prefer-spread, no-unused-vars, prefer-template, max-len */
 /* global Api */
 
 (function() {
@@ -59,15 +59,13 @@
       } else {
         avatar = gon.default_avatar_url;
       }
-      return "<div class='group-result'> <div class='group-name'>" + group.name + "</div> <div class='group-path'>" + group.path + "</div> </div>";
+      return "<div class='group-result'> <div class='group-name'>" + group.full_name + "</div> <div class='group-path'>" + group.full_path + "</div> </div>";
     };
 
     GroupsSelect.prototype.formatSelection = function(group) {
-      return group.name;
+      return group.full_name;
     };
 
     return GroupsSelect;
-
   })();
-
-}).call(this);
+}).call(window);

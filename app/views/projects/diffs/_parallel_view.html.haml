@@ -1,33 +1,39 @@
 / Side-by-side diff view
 .text-file.diff-wrap-lines.code.js-syntax-highlight{ data: diff_view_data }
   %table
-    - last_line = 0
     - diff_file.parallel_diff_lines.each do |line|
       - left = line[:left]
       - right = line[:right]
-      - last_line = right.new_pos if right
       %tr.line_holder.parallel
         - if left
-          - if left.meta?
+          - case left.type
+          - when 'match'
             = diff_match_line left.old_pos, nil, text: left.text, view: :parallel
+          - when 'nonewline'
+            %td.old_line.diff-line-num
+            %td.line_content.match= left.text
           - else
             - left_line_code = diff_file.line_code(left)
             - left_position = diff_file.position(left)
             %td.old_line.diff-line-num{ id: left_line_code, class: left.type, data: { linenumber: left.old_pos } }
-              %a{ href: "##{left_line_code}" }= raw(left.old_pos)
+              %a{ href: "##{left_line_code}", data: { linenumber: left.old_pos } }
             %td.line_content.parallel.noteable_line{ class: left.type, data: diff_view_line_data(left_line_code, left_position, 'old') }= diff_line_content(left.text)
         - else
           %td.old_line.diff-line-num.empty-cell
           %td.line_content.parallel
 
         - if right
-          - if right.meta?
+          - case right.type
+          - when 'match'
             = diff_match_line nil, right.new_pos, text: left.text, view: :parallel
+          - when 'nonewline'
+            %td.new_line.diff-line-num
+            %td.line_content.match= right.text
           - else
             - right_line_code = diff_file.line_code(right)
             - right_position = diff_file.position(right)
             %td.new_line.diff-line-num{ id: right_line_code, class: right.type, data: { linenumber: right.new_pos } }
-              %a{ href: "##{right_line_code}" }= raw(right.new_pos)
+              %a{ href: "##{right_line_code}", data: { linenumber: right.new_pos } }
             %td.line_content.parallel.noteable_line{ class: right.type, data: diff_view_line_data(right_line_code, right_position, 'new') }= diff_line_content(right.text)
         - else
           %td.old_line.diff-line-num.empty-cell
@@ -37,5 +43,8 @@
         - discussion_left, discussion_right = parallel_diff_discussions(left, right, diff_file)
         - if discussion_left || discussion_right
           = render "discussions/parallel_diff_discussion", discussion_left: discussion_left, discussion_right: discussion_right
-    - if !diff_file.new_file && last_line > 0
-      = diff_match_line last_line, last_line, bottom: true, view: :parallel
+    - if !diff_file.new_file && !diff_file.deleted_file && diff_file.diff_lines.any?
+      - last_line = diff_file.diff_lines.last
+      - if last_line.new_pos < total_lines
+        %tr.line_holder.parallel
+          = diff_match_line last_line.old_pos, last_line.new_pos, bottom: true, view: :parallel

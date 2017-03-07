@@ -91,7 +91,7 @@ class Deployment < ActiveRecord::Base
     @stop_action ||= manual_actions.find_by(name: on_stop)
   end
 
-  def stoppable?
+  def stop_action?
     stop_action.present?
   end
 

@@ -110,12 +110,12 @@ module Gitlab
       def import_issues
         fetch_resources(:issues, repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |issues|
           issues.each do |raw|
-            gh_issue = IssueFormatter.new(project, raw)
+            gh_issue = IssueFormatter.new(project, raw, client)
 
             begin
               issuable =
                 if gh_issue.pull_request?
-                  MergeRequest.find_by_iid(gh_issue.number)
+                  MergeRequest.find_by(target_project_id: project.id, iid: gh_issue.number)
                 else
                   gh_issue.create!
                 end
@@ -131,7 +131,8 @@ module Gitlab
       def import_pull_requests
         fetch_resources(:pull_requests, repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |pull_requests|
           pull_requests.each do |raw|
-            gh_pull_request = PullRequestFormatter.new(project, raw)
+            gh_pull_request = PullRequestFormatter.new(project, raw, client)
+
             next unless gh_pull_request.valid?
 
             begin
@@ -209,11 +210,17 @@ module Gitlab
         ActiveRecord::Base.no_touching do
           comments.each do |raw|
             begin
-              comment         = CommentFormatter.new(project, raw)
+              comment = CommentFormatter.new(project, raw, client)
+
               # GH does not return info about comment's parent, so we guess it by checking its URL!
               *_, parent, iid = URI(raw.html_url).path.split('/')
-              issuable_class = parent == 'issues' ? Issue : MergeRequest
-              issuable       = issuable_class.find_by_iid(iid)
+
+              issuable = if parent == 'issues'
+                           Issue.find_by(project_id: project.id, iid: iid)
+                         else
+                           MergeRequest.find_by(target_project_id: project.id, iid: iid)
+                         end
+
               next unless issuable
 
               issuable.notes.create!(comment.attributes)
@@ -278,7 +285,7 @@ module Gitlab
       def fetch_resources(resource_type, *opts)
         return if imported?(resource_type)
 
-        opts.last.merge!(page: current_page(resource_type))
+        opts.last[:page] = current_page(resource_type)
 
         client.public_send(resource_type, *opts) do |resources|
           yield resources

@@ -1,4 +1,9 @@
 .pipelines {
+  .realtime-loading {
+    font-size: 40px;
+    text-align: center;
+  }
+
   .stage {
     max-width: 90px;
     width: 90px;
@@ -8,36 +13,91 @@
     white-space: nowrap;
   }
 
+  .table-holder {
+    width: 100%;
+    overflow: auto;
+  }
+
   .commit-title {
     margin: 0;
   }
 
-  .controls {
-    white-space: nowrap;
-  }
-
-  .btn {
-    margin: 4px;
-  }
-
   .table.ci-table {
-    min-width: 1200px;
-    table-layout: fixed;
+
+    .label {
+      margin-bottom: 3px;
+    }
 
     .pipeline-id {
       color: $black;
     }
 
-    .pipeline-date,
-    .pipeline-status {
-      width: 10%;
+    .stage-cell {
+      min-width: 130px; // Guarantees we show at least 4 stages in line
+      width: 20%;
     }
 
-    .pipeline-info,
-    .pipeline-commit,
-    .pipeline-actions,
-    .pipeline-stages {
-      width: 20%;
+    .pipelines-time-ago {
+      text-align: right;
+    }
+
+    .pipeline-actions {
+      padding-right: 0;
+      min-width: 170px; //Guarantees buttons don't break in several lines.
+
+      .btn-default {
+        color: $gl-text-color-secondary;
+      }
+
+      .btn.btn-retry:hover,
+      .btn.btn-retry:focus {
+        border-color: $gray-darkest;
+        background-color: $white-normal;
+      }
+
+      svg path {
+        fill: $gl-text-color-secondary;
+      }
+
+      .dropdown-menu {
+        max-height: 250px;
+        overflow-y: auto;
+      }
+
+      .dropdown-toggle,
+      .dropdown-menu {
+        color: $gl-text-color-secondary;
+
+        .fa {
+          color: $gl-text-color-secondary;
+          font-size: 14px;
+        }
+
+        svg,
+        .fa {
+          margin-right: 0;
+        }
+      }
+
+      .btn-group {
+        &.open {
+          .btn-default {
+            background-color: $white-normal;
+            border-color: $border-white-normal;
+          }
+        }
+
+        .btn {
+          .icon-play {
+            height: 13px;
+            width: 12px;
+          }
+        }
+      }
+
+      .tooltip {
+        white-space: nowrap;
+      }
     }
   }
 }
@@ -45,6 +105,7 @@
 @media (max-width: $screen-md-max) {
   .content-list {
     &.pipelines,
+    &.environments-container,
     &.builds-content-list {
       width: 100%;
       overflow: auto;
@@ -52,27 +113,10 @@
   }
 }
 
-.content-list.pipelines .table-holder {
-  min-height: 300px;
-}
-
-.pipeline-holder {
-  width: 100%;
-  overflow: auto;
-}
-
 .table.ci-table {
-  min-width: 900px;
 
-  &.pipeline {
-    min-width: 650px;
-  }
-
-  &.builds-page {
-
-    tr {
-      height: 71px;
-    }
+  &.builds-page tbody tr {
+    height: 71px;
   }
 
   tr {
@@ -85,8 +129,16 @@
       padding: 10px 8px;
     }
 
+    td.environments-actions {
+      padding-right: 0;
+    }
+
+    td.stage-cell {
+      padding: 10px 0;
+    }
+
     .commit-link {
-      padding: 9px 8px 10px;
+      padding: 9px 8px 10px 2px;
     }
   }
 
@@ -131,7 +183,7 @@
       height: 14px;
       width: 14px;
       vertical-align: middle;
-      fill: $gl-gray-light;
+      fill: $gl-text-color-secondary;
     }
 
     .fa {
@@ -174,44 +226,11 @@
     }
   }
 
-  .stage-cell {
-    font-size: 0;
-
-    svg {
-      height: 18px;
-      width: 18px;
-      position: relative;
-      z-index: 2;
-      vertical-align: middle;
-      overflow: visible;
-    }
-
-    .stage-container {
-      display: inline-block;
-      position: relative;
-      margin-right: 6px;
-
-      .tooltip {
-        white-space: nowrap;
-      }
-
-      &:not(:last-child) {
-        &::after {
-          content: '';
-          width: 8px;
-          position: absolute;
-          right: -7px;
-          top: 10px;
-          border-bottom: 2px solid $border-color;
-        }
-      }
-    }
-  }
-
   .duration,
   .finished-at {
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
     margin: 4px 0;
+    white-space: nowrap;
 
     .fa {
       font-size: 12px;
@@ -226,67 +245,56 @@
     }
   }
 
-  .pipeline-actions {
-    min-width: 140px;
-
-    .btn {
-      margin: 0;
-      color: $gl-gray-light;
-    }
-
-    .cancel-retry-btns {
-      vertical-align: middle;
-
-      .btn:not(:first-child) {
-        margin-left: 8px;
-      }
-    }
-
-    .dropdown-toggle,
-    .dropdown-menu {
-      color: $gl-gray-light;
-
-      .fa {
-        color: $gl-gray-light;
-        font-size: 14px;
-      }
-
-      svg,
-      .fa {
-        margin-right: 0;
-      }
-    }
-
-    .btn-remove {
-      color: $white-light;
-    }
-
-    .btn-group {
-      &.open {
-        .btn-default {
-          background-color: $white-normal;
-          border-color: $border-white-normal;
-        }
-      }
-
-      .btn {
-        .icon-play {
-          height: 13px;
-          width: 12px;
-        }
-      }
-    }
-  }
-
-  .build-link {
-
-    a {
-      color: $gl-dark-link-color;
-    }
+  .build-link a {
+    color: $gl-text-color;
   }
 
   .btn-group.open .dropdown-toggle {
     box-shadow: none;
+  }
+}
+
+.stage-cell {
+  font-size: 0;
+  padding: 10px 4px;
+
+  > .stage-container > div > button > span > svg,
+  > .stage-container > button > svg {
+    height: 22px;
+    width: 22px;
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    z-index: 2;
+    overflow: visible;
+  }
+
+  .stage-container {
+    display: inline-block;
+    position: relative;
+    height: 22px;
+    margin: 3px 6px 3px 0;
+
+    // Hack to show a button tooltip inline
+    button.has-tooltip + .tooltip {
+      min-width: 105px;
+    }
+
+    // Bootstrap way of showing the content inline for anchors.
+    a.has-tooltip {
+      white-space: nowrap;
+    }
+
+    &:not(:last-child) {
+      &::after {
+        content: '';
+        width: 7px;
+        position: absolute;
+        right: -7px;
+        top: 10px;
+        border-bottom: 2px solid $border-color;
+      }
+    }
   }
 }
 
@@ -302,31 +310,8 @@
 }
 
 .tab-pane {
-  &.pipelines {
-    .ci-table {
-      min-width: 900px;
-    }
-
-    .content-list.pipelines {
-      overflow: auto;
-    }
-
-    .stage {
-      max-width: 100px;
-      width: 100px;
-    }
-
-    .pipeline-actions {
-      min-width: initial;
-    }
-  }
-
-  &.builds {
-    .ci-table {
-      tr {
-        height: 71px;
-      }
-    }
+  &.builds .ci-table tr {
+    height: 71px;
   }
 }
 
@@ -337,14 +322,16 @@
   padding: $gl-padding;
   white-space: nowrap;
   transition: max-height 0.3s, padding 0.3s;
+  overflow: auto;
 
-  ul {
+  .stage-column-list,
+  .builds-container > ul {
     padding: 0;
   }
 
   a {
     text-decoration: none;
-    color: $gl-text-color-light;
+    color: $gl-text-color-secondary;
   }
 
   svg {
@@ -468,13 +455,50 @@
     width: 186px;
     margin-bottom: 10px;
     white-space: normal;
-    color: $gl-text-color-light;
+    color: $gl-text-color-secondary;
+
+    // Action Icons in big pipeline-graph nodes
+    > .ci-action-icon-container .ci-action-icon-wrapper {
+      height: 30px;
+      width: 30px;
+      background: $white-light;
+      border: 1px solid $border-color;
+      border-radius: 100%;
+      display: block;
+
+      &:hover {
+        background-color: $stage-hover-bg;
+        border: 1px solid $stage-hover-bg;
+      }
+
+      svg {
+        fill: $border-color;
+        position: relative;
+        left: -1px;
+        top: -1px;
+      }
+
+      &:hover svg {
+        fill: $gl-text-color;
+      }
+    }
+
+    > .ci-action-icon-container {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+    }
+
+    .ci-status-icon svg {
+      height: 20px;
+      width: 20px;
+    }
 
     .dropdown-menu-toggle {
       background-color: transparent;
       border: none;
       padding: 0;
-      color: $gl-text-color-light;
+      color: $gl-text-color-secondary;
 
       &:focus {
         outline: none;
@@ -504,16 +528,6 @@
       }
     }
 
-    > .ci-action-icon-container {
-      position: absolute;
-      right: 5px;
-      top: 5px;
-    }
-
-    .ci-status-icon svg {
-      height: 20px;
-      width: 20px;
-    }
 
     .arrow {
       &::before,
@@ -596,96 +610,16 @@
       }
     }
   }
-
-  .grouped-pipeline-dropdown {
-    .dropdown-build {
-      .build-content {
-        width: 100%;
-
-        &:hover {
-          background-color: $stage-hover-bg;
-          color: $gl-text-color;
-        }
-      }
-
-      .ci-action-icon-container {
-        padding: 0;
-        font-size: 11px;
-        position: absolute;
-        top: 1px;
-        right: 8px;
-      }
-    }
-  }
 }
 
+// Triggers the dropdown in the big pipeline graph
 .dropdown-counter-badge {
   color: $border-color;
   font-weight: 100;
   font-size: 15px;
   position: absolute;
-  right: 5px;
+  right: 13px;
   top: 8px;
-}
-
-.grouped-pipeline-dropdown {
-  padding: 0;
-  width: 195px;
-  min-width: 195px;
-  left: auto;
-  right: -195px;
-  top: -4px;
-  box-shadow: 0 1px 5px $black-transparent;
-
-  a {
-    display: inline-block;
-  }
-
-  .dropdown-build {
-    .build-content {
-      width: 100%;
-
-      &:hover {
-        background-color: $stage-hover-bg;
-        color: $gl-text-color;
-      }
-    }
-
-    .ci-action-icon-container {
-      padding: 0;
-      font-size: 11px;
-      position: absolute;
-      margin-top: 3px;
-      right: 7px;
-    }
-  }
-
-  ul {
-    max-height: 245px;
-    overflow: auto;
-    margin: 3px 0;
-
-    li {
-      margin: 4px 8px 4px 9px;
-      padding: 0;
-      line-height: 1.1;
-      position: relative;
-
-      .ci-action-icon-container:hover {
-        background-color: transparent;
-      }
-
-      .ci-status-icon {
-        position: relative;
-        top: 2px;
-      }
-    }
-  }
-}
-
-.pipeline-graph .dropdown-build .ci-status-icon svg {
-  width: 18px;
-  height: 18px;
 }
 
 .ci-status-text {
@@ -696,180 +630,248 @@
   vertical-align: bottom;
   display: inline-block;
   position: relative;
-  font-weight: 200;
+  font-weight: normal;
 }
 
-// Action Icons
-.ci-action-icon-container .ci-action-icon-wrapper {
-  i {
-    color: $border-color;
-    border-radius: 100%;
-    border: 1px solid $border-color;
-    padding: 5px 6px;
-    font-size: 13px;
-    background: $white-light;
-    height: 30px;
-    width: 30px;
+// Dropdown button in mini pipeline graph
+.mini-pipeline-graph-dropdown-toggle {
+  border-radius: 100px;
+  background-color: $white-light;
+  border-width: 1px;
+  border-style: solid;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  transition: all 0.2s linear;
+  position: relative;
 
-    &::before {
-      position: relative;
-      top: 3px;
-      left: 3px;
-    }
-
-    &:hover {
-      color: $gl-text-color;
-      background-color: $stage-hover-bg;
-      border: 1px solid $stage-hover-bg;
-    }
-  }
-
-  .ci-play-icon {
-    padding: 5px 5px 5px 7px;
-  }
-}
-
-.dropdown-build {
-  color: $gl-text-color-light;
-
-  .build-content {
-    padding: 4px 7px 8px;
-  }
-
-  .ci-action-icon-container {
-    padding: 0;
-    font-size: 11px;
-    float: right;
-    margin-top: 3px;
+  > .fa.fa-caret-down {
+    position: absolute;
+    left: 20px;
+    top: 5px;
     display: inline-block;
-    position: relative;
+    visibility: hidden;
+    opacity: 0;
+    color: inherit;
+    font-size: 12px;
+    transition: visibility 0.1s, opacity 0.1s linear;
+  }
 
-    i {
-      font-size: 11px;
-      margin-top: 0;
+  &:active,
+  &:focus,
+  &:hover {
+    outline: none;
+    width: 35px;
+
+    .fa.fa-caret-down {
+      visibility: visible;
+      opacity: 1;
     }
   }
 
-  .ci-action-icon-container {
-    i {
-      width: 24px;
-      height: 24px;
+  // Dropdown button animation in mini pipeline graph
+  &.ci-status-icon-success {
+    border-color: $gl-success;
+    color: $gl-success;
 
-      &::before {
-        top: 1px;
-        left: 1px;
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: rgba($gl-success, 0.1);
+      border-color: $gl-success;
+    }
+  }
+
+  &.ci-status-icon-failed {
+    border-color: $gl-danger;
+    color: $gl-danger;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: rgba($gl-danger, 0.1);
+      border-color: $gl-danger;
+    }
+  }
+
+  &.ci-status-icon-pending,
+  &.ci-status-icon-success_with_warnings {
+    border-color: $gl-warning;
+    color: $gl-warning;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: rgba($gl-warning, 0.1);
+      border-color: $gl-warning;
+    }
+  }
+
+  &.ci-status-icon-running {
+    border-color: $blue-normal;
+    color: $blue-normal;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: rgba($blue-normal, 0.1);
+      border-color: $blue-normal;
+    }
+  }
+
+  &.ci-status-icon-canceled,
+  &.ci-status-icon-disabled,
+  &.ci-status-icon-not-found,
+  &.ci-status-icon-manual {
+    border-color: $gl-text-color;
+    color: $gl-text-color;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: rgba($gl-text-color, 0.1);
+      border-color: $gl-text-color;
+    }
+  }
+
+  &.ci-status-icon-created,
+  &.ci-status-icon-skipped {
+    border-color: $gray-darkest;
+    color: $gray-darkest;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: rgba($gray-darkest, 0.1);
+      border-color: $gray-darkest;
+    }
+  }
+}
+
+// dropdown content for big and mini pipeline
+.big-pipeline-graph-dropdown-menu,
+.mini-pipeline-graph-dropdown-menu {
+  width: 195px;
+  max-width: 195px;
+
+  li {
+    padding: 2px 3px;
+  }
+
+  .scrollable-menu {
+    max-height: 245px;
+    overflow: auto;
+  }
+
+  // Loading icon
+  .builds-dropdown-loading {
+    margin: 0 auto;
+    width: 20px;
+  }
+
+  // Action icon on the right
+  a.ci-action-icon-wrapper {
+    color: $action-icon-color;
+    border: 1px solid $action-icon-color;
+    border-radius: 20px;
+    width: 22px;
+    height: 22px;
+    padding: 2px 0 0 5px;
+    cursor: pointer;
+    float: right;
+    margin: -26px 9px 0 0;
+    font-size: 12px;
+    background-color: $white-light;
+
+    &:hover,
+    &:focus {
+      background-color: $stage-hover-bg;
+      border: 1px solid transparent;
+    }
+
+    svg {
+      width: 22px;
+      height: 22px;
+      left: -6px;
+      position: relative;
+      top: -3px;
+      fill: $action-icon-color;
+    }
+
+    &:hover svg,
+    &:focus svg {
+      fill: $gl-text-color;
+    }
+  }
+
+  // link to the build
+  .mini-pipeline-graph-dropdown-item {
+    padding: 3px 7px 4px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.428571429;
+    white-space: nowrap;
+    margin: 0 5px;
+    border-radius: 3px;
+
+    // build name
+    .ci-build-text {
+      font-weight: 200;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: 70%;
+      color: $gl-text-color-secondary;
+      margin-left: 2px;
+      display: inline-block;
+      top: 1px;
+      vertical-align: text-bottom;
+      position: relative;
+    }
+
+    // status icon on the left
+    .ci-status-icon {
+      top: 3px;
+      position: relative;
+
+      > svg {
+        overflow: visible;
+        width: 18px;
+        height: 18px;
       }
     }
-  }
 
-  .stage {
-    max-width: 100px;
-    width: 100px;
+    &:hover,
+    &:focus {
+      outline: none;
+      text-decoration: none;
+      color: $gl-text-color;
+      background-color: $stage-hover-bg;
+    }
   }
+}
 
-  .ci-status-icon svg {
-    height: 18px;
-    width: 18px;
-  }
+// Dropdown in the big pipeline graph
+.big-pipeline-graph-dropdown-menu {
+  width: 195px;
+  min-width: 195px;
+  left: auto;
+  right: -195px;
+  top: -4px;
+  box-shadow: 0 1px 5px $black-transparent;
 
-  .ci-status-text {
-    max-width: 95px;
+  .mini-pipeline-graph-dropdown-item {
+    .ci-status-icon {
+      top: -1px;
+    }
   }
 }
 
 /**
- * Builds dropdown in mini pipeline
+ * Top arrow in the dropdown in the mini pipeline graph
  */
-.mini-pipeline-graph {
-  .builds-dropdown {
-    background-color: transparent;
-    padding: 0;
-    color: $gl-text-color-light;
-    border: none;
-    margin: 0;
-
-    &:focus,
-    &:hover {
-      outline: none;
-      margin-right: -8px;
-
-      .ci-status-icon {
-        width: 32px;
-        padding: 0 8px 0 0;
-        transition: width 0.1s cubic-bezier(0.25, 0, 1, 1);
-
-        + .dropdown-caret {
-          visibility: visible;
-          opacity: 1;
-        }
-      }
-    }
-
-    &:focus,
-    &:active {
-      .ci-status-icon-success {
-        background-color: rgba($gl-success, .1);
-      }
-
-      .ci-status-icon-failed {
-        background-color: rgba($gl-danger, .1);
-      }
-
-      .ci-status-icon-pending,
-      .ci-status-icon-success_with_warnings {
-        background-color: rgba($gl-warning, .1);
-      }
-
-      .ci-status-icon-running {
-        background-color: rgba($blue-normal, .1);
-      }
-
-      .ci-status-icon-canceled,
-      .ci-status-icon-disabled,
-      .ci-status-icon-not-found {
-        background-color: rgba($gl-gray, .1);
-      }
-
-      .ci-status-icon-created,
-      .ci-status-icon-skipped {
-        background-color: rgba($gray-darkest, .1);
-      }
-    }
-
-    .mini-pipeline-graph-icon-container {
-      .dropdown-caret {
-        font-size: 11px;
-        position: absolute;
-        top: 6px;
-        left: 20px;
-        margin-right: -6px;
-        z-index: 2;
-        visibility: hidden;
-        opacity: 0;
-        transition: visibility 0.1s, opacity 0.1s linear;
-      }
-    }
-  }
-
-  .dropdown-build .build-content {
-    padding: 3px 7px 7px;
-  }
-
-  .builds-dropdown-loading {
-    margin: 10px auto;
-    width: 18px;
-  }
-
-  .grouped-pipeline-dropdown {
-    right: -172px;
-    top: 23px;
-    min-height: 50px;
-
-    a {
-      color: $gl-text-color-light;
-    }
-  }
-
+.mini-pipeline-graph-dropdown-menu {
   .arrow-up {
     &::before,
     &::after {
@@ -898,31 +900,8 @@
 }
 
 /**
- * Icons in mini pipeline graph
+ * Terminal
  */
-.mini-pipeline-graph-icon-container .ci-status-icon {
-  display: inline-block;
-  border: 1px solid;
-  border-radius: 22px;
-  margin-right: 1px;
-  width: 22px;
-  height: 22px;
-  position: relative;
-  z-index: 2;
-  transition: all 0.1s cubic-bezier(0.25, 0, 1, 1);
-
-  svg {
-    top: -1px;
-    left: -1px;
-  }
-}
-
-.stage-cell .mini-pipeline-graph-icon-container .ci-status-icon svg {
-  width: 22px;
-  height: 22px;
-}
-
-
 .terminal-icon {
   margin-left: 3px;
 }

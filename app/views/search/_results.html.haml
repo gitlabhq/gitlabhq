@@ -11,7 +11,7 @@
 
   .results.prepend-top-10
     - if @scope == 'commits'
-      %ul.list-unstyled
+      %ul.content-list.commit-list.table-list.table-wide
         = render partial: "search/results/commit", collection: @search_objects
     - else
       .search-results

@@ -20,6 +20,10 @@
 
     .fa {
       color: $cycle-analytics-light-gray;
+
+      &:hover {
+        color: $gl-text-color;
+      }
     }
 
     .stage-header {
@@ -111,14 +115,14 @@
           line-height: 19px;
           font-size: 14px;
           font-weight: 600;
-          color: $gl-title-color;
+          color: $gl-text-color;
         }
 
         &.text {
           color: $layout-link-gray;
 
           &.value-col {
-            color: $gl-title-color;
+            color: $gl-text-color;
           }
         }
       }
@@ -260,7 +264,7 @@
 
       .stage-empty,
       .not-available {
-        color: $gl-text-color-light;
+        color: $gl-text-color-secondary;
       }
     }
   }
@@ -280,7 +284,11 @@
 
     .events-description {
       line-height: 65px;
-      padding-left: $gl-padding;
+      padding: 0 $gl-padding;
+    }
+
+    .events-info {
+      color: $gl-text-color-secondary;
     }
   }
 
@@ -327,7 +335,7 @@
         @include text-overflow();
 
         a {
-          color: $gl-dark-link-color;
+          color: $gl-text-color;
         }
       }
     }
@@ -355,7 +363,7 @@
     .issue-link,
     .commit-author-link,
     .issue-author-link {
-      color: $gl-dark-link-color;
+      color: $gl-text-color;
     }
 
     // Custom CSS for components
@@ -396,11 +404,11 @@
       }
 
       .item-build-name {
-        color: $gl-title-color;
+        color: $gl-text-color;
       }
 
       .pipeline-id {
-        color: $gl-title-color;
+        color: $gl-text-color;
         padding: 0 3px 0 0;
       }
 
@@ -423,7 +431,7 @@
       }
 
       .fa {
-        color: $gl-text-color-light;
+        color: $gl-text-color-secondary;
         font-size: $code_font_size;
       }
     }
@@ -435,7 +443,7 @@
     width: 75%;
     margin: 0 auto;
     padding-top: 130px;
-    color: $gl-text-color-light;
+    color: $gl-text-color-secondary;
 
     h4 {
       color: $gl-text-color;

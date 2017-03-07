@@ -1,28 +1,34 @@
 - if @pipeline
   .mr-widget-heading
-    - %w[success success_with_warnings skipped canceled failed running pending].each do |status|
-      .ci_widget{ class: "ci-#{status} ci-status-icon-#{status}", style: ("display:none" unless @pipeline.status == status) }
-        = ci_icon_for_status(status)
+    - %w[success success_with_warnings skipped manual canceled failed running pending].each do |status|
+      .ci_widget{ class: "ci-#{status}", style: ("display:none" unless @pipeline.status == status) }
+        %div{ class: "ci-status-icon ci-status-icon-#{status}" }
+          = link_to namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), class: 'icon-link' do
+            = ci_icon_for_status(status)
         %span
           Pipeline
           = link_to "##{@pipeline.id}", namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), class: 'pipeline'
           = ci_label_for_status(status)
-        for
-        = succeed "." do
-          = link_to @pipeline.short_sha, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, @pipeline.sha), class: "monospace"
+        - if @pipeline.stages.any?
+          .mr-widget-pipeline-graph
+            = render 'shared/mini_pipeline_graph', pipeline: @pipeline, klass: 'js-pipeline-inline-mr-widget-graph'
+        %span
+          for
+          = succeed "." do
+            = link_to @pipeline.short_sha, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, @pipeline.sha), class: "monospace js-commit-link"
         %span.ci-coverage
 
 - elsif @merge_request.has_ci?
-  - # Compatibility with old CI integrations (ex jenkins) when you request status from CI server via AJAX
-  - # TODO, remove in later versions when services like Jenkins will set CI status via Commit status API
+  -# Compatibility with old CI integrations (ex jenkins) when you request status from CI server via AJAX
+  -# TODO, remove in later versions when services like Jenkins will set CI status via Commit status API
   .mr-widget-heading
     - %w[success skipped canceled failed running pending].each do |status|
       .ci_widget{ class: "ci-#{status} ci-status-icon-#{status}", style: "display:none" }
         = ci_icon_for_status(status)
         %span
-          CI build
+          CI job
           = ci_label_for_status(status)
-        for
+          for
         - commit = @merge_request.diff_head_commit
         = succeed "." do
           = link_to commit.short_id, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, commit), class: "monospace"

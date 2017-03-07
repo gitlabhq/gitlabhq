@@ -15,8 +15,8 @@ FactoryGirl.define do
 
     options do
       {
-        image: "ruby:2.1",
-        services: ["postgres"]
+        image: 'ruby:2.1',
+        services: ['postgres']
       }
     end
 
@@ -57,7 +57,7 @@ FactoryGirl.define do
     end
 
     trait :manual do
-      status 'skipped'
+      status 'manual'
       self.when 'manual'
     end
 
@@ -71,9 +71,24 @@ FactoryGirl.define do
       allow_failure true
     end
 
+    trait :ignored do
+      allowed_to_fail
+    end
+
     trait :playable do
-      skipped
       manual
+    end
+
+    trait :tags do
+      tag_list [:docker, :ruby]
+    end
+
+    trait :on_tag do
+      tag true
+    end
+
+    trait :triggered do
+      trigger_request factory: :ci_trigger_request_with_variables
     end
 
     after(:build) do |build, evaluator|
@@ -89,14 +104,25 @@ FactoryGirl.define do
       tag true
     end
 
-    factory :ci_build_with_coverage do
+    trait :coverage do
       coverage 99.9
+      coverage_regex '/(d+)/'
     end
 
     trait :trace do
       after(:create) do |build, evaluator|
         build.trace = 'BUILD TRACE'
       end
+    end
+
+    trait :erased do
+      erased_at Time.now
+      erased_by factory: :user
+    end
+
+    trait :queued do
+      queued_at Time.now
+      runner factory: :ci_runner
     end
 
     trait :artifacts do
@@ -127,6 +153,44 @@ FactoryGirl.define do
 
         build.save!
       end
+    end
+
+    trait :with_commit do
+      after(:build) do |build|
+        allow(build).to receive(:commit).and_return build(:commit, :without_author)
+      end
+    end
+
+    trait :with_commit_and_author do
+      after(:build) do |build|
+        allow(build).to receive(:commit).and_return build(:commit)
+      end
+    end
+
+    trait :extended_options do
+      options do
+        {
+            image: 'ruby:2.1',
+            services: ['postgres'],
+            after_script: "ls\ndate",
+            artifacts: {
+                name: 'artifacts_file',
+                untracked: false,
+                paths: ['out/'],
+                when: 'always',
+                expire_in: '7d'
+            },
+            cache: {
+                key: 'cache_key',
+                untracked: false,
+                paths: ['vendor/*']
+            }
+        }
+      end
+    end
+
+    trait :no_options do
+      options { {} }
     end
   end
 end

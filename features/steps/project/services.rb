@@ -4,7 +4,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   include SharedPaths
 
   step 'I visit project "Shop" services page' do
-    visit namespace_project_services_path(@project.namespace, @project)
+    visit namespace_project_settings_integrations_path(@project.namespace, @project)
   end
 
   step 'I should see list of available services' do

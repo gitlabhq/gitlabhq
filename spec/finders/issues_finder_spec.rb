@@ -136,10 +136,10 @@ describe IssuesFinder do
         end
       end
 
-      context 'filtering by issue iid' do
-        let(:params) { { search: issue3.to_reference } }
+      context 'filtering by issues iids' do
+        let(:params) { { iids: issue3.iid } }
 
-        it 'returns issue with iid match' do
+        it 'returns issues with iids match' do
           expect(issues).to contain_exactly(issue3)
         end
       end
@@ -224,7 +224,7 @@ describe IssuesFinder do
       let(:scope) { nil }
 
       it "doesn't return team-only issues to non team members" do
-        project = create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE)
+        project = create(:empty_project, :public, :issues_private)
         issue = create(:issue, project: project)
 
         expect(issues).not_to include(issue)

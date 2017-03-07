@@ -26,7 +26,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
   describe "#execute" do
     let(:user)    { create(:user) }
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:username) { 'slack_username' }
     let(:channel)  { 'slack_channel' }
 
@@ -196,7 +196,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
   describe "Note events" do
     let(:user) { create(:user) }
-    let(:project) { create(:project, creator_id: user.id) }
+    let(:project) { create(:project, :repository, creator: user) }
 
     before do
       allow(chat_service).to receive_messages(
@@ -269,7 +269,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
   describe 'Pipeline events' do
     let(:user) { create(:user) }
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     let(:pipeline) do
       create(:ci_pipeline,

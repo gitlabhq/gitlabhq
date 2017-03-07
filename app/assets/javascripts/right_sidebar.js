@@ -1,8 +1,8 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-unused-vars, semi, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, object-shorthand, comma-dangle, no-else-return, no-param-reassign, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-unused-vars, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, object-shorthand, comma-dangle, no-else-return, no-param-reassign, max-len */
 /* global Cookies */
 
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.Sidebar = (function() {
     function Sidebar(currentUser) {
@@ -18,14 +18,19 @@
       $('.dropdown').off('loading.gl.dropdown');
       $('.dropdown').off('loaded.gl.dropdown');
       $(document).off('click', '.js-sidebar-toggle');
-    }
+    };
 
     Sidebar.prototype.addEventListeners = function() {
+      const $document = $(document);
+      const throttledSetSidebarHeight = _.throttle(this.setSidebarHeight, 10);
+
       this.sidebar.on('click', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);
       $('.dropdown').on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
       $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
       $('.dropdown').on('loaded.gl.dropdown', this.sidebarDropdownLoaded);
-      $(document).on('click', '.js-sidebar-toggle', function(e, triggered) {
+      $(window).on('resize', () => throttledSetSidebarHeight());
+      $document.on('scroll', () => throttledSetSidebarHeight());
+      $document.on('click', '.js-sidebar-toggle', function(e, triggered) {
         var $allGutterToggleIcons, $this, $thisIcon;
         e.preventDefault();
         $this = $(this);
@@ -191,6 +196,17 @@
       }
     };
 
+    Sidebar.prototype.setSidebarHeight = function() {
+      const $navHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight();
+      const $rightSidebar = $('.js-right-sidebar');
+      const diff = $navHeight - $('body').scrollTop();
+      if (diff > 0) {
+        $rightSidebar.outerHeight($(window).height() - diff);
+      } else {
+        $rightSidebar.outerHeight('100%');
+      }
+    };
+
     Sidebar.prototype.isOpen = function() {
       return this.sidebar.is('.right-sidebar-expanded');
     };
@@ -200,7 +216,5 @@
     };
 
     return Sidebar;
-
   })();
-
-}).call(this);
+}).call(window);

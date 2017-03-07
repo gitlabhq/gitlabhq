@@ -15,6 +15,7 @@
 }
 
 .ci-status-icon-pending,
+.ci-status-icon-failed_with_warnings,
 .ci-status-icon-success_with_warnings {
   color: $gl-warning;
 
@@ -34,10 +35,10 @@
 .ci-status-icon-canceled,
 .ci-status-icon-disabled,
 .ci-status-icon-not-found {
-  color: $gl-gray;
+  color: $gl-text-color;
 
   svg {
-    fill: $gl-gray;
+    fill: $gl-text-color;
   }
 }
 
@@ -55,5 +56,11 @@
 
   svg {
     fill: $gl-text-color;
+  }
+}
+
+.icon-link {
+  &:hover {
+    text-decoration: none;
   }
 }

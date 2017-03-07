@@ -1,3 +1,5 @@
+require './spec/support/sidekiq'
+
 Gitlab::Seeder.quiet do
   Project.all.each do |project|
     10.times do

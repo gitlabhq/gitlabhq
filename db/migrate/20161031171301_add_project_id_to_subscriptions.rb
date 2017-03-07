@@ -5,7 +5,7 @@ class AddProjectIdToSubscriptions < ActiveRecord::Migration
 
   def up
     add_column :subscriptions, :project_id, :integer
-    add_foreign_key :subscriptions, :projects, column: :project_id, on_delete: :cascade
+    add_foreign_key :subscriptions, :projects, column: :project_id, on_delete: :cascade # rubocop: disable Migration/AddConcurrentForeignKey
   end
 
   def down

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::Diff::LineMapper, lib: true do
   include RepoHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:commit) { project.commit(sample_commit.id) }
   let(:diffs) { commit.raw_diffs }

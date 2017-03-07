@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-new, padded-blocks */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-new */
 /* global ImageFile */
 
 (function() {
@@ -10,7 +10,5 @@
     }
 
     return CommitFile;
-
   })();
-
-}).call(this);
+}).call(window);

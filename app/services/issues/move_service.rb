@@ -1,6 +1,6 @@
 module Issues
   class MoveService < Issues::BaseService
-    class MoveError < StandardError; end
+    MoveError = Class.new(StandardError)
 
     def execute(issue, new_project)
       @old_issue = issue

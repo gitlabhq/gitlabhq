@@ -7,6 +7,7 @@ class Snippet < ActiveRecord::Base
   include Sortable
   include Awardable
   include Mentionable
+  include Spammable
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :content
@@ -17,7 +18,7 @@ class Snippet < ActiveRecord::Base
     default_content_html_invalidator || file_name_changed?
   end
 
-  default_value_for :visibility_level, Snippet::PRIVATE
+  default_value_for(:visibility_level) { current_application_settings.default_snippet_visibility }
 
   belongs_to :author, class_name: 'User'
   belongs_to :project
@@ -46,6 +47,9 @@ class Snippet < ActiveRecord::Base
   participant :author
   participant :notes_with_associations
 
+  attr_spammable :title, spam_title: true
+  attr_spammable :content, spam_description: true
+
   def self.reference_prefix
     '$'
   end
@@ -64,11 +68,11 @@ class Snippet < ActiveRecord::Base
     @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
   end
 
-  def to_reference(from_project = nil)
+  def to_reference(from_project = nil, full: false)
     reference = "#{self.class.reference_prefix}#{id}"
 
     if project.present?
-      "#{project.to_reference(from_project)}#{reference}"
+      "#{project.to_reference(from_project, full: full)}#{reference}"
     else
       reference
     end
@@ -116,7 +120,7 @@ class Snippet < ActiveRecord::Base
   end
 
   def visibility_level_field
-    visibility_level
+    :visibility_level
   end
 
   def no_highlighting?
@@ -125,6 +129,14 @@ class Snippet < ActiveRecord::Base
 
   def notes_with_associations
     notes.includes(:author)
+  end
+
+  def check_for_spam?
+    public?
+  end
+
+  def spammable_entity_type
+    'snippet'
   end
 
   class << self

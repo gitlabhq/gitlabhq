@@ -42,19 +42,16 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def update
-    status = ::Projects::UpdateService.new(@project, current_user, project_params).execute
+    result = ::Projects::UpdateService.new(@project, current_user, project_params).execute
 
     # Refresh the repo in case anything changed
-    @repository = project.repository
+    @repository = @project.repository
 
     respond_to do |format|
-      if status
+      if result[:status] == :success
         flash[:notice] = "Project '#{@project.name}' was successfully updated."
         format.html do
-          redirect_to(
-            edit_project_path(@project),
-            notice: "Project '#{@project.name}' was successfully updated."
-          )
+          redirect_to(edit_project_path(@project))
         end
       else
         format.html { render 'edit' }
@@ -234,12 +231,16 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def refs
+    branches = BranchesFinder.new(@repository, params).execute.map(&:name)
+
     options = {
-      'Branches' => @repository.branch_names,
+      'Branches' => branches.take(100),
     }
 
     unless @repository.tag_count.zero?
-      options['Tags'] = VersionSorter.rsort(@repository.tag_names)
+      tags = TagsFinder.new(@repository, params).execute.map(&:name)
+
+      options['Tags'] = tags.take(100)
     end
 
     # If reference is commit id - we should add it to branch/tag selectbox
@@ -313,7 +314,7 @@ class ProjectsController < Projects::ApplicationController
       :name,
       :namespace_id,
       :only_allow_merge_if_all_discussions_are_resolved,
-      :only_allow_merge_if_build_succeeds,
+      :only_allow_merge_if_pipeline_succeeds,
       :path,
       :public_builds,
       :request_access_enabled,

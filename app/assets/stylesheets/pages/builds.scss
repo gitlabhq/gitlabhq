@@ -91,7 +91,7 @@
     }
 
     &.scroll-top {
-      top: 110px;
+      top: 10px;
     }
 
     &.scroll-bottom {
@@ -160,7 +160,7 @@
     flex: 1;
 
     a {
-      color: $gl-gray;
+      color: $gl-text-color;
 
       &:hover {
         color: $gl-link-color;
@@ -357,7 +357,7 @@
 }
 
 .build-light-text {
-  color: $gl-gray-light;
+  color: $gl-text-color-secondary;
 }
 
 .build-gutter-toggle {

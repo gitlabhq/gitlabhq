@@ -3,7 +3,7 @@
     .modal-content
       .modal-header
         %a.close{ href: "#", "data-dismiss" => "modal" } ×
-        %h3.page-title #{title}
+        %h3.page-title= title
       .modal-body
         = form_tag form_path, method: method, class: 'js-quick-submit js-upload-blob-form form-horizontal' do
           .dropzone

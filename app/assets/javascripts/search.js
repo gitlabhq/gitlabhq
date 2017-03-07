@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, object-shorthand, prefer-arrow-callback, comma-dangle, prefer-template, quotes, no-else-return, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, object-shorthand, prefer-arrow-callback, comma-dangle, prefer-template, quotes, no-else-return, max-len */
 /* global Api */
 
 (function() {
@@ -12,10 +12,13 @@
         selectable: true,
         filterable: true,
         fieldName: 'group_id',
+        search: {
+          fields: ['full_name']
+        },
         data: function(term, callback) {
           return Api.groups(term, {}, function(data) {
             data.unshift({
-              name: 'Any'
+              full_name: 'Any'
             });
             data.splice(1, 0, 'divider');
             return callback(data);
@@ -25,10 +28,10 @@
           return obj.id;
         },
         text: function(obj) {
-          return obj.name;
+          return obj.full_name;
         },
         toggleLabel: function(obj) {
-          return ($groupDropdown.data('default-label')) + " " + obj.name;
+          return ($groupDropdown.data('default-label')) + " " + obj.full_name;
         },
         clicked: (function(_this) {
           return function() {
@@ -40,6 +43,9 @@
         selectable: true,
         filterable: true,
         fieldName: 'project_id',
+        search: {
+          fields: ['name']
+        },
         data: function(term, callback) {
           return Api.projects(term, 'id', function(data) {
             data.unshift({
@@ -90,7 +96,5 @@
     };
 
     return Search;
-
   })();
-
-}).call(this);
+}).call(window);

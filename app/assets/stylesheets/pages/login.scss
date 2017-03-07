@@ -17,14 +17,19 @@
     line-height: 1.5;
 
     p {
-      font-size: 18px;
+      font-size: 16px;
       color: $login-brand-holder-color;
     }
 
     h1:first-child {
       font-weight: normal;
-      margin-bottom: 30px;
+      margin-bottom: 0.68em;
       margin-top: 0;
+      font-size: 34px;
+    }
+
+    h3 {
+      font-size: 22px;
     }
 
     img {

@@ -11,7 +11,7 @@ describe Gitlab::ChatCommands::Command, service: true do
 
     context 'when no command is available' do
       let(:params) { { text: 'issue show 1' } }
-      let(:project) { create(:project, has_external_issue_tracker: true) }
+      let(:project) { create(:empty_project, has_external_issue_tracker: true) }
 
       it 'displays 404 messages' do
         expect(subject[:response_type]).to be(:ephemeral)
@@ -24,7 +24,7 @@ describe Gitlab::ChatCommands::Command, service: true do
 
       it 'displays the help message' do
         expect(subject[:response_type]).to be(:ephemeral)
-        expect(subject[:text]).to start_with('Available commands')
+        expect(subject[:text]).to start_with('Unknown command')
         expect(subject[:text]).to match('/gitlab issue show')
       end
     end
@@ -34,47 +34,7 @@ describe Gitlab::ChatCommands::Command, service: true do
 
       it 'rejects the actions' do
         expect(subject[:response_type]).to be(:ephemeral)
-        expect(subject[:text]).to start_with('Whoops! That action is not allowed')
-      end
-    end
-
-    context 'issue is successfully created' do
-      let(:params) { { text: "issue create my new issue" } }
-
-      before do
-        project.team << [user, :master]
-      end
-
-      it 'presents the issue' do
-        expect(subject[:text]).to match("my new issue")
-      end
-
-      it 'shows a link to the new issue' do
-        expect(subject[:text]).to match(/\/issues\/\d+/)
-      end
-    end
-
-    context 'searching for an issue' do
-      let(:params) { { text: 'issue search find me' } }
-      let!(:issue) { create(:issue, project: project, title: 'find me') }
-
-      before do
-        project.team << [user, :master]
-      end
-
-      context 'a single issue is found' do
-        it 'presents the issue' do
-          expect(subject[:text]).to match(issue.title)
-        end
-      end
-
-      context 'multiple issues found' do
-        let!(:issue2) { create(:issue, project: project, title: "someone find me") }
-
-        it 'shows a link to the new issue' do
-          expect(subject[:text]).to match(issue.title)
-          expect(subject[:text]).to match(issue2.title)
-        end
+        expect(subject[:text]).to start_with('Whoops! This action is not allowed')
       end
     end
 
@@ -90,7 +50,7 @@ describe Gitlab::ChatCommands::Command, service: true do
       context 'and user can not create deployment' do
         it 'returns action' do
           expect(subject[:response_type]).to be(:ephemeral)
-          expect(subject[:text]).to start_with('Whoops! That action is not allowed')
+          expect(subject[:text]).to start_with('Whoops! This action is not allowed')
         end
       end
 
@@ -100,7 +60,7 @@ describe Gitlab::ChatCommands::Command, service: true do
         end
 
         it 'returns action' do
-          expect(subject[:text]).to include('Deployment from staging to production started.')
+          expect(subject[:text]).to include('Deployment started from staging to production')
           expect(subject[:response_type]).to be(:in_channel)
         end
 
@@ -130,7 +90,7 @@ describe Gitlab::ChatCommands::Command, service: true do
     context 'IssueCreate is triggered' do
       let(:params) { { text: 'issue create my title' } }
 
-      it { is_expected.to eq(Gitlab::ChatCommands::IssueCreate) }
+      it { is_expected.to eq(Gitlab::ChatCommands::IssueNew) }
     end
 
     context 'IssueSearch is triggered' do

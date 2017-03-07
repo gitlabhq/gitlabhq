@@ -253,6 +253,8 @@ li.note {
   .progress {
     margin-bottom: 0;
     margin-top: 4px;
+    box-shadow: none;
+    background-color: $border-gray-light;
   }
 }
 
@@ -412,7 +414,7 @@ table {
     padding: 0 10px;
     clip: auto;
     text-decoration: none;
-    color: $gl-title-color;
+    color: $gl-text-color;
     background: $gray-light;
     z-index: 1;
   }

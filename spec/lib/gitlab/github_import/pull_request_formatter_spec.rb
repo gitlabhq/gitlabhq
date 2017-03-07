@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
-  let(:project) { create(:project) }
+  let(:client) { double }
+  let(:project) { create(:project, :repository) }
   let(:source_sha) { create(:commit, project: project).id }
   let(:target_sha) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit).id }
   let(:repository) { double(id: 1, fork: false) }
@@ -10,7 +11,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   let(:target_repo) { repository }
   let(:target_branch) { double(ref: 'master', repo: target_repo, sha: target_sha) }
   let(:removed_branch) { double(ref: 'removed-branch', repo: source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b') }
-  let(:octocat) { double(id: 123456, login: 'octocat') }
+  let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
   let(:base_data) do
@@ -32,7 +33,11 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     }
   end
 
-  subject(:pull_request) { described_class.new(project, raw_data) }
+  subject(:pull_request) { described_class.new(project, raw_data, client) }
+
+  before do
+    allow(client).to receive(:user).and_return(octocat)
+  end
 
   shared_examples 'Gitlab::GithubImport::PullRequestFormatter#attributes' do
     context 'when pull request is open' do
@@ -121,8 +126,14 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
         expect(pull_request.attributes.fetch(:assignee_id)).to be_nil
       end
 
-      it 'returns GitLab user id as assignee_id when is a GitLab user' do
+      it 'returns GitLab user id associated with GitHub id as assignee_id' do
         gl_user = create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
+
+        expect(pull_request.attributes.fetch(:assignee_id)).to eq gl_user.id
+      end
+
+      it 'returns GitLab user id associated with GitHub email as assignee_id' do
+        gl_user = create(:user, email: octocat.email)
 
         expect(pull_request.attributes.fetch(:assignee_id)).to eq gl_user.id
       end
@@ -131,12 +142,18 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     context 'when author is a GitLab user' do
       let(:raw_data) { double(base_data.merge(user: octocat)) }
 
-      it 'returns project#creator_id as author_id when is not a GitLab user' do
+      it 'returns project creator_id as author_id when is not a GitLab user' do
         expect(pull_request.attributes.fetch(:author_id)).to eq project.creator_id
       end
 
-      it 'returns GitLab user id as author_id when is a GitLab user' do
+      it 'returns GitLab user id associated with GitHub id as author_id' do
         gl_user = create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
+
+        expect(pull_request.attributes.fetch(:author_id)).to eq gl_user.id
+      end
+
+      it 'returns GitLab user id associated with GitHub email as author_id' do
+        gl_user = create(:user, email: octocat.email)
 
         expect(pull_request.attributes.fetch(:author_id)).to eq gl_user.id
       end

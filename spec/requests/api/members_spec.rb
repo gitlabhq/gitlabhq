@@ -9,7 +9,7 @@ describe API::Members, api: true  do
   let(:stranger) { create(:user) }
 
   let(:project) do
-    create(:project, :public, :access_requestable, creator_id: master.id, namespace: master.namespace) do |project|
+    create(:empty_project, :public, :access_requestable, creator_id: master.id, namespace: master.namespace) do |project|
       project.team << [developer, :developer]
       project.team << [master, :master]
       project.request_access(access_requester)
@@ -34,9 +34,12 @@ describe API::Members, api: true  do
         context "when authenticated as a #{type}" do
           it 'returns 200' do
             user = public_send(type)
+
             get api("/#{source_type.pluralize}/#{source.id}/members", user)
 
             expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
+            expect(json_response).to be_an Array
             expect(json_response.size).to eq(2)
             expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id]
           end
@@ -49,6 +52,8 @@ describe API::Members, api: true  do
         get api("/#{source_type.pluralize}/#{source.id}/members", developer)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
         expect(json_response.size).to eq(2)
         expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id]
       end
@@ -57,6 +62,8 @@ describe API::Members, api: true  do
         get api("/#{source_type.pluralize}/#{source.id}/members", developer), query: master.username
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
         expect(json_response.count).to eq(1)
         expect(json_response.first['username']).to eq(master.username)
       end
@@ -145,11 +152,11 @@ describe API::Members, api: true  do
         end
       end
 
-      it "returns #{source_type == 'project' ? 201 : 409} if member already exists" do
+      it "returns 409 if member already exists" do
         post api("/#{source_type.pluralize}/#{source.id}/members", master),
              user_id: master.id, access_level: Member::MASTER
 
-        expect(response).to have_http_status(source_type == 'project' ? 201 : 409)
+        expect(response).to have_http_status(409)
       end
 
       it 'returns 400 when user_id is not given' do
@@ -166,11 +173,11 @@ describe API::Members, api: true  do
         expect(response).to have_http_status(400)
       end
 
-      it 'returns 422 when access_level is not valid' do
+      it 'returns 400  when access_level is not valid' do
         post api("/#{source_type.pluralize}/#{source.id}/members", master),
              user_id: stranger.id, access_level: 1234
 
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(400)
       end
     end
   end
@@ -223,11 +230,11 @@ describe API::Members, api: true  do
         expect(response).to have_http_status(400)
       end
 
-      it 'returns 422 when access level is not valid' do
+      it 'returns 400  when access level is not valid' do
         put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master),
             access_level: 1234
 
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(400)
       end
     end
   end
@@ -256,18 +263,18 @@ describe API::Members, api: true  do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", developer)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_http_status(204)
           end.to change { source.members.count }.by(-1)
         end
       end
 
       context 'when authenticated as a master/owner' do
         context 'and member is a requester' do
-          it "returns #{source_type == 'project' ? 200 : 404}" do
+          it 'returns 404' do
             expect do
               delete api("/#{source_type.pluralize}/#{source.id}/members/#{access_requester.id}", master)
 
-              expect(response).to have_http_status(source_type == 'project' ? 200 : 404)
+              expect(response).to have_http_status(404)
             end.not_to change { source.requesters.count }
           end
         end
@@ -276,15 +283,15 @@ describe API::Members, api: true  do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_http_status(204)
           end.to change { source.members.count }.by(-1)
         end
       end
 
-      it "returns #{source_type == 'project' ? 200 : 404} if member does not exist" do
+      it 'returns 404 if member does not exist' do
         delete api("/#{source_type.pluralize}/#{source.id}/members/123", master)
 
-        expect(response).to have_http_status(source_type == 'project' ? 200 : 404)
+        expect(response).to have_http_status(404)
       end
     end
   end
@@ -335,7 +342,7 @@ describe API::Members, api: true  do
         post api("/projects/#{project.id}/members", master),
              user_id: stranger.id, access_level: Member::OWNER
 
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(400)
       end.to change { project.members.count }.by(0)
     end
   end

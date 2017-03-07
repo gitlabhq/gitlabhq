@@ -14,9 +14,11 @@ module Ci
     has_many :builds, foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
 
-    validates_presence_of :sha, unless: :importing?
-    validates_presence_of :ref, unless: :importing?
-    validates_presence_of :status, unless: :importing?
+    delegate :id, to: :project, prefix: true
+
+    validates :sha, presence: { unless: :importing? }
+    validates :ref, presence: { unless: :importing? }
+    validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
 
     after_create :keep_around_commits, unless: :importing?
@@ -45,6 +47,10 @@ module Ci
 
       event :cancel do
         transition any - [:canceled] => :canceled
+      end
+
+      event :block do
+        transition any - [:manual] => :manual
       end
 
       # IMPORTANT
@@ -93,8 +99,11 @@ module Ci
         .select("max(#{quoted_table_name}.id)")
         .group(:ref, :sha)
 
-      relation = ref ? where(ref: ref) : self
-      relation.where(id: max_id)
+      if ref
+        where(ref: ref, id: max_id.where(ref: ref))
+      else
+        where(id: max_id)
+      end
     end
 
     def self.latest_status(ref = nil)
@@ -128,25 +137,26 @@ module Ci
     end
 
     def stages
+      # TODO, this needs refactoring, see gitlab-ce#26481.
+
+      stages_query = statuses
+        .group('stage').select(:stage).order('max(stage_idx)')
+
       status_sql = statuses.latest.where('stage=sg.stage').status_sql
 
-      stages_query = statuses.group('stage').select(:stage)
-                       .order('max(stage_idx)')
+      warnings_sql = statuses.latest.select('COUNT(*) > 0')
+        .where('stage=sg.stage').failed_but_allowed.to_sql
 
-      stages_with_statuses = CommitStatus.from(stages_query, :sg).
-        pluck('sg.stage', status_sql)
+      stages_with_statuses = CommitStatus.from(stages_query, :sg)
+        .pluck('sg.stage', status_sql, "(#{warnings_sql})")
 
       stages_with_statuses.map do |stage|
-        Ci::Stage.new(self, name: stage.first, status: stage.last)
+        Ci::Stage.new(self, Hash[%i[name status warnings].zip(stage)])
       end
     end
 
     def artifacts
-      builds.latest.with_artifacts_not_expired
-    end
-
-    def project_id
-      project.id
+      builds.latest.with_artifacts_not_expired.includes(project: [:namespace])
     end
 
     # For now the only user who participates is the user who triggered
@@ -191,7 +201,11 @@ module Ci
     end
 
     def manual_actions
-      builds.latest.manual_actions
+      builds.latest.manual_actions.includes(project: [:namespace])
+    end
+
+    def stuck?
+      builds.pending.any?(&:stuck?)
     end
 
     def retryable?
@@ -205,21 +219,17 @@ module Ci
     def cancel_running
       Gitlab::OptimisticLocking.retry_lock(
         statuses.cancelable) do |cancelable|
-          cancelable.each(&:cancel)
+          cancelable.find_each(&:cancel)
         end
     end
 
-    def retry_failed(user)
-      Gitlab::OptimisticLocking.retry_lock(
-        builds.latest.failed_or_canceled) do |failed_or_canceled|
-          failed_or_canceled.select(&:retryable?).each do |build|
-            Ci::Build.retry(build, user)
-          end
-        end
+    def retry_failed(current_user)
+      Ci::RetryPipelineService.new(project, current_user)
+        .execute(self)
     end
 
     def mark_as_processable_after_stage(stage_idx)
-      builds.skipped.where('stage_idx > ?', stage_idx).find_each(&:process)
+      builds.skipped.after_stage(stage_idx).find_each(&:process)
     end
 
     def latest?
@@ -274,13 +284,11 @@ module Ci
     def ci_yaml_file
       return @ci_yaml_file if defined?(@ci_yaml_file)
 
-      @ci_yaml_file ||= begin
-        blob = project.repository.blob_at(sha, '.gitlab-ci.yml')
-        blob.load_all_data!(project.repository)
-        blob.data
-      rescue
-        nil
-      end
+      @ci_yaml_file = project.repository.gitlab_ci_yml_for(sha) rescue nil
+    end
+
+    def has_yaml_errors?
+      yaml_errors.present?
     end
 
     def environments
@@ -317,6 +325,7 @@ module Ci
         when 'failed' then drop
         when 'canceled' then cancel
         when 'skipped' then skip
+        when 'manual' then block
         end
       end
     end

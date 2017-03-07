@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'lib/gitlab/badge/shared/metadata'
 
 describe Gitlab::Badge::Build::Metadata do
-  let(:badge) { double(project: create(:project), ref: 'feature') }
+  let(:badge) { double(project: create(:empty_project), ref: 'feature') }
   let(:metadata) { described_class.new(badge) }
 
   it_behaves_like 'badge metadata'

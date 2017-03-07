@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, camelcase, no-var, one-var, one-var-declaration-per-line, prefer-template, quotes, object-shorthand, comma-dangle, no-unused-vars, prefer-arrow-callback, no-else-return, padded-blocks, vars-on-top, no-new, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, camelcase, no-var, one-var, one-var-declaration-per-line, prefer-template, quotes, object-shorthand, comma-dangle, no-unused-vars, prefer-arrow-callback, no-else-return, vars-on-top, no-new, max-len */
 
 (function() {
   window.ImporterStatus = (function() {
@@ -68,7 +68,6 @@
     };
 
     return ImporterStatus;
-
   })();
 
   $(function() {
@@ -79,4 +78,4 @@
       new window.ImporterStatus(jobsImportPath, importPath);
     }
   });
-}).call(this);
+}).call(window);

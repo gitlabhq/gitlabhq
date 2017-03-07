@@ -10,20 +10,20 @@ module API
     resource :projects do
       desc 'Get all Pipelines of the project' do
         detail 'This feature was introduced in GitLab 8.11.'
-        success Entities::Pipeline
+        success Entities::PipelineBasic
       end
       params do
         use :pagination
-        optional :scope,    type: String, values: ['running', 'branches', 'tags'],
+        optional :scope,    type: String, values: %w(running branches tags),
                             desc: 'Either running, branches, or tags'
       end
       get ':id/pipelines' do
         authorize! :read_pipeline, user_project
 
         pipelines = PipelinesFinder.new(user_project).execute(scope: params[:scope])
-        present paginate(pipelines), with: Entities::Pipeline
+        present paginate(pipelines), with: Entities::PipelineBasic
       end
-      
+
       desc 'Create a new pipeline' do
         detail 'This feature was introduced in GitLab 8.14'
         success Entities::Pipeline
@@ -58,7 +58,7 @@ module API
         present pipeline, with: Entities::Pipeline
       end
 
-      desc 'Retry failed builds in the pipeline' do
+      desc 'Retry builds in the pipeline' do
         detail 'This feature was introduced in GitLab 8.11.'
         success Entities::Pipeline
       end

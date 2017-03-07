@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-else-return, quotes, quote-props, comma-dangle, one-var, one-var-declaration-per-line, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-else-return, quotes, quote-props, comma-dangle, one-var, one-var-declaration-per-line, max-len */
 /* global u2f */
 /* global U2FError */
 /* global U2FUtil */
@@ -8,7 +8,7 @@
 // State Flow #1: setup -> in_progress -> registered -> POST to server
 // State Flow #2: setup -> in_progress -> error -> setup
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.U2FRegister = (function() {
     function U2FRegister(container, u2fParams) {
@@ -39,7 +39,7 @@
         return function(response) {
           var error;
           if (response.errorCode) {
-            error = new U2FError(response.errorCode);
+            error = new U2FError(response.errorCode, 'register');
             return _this.renderError(error);
           } else {
             return _this.renderRegistered(JSON.stringify(response));
@@ -94,7 +94,5 @@
     };
 
     return U2FRegister;
-
   })();
-
-}).call(this);
+}).call(window);

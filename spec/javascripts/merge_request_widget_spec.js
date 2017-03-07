@@ -1,7 +1,8 @@
-/* eslint-disable space-before-function-paren, quotes, comma-dangle, dot-notation, indent, quote-props, no-var, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, quotes, comma-dangle, dot-notation, quote-props, no-var, max-len */
 
-/*= require merge_request_widget */
-/*= require lib/utils/datetime_utility */
+require('~/merge_request_widget');
+require('~/smart_interval');
+require('~/lib/utils/datetime_utility');
 
 (function() {
   describe('MergeRequestWidget', function() {
@@ -21,7 +22,11 @@
           normal: "Build {{status}}"
         },
         gitlab_icon: "gitlab_logo.png",
-        builds_path: "http://sampledomain.local/sampleBuildsPath"
+        ci_pipeline: 80,
+        ci_sha: "12a34bc5",
+        builds_path: "http://sampledomain.local/sampleBuildsPath",
+        commits_path: "http://sampledomain.local/commits",
+        pipeline_path: "http://sampledomain.local/pipelines"
       };
       this["class"] = new window.gl.MergeRequestWidget(this.opts);
     });
@@ -42,17 +47,17 @@
       });
 
       it('should call renderEnvironments when the environments property is set', function() {
-         const spy = spyOn(this.class, 'renderEnvironments').and.stub();
-         this.class.getCIEnvironmentsStatus();
-         expect(spy).toHaveBeenCalledWith(this.ciEnvironmentsStatusData);
-       });
+        const spy = spyOn(this.class, 'renderEnvironments').and.stub();
+        this.class.getCIEnvironmentsStatus();
+        expect(spy).toHaveBeenCalledWith(this.ciEnvironmentsStatusData);
+      });
 
-       it('should not call renderEnvironments when the environments property is not set', function() {
-         this.ciEnvironmentsStatusData = null;
-         const spy = spyOn(this.class, 'renderEnvironments').and.stub();
-         this.class.getCIEnvironmentsStatus();
-         expect(spy).not.toHaveBeenCalled();
-       });
+      it('should not call renderEnvironments when the environments property is not set', function() {
+        this.ciEnvironmentsStatusData = null;
+        const spy = spyOn(this.class, 'renderEnvironments').and.stub();
+        this.class.getCIEnvironmentsStatus();
+        expect(spy).not.toHaveBeenCalled();
+      });
     });
 
     describe('renderEnvironments', function() {
@@ -107,21 +112,22 @@
     });
 
     describe('mergeInProgress', function() {
-       it('should display error with h4 tag', function() {
-          spyOn(this.class.$widgetBody, 'html').and.callFake(function(html) {
-            expect(html).toBe('<h4>Sorry, something went wrong.</h4>');
-          });
-          spyOn($, 'ajax').and.callFake(function(e) {
-            e.success({ merge_error: 'Sorry, something went wrong.' });
-          });
-          this.class.mergeInProgress(null);
+      it('should display error with h4 tag', function() {
+        spyOn(this.class.$widgetBody, 'html').and.callFake(function(html) {
+          expect(html).toBe('<h4>Sorry, something went wrong.</h4>');
         });
+        spyOn($, 'ajax').and.callFake(function(e) {
+          e.success({ merge_error: 'Sorry, something went wrong.' });
+        });
+        this.class.mergeInProgress(null);
       });
+    });
 
-    return describe('getCIStatus', function() {
+    describe('getCIStatus', function() {
       beforeEach(function() {
         this.ciStatusData = {
           "title": "Sample MR title",
+          "pipeline": 80,
           "sha": "12a34bc5",
           "status": "success",
           "coverage": 98
@@ -165,7 +171,22 @@
         this["class"].getCIStatus(true);
         return expect(spy).not.toHaveBeenCalled();
       });
+      it('should update the pipeline URL when the pipeline changes', function() {
+        var spy;
+        spy = spyOn(this["class"], 'updatePipelineUrls').and.stub();
+        this["class"].getCIStatus(false);
+        this.ciStatusData.pipeline += 1;
+        this["class"].getCIStatus(false);
+        return expect(spy).toHaveBeenCalled();
+      });
+      it('should update the commit URL when the sha changes', function() {
+        var spy;
+        spy = spyOn(this["class"], 'updateCommitUrls').and.stub();
+        this["class"].getCIStatus(false);
+        this.ciStatusData.sha = "9b50b99a";
+        this["class"].getCIStatus(false);
+        return expect(spy).toHaveBeenCalled();
+      });
     });
   });
-
-}).call(this);
+}).call(window);

@@ -50,3 +50,98 @@
 .pulse {
   @include webkit-prefix(animation-name, pulse);
 }
+
+/*
+* General hover animations
+*/
+
+
+// Sass multiple transitions mixin | https://gist.github.com/tobiasahlin/7a421fb9306a4f518aab
+// Usage:   @include transition(width, height 0.3s ease-in-out);
+// Output:  -webkit-transition(width 0.2s, height 0.3s ease-in-out);
+//          transition(width 0.2s, height 0.3s ease-in-out);
+//
+// Pass in any number of transitions
+@mixin transition($transitions...) {
+  $unfoldedTransitions: ();
+  @each $transition in $transitions {
+    $unfoldedTransitions: append($unfoldedTransitions, unfoldTransition($transition), comma);
+  }
+
+  transition: $unfoldedTransitions;
+}
+
+@mixin disableAllAnimation {
+  /*CSS transitions*/
+  -o-transition-property: none !important;
+  -moz-transition-property: none !important;
+  -ms-transition-property: none !important;
+  -webkit-transition-property: none !important;
+  transition-property: none !important;
+  /*CSS transforms*/
+  -o-transform: none !important;
+  -moz-transform: none !important;
+  -ms-transform: none !important;
+  -webkit-transform: none !important;
+  transform: none !important;
+  /*CSS animations*/
+  -webkit-animation: none !important;
+  -moz-animation: none !important;
+  -o-animation: none !important;
+  -ms-animation: none !important;
+  animation: none !important;
+}
+
+@function unfoldTransition ($transition) {
+  // Default values
+  $property: all;
+  $duration: $general-hover-transition-duration;
+  $easing: $general-hover-transition-curve; // Browser default is ease, which is what we want
+  $delay: null; // Browser default is 0, which is what we want
+  $defaultProperties: ($property, $duration, $easing, $delay);
+
+  // Grab transition properties if they exist
+  $unfoldedTransition: ();
+  @for $i from 1 through length($defaultProperties) {
+    $p: null;
+    @if $i <= length($transition) {
+      $p: nth($transition, $i);
+    } @else {
+      $p: nth($defaultProperties, $i);
+    }
+    $unfoldedTransition: append($unfoldedTransition, $p);
+  }
+
+  @return $unfoldedTransition;
+}
+
+.btn,
+.global-dropdown-toggle {
+  @include transition(background-color, border-color, color, box-shadow);
+}
+
+.dropdown-menu-toggle,
+.avatar-circle,
+.header-user-avatar {
+  @include transition(border-color);
+}
+
+.note-action-button .link-highlight,
+.toolbar-btn,
+.dropdown-toggle-caret {
+  @include transition(color);
+}
+
+a {
+  @include transition(background-color, color, border);
+}
+
+.stage-nav-item {
+  @include transition(background-color, box-shadow);
+}
+
+.dropdown-menu a,
+.dropdown-menu button,
+.dropdown-menu-nav a {
+  transition: none;
+}

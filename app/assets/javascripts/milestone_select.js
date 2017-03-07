@@ -1,17 +1,24 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, comma-dangle, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow, padded-blocks */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, comma-dangle, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
 /* global Vue */
 /* global Issuable */
 /* global ListMilestone */
 
 (function() {
   this.MilestoneSelect = (function() {
-    function MilestoneSelect(currentProject) {
-      var _this;
+    function MilestoneSelect(currentProject, els) {
+      var _this, $els;
       if (currentProject != null) {
         _this = this;
         this.currentProject = JSON.parse(currentProject);
       }
-      $('.js-milestone-select').each(function(i, dropdown) {
+
+      $els = $(els);
+
+      if (!els) {
+        $els = $('.js-milestone-select');
+      }
+
+      $els.each(function(i, dropdown) {
         var $block, $dropdown, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, collapsedSidebarLabelTemplate, defaultLabel, issuableId, issueUpdateURL, milestoneLinkNoneTemplate, milestoneLinkTemplate, milestonesUrl, projectId, selectedMilestone, showAny, showNo, showUpcoming, useId, showMenuAbove;
         $dropdown = $(dropdown);
         projectId = $dropdown.data('project-id');
@@ -32,7 +39,7 @@
         $value = $block.find('.value');
         $loading = $block.find('.block-loading').fadeOut();
         if (issueUpdateURL) {
-          milestoneLinkTemplate = _.template('<a href="/<%- namespace %>/<%- path %>/milestones/<%- iid %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>');
+          milestoneLinkTemplate = _.template('<a href="/<%- full_path %>/milestones/<%- iid %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>');
           milestoneLinkNoneTemplate = '<span class="no-value">None</span>';
           collapsedSidebarLabelTemplate = _.template('<span class="has-tooltip" data-container="body" title="<%- remaining %>" data-placement="left"> <%- title %> </span>');
         }
@@ -108,7 +115,7 @@
           },
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
           clicked: function(selected, $el, e) {
-            var data, isIssueIndex, isMRIndex, page;
+            var data, isIssueIndex, isMRIndex, page, boardsStore;
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = (page === page && page === 'projects:merge_requests:index');
@@ -116,9 +123,19 @@
               e.preventDefault();
               return;
             }
-            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar')) {
-              gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = selected.name;
-              gl.issueBoards.BoardsStore.updateFiltersUrl();
+
+            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar') &&
+              !$dropdown.closest('.add-issues-modal').length) {
+              boardsStore = gl.issueBoards.BoardsStore.state.filters;
+            } else if ($dropdown.closest('.add-issues-modal').length) {
+              boardsStore = gl.issueBoards.ModalStore.store.filter;
+            }
+
+            if (boardsStore) {
+              boardsStore[$dropdown.data('field-name')] = selected.name;
+              if (!$dropdown.closest('.add-issues-modal').length) {
+                gl.issueBoards.BoardsStore.updateFiltersUrl();
+              }
               e.preventDefault();
             } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
               if (selected.name != null) {
@@ -164,8 +181,7 @@
                 $selectbox.hide();
                 $value.css('display', '');
                 if (data.milestone != null) {
-                  data.milestone.namespace = _this.currentProject.namespace;
-                  data.milestone.path = _this.currentProject.path;
+                  data.milestone.full_path = _this.currentProject.full_path;
                   data.milestone.remaining = gl.utils.timeFor(data.milestone.due_date);
                   $value.html(milestoneLinkTemplate(data.milestone));
                   return $sidebarCollapsedValue.find('span').html(collapsedSidebarLabelTemplate(data.milestone));
@@ -181,7 +197,5 @@
     }
 
     return MilestoneSelect;
-
   })();
-
-}).call(this);
+}).call(window);

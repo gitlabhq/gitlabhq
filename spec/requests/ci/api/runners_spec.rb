@@ -41,7 +41,7 @@ describe Ci::API::Runners do
 
       it 'creates runner' do
         expect(response).to have_http_status 201
-        expect(Ci::Runner.first.tag_list.sort).to eq(["tag1", "tag2"])
+        expect(Ci::Runner.first.tag_list.sort).to eq(%w(tag1 tag2))
       end
     end
 

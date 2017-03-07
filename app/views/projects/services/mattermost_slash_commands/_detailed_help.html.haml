@@ -1,16 +1,19 @@
-- run_actions_text = "Perform common operations on this project: #{@project.name_with_namespace}"
+- run_actions_text = "Perform common operations on GitLab project: #{@project.name_with_namespace}"
 
-To setup this service:
-%ul.list-unstyled
+%p To setup this service:
+%ul.list-unstyled.indent-list
   %li
     1.
-    = link_to 'Enable custom slash commands', 'https://docs.mattermost.com/developer/slash-commands.html#enabling-custom-commands'
+    = link_to 'https://docs.mattermost.com/developer/slash-commands.html#enabling-custom-commands', target: '_blank', rel: 'noreferrer noopener nofollow' do
+      Enable custom slash commands
+      = icon('external-link')
     on your Mattermost installation
   %li
     2.
-    = link_to 'Add a slash command', 'https://docs.mattermost.com/developer/slash-commands.html#set-up-a-custom-command'
-    in Mattermost with these options:
-
+    = link_to 'https://docs.mattermost.com/developer/slash-commands.html#set-up-a-custom-command', target: '_blank', rel: 'noreferrer noopener nofollow' do
+      Add a slash command
+      = icon('external-link')
+    in your Mattermost team with these options:
 %hr
 
 .help-form
@@ -83,9 +86,14 @@ To setup this service:
 
 %hr
 
-%ul.list-unstyled
+%ul.list-unstyled.indent-list
   %li
-    3. After adding the slash command, paste the
-
-    %strong token
+    3. Paste the
+    %strong Token
     into the field below
+  %li
+    4. Select the
+    %strong Active
+    checkbox, press
+    %strong Save changes
+    and start using GitLab inside Mattermost!

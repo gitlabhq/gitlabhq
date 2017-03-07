@@ -20,7 +20,7 @@ module Gitlab
 
             full_line = line.delete("\n")
 
-            if line.match(/^@@ -/)
+            if line =~ /^@@ -/
               type = "match"
 
               line_old = line.match(/\-[0-9]*/)[0].to_i.abs rescue 0
@@ -45,7 +45,7 @@ module Gitlab
               line_new += 1
             when "-"
               line_old += 1
-            when "\\"
+            when "\\" # rubocop:disable Lint/EmptyWhen
               # No increment
             else
               line_new += 1

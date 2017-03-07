@@ -19,7 +19,8 @@
       overflow: visible;
     }
 
-    &.ci-failed {
+    &.ci-failed,
+    &.ci-failed_with_warnings {
       color: $gl-danger;
       border-color: $gl-danger;
 
@@ -61,15 +62,15 @@
 
     &.ci-canceled,
     &.ci-disabled {
-      color: $gl-gray;
-      border-color: $gl-gray;
+      color: $gl-text-color;
+      border-color: $gl-text-color;
 
       &:not(span):hover {
-        background-color: rgba($gl-gray, .07);
+        background-color: rgba($gl-text-color, .07);
       }
 
       svg {
-        fill: $gl-gray;
+        fill: $gl-text-color;
       }
     }
 
@@ -101,15 +102,15 @@
 
     &.ci-created,
     &.ci-skipped {
-      color: $gl-gray-light;
-      border-color: $gl-gray-light;
+      color: $gl-text-color-secondary;
+      border-color: $gl-text-color-secondary;
 
       &:not(span):hover {
-        background-color: rgba($gl-gray-light, .07);
+        background-color: rgba($gl-text-color-secondary, .07);
       }
 
       svg {
-        fill: $gl-gray-light;
+        fill: $gl-text-color-secondary;
       }
     }
 
@@ -133,5 +134,11 @@
     position: relative;
     top: 2px;
     left: 5px;
+  }
+}
+
+.ci-status-link {
+  svg {
+    overflow: visible;
   }
 }

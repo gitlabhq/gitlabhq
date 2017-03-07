@@ -1,15 +1,7 @@
-/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, padded-blocks */
-/* global Turbolinks */
+/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback */
 
 (function() {
-  Turbolinks.enableProgressBar();
-
-  $(document).on('page:fetch', function() {
+  window.addEventListener('beforeunload', function() {
     $('.tanuki-logo').addClass('animate');
   });
-
-  $(document).on('page:change', function() {
-    $('.tanuki-logo').removeClass('animate');
-  });
-
-}).call(this);
+}).call(window);

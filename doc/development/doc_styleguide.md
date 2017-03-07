@@ -444,7 +444,7 @@ Rendered example:
 
 ### cURL commands
 
-- Use `https://gitlab.example.com/api/v3/` as an endpoint.
+- Use `https://gitlab.example.com/api/v4/` as an endpoint.
 - Wherever needed use this private token: `9koXpg98eAheJpvBs5tK`.
 - Always put the request first. `GET` is the default so you don't have to
   include it.
@@ -468,7 +468,7 @@ Below is a set of [cURL][] examples that you can use in the API documentation.
 Get the details of a group:
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/gitlab-org
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/gitlab-org
 ```
 
 #### cURL example with parameters passed in the URL
@@ -476,7 +476,7 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/a
 Create a new project under the authenticated user's namespace:
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects?name=foo"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects?name=foo"
 ```
 
 #### Post data using cURL's --data
@@ -486,7 +486,7 @@ cURL's `--data` option. The example below will create a new project `foo` under
 the authenticated user's namespace.
 
 ```bash
-curl --data "name=foo" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects"
+curl --data "name=foo" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects"
 ```
 
 #### Post data using JSON content
@@ -495,7 +495,7 @@ curl --data "name=foo" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://g
 and double quotes.
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' https://gitlab.example.com/api/v3/groups
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' https://gitlab.example.com/api/v4/groups
 ```
 
 #### Post data using form-data
@@ -504,7 +504,7 @@ Instead of using JSON or urlencode you can use multipart/form-data which
 properly handles data encoding:
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "title=ssh-key" --form "key=ssh-rsa AAAAB3NzaC1yc2EA..." https://gitlab.example.com/api/v3/users/25/keys
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "title=ssh-key" --form "key=ssh-rsa AAAAB3NzaC1yc2EA..." https://gitlab.example.com/api/v4/users/25/keys
 ```
 
 The above example is run by and administrator and will add an SSH public key
@@ -518,7 +518,7 @@ contains spaces in its title. Observe how spaces are escaped using the `%20`
 ASCII code.
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/42/issues?title=Hello%20Dude"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/42/issues?title=Hello%20Dude"
 ```
 
 Use `%2F` for slashes (`/`).
@@ -530,7 +530,7 @@ restrict the sign-up e-mail domains of a GitLab instance to `*.example.com` and
 `example.net`, you would do something like this:
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "domain_whitelist[]=*.example.com" --data "domain_whitelist[]=example.net" https://gitlab.example.com/api/v3/application/settings
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "domain_whitelist[]=*.example.com" --data "domain_whitelist[]=example.net" https://gitlab.example.com/api/v4/application/settings
 ```
 
 [cURL]: http://curl.haxx.se/ "cURL website"

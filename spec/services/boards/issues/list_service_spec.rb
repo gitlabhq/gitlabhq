@@ -13,7 +13,6 @@ describe Boards::Issues::ListService, services: true do
     let(:p2) { create(:label, title: 'P2', project: project, priority: 2) }
     let(:p3) { create(:label, title: 'P3', project: project, priority: 3) }
 
-    let!(:backlog) { create(:backlog_list, board: board) }
     let!(:list1)   { create(:list, board: board, label: development, position: 0) }
     let!(:list2)   { create(:list, board: board, label: testing, position: 1) }
     let!(:done)    { create(:done_list, board: board) }
@@ -45,8 +44,8 @@ describe Boards::Issues::ListService, services: true do
     end
 
     context 'sets default order to priority' do
-      it 'returns opened issues when listing issues from Backlog' do
-        params = { board_id: board.id, id: backlog.id }
+      it 'returns opened issues when list id is missing' do
+        params = { board_id: board.id }
 
         issues = described_class.new(project, user, params).execute
 

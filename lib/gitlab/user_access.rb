@@ -35,7 +35,9 @@ module Gitlab
         return true if project.empty_repo? && project.user_can_push_to_empty_repo?(user)
 
         access_levels = project.protected_branches.matching(ref).map(&:push_access_levels).flatten
-        access_levels.any? { |access_level| access_level.check_access(user) }
+        has_access = access_levels.any? { |access_level| access_level.check_access(user) }
+
+        has_access || !project.repository.branch_exists?(ref) && can_merge_to_branch?(ref)
       else
         user.can?(:push_code, project)
       end

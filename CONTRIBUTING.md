@@ -1,31 +1,48 @@
+## Contributor license agreement
+
+By submitting code as an individual you agree to the
+[individual contributor license agreement](doc/legal/individual_contributor_license_agreement.md).
+By submitting code as an entity you agree to the
+[corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
+
+_This notice should stay as the first item in the CONTRIBUTING.MD file._
+
+---
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+- [Contributor license agreement](#contributor-license-agreement)
 - [Contribute to GitLab](#contribute-to-gitlab)
-    - [Contributor license agreement](#contributor-license-agreement)
-    - [Security vulnerability disclosure](#security-vulnerability-disclosure)
-    - [Closing policy for issues and merge requests](#closing-policy-for-issues-and-merge-requests)
-    - [Helping others](#helping-others)
-    - [I want to contribute!](#i-want-to-contribute)
-    - [Implement design & UI elements](#implement-design-ui-elements)
-    - [Issue tracker](#issue-tracker)
-        - [Feature proposals](#feature-proposals)
-        - [Issue tracker guidelines](#issue-tracker-guidelines)
-        - [Issue weight](#issue-weight)
-        - [Regression issues](#regression-issues)
-        - [Technical debt](#technical-debt)
-    - [Merge requests](#merge-requests)
-        - [Merge request guidelines](#merge-request-guidelines)
-        - [Contribution acceptance criteria](#contribution-acceptance-criteria)
-    - [Changes for Stable Releases](#changes-for-stable-releases)
-    - [Definition of done](#definition-of-done)
-    - [Style guides](#style-guides)
-    - [Code of conduct](#code-of-conduct)
+- [Security vulnerability disclosure](#security-vulnerability-disclosure)
+- [Closing policy for issues and merge requests](#closing-policy-for-issues-and-merge-requests)
+- [Helping others](#helping-others)
+- [I want to contribute!](#i-want-to-contribute)
+- [Implement design & UI elements](#implement-design-ui-elements)
+- [Release retrospective and kickoff](#release-retrospective-and-kickoff)
+    - [Retrospective](#retrospective)
+    - [Kickoff](#kickoff)
+- [Issue tracker](#issue-tracker)
+    - [Feature proposals](#feature-proposals)
+    - [Issue tracker guidelines](#issue-tracker-guidelines)
+    - [Issue weight](#issue-weight)
+    - [Regression issues](#regression-issues)
+    - [Technical debt](#technical-debt)
+    - [Stewardship](#stewardship)
+- [Merge requests](#merge-requests)
+    - [Merge request guidelines](#merge-request-guidelines)
+    - [Contribution acceptance criteria](#contribution-acceptance-criteria)
+- [Changes for Stable Releases](#changes-for-stable-releases)
+- [Definition of done](#definition-of-done)
+- [Style guides](#style-guides)
+- [Code of conduct](#code-of-conduct)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Contribute to GitLab
+---
+
+## Contribute to GitLab
 
 Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to GitLab in a way that is efficient for everyone.
@@ -39,13 +56,6 @@ If you have read this guide and want to know how the GitLab [core team]
 operates please see [the GitLab contributing process](PROCESS.md).
 
 - [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
-
-## Contributor license agreement
-
-By submitting code as an individual you agree to the
-[individual contributor license agreement](doc/legal/individual_contributor_license_agreement.md).
-By submitting code as an entity you agree to the
-[corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
 
 ## Security vulnerability disclosure
 
@@ -80,15 +90,36 @@ the remaining issues on the GitHub issue tracker.
 ## I want to contribute!
 
 If you want to contribute to GitLab, but are not sure where to start,
-look for [issues with the label `up-for-grabs`][up-for-grabs]. These issues
-will be of reasonable size and challenge, for anyone to start contributing to
-GitLab.
-
-This was inspired by [an article by Kent C. Dodds][medium-up-for-grabs].
+look for [issues with the label `Accepting Merge Requests` and weight < 5][accepting-mrs-weight].
+These issues will be of reasonable size and challenge, for anyone to start
+contributing to GitLab.
 
 ## Implement design & UI elements
 
 Please see the [UX Guide for GitLab].
+
+## Release retrospective and kickoff
+
+### Retrospective
+
+After each release, we have a retrospective call where we discuss what went well,
+what went wrong, and what we can improve for the next release. The
+[retrospective notes] are public and you are invited to comment on them.
+If you're interested, you can even join the
+[retrospective call][retro-kickoff-call], on the first working day after the
+22nd at 6pm CET / 9am PST.
+
+### Kickoff
+
+Before working on the next release, we have a
+kickoff call to explain what we expect to ship in the next release. The
+[kickoff notes] are public and you are invited to comment on them.
+If you're interested, you can even join the [kickoff call][retro-kickoff-call],
+on the first working day after the 7th at 6pm CET / 9am PST..
+
+[retrospective notes]: https://docs.google.com/document/d/1nEkM_7Dj4bT21GJy0Ut3By76FZqCfLBmFQNVThmW2TY/edit?usp=sharing
+[kickoff notes]: https://docs.google.com/document/d/1ElPkZ90A8ey_iOkTvUs_ByMlwKK6NAB2VOK5835wYK0/edit?usp=sharing
+[retro-kickoff-call]: https://gitlab.zoom.us/j/918821206
 
 ## Issue tracker
 
@@ -211,19 +242,37 @@ for a release by the appropriate person.
 Make sure to mention the merge request that the `technical debt` issue is
 associated with in the description of the issue.
 
+### Stewardship
+
+For issues related to the open source stewardship of GitLab,
+there is the ~"stewardship" label.
+
+This label is to be used for issues in which the stewardship of GitLab
+is a topic of discussion. For instance if GitLab Inc. is planning to remove
+features from GitLab CE to make exclusive in GitLab EE, related issues
+would be labelled with ~"stewardship".
+
+A recent example of this was the issue for
+[bringing the time tracking API to GitLab CE][time-tracking-issue].
+
+[time-tracking-issue]: https://gitlab.com/gitlab-org/gitlab-ce/issues/25517#note_20019084
+
 ## Merge requests
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
-and/or documentation. The features we would really like a merge request for are
-listed with the label [`Accepting Merge Requests` on our issue tracker for CE][accepting-mrs-ce]
-and [EE][accepting-mrs-ee] but other improvements are also welcome. Please note
-that if an issue is marked for the current milestone either before or while you
-are working on it, a team member may take over the merge request in order to
-ensure the work is finished before the release date.
+and/or documentation. The issues that are specifically suitable for
+community contributions are listed with the label
+[`Accepting Merge Requests` on our issue tracker for CE][accepting-mrs-ce]
+and [EE][accepting-mrs-ee], but you are free to contribute to any other issue
+you want.
+
+Please note that if an issue is marked for the current milestone either before
+or while you are working on it, a team member may take over the merge request
+in order to ensure the work is finished before the release date.
 
 If you want to add a new feature that is not labeled it is best to first create
 a feedback issue (if there isn't one already) and leave a comment asking for it
-to be marked as `Accepting merge requests`. Please include screenshots or
+to be marked as `Accepting Merge Requests`. Please include screenshots or
 wireframes if the feature will also change the UI.
 
 Merge requests should be opened at [GitLab.com][gitlab-mr-tracker].
@@ -284,14 +333,6 @@ request is as follows:
    guidelines](doc/development/merge_request_performance_guidelines.md).
 1. For tests that use Capybara or PhantomJS, see this [article on how
    to write reliable asynchronous tests](https://robots.thoughtbot.com/write-reliable-asynchronous-integration-tests-with-capybara).
-
-The **official merge window** is in the beginning of the month from the 1st to
-the 7th day of the month. This is the best time to submit an MR and get
-feedback fast. Before this time the GitLab Inc. team is still dealing with work
-that is created by the monthly release such as regressions requiring patch
-releases. After the 7th it is already getting closer to the release date of the
-next version. This means there is less time to fix the issues created by
-merging large new features.
 
 Please keep the change in a single MR **as small as possible**. If you want to
 contribute a large feature think very hard what the minimum viable change is.
@@ -394,13 +435,13 @@ merge request:
 1.  [Ruby](https://github.com/bbatsov/ruby-style-guide).
     Important sections include [Source Code Layout][rss-source] and
     [Naming][rss-naming]. Use:
-    - multi-line method chaining style **Option B**: dot `.` on previous line
+    - multi-line method chaining style **Option A**: dot `.` on the second line
     - string literal quoting style **Option A**: single quoted by default
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
 1.  [Newlines styleguide][newlines-styleguide]
 1.  [Testing](doc/development/testing.md)
 1.  [JavaScript (ES6)](https://github.com/airbnb/javascript)
-1.  [JavaScript (ES5)](https://github.com/airbnb/javascript/tree/master/es5)
+1.  [JavaScript (ES5)](https://github.com/airbnb/javascript/tree/es5-deprecated/es5)
 1.  [SCSS styleguide][scss-styleguide]
 1.  [Shell commands](doc/development/shell_commands.md) created by GitLab
     contributors to enhance security
@@ -450,8 +491,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [core team]: https://about.gitlab.com/core-team/
 [getting-help]: https://about.gitlab.com/getting-help/
 [codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
-[up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=up-for-grabs
-[medium-up-for-grabs]: https://medium.com/@kentcdodds/first-timers-only-78281ea47455
+[accepting-mrs-weight]: https://gitlab.com/gitlab-org/gitlab-ce/issues?assignee_id=0&label_name[]=Accepting%20Merge%20Requests&sort=weight_asc
 [ce-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/issues
 [ee-tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues
 [google-group]: https://groups.google.com/forum/#!forum/gitlabhq

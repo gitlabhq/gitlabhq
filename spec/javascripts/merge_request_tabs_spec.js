@@ -1,11 +1,20 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
 
-/*= require merge_request_tabs */
-//= require breakpoints
-//= require lib/utils/common_utils
-//= require jquery.scrollTo
+require('~/merge_request_tabs');
+require('~/breakpoints');
+require('~/lib/utils/common_utils');
+require('vendor/jquery.scrollTo');
 
 (function () {
+  // TODO: remove this hack!
+  // PhantomJS causes spyOn to panic because replaceState isn't "writable"
+  var phantomjs;
+  try {
+    phantomjs = !Object.getOwnPropertyDescriptor(window.history, 'replaceState').writable;
+  } catch (err) {
+    phantomjs = false;
+  }
+
   describe('MergeRequestTabs', function () {
     var stubLocation = {};
     var setLocation = function (stubs) {
@@ -16,21 +25,23 @@
       };
       $.extend(stubLocation, defaults, stubs || {});
     };
-    fixture.preload('merge_request_tabs.html');
+    preloadFixtures('merge_requests/merge_request_with_task_list.html.raw');
 
     beforeEach(function () {
       this.class = new gl.MergeRequestTabs({ stubLocation: stubLocation });
       setLocation();
 
-      this.spies = {
-        history: spyOn(window.history, 'replaceState').and.callFake(function () {})
-      };
+      if (!phantomjs) {
+        this.spies = {
+          history: spyOn(window.history, 'replaceState').and.callFake(function () {})
+        };
+      }
     });
 
     describe('#activateTab', function () {
       beforeEach(function () {
         spyOn($, 'ajax').and.callFake(function () {});
-        fixture.load('merge_request_tabs.html');
+        loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
         this.subject = this.class.activateTab;
       });
       it('shows the first tab when action is show', function () {
@@ -48,6 +59,84 @@
       it('shows the diffs tab when action is diffs', function () {
         this.subject('diffs');
         expect($('#diffs')).toHaveClass('active');
+      });
+    });
+    describe('#opensInNewTab', function () {
+      var tabUrl;
+      var windowTarget = '_blank';
+
+      beforeEach(function () {
+        loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+
+        tabUrl = $('.commits-tab a').attr('href');
+
+        spyOn($.fn, 'attr').and.returnValue(tabUrl);
+      });
+
+      describe('meta click', () => {
+        beforeEach(function () {
+          spyOn(gl.utils, 'isMetaClick').and.returnValue(true);
+        });
+
+        it('opens page when commits link is clicked', function () {
+          spyOn(window, 'open').and.callFake(function (url, name) {
+            expect(url).toEqual(tabUrl);
+            expect(name).toEqual(windowTarget);
+          });
+
+          this.class.bindEvents();
+          document.querySelector('.merge-request-tabs .commits-tab a').click();
+        });
+
+        it('opens page when commits badge is clicked', function () {
+          spyOn(window, 'open').and.callFake(function (url, name) {
+            expect(url).toEqual(tabUrl);
+            expect(name).toEqual(windowTarget);
+          });
+
+          this.class.bindEvents();
+          document.querySelector('.merge-request-tabs .commits-tab a .badge').click();
+        });
+      });
+
+      it('opens page tab in a new browser tab with Ctrl+Click - Windows/Linux', function () {
+        spyOn(window, 'open').and.callFake(function (url, name) {
+          expect(url).toEqual(tabUrl);
+          expect(name).toEqual(windowTarget);
+        });
+
+        this.class.clickTab({
+          metaKey: false,
+          ctrlKey: true,
+          which: 1,
+          stopImmediatePropagation: function () {}
+        });
+      });
+      it('opens page tab in a new browser tab with Cmd+Click - Mac', function () {
+        spyOn(window, 'open').and.callFake(function (url, name) {
+          expect(url).toEqual(tabUrl);
+          expect(name).toEqual(windowTarget);
+        });
+
+        this.class.clickTab({
+          metaKey: true,
+          ctrlKey: false,
+          which: 1,
+          stopImmediatePropagation: function () {}
+        });
+      });
+      it('opens page tab in a new browser tab with Middle-click - Mac/PC', function () {
+        spyOn(window, 'open').and.callFake(function (url, name) {
+          expect(url).toEqual(tabUrl);
+          expect(name).toEqual(windowTarget);
+        });
+
+        this.class.clickTab({
+          metaKey: false,
+          ctrlKey: false,
+          which: 2,
+          stopImmediatePropagation: function () {}
+        });
       });
     });
 
@@ -98,10 +187,11 @@
           pathname: '/foo/bar/merge_requests/1'
         });
         newState = this.subject('commits');
-        expect(this.spies.history).toHaveBeenCalledWith({
-          turbolinks: true,
-          url: newState
-        }, document.title, newState);
+        if (!phantomjs) {
+          expect(this.spies.history).toHaveBeenCalledWith({
+            url: newState
+          }, document.title, newState);
+        }
       });
       it('treats "show" like "notes"', function () {
         setLocation({
@@ -119,4 +209,4 @@
       });
     });
   });
-}).call(this);
+}).call(window);

@@ -1,5 +1,5 @@
 .settings-list-icon {
-  color: $gl-gray-light;
+  color: $gl-text-color-secondary;
   font-size: $settings-icon-size;
   line-height: 42px;
 }
@@ -23,4 +23,15 @@
 
 .service-settings .control-label {
   padding-top: 0;
+}
+
+.token-token-container {
+  #impersonation-token-token {
+    width: 80%;
+    display: inline;
+  }
+
+  .btn-clipboard {
+    margin-left: 5px;
+  }
 }

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-else-return, quotes, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-else-return, quotes, max-len */
 /* global Api */
 
 (function() {
@@ -100,7 +100,5 @@
     }
 
     return ProjectSelect;
-
   })();
-
-}).call(this);
+}).call(window);

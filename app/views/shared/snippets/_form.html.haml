@@ -1,6 +1,6 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag('lib/ace.js')
-  = page_specific_javascript_tag('snippet/snippet_bundle.js')
+  = page_specific_javascript_bundle_tag('snippet')
 
 .snippet-form-holder
   = form_for @snippet, url: url, html: { class: "form-horizontal snippet-form js-requires-input" } do |f|
@@ -11,14 +11,14 @@
       .col-sm-10
         = f.text_field :title, class: 'form-control', required: true, autofocus: true
 
-    = render 'shared/visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: true, form_model: @snippet
+    = render 'shared/visibility_level', f: f, visibility_level: @snippet.visibility_level, can_change_visibility_level: true, form_model: @snippet
 
     .file-editor
       .form-group
         = f.label :file_name, "File", class: 'control-label'
         .col-sm-10
           .file-holder.snippet
-            .file-title
+            .js-file-title.file-title
               = f.text_field :file_name, placeholder: "Optionally name this file to add code highlighting, e.g. example.rb for Ruby.", class: 'form-control snippet-file-name'
             .file-content.code
               %pre#editor= @snippet.content
@@ -34,4 +34,3 @@
         = link_to "Cancel", namespace_project_snippets_path(@project.namespace, @project), class: "btn btn-cancel"
       - else
         = link_to "Cancel", snippets_path(@project), class: "btn btn-cancel"
-

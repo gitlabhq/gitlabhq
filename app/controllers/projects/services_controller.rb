@@ -9,10 +9,6 @@ class Projects::ServicesController < Projects::ApplicationController
 
   layout "project_settings"
 
-  def index
-    @services = @project.find_or_initialize_services
-  end
-
   def edit
   end
 

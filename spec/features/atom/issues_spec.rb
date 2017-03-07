@@ -43,7 +43,7 @@ describe 'Issues Feed', feature: true  do
                                           :atom, private_token: user.private_token, state: 'opened', assignee_id: user.id)
 
       link = find('link[type="application/atom+xml"]')
-      params = CGI::parse(URI.parse(link[:href]).query)
+      params = CGI.parse(URI.parse(link[:href]).query)
 
       expect(params).to include('private_token' => [user.private_token])
       expect(params).to include('state' => ['opened'])
@@ -54,7 +54,7 @@ describe 'Issues Feed', feature: true  do
       visit issues_group_path(group, :atom, private_token: user.private_token, state: 'opened', assignee_id: user.id)
 
       link = find('link[type="application/atom+xml"]')
-      params = CGI::parse(URI.parse(link[:href]).query)
+      params = CGI.parse(URI.parse(link[:href]).query)
 
       expect(params).to include('private_token' => [user.private_token])
       expect(params).to include('state' => ['opened'])

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-unused-vars, one-var, no-var, one-var-declaration-per-line, prefer-arrow-callback, no-new, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-unused-vars, one-var, no-var, one-var-declaration-per-line, prefer-arrow-callback, no-new, max-len */
 /* global Flash */
 
 (function() {
@@ -26,7 +26,5 @@
     }
 
     return Star;
-
   })();
-
-}).call(this);
+}).call(window);

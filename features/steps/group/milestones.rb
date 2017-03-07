@@ -5,9 +5,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
   include SharedUser
 
   step 'I click on group milestones' do
-    page.within('.layout-nav') do
-      click_link 'Milestones'
-    end
+    visit group_milestones_path('owned')
   end
 
   step 'I should see group milestones index page has no milestones' do
@@ -104,7 +102,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
     group = owned_group
 
     %w(gitlabhq gitlab-ci cookbook-gitlab).each do |path|
-      project = create :project, path: path, group: group
+      project = create(:empty_project, path: path, group: group)
       milestone = create :milestone, title: "Version 7.2", project: project
 
       create(:label, project: project, title: 'bug')

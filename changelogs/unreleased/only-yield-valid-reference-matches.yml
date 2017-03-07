@@ -1,0 +1,4 @@
+---
+title: Only yield valid references in ReferenceFilter.references_in
+merge_request:
+author:

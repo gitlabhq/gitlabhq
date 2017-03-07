@@ -1,6 +1,6 @@
 .issues-list {
   .issue {
-    padding: 10px $gl-padding;
+    padding: 10px 0 10px $gl-padding;
     position: relative;
 
     .title {
@@ -10,6 +10,11 @@
     .issue-labels {
       display: inline-block;
     }
+
+    .icon-merge-request-unmerged {
+      height: 13px;
+      margin-bottom: 3px;
+     }
   }
 }
 
@@ -147,4 +152,8 @@ ul.related-merge-requests > li {
     background-color: $gray-light;
     border: 1px solid $border-gray-normal;
   }
+}
+
+.recaptcha {
+  margin-bottom: 30px;
 }

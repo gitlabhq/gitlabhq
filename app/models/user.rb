@@ -21,7 +21,7 @@ class User < ActiveRecord::Base
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
   default_value_for :hide_no_password, false
-  default_value_for :theme_id, gitlab_config.default_theme
+  default_value_for :project_view, :files
 
   attr_encrypted :otp_secret,
     key:       Gitlab::Application.secrets.otp_key_base,
@@ -51,7 +51,12 @@ class User < ActiveRecord::Base
   has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id
 
   # Profile
-  has_many :keys, dependent: :destroy
+  has_many :keys, -> do
+    type = Key.arel_table[:type]
+    where(type.not_eq('DeployKey').or(type.eq(nil)))
+  end, dependent: :destroy
+  has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :destroy
+
   has_many :emails, dependent: :destroy
   has_many :personal_access_tokens, dependent: :destroy
   has_many :identities, dependent: :destroy, autosave: true
@@ -73,18 +78,15 @@ class User < ActiveRecord::Base
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy
   has_many :starred_projects, through: :users_star_projects, source: :project
-  has_many :project_authorizations, dependent: :destroy
+  has_many :project_authorizations
   has_many :authorized_projects, through: :project_authorizations, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id
-  has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
   has_many :events,                   dependent: :destroy, foreign_key: :author_id
   has_many :subscriptions,            dependent: :destroy
   has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
-  has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
-  has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
   has_one  :abuse_report,             dependent: :destroy
   has_many :spam_logs,                dependent: :destroy
@@ -93,12 +95,22 @@ class User < ActiveRecord::Base
   has_many :todos,                    dependent: :destroy
   has_many :notification_settings,    dependent: :destroy
   has_many :award_emoji,              dependent: :destroy
+  has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id
+
+  has_many :assigned_issues,          dependent: :nullify, foreign_key: :assignee_id, class_name: "Issue"
+  has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"
+
+  # Issues that a user owns are expected to be moved to the "ghost" user before
+  # the user is destroyed. If the user owns any issues during deletion, this
+  # should be treated as an exceptional condition.
+  has_many :issues,                   dependent: :restrict_with_exception, foreign_key: :author_id
 
   #
   # Validations
   #
   # Note: devise :validatable above adds validations for :email and :password
   validates :name, presence: true
+  validates :email, confirmation: true
   validates :notification_email, presence: true
   validates :notification_email, email: true, if: ->(user) { user.notification_email != user.email }
   validates :public_email, presence: true, uniqueness: true, email: true, allow_blank: true
@@ -114,10 +126,11 @@ class User < ActiveRecord::Base
   validate :unique_email, if: ->(user) { user.email_changed? }
   validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
   validate :owns_public_email, if: ->(user) { user.public_email_changed? }
+  validate :ghost_users_must_be_blocked
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
-  before_validation :signup_domain_valid?, on: :create
+  before_validation :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: ->(user) { user.email_changed? }
   before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
@@ -165,10 +178,20 @@ class User < ActiveRecord::Base
       def blocked?
         true
       end
+
+      def active_for_authentication?
+        false
+      end
+
+      def inactive_message
+        "Your account has been blocked. Please contact your GitLab " \
+          "administrator if you think this is an error."
+      end
     end
   end
 
   mount_uploader :avatar, AvatarUploader
+  has_many :uploads, as: :model, dependent: :destroy
 
   # Scopes
   scope :admins, -> { where(admin: true) }
@@ -178,8 +201,8 @@ class User < ActiveRecord::Base
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members WHERE user_id IS NOT NULL AND requested_at IS NULL)') }
   scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
-  scope :order_recent_sign_in, -> { reorder(last_sign_in_at: :desc) }
-  scope :order_oldest_sign_in, -> { reorder(last_sign_in_at: :asc) }
+  scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'DESC')) }
+  scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'ASC')) }
 
   def self.with_two_factor
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id").
@@ -302,8 +325,7 @@ class User < ActiveRecord::Base
     end
 
     def find_by_personal_access_token(token_string)
-      personal_access_token = PersonalAccessToken.active.find_by_token(token_string) if token_string
-      personal_access_token.user if personal_access_token
+      PersonalAccessTokensFinder.new(state: 'active').find_by(token: token_string)&.user
     end
 
     # Returns a user for the given SSH key.
@@ -319,8 +341,18 @@ class User < ActiveRecord::Base
     def reference_pattern
       %r{
         #{Regexp.escape(reference_prefix)}
-        (?<user>#{Gitlab::Regex::NAMESPACE_REGEX_STR})
+        (?<user>#{Gitlab::Regex::FULL_NAMESPACE_REGEX_STR})
       }x
+    end
+
+    # Return (create if necessary) the ghost user. The ghost user
+    # owns records previously belonging to deleted users.
+    def ghost
+      unique_internal(where(ghost: true), 'ghost', 'ghost%s@example.com') do |u|
+        u.bio = 'This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.'
+        u.state = :blocked
+        u.name = 'Ghost User'
+      end
     end
   end
 
@@ -332,7 +364,7 @@ class User < ActiveRecord::Base
     username
   end
 
-  def to_reference(_from_project = nil, _target_project = nil)
+  def to_reference(_from_project = nil, target_project: nil, full: nil)
     "#{self.class.reference_prefix}#{username}"
   end
 
@@ -420,6 +452,12 @@ class User < ActiveRecord::Base
     errors.add(:public_email, "is not an email you own") unless all_emails.include?(public_email)
   end
 
+  def ghost_users_must_be_blocked
+    if ghost? && !blocked?
+      errors.add(:ghost, 'cannot be enabled for a user who is not blocked.')
+    end
+  end
+
   def update_emails_with_primary_email
     primary_email_record = emails.find_by(email: email)
     if primary_email_record
@@ -438,12 +476,21 @@ class User < ActiveRecord::Base
     Group.where("namespaces.id IN (#{union.to_sql})")
   end
 
+  def nested_groups
+    Group.member_descendants(id)
+  end
+
+  def nested_groups_projects
+    Project.joins(:namespace).where('namespaces.parent_id IS NOT NULL').
+      member_descendants(id)
+  end
+
   def refresh_authorized_projects
     Users::RefreshAuthorizedProjectsService.new(self).execute
   end
 
   def remove_project_authorizations(project_ids)
-    project_authorizations.where(id: project_ids).delete_all
+    project_authorizations.where(project_id: project_ids).delete_all
   end
 
   def set_authorized_projects_column
@@ -556,8 +603,8 @@ class User < ActiveRecord::Base
 
       if project.repository.branch_exists?(event.branch_name)
         merge_requests = MergeRequest.where("created_at >= ?", event.created_at).
-            where(source_project_id: project.id,
-                  source_branch: event.branch_name)
+          where(source_project_id: project.id,
+                source_branch: event.branch_name)
         merge_requests.empty?
       end
     end
@@ -893,6 +940,21 @@ class User < ActiveRecord::Base
     end
   end
 
+  def access_level
+    if admin?
+      :admin
+    else
+      :regular
+    end
+  end
+
+  def access_level=(new_level)
+    new_level = new_level.to_s
+    return unless %w(admin regular).include?(new_level)
+
+    self.admin = (new_level == 'admin')
+  end
+
   private
 
   def ci_projects_union
@@ -959,5 +1021,45 @@ class User < ActiveRecord::Base
     else
       super
     end
+  end
+
+  def self.unique_internal(scope, username, email_pattern, &b)
+    scope.first || create_unique_internal(scope, username, email_pattern, &b)
+  end
+
+  def self.create_unique_internal(scope, username, email_pattern, &creation_block)
+    # Since we only want a single one of these in an instance, we use an
+    # exclusive lease to ensure than this block is never run concurrently.
+    lease_key = "user:unique_internal:#{username}"
+    lease = Gitlab::ExclusiveLease.new(lease_key, timeout: 1.minute.to_i)
+
+    until uuid = lease.try_obtain
+      # Keep trying until we obtain the lease. To prevent hammering Redis too
+      # much we'll wait for a bit between retries.
+      sleep(1)
+    end
+
+    # Recheck if the user is already present. One might have been
+    # added between the time we last checked (first line of this method)
+    # and the time we acquired the lock.
+    existing_user = uncached { scope.first }
+    return existing_user if existing_user.present?
+
+    uniquify = Uniquify.new
+
+    username = uniquify.string(username) { |s| User.find_by_username(s) }
+
+    email = uniquify.string(-> (n) { Kernel.sprintf(email_pattern, n) }) do |s|
+      User.find_by_email(s)
+    end
+
+    scope.create(
+      username: username,
+      password: Devise.friendly_token,
+      email: email,
+      &creation_block
+    )
+  ensure
+    Gitlab::ExclusiveLease.cancel(lease_key, uuid)
   end
 end

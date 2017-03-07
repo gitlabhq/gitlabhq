@@ -36,18 +36,19 @@ class Event < ActiveRecord::Base
   scope :code_push, -> { where(action: PUSHED) }
 
   scope :in_projects, ->(projects) do
-    where(project_id: projects.map(&:id)).recent
+    where(project_id: projects.pluck(:id)).recent
   end
 
-  scope :with_associations, -> { includes(project: :namespace) }
+  scope :with_associations, -> { includes(:author, :project, project: :namespace).preload(:target) }
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }
 
   class << self
     # Update Gitlab::ContributionsCalendar#activity_dates if this changes
     def contributions
-      where("action = ? OR (target_type in (?) AND action in (?))",
-            Event::PUSHED, ["MergeRequest", "Issue"],
-            [Event::CREATED, Event::CLOSED, Event::MERGED])
+      where("action = ? OR (target_type IN (?) AND action IN (?)) OR (target_type = ? AND action = ?)",
+            Event::PUSHED,
+            %w(MergeRequest Issue), [Event::CREATED, Event::CLOSED, Event::MERGED],
+            "Note", Event::COMMENTED)
     end
 
     def limit_recent(limit = 20, offset = nil)

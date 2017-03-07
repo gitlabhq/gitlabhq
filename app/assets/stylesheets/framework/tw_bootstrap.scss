@@ -86,6 +86,16 @@
   position: fixed;
 }
 
+/*
+ * Fix <summary> elements on firefox
+ * See https://github.com/necolas/normalize.css/issues/640
+ * and https://github.com/twbs/bootstrap/issues/21060
+ *
+ */
+summary {
+  display: list-item;
+}
+
 @import "bootstrap/responsive-utilities";
 
 // Labels
@@ -98,7 +108,7 @@
 
   &.label-gray {
     background-color: $label-gray-bg;
-    color: $gl-gray;
+    color: $gl-text-color;
     text-shadow: none;
   }
 
@@ -161,6 +171,10 @@
         color: $panel-heading-link-color;
       }
     }
+  }
+
+  &.panel-without-border {
+    border: 0;
   }
 }
 

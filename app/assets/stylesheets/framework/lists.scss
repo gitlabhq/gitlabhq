@@ -96,16 +96,6 @@ ul.unstyled-list > li {
   border-bottom: none;
 }
 
-ul.task-list {
-  li.task-list-item {
-    list-style-type: none;
-  }
-
-  ul:not(.task-list) {
-    padding-left: 1.3em;
-  }
-}
-
 // Generic content list
 ul.content-list {
   @include basic-list;
@@ -128,7 +118,7 @@ ul.content-list {
     }
 
     a {
-      color: $gl-dark-link-color;
+      color: $gl-text-color;
     }
 
     .member-group-link {
@@ -155,7 +145,8 @@ ul.content-list {
       }
 
       > .btn,
-      > .btn-group {
+      > .btn-group,
+      > .dropdown.inline {
         margin-right: $gl-padding-top;
         display: inline-block;
         margin-top: 3px;
@@ -163,6 +154,10 @@ ul.content-list {
 
         &:last-child {
           margin-right: 0;
+
+          @media(max-width: $screen-xs-max) {
+            margin: 0 auto;
+          }
         }
       }
 
@@ -230,18 +225,50 @@ ul.content-list {
   }
 
   .label-default {
-    color: $gl-gray-light;
+    color: $gl-text-color-secondary;
+  }
+}
+
+// Table list
+.table-list {
+  display: table;
+  width: 100%;
+
+  .table-list-row {
+    display: table-row;
+  }
+
+  .table-list-cell {
+    display: table-cell;
+    vertical-align: top;
+    padding: 10px 16px;
+    border-bottom: 1px solid $gray-darker;
+
+    &.avatar-cell {
+      width: 36px;
+      padding-right: 0;
+
+      img {
+        margin-right: 0;
+      }
+    }
+  }
+
+  &.table-wide {
+    .table-list-cell {
+      &:last-of-type {
+        padding-right: 0;
+      }
+
+      &:first-of-type {
+        padding-left: 0;
+      }
+    }
   }
 }
 
 .panel > .content-list > li {
   padding: $gl-padding-top $gl-padding;
-
-  &.commit {
-    @media (min-width: $screen-sm-min) {
-      padding-left: 46px + $gl-padding;
-    }
-  }
 }
 
 ul.controls {
@@ -269,4 +296,8 @@ ul.controls {
       }
     }
   }
+}
+
+ul.indent-list {
+  padding: 10px 0 0 30px;
 }

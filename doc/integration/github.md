@@ -2,7 +2,7 @@
 
 Import projects from GitHub and login to your GitLab instance with your GitHub account.
 
-To enable the GitHub OmniAuth provider you must register your application with GitHub. 
+To enable the GitHub OmniAuth provider you must register your application with GitHub.
 GitHub will generate an application ID and secret key for you to use.
 
 1.  Sign in to GitHub.
@@ -22,7 +22,7 @@ GitHub will generate an application ID and secret key for you to use.
     - Authorization callback URL is 'http(s)://${YOUR_DOMAIN}'
 1.  Select "Register application".
 
-1.  You should now see a Client ID and Client Secret near the top right of the page (see screenshot). 
+1.  You should now see a Client ID and Client Secret near the top right of the page (see screenshot).
     Keep this page open as you continue configuration.
     ![GitHub app](img/github_app.png)
 
@@ -49,7 +49,7 @@ GitHub will generate an application ID and secret key for you to use.
     For omnibus package:
 
     For GitHub.com:
-    
+
     ```ruby
       gitlab_rails['omniauth_providers'] = [
         {
@@ -60,9 +60,9 @@ GitHub will generate an application ID and secret key for you to use.
         }
       ]
     ```
-    
+
     For GitHub Enterprise:
-    
+
     ```ruby
       gitlab_rails['omniauth_providers'] = [
         {
@@ -101,10 +101,14 @@ GitHub will generate an application ID and secret key for you to use.
 
 1.  Change 'YOUR_APP_SECRET' to the client secret from the GitHub application page  from step 7.
 
-1.  Save the configuration file and run `sudo gitlab-ctl reconfigure`.
+1.  Save the configuration file.
 
-1.  Restart GitLab for the changes to take effect.
+1.  [Reconfigure][] or [restart GitLab][] for the changes to take effect if you
+    installed GitLab via Omnibus or from source respectively.
 
-On the sign in page there should now be a GitHub icon below the regular sign in form. 
-Click the icon to begin the authentication process. GitHub will ask the user to sign in and authorize the GitLab application. 
+On the sign in page there should now be a GitHub icon below the regular sign in form.
+Click the icon to begin the authentication process. GitHub will ask the user to sign in and authorize the GitLab application.
 If everything goes well the user will be returned to GitLab and will be signed in.
+
+[reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source

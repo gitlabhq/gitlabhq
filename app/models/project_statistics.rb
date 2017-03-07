@@ -4,7 +4,7 @@ class ProjectStatistics < ActiveRecord::Base
 
   before_save :update_storage_size
 
-  STORAGE_COLUMNS = [:repository_size, :lfs_objects_size, :build_artifacts_size]
+  STORAGE_COLUMNS = [:repository_size, :lfs_objects_size, :build_artifacts_size].freeze
   STATISTICS_COLUMNS = [:commit_count] + STORAGE_COLUMNS
 
   def total_repository_size
@@ -25,8 +25,9 @@ class ProjectStatistics < ActiveRecord::Base
     self.commit_count = project.repository.commit_count
   end
 
+  # Repository#size needs to be converted from MB to Byte.
   def update_repository_size
-    self.repository_size = project.repository.size
+    self.repository_size = project.repository.size * 1.megabyte
   end
 
   def update_lfs_objects_size

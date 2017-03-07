@@ -3,7 +3,7 @@
 To ensure a merge request does not negatively impact performance of GitLab
 _every_ merge request **must** adhere to the guidelines outlined in this
 document. There are no exceptions to this rule unless specifically discussed
-with and agreed upon by merge request endbosses and performance specialists.
+with and agreed upon by backend maintainers and performance specialists.
 
 To measure the impact of a merge request you can use
 [Sherlock](profiling.md#sherlock). It's also highly recommended that you read
@@ -40,9 +40,9 @@ section below for more information.
 about the impact.
 
 Sometimes it's hard to assess the impact of a merge request. In this case you
-should ask one of the merge request (mini) endbosses to review your changes. You
-can find a list of these endbosses at <https://about.gitlab.com/team/>. An
-endboss in turn can request a performance specialist to review the changes.
+should ask one of the merge request reviewers to review your changes. You can
+find a list of these reviewers at <https://about.gitlab.com/team/>. A reviewer
+in turn can request a performance specialist to review the changes.
 
 ## Query Counts
 

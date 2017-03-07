@@ -1,18 +1,21 @@
 require 'spec_helper'
 
 describe Dashboard::TodosController do
+  include ApiHelpers
+
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:author)  { create(:user) }
+  let(:project) { create(:empty_project) }
   let(:todo_service) { TodoService.new }
 
-  describe 'GET #index' do
-    before do
-      sign_in(user)
-      project.team << [user, :developer]
-    end
+  before do
+    sign_in(user)
+    project.team << [user, :developer]
+  end
 
+  describe 'GET #index' do
     context 'when using pagination' do
-      let(:last_page) { user.todos.page().total_pages }
+      let(:last_page) { user.todos.page.total_pages }
       let!(:issues) { create_list(:issue, 2, project: project, assignee: user) }
 
       before do
@@ -32,6 +35,18 @@ describe Dashboard::TodosController do
         expect(assigns(:todos).current_page).to eq(last_page)
         expect(response).to have_http_status(200)
       end
+    end
+  end
+
+  describe 'PATCH #restore' do
+    let(:todo) { create(:todo, :done, user: user, project: project, author: author) }
+
+    it 'restores the todo to pending state' do
+      patch :restore, id: todo.id
+
+      expect(todo.reload).to be_pending
+      expect(response).to have_http_status(200)
+      expect(json_response).to eq({ "count" => "1", "done_count" => "0" })
     end
   end
 end

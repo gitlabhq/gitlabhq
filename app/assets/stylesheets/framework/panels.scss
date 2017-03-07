@@ -48,3 +48,11 @@
     line-height: inherit;
   }
 }
+
+.panel-default {
+  .table-list-row:last-child {
+    .table-list-cell {
+      border-bottom: 0;
+    }
+  }
+}

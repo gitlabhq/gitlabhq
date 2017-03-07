@@ -1,4 +1,4 @@
-require 'sidekiq/testing'
+require './spec/support/sidekiq'
 
 Sidekiq::Testing.inline! do
   Gitlab::Seeder.quiet do

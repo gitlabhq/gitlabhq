@@ -12,7 +12,7 @@ describe 'Git HTTP requests', lib: true do
 
   describe "User with no identities" do
     let(:user)    { create(:user) }
-    let(:project) { create(:project, path: 'project.git-project') }
+    let(:project) { create(:project, :repository, path: 'project.git-project') }
 
     context "when the project doesn't exist" do
       context "when no authentication is provided" do
@@ -53,6 +53,28 @@ describe 'Git HTTP requests', lib: true do
           expect(response).to have_http_status(200)
           expect(json_body['RepoPath']).to include(wiki.repository.path_with_namespace)
           expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+        end
+      end
+
+      context 'but the repo is disabled' do
+        let(:project) { create(:project, :repository_disabled, :wiki_enabled) }
+        let(:wiki) { ProjectWiki.new(project) }
+        let(:path) { "/#{wiki.repository.path_with_namespace}.git" }
+
+        before do
+          project.team << [user, :developer]
+        end
+
+        it 'allows clones' do
+          download(path, user: user.username, password: user.password) do |response|
+            expect(response).to have_http_status(200)
+          end
+        end
+
+        it 'allows pushes' do
+          upload(path, user: user.username, password: user.password) do |response|
+            expect(response).to have_http_status(200)
+          end
         end
       end
     end
@@ -119,7 +141,7 @@ describe 'Git HTTP requests', lib: true do
         context 'when the repo is public' do
           context 'but the repo is disabled' do
             it 'does not allow to clone the repo' do
-              project = create(:project, :public, repository_access_level: ProjectFeature::DISABLED)
+              project = create(:project, :public, :repository_disabled)
 
               download("#{project.path_with_namespace}.git", {}) do |response|
                 expect(response).to have_http_status(:unauthorized)
@@ -129,7 +151,7 @@ describe 'Git HTTP requests', lib: true do
 
           context 'but the repo is enabled' do
             it 'allows to clone the repo' do
-              project = create(:project, :public, repository_access_level: ProjectFeature::ENABLED)
+              project = create(:project, :public, :repository_enabled)
 
               download("#{project.path_with_namespace}.git", {}) do |response|
                 expect(response).to have_http_status(:ok)
@@ -139,7 +161,7 @@ describe 'Git HTTP requests', lib: true do
 
           context 'but only project members are allowed' do
             it 'does not allow to clone the repo' do
-              project = create(:project, :public, repository_access_level: ProjectFeature::PRIVATE)
+              project = create(:project, :public, :repository_private)
 
               download("#{project.path_with_namespace}.git", {}) do |response|
                 expect(response).to have_http_status(:unauthorized)
@@ -337,10 +359,6 @@ describe 'Git HTTP requests', lib: true do
           let(:build) { create(:ci_build, :running) }
           let(:project) { build.project }
           let(:other_project) { create(:empty_project) }
-
-          before do
-            project.project_feature.update_attributes(builds_access_level: ProjectFeature::ENABLED)
-          end
 
           context 'when build created by system is authenticated' do
             it "downloads get status 200" do

@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe SearchController do
   let(:user)    { create(:user) }
-  let(:project) { create(:empty_project, :public) }
 
   before do
     sign_in(user)
@@ -22,7 +21,7 @@ describe SearchController do
       before { sign_out(user) }
 
       it "doesn't expose comments on issues" do
-        project = create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE)
+        project = create(:empty_project, :public, :issues_private)
         note = create(:note_on_issue, project: project)
 
         get :show, project_id: project.id, scope: 'notes', search: note.note
@@ -31,17 +30,8 @@ describe SearchController do
       end
     end
 
-    it "doesn't expose comments on issues" do
-      project = create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE)
-      note = create(:note_on_issue, project: project)
-
-      get :show, project_id: project.id, scope: 'notes', search: note.note
-
-      expect(assigns[:search_objects].count).to eq(0)
-    end
-
     it "doesn't expose comments on merge_requests" do
-      project = create(:empty_project, :public, merge_requests_access_level: ProjectFeature::PRIVATE)
+      project = create(:empty_project, :public, :merge_requests_private)
       note = create(:note_on_merge_request, project: project)
 
       get :show, project_id: project.id, scope: 'notes', search: note.note
@@ -50,7 +40,7 @@ describe SearchController do
     end
 
     it "doesn't expose comments on snippets" do
-      project = create(:empty_project, :public, snippets_access_level: ProjectFeature::PRIVATE)
+      project = create(:empty_project, :public, :snippets_private)
       note = create(:note_on_project_snippet, project: project)
 
       get :show, project_id: project.id, scope: 'notes', search: note.note

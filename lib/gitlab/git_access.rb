@@ -10,10 +10,10 @@ module Gitlab
       deploy_key_upload:
         'This deploy key does not have write access to this project.',
       no_repo: 'A repository for this project does not exist yet.'
-    }
+    }.freeze
 
-    DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }
-    PUSH_COMMANDS = %w{ git-receive-pack }
+    DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
+    PUSH_COMMANDS = %w{ git-receive-pack }.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
     attr_reader :actor, :project, :protocol, :user_access, :authentication_abilities

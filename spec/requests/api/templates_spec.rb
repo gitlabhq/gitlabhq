@@ -3,51 +3,53 @@ require 'spec_helper'
 describe API::Templates, api: true  do
   include ApiHelpers
 
-  shared_examples_for 'the Template Entity' do |path|
-    before { get api(path) }
+  context 'the Template Entity' do
+    before { get api('/templates/gitignores/Ruby') }
 
     it { expect(json_response['name']).to eq('Ruby') }
     it { expect(json_response['content']).to include('*.gem') }
   end
-  
-  shared_examples_for 'the TemplateList Entity' do |path|
-    before { get api(path) }
+
+  context 'the TemplateList Entity' do
+    before { get api('/templates/gitignores') }
 
     it { expect(json_response.first['name']).not_to be_nil }
     it { expect(json_response.first['content']).to be_nil }
   end
 
-  shared_examples_for 'requesting gitignores' do |path|
+  context 'requesting gitignores' do
     it 'returns a list of available gitignore templates' do
-      get api(path)
+      get api('/templates/gitignores')
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.size).to be > 15
     end
   end
 
-  shared_examples_for 'requesting gitlab-ci-ymls' do |path|
+  context 'requesting gitlab-ci-ymls' do
     it 'returns a list of available gitlab_ci_ymls' do
-      get api(path)
+      get api('/templates/gitlab_ci_ymls')
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.first['name']).not_to be_nil
     end
   end
 
-  shared_examples_for 'requesting gitlab-ci-yml for Ruby' do |path|
+  context 'requesting gitlab-ci-yml for Ruby' do
     it 'adds a disclaimer on the top' do
-      get api(path)
+      get api('/templates/gitlab_ci_ymls/Ruby')
 
       expect(response).to have_http_status(200)
       expect(json_response['content']).to start_with("# This file is a template,")
     end
   end
 
-  shared_examples_for 'the License Template Entity' do |path|
-    before { get api(path) }
+  context 'the License Template Entity' do
+    before { get api('/templates/licenses/mit') }
 
     it 'returns a license template' do
       expect(json_response['key']).to eq('mit')
@@ -56,30 +58,32 @@ describe API::Templates, api: true  do
       expect(json_response['popular']).to be true
       expect(json_response['html_url']).to eq('http://choosealicense.com/licenses/mit/')
       expect(json_response['source_url']).to eq('https://opensource.org/licenses/MIT')
-      expect(json_response['description']).to include('A permissive license that is short and to the point.')
+      expect(json_response['description']).to include('A short and simple permissive license with conditions')
       expect(json_response['conditions']).to eq(%w[include-copyright])
       expect(json_response['permissions']).to eq(%w[commercial-use modifications distribution private-use])
       expect(json_response['limitations']).to eq(%w[no-liability])
-      expect(json_response['content']).to include('The MIT License (MIT)')
+      expect(json_response['content']).to include('MIT License')
     end
   end
 
-  shared_examples_for 'GET licenses' do |path|
+  context 'GET templates/licenses' do
     it 'returns a list of available license templates' do
-      get api(path)
+      get api('/templates/licenses')
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.size).to eq(15)
+      expect(json_response.size).to eq(12)
       expect(json_response.map { |l| l['key'] }).to include('agpl-3.0')
     end
 
     describe 'the popular parameter' do
       context 'with popular=1' do
         it 'returns a list of available popular license templates' do
-          get api("#{path}?popular=1")
+          get api('/templates/licenses?popular=1')
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.size).to eq(3)
           expect(json_response.map { |l| l['key'] }).to include('apache-2.0')
@@ -88,17 +92,17 @@ describe API::Templates, api: true  do
     end
   end
 
-  shared_examples_for 'GET licenses/:name' do |path|
+  context 'GET templates/licenses/:name' do
     context 'with :project and :fullname given' do
       before do
-        get api("#{path}/#{license_type}?project=My+Awesome+Project&fullname=Anton+#{license_type.upcase}")
+        get api("/templates/licenses/#{license_type}?project=My+Awesome+Project&fullname=Anton+#{license_type.upcase}")
       end
 
       context 'for the mit license' do
         let(:license_type) { 'mit' }
 
         it 'returns the license text' do
-          expect(json_response['content']).to include('The MIT License (MIT)')
+          expect(json_response['content']).to include('MIT License')
         end
 
         it 'replaces placeholder values' do
@@ -177,27 +181,5 @@ describe API::Templates, api: true  do
         end
       end
     end
-  end
-
-  describe 'with /templates namespace' do
-    it_behaves_like 'the Template Entity', '/templates/gitignores/Ruby'
-    it_behaves_like 'the TemplateList Entity', '/templates/gitignores'
-    it_behaves_like 'requesting gitignores', '/templates/gitignores'
-    it_behaves_like 'requesting gitlab-ci-ymls', '/templates/gitlab_ci_ymls'
-    it_behaves_like 'requesting gitlab-ci-yml for Ruby', '/templates/gitlab_ci_ymls/Ruby'
-    it_behaves_like 'the License Template Entity', '/templates/licenses/mit'
-    it_behaves_like 'GET licenses', '/templates/licenses'
-    it_behaves_like 'GET licenses/:name', '/templates/licenses'
-  end
-
-  describe 'without /templates namespace' do
-    it_behaves_like 'the Template Entity', '/gitignores/Ruby'
-    it_behaves_like 'the TemplateList Entity', '/gitignores'
-    it_behaves_like 'requesting gitignores', '/gitignores'
-    it_behaves_like 'requesting gitlab-ci-ymls', '/gitlab_ci_ymls'
-    it_behaves_like 'requesting gitlab-ci-yml for Ruby', '/gitlab_ci_ymls/Ruby'
-    it_behaves_like 'the License Template Entity', '/licenses/mit'
-    it_behaves_like 'GET licenses', '/licenses'
-    it_behaves_like 'GET licenses/:name', '/licenses'
   end
 end

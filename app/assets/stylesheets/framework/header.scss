@@ -45,7 +45,7 @@ header {
       padding: 0;
 
       .nav > li > a {
-        color: $gl-gray-light;
+        color: $gl-text-color-secondary;
         font-size: 18px;
         padding: 0;
         margin: ($header-height - 28) / 2 0;
@@ -57,13 +57,21 @@ header {
 
         &.header-user-dropdown-toggle {
           margin-left: 14px;
+
+          &:hover,
+          &:focus,
+          &:active {
+            .header-user-avatar {
+              border-color: rgba($avatar-border, .2);
+            }
+          }
         }
 
         &:hover,
         &:focus,
         &:active {
           background-color: $gray-light;
-          color: darken($gl-gray-light, 30%);
+          color: $gl-text-color;
 
           .todos-pending-count {
             background: darken($todo-alert-blue, 10%);
@@ -88,23 +96,41 @@ header {
         }
 
         &.active {
-          color: $gl-gray-light;
+          color: $gl-text-color-secondary;
         }
       }
     }
+  }
 
-    .side-nav-toggle {
-      position: absolute;
-      left: -10px;
-      margin: 7px 0;
-      font-size: 18px;
-      padding: 6px 10px;
-      border: none;
-      background-color: $gray-light;
+  .global-dropdown {
+    position: absolute;
+    left: -10px;
 
-      &:hover {
-        background-color: $white-normal;
+    .badge {
+      font-size: 11px;
+    }
+
+    li {
+      &.active a {
+        font-weight: bold;
       }
+    }
+  }
+
+  .global-dropdown-toggle {
+    margin: 7px 0;
+    font-size: 18px;
+    padding: 6px 10px;
+    border: none;
+    background-color: $gray-light;
+
+    &:hover {
+      background-color: $white-normal;
+    }
+
+    &:focus {
+      outline: none;
+      background-color: $white-normal;
     }
   }
 
@@ -122,33 +148,19 @@ header {
     }
 
     .header-logo {
-      position: absolute;
-      left: 50%;
-      top: 7px;
+      display: inline-block;
+      margin: 0 7px 0 2px;
+      position: relative;
+      top: 10px;
       transition-duration: .3s;
-      z-index: 999;
-
-      #logo {
-        position: relative;
-        left: -50%;
-      }
 
       svg,
       img {
-        height: 36px;
+        height: 28px;
       }
 
       &:hover {
         cursor: pointer;
-      }
-
-      @media (max-width: $screen-xs-max) {
-        right: 20px;
-        left: auto;
-
-        #logo {
-          left: auto;
-        }
       }
     }
 
@@ -157,7 +169,6 @@ header {
       padding-right: 20px;
       margin: 0;
       font-size: 18px;
-      max-width: 385px;
       display: inline-block;
       line-height: $header-height;
       font-weight: normal;
@@ -167,12 +178,16 @@ header {
       vertical-align: top;
       white-space: nowrap;
 
-      @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-        max-width: 300px;
-      }
-
       @media (max-width: $screen-xs-max) {
         max-width: 190px;
+      }
+
+      @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) {
+        max-width: 428px;
+      }
+
+      @media (min-width: $screen-lg-min) {
+        max-width: 685px;
       }
 
       a {
@@ -180,6 +195,7 @@ header {
 
         &:hover {
           text-decoration: underline;
+          color: $gl-header-nav-hover-color;
         }
       }
 
@@ -198,7 +214,7 @@ header {
         cursor: pointer;
 
         &:hover {
-          color: darken($color: $gl-text-color, $amount: 30%);
+          color: $gl-header-nav-hover-color;
         }
       }
 
@@ -211,6 +227,10 @@ header {
     .navbar-collapse {
       float: right;
       border-top: none;
+
+      @media (min-width: $screen-md-min) {
+        padding: 0;
+      }
 
       @media (max-width: $screen-xs-max) {
         float: none;
@@ -240,29 +260,39 @@ header {
     font-size: 18px;
 
     .navbar-nav {
+      display: table;
+      table-layout: fixed;
+      width: 100%;
       margin: 0;
-      float: none !important;
-
-      .visible-xs,
-      .visible-sm {
-        display: table-cell !important;
-      }
+      text-align: right;
     }
 
     .navbar-collapse {
       padding-left: 5px;
 
-      .nav > li {
-        display: table-cell;
-        width: 1%;
+      .nav > li:not(.hidden-xs) {
+        display: table-cell!important;
+        width: 25%;
+
+        a {
+          margin-right: 8px;
+        }
       }
     }
+  }
+
+  .header-user-dropdown-toggle {
+    text-align: center;
+  }
+
+  .header-user-avatar {
+    float: none;
   }
 }
 
 .header-user {
   .dropdown-menu-nav {
-    width: 140px;
+    min-width: 140px;
     margin-top: -5px;
   }
 }
@@ -271,4 +301,5 @@ header {
   float: left;
   margin-right: 5px;
   border-radius: 50%;
+  border: 1px solid $avatar-border;
 }

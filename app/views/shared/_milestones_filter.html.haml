@@ -6,14 +6,14 @@
     = link_to milestones_filter_path(state: 'opened') do
       Open
       - if @project
-        %span.badge #{counts[:opened]}
+        %span.badge= counts[:opened]
   %li{ class: milestone_class_for_state(params[:state], 'closed') }>
     = link_to milestones_filter_path(state: 'closed') do
       Closed
       - if @project
-        %span.badge #{counts[:closed]}
+        %span.badge= counts[:closed]
   %li{ class: milestone_class_for_state(params[:state], 'all') }>
     = link_to milestones_filter_path(state: 'all') do
       All
       - if @project
-        %span.badge #{counts[:all]}
+        %span.badge= counts[:all]

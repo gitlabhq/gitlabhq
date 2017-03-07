@@ -1,11 +1,8 @@
-/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, new-parens, no-return-assign, new-cap, vars-on-top, semi, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, new-parens, no-return-assign, new-cap, vars-on-top, max-len */
 /* global Sidebar */
 
-/*= require right_sidebar */
-/*= require jquery */
-/*= require js.cookie */
-
-/*= require extensions/jquery.js */
+require('~/right_sidebar');
+require('~/extensions/jquery.js');
 
 (function() {
   var $aside, $icon, $labelsIcon, $page, $toggle, assertSidebarState;
@@ -36,9 +33,11 @@
 
   describe('RightSidebar', function() {
     var fixtureName = 'issues/open-issue.html.raw';
-    fixture.preload(fixtureName);
+    preloadFixtures(fixtureName);
+    loadJSONFixtures('todos/todos.json');
+
     beforeEach(function() {
-      fixture.load(fixtureName);
+      loadFixtures(fixtureName);
       this.sidebar = new Sidebar;
       $aside = $('.right-sidebar');
       $page = $('.page-with-sidebar');
@@ -65,9 +64,10 @@
     });
 
     it('should broadcast todo:toggle event when add todo clicked', function() {
+      var todos = getJSONFixture('todos/todos.json');
       spyOn(jQuery, 'ajax').and.callFake(function() {
         var d = $.Deferred();
-        var response = fixture.load('todos.json');
+        var response = todos;
         d.resolve(response);
         return d.promise();
       });
@@ -77,7 +77,6 @@
       $('.js-issuable-todo').click();
 
       expect(todoToggleSpy.calls.count()).toEqual(1);
-    })
+    });
   });
-
-}).call(this);
+}).call(window);

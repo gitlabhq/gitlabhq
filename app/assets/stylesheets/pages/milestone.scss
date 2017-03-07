@@ -30,6 +30,26 @@
       word-wrap: break-word;
     }
   }
+
+  .panel-heading {
+    line-height: $line-height-base;
+    padding: 14px 16px;
+    display: -webkit-flex;
+    display: flex;
+
+    .title {
+      -webkit-flex: 1;
+      -webkit-flex-grow: 1;
+      flex: 1;
+      flex-grow: 2;
+    }
+
+    .counter {
+      -webkit-flex: 1;
+      flex: 0;
+      padding-left: 16px;
+    }
+  }
 }
 
 .milestone-summary {
@@ -102,12 +122,16 @@
     margin-top: 7px;
 
     .issuable-number {
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
       margin-right: 5px;
     }
 
     .avatar {
       float: none;
+    }
+
+    > a:not(:last-of-type) {
+      margin-right: 5px;
     }
   }
 }
@@ -173,4 +197,10 @@
       order: 3;
     }
   }
+}
+
+.issuable-row {
+  background-color: $white-light;
+  cursor: -webkit-grab;
+  cursor: grab;
 }

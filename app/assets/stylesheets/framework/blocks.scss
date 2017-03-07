@@ -1,13 +1,13 @@
 .centered-light-block {
   text-align: center;
-  color: $gl-gray;
+  color: $gl-text-color;
   margin: 20px;
 }
 
 .nothing-here-block {
   text-align: center;
   padding: 20px;
-  color: $gl-gray;
+  color: $gl-text-color;
   font-weight: normal;
   font-size: 14px;
   line-height: 36px;
@@ -29,7 +29,7 @@
   margin-bottom: 0;
   border-top: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
-  color: $gl-gray;
+  color: $gl-text-color;
 
   &.oneline-block {
     line-height: 42px;
@@ -82,7 +82,12 @@
   }
 
   .block-controls {
-    float: right;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: flex-end;
+    justify-content: flex-end;
+    -webkit-flex: 1;
+    flex: 1;
 
     .control {
       float: left;
@@ -135,11 +140,11 @@
   }
 
   .cover-title {
-    color: $gl-header-color;
+    color: $gl-text-color;
     font-size: 23px;
 
     h1 {
-      color: $gl-gray-dark;
+      color: $gl-text-color;
       margin-bottom: 6px;
       font-size: 23px;
     }
@@ -153,7 +158,7 @@
 
     p {
       padding: 0 $gl-padding;
-      color: $gl-text-color-dark;
+      color: $gl-text-color;
     }
   }
 
@@ -211,7 +216,7 @@
       display: inline;
       font-weight: normal;
       font-size: 24px;
-      color: $gl-title-color;
+      color: $gl-text-color;
     }
   }
 }
@@ -224,7 +229,7 @@
   .controls {
     float: right;
     margin-top: 8px;
-    padding-bottom: 7px;
+    padding-bottom: 8px;
     border-bottom: 1px solid $border-color;
   }
 }
@@ -273,6 +278,10 @@
     display: inline-block;
   }
 
+  .btn {
+    margin: $btn-side-margin $btn-side-margin 0 0;
+  }
+
   @media(max-width: $screen-xs-max) {
     margin-top: 50px;
     text-align: center;
@@ -281,4 +290,15 @@
       width: 100%;
     }
   }
+
+  @media(min-width: $screen-xs-max) {
+    &.labels .text-content {
+      margin-top: 70px;
+    }
+  }
+}
+
+.flex-container-block {
+  display: -webkit-flex;
+  display: flex;
 }

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, consistent-return, no-var, no-else-return, prefer-arrow-callback, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, consistent-return, no-var, no-else-return, prefer-arrow-callback, max-len */
 
 // Syntax Highlighter
 //
@@ -10,7 +10,6 @@
 //   <div class="js-syntax-highlight"></div>
 //
 (function() {
-
   $.fn.syntaxHighlight = function() {
     var $children;
 
@@ -25,5 +24,4 @@
       }
     }
   };
-
-}).call(this);
+}).call(window);

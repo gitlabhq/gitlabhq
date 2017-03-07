@@ -2,10 +2,11 @@ require 'spec_helper'
 require_relative '../../config/initializers/secret_token'
 
 describe 'create_tokens', lib: true do
+  include StubENV
+
   let(:secrets) { ActiveSupport::OrderedOptions.new }
 
   before do
-    allow(ENV).to receive(:[]).and_call_original
     allow(File).to receive(:write)
     allow(File).to receive(:delete)
     allow(Rails).to receive_message_chain(:application, :secrets).and_return(secrets)
@@ -17,7 +18,7 @@ describe 'create_tokens', lib: true do
   context 'setting secret_key_base and otp_key_base' do
     context 'when none of the secrets exist' do
       before do
-        allow(ENV).to receive(:[]).with('SECRET_KEY_BASE').and_return(nil)
+        stub_env('SECRET_KEY_BASE', nil)
         allow(File).to receive(:exist?).with('.secret').and_return(false)
         allow(File).to receive(:exist?).with('config/secrets.yml').and_return(false)
         allow(self).to receive(:warn_missing_secret)
@@ -69,7 +70,7 @@ describe 'create_tokens', lib: true do
 
       context 'when secret_key_base exists in the environment and secrets.yml' do
         before do
-          allow(ENV).to receive(:[]).with('SECRET_KEY_BASE').and_return('env_key')
+          stub_env('SECRET_KEY_BASE', 'env_key')
           secrets.secret_key_base = 'secret_key_base'
           secrets.otp_key_base = 'otp_key_base'
         end

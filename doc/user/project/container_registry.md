@@ -1,10 +1,7 @@
 # GitLab Container Registry
 
-> [Introduced][ce-4040] in GitLab 8.8.
-
----
-
 >**Notes:**
+> [Introduced][ce-4040] in GitLab 8.8.
 - Docker Registry manifest `v1` support was added in GitLab 8.9 to support Docker
   versions earlier than 1.10.
 - This document is about the user guide. To learn how to enable GitLab Container
@@ -98,8 +95,8 @@ delete them.
 This feature requires GitLab 8.8 and GitLab Runner 1.2.
 
 Make sure that your GitLab Runner is configured to allow building Docker images by
-following the [Using Docker Build](../ci/docker/using_docker_build.md)
-and [Using the GitLab Container Registry documentation](../ci/docker/using_docker_build.md#using-the-gitlab-container-registry).
+following the [Using Docker Build](../../ci/docker/using_docker_build.md)
+and [Using the GitLab Container Registry documentation](../../ci/docker/using_docker_build.md#using-the-gitlab-container-registry).
 
 ## Limitations
 
@@ -252,4 +249,4 @@ Once the right permissions were set, the error will go away.
 
 [ce-4040]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040
 [docker-docs]: https://docs.docker.com/engine/userguide/intro/
-[private-docker]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/blob/master/docs/configuration/advanced-configuration.md#using-a-private-docker-registry
+[private-docker]: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#using-a-private-docker-registry

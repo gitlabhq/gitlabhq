@@ -1,10 +1,4 @@
 module NavHelper
-  def page_sidebar_class
-    if pinned_nav?
-      "page-sidebar-expanded page-sidebar-pinned"
-    end
-  end
-
   def page_gutter_class
     if current_path?('merge_requests#show') ||
         current_path?('merge_requests#diffs') ||
@@ -32,10 +26,6 @@ module NavHelper
     class_name = ''
     class_name << " with-horizontal-nav" if defined?(nav) && nav
 
-    if pinned_nav?
-      class_name << " header-sidebar-expanded header-sidebar-pinned"
-    end
-
     class_name
   end
 
@@ -45,9 +35,5 @@ module NavHelper
 
   def nav_control_class
     "nav-control" if current_user
-  end
-
-  def pinned_nav?
-    cookies[:pin_nav] == 'true'
   end
 end

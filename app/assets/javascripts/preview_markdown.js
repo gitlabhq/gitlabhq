@@ -7,6 +7,7 @@
 //
 (function () {
   var lastTextareaPreviewed;
+  var lastTextareaHeight = null;
   var markdownPreview;
   var previewButtonSelector;
   var writeButtonSelector;
@@ -104,10 +105,14 @@
     if (!$form) {
       return;
     }
+
     lastTextareaPreviewed = $form.find('textarea.markdown-area');
+    lastTextareaHeight = lastTextareaPreviewed.height();
+
     // toggle tabs
     $form.find(writeButtonSelector).parent().removeClass('active');
     $form.find(previewButtonSelector).parent().addClass('active');
+
     // toggle content
     $form.find('.md-write-holder').hide();
     $form.find('.md-preview-holder').show();
@@ -119,9 +124,15 @@
       return;
     }
     lastTextareaPreviewed = null;
+
+    if (lastTextareaHeight) {
+      $form.find('textarea.markdown-area').height(lastTextareaHeight);
+    }
+
     // toggle tabs
     $form.find(writeButtonSelector).parent().addClass('active');
     $form.find(previewButtonSelector).parent().removeClass('active');
+
     // toggle content
     $form.find('.md-write-holder').show();
     $form.find('textarea.markdown-area').focus();

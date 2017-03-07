@@ -107,7 +107,7 @@ describe ProjectStatistics, models: true do
 
   describe '#update_repository_size' do
     before do
-      allow(project.repository).to receive(:size).and_return(12.megabytes)
+      allow(project.repository).to receive(:size).and_return(12)
       statistics.update_repository_size
     end
 

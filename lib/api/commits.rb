@@ -16,16 +16,13 @@ module API
       end
       params do
         optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
-        optional :since,    type: String, desc: 'Only commits after or in this date will be returned'
-        optional :until,    type: String, desc: 'Only commits before or in this date will be returned'
+        optional :since,    type: DateTime, desc: 'Only commits after or on this date will be returned'
+        optional :until,    type: DateTime, desc: 'Only commits before or on this date will be returned'
         optional :page,     type: Integer, default: 0, desc: 'The page for pagination'
         optional :per_page, type: Integer, default: 20, desc: 'The number of results per page'
         optional :path,     type: String, desc: 'The file path'
       end
       get ":id/repository/commits" do
-        # TODO remove the next line for 9.0, use DateTime type in the params block
-        datetime_attributes! :since, :until
-
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
         offset = params[:page] * params[:per_page]
 
@@ -44,8 +41,7 @@ module API
         detail 'This feature was introduced in GitLab 8.13'
       end
       params do
-        requires :id, type: Integer, desc: 'The project ID'
-        requires :branch_name, type: String, desc: 'The name of branch'
+        requires :branch, type: String, desc: 'The name of branch'
         requires :commit_message, type: String, desc: 'Commit message'
         requires :actions, type: Array[Hash], desc: 'Actions to perform in commit'
         optional :author_email, type: String, desc: 'Author email for commit'
@@ -54,15 +50,7 @@ module API
       post ":id/repository/commits" do
         authorize! :push_code, user_project
 
-        attrs = declared_params
-        attrs[:source_branch] = attrs[:branch_name]
-        attrs[:target_branch] = attrs[:branch_name]
-        attrs[:actions].map! do |action|
-          action[:action] = action[:action].to_sym
-          action[:file_path].slice!(0) if action[:file_path] && action[:file_path].start_with?('/')
-          action[:previous_path].slice!(0) if action[:previous_path] && action[:previous_path].start_with?('/')
-          action
-        end
+        attrs = declared_params.merge(start_branch: declared_params[:branch], target_branch: declared_params[:branch])
 
         result = ::Files::MultiService.new(user_project, current_user, attrs).execute
 
@@ -115,7 +103,7 @@ module API
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
-        notes = Note.where(commit_id: commit.id).order(:created_at)
+        notes = user_project.notes.where(commit_id: commit.id).order(:created_at)
 
         present paginate(notes), with: Entities::CommitNote
       end
@@ -139,9 +127,7 @@ module API
 
         commit_params = {
           commit: commit,
-          create_merge_request: false,
-          source_project: user_project,
-          source_branch: commit.cherry_pick_branch_name,
+          start_branch: params[:branch],
           target_branch: params[:branch]
         }
 
@@ -164,7 +150,7 @@ module API
         optional :path, type: String, desc: 'The file path'
         given :path do
           requires :line, type: Integer, desc: 'The line number'
-          requires :line_type, type: String, values: ['new', 'old'], default: 'new', desc: 'The type of the line'
+          requires :line_type, type: String, values: %w(new old), default: 'new', desc: 'The type of the line'
         end
       end
       post ':id/repository/commits/:sha/comments' do

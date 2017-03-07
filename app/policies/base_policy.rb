@@ -6,9 +6,7 @@ class BasePolicy
       @cannot_set = cannot_set
     end
 
-    def size
-      to_set.size
-    end
+    delegate :size, to: :to_set
 
     def self.empty
       new(Set.new, Set.new)
@@ -52,6 +50,10 @@ class BasePolicy
 
   def self.class_for(subject)
     return GlobalPolicy if subject.nil?
+
+    if subject.class.try(:presenter?)
+      subject = subject.subject
+    end
 
     subject.class.ancestors.each do |klass|
       next unless klass.name

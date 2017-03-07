@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::Notes, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
-  let!(:project) { create(:project, :public, namespace: user.namespace) }
+  let!(:project) { create(:empty_project, :public, namespace: user.namespace) }
   let!(:issue) { create(:issue, project: project, author: user) }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
   let!(:snippet) { create(:project_snippet, project: project, author: user) }
@@ -14,12 +14,12 @@ describe API::Notes, api: true  do
   # For testing the cross-reference of a private issue in a public issue
   let(:private_user)    { create(:user) }
   let(:private_project) do
-    create(:project, namespace: private_user.namespace).
+    create(:empty_project, namespace: private_user.namespace).
     tap { |p| p.team << [private_user, :master] }
   end
   let(:private_issue)    { create(:issue, project: private_project) }
 
-  let(:ext_proj)  { create(:project, :public) }
+  let(:ext_proj)  { create(:empty_project, :public) }
   let(:ext_issue) { create(:issue, project: ext_proj) }
 
   let!(:cross_reference_note) do
@@ -32,15 +32,12 @@ describe API::Notes, api: true  do
   before { project.team << [user, :reporter] }
 
   describe "GET /projects/:id/noteable/:noteable_id/notes" do
-    it_behaves_like 'a paginated resources' do
-      let(:request) { get api("/projects/#{project.id}/issues/#{issue.id}/notes", user) }
-    end
-
     context "when noteable is an Issue" do
       it "returns an array of issue notes" do
         get api("/projects/#{project.id}/issues/#{issue.id}/notes", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['body']).to eq(issue_note.note)
       end
@@ -56,6 +53,7 @@ describe API::Notes, api: true  do
           get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes", user)
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response).to be_empty
         end
@@ -75,6 +73,7 @@ describe API::Notes, api: true  do
             get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes", private_user)
 
             expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(json_response.first['body']).to eq(cross_reference_note.note)
           end
@@ -87,6 +86,7 @@ describe API::Notes, api: true  do
         get api("/projects/#{project.id}/snippets/#{snippet.id}/notes", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['body']).to eq(snippet_note.note)
       end
@@ -109,6 +109,7 @@ describe API::Notes, api: true  do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/notes", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['body']).to eq(merge_request_note.note)
       end
@@ -224,11 +225,11 @@ describe API::Notes, api: true  do
       context 'when the user is posting an award emoji on an issue created by someone else' do
         let(:issue2) { create(:issue, project: project) }
 
-        it 'returns an award emoji' do
+        it 'creates a new issue note' do
           post api("/projects/#{project.id}/issues/#{issue2.id}/notes", user), body: ':+1:'
 
           expect(response).to have_http_status(201)
-          expect(json_response['awardable_id']).to eq issue2.id
+          expect(json_response['body']).to eq(':+1:')
         end
       end
 
@@ -264,8 +265,20 @@ describe API::Notes, api: true  do
       end
     end
 
+    context 'when user does not have access to read the noteable' do
+      it 'responds with 404' do
+        project = create(:empty_project, :private) { |p| p.add_guest(user) }
+        issue = create(:issue, :confidential, project: project)
+
+        post api("/projects/#{project.id}/issues/#{issue.id}/notes", user),
+          body: 'Foo'
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
     context 'when user does not have access to create noteable' do
-      let(:private_issue) { create(:issue, project: create(:project, :private)) }
+      let(:private_issue) { create(:issue, project: create(:empty_project, :private)) }
 
       ##
       # We are posting to project user has access to, but we use issue id
@@ -360,7 +373,7 @@ describe API::Notes, api: true  do
         delete api("/projects/#{project.id}/issues/#{issue.id}/"\
                    "notes/#{issue_note.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
         # Check if note is really deleted
         delete api("/projects/#{project.id}/issues/#{issue.id}/"\
                    "notes/#{issue_note.id}", user)
@@ -379,7 +392,7 @@ describe API::Notes, api: true  do
         delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                    "notes/#{snippet_note.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
         # Check if note is really deleted
         delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                    "notes/#{snippet_note.id}", user)
@@ -399,7 +412,7 @@ describe API::Notes, api: true  do
         delete api("/projects/#{project.id}/merge_requests/"\
                    "#{merge_request.id}/notes/#{merge_request_note.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
         # Check if note is really deleted
         delete api("/projects/#{project.id}/merge_requests/"\
                    "#{merge_request.id}/notes/#{merge_request_note.id}", user)

@@ -42,7 +42,7 @@ describe Snippet, models: true do
       end
 
       it 'supports a cross-project reference' do
-        another_project = build(:project, name: 'another-project', namespace: project.namespace)
+        another_project = build(:empty_project, name: 'another-project', namespace: project.namespace)
         expect(snippet.to_reference(another_project)).to eq "sample-project$1"
       end
     end
@@ -55,7 +55,7 @@ describe Snippet, models: true do
       end
 
       it 'still returns shortest reference when project arg present' do
-        another_project = build(:project, name: 'another-project')
+        another_project = build(:empty_project, name: 'another-project')
         expect(snippet.to_reference(another_project)).to eq "$1"
       end
     end
@@ -173,7 +173,7 @@ describe Snippet, models: true do
   end
 
   describe '#participants' do
-    let(:project) { create(:project, :public) }
+    let(:project) { create(:empty_project, :public) }
     let(:snippet) { create(:snippet, content: 'foo', project: project) }
 
     let!(:note1) do

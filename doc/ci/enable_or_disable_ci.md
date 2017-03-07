@@ -11,10 +11,10 @@ API.
 
 ---
 
-As of GitLab 8.2, GitLab CI is mainly exposed via the `/builds` page of a
-project. Disabling GitLab CI in a project does not delete any previous builds.
-In fact, the `/builds` page can still be accessed, although it's hidden from
-the left sidebar menu.
+GitLab CI is exposed via the `/pipelines` and `/builds` pages of a project.
+Disabling GitLab CI in a project does not delete any previous jobs.
+In fact, the `/pipelines` and `/builds` pages can still be accessed, although
+it's hidden from the left sidebar menu.
 
 GitLab CI is enabled by default on new installations and can be disabled either
 individually under each project's settings, or site-wide by modifying the
@@ -23,12 +23,12 @@ respectively.
 
 ### Per-project user setting
 
-The setting to enable or disable GitLab CI can be found with the name **Builds**
-under the **Features** area of a project's settings along with **Issues**,
-**Merge Requests**, **Wiki** and **Snippets**. Select or deselect the checkbox
-and hit **Save** for the settings to take effect.
+The setting to enable or disable GitLab CI can be found with the name **Pipelines**
+under the **Sharing & Permissions** area of a project's settings along with
+**Merge Requests**. Choose one of **Disabled**, **Only team members** and
+**Everyone with access** and hit **Save changes** for the settings to take effect.
 
-![Features settings](img/features_settings.png)
+![Sharing & Permissions settings](img/permissions_settings.png)
 
 ---
 

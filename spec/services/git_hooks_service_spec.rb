@@ -21,7 +21,7 @@ describe GitHooksService, services: true do
         hook = double(trigger: [true, nil])
         expect(Gitlab::Git::Hook).to receive(:new).exactly(3).times.and_return(hook)
 
-        expect(service.execute(user, @repo_path, @blankrev, @newrev, @ref) { }).to eq([true, nil])
+        service.execute(user, @repo_path, @blankrev, @newrev, @ref) { }
       end
     end
 

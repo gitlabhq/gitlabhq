@@ -1,8 +1,9 @@
 class Projects::BranchesController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   include SortingHelper
+
   # Authorize
-  before_action :require_non_empty_project
+  before_action :require_non_empty_project, except: :create
   before_action :authorize_download_code!
   before_action :authorize_push_code!, only: [:new, :create, :destroy, :destroy_all_merged]
 
@@ -19,7 +20,7 @@ class Projects::BranchesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @repository.branch_names
+        render json: @branches.map(&:name)
       end
     end
   end
@@ -32,6 +33,8 @@ class Projects::BranchesController < Projects::ApplicationController
     branch_name = sanitize(strip_tags(params[:branch_name]))
     branch_name = Addressable::URI.unescape(branch_name)
 
+    redirect_to_autodeploy = project.empty_repo? && project.deployment_services.present?
+
     result = CreateBranchService.new(project, current_user).
         execute(branch_name, ref)
 
@@ -42,8 +45,15 @@ class Projects::BranchesController < Projects::ApplicationController
 
     if result[:status] == :success
       @branch = result[:branch]
-      redirect_to namespace_project_tree_path(@project.namespace, @project,
-                                              @branch.name)
+
+      if redirect_to_autodeploy
+        redirect_to(
+          url_to_autodeploy_setup(project, branch_name),
+          notice: view_context.autodeploy_flash_notice(branch_name))
+      else
+        redirect_to namespace_project_tree_path(@project.namespace, @project,
+                                                @branch.name)
+      end
     else
       @error = result[:message]
       render action: 'new'
@@ -76,7 +86,19 @@ class Projects::BranchesController < Projects::ApplicationController
       ref_escaped = sanitize(strip_tags(params[:ref]))
       Addressable::URI.unescape(ref_escaped)
     else
-      @project.default_branch
+      @project.default_branch || 'master'
     end
+  end
+
+  def url_to_autodeploy_setup(project, branch_name)
+    namespace_project_new_blob_path(
+      project.namespace,
+      project,
+      branch_name,
+      file_name: '.gitlab-ci.yml',
+      commit_message: 'Set up auto deploy',
+      target_branch: branch_name,
+      context: 'autodeploy'
+    )
   end
 end

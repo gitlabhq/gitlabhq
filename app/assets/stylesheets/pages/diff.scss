@@ -14,7 +14,7 @@
     background: $gray-light;
     border-bottom: 1px solid $border-color;
     padding: 10px 16px;
-    color: $gl-diff-text-color;
+    color: $gl-text-color;
     z-index: 10;
     border-radius: 3px 3px 0 0;
 
@@ -34,8 +34,13 @@
     }
   }
 
-  .file-title {
+  .file-title,
+  .file-title-flex-parent {
     cursor: pointer;
+
+    a:hover {
+      text-decoration: none;
+    }
 
     &:hover {
       background-color: $gray-normal;
@@ -50,7 +55,7 @@
     overflow: auto;
     overflow-y: hidden;
     background: $white-light;
-    color: $gl-title-color;
+    color: $gl-text-color;
     border-radius: 0 0 3px 3px;
 
     .unfold {
@@ -84,6 +89,10 @@
 
       .diff-line-num {
         width: 50px;
+
+        a {
+          transition: none;
+        }
       }
 
       .line_holder td {
@@ -103,10 +112,6 @@
     tr.line_holder.parallel {
       td.line_content.parallel {
         width: 46%;
-      }
-
-      .add-diff-note {
-        margin-left: -65px;
       }
     }
 
@@ -128,8 +133,13 @@
         width: 35px;
         font-weight: normal;
 
-        &:hover {
-          text-decoration: underline;
+        &[disabled] {
+          cursor: default;
+
+          &:hover,
+          &:active {
+            text-decoration: none;
+          }
         }
       }
     }
@@ -380,7 +390,7 @@
         }
 
         cursor: default;
-        color: $gl-title-color;
+        color: $gl-text-color;
       }
 
       &.disabled {

@@ -8,7 +8,7 @@ describe 'mail_room.yml' do
 
   context 'when incoming email is disabled' do
     before do
-      ENV['MAIL_ROOM_GITLAB_CONFIG_FILE'] = Rails.root.join('spec/fixtures/mail_room_disabled.yml').to_s
+      ENV['MAIL_ROOM_GITLAB_CONFIG_FILE'] = Rails.root.join('spec/fixtures/config/mail_room_disabled.yml').to_s
       Gitlab::MailRoom.reset_config!
     end
 
@@ -26,7 +26,7 @@ describe 'mail_room.yml' do
     let(:gitlab_redis) { Gitlab::Redis.new(Rails.env) }
 
     before do
-      ENV['MAIL_ROOM_GITLAB_CONFIG_FILE'] = Rails.root.join('spec/fixtures/mail_room_enabled.yml').to_s
+      ENV['MAIL_ROOM_GITLAB_CONFIG_FILE'] = Rails.root.join('spec/fixtures/config/mail_room_enabled.yml').to_s
       Gitlab::MailRoom.reset_config!
     end
 

@@ -1,8 +1,9 @@
 require 'mime/types'
 
 module API
-  # Projects API
   class Branches < Grape::API
+    include PaginationParams
+
     before { authenticate! }
     before { authorize! :download_code, user_project }
 
@@ -13,10 +14,13 @@ module API
       desc 'Get a project repository branches' do
         success Entities::RepoBranch
       end
+      params do
+        use :pagination
+      end
       get ":id/repository/branches" do
-        branches = user_project.repository.branches.sort_by(&:name)
+        branches = ::Kaminari.paginate_array(user_project.repository.branches.sort_by(&:name))
 
-        present branches, with: Entities::RepoBranch, project: user_project
+        present paginate(branches), with: Entities::RepoBranch, project: user_project
       end
 
       desc 'Get a single branch' do
@@ -84,7 +88,7 @@ module API
         branch = user_project.repository.find_branch(params[:branch])
         not_found!("Branch") unless branch
         protected_branch = user_project.protected_branches.find_by(name: branch.name)
-        protected_branch.destroy if protected_branch
+        protected_branch&.destroy
 
         present branch, with: Entities::RepoBranch, project: user_project
       end
@@ -93,13 +97,13 @@ module API
         success Entities::RepoBranch
       end
       params do
-        requires :branch_name, type: String, desc: 'The name of the branch'
+        requires :branch, type: String, desc: 'The name of the branch'
         requires :ref, type: String, desc: 'Create branch from commit sha or existing branch'
       end
       post ":id/repository/branches" do
         authorize_push_project
         result = CreateBranchService.new(user_project, current_user).
-                 execute(params[:branch_name], params[:ref])
+                 execute(params[:branch], params[:ref])
 
         if result[:status] == :success
           present result[:branch],
@@ -120,25 +124,16 @@ module API
         result = DeleteBranchService.new(user_project, current_user).
                  execute(params[:branch])
 
-        if result[:status] == :success
-          {
-            branch_name: params[:branch]
-          }
-        else
+        if result[:status] != :success
           render_api_error!(result[:message], result[:return_code])
         end
       end
 
-      # Delete all merged branches
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   DELETE /projects/:id/repository/branches/delete_merged
+      desc 'Delete all merged branches'
       delete ":id/repository/merged_branches" do
         DeleteMergedBranchesService.new(user_project, current_user).async_execute
 
-        status(200)
+        accepted!
       end
     end
   end

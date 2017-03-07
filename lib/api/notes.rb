@@ -4,7 +4,7 @@ module API
 
     before { authenticate! }
 
-    NOTEABLE_TYPES = [Issue, MergeRequest, Snippet]
+    NOTEABLE_TYPES = [Issue, MergeRequest, Snippet].freeze
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
@@ -70,21 +70,27 @@ module API
         end
         post ":id/#{noteables_str}/:noteable_id/notes" do
           opts = {
-           note: params[:body],
-           noteable_type: noteables_str.classify,
-           noteable_id: params[:noteable_id]
+            note: params[:body],
+            noteable_type: noteables_str.classify,
+            noteable_id: params[:noteable_id]
           }
 
-          if params[:created_at] && (current_user.is_admin? || user_project.owner == current_user)
-            opts[:created_at] = params[:created_at]
-          end
+          noteable = user_project.send(noteables_str.to_sym).find(params[:noteable_id])
 
-          note = ::Notes::CreateService.new(user_project, current_user, opts).execute
+          if can?(current_user, noteable_read_ability_name(noteable), noteable)
+            if params[:created_at] && (current_user.is_admin? || user_project.owner == current_user)
+              opts[:created_at] = params[:created_at]
+            end
 
-          if note.valid?
-            present note, with: Entities::const_get(note.class.name)
+            note = ::Notes::CreateService.new(user_project, current_user, opts).execute
+
+            if note.valid?
+              present note, with: Entities.const_get(note.class.name)
+            else
+              not_found!("Note #{note.errors.messages}")
+            end
           else
-            not_found!("Note #{note.errors.messages}")
+            not_found!("Note")
           end
         end
 
@@ -125,9 +131,7 @@ module API
           note = user_project.notes.find(params[:note_id])
           authorize! :admin_note, note
 
-          ::Notes::DeleteService.new(user_project, current_user).execute(note)
-
-          present note, with: Entities::Note
+          ::Notes::DestroyService.new(user_project, current_user).execute(note)
         end
       end
     end

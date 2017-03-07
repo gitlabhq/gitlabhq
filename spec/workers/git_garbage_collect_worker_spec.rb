@@ -102,12 +102,13 @@ describe GitGarbageCollectWorker do
     new_commit_sha = Rugged::Commit.create(
       rugged,
       message: "hello world #{SecureRandom.hex(6)}",
-      author: Gitlab::Git::committer_hash(email: 'foo@bar', name: 'baz'),
-      committer: Gitlab::Git::committer_hash(email: 'foo@bar', name: 'baz'),
+      author: Gitlab::Git.committer_hash(email: 'foo@bar', name: 'baz'),
+      committer: Gitlab::Git.committer_hash(email: 'foo@bar', name: 'baz'),
       tree: old_commit.tree,
       parents: [old_commit],
     )
-    project.repository.update_ref!(
+    GitOperationService.new(nil, project.repository).send(
+      :update_ref,
       "refs/heads/#{SecureRandom.hex(6)}",
       new_commit_sha,
       Gitlab::Git::BLANK_SHA

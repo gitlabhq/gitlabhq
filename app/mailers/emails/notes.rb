@@ -38,6 +38,14 @@ module Emails
       mail_answer_thread(@snippet, note_thread_options(recipient_id))
     end
 
+    def note_personal_snippet_email(recipient_id, note_id)
+      setup_note_mail(note_id, recipient_id)
+
+      @snippet = @note.noteable
+      @target_url = snippet_url(@note.noteable)
+      mail_answer_thread(@snippet, note_thread_options(recipient_id))
+    end
+
     private
 
     def note_target_url_options

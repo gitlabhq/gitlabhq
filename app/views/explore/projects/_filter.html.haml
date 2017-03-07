@@ -13,7 +13,7 @@
         = link_to filter_projects_path(visibility_level: nil) do
           Any
       - Gitlab::VisibilityLevel.values.each do |level|
-        %li{ class: (level.to_s == params[:visibility_level]) ? 'active' : 'light' }
+        %li{ class: active_when(level.to_s == params[:visibility_level]) || 'light' }
           = link_to filter_projects_path(visibility_level: level) do
             = visibility_level_icon(level)
             = visibility_level_label(level)
@@ -34,7 +34,7 @@
           Any
 
       - @tags.each do |tag|
-        %li{ class: (tag.name == params[:tag]) ? 'active' : 'light' }
+        %li{ class: active_when(tag.name == params[:tag]) || 'light' }
           = link_to filter_projects_path(tag: tag.name) do
             = icon('tag')
             = tag.name

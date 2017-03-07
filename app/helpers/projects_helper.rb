@@ -150,6 +150,15 @@ module ProjectsHelper
     ).html_safe
   end
 
+  def link_to_autodeploy_doc
+    link_to 'About auto deploy', help_page_path('ci/autodeploy/index'), target: '_blank'
+  end
+
+  def autodeploy_flash_notice(branch_name)
+    "Branch <strong>#{truncate(sanitize(branch_name))}</strong> was created. To set up auto deploy, \
+      choose a GitLab CI Yaml template and commit your changes. #{link_to_autodeploy_doc}".html_safe
+  end
+
   private
 
   def repo_children_classes(field)
@@ -232,7 +241,7 @@ module ProjectsHelper
     when 'ssh'
       project.ssh_url_to_repo
     else
-      project.http_url_to_repo
+      project.http_url_to_repo(current_user)
     end
   end
 
@@ -408,5 +417,16 @@ module ProjectsHelper
 
   def project_issues(project)
     IssuesFinder.new(current_user, project_id: project.id).execute
+  end
+
+  def visibility_select_options(project, selected_level)
+    levels_options_array = Gitlab::VisibilityLevel.values.map do |level|
+      [
+        visibility_level_label(level),
+        { data: { description: visibility_level_description(level, project) } },
+        level
+      ]
+    end
+    options_for_select(levels_options_array, selected_level)
   end
 end

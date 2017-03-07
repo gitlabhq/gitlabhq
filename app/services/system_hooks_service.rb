@@ -33,9 +33,7 @@ class SystemHooksService
       data.merge!(project_data(model))
 
       if event == :rename || event == :transfer
-        data.merge!({
-          old_path_with_namespace: model.old_path_with_namespace
-        })
+        data[:old_path_with_namespace] = model.old_path_with_namespace
       end
 
       data
@@ -86,7 +84,7 @@ class SystemHooksService
       project_id: model.id,
       owner_name: owner.name,
       owner_email: owner.respond_to?(:email) ? owner.email : "",
-      project_visibility: Project.visibility_levels.key(model.visibility_level_field).downcase
+      project_visibility: Project.visibility_levels.key(model.visibility_level_value).downcase
     }
   end
 
@@ -103,7 +101,7 @@ class SystemHooksService
       user_email:                   model.user.email,
       user_id:                      model.user.id,
       access_level:                 model.human_access,
-      project_visibility:           Project.visibility_levels.key(project.visibility_level_field).downcase
+      project_visibility:           Project.visibility_levels.key(project.visibility_level_value).downcase
     }
   end
 

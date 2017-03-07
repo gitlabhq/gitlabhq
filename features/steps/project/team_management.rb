@@ -113,8 +113,10 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     project.team << [user, :reporter]
   end
 
-  step 'I click link "Import team from another project"' do
-    click_link "Import"
+  step 'I click link "Import team from another project"' do    
+    page.within '.users-project-form' do
+      click_link "Import"
+    end
   end
 
   When 'I submit "Website" project for import team' do
@@ -135,7 +137,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   step 'I share project with group "OpenSource"' do
     project = Project.find_by(name: 'Shop')
     os_group = create(:group, name: 'OpenSource')
-    create(:project, group: os_group)
+    create(:empty_project, group: os_group)
     @os_user1 = create(:user)
     @os_user2 = create(:user)
     os_group.add_owner(@os_user1)

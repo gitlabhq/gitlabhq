@@ -30,7 +30,8 @@ module API
       params do
         optional :state, type: String, values: %w[active closed all], default: 'all',
                          desc: 'Return "active", "closed", or "all" milestones'
-        optional :iid, type: Array[Integer], desc: 'The IID of the milestone'
+        optional :iids, type: Array[Integer], desc: 'The IIDs of the milestones'
+        optional :search, type: String, desc: 'The search criteria for the title or description of the milestone'
         use :pagination
       end
       get ":id/milestones" do
@@ -38,7 +39,8 @@ module API
 
         milestones = user_project.milestones
         milestones = filter_milestones_state(milestones, params[:state])
-        milestones = filter_by_iid(milestones, params[:iid]) if params[:iid].present?
+        milestones = filter_by_iid(milestones, params[:iids]) if params[:iids].present?
+        milestones = filter_by_search(milestones, params[:search]) if params[:search]
 
         present paginate(milestones), with: Entities::Milestone
       end
@@ -101,7 +103,7 @@ module API
       end
 
       desc 'Get all issues for a single project milestone' do
-        success Entities::Issue
+        success Entities::IssueBasic
       end
       params do
         requires :milestone_id, type: Integer, desc: 'The ID of a project milestone'
@@ -118,7 +120,32 @@ module API
         }
 
         issues = IssuesFinder.new(current_user, finder_params).execute
-        present paginate(issues), with: Entities::Issue, current_user: current_user, project: user_project
+        present paginate(issues), with: Entities::IssueBasic, current_user: current_user, project: user_project
+      end
+
+      desc 'Get all merge requests for a single project milestone' do
+        detail 'This feature was introduced in GitLab 9.'
+        success Entities::MergeRequestBasic
+      end
+      params do
+        requires :milestone_id, type: Integer, desc: 'The ID of a project milestone'
+        use :pagination
+      end
+      get ':id/milestones/:milestone_id/merge_requests' do
+        authorize! :read_milestone, user_project
+
+        milestone = user_project.milestones.find(params[:milestone_id])
+
+        finder_params = {
+          project_id: user_project.id,
+          milestone_id: milestone.id
+        }
+
+        merge_requests = MergeRequestsFinder.new(current_user, finder_params).execute
+        present paginate(merge_requests),
+          with: Entities::MergeRequestBasic,
+          current_user: current_user,
+          project: user_project
       end
     end
   end

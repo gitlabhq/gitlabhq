@@ -1,8 +1,8 @@
 - builds = @build.pipeline.builds.to_a
 
-%aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar
+%aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar.js-right-sidebar{ data: { "offset-top" => "151", "spy" => "affix" } }
   .block.build-sidebar-header.visible-xs-block.visible-sm-block.append-bottom-default
-    Build
+    Job
     %strong ##{@build.id}
     %a.gutter-toggle.pull-right.js-sidebar-build-toggle{ href: "#" }
       = icon('angle-double-right')
@@ -17,19 +17,19 @@
     - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
       .block{ class: ("block-first" if !@build.coverage) }
         .title
-          Build artifacts
+          Job artifacts
         - if @build.artifacts_expired?
           %p.build-detail-row
             The artifacts were removed
             #{time_ago_with_tooltip(@build.artifacts_expire_at)}
-        - elsif @build.artifacts_expire_at
+        - elsif @build.has_expiring_artifacts?
           %p.build-detail-row
             The artifacts will be removed in
             %span.js-artifacts-remove= @build.artifacts_expire_at
 
         - if @build.artifacts?
           .btn-group.btn-group-justified{ role: :group }
-            - if @build.artifacts_expire_at
+            - if @build.has_expiring_artifacts? && can?(current_user, :update_build, @build)
               = link_to keep_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default', method: :post do
                 Keep
 
@@ -42,9 +42,9 @@
 
     .block{ class: ("block-first" if !@build.coverage && !(can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?))) }
       .title
-        Build details
+        Job details
         - if can?(current_user, :update_build, @build) && @build.retryable?
-          = link_to "Retry build", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'pull-right retry-link', method: :post
+          = link_to "Retry job", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'pull-right retry-link', method: :post
       - if @build.merge_request
         %p.build-detail-row
           %span.build-light-text Merge Request:
@@ -136,4 +136,4 @@
               - else
                 = build.id
             - if build.retried?
-              %i.fa.fa-refresh.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Build was retried' }
+              %i.fa.fa-refresh.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Job was retried' }

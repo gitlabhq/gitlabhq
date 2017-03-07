@@ -1,6 +1,4 @@
 class Groups::MilestonesController < Groups::ApplicationController
-  include GlobalMilestones
-
   before_action :group_projects
   before_action :milestone, only: [:show, :update]
   before_action :authorize_admin_milestones!, only: [:new, :create, :update]
@@ -72,5 +70,14 @@ class Groups::MilestonesController < Groups::ApplicationController
 
   def milestone_path(title)
     group_milestone_path(@group, title.to_slug.to_s, title: title)
+  end
+
+  def milestones
+    @milestones = GroupMilestone.build_collection(@group, @projects, params)
+  end
+
+  def milestone
+    @milestone = GroupMilestone.build(@group, @projects, params[:title])
+    render_404 unless @milestone
   end
 end

@@ -18,6 +18,7 @@
 - [Frontend guidelines](frontend.md)
 - [SQL guidelines](sql.md) for working with SQL queries
 - [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
+- [`Gemfile` guidelines](gemfile.md)
 
 ## Process
 

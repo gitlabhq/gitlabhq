@@ -43,7 +43,7 @@ ul.notes {
     }
 
     .system-note-message {
-      display: inline-block;
+      display: inline;
 
       &::first-letter {
         text-transform: lowercase;
@@ -55,7 +55,7 @@ ul.notes {
       }
 
       p {
-        display: inline-block;
+        display: inline;
         margin: 0;
 
         &::first-letter {
@@ -72,6 +72,7 @@ ul.notes {
       overflow: hidden;
 
       .system-note-commit-list-toggler {
+        color: $gl-link-color;
         display: none;
         padding: 10px 0 0;
         cursor: pointer;
@@ -105,16 +106,6 @@ ul.notes {
 
           p:first-child {
             display: none;
-          }
-
-          p:last-child {
-            a {
-              color: $gl-text-color;
-
-              &:hover {
-                color: $gl-link-color;
-              }
-            }
           }
 
           &::after {
@@ -195,10 +186,10 @@ ul.notes {
     }
 
     .note-body {
-      overflow: auto;
+      overflow-x: auto;
+      overflow-y: hidden;
 
       .note-text {
-        overflow: auto;
         word-wrap: break-word;
         @include md-typography;
         // Reset ul style types since we're nested inside a ul already
@@ -340,17 +331,29 @@ ul.notes {
 
     &:hover {
       color: $gl-link-color;
+    }
+
+    &:focus,
+    &:hover {
       text-decoration: none;
     }
   }
 
   .author_link {
-    color: $gl-gray;
+    color: $gl-text-color;
   }
 }
 
 .discussion-header {
   font-size: 14px;
+}
+
+.note-headline-light {
+  display: inline;
+
+  @media (max-width: $screen-xs-min) {
+    display: block;
+  }
 }
 
 .note-headline-light,
@@ -453,36 +456,37 @@ ul.notes {
  * Line note button on the side of diffs
  */
 
-.diff-file tr.line_holder {
-  @mixin show-add-diff-note {
-    display: inline-block;
+.add-diff-note {
+  display: none;
+  margin-top: -2px;
+  border-radius: 50%;
+  background: $white-light;
+  padding: 1px 5px;
+  font-size: 12px;
+  color: $gl-link-color;
+  margin-left: -55px;
+  position: absolute;
+  z-index: 10;
+  width: 23px;
+  height: 23px;
+  border: 1px solid $border-color;
+  transition: transform .1s ease-in-out;
+
+  &:hover {
+    background: $gl-info;
+    color: $white-light;
+    transform: scale(1.15);
   }
 
-  .add-diff-note {
-    margin-top: -4px;
-    border-radius: 40px;
-    background: $white-light;
-    padding: 4px;
-    font-size: 16px;
-    color: $gl-link-color;
-    margin-left: -56px;
-    position: absolute;
-    z-index: 10;
-    width: 32px;
-    // "hide" it by default
-    display: none;
-
-    &:hover {
-      background: $gl-info;
-      color: $white-light;
-      @include show-add-diff-note;
-    }
+  &:active {
+    outline: 0;
   }
+}
 
-  // "show" the icon also if we just hover somewhere over the line
-  &:hover > td {
+.diff-file {
+  .is-over {
     .add-diff-note {
-      @include show-add-diff-note;
+      display: inline-block;
     }
   }
 }
@@ -507,7 +511,6 @@ ul.notes {
 
 .line-resolve-all-container {
   .btn-group {
-    margin-top: -1px;
     margin-left: -4px;
   }
 
@@ -518,8 +521,9 @@ ul.notes {
 }
 
 .line-resolve-all {
+  vertical-align: middle;
   display: inline-block;
-  padding: 5px 10px;
+  padding: 6px 10px;
   background-color: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
@@ -527,16 +531,12 @@ ul.notes {
   &.has-next-btn {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    border-right: 0;
   }
 
   .line-resolve-btn {
-    vertical-align: middle;
     margin-right: 5px;
   }
-}
-
-.line-resolve-text {
-  vertical-align: middle;
 }
 
 .line-resolve-btn {
@@ -580,13 +580,11 @@ ul.notes {
 
 // Merge request notes in diffs
 .diff-file {
-
   // Diff is side by side
   .notes_content.parallel .note-header .note-headline-light {
     display: block;
     position: relative;
   }
-
   // Diff is inline
   .notes_content .note-header .note-headline-light {
     display: inline-block;

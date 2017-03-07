@@ -85,7 +85,7 @@ feature 'Projects > Members > Sorting', feature: true do
   end
 
   def visit_members_list(sort:)
-    visit namespace_project_project_members_path(project.namespace.to_param, project.to_param, sort: sort)
+    visit namespace_project_project_members_path(project.namespace.to_param, project, sort: sort)
   end
 
   def first_member

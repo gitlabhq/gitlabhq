@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'Issues', feature: true do
+  include DropzoneHelper
   include IssueHelpers
   include SortingHelper
   include WaitForAjax
@@ -78,8 +79,8 @@ describe 'Issues', feature: true do
         fill_in 'issue_description', with: 'bug description'
         find('#issuable-due-date').click
 
-        page.within '.ui-datepicker' do
-          click_link date.day
+        page.within '.pika-single' do
+          click_button date.day
         end
 
         expect(find('#issuable-due-date').value).to eq date.to_s
@@ -110,8 +111,8 @@ describe 'Issues', feature: true do
         fill_in 'issue_description', with: 'bug description'
         find('#issuable-due-date').click
 
-        page.within '.ui-datepicker' do
-          click_link date.day
+        page.within '.pika-single' do
+          click_button date.day
         end
 
         expect(find('#issuable-due-date').value).to eq date.to_s
@@ -150,7 +151,7 @@ describe 'Issues', feature: true do
 
   describe 'Filter issue' do
     before do
-      ['foobar', 'barbaz', 'gitlab'].each do |title|
+      %w(foobar barbaz gitlab).each do |title|
         create(:issue,
                author: @user,
                assignee: @user,
@@ -382,7 +383,9 @@ describe 'Issues', feature: true do
     it 'changes incoming email address token', js: true do
       find('.issue-email-modal-btn').click
       previous_token = find('input#issue_email').value
-      find('.incoming-email-token-reset').click
+      find('.incoming-email-token-reset').trigger('click')
+
+      wait_for_ajax
 
       expect(page).to have_no_field('issue_email', with: previous_token)
       new_token = project1.new_issue_address(@user.reload)
@@ -568,12 +571,15 @@ describe 'Issues', feature: true do
       end
 
       it 'uploads file when dragging into textarea' do
-        drop_in_dropzone test_image_file
-
-        # Wait for the file to upload
-        sleep 1
+        dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
 
         expect(page.find_field("issue_description").value).to have_content 'banana_sample'
+      end
+
+      it 'adds double newline to end of attachment markdown' do
+        dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
+
+        expect(page.find_field("issue_description").value).to match /\n\n$/
       end
     end
   end
@@ -619,24 +625,32 @@ describe 'Issues', feature: true do
       end
 
       it 'adds due date to issue' do
+        date = Date.today.at_beginning_of_month + 2.days
+
         page.within '.due_date' do
           click_link 'Edit'
 
-          page.within '.ui-datepicker-calendar' do
-            first('.ui-state-default').click
+          page.within '.pika-single' do
+            click_button date.day
           end
 
-          expect(page).to have_no_content 'None'
+          wait_for_ajax
+
+          expect(find('.value').text).to have_content date.strftime('%b %-d, %Y')
         end
       end
 
       it 'removes due date from issue' do
+        date = Date.today.at_beginning_of_month + 2.days
+
         page.within '.due_date' do
           click_link 'Edit'
 
-          page.within '.ui-datepicker-calendar' do
-            first('.ui-state-default').click
+          page.within '.pika-single' do
+            click_button date.day
           end
+
+          wait_for_ajax
 
           expect(page).to have_no_content 'No due date'
 

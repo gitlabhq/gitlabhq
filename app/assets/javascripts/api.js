@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, quotes, object-shorthand, camelcase, no-var, comma-dangle, prefer-arrow-callback, indent, object-curly-spacing, quote-props, no-param-reassign, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, quotes, object-shorthand, camelcase, no-var, comma-dangle, prefer-arrow-callback, quote-props, no-param-reassign, max-len */
 
 (function() {
   var Api = {
@@ -11,7 +11,7 @@
     licensePath: "/api/:version/templates/licenses/:key",
     gitignorePath: "/api/:version/templates/gitignores/:key",
     gitlabCiYmlPath: "/api/:version/templates/gitlab_ci_ymls/:key",
-    dockerfilePath: "/api/:version/dockerfiles/:key",
+    dockerfilePath: "/api/:version/templates/dockerfiles/:key",
     issuableTemplatePath: "/:namespace_path/:project_path/templates/:type/:key",
     group: function(group_id, callback) {
       var url = Api.buildUrl(Api.groupPath)
@@ -29,9 +29,9 @@
       return $.ajax({
         url: url,
         data: $.extend({
-                search: query,
-                per_page: 20
-              }, options),
+          search: query,
+          per_page: 20
+        }, options),
         dataType: "json"
       }).done(function(groups) {
         return callback(groups);
@@ -73,7 +73,7 @@
       return $.ajax({
         url: url,
         type: "POST",
-        data: {'label': data},
+        data: { 'label': data },
         dataType: "json"
       }).done(function(label) {
         return callback(label);
@@ -147,4 +147,4 @@
   };
 
   window.Api = Api;
-}).call(this);
+}).call(window);

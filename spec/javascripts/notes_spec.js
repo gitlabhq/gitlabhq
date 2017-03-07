@@ -1,10 +1,10 @@
-/* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, semi, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
 /* global Notes */
 
-/*= require notes */
-/*= require autosize */
-/*= require gl_form */
-/*= require lib/utils/text_utility */
+require('~/notes');
+require('vendor/autosize');
+require('~/gl_form');
+require('~/lib/utils/text_utility');
 
 (function() {
   window.gon || (window.gon = {});
@@ -12,13 +12,14 @@
   gl.utils = gl.utils || {};
 
   describe('Notes', function() {
-    var commentsTemplate = 'issues/issue_with_comment.raw';
-    fixture.preload(commentsTemplate);
+    var commentsTemplate = 'issues/issue_with_comment.html.raw';
+    preloadFixtures(commentsTemplate);
 
     beforeEach(function () {
-      fixture.load(commentsTemplate);
+      loadFixtures(commentsTemplate);
       gl.utils.disableButtonIfEmptyField = _.noop;
       window.project_uploads_path = 'http://test.host/uploads';
+      $('body').data('page', 'projects:issues:show');
     });
 
     describe('task lists', function() {
@@ -34,15 +35,13 @@
         expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
       });
 
-      it('submits the form on tasklist:changed', function() {
-        var submitted = false;
-        $('form').on('submit', function(e) {
-          submitted = true;
-          e.preventDefault();
+      it('submits an ajax request on tasklist:changed', function() {
+        spyOn(jQuery, 'ajax').and.callFake(function(req) {
+          expect(req.type).toBe('PATCH');
+          expect(req.url).toBe('http://test.host/frontend-fixtures/issues-project/notes/1');
+          return expect(req.data.note).not.toBe(null);
         });
-
         $('.js-task-list-field').trigger('tasklist:changed');
-        expect(submitted).toBe(true);
       });
     });
 
@@ -71,8 +70,7 @@
 
         $('.js-comment-button').click();
         expect(this.autoSizeSpy).toHaveBeenTriggered();
-      })
+      });
     });
   });
-
-}).call(this);
+}).call(window);

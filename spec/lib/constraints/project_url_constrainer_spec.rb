@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe ProjectUrlConstrainer, lib: true do
-  let!(:project) { create(:project) }
+  let!(:project) { create(:empty_project) }
   let!(:namespace) { project.namespace }
 
   describe '#matches?' do
     context 'valid request' do
-      let(:request) { build_request(namespace.path, project.path) }
+      let(:request) { build_request(namespace.full_path, project.path) }
 
       it { expect(subject.matches?(request)).to be_truthy }
     end
@@ -19,7 +19,7 @@ describe ProjectUrlConstrainer, lib: true do
       end
 
       context "project id ending with .git" do
-        let(:request) { build_request(namespace.path, project.path + '.git') }
+        let(:request) { build_request(namespace.full_path, project.path + '.git') }
 
         it { expect(subject.matches?(request)).to be_falsey }
       end

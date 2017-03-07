@@ -120,11 +120,20 @@ describe Issues::BuildService, services: true do
   end
 
   describe '#execute' do
+    let(:milestone) { create(:milestone, project: project) }
+
     it 'builds a new issues with given params' do
-      issue = described_class.new(project, user, title: 'Issue #1', description: 'Issue description').execute
+      issue = described_class.new(
+        project,
+        user,
+        title: 'Issue #1',
+        description: 'Issue description',
+        milestone_id: milestone.id,
+      ).execute
 
       expect(issue.title).to eq('Issue #1')
       expect(issue.description).to eq('Issue description')
+      expect(issue.milestone).to eq(milestone)
     end
   end
 end

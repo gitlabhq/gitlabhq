@@ -4,24 +4,15 @@ require 'active_support/core_ext/hash/keys'
 
 module Gitlab
   class Redis
-    CACHE_NAMESPACE = 'cache:gitlab'
-    SESSION_NAMESPACE = 'session:gitlab'
-    SIDEKIQ_NAMESPACE = 'resque:gitlab'
-    MAILROOM_NAMESPACE = 'mail_room:gitlab'
-    DEFAULT_REDIS_URL = 'redis://localhost:6379'
+    CACHE_NAMESPACE = 'cache:gitlab'.freeze
+    SESSION_NAMESPACE = 'session:gitlab'.freeze
+    SIDEKIQ_NAMESPACE = 'resque:gitlab'.freeze
+    MAILROOM_NAMESPACE = 'mail_room:gitlab'.freeze
+    DEFAULT_REDIS_URL = 'redis://localhost:6379'.freeze
     CONFIG_FILE = File.expand_path('../../config/resque.yml', __dir__)
 
     class << self
-      # Do NOT cache in an instance variable. Result may be mutated by caller.
-      def params
-        new.params
-      end
-
-      # Do NOT cache in an instance variable. Result may be mutated by caller.
-      # @deprecated Use .params instead to get sentinel support
-      def url
-        new.url
-      end
+      delegate :params, :url, to: :new
 
       def with
         @pool ||= ConnectionPool.new(size: pool_size) { ::Redis.new(params) }
@@ -42,7 +33,7 @@ module Gitlab
         return @_raw_config if defined?(@_raw_config)
 
         begin
-          @_raw_config = File.read(CONFIG_FILE).freeze
+          @_raw_config = ERB.new(File.read(CONFIG_FILE)).result.freeze
         rescue Errno::ENOENT
           @_raw_config = false
         end

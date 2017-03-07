@@ -20,17 +20,19 @@ module Banzai
         code = node.text
         css_classes = "code highlight"
         lexer = lexer_for(language)
+        lang = lexer.tag
 
         begin
           code = format(lex(lexer, code))
 
-          css_classes << " js-syntax-highlight #{lexer.tag}"
+          css_classes << " js-syntax-highlight #{lang}"
         rescue
+          lang = nil
           # Gracefully handle syntax highlighter bugs/errors to ensure
           # users can still access an issue/comment/etc.
         end
 
-        highlighted = %(<pre class="#{css_classes}" v-pre="true"><code>#{code}</code></pre>)
+        highlighted = %(<pre class="#{css_classes}" lang="#{lang}" v-pre="true"><code>#{code}</code></pre>)
 
         # Extracted to a method to measure it
         replace_parent_pre_element(node, highlighted)

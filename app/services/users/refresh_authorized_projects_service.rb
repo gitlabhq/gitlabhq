@@ -26,32 +26,7 @@ module Users
       user.reload
     end
 
-    # This method returns the updated User object.
     def execute
-      current = current_authorizations_per_project
-      fresh = fresh_access_levels_per_project
-
-      remove = current.each_with_object([]) do |(project_id, row), array|
-        # rows not in the new list or with a different access level should be
-        # removed.
-        if !fresh[project_id] || fresh[project_id] != row.access_level
-          array << row.id
-        end
-      end
-
-      add = fresh.each_with_object([]) do |(project_id, level), array|
-        # rows not in the old list or with a different access level should be
-        # added.
-        if !current[project_id] || current[project_id].access_level != level
-          array << [user.id, project_id, level]
-        end
-      end
-
-      update_with_lease(remove, add)
-    end
-
-    # Updates the list of authorizations using an exclusive lease.
-    def update_with_lease(remove = [], add = [])
       lease_key = "refresh_authorized_projects:#{user.id}"
       lease = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT)
 
@@ -63,10 +38,34 @@ module Users
       end
 
       begin
-        update_authorizations(remove, add)
+        execute_without_lease
       ensure
         Gitlab::ExclusiveLease.cancel(lease_key, uuid)
       end
+    end
+
+    # This method returns the updated User object.
+    def execute_without_lease
+      current = current_authorizations_per_project
+      fresh = fresh_access_levels_per_project
+
+      remove = current.each_with_object([]) do |(project_id, row), array|
+        # rows not in the new list or with a different access level should be
+        # removed.
+        if !fresh[project_id] || fresh[project_id] != row.access_level
+          array << row.project_id
+        end
+      end
+
+      add = fresh.each_with_object([]) do |(project_id, level), array|
+        # rows not in the old list or with a different access level should be
+        # added.
+        if !current[project_id] || current[project_id].access_level != level
+          array << [user.id, project_id, level]
+        end
+      end
+
+      update_authorizations(remove, add)
     end
 
     # Updates the list of authorizations for the current user.
@@ -100,7 +99,7 @@ module Users
     end
 
     def current_authorizations
-      user.project_authorizations.select(:id, :project_id, :access_level)
+      user.project_authorizations.select(:project_id, :access_level)
     end
 
     def fresh_authorizations
@@ -116,10 +115,23 @@ module Users
     # Returns a union query of projects that the user is authorized to access
     def project_authorizations_union
       relations = [
+        # Personal projects
         user.personal_projects.select("#{user.id} AS user_id, projects.id AS project_id, #{Gitlab::Access::MASTER} AS access_level"),
-        user.groups_projects.select_for_project_authorization,
+
+        # Projects the user is a member of
         user.projects.select_for_project_authorization,
-        user.groups.joins(:shared_projects).select_for_project_authorization
+
+        # Projects of groups the user is a member of
+        user.groups_projects.select_for_project_authorization,
+
+        # Projects of subgroups of groups the user is a member of
+        user.nested_groups_projects.select_for_project_authorization,
+
+        # Projects shared with groups the user is a member of
+        user.groups.joins(:shared_projects).select_for_project_authorization,
+
+        # Projects shared with subgroups of groups the user is a member of
+        user.nested_groups.joins(:shared_projects).select_for_project_authorization
       ]
 
       Gitlab::SQL::Union.new(relations)

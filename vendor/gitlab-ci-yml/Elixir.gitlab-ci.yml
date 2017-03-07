@@ -1,6 +1,4 @@
-# This template uses the non default language docker image
-# The image already has Hex installed. You might want to consider to use `elixir:latest`
-image: trenpixster/elixir:latest
+image: elixir:latest
 
 # Pick zero or more services to be used on all builds.
 # Only needed when using a docker container to run your tests in.
@@ -11,6 +9,8 @@ services:
   - postgres:latest
 
 before_script:
+  - mix local.rebar --force
+  - mix local.hex --force
   - mix deps.get
 
 mix:

@@ -76,7 +76,7 @@ module Gitlab
         if referable.respond_to?(:project)
           referable.to_reference(target_project)
         else
-          referable.to_reference(@source_project, target_project)
+          referable.to_reference(@source_project, target_project: target_project)
         end
       end
 

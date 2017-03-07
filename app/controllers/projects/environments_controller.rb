@@ -9,15 +9,40 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :verify_api_request!, only: :terminal_websocket_authorize
 
   def index
-    @scope = params[:scope]
     @environments = project.environments
+      .with_state(params[:scope] || :available)
 
     respond_to do |format|
       format.html
       format.json do
-        render json: EnvironmentSerializer
-          .new(project: @project, user: current_user)
-          .represent(@environments)
+        render json: {
+          environments: EnvironmentSerializer
+            .new(project: @project, user: @current_user)
+            .with_pagination(request, response)
+            .within_folders
+            .represent(@environments),
+          available_count: project.environments.available.count,
+          stopped_count: project.environments.stopped.count
+        }
+      end
+    end
+  end
+
+  def folder
+    folder_environments = project.environments.where(environment_type: params[:id])
+    @environments = folder_environments.with_state(params[:scope] || :available)
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {
+          environments: EnvironmentSerializer
+            .new(project: @project, user: @current_user)
+            .with_pagination(request, response)
+            .represent(@environments),
+          available_count: folder_environments.available.count,
+          stopped_count: folder_environments.stopped.count
+        }
       end
     end
   end
@@ -52,10 +77,15 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def stop
-    return render_404 unless @environment.stoppable?
+    return render_404 unless @environment.available?
 
-    new_action = @environment.stop!(current_user)
-    redirect_to polymorphic_path([project.namespace.becomes(Namespace), project, new_action])
+    stop_action = @environment.stop_with_action!(current_user)
+
+    if stop_action
+      redirect_to polymorphic_path([project.namespace.becomes(Namespace), project, stop_action])
+    else
+      redirect_to namespace_project_environment_path(project.namespace, project, @environment)
+    end
   end
 
   def terminal

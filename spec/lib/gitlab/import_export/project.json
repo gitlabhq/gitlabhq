@@ -2539,7 +2539,7 @@
       "merge_params": {
         "force_remove_source_branch": null
       },
-      "merge_when_build_succeeds": true,
+      "merge_when_pipeline_succeeds": true,
       "merge_user_id": null,
       "merge_commit_sha": null,
       "deleted_at": null,
@@ -2976,7 +2976,7 @@
       "merge_params": {
         "force_remove_source_branch": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_user_id": null,
       "merge_commit_sha": null,
       "deleted_at": null,
@@ -3260,7 +3260,7 @@
       "merge_params": {
         "force_remove_source_branch": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_user_id": null,
       "merge_commit_sha": null,
       "deleted_at": null,
@@ -3544,7 +3544,7 @@
       "merge_params": {
         "force_remove_source_branch": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_user_id": null,
       "merge_commit_sha": null,
       "deleted_at": null,
@@ -4234,7 +4234,7 @@
       "merge_params": {
         "force_remove_source_branch": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_user_id": null,
       "merge_commit_sha": null,
       "deleted_at": null,
@@ -4782,7 +4782,7 @@
       "merge_params": {
         "force_remove_source_branch": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_user_id": null,
       "merge_commit_sha": null,
       "deleted_at": null,
@@ -5281,7 +5281,7 @@
       "merge_params": {
         "force_remove_source_branch": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_user_id": null,
       "merge_commit_sha": null,
       "deleted_at": null,
@@ -5541,7 +5541,7 @@
       "merge_params": {
         "force_remove_source_branch": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_user_id": null,
       "merge_commit_sha": null,
       "deleted_at": null,
@@ -6231,7 +6231,7 @@
       "merge_params": {
         "force_remove_source_branch": null
       },
-      "merge_when_build_succeeds": false,
+      "merge_when_pipeline_succeeds": false,
       "merge_user_id": null,
       "merge_commit_sha": null,
       "deleted_at": null,
@@ -6981,11 +6981,16 @@
       ]
     }
   ],
-  "variables": [
-
-  ],
   "triggers": [
-
+    {
+      "id": 123,
+      "token": "cdbfasdf44a5958c83654733449e585",
+      "project_id": null,
+      "deleted_at": null,
+      "created_at": "2017-01-16T15:25:28.637Z",
+      "updated_at": "2017-01-16T15:25:28.637Z",
+      "gl_project_id": 123
+    }
   ],
   "deploy_keys": [
 

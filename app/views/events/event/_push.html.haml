@@ -3,11 +3,9 @@
 .event-title
   %span.author_name= link_to_author event
   %span.pushed #{event.action_name} #{event.ref_type}
-  - if event.rm_ref?
-    %strong= event.ref_name
-  - else
-    %strong
-      = link_to event.ref_name, namespace_project_commits_path(project.namespace, project, event.ref_name), title: h(event.target_title)
+  %strong
+    - commits_link = namespace_project_commits_path(project.namespace, project, event.ref_name)
+    = link_to_if project.repository.branch_exists?(event.ref_name), event.ref_name, commits_link
 
   = render "events/event_scope", event: event
 

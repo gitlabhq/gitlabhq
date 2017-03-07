@@ -17,14 +17,17 @@ feature 'Ref switcher', feature: true, js: true do
 
     page.within '.project-refs-form' do
       input = find('input[type="search"]')
-      input.set 'expand'
+      input.set 'binary'
+      wait_for_ajax
 
-      input.native.send_keys :down
-      input.native.send_keys :down
-      input.native.send_keys :enter
+      expect(find('.dropdown-content ul')).to have_selector('li', count: 6)
+
+      page.within '.dropdown-content ul' do
+        input.native.send_keys :enter
+      end
     end
 
-    expect(page).to have_title 'expand-collapse-files'
+    expect(page).to have_title 'binary-encoding'
   end
 
   it "user selects ref with special characters" do

@@ -1,0 +1,25 @@
+- note_count         = @issuable_meta_data[issuable.id].notes_count
+- issue_votes        = @issuable_meta_data[issuable.id]
+- upvotes, downvotes = issue_votes.upvotes, issue_votes.downvotes
+- issuable_url       = @collection_type == "Issue" ? issue_path(issuable, anchor: 'notes') : merge_request_path(issuable, anchor: 'notes')
+- issuable_mr        = @issuable_meta_data[issuable.id].merge_requests_count
+
+- if issuable_mr > 0
+  %li
+    = image_tag('icon-merge-request-unmerged', class: 'icon-merge-request-unmerged')
+    = issuable_mr
+
+- if upvotes > 0
+  %li
+    = icon('thumbs-up')
+    = upvotes
+
+- if downvotes > 0
+  %li
+    = icon('thumbs-down')
+    = downvotes
+
+%li
+  = link_to issuable_url, class: ('no-comments' if note_count.zero?) do
+    = icon('comments')
+    = note_count

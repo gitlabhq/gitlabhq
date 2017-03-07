@@ -15,8 +15,6 @@ class Issue < ActiveRecord::Base
   DueThisWeek   = DueDateStruct.new('Due This Week', 'week').freeze
   DueThisMonth  = DueDateStruct.new('Due This Month', 'month').freeze
 
-  ActsAsTaggableOn.strict_case_match = true
-
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
 
@@ -97,10 +95,11 @@ class Issue < ActiveRecord::Base
     end
   end
 
-  def to_reference(from_project = nil)
+  # `from` argument can be a Namespace or Project.
+  def to_reference(from = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"
 
-    "#{project.to_reference(from_project)}#{reference}"
+    "#{project.to_reference(from, full: full)}#{reference}"
   end
 
   def referenced_merge_requests(current_user = nil)

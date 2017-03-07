@@ -1,11 +1,9 @@
 /*
  * Layout
  */
-$sidebar_collapsed_width: 62px;
-$sidebar_width: 220px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
-$gutter_inner_width: 258px;
+$gutter_inner_width: 250px;
 $sidebar-transition-duration: .15s;
 $sidebar-breakpoint: 1024px;
 
@@ -56,6 +54,7 @@ $black-transparent: rgba(0, 0, 0, 0.3);
 $border-white-light: darken($white-light, $darken-border-factor);
 $border-white-normal: darken($white-normal, $darken-border-factor);
 
+$border-gray-light: darken($gray-light, $darken-border-factor);
 $border-gray-normal: darken($gray-normal, $darken-border-factor);
 $border-gray-dark: darken($white-normal, $darken-border-factor);
 
@@ -85,6 +84,7 @@ $warning-message-border: #f0e2bb;
  */
 $border-color: #e5e5e5;
 $focus-border-color: #3aabf0;
+$sidebar-collapsed-icon-color: #999;
 $well-expand-item: #e8f2f7;
 $well-inner-border: #eef0f2;
 $well-light-border: #f1f1f1;
@@ -94,29 +94,26 @@ $well-light-text-color: #5b6169;
  * Text
  */
 $gl-font-size: 14px;
-$gl-title-color: #333;
-$gl-text-color: #5c5c5c;
-$gl-text-color-dark: #5c5d5e;
-$gl-text-color-light: #8c8c8c;
+$gl-text-color: rgba(0, 0, 0, .85);
+$gl-text-color-secondary: rgba(0, 0, 0, .55);
+$gl-text-color-disabled: rgba(0, 0, 0, .35);
 $gl-text-green: #4a2;
 $gl-text-red: #d12f19;
 $gl-text-orange: #d90;
 $gl-link-color: #3777b0;
-$gl-diff-text-color: #555;
-$gl-dark-link-color: #333;
-$gl-gray-light: #8f8f8f;
 $gl-grayish-blue: #7f8fa4;
 $gl-gray: $gl-text-color;
 $gl-gray-dark: #313236;
 $gl-header-color: #4c4e54;
+$gl-header-nav-hover-color: #434343;
 
 /*
  * Lists
  */
 $list-font-size: $gl-font-size;
-$list-title-color: $gl-title-color;
+$list-title-color: $gl-text-color;
 $list-text-color: $gl-text-color;
-$list-text-disabled-color: #888;
+$list-text-disabled-color: $gl-text-color-disabled;
 $list-border-light: #eee;
 $list-border: rgba(0, 0, 0, 0.05);
 $list-text-height: 42px;
@@ -127,7 +124,6 @@ $list-warning-row-color: #8a6d3b;
 /*
  * Markdown
  */
-$md-text-color: $gl-text-color;
 $md-link-color: $gl-link-color;
 $md-area-border: #ddd;
 
@@ -168,9 +164,7 @@ $btn-side-margin: 10px;
 $btn-sm-side-margin: 7px;
 $btn-xs-side-margin: 5px;
 $issue-status-expired: #cea61b;
-$issuable-sidebar-color: #999;
-$issuable-avatar-hover-border: #999;
-$issuable-clipboard-color: #999;
+$issuable-sidebar-color: $gl-text-color-secondary;
 $show-aside-bg: #eee;
 $show-aside-color: #777;
 $show-aside-shadow: #ddd;
@@ -182,6 +176,9 @@ $count-arrow-border: #dce0e5;
 $save-project-loader-color: #555;
 $divergence-graph-bar-bg: #ccc;
 $divergence-graph-separator-bg: #ccc;
+$general-hover-transition-duration: 100ms;
+$general-hover-transition-curve: linear;
+
 
 /*
 * Common component specific colors
@@ -251,7 +248,7 @@ $diff-view-modes-border: #c1c1c1;
  * Fonts
  */
 $monospace_font: 'Menlo', 'Liberation Mono', 'Consolas', 'DejaVu Sans Mono', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
-$regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+$regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
 /*
 * Dropdowns
@@ -274,18 +271,22 @@ $dropdown-toggle-active-border-color: darken($border-color, 14%);
 
 
 /*
+* Filtered Search
+*/
+$dropdown-hover-color: #3b86ff;
+
+/*
 * Buttons
 */
 $btn-active-gray: #ececec;
 $btn-active-gray-light: e4e7ed;
+$btn-white-active: #848484;
 
 /*
 * Badges
 */
-$badge-bg: #f3f3f3;
-$badge-bg-dark: #eee;
-$badge-color: #929292;
-$badge-color-dark: #8f8f8f;
+$badge-bg: #eee;
+$badge-color: $gl-text-color-secondary;
 
 /*
  *  Award emoji
@@ -304,8 +305,8 @@ $location-icon-color: #e7e9ed;
 /*
  *  Notes
  */
-$notes-light-color: #8e8e8e;
-$notes-role-color: #8e8e8e;
+$notes-light-color: $gl-text-color-secondary;
+$notes-role-color: $gl-text-color-secondary;
 $note-disabled-comment-color: #b2b2b2;
 $note-targe3-outside: #fffff0;
 $note-targe3-inside: #ffffd3;
@@ -330,7 +331,7 @@ $calendar-user-contrib-text: #959494;
 $cycle-analytics-box-padding: 30px;
 $cycle-analytics-box-text-color: #8c8c8c;
 $cycle-analytics-big-font: 19px;
-$cycle-analytics-dark-text: $gl-title-color;
+$cycle-analytics-dark-text: $gl-text-color;
 $cycle-analytics-light-gray: #bfbfbf;
 $cycle-analytics-dismiss-icon-color: #b2b2b2;
 
@@ -376,14 +377,13 @@ $callout-success-color: #3c763d;
 /*
 * Commit Page
 */
-$commit-committer-color: #999;
 $commit-max-width-marker-color: rgba(0, 0, 0, 0.0);
 $commit-message-text-area-bg: rgba(0, 0, 0, 0.0);
 
 /*
 * Common
 */
-$common-gray: $gl-gray;
+$common-gray: $gl-text-color;
 $common-gray-light: #bbb;
 $common-gray-dark: #444;
 $common-red: $gl-text-red;
@@ -434,6 +434,7 @@ $help-shortcut-header-color: #333;
 */
 $issues-today-bg: #f3fff2;
 $issues-today-border: #e1e8d5;
+$compare-display-color: #888;
 
 /*
 * jQuery UI
@@ -538,3 +539,4 @@ Pipeline Graph
 */
 $stage-hover-bg: #eaf3fc;
 $stage-hover-border: #d1e7fc;
+$action-icon-color: #d6d6d6;

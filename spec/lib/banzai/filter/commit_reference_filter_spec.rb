@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Banzai::Filter::CommitReferenceFilter, lib: true do
   include FilterSpecHelper
 
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:commit)  { project.commit }
 
   it 'requires project context' do
@@ -96,7 +96,7 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
 
   context 'cross-project / cross-namespace complete reference' do
     let(:namespace) { create(:namespace) }
-    let(:project2)  { create(:project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
     let(:reference) { "#{project2.path_with_namespace}@#{commit.short_id}" }
 
@@ -122,7 +122,7 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
   context 'cross-project / same-namespace complete reference' do
     let(:namespace) { create(:namespace) }
     let(:project)   { create(:empty_project, namespace: namespace) }
-    let(:project2)  { create(:project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
     let(:reference) { "#{project2.path_with_namespace}@#{commit.short_id}" }
 
@@ -148,7 +148,7 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
   context 'cross-project shorthand reference' do
     let(:namespace) { create(:namespace) }
     let(:project)   { create(:empty_project, namespace: namespace) }
-    let(:project2)  { create(:project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
     let(:reference) { "#{project2.path_with_namespace}@#{commit.short_id}" }
 
@@ -173,7 +173,7 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
 
   context 'cross-project URL reference' do
     let(:namespace) { create(:namespace) }
-    let(:project2)  { create(:project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
     let(:reference) { urls.namespace_project_commit_url(project2.namespace, project2, commit.id) }
 

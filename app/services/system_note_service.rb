@@ -109,6 +109,61 @@ module SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  # Called when the estimated time of a Noteable is changed
+  #
+  # noteable      - Noteable object
+  # project       - Project owning noteable
+  # author        - User performing the change
+  # time_estimate - Estimated time
+  #
+  # Example Note text:
+  #
+  #   "removed time estimate"
+  #
+  #   "changed time estimate to 3d 5h"
+  #
+  # Returns the created Note object
+
+  def change_time_estimate(noteable, project, author)
+    parsed_time = Gitlab::TimeTrackingFormatter.output(noteable.time_estimate)
+    body = if noteable.time_estimate == 0
+             "removed time estimate"
+           else
+             "changed time estimate to #{parsed_time}"
+           end
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when the spent time of a Noteable is changed
+  #
+  # noteable   - Noteable object
+  # project    - Project owning noteable
+  # author     - User performing the change
+  # time_spent - Spent time
+  #
+  # Example Note text:
+  #
+  #   "removed time spent"
+  #
+  #   "added 2h 30m of time spent"
+  #
+  # Returns the created Note object
+
+  def change_time_spent(noteable, project, author)
+    time_spent = noteable.time_spent
+
+    if time_spent == :reset
+      body = "removed time spent"
+    else
+      parsed_time = Gitlab::TimeTrackingFormatter.output(time_spent.abs)
+      action = time_spent > 0 ? 'added' : 'subtracted'
+      body = "#{action} #{parsed_time} of time spent"
+    end
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
   # Called when the status of a Noteable is changed
   #
   # noteable - Noteable object
@@ -132,14 +187,14 @@ module SystemNoteService
   end
 
   # Called when 'merge when pipeline succeeds' is executed
-  def merge_when_build_succeeds(noteable, project, author, last_commit)
+  def merge_when_pipeline_succeeds(noteable, project, author, last_commit)
     body = "enabled an automatic merge when the pipeline for #{last_commit.to_reference(project)} succeeds"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
   # Called when 'merge when pipeline succeeds' is canceled
-  def cancel_merge_when_build_succeeds(noteable, project, author)
+  def cancel_merge_when_pipeline_succeeds(noteable, project, author)
     body = 'canceled the automatic merge'
 
     create_note(noteable: noteable, project: project, author: author, note: body)
@@ -157,6 +212,12 @@ module SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  def add_merge_request_wip_from_commit(noteable, project, author, commit)
+    body = "marked as a **Work In Progress** from #{commit.to_reference(project)}"
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
   def self.resolve_all_discussions(merge_request, project, author)
     body = "resolved all discussions"
 
@@ -164,7 +225,7 @@ module SystemNoteService
   end
 
   def discussion_continued_in_issue(discussion, project, author, issue)
-    body = "Added #{issue.to_reference} to continue this discussion"
+    body = "created #{issue.to_reference} to continue this discussion"
     note_attributes = discussion.reply_attributes.merge(project: project, author: author, note: body)
     note_attributes[:type] = note_attributes.delete(:note_type)
 
@@ -203,7 +264,7 @@ module SystemNoteService
   #
   # Example Note text:
   #
-  # "made the issue confidential"
+  #   "made the issue confidential"
   #
   # Returns the created Note object
   def change_issue_confidentiality(issue, project, author)
@@ -295,10 +356,10 @@ module SystemNoteService
       note:    cross_reference_note_content(gfm_reference)
     }
 
-    if noteable.kind_of?(Commit)
+    if noteable.is_a?(Commit)
       note_options.merge!(noteable_type: 'Commit', commit_id: noteable.id)
     else
-      note_options.merge!(noteable: noteable)
+      note_options[:noteable] = noteable
     end
 
     if noteable.is_a?(ExternalIssue)
@@ -346,12 +407,13 @@ module SystemNoteService
     # Initial scope should be system notes of this noteable type
     notes = Note.system.where(noteable_type: noteable.class)
 
-    if noteable.is_a?(Commit)
-      # Commits have non-integer IDs, so they're stored in `commit_id`
-      notes = notes.where(commit_id: noteable.id)
-    else
-      notes = notes.where(noteable_id: noteable.id)
-    end
+    notes =
+      if noteable.is_a?(Commit)
+        # Commits have non-integer IDs, so they're stored in `commit_id`
+        notes.where(commit_id: noteable.id)
+      else
+        notes.where(noteable_id: noteable.id)
+      end
 
     notes_for_mentioner(mentioner, noteable, notes).exists?
   end

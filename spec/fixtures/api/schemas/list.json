@@ -10,7 +10,7 @@
     "id": { "type": "integer" },
     "list_type": {
       "type": "string",
-      "enum": ["backlog", "label", "done"]
+      "enum": ["label", "done"]
     },
     "label": {
       "type": ["object", "null"],

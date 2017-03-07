@@ -17,8 +17,8 @@ module ApiHelpers
   #   => "/api/v2/issues?foo=bar&private_token=..."
   #
   # Returns the relative path to the requested API resource
-  def api(path, user = nil)
-    "/api/#{API::API.version}#{path}" +
+  def api(path, user = nil, version: API::API.version)
+    "/api/#{version}#{path}" +
 
       # Normalize query string
       (path.index('?') ? '' : '?') +
@@ -29,6 +29,11 @@ module ApiHelpers
       else
         ''
       end
+  end
+
+  # Temporary helper method for simplifying V3 exclusive API specs
+  def v3_api(path, user = nil)
+    api(path, user, version: 'v3')
   end
 
   def ci_api(path, user = nil)

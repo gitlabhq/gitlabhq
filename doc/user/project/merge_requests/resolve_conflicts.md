@@ -21,6 +21,18 @@ request into the source branch, resolving the conflicts using the options
 chosen. If the source branch is `feature` and the target branch is `master`,
 this is similar to performing `git checkout feature; git merge master` locally.
 
+## Merge conflict editor
+
+> Introduced in GitLab 8.13.
+
+The merge conflict resolution editor allows for more complex merge conflicts,
+which require the user to manually modify a file in order to resolve a conflict,
+to be solved right form the GitLab interface. Use the **Edit inline** button
+to open the editor. Once you're sure about your changes, hit the
+**Commit conflict resolution** button.
+
+![Merge conflict editor](img/merge_conflict_editor.png)
+
 ## Conflicts available for resolution
 
 GitLab allows resolving conflicts in a file where all of the below are true:

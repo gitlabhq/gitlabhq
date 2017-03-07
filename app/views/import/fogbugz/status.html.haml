@@ -50,7 +50,7 @@
           %td
             = repo.name
           %td.import-target
-            = "#{current_user.username}/#{repo.name}"
+            #{current_user.username}/#{repo.name}
           %td.import-actions.job-status
             = button_tag class: "btn btn-import js-add-to-import" do
               Import

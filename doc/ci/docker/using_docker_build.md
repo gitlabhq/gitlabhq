@@ -12,6 +12,7 @@ One of the new trends in Continuous Integration/Deployment is to:
 1. deploy to a server from the pushed image.
 
 It's also useful when your application already has the `Dockerfile` that can be used to create and test an image:
+
 ```bash
 $ docker build -t my-image dockerfiles/
 $ docker run my-docker-image /script/to/run/tests
@@ -19,23 +20,23 @@ $ docker tag my-image my-registry:5000/my-image
 $ docker push my-registry:5000/my-image
 ```
 
-This requires special configuration of GitLab Runner to enable `docker` support during builds.
+This requires special configuration of GitLab Runner to enable `docker` support during jobs.
 
 ## Runner Configuration
 
-There are three methods to enable the use of `docker build` and `docker run` during builds; each with their own tradeoffs.
+There are three methods to enable the use of `docker build` and `docker run` during jobs; each with their own tradeoffs.
 
 ### Use shell executor
 
 The simplest approach is to install GitLab Runner in `shell` execution mode.
-GitLab Runner then executes build scripts as the `gitlab-runner` user.
+GitLab Runner then executes job scripts as the `gitlab-runner` user.
 
 1. Install [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/#installation).
 
-1. During GitLab Runner installation select `shell` as method of executing build scripts or use command:
+1. During GitLab Runner installation select `shell` as method of executing job scripts or use command:
 
     ```bash
-    $ sudo gitlab-ci-multi-runner register -n \
+    sudo gitlab-ci-multi-runner register -n \
       --url https://gitlab.com/ci \
       --registration-token REGISTRATION_TOKEN \
       --executor shell \
@@ -50,16 +51,17 @@ GitLab Runner then executes build scripts as the `gitlab-runner` user.
 3. Add `gitlab-runner` user to `docker` group:
 
     ```bash
-    $ sudo usermod -aG docker gitlab-runner
+    sudo usermod -aG docker gitlab-runner
     ```
 
 4. Verify that `gitlab-runner` has access to Docker:
 
     ```bash
-    $ sudo -u gitlab-runner -H docker info
+    sudo -u gitlab-runner -H docker info
     ```
 
     You can now verify that everything works by adding `docker info` to `.gitlab-ci.yml`:
+
     ```yaml
     before_script:
       - docker info
@@ -80,12 +82,12 @@ For more information please read [On Docker security: `docker` group considered 
 
 The second approach is to use the special docker-in-docker (dind)
 [Docker image](https://hub.docker.com/_/docker/) with all tools installed
-(`docker` and `docker-compose`) and run the build script in context of that
+(`docker` and `docker-compose`) and run the job script in context of that
 image in privileged mode.
 
 In order to do that, follow the steps:
 
-1. Install [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/#installation).
+1. Install [GitLab Runner](https://docs.gitlab.com/runner/install).
 
 1. Register GitLab Runner from the command line to use `docker` and `privileged`
    mode:
@@ -155,10 +157,10 @@ not without its own challenges:
   escalation which can lead to container breakout. For more information, check
   out the official Docker documentation on
   [Runtime privilege and Linux capabilities][docker-cap].
-- Using docker-in-docker, each build is in a clean environment without the past
-  history. Concurrent builds work fine because every build gets it's own
+- When using docker-in-docker, each job is in a clean environment without the past
+  history. Concurrent jobs work fine because every build gets it's own
   instance of Docker engine so they won't conflict with each other. But this
-  also means builds can be slower because there's no caching of layers.
+  also means jobs can be slower because there's no caching of layers.
 - By default, `docker:dind` uses `--storage-driver vfs` which is the slowest
   form offered. To use a different driver, see
   [Using the overlayfs driver](#using-the-overlayfs-driver).
@@ -171,7 +173,7 @@ The third approach is to bind-mount `/var/run/docker.sock` into the container so
 
 In order to do that, follow the steps:
 
-1. Install [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/#installation).
+1. Install [GitLab Runner](https://docs.gitlab.com/runner/install).
 
 1. Register GitLab Runner from the command line to use `docker` and share `/var/run/docker.sock`:
 
@@ -187,7 +189,9 @@ In order to do that, follow the steps:
 
     The above command will register a new Runner to use the special
     `docker:latest` image which is provided by Docker. **Notice that it's using
-    the Docker daemon of the Runner itself, and any containers spawned by docker commands will be siblings of the Runner rather than children of the runner.** This may have complications and limitations that are unsuitable for your workflow.
+    the Docker daemon of the Runner itself, and any containers spawned by docker
+    commands will be siblings of the Runner rather than children of the runner.**
+    This may have complications and limitations that are unsuitable for your workflow.
 
     The above command will create a `config.toml` entry similar to this:
 
@@ -206,7 +210,8 @@ In order to do that, follow the steps:
         Insecure = false
     ```
 
-1. You can now use `docker` in the build script (note that you don't need to include the `docker:dind` service as when using the Docker in Docker executor):
+1. You can now use `docker` in the build script (note that you don't need to
+   include the `docker:dind` service as when using the Docker in Docker executor):
 
     ```yaml
     image: docker:latest
@@ -221,18 +226,23 @@ In order to do that, follow the steps:
       - docker run my-docker-image /script/to/run/tests
     ```
 
-While the above method avoids using Docker in privileged mode, you should be aware of the following implications:
-* By sharing the docker daemon, you are effectively disabling all
-the security mechanisms of containers and exposing your host to privilege
-escalation which can lead to container breakout. For example, if a project
-ran `docker rm -f $(docker ps -a -q)` it would remove the GitLab Runner
-containers.
-* Concurrent builds may not work; if your tests
-create containers with specific names, they may conflict with each other.
-* Sharing files and directories from the source repo into containers may not
-work as expected since volume mounting is done in the context of the host
-machine, not the build container.
-e.g. `docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_app_tests`
+While the above method avoids using Docker in privileged mode, you should be
+aware of the following implications:
+
+- By sharing the docker daemon, you are effectively disabling all
+  the security mechanisms of containers and exposing your host to privilege
+  escalation which can lead to container breakout. For example, if a project
+  ran `docker rm -f $(docker ps -a -q)` it would remove the GitLab Runner
+  containers.
+- Concurrent jobs may not work; if your tests
+  create containers with specific names, they may conflict with each other.
+- Sharing files and directories from the source repo into containers may not
+  work as expected since volume mounting is done in the context of the host
+  machine, not the build container, e.g.:
+
+    ```
+    docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_app_tests
+    ```
 
 ## Using the OverlayFS driver
 
@@ -298,8 +308,32 @@ push to the Registry connected to your project. Its password is provided in the
 `$CI_BUILD_TOKEN` variable. This allows you to automate building and deployment
 of your Docker images.
 
+You can also make use of [other variables](../variables/README.md) to avoid hardcoding:
+
+```yaml
+services:
+  - docker:dind
+
+variables:
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+
+build:
+  stage: build
+  script:
+    - docker build -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+```
+
+Here, `$CI_REGISTRY_IMAGE` would be resolved to the address of the registry tied
+to this project, and `$CI_BUILD_REF_NAME` would be resolved to the branch or
+tag name for this particular job. We also declare our own variable, `$IMAGE_TAG`,
+combining the two to save us some typing in the `script` section.
+
 Here's a more elaborate example that splits up the tasks into 4 pipeline stages,
-including two tests that run in parallel. The build is stored in the container
+including two tests that run in parallel. The `build` is stored in the container
 registry and used by subsequent stages, downloading the image
 when needed. Changes to `master` also get tagged as `latest` and deployed using
 an application-specific deploy script:
@@ -360,17 +394,17 @@ deploy:
 Some things you should be aware of when using the Container Registry:
 
 - You must log in to the container registry before running commands. Putting
-  this in `before_script` will run it before each build job.
+  this in `before_script` will run it before each job.
 - Using `docker build --pull` makes sure that Docker fetches any changes to base
   images before building just in case your cache is stale. It takes slightly
   longer, but means you don’t get stuck without security patches to base images.
 - Doing an explicit `docker pull` before each `docker run` makes sure to fetch
   the latest image that was just built. This is especially important if you are
   using multiple runners that cache images locally. Using the git SHA in your
-  image tag makes this less necessary since each build will be unique and you
+  image tag makes this less necessary since each job will be unique and you
   shouldn't ever have a stale image, but it's still possible if you re-build a
   given commit after a dependency has changed.
-- You don't want to build directly to `latest` in case there are multiple builds
+- You don't want to build directly to `latest` in case there are multiple jobs
   happening simultaneously.
 
 [docker-in-docker]: https://blog.docker.com/2013/09/docker-can-now-run-within-docker/

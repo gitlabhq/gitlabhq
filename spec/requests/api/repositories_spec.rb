@@ -8,7 +8,7 @@ describe API::Repositories, api: true  do
 
   let(:user) { create(:user) }
   let(:guest) { create(:user).tap { |u| create(:project_member, :guest, user: u, project: project) } }
-  let!(:project) { create(:project, creator_id: user.id) }
+  let!(:project) { create(:project, :repository, creator: user) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
 
   describe "GET /projects/:id/repository/tree" do
@@ -19,10 +19,10 @@ describe API::Repositories, api: true  do
         get api(route, current_user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
 
         first_commit = json_response.first
-
-        expect(json_response).to be_an Array
         expect(first_commit['name']).to eq('bar')
         expect(first_commit['type']).to eq('tree')
         expect(first_commit['mode']).to eq('040000')
@@ -49,6 +49,7 @@ describe API::Repositories, api: true  do
 
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
+          expect(response).to include_pagination_headers
           expect(json_response[4]['name']).to eq('html')
           expect(json_response[4]['path']).to eq('files/html')
           expect(json_response[4]['type']).to eq('tree')
@@ -74,7 +75,7 @@ describe API::Repositories, api: true  do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository tree' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -144,7 +145,7 @@ describe API::Repositories, api: true  do
 
       context 'when unauthenticated', 'and project is public' do
         it_behaves_like 'repository blob' do
-          let(:project) { create(:project, :public) }
+          let(:project) { create(:project, :public, :repository) }
           let(:current_user) { nil }
         end
       end
@@ -198,7 +199,7 @@ describe API::Repositories, api: true  do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository raw blob' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -273,7 +274,7 @@ describe API::Repositories, api: true  do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository archive' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -347,7 +348,7 @@ describe API::Repositories, api: true  do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository compare' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -380,10 +381,10 @@ describe API::Repositories, api: true  do
         get api(route, current_user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
 
         first_contributor = json_response.first
-
         expect(first_contributor['email']).to eq('tiagonbotelho@hotmail.com')
         expect(first_contributor['name']).to eq('tiagonbotelho')
         expect(first_contributor['commits']).to eq(1)
@@ -394,7 +395,7 @@ describe API::Repositories, api: true  do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository contributors' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end

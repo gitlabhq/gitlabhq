@@ -5,20 +5,8 @@ module Gitlab
         class Play < SimpleDelegator
           include Status::Extended
 
-          def text
-            'manual'
-          end
-
           def label
             'manual play action'
-          end
-
-          def icon
-            'icon_status_manual'
-          end
-
-          def group
-            'manual'
           end
 
           def has_action?
@@ -26,15 +14,11 @@ module Gitlab
           end
 
           def action_icon
-            'play'
+            'icon_action_play'
           end
 
           def action_title
             'Play'
-          end
-
-          def action_class
-            'ci-play-icon'
           end
 
           def action_path

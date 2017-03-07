@@ -7,9 +7,12 @@ module Milestoneish
 
   def total_items_count(user)
     memoize_per_user(user, :total_items_count) do
-      issues_count = count_issues_by_state(user).values.sum
-      issues_count + merge_requests.size
+      total_issues_count(user) + merge_requests.size
     end
+  end
+
+  def total_issues_count(user)
+    count_issues_by_state(user).values.sum
   end
 
   def complete?(user)
@@ -36,8 +39,8 @@ module Milestoneish
 
   def issues_visible_to_user(user)
     memoize_per_user(user, :issues_visible_to_user) do
-      params = try(:project_id) ? { project_id: project_id } : {}
-      IssuesFinder.new(user, params).execute.where(milestone_id: milestoneish_ids)
+      IssuesFinder.new(user, issues_finder_params)
+        .execute.where(milestone_id: milestoneish_ids)
     end
   end
 
@@ -70,6 +73,12 @@ module Milestoneish
   def memoize_per_user(user, method_name)
     @memoized ||= {}
     @memoized[method_name] ||= {}
-    @memoized[method_name][user.try!(:id)] ||= yield
+    @memoized[method_name][user&.id] ||= yield
+  end
+
+  # override in a class that includes this module to get a faster query
+  # from IssuesFinder
+  def issues_finder_params
+    {}
   end
 end

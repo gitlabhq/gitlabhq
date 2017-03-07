@@ -15,7 +15,7 @@ module API
         optional :note_events, type: Boolean, desc: "Trigger hook on note(comment) events"
         optional :build_events, type: Boolean, desc: "Trigger hook on build events"
         optional :pipeline_events, type: Boolean, desc: "Trigger hook on pipeline events"
-        optional :wiki_events, type: Boolean, desc: "Trigger hook on wiki events"
+        optional :wiki_page_events, type: Boolean, desc: "Trigger hook on wiki events"
         optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
         optional :token, type: String, desc: "Secret token to validate received payloads; this will not be returned in the response"
       end
@@ -32,9 +32,7 @@ module API
         use :pagination
       end
       get ":id/hooks" do
-        hooks = paginate user_project.hooks
-
-        present hooks, with: Entities::ProjectHook
+        present paginate(user_project.hooks), with: Entities::ProjectHook
       end
 
       desc 'Get a project hook' do
@@ -92,12 +90,9 @@ module API
         requires :hook_id, type: Integer, desc: 'The ID of the hook to delete'
       end
       delete ":id/hooks/:hook_id" do
-        begin
-          present user_project.hooks.destroy(params[:hook_id]), with: Entities::ProjectHook
-        rescue
-          # ProjectHook can raise Error if hook_id not found
-          not_found!("Error deleting hook #{params[:hook_id]}")
-        end
+        hook = user_project.hooks.find(params.delete(:hook_id))
+
+        hook.destroy
       end
     end
   end

@@ -7,7 +7,7 @@ describe API::Tags, api: true  do
 
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let!(:project) { create(:project, creator_id: user.id) }
+  let!(:project) { create(:project, :repository, creator: user) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:guest) { create(:project_member, :guest, user: user2, project: project) }
 
@@ -20,16 +20,15 @@ describe API::Tags, api: true  do
         get api("/projects/#{project.id}/repository/tags", current_user)
 
         expect(response).to have_http_status(200)
-
-        first_tag = json_response.first
-
-        expect(first_tag['name']).to eq(tag_name)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(tag_name)
       end
     end
 
     context 'when unauthenticated' do
       it_behaves_like 'repository tags' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -43,7 +42,9 @@ describe API::Tags, api: true  do
     context 'without releases' do
       it "returns an array of project tags" do
         get api("/projects/#{project.id}/repository/tags", user)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(tag_name)
       end
@@ -59,6 +60,7 @@ describe API::Tags, api: true  do
         get api("/projects/#{project.id}/repository/tags", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(tag_name)
         expect(json_response.first['message']).to eq('Version 1.1.0')
@@ -88,7 +90,7 @@ describe API::Tags, api: true  do
 
     context 'when unauthenticated' do
       it_behaves_like 'repository tag' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -135,8 +137,8 @@ describe API::Tags, api: true  do
       context 'delete tag' do
         it 'deletes an existing tag' do
           delete api("/projects/#{project.id}/repository/tags/#{tag_name}", user)
-          expect(response).to have_http_status(200)
-          expect(json_response['tag_name']).to eq(tag_name)
+
+          expect(response).to have_http_status(204)
         end
 
         it 'raises 404 if the tag does not exist' do

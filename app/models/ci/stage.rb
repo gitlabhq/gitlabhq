@@ -8,10 +8,11 @@ module Ci
 
     delegate :project, to: :pipeline
 
-    def initialize(pipeline, name:, status: nil)
+    def initialize(pipeline, name:, status: nil, warnings: nil)
       @pipeline = pipeline
       @name = name
       @status = status
+      @warnings = warnings
     end
 
     def to_param
@@ -38,6 +39,18 @@ module Ci
 
     def builds
       @builds ||= pipeline.builds.where(stage: name)
+    end
+
+    def success?
+      status.to_s == 'success'
+    end
+
+    def has_warnings?
+      if @warnings.nil?
+        statuses.latest.failed_but_allowed.any?
+      else
+        @warnings
+      end
     end
   end
 end

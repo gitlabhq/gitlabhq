@@ -30,11 +30,11 @@ class Projects::MattermostsController < Projects::ApplicationController
   def configure_params
     params.require(:mattermost).permit(:trigger, :team_id).merge(
       url: service_trigger_url(@service),
-      icon_url: asset_url('gitlab_logo.png'))
+      icon_url: asset_url('slash-command-logo.png'))
   end
 
   def teams
-    @teams ||= @service.list_teams(current_user)
+    @teams, @teams_error_message = @service.list_teams(current_user)
   end
 
   def service

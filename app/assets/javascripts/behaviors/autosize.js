@@ -1,8 +1,7 @@
-/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var, consistent-return, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var, consistent-return, max-len */
 /* global autosize */
 
-/*= require jquery.ba-resize */
-/*= require autosize */
+var autosize = require('vendor/autosize');
 
 (function() {
   $(function() {
@@ -26,5 +25,4 @@
     autosize.update($fields);
     return $fields.css('resize', 'vertical');
   });
-
-}).call(this);
+}).call(window);

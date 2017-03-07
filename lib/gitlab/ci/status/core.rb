@@ -42,9 +42,6 @@ module Gitlab
           raise NotImplementedError
         end
 
-        def action_class
-        end
-
         def action_path
           raise NotImplementedError
         end

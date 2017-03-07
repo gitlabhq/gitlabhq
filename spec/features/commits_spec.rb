@@ -153,7 +153,7 @@ describe 'Commits' do
           expect(page).to have_content pipeline.git_author_name
           expect(page).to have_link('Download artifacts')
           expect(page).not_to have_link('Cancel running')
-          expect(page).not_to have_link('Retry failed')
+          expect(page).not_to have_link('Retry')
         end
       end
 
@@ -172,7 +172,7 @@ describe 'Commits' do
           expect(page).to have_content pipeline.git_author_name
           expect(page).not_to have_link('Download artifacts')
           expect(page).not_to have_link('Cancel running')
-          expect(page).not_to have_link('Retry failed')
+          expect(page).not_to have_link('Retry')
         end
       end
     end
@@ -192,7 +192,7 @@ describe 'Commits' do
       commits = project.repository.commits(branch_name)
 
       commits.each do |commit|
-        expect(page).to have_content("committed #{commit.committed_date}")
+        expect(page).to have_content("committed #{commit.committed_date.strftime("%b %d, %Y")}")
       end
     end
   end

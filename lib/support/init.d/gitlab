@@ -42,6 +42,11 @@ gitlab_workhorse_dir=$(cd $app_root/../gitlab-workhorse 2> /dev/null && pwd)
 gitlab_workhorse_pid_path="$pid_path/gitlab-workhorse.pid"
 gitlab_workhorse_options="-listenUmask 0 -listenNetwork unix -listenAddr $socket_path/gitlab-workhorse.socket -authBackend http://127.0.0.1:8080 -authSocket $rails_socket -documentRoot $app_root/public"
 gitlab_workhorse_log="$app_root/log/gitlab-workhorse.log"
+gitlab_pages_enabled=false
+gitlab_pages_dir=$(cd $app_root/../gitlab-pages 2> /dev/null && pwd)
+gitlab_pages_pid_path="$pid_path/gitlab-pages.pid"
+gitlab_pages_options="-pages-domain example.com -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090"
+gitlab_pages_log="$app_root/log/gitlab-pages.log"
 shell_path="/bin/bash"
 
 # Read configuration variable file if it is present
@@ -89,13 +94,20 @@ check_pids(){
       mpid=0
     fi
   fi
+  if [ "$gitlab_pages_enabled" = true ]; then
+    if [ -f "$gitlab_pages_pid_path" ]; then
+      gppid=$(cat "$gitlab_pages_pid_path")
+    else
+      gppid=0
+    fi
+  fi
 }
 
 ## Called when we have started the two processes and are waiting for their pid files.
 wait_for_pids(){
   # We are sleeping a bit here mostly because sidekiq is slow at writing its pid
   i=0;
-  while [ ! -f $web_server_pid_path ] || [ ! -f $sidekiq_pid_path ] || [ ! -f $gitlab_workhorse_pid_path ] || { [ "$mail_room_enabled" = true ] && [ ! -f $mail_room_pid_path ]; }; do
+  while [ ! -f $web_server_pid_path ] || [ ! -f $sidekiq_pid_path ] || [ ! -f $gitlab_workhorse_pid_path ] || { [ "$mail_room_enabled" = true ] && [ ! -f $mail_room_pid_path ]; } || { [ "$gitlab_pages_enabled" = true ] && [ ! -f $gitlab_pages_pid_path ]; }; do
     sleep 0.1;
     i=$((i+1))
     if [ $((i%10)) = 0 ]; then
@@ -144,7 +156,15 @@ check_status(){
       mail_room_status="-1"
     fi
   fi
-  if [ $web_status = 0 ] && [ $sidekiq_status = 0 ] && [ $gitlab_workhorse_status = 0 ] && { [ "$mail_room_enabled" != true ] || [ $mail_room_status = 0 ]; }; then
+  if [ "$gitlab_pages_enabled" = true ]; then
+    if [ $gppid -ne 0 ]; then
+      kill -0 "$gppid" 2>/dev/null
+      gitlab_pages_status="$?"
+    else
+      gitlab_pages_status="-1"
+    fi
+  fi
+  if [ $web_status = 0 ] && [ $sidekiq_status = 0 ] && [ $gitlab_workhorse_status = 0 ] && { [ "$mail_room_enabled" != true ] || [ $mail_room_status = 0 ]; } && { [ "$gitlab_pages_enabled" != true ] || [ $gitlab_pages_status = 0 ]; }; then
     gitlab_status=0
   else
     # http://refspecs.linuxbase.org/LSB_4.1.0/LSB-Core-generic/LSB-Core-generic/iniscrptact.html
@@ -186,12 +206,19 @@ check_stale_pids(){
       exit 1
     fi
   fi
+  if [ "$gitlab_pages_enabled" = true ] && [ "$gppid" != "0" ] && [ "$gitlab_pages_status" != "0" ]; then
+    echo "Removing stale GitLab Pages job dispatcher pid. This is most likely caused by GitLab Pages crashing the last time it ran."
+    if ! rm "$gitlab_pages_pid_path"; then
+      echo "Unable to remove stale pid, exiting"
+      exit 1
+    fi
+  fi
 }
 
 ## If no parts of the service is running, bail out.
 exit_if_not_running(){
   check_stale_pids
-  if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && [ "$gitlab_workhorse_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ]; }; then
+  if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && [ "$gitlab_workhorse_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ]; } && { [ "$gitlab_pages_enabled" != true ] || [ "$gitlab_pages_status" != "0" ]; }; then
     echo "GitLab is not running."
     exit
   fi
@@ -212,6 +239,9 @@ start_gitlab() {
   fi
   if [ "$mail_room_enabled" = true ] && [ "$mail_room_status" != "0" ]; then
     echo "Starting GitLab MailRoom"
+  fi
+  if [ "$gitlab_pages_enabled" = true ] && [ "$gitlab_pages_status" != "0" ]; then
+    echo "Starting GitLab Pages"
   fi
 
   # Then check if the service is running. If it is: don't start again.
@@ -252,6 +282,16 @@ start_gitlab() {
     fi
   fi
 
+  if [ "$gitlab_pages_enabled" = true ]; then
+    if [ "$gitlab_pages_status" = "0" ]; then
+      echo "The GitLab Pages is already running with pid $spid, not restarting"
+    else
+      $app_root/bin/daemon_with_pidfile $gitlab_pages_pid_path  \
+          $gitlab_pages_dir/gitlab-pages $gitlab_pages_options \
+        >> $gitlab_pages_log 2>&1 &
+    fi
+  fi
+
   # Wait for the pids to be planted
   wait_for_pids
   # Finally check the status to tell wether or not GitLab is running
@@ -278,13 +318,17 @@ stop_gitlab() {
     echo "Shutting down GitLab MailRoom"
     RAILS_ENV=$RAILS_ENV bin/mail_room stop
   fi
+  if [ "$gitlab_pages_status" = "0" ]; then
+    echo "Shutting down gitlab-pages"
+    kill -- $(cat $gitlab_pages_pid_path)
+  fi
 
   # If something needs to be stopped, lets wait for it to stop. Never use SIGKILL in a script.
-  while [ "$web_status" = "0" ] || [ "$sidekiq_status" = "0" ] || [ "$gitlab_workhorse_status" = "0" ] || { [ "$mail_room_enabled" = true ] && [ "$mail_room_status" = "0" ]; }; do
+  while [ "$web_status" = "0" ] || [ "$sidekiq_status" = "0" ] || [ "$gitlab_workhorse_status" = "0" ] || { [ "$mail_room_enabled" = true ] && [ "$mail_room_status" = "0" ]; } || { [ "$gitlab_pages_enabled" = true ] && [ "$gitlab_pages_status" = "0" ]; }; do
     sleep 1
     check_status
     printf "."
-    if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && [ "$gitlab_workhorse_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ]; }; then
+    if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && [ "$gitlab_workhorse_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ]; } && { [ "$gitlab_pages_enabled" != true ] || [ "$gitlab_pages_status" != "0" ]; }; then
       printf "\n"
       break
     fi
@@ -298,6 +342,7 @@ stop_gitlab() {
   if [ "$mail_room_enabled" = true ]; then
     rm "$mail_room_pid_path" 2>/dev/null
   fi
+  rm -f "$gitlab_pages_pid_path"
 
   print_status
 }
@@ -305,7 +350,7 @@ stop_gitlab() {
 ## Prints the status of GitLab and its components.
 print_status() {
   check_status
-  if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && [ "$gitlab_workhorse_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ]; }; then
+  if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && [ "$gitlab_workhorse_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ]; } && { [ "$gitlab_pages_enabled" != true ] || [ "$gitlab_pages_status" != "0" ]; }; then
     echo "GitLab is not running."
     return
   fi
@@ -331,7 +376,14 @@ print_status() {
         printf "The GitLab MailRoom email processor is \033[31mnot running\033[0m.\n"
     fi
   fi
-  if [ "$web_status" = "0" ] && [ "$sidekiq_status" = "0" ] && [ "$gitlab_workhorse_status" = "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" = "0" ]; }; then
+  if [ "$gitlab_pages_enabled" = true ]; then
+    if [ "$gitlab_pages_status" = "0" ]; then
+        echo "The GitLab Pages with pid $mpid is running."
+    else
+        printf "The GitLab Pages is \033[31mnot running\033[0m.\n"
+    fi
+  fi
+  if [ "$web_status" = "0" ] && [ "$sidekiq_status" = "0" ] && [ "$gitlab_workhorse_status" = "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" = "0" ]; } && { [ "$gitlab_pages_enabled" != true ] || [ "$gitlab_pages_status" = "0" ]; }; then
     printf "GitLab and all its components are \033[32mup and running\033[0m.\n"
   fi
 }
@@ -362,7 +414,7 @@ reload_gitlab(){
 ## Restarts Sidekiq and Unicorn.
 restart_gitlab(){
   check_status
-  if [ "$web_status" = "0" ] || [ "$sidekiq_status" = "0" ] || [ "$gitlab_workhorse" = "0" ] || { [ "$mail_room_enabled" = true ] && [ "$mail_room_status" = "0" ]; }; then
+  if [ "$web_status" = "0" ] || [ "$sidekiq_status" = "0" ] || [ "$gitlab_workhorse" = "0" ] || { [ "$mail_room_enabled" = true ] && [ "$mail_room_status" = "0" ]; } || { [ "$gitlab_pages_enabled" = true ] && [ "$gitlab_pages_status" = "0" ]; }; then
     stop_gitlab
   fi
   start_gitlab

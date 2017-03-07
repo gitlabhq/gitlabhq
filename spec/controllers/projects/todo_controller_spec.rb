@@ -12,8 +12,8 @@ describe Projects::TodosController do
     describe 'POST create' do
       def go
         post :create,
-          namespace_id: project.namespace.path,
-          project_id: project.path,
+          namespace_id: project.namespace,
+          project_id: project,
           issuable_id: issue.id,
           issuable_type: 'issue',
           format: 'html'
@@ -80,8 +80,8 @@ describe Projects::TodosController do
     describe 'POST create' do
       def go
         post :create,
-          namespace_id: project.namespace.path,
-          project_id: project.path,
+          namespace_id: project.namespace,
+          project_id: project,
           issuable_id: merge_request.id,
           issuable_type: 'merge_request',
           format: 'html'

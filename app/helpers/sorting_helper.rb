@@ -30,7 +30,7 @@ module SortingHelper
     }
 
     if current_controller?('admin/projects')
-      options.merge!(sort_value_largest_repo => sort_title_largest_repo)
+      options[sort_value_largest_repo] = sort_title_largest_repo
     end
 
     options

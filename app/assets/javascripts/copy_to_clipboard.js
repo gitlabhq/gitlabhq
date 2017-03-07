@@ -1,7 +1,7 @@
-/* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, prefer-arrow-callback, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, prefer-arrow-callback, max-len */
 /* global Clipboard */
 
-/*= require clipboard */
+window.Clipboard = require('vendor/clipboard');
 
 (function() {
   var genericError, genericSuccess, showTooltip;
@@ -46,5 +46,4 @@
     clipboard.on('success', genericSuccess);
     return clipboard.on('error', genericError);
   });
-
-}).call(this);
+}).call(window);

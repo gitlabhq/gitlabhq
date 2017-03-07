@@ -1,4 +1,4 @@
-# Quick Start
+# Getting started with GitLab CI
 
 >**Note:** Starting from version 8.0, GitLab [Continuous Integration][ci] (CI)
 is fully integrated into GitLab itself and is [enabled] by default on all
@@ -7,7 +7,7 @@ projects.
 GitLab offers a [continuous integration][ci] service. If you
 [add a `.gitlab-ci.yml` file][yaml] to the root directory of your repository,
 and configure your GitLab project to use a [Runner], then each merge request or
-push triggers your CI [pipeline].
+push, triggers your CI [pipeline].
 
 The `.gitlab-ci.yml` file tells the GitLab runner what to do. By default it runs
 a pipeline with three [stages]: `build`, `test`, and `deploy`. You don't need to
@@ -31,13 +31,13 @@ So in brief, the steps needed to have a working CI can be summed up to:
 
 From there on, on every push to your Git repository, the Runner will
 automagically start the pipeline and the pipeline will appear under the
-project's `/pipelines` page.
+project's **Pipelines** page.
 
 ---
 
 This guide assumes that you:
 
-- have a working GitLab instance of version 8.0 or higher or are using
+- have a working GitLab instance of version 8.0+r or are using
   [GitLab.com](https://gitlab.com)
 - have a project in GitLab that you would like to use CI for
 
@@ -54,7 +54,7 @@ The `.gitlab-ci.yml` file is where you configure what CI does with your project.
 It lives in the root of your repository.
 
 On any push to your repository, GitLab will look for the `.gitlab-ci.yml`
-file and start builds on _Runners_ according to the contents of the file,
+file and start jobs on _Runners_ according to the contents of the file,
 for that commit.
 
 Because `.gitlab-ci.yml` is in the repository and is version controlled, old
@@ -63,10 +63,11 @@ have different pipelines and jobs, and you have a single source of truth for CI.
 You can read more about the reasons why we are using `.gitlab-ci.yml` [in our
 blog about it][blog-ci].
 
-**Note:** `.gitlab-ci.yml` is a [YAML](https://en.wikipedia.org/wiki/YAML) file
-so you have to pay extra attention to indentation. Always use spaces, not tabs.
-
 ### Creating a simple `.gitlab-ci.yml` file
+
+>**Note:**
+`.gitlab-ci.yml` is a [YAML](https://en.wikipedia.org/wiki/YAML) file
+so you have to pay extra attention to indentation. Always use spaces, not tabs.
 
 You need to create a file named `.gitlab-ci.yml` in the root directory of your
 repository. Below is an example for a Ruby on Rails project.
@@ -88,7 +89,7 @@ rubocop:
     - bundle exec rubocop
 ```
 
-This is the simplest possible build configuration that will work for most Ruby
+This is the simplest possible configuration that will work for most Ruby
 applications:
 
 1. Define two jobs `rspec` and `rubocop` (the names are arbitrary) with
@@ -98,22 +99,22 @@ applications:
 The `.gitlab-ci.yml` file defines sets of jobs with constraints of how and when
 they should be run. The jobs are defined as top-level elements with a name (in
 our case `rspec` and `rubocop`) and always have to contain the `script` keyword.
-Jobs are used to create builds, which are then picked by
+Jobs are used to create jobs, which are then picked by
 [Runners](../runners/README.md) and executed within the environment of the Runner.
 
 What is important is that each job is run independently from each other.
 
 If you want to check whether your `.gitlab-ci.yml` file is valid, there is a
 Lint tool under the page `/ci/lint` of your GitLab instance. You can also find
-a "CI Lint" button to go to this page under **Pipelines > Pipelines** and
-**Pipelines > Builds** in your project.
+a "CI Lint" button to go to this page under **Pipelines ➔ Pipelines** and
+**Pipelines ➔ Jobs** in your project.
 
 For more information and a complete `.gitlab-ci.yml` syntax, please read
-[the documentation on .gitlab-ci.yml](../yaml/README.md).
+[the reference documentation on .gitlab-ci.yml](../yaml/README.md).
 
 ### Push `.gitlab-ci.yml` to GitLab
 
-Once you've created `.gitlab-ci.yml`, you should add it to your git repository
+Once you've created `.gitlab-ci.yml`, you should add it to your Git repository
 and push it to GitLab.
 
 ```bash
@@ -125,28 +126,27 @@ git push origin master
 Now if you go to the **Pipelines** page you will see that the pipeline is
 pending.
 
-You can also go to the **Commits** page and notice the little clock icon next
+You can also go to the **Commits** page and notice the little pause icon next
 to the commit SHA.
 
 ![New commit pending](img/new_commit.png)
 
-Clicking on the clock icon you will be directed to the builds page for that
-specific commit.
+Clicking on it you will be directed to the jobs page for that specific commit.
 
-![Single commit builds page](img/single_commit_status_pending.png)
+![Single commit jobs page](img/single_commit_status_pending.png)
 
 Notice that there are two jobs pending which are named after what we wrote in
 `.gitlab-ci.yml`. The red triangle indicates that there is no Runner configured
-yet for these builds.
+yet for these jobs.
 
-The next step is to configure a Runner so that it picks the pending builds.
+The next step is to configure a Runner so that it picks the pending jobs.
 
 ## Configuring a Runner
 
-In GitLab, Runners run the builds that you define in `.gitlab-ci.yml`. A Runner
+In GitLab, Runners run the jobs that you define in `.gitlab-ci.yml`. A Runner
 can be a virtual machine, a VPS, a bare-metal machine, a docker container or
 even a cluster of containers. GitLab and the Runners communicate through an API,
-so the only requirement is that the Runner's machine has Internet access.
+so the only requirement is that the Runner's machine has [Internet] access.
 
 A Runner can be specific to a certain project or serve multiple projects in
 GitLab. If it serves all projects it's called a _Shared Runner_.
@@ -155,9 +155,9 @@ Find more information about different Runners in the
 [Runners](../runners/README.md) documentation.
 
 You can find whether any Runners are assigned to your project by going to
-**Settings > Runners**. Setting up a Runner is easy and straightforward. The
-official Runner supported by GitLab is written in Go and can be found at
-<https://gitlab.com/gitlab-org/gitlab-ci-multi-runner>.
+**Settings ➔ Runners**. Setting up a Runner is easy and straightforward. The
+official Runner supported by GitLab is written in Go and its documentation
+can be found at <https://docs.gitlab.com/runner/>.
 
 In order to have a functional Runner you need to follow two steps:
 
@@ -167,28 +167,25 @@ In order to have a functional Runner you need to follow two steps:
 Follow the links above to set up your own Runner or use a Shared Runner as
 described in the next section.
 
-For other types of unofficial Runners written in other languages, see the
-[instructions for the various GitLab Runners](https://about.gitlab.com/gitlab-ci/#gitlab-runner).
-
 Once the Runner has been set up, you should see it on the Runners page of your
-project, following **Settings > Runners**.
+project, following **Settings ➔ Runners**.
 
 ![Activated runners](img/runners_activated.png)
 
 ### Shared Runners
 
-If you use [GitLab.com](https://gitlab.com/) you can use **Shared Runners**
+If you use [GitLab.com](https://gitlab.com/) you can use the **Shared Runners**
 provided by GitLab Inc.
 
 These are special virtual machines that run on GitLab's infrastructure and can
 build any project.
 
-To enable **Shared Runners** you have to go to your project's
-**Settings > Runners** and click **Enable shared runners**.
+To enable the **Shared Runners** you have to go to your project's
+**Settings ➔ Runners** and click **Enable shared runners**.
 
 [Read more on Shared Runners](../runners/README.md).
 
-## Seeing the status of your pipeline and builds
+## Seeing the status of your pipeline and jobs
 
 After configuring the Runner successfully, you should see the status of your
 last commit change from _pending_ to either _running_, _success_ or _failed_.
@@ -197,36 +194,34 @@ You can view all pipelines by going to the **Pipelines** page in your project.
 
 ![Commit status](img/pipelines_status.png)
 
-Or you can view all builds, by going to the **Pipelines > Builds** page.
+Or you can view all jobs, by going to the **Pipelines ➔ Jobs** page.
 
 ![Commit status](img/builds_status.png)
 
-By clicking on a Build ID, you will be able to see the log of that build.
-This is important to diagnose why a build failed or acted differently than
+By clicking on a job's status, you will be able to see the log of that job.
+This is important to diagnose why a job failed or acted differently than
 you expected.
 
 ![Build log](img/build_log.png)
 
 You are also able to view the status of any commit in the various pages in
-GitLab, such as **Commits** and **Merge Requests**.
+GitLab, such as **Commits** and **Merge requests**.
 
 ## Enabling build emails
 
 If you want to receive e-mail notifications about the result status of the
-builds, you should explicitly enable the **Builds Emails** service under your
+jobs, you should explicitly enable the **Builds Emails** service under your
 project's settings.
 
 For more information read the
-[Builds emails service documentation](../../project_services/builds_emails.md).
+[Builds emails service documentation](../../user/project/integrations/builds_emails.md).
 
 ## Examples
 
 Visit the [examples README][examples] to see a list of examples using GitLab
 CI with various languages.
 
-Awesome! You started using CI in GitLab!
-
-[runner-install]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/tree/master#install-gitlab-runner
+[runner-install]: https://docs.gitlab.com/runner/install/
 [blog-ci]: https://about.gitlab.com/2015/05/06/why-were-replacing-gitlab-ci-jobs-with-gitlab-ci-dot-yml/
 [examples]: ../examples/README.md
 [ci]: https://about.gitlab.com/gitlab-ci/
@@ -235,3 +230,4 @@ Awesome! You started using CI in GitLab!
 [enabled]: ../enable_or_disable_ci.md
 [stages]: ../yaml/README.md#stages
 [pipeline]: ../pipelines.md
+[internet]: https://about.gitlab.com/images/theinternet.png

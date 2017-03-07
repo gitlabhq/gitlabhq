@@ -4,9 +4,9 @@ describe MergeRequestsFinder do
   let(:user)  { create :user }
   let(:user2) { create :user }
 
-  let(:project1) { create(:project) }
-  let(:project2) { create(:project, forked_from_project: project1) }
-  let(:project3) { create(:project, forked_from_project: project1, archived: true) }
+  let(:project1) { create(:empty_project) }
+  let(:project2) { create(:empty_project, forked_from_project: project1) }
+  let(:project3) { create(:empty_project, :archived, forked_from_project: project1) }
 
   let!(:merge_request1) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project1) }
   let!(:merge_request2) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project1, state: 'closed') }
@@ -37,6 +37,14 @@ describe MergeRequestsFinder do
       params = { non_archived: true }
       merge_requests = MergeRequestsFinder.new(user, params).execute
       expect(merge_requests.size).to eq(3)
+    end
+
+    it 'filters by iid' do
+      params = { project_id: project1.id, iids: merge_request1.iid }
+
+      merge_requests = MergeRequestsFinder.new(user, params).execute
+
+      expect(merge_requests).to contain_exactly(merge_request1)
     end
   end
 end

@@ -17,7 +17,7 @@ module Referable
   #   Issue.last.to_reference(other_project) # => "cross-project#1"
   #
   # Returns a String
-  def to_reference(_from_project = nil)
+  def to_reference(_from_project = nil, full:)
     ''
   end
 

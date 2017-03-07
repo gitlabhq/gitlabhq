@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, padded-blocks */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife */
 /* global CommitFile */
 
 (function() {
@@ -10,7 +10,5 @@
     }
 
     return Commit;
-
   })();
-
-}).call(this);
+}).call(window);

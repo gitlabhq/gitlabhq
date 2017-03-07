@@ -1,8 +1,9 @@
-%div.js-builds-dropdown-tests
-  %button.dropdown.js-builds-dropdown-button{'data-stage-endpoint' => 'foobar'}
+%div.js-builds-dropdown-tests.dropdown.dropdown.js-mini-pipeline-graph
+  %button.js-builds-dropdown-button{'data-stage-endpoint' => 'foobar', data: { toggle: 'dropdown'} }
     Dropdown
-  %div.js-builds-dropdown-container
-    %div.js-builds-dropdown-list
 
-    %div.js-builds-dropdown-loading.builds-dropdown-loading.hidden
+  %ul.dropdown-menu.mini-pipeline-graph-dropdown-menu.js-builds-dropdown-container
+    .js-builds-dropdown-list.scrollable-menu
+
+    .js-builds-dropdown-loading.builds-dropdown-loading.hidden
       %span.fa.fa-spinner.fa-spin

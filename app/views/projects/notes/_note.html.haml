@@ -9,9 +9,12 @@
         = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
     .timeline-content
       .note-header
-        = link_to_member(note.project, note.author, avatar: false)
-        .note-headline-light
+        %a.visible-xs{ href: user_path(note.author) }
           = note.author.to_reference
+        = link_to_member(note.project, note.author, avatar: false, extra_class: 'hidden-xs')
+        .note-headline-light
+          %span.hidden-xs
+            = note.author.to_reference
           - unless note.system
             commented
           - if note.system
@@ -23,12 +26,11 @@
           .note-actions
             - access = note_max_access_for_user(note)
             - if access
-              %span.note-role.hidden-xs= access
+              %span.note-role= access
 
             - if note.resolvable?
               - can_resolve = can?(current_user, :resolve_note, note)
-              %resolve-btn{ "project-path" => "#{project_path(note.project)}",
-                  "discussion-id" => "#{note.discussion_id}",
+              %resolve-btn{ "discussion-id" => "#{note.discussion_id}",
                   ":note-id" => note.id,
                   ":resolved" => note.resolved?,
                   ":can-resolve" => can_resolve,
@@ -59,7 +61,7 @@
               - if note_editable
                 = link_to '#', title: 'Edit comment', class: 'note-action-button js-note-edit' do
                   = icon('pencil', class: 'link-highlight')
-                = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button hidden-xs js-note-delete danger' do
+                = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button js-note-delete danger' do
                   = icon('trash-o', class: 'danger-highlight')
       .note-body{ class: note_editable ? 'js-task-list-container' : '' }
         .note-text.md
@@ -67,12 +69,15 @@
             = note.redacted_note_html
         = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
         - if note_editable
-          = render 'projects/notes/edit_form', note: note
+          .original-note-content.hidden{ data: { post_url: namespace_project_note_path(@project.namespace, @project, note), target_id: note.noteable.id, target_type: note.noteable.class.name.underscore } }
+            #{note.note}
+          %textarea.hidden.js-task-list-field.original-task-list{ data: {update_url: namespace_project_note_path(@project.namespace, @project, note) } }= note.note
         .note-awards
           = render 'award_emoji/awards_block', awardable: note, inline: false
         - if note.system
           .system-note-commit-list-toggler
             Toggle commit list
+            %i.fa.fa-angle-down
       - if note.attachment.url
         .note-attachment
           - if note.attachment.image?

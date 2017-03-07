@@ -3,7 +3,7 @@ module SlashCommandsHelpers
     Sidekiq::Testing.fake! do
       page.within('.js-main-target-form') do
         fill_in 'note[note]', with: text
-        click_button 'Comment'
+        find('.comment-btn').trigger('click')
       end
     end
   end

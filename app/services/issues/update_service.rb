@@ -1,7 +1,15 @@
 module Issues
   class UpdateService < Issues::BaseService
+    include SpamCheckService
+
     def execute(issue)
+      filter_spam_check_params
+
       update(issue)
+    end
+
+    def before_update(issue)
+      spam_check(issue, current_user)
     end
 
     def handle_changes(issue, old_labels: [], old_mentioned_users: [])

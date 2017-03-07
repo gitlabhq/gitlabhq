@@ -24,7 +24,7 @@ module Banzai
       end
 
       def call
-        return doc if project.nil?
+        return doc if project.nil? && !skip_project_check?
 
         ref_pattern = User.reference_pattern
         ref_pattern_start = /\A#{ref_pattern}\z/
@@ -58,7 +58,7 @@ module Banzai
       # have `gfm` and `gfm-project_member` class names attached for styling.
       def user_link_filter(text, link_content: nil)
         self.class.references_in(text) do |match, username|
-          if username == 'all'
+          if username == 'all' && !skip_project_check?
             link_to_all(link_content: link_content)
           elsif namespace = namespaces[username]
             link_to_namespace(namespace, link_content: link_content) || match
@@ -75,8 +75,8 @@ module Banzai
       # corresponding Namespace objects.
       def namespaces
         @namespaces ||=
-          Namespace.where(path: usernames).each_with_object({}) do |row, hash|
-            hash[row.path] = row
+          Namespace.where_full_path_in(usernames).each_with_object({}) do |row, hash|
+            hash[row.full_path] = row
           end
       end
 
@@ -122,7 +122,7 @@ module Banzai
 
       def link_to_namespace(namespace, link_content: nil)
         if namespace.is_a?(Group)
-          link_to_group(namespace.path, namespace, link_content: link_content)
+          link_to_group(namespace.full_path, namespace, link_content: link_content)
         else
           link_to_user(namespace.path, namespace, link_content: link_content)
         end
@@ -133,7 +133,7 @@ module Banzai
         data = data_attribute(group: namespace.id)
         content = link_content || Group.reference_prefix + group
 
-        link_tag(url, data, content, namespace.name)
+        link_tag(url, data, content, namespace.full_name)
       end
 
       def link_to_user(user, namespace, link_content: nil)

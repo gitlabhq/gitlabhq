@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var, quotes, no-else-return, object-shorthand, comma-dangle, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var, quotes, no-else-return, object-shorthand, comma-dangle, max-len */
 (function() {
   $(function() {
     var previewPath;
@@ -31,5 +31,4 @@
       }
     });
   });
-
-}).call(this);
+}).call(window);

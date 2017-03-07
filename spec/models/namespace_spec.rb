@@ -3,19 +3,46 @@ require 'spec_helper'
 describe Namespace, models: true do
   let!(:namespace) { create(:namespace) }
 
-  it { is_expected.to have_many :projects }
-  it { is_expected.to have_many :project_statistics }
+  describe 'associations' do
+    it { is_expected.to have_many :projects }
+    it { is_expected.to have_many :project_statistics }
+    it { is_expected.to belong_to :parent }
+    it { is_expected.to have_many :children }
+  end
 
-  it { is_expected.to validate_presence_of(:name) }
-  it { is_expected.to validate_uniqueness_of(:name).scoped_to(:parent_id) }
-  it { is_expected.to validate_length_of(:name).is_at_most(255) }
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:parent_id) }
+    it { is_expected.to validate_length_of(:name).is_at_most(255) }
+    it { is_expected.to validate_length_of(:description).is_at_most(255) }
+    it { is_expected.to validate_presence_of(:path) }
+    it { is_expected.to validate_length_of(:path).is_at_most(255) }
+    it { is_expected.to validate_presence_of(:owner) }
 
-  it { is_expected.to validate_length_of(:description).is_at_most(255) }
+    it 'does not allow too deep nesting' do
+      ancestors = (1..21).to_a
+      nested = build(:namespace, parent: namespace)
 
-  it { is_expected.to validate_presence_of(:path) }
-  it { is_expected.to validate_length_of(:path).is_at_most(255) }
+      allow(nested).to receive(:ancestors).and_return(ancestors)
 
-  it { is_expected.to validate_presence_of(:owner) }
+      expect(nested).not_to be_valid
+      expect(nested.errors[:parent_id].first).to eq('has too deep level of nesting')
+    end
+
+    describe 'reserved path validation' do
+      context 'nested group' do
+        let(:group) { build(:group, :nested, path: 'tree') }
+
+        it { expect(group).not_to be_valid }
+      end
+
+      context 'top-level group' do
+        let(:group) { build(:group, path: 'tree') }
+
+        it { expect(group).to be_valid }
+      end
+    end
+  end
 
   describe "Respond to" do
     it { is_expected.to respond_to(:human_name) }
@@ -23,7 +50,7 @@ describe Namespace, models: true do
   end
 
   describe '#to_param' do
-    it { expect(namespace.to_param).to eq(namespace.path) }
+    it { expect(namespace.to_param).to eq(namespace.full_path) }
   end
 
   describe '#human_name' do
@@ -105,7 +132,7 @@ describe Namespace, models: true do
   describe '#move_dir' do
     before do
       @namespace = create :namespace
-      @project = create :project, namespace: @namespace
+      @project = create(:empty_project, namespace: @namespace)
       allow(@namespace).to receive(:path_changed?).and_return(true)
     end
 
@@ -117,6 +144,7 @@ describe Namespace, models: true do
       new_path = @namespace.path + "_new"
       allow(@namespace).to receive(:path_was).and_return(@namespace.path)
       allow(@namespace).to receive(:path).and_return(new_path)
+      expect(@namespace).to receive(:remove_exports!)
       expect(@namespace.move_dir).to be_truthy
     end
 
@@ -136,13 +164,19 @@ describe Namespace, models: true do
   end
 
   describe :rm_dir do
-    let!(:project) { create(:project, namespace: namespace) }
-    let!(:path) { File.join(Gitlab.config.repositories.storages.default, namespace.path) }
-
-    before { namespace.destroy }
+    let!(:project) { create(:empty_project, namespace: namespace) }
+    let!(:path) { File.join(Gitlab.config.repositories.storages.default, namespace.full_path) }
 
     it "removes its dirs when deleted" do
+      namespace.destroy
+
       expect(File.exist?(path)).to be(false)
+    end
+
+    it 'removes the exports folder' do
+      expect(namespace).to receive(:remove_exports!)
+
+      namespace.destroy
     end
   end
 
@@ -166,33 +200,38 @@ describe Namespace, models: true do
     end
   end
 
-  describe '#full_path' do
-    let(:group) { create(:group) }
-    let(:nested_group) { create(:group, parent: group) }
-
-    it { expect(group.full_path).to eq(group.path) }
-    it { expect(nested_group.full_path).to eq("#{group.path}/#{nested_group.path}") }
-  end
-
-  describe '#full_name' do
-    let(:group) { create(:group) }
-    let(:nested_group) { create(:group, parent: group) }
-
-    it { expect(group.full_name).to eq(group.name) }
-    it { expect(nested_group.full_name).to eq("#{group.name} / #{nested_group.name}") }
-  end
-
-  describe '#parents' do
+  describe '#ancestors' do
     let(:group) { create(:group) }
     let(:nested_group) { create(:group, parent: group) }
     let(:deep_nested_group) { create(:group, parent: nested_group) }
     let(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
 
-    it 'returns the correct parents' do
-      expect(very_deep_nested_group.parents).to eq([group, nested_group, deep_nested_group])
-      expect(deep_nested_group.parents).to eq([group, nested_group])
-      expect(nested_group.parents).to eq([group])
-      expect(group.parents).to eq([])
+    it 'returns the correct ancestors' do
+      expect(very_deep_nested_group.ancestors).to eq([group, nested_group, deep_nested_group])
+      expect(deep_nested_group.ancestors).to eq([group, nested_group])
+      expect(nested_group.ancestors).to eq([group])
+      expect(group.ancestors).to eq([])
+    end
+  end
+
+  describe '#descendants' do
+    let!(:group) { create(:group) }
+    let!(:nested_group) { create(:group, parent: group) }
+    let!(:deep_nested_group) { create(:group, parent: nested_group) }
+    let!(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
+
+    it 'returns the correct descendants' do
+      expect(very_deep_nested_group.descendants.to_a).to eq([])
+      expect(deep_nested_group.descendants.to_a).to eq([very_deep_nested_group])
+      expect(nested_group.descendants.to_a).to eq([deep_nested_group, very_deep_nested_group])
+      expect(group.descendants.to_a).to eq([nested_group, deep_nested_group, very_deep_nested_group])
+    end
+  end
+
+  describe '#user_ids_for_project_authorizations' do
+    it 'returns the user IDs for which to refresh authorizations' do
+      expect(namespace.user_ids_for_project_authorizations).
+        to eq([namespace.owner_id])
     end
   end
 end

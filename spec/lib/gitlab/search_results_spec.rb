@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::SearchResults do
   let(:user) { create(:user) }
-  let!(:project) { create(:project, name: 'foo') }
+  let!(:project) { create(:empty_project, name: 'foo') }
   let!(:issue) { create(:issue, project: project, title: 'foo') }
 
   let!(:merge_request) do

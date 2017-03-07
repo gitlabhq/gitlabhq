@@ -10,6 +10,8 @@ class Member < ActiveRecord::Base
   belongs_to :user
   belongs_to :source, polymorphic: true
 
+  delegate :name, :username, :email, to: :user, prefix: true
+
   validates :user, presence: true, unless: :invite?
   validates :source, presence: true
   validates :user_id, uniqueness: { scope: [:source_type, :source_id],
@@ -47,6 +49,7 @@ class Member < ActiveRecord::Base
   scope :invite, -> { where.not(invite_token: nil) }
   scope :non_invite, -> { where(invite_token: nil) }
   scope :request, -> { where.not(requested_at: nil) }
+  scope :non_request, -> { where(requested_at: nil) }
 
   scope :has_access, -> { active.where('access_level > 0') }
 
@@ -68,11 +71,9 @@ class Member < ActiveRecord::Base
   after_create :send_request, if: :request?, unless: :importing?
   after_create :create_notification_setting, unless: [:pending?, :importing?]
   after_create :post_create_hook, unless: [:pending?, :importing?]
-  after_create :refresh_member_authorized_projects, if: :importing?
   after_update :post_update_hook, unless: [:pending?, :importing?]
   after_destroy :post_destroy_hook, unless: :pending?
-
-  delegate :name, :username, :email, to: :user, prefix: true
+  after_commit :refresh_member_authorized_projects
 
   default_value_for :notification_level, NotificationSetting.levels[:global]
 
@@ -146,8 +147,6 @@ class Member < ActiveRecord::Base
       else
         member.save
       end
-
-      UserProjectAccessChangedService.new(user.id).execute if user.is_a?(User)
 
       member
     end
@@ -275,23 +274,27 @@ class Member < ActiveRecord::Base
   end
 
   def post_create_hook
-    UserProjectAccessChangedService.new(user.id).execute
     system_hook_service.execute_hooks_for(self, :create)
   end
 
   def post_update_hook
-    UserProjectAccessChangedService.new(user.id).execute if access_level_changed?
+    # override in sub class
   end
 
   def post_destroy_hook
-    refresh_member_authorized_projects
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 
+  # Refreshes authorizations of the current member.
+  #
+  # This method schedules a job using Sidekiq and as such **must not** be called
+  # in a transaction. Doing so can lead to the job running before the
+  # transaction has been committed, resulting in the job either throwing an
+  # error or not doing any meaningful work.
   def refresh_member_authorized_projects
-    # If user/source is being destroyed, project access are gonna be destroyed eventually
-    # because of DB foreign keys, so we shouldn't bother with refreshing after each
-    # member is destroyed through association
+    # If user/source is being destroyed, project access are going to be
+    # destroyed eventually because of DB foreign keys, so we shouldn't bother
+    # with refreshing after each member is destroyed through association
     return if destroyed_by_association.present?
 
     UserProjectAccessChangedService.new(user_id).execute

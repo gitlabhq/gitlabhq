@@ -21,6 +21,10 @@ module Gitlab
         false
       end
 
+      def group_members_tree
+        @attributes_finder.find_included(:project_members).merge(include: @attributes_finder.find(:user))
+      end
+
       private
 
       # Builds a hash in the format described here: http://api.rubyonrails.org/classes/ActiveModel/Serializers/JSON.html

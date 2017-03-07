@@ -16,7 +16,8 @@ in a simple dashboard.
 
 You can quickly access the Todos dashboard using the bell icon next to the
 search bar in the upper right corner. The number in blue is the number of Todos
-you still have open.
+you still have open if the count is < 100, else it's 99+. The exact number
+will still be shown in the body of the _To do_ tab.
 
 ![Todos icon](img/todos_icon.png)
 
@@ -27,10 +28,33 @@ A Todo appears in your Todos dashboard when:
 - an issue or merge request is assigned to you,
 - you are `@mentioned` in an issue or merge request, be it the description of
   the issue/merge request or in a comment,
-- build in the CI pipeline running for your merge request failed, but this
-  build is not allowed to fail.
+- a job in the CI pipeline running for your merge request failed, but this
+  job is not allowed to fail.
 
 >**Note:** Commenting on a commit will _not_ trigger a Todo.
+
+### Directly addressed Todos
+
+> [Introduced][ce-7926] in GitLab 9.0.
+
+If you are mentioned at the start of a line, the todo you receive will be listed
+as 'directly addressed'. For instance, in this comment:
+
+```markdown
+@alice What do you think? cc: @bob
+
+- @carol can you please have a look?
+
+>>>
+@dan what do you think?
+>>>
+
+@erin @frank thank you!
+```
+
+The people receiving directly addressed todos are `@alice`, `@erin`, and
+`@frank`. Directly addressed todos only differ from mention todos in their type,
+for filtering; otherwise, they appear as normal.
 
 ### Manually creating a Todo
 
@@ -85,8 +109,9 @@ There are four kinds of filters you can use on your Todos dashboard.
 | Project | Filter by project |
 | Author  | Filter by the author that triggered the Todo |
 | Type    | Filter by issue or merge request |
-| Action  | Filter by the action that triggered the Todo (Assigned or Mentioned)|
+| Action  | Filter by the action that triggered the Todo |
 
 You can also filter by more than one of these at the same time.
 
 [ce-2817]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2817
+[ce-7926]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7926

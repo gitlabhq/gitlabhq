@@ -30,5 +30,9 @@ module ChatMessage
     def attachment_color
       '#345'
     end
+
+    def link(text, url)
+      "[#{text}](#{url})"
+    end
   end
 end

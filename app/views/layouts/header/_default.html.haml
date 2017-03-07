@@ -1,10 +1,16 @@
-%header.navbar.navbar-fixed-top.navbar-gitlab{ class: nav_header_class }
+%header.navbar.navbar-gitlab{ class: nav_header_class }
   %a.sr-only.gl-accessibility{ href: "#content-body", tabindex: "1" } Skip to content
   .container-fluid
     .header-content
-      %button.side-nav-toggle{ type: 'button', "aria-label" => "Toggle global navigation" }
-        %span.sr-only Toggle navigation
-        = icon('bars')
+      .dropdown.global-dropdown
+        %button.global-dropdown-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
+          %span.sr-only Toggle navigation
+          = icon('bars')
+        .dropdown-menu-nav.global-dropdown-menu
+          - if current_user
+            = render 'layouts/nav/dashboard'
+          - else
+            = render 'layouts/nav/explore'
       %button.navbar-toggle{ type: 'button' }
         %span.sr-only Toggle navigation
         = icon('ellipsis-v')
@@ -13,7 +19,7 @@
         %ul.nav.navbar-nav
           %li.hidden-sm.hidden-xs
             = render 'layouts/search' unless current_controller?(:search)
-          %li.visible-sm.visible-xs
+          %li.visible-sm-inline-block.visible-xs-inline-block
             = link_to search_path, title: 'Search', aria: { label: "Search" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
               = icon('search')
           - if current_user
@@ -29,7 +35,11 @@
               = link_to dashboard_todos_path, title: 'Todos', aria: { label: "Todos" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = icon('bell fw')
                 %span.badge.todos-pending-count{ class: ("hidden" if todos_pending_count == 0) }
-                  = todos_pending_count
+                  = todos_count_format(todos_pending_count)
+            - if current_user.can_create_project?
+              %li
+                = link_to new_project_path, title: 'New project', aria: { label: "New project" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                  = icon('plus fw')
             - if Gitlab::Sherlock.enabled?
               %li
                 = link_to sherlock_transactions_path, title: 'Sherlock Transactions',
@@ -44,9 +54,7 @@
                   %li
                     = link_to "Profile", current_user, class: 'profile-link', aria: { label: "Profile" }, data: { user: current_user.username }
                   %li
-                    = link_to "Profile Settings", profile_path, aria: { label: "Profile Settings" }
-                  %li
-                    = link_to "Help", help_path, aria: { label: "Help" }
+                    = link_to "Settings", profile_path, aria: { label: "Settings" }
                   %li.divider
                   %li
                     = link_to "Sign out", destroy_user_session_path, method: :delete, class: "sign-out-link", aria: { label: "Sign out" }
@@ -55,12 +63,11 @@
               %div
                 = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-success'
 
-
-      %h1.title= title
-
       .header-logo
         = link_to root_path, class: 'home', title: 'Dashboard', id: 'logo' do
           = brand_header_logo
+
+      %h1.title= title
 
       = yield :header_content
 

@@ -6,7 +6,7 @@
   %span.list-item-name
     = image_tag group_icon(group), class: "avatar s40", alt: ''
     %strong
-      = link_to group.name, group_path(group)
+      = link_to group.full_name, group_path(group)
     .cgray
       Joined #{time_ago_with_tooltip(group.created_at)}
       - if group_link.expires?
@@ -37,7 +37,6 @@
         %i.clear-icon.js-clear-input
     - if can_admin_member
       = link_to namespace_project_group_link_path(@project.namespace, @project, group_link),
-        remote: true,
         method: :delete,
         data: { confirm: "Are you sure you want to remove #{group.name}?" },
         class: 'btn btn-remove prepend-left-10' do

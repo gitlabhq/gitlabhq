@@ -29,7 +29,7 @@ namespace :gitlab do
             next
           end
 
-          project = Project.find_with_namespace(path)
+          project = Project.find_by_full_path(path)
 
           if project
             puts " * #{project.name} (#{repo_path}) exists"
@@ -46,7 +46,7 @@ namespace :gitlab do
               group = Namespace.find_by(path: group_name)
               # create group namespace
               unless group
-                group = Group.new(:name => group_name)
+                group = Group.new(name: group_name)
                 group.path = group_name
                 group.owner = user
                 if group.save
@@ -63,7 +63,7 @@ namespace :gitlab do
 
             if project.persisted?
               puts " * Created #{project.name} (#{repo_path})".color(:green)
-              ProjectCacheWorker.perform(project.id)
+              ProjectCacheWorker.perform_async(project.id)
             else
               puts " * Failed trying to create #{project.name} (#{repo_path})".color(:red)
               puts "   Errors: #{project.errors.messages}".color(:red)

@@ -51,7 +51,7 @@
       margin-bottom: -1px;
       font-size: 14px;
       line-height: 28px;
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
       border-bottom: 2px solid transparent;
 
       &:hover,
@@ -101,7 +101,7 @@
         &:hover,
         &:active,
         &:focus {
-          border-bottom: none;
+          border-color: transparent;
         }
       }
     }
@@ -283,10 +283,7 @@
 }
 
 .layout-nav {
-  position: fixed;
-  top: $header-height;
   width: 100%;
-  z-index: 11;
   background: $gray-light;
   border-bottom: 1px solid $border-color;
   transition: padding $sidebar-transition-duration;
@@ -294,15 +291,17 @@
 
   .container-fluid {
     position: relative;
+
+    .nav-control {
+      @media (max-width: $screen-sm-max) {
+        margin-right: 75px;
+      }
+    }
   }
 
   .controls {
     float: right;
     padding: 7px 0 0;
-
-    @media (max-width: $screen-sm-max) {
-      display: none;
-    }
 
     i {
       color: $layout-link-gray;
@@ -315,7 +314,7 @@
 
     .fa-caret-down {
       margin-left: 5px;
-      color: $gl-gray-light;
+      color: $gl-text-color-secondary;
     }
 
     .dropdown {
@@ -361,6 +360,7 @@
   .fade-left {
     @include fade(right, $gray-light);
     left: -5px;
+    text-align: center;
 
     .fa {
       left: -7px;
@@ -416,15 +416,20 @@
 }
 
 .page-with-layout-nav {
-  margin-top: $header-height + 2;
-
   .right-sidebar {
     top: ($header-height * 2) + 2;
+  }
+
+  .build-sidebar {
+    top: ($header-height * 3) + 3;
+
+    &.affix {
+      top: 0;
+    }
   }
 }
 
 .activities {
-
   .nav-block {
     border-bottom: 1px solid $border-color;
 

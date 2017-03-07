@@ -5,28 +5,27 @@ module API
     before { authenticate! }
 
     helpers do
-      def filter_issues_state(issues, state)
-        case state
-        when 'opened' then issues.opened
-        when 'closed' then issues.closed
-        else issues
-        end
-      end
+      def find_issues(args = {})
+        args = params.merge(args)
 
-      def filter_issues_labels(issues, labels)
-        issues.includes(:labels).where('labels.title' => labels.split(','))
-      end
+        args.delete(:id)
+        args[:milestone_title] = args.delete(:milestone)
+        args[:label_name] = args.delete(:labels)
 
-      def filter_issues_milestone(issues, milestone)
-        issues.includes(:milestone).where('milestones.title' => milestone)
+        issues = IssuesFinder.new(current_user, args).execute
+
+        issues.reorder(args[:order_by] => args[:sort])
       end
 
       params :issues_params do
         optional :labels, type: String, desc: 'Comma-separated list of label names'
+        optional :milestone, type: String, desc: 'Milestone title'
         optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
                             desc: 'Return issues ordered by `created_at` or `updated_at` fields.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return issues sorted in `asc` or `desc` order.'
+        optional :milestone, type: String, desc: 'Return issues for a specific milestone'
+        optional :iids, type: Array[Integer], desc: 'The IID array of issues'
         use :pagination
       end
 
@@ -42,7 +41,7 @@ module API
 
     resource :issues do
       desc "Get currently authenticated user's issues" do
-        success Entities::Issue
+        success Entities::IssueBasic
       end
       params do
         optional :state, type: String, values: %w[opened closed all], default: 'all',
@@ -50,12 +49,9 @@ module API
         use :issues_params
       end
       get do
-        issues = current_user.issues.inc_notes_with_associations
-        issues = filter_issues_state(issues, params[:state])
-        issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
-        issues = issues.reorder(params[:order_by] => params[:sort])
+        issues = find_issues(scope: 'authored')
 
-        present paginate(issues), with: Entities::Issue, current_user: current_user
+        present paginate(issues), with: Entities::IssueBasic, current_user: current_user
       end
     end
 
@@ -64,7 +60,7 @@ module API
     end
     resource :groups do
       desc 'Get a list of group issues' do
-        success Entities::Issue
+        success Entities::IssueBasic
       end
       params do
         optional :state, type: String, values: %w[opened closed all], default: 'opened',
@@ -72,16 +68,11 @@ module API
         use :issues_params
       end
       get ":id/issues" do
-        group = find_group!(params.delete(:id))
+        group = find_group!(params[:id])
 
-        params[:group_id] = group.id
-        params[:milestone_title] = params.delete(:milestone)
-        params[:label_name] = params.delete(:labels)
+        issues = find_issues(group_id: group.id, state: params[:state] || 'opened')
 
-        issues = IssuesFinder.new(current_user, params).execute
-
-        issues = issues.reorder(params[:order_by] => params[:sort])
-        present paginate(issues), with: Entities::Issue, current_user: current_user
+        present paginate(issues), with: Entities::IssueBasic, current_user: current_user
       end
     end
 
@@ -89,37 +80,32 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
     end
     resource :projects do
+      include TimeTrackingEndpoints
+
       desc 'Get a list of project issues' do
-        success Entities::Issue
+        success Entities::IssueBasic
       end
       params do
         optional :state, type: String, values: %w[opened closed all], default: 'all',
                          desc: 'Return opened, closed, or all issues'
-        optional :iid, type: Integer, desc: 'The IID of the issue'
         use :issues_params
       end
       get ":id/issues" do
-        issues = IssuesFinder.new(current_user, project_id: user_project.id).execute.inc_notes_with_associations
-        issues = filter_issues_state(issues, params[:state])
-        issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
-        issues = filter_by_iid(issues, params[:iid]) unless params[:iid].nil?
+        project = find_project(params[:id])
 
-        unless params[:milestone].nil?
-          issues = filter_issues_milestone(issues, params[:milestone])
-        end
+        issues = find_issues(project_id: project.id)
 
-        issues = issues.reorder(params[:order_by] => params[:sort])
-        present paginate(issues), with: Entities::Issue, current_user: current_user, project: user_project
+        present paginate(issues), with: Entities::IssueBasic, current_user: current_user, project: user_project
       end
 
       desc 'Get a single project issue' do
         success Entities::Issue
       end
       params do
-        requires :issue_id, type: Integer, desc: 'The ID of a project issue'
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
-      get ":id/issues/:issue_id" do
-        issue = find_project_issue(params[:issue_id])
+      get ":id/issues/:issue_iid" do
+        issue = find_project_issue(params[:issue_iid])
         present issue, with: Entities::Issue, current_user: current_user, project: user_project
       end
 
@@ -166,7 +152,7 @@ module API
         success Entities::Issue
       end
       params do
-        requires :issue_id, type: Integer, desc: 'The ID of a project issue'
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
         optional :title, type: String, desc: 'The title of an issue'
         optional :updated_at, type: DateTime,
                               desc: 'Date time when the issue was updated. Available only for admins and project owners.'
@@ -175,8 +161,8 @@ module API
         at_least_one_of :title, :description, :assignee_id, :milestone_id,
                         :labels, :created_at, :due_date, :confidential, :state_event
       end
-      put ':id/issues/:issue_id' do
-        issue = user_project.issues.find(params.delete(:issue_id))
+      put ':id/issues/:issue_iid' do
+        issue = user_project.issues.find_by!(iid: params.delete(:issue_iid))
         authorize! :update_issue, issue
 
         # Setting created_at time only allowed for admins and project owners
@@ -184,9 +170,13 @@ module API
           params.delete(:updated_at)
         end
 
+        update_params = declared_params(include_missing: false).merge(request: request, api: true)
+
         issue = ::Issues::UpdateService.new(user_project,
                                             current_user,
-                                            declared_params(include_missing: false)).execute(issue)
+                                            update_params).execute(issue)
+
+        render_spam_error! if issue.spam?
 
         if issue.valid?
           present issue, with: Entities::Issue, current_user: current_user, project: user_project
@@ -199,11 +189,11 @@ module API
         success Entities::Issue
       end
       params do
-        requires :issue_id, type: Integer, desc: 'The ID of a project issue'
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
         requires :to_project_id, type: Integer, desc: 'The ID of the new project'
       end
-      post ':id/issues/:issue_id/move' do
-        issue = user_project.issues.find_by(id: params[:issue_id])
+      post ':id/issues/:issue_iid/move' do
+        issue = user_project.issues.find_by(iid: params[:issue_iid])
         not_found!('Issue') unless issue
 
         new_project = Project.find_by(id: params[:to_project_id])
@@ -219,10 +209,10 @@ module API
 
       desc 'Delete a project issue'
       params do
-        requires :issue_id, type: Integer, desc: 'The ID of a project issue'
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
-      delete ":id/issues/:issue_id" do
-        issue = user_project.issues.find_by(id: params[:issue_id])
+      delete ":id/issues/:issue_iid" do
+        issue = user_project.issues.find_by(iid: params[:issue_iid])
         not_found!('Issue') unless issue
 
         authorize!(:destroy_issue, issue)

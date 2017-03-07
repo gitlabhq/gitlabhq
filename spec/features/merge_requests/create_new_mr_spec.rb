@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Create New Merge Request', feature: true, js: true do
+  include WaitForVueResource
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
 
@@ -83,5 +85,26 @@ feature 'Create New Merge Request', feature: true, js: true do
     visit new_namespace_project_merge_request_path(project.namespace, project)
     expect(page).not_to have_selector('#error_explanation')
     expect(page).not_to have_content('The form contains the following error')
+  end
+
+  context 'when a new merge request has a pipeline' do
+    let!(:pipeline) do
+      create(:ci_pipeline, sha: project.commit('fix').id,
+                           ref: 'fix',
+                           project: project)
+    end
+
+    it 'shows pipelines for a new merge request' do
+      visit new_namespace_project_merge_request_path(
+        project.namespace, project,
+        merge_request: { target_branch: 'master', source_branch: 'fix' })
+
+      page.within('.merge-request') do
+        click_link 'Pipelines'
+        wait_for_vue_resource
+
+        expect(page).to have_content "##{pipeline.id}"
+      end
+    end
   end
 end

@@ -2,7 +2,7 @@ class ReactiveCachingWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
 
-  def perform(class_name, id)
+  def perform(class_name, id, *args)
     klass = begin
       Kernel.const_get(class_name)
     rescue NameError
@@ -10,6 +10,6 @@ class ReactiveCachingWorker
     end
     return unless klass
 
-    klass.find_by(id: id).try(:exclusively_update_reactive_cache!)
+    klass.find_by(id: id).try(:exclusively_update_reactive_cache!, *args)
   end
 end

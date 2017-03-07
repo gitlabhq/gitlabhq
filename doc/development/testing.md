@@ -31,9 +31,8 @@ GitLab uses [factory_girl] as a test fixture replacement.
 
 ## JavaScript
 
-GitLab uses [Teaspoon] to run its [Jasmine] JavaScript specs. They can be run on
-the command line via `bundle exec teaspoon`, or via a web browser at
-`http://localhost:3000/teaspoon` when the Rails server is running.
+GitLab uses [Karma] to run its [Jasmine] JavaScript specs. They can be run on
+the command line via `bundle exec karma`.
 
 - JavaScript tests live in `spec/javascripts/`, matching the folder structure of
   `app/assets/javascripts/`: `app/assets/javascripts/behaviors/autosize.js.es6` has a corresponding
@@ -51,7 +50,7 @@ the command line via `bundle exec teaspoon`, or via a web browser at
   [`Notification`](https://developer.mozilla.org/en-US/docs/Web/API/notification),
   which will have to be stubbed.
 
-[Teaspoon]: https://github.com/modeset/teaspoon
+[Karma]: https://github.com/karma-runner/karma
 [Jasmine]: https://github.com/jasmine/jasmine
 
 ## RSpec
@@ -96,6 +95,25 @@ so we need to set some guidelines for their use going forward:
 
 [lets-not]: https://robots.thoughtbot.com/lets-not
 
+### Time-sensitive tests
+
+[Timecop](https://github.com/travisjeffery/timecop) is available in our
+Ruby-based tests for verifying things that are time-sensitive. Any test that
+exercises or verifies something time-sensitive should make use of Timecop to
+prevent transient test failures.
+
+Example:
+
+```ruby
+it 'is overdue' do
+  issue = build(:issue, due_date: Date.tomorrow)
+
+  Timecop.freeze(3.days.from_now) do
+    expect(issue).to be_overdue
+  end
+end
+```
+
 ### Test speed
 
 GitLab has a massive test suite that, without parallelization, can take more
@@ -116,12 +134,20 @@ Here are some things to keep in mind regarding test performance:
 
 ### Features / Integration
 
+GitLab uses [rspec-rails feature specs] to test features in a browser
+environment. These are [capybara] specs running on the headless [poltergeist]
+driver.
+
 - Feature specs live in `spec/features/` and should be named
   `ROLE_ACTION_spec.rb`, such as `user_changes_password_spec.rb`.
 - Use only one `feature` block per feature spec file.
 - Use scenario titles that describe the success and failure paths.
 - Avoid scenario titles that add no information, such as "successfully."
 - Avoid scenario titles that repeat the feature title.
+
+[rspec-rails feature specs]: https://github.com/rspec/rspec-rails#feature-specs
+[capybara]: https://github.com/teamcapybara/capybara
+[poltergeist]: https://github.com/teampoltergeist/poltergeist
 
 ## Spinach (feature) tests
 

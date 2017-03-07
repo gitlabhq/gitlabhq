@@ -19,7 +19,7 @@ Easing specifies the rate of change of a parameter over time (see [easings.net](
 
 ### Hover
 
-Interactive elements (links, buttons, etc.) should have a hover state. A subtle animation for this transition adds a polished feel. We should target a `200ms linear` transition for a color hover effect.
+Interactive elements (links, buttons, etc.) should have a hover state. A subtle animation for this transition adds a polished feel. We should target a `100ms - 150ms linear` transition for a color hover effect.
 
 View the [interactive example](http://codepen.io/awhildy/full/GNyEvM/) here.
 

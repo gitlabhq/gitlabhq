@@ -73,7 +73,7 @@ In all of the below cases, the notification will be sent to:
 
     ...with notification level "Participating" or higher
 
-- Watchers: users with notification level "Watch"
+- Watchers: users with notification level "Watch" (however successful pipeline would be off for watchers)
 - Subscribers: anyone who manually subscribed to the issue/merge request
 - Custom: Users with notification level "custom" who turned on notifications for any of the events present in the table below
 

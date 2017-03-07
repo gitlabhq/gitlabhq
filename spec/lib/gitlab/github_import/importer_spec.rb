@@ -44,6 +44,7 @@ describe Gitlab::GithubImport::Importer, lib: true do
       allow_any_instance_of(Octokit::Client).to receive(:rate_limit!).and_raise(Octokit::NotFound)
       allow_any_instance_of(Gitlab::Shell).to receive(:import_repository).and_raise(Gitlab::Shell::Error)
 
+      allow_any_instance_of(Octokit::Client).to receive(:user).and_return(octocat)
       allow_any_instance_of(Octokit::Client).to receive(:labels).and_return([label1, label2])
       allow_any_instance_of(Octokit::Client).to receive(:milestones).and_return([milestone, milestone])
       allow_any_instance_of(Octokit::Client).to receive(:issues).and_return([issue1, issue2])
@@ -53,7 +54,8 @@ describe Gitlab::GithubImport::Importer, lib: true do
       allow_any_instance_of(Octokit::Client).to receive(:last_response).and_return(double(rels: { next: nil }))
       allow_any_instance_of(Octokit::Client).to receive(:releases).and_return([release1, release2])
     end
-    let(:octocat) { double(id: 123456, login: 'octocat') }
+
+    let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
     let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
     let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
     let(:label1) do
@@ -125,6 +127,7 @@ describe Gitlab::GithubImport::Importer, lib: true do
       )
     end
 
+    let!(:user) { create(:user, email: octocat.email) }
     let(:repository) { double(id: 1, fork: false) }
     let(:source_sha) { create(:commit, project: project).id }
     let(:source_branch) { double(ref: 'feature', repo: repository, sha: source_sha) }
@@ -202,7 +205,7 @@ describe Gitlab::GithubImport::Importer, lib: true do
     end
   end
 
-  let(:project) { create(:project, import_url: "#{repo_root}/octocat/Hello-World.git", wiki_access_level: ProjectFeature::DISABLED) }
+  let(:project) { create(:project, :wiki_disabled, import_url: "#{repo_root}/octocat/Hello-World.git") }
   let(:credentials) { { user: 'joe' } }
 
   context 'when importing a GitHub project' do

@@ -14,6 +14,9 @@ resource :dashboard, controller: 'dashboard', only: [] do
       collection do
         delete :destroy_all
       end
+      member do
+        patch :restore
+      end
     end
 
     resources :projects, only: [:index] do

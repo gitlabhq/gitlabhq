@@ -1,6 +1,7 @@
 module API
-  # Labels API
   class Labels < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     params do
@@ -10,8 +11,11 @@ module API
       desc 'Get all labels of the project' do
         success Entities::Label
       end
+      params do
+        use :pagination
+      end
       get ':id/labels' do
-        present available_labels, with: Entities::Label, current_user: current_user, project: user_project
+        present paginate(available_labels), with: Entities::Label, current_user: current_user, project: user_project
       end
 
       desc 'Create a new label' do
@@ -52,7 +56,7 @@ module API
         label = user_project.labels.find_by(title: params[:name])
         not_found!('Label') unless label
 
-        present label.destroy, with: Entities::Label, current_user: current_user, project: user_project
+        label.destroy
       end
 
       desc 'Update an existing label. At least one optional parameter is required.' do

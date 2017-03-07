@@ -182,3 +182,96 @@ span.idiff {
     border-bottom-right-radius: 2px;
   }
 }
+
+.file-stats {
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 10px 0;
+
+    li {
+      padding: 3px 0;
+      line-height: 20px;
+    }
+  }
+
+  .new-file {
+    a {
+      color: $gl-text-green;
+    }
+  }
+
+  .renamed-file {
+    a {
+      color: $gl-text-orange;
+    }
+  }
+
+  .deleted-file {
+    a {
+      color: $gl-text-red;
+    }
+  }
+
+  .edit-file {
+    a {
+      color: $gl-text-color;
+    }
+  }
+
+  a {
+    text-decoration: none;
+
+    .new-file {
+      color: $notify-new-file;
+    }
+
+    .deleted-file {
+      color: $notify-deleted-file;
+    }
+  }
+}
+
+.file-title-flex-parent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: $gray-light;
+  border-bottom: 1px solid $border-color;
+  padding: 5px $gl-padding;
+  margin: 0;
+  border-radius: 3px 3px 0 0;
+
+  .file-header-content {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 30px;
+    position: relative;
+  }
+
+  .btn-clipboard {
+    position: absolute;
+    right: 0;
+  }
+
+  a {
+    color: $gl-text-color;
+  }
+
+  small {
+    margin: 0 10px 0 0;
+  }
+
+  .file-actions {
+    white-space: nowrap;
+
+    .btn {
+      padding: 0 10px;
+      font-size: 13px;
+      line-height: 28px;
+      display: inline-block;
+      float: none;
+    }
+  }
+}

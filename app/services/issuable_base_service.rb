@@ -36,6 +36,14 @@ class IssuableBaseService < BaseService
     end
   end
 
+  def create_time_estimate_note(issuable)
+    SystemNoteService.change_time_estimate(issuable, issuable.project, current_user)
+  end
+
+  def create_time_spent_note(issuable)
+    SystemNoteService.change_time_spent(issuable, issuable.project, current_user)
+  end
+
   def filter_params(issuable)
     ability_name = :"admin_#{issuable.to_ability_name}"
 
@@ -183,20 +191,19 @@ class IssuableBaseService < BaseService
     # To be overridden by subclasses
   end
 
-  def after_update(issuable)
+  def before_update(issuable)
     # To be overridden by subclasses
   end
 
-  def update_issuable(issuable, attributes)
-    issuable.with_transaction_returning_status do
-      issuable.update(attributes.merge(updated_by: current_user))
-    end
+  def after_update(issuable)
+    # To be overridden by subclasses
   end
 
   def update(issuable)
     change_state(issuable)
     change_subscription(issuable)
     change_todo(issuable)
+    toggle_award(issuable)
     filter_params(issuable)
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
@@ -204,16 +211,22 @@ class IssuableBaseService < BaseService
     label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
     params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
 
-    if params.present? && update_issuable(issuable, params)
-      # We do not touch as it will affect a update on updated_at field
-      ActiveRecord::Base.no_touching do
-        handle_common_system_notes(issuable, old_labels: old_labels)
-      end
+    if params.present?
+      issuable.assign_attributes(params.merge(updated_by: current_user))
 
-      handle_changes(issuable, old_labels: old_labels, old_mentioned_users: old_mentioned_users)
-      after_update(issuable)
-      issuable.create_new_cross_references!(current_user)
-      execute_hooks(issuable, 'update')
+      before_update(issuable)
+
+      if issuable.with_transaction_returning_status { issuable.save }
+        # We do not touch as it will affect a update on updated_at field
+        ActiveRecord::Base.no_touching do
+          handle_common_system_notes(issuable, old_labels: old_labels)
+        end
+
+        handle_changes(issuable, old_labels: old_labels, old_mentioned_users: old_mentioned_users)
+        after_update(issuable)
+        issuable.create_new_cross_references!(current_user)
+        execute_hooks(issuable, 'update')
+      end
     end
 
     issuable
@@ -251,6 +264,14 @@ class IssuableBaseService < BaseService
     end
   end
 
+  def toggle_award(issuable)
+    award = params.delete(:emoji_award)
+    if award
+      todo_service.new_award_emoji(issuable, current_user)
+      issuable.toggle_award_emoji(award, current_user)
+    end
+  end
+
   def has_changes?(issuable, old_labels: [])
     valid_attrs = [:title, :description, :assignee_id, :milestone_id, :target_branch]
 
@@ -270,6 +291,14 @@ class IssuableBaseService < BaseService
 
     if issuable.previous_changes.include?('description') && issuable.tasks?
       create_task_status_note(issuable)
+    end
+
+    if issuable.previous_changes.include?('time_estimate')
+      create_time_estimate_note(issuable)
+    end
+
+    if issuable.time_spent?
+      create_time_spent_note(issuable)
     end
 
     create_labels_note(issuable, old_labels) if issuable.labels != old_labels

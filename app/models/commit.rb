@@ -21,10 +21,13 @@ class Commit
   DIFF_HARD_LIMIT_FILES = 1000
   DIFF_HARD_LIMIT_LINES = 50000
 
+  # The SHA can be between 7 and 40 hex characters.
+  COMMIT_SHA_PATTERN = '\h{7,40}'.freeze
+
   class << self
     def decorate(commits, project)
       commits.map do |commit|
-        if commit.kind_of?(Commit)
+        if commit.is_a?(Commit)
           commit
         else
           self.new(commit, project)
@@ -52,6 +55,10 @@ class Commit
     def from_hash(hash, project)
       new(Gitlab::Git::Commit.new(hash), project)
     end
+
+    def valid_hash?(key)
+      !!(/\A#{COMMIT_SHA_PATTERN}\z/ =~ key)
+    end
   end
 
   attr_accessor :raw
@@ -77,8 +84,6 @@ class Commit
 
   # Pattern used to extract commit references from text
   #
-  # The SHA can be between 7 and 40 hex characters.
-  #
   # This pattern supports cross-project references.
   def self.reference_pattern
     @reference_pattern ||= %r{
@@ -88,19 +93,19 @@ class Commit
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("commit", /(?<commit>\h{7,40})/)
+    @link_reference_pattern ||= super("commit", /(?<commit>#{COMMIT_SHA_PATTERN})/)
   end
 
-  def to_reference(from_project = nil)
-    commit_reference(from_project, id)
+  def to_reference(from_project = nil, full: false)
+    commit_reference(from_project, id, full: full)
   end
 
-  def reference_link_text(from_project = nil)
-    commit_reference(from_project, short_id)
+  def reference_link_text(from_project = nil, full: false)
+    commit_reference(from_project, short_id, full: full)
   end
 
   def diff_line_count
-    @diff_line_count ||= Commit::diff_line_count(raw_diffs)
+    @diff_line_count ||= Commit.diff_line_count(raw_diffs)
     @diff_line_count
   end
 
@@ -117,11 +122,12 @@ class Commit
   def full_title
     return @full_title if @full_title
 
-    if safe_message.blank?
-      @full_title = no_commit_message
-    else
-      @full_title = safe_message.split("\n", 2).first
-    end
+    @full_title =
+      if safe_message.blank?
+        no_commit_message
+      else
+        safe_message.split("\n", 2).first
+      end
   end
 
   # Returns the commits description
@@ -318,10 +324,24 @@ class Commit
     Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
   end
 
+  def persisted?
+    true
+  end
+
+  def touch
+    # no-op but needs to be defined since #persisted? is defined
+  end
+
+  WIP_REGEX = /\A\s*(((?i)(\[WIP\]|WIP:|WIP)\s|WIP$))|(fixup!|squash!)\s/.freeze
+
+  def work_in_progress?
+    !!(title =~ WIP_REGEX)
+  end
+
   private
 
-  def commit_reference(from_project, referable_commit_id)
-    reference = project.to_reference(from_project)
+  def commit_reference(from_project, referable_commit_id, full: false)
+    reference = project.to_reference(from_project, full: full)
 
     if reference.present?
       "#{reference}#{self.class.reference_prefix}#{referable_commit_id}"

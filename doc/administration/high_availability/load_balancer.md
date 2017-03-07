@@ -66,4 +66,4 @@ Read more on high-availability configuration:
       configure custom domains with custom SSL, which would not be possible
       if SSL was terminated at the load balancer.
 
-[gitlab-pages]: http://docs.gitlab.com/ee/pages/administration.html
+[gitlab-pages]: ../pages/index.md

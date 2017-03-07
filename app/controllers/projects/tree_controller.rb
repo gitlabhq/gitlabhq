@@ -15,10 +15,10 @@ class Projects::TreeController < Projects::ApplicationController
 
     if tree.entries.empty?
       if @repository.blob_at(@commit.id, @path)
-        redirect_to(
+        return redirect_to(
           namespace_project_blob_path(@project.namespace, @project,
                                       File.join(@ref, @path))
-        ) and return
+        )
       elsif @path.present?
         return render_404
       end

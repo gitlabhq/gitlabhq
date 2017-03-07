@@ -14,6 +14,11 @@
 >    raketask.
 >  - The exports are stored in a temporary [shared directory][tmp] and are deleted
 >    every 24 hours by a specific worker.
+>  - Group members will get exported as project members, as long as the user has
+>    master or admin access to the group where the exported project lives. An admin
+>    in the import side is required to map the users, based on email or username.
+>    Otherwise, a supplementary comment is left to mention the original author and
+>    the MRs, notes or issues will be owned by the importer.
 
 Existing projects running on any GitLab instance or GitLab.com can be exported
 with all their related data and be moved into a new GitLab instance.
@@ -22,7 +27,8 @@ with all their related data and be moved into a new GitLab instance.
 
 | GitLab version | Import/Export version |
 | -------- | -------- |
-| 8.13.0 to current  | 0.1.5    |
+| 8.17.0 to current  | 0.1.6    |
+| 8.13.0   | 0.1.5    |
 | 8.12.0   | 0.1.4    |
 | 8.10.3   | 0.1.3    |
 | 8.10.0   | 0.1.2    |
@@ -47,6 +53,9 @@ The following items will NOT be exported:
 
 - Build traces and artifacts
 - LFS objects
+- Container registry images
+- CI variables
+- Any encrypted tokens
 
 ## Exporting a project and its data
 

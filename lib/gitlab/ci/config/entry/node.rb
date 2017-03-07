@@ -6,7 +6,7 @@ module Gitlab
         # Base abstract class for each configuration entry node.
         #
         class Node
-          class InvalidError < StandardError; end
+          InvalidError = Class.new(StandardError)
 
           attr_reader :config, :metadata
           attr_accessor :key, :parent, :description
@@ -68,6 +68,12 @@ module Gitlab
 
           def relevant?
             true
+          end
+
+          def inspect
+            val = leaf? ? config : descendants
+            unspecified = specified? ? '' : '(unspecified) '
+            "#<#{self.class.name} #{unspecified}{#{key}: #{val.inspect}}>"
           end
 
           def self.default

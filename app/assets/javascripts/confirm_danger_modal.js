@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, camelcase, one-var-declaration-per-line, no-else-return, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, camelcase, one-var-declaration-per-line, no-else-return, max-len */
 (function() {
   this.ConfirmDangerModal = (function() {
     function ConfirmDangerModal(form, text) {
@@ -27,7 +27,5 @@
     }
 
     return ConfirmDangerModal;
-
   })();
-
-}).call(this);
+}).call(window);

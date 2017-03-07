@@ -5,7 +5,7 @@ class ApplicationSetting < ActiveRecord::Base
   add_authentication_token_field :runners_registration_token
   add_authentication_token_field :health_check_access_token
 
-  CACHE_KEY = 'application_setting.last'
+  CACHE_KEY = 'application_setting.last'.freeze
   DOMAIN_LIST_SEPARATOR = %r{\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
                             |               # or
                             \s              # any whitespace character
@@ -64,13 +64,33 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             if: :akismet_enabled
 
+  validates :unique_ips_limit_per_user,
+            numericality: { greater_than_or_equal_to: 1 },
+            presence: true,
+            if: :unique_ips_limit_enabled
+
+  validates :unique_ips_limit_time_window,
+            numericality: { greater_than_or_equal_to: 0 },
+            presence: true,
+            if: :unique_ips_limit_enabled
+
   validates :koding_url,
             presence: true,
             if: :koding_enabled
 
+  validates :plantuml_url,
+            presence: true,
+            if: :plantuml_enabled
+
   validates :max_attachment_size,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
+
+  validates :max_artifacts_size,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
+  validates :default_artifacts_expire_in, presence: true, duration: true
 
   validates :container_registry_token_expire_delay,
             presence: true,
@@ -107,32 +127,30 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: :housekeeping_full_repack_period }
 
+  validates :terminal_max_session_time,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates_each :restricted_visibility_levels do |record, attr, value|
-    unless value.nil?
-      value.each do |level|
-        unless Gitlab::VisibilityLevel.options.has_value?(level)
-          record.errors.add(attr, "'#{level}' is not a valid visibility level")
-        end
+    value&.each do |level|
+      unless Gitlab::VisibilityLevel.options.has_value?(level)
+        record.errors.add(attr, "'#{level}' is not a valid visibility level")
       end
     end
   end
 
   validates_each :import_sources do |record, attr, value|
-    unless value.nil?
-      value.each do |source|
-        unless Gitlab::ImportSources.options.has_value?(source)
-          record.errors.add(attr, "'#{source}' is not a import source")
-        end
+    value&.each do |source|
+      unless Gitlab::ImportSources.options.has_value?(source)
+        record.errors.add(attr, "'#{source}' is not a import source")
       end
     end
   end
 
   validates_each :disabled_oauth_sign_in_sources do |record, attr, value|
-    unless value.nil?
-      value.each do |source|
-        unless Devise.omniauth_providers.include?(source.to_sym)
-          record.errors.add(attr, "'#{source}' is not an OAuth sign-in source")
-        end
+    value&.each do |source|
+      unless Devise.omniauth_providers.include?(source.to_sym)
+        record.errors.add(attr, "'#{source}' is not an OAuth sign-in source")
       end
     end
   end
@@ -152,51 +170,78 @@ class ApplicationSetting < ActiveRecord::Base
 
   def self.expire
     Rails.cache.delete(CACHE_KEY)
+  rescue
+    # Gracefully handle when Redis is not available. For example,
+    # omnibus may fail here during gitlab:assets:compile.
   end
 
   def self.cached
     Rails.cache.fetch(CACHE_KEY)
   end
 
-  def self.create_from_defaults
-    create(
-      default_projects_limit: Settings.gitlab['default_projects_limit'],
-      default_branch_protection: Settings.gitlab['default_branch_protection'],
-      signup_enabled: Settings.gitlab['signup_enabled'],
-      signin_enabled: Settings.gitlab['signin_enabled'],
-      gravatar_enabled: Settings.gravatar['enabled'],
-      sign_in_text: nil,
+  def self.defaults_ce
+    {
       after_sign_up_text: nil,
-      help_page_text: nil,
-      shared_runners_text: nil,
-      restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
-      max_attachment_size: Settings.gitlab['max_attachment_size'],
-      session_expire_delay: Settings.gitlab['session_expire_delay'],
-      default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
-      default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
-      domain_whitelist: Settings.gitlab['domain_whitelist'],
-      import_sources: Gitlab::ImportSources.values,
-      shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
-      max_artifacts_size: Settings.artifacts['max_size'],
-      require_two_factor_authentication: false,
-      two_factor_grace_period: 48,
-      recaptcha_enabled: false,
       akismet_enabled: false,
-      koding_enabled: false,
-      koding_url: nil,
-      repository_checks_enabled: true,
-      disabled_oauth_sign_in_sources: [],
-      send_user_confirmation_email: false,
       container_registry_token_expire_delay: 5,
-      repository_storages: ['default'],
-      user_default_external: false,
-      sidekiq_throttling_enabled: false,
-      housekeeping_enabled: true,
+      default_artifacts_expire_in: '30 days',
+      default_branch_protection: Settings.gitlab['default_branch_protection'],
+      default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+      default_projects_limit: Settings.gitlab['default_projects_limit'],
+      default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+      default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+      disabled_oauth_sign_in_sources: [],
+      domain_whitelist: Settings.gitlab['domain_whitelist'],
+      gravatar_enabled: Settings.gravatar['enabled'],
+      help_page_text: nil,
+      unique_ips_limit_per_user: 10,
+      unique_ips_limit_time_window: 3600,
+      unique_ips_limit_enabled: false,
       housekeeping_bitmaps_enabled: true,
-      housekeeping_incremental_repack_period: 10,
+      housekeeping_enabled: true,
       housekeeping_full_repack_period: 50,
       housekeeping_gc_period: 200,
-    )
+      housekeeping_incremental_repack_period: 10,
+      import_sources: Gitlab::ImportSources.values,
+      koding_enabled: false,
+      koding_url: nil,
+      max_artifacts_size: Settings.artifacts['max_size'],
+      max_attachment_size: Settings.gitlab['max_attachment_size'],
+      plantuml_enabled: false,
+      plantuml_url: nil,
+      recaptcha_enabled: false,
+      repository_checks_enabled: true,
+      repository_storages: ['default'],
+      require_two_factor_authentication: false,
+      restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
+      session_expire_delay: Settings.gitlab['session_expire_delay'],
+      send_user_confirmation_email: false,
+      shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
+      shared_runners_text: nil,
+      sidekiq_throttling_enabled: false,
+      sign_in_text: nil,
+      signin_enabled: Settings.gitlab['signin_enabled'],
+      signup_enabled: Settings.gitlab['signup_enabled'],
+      terminal_max_session_time: 0,
+      two_factor_grace_period: 48,
+      user_default_external: false
+    }
+  end
+
+  def self.defaults
+    defaults_ce
+  end
+
+  def self.create_from_defaults
+    create(defaults)
+  end
+
+  def self.human_attribute_name(attr, _options = {})
+    if attr == :default_artifacts_expire_in
+      'Default artifacts expiration'
+    else
+      super
+    end
   end
 
   def home_page_url_column_exist
@@ -208,11 +253,11 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def domain_whitelist_raw
-    self.domain_whitelist.join("\n") unless self.domain_whitelist.nil?
+    self.domain_whitelist&.join("\n")
   end
 
   def domain_blacklist_raw
-    self.domain_blacklist.join("\n") unless self.domain_blacklist.nil?
+    self.domain_blacklist&.join("\n")
   end
 
   def domain_whitelist_raw=(values)
@@ -244,6 +289,22 @@ class ApplicationSetting < ActiveRecord::Base
 
   def repository_storage=(value)
     self.repository_storages = [value]
+  end
+
+  def default_project_visibility=(level)
+    super(Gitlab::VisibilityLevel.level_value(level))
+  end
+
+  def default_snippet_visibility=(level)
+    super(Gitlab::VisibilityLevel.level_value(level))
+  end
+
+  def default_group_visibility=(level)
+    super(Gitlab::VisibilityLevel.level_value(level))
+  end
+
+  def restricted_visibility_levels=(levels)
+    super(levels.map { |level| Gitlab::VisibilityLevel.level_value(level) })
   end
 
   # Choose one of the available repository storage options. Currently all have

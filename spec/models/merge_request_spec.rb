@@ -37,12 +37,12 @@ describe MergeRequest, models: true do
       end
 
       it "is invalid without merge user" do
-        subject.merge_when_build_succeeds = true
+        subject.merge_when_pipeline_succeeds = true
         expect(subject).not_to be_valid
       end
 
       it "is valid with merge user" do
-        subject.merge_when_build_succeeds = true
+        subject.merge_when_pipeline_succeeds = true
         subject.merge_user = build(:user)
 
         expect(subject).to be_valid
@@ -55,7 +55,7 @@ describe MergeRequest, models: true do
     it { is_expected.to respond_to(:can_be_merged?) }
     it { is_expected.to respond_to(:cannot_be_merged?) }
     it { is_expected.to respond_to(:merge_params) }
-    it { is_expected.to respond_to(:merge_when_build_succeeds) }
+    it { is_expected.to respond_to(:merge_when_pipeline_succeeds) }
   end
 
   describe '.in_projects' do
@@ -65,7 +65,7 @@ describe MergeRequest, models: true do
   end
 
   describe '#target_branch_sha' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     subject { create(:merge_request, source_project: project, target_project: project) }
 
@@ -97,7 +97,7 @@ describe MergeRequest, models: true do
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
       allow(subject).to receive(:commits).and_return([commit])
 
-      expect { subject.cache_merge_request_closes_issues! }.to change(subject.merge_requests_closing_issues, :count).by(1)
+      expect { subject.cache_merge_request_closes_issues!(subject.author) }.to change(subject.merge_requests_closing_issues, :count).by(1)
     end
 
     it 'does not cache issues from external trackers' do
@@ -106,7 +106,7 @@ describe MergeRequest, models: true do
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
       allow(subject).to receive(:commits).and_return([commit])
 
-      expect { subject.cache_merge_request_closes_issues! }.not_to change(subject.merge_requests_closing_issues, :count)
+      expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
     end
   end
 
@@ -150,8 +150,12 @@ describe MergeRequest, models: true do
     end
 
     it 'supports a cross-project reference' do
-      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      another_project = build(:empty_project, name: 'another-project', namespace: project.namespace)
       expect(merge_request.to_reference(another_project)).to eq "sample-project!1"
+    end
+
+    it 'returns a String reference with the full path' do
+      expect(merge_request.to_reference(full: true)).to eq(project.path_with_namespace + '!1')
     end
   end
 
@@ -205,6 +209,50 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#diff_size' do
+    let(:merge_request) do
+      build(:merge_request, source_branch: 'expand-collapse-files', target_branch: 'master')
+    end
+
+    context 'when there are MR diffs' do
+      before do
+        merge_request.save
+      end
+
+      it 'returns the correct count' do
+        expect(merge_request.diff_size).to eq(105)
+      end
+
+      it 'does not perform highlighting' do
+        expect(Gitlab::Diff::Highlight).not_to receive(:new)
+
+        merge_request.diff_size
+      end
+    end
+
+    context 'when there are no MR diffs' do
+      before do
+        merge_request.compare = CompareService.new(
+          merge_request.source_project,
+          merge_request.source_branch
+        ).execute(
+          merge_request.target_project,
+          merge_request.target_branch
+        )
+      end
+
+      it 'returns the correct count' do
+        expect(merge_request.diff_size).to eq(105)
+      end
+
+      it 'does not perform highlighting' do
+        expect(Gitlab::Diff::Highlight).not_to receive(:new)
+
+        merge_request.diff_size
+      end
+    end
+  end
+
   describe "#related_notes" do
     let!(:merge_request) { create(:merge_request) }
 
@@ -241,8 +289,8 @@ describe MergeRequest, models: true do
 
   describe '#for_fork?' do
     it 'returns true if the merge request is for a fork' do
-      subject.source_project = create(:project, namespace: create(:group))
-      subject.target_project = create(:project, namespace: create(:group))
+      subject.source_project = build_stubbed(:empty_project, namespace: create(:group))
+      subject.target_project = build_stubbed(:empty_project, namespace: create(:group))
 
       expect(subject.for_fork?).to be_truthy
     end
@@ -296,7 +344,24 @@ describe MergeRequest, models: true do
       allow(subject.project).to receive(:default_branch).
         and_return(subject.target_branch)
 
-      expect(subject.issues_mentioned_but_not_closing).to match_array([mentioned_issue])
+      expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue])
+    end
+
+    context 'when the project has an external issue tracker' do
+      before do
+        subject.project.team << [subject.author, :developer]
+        commit = double(:commit, safe_message: 'Fixes TEST-3')
+
+        create(:jira_service, project: subject.project)
+
+        allow(subject).to receive(:commits).and_return([commit])
+        allow(subject).to receive(:description).and_return('Is related to TEST-2 and TEST-3')
+        allow(subject.project).to receive(:default_branch).and_return(subject.target_branch)
+      end
+
+      it 'detects issues mentioned in description but not closed' do
+        expect(subject.issues_mentioned_but_not_closing(subject.author).map(&:to_s)).to match_array(['TEST-2'])
+      end
     end
   end
 
@@ -460,17 +525,17 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#reset_merge_when_build_succeeds" do
+  describe "#reset_merge_when_pipeline_succeeds" do
     let(:merge_if_green) do
-      create :merge_request, merge_when_build_succeeds: true, merge_user: create(:user),
+      create :merge_request, merge_when_pipeline_succeeds: true, merge_user: create(:user),
                              merge_params: { "should_remove_source_branch" => "1", "commit_message" => "msg" }
     end
 
     it "sets the item to false" do
-      merge_if_green.reset_merge_when_build_succeeds
+      merge_if_green.reset_merge_when_pipeline_succeeds
       merge_if_green.reload
 
-      expect(merge_if_green.merge_when_build_succeeds).to be_falsey
+      expect(merge_if_green.merge_when_pipeline_succeeds).to be_falsey
       expect(merge_if_green.merge_params["should_remove_source_branch"]).to be_nil
       expect(merge_if_green.merge_params["commit_message"]).to be_nil
     end
@@ -497,8 +562,8 @@ describe MergeRequest, models: true do
   end
 
   describe '#diverged_commits_count' do
-    let(:project)      { create(:project) }
-    let(:fork_project) { create(:project, forked_from_project: project) }
+    let(:project)      { create(:project, :repository) }
+    let(:fork_project) { create(:project, :repository, forked_from_project: project) }
 
     context 'when the target branch does not exist anymore' do
       subject { create(:merge_request, source_project: project, target_project: project) }
@@ -723,7 +788,7 @@ describe MergeRequest, models: true do
   end
 
   describe '#participants' do
-    let(:project) { create(:project, :public) }
+    let(:project) { create(:empty_project, :public) }
 
     let(:mr) do
       create(:merge_request, source_project: project, target_project: project)
@@ -764,15 +829,17 @@ describe MergeRequest, models: true do
   end
 
   describe '#check_if_can_be_merged' do
-    let(:project) { create(:project, only_allow_merge_if_build_succeeds: true) }
+    let(:project) { create(:empty_project, only_allow_merge_if_pipeline_succeeds: true) }
 
     subject { create(:merge_request, source_project: project, merge_status: :unchecked) }
 
     context 'when it is not broken and has no conflicts' do
-      it 'is marked as mergeable' do
+      before do
         allow(subject).to receive(:broken?) { false }
         allow(project.repository).to receive(:can_be_merged?).and_return(true)
+      end
 
+      it 'is marked as mergeable' do
         expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('can_be_merged')
       end
     end
@@ -798,7 +865,7 @@ describe MergeRequest, models: true do
   end
 
   describe '#mergeable?' do
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
 
     subject { create(:merge_request, source_project: project) }
 
@@ -818,7 +885,7 @@ describe MergeRequest, models: true do
   end
 
   describe '#mergeable_state?' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     subject { create(:merge_request, source_project: project) }
 
@@ -877,7 +944,7 @@ describe MergeRequest, models: true do
   end
 
   describe '#mergeable_ci_state?' do
-    let(:project) { create(:empty_project, only_allow_merge_if_build_succeeds: true) }
+    let(:project) { create(:empty_project, only_allow_merge_if_pipeline_succeeds: true) }
     let(:pipeline) { create(:ci_empty_pipeline) }
 
     subject { build(:merge_request, target_project: project) }
@@ -920,7 +987,7 @@ describe MergeRequest, models: true do
     end
 
     context 'when merges are not restricted to green builds' do
-      subject { build(:merge_request, target_project: build(:empty_project, only_allow_merge_if_build_succeeds: false)) }
+      subject { build(:merge_request, target_project: build(:empty_project, only_allow_merge_if_pipeline_succeeds: false)) }
 
       context 'and a failed pipeline is associated' do
         before do
@@ -945,7 +1012,7 @@ describe MergeRequest, models: true do
     let(:merge_request) { create(:merge_request_with_diff_notes, source_project: project) }
 
     context 'when project.only_allow_merge_if_all_discussions_are_resolved == true' do
-      let(:project) { create(:project, only_allow_merge_if_all_discussions_are_resolved: true) }
+      let(:project) { create(:project, :repository, only_allow_merge_if_all_discussions_are_resolved: true) }
 
       context 'with all discussions resolved' do
         before do
@@ -979,7 +1046,7 @@ describe MergeRequest, models: true do
     end
 
     context 'when project.only_allow_merge_if_all_discussions_are_resolved == false' do
-      let(:project) { create(:project, only_allow_merge_if_all_discussions_are_resolved: false) }
+      let(:project) { create(:project, :repository, only_allow_merge_if_all_discussions_are_resolved: false) }
 
       context 'with unresolved discussions' do
         before do
@@ -993,9 +1060,15 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#environments" do
-    let(:project)       { create(:project) }
+  describe "#environments_for" do
+    let(:project)       { create(:project, :repository) }
+    let(:user)          { project.creator }
     let(:merge_request) { create(:merge_request, source_project: project) }
+
+    before do
+      merge_request.source_project.add_master(user)
+      merge_request.target_project.add_master(user)
+    end
 
     context 'with multiple environments' do
       let(:environments) { create_list(:environment, 3, project: project) }
@@ -1006,13 +1079,13 @@ describe MergeRequest, models: true do
       end
 
       it 'selects deployed environments' do
-        expect(merge_request.environments).to contain_exactly(environments.first)
+        expect(merge_request.environments_for(user)).to contain_exactly(environments.first)
       end
     end
 
     context 'with environments on source project' do
       let(:source_project) do
-        create(:project) do |fork_project|
+        create(:project, :repository) do |fork_project|
           fork_project.create_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
         end
       end
@@ -1030,7 +1103,7 @@ describe MergeRequest, models: true do
       end
 
       it 'selects deployed environments' do
-        expect(merge_request.environments).to contain_exactly(source_environment)
+        expect(merge_request.environments_for(user)).to contain_exactly(source_environment)
       end
 
       context 'with environments on target project' do
@@ -1041,7 +1114,7 @@ describe MergeRequest, models: true do
         end
 
         it 'selects deployed environments' do
-          expect(merge_request.environments).to contain_exactly(source_environment, target_environment)
+          expect(merge_request.environments_for(user)).to contain_exactly(source_environment, target_environment)
         end
       end
     end
@@ -1052,7 +1125,7 @@ describe MergeRequest, models: true do
       end
 
       it 'returns an empty array' do
-        expect(merge_request.environments).to be_empty
+        expect(merge_request.environments_for(user)).to be_empty
       end
     end
   end
@@ -1389,8 +1462,8 @@ describe MergeRequest, models: true do
   end
 
   describe "#source_project_missing?" do
-    let(:project)      { create(:project) }
-    let(:fork_project) { create(:project, forked_from_project: project) }
+    let(:project)      { create(:empty_project) }
+    let(:fork_project) { create(:empty_project, forked_from_project: project) }
     let(:user)         { create(:user) }
     let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
 
@@ -1427,8 +1500,8 @@ describe MergeRequest, models: true do
   end
 
   describe "#closed_without_fork?" do
-    let(:project)      { create(:project) }
-    let(:fork_project) { create(:project, forked_from_project: project) }
+    let(:project)      { create(:empty_project) }
+    let(:fork_project) { create(:empty_project, forked_from_project: project) }
     let(:user)         { create(:user) }
     let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
 
@@ -1473,9 +1546,9 @@ describe MergeRequest, models: true do
       end
 
       context 'forked project' do
-        let(:project)      { create(:project) }
+        let(:project)      { create(:empty_project) }
         let(:user)         { create(:user) }
-        let(:fork_project) { create(:project, forked_from_project: project, namespace: user.namespace) }
+        let(:fork_project) { create(:empty_project, forked_from_project: project, namespace: user.namespace) }
 
         let!(:merge_request) do
           create(:closed_merge_request,
@@ -1506,6 +1579,108 @@ describe MergeRequest, models: true do
     context 'when the merge request is opened' do
       it 'returns false' do
         expect(subject.reopenable?).to be_falsey
+      end
+    end
+  end
+
+  describe '#mergeable_with_slash_command?' do
+    def create_pipeline(status)
+      create(:ci_pipeline_with_one_job,
+        project: project,
+        ref:     merge_request.source_branch,
+        sha:     merge_request.diff_head_sha,
+        status:  status)
+    end
+
+    let(:project)       { create(:project, :public, :repository, only_allow_merge_if_pipeline_succeeds: true) }
+    let(:developer)     { create(:user) }
+    let(:user)          { create(:user) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+    let(:mr_sha)        { merge_request.diff_head_sha }
+
+    before do
+      project.team << [developer, :developer]
+    end
+
+    context 'when autocomplete_precheck is set to true' do
+      it 'is mergeable by developer' do
+        expect(merge_request.mergeable_with_slash_command?(developer, autocomplete_precheck: true)).to be_truthy
+      end
+
+      it 'is not mergeable by normal user' do
+        expect(merge_request.mergeable_with_slash_command?(user, autocomplete_precheck: true)).to be_falsey
+      end
+    end
+
+    context 'when autocomplete_precheck is set to false' do
+      it 'is mergeable by developer' do
+        expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+      end
+
+      it 'is not mergeable by normal user' do
+        expect(merge_request.mergeable_with_slash_command?(user, last_diff_sha: mr_sha)).to be_falsey
+      end
+
+      context 'closed MR'  do
+        before do
+          merge_request.update_attribute(:state, :closed)
+        end
+
+        it 'is not mergeable' do
+          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+        end
+      end
+
+      context 'MR with WIP'  do
+        before do
+          merge_request.update_attribute(:title, 'WIP: some MR')
+        end
+
+        it 'is not mergeable' do
+          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+        end
+      end
+
+      context 'sha differs from the MR diff_head_sha'  do
+        it 'is not mergeable' do
+          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: 'some other sha')).to be_falsey
+        end
+      end
+
+      context 'sha is not provided'  do
+        it 'is not mergeable' do
+          expect(merge_request.mergeable_with_slash_command?(developer)).to be_falsey
+        end
+      end
+
+      context 'with pipeline ok'  do
+        before do
+          create_pipeline(:success)
+        end
+
+        it 'is mergeable' do
+          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+        end
+      end
+
+      context 'with failing pipeline'  do
+        before do
+          create_pipeline(:failed)
+        end
+
+        it 'is not mergeable' do
+          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+        end
+      end
+
+      context 'with running pipeline'  do
+        before do
+          create_pipeline(:running)
+        end
+
+        it 'is mergeable' do
+          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+        end
       end
     end
   end

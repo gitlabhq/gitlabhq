@@ -98,10 +98,12 @@ class TodoService
 
   # When a build fails on the HEAD of a merge request we should:
   #
-  #  * create a todo for that user to fix it
+  #  * create a todo for author of MR to fix it
+  #  * create a todo for merge_user to keep an eye on it
   #
   def merge_request_build_failed(merge_request)
-    create_build_failed_todo(merge_request)
+    create_build_failed_todo(merge_request, merge_request.author)
+    create_build_failed_todo(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
   end
 
   # When a new commit is pushed to a merge request we should:
@@ -115,11 +117,21 @@ class TodoService
   # When a build is retried to a merge request we should:
   #
   #  * mark all pending todos related to the merge request for the author as done
+  #  * mark all pending todos related to the merge request for the merge_user as done
   #
   def merge_request_build_retried(merge_request)
     mark_pending_todos_as_done(merge_request, merge_request.author)
+    mark_pending_todos_as_done(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
   end
-
+  
+  # When a merge request could not be automatically merged due to its unmergeable state we should:
+  #
+  #  * create a todo for a merge_user
+  #
+  def merge_request_became_unmergeable(merge_request)
+    create_unmergeable_todo(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
+  end
+  
   # When create a note we should:
   #
   #  * mark all pending todos related to the noteable for the note author as done
@@ -158,16 +170,20 @@ class TodoService
 
   # When user marks some todos as done
   def mark_todos_as_done(todos, current_user)
-    mark_todos_as_done_by_ids(todos.select(&:id), current_user)
+    update_todos_state_by_ids(todos.select(&:id), current_user, :done)
   end
 
   def mark_todos_as_done_by_ids(ids, current_user)
-    todos = current_user.todos.where(id: ids)
+    update_todos_state_by_ids(ids, current_user, :done)
+  end
 
-    # Only return those that are not really on that state
-    marked_todos = todos.where.not(state: :done).update_all(state: :done)
-    current_user.update_todos_count_cache
-    marked_todos
+  # When user marks some todos as pending
+  def mark_todos_as_pending(todos, current_user)
+    update_todos_state_by_ids(todos.select(&:id), current_user, :pending)
+  end
+
+  def mark_todos_as_pending_by_ids(ids, current_user)
+    update_todos_state_by_ids(ids, current_user, :pending)
   end
 
   # When user marks an issue as todo
@@ -181,6 +197,15 @@ class TodoService
   end
 
   private
+
+  def update_todos_state_by_ids(ids, current_user, state)
+    todos = current_user.todos.where(id: ids)
+
+    # Only return those that are not really on that state
+    marked_todos = todos.where.not(state: state).update_all(state: state)
+    current_user.update_todos_count_cache
+    marked_todos
+  end
 
   def create_todos(users, attributes)
     Array(users).map do |user|
@@ -231,15 +256,25 @@ class TodoService
   end
 
   def create_mention_todos(project, target, author, note = nil)
+    # Create Todos for directly addressed users
+    directly_addressed_users = filter_directly_addressed_users(project, note || target, author)
+    attributes = attributes_for_todo(project, target, author, Todo::DIRECTLY_ADDRESSED, note)
+    create_todos(directly_addressed_users, attributes)
+
+    # Create Todos for mentioned users
     mentioned_users = filter_mentioned_users(project, note || target, author)
     attributes = attributes_for_todo(project, target, author, Todo::MENTIONED, note)
     create_todos(mentioned_users, attributes)
   end
 
-  def create_build_failed_todo(merge_request)
-    author = merge_request.author
-    attributes = attributes_for_todo(merge_request.project, merge_request, author, Todo::BUILD_FAILED)
-    create_todos(author, attributes)
+  def create_build_failed_todo(merge_request, todo_author)
+    attributes = attributes_for_todo(merge_request.project, merge_request, todo_author, Todo::BUILD_FAILED)
+    create_todos(todo_author, attributes)
+  end
+
+  def create_unmergeable_todo(merge_request, merge_user)
+    attributes = attributes_for_todo(merge_request.project, merge_request, merge_user, Todo::UNMERGEABLE)
+    create_todos(merge_user, attributes)
   end
 
   def attributes_for_target(target)
@@ -266,10 +301,18 @@ class TodoService
     )
   end
 
+  def filter_todo_users(users, project, target)
+    reject_users_without_access(users, project, target).uniq
+  end
+
   def filter_mentioned_users(project, target, author)
     mentioned_users = target.mentioned_users(author)
-    mentioned_users = reject_users_without_access(mentioned_users, project, target)
-    mentioned_users.uniq
+    filter_todo_users(mentioned_users, project, target)
+  end
+
+  def filter_directly_addressed_users(project, target, author)
+    directly_addressed_users = target.directly_addressed_users(author)
+    filter_todo_users(directly_addressed_users, project, target)
   end
 
   def reject_users_without_access(users, project, target)

@@ -1,9 +1,10 @@
 - @no_container = true
 - page_title "Cycle Analytics"
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag("cycle_analytics/cycle_analytics_bundle.js")
+  = page_specific_javascript_bundle_tag('common_vue')
+  = page_specific_javascript_bundle_tag('cycle_analytics')
 
-= render "projects/pipelines/head"
+= render "projects/head"
 
 #cycle-analytics{ class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) } }
   - if @cycle_analytics_no_data
@@ -28,8 +29,8 @@
         .container-fluid
           .row
             .col-sm-3.col-xs-12.column{ "v-for" => "item in state.summary" }
-              %h3.header {{item.value}}
-              %p.text {{item.title}}
+              %h3.header {{ item.value }}
+              %p.text {{ item.title }}
             .col-sm-3.col-xs-12.column
               .dropdown.inline.js-ca-dropdown
                 %button.dropdown-menu-toggle{ "data-toggle" => "dropdown", :type => "button" }

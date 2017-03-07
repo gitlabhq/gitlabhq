@@ -1,21 +1,14 @@
 class Dashboard::ProjectsController < Dashboard::ApplicationController
   include FilterProjects
 
-  before_action :event_filter
-
   def index
-    @projects = current_user.authorized_projects.sorted_by_activity
-    @projects = filter_projects(@projects)
-    @projects = @projects.includes(:namespace)
+    @projects = load_projects(current_user.authorized_projects)
     @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.page(params[:page])
 
-    @last_push = current_user.recent_push
-
     respond_to do |format|
-      format.html
+      format.html { @last_push = current_user.recent_push }
       format.atom do
-        event_filter
         load_events
         render layout: false
       end
@@ -28,9 +21,8 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   end
 
   def starred
-    @projects = current_user.viewable_starred_projects.sorted_by_activity
-    @projects = filter_projects(@projects)
-    @projects = @projects.includes(:namespace, :forked_from_project, :tags)
+    @projects = load_projects(current_user.viewable_starred_projects)
+    @projects = @projects.includes(:forked_from_project, :tags)
     @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.page(params[:page])
 
@@ -39,7 +31,6 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
     respond_to do |format|
       format.html
-
       format.json do
         render json: {
           html: view_to_html_string("dashboard/projects/_projects", locals: { projects: @projects })
@@ -50,9 +41,15 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
   private
 
+  def load_projects(base_scope)
+    projects = base_scope.sorted_by_activity.includes(:namespace)
+
+    filter_projects(projects)
+  end
+
   def load_events
-    @events = Event.in_projects(@projects)
-    @events = @event_filter.apply_filter(@events).with_associations
+    @events = Event.in_projects(load_projects(current_user.authorized_projects))
+    @events = event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
   end
 end

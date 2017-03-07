@@ -1,17 +1,48 @@
 class Projects::PipelinesController < Projects::ApplicationController
-  before_action :pipeline, except: [:index, :new, :create]
+  before_action :pipeline, except: [:index, :new, :create, :charts]
   before_action :commit, only: [:show, :builds]
   before_action :authorize_read_pipeline!
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
+  before_action :builds_enabled, only: :charts
 
   def index
     @scope = params[:scope]
-    @pipelines = PipelinesFinder.new(project).execute(scope: @scope).page(params[:page]).per(30)
-    @pipelines = @pipelines.includes(project: :namespace)
+    @pipelines = PipelinesFinder
+      .new(project)
+      .execute(scope: @scope)
+      .page(params[:page])
+      .per(30)
 
-    @running_or_pending_count = PipelinesFinder.new(project).execute(scope: 'running').count
-    @pipelines_count = PipelinesFinder.new(project).execute.count
+    @running_count = PipelinesFinder
+      .new(project).execute(scope: 'running').count
+
+    @pending_count = PipelinesFinder
+      .new(project).execute(scope: 'pending').count
+
+    @finished_count = PipelinesFinder
+      .new(project).execute(scope: 'finished').count
+
+    @pipelines_count = PipelinesFinder
+      .new(project).execute.count
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {
+          pipelines: PipelineSerializer
+            .new(project: @project, user: @current_user)
+            .with_pagination(request, response)
+            .represent(@pipelines),
+          count: {
+            all: @pipelines_count,
+            running: @running_count,
+            pending: @pending_count,
+            finished: @finished_count,
+          }
+        }
+      end
+    end
   end
 
   def new
@@ -60,6 +91,14 @@ class Projects::PipelinesController < Projects::ApplicationController
     pipeline.cancel_running
 
     redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+  end
+
+  def charts
+    @charts = {}
+    @charts[:week] = Ci::Charts::WeekChart.new(project)
+    @charts[:month] = Ci::Charts::MonthChart.new(project)
+    @charts[:year] = Ci::Charts::YearChart.new(project)
+    @charts[:build_times] = Ci::Charts::BuildTime.new(project)
   end
 
   private

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Dashboard Todos', feature: true do
+  include WaitForAjax
+
   let(:user)    { create(:user) }
   let(:author)  { create(:user) }
   let(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
@@ -34,19 +36,55 @@ describe 'Dashboard Todos', feature: true do
         end
       end
 
-      describe 'deleting the todo' do
+      shared_examples 'deleting the todo' do
         before do
-          first('.done-todo').click
+          first('.js-done-todo').click
         end
 
-        it 'is removed from the list' do
-          expect(page).not_to have_selector('.todos-list .todo')
+        it 'is marked as done-reversible in the list' do
+          expect(page).to have_selector('.todos-list .todo.todo-pending.done-reversible')
         end
 
-        it 'shows "All done" message' do
-          expect(page).to have_selector('.todos-all-done', count: 1)
+        it 'shows Undo button' do
+          expect(page).to have_selector('.js-undo-todo', visible: true)
+          expect(page).to have_selector('.js-done-todo', visible: false)
+        end
+
+        it 'updates todo count' do
+          expect(page).to have_content 'To do 0'
+          expect(page).to have_content 'Done 1'
+        end
+
+        it 'has not "All done" message' do
+          expect(page).not_to have_selector('.todos-all-done')
         end
       end
+
+      shared_examples 'deleting and restoring the todo' do
+        before do
+          first('.js-done-todo').click
+          wait_for_ajax
+          first('.js-undo-todo').click
+        end
+
+        it 'is marked back as pending in the list' do
+          expect(page).not_to have_selector('.todos-list .todo.todo-pending.done-reversible')
+          expect(page).to have_selector('.todos-list .todo.todo-pending')
+        end
+
+        it 'shows Done button' do
+          expect(page).to have_selector('.js-undo-todo', visible: false)
+          expect(page).to have_selector('.js-done-todo', visible: true)
+        end
+
+        it 'updates todo count' do
+          expect(page).to have_content 'To do 1'
+          expect(page).to have_content 'Done 0'
+        end
+      end
+
+      it_behaves_like 'deleting the todo'
+      it_behaves_like 'deleting and restoring the todo'
 
       context 'todo is stale on the page' do
         before do
@@ -54,19 +92,8 @@ describe 'Dashboard Todos', feature: true do
           TodoService.new.mark_todos_as_done(todos, user)
         end
 
-        describe 'deleting the todo' do
-          before do
-            first('.done-todo').click
-          end
-
-          it 'is removed from the list' do
-            expect(page).not_to have_selector('.todos-list .todo')
-          end
-
-          it 'shows "All done" message' do
-            expect(page).to have_selector('.todos-all-done', count: 1)
-          end
-        end
+        it_behaves_like 'deleting the todo'
+        it_behaves_like 'deleting and restoring the todo'
       end
     end
 
@@ -113,18 +140,6 @@ describe 'Dashboard Todos', feature: true do
         expect(page).to have_selector('.gl-pagination .page', count: 2)
       end
 
-      describe 'completing last todo from last page', js: true do
-        it 'redirects to the previous page' do
-          visit dashboard_todos_path(page: 2)
-          expect(page).to have_css("#todo_#{Todo.last.id}")
-
-          click_link('Done')
-
-          expect(current_path).to eq dashboard_todos_path
-          expect(page).to have_css("#todo_#{Todo.first.id}")
-        end
-      end
-
       describe 'mark all as done', js: true do
         before do
           visit dashboard_todos_path
@@ -156,6 +171,29 @@ describe 'Dashboard Todos', feature: true do
       end
     end
 
+    context 'User have large number of todos' do
+      before do
+        create_list(:todo, 101, :mentioned, user: user, project: project, target: issue, author: author)
+
+        login_as(user)
+        visit dashboard_todos_path
+      end
+
+      it 'shows 99+ for count >= 100 in notification' do
+        expect(page).to have_selector('.todos-pending-count', text: '99+')
+      end
+
+      it 'shows exact number in To do tab' do
+        expect(page).to have_selector('.todos-pending .badge', text: '101')
+      end
+
+      it 'shows exact number for count < 100' do
+        3.times { first('.js-done-todo').click }
+
+        expect(page).to have_selector('.todos-pending-count', text: '98')
+      end
+    end
+
     context 'User has a Build Failed todo' do
       let!(:todo) { create(:todo, :build_failed, user: user, project: project, author: author) }
 
@@ -165,13 +203,13 @@ describe 'Dashboard Todos', feature: true do
       end
 
       it 'shows the todo' do
-        expect(page).to have_content 'The build failed for your merge request'
+        expect(page).to have_content 'The build failed for merge request'
       end
 
       it 'links to the pipelines for the merge request' do
         href = pipelines_namespace_project_merge_request_path(project.namespace, project, todo.target)
 
-        expect(page).to have_link "merge request #{todo.target.to_reference}", href
+        expect(page).to have_link "merge request #{todo.target.to_reference(full: true)}", href
       end
     end
   end

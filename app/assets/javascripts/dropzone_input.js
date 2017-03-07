@@ -1,7 +1,7 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, one-var, no-var, one-var-declaration-per-line, no-unused-vars, camelcase, quotes, no-useless-concat, prefer-template, quote-props, comma-dangle, object-shorthand, consistent-return, no-plusplus, prefer-arrow-callback, padded-blocks */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, one-var, no-var, one-var-declaration-per-line, no-unused-vars, camelcase, quotes, no-useless-concat, prefer-template, quote-props, comma-dangle, object-shorthand, consistent-return, prefer-arrow-callback */
 /* global Dropzone */
 
-/*= require preview_markdown */
+require('./preview_markdown');
 
 (function() {
   this.DropzoneInput = (function() {
@@ -120,19 +120,20 @@
           if (item.type.indexOf("image") !== -1) {
             return item;
           }
-          i++;
+          i += 1;
         }
         return false;
       };
       pasteText = function(text) {
         var afterSelection, beforeSelection, caretEnd, caretStart, textEnd;
+        var formattedText = text + "\n\n";
         caretStart = $(child)[0].selectionStart;
         caretEnd = $(child)[0].selectionEnd;
         textEnd = $(child).val().length;
         beforeSelection = $(child).val().substring(0, caretStart);
         afterSelection = $(child).val().substring(caretEnd, textEnd);
-        $(child).val(beforeSelection + text + afterSelection);
-        child.get(0).setSelectionRange(caretStart + text.length, caretEnd + text.length);
+        $(child).val(beforeSelection + formattedText + afterSelection);
+        child.get(0).setSelectionRange(caretStart + formattedText.length, caretEnd + formattedText.length);
         return form_textarea.trigger("input");
       };
       getFilename = function(e) {
@@ -215,7 +216,5 @@
     }
 
     return DropzoneInput;
-
   })();
-
-}).call(this);
+}).call(window);

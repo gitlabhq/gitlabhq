@@ -25,14 +25,14 @@ describe 'Awards Emoji', feature: true do
       end
 
       it 'increments the thumbsdown emoji', js: true do
-        find('[data-emoji="thumbsdown"]').click
+        find('[data-name="thumbsdown"]').click
         wait_for_ajax
         expect(thumbsdown_emoji).to have_text("1")
       end
 
       context 'click the thumbsup emoji' do
         it 'increments the thumbsup emoji', js: true do
-          find('[data-emoji="thumbsup"]').click
+          find('[data-name="thumbsup"]').click
           wait_for_ajax
           expect(thumbsup_emoji).to have_text("1")
         end
@@ -44,7 +44,7 @@ describe 'Awards Emoji', feature: true do
 
       context 'click the thumbsdown emoji' do
         it 'increments the thumbsdown emoji', js: true do
-          find('[data-emoji="thumbsdown"]').click
+          find('[data-name="thumbsdown"]').click
           wait_for_ajax
           expect(thumbsdown_emoji).to have_text("1")
         end
@@ -67,6 +67,18 @@ describe 'Awards Emoji', feature: true do
           expect(page).not_to have_selector(emoji_counter)
         end
       end
+
+      context 'execute /award slash command' do
+        it 'toggles the emoji award on noteable', js: true do
+          execute_slash_command('/award :100:')
+
+          expect(find(noteable_award_counter)).to have_text("1")
+
+          execute_slash_command('/award :100:')
+
+          expect(page).not_to have_selector(noteable_award_counter)
+        end
+      end
     end
   end
 
@@ -76,8 +88,17 @@ describe 'Awards Emoji', feature: true do
     end
 
     it 'has disabled emoji button' do
-      expect(first('.award-control')[:disabled]).to be(true)
+      expect(first('.award-control')[:class]).to have_text('disabled')
     end
+  end
+
+  def execute_slash_command(cmd)
+    within('.js-main-target-form') do
+      fill_in 'note[note]', with: cmd
+      click_button 'Comment'
+    end
+
+    wait_for_ajax
   end
 
   def thumbsup_emoji
@@ -92,15 +113,19 @@ describe 'Awards Emoji', feature: true do
     'span.js-counter'
   end
 
+  def noteable_award_counter
+    ".awards .active"
+  end
+
   def toggle_smiley_emoji(status)
     within('.note') do
       find('.note-emoji-button').click
     end
 
     unless status
-      first('[data-emoji="smiley"]').click
+      first('[data-name="smiley"]').click
     else
-      find('[data-emoji="smiley"]').click
+      find('[data-name="smiley"]').click
     end
 
     wait_for_ajax

@@ -97,7 +97,7 @@ class MergeRequest < ActiveRecord::Base
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
-  validates :merge_user, presence: true, if: :merge_when_build_succeeds?, unless: :importing?
+  validates :merge_user, presence: true, if: :merge_when_pipeline_succeeds?, unless: :importing?
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validate :validate_fork, unless: :closed_without_fork?
 
@@ -175,10 +175,11 @@ class MergeRequest < ActiveRecord::Base
     work_in_progress?(title) ? title : "WIP: #{title}"
   end
 
-  def to_reference(from_project = nil)
+  # `from` argument can be a Namespace or Project.
+  def to_reference(from = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"
 
-    "#{project.to_reference(from_project)}#{reference}"
+    "#{project.to_reference(from, full: full)}#{reference}"
   end
 
   def first_commit
@@ -198,7 +199,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_size
-    opts = diff_options || {}
+    # The `#diffs` method ends up at an instance of a class inheriting from
+    # `Gitlab::Diff::FileCollection::Base`, so use those options as defaults
+    # here too, to get the same diff size without performing highlighting.
+    #
+    opts = Gitlab::Diff::FileCollection::Base.default_options.merge(diff_options || {})
 
     raw_diffs(opts).size
   end
@@ -221,7 +226,7 @@ class MergeRequest < ActiveRecord::Base
   # true base commit, so we can't simply have `#diff_base_commit` fall back on
   # this method.
   def likely_diff_base_commit
-    first_commit.parent || first_commit
+    first_commit.try(:parent) || first_commit
   end
 
   def diff_start_commit
@@ -431,7 +436,7 @@ class MergeRequest < ActiveRecord::Base
     true
   end
 
-  def can_cancel_merge_when_build_succeeds?(current_user)
+  def can_cancel_merge_when_pipeline_succeeds?(current_user)
     can_be_merged_by?(current_user) || self.author == current_user
   end
 
@@ -522,7 +527,7 @@ class MergeRequest < ActiveRecord::Base
     }
 
     if diff_head_commit
-      attrs.merge!(last_commit: diff_head_commit.hook_attrs)
+      attrs[:last_commit] = diff_head_commit.hook_attrs
     end
 
     attributes.merge!(attrs)
@@ -541,7 +546,7 @@ class MergeRequest < ActiveRecord::Base
   # Calculating this information for a number of merge requests requires
   # running `ReferenceExtractor` on each of them separately.
   # This optimization does not apply to issues from external sources.
-  def cache_merge_request_closes_issues!(current_user = self.author)
+  def cache_merge_request_closes_issues!(current_user)
     return if project.has_external_issue_tracker?
 
     transaction do
@@ -553,14 +558,10 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def closes_issue?(issue)
-    closes_issues.include?(issue)
-  end
-
   # Return the set of issues that will be closed if this merge request is accepted.
   def closes_issues(current_user = self.author)
     if target_branch == project.default_branch
-      messages = [description]
+      messages = [title, description]
       messages.concat(commits.map(&:safe_message)) if merge_request_diff
 
       Gitlab::ClosingIssueExtractor.new(project, current_user).
@@ -570,13 +571,13 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def issues_mentioned_but_not_closing(current_user = self.author)
+  def issues_mentioned_but_not_closing(current_user)
     return [] unless target_branch == project.default_branch
 
     ext = Gitlab::ReferenceExtractor.new(project, current_user)
-    ext.analyze(description)
+    ext.analyze("#{title}\n#{description}")
 
-    ext.issues - closes_issues
+    ext.issues - closes_issues(current_user)
   end
 
   def target_project_path
@@ -597,7 +598,7 @@ class MergeRequest < ActiveRecord::Base
 
   def source_project_namespace
     if source_project && source_project.namespace
-      source_project.namespace.path
+      source_project.namespace.full_path
     else
       "(removed)"
     end
@@ -605,7 +606,7 @@ class MergeRequest < ActiveRecord::Base
 
   def target_project_namespace
     if target_project && target_project.namespace
-      target_project.namespace.path
+      target_project.namespace.full_path
     else
       "(removed)"
     end
@@ -643,10 +644,10 @@ class MergeRequest < ActiveRecord::Base
     message.join("\n\n")
   end
 
-  def reset_merge_when_build_succeeds
-    return unless merge_when_build_succeeds?
+  def reset_merge_when_pipeline_succeeds
+    return unless merge_when_pipeline_succeeds?
 
-    self.merge_when_build_succeeds = false
+    self.merge_when_pipeline_succeeds = false
     self.merge_user = nil
     if merge_params
       merge_params.delete('should_remove_source_branch')
@@ -683,7 +684,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def has_ci?
-    source_project.try(:ci_service) && commits.any?
+    has_ci_integration = source_project.try(:ci_service)
+    uses_gitlab_ci = all_pipelines.any?
+
+    (has_ci_integration || uses_gitlab_ci) && commits.any?
   end
 
   def branch_missing?
@@ -705,23 +709,27 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mergeable_ci_state?
-    return true unless project.only_allow_merge_if_build_succeeds?
+    return true unless project.only_allow_merge_if_pipeline_succeeds?
 
     !head_pipeline || head_pipeline.success? || head_pipeline.skipped?
   end
 
-  def environments
+  def environments_for(current_user)
     return [] unless diff_head_commit
 
-    @environments ||= begin
-      target_envs = target_project.environments_for(
-        target_branch, commit: diff_head_commit, with_tags: true)
+    @environments ||= Hash.new do |h, current_user|
+      envs = EnvironmentsFinder.new(target_project, current_user,
+        ref: target_branch, commit: diff_head_commit, with_tags: true).execute
 
-      source_envs = source_project.environments_for(
-        source_branch, commit: diff_head_commit) if source_project
+      if source_project
+        envs.concat EnvironmentsFinder.new(source_project, current_user,
+          ref: source_branch, commit: diff_head_commit).execute
+      end
 
-      (target_envs.to_a + source_envs.to_a).uniq
+      h[current_user] = envs.uniq
     end
+
+    @environments[current_user]
   end
 
   def state_human_name
@@ -861,9 +869,11 @@ class MergeRequest < ActiveRecord::Base
       paths: paths
     )
 
-    active_diff_notes.each do |note|
-      service.execute(note)
-      Gitlab::Timeless.timeless(note, &:save)
+    transaction do
+      active_diff_notes.each do |note|
+        service.execute(note)
+        Gitlab::Timeless.timeless(note, &:save)
+      end
     end
   end
 
@@ -898,10 +908,22 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def has_commits?
-    commits_count > 0
+    merge_request_diff && commits_count > 0
   end
 
   def has_no_commits?
     !has_commits?
+  end
+
+  def mergeable_with_slash_command?(current_user, autocomplete_precheck: false, last_diff_sha: nil)
+    return false unless can_be_merged_by?(current_user)
+
+    return true if autocomplete_precheck
+
+    return false unless mergeable?(skip_ci_check: true)
+    return false if head_pipeline && !(head_pipeline.success? || head_pipeline.active?)
+    return false if last_diff_sha != diff_head_sha
+
+    true
   end
 end

@@ -46,7 +46,7 @@
 
     &.light {
       a {
-        color: $gl-gray;
+        color: $gl-text-color;
       }
     }
   }
@@ -74,6 +74,13 @@
 @mixin webkit-prefix($property, $value) {
   #{'-webkit-' + $property}: $value;
   #{$property}: $value;
+}
+
+/* http://phrappe.com/css/conditional-css-for-webkit-based-browsers/ */
+@mixin on-webkit-only {
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
+    @content;
+  }
 }
 
 @mixin keyframes($animation-name) {

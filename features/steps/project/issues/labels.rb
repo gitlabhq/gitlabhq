@@ -15,17 +15,16 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
 
   step 'I delete all labels' do
     page.within '.labels' do
-      page.all('.remove-row').each do |remove|
-        remove.click
-        sleep 0.05
+      page.all('.remove-row').each do
+        first('.remove-row').click
       end
     end
   end
 
   step 'I should see labels help message' do
     page.within '.labels' do
-      expect(page).to have_content 'Create a label or generate a default set '\
-                                   'of labels'
+      expect(page).to have_content 'Generate a default set of labels'
+      expect(page).to have_content 'New label'
     end
   end
 

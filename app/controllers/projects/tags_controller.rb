@@ -27,7 +27,7 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   def create
-    result = CreateTagService.new(@project, current_user).
+    result = Tags::CreateService.new(@project, current_user).
       execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
 
     if result[:status] == :success
@@ -41,7 +41,7 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   def destroy
-    DeleteTagService.new(project, current_user).execute(params[:id])
+    Tags::DestroyService.new(project, current_user).execute(params[:id])
 
     respond_to do |format|
       format.html do

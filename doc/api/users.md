@@ -72,7 +72,6 @@ GET /users
     "organization": "",
     "last_sign_in_at": "2012-06-01T11:41:01Z",
     "confirmed_at": "2012-05-23T09:05:22Z",
-    "theme_id": 1,
     "color_scheme_id": 2,
     "projects_limit": 100,
     "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -105,7 +104,6 @@ GET /users
     "organization": "",
     "last_sign_in_at": null,
     "confirmed_at": "2012-05-30T16:53:06.148Z",
-    "theme_id": 1,
     "color_scheme_id": 3,
     "projects_limit": 100,
     "current_sign_in_at": "2014-03-19T17:54:13Z",
@@ -198,7 +196,6 @@ Parameters:
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
-  "theme_id": 1,
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -216,7 +213,7 @@ Parameters:
 
 ## User creation
 
-Creates a new user. Note only administrators can create new users.
+Creates a new user. Note only administrators can create new users. Either `password` or `reset_password` should be specified (`reset_password` takes priority).
 
 ```
 POST /users
@@ -225,7 +222,8 @@ POST /users
 Parameters:
 
 - `email` (required)            - Email
-- `password` (required)         - Password
+- `password` (optional)         - Password
+- `reset_password` (optional)   - Send user password reset link - true or false(default)
 - `username` (required)         - Username
 - `name` (required)             - Name
 - `skype` (optional)            - Skype ID
@@ -271,6 +269,7 @@ Parameters:
 - `can_create_group` (optional) - User can create groups - true or false
 - `external` (optional)         - Flags the user as external - true or false(default)
 
+On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,
 even in cases where a `409` (Conflict) would be more appropriate,
 e.g. when renaming the email address to some existing one.
@@ -321,7 +320,6 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
-  "theme_id": 1,
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -367,7 +365,6 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
-  "theme_id": 1,
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -662,14 +659,14 @@ Will return `200 OK` on success, or `404 Not found` if either user or email cann
 Blocks the specified user.  Available only for admin.
 
 ```
-PUT /users/:id/block
+POST /users/:id/block
 ```
 
 Parameters:
 
 - `id` (required) - id of specified user
 
-Will return `200 OK` on success, `404 User Not Found` is user cannot be found or
+Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to block an already blocked user by LDAP synchronization.
 
 ## Unblock user
@@ -677,14 +674,14 @@ Will return `200 OK` on success, `404 User Not Found` is user cannot be found or
 Unblocks the specified user.  Available only for admin.
 
 ```
-PUT /users/:id/unblock
+POST /users/:id/unblock
 ```
 
 Parameters:
 
 - `id` (required) - id of specified user
 
-Will return `200 OK` on success, `404 User Not Found` is user cannot be found or
+Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to unblock a user blocked by LDAP synchronization.
 
 ### Get user contribution events
@@ -702,7 +699,7 @@ Parameters:
 | `id` | integer | yes | The ID of the user |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/users/:id/events
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/:id/events
 ```
 
 Example response:
@@ -815,8 +812,6 @@ Example response:
       },
       "created_at": "2015-12-04T10:33:56.698Z",
       "system": false,
-      "upvote": false,
-      "downvote": false,
       "noteable_id": 377,
       "noteable_type": "Issue"
     },
@@ -832,3 +827,99 @@ Example response:
   }
 ]
 ```
+
+## Retrieve user impersonation tokens
+
+It retrieves every impersonation token of the user. Note that only administrators can do this.
+This function takes pagination parameters `page` and `per_page` to restrict the list of impersonation tokens.
+
+```
+GET /users/:user_id/impersonation_tokens
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `state`   | string | no | filter tokens based on state (all, active, inactive) |
+
+Example response:
+```json
+[
+  {
+    "id": 1,
+    "name": "mytoken",
+    "revoked": false,
+    "expires_at": "2017-01-04",
+    "scopes": ['api'],
+    "active": true,
+    "impersonation": true,
+    "token": "9koXpg98eAheJpvBs5tK"
+  }
+]
+```
+
+## Show a user's impersonation token
+
+It shows a user's impersonation token. Note that only administrators can do this.
+
+```
+GET /users/:user_id/impersonation_tokens/:impersonation_token_id
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `impersonation_token_id` | integer | yes | The ID of the impersonation token |
+
+## Create a impersonation token
+
+It creates a new impersonation token. Note that only administrators can do this.
+You are only able to create impersonation tokens to impersonate the user and perform
+both API calls and Git reads and writes. The user will not see these tokens in his profile
+settings page.
+
+```
+POST /users/:user_id/impersonation_tokens
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `name` | string | yes | The name of the impersonation token |
+| `expires_at` | date | no | The expiration date of the impersonation token |
+| `scopes` | array | no | The array of scopes of the impersonation token (api, read_user) |
+
+Example response:
+```json
+{
+  "id": 1,
+  "name": "mytoken",
+  "revoked": false,
+  "expires_at": "2017-01-04",
+  "scopes": ['api'],
+  "active": true,
+  "impersonation": true,
+  "token": "9koXpg98eAheJpvBs5tK"
+}
+```
+
+## Revoke an impersonation token
+
+It revokes an impersonation token. Note that only administrators can revoke impersonation tokens.
+
+```
+DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `impersonation_token_id` | integer | yes | The ID of the impersonation token |

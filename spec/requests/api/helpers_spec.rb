@@ -12,6 +12,7 @@ describe API::Helpers, api: true do
   let(:params) { {} }
   let(:env) { { 'REQUEST_METHOD' => 'GET' } }
   let(:request) { Rack::Request.new(env) }
+  let(:header) { }
 
   def set_env(user_or_token, identifier)
     clear_env
@@ -46,7 +47,7 @@ describe API::Helpers, api: true do
     allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ value }
   end
 
-  def error!(message, status)
+  def error!(message, status, header)
     raise Exception.new("#{status} - #{message}")
   end
 

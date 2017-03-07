@@ -4,16 +4,12 @@ module SharedProjectTab
   include Spinach::DSL
   include SharedActiveTab
 
-  step 'the active main tab should be Home' do
+  step 'the active main tab should be Project' do
     ensure_active_main_tab('Project')
   end
 
   step 'the active main tab should be Repository' do
     ensure_active_main_tab('Repository')
-  end
-
-  step 'the active main tab should be Graphs' do
-    ensure_active_main_tab('Graphs')
   end
 
   step 'the active main tab should be Issues' do
@@ -40,12 +36,8 @@ module SharedProjectTab
     expect(page).to have_selector('.layout-nav .nav-links > li.active', count: 0)
   end
 
-  step 'the active main tab should be Activity' do
-    ensure_active_main_tab('Activity')
-  end
-
-  step 'the active sub tab should be Network' do
-    ensure_active_sub_tab('Network')
+  step 'the active sub tab should be Graph' do
+    ensure_active_sub_tab('Graph')
   end
 
   step 'the active sub tab should be Files' do
@@ -54,5 +46,17 @@ module SharedProjectTab
 
   step 'the active sub tab should be Commits' do
     ensure_active_sub_tab('Commits')
+  end
+
+  step 'the active sub tab should be Home' do
+    ensure_active_sub_tab('Home')
+  end
+
+  step 'the active sub tab should be Activity' do
+    ensure_active_sub_tab('Activity')
+  end
+
+  step 'the active sub tab should be Charts' do
+    ensure_active_sub_tab('Charts')
   end
 end

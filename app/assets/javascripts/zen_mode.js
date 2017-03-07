@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-unused-vars, consistent-return, camelcase, comma-dangle, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-unused-vars, consistent-return, camelcase, comma-dangle, max-len */
 /* global Dropzone */
 /* global Mousetrap */
 
@@ -6,11 +6,11 @@
 //
 /*= provides zen_mode:enter */
 /*= provides zen_mode:leave */
-//
-/*= require jquery.scrollTo */
-/*= require dropzone */
-/*= require mousetrap */
-/*= require mousetrap/pause */
+
+require('vendor/jquery.scrollTo');
+window.Dropzone = require('dropzone');
+require('mousetrap');
+require('mousetrap/plugins/pause/mousetrap-pause');
 
 //
 // ### Events
@@ -93,7 +93,5 @@
     };
 
     return ZenMode;
-
   })();
-
-}).call(this);
+}).call(window);

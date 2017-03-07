@@ -15,11 +15,11 @@ For the installations options please see [the installation page on the GitLab we
 
 ### Unsupported Unix distributions
 
-- OS X
 - Arch Linux
 - Fedora
-- Gentoo
 - FreeBSD
+- Gentoo
+- macOS
 
 On the above unsupported distributions is still possible to install GitLab yourself.
 Please see the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/installation/) for more information.
@@ -120,7 +120,12 @@ To change the Unicorn workers when you have the Omnibus package please see [the 
 
 ## Database
 
-If you want to run the database separately expect a size of about 1 MB per user.
+We currently support the following databases:
+
+- PostgreSQL (recommended)
+- MySQL/MariaDB
+
+If you want to run the database separately, expect a size of about 1 MB per user.
 
 ### PostgreSQL Requirements
 
@@ -128,7 +133,9 @@ Users using PostgreSQL must ensure the `pg_trgm` extension is loaded into every
 GitLab database. This extension can be enabled (using a PostgreSQL super user)
 by running the following query for every database:
 
-    CREATE EXTENSION pg_trgm;
+```
+CREATE EXTENSION pg_trgm;
+```
 
 On some systems you may need to install an additional package (e.g.
 `postgresql-contrib`) for this extension to become available.

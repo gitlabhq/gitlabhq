@@ -18,9 +18,9 @@ class GitHooksService
       end
     end
 
-    yield self
-
-    run_hook('post-receive')
+    yield(self).tap do
+      run_hook('post-receive')
+    end
   end
 
   private

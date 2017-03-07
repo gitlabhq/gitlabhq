@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe 'project routing' do
   before do
-    allow(Project).to receive(:find_with_namespace).and_return(false)
-    allow(Project).to receive(:find_with_namespace).with('gitlab/gitlabhq').and_return(true)
+    allow(Project).to receive(:find_by_full_path).and_return(false)
+    allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq').and_return(true)
   end
 
   # Shared examples for a resource inside a Project
@@ -27,35 +27,42 @@ describe 'project routing' do
   #     let(:actions)    { [:index] }
   #     let(:controller) { 'issues' }
   #   end
+  #
+  #   # Different controller name and path
+  #   it_behaves_like 'RESTful project resources' do
+  #     let(:controller) { 'pages_domains' }
+  #     let(:controller_path) { 'pages/domains' }
+  #   end
   shared_examples 'RESTful project resources' do
     let(:actions) { [:index, :create, :new, :edit, :show, :update, :destroy] }
+    let(:controller_path) { controller }
 
     it 'to #index' do
-      expect(get("/gitlab/gitlabhq/#{controller}")).to route_to("projects/#{controller}#index", namespace_id: 'gitlab', project_id: 'gitlabhq') if actions.include?(:index)
+      expect(get("/gitlab/gitlabhq/#{controller_path}")).to route_to("projects/#{controller}#index", namespace_id: 'gitlab', project_id: 'gitlabhq') if actions.include?(:index)
     end
 
     it 'to #create' do
-      expect(post("/gitlab/gitlabhq/#{controller}")).to route_to("projects/#{controller}#create", namespace_id: 'gitlab', project_id: 'gitlabhq') if actions.include?(:create)
+      expect(post("/gitlab/gitlabhq/#{controller_path}")).to route_to("projects/#{controller}#create", namespace_id: 'gitlab', project_id: 'gitlabhq') if actions.include?(:create)
     end
 
     it 'to #new' do
-      expect(get("/gitlab/gitlabhq/#{controller}/new")).to route_to("projects/#{controller}#new", namespace_id: 'gitlab', project_id: 'gitlabhq') if actions.include?(:new)
+      expect(get("/gitlab/gitlabhq/#{controller_path}/new")).to route_to("projects/#{controller}#new", namespace_id: 'gitlab', project_id: 'gitlabhq') if actions.include?(:new)
     end
 
     it 'to #edit' do
-      expect(get("/gitlab/gitlabhq/#{controller}/1/edit")).to route_to("projects/#{controller}#edit", namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1') if actions.include?(:edit)
+      expect(get("/gitlab/gitlabhq/#{controller_path}/1/edit")).to route_to("projects/#{controller}#edit", namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1') if actions.include?(:edit)
     end
 
     it 'to #show' do
-      expect(get("/gitlab/gitlabhq/#{controller}/1")).to route_to("projects/#{controller}#show", namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1') if actions.include?(:show)
+      expect(get("/gitlab/gitlabhq/#{controller_path}/1")).to route_to("projects/#{controller}#show", namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1') if actions.include?(:show)
     end
 
     it 'to #update' do
-      expect(put("/gitlab/gitlabhq/#{controller}/1")).to route_to("projects/#{controller}#update", namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1') if actions.include?(:update)
+      expect(put("/gitlab/gitlabhq/#{controller_path}/1")).to route_to("projects/#{controller}#update", namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1') if actions.include?(:update)
     end
 
     it 'to #destroy' do
-      expect(delete("/gitlab/gitlabhq/#{controller}/1")).to route_to("projects/#{controller}#destroy", namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1') if actions.include?(:destroy)
+      expect(delete("/gitlab/gitlabhq/#{controller_path}/1")).to route_to("projects/#{controller}#destroy", namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1') if actions.include?(:destroy)
     end
   end
 
@@ -86,13 +93,13 @@ describe 'project routing' do
       end
 
       context 'name with dot' do
-        before { allow(Project).to receive(:find_with_namespace).with('gitlab/gitlabhq.keys').and_return(true) }
+        before { allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq.keys').and_return(true) }
 
         it { expect(get('/gitlab/gitlabhq.keys')).to route_to('projects#show', namespace_id: 'gitlab', id: 'gitlabhq.keys') }
       end
 
       context 'with nested group' do
-        before { allow(Project).to receive(:find_with_namespace).with('gitlab/subgroup/gitlabhq').and_return(true) }
+        before { allow(Project).to receive(:find_by_full_path).with('gitlab/subgroup/gitlabhq').and_return(true) }
 
         it { expect(get('/gitlab/subgroup/gitlabhq')).to route_to('projects#show', namespace_id: 'gitlab/subgroup', id: 'gitlabhq') }
       end
@@ -113,7 +120,6 @@ describe 'project routing' do
     end
   end
 
-  # emojis_namespace_project_autocomplete_sources_path         GET /:project_id/autocomplete_sources/emojis(.:format)         projects/autocomplete_sources#emojis
   # members_namespace_project_autocomplete_sources_path        GET /:project_id/autocomplete_sources/members(.:format)        projects/autocomplete_sources#members
   # issues_namespace_project_autocomplete_sources_path         GET /:project_id/autocomplete_sources/issues(.:format)         projects/autocomplete_sources#issues
   # merge_requests_namespace_project_autocomplete_sources_path GET /:project_id/autocomplete_sources/merge_requests(.:format) projects/autocomplete_sources#merge_requests
@@ -121,7 +127,7 @@ describe 'project routing' do
   # milestones_namespace_project_autocomplete_sources_path     GET /:project_id/autocomplete_sources/milestones(.:format)     projects/autocomplete_sources#milestones
   # commands_namespace_project_autocomplete_sources_path       GET /:project_id/autocomplete_sources/commands(.:format)       projects/autocomplete_sources#commands
   describe Projects::AutocompleteSourcesController, 'routing' do
-    [:emojis, :members, :issues, :merge_requests, :labels, :milestones, :commands].each do |action|
+    [:members, :issues, :merge_requests, :labels, :milestones, :commands].each do |action|
       it "to ##{action}" do
         expect(get("/gitlab/gitlabhq/autocomplete_sources/#{action}")).to route_to("projects/autocomplete_sources##{action}", namespace_id: 'gitlab', project_id: 'gitlabhq')
       end
@@ -424,12 +430,22 @@ describe 'project routing' do
     end
   end
 
-  #         project_notes GET    /:project_id/notes(.:format)         notes#index
-  #                       POST   /:project_id/notes(.:format)         notes#create
-  #          project_note DELETE /:project_id/notes/:id(.:format)     notes#destroy
+  # project_noteable_notes GET    /:project_id/noteable/:target_type/:target_id/notes notes#index
+  #                        POST   /:project_id/notes(.:format)                        notes#create
+  #           project_note DELETE /:project_id/notes/:id(.:format)                    notes#destroy
   describe Projects::NotesController, 'routing' do
+    it 'to #index' do
+      expect(get('/gitlab/gitlabhq/noteable/issue/1/notes')).to route_to(
+        'projects/notes#index',
+        namespace_id: 'gitlab',
+        project_id: 'gitlabhq',
+        target_type: 'issue',
+        target_id: '1'
+      )
+    end
+
     it_behaves_like 'RESTful project resources' do
-      let(:actions)    { [:index, :create, :destroy] }
+      let(:actions)    { [:create, :destroy] }
       let(:controller) { 'notes' }
     end
   end
@@ -537,6 +553,22 @@ describe 'project routing' do
     it 'to #destroy' do
       expect(delete('/gitlab/gitlabhq/avatar')).to route_to(
         'projects/avatars#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    end
+  end
+
+  describe Projects::PagesDomainsController, 'routing' do
+    it_behaves_like 'RESTful project resources' do
+      let(:actions)    { [:show, :new, :create, :destroy] }
+      let(:controller) { 'pages_domains' }
+      let(:controller_path) { 'pages/domains' }
+    end
+
+    it 'to #destroy with a valid domain name' do
+      expect(delete('/gitlab/gitlabhq/pages/domains/my.domain.com')).to route_to('projects/pages_domains#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'my.domain.com')
+    end
+
+    it 'to #show with a valid domain' do
+      expect(get('/gitlab/gitlabhq/pages/domains/my.domain.com')).to route_to('projects/pages_domains#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'my.domain.com')
     end
   end
 end

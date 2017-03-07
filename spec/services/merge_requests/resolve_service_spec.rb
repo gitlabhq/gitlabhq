@@ -59,14 +59,19 @@ describe MergeRequests::ResolveService do
 
         it 'creates a commit with the correct parents' do
           expect(merge_request.source_branch_head.parents.map(&:id)).
-            to eq(['1450cd639e0bc6721eb02800169e464f212cde06',
-                   '824be604a34828eb682305f0d963056cfac87b2d'])
+            to eq(%w(1450cd639e0bc6721eb02800169e464f212cde06
+                     824be604a34828eb682305f0d963056cfac87b2d))
         end
       end
 
       context 'when the source project is a fork and does not contain the HEAD of the target branch' do
         let!(:target_head) do
-          project.repository.commit_file(user, 'new-file-in-target', '', 'Add new file in target', 'conflict-start', false)
+          project.repository.create_file(
+            user,
+            'new-file-in-target',
+            '',
+            message: 'Add new file in target',
+            branch_name: 'conflict-start')
         end
 
         before do
@@ -119,8 +124,8 @@ describe MergeRequests::ResolveService do
 
       it 'creates a commit with the correct parents' do
         expect(merge_request.source_branch_head.parents.map(&:id)).
-          to eq(['1450cd639e0bc6721eb02800169e464f212cde06',
-                 '824be604a34828eb682305f0d963056cfac87b2d'])
+          to eq(%w(1450cd639e0bc6721eb02800169e464f212cde06
+                   824be604a34828eb682305f0d963056cfac87b2d))
       end
 
       it 'sets the content to the content given' do

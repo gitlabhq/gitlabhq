@@ -161,20 +161,42 @@ class Admin::UsersController < Admin::ApplicationController
     @user ||= User.find_by!(username: params[:id])
   end
 
-  def user_params
-    params.require(:user).permit(
-      :email, :remember_me, :bio, :name, :username,
-      :skype, :linkedin, :twitter, :website_url, :color_scheme_id, :theme_id, :force_random_password,
-      :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key, :hide_no_password,
-      :projects_limit, :can_create_group, :admin, :key_id, :external
-    )
-  end
-
   def redirect_back_or_admin_user(options = {})
     redirect_back_or_default(default: default_route, options: options)
   end
 
   def default_route
     [:admin, @user]
+  end
+
+  def user_params
+    params.require(:user).permit(user_params_ce)
+  end
+
+  def user_params_ce
+    [
+      :access_level,
+      :avatar,
+      :bio,
+      :can_create_group,
+      :color_scheme_id,
+      :email,
+      :extern_uid,
+      :external,
+      :force_random_password,
+      :hide_no_password,
+      :hide_no_ssh_key,
+      :key_id,
+      :linkedin,
+      :name,
+      :password_expires_at,
+      :projects_limit,
+      :provider,
+      :remember_me,
+      :skype,
+      :twitter,
+      :username,
+      :website_url
+    ]
   end
 end

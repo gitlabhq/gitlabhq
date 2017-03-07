@@ -2,20 +2,13 @@ class Projects::PipelinesSettingsController < Projects::ApplicationController
   before_action :authorize_admin_pipeline!
 
   def show
-    @ref = params[:ref] || @project.default_branch || 'master'
-
-    @badges = [Gitlab::Badge::Build::Status,
-               Gitlab::Badge::Coverage::Report]
-
-    @badges.map! do |badge|
-      badge.new(@project, @ref).metadata
-    end
+    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project, params: params)
   end
 
   def update
     if @project.update_attributes(update_params)
       flash[:notice] = "CI/CD Pipelines settings for '#{@project.name}' were successfully updated."
-      redirect_to namespace_project_pipelines_settings_path(@project.namespace, @project)
+      redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
     else
       render 'show'
     end

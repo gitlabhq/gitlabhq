@@ -10,14 +10,12 @@ class RenameReservedProjectNames < ActiveRecord::Migration
 
   KNOWN_PATHS = %w(.well-known
                    all
-                   assets
                    blame
                    blob
                    commits
                    create
                    create_dir
                    edit
-                   files
                    files
                    find_file
                    groups
@@ -26,11 +24,8 @@ class RenameReservedProjectNames < ActiveRecord::Migration
                    logs_tree
                    merge_requests
                    new
-                   new
                    preview
-                   profile
                    projects
-                   public
                    raw
                    repository
                    robots.txt
@@ -42,7 +37,7 @@ class RenameReservedProjectNames < ActiveRecord::Migration
                    unsubscribes
                    update
                    users
-                   wikis)
+                   wikis).freeze
 
   def up
     queues = Array.new(THREAD_COUNT) { Queue.new }

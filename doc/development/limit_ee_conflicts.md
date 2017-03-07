@@ -2,19 +2,26 @@
 
 This guide contains best-practices for avoiding conflicts between CE and EE.
 
-## Context
+## Daily CE Upstream merge
 
-Usually, GitLab Community Edition is merged into the Enterprise Edition once a
-week. During these merges, it's very common to get conflicts when some changes
-in CE do not apply cleanly to EE.
+GitLab Community Edition is merged daily into the Enterprise Edition (look for
+the [`CE Upstream` merge requests]). The daily merge is currently done manually
+by four individuals.
 
-There are a few things that can help you as a developer to:
+**If a developer pings you in a `CE Upstream` merge request for help with
+resolving conflicts, please help them because it means that you didn't do your
+job to reduce the conflicts nor to ease their resolution in the first place!**
 
-- know when your merge request to CE will conflict when merged to EE
-- avoid such conflicts in the first place
-- ease future conflict resolutions if conflict is inevitable
+To avoid the conflicts beforehand when working on CE, there are a few tools and
+techniques that can help you:
 
-## Check the `rake ee_compat_check` in your merge requests
+- know what are the usual types of conflicts and how to prevent them
+- the CI `rake ee_compat_check` job tells you if you need to open an EE-version
+  of your CE merge request
+
+[`CE Upstream` merge requests]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests?label_name%5B%5D=CE+upstream
+
+## Check the status of the CI `rake ee_compat_check` job
 
 For each commit (except on `master`), the `rake ee_compat_check` CI job tries to
 detect if the current branch's changes will conflict during the CE->EE merge.
@@ -43,6 +50,15 @@ Notes:
   asking a GitLab developer to do it once the merge request is merged.
 - If you branch is more than 500 commits behind `master`, the job will fail and
   you should rebase your branch upon latest `master`.
+- Code reviews for merge requests often consist of multiple iterations of
+  feedback and fixes. There is no need to update your EE MR after each
+  iteration. Instead, create an EE MR as soon as you see the
+  `rake ee_compat_check` job failing. After you receive the final acceptance
+  from a Maintainer (but before the CE MR is merged) update the EE MR.
+  This helps to identify significant conflicts sooner, but also reduces the
+  number of times you have to resolve conflicts.
+- You can use [`git rerere`](https://git-scm.com/blog/2010/03/08/rerere.html)
+  to avoid resolving the same conflicts multiple times.
 
 ## Possible type of conflicts
 

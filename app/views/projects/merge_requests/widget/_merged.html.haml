@@ -7,28 +7,46 @@
         by #{link_to_member(@project, @merge_request.merge_event.author, avatar: true)}
         #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}
     - if !@merge_request.source_branch_exists? || params[:deleted_source_branch]
-      %p
-        The changes were merged into
-        #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
-        The source branch has been removed.
+      .remove-message-pipes
+        %ul
+          %li
+            %span
+              The changes were merged into
+              #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
+          %li
+            %span
+              The source branch has been removed.
       = render 'projects/merge_requests/widget/merged_buttons'
     - elsif @merge_request.can_remove_source_branch?(current_user)
-      .remove_source_branch_widget
-        %p
-          The changes were merged into
-          #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
-          You can remove the source branch now.
+      .remove_source_branch_widget.remove-message-pipes
+        %ul
+          %li
+            %span
+              The changes were merged into
+              #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
+          %li
+            %span
+              You can remove the source branch now.
         = render 'projects/merge_requests/widget/merged_buttons', source_branch_exists: true
-      .remove_source_branch_widget.failed.hide
-        %p
-          Failed to remove source branch '#{@merge_request.source_branch}'.
-
-      .remove_source_branch_in_progress.hide
-        %p
-          = icon('spinner spin')
-          Removing source branch '#{@merge_request.source_branch}'. Please wait, this page will be automatically reloaded.
+      .remove_source_branch_widget.failed.remove-message-pipes.hide
+        %ul
+          %li
+            %span
+              Failed to remove source branch '#{@merge_request.source_branch}'.
+      .remove_source_branch_in_progress.remove-message-pipes.hide
+        %ul
+          %li
+            %span
+              = icon('spinner spin')
+              Removing source branch '#{@merge_request.source_branch}'.
+          %li
+            %span
+              Please wait, this page will be automatically reloaded.
     - else
-      %p
-        The changes were merged into
-        #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
-      = render 'projects/merge_requests/widget/merged_buttons'
+      .remove-message-pipes
+        %ul
+          %li
+            %span
+              The changes were merged into
+              #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
+        = render 'projects/merge_requests/widget/merged_buttons'

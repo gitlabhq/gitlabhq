@@ -35,7 +35,8 @@ module Banzai
           src: element['src'],
           width: '400',
           controls: true,
-          'data-setup' => '{}')
+          'data-setup' => '{}',
+          'data-title' => element['title'] || element['alt'])
 
         link = doc.document.create_element(
           'a',

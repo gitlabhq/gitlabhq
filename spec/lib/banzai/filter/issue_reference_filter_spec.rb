@@ -311,7 +311,7 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     end
   end
 
-  describe '#issues_per_Project' do
+  describe '#issues_per_project' do
     context 'using an internal issue tracker' do
       it 'returns a Hash containing the issues per project' do
         doc = Nokogiri::HTML.fragment('')
@@ -344,6 +344,28 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
         expect(filter.issues_per_project[project][1]).
           to be_an_instance_of(ExternalIssue)
       end
+    end
+  end
+
+  describe '.references_in' do
+    let(:merge_request)  { create(:merge_request) }
+
+    it 'yields valid references' do
+      expect do |b|
+        described_class.references_in(issue.to_reference, &b)
+      end.to yield_with_args(issue.to_reference, issue.iid, nil, nil, MatchData)
+    end
+
+    it "doesn't yield invalid references" do
+      expect do |b|
+        described_class.references_in('#0', &b)
+      end.not_to yield_control
+    end
+
+    it "doesn't yield unsupported references" do
+      expect do |b|
+        described_class.references_in(merge_request.to_reference, &b)
+      end.not_to yield_control
     end
   end
 end

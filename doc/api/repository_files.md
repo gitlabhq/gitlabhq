@@ -15,7 +15,7 @@ GET /projects/:id/repository/files
 ```
 
 ```bash
-curl --request GET --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v3/projects/13083/repository/files?file_path=app/models/key.rb&ref=master'
+curl --request GET --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files?file_path=app/models/key.rb&ref=master'
 ```
 
 Example response:
@@ -46,7 +46,7 @@ POST /projects/:id/repository/files
 ```
 
 ```bash
-curl --request POST --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v3/projects/13083/repository/files?file_path=app/project.rb&branch_name=master&author_email=author%40example.com&author_name=Firstname%20Lastname&content=some%20content&commit_message=create%20a%20new%20file'
+curl --request POST --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files?file_path=app/project.rb&branch=master&author_email=author%40example.com&author_name=Firstname%20Lastname&content=some%20content&commit_message=create%20a%20new%20file'
 ```
 
 Example response:
@@ -54,14 +54,14 @@ Example response:
 ```json
 {
   "file_name": "app/project.rb",
-  "branch_name": "master"
+  "branch": "master"
 }
 ```
 
 Parameters:
 
 - `file_path` (required) - Full path to new file. Ex. lib/class.rb
-- `branch_name` (required) - The name of branch
+- `branch` (required) - The name of branch
 - `encoding` (optional) - Change encoding to 'base64'. Default is text.
 - `author_email` (optional) - Specify the commit author's email address
 - `author_name` (optional) - Specify the commit author's name
@@ -75,7 +75,7 @@ PUT /projects/:id/repository/files
 ```
 
 ```bash
-curl --request PUT --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v3/projects/13083/repository/files?file_path=app/project.rb&branch_name=master&author_email=author%40example.com&author_name=Firstname%20Lastname&content=some%20other%20content&commit_message=update%20file'
+curl --request PUT --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files?file_path=app/project.rb&branch=master&author_email=author%40example.com&author_name=Firstname%20Lastname&content=some%20other%20content&commit_message=update%20file'
 ```
 
 Example response:
@@ -83,14 +83,14 @@ Example response:
 ```json
 {
   "file_name": "app/project.rb",
-  "branch_name": "master"
+  "branch": "master"
 }
 ```
 
 Parameters:
 
 - `file_path` (required) - Full path to file. Ex. lib/class.rb
-- `branch_name` (required) - The name of branch
+- `branch` (required) - The name of branch
 - `encoding` (optional) - Change encoding to 'base64'. Default is text.
 - `author_email` (optional) - Specify the commit author's email address
 - `author_name` (optional) - Specify the commit author's name
@@ -113,7 +113,7 @@ DELETE /projects/:id/repository/files
 ```
 
 ```bash
-curl --request PUT --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v3/projects/13083/repository/files?file_path=app/project.rb&branch_name=master&author_email=author%40example.com&author_name=Firstname%20Lastname&commit_message=delete%20file'
+curl --request DELETE --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files?file_path=app/project.rb&branch=master&author_email=author%40example.com&author_name=Firstname%20Lastname&commit_message=delete%20file'
 ```
 
 Example response:
@@ -121,14 +121,14 @@ Example response:
 ```json
 {
   "file_name": "app/project.rb",
-  "branch_name": "master"
+  "branch": "master"
 }
 ```
 
 Parameters:
 
 - `file_path` (required) - Full path to file. Ex. lib/class.rb
-- `branch_name` (required) - The name of branch
+- `branch` (required) - The name of branch
 - `author_email` (optional) - Specify the commit author's email address
 - `author_name` (optional) - Specify the commit author's name
 - `commit_message` (required) - Commit message

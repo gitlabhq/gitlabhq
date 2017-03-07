@@ -7,9 +7,9 @@
     = commit_author_link(@commit)
   .header-action-buttons
     - if can?(current_user, :update_pipeline, @pipeline.project)
-      - if @pipeline.builds.latest.failed.any?(&:retryable?)
-        = link_to "Retry failed", retry_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), class: 'btn btn-inverted-secondary', method: :post
-      - if @pipeline.builds.running_or_pending.any?
+      - if @pipeline.retryable?
+        = link_to "Retry", retry_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), class: 'js-retry-button btn btn-inverted-secondary', method: :post
+      - if @pipeline.cancelable?
         = link_to "Cancel running", cancel_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
 
 - if @commit
@@ -23,9 +23,9 @@
 .info-well
   - if @commit.status
     .well-segment.pipeline-info
-      %div{ class: "icon-container ci-status-icon-#{@commit.status}" }
-        = ci_icon_for_status(@commit.status)
-      = pluralize @pipeline.statuses.count(:id), "build"
+      .icon-container
+        = icon('clock-o')
+      = pluralize @pipeline.statuses.count(:id), "job"
       - if @pipeline.ref
         from
         = link_to @pipeline.ref, namespace_project_commits_path(@project.namespace, @project, @pipeline.ref), class: "monospace"

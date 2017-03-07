@@ -147,7 +147,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
   describe '#nodes_user_can_reference' do
     context 'when the link has a data-author attribute' do
       it 'returns the nodes when the user is a member of the project' do
-        other_project = create(:project)
+        other_project = create(:empty_project)
         other_project.team << [user, :developer]
 
         link['data-project'] = other_project.id.to_s
@@ -164,7 +164,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
       end
 
       it 'returns an empty Array when the user could not be found' do
-        other_project = create(:project)
+        other_project = create(:empty_project)
 
         link['data-project'] = other_project.id.to_s
         link['data-author'] = ''
@@ -173,7 +173,7 @@ describe Banzai::ReferenceParser::UserParser, lib: true do
       end
 
       it 'returns an empty Array when the user is not a team member' do
-        other_project = create(:project)
+        other_project = create(:empty_project)
 
         link['data-project'] = other_project.id.to_s
         link['data-author'] = user.id.to_s

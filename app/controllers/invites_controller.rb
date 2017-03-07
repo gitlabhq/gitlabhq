@@ -42,9 +42,7 @@ class InvitesController < ApplicationController
     @token = params[:id]
     @member = Member.find_by_invite_token(@token)
 
-    unless @member
-      render_404 and return
-    end
+    return render_404 unless @member
 
     @member
   end

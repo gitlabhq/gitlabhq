@@ -4,16 +4,15 @@ describe Gitlab::Template::MergeRequestTemplate do
   subject { described_class }
 
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
-  let(:file_path_1) { '.gitlab/merge_request_templates/bug.md' }
-  let(:file_path_2) { '.gitlab/merge_request_templates/template_test.md' }
-  let(:file_path_3) { '.gitlab/merge_request_templates/feature_proposal.md' }
 
-  before do
-    project.add_user(user, Gitlab::Access::MASTER)
-    project.repository.commit_file(user, file_path_1, "something valid", "test 3", "master", false)
-    project.repository.commit_file(user, file_path_2, "template_test", "test 1", "master", false)
-    project.repository.commit_file(user, file_path_3, "feature_proposal", "test 2", "master", false)
+  let(:project) do
+    create(:project,
+      :repository,
+      create_template: {
+        user: user,
+        access: Gitlab::Access::MASTER,
+        path: 'merge_request_templates'
+      })
   end
 
   describe '.all' do

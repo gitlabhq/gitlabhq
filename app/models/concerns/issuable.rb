@@ -13,6 +13,12 @@ module Issuable
   include StripAttribute
   include Awardable
   include Taskable
+  include TimeTrackable
+
+  # This object is used to gather issuable meta data for displaying
+  # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
+  # lists avoiding n+1 queries and improving performance.
+  IssuableMeta = Struct.new(:upvotes, :downvotes, :notes_count, :merge_requests_count)
 
   included do
     cache_markdown_field :title, pipeline: :single_line
@@ -40,6 +46,17 @@ module Issuable
 
     has_one :metrics
 
+    delegate :name,
+             :email,
+             to: :author,
+             prefix: true
+
+    delegate :name,
+             :email,
+             to: :assignee,
+             allow_nil: true,
+             prefix: true
+
     validates :author, presence: true
     validates :title, presence: true, length: { maximum: 255 }
 
@@ -62,20 +79,9 @@ module Issuable
 
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
     scope :join_project, -> { joins(:project) }
-    scope :inc_notes_with_associations, -> { includes(notes: [ :project, :author, :award_emoji ]) }
+    scope :inc_notes_with_associations, -> { includes(notes: [:project, :author, :award_emoji]) }
     scope :references_project, -> { references(:project) }
     scope :non_archived, -> { join_project.where(projects: { archived: false }) }
-
-    delegate :name,
-             :email,
-             to: :author,
-             prefix: true
-
-    delegate :name,
-             :email,
-             to: :assignee,
-             allow_nil: true,
-             prefix: true
 
     attr_mentionable :title, pipeline: :single_line
     attr_mentionable :description
@@ -94,8 +100,8 @@ module Issuable
     def update_assignee_cache_counts
       # make sure we flush the cache for both the old *and* new assignees(if they exist)
       previous_assignee = User.find_by_id(assignee_id_was) if assignee_id_was
-      previous_assignee.update_cache_counts if previous_assignee
-      assignee.update_cache_counts if assignee
+      previous_assignee&.update_cache_counts
+      assignee&.update_cache_counts
     end
 
     # We want to use optimistic lock for cases when only title or description are involved
@@ -176,7 +182,7 @@ module Issuable
     def grouping_columns(sort)
       grouping_columns = [arel_table[:id]]
 
-      if ["milestone_due_desc", "milestone_due_asc"].include?(sort)
+      if %w(milestone_due_desc milestone_due_asc).include?(sort)
         milestone_table = Milestone.arel_table
         grouping_columns << milestone_table[:id]
         grouping_columns << milestone_table[:due_date]
@@ -229,7 +235,7 @@ module Issuable
       # DEPRECATED
       repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
     }
-    hook_data.merge!(assignee: assignee.hook_attrs) if assignee
+    hook_data[:assignee] = assignee.hook_attrs if assignee
 
     hook_data
   end

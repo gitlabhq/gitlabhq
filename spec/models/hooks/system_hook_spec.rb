@@ -4,7 +4,7 @@ describe SystemHook, models: true do
   describe "execute" do
     let(:system_hook) { create(:system_hook) }
     let(:user)        { create(:user) }
-    let(:project)     { create(:project, namespace: user.namespace) }
+    let(:project)     { create(:empty_project, namespace: user.namespace) }
     let(:group)       { create(:group) }
 
     before do

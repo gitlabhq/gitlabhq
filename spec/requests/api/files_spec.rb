@@ -3,8 +3,8 @@ require 'spec_helper'
 describe API::Files, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
-  let!(:project) { create(:project, namespace: user.namespace ) }
-  let(:guest) { create(:user).tap { |u| create(:project_member, :guest, user: u, project: project) } }
+  let!(:project) { create(:project, :repository, namespace: user.namespace ) }
+  let(:guest) { create(:user) { |u| project.add_guest(u) } }
   let(:file_path) { 'files/ruby/popen.rb' }
   let(:params) do
     {
@@ -104,7 +104,7 @@ describe API::Files, api: true  do
     let(:valid_params) do
       {
         file_path: 'newfile.rb',
-        branch_name: 'master',
+        branch: 'master',
         content: 'puts 8',
         commit_message: 'Added newfile'
       }
@@ -127,7 +127,7 @@ describe API::Files, api: true  do
     end
 
     it "returns a 400 if editor fails to create file" do
-      allow_any_instance_of(Repository).to receive(:commit_file).
+      allow_any_instance_of(Repository).to receive(:create_file).
         and_return(false)
 
       post api("/projects/#{project.id}/repository/files", user), valid_params
@@ -147,13 +147,27 @@ describe API::Files, api: true  do
         expect(last_commit.author_name).to eq(author_name)
       end
     end
+
+    context 'when the repo is empty' do
+      let!(:project) { create(:project_empty_repo, namespace: user.namespace ) }
+
+      it "creates a new file in project repo" do
+        post api("/projects/#{project.id}/repository/files", user), valid_params
+
+        expect(response).to have_http_status(201)
+        expect(json_response['file_path']).to eq('newfile.rb')
+        last_commit = project.repository.commit.raw
+        expect(last_commit.author_email).to eq(user.email)
+        expect(last_commit.author_name).to eq(user.name)
+      end
+    end
   end
 
   describe "PUT /projects/:id/repository/files" do
     let(:valid_params) do
       {
         file_path: file_path,
-        branch_name: 'master',
+        branch: 'master',
         content: 'puts 8',
         commit_message: 'Changed file'
       }
@@ -193,7 +207,7 @@ describe API::Files, api: true  do
     let(:valid_params) do
       {
         file_path: file_path,
-        branch_name: 'master',
+        branch: 'master',
         commit_message: 'Changed file'
       }
     end
@@ -201,11 +215,7 @@ describe API::Files, api: true  do
     it "deletes existing file in project repo" do
       delete api("/projects/#{project.id}/repository/files", user), valid_params
 
-      expect(response).to have_http_status(200)
-      expect(json_response['file_path']).to eq(file_path)
-      last_commit = project.repository.commit.raw
-      expect(last_commit.author_email).to eq(user.email)
-      expect(last_commit.author_name).to eq(user.name)
+      expect(response).to have_http_status(204)
     end
 
     it "returns a 400 bad request if no params given" do
@@ -215,7 +225,7 @@ describe API::Files, api: true  do
     end
 
     it "returns a 400 if fails to create file" do
-      allow_any_instance_of(Repository).to receive(:remove_file).and_return(false)
+      allow_any_instance_of(Repository).to receive(:delete_file).and_return(false)
 
       delete api("/projects/#{project.id}/repository/files", user), valid_params
 
@@ -228,10 +238,7 @@ describe API::Files, api: true  do
 
         delete api("/projects/#{project.id}/repository/files", user), valid_params
 
-        expect(response).to have_http_status(200)
-        last_commit = project.repository.commit.raw
-        expect(last_commit.author_email).to eq(author_email)
-        expect(last_commit.author_name).to eq(author_name)
+        expect(response).to have_http_status(204)
       end
     end
   end
@@ -241,7 +248,7 @@ describe API::Files, api: true  do
     let(:put_params) do
       {
         file_path: file_path,
-        branch_name: 'master',
+        branch: 'master',
         content: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=',
         commit_message: 'Binary file with a \n should not be touched',
         encoding: 'base64'

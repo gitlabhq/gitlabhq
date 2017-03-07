@@ -25,7 +25,7 @@ This is the universal solution which works with any type of executor
 
 1. Create a new SSH key pair with [ssh-keygen][]
 2. Add the private key as a **Secret Variable** to the project
-3. Run the [ssh-agent][] during build to load the private key.
+3. Run the [ssh-agent][] during job to load the private key.
 
 ## SSH keys when using the Docker executor
 
@@ -77,7 +77,7 @@ SSH key.
 You can generate the SSH key from the machine that GitLab Runner is installed
 on, and use that key for all projects that are run on this machine.
 
-First, you need to login to the server that runs your builds.
+First, you need to login to the server that runs your jobs.
 
 Then from the terminal login as the `gitlab-runner` user and generate the SSH
 key pair as described in the [SSH keys documentation](../../ssh/README.md).
@@ -103,7 +103,7 @@ that runs on [GitLab.com](https://gitlab.com) using our publicly available
 [shared runners](../runners/README.md).
 
 Want to hack on it? Simply fork it, commit and push your changes. Within a few
-moments the changes will be picked by a public runner and the build will begin.
+moments the changes will be picked by a public runner and the job will begin.
 
 [ssh-keygen]: http://linux.die.net/man/1/ssh-keygen
 [ssh-agent]: http://linux.die.net/man/1/ssh-agent

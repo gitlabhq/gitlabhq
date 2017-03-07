@@ -50,4 +50,23 @@ describe 'projects/pipelines/_stage', :view do
       expect(rendered).to have_text 'test:build', count: 1
     end
   end
+
+  context 'when there are multiple builds' do
+    before do
+      HasStatus::AVAILABLE_STATUSES.each do |status|
+        create_build(status)
+      end
+    end
+
+    it 'shows them in order' do
+      render
+
+      expect(rendered).to have_text(HasStatus::ORDERED_STATUSES.join(" "))
+    end
+
+    def create_build(status)
+      create(:ci_build, name: status, status: status,
+                        pipeline: pipeline, stage: stage.name)
+    end
+  end
 end

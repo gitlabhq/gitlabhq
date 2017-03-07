@@ -165,4 +165,10 @@ module DiffHelper
 
     link_to "#{hide_whitespace? ? 'Show' : 'Hide'} whitespace changes", url, class: options[:class]
   end
+
+  def render_overflow_warning?(diff_files)
+    diffs = @merge_request_diff.presence || diff_files
+
+    diffs.overflow?
+  end
 end

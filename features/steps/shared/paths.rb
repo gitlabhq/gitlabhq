@@ -191,10 +191,6 @@ module SharedPaths
     visit admin_background_jobs_path
   end
 
-  step 'I visit admin groups page' do
-    visit admin_groups_path
-  end
-
   step 'I visit admin teams page' do
     visit admin_teams_path
   end
@@ -236,7 +232,7 @@ module SharedPaths
     visit stats_namespace_project_repository_path(@project.namespace, @project)
   end
 
-  step "I visit my project's network page" do
+  step "I visit my project's graph page" do
     # Stub Graph max_size to speed up test (10 commits vs. 650)
     Network::Graph.stub(max_count: 10)
 
@@ -260,7 +256,7 @@ module SharedPaths
   end
 
   step 'I visit project hooks page' do
-    visit namespace_project_hooks_path(@project.namespace, @project)
+    visit namespace_project_settings_integrations_path(@project.namespace, @project)
   end
 
   step 'I visit project deploy keys page' do

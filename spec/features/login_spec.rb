@@ -25,6 +25,27 @@ feature 'Login', feature: true do
 
       expect(current_path).to eq root_path
     end
+
+    it 'does not show flash messages when login page' do
+      visit root_path
+      expect(page).not_to have_content('You need to sign in or sign up before continuing.')
+    end
+  end
+
+  describe 'with a blocked account' do
+    it 'prevents the user from logging in' do
+      user = create(:user, :blocked)
+
+      login_with(user)
+
+      expect(page).to have_content('Your account has been blocked.')
+    end
+
+    it 'does not update Devise trackable attributes' do
+      user = create(:user, :blocked)
+
+      expect { login_with(user) }.not_to change { user.reload.sign_in_count }
+    end
   end
 
   describe 'with two-factor authentication' do

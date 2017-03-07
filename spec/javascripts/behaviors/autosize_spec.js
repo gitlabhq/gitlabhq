@@ -1,12 +1,12 @@
-/* eslint-disable space-before-function-paren, no-var, comma-dangle, no-return-assign, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, no-var, comma-dangle, no-return-assign, max-len */
 
-/*= require behaviors/autosize */
+require('~/behaviors/autosize');
 
 (function() {
   describe('Autosize behavior', function() {
     var load;
     beforeEach(function() {
-      return fixture.set('<textarea class="js-autosize" style="resize: vertical"></textarea>');
+      return setFixtures('<textarea class="js-autosize" style="resize: vertical"></textarea>');
     });
     it('does not overwrite the resize property', function() {
       load();
@@ -15,8 +15,7 @@
       });
     });
     return load = function() {
-      return $(document).trigger('page:load');
+      return $(document).trigger('load');
     };
   });
-
-}).call(this);
+}).call(window);

@@ -3,12 +3,12 @@
 - page_title "Boards"
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('boards/boards_bundle.js')
-  = page_specific_javascript_tag('boards/test_utils/simulate_drag.js') if Rails.env.test?
+  = page_specific_javascript_bundle_tag('common_vue')
+  = page_specific_javascript_bundle_tag('boards')
+  = page_specific_javascript_bundle_tag('simulate_drag') if Rails.env.test?
 
   %script#js-board-template{ type: "text/x-template" }= render "projects/boards/components/board"
   %script#js-board-list-template{ type: "text/x-template" }= render "projects/boards/components/board_list"
-  %script#js-board-list-card{ type: "text/x-template" }= render "projects/boards/components/card"
 
 = render "projects/issues/head"
 
@@ -24,5 +24,13 @@
       ":list" => "list",
       ":disabled" => "disabled",
       ":issue-link-base" => "issueLinkBase",
+      ":root-path" => "rootPath",
       ":key" => "_uid" }
   = render "projects/boards/components/sidebar"
+  %board-add-issues-modal{ "blank-state-image" => render('shared/empty_states/icons/issues.svg'),
+    "new-issue-path" => new_namespace_project_issue_path(@project.namespace, @project),
+    "milestone-path" => milestones_filter_dropdown_path,
+    "label-path" => labels_filter_path,
+    ":issue-link-base" => "issueLinkBase",
+    ":root-path" => "rootPath",
+    ":project-id" => @project.try(:id) }
