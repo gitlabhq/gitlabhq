@@ -47,4 +47,4 @@ function spreadString(str) {
   return arr;
 }
 
-module.exports = spreadString;
+export default spreadString;
