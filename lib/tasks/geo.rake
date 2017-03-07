@@ -41,7 +41,7 @@ namespace :geo do
   namespace :config do
     task :check do
       unless File.exist?(Rails.root.join('config/database_geo.yml'))
-        abort('You should run these tasks only when GitLab Geo is enabled, and only if it is a secondary node')
+        abort('You should run these tasks only when GitLab Geo is enabled.')
       end
     end
 
