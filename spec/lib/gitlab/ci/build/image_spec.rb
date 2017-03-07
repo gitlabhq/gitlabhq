@@ -10,18 +10,27 @@ describe Gitlab::Ci::Build::Image do
       let(:image_name) { 'ruby:2.1' }
       let(:job) { create(:ci_build, options: { image: image_name } ) }
 
-      it { is_expected.to be_kind_of(described_class) }
-      it { expect(subject.name).to eq(image_name) }
+      it 'fabricates an object of the proper class' do
+        is_expected.to be_kind_of(described_class)
+      end
+
+      it 'populates fabricated object with the proper name attribute' do
+        expect(subject.name).to eq(image_name)
+      end
 
       context 'when image name is empty' do
         let(:image_name) { '' }
 
-        it { is_expected.to eq(nil) }
+        it 'does not fabricate an object' do
+          is_expected.to be_nil
+        end
       end
     end
 
     context 'when image is not defined in job' do
-      it { is_expected.to eq(nil) }
+      it 'does not fabricate an object' do
+        is_expected.to be_nil
+      end
     end
   end
 
@@ -32,21 +41,27 @@ describe Gitlab::Ci::Build::Image do
       let(:service_image_name) { 'postgres' }
       let(:job) { create(:ci_build, options: { services: [service_image_name] }) }
 
-      it { is_expected.to be_kind_of(Array) }
-      it { is_expected.not_to be_empty }
-      it { expect(subject[0].name).to eq(service_image_name) }
+      it 'fabricates an non-empty array of objects' do
+        is_expected.to be_kind_of(Array)
+        is_expected.not_to be_empty
+        expect(subject.first.name).to eq(service_image_name)
+      end
 
       context 'when service image name is empty' do
         let(:service_image_name) { '' }
 
-        it { is_expected.to be_kind_of(Array) }
-        it { is_expected.to be_empty }
+        it 'fabricates an empty array' do
+          is_expected.to be_kind_of(Array)
+          is_expected.to be_empty
+        end
       end
     end
 
     context 'when services are not defined in job' do
-      it { is_expected.to be_kind_of(Array) }
-      it { is_expected.to be_empty }
+      it 'fabricates an empty array' do
+        is_expected.to be_kind_of(Array)
+        is_expected.to be_empty
+      end
     end
   end
 end

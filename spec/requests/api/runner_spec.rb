@@ -155,7 +155,10 @@ describe API::Runner do
     let(:project) { create(:empty_project, shared_runners_enabled: false) }
     let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
     let(:runner) { create(:ci_runner) }
-    let!(:job) { create(:ci_build, :artifacts, :extended_options, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, commands: "ls\ndate") }
+    let!(:job) do
+      create(:ci_build, :artifacts, :extended_options,
+             pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, commands: "ls\ndate")
+    end
 
     before { project.runners << runner }
 
@@ -283,6 +286,7 @@ describe API::Runner do
               'project_id' => job.project.id,
               'project_name' => job.project.name }
           end
+
           let(:expected_git_info) do
             { 'repo_url' => job.repo_url,
               'ref' => job.ref,
@@ -290,6 +294,7 @@ describe API::Runner do
               'before_sha' => job.before_sha,
               'ref_type' => 'branch' }
           end
+
           let(:expected_steps) do
             [{ 'name' => 'script',
                'script' => %w(ls date),
@@ -302,11 +307,13 @@ describe API::Runner do
                'when' => 'always',
                'allow_failure' => true }]
           end
+
           let(:expected_variables) do
             [{ 'key' => 'CI_BUILD_NAME', 'value' => 'spinach', 'public' => true },
              { 'key' => 'CI_BUILD_STAGE', 'value' => 'test', 'public' => true },
              { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true }]
           end
+
           let(:expected_artifacts) do
             [{ 'name' => 'artifacts_file',
                'untracked' => false,
@@ -314,13 +321,14 @@ describe API::Runner do
                'when' => 'always',
                'expire_in' => '7d' }]
           end
+
           let(:expected_cache) do
             [{ 'key' => 'cache_key',
                'untracked' => false,
                'paths' => ['vendor/*'] }]
           end
 
-          it 'starts a job' do
+          it 'picks a job' do
             request_job info: { platform: :darwin }
 
             expect(response).to have_http_status(201)

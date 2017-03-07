@@ -6,7 +6,9 @@ module Gitlab
         WHEN_ON_SUCCESS = 'on_success'.freeze
         WHEN_ALWAYS = 'always'.freeze
 
-        attr_reader :name, :script, :timeout, :when, :allow_failure
+        attr_reader :name
+        attr_writer :script
+        attr_accessor :timeout, :when, :allow_failure
 
         class << self
           def from_commands(job)
@@ -25,7 +27,7 @@ module Gitlab
               step.script = after_script
               step.timeout = job.timeout
               step.when = WHEN_ALWAYS
-              step.allow_failure_on
+              step.allow_failure = true
             end
           end
         end
@@ -35,20 +37,8 @@ module Gitlab
           @allow_failure = false
         end
 
-        def script=(script)
-          @script = script.split("\n")
-        end
-
-        def timeout=(timeout)
-          @timeout = timeout
-        end
-
-        def when=(when_condition)
-          @when = when_condition
-        end
-
-        def allow_failure_on
-          @allow_failure = true
+        def script
+          @script.split("\n")
         end
       end
     end

@@ -115,7 +115,7 @@ module API
         end
       end
 
-      desc 'Appends a patch to the job.trace' do
+      desc 'Appends a patch to the job trace' do
         http_codes [[202, 'Trace was patched'],
                     [400, 'Missing Content-Range header'],
                     [403, 'Forbidden'],

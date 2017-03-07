@@ -509,10 +509,8 @@ module Ci
     end
 
     def steps
-      [
-          Gitlab::Ci::Build::Step.from_commands(self),
-          Gitlab::Ci::Build::Step.from_after_script(self)
-      ].compact
+      [Gitlab::Ci::Build::Step.from_commands(self),
+       Gitlab::Ci::Build::Step.from_after_script(self)].compact
     end
 
     def image

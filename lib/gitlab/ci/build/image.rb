@@ -21,8 +21,7 @@ module Gitlab
         end
 
         def initialize(image)
-          type = image.class
-          @name = image if type == String
+          @name = image
         end
 
         def valid?
