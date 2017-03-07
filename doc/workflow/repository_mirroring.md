@@ -22,7 +22,7 @@ A few things/limitations to consider:
   password, e.g., you want to mirror to GitHub and have 2FA enabled.
 - The import will time out after 15 minutes. For repositories that take longer
   use a clone/push combination.
-- The Git LFS/Annex objects will not be synced. You'll need to push/pull them
+- The Git LFS objects will not be synced. You'll need to push/pull them
   manually.
 
 ## Pulling from a remote repository

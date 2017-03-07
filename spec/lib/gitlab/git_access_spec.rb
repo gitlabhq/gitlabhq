@@ -5,11 +5,7 @@ describe Gitlab::GitAccess, lib: true do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:actor) { user }
-  let(:git_annex_changes) do
-    ["6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/synced/git-annex",
-     "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/synced/named-branch"]
-  end
-  let(:git_annex_master_changes) { "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master" }
+
   let(:authentication_abilities) do
     [
       :read_project,
@@ -525,96 +521,6 @@ describe Gitlab::GitAccess, lib: true do
       permissions_matrix = Hash.new(Hash.new(false))
 
       run_permission_checks(permissions_matrix)
-    end
-
-    context "when using git annex" do
-      before do
-        project.team << [user, :master]
-
-        allow_any_instance_of(Repository).to receive(:new_commits).and_return(
-          project.repository.commits_between('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
-        )
-      end
-
-      describe 'and gitlab geo is enabled in a secondary node' do
-        before do
-          allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(true)
-          allow(Gitlab::Geo).to receive(:enabled?) { true }
-          allow(Gitlab::Geo).to receive(:secondary?) { true }
-        end
-
-        it { expect { access.send(:check_push_access!, git_annex_changes) }.to raise_error(described_class::UnauthorizedError) }
-      end
-
-      describe 'and git hooks unset' do
-        describe 'git annex enabled' do
-          before { allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(true) }
-
-          it { expect { access.send(:check_push_access!, git_annex_changes) }.not_to raise_error }
-        end
-
-        describe 'git annex disabled' do
-          before { allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(false) }
-
-          it { expect { access.send(:check_push_access!, git_annex_changes) }.not_to raise_error }
-        end
-      end
-
-      describe 'and push rules set' do
-        before { project.create_push_rule }
-
-        describe 'check commit author email' do
-          before do
-            project.push_rule.update(author_email_regex: "@only.com")
-          end
-
-          describe 'git annex enabled' do
-            before { allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(true) }
-
-            it { expect { access.send(:check_push_access!, git_annex_changes) }.not_to raise_error }
-          end
-
-          describe 'git annex enabled, push to master branch' do
-            before do
-              allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(true)
-              allow_any_instance_of(Commit).to receive(:safe_message) { 'git-annex in me@host:~/repo' }
-            end
-
-            it { expect { access.send(:check_push_access!, git_annex_master_changes) }.not_to raise_error }
-          end
-
-          describe 'git annex disabled' do
-            before do
-              allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(false)
-            end
-
-            it { expect { access.send(:check_push_access!, git_annex_changes) }.to raise_error(described_class::UnauthorizedError) }
-          end
-        end
-
-        describe 'check max file size' do
-          before do
-            allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(5.megabytes.to_i)
-            project.push_rule.update(max_file_size: 2)
-          end
-
-          describe 'git annex enabled' do
-            before { allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(true) }
-
-            it { expect(access.check('git-annex-shell', git_annex_changes).allowed?).to be_truthy }
-            it { expect { access.send(:check_push_access!, git_annex_changes) }.not_to raise_error }
-          end
-
-          describe 'git annex disabled' do
-            before do
-              allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(false)
-            end
-
-            it { expect(access.check('git-annex-shell', git_annex_changes).allowed?).to be_falsey }
-            it { expect { access.send(:check_push_access!, git_annex_changes) }.to raise_error(described_class::UnauthorizedError) }
-          end
-        end
-      end
     end
 
     describe "push_rule_check" do

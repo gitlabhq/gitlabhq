@@ -1,8 +1,8 @@
 # Migration guide from Git Annex to Git LFS
 
 >**Note:**
-Git Annex support [will be dropped][issue-remove-annex] with GitLab Enterprise
-Edition 9.0 which is to be released on March 22nd 2017.
+Git Annex support [has been removed][issue-remove-annex] in GitLab Enterprise
+Edition 9.0 (2017/03/22).
 
 Both [Git Annex][] and [Git LFS][] are tools to manage large files in Git.
 

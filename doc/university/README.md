@@ -130,7 +130,6 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 1. [GitLab Flow Overview](https://about.gitlab.com/2014/09/29/gitlab-flow/)
 1. [Always Start with an Issue](https://about.gitlab.com/2016/03/03/start-with-an-issue/)
 1. [GitLab Flow Documentation](https://docs.gitlab.com/ee/workflow/gitlab_flow.html)
-1. [Git-Annex to Git-LFS Migration Guide](https://docs.gitlab.com/ee/workflow/lfs/migrate_from_git-annex_to_git-lfs.html)
 
 #### 2.5. GitLab Comparisons
 
@@ -166,7 +165,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 #### 3.4. Large Files
 
-1. [Big files in Git (Git LFS, Annex) - Video](https://www.youtube.com/watch?v=DawznUxYDe4)
+1. [Big files in Git (Git LFS) - Video](https://www.youtube.com/watch?v=DawznUxYDe4)
 
 #### 3.5. LDAP and Active Directory
 
