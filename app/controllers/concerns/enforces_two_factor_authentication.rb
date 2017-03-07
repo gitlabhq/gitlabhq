@@ -42,6 +42,6 @@ module EnforcesTwoFactorAuthentication
   end
 
   def skip_two_factor?
-    session[:skip_tfa] && session[:skip_tfa] > Time.current
+    session[:skip_two_factor] && session[:skip_two_factor] > Time.current
   end
 end

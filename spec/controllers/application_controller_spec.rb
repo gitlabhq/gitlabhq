@@ -295,7 +295,7 @@ describe ApplicationController do
 
       context 'with 2FA setup skipped' do
         before do
-          allow(controller).to receive(:session).and_return({ skip_tfa: 2.hours.from_now })
+          allow(controller).to receive(:session).and_return({ skip_two_factor: 2.hours.from_now })
         end
 
         it 'returns false if the grace period has expired' do

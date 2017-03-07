@@ -71,7 +71,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     if two_factor_grace_period_expired?
       redirect_to new_profile_two_factor_auth_path, alert: 'Cannot skip two factor authentication setup'
     else
-      session[:skip_tfa] = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
+      session[:skip_two_factor] = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
       redirect_to root_path
     end
   end
