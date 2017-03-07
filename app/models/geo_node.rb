@@ -117,8 +117,10 @@ class GeoNode < ActiveRecord::Base
   end
 
   def build_dependents
-    self.build_geo_node_key if geo_node_key.nil?
-    update_system_hook!
+    unless persisted?
+      self.build_geo_node_key if geo_node_key.nil?
+      update_system_hook!
+    end
   end
 
   def update_dependents_attributes
