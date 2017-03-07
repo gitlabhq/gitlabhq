@@ -46,7 +46,7 @@ module Elastic
           :name_with_namespace,
           :path_with_namespace
         ].each do |attr|
-          data[attr.to_s] = self.send(attr)
+          data[attr.to_s] = safely_read_attribute_for_elasticsearch(attr)
         end
 
         data
