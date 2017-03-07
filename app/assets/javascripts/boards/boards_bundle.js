@@ -2,6 +2,8 @@
 /* global Vue */
 /* global BoardService */
 
+import FilteredSearchBoards from './filtered_search_boards';
+
 window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
 require('./models/issue');
@@ -65,6 +67,8 @@ $(() => {
       }
 
       gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
+
+      gl.boardsFilterManager = new FilteredSearchBoards(Store.filter, true);
     },
     mounted () {
       Store.disabled = this.disabled;
@@ -87,7 +91,7 @@ $(() => {
   });
 
   gl.IssueBoardsSearch = new Vue({
-    el: document.getElementById('js-boards-search'),
+    el: document.getElementById('js-add-list'),
     data: {
       filters: Store.state.filters,
       milestoneTitle: $boardApp.dataset.boardMilestoneTitle,

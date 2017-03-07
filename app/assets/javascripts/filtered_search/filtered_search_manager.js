@@ -109,8 +109,15 @@
         e.preventDefault();
 
         if (!activeElements.length) {
-          // Prevent droplab from opening dropdown
-          this.dropdownManager.destroyDroplab();
+          if (this.isHandledAsync) {
+            e.stopImmediatePropagation();
+
+            this.filteredSearchInput.blur();
+            this.dropdownManager.resetDropdowns();
+          } else {
+            // Prevent droplab from opening dropdown
+            this.dropdownManager.destroyDroplab();
+          }
 
           this.search();
         }
@@ -203,6 +210,10 @@
       this.handleInputPlaceholder();
 
       this.dropdownManager.resetDropdowns();
+
+      if (this.isHandledAsync) {
+        this.search();
+      }
     }
 
     handleInputVisualToken() {
@@ -349,7 +360,11 @@
 
       const parameterizedUrl = `?scope=all&utf8=✓&${paths.join('&')}`;
 
-      gl.utils.visitUrl(parameterizedUrl);
+      if (this.updateObject) {
+        this.updateObject(parameterizedUrl);
+      } else {
+        gl.utils.visitUrl(parameterizedUrl);
+      }
     }
 
     getUsernameParams() {

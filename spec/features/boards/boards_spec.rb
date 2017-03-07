@@ -29,7 +29,7 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'shows tooltip on add issues button' do
-      button = page.find('.issue-boards-search button', text: 'Add issues')
+      button = page.find('.filter-dropdown-container button', text: 'Add issues')
 
       expect(button[:"data-original-title"]).to eq("Please add a list to your board first")
     end
@@ -115,9 +115,8 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'search done list' do
-      page.within('#js-boards-search') do
-        find('.form-control').set(issue8.title)
-      end
+      find('.filtered-search').set(issue8.title)
+      find('.filtered-search').native.send_keys(:enter)
 
       wait_for_vue_resource
 
@@ -127,9 +126,8 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'search list' do
-      page.within('#js-boards-search') do
-        find('.form-control').set(issue5.title)
-      end
+      find('.filtered-search').set(issue5.title)
+      find('.filtered-search').native.send_keys(:enter)
 
       wait_for_vue_resource
 
@@ -333,7 +331,7 @@ describe 'Issue Boards', feature: true, js: true do
 
           wait_for_vue_resource
 
-          expect(find('.issue-boards-search')).to have_selector('.open')
+          expect(page).to have_css('#js-add-list.open')
         end
 
         it 'creates new list from a new label' do
@@ -359,17 +357,9 @@ describe 'Issue Boards', feature: true, js: true do
 
     context 'filtering' do
       it 'filters by author' do
-        page.within '.issues-filters' do
-          click_button('Author')
-          wait_for_ajax
-
-          page.within '.dropdown-menu-author' do
-            click_link(user2.name)
-          end
-          wait_for_vue_resource
-
-          expect(find('.js-author-search')).to have_content(user2.name)
-        end
+        set_filter("author", user2.username)
+        click_filter_link(user2.username)
+        submit_filter
 
         wait_for_vue_resource
         wait_for_board_cards(1, 1)
@@ -377,17 +367,9 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'filters by assignee' do
-        page.within '.issues-filters' do
-          click_button('Assignee')
-          wait_for_ajax
-
-          page.within '.dropdown-menu-assignee' do
-            click_link(user.name)
-          end
-          wait_for_vue_resource
-
-          expect(find('.js-assignee-search')).to have_content(user.name)
-        end
+        set_filter("assignee", user.username)
+        click_filter_link(user.username)
+        submit_filter
 
         wait_for_vue_resource
 
@@ -396,17 +378,9 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'filters by milestone' do
-        page.within '.issues-filters' do
-          click_button('Milestone')
-          wait_for_ajax
-
-          page.within '.milestone-filter' do
-            click_link(milestone.title)
-          end
-          wait_for_vue_resource
-
-          expect(find('.js-milestone-select')).to have_content(milestone.title)
-        end
+        set_filter("milestone", "\"#{milestone.title}\"")
+        click_filter_link(milestone.title)
+        submit_filter
 
         wait_for_vue_resource
         wait_for_board_cards(1, 1)
@@ -415,16 +389,9 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'filters by label' do
-        page.within '.issues-filters' do
-          click_button('Label')
-          wait_for_ajax
-
-          page.within '.dropdown-menu-labels' do
-            click_link(testing.title)
-            wait_for_vue_resource
-            find('.dropdown-menu-close').click
-          end
-        end
+        set_filter("label", testing.title)
+        click_filter_link(testing.title)
+        submit_filter
 
         wait_for_vue_resource
         wait_for_board_cards(1, 1)
@@ -432,19 +399,14 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'filters by label with space after reload' do
-        page.within '.issues-filters' do
-          click_button('Label')
-          wait_for_ajax
-
-          page.within '.dropdown-menu-labels' do
-            click_link(accepting.title)
-            wait_for_vue_resource(spinner: false)
-            find('.dropdown-menu-close').click
-          end
-        end
+        set_filter("label", "\"#{accepting.title}\"")
+        click_filter_link(accepting.title)
+        submit_filter
 
         # Test after reload
         page.evaluate_script 'window.location.reload()'
+        wait_for_board_cards(1, 1)
+        wait_for_empty_boards((2..3))
 
         wait_for_vue_resource
 
@@ -460,26 +422,16 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'removes filtered labels' do
-        wait_for_vue_resource
+        set_filter("label", testing.title)
+        click_filter_link(testing.title)
+        submit_filter
 
-        page.within '.labels-filter' do
-          click_button('Label')
-          wait_for_ajax
+        wait_for_board_cards(1, 1)
 
-          page.within '.dropdown-menu-labels' do
-            click_link(testing.title)
-            wait_for_vue_resource(spinner: false)
-          end
+        find('.clear-search').click
+        submit_filter
 
-          expect(page).to have_css('input[name="label_name[]"]', visible: false)
-
-          page.within '.dropdown-menu-labels' do
-            click_link(testing.title)
-            wait_for_vue_resource(spinner: false)
-          end
-
-          expect(page).not_to have_css('input[name="label_name[]"]', visible: false)
-        end
+        wait_for_board_cards(1, 8)
       end
 
       it 'infinite scrolls list with label filter' do
@@ -487,16 +439,9 @@ describe 'Issue Boards', feature: true, js: true do
           create(:labeled_issue, project: project, labels: [planning, testing])
         end
 
-        page.within '.issues-filters' do
-          click_button('Label')
-          wait_for_ajax
-
-          page.within '.dropdown-menu-labels' do
-            click_link(testing.title)
-            wait_for_vue_resource
-            find('.dropdown-menu-close').click
-          end
-        end
+        set_filter("label", testing.title)
+        click_filter_link(testing.title)
+        submit_filter
 
         wait_for_vue_resource
 
@@ -518,18 +463,13 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'filters by multiple labels' do
-        page.within '.issues-filters' do
-          click_button('Label')
-          wait_for_ajax
+        set_filter("label", testing.title)
+        click_filter_link(testing.title)
 
-          page.within(find('.dropdown-menu-labels')) do
-            click_link(testing.title)
-            wait_for_vue_resource
-            click_link(bug.title)
-            wait_for_vue_resource
-            find('.dropdown-menu-close').click
-          end
-        end
+        set_filter("label", bug.title)
+        click_filter_link(bug.title)
+
+        submit_filter
 
         wait_for_vue_resource
 
@@ -545,14 +485,14 @@ describe 'Issue Boards', feature: true, js: true do
           wait_for_vue_resource
         end
 
+        page.within('.tokens-container') do
+          expect(page).to have_content(bug.title)
+        end
+
         wait_for_vue_resource
 
         wait_for_board_cards(1, 1)
         wait_for_empty_boards((2..3))
-
-        page.within('.labels-filter') do
-          expect(find('.dropdown-toggle-text')).to have_content(bug.title)
-        end
       end
 
       it 'removes label filter by clicking label button on issue' do
@@ -560,16 +500,13 @@ describe 'Issue Boards', feature: true, js: true do
           page.within(find('.card', match: :first)) do
             click_button(bug.title)
           end
+
           wait_for_vue_resource
 
           expect(page).to have_selector('.card', count: 1)
         end
 
         wait_for_vue_resource
-
-        page.within('.labels-filter') do
-          expect(find('.dropdown-toggle-text')).to have_content(bug.title)
-        end
       end
     end
   end
@@ -641,6 +578,22 @@ describe 'Issue Boards', feature: true, js: true do
   def wait_for_empty_boards(board_numbers)
     board_numbers.each do |board|
       wait_for_board_cards(board, 0)
+    end
+  end
+
+  def set_filter(type, text)
+    find('.filtered-search').native.send_keys("#{type}:#{text}")
+  end
+
+  def submit_filter
+    find('.filtered-search').native.send_keys(:enter)
+  end
+
+  def click_filter_link(link_text)
+    page.within('.filtered-search-input-container') do
+      expect(page).to have_button(link_text)
+
+      click_button(link_text)
     end
   end
 end
