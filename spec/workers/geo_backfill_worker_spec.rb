@@ -8,14 +8,18 @@ describe Geo::GeoBackfillWorker, services: true do
   subject { described_class.new }
 
   describe '#perform' do
+    before do
+      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { true }
+    end
+
     it 'performs GeoSingleRepositoryBackfillWorker for each project' do
-      expect(GeoSingleRepositoryBackfillWorker).to receive(:new).twice.and_call_original
+      expect(GeoSingleRepositoryBackfillWorker).to receive(:new).twice.and_return(double.as_null_object)
 
       subject.perform
     end
 
     it 'does not perform GeoSingleRepositoryBackfillWorker when node is disabled' do
-      allow(secondary).to receive(:enabled?) { false }
+      allow_any_instance_of(GeoNode).to receive(:enabled?) { false }
 
       expect(GeoSingleRepositoryBackfillWorker).not_to receive(:new)
 
@@ -25,7 +29,7 @@ describe Geo::GeoBackfillWorker, services: true do
     it 'does not perform GeoSingleRepositoryBackfillWorker for projects that repository exists' do
       create_list(:project, 2)
 
-      expect(GeoSingleRepositoryBackfillWorker).to receive(:new).twice.and_call_original
+      expect(GeoSingleRepositoryBackfillWorker).to receive(:new).twice.and_return(double.as_null_object)
 
       subject.perform
     end
