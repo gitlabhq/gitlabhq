@@ -37,13 +37,7 @@ feature 'Environment', :feature do
 
         scenario 'does show deployment SHA' do
           expect(page).to have_link(deployment.short_sha)
-        end
-
-        scenario 'does not show a re-deploy button for deployment without build' do
           expect(page).not_to have_link('Re-deploy')
-        end
-
-        scenario 'does not show terminal button' do
           expect(page).not_to have_terminal_button
         end
       end
@@ -58,13 +52,7 @@ feature 'Environment', :feature do
 
         scenario 'does show build name' do
           expect(page).to have_link("#{build.name} (##{build.id})")
-        end
-
-        scenario 'does show re-deploy button' do
           expect(page).to have_link('Re-deploy')
-        end
-
-        scenario 'does not show terminal button' do
           expect(page).not_to have_terminal_button
         end
 
@@ -117,9 +105,6 @@ feature 'Environment', :feature do
 
                 it 'displays a web terminal' do
                   expect(page).to have_selector('#terminal')
-                end
-
-                it 'displays a link to the environment external url' do
                   expect(page).to have_link(nil, href: environment.external_url)
                 end
               end
@@ -145,10 +130,6 @@ feature 'Environment', :feature do
                 create(:deployment, environment: environment,
                                     deployable: build,
                                     on_stop: 'close_app')
-              end
-
-              scenario 'does show stop button' do
-                expect(page).to have_link('Stop')
               end
 
               scenario 'does allow to stop environment' do

@@ -159,6 +159,7 @@ constraints(ProjectUrlConstrainer.new) do
         member do
           post :stop
           get :terminal
+          get :metrics
           get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
         end
 
