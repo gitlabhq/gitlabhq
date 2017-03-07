@@ -18,8 +18,8 @@ module Gitlab
           build_access_token_check(login, password) ||
           lfs_token_check(login, password) ||
           oauth_access_token_check(login, password) ||
-          personal_access_token_check(login, password) ||
           user_with_password_for_git(login, password) ||
+          personal_access_token_check(password) ||
           Gitlab::Auth::Result.new
 
         rate_limit!(ip, success: result.success?, login: login)
@@ -105,23 +105,18 @@ module Gitlab
         end
       end
 
-      def personal_access_token_check(login, password)
-        if login && password
-          token = PersonalAccessToken.active.find_by_token(password)
-          validation = User.by_login(login)
+      def personal_access_token_check(password)
+        return unless password.present?
 
-          if valid_personal_access_token?(token, validation)
-            Gitlab::Auth::Result.new(validation, nil, :personal_token, full_authentication_abilities)
-          end
+        token = PersonalAccessTokensFinder.new(state: 'active').find_by(token: password)
+
+        if token && valid_api_token?(token)
+          Gitlab::Auth::Result.new(token.user, nil, :personal_token, full_authentication_abilities)
         end
       end
 
       def valid_oauth_token?(token)
         token && token.accessible? && valid_api_token?(token)
-      end
-
-      def valid_personal_access_token?(token, user)
-        token && token.user == user && valid_api_token?(token)
       end
 
       def valid_api_token?(token)

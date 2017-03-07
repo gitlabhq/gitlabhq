@@ -706,6 +706,22 @@ module API
       expose :active?, as: :active
     end
 
+    class PersonalAccessToken < Grape::Entity
+      expose :id, :name, :revoked, :created_at, :scopes
+      expose :active?, as: :active
+      expose :expires_at do |personal_access_token|
+        personal_access_token.expires_at ? personal_access_token.expires_at.strftime("%Y-%m-%d") : nil
+      end
+    end
+
+    class PersonalAccessTokenWithToken < PersonalAccessToken
+      expose :token
+    end
+
+    class ImpersonationToken < PersonalAccessTokenWithToken
+      expose :impersonation
+    end
+
     module JobRequest
       class JobInfo < Grape::Entity
         expose :name, :stage
