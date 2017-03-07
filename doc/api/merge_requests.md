@@ -90,7 +90,7 @@ GET /projects/:id/merge_requests/:merge_request_id
 Parameters:
 
 - `id` (required) - The ID of a project
-- `merge_request_id` (required) - The ID of MR
+- `merge_request_iid` (required) - The internal ID of the merge request
 
 ```json
 {

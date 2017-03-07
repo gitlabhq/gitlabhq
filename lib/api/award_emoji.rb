@@ -3,12 +3,16 @@ module API
     include PaginationParams
 
     before { authenticate! }
-    AWARDABLES = %w[issue merge_request snippet].freeze
+    AWARDABLES = [
+      { type: 'issue', find_by: :iid },
+      { type: 'merge_request', find_by: :iid },
+      { type: 'snippet', find_by: :id }
+    ].freeze
 
     resource :projects do
-      AWARDABLES.each do |awardable_type|
-        awardable_string = awardable_type.pluralize
-        awardable_id_string = "#{awardable_type}_id"
+      AWARDABLES.each do |awardable_params|
+        awardable_string = awardable_params[:type].pluralize
+        awardable_id_string = "#{awardable_params[:type]}_#{awardable_params[:find_by]}"
 
         params do
           requires :id, type: String, desc: 'The ID of a project'
@@ -104,10 +108,10 @@ module API
               note_id = params.delete(:note_id)
 
               awardable.notes.find(note_id)
-            elsif params.include?(:issue_id)
-              user_project.issues.find(params[:issue_id])
-            elsif params.include?(:merge_request_id)
-              user_project.merge_requests.find(params[:merge_request_id])
+            elsif params.include?(:issue_iid)
+              user_project.issues.find_by!(iid: params[:issue_iid])
+            elsif params.include?(:merge_request_iid)
+              user_project.merge_requests.find_by!(iid: params[:merge_request_iid])
             else
               user_project.snippets.find(params[:snippet_id])
             end
