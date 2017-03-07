@@ -287,7 +287,7 @@ const UserCallout = require('./user_callout');
         case 'search:show':
           new Search();
           break;
-        case 'projects:protected_branches:index':
+        case 'projects:repository:show':
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
           break;
