@@ -1,7 +1,6 @@
 # Git annex
 
-> **Warning:** GitLab is deprecating git-annex support
-from GitLab 8.17 (2017/02/22) on. It will be [completely
+> **Warning:** GitLab has [completely
 removed][deprecate-annex-issue] in GitLab 9.0 (2017/03/22).
 Read through the [migration guide from git-annex to git-lfs][guide].
 
