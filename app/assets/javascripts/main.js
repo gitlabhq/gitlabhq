@@ -3,7 +3,6 @@
 /* global Cookies */
 /* global Flash */
 /* global ConfirmDangerModal */
-/* global AwardsHandler */
 /* global Aside */
 
 import jQuery from 'jquery';
@@ -17,6 +16,15 @@ import Sortable from 'vendor/Sortable';
 require('mousetrap');
 require('mousetrap/plugins/pause/mousetrap-pause');
 require('vendor/fuzzaldrin-plus');
+require('es6-promise').polyfill();
+
+// extensions
+require('./extensions/string');
+require('./extensions/array');
+require('./extensions/custom_event');
+require('./extensions/element');
+require('./extensions/jquery');
+require('./extensions/object');
 require('es6-promise').polyfill();
 
 // expose common libraries as globals (TODO: remove these)
@@ -62,13 +70,6 @@ require('./templates/issuable_template_selectors');
 require('./commit/file.js');
 require('./commit/image_file.js');
 
-// extensions
-require('./extensions/array');
-require('./extensions/custom_event');
-require('./extensions/element');
-require('./extensions/jquery');
-require('./extensions/object');
-
 // lib/utils
 require('./lib/utils/animate');
 require('./lib/utils/bootstrap_linked_tabs');
@@ -100,7 +101,7 @@ require('./ajax_loading_spinner');
 require('./api');
 require('./aside');
 require('./autosave');
-require('./awards_handler');
+const AwardsHandler = require('./awards_handler');
 require('./breakpoints');
 require('./broadcast_message');
 require('./build');

@@ -143,7 +143,7 @@ feature 'Group', feature: true do
 
       visit path
 
-      expect(page).to have_css('.group-home-desc > p > img')
+      expect(page).to have_css('.group-home-desc > p > gl-emoji')
     end
 
     it 'sanitizes unwanted tags' do
