@@ -126,7 +126,8 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
     end
 
     let(:group) do
-      create(:group_with_ldap_group_link, :access_requestable,
+      create(:group_with_ldap_group_link,
+             :access_requestable,
              cn: 'ldap_group1',
              group_access: ::Gitlab::Access::DEVELOPER)
     end
@@ -251,6 +252,42 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
 
           expect(group.members.pluck(:access_level).sort)
             .to eq([::Gitlab::Access::DEVELOPER, ::Gitlab::Access::OWNER])
+        end
+      end
+
+      context 'when the extern_uid and group member DNs have different case' do
+        let(:user1) { create(:user) }
+        let(:user2) { create(:user) }
+
+        # Change the case once on the LDAP group, and once on the GitLab Identity
+        # to test that both sides can handle the differing case.
+        let(:ldap_group1) do
+          ldap_group_entry(%W(
+            #{user_dn(user1.username).upcase}
+            #{user_dn(user2.username)}
+          ))
+        end
+
+        it 'does not revert the overrides' do
+          create(:identity, user: user1, extern_uid: user_dn(user1.username))
+          create(:identity, user: user2, extern_uid: user_dn(user2.username).upcase)
+          group.members.create(
+            user: user1,
+            access_level: ::Gitlab::Access::MASTER,
+            ldap: true,
+            override: true
+          )
+          group.members.create(
+            user: user2,
+            access_level: ::Gitlab::Access::OWNER,
+            ldap: true,
+            override: true
+          )
+
+          sync_group.update_permissions
+
+          expect(group.members.pluck(:access_level))
+            .to match_array([::Gitlab::Access::MASTER, ::Gitlab::Access::OWNER])
         end
       end
     end
