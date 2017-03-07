@@ -40,7 +40,7 @@ describe PipelinesFinder do
         let(:params) { { scope: 'running' } }
 
         it 'has only running status' do
-          expect(subject.map(&:status)).to include('running')
+          expect(subject.map(&:status)).to all(eq('running'))
         end
       end
 
@@ -48,7 +48,7 @@ describe PipelinesFinder do
         let(:params) { { scope: 'pending' } }
 
         it 'has only pending status' do
-          expect(subject.map(&:status)).to include('pending')
+          expect(subject.map(&:status)).to all(eq('pending'))
         end
       end
 
@@ -66,7 +66,7 @@ describe PipelinesFinder do
         it 'excludes tags' do
           expect(subject.count).to be 1
           expect(subject).not_to include dummy_pipelines[:tag]
-          expect(subject.map(&:ref)).to include('master')
+          expect(subject.map(&:ref)).to all(eq('master'))
         end
       end
 
@@ -76,57 +76,57 @@ describe PipelinesFinder do
         it 'excludes branches' do
           expect(subject.count).to be 1
           expect(subject).to include dummy_pipelines[:tag]
-          expect(subject.map(&:ref)).not_to include('master')
+          expect(subject.map(&:ref)).not_to all(eq('master'))
         end
       end
     end
 
     context 'when a status is passed' do
       context 'when selecting running' do
-        let(:params) { { scope: 'running' } }
+        let(:params) { { status: 'running' } }
 
         it 'has only running status' do
-          expect(subject.map(&:status)).to include('running')
+          expect(subject.map(&:status)).to all(eq('running'))
         end
       end
 
       context 'when selecting pending' do
-        let(:params) { { scope: 'pending' } }
+        let(:params) { { status: 'pending' } }
 
         it 'has only pending status' do
-          expect(subject.map(&:status)).to include('pending')
+          expect(subject.map(&:status)).to all(eq('pending'))
         end
       end
 
       context 'when selecting success' do
-        let(:params) { { scope: 'success' } }
+        let(:params) { { status: 'success' } }
 
         it 'has only success status' do
-          expect(subject.map(&:status)).to include('success')
+          expect(subject.map(&:status)).to all(eq('success'))
         end
       end
 
       context 'when selecting failed' do
-        let(:params) { { scope: 'failed' } }
+        let(:params) { { status: 'failed' } }
 
         it 'has only failed status' do
-          expect(subject.map(&:status)).to include('failed')
+          expect(subject.map(&:status)).to all(eq('failed'))
         end
       end
 
       context 'when selecting canceled' do
-        let(:params) { { scope: 'canceled' } }
+        let(:params) { { status: 'canceled' } }
 
         it 'has only canceled status' do
-          expect(subject.map(&:status)).to include('canceled')
+          expect(subject.map(&:status)).to all(eq('canceled'))
         end
       end
 
       context 'when selecting skipped' do
-        let(:params) { { scope: 'skipped' } }
+        let(:params) { { status: 'skipped' } }
 
         it 'has only skipped status' do
-          expect(subject.map(&:status)).to include('skipped')
+          expect(subject.map(&:status)).to all(eq('skipped'))
         end
       end
     end 
