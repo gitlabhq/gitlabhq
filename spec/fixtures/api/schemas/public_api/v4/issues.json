@@ -62,23 +62,15 @@
       "downvotes": { "type": "integer" },
       "due_date": { "type": ["date", "null"] },
       "confidential": { "type": "boolean" },
-<<<<<<< HEAD
       "web_url": { "type": "uri" },
       "weight": { "type": ["integer", "null"] }
-=======
-      "web_url": { "type": "uri" }
->>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
     },
     "required": [
       "id", "iid", "project_id", "title", "description",
       "state", "created_at", "updated_at", "labels",
       "milestone", "assignee", "author", "user_notes_count",
       "upvotes", "downvotes", "due_date", "confidential",
-<<<<<<< HEAD
       "web_url", "weight"
-=======
-      "web_url"
->>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
     ],
     "additionalProperties": false
   }

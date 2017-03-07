@@ -39,7 +39,6 @@ describe Groups::CreateService, '#execute', services: true do
     end
   end
 
-<<<<<<< HEAD
   context 'repository_size_limit assignment as Bytes' do
     let(:admin_user) { create(:user, admin: true) }
     let(:service) { described_class.new(admin_user, group_params.merge(opts)) }
@@ -62,7 +61,9 @@ describe Groups::CreateService, '#execute', services: true do
 
         expect(group.repository_size_limit).to be_nil
       end
-=======
+    end
+  end
+
   describe 'creating a mattermost team' do
     let!(:params) { group_params.merge(create_chat_team: "true") }
     let!(:service) { described_class.new(user, params) }
@@ -76,7 +77,6 @@ describe Groups::CreateService, '#execute', services: true do
         .and_return({ 'name' => 'tanuki', 'id' => 'lskdjfwlekfjsdifjj' })
 
       expect { subject }.to change { ChatTeam.count }.from(0).to(1)
->>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
     end
   end
 end

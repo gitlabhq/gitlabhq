@@ -71,13 +71,9 @@
       "user_notes_count": { "type": "integer" },
       "should_remove_source_branch": { "type": ["boolean", "null"] },
       "force_remove_source_branch": { "type": ["boolean", "null"] },
-<<<<<<< HEAD
       "web_url": { "type": "uri" },
       "approvals_before_merge": { "type": ["integer", "null"] },
       "squash": { "type": "boolean" }
-=======
-      "web_url": { "type": "uri" }
->>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
     },
     "required": [
       "id", "iid", "project_id", "title", "description",
@@ -87,11 +83,7 @@
       "labels", "work_in_progress", "milestone", "merge_when_pipeline_succeeds",
       "merge_status", "sha", "merge_commit_sha", "user_notes_count",
       "should_remove_source_branch", "force_remove_source_branch",
-<<<<<<< HEAD
       "web_url", "approvals_before_merge", "squash"
-=======
-      "web_url"
->>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
     ],
     "additionalProperties": false
   }
