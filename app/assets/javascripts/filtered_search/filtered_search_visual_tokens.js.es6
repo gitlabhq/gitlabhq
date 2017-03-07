@@ -166,9 +166,8 @@ class FilteredSearchVisualTokens {
     }
 
     // Opens dropdown
-    input.click();
-
-    input.setSelectionRange(input.value.length, input.value.length);
+    const inputEvent = new Event('input');
+    input.dispatchEvent(inputEvent);
 
     // Adds cursor to input
     input.focus();
