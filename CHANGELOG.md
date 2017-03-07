@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.17.3 (2017-03-07)
+
+- Fix the redirect to custom home page URL. !9518
+- Fix broken migration when upgrading straight to 8.17.1. !9613
+- Make projects dropdown only show projects you are a member of. !9614
+- Fix creating a file in an empty repo using the API. !9632
+- Don't copy tooltip when copying GFM.
+- Fix cherry-picking or reverting through an MR.
+
 ## 8.17.2 (2017-03-01)
 
 - Expire all webpack assets after 8.17.1 included a badly compiled asset. !9602
