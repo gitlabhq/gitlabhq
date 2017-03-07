@@ -32,7 +32,7 @@ feature 'Issue prioritization', feature: true do
       visit namespace_project_issues_path(project.namespace, project, sort: 'priority')
 
       # Ensure we are indicating that issues are sorted by priority
-      expect(page).to have_selector('.dropdown-toggle', text: 'Priority')
+      expect(page).to have_selector('.dropdown-toggle', text: 'Label priority')
 
       page.within('.issues-holder') do
         issue_titles = all('.issues-list .issue-title-text').map(&:text)
@@ -70,7 +70,7 @@ feature 'Issue prioritization', feature: true do
       login_as user
       visit namespace_project_issues_path(project.namespace, project, sort: 'priority')
 
-      expect(page).to have_selector('.dropdown-toggle', text: 'Priority')
+      expect(page).to have_selector('.dropdown-toggle', text: 'Label priority')
 
       page.within('.issues-holder') do
         issue_titles = all('.issues-list .issue-title-text').map(&:text)
