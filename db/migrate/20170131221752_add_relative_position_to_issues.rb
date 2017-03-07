@@ -21,11 +21,17 @@ class AddRelativePositionToIssues < ActiveRecord::Migration
   #
   # To disable transactions uncomment the following line and remove these
   # comments:
-  # disable_ddl_transaction!
+  disable_ddl_transaction!
 
-  def change
+  def up
     add_column :issues, :relative_position, :integer
 
     add_concurrent_index :issues, :relative_position
+  end
+
+  def down
+    remove_column :issues, :relative_position
+
+    remove_index :issues, :relative_position if index_exists? :issues, :relative_position
   end
 end
