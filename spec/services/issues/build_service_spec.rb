@@ -57,11 +57,11 @@ describe Issues::BuildService, services: true do
                     "with a blockquote\n"\
                     "> That has a quote\n"\
                     ">>>\n"
-        note_result = "This is a string\n"\
-                    "> with a blockquote\n"\
-                    "> > That has a quote\n"
+        note_result = "    > This is a string\n"\
+                      "    > > with a blockquote\n"\
+                      "    > > > That has a quote\n"
         discussion = Discussion.new([create(:diff_note_on_merge_request, note: note_text)])
-        expect(service.item_for_discussion(discussion)).to include(">>>\n#{note_result}\n>>>")
+        expect(service.item_for_discussion(discussion)).to include(note_result)
       end
     end
 

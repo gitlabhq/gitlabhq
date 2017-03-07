@@ -43,7 +43,8 @@ module Issues
       discussion_info << " (+#{other_note_count} #{'comment'.pluralize(other_note_count)})" if other_note_count > 0
 
       note_without_block_quotes = Banzai::Filter::BlockquoteFenceFilter.new(first_note.note).call
-      quote = ">>>\n#{note_without_block_quotes}\n>>>"
+      spaces = ' ' * 4
+      quote = note_without_block_quotes.lines.map { |line| "#{spaces}> #{line}" }.join
 
       [discussion_info, quote].join("\n\n")
     end
