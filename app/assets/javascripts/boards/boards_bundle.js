@@ -4,6 +4,7 @@
 
 window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
+import FilteredSearchBoards from './filtered_search_boards';
 require('./models/issue');
 require('./models/label');
 require('./models/list');
@@ -25,6 +26,8 @@ $(() => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
   const ModalStore = gl.issueBoards.ModalStore;
+
+  new FilteredSearchBoards();
 
   window.gl = window.gl || {};
 

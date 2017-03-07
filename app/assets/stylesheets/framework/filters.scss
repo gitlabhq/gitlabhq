@@ -219,6 +219,11 @@
   }
 }
 
+.filter-dropdown-container {
+  display: -webkit-flex;
+  display: flex;
+}
+
 .dropdown-menu .filter-dropdown-item {
   padding: 0;
 }
