@@ -7,7 +7,7 @@ describe PipelinesFinder do
 
   let!(:dummy_pipelines) do
     {
-      tag:          create(:ci_pipeline, project: project, user: user1, created_at:  9.minutes.ago, ref: 'v1.0.0'),
+      tag:          create(:ci_pipeline, project: project, user: user1, created_at:  9.minutes.ago, ref: 'v1.0.0', tag: true),
       created:      create(:ci_pipeline, project: project, user: user1, created_at:  8.minutes.ago, status: 'created'),
       pending:      create(:ci_pipeline, project: project, user: user1, created_at:  7.minutes.ago, status: 'pending'),
       running:      create(:ci_pipeline, project: project, user: user1, created_at:  6.minutes.ago, status: 'running'),
