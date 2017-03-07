@@ -59,5 +59,18 @@ module Gitlab
 
       RequestStore.fetch(key) { yield }
     end
+
+    def self.generate_access_keys
+      # Inspired by S3
+      {
+        access_key: generate_random_string(20),
+        secret_access_key: generate_random_string(40)
+      }
+    end
+
+    def self.generate_random_string(size)
+      # urlsafe_base64 may return a string of size * 4/3
+      SecureRandom.urlsafe_base64(size)[0, size]
+    end
   end
 end

@@ -252,7 +252,7 @@ module SharedPaths
     visit stats_namespace_project_repository_path(@project.namespace, @project)
   end
 
-  step "I visit my project's network page" do
+  step "I visit my project's graph page" do
     # Stub Graph max_size to speed up test (10 commits vs. 650)
     allow(Network::Graph).to receive(:max_count).and_return(10)
 

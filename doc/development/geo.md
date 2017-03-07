@@ -81,3 +81,42 @@ take any extra step for that.
 
 We do use our feature toggle `.secondary?` to coordinate Git operations and do
 the correct authorization (denying writing on any secondary node).
+
+## File Transfers
+
+Secondary Geo Nodes need to transfer files, such as LFS objects, attachments, avatars,
+etc. from the primary. To do this, secondary nodes have a separate tracking database
+that records which objects it needs to transfer.
+
+Files are copied via HTTP(s) and initiated via the
+`/api/v4/geo/transfers/:type/:id` endpoint.
+
+### Authentication
+
+To authenticate file transfers, each GeoNode has two fields:
+
+1. A public access key (`access_key`)
+2. A secret access key (`secret_access_key`)
+
+The secondary authenticates itself via a [JWT request](https://jwt.io/). When the
+secondary wishes to download a file, it sends an HTTP request with the `Authorization`
+header:
+
+```
+Authorization: GL-Geo <access_key>:<JWT payload>
+```
+
+The primary uses the `access_key` to look up the corresponding Geo node and
+decrypt the JWT payload, which contains additional information to identify the
+file request. This ensures that the secondary downloads the right file for the
+right database ID. For example, for an LFS object, the request must also
+include the SHA256 of the file. An example JWT payload looks like:
+
+```
+{ "data": { sha256: "31806bb23580caab78040f8c45d329f5016b0115" }, iat: "1234567890" }
+```
+
+If the data checks out, then the Geo primary sends data via the
+[XSendfile](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
+feature, which allows nginx to handle the file transfer without tying up Rails
+or Workhorse.

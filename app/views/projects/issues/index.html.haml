@@ -11,8 +11,7 @@
   = page_specific_javascript_bundle_tag('issues')
 
 = content_for :meta_tags do
-  - if current_user
-    = auto_discovery_link_tag(:atom, url_for(params.merge(format: :atom, private_token: current_user.private_token)), title: "#{@project.name} issues")
+  = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{@project.name} issues")
 
 - if project_issues(@project).exists?
   - if current_user
@@ -21,9 +20,9 @@
     .top-area
       = render 'shared/issuable/nav', type: :issues
       .nav-controls
+        = link_to params.merge(rss_url_options), class: 'btn append-right-10 has-tooltip', title: 'Subscribe' do
+          = icon('rss')
         - if current_user
-          = link_to url_for(params.merge(format: :atom, private_token: current_user.private_token)), class: 'btn append-right-10 has-tooltip', title: 'Subscribe' do
-            = icon('rss')
           %button.csv_download_link.btn.append-right-10.has-tooltip{ title: 'Download CSV' }
             = icon('download')
         - if can? current_user, :create_issue, @project

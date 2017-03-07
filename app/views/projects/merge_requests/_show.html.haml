@@ -3,6 +3,7 @@
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('diff_notes')
 
 .merge-request{ 'data-url' => merge_request_path(@merge_request), 'data-project-path' => project_path(@merge_request.project) }

@@ -103,7 +103,7 @@ module EE
               user = member.user
               identity = user.identities.select(:id, :extern_uid)
                            .with_provider(provider).first
-              member_dn = identity.extern_uid
+              member_dn = identity.extern_uid.downcase
 
               # Skip if this is not an LDAP user with a valid `extern_uid`.
               next unless member_dn.present?

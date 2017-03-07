@@ -166,11 +166,15 @@ module SharedProject
   end
 
   step 'I should see project "Internal"' do
-    expect(page).to have_content "Internal"
+    page.within '.js-projects-list-holder' do
+      expect(page).to have_content "Internal"
+    end
   end
 
   step 'I should not see project "Internal"' do
-    expect(page).not_to have_content "Internal"
+    page.within '.js-projects-list-holder' do
+      expect(page).not_to have_content "Internal"
+    end
   end
 
   step 'public project "Community"' do

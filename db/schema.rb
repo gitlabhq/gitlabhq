@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170217151947) do
+ActiveRecord::Schema.define(version: 20170224075132) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,8 +93,6 @@ ActiveRecord::Schema.define(version: 20170217151947) do
     t.boolean "user_default_external", default: false, null: false
     t.boolean "elasticsearch_indexing", default: false, null: false
     t.boolean "elasticsearch_search", default: false, null: false
-    t.string "elasticsearch_host", default: "localhost"
-    t.string "elasticsearch_port", default: "9200"
     t.string "repository_storages", default: "default"
     t.string "enabled_git_access_protocol"
     t.boolean "domain_blacklist_enabled", default: false
@@ -121,7 +119,12 @@ ActiveRecord::Schema.define(version: 20170217151947) do
     t.integer "repository_size_limit", limit: 8, default: 0
     t.integer "terminal_max_session_time", default: 0, null: false
     t.integer "minimum_mirror_sync_time", default: 15, null: false
-    t.string "default_artifacts_expire_in", default: '0', null: false
+    t.string "default_artifacts_expire_in", default: "0", null: false
+    t.string "elasticsearch_url", default: "http://localhost:9200"
+    t.boolean "elasticsearch_aws", default: false, null: false
+    t.string "elasticsearch_aws_region", default: "us-east-1"
+    t.string "elasticsearch_aws_access_key"
+    t.string "elasticsearch_aws_secret_access_key"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -521,8 +524,12 @@ ActiveRecord::Schema.define(version: 20170217151947) do
     t.integer "geo_node_key_id"
     t.integer "oauth_application_id"
     t.integer "system_hook_id"
+    t.string "access_key"
+    t.string "encrypted_secret_access_key"
+    t.string "encrypted_secret_access_key_iv"
   end
 
+  add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree
   add_index "geo_nodes", ["host"], name: "index_geo_nodes_on_host", using: :btree
   add_index "geo_nodes", ["primary"], name: "index_geo_nodes_on_primary", using: :btree
 

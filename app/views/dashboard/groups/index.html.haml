@@ -5,9 +5,4 @@
 - if @group_members.empty?
   = render 'empty_state'
 - else
-  %ul.content-list
-    - @group_members.each do |group_member|
-      - group = group_member.group
-      = render 'shared/groups/group', group: group, group_member: group_member
-
-  = paginate @group_members, theme: 'gitlab'
+  = render 'groups'

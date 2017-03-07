@@ -19,15 +19,10 @@ Feature: Project Shortcuts
     Then the active sub tab should be Commits
 
   @javascript
-  Scenario: Navigate to network tab
+  Scenario: Navigate to graph tab
     Given I press "g" and "n"
-    Then the active sub tab should be Network
+    Then the active sub tab should be Graph
     And the active main tab should be Repository
-
-  @javascript
-  Scenario: Navigate to graphs tab
-    Given I press "g" and "g"
-    Then the active main tab should be Graphs
 
   @javascript
   Scenario: Navigate to issues tab
@@ -53,8 +48,3 @@ Feature: Project Shortcuts
   Scenario: Navigate to project home
     Given I press "g" and "p"
     Then the active main tab should be Home
-
-  @javascript
-  Scenario: Navigate to project feed
-    Given I press "g" and "e"
-    Then the active main tab should be Activity

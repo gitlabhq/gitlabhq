@@ -21,9 +21,9 @@ module API
     end
     params do
       optional :default_branch_protection, type: Integer, values: [0, 1, 2], desc: 'Determine if developers can push to master'
-      optional :default_project_visibility, type: Integer, values: Gitlab::VisibilityLevel.values, desc: 'The default project visibility'
-      optional :default_snippet_visibility, type: Integer, values: Gitlab::VisibilityLevel.values, desc: 'The default snippet visibility'
-      optional :default_group_visibility, type: Integer, values: Gitlab::VisibilityLevel.values, desc: 'The default group visibility'
+      optional :default_project_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default project visibility'
+      optional :default_snippet_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default snippet visibility'
+      optional :default_group_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default group visibility'
       optional :restricted_visibility_levels, type: Array[String], desc: 'Selected levels cannot be used by non-admin users for projects or snippets. If the public level is restricted, user profiles are only visible to logged in users.'
       optional :import_sources, type: Array[String], values: %w[github bitbucket gitlab google_code fogbugz git gitlab_project],
                                 desc: 'Enabled sources for code import during project creation. OmniAuth must be configured for GitHub, Bitbucket, and GitLab.com'
@@ -115,8 +115,13 @@ module API
       optional :elasticsearch_indexing, type: Boolean, desc: 'Enable Elasticsearch indexing'
       given elasticsearch_indexing: ->(val) { val } do
         optional :elasticsearch_search, type: Boolean, desc: 'Enable Elasticsearch search'
-        requires :elasticsearch_host, type: String, desc: 'The TCP/IP host to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "host1, host2")'
-        requires :elasticsearch_port, type: Integer, desc: 'The TCP/IP port that Elasticsearch listens to. The default value is 9200'
+        requires :elasticsearch_url, type: String, desc: 'The url to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://localhost:9200, http://localhost:9201")'
+      end
+      optional :elasticsearch_aws, type: Boolean, desc: 'Enable support for AWS hosted elasticsearch'
+      given elasticsearch_aws: ->(val) { val } do
+        requires :elasticsearch_aws_region, type: String, desc: 'The AWS region the elasticsearch domain is configured'
+        optional :elasticsearch_aws_access_key, type: String, desc: 'AWS IAM access key'
+        optional :elasticsearch_aws_secret_access_key, type: String, desc: 'AWS IAM secret access key'
       end
       optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
       optional :repository_storages, type: Array[String], desc: 'A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random.'
@@ -141,7 +146,9 @@ module API
                       :repository_storages, :repository_size_limit
     end
     put "application/settings" do
-      if current_settings.update_attributes(declared_params(include_missing: false))
+      attrs = declared_params(include_missing: false)
+
+      if current_settings.update_attributes(attrs)
         present current_settings, with: Entities::ApplicationSetting
       else
         render_validation_error!(current_settings)

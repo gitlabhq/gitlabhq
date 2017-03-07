@@ -4,7 +4,6 @@
 - if project
   :javascript
     gl.GfmAutoComplete.dataSources = {
-      emojis: "#{emojis_namespace_project_autocomplete_sources_path(project.namespace, project)}",
       members: "#{members_namespace_project_autocomplete_sources_path(project.namespace, project, type: noteable_type, type_id: params[:id])}",
       issues: "#{issues_namespace_project_autocomplete_sources_path(project.namespace, project)}",
       mergeRequests: "#{merge_requests_namespace_project_autocomplete_sources_path(project.namespace, project)}",

@@ -259,6 +259,10 @@ module API
     # project helpers
 
     def filter_projects(projects)
+      if params[:membership]
+        projects = projects.merge(current_user.authorized_projects)
+      end
+
       if params[:owned]
         projects = projects.merge(current_user.owned_projects)
       end
@@ -393,14 +397,6 @@ module API
 
     def send_git_archive(repository, ref:, format:)
       header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
-    end
-
-    def issue_entity(project)
-      if project.has_external_issue_tracker?
-        Entities::ExternalIssue
-      else
-        Entities::Issue
-      end
     end
 
     # The Grape Error Middleware only has access to env but no params. We workaround this by

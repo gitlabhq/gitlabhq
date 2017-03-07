@@ -109,7 +109,7 @@ class Group < Namespace
   end
 
   def visibility_level_field
-    visibility_level
+    :visibility_level
   end
 
   def visibility_level_allowed_by_projects

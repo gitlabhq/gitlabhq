@@ -13,4 +13,5 @@ describe RolloutStatusEntity do
   it { is_expected.to have_key(:instances) }
   it { is_expected.to have_key(:completion) }
   it { is_expected.to have_key(:is_completed) }
+  it { is_expected.to have_key(:valid) }
 end

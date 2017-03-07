@@ -94,6 +94,13 @@ describe API::MergeRequests, api: true  do
         expect(json_response.first['id']).to eq merge_request_closed.id
       end
 
+      it 'matches V4 response schema' do
+        get api("/projects/#{project.id}/merge_requests", user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/merge_requests')
+      end
+
       context "with ordering" do
         before do
           @mr_later = mr_with_later_created_and_updated_at_time

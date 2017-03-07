@@ -58,12 +58,23 @@ namespace :gitlab do
       end
     end
 
-    desc "GitLab | Elasticsearch | Index all database objects"
-    task index_database: :environment do
-      [Project, Issue, MergeRequest, Snippet, Note, Milestone].each do |klass|
-        print "Indexing #{klass} records... "
+    INDEXABLE_CLASSES = {
+      "Project"      => "index_projects",
+      "Issue"        => "index_issues",
+      "MergeRequest" => "index_merge_requests",
+      "Snippet"      => "index_snippets",
+      "Note"         => "index_notes",
+      "Milestone"    => "index_milestones",
+    }.freeze
 
-        case klass.to_s
+    INDEXABLE_CLASSES.each do |klass_name, task_name|
+      task task_name => :environment do
+        logger = Logger.new(STDOUT)
+        logger.info("Indexing #{klass_name.pluralize}...")
+
+        klass = Kernel.const_get(klass_name)
+
+        case klass_name
         when 'Note'
           Note.searchable.import_with_parent
         when 'Project', 'Snippet'
@@ -72,9 +83,12 @@ namespace :gitlab do
           klass.import_with_parent
         end
 
-        puts "done".color(:green)
+        logger.info("Indexing #{klass_name.pluralize}... " + "done".color(:green))
       end
     end
+
+    desc "GitLab | Elasticsearch | Index all database objects"
+    multitask index_database: INDEXABLE_CLASSES.values
 
     desc "GitLab | Elasticsearch | Create empty index"
     task create_empty_index: :environment do

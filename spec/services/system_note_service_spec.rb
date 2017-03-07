@@ -418,45 +418,6 @@ describe SystemNoteService, services: true do
           to be_truthy
       end
     end
-
-    context 'when noteable is an Issue' do
-      let(:issue) { create(:issue, project: project) }
-
-      it 'is truthy when issue is closed' do
-        issue.close
-
-        expect(described_class.cross_reference_disallowed?(issue, project.commit)).
-          to be_truthy
-      end
-
-      it 'is falsey when issue is open' do
-        expect(described_class.cross_reference_disallowed?(issue, project.commit)).
-          to be_falsy
-      end
-    end
-
-    context 'when noteable is a Merge Request' do
-      let(:merge_request) { create(:merge_request, :simple, source_project: project) }
-
-      it 'is truthy when merge request is closed' do
-        allow(merge_request).to receive(:closed?).and_return(:true)
-
-        expect(described_class.cross_reference_disallowed?(merge_request, project.commit)).
-          to be_truthy
-      end
-
-      it 'is truthy when merge request is merged' do
-        allow(merge_request).to receive(:closed?).and_return(:true)
-
-        expect(described_class.cross_reference_disallowed?(merge_request, project.commit)).
-          to be_truthy
-      end
-
-      it 'is falsey when merge request is open' do
-        expect(described_class.cross_reference_disallowed?(merge_request, project.commit)).
-          to be_falsy
-      end
-    end
   end
 
   describe '.cross_reference_exists?' do

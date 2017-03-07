@@ -43,6 +43,8 @@ class UserCallout {
       this.userCalloutBody.append($template);
       $template.find(closeButton).on('click', e => this.dismissCallout(e));
       $template.find(userCalloutBtn).on('click', e => this.dismissCallout(e));
+    } else {
+      this.userCalloutBody.remove();
     }
   }
 
@@ -50,7 +52,7 @@ class UserCallout {
     Cookies.set(USER_CALLOUT_COOKIE, 'true');
     const $currentTarget = $(e.currentTarget);
     if ($currentTarget.hasClass('close-user-callout')) {
-      this.userCalloutBody.empty();
+      this.userCalloutBody.remove();
     }
   }
 }

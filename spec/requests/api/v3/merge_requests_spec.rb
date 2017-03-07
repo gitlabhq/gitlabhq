@@ -74,6 +74,13 @@ describe API::MergeRequests, api: true  do
         expect(json_response.first['title']).to eq(merge_request_merged.title)
       end
 
+      it 'matches V3 response schema' do
+        get v3_api("/projects/#{project.id}/merge_requests", user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v3/merge_requests')
+      end
+
       context "with ordering" do
         before do
           @mr_later = mr_with_later_created_and_updated_at_time

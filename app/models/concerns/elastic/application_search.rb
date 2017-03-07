@@ -74,6 +74,16 @@ module Elastic
       def es_parent
         project_id if respond_to?(:project_id)
       end
+
+      # Some attributes are actually complicated methods. Bad data can cause
+      # them to raise exceptions. When this happens, we still want the remainder
+      # of the object to be saved, so silently swallow the errors
+      def safely_read_attribute_for_elasticsearch(attr_name)
+        send(attr_name)
+      rescue => err
+        logger.warn("Elasticsearch failed to read #{attr_name} for #{self.class} #{self.id}: #{err}")
+        nil
+      end
     end
 
     module ClassMethods

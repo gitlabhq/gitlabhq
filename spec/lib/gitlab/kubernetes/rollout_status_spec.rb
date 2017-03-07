@@ -11,6 +11,8 @@ describe Gitlab::Kubernetes::RolloutStatus do
   end
 
   let(:specs) { specs_all_finished }
+  let(:specs_none) { [] }
+
   subject(:rollout_status) { described_class.from_specs(*specs) }
 
   describe '#deployments' do
@@ -59,6 +61,18 @@ describe Gitlab::Kubernetes::RolloutStatus do
     context 'when half of the instances are finished' do
       let(:specs) { specs_half_finished }
       it { is_expected.to be_falsy}
+    end
+  end
+
+  describe '#valid?' do
+    context 'when the specs are passed' do
+      it { is_expected.to be_valid }
+    end
+
+    context 'when no specs are passed' do
+      let(:specs) { specs_none }
+
+      it { is_expected.not_to be_valid }
     end
   end
 end

@@ -4,17 +4,17 @@
 ### Project visibility level
 
 Project in GitLab has be either private, internal or public.
-You can determine it by `visibility_level` field in project.
+You can determine it by `visibility` field in project.
 
 Constants for project visibility levels are next:
 
-* Private. `visibility_level` is `0`.
+* `private`:
   Project access must be granted explicitly for each user.
 
-* Internal. `visibility_level` is `10`.
+* `internal`:
   The project can be cloned by any logged in user.
 
-* Public. `visibility_level` is `20`.
+* `public`:
   The project can be cloned without any authentication.
 
 
@@ -34,9 +34,10 @@ Parameters:
 | `visibility` | string | no | Limit by visibility `public`, `internal`, or `private` |
 | `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
-| `search` | string | no | Return list of authorized projects matching the search criteria |
+| `search` | string | no | Return list of projects matching the search criteria |
 | `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
 | `owned` | boolean | no | Limit by projects owned by the current user |
+| `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 
 ```json
@@ -45,8 +46,7 @@ Parameters:
     "id": 4,
     "description": null,
     "default_branch": "master",
-    "public": false,
-    "visibility_level": 0,
+    "visibility": "private",
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
@@ -90,14 +90,14 @@ Parameters:
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
-    "request_access_enabled": false
+    "request_access_enabled": false,
+    "approvals_before_merge": 0
   },
   {
     "id": 6,
     "description": null,
     "default_branch": "master",
-    "public": false,
-    "visibility_level": 0,
+    "visibility": "private",
     "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
     "http_url_to_repo": "http://example.com/brightbox/puppet.git",
     "web_url": "http://example.com/brightbox/puppet",
@@ -151,7 +151,8 @@ Parameters:
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
-    "request_access_enabled": false
+    "request_access_enabled": false,
+    "approvals_before_merge": 0
   }
 ]
 ```
@@ -177,8 +178,7 @@ Parameters:
   "id": 3,
   "description": null,
   "default_branch": "master",
-  "public": false,
-  "visibility_level": 0,
+  "visibility": "private",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
@@ -244,7 +244,8 @@ Parameters:
   "repository_storage": "default",
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
-  "request_access_enabled": false
+  "request_access_enabled": false,
+  "approvals_before_merge": 0
 }
 ```
 
@@ -448,7 +449,7 @@ Parameters:
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
-| `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
+| `visibility` | String | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
@@ -482,7 +483,7 @@ Parameters:
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
-| `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
+| `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
@@ -516,7 +517,7 @@ Parameters:
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
-| `visibility_level` | integer | no | See [project visibility level](#project-visibility-level) |
+| `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
 | `public_builds` | boolean | no | If `true`, builds can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
@@ -566,8 +567,7 @@ Example response:
   "id": 3,
   "description": null,
   "default_branch": "master",
-  "public": false,
-  "visibility_level": 10,
+  "visibility": "internal",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
@@ -632,8 +632,7 @@ Example response:
   "id": 3,
   "description": null,
   "default_branch": "master",
-  "public": false,
-  "visibility_level": 10,
+  "visibility": "internal",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
@@ -699,8 +698,7 @@ Example response:
   "id": 3,
   "description": null,
   "default_branch": "master",
-  "public": false,
-  "visibility_level": 0,
+  "visibility": "private",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
@@ -782,8 +780,7 @@ Example response:
   "id": 3,
   "description": null,
   "default_branch": "master",
-  "public": false,
-  "visibility_level": 0,
+  "visibility": "private",
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",

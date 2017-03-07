@@ -8,5 +8,9 @@ FactoryGirl.define do
       primary true
       port { Gitlab.config.gitlab.port }
     end
+
+    trait :current do
+      port { Gitlab.config.gitlab.port }
+    end
   end
 end

@@ -17,7 +17,10 @@ var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
-    application:          './application.js',
+    common:               './commons/index.js',
+    common_vue:           ['vue', 'vue-resource'],
+    common_d3:            ['d3'],
+    main:                 './main.js',
     blob_edit:            './blob_edit/blob_edit_bundle.js',
     boards:               './boards/boards_bundle.js',
     simulate_drag:        './test_utils/simulate_drag.js',
@@ -28,6 +31,7 @@ var config = {
     environments_folder:  './environments/folder/environments_folder_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     graphs:               './graphs/graphs_bundle.js',
+    groups_list:          './groups_list.js',
     issues:               './issues/issues_bundle.js',
     issuable:             './issuable/issuable_bundle.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
@@ -39,16 +43,13 @@ var config = {
     snippet:              './snippet/snippet_bundle.js',
     terminal:             './terminal/terminal_bundle.js',
     users:                './users/users_bundle.js',
-    lib_chart:            './lib/chart.js',
-    lib_d3:               './lib/d3.js',
-    lib_vue:              './lib/vue_resource.js',
     vue_pipelines:        './vue_pipelines_index/index.js',
   },
 
   output: {
     path: path.join(ROOT_PATH, 'public/assets/webpack'),
     publicPath: '/assets/webpack/',
-    filename: IS_PRODUCTION ? '[name]-[chunkhash].js' : '[name].js'
+    filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js'
   },
 
   devtool: 'inline-source-map',
@@ -65,6 +66,10 @@ var config = {
             'stage-2'
           ]
         }
+      },
+      {
+        test: /\.svg$/,
+        use: 'raw-loader'
       }
     ]
   },
@@ -79,15 +84,61 @@ var config = {
       modules: false,
       assets: true
     }),
+
+    // prevent pikaday from including moment.js
     new webpack.IgnorePlugin(/moment/, /pikaday/),
+
+    // fix legacy jQuery plugins which depend on globals
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+    }),
+
+    // use deterministic module ids in all environments
+    IS_PRODUCTION ?
+      new webpack.HashedModuleIdsPlugin() :
+      new webpack.NamedModulesPlugin(),
+
+    // create cacheable common library bundle for all vue chunks
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common_vue',
+      chunks: [
+        'boards',
+        'commit_pipelines',
+        'cycle_analytics',
+        'diff_notes',
+        'environments',
+        'environments_folder',
+        'issuable',
+        'merge_conflicts',
+        'mr_widget_ee',
+        'vue_pipelines',
+      ],
+      minChunks: function(module, count) {
+        return module.resource && (/vue_shared/).test(module.resource);
+      },
+    }),
+
+    // create cacheable common library bundle for all d3 chunks
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common_d3',
+      chunks: ['graphs', 'users'],
+    }),
+
+    // create cacheable common library bundles
+    new webpack.optimize.CommonsChunkPlugin({
+      names: ['main', 'common', 'runtime'],
+    }),
   ],
 
   resolve: {
     extensions: ['.js', '.es6', '.js.es6'],
     alias: {
       '~':              path.join(ROOT_PATH, 'app/assets/javascripts'),
-      'bootstrap/js':   'bootstrap-sass/assets/javascripts/bootstrap',
+      'emoji-map$':      path.join(ROOT_PATH, 'fixtures/emojis/digests.json'),
       'emoji-aliases$': path.join(ROOT_PATH, 'fixtures/emojis/aliases.json'),
+      'empty_states':   path.join(ROOT_PATH, 'app/views/shared/empty_states'),
+      'icons':          path.join(ROOT_PATH, 'app/views/shared/icons'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       'vue$':           'vue/dist/vue.common.js',
     }

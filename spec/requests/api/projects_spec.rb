@@ -43,9 +43,10 @@ describe API::Projects, api: true  do
   describe 'GET /projects' do
     shared_examples_for 'projects response' do
       it 'returns an array of projects' do
-        get api('/projects', current_user)
+        get api('/projects', current_user), filter
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.map { |p| p['id'] }).to contain_exactly(*projects.map(&:id))
       end
@@ -61,6 +62,7 @@ describe API::Projects, api: true  do
 
     context 'when unauthenticated' do
       it_behaves_like 'projects response' do
+        let(:filter) { {} }
         let(:current_user) { nil }
         let(:projects) { [public_project] }
       end
@@ -68,6 +70,7 @@ describe API::Projects, api: true  do
 
     context 'when authenticated as regular user' do
       it_behaves_like 'projects response' do
+        let(:filter) { {} }
         let(:current_user) { user }
         let(:projects) { [public_project, project, project2, project3] }
       end
@@ -133,13 +136,18 @@ describe API::Projects, api: true  do
       end
 
       context 'and using search' do
-        it 'returns searched project' do
-          get api('/projects', user), { search: project.name }
+        it_behaves_like 'projects response' do
+          let(:filter) { { search: project.name } }
+          let(:current_user) { user }
+          let(:projects) { [project] }
+        end
+      end
 
-          expect(response).to have_http_status(200)
-          expect(response).to include_pagination_headers
-          expect(json_response).to be_an Array
-          expect(json_response.length).to eq(1)
+      context 'and membership=true' do
+        it_behaves_like 'projects response' do
+          let(:filter) { { membership: true } }
+          let(:current_user) { user }
+          let(:projects) { [project, project2, project3] }
         end
       end
 
@@ -216,36 +224,52 @@ describe API::Projects, api: true  do
       end
 
       context 'and with all query parameters' do
-        # |         | project5 | project6 | project7 | project8 | project9 |
-        # |---------+----------+----------+----------+----------+----------|
-        # | search  | x        |          | x        | x        | x        |
-        # | starred | x        | x        |          | x        | x        |
-        # | public  | x        | x        | x        |          | x        |
-        # | owned   | x        | x        | x        | x        |          |
-        let!(:project5) { create(:empty_project, :public, path: 'gitlab5', namespace: user.namespace) }
+        let!(:project5) { create(:empty_project, :public, path: 'gitlab5', namespace: create(:namespace)) }
         let!(:project6) { create(:empty_project, :public, path: 'project6', namespace: user.namespace) }
         let!(:project7) { create(:empty_project, :public, path: 'gitlab7', namespace: user.namespace) }
         let!(:project8) { create(:empty_project, path: 'gitlab8', namespace: user.namespace) }
         let!(:project9) { create(:empty_project, :public, path: 'gitlab9') }
 
         before do
-          user.update_attributes(starred_projects: [project5, project6, project8, project9])
+          user.update_attributes(starred_projects: [project5, project7, project8, project9])
         end
 
-        it 'returns only projects that satify all query parameters' do
-          get api('/projects', user), { visibility: 'public', owned: true, starred: true, search: 'gitlab' }
+        context 'including owned filter' do
+          it 'returns only projects that satisfy all query parameters' do
+            get api('/projects', user), { visibility: 'public', owned: true, starred: true, search: 'gitlab' }
 
-          expect(response).to have_http_status(200)
-          expect(response).to include_pagination_headers
-          expect(json_response).to be_an Array
-          expect(json_response.size).to eq(1)
-          expect(json_response.first['id']).to eq(project5.id)
+            expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
+            expect(json_response).to be_an Array
+            expect(json_response.size).to eq(1)
+            expect(json_response.first['id']).to eq(project7.id)
+          end
+        end
+
+        context 'including membership filter' do
+          before do
+            create(:project_member,
+                   user: user,
+                   project: project5,
+                   access_level: ProjectMember::MASTER)
+          end
+
+          it 'returns only projects that satisfy all query parameters' do
+            get api('/projects', user), { visibility: 'public', membership: true, starred: true, search: 'gitlab' }
+
+            expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
+            expect(json_response).to be_an Array
+            expect(json_response.size).to eq(2)
+            expect(json_response.map { |project| project['id'] }).to contain_exactly(project5.id, project7.id)
+          end
         end
       end
     end
 
     context 'when authenticated as a different user' do
       it_behaves_like 'projects response' do
+        let(:filter) { {} }
         let(:current_user) { user2 }
         let(:projects) { [public_project] }
       end
@@ -253,6 +277,7 @@ describe API::Projects, api: true  do
 
     context 'when authenticated as admin' do
       it_behaves_like 'projects response' do
+        let(:filter) { {} }
         let(:current_user) { admin }
         let(:projects) { Project.all }
       end
@@ -340,24 +365,27 @@ describe API::Projects, api: true  do
     end
 
     it 'sets a project as public' do
-      project = attributes_for(:project, :public)
+      project = attributes_for(:project, visibility: 'public')
+
       post api('/projects', user), project
-      expect(json_response['public']).to be_truthy
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
+
+      expect(json_response['visibility']).to eq('public')
     end
 
     it 'sets a project as internal' do
-      project = attributes_for(:project, :internal)
+      project = attributes_for(:project, visibility: 'internal')
+
       post api('/projects', user), project
-      expect(json_response['public']).to be_falsey
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
+
+      expect(json_response['visibility']).to eq('internal')
     end
 
     it 'sets a project as private' do
-      project = attributes_for(:project, :private)
+      project = attributes_for(:project, visibility: 'private')
+
       post api('/projects', user), project
-      expect(json_response['public']).to be_falsey
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
+
+      expect(json_response['visibility']).to eq('private')
     end
 
     it 'sets a project as allowing merge even if build fails' do
@@ -397,7 +425,7 @@ describe API::Projects, api: true  do
     end
 
     context 'when a visibility level is restricted' do
-      let(:project_param) { attributes_for(:project, :public) }
+      let(:project_param) { attributes_for(:project, visibility: 'public') }
 
       before do
         stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
@@ -415,10 +443,7 @@ describe API::Projects, api: true  do
       it 'allows an admin to override restricted visibility settings' do
         post api('/projects', admin), project_param
 
-        expect(json_response['public']).to be_truthy
-        expect(json_response['visibility_level']).to(
-          eq(Gitlab::VisibilityLevel::PUBLIC)
-        )
+        expect(json_response['visibility']).to eq('public')
       end
     end
   end
@@ -459,28 +484,29 @@ describe API::Projects, api: true  do
     end
 
     it 'sets a project as public' do
-      project = attributes_for(:project, :public)
+      project = attributes_for(:project, visibility: 'public')
+
       post api("/projects/user/#{user.id}", admin), project
 
       expect(response).to have_http_status(201)
-      expect(json_response['public']).to be_truthy
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
+      expect(json_response['visibility']).to eq('public')
     end
 
     it 'sets a project as internal' do
-      project = attributes_for(:project, :internal)
+      project = attributes_for(:project, visibility: 'internal')
+
       post api("/projects/user/#{user.id}", admin), project
 
       expect(response).to have_http_status(201)
-      expect(json_response['public']).to be_falsey
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
+      expect(json_response['visibility']).to eq('internal')
     end
 
     it 'sets a project as private' do
-      project = attributes_for(:project, :private)
+      project = attributes_for(:project, visibility: 'private')
+
       post api("/projects/user/#{user.id}", admin), project
-      expect(json_response['public']).to be_falsey
-      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
+
+      expect(json_response['visibility']).to eq('private')
     end
 
     it 'sets a project as allowing merge even if build fails' do
@@ -553,9 +579,8 @@ describe API::Projects, api: true  do
         expect(json_response['description']).to eq(project.description)
         expect(json_response['default_branch']).to eq(project.default_branch)
         expect(json_response['tag_list']).to be_an Array
-        expect(json_response['public']).to be_falsey
         expect(json_response['archived']).to be_falsey
-        expect(json_response['visibility_level']).to be_present
+        expect(json_response['visibility']).to be_present
         expect(json_response['ssh_url_to_repo']).to be_present
         expect(json_response['http_url_to_repo']).to be_present
         expect(json_response['web_url']).to be_present
@@ -606,9 +631,8 @@ describe API::Projects, api: true  do
         expect(json_response['description']).to eq(project.description)
         expect(json_response['default_branch']).to eq(project.default_branch)
         expect(json_response['tag_list']).to be_an Array
-        expect(json_response['public']).to be_falsey
         expect(json_response['archived']).to be_falsey
-        expect(json_response['visibility_level']).to be_present
+        expect(json_response['visibility']).to be_present
         expect(json_response['ssh_url_to_repo']).to be_present
         expect(json_response['http_url_to_repo']).to be_present
         expect(json_response['web_url']).to be_present
@@ -863,8 +887,7 @@ describe API::Projects, api: true  do
   describe 'POST /projects/:id/snippets' do
     it 'creates a new project snippet' do
       post api("/projects/#{project.id}/snippets", user),
-        title: 'api test', file_name: 'sample.rb', code: 'test',
-        visibility_level: Gitlab::VisibilityLevel::PRIVATE
+        title: 'api test', file_name: 'sample.rb', code: 'test', visibility: 'private'
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('api test')
     end
@@ -1116,7 +1139,7 @@ describe API::Projects, api: true  do
       end
 
       it 'updates visibility_level' do
-        project_param = { visibility_level: Gitlab::VisibilityLevel::PUBLIC }
+        project_param = { visibility: 'public' }
         put api("/projects/#{project3.id}", user), project_param
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
@@ -1126,13 +1149,13 @@ describe API::Projects, api: true  do
 
       it 'updates visibility_level from public to private' do
         project3.update_attributes({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
-        project_param = { visibility_level: Gitlab::VisibilityLevel::PRIVATE }
+        project_param = { visibility: 'private' }
         put api("/projects/#{project3.id}", user), project_param
         expect(response).to have_http_status(200)
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
         end
-        expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
+        expect(json_response['visibility']).to eq('private')
       end
 
       it 'does not update name to existing name' do
@@ -1208,7 +1231,7 @@ describe API::Projects, api: true  do
       end
 
       it 'does not update visibility_level' do
-        project_param = { visibility_level: Gitlab::VisibilityLevel::PUBLIC }
+        project_param = { visibility: 'public' }
         put api("/projects/#{project3.id}", user4), project_param
         expect(response).to have_http_status(403)
       end

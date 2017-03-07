@@ -13,7 +13,6 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :autocomplete_sources, only: [] do
         collection do
-          get 'emojis'
           get 'members'
           get 'issues'
           get 'merge_requests'
@@ -58,6 +57,7 @@ constraints(ProjectUrlConstrainer.new) do
 
         resources :graphs, only: [:show], constraints: { id: Gitlab::Regex.git_reference_regex } do
           member do
+            get :charts
             get :commits
             get :ci
             get :languages
@@ -177,6 +177,7 @@ constraints(ProjectUrlConstrainer.new) do
       resources :pipelines, only: [:index, :new, :create, :show] do
         collection do
           resource :pipelines_settings, path: 'settings', only: [:show, :update]
+          get :charts
         end
 
         member do

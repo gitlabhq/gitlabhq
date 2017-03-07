@@ -158,7 +158,7 @@
     width: 70px;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 20px 0 20px 10px;
+    margin: 20px 0 20px 5px;
 
     > span {
       text-align: center;
@@ -175,7 +175,7 @@
 
   .deploy-board-instances {
     order: 2;
-    width: 75%;
+    margin-left: 20px;
 
     .text {
       color: $gl-text-color-secondary;
@@ -193,10 +193,31 @@
   .deploy-board-actions {
     order: 3;
     align-self: center;
+    min-width: 150px;
+    margin-left: 10px;
   }
 
   &.deploy-board-error-message {
     justify-content: center;
+  }
+
+  .deploy-board-empty-state-svg {
+    order: 1;
+    width: 90px;
+    margin: auto 0 auto 20px;
+  }
+
+  .deploy-board-empty-state-text {
+    order: 2;
+    flex-wrap: wrap;
+    margin: auto auto 15px 0;
+
+    .title {
+      order: 1;
+      display: flex;
+      font-size: 17px;
+      line-height: 40px;
+    }
   }
 }
 
