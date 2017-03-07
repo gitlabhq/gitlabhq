@@ -14,7 +14,7 @@ describe '6_validations', lib: true do
 
   context 'with correct settings' do
     before do
-      mock_storages('foo' => 'tmp/tests/paths/a/b/c', 'bar' => 'tmp/tests/paths/a/b/d')
+      mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/d' })
     end
 
     it 'passes through' do
@@ -24,7 +24,7 @@ describe '6_validations', lib: true do
 
   context 'with invalid storage names' do
     before do
-      mock_storages('name with spaces' => 'tmp/tests/paths/a/b/c')
+      mock_storages('name with spaces' => { 'path' => 'tmp/tests/paths/a/b/c' })
     end
 
     it 'throws an error' do
@@ -34,7 +34,7 @@ describe '6_validations', lib: true do
 
   context 'with nested storage paths' do
     before do
-      mock_storages('foo' => 'tmp/tests/paths/a/b/c', 'bar' => 'tmp/tests/paths/a/b/c/d')
+      mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/c/d' })
     end
 
     it 'throws an error' do
@@ -44,11 +44,31 @@ describe '6_validations', lib: true do
 
   context 'with similar but un-nested storage paths' do
     before do
-      mock_storages('foo' => 'tmp/tests/paths/a/b/c', 'bar' => 'tmp/tests/paths/a/b/c2')
+      mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/c2' })
     end
 
     it 'passes through' do
       expect { validate_storages }.not_to raise_error
+    end
+  end
+
+  context 'with incomplete settings' do
+    before do
+      mock_storages('foo' => {})
+    end
+
+    it 'throws an error suggesting the user to update its settings' do
+      expect { validate_storages }.to raise_error('foo is not a valid storage, because it has no `path` key. Refer to gitlab.yml.example for an updated example. Please fix this in your gitlab.yml before starting GitLab.')
+    end
+  end
+
+  context 'with deprecated settings structure' do
+    before do
+      mock_storages('foo' => 'tmp/tests/paths/a/b/c')
+    end
+
+    it 'throws an error suggesting the user to update its settings' do
+      expect { validate_storages }.to raise_error("foo is not a valid storage, because it has no `path` key. It may be configured as:\n\nfoo:\n  path: tmp/tests/paths/a/b/c\n\nRefer to gitlab.yml.example for an updated example. Please fix this in your gitlab.yml before starting GitLab.")
     end
   end
 
