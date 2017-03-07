@@ -38,7 +38,7 @@ version of Runner required.
 | **CI_BUILD_ID**         | all    | all    | The unique id of the current job that GitLab CI uses internally. Deprecated, use CI_JOB_ID |
 | **CI_JOB_ID**           | 9.0    | all    | The unique id of the current job that GitLab CI uses internally |
 | **CI_BUILD_REF**        | all    | all    | The commit revision for which project is built. Deprecated, use CI_COMMIT_REF |
-| **CI_COMMIT_REF**       | 9.0    | all    | The commit revision for which project is built |
+| **CI_COMMIT_SHA**       | 9.0    | all    | The commit revision for which project is built |
 | **CI_BUILD_TAG**        | all    | 0.5    | The commit tag name. Present only when building tags. Deprecated, use CI_COMMIT_TAG |
 | **CI_COMMIT_TAG**       | 9.0    | 0.5    | The commit tag name. Present only when building tags. |
 | **CI_BUILD_NAME**       | all    | 0.5    | The name of the job as defined in `.gitlab-ci.yml`. Deprecated, use CI_JOB_NAME |
@@ -84,7 +84,7 @@ Example values:
 
 ```bash
 export CI_JOB_ID="50"
-export CI_COMMIT_REF="1ecfd275763eff1d6b4844ea3168962458c9f27a"
+export CI_COMMIT_SHA="1ecfd275763eff1d6b4844ea3168962458c9f27a"
 export CI_COMMIT_REF_NAME="master"
 export CI_REPOSITORY="https://gitab-ci-token:abcde-1234ABCD5678ef@example.com/gitlab-org/gitlab-ce.git"
 export CI_COMMIT_TAG="1.0.0"

@@ -1293,7 +1293,7 @@ describe Ci::Build, :models do
         { key: 'CI_JOB_NAME', value: 'test', public: true },
         { key: 'CI_JOB_STAGE', value: 'test', public: true },
         { key: 'CI_JOB_TOKEN', value: build.token, public: false },
-        { key: 'CI_COMMIT_REF', value: build.sha, public: true },
+        { key: 'CI_COMMIT_SHA', value: build.sha, public: true },
         { key: 'CI_COMMIT_REF_NAME', value: build.ref, public: true },
         { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true },
         { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true },
