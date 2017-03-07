@@ -44,7 +44,7 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
   end
 
   def set_index_vars
-    @scopes = Gitlab::Auth::SCOPES
+    @scopes = Gitlab::Auth::API_SCOPES
 
     @impersonation_token ||= finder.build
     @inactive_impersonation_tokens = finder(state: 'inactive').execute

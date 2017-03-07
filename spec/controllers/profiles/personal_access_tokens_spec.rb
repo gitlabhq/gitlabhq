@@ -15,10 +15,10 @@ describe Profiles::PersonalAccessTokensController do
       name = FFaker::Product.brand
       scopes = %w[api read_user]
 
-      post :create, personal_access_token: token_attributes.merge(scopes: scopes)
+      post :create, personal_access_token: token_attributes.merge(scopes: scopes, name: name)
 
       expect(created_token).not_to be_nil
-      expect(created_token.name).to eq(token_attributes[:name])
+      expect(created_token.name).to eq(name)
       expect(created_token.scopes).to eq(scopes)
       expect(PersonalAccessToken.active).to include(created_token)
     end
