@@ -8,6 +8,6 @@ class GeoNodePresenter < Gitlab::View::Presenter::Delegated
   private
 
   def status
-    @status ||= Geo::NodeStatusService.new.call(status_url)
+    @status ||= Geo::NodeStatusService.new.call(geo_node.status_url)
   end
 end
