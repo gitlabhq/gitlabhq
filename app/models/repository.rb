@@ -6,6 +6,7 @@ class Repository
   include Gitlab::ShellAdapter
   include Elastic::RepositoriesSearch
   include RepositoryMirroring
+  prepend EE::Repository
 
   attr_accessor :path_with_namespace, :project
 
@@ -424,13 +425,6 @@ class Repository
     expire_content_cache
     expire_tags_cache
     expire_branches_cache
-  end
-
-  # Runs code after a repository has been synced.
-  def after_sync
-    expire_all_method_caches
-    expire_branch_cache
-    expire_content_cache
   end
 
   # Runs code after a new commit has been pushed.

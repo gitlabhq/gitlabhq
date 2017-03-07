@@ -1972,16 +1972,6 @@ describe Repository, models: true do
     end
   end
 
-  describe '#after_sync' do
-    it 'expires repository cache' do
-      expect(repository).to receive(:expire_all_method_caches)
-      expect(repository).to receive(:expire_branch_cache)
-      expect(repository).to receive(:expire_content_cache)
-
-      repository.after_sync
-    end
-  end
-
   def create_remote_branch(remote_name, branch_name, target)
     rugged = repository.rugged
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)

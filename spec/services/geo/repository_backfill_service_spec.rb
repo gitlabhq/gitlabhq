@@ -22,7 +22,9 @@ describe Geo::RepositoryBackfillService, services: true do
     it 'expires repository caches' do
       allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) { true }
 
-      expect_any_instance_of(Repository).to receive(:after_sync).once
+      expect_any_instance_of(Repository).to receive(:expire_all_method_caches).once
+      expect_any_instance_of(Repository).to receive(:expire_branch_cache).once
+      expect_any_instance_of(Repository).to receive(:expire_content_cache).once
 
       subject.execute
     end
