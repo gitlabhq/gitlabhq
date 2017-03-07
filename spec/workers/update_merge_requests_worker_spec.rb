@@ -23,16 +23,5 @@ describe UpdateMergeRequestsWorker do
 
       perform
     end
-
-    it 'executes SystemHooksService with expected values' do
-      push_data = double('push_data')
-      expect(Gitlab::DataBuilder::Push).to receive(:build).with(project, user, oldrev, newrev, ref, []).and_return(push_data)
-
-      system_hook_service = double('system_hook_service')
-      expect(SystemHooksService).to receive(:new).and_return(system_hook_service)
-      expect(system_hook_service).to receive(:execute_hooks).with(push_data, :push_hooks)
-
-      perform
-    end
   end
 end
