@@ -21,8 +21,7 @@
     //   %a.js-toggle-button
     //   %div.js-toggle-content
     //
-    $('body').on('click', '.js-toggle-button', function(e) {
-      e.preventDefault();
+    $('body').on('click', '.js-toggle-button', function() {
       toggleContainer($(this).closest('.js-toggle-container'));
     });
 

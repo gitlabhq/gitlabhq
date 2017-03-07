@@ -100,6 +100,7 @@ variables:
 triggers:
 - project
 - trigger_requests
+- owner
 deploy_keys:
 - user
 - deploy_keys_projects
@@ -216,6 +217,7 @@ project:
 - approver_groups
 - route
 - statistics
+- uploads
 award_emoji:
 - awardable
 - user

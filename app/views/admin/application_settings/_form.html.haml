@@ -380,6 +380,29 @@
           Generate API key at
           %a{ href: 'http://www.akismet.com', target: 'blank' } http://www.akismet.com
 
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :unique_ips_limit_enabled do
+            = f.check_box :unique_ips_limit_enabled
+            Limit sign in from multiple ips
+          %span.help-block#unique_ip_help_block
+            Helps prevent malicious users hide their activity
+
+    .form-group
+      = f.label :unique_ips_limit_per_user, 'IPs per user', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :unique_ips_limit_per_user, class: 'form-control'
+        .help-block
+          Maximum number of unique IPs per user
+
+    .form-group
+      = f.label :unique_ips_limit_time_window, 'IP expiration time', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :unique_ips_limit_time_window, class: 'form-control'
+        .help-block
+          How many seconds an IP will be counted towards the limit
+
   %fieldset
     %legend Abuse reports
     .form-group

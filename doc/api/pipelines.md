@@ -127,7 +127,7 @@ Example of response
 }
 ```
 
-## Retry builds in a pipeline
+## Retry jobs in a pipeline
 
 > [Introduced][ce-5837] in GitLab 8.11
 
@@ -173,7 +173,7 @@ Response:
 }
 ```
 
-## Cancel a pipelines builds
+## Cancel a pipelines jobs 
 
 > [Introduced][ce-5837] in GitLab 8.11
 

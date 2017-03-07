@@ -39,6 +39,12 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
     click_link('Pages')
   end
 
+  step 'I click the "Activity" tab' do
+    page.within '.sub-nav' do
+      click_link('Activity')
+    end
+  end
+
   step 'the active sub nav should be Members' do
     ensure_active_sub_nav('Members')
   end
@@ -55,6 +61,10 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
     ensure_active_sub_nav('Pages')
   end
 
+  step 'the active sub tab should be Activity' do
+    ensure_active_sub_tab('Activity')
+  end
+
   # Sub Tabs: Commits
 
   step 'I click the "Compare" tab' do
@@ -69,6 +79,12 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
 
   step 'I click the "Tags" tab' do
     click_link('Tags')
+  end
+
+  step 'I click the "Charts" tab' do
+    page.within '.sub-nav' do
+      click_link('Charts')
+    end
   end
 
   step 'the active sub tab should be Compare' do

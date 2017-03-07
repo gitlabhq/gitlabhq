@@ -122,9 +122,9 @@ module API
         },
         {
           required: false,
-          name: :notify_only_broken_builds,
+          name: :notify_only_broken_jobs,
           type: Boolean,
-          desc: 'Notify only broken builds'
+          desc: 'Notify only broken jobs'
         }
       ],
       'campfire' => [
@@ -402,9 +402,9 @@ module API
         },
         {
           required: false,
-          name: :notify_only_broken_builds,
+          name: :notify_only_broken_jobs,
           type: Boolean,
-          desc: 'Notify only broken builds'
+          desc: 'Notify only broken jobs'
         }
       ],
       'pivotaltracker' => [
@@ -659,7 +659,7 @@ module API
         desc "Set #{service_slug} service for project"
         params do
           service_classes.each do |service|
-            event_names = service.try(:event_names) || []
+            event_names = service.try(:event_names) || next
             event_names.each do |event_name|
               services[service.to_param.tr("_", "-")] << {
                 required: false,

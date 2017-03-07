@@ -37,6 +37,7 @@
 /* global WeightSelect */
 /* global AdminEmailSelect */
 
+import BindInOut from './behaviors/bind_in_out';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 
@@ -232,9 +233,14 @@ const UserCallout = require('./user_callout');
           new UsersSelect();
           break;
         case 'groups:new':
+        case 'admin:groups:new':
+        case 'groups:create':
+        case 'admin:groups:create':
+          BindInOut.initAll();
+        case 'groups:new':
+        case 'admin:groups:new':
         case 'groups:edit':
         case 'admin:groups:edit':
-        case 'admin:groups:new':
           new GroupAvatar();
           break;
         case 'projects:tree:show':

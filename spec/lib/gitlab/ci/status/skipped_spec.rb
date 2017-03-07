@@ -6,7 +6,7 @@ describe Gitlab::Ci::Status::Skipped do
   end
 
   describe '#text' do
-    it { expect(subject.label).to eq 'skipped' }
+    it { expect(subject.text).to eq 'skipped' }
   end
 
   describe '#label' do

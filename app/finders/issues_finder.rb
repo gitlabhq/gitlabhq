@@ -41,4 +41,8 @@ class IssuesFinder < IssuableFinder
       user_id: user.id,
       project_ids: user.authorized_projects(Gitlab::Access::REPORTER).select(:id))
   end
+
+  def item_project_ids(items)
+    items&.reorder(nil)&.select(:project_id)
+  end
 end

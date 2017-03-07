@@ -8,6 +8,19 @@ body {
   &.navless {
     background-color: $white-light !important;
   }
+
+  &.card-content {
+    background-color: $gray-darker;
+
+    .content-wrapper {
+      padding: 0;
+
+      .container-fluid,
+      .container-limited {
+        background-color: $gray-darker;
+      }
+    }
+  }
 }
 
 .container {

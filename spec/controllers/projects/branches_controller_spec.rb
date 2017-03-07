@@ -244,4 +244,27 @@ describe Projects::BranchesController do
       end
     end
   end
+
+  describe "GET index" do
+    render_views
+
+    before do
+      sign_in(user)
+    end
+
+    context 'when rendering a JSON format' do
+      it 'filters branches by name' do
+        get :index,
+            namespace_id: project.namespace,
+            project_id: project,
+            format: :json,
+            search: 'master'
+
+        parsed_response = JSON.parse(response.body)
+
+        expect(parsed_response.length).to eq 1
+        expect(parsed_response.first).to eq 'master'
+      end
+    end
+  end
 end

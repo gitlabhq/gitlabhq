@@ -34,7 +34,10 @@ Rails.application.routes.draw do
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
   get '/autocomplete/projects' => 'autocomplete#projects'
+<<<<<<< HEAD
   get '/autocomplete/project_groups' => 'autocomplete#project_groups'
+=======
+>>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
 
   # Search
   get 'search' => 'search#show'

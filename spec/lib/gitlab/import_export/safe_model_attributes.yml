@@ -243,6 +243,8 @@ Ci::Trigger:
 - created_at
 - updated_at
 - gl_project_id
+- owner_id
+- description
 DeployKey:
 - id
 - user_id

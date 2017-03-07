@@ -1,5 +1,5 @@
 module API
-  # Deployments RESTfull API endpoints
+  # Deployments RESTful API endpoints
   class Deployments < Grape::API
     include PaginationParams
 

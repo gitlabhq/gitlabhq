@@ -63,15 +63,23 @@
       "due_date": { "type": ["date", "null"] },
       "confidential": { "type": "boolean" },
       "web_url": { "type": "uri" },
+<<<<<<< HEAD
       "subscribed": { "type": ["boolean"] },
       "weight": { "type": ["integer", "null"] }
+=======
+      "subscribed": { "type": ["boolean"] }
+>>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
     },
     "required": [
       "id", "iid", "project_id", "title", "description",
       "state", "created_at", "updated_at", "labels",
       "milestone", "assignee", "author", "user_notes_count",
       "upvotes", "downvotes", "due_date", "confidential",
+<<<<<<< HEAD
       "web_url", "subscribed", "weight"
+=======
+      "web_url", "subscribed"
+>>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
     ],
     "additionalProperties": false
   }

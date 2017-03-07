@@ -86,6 +86,7 @@
   }
 }
 
+<<<<<<< HEAD
 .panel {
   .shared_runners_limit_under_quota {
     color: $gl-success;
@@ -120,4 +121,20 @@
 
 table.pipeline-project-metrics tr td {
   padding: $gl-padding;
+=======
+.mattermost-icon svg {
+  width: 16px;
+  height: 16px;
+  vertical-align: text-bottom;
+}
+
+.mattermost-team-name {
+  color: $gl-text-color-secondary;
+}
+
+.mattermost-info {
+  display: block;
+  color: $gl-text-color-secondary;
+  margin-top: 10px;
+>>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
 }

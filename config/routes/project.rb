@@ -304,7 +304,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :group_links, only: [:index, :create, :update, :destroy], constraints: { id: /\d+/ }
 
-      resources :notes, only: [:index, :create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do
+      resources :notes, only: [:create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do
         member do
           delete :delete_attachment
           post :resolve
@@ -312,7 +312,13 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+<<<<<<< HEAD
       resources :boards, only: [:index, :show, :create, :update, :destroy] do
+=======
+      get 'noteable/:target_type/:target_id/notes' => 'notes#index', as: 'noteable_notes'
+
+      resources :boards, only: [:index, :show] do
+>>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
         scope module: :boards do
           resources :issues, only: [:index, :update]
 

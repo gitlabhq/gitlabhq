@@ -9,6 +9,7 @@ module API
       mount ::API::V3::Boards
       mount ::API::V3::Branches
       mount ::API::V3::BroadcastMessages
+      mount ::API::V3::Builds
       mount ::API::V3::Commits
       mount ::API::V3::DeployKeys
       mount ::API::V3::Environments
@@ -64,6 +65,10 @@ module API
       error! e.message, e.status, e.headers
     end
 
+    rescue_from Gitlab::Auth::TooManyIps do |e|
+      rack_response({ 'message' => '403 Forbidden' }.to_json, 403)
+    end
+
     rescue_from :all do |exception|
       handle_api_exception(exception)
     end
@@ -81,7 +86,6 @@ module API
     mount ::API::Boards
     mount ::API::Branches
     mount ::API::BroadcastMessages
-    mount ::API::Builds
     mount ::API::Commits
     mount ::API::CommitStatuses
     mount ::API::DeployKeys
@@ -92,6 +96,7 @@ module API
     mount ::API::Geo
     mount ::API::Internal
     mount ::API::Issues
+    mount ::API::Jobs
     mount ::API::Keys
     mount ::API::Labels
     mount ::API::Ldap

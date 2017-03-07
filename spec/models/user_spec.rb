@@ -32,10 +32,15 @@ describe User, models: true do
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
+<<<<<<< HEAD
     it { is_expected.to have_many(:path_locks).dependent(:destroy) }
+=======
+    it { is_expected.to have_many(:triggers).dependent(:destroy) }
+>>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
     it { is_expected.to have_many(:builds).dependent(:nullify) }
     it { is_expected.to have_many(:pipelines).dependent(:nullify) }
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }
+    it { is_expected.to have_many(:uploads).dependent(:destroy) }
 
     describe '#group_members' do
       it 'does not include group memberships for which user is a requester' do

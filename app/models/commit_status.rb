@@ -29,9 +29,11 @@ class CommitStatus < ActiveRecord::Base
   end
 
   scope :exclude_ignored, -> do
-    # We want to ignore failed_but_allowed jobs
+    # We want to ignore failed but allowed to fail jobs.
+    #
+    # TODO, we also skip ignored optional manual actions.
     where("allow_failure = ? OR status IN (?)",
-      false, all_state_names - [:failed, :canceled])
+      false, all_state_names - [:failed, :canceled, :manual])
   end
 
   scope :retried, -> { where.not(id: latest) }
@@ -42,11 +44,11 @@ class CommitStatus < ActiveRecord::Base
 
   state_machine :status do
     event :enqueue do
-      transition [:created, :skipped] => :pending
+      transition [:created, :skipped, :manual] => :pending
     end
 
     event :process do
-      transition skipped: :created
+      transition [:skipped, :manual] => :created
     end
 
     event :run do
@@ -66,7 +68,7 @@ class CommitStatus < ActiveRecord::Base
     end
 
     event :cancel do
-      transition [:created, :pending, :running] => :canceled
+      transition [:created, :pending, :running, :manual] => :canceled
     end
 
     before_transition created: [:pending, :running] do |commit_status|
@@ -86,7 +88,7 @@ class CommitStatus < ActiveRecord::Base
 
       commit_status.run_after_commit do
         pipeline.try do |pipeline|
-          if complete?
+          if complete? || manual?
             PipelineProcessWorker.perform_async(pipeline.id)
           else
             PipelineUpdateWorker.perform_async(pipeline.id)

@@ -64,6 +64,10 @@ module Ci
     end
 
     state_machine :status do
+      event :actionize do
+        transition created: :manual
+      end
+
       after_transition any => [:pending] do |build|
         build.run_after_commit do
           BuildQueueWorker.perform_async(id)
@@ -95,16 +99,21 @@ module Ci
         .fabricate!
     end
 
-    def manual?
-      self.when == 'manual'
-    end
-
     def other_actions
       pipeline.manual_actions.where.not(name: name)
     end
 
     def playable?
-      project.builds_enabled? && commands.present? && manual? && skipped?
+      project.builds_enabled? && has_commands? &&
+        action? && manual?
+    end
+
+    def action?
+      self.when == 'manual'
+    end
+
+    def has_commands?
+      commands.present?
     end
 
     def play(current_user)
@@ -123,7 +132,7 @@ module Ci
     end
 
     def retryable?
-      project.builds_enabled? && commands.present? &&
+      project.builds_enabled? && has_commands? &&
         (success? || failed? || canceled?)
     end
 
@@ -553,7 +562,7 @@ module Ci
       ]
       variables << { key: 'CI_BUILD_TAG', value: ref, public: true } if tag?
       variables << { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true } if trigger_request
-      variables << { key: 'CI_BUILD_MANUAL', value: 'true', public: true } if manual?
+      variables << { key: 'CI_BUILD_MANUAL', value: 'true', public: true } if action?
       variables
     end
 
