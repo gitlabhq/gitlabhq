@@ -517,6 +517,27 @@ module Ci
       ]
     end
 
+    def steps
+      [Gitlab::Ci::Build::Step.from_commands(self),
+       Gitlab::Ci::Build::Step.from_after_script(self)].compact
+    end
+
+    def image
+      Gitlab::Ci::Build::Image.from_image(self)
+    end
+
+    def services
+      Gitlab::Ci::Build::Image.from_services(self)
+    end
+
+    def artifacts
+      [options[:artifacts]]
+    end
+
+    def cache
+      [options[:cache]]
+    end
+
     def credentials
       Gitlab::Ci::Build::Credentials::Factory.new(self).create!
     end
