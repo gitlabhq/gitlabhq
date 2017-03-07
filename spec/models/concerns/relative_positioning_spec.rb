@@ -34,7 +34,6 @@ describe Issue, 'RelativePositioning' do
     end
   end
 
-
   describe '#move_to_end' do
     it 'moves issue to the end' do
       new_issue.move_to_end
