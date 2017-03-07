@@ -1,10 +1,11 @@
-/* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
+/* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren, no-new */
 /* global Vue */
 /* global BoardService */
 
+import FilteredSearchBoards from './filtered_search_boards';
+
 window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
-import FilteredSearchBoards from './filtered_search_boards';
 require('./models/issue');
 require('./models/label');
 require('./models/list');
@@ -61,7 +62,7 @@ $(() => {
     created () {
       gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
 
-      new FilteredSearchBoards(Store.filter);
+      new FilteredSearchBoards(Store.filter, true);
     },
     mounted () {
       Store.disabled = this.disabled;
