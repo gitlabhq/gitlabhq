@@ -878,7 +878,7 @@ DEPENDENCIES
   fog-local (~> 0.3)
   fog-openstack (~> 0.1)
   fog-rackspace (~> 0.1.1)
-  font-awesome-rails (~> 4.6.1)
+  font-awesome-rails (~> 4.7)
   foreman (~> 0.78.0)
   fuubar (~> 2.0.0)
   gemnasium-gitlab-service (~> 0.2)
