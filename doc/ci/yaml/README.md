@@ -220,7 +220,7 @@ rspec:
 ```
 
 Note that since cache is shared between jobs, if you're using different
-paths for different jobs, you should also set a different *cache:key*
+paths for different jobs, you should also set a different **cache:key**
 otherwise cache content can be overwritten.
 
 The cache is provided on a best-effort basis, so don't expect that the cache
