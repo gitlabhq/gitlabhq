@@ -13,7 +13,7 @@ describe Geo::GeoBackfillWorker, services: true do
     end
 
     it 'performs GeoSingleRepositoryBackfillWorker for each project' do
-      expect(GeoSingleRepositoryBackfillWorker).to receive(:new).twice.and_return(double.as_null_object)
+      expect(GeoSingleRepositoryBackfillWorker).to receive(:new).twice.and_return(spy)
 
       subject.perform
     end
@@ -29,7 +29,7 @@ describe Geo::GeoBackfillWorker, services: true do
     it 'does not perform GeoSingleRepositoryBackfillWorker for projects that repository exists' do
       create_list(:project, 2)
 
-      expect(GeoSingleRepositoryBackfillWorker).to receive(:new).twice.and_return(double.as_null_object)
+      expect(GeoSingleRepositoryBackfillWorker).to receive(:new).twice.and_return(spy)
 
       subject.perform
     end
