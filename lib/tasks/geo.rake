@@ -54,11 +54,11 @@ namespace :geo do
       }
 
       # set config variables for geo database
-      ENV['SCHEMA'] = 'db_geo/schema.rb'
+      ENV['SCHEMA'] = 'db/geo/schema.rb'
       ENV['SKIP_POST_DEPLOYMENT_MIGRATIONS'] = 'true'
-      Rails.application.config.paths['db'] = ['db_geo']
-      Rails.application.config.paths['db/migrate'] = ['db_geo/migrate']
-      Rails.application.config.paths['db/seeds.rb'] = ['db_geo/seeds.rb']
+      Rails.application.config.paths['db'] = ['db/geo']
+      Rails.application.config.paths['db/migrate'] = ['db/geo/migrate']
+      Rails.application.config.paths['db/seeds.rb'] = ['db/geo/seeds.rb']
       Rails.application.config.paths['config/database'] = ['config/database_geo.yml']
     end
 

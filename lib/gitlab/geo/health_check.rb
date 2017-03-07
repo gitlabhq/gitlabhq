@@ -18,7 +18,7 @@ module Gitlab
 
       def self.db_migrate_path
         # Lazy initialisation so Rails.root will be defined
-        @db_migrate_path ||= File.join(Rails.root, 'db_geo', 'migrate')
+        @db_migrate_path ||= File.join(Rails.root, 'db', 'geo', 'migrate')
       end
 
       def self.get_database_version
