@@ -14,7 +14,6 @@ module Issues
 
     def before_create(issue)
       spam_check(issue, current_user)
-      issue.move_to_end
     end
 
     def after_create(issuable)
