@@ -1,0 +1,4 @@
+---
+title: Periodically persists users activity to users.last_activity_on
+merge_request: 1597
+author:

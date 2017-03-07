@@ -1303,6 +1303,7 @@ ActiveRecord::Schema.define(version: 20170408033905) do
     t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "ghost"
+    t.date "last_activity_on"
     t.boolean "notified_of_own_activity"
     t.boolean "require_two_factor_authentication_from_group", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false
