@@ -61,6 +61,13 @@ describe EventsHelper do
         '</code></pre>'
       expect(helper.event_note(input)).to eq(expected)
     end
+
+    it 'preserves style attribute within a tag' do
+      input = '<span class="" style="background-color: #44ad8e; color: #FFFFFF;"></span>'
+      expected = '<p><span style="background-color: #44ad8e; color: #FFFFFF;"></span></p>'
+
+      expect(helper.event_note(input)).to eq(expected)
+    end
   end
 
   describe '#event_commit_title' do
