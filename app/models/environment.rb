@@ -149,6 +149,14 @@ class Environment < ActiveRecord::Base
     project.deployment_service.rollout_status(self) if deployment_service_ready?
   end
 
+  def has_metrics?
+    project.monitoring_service.present? && available? && last_deployment.present?
+  end
+
+  def metrics
+    project.monitoring_service.metrics(self) if has_metrics?
+  end
+
   # An environment name is not necessarily suitable for use in URLs, DNS
   # or other third-party contexts, so provide a slugified version. A slug has
   # the following properties:

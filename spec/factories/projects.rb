@@ -247,4 +247,15 @@ FactoryGirl.define do
       )
     end
   end
+
+  factory :prometheus_project, parent: :empty_project do
+    after :create do |project|
+      project.create_prometheus_service(
+        active: true,
+        properties: {
+          api_url: 'https://prometheus.example.com'
+        }
+      )
+    end
+  end
 end
