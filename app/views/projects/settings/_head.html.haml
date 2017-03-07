@@ -2,7 +2,7 @@
   .scrolling-tabs-container.sub-nav-scroll
     = render 'shared/nav_scroll'
     .nav-links.sub-nav.scrolling-tabs
-      %ul{ class: (container_class) }
+      %ul{ class: container_class }
         - can_edit = can?(current_user, :admin_project, @project)
         - if can_edit
           = nav_link(controller: :projects) do
