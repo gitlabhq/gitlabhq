@@ -8,8 +8,16 @@
     "id": { "type": "integer" },
     "name": { "type": "string" },
     "milestone": {
-      "id": { "type": "integer" },
-      "title": { "type": "string" }
+      "type": ["object", "null"],
+      "required": [
+        "id",
+        "title"
+      ],
+      "properties": {
+        "id": { "type": "integer" },
+        "title": { "type": "string" }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false
