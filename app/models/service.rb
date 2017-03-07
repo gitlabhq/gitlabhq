@@ -234,6 +234,7 @@ class Service < ActiveRecord::Base
       mattermost
       pipelines_email
       pivotaltracker
+      prometheus
       pushover
       redmine
       slack_slash_commands
