@@ -78,10 +78,10 @@ describe Boards::Issues::MoveService, services: true do
     end
 
     context 'when moving to same list' do
-      let(:issue)  { create(:labeled_issue, project: project, labels: [bug, development]) }
+      let(:issue)   { create(:labeled_issue, project: project, labels: [bug, development]) }
       let(:issue1)  { create(:labeled_issue, project: project, labels: [bug, development]) }
       let(:issue2)  { create(:labeled_issue, project: project, labels: [bug, development]) }
-      let(:params) { { board_id: board1.id, from_list_id: list1.id, to_list_id: list1.id } }
+      let(:params)  { { board_id: board1.id, from_list_id: list1.id, to_list_id: list1.id } }
 
       it 'returns false' do
         expect(described_class.new(project, user, params).execute(issue)).to eq false
@@ -94,13 +94,13 @@ describe Boards::Issues::MoveService, services: true do
       end
 
       it 'sorts issues' do
-        [issue1, issue2].each(&:move_to_end)
+        [issue, issue1, issue2].each do |issue|
+          issue.move_to_end && issue.save!
+        end
 
-        issue.move_between!(issue1, issue2)
+        params.merge!(move_after_iid: issue1.iid, move_before_iid: issue2.iid)
 
-        params.merge!(move_after_iid: issue.iid, move_before_iid: issue2.iid)
-
-        described_class.new(project, user, params).execute(issue1)
+        described_class.new(project, user, params).execute(issue)
 
         expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
       end
