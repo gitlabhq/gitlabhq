@@ -115,6 +115,14 @@ describe 'GitLab Markdown', feature: true do
         expect(doc).to have_selector('span:contains("span tag")')
       end
 
+      it 'permits details elements' do
+        expect(doc).to have_selector('details:contains("Hiding the details")')
+      end
+
+      it 'permits summary elements' do
+        expect(doc).to have_selector('details summary:contains("collapsible")')
+      end
+
       it 'permits style attribute in th elements' do
         aggregate_failures do
           expect(doc.at_css('th:contains("Header")')['style']).to eq 'text-align: center'

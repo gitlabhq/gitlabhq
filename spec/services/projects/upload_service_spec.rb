@@ -10,7 +10,7 @@ describe Projects::UploadService, services: true do
     context 'for valid gif file' do
       before do
         gif = fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
-        @link_to_file = upload_file(@project.repository, gif)
+        @link_to_file = upload_file(@project, gif)
       end
 
       it { expect(@link_to_file).to have_key(:alt) }
@@ -23,7 +23,7 @@ describe Projects::UploadService, services: true do
       before do
         png = fixture_file_upload(Rails.root + 'spec/fixtures/dk.png',
           'image/png')
-        @link_to_file = upload_file(@project.repository, png)
+        @link_to_file = upload_file(@project, png)
       end
 
       it { expect(@link_to_file).to have_key(:alt) }
@@ -35,7 +35,7 @@ describe Projects::UploadService, services: true do
     context 'for valid jpg file' do
       before do
         jpg = fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg')
-        @link_to_file = upload_file(@project.repository, jpg)
+        @link_to_file = upload_file(@project, jpg)
       end
 
       it { expect(@link_to_file).to have_key(:alt) }
@@ -47,7 +47,7 @@ describe Projects::UploadService, services: true do
     context 'for txt file' do
       before do
         txt = fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain')
-        @link_to_file = upload_file(@project.repository, txt)
+        @link_to_file = upload_file(@project, txt)
       end
 
       it { expect(@link_to_file).to have_key(:alt) }
@@ -60,14 +60,14 @@ describe Projects::UploadService, services: true do
       before do
         txt = fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain')
         allow(txt).to receive(:size) { 1000.megabytes.to_i }
-        @link_to_file = upload_file(@project.repository, txt)
+        @link_to_file = upload_file(@project, txt)
       end
 
       it { expect(@link_to_file).to eq(nil) }
     end
   end
 
-  def upload_file(repository, file)
-    Projects::UploadService.new(repository, file).execute
+  def upload_file(project, file)
+    Projects::UploadService.new(project, file).execute
   end
 end

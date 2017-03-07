@@ -57,7 +57,7 @@ FactoryGirl.define do
     end
 
     trait :manual do
-      status 'skipped'
+      status 'manual'
       self.when 'manual'
     end
 
@@ -71,8 +71,11 @@ FactoryGirl.define do
       allow_failure true
     end
 
+    trait :ignored do
+      allowed_to_fail
+    end
+
     trait :playable do
-      skipped
       manual
     end
 

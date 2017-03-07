@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170305203726) do
+ActiveRecord::Schema.define(version: 20170306170512) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -174,6 +174,16 @@ ActiveRecord::Schema.define(version: 20170305203726) do
 
   add_index "chat_names", ["service_id", "team_id", "chat_id"], name: "index_chat_names_on_service_id_and_team_id_and_chat_id", unique: true, using: :btree
   add_index "chat_names", ["user_id", "service_id"], name: "index_chat_names_on_user_id_and_service_id", unique: true, using: :btree
+
+  create_table "chat_teams", force: :cascade do |t|
+    t.integer "namespace_id", null: false
+    t.string "team_id"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "chat_teams", ["namespace_id"], name: "index_chat_teams_on_namespace_id", unique: true, using: :btree
 
   create_table "ci_application_settings", force: :cascade do |t|
     t.boolean "all_broken_builds"
@@ -1216,6 +1226,20 @@ ActiveRecord::Schema.define(version: 20170305203726) do
   add_index "u2f_registrations", ["key_handle"], name: "index_u2f_registrations_on_key_handle", using: :btree
   add_index "u2f_registrations", ["user_id"], name: "index_u2f_registrations_on_user_id", using: :btree
 
+  create_table "uploads", force: :cascade do |t|
+    t.integer "size", limit: 8, null: false
+    t.string "path", null: false
+    t.string "checksum", limit: 64
+    t.integer "model_id"
+    t.string "model_type"
+    t.string "uploader", null: false
+    t.datetime "created_at", null: false
+  end
+
+  add_index "uploads", ["checksum"], name: "index_uploads_on_checksum", using: :btree
+  add_index "uploads", ["model_id", "model_type"], name: "index_uploads_on_model_id_and_model_type", using: :btree
+  add_index "uploads", ["path"], name: "index_uploads_on_path", using: :btree
+
   create_table "user_agent_details", force: :cascade do |t|
     t.string "user_agent", null: false
     t.string "ip_address", null: false
@@ -1340,6 +1364,7 @@ ActiveRecord::Schema.define(version: 20170305203726) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
   add_foreign_key "boards", "projects"
+  add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade

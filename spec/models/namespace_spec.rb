@@ -28,6 +28,20 @@ describe Namespace, models: true do
       expect(nested).not_to be_valid
       expect(nested.errors[:parent_id].first).to eq('has too deep level of nesting')
     end
+
+    describe 'reserved path validation' do
+      context 'nested group' do
+        let(:group) { build(:group, :nested, path: 'tree') }
+
+        it { expect(group).not_to be_valid }
+      end
+
+      context 'top-level group' do
+        let(:group) { build(:group, path: 'tree') }
+
+        it { expect(group).to be_valid }
+      end
+    end
   end
 
   describe "Respond to" do

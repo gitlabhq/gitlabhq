@@ -1,4 +1,5 @@
 class AvatarUploader < GitlabUploader
+  include RecordsUploads
   include UploaderHelper
 
   storage :file

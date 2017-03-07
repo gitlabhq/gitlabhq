@@ -3,7 +3,6 @@
  *
  */
 .mr-state-widget {
-  background: $gray-light;
   color: $gl-text-color;
   border: 1px solid $border-color;
   border-radius: 2px;
@@ -109,12 +108,17 @@
     @media (max-width: $screen-xs-max) {
       flex-wrap: wrap;
     }
+
+    .ci-status-icon > .icon-link > svg {
+      width: 22px;
+      height: 22px;
+    }
   }
 
   .mr-widget-body,
   .ci_widget,
   .mr-widget-footer {
-    padding: $gl-padding;
+    padding: 16px;
   }
 
   .mr-widget-pipeline-graph {
@@ -172,10 +176,6 @@
       &.has-conflicts .fa-exclamation-triangle {
         color: $gl-warning;
       }
-    }
-
-    p:last-child {
-      margin-bottom: 0;
     }
 
     .btn-grouped {
@@ -340,8 +340,61 @@
   }
 }
 
+.remove-message-pipes {
+  ul {
+    margin: 10px 0 0 12px;
+    padding: 0;
+    list-style: none;
+    border-left: 2px solid $border-color;
+    display: inline-block;
+  }
+
+  li {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    display: block;
+
+    span {
+      margin-left: 15px;
+      max-height: 20px;
+    }
+  }
+
+  li::before {
+    content: '';
+    position: absolute;
+    border-top: 2px solid $border-color;
+    height: 1px;
+    top: 8px;
+    width: 8px;
+  }
+
+  li:last-child {
+    &::before {
+      top: 18px;
+    }
+
+    span {
+      display: block;
+      position: relative;
+      top: 5px;
+      margin-top: 5px;
+    }
+  }
+}
+
 .mr-source-target {
+  background-color: $gray-light;
   line-height: 31px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: $border-color;
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+  border-bottom: none;
+  padding: 16px;
+  margin-bottom: -1px;
 }
 
 .panel-new-merge-request {
@@ -426,6 +479,11 @@
   }
 }
 
+.assign-to-me-link {
+  padding-left: 12px;
+  white-space: nowrap;
+}
+
 .table-holder {
   .ci-table {
 
@@ -437,6 +495,8 @@
 }
 
 .merged-buttons {
+  margin-top: 20px;
+
   .btn {
     float: left;
 

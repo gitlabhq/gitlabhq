@@ -12,7 +12,7 @@ class BuildEntity < Grape::Entity
     path_to(:retry_namespace_project_build, build)
   end
 
-  expose :play_path, if: ->(build, _) { build.manual? } do |build|
+  expose :play_path, if: ->(build, _) { build.playable? } do |build|
     path_to(:play_namespace_project_build, build)
   end
 

@@ -79,7 +79,7 @@ gem 'kaminari', '~> 0.17.0'
 gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
-gem 'carrierwave', '~> 0.10.0'
+gem 'carrierwave', '~> 0.11.0'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
@@ -105,7 +105,7 @@ gem 'seed-fu', '~> 2.3.5'
 gem 'html-pipeline',        '~> 1.11.0'
 gem 'deckar01-task_list',   '1.0.6', require: 'task_list/railtie'
 gem 'gitlab-markup',        '~> 1.5.1'
-gem 'redcarpet',            '~> 3.3.3'
+gem 'redcarpet',            '~> 3.4'
 gem 'RedCloth',             '~> 4.3.2'
 gem 'rdoc',                 '~> 4.2'
 gem 'org-ruby',             '~> 0.9.12'
@@ -231,7 +231,7 @@ gem 'uglifier', '~> 2.7.2'
 
 gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.3.0'
-gem 'font-awesome-rails', '~> 4.6.1'
+gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione',          '~> 3.0'
 gem 'gon',                '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'

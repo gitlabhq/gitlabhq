@@ -20,6 +20,7 @@ class Namespace < ActiveRecord::Base
 
   belongs_to :parent, class_name: "Namespace"
   has_many :children, class_name: "Namespace", foreign_key: :parent_id
+  has_one :chat_team, dependent: :destroy
 
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,

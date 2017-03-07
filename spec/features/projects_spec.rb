@@ -18,7 +18,7 @@ feature 'Project', feature: true do
     it 'passes through html-pipeline' do
       project.update_attribute(:description, 'This project is the :poop:')
       visit path
-      expect(page).to have_css('.project-home-desc > p > img')
+      expect(page).to have_css('.project-home-desc > p > gl-emoji')
     end
 
     it 'sanitizes unwanted tags' do

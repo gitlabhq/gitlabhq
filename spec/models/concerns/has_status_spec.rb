@@ -109,6 +109,24 @@ describe HasStatus do
 
         it { is_expected.to eq 'running' }
       end
+
+      context 'when one status is a blocking manual action' do
+        let!(:statuses) do
+          [create(type, status: :failed),
+           create(type, status: :manual, allow_failure: false)]
+        end
+
+        it { is_expected.to eq 'manual' }
+      end
+
+      context 'when one status is a non-blocking manual action' do
+        let!(:statuses) do
+          [create(type, status: :failed),
+           create(type, status: :manual, allow_failure: true)]
+        end
+
+        it { is_expected.to eq 'failed' }
+      end
     end
 
     context 'ci build statuses' do
@@ -218,11 +236,29 @@ describe HasStatus do
         it_behaves_like 'not containing the job', status
       end
     end
+
+    describe '.manual' do
+      subject { CommitStatus.manual }
+
+      %i[manual].each do |status|
+        it_behaves_like 'containing the job', status
+      end
+
+      %i[failed success skipped canceled].each do |status|
+        it_behaves_like 'not containing the job', status
+      end
+    end
   end
 
   describe '::DEFAULT_STATUS' do
     it 'is a status created' do
       expect(described_class::DEFAULT_STATUS).to eq 'created'
+    end
+  end
+
+  describe '::BLOCKED_STATUS' do
+    it 'is a status manual' do
+      expect(described_class::BLOCKED_STATUS).to eq 'manual'
     end
   end
 end

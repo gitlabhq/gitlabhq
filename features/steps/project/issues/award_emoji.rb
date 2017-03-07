@@ -90,7 +90,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
 
   step 'I see search result for "hand"' do
     page.within '.emoji-menu-content' do
-      expect(page).to have_selector '[data-emoji="raised_hand"]'
+      expect(page).to have_selector '[data-name="raised_hand"]'
     end
   end
 
