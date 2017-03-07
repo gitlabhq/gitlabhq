@@ -8,7 +8,7 @@ describe 'Visual tokens', js: true, feature: true do
   let!(:user_rock) { create(:user, name: 'The Rock', username: 'rock') }
   let!(:milestone_nine) { create(:milestone, title: '9.0', project: project) }
   let!(:milestone_ten) { create(:milestone, title: '10.0', project: project) }
-  let!(:label) { create(:label, project: project, title: 'enhancement') }
+  let!(:label) { create(:label, project: project, title: 'abc') }
   let!(:cc_label) { create(:label, project: project, title: 'Community Contribution') }
 
   let(:filtered_search) { find('.filtered-search') }
@@ -205,7 +205,7 @@ describe 'Visual tokens', js: true, feature: true do
       expect(filter_label_dropdown.find('.filter-dropdown-item', text: label.title)).to be_visible
       expect(filter_label_dropdown.find('.filter-dropdown-item', text: cc_label.title)).to be_visible
 
-      filtered_search.send_keys('*')
+      filtered_search.send_keys(:backspace)
 
       find('#js-dropdown-label .filter-dropdown .filter-dropdown-item')
 
