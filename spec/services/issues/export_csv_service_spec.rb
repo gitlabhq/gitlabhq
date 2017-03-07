@@ -14,6 +14,12 @@ describe Issues::ExportCsvService, services: true do
     it 'emails csv' do
       expect{ subject.email(user, project) }.to change(ActionMailer::Base.deliveries, :count)
     end
+
+    it 'renders with a target filesize' do
+      expect(subject.csv_builder).to receive(:render).with(described_class::TARGET_FILESIZE)
+
+      subject.email(user, project)
+    end
   end
 
   def csv

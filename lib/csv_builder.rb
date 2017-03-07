@@ -22,17 +22,27 @@ class CsvBuilder
   def initialize(collection, header_to_value_hash)
     @header_to_value_hash = header_to_value_hash
     @collection = collection
+    @truncated = false
   end
 
   # Renders the csv to a string
-  def render
-    generate_csv_with_tempfile do |csv|
-      csv << headers
+  def render(truncate_after_bytes = nil)
+    tempfile = Tempfile.new('issues_csv')
+    csv = CSV.new(tempfile)
 
-      @collection.find_each do |object|
-        csv << row(object)
-      end
+    write_csv(csv) do
+      truncate_after_bytes && tempfile.size > truncate_after_bytes
     end
+
+    tempfile.rewind
+    tempfile.read
+  ensure
+    tempfile.close
+    tempfile.unlink
+  end
+
+  def truncated?
+    @truncated
   end
 
   private
@@ -55,16 +65,16 @@ class CsvBuilder
     end
   end
 
-  def generate_csv_with_tempfile
-    tempfile = Tempfile.new('issues_csv')
-    csv = CSV.new(tempfile)
+  def write_csv(csv, &until_block)
+    csv << headers
 
-    yield(csv)
+    @collection.find_each do |object|
+      csv << row(object)
 
-    tempfile.rewind
-    tempfile.read
-  ensure
-    tempfile.close
-    tempfile.unlink
+      if until_block.call
+        @truncated = true
+        break
+      end
+    end
   end
 end

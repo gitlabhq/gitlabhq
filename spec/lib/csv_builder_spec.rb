@@ -20,6 +20,26 @@ describe CsvBuilder, lib: true do
     subject.render
   end
 
+  describe 'truncation' do
+    let(:big_object) { double(question: 'Long' * 1024) }
+    let(:row_size) { big_object.question.length * 2 }
+
+    before do
+      allow(fake_relation).to receive(:find_each).and_yield(big_object)
+                                                 .and_yield(big_object)
+                                                 .and_yield(big_object)
+    end
+
+    it 'after given number of bytes' do
+      expect(subject.render(row_size * 2).length).to be_between(row_size * 2, row_size * 3)
+      expect(subject).to be_truncated
+    end
+
+    it 'is ignored by default' do
+      expect(subject.render.length).to be > row_size * 3
+    end
+  end
+
   it 'avoids loading all data in a single query' do
     expect(fake_relation).to receive(:find_each)
 
