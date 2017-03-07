@@ -79,18 +79,4 @@ FactoryGirl::SyntaxRunner.class_eval do
   include RSpec::Mocks::ExampleMethods
 end
 
-#
-# Maintain Geo database schema in tests. Unfortunately, we cannot simply use
-# ActiveRecord::Migration.maintain_test_schema! because it hardcodes the rake
-# task name:
-#
-# https://github.com/rails/rails/blob/master/activerecord/lib/active_record/migration.rb#L585
-#
-FileUtils.cd Rails.root do
-  Geo::BaseRegistry.clear_all_connections!
-  system("bin/rake geo:db:test:prepare")
-  # Establish a new connection, the old database may be gone (db:test:prepare uses purge)
-  Geo::BaseRegistry.establish_connection(Rails.configuration.geo_database)
-end
-
 ActiveRecord::Migration.maintain_test_schema!
