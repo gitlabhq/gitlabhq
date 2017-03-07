@@ -38,8 +38,7 @@ module API
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
-        present paginate(builds), with: Entities::Job,
-                                  user_can_download_artifacts: can?(current_user, :read_build, user_project)
+        present paginate(builds), with: Entities::Job
       end
 
       desc 'Get pipeline jobs' do
@@ -55,8 +54,7 @@ module API
         builds = pipeline.builds
         builds = filter_builds(builds, params[:scope])
 
-        present paginate(builds), with: Entities::Job,
-                                  user_can_download_artifacts: can?(current_user, :read_build, user_project)
+        present paginate(builds), with: Entities::Job
       end
 
       desc 'Get a specific job of a project' do
@@ -70,8 +68,7 @@ module API
 
         build = get_build!(params[:job_id])
 
-        present build, with: Entities::Job,
-                       user_can_download_artifacts: can?(current_user, :read_build, user_project)
+        present build, with: Entities::Job
       end
 
       desc 'Download the artifacts file from a job' do
@@ -138,8 +135,7 @@ module API
 
         build.cancel
 
-        present build, with: Entities::Job,
-                       user_can_download_artifacts: can?(current_user, :read_build, user_project)
+        present build, with: Entities::Job
       end
 
       desc 'Retry a specific build of a project' do
@@ -156,8 +152,7 @@ module API
 
         build = Ci::Build.retry(build, current_user)
 
-        present build, with: Entities::Job,
-                       user_can_download_artifacts: can?(current_user, :read_build, user_project)
+        present build, with: Entities::Job
       end
 
       desc 'Erase job (remove artifacts and the trace)' do
@@ -173,8 +168,7 @@ module API
         return forbidden!('Job is not erasable!') unless build.erasable?
 
         build.erase(erased_by: current_user)
-        present build, with: Entities::Job,
-                       user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
+        present build, with: Entities::Job
       end
 
       desc 'Keep the artifacts to prevent them from being deleted' do
@@ -192,8 +186,7 @@ module API
         build.keep_artifacts!
 
         status 200
-        present build, with: Entities::Job,
-                       user_can_download_artifacts: can?(current_user, :read_build, user_project)
+        present build, with: Entities::Job
       end
 
       desc 'Trigger a manual job' do
@@ -213,8 +206,7 @@ module API
         build.play(current_user)
 
         status 200
-        present build, with: Entities::Job,
-                       user_can_download_artifacts: can?(current_user, :read_build, user_project)
+        present build, with: Entities::Job
       end
     end
 
