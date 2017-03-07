@@ -60,6 +60,18 @@ module Gitlab
         source_branch.repo.id != target_branch.repo.id
       end
 
+      def opened?
+        state == 'opened'
+      end
+
+      def closed?
+        state == 'closed'
+      end
+
+      def merged?
+        state == 'merged'
+      end
+
       private
 
       def state
