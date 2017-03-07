@@ -46,6 +46,9 @@ require('./lib/utils/common_utils');
       'img.emoji'(el, text) {
         return el.getAttribute('alt');
       },
+      'gl-emoji'(el, text) {
+        return `:${el.getAttribute('data-name')}:`;
+      },
     },
     ImageLinkFilter: {
       'a.no-attachment-icon'(el, text) {

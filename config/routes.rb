@@ -36,9 +36,6 @@ Rails.application.routes.draw do
   get '/autocomplete/projects' => 'autocomplete#projects'
   get '/autocomplete/project_groups' => 'autocomplete#project_groups'
 
-  # Emojis
-  resources :emojis, only: :index
-
   # Search
   get 'search' => 'search#show'
   get 'search/autocomplete' => 'search#autocomplete', as: :search_autocomplete
