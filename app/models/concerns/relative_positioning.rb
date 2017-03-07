@@ -16,7 +16,6 @@ module RelativePositioning
     self.class.in_projects(project.id).maximum(:relative_position)
   end
 
-
   def prev_relative_position
     prev_pos = nil
 

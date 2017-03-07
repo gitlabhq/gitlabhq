@@ -44,7 +44,6 @@ describe Issue, 'RelativePositioning' do
     end
   end
 
-
   describe '#move_before' do
     it 'moves issue before' do
       [issue1, issue].each(&:move_to_end)
