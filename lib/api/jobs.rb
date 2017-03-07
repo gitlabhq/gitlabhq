@@ -18,6 +18,8 @@ module API
                                [scope]
                              when Hashie::Mash
                                scope.values
+                             when Hashie::Array
+                               scope
                              else
                                ['unknown']
                              end

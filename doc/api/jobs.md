@@ -14,7 +14,7 @@ GET /projects/:id/jobs
 | `scope`   | string **or** array of strings | no | The scope of jobs to show, one or array of: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`; showing all jobs if none provided |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/1/jobs?scope%5B0%5D=pending&scope%5B1%5D=running'
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/1/jobs?scope[]=pending&scope[]=running'
 ```
 
 Example of response
@@ -123,14 +123,14 @@ Get a list of jobs for a pipeline.
 GET /projects/:id/pipeline/:pipeline_id/jobs
 ```
 
-| Attribute    | Type                           | Required | Description          |
-|--------------|--------------------------------|----------|----------------------|
-| `id`         | integer                        | yes      | The ID of a project  |
-| `pipelin_id` | integer                        | yes      | The ID of a pipeline |
-| `scope`      | string **or** array of strings | no       | The scope of jobs to show, one or array of: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`; showing all jobs if none provided |
+| Attribute     | Type                           | Required | Description          |
+|---------------|--------------------------------|----------|----------------------|
+| `id`          | integer                        | yes      | The ID of a project  |
+| `pipeline_id` | integer                        | yes      | The ID of a pipeline |
+| `scope`       | string **or** array of strings | no       | The scope of jobs to show, one or array of: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`; showing all jobs if none provided |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/1/pipelines/6/jobs?scope%5B0%5D=pending&scope%5B1%5D=running'
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/1/pipelines/6/jobs?scope[]=pending&scope[]=running'
 ```
 
 Example of response

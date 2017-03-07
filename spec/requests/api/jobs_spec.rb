@@ -51,7 +51,7 @@ describe API::Jobs, api: true do
       end
 
       context 'filter project with array of scope elements' do
-        let(:query) { { 'scope[0]' => 'pending', 'scope[1]' => 'running' } }
+        let(:query) { { scope: %w(pending running) } }
 
         it do
           expect(response).to have_http_status(200)
@@ -60,7 +60,7 @@ describe API::Jobs, api: true do
       end
 
       context 'respond 400 when scope contains invalid state' do
-        let(:query) { { 'scope[0]' => 'unknown', 'scope[1]' => 'running' } }
+        let(:query) { { scope: %w(unknown running) } }
 
         it { expect(response).to have_http_status(400) }
       end
@@ -114,7 +114,7 @@ describe API::Jobs, api: true do
       end
 
       context 'filter jobs with array of scope elements' do
-        let(:query) { { 'scope[0]' => 'pending', 'scope[1]' => 'running' } }
+        let(:query) { { scope: %w(pending running) } }
 
         it do
           expect(response).to have_http_status(200)
@@ -123,7 +123,7 @@ describe API::Jobs, api: true do
       end
 
       context 'respond 400 when scope contains invalid state' do
-        let(:query) { { 'scope[0]' => 'unknown', 'scope[1]' => 'running' } }
+        let(:query) { { scope: %w(unknown running) } }
 
         it { expect(response).to have_http_status(400) }
       end
