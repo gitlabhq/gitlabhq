@@ -88,13 +88,11 @@ class PipelinesFinder
   end
 
   def by_yaml_errors(items)
-    flg = Gitlab::Utils.to_boolean(params[:yaml_errors])
-    if !flg.nil?
-      if flg
-        items.where("yaml_errors IS NOT NULL")
-      else
-        items.where("yaml_errors IS NULL")
-      end
+    case Gitlab::Utils.to_boolean(params[:yaml_errors])
+    when true
+      items.where("yaml_errors IS NOT NULL")
+    when false
+      items.where("yaml_errors IS NULL")
     else
       items
     end
