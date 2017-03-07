@@ -1,8 +1,7 @@
 - @no_container = true
 
 = content_for :meta_tags do
-  - if current_user
-    = auto_discovery_link_tag(:atom, namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), title: "#{@project.name} activity")
+  = auto_discovery_link_tag(:atom, namespace_project_path(@project.namespace, @project, rss_url_options), title: "#{@project.name} activity")
 
 = content_for :flash_message do
   - if current_user && can?(current_user, :download_code, @project)
@@ -12,7 +11,8 @@
     - if @project.above_size_limit?
       = render 'above_size_limit_warning'
 
-= render 'projects/last_push'
+= render "projects/head"
+= render "projects/last_push"
 = render "home_panel"
 
 - if current_user && can?(current_user, :download_code, @project)

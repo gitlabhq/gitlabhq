@@ -6,14 +6,15 @@
 
     .milestone-stats-and-buttons
       .milestone-stats
-        %span.milestone-stat.with-drilldown
-          %strong= milestone.issues_visible_to_user(current_user).size
-          issues:
-        %span.milestone-stat
-          %strong= milestone.issues_visible_to_user(current_user).opened.size
-          open and
-          %strong= milestone.issues_visible_to_user(current_user).closed.size
-          closed
+        - if !project || can?(current_user, :read_issue, project)
+          %span.milestone-stat.with-drilldown
+            %strong= milestone.issues_visible_to_user(current_user).size
+            issues:
+          %span.milestone-stat
+            %strong= milestone.issues_visible_to_user(current_user).opened.size
+            open and
+            %strong= milestone.issues_visible_to_user(current_user).closed.size
+            closed
         %span.milestone-stat.with-drilldown
           %strong= milestone.merge_requests.size
           merge requests:
@@ -37,10 +38,12 @@
 
       .milestone-progress-buttons
         %span.tab-issues-buttons
-          - if project && can?(current_user, :create_issue, project)
-            = link_to new_namespace_project_issue_path(project.namespace, project, issue: { milestone_id: milestone.id }), class: "btn", title: "New Issue" do
-              New Issue
-          = link_to 'Browse Issues', milestones_browse_issuables_path(milestone, type: :issues), class: "btn"
+          - if project
+            - if can?(current_user, :create_issue, project)
+              = link_to new_namespace_project_issue_path(project.namespace, project, issue: { milestone_id: milestone.id }), class: "btn", title: "New Issue" do
+                New Issue
+            - if can?(current_user, :read_issue, project)
+              = link_to 'Browse Issues', milestones_browse_issuables_path(milestone, type: :issues), class: "btn"
         %span.tab-merge-requests-buttons.hidden
           = link_to 'Browse Merge Requests', milestones_browse_issuables_path(milestone, type: :merge_requests), class: "btn"
 

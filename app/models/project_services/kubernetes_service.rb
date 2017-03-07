@@ -94,7 +94,12 @@ class KubernetesService < DeploymentService
       { key: 'KUBE_TOKEN', value: token, public: false },
       { key: 'KUBE_NAMESPACE', value: namespace, public: true }
     ]
-    variables << { key: 'KUBE_CA_PEM', value: ca_pem, public: true } if ca_pem.present?
+
+    if ca_pem.present?
+      variables << { key: 'KUBE_CA_PEM', value: ca_pem, public: true }
+      variables << { key: 'KUBE_CA_PEM_FILE', value: ca_pem, public: true, file: true }
+    end
+
     variables
   end
 

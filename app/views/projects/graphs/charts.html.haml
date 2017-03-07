@@ -1,38 +1,58 @@
 - @no_container = true
-- page_title "Commits", "Graphs"
-= render 'head'
+- page_title "Charts"
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('common_d3')
+  = page_specific_javascript_bundle_tag('graphs')
+= render "projects/commits/head"
 
-%div{ class: container_class }
-  .sub-header-block
-    .tree-ref-holder
-      = render 'shared/ref_switcher', destination: 'graphs_commits'
-    %ul.breadcrumb.repo-breadcrumb
-      = commits_breadcrumbs
+.repo-charts{ class: container_class }
+  %h4.sub-header
+    Programming languages used in this repository
 
-  %p.lead
-    Commit statistics for
-    %strong= @ref
-    #{@commits_graph.start_date.strftime('%b %d')} - #{@commits_graph.end_date.strftime('%b %d')}
+  .row
+    .col-md-4
+      %ul.bordered-list
+        - @languages.each do |language|
+          %li
+            %span{ style: "color: #{language[:color]}" }
+              = icon('circle')
+            &nbsp;
+            = language[:label]
+            .pull-right
+              = language[:value]
+              \%
+    .col-md-8
+      %canvas#languages-chart{ height: 400 }
+
+.repo-charts{ class: container_class }
+  .sub-header-block.border-top
+
+  .row.tree-ref-header
+    .col-md-6
+      %h4
+        Commit statistics for
+        %strong= @ref
+        #{@commits_graph.start_date.strftime('%b %d')} - #{@commits_graph.end_date.strftime('%b %d')}
+
+    .col-md-6
+      .tree-ref-container
+        .tree-ref-holder
+          = render 'shared/ref_switcher', destination: 'graphs_commits'
+        %ul.breadcrumb.repo-breadcrumb
+          = commits_breadcrumbs
 
   .row
     .col-md-6
-      %ul
+      %ul.commit-stats
         %li
-          %p.lead
-            %strong= @commits_graph.commits.size
-            commits during
-            %strong= @commits_graph.duration
-            days
+          Total:
+          %strong #{@commits_graph.commits.size} commits
         %li
-          %p.lead
-            Average
-            %strong= @commits_graph.commit_per_day
-            commits per day
+          Average per day:
+          %strong #{@commits_graph.commit_per_day} commits
         %li
-          %p.lead
-            Contributed by
-            %strong= @commits_graph.authors
-            authors
+          Authors:
+          %strong= @commits_graph.authors
     .col-md-6
       %div
         %p.slead
@@ -40,15 +60,18 @@
         %canvas#month-chart
   .row
     .col-md-6
-      %div
-        %p.slead
-          Commits per day hour (UTC)
-        %canvas#hour-chart
     .col-md-6
       %div
         %p.slead
           Commits per weekday
         %canvas#weekday-chart
+  .row
+    .col-md-6
+    .col-md-6
+      %div
+        %p.slead
+          Commits per day hour (UTC)
+        %canvas#hour-chart
 
 :javascript
   var responsiveChart = function (selector, data) {
@@ -93,3 +116,12 @@
 
   var monthData = chartData(#{@commits_per_month.keys.to_json}, #{@commits_per_month.values.to_json});
   responsiveChart($('#month-chart'), monthData);
+
+  var data = #{@languages.to_json};
+  var ctx = $("#languages-chart").get(0).getContext("2d");
+  var options = {
+    scaleOverlay: true,
+    responsive: true,
+    maintainAspectRatio: false
+  }
+  var myPieChart = new Chart(ctx).Pie(data, options);

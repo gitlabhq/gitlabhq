@@ -286,22 +286,6 @@ Parameters:
 - `description` (optional) - The group's description
 - `membership_lock` (optional, boolean) - Prevent adding new members to project membership within this group
 - `share_with_group_lock` (optional, boolean) - Prevent sharing a project with another group within this group
-
-## Update group
-
-Updates a project group. Available only for users who can manage this group.
-
-```
-PUT /groups/:id
-```
-
-Parameters:
-
-- `name` (required) - The name of the group
-- `path` (required) - The path of the group
-- `description` (optional) - The group's description
-- `membership_lock` (optional, boolean) - Prevent adding new members to project membership within this group
-- `share_with_group_lock` (optional, boolean) - Prevent sharing a project with another group within this group
 - `visibility` (optional) - The group's visibility. Can be `private`, `internal`, or `public`.
 - `lfs_enabled` (optional)      - Enable/disable Large File Storage (LFS) for the projects in this group
 - `request_access_enabled` (optional) - Allow users to request member access.
@@ -334,6 +318,8 @@ PUT /groups/:id
 | `name` | string | no | The name of the group |
 | `path` | string | no | The path of the group |
 | `description` | string | no | The description of the group |
+| `membership_lock` | boolean | no | Prevent adding new members to project membership within this group |
+| `share_with_group_lock` | boolean | no | Prevent sharing a project with another group within this group |
 | `visibility` | string | no | The visibility level of the group. Can be `private`, `internal`, or `public`. |
 | `lfs_enabled` (optional) | boolean | no | Enable/disable Large File Storage (LFS) for the projects in this group |
 | `request_access_enabled` | boolean | no | Allow users to request member access. |

@@ -107,11 +107,12 @@
 
     &.fa-spinner {
       font-size: 16px;
-      margin-top: -8px;
+      margin-top: -3px;
     }
   }
 
-  .fa-chevron-down {
+  .fa-chevron-down,
+  .fa-spinner {
     position: absolute;
     top: 11px;
     right: 8px;
@@ -196,6 +197,10 @@
     &.is-focused {
       background-color: $dropdown-link-hover-bg;
       text-decoration: none;
+
+      .badge {
+        background-color: darken($row-hover, 5%);
+      }
     }
 
     &.dropdown-menu-empty-link {
@@ -231,6 +236,12 @@
     cursor: not-allowed;
     padding: 5px 8px;
     color: $gl-text-color-secondary;
+  }
+
+  .badge {
+    position: absolute;
+    right: 8px;
+    top: 5px;
   }
 }
 

@@ -56,7 +56,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I should see my fork on the list' do
-    page.within('.projects-list-holder') do
+    page.within('.js-projects-list-holder') do
       project = @user.fork_of(@project)
       expect(page).to have_content("#{project.namespace.human_name} / #{project.name}")
     end

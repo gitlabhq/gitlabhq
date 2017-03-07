@@ -62,16 +62,12 @@ module Files
         raise_error("You are not allowed to push into this branch")
       end
 
-      unless project.empty_repo?
-        unless @start_project.repository.branch_exists?(@start_branch)
-          raise_error('You can only create or edit files when you are on a branch')
-        end
+      if !@start_project.empty_repo? && !@start_project.repository.branch_exists?(@start_branch)
+        raise ValidationError, 'You can only create or edit files when you are on a branch'
+      end
 
-        if different_branch?
-          if repository.branch_exists?(@target_branch)
-            raise_error('Branch with such name already exists. You need to switch to this branch in order to make changes')
-          end
-        end
+      if !project.empty_repo? && different_branch? && repository.branch_exists?(@branch_name)
+        raise ValidationError, "A branch called #{@branch_name} already exists. Switch to that branch in order to make changes"
       end
     end
 

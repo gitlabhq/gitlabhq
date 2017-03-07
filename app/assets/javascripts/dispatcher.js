@@ -37,6 +37,9 @@
 /* global WeightSelect */
 /* global AdminEmailSelect */
 
+import GroupsList from './groups_list';
+import ProjectsList from './projects_list';
+
 const ShortcutsBlob = require('./shortcuts_blob');
 const UserCallout = require('./user_callout');
 
@@ -97,6 +100,18 @@ const UserCallout = require('./user_callout');
           break;
         case 'dashboard:todos:index':
           new gl.Todos();
+          break;
+        case 'dashboard:projects:index':
+        case 'dashboard:projects:starred':
+        case 'explore:projects:index':
+        case 'explore:projects:trending':
+        case 'explore:projects:starred':
+        case 'admin:projects:index':
+          new ProjectsList();
+          break;
+        case 'dashboard:groups:index':
+        case 'explore:groups:index':
+          new GroupsList();
           break;
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
@@ -160,9 +175,6 @@ const UserCallout = require('./user_callout');
         case 'dashboard:activity':
           new gl.Activities();
           break;
-        case 'dashboard:projects:starred':
-          new gl.Activities();
-          break;
         case 'projects:commit:show':
           new Commit();
           new gl.Diff();
@@ -205,6 +217,7 @@ const UserCallout = require('./user_callout');
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
           new NotificationsDropdown();
+          new ProjectsList();
           break;
         case 'groups:group_members:index':
           new gl.MemberExpirationDate();

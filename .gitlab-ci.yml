@@ -284,7 +284,7 @@ bundler:audit:
     - master@gitlab/gitlabhq
     - master@gitlab/gitlab-ee
   script:
-    - "bundle exec bundle-audit check --update --ignore OSVDB-115941 CVE-2016-6316 CVE-2016-6317"
+    - "bundle exec bundle-audit check --update"
 
 migration paths:
   stage: test
@@ -405,6 +405,7 @@ pages:
       - public
   only:
     - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
 
 # Insurance in case a gem needed by one of our releases gets yanked from
 # rubygems.org in the future.
