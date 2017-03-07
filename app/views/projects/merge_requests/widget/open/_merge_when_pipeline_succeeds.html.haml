@@ -4,22 +4,6 @@
 %h4
   Set by #{link_to_member(@project, @merge_request.merge_user, avatar: true)}
   to be merged automatically when the pipeline succeeds.
-<<<<<<< HEAD
-%div
-  %p
-    = succeed '.' do
-      The changes will be
-      - if @merge_request.squash
-        squashed and
-      - if @project.merge_requests_ff_only_enabled
-        fast-forward
-      merged into
-      %span.label-branch= @merge_request.target_branch
-    - if @merge_request.remove_source_branch?
-      The source branch will be removed.
-    - else
-      The source branch will not be removed.
-=======
 .remove-message-pipes
   %ul
     %li
@@ -34,7 +18,6 @@
           %li
             %span
               The source branch will not be removed.
->>>>>>> 24f1ee5e9b1f4d9bc8cff581419b091756da8deb
 
   - remove_source_branch_button = !@merge_request.remove_source_branch? && @merge_request.can_remove_source_branch?(current_user) && @merge_request.merge_user == current_user
   - user_can_cancel_automatic_merge = @merge_request.can_cancel_merge_when_pipeline_succeeds?(current_user)
