@@ -206,7 +206,6 @@ require('./wikis');
 require('./zen_mode');
 
 // EE-only scripts
-require('./geo/geo_bundle');
 require('./admin_email_select');
 require('./application_settings');
 require('./approvals');
