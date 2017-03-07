@@ -41,17 +41,6 @@ describe NotesFinder do
       expect(notes.count).to eq(0)
     end
 
-    context 'for a certain discussion' do
-      let!(:note_in_a_commit_discussion) { create(:note_on_commit, project: project) }
-      let!(:other_note) { create(:note_on_merge_request, project: project) }
-
-      it 'finds the only the notes for a certain discussion id' do
-        notes = described_class.new(project, user, discussion_id: note_in_a_commit_discussion.discussion_id).execute
-
-        expect(notes).to contain_exactly(note_in_a_commit_discussion)
-      end
-    end
-
     context 'on restricted projects' do
       let(:project) do
         create(:empty_project,
