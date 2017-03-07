@@ -112,7 +112,7 @@
 
           = hidden_field_tag 'update[issuable_ids]', []
           = hidden_field_tag :state_event, params[:state_event]
-          .filter-item.inline
+          .filter-item.inline.update-issues-btn
             = button_tag "Update #{type.to_s.humanize(capitalize: false)}", class: "btn update_selected_issues btn-save"
 
 :javascript
