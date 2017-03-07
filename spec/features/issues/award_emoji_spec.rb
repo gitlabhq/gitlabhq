@@ -25,14 +25,14 @@ describe 'Awards Emoji', feature: true do
       end
 
       it 'increments the thumbsdown emoji', js: true do
-        find('[data-emoji="thumbsdown"]').click
+        find('[data-name="thumbsdown"]').click
         wait_for_ajax
         expect(thumbsdown_emoji).to have_text("1")
       end
 
       context 'click the thumbsup emoji' do
         it 'increments the thumbsup emoji', js: true do
-          find('[data-emoji="thumbsup"]').click
+          find('[data-name="thumbsup"]').click
           wait_for_ajax
           expect(thumbsup_emoji).to have_text("1")
         end
@@ -44,7 +44,7 @@ describe 'Awards Emoji', feature: true do
 
       context 'click the thumbsdown emoji' do
         it 'increments the thumbsdown emoji', js: true do
-          find('[data-emoji="thumbsdown"]').click
+          find('[data-name="thumbsdown"]').click
           wait_for_ajax
           expect(thumbsdown_emoji).to have_text("1")
         end
@@ -123,9 +123,9 @@ describe 'Awards Emoji', feature: true do
     end
 
     unless status
-      first('[data-emoji="smiley"]').click
+      first('[data-name="smiley"]').click
     else
-      find('[data-emoji="smiley"]').click
+      find('[data-name="smiley"]').click
     end
 
     wait_for_ajax

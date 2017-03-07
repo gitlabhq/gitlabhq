@@ -21,6 +21,7 @@ module API
       mount ::API::V3::MergeRequestDiffs
       mount ::API::V3::MergeRequests
       mount ::API::V3::Notes
+      mount ::API::V3::Pipelines
       mount ::API::V3::ProjectGitHook
       mount ::API::V3::ProjectPushRule
       mount ::API::V3::Pipelines

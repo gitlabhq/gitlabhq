@@ -120,7 +120,15 @@ const deployBoardMockData = {
   abort_url: 'url',
   rollback_url: 'url',
   completion: 100,
-  is_completed: true,
+  valid: true,
+};
+
+const invalidDeployBoardMockData = {
+  instances: [],
+  abort_url: 'url',
+  rollback_url: 'url',
+  completion: 100,
+  valid: false,
 };
 
 module.exports = {
@@ -128,4 +136,5 @@ module.exports = {
   environment,
   serverData,
   deployBoardMockData,
+  invalidDeployBoardMockData,
 };
