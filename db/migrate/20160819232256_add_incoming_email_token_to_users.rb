@@ -9,8 +9,15 @@ class AddIncomingEmailTokenToUsers < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def change
+  def up
     add_column :users, :incoming_email_token, :string
+
     add_concurrent_index :users, :incoming_email_token
+  end
+
+  def down
+    remove_index :users, :incoming_email_token if index_exists? :users, :incoming_email_token
+
+    remove_column :users, :incoming_email_token
   end
 end

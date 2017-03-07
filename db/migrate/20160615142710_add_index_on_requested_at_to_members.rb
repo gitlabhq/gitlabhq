@@ -3,7 +3,11 @@ class AddIndexOnRequestedAtToMembers < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def change
+  def up
     add_concurrent_index :members, :requested_at
+  end
+
+  def down
+    remove_index :members, :requested_at if index_exists? :members, :requested_at
   end
 end
