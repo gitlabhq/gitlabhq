@@ -76,7 +76,7 @@ describe PipelinesFinder do
         it 'excludes branches' do
           expect(subject.count).to be 1
           expect(subject).to include dummy_pipelines[:tag]
-          expect(subject.map(&:ref)).not_to all(eq('master'))
+          expect(subject.map(&:ref)).not_to include('master')
         end
       end
     end
