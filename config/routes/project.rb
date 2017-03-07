@@ -135,7 +135,11 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :protected_branches, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
       resources :variables, only: [:index, :show, :update, :create, :destroy]
-      resources :triggers, only: [:index, :create, :destroy]
+      resources :triggers, only: [:index, :create, :edit, :update, :destroy] do
+        member do
+          post :take_ownership
+        end
+      end
 
       resources :pipelines, only: [:index, :new, :create, :show] do
         collection do
