@@ -58,9 +58,9 @@ module Issues
     end
 
     def handle_move_between_iids(issue)
-      return unless move_between_iids = params.delete(:move_between_iids)
+      return unless params[:move_between_iids]
 
-      after_iid, before_iid = move_between_iids
+      after_iid, before_iid = params.delete(:move_between_iids)
 
       issue_before = get_issue_if_allowed(issue.project, before_iid) if before_iid
       issue_after = get_issue_if_allowed(issue.project, after_iid) if after_iid

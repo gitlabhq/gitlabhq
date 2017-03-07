@@ -59,8 +59,8 @@ describe Issues::UpdateService, services: true do
       end
 
       it 'sorts issues as specified by parameters' do
-        issue1 = create :issue, project: project, assignee_id: user3.id
-        issue2 = create :issue, project: project, assignee_id: user3.id
+        issue1 = create(:issue, project: project, assignee_id: user3.id)
+        issue2 = create(:issue, project: project, assignee_id: user3.id)
 
         [issue, issue1, issue2].each do |issue|
           issue.move_to_end
