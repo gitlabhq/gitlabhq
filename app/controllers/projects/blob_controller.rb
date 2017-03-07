@@ -62,9 +62,9 @@ class Projects::BlobController < Projects::ApplicationController
 
   def destroy
     create_commit(Files::DeleteService, success_notice: "The file has been successfully deleted.",
-                                         success_path: -> { namespace_project_tree_path(@project.namespace, @project, @target_branch) },
-                                         failure_view: :show,
-                                         failure_path: namespace_project_blob_path(@project.namespace, @project, @id))
+                                        success_path: -> { namespace_project_tree_path(@project.namespace, @project, @target_branch) },
+                                        failure_view: :show,
+                                        failure_path: namespace_project_blob_path(@project.namespace, @project, @id))
   end
 
   def diff
