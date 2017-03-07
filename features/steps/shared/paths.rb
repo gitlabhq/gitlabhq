@@ -284,7 +284,7 @@ module SharedPaths
   end
 
   step 'I visit project push rules page' do
-    visit namespace_project_push_rules_path(@project.namespace, @project)
+    visit namespace_project_settings_repository_path(@project.namespace, @project)
   end
 
   step 'I visit project deploy keys page' do

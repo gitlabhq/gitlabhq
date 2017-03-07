@@ -31,8 +31,10 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
     click_link('Integrations')
   end
 
-  step 'I click the "Deploy Keys" tab' do
-    click_link('Deploy Keys')
+  step 'I click the "Repository" tab' do
+    page.within '.layout-nav .controls' do
+      click_link('Repository')
+    end
   end
 
   step 'I click the "Pages" tab' do
@@ -47,8 +49,8 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
     ensure_active_sub_nav('Integrations')
   end
 
-  step 'the active sub nav should be Deploy Keys' do
-    ensure_active_sub_nav('Deploy Keys')
+  step 'the active sub nav should be Repository' do
+    ensure_active_sub_nav('Repository')
   end
 
   step 'the active sub nav should be Pages' do

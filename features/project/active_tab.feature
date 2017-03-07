@@ -46,10 +46,10 @@ Feature: Project Active Tab
     And no other sub navs should be active
     And the active main tab should be Settings
 
-  Scenario: On Project Settings/Deploy Keys
+  Scenario: On Project Settings/Repository
     Given I visit my project's settings page
-    And I click the "Deploy Keys" tab
-    Then the active sub nav should be Deploy Keys
+    And I click the "Repository" tab
+    Then the active sub nav should be Repository
     And no other sub navs should be active
     And the active main tab should be Settings
 

@@ -291,7 +291,7 @@ const UserCallout = require('./user_callout');
         case 'admin:emails:show':
           new AdminEmailSelect();
           break;
-        case 'projects:protected_branches:index':
+        case 'projects:repository:show':
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
           break;
@@ -395,7 +395,7 @@ const UserCallout = require('./user_callout');
             case 'builds':
             case 'hooks':
             case 'services':
-            case 'protected_branches':
+            case 'repository':
               shortcut_handler = new ShortcutsNavigation();
           }
       }
