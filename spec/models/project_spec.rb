@@ -71,6 +71,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
+    it { is_expected.to have_many(:uploads).dependent(:destroy) }
 
     context 'after initialized' do
       it "has a project_feature" do

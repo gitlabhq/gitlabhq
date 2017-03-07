@@ -252,6 +252,10 @@ module API
     # project helpers
 
     def filter_projects(projects)
+      if params[:membership]
+        projects = projects.merge(current_user.authorized_projects)
+      end
+
       if params[:owned]
         projects = projects.merge(current_user.owned_projects)
       end
@@ -332,16 +336,17 @@ module API
 
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
+      Gitlab::Auth::UniqueIpsLimiter.limit_user! do
+        @initial_current_user ||= find_user_by_private_token(scopes: @scopes)
+        @initial_current_user ||= doorkeeper_guard(scopes: @scopes)
+        @initial_current_user ||= find_user_from_warden
 
-      @initial_current_user ||= find_user_by_private_token(scopes: @scopes)
-      @initial_current_user ||= doorkeeper_guard(scopes: @scopes)
-      @initial_current_user ||= find_user_from_warden
+        unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
+          @initial_current_user = nil
+        end
 
-      unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
-        @initial_current_user = nil
+        @initial_current_user
       end
-
-      @initial_current_user
     end
 
     def sudo!
@@ -382,14 +387,6 @@ module API
 
     def send_git_archive(repository, ref:, format:)
       header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
-    end
-
-    def issue_entity(project)
-      if project.has_external_issue_tracker?
-        Entities::ExternalIssue
-      else
-        Entities::Issue
-      end
     end
 
     # The Grape Error Middleware only has access to env but no params. We workaround this by

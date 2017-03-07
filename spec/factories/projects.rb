@@ -39,6 +39,10 @@ FactoryGirl.define do
     trait :empty_repo do
       after(:create) do |project|
         project.create_repository
+
+        # We delete hooks so that gitlab-shell will not try to authenticate with
+        # an API that isn't running
+        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.path_with_namespace}.git", 'hooks'))
       end
     end
 
@@ -185,29 +189,10 @@ FactoryGirl.define do
 
   factory :jira_project, parent: :project do
     has_external_issue_tracker true
-
-    after :create do |project|
-      project.create_jira_service(
-        active: true,
-        properties: {
-          title: 'JIRA tracker',
-          url: 'http://jira.example.net',
-          project_key: 'JIRA'
-        }
-      )
-    end
+    jira_service
   end
 
   factory :kubernetes_project, parent: :empty_project do
-    after :create do |project|
-      project.create_kubernetes_service(
-        active: true,
-        properties: {
-          namespace: project.path,
-          api_url: 'https://kubernetes.example.com',
-          token: 'a' * 40,
-        }
-      )
-    end
+    kubernetes_service
   end
 end

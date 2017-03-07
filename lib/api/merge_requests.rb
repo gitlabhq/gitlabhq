@@ -25,6 +25,14 @@ module API
           render_api_error!(errors, 400)
         end
 
+        def issue_entity(project)
+          if project.has_external_issue_tracker?
+            Entities::ExternalIssue
+          else
+            Entities::IssueBasic
+          end
+        end
+
         params :optional_params do
           optional :description, type: String, desc: 'The description of the merge request'
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
@@ -35,7 +43,7 @@ module API
       end
 
       desc 'List merge requests' do
-        success Entities::MergeRequest
+        success Entities::MergeRequestBasic
       end
       params do
         optional :state, type: String, values: %w[opened closed merged all], default: 'all',
@@ -62,7 +70,7 @@ module API
           end
 
         merge_requests = merge_requests.reorder(params[:order_by] => params[:sort])
-        present paginate(merge_requests), with: Entities::MergeRequest, current_user: current_user, project: user_project
+        present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
       end
 
       desc 'Create a merge request' do

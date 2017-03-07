@@ -123,6 +123,12 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
 
       expect(doc.css('a').first.attr('href')).to eq urls.group_url(group)
     end
+
+    it 'has the full group name as a title' do
+      doc = reference_filter("Hey #{reference}")
+
+      expect(doc.css('a').first.attr('title')).to eq group.full_name
+    end
   end
 
   it 'links with adjacent text' do

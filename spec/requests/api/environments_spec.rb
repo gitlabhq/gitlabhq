@@ -15,6 +15,8 @@ describe API::Environments, api: true  do
   describe 'GET /projects/:id/environments' do
     context 'as member of the project' do
       it 'returns project environments' do
+        project_data_keys = %w(id http_url_to_repo web_url name name_with_namespace path path_with_namespace)
+
         get api("/projects/#{project.id}/environments", user)
 
         expect(response).to have_http_status(200)
@@ -23,7 +25,7 @@ describe API::Environments, api: true  do
         expect(json_response.size).to eq(1)
         expect(json_response.first['name']).to eq(environment.name)
         expect(json_response.first['external_url']).to eq(environment.external_url)
-        expect(json_response.first['project']['id']).to eq(project.id)
+        expect(json_response.first['project'].keys).to contain_exactly(*project_data_keys)
       end
     end
 

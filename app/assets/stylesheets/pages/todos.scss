@@ -170,7 +170,11 @@
 @media (max-width: $screen-sm-max) {
   .todos-filters {
     .dropdown-menu-toggle {
-      width: 135px;
+      width: 130px;
+    }
+
+    .dropdown-menu-toggle-sort {
+      width: auto;
     }
   }
 }
@@ -200,10 +204,6 @@
   }
 
   .todos-filters {
-    .row-content-block {
-      padding-bottom: 50px;
-    }
-
     .dropdown-menu-toggle {
       width: 100%;
     }

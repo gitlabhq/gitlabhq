@@ -7,8 +7,9 @@ Feature: Project Active Tab
 
   Scenario: On Project Home
     Given I visit my project's home page
-    Then the active main tab should be Home
-    And no other main tabs should be active
+    Then the active sub tab should be Home
+    And no other sub tabs should be active
+    And the active main tab should be Project
 
   Scenario: On Project Repository
     Given I visit my project's files page
@@ -34,8 +35,17 @@ Feature: Project Active Tab
 
   Scenario: On Project Home/Show
     Given I visit my project's home page
-    Then the active main tab should be Home
+    Then the active sub tab should be Home
+    And no other sub tabs should be active
+    And the active main tab should be Project
     And no other main tabs should be active
+
+  Scenario: On Project Home/Activity
+    Given I visit my project's home page
+    And I click the "Activity" tab
+    Then the active sub tab should be Activity
+    And no other sub tabs should be active
+    And the active main tab should be Project
 
   # Sub Tabs: Settings
 
@@ -80,9 +90,9 @@ Feature: Project Active Tab
     And no other sub tabs should be active
     And the active main tab should be Repository
 
-  Scenario: On Project Repository/Network
-    Given I visit my project's network page
-    Then the active sub tab should be Network
+  Scenario: On Project Repository/Graph
+    Given I visit my project's graph page
+    Then the active sub tab should be Graph
     And no other sub tabs should be active
     And the active main tab should be Repository
 
@@ -90,6 +100,13 @@ Feature: Project Active Tab
     Given I visit my project's commits page
     And I click the "Compare" tab
     Then the active sub tab should be Compare
+    And no other sub tabs should be active
+    And the active main tab should be Repository
+
+  Scenario: On Project Repository/Charts
+    Given I visit my project's commits page
+    And I click the "Charts" tab
+    Then the active sub tab should be Charts
     And no other sub tabs should be active
     And the active main tab should be Repository
 

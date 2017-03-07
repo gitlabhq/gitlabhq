@@ -49,7 +49,8 @@ module API
 
     class ProjectHook < Hook
       expose :project_id, :issues_events, :merge_requests_events
-      expose :note_events, :build_events, :pipeline_events, :wiki_page_events
+      expose :note_events, :pipeline_events, :wiki_page_events
+      expose :build_events, as: :job_events
     end
 
     class BasicProjectDetails < Grape::Entity
@@ -69,9 +70,8 @@ module API
 
     class Project < Grape::Entity
       expose :id, :description, :default_branch, :tag_list
-      expose :public?, as: :public
       expose :archived?, as: :archived
-      expose :visibility_level, :ssh_url_to_repo, :http_url_to_repo, :web_url
+      expose :visibility, :ssh_url_to_repo, :http_url_to_repo, :web_url
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
@@ -81,7 +81,7 @@ module API
       expose(:issues_enabled) { |project, options| project.feature_available?(:issues, options[:current_user]) }
       expose(:merge_requests_enabled) { |project, options| project.feature_available?(:merge_requests, options[:current_user]) }
       expose(:wiki_enabled) { |project, options| project.feature_available?(:wiki, options[:current_user]) }
-      expose(:builds_enabled) { |project, options| project.feature_available?(:builds, options[:current_user]) }
+      expose(:jobs_enabled) { |project, options| project.feature_available?(:builds, options[:current_user]) }
       expose(:snippets_enabled) { |project, options| project.feature_available?(:snippets, options[:current_user]) }
 
       expose :created_at, :last_activity_at
@@ -94,7 +94,7 @@ module API
       expose :star_count, :forks_count
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) && project.default_issues_tracker? }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
-      expose :public_builds
+      expose :public_builds, as: :public_jobs
       expose :shared_with_groups do |project, options|
         SharedGroup.represent(project.project_group_links.all, options)
       end
@@ -110,7 +110,7 @@ module API
       expose :storage_size
       expose :repository_size
       expose :lfs_objects_size
-      expose :build_artifacts_size
+      expose :build_artifacts_size, as: :job_artifacts_size
     end
 
     class Member < UserBasic
@@ -132,7 +132,7 @@ module API
     end
 
     class Group < Grape::Entity
-      expose :id, :name, :path, :description, :visibility_level
+      expose :id, :name, :path, :description, :visibility
       expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url
       expose :web_url
@@ -145,7 +145,7 @@ module API
           expose :storage_size
           expose :repository_size
           expose :lfs_objects_size
-          expose :build_artifacts_size
+          expose :build_artifacts_size, as: :job_artifacts_size
         end
       end
     end
@@ -250,14 +250,11 @@ module API
       expose :start_date
     end
 
-    class Issue < ProjectEntity
+    class IssueBasic < ProjectEntity
       expose :label_names, as: :labels
       expose :milestone, using: Entities::Milestone
       expose :assignee, :author, using: Entities::UserBasic
 
-      expose :subscribed do |issue, options|
-        issue.subscribed?(options[:current_user], options[:project] || issue.project)
-      end
       expose :user_notes_count
       expose :upvotes, :downvotes
       expose :due_date
@@ -265,6 +262,12 @@ module API
 
       expose :web_url do |issue, options|
         Gitlab::UrlBuilder.build(issue)
+      end
+    end
+
+    class Issue < IssueBasic
+      expose :subscribed do |issue, options|
+        issue.subscribed?(options[:current_user], options[:project] || issue.project)
       end
     end
 
@@ -280,7 +283,7 @@ module API
       expose :id
     end
 
-    class MergeRequest < ProjectEntity
+    class MergeRequestBasic < ProjectEntity
       expose :target_branch, :source_branch
       expose :upvotes, :downvotes
       expose :author, :assignee, using: Entities::UserBasic
@@ -292,15 +295,18 @@ module API
       expose :merge_status
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
-      expose :subscribed do |merge_request, options|
-        merge_request.subscribed?(options[:current_user], options[:project])
-      end
       expose :user_notes_count
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
 
       expose :web_url do |merge_request, options|
         Gitlab::UrlBuilder.build(merge_request)
+      end
+    end
+
+    class MergeRequest < MergeRequestBasic
+      expose :subscribed do |merge_request, options|
+        merge_request.subscribed?(options[:current_user], options[:project])
       end
     end
 
@@ -449,7 +455,8 @@ module API
     class ProjectService < Grape::Entity
       expose :id, :title, :created_at, :updated_at, :active
       expose :push_events, :issues_events, :merge_requests_events
-      expose :tag_push_events, :note_events, :build_events, :pipeline_events
+      expose :tag_push_events, :note_events, :pipeline_events
+      expose :build_events, as: :job_events
       # Expose serialized properties
       expose :properties do |service, options|
         field_names = service.fields.
@@ -552,12 +559,14 @@ module API
       expose :updated_at
       expose :home_page_url
       expose :default_branch_protection
-      expose :restricted_visibility_levels
+      expose(:restricted_visibility_levels) do |setting, _options|
+        setting.restricted_visibility_levels.map { |level| Gitlab::VisibilityLevel.string_level(level) }
+      end
       expose :max_attachment_size
       expose :session_expire_delay
-      expose :default_project_visibility
-      expose :default_snippet_visibility
-      expose :default_group_visibility
+      expose(:default_project_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_project_visibility) }
+      expose(:default_snippet_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_snippet_visibility) }
+      expose(:default_group_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_group_visibility) }
       expose :default_artifacts_expire_in
       expose :domain_whitelist
       expose :domain_blacklist_enabled
@@ -591,10 +600,6 @@ module API
       end
     end
 
-    class TriggerRequest < Grape::Entity
-      expose :id, :variables
-    end
-
     class Runner < Grape::Entity
       expose :id
       expose :description
@@ -623,7 +628,7 @@ module API
       expose :id, :token
     end
 
-    class BuildArtifactFile < Grape::Entity
+    class JobArtifactFile < Grape::Entity
       expose :filename, :size
     end
 
@@ -631,18 +636,21 @@ module API
       expose :id, :sha, :ref, :status
     end
 
-    class Build < Grape::Entity
+    class Job < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
       expose :user, with: User
-      expose :artifacts_file, using: BuildArtifactFile, if: -> (build, opts) { build.artifacts? }
+      expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
       expose :commit, with: RepoCommit
       expose :runner, with: Runner
       expose :pipeline, with: PipelineBasic
     end
 
     class Trigger < Grape::Entity
-      expose :token, :created_at, :updated_at, :deleted_at, :last_used
+      expose :id
+      expose :token, :description
+      expose :created_at, :updated_at, :deleted_at, :last_used
+      expose :owner, using: Entities::UserBasic
     end
 
     class Variable < Grape::Entity
@@ -663,14 +671,14 @@ module API
     end
 
     class Environment < EnvironmentBasic
-      expose :project, using: Entities::Project
+      expose :project, using: Entities::BasicProjectDetails
     end
 
     class Deployment < Grape::Entity
       expose :id, :iid, :ref, :sha, :created_at
       expose :user,        using: Entities::UserBasic
       expose :environment, using: Entities::EnvironmentBasic
-      expose :deployable,  using: Entities::Build
+      expose :deployable,  using: Entities::Job
     end
 
     class RepoLicense < Grape::Entity

@@ -27,9 +27,6 @@ Rails.application.routes.draw do
   get '/autocomplete/users/:id' => 'autocomplete#user'
   get '/autocomplete/projects' => 'autocomplete#projects'
 
-  # Emojis
-  resources :emojis, only: :index
-
   # Search
   get 'search' => 'search#show'
   get 'search/autocomplete' => 'search#autocomplete', as: :search_autocomplete

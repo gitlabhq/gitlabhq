@@ -40,6 +40,10 @@ class ApplicationController < ActionController::Base
     render_403
   end
 
+  rescue_from Gitlab::Auth::TooManyIps do |e|
+    head :forbidden, retry_after: Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window
+  end
+
   def redirect_back_or_default(default: root_path, options: {})
     redirect_to request.referer.present? ? :back : default, options
   end
@@ -122,10 +126,6 @@ class ApplicationController < ActionController::Base
     headers['X-XSS-Protection'] = '1; mode=block'
     headers['X-UA-Compatible'] = 'IE=edge'
     headers['X-Content-Type-Options'] = 'nosniff'
-    # Enabling HSTS for non-standard ports would send clients to the wrong port
-    if Gitlab.config.gitlab.https && Gitlab.config.gitlab.port == 443
-      headers['Strict-Transport-Security'] = 'max-age=31536000'
-    end
   end
 
   def validate_user_service_ticket!

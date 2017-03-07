@@ -13,7 +13,6 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :autocomplete_sources, only: [] do
         collection do
-          get 'emojis'
           get 'members'
           get 'issues'
           get 'merge_requests'
@@ -58,6 +57,7 @@ constraints(ProjectUrlConstrainer.new) do
 
         resources :graphs, only: [:show], constraints: { id: Gitlab::Regex.git_reference_regex } do
           member do
+            get :charts
             get :commits
             get :ci
             get :languages
@@ -140,6 +140,7 @@ constraints(ProjectUrlConstrainer.new) do
       resources :pipelines, only: [:index, :new, :create, :show] do
         collection do
           resource :pipelines_settings, path: 'settings', only: [:show, :update]
+          get :charts
         end
 
         member do
@@ -265,13 +266,15 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :group_links, only: [:index, :create, :update, :destroy], constraints: { id: /\d+/ }
 
-      resources :notes, only: [:index, :create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do
+      resources :notes, only: [:create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do
         member do
           delete :delete_attachment
           post :resolve
           delete :resolve, action: :unresolve
         end
       end
+
+      get 'noteable/:target_type/:target_id/notes' => 'notes#index', as: 'noteable_notes'
 
       resources :boards, only: [:index, :show] do
         scope module: :boards do

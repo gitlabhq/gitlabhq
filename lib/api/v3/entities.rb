@@ -81,7 +81,7 @@ module API
         expose :request_access_enabled
         expose :only_allow_merge_if_all_discussions_are_resolved
 
-        expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
+        expose :statistics, using: '::API::V3::Entities::ProjectStatistics', if: :statistics
       end
 
       class ProjectWithAccess < Project
@@ -124,6 +124,129 @@ module API
         expose :web_url do |merge_request, options|
           Gitlab::UrlBuilder.build(merge_request)
         end
+      end
+
+      class Group < Grape::Entity
+        expose :id, :name, :path, :description, :visibility_level
+        expose :lfs_enabled?, as: :lfs_enabled
+        expose :avatar_url
+        expose :web_url
+        expose :request_access_enabled
+        expose :full_name, :full_path
+        expose :parent_id
+
+        expose :statistics, if: :statistics do
+          with_options format_with: -> (value) { value.to_i } do
+            expose :storage_size
+            expose :repository_size
+            expose :lfs_objects_size
+            expose :build_artifacts_size
+          end
+        end
+      end
+
+      class GroupDetail < Group
+        expose :projects, using: Entities::Project
+        expose :shared_projects, using: Entities::Project
+      end
+
+      class ApplicationSetting < Grape::Entity
+        expose :id
+        expose :default_projects_limit
+        expose :signup_enabled
+        expose :signin_enabled
+        expose :gravatar_enabled
+        expose :sign_in_text
+        expose :after_sign_up_text
+        expose :created_at
+        expose :updated_at
+        expose :home_page_url
+        expose :default_branch_protection
+        expose :restricted_visibility_levels
+        expose :max_attachment_size
+        expose :session_expire_delay
+        expose :default_project_visibility
+        expose :default_snippet_visibility
+        expose :default_group_visibility
+        expose :domain_whitelist
+        expose :domain_blacklist_enabled
+        expose :domain_blacklist
+        expose :user_oauth_applications
+        expose :after_sign_out_path
+        expose :container_registry_token_expire_delay
+        expose :repository_storage
+        expose :repository_storages
+        expose :koding_enabled
+        expose :koding_url
+        expose :plantuml_enabled
+        expose :plantuml_url
+        expose :terminal_max_session_time
+      end
+
+      class Environment < ::API::Entities::EnvironmentBasic
+        expose :project, using: Entities::Project
+      end
+
+      class Trigger < Grape::Entity
+        expose :token, :created_at, :updated_at, :deleted_at, :last_used
+        expose :owner, using: ::API::Entities::UserBasic
+      end
+
+      class TriggerRequest < Grape::Entity
+        expose :id, :variables
+      end
+
+      class Build < Grape::Entity
+        expose :id, :status, :stage, :name, :ref, :tag, :coverage
+        expose :created_at, :started_at, :finished_at
+        expose :user, with: ::API::Entities::User
+        expose :artifacts_file, using: ::API::Entities::JobArtifactFile, if: -> (build, opts) { build.artifacts? }
+        expose :commit, with: ::API::Entities::RepoCommit
+        expose :runner, with: ::API::Entities::Runner
+        expose :pipeline, with: ::API::Entities::PipelineBasic
+      end
+
+      class BuildArtifactFile < Grape::Entity
+        expose :filename, :size
+      end
+
+      class Deployment < Grape::Entity
+        expose :id, :iid, :ref, :sha, :created_at
+        expose :user,        using: ::API::Entities::UserBasic
+        expose :environment, using: ::API::Entities::EnvironmentBasic
+        expose :deployable,  using: Entities::Build
+      end
+
+      class MergeRequestChanges < MergeRequest
+        expose :diffs, as: :changes, using: ::API::Entities::RepoDiff do |compare, _|
+          compare.raw_diffs(all_diffs: true).to_a
+        end
+      end
+
+      class ProjectStatistics < Grape::Entity
+        expose :commit_count
+        expose :storage_size
+        expose :repository_size
+        expose :lfs_objects_size
+        expose :build_artifacts_size
+      end
+
+      class ProjectService < Grape::Entity
+        expose :id, :title, :created_at, :updated_at, :active
+        expose :push_events, :issues_events, :merge_requests_events
+        expose :tag_push_events, :note_events, :build_events, :pipeline_events
+        # Expose serialized properties
+        expose :properties do |service, options|
+          field_names = service.fields.
+            select { |field| options[:include_passwords] || field[:type] != 'password' }.
+            map { |field| field[:name] }
+          service.properties.slice(*field_names)
+        end
+      end
+
+      class ProjectHook < ::API::Entities::Hook
+        expose :project_id, :issues_events, :merge_requests_events
+        expose :note_events, :build_events, :pipeline_events, :wiki_page_events
       end
     end
   end

@@ -24,6 +24,7 @@ describe API::Pipelines, api: true do
         expect(json_response).to be_an Array
         expect(json_response.first['sha']).to match /\A\h{40}\z/
         expect(json_response.first['id']).to eq pipeline.id
+        expect(json_response.first.keys).to contain_exactly(*%w[id sha ref status])
       end
     end
 

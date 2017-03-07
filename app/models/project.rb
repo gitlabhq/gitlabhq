@@ -113,6 +113,7 @@ class Project < ActiveRecord::Base
   has_one :gitlab_issue_tracker_service, dependent: :destroy, inverse_of: :project
   has_one :external_wiki_service, dependent: :destroy
   has_one :kubernetes_service, dependent: :destroy, inverse_of: :project
+  has_one :mock_ci_service, dependent: :destroy
 
   has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one  :forked_from_project,  through:   :forked_project_link
@@ -211,6 +212,7 @@ class Project < ActiveRecord::Base
   before_save :ensure_runners_token
 
   mount_uploader :avatar, AvatarUploader
+  has_many :uploads, as: :model, dependent: :destroy
 
   # Scopes
   default_scope { where(pending_delete: false) }
@@ -334,7 +336,7 @@ class Project < ActiveRecord::Base
     end
 
     def search_by_visibility(level)
-      where(visibility_level: Gitlab::VisibilityLevel.const_get(level.upcase))
+      where(visibility_level: Gitlab::VisibilityLevel.string_options[level])
     end
 
     def search_by_title(query)
@@ -1003,7 +1005,7 @@ class Project < ActiveRecord::Base
   end
 
   def visibility_level_field
-    visibility_level
+    :visibility_level
   end
 
   def archive!

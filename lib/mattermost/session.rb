@@ -153,7 +153,7 @@ module Mattermost
       yield
     rescue HTTParty::Error => e
       raise Mattermost::ConnectionError.new(e.message)
-    rescue Errno::ECONNREFUSED
+    rescue Errno::ECONNREFUSED => e
       raise Mattermost::ConnectionError.new(e.message)
     end
   end

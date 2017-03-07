@@ -35,6 +35,10 @@ FactoryGirl.define do
       status 'created'
     end
 
+    trait :manual do
+      status 'manual'
+    end
+
     after(:build) do |build, evaluator|
       build.project = build.pipeline.project
     end

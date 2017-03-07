@@ -32,7 +32,13 @@ class GroupsController < Groups::ApplicationController
     @group = Groups::CreateService.new(current_user, group_params).execute
 
     if @group.persisted?
-      redirect_to @group, notice: "Group '#{@group.name}' was successfully created."
+      notice = if @group.chat_team.present?
+                 "Group '#{@group.name}' and its Mattermost team were successfully created."
+               else
+                 "Group '#{@group.name}' was successfully created."
+               end
+
+      redirect_to @group, notice: notice
     else
       render action: "new"
     end
@@ -108,7 +114,7 @@ class GroupsController < Groups::ApplicationController
     @projects = @projects.sorted_by_activity
     @projects = filter_projects(@projects)
     @projects = @projects.sort(@sort = params[:sort])
-    @projects = @projects.page(params[:page]) if params[:filter_projects].blank?
+    @projects = @projects.page(params[:page]) if params[:name].blank?
   end
 
   def authorize_create_group!
@@ -142,7 +148,9 @@ class GroupsController < Groups::ApplicationController
       :request_access_enabled,
       :share_with_group_lock,
       :visibility_level,
-      :parent_id
+      :parent_id,
+      :create_chat_team,
+      :chat_team_name
     ]
   end
 

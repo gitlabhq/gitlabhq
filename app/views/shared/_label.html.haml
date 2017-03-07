@@ -45,11 +45,11 @@
     - if current_user && defined?(@project)
       .label-subscription.inline
         - if label.is_a?(ProjectLabel)
-          %button.js-subscribe-button.label-subscribe-button.btn.btn-default.btn-action{ type: 'button', title: label_subscription_toggle_button_text(label, @project), data: { toggle: 'tooltip', status: status, url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
+          %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ type: 'button', data: { status: status, url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
             %span= label_subscription_toggle_button_text(label, @project)
             = icon('spinner spin', class: 'label-subscribe-button-loading')
         - else
-          %button.js-unsubscribe-button.label-subscribe-button.btn.btn-default.btn-action{ type: 'button', class: ('hidden' if status.unsubscribed?), title: 'Unsubscribe', data: { toggle: 'tooltip', url: group_label_unsubscribe_path(label, @project) } }
+          %button.js-unsubscribe-button.label-subscribe-button.btn.btn-default{ type: 'button', class: ('hidden' if status.unsubscribed?), data: { url: group_label_unsubscribe_path(label, @project) } }
             %span Unsubscribe
             = icon('spinner spin', class: 'label-subscribe-button-loading')
 

@@ -6,7 +6,7 @@ describe Gitlab::Ci::Status::Failed do
   end
 
   describe '#text' do
-    it { expect(subject.label).to eq 'failed' }
+    it { expect(subject.text).to eq 'failed' }
   end
 
   describe '#label' do

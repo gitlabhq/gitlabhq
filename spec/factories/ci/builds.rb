@@ -57,7 +57,7 @@ FactoryGirl.define do
     end
 
     trait :manual do
-      status 'skipped'
+      status 'manual'
       self.when 'manual'
     end
 
@@ -71,9 +71,24 @@ FactoryGirl.define do
       allow_failure true
     end
 
+    trait :ignored do
+      allowed_to_fail
+    end
+
     trait :playable do
-      skipped
       manual
+    end
+
+    trait :tags do
+      tag_list [:docker, :ruby]
+    end
+
+    trait :on_tag do
+      tag true
+    end
+
+    trait :triggered do
+      trigger_request factory: :ci_trigger_request_with_variables
     end
 
     after(:build) do |build, evaluator|

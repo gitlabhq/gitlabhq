@@ -149,14 +149,14 @@ header {
 
     .header-logo {
       display: inline-block;
-      margin: 0 8px 0 3px;
+      margin: 0 7px 0 2px;
       position: relative;
-      top: 7px;
+      top: 10px;
       transition-duration: .3s;
 
       svg,
       img {
-        height: 36px;
+        height: 28px;
       }
 
       &:hover {
@@ -260,23 +260,33 @@ header {
     font-size: 18px;
 
     .navbar-nav {
+      display: table;
+      table-layout: fixed;
+      width: 100%;
       margin: 0;
-      float: none !important;
-
-      .visible-xs,
-      .visible-sm {
-        display: table-cell !important;
-      }
+      text-align: right;
     }
 
     .navbar-collapse {
       padding-left: 5px;
 
-      .nav > li {
-        display: table-cell;
-        width: 1%;
+      .nav > li:not(.hidden-xs) {
+        display: table-cell!important;
+        width: 25%;
+
+        a {
+          margin-right: 8px;
+        }
       }
     }
+  }
+
+  .header-user-dropdown-toggle {
+    text-align: center;
+  }
+
+  .header-user-avatar {
+    float: none;
   }
 }
 

@@ -41,7 +41,7 @@ module API
 
     resource :issues do
       desc "Get currently authenticated user's issues" do
-        success Entities::Issue
+        success Entities::IssueBasic
       end
       params do
         optional :state, type: String, values: %w[opened closed all], default: 'all',
@@ -51,7 +51,7 @@ module API
       get do
         issues = find_issues(scope: 'authored')
 
-        present paginate(issues), with: Entities::Issue, current_user: current_user
+        present paginate(issues), with: Entities::IssueBasic, current_user: current_user
       end
     end
 
@@ -60,7 +60,7 @@ module API
     end
     resource :groups do
       desc 'Get a list of group issues' do
-        success Entities::Issue
+        success Entities::IssueBasic
       end
       params do
         optional :state, type: String, values: %w[opened closed all], default: 'opened',
@@ -72,7 +72,7 @@ module API
 
         issues = find_issues(group_id: group.id, state: params[:state] || 'opened')
 
-        present paginate(issues), with: Entities::Issue, current_user: current_user
+        present paginate(issues), with: Entities::IssueBasic, current_user: current_user
       end
     end
 
@@ -83,7 +83,7 @@ module API
       include TimeTrackingEndpoints
 
       desc 'Get a list of project issues' do
-        success Entities::Issue
+        success Entities::IssueBasic
       end
       params do
         optional :state, type: String, values: %w[opened closed all], default: 'all',
@@ -95,7 +95,7 @@ module API
 
         issues = find_issues(project_id: project.id)
 
-        present paginate(issues), with: Entities::Issue, current_user: current_user, project: user_project
+        present paginate(issues), with: Entities::IssueBasic, current_user: current_user, project: user_project
       end
 
       desc 'Get a single project issue' do

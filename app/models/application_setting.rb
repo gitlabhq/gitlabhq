@@ -64,6 +64,16 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             if: :akismet_enabled
 
+  validates :unique_ips_limit_per_user,
+            numericality: { greater_than_or_equal_to: 1 },
+            presence: true,
+            if: :unique_ips_limit_enabled
+
+  validates :unique_ips_limit_time_window,
+            numericality: { greater_than_or_equal_to: 0 },
+            presence: true,
+            if: :unique_ips_limit_enabled
+
   validates :koding_url,
             presence: true,
             if: :koding_enabled
@@ -179,10 +189,14 @@ class ApplicationSetting < ActiveRecord::Base
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_projects_limit: Settings.gitlab['default_projects_limit'],
       default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+      default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       disabled_oauth_sign_in_sources: [],
       domain_whitelist: Settings.gitlab['domain_whitelist'],
       gravatar_enabled: Settings.gravatar['enabled'],
       help_page_text: nil,
+      unique_ips_limit_per_user: 10,
+      unique_ips_limit_time_window: 3600,
+      unique_ips_limit_enabled: false,
       housekeeping_bitmaps_enabled: true,
       housekeeping_enabled: true,
       housekeeping_full_repack_period: 50,
@@ -275,6 +289,22 @@ class ApplicationSetting < ActiveRecord::Base
 
   def repository_storage=(value)
     self.repository_storages = [value]
+  end
+
+  def default_project_visibility=(level)
+    super(Gitlab::VisibilityLevel.level_value(level))
+  end
+
+  def default_snippet_visibility=(level)
+    super(Gitlab::VisibilityLevel.level_value(level))
+  end
+
+  def default_group_visibility=(level)
+    super(Gitlab::VisibilityLevel.level_value(level))
+  end
+
+  def restricted_visibility_levels=(levels)
+    super(levels.map { |level| Gitlab::VisibilityLevel.level_value(level) })
   end
 
   # Choose one of the available repository storage options. Currently all have
