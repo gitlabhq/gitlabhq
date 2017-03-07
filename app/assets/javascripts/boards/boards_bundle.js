@@ -51,7 +51,8 @@ $(() => {
       issueLinkBase: $boardApp.dataset.issueLinkBase,
       rootPath: $boardApp.dataset.rootPath,
       bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
-      detailIssue: Store.detail
+      detailIssue: Store.detail,
+      milestoneTitle: $boardApp.dataset.boardMilestoneTitle,
     },
     computed: {
       detailIssueVisible () {
@@ -59,6 +60,10 @@ $(() => {
       },
     },
     created () {
+      if (this.milestoneTitle) {
+        this.state.filters.milestone_title = this.milestoneTitle;
+      }
+
       gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
     },
     mounted () {
@@ -84,7 +89,8 @@ $(() => {
   gl.IssueBoardsSearch = new Vue({
     el: document.getElementById('js-boards-search'),
     data: {
-      filters: Store.state.filters
+      filters: Store.state.filters,
+      milestoneTitle: $boardApp.dataset.boardMilestoneTitle,
     },
     mounted () {
       gl.issueBoards.newListDropdownInit();

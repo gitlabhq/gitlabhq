@@ -10,7 +10,7 @@
 @media (min-width: $screen-sm-min) {
   .issues-filters,
   .issues_bulk_update {
-    .dropdown-menu-toggle {
+    .dropdown-menu-toggle:not(.wide) {
       width: 132px;
     }
   }

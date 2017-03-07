@@ -528,12 +528,6 @@
 
 }
 
-.boards-switcher {
-  padding-right: 10px;
-  margin-right: 10px;
-  border-right: 1px solid $white-dark;
-}
-
 .modal-filters {
   display: flex;
 
@@ -553,4 +547,40 @@
       width: 140px;
     }
   }
+}
+
+.boards-switcher {
+  padding-right: 10px;
+  margin-right: 10px;
+  border-right: 1px solid $white-dark;
+}
+
+.board-milestone-list {
+  > li {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  a {
+    padding-left: 25px;
+  }
+
+  .fa-check {
+    margin-left: -18px;
+  }
+}
+
+.board-inner-milestone-dropdown {
+  margin-top: 10px;
+
+  .dropdown-menu {
+    top: 60px;
+    min-width: 100%;
+  }
+}
+
+.board-milestone-footer-content {
+  padding-left: 12px;
+  padding-right: 12px;
+  color: $gl-gray-dark;
 }

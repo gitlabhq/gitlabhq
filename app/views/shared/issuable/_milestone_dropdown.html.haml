@@ -1,6 +1,9 @@
 - project = @target_project || @project
 - extra_class = extra_class || ''
 - show_menu_above = show_menu_above || false
+- board = local_assigns[:board]
+- selected = board.try(:milestone) || local_assigns[:selected]
+
 - selected_text = selected.try(:title) || params[:milestone_title]
 - dropdown_title = local_assigns.fetch(:dropdown_title, "Filter by milestone")
 - if selected.present? || params[:milestone_title].present?
@@ -19,3 +22,7 @@
             Manage milestones
           - else
             View milestones
+    - if board
+      %p.board-milestone-footer-content.js-milestone-footer-content{ style: "display: none;" }
+        This board's milestone has been set in its configuration.
+        Edit this value under the board menu.

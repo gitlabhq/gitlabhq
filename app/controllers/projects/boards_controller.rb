@@ -75,7 +75,7 @@ class Projects::BoardsController < Projects::ApplicationController
   end
 
   def board_params
-    params.require(:board).permit(:name)
+    params.require(:board).permit(:name, :milestone_id)
   end
 
   def find_board
@@ -83,6 +83,11 @@ class Projects::BoardsController < Projects::ApplicationController
   end
 
   def serialize_as_json(resource)
-    resource.as_json(only: [:id, :name])
+    resource.as_json(
+      only: [:id, :name],
+      include: {
+        milestone: { only: [:id, :title] }
+      }
+    )
   end
 end

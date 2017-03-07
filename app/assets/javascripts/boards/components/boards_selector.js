@@ -15,8 +15,14 @@ require('./board_new_form');
       'board-selector-form': gl.issueBoards.BoardSelectorForm,
     },
     props: {
-      currentBoard: Object,
-      endpoint: String,
+      currentBoard: {
+        type: Object,
+        required: true,
+      },
+      milestonePath: {
+        type: String,
+        required: true,
+      },
     },
     data() {
       return {
@@ -36,6 +42,12 @@ require('./board_new_form');
           this.loadBoards(false);
         }
       },
+      board: {
+        handler() {
+          this.updateMilestoneFilterDropdown();
+        },
+        deep: true,
+      },
     },
     computed: {
       currentPage() {
@@ -51,7 +63,7 @@ require('./board_new_form');
         return this.boards.length > 1;
       },
       title() {
-        if (this.currentPage === 'edit') {
+        if (this.currentPage === 'edit' || this.currentPage === 'milestone') {
           return 'Edit board';
         } else if (this.currentPage === 'new') {
           return 'Create new board';
@@ -82,9 +94,33 @@ require('./board_new_form');
           });
         }
       },
+      updateMilestoneFilterDropdown() {
+        const $milestoneDropdownToggle = $('.js-milestone-select');
+        const glDropdown = $milestoneDropdownToggle.data('glDropdown');
+        const $milestoneDropdown = $('.dropdown-menu-milestone');
+        const hideElements = this.board.milestone === undefined || this.board.milestone_id === null;
+
+        $('#milestone_title').val(this.board.milestone ? this.board.milestone.title : '');
+
+        if (glDropdown.fullData) {
+          glDropdown.parseData(glDropdown.fullData);
+        }
+
+        $milestoneDropdown.find('.dropdown-input, .dropdown-footer-list')
+          .toggle(hideElements);
+        $milestoneDropdown.find('.js-milestone-footer-content').toggle(!hideElements);
+        $milestoneDropdown.find('.dropdown-content li').show()
+          .filter((i, el) => $(el).find('.is-active').length === 0)
+          .toggle(hideElements);
+
+        $('.js-milestone-select .dropdown-toggle-text')
+          .text(hideElements ? 'Milestone' : this.board.milestone.title)
+          .toggleClass('is-default', hideElements);
+      },
     },
     created() {
       this.state.currentBoard = this.currentBoard;
+      this.updateMilestoneFilterDropdown();
     },
   });
 })();

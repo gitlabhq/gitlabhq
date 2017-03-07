@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170224075132) do
+ActiveRecord::Schema.define(version: 20170306180725) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -185,8 +185,10 @@ ActiveRecord::Schema.define(version: 20170224075132) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name", default: "Development", null: false
+    t.integer "milestone_id"
   end
 
+  add_index "boards", ["milestone_id"], name: "index_boards_on_milestone_id", using: :btree
   add_index "boards", ["project_id"], name: "index_boards_on_project_id", using: :btree
 
   create_table "broadcast_messages", force: :cascade do |t|
