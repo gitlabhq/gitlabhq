@@ -16,7 +16,7 @@ describe MergeRequests::FfMergeService do
     project.team << [user2, :developer]
   end
 
-  describe :execute do
+  describe '#execute' do
     context 'valid params' do
       let(:service) { MergeRequests::FfMergeService.new(project, user, {}) }
 
@@ -46,6 +46,38 @@ describe MergeRequests::FfMergeService do
       it 'creates system note about merge_request merge' do
         note = merge_request.notes.last
         expect(note.note).to include 'merged'
+      end
+    end
+
+    context "error handling" do
+      let(:service) { MergeRequests::FfMergeService.new(project, user, commit_message: 'Awesome message') }
+
+      before do
+        allow(Rails.logger).to receive(:error)
+      end
+
+      it 'logs and saves error if there is an exception' do
+        error_message = 'error message'
+
+        allow(service).to receive(:repository).and_raise("error message")
+        allow(service).to receive(:execute_hooks)
+
+        service.execute(merge_request)
+
+        expect(merge_request.merge_error).to include(error_message)
+        expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+      end
+
+      it 'logs and saves error if there is an PreReceiveError exception' do
+        error_message = 'error message'
+
+        allow(service).to receive(:repository).and_raise(GitHooksService::PreReceiveError, error_message)
+        allow(service).to receive(:execute_hooks)
+
+        service.execute(merge_request)
+
+        expect(merge_request.merge_error).to include(error_message)
+        expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
       end
     end
   end
