@@ -49,6 +49,9 @@ require('./lib/utils/common_utils');
       'img.emoji'(el, text) {
         return el.getAttribute('alt');
       },
+      'gl-emoji'(el, text) {
+        return `:${el.getAttribute('data-name')}:`;
+      },
     },
     ImageLinkFilter: {
       'a.no-attachment-icon'(el, text) {
@@ -110,7 +113,7 @@ require('./lib/utils/common_utils');
 
         return `<dl>\n${lines.join('\n')}\n</dl>`;
       },
-      'sub, dt, dd, kbd, q, samp, var, ruby, rt, rp, abbr'(el, text) {
+      'sub, dt, dd, kbd, q, samp, var, ruby, rt, rp, abbr, summary, details'(el, text) {
         const tag = el.nodeName.toLowerCase();
         return `<${tag}>${text}</${tag}>`;
       },

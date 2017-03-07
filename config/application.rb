@@ -7,6 +7,7 @@ Bundler.require(:default, Rails.env)
 module Gitlab
   class Application < Rails::Application
     require_dependency Rails.root.join('lib/gitlab/redis')
+    require_dependency Rails.root.join('lib/gitlab/request_context')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -90,7 +91,6 @@ module Gitlab
 
     # Enable the asset pipeline
     config.assets.enabled = true
-    config.assets.paths << Gemojione.images_path
     config.assets.paths << "vendor/assets/fonts"
     config.assets.precompile << "*.png"
     config.assets.precompile << "print.css"
@@ -100,7 +100,6 @@ module Gitlab
     config.assets.precompile << "katex.js"
     config.assets.precompile << "xterm/xterm.css"
     config.assets.precompile << "lib/ace.js"
-    config.assets.precompile << "lib/raphael.js"
     config.assets.precompile << "u2f.js"
     config.assets.precompile << "vendor/assets/fonts/*"
 

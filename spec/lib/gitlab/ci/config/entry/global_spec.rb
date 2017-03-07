@@ -155,6 +155,7 @@ describe Gitlab::Ci::Config::Entry::Global do
                        stage: 'test',
                        cache: { key: 'k', untracked: true, paths: ['public/'] },
                        variables: { VAR: 'value' },
+                       ignore: false,
                        after_script: ['make clean'] },
               spinach: { name: :spinach,
                          before_script: [],
@@ -165,6 +166,7 @@ describe Gitlab::Ci::Config::Entry::Global do
                          stage: 'test',
                          cache: { key: 'k', untracked: true, paths: ['public/'] },
                          variables: {},
+                         ignore: false,
                          after_script: ['make clean'] },
             )
           end
@@ -186,7 +188,7 @@ describe Gitlab::Ci::Config::Entry::Global do
 
         it 'contains unspecified nodes' do
           expect(global.descendants.first)
-            .to be_an_instance_of Gitlab::Ci::Config::Entry::Unspecified
+            .not_to be_specified
         end
       end
 

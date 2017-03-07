@@ -23,22 +23,25 @@ module Gitlab
           Gitlab::Auth::Result.new
 
         rate_limit!(ip, success: result.success?, login: login)
+        Gitlab::Auth::UniqueIpsLimiter.limit_user!(result.actor)
 
         result
       end
 
       def find_with_user_password(login, password)
-        user = User.by_login(login)
+        Gitlab::Auth::UniqueIpsLimiter.limit_user! do
+          user = User.by_login(login)
 
-        # If no user is found, or it's an LDAP server, try LDAP.
-        #   LDAP users are only authenticated via LDAP
-        if user.nil? || user.ldap_user?
-          # Second chance - try LDAP authentication
-          return nil unless Gitlab::LDAP::Config.enabled?
+          # If no user is found, or it's an LDAP server, try LDAP.
+          #   LDAP users are only authenticated via LDAP
+          if user.nil? || user.ldap_user?
+            # Second chance - try LDAP authentication
+            return nil unless Gitlab::LDAP::Config.enabled?
 
-          Gitlab::LDAP::Authentication.login(login, password)
-        else
-          user if user.valid_password?(password)
+            Gitlab::LDAP::Authentication.login(login, password)
+          else
+            user if user.valid_password?(password)
+          end
         end
       end
 

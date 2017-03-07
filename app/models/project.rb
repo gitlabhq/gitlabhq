@@ -212,6 +212,7 @@ class Project < ActiveRecord::Base
   before_save :ensure_runners_token
 
   mount_uploader :avatar, AvatarUploader
+  has_many :uploads, as: :model, dependent: :destroy
 
   # Scopes
   default_scope { where(pending_delete: false) }

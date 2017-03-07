@@ -25,9 +25,17 @@ describe SessionsController do
           expect(subject.current_user). to eq user
         end
 
-        it "creates an audit log record" do
+        it 'creates an audit log record' do
           expect { post(:create, user: { login: user.username, password: user.password }) }.to change { SecurityEvent.count }.by(1)
-          expect(SecurityEvent.last.details[:with]).to eq("standard")
+          expect(SecurityEvent.last.details[:with]).to eq('standard')
+        end
+
+        include_examples 'user login request with unique ip limit', 302 do
+          def request
+            post(:create, user: { login: user.username, password: user.password })
+            expect(subject.current_user).to eq user
+            subject.sign_out user
+          end
         end
       end
     end

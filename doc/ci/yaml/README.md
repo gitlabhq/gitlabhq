@@ -166,10 +166,11 @@ which can be set in GitLab's UI.
 cached between jobs. You can only use paths that are within the project
 workspace.
 
-**By default the caching is enabled per-job and per-branch.**
+**By default caching is enabled and shared between pipelines and jobs,
+starting from GitLab 9.0**
 
-If `cache` is defined outside the scope of the jobs, it means it is set
-globally and all jobs will use its definition.
+If `cache` is defined outside the scope of jobs, it means it is set
+globally and all jobs will use that definition.
 
 Cache all files in `binaries` and `.config`:
 
@@ -202,7 +203,7 @@ rspec:
     - binaries/
 ```
 
-Locally defined cache overwrites globally defined options. The following `rspec`
+Locally defined cache overrides globally defined options. The following `rspec`
 job will cache only `binaries/`:
 
 ```yaml
@@ -213,9 +214,14 @@ cache:
 rspec:
   script: test
   cache:
+    key: rspec
     paths:
     - binaries/
 ```
+
+Note that since cache is shared between jobs, if you're using different
+paths for different jobs, you should also set a different **cache:key**
+otherwise cache content can be overwritten.
 
 The cache is provided on a best-effort basis, so don't expect that the cache
 will be always present. For implementation details, please check GitLab Runner.
@@ -232,6 +238,9 @@ This allows you to fine tune caching, allowing you to cache data between
 different jobs or even different branches.
 
 The `cache:key` variable can use any of the [predefined variables](../variables/README.md).
+
+The default key is **default** across the project, therefore everything is
+shared between each pipelines and jobs by default, starting from GitLab 9.0.
 
 ---
 
@@ -545,12 +554,29 @@ The above script will:
 
 Manual actions are a special type of job that are not executed automatically;
 they need to be explicitly started by a user. Manual actions can be started
-from pipeline, build, environment, and deployment views. You can execute the
-same manual action multiple times.
+from pipeline, build, environment, and deployment views.
 
 An example usage of manual actions is deployment to production.
 
 Read more at the [environments documentation][env-manual].
+
+Manual actions can be either optional or blocking. Blocking manual action will
+block execution of the pipeline at stage this action is defined in. It is
+possible to resume execution of the pipeline when someone executes a blocking
+manual actions by clicking a _play_ button.
+
+When pipeline is blocked it will not be merged if Merge When Pipeline Succeeds
+is set. Blocked pipelines also do have a special status, called _manual_.
+
+Manual actions are non-blocking by default. If you want to make manual action
+blocking, it is necessary to add `allow_failure: false` to the job's definition
+in `.gitlab-ci.yml`.
+
+Optional manual actions have `allow_failure: true` set by default.
+
+**Statuses of optional actions do not contribute to overall pipeline status.**
+
+> Blocking manual actions were introduced in GitLab 9.0
 
 ### environment
 

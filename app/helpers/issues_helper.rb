@@ -87,34 +87,6 @@ module IssuesHelper
     icon('eye-slash') if issue.confidential?
   end
 
-  def emoji_icon(name, unicode = nil, aliases = [], sprite: true)
-    unicode ||= Gitlab::Emoji.emoji_filename(name) rescue ""
-
-    data = {
-      aliases: aliases.join(" "),
-      emoji: name,
-      unicode_name: unicode
-    }
-
-    if sprite
-      # Emoji icons for the emoji menu, these use a spritesheet.
-      content_tag :div, "",
-        class: "icon emoji-icon emoji-#{unicode}",
-        title: name,
-        data: data
-    else
-      # Emoji icons displayed separately, used for the awards already given
-      # to an issue or merge request.
-      content_tag :img, "",
-        class: "icon emoji",
-        title: name,
-        height: "20px",
-        width: "20px",
-        src: url_to_image("#{unicode}.png"),
-        data: data
-    end
-  end
-
   def award_user_list(awards, current_user, limit: 10)
     names = awards.map do |award|
       award.user == current_user ? 'You' : award.user.name

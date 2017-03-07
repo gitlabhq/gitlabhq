@@ -252,7 +252,7 @@ describe 'Copy as GFM', feature: true, js: true do
 
       <<-GFM.strip_heredoc
       <a name="named-anchor"></a>
-      
+
       <sub>sub</sub>
 
       <dl>
@@ -275,6 +275,10 @@ describe 'Copy as GFM', feature: true, js: true do
       <rp>rp</rp>
 
       <abbr>abbr</abbr>
+
+      <summary>summary</summary>
+
+      <details>details</details>
       GFM
     )
 

@@ -4,7 +4,7 @@ module SharedProjectTab
   include Spinach::DSL
   include SharedActiveTab
 
-  step 'the active main tab should be Home' do
+  step 'the active main tab should be Project' do
     ensure_active_main_tab('Project')
   end
 
@@ -46,5 +46,17 @@ module SharedProjectTab
 
   step 'the active sub tab should be Commits' do
     ensure_active_sub_tab('Commits')
+  end
+
+  step 'the active sub tab should be Home' do
+    ensure_active_sub_tab('Home')
+  end
+
+  step 'the active sub tab should be Activity' do
+    ensure_active_sub_tab('Activity')
+  end
+
+  step 'the active sub tab should be Charts' do
+    ensure_active_sub_tab('Charts')
   end
 end

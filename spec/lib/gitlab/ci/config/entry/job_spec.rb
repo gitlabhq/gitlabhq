@@ -144,6 +144,7 @@ describe Gitlab::Ci::Config::Entry::Job do
                    script: %w[rspec],
                    commands: "ls\npwd\nrspec",
                    stage: 'test',
+                   ignore: false,
                    after_script: %w[cleanup])
         end
       end
@@ -156,6 +157,84 @@ describe Gitlab::Ci::Config::Entry::Job do
 
       it 'returns a string of commands concatenated with new line character' do
         expect(entry.commands).to eq "ls\npwd\nrspec"
+      end
+    end
+  end
+
+  describe '#manual_action?' do
+    context 'when job is a manual action' do
+      let(:config) { { script: 'deploy', when: 'manual' } }
+
+      it 'is a manual action' do
+        expect(entry).to be_manual_action
+      end
+    end
+
+    context 'when job is not a manual action' do
+      let(:config) { { script: 'deploy' } }
+
+      it 'is not a manual action' do
+        expect(entry).not_to be_manual_action
+      end
+    end
+  end
+
+  describe '#ignored?' do
+    context 'when job is a manual action' do
+      context 'when it is not specified if job is allowed to fail' do
+        let(:config) do
+          { script: 'deploy', when: 'manual' }
+        end
+
+        it 'is an ignored job' do
+          expect(entry).to be_ignored
+        end
+      end
+
+      context 'when job is allowed to fail' do
+        let(:config) do
+          { script: 'deploy', when: 'manual', allow_failure: true }
+        end
+
+        it 'is an ignored job' do
+          expect(entry).to be_ignored
+        end
+      end
+
+      context 'when job is not allowed to fail' do
+        let(:config) do
+          { script: 'deploy', when: 'manual', allow_failure: false }
+        end
+
+        it 'is not an ignored job' do
+          expect(entry).not_to be_ignored
+        end
+      end
+    end
+
+    context 'when job is not a manual action' do
+      context 'when it is not specified if job is allowed to fail' do
+        let(:config) { { script: 'deploy' } }
+
+        it 'is not an ignored job' do
+          expect(entry).not_to be_ignored
+        end
+      end
+
+      context 'when job is allowed to fail' do
+        let(:config) { { script: 'deploy', allow_failure: true } }
+
+        it 'is an ignored job' do
+          expect(entry).to be_ignored
+        end
+      end
+
+      context 'when job is not allowed to fail' do
+        let(:config) { { script: 'deploy', allow_failure: false } }
+
+        it 'is not an ignored job' do
+          expect(entry).not_to be_ignored
+        end
       end
     end
   end

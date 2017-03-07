@@ -43,6 +43,44 @@ feature 'Group', feature: true do
         expect(page).to have_namespace_error_message
       end
     end
+
+    describe 'Mattermost team creation' do
+      before do
+        allow(Settings.mattermost).to receive_messages(enabled: mattermost_enabled)
+
+        visit new_group_path
+      end
+
+      context 'Mattermost enabled' do
+        let(:mattermost_enabled) { true }
+
+        it 'displays a team creation checkbox' do
+          expect(page).to have_selector('#group_create_chat_team')
+        end
+
+        it 'checks the checkbox by default' do
+          expect(find('#group_create_chat_team')['checked']).to eq(true)
+        end
+
+        it 'updates the team URL on graph path update', :js do
+          out_span = find('span[data-bind-out="create_chat_team"]')
+
+          expect(out_span.text).to be_empty
+
+          fill_in('group_path', with: 'test-group')
+
+          expect(out_span.text).to eq('test-group')
+        end
+      end
+
+      context 'Mattermost disabled' do
+        let(:mattermost_enabled) { false }
+
+        it 'doesnt show a team creation checkbox if Mattermost not enabled' do
+          expect(page).not_to have_selector('#group_create_chat_team')
+        end
+      end
+    end
   end
 
   describe 'create a nested group' do
@@ -105,7 +143,7 @@ feature 'Group', feature: true do
 
       visit path
 
-      expect(page).to have_css('.group-home-desc > p > img')
+      expect(page).to have_css('.group-home-desc > p > gl-emoji')
     end
 
     it 'sanitizes unwanted tags' do

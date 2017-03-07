@@ -96,7 +96,7 @@
 
 .dropdown-menu-toggle {
   @extend .dropdown-toggle;
-  padding-right: 20px;
+  padding-right: 25px;
   position: relative;
   width: 163px;
   text-overflow: ellipsis;
@@ -221,6 +221,7 @@
     color: $gl-text-color-secondary;
     font-size: 13px;
     line-height: 22px;
+    text-transform: capitalize;
     padding: 0 10px;
   }
 

@@ -1,5 +1,11 @@
 /* eslint-disable func-names, space-before-function-paren, no-template-curly-in-string, comma-dangle, object-shorthand, quotes, dot-notation, no-else-return, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-param-reassign, no-useless-escape, prefer-template, consistent-return, wrap-iife, prefer-arrow-callback, camelcase, no-unused-vars, no-useless-return, vars-on-top, max-len */
 
+const emojiMap = require('emoji-map');
+const emojiAliases = require('emoji-aliases');
+const glEmoji = require('./behaviors/gl_emoji');
+
+const glEmojiTag = glEmoji.glEmojiTag;
+
 // Creates the variables for setting up GFM auto-completion
 (function() {
   if (window.gl == null) {
@@ -26,7 +32,12 @@
     },
     // Emoji
     Emoji: {
-      template: '<li>${name} <img alt="${name}" height="20" src="${path}" width="20" /></li>'
+      templateFunction: function(name) {
+        return `<li>
+          ${name} ${glEmojiTag(name)}
+        </li>
+        `;
+      }
     },
     // Team Members
     Members: {
@@ -113,7 +124,7 @@
       $input.atwho({
         at: ':',
         displayTpl: function(value) {
-          return value.path != null ? this.Emoji.template : this.Loading.template;
+          return value && value.name ? this.Emoji.templateFunction(value.name) : this.Loading.template;
         }.bind(this),
         insertTpl: ':${name}:',
         skipSpecialCharacterTest: true,
@@ -355,6 +366,8 @@
       this.isLoadingData[at] = true;
       if (this.cachedData[at]) {
         this.loadData($input, at, this.cachedData[at]);
+      } else if (this.atTypeMap[at] === 'emojis') {
+        this.loadData($input, at, Object.keys(emojiMap).concat(Object.keys(emojiAliases)));
       } else {
         $.getJSON(this.dataSources[this.atTypeMap[at]], (data) => {
           this.loadData($input, at, data);

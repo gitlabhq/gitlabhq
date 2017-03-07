@@ -25,13 +25,13 @@ module Projects
       def access_levels_options
         {
           push_access_levels: {
-            "Roles" => ProtectedBranch::PushAccessLevel.human_access_levels.map do |id, text| 
-              { id: id, text: text, before_divider: true } 
+            roles: ProtectedBranch::PushAccessLevel.human_access_levels.map do |id, text|
+              { id: id, text: text, before_divider: true }
             end
           },
           merge_access_levels: {
-            "Roles" => ProtectedBranch::MergeAccessLevel.human_access_levels.map do |id, text| 
-              { id: id, text: text, before_divider: true } 
+            roles: ProtectedBranch::MergeAccessLevel.human_access_levels.map do |id, text|
+              { id: id, text: text, before_divider: true }
             end
           }
         }

@@ -35,12 +35,21 @@ class NamespaceValidator < ActiveModel::EachValidator
     users
   ].freeze
 
+  WILDCARD_ROUTES = %w[tree commits wikis new edit create update logs_tree
+                       preview blob blame raw files create_dir find_file].freeze
+
+  STRICT_RESERVED = (RESERVED + WILDCARD_ROUTES).freeze
+
   def self.valid?(value)
     !reserved?(value) && follow_format?(value)
   end
 
-  def self.reserved?(value)
-    RESERVED.include?(value)
+  def self.reserved?(value, strict: false)
+    if strict
+      STRICT_RESERVED.include?(value)
+    else
+      RESERVED.include?(value)
+    end
   end
 
   def self.follow_format?(value)
@@ -54,7 +63,9 @@ class NamespaceValidator < ActiveModel::EachValidator
       record.errors.add(attribute, Gitlab::Regex.namespace_regex_message)
     end
 
-    if reserved?(value)
+    strict = record.is_a?(Group) && record.parent_id
+
+    if reserved?(value, strict: strict)
       record.errors.add(attribute, "#{value} is a reserved name")
     end
   end

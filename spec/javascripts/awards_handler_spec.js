@@ -1,11 +1,11 @@
 /* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, comma-dangle, new-parens, no-unused-vars, quotes, jasmine/no-spec-dupes, prefer-template, max-len */
-/* global AwardsHandler */
 
-require('~/awards_handler');
-require('./fixtures/emoji_menu');
+require('es6-promise').polyfill();
+
+const AwardsHandler = require('~/awards_handler');
 
 (function() {
-  var awardsHandler, lazyAssert, urlRoot;
+  var awardsHandler, lazyAssert, urlRoot, openAndWaitForEmojiMenu;
 
   awardsHandler = null;
 
@@ -13,14 +13,6 @@ require('./fixtures/emoji_menu');
 
   window.gon || (window.gon = {});
 
-  gl.emojiAliases = function() {
-    return {
-      '+1': 'thumbsup',
-      '-1': 'thumbsdown'
-    };
-  };
-
-  gon.award_menu_url = '/emojis';
   urlRoot = gon.relative_url_root;
 
   lazyAssert = function(done, assertFn) {
@@ -32,22 +24,40 @@ require('./fixtures/emoji_menu');
   };
 
   describe('AwardsHandler', function() {
-    preloadFixtures('issues/open-issue.html.raw');
+    preloadFixtures('issues/issue_with_comment.html.raw');
     beforeEach(function() {
-      loadFixtures('issues/open-issue.html.raw');
+      loadFixtures('issues/issue_with_comment.html.raw');
       awardsHandler = new AwardsHandler;
       spyOn(awardsHandler, 'postEmoji').and.callFake((function(_this) {
         return function(url, emoji, cb) {
           return cb();
         };
       })(this));
-      spyOn(jQuery, 'get').and.callFake(function(req, cb) {
-        return cb(window.emojiMenu);
-      });
+
+      let isEmojiMenuBuilt = false;
+      openAndWaitForEmojiMenu = function() {
+        return new Promise((resolve, reject) => {
+          if (isEmojiMenuBuilt) {
+            resolve();
+          } else {
+            $('.js-add-award').eq(0).click();
+            const $menu = $('.emoji-menu');
+            $menu.one('build-emoji-menu-finish', () => {
+              isEmojiMenuBuilt = true;
+              resolve();
+            });
+
+            // Fail after 1 second
+            setTimeout(reject, 1000);
+          }
+        });
+      };
     });
     afterEach(function() {
       // restore original url root value
       gon.relative_url_root = urlRoot;
+
+      awardsHandler.destroy();
     });
     describe('::showEmojiMenu', function() {
       it('should show emoji menu when Add emoji button clicked', function(done) {
@@ -62,10 +72,9 @@ require('./fixtures/emoji_menu');
         });
       });
       it('should also show emoji menu for the smiley icon in notes', function(done) {
-        $('.note-action-button').click();
+        $('.js-add-award.note-action-button').click();
         return lazyAssert(done, function() {
-          var $emojiMenu;
-          $emojiMenu = $('.emoji-menu');
+          var $emojiMenu = $('.emoji-menu');
           return expect($emojiMenu.length).toBe(1);
         });
       });
@@ -86,7 +95,7 @@ require('./fixtures/emoji_menu');
         var $emojiButton, $votesBlock;
         $votesBlock = $('.js-awards-block').eq(0);
         awardsHandler.addAwardToEmojiBar($votesBlock, 'heart', false);
-        $emojiButton = $votesBlock.find('[data-emoji=heart]');
+        $emojiButton = $votesBlock.find('[data-name=heart]');
         expect($emojiButton.length).toBe(1);
         expect($emojiButton.next('.js-counter').text()).toBe('1');
         return expect($votesBlock.hasClass('hidden')).toBe(false);
@@ -96,14 +105,14 @@ require('./fixtures/emoji_menu');
         $votesBlock = $('.js-awards-block').eq(0);
         awardsHandler.addAwardToEmojiBar($votesBlock, 'heart', false);
         awardsHandler.addAwardToEmojiBar($votesBlock, 'heart', false);
-        $emojiButton = $votesBlock.find('[data-emoji=heart]');
+        $emojiButton = $votesBlock.find('[data-name=heart]');
         return expect($emojiButton.length).toBe(0);
       });
       return it('should decrement the emoji counter', function() {
         var $emojiButton, $votesBlock;
         $votesBlock = $('.js-awards-block').eq(0);
         awardsHandler.addAwardToEmojiBar($votesBlock, 'heart', false);
-        $emojiButton = $votesBlock.find('[data-emoji=heart]');
+        $emojiButton = $votesBlock.find('[data-name=heart]');
         $emojiButton.next('.js-counter').text(5);
         awardsHandler.addAwardToEmojiBar($votesBlock, 'heart', false);
         expect($emojiButton.length).toBe(1);
@@ -120,8 +129,8 @@ require('./fixtures/emoji_menu');
         var $thumbsDownEmoji, $thumbsUpEmoji, $votesBlock, awardUrl;
         awardUrl = awardsHandler.getAwardUrl();
         $votesBlock = $('.js-awards-block').eq(0);
-        $thumbsUpEmoji = $votesBlock.find('[data-emoji=thumbsup]').parent();
-        $thumbsDownEmoji = $votesBlock.find('[data-emoji=thumbsdown]').parent();
+        $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
+        $thumbsDownEmoji = $votesBlock.find('[data-name=thumbsdown]').parent();
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         expect($thumbsUpEmoji.hasClass('active')).toBe(true);
         expect($thumbsDownEmoji.hasClass('active')).toBe(false);
@@ -138,9 +147,9 @@ require('./fixtures/emoji_menu');
         awardUrl = awardsHandler.getAwardUrl();
         $votesBlock = $('.js-awards-block').eq(0);
         awardsHandler.addAward($votesBlock, awardUrl, 'fire', false);
-        expect($votesBlock.find('[data-emoji=fire]').length).toBe(1);
-        awardsHandler.removeEmoji($votesBlock.find('[data-emoji=fire]').closest('button'));
-        return expect($votesBlock.find('[data-emoji=fire]').length).toBe(0);
+        expect($votesBlock.find('[data-name=fire]').length).toBe(1);
+        awardsHandler.removeEmoji($votesBlock.find('[data-name=fire]').closest('button'));
+        return expect($votesBlock.find('[data-name=fire]').length).toBe(0);
       });
     });
     describe('::addYouToUserList', function() {
@@ -148,7 +157,7 @@ require('./fixtures/emoji_menu');
         var $thumbsUpEmoji, $votesBlock, awardUrl;
         awardUrl = awardsHandler.getAwardUrl();
         $votesBlock = $('.js-awards-block').eq(0);
-        $thumbsUpEmoji = $votesBlock.find('[data-emoji=thumbsup]').parent();
+        $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
         $thumbsUpEmoji.attr('data-title', 'sam, jerry, max, and andy');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
@@ -158,7 +167,7 @@ require('./fixtures/emoji_menu');
         var $thumbsUpEmoji, $votesBlock, awardUrl;
         awardUrl = awardsHandler.getAwardUrl();
         $votesBlock = $('.js-awards-block').eq(0);
-        $thumbsUpEmoji = $votesBlock.find('[data-emoji=thumbsup]').parent();
+        $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
         $thumbsUpEmoji.attr('data-title', 'sam');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
@@ -170,7 +179,7 @@ require('./fixtures/emoji_menu');
         var $thumbsUpEmoji, $votesBlock, awardUrl;
         awardUrl = awardsHandler.getAwardUrl();
         $votesBlock = $('.js-awards-block').eq(0);
-        $thumbsUpEmoji = $votesBlock.find('[data-emoji=thumbsup]').parent();
+        $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
         $thumbsUpEmoji.attr('data-title', 'You, sam, jerry, max, and andy');
         $thumbsUpEmoji.addClass('active');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
@@ -181,7 +190,7 @@ require('./fixtures/emoji_menu');
         var $thumbsUpEmoji, $votesBlock, awardUrl;
         awardUrl = awardsHandler.getAwardUrl();
         $votesBlock = $('.js-awards-block').eq(0);
-        $thumbsUpEmoji = $votesBlock.find('[data-emoji=thumbsup]').parent();
+        $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
         $thumbsUpEmoji.attr('data-title', 'You and sam');
         $thumbsUpEmoji.addClass('active');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
@@ -190,42 +199,58 @@ require('./fixtures/emoji_menu');
       });
     });
     describe('search', function() {
-      return it('should filter the emoji', function() {
-        $('.js-add-award').eq(0).click();
-        expect($('[data-emoji=angel]').is(':visible')).toBe(true);
-        expect($('[data-emoji=anger]').is(':visible')).toBe(true);
-        $('#emoji_search').val('ali').trigger('keyup');
-        expect($('[data-emoji=angel]').is(':visible')).toBe(false);
-        expect($('[data-emoji=anger]').is(':visible')).toBe(false);
-        return expect($('[data-emoji=alien]').is(':visible')).toBe(true);
+      return it('should filter the emoji', function(done) {
+        return openAndWaitForEmojiMenu()
+          .then(() => {
+            expect($('[data-name=angel]').is(':visible')).toBe(true);
+            expect($('[data-name=anger]').is(':visible')).toBe(true);
+            $('#emoji_search').val('ali').trigger('input');
+            expect($('[data-name=angel]').is(':visible')).toBe(false);
+            expect($('[data-name=anger]').is(':visible')).toBe(false);
+            expect($('[data-name=alien]').is(':visible')).toBe(true);
+          })
+          .then(done)
+          .catch(() => {
+            done.fail('Failed to open and build emoji menu');
+          });
       });
     });
-    return describe('emoji menu', function() {
-      var openEmojiMenuAndAddEmoji, selector;
-      selector = '[data-emoji=sunglasses]';
-      openEmojiMenuAndAddEmoji = function() {
-        var $block, $emoji, $menu;
-        $('.js-add-award').eq(0).click();
-        $menu = $('.emoji-menu');
-        $block = $('.js-awards-block');
-        $emoji = $menu.find('.emoji-menu-list:not(.frequent-emojis) ' + selector);
-        expect($emoji.length).toBe(1);
-        expect($block.find(selector).length).toBe(0);
-        $emoji.click();
-        expect($menu.hasClass('.is-visible')).toBe(false);
-        return expect($block.find(selector).length).toBe(1);
+    describe('emoji menu', function() {
+      const emojiSelector = '[data-name="sunglasses"]';
+      const openEmojiMenuAndAddEmoji = function() {
+        return openAndWaitForEmojiMenu()
+          .then(() => {
+            const $menu = $('.emoji-menu');
+            const $block = $('.js-awards-block');
+            const $emoji = $menu.find('.emoji-menu-list:not(.frequent-emojis) ' + emojiSelector);
+
+            expect($emoji.length).toBe(1);
+            expect($block.find(emojiSelector).length).toBe(0);
+            $emoji.click();
+            expect($menu.hasClass('.is-visible')).toBe(false);
+            expect($block.find(emojiSelector).length).toBe(1);
+          });
       };
-      it('should add selected emoji to awards block', function() {
-        return openEmojiMenuAndAddEmoji();
+      it('should add selected emoji to awards block', function(done) {
+        return openEmojiMenuAndAddEmoji()
+          .then(done)
+          .catch(() => {
+            done.fail('Failed to open and build emoji menu');
+          });
       });
-      return it('should remove already selected emoji', function() {
-        var $block, $emoji;
-        openEmojiMenuAndAddEmoji();
-        $('.js-add-award').eq(0).click();
-        $block = $('.js-awards-block');
-        $emoji = $('.emoji-menu').find(".emoji-menu-list:not(.frequent-emojis) " + selector);
-        $emoji.click();
-        return expect($block.find(selector).length).toBe(0);
+      it('should remove already selected emoji', function(done) {
+        return openEmojiMenuAndAddEmoji()
+          .then(() => {
+            $('.js-add-award').eq(0).click();
+            const $block = $('.js-awards-block');
+            const $emoji = $('.emoji-menu').find(`.emoji-menu-list:not(.frequent-emojis) ${emojiSelector}`);
+            $emoji.click();
+            expect($block.find(emojiSelector).length).toBe(0);
+          })
+          .then(done)
+          .catch((err) => {
+            done.fail('Failed to open and build emoji menu');
+          });
       });
     });
   });
