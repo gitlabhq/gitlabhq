@@ -24,6 +24,20 @@ describe Gitlab::Ci::Config::Entry::Cache do
           expect(entry).to be_valid
         end
       end
+
+      context 'when key is missing' do
+        let(:config) do
+          { untracked: true,
+            paths: ['some/path/'] }
+        end
+
+        describe '#value' do
+          it 'sets key with the default' do
+            expect(entry.value[:key])
+              .to eq(Gitlab::Ci::Config::Entry::Key.default)
+          end
+        end
+      end
     end
 
     context 'when entry value is not correct' do

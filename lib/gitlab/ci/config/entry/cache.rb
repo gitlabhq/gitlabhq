@@ -22,6 +22,12 @@ module Gitlab
 
           entry :paths, Entry::Paths,
             description: 'Specify which paths should be cached across builds.'
+
+          helpers :key
+
+          def value
+            super.merge(key: key_value)
+          end
         end
       end
     end
