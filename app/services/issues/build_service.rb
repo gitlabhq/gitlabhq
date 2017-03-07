@@ -10,10 +10,10 @@ module Issues
     def issue_params_with_info_from_discussions
       return {} unless merge_request_for_resolving_discussions
 
-      { title: title_for_merge_request, description: description_for_discussions }
+      { title: title_from_merge_request, description: description_for_discussions }
     end
 
-    def title_for_merge_request
+    def title_from_merge_request
       "Follow-up from \"#{merge_request_for_resolving_discussions.title}\""
     end
 
