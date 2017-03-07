@@ -168,6 +168,8 @@ class FilteredSearchVisualTokens {
     // Opens dropdown
     input.click();
 
+    input.setSelectionRange(input.value.length, input.value.length);
+
     // Adds cursor to input
     input.focus();
   }
