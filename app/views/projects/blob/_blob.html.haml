@@ -33,4 +33,4 @@
           = number_to_human_size(blob_size(blob))
       .file-actions.hidden-xs
         = render "actions"
-    = render blob, blob: blob
+    = render blob.to_partial_path(@project), blob: blob

@@ -54,9 +54,13 @@ class Blob < SimpleDelegator
     UploaderHelper::VIDEO_EXT.include?(extname.downcase.delete('.'))
   end
 
-  def to_partial_path
+  def to_partial_path(project)
     if lfs_pointer?
-      'download'
+      if project.lfs_enabled?
+        'download'
+      else
+        'text'
+      end
     elsif image? || svg?
       'image'
     elsif text?
