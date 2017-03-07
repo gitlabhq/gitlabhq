@@ -147,6 +147,9 @@
 }
 
 .atwho-view {
+  overflow-y: auto;
+  overflow-x: hidden;
+
   small.description {
     float: right;
     padding: 3px 5px;
@@ -161,5 +164,9 @@
       border: 1px solid $white-light;
       @include disableAllAnimation;
     }
+  }
+
+  ul > li {
+    white-space: nowrap;
   }
 }

@@ -1,0 +1,4 @@
+---
+title: Fix LDAP DN case-mismatch bug in LDAP group sync
+merge_request: 1337
+author:
