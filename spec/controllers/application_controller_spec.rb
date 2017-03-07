@@ -117,8 +117,8 @@ describe ApplicationController do
   context 'two-factor authentication' do
     let(:controller) { ApplicationController.new }
 
-    describe '#check_2fa_requirement' do
-      subject { controller.send :check_2fa_requirement }
+    describe '#check_two_factor_requirement' do
+      subject { controller.send :check_two_factor_requirement }
 
       it 'does not redirect if 2FA is not required' do
         allow(controller).to receive(:two_factor_authentication_required?).and_return(false)

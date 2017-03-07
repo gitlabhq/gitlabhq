@@ -2,18 +2,18 @@
 #
 # Controller concern to enforce two-factor authentication requirements
 #
-# Upon inclusion, adds `check_2fa_requirement` as a before_action, and
-# makes `two_factor_grace_period_expired?` and `two_factor_skippable?`
+# Upon inclusion, adds `check_two_factor_requirement` as a before_action,
+# and makes `two_factor_grace_period_expired?` and `two_factor_skippable?`
 # available as view helpers.
 module EnforcesTwoFactorAuthentication
   extend ActiveSupport::Concern
 
   included do
-    before_action :check_2fa_requirement
+    before_action :check_two_factor_requirement
     helper_method :two_factor_grace_period_expired?, :two_factor_skippable?
   end
 
-  def check_2fa_requirement
+  def check_two_factor_requirement
     if two_factor_authentication_required? && current_user && !current_user.two_factor_enabled? && !skip_two_factor?
       redirect_to profile_two_factor_auth_path
     end

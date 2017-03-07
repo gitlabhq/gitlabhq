@@ -1,5 +1,5 @@
 class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
-  skip_before_action :check_2fa_requirement
+  skip_before_action :check_two_factor_requirement
 
   def show
     unless current_user.otp_secret
