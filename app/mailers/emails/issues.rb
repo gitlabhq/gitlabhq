@@ -54,8 +54,9 @@ module Emails
       @issues_count = issues_count
       @truncated = truncated
 
-      attachments['issues.csv'] = { content: csv_data, mime_type: 'text/csv' }
-      mail(to: user.notification_email, subject: subject("Issues exported as CSV"))
+      filename = "#{project.full_path.parameterize}_issues_#{Date.today.iso8601}.csv"
+      attachments[filename] = { content: csv_data, mime_type: 'text/csv' }
+      mail(to: user.notification_email, subject: subject("Exported issues"))
     end
 
     private

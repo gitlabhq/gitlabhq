@@ -57,7 +57,7 @@
                   %td{ style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background-color:#ffffff;text-align:left;padding:18px 25px;border:1px solid #ededed;border-radius:3px;overflow:hidden;font-size:18px;" }
                     Your CSV export of #{ @issues_count } issues from project
                     %a{ href: project_url(@project), style: "color:#3777b0;text-decoration:none;" }
-                      = @project.name
+                      = @project.full_name
                     has been added to this email as an attachment.
                     - if @truncated
                       %br

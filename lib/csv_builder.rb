@@ -27,7 +27,7 @@ class CsvBuilder
 
   # Renders the csv to a string
   def render(truncate_after_bytes = nil)
-    tempfile = Tempfile.new('issues_csv')
+    tempfile = Tempfile.new('csv_export')
     csv = CSV.new(tempfile)
 
     write_csv(csv) do
@@ -60,7 +60,7 @@ class CsvBuilder
       if attribute.respond_to?(:call)
         attribute.call(object)
       else
-        object.send(attribute)
+        object.public_send(attribute)
       end
     end
   end
