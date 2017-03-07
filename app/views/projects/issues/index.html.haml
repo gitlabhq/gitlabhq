@@ -23,7 +23,7 @@
         = link_to params.merge(rss_url_options), class: 'btn append-right-10 has-tooltip', title: 'Subscribe' do
           = icon('rss')
         - if current_user
-          %button.csv_download_link.btn.append-right-10.has-tooltip{ title: 'Download CSV' }
+          %button.csv_download_link.btn.append-right-10.has-tooltip{ title: 'Export as CSV' }
             = icon('download')
         - if can? current_user, :create_issue, @project
           = link_to new_namespace_project_issue_path(@project.namespace,

@@ -39,7 +39,8 @@ describe 'Issues csv', feature: true do
   it 'displays flash message' do
     request_csv
 
-    expect(page).to have_content 'CSV export queued'
+    expect(page).to have_content 'CSV export has started'
+    expect(page).to have_content "emailed to #{user.notification_email}"
   end
 
   it 'includes a csv attachment' do

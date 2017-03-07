@@ -149,7 +149,7 @@ class Projects::IssuesController < Projects::ApplicationController
     ExportCsvWorker.perform_async(@current_user.id, @project.id, csv_params)
 
     index_path = namespace_project_issues_path(@project.namespace, @project)
-    redirect_to(index_path, notice: "CSV export queued")
+    redirect_to(index_path, notice: "Your CSV export has started. It will be emailed to #{current_user.notification_email} when complete.")
   end
 
   def referenced_merge_requests
