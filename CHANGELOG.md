@@ -5,6 +5,7 @@ entry.
 ## 8.17.3 (2017-03-07)
 
 - No changes.
+- No changes.
 - Fix the redirect to custom home page URL. !9518
 - Fix broken migration when upgrading straight to 8.17.1. !9613
 - Make projects dropdown only show projects you are a member of. !9614
