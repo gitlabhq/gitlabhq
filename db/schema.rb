@@ -664,9 +664,9 @@ ActiveRecord::Schema.define(version: 20170306180725) do
   end
 
   add_index "labels", ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true, using: :btree
+  add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
   add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
-  add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
 
   create_table "ldap_group_links", force: :cascade do |t|
     t.string "cn", null: false
@@ -867,14 +867,14 @@ ActiveRecord::Schema.define(version: 20170306180725) do
     t.boolean "share_with_group_lock", default: false
     t.integer "visibility_level", default: 20, null: false
     t.boolean "request_access_enabled", default: false, null: false
-    t.datetime "deleted_at"
     t.string "ldap_sync_status", default: "ready", null: false
     t.string "ldap_sync_error"
     t.datetime "ldap_sync_last_update_at"
     t.datetime "ldap_sync_last_successful_update_at"
     t.datetime "ldap_sync_last_sync_at"
-    t.boolean "lfs_enabled"
+    t.datetime "deleted_at"
     t.text "description_html"
+    t.boolean "lfs_enabled"
     t.integer "parent_id"
     t.integer "shared_runners_minutes_limit"
     t.integer "repository_size_limit", limit: 8
@@ -1085,7 +1085,6 @@ ActiveRecord::Schema.define(version: 20170306180725) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "creator_id"
-    t.boolean "wall_enabled", default: true, null: false
     t.integer "namespace_id"
     t.datetime "last_activity_at"
     t.string "import_url"
@@ -1122,9 +1121,9 @@ ActiveRecord::Schema.define(version: 20170306180725) do
     t.boolean "only_allow_merge_if_pipeline_succeeds", default: false, null: false
     t.boolean "has_external_issue_tracker"
     t.string "repository_storage", default: "default", null: false
+    t.boolean "repository_read_only"
     t.boolean "request_access_enabled", default: false, null: false
     t.boolean "has_external_wiki"
-    t.boolean "repository_read_only"
     t.boolean "lfs_enabled"
     t.text "description_html"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
@@ -1476,13 +1475,12 @@ ActiveRecord::Schema.define(version: 20170306180725) do
     t.datetime "otp_grace_period_started_at"
     t.boolean "ldap_email", default: false, null: false
     t.boolean "external", default: false
-    t.string "organization"
     t.string "incoming_email_token"
+    t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "auditor", default: false, null: false
     t.boolean "notified_of_own_activity", default: false, null: false
     t.boolean "ghost"
-    t.integer "theme_id", default: 1, null: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1525,8 +1523,8 @@ ActiveRecord::Schema.define(version: 20170306180725) do
     t.boolean "note_events", default: false, null: false
     t.boolean "enable_ssl_verification", default: true
     t.boolean "build_events", default: false, null: false
-    t.string "token"
     t.boolean "wiki_page_events", default: false, null: false
+    t.string "token"
     t.boolean "pipeline_events", default: false, null: false
     t.boolean "confidential_issues_events", default: false, null: false
   end
