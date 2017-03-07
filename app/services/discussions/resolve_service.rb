@@ -9,13 +9,7 @@ module Discussions
 
       discussion.resolve!(current_user)
 
-      notify_discussion_resolved(discussion)
-    end
-
-    def notify_discussion_resolved(discussion)
-      noteable = merge_request || discussion.noteable
-
-      MergeRequests::ResolvedDiscussionNotificationService.new(project, current_user).execute(noteable)
+      MergeRequests::ResolvedDiscussionNotificationService.new(project, current_user).execute(merge_request)
       SystemNoteService.discussion_continued_in_issue(discussion, project, current_user, follow_up_issue) if follow_up_issue
     end
 
