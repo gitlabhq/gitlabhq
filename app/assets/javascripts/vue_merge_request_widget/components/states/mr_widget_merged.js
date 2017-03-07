@@ -10,12 +10,12 @@ export default {
   },
   data() {
     return {
-      isSourceBranchRemoving: false,
+      isRemovingSourceBranch: false,
     };
   },
   methods: {
     removeSourceBranch() {
-      this.isSourceBranchRemoving = true;
+      this.isRemovingSourceBranch = true;
     },
   },
   template: `
@@ -37,12 +37,12 @@ export default {
           You can remove source branch now.
           <a
             :href="mr.sourceBranchPath"
-            :class="{ disabled: isSourceBranchRemoving }"
+            :class="{ disabled: isRemovingSourceBranch }"
             @click="removeSourceBranch"
             class="btn btn-default remove_source_branch"
             data-remote="true" data-method="delete">Remove Source Branch</a>
         </p>
-        <p v-if="isSourceBranchRemoving">
+        <p v-if="isRemovingSourceBranch">
           The source branch is being removed.
           <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
         </p>

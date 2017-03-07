@@ -69,7 +69,6 @@ export default {
           </div>
         </div>
       </div>
-      <input type="hidden" v-model="mergeWhenBuildSucceeds" />
     </div>
   `,
 };
