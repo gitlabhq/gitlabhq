@@ -261,13 +261,13 @@ Example response:
 Get a single project issue.
 
 ```
-GET /projects/:id/issues/:issue_id
+GET /projects/:id/issues/:issue_iid
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of a project |
-| `issue_id`| integer | yes   | The ID of a project's issue |
+| Attribute   | Type    | Required | Description                          |
+| ---------   | ----    | -------- | -----------                          |
+| `id`        | integer | yes      | The ID of a project                  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues/41
@@ -385,22 +385,22 @@ Updates an existing project issue. This call is also used to mark an issue as
 closed.
 
 ```
-PUT /projects/:id/issues/:issue_id
+PUT /projects/:id/issues/:issue_iid
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`            | integer | yes | The ID of a project |
-| `issue_id`      | integer | yes | The ID of a project's issue |
-| `title`         | string  | no  | The title of an issue |
-| `description`   | string  | no  | The description of an issue  |
-| `confidential`  | boolean | no  | Updates an issue to be confidential |
-| `assignee_id`   | integer | no  | The ID of a user to assign the issue to |
-| `milestone_id`  | integer | no  | The ID of a milestone to assign the issue to |
-| `labels`        | string  | no  | Comma-separated label names for an issue  |
-| `state_event`   | string  | no  | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it |
-| `updated_at`    | string  | no  | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
-| `due_date`      | string  | no  | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
+| Attribute      | Type    | Required | Description                                                                                                |
+| ---------      | ----    | -------- | -----------                                                                                                |
+| `id`           | integer | yes      | The ID of a project                                                                                        |
+| `issue_iid`    | integer | yes      | The internal ID of a project's issue                                                                       |
+| `title`        | string  | no       | The title of an issue                                                                                      |
+| `description`  | string  | no       | The description of an issue                                                                                |
+| `confidential` | boolean | no       | Updates an issue to be confidential                                                                        |
+| `assignee_id`  | integer | no       | The ID of a user to assign the issue to                                                                    |
+| `milestone_id` | integer | no       | The ID of a milestone to assign the issue to                                                               |
+| `labels`       | string  | no       | Comma-separated label names for an issue                                                                   |
+| `state_event`  | string  | no       | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it                      |
+| `updated_at`   | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
+| `due_date`     | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`                                           |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues/85?state_event=close
@@ -444,13 +444,13 @@ Example response:
 Only for admins and project owners. Soft deletes the issue in question.
 
 ```
-DELETE /projects/:id/issues/:issue_id
+DELETE /projects/:id/issues/:issue_iid
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`            | integer | yes | The ID of a project |
-| `issue_id`      | integer | yes | The ID of a project's issue |
+| Attribute   | Type    | Required | Description                          |
+| ---------   | ----    | -------- | -----------                          |
+| `id`        | integer | yes      | The ID of a project                  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues/85
@@ -466,14 +466,14 @@ If a given label and/or milestone with the same name also exists in the target
 project, it will then be assigned to the issue that is being moved.
 
 ```
-POST /projects/:id/issues/:issue_id/move
+POST /projects/:id/issues/:issue_iid/move
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `issue_id` | integer | yes | The ID of a project's issue |
-| `to_project_id` | integer | yes | The ID of the new project |
+| Attribute       | Type    | Required | Description                          |
+| ---------       | ----    | -------- | -----------                          |
+| `id`            | integer | yes      | The ID of a project                  |
+| `issue_iid`     | integer | yes      | The internal ID of a project's issue |
+| `to_project_id` | integer | yes      | The ID of the new project            |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues/85/move
@@ -522,13 +522,13 @@ If the user is already subscribed to the issue, the status code `304`
 is returned.
 
 ```
-POST /projects/:id/issues/:issue_id/subscribe
+POST /projects/:id/issues/:issue_iid/subscribe
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `issue_id` | integer | yes | The ID of a project's issue |
+| Attribute   | Type    | Required | Description                          |
+| ---------   | ----    | -------- | -----------                          |
+| `id`        | integer | yes      | The ID of a project                  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/subscribe
@@ -577,13 +577,13 @@ from it. If the user is not subscribed to the issue, the
 status code `304` is returned.
 
 ```
-POST /projects/:id/issues/:issue_id/unsubscribe
+POST /projects/:id/issues/:issue_iid/unsubscribe
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `issue_id` | integer | yes | The ID of a project's issue |
+| Attribute   | Type    | Required | Description                          |
+| ---------   | ----    | -------- | -----------                          |
+| `id`        | integer | yes      | The ID of a project                  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/unsubscribe
@@ -596,13 +596,13 @@ there already exists a todo for the user on that issue, status code `304` is
 returned.
 
 ```
-POST /projects/:id/issues/:issue_id/todo
+POST /projects/:id/issues/:issue_iid/todo
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `issue_id` | integer | yes | The ID of a project's issue |
+| Attribute   | Type    | Required | Description                          |
+| ---------   | ----    | -------- | -----------                          |
+| `id`        | integer | yes      | The ID of a project                  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/todo
@@ -687,14 +687,14 @@ Example response:
 Sets an estimated time of work for this issue.
 
 ```
-POST /projects/:id/issues/:issue_id/time_estimate
+POST /projects/:id/issues/:issue_iid/time_estimate
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of a project |
-| `issue_id` | integer | yes | The ID of a project's issue |
-| `duration` | string | yes | The duration in human format. e.g: 3h30m |
+| Attribute   | Type    | Required | Description                              |
+| ---------   | ----    | -------- | -----------                              |
+| `id`        | integer | yes      | The ID of a project                      |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue     |
+| `duration`  | string  | yes      | The duration in human format. e.g: 3h30m |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/time_estimate?duration=3h30m
@@ -716,13 +716,13 @@ Example response:
 Resets the estimated time for this issue to 0 seconds.
 
 ```
-POST /projects/:id/issues/:issue_id/reset_time_estimate
+POST /projects/:id/issues/:issue_iid/reset_time_estimate
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of a project |
-| `issue_id` | integer | yes | The ID of a project's issue |
+| Attribute   | Type    | Required | Description                          |
+| ---------   | ----    | -------- | -----------                          |
+| `id`        | integer | yes      | The ID of a project                  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/reset_time_estimate
@@ -744,14 +744,14 @@ Example response:
 Adds spent time for this issue
 
 ```
-POST /projects/:id/issues/:issue_id/add_spent_time
+POST /projects/:id/issues/:issue_iid/add_spent_time
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of a project |
-| `issue_id` | integer | yes | The ID of a project's issue |
-| `duration` | string | yes | The duration in human format. e.g: 3h30m |
+| Attribute   | Type    | Required | Description                              |
+| ---------   | ----    | -------- | -----------                              |
+| `id`        | integer | yes      | The ID of a project                      |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue     |
+| `duration`  | string  | yes      | The duration in human format. e.g: 3h30m |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/add_spent_time?duration=1h
@@ -773,13 +773,13 @@ Example response:
 Resets the total spent time for this issue to 0 seconds.
 
 ```
-POST /projects/:id/issues/:issue_id/reset_spent_time
+POST /projects/:id/issues/:issue_iid/reset_spent_time
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of a project |
-| `issue_id` | integer | yes | The ID of a project's issue |
+| Attribute   | Type    | Required | Description                          |
+| ---------   | ----    | -------- | -----------                          |
+| `id`        | integer | yes      | The ID of a project                  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/reset_spent_time
@@ -799,13 +799,13 @@ Example response:
 ## Get time tracking stats
 
 ```
-GET /projects/:id/issues/:issue_id/time_stats
+GET /projects/:id/issues/:issue_iid/time_stats
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of a project |
-| `issue_id` | integer | yes | The ID of a project's issue |
+| Attribute   | Type    | Required | Description                          |
+| ---------   | ----    | -------- | -----------                          |
+| `id`        | integer | yes      | The ID of a project                  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```bash
 curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/time_stats
