@@ -14,16 +14,16 @@ module API
       end
       params do
         use :pagination
-        optional :scope,    type: String, values: %w(running pending finished branches tags),
+        optional :scope,    type: String, values: %[running pending finished branches tags],
                             desc: 'The scope of pipelines'
-        optional :status,   type: String, values: %w(running pending success failed canceled skipped),
+        optional :status,   type: String, values: %[running pending success failed canceled skipped],
                             desc: 'The status of pipelines'
         optional :ref,      type: String, desc: 'The ref of pipelines'
-        optional :yaml_errors, type: Boolean, desc: 'If true, Returns only yaml error pipelines'
+        optional :yaml_errors, type: Boolean, desc: 'If true, returns only yaml error pipelines'
         optional :username, type: String, desc: 'The name of user who triggered pipelines'
-        optional :order_by, type: String, values: %w(id status ref username started_at finished_at created_at updated_at), default: 'id',
+        optional :order_by, type: String, values: %[id status ref username started_at finished_at created_at updated_at], default: 'id',
                             desc: 'The order_by which is combined with a sort'
-        optional :sort,     type: String, values: %w(asc desc), default: 'desc',
+        optional :sort,     type: String, values: %[asc desc], default: 'desc',
                             desc: 'The sort method which is combined with an order_by'
       end
       get ':id/pipelines' do
