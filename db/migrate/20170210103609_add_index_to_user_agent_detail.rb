@@ -8,7 +8,11 @@ class AddIndexToUserAgentDetail < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def change
-    add_concurrent_index(:user_agent_details, [:subject_id, :subject_type])
+  def up
+    add_concurrent_index :user_agent_details, [:subject_id, :subject_type]
+  end
+
+  def down
+    remove_index :user_agent_details, [:subject_id, :subject_type] if index_exists? :user_agent_details, [:subject_id, :subject_type]
   end
 end
