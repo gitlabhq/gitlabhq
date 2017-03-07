@@ -3,6 +3,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
   before_action :load_node, only: [:destroy, :repair, :toggle]
 
   def index
+    # Ensure all nodes are using their Presenter
     @nodes = GeoNode.all.map(&:present)
     @node = GeoNode.new
 
