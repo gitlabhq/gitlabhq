@@ -3,11 +3,12 @@ export default class FilteredSearchBoards extends gl.FilteredSearchManager {
     super('boards');
 
     this.store = store;
-    this.destroyOnSubmit = false
+    this.isHandledAsync = true;
   }
 
   updateObject(path) {
     this.store.path = path.substr(1);
+
     gl.issueBoards.BoardsStore.updateFiltersUrl();
   }
 }

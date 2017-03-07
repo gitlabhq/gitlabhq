@@ -105,8 +105,14 @@
         e.preventDefault();
 
         if (!activeElements.length) {
-          // Prevent droplab from opening dropdown
-          //this.dropdownManager.destroyDroplab();
+          if (this.isHandledAsync) {
+            e.stopImmediatePropagation();
+            this.filteredSearchInput.blur();
+            this.dropdownManager.resetDropdowns();
+          } else {
+            // Prevent droplab from opening dropdown
+            this.dropdownManager.destroyDroplab();
+          }
 
           this.search();
         }
