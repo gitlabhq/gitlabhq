@@ -52,7 +52,7 @@ module Projects
       flush_caches(project, wiki_path)
 
       trash_repositories!
-      remove_tracking_registry!
+      remove_tracking_entries!
       log_info("Project \"#{project.name}\" was removed")
     end
 
@@ -99,7 +99,7 @@ module Projects
       project.container_registry_repository.delete_tags
     end
 
-    def remove_tracking_registry!
+    def remove_tracking_entries!
       return unless Gitlab::Geo.secondary?
 
       Geo::ProjectRegistry.where(project_id: project.id).delete_all
