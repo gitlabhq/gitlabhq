@@ -8,7 +8,7 @@ describe 'Visual tokens', js: true, feature: true do
   let!(:user_rock) { create(:user, name: 'The Rock', username: 'rock') }
   let!(:milestone_nine) { create(:milestone, title: '9.0', project: project) }
   let!(:milestone_ten) { create(:milestone, title: '10.0', project: project) }
-  let!(:label) { create(:label, project: project, title: 'abc') }
+  let!(:label) { create(:label, project: project, title: 'enhancement') }
   let!(:cc_label) { create(:label, project: project, title: 'Community Contribution') }
 
   let(:filtered_search) { find('.filtered-search') }

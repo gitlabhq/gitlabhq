@@ -147,30 +147,31 @@ class FilteredSearchVisualTokens {
   static editToken(token) {
     const input = document.querySelector('.filtered-search');
 
-    FilteredSearchVisualTokens.tokenizeInput();
+    input.value = 'enhancement';
+    // FilteredSearchVisualTokens.tokenizeInput();
 
-    // Replace token with input field
-    const tokenContainer = token.parentElement;
-    const inputLi = input.parentElement;
-    tokenContainer.replaceChild(inputLi, token);
+    // // Replace token with input field
+    // const tokenContainer = token.parentElement;
+    // const inputLi = input.parentElement;
+    // tokenContainer.replaceChild(inputLi, token);
 
-    const name = token.querySelector('.name');
-    const value = token.querySelector('.value');
+    // const name = token.querySelector('.name');
+    // const value = token.querySelector('.value');
 
-    if (token.classList.contains('filtered-search-token')) {
-      FilteredSearchVisualTokens.addFilterVisualToken(name.innerText);
-      input.value = value.innerText;
-    } else {
-      // token is a search term
-      input.value = name.innerText;
-    }
+    // if (token.classList.contains('filtered-search-token')) {
+    //   FilteredSearchVisualTokens.addFilterVisualToken(name.innerText);
+    //   input.value = value.innerText;
+    // } else {
+    //   // token is a search term
+    //   input.value = name.innerText;
+    // }
 
-    // Opens dropdown
-    const inputEvent = new Event('input');
-    input.dispatchEvent(inputEvent);
+    // // Opens dropdown
+    // const inputEvent = new Event('input');
+    // input.dispatchEvent(inputEvent);
 
-    // Adds cursor to input
-    input.focus();
+    // // Adds cursor to input
+    // input.focus();
   }
 
   static moveInputToTheRight() {
