@@ -6,7 +6,9 @@ describe API::V3::Services, api: true  do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
 
-  Service.available_services_names.each do |service|
+  available_services = Service.available_services_names
+  available_services.delete('prometheus')
+  available_services.each do |service|
     describe "DELETE /projects/:id/services/#{service.dasherize}" do
       include_context service
 
