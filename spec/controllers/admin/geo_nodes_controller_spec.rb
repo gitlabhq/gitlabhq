@@ -131,10 +131,13 @@ describe Admin::GeoNodesController do
     context 'with add-on license' do
       before do
         allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)
-        post :toggle, id: geo_node
       end
 
       context 'with a primary node' do
+        before do
+          post :toggle, id: geo_node
+        end
+
         let(:geo_node) { create(:geo_node, :primary, enabled: true) }
 
         it 'does not disable the node' do
@@ -153,16 +156,41 @@ describe Admin::GeoNodesController do
       context 'with a secondary node' do
         let(:geo_node) { create(:geo_node, host: 'example.com', port: 80, enabled: true) }
 
-        it 'disables the node' do
-          expect(geo_node.reload).not_to be_enabled
+        context 'when succeed' do
+          before do
+            post :toggle, id: geo_node
+          end
+
+          it 'disables the node' do
+            expect(geo_node.reload).not_to be_enabled
+          end
+
+          it 'displays a flash message' do
+            expect(controller).to set_flash.now[:notice].to('Node http://example.com/ was successfully disabled.')
+          end
+
+          it 'redirects to the geo nodes page' do
+            expect(response).to redirect_to(admin_geo_nodes_path)
+          end
         end
 
-        it 'displays a flash message' do
-          expect(controller).to set_flash.now[:notice].to('Node http://example.com/ was successfully disabled.')
-        end
+        context 'when fail' do
+          before do
+            allow_any_instance_of(GeoNode).to receive(:toggle!).and_return(false)
+            post :toggle, id: geo_node
+          end
 
-        it 'redirects to the geo nodes page' do
-          expect(response).to redirect_to(admin_geo_nodes_path)
+          it 'does not disable the node' do
+            expect(geo_node.reload).to be_enabled
+          end
+
+          it 'displays a flash message' do
+            expect(controller).to set_flash.now[:alert].to('There was a problem disabling node http://example.com/.')
+          end
+
+          it 'redirects to the geo nodes page' do
+            expect(response).to redirect_to(admin_geo_nodes_path)
+          end
         end
       end
     end
