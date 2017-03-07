@@ -94,7 +94,7 @@ class CsvBuilder
 
       @rows_written += 1
 
-      if until_block.call
+      if yield
         @truncated = true
         break
       end
