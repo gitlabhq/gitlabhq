@@ -12,7 +12,7 @@ module Geo
         begin
           response = self.class.get(status_url, headers: headers)
 
-          if response.success? || response.redirection?
+          if response.success?
             response.parsed_response.values_at(*KEYS)
           else
             ["Could not connect to Geo node - HTTP Status Code: #{response.code}"]
