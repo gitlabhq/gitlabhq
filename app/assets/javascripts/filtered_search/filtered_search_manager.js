@@ -106,7 +106,7 @@
 
         if (!activeElements.length) {
           // Prevent droplab from opening dropdown
-          this.dropdownManager.destroyDroplab();
+          //this.dropdownManager.destroyDroplab();
 
           this.search();
         }
@@ -345,7 +345,11 @@
 
       const parameterizedUrl = `?scope=all&utf8=✓&${paths.join('&')}`;
 
-      gl.utils.visitUrl(parameterizedUrl);
+      if (this.updateObject) {
+        this.updateObject(parameterizedUrl);
+      } else {
+        gl.utils.visitUrl(parameterizedUrl);
+      }
     }
 
     getUsernameParams() {

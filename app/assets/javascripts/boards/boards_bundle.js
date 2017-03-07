@@ -27,8 +27,6 @@ $(() => {
   const Store = gl.issueBoards.BoardsStore;
   const ModalStore = gl.issueBoards.ModalStore;
 
-  new FilteredSearchBoards();
-
   window.gl = window.gl || {};
 
   if (gl.IssueBoardsApp) {
@@ -62,6 +60,8 @@ $(() => {
     },
     created () {
       gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
+
+      new FilteredSearchBoards(Store.filter);
     },
     mounted () {
       Store.disabled = this.disabled;

@@ -10,7 +10,7 @@ class List {
     this.title = obj.title;
     this.type = obj.list_type;
     this.preset = ['done', 'blank'].indexOf(this.type) > -1;
-    this.filters = gl.issueBoards.BoardsStore.state.filters;
+    this.filterPath = gl.issueBoards.BoardsStore.filter.path;
     this.page = 1;
     this.loading = true;
     this.loadingMore = false;
@@ -65,12 +65,24 @@ class List {
   }
 
   getIssues (emptyIssues = true) {
-    const filters = this.filters;
     const data = { page: this.page };
+    gl.issueBoards.BoardsStore.filter.path.split('&').forEach((filterParam) => {
+      const paramSplit = filterParam.split('=');
+      const paramKeyNormalized = paramSplit[0].replace('[]', '');
+      const isArray = paramSplit[0].indexOf('[]');
 
-    Object.keys(filters).forEach((key) => { data[key] = filters[key]; });
+      if (isArray >= 0) {
+        if (!data[paramKeyNormalized]) {
+          data[paramKeyNormalized] = [];
+        }
 
-    if (this.label) {
+        data[paramKeyNormalized].push(paramSplit[1]);
+      } else {
+        data[paramKeyNormalized] = paramSplit[1];
+      }
+    });
+
+    if (this.label && data.label_name) {
       data.label_name = data.label_name.filter(label => label !== this.label.title);
     }
 

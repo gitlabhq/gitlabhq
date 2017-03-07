@@ -28,16 +28,16 @@ require('./board_list');
     data () {
       return {
         detailIssue: Store.detail,
-        filters: Store.state.filters,
+        filter: Store.filter,
       };
     },
     watch: {
-      filters: {
-        handler () {
+      filter: {
+        handler() {
           this.list.page = 1;
           this.list.getIssues(true);
         },
-        deep: true
+        deep: true,
       },
       detailIssue: {
         handler () {
