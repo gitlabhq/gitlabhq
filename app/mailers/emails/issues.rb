@@ -49,10 +49,11 @@ module Emails
       mail_answer_thread(issue, issue_thread_options(updated_by_user.id, recipient.id))
     end
 
-    def issues_csv_email(user, project, csv_data, issues_count, truncated = false)
+    def issues_csv_email(user, project, csv_data, export_status)
       @project = project
-      @issues_count = issues_count
-      @truncated = truncated
+      @issues_count = export_status.fetch(:rows_expected)
+      @written_count = export_status.fetch(:rows_written)
+      @truncated = export_status.fetch(:truncated)
 
       filename = "#{project.full_path.parameterize}_issues_#{Date.today.iso8601}.csv"
       attachments[filename] = { content: csv_data, mime_type: 'text/csv' }

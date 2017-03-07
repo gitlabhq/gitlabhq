@@ -16,7 +16,7 @@ module Issues
     end
 
     def email(user, project)
-      Notify.issues_csv_email(user, project, csv_data, @issues.count, csv_builder.truncated?).deliver_now
+      Notify.issues_csv_email(user, project, csv_data, csv_builder.status).deliver_now
     end
 
     def csv_builder

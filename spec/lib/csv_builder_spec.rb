@@ -2,12 +2,14 @@ require 'spec_helper'
 
 describe CsvBuilder, lib: true do
   let(:object) { double(question: :answer) }
-  let(:fake_relation) { [object] }
+  let(:fake_relation) { FakeRelation.new([object]) }
   let(:subject) { CsvBuilder.new(fake_relation, 'Q & A' => :question, 'Reversed' => -> (o) { o.question.to_s.reverse }) }
   let(:csv_data) { subject.render }
 
-  before do
-    allow(fake_relation).to receive(:find_each).and_yield(object)
+  class FakeRelation < Array
+    def find_each(&block)
+      each(&block)
+    end
   end
 
   it 'generates a csv' do
@@ -20,23 +22,46 @@ describe CsvBuilder, lib: true do
     subject.render
   end
 
+  it 'counts the number of rows' do
+    subject.render
+
+    expect(subject.rows_written).to eq 1
+  end
+
+  describe 'rows_expected' do
+    it 'uses rows_written if CSV rendered successfully' do
+      subject.render
+
+      expect(fake_relation).not_to receive(:count)
+      expect(subject.rows_expected).to eq 1
+    end
+
+    it 'falls back to calling .count before rendering begins' do
+      expect(subject.rows_expected).to eq 1
+    end
+  end
+
   describe 'truncation' do
     let(:big_object) { double(question: 'Long' * 1024) }
     let(:row_size) { big_object.question.length * 2 }
+    let(:fake_relation) { FakeRelation.new([big_object, big_object, big_object]) }
 
-    before do
-      allow(fake_relation).to receive(:find_each).and_yield(big_object)
-                                                 .and_yield(big_object)
-                                                 .and_yield(big_object)
-    end
-
-    it 'after given number of bytes' do
+    it 'occurs after given number of bytes' do
       expect(subject.render(row_size * 2).length).to be_between(row_size * 2, row_size * 3)
       expect(subject).to be_truncated
+      expect(subject.rows_written).to eq 2
     end
 
     it 'is ignored by default' do
       expect(subject.render.length).to be > row_size * 3
+      expect(subject.rows_written).to eq 3
+    end
+
+    it 'causes rows_expected to fall back to .count' do
+      subject.render(0)
+
+      expect(fake_relation).to receive(:count).and_call_original
+      expect(subject.rows_expected).to eq 3
     end
   end
 

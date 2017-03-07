@@ -23,6 +23,7 @@ class CsvBuilder
     @header_to_value_hash = header_to_value_hash
     @collection = collection
     @truncated = false
+    @rows_written = 0
   end
 
   # Renders the csv to a string
@@ -43,6 +44,26 @@ class CsvBuilder
 
   def truncated?
     @truncated
+  end
+
+  def rows_written
+    @rows_written
+  end
+
+  def rows_expected
+    if truncated? || rows_written == 0
+      @collection.count
+    else
+      rows_written
+    end
+  end
+
+  def status
+    {
+      truncated: truncated?,
+      rows_written: rows_written,
+      rows_expected: rows_expected
+    }
   end
 
   private
@@ -70,6 +91,8 @@ class CsvBuilder
 
     @collection.find_each do |object|
       csv << row(object)
+
+      @rows_written += 1
 
       if until_block.call
         @truncated = true
