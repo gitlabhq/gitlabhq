@@ -35,9 +35,8 @@ module PreferencesHelper
 
   def project_view_choices
     [
-      ['Readme', :readme],
-      ['Activity view', :activity],
-      ['Files and Readme (default)', :files]
+      ['Files and Readme (default)', :files],
+      ['Activity view', :activity]
     ]
   end
 
