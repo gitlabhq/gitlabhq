@@ -12,6 +12,7 @@ See the documentation below for details on how to configure these services.
 - [SAML](saml.md) Configure GitLab as a SAML 2.0 Service Provider
 - [CAS](cas.md) Configure GitLab to sign in using CAS
 - [OAuth2 provider](oauth_provider.md) OAuth2 application creation
+- [OpenID Connect](openid_connect_provider.md) Use GitLab as an identity provider
 - [Gmail actions buttons](gmail_action_buttons_for_gitlab.md) Adds GitLab actions to messages
 - [reCAPTCHA](recaptcha.md) Configure GitLab to use Google reCAPTCHA for new users
 - [Akismet](akismet.md) Configure Akismet to stop spam

@@ -87,5 +87,23 @@ describe API::Session, api: true  do
         expect(response).to have_http_status(400)
       end
     end
+
+    context "when user is blocked" do
+      it "returns authentication error" do
+        user.block
+        post api("/session"), email: user.username, password: user.password
+
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context "when user is ldap_blocked" do
+      it "returns authentication error" do
+        user.ldap_block
+        post api("/session"), email: user.username, password: user.password
+
+        expect(response).to have_http_status(401)
+      end
+    end
   end
 end
