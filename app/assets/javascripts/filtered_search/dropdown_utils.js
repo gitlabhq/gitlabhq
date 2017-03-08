@@ -79,6 +79,7 @@
       return dataValue !== null;
     }
 
+    // Determines the full search query (visual tokens + input)
     static getSearchQuery() {
       const tokensContainer = document.querySelector('.tokens-container');
       const values = [];
