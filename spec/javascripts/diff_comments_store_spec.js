@@ -7,7 +7,16 @@ require('~/diff_notes/stores/comments');
 
 (() => {
   function createDiscussion(noteId = 1, resolved = true) {
-    CommentsStore.create('a', noteId, true, resolved, 'test');
+    CommentsStore.create({
+      discussionId: 'a',
+      noteId,
+      canResolve: true,
+      resolved,
+      resolvedBy: 'test',
+      authorName: 'test',
+      authorAvatar: 'test',
+      noteTruncated: 'test...',
+    });
   }
 
   beforeEach(() => {

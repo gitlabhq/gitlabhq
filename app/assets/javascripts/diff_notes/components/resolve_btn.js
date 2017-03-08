@@ -11,7 +11,10 @@ const Vue = require('vue');
       discussionId: String,
       resolved: Boolean,
       canResolve: Boolean,
-      resolvedBy: String
+      resolvedBy: String,
+      authorName: String,
+      authorAvatar: String,
+      noteTruncated: String,
     },
     data: function () {
       return {
@@ -98,7 +101,16 @@ const Vue = require('vue');
       CommentsStore.delete(this.discussionId, this.noteId);
     },
     created: function () {
-      CommentsStore.create(this.discussionId, this.noteId, this.canResolve, this.resolved, this.resolvedBy);
+      CommentsStore.create({
+        discussionId: this.discussionId,
+        noteId: this.noteId,
+        canResolve: this.canResolve,
+        resolved: this.resolved,
+        resolvedBy: this.resolvedBy,
+        authorName: this.authorName,
+        authorAvatar: this.authorAvatar,
+        noteTruncated: this.noteTruncated,
+      });
 
       this.note = this.discussion.getNote(this.noteId);
     }
