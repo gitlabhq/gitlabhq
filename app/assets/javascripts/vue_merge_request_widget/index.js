@@ -23,7 +23,7 @@ const mrWidgetOptions = () => ({
     const service = new MRWidgetService(store);
     return {
       mr: store,
-      service
+      service,
     };
   },
   computed: {
@@ -47,11 +47,7 @@ const mrWidgetOptions = () => ({
   },
   template: `
     <div class="mr-state-widget">
-      <mr-widget-header
-        :targetBranch="mr.targetBranch"
-        :sourceBranch="mr.sourceBranch"
-      />
-
+      <mr-widget-header :mr="mr" />
       <component :is="componentName" :mr="mr" :service="service"></component>
     </div>
   `,

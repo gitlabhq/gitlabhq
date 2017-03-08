@@ -10,7 +10,7 @@ export default class MergeRequestStore {
 
     this.targetBranch = data.target_branch;
     this.sourceBranch = data.source_branch;
-    this.mergeStatus  = data.merge_status;
+    this.mergeStatus = data.merge_status;
     this.sha = data.diff_head_sha;
     this.commitMessage = data.merge_commit_message;
     this.commitMessageWithDescription = data.merge_commit_message_with_description;

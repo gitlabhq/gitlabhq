@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 export default class MRWidgetService {
   constructor(mr) {
     this.mergeService = Vue.resource(mr.mergePath);
