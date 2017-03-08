@@ -33,10 +33,10 @@ class FilteredSearchSpecHelper {
     `;
   }
 
-  static createInputHTML(placeholder = '') {
+  static createInputHTML(placeholder = '', value = '') {
     return `
       <li class="input-token">
-        <input type='text' class='filtered-search' placeholder='${placeholder}' />
+        <input type='text' class='filtered-search' placeholder='${placeholder}' value='${value}'/>
       </li>
     `;
   }
