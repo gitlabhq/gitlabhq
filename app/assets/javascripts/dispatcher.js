@@ -5,7 +5,6 @@ import PrometheusGraph from './monitoring/prometheus_graph'; // TODO: Maybe Make
 /* global ShortcutsNavigation */
 /* global Build */
 /* global Issuable */
-/* global Issue */
 /* global ShortcutsIssuable */
 /* global ZenMode */
 /* global Milestone */
@@ -35,6 +34,7 @@ import PrometheusGraph from './monitoring/prometheus_graph'; // TODO: Maybe Make
 /* global ProjectShow */
 /* global Labels */
 /* global Shortcuts */
+import Issue from './issue';
 
 import BindInOut from './behaviors/bind_in_out';
 import GroupsList from './groups_list';
