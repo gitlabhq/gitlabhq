@@ -31,7 +31,7 @@ module Gitlab
     end
 
     def emoji_unicode_version(name)
-      @emoji_unicode_versions_by_name ||= JSON.parse(File.read(Rails.root.join('node_modules', 'emoji-unicode-version', 'emoji-unicode-version-map.json')))
+      @emoji_unicode_versions_by_name ||= JSON.parse(File.read(Rails.root.join('fixtures', 'emojis', 'emoji-unicode-version-map.json')))
       @emoji_unicode_versions_by_name[name]
     end
 
