@@ -15,7 +15,7 @@ Parameters:
 
 - `id` (required) - The ID of a project
 - `path` (optional) - The path inside repository. Used to get contend of subdirectories
-- `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
+- `ref` (optional) - The name of a repository branch or tag or if not given the default branch
 - `recursive` (optional) - Boolean value used to get a recursive tree (false by default)
 
 ```json
@@ -72,10 +72,11 @@ Parameters:
 ]
 ```
 
-## Raw file content
+## Get a blob from repository
 
-Get the raw file contents for a file by commit SHA and path. This endpoint can
-be accessed without authentication if the repository is publicly accessible.
+Allows you to receive information about blob in repository like size and
+content. Note that blob content is Base64 encoded. This endpoint can be accessed
+without authentication if the repository is publicly accessible.
 
 ```
 GET /projects/:id/repository/blobs/:sha
@@ -85,7 +86,6 @@ Parameters:
 
 - `id` (required) - The ID of a project
 - `sha` (required) - The commit or branch name
-- `filepath` (required) - The path the file
 
 ## Raw blob content
 
@@ -93,7 +93,7 @@ Get the raw file contents for a blob by blob SHA. This endpoint can be accessed
 without authentication if the repository is publicly accessible.
 
 ```
-GET /projects/:id/repository/raw_blobs/:sha
+GET /projects/:id/repository/blobs/:sha/raw
 ```
 
 Parameters:

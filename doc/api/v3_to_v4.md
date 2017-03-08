@@ -75,4 +75,8 @@ Below are the changes made between V3 and V4.
 - API uses issue `IID`s (internal ID, as in the web UI) rather than `ID`s. This affects the issues, award emoji, todos, and time tracking APIs. [!9530](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9530)
 - Change initial page from `0` to `1` on `GET projects/:id/repository/commits` (like on the rest of the API) [!9679] (https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9679)
 - Return correct `Link` header data for `GET projects/:id/repository/commits` [!9679] (https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9679)
-
+- Update endpoints for repository files [!9637](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9637)
+  - Moved `/projects/:id/repository/files?file_path=:file_path` to `/projects/:id/repository/files/:file_path` (`:file_path` should be URL-encoded)
+  - `/projects/:id/repository/blobs/:sha` now returns JSON attributes for the blob identified by `:sha`, instead of finding the commit identified by `:sha` and returning the raw content of the blob in that commit identified by the required `?filepath=:filepath`
+  - Moved `/projects/:id/repository/commits/:sha/blob?file_path=:file_path`  and `/projects/:id/repository/blobs/:sha?file_path=:file_path`  to `/projects/:id/repository/files/:file_path/raw?ref=:sha`
+  - `/projects/:id/repository/tree` parameter `ref_name` has been renamed to `ref` for consistency
