@@ -16,7 +16,7 @@ module LicenseHelper
   # HTML links.
   #
   def license_message(signed_in: signed_in?, is_admin: (current_user && current_user.is_admin?), in_html: true)
-    @license_message ||=
+    @license_message =
       if License.current
         yes_license_message(signed_in, is_admin)
       else
