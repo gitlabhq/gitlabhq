@@ -600,6 +600,7 @@ ActiveRecord::Schema.define(version: 20170308015651) do
     t.text "title_html"
     t.text "description_html"
     t.integer "time_estimate"
+    t.integer "relative_position"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -611,6 +612,7 @@ ActiveRecord::Schema.define(version: 20170308015651) do
   add_index "issues", ["due_date"], name: "index_issues_on_due_date", using: :btree
   add_index "issues", ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
   add_index "issues", ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true, using: :btree
+  add_index "issues", ["relative_position"], name: "index_issues_on_relative_position", using: :btree
   add_index "issues", ["state"], name: "index_issues_on_state", using: :btree
   add_index "issues", ["title"], name: "index_issues_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
 

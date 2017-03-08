@@ -110,9 +110,20 @@ class List {
   }
 
   addIssue (issue, listFrom, newIndex) {
+    let moveBeforeIid = null;
+    let moveAfterIid = null;
+
     if (!this.findIssue(issue.id)) {
       if (newIndex !== undefined) {
         this.issues.splice(newIndex, 0, issue);
+
+        if (this.issues[newIndex - 1]) {
+          moveBeforeIid = this.issues[newIndex - 1].id;
+        }
+
+        if (this.issues[newIndex + 1]) {
+          moveAfterIid = this.issues[newIndex + 1].id;
+        }
       } else {
         this.issues.push(issue);
       }
@@ -123,13 +134,21 @@ class List {
 
       if (listFrom) {
         this.issuesSize += 1;
-        this.updateIssueLabel(issue, listFrom);
+
+        this.updateIssueLabel(issue, listFrom, moveBeforeIid, moveAfterIid);
       }
     }
   }
 
-  updateIssueLabel(issue, listFrom) {
-    gl.boardService.moveIssue(issue.id, listFrom.id, this.id)
+  moveIssue (issue, oldIndex, newIndex, moveBeforeIid, moveAfterIid) {
+    this.issues.splice(oldIndex, 1);
+    this.issues.splice(newIndex, 0, issue);
+
+    gl.boardService.moveIssue(issue.id, null, null, moveBeforeIid, moveAfterIid);
+  }
+
+  updateIssueLabel(issue, listFrom, moveBeforeIid, moveAfterIid) {
+    gl.boardService.moveIssue(issue.id, listFrom.id, this.id, moveBeforeIid, moveAfterIid)
       .then(() => {
         listFrom.getIssues(false);
       });
