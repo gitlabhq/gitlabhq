@@ -1,8 +1,13 @@
+import mrWidgetMergeHelp from '../../components/mr_widget_merge_help';
+
 export default {
   name: 'MRWidgetReadyToMerge',
   props: {
     mr: { type: Object, required: true, default: () => ({}) },
     service: { type: Object, required: true, default: () => ({}) },
+  },
+  components: {
+    'mr-widget-merge-help': mrWidgetMergeHelp,
   },
   data() {
     return {
@@ -69,6 +74,7 @@ export default {
           </div>
         </div>
       </div>
+      <mr-widget-merge-help />
     </div>
   `,
 };
