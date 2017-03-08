@@ -41,7 +41,7 @@ module MergeRequests
       )
 
       run_git_command(
-        %W(commit --no-verify -m #{merge_request.title}),
+        %W(commit --no-verify --message #{merge_request.title}),
         tree_path,
         git_env.merge('GIT_COMMITTER_NAME' => current_user.name,
                       'GIT_COMMITTER_EMAIL' => current_user.email,
