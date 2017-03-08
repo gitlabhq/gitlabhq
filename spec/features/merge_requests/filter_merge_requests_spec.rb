@@ -24,6 +24,11 @@ describe 'Filter merge requests', feature: true do
   describe 'for assignee from mr#index' do
     let(:search_query) { "assignee:@#{user.username}" }
 
+    def expect_assignee_visual_tokens
+      expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+      expect_filtered_search_input_empty
+    end
+
     before do
       input_filtered_search(search_query)
 
@@ -32,25 +37,30 @@ describe 'Filter merge requests', feature: true do
 
     context 'assignee', js: true do
       it 'updates to current user' do
-        expect_filtered_search_input(search_query)
+        expect_assignee_visual_tokens()
       end
 
       it 'does not change when closed link is clicked' do
         find('.issues-state-filters a', text: "Closed").click
 
-        expect_filtered_search_input(search_query)
+        expect_assignee_visual_tokens()
       end
 
       it 'does not change when all link is clicked' do
         find('.issues-state-filters a', text: "All").click
 
-        expect_filtered_search_input(search_query)
+        expect_assignee_visual_tokens()
       end
     end
   end
 
   describe 'for milestone from mr#index' do
-    let(:search_query) { "milestone:%#{milestone.title}" }
+    let(:search_query) { "milestone:%\"#{milestone.title}\"" }
+
+    def expect_milestone_visual_tokens
+      expect_tokens([{ name: 'milestone', value: "%\"#{milestone.title}\"" }])
+      expect_filtered_search_input_empty
+    end
 
     before do
       input_filtered_search(search_query)
@@ -60,19 +70,19 @@ describe 'Filter merge requests', feature: true do
 
     context 'milestone', js: true do
       it 'updates to current milestone' do
-        expect_filtered_search_input(search_query)
+        expect_milestone_visual_tokens()
       end
 
       it 'does not change when closed link is clicked' do
         find('.issues-state-filters a', text: "Closed").click
 
-        expect_filtered_search_input(search_query)
+        expect_milestone_visual_tokens()
       end
 
       it 'does not change when all link is clicked' do
         find('.issues-state-filters a', text: "All").click
 
-        expect_filtered_search_input(search_query)
+        expect_milestone_visual_tokens()
       end
     end
   end
@@ -82,35 +92,44 @@ describe 'Filter merge requests', feature: true do
       input_filtered_search('label:none')
 
       expect_mr_list_count(1)
-      expect_filtered_search_input('label:none')
+      expect_tokens([{ name: 'label', value: 'none' }])
+      expect_filtered_search_input_empty
     end
 
     it 'filters by a label' do
       input_filtered_search("label:~#{label.title}")
 
       expect_mr_list_count(0)
-      expect_filtered_search_input("label:~#{label.title}")
+      expect_tokens([{ name: 'label', value: "~#{label.title}" }])
+      expect_filtered_search_input_empty
     end
 
     it "filters by `won't fix` and another label" do
       input_filtered_search("label:~\"#{wontfix.title}\" label:~#{label.title}")
 
       expect_mr_list_count(0)
-      expect_filtered_search_input("label:~\"#{wontfix.title}\" label:~#{label.title}")
+      expect_tokens([
+        { name: 'label', value: "~\"#{wontfix.title}\"" },
+        { name: 'label', value: "~#{label.title}" }
+      ])
+      expect_filtered_search_input_empty
     end
 
     it "filters by `won't fix` label followed by another label after page load" do
       input_filtered_search("label:~\"#{wontfix.title}\"")
 
       expect_mr_list_count(0)
-      expect_filtered_search_input("label:~\"#{wontfix.title}\"")
+      expect_tokens([{ name: 'label', value: "~\"#{wontfix.title}\"" }])
+      expect_filtered_search_input_empty
 
-      input_filtered_search_keys(" label:~#{label.title}")
-
-      expect_filtered_search_input("label:~\"#{wontfix.title}\" label:~#{label.title}")
+      input_filtered_search_keys("label:~#{label.title}")
 
       expect_mr_list_count(0)
-      expect_filtered_search_input("label:~\"#{wontfix.title}\" label:~#{label.title}")
+      expect_tokens([
+        { name: 'label', value: "~\"#{wontfix.title}\"" },
+        { name: 'label', value: "~#{label.title}" }
+      ])
+      expect_filtered_search_input_empty
     end
   end
 
@@ -121,9 +140,10 @@ describe 'Filter merge requests', feature: true do
       input_filtered_search("assignee:@#{user.username}")
 
       expect_mr_list_count(1)
-      expect_filtered_search_input("assignee:@#{user.username}")
+      expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+      expect_filtered_search_input_empty
 
-      input_filtered_search_keys(" label:~#{label.title}")
+      input_filtered_search_keys("label:~#{label.title} ")
 
       expect_mr_list_count(1)
 
@@ -131,20 +151,28 @@ describe 'Filter merge requests', feature: true do
     end
 
     context 'assignee and label', js: true do
+      def expect_assignee_label_visual_tokens
+        expect_tokens([
+          { name: 'assignee', value: "@#{user.username}" },
+          { name: 'label', value: "~#{label.title}" }
+        ])
+        expect_filtered_search_input_empty
+      end
+
       it 'updates to current assignee and label' do
-        expect_filtered_search_input(search_query)
+        expect_assignee_label_visual_tokens()
       end
 
       it 'does not change when closed link is clicked' do
         find('.issues-state-filters a', text: "Closed").click
 
-        expect_filtered_search_input(search_query)
+        expect_assignee_label_visual_tokens()
       end
 
       it 'does not change when all link is clicked' do
         find('.issues-state-filters a', text: "All").click
 
-        expect_filtered_search_input(search_query)
+        expect_assignee_label_visual_tokens()
       end
     end
   end
@@ -195,6 +223,8 @@ describe 'Filter merge requests', feature: true do
         input_filtered_search_keys(' label:~bug')
 
         expect_mr_list_count(1)
+        expect_tokens([{ name: 'label', value: '~bug' }])
+        expect_filtered_search_input('Bug')
       end
 
       it 'filters by text and milestone' do
@@ -206,6 +236,8 @@ describe 'Filter merge requests', feature: true do
         input_filtered_search_keys(' milestone:%8')
 
         expect_mr_list_count(1)
+        expect_tokens([{ name: 'milestone', value: '%8' }])
+        expect_filtered_search_input('Bug')
       end
 
       it 'filters by text and assignee' do
@@ -217,6 +249,8 @@ describe 'Filter merge requests', feature: true do
         input_filtered_search_keys(" assignee:@#{user.username}")
 
         expect_mr_list_count(1)
+        expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+        expect_filtered_search_input('Bug')
       end
 
       it 'filters by text and author' do
@@ -228,6 +262,8 @@ describe 'Filter merge requests', feature: true do
         input_filtered_search_keys(" author:@#{user.username}")
 
         expect_mr_list_count(1)
+        expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+        expect_filtered_search_input('Bug')
       end
     end
   end
@@ -266,7 +302,8 @@ describe 'Filter merge requests', feature: true do
     it 'filter by current user' do
       visit namespace_project_merge_requests_path(project.namespace, project, assignee_id: user.id)
 
-      expect_filtered_search_input("assignee:@#{user.username}")
+      expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+      expect_filtered_search_input_empty
     end
 
     it 'filter by new user' do
@@ -275,7 +312,8 @@ describe 'Filter merge requests', feature: true do
 
       visit namespace_project_merge_requests_path(project.namespace, project, assignee_id: new_user.id)
 
-      expect_filtered_search_input("assignee:@#{new_user.username}")
+      expect_tokens([{ name: 'assignee', value: "@#{new_user.username}" }])
+      expect_filtered_search_input_empty
     end
   end
 
@@ -283,7 +321,8 @@ describe 'Filter merge requests', feature: true do
     it 'filter by current user' do
       visit namespace_project_merge_requests_path(project.namespace, project, author_id: user.id)
 
-      expect_filtered_search_input("author:@#{user.username}")
+      expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+      expect_filtered_search_input_empty
     end
 
     it 'filter by new user' do
@@ -292,7 +331,8 @@ describe 'Filter merge requests', feature: true do
 
       visit namespace_project_merge_requests_path(project.namespace, project, author_id: new_user.id)
 
-      expect_filtered_search_input("author:@#{new_user.username}")
+      expect_tokens([{ name: 'author', value: "@#{new_user.username}" }])
+      expect_filtered_search_input_empty
     end
   end
 end
