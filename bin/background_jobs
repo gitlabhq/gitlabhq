@@ -33,7 +33,7 @@ restart()
 
 start_no_deamonize()
 {
-  start_sidekiq >> $sidekiq_logfile 2>&1
+  start_sidekiq -L $sidekiq_logfile >> $sidekiq_logfile 2>&1
 }
 
 start_sidekiq()
