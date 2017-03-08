@@ -1,7 +1,7 @@
 class Projects::BuildsController < Projects::ApplicationController
   before_action :build, except: [:index, :cancel_all]
   before_action :authorize_read_build!, except: [:cancel, :cancel_all, :retry, :play]
-  before_action :authorize_update_build!, except: [:index, :show, :status, :raw]
+  before_action :authorize_update_build!, except: [:index, :show, :status, :raw, :trace]
   layout 'project'
 
   def index
