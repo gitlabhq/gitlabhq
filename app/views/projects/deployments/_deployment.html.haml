@@ -17,6 +17,6 @@
     #{time_ago_with_tooltip(deployment.created_at)}
 
   %td.hidden-xs
-    .pull-right
+    .pull-right.btn-group
       = render 'projects/deployments/actions', deployment: deployment
       = render 'projects/deployments/rollback', deployment: deployment
