@@ -9,4 +9,5 @@ export default {
   nothingToMerge: 'mr-widget-nothing-to-merge',
   notAllowedToMerge: 'mr-widget-not-allowed',
   archived: 'mr-widget-archived',
+  checking: 'mr-widget-checking',
 };

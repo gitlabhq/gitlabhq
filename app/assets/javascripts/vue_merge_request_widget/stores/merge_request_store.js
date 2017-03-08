@@ -10,6 +10,7 @@ export default class MergeRequestStore {
 
     this.targetBranch = data.target_branch;
     this.sourceBranch = data.source_branch;
+    this.mergeStatus  = data.merge_status;
     this.sha = data.diff_head_sha;
     this.commitMessage = data.merge_commit_message;
     this.commitMessageWithDescription = data.merge_commit_message_with_description;
@@ -58,6 +59,8 @@ export default class MergeRequestStore {
         this.state = 'notAllowedToMerge';
       } else if (this.canBeMerged) {
         this.state = 'readyToMerge';
+      } else if (this.mergeStatus === 'unchecked') {
+        this.state = 'checking';
       }
     } else {
       switch (data.state) {
