@@ -46,7 +46,7 @@ module Ci
     end
 
     def has_warnings?
-      if @warnings.is_a?(Fixnum)
+      if @warnings.is_a?(Integer)
         @warnings > 0
       else
         statuses.latest.failed_but_allowed.any?
