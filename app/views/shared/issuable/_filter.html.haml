@@ -36,7 +36,9 @@
         .pull-right
           - if boards_page
             #js-boards-search.issue-boards-search
-              %button.focus-mode-button.js-focus-mode-button
+              %button.focus-mode-button.js-focus-mode-button{ type: "button", "aria-label" => "Toggle focus mode" }
+                = icon("expand")
+                = icon("compress")
               %input.pull-left.form-control{ type: "search", placeholder: "Filter by name...", "v-model" => "filters.search", "debounce" => "250" }
               - if can?(current_user, :admin_list, @project)
                 #js-add-issues-btn.pull-right.prepend-left-10

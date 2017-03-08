@@ -25,6 +25,7 @@ $(() => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
   const ModalStore = gl.issueBoards.ModalStore;
+  const issueBoardsContent = document.querySelector('.js-focus-mode-board');
 
   window.gl = window.gl || {};
 
@@ -148,9 +149,9 @@ $(() => {
       </button>
     `,
   });
-});
 
-document.querySelector('.js-focus-mode-button').addEventListener('click', function(e) {
-  e.preventDefault();
-  document.querySelector('.js-focus-mode-board').classList.toggle('focused');
+  document.querySelector('.js-focus-mode-button').addEventListener('click', (e) => {
+    e.preventDefault();
+    issueBoardsContent.classList.toggle('is-focused');
+  });
 });

@@ -55,7 +55,6 @@
   color: $gl-text-color-secondary;
   position: absolute;
   margin-left: -38px;
-  font: normal normal normal 17px/1 FontAwesome;
   background: none;
   border: 0;
   margin-top: 6px;
@@ -67,25 +66,31 @@
     color: $filter-value-text-color;
   }
 
-  &::before {
-    content: "\f065";
+  .fa-compress {
+    display: none;
   }
 }
 
-.issue-boards-content.focused {
+.issue-boards-content.is-focused {
   position: fixed;
-  width: calc(100vw - 16px);
+  width: 100vw;
   height: 100vh;
   top: 0;
-  background: white;
+  background: $white-light;
   z-index: 100000;
 
   .boards-list {
     height: calc(100vh - 50px);
   }
 
-  .focus-mode-button::before {
-    content: "\f066";
+  .focus-mode-button {
+    .fa-compress {
+      display: block;
+    }
+
+    .fa-expand {
+      display: none;
+    }
   }
 }
 
