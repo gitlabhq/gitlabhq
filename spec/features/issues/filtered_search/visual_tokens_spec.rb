@@ -242,6 +242,23 @@ describe 'Visual tokens', js: true, feature: true do
     end
   end
 
+  describe 'editing a search term while editing another filter token' do
+    before do
+      input_filtered_search('author assignee:', submit: false)
+      first('.tokens-container .filtered-search-term').double_click
+    end
+
+    it 'opens hint dropdown' do
+      expect(page).to have_css('#js-dropdown-hint', visible: true)
+    end
+
+    it 'opens author dropdown' do
+      find('#js-dropdown-hint .filter-dropdown .filter-dropdown-item', text: 'author').click
+
+      expect(page).to have_css('#js-dropdown-author', visible: true)
+    end
+  end
+
   describe 'add new token after editing existing token' do
     before do
       input_filtered_search('author:@root assignee:none', submit: false)
@@ -317,6 +334,19 @@ describe 'Visual tokens', js: true, feature: true do
 
       expect_filtered_search_input_empty
       expect(token.find('.name').text).to eq('Author')
+    end
+  end
+
+  describe 'search using incomplete visual tokens' do
+    before do
+      input_filtered_search('author:@root assignee:none', extra_space: false)
+    end
+
+    it 'tokenizes the search term to complete visual token' do
+      expect_tokens([
+        { name: 'author', value: '@root' },
+        { name: 'assignee', value: 'none' }
+      ])
     end
   end
 end
