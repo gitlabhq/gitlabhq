@@ -1,8 +1,10 @@
 # V3 to V4 version
 
-Our V4 API version is currently available as *Beta*! It means that V3
-will still be supported and remain unchanged for now, but be aware that the following
-changes are in V4:
+Since GitLab 9.0, API V4 is the preferred version to be used.
+
+V3 will remain working until at least GitLab 9.3. The V3 API documentation is still [available](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-16-stable/doc/api/README.md).
+
+Below are the changes made between V3 and V4.
 
 ### 8.17
 
