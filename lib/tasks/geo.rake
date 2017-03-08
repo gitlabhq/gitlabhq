@@ -34,6 +34,12 @@ namespace :geo do
     ns.tasks.each do |task|
       task.enhance ['geo:config:check', 'geo:config:set'] do
         Rake::Task['geo:config:restore'].invoke
+
+        # Reenable the tasks, otherwise the following tasks are run only once
+        # per invocation of `rake`!
+        Rake::Task['geo:config:check'].reenable
+        Rake::Task['geo:config:set'].reenable
+        Rake::Task['geo:config:restore'].reenable
       end
     end
   end
