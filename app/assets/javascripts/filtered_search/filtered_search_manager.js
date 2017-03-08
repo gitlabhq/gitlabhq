@@ -35,6 +35,7 @@
       this.checkForBackspaceWrapper = this.checkForBackspace.bind(this);
       this.removeSelectedTokenWrapper = this.removeSelectedToken.bind(this);
       this.unselectEditTokensWrapper = this.unselectEditTokens.bind(this);
+      this.editTokenWrapper = this.editToken.bind(this);
       this.tokenChange = this.tokenChange.bind(this);
 
       this.filteredSearchInput.form.addEventListener('submit', this.handleFormSubmit);
@@ -47,7 +48,7 @@
       this.filteredSearchInput.addEventListener('click', this.tokenChange);
       this.filteredSearchInput.addEventListener('keyup', this.tokenChange);
       this.tokensContainer.addEventListener('click', FilteredSearchManager.selectToken);
-      this.tokensContainer.addEventListener('dblclick', FilteredSearchManager.editToken);
+      this.tokensContainer.addEventListener('dblclick', this.editTokenWrapper);
       this.clearSearchButton.addEventListener('click', this.clearSearchWrapper);
       document.addEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
       document.addEventListener('click', this.unselectEditTokensWrapper);
@@ -65,7 +66,7 @@
       this.filteredSearchInput.removeEventListener('click', this.tokenChange);
       this.filteredSearchInput.removeEventListener('keyup', this.tokenChange);
       this.tokensContainer.removeEventListener('click', FilteredSearchManager.selectToken);
-      this.tokensContainer.removeEventListener('dblclick', FilteredSearchManager.editToken);
+      this.tokensContainer.removeEventListener('dblclick', this.editTokenWrapper);
       this.clearSearchButton.removeEventListener('click', this.clearSearchWrapper);
       document.removeEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
       document.removeEventListener('click', this.unselectEditTokensWrapper);
@@ -134,11 +135,12 @@
       }
     }
 
-    static editToken(e) {
+    editToken(e) {
       const token = e.target.closest('.js-visual-token');
 
       if (token) {
         gl.FilteredSearchVisualTokens.editToken(token);
+        this.tokenChange();
       }
     }
 
