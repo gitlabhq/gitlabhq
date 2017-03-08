@@ -51,6 +51,27 @@
   }
 }
 
+.focus-mode-button {
+  color: $gl-text-color-secondary;
+  position: absolute;
+  margin-left: -38px;
+  font: normal normal normal 17px/1 FontAwesome;
+  background: none;
+  border: 0;
+  margin-top: 6px;
+
+  &:hover,
+  &:focus,
+  &:active {
+    outline: none;
+    color: $filter-value-text-color;
+  }
+
+  &::before {
+    content: "\f065";
+  }
+}
+
 .issue-boards-content.focused {
   position: fixed;
   width: calc(100vw - 16px);
@@ -61,6 +82,10 @@
 
   .boards-list {
     height: calc(100vh - 50px);
+  }
+
+  .focus-mode-button::before {
+    content: "\f066";
   }
 }
 

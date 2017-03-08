@@ -150,6 +150,7 @@ $(() => {
   });
 });
 
-document.querySelector('.js-focus-mode-button').addEventListener('click', function() {
+document.querySelector('.js-focus-mode-button').addEventListener('click', function(e) {
+  e.preventDefault();
   document.querySelector('.js-focus-mode-board').classList.toggle('focused');
 });
