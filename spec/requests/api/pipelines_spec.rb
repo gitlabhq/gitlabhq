@@ -24,6 +24,151 @@ describe API::Pipelines do
         expect(json_response.first['id']).to eq pipeline.id
         expect(json_response.first.keys).to contain_exactly(*%w[id sha ref status])
       end
+
+      context 'when parameter is passed' do
+        let(:user1) { create(:user) }
+        let(:user2) { create(:user) }
+        let(:project) { create(:project, :repository) }
+
+        before do
+          create(:ci_pipeline, project: project, user: user1, ref: 'v1.0.0', tag: true)
+          create(:ci_pipeline, project: project, user: user1, status: 'created')
+          create(:ci_pipeline, project: project, user: user1, status: 'pending')
+          create(:ci_pipeline, project: project, user: user1, status: 'running')
+          create(:ci_pipeline, project: project, user: user1, status: 'success')
+          create(:ci_pipeline, project: project, user: user2, status: 'failed')
+          create(:ci_pipeline, project: project, user: user2, status: 'canceled')
+          create(:ci_pipeline, project: project, user: user2, status: 'skipped')
+          create(:ci_pipeline, project: project, user: user2, yaml_errors: 'Syntax error')
+        end
+
+        context 'when scope is passed' do
+          %w[running pending finished branches tags].each do |target|
+            it "returns only scope=#{target} pipelines" do
+              get api("/projects/#{project.id}/pipelines?scope=#{target}", user)
+
+              expect(response).to have_http_status(200)
+              expect(response).to include_pagination_headers
+              expect(json_response.count).to be > 0
+              if target == 'running' || target == 'pending'
+                json_response.each { |r| expect(r['status']).to eq(target) }
+              elsif target == 'finished'
+                json_response.each { |r| expect(r['status']).to be_in(%w[success failed canceled]) }
+              elsif target == 'branches'
+                expect(json_response.last['sha']).to eq(Ci::Pipeline.where(tag: false).last.sha)
+              elsif target == 'tags'
+                expect(json_response.last['sha']).to eq(Ci::Pipeline.where(tag: true).last.sha)
+              end
+            end
+          end
+        end
+
+        context 'when status is passed' do
+          %w[running pending success failed canceled skipped].each do |target|
+            it "returns only status=#{target} pipelines" do
+              get api("/projects/#{project.id}/pipelines?status=#{target}", user)
+
+              expect(response).to have_http_status(200)
+              expect(response).to include_pagination_headers
+              expect(json_response.count).to be > 0
+              json_response.each { |r| expect(r['status']).to eq(target) }
+            end
+          end
+        end
+
+        context 'when ref is passed' do
+          %w[master invalid-ref].each do |target|
+            it "returns only ref=#{target} pipelines" do
+              get api("/projects/#{project.id}/pipelines?ref=#{target}", user)
+
+              expect(response).to have_http_status(200)
+              expect(response).to include_pagination_headers
+              if target == 'master'
+                expect(json_response.count).to be > 0
+                json_response.each { |r| expect(r['ref']).to eq(target) }
+              else
+                expect(json_response.count).to eq(0)
+              end
+            end
+          end
+        end
+
+        context 'when name is passed' do
+          context 'when name exists' do
+            it "returns only pipelines related to the name" do
+              get api("/projects/#{project.id}/pipelines?name=#{user1.name}", user)
+
+              expect(response).to have_http_status(200)
+              expect(response).to include_pagination_headers
+              expect(json_response.first['sha']).to eq(Ci::Pipeline.where(user: user1).order(id: :desc).first.sha)
+            end
+          end
+
+          context 'when name does not exist' do
+            it "returns nothing" do
+              get api("/projects/#{project.id}/pipelines?name=invalid-name", user)
+
+              expect(response).to have_http_status(200)
+              expect(response).to include_pagination_headers
+              expect(json_response.count).to eq(0)
+            end
+          end
+        end
+
+        context 'when username is passed' do
+          context 'when username exists' do
+            it "returns only pipelines related to the username" do
+              get api("/projects/#{project.id}/pipelines?username=#{user1.username}", user)
+
+              expect(response).to have_http_status(200)
+              expect(response).to include_pagination_headers
+              expect(json_response.first['sha']).to eq(Ci::Pipeline.where(user: user1).order(id: :desc).first.sha)
+            end
+          end
+
+          context 'when username does not exist' do
+            it "returns nothing" do
+              get api("/projects/#{project.id}/pipelines?username=invalid-username", user)
+
+              expect(response).to have_http_status(200)
+              expect(response).to include_pagination_headers
+              expect(json_response.count).to eq(0)
+            end
+          end
+        end
+
+        context 'when yaml_errors is passed' do
+          context 'when yaml_errors is true' do
+            it "returns only pipelines related to the yaml_errors" do
+              get api("/projects/#{project.id}/pipelines?yaml_errors=true", user)
+
+              expect(response).to have_http_status(200)
+              expect(response).to include_pagination_headers
+              expect(json_response.first['id']).to eq(Ci::Pipeline.where("yaml_errors IS NOT NULL").order(id: :desc).first.id)
+            end
+          end
+
+          context 'when yaml_errors is false' do
+            it "returns nothing" do
+              get api("/projects/#{project.id}/pipelines?yaml_errors=false", user)
+
+              expect(response).to have_http_status(200)
+              expect(response).to include_pagination_headers
+              expect(json_response.first['id']).to eq(Ci::Pipeline.where("yaml_errors IS NULL").order(id: :desc).first.id)
+              #TODO: Better checking all 
+            end
+          end
+
+          context 'when argument is invalid' do
+            it 'selects all pipelines' do
+              get api("/projects/#{project.id}/pipelines?yaml_errors=invalid-yaml_errors", user)
+
+              #TODO: Eliminate repeting
+              expect(response).to have_http_status(400)
+            end
+          end
+        end
+      end
     end
 
     context 'unauthorized user' do
