@@ -13,7 +13,8 @@
 
 = render "projects/issues/head"
 
-= render 'shared/issuable/search_bar', type: :boards
+.hidden-xs.hidden-sm
+  = render 'shared/issuable/search_bar', type: :boards
 
 #board-app.boards-app{ "v-cloak" => true, data: board_data }
   .boards-list{ ":class" => "{ 'is-compact': detailIssueVisible }" }
