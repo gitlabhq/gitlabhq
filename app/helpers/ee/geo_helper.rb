@@ -20,7 +20,7 @@ module EE
     def toggle_node_button(node)
       btn_class, title, data =
         if node.enabled?
-          ['warning', 'Disable node', { confirm: 'Disabling a node stops the repositories backfilling process. Are you sure?' }]
+          ['warning', 'Disable node', { confirm: 'Disabling a node stops the sync process. Are you sure?' }]
         else
           ['success', 'Enable node']
         end

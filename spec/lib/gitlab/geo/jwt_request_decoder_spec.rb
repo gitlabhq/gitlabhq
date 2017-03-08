@@ -12,6 +12,13 @@ describe Gitlab::Geo::JwtRequestDecoder do
       expect(subject.decode).to eq(data)
     end
 
+    it 'fails to decode when node is disabled' do
+      primary_node.enabled = false
+      primary_node.save
+
+      expect(subject.decode).to be_nil
+    end
+
     it 'fails to decode with wrong key' do
       data = request.headers['Authorization']
 

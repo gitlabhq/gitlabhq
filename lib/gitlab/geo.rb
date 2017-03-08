@@ -22,6 +22,13 @@ module Gitlab
       self.cache_value(:geo_node_enabled) { GeoNode.exists? }
     end
 
+    def self.current_node_enabled?
+      # No caching of the enabled! If we cache it and an admin disables
+      # this node, an active GeoBackfillWorker would keep going for up
+      # to max run time after the node was disabled.
+      Gitlab::Geo.current_node.reload.enabled?
+    end
+
     def self.license_allows?
       ::License.current && ::License.current.add_on?('GitLab_Geo')
     end
@@ -52,6 +59,10 @@ module Gitlab
 
     def self.backfill_job
       Sidekiq::Cron::Job.find('geo_backfill_worker')
+    end
+
+    def self.file_download_job
+      Sidekiq::Cron::Job.find('geo_download_dispatch_worker')
     end
 
     def self.oauth_authentication

@@ -31,6 +31,9 @@
                 %span.help-block
                   Repositories failed: #{node.repositories_failed_count}
               %p
+                %span.help-block
+                  LFS objects synced: #{node.lfs_objects_synced}/#{node.lfs_objects_total} (#{number_to_percentage(node.lfs_objects_synced_in_percentage, precision: 2)})
+              %p
                 %span.help-block= node.healthy? ? 'No Health Problems Detected' : node.health
 
           .pull-right

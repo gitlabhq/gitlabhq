@@ -42,6 +42,9 @@ Sidekiq.configure_server do |config|
   # GitLab Geo: enable backfill job only on secondary nodes
   Gitlab::Geo.backfill_job.disable! unless Gitlab::Geo.secondary?
 
+  # GitLab Geo: enable backfill job only on secondary nodes
+  Gitlab::Geo.file_download_job.disable! unless Gitlab::Geo.secondary?
+
   Gitlab::SidekiqThrottler.execute!
 
   config = ActiveRecord::Base.configurations[Rails.env] ||
