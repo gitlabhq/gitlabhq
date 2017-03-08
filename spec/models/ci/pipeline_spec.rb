@@ -197,6 +197,24 @@ describe Ci::Pipeline, models: true do
           end
         end
       end
+
+      context 'when there is a stage with warnings' do
+        before do
+          create(:commit_status, pipeline: pipeline,
+                                 stage: 'deploy',
+                                 name: 'prod:2',
+                                 stage_idx: 2,
+                                 status: 'failed',
+                                 allow_failure: true)
+        end
+
+        it 'populates stage with correct number of warnings' do
+          deploy_stage = pipeline.stages.third
+
+          expect(deploy_stage).not_to receive(:statuses)
+          expect(deploy_stage).to have_warnings
+        end
+      end
     end
 
     describe '#stages_count' do
