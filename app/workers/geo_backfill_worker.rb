@@ -21,6 +21,11 @@ class GeoBackfillWorker
         project = Project.find(project_id)
         next if synced?(project)
 
+        # We try to obtain a lease here for the entire backfilling process
+        # because backfill the repositories continuously at a controlled rate
+        # instead of hammering the primary node. Initially, we are backfilling
+        # one repo at a time. If we don't obtain the lease here, every 5
+        # minutes all of 100 projects will be synced.
         try_obtain_lease do |lease|
           GeoSingleRepositoryBackfillWorker.new.perform(project_id, lease)
         end
@@ -36,8 +41,6 @@ class GeoBackfillWorker
   private
 
   def find_project_ids
-    return [] if Project.count == Geo::ProjectRegistry.count
-
     Project.where.not(id: Geo::ProjectRegistry.pluck(:project_id))
            .limit(BATCH_SIZE)
            .pluck(:id)
