@@ -102,11 +102,6 @@ production: &base
     # The default is 'shared/cache/archive/' relative to the root of the Rails app.
     # repository_downloads_path: shared/cache/archive/
 
-    ## Geo settings
-    # NOTE: This will only take effect if Geo is enabled
-    # Number of seconds to wait for HTTP response after sending status HTTP GET request to secondary nodes (default: 10)
-    # geo_status_timeout: 10
-
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
   # For documentation on how to set this up, see http://doc.gitlab.com/ce/administration/reply_by_email.html

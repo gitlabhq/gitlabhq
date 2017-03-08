@@ -1,11 +1,12 @@
 module Geo
   class NodeStatusService
+    include Gitlab::CurrentSettings
     include HTTParty
 
     KEYS = %w(health repositories_count repositories_synced_count repositories_failed_count).freeze
 
     # HTTParty timeout
-    default_timeout Gitlab.config.gitlab.geo_status_timeout
+    default_timeout current_application_settings.geo_status_timeout
 
     def call(status_url)
       values =

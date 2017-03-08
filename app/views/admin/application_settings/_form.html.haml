@@ -619,5 +619,18 @@
           Maximum time for web terminal websocket connection (in seconds).
           0 for unlimited.
 
+  - if Gitlab::Geo.license_allows?
+    %fieldset
+      %legend GitLab Geo
+      %p
+        These settings will only take effect if Geo is enabled and require a restart to take effect.
+      .form-group
+        = f.label :geo_status_timeout, 'Connection timeout', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.number_field :geo_status_timeout, class: 'form-control'
+          .help-block
+            The amount of seconds after which a request to get a secondary node
+            status will time out.
+
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'
