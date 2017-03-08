@@ -134,13 +134,31 @@ describe PipelinesFinder do
       end
 
       context 'when a ref does not exist' do
-        let(:params) { { ref: 'unique-ref' } }
+        let(:params) { { ref: 'invalid-ref' } }
 
         it 'selects nothing' do
           expect(subject).to be_empty
         end
       end
-    end  
+    end
+
+    context 'when a name is passed' do
+      context 'when a name exists' do
+        let(:params) { { name: user1.name } }
+
+        it 'selects all pipelines which belong to the name' do
+          expect(subject).to match_array(Ci::Pipeline.where(user: user1))
+        end
+      end
+
+      context 'when a name does not exist' do
+        let(:params) { { name: 'invalid-name' } }
+
+        it 'selects nothing' do
+          expect(subject).to be_empty
+        end
+      end
+    end
 
     context 'when a username is passed' do
       context 'when a username exists' do
@@ -152,13 +170,13 @@ describe PipelinesFinder do
       end
 
       context 'when a username does not exist' do
-        let(:params) { { username: 'unique-username' } }
+        let(:params) { { username: 'invalid-username' } }
 
         it 'selects nothing' do
           expect(subject).to be_empty
         end
       end
-    end  
+    end
 
     context 'when a yaml_errors is passed' do
       context 'when yaml_errors is true' do
@@ -204,7 +222,7 @@ describe PipelinesFinder do
       end
 
       context 'when order_by does not exist' do
-        let(:params) { { order_by: 'abnormal_column', sort: 'desc' } }
+        let(:params) { { order_by: 'invalid_column', sort: 'desc' } }
 
         it 'sorts by default' do
           expect(subject).to match_array(Ci::Pipeline.order(id: :desc))
@@ -212,7 +230,7 @@ describe PipelinesFinder do
       end
 
       context 'when sort does not exist' do
-        let(:params) { { order_by: 'created_at', sort: 'abnormal_sort' } }
+        let(:params) { { order_by: 'created_at', sort: 'invalid_sort' } }
 
         it 'sorts by default' do
           expect(subject).to match_array(Ci::Pipeline.order(id: :desc))

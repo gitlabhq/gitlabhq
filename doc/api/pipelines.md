@@ -15,7 +15,8 @@ GET /projects/:id/pipelines
 | `status`  | string  | no       | The status of pipelines, one of: `running`, `pending`, `success`, `failed`, `canceled`, `skipped`; |
 | `ref`     | string  | no       | The ref of pipelines |
 | `yaml_errors`| string  | no       | If true, returns only yaml error pipelines |
-| `username`| string  | no       | The name of user who triggered pipelines |
+| `name`| string  | no       | The name of user who triggered pipelines |
+| `username`| string  | no       | The username of user who triggered pipelines |
 | `order_by`| string  | no       | Return requests ordered by `id`, `status`, `ref`, `username`, `started_at`, `finished_at`, `created_at` or `updated_at` fields. Default is `id` |
 | `sort`    | string  | no       | Return requests sorted in `asc` or `desc` order. Default is `desc` |
 

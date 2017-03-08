@@ -20,7 +20,8 @@ module API
                             desc: 'The status of pipelines'
         optional :ref,      type: String, desc: 'The ref of pipelines'
         optional :yaml_errors, type: Boolean, desc: 'If true, returns only yaml error pipelines'
-        optional :username, type: String, desc: 'The name of user who triggered pipelines'
+        optional :name,     type: String, desc: 'The name of user who triggered pipelines'
+        optional :username, type: String, desc: 'The username of user who triggered pipelines'
         optional :order_by, type: String, values: %w[id status ref username started_at finished_at created_at updated_at], default: 'id',
                             desc: 'The order_by which is combined with a sort'
         optional :sort,     type: String, values: %w[asc desc], default: 'desc',
