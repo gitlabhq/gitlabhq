@@ -12,6 +12,7 @@ class PipelinesFinder
     items = by_scope(items)
     items = by_status(items)
     items = by_ref(items)
+    items = by_name(items)
     items = by_username(items)
     items = by_yaml_errors(items)
     order_and_sort(items)
@@ -107,12 +108,16 @@ class PipelinesFinder
   end
 
   def order_and_sort(items)
-    if params[:order_by].present? && params[:sort].present? && 
-        items.column_names.include?(params[:order_by]) && 
-        params[:sort] =~ /\A(ASC|DESC)\z/i
-      items.reorder(params[:order_by] => params[:sort])
-    else
-      items.reorder(id: :desc)
-    end
+    order_by = if params[:order_by].present? && items.column_names.include?(params[:order_by])
+                 params[:order_by]
+               else
+                 :id
+               end
+    sort = if params[:sort].present? && params[:sort] =~ /\A(ASC|DESC)\z/i
+             params[:sort]
+           else
+             :desc
+           end
+    items.reorder(order_by => sort)
   end
 end
