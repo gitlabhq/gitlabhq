@@ -60,6 +60,41 @@ Notes:
 - You can use [`git rerere`](https://git-scm.com/blog/2010/03/08/rerere.html)
   to avoid resolving the same conflicts multiple times.
 
+### Creating EE branch for CE Merge Request
+
+While the instructions to create `<cd_branch>-ee` are mentioned in logs of failed
+`rake ee_compat_check` Job, you can create `*-ee` branch once you're done
+with changes in CE branch. There are different ways to create such branch:
+
+##### a) Create a new branch based on the CE branch and rebase it on top of EE/master:
+
+  - In the EE repo
+    - `git fetch https://gitlab.com/gitlab-org/gitlab-ce.git <ce_branch>`
+    - `git checkout -b <ce_branch>-ee FETCH_HEAD`
+  - You can squash the _<ce_branch>_ commits into a single "Port of
+    _<ce_branch>_ to EE" commit before rebasing to limit the conflicts-resolving
+    steps during the rebase
+    - `git fetch origin`
+    - `git rebase origin/master`
+
+At this point you will likely have conflicts. Solve them, and continue/finish the rebase.
+
+##### b) Create a new branch from master and cherry-pick your CE commits:
+
+  - In the EE repo
+    - `git fetch origin`
+    - `git checkout -b <ce_branch>-ee origin/master`
+    - `git fetch https://gitlab.com/gitlab-org/gitlab-ce.git <ce_branch>`
+    - `git cherry-pick <SHA> # Repeat for all the commits you want to pick`
+
+##### Don't forget to push your branch to `https://gitlab.com/gitlab-org/gitlab-ee.git`:
+
+  - In the EE repo
+    - `git push origin <ce_branch>-ee`
+
+You can then retry failed `rake ee_compat_check` job, and it should pass if there
+are no conflicts.
+
 ## Possible type of conflicts
 
 ### Controllers
