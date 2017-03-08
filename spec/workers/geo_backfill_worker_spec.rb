@@ -12,32 +12,32 @@ describe Geo::GeoBackfillWorker, services: true do
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { true }
     end
 
-    it 'performs GeoSingleRepositoryBackfillWorker for each project' do
-      expect(GeoSingleRepositoryBackfillWorker).to receive(:new).twice.and_return(spy)
+    it 'performs Geo::RepositoryBackfillService for each project' do
+      expect(Geo::RepositoryBackfillService).to receive(:new).twice.and_return(spy)
 
       subject.perform
     end
 
-    it 'does not perform GeoSingleRepositoryBackfillWorker when node is disabled' do
+    it 'does not perform Geo::RepositoryBackfillService when node is disabled' do
       allow_any_instance_of(GeoNode).to receive(:enabled?) { false }
 
-      expect(GeoSingleRepositoryBackfillWorker).not_to receive(:new)
+      expect(Geo::RepositoryBackfillService).not_to receive(:new)
 
       subject.perform
     end
 
-    it 'does not perform GeoSingleRepositoryBackfillWorker for projects that repository exists' do
+    it 'does not perform Geo::RepositoryBackfillService for projects that repository exists' do
       create_list(:project, 2)
 
-      expect(GeoSingleRepositoryBackfillWorker).to receive(:new).twice.and_return(spy)
+      expect(Geo::RepositoryBackfillService).to receive(:new).twice.and_return(spy)
 
       subject.perform
     end
 
-    it 'does not perform GeoSingleRepositoryBackfillWorker when can not obtain a lease' do
+    it 'does not perform Geo::RepositoryBackfillService when can not obtain a lease' do
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { false }
 
-      expect(GeoSingleRepositoryBackfillWorker).not_to receive(:new)
+      expect(Geo::RepositoryBackfillService).not_to receive(:new)
 
       subject.perform
     end

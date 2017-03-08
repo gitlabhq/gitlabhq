@@ -27,7 +27,7 @@ class GeoBackfillWorker
         # one repo at a time. If we don't obtain the lease here, every 5
         # minutes all of 100 projects will be synced.
         try_obtain_lease do |lease|
-          GeoSingleRepositoryBackfillWorker.new.perform(project_id, lease)
+          Geo::RepositoryBackfillService.new(project_id).execute
         end
       rescue ActiveRecord::RecordNotFound
         logger.error("Couldn't find project with ID=#{project_id}, skipping syncing")
@@ -65,7 +65,11 @@ class GeoBackfillWorker
 
     return unless lease
 
-    yield lease
+    begin
+      yield lease
+    ensure
+      Gitlab::ExclusiveLease.cancel(lease_key, lease)
+    end
   end
 
   def lease_key

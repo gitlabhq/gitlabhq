@@ -4,7 +4,7 @@ describe Geo::RepositoryBackfillService, services: true do
   let!(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
   let(:project) { create(:empty_project) }
 
-  subject { described_class.new(project.id, '123456') }
+  subject { described_class.new(project.id) }
 
   describe '#execute' do
     it 'fetches project repositories' do
@@ -29,8 +29,8 @@ describe Geo::RepositoryBackfillService, services: true do
       subject.execute
     end
 
-    it 'releases leases' do
-      expect(Gitlab::ExclusiveLease).to receive(:cancel).twice.and_call_original
+    it 'releases lease' do
+      expect(Gitlab::ExclusiveLease).to receive(:cancel).once.and_call_original
 
       subject.execute
     end
