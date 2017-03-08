@@ -106,4 +106,24 @@ class MergeRequestEntity < IssuableEntity
     merge_request.merge_commit_message(include_description: true)
   end
 
+  expose :diverged_commits_count do |merge_request|
+    merge_request.open? &&
+      merge_request.diverged_from_target_branch? ?
+        merge_request.diverged_commits_count : 0
+  end
+
+  expose :email_pathes_path do |merge_request|
+    namespace_project_merge_request_path(merge_request.target_project.namespace,
+                                         merge_request.target_project,
+                                         merge_request,
+                                         format: :patch)
+  end
+
+  expose :plain_diff_path do |merge_request|
+    namespace_project_merge_request_path(merge_request.target_project.namespace,
+                                         merge_request.target_project,
+                                         merge_request,
+                                         format: :diff)
+  end
+
 end

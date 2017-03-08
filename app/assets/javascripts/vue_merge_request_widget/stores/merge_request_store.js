@@ -14,6 +14,7 @@ export default class MergeRequestStore {
     this.sha = data.diff_head_sha;
     this.commitMessage = data.merge_commit_message;
     this.commitMessageWithDescription = data.merge_commit_message_with_description;
+    this.divergedCommitsCount = data.diverged_commits_count;
 
     this.updatedAt = data.updated_at;
     this.mergedAt = MergeRequestStore.getEventDate(data.merge_event);
@@ -30,6 +31,8 @@ export default class MergeRequestStore {
     this.removeWIPPath = data.remove_wip_path;
     this.sourceBranchRemoved = !data.source_branch_exists;
     this.mergePath = data.merge_path;
+    this.emailPatchesPath = data.email_pathes_path;
+    this.plainDiffPath = data.plain_diff_path;
 
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
     this.canRevert = currentUser.can_revert || false;
@@ -39,6 +42,7 @@ export default class MergeRequestStore {
     this.canResolveConflictsInUI = data.conflicts_can_be_resolved_in_ui || false;
     this.canBeCherryPicked = data.can_be_cherry_picked || false;
     this.canBeMerged = data.can_be_merged || false;
+    this.isOpen = data.state === 'opened' || false;
 
     this.setState(data);
   }
