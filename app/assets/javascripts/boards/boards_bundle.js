@@ -62,7 +62,7 @@ $(() => {
     created () {
       gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
 
-      new FilteredSearchBoards(Store.filter, true);
+      gl.boardsFilterManager = new FilteredSearchBoards(Store.filter, true);
     },
     mounted () {
       Store.disabled = this.disabled;
@@ -85,7 +85,7 @@ $(() => {
   });
 
   gl.IssueBoardsSearch = new Vue({
-    el: document.getElementById('js-boards-search'),
+    el: document.getElementById('js-add-list'),
     data: {
       filters: Store.state.filters
     },
