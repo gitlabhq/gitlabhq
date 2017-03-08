@@ -591,7 +591,7 @@ describe API::Projects, api: true  do
         expect(json_response['issues_enabled']).to be_present
         expect(json_response['merge_requests_enabled']).to be_present
         expect(json_response['wiki_enabled']).to be_present
-        expect(json_response['builds_enabled']).to be_present
+        expect(json_response['jobs_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present
         expect(json_response['container_registry_enabled']).to be_present
         expect(json_response['created_at']).to be_present
@@ -602,7 +602,7 @@ describe API::Projects, api: true  do
         expect(json_response['avatar_url']).to be_nil
         expect(json_response['star_count']).to be_present
         expect(json_response['forks_count']).to be_present
-        expect(json_response['public_builds']).to be_present
+        expect(json_response['public_jobs']).to be_present
         expect(json_response['shared_with_groups']).to be_an Array
         expect(json_response['shared_with_groups'].length).to eq(1)
         expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
