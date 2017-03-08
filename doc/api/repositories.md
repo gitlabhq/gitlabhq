@@ -15,7 +15,7 @@ Parameters:
 
 - `id` (required) - The ID of a project
 - `path` (optional) - The path inside repository. Used to get contend of subdirectories
-- `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
+- `ref` (optional) - The name of a repository branch or tag or if not given the default branch
 - `recursive` (optional) - Boolean value used to get a recursive tree (false by default)
 
 ```json
@@ -72,10 +72,10 @@ Parameters:
 ]
 ```
 
-## Get file from repository
+## Get a blob from repository
 
-Allows you to receive information about file in repository like size and
-content. Note that file content is Base64 encoded. This endpoint can be accessed
+Allows you to receive information about blob in repository like size and
+content. Note that blob content is Base64 encoded. This endpoint can be accessed
 without authentication if the repository is publicly accessible.
 
 ```

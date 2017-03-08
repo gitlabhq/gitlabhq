@@ -30,7 +30,7 @@ describe API::Repositories, api: true  do
 
       context 'when ref does not exist' do
         it_behaves_like '404 response' do
-          let(:request) { get api("#{route}?ref_name=foo", current_user) }
+          let(:request) { get api("#{route}?ref=foo", current_user) }
           let(:message) { '404 Tree Not Found' }
         end
       end
@@ -66,7 +66,7 @@ describe API::Repositories, api: true  do
 
         context 'when ref does not exist' do
           it_behaves_like '404 response' do
-            let(:request) { get api("#{route}?recursive=1&ref_name=foo", current_user) }
+            let(:request) { get api("#{route}?recursive=1&ref=foo", current_user) }
             let(:message) { '404 Tree Not Found' }
           end
         end
@@ -89,72 +89,6 @@ describe API::Repositories, api: true  do
 
     context 'when authenticated', 'as a developer' do
       it_behaves_like 'repository tree' do
-        let(:current_user) { user }
-      end
-    end
-
-    context 'when authenticated', 'as a guest' do
-      it_behaves_like '403 response' do
-        let(:request) { get api(route, guest) }
-      end
-    end
-  end
-
-  describe "GET /projects/:id/repository/commits/:sha/blob" do
-    let(:route) { "/projects/#{project.id}/repository/commits/master/blob?filepath=README.md" }
-
-    shared_examples_for 'repository blob' do
-      it 'returns the repository blob' do
-        get api(route, current_user)
-
-        expect(response).to have_http_status(200)
-      end
-
-      context 'when sha does not exist' do
-        it_behaves_like '404 response' do
-          let(:request) { get api(route.sub('master', 'invalid_branch_name'), current_user) }
-          let(:message) { '404 Commit Not Found' }
-        end
-      end
-
-      context 'when filepath does not exist' do
-        it_behaves_like '404 response' do
-          let(:request) { get api(route.sub('README.md', 'README.invalid'), current_user) }
-          let(:message) { '404 File Not Found' }
-        end
-      end
-
-      context 'when no filepath is given' do
-        it_behaves_like '400 response' do
-          let(:request) { get api(route.sub('?filepath=README.md', ''), current_user) }
-        end
-      end
-
-      context 'when repository is disabled' do
-        include_context 'disabled repository'
-
-        it_behaves_like '403 response' do
-          let(:request) { get api(route, current_user) }
-        end
-      end
-    end
-
-    context 'when unauthenticated', 'and project is public' do
-      it_behaves_like 'repository blob' do
-        let(:project) { create(:project, :public, :repository) }
-        let(:current_user) { nil }
-      end
-    end
-
-    context 'when unauthenticated', 'and project is private' do
-      it_behaves_like '404 response' do
-        let(:request) { get api(route) }
-        let(:message) { '404 Project Not Found' }
-      end
-    end
-
-    context 'when authenticated', 'as a developer' do
-      it_behaves_like 'repository blob' do
         let(:current_user) { user }
       end
     end

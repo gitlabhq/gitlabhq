@@ -15,13 +15,13 @@ module API
       end
 
       def assign_file_vars!
+        authorize! :download_code, user_project
+
         @commit = user_project.commit(params[:ref])
         not_found!('Commit') unless @commit
 
-        @repo      = user_project.repository
-        @file_path = params[:file_path]
-        @file_path = [params[:file_path], params[:format]].join('.') if params[:format].present?
-        @blob      = @repo.blob_at(@commit.sha, @file_path)
+        @repo = user_project.repository
+        @blob = @repo.blob_at(@commit.sha, params[:file_path])
 
         not_found!('File') unless @blob
         @blob.load_all_data!(@repo)
@@ -35,7 +35,7 @@ module API
       end
 
       params :simple_file_params do
-        requires :file_path, type: String, desc: 'The path to the file. Ex. lib/class.rb'
+        requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
         requires :branch, type: String, desc: 'The name of branch'
         requires :commit_message, type: String, desc: 'Commit Message'
         optional :author_email, type: String, desc: 'The email of the author'
@@ -53,30 +53,24 @@ module API
       requires :id, type: String, desc: 'The project ID'
     end
     resource :projects do
-      desc 'Get a file from repository in raw format'
+      desc 'Get raw file contents from the repository'
       params do
-        requires :ref, type: String, desc: 'The name of branch, tag, or commit'
+        requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
+        requires :ref, type: String, desc: 'The name of branch, tag commit'
       end
       get ":id/repository/files/:file_path/raw" do
-        authorize! :download_code, user_project
-
         assign_file_vars!
-
-        status(200)
 
         send_git_blob @repo, @blob
       end
 
-      desc 'Get a file from repository in base64 format'
+      desc 'Get a file from the repository'
       params do
-        requires :ref, type: String, desc: 'The name of branch, tag, or commit'
+        requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
+        requires :ref, type: String, desc: 'The name of branch, tag or commit'
       end
-      get ":id/repository/files/:file_path" do
-        authorize! :download_code, user_project
-
+      get ":id/repository/files/:file_path", requirements: { file_path: /.+/ } do
         assign_file_vars!
-
-        status(200)
 
         {
           file_name: @blob.name,
@@ -87,7 +81,7 @@ module API
           ref: params[:ref],
           blob_id: @blob.id,
           commit_id: @commit.id,
-          last_commit_id: @repo.last_commit_id_for_path(@commit.sha, @file_path)
+          last_commit_id: @repo.last_commit_id_for_path(@commit.sha, params[:file_path])
         }
       end
 

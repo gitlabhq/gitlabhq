@@ -45,6 +45,18 @@ describe API::Files, api: true  do
         expect(Base64.decode64(json_response['content']).lines.first).to eq("require 'fileutils'\n")
       end
 
+      it 'returns file by commit sha' do
+        # This file is deleted on HEAD
+        file_path = "files%2Fjs%2Fcommit%2Ejs%2Ecoffee"
+        params[:ref] = "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9"
+
+        get api(route(file_path), current_user), params
+
+        expect(response).to have_http_status(200)
+        expect(json_response['file_name']).to eq('commit.js.coffee')
+        expect(Base64.decode64(json_response['content']).lines.first).to eq("class Commit\n")
+      end
+
       it 'returns raw file info' do
         url = route(file_path) + "/raw"
         expect(Gitlab::Workhorse).to receive(:send_git_blob)
@@ -112,6 +124,17 @@ describe API::Files, api: true  do
         expect(Gitlab::Workhorse).to receive(:send_git_blob)
 
         get api(url, current_user), params
+
+        expect(response).to have_http_status(200)
+      end
+
+      it 'returns file by commit sha' do
+        # This file is deleted on HEAD
+        file_path = "files%2Fjs%2Fcommit%2Ejs%2Ecoffee"
+        params[:ref] = "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9"
+        expect(Gitlab::Workhorse).to receive(:send_git_blob)
+
+        get api(route(file_path) + "/raw", current_user), params
 
         expect(response).to have_http_status(200)
       end

@@ -72,6 +72,7 @@ changes are in V4:
 - API uses merge request `IID`s (internal ID, as in the web UI) rather than `ID`s. This affects the merge requests, award emoji, todos, and time tracking APIs. [!9530](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9530)
 - API uses issue `IID`s (internal ID, as in the web UI) rather than `ID`s. This affects the issues, award emoji, todos, and time tracking APIs. [!9530](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9530)
 - Update endpoints for repository files [!9637](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9637)
-  - Moved `/projects/:id/repository/files` to `/projects/:id/repository/files/:filepath` (`:filepath` should be URL-encoded)
-  - Moved `/projects/:id/repository/blobs/:sha` to `/projects/:id/repository/files/:filepath/raw`
-  - Moved `/projects/:id/repository/raw_blobs/:sha` to `/projects/:id/repository/blobs/:sha/raw`
+  - Moved `/projects/:id/repository/files?file_path=:file_path` to `/projects/:id/repository/files/:file_path` (`:file_path` should be URL-encoded)
+  - `/projects/:id/repository/blobs/:sha` now returns JSON attributes for the blob identified by `:sha`, instead of finding the commit identified by `:sha` and returning the raw content of the blob in that commit identified by the required `?filepath=:filepath`
+  - Moved `/projects/:id/repository/commits/:sha/blob?file_path=:file_path`  and `/projects/:id/repository/blobs/:sha?file_path=:file_path`  to `/projects/:id/repository/files/:file_path/raw?ref=:sha`
+  - `/projects/:id/repository/tree` parameter `ref_name` has been renamed to `ref` for consistency
