@@ -23,6 +23,16 @@ shared_examples 'creating an issue for a discussion' do
     expect(discussion.resolved?).to eq(true)
   end
 
+  it 'shows a flash messaage after resolving a discussion' do
+    click_button 'Submit issue'
+
+    page.within '.flash-notice' do
+      # Only check for the word 'Resolved' since the spec might have resolved
+      # multiple discussions
+      expect(page).to have_content('Resolved')
+    end
+  end
+
   it 'has a hidden field for the merge request' do
     merge_request_field = find('#merge_request_for_resolving_discussions', visible: false)
 

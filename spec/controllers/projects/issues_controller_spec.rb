@@ -495,6 +495,20 @@ describe Projects::IssuesController do
         expect(discussion.resolved?).to eq(true)
       end
 
+      it 'sets a flash message' do
+        post_issue(title: 'Hello')
+
+        expect(flash[:notice]).to eq('Resolved 1 discussion.')
+      end
+
+      it 'pluralizes the flash message when resolving multiple discussions' do
+        create(:diff_note_on_merge_request, noteable: merge_request, project: project, line_number: 15)
+
+        post_issue(title: 'Hello')
+
+        expect(flash[:notice]).to eq('Resolved 2 discussions.')
+      end
+
       it "resolves a single discussion" do
         post_issue(other_params: { discussion_to_resolve: discussion.id })
         discussion.first_note.reload
