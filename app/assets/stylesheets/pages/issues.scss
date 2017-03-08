@@ -129,6 +129,21 @@ ul.related-merge-requests > li {
   padding-bottom: 37px;
 }
 
+.issues-export-modal {
+  .export-svg-container {
+    height: 56px;
+    padding: 10px 10px 0;
+  }
+
+  svg {
+    height: 100%;
+  }
+
+  .export-checkmark {
+    color: $green-light;
+  }
+}
+
 .issue-email-modal-btn {
   padding: 0;
   color: $gl-link-color;

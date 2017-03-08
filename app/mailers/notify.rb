@@ -3,6 +3,7 @@ class Notify < BaseMailer
 
   include Emails::AdminNotification
   include Emails::Issues
+  include Emails::CsvExport
   include Emails::MergeRequests
   include Emails::Notes
   include Emails::Projects

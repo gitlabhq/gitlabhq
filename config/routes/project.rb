@@ -284,7 +284,8 @@ constraints(ProjectUrlConstrainer.new) do
           get :can_create_branch
         end
         collection do
-          post  :bulk_update
+          post :bulk_update
+          post :export_csv
         end
       end
 

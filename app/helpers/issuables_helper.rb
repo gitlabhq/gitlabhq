@@ -134,15 +134,18 @@ module IssuablesHelper
 
     state_title = titles[state] || state.to_s.humanize
 
-    count =
-      Rails.cache.fetch(issuables_state_counter_cache_key(issuable_type, state), expires_in: 2.minutes) do
-        issuables_count_for_state(issuable_type, state)
-      end
+    count = cached_issuables_count_for_state(issuable_type, state)
 
     html = content_tag(:span, state_title)
     html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge')
 
     html.html_safe
+  end
+
+  def cached_issuables_count_for_state(issuable_type, state)
+    Rails.cache.fetch(issuables_state_counter_cache_key(issuable_type, state), expires_in: 2.minutes) do
+      issuables_count_for_state(issuable_type, state)
+    end
   end
 
   def cached_assigned_issuables_count(assignee, issuable_type, state)
