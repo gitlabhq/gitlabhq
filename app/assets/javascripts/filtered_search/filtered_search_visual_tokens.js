@@ -178,9 +178,9 @@ class FilteredSearchVisualTokens {
     const inputLi = input.parentElement;
     const tokenContainer = document.querySelector('.tokens-container');
 
-    if (!tokenContainer.lastElementChild.isEqualNode(inputLi)) {
-      FilteredSearchVisualTokens.tokenizeInput();
+    FilteredSearchVisualTokens.tokenizeInput();
 
+    if (!tokenContainer.lastElementChild.isEqualNode(inputLi)) {
       const { isLastVisualTokenValid } =
         gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 

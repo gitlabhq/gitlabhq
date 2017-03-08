@@ -533,12 +533,12 @@ describe('Filtered Search Visual Tokens', () => {
         FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', 'none'),
       );
 
-      spyOn(gl.FilteredSearchVisualTokens, 'tokenizeInput').and.callThrough();
+      spyOn(gl.FilteredSearchVisualTokens, 'tokenizeInput').and.callFake(() => {});
       spyOn(gl.FilteredSearchVisualTokens, 'getLastVisualTokenBeforeInput').and.callThrough();
 
       gl.FilteredSearchVisualTokens.moveInputToTheRight();
 
-      expect(gl.FilteredSearchVisualTokens.tokenizeInput).not.toHaveBeenCalled();
+      expect(gl.FilteredSearchVisualTokens.tokenizeInput).toHaveBeenCalled();
       expect(gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput).not.toHaveBeenCalled();
     });
 
@@ -582,6 +582,19 @@ describe('Filtered Search Visual Tokens', () => {
       gl.FilteredSearchVisualTokens.moveInputToTheRight();
 
       expect(tokensContainer.children[2].querySelector('.filtered-search')).not.toEqual(null);
+    });
+
+    it('tokenizes input even if input is the right most element', () => {
+      tokensContainer.innerHTML = `
+        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', 'none')}
+        ${FilteredSearchSpecHelper.createNameFilterVisualTokenHTML('label')}
+        ${FilteredSearchSpecHelper.createInputHTML('', '~bug')}
+      `;
+
+      gl.FilteredSearchVisualTokens.moveInputToTheRight();
+
+      const token = tokensContainer.children[1];
+      expect(token.querySelector('.value').innerText).toEqual('~bug');
     });
   });
 });
