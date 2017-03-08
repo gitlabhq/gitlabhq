@@ -7,6 +7,7 @@ class Issue < ActiveRecord::Base
   include Sortable
   include Spammable
   include FasterCacheKeys
+  include RelativePositioning
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze

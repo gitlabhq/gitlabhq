@@ -8,7 +8,7 @@
     "v-show" => "!loading",
     ":data-board" => "list.id",
     ":class" => '{ "is-smaller": showIssueForm }' }
-    %board-card{ "v-for" => "(issue, index) in orderedIssues",
+    %board-card{ "v-for" => "(issue, index) in issues",
       "ref" => "issue",
       ":index" => "index",
       ":list" => "list",
@@ -17,7 +17,8 @@
       ":root-path" => "rootPath",
       ":disabled" => "disabled",
       ":key" => "issue.id" }
-    %li.board-list-count.text-center{ "v-if" => "showCount" }
+    %li.board-list-count.text-center{ "v-if" => "showCount",
+      "data-issue-id" => "-1" }
       = icon("spinner spin", "v-show" => "list.loadingMore" )
       %span{ "v-if" => "list.issues.length === list.issuesSize" }
         Showing all issues
