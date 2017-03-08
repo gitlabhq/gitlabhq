@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe "Search", feature: true  do
+  include FilteredSearchHelpers
   include WaitForAjax
 
   let(:user) { create(:user) }
@@ -170,7 +171,8 @@ describe "Search", feature: true  do
           sleep 2
 
           expect(page).to have_selector('.filtered-search')
-          expect(find('.filtered-search').value).to eq("assignee:@#{user.username}")
+          expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+          expect_filtered_search_input_empty
         end
 
         it 'takes user to her issues page when issues authored is clicked' do
@@ -178,7 +180,8 @@ describe "Search", feature: true  do
           sleep 2
 
           expect(page).to have_selector('.filtered-search')
-          expect(find('.filtered-search').value).to eq("author:@#{user.username}")
+          expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+          expect_filtered_search_input_empty
         end
 
         it 'takes user to her MR page when MR assigned is clicked' do
@@ -186,7 +189,8 @@ describe "Search", feature: true  do
           sleep 2
 
           expect(page).to have_selector('.merge-requests-holder')
-          expect(find('.filtered-search').value).to eq("assignee:@#{user.username}")
+          expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+          expect_filtered_search_input_empty
         end
 
         it 'takes user to her MR page when MR authored is clicked' do
@@ -194,7 +198,8 @@ describe "Search", feature: true  do
           sleep 2
 
           expect(page).to have_selector('.merge-requests-holder')
-          expect(find('.filtered-search').value).to eq("author:@#{user.username}")
+          expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+          expect_filtered_search_input_empty
         end
       end
 

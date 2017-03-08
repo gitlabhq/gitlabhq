@@ -1,4 +1,9 @@
 /* eslint-disable comma-dangle, no-unused-vars, quote-props */
+const boardObj = {
+  id: 1,
+  name: 'test',
+  milestone_id: null,
+};
 
 const listObj = {
   id: 1,
@@ -36,7 +41,11 @@ const BoardsMockData = {
         labels: []
       }],
       size: 1
-    }
+    },
+    '/test/issue-boards/milestones.json': [{
+      id: 1,
+      title: 'test',
+    }],
   },
   'POST': {
     '/test/issue-boards/board/1/lists{/id}': listObj
@@ -50,13 +59,14 @@ const BoardsMockData = {
 };
 
 const boardsMockInterceptor = (request, next) => {
-  const body = BoardsMockData[request.method][request.url];
+  const body = BoardsMockData[request.method.toUpperCase()][request.url];
 
   next(request.respondWith(JSON.stringify(body), {
     status: 200
   }));
 };
 
+window.boardObj = boardObj;
 window.listObj = listObj;
 window.listObjDuplicate = listObjDuplicate;
 window.BoardsMockData = BoardsMockData;

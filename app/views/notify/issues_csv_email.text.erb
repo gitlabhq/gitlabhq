@@ -1,0 +1,5 @@
+Your CSV export of <%= pluralize(@written_count, 'issue') %> from project <%= @project.full_name %> (<%= project_url(@project) %>) has been added to this email as an attachment.
+
+<% if @truncated %>
+This attachment has been truncated to avoid exceeding a maximum allowed attachment size of 20MB. <%= @written_count %> of <%= @issues_count %> issues have been included. Consider re-exporting with a narrower selection of issues.
+<% end %>

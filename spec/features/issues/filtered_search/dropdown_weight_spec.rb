@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe 'Dropdown weight', js: true, feature: true do
+  include FilteredSearchHelpers
   include WaitForAjax
 
   let!(:project) { create(:empty_project) }
@@ -55,35 +56,39 @@ describe 'Dropdown weight', js: true, feature: true do
 
   describe 'selecting from dropdown' do
     before do
-      filtered_search.set('weight:')
+      input_filtered_search('weight:', submit: false)
     end
 
     it 'fills in weight 1' do
       click_weight(1)
 
       expect(page).to have_css(js_dropdown_weight, visible: false)
-      expect(filtered_search.value).to eq("weight:1 ")
+      expect_tokens([{ name: 'weight', value: '1' }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in weight 2' do
       click_weight(2)
 
       expect(page).to have_css(js_dropdown_weight, visible: false)
-      expect(filtered_search.value).to eq("weight:2 ")
+      expect_tokens([{ name: 'weight', value: '2' }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in weight 3' do
       click_weight(3)
 
       expect(page).to have_css(js_dropdown_weight, visible: false)
-      expect(filtered_search.value).to eq("weight:3 ")
+      expect_tokens([{ name: 'weight', value: '3' }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in `no weight`' do
       click_static_weight('No Weight')
 
       expect(page).to have_css(js_dropdown_weight, visible: false)
-      expect(filtered_search.value).to eq("weight:none ")
+      expect_tokens([{ name: 'weight', value: 'none' }])
+      expect_filtered_search_input_empty
     end
   end
 

@@ -1,3 +1,4 @@
+import PrometheusGraph from './monitoring/prometheus_graph'; // TODO: Maybe Make this a bundle
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
 /* global UsernameValidator */
 /* global ActiveTabMemoizer */
@@ -296,7 +297,7 @@ const UserCallout = require('./user_callout');
         case 'admin:emails:show':
           new AdminEmailSelect();
           break;
-        case 'projects:protected_branches:index':
+        case 'projects:repository:show':
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
           break;
@@ -307,6 +308,8 @@ const UserCallout = require('./user_callout');
         case 'ci:lints:show':
           new gl.CILintEditor();
           break;
+        case 'projects:environments:metrics':
+          new PrometheusGraph();
         case 'users:show':
           new UserCallout();
           break;
@@ -398,7 +401,7 @@ const UserCallout = require('./user_callout');
             case 'builds':
             case 'hooks':
             case 'services':
-            case 'protected_branches':
+            case 'repository':
               shortcut_handler = new ShortcutsNavigation();
           }
       }

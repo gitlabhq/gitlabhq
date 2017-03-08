@@ -20,6 +20,7 @@ AllCops:
     - 'node_modules/**/*'
     - 'db/*'
     - 'db/fixtures/**/*'
+    - 'db/geo/*'
     - 'tmp/**/*'
     - 'bin/**/*'
     - 'generator_templates/**/*'
@@ -349,6 +350,7 @@ Style/MutableConstant:
   Exclude:
     - 'db/migrate/**/*'
     - 'db/post_migrate/**/*'
+    - 'db/geo/migrate/**/*'
 
 # Favor unless over if for negative conditions (or control flow or).
 Style/NegatedIf:

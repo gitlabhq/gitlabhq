@@ -34,6 +34,9 @@
         %code= health_check_url(token: current_application_settings.health_check_access_token, checks: :database)
       %li
         %code= health_check_url(token: current_application_settings.health_check_access_token, checks: :migrations)
+      - if Gitlab::Geo.secondary?
+        %li
+          %code= health_check_url(token: current_application_settings.health_check_access_token, checks: :geo)
 
   %hr
   .panel.panel-default

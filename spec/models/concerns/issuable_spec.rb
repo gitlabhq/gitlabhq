@@ -331,6 +331,16 @@ describe Issue, "Issuable" do
     end
   end
 
+  describe '.labels_hash' do
+    let(:feature_label) { create(:label, title: 'Feature') }
+    let!(:issues) { create_list(:labeled_issue, 3, labels: [feature_label]) }
+
+    it 'maps issue ids to labels titles' do
+      issue_id = issues.first.id
+      expect(Issue.labels_hash[issue_id]).to eq ['Feature']
+    end
+  end
+
   describe '#user_notes_count' do
     let(:project) { create(:empty_project) }
     let(:issue1) { create(:issue, project: project) }

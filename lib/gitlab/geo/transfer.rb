@@ -20,11 +20,11 @@ module Gitlab
         return unless primary
 
         url = primary.geo_transfers_url(file_type, file_id.to_s)
-        req_header = TransferRequest.new(request_data).header
+        req_headers = TransferRequest.new(request_data).headers
 
         return unless ensure_path_exists
 
-        download_file(url, req_header)
+        download_file(url, req_headers)
       end
 
       private
@@ -56,12 +56,12 @@ module Gitlab
 
       # Use HTTParty for now but switch to curb if performance becomes
       # an issue
-      def download_file(url, req_header)
+      def download_file(url, req_headers)
         file_size = -1
 
         begin
           File.open(filename, "wb") do |file|
-            response = HTTParty.get(url, headers: req_header, stream_body: true) do |fragment|
+            response = HTTParty.get(url, headers: req_headers, stream_body: true) do |fragment|
               file.write(fragment)
             end
 

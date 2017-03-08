@@ -1,9 +1,10 @@
 class Admin::GeoNodesController < Admin::ApplicationController
   before_action :check_license, except: [:index, :destroy]
-  before_action :load_node, only: [:destroy, :repair, :backfill_repositories]
+  before_action :load_node, only: [:destroy, :repair, :toggle]
 
   def index
-    @nodes = GeoNode.all
+    # Ensure all nodes are using their Presenter
+    @nodes = GeoNode.all.map(&:present)
     @node = GeoNode.new
 
     unless Gitlab::Geo.license_allows?
@@ -40,14 +41,20 @@ class Admin::GeoNodesController < Admin::ApplicationController
     redirect_to admin_geo_nodes_path
   end
 
-  def backfill_repositories
+  def toggle
     if @node.primary?
-      redirect_to admin_geo_nodes_path, notice: 'This is the primary node. Please run this action with a secondary node.'
+      flash[:alert] = "Primary node can't be disabled."
     else
-      @node.backfill_repositories
-
-      redirect_to admin_geo_nodes_path, notice: 'Backfill scheduled successfully.'
+      if @node.toggle!(:enabled)
+        new_status = @node.enabled? ? 'enabled' : 'disabled'
+        flash[:notice] = "Node #{@node.url} was successfully #{new_status}."
+      else
+        action = @node.enabled? ? 'disabling' : 'enabling'
+        flash[:alert] = "There was a problem #{action} node #{@node.url}."
+      end
     end
+
+    redirect_to admin_geo_nodes_path
   end
 
   private

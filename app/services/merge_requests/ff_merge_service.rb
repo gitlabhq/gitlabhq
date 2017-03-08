@@ -13,6 +13,10 @@ module MergeRequests
                           source,
                           merge_request.target_branch,
                           merge_request: merge_request)
+    rescue GitHooksService::PreReceiveError => e
+      raise MergeError, e.message
+    rescue StandardError => e
+      raise MergeError, "Something went wrong during merge: #{e.message}"
     ensure
       merge_request.update(in_progress_merge_commit_sha: nil)
     end

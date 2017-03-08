@@ -20,6 +20,7 @@
 #
 class IssuableFinder
   NONE = '0'.freeze
+  VALID_PARAMS = %i(scope state group_id project_id milestone_title assignee_id search label_name sort assignee_username author_id author_username authorized_only due_date iids non_archived weight).freeze
 
   attr_accessor :current_user, :params
 
@@ -80,7 +81,7 @@ class IssuableFinder
     counts[:all] = counts.values.sum
     counts[:opened] += counts[:reopened]
 
-    counts
+    counts.with_indifferent_access
   end
 
   def find_by!(*params)

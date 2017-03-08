@@ -109,7 +109,7 @@ class Settings < Settingslogic
 
     def base_url(config)
       custom_port = on_standard_port?(config) ? nil : ":#{config.port}"
-      
+
       [
         config.protocol,
         "://",
@@ -331,6 +331,11 @@ Settings.pages['external_http']   ||= false if Settings.pages['external_http'].n
 Settings.pages['external_https']  ||= false if Settings.pages['external_https'].nil?
 
 #
+# Geo
+#
+Settings.gitlab['geo_status_timeout'] ||= 10
+
+#
 # Git LFS
 #
 Settings['lfs'] ||= Settingslogic.new({})
@@ -384,6 +389,12 @@ Settings.cron_jobs['ldap_group_sync_worker']['job_class'] = 'LdapGroupSyncWorker
 Settings.cron_jobs['geo_bulk_notify_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['geo_bulk_notify_worker']['cron'] ||= '*/10 * * * * *'
 Settings.cron_jobs['geo_bulk_notify_worker']['job_class'] ||= 'GeoBulkNotifyWorker'
+Settings.cron_jobs['geo_backfill_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['geo_backfill_worker']['cron'] ||= '*/5 * * * *'
+Settings.cron_jobs['geo_backfill_worker']['job_class'] ||= 'GeoBackfillWorker'
+Settings.cron_jobs['geo_download_dispatch_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['geo_download_dispatch_worker']['cron'] ||= '5 * * * *'
+Settings.cron_jobs['geo_download_dispatch_worker']['job_class'] ||= 'GeoFileDownloadDispatchWorker'
 Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.send(:cron_random_weekly_time)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
@@ -428,7 +439,6 @@ Settings.gitlab_shell['ssh_port']     ||= 22
 Settings.gitlab_shell['ssh_user']     ||= Settings.gitlab.user
 Settings.gitlab_shell['owner_group']  ||= Settings.gitlab.user
 Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_ssh_path_prefix)
-Settings.gitlab_shell['git_annex_enabled'] ||= false
 
 #
 # Repositories

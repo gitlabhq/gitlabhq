@@ -2,6 +2,8 @@ module API
   module V3
     # MergeRequestDiff API
     class MergeRequestDiffs < Grape::API
+      include PaginationParams
+
       before { authenticate! }
 
       resource :projects do
@@ -13,12 +15,12 @@ module API
         params do
           requires :id, type: String, desc: 'The ID of a project'
           requires :merge_request_id, type: Integer, desc: 'The ID of a merge request'
+          use :pagination
         end
-
         get ":id/merge_requests/:merge_request_id/versions" do
           merge_request = find_merge_request_with_access(params[:merge_request_id])
 
-          present merge_request.merge_request_diffs, with: ::API::Entities::MergeRequestDiff
+          present paginate(merge_request.merge_request_diffs), with: ::API::Entities::MergeRequestDiff
         end
 
         desc 'Get a single merge request diff version' do

@@ -6,6 +6,7 @@ class Repository
   include Gitlab::ShellAdapter
   include Elastic::RepositoriesSearch
   include RepositoryMirroring
+  prepend EE::Repository
 
   attr_accessor :path_with_namespace, :project
 

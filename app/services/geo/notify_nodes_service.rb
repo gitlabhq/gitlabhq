@@ -17,8 +17,11 @@ module Geo
       content = { projects: projects }.to_json
 
       ::Gitlab::Geo.secondary_nodes.each do |node|
+        next unless node.enabled?
+
         notify_url = node.send(notify_url_method.to_sym)
         success, message = notify(notify_url, content)
+
         unless success
           Rails.logger.error("GitLab failed to notify #{node.url} to #{notify_url} : #{message}")
           queue.store_batched_data(projects)

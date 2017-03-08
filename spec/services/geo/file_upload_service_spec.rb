@@ -5,7 +5,7 @@ describe Geo::FileUploadService, services: true do
   let(:params) { { id: lfs_object.id, type: 'lfs' } }
   let(:lfs_transfer) { Gitlab::Geo::LfsTransfer.new(lfs_object) }
   let(:transfer_request) { Gitlab::Geo::TransferRequest.new(lfs_transfer.request_data) }
-  let(:req_header) { transfer_request.header['Authorization'] }
+  let(:req_header) { transfer_request.headers['Authorization'] }
 
   before do
     create(:geo_node, :current)

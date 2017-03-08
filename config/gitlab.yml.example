@@ -208,10 +208,20 @@ production: &base
     ldap_sync_worker:
       cron: "30 1 * * *"
 
-    # Gitlab Geo nodes notification worker
+    # GitLab Geo nodes notification worker
     # NOTE: This will only take effect if Geo is enabled
     geo_bulk_notify_worker:
       cron: "*/10 * * * * *"
+
+    # GitLab Geo backfill worker
+    # NOTE: This will only take effect if Geo is enabled
+    geo_backfill_worker:
+      cron: "*/5 * * * *"
+
+    # GitLab Geo file download worker
+    # NOTE: This will only take effect if Geo is enabled
+    geo_download_dispatch_worker:
+      cron: "*/10 * * * *"
 
   registry:
     # enabled: true
@@ -578,11 +588,6 @@ production: &base
 
     # If you use non-standard ssh port you need to specify it
     # ssh_port: 22
-
-    # git-annex support (EE only)
-    # If this setting is set to true, the same setting in config.yml of
-    # gitlab-shell needs to be set to true
-    # git_annex_enabled: false
 
   ## Git settings
   # CAUTION!

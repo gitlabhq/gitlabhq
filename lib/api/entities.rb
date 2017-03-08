@@ -773,5 +773,14 @@ module API
       expose :id, :message, :starts_at, :ends_at, :color, :font
       expose :active?, as: :active
     end
+
+    class GeoNodeStatus < Grape::Entity
+      expose :health
+      expose :repositories_count
+      expose :repositories_synced_count
+      expose :repositories_failed_count
+      expose :lfs_objects_total
+      expose :lfs_objects_synced
+    end
   end
 end

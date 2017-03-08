@@ -24,9 +24,9 @@ describe Projects::MirrorsController do
         mirror_trigger_builds: '0'
       }
 
-      expect(response).to have_http_status :success
-      expect(response).to render_template(:show)
-      expect(response.body).to include('Import url can&#39;t be blank')
+      expect(response).to have_http_status(302)
+      expect(response).to redirect_to(namespace_project_settings_repository_path(project.namespace, project))
+      expect(flash[:alert]).to include("Import url can't be blank")
     end
   end
 end

@@ -102,6 +102,16 @@ class BoardService {
 
     return this.issues.bulkUpdate(data);
   }
+
+  static loadMilestones(path) {
+    this.loading = true;
+
+    return this.$http.get(this.milestonePath)
+      .then((res) => {
+        this.milestones = res.json();
+        this.loading = false;
+      });
+  }
 }
 
 window.BoardService = BoardService;

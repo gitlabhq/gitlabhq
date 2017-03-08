@@ -190,6 +190,14 @@ describe GeoNode, type: :model do
     end
   end
 
+  describe '#geo_status_url' do
+    let(:status_url) { "https://localhost:3000/gitlab/api/#{api_version}/geo/status" }
+
+    it 'returns api url based on node uri' do
+      expect(new_node.status_url).to eq(status_url)
+    end
+  end
+
   describe '#oauth_callback_url' do
     let(:oauth_callback_url) { 'https://localhost:3000/gitlab/oauth/geo/callback' }
 
@@ -232,30 +240,6 @@ describe GeoNode, type: :model do
       node.oauth_application.destroy!
       node.reload
       expect(node).to be_missing_oauth_application
-    end
-  end
-
-  describe '#backfill_repositories' do
-    before do
-      Sidekiq::Worker.clear_all
-    end
-
-    it 'schedules the scheduler worker' do
-      Sidekiq::Testing.fake! do
-        expect { node.backfill_repositories }.to change(GeoScheduleBackfillWorker.jobs, :size).by(1)
-      end
-    end
-
-    it 'schedules the correct worker for the number of projects' do
-      Sidekiq::Testing.fake! do
-        2.times do
-          create(:project)
-        end
-
-        node.backfill_repositories
-
-        expect { GeoScheduleBackfillWorker.drain }.to change(GeoRepositoryBackfillWorker.jobs, :size).by(2)
-      end
     end
   end
 end

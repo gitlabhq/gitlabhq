@@ -17,8 +17,6 @@
 - (EE) [File lock](../user/project/file_lock.md)
 - [Labels](../user/project/labels.md)
 - (EE) [Issue weight](issue_weight.md)
-- (EE) [Manage large binaries with git annex](git_annex.md)
-- [Git-Annex to Git-LFS Migration Guide](lfs/migrate_from_git_annex_to_git_lfs.html)
 - [Notification emails](notifications.md)
 - [Project Features](project_features.md)
 - [Project forking workflow](forking_workflow.md)
