@@ -226,6 +226,22 @@ describe 'Visual tokens', js: true, feature: true do
     end
   end
 
+  describe 'editing multiple tokens' do
+    before do
+      input_filtered_search('author:@root assignee:none', submit: false)
+      first('.tokens-container .filtered-search-token').double_click
+    end
+
+    it 'opens author dropdown' do
+      expect(page).to have_css('#js-dropdown-author', visible: true)
+    end
+
+    it 'opens assignee dropdown' do
+      find('.tokens-container .filtered-search-token', text: 'Assignee').double_click
+      expect(page).to have_css('#js-dropdown-assignee', visible: true)
+    end
+  end
+
   describe 'add new token after editing existing token' do
     before do
       input_filtered_search('author:@root assignee:none', submit: false)
