@@ -218,6 +218,11 @@ production: &base
     geo_backfill_worker:
       cron: "*/5 * * * *"
 
+    # GitLab Geo file download worker
+    # NOTE: This will only take effect if Geo is enabled
+    geo_download_dispatch_worker:
+      cron: "*/10 * * * *"
+
   registry:
     # enabled: true
     # host: registry.example.com

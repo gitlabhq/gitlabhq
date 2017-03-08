@@ -3,7 +3,7 @@ module Geo
     include Gitlab::CurrentSettings
     include HTTParty
 
-    KEYS = %w(health repositories_count repositories_synced_count repositories_failed_count).freeze
+    KEYS = %w(health repositories_count repositories_synced_count repositories_failed_count lfs_objects_total lfs_objects_synced).freeze
 
     # HTTParty timeout
     default_timeout current_application_settings.geo_status_timeout
