@@ -1,22 +1,12 @@
 require 'rails_helper'
 
 describe 'Filter issues weight', js: true, feature: true do
+  include FilteredSearchHelpers
   include WaitForAjax
 
   let!(:project) { create(:empty_project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
-  let(:filtered_search) { find('.filtered-search') }
   let(:js_dropdown_weight) { '#js-dropdown-weight' }
-
-  def input_filtered_search(search_term)
-    filtered_search = find('.filtered-search')
-    filtered_search.set(search_term)
-    filtered_search.send_keys(:enter)
-  end
-
-  def expect_filtered_search_input(input)
-    expect(find('.filtered-search').value).to eq(input)
-  end
 
   def expect_issues_list_count(open_count, closed_count = 0)
     all_count = open_count + closed_count
@@ -69,7 +59,7 @@ describe 'Filter issues weight', js: true, feature: true do
       input_filtered_search(search)
 
       expect_issues_list_count(1)
-      expect_filtered_search_input(search)
+      expect_filtered_search_input('bug')
     end
 
     it 'filters issues by searched weight, author and text' do
@@ -77,7 +67,7 @@ describe 'Filter issues weight', js: true, feature: true do
       input_filtered_search(search)
 
       expect_issues_list_count(1)
-      expect_filtered_search_input(search)
+      expect_filtered_search_input('bug')
     end
 
     it 'filters issues by searched weight, author, assignee and text' do
@@ -85,7 +75,7 @@ describe 'Filter issues weight', js: true, feature: true do
       input_filtered_search(search)
 
       expect_issues_list_count(1)
-      expect_filtered_search_input(search)
+      expect_filtered_search_input('bug')
     end
 
     it 'filters issues by searched weight, author, assignee, label and text' do
@@ -93,7 +83,7 @@ describe 'Filter issues weight', js: true, feature: true do
       input_filtered_search(search)
 
       expect_issues_list_count(1)
-      expect_filtered_search_input(search)
+      expect_filtered_search_input('bug')
     end
 
     it 'filters issues by searched weight, author, assignee, label, milestone and text' do
@@ -101,7 +91,7 @@ describe 'Filter issues weight', js: true, feature: true do
       input_filtered_search(search)
 
       expect_issues_list_count(1)
-      expect_filtered_search_input(search)
+      expect_filtered_search_input('bug')
     end
   end
 end
