@@ -354,8 +354,20 @@ class User < ActiveRecord::Base
     end
   end
 
+  def self.internal_attributes
+    [:ghost]
+  end
+
   def internal?
-    ghost?
+    self.class.internal_attributes.any? { |a| self[a] }
+  end
+
+  def self.internal
+    where(Hash[internal_attributes.zip([true] * internal_attributes.size)])
+  end
+
+  def self.non_internal
+    where(Hash[internal_attributes.zip([false] * internal_attributes.size)])
   end
 
   #
