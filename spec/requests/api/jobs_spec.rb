@@ -51,7 +51,7 @@ describe API::Jobs, api: true do
       end
 
       context 'filter project with array of scope elements' do
-        let(:query) { { 'scope[0]' => 'pending', 'scope[1]' => 'running' } }
+        let(:query) { { scope: %w(pending running) } }
 
         it do
           expect(response).to have_http_status(200)
@@ -60,7 +60,7 @@ describe API::Jobs, api: true do
       end
 
       context 'respond 400 when scope contains invalid state' do
-        let(:query) { { 'scope[0]' => 'unknown', 'scope[1]' => 'running' } }
+        let(:query) { { scope: %w(unknown running) } }
 
         it { expect(response).to have_http_status(400) }
       end
@@ -70,6 +70,78 @@ describe API::Jobs, api: true do
       let(:api_user) { nil }
 
       it 'does not return project builds' do
+        expect(response).to have_http_status(401)
+      end
+    end
+  end
+
+  describe 'GET /projects/:id/pipelines/:pipeline_id/jobs' do
+    let(:query) { Hash.new }
+
+    before do
+      get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
+    end
+
+    context 'authorized user' do
+      it 'returns pipeline jobs' do
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+      end
+
+      it 'returns correct values' do
+        expect(json_response).not_to be_empty
+        expect(json_response.first['commit']['id']).to eq project.commit.id
+      end
+
+      it 'returns pipeline data' do
+        json_build = json_response.first
+
+        expect(json_build['pipeline']).not_to be_empty
+        expect(json_build['pipeline']['id']).to eq build.pipeline.id
+        expect(json_build['pipeline']['ref']).to eq build.pipeline.ref
+        expect(json_build['pipeline']['sha']).to eq build.pipeline.sha
+        expect(json_build['pipeline']['status']).to eq build.pipeline.status
+      end
+
+      context 'filter jobs with one scope element' do
+        let(:query) { { 'scope' => 'pending' } }
+
+        it do
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+        end
+      end
+
+      context 'filter jobs with array of scope elements' do
+        let(:query) { { scope: %w(pending running) } }
+
+        it do
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+        end
+      end
+
+      context 'respond 400 when scope contains invalid state' do
+        let(:query) { { scope: %w(unknown running) } }
+
+        it { expect(response).to have_http_status(400) }
+      end
+
+      context 'jobs in different pipelines' do
+        let!(:pipeline2) { create(:ci_empty_pipeline, project: project) }
+        let!(:build2) { create(:ci_build, pipeline: pipeline2) }
+
+        it 'excludes jobs from other pipelines' do
+          json_response.each { |job| expect(job['pipeline']['id']).to eq(pipeline.id) }
+        end
+      end
+    end
+
+    context 'unauthorized user' do
+      let(:api_user) { nil }
+
+      it 'does not return jobs' do
         expect(response).to have_http_status(401)
       end
     end
