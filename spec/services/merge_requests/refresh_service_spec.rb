@@ -66,18 +66,19 @@ describe MergeRequests::RefreshService, services: true do
       it 'executes hooks with update action' do
         expect(refresh_service).to have_received(:execute_hooks).
           with(@merge_request, 'update', @oldrev)
-      end
 
-      it { expect(@merge_request.notes).not_to be_empty }
-      it { expect(@merge_request).to be_open }
-      it { expect(@merge_request.approvals).to be_empty }
-      it { expect(@merge_request.merge_when_pipeline_succeeds).to be_falsey }
-      it { expect(@merge_request.diff_head_sha).to eq(@newrev) }
-      it { expect(@fork_merge_request).to be_open }
-      it { expect(@fork_merge_request.notes).to be_empty }
-      it { expect(@build_failed_todo).to be_done }
-      it { expect(@fork_build_failed_todo).to be_done }
-      it { expect(@fork_merge_request.approvals).not_to be_empty }
+        expect(@merge_request.notes).not_to be_empty
+        expect(@merge_request).to be_open
+        expect(@merge_request.merge_when_pipeline_succeeds).to be_falsey
+        expect(@merge_request.diff_head_sha).to eq(@newrev)
+        expect(@fork_merge_request).to be_open
+        expect(@fork_merge_request.notes).to be_empty
+        expect(@build_failed_todo).to be_done
+        expect(@fork_build_failed_todo).to be_done
+        # EE-only
+        expect(@merge_request.approvals).to be_empty
+        expect(@fork_merge_request.approvals).not_to be_empty
+      end
     end
 
     context 'push to origin repo target branch' do
@@ -86,14 +87,17 @@ describe MergeRequests::RefreshService, services: true do
         reload_mrs
       end
 
-      it { expect(@merge_request.notes.last.note).to include('merged') }
-      it { expect(@merge_request).to be_merged }
-      it { expect(@merge_request.approvals).not_to be_empty }
-      it { expect(@fork_merge_request).to be_merged }
-      it { expect(@fork_merge_request.notes.last.note).to include('merged') }
-      it { expect(@fork_merge_request.approvals).not_to be_empty }
-      it { expect(@build_failed_todo).to be_done }
-      it { expect(@fork_build_failed_todo).to be_done }
+      it 'updates the merge state' do
+        expect(@merge_request.notes.last.note).to include('merged')
+        expect(@merge_request).to be_merged
+        expect(@fork_merge_request).to be_merged
+        expect(@fork_merge_request.notes.last.note).to include('merged')
+        expect(@build_failed_todo).to be_done
+        expect(@fork_build_failed_todo).to be_done
+        # EE-only
+        expect(@merge_request.approvals).not_to be_empty
+        expect(@fork_merge_request.approvals).not_to be_empty
+      end
     end
 
     context 'manual merge of source branch' do
@@ -107,13 +111,15 @@ describe MergeRequests::RefreshService, services: true do
         reload_mrs
       end
 
-      it { expect(@merge_request.notes.last.note).to include('merged') }
-      it { expect(@merge_request).to be_merged }
-      it { expect(@merge_request.diffs.size).to be > 0 }
-      it { expect(@fork_merge_request).to be_merged }
-      it { expect(@fork_merge_request.notes.last.note).to include('merged') }
-      it { expect(@build_failed_todo).to be_done }
-      it { expect(@fork_build_failed_todo).to be_done }
+      it 'updates the merge state' do
+        expect(@merge_request.notes.last.note).to include('merged')
+        expect(@merge_request).to be_merged
+        expect(@merge_request.diffs.size).to be > 0
+        expect(@fork_merge_request).to be_merged
+        expect(@fork_merge_request.notes.last.note).to include('merged')
+        expect(@build_failed_todo).to be_done
+        expect(@fork_build_failed_todo).to be_done
+      end
     end
 
     context 'push to fork repo source branch' do
@@ -129,16 +135,17 @@ describe MergeRequests::RefreshService, services: true do
         it 'executes hooks with update action' do
           expect(refresh_service).to have_received(:execute_hooks).
             with(@fork_merge_request, 'update', @oldrev)
-        end
 
-        it { expect(@merge_request.notes).to be_empty }
-        it { expect(@merge_request).to be_open }
-        it { expect(@merge_request.approvals).not_to be_empty }
-        it { expect(@fork_merge_request.notes.last.note).to include('added 28 commits') }
-        it { expect(@fork_merge_request).to be_open }
-        it { expect(@build_failed_todo).to be_pending }
-        it { expect(@fork_build_failed_todo).to be_pending }
-        it { expect(@fork_merge_request.approvals).to be_empty }
+          expect(@merge_request.notes).to be_empty
+          expect(@merge_request).to be_open
+          expect(@fork_merge_request.notes.last.note).to include('added 28 commits')
+          expect(@fork_merge_request).to be_open
+          expect(@build_failed_todo).to be_pending
+          expect(@fork_build_failed_todo).to be_pending
+          # EE-only
+          expect(@merge_request.approvals).not_to be_empty
+          expect(@fork_merge_request.approvals).to be_empty
+        end
       end
 
       context 'closed fork merge request' do
@@ -153,14 +160,17 @@ describe MergeRequests::RefreshService, services: true do
           expect(refresh_service).not_to have_received(:execute_hooks)
         end
 
-        it { expect(@merge_request.notes).to be_empty }
-        it { expect(@merge_request).to be_open }
-        it { expect(@merge_request.approvals).not_to be_empty }
-        it { expect(@fork_merge_request.notes).to be_empty }
-        it { expect(@fork_merge_request).to be_closed }
-        it { expect(@build_failed_todo).to be_pending }
-        it { expect(@fork_build_failed_todo).to be_pending }
-        it { expect(@fork_merge_request.approvals).to be_empty }
+        it 'updates merge request to closed state' do
+          expect(@merge_request.notes).to be_empty
+          expect(@merge_request).to be_open
+          expect(@fork_merge_request.notes).to be_empty
+          expect(@fork_merge_request).to be_closed
+          expect(@build_failed_todo).to be_pending
+          expect(@fork_build_failed_todo).to be_pending
+          # EE-only
+          expect(@merge_request.approvals).not_to be_empty
+          expect(@fork_merge_request.approvals).to be_empty
+        end
       end
     end
 
@@ -171,14 +181,17 @@ describe MergeRequests::RefreshService, services: true do
           reload_mrs
         end
 
-        it { expect(@merge_request.notes).to be_empty }
-        it { expect(@merge_request).to be_open }
-        it { expect(@merge_request.approvals).not_to be_empty }
-        it { expect(@fork_merge_request.notes).to be_empty }
-        it { expect(@fork_merge_request).to be_open }
-        it { expect(@fork_merge_request.approvals).not_to be_empty }
-        it { expect(@build_failed_todo).to be_pending }
-        it { expect(@fork_build_failed_todo).to be_pending }
+        it 'updates the merge request state' do
+          expect(@merge_request.notes).to be_empty
+          expect(@merge_request).to be_open
+          expect(@fork_merge_request.notes).to be_empty
+          expect(@fork_merge_request).to be_open
+          expect(@build_failed_todo).to be_pending
+          expect(@fork_build_failed_todo).to be_pending
+          # EE-only
+          expect(@merge_request.approvals).not_to be_empty
+          expect(@fork_merge_request.approvals).not_to be_empty
+        end
       end
 
       describe 'merge request diff' do
@@ -197,14 +210,17 @@ describe MergeRequests::RefreshService, services: true do
         reload_mrs
       end
 
-      it { expect(@merge_request.notes.last.note).to include('merged') }
-      it { expect(@merge_request).to be_merged }
-      it { expect(@merge_request.approvals).not_to be_empty }
-      it { expect(@fork_merge_request).to be_open }
-      it { expect(@fork_merge_request.notes).to be_empty }
-      it { expect(@build_failed_todo).to be_done }
-      it { expect(@fork_build_failed_todo).to be_done }
-      it { expect(@fork_merge_request.approvals).not_to be_empty }
+      it 'updates the merge request state' do
+        expect(@merge_request.notes.last.note).to include('merged')
+        expect(@merge_request).to be_merged
+        expect(@fork_merge_request).to be_open
+        expect(@fork_merge_request.notes).to be_empty
+        expect(@build_failed_todo).to be_done
+        expect(@fork_build_failed_todo).to be_done
+        # EE-only
+        expect(@merge_request.approvals).not_to be_empty
+        expect(@fork_merge_request.approvals).not_to be_empty
+      end
     end
 
     context 'resetting approvals if they are enabled' do
