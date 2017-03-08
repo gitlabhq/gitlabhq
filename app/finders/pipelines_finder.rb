@@ -101,7 +101,7 @@ class PipelinesFinder
   def order_and_sort(items)
     if params[:order_by].present? && params[:sort].present? && 
         items.column_names.include?(params[:order_by]) && 
-        params[:sort] =~ /\A(ASC|DESC)\Z/i
+        params[:sort] =~ /\A(ASC|DESC)\z/i
       items.reorder(params[:order_by] => params[:sort])
     else
       items.reorder(id: :desc)
