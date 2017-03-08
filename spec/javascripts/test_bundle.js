@@ -36,7 +36,8 @@ testsContext.keys().forEach(function (path) {
 if (process.env.BABEL_ENV === 'coverage') {
   // exempt these files from the coverage report
   const troubleMakers = [
-    './blob_edit/blob_edit_bundle.js',
+    './blob_edit/blob_bundle.js',
+    './boards/boards_bundle.js',
     './cycle_analytics/components/stage_plan_component.js',
     './cycle_analytics/components/stage_staging_component.js',
     './cycle_analytics/components/stage_test_component.js',
