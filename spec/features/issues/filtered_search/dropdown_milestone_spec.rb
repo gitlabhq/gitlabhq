@@ -1,8 +1,7 @@
 require 'rails_helper'
 
-describe 'Dropdown milestone', js: true, feature: true do
+describe 'Dropdown milestone', :feature, :js do
   include FilteredSearchHelpers
-  include WaitForAjax
 
   let!(:project) { create(:empty_project) }
   let!(:user) { create(:user) }
@@ -15,18 +14,10 @@ describe 'Dropdown milestone', js: true, feature: true do
 
   let(:filtered_search) { find('.filtered-search') }
   let(:js_dropdown_milestone) { '#js-dropdown-milestone' }
-
-  def send_keys_to_filtered_search(input)
-    input.split("").each do |i|
-      filtered_search.send_keys(i)
-      sleep 3
-      wait_for_ajax
-      sleep 3
-    end
-  end
+  let(:filter_dropdown) { find("#{js_dropdown_milestone} .filter-dropdown") }
 
   def dropdown_milestone_size
-    page.all('#js-dropdown-milestone .filter-dropdown .filter-dropdown-item').size
+    filter_dropdown.all('.filter-dropdown-item').size
   end
 
   def click_milestone(text)
@@ -65,13 +56,14 @@ describe 'Dropdown milestone', js: true, feature: true do
     end
 
     it 'should hide loading indicator when loaded' do
-      send_keys_to_filtered_search('milestone:')
+      filtered_search.set('milestone:')
 
-      expect(page).not_to have_css('#js-dropdown-milestone .filter-dropdown-loading')
+      expect(find(js_dropdown_milestone)).to have_css('.filter-dropdown-loading')
+      expect(find(js_dropdown_milestone)).not_to have_css('.filter-dropdown-loading')
     end
 
     it 'should load all the milestones when opened' do
-      send_keys_to_filtered_search('milestone:')
+      filtered_search.set('milestone:')
 
       expect(dropdown_milestone_size).to be > 0
     end
@@ -79,41 +71,48 @@ describe 'Dropdown milestone', js: true, feature: true do
 
   describe 'filtering' do
     before do
-      filtered_search.set('milestone')
+      filtered_search.set('milestone:')
+
+      expect(find("#{js_dropdown_milestone} .filter-dropdown")).to have_content(milestone.title)
+      expect(find("#{js_dropdown_milestone} .filter-dropdown")).to have_content(uppercase_milestone.title)
+      expect(find("#{js_dropdown_milestone} .filter-dropdown")).to have_content(two_words_milestone.title)
+      expect(find("#{js_dropdown_milestone} .filter-dropdown")).to have_content(wont_fix_milestone.title)
+      expect(find("#{js_dropdown_milestone} .filter-dropdown")).to have_content(special_milestone.title)
+      expect(find("#{js_dropdown_milestone} .filter-dropdown")).to have_content(long_milestone.title)
     end
 
     it 'filters by name' do
-      send_keys_to_filtered_search(':v1')
+      filtered_search.send_keys('v1')
 
       expect(dropdown_milestone_size).to eq(1)
     end
 
     it 'filters by case insensitive name' do
-      send_keys_to_filtered_search(':V1')
+      filtered_search.send_keys('V1')
 
       expect(dropdown_milestone_size).to eq(1)
     end
 
     it 'filters by name with symbol' do
-      send_keys_to_filtered_search(':%v1')
+      filtered_search.send_keys('%v1')
 
       expect(dropdown_milestone_size).to eq(1)
     end
 
     it 'filters by case insensitive name with symbol' do
-      send_keys_to_filtered_search(':%V1')
+      filtered_search.send_keys('%V1')
 
       expect(dropdown_milestone_size).to eq(1)
     end
 
     it 'filters by special characters' do
-      send_keys_to_filtered_search(':(+')
+      filtered_search.send_keys('(+')
 
       expect(dropdown_milestone_size).to eq(1)
     end
 
     it 'filters by special characters with symbol' do
-      send_keys_to_filtered_search(':%(+')
+      filtered_search.send_keys('%(+')
 
       expect(dropdown_milestone_size).to eq(1)
     end
@@ -122,6 +121,13 @@ describe 'Dropdown milestone', js: true, feature: true do
   describe 'selecting from dropdown' do
     before do
       filtered_search.set('milestone:')
+
+      expect(find("#{js_dropdown_milestone} .filter-dropdown")).to have_content(milestone.title)
+      expect(find("#{js_dropdown_milestone} .filter-dropdown")).to have_content(uppercase_milestone.title)
+      expect(find("#{js_dropdown_milestone} .filter-dropdown")).to have_content(two_words_milestone.title)
+      expect(find("#{js_dropdown_milestone} .filter-dropdown")).to have_content(wont_fix_milestone.title)
+      expect(find("#{js_dropdown_milestone} .filter-dropdown")).to have_content(special_milestone.title)
+      expect(find("#{js_dropdown_milestone} .filter-dropdown")).to have_content(long_milestone.title)
     end
 
     it 'fills in the milestone name when the milestone has not been filled' do
@@ -133,7 +139,7 @@ describe 'Dropdown milestone', js: true, feature: true do
     end
 
     it 'fills in the milestone name when the milestone is partially filled' do
-      send_keys_to_filtered_search('v')
+      filtered_search.send_keys('v')
       click_milestone(milestone.title)
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
@@ -232,16 +238,14 @@ describe 'Dropdown milestone', js: true, feature: true do
 
   describe 'caching requests' do
     it 'caches requests after the first load' do
-      filtered_search.set('milestone')
-      send_keys_to_filtered_search(':')
+      filtered_search.set('milestone:')
       initial_size = dropdown_milestone_size
 
       expect(initial_size).to be > 0
 
       create(:milestone, project: project)
       find('.filtered-search-input-container .clear-search').click
-      filtered_search.set('milestone')
-      send_keys_to_filtered_search(':')
+      filtered_search.set('milestone:')
 
       expect(dropdown_milestone_size).to eq(initial_size)
     end
