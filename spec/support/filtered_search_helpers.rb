@@ -3,16 +3,20 @@ module FilteredSearchHelpers
     page.find('.filtered-search')
   end
 
+  # Enables input to be set (similar to copy and paste)
   def input_filtered_search(search_term, submit: true)
-    filtered_search.set(search_term)
+    # Add an extra space to engage visual tokens
+    filtered_search.set("#{search_term} ")
 
     if submit
       filtered_search.send_keys(:enter)
     end
   end
 
+  # Enables input to be added character by character
   def input_filtered_search_keys(search_term)
-    filtered_search.send_keys(search_term)
+    # Add an extra space to engage visual tokens
+    filtered_search.send_keys("#{search_term} ")
     filtered_search.send_keys(:enter)
   end
 
@@ -33,5 +37,33 @@ module FilteredSearchHelpers
     filtered_search.set('label:')
     # This ensures the dropdown is shown
     expect(find('#js-dropdown-label')).not_to have_css('.filter-dropdown-loading')
+  end
+
+  def expect_filtered_search_input_empty
+    expect(find('.filtered-search').value).to eq('')
+  end
+
+  # Iterates through each visual token inside
+  # .tokens-container to make sure the correct names and values are rendered
+  def expect_tokens(tokens)
+    page.find '.filtered-search-input-container .tokens-container' do
+      page.all(:css, '.tokens-container li').each_with_index do |el, index|
+        token_name = tokens[index][:name]
+        token_value = tokens[index][:value]
+
+        expect(el.find('.name')).to have_content(token_name)
+        if token_value
+          expect(el.find('.value')).to have_content(token_value)
+        end
+      end
+    end
+  end
+
+  def default_placeholder
+    'Search or filter results...'
+  end
+
+  def get_filtered_search_placeholder
+    find('.filtered-search')['placeholder']
   end
 end
