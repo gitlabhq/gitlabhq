@@ -281,6 +281,24 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     end
   end
 
+  describe '#cross_project?' do
+    context 'when source and target repositories are different' do
+      let(:raw_data) { double(base_data.merge(head: forked_branch)) }
+
+      it 'returns true' do
+        expect(pull_request.cross_project?).to eq true
+      end
+    end
+
+    context 'when source and target repositories are the same' do
+      let(:raw_data) { double(base_data.merge(head: source_branch)) }
+
+      it 'returns false' do
+        expect(pull_request.cross_project?).to eq false
+      end
+    end
+  end
+
   describe '#url' do
     let(:raw_data) { double(base_data) }
 
