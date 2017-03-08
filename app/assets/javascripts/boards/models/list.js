@@ -102,7 +102,6 @@ class List {
         }
 
         this.createIssues(data.issues);
-        console.log(this.issues.length);
       });
   }
 
