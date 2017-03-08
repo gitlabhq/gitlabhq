@@ -16,15 +16,15 @@ module Issues
     def discussions_to_resolve
       return [] unless merge_request_for_resolving_discussions
 
-      @discussions_to_resolve ||= begin
-                                    if discussion_to_resolve_id
-                                      Array(merge_request_for_resolving_discussions.
-                                              find_diff_discussion(discussion_to_resolve_id))
-                                    else
-                                      merge_request_for_resolving_discussions
-                                        .resolvable_discussions
-                                    end
-                                  end
+      @discussions_to_resolve ||=
+        if discussion_to_resolve_id
+          discussion_or_nil = merge_request_for_resolving_discussions
+                                .find_diff_discussion(discussion_to_resolve_id)
+          Array(discussion_or_nil)
+        else
+          merge_request_for_resolving_discussions
+            .resolvable_discussions
+        end
     end
   end
 end
