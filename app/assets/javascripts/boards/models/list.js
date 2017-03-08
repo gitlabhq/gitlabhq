@@ -70,7 +70,8 @@ class List {
       const paramSplit = filterParam.split('=');
       const paramKeyNormalized = paramSplit[0].replace('[]', '');
       const isArray = paramSplit[0].indexOf('[]');
-      const value = decodeURIComponent(paramSplit[1]);
+      let value = decodeURIComponent(paramSplit[1]);
+      value = value.replace(/\+/g, ' ');
 
       if (isArray >= 0) {
         if (!data[paramKeyNormalized]) {

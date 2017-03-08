@@ -29,7 +29,7 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'shows tooltip on add issues button' do
-      button = page.find('.issue-boards-search button', text: 'Add issues')
+      button = page.find('.filter-dropdown-container button', text: 'Add issues')
 
       expect(button[:"data-original-title"]).to eq("Please add a list to your board first")
     end
@@ -115,9 +115,8 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'search done list' do
-      page.within('#js-boards-search') do
-        find('.form-control').set(issue8.title)
-      end
+      find('.filtered-search').set(issue8.title)
+      find('.filtered-search').native.send_keys(:enter)
 
       wait_for_vue_resource
 
@@ -127,9 +126,8 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'search list' do
-      page.within('#js-boards-search') do
-        find('.form-control').set(issue5.title)
-      end
+      find('.filtered-search').set(issue5.title)
+      find('.filtered-search').native.send_keys(:enter)
 
       wait_for_vue_resource
 
@@ -333,7 +331,7 @@ describe 'Issue Boards', feature: true, js: true do
 
           wait_for_vue_resource
 
-          expect(find('.issue-boards-search')).to have_selector('.open')
+          expect(page).to have_css('#js-add-list.open')
         end
 
         it 'creates new list from a new label' do
