@@ -19,7 +19,7 @@
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md) Convert a SVN repository to Git and GitLab.
 - [Permissions](user/permissions.md) Learn what each role in a project (external/guest/reporter/developer/master/owner) can do.
 - [Profile Settings](profile/README.md)
-- [Project Services](user/project/integrations//project_services.md) Integrate a project with external services, such as CI and chat.
+- [Project Services](user/project/integrations/project_services.md) Integrate a project with external services, such as CI and chat.
 - [Public access](public_access/public_access.md) Learn how you can allow public and internal access to projects.
 - [Snippets](user/snippets.md) Snippets allow you to create little bits of code.
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
