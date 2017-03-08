@@ -7,7 +7,7 @@ module Projects
     end
 
     def execute(new_repository_storage_key)
-      new_storage_path = Gitlab.config.repositories.storages[new_repository_storage_key]
+      new_storage_path = Gitlab.config.repositories.storages[new_repository_storage_key]['path']
       result = move_storage(project.path_with_namespace, new_storage_path)
 
       if project.wiki.repository_exists?

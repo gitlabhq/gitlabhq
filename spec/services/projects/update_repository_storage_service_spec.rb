@@ -11,7 +11,10 @@ describe Projects::UpdateRepositoryStorageService, services: true do
       FileUtils.mkdir('tmp/tests/storage_a')
       FileUtils.mkdir('tmp/tests/storage_b')
 
-      storages = { 'a' => 'tmp/tests/storage_a', 'b' => 'tmp/tests/storage_b' }
+      storages = {
+        'a' => { 'path' => 'tmp/tests/storage_a' },
+        'b' => { 'path' => 'tmp/tests/storage_b' }
+      }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
       allow(subject).to receive(:gitlab_shell).and_return(gitlab_shell)
 
