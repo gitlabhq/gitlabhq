@@ -1,6 +1,6 @@
 module Issues
   class ExportCsvService
-    include Rails.application.routes.url_helpers
+    include Gitlab::Routing.url_helpers
     include GitlabRoutingHelper
 
     # Target attachment size before base64 encoding

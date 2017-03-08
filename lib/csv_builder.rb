@@ -31,7 +31,7 @@ class CsvBuilder
     tempfile = Tempfile.new('csv_export')
     csv = CSV.new(tempfile)
 
-    write_csv(csv) do
+    write_csv csv, until_condition: -> do
       truncate_after_bytes && tempfile.size > truncate_after_bytes
     end
 
@@ -86,7 +86,7 @@ class CsvBuilder
     end
   end
 
-  def write_csv(csv, &until_block)
+  def write_csv(csv, until_condition:)
     csv << headers
 
     @collection.find_each do |object|
@@ -94,7 +94,7 @@ class CsvBuilder
 
       @rows_written += 1
 
-      if yield
+      if until_condition.call
         @truncated = true
         break
       end
