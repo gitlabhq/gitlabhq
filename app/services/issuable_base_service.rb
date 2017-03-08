@@ -211,7 +211,7 @@ class IssuableBaseService < BaseService
     label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
     params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
 
-    if params.present?
+    if issuable.changed? || params.present?
       issuable.assign_attributes(params.merge(updated_by: current_user))
 
       before_update(issuable)
