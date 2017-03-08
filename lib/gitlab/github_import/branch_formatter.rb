@@ -18,7 +18,7 @@ module Gitlab
       end
 
       def commit_exists?
-        project.repository.commit(sha).present?
+        project.repository.branch_names_contains(sha).include?(ref)
       end
 
       def short_id
