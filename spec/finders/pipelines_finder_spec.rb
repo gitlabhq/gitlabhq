@@ -144,7 +144,7 @@ describe PipelinesFinder do
 
     context 'when a username is passed' do
       context 'when a username exists' do
-        let(:params) { { username: user1.name } }
+        let(:params) { { username: user1.username } }
 
         it 'selects all pipelines which belong to the username' do
           expect(subject).to match_array(Ci::Pipeline.where(user: user1))
