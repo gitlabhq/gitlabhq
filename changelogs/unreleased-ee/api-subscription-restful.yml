@@ -1,0 +1,5 @@
+---
+title: 'API: Use `post ":id/#{type}/:subscribable_id/subscribe"` to subscribe and
+  `post ":id/#{type}/:subscribable_id/unsubscribe"` to unsubscribe from a resource'
+merge_request: 1274
+author: Robert Schilling

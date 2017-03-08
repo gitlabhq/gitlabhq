@@ -34,6 +34,7 @@ gem 'omniauth-saml',          '~> 1.7.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd',         '~> 2.2.0'
+gem 'gssapi', group: :kerberos
 gem 'omniauth-authentiq',     '~> 0.3.0'
 gem 'rack-oauth2',            '~> 1.2.1'
 gem 'jwt',                    '~> 1.5.6'
@@ -58,6 +59,7 @@ gem 'browser', '~> 2.2'
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
 gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: 'omniauth-ldap'
+gem 'net-ldap'
 
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
@@ -100,6 +102,14 @@ gem 'unf', '~> 0.1.4'
 
 # Seed data
 gem 'seed-fu', '~> 2.3.5'
+
+# Search
+gem 'elasticsearch-model', '~> 0.1.9'
+gem 'elasticsearch-rails', '~> 0.1.9'
+gem 'elasticsearch-api',   '5.0.3'
+gem 'gitlab-elasticsearch-git', '1.1.1', require: "elasticsearch/git"
+gem 'aws-sdk'
+gem 'faraday_middleware-aws-signers-v4'
 
 # Markdown and HTML processing
 gem 'html-pipeline',        '~> 1.11.0'
@@ -241,6 +251,7 @@ gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
 gem 'base32',             '~> 0.3.0'
+gem "gitlab-license", "~> 1.0"
 
 # Sentry integration
 gem 'sentry-raven', '~> 2.0.0'

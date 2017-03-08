@@ -486,7 +486,14 @@ describe SystemNoteService, services: true do
 
     context 'commit with cross-reference from fork' do
       let(:author2) { create(:project_member, :reporter, user: create(:user), project: project).user }
-      let(:forked_project) { Projects::ForkService.new(project, author2).execute }
+      let(:forked_project) do
+        fp = Projects::ForkService.new(project, author2).execute
+        # The call to project.repository.after_import in RepositoryForkWorker does
+        # not reset the @exists variable of @fork_project.repository so we have to
+        # explicitely call this method to clear the @exists variable.
+        fp.repository.after_import
+        fp
+      end
       let(:commit2) { forked_project.commit }
 
       before do
@@ -712,6 +719,84 @@ describe SystemNoteService, services: true do
         expect(WebMock).not_to have_requested(:post, jira_api_comment_url(jira_issue))
         expect(WebMock).not_to have_requested(:post, jira_api_remote_link_url(jira_issue))
       end
+    end
+  end
+
+  describe '.approve_mr' do
+    let(:noteable)    { create(:merge_request, source_project: project) }
+    subject { described_class.approve_mr(noteable, author) }
+
+    it_behaves_like 'a system note'
+
+    context 'when merge request approved' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "approved this merge request"
+      end
+    end
+  end
+
+  describe '.change_time_estimate' do
+    subject { described_class.change_time_estimate(noteable, project, author) }
+
+    it_behaves_like 'a system note'
+
+    context 'with a time estimate' do
+      it 'sets the note text' do
+        noteable.update_attribute(:time_estimate, 277200)
+
+        expect(subject.note).to eq "changed time estimate to 1w 4d 5h"
+      end
+    end
+
+    context 'without a time estimate' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "removed time estimate"
+      end
+    end
+  end
+
+  describe '.change_time_spent' do
+    # We need a custom noteable in order to the shared examples to be green.
+    let(:noteable) do
+      mr = create(:merge_request, source_project: project)
+      mr.spend_time(duration: 360000, user: author)
+      mr.save!
+      mr
+    end
+
+    subject do
+      described_class.change_time_spent(noteable, project, author)
+    end
+
+    it_behaves_like 'a system note'
+
+    context 'when time was added' do
+      it 'sets the note text' do
+        spend_time!(277200)
+
+        expect(subject.note).to eq "added 1w 4d 5h of time spent"
+      end
+    end
+
+    context 'when time was subtracted' do
+      it 'sets the note text' do
+        spend_time!(-277200)
+
+        expect(subject.note).to eq "subtracted 1w 4d 5h of time spent"
+      end
+    end
+
+    context 'when time was removed' do
+      it 'sets the note text' do
+        spend_time!(:reset)
+
+        expect(subject.note).to eq "removed time spent"
+      end
+    end
+
+    def spend_time!(seconds)
+      noteable.spend_time(duration: seconds, user: author)
+      noteable.save!
     end
   end
 

@@ -18,6 +18,11 @@ module API
       expose :bio, :location, :skype, :linkedin, :twitter, :website_url, :organization
     end
 
+    class UserActivity < Grape::Entity
+      expose :username
+      expose :last_activity_at
+    end
+
     class Identity < Grape::Entity
       expose :provider, :extern_uid
     end
@@ -50,6 +55,13 @@ module API
     class ProjectHook < Hook
       expose :project_id, :issues_events, :merge_requests_events
       expose :note_events, :build_events, :pipeline_events, :wiki_page_events
+    end
+
+    class ProjectPushRule < Grape::Entity
+      expose :id, :project_id, :created_at
+      expose :commit_message_regex, :deny_delete_tag
+      expose :member_check, :prevent_secrets, :author_email_regex
+      expose :file_name_regex, :max_file_size
     end
 
     class BasicProjectDetails < Grape::Entity
@@ -98,8 +110,10 @@ module API
         SharedGroup.represent(project.project_group_links.all, options)
       end
       expose :only_allow_merge_if_pipeline_succeeds
+      expose :repository_storage, if: lambda { |_project, options| options[:current_user].try(:admin?) }
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
+      expose :approvals_before_merge
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
     end
@@ -130,8 +144,20 @@ module API
       end
     end
 
+    class LdapGroupLink < Grape::Entity
+      expose :cn, :group_access, :provider
+    end
+
     class Group < Grape::Entity
       expose :id, :name, :path, :description, :visibility
+
+      ## EE-only
+      expose :ldap_cn, :ldap_access
+      expose :ldap_group_links,
+        using: Entities::LdapGroupLink,
+        if: lambda { |group, options| group.ldap_group_links.any? }
+      ## EE-only
+
       expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url
       expose :web_url
@@ -249,21 +275,25 @@ module API
       expose :start_date
     end
 
-    class Issue < ProjectEntity
+    class IssueBasic < ProjectEntity
       expose :label_names, as: :labels
       expose :milestone, using: Entities::Milestone
       expose :assignee, :author, using: Entities::UserBasic
 
-      expose :subscribed do |issue, options|
-        issue.subscribed?(options[:current_user], options[:project] || issue.project)
-      end
       expose :user_notes_count
       expose :upvotes, :downvotes
       expose :due_date
       expose :confidential
+      expose :weight
 
       expose :web_url do |issue, options|
         Gitlab::UrlBuilder.build(issue)
+      end
+    end
+
+    class Issue < IssueBasic
+      expose :subscribed do |issue, options|
+        issue.subscribed?(options[:current_user], options[:project] || issue.project)
       end
     end
 
@@ -279,7 +309,7 @@ module API
       expose :id
     end
 
-    class MergeRequest < ProjectEntity
+    class MergeRequestBasic < ProjectEntity
       expose :target_branch, :source_branch
       expose :upvotes, :downvotes
       expose :author, :assignee, using: Entities::UserBasic
@@ -291,21 +321,46 @@ module API
       expose :merge_status
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
-      expose :subscribed do |merge_request, options|
-        merge_request.subscribed?(options[:current_user], options[:project])
-      end
       expose :user_notes_count
+      expose :approvals_before_merge
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
+      expose :squash
 
       expose :web_url do |merge_request, options|
         Gitlab::UrlBuilder.build(merge_request)
       end
     end
 
+    class MergeRequest < MergeRequestBasic
+      expose :subscribed do |merge_request, options|
+        merge_request.subscribed?(options[:current_user], options[:project])
+      end
+    end
+
     class MergeRequestChanges < MergeRequest
       expose :diffs, as: :changes, using: Entities::RepoDiff do |compare, _|
         compare.raw_diffs(all_diffs: true).to_a
+      end
+    end
+
+    class Approvals < Grape::Entity
+      expose :user, using: Entities::UserBasic
+    end
+
+    class MergeRequestApprovals < ProjectEntity
+      expose :merge_status
+      expose :approvals_required
+      expose :approvals_left
+      expose :approvals, as: :approved_by, using: Entities::Approvals
+      expose :approvers_left, as: :suggested_approvers, using: Entities::UserBasic
+
+      expose :user_has_approved do |merge_request, options|
+        merge_request.has_approved?(options[:current_user])
+      end
+
+      expose :user_can_approve do |merge_request, options|
+        merge_request.can_approve?(options[:current_user])
       end
     end
 
@@ -379,6 +434,10 @@ module API
       expose :author_username do |event, options|
         event.author&.username
       end
+    end
+
+    class LdapGroup < Grape::Entity
+      expose :cn
     end
 
     class ProjectGroupLink < Grape::Entity
@@ -566,7 +625,6 @@ module API
       expose :user_oauth_applications
       expose :after_sign_out_path
       expose :container_registry_token_expire_delay
-      expose :repository_storage
       expose :repository_storages
       expose :koding_enabled
       expose :koding_url
@@ -589,6 +647,18 @@ module API
 
       expose :release, using: Entities::Release do |repo_tag, options|
         options[:project].releases.find_by(tag: repo_tag.name)
+      end
+    end
+
+    class License < Grape::Entity
+      expose :starts_at, :expires_at, :licensee, :add_ons
+
+      expose :user_limit do |license, options|
+        license.restricted?(:active_user_count) ? license.restrictions[:active_user_count] : 0
+      end
+
+      expose :active_users do |license, options|
+        ::User.active.count
       end
     end
 
@@ -664,7 +734,7 @@ module API
     end
 
     class Environment < EnvironmentBasic
-      expose :project, using: Entities::Project
+      expose :project, using: Entities::BasicProjectDetails
     end
 
     class Deployment < Grape::Entity
@@ -697,6 +767,15 @@ module API
     class BroadcastMessage < Grape::Entity
       expose :id, :message, :starts_at, :ends_at, :color, :font
       expose :active?, as: :active
+    end
+
+    class GeoNodeStatus < Grape::Entity
+      expose :health
+      expose :repositories_count
+      expose :repositories_synced_count
+      expose :repositories_failed_count
+      expose :lfs_objects_total
+      expose :lfs_objects_synced
     end
   end
 end

@@ -3,6 +3,8 @@ class PruneOldEventsWorker
   include CronjobQueue
 
   def perform
+    return if Gitlab::Geo.secondary?
+
     # Contribution calendar shows maximum 12 months of events.
     # Double nested query is used because MySQL doesn't allow DELETE subqueries
     # on the same table.

@@ -11,11 +11,18 @@ module MergeRequests
     attr_reader :merge_request, :source
 
     def execute(merge_request)
+      if project.merge_requests_ff_only_enabled && !self.is_a?(FfMergeService)
+        FfMergeService.new(project, current_user, params).execute(merge_request)
+        return
+      end
+
       @merge_request = merge_request
 
       unless @merge_request.mergeable?
         return log_merge_error('Merge request is not mergeable', save_message_on_model: true)
       end
+
+      check_size_limit
 
       @source = find_merge_source
 
@@ -31,6 +38,27 @@ module MergeRequests
       end
     rescue MergeError => e
       log_merge_error(e.message, save_message_on_model: true)
+    end
+
+    def hooks_validation_pass?(merge_request)
+      @merge_request = merge_request
+
+      return true if project.merge_requests_ff_only_enabled
+
+      push_rule = merge_request.project.push_rule
+      return true unless push_rule
+
+      unless push_rule.commit_message_allowed?(params[:commit_message])
+        log_merge_error("Commit message does not follow the pattern '#{push_rule.commit_message_regex}'", save_message_on_model: true)
+        return false
+      end
+
+      unless push_rule.author_email_allowed?(current_user.email)
+        log_merge_error("Commit author's email '#{current_user.email}' does not follow the pattern '#{push_rule.author_email_regex}'", save_message_on_model: true)
+        return false
+      end
+
+      true
     end
 
     private
@@ -80,8 +108,25 @@ module MergeRequests
       merge_request.to_reference(full: true)
     end
 
+    def check_size_limit
+      if @merge_request.target_project.above_size_limit?
+        message = Gitlab::RepositorySizeError.new(@merge_request.target_project).merge_error
+
+        raise MergeError, message
+      end
+    end
+
     def find_merge_source
-      merge_request.diff_head_sha
+      return merge_request.diff_head_sha unless merge_request.squash
+
+      squash_result = SquashService.new(project, current_user, params).execute(merge_request)
+
+      case squash_result[:status]
+      when :success
+        squash_result[:squash_sha]
+      when :error
+        raise MergeError, squash_result[:message]
+      end
     end
   end
 end

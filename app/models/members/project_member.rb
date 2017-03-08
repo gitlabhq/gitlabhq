@@ -14,6 +14,7 @@ class ProjectMember < Member
   scope :in_project, ->(project) { where(source_id: project.id) }
 
   before_destroy :delete_member_todos
+  before_destroy :delete_member_branch_protection
 
   class << self
     # Add users to project teams with passed access option
@@ -97,8 +98,15 @@ class ProjectMember < Member
     user.todos.where(project_id: source_id).destroy_all if user
   end
 
+  def delete_member_branch_protection
+    if user.present? && project.present?
+      project.protected_branches.merge_access_by_user(user).destroy_all
+      project.protected_branches.push_access_by_user(user).destroy_all
+    end
+  end
+
   def send_invite
-    notification_service.invite_project_member(self, @raw_invite_token)
+    notification_service.invite_project_member(self, @raw_invite_token) unless @skip_notification
 
     super
   end
@@ -106,7 +114,7 @@ class ProjectMember < Member
   def post_create_hook
     unless owner?
       event_service.join_project(self.project, self.user)
-      notification_service.new_project_member(self)
+      notification_service.new_project_member(self) unless @skip_notification
     end
 
     super
@@ -114,7 +122,7 @@ class ProjectMember < Member
 
   def post_update_hook
     if access_level_changed?
-      notification_service.update_project_member(self)
+      notification_service.update_project_member(self)  unless @skip_notification
     end
 
     super
@@ -131,13 +139,13 @@ class ProjectMember < Member
   end
 
   def after_accept_invite
-    notification_service.accept_project_invite(self)
+    notification_service.accept_project_invite(self) unless @skip_notification
 
     super
   end
 
   def after_decline_invite
-    notification_service.decline_project_invite(self)
+    notification_service.decline_project_invite(self) unless @skip_notification
 
     super
   end

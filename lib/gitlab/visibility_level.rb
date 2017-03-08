@@ -15,7 +15,7 @@ module Gitlab
 
       scope :public_to_user, -> (user) do
         if user
-          if user.admin?
+          if user.admin_or_auditor?
             all
           elsif !user.external?
             public_and_internal_only

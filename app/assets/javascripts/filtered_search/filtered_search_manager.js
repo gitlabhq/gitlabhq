@@ -3,7 +3,12 @@
     constructor(page) {
       this.filteredSearchInput = document.querySelector('.filtered-search');
       this.clearSearchButton = document.querySelector('.clear-search');
+      this.tokensContainer = document.querySelector('.tokens-container');
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
+
+      if (page === 'issues') {
+        this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
+      }
 
       if (this.filteredSearchInput) {
         this.tokenizer = gl.FilteredSearchTokenizer;
@@ -27,36 +32,62 @@
       this.handleFormSubmit = this.handleFormSubmit.bind(this);
       this.setDropdownWrapper = this.dropdownManager.setDropdown.bind(this.dropdownManager);
       this.toggleClearSearchButtonWrapper = this.toggleClearSearchButton.bind(this);
+      this.handleInputPlaceholderWrapper = this.handleInputPlaceholder.bind(this);
+      this.handleInputVisualTokenWrapper = this.handleInputVisualToken.bind(this);
       this.checkForEnterWrapper = this.checkForEnter.bind(this);
       this.clearSearchWrapper = this.clearSearch.bind(this);
       this.checkForBackspaceWrapper = this.checkForBackspace.bind(this);
+      this.removeSelectedTokenWrapper = this.removeSelectedToken.bind(this);
+      this.unselectEditTokensWrapper = this.unselectEditTokens.bind(this);
+      this.editTokenWrapper = this.editToken.bind(this);
       this.tokenChange = this.tokenChange.bind(this);
 
       this.filteredSearchInput.form.addEventListener('submit', this.handleFormSubmit);
       this.filteredSearchInput.addEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.addEventListener('input', this.toggleClearSearchButtonWrapper);
+      this.filteredSearchInput.addEventListener('input', this.handleInputPlaceholderWrapper);
+      this.filteredSearchInput.addEventListener('input', this.handleInputVisualTokenWrapper);
       this.filteredSearchInput.addEventListener('keydown', this.checkForEnterWrapper);
       this.filteredSearchInput.addEventListener('keyup', this.checkForBackspaceWrapper);
       this.filteredSearchInput.addEventListener('click', this.tokenChange);
       this.filteredSearchInput.addEventListener('keyup', this.tokenChange);
+      this.tokensContainer.addEventListener('click', FilteredSearchManager.selectToken);
+      this.tokensContainer.addEventListener('dblclick', this.editTokenWrapper);
       this.clearSearchButton.addEventListener('click', this.clearSearchWrapper);
+      document.addEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
+      document.addEventListener('click', this.unselectEditTokensWrapper);
+      document.addEventListener('keydown', this.removeSelectedTokenWrapper);
     }
 
     unbindEvents() {
       this.filteredSearchInput.form.removeEventListener('submit', this.handleFormSubmit);
       this.filteredSearchInput.removeEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.removeEventListener('input', this.toggleClearSearchButtonWrapper);
+      this.filteredSearchInput.removeEventListener('input', this.handleInputPlaceholderWrapper);
+      this.filteredSearchInput.removeEventListener('input', this.handleInputVisualTokenWrapper);
       this.filteredSearchInput.removeEventListener('keydown', this.checkForEnterWrapper);
       this.filteredSearchInput.removeEventListener('keyup', this.checkForBackspaceWrapper);
       this.filteredSearchInput.removeEventListener('click', this.tokenChange);
       this.filteredSearchInput.removeEventListener('keyup', this.tokenChange);
+      this.tokensContainer.removeEventListener('click', FilteredSearchManager.selectToken);
+      this.tokensContainer.removeEventListener('dblclick', this.editTokenWrapper);
       this.clearSearchButton.removeEventListener('click', this.clearSearchWrapper);
+      document.removeEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
+      document.removeEventListener('click', this.unselectEditTokensWrapper);
+      document.removeEventListener('keydown', this.removeSelectedTokenWrapper);
     }
 
     checkForBackspace(e) {
       // 8 = Backspace Key
       // 46 = Delete Key
       if (e.keyCode === 8 || e.keyCode === 46) {
+        const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+
+        if (this.filteredSearchInput.value === '' && lastVisualToken) {
+          this.filteredSearchInput.value = gl.FilteredSearchVisualTokens.getLastTokenPartial();
+          gl.FilteredSearchVisualTokens.removeLastTokenPartial();
+        }
+
         // Reposition dropdown so that it is aligned with cursor
         this.dropdownManager.updateCurrentDropdownOffset();
       }
@@ -86,11 +117,69 @@
       }
     }
 
-    toggleClearSearchButton(e) {
-      if (e.target.value) {
-        this.clearSearchButton.classList.remove('hidden');
-      } else {
-        this.clearSearchButton.classList.add('hidden');
+    static selectToken(e) {
+      const button = e.target.closest('.selectable');
+
+      if (button) {
+        e.preventDefault();
+        e.stopPropagation();
+        gl.FilteredSearchVisualTokens.selectToken(button);
+      }
+    }
+
+    unselectEditTokens(e) {
+      const inputContainer = document.querySelector('.filtered-search-input-container');
+      const isElementInFilteredSearch = inputContainer && inputContainer.contains(e.target);
+      const isElementInFilterDropdown = e.target.closest('.filter-dropdown') !== null;
+      const isElementTokensContainer = e.target.classList.contains('tokens-container');
+
+      if ((!isElementInFilteredSearch && !isElementInFilterDropdown) || isElementTokensContainer) {
+        gl.FilteredSearchVisualTokens.moveInputToTheRight();
+        this.dropdownManager.resetDropdowns();
+      }
+    }
+
+    editToken(e) {
+      const token = e.target.closest('.js-visual-token');
+
+      if (token) {
+        gl.FilteredSearchVisualTokens.editToken(token);
+        this.tokenChange();
+      }
+    }
+
+    toggleClearSearchButton() {
+      const query = gl.DropdownUtils.getSearchQuery();
+      const hidden = 'hidden';
+      const hasHidden = this.clearSearchButton.classList.contains(hidden);
+
+      if (query.length === 0 && !hasHidden) {
+        this.clearSearchButton.classList.add(hidden);
+      } else if (query.length && hasHidden) {
+        this.clearSearchButton.classList.remove(hidden);
+      }
+    }
+
+    handleInputPlaceholder() {
+      const query = gl.DropdownUtils.getSearchQuery();
+      const placeholder = 'Search or filter results...';
+      const currentPlaceholder = this.filteredSearchInput.placeholder;
+
+      if (query.length === 0 && currentPlaceholder !== placeholder) {
+        this.filteredSearchInput.placeholder = placeholder;
+      } else if (query.length > 0 && currentPlaceholder !== '') {
+        this.filteredSearchInput.placeholder = '';
+      }
+    }
+
+    removeSelectedToken(e) {
+      // 8 = Backspace Key
+      // 46 = Delete Key
+      if (e.keyCode === 8 || e.keyCode === 46) {
+        gl.FilteredSearchVisualTokens.removeSelectedToken();
+        this.handleInputPlaceholder();
+
+        this.toggleClearSearchButton();
       }
     }
 
@@ -98,9 +187,65 @@
       e.preventDefault();
 
       this.filteredSearchInput.value = '';
+
+      const removeElements = [];
+
+      [].forEach.call(this.tokensContainer.children, (t) => {
+        if (t.classList.contains('js-visual-token')) {
+          removeElements.push(t);
+        }
+      });
+
+      removeElements.forEach((el) => {
+        el.parentElement.removeChild(el);
+      });
+
       this.clearSearchButton.classList.add('hidden');
+      this.handleInputPlaceholder();
 
       this.dropdownManager.resetDropdowns();
+    }
+
+    handleInputVisualToken() {
+      const input = this.filteredSearchInput;
+      const { tokens, searchToken }
+        = gl.FilteredSearchTokenizer.processTokens(input.value);
+      const { isLastVisualTokenValid }
+        = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+
+      if (isLastVisualTokenValid) {
+        tokens.forEach((t) => {
+          input.value = input.value.replace(`${t.key}:${t.symbol}${t.value}`, '');
+          gl.FilteredSearchVisualTokens.addFilterVisualToken(t.key, `${t.symbol}${t.value}`);
+        });
+
+        const fragments = searchToken.split(':');
+        if (fragments.length > 1) {
+          const inputValues = fragments[0].split(' ');
+          const tokenKey = inputValues.last();
+
+          if (inputValues.length > 1) {
+            inputValues.pop();
+            const searchTerms = inputValues.join(' ');
+
+            input.value = input.value.replace(searchTerms, '');
+            gl.FilteredSearchVisualTokens.addSearchVisualToken(searchTerms);
+          }
+
+          gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenKey);
+          input.value = input.value.replace(`${tokenKey}:`, '');
+        }
+      } else {
+        // Keep listening to token until we determine that the user is done typing the token value
+        const valueCompletedRegex = /([~%@]{0,1}".+")|([~%@]{0,1}'.+')|^((?![~%@]')(?![~%@]")(?!')(?!")).*/g;
+
+        if (searchToken.match(valueCompletedRegex) && input.value[input.value.length - 1] === ' ') {
+          gl.FilteredSearchVisualTokens.addFilterVisualToken(searchToken);
+
+          // Trim the last space as seen in the if statement above
+          input.value = input.value.replace(searchToken, '').trim();
+        }
+      }
     }
 
     handleFormSubmit(e) {
@@ -111,7 +256,7 @@
     loadSearchParamsFromURL() {
       const params = gl.utils.getUrlParamsArray();
       const usernameParams = this.getUsernameParams();
-      const inputValues = [];
+      let hasFilteredSearch = false;
 
       params.forEach((p) => {
         const split = p.split('=');
@@ -122,7 +267,8 @@
         const condition = this.filteredSearchTokenKeys.searchByConditionUrl(p);
 
         if (condition) {
-          inputValues.push(`${condition.tokenKey}:${condition.value}`);
+          hasFilteredSearch = true;
+          gl.FilteredSearchVisualTokens.addFilterVisualToken(condition.tokenKey, condition.value);
         } else {
           // Sanitize value since URL converts spaces into +
           // Replace before decode so that we know what was originally + versus the encoded +
@@ -140,34 +286,37 @@
               quotationsToUse = sanitizedValue.indexOf('"') === -1 ? '"' : '\'';
             }
 
-            inputValues.push(`${sanitizedKey}:${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}`);
+            hasFilteredSearch = true;
+            gl.FilteredSearchVisualTokens.addFilterVisualToken(sanitizedKey, `${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}`);
           } else if (!match && keyParam === 'assignee_id') {
             const id = parseInt(value, 10);
             if (usernameParams[id]) {
-              inputValues.push(`assignee:@${usernameParams[id]}`);
+              hasFilteredSearch = true;
+              gl.FilteredSearchVisualTokens.addFilterVisualToken('assignee', `@${usernameParams[id]}`);
             }
           } else if (!match && keyParam === 'author_id') {
             const id = parseInt(value, 10);
             if (usernameParams[id]) {
-              inputValues.push(`author:@${usernameParams[id]}`);
+              hasFilteredSearch = true;
+              gl.FilteredSearchVisualTokens.addFilterVisualToken('author', `@${usernameParams[id]}`);
             }
           } else if (!match && keyParam === 'search') {
-            inputValues.push(sanitizedValue);
+            hasFilteredSearch = true;
+            this.filteredSearchInput.value = sanitizedValue;
           }
         }
       });
 
-      // Trim the last space value
-      this.filteredSearchInput.value = inputValues.join(' ');
-
-      if (inputValues.length > 0) {
+      if (hasFilteredSearch) {
         this.clearSearchButton.classList.remove('hidden');
+        this.handleInputPlaceholder();
       }
     }
 
     search() {
       const paths = [];
-      const { tokens, searchToken } = this.tokenizer.processTokens(this.filteredSearchInput.value);
+      const { tokens, searchToken }
+        = this.tokenizer.processTokens(gl.DropdownUtils.getSearchQuery());
       const currentState = gl.utils.getParameterByName('state') || 'opened';
       paths.push(`state=${currentState}`);
 

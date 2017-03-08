@@ -54,6 +54,10 @@ module Files
     def validate
       allowed = ::Gitlab::UserAccess.new(current_user, project: project).can_push_to_branch?(@target_branch)
 
+      if project.above_size_limit?
+        raise_error(Gitlab::RepositorySizeError.new(project).commit_error)
+      end
+
       unless allowed
         raise_error("You are not allowed to push into this branch")
       end
@@ -74,6 +78,10 @@ module Files
       if result[:status] == :error
         raise_error("Something went wrong when we tried to create #{@target_branch} for you: #{result[:message]}")
       end
+    end
+
+    def push_rule
+      project.push_rule
     end
   end
 end

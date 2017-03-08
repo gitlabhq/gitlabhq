@@ -28,7 +28,11 @@ module Banzai
       end
 
       def build_url(uri)
-        File.join(Gitlab.config.gitlab.url, project.path_with_namespace, uri)
+        if Gitlab::Geo.secondary?
+          File.join(Gitlab::Geo.primary_node.url, context[:project].path_with_namespace, uri)
+        else
+          File.join(Gitlab.config.gitlab.url, context[:project].path_with_namespace, uri)
+        end
       end
 
       def project

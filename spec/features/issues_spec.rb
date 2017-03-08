@@ -147,6 +147,17 @@ describe 'Issues', feature: true do
       expect(page).to have_content 'foobar'
       expect(page.all('.no-comments').first.text).to eq "0"
     end
+
+    it 'shows weight on issue row' do
+      create(:issue, author: @user, project: project, weight: 2)
+
+      visit namespace_project_issues_path(project.namespace, project)
+
+      page.within(first('.issue-info')) do
+        expect(page).to have_selector('.fa-balance-scale')
+        expect(page).to have_content(2)
+      end
+    end
   end
 
   describe 'Filter issue' do
@@ -488,6 +499,27 @@ describe 'Issues', feature: true do
 
         visit namespace_project_issue_path(project.namespace, project, issue)
         expect(page).to have_content issue.assignee.name
+      end
+    end
+  end
+
+  describe 'update weight from issue#show', js: true do
+    let!(:issue) { create(:issue, project: project) }
+
+    before do
+      visit namespace_project_issue_path(project.namespace, project, issue)
+    end
+
+    it 'allows user to update to a weight' do
+      page.within('.weight') do
+        expect(page).to have_content "None"
+        click_link 'Edit'
+
+        find('.dropdown-content a', text: '1').click
+
+        page.within('.value') do
+          expect(page).to have_content "1"
+        end
       end
     end
   end

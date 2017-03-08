@@ -225,6 +225,16 @@
   }
 }
 
+.project-result {
+  .project-name {
+    font-weight: bold;
+  }
+
+  .project-path {
+    color: $project-path-color;
+  }
+}
+
 .user-result {
   min-height: 24px;
 

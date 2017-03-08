@@ -200,6 +200,7 @@ describe Notify do
         let(:merge_author) { create(:user) }
         let(:merge_request) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project) }
         let(:merge_request_with_description) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project, description: FFaker::Lorem.sentence) }
+        let(:merge_request_with_approver) { create(:merge_request_with_approver, author: current_user, assignee: assignee, source_project: project, target_project: project) }
 
         describe 'that are new' do
           subject { Notify.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
@@ -239,8 +240,26 @@ describe Notify do
           end
         end
 
+        describe "that are new with approver" do
+          subject do
+            Notify.new_merge_request_email(
+              merge_request_with_approver.assignee_id,
+              merge_request_with_approver.id
+            )
+          end
+
+          it "contains the approvers list" do
+            is_expected.to have_body_text /#{merge_request_with_approver.approvers.first.user.name}/
+          end
+        end
+
         describe 'that are new with a description' do
-          subject { Notify.new_merge_request_email(merge_request_with_description.assignee_id, merge_request_with_description.id) }
+          subject do
+            Notify.new_merge_request_email(
+              merge_request_with_description.assignee_id,
+              merge_request_with_description.id
+            )
+          end
 
           it_behaves_like 'it should show Gmail Actions View Merge request link'
           it_behaves_like "an unsubscribeable thread"
@@ -343,6 +362,94 @@ describe Notify do
 
           it 'contains a link to the merge request' do
             is_expected.to have_body_text /#{namespace_project_merge_request_path project.namespace, project, merge_request}/
+          end
+        end
+
+        describe 'that are approved' do
+          let(:last_approver) { create(:user) }
+          subject { Notify.approved_merge_request_email(recipient.id, merge_request.id, last_approver.id) }
+
+          before do
+            merge_request.approvals.create(user: merge_request.assignee)
+            merge_request.approvals.create(user: last_approver)
+          end
+
+          it_behaves_like 'a multiple recipients email'
+          it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+            let(:model) { merge_request }
+          end
+          it_behaves_like 'it should show Gmail Actions View Merge request link'
+          it_behaves_like 'an unsubscribeable thread'
+
+          it 'is sent as the last approver' do
+            sender = subject.header[:from].addrs[0]
+            expect(sender.display_name).to eq(last_approver.name)
+            expect(sender.address).to eq(gitlab_sender)
+          end
+
+          it 'has the correct subject' do
+            is_expected.to have_subject /#{merge_request.title} \(#{merge_request.to_reference}\)/
+          end
+
+          it 'contains the new status' do
+            is_expected.to have_body_text /approved/i
+          end
+
+          it 'contains a link to the merge request' do
+            is_expected.to have_body_text /#{namespace_project_merge_request_path project.namespace, project, merge_request}/
+          end
+
+          it 'contains the names of all of the approvers' do
+            is_expected.to have_body_text /#{merge_request.assignee.name}/
+            is_expected.to have_body_text /#{last_approver.name}/
+          end
+
+          context 'when merge request has no assignee' do
+            before do
+              merge_request.update(assignee: nil)
+            end
+
+            it 'does not show the assignee' do
+              is_expected.not_to have_body_text 'Assignee'
+            end
+          end
+        end
+
+        describe 'that are unapproved' do
+          let(:last_unapprover) { create(:user) }
+          subject { Notify.unapproved_merge_request_email(recipient.id, merge_request.id, last_unapprover.id) }
+
+          before do
+            merge_request.approvals.create(user: merge_request.assignee)
+          end
+
+          it_behaves_like 'a multiple recipients email'
+          it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+            let(:model) { merge_request }
+          end
+          it_behaves_like 'it should show Gmail Actions View Merge request link'
+          it_behaves_like 'an unsubscribeable thread'
+
+          it 'is sent as the last unapprover' do
+            sender = subject.header[:from].addrs[0]
+            expect(sender.display_name).to eq(last_unapprover.name)
+            expect(sender.address).to eq(gitlab_sender)
+          end
+
+          it 'has the correct subject' do
+            is_expected.to have_subject /#{merge_request.title} \(#{merge_request.to_reference}\)/
+          end
+
+          it 'contains the new status' do
+            is_expected.to have_body_text /unapproved/i
+          end
+
+          it 'contains a link to the merge request' do
+            is_expected.to have_body_text /#{namespace_project_merge_request_path project.namespace, project, merge_request}/
+          end
+
+          it 'contains the names of all of the approvers' do
+            is_expected.to have_body_text /#{merge_request.assignee.name}/
           end
         end
 
@@ -1170,6 +1277,32 @@ describe Notify do
 
     it 'contains a link to the diff' do
       is_expected.to have_body_text /#{diff_path}/
+    end
+  end
+
+  describe 'admin notification' do
+    let(:example_site_path) { root_path }
+    let(:user) { create(:user) }
+
+    subject { @email = Notify.send_admin_notification(user.id, 'Admin announcement', 'Text') }
+
+    it 'is sent as the author' do
+      sender = subject.header[:from].addrs[0]
+      expect(sender.display_name).to eq("GitLab")
+      expect(sender.address).to eq(gitlab_sender)
+    end
+
+    it 'is sent to recipient' do
+      should deliver_to user.email
+    end
+
+    it 'has the correct subject' do
+      should have_subject 'Admin announcement'
+    end
+
+    it 'includes unsubscribe link' do
+      unsubscribe_link = "http://localhost/unsubscribes/#{Base64.urlsafe_encode64(user.email)}"
+      should have_body_text(unsubscribe_link)
     end
   end
 

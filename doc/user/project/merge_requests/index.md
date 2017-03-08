@@ -36,6 +36,13 @@ you hide discussions that are no longer relevant.
 
 [Read more about resolving discussion comments in merge requests reviews.](merge_request_discussion_resolution.md)
 
+## Squash and merge
+
+GitLab allows you to squash all changes present in a merge request into a single
+commit when merging, to allow for a neater commit history.
+
+[Learn more about squash and merge.](squash_and_merge.md)
+
 ## Resolve conflicts
 
 When a merge request has conflicts, GitLab may provide the option to resolve
@@ -66,6 +73,26 @@ completely ready, GitLab blocks the "Accept" button for merge requests that
 have been marked as a **Work In Progress**.
 
 [Learn more about settings a merge request as "Work In Progress".](work_in_progress_merge_requests.md)
+
+## Merge request approvals
+
+> Included in [GitLab Enterprise Edition Starter][products].
+
+If you want to make sure every merge request is approved by one or more people,
+you can enforce this workflow by using merge request approvals. Merge request
+approvals allow you to set the number of necessary approvals and predefine a
+list of approvers that will need to approve every merge request in a project.
+
+[Read more about merge request approvals.](merge_request_approvals.md)
+
+## Fast-forward merge requests
+
+> Included in [GitLab Enterprise Edition Starter][products].
+
+If you prefer a linear Git history and a way to accept merge requests without
+creating merge commits, you can configure this on a per-project basis.
+
+[Read more about fast-forward merge requests.](fast_forward_merge.md)
 
 ## Ignore whitespace changes in Merge Request diff view
 
@@ -167,3 +194,4 @@ git checkout origin/merge-requests/1
 ```
 
 [protected branches]: ../protected_branches.md
+[products]: https://about.gitlab.com/products/ "GitLab products page"

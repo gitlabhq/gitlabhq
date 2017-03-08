@@ -1,5 +1,9 @@
 - @no_container = true
 - page_title "Pipelines"
+
+= content_for :flash_message do
+  = render 'shared/shared_runners_minutes_limit', project: @project
+
 = render "projects/pipelines/head"
 
 %div{ class: container_class }

@@ -1,0 +1,8 @@
+.form-group
+  = form.label :shared_runners_minutes, 'Build minutes quota', class: 'control-label col-sm-2'
+  .col-sm-10
+    = form.number_field :shared_runners_minutes, class: 'form-control'
+    .help-block
+      Set the maximum number of build minutes that a group can use on shared Runners per month.
+      0 for unlimited.
+      = link_to icon('question-circle'), help_page_path("user/admin_area/settings/continuous_integration", anchor: "shared-runners-build-minutes-quota"), target: '_blank'

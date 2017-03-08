@@ -152,6 +152,12 @@ ul.content-list {
         margin-top: 3px;
         margin-bottom: 4px;
 
+        &.btn-ldap-override {
+          @media (min-width: $screen-sm-min) {
+            margin-bottom: 0;
+          }
+        }
+
         &:last-child {
           margin-right: 0;
 

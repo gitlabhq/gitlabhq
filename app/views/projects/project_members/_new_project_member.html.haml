@@ -15,4 +15,5 @@
     .help-block.append-bottom-10
       On this date, the member(s) will automatically lose access to this project.
   = f.submit "Add to project", class: "btn btn-create"
-  = link_to "Import", import_namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-default", title: "Import members from another project"
+  - if can?(current_user, :admin_project_member, @project) && !membership_locked?
+    = link_to "Import", import_namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-default", title: "Import members from another project"

@@ -1,4 +1,8 @@
-.mr-state-widget
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('common_vue')
+  = page_specific_javascript_bundle_tag('mr_widget_ee')
+
+#merge-request-widget-app.mr-state-widget{ 'data-endpoint'=> merge_request_path(@merge_request), 'data-approval-pending' => (!@merge_request.approved?).to_s }
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
     -# After conflicts are resolved, the user is redirected back to the MR page.
@@ -7,8 +11,12 @@
     -# We send this param to get the widget to treat the MR as having no more conflicts.
     - resolved_conflicts = params[:resolved_conflicts]
 
+    - if Gitlab::Geo.secondary?
+      = render 'projects/merge_requests/widget/open/geo'
     - if @project.archived?
       = render 'projects/merge_requests/widget/open/archived'
+    - elsif @project.above_size_limit?
+      = render 'projects/merge_requests/widget/open/size_limit_reached'
     - elsif @merge_request.branch_missing?
       = render 'projects/merge_requests/widget/open/missing_branch'
     - elsif @merge_request.has_no_commits?
@@ -25,6 +33,8 @@
       = render 'projects/merge_requests/widget/open/not_allowed'
     - elsif !@merge_request.mergeable_ci_state? && (@pipeline.failed? || @pipeline.canceled?)
       = render 'projects/merge_requests/widget/open/build_failed'
+    - elsif @merge_request.should_be_rebased?
+      = render 'projects/merge_requests/widget/open/rebase'
     - elsif !@merge_request.mergeable_discussions_state?
       = render 'projects/merge_requests/widget/open/unresolved_discussions'
     - elsif @merge_request.can_be_merged? || resolved_conflicts
@@ -43,3 +53,11 @@
           #{"Issue".pluralize(mr_issues_mentioned_but_not_closing.size)}
           != markdown issues_sentence(mr_issues_mentioned_but_not_closing), pipeline: :gfm, author: @merge_request.author
           #{mr_issues_mentioned_but_not_closing.size > 1 ? 'are' : 'is'} mentioned but will not be closed.
+
+  - if @merge_request.requires_approve?
+    .mr-widget-footer.mr-approvals-footer{ 'v-show' => '!showApprovals' }
+      = icon("spinner spin")
+      Checking approval status for this merge request.
+    .approvals-components{ 'v-show' => 'showApprovals' }
+      = render 'projects/merge_requests/widget/open/approvals_body'
+      = render 'projects/merge_requests/widget/open/approvals_footer'

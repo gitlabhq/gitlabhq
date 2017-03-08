@@ -1,0 +1,13 @@
+- if project.builds_enabled?
+  %li
+    %span.light Shared Runners:
+    %strong
+      - if project.shared_runners_enabled?
+        Enabled
+        - if project.shared_runners_minutes_limit_enabled?
+          - limit = project.actual_shared_runners_minutes_limit.to_i
+          (Limited to #{limit} build minutes per month)
+        - else
+          (Unlimited build minutes)
+      - else
+        Disabled

@@ -131,6 +131,28 @@ describe GitPushService, services: true do
     end
   end
 
+  describe "ES indexing" do
+    before do
+      stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+    end
+
+    after do
+      stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
+    end
+
+    it "does not trigger indexer when push to non-default branch" do
+      expect_any_instance_of(Gitlab::Elastic::Indexer).not_to receive(:run)
+
+      execute_service(project, user, @oldrev, @newrev, 'refs/heads/other')
+    end
+
+    it "triggers indexer when push to default branch" do
+      expect_any_instance_of(Gitlab::Elastic::Indexer).to receive(:run)
+
+      execute_service(project, user, @oldrev, @newrev, 'refs/heads/master')
+    end
+  end
+
   describe "Push Event" do
     before do
       service = execute_service(project, user, @oldrev, @newrev, @ref )
@@ -217,7 +239,9 @@ describe GitPushService, services: true do
       it "when pushing a branch for the first time with an existing branch permission configured" do
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
-        create(:protected_branch, :no_one_can_push, :developers_can_merge, project: project, name: 'master')
+        create(:protected_branch, :no_one_can_push, :developers_can_merge,
+               :remove_default_access_levels,
+               project: project, name: 'master')
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
         expect_any_instance_of(ProtectedBranches::CreateService).not_to receive(:execute)
@@ -424,11 +448,11 @@ describe GitPushService, services: true do
         stub_jira_urls("JIRA-1")
 
         allow(closing_commit).to receive_messages({
-                                                    issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
-                                                    safe_message: message,
-                                                    author_name: commit_author.name,
-                                                    author_email: commit_author.email
-                                                  })
+          issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
+          safe_message: message,
+          author_name: commit_author.name,
+          author_email: commit_author.email
+        })
 
         allow(project.repository).to receive_messages(commits_between: [closing_commit])
       end

@@ -17,6 +17,12 @@
           Forked from
           = link_to project_path(forked_from_project) do
             = forked_from_project.namespace.try(:name)
+      - if @project.mirror?
+        - import_url = @project.safe_import_url
+        %p
+          Mirrored from #{link_to import_url, import_url}.
+          %br
+          = render "shared/mirror_status"
 
     .project-repo-buttons
       .count-buttons

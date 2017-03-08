@@ -328,6 +328,29 @@ module SlashCommands
       @updates[:target_branch] = branch_name if project.repository.branch_names.include?(branch_name)
     end
 
+    desc 'Set weight'
+    params Issue::WEIGHT_RANGE.to_s.squeeze('.').tr('.', '-')
+    condition do
+      issuable.respond_to?(:weight) &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
+    end
+    command :weight do |weight|
+      if Issue.weight_filter_options.include?(weight.to_i)
+        @updates[:weight] = weight.to_i
+      end
+    end
+
+    desc 'Clear weight'
+    condition do
+      issuable.persisted? &&
+        issuable.respond_to?(:weight) &&
+        issuable.weight? &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
+    end
+    command :clear_weight do
+      @updates[:weight] = nil
+    end
+
     def find_label_ids(labels_param)
       label_ids_by_reference = extract_references(labels_param, :label).map(&:id)
       labels_ids_by_name = LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split).execute.select(:id)

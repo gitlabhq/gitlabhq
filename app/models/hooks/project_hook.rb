@@ -1,4 +1,8 @@
 class ProjectHook < WebHook
+  include CustomModelNaming
+
+  self.singular_route_key = :hook
+
   belongs_to :project
 
   scope :issue_hooks, -> { where(issues_events: true) }

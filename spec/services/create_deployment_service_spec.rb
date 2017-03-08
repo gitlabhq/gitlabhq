@@ -221,7 +221,7 @@ describe CreateDeploymentService, services: true do
         { environment: { name: 'production', url: 'http://gitlab.com' } }
       end
 
-      context 'when build succeeds' do
+      context 'when pipeline succeeds' do
         it_behaves_like 'does create environment and deployment' do
           let(:deployable) { build }
 

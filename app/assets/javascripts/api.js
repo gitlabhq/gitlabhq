@@ -7,10 +7,12 @@
     namespacesPath: "/api/:version/namespaces.json",
     groupProjectsPath: "/api/:version/groups/:id/projects.json",
     projectsPath: "/api/:version/projects.json?simple=true",
+    allProjectsPath: "/api/:version/projects/all.json?simple=true", // Deprecated. Valid for API v3 only.
     labelsPath: "/:namespace_path/:project_path/labels",
     licensePath: "/api/:version/templates/licenses/:key",
     gitignorePath: "/api/:version/templates/gitignores/:key",
     gitlabCiYmlPath: "/api/:version/templates/gitlab_ci_ymls/:key",
+    ldapGroupsPath: "/api/:version/ldap/:provider/groups.json",
     dockerfilePath: "/api/:version/templates/dockerfiles/:key",
     issuableTemplatePath: "/:namespace_path/:project_path/templates/:type/:key",
     group: function(group_id, callback) {
@@ -54,6 +56,24 @@
     // Return projects list. Filtered by query
     projects: function(query, order, callback) {
       var url = Api.buildUrl(Api.projectsPath);
+      return $.ajax({
+        url: url,
+        data: {
+          search: query,
+          order_by: order,
+          per_page: 20
+        },
+        dataType: "json"
+      }).done(function(projects) {
+        return callback(projects);
+      });
+    },
+    // Deprecated and should be deleted for 9.1
+    // Also the 'Api.allProjectsPath' should be deleted as well.
+    // Basically, the whole commit that adds this comment should be reverted when API v4 is frozen (9.1)
+    // Details here: https://gitlab.com/gitlab-org/gitlab-ce/issues/28853#note_24410695
+    allProjects: function(query, order, callback) {
+      var url = Api.buildUrl(Api.allProjectsPath);
       return $.ajax({
         url: url,
         data: {
@@ -143,6 +163,23 @@
         url = gon.relative_url_root + url;
       }
       return url.replace(':version', gon.api_version);
+    },
+    ldap_groups: function(query, provider, callback) {
+      var url;
+      url = Api.buildUrl(Api.ldapGroupsPath);
+      url = url.replace(':provider', provider);
+      return $.ajax({
+        url: url,
+        data: {
+          private_token: gon.api_token,
+          search: query,
+          per_page: 20,
+          active: true
+        },
+        dataType: "json"
+      }).done(function(groups) {
+        return callback(groups);
+      });
     }
   };
 

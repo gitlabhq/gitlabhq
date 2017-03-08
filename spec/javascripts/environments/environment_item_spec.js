@@ -26,6 +26,9 @@ describe('Environment item', () => {
           model: mockItem,
           canCreateDeployment: false,
           canReadEnvironment: true,
+          toggleDeployBoard: () => {},
+          store: {},
+          service: {},
         },
       });
     });
@@ -114,6 +117,9 @@ describe('Environment item', () => {
           model: environment,
           canCreateDeployment: true,
           canReadEnvironment: true,
+          toggleDeployBoard: () => {},
+          store: {},
+          service: {},
         },
       });
     });

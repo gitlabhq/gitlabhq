@@ -232,6 +232,13 @@ describe API::V3::Issues, api: true  do
         expect(json_response).to be_an Array
         expect(response_dates).to eq(response_dates.sort)
       end
+
+      it 'matches V3 response schema' do
+        get v3_api('/issues', user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v3/issues')
+      end
     end
   end
 
@@ -634,6 +641,7 @@ describe API::V3::Issues, api: true  do
       expect(json_response['assignee']).to be_a Hash
       expect(json_response['author']).to be_a Hash
       expect(json_response['confidential']).to be_falsy
+      expect(json_response['weight']).to be_nil
     end
 
     it "returns a project issue by id" do
@@ -717,13 +725,14 @@ describe API::V3::Issues, api: true  do
   describe "POST /projects/:id/issues" do
     it 'creates a new project issue' do
       post v3_api("/projects/#{project.id}/issues", user),
-        title: 'new issue', labels: 'label, label2'
+        title: 'new issue', labels: 'label, label2', weight: 3
 
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(%w(label label2))
       expect(json_response['confidential']).to be_falsy
+      expect(json_response['weight']).to eq(3)
     end
 
     it 'creates a new confidential project issue' do
@@ -1120,6 +1129,38 @@ describe API::V3::Issues, api: true  do
     end
   end
 
+  describe 'PUT /projects/:id/issues/:issue_id to update weight' do
+    it 'updates an issue with no weight' do
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), weight: 5
+
+      expect(response).to have_http_status(200)
+      expect(json_response['weight']).to eq(5)
+    end
+
+    it 'removes a weight from an issue' do
+      weighted_issue = create(:issue, project: project, weight: 2)
+
+      put v3_api("/projects/#{project.id}/issues/#{weighted_issue.id}", user), weight: nil
+
+      expect(response).to have_http_status(200)
+      expect(json_response['weight']).to be_nil
+    end
+
+    it 'returns 400 if weight is less than minimum weight' do
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), weight: -1
+
+      expect(response).to have_http_status(400)
+      expect(json_response['error']).to eq('weight does not have a valid value')
+    end
+
+    it 'returns 400 if weight is more than maximum weight' do
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), weight: 10
+
+      expect(response).to have_http_status(400)
+      expect(json_response['error']).to eq('weight does not have a valid value')
+    end
+  end
+
   describe "DELETE /projects/:id/issues/:issue_id" do
     it "rejects a non member from deleting an issue" do
       delete v3_api("/projects/#{project.id}/issues/#{issue.id}", non_member)
@@ -1281,6 +1322,6 @@ describe API::V3::Issues, api: true  do
   describe 'time tracking endpoints' do
     let(:issuable) { issue }
 
-    include_examples 'time tracking endpoints', 'issue'
+    include_examples 'V3 time tracking endpoints', 'issue'
   end
 end

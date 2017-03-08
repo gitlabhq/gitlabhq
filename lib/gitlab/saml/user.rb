@@ -36,6 +36,15 @@ module Gitlab
             end
         end
 
+        if admin_groups_enabled? && @user
+          @user.admin =
+            if (auth_hash.groups & Gitlab::Saml::Config.admin_groups).empty?
+              false
+            else
+              true
+            end
+        end
+
         @user
       end
 
@@ -64,6 +73,10 @@ module Gitlab
 
       def auth_hash=(auth_hash)
         @auth_hash = Gitlab::Saml::AuthHash.new(auth_hash)
+      end
+
+      def admin_groups_enabled?
+        !Gitlab::Saml::Config.admin_groups.nil?
       end
     end
   end

@@ -30,6 +30,11 @@
         - if remaining_days.present?
           %span.milestone-stat
             %span.remaining-days= remaining_days
+        - total_weight = milestone.issues_visible_to_user(current_user).sum(:weight)
+        - unless total_weight.zero?
+          %span.milestone-stat
+            Total weight:
+            %strong= total_weight
 
       .milestone-progress-buttons
         %span.tab-issues-buttons

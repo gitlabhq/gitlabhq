@@ -41,6 +41,8 @@
       title: 'Moving an issue will copy the discussion to a different project and close it here. All participants will be notified of the new location.' }
         = icon('question-circle')
 
+= render 'shared/issuable/approvals', issuable: issuable, form: form
+
 = render 'shared/issuable/form/branch_chooser', issuable: issuable, form: form
 
 = render 'shared/issuable/form/merge_params', issuable: issuable
@@ -81,5 +83,12 @@
         = link_to 'Delete', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), data: { confirm: "#{issuable.human_class_name} will be removed! Are you sure?" },
                                                                                                   method: :delete, class: 'btn btn-danger btn-grouped'
       = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), class: 'btn btn-grouped btn-cancel'
+
+%li.unsaved-approvers.hide.approver.approver-template{ id: "user_{user_id}" }
+  = link_to "{approver_name}", "#"
+  .pull-right
+    = link_to "#", data: { confirm: "Are you sure you want to remove approver {approver_name}"}, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+      = icon("sign-out")
+      Remove
 
 = form.hidden_field :lock_version

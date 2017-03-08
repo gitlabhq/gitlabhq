@@ -1,0 +1,30 @@
+%section.ldap-group-links
+  = form_for [group, LdapGroupLink.new], html: { class: 'form-horizontal' } do |f|
+    .form-holder
+      .form-group.clearfix
+        = f.label :cn, class: 'control-label' do
+          LDAP Server
+        .col-sm-10
+          = f.select :provider, ldap_server_select_options, {}, class: 'form-control'
+      .form-group.clearfix
+        = f.label :cn, class: 'control-label' do
+          LDAP Group cn
+        .col-sm-10
+          = f.hidden_field :cn, placeholder: "Ex. QA group", class: "xxlarge ajax-ldap-groups-select input-mn-300"
+          .help-block
+            Synchronize #{group.name}'s members with this LDAP group.
+            %br
+            If you select an LDAP group you do not belong to you will lose ownership of #{group.name}.
+
+      .form-group.clearfix
+        = f.label :group_access, class: 'control-label' do
+          LDAP Access
+        .col-sm-10
+          = f.select :group_access, options_for_select(GroupMember.access_level_roles), {}, class: 'form-control'
+          .help-block
+            Default, minimum permission level for LDAP group members of #{group.name}.
+            %br
+            You can manage permission levels for individual group members in the Members tab.
+
+    .form-actions
+      = f.submit 'Add synchronization', class: "btn btn-create"

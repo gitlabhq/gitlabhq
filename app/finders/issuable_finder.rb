@@ -20,6 +20,7 @@
 #
 class IssuableFinder
   NONE = '0'.freeze
+  VALID_PARAMS = %i(scope state group_id project_id milestone_title assignee_id search label_name sort assignee_username author_id author_username authorized_only due_date iids non_archived weight).freeze
 
   attr_accessor :current_user, :params
 
@@ -39,6 +40,7 @@ class IssuableFinder
     items = by_assignee(items)
     items = by_author(items)
     items = by_label(items)
+    items = by_weight(items)
     items = by_due_date(items)
     items = by_non_archived(items)
     items = by_iids(items)
@@ -76,7 +78,7 @@ class IssuableFinder
     counts[:all] = counts.values.sum
     counts[:opened] += counts[:reopened]
 
-    counts
+    counts.with_indifferent_access
   end
 
   def find_by!(*params)
@@ -343,6 +345,31 @@ class IssuableFinder
     end
 
     items
+  end
+
+  def by_weight(items)
+    return items unless weights?
+
+    if filter_by_no_weight?
+      items.where(weight: [-1, nil])
+    elsif filter_by_any_weight?
+      items.where.not(weight: [-1, nil])
+    else
+      items.where(weight: params[:weight])
+    end
+  end
+
+  def weights?
+    params[:weight].present? && params[:weight] != Issue::WEIGHT_ALL &&
+      klass.column_names.include?('weight')
+  end
+
+  def filter_by_no_weight?
+    params[:weight] == Issue::WEIGHT_NONE
+  end
+
+  def filter_by_any_weight?
+    params[:weight] == Issue::WEIGHT_ANY
   end
 
   def by_due_date(items)

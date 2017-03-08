@@ -83,7 +83,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource)
-    current_application_settings.after_sign_out_path.presence || new_user_session_path
+    if Gitlab::Geo.secondary?
+      Gitlab::Geo.primary_node.oauth_logout_url(@geo_logout_state)
+    else
+      current_application_settings.after_sign_out_path.presence || new_user_session_path
+    end
   end
 
   def can?(object, action, subject)

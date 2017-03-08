@@ -61,6 +61,10 @@ describe Groups::DestroyService, services: true do
 
     context 'potential race conditions' do
       context "when the `GroupDestroyWorker` task runs immediately" do
+        before do
+          DatabaseCleaner.strategy = :deletion
+        end
+
         it "deletes the group" do
           # Commit the contents of this spec's transaction so far
           # so subsequent db connections can see it.

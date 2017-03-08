@@ -52,7 +52,7 @@ module API
           required: true,
           name: :password,
           type: String,
-          desc: 'Passord of the user'
+          desc: 'Password of the user'
         }
       ],
       'bugzilla' => [
@@ -351,7 +351,6 @@ module API
           desc: 'The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`'
         }
       ],
-
       'kubernetes' => [
         {
           required: true,
@@ -420,6 +419,14 @@ module API
           name: :restrict_to_branch,
           type: String,
           desc: 'Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.'
+        }
+      ],
+      'prometheus' => [
+        {
+          required: true,
+          name: :api_url,
+          type: String,
+          desc: 'Prometheus API Base URL, like http://prometheus.example.com/'
         }
       ],
       'pushover' => [
@@ -533,6 +540,53 @@ module API
           type: String,
           desc: 'The password of the user'
         }
+      ],
+      # EE-specific services
+      'jenkins' => [
+        {
+          required: true,
+          name: :jenkins_url,
+          type: String,
+          desc: 'Jenkins root URL like https://jenkins.example.com'
+        },
+        {
+          required: true,
+          name: :project_name,
+          type: String,
+          desc: 'The URL-friendly project name. Example: my_project_name'
+        },
+        {
+          required: false,
+          name: :username,
+          type: String,
+          desc: 'A user with access to the Jenkins server, if applicable'
+        },
+        {
+          required: false,
+          name: :password,
+          type: String,
+          desc: 'The password of the user'
+        }
+      ],
+      'jenkins-deprecated' => [
+        {
+          required: true,
+          name: :project_url,
+          type: String,
+          desc: 'Jenkins project URL like http://jenkins.example.com/job/my-project/',
+        },
+        {
+          required: false,
+          name: :pass_unstable,
+          type: Boolean,
+          desc: 'Multi-project setup enabled?',
+        },
+        {
+          required: false,
+          name: :multiproject_enabled,
+          type: Boolean,
+          desc: 'Should unstable builds be treated as passing?'
+        }
       ]
     }
 
@@ -558,11 +612,14 @@ module API
       SlackSlashCommandsService,
       PipelinesEmailService,
       PivotaltrackerService,
+      PrometheusService,
       PushoverService,
       RedmineService,
       SlackService,
       MattermostService,
       TeamcityService,
+      JenkinsService,
+      JenkinsDeprecatedService
     ]
 
     if Rails.env.development?

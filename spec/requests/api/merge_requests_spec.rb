@@ -41,6 +41,7 @@ describe API::MergeRequests, api: true  do
         expect(json_response.first['sha']).to eq(merge_request_merged.diff_head_sha)
         expect(json_response.first['merge_commit_sha']).not_to be_nil
         expect(json_response.first['merge_commit_sha']).to eq(merge_request_merged.merge_commit_sha)
+        expect(json_response.first['squash']).to eq(merge_request_merged.squash)
       end
 
       it "returns an array of all merge_requests" do
@@ -91,6 +92,13 @@ describe API::MergeRequests, api: true  do
         expect(json_response.length).to eq(2)
         expect(json_response.first['title']).to eq merge_request_closed.title
         expect(json_response.first['id']).to eq merge_request_closed.id
+      end
+
+      it 'matches V4 response schema' do
+        get api("/projects/#{project.id}/merge_requests", user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/merge_requests')
       end
 
       context "with ordering" do
@@ -146,9 +154,9 @@ describe API::MergeRequests, api: true  do
     end
   end
 
-  describe "GET /projects/:id/merge_requests/:merge_request_id" do
+  describe "GET /projects/:id/merge_requests/:merge_request_iid" do
     it 'exposes known attributes' do
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
 
       expect(response).to have_http_status(200)
       expect(json_response['id']).to eq(merge_request.id)
@@ -177,7 +185,7 @@ describe API::MergeRequests, api: true  do
     end
 
     it "returns merge_request" do
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
       expect(response).to have_http_status(200)
       expect(json_response['title']).to eq(merge_request.title)
       expect(json_response['iid']).to eq(merge_request.iid)
@@ -187,8 +195,14 @@ describe API::MergeRequests, api: true  do
       expect(json_response['force_close_merge_request']).to be_falsy
     end
 
-    it "returns a 404 error if merge_request_id not found" do
+    it "returns a 404 error if merge_request_iid not found" do
       get api("/projects/#{project.id}/merge_requests/999", user)
+      expect(response).to have_http_status(404)
+    end
+
+    it "returns a 404 error if merge_request `id` is used instead of iid" do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
+
       expect(response).to have_http_status(404)
     end
 
@@ -196,16 +210,16 @@ describe API::MergeRequests, api: true  do
       let!(:merge_request_wip) { create(:merge_request, author: user, assignee: user, source_project: project, target_project: project, title: "WIP: Test", created_at: base_time + 1.second) }
 
       it "returns merge_request" do
-        get api("/projects/#{project.id}/merge_requests/#{merge_request_wip.id}", user)
+        get api("/projects/#{project.id}/merge_requests/#{merge_request_wip.iid}", user)
         expect(response).to have_http_status(200)
         expect(json_response['work_in_progress']).to eq(true)
       end
     end
   end
 
-  describe 'GET /projects/:id/merge_requests/:merge_request_id/commits' do
+  describe 'GET /projects/:id/merge_requests/:merge_request_iid/commits' do
     it 'returns a 200 when merge request is valid' do
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/commits", user)
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/commits", user)
       commit = merge_request.commits.first
 
       expect(response.status).to eq 200
@@ -216,22 +230,34 @@ describe API::MergeRequests, api: true  do
       expect(json_response.first['title']).to eq(commit.title)
     end
 
-    it 'returns a 404 when merge_request_id not found' do
+    it 'returns a 404 when merge_request_iid not found' do
       get api("/projects/#{project.id}/merge_requests/999/commits", user)
+      expect(response).to have_http_status(404)
+    end
+
+    it 'returns a 404 when merge_request id is used instead of iid' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/commits", user)
+
       expect(response).to have_http_status(404)
     end
   end
 
-  describe 'GET /projects/:id/merge_requests/:merge_request_id/changes' do
+  describe 'GET /projects/:id/merge_requests/:merge_request_iid/changes' do
     it 'returns the change information of the merge_request' do
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/changes", user)
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/changes", user)
 
       expect(response.status).to eq 200
       expect(json_response['changes'].size).to eq(merge_request.diffs.size)
     end
 
-    it 'returns a 404 when merge_request_id not found' do
+    it 'returns a 404 when merge_request_iid not found' do
       get api("/projects/#{project.id}/merge_requests/999/changes", user)
+      expect(response).to have_http_status(404)
+    end
+
+    it 'returns a 404 when merge_request id is used instead of iid' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/changes", user)
+
       expect(response).to have_http_status(404)
     end
   end
@@ -246,13 +272,15 @@ describe API::MergeRequests, api: true  do
              author: user,
              labels: 'label, label2',
              milestone_id: milestone.id,
-             remove_source_branch: true
+             remove_source_branch: true,
+             squash: true
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['labels']).to eq(%w(label label2))
         expect(json_response['milestone']['id']).to eq(milestone.id)
         expect(json_response['force_remove_source_branch']).to be_truthy
+        expect(json_response['squash']).to be_truthy
       end
 
       it "returns 422 when source_branch equals target_branch" do
@@ -391,9 +419,69 @@ describe API::MergeRequests, api: true  do
         expect(response).to have_http_status(201)
       end
     end
+
+    context 'the approvals_before_merge param' do
+      def create_merge_request(approvals_before_merge)
+        post api("/projects/#{project.id}/merge_requests", user),
+             title: 'Test merge_request',
+             source_branch: 'feature_conflict',
+             target_branch: 'master',
+             author: user,
+             labels: 'label, label2',
+             milestone_id: milestone.id,
+             approvals_before_merge: approvals_before_merge
+      end
+
+      context 'when the target project has approvals_before_merge set to zero' do
+        before do
+          project.update_attributes(approvals_before_merge: 0)
+          create_merge_request(1)
+        end
+
+        it 'returns a 400' do
+          expect(response).to have_http_status(400)
+        end
+
+        it 'includes the error in the response' do
+          expect(json_response['message']['validate_approvals_before_merge']).not_to be_empty
+        end
+      end
+
+      context 'when the target project has a non-zero approvals_before_merge' do
+        context 'when the approvals_before_merge param is less than or equal to the value in the target project' do
+          before do
+            project.update_attributes(approvals_before_merge: 1)
+            create_merge_request(1)
+          end
+
+          it 'returns a 400' do
+            expect(response).to have_http_status(400)
+          end
+
+          it 'includes the error in the response' do
+            expect(json_response['message']['validate_approvals_before_merge']).not_to be_empty
+          end
+        end
+
+        context 'when the approvals_before_merge param is greater than the value in the target project' do
+          before do
+            project.update_attributes(approvals_before_merge: 1)
+            create_merge_request(2)
+          end
+
+          it 'returns a created status' do
+            expect(response).to have_http_status(201)
+          end
+
+          it 'sets approvals_before_merge of the newly-created MR' do
+            expect(json_response['approvals_before_merge']).to eq(2)
+          end
+        end
+      end
+    end
   end
 
-  describe "DELETE /projects/:id/merge_requests/:merge_request_id" do
+  describe "DELETE /projects/:id/merge_requests/:merge_request_iid" do
     context "when the user is developer" do
       let(:developer) { create(:user) }
 
@@ -402,25 +490,37 @@ describe API::MergeRequests, api: true  do
       end
 
       it "denies the deletion of the merge request" do
-        delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", developer)
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", developer)
         expect(response).to have_http_status(403)
       end
     end
 
     context "when the user is project owner" do
       it "destroys the merge request owners can destroy" do
-        delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
 
         expect(response).to have_http_status(204)
+      end
+
+      it "returns 404 for an invalid merge request IID" do
+        delete api("/projects/#{project.id}/merge_requests/12345", user)
+
+        expect(response).to have_http_status(404)
+      end
+
+      it "returns 404 if the merge request id is used instead of iid" do
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
+
+        expect(response).to have_http_status(404)
       end
     end
   end
 
-  describe "PUT /projects/:id/merge_requests/:merge_request_id/merge" do
+  describe "PUT /projects/:id/merge_requests/:merge_request_iid/merge" do
     let(:pipeline) { create(:ci_pipeline_without_jobs) }
 
     it "returns merge_request in case of success" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
 
       expect(response).to have_http_status(200)
     end
@@ -429,7 +529,7 @@ describe API::MergeRequests, api: true  do
       allow_any_instance_of(MergeRequest).
         to receive(:can_be_merged?).and_return(false)
 
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
 
       expect(response).to have_http_status(406)
       expect(json_response['message']).to eq('Branch cannot be merged')
@@ -437,14 +537,14 @@ describe API::MergeRequests, api: true  do
 
     it "returns 405 if merge_request is not open" do
       merge_request.close
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
       expect(response).to have_http_status(405)
       expect(json_response['message']).to eq('405 Method Not Allowed')
     end
 
     it "returns 405 if merge_request is a work in progress" do
       merge_request.update_attribute(:title, "WIP: #{merge_request.title}")
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
       expect(response).to have_http_status(405)
       expect(json_response['message']).to eq('405 Method Not Allowed')
     end
@@ -452,7 +552,7 @@ describe API::MergeRequests, api: true  do
     it 'returns 405 if the build failed for a merge request that requires success' do
       allow_any_instance_of(MergeRequest).to receive(:mergeable_ci_state?).and_return(false)
 
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
 
       expect(response).to have_http_status(405)
       expect(json_response['message']).to eq('405 Method Not Allowed')
@@ -461,20 +561,28 @@ describe API::MergeRequests, api: true  do
     it "returns 401 if user has no permissions to merge" do
       user2 = create(:user)
       project.team << [user2, :reporter]
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user2)
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user2)
       expect(response).to have_http_status(401)
       expect(json_response['message']).to eq('401 Unauthorized')
     end
 
     it "returns 409 if the SHA parameter doesn't match" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), sha: merge_request.diff_head_sha.reverse
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), sha: merge_request.diff_head_sha.reverse
 
       expect(response).to have_http_status(409)
       expect(json_response['message']).to start_with('SHA does not match HEAD of source branch')
     end
 
     it "succeeds if the SHA parameter matches" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), sha: merge_request.diff_head_sha
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), sha: merge_request.diff_head_sha
+
+      expect(response).to have_http_status(200)
+    end
+
+    it "updates the MR's squash attribute" do
+      expect do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), squash: true
+      end.to change { merge_request.reload.squash }
 
       expect(response).to have_http_status(200)
     end
@@ -483,18 +591,30 @@ describe API::MergeRequests, api: true  do
       allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
 
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), merge_when_pipeline_succeeds: true
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), merge_when_pipeline_succeeds: true
 
       expect(response).to have_http_status(200)
       expect(json_response['title']).to eq('Test')
       expect(json_response['merge_when_pipeline_succeeds']).to eq(true)
     end
+
+    it "returns 404 for an invalid merge request IID" do
+      put api("/projects/#{project.id}/merge_requests/12345/merge", user)
+
+      expect(response).to have_http_status(404)
+    end
+
+    it "returns 404 if the merge request id is used instead of iid" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
+
+      expect(response).to have_http_status(404)
+    end
   end
 
-  describe "PUT /projects/:id/merge_requests/:merge_request_id" do
+  describe "PUT /projects/:id/merge_requests/:merge_request_iid" do
     context "to close a MR" do
       it "returns merge_request" do
-        put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: "close"
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), state_event: "close"
 
         expect(response).to have_http_status(200)
         expect(json_response['state']).to eq('closed')
@@ -502,38 +622,45 @@ describe API::MergeRequests, api: true  do
     end
 
     it "updates title and returns merge_request" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), title: "New title"
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), title: "New title"
       expect(response).to have_http_status(200)
       expect(json_response['title']).to eq('New title')
     end
 
     it "updates description and returns merge_request" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), description: "New description"
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), description: "New description"
       expect(response).to have_http_status(200)
       expect(json_response['description']).to eq('New description')
     end
 
     it "updates milestone_id and returns merge_request" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), milestone_id: milestone.id
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), milestone_id: milestone.id
       expect(response).to have_http_status(200)
       expect(json_response['milestone']['id']).to eq(milestone.id)
     end
 
+    it "updates squash and returns merge_request" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), squash: true
+
+      expect(response).to have_http_status(200)
+      expect(json_response['squash']).to be_truthy
+    end
+
     it "returns merge_request with renamed target_branch" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), target_branch: "wiki"
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), target_branch: "wiki"
       expect(response).to have_http_status(200)
       expect(json_response['target_branch']).to eq('wiki')
     end
 
     it "returns merge_request that removes the source branch" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), remove_source_branch: true
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), remove_source_branch: true
 
       expect(response).to have_http_status(200)
       expect(json_response['force_remove_source_branch']).to be_truthy
     end
 
     it 'allows special label names' do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user),
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user),
         title: 'new issue',
         labels: 'label, label?, label&foo, ?, &'
 
@@ -546,7 +673,7 @@ describe API::MergeRequests, api: true  do
     end
 
     it 'does not update state when title is empty' do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: 'close', title: nil
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), state_event: 'close', title: nil
 
       merge_request.reload
       expect(response).to have_http_status(400)
@@ -554,19 +681,31 @@ describe API::MergeRequests, api: true  do
     end
 
     it 'does not update state when target_branch is empty' do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: 'close', target_branch: nil
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), state_event: 'close', target_branch: nil
 
       merge_request.reload
       expect(response).to have_http_status(400)
       expect(merge_request.state).to eq('opened')
     end
+
+    it "returns 404 for an invalid merge request IID" do
+      put api("/projects/#{project.id}/merge_requests/12345", user), state_event: "close"
+
+      expect(response).to have_http_status(404)
+    end
+
+    it "returns 404 if the merge request id is used instead of iid" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: "close"
+
+      expect(response).to have_http_status(404)
+    end
   end
 
-  describe "POST /projects/:id/merge_requests/:merge_request_id/comments" do
+  describe "POST /projects/:id/merge_requests/:merge_request_iid/comments" do
     it "returns comment" do
       original_count = merge_request.notes.size
 
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/comments", user), note: "My comment"
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/comments", user), note: "My comment"
 
       expect(response).to have_http_status(201)
       expect(json_response['note']).to eq('My comment')
@@ -576,23 +715,29 @@ describe API::MergeRequests, api: true  do
     end
 
     it "returns 400 if note is missing" do
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/comments", user)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/comments", user)
       expect(response).to have_http_status(400)
     end
 
-    it "returns 404 if note is attached to non existent merge request" do
+    it "returns 404 if merge request iid is invalid" do
       post api("/projects/#{project.id}/merge_requests/404/comments", user),
+        note: 'My comment'
+      expect(response).to have_http_status(404)
+    end
+
+    it "returns 404 if merge request id is used instead of iid" do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/comments", user),
         note: 'My comment'
       expect(response).to have_http_status(404)
     end
   end
 
-  describe "GET :id/merge_requests/:merge_request_id/comments" do
+  describe "GET :id/merge_requests/:merge_request_iid/comments" do
     let!(:note)  { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
     let!(:note2) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
 
     it "returns merge_request comments ordered by created_at" do
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/comments", user)
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/comments", user)
 
       expect(response).to have_http_status(200)
       expect(response).to include_pagination_headers
@@ -603,20 +748,25 @@ describe API::MergeRequests, api: true  do
       expect(json_response.last['note']).to eq("another comment on a MR")
     end
 
-    it "returns a 404 error if merge_request_id not found" do
+    it "returns a 404 error if merge_request_iid is invalid" do
       get api("/projects/#{project.id}/merge_requests/999/comments", user)
+      expect(response).to have_http_status(404)
+    end
+
+    it "returns a 404 error if merge_request id is used instead of iid" do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/comments", user)
       expect(response).to have_http_status(404)
     end
   end
 
-  describe 'GET :id/merge_requests/:merge_request_id/closes_issues' do
+  describe 'GET :id/merge_requests/:merge_request_iid/closes_issues' do
     it 'returns the issue that will be closed on merge' do
       issue = create(:issue, project: project)
       mr = merge_request.tap do |mr|
         mr.update_attribute(:description, "Closes #{issue.to_reference(mr.project)}")
       end
 
-      get api("/projects/#{project.id}/merge_requests/#{mr.id}/closes_issues", user)
+      get api("/projects/#{project.id}/merge_requests/#{mr.iid}/closes_issues", user)
 
       expect(response).to have_http_status(200)
       expect(response).to include_pagination_headers
@@ -626,7 +776,7 @@ describe API::MergeRequests, api: true  do
     end
 
     it 'returns an empty array when there are no issues to be closed' do
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/closes_issues", user)
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/closes_issues", user)
 
       expect(response).to have_http_status(200)
       expect(response).to include_pagination_headers
@@ -640,7 +790,7 @@ describe API::MergeRequests, api: true  do
       merge_request = create(:merge_request, :simple, author: user, assignee: user, source_project: jira_project)
       merge_request.update_attribute(:description, "Closes #{issue.to_reference(jira_project)}")
 
-      get api("/projects/#{jira_project.id}/merge_requests/#{merge_request.id}/closes_issues", user)
+      get api("/projects/#{jira_project.id}/merge_requests/#{merge_request.iid}/closes_issues", user)
 
       expect(response).to have_http_status(200)
       expect(response).to include_pagination_headers
@@ -656,22 +806,34 @@ describe API::MergeRequests, api: true  do
       guest = create(:user)
       project.team << [guest, :guest]
 
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/closes_issues", guest)
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/closes_issues", guest)
 
       expect(response).to have_http_status(403)
     end
+
+    it "returns 404 for an invalid merge request IID" do
+      get api("/projects/#{project.id}/merge_requests/12345/closes_issues", user)
+
+      expect(response).to have_http_status(404)
+    end
+
+    it "returns 404 if the merge request id is used instead of iid" do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/closes_issues", user)
+
+      expect(response).to have_http_status(404)
+    end
   end
 
-  describe 'POST :id/merge_requests/:merge_request_id/subscribe' do
+  describe 'POST :id/merge_requests/:merge_request_iid/subscribe' do
     it 'subscribes to a merge request' do
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscribe", admin)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/subscribe", admin)
 
       expect(response).to have_http_status(201)
       expect(json_response['subscribed']).to eq(true)
     end
 
     it 'returns 304 if already subscribed' do
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscribe", user)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/subscribe", user)
 
       expect(response).to have_http_status(304)
     end
@@ -682,26 +844,32 @@ describe API::MergeRequests, api: true  do
       expect(response).to have_http_status(404)
     end
 
+    it 'returns 404 if the merge request id is used instead of iid' do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscribe", user)
+
+      expect(response).to have_http_status(404)
+    end
+
     it 'returns 403 if user has no access to read code' do
       guest = create(:user)
       project.team << [guest, :guest]
 
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscribe", guest)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/subscribe", guest)
 
       expect(response).to have_http_status(403)
     end
   end
 
-  describe 'POST :id/merge_requests/:merge_request_id/unsubscribe' do
+  describe 'POST :id/merge_requests/:merge_request_iid/unsubscribe' do
     it 'unsubscribes from a merge request' do
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/unsubscribe", user)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unsubscribe", user)
 
       expect(response).to have_http_status(201)
       expect(json_response['subscribed']).to eq(false)
     end
 
     it 'returns 304 if not subscribed' do
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/unsubscribe", admin)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unsubscribe", admin)
 
       expect(response).to have_http_status(304)
     end
@@ -712,13 +880,97 @@ describe API::MergeRequests, api: true  do
       expect(response).to have_http_status(404)
     end
 
+    it 'returns 404 if the merge request id is used instead of iid' do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/unsubscribe", user)
+
+      expect(response).to have_http_status(404)
+    end
+
     it 'returns 403 if user has no access to read code' do
       guest = create(:user)
       project.team << [guest, :guest]
 
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/unsubscribe", guest)
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unsubscribe", guest)
 
       expect(response).to have_http_status(403)
+    end
+  end
+
+  describe 'GET :id/merge_requests/:merge_request_id/approvals' do
+    it 'retrieves the approval status' do
+      approver = create :user
+      project.update_attribute(:approvals_before_merge, 2)
+      project.team << [approver, :developer]
+      project.team << [create(:user), :developer]
+      merge_request.approvals.create(user: approver)
+
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approvals", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response['approvals_required']).to eq 2
+      expect(json_response['approvals_left']).to eq 1
+      expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
+      expect(json_response['user_can_approve']).to be false
+      expect(json_response['user_has_approved']).to be false
+    end
+  end
+
+  describe 'POST :id/merge_requests/:merge_request_id/approve' do
+    before { project.update_attribute(:approvals_before_merge, 2) }
+
+    context 'as the author of the merge request' do
+      before { post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", user) }
+
+      it 'returns a 401' do
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'as a valid approver' do
+      let(:approver) { create(:user) }
+
+      before do
+        project.team << [approver, :developer]
+        project.team << [create(:user), :developer]
+
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", approver)
+      end
+
+      it 'approves the merge request' do
+        expect(response.status).to eq(201)
+        expect(json_response['approvals_left']).to eq(1)
+        expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
+        expect(json_response['user_has_approved']).to be true
+      end
+    end
+  end
+
+  describe 'DELETE :id/merge_requests/:merge_request_id/unapprove' do
+    before { project.update_attribute(:approvals_before_merge, 2) }
+
+    context 'as a user who has approved the merge request' do
+      let(:approver) { create(:user) }
+      let(:unapprover) { create(:user) }
+
+      before do
+        project.team << [approver, :developer]
+        project.team << [unapprover, :developer]
+        project.team << [create(:user), :developer]
+        merge_request.approvals.create(user: approver)
+        merge_request.approvals.create(user: unapprover)
+
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/unapprove", unapprover)
+      end
+
+      it 'unapproves the merge request' do
+        expect(response.status).to eq(200)
+        expect(json_response['approvals_left']).to eq(1)
+        usernames = json_response['approved_by'].map { |u| u['user']['username'] }
+        expect(usernames).not_to include(unapprover.username)
+        expect(usernames.size).to be 1
+        expect(json_response['user_has_approved']).to be false
+        expect(json_response['user_can_approve']).to be true
+      end
     end
   end
 

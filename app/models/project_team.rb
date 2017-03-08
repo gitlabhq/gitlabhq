@@ -50,6 +50,8 @@ class ProjectTeam
   end
 
   def add_users(users, access_level, current_user: nil, expires_at: nil)
+    return false if group_member_lock
+
     ProjectMember.add_users_to_projects(
       [project.id],
       users,
@@ -193,5 +195,13 @@ class ProjectTeam
 
   def group
     project.group
+  end
+
+  def group_member_lock
+    group && group.membership_lock
+  end
+
+  def merge_max!(first_hash, second_hash)
+    first_hash.merge!(second_hash) { |_key, old, new| old > new ? old : new }
   end
 end

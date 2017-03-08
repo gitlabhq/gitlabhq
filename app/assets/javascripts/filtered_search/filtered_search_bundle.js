@@ -7,3 +7,6 @@ require('./filtered_search_dropdown');
 require('./filtered_search_manager');
 require('./filtered_search_token_keys');
 require('./filtered_search_tokenizer');
+require('./filtered_search_visual_tokens');
+
+require('./filtered_search_token_keys_with_weights');

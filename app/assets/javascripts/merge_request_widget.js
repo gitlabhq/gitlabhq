@@ -42,7 +42,6 @@ require('./smart_interval');
       //   ci_status_url        - String, URL to use to check CI status
       //
       this.opts = opts;
-      this.$widgetBody = $('.mr-widget-body');
       $('#modal_merge_info').modal({
         show: false
       });
@@ -123,6 +122,23 @@ require('./smart_interval');
       });
     };
 
+    MergeRequestWidget.prototype.rebaseInProgress = function() {
+      return $.ajax({
+        type: 'GET',
+        url: $('.merge-request').data('url'),
+        success: (function(_this) {
+          return function(data) {
+            if (data["rebase_in_progress?"]) {
+              return setTimeout(merge_request_widget.rebaseInProgress, 1000);
+            } else {
+              return location.reload();
+            }
+          };
+        })(this),
+        dataType: 'json'
+      });
+    };
+
     MergeRequestWidget.prototype.cancelPolling = function () {
       this.ciStatusInterval.cancel();
       this.ciEnvironmentStatusInterval.cancel();
@@ -134,6 +150,11 @@ require('./smart_interval');
         this.updateMergeButton(this.status, this.hasCi, $html);
         $('.mr-widget-body').replaceWith($html.find('.mr-widget-body'));
         $('.mr-widget-footer').replaceWith($html.find('.mr-widget-footer'));
+        $('.approvals-components').replaceWith($html.find('.approvals-components'));
+
+        if (gl.compileApprovalsWidget) {
+          gl.compileApprovalsWidget();
+        }
       });
     };
 
@@ -223,7 +244,7 @@ require('./smart_interval');
         environment.ci_success_icon = this.$ciSuccessIcon;
         const templateString = _.unescape($template[0].outerHTML);
         const template = _.template(templateString)(environment);
-        this.$widgetBody.before(template);
+        $('.mr-widget-body').before(template);
       }
     };
 

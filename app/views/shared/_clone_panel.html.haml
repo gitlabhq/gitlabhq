@@ -16,10 +16,14 @@
           = ssh_clone_button(project)
         %li
           = http_clone_button(project)
+        - if alternative_kerberos_url?
+          %li
+            = kerberos_clone_button(project)
 
   = text_field_tag :project_clone, default_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true
   .input-group-btn
     = clipboard_button(clipboard_target: '#project_clone', title: "Copy URL to clipboard")
+    = geo_button(modal_target: '#modal-geo-info') if Gitlab::Geo.secondary?
 
 :javascript
   $('ul.clone-options-dropdown a').on('click',function(e){
@@ -28,3 +32,16 @@
     $('a.clone-dropdown-btn span').text($this.text());
     $('#project_clone').val($this.attr('href'));
   });
+
+  // Change URLs in Geo Clone Dialog information text
+  $('ul.clone-options-dropdown a').on('click',function(e){
+    e.preventDefault();
+    var $this = $(this);
+
+    $('#modal-geo-info').data({
+      cloneUrlSecondary: $this.attr('href'),
+      cloneUrlPrimary: $this.data('primaryUrl') || ''
+    });
+  });
+
+= render 'shared/geo_info_modal', project: project if Gitlab::Geo.secondary?

@@ -147,10 +147,65 @@ describe API::Internal, api: true  do
     end
   end
 
-  describe "POST /internal/allowed" do
+  describe "GET /internal/authorized_keys" do
+    context "unsing an existing key's fingerprint" do
+      it "finds the key" do
+        get(api('/internal/authorized_keys'), fingerprint: key.fingerprint, secret_token: secret_token)
+
+        expect(response.status).to eq(200)
+        expect(json_response["key"]).to eq(key.key)
+      end
+    end
+
+    context "non existing key's fingerprint" do
+      it "returns 404" do
+        get(api('/internal/authorized_keys'), fingerprint: "no:t-:va:li:d0", secret_token: secret_token)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context "using a partial fingerprint" do
+      it "returns 404" do
+        get(api('/internal/authorized_keys'), fingerprint: "#{key.fingerprint[0..5]}%", secret_token: secret_token)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context "sending the key" do
+      it "finds the key" do
+        get(api('/internal/authorized_keys'), key: key.key.split[1], secret_token: secret_token)
+
+        expect(response.status).to eq(200)
+        expect(json_response["key"]).to eq(key.key)
+      end
+
+      it "returns 404 with a partial key" do
+        get(api('/internal/authorized_keys'), key: key.key.split[1][0...-3], secret_token: secret_token)
+
+        expect(response.status).to eq(404)
+      end
+
+      it "returns 404 with an not valid base64 string" do
+        get(api('/internal/authorized_keys'), key: "whatever!", secret_token: secret_token)
+
+        expect(response.status).to eq(404)
+      end
+    end
+  end
+
+  describe "POST /internal/allowed", :redis do
+    include UserActivitiesHelpers
+
     context "access granted" do
       before do
         project.team << [user, :developer]
+        Timecop.freeze
+      end
+
+      after do
+        Timecop.return
       end
 
       context "git push with project.wiki" do
@@ -160,6 +215,7 @@ describe API::Internal, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
+          expect(user_score).to be_zero
         end
       end
 
@@ -170,6 +226,7 @@ describe API::Internal, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
+          expect(user_score).not_to be_zero
         end
       end
 
@@ -180,6 +237,7 @@ describe API::Internal, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+          expect(user_score).not_to be_zero
         end
       end
 
@@ -190,6 +248,7 @@ describe API::Internal, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+          expect(user_score).to be_zero
         end
 
         context 'project as /namespace/project' do
@@ -225,6 +284,7 @@ describe API::Internal, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
+          expect(user_score).to be_zero
         end
       end
 
@@ -234,6 +294,7 @@ describe API::Internal, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
+          expect(user_score).to be_zero
         end
       end
     end
@@ -251,6 +312,7 @@ describe API::Internal, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
+          expect(user_score).to be_zero
         end
       end
 
@@ -260,6 +322,7 @@ describe API::Internal, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
+          expect(user_score).to be_zero
         end
       end
     end

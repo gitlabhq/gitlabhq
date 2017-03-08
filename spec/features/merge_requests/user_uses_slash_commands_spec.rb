@@ -196,5 +196,13 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
         end
       end
     end
+
+    describe 'adding a weight from a note' do
+      it 'does not recognize the command nor create a note' do
+        write_note("/weight 5")
+
+        expect(page).not_to have_content '/weight 5'
+      end
+    end
   end
 end

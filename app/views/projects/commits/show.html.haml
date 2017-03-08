@@ -30,6 +30,8 @@
         = link_to namespace_project_commits_path(@project.namespace, @project, @ref, rss_url_options), title: "Commits Feed", class: 'btn' do
           = icon("rss")
 
+  = render 'projects/commits/mirror_status'
+
   %div{ id: dom_id(@project) }
     %ol#commits-list.list-unstyled.content_list
       = render 'commits', project: @project, ref: @ref

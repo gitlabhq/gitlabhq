@@ -147,7 +147,7 @@ describe Projects::ProjectMembersController do
 
         before { project.team << [user, :master] }
 
-        it 'cannot remove himself from the project' do
+        it 'does not remove himself from the project' do
           delete :leave, namespace_id: project.namespace,
                          project_id: project
 

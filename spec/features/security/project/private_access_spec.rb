@@ -16,6 +16,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -30,6 +31,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_tree_path(project.namespace, project, project.repository.root_ref) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -44,6 +46,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_commits_path(project.namespace, project, project.repository.root_ref, limit: 1) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -58,6 +61,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_commit_path(project.namespace, project, project.repository.commit) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -72,6 +76,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_compare_index_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -86,6 +91,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_settings_members_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -110,11 +116,40 @@ describe "Private Project Access", feature: true  do
     it { is_expected.to be_denied_for(:external) }
   end
 
+  describe "GET /:project_path/settings/repository" do
+    subject { namespace_project_settings_repository_path(project.namespace, project) }
+
+    it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:owner).of(project) }
+    it { is_expected.to be_allowed_for(:master).of(project) }
+    it { is_expected.to be_denied_for(:developer).of(project) }
+    it { is_expected.to be_denied_for(:reporter).of(project) }
+    it { is_expected.to be_denied_for(:guest).of(project) }
+    it { is_expected.to be_denied_for(:user) }
+    it { is_expected.to be_denied_for(:visitor) }
+    it { is_expected.to be_denied_for(:external) }
+  end
+
+  describe "GET /:project_path/settings/repository" do
+    subject { namespace_project_settings_repository_path(project.namespace, project) }
+
+    it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:owner).of(project) }
+    it { is_expected.to be_allowed_for(:master).of(project) }
+    it { is_expected.to be_denied_for(:developer).of(project) }
+    it { is_expected.to be_denied_for(:reporter).of(project) }
+    it { is_expected.to be_denied_for(:guest).of(project) }
+    it { is_expected.to be_denied_for(:user) }
+    it { is_expected.to be_denied_for(:external) }
+    it { is_expected.to be_denied_for(:visitor) }
+  end
+
   describe "GET /:project_path/blob" do
     let(:commit) { project.repository.commit }
     subject { namespace_project_blob_path(project.namespace, project, File.join(commit.id, '.gitignore'))}
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -129,6 +164,7 @@ describe "Private Project Access", feature: true  do
     subject { edit_namespace_project_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_denied_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_denied_for(:developer).of(project) }
@@ -143,6 +179,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_deploy_keys_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_denied_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_denied_for(:developer).of(project) }
@@ -157,6 +194,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_issues_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -172,6 +210,7 @@ describe "Private Project Access", feature: true  do
     subject { edit_namespace_project_issue_path(project.namespace, project, issue) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_denied_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -186,6 +225,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_snippets_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -200,6 +240,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_merge_requests_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -219,6 +260,7 @@ describe "Private Project Access", feature: true  do
     end
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -238,6 +280,7 @@ describe "Private Project Access", feature: true  do
     end
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -252,6 +295,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_settings_integrations_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_denied_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_denied_for(:developer).of(project) }
@@ -266,6 +310,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_pipelines_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -293,6 +338,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_pipeline_path(project.namespace, project, pipeline) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -319,6 +365,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_builds_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -347,6 +394,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_build_path(project.namespace, project, build.id) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -378,6 +426,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_environments_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -393,6 +442,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_environment_path(project.namespace, project, environment) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -407,6 +457,7 @@ describe "Private Project Access", feature: true  do
     subject { new_namespace_project_environment_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_denied_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -415,6 +466,36 @@ describe "Private Project Access", feature: true  do
     it { is_expected.to be_denied_for(:user) }
     it { is_expected.to be_denied_for(:external) }
     it { is_expected.to be_denied_for(:visitor) }
+  end
+
+  context "when license blocks changes" do
+    before do
+      allow(License).to receive(:block_changes?).and_return(true)
+    end
+
+    describe "GET /:project_path/issues/new" do
+      subject { new_namespace_project_issue_path(project.namespace, project) }
+
+      it { is_expected.to be_denied_for(:master).of(project) }
+      it { is_expected.to be_denied_for(:reporter).of(project) }
+      it { is_expected.to be_denied_for(:admin) }
+      it { is_expected.to be_denied_for(:guest).of(project) }
+      it { is_expected.to be_denied_for(:user) }
+      it { is_expected.to be_denied_for(:auditor) }
+      it { is_expected.to be_denied_for(:visitor) }
+    end
+
+    describe "GET /:project_path/merge_requests/new" do
+      subject { new_namespace_project_merge_request_path(project.namespace, project) }
+
+      it { is_expected.to be_denied_for(:master).of(project) }
+      it { is_expected.to be_denied_for(:reporter).of(project) }
+      it { is_expected.to be_denied_for(:admin) }
+      it { is_expected.to be_denied_for(:guest).of(project) }
+      it { is_expected.to be_denied_for(:user) }
+      it { is_expected.to be_denied_for(:auditor) }
+      it { is_expected.to be_denied_for(:visitor) }
+    end
   end
 
   describe "GET /:project_path/container_registry" do
@@ -426,6 +507,7 @@ describe "Private Project Access", feature: true  do
     subject { namespace_project_container_registry_index_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }

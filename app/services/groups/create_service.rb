@@ -12,6 +12,10 @@ module Groups
         return @group
       end
 
+      # Repository size limit comes as MB from the view
+      limit = params.delete(:repository_size_limit)
+      @group.repository_size_limit = (limit.to_i.megabytes if limit.present?)
+
       if @group.parent && !can?(current_user, :admin_group, @group.parent)
         @group.parent = nil
         @group.errors.add(:parent_id, 'manage access required to create subgroup')

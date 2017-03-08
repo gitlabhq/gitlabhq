@@ -2,6 +2,9 @@
 = render "admin/dashboard/head"
 
 %div{ class: container_class }
+  - if @license
+    = render "admin/licenses/breakdown", license: @license
+
   .admin-dashboard.prepend-top-default
     .row
       .col-md-4
@@ -64,6 +67,14 @@
           %span.light.pull-right
             = boolean_to_icon Gitlab::IncomingEmail.enabled?
         %p
+          Elasticsearch
+          %span.light.pull-right
+            = boolean_to_icon current_application_settings.elasticsearch_search?
+        %p
+          Geo
+          %span.light.pull-right
+            = boolean_to_icon Gitlab::Geo.enabled?
+        %p
           Container Registry
           %span.light.pull-right
             = boolean_to_icon Gitlab.config.registry.enabled
@@ -92,6 +103,14 @@
           GitLab API
           %span.pull-right
             = API::API::version
+        - if Gitlab::Geo.enabled?
+          %p
+            Geo
+            %span.pull-right
+              - if Gitlab::Geo.current_node
+                = Gitlab::Geo.current_node.primary ? 'Primary node' : 'Secondary node'
+              - else
+                Undefined
         %p
           Git
           %span.pull-right

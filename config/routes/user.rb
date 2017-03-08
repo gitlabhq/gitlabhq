@@ -1,5 +1,10 @@
 require 'constraints/user_url_constrainer'
 
+## EE-specific
+get  'unsubscribes/:email', to: 'unsubscribes#show', as: :unsubscribe
+post 'unsubscribes/:email', to: 'unsubscribes#create'
+## EE-specific
+
 devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks,
                                   registrations: :registrations,
                                   passwords: :passwords,
@@ -9,6 +14,10 @@ devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks,
 devise_scope :user do
   get '/users/auth/:provider/omniauth_error' => 'omniauth_callbacks#omniauth_error', as: :omniauth_error
   get '/users/almost_there' => 'confirmations#almost_there'
+
+  ## EE-specific
+  get '/users/auth/kerberos_spnego/negotiate' => 'omniauth_kerberos_spnego#negotiate'
+  ## EE-specific
 end
 
 constraints(UserUrlConstrainer.new) do

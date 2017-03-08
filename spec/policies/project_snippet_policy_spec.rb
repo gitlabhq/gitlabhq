@@ -50,6 +50,15 @@ describe ProjectSnippetPolicy, models: true do
         is_expected.not_to include(*author_permissions)
       end
     end
+
+    context 'external user' do
+      let(:current_user) { create(:user, :external) }
+
+      it do
+        is_expected.not_to include(:read_project_snippet)
+        is_expected.not_to include(*author_permissions)
+      end
+    end
   end
 
   context 'private snippet' do
@@ -82,6 +91,15 @@ describe ProjectSnippetPolicy, models: true do
 
     context 'project team member' do
       before { project_snippet.project.team << [current_user, :developer] }
+
+      it do
+        is_expected.to include(:read_project_snippet)
+        is_expected.not_to include(*author_permissions)
+      end
+    end
+
+    context 'auditor user' do
+      let(:current_user) { create(:user, :auditor) }
 
       it do
         is_expected.to include(:read_project_snippet)

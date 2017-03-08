@@ -5,6 +5,7 @@ class Member < ActiveRecord::Base
   include Gitlab::Access
 
   attr_accessor :raw_invite_token
+  attr_accessor :skip_notification
 
   belongs_to :created_by, class_name: "User"
   belongs_to :user
@@ -115,7 +116,7 @@ class Member < ActiveRecord::Base
       find_by(invite_token: invite_token)
     end
 
-    def add_user(source, user, access_level, current_user: nil, expires_at: nil)
+    def add_user(source, user, access_level, current_user: nil, expires_at: nil, ldap: false)
       user = retrieve_user(user)
       access_level = retrieve_access_level(access_level)
 
@@ -134,7 +135,9 @@ class Member < ActiveRecord::Base
       member.attributes = {
         created_by: member.created_by || current_user,
         access_level: access_level,
-        expires_at: expires_at
+        expires_at: expires_at,
+        skip_notification: ldap,
+        ldap: ldap
       }
 
       if member.request?
@@ -143,7 +146,7 @@ class Member < ActiveRecord::Base
           current_user,
           id: member.id,
           access_level: access_level
-        ).execute
+        ).execute(force: ldap)
       else
         member.save
       end

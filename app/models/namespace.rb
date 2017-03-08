@@ -1,6 +1,7 @@
 class Namespace < ActiveRecord::Base
   acts_as_paranoid
 
+  prepend EE::Namespace
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
@@ -169,6 +170,10 @@ class Namespace < ActiveRecord::Base
   def lfs_enabled?
     # User namespace will always default to the global setting
     Gitlab.config.lfs.enabled
+  end
+
+  def actual_size_limit
+    current_application_settings.repository_size_limit
   end
 
   def shared_runners_enabled?

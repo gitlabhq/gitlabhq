@@ -3,7 +3,6 @@
 /* global Cookies */
 /* global Flash */
 /* global ConfirmDangerModal */
-/* global AwardsHandler */
 /* global Aside */
 
 import jQuery from 'jquery';
@@ -17,6 +16,15 @@ import Sortable from 'vendor/Sortable';
 require('mousetrap');
 require('mousetrap/plugins/pause/mousetrap-pause');
 require('vendor/fuzzaldrin-plus');
+require('es6-promise').polyfill();
+
+// extensions
+require('./extensions/string');
+require('./extensions/array');
+require('./extensions/custom_event');
+require('./extensions/element');
+require('./extensions/jquery');
+require('./extensions/object');
 require('es6-promise').polyfill();
 
 // expose common libraries as globals (TODO: remove these)
@@ -61,13 +69,6 @@ require('./templates/issuable_template_selectors');
 require('./commit/file.js');
 require('./commit/image_file.js');
 
-// extensions
-require('./extensions/array');
-require('./extensions/custom_event');
-require('./extensions/element');
-require('./extensions/jquery');
-require('./extensions/object');
-
 // lib/utils
 require('./lib/utils/animate');
 require('./lib/utils/bootstrap_linked_tabs');
@@ -99,7 +100,7 @@ require('./ajax_loading_spinner');
 require('./api');
 require('./aside');
 require('./autosave');
-require('./awards_handler');
+const AwardsHandler = require('./awards_handler');
 require('./breakpoints');
 require('./broadcast_message');
 require('./build');
@@ -203,6 +204,14 @@ require('./version_check_image');
 require('./visibility_select');
 require('./wikis');
 require('./zen_mode');
+
+// EE-only scripts
+require('./admin_email_select');
+require('./application_settings');
+require('./approvals');
+require('./ldap_groups_select');
+require('./path_locks');
+require('./weight_select');
 
 (function () {
   document.addEventListener('beforeunload', function () {
@@ -352,8 +361,11 @@ require('./zen_mode');
       var btn = $(e.target);
       var form = btn.closest('form');
       var text = btn.data('confirm-danger-message');
+      var warningMessage = btn.data('warning-message');
       e.preventDefault();
-      return new ConfirmDangerModal(form, text);
+      return new ConfirmDangerModal(form, text, {
+        warningMessage: warningMessage
+      });
     });
     $('input[type="search"]').each(function () {
       var $this = $(this);

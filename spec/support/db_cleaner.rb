@@ -12,11 +12,11 @@ RSpec.configure do |config|
   end
 
   config.before(:each, js: true) do
-    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.strategy = :truncation, { except: ['licenses'] }
   end
 
   config.before(:each, truncate: true) do
-    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.strategy = :truncation, { except: ['licenses'] }
   end
 
   config.before(:each) do

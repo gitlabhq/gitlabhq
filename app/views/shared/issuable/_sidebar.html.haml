@@ -148,6 +148,33 @@
                 - if can? current_user, :admin_label, @project and @project
                   = render partial: "shared/issuable/label_page_create"
 
+      - if issuable.respond_to?(:weight)
+        .block.weight
+          .sidebar-collapsed-icon
+            = icon('balance-scale')
+            %span
+              - if issuable.weight
+                = issuable.weight
+              - else
+                No
+          .title.hide-collapsed
+            Weight
+            = icon('spinner spin', class: 'block-loading')
+            - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+              = link_to 'Edit', '#', class: 'edit-link pull-right'
+          .value.bold.hide-collapsed
+            - if issuable.weight
+              = issuable.weight
+            - else
+              .light None
+          .selectbox.hide-collapsed
+            = weight_dropdown_tag(issuable, title: 'Change weight', data: { field_name: 'weight', issue_update: "#{issuable_json_path(issuable)}", ability_name: "#{issuable.to_ability_name}" }) do
+              %ul
+                - Issue.weight_options.each do |weight|
+                  %li
+                    %a{ href: "#", data: { id: weight, none: weight == Issue::WEIGHT_NONE }, class: ("is-active" if params[:weight] == weight.to_s) }
+                      = weight
+
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
       - if current_user
         - subscribed = issuable.subscribed?(current_user, @project)
@@ -176,6 +203,7 @@
       new gl.IssuableTimeTracking("#{escape_javascript(serialize_issuable(issuable))}");
       new MilestoneSelect('{"full_path":"#{@project.full_path}"}');
       new LabelsSelect();
+      new WeightSelect();
       new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');
       gl.Subscription.bindAll('.subscription');
       new gl.DueDateSelectors();

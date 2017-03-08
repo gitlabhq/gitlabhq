@@ -87,6 +87,11 @@
           },
           selectable: true,
           toggleLabel: function(selected, el, e) {
+            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar') &&
+              !$dropdown.closest('.add-issues-modal').length && !selected) {
+              return gl.issueBoards.BoardsStore.state.currentBoard.milestone.title;
+            }
+
             if (selected && 'id' in selected && $(el).hasClass('is-active')) {
               return selected.title;
             } else {
@@ -114,8 +119,25 @@
             return $value.css('display', '');
           },
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
+          hideRow: function(milestone) {
+            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar') &&
+              !$dropdown.closest('.add-issues-modal').length && gl.issueBoards.BoardsStore.state.currentBoard.milestone) {
+              return milestone !== gl.issueBoards.BoardsStore.state.currentBoard.milestone.title;
+            }
+
+            return false;
+          },
+          isSelectable: function() {
+            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar') &&
+              !$dropdown.closest('.add-issues-modal').length && gl.issueBoards.BoardsStore.state.currentBoard.milestone_id) {
+              return false;
+            }
+
+            return true;
+          },
           clicked: function(selected, $el, e) {
             var data, isIssueIndex, isMRIndex, page, boardsStore;
+            if (!selected) return;
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = (page === page && page === 'projects:merge_requests:index');

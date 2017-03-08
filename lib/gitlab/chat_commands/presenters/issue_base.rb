@@ -34,6 +34,11 @@ module Gitlab
               title: "Labels",
               value: @resource.labels.any? ? @resource.label_names.join(', ') : "_None_",
               short: true
+            },
+            {
+              title: "Weight",
+              value: @resource.weight? ? @resource.weight : "_None_",
+              short: true
             }
           ]
         end

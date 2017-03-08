@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe API::Users, api: true  do
+describe API::Users, api: true do
   include ApiHelpers
 
-  let(:user)  { create(:user) }
+  let(:user) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:key)   { create(:key, user: user) }
-  let(:email)   { create(:email, user: user) }
+  let(:key) { create(:key, user: user) }
+  let(:email) { create(:email, user: user) }
   let(:omniauth_user) { create(:omniauth_user) }
   let(:ldap_user) { create(:omniauth_user, provider: 'ldapmain') }
   let(:ldap_blocked_user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
@@ -99,6 +99,18 @@ describe API::Users, api: true  do
         expect(json_response).to all(include('external' => true))
       end
     end
+
+    context "when authenticated and ldap is enabled" do
+      it "returns non-ldap user" do
+        User.delete_all
+        create :omniauth_user, provider: "ldapserver1"
+        get api("/users", user), skip_ldap: "true"
+        expect(response.status).to eq 200
+        expect(json_response).to be_an Array
+        username = user.username
+        expect(json_response.first["username"]).to eq username
+      end
+    end
   end
 
   describe "GET /users/:id" do
@@ -127,7 +139,7 @@ describe API::Users, api: true  do
   end
 
   describe "POST /users" do
-    before{ admin }
+    before { admin }
 
     it "creates user" do
       expect do
@@ -212,9 +224,9 @@ describe API::Users, api: true  do
 
     it "does not create user with invalid email" do
       post api('/users', admin),
-        email: 'invalid email',
-        password: 'password',
-        name: 'test'
+           email: 'invalid email',
+           password: 'password',
+           name: 'test'
       expect(response).to have_http_status(400)
     end
 
@@ -240,12 +252,12 @@ describe API::Users, api: true  do
 
     it 'returns 400 error if user does not validate' do
       post api('/users', admin),
-        password: 'pass',
-        email: 'test@example.com',
-        username: 'test!',
-        name: 'test',
-        bio: 'g' * 256,
-        projects_limit: -1
+           password: 'pass',
+           email: 'test@example.com',
+           username: 'test!',
+           name: 'test',
+           bio: 'g' * 256,
+           projects_limit: -1
       expect(response).to have_http_status(400)
       expect(json_response['message']['password']).
         to eq(['is too short (minimum is 8 characters)'])
@@ -265,19 +277,19 @@ describe API::Users, api: true  do
     context 'with existing user' do
       before do
         post api('/users', admin),
-          email: 'test@example.com',
-          password: 'password',
-          username: 'test',
-          name: 'foo'
+             email: 'test@example.com',
+             password: 'password',
+             username: 'test',
+             name: 'foo'
       end
 
       it 'returns 409 conflict error if user with same email exists' do
         expect do
           post api('/users', admin),
-            name: 'foo',
-            email: 'test@example.com',
-            password: 'password',
-            username: 'foo'
+               name: 'foo',
+               email: 'test@example.com',
+               password: 'password',
+               username: 'foo'
         end.to change { User.count }.by(0)
         expect(response).to have_http_status(409)
         expect(json_response['message']).to eq('Email has already been taken')
@@ -286,10 +298,10 @@ describe API::Users, api: true  do
       it 'returns 409 conflict error if same username exists' do
         expect do
           post api('/users', admin),
-            name: 'foo',
-            email: 'foo@example.com',
-            password: 'password',
-            username: 'test'
+               name: 'foo',
+               email: 'foo@example.com',
+               password: 'password',
+               username: 'test'
         end.to change { User.count }.by(0)
         expect(response).to have_http_status(409)
         expect(json_response['message']).to eq('Username has already been taken')
@@ -414,12 +426,12 @@ describe API::Users, api: true  do
 
     it 'returns 400 error if user does not validate' do
       put api("/users/#{user.id}", admin),
-        password: 'pass',
-        email: 'test@example.com',
-        username: 'test!',
-        name: 'test',
-        bio: 'g' * 256,
-        projects_limit: -1
+          password: 'pass',
+          email: 'test@example.com',
+          username: 'test!',
+          name: 'test',
+          bio: 'g' * 256,
+          projects_limit: -1
       expect(response).to have_http_status(400)
       expect(json_response['message']['password']).
         to eq(['is too short (minimum is 8 characters)'])
@@ -486,7 +498,7 @@ describe API::Users, api: true  do
       key_attrs = attributes_for :key
       expect do
         post api("/users/#{user.id}/keys", admin), key_attrs
-      end.to change{ user.keys.count }.by(1)
+      end.to change { user.keys.count }.by(1)
     end
 
     it "returns 400 for invalid ID" do
@@ -578,7 +590,7 @@ describe API::Users, api: true  do
       email_attrs = attributes_for :email
       expect do
         post api("/users/#{user.id}/emails", admin), email_attrs
-      end.to change{ user.emails.count }.by(1)
+      end.to change { user.emails.count }.by(1)
     end
 
     it "returns a 400 for invalid ID" do
@@ -728,7 +740,7 @@ describe API::Users, api: true  do
         get api("/user", user)
 
         expect(response).to have_http_status(200)
-        expect(response).to match_response_schema('user/public')
+        expect(response).to match_response_schema('public_api/v4/user/public')
         expect(json_response['id']).to eq(user.id)
       end
     end
@@ -747,7 +759,7 @@ describe API::Users, api: true  do
           get api("/user?private_token=#{admin_personal_access_token}")
 
           expect(response).to have_http_status(200)
-          expect(response).to match_response_schema('user/public')
+          expect(response).to match_response_schema('public_api/v4/user/public')
           expect(json_response['id']).to eq(admin.id)
         end
       end
@@ -757,7 +769,7 @@ describe API::Users, api: true  do
           get api("/user?private_token=#{admin.private_token}&sudo=#{user.id}")
 
           expect(response).to have_http_status(200)
-          expect(response).to match_response_schema('user/login')
+          expect(response).to match_response_schema('public_api/v4/user/login')
           expect(json_response['id']).to eq(user.id)
         end
 
@@ -765,7 +777,7 @@ describe API::Users, api: true  do
           get api("/user?private_token=#{admin.private_token}")
 
           expect(response).to have_http_status(200)
-          expect(response).to match_response_schema('user/public')
+          expect(response).to match_response_schema('public_api/v4/user/public')
           expect(json_response['id']).to eq(admin.id)
         end
       end
@@ -840,7 +852,7 @@ describe API::Users, api: true  do
       key_attrs = attributes_for :key
       expect do
         post api("/user/keys", user), key_attrs
-      end.to change{ user.keys.count }.by(1)
+      end.to change { user.keys.count }.by(1)
       expect(response).to have_http_status(201)
     end
 
@@ -961,7 +973,7 @@ describe API::Users, api: true  do
       email_attrs = attributes_for :email
       expect do
         post api("/user/emails", user), email_attrs
-      end.to change{ user.emails.count }.by(1)
+      end.to change { user.emails.count }.by(1)
       expect(response).to have_http_status(201)
     end
 
@@ -1153,6 +1165,77 @@ describe API::Users, api: true  do
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
+    end
+  end
+
+  context "user activities", :redis do
+    context 'last activity as normal user' do
+      it 'has no permission' do
+        user.record_activity
+
+        get api("/user/activities", user)
+
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'last activity as admin' do
+      it 'returns the last activity' do
+        allow(Time).to receive(:now).and_return(Time.new(2000, 1, 1))
+
+        user.record_activity
+
+        get api("/user/activities", admin)
+
+        activity = json_response.last
+
+        expect(response).to include_pagination_headers
+        expect(activity['username']).to eq(user.username)
+        expect(activity['last_activity_at']).to eq('2000-01-01 00:00:00')
+      end
+    end
+
+    context 'last activities paginated', :redis do
+      let(:activity) { json_response.first }
+      let(:old_date) { 2.months.ago.to_date }
+
+      before do
+        5.times do |num|
+          Timecop.freeze(old_date + num)
+
+          create(:user, username: num.to_s).record_activity
+        end
+      end
+
+      after do
+        Timecop.return
+      end
+
+      it 'returns 3 activities' do
+        get api("/user/activities?page=1&per_page=3", admin)
+
+        expect(json_response.count).to eq(3)
+      end
+
+      it 'contains the first activities' do
+        get api("/user/activities?page=1&per_page=3", admin)
+
+        expect(json_response.map { |activity| activity['username'] }).to eq(%w[0 1 2])
+      end
+
+      it 'contains the last activities' do
+        get api("/user/activities?page=2&per_page=3", admin)
+
+        expect(json_response.map { |activity| activity['username'] }).to eq(%w[3 4])
+      end
+
+      it 'contains activities created after user 3 was created' do
+        from = (old_date + 3).to_s("%Y-%m-%d")
+
+        get api("/user/activities?page=1&per_page=5&from=#{from}", admin)
+
+        expect(json_response.map { |activity| activity['username'] }).to eq(%w[3 4])
+      end
     end
   end
 end

@@ -1,0 +1,97 @@
+- form = local_assigns.fetch(:form)
+- project = local_assigns.fetch(:project)
+
+.form-group
+  = label_tag :merge_method_merge, class: 'label-light' do
+    Merge method
+  .radio
+    = label_tag :project_merge_method_merge do
+      = form.radio_button :merge_method, :merge, class: "js-merge-method-radio"
+      %strong Merge commit
+      %br
+      %span.descr
+        A merge commit is created for every merge, and merging is allowed as long as there are no conflicts.
+
+  .radio
+    = label_tag :project_merge_method_rebase_merge do
+      = form.radio_button :merge_method, :rebase_merge, class: "js-merge-method-radio"
+      %strong Merge commit with semi-linear history
+      %br
+      %span.descr
+        A merge commit is created for every merge, but merging is only allowed if fast-forward merge is possible.
+        This way you could make sure that if this merge request would build, after merging to target branch it would also build.
+      %br
+      %span.descr
+        When fast-forward merge is not possible, the user is given the option to rebase.
+
+  .radio
+    = label_tag :project_merge_method_ff do
+      = form.radio_button :merge_method, :ff, class: "js-merge-method-radio"
+      %strong Fast-forward merge
+      %br
+      %span.descr
+        No merge commits are created and all merges are fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.
+      %br
+      %span.descr
+        When fast-forward merge is not possible, the user is given the option to rebase.
+
+.form-group
+  = form.label :merge_requests_template, class: 'label-light' do
+    Default description template for merge requests
+    = link_to icon('question-circle'), help_page_path('user/project/description_templates', anchor: 'setting-a-default-template-for-issues-and-merge-requests'), target: '_blank'
+  = form.text_area :merge_requests_template, class: "form-control", rows: 3
+  .hint
+    Description parsed with #{link_to "GitLab Flavored Markdown", help_page_path('user/markdown'), target: '_blank'}.
+
+.form-group
+  = form.label :approvals_before_merge, class: 'label-light' do
+    Approvals required
+  = form.number_field :approvals_before_merge, class: "form-control", min: 0
+  .help-block
+    Number of users to approve a merge request before it can be accepted. 0 - approving is disabled
+
+.form-group.reset-approvals-on-push
+  .checkbox
+    = form.label :reset_approvals_on_push do
+      = form.check_box :reset_approvals_on_push
+      %span.descr Reset approvals on push
+      .help-block Approvals are reset when new data is pushed to the merge request
+
+.form-group
+  = form.label :approver_ids, class: 'label-light' do
+    Approvers
+  = users_select_tag("project[approver_ids]", multiple: true, class: 'input-large', scope: :all, email_user: true)
+  .help-block
+    Add an approver suggestion for each merge request
+  = form.label :approver_group_ids, class: 'label-light' do
+    Approver groups
+  - skip_groups = project.approver_groups.pluck(:group_id)
+  = groups_select_tag('project[approver_group_ids]', multiple: true, data: { skip_groups: skip_groups, all_available: true }, class: 'input-large')
+  .help-block
+    Add a group as an approver suggestion for each merge request
+
+  .panel.panel-default.prepend-top-10
+    .panel-heading
+      Approvers
+    %ul.well-list.approver-list
+      - project.approvers.each do |approver|
+        %li.approver
+          = link_to approver.user.name, approver.user
+          .pull-right
+            = link_to namespace_project_approver_path(project.namespace, project, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+              = icon("sign-out")
+              Remove
+      - project.approver_groups.each do |approver_group|
+        %li.approver-group
+          Group:
+          = link_to approver_group.group.name, approver_group.group
+          .pull-right
+            = link_to namespace_project_approver_group_path(project.namespace, project, approver_group), data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}" }, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove group' do
+              = icon("sign-out")
+              Remove
+      - if project.approvers.empty? && project.approver_groups.empty?
+        %li There are no approvers
+
+:javascript
+  new UsersSelect();
+  new GroupsSelect();

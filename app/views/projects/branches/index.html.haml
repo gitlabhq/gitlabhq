@@ -31,7 +31,7 @@
           Delete merged branches
         = link_to new_namespace_project_branch_path(@project.namespace, @project), class: 'btn btn-create' do
           New branch
-
+  = render 'projects/commits/mirror_status'
   - if @branches.any?
     %ul.content-list.all-branches
       - @branches.each do |branch|

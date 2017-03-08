@@ -141,6 +141,17 @@ describe('Environments Folder View', () => {
         }, 0);
       });
     });
+
+    describe('deploy boards', () => {
+      it('should render arrow to open deploy boards', (done) => {
+        setTimeout(() => {
+          expect(
+            component.$el.querySelector('.deploy-board-icon i').classList.contains('fa-caret-right'),
+          ).toEqual(true);
+          done();
+        }, 0);
+      });
+    });
   });
 
   describe('unsuccessfull request', () => {

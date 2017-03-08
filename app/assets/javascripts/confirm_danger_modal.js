@@ -1,10 +1,14 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, camelcase, one-var-declaration-per-line, no-else-return, max-len */
 (function() {
   this.ConfirmDangerModal = (function() {
-    function ConfirmDangerModal(form, text) {
-      var project_path, submit;
+    function ConfirmDangerModal(form, text, arg) {
+      var project_path, submit, warningMessage;
+      warningMessage = (arg != null ? arg : {}).warningMessage;
       this.form = form;
-      $('.js-confirm-text').text(text || '');
+      $('.js-confirm-text').html(text || '');
+      if (warningMessage) {
+        $('.js-warning-text').html(warningMessage);
+      }
       $('.js-confirm-danger-input').val('');
       $('#modal-confirm-danger').modal('show');
       project_path = $('.js-confirm-danger-match').text();

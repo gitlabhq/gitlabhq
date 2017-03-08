@@ -9,6 +9,10 @@ class ProjectSnippetPolicy < BasePolicy
       can! :admin_project_snippet
     end
 
+    if @user.auditor?
+      can! :read_project_snippet
+    end
+
     if @subject.internal? && !@user.external?
       can! :read_project_snippet
     end

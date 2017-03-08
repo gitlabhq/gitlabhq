@@ -114,6 +114,16 @@ describe Admin::DashboardController, "routing" do
   end
 end
 
+describe Admin::EmailsController, "routing" do
+  it "to #show" do
+    expect(get("/admin/email")).to route_to('admin/emails#show')
+  end
+
+  it "to #create" do
+    expect(post("/admin/email")).to route_to('admin/emails#create')
+  end
+end
+
 # admin_health_check GET    /admin/health_check(.:format) admin/health_check#show
 describe Admin::HealthCheckController, "routing" do
   it "to #show" do

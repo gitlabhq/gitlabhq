@@ -38,6 +38,22 @@ describe MergeRequests::MergeService, services: true do
       end
     end
 
+    context 'project has exceeded size limit' do
+      let(:service) { MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message') }
+
+      before do
+        allow(project).to receive(:above_size_limit?).and_return(true)
+
+        perform_enqueued_jobs do
+          service.execute(merge_request)
+        end
+      end
+
+      it 'returns the correct error message' do
+        expect(merge_request.merge_error).to include('This merge request cannot be merged')
+      end
+    end
+
     context 'closes related issues' do
       let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
 
@@ -189,6 +205,74 @@ describe MergeRequests::MergeService, services: true do
         expect(merge_request.merge_commit_sha).to be_nil
         expect(merge_request.merge_error).to include(error_message)
         expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+      end
+
+      context 'when squashing' do
+        it 'logs and saves error if there is an error when squashing' do
+          error_message = 'Failed to squash. Should be done manually'
+
+          allow_any_instance_of(MergeRequests::SquashService).to receive(:squash).and_return(nil)
+          merge_request.update(squash: true)
+
+          service.execute(merge_request)
+
+          expect(merge_request).to be_open
+          expect(merge_request.merge_commit_sha).to be_nil
+          expect(merge_request.merge_error).to include(error_message)
+          expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+        end
+
+        it 'logs and saves error if there is a squash in progress' do
+          error_message = 'another squash is already in progress'
+
+          allow_any_instance_of(MergeRequest).to receive(:squash_in_progress?).and_return(true)
+          merge_request.update(squash: true)
+
+          service.execute(merge_request)
+
+          expect(merge_request).to be_open
+          expect(merge_request.merge_commit_sha).to be_nil
+          expect(merge_request.merge_error).to include(error_message)
+          expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+        end
+      end
+    end
+  end
+
+  describe '#hooks_validation_pass?' do
+    let(:service) { MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message') }
+
+    it 'returns true when valid' do
+      expect(service.hooks_validation_pass?(merge_request)).to be_truthy
+    end
+
+    context 'commit message validation' do
+      before do
+        allow(project).to receive(:push_rule) { build(:push_rule, commit_message_regex: 'unmatched pattern .*') }
+      end
+
+      it 'returns false and saves error when invalid' do
+        expect(service.hooks_validation_pass?(merge_request)).to be_falsey
+        expect(merge_request.merge_error).not_to be_empty
+      end
+    end
+
+    context 'authors email validation' do
+      before do
+        allow(project).to receive(:push_rule) { build(:push_rule, author_email_regex: '.*@unmatchedemaildomain.com') }
+      end
+
+      it 'returns false and saves error when invalid' do
+        expect(service.hooks_validation_pass?(merge_request)).to be_falsey
+        expect(merge_request.merge_error).not_to be_empty
+      end
+    end
+
+    context 'fast forward merge request' do
+      it 'returns true when fast forward is enabled' do
+        allow(project).to receive(:merge_requests_ff_only_enabled) { true }
+
+        expect(service.hooks_validation_pass?(merge_request)).to be_truthy
       end
     end
   end

@@ -16,6 +16,7 @@ require('./mixins/modal_mixins');
 require('./mixins/sortable_default_options');
 require('./filters/due_date_filters');
 require('./components/board');
+require('./components/boards_selector');
 require('./components/board_sidebar');
 require('./components/new_list_dropdown');
 require('./components/modal/index');
@@ -50,7 +51,8 @@ $(() => {
       issueLinkBase: $boardApp.dataset.issueLinkBase,
       rootPath: $boardApp.dataset.rootPath,
       bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
-      detailIssue: Store.detail
+      detailIssue: Store.detail,
+      milestoneTitle: $boardApp.dataset.boardMilestoneTitle,
     },
     computed: {
       detailIssueVisible () {
@@ -58,6 +60,10 @@ $(() => {
       },
     },
     created () {
+      if (this.milestoneTitle) {
+        this.state.filters.milestone_title = this.milestoneTitle;
+      }
+
       gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
     },
     mounted () {
@@ -83,7 +89,8 @@ $(() => {
   gl.IssueBoardsSearch = new Vue({
     el: document.getElementById('js-boards-search'),
     data: {
-      filters: Store.state.filters
+      filters: Store.state.filters,
+      milestoneTitle: $boardApp.dataset.boardMilestoneTitle,
     },
     mounted () {
       gl.issueBoards.newListDropdownInit();
@@ -147,5 +154,12 @@ $(() => {
         Add issues
       </button>
     `,
+  });
+
+  gl.IssueboardsSwitcher = new Vue({
+    el: '#js-multiple-boards-switcher',
+    components: {
+      'boards-selector': gl.issueBoards.BoardsSelector,
+    }
   });
 });

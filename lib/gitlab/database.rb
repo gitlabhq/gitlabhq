@@ -24,7 +24,7 @@ module Gitlab
     def self.nulls_last_order(field, direction = 'ASC')
       order = "#{field} #{direction}"
 
-      if Gitlab::Database.postgresql?
+      if postgresql?
         order << ' NULLS LAST'
       else
         # `field IS NULL` will be `0` for non-NULL columns and `1` for NULL
@@ -38,7 +38,7 @@ module Gitlab
     def self.nulls_first_order(field, direction = 'ASC')
       order = "#{field} #{direction}"
 
-      if Gitlab::Database.postgresql?
+      if postgresql?
         order << ' NULLS FIRST'
       else
         # `field IS NULL` will be `0` for non-NULL columns and `1` for NULL
@@ -50,7 +50,11 @@ module Gitlab
     end
 
     def self.random
-      Gitlab::Database.postgresql? ? "RANDOM()" : "RAND()"
+      postgresql? ? "RANDOM()" : "RAND()"
+    end
+
+    def self.minute_interval(value)
+      postgresql? ? "#{value} * '1 minute'::interval" : "INTERVAL #{value} MINUTE"
     end
 
     def true_value

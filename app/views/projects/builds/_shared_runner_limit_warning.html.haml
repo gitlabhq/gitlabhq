@@ -1,0 +1,13 @@
+- if project.namespace.shared_runners_minutes_used?
+  - quota_used = project.namespace.shared_runners_minutes
+  - quota_limit = project.namespace.actual_shared_runners_minutes_limit
+  .bs-callout.bs-callout-warning
+    %p
+      You have used all your shared Runners build minutes.
+      = "(#{quota_used} of #{quota_limit})."
+      - if can?(current_user, :admin_build, @project)
+        %br
+        For more information, go to the
+        = succeed "." do
+          = link_to namespace_project_runners_path(project.namespace, project) do
+            Runners page

@@ -49,6 +49,15 @@
   .page-with-sidebar {
     padding-bottom: 0;
   }
+
+  .issues-details-filters {
+    display: -webkit-flex;
+    display: flex;
+  }
+
+  .filter-form {
+    width: 100%;
+  }
 }
 
 .boards-app {
@@ -73,7 +82,7 @@
   @media (min-width: $screen-sm-min) {
     height: 475px; // Needed for PhantomJS
     height: calc(100vh - 220px);
-    min-height: 475px;
+    min-height: 409px;
     transition: width .2s;
 
     &.is-compact {
@@ -296,6 +305,26 @@
   }
 }
 
+.boards-title-holder {
+  padding: 25px 13px $gl-padding;
+
+  .dropdown-menu {
+    margin-top: -15px;
+    margin-left: 8px;
+  }
+}
+
+.board-selector-page-two {
+  padding-left: 10px;
+  padding-right: 10px;
+  white-space: normal;
+}
+
+.board-delete-btns {
+  padding-top: 12px;
+  border-top: 1px solid $border-color;
+}
+
 .issue-boards-sidebar {
   &.right-sidebar {
     top: 0;
@@ -496,6 +525,7 @@
   font-size: 9px;
   line-height: 15px;
   border-radius: 50%;
+
 }
 
 .modal-filters {
@@ -517,4 +547,40 @@
       width: 140px;
     }
   }
+}
+
+.boards-switcher {
+  padding-right: 10px;
+  margin-right: 10px;
+  border-right: 1px solid $white-dark;
+}
+
+.board-milestone-list {
+  > li {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  a {
+    padding-left: 25px;
+  }
+
+  .fa-check {
+    margin-left: -18px;
+  }
+}
+
+.board-inner-milestone-dropdown {
+  margin-top: 10px;
+
+  .dropdown-menu {
+    top: 60px;
+    min-width: 100%;
+  }
+}
+
+.board-milestone-footer-content {
+  padding-left: 12px;
+  padding-right: 12px;
+  color: $gl-gray-dark;
 }

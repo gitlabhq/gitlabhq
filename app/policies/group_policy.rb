@@ -1,4 +1,6 @@
 class GroupPolicy < BasePolicy
+  prepend EE::GroupPolicy
+
   def rules
     can! :read_group if @subject.public?
     return unless @user
@@ -12,6 +14,7 @@ class GroupPolicy < BasePolicy
     can_read ||= globally_viewable
     can_read ||= member
     can_read ||= @user.admin?
+    can_read ||= @user.auditor?
     can_read ||= GroupProjectsFinder.new(@subject).execute(@user).any?
     can! :read_group if can_read
 
@@ -38,6 +41,7 @@ class GroupPolicy < BasePolicy
   def can_read_group?
     return true if @subject.public?
     return true if @user.admin?
+    return true if @user.auditor?
     return true if @subject.internal? && !@user.external?
     return true if @subject.users.include?(@user)
 

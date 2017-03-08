@@ -41,10 +41,20 @@
       }
     },
     "assignee": {
-      "id": { "type": "integet" },
-      "name": { "type": "string" },
-      "username": { "type": "string" },
-      "avatar_url": { "type": "uri" }
+      "type": ["object", "null"],
+      "required": [
+        "id",
+        "name",
+        "username",
+        "avatar_url"
+      ],
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "username": { "type": "string" },
+        "avatar_url": { "type": "uri" }
+      },
+      "additionalProperties": false
     },
     "subscribed": { "type": ["boolean", "null"] }
   },

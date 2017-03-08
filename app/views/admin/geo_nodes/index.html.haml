@@ -1,0 +1,49 @@
+- page_title 'Geo nodes'
+%h3.page-title
+  Geo Nodes
+
+%p.light
+  With #{link_to 'GitLab Geo', help_page_path('gitlab-geo/README'), class: 'vlink'} you can install a special
+  read-only and replicated instance anywhere.
+
+%hr
+
+= render partial: 'form', locals: {geo_node: @node} if Gitlab::Geo.license_allows?
+
+- if @nodes.any?
+  .panel.panel-default
+    .panel-heading
+      Geo nodes (#{@nodes.count})
+    %ul.well-list
+      - @nodes.each do |node|
+        %li
+          .list-item-name
+            %span
+              = node_status_icon(node)
+            %strong= node.url
+            - if node.primary?
+              %span.help-block Primary node
+            - else
+              %p
+                %span.help-block
+                  Repositories synced: #{node.repositories_synced_count}/#{node.repositories_count} (#{number_to_percentage(node.repositories_synced_in_percentage, precision: 2)})
+              %p
+                %span.help-block
+                  Repositories failed: #{node.repositories_failed_count}
+              %p
+                %span.help-block
+                  LFS objects synced: #{node.lfs_objects_synced}/#{node.lfs_objects_total} (#{number_to_percentage(node.lfs_objects_synced_in_percentage, precision: 2)})
+              %p
+                %span.help-block= node.healthy? ? 'No Health Problems Detected' : node.health
+
+          .pull-right
+            - if Gitlab::Geo.license_allows?
+              - if node.missing_oauth_application?
+                = link_to repair_admin_geo_node_path(node), method: :post, title: 'OAuth application is missing', class: 'btn btn-default btn-sm prepend-left-10' do
+                  = icon('exclamation-triangle fw')
+                  Repair authentication
+              - if node.secondary?
+                = toggle_node_button(node)
+            = link_to admin_geo_node_path(node), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-remove btn-sm prepend-left-10' do
+              = icon 'trash'
+              Remove

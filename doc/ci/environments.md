@@ -263,7 +263,7 @@ This works just like any other terminal - you'll be in the container created
 by your deployment, so you can run shell commands and get responses in real
 time, check the logs, try out configuration or code tweaks, etc. You can open
 multiple terminals to the same environment - they each get their own shell
-session -  and even a multiplexer like `screen` or `tmux`!  
+session -  and even a multiplexer like `screen` or `tmux`!
 
 >**Note:**
 Container-based deployments often lack basic tools (like an editor), and may

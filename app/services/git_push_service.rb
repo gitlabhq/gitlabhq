@@ -52,6 +52,10 @@ class GitPushService < BaseService
       update_gitattributes if is_default_branch?
     end
 
+    if current_application_settings.elasticsearch_indexing? && is_default_branch?
+      ElasticCommitIndexerWorker.perform_async(@project.id, params[:oldrev], params[:newrev])
+    end
+
     execute_related_hooks
     perform_housekeeping
 
@@ -99,10 +103,12 @@ class GitPushService < BaseService
     UpdateMergeRequestsWorker
       .perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
 
+    mirror_update = @project.mirror? && @project.repository.up_to_date_with_upstream?(branch_name)
+
     EventCreateService.new.push(@project, current_user, build_push_data)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
-    Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute
+    Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute(mirror_update: mirror_update)
 
     if push_remove_branch?
       AfterBranchDeleteService

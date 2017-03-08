@@ -169,6 +169,7 @@ $show-aside-bg: #eee;
 $show-aside-color: #777;
 $show-aside-shadow: #ddd;
 $group-path-color: #999;
+$project-path-color: #999;
 $namespace-kind-color: #aaa;
 $panel-heading-link-color: #777;
 $graph-author-email-color: #777;
@@ -178,7 +179,9 @@ $divergence-graph-bar-bg: #ccc;
 $divergence-graph-separator-bg: #ccc;
 $general-hover-transition-duration: 100ms;
 $general-hover-transition-curve: linear;
-
+$issue-box-upcoming-bg: #8f8f8f;
+$pages-group-name-color: #4c4e54;
+$ldap-members-override-bg: #fff1e0;
 
 /*
 * Common component specific colors
@@ -248,7 +251,7 @@ $diff-view-modes-border: #c1c1c1;
  * Fonts
  */
 $monospace_font: 'Menlo', 'Liberation Mono', 'Consolas', 'DejaVu Sans Mono', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
-$regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+$regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
 /*
 * Dropdowns
@@ -540,3 +543,12 @@ Pipeline Graph
 $stage-hover-bg: #eaf3fc;
 $stage-hover-border: #d1e7fc;
 $action-icon-color: #d6d6d6;
+
+/*
+Filtered Search
+*/
+$filter-name-resting-color: #f8f8f8;
+$filter-name-text-color: rgba(0, 0, 0, 0.55);
+$filter-value-text-color: rgba(0, 0, 0, 0.85);
+$filter-name-selected-color: #ebebeb;
+$filter-value-selected-color: #d7d7d7;

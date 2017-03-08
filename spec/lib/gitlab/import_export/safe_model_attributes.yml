@@ -119,6 +119,8 @@ ProjectMember:
 - invite_accepted_at
 - requested_at
 - expires_at
+- ldap
+- override
 User:
 - id
 - username
@@ -153,6 +155,7 @@ MergeRequest:
 - approvals_before_merge
 - rebase_commit_sha
 - time_estimate
+- squash
 MergeRequestDiff:
 - id
 - state
@@ -328,12 +331,16 @@ ProtectedBranch::MergeAccessLevel:
 - access_level
 - created_at
 - updated_at
+- user_id
+- group_id
 ProtectedBranch::PushAccessLevel:
 - id
 - protected_branch_id
 - access_level
 - created_at
 - updated_at
+- user_id
+- group_id
 AwardEmoji:
 - id
 - user_id

@@ -9,6 +9,7 @@ describe "Admin::Projects", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_denied_for :user }
     it { is_expected.to be_denied_for :visitor }
+    it { is_expected.to be_denied_for :auditor }
   end
 
   describe "GET /admin/users" do
@@ -17,6 +18,7 @@ describe "Admin::Projects", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_denied_for :user }
     it { is_expected.to be_denied_for :visitor }
+    it { is_expected.to be_denied_for :auditor }
   end
 
   describe "GET /admin/hooks" do
@@ -25,5 +27,6 @@ describe "Admin::Projects", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_denied_for :user }
     it { is_expected.to be_denied_for :visitor }
+    it { is_expected.to be_denied_for :auditor }
   end
 end

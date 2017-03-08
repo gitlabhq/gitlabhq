@@ -1,0 +1,50 @@
+- page_title "Pipelines quota"
+%h3.page-title
+  Group pipelines quota
+  = link_to icon('question-circle'), help_page_path("user/admin_area/settings/continuous_integration", anchor: "shared-runners-build-minutes-quota"), target: '_blank'
+%p.light
+  Monthly build minutes usage across shared Runners for the
+  %strong= @group.name
+  group
+
+.pipeline-quota.container-fluid
+  .row
+    .col-sm-6
+      %strong
+        - last_reset = @group.shared_runners_seconds_last_reset
+        - if last_reset
+          Usage since
+          = last_reset.strftime('%b %d, %Y')
+        - else
+          Current period usage
+      %div
+        = group_shared_runner_limits_quota(@group)
+        minutes
+    .col-sm-6.right
+      - if @group.shared_runners_minutes_limit_enabled?
+        #{group_shared_runner_limits_percent_used(@group)}% used
+      - else
+        Unlimited
+      = group_shared_runner_limits_progress_bar(@group)
+
+%table.table.pipeline-project-metrics
+  %thead
+    %tr
+      %th Project
+      %th Minutes
+
+  %tbody
+    - @projects.each do |project|
+      %tr
+        %td
+          .avatar-container.s20.hidden-xs
+            = project_icon(project, alt: '', class: 'avatar project-avatar s20')
+          %strong= link_to project.name, project
+        %td
+          = project.shared_runners_minutes
+    - if @projects.blank?
+      %tr
+        %td{ colspan: 2 }
+          .nothing-here-block This group has no projects which use shared runners
+
+= paginate @projects, theme: "gitlab"

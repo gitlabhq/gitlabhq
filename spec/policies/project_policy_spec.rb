@@ -6,6 +6,7 @@ describe ProjectPolicy, models: true do
   let(:dev) { create(:user) }
   let(:master) { create(:user) }
   let(:owner) { create(:user) }
+  let(:auditor) { create(:user, :auditor) }
   let(:admin) { create(:admin) }
   let(:project) { create(:empty_project, :public, namespace: owner.namespace) }
 
@@ -63,6 +64,16 @@ describe ProjectPolicy, models: true do
     %i[
       change_namespace change_visibility_level rename_project remove_project
       archive_project remove_fork_project destroy_merge_request destroy_issue
+    ]
+  end
+
+  let(:auditor_permissions) do
+    %i[
+      download_code download_wiki_code read_project read_board read_list
+      read_wiki read_issue read_label read_milestone read_project_snippet
+      read_project_member read_note read_cycle_analytics read_pipeline
+      read_build read_commit_status read_container_image read_environment
+      read_deployment read_merge_request read_pages
     ]
   end
 
@@ -203,6 +214,17 @@ describe ProjectPolicy, models: true do
         is_expected.to include(*developer_permissions)
         is_expected.to include(*master_permissions)
         is_expected.to include(*owner_permissions)
+      end
+    end
+
+    context 'auditor' do
+      let(:current_user) { auditor }
+
+      it do
+        is_expected.not_to include(*developer_permissions)
+        is_expected.not_to include(*master_permissions)
+        is_expected.not_to include(*owner_permissions)
+        is_expected.to include(*auditor_permissions)
       end
     end
   end

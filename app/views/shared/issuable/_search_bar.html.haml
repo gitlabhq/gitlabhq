@@ -11,10 +11,13 @@
             class: "check_all_issues left"
       .issues-other-filters.filtered-search-container
         .filtered-search-input-container
-          %input.form-control.filtered-search{ placeholder: 'Search or filter results...', 'data-id' => 'filtered-search', 'data-project-id' => @project.id, 'data-username-params' => @users.to_json(only: [:id, :username]), 'data-base-endpoint' => namespace_project_path(@project.namespace, @project) }
-          = icon('filter')
-          %button.clear-search.hidden{ type: 'button' }
-            = icon('times')
+          .scroll-container
+            %ul.tokens-container.list-unstyled
+              %li.input-token
+                %input.form-control.filtered-search{ placeholder: 'Search or filter results...', 'data-id' => 'filtered-search', 'data-project-id' => @project.id, 'data-username-params' => @users.to_json(only: [:id, :username]), 'data-base-endpoint' => namespace_project_path(@project.namespace, @project) }
+            = icon('filter')
+            %button.clear-search.hidden{ type: 'button' }
+              = icon('times')
           #js-dropdown-hint.dropdown-menu.hint-dropdown
             %ul{ 'data-dropdown' => true }
               %li.filter-dropdown-item{ 'data-action' => 'submit' }
@@ -82,6 +85,21 @@
                   %span.dropdown-label-box{ style: 'background: {{color}}' }
                   %span.label-title.js-data-value
                     {{title}}
+          - if type == :issues
+            #js-dropdown-weight.dropdown-menu{ data: { icon: 'balance-scale', hint: 'weight', tag: 'weight' } }
+              %ul{ 'data-dropdown' => true }
+                %li.filter-dropdown-item{ 'data-value' => 'none' }
+                  %button.btn.btn-link
+                    No Weight
+                %li.filter-dropdown-item{ 'data-value' => 'any' }
+                  %button.btn.btn-link
+                    Any Weight
+                %li.divider
+              %ul.filter-dropdown{ 'data-dropdown' => true }
+                - Issue.weight_filter_options.each do |weight|
+                  %li.filter-dropdown-item{ 'data-value' => "#{weight}" }
+                    %button.btn.btn-link= weight
+
         .pull-right.filter-dropdown-container
           = render 'shared/sort_dropdown'
 

@@ -13,7 +13,6 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :autocomplete_sources, only: [] do
         collection do
-          get 'emojis'
           get 'members'
           get 'issues'
           get 'merge_requests'
@@ -105,6 +104,15 @@ constraints(ProjectUrlConstrainer.new) do
           get :ci_status
           get :ci_environments_status
           post :toggle_subscription
+
+          ## EE-specific
+          get :approvals
+          post :approvals, action: :approve
+          delete :approvals, action: :unapprove
+
+          post :rebase
+          ## EE-specific
+
           post :remove_wip
           get :diff_for_path
           post :resolve_conflicts
@@ -120,6 +128,11 @@ constraints(ProjectUrlConstrainer.new) do
           get :new_diffs, path: 'new/diffs'
         end
 
+        ## EE-specific
+        resources :approvers, only: :destroy
+        resources :approver_groups, only: :destroy
+        ## EE-specific
+
         resources :discussions, only: [], constraints: { id: /\h{40}/ } do
           member do
             post :resolve
@@ -134,9 +147,32 @@ constraints(ProjectUrlConstrainer.new) do
         resource :release, only: [:edit, :update]
       end
 
-      resources :protected_branches, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+      ## EE-specific
+      resources :path_locks, only: [:index, :destroy] do
+        collection do
+          post :toggle
+        end
+      end
+
+      resources :protected_branches, only: [:index, :show, :create, :update, :destroy, :patch], constraints: { id: Gitlab::Regex.git_reference_regex } do
+        scope module: :protected_branches do
+          resources :merge_access_levels, only: [:destroy]
+          resources :push_access_levels, only: [:destroy]
+        end
+      end
+      ## EE-specific
+
       resources :variables, only: [:index, :show, :update, :create, :destroy]
       resources :triggers, only: [:index, :create, :destroy]
+
+      ## EE-specific
+      resource :mirror, only: [:show, :update] do
+        member do
+          post :update_now
+        end
+      end
+      resources :push_rules, constraints: { id: /\d+/ }
+      ## EE-specific
 
       resources :pipelines, only: [:index, :new, :create, :show] do
         collection do
@@ -156,6 +192,8 @@ constraints(ProjectUrlConstrainer.new) do
         member do
           post :stop
           get :terminal
+          get :metrics
+          get :status, constraints: { format: :json }
           get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
         end
 
@@ -246,7 +284,8 @@ constraints(ProjectUrlConstrainer.new) do
           get :can_create_branch
         end
         collection do
-          post  :bulk_update
+          post :bulk_update
+          post :export_csv
         end
       end
 
@@ -275,7 +314,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :boards, only: [:index, :show] do
+      resources :boards, only: [:index, :show, :create, :update, :destroy] do
         scope module: :boards do
           resources :issues, only: [:index, :update]
 
@@ -308,6 +347,11 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      ## EE-specific
+      resources :approvers, only: :destroy
+      resources :approver_groups, only: :destroy
+      ## EE-specific
+
       resources :runner_projects, only: [:create, :destroy]
       resources :badges, only: [:index] do
         collection do
@@ -319,10 +363,16 @@ constraints(ProjectUrlConstrainer.new) do
           end
         end
       end
+
+      ## EE-specific
+      resources :audit_events, only: [:index]
+      ## EE-specific
+
       namespace :settings do
         resource :members, only: [:show]
         resource :ci_cd, only: [:show], controller: 'ci_cd'
         resource :integrations, only: [:show]
+        resource :repository, only: [:show], controller: :repository
       end
 
       # Since both wiki and repository routing contains wildcard characters

@@ -7,6 +7,8 @@ module Gitlab
     OPTIONAL_SCOPES = SCOPES - DEFAULT_SCOPES
 
     class << self
+      prepend EE::Gitlab::Auth
+
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 

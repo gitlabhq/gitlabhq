@@ -46,6 +46,39 @@ module API
         expose :awardable_id, :awardable_type
       end
 
+      class ApplicationSetting < Grape::Entity
+        expose :id
+        expose :default_projects_limit
+        expose :signup_enabled
+        expose :signin_enabled
+        expose :gravatar_enabled
+        expose :sign_in_text
+        expose :after_sign_up_text
+        expose :created_at
+        expose :updated_at
+        expose :home_page_url
+        expose :default_branch_protection
+        expose :restricted_visibility_levels
+        expose :max_attachment_size
+        expose :session_expire_delay
+        expose :default_project_visibility
+        expose :default_snippet_visibility
+        expose :default_group_visibility
+        expose :domain_whitelist
+        expose :domain_blacklist_enabled
+        expose :domain_blacklist
+        expose :user_oauth_applications
+        expose :after_sign_out_path
+        expose :container_registry_token_expire_delay
+        expose :repository_storage
+        expose :repository_storages
+        expose :koding_enabled
+        expose :koding_url
+        expose :plantuml_enabled
+        expose :plantuml_url
+        expose :terminal_max_session_time
+      end
+
       class Project < Grape::Entity
         expose :id, :description, :default_branch, :tag_list
         expose :public?, as: :public
@@ -78,8 +111,10 @@ module API
           ::API::Entities::SharedGroup.represent(project.project_group_links.all, options)
         end
         expose :only_allow_merge_if_pipeline_succeeds, as: :only_allow_merge_if_build_succeeds
+        expose :repository_storage, if: lambda { |_project, options| options[:current_user].try(:admin?) }
         expose :request_access_enabled
         expose :only_allow_merge_if_all_discussions_are_resolved
+        expose :approvals_before_merge
 
         expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
       end
@@ -114,12 +149,16 @@ module API
         expose :merge_status
         expose :diff_head_sha, as: :sha
         expose :merge_commit_sha
+
         expose :subscribed do |merge_request, options|
           merge_request.subscribed?(options[:current_user], options[:project])
         end
+
         expose :user_notes_count
+        expose :approvals_before_merge
         expose :should_remove_source_branch?, as: :should_remove_source_branch
         expose :force_remove_source_branch?, as: :force_remove_source_branch
+        expose :squash
 
         expose :web_url do |merge_request, options|
           Gitlab::UrlBuilder.build(merge_request)
@@ -128,6 +167,14 @@ module API
 
       class Group < Grape::Entity
         expose :id, :name, :path, :description, :visibility_level
+
+        # EE-only
+        expose :ldap_cn, :ldap_access
+        expose :ldap_group_links,
+               using: ::API::Entities::LdapGroupLink,
+               if: lambda { |group, options| group.ldap_group_links.any? }
+        # EE-only
+
         expose :lfs_enabled?, as: :lfs_enabled
         expose :avatar_url
         expose :web_url

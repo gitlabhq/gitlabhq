@@ -107,6 +107,28 @@ def instrument_classes(instrumentation)
   instrumentation.instrument_methods(Gitlab::Highlight)
   instrumentation.instrument_instance_methods(Gitlab::Highlight)
 
+  instrumentation.instrument_methods(Elasticsearch::Git::Repository)
+  instrumentation.instrument_instance_methods(Elasticsearch::Git::Repository)
+
+  instrumentation.instrument_instance_methods(Search::GlobalService)
+  instrumentation.instrument_instance_methods(Search::ProjectService)
+
+  instrumentation.instrument_instance_methods(Gitlab::Elastic::SearchResults)
+  instrumentation.instrument_instance_methods(Gitlab::Elastic::ProjectSearchResults)
+  instrumentation.instrument_instance_methods(Gitlab::Elastic::Indexer)
+  instrumentation.instrument_instance_methods(Gitlab::Elastic::SnippetSearchResults)
+  instrumentation.instrument_methods(Gitlab::Elastic::Helper)
+
+  instrumentation.instrument_instance_methods(Elastic::ApplicationSearch)
+  instrumentation.instrument_instance_methods(Elastic::IssuesSearch)
+  instrumentation.instrument_instance_methods(Elastic::MergeRequestsSearch)
+  instrumentation.instrument_instance_methods(Elastic::MilestonesSearch)
+  instrumentation.instrument_instance_methods(Elastic::NotesSearch)
+  instrumentation.instrument_instance_methods(Elastic::ProjectsSearch)
+  instrumentation.instrument_instance_methods(Elastic::RepositoriesSearch)
+  instrumentation.instrument_instance_methods(Elastic::SnippetsSearch)
+  instrumentation.instrument_instance_methods(Elastic::WikiRepositoriesSearch)
+
   # This is a Rails scope so we have to instrument it manually.
   instrumentation.instrument_method(Project, :visible_to_user)
 end
@@ -169,6 +191,10 @@ if Gitlab::Metrics.enabled?
   GC::Profiler.enable
 
   Gitlab::Metrics::Sampler.new.start
+
+  Gitlab::Metrics::Instrumentation.configure do |config|
+    config.instrument_instance_methods(Gitlab::InsecureKeyFingerprint)
+  end
 
   module TrackNewRedisConnections
     def connect(*args)

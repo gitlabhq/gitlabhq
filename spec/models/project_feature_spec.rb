@@ -52,6 +52,15 @@ describe ProjectFeature do
           expect(project.feature_available?(:issues, user)).to eq(true)
         end
       end
+
+      it "returns true if user is an auditor" do
+        user.update_attribute(:auditor, true)
+
+        features.each do |feature|
+          project.project_feature.update_attribute("#{feature}_access_level".to_sym, ProjectFeature::PRIVATE)
+          expect(project.feature_available?(:issues, user)).to eq(true)
+        end
+      end
     end
 
     context 'when feature is enabled for everyone' do

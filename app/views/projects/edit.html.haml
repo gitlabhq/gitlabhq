@@ -28,6 +28,15 @@
             .form-group
               = f.label :default_branch, "Default Branch", class: 'label-light'
               = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
+
+        - if current_user.admin?
+          .form-group
+            = f.label :repository_size_limit, class: 'label-light' do
+              Repository size limit (MB)
+            = f.number_field :repository_size_limit, value: f.object.repository_size_limit.try(:to_mb), class: 'form-control', min: 0
+            %span.help-block#repository_size_limit_help_block
+              = size_limit_message(@project)
+
         .form-group
           = f.label :tag_list, "Tags", class: 'label-light'
           = f.text_field :tag_list, value: @project.tag_list.to_s, maxlength: 2000, class: "form-control"
@@ -41,7 +50,7 @@
               .col-md-9
                 %label.label-light
                   = label_tag :project_visibility, 'Project Visibility', class: 'label-light'
-                  = link_to "(?)", help_page_path("public_access/public_access")
+                  = link_to icon('question-circle'), help_page_path("public_access/public_access")
                 %span.help-block
               .col-md-3.visibility-select-container
                 = render('projects/visibility_select', model_method: :visibility_level, form: f, selected_level: @project.visibility_level)
@@ -110,6 +119,8 @@
                 %br
                 %span.descr Enable Container Registry for this project
                 = link_to icon('question-circle'), help_page_path('user/project/container_registry'), target: '_blank'
+
+        = render 'issues_settings', f: f
 
         = render 'merge_request_settings', form: f
 

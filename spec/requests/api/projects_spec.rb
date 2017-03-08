@@ -565,7 +565,56 @@ describe API::Projects, api: true  do
       end
     end
 
-    context 'when authenticated' do
+    context 'when authenticated as an admin' do
+      it 'returns a project by id including repository_storage' do
+        project
+        project_member
+        group = create(:group)
+        link = create(:project_group_link, project: project, group: group)
+
+        get api("/projects/#{project.id}", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['id']).to eq(project.id)
+        expect(json_response['description']).to eq(project.description)
+        expect(json_response['default_branch']).to eq(project.default_branch)
+        expect(json_response['tag_list']).to be_an Array
+        expect(json_response['archived']).to be_falsey
+        expect(json_response['visibility']).to be_present
+        expect(json_response['ssh_url_to_repo']).to be_present
+        expect(json_response['http_url_to_repo']).to be_present
+        expect(json_response['web_url']).to be_present
+        expect(json_response['owner']).to be_a Hash
+        expect(json_response['owner']).to be_a Hash
+        expect(json_response['name']).to eq(project.name)
+        expect(json_response['path']).to be_present
+        expect(json_response['issues_enabled']).to be_present
+        expect(json_response['merge_requests_enabled']).to be_present
+        expect(json_response['wiki_enabled']).to be_present
+        expect(json_response['builds_enabled']).to be_present
+        expect(json_response['snippets_enabled']).to be_present
+        expect(json_response['container_registry_enabled']).to be_present
+        expect(json_response['created_at']).to be_present
+        expect(json_response['last_activity_at']).to be_present
+        expect(json_response['shared_runners_enabled']).to be_present
+        expect(json_response['creator_id']).to be_present
+        expect(json_response['namespace']).to be_present
+        expect(json_response['avatar_url']).to be_nil
+        expect(json_response['star_count']).to be_present
+        expect(json_response['forks_count']).to be_present
+        expect(json_response['public_builds']).to be_present
+        expect(json_response['shared_with_groups']).to be_an Array
+        expect(json_response['shared_with_groups'].length).to eq(1)
+        expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
+        expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
+        expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
+        expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
+        expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
+        expect(json_response['repository_storage']).to eq(project.repository_storage)
+      end
+    end
+
+    context 'when authenticated as a regular user' do
       before do
         project
         project_member
@@ -613,6 +662,7 @@ describe API::Projects, api: true  do
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
+        expect(json_response).not_to have_key('repository_storage')
       end
 
       it 'returns a project by path name' do
@@ -1122,6 +1172,15 @@ describe API::Projects, api: true  do
 
         expect(response).to have_http_status(200)
         expect(json_response['request_access_enabled']).to eq(false)
+      end
+
+      it 'updates approvals_before_merge' do
+        project_param = { approvals_before_merge: 3 }
+
+        put api("/projects/#{project.id}", user), project_param
+
+        expect(response).to have_http_status(200)
+        expect(json_response['approvals_before_merge']).to eq(3)
       end
 
       it 'updates path & name to existing path & name in different namespace' do

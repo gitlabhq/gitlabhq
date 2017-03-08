@@ -7,6 +7,7 @@
 
 .emoji-menu {
   position: absolute;
+  top: 0;
   margin-top: 3px;
   padding: $gl-padding;
   z-index: 9;
@@ -20,7 +21,7 @@
   opacity: 0;
   transform: scale(.2);
   transform-origin: 0 -45px;
-  transition: .3s cubic-bezier(.87,-.41,.19,1.44);
+  transition: .3s cubic-bezier(.67,.06,.19,1.44);
   transition-property: transform, opacity;
 
   &.is-aligned-right {
@@ -47,12 +48,13 @@
 }
 
 .emoji-menu-list {
-  list-style: none;
-  padding-left: 0;
   margin-bottom: 0;
+  padding-left: 0;
+  list-style: none;
 }
 
 .emoji-menu-list-item {
+  float: left;
   padding: 3px;
   margin-left: 1px;
   margin-right: 1px;
@@ -96,6 +98,8 @@
   margin: 3px 5px 3px 0;
   padding: 5px 6px;
   outline: 0;
+
+  line-height: 1;
 
   &.disabled {
     cursor: default;

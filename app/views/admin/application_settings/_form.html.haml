@@ -64,6 +64,18 @@
       .col-sm-10
         = f.number_field :max_attachment_size, class: 'form-control'
     .form-group
+      = f.label :repository_size_limit, class: 'control-label col-sm-2' do
+        Size limit per repository (MB)
+      .col-sm-10
+        = f.number_field :repository_size_limit, value: f.object.repository_size_limit.try(:to_mb), class: 'form-control', min: 0
+        %span.help-block#repository_size_limit_help_block
+          Includes LFS objects. It can be overridden per group, or per project. 0 for unlimited.
+          = link_to icon('question-circle'), help_page_path("user/admin_area/settings/account_and_limit_settings")
+    .form-group
+      = f.label :minimum_mirror_sync_time, class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.select :minimum_mirror_sync_time, options_for_select(Gitlab::Mirror::SYNC_TIME_OPTIONS, @application_setting.minimum_mirror_sync_time), {}, class: 'form-control'
+    .form-group
       = f.label :session_expire_delay, 'Session duration (minutes)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :session_expire_delay, class: 'form-control'
@@ -181,6 +193,11 @@
         = f.text_area :sign_in_text, class: 'form-control', rows: 4
         .help-block Markdown enabled
     .form-group
+      = f.label :help_text, class: 'control-label'
+      .col-sm-10
+        = f.text_area :help_text, class: 'form-control', rows: 4
+        .help-block Markdown enabled
+    .form-group
       = f.label :help_page_text, class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_area :help_page_text, class: 'form-control', rows: 4
@@ -202,6 +219,9 @@
           = f.label :shared_runners_enabled do
             = f.check_box :shared_runners_enabled
             Enable shared runners for new projects
+
+    = render 'shared_runners_minutes_setting', form: f
+
     .form-group
       = f.label :shared_runners_text, class: 'control-label col-sm-2'
       .col-sm-10
@@ -418,6 +438,58 @@
           If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
 
   %fieldset
+    %legend Elasticsearch
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :elasticsearch_indexing do
+            = f.check_box :elasticsearch_indexing
+            Elasticsearch indexing
+
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :elasticsearch_search do
+            = f.check_box :elasticsearch_search
+            Search with Elasticsearch enabled
+
+    .form-group
+      = f.label :elasticsearch_url, 'URL', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :elasticsearch_url, value: @application_setting.elasticsearch_url.join(', '), class: 'form-control', placeholder: 'http://localhost:9200'
+        .help-block
+          The url to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://localhost:9200, http://localhost:9201").
+
+  %fieldset
+    %legend Elasticsearch AWS IAM credentials
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :elasticsearch_aws do
+            = f.check_box :elasticsearch_aws
+            Using AWS hosted Elasticsearch with IAM credentials
+    .form-group
+      = f.label :elasticsearch_aws_region, 'AWS region', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :elasticsearch_aws_region, value: @application_setting.elasticsearch_aws_region, class: 'form-control'
+        .help-block
+          Region that elasticsearch is configured
+
+    .form-group
+      = f.label :elasticsearch_aws_access_key, 'AWS Access Key', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :elasticsearch_aws_access_key, value: @application_setting.elasticsearch_aws_access_key, class: 'form-control'
+        .help-block
+          AWS Access Key.  Only required if not using role instance credentials
+
+    .form-group
+      = f.label :elasticsearch_aws_secret_access_key, 'AWS Secret Access Key', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.password_field :elasticsearch_aws_secret_access_key, value: @application_setting.elasticsearch_aws_secret_access_key, class: 'form-control'
+        .help-block
+          AWS Secret Access Key.  Only required if not using role instance credentials
+
+  %fieldset
     %legend Koding
     .form-group
       .col-sm-offset-2.col-sm-10
@@ -463,6 +535,18 @@
             Version check enabled
           .help-block
             Let GitLab inform you when an update is available.
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :usage_ping_enabled do
+            = f.check_box :usage_ping_enabled
+            Usage ping enabled
+            = link_to icon('question-circle'), help_page_path("user/admin_area/settings/usage_statistics", anchor: "usage-data")
+          .container
+            .help-block
+              Every week GitLab will report license usage back to GitLab, Inc.
+              Disable this option if you do not want this to occur. This is the JSON payload that will be sent:
+              %pre.usage-data.js-syntax-highlight.code.highlight{ "data-endpoint" => usage_data_admin_application_settings_path(format: :html) }
 
   %fieldset
     %legend Email
@@ -534,6 +618,19 @@
         .help-block
           Maximum time for web terminal websocket connection (in seconds).
           0 for unlimited.
+
+  - if Gitlab::Geo.license_allows?
+    %fieldset
+      %legend GitLab Geo
+      %p
+        These settings will only take effect if Geo is enabled and require a restart to take effect.
+      .form-group
+        = f.label :geo_status_timeout, 'Connection timeout', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.number_field :geo_status_timeout, class: 'form-control'
+          .help-block
+            The amount of seconds after which a request to get a secondary node
+            status will time out.
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

@@ -6,6 +6,8 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableCollections
   include SpammableActions
 
+  prepend_before_action :authenticate_user!, only: [:export_csv]
+
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
@@ -25,6 +27,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def index
     @collection_type    = "Issue"
     @issues             = issues_collection
+
     @issues             = @issues.page(params[:page])
     @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
 
@@ -66,6 +69,11 @@ class Projects::IssuesController < Projects::ApplicationController
     )
     build_params = issue_params.merge(merge_request_for_resolving_discussions: merge_request_for_resolving_discussions)
     @issue = @noteable = Issues::BuildService.new(project, current_user, build_params).execute
+
+    # Set Issue description based on project template
+    if @project.issues_template.present?
+      @issue.description = @project.issues_template
+    end
 
     respond_with(@issue)
   end
@@ -135,6 +143,14 @@ class Projects::IssuesController < Projects::ApplicationController
 
   rescue ActiveRecord::StaleObjectError
     render_conflict_response
+  end
+
+  def export_csv
+    csv_params = filter_params.permit(IssuableFinder::VALID_PARAMS)
+    ExportCsvWorker.perform_async(@current_user.id, @project.id, csv_params)
+
+    index_path = namespace_project_issues_path(@project.namespace, @project)
+    redirect_to(index_path, notice: "Your CSV export has started. It will be emailed to #{current_user.notification_email} when complete.")
   end
 
   def referenced_merge_requests
@@ -238,7 +254,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def issue_params
     params.require(:issue).permit(
-      :title, :assignee_id, :position, :description, :confidential,
+      :title, :assignee_id, :position, :description, :confidential, :weight,
       :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: []
     )
   end

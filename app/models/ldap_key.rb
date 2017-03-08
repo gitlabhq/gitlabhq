@@ -1,0 +1,2 @@
+class LDAPKey < Key
+end

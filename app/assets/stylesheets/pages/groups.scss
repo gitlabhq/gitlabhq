@@ -9,6 +9,11 @@
   }
 }
 
+.content-list .group-name {
+  font-weight: 600;
+  color: $pages-group-name-color;
+}
+
 .group-row {
   .stats {
     float: right;
@@ -20,6 +25,13 @@
     }
   }
 }
+
+.ldap-group-links {
+  .form-actions {
+    margin-bottom: $gl-padding;
+  }
+}
+
 
 .ldap-group-links {
   .form-actions {
@@ -72,4 +84,40 @@
       text-align: center;
     }
   }
+}
+
+.panel {
+  .shared_runners_limit_under_quota {
+    color: $gl-success;
+  }
+
+  .shared_runners_limit_over_quota {
+    color: $gl-danger;
+  }
+}
+
+.pipeline-quota {
+  border-top: 1px solid $table-border-color;
+  border-bottom: 1px solid $table-border-color;
+  margin: 0 0 $gl-padding;
+
+  .row {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .right {
+    text-align: right;
+  }
+
+  .progress {
+    height: 6px;
+    width: 100%;
+    margin-bottom: 0;
+    margin-top: 4px;
+  }
+}
+
+table.pipeline-project-metrics tr td {
+  padding: $gl-padding;
 }

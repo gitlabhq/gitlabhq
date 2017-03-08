@@ -71,6 +71,21 @@ dropdown list in the "Already protected" area.
 If you don't choose any of those options while creating a protected branch,
 they are set to "Masters" by default.
 
+## Restricting push and merge access to certain users
+
+> This feature was [introduced][ce-5081] in GitLab Enterprise Edition 8.11.
+
+With GitLab Enterprise Edition you can restrict access to protected branches
+by choosing a role (Masters, Developers) as well as certain users. From the
+dropdown menu select the role and/or the users you want to have merge or push
+access.
+
+![Select roles and users](img/protected_branches_select_roles_and_users.png)
+
+Click **Protect** and the branch will appear in the "Protected branch" list.
+
+![Roles and users list](img/protected_branches_select_roles_and_users_list.png)
+
 ## Wildcard protected branches
 
 > [Introduced][ce-4665] in GitLab 8.10.

@@ -23,12 +23,20 @@ class EnvironmentEntity < Grape::Entity
       environment)
   end
 
-  expose :terminal_path, if: ->(environment, _) { environment.has_terminals? } do |environment|
+  expose :terminal_path, if: ->(environment, _) { environment.deployment_service_ready? } do |environment|
     can?(request.user, :admin_environment, environment.project) &&
       terminal_namespace_project_environment_path(
         environment.project.namespace,
         environment.project,
         environment)
+  end
+
+  expose :rollout_status_path, if: ->(environment, _) { environment.deployment_service_ready? } do |environment|
+    status_namespace_project_environment_path(
+      environment.project.namespace,
+      environment.project,
+      environment,
+      format: :json)
   end
 
   expose :created_at, :updated_at

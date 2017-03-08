@@ -5,6 +5,7 @@ describe Gitlab::GitAccess, lib: true do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:actor) { user }
+
   let(:authentication_abilities) do
     [
       :read_project,
@@ -142,6 +143,17 @@ describe Gitlab::GitAccess, lib: true do
       end
     end
 
+    describe 'geo node key permissions' do
+      let(:key) { build(:geo_node_key) }
+      let(:actor) { key }
+
+      context 'pull code' do
+        subject { access.send(:check_download_access!) }
+
+        it { expect { subject }.not_to raise_error }
+      end
+    end
+
     describe 'build authentication_abilities permissions' do
       let(:authentication_abilities) { build_authentication_abilities }
 
@@ -149,7 +161,7 @@ describe Gitlab::GitAccess, lib: true do
         let(:project) { create(:project, :repository, namespace: user.namespace) }
 
         context 'pull code' do
-          it { expect(subject).to be_allowed }
+          it { expect { subject }.not_to raise_error }
         end
       end
 
@@ -157,7 +169,7 @@ describe Gitlab::GitAccess, lib: true do
         before { project.team << [user, :reporter] }
 
         context 'pull code' do
-          it { expect(subject).to be_allowed }
+          it { expect { subject }.not_to raise_error }
         end
       end
 
@@ -168,13 +180,13 @@ describe Gitlab::GitAccess, lib: true do
           before { project.team << [user, :reporter] }
 
           context 'pull code' do
-            it { expect(subject).to be_allowed }
+            it { expect { subject }.not_to raise_error }
           end
         end
 
         context 'when is not member of the project' do
           context 'pull code' do
-            it { expect(subject).not_to be_allowed }
+            it { expect { subject }.not_to raise_error }
           end
         end
       end
@@ -233,6 +245,33 @@ describe Gitlab::GitAccess, lib: true do
             else
               project.team << [user, role]
             end
+          end
+
+          permissions_matrix[role].each do |action, allowed|
+            context action do
+              subject { access.send(:check_push_access!, changes[action]) }
+
+              it do
+                if allowed
+                  expect { subject }.not_to raise_error
+                else
+                  expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError)
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+
+    # Run permission checks for a group
+    def self.run_group_permission_checks(permissions_matrix)
+      permissions_matrix.keys.each do |role|
+        describe "#{role} access" do
+          before do
+            project.project_group_links.create(
+              group: group, group_access: Gitlab::Access.sym_options[role]
+            )
           end
 
           permissions_matrix[role].each do |action, allowed|
@@ -311,19 +350,19 @@ describe Gitlab::GitAccess, lib: true do
 
     [%w(feature exact), ['feat*', 'wildcard']].each do |protected_branch_name, protected_branch_type|
       context do
-        before { create(:protected_branch, name: protected_branch_name, project: project) }
+        before { create(:protected_branch, :remove_default_access_levels, :masters_can_push, name: protected_branch_name, project: project) }
 
         run_permission_checks(permissions_matrix)
       end
 
       context "when developers are allowed to push into the #{protected_branch_type} protected branch" do
-        before { create(:protected_branch, :developers_can_push, name: protected_branch_name, project: project) }
+        before { create(:protected_branch, :remove_default_access_levels, :masters_can_push, :developers_can_push, name: protected_branch_name, project: project) }
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
       end
 
       context "developers are allowed to merge into the #{protected_branch_type} protected branch" do
-        before { create(:protected_branch, :developers_can_merge, name: protected_branch_name, project: project) }
+        before { create(:protected_branch, :remove_default_access_levels, :masters_can_push, :developers_can_merge, name: protected_branch_name, project: project) }
 
         context "when a merge request exists for the given source/target branch" do
           context "when the merge request is in progress" do
@@ -350,17 +389,293 @@ describe Gitlab::GitAccess, lib: true do
       end
 
       context "when developers are allowed to push and merge into the #{protected_branch_type} protected branch" do
-        before { create(:protected_branch, :developers_can_merge, :developers_can_push, name: protected_branch_name, project: project) }
+        before { create(:protected_branch, :remove_default_access_levels, :masters_can_push, :developers_can_merge, :developers_can_push, name: protected_branch_name, project: project) }
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
       end
 
+      context "user-specific access control" do
+        context "when a specific user is allowed to push into the #{protected_branch_type} protected branch" do
+          let(:user) { create(:user) }
+
+          before do
+            create(:protected_branch, :remove_default_access_levels, authorize_user_to_push: user, name: protected_branch_name, project: project)
+          end
+
+          run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true },
+                                                              guest: { push_protected_branch: false, merge_into_protected_branch: false },
+                                                              reporter: { push_protected_branch: false, merge_into_protected_branch: false }))
+        end
+
+        context "when a specific user is allowed to merge into the #{protected_branch_type} protected branch" do
+          let(:user) { create(:user) }
+
+          before do
+            create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
+            create(:protected_branch, :remove_default_access_levels, authorize_user_to_merge: user, name: protected_branch_name, project: project)
+          end
+
+          run_permission_checks(permissions_matrix.deep_merge(admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: true },
+                                                              master: { push_protected_branch: false, push_all: false, merge_into_protected_branch: true },
+                                                              developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: true },
+                                                              guest: { push_protected_branch: false, merge_into_protected_branch: false },
+                                                              reporter: { push_protected_branch: false, merge_into_protected_branch: false }))
+        end
+
+        context "when a specific user is allowed to push & merge into the #{protected_branch_type} protected branch" do
+          let(:user) { create(:user) }
+
+          before do
+            create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
+            create(:protected_branch, :remove_default_access_levels, authorize_user_to_push: user, authorize_user_to_merge: user, name: protected_branch_name, project: project)
+          end
+
+          run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true },
+                                                              guest: { push_protected_branch: false, merge_into_protected_branch: false },
+                                                              reporter: { push_protected_branch: false, merge_into_protected_branch: false }))
+        end
+      end
+
+      context "group-specific access control" do
+        context "when a specific group is allowed to push into the #{protected_branch_type} protected branch" do
+          let(:user) { create(:user) }
+          let(:group) { create(:group) }
+
+          before do
+            group.add_master(user)
+            create(:protected_branch, :remove_default_access_levels, authorize_group_to_push: group, name: protected_branch_name, project: project)
+          end
+
+          permissions = permissions_matrix.except(:admin).deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true },
+                                                                     guest: { push_protected_branch: false, merge_into_protected_branch: false },
+                                                                     reporter: { push_protected_branch: false, merge_into_protected_branch: false })
+
+          run_group_permission_checks(permissions)
+        end
+
+        context "when a specific group is allowed to merge into the #{protected_branch_type} protected branch" do
+          let(:user) { create(:user) }
+          let(:group) { create(:group) }
+
+          before do
+            group.add_master(user)
+            create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
+            create(:protected_branch, :remove_default_access_levels, authorize_group_to_merge: group, name: protected_branch_name, project: project)
+          end
+
+          permissions = permissions_matrix.except(:admin).deep_merge(master: { push_protected_branch: false, push_all: false, merge_into_protected_branch: true },
+                                                                     developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: true },
+                                                                     guest: { push_protected_branch: false, merge_into_protected_branch: false },
+                                                                     reporter: { push_protected_branch: false, merge_into_protected_branch: false })
+
+          run_group_permission_checks(permissions)
+        end
+
+        context "when a specific group is allowed to push & merge into the #{protected_branch_type} protected branch" do
+          let(:user) { create(:user) }
+          let(:group) { create(:group) }
+
+          before do
+            group.add_master(user)
+            create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
+            create(:protected_branch, :remove_default_access_levels, authorize_group_to_push: group, authorize_group_to_merge: group, name: protected_branch_name, project: project)
+          end
+
+          permissions = permissions_matrix.except(:admin).deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true },
+                                                                     guest: { push_protected_branch: false, merge_into_protected_branch: false },
+                                                                     reporter: { push_protected_branch: false, merge_into_protected_branch: false })
+
+          run_group_permission_checks(permissions)
+        end
+      end
+
       context "when no one is allowed to push to the #{protected_branch_name} protected branch" do
-        before { create(:protected_branch, :no_one_can_push, name: protected_branch_name, project: project) }
+        before { create(:protected_branch, :remove_default_access_levels, :no_one_can_push, name: protected_branch_name, project: project) }
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
                                                             master: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
                                                             admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
+      end
+    end
+
+    context "when license blocks changes" do
+      before do
+        create(:protected_branch, name: 'feature', project: project)
+        allow(License).to receive(:block_changes?).and_return(true)
+      end
+
+      # All permissions are `false`
+      permissions_matrix = Hash.new(Hash.new(false))
+
+      run_permission_checks(permissions_matrix)
+    end
+
+    context "when in a secondary gitlab geo node" do
+      before do
+        create(:protected_branch, name: 'feature', project: project)
+        allow(Gitlab::Geo).to receive(:enabled?) { true }
+        allow(Gitlab::Geo).to receive(:secondary?) { true }
+      end
+
+      # All permissions are `false`
+      permissions_matrix = Hash.new(Hash.new(false))
+
+      run_permission_checks(permissions_matrix)
+    end
+
+    describe "push_rule_check" do
+      before do
+        project.team << [user, :developer]
+
+        allow_any_instance_of(Repository).to receive(:new_commits).and_return(
+          project.repository.commits_between('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
+        )
+      end
+
+      describe "author email check" do
+        it 'returns true' do
+          expect { access.send(:check_push_access!, '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master') }.not_to raise_error
+        end
+
+        it 'returns false' do
+          project.create_push_rule
+          project.push_rule.update(commit_message_regex: "@only.com")
+
+          expect { access.send(:check_push_access!, '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master') }.to raise_error(described_class::UnauthorizedError)
+        end
+
+        it 'returns true for tags' do
+          project.create_push_rule
+          project.push_rule.update(commit_message_regex: "@only.com")
+
+          expect { access.send(:check_push_access!, '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/tags/v1') }.not_to raise_error
+        end
+
+        it 'allows githook for new branch with an old bad commit' do
+          bad_commit = double("Commit", safe_message: 'Some change').as_null_object
+          ref_object = double(name: 'heads/master')
+          allow(bad_commit).to receive(:refs).and_return([ref_object])
+          allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
+
+          project.create_push_rule
+          project.push_rule.update(commit_message_regex: "Change some files")
+
+          # push to new branch, so use a blank old rev and new ref
+          expect { access.send(:check_push_access!, "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new-branch") }.not_to raise_error
+        end
+
+        it 'allows githook for any change with an old bad commit' do
+          bad_commit = double("Commit", safe_message: 'Some change').as_null_object
+          ref_object = double(name: 'heads/master')
+          allow(bad_commit).to receive(:refs).and_return([ref_object])
+          allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
+
+          project.create_push_rule
+          project.push_rule.update(commit_message_regex: "Change some files")
+
+          # push to new branch, so use a blank old rev and new ref
+          expect { access.send(:check_push_access!, '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master') }.not_to raise_error
+        end
+
+        it 'does not allow any change from Web UI with bad commit' do
+          bad_commit = double("Commit", safe_message: 'Some change').as_null_object
+          # We use tmp ref a a temporary for Web UI commiting
+          ref_object = double(name: 'refs/tmp')
+          allow(bad_commit).to receive(:refs).and_return([ref_object])
+          allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
+          allow_any_instance_of(Repository).to receive(:new_commits).and_return([bad_commit])
+
+          project.create_push_rule
+          project.push_rule.update(commit_message_regex: "Change some files")
+
+          # push to new branch, so use a blank old rev and new ref
+          expect { access.send(:check_push_access!, '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master') }.to raise_error(described_class::UnauthorizedError)
+        end
+      end
+
+      describe "member_check" do
+        before do
+          project.create_push_rule
+          project.push_rule.update(member_check: true)
+        end
+
+        it 'returns false for non-member user' do
+          expect { access.send(:check_push_access!, '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master') }.to raise_error(described_class::UnauthorizedError)
+        end
+
+        it 'returns true if committer is a gitlab member' do
+          create(:user, email: 'dmitriy.zaporozhets@gmail.com')
+
+          expect { access.send(:check_push_access!, '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master') }.not_to raise_error
+        end
+      end
+
+      describe "file names check" do
+        before do
+          allow_any_instance_of(Repository).to receive(:new_commits).and_return(
+            project.repository.commits_between('913c66a37b4a45b9769037c55c2d238bd0942d2e', '33f3729a45c02fc67d00adb1b8bca394b0e761d9')
+          )
+        end
+
+        it 'returns false when filename is prohibited' do
+          project.create_push_rule
+          project.push_rule.update(file_name_regex: "jpg$")
+
+          expect { access.send(:check_push_access!, '913c66a37b4a45b9769037c55c2d238bd0942d2e 33f3729a45c02fc67d00adb1b8bca394b0e761d9 refs/heads/master') }.to raise_error(described_class::UnauthorizedError)
+        end
+
+        it 'returns true if file name is allowed' do
+          project.create_push_rule
+          project.push_rule.update(file_name_regex: "exe$")
+
+          expect { access.send(:check_push_access!, '913c66a37b4a45b9769037c55c2d238bd0942d2e 33f3729a45c02fc67d00adb1b8bca394b0e761d9 refs/heads/master') }.not_to raise_error
+        end
+      end
+
+      describe "max file size check" do
+        before do
+          allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(1.5.megabytes.to_i)
+        end
+
+        it "returns false when size is too large" do
+          project.create_push_rule
+          project.push_rule.update(max_file_size: 1)
+
+          expect { access.send(:check_push_access!, 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master') }.to raise_error(described_class::UnauthorizedError)
+        end
+
+        it "returns true when size is allowed" do
+          project.create_push_rule
+          project.push_rule.update(max_file_size: 2)
+
+          expect { access.send(:check_push_access!, 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master') }.not_to raise_error
+        end
+
+        it "returns true when size is nil" do
+          allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(nil)
+          project.create_push_rule
+          project.push_rule.update(max_file_size: 2)
+
+          expect { access.send(:check_push_access!, 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master') }.not_to raise_error
+        end
+      end
+
+      describe 'repository size restrictions' do
+        before do
+          project.update_attribute(:repository_size_limit, 50.megabytes)
+        end
+
+        it 'returns false when blob is too big' do
+          allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(100.megabytes.to_i)
+
+          expect { access.send(:check_push_access!, 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master') }.to raise_error(described_class::UnauthorizedError)
+        end
+
+        it 'returns true when blob is just right' do
+          allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(2.megabytes.to_i)
+
+          expect { access.send(:check_push_access!, 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master') }.not_to raise_error
+        end
       end
     end
   end
@@ -402,6 +717,17 @@ describe Gitlab::GitAccess, lib: true do
       def authorize
         project.team << [user, :reporter]
       end
+    end
+  end
+
+  context 'when the repository is read only' do
+    it 'denies push access' do
+      project = create(:project, :read_only_repository)
+      project.team << [user, :master]
+
+      check = access.check('git-receive-pack', '_any')
+
+      expect(check).not_to be_allowed
     end
   end
 

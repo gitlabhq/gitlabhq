@@ -3,6 +3,7 @@ module Ci
   # proper pending build to runner on runner API request
   class RegisterBuildService
     include Gitlab::CurrentSettings
+    prepend EE::Ci::RegisterBuildService
 
     attr_reader :runner
 

@@ -1,7 +1,9 @@
 class Notify < BaseMailer
   include ActionDispatch::Routing::PolymorphicRoutes
 
+  include Emails::AdminNotification
   include Emails::Issues
+  include Emails::CsvExport
   include Emails::MergeRequests
   include Emails::Notes
   include Emails::Projects

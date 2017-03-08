@@ -187,6 +187,90 @@ describe Projects::EnvironmentsController do
     end
   end
 
+  describe 'GET #status' do
+    context 'without deployment service' do
+      it 'returns 404' do
+        get :status, environment_params
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'with deployment service' do
+      let(:project) { create(:kubernetes_project) }
+
+      before do
+        allow_any_instance_of(Environment).to receive(:deployment_service_ready?).and_return(true)
+      end
+
+      it 'returns 204 until the rollout status is present' do
+        expect_any_instance_of(Environment).
+          to receive(:rollout_status).
+          and_return(nil)
+
+        get :status, environment_params
+
+        expect(response.status).to eq(204)
+      end
+
+      it 'returns the rollout status when present' do
+        expect_any_instance_of(Environment).
+          to receive(:rollout_status).
+          and_return(::Gitlab::Kubernetes::RolloutStatus.new([]))
+
+        get :status, environment_params
+
+        expect(response.status).to eq(200)
+      end
+    end
+  end
+
+  describe 'GET #metrics' do
+    before do
+      allow(controller).to receive(:environment).and_return(environment)
+    end
+
+    context 'when environment has no metrics' do
+      before do
+        expect(environment).to receive(:metrics).and_return(nil)
+      end
+
+      it 'returns a metrics page' do
+        get :metrics, environment_params
+
+        expect(response).to be_ok
+      end
+
+      context 'when requesting metrics as JSON' do
+        it 'returns a metrics JSON document' do
+          get :metrics, environment_params(format: :json)
+
+          expect(response).to have_http_status(204)
+          expect(json_response).to eq({})
+        end
+      end
+    end
+
+    context 'when environment has some metrics' do
+      before do
+        expect(environment).to receive(:metrics).and_return({
+          success: true,
+          metrics: {},
+          last_update: 42
+        })
+      end
+
+      it 'returns a metrics JSON document' do
+        get :metrics, environment_params(format: :json)
+
+        expect(response).to be_ok
+        expect(json_response['success']).to be(true)
+        expect(json_response['metrics']).to eq({})
+        expect(json_response['last_update']).to eq(42)
+      end
+    end
+  end
+
   def environment_params(opts = {})
     opts.reverse_merge(namespace_id: project.namespace,
                        project_id: project,

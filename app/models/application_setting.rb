@@ -1,6 +1,7 @@
 class ApplicationSetting < ActiveRecord::Base
   include CacheMarkdownField
   include TokenAuthenticatable
+  prepend EE::ApplicationSetting
 
   add_authentication_token_field :runners_registration_token
   add_authentication_token_field :health_check_access_token
@@ -76,6 +77,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
+  validates :repository_size_limit,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates :max_artifacts_size,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
@@ -85,6 +90,14 @@ class ApplicationSetting < ActiveRecord::Base
   validates :container_registry_token_expire_delay,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
+
+  validates :elasticsearch_url,
+            presence: { message: "can't be blank when indexing is enabled" },
+            if: :elasticsearch_indexing?
+
+  validates :elasticsearch_aws_region,
+            presence: { message: "can't be blank when using aws hosted elasticsearch" },
+            if: ->(setting) { setting.elasticsearch_indexing? && setting.elasticsearch_aws? }
 
   validates :repository_storages, presence: true
   validate :check_repository_storages
@@ -121,6 +134,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :minimum_mirror_sync_time,
+            presence: true,
+            inclusion: { in: Gitlab::Mirror::SYNC_TIME_OPTIONS.values }
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
       unless Gitlab::VisibilityLevel.options.has_value?(level)
@@ -147,6 +164,8 @@ class ApplicationSetting < ActiveRecord::Base
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
+
+  after_update :update_mirror_cron_jobs, if: :minimum_mirror_sync_time_changed?
 
   after_commit do
     Rails.cache.write(CACHE_KEY, self)
@@ -215,8 +234,18 @@ class ApplicationSetting < ActiveRecord::Base
     }
   end
 
+  def self.defaults_ee
+    {
+      elasticsearch_url: ENV['ELASTIC_URL'] || 'http://localhost:9200',
+      elasticsearch_aws: false,
+      elasticsearch_aws_region: ENV['ELASTIC_REGION'] || 'us-east-1',
+      usage_ping_enabled: true,
+      minimum_mirror_sync_time: Gitlab::Mirror::FIFTEEN
+    }
+  end
+
   def self.defaults
-    defaults_ce
+    defaults_ce.merge(defaults_ee)
   end
 
   def self.create_from_defaults
@@ -229,6 +258,29 @@ class ApplicationSetting < ActiveRecord::Base
     else
       super
     end
+  end
+
+  def update_mirror_cron_jobs
+    Project.mirror.where('sync_time < ?', minimum_mirror_sync_time)
+      .update_all(sync_time: minimum_mirror_sync_time)
+    RemoteMirror.where('sync_time < ?', minimum_mirror_sync_time)
+      .update_all(sync_time: minimum_mirror_sync_time)
+
+    Gitlab::Mirror.configure_cron_jobs!
+  end
+
+  def elasticsearch_url
+    read_attribute(:elasticsearch_url).split(',').map(&:strip)
+  end
+
+  def elasticsearch_config
+    {
+      url:                   elasticsearch_url,
+      aws:                   elasticsearch_aws,
+      aws_access_key:        elasticsearch_aws_access_key,
+      aws_secret_access_key: elasticsearch_aws_secret_access_key,
+      aws_region:            elasticsearch_aws_region,
+    }
   end
 
   def home_page_url_column_exist

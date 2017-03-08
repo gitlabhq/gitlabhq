@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe 'Dropdown assignee', js: true, feature: true do
+  include FilteredSearchHelpers
   include WaitForAjax
 
   let!(:project) { create(:empty_project) }
@@ -125,7 +126,8 @@ describe 'Dropdown assignee', js: true, feature: true do
       click_assignee(user_jacob.name)
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect(filtered_search.value).to eq("assignee:@#{user_jacob.username} ")
+      expect_tokens([{ name: 'assignee', value: "@#{user_jacob.username}" }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in the assignee username when the assignee has been filtered' do
@@ -133,14 +135,16 @@ describe 'Dropdown assignee', js: true, feature: true do
       click_assignee(user.name)
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect(filtered_search.value).to eq("assignee:@#{user.username} ")
+      expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+      expect_filtered_search_input_empty
     end
 
     it 'selects `no assignee`' do
       find('#js-dropdown-assignee .filter-dropdown-item', text: 'No Assignee').click
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect(filtered_search.value).to eq("assignee:none ")
+      expect_tokens([{ name: 'assignee', value: 'none' }])
+      expect_filtered_search_input_empty
     end
   end
 

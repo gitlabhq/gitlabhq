@@ -46,6 +46,8 @@ module API
           optional :labels, type: String, desc: 'Comma-separated list of label names'
           optional :due_date, type: String, desc: 'Date time string in the format YEAR-MONTH-DAY'
           optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
+          # Gitlab-EE specific
+          optional :weight, type: Integer, values: 0..9, desc: 'The weight of the issue'
         end
       end
 
@@ -60,7 +62,6 @@ module API
         end
         get do
           issues = find_issues(scope: 'authored')
-
           present paginate(issues), with: ::API::Entities::Issue, current_user: current_user
         end
       end
@@ -169,7 +170,8 @@ module API
           optional :state_event, type: String, values: %w[reopen close], desc: 'State of the issue'
           use :issue_params
           at_least_one_of :title, :description, :assignee_id, :milestone_id,
-                          :labels, :created_at, :due_date, :confidential, :state_event
+                          :labels, :created_at, :due_date, :confidential, :state_event,
+                          :weight
         end
         put ':id/issues/:issue_id' do
           issue = user_project.issues.find(params.delete(:issue_id))

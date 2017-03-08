@@ -11,6 +11,7 @@ describe "Private Project Snippets Access", feature: true  do
     subject { namespace_project_snippets_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -25,6 +26,7 @@ describe "Private Project Snippets Access", feature: true  do
     subject { new_namespace_project_snippet_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_denied_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -39,6 +41,7 @@ describe "Private Project Snippets Access", feature: true  do
     subject { namespace_project_snippet_path(project.namespace, project, private_snippet) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
@@ -53,6 +56,7 @@ describe "Private Project Snippets Access", feature: true  do
     subject { raw_namespace_project_snippet_path(project.namespace, project, private_snippet) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }

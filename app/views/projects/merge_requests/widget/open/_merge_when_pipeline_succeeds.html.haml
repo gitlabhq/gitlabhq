@@ -7,7 +7,12 @@
 %div
   %p
     = succeed '.' do
-      The changes will be merged into
+      The changes will be
+      - if @merge_request.squash
+        squashed and
+      - if @project.merge_requests_ff_only_enabled
+        fast-forward
+      merged into
       %span.label-branch= @merge_request.target_branch
     - if @merge_request.remove_source_branch?
       The source branch will be removed.

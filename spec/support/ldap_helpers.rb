@@ -1,4 +1,8 @@
+require_relative 'ee/ldap_helpers'
+
 module LdapHelpers
+  include EE::LdapHelpers
+
   def ldap_adapter(provider = 'ldapmain', ldap = double(:ldap))
     ::Gitlab::LDAP::Adapter.new(provider, ldap)
   end

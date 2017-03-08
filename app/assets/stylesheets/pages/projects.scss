@@ -760,6 +760,19 @@ pre.light-well {
   }
 }
 
+a.allowed-to-merge,
+a.allowed-to-push {
+  cursor: pointer;
+  cursor: hand;
+}
+
+.protected-branch-push-access-list,
+.protected-branch-merge-access-list {
+  a {
+    color: $white-light;
+  }
+}
+
 .protected-branches-list {
   a {
     color: $gl-text-color;
@@ -790,6 +803,10 @@ pre.light-well {
   }
 }
 
+.disabled-item {
+  @extend .btn.disabled;
+}
+
 .custom-notifications-form {
   .is-loading {
     .custom-notification-event-loading {
@@ -817,6 +834,22 @@ pre.light-well {
 
   a {
     white-space: normal;
+  }
+}
+
+.project-mirror-text {
+  @media (min-width: $screen-sm-min) {
+    float: left;
+    line-height: 35px;
+  }
+}
+
+.project-mirror-button {
+  margin-top: 10px;
+
+  @media (min-width: $screen-sm-min) {
+    float: right;
+    margin-top: 0;
   }
 }
 
@@ -951,6 +984,22 @@ pre.light-well {
       overflow: hidden;
       word-wrap: break-word;
     }
+  }
+}
+
+#modal-geo-info .modal-dialog {
+  max-width: 700px;
+
+  .btn-clipboard {
+    @extend .pull-right;
+    margin-right: 20px;
+    margin-top: 5px;
+    position: absolute;
+    right: 0;
+  }
+
+  .dark {
+    margin-right: 40px;
   }
 }
 

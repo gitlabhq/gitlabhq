@@ -24,6 +24,7 @@
 
 - [Generate a changelog entry with `bin/changelog`](changelog.md)
 - [Limit conflicts with EE when developing on CE](limit_ee_conflicts.md)
+- [Guidelines for implementing Enterprise Edition feature](ee_features.md)
 - [Code review guidelines](code_review.md) for reviewing code and having code reviewed.
 - [Merge request performance guidelines](merge_request_performance_guidelines.md)
   for ensuring merge requests do not negatively impact GitLab performance

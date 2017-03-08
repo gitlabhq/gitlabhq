@@ -17,6 +17,7 @@ describe API::Groups, api: true  do
   before do
     group1.add_owner(user1)
     group2.add_owner(user2)
+    group1.ldap_group_links.create cn: 'ldap-group', group_access: Gitlab::Access::MASTER, provider: 'ldap'
   end
 
   describe "GET /groups" do
@@ -38,6 +39,19 @@ describe API::Groups, api: true  do
         expect(json_response.length).to eq(1)
         expect(json_response)
           .to satisfy_one { |group| group['name'] == group1.name }
+
+        expect(json_response)
+          .to satisfy_one { |group| group['ldap_cn'] == group1.ldap_cn }
+        expect(json_response)
+          .to satisfy_one { |group| group['ldap_access'] == group1.ldap_access }
+
+        expect(json_response).to satisfy_one do |group|
+          ldap_group_link = group['ldap_group_links'].first
+
+          ldap_group_link['cn'] == group1.ldap_cn &&
+            ldap_group_link['group_access'] == group1.ldap_access &&
+            ldap_group_link['provider'] == 'ldap'
+        end
       end
 
       it "does not include statistics" do
@@ -458,6 +472,29 @@ describe API::Groups, api: true  do
         post api("/groups", user3), { name: 'test' }
 
         expect(response).to have_http_status(400)
+      end
+
+      it "creates an ldap_group_link if ldap_cn and ldap_access are supplied" do
+        group_attributes = attributes_for(:group, ldap_cn: 'ldap-group', ldap_access: Gitlab::Access::DEVELOPER)
+        expect { post api("/groups", admin), group_attributes }.to change{ LdapGroupLink.count }.by(1)
+      end
+    end
+  end
+
+  describe "PUT /groups" do
+    context "when authenticated as user without group permissions" do
+      it "does not create group" do
+        put api("/groups/#{group2.id}", user1), attributes_for(:group)
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context "when authenticated as user with group permissions" do
+      it "updates group" do
+        group2.update(owner: user2)
+        put api("/groups/#{group2.id}", user2), { name: 'Renamed' }
+        expect(response.status).to eq(200)
+        expect(group2.reload.name).to eq('Renamed')
       end
     end
   end

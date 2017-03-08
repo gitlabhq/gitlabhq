@@ -158,20 +158,33 @@ describe ProjectsController do
         expect(response).to render_template('_activity')
       end
 
-      it "renders the readme view" do
-        allow(controller).to receive(:current_user).and_return(user)
-        allow(user).to receive(:project_view).and_return('readme')
-
-        get :show, namespace_id: public_project.namespace, id: public_project
-        expect(response).to render_template('_readme')
-      end
-
       it "renders the files view" do
         allow(controller).to receive(:current_user).and_return(user)
         allow(user).to receive(:project_view).and_return('files')
 
         get :show, namespace_id: public_project.namespace, id: public_project
         expect(response).to render_template('_files')
+      end
+
+      context 'project repo over limit' do
+        before do
+          allow_any_instance_of(Project).to receive(:above_size_limit?).and_return(true)
+          project.team << [user, :master]
+        end
+
+        it 'shows the over size limit warning message for project members' do
+          allow(controller).to receive(:current_user).and_return(user)
+
+          get :show, namespace_id: public_project.namespace.path, id: public_project.path
+
+          expect(response).to render_template('_above_size_limit_warning')
+        end
+
+        it 'does not show the message for non members' do
+          get :show, namespace_id: public_project.namespace.path, id: public_project.path
+
+          expect(response).not_to render_template('_above_size_limit_warning')
+        end
       end
     end
 
@@ -402,6 +415,28 @@ describe ProjectsController do
       expect(parsed_body["Branches"]).to include("master")
       expect(parsed_body["Tags"]).to include("v1.0.0")
       expect(parsed_body["Commits"]).to include("123456")
+    end
+  end
+
+  describe 'GET edit' do
+    it 'does not allow an auditor user to access the page' do
+      sign_in(create(:user, :auditor))
+
+      get :edit,
+          namespace_id: project.namespace.path,
+          id: project.path
+
+      expect(response).to have_http_status(404)
+    end
+
+    it 'allows an admin user to access the page' do
+      sign_in(create(:user, :admin))
+
+      get :edit,
+          namespace_id: project.namespace.path,
+          id: project.path
+
+      expect(response).to have_http_status(200)
     end
   end
 end

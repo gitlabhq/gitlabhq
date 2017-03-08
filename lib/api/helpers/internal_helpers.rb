@@ -53,6 +53,12 @@ module API
         ]
       end
 
+      def log_user_activity(actor)
+        commands = Gitlab::GitAccess::DOWNLOAD_COMMANDS
+
+        ::Users::ActivityService.new(actor, 'Git SSH').execute if commands.include?(params[:action])
+      end
+
       def parse_allowed_environment_variables
         return if params[:env].blank?
 

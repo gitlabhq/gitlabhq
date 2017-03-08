@@ -1,3 +1,9 @@
+/**
+ * Environment Item Component
+ *
+ * Renders a table row for each environment.
+ */
+
 const Vue = require('vue');
 const Timeago = require('timeago.js');
 
@@ -8,12 +14,6 @@ const ExternalUrlComponent = require('./environment_external_url');
 const StopComponent = require('./environment_stop');
 const RollbackComponent = require('./environment_rollback');
 const TerminalButtonComponent = require('./environment_terminal_button');
-
-/**
- * Envrionment Item Component
- *
- * Renders a table row for each environment.
- */
 
 const timeagoInstance = new Timeago();
 
@@ -46,11 +46,16 @@ module.exports = Vue.component('environment-item', {
       required: false,
       default: false,
     },
+
+    toggleDeployBoard: {
+      type: Function,
+      required: false,
+    },
   },
 
   computed: {
     /**
-     * Verifies if `last_deployment` key exists in the current Envrionment.
+     * Verifies if `last_deployment` key exists in the current Environment.
      * This key is required to render most of the html - this method works has
      * an helper.
      *
@@ -399,7 +404,6 @@ module.exports = Vue.component('environment-item', {
     folderUrl() {
       return `${window.location.pathname}/folders/${this.model.folderName}`;
     },
-
   },
 
   /**
@@ -420,11 +424,27 @@ module.exports = Vue.component('environment-item', {
   template: `
     <tr>
       <td>
+        <span class="deploy-board-icon"
+          v-if="model.hasDeployBoard"
+          @click="toggleDeployBoard(model)">
+
+          <i v-show="!model.isDeployBoardVisible"
+            class="fa fa-caret-right"
+            aria-hidden="true">
+          </i>
+
+          <i v-show="model.isDeployBoardVisible"
+            class="fa fa-caret-down"
+            aria-hidden="true">
+          </i>
+        </span>
+
         <a v-if="!model.isFolder"
           class="environment-name"
           :href="environmentPath">
           {{model.name}}
         </a>
+
         <a v-else class="folder-name" :href="folderUrl">
           <span class="folder-icon">
             <i class="fa fa-folder" aria-hidden="true"></i>

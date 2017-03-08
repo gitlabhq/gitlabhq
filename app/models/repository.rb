@@ -1,12 +1,20 @@
+# coding: utf-8
 require 'securerandom'
+require 'forwardable'
 
 class Repository
   include Gitlab::ShellAdapter
+  include Elastic::RepositoriesSearch
+  include RepositoryMirroring
+  prepend EE::Repository
 
   attr_accessor :path_with_namespace, :project
 
   CommitError = Class.new(StandardError)
   CreateTreeError = Class.new(StandardError)
+
+  MIRROR_REMOTE = "upstream".freeze
+  MIRROR_GEO = "geo".freeze
 
   # Methods that cache data from the Git repository.
   #
@@ -629,6 +637,15 @@ class Repository
     commit(sha)
   end
 
+  # Returns a list of commits that are not present in any reference
+  def new_commits(newrev)
+    args = %W(#{Gitlab.config.git.bin_path} rev-list #{newrev} --not --all)
+
+    Gitlab::Popen.popen(args, path_to_repo).first.split("\n").map do |sha|
+      commit(sha.strip)
+    end
+  end
+
   def last_commit_id_for_path(sha, path)
     key = path.blank? ? "last_commit_id_for_path:#{sha}" : "last_commit_id_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
 
@@ -837,6 +854,25 @@ class Repository
     end
   end
 
+  def ff_merge(user, source, target_branch, merge_request: nil)
+    our_commit = rugged.branches[target_branch].target
+    their_commit =
+      if source.is_a?(Gitlab::Git::Commit)
+        source.raw_commit
+      else
+        rugged.lookup(source)
+      end
+
+    raise 'Invalid merge target' if our_commit.nil?
+    raise 'Invalid merge source' if their_commit.nil?
+
+    GitOperationService.new(user, self).with_branch(target_branch) do |start_commit|
+      merge_request&.update(in_progress_merge_commit_sha: their_commit.oid)
+
+      their_commit.oid
+    end
+  end
+
   def merge(user, source, merge_request, options = {})
     GitOperationService.new(user, self).with_branch(
       merge_request.target_branch) do |start_commit|
@@ -964,6 +1000,54 @@ class Repository
     end
   end
 
+  def fetch_upstream(url)
+    add_remote(Repository::MIRROR_REMOTE, url)
+    fetch_remote(Repository::MIRROR_REMOTE)
+  end
+
+  def fetch_geo_mirror(url)
+    add_remote(Repository::MIRROR_GEO, url)
+    set_remote_as_mirror(Repository::MIRROR_GEO)
+    fetch_remote(Repository::MIRROR_GEO, forced: true)
+  end
+
+  def upstream_branches
+    @upstream_branches ||= remote_branches(Repository::MIRROR_REMOTE)
+  end
+
+  def diverged_from_upstream?(branch_name)
+    branch_commit = commit(branch_name)
+    upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
+
+    if upstream_commit
+      !is_ancestor?(branch_commit.id, upstream_commit.id)
+    else
+      false
+    end
+  end
+
+  def upstream_has_diverged?(branch_name, remote_ref)
+    branch_commit = commit(branch_name)
+    upstream_commit = commit("refs/remotes/#{remote_ref}/#{branch_name}")
+
+    if upstream_commit
+      !is_ancestor?(upstream_commit.id, branch_commit.id)
+    else
+      false
+    end
+  end
+
+  def up_to_date_with_upstream?(branch_name)
+    branch_commit = commit(branch_name)
+    upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
+
+    if upstream_commit
+      is_ancestor?(branch_commit.id, upstream_commit.id)
+    else
+      false
+    end
+  end
+
   def merge_base(first_commit_id, second_commit_id)
     first_commit_id = commit(first_commit_id).try(:id) || first_commit_id
     second_commit_id = commit(second_commit_id).try(:id) || second_commit_id
@@ -1045,6 +1129,12 @@ class Repository
     rescue Gitlab::Git::Repository::InvalidRef
       false
     end
+  end
+
+  def main_language
+    return unless exists?
+
+    Linguist::Repository.new(rugged, rugged.head.target_id).language
   end
 
   # Caches the supplied block both in a cache and in an instance variable.

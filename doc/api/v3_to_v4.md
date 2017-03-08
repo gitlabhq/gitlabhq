@@ -52,6 +52,10 @@ changes are in V4:
   - PUT `projects/:id`
 - Renamed `branch_name` to `branch` on DELETE `id/repository/branches/:branch` response [!8936](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8936)
 - Remove `public` param from create and edit actions of projects [!8736](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8736)
+- Remove `subscribed` field from responses returning list of issues or merge
+  requests. Fetch individual issues or merge requests to obtain the value
+  of `subscribed`
+  [!9661](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9661)
 - Use `visibility` as string parameter everywhere [!9337](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9337)
 - Notes do not return deprecated field `upvote` and `downvote` [!9384](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9384)
 - Return HTTP status code `400` for all validation errors when creating or updating a member instead of sometimes `422` error. [!9523](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9523)
@@ -59,3 +63,11 @@ changes are in V4:
 - Return 202 with JSON body on async removals on V4 API (DELETE `/projects/:id/repository/merged_branches` and DELETE `/projects/:id`) [!9449](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9449)
 - `projects/:id/milestones?iid[]=x&iid[]=y` array filter has been renamed to `iids` [!9096](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9096)
 - Return basic info about pipeline in `GET /projects/:id/pipelines` [!8875](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8875)
+- Simplify project payload exposed on Environment endpoints [!9675](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9675)
+
+#### EE-specific
+
+- Remove the ProjectGitHook API. Use the ProjectPushRule API instead [!1301](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1301)
+- Removed `repository_storage` from `PUT /application/settings` and `GET /application/settings` (use `repository_storages` instead) [!1307](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1307)
+- Removed `elasticsearch_host` and `elasticsearch_port` from `PUT /application/settings` (use `elasticsearch_url` instead) [!1305](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1305)
+

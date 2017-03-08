@@ -683,12 +683,15 @@ describe 'Git LFS API and storage' do
           end
 
           context 'when pushing a lfs object that does not exist' do
+            let(:sample_size) { 150.megabytes }
+            let(:sample_oid) { '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897' }
+
             let(:body) do
               {
                 'operation' => 'upload',
                 'objects' => [
-                  { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                    'size' => 1575078 }
+                  { 'oid' => sample_oid,
+                    'size' => sample_size }
                 ]
               }
             end
@@ -699,10 +702,43 @@ describe 'Git LFS API and storage' do
 
             it 'responds with upload hypermedia link' do
               expect(json_response['objects']).to be_kind_of(Array)
-              expect(json_response['objects'].first['oid']).to eq("91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897")
-              expect(json_response['objects'].first['size']).to eq(1575078)
-              expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/1575078")
+              expect(json_response['objects'].first['oid']).to eq(sample_oid)
+              expect(json_response['objects'].first['size']).to eq(sample_size)
+              expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/#{sample_oid}/#{sample_size}")
               expect(json_response['objects'].first['actions']['upload']['header']).to eq('Authorization' => authorization)
+            end
+
+            context 'and project is above the limit' do
+              let(:update_lfs_permissions) do
+                allow_any_instance_of(Project).to receive_messages(
+                  repository_and_lfs_size: 100.megabytes,
+                  actual_size_limit: 99.megabytes)
+              end
+
+              it 'responds with status 406' do
+                expect(response).to have_http_status(406)
+              end
+
+              it 'show correct error message' do
+                expect(json_response['message']).to eql('Your push has been rejected, because this repository has exceeded its size limit of 99 MB by 1 MB. Please contact your GitLab administrator for more information.')
+              end
+            end
+
+            context 'and project will go over the limit' do
+              let(:update_lfs_permissions) do
+                allow_any_instance_of(Project).to receive_messages(
+                  repository_and_lfs_size: 200.megabytes,
+                  actual_size_limit: 300.megabytes)
+              end
+
+              it 'responds with status 406' do
+                expect(response).to have_http_status(406)
+                expect(json_response['documentation_url']).to include('/help')
+              end
+
+              it 'show correct error message' do
+                expect(json_response['message']).to eql('Your push has been rejected, because this repository has exceeded its size limit of 300 MB by 50 MB. Please contact your GitLab administrator for more information.')
+              end
             end
           end
 
@@ -940,6 +976,17 @@ describe 'Git LFS API and storage' do
 
             it 'lfs object is linked to the project' do
               expect(lfs_object.projects.pluck(:id)).to include(project.id)
+            end
+          end
+
+          context 'and project has limit enabled but will stay under the limit' do
+            before do
+              allow_any_instance_of(Project).to receive_messages(actual_size_limit: 200, size_limit_enabled?: true)
+              put_finalize
+            end
+
+            it 'responds with status 200' do
+              expect(response).to have_http_status(200)
             end
           end
 

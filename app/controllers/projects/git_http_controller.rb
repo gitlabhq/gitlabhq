@@ -5,6 +5,8 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
   def info_refs
     if upload_pack? && upload_pack_allowed?
+      log_user_activity
+
       render_ok
     elsif receive_pack? && receive_pack_allowed?
       render_ok
@@ -74,7 +76,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def access_denied_message
-    'Access denied'
+    access_check.message || 'Access denied'
   end
 
   def upload_pack_allowed?
@@ -101,6 +103,10 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     return false unless Gitlab.config.gitlab_shell.receive_pack
 
     access_check.allowed?
+  end
+
+  def log_user_activity
+    Users::ActivityService.new(user, 'pull').execute
   end
 
   def access_klass

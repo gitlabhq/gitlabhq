@@ -54,6 +54,12 @@ module API
           source = find_source(source_type, params[:id])
           authorize_admin_source!(source_type, source)
 
+          ## EE specific
+          if source_type == 'project' && source.group && source.group.membership_lock
+            not_allowed!
+          end
+          ## EE specific
+
           member = source.members.find_by(user_id: params[:user_id])
           conflict!('Member already exists') if member
 
@@ -93,7 +99,7 @@ module API
         end
         delete ":id/members/:user_id" do
           source = find_source(source_type, params[:id])
-          # Ensure that memeber exists
+          # Ensure the member exists
           source.members.find_by!(user_id: params[:user_id])
 
           ::Members::DestroyService.new(source, current_user, declared_params).execute

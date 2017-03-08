@@ -220,6 +220,16 @@ module ProjectsHelper
     end
   end
 
+  def size_limit_message(project)
+    show_lfs = project.lfs_enabled? ? 'including files in LFS' : ''
+
+    "The total size of this project's repository #{show_lfs} will be limited to this size. 0 for unlimited. Leave empty to inherit the group/global value."
+  end
+
+  def project_above_size_limit_message
+    Gitlab::RepositorySizeError.new(@project).above_size_limit_message
+  end
+
   def git_user_name
     if current_user
       current_user.name
@@ -238,6 +248,8 @@ module ProjectsHelper
 
   def default_url_to_repo(project = @project)
     case default_clone_protocol
+    when 'krb5'
+      project.kerberos_url_to_repo
     when 'ssh'
       project.ssh_url_to_repo
     else
@@ -248,6 +260,8 @@ module ProjectsHelper
   def default_clone_protocol
     if allowed_protocols_present?
       enabled_protocol
+    elsif alternative_kerberos_url? && current_user
+      "krb5"
     else
       if !current_user || current_user.require_ssh_key?
         gitlab_config.protocol
@@ -255,6 +269,11 @@ module ProjectsHelper
         'ssh'
       end
     end
+  end
+
+  # Given the current GitLab configuration, check whether the GitLab URL for Kerberos is going to be different than the HTTP URL
+  def alternative_kerberos_url?
+    Gitlab.config.alternative_gitlab_kerberos_url?
   end
 
   def project_last_activity(project)
@@ -375,6 +394,14 @@ module ProjectsHelper
       "danger"
     when "finished"
       "success"
+    end
+  end
+
+  def membership_locked?
+    if @project.group && @project.group.membership_lock
+      true
+    else
+      false
     end
   end
 

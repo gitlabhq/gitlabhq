@@ -22,13 +22,19 @@ Rails.application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
+  namespace :oauth do
+    scope path: 'geo', controller: :geo_auth, as: :geo do
+      get 'auth'
+      get 'callback'
+      get 'logout'
+    end
+  end
+
   # Autocomplete
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
   get '/autocomplete/projects' => 'autocomplete#projects'
-
-  # Emojis
-  resources :emojis, only: :index
+  get '/autocomplete/project_groups' => 'autocomplete#project_groups'
 
   # Search
   get 'search' => 'search#show'

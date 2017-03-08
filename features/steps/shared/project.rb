@@ -21,7 +21,7 @@ module SharedProject
   # Create a specific project called "Shop"
   step 'I own project "Shop"' do
     @project = Project.find_by(name: "Shop")
-    @project ||= create(:project, :repository, name: "Shop", namespace: @user.namespace)
+    @project ||= create(:project, :repository, name: "Shop", namespace: @user.namespace, issues_template: "This issue should contain the following.", merge_requests_template: "This merge request should contain the following.")
     @project.team << [@user, :master]
   end
 

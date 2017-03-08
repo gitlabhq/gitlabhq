@@ -28,7 +28,10 @@
       = form.hidden_field :label_ids, multiple: true, value: ''
       .col-sm-10{ class: "#{"col-lg-8" if has_due_date} #{'issuable-form-padding-top' if !has_labels}" }
         .issuable-form-select-holder
-          = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: issuable.labels, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: false}, dropdown_title: "Select label"
+          = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: issuable.labels, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: false }, dropdown_title: "Select label"
+
+    = render "shared/issuable/form/weight", issuable: issuable, form: form
+
   - if has_due_date
     .col-lg-6
       .form-group

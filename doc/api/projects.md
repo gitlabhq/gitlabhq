@@ -90,7 +90,8 @@ Parameters:
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
-    "request_access_enabled": false
+    "request_access_enabled": false,
+    "approvals_before_merge": 0
   },
   {
     "id": 6,
@@ -150,7 +151,8 @@ Parameters:
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
-    "request_access_enabled": false
+    "request_access_enabled": false,
+    "approvals_before_merge": 0
   }
 ]
 ```
@@ -239,9 +241,11 @@ Parameters:
       "group_access_level": 10
     }
   ],
+  "repository_storage": "default",
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
-  "request_access_enabled": false
+  "request_access_enabled": false,
+  "approvals_before_merge": 0
 }
 ```
 
@@ -436,6 +440,7 @@ Parameters:
 | `name` | string | yes if path is not provided | The name of the new project. Equals path if not provided. |
 | `path` | string | yes if name is not provided | Repository name for new project. Generated based on name if not provided (generated lowercased with dashes). |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
+| `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
 | `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
@@ -451,6 +456,8 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
+| `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
 ### Create project for user
 
@@ -467,7 +474,6 @@ Parameters:
 | `user_id` | integer | yes | The user ID of the project owner |
 | `name` | string | yes | The name of the new project |
 | `path` | string | no | Custom repository name for new project. By default generated based on name |
-| `default_branch` | string | no | `master` by default |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
@@ -484,6 +490,8 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
+| `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
 ### Edit project
 
@@ -516,6 +524,8 @@ Parameters:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
+| `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 
 ### Fork project
 
@@ -1201,3 +1211,88 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+
+## Push Rules (EE only)
+
+### Show project push rules
+
+Get a project push rule.
+
+```
+GET /projects/:id/push_rule
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+
+
+```json
+{
+  "id": 1,
+  "project_id": 3,
+  "commit_message_regex": "Fixes \d +\",
+  "deny_delete_tag": false,
+  "created_at": "2012-10-12T17:04:47Z",
+  "member_check": false,
+  "prevent_secrets": false,
+  "author_email_regex": "",
+  "file_name_regex": "",
+  "max_file_size": 5
+}
+```
+
+### Add project push rule
+
+Adds a push rule to a specified project.
+
+```
+POST /projects/:id/push_rule
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `deny_delete_tag` | boolean | no | Deny deleting a tag |
+| `member_check` | boolean | no | Restrict commits by author (email) to existing GitLab users |
+| `prevent_secrets` | boolean | no | GitLab will reject any files that are likely to contain secrets |
+| `commit_message_regex` | string | no | All commit messages must match this, e.g. `Fixed \d+\..*` |
+| `author_email_regex` | string | no | All commit author emails must match this, e.g. `@my-company.com$` |
+| `file_name_regex` | string | no | All commited filenames must **not** match this, e.g. `(jar|exe)$` |
+| `max_file_size` | integer | no | Maximum file size (MB) |
+
+### Edit project push rule
+
+Edits a push rule for a specified project.
+
+```
+PUT /projects/:id/push_rule
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `deny_delete_tag` | boolean | no | Deny deleting a tag |
+| `member_check` | boolean | no | Restrict commits by author (email) to existing GitLab users |
+| `prevent_secrets` | boolean | no | GitLab will reject any files that are likely to contain secrets |
+| `commit_message_regex` | string | no | All commit messages must match this, e.g. `Fixed \d+\..*` |
+| `author_email_regex` | string | no | All commit author emails must match this, e.g. `@my-company.com$` |
+| `file_name_regex` | string | no | All commited filenames must **not** match this, e.g. `(jar|exe)$` |
+| `max_file_size` | integer | no | Maximum file size (MB) |
+
+### Delete project push rule
+
+Removes a push rule from a project. This is an idempotent method and can be called multiple times.
+Either the push rule is available or not.
+
+```
+DELETE /projects/:id/push_rule
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project

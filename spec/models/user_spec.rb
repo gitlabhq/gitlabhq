@@ -32,6 +32,7 @@ describe User, models: true do
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
+    it { is_expected.to have_many(:path_locks).dependent(:destroy) }
     it { is_expected.to have_many(:builds).dependent(:nullify) }
     it { is_expected.to have_many(:pipelines).dependent(:nullify) }
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }
@@ -209,6 +210,12 @@ describe User, models: true do
       end
     end
 
+    it 'does not allow a user to be both an auditor and an admin' do
+      user = build(:user, :admin, :auditor)
+
+      expect(user).to be_invalid
+    end
+
     describe 'ghost users' do
       it 'does not allow a non-blocked ghost user' do
         user = build(:user, :ghost)
@@ -223,6 +230,19 @@ describe User, models: true do
 
         expect(user).to be_valid
       end
+    end
+  end
+
+  describe "non_ldap" do
+    it "retuns non-ldap user" do
+      User.delete_all
+      create :user
+      ldap_user = create :omniauth_user, provider: "ldapmain"
+      create :omniauth_user, provider: "gitlub"
+
+      users = User.non_ldap
+      expect(users.count).to eq 2
+      expect(users.detect { |user| user.username == ldap_user.username }).to be_nil
     end
   end
 
@@ -859,6 +879,35 @@ describe User, models: true do
     end
   end
 
+  describe '#avatar_url' do
+    let(:user) { create(:user) }
+    subject { user.avatar_url }
+
+    context 'when avatar file is uploaded' do
+      before do
+        user.update_columns(avatar: 'uploads/avatar.png')
+        allow(user.avatar).to receive(:present?) { true }
+      end
+
+      let(:avatar_path) do
+        "/uploads/user/avatar/#{user.id}/uploads/avatar.png"
+      end
+
+      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+
+      context 'when in a geo secondary node' do
+        let(:geo_url) { 'http://geo.example.com' }
+
+        before do
+          allow(Gitlab::Geo).to receive(:secondary?) { true }
+          allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_url }
+        end
+
+        it { should eq "#{geo_url}#{avatar_path}" }
+      end
+    end
+  end
+
   describe '#requires_ldap_check?' do
     let(:user) { User.new }
 
@@ -1014,6 +1063,27 @@ describe User, models: true do
       expect(user.starred?(project)).to be_truthy
       user.toggle_star(project)
       expect(user.starred?(project)).to be_falsey
+    end
+  end
+
+  describe "#existing_member?" do
+    it "returns true for exisitng user" do
+      create :user, email: "bruno@example.com"
+
+      expect(User.existing_member?("bruno@example.com")).to be_truthy
+    end
+
+    it "returns false for unknown exisitng user" do
+      create :user, email: "bruno@example.com"
+
+      expect(User.existing_member?("rendom@example.com")).to be_falsey
+    end
+
+    it "returns true if additional email exists" do
+      user = create :user
+      user.emails.create(email: "bruno@example.com")
+
+      expect(User.existing_member?("bruno@example.com")).to be_truthy
     end
   end
 
@@ -1477,11 +1547,18 @@ describe User, models: true do
   describe '#access_level=' do
     let(:user) { build(:user) }
 
+    before do
+      # `auditor?` returns true only when the user is an auditor _and_ the auditor license
+      # add-on is present. We aren't testing this here, so we can assume that the add-on exists.
+      allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { true }
+    end
+
     it 'does nothing for an invalid access level' do
       user.access_level = :invalid_access_level
 
       expect(user.access_level).to eq(:regular)
       expect(user.admin).to be false
+      expect(user.auditor).to be false
     end
 
     it "assigns the 'admin' access level" do
@@ -1489,6 +1566,41 @@ describe User, models: true do
 
       expect(user.access_level).to eq(:admin)
       expect(user.admin).to be true
+      expect(user.auditor).to be false
+    end
+
+    it "assigns the 'auditor' access level" do
+      user.access_level = :auditor
+
+      expect(user.access_level).to eq(:auditor)
+      expect(user.admin).to be false
+      expect(user.auditor).to be true
+    end
+
+    it "assigns the 'auditor' access level" do
+      user.access_level = :regular
+
+      expect(user.access_level).to eq(:regular)
+      expect(user.admin).to be false
+      expect(user.auditor).to be false
+    end
+
+    it "clears the 'admin' access level when a user is made an auditor" do
+      user.access_level = :admin
+      user.access_level = :auditor
+
+      expect(user.access_level).to eq(:auditor)
+      expect(user.admin).to be false
+      expect(user.auditor).to be true
+    end
+
+    it "clears the 'auditor' access level when a user is made an admin" do
+      user.access_level = :auditor
+      user.access_level = :admin
+
+      expect(user.access_level).to eq(:admin)
+      expect(user.admin).to be true
+      expect(user.auditor).to be false
     end
 
     it "doesn't clear existing access levels when an invalid access level is passed in" do
@@ -1497,6 +1609,7 @@ describe User, models: true do
 
       expect(user.access_level).to eq(:admin)
       expect(user.admin).to be true
+      expect(user.auditor).to be false
     end
 
     it "accepts string values in addition to symbols" do
@@ -1504,6 +1617,104 @@ describe User, models: true do
 
       expect(user.access_level).to eq(:admin)
       expect(user.admin).to be true
+      expect(user.auditor).to be false
+    end
+  end
+
+  describe 'the GitLab_Auditor_User add-on' do
+    let(:license) { build(:license) }
+
+    before do
+      allow(::License).to receive(:current).and_return(license)
+    end
+
+    context 'creating an auditor user' do
+      it "does not allow creating an auditor user if the addon isn't enabled" do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { false }
+
+        expect(build(:user, :auditor)).to be_invalid
+      end
+
+      it "does not allow creating an auditor user if no license is present" do
+        allow(License).to receive(:current).and_return nil
+
+        expect(build(:user, :auditor)).to be_invalid
+      end
+
+      it "allows creating an auditor user if the addon is enabled" do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { true }
+
+        expect(build(:user, :auditor)).to be_valid
+      end
+
+      it "allows creating a regular user if the addon isn't enabled" do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { false }
+
+        expect(build(:user)).to be_valid
+      end
+    end
+
+    context '#auditor?' do
+      it "returns true for an auditor user if the addon is enabled" do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { true }
+
+        expect(build(:user, :auditor)).to be_auditor
+      end
+
+      it "returns false for an auditor user if the addon is not enabled" do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { false }
+
+        expect(build(:user, :auditor)).not_to be_auditor
+      end
+
+      it "returns false for an auditor user if a license is not present" do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { false }
+
+        expect(build(:user, :auditor)).not_to be_auditor
+      end
+
+      it "returns false for a non-auditor user even if the addon is present" do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_Auditor_User') { true }
+
+        expect(build(:user)).not_to be_auditor
+      end
+    end
+  end
+
+  describe '.ghost' do
+    it "creates a ghost user if one isn't already present" do
+      ghost = User.ghost
+
+      expect(ghost).to be_ghost
+      expect(ghost).to be_persisted
+    end
+
+    it "does not create a second ghost user if one is already present" do
+      expect do
+        User.ghost
+        User.ghost
+      end.to change { User.count }.by(1)
+      expect(User.ghost).to eq(User.ghost)
+    end
+
+    context "when a regular user exists with the username 'ghost'" do
+      it "creates a ghost user with a non-conflicting username" do
+        create(:user, username: 'ghost')
+        ghost = User.ghost
+
+        expect(ghost).to be_persisted
+        expect(ghost.username).to eq('ghost1')
+      end
+    end
+
+    context "when a regular user exists with the email 'ghost@example.com'" do
+      it "creates a ghost user with a non-conflicting email" do
+        create(:user, email: 'ghost@example.com')
+        ghost = User.ghost
+
+        expect(ghost).to be_persisted
+        expect(ghost.email).to eq('ghost1@example.com')
+      end
     end
   end
 

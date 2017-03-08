@@ -1,0 +1,24 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Cross-Site Request Forgery",
+      "warning_code": 7,
+      "fingerprint": "dc562678129557cdb8b187217da304044547a3605f05fe678093dcb4b4d8bbe4",
+      "message": "'protect_from_forgery' should be called in Oauth::GeoAuthController",
+      "file": "app/controllers/oauth/geo_auth_controller.rb",
+      "line": 1,
+      "link": "http://brakemanscanner.org/docs/warning_types/cross-site_request_forgery/",
+      "code": null,
+      "render_path": null,
+      "location": {
+        "type": "controller",
+        "controller": "Oauth::GeoAuthController"
+      },
+      "user_input": null,
+      "confidence": "High",
+      "note": ""
+    }
+  ],
+  "updated": "2017-01-20 02:06:54 +0000",
+  "brakeman_version": "3.4.1"
+}

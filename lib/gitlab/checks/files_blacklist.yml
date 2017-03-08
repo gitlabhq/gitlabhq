@@ -1,0 +1,24 @@
+# List of regular expressions to prevent secrets
+# being pushed to repository.
+# This list is checked only if project.push_rule.prevent_secrets is true
+# Any changes to this file should be documented in: doc/push_rules/push_rules.md
+
+# AWS CLI credential blobs
+
+- aws\/credentials$
+
+# RSA DSA ECSDA and ED25519 SSH keys
+
+- (ssh|config)\/(personal|server)_(rsa|dsa|ed\d+|ecdsa)
+- id_rsa$
+- id_dsa$
+- id_ed25519$
+- id_ecdsa$
+
+# privatekey.pem and secret.key
+
+- \.(pem|key)$
+
+# files ending in .history or _history
+- "[._]history$"
+

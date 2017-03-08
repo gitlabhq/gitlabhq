@@ -6,6 +6,15 @@ servers, including Microsoft Active Directory, Apple Open Directory, Open LDAP,
 and 389 Server. GitLab EE includes enhanced integration, including group
 membership syncing.
 
+## GitLab EE
+
+The information on this page is relevent for both GitLab CE and EE. For more
+details about EE-specific LDAP features, see [LDAP EE Documentation](ldap-ee.md).
+
+[//]: # (Do *NOT* modify this file in EE documentation. All changes in this)
+[//]: # (file should happen in CE, too. If the change is EE-specific, put)
+[//]: # (it in `ldap-ee.md`.)
+
 ## Security
 
 GitLab assumes that LDAP users are not able to change their LDAP 'mail', 'email'
@@ -51,6 +60,11 @@ syntax will be used by GitLab.
 The configuration inside `gitlab_rails['ldap_servers']` below is sensitive to
 incorrect indentation. Be sure to retain the indentation given in the example.
 Copy/paste can sometimes cause problems.
+
+> **Note:** The `method` value `ssl` corresponds to 'Simple TLS' in the LDAP
+  library. `tls` corresponds to StartTLS, not to be confused with regular TLS.
+  Normally, if you specify `ssl` is will be on port 636 while `tls` (StartTLS)
+  would be on port 389. `plain` also operates on port 389.
 
 **Omnibus configuration**
 
@@ -157,6 +171,14 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   #
   admin_group: ''
 
+  # An array of CNs of groups containing users that should be considered external
+  #
+  #   Ex. ['interns', 'contractors']
+  #
+  #   Note: Not `cn=interns` or the full DN
+  #
+  external_groups: []
+
   # The LDAP attribute containing a user's public SSH key
   #
   #   Ex. ssh_public_key
@@ -229,6 +251,24 @@ group you can use the following syntax:
 
 ```
 (memberOf=CN=My Group,DC=Example,DC=com)
+```
+
+### Escaping special characters
+
+If the `user_filter` DN contains a special characters. For example a comma
+
+```
+OU=GitLab, Inc,DC=gitlab,DC=com
+```
+
+This character needs to be escaped as documented in [RFC 4515](https://tools.ietf.org/search/rfc4515).
+
+Due to the way the string is parsed the special character needs to be convered
+to hex and `\\5C\\` (`5C` = `\` in hex) added before it.
+As an example the above DN would look like
+
+```
+OU=GitLab\\5C\\2C Inc,DC=gitlab,DC=com
 ```
 
 Please note that GitLab does not support the custom filter syntax used by

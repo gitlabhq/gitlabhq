@@ -37,6 +37,7 @@ module API
         optional :active, type: Boolean, default: false, desc: 'Filters only active users'
         optional :external, type: Boolean, default: false, desc: 'Filters only external users'
         optional :blocked, type: Boolean, default: false, desc: 'Filters only blocked users'
+        optional :skip_ldap, type: Boolean, default: false, desc: 'Skip LDAP users'
         use :pagination
       end
       get do
@@ -49,6 +50,7 @@ module API
         else
           users = User.all
           users = users.active if params[:active]
+          users = users.non_ldap if params[:skip_ldap]
           users = users.search(params[:search]) if params[:search].present?
           users = users.blocked if params[:blocked]
           users = users.external if params[:external] && current_user.is_admin?
@@ -475,6 +477,23 @@ module API
 
         email.destroy
         current_user.update_secondary_emails!
+      end
+
+      desc 'Get a list of user activities'
+      params do
+        optional :from, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
+        use :pagination
+      end
+      get ":activities" do
+        authenticated_as_admin!
+
+        activity_set = Gitlab::UserActivities::ActivitySet.new(from: params[:from],
+                                                               page: params[:page],
+                                                               per_page: params[:per_page])
+
+        add_pagination_headers(activity_set)
+
+        present activity_set.activities, with: Entities::UserActivity
       end
     end
   end

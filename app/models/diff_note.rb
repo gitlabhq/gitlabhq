@@ -1,4 +1,9 @@
 class DiffNote < Note
+  # Elastic search configuration (it does not support STI properly)
+  document_type 'note'
+  index_name [Rails.application.class.parent_name.downcase, Rails.env].join('-')
+  include Elastic::NotesSearch
+
   include NoteOnDiff
 
   serialize :original_position, Gitlab::Diff::Position

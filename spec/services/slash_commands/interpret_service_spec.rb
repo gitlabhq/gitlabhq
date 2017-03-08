@@ -275,6 +275,23 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
+    shared_examples 'weight command' do
+      it 'populates weight: 5 if content contains /weight 5' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(weight: 5)
+      end
+    end
+
+    shared_examples 'clear weight command' do
+      it 'populates weight: nil if content contains /clear_weight' do
+        issuable.update(weight: 5)
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(weight: nil)
+      end
+    end
+
     it_behaves_like 'reopen command' do
       let(:content) { '/reopen' }
       let(:issuable) { issue }
@@ -608,6 +625,16 @@ describe SlashCommands::InterpretService, services: true do
 
     it_behaves_like 'remove_time_spent command' do
       let(:content) { '/remove_time_spent' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'weight command' do
+      let(:content) { '/weight 5'}
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'clear weight command' do
+      let(:content) { '/clear_weight' }
       let(:issuable) { issue }
     end
 

@@ -161,5 +161,81 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
         expect(page).not_to have_content '/wip'
       end
     end
+
+    describe 'adding a weight from a note' do
+      let(:issue) { create(:issue, project: project) }
+
+      context 'when the user can update the weight' do
+        it 'does not create a note, and sets the weight accordingly' do
+          write_note("/weight 5")
+
+          expect(page).not_to have_content '/weight 5'
+          expect(page).to have_content 'Commands applied'
+
+          issue.reload
+
+          expect(issue.weight).to eq(5)
+        end
+      end
+
+      context 'when the current user cannot update the weight' do
+        let(:guest) { create(:user) }
+        before do
+          project.team << [guest, :guest]
+          logout
+          login_with(guest)
+          visit namespace_project_issue_path(project.namespace, project, issue)
+        end
+
+        it 'creates a note, and does not set the weight' do
+          write_note("/weight 5")
+
+          expect(page).to have_content '/weight 5'
+          expect(page).not_to have_content 'Commands applied'
+
+          issue.reload
+
+          expect(issue.weight).not_to eq(5)
+        end
+      end
+    end
+
+    describe 'removing weight from a note' do
+      let(:issue) { create(:issue, project: project, weight: 1) }
+
+      context 'when the user can update the weight' do
+        it 'does not create a note, and removes the weight accordingly' do
+          write_note("/clear_weight")
+
+          expect(page).not_to have_content '/clear_weight'
+          expect(page).to have_content 'Commands applied'
+
+          issue.reload
+
+          expect(issue.weight).to eq(nil)
+        end
+      end
+
+      context 'when the current user cannot update the weight' do
+        let(:guest) { create(:user) }
+        before do
+          project.team << [guest, :guest]
+          logout
+          login_with(guest)
+          visit namespace_project_issue_path(project.namespace, project, issue)
+        end
+
+        it 'creates a note, and does not set the weight' do
+          write_note("/clear_weight")
+
+          expect(page).to have_content '/clear_weight'
+          expect(page).not_to have_content 'Commands applied'
+
+          issue.reload
+
+          expect(issue.weight).to eq(1)
+        end
+      end
+    end
   end
 end

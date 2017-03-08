@@ -82,16 +82,16 @@ module API
       label || not_found!('Label')
     end
 
-    def find_project_issue(id)
-      IssuesFinder.new(current_user, project_id: user_project.id).find(id)
+    def find_project_issue(iid)
+      IssuesFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
 
-    def find_project_merge_request(id)
-      MergeRequestsFinder.new(current_user, project_id: user_project.id).find(id)
+    def find_project_merge_request(iid)
+      MergeRequestsFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
 
-    def find_merge_request_with_access(id, access_level = :read_merge_request)
-      merge_request = user_project.merge_requests.find(id)
+    def find_merge_request_with_access(iid, access_level = :read_merge_request)
+      merge_request = user_project.merge_requests.find_by!(iid: iid)
       authorize! access_level, merge_request
       merge_request
     end
@@ -107,6 +107,13 @@ module API
     def authenticate_by_gitlab_shell_token!
       input = params['secret_token'].try(:chomp)
       unless Devise.secure_compare(secret_token, input)
+        unauthorized!
+      end
+    end
+
+    def authenticate_by_gitlab_geo_token!
+      token = headers['X-Gitlab-Token'].try(:chomp)
+      unless token && Devise.secure_compare(geo_token, token)
         unauthorized!
       end
     end
@@ -378,6 +385,10 @@ module API
       Gitlab::Shell.secret_token
     end
 
+    def geo_token
+      Gitlab::Geo.current_node.system_hook.token
+    end
+
     def send_git_blob(repository, blob)
       env['api.format'] = :txt
       content_type 'text/plain'
@@ -386,14 +397,6 @@ module API
 
     def send_git_archive(repository, ref:, format:)
       header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
-    end
-
-    def issue_entity(project)
-      if project.has_external_issue_tracker?
-        Entities::ExternalIssue
-      else
-        Entities::Issue
-      end
     end
 
     # The Grape Error Middleware only has access to env but no params. We workaround this by

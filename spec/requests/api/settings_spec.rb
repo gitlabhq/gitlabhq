@@ -9,11 +9,12 @@ describe API::Settings, 'Settings', api: true  do
   describe "GET /application/settings" do
     it "returns application settings" do
       get api("/application/settings", admin)
+
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Hash
       expect(json_response['default_projects_limit']).to eq(42)
       expect(json_response['signin_enabled']).to be_truthy
-      expect(json_response['repository_storage']).to eq('default')
+      expect(json_response['repository_storages']).to eq(['default'])
       expect(json_response['koding_enabled']).to be_falsey
       expect(json_response['koding_url']).to be_nil
       expect(json_response['plantuml_enabled']).to be_falsey
@@ -35,7 +36,7 @@ describe API::Settings, 'Settings', api: true  do
         put api("/application/settings", admin),
           default_projects_limit: 3,
           signin_enabled: false,
-          repository_storage: 'custom',
+          repository_storages: ['custom'],
           koding_enabled: true,
           koding_url: 'http://koding.example.com',
           plantuml_enabled: true,
@@ -43,10 +44,10 @@ describe API::Settings, 'Settings', api: true  do
           default_snippet_visibility: 'internal',
           restricted_visibility_levels: ['public'],
           default_artifacts_expire_in: '2 days'
+
         expect(response).to have_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
         expect(json_response['signin_enabled']).to be_falsey
-        expect(json_response['repository_storage']).to eq('custom')
         expect(json_response['repository_storages']).to eq(['custom'])
         expect(json_response['koding_enabled']).to be_truthy
         expect(json_response['koding_url']).to eq('http://koding.example.com')

@@ -1,15 +1,15 @@
 class AutocompleteController < ApplicationController
   skip_before_action :authenticate_user!, only: [:users]
-  before_action :load_project, only: [:users]
+  before_action :load_project, only: [:users, :project_groups]
   before_action :find_users, only: [:users]
 
   def users
-    @users ||= User.none
+    @users = @users.non_ldap if params[:skip_ldap] == 'true'
     @users = @users.search(params[:search]) if params[:search].present?
     @users = @users.where.not(id: params[:skip_users]) if params[:skip_users].present?
     @users = @users.active
     @users = @users.reorder(:name)
-    @users = @users.page(params[:page])
+    @users = load_users_by_ability || @users.page(params[:page])
 
     if params[:todo_filter].present? && current_user
       @users = @users.todo_authors(current_user.id, params[:todo_state_filter])
@@ -31,6 +31,10 @@ class AutocompleteController < ApplicationController
     render json: @users, only: [:name, :username, :id], methods: [:avatar_url]
   end
 
+  def project_groups
+    render json: @project.invited_groups, only: [:id, :name], methods: [:avatar_url]
+  end
+
   def user
     @user = User.find(params[:id])
     render json: @user, only: [:name, :username, :id], methods: [:avatar_url]
@@ -50,6 +54,18 @@ class AutocompleteController < ApplicationController
   end
 
   private
+
+  def load_users_by_ability
+    ability = :push_code_to_protected_branches if params[:push_code_to_protected_branches].present?
+    ability = :push_code if params[:push_code].present?
+
+    return if params[:project_id].blank?
+    return if ability.blank?
+
+    @users.to_a
+      .select { |user| user.can?(ability, @project) }
+      .take(Kaminari.config.default_per_page)
+  end
 
   def find_users
     @users =

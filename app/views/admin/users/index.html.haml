@@ -33,6 +33,7 @@
                   = sort_title_recently_updated
                 = link_to admin_users_path(sort: sort_value_oldest_updated, filter: params[:filter]) do
                   = sort_title_oldest_updated
+          = link_to 'Send email to users', admin_email_path, class: 'btn'
           = link_to 'New User', new_admin_user_path, class: 'btn btn-new btn-search'
 
     .nav-block

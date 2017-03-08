@@ -24,6 +24,23 @@ FactoryGirl.define do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
 
+    trait :import_started do
+      import_url FFaker::Internet.uri('http')
+      import_status :started
+    end
+
+    trait :import_finished do
+      import_started
+      import_status :finished
+    end
+
+    trait :mirror do
+      import_started
+
+      mirror true
+      mirror_user_id { creator_id }
+    end
+
     trait :archived do
       archived true
     end
@@ -44,6 +61,22 @@ FactoryGirl.define do
         # an API that isn't running
         FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.path_with_namespace}.git", 'hooks'))
       end
+    end
+
+    trait :remote_mirror do
+      transient do
+        sync_time Gitlab::Mirror::HOURLY
+        url "http://foo.com"
+        enabled true
+      end
+
+      after(:create) do |project, evaluator|
+        project.remote_mirrors.create!(url: evaluator.url, enabled: evaluator.enabled, sync_time: evaluator.sync_time)
+      end
+    end
+
+    trait :read_only_repository do
+      repository_read_only true
     end
 
     trait :broken_repo do
@@ -210,6 +243,17 @@ FactoryGirl.define do
           namespace: project.path,
           api_url: 'https://kubernetes.example.com',
           token: 'a' * 40,
+        }
+      )
+    end
+  end
+
+  factory :prometheus_project, parent: :empty_project do
+    after :create do |project|
+      project.create_prometheus_service(
+        active: true,
+        properties: {
+          api_url: 'https://prometheus.example.com'
         }
       )
     end

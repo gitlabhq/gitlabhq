@@ -3,6 +3,7 @@ module Ci
     include TokenAuthenticatable
     include AfterCommitQueue
     include Presentable
+    prepend EE::Build
 
     belongs_to :runner
     belongs_to :trigger_request

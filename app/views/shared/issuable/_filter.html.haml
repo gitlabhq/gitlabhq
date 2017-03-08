@@ -1,8 +1,12 @@
 - finder = controller.controller_name == 'issues' || controller.controller_name == 'boards' ? issues_finder : merge_requests_finder
 - boards_page = controller.controller_name == 'boards'
+- board = local_assigns[:board]
 
 .issues-filters
   .issues-details-filters.row-content-block.second-block
+    - if boards_page && board
+      #js-multiple-boards-switcher.filter-item.inline.boards-switcher{ "v-cloak" => true }
+        = render "projects/boards/switcher", board: board
     = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search]), method: :get, class: 'filter-form js-filter-form' do
       - if params[:search].present?
         = hidden_field_tag :search, params[:search]
@@ -24,7 +28,7 @@
             placeholder: "Search assignee", data: { any_user: "Any Assignee", first_user: current_user.try(:username), null_user: true, current_user: true, project_id: @project.try(:id), selected: params[:assignee_id], field_name: "assignee_id", default_label: "Assignee" } })
 
         .filter-item.inline.milestone-filter
-          = render "shared/issuable/milestone_dropdown", selected: finder.milestones.try(:first), name: :milestone_title, show_any: true, show_upcoming: true
+          = render "shared/issuable/milestone_dropdown", selected: finder.milestones.try(:first), name: :milestone_title, show_any: true, show_upcoming: true, board: board
 
         .filter-item.inline.labels-filter
           = render "shared/issuable/label_dropdown", selected: finder.labels.select(:title).uniq, use_id: false, selected_toggle: params[:label_name], data_options: { field_name: "label_name[]" }
@@ -48,7 +52,7 @@
                       = render partial: "shared/issuable/label_page_create"
                     = dropdown_loading
           - else
-            = render 'shared/sort_dropdown'
+            = render 'shared/sort_dropdown', type: local_assigns[:type]
 
     - if @bulk_edit
       .issues_bulk_update.hide
@@ -89,6 +93,7 @@
   new LabelsSelect();
   new MilestoneSelect();
   new IssueStatusSelect();
+  new WeightSelect();
   new SubscriptionSelect();
   $('form.filter-form').on('submit', function (event) {
     event.preventDefault();

@@ -78,6 +78,17 @@ describe PostReceive do
       PostReceive.new.perform(pwd(project), key_id, base64_changes)
     end
 
+    it "triggers wiki index update" do
+      expect(Project).to receive(:find_by_full_path).with("#{project.full_path}.wiki").and_return(nil)
+      expect(Project).to receive(:find_by_full_path).with(project.full_path).and_return(project)
+      stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+      expect_any_instance_of(ProjectWiki).to receive(:index_blobs)
+
+      repo_path = "#{pwd(project)}.wiki"
+
+      PostReceive.new.perform(repo_path, key_id, base64_changes)
+    end
+
     it "does not run if the author is not in the project" do
       allow_any_instance_of(Gitlab::GitPostReceive).
         to receive(:identify_using_ssh_key).

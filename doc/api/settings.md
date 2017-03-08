@@ -42,7 +42,6 @@ Example response:
    "gravatar_enabled" : true,
    "sign_in_text" : null,
    "container_registry_token_expire_delay": 5,
-   "repository_storage": "default",
    "repository_storages": ["default"],
    "koding_enabled": false,
    "koding_url": null,
@@ -80,11 +79,20 @@ PUT /application/settings
 | `after_sign_out_path` | string | no | Where to redirect users after logout |
 | `container_registry_token_expire_delay` | integer | no | Container Registry token duration in minutes |
 | `repository_storages` | array of strings | no | A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random. |
-| `repository_storage` | string | no | The first entry in `repository_storages`. Deprecated, but retained for compatibility reasons |
 | `enabled_git_access_protocol` | string | no | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `nil` to allow both protocols. |
 | `koding_enabled` | boolean | no | Enable Koding integration. Default is `false`. |
 | `koding_url` | string | yes (if `koding_enabled` is `true`) |  The Koding instance URL for integration. |
 | `disabled_oauth_sign_in_sources` | Array of strings | no | Disabled OAuth sign-in sources |
+| `help_text` | string | no | GitLab server administrator information |
+| `elasticsearch_indexing` | boolean | no | Enable Elasticsearch indexing |
+| `elasticsearch_search` | boolean | no | Enable Elasticsearch search |
+| `elasticsearch_url` | string | no | The url to use for connecting to Elasticsearch. Use a comma-separated list to support cluster (e.g., "http://localhost:9200, http://localhost:9201") |
+| `elasticsearch_aws` | boolean | no | Enable the use of AWS hosted Elasticsearch |
+| `elasticsearch_aws_region` | string | no | The AWS region the elasticsearch domain is configured |
+| `elasticsearch_aws_access_key` | string | no | AWS IAM access key |
+| `elasticsearch_aws_secret_access_key` | string | no | AWS IAM secret access key |
+| `usage_ping_enabled` | boolean | no | Every week GitLab will report license usage back to GitLab, Inc.|
+| `repository_size_limit` | integer | no | Size limit per repository (MB) |
 | `plantuml_enabled` | boolean | no | Enable PlantUML integration. Default is `false`. |
 | `plantuml_url` | string | yes (if `plantuml_enabled` is `true`) |  The PlantUML instance URL for integration. |
 | `terminal_max_session_time` | integer | no | Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time. |
@@ -119,7 +127,7 @@ Example response:
   "user_oauth_applications": true,
   "after_sign_out_path": "",
   "container_registry_token_expire_delay": 5,
-  "repository_storage": "default",
+  "repository_storages": ["default"],
   "koding_enabled": false,
   "koding_url": null,
   "plantuml_enabled": false,

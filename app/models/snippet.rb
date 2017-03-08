@@ -5,6 +5,7 @@ class Snippet < ActiveRecord::Base
   include Participable
   include Referable
   include Sortable
+  include Elastic::SnippetsSearch
   include Awardable
   include Mentionable
   include Spammable

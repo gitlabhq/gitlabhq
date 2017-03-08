@@ -12,6 +12,10 @@ module Groups
         end
       end
 
+      # Repository size limit comes as MB from the view
+      limit = @params.delete(:repository_size_limit)
+      group.repository_size_limit = (limit.to_i.megabytes if limit.present?)
+
       group.assign_attributes(params)
 
       begin

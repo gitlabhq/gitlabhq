@@ -46,6 +46,8 @@ module API
         response = { status: access_status.status, message: access_status.message }
 
         if access_status.status
+          log_user_activity(actor)
+
           # Return the repository full path so that gitlab-shell has it when
           # handling ssh commands
           response[:repository_path] =
@@ -76,6 +78,18 @@ module API
 
       get "/merge_request_urls" do
         ::MergeRequests::GetUrlsService.new(project).execute(params[:changes])
+      end
+
+      #
+      # Get a ssh key using the fingerprint
+      #
+      get "/authorized_keys" do
+        fingerprint = params.fetch(:fingerprint) do
+          Gitlab::InsecureKeyFingerprint.new(params.fetch(:key)).fingerprint
+        end
+        key = Key.find_by(fingerprint: fingerprint)
+        not_found!("Key") if key.nil?
+        present key, with: Entities::SSHKey
       end
 
       #

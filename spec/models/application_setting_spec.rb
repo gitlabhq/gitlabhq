@@ -20,6 +20,12 @@ describe ApplicationSetting, models: true do
     it { is_expected.to allow_value(https).for(:after_sign_out_path) }
     it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
 
+    it { is_expected.to allow_value(Gitlab::Mirror::FIFTEEN).for(:minimum_mirror_sync_time) }
+    it { is_expected.to allow_value(Gitlab::Mirror::HOURLY).for(:minimum_mirror_sync_time) }
+    it { is_expected.to allow_value(Gitlab::Mirror::DAILY).for(:minimum_mirror_sync_time) }
+    it { is_expected.not_to allow_value(nil).for(:minimum_mirror_sync_time) }
+    it { is_expected.not_to allow_value(61).for(:minimum_mirror_sync_time) }
+
     describe 'disabled_oauth_sign_in_sources validations' do
       before do
         allow(Devise).to receive(:omniauth_providers).and_return([:github])
@@ -73,6 +79,74 @@ describe ApplicationSetting, models: true do
 
     it_behaves_like 'an object with email-formated attributes', :admin_notification_email do
       subject { setting }
+    end
+
+    context "update minimum_mirror_sync_time" do
+      before do
+        Sidekiq::Logging.logger = nil
+        Gitlab::Mirror::SYNC_TIME_TO_CRON.keys.each do |sync_time|
+          create(:project, :mirror, sync_time: sync_time)
+          create(:project, :remote_mirror, sync_time: sync_time)
+        end
+      end
+
+      context 'with daily sync_time' do
+        let(:sync_time) { Gitlab::Mirror::DAILY }
+
+        it 'updates minimum_mirror_sync_time to daily and updates cron jobs' do
+          expect_any_instance_of(ApplicationSetting).to receive(:update_mirror_cron_jobs).and_call_original
+          expect(Gitlab::Mirror).to receive(:configure_cron_jobs!)
+
+          setting.update_attributes(minimum_mirror_sync_time: sync_time)
+        end
+
+        it 'updates every mirror to the current minimum_mirror_sync_time' do
+          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.to change { Project.mirror.where('sync_time < ?', sync_time).count }.from(2).to(0)
+        end
+
+        it 'updates every remote mirror to the current minimum_mirror_sync_time' do
+          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.to change { RemoteMirror.where('sync_time < ?', sync_time).count }.from(2).to(0)
+        end
+      end
+
+      context 'with hourly sync time' do
+        let(:sync_time) { Gitlab::Mirror::HOURLY }
+
+        it 'updates minimum_mirror_sync_time to daily and updates cron jobs' do
+          expect_any_instance_of(ApplicationSetting).to receive(:update_mirror_cron_jobs).and_call_original
+          expect(Gitlab::Mirror).to receive(:configure_cron_jobs!)
+
+          setting.update_attributes(minimum_mirror_sync_time: sync_time)
+        end
+
+        it 'updates every mirror to the current minimum_mirror_sync_time' do
+          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.to change { Project.mirror.where('sync_time < ?', sync_time).count }.from(1).to(0)
+        end
+
+        it 'updates every remote mirror to the current minimum_mirror_sync_time' do
+          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.to change { RemoteMirror.where('sync_time < ?', sync_time).count }.from(1).to(0)
+        end
+      end
+
+      context 'with default fifteen sync time' do
+        let(:sync_time) { Gitlab::Mirror::FIFTEEN }
+
+        it 'does not update minimum_mirror_sync_time' do
+          expect_any_instance_of(ApplicationSetting).not_to receive(:update_mirror_cron_jobs)
+          expect(Gitlab::Mirror).not_to receive(:configure_cron_jobs!)
+          expect(setting.minimum_mirror_sync_time).to eq(Gitlab::Mirror::FIFTEEN)
+
+          setting.update_attributes(minimum_mirror_sync_time: sync_time)
+        end
+
+        it 'updates every mirror to the current minimum_mirror_sync_time' do
+          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.not_to change { Project.mirror.where('sync_time < ?', sync_time).count }
+        end
+
+        it 'updates every remote mirror to the current minimum_mirror_sync_time' do
+          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.not_to change { RemoteMirror.where('sync_time < ?', sync_time).count }
+        end
+      end
     end
 
     # Upgraded databases will have this sort of content
@@ -208,6 +282,56 @@ describe ApplicationSetting, models: true do
     it 'sets multiple domain with file' do
       setting.domain_blacklist_file = File.open(Rails.root.join('spec/fixtures/', 'domain_blacklist.txt'))
       expect(setting.domain_blacklist).to contain_exactly('example.com', 'test.com', 'foo.bar')
+    end
+  end
+
+  describe '#repository_size_limit column' do
+    it 'support values up to 8 exabytes' do
+      setting.update_column(:repository_size_limit, 8.exabytes - 1)
+
+      setting.reload
+
+      expect(setting.repository_size_limit).to eql(8.exabytes - 1)
+    end
+  end
+
+  describe '#elasticsearch_url' do
+    it 'presents a single URL as a one-element array' do
+      setting.elasticsearch_url = 'http://example.com'
+
+      expect(setting.elasticsearch_url).to eq(%w[http://example.com])
+    end
+
+    it 'presents multiple URLs as a many-element array' do
+      setting.elasticsearch_url = 'http://example.com,https://invalid.invalid:9200'
+
+      expect(setting.elasticsearch_url).to eq(%w[http://example.com https://invalid.invalid:9200])
+    end
+
+    it 'strips whitespace from around URLs' do
+      setting.elasticsearch_url = ' http://example.com, https://invalid.invalid:9200 '
+
+      expect(setting.elasticsearch_url).to eq(%w[http://example.com https://invalid.invalid:9200])
+    end
+  end
+
+  describe '#elasticsearch_config' do
+    it 'places all elasticsearch configuration values into a hash' do
+      setting.update!(
+        elasticsearch_url: 'http://example.com:9200',
+        elasticsearch_aws: false,
+        elasticsearch_aws_region:     'test-region',
+        elasticsearch_aws_access_key: 'test-access-key',
+        elasticsearch_aws_secret_access_key: 'test-secret-access-key'
+      )
+
+      expect(setting.elasticsearch_config).to eq(
+        url: ['http://example.com:9200'],
+        aws: false,
+        aws_region:     'test-region',
+        aws_access_key: 'test-access-key',
+        aws_secret_access_key: 'test-secret-access-key'
+      )
     end
   end
 end

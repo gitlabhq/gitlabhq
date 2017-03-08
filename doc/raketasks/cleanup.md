@@ -22,3 +22,13 @@ sudo gitlab-rake gitlab:cleanup:repos
 # installation from source
 bundle exec rake gitlab:cleanup:repos RAILS_ENV=production
 ```
+
+Remove old repository copies from repositories moved to another storage.
+
+```
+# omnibus-gitlab
+sudo gitlab-rake gitlab:cleanup:moved
+
+# installation from source
+bundle exec rake gitlab:cleanup:moved RAILS_ENV=production
+```

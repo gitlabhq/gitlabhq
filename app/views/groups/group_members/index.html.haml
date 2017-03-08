@@ -13,6 +13,8 @@
 
     = render 'shared/members/requests', membership_source: @group, requesters: @requesters
 
+  = render 'ldap_sync'
+
   .append-bottom-default.clearfix
     %h5.member.existing-title
       Existing members

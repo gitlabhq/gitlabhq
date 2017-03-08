@@ -41,6 +41,11 @@ class Event < ActiveRecord::Base
 
   scope :with_associations, -> { includes(:author, :project, project: :namespace).preload(:target) }
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }
+  scope :issues, -> { where(target_type: 'Issue') }
+  scope :merge_requests, -> { where(target_type: 'MergeRequest') }
+  scope :created, -> { where(action: CREATED) }
+  scope :closed, -> { where(action: CLOSED) }
+  scope :merged, -> { where(action: MERGED) }
 
   class << self
     # Update Gitlab::ContributionsCalendar#activity_dates if this changes

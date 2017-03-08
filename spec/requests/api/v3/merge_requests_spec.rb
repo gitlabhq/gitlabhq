@@ -39,6 +39,7 @@ describe API::MergeRequests, api: true  do
         expect(json_response.first['sha']).to eq(merge_request_merged.diff_head_sha)
         expect(json_response.first['merge_commit_sha']).not_to be_nil
         expect(json_response.first['merge_commit_sha']).to eq(merge_request_merged.merge_commit_sha)
+        expect(json_response.first['squash']).to eq(merge_request_merged.squash)
       end
 
       it "returns an array of all merge_requests" do
@@ -71,6 +72,13 @@ describe API::MergeRequests, api: true  do
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['title']).to eq(merge_request_merged.title)
+      end
+
+      it 'matches V3 response schema' do
+        get v3_api("/projects/#{project.id}/merge_requests", user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v3/merge_requests')
       end
 
       context "with ordering" do
@@ -233,13 +241,15 @@ describe API::MergeRequests, api: true  do
              author: user,
              labels: 'label, label2',
              milestone_id: milestone.id,
-             remove_source_branch: true
+             remove_source_branch: true,
+             squash: true
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['labels']).to eq(%w(label label2))
         expect(json_response['milestone']['id']).to eq(milestone.id)
         expect(json_response['force_remove_source_branch']).to be_truthy
+        expect(json_response['squash']).to be_truthy
       end
 
       it "returns 422 when source_branch equals target_branch" do
@@ -378,6 +388,66 @@ describe API::MergeRequests, api: true  do
         expect(response).to have_http_status(201)
       end
     end
+
+    context 'the approvals_before_merge param' do
+      def create_merge_request(approvals_before_merge)
+        post v3_api("/projects/#{project.id}/merge_requests", user),
+             title: 'Test merge_request',
+             source_branch: 'feature_conflict',
+             target_branch: 'master',
+             author: user,
+             labels: 'label, label2',
+             milestone_id: milestone.id,
+             approvals_before_merge: approvals_before_merge
+      end
+
+      context 'when the target project has approvals_before_merge set to zero' do
+        before do
+          project.update_attributes(approvals_before_merge: 0)
+          create_merge_request(1)
+        end
+
+        it 'returns a 400' do
+          expect(response).to have_http_status(400)
+        end
+
+        it 'includes the error in the response' do
+          expect(json_response['message']['validate_approvals_before_merge']).not_to be_empty
+        end
+      end
+
+      context 'when the target project has a non-zero approvals_before_merge' do
+        context 'when the approvals_before_merge param is less than or equal to the value in the target project' do
+          before do
+            project.update_attributes(approvals_before_merge: 1)
+            create_merge_request(1)
+          end
+
+          it 'returns a 400' do
+            expect(response).to have_http_status(400)
+          end
+
+          it 'includes the error in the response' do
+            expect(json_response['message']['validate_approvals_before_merge']).not_to be_empty
+          end
+        end
+
+        context 'when the approvals_before_merge param is greater than the value in the target project' do
+          before do
+            project.update_attributes(approvals_before_merge: 1)
+            create_merge_request(2)
+          end
+
+          it 'returns a created status' do
+            expect(response).to have_http_status(201)
+          end
+
+          it 'sets approvals_before_merge of the newly-created MR' do
+            expect(json_response['approvals_before_merge']).to eq(2)
+          end
+        end
+      end
+    end
   end
 
   describe "DELETE /projects/:id/merge_requests/:merge_request_id" do
@@ -466,6 +536,14 @@ describe API::MergeRequests, api: true  do
       expect(response).to have_http_status(200)
     end
 
+    it "updates the MR's squash attribute" do
+      expect do
+        put v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), squash: true
+      end.to change { merge_request.reload.squash }
+
+      expect(response).to have_http_status(200)
+    end
+
     it "enables merge when pipeline succeeds if the pipeline is active" do
       allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
@@ -504,6 +582,13 @@ describe API::MergeRequests, api: true  do
       put v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), milestone_id: milestone.id
       expect(response).to have_http_status(200)
       expect(json_response['milestone']['id']).to eq(milestone.id)
+    end
+
+    it "updates squash and returns merge_request" do
+      put v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), squash: true
+
+      expect(response).to have_http_status(200)
+      expect(json_response['squash']).to be_truthy
     end
 
     it "returns merge_request with renamed target_branch" do
@@ -702,10 +787,88 @@ describe API::MergeRequests, api: true  do
     end
   end
 
+  describe 'GET :id/merge_requests/:merge_request_id/approvals' do
+    it 'retrieves the approval status' do
+      approver = create :user
+      project.update_attribute(:approvals_before_merge, 2)
+      project.team << [approver, :developer]
+      project.team << [create(:user), :developer]
+      merge_request.approvals.create(user: approver)
+
+      get v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approvals", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response['approvals_required']).to eq 2
+      expect(json_response['approvals_left']).to eq 1
+      expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
+      expect(json_response['user_can_approve']).to be false
+      expect(json_response['user_has_approved']).to be false
+    end
+  end
+
+  describe 'POST :id/merge_requests/:merge_request_id/approve' do
+    before { project.update_attribute(:approvals_before_merge, 2) }
+
+    context 'as the author of the merge request' do
+      before { post v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", user) }
+
+      it 'returns a 401' do
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'as a valid approver' do
+      let(:approver) { create(:user) }
+
+      before do
+        project.team << [approver, :developer]
+        project.team << [create(:user), :developer]
+
+        post v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", approver)
+      end
+
+      it 'approves the merge request' do
+        expect(response.status).to eq(201)
+        expect(json_response['approvals_left']).to eq(1)
+        expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
+        expect(json_response['user_has_approved']).to be true
+      end
+    end
+  end
+
+  describe 'DELETE :id/merge_requests/:merge_request_id/unapprove' do
+    before { project.update_attribute(:approvals_before_merge, 2) }
+
+    context 'as a user who has approved the merge request' do
+      let(:approver) { create(:user) }
+      let(:unapprover) { create(:user) }
+
+      before do
+        project.team << [approver, :developer]
+        project.team << [unapprover, :developer]
+        project.team << [create(:user), :developer]
+        merge_request.approvals.create(user: approver)
+        merge_request.approvals.create(user: unapprover)
+
+        delete v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/unapprove", unapprover)
+      end
+
+      it 'unapproves the merge request' do
+        expect(response.status).to eq(200)
+        expect(json_response['approvals_left']).to eq(1)
+        usernames = json_response['approved_by'].map { |u| u['user']['username'] }
+        expect(usernames).not_to include(unapprover.username)
+        expect(usernames.size).to be 1
+        expect(json_response['user_has_approved']).to be false
+        expect(json_response['user_can_approve']).to be true
+      end
+    end
+  end
+
   describe 'Time tracking' do
     let(:issuable) { merge_request }
 
-    include_examples 'time tracking endpoints', 'merge_request'
+    include_examples 'V3 time tracking endpoints', 'merge_request'
   end
 
   def mr_with_later_created_and_updated_at_time

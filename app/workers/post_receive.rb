@@ -1,6 +1,7 @@
 class PostReceive
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
+  extend Gitlab::CurrentSettings
 
   def perform(repo_path, identifier, changes)
     if path = Gitlab.config.repositories.storages.find { |p| repo_path.start_with?(p[1].to_s) }
@@ -21,8 +22,23 @@ class PostReceive
     end
 
     if post_received.wiki?
-      # Nothing defined here yet.
+      update_wiki_es_indexes(post_received)
+
+      # Triggers repository update on secondary nodes when Geo is enabled
+      Gitlab::Geo.notify_wiki_update(post_received.project) if Gitlab::Geo.enabled?
     elsif post_received.regular_project?
+      # TODO: gitlab-org/gitlab-ce#26325. Remove this.
+      if Gitlab::Geo.enabled?
+        hook_data = {
+          event_name: 'repository_update',
+          project_id: post_received.project.id,
+          project: post_received.project.hook_attrs,
+          remote_url: post_received.project.ssh_url_to_repo
+        }
+
+        SystemHooksService.new.execute_hooks(hook_data, :repository_update_hooks)
+      end
+
       process_project_changes(post_received)
     else
       log("Triggered hook for unidentifiable repository type with full path \"#{repo_path}\"")
@@ -47,6 +63,12 @@ class PostReceive
         GitPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
       end
     end
+  end
+
+  def update_wiki_es_indexes(post_received)
+    return unless current_application_settings.elasticsearch_indexing?
+
+    post_received.project.wiki.index_blobs
   end
 
   private

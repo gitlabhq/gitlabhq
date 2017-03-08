@@ -28,6 +28,11 @@
 
               - if current_application_settings.sign_in_text.present?
                 = markdown_field(current_application_settings, :sign_in_text)
+              - if current_application_settings.help_text.present?
+                %h3 Need help?
+                %hr
+                %p.slead
+                  = markdown(current_application_settings.help_text)
 
       %hr.footer-fixed
       .container.footer-container

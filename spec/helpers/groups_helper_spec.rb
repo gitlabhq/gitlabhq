@@ -1,11 +1,12 @@
 require 'spec_helper'
 
 describe GroupsHelper do
+  let(:group) { create(:group) }
+
   describe 'group_icon' do
     avatar_file_path = File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
 
     it 'returns an url for the avatar' do
-      group = create(:group)
       group.avatar = fixture_file_upload(avatar_file_path)
       group.save!
       expect(group_icon(group.path).to_s).
@@ -13,14 +14,32 @@ describe GroupsHelper do
     end
 
     it 'gives default avatar_icon when no avatar is present' do
-      group = create(:group)
       group.save!
       expect(group_icon(group.path)).to match('group_avatar.png')
+    end
+
+    context 'in a geo secondary node' do
+      let(:geo_url) { 'http://geo.example.com' }
+
+      before do
+        allow(Gitlab::Geo).to receive(:secondary?) { true }
+        allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_url }
+      end
+
+      it 'returns an url for the avatar pointing to the primary node base url' do
+        group.avatar = fixture_file_upload(avatar_file_path)
+        group.save!
+        expect(group_icon(group.path).to_s).to match("#{geo_url}/uploads/group/avatar/#{group.id}/banana_sample.gif")
+      end
+
+      it 'gives default avatar_icon when no avatar is present' do
+        group.save!
+        expect(group_icon(group.path)).to match('group_avatar.png')
+      end
     end
   end
 
   describe 'group_lfs_status' do
-    let(:group) { create(:group) }
     let!(:project) { create(:empty_project, namespace_id: group.id) }
 
     before do

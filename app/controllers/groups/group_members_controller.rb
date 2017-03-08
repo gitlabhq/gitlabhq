@@ -1,9 +1,12 @@
 class Groups::GroupMembersController < Groups::ApplicationController
+  prepend EE::Groups::GroupMembersController
+
   include MembershipActions
   include SortingHelper
 
   # Authorize
-  before_action :authorize_admin_group_member!, except: [:index, :leave, :request_access]
+  before_action :authorize_admin_group_member!, except: [:index, :leave, :request_access, :update, :override]
+  before_action :authorize_update_group_member!, only: [:update, :override]
 
   def index
     @sort = params[:sort].presence || sort_value_name
@@ -32,6 +35,12 @@ class Groups::GroupMembersController < Groups::ApplicationController
       expires_at: params[:expires_at]
     )
 
+    group_members = @group.group_members.where(user_id: params[:user_ids].split(','))
+
+    group_members.each do |group_member|
+      log_audit_event(group_member, action: :create)
+    end
+
     redirect_to group_group_members_path(@group), notice: 'Users were successfully added.'
   end
 
@@ -40,11 +49,17 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
     return render_403 unless can?(current_user, :update_group_member, @group_member)
 
-    @group_member.update_attributes(member_params)
+    old_access_level = @group_member.human_access
+
+    if @group_member.update_attributes(member_params)
+      log_audit_event(@group_member, action: :update, old_access_level: old_access_level)
+    end
   end
 
   def destroy
-    Members::DestroyService.new(@group, current_user, id: params[:id]).execute(:all)
+    member = Members::DestroyService.new(@group, current_user, id: params[:id]).execute(:all)
+
+    log_audit_event(member, action: :destroy)
 
     respond_to do |format|
       format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }

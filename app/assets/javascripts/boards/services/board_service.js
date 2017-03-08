@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, comma-dangle, no-param-reassign, camelcase, max-len, no-unused-vars */
+/* eslint-disable space-before-function-paren, comma-dangle, no-param-reassign, camelcase, max-len, no-unused-vars, no-else-return */
 /* global Vue */
 
 class BoardService {
@@ -27,6 +27,18 @@ class BoardService {
       request.headers['X-CSRF-Token'] = $.rails.csrfToken();
       next();
     });
+  }
+
+  allBoards () {
+    return this.boards.get();
+  }
+
+  createBoard (board) {
+    if (board.id) {
+      return this.boards.update({ id: board.id }, board);
+    } else {
+      return this.boards.save({}, board);
+    }
   }
 
   all () {
@@ -91,6 +103,16 @@ class BoardService {
     };
 
     return this.issues.bulkUpdate(data);
+  }
+
+  static loadMilestones(path) {
+    this.loading = true;
+
+    return this.$http.get(this.milestonePath)
+      .then((res) => {
+        this.milestones = res.json();
+        this.loading = false;
+      });
   }
 }
 

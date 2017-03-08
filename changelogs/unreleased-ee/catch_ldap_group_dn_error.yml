@@ -1,0 +1,4 @@
+---
+title: Catch Net::LDAP::DN exceptions in EE::Gitlab::LDAP::Group
+merge_request: 1260
+author:

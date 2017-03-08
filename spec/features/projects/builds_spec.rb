@@ -282,6 +282,17 @@ feature 'Builds', :feature do
         end
       end
     end
+
+    context 'build project is over shared runners limit' do
+      let(:group) { create(:group, :with_used_build_minutes_limit) }
+      let(:project) { create(:project, namespace: group, shared_runners_enabled: true) }
+
+      it 'displays a warning message' do
+        visit namespace_project_build_path(project.namespace, project, build)
+
+        expect(page).to have_content('You have used all your shared Runners build minutes.')
+      end
+    end
   end
 
   describe "POST /:project/builds/:id/cancel" do

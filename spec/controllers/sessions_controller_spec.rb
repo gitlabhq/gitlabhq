@@ -16,7 +16,9 @@ describe SessionsController do
         end
       end
 
-      context 'when using valid password' do
+      context 'when using valid password', :redis do
+        include UserActivitiesHelpers
+
         let(:user) { create(:user) }
 
         it 'authenticates user correctly' do
@@ -28,6 +30,12 @@ describe SessionsController do
         it "creates an audit log record" do
           expect { post(:create, user: { login: user.username, password: user.password }) }.to change { SecurityEvent.count }.by(1)
           expect(SecurityEvent.last.details[:with]).to eq("standard")
+        end
+
+        it 'updates the user activity' do
+          expect do
+            post(:create, user: { login: user.username, password: user.password })
+          end.to change { user_score }.from(0)
         end
       end
     end

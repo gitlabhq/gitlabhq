@@ -28,6 +28,23 @@ require('./filtered_search_dropdown');
           const tag = selected.querySelector('.js-filter-tag').innerText.trim();
 
           if (tag.length) {
+            // Get previous input values in the input field and convert them into visual tokens
+            const previousInputValues = this.input.value.split(' ');
+            const searchTerms = [];
+
+            previousInputValues.forEach((value, index) => {
+              searchTerms.push(value);
+
+              if (index === previousInputValues.length - 1
+                && token.indexOf(value.toLowerCase()) !== -1) {
+                searchTerms.pop();
+              }
+            });
+
+            if (searchTerms.length > 0) {
+              gl.FilteredSearchVisualTokens.addSearchVisualToken(searchTerms.join(' '));
+            }
+
             gl.FilteredSearchDropdownManager.addWordToInput(token.replace(':', ''));
           }
           this.dismissDropdown();
@@ -39,7 +56,7 @@ require('./filtered_search_dropdown');
     renderContent() {
       const dropdownData = [];
 
-      [].forEach.call(this.input.parentElement.querySelectorAll('.dropdown-menu'), (dropdownMenu) => {
+      [].forEach.call(this.input.closest('.filtered-search-input-container').querySelectorAll('.dropdown-menu'), (dropdownMenu) => {
         const { icon, hint, tag } = dropdownMenu.dataset;
         if (icon && hint && tag) {
           dropdownData.push({

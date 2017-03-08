@@ -143,3 +143,206 @@
     }
   }
 }
+
+/**
+ * Deploy boards
+ */
+
+.deploy-board > div {
+  display: flex;
+  justify-content: space-between;
+
+  .deploy-board-information {
+    order: 1;
+    display: flex;
+    width: 70px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0 20px 5px;
+
+    > span {
+      text-align: center;
+    }
+
+    .percentage {
+      color: $gl-text-color;
+    }
+
+    .text {
+      color: $gl-text-color-secondary;
+    }
+  }
+
+  .deploy-board-instances {
+    order: 2;
+    margin-left: 20px;
+
+    .text {
+      color: $gl-text-color-secondary;
+      font-size: 12px;
+    }
+
+    .deploy-board-instances-container {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+      margin-top: -8px;
+    }
+  }
+
+  .deploy-board-actions {
+    order: 3;
+    align-self: center;
+    min-width: 150px;
+    margin-left: 10px;
+  }
+
+  &.deploy-board-error-message {
+    justify-content: center;
+  }
+
+  .deploy-board-empty-state-svg {
+    order: 1;
+    width: 90px;
+    margin: auto 0 auto 20px;
+  }
+
+  .deploy-board-empty-state-text {
+    order: 2;
+    flex-wrap: wrap;
+    margin: auto auto 15px 0;
+
+    .title {
+      order: 1;
+      display: flex;
+      font-size: 17px;
+      line-height: 40px;
+    }
+  }
+}
+
+.deploy-board-instance {
+  width: 15px;
+  height: 15px;
+  border-radius: 3px;
+  border-width: 1px;
+  border-style: solid;
+  margin: 1px;
+
+  &-finished {
+    background-color: lighten($green-light, 25%);
+    border-color: $green-light;
+  }
+
+  &-deploying {
+    background-color: lighten($green-light, 40%);
+    border-color: $green-light;
+  }
+
+  &-failed {
+    background-color: lighten($red-light, 20%);
+    border-color: $red-normal;
+  }
+
+  &-ready {
+    background-color: lighten($border-color, 1%);
+    border-color: $border-color;
+  }
+
+  &-preparing {
+    background-color: lighten($border-color, 5%);
+    border-color: $border-color;
+  }
+
+  &-waiting {
+    background-color: $white-light;
+    border-color: $border-color;
+  }
+}
+
+.deploy-board-icon i {
+  cursor: pointer;
+  color: $layout-link-gray;
+  padding-right: 10px;
+}
+
+.deploy-board {
+  padding: 10px;
+  background-color: $gray-light;
+  min-height: 20px;
+
+  .fa-spinner {
+    margin: 0 auto;
+    width: 20px;
+    display: block;
+    font-size: 20px;
+  }
+}
+
+.prometheus-graph {
+  text {
+    fill: $stat-graph-axis-fill;
+  }
+}
+
+.x-axis path,
+.y-axis path,
+.label-x-axis-line,
+.label-y-axis-line {
+  fill: none;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.x-axis path,
+.y-axis path {
+  stroke: $stat-graph-axis-fill;
+}
+
+.label-x-axis-line,
+.label-y-axis-line {
+  stroke: $border-color;
+}
+
+.y-axis {
+  line {
+    stroke: $stat-graph-axis-fill;
+    stroke-width: 1;
+  }
+}
+
+.metric-area {
+  opacity: 0.8;
+}
+
+.prometheus-graph-overlay {
+  fill: none;
+  opacity: 0.0;
+  pointer-events: all;
+}
+
+.rect-text-metric {
+  fill: $white-light;
+  stroke-width: 1;
+  stroke: $black;
+}
+
+.rect-axis-text {
+  fill: $white-light;
+}
+
+.text-metric,
+.text-median-metric,
+.text-metric-usage,
+.text-metric-date {
+  fill: $black;
+}
+
+.text-metric-date {
+  font-weight: 200;
+}
+
+.selected-metric-line {
+  stroke: $black;
+  stroke-width: 1;
+}

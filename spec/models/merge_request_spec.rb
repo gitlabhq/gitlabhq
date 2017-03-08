@@ -10,6 +10,7 @@ describe MergeRequest, models: true do
     it { is_expected.to belong_to(:source_project).class_name('Project') }
     it { is_expected.to belong_to(:merge_user).class_name("User") }
     it { is_expected.to have_many(:merge_request_diffs).dependent(:destroy) }
+    it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
   end
 
   describe 'modules' do
@@ -411,6 +412,200 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe "#approvers_left" do
+    let(:merge_request) {create :merge_request}
+
+    it "returns correct value" do
+      user = create(:user)
+      user1 = create(:user)
+      merge_request.approvers.create(user_id: user.id)
+      merge_request.approvers.create(user_id: user1.id)
+      merge_request.approvals.create(user_id: user1.id)
+
+      expect(merge_request.approvers_left).to eq [user]
+    end
+
+    it "returns correct value when there is a group approver" do
+      user = create(:user)
+      user1 = create(:user)
+      user2 = create(:user)
+      group = create(:group)
+
+      group.add_developer(user2)
+      merge_request.approver_groups.create(group: group)
+      merge_request.approvers.create(user_id: user.id)
+      merge_request.approvers.create(user_id: user1.id)
+      merge_request.approvals.create(user_id: user1.id)
+
+      expect(merge_request.approvers_left).to match_array [user, user2]
+    end
+
+    it "returns correct value when there is only a group approver" do
+      user = create(:user)
+      group = create(:group)
+      group.add_developer(user)
+
+      merge_request.approver_groups.create(group: group)
+
+      expect(merge_request.approvers_left).to eq [user]
+    end
+  end
+
+  describe "#number_of_potential_approvers" do
+    let(:project) { create(:empty_project) }
+    let(:author) { create(:user) }
+    let(:merge_request) { create(:merge_request, source_project: project, author: author) }
+
+    it "includes approvers set on the MR" do
+      expect do
+        create(:approver, user: create(:user), target: merge_request)
+      end.to change { merge_request.number_of_potential_approvers }.by(1)
+    end
+
+    it "includes approvers from group" do
+      group = create(:group_with_members)
+
+      expect do
+        create(:approver_group, group: group, target: merge_request)
+      end.to change { merge_request.number_of_potential_approvers }.by(1)
+    end
+
+    it "includes project members with developer access and up" do
+      expect do
+        project.team << [create(:user), :guest]
+        project.team << [create(:user), :reporter]
+        project.team << [create(:user), :developer]
+        project.team << [create(:user), :master]
+      end.to change { merge_request.number_of_potential_approvers }.by(2)
+    end
+
+    it "excludes users who have already approved the MR" do
+      expect do
+        approver = create(:user)
+        create(:approver, user: approver, target: merge_request)
+        create(:approval, user: approver, merge_request: merge_request)
+      end.not_to change { merge_request.number_of_potential_approvers }
+    end
+
+    it "excludes the MR author" do
+      expect do
+        create(:approver, user: create(:user), target: merge_request)
+        create(:approver, user: author, target: merge_request)
+      end.to change { merge_request.number_of_potential_approvers }.by(1)
+    end
+
+    it "excludes blocked users" do
+      developer = create(:user)
+      blocked_developer = create(:user).tap { |u| u.block! }
+      project.team << [developer, :developer]
+      project.team << [blocked_developer, :developer]
+
+      expect(merge_request.number_of_potential_approvers).to eq(1)
+    end
+
+    context "when the project is part of a group" do
+      let(:group) { create(:group) }
+      before { project.update_attributes(group: group) }
+
+      it "includes group members with developer access and up" do
+        expect do
+          group.add_guest(create(:user))
+          group.add_reporter(create(:user))
+          group.add_developer(create(:user))
+          group.add_master(create(:user))
+          blocked_developer = create(:user).tap { |u| u.block! }
+          group.add_developer(blocked_developer)
+        end.to change { merge_request.number_of_potential_approvers }.by(2)
+      end
+    end
+  end
+
+  describe "#overall_approver_groups" do
+    it 'returns a merge request group approver' do
+      project = create :empty_project
+      create :approver_group, target: project
+
+      merge_request = create :merge_request, target_project: project, source_project: project
+      approver_group2 = create :approver_group, target: merge_request
+
+      expect(merge_request.overall_approver_groups).to eq([approver_group2])
+    end
+
+    it 'returns a project group approver' do
+      project = create :empty_project
+      approver_group1 = create :approver_group, target: project
+
+      merge_request = create :merge_request, target_project: project, source_project: project
+
+      expect(merge_request.overall_approver_groups).to eq([approver_group1])
+    end
+
+    it 'returns a merge request approver if there is no project group approver' do
+      project = create :empty_project
+
+      merge_request = create :merge_request, target_project: project, source_project: project
+      approver_group1 = create :approver_group, target: merge_request
+
+      expect(merge_request.overall_approver_groups).to eq([approver_group1])
+    end
+  end
+
+  describe '#all_approvers_including_groups' do
+    it 'returns correct set of users' do
+      user = create :user
+      user1 = create :user
+      user2 = create :user
+      create :user
+
+      project = create :empty_project
+      group = create :group
+      group.add_master user
+      create :approver_group, target: project, group: group
+
+      merge_request = create :merge_request, target_project: project, source_project: project
+      group1 = create :group
+      group1.add_master user1
+      create :approver_group, target: merge_request, group: group1
+
+      create(:approver, user: user2, target: merge_request)
+
+      expect(merge_request.all_approvers_including_groups).to match_array([user1, user2])
+    end
+  end
+
+  describe '#approver_group_ids=' do
+    it 'create approver_groups' do
+      group = create :group
+      group1 = create :group
+
+      merge_request = create :merge_request
+
+      merge_request.approver_group_ids = "#{group.id}, #{group1.id}"
+      merge_request.save!
+
+      expect(merge_request.approver_groups.map(&:group)).to match_array([group, group1])
+    end
+  end
+
+  describe "#approvals_required" do
+    let(:merge_request) { build(:merge_request) }
+    before { merge_request.target_project.update_attributes(approvals_before_merge: 3) }
+
+    context "when the MR has approvals_before_merge set" do
+      before { merge_request.update_attributes(approvals_before_merge: 1) }
+
+      it "uses the approvals_before_merge from the MR" do
+        expect(merge_request.approvals_required).to eq(1)
+      end
+    end
+
+    context "when the MR doesn't have approvals_before_merge set" do
+      it "takes approvals_before_merge from the target project" do
+        expect(merge_request.approvals_required).to eq(3)
+      end
+    end
+  end
+
   describe '#can_remove_source_branch?' do
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
@@ -634,6 +829,68 @@ describe MergeRequest, models: true do
 
   it_behaves_like 'a Taskable' do
     subject { create :merge_request, :simple }
+  end
+
+  describe '#rebase_in_progress?' do
+    it 'returns true when there is a current rebase directory' do
+      allow(File).to receive(:exist?).and_return(true)
+      allow(File).to receive(:mtime).and_return(Time.now)
+
+      expect(subject.rebase_in_progress?).to be_truthy
+    end
+
+    it 'returns false when there is no rebase directory' do
+      allow(File).to receive(:exist?).with(subject.rebase_dir_path).and_return(false)
+
+      expect(subject.rebase_in_progress?).to be_falsey
+    end
+
+    it 'returns false when the rebase directory has expired' do
+      allow(File).to receive(:exist?).and_return(true)
+      allow(File).to receive(:mtime).and_return(20.minutes.ago)
+
+      expect(subject.rebase_in_progress?).to be_falsey
+    end
+
+    it 'returns false when the source project has been removed' do
+      allow(subject).to receive(:source_project).and_return(nil)
+      allow(File).to receive(:exist?).and_return(true)
+      allow(File).to receive(:mtime).and_return(Time.now)
+
+      expect(File).not_to have_received(:exist?)
+      expect(subject.rebase_in_progress?).to be_falsey
+    end
+  end
+
+  describe '#squash_in_progress?' do
+    it 'returns true when there is a current squash directory' do
+      allow(File).to receive(:exist?).and_return(true)
+      allow(File).to receive(:mtime).and_return(Time.now)
+
+      expect(subject.squash_in_progress?).to be_truthy
+    end
+
+    it 'returns false when there is no squash directory' do
+      allow(File).to receive(:exist?).with(subject.squash_dir_path).and_return(false)
+
+      expect(subject.squash_in_progress?).to be_falsey
+    end
+
+    it 'returns false when the squash directory has expired' do
+      allow(File).to receive(:exist?).and_return(true)
+      allow(File).to receive(:mtime).and_return(20.minutes.ago)
+
+      expect(subject.squash_in_progress?).to be_falsey
+    end
+
+    it 'returns false when the source project has been removed' do
+      allow(subject).to receive(:source_project).and_return(nil)
+      allow(File).to receive(:exist?).and_return(true)
+      allow(File).to receive(:mtime).and_return(Time.now)
+
+      expect(File).not_to have_received(:exist?)
+      expect(subject.squash_in_progress?).to be_falsey
+    end
   end
 
   describe '#commits_sha' do
@@ -1159,6 +1416,212 @@ describe MergeRequest, models: true do
       expect_any_instance_of(DiffNote).to receive(:save).once
 
       subject.reload_diff
+    end
+  end
+
+  describe 'approvals' do
+    let(:project) { create(:empty_project) }
+    let(:merge_request) { create(:merge_request, source_project: project, author: author) }
+    let(:author) { create(:user) }
+    let(:approver) { create(:user) }
+
+    context 'on a project with only one member' do
+      context 'when there is one approver' do
+        before { project.update_attributes(approvals_before_merge: 1) }
+
+        context 'when that approver is the MR author' do
+          before do
+            project.team << [author, :developer]
+            create(:approver, user: author, target: merge_request)
+          end
+
+          it 'does not require approval for the merge request' do
+            expect(merge_request.approvals_left).to eq(0)
+          end
+
+          it 'does not allow the approver to approve the MR' do
+            expect(merge_request.can_approve?(author)).to be_falsey
+          end
+
+          it 'does not allow a logged-out user to approve the MR' do
+            expect(merge_request.can_approve?(nil)).to be_falsey
+          end
+        end
+
+        context 'when that approver is not the MR author' do
+          before do
+            project.team << [approver, :developer]
+            create(:approver, user: approver, target: merge_request)
+          end
+
+          it 'requires one approval' do
+            expect(merge_request.approvals_left).to eq(1)
+          end
+
+          it 'allows the approver to approve the MR' do
+            expect(merge_request.can_approve?(approver)).to be_truthy
+          end
+
+          it 'does not allow a logged-out user to approve the MR' do
+            expect(merge_request.can_approve?(nil)).to be_falsey
+          end
+        end
+      end
+    end
+
+    context 'on a project with several members' do
+      let(:approver_2) { create(:user) }
+      let(:developer) { create(:user) }
+      let(:reporter) { create(:user) }
+      let(:stranger) { create(:user) }
+
+      before do
+        project.team << [author, :developer]
+        project.team << [approver, :developer]
+        project.team << [approver_2, :developer]
+        project.team << [developer, :developer]
+        project.team << [reporter, :reporter]
+      end
+
+      context 'when there is one approver required' do
+        before { project.update_attributes(approvals_before_merge: 1) }
+
+        context 'when that approver is the MR author' do
+          before { create(:approver, user: author, target: merge_request) }
+
+          it 'requires one approval' do
+            expect(merge_request.approvals_left).to eq(1)
+          end
+
+          it 'does not allow the author to approve the MR' do
+            expect(merge_request.can_approve?(author)).to be_falsey
+          end
+
+          it 'allows any other project member with write access to approve the MR' do
+            expect(merge_request.can_approve?(developer)).to be_truthy
+
+            expect(merge_request.can_approve?(reporter)).to be_falsey
+            expect(merge_request.can_approve?(stranger)).to be_falsey
+          end
+
+          it 'does not allow a logged-out user to approve the MR' do
+            expect(merge_request.can_approve?(nil)).to be_falsey
+          end
+        end
+
+        context 'when that approver is not the MR author' do
+          before { create(:approver, user: approver, target: merge_request) }
+
+          it 'requires one approval' do
+            expect(merge_request.approvals_left).to eq(1)
+          end
+
+          it 'only allows the approver to approve the MR' do
+            expect(merge_request.can_approve?(approver)).to be_truthy
+
+            expect(merge_request.can_approve?(author)).to be_falsey
+            expect(merge_request.can_approve?(developer)).to be_falsey
+            expect(merge_request.can_approve?(reporter)).to be_falsey
+            expect(merge_request.can_approve?(stranger)).to be_falsey
+            expect(merge_request.can_approve?(nil)).to be_falsey
+          end
+        end
+      end
+
+      context 'when there are multiple approvers required' do
+        before { project.update_attributes(approvals_before_merge: 3) }
+
+        context 'when one of those approvers is the MR author' do
+          before do
+            create(:approver, user: author, target: merge_request)
+            create(:approver, user: approver, target: merge_request)
+            create(:approver, user: approver_2, target: merge_request)
+          end
+
+          it 'requires the original number of approvals' do
+            expect(merge_request.approvals_left).to eq(3)
+          end
+
+          it 'does not allow the author to approve the MR' do
+            expect(merge_request.can_approve?(author)).to be_falsey
+          end
+
+          it 'allows any other other approver to approve the MR' do
+            expect(merge_request.can_approve?(approver)).to be_truthy
+          end
+
+          it 'does not allow a logged-out user to approve the MR' do
+            expect(merge_request.can_approve?(nil)).to be_falsey
+          end
+
+          context 'when all of the valid approvers have approved the MR' do
+            before do
+              create(:approval, user: approver, merge_request: merge_request)
+              create(:approval, user: approver_2, merge_request: merge_request)
+            end
+
+            it 'requires the original number of approvals' do
+              expect(merge_request.approvals_left).to eq(1)
+            end
+
+            it 'does not allow the author to approve the MR' do
+              expect(merge_request.can_approve?(author)).to be_falsey
+            end
+
+            it 'does not allow the approvers to approve the MR again' do
+              expect(merge_request.can_approve?(approver)).to be_falsey
+              expect(merge_request.can_approve?(approver_2)).to be_falsey
+            end
+
+            it 'allows any other project member with write access to approve the MR' do
+              expect(merge_request.can_approve?(developer)).to be_truthy
+
+              expect(merge_request.can_approve?(reporter)).to be_falsey
+              expect(merge_request.can_approve?(stranger)).to be_falsey
+              expect(merge_request.can_approve?(nil)).to be_falsey
+            end
+          end
+
+          context 'when more than the number of approvers have approved the MR' do
+            before do
+              create(:approval, user: approver, merge_request: merge_request)
+              create(:approval, user: approver_2, merge_request: merge_request)
+              create(:approval, user: developer, merge_request: merge_request)
+            end
+
+            it 'marks the MR as approved' do
+              expect(merge_request).to be_approved
+            end
+
+            it 'clamps the approvals left at zero' do
+              expect(merge_request.approvals_left).to eq(0)
+            end
+          end
+        end
+
+        context 'when the approvers do not contain the MR author' do
+          before do
+            create(:approver, user: developer, target: merge_request)
+            create(:approver, user: approver, target: merge_request)
+            create(:approver, user: approver_2, target: merge_request)
+          end
+
+          it 'requires the original number of approvals' do
+            expect(merge_request.approvals_left).to eq(3)
+          end
+
+          it 'only allows the approvers to approve the MR' do
+            expect(merge_request.can_approve?(developer)).to be_truthy
+            expect(merge_request.can_approve?(approver)).to be_truthy
+            expect(merge_request.can_approve?(approver_2)).to be_truthy
+
+            expect(merge_request.can_approve?(author)).to be_falsey
+            expect(merge_request.can_approve?(reporter)).to be_falsey
+            expect(merge_request.can_approve?(stranger)).to be_falsey
+            expect(merge_request.can_approve?(nil)).to be_falsey
+          end
+        end
+      end
     end
   end
 

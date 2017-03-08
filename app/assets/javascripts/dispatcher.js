@@ -1,3 +1,4 @@
+import PrometheusGraph from './monitoring/prometheus_graph'; // TODO: Maybe Make this a bundle
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
 /* global UsernameValidator */
 /* global ActiveTabMemoizer */
@@ -34,6 +35,8 @@
 /* global ProjectShow */
 /* global Labels */
 /* global Shortcuts */
+/* global WeightSelect */
+/* global AdminEmailSelect */
 
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
@@ -134,6 +137,7 @@ const UserCallout = require('./user_callout');
           new IssuableForm($('.issue-form'));
           new LabelsSelect();
           new MilestoneSelect();
+          new WeightSelect();
           new gl.IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:new':
@@ -280,7 +284,14 @@ const UserCallout = require('./user_callout');
         case 'search:show':
           new Search();
           break;
-        case 'projects:protected_branches:index':
+        case 'projects:mirrors:show':
+        case 'projects:mirrors:update':
+          new UsersSelect();
+          break;
+        case 'admin:emails:show':
+          new AdminEmailSelect();
+          break;
+        case 'projects:repository:show':
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
           break;
@@ -291,6 +302,8 @@ const UserCallout = require('./user_callout');
         case 'ci:lints:show':
           new gl.CILintEditor();
           break;
+        case 'projects:environments:metrics':
+          new PrometheusGraph();
         case 'users:show':
           new UserCallout();
           break;
@@ -310,6 +323,9 @@ const UserCallout = require('./user_callout');
         case 'admin':
           new Admin();
           switch (path[1]) {
+            case 'application_settings':
+              new gl.ApplicationSettings();
+              break;
             case 'groups':
               new UsersSelect();
               break;
@@ -379,7 +395,7 @@ const UserCallout = require('./user_callout');
             case 'builds':
             case 'hooks':
             case 'services':
-            case 'protected_branches':
+            case 'repository':
               shortcut_handler = new ShortcutsNavigation();
           }
       }

@@ -1,6 +1,12 @@
+# LDAP connection adapter
+#
+# Contains methods common to both GitLab CE and EE.
+# All EE methods should be in `EE::Gitlab::LDAP::Adapter` only.
 module Gitlab
   module LDAP
     class Adapter
+      prepend EE::Gitlab::LDAP::Adapter
+
       attr_reader :provider, :ldap
 
       def self.open(provider, &block)

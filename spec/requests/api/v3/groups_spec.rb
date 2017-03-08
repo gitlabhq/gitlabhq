@@ -17,6 +17,138 @@ describe API::V3::Groups, api: true  do
   before do
     group1.add_owner(user1)
     group2.add_owner(user2)
+    group1.ldap_group_links.create cn: 'ldap-group', group_access: Gitlab::Access::MASTER, provider: 'ldap'
+  end
+
+  describe "GET /groups" do
+    context "when unauthenticated" do
+      it "returns authentication error" do
+        get v3_api("/groups")
+
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context "when authenticated as user" do
+      it "normal user: returns an array of groups of user1" do
+        get v3_api("/groups", user1)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response)
+          .to satisfy_one { |group| group['name'] == group1.name }
+
+        expect(json_response.first['ldap_cn']).to eq(group1.ldap_cn)
+        expect(json_response.first['ldap_access']).to eq(group1.ldap_access)
+
+        ldap_group_link = json_response.first['ldap_group_links'].first
+        expect(ldap_group_link['cn']).to eq(group1.ldap_cn)
+        expect(ldap_group_link['group_access']).to eq(group1.ldap_access)
+        expect(ldap_group_link['provider']).to eq('ldap')
+      end
+
+      it "does not include statistics" do
+        get v3_api("/groups", user1), statistics: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).not_to include 'statistics'
+      end
+    end
+
+    context "when authenticated as admin" do
+      it "admin: returns an array of all groups" do
+        get v3_api("/groups", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(2)
+      end
+
+      it "does not include statistics by default" do
+        get v3_api("/groups", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).not_to include('statistics')
+      end
+
+      it "includes statistics if requested" do
+        attributes = {
+          storage_size: 702,
+          repository_size: 123,
+          lfs_objects_size: 234,
+          build_artifacts_size: 345,
+        }.stringify_keys
+
+        project1.statistics.update!(attributes)
+
+        get v3_api("/groups", admin), statistics: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response)
+          .to satisfy_one { |group| group['statistics'] == attributes }
+      end
+    end
+
+    context "when using skip_groups in request" do
+      it "returns all groups excluding skipped groups" do
+        get v3_api("/groups", admin), skip_groups: [group2.id]
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+      end
+    end
+
+    context "when using all_available in request" do
+      let(:response_groups) { json_response.map { |group| group['name'] } }
+
+      it "returns all groups you have access to" do
+        public_group = create :group, :public
+
+        get v3_api("/groups", user1), all_available: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(public_group.name, group1.name)
+      end
+    end
+
+    context "when using sorting" do
+      let(:group3) { create(:group, name: "a#{group1.name}", path: "z#{group1.path}") }
+      let(:response_groups) { json_response.map { |group| group['name'] } }
+
+      before do
+        group3.add_owner(user1)
+      end
+
+      it "sorts by name ascending by default" do
+        get v3_api("/groups", user1)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_groups).to eq([group3.name, group1.name])
+      end
+
+      it "sorts in descending order when passed" do
+        get v3_api("/groups", user1), sort: "desc"
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_groups).to eq([group1.name, group3.name])
+      end
+
+      it "sorts by the order_by param" do
+        get v3_api("/groups", user1), order_by: "path"
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_groups).to eq([group1.name, group3.name])
+      end
+    end
   end
 
   describe "GET /groups" do
@@ -283,6 +415,17 @@ describe API::V3::Groups, api: true  do
         expect(response).to have_http_status(404)
       end
     end
+
+    context "when authenticated as user with group permissions" do
+      it "updates group" do
+        group2.update(owner: user2)
+
+        put v3_api("/groups/#{group2.id}", user2), { name: 'Renamed' }
+
+        expect(response.status).to eq(200)
+        expect(group2.reload.name).to eq('Renamed')
+      end
+    end
   end
 
   describe "GET /groups/:id/projects" do
@@ -452,6 +595,11 @@ describe API::V3::Groups, api: true  do
         post v3_api("/groups", user3), { name: 'test' }
 
         expect(response).to have_http_status(400)
+      end
+
+      it "creates an ldap_group_link if ldap_cn and ldap_access are supplied" do
+        group_attributes = attributes_for(:group, ldap_cn: 'ldap-group', ldap_access: Gitlab::Access::DEVELOPER)
+        expect { post v3_api("/groups", admin), group_attributes }.to change{ LdapGroupLink.count }.by(1)
       end
     end
   end

@@ -39,7 +39,8 @@ module ButtonHelper
         html: true,
         placement: placement,
         container: 'body',
-        title: "Set a password on your account<br>to pull or push via #{protocol}"
+        title: "Set a password on your account<br>to pull or push via #{protocol}",
+        primary_url: (geo_primary_http_url_to_repo(project) if Gitlab::Geo.secondary?)
       }
   end
 
@@ -56,5 +57,30 @@ module ButtonHelper
         container: 'body',
         title: 'Add an SSH key to your profile<br>to pull or push via SSH.'
       }
+  end
+
+  def kerberos_clone_button(project)
+    klass = 'kerberos-selector'
+    klass << ' has-tooltip'
+
+    content_tag :a, 'KRB5',
+      class: klass,
+      href: project.kerberos_url_to_repo,
+      data: {
+        html: 'true',
+        placement: 'right',
+        container: 'body',
+        title: 'Get a Kerberos token for your<br>account with kinit.'
+      }
+  end
+
+  def geo_button(modal_target: nil)
+    data = { placement: 'bottom', container: 'body', toggle: 'modal', target: modal_target }
+    content_tag :button,
+                icon('globe'),
+                class: 'btn btn-geo has-tooltip',
+                data: data,
+                type: :button,
+                title: 'See Geo-specific instructions'
   end
 end

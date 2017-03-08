@@ -22,6 +22,7 @@ describe 'Private Group access', feature: true do
     subject { group_path(group) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(group) }
     it { is_expected.to be_allowed_for(:master).of(group) }
     it { is_expected.to be_allowed_for(:developer).of(group) }
@@ -37,6 +38,7 @@ describe 'Private Group access', feature: true do
     subject { issues_group_path(group) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(group) }
     it { is_expected.to be_allowed_for(:master).of(group) }
     it { is_expected.to be_allowed_for(:developer).of(group) }
@@ -52,6 +54,7 @@ describe 'Private Group access', feature: true do
     subject { merge_requests_group_path(group) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(group) }
     it { is_expected.to be_allowed_for(:master).of(group) }
     it { is_expected.to be_allowed_for(:developer).of(group) }
@@ -67,6 +70,7 @@ describe 'Private Group access', feature: true do
     subject { group_group_members_path(group) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(group) }
     it { is_expected.to be_allowed_for(:master).of(group) }
     it { is_expected.to be_allowed_for(:developer).of(group) }
@@ -82,6 +86,7 @@ describe 'Private Group access', feature: true do
     subject { edit_group_path(group) }
 
     it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_denied_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(group) }
     it { is_expected.to be_denied_for(:master).of(group) }
     it { is_expected.to be_denied_for(:developer).of(group) }

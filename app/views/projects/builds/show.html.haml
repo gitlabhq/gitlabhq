@@ -26,6 +26,8 @@
             = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
               Runners page
 
+    = render "shared_runner_limit_warning", project: @build.project
+
     - if @build.starts_environment?
       .prepend-top-default
         .environment-information

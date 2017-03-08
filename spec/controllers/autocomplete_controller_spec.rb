@@ -12,6 +12,7 @@ describe AutocompleteController do
       before do
         sign_in(user)
         project.add_master(user)
+        project.add_developer(user2)
       end
 
       describe 'GET #users with project ID' do
@@ -22,8 +23,8 @@ describe AutocompleteController do
         let(:body) { JSON.parse(response.body) }
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 1 }
-        it { expect(body.map { |u| u["username"] }).to include(user.username) }
+        it { expect(body.size).to eq 2 }
+        it { expect(body.map { |u| u["username"] }).to match_array([user.username, user2.username]) }
       end
 
       describe 'GET #users with unknown project' do
@@ -32,6 +33,33 @@ describe AutocompleteController do
         end
 
         it { expect(response).to have_http_status(404) }
+      end
+
+      describe "GET #users that can push to protected branches" do
+        before do
+          get(:users, project_id: project.id, push_code_to_protected_branches: 'true')
+        end
+
+        let(:body) { JSON.parse(response.body) }
+
+        it { expect(body).to be_kind_of(Array) }
+        it { expect(body.size).to eq 1 }
+        it { expect(body.first["username"]).to eq user.username }
+      end
+
+      describe "GET #users that can push code" do
+        let(:reporter_user) { create(:user) }
+
+        before do
+          project.team << [reporter_user, :reporter]
+          get(:users, project_id: project.id, push_code: 'true')
+        end
+
+        let(:body) { JSON.parse(response.body) }
+
+        it { expect(body).to be_kind_of(Array) }
+        it { expect(body.size).to eq 2 }
+        it { expect(body.map { |user| user["username"] }).to match_array([user.username, user2.username]) }
       end
     end
 
@@ -317,6 +345,46 @@ describe AutocompleteController do
           expect(body.first['id']).to eq 0
         end
       end
+    end
+  end
+
+  context "groups" do
+    let(:matching_group) { create(:group) }
+    let(:non_matching_group) { create(:group) }
+
+    context "while fetching all groups belonging to a project" do
+      before do
+        project.team << [user, :developer]
+        project.invited_groups << matching_group
+        sign_in(user)
+        get(:project_groups, project_id: project.id)
+      end
+
+      let(:body) { JSON.parse(response.body) }
+
+      it { expect(body).to be_kind_of(Array) }
+      it { expect(body.size).to eq 1 }
+      it { expect(body.first.values_at('id', 'name')).to eq [matching_group.id, matching_group.name] }
+    end
+
+    context "while fetching all groups belonging to a project the current user cannot access" do
+      before do
+        project.invited_groups << matching_group
+        sign_in(user)
+        get(:project_groups, project_id: project.id)
+      end
+
+      it { expect(response).to be_not_found }
+    end
+
+    context "while fetching all groups belonging to an invalid project ID" do
+      before do
+        project.invited_groups << matching_group
+        sign_in(user)
+        get(:project_groups, project_id: 'invalid')
+      end
+
+      it { expect(response).to be_not_found }
     end
   end
 end

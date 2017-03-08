@@ -6,6 +6,8 @@
       = form_errors(@group)
       = render 'shared/group_form', f: f
 
+      = render 'repository_size_limit_setting', f: f
+
       .form-group
         .col-sm-offset-2.col-sm-10
           .avatar-container.s160
@@ -27,6 +29,15 @@
           = render 'shared/allow_request_access', form: f
 
       = render 'group_lfs_settings', f: f
+
+      .form-group
+        %hr
+        = f.label :membership_lock, class: 'control-label' do
+          Member lock
+        .col-sm-10
+          .checkbox
+            = f.check_box :membership_lock
+            %span.descr Prevent adding new members to project membership within this group
 
       .form-group
         %hr

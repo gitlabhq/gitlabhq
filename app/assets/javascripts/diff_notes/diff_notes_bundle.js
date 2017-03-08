@@ -1,6 +1,7 @@
 /* eslint-disable func-names, comma-dangle, new-cap, no-new, max-len */
 /* global Vue */
 /* global ResolveCount */
+/* global ResolveServiceClass */
 
 const Vue = require('vue');
 require('./models/discussion');
@@ -52,6 +53,6 @@ $(() => {
     el: '#resolve-count-app',
     components: {
       'resolve-count': ResolveCount
-    }
+    },
   });
 });

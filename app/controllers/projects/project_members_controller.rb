@@ -16,6 +16,12 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     redirect_url = namespace_project_settings_members_path(@project.namespace, @project)
 
     if status
+      members = @project.project_members.where(user_id: params[:user_ids].split(','))
+
+      members.each do |member|
+        log_audit_event(member, action: :create)
+      end
+
       redirect_to redirect_url, notice: 'Users were successfully added.'
     else
       redirect_to redirect_url, alert: 'No users or groups specified.'
@@ -27,12 +33,18 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
     return render_403 unless can?(current_user, :update_project_member, @project_member)
 
-    @project_member.update_attributes(member_params)
+    old_access_level = @project_member.human_access
+
+    if @project_member.update_attributes(member_params)
+      log_audit_event(@project_member, action: :update, old_access_level: old_access_level)
+    end
   end
 
   def destroy
-    Members::DestroyService.new(@project, current_user, params).
+    member = Members::DestroyService.new(@project, current_user, params).
       execute(:all)
+
+    log_audit_event(member, action: :destroy)
 
     respond_to do |format|
       format.html do

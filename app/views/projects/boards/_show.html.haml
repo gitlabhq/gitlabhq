@@ -1,3 +1,4 @@
+- board = local_assigns.fetch(:board, nil)
 - @no_container = true
 - @content_class = "issue-boards-content"
 - page_title "Boards"
@@ -12,7 +13,7 @@
 
 = render "projects/issues/head"
 
-= render 'shared/issuable/filter', type: :boards
+= render 'shared/issuable/filter', type: :boards, board: board
 
 #board-app.boards-app{ "v-cloak" => true, data: board_data }
   .boards-list{ ":class" => "{ 'is-compact': detailIssueVisible }" }

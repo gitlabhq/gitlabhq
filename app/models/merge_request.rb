@@ -3,12 +3,17 @@ class MergeRequest < ActiveRecord::Base
   include Issuable
   include Referable
   include Sortable
+  include Elastic::MergeRequestsSearch
   include Importable
+  include Approvable
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
 
+  has_many :approvals, dependent: :destroy
+  has_many :approvers, as: :target, dependent: :destroy
+  has_many :approver_groups, as: :target, dependent: :destroy
   has_many :merge_request_diffs, dependent: :destroy
   has_one :merge_request_diff,
     -> { order('merge_request_diffs.id DESC') }
@@ -100,6 +105,7 @@ class MergeRequest < ActiveRecord::Base
   validates :merge_user, presence: true, if: :merge_when_pipeline_succeeds?, unless: :importing?
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validate :validate_fork, unless: :closed_without_fork?
+  validate :validate_approvals_before_merge
 
   scope :by_source_or_target_branch, ->(branch_name) do
     where("source_branch = :branch OR target_branch = :branch", branch: branch_name)
@@ -111,9 +117,10 @@ class MergeRequest < ActiveRecord::Base
   scope :merged, -> { with_state(:merged) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
   scope :from_source_branches, ->(branches) { where(source_branch: branches) }
-
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
+
+  participant :approvers_left
 
   after_save :keep_around_commit
 
@@ -348,6 +355,22 @@ class MergeRequest < ActiveRecord::Base
     !source_project.forked_from?(target_project)
   end
 
+  def validate_approvals_before_merge
+    return true unless approvals_before_merge
+    return true unless target_project
+
+    # Approvals disabled
+    if target_project.approvals_before_merge == 0
+      errors.add :validate_approvals_before_merge,
+                 'Approvals disabled for target project'
+    elsif approvals_before_merge > target_project.approvals_before_merge
+      true
+    else
+      errors.add :validate_approvals_before_merge,
+                 'Number of approvals must be greater than those on target project'
+    end
+  end
+
   def reopenable?
     closed? && !source_project_missing? && source_branch_exists?
   end
@@ -386,7 +409,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def check_if_can_be_merged
-    return unless unchecked?
+    return unless unchecked? && !Gitlab::Geo.secondary?
 
     can_be_merged =
       !broken? && project.repository.can_be_merged?(diff_head_sha, target_branch)
@@ -423,7 +446,7 @@ class MergeRequest < ActiveRecord::Base
 
     check_if_can_be_merged
 
-    can_be_merged?
+    can_be_merged? && !should_be_rebased?
   end
 
   def mergeable_state?(skip_ci_check: false)
@@ -778,6 +801,50 @@ class MergeRequest < ActiveRecord::Base
       yield
     ensure
       unlock_mr if locked?
+    end
+  end
+
+  def ff_merge_possible?
+    project.repository.is_ancestor?(target_branch_sha, diff_head_sha)
+  end
+
+  def should_be_rebased?
+    self.project.ff_merge_must_be_possible? && !ff_merge_possible?
+  end
+
+  def rebase_dir_path
+    File.join(Gitlab.config.shared.path, 'tmp/rebase', source_project.id.to_s, id.to_s).to_s
+  end
+
+  def squash_dir_path
+    File.join(Gitlab.config.shared.path, 'tmp/squash', source_project.id.to_s, id.to_s).to_s
+  end
+
+  def rebase_in_progress?
+    # The source project can be deleted
+    return false unless source_project
+
+    File.exist?(rebase_dir_path) && !clean_stuck_rebase
+  end
+
+  def clean_stuck_rebase
+    if File.mtime(rebase_dir_path) < 15.minutes.ago
+      FileUtils.rm_rf(rebase_dir_path)
+      true
+    end
+  end
+
+  def squash_in_progress?
+    # The source project can be deleted
+    return false unless source_project
+
+    File.exist?(squash_dir_path) && !clean_stuck_squash
+  end
+
+  def clean_stuck_squash
+    if File.mtime(squash_dir_path) < 15.minutes.ago
+      FileUtils.rm_rf(squash_dir_path)
+      true
     end
   end
 

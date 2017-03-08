@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Kubernetes do
+  include KubernetesHelpers
   include described_class
 
   describe '#container_exec_url' do
@@ -34,6 +35,15 @@ describe Gitlab::Kubernetes do
 
       it { expect(result.path).to eq('/api/v1/namespaces/default%20namespace/pods/pod%201/exec') }
       it { expect(result.query).to match(/\Acontainer=container\+1&/) }
+    end
+  end
+
+  describe '#filter_by_label' do
+    it 'returns matching labels' do
+      matching_items = [kube_pod(app: 'foo'), kube_deployment(app: 'foo')]
+      items = matching_items + [kube_pod, kube_deployment]
+
+      expect(filter_by_label(items, app: 'foo')).to eq(matching_items)
     end
   end
 end

@@ -23,9 +23,18 @@ module SelectsHelper
     hidden_field_tag(id, value, html)
   end
 
+  def ldap_server_select_options
+    options_from_collection_for_select(
+      Gitlab::LDAP::Config.servers,
+      'provider_name',
+      'label'
+    )
+  end
+
   def groups_select_tag(id, opts = {})
     opts[:class] ||= ''
     opts[:class] << ' ajax-groups-select'
+    opts[:class] << ' multiselect' if opts[:multiple]
     select2_tag(id, opts)
   end
 
@@ -51,8 +60,16 @@ module SelectsHelper
   def select2_tag(id, opts = {})
     opts[:class] << ' multiselect' if opts[:multiple]
     value = opts[:selected] || ''
-
     hidden_field_tag(id, value, opts)
+  end
+
+  def admin_email_select_tag(id, opts = {})
+    css_class = "ajax-admin-email-select "
+    css_class << "multiselect " if opts[:multiple]
+    css_class << (opts[:class] || '')
+    value = opts[:selected] || ''
+
+    hidden_field_tag(id, value, class: css_class)
   end
 
   private

@@ -106,6 +106,14 @@ class TodoService
     create_build_failed_todo(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
   end
 
+  # When new approvers are added for a merge request:
+  #
+  #  * create a todo for those users to approve the MR
+  #
+  def add_merge_request_approvers(merge_request, approvers)
+    create_approval_required_todos(merge_request, approvers, merge_request.author)
+  end
+
   # When a new commit is pushed to a merge request we should:
   #
   #  * mark all pending todos related to the merge request for that user as done
@@ -123,7 +131,7 @@ class TodoService
     mark_pending_todos_as_done(merge_request, merge_request.author)
     mark_pending_todos_as_done(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
   end
-  
+
   # When a merge request could not be automatically merged due to its unmergeable state we should:
   #
   #  * create a todo for a merge_user
@@ -131,7 +139,7 @@ class TodoService
   def merge_request_became_unmergeable(merge_request)
     create_unmergeable_todo(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
   end
-  
+
   # When create a note we should:
   #
   #  * mark all pending todos related to the noteable for the note author as done
@@ -218,6 +226,11 @@ class TodoService
 
   def new_issuable(issuable, author)
     create_assignment_todo(issuable, author)
+
+    if issuable.is_a?(MergeRequest)
+      create_approval_required_todos(issuable, issuable.overall_approvers, author)
+    end
+
     create_mention_todos(issuable.project, issuable, author)
   end
 
@@ -265,6 +278,11 @@ class TodoService
     mentioned_users = filter_mentioned_users(project, note || target, author)
     attributes = attributes_for_todo(project, target, author, Todo::MENTIONED, note)
     create_todos(mentioned_users, attributes)
+  end
+
+  def create_approval_required_todos(merge_request, approvers, author)
+    attributes = attributes_for_todo(merge_request.project, merge_request, author, Todo::APPROVAL_REQUIRED)
+    create_todos(approvers.map(&:user), attributes)
   end
 
   def create_build_failed_todo(merge_request, todo_author)

@@ -23,6 +23,8 @@ class Key < ActiveRecord::Base
     uniqueness: true,
     presence: { message: 'cannot be generated' }
 
+  scope :ldap, -> { where(type: 'LDAPKey') }
+
   delegate :name, :email, to: :user, prefix: true
 
   after_create :add_to_shell

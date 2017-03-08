@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
   include Sortable
   include CaseSensitivity
   include TokenAuthenticatable
+  prepend EE::GeoAwareAvatar
+  prepend EE::User
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -87,7 +89,11 @@ class User < ActiveRecord::Base
   has_many :events,                   dependent: :destroy, foreign_key: :author_id
   has_many :subscriptions,            dependent: :destroy
   has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
-  has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
+  has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
+  has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
+  has_many :oauth_applications,       class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
+  has_many :approvals,                dependent: :destroy
+  has_many :approvers,                dependent: :destroy
   has_one  :abuse_report,             dependent: :destroy
   has_many :spam_logs,                dependent: :destroy
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
@@ -95,6 +101,11 @@ class User < ActiveRecord::Base
   has_many :todos,                    dependent: :destroy
   has_many :notification_settings,    dependent: :destroy
   has_many :award_emoji,              dependent: :destroy
+  has_many :path_locks,               dependent: :destroy
+
+  # Protected Branch Access
+  has_many :protected_branch_merge_access_levels, dependent: :destroy, class_name: ProtectedBranch::MergeAccessLevel
+  has_many :protected_branch_push_access_levels, dependent: :destroy, class_name: ProtectedBranch::PushAccessLevel
 
   has_many :assigned_issues,          dependent: :nullify, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest"
@@ -198,6 +209,11 @@ class User < ActiveRecord::Base
   scope :active, -> { with_state(:active) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members WHERE user_id IS NOT NULL AND requested_at IS NULL)') }
+  scope :subscribed_for_admin_email, -> { where(admin_email_unsubscribed_at: nil) }
+  scope :ldap, -> { joins(:identities).where('identities.provider LIKE ?', 'ldap%') }
+  scope :with_provider, ->(provider) do
+    joins(:identities).where(identities: { provider: provider })
+  end
   scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'ASC')) }
@@ -247,6 +263,10 @@ class User < ActiveRecord::Base
       LIMIT 1;'
 
       User.find_by_sql([sql, { email: email }]).first
+    end
+
+    def existing_member?(email)
+      User.where(email: email).any? || Email.where(email: email).any?
     end
 
     def filter(filter_name)
@@ -330,6 +350,11 @@ class User < ActiveRecord::Base
     # Returns a user for the given SSH key.
     def find_by_ssh_key_id(key_id)
       find_by(id: Key.unscoped.select(:user_id).where(id: key_id))
+    end
+
+    def non_ldap
+      joins('LEFT JOIN identities ON identities.user_id = users.id')
+        .where('identities.provider IS NULL OR identities.provider NOT LIKE ?', 'ldap%')
     end
 
     def reference_prefix
@@ -704,7 +729,7 @@ class User < ActiveRecord::Base
     if !Gitlab.config.ldap.enabled
       false
     elsif ldap_user?
-      !last_credential_check_at || (last_credential_check_at + 1.hour) < Time.now
+      !last_credential_check_at || (last_credential_check_at + Gitlab.config.ldap['sync_time']) < Time.now
     else
       false
     end
@@ -807,6 +832,10 @@ class User < ActiveRecord::Base
 
   def system_hook_service
     SystemHooksService.new
+  end
+
+  def admin_unsubscribe!
+    update_column :admin_email_unsubscribed_at, Time.now
   end
 
   def starred?(project)
@@ -939,9 +968,15 @@ class User < ActiveRecord::Base
     end
   end
 
+  def record_activity
+    Gitlab::UserActivities::ActivitySet.record(self)
+  end
+
   def access_level
     if admin?
       :admin
+    elsif auditor?
+      :auditor
     else
       :regular
     end
@@ -949,9 +984,10 @@ class User < ActiveRecord::Base
 
   def access_level=(new_level)
     new_level = new_level.to_s
-    return unless %w(admin regular).include?(new_level)
+    return unless %w(admin auditor regular).include?(new_level)
 
     self.admin = (new_level == 'admin')
+    self.auditor = (new_level == 'auditor')
   end
 
   private

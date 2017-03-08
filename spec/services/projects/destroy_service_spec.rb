@@ -36,6 +36,19 @@ describe Projects::DestroyService, services: true do
       Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
     end
 
+    context 'when has remote mirrors' do
+      let!(:project) do
+        create(:project, namespace: user.namespace).tap do |project|
+          project.remote_mirrors.create(url: 'http://test.com')
+        end
+      end
+      let!(:async) { true }
+
+      it 'destroys them' do
+        expect(RemoteMirror.count).to eq(0)
+      end
+    end
+
     it_behaves_like 'deleting the project'
   end
 

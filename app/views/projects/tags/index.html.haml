@@ -28,6 +28,8 @@
         = link_to new_namespace_project_tag_path(@project.namespace, @project), class: 'btn btn-create new-tag-btn' do
           New tag
 
+  = render 'projects/commits/mirror_status'
+
   .tags
     - if @tags.any?
       %ul.flex-list.content-list

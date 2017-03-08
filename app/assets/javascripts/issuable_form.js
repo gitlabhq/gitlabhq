@@ -3,6 +3,7 @@
 /* global UsersSelect */
 /* global ZenMode */
 /* global Autosave */
+/* global GroupsSelect */
 /* global dateFormat */
 /* global Pikaday */
 
@@ -23,6 +24,7 @@
       this.handleSubmit = bind(this.handleSubmit, this);
       gl.GfmAutoComplete.setup();
       new UsersSelect();
+      new GroupsSelect();
       new ZenMode();
       this.titleField = this.form.find("input[name*='[title]']");
       this.descriptionField = this.form.find("textarea[name*='[description]']");

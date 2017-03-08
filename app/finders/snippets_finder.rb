@@ -44,7 +44,7 @@ class SnippetsFinder
     snippets = project.snippets.fresh
 
     if current_user
-      include_private = project.team.member?(current_user) || current_user.admin?
+      include_private = project.team.member?(current_user) || current_user.admin_or_auditor?
       by_scope(snippets, scope, include_private)
     else
       snippets.are_public

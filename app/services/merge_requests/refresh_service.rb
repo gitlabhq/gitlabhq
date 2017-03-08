@@ -23,6 +23,7 @@ module MergeRequests
       comment_mr_with_commits
       mark_mr_as_wip_from_commits
       execute_mr_web_hooks
+      reset_approvals_for_merge_requests
 
       true
     end
@@ -75,6 +76,22 @@ module MergeRequests
         end
 
         merge_request.mark_as_unchecked
+      end
+    end
+
+    # Note: Closed merge requests also need approvals reset.
+    def reset_approvals_for_merge_requests
+      merge_requests = merge_requests_for(@branch_name, mr_states: [:opened, :reopened, :closed])
+
+      merge_requests.each do |merge_request|
+        target_project = merge_request.target_project
+
+        if target_project.approvals_before_merge.nonzero? &&
+            target_project.reset_approvals_on_push &&
+            merge_request.rebase_commit_sha != @newrev
+
+          merge_request.approvals.destroy_all
+        end
       end
     end
 

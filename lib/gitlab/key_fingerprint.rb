@@ -49,7 +49,7 @@ module Gitlab
 
       required_version_info = Gitlab::VersionInfo.new(6, 8)
 
-      version_info >= required_version_info 
+      version_info >= required_version_info
     end
   end
 end

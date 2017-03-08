@@ -15,7 +15,7 @@ describe Boards::Issues::ListService, services: true do
 
     let!(:list1)   { create(:list, board: board, label: development, position: 0) }
     let!(:list2)   { create(:list, board: board, label: testing, position: 1) }
-    let!(:done)    { create(:done_list, board: board) }
+    let!(:done)    { board.done_list }
 
     let!(:opened_issue1) { create(:labeled_issue, project: project, labels: [bug]) }
     let!(:opened_issue2) { create(:labeled_issue, project: project, labels: [p2]) }

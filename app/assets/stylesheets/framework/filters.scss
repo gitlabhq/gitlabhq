@@ -10,7 +10,7 @@
 @media (min-width: $screen-sm-min) {
   .issues-filters,
   .issues_bulk_update {
-    .dropdown-menu-toggle {
+    .dropdown-menu-toggle:not(.wide) {
       width: 132px;
     }
   }
@@ -31,6 +31,89 @@
     -webkit-flex-direction: column;
     flex-direction: column;
   }
+
+  .tokens-container {
+    display: -webkit-flex;
+    display: flex;
+    flex: 1;
+    -webkit-flex: 1;
+    padding-left: 30px;
+    position: relative;
+    margin-bottom: 0;
+  }
+
+  .input-token {
+    flex: 1;
+    -webkit-flex: 1;
+  }
+
+  .filtered-search-token + .input-token:not(:last-child) {
+    max-width: 200px;
+  }
+}
+
+.filtered-search-token,
+.filtered-search-term {
+  display: -webkit-flex;
+  display: flex;
+  margin-top: 5px;
+  margin-bottom: 5px;
+
+  .selectable {
+    display: -webkit-flex;
+    display: flex;
+  }
+
+  .name,
+  .value {
+    display: inline-block;
+    padding: 2px 7px;
+  }
+
+  .name {
+    background-color: $filter-name-resting-color;
+    color: $filter-name-text-color;
+    border-radius: 2px 0 0 2px;
+    margin-right: 1px;
+    text-transform: capitalize;
+  }
+
+  .value {
+    background-color: $white-normal;
+    color: $filter-value-text-color;
+    border-radius: 0 2px 2px 0;
+    margin-right: 5px;
+  }
+
+  .selected {
+    .name {
+      background-color: $filter-name-selected-color;
+    }
+
+    .value {
+      background-color: $filter-value-selected-color;
+    }
+  }
+}
+
+.filtered-search-term {
+  .name {
+    background-color: inherit;
+    color: $black;
+    text-transform: none;
+  }
+
+  .selectable {
+    cursor: text;
+  }
+}
+
+.scroll-container {
+  display: -webkit-flex;
+  display: flex;
+  overflow-x: scroll;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .filtered-search-input-container {
@@ -38,6 +121,9 @@
   display: flex;
   position: relative;
   width: 100%;
+  border: 1px solid $border-color;
+  background-color: $white-light;
+  max-width: 87%;
 
   @media (max-width: $screen-xs-min) {
     -webkit-flex: 1 1 100%;
@@ -54,11 +140,21 @@
   }
 
   .form-control {
-    padding-left: 25px;
+    position: relative;
+    min-width: 200px;
+    padding-left: 0;
     padding-right: 25px;
+    border-color: transparent;
 
     &:focus ~ .fa-filter {
       color: $common-gray-dark;
+    }
+
+    &:focus,
+    &:hover {
+      outline: none;
+      border-color: transparent;
+      box-shadow: none;
     }
   }
 
@@ -76,12 +172,13 @@
 
   .clear-search {
     width: 35px;
-    background-color: transparent;
+    background-color: $white-light;
     border: none;
     position: absolute;
     right: 0;
     height: 100%;
     outline: none;
+    z-index: 1;
 
     &:hover .fa-times {
       color: $common-gray-dark;

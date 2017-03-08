@@ -228,6 +228,21 @@ describe "Admin::Users", feature: true do
       end
     end
 
+    describe "Update user account type" do
+      before do
+        allow_any_instance_of(AuditorUserHelper).to receive(:license_allows_auditor_user?).and_return(true)
+        choose "user_access_level_auditor"
+        click_button "Save changes"
+      end
+
+      it "changes account type to be auditor" do
+        user.reload
+
+        expect(user).not_to be_admin
+        expect(user).to be_auditor
+      end
+    end
+
     describe 'update username to non ascii char' do
       it do
         fill_in 'user_username', with: '\u3042\u3044'

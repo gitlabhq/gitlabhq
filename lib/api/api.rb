@@ -5,6 +5,8 @@ module API
     version %w(v3 v4), using: :path
 
     version 'v3', using: :path do
+      helpers ::API::V3::Helpers
+
       mount ::API::V3::AwardEmoji
       mount ::API::V3::Boards
       mount ::API::V3::Branches
@@ -16,10 +18,14 @@ module API
       mount ::API::V3::Groups
       mount ::API::V3::Issues
       mount ::API::V3::Labels
+      mount ::API::V3::LdapGroupLinks
       mount ::API::V3::Members
       mount ::API::V3::MergeRequestDiffs
       mount ::API::V3::MergeRequests
       mount ::API::V3::Notes
+      mount ::API::V3::Pipelines
+      mount ::API::V3::ProjectGitHook
+      mount ::API::V3::ProjectPushRule
       mount ::API::V3::Pipelines
       mount ::API::V3::ProjectHooks
       mount ::API::V3::Milestones
@@ -85,10 +91,14 @@ module API
     mount ::API::Environments
     mount ::API::Files
     mount ::API::Groups
+    mount ::API::Geo
     mount ::API::Internal
     mount ::API::Issues
     mount ::API::Keys
     mount ::API::Labels
+    mount ::API::Ldap
+    mount ::API::LdapGroupLinks
+    mount ::API::License
     mount ::API::Lint
     mount ::API::Members
     mount ::API::MergeRequestDiffs
@@ -99,6 +109,7 @@ module API
     mount ::API::NotificationSettings
     mount ::API::Pipelines
     mount ::API::ProjectHooks
+    mount ::API::ProjectPushRule
     mount ::API::Projects
     mount ::API::ProjectSnippets
     mount ::API::Repositories

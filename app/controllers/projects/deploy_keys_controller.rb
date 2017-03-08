@@ -1,4 +1,5 @@
 class Projects::DeployKeysController < Projects::ApplicationController
+  include RepositorySettingsRedirect
   respond_to :html
 
   # Authorize
@@ -7,52 +8,52 @@ class Projects::DeployKeysController < Projects::ApplicationController
   layout "project_settings"
 
   def index
-    @key = DeployKey.new
-    set_index_vars
+    redirect_to_repository_settings(@project)
   end
 
   def new
-    redirect_to namespace_project_deploy_keys_path(@project.namespace, @project)
+    redirect_to_repository_settings(@project)
   end
 
   def create
     @key = DeployKey.new(deploy_key_params.merge(user: current_user))
-    set_index_vars
 
-    if @key.valid? && @project.deploy_keys << @key
-      redirect_to namespace_project_deploy_keys_path(@project.namespace, @project)
+    unless @key.valid? && @project.deploy_keys << @key
+      flash[:alert] = @key.errors.full_messages.join(', ').html_safe
     else
-      render "index"
+      log_audit_event(@key.title, action: :create)
     end
+    redirect_to_repository_settings(@project)
   end
 
   def enable
+    load_key
     Projects::EnableDeployKeyService.new(@project, current_user, params).execute
+    log_audit_event(@key.title, action: :create)
 
-    redirect_to namespace_project_deploy_keys_path(@project.namespace, @project)
+    redirect_to_repository_settings(@project)
   end
 
   def disable
+    load_key
     @project.deploy_keys_projects.find_by(deploy_key_id: params[:id]).destroy
+    log_audit_event(@key.title, action: :destroy)
 
-    redirect_back_or_default(default: { action: 'index' })
+    redirect_to_repository_settings(@project)
   end
 
   protected
 
-  def set_index_vars
-    @enabled_keys           ||= @project.deploy_keys
-
-    @available_keys         ||= current_user.accessible_deploy_keys - @enabled_keys
-    @available_project_keys ||= current_user.project_deploy_keys - @enabled_keys
-    @available_public_keys  ||= DeployKey.are_public - @enabled_keys
-
-    # Public keys that are already used by another accessible project are already
-    # in @available_project_keys.
-    @available_public_keys -= @available_project_keys
-  end
-
   def deploy_key_params
     params.require(:deploy_key).permit(:key, :title, :can_push)
+  end
+
+  def log_audit_event(key_title, options = {})
+    AuditEventService.new(current_user, @project, options)
+      .for_deploy_key(key_title).security_event
+  end
+
+  def load_key
+    @key ||= current_user.accessible_deploy_keys.find(params[:id])
   end
 end

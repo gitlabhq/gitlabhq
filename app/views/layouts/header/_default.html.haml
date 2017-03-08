@@ -40,6 +40,12 @@
               %li
                 = link_to new_project_path, title: 'New project', aria: { label: "New project" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                   = icon('plus fw')
+
+            - if Gitlab::Geo.secondary?
+              %li
+                = link_to Gitlab::Geo.primary_node.url, title: 'Go to primary node', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                  = icon('globe fw')
+
             - if Gitlab::Sherlock.enabled?
               %li
                 = link_to sherlock_transactions_path, title: 'Sherlock Transactions',
