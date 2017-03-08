@@ -32,7 +32,7 @@ describe PipelinesFinder do
       end
     end
 
-    context 'when a scope is passed' do
+    context 'when scope is passed' do
       context 'when selecting running' do
         let(:params) { { scope: 'running' } }
 
@@ -74,7 +74,7 @@ describe PipelinesFinder do
       end
     end
 
-    context 'when a status is passed' do
+    context 'when status is passed' do
       context 'when selecting running' do
         let(:params) { { status: 'running' } }
 
@@ -124,8 +124,8 @@ describe PipelinesFinder do
       end
     end 
     
-    context 'when a ref is passed' do
-      context 'when a ref exists' do
+    context 'when ref is passed' do
+      context 'when ref exists' do
         let(:params) { { ref: 'master' } }
 
         it 'selects all pipelines which belong to the ref' do
@@ -133,7 +133,7 @@ describe PipelinesFinder do
         end
       end
 
-      context 'when a ref does not exist' do
+      context 'when ref does not exist' do
         let(:params) { { ref: 'invalid-ref' } }
 
         it 'selects nothing' do
@@ -142,8 +142,8 @@ describe PipelinesFinder do
       end
     end
 
-    context 'when a name is passed' do
-      context 'when a name exists' do
+    context 'when name is passed' do
+      context 'when name exists' do
         let(:params) { { name: user1.name } }
 
         it 'selects all pipelines which belong to the name' do
@@ -151,7 +151,7 @@ describe PipelinesFinder do
         end
       end
 
-      context 'when a name does not exist' do
+      context 'when name does not exist' do
         let(:params) { { name: 'invalid-name' } }
 
         it 'selects nothing' do
@@ -160,8 +160,8 @@ describe PipelinesFinder do
       end
     end
 
-    context 'when a username is passed' do
-      context 'when a username exists' do
+    context 'when username is passed' do
+      context 'when username exists' do
         let(:params) { { username: user1.username } }
 
         it 'selects all pipelines which belong to the username' do
@@ -169,7 +169,7 @@ describe PipelinesFinder do
         end
       end
 
-      context 'when a username does not exist' do
+      context 'when username does not exist' do
         let(:params) { { username: 'invalid-username' } }
 
         it 'selects nothing' do
@@ -178,7 +178,7 @@ describe PipelinesFinder do
       end
     end
 
-    context 'when a yaml_errors is passed' do
+    context 'when yaml_errors is passed' do
       context 'when yaml_errors is true' do
         let(:params) { { yaml_errors: true } }
 
@@ -204,7 +204,7 @@ describe PipelinesFinder do
       end
     end
 
-    context 'when a order_by and sort are passed' do
+    context 'when order_by and sort are passed' do
       context 'when order by created_at asc' do
         let(:params) { { order_by: 'created_at', sort: 'asc' } }
 
