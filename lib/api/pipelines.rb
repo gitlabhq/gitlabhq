@@ -29,7 +29,7 @@ module API
       get ':id/pipelines' do
         authorize! :read_pipeline, user_project
 
-        pipelines = PipelinesFinder.new(user_project, params).execute(scope: params[:scope])
+        pipelines = PipelinesFinder.new(user_project, params).execute
         present paginate(pipelines), with: Entities::PipelineBasic
       end
 
