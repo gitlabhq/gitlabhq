@@ -171,7 +171,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :repository_size_limit,
       :shared_runners_minutes,
       :usage_ping_enabled,
-      :minimum_mirror_sync_time
+      :minimum_mirror_sync_time,
+      :geo_status_timeout
     ]
   end
 end

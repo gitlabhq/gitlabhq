@@ -5,7 +5,7 @@ describe Gitlab::Geo::JwtRequestDecoder do
   let(:data) { { input: 123 } }
   let(:request) { Gitlab::Geo::TransferRequest.new(data) }
 
-  subject { described_class.new(request.header['Authorization']) }
+  subject { described_class.new(request.headers['Authorization']) }
 
   describe '#decode' do
     it 'decodes correct data' do
@@ -13,7 +13,7 @@ describe Gitlab::Geo::JwtRequestDecoder do
     end
 
     it 'fails to decode with wrong key' do
-      data = request.header['Authorization']
+      data = request.headers['Authorization']
 
       primary_node.secret_access_key = ''
       primary_node.save

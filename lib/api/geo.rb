@@ -28,6 +28,17 @@ module API
         end
       end
 
+      #  Get node information (e.g. health, repos synced, repos failed, etc.)
+      #
+      # Example request:
+      #   GET /geo/status
+      get 'status' do
+        authenticate_by_gitlab_geo_node_token!
+        require_node_to_be_secondary!
+
+        present GeoNodeStatus.new, with: Entities::GeoNodeStatus
+      end
+
       # Enqueue a batch of IDs of wiki's projects to have their
       # wiki repositories updated
       #
@@ -35,6 +46,7 @@ module API
       #   POST /geo/refresh_wikis
       post 'refresh_wikis' do
         authenticated_as_admin!
+        require_node_to_be_enabled!
         required_attributes! [:projects]
         ::Geo::ScheduleWikiRepoUpdateService.new(params[:projects]).execute
       end
@@ -45,6 +57,7 @@ module API
       #   POST /geo/receive_events
       post 'receive_events' do
         authenticate_by_gitlab_geo_token!
+        require_node_to_be_enabled!
         required_attributes! %w(event_name)
 
         case params['event_name']
@@ -73,6 +86,24 @@ module API
           required_attributes! %w(event_name project_id path_with_namespace old_path_with_namespace)
           ::Geo::ScheduleRepoMoveService.new(params).execute
         end
+      end
+    end
+
+    helpers do
+      def authenticate_by_gitlab_geo_node_token!
+        auth_header = headers['Authorization']
+
+        unless auth_header && Gitlab::Geo::JwtRequestDecoder.new(auth_header).decode
+          unauthorized!
+        end
+      end
+
+      def require_node_to_be_enabled!
+        forbidden! 'Geo node is disabled.' unless Gitlab::Geo.current_node&.enabled?
+      end
+
+      def require_node_to_be_secondary!
+        forbidden! 'Geo node is not secondary node.' unless Gitlab::Geo.current_node&.secondary?
       end
     end
   end

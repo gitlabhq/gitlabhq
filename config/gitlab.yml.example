@@ -208,10 +208,15 @@ production: &base
     ldap_sync_worker:
       cron: "30 1 * * *"
 
-    # Gitlab Geo nodes notification worker
+    # GitLab Geo nodes notification worker
     # NOTE: This will only take effect if Geo is enabled
     geo_bulk_notify_worker:
       cron: "*/10 * * * * *"
+
+    # GitLab Geo backfill worker
+    # NOTE: This will only take effect if Geo is enabled
+    geo_backfill_worker:
+      cron: "*/5 * * * *"
 
   registry:
     # enabled: true

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170306180725) do
+ActiveRecord::Schema.define(version: 20170308015651) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -125,6 +125,7 @@ ActiveRecord::Schema.define(version: 20170306180725) do
     t.string "elasticsearch_aws_region", default: "us-east-1"
     t.string "elasticsearch_aws_access_key"
     t.string "elasticsearch_aws_secret_access_key"
+    t.integer "geo_status_timeout", default: 10
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -529,6 +530,7 @@ ActiveRecord::Schema.define(version: 20170306180725) do
     t.string "access_key"
     t.string "encrypted_secret_access_key"
     t.string "encrypted_secret_access_key_iv"
+    t.boolean "enabled", default: true, null: false
   end
 
   add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree

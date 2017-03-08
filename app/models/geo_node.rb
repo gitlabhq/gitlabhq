@@ -1,4 +1,6 @@
 class GeoNode < ActiveRecord::Base
+  include Presentable
+
   belongs_to :geo_node_key, dependent: :destroy
   belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy
   belongs_to :system_hook, dependent: :destroy
@@ -30,6 +32,10 @@ class GeoNode < ActiveRecord::Base
                  algorithm: 'aes-256-gcm',
                  mode: :per_attribute_iv,
                  encode: true
+
+  def secondary?
+    !primary
+  end
 
   def uri
     if relative_url_root
@@ -67,6 +73,10 @@ class GeoNode < ActiveRecord::Base
     geo_api_url("transfers/#{file_type}/#{file_id}")
   end
 
+  def status_url
+    geo_api_url('status')
+  end
+
   def oauth_callback_url
     Gitlab::Routing.url_helpers.oauth_geo_callback_url(url_helper_args)
   end
@@ -77,12 +87,6 @@ class GeoNode < ActiveRecord::Base
 
   def missing_oauth_application?
     self.primary? ? false : !oauth_application.present?
-  end
-
-  def backfill_repositories
-    if Gitlab::Geo.enabled? && !primary?
-      GeoScheduleBackfillWorker.perform_async(id)
-    end
   end
 
   private
