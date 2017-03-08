@@ -37,7 +37,6 @@ class IssuableFinder
     items = by_search(items)
     items = by_assignee(items)
     items = by_author(items)
-    items = by_label(items)
     items = by_weight(items)
     items = by_due_date(items)
     items = by_non_archived(items)
