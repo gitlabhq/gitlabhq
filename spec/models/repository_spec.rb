@@ -1042,7 +1042,7 @@ describe Repository, models: true do
 
     it 'expires the cache for all branches' do
       expect(cache).to receive(:expire).
-        at_least(repository.branches.length).
+        at_least(repository.branches.length * 2).
         times
 
       repository.expire_branch_cache
@@ -1050,14 +1050,14 @@ describe Repository, models: true do
 
     it 'expires the cache for all branches when the root branch is given' do
       expect(cache).to receive(:expire).
-        at_least(repository.branches.length).
+        at_least(repository.branches.length * 2).
         times
 
       repository.expire_branch_cache(repository.root_ref)
     end
 
     it 'expires the cache for a specific branch' do
-      expect(cache).to receive(:expire).once
+      expect(cache).to receive(:expire).twice
 
       repository.expire_branch_cache('foo')
     end
@@ -1738,6 +1738,29 @@ describe Repository, models: true do
     context 'with an existing repository' do
       it 'returns the commit count' do
         expect(repository.commit_count).to be_an(Integer)
+      end
+    end
+  end
+
+  describe '#commit_count_for_ref' do
+    let(:project) { create :empty_project }
+
+    context 'with a non-existing repository' do
+      it 'returns 0' do
+        expect(project.repository.commit_count_for_ref('master')).to eq(0)
+      end
+    end
+
+    context 'with empty repository' do
+      it 'returns 0' do
+        project.create_repository
+        expect(project.repository.commit_count_for_ref('master')).to eq(0)
+      end
+    end
+
+    context 'when searching for the root ref' do
+      it 'returns the same count as #commit_count' do
+        expect(repository.commit_count_for_ref(repository.root_ref)).to eq(repository.commit_count)
       end
     end
   end
