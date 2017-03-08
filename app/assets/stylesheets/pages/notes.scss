@@ -521,7 +521,9 @@ ul.notes {
   }
 
   .btn.discussion-create-issue-btn {
-    margin-left: 4px;
+    margin-left: -4px;
+    border-radius: 0;
+    border-right: 0;
 
     a {
       padding: 0;
