@@ -38,6 +38,9 @@
     FilesCommentButton.prototype.render = function(e) {
       var $currentTarget, buttonParentElement, lineContentElement, textFileElement, $button;
       $currentTarget = $(e.currentTarget);
+
+      if ($currentTarget.hasClass('js-no-comment-btn')) return;
+
       lineContentElement = this.getLineContent($currentTarget);
       buttonParentElement = this.getButtonParent($currentTarget);
 
