@@ -50,8 +50,12 @@ module MergeRequests
         'commit squashed changes'
       )
 
+      # May print a warning for ambiguous refs, but we can ignore that with
+      # `--quiet` and just take the SHA, if present. HEAD here always refers to
+      # the current HEAD commit, even if there is another ref called HEAD.
+      #
       squash_sha = run_git_command(
-        %w(rev-parse HEAD),
+        %w(rev-parse --quiet --verify HEAD),
         tree_path,
         git_env,
         'get SHA of squashed commit'
