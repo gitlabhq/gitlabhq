@@ -249,4 +249,4 @@ Once the right permissions were set, the error will go away.
 
 [ce-4040]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040
 [docker-docs]: https://docs.docker.com/engine/userguide/intro/
-[private-docker]: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#using-a-private-docker-registry
+[private-docker]: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#using-a-private-container-registry
