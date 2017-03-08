@@ -13,11 +13,24 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     current_user.save! if current_user.changed?
 
     if two_factor_authentication_required? && !current_user.two_factor_enabled?
-      if two_factor_grace_period_expired?
-        flash.now[:alert] = 'You must enable Two-Factor Authentication for your account.'
-      else
+      two_factor_authentication_reason(
+        global: lambda do
+          flash.now[:alert] =
+            'The global settings require you to enable Two-Factor Authentication for your account.'
+        end,
+        group: lambda do |groups|
+          group_links = groups.map { |group| view_context.link_to group.full_name, group_path(group) }.to_sentence
+
+          flash.now[:alert] = %{
+            The group settings for #{group_links} require you to enable
+            Two-Factor Authentication for your account.
+          }.html_safe
+        end
+      )
+
+      unless two_factor_grace_period_expired?
         grace_period_deadline = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
-        flash.now[:alert] = "You must enable Two-Factor Authentication for your account before #{l(grace_period_deadline)}."
+        flash.now[:alert] << " You need to do this before #{l(grace_period_deadline)}."
       end
     end
 
