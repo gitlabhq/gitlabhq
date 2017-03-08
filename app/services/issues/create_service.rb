@@ -25,6 +25,15 @@ module Issues
       resolve_discussions_with_issue(issuable)
     end
 
+    def resolve_discussions_with_issue(issue)
+      return if discussions_to_resolve.empty?
+
+      Discussions::ResolveService.new(project, current_user,
+                                      merge_request: merge_request_for_resolving_discussions,
+                                      follow_up_issue: issue).
+        execute(discussions_to_resolve)
+    end
+
     private
 
     def user_agent_detail_service

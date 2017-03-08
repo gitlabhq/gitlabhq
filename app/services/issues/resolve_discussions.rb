@@ -7,15 +7,6 @@ module Issues
       @discussion_to_resolve_id ||= params.delete(:discussion_to_resolve)
     end
 
-    def resolve_discussions_with_issue(issue)
-      return if discussions_to_resolve.empty?
-
-      Discussions::ResolveService.new(project, current_user,
-                                      merge_request: merge_request_for_resolving_discussions,
-                                      follow_up_issue: issue).
-        execute(discussions_to_resolve)
-    end
-
     def merge_request_for_resolving_discussions
       @merge_request_for_resolving_discussions ||= MergeRequestsFinder.new(current_user, project_id: project.id).
                                                      execute.
