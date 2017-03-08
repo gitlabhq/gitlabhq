@@ -51,6 +51,19 @@
   }
 }
 
+.issue-boards-content.focused {
+  position: fixed;
+  width: calc(100vw - 16px);
+  height: 100vh;
+  top: 0;
+  background: white;
+  z-index: 100000;
+
+  .boards-list {
+    height: calc(100vh - 50px);
+  }
+}
+
 .boards-app {
   position: relative;
 }
