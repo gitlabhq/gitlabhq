@@ -1,7 +1,11 @@
 - type = local_assigns.fetch(:type)
+- board = local_assigns.fetch(:board)
 
 .issues-filters
   .issues-details-filters.row-content-block.second-block.filtered-search-block
+    - if type == :boards && board
+      #js-multiple-boards-switcher.inline.boards-switcher{ "v-cloak" => true }
+        = render "projects/boards/switcher", board: board
     = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search]), method: :get, class: 'filter-form js-filter-form' do
       - if params[:search].present?
         = hidden_field_tag :search, params[:search]
@@ -60,19 +64,20 @@
                       {{name}}
                     %span.dropdown-light-content
                       @{{username}}
-          #js-dropdown-milestone.dropdown-menu{ data: { icon: 'clock-o', hint: 'milestone', tag: '%milestone' } }
-            %ul{ data: { dropdown: true } }
-              %li.filter-dropdown-item{ data: { value: 'none' } }
-                %button.btn.btn-link
-                  No Milestone
-              %li.filter-dropdown-item{ data: { value: 'upcoming' } }
-                %button.btn.btn-link
-                  Upcoming
-              %li.divider
-            %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-              %li.filter-dropdown-item
-                %button.btn.btn-link.js-data-value
-                  {{title}}
+          - unless board && board.milestone_id
+            #js-dropdown-milestone.dropdown-menu{ data: { icon: 'clock-o', hint: 'milestone', tag: '%milestone' } }
+              %ul{ data: { dropdown: true } }
+                %li.filter-dropdown-item{ data: { value: 'none' } }
+                  %button.btn.btn-link
+                    No Milestone
+                %li.filter-dropdown-item{ data: { value: 'upcoming' } }
+                  %button.btn.btn-link
+                    Upcoming
+                %li.divider
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  %button.btn.btn-link.js-data-value
+                    {{title}}
           #js-dropdown-label.dropdown-menu{ data: { icon: 'tag', hint: 'label', tag: '~label' } }
             %ul{ data: { dropdown: true } }
               %li.filter-dropdown-item{ data: { value: 'none' } }
