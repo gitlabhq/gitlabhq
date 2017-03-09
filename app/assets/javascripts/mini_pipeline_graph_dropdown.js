@@ -40,9 +40,13 @@ export default class MiniPipelineGraph {
    * target the click event of this component.
    */
   stopDropdownClickPropagation() {
-    document.querySelector(`${this.container} .js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item`).addEventListener('click', (e) => {
-      e.stopPropagation();
-    });
+    $(document).on(
+      'click',
+      `${this.container} .js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item`,
+      (e) => {
+        e.stopPropagation();
+      },
+    );
   }
 
   /**

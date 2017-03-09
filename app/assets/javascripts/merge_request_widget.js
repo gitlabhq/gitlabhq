@@ -287,7 +287,7 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 
     MergeRequestWidget.prototype.initMiniPipelineGraph = function() {
       new MiniPipelineGraph({
-        container: '.js-pipeline-inline-mr-widget-graph',
+        container: '.js-pipeline-inline-mr-widget-graph:visible',
       }).bindEvents();
     };
 
