@@ -78,15 +78,8 @@ const extraMilestones = require('../mixins/extra_milestones');
         gl.boardService.createBoard(this.board)
           .then(() => {
             if (this.currentBoard && this.currentPage !== 'new') {
-              this.currentBoard.name = this.board.name;
-
-              if (this.board.milestone) {
-                this.currentBoard.milestone_id = this.board.milestone_id;
-                this.currentBoard.milestone = this.board.milestone;
-
-                Store.state.filters.milestone_title = this.currentBoard.milestone_id ?
-                  this.currentBoard.milestone.title : null;
-              }
+              // We reload the page to make sure the store & state of the app are correct
+              location.reload();
             }
 
             // Enable the button thanks to our jQuery disabling it
