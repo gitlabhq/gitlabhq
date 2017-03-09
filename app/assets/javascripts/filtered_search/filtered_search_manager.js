@@ -6,7 +6,7 @@
       this.tokensContainer = document.querySelector('.tokens-container');
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
 
-      if (page === 'issues') {
+      if (page === 'issues' || page === 'boards') {
         this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
       }
 

@@ -9,7 +9,7 @@
       this.filteredSearchInput = document.querySelector('.filtered-search');
       this.page = page;
 
-      if (this.page === 'issues') {
+      if (this.page === 'issues' || this.page === 'boards') {
         this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
       }
 
@@ -61,7 +61,7 @@
         },
       };
 
-      if (this.page === 'issues') {
+      if (this.page === 'issues' || this.page === 'boards') {
         this.mapping.weight = {
           reference: null,
           gl: 'DropdownNonUser',
