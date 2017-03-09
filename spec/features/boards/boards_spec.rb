@@ -71,16 +71,16 @@ describe 'Issue Boards', feature: true, js: true do
     let!(:list1) { create(:list, board: board, label: planning, position: 0) }
     let!(:list2) { create(:list, board: board, label: development, position: 1) }
 
-    let!(:confidential_issue) { create(:labeled_issue, :confidential, project: project, author: user, labels: [planning]) }
-    let!(:issue1) { create(:labeled_issue, project: project, assignee: user, labels: [planning]) }
-    let!(:issue2) { create(:labeled_issue, project: project, author: user2, labels: [planning]) }
-    let!(:issue3) { create(:labeled_issue, project: project, labels: [planning]) }
-    let!(:issue4) { create(:labeled_issue, project: project, labels: [planning]) }
-    let!(:issue5) { create(:labeled_issue, project: project, labels: [planning], milestone: milestone) }
-    let!(:issue6) { create(:labeled_issue, project: project, labels: [planning, development]) }
-    let!(:issue7) { create(:labeled_issue, project: project, labels: [development]) }
+    let!(:confidential_issue) { create(:labeled_issue, :confidential, project: project, author: user, labels: [planning], relative_position: 9) }
+    let!(:issue1) { create(:labeled_issue, project: project, assignee: user, labels: [planning], relative_position: 8) }
+    let!(:issue2) { create(:labeled_issue, project: project, author: user2, labels: [planning], relative_position: 7) }
+    let!(:issue3) { create(:labeled_issue, project: project, labels: [planning], relative_position: 6) }
+    let!(:issue4) { create(:labeled_issue, project: project, labels: [planning], relative_position: 5) }
+    let!(:issue5) { create(:labeled_issue, project: project, labels: [planning], milestone: milestone, relative_position: 4) }
+    let!(:issue6) { create(:labeled_issue, project: project, labels: [planning, development], relative_position: 3) }
+    let!(:issue7) { create(:labeled_issue, project: project, labels: [development], relative_position: 2) }
     let!(:issue8) { create(:closed_issue, project: project) }
-    let!(:issue9) { create(:labeled_issue, project: project, labels: [planning, testing, bug, accepting]) }
+    let!(:issue9) { create(:labeled_issue, project: project, labels: [planning, testing, bug, accepting], relative_position: 1) }
 
     before do
       visit namespace_project_boards_path(project.namespace, project)

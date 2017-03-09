@@ -112,7 +112,7 @@ describe 'Filter issues', js: true, feature: true do
     end
 
     context 'author with other filters' do
-      search_term = 'issue'
+      let(:search_term) { 'issue' }
 
       it 'filters issues by searched author and text' do
         input_filtered_search("author:@#{user.username} #{search_term}")
@@ -536,7 +536,7 @@ describe 'Filter issues', js: true, feature: true do
     end
 
     context 'milestone with other filters' do
-      search_term = 'bug'
+      let(:search_term) { 'bug' }
 
       it 'filters issues by searched milestone and text' do
         input_filtered_search("milestone:%#{milestone.title} #{search_term}")

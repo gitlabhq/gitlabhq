@@ -8,6 +8,7 @@ class Issue < ActiveRecord::Base
   include Spammable
   include Elastic::IssuesSearch
   include FasterCacheKeys
+  include RelativePositioning
 
   WEIGHT_RANGE = 1..9
   WEIGHT_ALL = 'Everything'.freeze

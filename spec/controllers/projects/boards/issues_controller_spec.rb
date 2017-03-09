@@ -43,6 +43,7 @@ describe Projects::Boards::IssuesController do
 
           expect(response).to match_response_schema('issues')
           expect(parsed_response.length).to eq 2
+          expect(development.issues.map(&:relative_position)).not_to include(nil)
         end
       end
 
