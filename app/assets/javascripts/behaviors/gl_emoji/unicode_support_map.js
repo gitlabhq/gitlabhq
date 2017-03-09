@@ -68,7 +68,7 @@ const chromeVersion = chromeMatches && chromeMatches[1] && parseInt(chromeMatche
 // See 32px, https://i.imgur.com/htY6Zym.png
 // See 16px, https://i.imgur.com/FPPsIF8.png
 const fontSize = 16;
-function testUnicodeSupportMap(testMap) {
+function generateUnicodeSupportMap(testMap) {
   const testMapKeys = Object.keys(testMap);
   const numTestEntries = testMapKeys
     .reduce((list, testKey) => list.concat(testMap[testKey]), []).length;
@@ -138,17 +138,24 @@ function testUnicodeSupportMap(testMap) {
   return resultMap;
 }
 
-let unicodeSupportMap;
-const userAgentFromCache = window.localStorage.getItem('gl-emoji-user-agent');
-try {
-  unicodeSupportMap = JSON.parse(window.localStorage.getItem('gl-emoji-unicode-support-map'));
-} catch (err) {
-  // swallow
-}
-if (!unicodeSupportMap || userAgentFromCache !== navigator.userAgent) {
-  unicodeSupportMap = testUnicodeSupportMap(unicodeSupportTestMap);
-  window.localStorage.setItem('gl-emoji-user-agent', navigator.userAgent);
-  window.localStorage.setItem('gl-emoji-unicode-support-map', JSON.stringify(unicodeSupportMap));
+function getUnicodeSupportMap() {
+  let unicodeSupportMap;
+  const userAgentFromCache = window.localStorage.getItem('gl-emoji-user-agent');
+  try {
+    unicodeSupportMap = JSON.parse(window.localStorage.getItem('gl-emoji-unicode-support-map'));
+  } catch (err) {
+    // swallow
+  }
+  if (!unicodeSupportMap || userAgentFromCache !== navigator.userAgent) {
+    unicodeSupportMap = generateUnicodeSupportMap(unicodeSupportTestMap);
+    window.localStorage.setItem('gl-emoji-user-agent', navigator.userAgent);
+    window.localStorage.setItem('gl-emoji-unicode-support-map', JSON.stringify(unicodeSupportMap));
+  }
+
+  return unicodeSupportMap;
 }
 
-module.exports = unicodeSupportMap;
+export {
+  getUnicodeSupportMap,
+  generateUnicodeSupportMap,
+};
