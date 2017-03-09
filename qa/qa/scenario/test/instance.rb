@@ -6,7 +6,7 @@ module QA
       # including staging and on-premises installation.
       #
       class Instance < Scenario::Template
-        def perform(address, tag, *files)
+        def perform(address, *files)
           Specs::Config.perform do |specs|
             specs.address = address
           end
@@ -17,9 +17,7 @@ module QA
           Runtime::Release.perform_before_hooks
 
           Specs::Runner.perform do |specs|
-            files = files.any? ? files : 'qa/specs/features'
-
-            specs.rspec('--tty', '--tag', tag.to_s, files)
+            specs.rspec('--tty', files.any? ? files : 'qa/specs/features')
           end
         end
       end

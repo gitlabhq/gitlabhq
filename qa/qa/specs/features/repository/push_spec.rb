@@ -1,5 +1,5 @@
 module QA
-  feature 'push code to repository', :ce, :ee, :staging do
+  feature 'push code to repository' do
     context 'with regular account over http' do
       scenario 'user pushes code to the repository' do
         Page::Main::Entry.act { sign_in_using_credentials }

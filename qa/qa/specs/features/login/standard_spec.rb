@@ -1,5 +1,5 @@
 module QA
-  feature 'standard root login', :ce, :ee do
+  feature 'standard root login' do
     scenario 'user logs in using credentials' do
       Page::Main::Entry.act { sign_in_using_credentials }
 

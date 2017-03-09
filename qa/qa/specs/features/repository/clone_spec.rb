@@ -1,5 +1,5 @@
 module QA
-  feature 'clone code from the repository', :ce, :ee, :staging do
+  feature 'clone code from the repository' do
     context 'with regular account over http' do
       given(:location) do
         Page::Project::Show.act do

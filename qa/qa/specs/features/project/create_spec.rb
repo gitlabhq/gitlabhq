@@ -1,5 +1,5 @@
 module QA
-  feature 'create a new project', :ce, :ee, :staging do
+  feature 'create a new project' do
     scenario 'user creates a new project' do
       Page::Main::Entry.act { sign_in_using_credentials }
 
