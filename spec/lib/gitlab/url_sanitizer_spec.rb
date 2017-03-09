@@ -70,4 +70,12 @@ describe Gitlab::UrlSanitizer, lib: true do
       expect(sanitizer.full_url).to eq('user@server:project.git')
     end
   end
+
+  describe '.valid?' do
+    it 'validates url strings' do
+      expect(described_class.valid?(nil)).to be(false)
+      expect(described_class.valid?('valid@project:url.git')).to be(true)
+      expect(described_class.valid?('123://invalid:url')).to be(false)
+    end
+  end
 end
