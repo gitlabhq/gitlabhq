@@ -76,7 +76,7 @@ $(() => {
 
       gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
 
-      gl.boardsFilterManager = new FilteredSearchBoards(Store.filter, true);
+      gl.boardsFilterManager = new FilteredSearchBoards(Store.filter, true, [(this.milestoneTitle ? 'milestone' : null)]);
     },
     mounted () {
       Store.disabled = this.disabled;

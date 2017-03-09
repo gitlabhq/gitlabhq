@@ -84,6 +84,8 @@
         const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
         if (this.filteredSearchInput.value === '' && lastVisualToken) {
+          if (this.canEdit && !this.canEdit(lastVisualToken)) return;
+
           this.filteredSearchInput.value = gl.FilteredSearchVisualTokens.getLastTokenPartial();
           gl.FilteredSearchVisualTokens.removeLastTokenPartial();
         }
