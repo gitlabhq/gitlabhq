@@ -12,8 +12,9 @@ module QA
           end
 
           ##
-          # Temporary CE + EE support
-          Scenario::Gitlab::License::Add.perform if tag.to_s == 'ee'
+          # Perform before hooks, which are different for CE and EE
+          #
+          Runtime::Release.perform_before_hooks
 
           Specs::Runner.perform do |specs|
             files = files.any? ? files : 'qa/specs/features'

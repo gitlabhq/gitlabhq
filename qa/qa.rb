@@ -34,10 +34,6 @@ module QA
       module Project
         autoload :Create, 'qa/scenario/gitlab/project/create'
       end
-
-      module License
-        autoload :Add, 'qa/scenario/gitlab/license/add'
-      end
     end
   end
 
@@ -63,7 +59,6 @@ module QA
 
     module Admin
       autoload :Menu, 'qa/page/admin/menu'
-      autoload :License, 'qa/page/admin/license'
     end
   end
 
