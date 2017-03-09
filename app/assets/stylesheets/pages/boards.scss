@@ -56,7 +56,9 @@
   color: $gl-text-color-secondary;
   background: none;
   border: 0;
-  margin-top: 6px;
+  margin-top: 7px;
+  width: 28px;
+  text-align: center;
 
   &:hover,
   &:active {
@@ -83,6 +85,13 @@
     }
 
     .focus-mode-button {
+      margin-top: 9px;
+
+      &:hover,
+      &:focus {
+        text-decoration: none;
+      }
+
       .fa-compress {
         display: block;
       }

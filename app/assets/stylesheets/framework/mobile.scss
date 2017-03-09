@@ -98,6 +98,14 @@
   }
 }
 
+@media (max-width: 809px) {
+  .issues-filters {
+    .labels-filter {
+      display: none;
+    }
+  }
+}
+
 @media (max-width: $screen-sm-max) {
   .issues-filters {
     .milestone-filter {
