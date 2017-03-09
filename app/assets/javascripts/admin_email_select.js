@@ -18,8 +18,10 @@ window.AdminEmailSelect = (function() {
             group_result = Api.groups(query.term, {}, function(groups) {
               return groups;
             });
-            // Should be replaced with "Api.projects" when API v4 is frozen (9.1)
-            project_result = Api.allProjects(query.term, 'id', function(projects) {
+            project_result = Api.projects(query.term, {
+              order_by: 'id',
+              membership: false
+            }, function(projects) {
               return projects;
             });
             return $.when(project_result, group_result).done(function(projects, groups) {

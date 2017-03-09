@@ -26,7 +26,7 @@ require('~/project');
       var fakeAjaxResponse = function fakeAjaxResponse(req) {
         var d;
         expect(req.url).toBe('/api/v3/projects.json?simple=true');
-        expect(req.data).toEqual({ search: '', order_by: 'last_activity_at', per_page: 20 });
+        expect(req.data).toEqual({ search: '', order_by: 'last_activity_at', membership: true, per_page: 20 });
         d = $.Deferred();
         d.resolve(this.projects_data);
         return d.promise();
