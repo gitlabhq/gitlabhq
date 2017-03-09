@@ -88,6 +88,12 @@ $(() => {
     },
     mounted () {
       gl.issueBoards.newListDropdownInit();
+    },
+    methods: {
+      toggleFocusMode() {
+        $(this.$refs.toggleFocusModeButton).tooltip('hide');
+        issueBoardsContent.classList.toggle('is-focused');
+      }
     }
   });
 
@@ -148,10 +154,5 @@ $(() => {
         Add issues
       </button>
     `,
-  });
-
-  document.querySelector('.js-focus-mode-button').addEventListener('click', (e) => {
-    e.preventDefault();
-    issueBoardsContent.classList.toggle('is-focused');
   });
 });

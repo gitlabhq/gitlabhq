@@ -52,9 +52,8 @@
 }
 
 .focus-mode-button {
+  margin-right: 10px;
   color: $gl-text-color-secondary;
-  position: absolute;
-  margin-left: -38px;
   background: none;
   border: 0;
   margin-top: 6px;
@@ -73,8 +72,8 @@
 
 .issue-boards-content.is-focused {
   position: fixed;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   top: 0;
   background: $white-light;
   z-index: 100000;
@@ -293,7 +292,7 @@
 }
 
 .issue-boards-search {
-  width: 395px;
+  width: 435px;
 
   .form-control {
     display: inline-block;
