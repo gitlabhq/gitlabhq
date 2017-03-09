@@ -22,6 +22,25 @@ describe DummyService, services: true do
     let(:merge_request) { discussion.noteable }
     let(:other_merge_request) { create(:merge_request, source_project: project, source_branch: "other") }
 
+    describe "#merge_request_for_resolving_discussion" do
+      let(:service) { described_class.new(project, user, merge_request_for_resolving_discussions: merge_request.iid) }
+
+      it "finds the merge request" do
+        expect(service.merge_request_for_resolving_discussions).to eq(merge_request)
+      end
+
+      it "only queries for the merge request once" do
+        fake_finder = double
+        fake_results = double
+
+        expect(fake_finder).to receive(:execute).and_return(fake_results).exactly(1)
+        expect(fake_results).to receive(:find_by).exactly(1)
+        expect(MergeRequestsFinder).to receive(:new).and_return(fake_finder).exactly(1)
+
+        2.times { service.merge_request_for_resolving_discussions }
+      end
+    end
+
     describe "#discussions_to_resolve" do
       it "contains a single discussion when matching merge request and discussion are passed" do
         service = described_class.new(

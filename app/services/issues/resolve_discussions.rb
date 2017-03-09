@@ -8,7 +8,9 @@ module Issues
     end
 
     def merge_request_for_resolving_discussions
-      @merge_request_for_resolving_discussions ||= MergeRequestsFinder.new(current_user, project_id: project.id).
+      return @merge_request_for_resolving_discussions if defined?(@merge_request_for_resolving_discussions)
+
+      @merge_request_for_resolving_discussions = MergeRequestsFinder.new(current_user, project_id: project.id).
                                                      execute.
                                                      find_by(iid: merge_request_for_resolving_discussions_iid)
     end
