@@ -12,8 +12,8 @@ import NotAllowedState from './components/states/mr_widget_not_allowed';
 import ReadyToMergeState from './components/states/mr_widget_ready_to_merge';
 import CheckingState from './components/states/mr_widget_checking';
 import stateToComponentMap from './stores/state_to_component_map';
-import MRWidgetStore from './stores/merge_request_store';
-import MRWidgetService from './services/merge_request_service';
+import MRWidgetStore from './stores/mr_widget_store';
+import MRWidgetService from './services/mr_widget_service';
 
 const mrWidgetOptions = () => ({
   el: '#js-vue-mr-widget',
