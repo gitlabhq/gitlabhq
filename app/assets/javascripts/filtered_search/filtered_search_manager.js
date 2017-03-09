@@ -151,6 +151,8 @@
     editToken(e) {
       const token = e.target.closest('.js-visual-token');
 
+      if (this.canEdit && !this.canEdit(token)) return;
+
       if (token) {
         gl.FilteredSearchVisualTokens.editToken(token);
         this.tokenChange();
