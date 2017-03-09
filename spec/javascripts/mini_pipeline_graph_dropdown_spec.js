@@ -46,6 +46,21 @@ require('~/mini_pipeline_graph_dropdown');
         document.querySelector('.js-builds-dropdown-button').click();
         expect(ajaxSpy.calls.allArgs()[0][0].url).toEqual('foobar');
       });
+
+      it('should not close when user uses cmd/ctrl + click', () => {
+        spyOn($, 'ajax').and.callFake(function (params) {
+          params.success({
+            html: '\u003cli\u003e\n\u003ca class="mini-pipeline-graph-dropdown-item" href="#"\u003e\u003cspan class="ci-status-icon ci-status-icon-failed"\u003e\u003c/span\u003e\n\u003cspan class="ci-build-text"\u003ebuild\u003c/span\u003e\n\u003c/a\u003e\u003ca class="ci-action-icon-wrapper js-ci-action-icon" href="#"\u003e\u003c/a\u003e\n\u003c/li\u003e\n',
+          });
+        });
+        new gl.MiniPipelineGraph({ container: '.js-builds-dropdown-tests' }).bindEvents();
+
+        document.querySelector('.js-builds-dropdown-button').click();
+
+        document.querySelector('a.mini-pipeline-graph-dropdown-item').click();
+
+        expect($('.js-builds-dropdown-list').is(':visible')).toEqual(true);
+      });
     });
   });
 })();

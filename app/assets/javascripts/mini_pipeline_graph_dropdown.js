@@ -21,6 +21,8 @@
       this.container = opts.container || '';
       this.dropdownListSelector = '.js-builds-dropdown-container';
       this.getBuildsList = this.getBuildsList.bind(this);
+
+      this.stopDropdownClickPropagation();
     }
 
     /**
@@ -29,6 +31,20 @@
      */
     bindEvents() {
       $(document).off('shown.bs.dropdown', this.container).on('shown.bs.dropdown', this.container, this.getBuildsList);
+    }
+
+    /**
+     * When the user right clicks or cmd/ctrl + click in the job name
+     * the dropdown should not be closed and the link should open in another tab,
+     * so we stop propagation of the click event inside the dropdown.
+     *
+     * Since this component is rendered multiple times per page we need to guarantee we only
+     * target the click event of this component.
+     */
+    stopDropdownClickPropagation() {
+      $(document).on('click', `${this.container} .js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item`, (e) => {
+        e.stopPropagation();
+      });
     }
 
     /**
