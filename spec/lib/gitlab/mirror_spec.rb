@@ -4,27 +4,67 @@ describe Gitlab::Mirror do
   before { Sidekiq::Logging.logger = nil }
 
   describe '#sync_times' do
+    before { Timecop.freeze(DateTime.now.change(time)) }
+
+    describe 'every fifteen minutes' do
+      let!(:time) { { hour: 1, min: 15 } }
+
+      it 'returns only fifteen minutes' do
+        times = [Gitlab::Mirror::FIFTEEN]
+
+        expect(Gitlab::Mirror.sync_times).to match_array(times)
+      end
+    end
+
     describe 'at beginning of hour' do
-      before { Timecop.freeze(DateTime.now.at_beginning_of_hour) }
+      let!(:time) { { hour: 1 } }
 
       it 'returns only fifteen and hourly sync_times' do
-        expect(Gitlab::Mirror.sync_times).to contain_exactly(Gitlab::Mirror::FIFTEEN, Gitlab::Mirror::HOURLY)
+        times = [Gitlab::Mirror::FIFTEEN, Gitlab::Mirror::HOURLY]
+
+        expect(Gitlab::Mirror.sync_times).to match_array(times)
+      end
+    end
+
+    describe 'at beginning of th hour' do
+      describe 'three' do
+        let!(:time) { { hour: 3 } }
+
+        it 'returns only fifteen hourly and three hour sync_times' do
+          times = [Gitlab::Mirror::FIFTEEN, Gitlab::Mirror::HOURLY, Gitlab::Mirror::THREE]
+
+          expect(Gitlab::Mirror.sync_times).to match_array(times)
+        end
+      end
+
+      describe 'six' do
+        let!(:time) { { hour: 6 } }
+
+        it 'returns only fifteen, hourly, three and six hour sync_times' do
+          times = [Gitlab::Mirror::FIFTEEN, Gitlab::Mirror::HOURLY, Gitlab::Mirror::THREE, Gitlab::Mirror::SIX]
+
+          expect(Gitlab::Mirror.sync_times).to match_array(times)
+        end
+      end
+
+      describe 'twelve' do
+        let!(:time) { { hour: 12 } }
+
+        it 'returns only fifteen, hourly, three, six and twelve hour sync_times' do
+          times = [Gitlab::Mirror::FIFTEEN, Gitlab::Mirror::HOURLY, Gitlab::Mirror::THREE, Gitlab::Mirror::SIX, Gitlab::Mirror::TWELVE]
+
+          expect(Gitlab::Mirror.sync_times).to match_array(times)
+        end
       end
     end
 
     describe 'at beginning of day' do
-      before { Timecop.freeze(DateTime.now.at_beginning_of_day) }
+      let!(:time) { { hour: 0 } }
 
       it 'returns daily hourly and fifteen sync_times' do
-        expect(Gitlab::Mirror.sync_times).to contain_exactly(Gitlab::Mirror::DAILY, Gitlab::Mirror::HOURLY, Gitlab::Mirror::FIFTEEN)
-      end
-    end
+        times = [Gitlab::Mirror::FIFTEEN, Gitlab::Mirror::HOURLY, Gitlab::Mirror::THREE, Gitlab::Mirror::SIX, Gitlab::Mirror::TWELVE, Gitlab::Mirror::DAILY]
 
-    describe 'every fifteen minutes' do
-      before { Timecop.freeze(DateTime.now.at_beginning_of_hour + 15.minutes) }
-
-      it 'returns only fifteen minutes' do
-        expect(Gitlab::Mirror.sync_times).to contain_exactly(Gitlab::Mirror::FIFTEEN)
+        expect(Gitlab::Mirror.sync_times).to match_array(times)
       end
     end
 
@@ -32,8 +72,11 @@ describe Gitlab::Mirror do
   end
 
   describe '#configure_cron_jobs!' do
-    let(:daily_cron) { Gitlab::Mirror::SYNC_TIME_TO_CRON[Gitlab::Mirror::DAILY] }
-    let(:hourly_cron) { Gitlab::Mirror::SYNC_TIME_TO_CRON[Gitlab::Mirror::HOURLY] }
+    let(:daily_cron)   { Gitlab::Mirror::SYNC_TIME_TO_CRON[Gitlab::Mirror::DAILY] }
+    let(:twelve_cron)  { Gitlab::Mirror::SYNC_TIME_TO_CRON[Gitlab::Mirror::TWELVE] }
+    let(:six_cron)     { Gitlab::Mirror::SYNC_TIME_TO_CRON[Gitlab::Mirror::SIX] }
+    let(:three_cron)   { Gitlab::Mirror::SYNC_TIME_TO_CRON[Gitlab::Mirror::THREE] }
+    let(:hourly_cron)  { Gitlab::Mirror::SYNC_TIME_TO_CRON[Gitlab::Mirror::HOURLY] }
     let(:fifteen_cron) { Gitlab::Mirror::SYNC_TIME_TO_CRON[Gitlab::Mirror::FIFTEEN] }
 
     describe 'with jobs already running' do
@@ -55,14 +98,50 @@ describe Gitlab::Mirror do
         end
       end
 
+      describe 'with twelve hour minimum_mirror_sync_time' do
+        before { setup_mirrors_cron_job(Gitlab::Mirror::DAILY, Gitlab::Mirror::TWELVE) }
+
+        it 'changes cron of update_all_mirrors_worker to every twelve hours' do
+          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(daily_cron).to(twelve_cron)
+        end
+
+        it 'changes cron of update_all_remote_mirrors_worker to every twelve hours' do
+          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron }.from(daily_cron).to(twelve_cron)
+        end
+      end
+
+      describe 'with six hour minimum_mirror_sync_time' do
+        before { setup_mirrors_cron_job(Gitlab::Mirror::DAILY, Gitlab::Mirror::SIX) }
+
+        it 'changes cron of update_all_mirrors_worker to every six hours' do
+          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(daily_cron).to(six_cron)
+        end
+
+        it 'changes cron of update_all_remote_mirrors_worker to every six hours' do
+          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron }.from(daily_cron).to(six_cron)
+        end
+      end
+
+      describe 'with three hour minimum_mirror_sync_time' do
+        before { setup_mirrors_cron_job(Gitlab::Mirror::DAILY, Gitlab::Mirror::THREE) }
+
+        it 'changes cron of update_all_mirrors_worker to every three hours' do
+          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(daily_cron).to(three_cron)
+        end
+
+        it 'changes cron of update_all_remote_mirrors_worker to every three hours' do
+          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron }.from(daily_cron).to(three_cron)
+        end
+      end
+
       describe 'with hourly minimum_mirror_sync_time' do
         before { setup_mirrors_cron_job(Gitlab::Mirror::DAILY, Gitlab::Mirror::HOURLY) }
 
-        it 'changes cron of update_all_mirrors_worker to daily' do
+        it 'changes cron of update_all_mirrors_worker to hourly' do
           expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron }.from(daily_cron).to(hourly_cron)
         end
 
-        it 'changes cron of update_all_remote_mirrors_worker to daily' do
+        it 'changes cron of update_all_remote_mirrors_worker to hourly' do
           expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron }.from(daily_cron).to(hourly_cron)
         end
       end
@@ -100,6 +179,48 @@ describe Gitlab::Mirror do
         end
       end
 
+      describe 'with twelve hours minimum_mirror_sync_time' do
+        before { allow_any_instance_of(ApplicationSetting).to receive(:minimum_mirror_sync_time).and_return(Gitlab::Mirror::TWELVE) }
+
+        it 'creates update_all_mirrors_worker with cron of every twelve hours sync_time' do
+          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
+          expect(Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron).to eq(twelve_cron)
+        end
+
+        it 'creates update_all_remote_mirrors_worker with cron of every twelve hours sync_time' do
+          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
+          expect(Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron).to eq(twelve_cron)
+        end
+      end
+
+      describe 'with six hours minimum_mirror_sync_time' do
+        before { allow_any_instance_of(ApplicationSetting).to receive(:minimum_mirror_sync_time).and_return(Gitlab::Mirror::SIX) }
+
+        it 'creates update_all_mirrors_worker with cron of every six hours sync_time' do
+          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
+          expect(Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron).to eq(six_cron)
+        end
+
+        it 'creates update_all_remote_mirrors_worker with cron of every six hours sync_time' do
+          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
+          expect(Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron).to eq(six_cron)
+        end
+      end
+
+      describe 'with three hours minimum_mirror_sync_time' do
+        before { allow_any_instance_of(ApplicationSetting).to receive(:minimum_mirror_sync_time).and_return(Gitlab::Mirror::THREE) }
+
+        it 'creates update_all_mirrors_worker with cron of every three hours sync_time' do
+          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
+          expect(Sidekiq::Cron::Job.find("update_all_mirrors_worker").cron).to eq(three_cron)
+        end
+
+        it 'creates update_all_remote_mirrors_worker with cron of every three hours sync_time' do
+          expect { Gitlab::Mirror.configure_cron_jobs! }.to change { Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker") }.from(nil).to(Sidekiq::Cron::Job)
+          expect(Sidekiq::Cron::Job.find("update_all_remote_mirrors_worker").cron).to eq(three_cron)
+        end
+      end
+
       describe 'with hourly minimum_mirror_sync_time' do
         before { allow_any_instance_of(ApplicationSetting).to receive(:minimum_mirror_sync_time).and_return(Gitlab::Mirror::HOURLY) }
 
@@ -130,19 +251,19 @@ describe Gitlab::Mirror do
 
   describe '#at_beginning_of_day?' do
     it 'returns true if at beginning_of_day' do
-      Timecop.freeze(DateTime.now.at_beginning_of_day)
+      Timecop.freeze(DateTime.now.beginning_of_day)
 
       expect(Gitlab::Mirror.at_beginning_of_day?).to be true
     end
 
     it 'returns false if at beginning of hour' do
-      Timecop.freeze(DateTime.now.at_beginning_of_hour)
+      Timecop.freeze(DateTime.now.beginning_of_hour)
 
       expect(Gitlab::Mirror.at_beginning_of_day?).to be false
     end
 
     it 'returns false in every 15 minute mark' do
-      Timecop.freeze(DateTime.now.at_beginning_of_hour + 15.minutes)
+      Timecop.freeze(DateTime.now.beginning_of_hour + 15.minutes)
 
       expect(Gitlab::Mirror.at_beginning_of_day?).to be false
     end
@@ -151,22 +272,64 @@ describe Gitlab::Mirror do
   end
 
   describe '#at_beginning_of_hour?' do
-    it 'returns true if at beginning of day' do
-      Timecop.freeze(DateTime.now.at_beginning_of_day)
+    before { Timecop.freeze(DateTime.now.change(time)) }
 
-      expect(Gitlab::Mirror.at_beginning_of_day?).to be true
+    describe 'without hour mark' do
+      describe 'at beginning of day' do
+        let!(:time) { { hour: 0 } }
+
+        it { expect(Gitlab::Mirror.at_beginning_of_hour?).to be true }
+      end
+
+      describe 'at beginning of hour' do
+        let!(:time) { { hour: 1 } }
+
+        it { expect(Gitlab::Mirror.at_beginning_of_hour?).to be true }
+      end
+
+      describe 'at beginning of hour' do
+        let!(:time) { { hour: 1, min: 15 } }
+
+        it { expect(Gitlab::Mirror.at_beginning_of_hour?).to be false }
+      end
     end
 
-    it 'returns true if at beginning of hour' do
-      Timecop.freeze(DateTime.now.at_beginning_of_hour)
+    describe 'with hour mark' do
+      describe 'three' do
+        let!(:time) { { hour: 3 } }
 
-      expect(Gitlab::Mirror.at_beginning_of_hour?).to be true
-    end
+        it { expect(Gitlab::Mirror.at_beginning_of_hour?(3)).to be true }
 
-    it 'returns false in every 15 minute mark' do
-      Timecop.freeze(DateTime.now.at_beginning_of_hour + 15.minutes)
+        describe 'with another hour' do
+          let!(:time) { { hour: 4 } }
 
-      expect(Gitlab::Mirror.at_beginning_of_hour?).to be false
+          it { expect(Gitlab::Mirror.at_beginning_of_hour?(3)).to be false }
+        end
+      end
+
+      describe 'six' do
+        let!(:time) { { hour: 6 } }
+
+        it { expect(Gitlab::Mirror.at_beginning_of_hour?(6)).to be true }
+
+        describe 'with another hour' do
+          let!(:time) { { hour: 4 } }
+
+          it { expect(Gitlab::Mirror.at_beginning_of_hour?(6)).to be false }
+        end
+      end
+
+      describe 'twelve' do
+        let!(:time) { { hour: 12 } }
+
+        it { expect(Gitlab::Mirror.at_beginning_of_hour?(12)).to be true }
+
+        describe 'with another hour' do
+          let!(:time) { { hour: 4 } }
+
+          it { expect(Gitlab::Mirror.at_beginning_of_hour?(12)).to be false }
+        end
+      end
     end
 
     after { Timecop.return }
