@@ -5,6 +5,7 @@ module QA
   # GitLab QA runtime classes, mostly singletons.
   #
   module Runtime
+    autoload :Release, 'qa/runtime/release'
     autoload :User, 'qa/runtime/user'
     autoload :Namespace, 'qa/runtime/namespace'
   end
@@ -81,3 +82,5 @@ module QA
     autoload :Runner, 'qa/specs/runner'
   end
 end
+
+QA::Runtime::Release.autoloads
