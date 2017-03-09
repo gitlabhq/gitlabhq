@@ -143,10 +143,8 @@ module Routable
 
       return none if paths.empty?
 
-      leaf_paths = paths.group_by(&:length).flat_map(&:last)
-
-      wheres = leaf_paths.map do |leaf_path|
-        "#{connection.quote(leaf_path)} LIKE CONCAT(routes.path, '%')"
+      wheres = paths.map do |path|
+        "#{connection.quote(path)} LIKE CONCAT(routes.path, '%')"
       end
 
       joins(:route).where(wheres.join(' OR '))

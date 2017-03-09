@@ -484,6 +484,14 @@ class User < ActiveRecord::Base
     Group.member_descendants(id)
   end
 
+  def all_expanded_groups
+    Group.member_hierarchy(id)
+  end
+
+  def expanded_groups_requiring_two_factor_authentication
+    all_expanded_groups.where(require_two_factor_authentication: true)
+  end
+
   def nested_groups_projects
     Project.joins(:namespace).where('namespaces.parent_id IS NOT NULL').
       member_descendants(id)
@@ -964,7 +972,7 @@ class User < ActiveRecord::Base
   end
 
   def update_two_factor_requirement
-    periods = groups.where(require_two_factor_authentication: true).pluck(:two_factor_grace_period)
+    periods = expanded_groups_requiring_two_factor_authentication.pluck(:two_factor_grace_period)
 
     self.require_two_factor_authentication = periods.any?
     self.two_factor_grace_period = periods.min || User.column_defaults['two_factor_grace_period']

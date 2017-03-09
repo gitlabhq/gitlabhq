@@ -1407,6 +1407,17 @@ describe User, models: true do
     it { expect(user.nested_groups).to eq([nested_group]) }
   end
 
+  describe '#all_expanded_groups' do
+    let!(:user) { create(:user) }
+    let!(:group) { create(:group) }
+    let!(:nested_group_1) { create(:group, parent: group) }
+    let!(:nested_group_2) { create(:group, parent: group) }
+
+    before { nested_group_1.add_owner(user) }
+
+    it { expect(user.all_expanded_groups).to match_array [group, nested_group_1] }
+  end
+
   describe '#nested_groups_projects' do
     let!(:user) { create(:user) }
     let!(:group) { create(:group) }
@@ -1542,6 +1553,36 @@ describe User, models: true do
 
       it 'uses the shortest grace period' do
         expect(user.two_factor_grace_period).to be 23
+      end
+    end
+
+    context 'with 2FA requirement on nested parent group' do
+      let!(:group1) { create :group, require_two_factor_authentication: true }
+      let!(:group1a) { create :group, require_two_factor_authentication: false, parent: group1 }
+
+      before do
+        group1a.add_user(user, GroupMember::OWNER)
+
+        user.update_two_factor_requirement
+      end
+
+      it 'requires 2FA' do
+        expect(user.require_two_factor_authentication).to be true
+      end
+    end
+
+    context 'with 2FA requirement on nested child group' do
+      let!(:group1) { create :group, require_two_factor_authentication: false }
+      let!(:group1a) { create :group, require_two_factor_authentication: true, parent: group1 }
+
+      before do
+        group1.add_user(user, GroupMember::OWNER)
+
+        user.update_two_factor_requirement
+      end
+
+      it 'requires 2FA' do
+        expect(user.require_two_factor_authentication).to be true
       end
     end
 

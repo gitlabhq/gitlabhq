@@ -29,7 +29,7 @@ module EnforcesTwoFactorAuthentication
       if current_application_settings.require_two_factor_authentication?
         global.call
       else
-        groups = current_user.groups.where(require_two_factor_authentication: true).reorder(name: :asc)
+        groups = current_user.expanded_groups_requiring_two_factor_authentication.reorder(name: :asc)
         group.call(groups)
       end
     end
