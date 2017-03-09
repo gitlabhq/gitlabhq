@@ -109,9 +109,12 @@ class Projects::IssuesController < Projects::ApplicationController
     service = Issues::CreateService.new(project, current_user, create_params)
     @issue = service.execute
 
-    if service.discussions_to_resolve.any? && service.discussions_to_resolve.all?(&:resolved?)
-      resolve_count = service.discussions_to_resolve.size
-      flash[:notice] = "Resolved #{resolve_count} #{'discussion'.pluralize(resolve_count)}."
+    if service.discussions_to_resolve.count(&:resolved?) > 0
+      flash[:notice] = if params[:discussion_to_resolve].present?
+                         "Resolved 1 discussion."
+                       else
+                         "Resolved all discussions."
+                       end
     end
 
     respond_to do |format|
