@@ -15,6 +15,8 @@ module CiStatusHelper
       'passed'
     when 'success_with_warnings'
       'passed with warnings'
+    when 'manual'
+      'waiting for manual action'
     else
       status
     end
