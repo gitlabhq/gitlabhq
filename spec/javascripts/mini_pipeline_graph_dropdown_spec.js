@@ -50,7 +50,13 @@ import '~/flash';
       it('should not close when user uses cmd/ctrl + click', () => {
         spyOn($, 'ajax').and.callFake(function (params) {
           params.success({
-            html: '\u003cli\u003e\n\u003ca class="mini-pipeline-graph-dropdown-item" href="#"\u003e\u003cspan class="ci-status-icon ci-status-icon-failed"\u003e\u003c/span\u003e\n\u003cspan class="ci-build-text"\u003ebuild\u003c/span\u003e\n\u003c/a\u003e\u003ca class="ci-action-icon-wrapper js-ci-action-icon" href="#"\u003e\u003c/a\u003e\n\u003c/li\u003e\n',
+            html: `<li>
+              <a class="mini-pipeline-graph-dropdown-item" href="#">
+                <span class="ci-status-icon ci-status-icon-failed"></span>
+                <span class="ci-build-text">build</span>
+              </a>
+              <a class="ci-action-icon-wrapper js-ci-action-icon" href="#"></a>
+            </li>`,
           });
         });
         new MiniPipelineGraph({ container: '.js-builds-dropdown-tests' }).bindEvents();
