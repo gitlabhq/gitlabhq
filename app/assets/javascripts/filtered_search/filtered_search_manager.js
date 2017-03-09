@@ -202,6 +202,8 @@
 
       [].forEach.call(this.tokensContainer.children, (t) => {
         if (t.classList.contains('js-visual-token')) {
+          if (this.canEdit && !this.canEdit(t)) return;
+
           removeElements.push(t);
         }
       });
