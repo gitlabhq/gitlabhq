@@ -5,7 +5,6 @@
 - line_code = diff_file.line_code(line)
 - if discussions && !line.meta?
   - discussion = discussions[line_code]
-  - show_discussion_avatars = discussion && discussion.resolvable? && !plain
 %tr.line_holder{ class: type, id: (line_code unless plain) }
   - case type
   - when 'match'
@@ -15,13 +14,13 @@
     %td.new_line.diff-line-num
     %td.line_content.match= line.text
   - else
-    %td.old_line.diff-line-num{ class: [type, ("js-avatar-container" if show_discussion_avatars)], data: { linenumber: line.old_pos } }
+    %td.old_line.diff-line-num{ class: [type, ("js-avatar-container" if !plain)], data: { linenumber: line.old_pos } }
       - link_text = type == "new" ? " " : line.old_pos
       - if plain
         = link_text
       - else
         %a{ href: "##{line_code}", data: { linenumber: link_text } }
-      - if show_discussion_avatars
+      - if discussion && discussion.resolvable? && !plain
         %diff-note-avatars{ "discussion-id" => discussion.id }
     %td.new_line.diff-line-num{ class: type, data: { linenumber: line.new_pos } }
       - link_text = type == "old" ? " " : line.new_pos
