@@ -70,25 +70,27 @@
   }
 }
 
-.issue-boards-content.is-focused {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  background: $white-light;
-  z-index: 100000;
+@media (min-width: $screen-sm-min) {
+  .issue-boards-content.is-focused {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    background: $white-light;
+    z-index: 100000;
 
-  .boards-list {
-    height: calc(100vh - 50px);
-  }
-
-  .focus-mode-button {
-    .fa-compress {
-      display: block;
+    .boards-list {
+      height: calc(100vh - 50px);
     }
 
-    .fa-expand {
-      display: none;
+    .focus-mode-button {
+      .fa-compress {
+        display: block;
+      }
+
+      .fa-expand {
+        display: none;
+      }
     }
   }
 }
