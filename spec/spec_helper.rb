@@ -57,6 +57,13 @@ RSpec.configure do |config|
     TestEnv.init
   end
 
+  if ENV['CI']
+    # Retry only on feature specs that use JS
+    config.around :each, :js do |ex|
+      ex.run_with_retry retry: 3
+    end
+  end
+
   config.around(:each, :caching) do |example|
     caching_store = Rails.cache
     Rails.cache = ActiveSupport::Cache::MemoryStore.new if example.metadata[:caching]
