@@ -548,7 +548,8 @@ production: &base
     # gitlab-shell invokes Dir.pwd inside the repository path and that results
     # real path not the symlink.
     storages: # You must have at least a `default` storage path.
-      default: /home/git/repositories/
+      default:
+        path: /home/git/repositories/
 
   ## Backup settings
   backup:
@@ -661,7 +662,8 @@ test:
     path: tmp/tests/gitlab-satellites/
   repositories:
     storages:
-      default: tmp/tests/repositories/
+      default:
+        path: tmp/tests/repositories/
   backup:
     path: tmp/tests/backups
   gitlab_shell:

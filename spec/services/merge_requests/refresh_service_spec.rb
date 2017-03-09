@@ -75,9 +75,12 @@ describe MergeRequests::RefreshService, services: true do
         expect(@fork_merge_request.notes).to be_empty
         expect(@build_failed_todo).to be_done
         expect(@fork_build_failed_todo).to be_done
+<<<<<<< HEAD
         # EE-only
         expect(@merge_request.approvals).to be_empty
         expect(@fork_merge_request.approvals).not_to be_empty
+=======
+>>>>>>> ce/master
       end
     end
 
@@ -94,9 +97,12 @@ describe MergeRequests::RefreshService, services: true do
         expect(@fork_merge_request.notes.last.note).to include('merged')
         expect(@build_failed_todo).to be_done
         expect(@fork_build_failed_todo).to be_done
+<<<<<<< HEAD
         # EE-only
         expect(@merge_request.approvals).not_to be_empty
         expect(@fork_merge_request.approvals).not_to be_empty
+=======
+>>>>>>> ce/master
       end
     end
 
@@ -142,9 +148,12 @@ describe MergeRequests::RefreshService, services: true do
           expect(@fork_merge_request).to be_open
           expect(@build_failed_todo).to be_pending
           expect(@fork_build_failed_todo).to be_pending
+<<<<<<< HEAD
           # EE-only
           expect(@merge_request.approvals).not_to be_empty
           expect(@fork_merge_request.approvals).to be_empty
+=======
+>>>>>>> ce/master
         end
       end
 
@@ -167,9 +176,12 @@ describe MergeRequests::RefreshService, services: true do
           expect(@fork_merge_request).to be_closed
           expect(@build_failed_todo).to be_pending
           expect(@fork_build_failed_todo).to be_pending
+<<<<<<< HEAD
           # EE-only
           expect(@merge_request.approvals).not_to be_empty
           expect(@fork_merge_request.approvals).to be_empty
+=======
+>>>>>>> ce/master
         end
       end
     end
@@ -188,9 +200,12 @@ describe MergeRequests::RefreshService, services: true do
           expect(@fork_merge_request).to be_open
           expect(@build_failed_todo).to be_pending
           expect(@fork_build_failed_todo).to be_pending
+<<<<<<< HEAD
           # EE-only
           expect(@merge_request.approvals).not_to be_empty
           expect(@fork_merge_request.approvals).not_to be_empty
+=======
+>>>>>>> ce/master
         end
       end
 
@@ -217,6 +232,7 @@ describe MergeRequests::RefreshService, services: true do
         expect(@fork_merge_request.notes).to be_empty
         expect(@build_failed_todo).to be_done
         expect(@fork_build_failed_todo).to be_done
+<<<<<<< HEAD
         # EE-only
         expect(@merge_request.approvals).not_to be_empty
         expect(@fork_merge_request.approvals).not_to be_empty
@@ -293,6 +309,8 @@ describe MergeRequests::RefreshService, services: true do
             expect(@merge_request.approvals).to be_empty
           end
         end
+=======
+>>>>>>> ce/master
       end
     end
 

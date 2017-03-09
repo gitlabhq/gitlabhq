@@ -120,7 +120,10 @@ describe "Internal Project Access", feature: true  do
     subject { namespace_project_settings_repository_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
+<<<<<<< HEAD
     it { is_expected.to be_denied_for(:auditor) }
+=======
+>>>>>>> ce/master
     it { is_expected.to be_allowed_for(:owner).of(project) }
     it { is_expected.to be_allowed_for(:master).of(project) }
     it { is_expected.to be_denied_for(:developer).of(project) }

@@ -18,18 +18,20 @@ gem 'pg', '~> 0.18.2', group: :postgres
 gem 'rugged', '~> 0.24.0'
 
 # Authentication libraries
-gem 'devise',                 '~> 4.2'
-gem 'doorkeeper',             '~> 4.2.0'
-gem 'omniauth',               '~> 1.4.2'
-gem 'omniauth-auth0',         '~> 1.4.1'
-gem 'omniauth-azure-oauth2',  '~> 0.0.6'
-gem 'omniauth-cas3',          '~> 1.1.2'
-gem 'omniauth-facebook',      '~> 4.0.0'
-gem 'omniauth-github',        '~> 1.1.1'
-gem 'omniauth-gitlab',        '~> 1.0.2'
+gem 'devise', '~> 4.2'
+gem 'doorkeeper', '~> 4.2.0'
+gem 'doorkeeper-openid_connect', '~> 1.1.0'
+gem 'omniauth', '~> 1.4.2'
+gem 'omniauth-auth0', '~> 1.4.1'
+gem 'omniauth-azure-oauth2', '~> 0.0.6'
+gem 'omniauth-cas3', '~> 1.1.2'
+gem 'omniauth-facebook', '~> 4.0.0'
+gem 'omniauth-github', '~> 1.1.1'
+gem 'omniauth-gitlab', '~> 1.0.2'
 gem 'omniauth-google-oauth2', '~> 0.4.1'
-gem 'omniauth-kerberos',      '~> 0.3.0', group: :kerberos
+gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
+<<<<<<< HEAD
 gem 'omniauth-saml',          '~> 1.7.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
@@ -38,6 +40,15 @@ gem 'gssapi', group: :kerberos
 gem 'omniauth-authentiq',     '~> 0.3.0'
 gem 'rack-oauth2',            '~> 1.2.1'
 gem 'jwt',                    '~> 1.5.6'
+=======
+gem 'omniauth-saml', '~> 1.7.0'
+gem 'omniauth-shibboleth', '~> 1.2.0'
+gem 'omniauth-twitter', '~> 1.2.0'
+gem 'omniauth_crowd', '~> 2.2.0'
+gem 'omniauth-authentiq', '~> 0.3.0'
+gem 'rack-oauth2', '~> 1.2.1'
+gem 'jwt', '~> 1.5.6'
+>>>>>>> ce/master
 
 # Spam and anti-bot protection
 gem 'recaptcha', '~> 3.0', require: 'recaptcha/rails'
@@ -70,9 +81,9 @@ gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape',        '~> 0.19.0'
+gem 'grape', '~> 0.19.0'
 gem 'grape-entity', '~> 0.6.0'
-gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
+gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
 
 # Pagination
 gem 'kaminari', '~> 0.17.0'
@@ -112,19 +123,19 @@ gem 'aws-sdk'
 gem 'faraday_middleware-aws-signers-v4'
 
 # Markdown and HTML processing
-gem 'html-pipeline',        '~> 1.11.0'
-gem 'deckar01-task_list',   '1.0.6', require: 'task_list/railtie'
-gem 'gitlab-markup',        '~> 1.5.1'
-gem 'redcarpet',            '~> 3.4'
-gem 'RedCloth',             '~> 4.3.2'
-gem 'rdoc',                 '~> 4.2'
-gem 'org-ruby',             '~> 0.9.12'
-gem 'creole',               '~> 0.5.0'
-gem 'wikicloth',            '0.8.1'
-gem 'asciidoctor',          '~> 1.5.2'
+gem 'html-pipeline', '~> 1.11.0'
+gem 'deckar01-task_list', '1.0.6', require: 'task_list/railtie'
+gem 'gitlab-markup', '~> 1.5.1'
+gem 'redcarpet', '~> 3.4'
+gem 'RedCloth', '~> 4.3.2'
+gem 'rdoc', '~> 4.2'
+gem 'org-ruby', '~> 0.9.12'
+gem 'creole', '~> 0.5.0'
+gem 'wikicloth', '0.8.1'
+gem 'asciidoctor', '~> 1.5.2'
 gem 'asciidoctor-plantuml', '0.0.7'
-gem 'rouge',                '~> 2.0'
-gem 'truncato',             '~> 0.7.8'
+gem 'rouge', '~> 2.0'
+gem 'truncato', '~> 0.7.8'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
@@ -239,12 +250,13 @@ gem 'sass-rails', '~> 5.0.6'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '~> 2.7.2'
 
-gem 'addressable',        '~> 2.3.8'
-gem 'bootstrap-sass',     '~> 3.3.0'
+gem 'addressable', '~> 2.3.8'
+gem 'bootstrap-sass', '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.7'
-gem 'gemojione',          '~> 3.0'
-gem 'gon',                '~> 6.1.0'
+gem 'gemojione', '~> 3.0'
+gem 'gon', '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
+<<<<<<< HEAD
 gem 'jquery-rails',       '~> 4.1.0'
 gem 'request_store',      '~> 1.3'
 gem 'select2-rails',      '~> 3.5.9'
@@ -252,6 +264,14 @@ gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
 gem 'base32',             '~> 0.3.0'
 gem "gitlab-license", "~> 1.0"
+=======
+gem 'jquery-rails', '~> 4.1.0'
+gem 'request_store', '~> 1.3'
+gem 'select2-rails', '~> 3.5.9'
+gem 'virtus', '~> 1.0.1'
+gem 'net-ssh', '~> 3.0.1'
+gem 'base32', '~> 0.3.0'
+>>>>>>> ce/master
 
 # Sentry integration
 gem 'sentry-raven', '~> 2.0.0'
@@ -289,13 +309,13 @@ group :development, :test do
   gem 'awesome_print', '~> 1.2.0', require: false
   gem 'fuubar', '~> 2.0.0'
 
-  gem 'database_cleaner',   '~> 1.5.0'
+  gem 'database_cleaner', '~> 1.5.0'
   gem 'factory_girl_rails', '~> 4.7.0'
-  gem 'rspec-rails',        '~> 3.5.0'
-  gem 'rspec-retry',        '~> 0.4.5'
-  gem 'spinach-rails',      '~> 0.2.1'
+  gem 'rspec-rails', '~> 3.5.0'
+  gem 'rspec-retry', '~> 0.4.5'
+  gem 'spinach-rails', '~> 0.2.1'
   gem 'spinach-rerun-reporter', '~> 0.0.2'
-  gem 'rspec_profiling',    '~> 0.0.5'
+  gem 'rspec_profiling', '~> 0.0.5'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'
@@ -303,13 +323,13 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.4'
 
-  gem 'capybara',            '~> 2.6.2'
+  gem 'capybara', '~> 2.6.2'
   gem 'capybara-screenshot', '~> 1.0.0'
-  gem 'poltergeist',         '~> 1.9.0'
+  gem 'poltergeist', '~> 1.9.0'
 
-  gem 'spring',                   '~> 1.7.0'
-  gem 'spring-commands-rspec',    '~> 1.0.4'
-  gem 'spring-commands-spinach',  '~> 1.1.0'
+  gem 'spring', '~> 1.7.0'
+  gem 'spring-commands-rspec', '~> 1.0.4'
+  gem 'spring-commands-spinach', '~> 1.1.0'
 
   gem 'rubocop', '~> 0.47.1', require: false
   gem 'rubocop-rspec', '~> 1.12.0', require: false

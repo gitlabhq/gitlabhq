@@ -184,7 +184,7 @@ describe Project, models: true do
       let(:project2) { build(:empty_project, repository_storage: 'missing') }
 
       before do
-        storages = { 'custom' => 'tmp/tests/custom_repositories' }
+        storages = { 'custom' => { 'path' => 'tmp/tests/custom_repositories' } }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
       end
 
@@ -393,7 +393,7 @@ describe Project, models: true do
 
     before do
       FileUtils.mkdir('tmp/tests/custom_repositories')
-      storages = { 'custom' => 'tmp/tests/custom_repositories' }
+      storages = { 'custom' => { 'path' => 'tmp/tests/custom_repositories' } }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
     end
 
@@ -1139,8 +1139,8 @@ describe Project, models: true do
 
     before do
       storages = {
-        'default' => 'tmp/tests/repositories',
-        'picked'  => 'tmp/tests/repositories',
+        'default' => { 'path' => 'tmp/tests/repositories' },
+        'picked'  => { 'path' => 'tmp/tests/repositories' },
       }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
     end

@@ -163,7 +163,11 @@ constraints(ProjectUrlConstrainer.new) do
       ## EE-specific
 
       resources :variables, only: [:index, :show, :update, :create, :destroy]
-      resources :triggers, only: [:index, :create, :destroy]
+      resources :triggers, only: [:index, :create, :edit, :update, :destroy] do
+        member do
+          post :take_ownership
+        end
+      end
 
       ## EE-specific
       resource :mirror, only: [:show, :update] do
@@ -193,7 +197,10 @@ constraints(ProjectUrlConstrainer.new) do
           post :stop
           get :terminal
           get :metrics
+<<<<<<< HEAD
           get :status, constraints: { format: :json }
+=======
+>>>>>>> ce/master
           get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
         end
 

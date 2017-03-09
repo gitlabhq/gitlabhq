@@ -575,6 +575,7 @@ describe API::MergeRequests, api: true  do
 
     it "succeeds if the SHA parameter matches" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), sha: merge_request.diff_head_sha
+<<<<<<< HEAD
 
       expect(response).to have_http_status(200)
     end
@@ -583,6 +584,8 @@ describe API::MergeRequests, api: true  do
       expect do
         put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), squash: true
       end.to change { merge_request.reload.squash }
+=======
+>>>>>>> ce/master
 
       expect(response).to have_http_status(200)
     end

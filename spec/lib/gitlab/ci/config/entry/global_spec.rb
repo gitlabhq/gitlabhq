@@ -188,7 +188,7 @@ describe Gitlab::Ci::Config::Entry::Global do
 
         it 'contains unspecified nodes' do
           expect(global.descendants.first)
-            .to be_an_instance_of Gitlab::Ci::Config::Entry::Unspecified
+            .not_to be_specified
         end
       end
 

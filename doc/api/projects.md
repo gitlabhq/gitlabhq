@@ -20,7 +20,7 @@ Constants for project visibility levels are next:
 
 ## List projects
 
-Get a list of projects for which the authenticated user is a member.
+Get a list of visible projects for authenticated user. When being accessed without authentication, all public projects are returned.
 
 ```
 GET /projects

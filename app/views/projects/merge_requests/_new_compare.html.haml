@@ -21,7 +21,7 @@
                   selected: f.object.source_project_id
           .merge-request-select.dropdown
             = f.hidden_field :source_branch
-            = dropdown_toggle f.object.source_branch || "Select source branch", { toggle: "dropdown", field_name: "#{f.object_name}[source_branch]" }, { toggle_class: "js-compare-dropdown js-source-branch" }
+            = dropdown_toggle local_assigns.fetch(f.object.source_branch, "Select source branch"), { toggle: "dropdown", field_name: "#{f.object_name}[source_branch]" }, { toggle_class: "js-compare-dropdown js-source-branch" }
             .dropdown-menu.dropdown-menu-selectable.dropdown-source-branch
               = dropdown_title("Select source branch")
               = dropdown_filter("Search branches")
@@ -30,7 +30,7 @@
                   branches: @merge_request.source_branches,
                   selected: f.object.source_branch
         .panel-footer
-          = icon('spinner spin', class: 'js-source-loading')
+          .text-center= icon('spinner spin', class: 'js-source-loading')
           %ul.list-unstyled.mr_source_commit
 
     .col-md-6
@@ -60,7 +60,7 @@
                   branches: @merge_request.target_branches,
                   selected: f.object.target_branch
         .panel-footer
-          = icon('spinner spin', class: "js-target-loading")
+          .text-center= icon('spinner spin', class: "js-target-loading")
           %ul.list-unstyled.mr_target_commit
 
   - if @merge_request.errors.any?

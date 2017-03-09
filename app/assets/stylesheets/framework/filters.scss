@@ -4,6 +4,21 @@
   &.reset-filters {
     padding: 7px;
   }
+
+  &.update-issues-btn {
+    float: right;
+    margin-right: 0;
+
+    @media (max-width: $screen-xs-max) {
+      float: none;
+    }
+  }
+}
+
+.filters-section {
+  @media (max-width: $screen-xs-max) {
+    display: inline-block;
+  }
 }
 
 @media (min-width: $screen-sm-min) {
@@ -33,6 +48,11 @@
   .filter-item {
     display: block;
     margin: 0 0 10px;
+  }
+
+  .dropdown-menu-toggle,
+  .update-issues-btn .btn {
+    width: 100%;
   }
 }
 
@@ -208,7 +228,15 @@
   overflow: auto;
 }
 
-@media (max-width: $screen-xs-min) {
+@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+  .issues-details-filters {
+    .dropdown-menu-toggle {
+      width: 100px;
+    }
+  }
+}
+
+@media (max-width: $screen-xs-max) {
   .issues-details-filters {
     padding: 0 0 10px;
     background-color: $white-light;

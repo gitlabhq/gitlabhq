@@ -1,6 +1,6 @@
 # Jobs API
 
-## List project jobs 
+## List project jobs
 
 Get a list of jobs in a project.
 
@@ -14,7 +14,123 @@ GET /projects/:id/jobs
 | `scope`   | string **or** array of strings | no | The scope of jobs to show, one or array of: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`; showing all jobs if none provided |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/1/jobs?scope%5B0%5D=pending&scope%5B1%5D=running'
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/1/jobs?scope[]=pending&scope[]=running'
+```
+
+Example of response
+
+```json
+[
+  {
+    "commit": {
+      "author_email": "admin@example.com",
+      "author_name": "Administrator",
+      "created_at": "2015-12-24T16:51:14.000+01:00",
+      "id": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
+      "message": "Test the CI integration.",
+      "short_id": "0ff3ae19",
+      "title": "Test the CI integration."
+    },
+    "coverage": null,
+    "created_at": "2015-12-24T15:51:21.802Z",
+    "artifacts_file": {
+      "filename": "artifacts.zip",
+      "size": 1000
+    },
+    "finished_at": "2015-12-24T17:54:27.895Z",
+    "id": 7,
+    "name": "teaspoon",
+    "pipeline": {
+      "id": 6,
+      "ref": "master",
+      "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
+      "status": "pending"
+    },
+    "ref": "master",
+    "runner": null,
+    "stage": "test",
+    "started_at": "2015-12-24T17:54:27.722Z",
+    "status": "failed",
+    "tag": false,
+    "user": {
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "bio": null,
+      "created_at": "2015-12-21T13:14:24.077Z",
+      "id": 1,
+      "is_admin": true,
+      "linkedin": "",
+      "name": "Administrator",
+      "skype": "",
+      "state": "active",
+      "twitter": "",
+      "username": "root",
+      "web_url": "http://gitlab.dev/root",
+      "website_url": ""
+    }
+  },
+  {
+    "commit": {
+      "author_email": "admin@example.com",
+      "author_name": "Administrator",
+      "created_at": "2015-12-24T16:51:14.000+01:00",
+      "id": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
+      "message": "Test the CI integration.",
+      "short_id": "0ff3ae19",
+      "title": "Test the CI integration."
+    },
+    "coverage": null,
+    "created_at": "2015-12-24T15:51:21.727Z",
+    "artifacts_file": null,
+    "finished_at": "2015-12-24T17:54:24.921Z",
+    "id": 6,
+    "name": "spinach:other",
+    "pipeline": {
+      "id": 6,
+      "ref": "master",
+      "sha": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
+      "status": "pending"
+    },
+    "ref": "master",
+    "runner": null,
+    "stage": "test",
+    "started_at": "2015-12-24T17:54:24.729Z",
+    "status": "failed",
+    "tag": false,
+    "user": {
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "bio": null,
+      "created_at": "2015-12-21T13:14:24.077Z",
+      "id": 1,
+      "is_admin": true,
+      "linkedin": "",
+      "name": "Administrator",
+      "skype": "",
+      "state": "active",
+      "twitter": "",
+      "username": "root",
+      "web_url": "http://gitlab.dev/root",
+      "website_url": ""
+    }
+  }
+]
+```
+
+## List pipeline jobs
+
+Get a list of jobs for a pipeline.
+
+```
+GET /projects/:id/pipeline/:pipeline_id/jobs
+```
+
+| Attribute     | Type                           | Required | Description          |
+|---------------|--------------------------------|----------|----------------------|
+| `id`          | integer                        | yes      | The ID of a project  |
+| `pipeline_id` | integer                        | yes      | The ID of a pipeline |
+| `scope`       | string **or** array of strings | no       | The scope of jobs to show, one or array of: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`; showing all jobs if none provided |
+
+```
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/1/pipelines/6/jobs?scope[]=pending&scope[]=running'
 ```
 
 Example of response

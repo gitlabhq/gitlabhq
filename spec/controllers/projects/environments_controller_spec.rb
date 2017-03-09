@@ -187,6 +187,7 @@ describe Projects::EnvironmentsController do
     end
   end
 
+<<<<<<< HEAD
   describe 'GET #status' do
     context 'without deployment service' do
       it 'returns 404' do
@@ -225,6 +226,8 @@ describe Projects::EnvironmentsController do
     end
   end
 
+=======
+>>>>>>> ce/master
   describe 'GET #metrics' do
     before do
       allow(controller).to receive(:environment).and_return(environment)

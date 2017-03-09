@@ -178,7 +178,10 @@
       if (e.keyCode === 8 || e.keyCode === 46) {
         gl.FilteredSearchVisualTokens.removeSelectedToken();
         this.handleInputPlaceholder();
+<<<<<<< HEAD
 
+=======
+>>>>>>> ce/master
         this.toggleClearSearchButton();
       }
     }
@@ -368,10 +371,13 @@
 
     tokenChange() {
       const dropdown = this.dropdownManager.mapping[this.dropdownManager.currentDropdown];
-      const currentDropdownRef = dropdown.reference;
 
-      this.setDropdownWrapper();
-      currentDropdownRef.dispatchInputEvent();
+      if (dropdown) {
+        const currentDropdownRef = dropdown.reference;
+
+        this.setDropdownWrapper();
+        currentDropdownRef.dispatchInputEvent();
+      }
     }
   }
 

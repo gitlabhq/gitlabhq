@@ -21,7 +21,7 @@ describe ::API::Helpers::InternalHelpers do
         # Relative and absolute storage paths, with and without trailing /
         ['.', './', Dir.pwd, Dir.pwd + '/'].each do |storage_path|
           context "storage path is #{storage_path}" do
-            subject { clean_project_path(project_path, [storage_path]) }
+            subject { clean_project_path(project_path, [{ 'path' => storage_path }]) }
 
             it { is_expected.to eq(expected) }
           end

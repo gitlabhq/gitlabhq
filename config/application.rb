@@ -103,7 +103,6 @@ module Gitlab
     config.assets.precompile << "katex.js"
     config.assets.precompile << "xterm/xterm.css"
     config.assets.precompile << "lib/ace.js"
-    config.assets.precompile << "u2f.js"
     config.assets.precompile << "vendor/assets/fonts/*"
 
     # Version of your assets, change this if you want to expire all your assets

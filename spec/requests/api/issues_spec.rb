@@ -1242,6 +1242,7 @@ describe API::Issues, api: true  do
     end
   end
 
+<<<<<<< HEAD
   describe 'PUT /projects/:id/issues/:issue_id to update weight' do
     it 'updates an issue with no weight' do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: 5
@@ -1274,6 +1275,8 @@ describe API::Issues, api: true  do
     end
   end
 
+=======
+>>>>>>> ce/master
   describe "DELETE /projects/:id/issues/:issue_iid" do
     it "rejects a non member from deleting an issue" do
       delete api("/projects/#{project.id}/issues/#{issue.iid}", non_member)

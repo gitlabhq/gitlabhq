@@ -223,7 +223,10 @@ module API
       desc 'Cancel merge if "Merge When Pipeline Succeeds" is enabled' do
         success Entities::MergeRequest
       end
+<<<<<<< HEAD
 
+=======
+>>>>>>> ce/master
       post ':id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
@@ -277,6 +280,7 @@ module API
       end
       get ':id/merge_requests/:merge_request_iid/closes_issues' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
+<<<<<<< HEAD
         issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
         present paginate(issues), with: issue_entity(user_project), current_user: current_user
       end
@@ -336,6 +340,8 @@ module API
       end
       get ':id/merge_requests/:merge_request_id/closes_issues' do
         merge_request = find_merge_request_with_access(params[:merge_request_id])
+=======
+>>>>>>> ce/master
         issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
         present paginate(issues), with: issue_entity(user_project), current_user: current_user
       end

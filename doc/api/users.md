@@ -830,6 +830,7 @@ Example response:
 ]
 ```
 
+<<<<<<< HEAD
 ### Get user activities (admin only)
 
 >**Note:** This API endpoint is only available on 8.15 EE and above.
@@ -854,12 +855,71 @@ This function takes pagination parameters `page` and `per_page` to restrict the 
 
 ```
 GET /user/activities
+=======
+## Retrieve user impersonation tokens
+
+It retrieves every impersonation token of the user. Note that only administrators can do this.
+This function takes pagination parameters `page` and `per_page` to restrict the list of impersonation tokens.
+
+```
+GET /users/:user_id/impersonation_tokens
 ```
 
 Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `state`   | string | no | filter tokens based on state (all, active, inactive) |
+
+Example response:
+```json
+[
+  {
+    "id": 1,
+    "name": "mytoken",
+    "revoked": false,
+    "expires_at": "2017-01-04",
+    "scopes": ['api'],
+    "active": true,
+    "impersonation": true,
+    "token": "9koXpg98eAheJpvBs5tK"
+  }
+]
+```
+
+## Show a user's impersonation token
+
+It shows a user's impersonation token. Note that only administrators can do this.
+
+```
+GET /users/:user_id/impersonation_tokens/:impersonation_token_id
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `impersonation_token_id` | integer | yes | The ID of the impersonation token |
+
+## Create a impersonation token
+
+It creates a new impersonation token. Note that only administrators can do this.
+You are only able to create impersonation tokens to impersonate the user and perform
+both API calls and Git reads and writes. The user will not see these tokens in his profile
+settings page.
+
+```
+POST /users/:user_id/impersonation_tokens
+>>>>>>> ce/master
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+<<<<<<< HEAD
 | `from` | string | no | Date string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`. Defaults to 6 months ago. |
 
 ```bash
@@ -884,3 +944,38 @@ Example response:
   }
 ]
 ```
+=======
+| `user_id` | integer | yes | The ID of the user |
+| `name` | string | yes | The name of the impersonation token |
+| `expires_at` | date | no | The expiration date of the impersonation token |
+| `scopes` | array | no | The array of scopes of the impersonation token (api, read_user) |
+
+Example response:
+```json
+{
+  "id": 1,
+  "name": "mytoken",
+  "revoked": false,
+  "expires_at": "2017-01-04",
+  "scopes": ['api'],
+  "active": true,
+  "impersonation": true,
+  "token": "9koXpg98eAheJpvBs5tK"
+}
+```
+
+## Revoke an impersonation token
+
+It revokes an impersonation token. Note that only administrators can revoke impersonation tokens.
+
+```
+DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `impersonation_token_id` | integer | yes | The ID of the impersonation token |
+>>>>>>> ce/master

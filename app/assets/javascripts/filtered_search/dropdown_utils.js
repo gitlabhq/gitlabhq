@@ -80,6 +80,7 @@
     }
 
     // Determines the full search query (visual tokens + input)
+<<<<<<< HEAD
     static getSearchQuery() {
       const tokensContainer = document.querySelector('.tokens-container');
       const values = [];
@@ -104,6 +105,50 @@
       const input = document.querySelector('.filtered-search');
       values.push(input && input.value);
 
+=======
+    static getSearchQuery(untilInput = false) {
+      const tokens = [].slice.call(document.querySelectorAll('.tokens-container li'));
+      const values = [];
+
+      if (untilInput) {
+        const inputIndex = _.findIndex(tokens, t => t.classList.contains('input-token'));
+        // Add one to include input-token to the tokens array
+        tokens.splice(inputIndex + 1);
+      }
+
+      tokens.forEach((token) => {
+        if (token.classList.contains('js-visual-token')) {
+          const name = token.querySelector('.name');
+          const value = token.querySelector('.value');
+          const symbol = value && value.dataset.symbol ? value.dataset.symbol : '';
+          let valueText = '';
+
+          if (value && value.innerText) {
+            valueText = value.innerText;
+          }
+
+          if (token.className.indexOf('filtered-search-token') !== -1) {
+            values.push(`${name.innerText.toLowerCase()}:${symbol}${valueText}`);
+          } else {
+            values.push(name.innerText);
+          }
+        } else if (token.classList.contains('input-token')) {
+          const { isLastVisualTokenValid } =
+            gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+
+          const input = document.querySelector('.filtered-search');
+          const inputValue = input && input.value;
+
+          if (isLastVisualTokenValid) {
+            values.push(inputValue);
+          } else {
+            const previous = values.pop();
+            values.push(`${previous}${inputValue}`);
+          }
+        }
+      });
+
+>>>>>>> ce/master
       return values.join(' ');
     }
 

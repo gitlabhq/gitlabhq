@@ -139,18 +139,10 @@
 .blob-commit-info {
   list-style: none;
   background: $gray-light;
-  padding: 6px 0;
+  padding: 16px 16px 16px 6px;
   border: 1px solid $border-color;
   border-bottom: none;
   margin: 0;
-
-  .table-list-cell {
-    border-bottom: none;
-  }
-
-  .commit-actions {
-    width: 260px;
-  }
 }
 
 #modal-remove-blob > .modal-dialog { width: 850px; }

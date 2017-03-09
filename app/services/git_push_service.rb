@@ -103,7 +103,11 @@ class GitPushService < BaseService
     UpdateMergeRequestsWorker
       .perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
 
+<<<<<<< HEAD
     mirror_update = @project.mirror? && @project.repository.up_to_date_with_upstream?(branch_name)
+=======
+    SystemHookPushWorker.perform_async(build_push_data.dup, :push_hooks)
+>>>>>>> ce/master
 
     EventCreateService.new.push(@project, current_user, build_push_data)
     @project.execute_hooks(build_push_data.dup, :push_hooks)

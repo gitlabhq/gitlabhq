@@ -60,13 +60,13 @@ describe Gitlab::Ci::Config::Entry::Factory do
     end
 
     context 'when creating entry with nil value' do
-      it 'creates an undefined entry' do
+      it 'creates an unspecified entry' do
         entry = factory
           .value(nil)
           .create!
 
         expect(entry)
-          .to be_an_instance_of Gitlab::Ci::Config::Entry::Unspecified
+          .not_to be_specified
       end
     end
 

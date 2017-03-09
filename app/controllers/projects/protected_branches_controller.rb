@@ -57,8 +57,11 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
                                              merge_access_levels_attributes: [:access_level, :id, :user_id, :_destroy, :group_id],
                                              push_access_levels_attributes: [:access_level, :id, :user_id, :_destroy, :group_id])
   end
+<<<<<<< HEAD
 
   def load_protected_branches
     @protected_branches = @project.protected_branches.order(:name).page(params[:page])
   end
+=======
+>>>>>>> ce/master
 end

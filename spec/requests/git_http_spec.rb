@@ -351,12 +351,20 @@ describe 'Git HTTP requests', lib: true do
               end
 
               context "when the user is blocked" do
-                it "responds with status 404" do
+                it "responds with status 401" do
                   user.block
                   project.team << [user, :master]
 
                   download(path, env) do |response|
-                    expect(response).to have_http_status(404)
+                    expect(response).to have_http_status(401)
+                  end
+                end
+
+                it "responds with status 401 for unknown projects (no project existence information leak)" do
+                  user.block
+
+                  download('doesnt/exist.git', env) do |response|
+                    expect(response).to have_http_status(401)
                   end
                 end
               end

@@ -10,6 +10,8 @@ describe API::Users, api: true do
   let(:omniauth_user) { create(:omniauth_user) }
   let(:ldap_user) { create(:omniauth_user, provider: 'ldapmain') }
   let(:ldap_blocked_user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
+  let(:not_existing_user_id) { (User.maximum('id') || 0 ) + 10 }
+  let(:not_existing_pat_id) { (PersonalAccessToken.maximum('id') || 0 ) + 10 }
 
   describe "GET /users" do
     context "when unauthenticated" do
@@ -1168,6 +1170,7 @@ describe API::Users, api: true do
     end
   end
 
+<<<<<<< HEAD
   context "user activities", :redis do
     context 'last activity as normal user' do
       it 'has no permission' do
@@ -1236,6 +1239,188 @@ describe API::Users, api: true do
 
         expect(json_response.map { |activity| activity['username'] }).to eq(%w[3 4])
       end
+=======
+  describe 'GET /users/:user_id/impersonation_tokens' do
+    let!(:active_personal_access_token) { create(:personal_access_token, user: user) }
+    let!(:revoked_personal_access_token) { create(:personal_access_token, :revoked, user: user) }
+    let!(:expired_personal_access_token) { create(:personal_access_token, :expired, user: user) }
+    let!(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
+    let!(:revoked_impersonation_token) { create(:personal_access_token, :impersonation, :revoked, user: user) }
+
+    it 'returns a 404 error if user not found' do
+      get api("/users/#{not_existing_user_id}/impersonation_tokens", admin)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns a 403 error when authenticated as normal user' do
+      get api("/users/#{not_existing_user_id}/impersonation_tokens", user)
+
+      expect(response).to have_http_status(403)
+      expect(json_response['message']).to eq('403 Forbidden')
+    end
+
+    it 'returns an array of all impersonated tokens' do
+      get api("/users/#{user.id}/impersonation_tokens", admin)
+
+      expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.size).to eq(2)
+    end
+
+    it 'returns an array of active impersonation tokens if state active' do
+      get api("/users/#{user.id}/impersonation_tokens?state=active", admin)
+
+      expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.size).to eq(1)
+      expect(json_response).to all(include('active' => true))
+    end
+
+    it 'returns an array of inactive personal access tokens if active is set to false' do
+      get api("/users/#{user.id}/impersonation_tokens?state=inactive", admin)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.size).to eq(1)
+      expect(json_response).to all(include('active' => false))
+    end
+  end
+
+  describe 'POST /users/:user_id/impersonation_tokens' do
+    let(:name) { 'my new pat' }
+    let(:expires_at) { '2016-12-28' }
+    let(:scopes) { %w(api read_user) }
+    let(:impersonation) { true }
+
+    it 'returns validation error if impersonation token misses some attributes' do
+      post api("/users/#{user.id}/impersonation_tokens", admin)
+
+      expect(response).to have_http_status(400)
+      expect(json_response['error']).to eq('name is missing')
+    end
+
+    it 'returns a 404 error if user not found' do
+      post api("/users/#{not_existing_user_id}/impersonation_tokens", admin),
+        name: name,
+        expires_at: expires_at
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns a 403 error when authenticated as normal user' do
+      post api("/users/#{user.id}/impersonation_tokens", user),
+        name: name,
+        expires_at: expires_at
+
+      expect(response).to have_http_status(403)
+      expect(json_response['message']).to eq('403 Forbidden')
+    end
+
+    it 'creates a impersonation token' do
+      post api("/users/#{user.id}/impersonation_tokens", admin),
+        name: name,
+        expires_at: expires_at,
+        scopes: scopes,
+        impersonation: impersonation
+
+      expect(response).to have_http_status(201)
+      expect(json_response['name']).to eq(name)
+      expect(json_response['scopes']).to eq(scopes)
+      expect(json_response['expires_at']).to eq(expires_at)
+      expect(json_response['id']).to be_present
+      expect(json_response['created_at']).to be_present
+      expect(json_response['active']).to be_falsey
+      expect(json_response['revoked']).to be_falsey
+      expect(json_response['token']).to be_present
+      expect(json_response['impersonation']).to eq(impersonation)
+    end
+  end
+
+  describe 'GET /users/:user_id/impersonation_tokens/:impersonation_token_id' do
+    let!(:personal_access_token) { create(:personal_access_token, user: user) }
+    let!(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
+
+    it 'returns 404 error if user not found' do
+      get api("/users/#{not_existing_user_id}/impersonation_tokens/1", admin)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns a 404 error if impersonation token not found' do
+      get api("/users/#{user.id}/impersonation_tokens/#{not_existing_pat_id}", admin)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 Impersonation Token Not Found')
+    end
+
+    it 'returns a 404 error if token is not impersonation token' do
+      get api("/users/#{user.id}/impersonation_tokens/#{personal_access_token.id}", admin)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 Impersonation Token Not Found')
+    end
+
+    it 'returns a 403 error when authenticated as normal user' do
+      get api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", user)
+
+      expect(response).to have_http_status(403)
+      expect(json_response['message']).to eq('403 Forbidden')
+    end
+
+    it 'returns a personal access token' do
+      get api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", admin)
+
+      expect(response).to have_http_status(200)
+      expect(json_response['token']).to be_present
+      expect(json_response['impersonation']).to be_truthy
+    end
+  end
+
+  describe 'DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id' do
+    let!(:personal_access_token) { create(:personal_access_token, user: user) }
+    let!(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
+
+    it 'returns a 404 error if user not found' do
+      delete api("/users/#{not_existing_user_id}/impersonation_tokens/1", admin)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns a 404 error if impersonation token not found' do
+      delete api("/users/#{user.id}/impersonation_tokens/#{not_existing_pat_id}", admin)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 Impersonation Token Not Found')
+    end
+
+    it 'returns a 404 error if token is not impersonation token' do
+      delete api("/users/#{user.id}/impersonation_tokens/#{personal_access_token.id}", admin)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 Impersonation Token Not Found')
+    end
+
+    it 'returns a 403 error when authenticated as normal user' do
+      delete api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", user)
+
+      expect(response).to have_http_status(403)
+      expect(json_response['message']).to eq('403 Forbidden')
+    end
+
+    it 'revokes a impersonation token' do
+      delete api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", admin)
+
+      expect(response).to have_http_status(204)
+      expect(impersonation_token.revoked).to be_falsey
+      expect(impersonation_token.reload.revoked).to be_truthy
+>>>>>>> ce/master
     end
   end
 end

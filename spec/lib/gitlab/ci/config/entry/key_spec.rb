@@ -31,4 +31,10 @@ describe Gitlab::Ci::Config::Entry::Key do
       end
     end
   end
+
+  describe '.default' do
+    it 'returns default key' do
+      expect(described_class.default).to eq 'default'
+    end
+  end
 end

@@ -38,6 +38,60 @@ module API
           present tree.sorted_entries, with: ::API::Entities::RepoTreeObject
         end
 
+        desc 'Get a raw file contents'
+        params do
+          requires :sha, type: String, desc: 'The commit, branch name, or tag name'
+          requires :filepath, type: String, desc: 'The path to the file to display'
+        end
+        get [":id/repository/blobs/:sha", ":id/repository/commits/:sha/blob"] do
+          repo = user_project.repository
+          commit = repo.commit(params[:sha])
+          not_found! "Commit" unless commit
+          blob = Gitlab::Git::Blob.find(repo, commit.id, params[:filepath])
+          not_found! "File" unless blob
+          send_git_blob repo, blob
+        end
+
+        desc 'Get a raw blob contents by blob sha'
+        params do
+          requires :sha, type: String, desc: 'The commit, branch name, or tag name'
+        end
+        get ':id/repository/raw_blobs/:sha' do
+          repo = user_project.repository
+          begin
+            blob = Gitlab::Git::Blob.raw(repo, params[:sha])
+          rescue
+            not_found! 'Blob'
+          end
+          not_found! 'Blob' unless blob
+          send_git_blob repo, blob
+        end
+
+        desc 'Get an archive of the repository'
+        params do
+          optional :sha, type: String, desc: 'The commit sha of the archive to be downloaded'
+          optional :format, type: String, desc: 'The archive format'
+        end
+        get ':id/repository/archive', requirements: { format: Gitlab::Regex.archive_formats_regex } do
+          begin
+            send_git_archive user_project.repository, ref: params[:sha], format: params[:format]
+          rescue
+            not_found!('File')
+          end
+        end
+
+        desc 'Compare two branches, tags, or commits' do
+          success ::API::Entities::Compare
+        end
+        params do
+          requires :from, type: String, desc: 'The commit, branch name, or tag name to start comparison'
+          requires :to, type: String, desc: 'The commit, branch name, or tag name to stop comparison'
+        end
+        get ':id/repository/compare' do
+          compare = Gitlab::Git::Compare.new(user_project.repository.raw_repository, params[:from], params[:to])
+          present compare, with: ::API::Entities::Compare
+        end
+
         desc 'Get repository contributors' do
           success ::API::Entities::Contributor
         end

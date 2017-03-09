@@ -4,9 +4,20 @@ module FilteredSearchHelpers
   end
 
   # Enables input to be set (similar to copy and paste)
+<<<<<<< HEAD
   def input_filtered_search(search_term, submit: true)
     # Add an extra space to engage visual tokens
     filtered_search.set("#{search_term} ")
+=======
+  def input_filtered_search(search_term, submit: true, extra_space: true)
+    search = search_term
+    if extra_space
+      # Add an extra space to engage visual tokens
+      search = "#{search_term} "
+    end
+
+    filtered_search.set(search)
+>>>>>>> ce/master
 
     if submit
       filtered_search.send_keys(:enter)

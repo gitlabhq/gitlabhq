@@ -52,6 +52,7 @@
   - [cronjob, 1]
   - [default, 1]
   - [pages, 1]
+<<<<<<< HEAD
   # EE specific queues
   - [elasticsearch, 1]
   - [geo, 1]
@@ -61,3 +62,6 @@
   - [geo_repository_update, 1]
   - [elastic_batch_project_indexer, 1]
   - [export_csv, 1]
+=======
+  - [system_hook_push, 1]
+>>>>>>> ce/master

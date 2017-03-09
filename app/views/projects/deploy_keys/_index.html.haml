@@ -26,7 +26,11 @@
         = render partial: 'projects/deploy_keys/deploy_key', collection: @deploy_keys.available_project_keys, as: :deploy_key
     - else
       .settings-message.text-center
+<<<<<<< HEAD
         No deploy keys from your projects could be found. Create one with the form above
+=======
+        No deploy keys from your projects could be found. Create one with the form above or add existing one below.
+>>>>>>> ce/master
     - if @deploy_keys.any_available_public_keys_enabled?
       %h5.prepend-top-default
         Public deploy keys available to any project (#{@deploy_keys.available_public_keys_size})

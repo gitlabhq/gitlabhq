@@ -126,6 +126,7 @@ describe "Private Project Access", feature: true  do
     it { is_expected.to be_denied_for(:reporter).of(project) }
     it { is_expected.to be_denied_for(:guest).of(project) }
     it { is_expected.to be_denied_for(:user) }
+<<<<<<< HEAD
     it { is_expected.to be_denied_for(:visitor) }
     it { is_expected.to be_denied_for(:external) }
   end
@@ -140,6 +141,8 @@ describe "Private Project Access", feature: true  do
     it { is_expected.to be_denied_for(:reporter).of(project) }
     it { is_expected.to be_denied_for(:guest).of(project) }
     it { is_expected.to be_denied_for(:user) }
+=======
+>>>>>>> ce/master
     it { is_expected.to be_denied_for(:external) }
     it { is_expected.to be_denied_for(:visitor) }
   end
