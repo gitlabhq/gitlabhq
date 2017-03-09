@@ -228,7 +228,7 @@
   overflow: auto;
 }
 
-@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+@media (min-width: $screen-sm-min) and (max-width: 1046px) {
   .issues-details-filters {
     .dropdown-menu-toggle {
       width: 100px;
