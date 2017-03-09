@@ -48,7 +48,7 @@
 - if @merge_request_for_resolving_discussions
   .form-group
     .col-sm-10.col-sm-offset-2
-      = icon('exclamation-triangle')
+      = icon('info-circle')
       - if @merge_request_for_resolving_discussions.discussions_can_be_resolved_by?(current_user)
         = hidden_field_tag 'merge_request_for_resolving_discussions', @merge_request_for_resolving_discussions.iid
         - if @discussion_to_resolve
