@@ -66,6 +66,13 @@
         return results;
       })()).join('&');
     };
+    w.gl.utils.removeParams = (params) => {
+      const url = new URL(window.location.href);
+      params.forEach((param) => {
+        url.search = w.gl.utils.removeParamQueryString(url.search, param);
+      });
+      return url.href;
+    };
     w.gl.utils.getLocationHash = function(url) {
       var hashIndex;
       if (typeof url === 'undefined') {

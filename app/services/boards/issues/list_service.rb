@@ -5,7 +5,7 @@ module Boards
         issues = IssuesFinder.new(current_user, filter_params).execute
         issues = without_board_labels(issues) unless movable_list?
         issues = with_list_label(issues) if movable_list?
-        issues
+        issues.reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'))
       end
 
       private
@@ -26,7 +26,6 @@ module Boards
 
       def filter_params
         set_default_scope
-        set_default_sort
         set_project
         set_state
 
@@ -35,10 +34,6 @@ module Boards
 
       def set_default_scope
         params[:scope] = 'all'
-      end
-
-      def set_default_sort
-        params[:sort] = 'priority'
       end
 
       def set_project

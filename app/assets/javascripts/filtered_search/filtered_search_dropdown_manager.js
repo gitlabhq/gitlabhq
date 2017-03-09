@@ -58,35 +58,15 @@
       };
     }
 
-    static addWordToInput(tokenName, tokenValue = '') {
+    static addWordToInput(tokenName, tokenValue = '', clicked = false) {
       const input = document.querySelector('.filtered-search');
-      const inputValue = input.value;
-      const word = `${tokenName}:${tokenValue}`;
 
-      // Get the string to replace
-      let newCaretPosition = input.selectionStart;
-      const { left, right } = gl.DropdownUtils.getInputSelectionPosition(input);
+      gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue);
+      input.value = '';
 
-      input.value = `${inputValue.substr(0, left)}${word}${inputValue.substr(right)}`;
-
-      // If we have added a tokenValue at the end of the input,
-      // add a space and set selection to the end
-      if (right >= inputValue.length && tokenValue !== '') {
-        input.value += ' ';
-        newCaretPosition = input.value.length;
+      if (clicked) {
+        gl.FilteredSearchVisualTokens.moveInputToTheRight();
       }
-
-      gl.FilteredSearchDropdownManager.updateInputCaretPosition(newCaretPosition, input);
-    }
-
-    static updateInputCaretPosition(selectionStart, input) {
-      // Reset the position
-      // Sometimes can end up at end of input
-      input.setSelectionRange(selectionStart, selectionStart);
-
-      const { right } = gl.DropdownUtils.getInputSelectionPosition(input);
-
-      input.setSelectionRange(right, right);
     }
 
     updateCurrentDropdownOffset() {
@@ -94,19 +74,14 @@
     }
 
     updateDropdownOffset(key) {
-      if (!this.font) {
-        this.font = window.getComputedStyle(this.filteredSearchInput).font;
-      }
+      // Always align dropdown with the input field
+      let offset = this.filteredSearchInput.getBoundingClientRect().left - document.querySelector('.scroll-container').getBoundingClientRect().left;
 
-      const input = this.filteredSearchInput;
-      const inputText = input.value.slice(0, input.selectionStart);
-      const filterIconPadding = 27;
-      let offset = gl.text.getTextWidth(inputText, this.font) + filterIconPadding;
+      const maxInputWidth = 240;
+      const currentDropdownWidth = this.mapping[key].element.clientWidth || maxInputWidth;
 
-      const currentDropdownWidth = this.mapping[key].element.clientWidth === 0 ? 200 :
-      this.mapping[key].element.clientWidth;
-      const offsetMaxWidth = this.filteredSearchInput.clientWidth - currentDropdownWidth;
-
+      // Make sure offset never exceeds the input container
+      const offsetMaxWidth = document.querySelector('.scroll-container').clientWidth - currentDropdownWidth;
       if (offsetMaxWidth < offset) {
         offset = offsetMaxWidth;
       }
@@ -164,8 +139,8 @@
     }
 
     setDropdown() {
-      const { lastToken, searchToken } = this.tokenizer
-        .processTokens(gl.DropdownUtils.getSearchInput(this.filteredSearchInput));
+      const query = gl.DropdownUtils.getSearchQuery(true);
+      const { lastToken, searchToken } = this.tokenizer.processTokens(query);
 
       if (this.currentDropdown) {
         this.updateCurrentDropdownOffset();

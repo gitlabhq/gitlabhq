@@ -56,11 +56,6 @@ import boardCard from './board_card';
         });
       }
     },
-    computed: {
-      orderedIssues () {
-        return _.sortBy(this.issues, 'priority');
-      },
-    },
     methods: {
       listHeight () {
         return this.$refs.list.getBoundingClientRect().height;
@@ -92,9 +87,9 @@ import boardCard from './board_card';
       const options = gl.issueBoards.getBoardSortableDefaultOptions({
         scroll: document.querySelectorAll('.boards-list')[0],
         group: 'issues',
-        sort: false,
         disabled: this.disabled,
         filter: '.board-list-count, .is-disabled',
+        dataIdAttr: 'data-issue-id',
         onStart: (e) => {
           const card = this.$refs.issue[e.oldIndex];
 
@@ -111,6 +106,13 @@ import boardCard from './board_card';
             e.item.remove();
           });
         },
+        onUpdate: (e) => {
+          const sortedArray = this.sortable.toArray().filter(id => id !== '-1');
+          gl.issueBoards.BoardsStore.moveIssueInList(this.list, Store.moving.issue, e.oldIndex, e.newIndex, sortedArray);
+        },
+        onMove(e) {
+          return !e.related.classList.contains('board-list-count');
+        }
       });
 
       this.sortable = Sortable.create(this.$refs.list, options);

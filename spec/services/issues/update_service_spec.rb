@@ -58,6 +58,22 @@ describe Issues::UpdateService, services: true do
         expect(issue.due_date).to eq Date.tomorrow
       end
 
+      it 'sorts issues as specified by parameters' do
+        issue1 = create(:issue, project: project, assignee_id: user3.id)
+        issue2 = create(:issue, project: project, assignee_id: user3.id)
+
+        [issue, issue1, issue2].each do |issue|
+          issue.move_to_end
+          issue.save
+        end
+
+        opts[:move_between_iids] = [issue1.iid, issue2.iid]
+
+        update_issue(opts)
+
+        expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
+      end
+
       context 'when current user cannot admin issues in the project' do
         let(:guest) { create(:user) }
         before do

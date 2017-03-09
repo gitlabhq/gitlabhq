@@ -824,6 +824,32 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.to eq(17) }
   end
 
+  describe '#count_commits' do
+    context 'with after timestamp' do
+      it 'returns the number of commits after timestamp' do
+        options = { ref: 'master', limit: nil, after: Time.iso8601('2013-03-03T20:15:01+00:00') }
+
+        expect(repository.count_commits(options)).to eq(25)
+      end
+    end
+
+    context 'with before timestamp' do
+      it 'returns the number of commits after timestamp' do
+        options = { ref: 'feature', limit: nil, before: Time.iso8601('2015-03-03T20:15:01+00:00') }
+
+        expect(repository.count_commits(options)).to eq(9)
+      end
+    end
+
+    context 'with path' do
+      it 'returns the number of commits with path ' do
+        options = { ref: 'master', limit: nil, path: "encoding" }
+
+        expect(repository.count_commits(options)).to eq(2)
+      end
+    end
+  end
+
   describe "branch_names_contains" do
     subject { repository.branch_names_contains(SeedRepo::LastCommit::ID) }
 

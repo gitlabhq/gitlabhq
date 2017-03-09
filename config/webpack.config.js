@@ -40,6 +40,7 @@ var config = {
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     terminal:             './terminal/terminal_bundle.js',
+    u2f:                  ['vendor/u2f'],
     users:                './users/users_bundle.js',
     vue_pipelines:        './vue_pipelines_index/index.js',
   },
@@ -132,8 +133,7 @@ var config = {
     extensions: ['.js', '.es6', '.js.es6'],
     alias: {
       '~':              path.join(ROOT_PATH, 'app/assets/javascripts'),
-      'emoji-map$':      path.join(ROOT_PATH, 'fixtures/emojis/digests.json'),
-      'emoji-aliases$': path.join(ROOT_PATH, 'fixtures/emojis/aliases.json'),
+      'emojis':         path.join(ROOT_PATH, 'fixtures/emojis'),
       'empty_states':   path.join(ROOT_PATH, 'app/views/shared/empty_states'),
       'icons':          path.join(ROOT_PATH, 'app/views/shared/icons'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
