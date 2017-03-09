@@ -11,7 +11,7 @@ class AddIndexesToMirrors < ActiveRecord::Migration
   end
 
   def down
-    remove_index :projects, [:sync_time]
-    remove_index :remote_mirrors, [:sync_time]
+    remove_index :projects, [:sync_time] if index_exists? :projects, [:sync_time]
+    remove_index :remote_mirrors, [:sync_time] if index_exists? :remote_mirrors, [:sync_time]
   end
 end
