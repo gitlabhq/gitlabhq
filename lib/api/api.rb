@@ -177,6 +177,10 @@ module API
             passAs: 'query',
             keyname: 'private_token',
           },
+      },
+      info: {
+        title: 'GitLab Community Edition API documentation',
+        description: 'Automate GitLab via a simple and powerful API.'
       }
     )
 
