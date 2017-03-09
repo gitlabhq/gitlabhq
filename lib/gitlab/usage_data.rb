@@ -41,6 +41,7 @@ module Gitlab
             services: Service.where(active: true).count,
             snippets: Snippet.count,
             todos: Todo.count,
+            uploads: Upload.count,
             web_hooks: WebHook.count
           }
         }
