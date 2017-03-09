@@ -2,3 +2,4 @@
 
 = render layout: 'layouts/recaptcha_verification', locals: { spammable: @issue, form: form } do
   = hidden_field_tag(:merge_request_for_resolving_discussions, params[:merge_request_for_resolving_discussions])
+  = hidden_field_tag(:discussion_to_resolve, params[:discussion_to_resolve])
