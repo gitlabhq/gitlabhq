@@ -1,3 +1,4 @@
+import mrWidgetPipeline from '../../components/mr_widget_pipeline';
 import mrWidgetMergeHelp from '../../components/mr_widget_merge_help';
 
 export default {
@@ -7,6 +8,7 @@ export default {
     service: { type: Object, required: true, default: () => ({}) },
   },
   components: {
+    'mr-widget-pipeline': mrWidgetPipeline,
     'mr-widget-merge-help': mrWidgetMergeHelp,
   },
   data() {
@@ -49,32 +51,35 @@ export default {
     },
   },
   template: `
-    <div class="mr-widget-body">
-      <button
-        @click="merge"
-        :disabled="!this.commitMessage.length"
-        class="btn btn-success btn-small">Merge</button>
-      <label><input type="checkbox" v-model="removeSourceBranch" /> Remove source branch</label>
-      <a @click.prevent="toggleCommitMessageEditor"
-        class="btn btn-default btn-xs" href="#">Modify commit message</a>
-      <div class="prepend-top-default clearfix" v-if="showCommitMessageEditor">
-        <div class="form-group">
-          <label class="control-label" for="commit-message">Commit message</label>
-          <div class="col-sm-10">
-            <div class="commit-message-container">
-              <div class="max-width-marker"></div>
-              <textarea
-                v-model="commitMessage"
-                class="form-control js-commit-message" required="required" rows="14"></textarea>
-            </div>
-            <p class="hint">Try to keep the first line under 52 characters and the others under 72.</p>
-            <div class="hint">
-              <a @click.prevent="updateCommitMessage" href="#">{{commitMessageLinkTitle}}</a>
+    <div class="mr-widget-wrapper">
+      <mr-widget-pipeline v-if="mr.pipeline" :mr="mr" />
+      <div class="mr-widget-body">
+        <button
+          @click="merge"
+          :disabled="!this.commitMessage.length"
+          class="btn btn-success btn-small">Merge</button>
+        <label><input type="checkbox" v-model="removeSourceBranch" /> Remove source branch</label>
+        <a @click.prevent="toggleCommitMessageEditor"
+          class="btn btn-default btn-xs" href="#">Modify commit message</a>
+        <div class="prepend-top-default clearfix" v-if="showCommitMessageEditor">
+          <div class="form-group">
+            <label class="control-label" for="commit-message">Commit message</label>
+            <div class="col-sm-10">
+              <div class="commit-message-container">
+                <div class="max-width-marker"></div>
+                <textarea
+                  v-model="commitMessage"
+                  class="form-control js-commit-message" required="required" rows="14"></textarea>
+              </div>
+              <p class="hint">Try to keep the first line under 52 characters and the others under 72.</p>
+              <div class="hint">
+                <a @click.prevent="updateCommitMessage" href="#">{{commitMessageLinkTitle}}</a>
+              </div>
             </div>
           </div>
         </div>
+        <mr-widget-merge-help />
       </div>
-      <mr-widget-merge-help />
     </div>
   `,
 };

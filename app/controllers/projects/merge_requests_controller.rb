@@ -715,6 +715,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def serializer
-    MergeRequestSerializer.new(user: current_user,current_user: current_user, project: merge_request.project)
+    MergeRequestSerializer.new(user: current_user, current_user: current_user, project: merge_request.project)
   end
 end

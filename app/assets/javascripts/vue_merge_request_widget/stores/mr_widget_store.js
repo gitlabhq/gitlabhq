@@ -15,6 +15,7 @@ export default class MergeRequestStore {
     this.commitMessage = data.merge_commit_message;
     this.commitMessageWithDescription = data.merge_commit_message_with_description;
     this.divergedCommitsCount = data.diverged_commits_count;
+    this.pipeline = data.pipeline;
 
     this.updatedAt = data.updated_at;
     this.mergedAt = MergeRequestStore.getEventDate(data.merge_event);
