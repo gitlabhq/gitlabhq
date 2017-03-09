@@ -58,9 +58,12 @@
           Creating this issue will resolve all discussions in
         = link_to_discussions_to_resolve(@merge_request_for_resolving_discussions, @discussion_to_resolve)
       - else
-        The discussion at
+        The
+        = @discussion_to_resolve ? 'discussion' : 'discussions'
+        at
         = link_to_discussions_to_resolve(@merge_request_for_resolving_discussions, @discussion_to_resolve)
-        will stay unresolved. Ask someone with permission to resolve it.
+        will stay unresolved. Ask someone with permission to resolve
+        = @discussion_to_resolve ? 'it.' : 'them.'
 
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
 .row-content-block{ class: (is_footer ? "footer-block" : "middle-block") }
