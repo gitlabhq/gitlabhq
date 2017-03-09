@@ -61,6 +61,7 @@ describe Gitlab::UsageData do
         services
         snippets
         todos
+        uploads
         web_hooks
       ))
     end
