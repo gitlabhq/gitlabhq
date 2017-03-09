@@ -5,6 +5,7 @@ describe QA::Runtime::Release do
 
     before do
       stub_const('QA::CE::Strategy', strategy)
+      stub_const('QA::EE::Strategy', strategy)
     end
 
     describe '#has_strategy?' do
@@ -31,6 +32,11 @@ describe QA::Runtime::Release do
 
   context 'when release version does not have extension strategy' do
     subject { described_class.new('CE') }
+
+    before do
+      hide_const('QA::CE::Strategy')
+      hide_const('QA::EE::Strategy')
+    end
 
     describe '#has_strategy?' do
       it 'returns false' do

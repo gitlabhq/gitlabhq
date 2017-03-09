@@ -19,7 +19,7 @@ module QA
         end
 
         begin
-          require "#{version.downcase}/strategy"
+          require "qa/#{version.downcase}/strategy"
         rescue LoadError
           # noop
         end
