@@ -100,5 +100,32 @@ describe Issue, 'RelativePositioning' do
       expect(new_issue.relative_position).to be > issue.relative_position
       expect(issue.relative_position).to be < issue1.relative_position
     end
+
+    it 'positions issues between other two if distance is 1' do
+      issue1.update relative_position: issue.relative_position + 1
+
+      new_issue.move_between(issue, issue1)
+
+      expect(new_issue.relative_position).to be > issue.relative_position
+      expect(issue.relative_position).to be < issue1.relative_position
+    end
+
+    it 'positions issue closer to before-issue if distance is big enough' do
+      issue.update relative_position: 100
+      issue1.update relative_position: 6000
+
+      new_issue.move_between(issue, issue1)
+
+      expect(new_issue.relative_position).to eq(100 + RelativePositioning::DISTANCE)
+    end
+
+    it 'positions issue in the middle of other two if distance is not big enough' do
+      issue.update relative_position: 100
+      issue1.update relative_position: 400
+
+      new_issue.move_between(issue, issue1)
+
+      expect(new_issue.relative_position).to eq(250)
+    end
   end
 end

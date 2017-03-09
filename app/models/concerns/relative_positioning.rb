@@ -3,6 +3,7 @@ module RelativePositioning
 
   MIN_POSITION = 0
   MAX_POSITION = Gitlab::Database::MAX_INT_VALUE
+  DISTANCE = 500
 
   included do
     after_save :save_positionable_neighbours
@@ -49,7 +50,9 @@ module RelativePositioning
     pos_before = before.relative_position
     pos_after = after.relative_position
 
-    if pos_after && (pos_before == pos_after)
+    # We can't insert an issue between two other if the distance is 1 or 0
+    # so we need to handle this collision properly
+    if pos_after && (pos_after - pos_before).abs <= 1
       self.relative_position = pos_before
       before.move_before(self)
       after.move_after(self)
@@ -75,19 +78,20 @@ module RelativePositioning
   private
 
   # This method takes two integer values (positions) and
-  # calculates some random position between them. The range is huge as
-  # the maximum integer value is 2147483647. Ideally, the calculated value would be
-  # exactly between those terminating values, but this will introduce possibility of a race condition
-  # so two or more issues can get the same value, we want to avoid that and we also want to avoid
-  # using a lock here. If we have two issues with distance more than one thousand, we are OK.
-  # Given the huge range of possible values that integer can fit we shoud never face a problem.
+  # calculates the position between them. The range is huge as
+  # the maximum integer value is 2147483647. We are incrementing position by 1000 every time
+  # when we have enough space. If distance is less then 500 we are calculating an average number
   def position_between(pos_before, pos_after)
     pos_before ||= MIN_POSITION
     pos_after ||= MAX_POSITION
 
     pos_before, pos_after = [pos_before, pos_after].sort
 
-    rand(pos_before.next..pos_after.pred)
+    if pos_after - pos_before > DISTANCE * 2
+      pos_before + DISTANCE
+    else
+      pos_before + (pos_after - pos_before) / 2
+    end
   end
 
   def save_positionable_neighbours
