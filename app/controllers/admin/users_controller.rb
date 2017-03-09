@@ -29,7 +29,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def impersonate
-    if !can?(user, :log_in)
+    if can?(user, :log_in)
       session[:impersonator_id] = current_user.id
 
       warden.set_user(user, scope: :user)
