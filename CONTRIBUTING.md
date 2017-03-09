@@ -299,10 +299,13 @@ request is as follows:
 1. [Generate a changelog entry with `bin/changelog`][changelog]
 1. If you are writing documentation, make sure to follow the
    [documentation styleguide][doc-styleguide]
-1. If you have multiple commits please combine them into one commit by
-   [squashing them][git-squash]
+1. If you have multiple commits please combine them into a few logically
+  organized commits by [squashing them][git-squash]
 1. Push the commit(s) to your fork
 1. Submit a merge request (MR) to the `master` branch
+1. Leave the approvals settings as they are:
+  1. Your merge request needs at least 1 approval
+  1. You don't have to select any approvers
 1. The MR title should describe the change you want to make
 1. The MR description should give a motive for your change and the method you
    used to achieve it.
@@ -345,12 +348,30 @@ The ['How to get faster PR reviews' document of Kubernetes](https://github.com/k
 
 For examples of feedback on merge requests please look at already
 [closed merge requests][closed-merge-requests]. If you would like quick feedback
-on your merge request feel free to mention one of the Merge Marshalls in the
-[core team] or one of the [Merge request coaches](https://about.gitlab.com/team/).
+on your merge request feel free to mention someone from the [core team] or one
+of the [Merge request coaches][team].
 Please ensure that your merge request meets the contribution acceptance criteria.
 
 When having your code reviewed and when reviewing merge requests please take the
 [code review guidelines](doc/development/code_review.md) into account.
+
+### Getting your merge request reviewed, approved, and merged
+
+There are a few rules to get your merge request accepted:
+
+1. Your merge request should only be **merged by a [maintainer][team]**.
+  1. If your merge request includes only backend changes [^1], it must be
+    **approved by a [backend maintainer][team]**.
+  1. If your merge request includes only frontend changes [^1], it must be
+    **approved by a [frontend maintainer][team]**.
+  1. If your merge request includes frontend and backend changes [^1], it must
+    be approved by a frontend **and** a backend maintainer.
+1. To lower the amount of merge requests maintainers need to review, you can
+  ask or assign any [reviewers][team] for a first review.
+  1. If you need some guidance (e.g. it's your first merge request), feel free
+    to ask one of the [Merge request coaches][team].
+  1. The reviewer will assign the merge request to a maintainer once the
+    reviewer is satisfied with the state of the merge request.
 
 ### Contribution acceptance criteria
 
@@ -489,6 +510,7 @@ This Code of Conduct is adapted from the [Contributor Covenant][contributor-cove
 available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/).
 
 [core team]: https://about.gitlab.com/core-team/
+[team]: https://about.gitlab.com/team/
 [getting-help]: https://about.gitlab.com/getting-help/
 [codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
 [accepting-mrs-weight]: https://gitlab.com/gitlab-org/gitlab-ce/issues?assignee_id=0&label_name[]=Accepting%20Merge%20Requests&sort=weight_asc
@@ -513,3 +535,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [newlines-styleguide]: doc/development/newlines_styleguide.md "Newlines styleguide"
 [UX Guide for GitLab]: http://docs.gitlab.com/ce/development/ux_guide/
 [license-finder-doc]: doc/development/licensing.md
+
+[^1]: Specs other than JavaScript specs are considered backend code. Haml
+      changes are considered backend code if they include Ruby code other than just
+      pure HTML.
