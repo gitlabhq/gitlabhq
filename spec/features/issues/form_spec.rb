@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe 'New/edit issue', feature: true, js: true do
+  include GitlabRoutingHelper
+
   let!(:project)   { create(:project) }
   let!(:user)      { create(:user)}
   let!(:user2)     { create(:user)}
@@ -77,6 +79,14 @@ describe 'New/edit issue', feature: true, js: true do
           expect(page).to have_content label.title
           expect(page).to have_content label2.title
         end
+      end
+
+      page.within '.issuable-meta' do
+        issue = Issue.find_by(title: 'title')
+
+        expect(page).to have_text("Issue #{issue.to_reference}")
+        # compare paths because the host differ in test
+        expect(find_link(issue.to_reference)[:href]).to end_with(issue_path(issue))
       end
     end
 
