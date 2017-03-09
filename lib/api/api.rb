@@ -164,7 +164,7 @@ module API
 
     add_swagger_documentation(
       base_path: '/api',
-      api_version: 'v3',
+      api_version: 'v4',
       hide_documentation_path: true,
       authorizations: {
           private_token_header: {
