@@ -64,9 +64,8 @@ $(() => {
     created () {
       if (this.milestoneTitle) {
         const milestoneTitleParam = `milestone_title=${this.milestoneTitle}`;
-        let splitPath = Store.filter.path.split('&').filter((param) => {
-          return param.match(/^milestone_title=(.*)$/g) === null;
-        });
+        let splitPath = Store.filter.path.split('&')
+          .filter(param => param.match(/^milestone_title=(.*)$/g) === null);
 
         splitPath = [milestoneTitleParam].concat(splitPath);
         Store.filter.path = splitPath.join('&');
