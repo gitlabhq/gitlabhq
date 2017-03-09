@@ -3,8 +3,8 @@
 /* global notifyPermissions */
 /* global merge_request_widget */
 
-require('./smart_interval');
-const MiniPipelineGraph = require('./mini_pipeline_graph_dropdown').default;
+import './smart_interval';
+import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 
 ((global) => {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i += 1) { if (i in this && this[i] === item) return i; } return -1; };
