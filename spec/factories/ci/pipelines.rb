@@ -40,6 +40,14 @@ FactoryGirl.define do
       trait :invalid do
         config(rspec: nil)
       end
+
+      trait :blocked do
+        status :manual
+      end
+
+      trait :success do
+        status :success
+      end
     end
   end
 end

@@ -647,7 +647,7 @@ describe Ci::Pipeline, models: true do
       let(:pipeline) { create(:ci_pipeline, status: :manual) }
 
       it 'returns detailed status for blocked pipeline' do
-        expect(subject.text).to eq 'manual'
+        expect(subject.text).to eq 'blocked'
       end
     end
 
