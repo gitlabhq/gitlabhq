@@ -25,12 +25,10 @@ export default {
   props: {
     pipelineStatus: { type: Object, required: true, default: () => ({}) },
   },
-  data() {
-    return {
-      svg: svgsDictionary[this.pipelineStatus.icon],
-    };
-  },
   computed: {
+    svg() {
+      return svgsDictionary[this.pipelineStatus.icon];
+    },
     statusClass() {
       return `ci-status-icon-${this.pipelineStatus.label}`;
     },
