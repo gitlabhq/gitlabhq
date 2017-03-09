@@ -39,6 +39,7 @@ import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
+import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 
 const ShortcutsBlob = require('./shortcuts_blob');
 const UserCallout = require('./user_callout');
@@ -181,7 +182,7 @@ const UserCallout = require('./user_callout');
           shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:commit:pipelines':
-          new gl.MiniPipelineGraph({
+          new MiniPipelineGraph({
             container: '.js-pipeline-table',
           }).bindEvents();
           break;

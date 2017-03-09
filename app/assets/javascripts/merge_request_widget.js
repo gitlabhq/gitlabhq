@@ -4,6 +4,7 @@
 /* global merge_request_widget */
 
 require('./smart_interval');
+const MiniPipelineGraph = require('./mini_pipeline_graph_dropdown').default;
 
 ((global) => {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i += 1) { if (i in this && this[i] === item) return i; } return -1; };
@@ -285,8 +286,8 @@ require('./smart_interval');
     };
 
     MergeRequestWidget.prototype.initMiniPipelineGraph = function() {
-      new gl.MiniPipelineGraph({
-        container: '.js-pipeline-inline-mr-widget-graph:visible',
+      new MiniPipelineGraph({
+        container: '.js-pipeline-inline-mr-widget-graph',
       }).bindEvents();
     };
 
