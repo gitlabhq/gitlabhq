@@ -1,5 +1,6 @@
 RSpec.configure do |config|
   config.before(:suite) do
+    setup_database_cleaner
     DatabaseCleaner.clean_with(:truncation)
   end
 
@@ -8,6 +9,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
+    setup_database_cleaner
     DatabaseCleaner.strategy = :transaction
   end
 
@@ -25,5 +27,10 @@ RSpec.configure do |config|
 
   config.append_after(:each) do
     DatabaseCleaner.clean
+  end
+
+  def setup_database_cleaner
+    DatabaseCleaner[:active_record, { connection: Geo::BaseRegistry }]
+    DatabaseCleaner[:active_record, { connection: ActiveRecord::Base }]
   end
 end
