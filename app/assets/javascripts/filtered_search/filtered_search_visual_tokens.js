@@ -133,7 +133,7 @@ class FilteredSearchVisualTokens {
     const { isLastVisualTokenValid } =
       gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
-    if (input.value) {
+    if (input && input.value) {
       if (isLastVisualTokenValid) {
         gl.FilteredSearchVisualTokens.addSearchVisualToken(input.value);
       } else {
@@ -174,13 +174,13 @@ class FilteredSearchVisualTokens {
   }
 
   static moveInputToTheRight() {
-    const input = document.querySelector('.filtered-search');
-    const inputLi = input.parentElement;
+    const inputLi = document.querySelector('.input-token');
     const tokenContainer = document.querySelector('.tokens-container');
 
     FilteredSearchVisualTokens.tokenizeInput();
 
-    if (!tokenContainer.lastElementChild.isEqualNode(inputLi)) {
+    const lastElementChild = tokenContainer && tokenContainer.lastElementChild;
+    if (lastElementChild && !lastElementChild.isEqualNode(inputLi)) {
       const { isLastVisualTokenValid } =
         gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 

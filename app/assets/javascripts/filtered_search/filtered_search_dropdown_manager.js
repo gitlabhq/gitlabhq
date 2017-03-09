@@ -163,13 +163,18 @@
 
     resetDropdowns() {
       // Force current dropdown to hide
-      this.mapping[this.currentDropdown].reference.hideDropdown();
+      const currentDropdown = this.mapping[this.currentDropdown];
+      if (currentDropdown) {
+        currentDropdown.reference.hideDropdown();
+      }
 
       // Re-Load dropdown
       this.setDropdown();
 
       // Reset filters for current dropdown
-      this.mapping[this.currentDropdown].reference.resetFilters();
+      if (currentDropdown) {
+        currentDropdown.reference.resetFilters();
+      }
 
       // Reposition dropdown so that it is aligned with cursor
       this.updateDropdownOffset(this.currentDropdown);
