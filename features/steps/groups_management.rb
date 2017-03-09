@@ -23,6 +23,9 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
 
   step 'I go to "Open" project members page' do
     click_link 'Sourcing / Open'
+    page.within('.layout-nav') do
+      click_link 'Settings'
+    end
     click_link 'Members'
   end
 
@@ -34,9 +37,10 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
   step 'I reload "Open" project members page' do
     visit root_path
     click_link 'Sourcing / Open'
-    page.within('.project-settings-dropdown') do
-      click_link 'Members'
+    page.within('.layout-nav') do
+      click_link 'Settings'
     end
+    click_link 'Members'
   end
 
   step 'I go to group settings page' do
