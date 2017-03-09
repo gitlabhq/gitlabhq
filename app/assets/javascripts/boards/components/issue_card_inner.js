@@ -23,6 +23,11 @@
         type: String,
         required: true,
       },
+      updateFilters: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
     },
     methods: {
       showLabel(label) {
@@ -31,6 +36,8 @@
         return !this.list.label || label.id !== this.list.label.id;
       },
       filterByLabel(label, e) {
+        if (!this.updateFilters) return;
+
         const filterPath = gl.issueBoards.BoardsStore.filter.path.split('&');
         const labelTitle = encodeURIComponent(label.title);
         const param = `label_name[]=${labelTitle}`;
@@ -46,7 +53,8 @@
         gl.issueBoards.BoardsStore.filter.path = filterPath.join('&');
 
         Store.updateFiltersUrl();
-        gl.boardsFilterManager.updateTokens();
+
+        gl.IssueBoardsApp.$emit('updateTokens');
       },
       labelStyle(label) {
         return {

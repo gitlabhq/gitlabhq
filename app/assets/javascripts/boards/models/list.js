@@ -64,16 +64,14 @@ class List {
   }
 
   getIssues (emptyIssues = true) {
-    const data = { page: this.page };
-    gl.issueBoards.BoardsStore.filter.path.split('&').forEach((filterParam) => {
-      if (filterParam === '') return;
+    const data = gl.issueBoards.BoardsStore.filter.path.split('&').reduce((data, filterParam) => {
+      if (filterParam === '') return data;
       const paramSplit = filterParam.split('=');
       const paramKeyNormalized = paramSplit[0].replace('[]', '');
       const isArray = paramSplit[0].indexOf('[]');
-      let value = decodeURIComponent(paramSplit[1]);
-      value = value.replace(/\+/g, ' ');
+      const value = decodeURIComponent(paramSplit[1]).replace(/\+/g, ' ');
 
-      if (isArray >= 0) {
+      if (isArray !== -1) {
         if (!data[paramKeyNormalized]) {
           data[paramKeyNormalized] = [];
         }
@@ -82,7 +80,9 @@ class List {
       } else {
         data[paramKeyNormalized] = value;
       }
-    });
+
+      return data;
+    }, { page: this.page });
 
     if (this.label && data.label_name) {
       data.label_name = data.label_name.filter(label => label !== this.label.title);

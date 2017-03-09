@@ -76,7 +76,13 @@ $(() => {
 
       gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
 
-      gl.boardsFilterManager = new FilteredSearchBoards(Store.filter, true, [(this.milestoneTitle ? 'milestone' : null)]);
+      this.filterManager = new FilteredSearchBoards(Store.filter, true, [(this.milestoneTitle ? 'milestone' : null)]);
+
+      // Listen for updateTokens event
+      this.$on('updateTokens', this.updateTokens);
+    },
+    beforeDestroy() {
+      this.$off('updateTokens', this.updateTokens);
     },
     mounted () {
       Store.disabled = this.disabled;
@@ -95,7 +101,12 @@ $(() => {
           Store.addBlankState();
           this.loading = false;
         });
-    }
+    },
+    methods: {
+      updateTokens() {
+        this.filterManager.updateTokens();
+      }
+    },
   });
 
   gl.IssueBoardsSearch = new Vue({
