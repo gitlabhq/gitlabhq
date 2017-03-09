@@ -75,41 +75,6 @@ future GitLab releases.**
 | **GITLAB_USER_EMAIL**           | 8.12   | all    | The email of the user who started the job |
 | **RESTORE_CACHE_ATTEMPTS**      | 8.15   | 1.9    | Number of attempts to restore the cache running a job |
 
-Example values:
-
-```bash
-export CI_JOB_ID="50"
-export CI_COMMIT_SHA="1ecfd275763eff1d6b4844ea3168962458c9f27a"
-export CI_COMMIT_REF_NAME="master"
-export CI_REPOSITORY="https://gitab-ci-token:abcde-1234ABCD5678ef@example.com/gitlab-org/gitlab-ce.git"
-export CI_COMMIT_TAG="1.0.0"
-export CI_JOB_NAME="spec:other"
-export CI_JOB_STAGE="test"
-export CI_JOB_MANUAL="true"
-export CI_JOB_TRIGGERED="true"
-export CI_JOB_TOKEN="abcde-1234ABCD5678ef"
-export CI_PIPELINE_ID="1000"
-export CI_PROJECT_ID="34"
-export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
-export CI_PROJECT_NAME="gitlab-ce"
-export CI_PROJECT_NAMESPACE="gitlab-org"
-export CI_PROJECT_PATH="gitlab-org/gitlab-ce"
-export CI_PROJECT_URL="https://example.com/gitlab-org/gitlab-ce"
-export CI_REGISTRY="registry.example.com"
-export CI_REGISTRY_IMAGE="registry.example.com/gitlab-org/gitlab-ce"
-export CI_RUNNER_ID="10"
-export CI_RUNNER_DESCRIPTION="my runner"
-export CI_RUNNER_TAGS="docker, linux"
-export CI_SERVER="yes"
-export CI_SERVER_NAME="GitLab"
-export CI_SERVER_REVISION="70606bf"
-export CI_SERVER_VERSION="8.9.0"
-export GITLAB_USER_ID="42"
-export GITLAB_USER_EMAIL="user@example.com"
-export CI_REGISTRY_USER="gitlab-ci-token"
-export CI_REGISTRY_PASSWORD="longalfanumstring"
-```
-
 ## 9.0 Renaming
 
 To follow conventions of naming across GitLab, and to futher move away from the
@@ -125,7 +90,7 @@ release.
 | `CI_BUILD_REF_SLUG`   | `CI_COMMIT_REF_SLUG`    |
 | `CI_BUILD_NAME`       | `CI_JOB_NAME`           |
 | `CI_BUILD_STAGE`      | `CI_JOB_STAGE`          |
-| `CI_BUILD_REPO`       | `CI_REPOSITORY`         |
+| `CI_BUILD_REPO`       | `CI_REPOSITORY_URL`     |
 | `CI_BUILD_TRIGGERED`  | `CI_PIPELINE_TRIGGERED` |
 | `CI_BUILD_MANUAL`     | `CI_JOB_MANUAL`         |
 | `CI_BUILD_TOKEN`      | `CI_JOB_TOKEN`          |
@@ -379,6 +344,41 @@ you set, in the job log:
 job_name:
   script:
     - export
+```
+
+Example values:
+
+```bash
+export CI_JOB_ID="50"
+export CI_COMMIT_SHA="1ecfd275763eff1d6b4844ea3168962458c9f27a"
+export CI_COMMIT_REF_NAME="master"
+export CI_REPOSITORY="https://gitab-ci-token:abcde-1234ABCD5678ef@example.com/gitlab-org/gitlab-ce.git"
+export CI_COMMIT_TAG="1.0.0"
+export CI_JOB_NAME="spec:other"
+export CI_JOB_STAGE="test"
+export CI_JOB_MANUAL="true"
+export CI_JOB_TRIGGERED="true"
+export CI_JOB_TOKEN="abcde-1234ABCD5678ef"
+export CI_PIPELINE_ID="1000"
+export CI_PROJECT_ID="34"
+export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
+export CI_PROJECT_NAME="gitlab-ce"
+export CI_PROJECT_NAMESPACE="gitlab-org"
+export CI_PROJECT_PATH="gitlab-org/gitlab-ce"
+export CI_PROJECT_URL="https://example.com/gitlab-org/gitlab-ce"
+export CI_REGISTRY="registry.example.com"
+export CI_REGISTRY_IMAGE="registry.example.com/gitlab-org/gitlab-ce"
+export CI_RUNNER_ID="10"
+export CI_RUNNER_DESCRIPTION="my runner"
+export CI_RUNNER_TAGS="docker, linux"
+export CI_SERVER="yes"
+export CI_SERVER_NAME="GitLab"
+export CI_SERVER_REVISION="70606bf"
+export CI_SERVER_VERSION="8.9.0"
+export GITLAB_USER_ID="42"
+export GITLAB_USER_EMAIL="user@example.com"
+export CI_REGISTRY_USER="gitlab-ci-token"
+export CI_REGISTRY_PASSWORD="longalfanumstring"
 ```
 
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784
