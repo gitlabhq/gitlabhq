@@ -22,17 +22,15 @@
       fetch() {
         this.intervalId = setInterval(() => {
           if (Vue.activeResources === 0) {
-            this.$http.get(this.endpoint, { params: { digest: this.titleDigest } })
-              .then((res) => {
-                this.renderResponse(res);
-              }, () => this.endOfCall());
+            this.$http
+              .get(this.endpoint, { params: { digest: this.titleDigest } })
+                .then(res => this.renderResponse(res))
+                .catch((err) => { throw new Error(err); });
           }
         }, 3000);
       },
       clear() {
         clearInterval(this.intervalId);
-      },
-      endOfCall() {
       },
       renderResponse(res) {
         const body = JSON.parse(res.body);
