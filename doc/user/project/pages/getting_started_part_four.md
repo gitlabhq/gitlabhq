@@ -133,6 +133,9 @@ your Jekyll 3.4.0 site with GitLab Pages. This is the minimum
 configuration for our example. On the steps below, we'll refine
 the script by adding extra options to our GitLab CI.
 
+Artifacts will be automatically deleted once GitLab Pages got deployed.
+You can preserve artifacts for limited time by specifying the expiry time.
+
 ### Image
 
 At this point, you probably ask yourself: "okay, but to install Jekyll

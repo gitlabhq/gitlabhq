@@ -46,16 +46,16 @@
             = hidden_field_tag(:action_id, params[:action_id])
           = dropdown_tag(todo_actions_dropdown_label(params[:action_id], 'Action'), options: { toggle_class: 'js-action-search js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-action js-filter-submit',
             data: { data: todo_actions_options, default_label: 'Action' } })
-        .pull-right
-          .dropdown.inline.prepend-left-10
-            %button.dropdown-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
+        .filter-item.sort-filter
+          .dropdown
+            %button.dropdown-menu-toggle.dropdown-menu-toggle-sort{ type: 'button', 'data-toggle' => 'dropdown' }
               %span.light
               - if @sort.present?
                 = sort_options_hash[@sort]
               - else
                 = sort_title_recently_created
               = icon('chevron-down')
-            %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-sort
+            %ul.dropdown-menu.dropdown-menu-sort
               %li
                 = link_to todos_filter_path(sort: sort_value_priority) do
                   = sort_title_priority

@@ -1,4 +1,5 @@
 class AttachmentUploader < GitlabUploader
+  include RecordsUploads
   include UploaderHelper
 
   storage :file

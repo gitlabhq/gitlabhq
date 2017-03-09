@@ -236,6 +236,7 @@ class Project < ActiveRecord::Base
   before_validation :mark_remote_mirrors_for_removal
 
   mount_uploader :avatar, AvatarUploader
+  has_many :uploads, as: :model, dependent: :destroy
 
   # Scopes
   default_scope { where(pending_delete: false) }

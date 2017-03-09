@@ -84,7 +84,7 @@ Example response:
     "issues_enabled": true,
     "merge_requests_enabled": true,
     "wiki_enabled": true,
-    "builds_enabled": true,
+    "jobs_enabled": true,
     "snippets_enabled": true,
     "created_at": "2016-04-05T21:40:50.169Z",
     "last_activity_at": "2016-04-06T16:52:08.432Z",
@@ -100,7 +100,7 @@ Example response:
     "star_count": 1,
     "forks_count": 0,
     "open_issues_count": 3,
-    "public_builds": true,
+    "public_jobs": true,
     "shared_with_groups": [],
     "request_access_enabled": false
   }
@@ -158,7 +158,7 @@ Example response:
       "issues_enabled": true,
       "merge_requests_enabled": true,
       "wiki_enabled": true,
-      "builds_enabled": true,
+      "jobs_enabled": true,
       "snippets_enabled": false,
       "container_registry_enabled": true,
       "created_at": "2016-06-17T07:47:25.578Z",
@@ -175,7 +175,7 @@ Example response:
       "star_count": 0,
       "forks_count": 0,
       "open_issues_count": 3,
-      "public_builds": true,
+      "public_jobs": true,
       "shared_with_groups": [],
       "request_access_enabled": false
     },
@@ -196,7 +196,7 @@ Example response:
       "issues_enabled": true,
       "merge_requests_enabled": true,
       "wiki_enabled": true,
-      "builds_enabled": true,
+      "jobs_enabled": true,
       "snippets_enabled": false,
       "container_registry_enabled": true,
       "created_at": "2016-06-17T07:47:24.661Z",
@@ -213,7 +213,7 @@ Example response:
       "star_count": 0,
       "forks_count": 0,
       "open_issues_count": 8,
-      "public_builds": true,
+      "public_jobs": true,
       "shared_with_groups": [],
       "request_access_enabled": false
     }
@@ -236,7 +236,7 @@ Example response:
       "issues_enabled": true,
       "merge_requests_enabled": true,
       "wiki_enabled": true,
-      "builds_enabled": true,
+      "jobs_enabled": true,
       "snippets_enabled": false,
       "container_registry_enabled": true,
       "created_at": "2016-06-17T07:47:27.089Z",
@@ -253,7 +253,7 @@ Example response:
       "star_count": 0,
       "forks_count": 0,
       "open_issues_count": 4,
-      "public_builds": true,
+      "public_jobs": true,
       "shared_with_groups": [
         {
           "group_id": 4,
@@ -363,7 +363,7 @@ Example response:
       "issues_enabled": true,
       "merge_requests_enabled": true,
       "wiki_enabled": true,
-      "builds_enabled": true,
+      "jobs_enabled": true,
       "snippets_enabled": true,
       "created_at": "2016-04-05T21:40:50.169Z",
       "last_activity_at": "2016-04-06T16:52:08.432Z",
@@ -379,7 +379,7 @@ Example response:
       "star_count": 1,
       "forks_count": 0,
       "open_issues_count": 3,
-      "public_builds": true,
+      "public_jobs": true,
       "shared_with_groups": [],
       "request_access_enabled": false
     }

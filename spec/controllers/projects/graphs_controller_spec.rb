@@ -30,18 +30,18 @@ describe Projects::GraphsController do
       double(languages: {
                'Ruby'         => 1000,
                'CoffeeScript' => 350,
-               'PowerShell'   => 15
+               'NSIS'         => 15
              })
     end
 
     let(:expected_values) do
-      ps_color = "##{Digest::SHA256.hexdigest('PowerShell')[0...6]}"
+      nsis_color = "##{Digest::SHA256.hexdigest('NSIS')[0...6]}"
       [
         # colors from Linguist:
-        { label: "Ruby",         color: "#701516", highlight: "#701516" },
-        { label: "CoffeeScript", color: "#244776", highlight: "#244776" },
+        { label: "Ruby",         color: "#701516",  highlight: "#701516" },
+        { label: "CoffeeScript", color: "#244776",  highlight: "#244776" },
         # colors from SHA256 fallback:
-        { label: "PowerShell",   color: ps_color,  highlight: ps_color  }
+        { label: "NSIS",         color: nsis_color, highlight: nsis_color }
       ]
     end
 

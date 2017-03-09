@@ -87,6 +87,7 @@ class Note < ActiveRecord::Base
   before_validation :nullify_blank_type, :nullify_blank_line_code
   before_validation :set_discussion_id
   after_save :keep_around_commit, unless: :for_personal_snippet?
+  after_save :expire_etag_cache
 
   class << self
     def model_name
@@ -277,5 +278,17 @@ class Note < ActiveRecord::Base
     else
       self.class.build_discussion_id(noteable_type, noteable_id || commit_id)
     end
+  end
+
+  def expire_etag_cache
+    return unless for_issue?
+
+    key = Gitlab::Routing.url_helpers.namespace_project_noteable_notes_path(
+      noteable.project.namespace,
+      noteable.project,
+      target_type: noteable_type.underscore,
+      target_id: noteable.id
+    )
+    Gitlab::EtagCaching::Store.new.touch(key)
   end
 end

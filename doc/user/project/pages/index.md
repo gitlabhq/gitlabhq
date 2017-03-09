@@ -10,10 +10,11 @@ Here's some info we've gathered to get you started.
 ## General info
 
 - [Product webpage](https://pages.gitlab.io)
-- ["We're bringing GitLab Pages to CE" blog post](https://about.gitlab.com/2016/12/24/were-bringing-gitlab-pages-to-community-edition/)
+- ["We're bringing GitLab Pages to CE"](https://about.gitlab.com/2016/12/24/were-bringing-gitlab-pages-to-community-edition/)
 - [Pages group - templates](https://gitlab.com/pages)
 - [General user documentation](introduction.md)
 - [Admin documentation - Set GitLab Pages on your own GitLab instance](../../../administration/pages/index.md)
+- ["We are changing the IP of GitLab Pages on GitLab.com"](https://about.gitlab.com/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/)
 
 ## Getting started
 

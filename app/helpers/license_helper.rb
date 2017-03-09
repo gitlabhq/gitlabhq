@@ -12,29 +12,43 @@ module LicenseHelper
     HistoricalData.max_historical_user_count
   end
 
-  def license_message(signed_in: signed_in?, is_admin: (current_user && current_user.is_admin?))
-    @license_message ||=
+  # in_html is set to false from an initializer, which shouldn't try to render
+  # HTML links.
+  #
+  def license_message(signed_in: signed_in?, is_admin: (current_user && current_user.is_admin?), in_html: true)
+    @license_message =
       if License.current
         yes_license_message(signed_in, is_admin)
       else
-        no_license_message(is_admin)
+        no_license_message(is_admin, in_html: in_html)
       end
   end
 
   private
 
-  def no_license_message(is_admin)
+  def no_license_message(is_admin, in_html: true)
+    upload_a_license =
+      if in_html
+        link_to('Upload a license', new_admin_license_path)
+      else
+        'Upload a license'
+      end
+
     message = []
     message << 'No GitLab Enterprise Edition license has been provided yet.'
     message << 'Pushing code and creation of issues and merge requests has been disabled.'
     message <<
       if is_admin
-        "#{link_to('Upload a license', new_admin_license_path)} in the admin area to activate this functionality."
+        "#{upload_a_license} in the admin area to activate this functionality."
       else
         'Ask an admin to upload a license to activate this functionality.'
       end
 
-    content_tag(:p, message.join(' ').html_safe)
+    if in_html
+      content_tag(:p, message.join(' ').html_safe)
+    else
+      message.join(' ')
+    end
   end
 
   def yes_license_message(signed_in, is_admin)

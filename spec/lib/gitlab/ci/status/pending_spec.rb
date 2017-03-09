@@ -6,7 +6,7 @@ describe Gitlab::Ci::Status::Pending do
   end
 
   describe '#text' do
-    it { expect(subject.label).to eq 'pending' }
+    it { expect(subject.text).to eq 'pending' }
   end
 
   describe '#label' do

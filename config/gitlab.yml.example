@@ -177,9 +177,9 @@ production: &base
   # Periodically executed jobs, to self-heal GitLab, do external synchronizations, etc.
   # Please read here for more information: https://github.com/ondrejbartas/sidekiq-cron#adding-cron-job
   cron_jobs:
-    # Flag stuck CI builds as failed
-    stuck_ci_builds_worker:
-      cron: "0 0 * * *"
+    # Flag stuck CI jobs as failed
+    stuck_ci_jobs_worker:
+      cron: "0 * * * *"
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
@@ -570,6 +570,8 @@ production: &base
     #   multipart_chunk_size: 104857600
     #   # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
     #   # encryption: 'AES256'
+    #   # Specifies Amazon S3 storage class to use for backups, this is optional
+    #   # storage_class: 'STANDARD'
 
   ## GitLab Shell settings
   gitlab_shell:
@@ -673,7 +675,7 @@ test:
       new_issue_url: "http://redmine/projects/:issues_tracker_id/issues/new"
     jira:
       title: "JIRA"
-      url: https://sample_company.atlasian.net
+      url: https://sample_company.atlassian.net
       project_key: PROJECT
   ldap:
     enabled: false

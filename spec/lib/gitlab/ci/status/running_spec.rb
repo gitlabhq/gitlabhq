@@ -6,7 +6,7 @@ describe Gitlab::Ci::Status::Running do
   end
 
   describe '#text' do
-    it { expect(subject.label).to eq 'running' }
+    it { expect(subject.text).to eq 'running' }
   end
 
   describe '#label' do

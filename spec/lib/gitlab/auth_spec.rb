@@ -58,6 +58,14 @@ describe Gitlab::Auth, lib: true do
       expect(gl_auth.find_for_git_client(user.username, 'password', project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities))
     end
 
+    include_examples 'user login operation with unique ip limit' do
+      let(:user) { create(:user, password: 'password') }
+
+      def operation
+        expect(gl_auth.find_for_git_client(user.username, 'password', project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities))
+      end
+    end
+
     context 'while using LFS authenticate' do
       it 'recognizes user lfs tokens' do
         user = create(:user)
@@ -194,6 +202,12 @@ describe Gitlab::Auth, lib: true do
     it "does not find user with invalid login" do
       user = 'wrong'
       expect( gl_auth.find_with_user_password(username, password) ).not_to eql user
+    end
+
+    include_examples 'user login operation with unique ip limit' do
+      def operation
+        expect(gl_auth.find_with_user_password(username, password)).to eq(user)
+      end
     end
 
     context "with ldap enabled" do

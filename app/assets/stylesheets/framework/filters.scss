@@ -1,5 +1,4 @@
 .filter-item {
-  margin-right: 6px;
   vertical-align: top;
 
   &.reset-filters {
@@ -13,6 +12,20 @@
     .dropdown-menu-toggle:not(.wide) {
       width: 132px;
     }
+  }
+
+  .filter-item:not(:last-child) {
+    margin-right: 6px;
+  }
+
+  .sort-filter {
+    display: inline-block;
+    float: right;
+  }
+
+  .dropdown-menu-sort {
+    left: auto;
+    right: 0;
   }
 }
 

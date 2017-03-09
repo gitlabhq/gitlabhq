@@ -34,6 +34,12 @@ namespace :geo do
     ns.tasks.each do |task|
       task.enhance ['geo:config:check', 'geo:config:set'] do
         Rake::Task['geo:config:restore'].invoke
+
+        # Reenable the tasks, otherwise the following tasks are run only once
+        # per invocation of `rake`!
+        Rake::Task['geo:config:check'].reenable
+        Rake::Task['geo:config:set'].reenable
+        Rake::Task['geo:config:restore'].reenable
       end
     end
   end
@@ -49,13 +55,11 @@ namespace :geo do
       # save current configuration
       @previous_config = {
         config: Rails.application.config.dup,
-        schema: ENV['SCHEMA'],
-        skip_post_deployment_migrations: ENV['SKIP_POST_DEPLOYMENT_MIGRATIONS']
+        schema: ENV['SCHEMA']
       }
 
       # set config variables for geo database
       ENV['SCHEMA'] = 'db/geo/schema.rb'
-      ENV['SKIP_POST_DEPLOYMENT_MIGRATIONS'] = 'true'
       Rails.application.config.paths['db'] = ['db/geo']
       Rails.application.config.paths['db/migrate'] = ['db/geo/migrate']
       Rails.application.config.paths['db/seeds.rb'] = ['db/geo/seeds.rb']
@@ -65,7 +69,6 @@ namespace :geo do
     task :restore do
       # restore config variables to previous values
       ENV['SCHEMA'] = @previous_config[:schema]
-      ENV['SKIP_POST_DEPLOYMENT_MIGRATIONS'] = @previous_config[:skip_post_deployment_migrations]
       Rails.application.config = @previous_config[:config]
     end
   end

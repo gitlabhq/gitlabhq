@@ -13,7 +13,7 @@ feature 'Environment', :feature do
   feature 'environment details page' do
     given!(:environment) { create(:environment, project: project) }
     given!(:deployment) { }
-    given!(:manual) { }
+    given!(:action) { }
 
     before do
       visit_environment(environment)
@@ -57,17 +57,23 @@ feature 'Environment', :feature do
         end
 
         context 'with manual action' do
-          given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy to production') }
+          given(:action) do
+            create(:ci_build, :manual, pipeline: pipeline,
+                                       name: 'deploy to production')
+          end
 
           scenario 'does show a play button' do
-            expect(page).to have_link(manual.name.humanize)
+            expect(page).to have_link(action.name.humanize)
           end
 
           scenario 'does allow to play manual action' do
-            expect(manual).to be_skipped
-            expect { click_link(manual.name.humanize) }.not_to change { Ci::Pipeline.count }
-            expect(page).to have_content(manual.name)
-            expect(manual.reload).to be_pending
+            expect(action).to be_manual
+
+            expect { click_link(action.name.humanize) }
+              .not_to change { Ci::Pipeline.count }
+
+            expect(page).to have_content(action.name)
+            expect(action.reload).to be_pending
           end
 
           context 'with external_url' do
@@ -115,8 +121,16 @@ feature 'Environment', :feature do
 
           context 'when environment is available' do
             context 'with stop action' do
-              given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'close_app') }
-              given(:deployment) { create(:deployment, environment: environment, deployable: build, on_stop: 'close_app') }
+              given(:action) do
+                create(:ci_build, :manual, pipeline: pipeline,
+                                           name: 'close_app')
+              end
+
+              given(:deployment) do
+                create(:deployment, environment: environment,
+                                    deployable: build,
+                                    on_stop: 'close_app')
+              end
 
               scenario 'does allow to stop environment' do
                 click_link('Stop')

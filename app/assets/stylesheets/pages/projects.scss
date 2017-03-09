@@ -494,11 +494,11 @@ a.deploy-project-label {
 .project-stats {
   font-size: 0;
   text-align: center;
-  border-bottom: 1px solid $border-color;
 
   .nav {
     padding-top: 12px;
     padding-bottom: 12px;
+    border-bottom: 1px solid $border-color;
   }
 
   .nav > li {
@@ -645,28 +645,13 @@ pre.light-well {
 }
 
 .project-last-commit {
+  background-color: $gray-light;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-base;
+  padding: 12px;
+
   @media (min-width: $screen-sm-min) {
     margin-top: $gl-padding;
-  }
-
-  &.container-fluid {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    background-color: $gray-light;
-    border: 1px solid $border-color;
-    border-right-width: 0;
-    border-left-width: 0;
-
-    @media (min-width: $screen-sm-min) {
-      border-right-width: 1px;
-      border-left-width: 1px;
-    }
-  }
-
-  &.container-limited {
-    @media (min-width: 1281px) {
-      border-radius: $border-radius-base;
-    }
   }
 
   .ci-status {

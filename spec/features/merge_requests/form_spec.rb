@@ -4,12 +4,14 @@ describe 'New/edit merge request', feature: true, js: true do
   let!(:project)   { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
   let(:fork_project) { create(:project, forked_from_project: project) }
   let!(:user)      { create(:user)}
+  let!(:user2)      { create(:user)}
   let!(:milestone) { create(:milestone, project: project) }
   let!(:label)     { create(:label, project: project) }
   let!(:label2)    { create(:label, project: project) }
 
   before do
     project.team << [user, :master]
+    project.team << [user2, :master]
   end
 
   context 'owned projects' do
@@ -33,8 +35,14 @@ describe 'New/edit merge request', feature: true, js: true do
       it 'creates new merge request' do
         click_button 'Assignee'
         page.within '.dropdown-menu-user' do
-          click_link user.name
+          click_link user2.name
         end
+        expect(find('input[name="merge_request[assignee_id]"]', visible: false).value).to match(user2.id.to_s)
+        page.within '.js-assignee-search' do
+          expect(page).to have_content user2.name
+        end
+
+        click_link 'Assign to me'
         expect(find('input[name="merge_request[assignee_id]"]', visible: false).value).to match(user.id.to_s)
         page.within '.js-assignee-search' do
           expect(page).to have_content user.name

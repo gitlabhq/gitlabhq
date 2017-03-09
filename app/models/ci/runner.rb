@@ -127,18 +127,15 @@ module Ci
 
     def tick_runner_queue
       SecureRandom.hex.tap do |new_update|
-        Gitlab::Redis.with do |redis|
-          redis.set(runner_queue_key, new_update, ex: RUNNER_QUEUE_EXPIRY_TIME)
-        end
+        ::Gitlab::Workhorse.set_key_and_notify(runner_queue_key, new_update,
+          expire: RUNNER_QUEUE_EXPIRY_TIME, overwrite: true)
       end
     end
 
     def ensure_runner_queue_value
-      Gitlab::Redis.with do |redis|
-        value = SecureRandom.hex
-        redis.set(runner_queue_key, value, ex: RUNNER_QUEUE_EXPIRY_TIME, nx: true)
-        redis.get(runner_queue_key)
-      end
+      new_value = SecureRandom.hex
+      ::Gitlab::Workhorse.set_key_and_notify(runner_queue_key, new_value,
+        expire: RUNNER_QUEUE_EXPIRY_TIME, overwrite: false)
     end
 
     def is_runner_queue_value_latest?(value)

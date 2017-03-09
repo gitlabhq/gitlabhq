@@ -12,7 +12,6 @@ following locations:
 - [Branches](branches.md)
 - [Broadcast Messages](broadcast_messages.md)
 - [Builds](builds.md)
-- [Build Triggers](build_triggers.md)
 - [Build Variables](build_variables.md)
 - [Commits](commits.md)
 - [Deployments](deployments.md)
@@ -34,6 +33,7 @@ following locations:
 - [Notification settings](notification_settings.md)
 - [Open source license templates](templates/licenses.md)
 - [Pipelines](pipelines.md)
+- [Pipeline Triggers](pipeline_triggers.md)
 - [Projects](projects.md) including setting Webhooks
 - [Project Access Requests](access_requests.md)
 - [Project Members](members.md)

@@ -1,5 +1,5 @@
 require 'spec_helper'
-require_relative '../../config/initializers/metrics'
+require_relative '../../config/initializers/8_metrics'
 
 describe 'instrument_classes', lib: true do
   let(:config) { double(:config) }

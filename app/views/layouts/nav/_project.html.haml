@@ -71,18 +71,30 @@
           %span
             Snippets
 
-    -# Global shortcut to network page for compatibility
+    -# Shortcut to Project > Activity
+    %li.hidden
+      = link_to activity_project_path(@project), title: 'Activity', class: 'shortcuts-project-activity' do
+        %span
+          Activity
+
+    -# Shortcut to Repository > Graph (formerly, Network)
     - if project_nav_tab? :network
       %li.hidden
         = link_to namespace_project_network_path(@project.namespace, @project, current_ref), title: 'Network', class: 'shortcuts-network' do
-          Network
+          Graph
 
-    -# Shortcut to create a new issue
+    -# Shortcut to Repository > Charts (formerly, top-nav item "Graphs")
+    - unless @project.empty_repo?
+      %li.hidden
+        = link_to charts_namespace_project_graph_path(@project.namespace, @project, current_ref), title: 'Charts', class: 'shortcuts-repository-charts' do
+          Charts
+
+    -# Shortcut to Issues > New Issue
     %li.hidden
       = link_to new_namespace_project_issue_path(@project.namespace, @project), class: 'shortcuts-new-issue' do
         Create a new issue
 
-    -# Shortcut to builds page
+    -# Shortcut to Pipelines > Jobs
     - if project_nav_tab? :builds
       %li.hidden
         = link_to project_builds_path(@project), title: 'Jobs', class: 'shortcuts-builds' do

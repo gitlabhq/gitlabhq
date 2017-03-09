@@ -49,6 +49,7 @@ require('./behaviors/details_behavior');
 require('./behaviors/quick_submit');
 require('./behaviors/requires_input');
 require('./behaviors/toggler_behavior');
+require('./behaviors/bind_in_out');
 
 // blob
 require('./blob/blob_ci_yaml');

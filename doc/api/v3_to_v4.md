@@ -80,4 +80,3 @@ changes are in V4:
 - Remove the ProjectGitHook API. Use the ProjectPushRule API instead [!1301](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1301)
 - Removed `repository_storage` from `PUT /application/settings` and `GET /application/settings` (use `repository_storages` instead) [!1307](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1307)
 - Removed `elasticsearch_host` and `elasticsearch_port` from `PUT /application/settings` (use `elasticsearch_url` instead) [!1305](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1305)
-

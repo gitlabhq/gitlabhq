@@ -159,6 +159,8 @@ For installations from source:
       remote_directory: 'my.s3.bucket'
       # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
       # encryption: 'AES256'
+      # Specifies Amazon S3 storage class to use for backups, this is optional
+      # storage_class: 'STANDARD'
 ```
 
 If you are uploading your backups to S3 you will probably want to create a new

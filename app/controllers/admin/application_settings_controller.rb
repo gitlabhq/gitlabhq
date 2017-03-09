@@ -147,6 +147,9 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :two_factor_grace_period,
       :user_default_external,
       :user_oauth_applications,
+      :unique_ips_limit_per_user,
+      :unique_ips_limit_time_window,
+      :unique_ips_limit_enabled,
       :version_check_enabled,
       :terminal_max_session_time,
 

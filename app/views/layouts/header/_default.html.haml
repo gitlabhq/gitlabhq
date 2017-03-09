@@ -19,7 +19,7 @@
         %ul.nav.navbar-nav
           %li.hidden-sm.hidden-xs
             = render 'layouts/search' unless current_controller?(:search)
-          %li.visible-sm.visible-xs
+          %li.visible-sm-inline-block.visible-xs-inline-block
             = link_to search_path, title: 'Search', aria: { label: "Search" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
               = icon('search')
           - if current_user
