@@ -46,9 +46,6 @@ const AwardsHandler = require('~/awards_handler');
               isEmojiMenuBuilt = true;
               resolve();
             });
-
-            // Fail after 1 second
-            setTimeout(reject, 1000);
           }
         });
       };
