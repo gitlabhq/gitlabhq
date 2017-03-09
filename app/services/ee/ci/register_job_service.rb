@@ -1,10 +1,10 @@
 module EE
   module Ci
-    # RegisterBuildService EE mixin
+    # RegisterJobService EE mixin
     #
     # This module is intended to encapsulate EE-specific service logic
-    # and be included in the `RegisterBuildService` service
-    module RegisterBuildService
+    # and be included in the `RegisterJobService` service
+    module RegisterJobService
       extend ActiveSupport::Concern
 
       def builds_for_shared_runner
