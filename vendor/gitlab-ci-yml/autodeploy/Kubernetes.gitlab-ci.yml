@@ -12,6 +12,7 @@ stages:
   - review
   - staging
   - production
+  - cleanup
 
 build:
   stage: build
@@ -61,7 +62,7 @@ review:
     - master
 
 stop_review:
-  stage: review
+  stage: cleanup
   variables:
     GIT_STRATEGY: none
   script:

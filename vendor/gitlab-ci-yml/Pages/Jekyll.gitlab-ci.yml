@@ -1,11 +1,15 @@
-# Full project: https://gitlab.com/pages/jekyll
+# Template project: https://gitlab.com/pages/jekyll
+# Docs: https://docs.gitlab.com/ce/pages/
+# Jekyll version: 3.4.0
 image: ruby:2.3
+
+before_script:
+- bundle install
 
 test:
   stage: test
   script:
-  - gem install jekyll
-  - jekyll build -d test
+  - bundle exec jekyll build -d test
   artifacts:
     paths:
     - test
@@ -15,10 +19,10 @@ test:
 pages:
   stage: deploy
   script:
-  - gem install jekyll
-  - jekyll build -d public
+  - bundle exec jekyll build -d public
   artifacts:
     paths:
     - public
   only:
   - master
+  
