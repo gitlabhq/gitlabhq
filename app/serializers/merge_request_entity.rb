@@ -19,7 +19,7 @@ class MergeRequestEntity < IssuableEntity
   expose :merge_event
   expose :closed_event
   expose :diff_head_sha
-  expose :head_pipeline
+  expose :head_pipeline, with: PipelineEntity, as: :pipeline
   expose :merge_commit_message
   expose :work_in_progress?, as: :work_in_progress
   expose :source_branch_exists?, as: :source_branch_exists
