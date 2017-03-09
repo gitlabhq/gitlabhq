@@ -286,11 +286,7 @@ describe Environment, models: true do
 
     context 'when the environment has terminals' do
       before do
-<<<<<<< HEAD
         allow(environment).to receive(:deployment_service_ready?).and_return(true)
-=======
-        allow(environment).to receive(:has_terminals?).and_return(true)
->>>>>>> ce/master
       end
 
       it 'returns the terminals from the deployment service' do
@@ -304,18 +300,13 @@ describe Environment, models: true do
 
     context 'when the environment does not have terminals' do
       before do
-<<<<<<< HEAD
         allow(environment).to receive(:deployment_service_ready?).and_return(false)
-=======
-        allow(environment).to receive(:has_terminals?).and_return(false)
->>>>>>> ce/master
       end
 
       it { is_expected.to be_nil }
     end
   end
 
-<<<<<<< HEAD
   describe '#rollout_status' do
     let(:project) { create(:kubernetes_project) }
     subject { environment.rollout_status }
@@ -335,7 +326,9 @@ describe Environment, models: true do
     context 'when the environment does not have rollout status' do
       before { allow(environment).to receive(:deployment_service_ready?).and_return(false) }
       it { is_expected.to eq(nil) }
-=======
+    end
+  end
+
   describe '#has_metrics?' do
     subject { environment.has_metrics? }
 
@@ -393,7 +386,6 @@ describe Environment, models: true do
       end
 
       it { is_expected.to be_nil }
->>>>>>> ce/master
     end
   end
 

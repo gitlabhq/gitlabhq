@@ -8,11 +8,7 @@ module Projects
       def index
         issues = ::Boards::Issues::ListService.new(project, current_user, filter_params).execute
         issues = issues.page(params[:page]).per(params[:per] || 20)
-<<<<<<< HEAD
         make_sure_position_is_set(issues) unless Gitlab::Geo.secondary?
-=======
-        make_sure_position_is_set(issues)
->>>>>>> ce/master
 
         render json: {
           issues: serialize_as_json(issues),

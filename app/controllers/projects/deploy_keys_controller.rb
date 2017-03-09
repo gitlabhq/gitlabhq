@@ -19,13 +19,9 @@ class Projects::DeployKeysController < Projects::ApplicationController
     @key = DeployKey.new(deploy_key_params.merge(user: current_user))
 
     unless @key.valid? && @project.deploy_keys << @key
-<<<<<<< HEAD
       flash[:alert] = @key.errors.full_messages.join(', ').html_safe
     else
       log_audit_event(@key.title, action: :create)
-=======
-      flash[:alert] = @key.errors.full_messages.join(', ').html_safe      
->>>>>>> ce/master
     end
     redirect_to_repository_settings(@project)
   end
@@ -50,7 +46,6 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
   def deploy_key_params
     params.require(:deploy_key).permit(:key, :title, :can_push)
-<<<<<<< HEAD
   end
 
   def log_audit_event(key_title, options = {})
@@ -60,7 +55,5 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
   def load_key
     @key ||= current_user.accessible_deploy_keys.find(params[:id])
-=======
->>>>>>> ce/master
   end
 end

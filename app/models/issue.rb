@@ -9,14 +9,11 @@ class Issue < ActiveRecord::Base
   include Elastic::IssuesSearch
   include FasterCacheKeys
   include RelativePositioning
-<<<<<<< HEAD
 
   WEIGHT_RANGE = 1..9
   WEIGHT_ALL = 'Everything'.freeze
   WEIGHT_ANY = 'Any Weight'.freeze
   WEIGHT_NONE = 'No Weight'.freeze
-=======
->>>>>>> ce/master
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze

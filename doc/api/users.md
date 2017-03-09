@@ -830,7 +830,6 @@ Example response:
 ]
 ```
 
-<<<<<<< HEAD
 ### Get user activities (admin only)
 
 >**Note:** This API endpoint is only available on 8.15 EE and above.
@@ -855,7 +854,37 @@ This function takes pagination parameters `page` and `per_page` to restrict the 
 
 ```
 GET /user/activities
-=======
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `from` | string | no | Date string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`. Defaults to 6 months ago. |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/user/activities
+```
+
+Example response:
+
+```json
+[
+  {
+    "username": "user1",
+    "last_activity_at": "2015-12-14 01:00:00"
+  },
+  {
+    "username": "user2",
+    "last_activity_at": "2015-12-15 01:00:00"
+  },
+  {
+    "username": "user3",
+    "last_activity_at": "2015-12-16 01:00:00"
+  }
+]
+```
+
 ## Retrieve user impersonation tokens
 
 It retrieves every impersonation token of the user. Note that only administrators can do this.
@@ -912,39 +941,10 @@ settings page.
 
 ```
 POST /users/:user_id/impersonation_tokens
->>>>>>> ce/master
 ```
-
-Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-<<<<<<< HEAD
-| `from` | string | no | Date string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`. Defaults to 6 months ago. |
-
-```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/user/activities
-```
-
-Example response:
-
-```json
-[
-  {
-    "username": "user1",
-    "last_activity_at": "2015-12-14 01:00:00"
-  },
-  {
-    "username": "user2",
-    "last_activity_at": "2015-12-15 01:00:00"
-  },
-  {
-    "username": "user3",
-    "last_activity_at": "2015-12-16 01:00:00"
-  }
-]
-```
-=======
 | `user_id` | integer | yes | The ID of the user |
 | `name` | string | yes | The name of the impersonation token |
 | `expires_at` | date | no | The expiration date of the impersonation token |
@@ -978,4 +978,3 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `user_id` | integer | yes | The ID of the user |
 | `impersonation_token_id` | integer | yes | The ID of the impersonation token |
->>>>>>> ce/master

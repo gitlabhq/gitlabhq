@@ -31,7 +31,6 @@ gem 'omniauth-gitlab', '~> 1.0.2'
 gem 'omniauth-google-oauth2', '~> 0.4.1'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
-<<<<<<< HEAD
 gem 'omniauth-saml',          '~> 1.7.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
@@ -40,15 +39,6 @@ gem 'gssapi', group: :kerberos
 gem 'omniauth-authentiq',     '~> 0.3.0'
 gem 'rack-oauth2',            '~> 1.2.1'
 gem 'jwt',                    '~> 1.5.6'
-=======
-gem 'omniauth-saml', '~> 1.7.0'
-gem 'omniauth-shibboleth', '~> 1.2.0'
-gem 'omniauth-twitter', '~> 1.2.0'
-gem 'omniauth_crowd', '~> 2.2.0'
-gem 'omniauth-authentiq', '~> 0.3.0'
-gem 'rack-oauth2', '~> 1.2.1'
-gem 'jwt', '~> 1.5.6'
->>>>>>> ce/master
 
 # Spam and anti-bot protection
 gem 'recaptcha', '~> 3.0', require: 'recaptcha/rails'
@@ -256,7 +246,6 @@ gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione', '~> 3.0'
 gem 'gon', '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
-<<<<<<< HEAD
 gem 'jquery-rails',       '~> 4.1.0'
 gem 'request_store',      '~> 1.3'
 gem 'select2-rails',      '~> 3.5.9'
@@ -264,14 +253,6 @@ gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
 gem 'base32',             '~> 0.3.0'
 gem "gitlab-license", "~> 1.0"
-=======
-gem 'jquery-rails', '~> 4.1.0'
-gem 'request_store', '~> 1.3'
-gem 'select2-rails', '~> 3.5.9'
-gem 'virtus', '~> 1.0.1'
-gem 'net-ssh', '~> 3.0.1'
-gem 'base32', '~> 0.3.0'
->>>>>>> ce/master
 
 # Sentry integration
 gem 'sentry-raven', '~> 2.0.0'

@@ -80,32 +80,6 @@
     }
 
     // Determines the full search query (visual tokens + input)
-<<<<<<< HEAD
-    static getSearchQuery() {
-      const tokensContainer = document.querySelector('.tokens-container');
-      const values = [];
-
-      [].forEach.call(tokensContainer.querySelectorAll('.js-visual-token'), (token) => {
-        const name = token.querySelector('.name');
-        const value = token.querySelector('.value');
-        const symbol = value && value.dataset.symbol ? value.dataset.symbol : '';
-        let valueText = '';
-
-        if (value && value.innerText) {
-          valueText = value.innerText;
-        }
-
-        if (token.className.indexOf('filtered-search-token') !== -1) {
-          values.push(`${name.innerText.toLowerCase()}:${symbol}${valueText}`);
-        } else {
-          values.push(name.innerText);
-        }
-      });
-
-      const input = document.querySelector('.filtered-search');
-      values.push(input && input.value);
-
-=======
     static getSearchQuery(untilInput = false) {
       const tokens = [].slice.call(document.querySelectorAll('.tokens-container li'));
       const values = [];
@@ -148,7 +122,6 @@
         }
       });
 
->>>>>>> ce/master
       return values.join(' ');
     }
 

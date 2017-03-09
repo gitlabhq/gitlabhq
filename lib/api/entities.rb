@@ -774,7 +774,6 @@ module API
       expose :active?, as: :active
     end
 
-<<<<<<< HEAD
     class GeoNodeStatus < Grape::Entity
       expose :health
       expose :repositories_count
@@ -782,7 +781,8 @@ module API
       expose :repositories_failed_count
       expose :lfs_objects_total
       expose :lfs_objects_synced
-=======
+    end
+
     class PersonalAccessToken < Grape::Entity
       expose :id, :name, :revoked, :created_at, :scopes
       expose :active?, as: :active
@@ -875,7 +875,6 @@ module API
         expose :credentials, using: Credentials
         expose :depends_on_builds, as: :dependencies, using: Dependency
       end
->>>>>>> ce/master
     end
   end
 end

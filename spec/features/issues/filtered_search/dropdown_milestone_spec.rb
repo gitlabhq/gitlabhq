@@ -1,13 +1,7 @@
 require 'rails_helper'
 
-<<<<<<< HEAD
-describe 'Dropdown milestone', js: true, feature: true do
-  include FilteredSearchHelpers
-  include WaitForAjax
-=======
 describe 'Dropdown milestone', :feature, :js do
   include FilteredSearchHelpers
->>>>>>> ce/master
 
   let!(:project) { create(:empty_project) }
   let!(:user) { create(:user) }

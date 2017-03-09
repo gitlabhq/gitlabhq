@@ -59,13 +59,8 @@ Feature: Project Active Tab
   Scenario: On Project Settings/Repository
     Given I visit my project's settings page
     And I click the "Repository" tab
-<<<<<<< HEAD
-    Then the active sub nav should be Repository
-    And no other sub navs should be active
-=======
     Then the active sub tab should be Repository
     And no other sub tabs should be active
->>>>>>> ce/master
     And the active main tab should be Settings
 
   Scenario: On Project Settings/Pages

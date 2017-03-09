@@ -34,11 +34,7 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
   end
 
   step 'I click the "Repository" tab' do
-<<<<<<< HEAD
-    page.within '.layout-nav .controls' do
-=======
     page.within '.sub-nav' do
->>>>>>> ce/master
       click_link('Repository')
     end
   end
@@ -63,13 +59,8 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
     ensure_active_sub_tab('Integrations')
   end
 
-<<<<<<< HEAD
-  step 'the active sub nav should be Repository' do
-    ensure_active_sub_nav('Repository')
-=======
   step 'the active sub tab should be Repository' do
     ensure_active_sub_tab('Repository')
->>>>>>> ce/master
   end
 
   step 'the active sub tab should be Pages' do

@@ -60,7 +60,6 @@
           element: document.querySelector('#js-dropdown-hint'),
         },
       };
-<<<<<<< HEAD
 
       if (this.page === 'issues') {
         this.mapping.weight = {
@@ -80,19 +79,6 @@
       if (clicked) {
         gl.FilteredSearchVisualTokens.moveInputToTheRight();
       }
-=======
-    }
-
-    static addWordToInput(tokenName, tokenValue = '', clicked = false) {
-      const input = document.querySelector('.filtered-search');
-
-      gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue);
-      input.value = '';
-
-      if (clicked) {
-        gl.FilteredSearchVisualTokens.moveInputToTheRight();
-      }
->>>>>>> ce/master
     }
 
     updateCurrentDropdownOffset() {
@@ -165,11 +151,7 @@
     }
 
     setDropdown() {
-<<<<<<< HEAD
-      const query = gl.DropdownUtils.getSearchQuery();
-=======
       const query = gl.DropdownUtils.getSearchQuery(true);
->>>>>>> ce/master
       const { lastToken, searchToken } = this.tokenizer.processTokens(query);
 
       if (this.currentDropdown) {

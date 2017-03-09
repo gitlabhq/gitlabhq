@@ -242,8 +242,6 @@ describe 'Visual tokens', js: true, feature: true do
     end
   end
 
-<<<<<<< HEAD
-=======
   describe 'editing a search term while editing another filter token' do
     before do
       input_filtered_search('author assignee:', submit: false)
@@ -261,7 +259,6 @@ describe 'Visual tokens', js: true, feature: true do
     end
   end
 
->>>>>>> ce/master
   describe 'add new token after editing existing token' do
     before do
       input_filtered_search('author:@root assignee:none', submit: false)
@@ -339,8 +336,6 @@ describe 'Visual tokens', js: true, feature: true do
       expect(token.find('.name').text).to eq('Author')
     end
   end
-<<<<<<< HEAD
-=======
 
   describe 'search using incomplete visual tokens' do
     before do
@@ -354,5 +349,4 @@ describe 'Visual tokens', js: true, feature: true do
       ])
     end
   end
->>>>>>> ce/master
 end

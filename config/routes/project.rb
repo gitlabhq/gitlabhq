@@ -197,10 +197,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :stop
           get :terminal
           get :metrics
-<<<<<<< HEAD
           get :status, constraints: { format: :json }
-=======
->>>>>>> ce/master
           get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
         end
 

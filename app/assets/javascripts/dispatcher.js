@@ -34,12 +34,9 @@ import PrometheusGraph from './monitoring/prometheus_graph'; // TODO: Maybe Make
 /* global ProjectShow */
 /* global Labels */
 /* global Shortcuts */
-<<<<<<< HEAD
 /* global WeightSelect */
 /* global AdminEmailSelect */
-=======
 import Issue from './issue';
->>>>>>> ce/master
 
 import BindInOut from './behaviors/bind_in_out';
 import GroupsList from './groups_list';
@@ -293,7 +290,6 @@ const UserCallout = require('./user_callout');
         case 'search:show':
           new Search();
           break;
-<<<<<<< HEAD
         case 'projects:mirrors:show':
         case 'projects:mirrors:update':
           new UsersSelect();
@@ -301,8 +297,6 @@ const UserCallout = require('./user_callout');
         case 'admin:emails:show':
           new AdminEmailSelect();
           break;
-=======
->>>>>>> ce/master
         case 'projects:repository:show':
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();

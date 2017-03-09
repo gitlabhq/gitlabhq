@@ -45,10 +45,7 @@ describe API::V3::MergeRequestDiffs, 'MergeRequestDiffs', api: true  do
 
     it 'returns a 404 when merge_request_id not found' do
       get v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/versions/999", user)
-<<<<<<< HEAD
-=======
 
->>>>>>> ce/master
       expect(response).to have_http_status(404)
     end
   end

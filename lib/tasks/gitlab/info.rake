@@ -14,13 +14,10 @@ namespace :gitlab do
       rake_version = run_and_match(%w(rake --version), /[\d\.]+/).try(:to_s)
       # check redis version
       redis_version = run_and_match(%w(redis-cli --version), /redis-cli (\d+\.\d+\.\d+)/).to_a
-<<<<<<< HEAD
       # check for system defined proxies
       proxies = Gitlab::Proxy.detect_proxy.map{|k, v| "#{k}: #{v}"}.join("\n\t\t")
-=======
       # check Git version
       git_version = run_and_match([Gitlab.config.git.bin_path, '--version'], /git version ([\d\.]+)/).to_a
->>>>>>> ce/master
 
       puts ""
       puts "System information".color(:yellow)

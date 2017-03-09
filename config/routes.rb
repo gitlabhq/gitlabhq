@@ -22,7 +22,6 @@ Rails.application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
-<<<<<<< HEAD
   namespace :oauth do
     scope path: 'geo', controller: :geo_auth, as: :geo do
       get 'auth'
@@ -30,9 +29,8 @@ Rails.application.routes.draw do
       get 'logout'
     end
   end
-=======
+
   use_doorkeeper_openid_connect
->>>>>>> ce/master
 
   # Autocomplete
   get '/autocomplete/users' => 'autocomplete#users'

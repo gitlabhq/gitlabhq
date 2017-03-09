@@ -1170,7 +1170,6 @@ describe API::Users, api: true do
     end
   end
 
-<<<<<<< HEAD
   context "user activities", :redis do
     context 'last activity as normal user' do
       it 'has no permission' do
@@ -1239,7 +1238,9 @@ describe API::Users, api: true do
 
         expect(json_response.map { |activity| activity['username'] }).to eq(%w[3 4])
       end
-=======
+    end
+  end
+
   describe 'GET /users/:user_id/impersonation_tokens' do
     let!(:active_personal_access_token) { create(:personal_access_token, user: user) }
     let!(:revoked_personal_access_token) { create(:personal_access_token, :revoked, user: user) }
@@ -1420,7 +1421,6 @@ describe API::Users, api: true do
       expect(response).to have_http_status(204)
       expect(impersonation_token.revoked).to be_falsey
       expect(impersonation_token.reload.revoked).to be_truthy
->>>>>>> ce/master
     end
   end
 end

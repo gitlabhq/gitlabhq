@@ -1,10 +1,6 @@
 require 'rails_helper'
 
-<<<<<<< HEAD
-describe 'Dropdown assignee', js: true, feature: true do
-=======
 describe 'Dropdown assignee', :feature, :js do
->>>>>>> ce/master
   include FilteredSearchHelpers
   include WaitForAjax
 

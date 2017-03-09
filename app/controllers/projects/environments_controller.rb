@@ -5,11 +5,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :authorize_create_deployment!, only: [:stop]
   before_action :authorize_update_environment!, only: [:edit, :update]
   before_action :authorize_admin_environment!, only: [:terminal, :terminal_websocket_authorize]
-<<<<<<< HEAD
   before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics, :status]
-=======
-  before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics]
->>>>>>> ce/master
   before_action :verify_api_request!, only: :terminal_websocket_authorize
 
   def index
@@ -126,7 +122,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
-<<<<<<< HEAD
   # The rollout status of an enviroment
   def status
     unless @environment.deployment_service_ready?
@@ -144,8 +139,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
-=======
->>>>>>> ce/master
   private
 
   def verify_api_request!
