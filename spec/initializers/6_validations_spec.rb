@@ -12,21 +12,9 @@ describe '6_validations', lib: true do
     FileUtils.rm_rf('tmp/tests/paths')
   end
 
-<<<<<<< HEAD
-  describe 'validate_storages_config' do
-    context 'with correct settings' do
-      before do
-        mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/d' })
-      end
-
-      it 'passes through' do
-        expect { validate_storages_config }.not_to raise_error
-      end
-=======
   context 'with correct settings' do
     before do
       mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/d' })
->>>>>>> upstream/master
     end
 
     context 'with invalid storage names' do
@@ -39,7 +27,6 @@ describe '6_validations', lib: true do
       end
     end
 
-<<<<<<< HEAD
     context 'with incomplete settings' do
       before do
         mock_storages('foo' => {})
@@ -48,11 +35,6 @@ describe '6_validations', lib: true do
       it 'throws an error suggesting the user to update its settings' do
         expect { validate_storages_config }.to raise_error('foo is not a valid storage, because it has no `path` key. Refer to gitlab.yml.example for an updated example. Please fix this in your gitlab.yml before starting GitLab.')
       end
-=======
-  context 'with invalid storage names' do
-    before do
-      mock_storages('name with spaces' => { 'path' => 'tmp/tests/paths/a/b/c' })
->>>>>>> upstream/master
     end
 
     context 'with deprecated settings structure' do
@@ -66,25 +48,17 @@ describe '6_validations', lib: true do
     end
   end
 
-<<<<<<< HEAD
   describe 'validate_storages_paths' do
     context 'with correct settings' do
       before do
         mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/d' })
       end
-=======
-  context 'with nested storage paths' do
-    before do
-      mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/c/d' })
-    end
->>>>>>> upstream/master
 
       it 'passes through' do
         expect { validate_storages_paths }.not_to raise_error
       end
     end
 
-<<<<<<< HEAD
     context 'with nested storage paths' do
       before do
         mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/c/d' })
@@ -93,11 +67,6 @@ describe '6_validations', lib: true do
       it 'throws an error' do
         expect { validate_storages_paths }.to raise_error('bar is a nested path of foo. Nested paths are not supported for repository storages. Please fix this in your gitlab.yml before starting GitLab.')
       end
-=======
-  context 'with similar but un-nested storage paths' do
-    before do
-      mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c' }, 'bar' => { 'path' => 'tmp/tests/paths/a/b/c2' })
->>>>>>> upstream/master
     end
 
     context 'with similar but un-nested storage paths' do

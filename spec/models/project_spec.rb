@@ -1964,14 +1964,8 @@ describe Project, models: true do
 
       storages = {
         'a' => { 'path' => 'tmp/tests/storage_a' },
-<<<<<<< HEAD
-        'b' => { 'path' => 'tmp/tests/storage_b' },
-      }
-
-=======
         'b' => { 'path' => 'tmp/tests/storage_b' }
       }
->>>>>>> upstream/master
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
     end
 
