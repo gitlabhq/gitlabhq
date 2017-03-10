@@ -3,9 +3,9 @@
 # For docker image tags see https://hub.docker.com/_/maven/
 #
 # For general lifecycle information see https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
-# 
+#
 # This template will build and test your projects as well as create the documentation.
-# 
+#
 # * Caches downloaded dependencies and plugins between invocation.
 # * Does only verify merge requests but deploy built artifacts of the
 #   master branch.
@@ -24,12 +24,12 @@ variables:
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
 
 # Cache downloaded dependencies and plugins between builds.
-# To keep cache across branches add 'key: "$CI_BUILD_REF_NAME"'
+# To keep cache across branches add 'key: "$CI_JOB_REF_NAME"'
 cache:
   paths:
     - .m2/repository
 
-# This will only validate and compile stuff and run e.g. maven-enforcer-plugin. 
+# This will only validate and compile stuff and run e.g. maven-enforcer-plugin.
 # Because some enforcer rules might check dependency convergence and class duplications
 # we use `test-compile` here instead of `validate`, so the correct classpath is picked up.
 .validate: &validate
