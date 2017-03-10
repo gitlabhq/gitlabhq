@@ -384,7 +384,7 @@ ul.notes {
   top: 0;
 
   .note-action-button {
-    margin-left: 10px;
+    margin-left: 8px;
   }
 }
 
@@ -400,8 +400,7 @@ ul.notes {
 }
 
 .note-action-button {
-  display: inline-block;
-  margin-left: 0;
+  display: inline;
   line-height: 20px;
 
   @media (min-width: $screen-sm-min) {
@@ -540,7 +539,6 @@ ul.notes {
 }
 
 .line-resolve-btn {
-  display: inline-block;
   position: relative;
   top: 2px;
   padding: 0;
@@ -563,8 +561,9 @@ ul.notes {
   }
 
   svg {
-    position: relative;
     fill: $gray-darkest;
+    height: 15px;
+    width: 15px;
   }
 }
 

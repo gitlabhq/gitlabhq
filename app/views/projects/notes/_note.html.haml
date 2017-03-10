@@ -43,18 +43,17 @@
                   "inline-template" => true,
                   "ref" => "note_#{note.id}" }
 
-                .note-action-button
+                %button.note-action-button.line-resolve-btn{ type: "button",
+                    class: ("is-disabled" unless can_resolve),
+                    ":class" => "{ 'is-active': isResolved }",
+                    ":aria-label" => "buttonText",
+                    "@click" => "resolve",
+                    ":title" => "buttonText",
+                    "v-show" => "!loading",
+                    ":ref" => "'button'" }
                   = icon("spin spinner", "v-show" => "loading")
-                  %button.line-resolve-btn{ type: "button",
-                      class: ("is-disabled" unless can_resolve),
-                      ":class" => "{ 'is-active': isResolved }",
-                      ":aria-label" => "buttonText",
-                      "@click" => "resolve",
-                      ":title" => "buttonText",
-                      "v-show" => "!loading",
-                      ":ref" => "'button'" }
 
-                    = render "shared/icons/icon_status_success.svg"
+                  = render "shared/icons/icon_status_success.svg"
 
             - if current_user
               - if note.emoji_awardable?
