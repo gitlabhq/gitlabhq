@@ -66,6 +66,8 @@ Let's look into each of them:
 This is the index file of your new feature. This is where the root Vue instance
 of the new feature should be.
 
+The Store and the Service should be loaded in this file and provided as a prop to the main component.
+
 Don't forget to follow [these steps.][page_specific_javascript]
 
 **A folder for Components**
@@ -86,7 +88,7 @@ You can read more about components in Vue.js site, [Component System][component-
 
 **A folder for the Store**
 
-The Store is a simple object that allows us to manage the state in a single
+The Store is a class that allows us to manage the state in a single
 source of truth.
 
 The concept we are trying to follow is better explained by Vue documentation
@@ -332,6 +334,34 @@ gl.MyThing = MyThing;
 
 ```
 
+### Manipulating the DOM in a JS Class
+
+When writing a class that needs to manipulate the DOM guarantee a container option is provided.
+This is useful when we need that class to be instantiated more than once in the same page.
+
+Bad:
+```
+class Foo {
+  constructor() {
+    document.querySelector('.bar');
+  }
+}
+
+new Foo();
+```
+
+Good:
+```
+class Foo {
+  constructor(opts) {
+    document.querySelector(opts.container);
+  }
+}
+
+new Foo({ container: '.my-element' });
+```
+You can find an example of the above in this [class][container-class-example];
+
 ## Supported browsers
 
 For our currently-supported browsers, see our [requirements][requirements].
@@ -457,3 +487,4 @@ Scenario: Developer can approve merge request
 [eslintrc]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.eslintrc
 [team-page]: https://about.gitlab.com/team
 [vue-section]: https://docs.gitlab.com/ce/development/frontend.html#how-to-build-a-new-feature-with-vue-js
+[container-class-example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/mini_pipeline_graph_dropdown.js
