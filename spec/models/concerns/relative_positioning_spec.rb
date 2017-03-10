@@ -12,12 +12,6 @@ describe Issue, 'RelativePositioning' do
     end
   end
 
-  describe '#min_relative_position' do
-    it 'returns maximum position' do
-      expect(issue.min_relative_position).to eq issue.relative_position
-    end
-  end
-
   describe '#max_relative_position' do
     it 'returns maximum position' do
       expect(issue.max_relative_position).to eq issue1.relative_position
@@ -29,8 +23,8 @@ describe Issue, 'RelativePositioning' do
       expect(issue1.prev_relative_position).to eq issue.relative_position
     end
 
-    it 'returns minimum position if there is no issue above' do
-      expect(issue.prev_relative_position).to eq RelativePositioning::MIN_POSITION
+    it 'returns nil if there is no issue above' do
+      expect(issue.prev_relative_position).to eq nil
     end
   end
 
@@ -39,8 +33,8 @@ describe Issue, 'RelativePositioning' do
       expect(issue.next_relative_position).to eq issue1.relative_position
     end
 
-    it 'returns next position if there is no issue below' do
-      expect(issue1.next_relative_position).to eq RelativePositioning::MAX_POSITION
+    it 'returns nil if there is no issue below' do
+      expect(issue1.next_relative_position).to eq nil
     end
   end
 
@@ -110,14 +104,32 @@ describe Issue, 'RelativePositioning' do
       expect(issue.relative_position).to be < issue1.relative_position
     end
 
-    it 'positions issue closer to before-issue if distance is big enough' do
-      issue.update relative_position: 100
-      issue1.update relative_position: 6000
+    it 'positions issue in the middle of other two if distance is big enough' do
+      issue.update relative_position: 6000
+      issue1.update relative_position: 10000
 
       new_issue.move_between(issue, issue1)
 
-      expect(new_issue.relative_position).to eq(100 + RelativePositioning::DISTANCE)
+      expect(new_issue.relative_position).to eq(8000)
     end
+
+    it 'positions issue closer to the middle if we are at the very top' do
+      issue1.update relative_position: 6000
+
+      new_issue.move_between(nil, issue1)
+
+      expect(new_issue.relative_position).to eq(6000 - RelativePositioning::DISTANCE)
+    end
+
+    it 'positions issue closer to the middle if we are at the very bottom' do
+      issue.update relative_position: 6000
+      issue1.update relative_position: nil
+
+      new_issue.move_between(issue, nil)
+
+      expect(new_issue.relative_position).to eq(6000 + RelativePositioning::DISTANCE)
+    end
+
 
     it 'positions issue in the middle of other two if distance is not big enough' do
       issue.update relative_position: 100

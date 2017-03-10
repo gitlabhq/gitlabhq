@@ -2,15 +2,12 @@ module RelativePositioning
   extend ActiveSupport::Concern
 
   MIN_POSITION = 0
+  START_POSITION = Gitlab::Database::MAX_INT_VALUE / 2
   MAX_POSITION = Gitlab::Database::MAX_INT_VALUE
   DISTANCE = 500
 
   included do
     after_save :save_positionable_neighbours
-  end
-
-  def min_relative_position
-    self.class.in_projects(project.id).minimum(:relative_position)
   end
 
   def max_relative_position
@@ -27,7 +24,7 @@ module RelativePositioning
         maximum(:relative_position)
     end
 
-    prev_pos || MIN_POSITION
+    prev_pos
   end
 
   def next_relative_position
@@ -40,7 +37,7 @@ module RelativePositioning
         minimum(:relative_position)
     end
 
-    next_pos || MAX_POSITION
+    next_pos
   end
 
   def move_between(before, after)
@@ -72,7 +69,7 @@ module RelativePositioning
   end
 
   def move_to_end
-    self.relative_position = position_between(max_relative_position, MAX_POSITION)
+    self.relative_position = position_between(max_relative_position || START_POSITION, MAX_POSITION)
   end
 
   private
@@ -87,10 +84,16 @@ module RelativePositioning
 
     pos_before, pos_after = [pos_before, pos_after].sort
 
-    if pos_after - pos_before > DISTANCE * 2
-      pos_before + DISTANCE
+    if pos_after - pos_before < DISTANCE * 2
+      (pos_after + pos_before) / 2
     else
-      pos_before + (pos_after - pos_before) / 2
+      if pos_before == MIN_POSITION
+        pos_after - DISTANCE
+      elsif pos_after == MAX_POSITION
+        pos_before + DISTANCE
+      else
+        (pos_after + pos_before) / 2
+      end
     end
   end
 
