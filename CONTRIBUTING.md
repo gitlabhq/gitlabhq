@@ -94,6 +94,10 @@ look for [issues with the label `Accepting Merge Requests` and weight < 5][accep
 These issues will be of reasonable size and challenge, for anyone to start
 contributing to GitLab.
 
+## Workflow labels
+
+Labelling issues is described in the [GitLab Inc engineering workflow].
+
 ## Implement design & UI elements
 
 Please see the [UX Guide for GitLab].
@@ -535,6 +539,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [newlines-styleguide]: doc/development/newlines_styleguide.md "Newlines styleguide"
 [UX Guide for GitLab]: http://docs.gitlab.com/ce/development/ux_guide/
 [license-finder-doc]: doc/development/licensing.md
+[GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
 
 [^1]: Specs other than JavaScript specs are considered backend code. Haml
       changes are considered backend code if they include Ruby code other than just
