@@ -1,12 +1,14 @@
 /* eslint-disable no-restricted-properties, func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, camelcase, no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line, default-case, prefer-template, consistent-return, no-alert, no-return-assign, no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new, brace-style, no-lonely-if, vars-on-top, no-unused-vars, no-sequences, no-shadow, newline-per-chained-call, no-useless-escape */
 /* global Flash */
 /* global Autosave */
+/* global Cookies */
 /* global ResolveService */
 /* global mrRefreshWidgetUrl */
 
 require('./autosave');
 window.autosize = require('vendor/autosize');
 window.Dropzone = require('dropzone');
+window.Cookies = require('js-cookie');
 require('./dropzone_input');
 require('./gfm_auto_complete');
 require('vendor/jquery.caret'); // required by jquery.atwho
@@ -42,7 +44,6 @@ require('./task_list');
       this.notes_url = notes_url;
       this.note_ids = note_ids;
       this.last_fetched_at = last_fetched_at;
-      this.view = view;
       this.noteable_url = document.URL;
       this.notesCountBadge || (this.notesCountBadge = $(".issuable-details").find(".notes-tab .badge"));
       this.basePollingInterval = 15000;
@@ -57,6 +58,7 @@ require('./task_list');
         selector: '.notes'
       });
       this.collapseLongCommitList();
+      this.setViewType(view);
 
       // We are in the Merge Requests page so we need another edit form for Changes tab
       if (gl.utils.getPagePath(1) === 'merge_requests') {
@@ -64,6 +66,10 @@ require('./task_list');
           .addClass('mr-note-edit-form').insertAfter('.note-edit-form');
       }
     }
+
+    Notes.prototype.setViewType = function(view) {
+      this.view = Cookies.get('diff_view') || view;
+    };
 
     Notes.prototype.addBinding = function() {
       // add note to UI after creation
@@ -302,7 +308,7 @@ require('./task_list');
     };
 
     Notes.prototype.isParallelView = function() {
-      return this.view === 'parallel';
+      return Cookies.get('diff_view') === 'parallel';
     };
 
     /*
