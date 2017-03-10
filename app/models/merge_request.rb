@@ -175,6 +175,15 @@ class MergeRequest < ActiveRecord::Base
     work_in_progress?(title) ? title : "WIP: #{title}"
   end
 
+  def self.pipelines_status_for_collection(merge_requests)
+    refs = merge_requests.pluck(:source_branch)
+
+    Ci::Pipeline.
+      where(
+        id: Ci::Pipeline.select("MAX(id)").where(ref: refs).group(:ref)
+      )
+  end
+
   # `from` argument can be a Namespace or Project.
   def to_reference(from = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"

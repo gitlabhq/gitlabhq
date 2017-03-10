@@ -16,9 +16,11 @@
             = icon('ban')
             CLOSED
 
-        - if merge_request.head_pipeline
+        - pipeline = @pipeline_statuses[merge_request.source_branch]
+
+        - if pipeline
           %li
-            = render_pipeline_status(merge_request.head_pipeline)
+            = render_pipeline_status(pipeline)
 
         - if merge_request.open? && merge_request.broken?
           %li

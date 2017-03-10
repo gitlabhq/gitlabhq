@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'issuable list', feature: true do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user)    { create(:user) }
 
   issuable_types = [:issue, :merge_request]
@@ -17,7 +17,6 @@ describe 'issuable list', feature: true do
       control_count = ActiveRecord::QueryRecorder.new { visit_issuable_list(issuable_type) }.count
 
       create_issuables(issuable_type)
-
       expect { visit_issuable_list(issuable_type) }.not_to exceed_query_limit(control_count)
     end
 
@@ -51,7 +50,9 @@ describe 'issuable list', feature: true do
         if issuable_type == :issue
           create(:issue, project: project, author: user)
         else
-          create(:merge_request, title: FFaker::Lorem.sentence, source_project: project, source_branch: FFaker::Name.name)
+          source_branch = FFaker::Name.name
+          create(:ci_empty_pipeline, project: project, ref: source_branch, status: %w(running failed success).sample, sha: project.commit.id)
+          create(:merge_request, title: FFaker::Lorem.sentence, source_project: project, source_branch: source_branch)
         end
 
       2.times do

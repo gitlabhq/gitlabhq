@@ -1,0 +1,4 @@
+---
+title: Remove n+1 query for pipeline status when rendering merge requests list
+merge_request:
+author:

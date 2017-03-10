@@ -40,6 +40,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_requests     = merge_requests_collection
     @merge_requests     = @merge_requests.page(params[:page])
     @issuable_meta_data = issuable_meta_data(@merge_requests, @collection_type)
+    @pipeline_statuses  = pipelines_for_collection(@merge_requests)
 
     if @merge_requests.out_of_range? && @merge_requests.total_pages != 0
       return redirect_to url_for(params.merge(page: @merge_requests.total_pages))

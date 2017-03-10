@@ -10,6 +10,7 @@ module MergeRequestsAction
 
     @collection_type    = "MergeRequest"
     @issuable_meta_data = issuable_meta_data(@merge_requests, @collection_type)
+    @pipeline_statuses  = pipelines_for_collection(@merge_requests)
   end
 
   private

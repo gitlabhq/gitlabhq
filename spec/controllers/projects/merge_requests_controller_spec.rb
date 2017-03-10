@@ -160,6 +160,25 @@ describe Projects::MergeRequestsController do
 
     it_behaves_like "issuables list meta-data", :merge_request
 
+    it 'loads last pipeline for each merge request source branch' do
+      status = %w(running failed success)
+
+      2.times do |i|
+        branch = "branch_#{i}"
+        create(:ci_empty_pipeline, project: project, ref: branch, status: status.sample, sha: project.commit.id)
+        create(:ci_empty_pipeline, project: project, ref: branch, status: status.sample, sha: project.commit.id)
+        create(:merge_request_with_diffs, target_project: project, source_project: project, source_branch: branch)
+      end
+      create(:merge_request_with_diffs, target_project: project, source_project: project, source_branch: "branch_1", target_branch: "not_master")
+
+      get_merge_requests
+
+      pipelines = assigns(:pipeline_statuses)
+      expect(pipelines.count).to eq(2)
+      expect(pipelines["branch_0"]).to eq(Ci::Pipeline.where(ref: "branch_0").last)
+      expect(pipelines["branch_1"]).to eq(Ci::Pipeline.where(ref: "branch_1").last)
+    end
+
     context 'when page param' do
       let(:last_page) { project.merge_requests.page().total_pages }
       let!(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }

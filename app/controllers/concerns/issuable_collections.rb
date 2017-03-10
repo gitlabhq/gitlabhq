@@ -39,6 +39,14 @@ module IssuableCollections
     end
   end
 
+  def pipelines_for_collection(merge_requests)
+    pipelines = MergeRequest.pipelines_status_for_collection(merge_requests)
+
+    pipelines.each_with_object({}) do |pipeline, pipelines_per_branch|
+      pipelines_per_branch[pipeline.ref] = pipeline
+    end
+  end
+
   def issues_collection
     issues_finder.execute.preload(:project, :author, :assignee, :labels, :milestone, project: :namespace)
   end
