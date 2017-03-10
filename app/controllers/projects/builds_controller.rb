@@ -76,8 +76,7 @@ class Projects::BuildsController < Projects::ApplicationController
   def status
     render json: BuildSerializer
       .new(project: @project, user: @current_user)
-      .only_status
-      .represent(@build)
+      .represent_status(@build)
   end
 
   def erase

@@ -476,8 +476,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def status
     render json: PipelineSerializer
       .new(project: @project, user: @current_user)
-      .only_status
-      .represent(@merge_request.head_pipeline)
+      .represent_status(@merge_request.head_pipeline)
   end
 
   def ci_environments_status

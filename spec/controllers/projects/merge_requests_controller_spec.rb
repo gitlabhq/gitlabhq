@@ -1181,11 +1181,15 @@ describe Projects::MergeRequestsController do
 
   describe 'GET status.json' do
     context 'when accessing status' do
+      let(:status) do
+        Gitlab::Ci::Status::Success.new(double('object'), double('user'))
+      end
+
       before do
         create(:ci_pipeline, project: merge_request.source_project,
                              ref: merge_request.source_branch,
                              sha: merge_request.diff_head_sha,
-                             status: 'success')
+                             status: :success)
         get :status, namespace_id: project.namespace,
                      project_id: project,
                      id: merge_request.iid,
@@ -1194,7 +1198,7 @@ describe Projects::MergeRequestsController do
 
       it 'return a correct pipeline status' do
         expect(response).to have_http_status(:ok)
-        expect(json_response['details']['status']['text']).to eq 'passed'
+        expect(json_response['favicon']).to eq status.favicon
       end
     end
   end

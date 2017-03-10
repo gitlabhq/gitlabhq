@@ -75,8 +75,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   def status
     render json: PipelineSerializer
       .new(project: @project, user: @current_user)
-      .only_status
-      .represent(@pipeline)
+      .represent_status(@pipeline)
   end
 
   def stage
