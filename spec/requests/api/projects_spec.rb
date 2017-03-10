@@ -424,6 +424,14 @@ describe API::Projects, api: true  do
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_truthy
     end
 
+    it 'ignores import_url when it is nil' do
+      project = attributes_for(:project, { import_url: nil })
+
+      post api('/projects', user), project
+
+      expect(response).to have_http_status(201)
+    end
+
     context 'when a visibility level is restricted' do
       let(:project_param) { attributes_for(:project, visibility: 'public') }
 
