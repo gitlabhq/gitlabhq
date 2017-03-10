@@ -110,7 +110,7 @@ class Projects::IssuesController < Projects::ApplicationController
     @issue = service.execute
 
     if service.discussions_to_resolve.count(&:resolved?) > 0
-      flash[:notice] = if params[:discussion_to_resolve].present?
+      flash[:notice] = if service.discussion_to_resolve_id
                          "Resolved 1 discussion."
                        else
                          "Resolved all discussions."
