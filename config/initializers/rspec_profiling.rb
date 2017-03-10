@@ -1,22 +1,41 @@
-module RspecProfilingConnection
-  def establish_connection
-    ::RspecProfiling::Collectors::PSQL::Result.establish_connection(ENV['RSPEC_PROFILING_POSTGRES_URL'])
+module RspecProfilingExt
+  module PSQL
+    def establish_connection
+      ::RspecProfiling::Collectors::PSQL::Result.establish_connection(ENV['RSPEC_PROFILING_POSTGRES_URL'])
+    end
   end
-end
 
-module RspecProfilingGitBranchCi
-  def branch
-    ENV['CI_BUILD_REF_NAME'] || super
+  module Git
+    def branch
+      ENV['CI_BUILD_REF_NAME'] || super
+    end
+  end
+
+  module Run
+    def example_finished(*args)
+      super
+    rescue => err
+      return if @already_logged_example_finished_error
+
+      $stderr.puts "rspec_profiling couldn't collect an example: #{err}. Further warnings suppressed."
+      @already_logged_example_finished_error = true
+    end
+
+    alias_method :example_passed, :example_finished
+    alias_method :example_failed, :example_finished
   end
 end
 
 if Rails.env.test?
   RspecProfiling.configure do |config|
     if ENV['RSPEC_PROFILING_POSTGRES_URL']
-      RspecProfiling::Collectors::PSQL.prepend(RspecProfilingConnection)
+      RspecProfiling::Collectors::PSQL.prepend(RspecProfilingExt::PSQL)
       config.collector = RspecProfiling::Collectors::PSQL
     end
   end
 
-  RspecProfiling::VCS::Git.prepend(RspecProfilingGitBranchCi) if ENV.has_key?('CI')
+  if ENV.has_key?('CI')
+    RspecProfiling::VCS::Git.prepend(RspecProfilingExt::Git)
+    RspecProfiling::Run.prepend(RspecProfilingExt::Run)
+  end
 end

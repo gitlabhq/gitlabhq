@@ -9,8 +9,13 @@ class AddIndexToRoutes < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def change
+  def up
     add_concurrent_index(:routes, :path, unique: true)
     add_concurrent_index(:routes, [:source_type, :source_id], unique: true)
+  end
+
+  def down
+    remove_index(:routes, :path) if index_exists? :routes, :path
+    remove_index(:routes, [:source_type, :source_id]) if index_exists? :routes, [:source_type, :source_id]
   end
 end

@@ -29,8 +29,12 @@ module Ci
       token[0...4]
     end
 
-    def can_show_token?(user)
-      owner.blank? || owner == user
+    def legacy?
+      self.owner_id.blank?
+    end
+
+    def can_access_project?
+      self.owner_id.blank? || Ability.allowed?(self.owner, :create_build, project)
     end
   end
 end

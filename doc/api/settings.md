@@ -20,7 +20,7 @@ Example response:
 
 ```json
 {
-   "default_projects_limit" : 10,
+   "default_projects_limit" : 100000,
    "signup_enabled" : true,
    "id" : 1,
    "default_branch_protection" : 2,
@@ -59,7 +59,7 @@ PUT /application/settings
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | :------: | ----------- |
-| `default_projects_limit` | integer  | no | Project limit per user. Default is `10` |
+| `default_projects_limit` | integer  | no | Project limit per user. Default is `100000` |
 | `signup_enabled`    | boolean | no  | Enable registration. Default is `true`. |
 | `signin_enabled`    | boolean | no  | Enable login via a GitLab account. Default is `true`. |
 | `gravatar_enabled`  | boolean | no  | Enable Gravatar |
@@ -106,7 +106,7 @@ Example response:
 ```json
 {
   "id": 1,
-  "default_projects_limit": 10,
+  "default_projects_limit": 100000,
   "signup_enabled": true,
   "signin_enabled": true,
   "gravatar_enabled": true,

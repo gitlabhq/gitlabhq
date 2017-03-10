@@ -10,7 +10,7 @@ module Projects
           .new(@project, current_user: current_user)
 
         define_protected_branches
-      end      
+      end
 
       private
 
@@ -35,16 +35,20 @@ module Projects
       def access_levels_options
         {
           push_access_levels: {
-            roles: ProtectedBranch::PushAccessLevel.human_access_levels.map { |id, text| { id: id, text: text, before_divider: true } },
+            roles: ProtectedBranch::PushAccessLevel.human_access_levels.map do |id, text|
+              { id: id, text: text, before_divider: true }
+            end
           },
           merge_access_levels: {
-            roles: ProtectedBranch::MergeAccessLevel.human_access_levels.map { |id, text| { id: id, text: text, before_divider: true } },
+            roles: ProtectedBranch::MergeAccessLevel.human_access_levels.map do |id, text|
+              { id: id, text: text, before_divider: true }
+            end
           },
           selected_merge_access_levels: @protected_branch.merge_access_levels.map { |access_level| access_level.user_id || access_level.access_level },
           selected_push_access_levels: @protected_branch.push_access_levels.map { |access_level| access_level.user_id || access_level.access_level }
         }
       end
-      
+
       def open_branches
         branches = @project.open_branches.map { |br| { text: br.name, id: br.name, title: br.name } }
         { open_branches: branches }

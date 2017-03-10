@@ -42,6 +42,7 @@ var config = {
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     terminal:             './terminal/terminal_bundle.js',
+    u2f:                  ['vendor/u2f'],
     users:                './users/users_bundle.js',
     vue_pipelines:        './vue_pipelines_index/index.js',
   },

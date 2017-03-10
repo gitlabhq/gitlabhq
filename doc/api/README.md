@@ -11,7 +11,6 @@ following locations:
 - [Award Emoji](award_emoji.md)
 - [Branches](branches.md)
 - [Broadcast Messages](broadcast_messages.md)
-- [Builds](builds.md)
 - [Build Variables](build_variables.md)
 - [Commits](commits.md)
 - [Deployments](deployments.md)
@@ -23,6 +22,7 @@ following locations:
 - [Group Members](members.md)
 - [Issues](issues.md)
 - [Issue Boards](boards.md)
+- [Jobs](jobs.md)
 - [Keys](keys.md)
 - [Labels](labels.md)
 - [License](license.md)
@@ -221,6 +221,14 @@ GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=23
 ```shell
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: 23" "https://gitlab.example.com/api/v4/projects"
 ```
+
+## Impersonation Tokens
+
+Impersonation Tokens are a type of Personal Access Token that can only be created by an admin for a specific user. These can be used by automated tools
+to authenticate with the API as a specific user, as a better alternative to using the user's password or private token directly, which may change over time,
+and to using the [Sudo](#sudo) feature, which requires the tool to know an admin's password or private token, which can change over time as well and are extremely powerful.
+
+For more information about the usage please refer to the [Users](users.md) page
 
 ## Pagination
 

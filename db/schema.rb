@@ -120,14 +120,14 @@ ActiveRecord::Schema.define(version: 20170308015651) do
     t.integer "terminal_max_session_time", default: 0, null: false
     t.integer "minimum_mirror_sync_time", default: 15, null: false
     t.string "default_artifacts_expire_in", default: "0", null: false
-    t.integer "unique_ips_limit_per_user"
-    t.integer "unique_ips_limit_time_window"
-    t.boolean "unique_ips_limit_enabled", default: false, null: false
     t.string "elasticsearch_url", default: "http://localhost:9200"
     t.boolean "elasticsearch_aws", default: false, null: false
     t.string "elasticsearch_aws_region", default: "us-east-1"
     t.string "elasticsearch_aws_access_key"
     t.string "elasticsearch_aws_secret_access_key"
+    t.integer "unique_ips_limit_per_user"
+    t.integer "unique_ips_limit_time_window"
+    t.boolean "unique_ips_limit_enabled", default: false, null: false
     t.integer "geo_status_timeout", default: 10
   end
 
@@ -1003,6 +1003,11 @@ ActiveRecord::Schema.define(version: 20170308015651) do
   add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
+  create_table "oauth_openid_requests", force: :cascade do |t|
+    t.integer "access_grant_id", null: false
+    t.string "nonce", null: false
+  end
+
   create_table "pages_domains", force: :cascade do |t|
     t.integer "project_id"
     t.text "certificate"
@@ -1031,10 +1036,11 @@ ActiveRecord::Schema.define(version: 20170308015651) do
     t.string "token", null: false
     t.string "name", null: false
     t.boolean "revoked", default: false
-    t.datetime "expires_at"
+    t.date "expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "scopes", default: "--- []\n", null: false
+    t.boolean "impersonation", default: false, null: false
   end
 
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
@@ -1579,6 +1585,7 @@ ActiveRecord::Schema.define(version: 20170308015651) do
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
   add_foreign_key "namespace_statistics", "namespaces", on_delete: :cascade
+  add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
   add_foreign_key "path_locks", "projects"
   add_foreign_key "path_locks", "users"
   add_foreign_key "personal_access_tokens", "users"

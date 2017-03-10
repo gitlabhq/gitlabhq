@@ -320,11 +320,13 @@ class Repository
     if !branch_name || branch_name == root_ref
       branches.each do |branch|
         cache.expire(:"diverging_commit_counts_#{branch.name}")
+        cache.expire(:"commit_count_#{branch.name}")
       end
     # In case a commit is pushed to a non-root branch we only have to flush the
     # cache for said branch.
     else
       cache.expire(:"diverging_commit_counts_#{branch_name}")
+      cache.expire(:"commit_count_#{branch_name}")
     end
   end
 
@@ -503,6 +505,16 @@ class Repository
     root_ref ? raw_repository.commit_count(root_ref) : 0
   end
   cache_method :commit_count, fallback: 0
+
+  def commit_count_for_ref(ref)
+    return 0 unless exists?
+
+    begin
+      cache.fetch(:"commit_count_#{ref}") { raw_repository.commit_count(ref) }
+    rescue Rugged::ReferenceError
+      0
+    end
+  end
 
   def branch_names
     branches.map(&:name)

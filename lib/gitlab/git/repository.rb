@@ -354,6 +354,18 @@ module Gitlab
         lines.map! { |c| Rugged::Commit.new(rugged, c.strip) }
       end
 
+      def count_commits(options)
+        cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} rev-list]
+        cmd << "--after=#{options[:after].iso8601}" if options[:after]
+        cmd << "--before=#{options[:before].iso8601}" if options[:before]
+        cmd += %W[--count #{options[:ref]}]
+        cmd += %W[-- #{options[:path]}] if options[:path].present?
+
+        raw_output = IO.popen(cmd) { |io| io.read }
+
+        raw_output.to_i
+      end
+
       def sha_from_ref(ref)
         rev_parse_target(ref).oid
       end

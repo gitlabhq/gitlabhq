@@ -782,7 +782,7 @@ describe TodoService, services: true do
     issue = create(:issue, project: project, assignee: john_doe, author: author, description: mentions)
 
     expect(john_doe.todos_pending_count).to eq(0)
-    expect(john_doe).to receive(:update_todos_count_cache)
+    expect(john_doe).to receive(:update_todos_count_cache).and_call_original
 
     service.new_issue(issue, author)
 

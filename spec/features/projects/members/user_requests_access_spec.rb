@@ -57,6 +57,12 @@ feature 'Projects > Members > User requests access', feature: true do
   end
 
   def open_project_settings_menu
-    find('#project-settings-button').click
+    page.within('.layout-nav .nav-links') do
+      click_link('Settings')
+    end
+
+    page.within('.page-with-layout-nav .sub-nav') do
+      click_link('Members')
+    end
   end
 end

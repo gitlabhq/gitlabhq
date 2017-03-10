@@ -151,7 +151,7 @@
     }
 
     setDropdown() {
-      const query = gl.DropdownUtils.getSearchQuery();
+      const query = gl.DropdownUtils.getSearchQuery(true);
       const { lastToken, searchToken } = this.tokenizer.processTokens(query);
 
       if (this.currentDropdown) {

@@ -14,6 +14,7 @@ require('./components/jump_to_discussion');
 require('./components/resolve_btn');
 require('./components/resolve_count');
 require('./components/resolve_discussion_btn');
+require('./components/diff_note_avatars');
 
 $(() => {
   const projectPath = document.querySelector('.merge-request').dataset.projectPath;
@@ -25,6 +26,15 @@ $(() => {
   window.ResolveService = new gl.DiffNotesResolveServiceClass(projectPath);
 
   gl.diffNotesCompileComponents = () => {
+    $('diff-note-avatars').each(function () {
+      const tmp = Vue.extend({
+        template: $(this).get(0).outerHTML
+      });
+      const tmpApp = new tmp().$mount();
+
+      $(this).replaceWith(tmpApp.$el);
+    });
+
     const $components = $(COMPONENT_SELECTOR).filter(function () {
       return $(this).closest('resolve-count').length !== 1;
     });

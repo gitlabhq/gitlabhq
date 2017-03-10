@@ -19,8 +19,8 @@ you need to use with GitLab.
 ## GitLab Pages Ports
 
 If you're using GitLab Pages you will need some additional port configurations.
-GitLab Pages requires a separate VIP. Configure DNS to point the
-`pages_external_url` from `/etc/gitlab/gitlab.rb` at the new VIP. See the
+GitLab Pages requires a separate virtual IP address. Configure DNS to point the
+`pages_external_url` from `/etc/gitlab/gitlab.rb` at the new virtual IP address. See the
 [GitLab Pages documentation][gitlab-pages] for more information.
 
 | LB Port | Backend Port | Protocol |
@@ -32,7 +32,7 @@ GitLab Pages requires a separate VIP. Configure DNS to point the
 
 Some organizations have policies against opening SSH port 22. In this case,
 it may be helpful to configure an alternate SSH hostname that allows users
-to use SSH on port 443. An alternate SSH hostname will require a new VIP
+to use SSH on port 443. An alternate SSH hostname will require a new virtual IP address
 compared to the other GitLab HTTP configuration above.
 
 Configure DNS for an alternate SSH hostname such as altssh.gitlab.example.com.

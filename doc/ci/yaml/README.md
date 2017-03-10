@@ -70,7 +70,7 @@ There are a few reserved `keywords` that **cannot** be used as job names:
 | image         | no | Use docker image, covered in [Use Docker](../docker/README.md) |
 | services      | no | Use docker services, covered in [Use Docker](../docker/README.md) |
 | stages        | no | Define build stages |
-| types         | no | Alias for `stages` |
+| types         | no | Alias for `stages` (deprecated) |
 | before_script | no | Define commands that run before each job's script |
 | after_script  | no | Define commands that run after each job's script |
 | variables     | no | Define build variables |
@@ -130,6 +130,8 @@ There are also two edge cases worth mentioning:
 
 ### types
 
+> Deprecated, and will be removed in 10.0. Use [stages](#stages) instead.
+
 Alias for [stages](#stages).
 
 ### variables
@@ -166,10 +168,11 @@ which can be set in GitLab's UI.
 cached between jobs. You can only use paths that are within the project
 workspace.
 
-**By default the caching is enabled per-job and per-branch.**
+**By default caching is enabled and shared between pipelines and jobs,
+starting from GitLab 9.0**
 
-If `cache` is defined outside the scope of the jobs, it means it is set
-globally and all jobs will use its definition.
+If `cache` is defined outside the scope of jobs, it means it is set
+globally and all jobs will use that definition.
 
 Cache all files in `binaries` and `.config`:
 
@@ -202,7 +205,7 @@ rspec:
     - binaries/
 ```
 
-Locally defined cache overwrites globally defined options. The following `rspec`
+Locally defined cache overrides globally defined options. The following `rspec`
 job will cache only `binaries/`:
 
 ```yaml
@@ -213,9 +216,14 @@ cache:
 rspec:
   script: test
   cache:
+    key: rspec
     paths:
     - binaries/
 ```
+
+Note that since cache is shared between jobs, if you're using different
+paths for different jobs, you should also set a different **cache:key**
+otherwise cache content can be overwritten.
 
 The cache is provided on a best-effort basis, so don't expect that the cache
 will be always present. For implementation details, please check GitLab Runner.
@@ -232,6 +240,9 @@ This allows you to fine tune caching, allowing you to cache data between
 different jobs or even different branches.
 
 The `cache:key` variable can use any of the [predefined variables](../variables/README.md).
+
+The default key is **default** across the project, therefore everything is
+shared between each pipelines and jobs by default, starting from GitLab 9.0.
 
 ---
 

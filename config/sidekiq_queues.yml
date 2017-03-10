@@ -52,6 +52,7 @@
   - [cronjob, 1]
   - [default, 1]
   - [pages, 1]
+  - [system_hook_push, 1]
   # EE specific queues
   - [elasticsearch, 1]
   - [geo, 1]

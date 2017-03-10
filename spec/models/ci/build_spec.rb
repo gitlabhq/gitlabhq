@@ -345,11 +345,11 @@ describe Ci::Build, :models do
     describe '#expanded_environment_name' do
       subject { build.expanded_environment_name }
 
-      context 'when environment uses $CI_BUILD_REF_NAME' do
+      context 'when environment uses $CI_COMMIT_REF_NAME' do
         let(:build) do
           create(:ci_build,
                  ref: 'master',
-                 environment: 'review/$CI_BUILD_REF_NAME')
+                 environment: 'review/$CI_COMMIT_REF_NAME')
         end
 
         it { is_expected.to eq('review/master') }
@@ -915,7 +915,7 @@ describe Ci::Build, :models do
     end
 
     context 'referenced with a variable' do
-      let(:build) { create(:ci_build, pipeline: pipeline, environment: "foo-$CI_BUILD_REF_NAME") }
+      let(:build) { create(:ci_build, pipeline: pipeline, environment: "foo-$CI_COMMIT_REF_NAME") }
 
       it { is_expected.to eq(@environment) }
     end
@@ -1286,23 +1286,25 @@ describe Ci::Build, :models do
       [
         { key: 'CI', value: 'true', public: true },
         { key: 'GITLAB_CI', value: 'true', public: true },
-        { key: 'CI_BUILD_ID', value: build.id.to_s, public: true },
-        { key: 'CI_BUILD_TOKEN', value: build.token, public: false },
-        { key: 'CI_BUILD_REF', value: build.sha, public: true },
-        { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true },
-        { key: 'CI_BUILD_REF_NAME', value: 'master', public: true },
-        { key: 'CI_BUILD_REF_SLUG', value: 'master', public: true },
-        { key: 'CI_BUILD_NAME', value: 'test', public: true },
-        { key: 'CI_BUILD_STAGE', value: 'test', public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
         { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
         { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
+        { key: 'CI_JOB_ID', value: build.id.to_s, public: true },
+        { key: 'CI_JOB_NAME', value: 'test', public: true },
+        { key: 'CI_JOB_STAGE', value: 'test', public: true },
+        { key: 'CI_JOB_TOKEN', value: build.token, public: false },
+        { key: 'CI_COMMIT_SHA', value: build.sha, public: true },
+        { key: 'CI_COMMIT_REF_NAME', value: build.ref, public: true },
+        { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true },
         { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true },
         { key: 'CI_PROJECT_NAME', value: project.path, public: true },
         { key: 'CI_PROJECT_PATH', value: project.full_path, public: true },
         { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
-        { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true }
+        { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
+        { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
+        { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
+        { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false },
       ]
     end
 
@@ -1317,7 +1319,7 @@ describe Ci::Build, :models do
         build.yaml_variables = []
       end
 
-      it { is_expected.to eq(predefined_variables) }
+      it { is_expected.to include(*predefined_variables) }
     end
 
     context 'when build has user' do
@@ -1355,7 +1357,7 @@ describe Ci::Build, :models do
       end
 
       let(:manual_variable) do
-        { key: 'CI_BUILD_MANUAL', value: 'true', public: true }
+        { key: 'CI_JOB_MANUAL', value: 'true', public: true }
       end
 
       it { is_expected.to include(manual_variable) }
@@ -1363,7 +1365,7 @@ describe Ci::Build, :models do
 
     context 'when build is for tag' do
       let(:tag_variable) do
-        { key: 'CI_BUILD_TAG', value: 'master', public: true }
+        { key: 'CI_COMMIT_TAG', value: 'master', public: true }
       end
 
       before do
@@ -1392,7 +1394,7 @@ describe Ci::Build, :models do
         { key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1', public: false }
       end
       let(:predefined_trigger_variable) do
-        { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true }
+        { key: 'CI_PIPELINE_TRIGGERED', value: 'true', public: true }
       end
 
       before do
@@ -1416,7 +1418,7 @@ describe Ci::Build, :models do
         context 'when config is not found' do
           let(:config) { nil }
 
-          it { is_expected.to eq(predefined_variables) }
+          it { is_expected.to include(*predefined_variables) }
         end
 
         context 'when config does not have a questioned job' do
@@ -1428,7 +1430,7 @@ describe Ci::Build, :models do
             })
           end
 
-          it { is_expected.to eq(predefined_variables) }
+          it { is_expected.to include(*predefined_variables) }
         end
 
         context 'when config has variables' do
@@ -1446,7 +1448,8 @@ describe Ci::Build, :models do
             [{ key: 'KEY', value: 'value', public: true }]
           end
 
-          it { is_expected.to eq(predefined_variables + variables) }
+          it { is_expected.to include(*predefined_variables) }
+          it { is_expected.to include(*variables) }
         end
       end
     end

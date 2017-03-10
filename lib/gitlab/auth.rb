@@ -2,9 +2,17 @@ module Gitlab
   module Auth
     MissingPersonalTokenError = Class.new(StandardError)
 
-    SCOPES = [:api, :read_user].freeze
+    # Scopes used for GitLab API access
+    API_SCOPES = [:api, :read_user].freeze
+
+    # Scopes used for OpenID Connect
+    OPENID_SCOPES = [:openid].freeze
+
+    # Default scopes for OAuth applications that don't define their own
     DEFAULT_SCOPES = [:api].freeze
-    OPTIONAL_SCOPES = SCOPES - DEFAULT_SCOPES
+
+    # Other available scopes
+    OPTIONAL_SCOPES = (API_SCOPES + OPENID_SCOPES - DEFAULT_SCOPES).freeze
 
     class << self
       prepend EE::Gitlab::Auth
@@ -20,8 +28,8 @@ module Gitlab
           build_access_token_check(login, password) ||
           lfs_token_check(login, password) ||
           oauth_access_token_check(login, password) ||
-          personal_access_token_check(login, password) ||
           user_with_password_for_git(login, password) ||
+          personal_access_token_check(password) ||
           Gitlab::Auth::Result.new
 
         rate_limit!(ip, success: result.success?, login: login)
@@ -42,7 +50,7 @@ module Gitlab
 
             Gitlab::LDAP::Authentication.login(login, password)
           else
-            user if user.valid_password?(password)
+            user if user.active? && user.valid_password?(password)
           end
         end
       end
@@ -107,23 +115,18 @@ module Gitlab
         end
       end
 
-      def personal_access_token_check(login, password)
-        if login && password
-          token = PersonalAccessToken.active.find_by_token(password)
-          validation = User.by_login(login)
+      def personal_access_token_check(password)
+        return unless password.present?
 
-          if valid_personal_access_token?(token, validation)
-            Gitlab::Auth::Result.new(validation, nil, :personal_token, full_authentication_abilities)
-          end
+        token = PersonalAccessTokensFinder.new(state: 'active').find_by(token: password)
+
+        if token && valid_api_token?(token)
+          Gitlab::Auth::Result.new(token.user, nil, :personal_token, full_authentication_abilities)
         end
       end
 
       def valid_oauth_token?(token)
         token && token.accessible? && valid_api_token?(token)
-      end
-
-      def valid_personal_access_token?(token, user)
-        token && token.user == user && valid_api_token?(token)
       end
 
       def valid_api_token?(token)

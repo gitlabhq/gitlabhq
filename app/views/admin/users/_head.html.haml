@@ -23,4 +23,6 @@
     = link_to "SSH keys", keys_admin_user_path(@user)
   = nav_link(controller: :identities) do
     = link_to "Identities", admin_user_identities_path(@user)
+  = nav_link(controller: :impersonation_tokens) do
+    = link_to "Impersonation Tokens", admin_user_impersonation_tokens_path(@user)
 .append-bottom-default

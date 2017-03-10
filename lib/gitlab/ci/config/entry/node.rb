@@ -70,6 +70,12 @@ module Gitlab
             true
           end
 
+          def inspect
+            val = leaf? ? config : descendants
+            unspecified = specified? ? '' : '(unspecified) '
+            "#<#{self.class.name} #{unspecified}{#{key}: #{val.inspect}}>"
+          end
+
           def self.default
           end
 

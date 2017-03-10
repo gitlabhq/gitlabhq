@@ -1,0 +1,4 @@
+---
+title: Restrict nested group names to prevent ambiguous routes
+merge_request: 9738
+author:

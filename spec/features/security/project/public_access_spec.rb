@@ -117,7 +117,7 @@ describe "Public Project Access", feature: true  do
   end
 
   describe "GET /:project_path/settings/repository" do
-    subject { namespace_project_settings_ci_cd_path(project.namespace, project) }
+    subject { namespace_project_settings_repository_path(project.namespace, project) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }

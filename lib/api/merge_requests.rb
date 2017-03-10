@@ -223,7 +223,6 @@ module API
       desc 'Cancel merge if "Merge When Pipeline Succeeds" is enabled' do
         success Entities::MergeRequest
       end
-
       post ':id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
 

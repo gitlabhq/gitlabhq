@@ -782,5 +782,99 @@ module API
       expose :lfs_objects_total
       expose :lfs_objects_synced
     end
+
+    class PersonalAccessToken < Grape::Entity
+      expose :id, :name, :revoked, :created_at, :scopes
+      expose :active?, as: :active
+      expose :expires_at do |personal_access_token|
+        personal_access_token.expires_at ? personal_access_token.expires_at.strftime("%Y-%m-%d") : nil
+      end
+    end
+
+    class PersonalAccessTokenWithToken < PersonalAccessToken
+      expose :token
+    end
+
+    class ImpersonationToken < PersonalAccessTokenWithToken
+      expose :impersonation
+    end
+
+    module JobRequest
+      class JobInfo < Grape::Entity
+        expose :name, :stage
+        expose :project_id, :project_name
+      end
+
+      class GitInfo < Grape::Entity
+        expose :repo_url, :ref, :sha, :before_sha
+        expose :ref_type do |model|
+          if model.tag
+            'tag'
+          else
+            'branch'
+          end
+        end
+      end
+
+      class RunnerInfo < Grape::Entity
+        expose :timeout
+      end
+
+      class Step < Grape::Entity
+        expose :name, :script, :timeout, :when, :allow_failure
+      end
+
+      class Image < Grape::Entity
+        expose :name
+      end
+
+      class Artifacts < Grape::Entity
+        expose :name, :untracked, :paths, :when, :expire_in
+      end
+
+      class Cache < Grape::Entity
+        expose :key, :untracked, :paths
+      end
+
+      class Credentials < Grape::Entity
+        expose :type, :url, :username, :password
+      end
+
+      class ArtifactFile < Grape::Entity
+        expose :filename, :size
+      end
+
+      class Dependency < Grape::Entity
+        expose :id, :name
+        expose :artifacts_file, using: ArtifactFile, if: ->(job, _) { job.artifacts? }
+      end
+
+      class Response < Grape::Entity
+        expose :id
+        expose :token
+        expose :allow_git_fetch
+
+        expose :job_info, using: JobInfo do |model|
+          model
+        end
+
+        expose :git_info, using: GitInfo do |model|
+          model
+        end
+
+        expose :runner_info, using: RunnerInfo do |model|
+          model
+        end
+
+        expose :variables
+        expose :steps, using: Step
+        expose :image, using: Image
+        expose :services, using: Image
+        expose :artifacts, using: Artifacts
+        expose :cache, using: Cache
+        expose :credentials, using: Credentials
+        expose :depends_on_builds, as: :dependencies, using: Dependency
+      end
+    end
   end
 end

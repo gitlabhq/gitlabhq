@@ -1,0 +1,4 @@
+---
+title: Clear ActiveRecord connections before starting Sidekiq
+merge_request:
+author:

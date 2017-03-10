@@ -235,44 +235,6 @@ ul.content-list {
   }
 }
 
-// Table list
-.table-list {
-  display: table;
-  width: 100%;
-
-  .table-list-row {
-    display: table-row;
-  }
-
-  .table-list-cell {
-    display: table-cell;
-    vertical-align: top;
-    padding: 10px 16px;
-    border-bottom: 1px solid $gray-darker;
-
-    &.avatar-cell {
-      width: 36px;
-      padding-right: 0;
-
-      img {
-        margin-right: 0;
-      }
-    }
-  }
-
-  &.table-wide {
-    .table-list-cell {
-      &:last-of-type {
-        padding-right: 0;
-      }
-
-      &:first-of-type {
-        padding-left: 0;
-      }
-    }
-  }
-}
-
 .panel > .content-list > li {
   padding: $gl-padding-top $gl-padding;
 }

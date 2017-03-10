@@ -512,6 +512,62 @@ Currently, there is no storage limitation, which means a user can upload an
 infinite amount of Docker images with arbitrary sizes. This setting will be
 configurable in future releases.
 
+## Configure Container Registry notifications
+
+You can configure the Container Registry to send webhook notifications in 
+response to events happening within the registry.  
+
+Read more about the Container Registry notifications config options in the
+[Docker Registry notifications documentation][notifications-config].
+
+>**Note:**
+Multiple endpoints can be configured for the Container Registry.
+
+
+**Omnibus GitLab installations**
+
+To configure a notification endpoint in Omnibus:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    registry['notifications'] = [
+      {
+        'name' => 'test_endpoint',
+        'url' => 'https://gitlab.example.com/notify',
+        'timeout' => '500ms',
+        'threshold' => 5,
+        'backoff' => '1s',
+        'headers' => {
+          "Authorization" => ["AUTHORIZATION_EXAMPLE_TOKEN"]
+        }
+      }
+    ]
+    ```
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+
+---
+
+**Installations from source**
+
+Configuring the notification endpoint is done in your registry config YML file created
+when you [deployed your docker registry][registry-deploy].
+
+Example:
+
+```
+notifications:
+  endpoints:
+    - name: alistener
+      disabled: false
+      url: https://my.listener.com/event
+      headers: <http.Header>
+      timeout: 500
+      threshold: 5
+      backoff: 1000
+```
+
 ## Changelog
 
 **GitLab 8.8 ([source docs][8-8-docs])**
@@ -532,3 +588,5 @@ configurable in future releases.
 [registry-ssl]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/support/nginx/registry-ssl
 [existing-domain]: #configure-container-registry-under-an-existing-gitlab-domain
 [new-domain]: #configure-container-registry-under-its-own-domain
+[notifications-config]: https://docs.docker.com/registry/notifications/
+[registry-notifications-config]: https://docs.docker.com/registry/configuration/#notifications

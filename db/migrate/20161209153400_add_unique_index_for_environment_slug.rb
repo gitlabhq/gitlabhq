@@ -9,7 +9,11 @@ class AddUniqueIndexForEnvironmentSlug < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def change
+  def up
     add_concurrent_index :environments, [:project_id, :slug], unique: true
+  end
+
+  def down
+    remove_index :environments, [:project_id, :slug], unique: true if index_exists? :environments, [:project_id, :slug]
   end
 end
