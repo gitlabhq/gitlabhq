@@ -18,7 +18,8 @@ module SortingHelper
       sort_value_upvotes => sort_title_upvotes,
       sort_value_more_weight => sort_title_more_weight,
       sort_value_less_weight => sort_title_less_weight,
-      sort_value_priority => sort_title_priority
+      sort_value_priority => sort_title_priority,
+      sort_value_label_priority => sort_title_label_priority
     }
   end
 
@@ -52,6 +53,10 @@ module SortingHelper
   end
 
   def sort_title_priority
+    'Priority'
+  end
+
+  def sort_title_label_priority
     'Label priority'
   end
 
@@ -169,6 +174,10 @@ module SortingHelper
 
   def sort_value_priority
     'priority'
+  end
+
+  def sort_value_label_priority
+    'label_priority'
   end
 
   def sort_value_oldest_updated
