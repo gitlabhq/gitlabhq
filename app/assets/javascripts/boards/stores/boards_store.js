@@ -124,8 +124,12 @@
         return list[key] === val && byType;
       })[0];
     },
-    updateFiltersUrl () {
-      history.pushState(null, null, `?${this.filter.path}`);
+    updateFiltersUrl (replaceState = false) {
+      if (replaceState) {
+        history.replaceState(null, null, `?${this.filter.path}`);
+      } else {
+        history.pushState(null, null, `?${this.filter.path}`);
+      }
     }
   };
 })();

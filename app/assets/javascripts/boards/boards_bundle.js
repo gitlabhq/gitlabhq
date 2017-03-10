@@ -70,7 +70,7 @@ $(() => {
         splitPath = [milestoneTitleParam].concat(splitPath);
         Store.filter.path = splitPath.join('&');
 
-        Store.updateFiltersUrl();
+        Store.updateFiltersUrl(true);
       }
 
       gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
