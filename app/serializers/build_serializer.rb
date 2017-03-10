@@ -1,7 +1,7 @@
 class BuildSerializer < BaseSerializer
   entity BuildEntity
 
-  def with_status
+  def only_status
     tap { @status_only = { only: [{ details: [:status] }] } }
   end
 

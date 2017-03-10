@@ -97,7 +97,7 @@ describe PipelineSerializer do
     context 'when used with status' do
       let(:serializer) do
         described_class.new(user: user)
-          .with_status
+          .only_status
       end
       let(:resource) { create(:ci_empty_pipeline) }
 

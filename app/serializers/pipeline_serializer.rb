@@ -11,7 +11,7 @@ class PipelineSerializer < BaseSerializer
     @paginator.present?
   end
 
-  def with_status
+  def only_status
     tap { @status_only = { only: [{ details: [:status] }] } }
   end
 
