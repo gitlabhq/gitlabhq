@@ -147,9 +147,9 @@ that was explicitly given Developer access.
 ## Mentioning subgroups
 
 Mentioning groups (`@group`) in issues, commits and merge requests, would
-mention all members of that group. Now with subgroups, there is a more granular
+notify all members of that group. Now with subgroups, there is a more granular
 support if you want to split your group's structure. Mentioning works as before
-and you can choose the group of people to be summoned.
+and you can choose the group of people to be notified.
 
 ![Mentioning subgroups](img/mention_subgroups.png)
 
