@@ -86,7 +86,7 @@ describe '6_validations', lib: true do
     end
 
     it 'throws an error suggesting the user to update its settings' do
-      expect { validate_storages }.to raise_error('foo is not a valid storage, because it has no `path` key. Refer to gitlab.yml.example for an updated example. Please fix this in your gitlab.yml before starting GitLab.')
+      expect { validate_storages_config }.to raise_error('foo is not a valid storage, because it has no `path` key. Refer to gitlab.yml.example for an updated example. Please fix this in your gitlab.yml before starting GitLab.')
     end
   end
 
@@ -96,7 +96,7 @@ describe '6_validations', lib: true do
     end
 
     it 'throws an error suggesting the user to update its settings' do
-      expect { validate_storages }.to raise_error("foo is not a valid storage, because it has no `path` key. It may be configured as:\n\nfoo:\n  path: tmp/tests/paths/a/b/c\n\nRefer to gitlab.yml.example for an updated example. Please fix this in your gitlab.yml before starting GitLab.")
+      expect { validate_storages_config }.to raise_error("foo is not a valid storage, because it has no `path` key. It may be configured as:\n\nfoo:\n  path: tmp/tests/paths/a/b/c\n\nFor source installations, update your config/gitlab.yml Refer to gitlab.yml.example for an updated example.\n\nIf you're using the Gitlab Development Kit, you can update your configuration running `gdk reconfigure`.\n")
     end
   end
 
