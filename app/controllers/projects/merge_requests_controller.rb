@@ -715,6 +715,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def serializer
+    # FIXME: @oswaldo, we should remove one of the user or current_user
     MergeRequestSerializer.new(user: current_user, current_user: current_user, project: merge_request.project)
   end
 end
