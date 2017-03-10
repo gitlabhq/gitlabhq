@@ -6,9 +6,10 @@ module Rouge
       # Creates a new <tt>Rouge::Formatter::HTMLGitlab</tt> instance.
       #
       # [+linenostart+]     The line number for the first line (default: 1).
-      def initialize(linenostart: 1)
+      def initialize(linenostart: 1, tag: nil)
         @linenostart = linenostart
         @line_number = linenostart
+        @tag = tag
       end
 
       def stream(tokens, &b)
@@ -17,7 +18,7 @@ module Rouge
           yield "\n" unless is_first
           is_first = false
 
-          yield %(<span id="LC#{@line_number}" class="line">)
+          yield %(<span id="LC#{@line_number}" class="line" lang="#{@tag}">)
           line.each { |token, value| yield span(token, value.chomp) }
           yield %(</span>)
 
