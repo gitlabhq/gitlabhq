@@ -11,7 +11,8 @@ namespace :gitlab do
     #
     desc "GitLab | Import bare repositories from repositories -> storages into GitLab project instance"
     task repos: :environment do
-      Gitlab.config.repositories.storages.each do |name, git_base_path|
+      Gitlab.config.repositories.storages.each_value do |repository_storage|
+        git_base_path = repository_storage['path']
         repos_to_import = Dir.glob(git_base_path + '/**/*.git')
 
         repos_to_import.each do |repo_path|

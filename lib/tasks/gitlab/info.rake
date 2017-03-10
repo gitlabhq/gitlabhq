@@ -77,8 +77,8 @@ namespace :gitlab do
       puts "GitLab Shell".color(:yellow)
       puts "Version:\t#{gitlab_shell_version || "unknown".color(:red)}"
       puts "Repository storage paths:"
-      Gitlab.config.repositories.storages.each do |name, path|
-        puts "- #{name}: \t#{path}"
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        puts "- #{name}: \t#{repository_storage['path']}"
       end
       puts "Hooks:\t\t#{Gitlab.config.gitlab_shell.hooks_path}"
       puts "Git:\t\t#{Gitlab.config.git.bin_path}"

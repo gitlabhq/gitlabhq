@@ -6,7 +6,8 @@ namespace :gitlab do
       remove_flag = ENV['REMOVE']
 
       namespaces = Namespace.pluck(:path)
-      Gitlab.config.repositories.storages.each do |name, git_base_path|
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        git_base_path = repository_storage['path']
         all_dirs = Dir.glob(git_base_path + '/*')
 
         puts git_base_path.color(:yellow)
@@ -47,9 +48,10 @@ namespace :gitlab do
       warn_user_is_not_gitlab
       remove_flag = ENV['REMOVE']
 
-      Gitlab.config.repositories.storages.each do |name, repo_root|
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        repo_root = repository_storage['path'].chomp('/')
         # Look for global repos (legacy, depth 1) and normal repos (depth 2)
-        IO.popen(%W(find #{repo_root.chomp('/')} -mindepth 1 -maxdepth 2 -name *+moved*.git)) do |find|
+        IO.popen(%W(find #{repo_root} -mindepth 1 -maxdepth 2 -name *+moved*.git)) do |find|
           find.each_line do |path|
             path.chomp!
             if remove_flag
@@ -75,7 +77,8 @@ namespace :gitlab do
       warn_user_is_not_gitlab
 
       move_suffix = "+orphaned+#{Time.now.to_i}"
-      Gitlab.config.repositories.storages.each do |name, repo_root|
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        repo_root = repository_storage['path']
         # Look for global repos (legacy, depth 1) and normal repos (depth 2)
         IO.popen(%W(find #{repo_root} -mindepth 1 -maxdepth 2 -name *.git)) do |find|
           find.each_line do |path|

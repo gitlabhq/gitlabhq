@@ -145,7 +145,7 @@ module TestEnv
   end
 
   def repos_path
-    Gitlab.config.repositories.storages.default
+    Gitlab.config.repositories.storages.default['path']
   end
 
   def backup_path

@@ -435,7 +435,7 @@ class Project < ActiveRecord::Base
   end
 
   def repository_storage_path
-    Gitlab.config.repositories.storages[repository_storage]
+    Gitlab.config.repositories.storages[repository_storage]['path']
   end
 
   def team
