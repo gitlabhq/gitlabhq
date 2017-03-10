@@ -41,7 +41,7 @@ class FilteredSearchVisualTokens {
     `;
   }
 
-  static addVisualTokenElement(name, value, isSearchTerm) {
+  static addVisualTokenElement(name, value, isSearchTerm, container) {
     const li = document.createElement('li');
     li.classList.add('js-visual-token');
     li.classList.add(isSearchTerm ? 'filtered-search-term' : 'filtered-search-token');
@@ -54,8 +54,8 @@ class FilteredSearchVisualTokens {
     }
     li.querySelector('.name').innerText = name;
 
-    const tokensContainer = document.querySelector('.tokens-container');
-    const input = document.querySelector('.filtered-search');
+    const tokensContainer = container.querySelector('.tokens-container');
+    const input = container.querySelector('.filtered-search');
     tokensContainer.insertBefore(li, input.parentElement);
   }
 
@@ -71,20 +71,20 @@ class FilteredSearchVisualTokens {
     }
   }
 
-  static addFilterVisualToken(tokenName, tokenValue) {
+  static addFilterVisualToken(tokenName, tokenValue, container) {
     const { lastVisualToken, isLastVisualTokenValid }
       = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
     const addVisualTokenElement = FilteredSearchVisualTokens.addVisualTokenElement;
 
     if (isLastVisualTokenValid) {
-      addVisualTokenElement(tokenName, tokenValue);
+      addVisualTokenElement(tokenName, tokenValue, false, container);
     } else {
       const previousTokenName = lastVisualToken.querySelector('.name').innerText;
-      const tokensContainer = document.querySelector('.tokens-container');
+      const tokensContainer = container.querySelector('.tokens-container');
       tokensContainer.removeChild(lastVisualToken);
 
       const value = tokenValue || tokenName;
-      addVisualTokenElement(previousTokenName, value);
+      addVisualTokenElement(previousTokenName, value, false, container);
     }
   }
 
