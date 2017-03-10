@@ -1,9 +1,10 @@
 /* global DropLab */
+import { FilteredSearchContainer } from './container';
 
 (() => {
   class FilteredSearchDropdownManager {
-    constructor(baseEndpoint = '', page, container) {
-      this.container = container;
+    constructor(baseEndpoint = '', page) {
+      this.container = FilteredSearchContainer.container;
       this.baseEndpoint = baseEndpoint.replace(/\/$/, '');
       this.tokenizer = gl.FilteredSearchTokenizer;
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
@@ -59,10 +60,10 @@
       };
     }
 
-    static addWordToInput(tokenName, tokenValue = '', clicked = false, container = document) {
-      const input = container.querySelector('.filtered-search');
+    static addWordToInput(tokenName, tokenValue = '', clicked = false) {
+      const input = FilteredSearchContainer.container.querySelector('.filtered-search');
 
-      gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue, container);
+      gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue);
       input.value = '';
 
       if (clicked) {
@@ -103,7 +104,6 @@
 
         // Passing glArguments to `new gl[glClass](<arguments>)`
         mappingKey.reference = new (Function.prototype.bind.apply(gl[glClass], glArguments))();
-        mappingKey.reference.container = this.container;
       }
 
       if (firstLoad) {

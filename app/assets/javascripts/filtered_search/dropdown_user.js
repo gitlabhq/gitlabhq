@@ -56,6 +56,8 @@ require('./filtered_search_dropdown');
     }
 
     init() {
+      console.log(this.input);
+      console.log(this.dropdown);
       this.droplab.addHook(this.input, this.dropdown, [droplabAjaxFilter], this.config).init();
     }
   }

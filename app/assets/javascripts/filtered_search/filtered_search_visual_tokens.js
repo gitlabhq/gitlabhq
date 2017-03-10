@@ -1,6 +1,8 @@
+import { FilteredSearchContainer } from './container';
+
 class FilteredSearchVisualTokens {
   static getLastVisualTokenBeforeInput() {
-    const inputLi = document.querySelector('.input-token');
+    const inputLi = FilteredSearchContainer.container.querySelector('.input-token');
     const lastVisualToken = inputLi && inputLi.previousElementSibling;
 
     return {
@@ -10,7 +12,7 @@ class FilteredSearchVisualTokens {
   }
 
   static unselectTokens() {
-    const otherTokens = document.querySelectorAll('.js-visual-token .selectable.selected');
+    const otherTokens = FilteredSearchContainer.container.querySelectorAll('.js-visual-token .selectable.selected');
     [].forEach.call(otherTokens, t => t.classList.remove('selected'));
   }
 
@@ -24,7 +26,7 @@ class FilteredSearchVisualTokens {
   }
 
   static removeSelectedToken() {
-    const selected = document.querySelector('.js-visual-token .selected');
+    const selected = FilteredSearchContainer.container.querySelector('.js-visual-token .selected');
 
     if (selected) {
       const li = selected.closest('.js-visual-token');
@@ -41,7 +43,7 @@ class FilteredSearchVisualTokens {
     `;
   }
 
-  static addVisualTokenElement(name, value, isSearchTerm, container) {
+  static addVisualTokenElement(name, value, isSearchTerm) {
     const li = document.createElement('li');
     li.classList.add('js-visual-token');
     li.classList.add(isSearchTerm ? 'filtered-search-term' : 'filtered-search-token');
@@ -54,8 +56,8 @@ class FilteredSearchVisualTokens {
     }
     li.querySelector('.name').innerText = name;
 
-    const tokensContainer = container.querySelector('.tokens-container');
-    const input = container.querySelector('.filtered-search');
+    const tokensContainer = FilteredSearchContainer.container.querySelector('.tokens-container');
+    const input = FilteredSearchContainer.container.querySelector('.filtered-search');
     tokensContainer.insertBefore(li, input.parentElement);
   }
 
@@ -71,20 +73,20 @@ class FilteredSearchVisualTokens {
     }
   }
 
-  static addFilterVisualToken(tokenName, tokenValue, container) {
+  static addFilterVisualToken(tokenName, tokenValue) {
     const { lastVisualToken, isLastVisualTokenValid }
       = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
     const addVisualTokenElement = FilteredSearchVisualTokens.addVisualTokenElement;
 
     if (isLastVisualTokenValid) {
-      addVisualTokenElement(tokenName, tokenValue, false, container);
+      addVisualTokenElement(tokenName, tokenValue, false);
     } else {
       const previousTokenName = lastVisualToken.querySelector('.name').innerText;
-      const tokensContainer = container.querySelector('.tokens-container');
+      const tokensContainer = FilteredSearchContainer.container.querySelector('.tokens-container');
       tokensContainer.removeChild(lastVisualToken);
 
       const value = tokenValue || tokenName;
-      addVisualTokenElement(previousTokenName, value, false, container);
+      addVisualTokenElement(previousTokenName, value, false);
     }
   }
 
@@ -129,7 +131,7 @@ class FilteredSearchVisualTokens {
   }
 
   static tokenizeInput() {
-    const input = document.querySelector('.filtered-search');
+    const input = FilteredSearchContainer.container.querySelector('.filtered-search');
     const { isLastVisualTokenValid } =
       gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
@@ -145,7 +147,7 @@ class FilteredSearchVisualTokens {
   }
 
   static editToken(token) {
-    const input = document.querySelector('.filtered-search');
+    const input = FilteredSearchContainer.container.querySelector('.filtered-search');
 
     FilteredSearchVisualTokens.tokenizeInput();
 
@@ -174,9 +176,9 @@ class FilteredSearchVisualTokens {
   }
 
   static moveInputToTheRight() {
-    const input = document.querySelector('.filtered-search');
+    const input = FilteredSearchContainer.container.querySelector('.filtered-search');
     const inputLi = input.parentElement;
-    const tokenContainer = document.querySelector('.tokens-container');
+    const tokenContainer = FilteredSearchContainer.container.querySelector('.tokens-container');
 
     FilteredSearchVisualTokens.tokenizeInput();
 

@@ -1,7 +1,9 @@
+import { FilteredSearchContainer } from './container';
+
 (() => {
   class FilteredSearchManager {
-    constructor(page, container = document) {
-      this.container = container;
+    constructor(page) {
+      this.container = FilteredSearchContainer.container;
       this.filteredSearchInput = this.container.querySelector('.filtered-search');
       this.clearSearchButton = this.container.querySelector('.clear-search');
       this.tokensContainer = this.container.querySelector('.tokens-container');
@@ -9,7 +11,7 @@
 
       if (this.filteredSearchInput) {
         this.tokenizer = gl.FilteredSearchTokenizer;
-        this.dropdownManager = new gl.FilteredSearchDropdownManager(this.filteredSearchInput.getAttribute('data-base-endpoint') || '', page, container);
+        this.dropdownManager = new gl.FilteredSearchDropdownManager(this.filteredSearchInput.getAttribute('data-base-endpoint') || '', page);
 
         this.bindEvents();
         this.loadSearchParamsFromURL();

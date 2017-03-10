@@ -1,6 +1,6 @@
 export default class FilteredSearchBoards extends gl.FilteredSearchManager {
-  constructor(store, updateUrl = false, container = document) {
-    super('boards', container);
+  constructor(store, updateUrl = false) {
+    super('boards');
 
     this.store = store;
     this.updateUrl = updateUrl;
