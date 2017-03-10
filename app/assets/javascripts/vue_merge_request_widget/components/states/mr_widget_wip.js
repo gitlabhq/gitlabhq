@@ -3,7 +3,7 @@ import mrWidgetMergeHelp from '../../components/mr_widget_merge_help';
 export default {
   name: 'MRWidgetWIP',
   props: {
-    mr: { type: Object, required: true, default: () => ({}) },
+    mr: { type: Object, required: true },
   },
   components: {
     'mr-widget-merge-help': mrWidgetMergeHelp,

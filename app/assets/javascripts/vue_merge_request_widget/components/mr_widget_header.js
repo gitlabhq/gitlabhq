@@ -3,7 +3,7 @@ require('../../lib/utils/text_utility');
 export default {
   name: 'MRWidgetHeader',
   props: {
-    mr: { type: Object, required: true, default: () => ({}) },
+    mr: { type: Object, required: true },
   },
   computed: {
     shouldShowCommitsBehindText() {

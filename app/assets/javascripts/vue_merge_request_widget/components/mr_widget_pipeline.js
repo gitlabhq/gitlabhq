@@ -4,7 +4,7 @@ import pipelineStatusIcon from '../../vue_shared/components/pipeline_status_icon
 export default {
   name: 'MRWidgetPipeline',
   props: {
-    mr: { type: Object, required: true, default: () => ({}) },
+    mr: { type: Object, required: true },
   },
   components: {
     'pipeline-stage': gl.VueStage,
@@ -21,7 +21,7 @@ export default {
         </span>
         <div class="mr-widget-pipeline-graph">
           <div class="stage-cell">
-            <div class="stage-container dropdown js-mini-pipeline-graph "
+            <div class="stage-container dropdown js-mini-pipeline-graph"
               v-if="mr.pipeline.details.stages.length > 0"
               v-for="stage in mr.pipeline.details.stages">
               <pipeline-stage :stage="stage" />

@@ -1,10 +1,10 @@
 export default {
   name: 'MRWidgetAuthorTime',
   props: {
-    actionText: { type: String, required: true, default: '' },
-    author: { type: Object, required: true, default: () => ({}) },
-    dateTitle: { type: String, required: true, default: '' },
-    dateReadable: { type: String, required: true, default: '' },
+    actionText: { type: String, required: true },
+    author: { type: Object, required: true },
+    dateTitle: { type: String, required: true },
+    dateReadable: { type: String, required: true },
   },
   template: `
     <h4>

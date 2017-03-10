@@ -3,7 +3,7 @@ import mrWidgetAuthorTime from '../../components/mr_widget_author_time';
 export default {
   name: 'MRWidgetMerged',
   props: {
-    mr: { type: Object, required: true, default: () => ({}) },
+    mr: { type: Object, required: true },
   },
   components: {
     'mr-widget-author-and-time': mrWidgetAuthorTime,

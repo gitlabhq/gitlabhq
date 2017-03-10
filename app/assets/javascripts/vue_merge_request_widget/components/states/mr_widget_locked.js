@@ -1,7 +1,7 @@
 export default {
   name: 'MRWidgetLocked',
   props: {
-    targetBranch: { type: Object, required: true, default: () => ({}) },
+    targetBranch: { type: Object, required: true },
   },
   template: `
     <div class="mr-widget-body">

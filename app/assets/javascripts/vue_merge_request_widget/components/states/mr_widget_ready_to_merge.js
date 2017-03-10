@@ -4,8 +4,8 @@ import mrWidgetMergeHelp from '../../components/mr_widget_merge_help';
 export default {
   name: 'MRWidgetReadyToMerge',
   props: {
-    mr: { type: Object, required: true, default: () => ({}) },
-    service: { type: Object, required: true, default: () => ({}) },
+    mr: { type: Object, required: true },
+    service: { type: Object, required: true },
   },
   components: {
     'mr-widget-pipeline': mrWidgetPipeline,

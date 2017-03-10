@@ -10,11 +10,11 @@ export default {
       return statusClassToSvgMap[this.pipelineStatus.icon];
     },
     statusClass() {
-      return `ci-status-icon-${this.pipelineStatus.label}`;
+      return `ci-status-icon ci-status-icon-${this.pipelineStatus.label}`;
     },
   },
   template: `
-    <div class="ci-status-icon" :class="statusClass">
+    <div :class="statusClass">
       <a class="icon-link" :href="pipelineStatus.details_path">
         <span v-html="svg" aria-hidden="true"></span>
       </a>
