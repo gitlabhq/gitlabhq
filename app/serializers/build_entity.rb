@@ -18,10 +18,7 @@ class BuildEntity < Grape::Entity
 
   expose :created_at
   expose :updated_at
-
-  expose :details do
-    expose :detailed_status, as: :status, with: StatusEntity
-  end
+  expose :detailed_status, as: :status, with: StatusEntity
 
   private
 

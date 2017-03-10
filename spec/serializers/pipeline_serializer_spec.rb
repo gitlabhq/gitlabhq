@@ -93,17 +93,19 @@ describe PipelineSerializer do
         end
       end
     end
+  end
 
-    context 'when used with status' do
-      let(:serializer) do
-        described_class.new(user: user)
-          .only_status
+  describe '#represent_status' do
+    context 'when represents only status' do
+      let(:status) do
+        Gitlab::Ci::Status::Success.new(double('object'), double('user'))
       end
-      let(:resource) { create(:ci_empty_pipeline) }
+      let(:resource) { create(:ci_pipeline, status: :success) }
+
+      subject { serializer.represent_status(resource) }
 
       it 'serializes only status' do
-        expect(subject[:details][:status]).not_to be_empty
-        expect(subject[:details].keys.count).to eq 1
+        expect(subject[:favicon]).to eq(status.favicon)
       end
     end
   end

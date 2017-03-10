@@ -11,17 +11,9 @@ class PipelineSerializer < BaseSerializer
     @paginator.present?
   end
 
-  def only_status
-    tap { @status_only = { only: [{ details: [:status] }] } }
-  end
-
   def represent(resource, opts = {})
     if resource.is_a?(ActiveRecord::Relation)
       resource = resource.includes(project: :namespace)
-    end
-
-    if @status_only.present?
-      opts.merge!(@status_only)
     end
 
     if paginated?
@@ -29,5 +21,10 @@ class PipelineSerializer < BaseSerializer
     else
       super(resource, opts)
     end
+  end
+
+  def represent_status(resource)
+    data = represent(resource, { only: [{ details: [:status] }] })
+    data[:details][:status]
   end
 end
