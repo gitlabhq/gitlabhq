@@ -39,11 +39,12 @@ const vueOptions = () => ({
 });
 
 (() => {
-  const vm = new Vue(vueOptions);
+  Vue.activeResources = 0;
+  const vm = new Vue(vueOptions());
 
   if (notUser === 'false') {
     const titleComp = vm.$children
-      .filter(e => e.$options._componentTag === 'vue-title')[0];
+      .filter(e => e.$options._componentTag === 'IssueTitle')[0];
 
     const startTitleFetch = () => titleComp.fetch();
     const removeIntervalLoops = () => titleComp.clear();

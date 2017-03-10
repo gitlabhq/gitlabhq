@@ -4,7 +4,9 @@
  *
  * Used to store the Pipelines rendered in the commit view in the pipelines table.
  */
-require('../../vue_realtime_listener');
+const VueRealtimeListener = require('../../vue_realtime_listener');
+
+gl.VueRealtimeListener = VueRealtimeListener;
 
 class PipelinesStore {
   constructor() {
