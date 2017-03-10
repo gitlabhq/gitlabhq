@@ -18,8 +18,7 @@ class AutocompleteController < ApplicationController
     if params[:search].blank?
       # Include current user if available to filter by "Me"
       if params[:current_user].present? && current_user
-        @users = @users.where.not(id: current_user.id)
-        @users = [current_user, *@users]
+        @users = [current_user, *@users].uniq
       end
 
       if params[:author_id].present?
