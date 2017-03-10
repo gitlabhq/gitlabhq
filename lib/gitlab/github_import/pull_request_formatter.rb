@@ -64,14 +64,6 @@ module Gitlab
         state == 'opened'
       end
 
-      def closed?
-        state == 'closed'
-      end
-
-      def merged?
-        state == 'merged'
-      end
-
       private
 
       def state

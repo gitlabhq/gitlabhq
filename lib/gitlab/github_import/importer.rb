@@ -148,7 +148,7 @@ module Gitlab
             rescue => e
               errors << { type: :pull_request, url: Gitlab::UrlSanitizer.sanitize(gh_pull_request.url), errors: e.message }
             ensure
-              clean_up_restored_branches(gh_pull_request) unless gh_pull_request.opened?
+              clean_up_restored_branches(gh_pull_request)
             end
           end
         end
@@ -171,6 +171,8 @@ module Gitlab
       end
 
       def clean_up_restored_branches(pull_request)
+        return if pull_request.opened?
+
         remove_branch(pull_request.source_branch_name) unless pull_request.source_branch_exists?
         remove_branch(pull_request.target_branch_name) unless pull_request.target_branch_exists?
       end
