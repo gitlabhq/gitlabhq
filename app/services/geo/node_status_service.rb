@@ -5,13 +5,10 @@ module Geo
 
     KEYS = %w(health repositories_count repositories_synced_count repositories_failed_count lfs_objects_total lfs_objects_synced).freeze
 
-    # HTTParty timeout
-    default_timeout current_application_settings.geo_status_timeout
-
     def call(status_url)
       values =
         begin
-          response = self.class.get(status_url, headers: headers)
+          response = self.class.get(status_url, headers: headers, timeout: timeout)
 
           if response.success?
             response.parsed_response.values_at(*KEYS)
@@ -29,6 +26,10 @@ module Geo
 
     def headers
       Gitlab::Geo::BaseRequest.new.headers
+    end
+
+    def timeout
+      current_application_settings.geo_status_timeout
     end
   end
 end
