@@ -1,7 +1,7 @@
 class ArtifactUploader < GitlabUploader
-  storage :file
+  storage Gitlab.config.artifacts.object_store ? :fog : :file
 
-  attr_accessor :build, :field
+  attr_accessor :job, :field
 
   def self.artifacts_path
     Gitlab.config.artifacts.path
@@ -15,16 +15,16 @@ class ArtifactUploader < GitlabUploader
     File.join(self.artifacts_path, 'tmp/cache/')
   end
 
-  def initialize(build, field)
-    @build, @field = build, field
+  def initialize(job, field)
+    @job, @field = job, field
   end
 
   def store_dir
-    File.join(self.class.artifacts_path, @build.artifacts_path)
+    File.join(self.class.artifacts_path, job.artifacts_path)
   end
 
   def cache_dir
-    File.join(self.class.artifacts_cache_path, @build.artifacts_path)
+    File.join(self.class.artifacts_cache_path, job.artifacts_path)
   end
 
   def filename
