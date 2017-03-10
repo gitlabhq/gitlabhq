@@ -3,14 +3,34 @@ require 'spec_helper'
 describe Discussion, model: true do
   subject { described_class.new([first_note, second_note, third_note]) }
 
-  let(:first_note) { create(:diff_note_on_merge_request) }
-  let(:second_note) { create(:diff_note_on_merge_request) }
-  let(:third_note) { create(:diff_note_on_merge_request) }
+  let(:first_note) { create(:discussion_note_on_merge_request) }
+  let(:second_note) { create(:discussion_note_on_merge_request) }
+  let(:third_note) { create(:discussion_note_on_merge_request) }
+
+  describe '.build' do
+    # TODO: Test
+  end
+
+  describe '.build_collection' do
+    # TODO: Test
+  end
+
+  describe '#id' do
+    # TODO: Test
+  end
+
+  describe '#original_id' do
+    # TODO: Test
+  end
+
+  describe '#potentially_resolvable?' do
+    # TODO: Test
+  end
 
   describe "#resolvable?" do
-    context "when a diff discussion" do
+    context "when potentially resolvable" do
       before do
-        allow(subject).to receive(:diff_discussion?).and_return(true)
+        allow(subject).to receive(:discussion_resolvable?).and_return(true)
       end
 
       context "when all notes are unresolvable" do
@@ -50,9 +70,9 @@ describe Discussion, model: true do
       end
     end
 
-    context "when not a diff discussion" do
+    context "when not potentially resolvable" do
       before do
-        allow(subject).to receive(:diff_discussion?).and_return(false)
+        allow(subject).to receive(:discussion_resolvable?).and_return(false)
       end
 
       it "returns false" do
@@ -530,10 +550,14 @@ describe Discussion, model: true do
     end
   end
 
+  describe "#last_resolved_note" do
+    # TODO: Test
+  end
+
   describe "#collapsed?" do
-    context "when a diff discussion" do
+    context "when potentially resolvable" do
       before do
-        allow(subject).to receive(:diff_discussion?).and_return(true)
+        allow(subject).to receive(:discussion_resolvable?).and_return(true)
       end
 
       context "when resolvable" do
@@ -567,54 +591,47 @@ describe Discussion, model: true do
           allow(subject).to receive(:resolvable?).and_return(false)
         end
 
-        context "when active" do
+        context "when a diff discussion" do
           before do
-            allow(subject).to receive(:active?).and_return(true)
+            allow(subject).to receive(:diff_discussion?).and_return(true)
           end
 
+          context "when active" do
+            before do
+              allow(subject).to receive(:active?).and_return(true)
+            end
+
+            it "returns false" do
+              expect(subject.collapsed?).to be false
+            end
+          end
+
+          context "when outdated" do
+            before do
+              allow(subject).to receive(:active?).and_return(false)
+            end
+
+            it "returns true" do
+              expect(subject.collapsed?).to be true
+            end
+          end
+        end
+
+        context "when not a diff discussion" do
           it "returns false" do
             expect(subject.collapsed?).to be false
           end
         end
-
-        context "when outdated" do
-          before do
-            allow(subject).to receive(:active?).and_return(false)
-          end
-
-          it "returns true" do
-            expect(subject.collapsed?).to be true
-          end
-        end
       end
     end
 
-    context "when not a diff discussion" do
+    context "when not potentially resolvable" do
       before do
-        allow(subject).to receive(:diff_discussion?).and_return(false)
+        allow(subject).to receive(:discussion_resolvable?).and_return(false)
       end
 
       it "returns false" do
         expect(subject.collapsed?).to be false
-      end
-    end
-  end
-
-  describe "#truncated_diff_lines" do
-    let(:truncated_lines) { subject.truncated_diff_lines }
-
-    context "when diff is greater than allowed number of truncated diff lines " do
-      it "returns fewer lines"  do
-        expect(subject.diff_lines.count).to be > described_class::NUMBER_OF_TRUNCATED_DIFF_LINES
-
-        expect(truncated_lines.count).to be <= described_class::NUMBER_OF_TRUNCATED_DIFF_LINES
-      end
-    end
-
-    context "when some diff lines are meta" do
-      it "returns no meta lines"  do
-        expect(subject.diff_lines).to include(be_meta)
-        expect(truncated_lines).not_to include(be_meta)
       end
     end
   end

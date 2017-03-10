@@ -227,7 +227,6 @@ module SystemNoteService
   def discussion_continued_in_issue(discussion, project, author, issue)
     body = "created #{issue.to_reference} to continue this discussion"
     note_attributes = discussion.reply_attributes.merge(project: project, author: author, note: body)
-    note_attributes[:type] = note_attributes.delete(:note_type)
 
     create_note(note_attributes)
   end

@@ -245,6 +245,18 @@ describe Note, models: true do
     end
   end
 
+  describe '.discussions' do
+    # TODO: Test
+  end
+
+  describe '.find_original_discussion' do
+    # TODO: Test
+  end
+
+  describe '.find_discussion' do
+    # TODO: Test
+  end
+
   describe ".grouped_diff_discussions" do
     let!(:merge_request) { create(:merge_request) }
     let(:project) { merge_request.project }
@@ -294,31 +306,6 @@ describe Note, models: true do
     it "groups the discussions by line code" do
       expect(subject[active_diff_note1.line_code].id).to eq(active_diff_note1.discussion_id)
       expect(subject[active_diff_note3.line_code].id).to eq(active_diff_note3.discussion_id)
-    end
-  end
-
-  describe "#discussion_id" do
-    let(:note) { create(:note) }
-
-    context "when it is newly created" do
-      it "has a discussion id" do
-        expect(note.discussion_id).not_to be_nil
-        expect(note.discussion_id).to match(/\A\h{40}\z/)
-      end
-    end
-
-    context "when it didn't store a discussion id before" do
-      before do
-        note.update_column(:discussion_id, nil)
-      end
-
-      it "has a discussion id" do
-        # The discussion_id is set in `after_initialize`, so `reload` won't work
-        reloaded_note = Note.find(note.id)
-
-        expect(reloaded_note.discussion_id).not_to be_nil
-        expect(reloaded_note.discussion_id).to match(/\A\h{40}\z/)
-      end
     end
   end
 
@@ -386,6 +373,86 @@ describe Note, models: true do
         expect(note.note_html).to eq(html)
       end
     end
+  end
+
+  describe '#can_be_discussion_note?' do
+    # TODO: Test
+  end
+
+  describe '#discussion_class' do
+    # TODO: Test
+  end
+
+  describe "#discussion_id" do
+    let(:note) { create(:note) }
+
+    context "when it is newly created" do
+      it "has a discussion id" do
+        expect(note.discussion_id).not_to be_nil
+        expect(note.discussion_id).to match(/\A\h{40}\z/)
+      end
+    end
+
+    context "when it didn't store a discussion id before" do
+      before do
+        note.update_column(:discussion_id, nil)
+      end
+
+      it "has a discussion id" do
+        # The discussion_id is set in `after_initialize`, so `reload` won't work
+        reloaded_note = Note.find(note.id)
+
+        expect(reloaded_note.discussion_id).not_to be_nil
+        expect(reloaded_note.discussion_id).to match(/\A\h{40}\z/)
+      end
+    end
+  end
+
+  describe "#original_discussion_id" do
+    # TODO: Test
+  end
+
+  describe '#to_discussion' do
+    subject { create(:discussion_note_on_merge_request) }
+    let!(:note2) { create(:discussion_note_on_merge_request, project: subject.project, noteable: subject.noteable, in_reply_to_discussion_id: subject.discussion_id) }
+
+    it "returns a discussion with just this note" do
+      discussion = subject.to_discussion
+
+      expect(discussion.id).to eq(subject.discussion_id)
+      expect(discussion.notes).to eq([subject])
+    end
+  end
+
+  describe "#discussion" do
+    let!(:note1) { create(:discussion_note_on_merge_request) }
+    let!(:note2) { create(:diff_note_on_merge_request, project: note1.project, noteable: note1.noteable) }
+
+    context 'when the note is part of a discussion' do
+      subject { create(:discussion_note_on_merge_request, project: note1.project, noteable: note1.noteable, in_reply_to_discussion_id: note1.discussion_id) }
+
+      it "returns the discussion this note is in" do
+        discussion = subject.discussion
+
+        expect(discussion.id).to eq(subject.discussion_id)
+        expect(discussion.notes).to eq([note1, subject])
+      end
+    end
+
+    context 'when the note is not part of a discussion' do
+      subject { create(:note) }
+
+      it "returns a discussion with just this note" do
+        discussion = subject.discussion
+
+        expect(discussion.id).to eq(subject.discussion_id)
+        expect(discussion.notes).to eq([subject])
+      end
+    end
+  end
+
+  describe "#part_of_discussion?" do
+    # TODO: Test
   end
 
   describe 'expiring ETag cache' do

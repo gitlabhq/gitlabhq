@@ -3,10 +3,8 @@ module Notes
     def execute
       merge_request_diff_head_sha = params.delete(:merge_request_diff_head_sha)
 
-      note = Note.new(params)
-      note.project = project
-      note.author  = current_user
-      note.system  = false
+      note = Notes::BuildService.new(project, current_user, params).execute
+      return note unless note.valid?
 
       # We execute commands (extracted from `params[:note]`) on the noteable
       # **before** we save the note because if the note consists of commands

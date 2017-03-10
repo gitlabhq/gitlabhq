@@ -24,9 +24,9 @@ module NotesHelper
   end
 
   def diff_view_data
-    return {} unless @comments_target
+    return {} unless @new_diff_note_attrs
 
-    @comments_target.slice(:noteable_id, :noteable_type, :commit_id)
+    @new_diff_note_attrs.slice(:noteable_id, :noteable_type, :commit_id)
   end
 
   def diff_view_line_data(line_code, position, line_type)
@@ -53,37 +53,26 @@ module NotesHelper
     }
 
     if use_legacy_diff_note
-      discussion_id = LegacyDiffNote.discussion_id(
-        @comments_target[:noteable_type],
-        @comments_target[:noteable_id] || @comments_target[:commit_id],
-        line_code
-      )
-
-      data.merge!(
-        note_type: LegacyDiffNote.name,
-        discussion_id: discussion_id
-      )
+      new_note = LegacyDiffNote.new(@new_diff_note_attrs.merge(line_code: line_code))
+      discussion_id = new_note.discussion_id
     else
-      discussion_id = DiffNote.discussion_id(
-        @comments_target[:noteable_type],
-        @comments_target[:noteable_id] || @comments_target[:commit_id],
-        position
-      )
+      new_note = DiffNote.new(@new_diff_note_attrs.merge(position: position))
+      discussion_id = new_note.discussion_id
 
-      data.merge!(
-        position: position.to_json,
-        note_type: DiffNote.name,
-        discussion_id: discussion_id
-      )
+      data[:position] = position.to_json
     end
 
-    data
+    data.merge(
+      note_type: new_note.type,
+      discussion_id: discussion_id
+    )
   end
 
   def link_to_reply_discussion(discussion, line_type = nil)
     return unless current_user
 
-    data = discussion.reply_attributes.merge(line_type: line_type)
+    data = { discussion_id: discussion.id, original_discussion_id: discussion.original_id, line_type: line_type }
+    data[:line_code] = discussion.line_code if discussion.respond_to?(:line_code)
 
     button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
                            data: data, title: 'Add a reply'
@@ -95,7 +84,15 @@ module NotesHelper
   end
 
   def preload_noteable_for_regular_notes(notes)
-    ActiveRecord::Associations::Preloader.new.preload(notes.select { |note| !note.for_commit? }, :noteable)
+    ActiveRecord::Associations::Preloader.new.preload(notes.reject(&:for_commit?), :noteable)
+  end
+
+  def prepare_notes_for_rendering(notes)
+    preload_noteable_for_regular_notes(notes)
+    preload_max_access_for_authors(notes, @project)
+    Banzai::NoteRenderer.render(notes, @project, current_user)
+
+    notes
   end
 
   def note_max_access_for_user(note)

@@ -25,7 +25,7 @@ module Issues
           Array(discussion_or_nil)
         else
           merge_request_to_resolve_discussions_of
-            .resolvable_discussions
+            .discussions_to_be_resolved
         end
     end
   end

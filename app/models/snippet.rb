@@ -2,6 +2,7 @@ class Snippet < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   include Linguist::BlobHelper
   include CacheMarkdownField
+  include Noteable
   include Participable
   include Referable
   include Sortable

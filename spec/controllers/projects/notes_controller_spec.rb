@@ -14,7 +14,15 @@ describe Projects::NotesController do
     }
   end
 
+  describe 'GET index' do
+    # It renders the discussion partial for any threaded note
+    # TODO: Test
+  end
+
   describe 'POST create' do
+    # Test :type, :new_discussion, :in_reply_to_discussion_id (in_reply_to_id?)
+    # TODO: Test
+
     let(:merge_request) { create(:merge_request) }
     let(:project) { merge_request.source_project }
     let(:request_params) do
@@ -49,7 +57,8 @@ describe Projects::NotesController do
           note: 'some note',
           noteable_id: merge_request.id.to_s,
           noteable_type: 'MergeRequest',
-          merge_request_diff_head_sha: 'sha'
+          merge_request_diff_head_sha: 'sha',
+          in_reply_to_discussion_id: nil
         }
 
         expect(Notes::CreateService).to receive(:new).with(project, user, service_params).and_return(double(execute: true))
