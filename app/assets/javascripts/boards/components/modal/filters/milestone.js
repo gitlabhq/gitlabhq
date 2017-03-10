@@ -20,6 +20,7 @@ module.exports = Vue.extend({
         data-toggle="dropdown"
         data-show-any="true"
         data-show-upcoming="true"
+        data-show-started="true"
         data-field-name="milestone_title"
         :data-milestones="milestonePath"
         ref="dropdown">

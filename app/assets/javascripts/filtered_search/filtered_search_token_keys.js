@@ -43,6 +43,10 @@
     tokenKey: 'milestone',
     value: 'upcoming',
   }, {
+    url: 'milestone_title=%23started',
+    tokenKey: 'milestone',
+    value: 'started',
+  }, {
     url: 'label_name[]=No+Label',
     tokenKey: 'label',
     value: 'none',
