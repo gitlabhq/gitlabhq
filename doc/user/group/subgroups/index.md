@@ -104,6 +104,9 @@ When you add a member to a subgroup, they inherit the membership and permission
 level from the parent group. This model allows access to nested groups if you
 have membership in one of its parents.
 
+The group permissions for a member can be changed only by Owners and only on
+the **Members** page of the group the member was added.
+
 You can tell if a member has inherited the permissions from a parent group by
 looking at the group's **Members** page.
 
@@ -111,19 +114,35 @@ looking at the group's **Members** page.
 
 From the image above, we can deduct the following things:
 
-- There are 5 members that have access to the group **four**
-- Administrator is the Owner and member of all subgroups
-- User0 is a Reporter and has inherited their permissions from group **one**
-  which is above the hierarchy of group **four**
+- There are 5 members that have access to the group `four`
+- User0 is a Reporter and has inherited their permissions from group `one`
+  which is above the hierarchy of group `four`
 - User1 is a Developer and has inherited their permissions from group
-  **one/two** which is above the hierarchy of group **four**
+  `one/two` which is above the hierarchy of group `four`
 - User2 is a Developer and has inherited their permissions from group
-  **one/two/three** which is above the hierarchy of group **four**
-- User3 is a Master of group **four**, there is no indication of a parent
-  group therefore they belong to group **four**
+  `one/two/three` which is above the hierarchy of group `four`
+- For User3 there is no indication of a parent group, therefore they belong to
+  group `four`, the one we're inspecting
+- Administrator is the Owner and member of **all** subgroups and for that reason,
+  same as User3, there is no indication of an ancestor group
 
-The group permissions for a member can be changed only by Owners and only on
-the **Members** page of the group the member was added.
+### Overriding the ancestor group membership
+
+>**Note:**
+You need to be an Owner of a group in order to be able to add members to it.
+
+To override the membership of an ancestor group, simply add the user in the new
+subgroup again, but with different permissions.
+
+For example, if User0 was first added to group `one/two` with Developer
+permissions, then they will inherit those permissions in every other subgroup
+of `one/two`. To give them Master access to `one/two/three`, you would add them
+again in that group as Master. Removing them from that group, the permissions
+will fallback to those of the ancestor group.
+
+Note that the higher permission wins, so if in the above example the permissions
+where reversed, User0 would have Master access to all groups, even to the one
+that was explicitly given Developer access.
 
 ## Mentioning subgroups
 
