@@ -312,6 +312,10 @@ class IssuableFinder
     params[:milestone_title] == Milestone::Upcoming.name
   end
 
+  def filter_by_started_milestone?
+    params[:milestone_title] == Milestone::Started.name
+  end
+
   def by_milestone(items)
     if milestones?
       if filter_by_no_milestone?
@@ -319,6 +323,8 @@ class IssuableFinder
       elsif filter_by_upcoming_milestone?
         upcoming_ids = Milestone.upcoming_ids_by_projects(projects(items))
         items = items.left_joins_milestones.where(milestone_id: upcoming_ids)
+      elsif filter_by_started_milestone?
+        items = items.left_joins_milestones.where('milestones.start_date <= NOW()')
       else
         items = items.with_milestone(params[:milestone_title])
         items_projects = projects(items)
