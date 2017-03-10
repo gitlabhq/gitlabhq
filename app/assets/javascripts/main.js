@@ -12,6 +12,8 @@ import Pikaday from 'pikaday';
 import Dropzone from 'dropzone';
 import Sortable from 'vendor/Sortable';
 
+import '../stylesheets/main.scss';
+
 // libraries with import side-effects
 import 'mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';

@@ -226,12 +226,10 @@ gem 'chronic_duration', '~> 0.10.6'
 gem 'webpack-rails', '~> 0.9.9'
 gem 'rack-proxy', '~> 0.6.0'
 
-gem 'sass-rails', '~> 5.0.6'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '~> 2.7.2'
 
 gem 'addressable', '~> 2.3.8'
-gem 'bootstrap-sass', '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione', '~> 3.0'
 gem 'gon', '~> 6.1.0'

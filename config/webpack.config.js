@@ -5,6 +5,7 @@ var path = require('path');
 var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
 var CompressionPlugin = require('compression-webpack-plugin');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 var ROOT_PATH = path.resolve(__dirname, '..');
@@ -68,7 +69,38 @@ var config = {
       },
       {
         test: /\.svg$/,
-        use: 'raw-loader'
+        include: /app\/views\/shared\/icons/,
+        use: 'raw-loader',
+      },
+      {
+        test: /\.(eot|ttf|woff2?|svg)(\?\S*)?$/,
+        exclude: /app\/views\/shared\/icons/,
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 8000,
+          }
+        }
+      },
+      {
+        test: /\.s?css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [{
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+            }
+          }, {
+            loader: 'sass-loader',
+            options: {
+              includePaths: [
+                path.join(ROOT_PATH, 'app/assets/stylesheets')
+              ],
+              sourceMap: true
+            }
+          }]
+        }),
       }
     ]
   },
@@ -97,6 +129,8 @@ var config = {
     IS_PRODUCTION ?
       new webpack.HashedModuleIdsPlugin() :
       new webpack.NamedModulesPlugin(),
+
+    new ExtractTextPlugin('main.css'),
 
     // create cacheable common library bundle for all vue chunks
     new webpack.optimize.CommonsChunkPlugin({

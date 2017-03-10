@@ -25,8 +25,8 @@
 
   = favicon_link_tag favicon
 
-  = stylesheet_link_tag "application", media: "all"
-  = stylesheet_link_tag "print",       media: "print"
+  = stylesheet_link_tag *webpack_asset_paths("main", extension: 'css'), media: "all"
+  -# = stylesheet_link_tag "print",       media: "print"
 
   = javascript_include_tag(*webpack_asset_paths("runtime"))
   = javascript_include_tag(*webpack_asset_paths("common"))
