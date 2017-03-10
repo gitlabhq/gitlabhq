@@ -80,7 +80,7 @@ describe Projects::PipelinesController do
                      format: :json
       end
 
-      it 'returns pipeline status via PipelineSerializer' do
+      it 'return a correct pipeline status' do
         expect(response).to have_http_status(:ok)
         expect(json_response['details']['status']['text']).to eq 'passed'
       end

@@ -20,9 +20,7 @@ class BuildEntity < Grape::Entity
   expose :updated_at
 
   expose :details do
-    expose :detailed_status,
-        as: :status,
-        with: StatusEntity
+    expose :detailed_status, as: :status, with: StatusEntity
   end
 
   private
