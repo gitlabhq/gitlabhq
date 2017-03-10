@@ -61,6 +61,18 @@ describe AutocompleteController do
         it { expect(body.size).to eq 2 }
         it { expect(body.map { |user| user["username"] }).to match_array([user.username, user2.username]) }
       end
+
+      describe "GET #users that can push to protected branches, including the current user" do
+        before do
+          get(:users, project_id: project.id, push_code_to_protected_branches: true, current_user: true)
+        end
+
+        let(:body) { JSON.parse(response.body) }
+
+        it { expect(body).to be_kind_of(Array) }
+        it { expect(body.size).to eq 1 }
+        it { expect(body.first["username"]).to eq user.username }
+      end
     end
 
     context 'group members' do
