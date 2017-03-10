@@ -45,12 +45,12 @@ function buildCategoryMap() {
   });
 }
 
-function renderCategory(name, emojiList) {
+function renderCategory(name, emojiList, opts = {}) {
   return `
     <h5 class="emoji-menu-title">
       ${name}
     </h5>
-    <ul class="clearfix emoji-menu-list">
+    <ul class="clearfix emoji-menu-list ${opts.menuListClass}">
       ${emojiList.map(emojiName => `
         <li class="emoji-menu-list-item">
           <button class="emoji-menu-btn text-center js-emoji-btn" type="button">
@@ -140,9 +140,6 @@ AwardsHandler.prototype.showEmojiMenu = function showEmojiMenu($addBtn) {
       const $createdMenu = $('.emoji-menu');
       $addBtn.removeClass('is-loading');
       this.positionMenu($createdMenu, $addBtn);
-      if (!this.frequentEmojiBlockRendered) {
-        this.renderFrequentlyUsedBlock();
-      }
       return setTimeout(() => {
         $createdMenu.addClass('is-visible');
         $('#emoji_search').focus();
@@ -165,11 +162,21 @@ AwardsHandler.prototype.createEmojiMenu = function createEmojiMenu(callback) {
   const emojisInCategory = categoryMap[categoryNameKey];
   const firstCategory = renderCategory(categoryLabelMap[categoryNameKey], emojisInCategory);
 
+  // Render the frequently used
+  const frequentlyUsedEmojis = this.getFrequentlyUsedEmojis();
+  let frequentlyUsedCatgegory = '';
+  if (frequentlyUsedEmojis.length > 0) {
+    frequentlyUsedCatgegory = renderCategory('Frequently used', frequentlyUsedEmojis, {
+      menuListClass: 'frequent-emojis',
+    });
+  }
+
   const emojiMenuMarkup = `
     <div class="emoji-menu">
       <input type="text" name="emoji_search" id="emoji_search" value="" class="emoji-search search-input form-control" placeholder="Search emoji" />
 
       <div class="emoji-menu-content">
+        ${frequentlyUsedCatgegory}
         ${firstCategory}
       </div>
     </div>
@@ -455,19 +462,6 @@ AwardsHandler
 AwardsHandler.prototype.getFrequentlyUsedEmojis = function getFrequentlyUsedEmojis() {
   const frequentlyUsedEmojis = (Cookies.get('frequently_used_emojis') || '').split(',');
   return _.compact(_.uniq(frequentlyUsedEmojis));
-};
-
-AwardsHandler.prototype.renderFrequentlyUsedBlock = function renderFrequentlyUsedBlock() {
-  if (Cookies.get('frequently_used_emojis')) {
-    const frequentlyUsedEmojis = this.getFrequentlyUsedEmojis();
-    const ul = $('<ul class="clearfix emoji-menu-list frequent-emojis">');
-    for (let i = 0, len = frequentlyUsedEmojis.length; i < len; i += 1) {
-      const emoji = frequentlyUsedEmojis[i];
-      $(`.emoji-menu-content [data-name="${emoji}"]`).closest('li').clone().appendTo(ul);
-    }
-    $('.emoji-menu-content').prepend(ul).prepend($('<h5>').text('Frequently used'));
-  }
-  this.frequentEmojiBlockRendered = true;
 };
 
 AwardsHandler.prototype.setupSearch = function setupSearch() {
