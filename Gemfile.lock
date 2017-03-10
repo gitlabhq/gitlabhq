@@ -128,7 +128,7 @@ GEM
       execjs
     coffee-script-source (1.10.0)
     colorize (0.7.7)
-    concurrent-ruby (1.0.4)
+    concurrent-ruby (1.0.5)
     connection_pool (2.2.1)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
@@ -868,6 +868,7 @@ DEPENDENCIES
   chronic (~> 0.10.2)
   chronic_duration (~> 0.10.6)
   coffee-rails (~> 4.1.0)
+  concurrent-ruby (~> 1.0.5)
   connection_pool (~> 2.0)
   creole (~> 0.5.0)
   d3_rails (~> 3.5.0)
