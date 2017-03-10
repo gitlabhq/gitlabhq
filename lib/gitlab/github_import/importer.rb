@@ -171,6 +171,8 @@ module Gitlab
       end
 
       def clean_up_restored_branches(pull_request)
+        return if pull_request.opened?
+
         remove_branch(pull_request.source_branch_name) unless pull_request.source_branch_exists?
         remove_branch(pull_request.target_branch_name) unless pull_request.target_branch_exists?
       end
