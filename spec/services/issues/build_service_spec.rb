@@ -96,13 +96,13 @@ describe Issues::BuildService, services: true do
         end
 
         it 'mentions all the authors in the description' do
-          authors = merge_request.diff_discussions.map(&:author)
+          authors = merge_request.resolvable_discussions.map(&:author)
 
           expect(issue.description).to include(*authors.map(&:to_reference))
         end
 
         it 'has a link for each unresolved discussion in the description' do
-          notes = merge_request.diff_discussions.map(&:first_note)
+          notes = merge_request.resolvable_discussions.map(&:first_note)
           links = notes.map { |note| Gitlab::UrlBuilder.build(note) }
 
           expect(issue.description).to include(*links)

@@ -570,20 +570,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @note = @project.notes.new(noteable: @merge_request)
 
     @discussions = @merge_request.discussions
-
-    preload_noteable_for_regular_notes(@discussions.flat_map(&:notes))
-
-    # This is not executed lazily
-    @notes = Banzai::NoteRenderer.render(
-      @discussions.flat_map(&:notes),
-      @project,
-      current_user,
-      @path,
-      @project_wiki,
-      @ref
-    )
-
-    preload_max_access_for_authors(@notes, @project)
+    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
   end
 
   def define_widget_vars
@@ -596,22 +583,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def define_diff_comment_vars
-    @comments_target = {
+    @new_diff_note_attrs = {
       noteable_type: 'MergeRequest',
       noteable_id: @merge_request.id
     }
 
     @use_legacy_diff_notes = !@merge_request.has_complete_diff_refs?
-    @grouped_diff_discussions = @merge_request.notes.inc_relations_for_view.grouped_diff_discussions
 
-    Banzai::NoteRenderer.render(
-      @grouped_diff_discussions.values.flat_map(&:notes),
-      @project,
-      current_user,
-      @path,
-      @project_wiki,
-      @ref
-    )
+    @grouped_diff_discussions = @merge_request.grouped_diff_discussions
+    @notes = prepare_notes_for_rendering(@grouped_diff_discussions.values.flat_map(&:notes))
   end
 
   def define_pipelines_vars

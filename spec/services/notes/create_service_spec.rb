@@ -13,6 +13,9 @@ describe Notes::CreateService, services: true do
       project.team << [user, :master]
     end
 
+    # TODO: Test in_reply_to_discussion_id
+    # TODO: Test new_discussion
+
     context "valid params" do
       it 'returns a valid note' do
         note = described_class.new(project, user, opts).execute

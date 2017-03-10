@@ -202,4 +202,8 @@ describe NotesFinder do
       end
     end
   end
+
+  describe '#target' do
+    # TODO: Test
+  end
 end

@@ -18,19 +18,21 @@
 
           .inline.discussion-headline-light
             = discussion.author.to_reference
-            started a discussion on
+            started a discussion
 
-            - if discussion.for_commit?
+            - if discussion.for_commit? && @noteable != discussion.noteable
+              on
               - commit = discussion.noteable
               - if commit
                 commit
-                = link_to commit.short_id, namespace_project_commit_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: discussion.line_code), class: 'monospace'
+                - anchor = discussion.line_code if discussion.diff_discussion?
+                = link_to commit.short_id, namespace_project_commit_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: anchor), class: 'monospace'
               - else
                 a deleted commit
-            - else
+            - elsif discussion.diff_discussion?
+              on
               - if discussion.active?
-                = link_to diffs_namespace_project_merge_request_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: discussion.line_code) do
-                  the diff
+                = link_to 'the diff', discussion_diff_path(discussion)
               - else
                 an outdated diff
 

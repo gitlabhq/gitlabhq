@@ -439,7 +439,7 @@ describe NotificationService, services: true do
 
           notification.new_note(note)
 
-          expect(SentNotification.last.position).to eq(note.position)
+          expect(SentNotification.last.in_reply_to_discussion_id).to eq(note.original_discussion_id)
         end
       end
     end

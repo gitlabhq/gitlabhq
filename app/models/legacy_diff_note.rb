@@ -7,10 +7,8 @@ class LegacyDiffNote < Note
 
   before_create :set_diff
 
-  class << self
-    def build_discussion_id(noteable_type, noteable_id, line_code)
-      [super(noteable_type, noteable_id), line_code].join("-")
-    end
+  def discussion_class(*)
+    LegacyDiffDiscussion
   end
 
   def legacy_diff_note?
@@ -118,9 +116,5 @@ class LegacyDiffNote < Note
   def find_noteable_diff
     diffs = noteable.raw_diffs(Commit.max_diff_options)
     diffs.find { |d| d.new_path == self.diff.new_path }
-  end
-
-  def build_discussion_id
-    self.class.build_discussion_id(noteable_type, noteable_id || commit_id, line_code)
   end
 end

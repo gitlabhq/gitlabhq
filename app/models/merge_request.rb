@@ -1,6 +1,7 @@
 class MergeRequest < ActiveRecord::Base
   include InternalId
   include Issuable
+  include Noteable
   include Referable
   include Sortable
 
@@ -475,42 +476,30 @@ class MergeRequest < ActiveRecord::Base
     )
   end
 
-  def discussions
-    @discussions ||= self.related_notes.
-      inc_relations_for_view.
-      fresh.
-      discussions
-  end
-
-  def diff_discussions
-    @diff_discussions ||= self.notes.diff_notes.discussions
-  end
+  alias_method :discussion_notes, :related_notes
 
   def resolvable_discussions
-    @resolvable_discussions ||= diff_discussions.select(&:to_be_resolved?)
-  end
-
-  def discussions_can_be_resolved_by?(user)
-    resolvable_discussions.all? { |discussion| discussion.can_resolve?(user) }
-  end
-
-  def find_diff_discussion(discussion_id)
-    notes = self.notes.diff_notes.where(discussion_id: discussion_id).fresh.to_a
-    return if notes.empty?
-
-    Discussion.new(notes)
+    @resolvable_discussions ||= notes.resolvable.discussions
   end
 
   def discussions_resolvable?
-    diff_discussions.any?(&:resolvable?)
+    resolvable_discussions.any?(&:resolvable?)
   end
 
   def discussions_resolved?
-    discussions_resolvable? && diff_discussions.none?(&:to_be_resolved?)
+    discussions_resolvable? && resolvable_discussions.none?(&:to_be_resolved?)
   end
 
   def discussions_to_be_resolved?
     discussions_resolvable? && !discussions_resolved?
+  end
+
+  def discussions_to_be_resolved
+    @discussions_to_be_resolved ||= resolvable_discussions.select(&:to_be_resolved?)
+  end
+
+  def discussions_can_be_resolved_by?(user)
+    discussions_to_be_resolved.all? { |discussion| discussion.can_resolve?(user) }
   end
 
   def mergeable_discussions_state?

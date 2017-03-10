@@ -16,6 +16,15 @@ FactoryGirl.define do
     factory :note_on_personal_snippet,   traits: [:on_personal_snippet]
     factory :system_note,                traits: [:system]
 
+    factory :discussion_note_on_merge_request, traits: [:on_merge_request], class: DiscussionNote do
+      association :project, :repository
+      
+      trait :resolved do
+        resolved_at { Time.now }
+        resolved_by { create(:user) }
+      end
+    end
+
     factory :legacy_diff_note_on_commit, traits: [:on_commit, :legacy_diff_note], class: LegacyDiffNote do
       association :project, :repository
     end

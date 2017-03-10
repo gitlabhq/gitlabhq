@@ -6,12 +6,13 @@ class Projects::NotesController < Projects::ApplicationController
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_admin_note!, only: [:update, :destroy]
   before_action :authorize_resolve_note!, only: [:resolve, :unresolve]
-  before_action :find_current_user_notes, only: [:index]
 
   def index
     current_fetched_at = Time.now.to_i
 
     notes_json = { notes: [], last_fetched_at: current_fetched_at }
+
+    @notes = notes_finder.execute.inc_author
 
     @notes.each do |note|
       next if note.cross_reference_not_visible_for?(current_user)
@@ -23,7 +24,11 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def create
-    create_params = note_params.merge(merge_request_diff_head_sha: params[:merge_request_diff_head_sha])
+    create_params = note_params.merge(
+      merge_request_diff_head_sha: params[:merge_request_diff_head_sha],
+      in_reply_to_discussion_id: params[:in_reply_to_discussion_id],
+      new_discussion: params[:new_discussion],
+    )
     @note = Notes::CreateService.new(project, current_user, create_params).execute
 
     if @note.is_a?(Note)
@@ -111,6 +116,17 @@ class Projects::NotesController < Projects::ApplicationController
     )
   end
 
+  def discussion_html(discussion)
+    return if discussion.render_as_individual_notes?
+
+    render_to_string(
+      "discussions/_discussion",
+      layout: false,
+      formats: [:html],
+      locals: { discussion: discussion }
+    )
+  end
+
   def diff_discussion_html(discussion)
     return unless discussion.diff_discussion?
 
@@ -135,17 +151,6 @@ class Projects::NotesController < Projects::ApplicationController
     )
   end
 
-  def discussion_html(discussion)
-    return unless discussion.diff_discussion?
-
-    render_to_string(
-      "discussions/_discussion",
-      layout: false,
-      formats: [:html],
-      locals: { discussion: discussion }
-    )
-  end
-
   def note_json(note)
     attrs = {
       id: note.id
@@ -156,33 +161,22 @@ class Projects::NotesController < Projects::ApplicationController
 
       attrs.merge!(
         valid: true,
-        discussion_id: note.discussion_id,
+        discussion_id: note.discussion_id(noteable),
         html: note_html(note),
         note: note.note
       )
 
-      if note.diff_note?
-        discussion = note.to_discussion
-
+      discussion = note.to_discussion(noteable)
+      unless discussion.render_as_individual_notes?
         attrs.merge!(
           diff_discussion_html: diff_discussion_html(discussion),
-          discussion_html: discussion_html(discussion)
-        )
+          discussion_html: discussion_html(discussion),
 
-        # The discussion_id is used to add the comment to the correct discussion
-        # element on the merge request page. Among other things, the discussion_id
-        # contains the sha of head commit of the merge request.
-        # When new commits are pushed into the merge request after the initial
-        # load of the merge request page, the discussion elements will still have
-        # the old discussion_ids, with the old head commit sha. The new comment,
-        # however, will have the new discussion_id with the new commit sha.
-        # To ensure that these new comments will still end up in the correct
-        # discussion element, we also send the original discussion_id, with the
-        # old commit sha, along, and fall back on this value when no discussion
-        # element with the new discussion_id could be found.
-        if note.new_diff_note? && note.position != note.original_position
-          attrs[:original_discussion_id] = note.original_discussion_id
-        end
+          # Since the `discussion_id` can change, for example when new commits are pushed into an MR,
+          # the never-changing `original_discussion_id` is used as a fallback to the find the relevant
+          # discussion container to add this note to.
+          original_discussion_id: note.original_discussion_id
+        )
       end
     else
       attrs.merge!(
@@ -205,14 +199,30 @@ class Projects::NotesController < Projects::ApplicationController
 
   def note_params
     params.require(:note).permit(
-      :note, :noteable, :noteable_id, :noteable_type, :project_id,
-      :attachment, :line_code, :commit_id, :type, :position
+      :project_id,
+      :noteable_type,
+      :noteable_id,
+      :commit_id,
+      :noteable,
+      :type,
+
+      :note,
+      :attachment,
+
+      # LegacyDiffNote
+      :line_code,
+
+      # DiffNote
+      :position
     )
   end
 
-  def find_current_user_notes
-    @notes = NotesFinder.new(project, current_user, params.merge(last_fetched_at: last_fetched_at))
-      .execute.inc_author
+  def notes_finder
+    @notes_finder ||= NotesFinder.new(project, current_user, params.merge(last_fetched_at: last_fetched_at))
+  end
+
+  def noteable
+    @noteable ||= notes_finder.target
   end
 
   def last_fetched_at

@@ -1225,12 +1225,12 @@ describe MergeRequest, models: true do
   end
 
   context "discussion status" do
-    let(:first_discussion) { Discussion.new([create(:diff_note_on_merge_request)]) }
-    let(:second_discussion) { Discussion.new([create(:diff_note_on_merge_request)]) }
-    let(:third_discussion) { Discussion.new([create(:diff_note_on_merge_request)]) }
+    let(:first_discussion) { Discussion.new([create(:discussion_note_on_merge_request)]) }
+    let(:second_discussion) { Discussion.new([create(:discussion_note_on_merge_request)]) }
+    let(:third_discussion) { Discussion.new([create(:discussion_note_on_merge_request)]) }
 
     before do
-      allow(subject).to receive(:diff_discussions).and_return([first_discussion, second_discussion, third_discussion])
+      allow(subject).to receive(:resolvable_discussions).and_return([first_discussion, second_discussion, third_discussion])
     end
 
     describe '#resolvable_discussions' do
@@ -1242,34 +1242,6 @@ describe MergeRequest, models: true do
 
       it 'includes only discussions that need to be resolved' do
         expect(subject.resolvable_discussions).to eq([first_discussion])
-      end
-    end
-
-    describe '#discussions_can_be_resolved_by? user' do
-      let(:user) { build(:user) }
-
-      context 'all discussions can be resolved by the user' do
-        before do
-          allow(first_discussion).to receive(:can_resolve?).with(user).and_return(true)
-          allow(second_discussion).to receive(:can_resolve?).with(user).and_return(true)
-          allow(third_discussion).to receive(:can_resolve?).with(user).and_return(true)
-        end
-
-        it 'allows a user to resolve the discussions' do
-          expect(subject.discussions_can_be_resolved_by?(user)).to be(true)
-        end
-      end
-
-      context 'one discussion cannot be resolved by the user' do
-        before do
-          allow(first_discussion).to receive(:can_resolve?).with(user).and_return(true)
-          allow(second_discussion).to receive(:can_resolve?).with(user).and_return(true)
-          allow(third_discussion).to receive(:can_resolve?).with(user).and_return(false)
-        end
-
-        it 'allows a user to resolve the discussions' do
-          expect(subject.discussions_can_be_resolved_by?(user)).to be(false)
-        end
       end
     end
 
@@ -1395,6 +1367,38 @@ describe MergeRequest, models: true do
           it "returns true" do
             expect(subject.discussions_to_be_resolved?).to be true
           end
+        end
+      end
+    end
+
+    describe "#discussions_to_be_resolved" do
+      # TODO: Test
+    end
+
+    describe '#discussions_can_be_resolved_by?' do
+      let(:user) { build(:user) }
+
+      context 'all discussions can be resolved by the user' do
+        before do
+          allow(first_discussion).to receive(:can_resolve?).with(user).and_return(true)
+          allow(second_discussion).to receive(:can_resolve?).with(user).and_return(true)
+          allow(third_discussion).to receive(:can_resolve?).with(user).and_return(true)
+        end
+
+        it 'allows a user to resolve the discussions' do
+          expect(subject.discussions_can_be_resolved_by?(user)).to be(true)
+        end
+      end
+
+      context 'one discussion cannot be resolved by the user' do
+        before do
+          allow(first_discussion).to receive(:can_resolve?).with(user).and_return(true)
+          allow(second_discussion).to receive(:can_resolve?).with(user).and_return(true)
+          allow(third_discussion).to receive(:can_resolve?).with(user).and_return(false)
+        end
+
+        it 'allows a user to resolve the discussions' do
+          expect(subject.discussions_can_be_resolved_by?(user)).to be(false)
         end
       end
     end
