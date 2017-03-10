@@ -493,23 +493,23 @@ feature 'Builds', :feature do
       it { expect(page.status_code).to eq(404) }
     end
 
-    context "when Project is public and builds_access_level is Everyone with access" do
+    context 'when Project is public and builds_access_level is Everyone with access' do
       let(:project) { create(:project, :public) }
       before do
         project.project_feature.update_attribute('builds_access_level', ProjectFeature::ENABLED)
       end
 
-      context "when user belongs to the project" do
+      context 'when user belongs to the project' do
         before do
           visit trace_namespace_project_build_path(project.namespace, project, build, format: :json)
         end
 
         it 'traces build log' do
-          expect(page.status_code).to eq(200)
+          expect(page).to have_http_status(:ok)
         end
       end
 
-      context "when user does not belong to the project" do
+      context 'when user does not belong to the project' do
         let(:non_member) { create(:user) }
 
         before do
@@ -519,7 +519,7 @@ feature 'Builds', :feature do
         end
 
         it 'traces build log' do
-          expect(page.status_code).to eq(200)
+          expect(page).to have_http_status(:ok)
         end
       end
     end
