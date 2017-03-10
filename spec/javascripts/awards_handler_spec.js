@@ -1,8 +1,10 @@
 /* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, comma-dangle, new-parens, no-unused-vars, quotes, jasmine/no-spec-dupes, prefer-template, max-len */
 
-require('es6-promise').polyfill();
+import promisePolyfill from 'es6-promise';
+import Cookies from 'js-cookie';
+import AwardsHandler from '~/awards_handler';
 
-const AwardsHandler = require('~/awards_handler');
+promisePolyfill.polyfill();
 
 (function() {
   var awardsHandler, lazyAssert, urlRoot, openAndWaitForEmojiMenu;
@@ -207,8 +209,8 @@ const AwardsHandler = require('~/awards_handler');
             expect($('[data-name=alien]').is(':visible')).toBe(true);
           })
           .then(done)
-          .catch(() => {
-            done.fail('Failed to open and build emoji menu');
+          .catch((err) => {
+            done.fail(`Failed to open and build emoji menu: ${err.message}`);
           });
       });
     });
@@ -231,8 +233,8 @@ const AwardsHandler = require('~/awards_handler');
       it('should add selected emoji to awards block', function(done) {
         return openEmojiMenuAndAddEmoji()
           .then(done)
-          .catch(() => {
-            done.fail('Failed to open and build emoji menu');
+          .catch((err) => {
+            done.fail(`Failed to open and build emoji menu: ${err.message}`);
           });
       });
       it('should remove already selected emoji', function(done) {
@@ -246,7 +248,46 @@ const AwardsHandler = require('~/awards_handler');
           })
           .then(done)
           .catch((err) => {
-            done.fail('Failed to open and build emoji menu');
+            done.fail(`Failed to open and build emoji menu: ${err.message}`);
+          });
+      });
+    });
+
+    describe('frequently used emojis', function() {
+      beforeEach(() => {
+        // Clear it out
+        Cookies.set('frequently_used_emojis', '');
+      });
+
+      it('shouldn\'t have any "Frequently used" heading if no frequently used emojis', function(done) {
+        return openAndWaitForEmojiMenu()
+          .then(() => {
+            const emojiMenu = document.querySelector('.emoji-menu');
+            Array.prototype.forEach.call(emojiMenu.querySelectorAll('.emoji-menu-title'), (title) => {
+              expect(title.textContent.trim().toLowerCase()).not.toBe('frequently used');
+            });
+          })
+          .then(done)
+          .catch((err) => {
+            done.fail(`Failed to open and build emoji menu: ${err.message}`);
+          });
+      });
+
+      it('should have any frequently used section when there are frequently used emojis', function(done) {
+        awardsHandler.addEmojiToFrequentlyUsedList('8ball');
+
+        return openAndWaitForEmojiMenu()
+          .then(() => {
+            const emojiMenu = document.querySelector('.emoji-menu');
+            const hasFrequentlyUsedHeading = Array.prototype.some.call(emojiMenu.querySelectorAll('.emoji-menu-title'), title =>
+              title.textContent.trim().toLowerCase() === 'frequently used'
+            );
+
+            expect(hasFrequentlyUsedHeading).toBe(true);
+          })
+          .then(done)
+          .catch((err) => {
+            done.fail(`Failed to open and build emoji menu: ${err.message}`);
           });
       });
     });
