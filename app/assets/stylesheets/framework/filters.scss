@@ -144,7 +144,7 @@
 .scroll-container {
   display: -webkit-flex;
   display: flex;
-  overflow-x: scroll;
+  overflow-x: auto;
   white-space: nowrap;
   width: 100%;
 }
