@@ -26,7 +26,7 @@ describe 'Board with milestone', :feature, :js do
 
       click_link 'test'
 
-      expect(find('.js-milestone-select')).to have_content(milestone.title)
+      expect(find('.tokens-container')).to have_content(milestone.title)
       expect(all('.board')[1]).to have_selector('.card', count: 1)
     end
   end
@@ -48,21 +48,22 @@ describe 'Board with milestone', :feature, :js do
         click_link board.name
       end
 
-      expect(find('.js-milestone-select')).to have_content(milestone.title)
+      expect(find('.tokens-container')).to have_content(milestone.title)
       expect(all('.board')[1]).to have_selector('.card', count: 1)
     end
 
     it 'sets board to any milestone' do
       update_board_milestone('Any Milestone')
 
-      expect(find('.js-milestone-select')).not_to have_content(milestone.title)
+      expect(page).not_to have_css('.js-visual-token')
+      expect(find('.tokens-container')).not_to have_content(milestone.title)
       expect(all('.board')[1]).to have_selector('.card', count: 2)
     end
 
     it 'sets board to upcoming milestone' do
       update_board_milestone('Upcoming')
 
-      expect(find('.js-milestone-select')).not_to have_content(milestone.title)
+      expect(find('.tokens-container')).not_to have_content(milestone.title)
       expect(all('.board')[1]).to have_selector('.card', count: 0)
     end
   end

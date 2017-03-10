@@ -59,6 +59,9 @@ const extraMilestones = require('../mixins/extra_milestones');
       },
     },
     methods: {
+      refreshPage() {
+        location.href = location.pathname;
+      },
       loadMilestones(e) {
         this.milestoneDropdownOpen = !this.milestoneDropdownOpen;
         BoardService.loadMilestones.call(this);
@@ -78,8 +81,12 @@ const extraMilestones = require('../mixins/extra_milestones');
         gl.boardService.createBoard(this.board)
           .then(() => {
             if (this.currentBoard && this.currentPage !== 'new') {
-              // We reload the page to make sure the store & state of the app are correct
-              location.reload();
+              this.currentBoard.name = this.board.name;
+
+              if (this.currentPage === 'milestone') {
+                // We reload the page to make sure the store & state of the app are correct
+                this.refreshPage();
+              }
             }
 
             // Enable the button thanks to our jQuery disabling it
