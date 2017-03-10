@@ -89,7 +89,7 @@ production: &base
       issues: true
       merge_requests: true
       wiki: true
-      snippets: false
+      snippets: true
       builds: true
       container_registry: true
 
