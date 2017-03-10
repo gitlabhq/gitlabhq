@@ -8,23 +8,23 @@ module Issues
     end
 
     def issue_params_with_info_from_discussions
-      return {} unless merge_request_for_resolving_discussions
+      return {} unless merge_request_to_resolve_discussions_of
 
       { title: title_from_merge_request, description: description_for_discussions }
     end
 
     def title_from_merge_request
-      "Follow-up from \"#{merge_request_for_resolving_discussions.title}\""
+      "Follow-up from \"#{merge_request_to_resolve_discussions_of.title}\""
     end
 
     def description_for_discussions
       if discussions_to_resolve.empty?
         return "There are no unresolved discussions. "\
-               "Review the conversation in #{merge_request_for_resolving_discussions.to_reference}"
+               "Review the conversation in #{merge_request_to_resolve_discussions_of.to_reference}"
       end
 
       description = "The following #{'discussion'.pluralize(discussions_to_resolve.size)} "\
-                    "from #{merge_request_for_resolving_discussions.to_reference} "\
+                    "from #{merge_request_to_resolve_discussions_of.to_reference} "\
                     "should be addressed:"
 
       [description, *items_for_discussions].join("\n\n")

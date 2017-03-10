@@ -104,7 +104,7 @@ describe Projects::IssuesController do
         project_with_repository.team << [user, :developer]
         mr = create(:merge_request_with_diff_notes, source_project: project_with_repository)
 
-        get :new, namespace_id: project_with_repository.namespace, project_id: project_with_repository, merge_request_for_resolving_discussions: mr.iid
+        get :new, namespace_id: project_with_repository.namespace, project_id: project_with_repository, merge_request_to_resolve_discussions_of: mr.iid
 
         expect(assigns(:issue).title).not_to be_empty
         expect(assigns(:issue).description).not_to be_empty
@@ -113,7 +113,7 @@ describe Projects::IssuesController do
       it 'fills in an issue for a discussion' do
         note = create(:note_on_merge_request, project: project)
 
-        get :new, namespace_id: project.namespace.path, project_id: project, merge_request_for_resolving_discussions: note.noteable.iid, discussion_to_resolve: note.discussion_id
+        get :new, namespace_id: project.namespace.path, project_id: project, merge_request_to_resolve_discussions_of: note.noteable.iid, discussion_to_resolve: note.discussion_id
 
         expect(assigns(:issue).title).not_to be_empty
         expect(assigns(:issue).description).not_to be_empty
@@ -471,11 +471,11 @@ describe Projects::IssuesController do
       end
 
       let(:merge_request_params) do
-        { merge_request_for_resolving_discussions: merge_request.iid }
+        { merge_request_to_resolve_discussions_of: merge_request.iid }
       end
 
       def post_issue(issue_params, other_params: {})
-        post :create, { namespace_id: project.namespace.to_param, project_id: project, issue: issue_params, merge_request_for_resolving_discussions: merge_request.iid }.merge(other_params)
+        post :create, { namespace_id: project.namespace.to_param, project_id: project, issue: issue_params, merge_request_to_resolve_discussions_of: merge_request.iid }.merge(other_params)
       end
 
       it 'creates an issue for the project' do

@@ -65,13 +65,13 @@ class Projects::IssuesController < Projects::ApplicationController
       assignee_id: ""
     )
     build_params = issue_params.merge(
-      merge_request_for_resolving_discussions: params[:merge_request_for_resolving_discussions],
+      merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
       discussion_to_resolve: params[:discussion_to_resolve]
     )
     service = Issues::BuildService.new(project, current_user, build_params)
 
     @issue = @noteable = service.execute
-    @merge_request_for_resolving_discussions = service.merge_request_for_resolving_discussions
+    @merge_request_to_resolve_discussions_of = service.merge_request_to_resolve_discussions_of
     @discussion_to_resolve = service.discussions_to_resolve.first if params[:discussion_to_resolve]
 
     respond_with(@issue)
@@ -102,7 +102,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def create
     create_params = issue_params.merge(spammable_params).merge(
-      merge_request_for_resolving_discussions: params[:merge_request_for_resolving_discussions],
+      merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
       discussion_to_resolve: params[:discussion_to_resolve]
     )
 
@@ -248,7 +248,6 @@ class Projects::IssuesController < Projects::ApplicationController
   def issue_params
     params.require(:issue).permit(
       :title, :assignee_id, :position, :description, :confidential,
-      :discussion_to_resolve, :merge_request_for_resolving_discussions,
       :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: []
     )
   end

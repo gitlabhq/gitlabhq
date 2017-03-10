@@ -941,7 +941,7 @@ describe API::Issues, api: true  do
         before do
           post api("/projects/#{project.id}/issues", user),
                title: 'New Issue',
-               merge_request_for_resolving_discussions: merge_request.iid
+               merge_request_to_resolve_discussions_of: merge_request.iid
         end
 
         it_behaves_like 'creating an issue resolving discussions through the API'
@@ -951,7 +951,7 @@ describe API::Issues, api: true  do
         before do
           post api("/projects/#{project.id}/issues", user),
                title: 'New Issue',
-               merge_request_for_resolving_discussions: merge_request.iid,
+               merge_request_to_resolve_discussions_of: merge_request.iid,
                discussion_to_resolve: discussion.id
         end
 

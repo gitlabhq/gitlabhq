@@ -150,7 +150,7 @@ describe Issues::CreateService, services: true do
       end
 
       describe 'for a single discussion' do
-        let(:opts) { { discussion_to_resolve: discussion.id, merge_request_for_resolving_discussions: merge_request.iid } }
+        let(:opts) { { discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid } }
 
         it 'resolves the discussion' do
           described_class.new(project, user, opts).execute
@@ -176,7 +176,7 @@ describe Issues::CreateService, services: true do
 
         it 'can set nil explicitly to the title and description' do
           issue = described_class.new(project, user,
-                                      merge_request_for_resolving_discussions: merge_request,
+                                      merge_request_to_resolve_discussions_of: merge_request,
                                       description: nil,
                                       title: nil).execute
 
@@ -186,7 +186,7 @@ describe Issues::CreateService, services: true do
       end
 
       describe 'for a merge request' do
-        let(:opts) { { merge_request_for_resolving_discussions: merge_request.iid } }
+        let(:opts) { { merge_request_to_resolve_discussions_of: merge_request.iid } }
 
         it 'resolves the discussion' do
           described_class.new(project, user, opts).execute
@@ -212,7 +212,7 @@ describe Issues::CreateService, services: true do
 
         it 'can set nil explicitly to the title and description' do
           issue = described_class.new(project, user,
-                                      merge_request_for_resolving_discussions: merge_request,
+                                      merge_request_to_resolve_discussions_of: merge_request,
                                       description: nil,
                                       title: nil).execute
 

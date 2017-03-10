@@ -23,10 +23,10 @@ describe DummyService, services: true do
     let(:other_merge_request) { create(:merge_request, source_project: project, source_branch: "other") }
 
     describe "#merge_request_for_resolving_discussion" do
-      let(:service) { described_class.new(project, user, merge_request_for_resolving_discussions: merge_request.iid) }
+      let(:service) { described_class.new(project, user, merge_request_to_resolve_discussions_of: merge_request.iid) }
 
       it "finds the merge request" do
-        expect(service.merge_request_for_resolving_discussions).to eq(merge_request)
+        expect(service.merge_request_to_resolve_discussions_of).to eq(merge_request)
       end
 
       it "only queries for the merge request once" do
@@ -37,7 +37,7 @@ describe DummyService, services: true do
         expect(fake_results).to receive(:find_by).exactly(1)
         expect(MergeRequestsFinder).to receive(:new).and_return(fake_finder).exactly(1)
 
-        2.times { service.merge_request_for_resolving_discussions }
+        2.times { service.merge_request_to_resolve_discussions_of }
       end
     end
 
@@ -47,7 +47,7 @@ describe DummyService, services: true do
           project,
           user,
           discussion_to_resolve: discussion.id,
-          merge_request_for_resolving_discussions: merge_request.iid
+          merge_request_to_resolve_discussions_of: merge_request.iid
         )
         # We need to compare discussion id's because the Discussion-objects are rebuilt
         # which causes the object-id's not to be different.
@@ -64,7 +64,7 @@ describe DummyService, services: true do
         service = described_class.new(
           project,
           user,
-          merge_request_for_resolving_discussions: merge_request.iid
+          merge_request_to_resolve_discussions_of: merge_request.iid
         )
         # We need to compare discussion id's because the Discussion-objects are rebuilt
         # which causes the object-id's not to be different.
@@ -82,7 +82,7 @@ describe DummyService, services: true do
         service = described_class.new(
           project,
           user,
-          merge_request_for_resolving_discussions: merge_request.iid
+          merge_request_to_resolve_discussions_of: merge_request.iid
         )
         # We need to compare discussion id's because the Discussion-objects are rebuilt
         # which causes the object-id's not to be different.
@@ -96,7 +96,7 @@ describe DummyService, services: true do
           project,
           user,
           discussion_to_resolve: discussion.id,
-          merge_request_for_resolving_discussions: other_merge_request.iid
+          merge_request_to_resolve_discussions_of: other_merge_request.iid
         )
 
         expect(service.discussions_to_resolve).to be_empty

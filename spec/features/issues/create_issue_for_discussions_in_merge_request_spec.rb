@@ -15,7 +15,7 @@ feature 'Resolving all open discussions in a merge request from an issue', featu
 
     it 'shows a button to resolve all discussions by creating a new issue' do
       within('li#resolve-count-app') do
-        expect(page).to have_link "Resolve all discussions in new issue", href: new_namespace_project_issue_path(project.namespace, project, merge_request_for_resolving_discussions: merge_request.iid)
+        expect(page).to have_link "Resolve all discussions in new issue", href: new_namespace_project_issue_path(project.namespace, project, merge_request_to_resolve_discussions_of: merge_request.iid)
       end
     end
 
@@ -25,13 +25,13 @@ feature 'Resolving all open discussions in a merge request from an issue', featu
       end
 
       it 'hides the link for creating a new issue' do
-        expect(page).not_to have_link "Resolve all discussions in new issue", href: new_namespace_project_issue_path(project.namespace, project, merge_request_for_resolving_discussions: merge_request.iid)
+        expect(page).not_to have_link "Resolve all discussions in new issue", href: new_namespace_project_issue_path(project.namespace, project, merge_request_to_resolve_discussions_of: merge_request.iid)
       end
     end
 
     context 'creating an issue for discussions' do
       before do
-        click_link "Resolve all discussions in new issue", href: new_namespace_project_issue_path(project.namespace, project, merge_request_for_resolving_discussions: merge_request.iid)
+        click_link "Resolve all discussions in new issue", href: new_namespace_project_issue_path(project.namespace, project, merge_request_to_resolve_discussions_of: merge_request.iid)
       end
 
       it_behaves_like 'creating an issue for a discussion'
@@ -64,13 +64,13 @@ feature 'Resolving all open discussions in a merge request from an issue', featu
 
         it 'has a link to resolve all discussions by creating an issue' do
           page.within '.mr-widget-body' do
-            expect(page).to have_link 'open an issue to resolve them later', href: new_namespace_project_issue_path(project.namespace, project, merge_request_for_resolving_discussions: merge_request.iid)
+            expect(page).to have_link 'open an issue to resolve them later', href: new_namespace_project_issue_path(project.namespace, project, merge_request_to_resolve_discussions_of: merge_request.iid)
           end
         end
 
         context 'creating an issue for discussions' do
           before do
-            page.click_link 'open an issue to resolve them later', href: new_namespace_project_issue_path(project.namespace, project, merge_request_for_resolving_discussions: merge_request.iid)
+            page.click_link 'open an issue to resolve them later', href: new_namespace_project_issue_path(project.namespace, project, merge_request_to_resolve_discussions_of: merge_request.iid)
           end
 
           it_behaves_like 'creating an issue for a discussion'
@@ -83,7 +83,7 @@ feature 'Resolving all open discussions in a merge request from an issue', featu
     before do
       project.team << [user, :reporter]
       login_as user
-      visit new_namespace_project_issue_path(project.namespace, project, merge_request_for_resolving_discussions: merge_request.iid)
+      visit new_namespace_project_issue_path(project.namespace, project, merge_request_to_resolve_discussions_of: merge_request.iid)
     end
 
     it 'Shows a notice to ask someone else to resolve the discussions' do
