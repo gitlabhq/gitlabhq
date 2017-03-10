@@ -66,6 +66,22 @@ describe 'Board with milestone', :feature, :js do
       expect(find('.tokens-container')).not_to have_content(milestone.title)
       expect(all('.board')[1]).to have_selector('.card', count: 0)
     end
+
+    it 'does not allow milestone in filter to be editted' do
+      find('.filtered-search').native.send_keys(:backspace)
+
+      page.within('.tokens-container') do
+        expect(page).to have_selector('.value')
+      end
+    end
+
+    it 'does not render milestone in hint dropdown' do
+      find('.filtered-search').click
+
+      page.within('#js-dropdown-hint') do
+        expect(page).not_to have_button('Milestone')
+      end
+    end
   end
 
   def create_board_with_milestone
