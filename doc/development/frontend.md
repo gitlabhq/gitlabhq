@@ -16,6 +16,22 @@ minification, and compression of our assets.
 [jQuery][jquery] is used throughout the application's JavaScript, with
 [Vue.js][vue] for particularly advanced, dynamic elements.
 
+### Architecture
+
+The Frontend Architect is an expert who makes high-level frontend design choices
+and decides on technical standards, including coding standards, and frameworks.
+
+When you are assigned a new feature that requires architectural design,
+make sure it is discussed with one of the Frontend Architecture Experts.
+
+This rule also applies if you plan to change the architecture of an existing feature.
+
+These decisions should be accessible to everyone, so please document it on the Merge Request.
+
+You can find the Frontend Architecture experts on the [team page][team-page].
+
+You can find documentation about the desired architecture for a new feature built with Vue.js in [here][vue-section].
+
 ### Vue
 
 For more complex frontend features, we recommend using Vue.js. It shares
@@ -238,8 +254,8 @@ readability.
 See the relevant style guides for our guidelines and for information on linting:
 
 - [SCSS][scss-style-guide]
-- JavaScript - We defer to [AirBnb][airbnb-js-style-guide] on most style-related 
-conventions and enforce them with eslint. See [our current .eslintrc][eslistrc] 
+- JavaScript - We defer to [AirBnb][airbnb-js-style-guide] on most style-related
+conventions and enforce them with eslint. See [our current .eslintrc][eslintrc]
 for specific rules and patterns.
 
 ## Testing
@@ -439,3 +455,5 @@ Scenario: Developer can approve merge request
 [issue-boards-service]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/boards/services/board_service.js.es6
 [airbnb-js-style-guide]: https://github.com/airbnb/javascript
 [eslintrc]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.eslintrc
+[team-page]: https://about.gitlab.com/team
+[vue-section]: https://docs.gitlab.com/ce/development/frontend.html#how-to-build-a-new-feature-with-vue-js
