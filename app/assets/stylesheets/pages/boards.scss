@@ -302,11 +302,15 @@
 }
 
 .issue-boards-search {
-  width: 435px;
 
   .form-control {
     display: inline-block;
     width: 210px;
+    margin-right: 10px;
+
+    @media (max-width: $screen-md-max) {
+      width: 155px;
+    }
   }
 }
 

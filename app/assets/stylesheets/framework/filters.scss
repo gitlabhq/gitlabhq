@@ -44,6 +44,14 @@
   }
 }
 
+@media (max-width: $screen-md-max) {
+  .issues-details-filters {
+    .dropdown-menu-toggle {
+      width: 110px;
+    }
+  }
+}
+
 @media (max-width: $screen-xs-max) {
   .filter-item {
     display: block;
@@ -226,14 +234,6 @@
 .filter-dropdown {
   max-height: 215px;
   overflow: auto;
-}
-
-@media (min-width: $screen-sm-min) and (max-width: 1046px) {
-  .issues-details-filters {
-    .dropdown-menu-toggle {
-      width: 100px;
-    }
-  }
 }
 
 @media (max-width: $screen-xs-max) {
