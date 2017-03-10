@@ -139,6 +139,7 @@ module API
           end
 
           issue_params = declared_params(include_missing: false)
+          issue_params = issue_params.merge(merge_request_to_resolve_discussions_of: issue_params.delete(:merge_request_for_resolving_discussions))
 
           issue = ::Issues::CreateService.new(user_project,
                                               current_user,
