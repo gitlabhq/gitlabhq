@@ -291,7 +291,7 @@ When exactly one object is needed for a given task, prefer to define it as a
 `class` rather than as an object literal. Prefer also to explicitly restrict
 instantiation, unless flexibility is important (e.g. for testing).
 
-```
+```javascript
 // bad
 
 gl.MyThing = {
@@ -340,21 +340,20 @@ When writing a class that needs to manipulate the DOM guarantee a container opti
 This is useful when we need that class to be instantiated more than once in the same page.
 
 Bad:
-```
+```javascript
 class Foo {
   constructor() {
     document.querySelector('.bar');
   }
 }
-
 new Foo();
 ```
 
 Good:
-```
+```javascript
 class Foo {
   constructor(opts) {
-    document.querySelector(opts.container);
+    opts.container.querySelector('.bar');
   }
 }
 
