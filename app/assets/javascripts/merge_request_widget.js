@@ -149,7 +149,7 @@ require('./smart_interval');
         var $html = $(data);
         this.updateMergeButton(this.status, this.hasCi, $html);
         $('.mr-widget-body').replaceWith($html.find('.mr-widget-body'));
-        $('.mr-widget-footer').replaceWith($html.find('.mr-widget-footer'));
+        $('.mr-widget-footer:not(.mr-approvals-footer)').replaceWith($html.find('.mr-widget-footer:not(.mr-approvals-footer)'));
         $('.approvals-components').replaceWith($html.find('.approvals-components'));
 
         if (gl.compileApprovalsWidget) {

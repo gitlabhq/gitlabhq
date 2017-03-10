@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Merge Request closing issues message', feature: true do
+  include WaitForAjax
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:issue_1) { create(:issue, project: project)}
@@ -76,6 +78,20 @@ feature 'Merge Request closing issues message', feature: true do
 
     it 'does not display closing issue message' do
       expect(page).to have_content("Accepting this merge request will close issue #{issue_1.to_reference}. Issue #{issue_2.to_reference} is mentioned but will not be closed.")
+    end
+  end
+
+  context 'approvals are enabled while closing issues', js: true do
+    before do
+      project.team << [user, :developer]
+    end
+
+    let(:project) { create(:project, :public, approvals_before_merge: 1) }
+    let(:merge_request_description) { "Description\n\nclosing #{issue_1.to_reference}, #{issue_2.to_reference}" }
+
+    it 'displays closing issue message exactly one time' do
+      wait_for_ajax
+      expect(page).to have_content("Accepting this merge request will close issues #{issue_1.to_reference} and #{issue_2.to_reference}", count: 1)
     end
   end
 end
