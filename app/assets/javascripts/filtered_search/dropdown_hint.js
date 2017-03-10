@@ -45,7 +45,7 @@ require('./filtered_search_dropdown');
               gl.FilteredSearchVisualTokens.addSearchVisualToken(searchTerms.join(' '));
             }
 
-            gl.FilteredSearchDropdownManager.addWordToInput(token.replace(':', ''));
+            gl.FilteredSearchDropdownManager.addWordToInput(token.replace(':', ''), '', false, this.container);
           }
           this.dismissDropdown();
           this.dispatchInputEvent();

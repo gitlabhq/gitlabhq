@@ -1,5 +1,8 @@
+/* eslint-disable class-methods-use-this */
+import FilteredSearchContainer from '../filtered_search/container';
+
 export default class FilteredSearchBoards extends gl.FilteredSearchManager {
-  constructor(store, updateUrl = false, cantEdit = []) {
+  constructor(store, updateUrl = false, canEdit = []) {
     super('boards');
 
     this.store = store;
@@ -19,13 +22,17 @@ export default class FilteredSearchBoards extends gl.FilteredSearchManager {
     }
   }
 
-  updateTokens() {
-    const tokens = document.querySelectorAll('.js-visual-token');
+  removeTokens() {
+    const tokens = FilteredSearchContainer.container.querySelectorAll('.js-visual-token');
 
     // Remove all the tokens as they will be replaced by the search manager
     [].forEach.call(tokens, (el) => {
       el.parentNode.removeChild(el);
     });
+  }
+
+  updateTokens() {
+    this.removeTokens();
 
     this.loadSearchParamsFromURL();
 
