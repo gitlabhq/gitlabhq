@@ -171,16 +171,26 @@
     }
   }
 
+  &:hover {
+    @extend .form-control:hover;
+  }
+
+  &.focus,
+  &.focus:hover {
+    border-color: $dropdown-input-focus-border;
+    box-shadow: 0 0 4px $search-input-focus-shadow-color;
+  }
+
+  &.focus .fa-filter {
+    color: $common-gray-dark;
+  }
+
   .form-control {
     position: relative;
     min-width: 200px;
     padding-left: 0;
     padding-right: 25px;
     border-color: transparent;
-
-    &:focus ~ .fa-filter {
-      color: $common-gray-dark;
-    }
 
     &:focus,
     &:hover {
