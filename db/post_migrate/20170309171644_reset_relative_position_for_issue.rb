@@ -7,10 +7,9 @@ class ResetRelativePositionForIssue < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
-    execute <<-EOS
-      UPDATE issues SET relative_position = NULL
-        WHERE issues.relative_position IS NOT NULL;
-    EOS
+    update_column_in_batches(:issues, :relative_position, nil) do |table, query|
+      query.where(table[:relative_position].not_eq(nil))
+    end
   end
 
   def down

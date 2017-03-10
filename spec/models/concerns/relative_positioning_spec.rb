@@ -130,7 +130,6 @@ describe Issue, 'RelativePositioning' do
       expect(new_issue.relative_position).to eq(6000 + RelativePositioning::DISTANCE)
     end
 
-
     it 'positions issue in the middle of other two if distance is not big enough' do
       issue.update relative_position: 100
       issue1.update relative_position: 400
