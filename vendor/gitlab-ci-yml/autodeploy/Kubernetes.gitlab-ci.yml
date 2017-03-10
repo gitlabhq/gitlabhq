@@ -24,12 +24,12 @@ build:
 production:
   stage: production
   variables:
-    CI_ENVIRONMENT_URL: http://production.$KUBE_DOMAIN
+    CI_ENVIRONMENT_URL: http://$CI_PROJECT_NAME.$KUBE_DOMAIN
   script:
     - command deploy
   environment:
     name: production
-    url: http://production.$KUBE_DOMAIN
+    url: http://$CI_PROJECT_NAME.$KUBE_DOMAIN
   when: manual
   only:
     - master
@@ -37,24 +37,24 @@ production:
 staging:
   stage: staging
   variables:
-    CI_ENVIRONMENT_URL: http://staging.$KUBE_DOMAIN
+    CI_ENVIRONMENT_URL: http://$CI_PROJECT_NAME-staging.$KUBE_DOMAIN
   script:
     - command deploy
   environment:
     name: staging
-    url: http://staging.$KUBE_DOMAIN
+    url: http://$CI_PROJECT_NAME-staging.$KUBE_DOMAIN
   only:
     - master
 
 review:
   stage: review
   variables:
-    CI_ENVIRONMENT_URL: http://$CI_ENVIRONMENT_SLUG.$KUBE_DOMAIN
+    CI_ENVIRONMENT_URL: http://$CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG.$KUBE_DOMAIN
   script:
     - command deploy
   environment:
-    name: review/$CI_BUILD_REF_NAME
-    url: http://$CI_ENVIRONMENT_SLUG.$KUBE_DOMAIN
+    name: review/$CI_COMMIT_REF_NAME
+    url: http://$CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG.$KUBE_DOMAIN
     on_stop: stop_review
   only:
     - branches
@@ -68,7 +68,7 @@ stop_review:
   script:
     - command destroy
   environment:
-    name: review/$CI_BUILD_REF_NAME
+    name: review/$CI_COMMIT_REF_NAME
     action: stop
   when: manual
   only:
