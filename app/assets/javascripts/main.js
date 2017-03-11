@@ -57,7 +57,6 @@ import { installGlEmojiElement } from './behaviors/gl_emoji';
 installGlEmojiElement();
 
 // blob
-import './blob/blob_file_dropzone';
 import './blob/create_branch_dropdown';
 import './blob/target_branch_dropdown';
 

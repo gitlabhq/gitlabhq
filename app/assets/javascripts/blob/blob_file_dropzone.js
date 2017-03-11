@@ -61,5 +61,3 @@ export default class BlobFileDropzone {
     });
   }
 }
-
-window.BlobFileDropzone = BlobFileDropzone;
