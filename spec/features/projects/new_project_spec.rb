@@ -18,12 +18,12 @@ feature "New project", feature: true do
       end
 
       it 'saves visibility level on validation error' do
-          visit new_project_path
+        visit new_project_path
 
-          choose(key)
-          click_button('Create project')
+        choose(key)
+        click_button('Create project')
 
-          expect(find_field("project_visibility_level_#{level}")).to be_checked
+        expect(find_field("project_visibility_level_#{level}")).to be_checked
       end
     end
   end
