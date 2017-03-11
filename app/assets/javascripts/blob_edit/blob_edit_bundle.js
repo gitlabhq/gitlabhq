@@ -2,7 +2,7 @@
 /* global EditBlob */
 /* global NewCommitForm */
 
-require('./edit_blob');
+import EditBlob from './edit_blob';
 
 $(function() {
   var url = $(".js-edit-blob-form").data("relative-url-root");

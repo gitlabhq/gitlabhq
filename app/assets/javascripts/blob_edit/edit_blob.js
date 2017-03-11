@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, camelcase, no-param-reassign, quotes, prefer-template, no-new, comma-dangle, one-var, one-var-declaration-per-line, prefer-arrow-callback, no-else-return, no-unused-vars, max-len */
+/* eslint-disable no-new */
 /* global ace */
 
 import BlobCiYamlSelectors from '../blob/blob_ci_yaml';
@@ -6,85 +6,68 @@ import BlobDockerfileSelectors from '../blob/blob_dockerfile_selectors';
 import BlobGitignoreSelectors from '../blob/blob_gitignore_selectors';
 import BlobLicenseSelectors from '../blob/blob_license_selectors';
 
-var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
-window.EditBlob = (function() {
-  function EditBlob(assets_path, ace_mode) {
-    if (ace_mode == null) {
-      ace_mode = null;
-    }
-    this.editModeLinkClickHandler = bind(this.editModeLinkClickHandler, this);
-    ace.config.set("modePath", assets_path + "/ace");
-    ace.config.loadModule("ace/ext/searchbox");
-    this.editor = ace.edit("editor");
+export default class EditBlob {
+  constructor(assetsPath, aceMode) {
+    this.editModeLinkClickHandler = this.editModeLinkClickHandler.bind(this);
+    ace.config.set('modePath', `${assetsPath}/ace`);
+    ace.config.loadModule('ace/ext/searchbox');
+    this.editor = ace.edit('editor');
     this.editor.focus();
-    if (ace_mode) {
-      this.editor.getSession().setMode("ace/mode/" + ace_mode);
+    if (aceMode) {
+      this.editor.getSession().setMode(`ace/mode/${aceMode}`);
     }
-    $('form').submit((function(_this) {
-      return function() {
-        return $("#file-content").val(_this.editor.getValue());
-      };
+
     // Before a form submission, move the content from the Ace editor into the
     // submitted textarea
-    })(this));
+    $('form').submit(() => $('#file-content').val(this.editor.getValue()));
+
     this.initModePanesAndLinks();
     this.initSoftWrap();
-    new BlobLicenseSelectors({
-      editor: this.editor
-    });
-    new BlobGitignoreSelectors({
-      editor: this.editor
-    });
-    new BlobCiYamlSelectors({
-      editor: this.editor
-    });
-    new BlobDockerfileSelectors({
-      editor: this.editor
-    });
+
+    new BlobLicenseSelectors({ editor: this.editor });
+    new BlobGitignoreSelectors({ editor: this.editor });
+    new BlobCiYamlSelectors({ editor: this.editor });
+    new BlobDockerfileSelectors({ editor: this.editor });
   }
 
-  EditBlob.prototype.initModePanesAndLinks = function() {
-    this.$editModePanes = $(".js-edit-mode-pane");
-    this.$editModeLinks = $(".js-edit-mode a");
-    return this.$editModeLinks.click(this.editModeLinkClickHandler);
-  };
+  initModePanesAndLinks() {
+    this.$editModePanes = $('.js-edit-mode-pane');
+    this.$editModeLinks = $('.js-edit-mode a');
+    this.$editModeLinks.click(this.editModeLinkClickHandler);
+  }
 
-  EditBlob.prototype.editModeLinkClickHandler = function(event) {
-    var currentLink, currentPane, paneId;
+  editModeLinkClickHandler(event) {
     event.preventDefault();
-    currentLink = $(event.target);
-    paneId = currentLink.attr("href");
-    currentPane = this.$editModePanes.filter(paneId);
-    this.$editModeLinks.parent().removeClass("active hover");
-    currentLink.parent().addClass("active hover");
+    const currentLink = $(event.target);
+    const paneId = currentLink.attr('href');
+    const currentPane = this.$editModePanes.filter(paneId);
+    this.$editModeLinks.parent().removeClass('active hover');
+    currentLink.parent().addClass('active hover');
     this.$editModePanes.hide();
     currentPane.fadeIn(200);
-    if (paneId === "#preview") {
+    if (paneId === '#preview') {
       this.$toggleButton.hide();
-      return $.post(currentLink.data("preview-url"), {
-        content: this.editor.getValue()
-      }, function(response) {
+      $.post(currentLink.data('preview-url'), {
+        content: this.editor.getValue(),
+      }, (response) => {
         currentPane.empty().append(response);
-        return currentPane.renderGFM();
+        currentPane.renderGFM();
       });
     } else {
       this.$toggleButton.show();
-      return this.editor.focus();
+      this.editor.focus();
     }
-  };
+  }
 
-  EditBlob.prototype.initSoftWrap = function() {
+  initSoftWrap() {
     this.isSoftWrapped = false;
     this.$toggleButton = $('.soft-wrap-toggle');
     this.$toggleButton.on('click', this.toggleSoftWrap.bind(this));
-  };
+  }
 
-  EditBlob.prototype.toggleSoftWrap = function(e) {
+  toggleSoftWrap() {
     this.isSoftWrapped = !this.isSoftWrapped;
     this.$toggleButton.toggleClass('soft-wrap-active', this.isSoftWrapped);
     this.editor.getSession().setUseWrapMode(this.isSoftWrapped);
-  };
-
-  return EditBlob;
-})();
+  }
+}
