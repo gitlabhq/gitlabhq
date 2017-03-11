@@ -27,6 +27,9 @@ describe Projects::BuildsController do
 
       it 'return a correct pipeline status' do
         expect(response).to have_http_status(:ok)
+        expect(json_response['text']).to eq status.text
+        expect(json_response['label']).to eq status.label
+        expect(json_response['icon']).to eq status.icon
         expect(json_response['favicon']).to eq status.favicon
       end
     end
