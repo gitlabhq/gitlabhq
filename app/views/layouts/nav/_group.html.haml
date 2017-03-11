@@ -32,7 +32,7 @@
           Contribution Analytics
     - if current_user
       - if can_admin_group || can_edit
-        = nav_link(path: %w[groups#projects groups#edit]) do
+        = nav_link(path: %w[groups#projects groups#edit ldap_group_links#index hooks#index audit_events#index pipeline_quota#index]) do
           = link_to projects_group_path(@group), title: 'Settings' do
             %span
               Settings
