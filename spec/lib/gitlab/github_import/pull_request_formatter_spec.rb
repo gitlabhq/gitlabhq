@@ -306,4 +306,12 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
       expect(pull_request.url).to eq 'https://api.github.com/repos/octocat/Hello-World/pulls/1347'
     end
   end
+
+  describe '#opened?' do
+    let(:raw_data) { double(base_data.merge(state: 'open')) }
+
+    it 'returns true when state is "open"' do
+      expect(pull_request.opened?).to be_truthy
+    end
+  end
 end

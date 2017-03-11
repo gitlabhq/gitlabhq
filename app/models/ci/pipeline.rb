@@ -144,7 +144,7 @@ module Ci
 
       status_sql = statuses.latest.where('stage=sg.stage').status_sql
 
-      warnings_sql = statuses.latest.select('COUNT(*) > 0')
+      warnings_sql = statuses.latest.select('COUNT(*)')
         .where('stage=sg.stage').failed_but_allowed.to_sql
 
       stages_with_statuses = CommitStatus.from(stages_query, :sg)

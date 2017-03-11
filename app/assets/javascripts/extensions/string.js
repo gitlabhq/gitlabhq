@@ -1,2 +1,2 @@
-require('string.prototype.codepointat');
-require('string.fromcodepoint');
+import 'string.prototype.codepointat';
+import 'string.fromcodepoint';

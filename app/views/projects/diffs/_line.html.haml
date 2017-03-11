@@ -14,13 +14,13 @@
     %td.new_line.diff-line-num
     %td.line_content.match= line.text
   - else
-    %td.old_line.diff-line-num.js-avatar-container{ class: type, data: { linenumber: line.old_pos } }
+    %td.old_line.diff-line-num{ class: [type, ("js-avatar-container" if !plain)], data: { linenumber: line.old_pos } }
       - link_text = type == "new" ? " " : line.old_pos
       - if plain
         = link_text
       - else
         %a{ href: "##{line_code}", data: { linenumber: link_text } }
-      - if discussion && !plain
+      - if discussion && discussion.resolvable? && !plain
         %diff-note-avatars{ "discussion-id" => discussion.id }
     %td.new_line.diff-line-num{ class: type, data: { linenumber: line.new_pos } }
       - link_text = type == "old" ? " " : line.new_pos

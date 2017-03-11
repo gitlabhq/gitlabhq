@@ -1,10 +1,8 @@
 /* eslint-disable func-names, space-before-function-paren, no-template-curly-in-string, comma-dangle, object-shorthand, quotes, dot-notation, no-else-return, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-param-reassign, no-useless-escape, prefer-template, consistent-return, wrap-iife, prefer-arrow-callback, camelcase, no-unused-vars, no-useless-return, vars-on-top, max-len */
 
-const emojiMap = require('emoji-map');
-const emojiAliases = require('emoji-aliases');
-const glEmoji = require('./behaviors/gl_emoji');
-
-const glEmojiTag = glEmoji.glEmojiTag;
+import emojiMap from 'emojis/digests.json';
+import emojiAliases from 'emojis/aliases.json';
+import { glEmojiTag } from '~/behaviors/gl_emoji';
 
 // Creates the variables for setting up GFM auto-completion
 (function() {

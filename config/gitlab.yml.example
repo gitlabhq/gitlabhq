@@ -89,7 +89,7 @@ production: &base
       issues: true
       merge_requests: true
       wiki: true
-      snippets: false
+      snippets: true
       builds: true
       container_registry: true
 
@@ -441,6 +441,16 @@ production: &base
   shared:
     # path: /mnt/gitlab # Default: shared
 
+  # Gitaly settings
+  gitaly:
+    # The socket_path setting is optional and obsolete. When this is set
+    # GitLab assumes it can reach a Gitaly services via a Unix socket at
+    # this path. When this is commented out GitLab will not use Gitaly.
+    # 
+    # This setting is obsolete because we expect it to be moved under
+    # repositories/storages in GitLab 9.1.
+    #
+    # socket_path: tmp/sockets/gitaly.socket
 
   #
   # 4. Advanced settings
