@@ -1,27 +1,23 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-unused-expressions, no-cond-assign, no-sequences, comma-dangle, max-len */
-
 import BlobGitignoreSelector from './blob_gitignore_selector';
 
-(function() {
-  this.BlobGitignoreSelectors = (function() {
-    function BlobGitignoreSelectors(opts) {
-      var ref;
-      this.$dropdowns = (ref = opts.$dropdowns) != null ? ref : $('.js-gitignore-selector'), this.editor = opts.editor;
-      this.$dropdowns.each((function(_this) {
-        return function(i, dropdown) {
-          var $dropdown;
-          $dropdown = $(dropdown);
-          return new BlobGitignoreSelector({
-            pattern: /(.gitignore)/,
-            data: $dropdown.data('data'),
-            wrapper: $dropdown.closest('.js-gitignore-selector-wrap'),
-            dropdown: $dropdown,
-            editor: _this.editor
-          });
-        };
-      })(this));
-    }
+export default class BlobGitignoreSelectors {
+  constructor({ editor, $dropdowns } = {}) {
+    this.editor = editor;
+    this.$dropdowns = $dropdowns || $('.js-gitignore-selector');
+    this.initSelectors();
+  }
 
-    return BlobGitignoreSelectors;
-  })();
-}).call(window);
+  initSelectors() {
+    const editor = this.editor;
+    this.$dropdowns.each((i, dropdown) => {
+      const $dropdown = $(dropdown);
+      return new BlobGitignoreSelector({
+        editor,
+        pattern: /(\.gitignore)/,
+        data: $dropdown.data('data'),
+        wrapper: $dropdown.closest('.js-gitignore-selector-wrap'),
+        dropdown: $dropdown,
+      });
+    });
+  }
+}

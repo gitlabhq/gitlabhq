@@ -1,9 +1,9 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, camelcase, no-param-reassign, quotes, prefer-template, no-new, comma-dangle, one-var, one-var-declaration-per-line, prefer-arrow-callback, no-else-return, no-unused-vars, max-len */
 /* global ace */
-/* global BlobGitignoreSelectors */
 
 import BlobCiYamlSelectors from '../blob/blob_ci_yaml';
 import BlobDockerfileSelectors from '../blob/blob_dockerfile_selectors';
+import BlobGitignoreSelectors from '../blob/blob_gitignore_selectors';
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
