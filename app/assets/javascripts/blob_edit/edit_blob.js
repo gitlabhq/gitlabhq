@@ -4,6 +4,7 @@
 import BlobCiYamlSelectors from '../blob/blob_ci_yaml';
 import BlobDockerfileSelectors from '../blob/blob_dockerfile_selectors';
 import BlobGitignoreSelectors from '../blob/blob_gitignore_selectors';
+import BlobLicenseSelectors from '../blob/blob_license_selectors';
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
@@ -30,7 +31,7 @@ import BlobGitignoreSelectors from '../blob/blob_gitignore_selectors';
       })(this));
       this.initModePanesAndLinks();
       this.initSoftWrap();
-      new gl.BlobLicenseSelectors({
+      new BlobLicenseSelectors({
         editor: this.editor
       });
       new BlobGitignoreSelectors({
