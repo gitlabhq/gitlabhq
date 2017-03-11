@@ -57,7 +57,6 @@ import { installGlEmojiElement } from './behaviors/gl_emoji';
 installGlEmojiElement();
 
 // blob
-import './blob/blob_ci_yaml';
 import './blob/blob_dockerfile_selector';
 import './blob/blob_dockerfile_selectors';
 import './blob/blob_file_dropzone';
