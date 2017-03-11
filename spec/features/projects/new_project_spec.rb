@@ -53,6 +53,7 @@ feature "New project", feature: true do
           click_button('Create project')
 
           expect(page).to have_css '.project-edit-errors .alert.alert-danger'
+          expect(find("[name='project[visibility_level]'][checked].option-title").value).to eq('Internal')
         end
 
         it "selects the group namespace" do
