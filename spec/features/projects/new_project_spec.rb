@@ -53,13 +53,18 @@ feature "New project", feature: true do
           click_button('Create project')
 
           expect(page).to have_css '.project-edit-errors .alert.alert-danger'
-          expect(find("[name='project[visibility_level]'][checked].option-title").value).to eq('Internal')
         end
 
         it "selects the group namespace" do
           namespace = find("#project_namespace_id option[selected]")
 
           expect(namespace.text).to eq group.name
+        end
+
+        it 'selects the visibility level' do
+          level = Gitlab::VisibilityLevel.options['Internal']
+
+          expect(find_field("project_visibility_level_#{level}")).to be_checked
         end
       end
     end
