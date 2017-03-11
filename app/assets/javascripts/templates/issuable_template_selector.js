@@ -1,10 +1,10 @@
 /* eslint-disable comma-dangle, max-len, no-useless-return, no-param-reassign, max-len */
 /* global Api */
 
-require('../blob/template_selector');
+import TemplateSelector from '../blob/template_selector';
 
 ((global) => {
-  class IssuableTemplateSelector extends gl.TemplateSelector {
+  class IssuableTemplateSelector extends TemplateSelector {
     constructor(...args) {
       super(...args);
       this.projectPath = this.dropdown.data('project-path');

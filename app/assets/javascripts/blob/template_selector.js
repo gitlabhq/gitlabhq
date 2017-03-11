@@ -1,101 +1,94 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names, space-before-function-paren, arrow-parens, no-unused-vars, class-methods-use-this, no-var, consistent-return, no-param-reassign, max-len */
+/* eslint-disable no-unused-vars, class-methods-use-this */
 
-((global) => {
-  class TemplateSelector {
-    constructor({ dropdown, data, pattern, wrapper, editor, fileEndpoint, $input } = {}) {
-      this.onClick = this.onClick.bind(this);
-      this.dropdown = dropdown;
-      this.data = data;
-      this.pattern = pattern;
-      this.wrapper = wrapper;
-      this.editor = editor;
-      this.fileEndpoint = fileEndpoint;
-      this.$input = $input || $('#file_name');
-      this.dropdownIcon = $('.fa-chevron-down', this.dropdown);
-      this.buildDropdown();
-      this.bindEvents();
-      this.onFilenameUpdate();
+export default class TemplateSelector {
+  constructor({ dropdown, data, pattern, wrapper, editor, fileEndpoint, $input } = {}) {
+    this.onClick = this.onClick.bind(this);
+    this.dropdown = dropdown;
+    this.data = data;
+    this.pattern = pattern;
+    this.wrapper = wrapper;
+    this.editor = editor;
+    this.fileEndpoint = fileEndpoint;
+    this.$input = $input || $('#file_name');
+    this.dropdownIcon = $('.fa-chevron-down', this.dropdown);
+    this.buildDropdown();
+    this.bindEvents();
+    this.onFilenameUpdate();
 
-      this.autosizeUpdateEvent = document.createEvent('Event');
-      this.autosizeUpdateEvent.initEvent('autosize:update', true, false);
+    this.autosizeUpdateEvent = document.createEvent('Event');
+    this.autosizeUpdateEvent.initEvent('autosize:update', true, false);
+  }
+
+  buildDropdown() {
+    return this.dropdown.glDropdown({
+      data: this.data,
+      filterable: true,
+      selectable: true,
+      toggleLabel: this.toggleLabel,
+      search: {
+        fields: ['name'],
+      },
+      clicked: this.onClick,
+      text: item => item.name,
+    });
+  }
+
+  bindEvents() {
+    return this.$input.on('keyup blur', e => this.onFilenameUpdate());
+  }
+
+  toggleLabel(item) {
+    return item.name;
+  }
+
+  onFilenameUpdate() {
+    if (!this.$input.length) {
+      return;
     }
-
-    buildDropdown() {
-      return this.dropdown.glDropdown({
-        data: this.data,
-        filterable: true,
-        selectable: true,
-        toggleLabel: this.toggleLabel,
-        search: {
-          fields: ['name']
-        },
-        clicked: this.onClick,
-        text: function(item) {
-          return item.name;
-        }
-      });
+    const filenameMatches = this.pattern.test(this.$input.val().trim());
+    if (!filenameMatches) {
+      this.wrapper.addClass('hidden');
+      return;
     }
+    this.wrapper.removeClass('hidden');
+  }
 
-    bindEvents() {
-      return this.$input.on('keyup blur', (e) => this.onFilenameUpdate());
-    }
+  onClick(item, el, e) {
+    e.preventDefault();
+    return this.requestFile(item);
+  }
 
-    toggleLabel(item) {
-      return item.name;
-    }
+  requestFile(item) {
+    // This `requestFile` method is an abstract method that should
+    // be added by all subclasses.
+  }
 
-    onFilenameUpdate() {
-      var filenameMatches;
-      if (!this.$input.length) {
-        return;
-      }
-      filenameMatches = this.pattern.test(this.$input.val().trim());
-      if (!filenameMatches) {
-        this.wrapper.addClass('hidden');
-        return;
-      }
-      return this.wrapper.removeClass('hidden');
-    }
+  // To be implemented on the extending class
+  // e.g.
+  // Api.gitignoreText item.name, @requestFileSuccess.bind(@)
+  requestFileSuccess(file, { skipFocus } = {}) {
+    if (!file) return;
 
-    onClick(item, el, e) {
-      e.preventDefault();
-      return this.requestFile(item);
-    }
+    const oldValue = this.editor.getValue();
+    const newValue = file.content;
 
-    requestFile(item) {
-      // This `requestFile` method is an abstract method that should
-      // be added by all subclasses.
-    }
+    this.editor.setValue(newValue, 1);
+    if (!skipFocus) this.editor.focus();
 
-    // To be implemented on the extending class
-    // e.g.
-    // Api.gitignoreText item.name, @requestFileSuccess.bind(@)
-    requestFileSuccess(file, { skipFocus } = {}) {
-      if (!file) return;
-
-      const oldValue = this.editor.getValue();
-      const newValue = file.content;
-
-      this.editor.setValue(newValue, 1);
-      if (!skipFocus) this.editor.focus();
-
-      if (this.editor instanceof jQuery) {
-        this.editor.get(0).dispatchEvent(this.autosizeUpdateEvent);
-      }
-    }
-
-    startLoadingSpinner() {
-      this.dropdownIcon
-        .addClass('fa-spinner fa-spin')
-        .removeClass('fa-chevron-down');
-    }
-
-    stopLoadingSpinner() {
-      this.dropdownIcon
-        .addClass('fa-chevron-down')
-        .removeClass('fa-spinner fa-spin');
+    if (this.editor instanceof jQuery) {
+      this.editor.get(0).dispatchEvent(this.autosizeUpdateEvent);
     }
   }
 
-  global.TemplateSelector = TemplateSelector;
-})(window.gl || (window.gl = {}));
+  startLoadingSpinner() {
+    this.dropdownIcon
+      .addClass('fa-spinner fa-spin')
+      .removeClass('fa-chevron-down');
+  }
+
+  stopLoadingSpinner() {
+    this.dropdownIcon
+      .addClass('fa-chevron-down')
+      .removeClass('fa-spinner fa-spin');
+  }
+}

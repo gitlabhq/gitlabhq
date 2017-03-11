@@ -1,11 +1,11 @@
 /* global Api */
 
-require('./template_selector');
+import TemplateSelector from './template_selector';
 
 (() => {
   const global = window.gl || (window.gl = {});
 
-  class BlobDockerfileSelector extends gl.TemplateSelector {
+  class BlobDockerfileSelector extends TemplateSelector {
     requestFile(query) {
       return Api.dockerfileYml(query.name, this.requestFileSuccess.bind(this));
     }

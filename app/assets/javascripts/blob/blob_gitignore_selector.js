@@ -1,7 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, max-len, one-var, no-var, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, prefer-rest-params */
 /* global Api */
 
-require('./template_selector');
+import TemplateSelector from './template_selector';
 
 (function() {
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -19,5 +19,5 @@ require('./template_selector');
     };
 
     return BlobGitignoreSelector;
-  })(gl.TemplateSelector);
+  })(TemplateSelector);
 }).call(window);

@@ -1,8 +1,8 @@
 /* global Api */
 
-import './template_selector';
+import TemplateSelector from './template_selector';
 
-class BlobCiYamlSelector extends gl.TemplateSelector {
+class BlobCiYamlSelector extends TemplateSelector {
   requestFile(query) {
     return Api.gitlabCiYml(query.name, this.requestFileSuccess.bind(this));
   }
