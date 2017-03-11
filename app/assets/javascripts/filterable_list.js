@@ -2,6 +2,7 @@
  * Makes search request for content when user types a value in the search input.
  * Updates the html content of the page with the received one.
  */
+
 export default class FilterableList {
   constructor(form, filter, holder) {
     this.filterForm = form;
