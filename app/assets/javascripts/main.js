@@ -58,7 +58,6 @@ installGlEmojiElement();
 
 // blob
 import './blob/blob_file_dropzone';
-import './blob/blob_gitignore_selector';
 import './blob/blob_gitignore_selectors';
 import './blob/blob_license_selector';
 import './blob/blob_license_selectors';
