@@ -1,6 +1,6 @@
 - page_title    'New Project'
 - header_title  "Projects", dashboard_projects_path
-- visibility_level = params.try(:[], :project).try(:[], :visibility_level).to_i || default_project_visibility
+- visibility_level = params.try(:[], :project).try(:[], :visibility_level) || default_project_visibility
 
 .project-edit-container
   .project-edit-errors
@@ -96,7 +96,7 @@
           = f.label :visibility_level, class: 'label-light' do
             Visibility Level
             = link_to icon('question-circle'), help_page_path("public_access/public_access")
-          = render 'shared/visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: true, form_model: @project, with_label: false
+          = render 'shared/visibility_level', f: f, visibility_level: visibility_level.to_i, can_change_visibility_level: true, form_model: @project, with_label: false
 
         = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
         = link_to 'Cancel', dashboard_projects_path, class: 'btn btn-cancel'
