@@ -81,7 +81,7 @@ describe Gitlab::Ci::Status::Build::Factory do
       it 'fabricates status with correct details' do
         expect(status.text).to eq 'failed'
         expect(status.icon).to eq 'icon_status_warning'
-        expect(status.favicon).to eq 'favicon_status_warning'
+        expect(status.favicon).to eq 'favicon_status_failed'
         expect(status.label).to eq 'failed (allowed to fail)'
         expect(status).to have_details
         expect(status).to have_action
