@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars, no-param-reassign */
-/* global BlobLicenseSelector */
+
+import BlobLicenseSelector from './blob_license_selector';
 
 ((global) => {
   class BlobLicenseSelectors {
