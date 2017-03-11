@@ -16,6 +16,15 @@ feature "New project", feature: true do
 
         expect(find_field("project_visibility_level_#{level}")).to be_checked
       end
+
+      it 'saves visibility level on validation error' do
+          visit new_project_path
+
+          choose(key)
+          click_button('Create project')
+
+          expect(find_field("project_visibility_level_#{level}")).to be_checked
+      end
     end
   end
 
@@ -59,12 +68,6 @@ feature "New project", feature: true do
           namespace = find("#project_namespace_id option[selected]")
 
           expect(namespace.text).to eq group.name
-        end
-
-        it 'selects the visibility level' do
-          level = Gitlab::VisibilityLevel.options['Internal']
-
-          expect(find_field("project_visibility_level_#{level}")).to be_checked
         end
       end
     end
