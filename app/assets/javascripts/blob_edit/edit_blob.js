@@ -3,6 +3,7 @@
 /* global BlobGitignoreSelectors */
 
 import BlobCiYamlSelectors from '../blob/blob_ci_yaml';
+import BlobDockerfileSelectors from '../blob/blob_dockerfile_selectors';
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
@@ -38,7 +39,7 @@ import BlobCiYamlSelectors from '../blob/blob_ci_yaml';
       new BlobCiYamlSelectors({
         editor: this.editor
       });
-      new gl.BlobDockerfileSelectors({
+      new BlobDockerfileSelectors({
         editor: this.editor
       });
     }
