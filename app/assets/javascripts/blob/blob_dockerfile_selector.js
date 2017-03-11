@@ -2,18 +2,12 @@
 
 import TemplateSelector from './template_selector';
 
-(() => {
-  const global = window.gl || (window.gl = {});
-
-  class BlobDockerfileSelector extends TemplateSelector {
-    requestFile(query) {
-      return Api.dockerfileYml(query.name, this.requestFileSuccess.bind(this));
-    }
-
-    requestFileSuccess(file) {
-      return super.requestFileSuccess(file);
-    }
+export default class BlobDockerfileSelector extends TemplateSelector {
+  requestFile(query) {
+    return Api.dockerfileYml(query.name, this.requestFileSuccess.bind(this));
   }
 
-  global.BlobDockerfileSelector = BlobDockerfileSelector;
-})();
+  requestFileSuccess(file) {
+    return super.requestFileSuccess(file);
+  }
+}

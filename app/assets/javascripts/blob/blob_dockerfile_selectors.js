@@ -1,3 +1,5 @@
+import BlobDockerfileSelector from './blob_dockerfile_selector';
+
 (() => {
   const global = window.gl || (window.gl = {});
 
@@ -12,7 +14,7 @@
       const editor = this.editor;
       this.$dropdowns.each((i, dropdown) => {
         const $dropdown = $(dropdown);
-        return new gl.BlobDockerfileSelector({
+        return new BlobDockerfileSelector({
           editor,
           pattern: /(Dockerfile)/,
           data: $dropdown.data('data'),
