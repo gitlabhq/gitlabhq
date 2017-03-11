@@ -7,7 +7,7 @@ describe DeploymentEntity do
   before do
     allow(request).to receive(:user).and_return(user)
   end
-  
+
   let(:entity) do
     described_class.new(deployment, request: request)
   end
