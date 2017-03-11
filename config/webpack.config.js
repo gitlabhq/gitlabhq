@@ -21,7 +21,7 @@ var config = {
     common_vue:           ['vue', 'vue-resource'],
     common_d3:            ['d3'],
     main:                 './main.js',
-    blob_edit:            './blob_edit/blob_edit_bundle.js',
+    blob:                 './blob/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
     simulate_drag:        './test_utils/simulate_drag.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',

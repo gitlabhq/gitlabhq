@@ -1,16 +1,4 @@
-/* global Api */
-
-import TemplateSelector from './template_selector';
-
-class BlobCiYamlSelector extends TemplateSelector {
-  requestFile(query) {
-    return Api.gitlabCiYml(query.name, this.requestFileSuccess.bind(this));
-  }
-
-  requestFileSuccess(file) {
-    return super.requestFileSuccess(file);
-  }
-}
+import BlobCiYamlSelector from './blob_ci_yaml_selector';
 
 export default class BlobCiYamlSelectors {
   constructor({ editor, $dropdowns } = {}) {

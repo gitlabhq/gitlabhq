@@ -1,10 +1,10 @@
 /* eslint-disable no-new */
 /* global ace */
 
-import BlobCiYamlSelectors from '../blob/blob_ci_yaml';
-import BlobDockerfileSelectors from '../blob/blob_dockerfile_selectors';
-import BlobGitignoreSelectors from '../blob/blob_gitignore_selectors';
-import BlobLicenseSelectors from '../blob/blob_license_selectors';
+import BlobCiYamlSelectors from './template_selectors/blob_ci_yaml_selectors';
+import BlobDockerfileSelectors from './template_selectors/blob_dockerfile_selectors';
+import BlobGitignoreSelectors from './template_selectors/blob_gitignore_selectors';
+import BlobLicenseSelectors from './template_selectors/blob_license_selectors';
 
 export default class EditBlob {
   constructor(assetsPath, aceMode) {

@@ -2,7 +2,7 @@
 - page_title "Edit", @blob.path, @ref
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag('lib/ace.js')
-  = page_specific_javascript_bundle_tag('blob_edit')
+  = page_specific_javascript_bundle_tag('blob')
 = render "projects/commits/head"
 
 %div{ class: container_class }

@@ -1,6 +1,6 @@
 /* global Api */
 
-import TemplateSelector from './template_selector';
+import TemplateSelector from '../template_selector';
 
 export default class BlobGitignoreSelector extends TemplateSelector {
   requestFile(query) {

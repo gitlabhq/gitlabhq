@@ -37,7 +37,7 @@ testsContext.keys().forEach(function (path) {
 describe('Uncovered files', function () {
   // the following files throw errors because of undefined variables
   const troubleMakers = [
-    './blob_edit/blob_edit_bundle.js',
+    './blob/blob_bundle.js',
     './cycle_analytics/components/stage_plan_component.js',
     './cycle_analytics/components/stage_staging_component.js',
     './cycle_analytics/components/stage_test_component.js',
