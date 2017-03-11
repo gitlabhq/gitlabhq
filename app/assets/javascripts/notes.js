@@ -5,6 +5,8 @@
 /* global ResolveService */
 /* global mrRefreshWidgetUrl */
 
+import Cookies from 'js-cookie';
+
 require('./autosave');
 window.autosize = require('vendor/autosize');
 window.Dropzone = require('dropzone');
