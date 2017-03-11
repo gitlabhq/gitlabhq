@@ -1,5 +1,7 @@
 /* global ListLabel */
-/* global Cookies */
+
+import Cookies from 'js-cookie';
+
 const Store = gl.issueBoards.BoardsStore;
 
 export default {

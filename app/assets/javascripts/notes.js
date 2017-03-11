@@ -1,14 +1,14 @@
 /* eslint-disable no-restricted-properties, func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, camelcase, no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line, default-case, prefer-template, consistent-return, no-alert, no-return-assign, no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new, brace-style, no-lonely-if, vars-on-top, no-unused-vars, no-sequences, no-shadow, newline-per-chained-call, no-useless-escape */
 /* global Flash */
 /* global Autosave */
-/* global Cookies */
 /* global ResolveService */
 /* global mrRefreshWidgetUrl */
+
+import Cookies from 'js-cookie';
 
 require('./autosave');
 window.autosize = require('vendor/autosize');
 window.Dropzone = require('dropzone');
-window.Cookies = require('js-cookie');
 require('./dropzone_input');
 require('./gfm_auto_complete');
 require('vendor/jquery.caret'); // required by jquery.atwho

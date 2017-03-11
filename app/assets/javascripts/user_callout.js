@@ -1,4 +1,4 @@
-/* global Cookies */
+import Cookies from 'js-cookie';
 
 const userCalloutElementName = '.user-callout';
 const closeButton = '.close-user-callout';
