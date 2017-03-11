@@ -22,6 +22,12 @@ describe Gitlab::Ci::Status::Build::FailedAllowed do
     end
   end
 
+  describe '#favicon' do
+    it 'returns a warning favicon' do
+      expect(subject.favicon).to eq 'favicon_status_warning'
+    end
+  end
+
   describe '#label' do
     it 'returns information about failed but allowed to fail status' do
       expect(subject.label).to eq 'failed (allowed to fail)'

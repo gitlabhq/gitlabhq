@@ -29,8 +29,8 @@ describe BuildEntity do
   end
 
   it 'contains details' do
-    expect(subject).to include :details
-    expect(subject[:details][:status]).to include :icon, :favicon, :text, :label
+    expect(subject).to include :status
+    expect(subject[:status]).to include :icon, :favicon, :text, :label
   end
 
   context 'when build is a regular job' do

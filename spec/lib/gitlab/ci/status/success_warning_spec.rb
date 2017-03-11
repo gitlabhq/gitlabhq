@@ -17,6 +17,10 @@ describe Gitlab::Ci::Status::SuccessWarning do
     it { expect(subject.icon).to eq 'icon_status_warning' }
   end
 
+  describe '#favicon' do
+    it { expect(subject.favicon).to eq 'favicon_status_warning' }
+  end
+
   describe '#group' do
     it { expect(subject.group).to eq 'success_with_warnings' }
   end

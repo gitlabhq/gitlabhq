@@ -20,6 +20,10 @@ module Gitlab
           'icon_status_warning'
         end
 
+        def favicon
+          'favicon_status_warning'
+        end
+
         def group
           'success_with_warnings'
         end
