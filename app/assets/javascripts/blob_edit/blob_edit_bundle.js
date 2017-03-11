@@ -1,13 +1,14 @@
-/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var, quotes, vars-on-top, no-unused-vars, no-new, max-len */
-/* global EditBlob */
+/* eslint-disable no-new */
 /* global NewCommitForm */
 
 import EditBlob from './edit_blob';
 
-$(function() {
-  var url = $(".js-edit-blob-form").data("relative-url-root");
-  url += $(".js-edit-blob-form").data("assets-prefix");
+$(() => {
+  const editBlobForm = $('.js-edit-blob-form');
+  const urlRoot = editBlobForm.data('relative-url-root');
+  const assetsPath = editBlobForm.data('assets-prefix');
+  const blobLanguage = editBlobForm.data('blob-language');
 
-  var blob = new EditBlob(url, $('.js-edit-blob-form').data('blob-language'));
-  new NewCommitForm($('.js-edit-blob-form'));
+  new EditBlob(`${urlRoot}${assetsPath}`, blobLanguage);
+  new NewCommitForm(editBlobForm);
 });
