@@ -38,6 +38,7 @@ describe('Uncovered files', function () {
   // the following files throw errors because of undefined variables
   const troubleMakers = [
     './blob/blob_bundle.js',
+    './boards/boards_bundle.js',
     './cycle_analytics/components/stage_plan_component.js',
     './cycle_analytics/components/stage_staging_component.js',
     './cycle_analytics/components/stage_test_component.js',
