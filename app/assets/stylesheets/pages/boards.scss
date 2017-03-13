@@ -574,8 +574,7 @@
   margin-top: 10px;
 
   .dropdown-menu {
-    top: 60px;
-    min-width: 100%;
+    position: fixed;
   }
 }
 

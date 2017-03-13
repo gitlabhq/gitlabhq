@@ -59,9 +59,20 @@ const extraMilestones = require('../mixins/extra_milestones');
       },
     },
     methods: {
-      loadMilestones() {
+      loadMilestones(e) {
         this.milestoneDropdownOpen = !this.milestoneDropdownOpen;
         BoardService.loadMilestones.call(this);
+
+        if (this.milestoneDropdownOpen) {
+          this.$nextTick(() => {
+            const milestoneDropdown = this.$refs.milestoneDropdown;
+            const rect = e.target.getBoundingClientRect();
+
+            milestoneDropdown.style.left = `${rect.left}px`;
+            milestoneDropdown.style.top = `${rect.bottom}px`;
+            milestoneDropdown.style.width = `${rect.width}px`;
+          });
+        }
       },
       submit() {
         gl.boardService.createBoard(this.board)
