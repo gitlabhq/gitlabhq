@@ -2,7 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     RedCloth (4.3.2)
-    ace-rails-ap (4.1.0)
+    ace-rails-ap (4.1.2)
     actionmailer (4.2.8)
       actionpack (= 4.2.8)
       actionview (= 4.2.8)

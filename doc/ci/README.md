@@ -27,6 +27,8 @@
 
 ## Breaking changes
 
+- [CI variables renaming](variables/README.md#9-0-renaming) Read about the
+  deprecated CI variables and what you should use for GitLab 9.0+.
 - [New CI job permissions model](../user/project/new_ci_build_permissions_model.md)
   Read about what changed in GitLab 8.12 and how that affects your jobs.
   There's a new way to access your Git submodules and LFS objects in jobs.

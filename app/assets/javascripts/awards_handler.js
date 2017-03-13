@@ -1,10 +1,8 @@
 /* global Cookies */
 
-const emojiMap = require('emoji-map');
-const emojiAliases = require('emoji-aliases');
-const glEmoji = require('./behaviors/gl_emoji');
-
-const glEmojiTag = glEmoji.glEmojiTag;
+import emojiMap from 'emojis/digests.json';
+import emojiAliases from 'emojis/aliases.json';
+import { glEmojiTag } from './behaviors/gl_emoji';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const requestAnimationFrame = window.requestAnimationFrame ||
@@ -509,4 +507,4 @@ AwardsHandler.prototype.destroy = function destroy() {
   $('.emoji-menu').remove();
 };
 
-module.exports = AwardsHandler;
+export default AwardsHandler;

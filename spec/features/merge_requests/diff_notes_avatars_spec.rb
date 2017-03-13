@@ -23,6 +23,56 @@ feature 'Diff note avatars', feature: true, js: true do
     login_as user
   end
 
+  context 'discussion tab' do
+    before do
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    end
+
+    it 'does not show avatars on discussion tab' do
+      expect(page).not_to have_selector('.js-avatar-container')
+      expect(page).not_to have_selector('.diff-comment-avatar-holders')
+    end
+
+    it 'does not render avatars after commening on discussion tab' do
+      click_button 'Reply...'
+
+      page.within('.js-discussion-note-form') do
+        find('.note-textarea').native.send_keys('Test comment')
+
+        click_button 'Comment'
+      end
+
+      expect(page).to have_content('Test comment')
+      expect(page).not_to have_selector('.js-avatar-container')
+      expect(page).not_to have_selector('.diff-comment-avatar-holders')
+    end
+  end
+
+  context 'commit view' do
+    before do
+      visit namespace_project_commit_path(project.namespace, project, merge_request.commits.first.id)
+    end
+
+    it 'does not render avatar after commenting' do
+      first('.diff-line-num').trigger('mouseover')
+      find('.js-add-diff-note-button').click
+
+      page.within('.js-discussion-note-form') do
+        find('.note-textarea').native.send_keys('test comment')
+
+        click_button 'Comment'
+
+        wait_for_ajax
+      end
+
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+
+      expect(page).to have_content('test comment')
+      expect(page).not_to have_selector('.js-avatar-container')
+      expect(page).not_to have_selector('.diff-comment-avatar-holders')
+    end
+  end
+
   %w(inline parallel).each do |view|
     context "#{view} view" do
       before do

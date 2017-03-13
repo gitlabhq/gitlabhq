@@ -17,14 +17,17 @@ Pages to the latest supported version.
 
 ## Prerequisites
 
-Before proceeding with the Pages configuration, you will need to:
+Before proceeding with the Pages configuration, make sure that:
 
-1. Have a separate domain under which the GitLab Pages will be served. In this
-   document we assume that to be `example.io`.
-1. Configure a **wildcard DNS record**.
-1. (Optional) Have a **wildcard certificate** for that domain if you decide to
-   serve Pages under HTTPS.
-1. (Optional but recommended) Enable [Shared runners](../../ci/runners/README.md)
+1. You have a separate domain under which GitLab Pages will be served. In
+   this document we assume that to be `example.io`.
+1. You have configured a **wildcard DNS record** for that domain.
+1. You have installed the `zip` and `unzip` packages in the same server that
+   GitLab is installed since they are needed to compress/uncompress the
+   Pages artifacts.
+1. (Optional) You have a **wildcard certificate** for the Pages domain if you
+   decide to serve Pages (`*.example.io`) under HTTPS.
+1. (Optional but recommended) You have configured and enabled the [Shared Runners][]
    so that your users don't have to bring their own.
 
 ### DNS configuration
@@ -390,3 +393,4 @@ than GitLab to prevent XSS attacks.
 [reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart]: ../restart_gitlab.md#installations-from-source
 [gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.2.4
+[shared runners]: ../../ci/runners/README.md

@@ -1,16 +1,15 @@
+import '~/extensions/string';
+import '~/extensions/array';
 
-require('~/extensions/string');
-require('~/extensions/array');
-
-const glEmoji = require('~/behaviors/gl_emoji');
-
-const glEmojiTag = glEmoji.glEmojiTag;
-const isEmojiUnicodeSupported = glEmoji.isEmojiUnicodeSupported;
-const isFlagEmoji = glEmoji.isFlagEmoji;
-const isKeycapEmoji = glEmoji.isKeycapEmoji;
-const isSkinToneComboEmoji = glEmoji.isSkinToneComboEmoji;
-const isHorceRacingSkinToneComboEmoji = glEmoji.isHorceRacingSkinToneComboEmoji;
-const isPersonZwjEmoji = glEmoji.isPersonZwjEmoji;
+import { glEmojiTag } from '~/behaviors/gl_emoji';
+import {
+  isEmojiUnicodeSupported,
+  isFlagEmoji,
+  isKeycapEmoji,
+  isSkinToneComboEmoji,
+  isHorceRacingSkinToneComboEmoji,
+  isPersonZwjEmoji,
+} from '~/behaviors/gl_emoji/is_emoji_unicode_supported';
 
 const emptySupportMap = {
   personZwj: false,

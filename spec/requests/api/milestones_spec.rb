@@ -243,8 +243,8 @@ describe API::Milestones, api: true  do
     describe 'confidential issues' do
       let(:public_project) { create(:empty_project, :public) }
       let(:milestone) { create(:milestone, project: public_project) }
-      let(:issue) { create(:issue, project: public_project) }
-      let(:confidential_issue) { create(:issue, confidential: true, project: public_project) }
+      let(:issue) { create(:issue, project: public_project, position: 2) }
+      let(:confidential_issue) { create(:issue, confidential: true, project: public_project, position: 1) }
 
       before do
         public_project.team << [user, :developer]
@@ -283,11 +283,24 @@ describe API::Milestones, api: true  do
         expect(json_response.size).to eq(1)
         expect(json_response.map { |issue| issue['id'] }).to include(issue.id)
       end
+
+      it 'returns issues ordered by position asc' do
+        get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(2)
+        expect(json_response.first['id']).to eq(confidential_issue.id)
+        expect(json_response.second['id']).to eq(issue.id)
+      end
     end
   end
 
   describe 'GET /projects/:id/milestones/:milestone_id/merge_requests' do
-    let(:merge_request) { create(:merge_request, source_project: project) }
+    let(:merge_request) { create(:merge_request, source_project: project, position: 2) }
+    let(:another_merge_request) { create(:merge_request, :simple, source_project: project, position: 1) }
+
     before do
       milestone.merge_requests << merge_request
     end
@@ -319,6 +332,19 @@ describe API::Milestones, api: true  do
       get api("/projects/#{project.id}/milestones/#{milestone.id}/merge_requests")
 
       expect(response).to have_http_status(401)
+    end
+
+    it 'returns merge_requests ordered by position asc' do
+      milestone.merge_requests << another_merge_request
+
+      get api("/projects/#{project.id}/milestones/#{milestone.id}/merge_requests", user)
+
+      expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.size).to eq(2)
+      expect(json_response.first['id']).to eq(another_merge_request.id)
+      expect(json_response.second['id']).to eq(merge_request.id)
     end
   end
 end

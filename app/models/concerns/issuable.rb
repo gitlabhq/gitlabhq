@@ -63,6 +63,7 @@ module Issuable
     scope :authored, ->(user) { where(author_id: user) }
     scope :assigned_to, ->(u) { where(assignee_id: u.id)}
     scope :recent, -> { reorder(id: :desc) }
+    scope :order_position_asc, -> { reorder(position: :asc) }
     scope :assigned, -> { where("assignee_id IS NOT NULL") }
     scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }
@@ -147,6 +148,7 @@ module Issuable
                when 'downvotes_desc' then order_downvotes_desc
                when 'upvotes_desc' then order_upvotes_desc
                when 'priority' then order_labels_priority(excluded_labels: excluded_labels)
+               when 'position_asc' then  order_position_asc
                else
                  order_by(method)
                end
