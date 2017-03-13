@@ -49,6 +49,16 @@ class AddForeignKeysToTimelogs < ActiveRecord::Migration
     Timelog.where('issue_id IS NOT NULL').update_all("trackable_id = issue_id, trackable_type = 'Issue'")
     Timelog.where('merge_request_id IS NOT NULL').update_all("trackable_id = merge_request_id, trackable_type = 'MergeRequest'")
 
+    constraint =
+      if Gitlab::Database.postgresql?
+        'CONSTRAINT'
+      else
+        'FOREIGN KEY'
+      end
+
+    execute "ALTER TABLE timelogs DROP #{constraint} fk_timelogs_issues_issue_id"
+    execute "ALTER TABLE timelogs DROP #{constraint} fk_timelogs_merge_requests_merge_request_id"
+
     remove_columns :timelogs, :issue_id, :merge_request_id
   end
 end

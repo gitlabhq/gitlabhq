@@ -9,6 +9,7 @@ class AddProjectIdToSubscriptions < ActiveRecord::Migration
   end
 
   def down
+    remove_foreign_key :subscriptions, column: :project_id
     remove_column :subscriptions, :project_id
   end
 end
