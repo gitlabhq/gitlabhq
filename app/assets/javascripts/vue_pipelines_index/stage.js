@@ -69,7 +69,7 @@ import warningSvg from 'icons/_icon_status_warning_borderless.svg';
        * target the click event of this component.
        */
       stopDropdownClickPropagation() {
-        $(this.$el.querySelectorAll('.js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item')).on('click', (e) => {
+        $(this.$el).on('click', '.js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item', (e) => {
           e.stopPropagation();
         });
       },
