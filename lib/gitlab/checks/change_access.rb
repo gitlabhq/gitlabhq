@@ -3,16 +3,20 @@ module Gitlab
     class ChangeAccess
       include PathLocksHelper
 
-      attr_reader :user_access, :project, :skip_authorization
+      # protocol is currently used only in EE
+      attr_reader :user_access, :project, :skip_authorization, :protocol
 
       def initialize(
-        change, user_access:, project:, env: {}, skip_authorization: false)
+        change, user_access:, project:, env: {}, skip_authorization: false,
+        protocol:
+      )
         @oldrev, @newrev, @ref = change.values_at(:oldrev, :newrev, :ref)
         @branch_name = Gitlab::Git.branch_name(@ref)
         @user_access = user_access
         @project = project
         @env = env
         @skip_authorization = skip_authorization
+        @protocol = protocol
       end
 
       def exec
@@ -92,8 +96,8 @@ module Gitlab
 
         # Prevent tag removal
         if Gitlab::Git.tag_name(@ref)
-          if push_rule.try(:deny_delete_tag) && protected_tag?(Gitlab::Git.tag_name(@ref)) && Gitlab::Git.blank_ref?(@newrev)
-            return  "You can not delete a tag"
+          if tag_deletion_denied_by_push_rule?(push_rule)
+            return 'You cannot delete a tag'
           end
         else
           commit_validation = push_rule.try(:commit_validation?)
@@ -114,6 +118,13 @@ module Gitlab
         end
 
         nil
+      end
+
+      def tag_deletion_denied_by_push_rule?(push_rule)
+        push_rule.try(:deny_delete_tag) &&
+          protocol != 'web' &&
+          Gitlab::Git.blank_ref?(@newrev) &&
+          protected_tag?(Gitlab::Git.tag_name(@ref))
       end
 
       # If commit does not pass push rule validation the whole push should be rejected.
