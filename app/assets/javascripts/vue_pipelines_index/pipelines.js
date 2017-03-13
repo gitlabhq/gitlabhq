@@ -101,9 +101,20 @@ const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_s
           </div>
         </div>
 
-        <div class="blank-state blank-state-no-icon"
-          v-if="shouldRenderErrorState">
-          ${pipelinesErrorStateSVG}
+        <div v-if="shouldRenderErrorState"
+          class="row empty-state">
+
+          <div class="col-xs-12 pull-right">
+            <div class="svg-content">
+              ${pipelinesErrorStateSVG}
+            </div>
+          </div>
+
+          <div class="col-xs-12 center">
+            <div class="text-content">
+              <h4>The API failed to fetch the pipelines.</h4>
+            </div>
+          </div>
         </div>
 
         <div class="table-holder" v-if='!pageRequest && pipelines.length'>
@@ -115,9 +126,7 @@ const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_s
           :pagenum='pagenum'
           :change='change'
           :count='count.all'
-          :pageInfo='pageInfo'
-        >
-        </gl-pagination>
+          :pageInfo='pageInfo'/>
       </div>
     `,
   });
