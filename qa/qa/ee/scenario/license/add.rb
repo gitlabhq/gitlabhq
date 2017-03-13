@@ -1,0 +1,21 @@
+module QA
+  module EE
+    module Scenario
+      module License
+        class Add < QA::Scenario::Template
+          def perform
+            QA::Page::Main::Entry.act { sign_in_using_credentials }
+            QA::Page::Main::Menu.act { go_to_admin_area }
+            QA::Page::Admin::Menu.act { go_to_license }
+
+            EE::Page::Admin::License.act do
+              add_new_license(ENV['EE_LICENSE']) if no_license?
+            end
+
+            QA::Page::Main::Menu.act { sign_out }
+          end
+        end
+      end
+    end
+  end
+end
