@@ -82,52 +82,38 @@ describe ApplicationSetting, models: true do
     end
 
     context "update minimum_mirror_sync_time" do
+      sync_times = Gitlab::Mirror::SYNC_TIME_TO_CRON.keys
+
       before do
         Sidekiq::Logging.logger = nil
-        Gitlab::Mirror::SYNC_TIME_TO_CRON.keys.each do |sync_time|
+        sync_times.each do |sync_time|
           create(:project, :mirror, sync_time: sync_time)
           create(:project, :remote_mirror, sync_time: sync_time)
         end
       end
 
-      context 'with daily sync_time' do
-        let(:sync_time) { Gitlab::Mirror::DAILY }
+      sync_times.drop(1).each_with_index do |sync_time, index|
+        context "with #{sync_time} sync_time" do
+          subject { setting.update_attributes(minimum_mirror_sync_time: sync_time) }
 
-        it 'updates minimum_mirror_sync_time to daily and updates cron jobs' do
-          expect_any_instance_of(ApplicationSetting).to receive(:update_mirror_cron_jobs).and_call_original
-          expect(Gitlab::Mirror).to receive(:configure_cron_jobs!)
+          it "updates minimum mirror sync time to #{sync_time}" do
+            expect_any_instance_of(ApplicationSetting).to receive(:update_mirror_cron_jobs).and_call_original
+            expect(Gitlab::Mirror).to receive(:configure_cron_jobs!)
 
-          setting.update_attributes(minimum_mirror_sync_time: sync_time)
-        end
+            subject
+          end
 
-        it 'updates every mirror to the current minimum_mirror_sync_time' do
-          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.to change { Project.mirror.where('sync_time < ?', sync_time).count }.from(2).to(0)
-        end
+          it 'updates every mirror to the current minimum_mirror_sync_time' do
+            expect { subject }.to change { Project.mirror.where('sync_time < ?', sync_time).count }.from(index + 1).to(0)
+          end
 
-        it 'updates every remote mirror to the current minimum_mirror_sync_time' do
-          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.to change { RemoteMirror.where('sync_time < ?', sync_time).count }.from(2).to(0)
-        end
-      end
-
-      context 'with hourly sync time' do
-        let(:sync_time) { Gitlab::Mirror::HOURLY }
-
-        it 'updates minimum_mirror_sync_time to daily and updates cron jobs' do
-          expect_any_instance_of(ApplicationSetting).to receive(:update_mirror_cron_jobs).and_call_original
-          expect(Gitlab::Mirror).to receive(:configure_cron_jobs!)
-
-          setting.update_attributes(minimum_mirror_sync_time: sync_time)
-        end
-
-        it 'updates every mirror to the current minimum_mirror_sync_time' do
-          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.to change { Project.mirror.where('sync_time < ?', sync_time).count }.from(1).to(0)
-        end
-
-        it 'updates every remote mirror to the current minimum_mirror_sync_time' do
-          expect { setting.update_attributes(minimum_mirror_sync_time: sync_time) }.to change { RemoteMirror.where('sync_time < ?', sync_time).count }.from(1).to(0)
+          it 'updates every remote mirror to the current minimum_mirror_sync_time' do
+            expect { subject }.to change { RemoteMirror.where('sync_time < ?', sync_time).count }.from(index + 1).to(0)
+          end
         end
       end
 
+      # fifteen is a special case so we isolate it
       context 'with default fifteen sync time' do
         let(:sync_time) { Gitlab::Mirror::FIFTEEN }
 

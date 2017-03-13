@@ -21,39 +21,17 @@ feature 'Project mirror', feature: true do
     end
 
     describe 'synchronization times' do
-      describe 'daily minimum mirror sync_time' do
-        before do
-          stub_application_setting(minimum_mirror_sync_time: Gitlab::Mirror::DAILY)
-          visit namespace_project_mirror_path(project.namespace, project)
-        end
+      Gitlab::Mirror::SYNC_TIME_TO_CRON.keys.reverse.each_with_index do |sync_time, index|
+        describe "#{sync_time} minimum mirror sync time" do
+          before do
+            stub_application_setting(minimum_mirror_sync_time: sync_time)
+            visit namespace_project_mirror_path(project.namespace, project)
+          end
 
-        it 'shows the correct selector options' do
-          expect(page).to have_selector('.project-mirror-sync-time > option', count: 1)
-          expect(page).to have_selector('.remote-mirror-sync-time > option', count: 1)
-        end
-      end
-
-      describe 'hourly minimum mirror sync_time' do
-        before do
-          stub_application_setting(minimum_mirror_sync_time: Gitlab::Mirror::HOURLY)
-          visit namespace_project_mirror_path(project.namespace, project)
-        end
-
-        it 'shows the correct selector options' do
-          expect(page).to have_selector('.project-mirror-sync-time > option', count: 2)
-          expect(page).to have_selector('.remote-mirror-sync-time > option', count: 2)
-        end
-      end
-
-      describe 'fifteen minimum mirror sync_time' do
-        before do
-          stub_application_setting(minimum_mirror_sync_time: Gitlab::Mirror::FIFTEEN)
-          visit namespace_project_mirror_path(project.namespace, project)
-        end
-
-        it 'shows the correct selector options' do
-          expect(page).to have_selector('.project-mirror-sync-time > option', count: 3)
-          expect(page).to have_selector('.remote-mirror-sync-time > option', count: 3)
+          it 'shows the correct selector options' do
+            expect(page).to have_selector('.project-mirror-sync-time > option', count: index + 1)
+            expect(page).to have_selector('.remote-mirror-sync-time > option', count: index + 1)
+          end
         end
       end
     end
