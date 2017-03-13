@@ -48,7 +48,6 @@ describe PipelineNotificationWorker do
         let(:email_subject) { "Pipeline ##{pipeline.id} has succeeded" }
         let(:receivers) { [pusher] }
 
-
         context 'with custom notification success pipeline on' do
           before do
             pusher.global_notification_setting
