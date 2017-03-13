@@ -14,10 +14,11 @@
       %label.label-light{ for: "board-milestone" }
         Board milestone
       %button.dropdown-menu-toggle.wide{ type: "button",
-        "@click.stop.prevent" => "loadMilestones" }
+        "@click.stop.prevent" => "loadMilestones($event)" }
         {{ milestoneToggleText }}
         = icon("chevron-down")
-      .dropdown-menu.dropdown-menu-selectable{ "v-if" => "milestoneDropdownOpen" }
+      .dropdown-menu.dropdown-menu-selectable{ "v-if" => "milestoneDropdownOpen",
+        ref: "milestoneDropdown" }
         .dropdown-content
           %ul
             %li{ "v-for" => "milestone in extraMilestones" }
