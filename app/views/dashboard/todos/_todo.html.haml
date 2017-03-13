@@ -42,3 +42,8 @@
       = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'btn btn-loading js-undo-todo hidden'  do
         Undo
         = icon('spinner spin')
+  - else
+    .todo-actions
+      = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'btn btn-loading js-add-todo' do
+        Add todo
+        = icon('spinner spin')

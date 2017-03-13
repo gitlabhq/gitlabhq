@@ -38,7 +38,9 @@ describe 'Dashboard Todos', feature: true do
 
       shared_examples 'deleting the todo' do
         before do
-          first('.js-done-todo').click
+          within first('.todo') do
+            click_link 'Done'
+          end
         end
 
         it 'is marked as done-reversible in the list' do
@@ -62,9 +64,11 @@ describe 'Dashboard Todos', feature: true do
 
       shared_examples 'deleting and restoring the todo' do
         before do
-          first('.js-done-todo').click
-          wait_for_ajax
-          first('.js-undo-todo').click
+          within first('.todo') do
+            click_link 'Done'
+            wait_for_ajax
+            click_link 'Undo'
+          end
         end
 
         it 'is marked back as pending in the list' do
@@ -94,6 +98,35 @@ describe 'Dashboard Todos', feature: true do
 
         it_behaves_like 'deleting the todo'
         it_behaves_like 'deleting and restoring the todo'
+      end
+    end
+
+    context 'User has done todos', js: true do
+      before do
+        create(:todo, :mentioned, :done, user: user, project: project, target: issue, author: author)
+        login_as(user)
+        visit dashboard_todos_path(state: :done)
+      end
+
+      it 'has the done todo present' do
+        expect(page).to have_selector('.todos-list .todo.todo-done', count: 1)
+      end
+
+      describe 'restoring the todo' do
+        before do
+          within first('.todo') do
+            click_link 'Add todo'
+          end
+        end
+
+        it 'is removed from the list' do
+          expect(page).not_to have_selector('.todos-list .todo.todo-done')
+        end
+
+        it 'updates todo count' do
+          expect(page).to have_content 'To do 1'
+          expect(page).to have_content 'Done 0'
+        end
       end
     end
 
@@ -143,7 +176,7 @@ describe 'Dashboard Todos', feature: true do
       describe 'mark all as done', js: true do
         before do
           visit dashboard_todos_path
-          click_link('Mark all as done')
+          click_link 'Mark all as done'
         end
 
         it 'shows "All done" message!' do
