@@ -1066,7 +1066,7 @@ describe Ci::Pipeline, models: true do
         perform_enqueued_jobs do
           pipeline.user.global_notification_setting
             .update(level: NotificationSetting.levels[:custom],
-                    events: {success_pipeline: true})
+                    events: { success_pipeline: true })
 
           pipeline.succeed
         end
