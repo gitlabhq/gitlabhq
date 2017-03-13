@@ -24,6 +24,7 @@
         this.pageRequest = false;
       }, () => {
         this.pageRequest = false;
+        this.hasError = true;
         return new Flash('An error occurred while fetching the pipelines, please reload the page again.');
       });
     }
