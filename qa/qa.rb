@@ -78,6 +78,4 @@ module QA
   end
 end
 
-if QA::Runtime::Release.has_autoloads?
-  require QA::Runtime::Release.autoloads_file
-end
+QA::Runtime::Release.extend_autoloads!
