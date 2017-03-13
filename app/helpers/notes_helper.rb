@@ -54,17 +54,15 @@ module NotesHelper
 
     if use_legacy_diff_note
       new_note = LegacyDiffNote.new(@new_diff_note_attrs.merge(line_code: line_code))
-      discussion_id = new_note.discussion_id
     else
       new_note = DiffNote.new(@new_diff_note_attrs.merge(position: position))
-      discussion_id = new_note.discussion_id
 
       data[:position] = position.to_json
     end
 
     data.merge(
       note_type: new_note.type,
-      discussion_id: discussion_id
+      discussion_id: new_note.discussion_class.discussion_id(new_note)
     )
   end
 

@@ -192,7 +192,7 @@ require('./task_list');
     };
 
     Notes.prototype.refresh = function() {
-      if (!document.hidden && document.URL.indexOf(this.noteable_url) === 0) {
+      if (!document.hidden) {
         return this.getContent();
       }
     };
@@ -371,7 +371,7 @@ require('./task_list');
         discussionContainer.append(note_html);
       }
 
-      if (typeof gl.diffNotesCompileComponents !== 'undefined' && note.discussion_id) {
+      if (typeof gl.diffNotesCompileComponents !== 'undefined' && note.discussion_resolvable) {
         gl.diffNotesCompileComponents();
         this.renderDiscussionAvatar(diffAvatarContainer, note);
       }

@@ -1,4 +1,4 @@
-- if @discussions.present?
+- if defined?(@discussions)
   - @discussions.each do |discussion|
     - if discussion.render_as_individual_notes?
       = render partial: "projects/notes/note", collection: discussion.notes, as: :note

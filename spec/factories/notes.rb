@@ -18,7 +18,7 @@ FactoryGirl.define do
 
     factory :discussion_note_on_merge_request, traits: [:on_merge_request], class: DiscussionNote do
       association :project, :repository
-      
+
       trait :resolved do
         resolved_at { Time.now }
         resolved_by { create(:user) }
@@ -116,6 +116,19 @@ FactoryGirl.define do
 
     trait :with_svg_attachment do
       attachment { fixture_file_upload(Rails.root + "spec/fixtures/unsanitized.svg", "image/svg+xml") }
+    end
+
+    transient do
+      in_reply_to nil
+    end
+
+    before(:create) do |note, evaluator|
+      discussion = evaluator.in_reply_to
+      next unless discussion
+      discussion = discussion.to_discussion if discussion.is_a?(Note)
+      next unless discussion
+      
+      note.assign_attributes(discussion.reply_attributes)
     end
   end
 end

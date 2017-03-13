@@ -1234,15 +1234,7 @@ describe MergeRequest, models: true do
     end
 
     describe '#resolvable_discussions' do
-      before do
-        allow(first_discussion).to receive(:to_be_resolved?).and_return(true)
-        allow(second_discussion).to receive(:to_be_resolved?).and_return(false)
-        allow(third_discussion).to receive(:to_be_resolved?).and_return(false)
-      end
-
-      it 'includes only discussions that need to be resolved' do
-        expect(subject.resolvable_discussions).to eq([first_discussion])
-      end
+      # TODO: Test
     end
 
     describe "#discussions_resolvable?" do
@@ -1372,7 +1364,15 @@ describe MergeRequest, models: true do
     end
 
     describe "#discussions_to_be_resolved" do
-      # TODO: Test
+      before do
+        allow(first_discussion).to receive(:to_be_resolved?).and_return(true)
+        allow(second_discussion).to receive(:to_be_resolved?).and_return(false)
+        allow(third_discussion).to receive(:to_be_resolved?).and_return(false)
+      end
+
+      it 'includes only discussions that need to be resolved' do
+        expect(subject.discussions_to_be_resolved).to eq([first_discussion])
+      end
     end
 
     describe '#discussions_can_be_resolved_by?' do

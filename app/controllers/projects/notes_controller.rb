@@ -169,6 +169,8 @@ class Projects::NotesController < Projects::ApplicationController
       discussion = note.to_discussion(noteable)
       unless discussion.render_as_individual_notes?
         attrs.merge!(
+          discussion_resolvable: discussion.resolvable?,
+
           diff_discussion_html: diff_discussion_html(discussion),
           discussion_html: discussion_html(discussion),
 
