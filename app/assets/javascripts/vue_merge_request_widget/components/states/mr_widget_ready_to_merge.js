@@ -28,6 +28,17 @@ export default {
 
       return this.useCommitMessageWithDescription ? withoutDesc : withDesc;
     },
+    mergeButtonClass() {
+      const defaultCls = 'btn btn-success';
+      const failedCls = `${defaultCls} btn-danger`;
+      const { pipeline } = this.mr;
+
+      if (!pipeline) {
+        return defaultCls;
+      }
+
+      return pipeline.details.status.label === 'failed' ? failedCls : defaultCls;
+    },
   },
   methods: {
     updateCommitMessage() {
@@ -56,8 +67,8 @@ export default {
       <div class="mr-widget-body">
         <button
           @click="merge"
-          :disabled="!this.commitMessage.length"
-          class="btn btn-success btn-small">Merge</button>
+          :disabled="!commitMessage.length"
+          :class="mergeButtonClass">Merge</button>
         <label><input type="checkbox" v-model="removeSourceBranch" /> Remove source branch</label>
         <a @click.prevent="toggleCommitMessageEditor"
           class="btn btn-default btn-xs" href="#">Modify commit message</a>
