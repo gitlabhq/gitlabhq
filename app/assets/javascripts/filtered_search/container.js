@@ -1,13 +1,14 @@
-let _container = document;
+/* eslint-disable class-methods-use-this */
+let container = document;
 
 class FilteredSearchContainerClass {
-  set container(container) {
-    _container = container;
+  set container(containerParam) {
+    container = containerParam;
   }
 
   get container() {
-    return _container;
+    return container;
   }
 }
 
-export let FilteredSearchContainer = new FilteredSearchContainerClass();
+export default new FilteredSearchContainerClass();

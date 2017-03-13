@@ -1,17 +1,23 @@
 /* global Vue */
 import FilteredSearchBoards from '../../filtered_search_boards';
-import { FilteredSearchContainer } from '../../../filtered_search/container';
+import FilteredSearchContainer from '../../../filtered_search/container';
 
 export default {
   name: 'modal-filters',
+  props: {
+    store: {
+      type: Object,
+      required: true,
+    },
+  },
   mounted() {
     FilteredSearchContainer.container = this.$el;
 
-    this.filteredSearch = new FilteredSearchBoards({path: ''}, false);
+    this.filteredSearch = new FilteredSearchBoards(this.store, false);
   },
   destroyed() {
     FilteredSearchContainer.container = document;
-    gl.issueBoards.ModalStore.setDefaultFilter();
+    this.store.path = '';
   },
   template: '#js-board-modal-filter',
 };

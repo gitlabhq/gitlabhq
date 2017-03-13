@@ -1,6 +1,7 @@
 /* global Vue */
-require('./tabs');
 import modalFilters from './filters';
+
+require('./tabs');
 
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
@@ -66,7 +67,7 @@ import modalFilters from './filters';
         <div
           class="add-issues-search append-bottom-10"
           v-if="showSearch">
-          <modal-filters />
+          <modal-filters :store="filter" />
           <button
             type="button"
             class="btn btn-success btn-inverted prepend-left-10"

@@ -1,5 +1,5 @@
 /* global DropLab */
-import { FilteredSearchContainer } from './container';
+import FilteredSearchContainer from './container';
 
 (() => {
   class FilteredSearchDropdownManager {

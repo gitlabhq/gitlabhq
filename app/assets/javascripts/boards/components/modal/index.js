@@ -47,9 +47,6 @@ require('./empty_state');
       page() {
         this.loadIssues();
       },
-      searchTerm() {
-        this.searchOperation();
-      },
       showAddIssuesModal() {
         if (this.showAddIssuesModal && !this.issues.length) {
           this.loading = true;
@@ -72,17 +69,30 @@ require('./empty_state');
       },
     },
     methods: {
-      searchOperation: _.debounce(function searchOperationDebounce() {
-        this.loadIssues(true);
-      }, 500),
       loadIssues(clearIssues = false) {
         if (!this.showAddIssuesModal) return false;
 
-        const queryData = Object.assign({}, this.filter, {
-          search: this.searchTerm,
-          page: this.page,
-          per: this.perPage,
-        });
+        const queryData = this.filter.path.split('&').reduce((dataParam, filterParam) => {
+          if (filterParam === '') return dataParam;
+
+          const data = dataParam;
+          const paramSplit = filterParam.split('=');
+          const paramKeyNormalized = paramSplit[0].replace('[]', '');
+          const isArray = paramSplit[0].indexOf('[]');
+          const value = decodeURIComponent(paramSplit[1]).replace(/\+/g, ' ');
+
+          if (isArray !== -1) {
+            if (!data[paramKeyNormalized]) {
+              data[paramKeyNormalized] = [];
+            }
+
+            data[paramKeyNormalized].push(value);
+          } else {
+            data[paramKeyNormalized] = value;
+          }
+
+          return data;
+        }, { page: this.page, per: this.perPage });
 
         return gl.boardService.getBacklog(queryData).then((res) => {
           const data = res.json();

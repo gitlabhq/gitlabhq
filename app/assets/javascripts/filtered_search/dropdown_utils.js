@@ -1,4 +1,4 @@
-import { FilteredSearchContainer } from './container';
+import FilteredSearchContainer from './container';
 
 (() => {
   class DropdownUtils {
