@@ -267,7 +267,7 @@ describe Projects::CommitController do
 
             expect(assigns(:diff_notes_disabled)).to be_falsey
             expect(assigns(:new_diff_note_attrs)).to eq(noteable_type: 'Commit',
-                                                    commit_id: commit2.id)
+                                                        commit_id: commit2.id)
           end
 
           it 'only renders the diffs for the path given' do
