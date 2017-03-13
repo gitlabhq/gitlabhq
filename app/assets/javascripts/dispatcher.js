@@ -67,6 +67,25 @@ const UserCallout = require('./user_callout');
       }
       path = page.split(':');
       shortcut_handler = null;
+
+      function initBlob() {
+        new LineHighlighter();
+
+        new BlobLinePermalinkUpdater(
+          document.querySelector('#blob-content-holder'),
+          '.diff-line-num[data-line-number]',
+          document.querySelectorAll('.js-data-file-blob-permalink-url, .js-blob-blame-link'),
+        );
+
+        shortcut_handler = new ShortcutsNavigation();
+        fileBlobPermalinkUrlElement = document.querySelector('.js-data-file-blob-permalink-url');
+        fileBlobPermalinkUrl = fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
+        new ShortcutsBlob({
+          skipResetBindings: true,
+          fileBlobPermalinkUrl,
+        });
+      }
+
       switch (page) {
         case 'sessions:new':
           new UsernameValidator();
@@ -259,34 +278,13 @@ const UserCallout = require('./user_callout');
           break;
         case 'projects:blob:show':
           gl.TargetBranchDropDown.bootstrap();
-          new LineHighlighter();
-          shortcut_handler = new ShortcutsNavigation();
-          fileBlobPermalinkUrlElement = document.querySelector('.js-data-file-blob-permalink-url');
-          fileBlobPermalinkUrl = fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
-          new ShortcutsBlob({
-            skipResetBindings: true,
-            fileBlobPermalinkUrl,
-          });
+          initBlob();
           break;
         case 'projects:blob:edit':
           gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:blame:show':
-          new LineHighlighter();
-
-          new BlobLinePermalinkUpdater(
-            document.querySelector('#blob-content-holder'),
-            '.diff-line-num[data-line-number]',
-            document.querySelectorAll('.js-data-file-blob-permalink-url, .js-blob-blame-link'),
-          );
-
-          shortcut_handler = new ShortcutsNavigation();
-          fileBlobPermalinkUrlElement = document.querySelector('.js-data-file-blob-permalink-url');
-          fileBlobPermalinkUrl = fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
-          new ShortcutsBlob({
-            skipResetBindings: true,
-            fileBlobPermalinkUrl,
-          });
+          initBlob();
           break;
         case 'groups:labels:new':
         case 'groups:labels:edit':
