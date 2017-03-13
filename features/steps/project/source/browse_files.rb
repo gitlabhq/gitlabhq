@@ -337,6 +337,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on "files/lfs/lfs_object.iso" file in repo' do
+    allow_any_instance_of(Project).to receive(:lfs_enabled?).and_return(true)
     visit namespace_project_tree_path(@project.namespace, @project, "lfs")
     click_link 'files'
     click_link "lfs"
