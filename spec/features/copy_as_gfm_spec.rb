@@ -543,7 +543,7 @@ describe 'Copy as GFM', feature: true, js: true do
       end
 
       context 'selecting multiple lines of text' do
-        it 'copies as a code block' do
+        it 'copies as a code block with the correct language' do
           verify(
             '.line[id="LC27"], .line[id="LC28"]',
 

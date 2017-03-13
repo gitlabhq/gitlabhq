@@ -5,10 +5,9 @@ module Rouge
 
       # Creates a new <tt>Rouge::Formatter::HTMLGitlab</tt> instance.
       #
-      # [+linenostart+]     The line number for the first line (default: 1).
-      def initialize(linenostart: 1, tag: nil)
-        @linenostart = linenostart
-        @line_number = linenostart
+      # [+tag+]     The tag (language) of the lexer used to generate the formatted tokens
+      def initialize(tag: nil)
+        @line_number = 1
         @tag = tag
       end
 
