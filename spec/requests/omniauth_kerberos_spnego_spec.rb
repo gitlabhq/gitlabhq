@@ -1,7 +1,6 @@
 require 'spec_helper'
-require 'omniauth/strategies/kerberos_spnego'
 
-describe 'OmniAuth Kerberos SPNEGO', lib: true do
+describe 'OmniAuth Kerberos SPNEGO' do
   let(:path) { '/users/auth/kerberos_spnego/negotiate' }
   let(:controller_class) { OmniauthKerberosSpnegoController }
 

@@ -1,5 +1,3 @@
-require 'omniauth/strategies/kerberos_spnego'
-
 class OmniauthKerberosSpnegoController < ApplicationController
   include KerberosSpnegoHelper
 
@@ -15,11 +13,11 @@ class OmniauthKerberosSpnegoController < ApplicationController
 
     # When the browser is Kerberos-aware, this response will make it try to
     # get a Kerberos ticket and present it to us via an SPNEGO token.
-    # 
+    #
     # When the browser does not know Kerberos, or if it tried to
     # authenticate with Kerberos but failed, it shows the special 'Kerberos
     # denied' 401 page to the user.
-    # 
+    #
     # We cannot redirect the user to the sign-in page because we do not know
     # when the browser has given up.
     #
