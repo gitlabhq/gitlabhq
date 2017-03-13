@@ -16,17 +16,9 @@ import Sortable from 'vendor/Sortable';
 import 'mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';
 import 'vendor/fuzzaldrin-plus';
-import promisePolyfill from 'es6-promise';
 
 // extensions
-import './extensions/string';
 import './extensions/array';
-import './extensions/custom_event';
-import './extensions/element';
-import './extensions/jquery';
-import './extensions/object';
-
-promisePolyfill.polyfill();
 
 // expose common libraries as globals (TODO: remove these)
 window.jQuery = jQuery;
