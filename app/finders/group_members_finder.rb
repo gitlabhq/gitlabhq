@@ -1,4 +1,4 @@
-class GroupMembersFinder < Projects::ApplicationController
+class GroupMembersFinder
   def initialize(group)
     @group = group
   end

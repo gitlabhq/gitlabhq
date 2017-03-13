@@ -24,10 +24,6 @@
         color: inherit;
       }
 
-      .btn-success.dropdown-toggle:disabled {
-        background-color: $gl-success;
-      }
-
       .accept-merge-request {
         &.ci-pending,
         &.ci-running {

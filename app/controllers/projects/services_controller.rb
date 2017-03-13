@@ -13,7 +13,8 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def update
-    if @service.update_attributes(service_params[:service])
+    @service.assign_attributes(service_params[:service])
+    if @service.save(context: :manual_change)
       redirect_to(
         edit_namespace_project_service_path(@project.namespace, @project, @service.to_param),
         notice: 'Successfully updated.'

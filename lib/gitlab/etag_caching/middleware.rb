@@ -37,7 +37,7 @@ module Gitlab
 
       def get_etag(env)
         cache_key = env['PATH_INFO']
-        store = Store.new
+        store = Gitlab::EtagCaching::Store.new
         current_value = store.get(cache_key)
         cached_value_present = current_value.present?
 
