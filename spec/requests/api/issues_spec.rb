@@ -928,29 +928,34 @@ describe API::Issues, api: true  do
       ])
     end
 
-    context 'resolving issues in a merge request' do
+    context 'resolving discussions' do
       let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
       let(:merge_request) { discussion.noteable }
       let(:project) { merge_request.source_project }
+
       before do
         project.team << [user, :master]
-        post api("/projects/#{project.id}/issues", user),
-             title: 'New Issue',
-             merge_request_for_resolving_discussions: merge_request.iid
       end
 
-      it 'creates a new project issue' do
-        expect(response).to have_http_status(:created)
+      context 'resolving all discussions in a merge request' do
+        before do
+          post api("/projects/#{project.id}/issues", user),
+               title: 'New Issue',
+               merge_request_to_resolve_discussions_of: merge_request.iid
+        end
+
+        it_behaves_like 'creating an issue resolving discussions through the API'
       end
 
-      it 'resolves the discussions in a merge request' do
-        discussion.first_note.reload
+      context 'resolving a single discussion' do
+        before do
+          post api("/projects/#{project.id}/issues", user),
+               title: 'New Issue',
+               merge_request_to_resolve_discussions_of: merge_request.iid,
+               discussion_to_resolve: discussion.id
+        end
 
-        expect(discussion.resolved?).to be(true)
-      end
-
-      it 'assigns a description to the issue mentioning the merge request' do
-        expect(json_response['description']).to include(merge_request.to_reference)
+        it_behaves_like 'creating an issue resolving discussions through the API'
       end
     end
 

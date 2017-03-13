@@ -82,6 +82,7 @@
                     = render "shared/icons/icon_status_success.svg"
                   %span.line-resolve-text
                     {{ resolvedDiscussionCount }}/{{ discussionCount }} {{ resolvedCountText }} resolved
+                = render "discussions/new_issue_for_all_discussions", merge_request: @merge_request
                 = render "discussions/jump_to_next"
 
     .tab-content#diff-notes-app

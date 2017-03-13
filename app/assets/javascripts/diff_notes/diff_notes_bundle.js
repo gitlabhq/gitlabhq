@@ -14,10 +14,11 @@ require('./components/resolve_btn');
 require('./components/resolve_count');
 require('./components/resolve_discussion_btn');
 require('./components/diff_note_avatars');
+require('./components/new_issue_for_discussion');
 
 $(() => {
   const projectPath = document.querySelector('.merge-request').dataset.projectPath;
-  const COMPONENT_SELECTOR = 'resolve-btn, resolve-discussion-btn, jump-to-discussion, comment-and-resolve-btn';
+  const COMPONENT_SELECTOR = 'resolve-btn, resolve-discussion-btn, jump-to-discussion, comment-and-resolve-btn, new-issue-for-discussion-btn';
 
   window.gl = window.gl || {};
   window.gl.diffNoteApps = {};
