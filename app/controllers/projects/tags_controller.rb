@@ -41,13 +41,27 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   def destroy
-    Tags::DestroyService.new(project, current_user).execute(params[:id])
+    result = Tags::DestroyService.new(project, current_user).execute(params[:id])
 
     respond_to do |format|
-      format.html do
-        redirect_to namespace_project_tags_path(@project.namespace, @project)
+      if result[:status] == :success
+        format.html do
+          redirect_to namespace_project_tags_path(@project.namespace, @project)
+        end
+
+        format.js
+      else
+        @error = result[:message]
+
+        format.html do
+          redirect_to namespace_project_tags_path(@project.namespace, @project),
+            alert: @error
+        end
+
+        format.js do
+          render status: :unprocessable_entity
+        end
       end
-      format.js
     end
   end
 end
