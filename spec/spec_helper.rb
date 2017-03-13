@@ -43,12 +43,25 @@ RSpec.configure do |config|
   config.include ActiveSupport::Testing::TimeHelpers
   config.include StubGitlabCalls
   config.include StubGitlabData
+  config.include ApiHelpers, :api
 
   config.infer_spec_type_from_file_location!
+
+  config.define_derived_metadata(file_path: %r{/spec/requests/(ci/)?api/}) do |metadata|
+    metadata[:api] = true
+  end
+
   config.raise_errors_for_deprecations!
 
   config.before(:suite) do
     TestEnv.init
+  end
+
+  if ENV['CI']
+    # Retry only on feature specs that use JS
+    config.around :each, :js do |ex|
+      ex.run_with_retry retry: 3
+    end
   end
 
   config.around(:each, :caching) do |example|
