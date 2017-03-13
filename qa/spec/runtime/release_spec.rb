@@ -1,11 +1,10 @@
 describe QA::Runtime::Release do
   context 'when release version has extension strategy' do
-    subject { described_class.new('CE') }
-    let(:strategy) { spy('CE::Strategy') }
+    subject { described_class.new('VER') }
+    let(:strategy) { spy('VER::Strategy') }
 
     before do
-      stub_const('QA::CE::Strategy', strategy)
-      stub_const('QA::EE::Strategy', strategy)
+      stub_const('QA::VER::Strategy', strategy)
     end
 
     describe '#has_strategy?' do
@@ -16,11 +15,19 @@ describe QA::Runtime::Release do
 
     describe '#strategy' do
       it 'return the strategy constant' do
-        expect(subject.strategy).to eq QA::CE::Strategy
+        expect(subject.strategy).to eq QA::VER::Strategy
       end
     end
 
     describe 'delegated class methods' do
+      before do
+        allow_any_instance_of(described_class)
+          .to receive(:has_strategy?).and_return(true)
+
+        allow_any_instance_of(described_class)
+          .to receive(:strategy).and_return(strategy)
+      end
+
       it 'delegates all calls to strategy class' do
         described_class.some_method(1, 2)
 
@@ -31,12 +38,7 @@ describe QA::Runtime::Release do
   end
 
   context 'when release version does not have extension strategy' do
-    subject { described_class.new('CE') }
-
-    before do
-      hide_const('QA::CE::Strategy')
-      hide_const('QA::EE::Strategy')
-    end
+    subject { described_class.new('NOVER') }
 
     describe '#has_strategy?' do
       it 'returns false' do
@@ -50,18 +52,23 @@ describe QA::Runtime::Release do
       end
     end
 
-    describe 'delegated class methods' do
+    describe 'does not delegate class methods' do
+      before do
+        allow_any_instance_of(described_class)
+          .to receive(:has_strategy?).and_return(false)
+      end
+
       it 'behaves like a null object and does nothing' do
         expect { described_class.some_method(2, 3) }.not_to raise_error
       end
-    end
-  end
 
-  context 'when release version is invalid or unspecified' do
-    describe '#new' do
-      it 'raises an exception' do
-        expect { described_class.new(nil) }
-          .to raise_error(described_class::UnspecifiedReleaseError)
+      it 'returns nil' do
+        expect(described_class.something).to be_nil
+      end
+
+      it 'does not delegate to strategy object' do
+        expect_any_instance_of(described_class)
+          .not_to receive(:strategy)
       end
     end
   end

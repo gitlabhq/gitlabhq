@@ -2,35 +2,32 @@ module QA
   module Runtime
     ##
     # Class that is responsible for plugging CE/EE extensions in, depending on
-    # environment variable GITLAB_RELEASE that should be present in the runtime
-    # environment.
+    # existence of EE module.
     #
     # We need that to reduce the probability of conflicts when merging
     # CE to EE.
     #
     class Release
-      UnspecifiedReleaseError = Class.new(StandardError)
-
-      def initialize(version = ENV['GITLAB_RELEASE'])
-        @version = version.to_s.upcase
-
-        unless %w[CE EE].include?(@version)
-          raise UnspecifiedReleaseError, 'GITLAB_RELEASE env not defined!'
-        end
+      def initialize(variant = nil)
+        @version = variant || version
 
         begin
-          require "qa/#{version.downcase}/strategy"
+          require "qa/#{@version.downcase}/strategy"
         rescue LoadError
           # noop
         end
       end
 
+      def version
+        File.directory?("#{__dir__}/../ee") ? :EE : :CE
+      end
+
       def has_strategy?
-        QA.const_defined?("#{@version}::Strategy")
+        QA.const_defined?("QA::#{@version}::Strategy")
       end
 
       def strategy
-        QA.const_get("#{@version}::Strategy")
+        QA.const_get("QA::#{@version}::Strategy")
       end
 
       def self.method_missing(name, *args)
