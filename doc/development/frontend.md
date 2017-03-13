@@ -66,7 +66,7 @@ Let's look into each of them:
 This is the index file of your new feature. This is where the root Vue instance
 of the new feature should be.
 
-The Store and the Service should be loaded in this file and provided as a prop to the main component.
+The Store and the Service should be imported and initialized in this file and provided as a prop to the main component.
 
 Don't forget to follow [these steps.][page_specific_javascript]
 
@@ -353,7 +353,7 @@ Good:
 ```javascript
 class Foo {
   constructor(opts) {
-    opts.container.querySelector('.bar');
+    document.querySelector(`${opts.container} .bar`);
   }
 }
 
