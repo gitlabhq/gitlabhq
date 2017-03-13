@@ -1,4 +1,6 @@
 module IssuablesHelper
+  include GitlabRoutingHelper
+
   def sidebar_gutter_toggle_icon
     sidebar_gutter_collapsed? ? icon('angle-double-left', { 'aria-hidden': 'true' }) : icon('angle-double-right', { 'aria-hidden': 'true' })
   end
@@ -95,8 +97,23 @@ module IssuablesHelper
     h(milestone_title.presence || default_label)
   end
 
+  def to_url_reference(issuable)
+    case issuable
+    when Issue
+      link_to issuable.to_reference, issue_url(issuable)
+    when MergeRequest
+      link_to issuable.to_reference, merge_request_url(issuable)
+    else
+      issuable.to_reference
+    end
+  end
+
   def issuable_meta(issuable, project, text)
-    output = content_tag :strong, "#{text} #{issuable.to_reference}", class: "identifier"
+    output = content_tag(:strong, class: "identifier") do
+      concat("#{text} ")
+      concat(to_url_reference(issuable))
+    end
+
     output << " opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
     output << content_tag(:strong) do
       author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "hidden-xs", tooltip: true)
