@@ -795,7 +795,8 @@ pre.light-well {
 }
 
 .project-refs-form .dropdown-menu,
-.dropdown-menu-projects {
+.dropdown-menu-projects,
+.dropdown-menu-branches {
   width: 300px;
 
   @media (min-width: $screen-sm-min) {

@@ -59,7 +59,7 @@ const UserCallout = require('./user_callout');
     }
 
     Dispatcher.prototype.initPageScripts = function() {
-      var page, path, shortcut_handler;
+      var page, path, shortcut_handler, fileBlobPermalinkUrlElement, fileBlobPermalinkUrl;
       page = $('body').attr('data-page');
       if (!page) {
         return false;
@@ -245,16 +245,36 @@ const UserCallout = require('./user_callout');
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
           new TreeView();
+          gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:find_file:show':
           shortcut_handler = true;
           break;
+        case 'projects:blob:new':
+          gl.TargetBranchDropDown.bootstrap();
+          break;
+        case 'projects:blob:create':
+          gl.TargetBranchDropDown.bootstrap();
+          break;
         case 'projects:blob:show':
+          gl.TargetBranchDropDown.bootstrap();
+          new LineHighlighter();
+          shortcut_handler = new ShortcutsNavigation();
+          fileBlobPermalinkUrlElement = document.querySelector('.js-data-file-blob-permalink-url');
+          fileBlobPermalinkUrl = fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
+          new ShortcutsBlob({
+            skipResetBindings: true,
+            fileBlobPermalinkUrl,
+          });
+          break;
+        case 'projects:blob:edit':
+          gl.TargetBranchDropDown.bootstrap();
+          break;
         case 'projects:blame:show':
           new LineHighlighter();
           shortcut_handler = new ShortcutsNavigation();
-          const fileBlobPermalinkUrlElement = document.querySelector('.js-data-file-blob-permalink-url');
-          const fileBlobPermalinkUrl = fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
+          fileBlobPermalinkUrlElement = document.querySelector('.js-data-file-blob-permalink-url');
+          fileBlobPermalinkUrl = fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
           new ShortcutsBlob({
             skipResetBindings: true,
             fileBlobPermalinkUrl,
