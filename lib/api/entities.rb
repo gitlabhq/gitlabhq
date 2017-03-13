@@ -567,6 +567,9 @@ module API
 
     class Board < Grape::Entity
       expose :id
+      expose :name
+      expose :project, using: Entities::BasicProjectDetails
+      expose :milestone
       expose :lists, using: Entities::List do |board|
         board.lists.destroyable
       end

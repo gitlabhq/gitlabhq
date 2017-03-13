@@ -27,6 +27,19 @@ Example response:
 [
   {
     "id" : 1,
+    "project": {
+      "id": 3,
+      "name": "Diaspora Project Site",
+      "name_with_namespace": "Diaspora / Diaspora Project Site",
+      "path": "diaspora-project-site",
+      "path_with_namespace": "diaspora/diaspora-project-site",
+      "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
+      "web_url": "http://example.com/diaspora/diaspora-project-site"
+    },
+    "milestone":   {
+      "id": 12
+      "title": "10.0"
+    },
     "lists" : [
       {
         "id" : 1,
