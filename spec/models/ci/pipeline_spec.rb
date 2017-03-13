@@ -1058,6 +1058,20 @@ describe Ci::Pipeline, models: true do
         end
       end
 
+      it_behaves_like 'not sending any notification'
+    end
+
+    context 'with success pipeline and custom notification on' do
+      before do
+        perform_enqueued_jobs do
+          pipeline.user.global_notification_setting
+            .update(level: NotificationSetting.levels[:custom],
+                    events: {success_pipeline: true})
+
+          pipeline.succeed
+        end
+      end
+
       it_behaves_like 'sending a notification'
     end
 

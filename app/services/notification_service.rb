@@ -361,10 +361,10 @@ class NotificationService
       setting = [user.notification_settings_for(project),
                  user.notification_settings_for(project.group),
                  user.global_notification_setting].find do |setting|
-                   setting&.level == :custom
+                   setting&.level == 'custom'
                  end
 
-      recipients << user if setting.events[action]
+      recipients << user if setting && setting.events[action.to_s]
       recipients
     end
   end
