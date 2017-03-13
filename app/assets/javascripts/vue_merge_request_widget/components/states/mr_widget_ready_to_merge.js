@@ -38,7 +38,7 @@ export default {
         return defaultCls;
       } else if (this.mr.isPipelineActive) {
         return inActionCls;
-      } else if (pipeline.details.status.label === 'failed') {
+      } else if (this.mr.isPipelineFailed) {
         return failedCls;
       }
 
@@ -54,8 +54,15 @@ export default {
     shouldShowMergeOptionsDropdown() {
       return this.mr.isPipelineActive && !this.mr.onlyAllowMergeIfPipelineSucceeds;
     },
+    isMergeButtonDisabled() {
+      const { mr, commitMessage } = this;
+      return !commitMessage.length || !this.isMergeAllowed();
+    },
   },
   methods: {
+    isMergeAllowed() {
+      return !(this.mr.onlyAllowMergeIfPipelineSucceeds && this.mr.isPipelineFailed);
+    },
     updateCommitMessage() {
       const cmwd = this.mr.commitMessageWithDescription;
       this.useCommitMessageWithDescription = !this.useCommitMessageWithDescription;
@@ -89,7 +96,7 @@ export default {
         <span class="btn-group">
           <button
             @click="handleMergeButtonClick()"
-            :disabled="!commitMessage.length"
+            :disabled="isMergeButtonDisabled"
             :class="mergeButtonClass">{{mergeButtonText}}</button>
           <button
             v-if="shouldShowMergeOptionsDropdown"
@@ -116,25 +123,34 @@ export default {
             </li>
           </ul>
         </span>
-        <label><input type="checkbox" v-model="removeSourceBranch" /> Remove source branch</label>
-        <a @click.prevent="toggleCommitMessageEditor"
-          class="btn btn-default btn-xs" href="#">Modify commit message</a>
-        <div class="prepend-top-default clearfix" v-if="showCommitMessageEditor">
-          <div class="form-group">
-            <label class="control-label" for="commit-message">Commit message</label>
-            <div class="col-sm-10">
-              <div class="commit-message-container">
-                <div class="max-width-marker"></div>
-                <textarea
-                  v-model="commitMessage"
-                  class="form-control js-commit-message" required="required" rows="14"></textarea>
-              </div>
-              <p class="hint">Try to keep the first line under 52 characters and the others under 72.</p>
-              <div class="hint">
-                <a @click.prevent="updateCommitMessage" href="#">{{commitMessageLinkTitle}}</a>
+        <div v-if="isMergeAllowed()">
+          <label>
+            <input type="checkbox" v-model="removeSourceBranch" /> Remove source branch
+          </label>
+          <a @click.prevent="toggleCommitMessageEditor"
+            class="btn btn-default btn-xs" href="#">Modify commit message</a>
+          <div class="prepend-top-default clearfix" v-if="showCommitMessageEditor">
+            <div class="form-group">
+              <label class="control-label" for="commit-message">Commit message</label>
+              <div class="col-sm-10">
+                <div class="commit-message-container">
+                  <div class="max-width-marker"></div>
+                  <textarea
+                    v-model="commitMessage"
+                    class="form-control js-commit-message" required="required" rows="14"></textarea>
+                </div>
+                <p class="hint">Try to keep the first line under 52 characters and the others under 72.</p>
+                <div class="hint">
+                  <a @click.prevent="updateCommitMessage" href="#">{{commitMessageLinkTitle}}</a>
+                </div>
               </div>
             </div>
           </div>
+        </div>
+        <div v-else>
+          <span class="bold">
+            The pipeline for this merge request failed. Please retry the job or push a new commit to fix the failure.
+          </span>
         </div>
         <mr-widget-merge-help />
       </div>

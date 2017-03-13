@@ -46,6 +46,7 @@ export default class MergeRequestStore {
     this.canBeMerged = data.can_be_merged || false;
 
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
+    this.isPipelineFailed = data.pipeline ? data.pipeline.details.status.label === 'failed' : false;
     this.isOpen = data.state === 'opened' || false;
 
     this.setState(data);
