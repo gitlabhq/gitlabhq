@@ -356,6 +356,19 @@ class NotificationService
     recipients.concat(User.find(user_ids))
   end
 
+  def add_special_custom_notifications(target, project, action)
+    target.participants.inject([]) do |recipients, user|
+      setting = [user.notification_settings_for(project),
+                 user.notification_settings_for(project.group),
+                 user.global_notification_setting].find do |setting|
+                   setting&.level == :custom
+                 end
+
+      recipients << user if setting.events[action]
+      recipients
+    end
+  end
+
   # Get project users with WATCH notification level
   def project_watchers(project)
     project_members = notification_settings_for(project)
@@ -599,13 +612,15 @@ class NotificationService
   def build_recipients(target, project, current_user, action: nil, previous_assignee: nil, skip_current_user: true)
     custom_action = build_custom_key(action, target)
 
-    recipients = target.participants(current_user)
-
-    unless NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(custom_action)
+    if NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(custom_action)
+      recipients = add_special_custom_notifications(
+        target, project, custom_action)
+    else
+      recipients = target.participants(current_user)
       recipients = add_project_watchers(recipients, project)
+      recipients = add_custom_notifications(recipients, project, custom_action)
     end
 
-    recipients = add_custom_notifications(recipients, project, custom_action)
     recipients = reject_mention_users(recipients, project)
 
     recipients = recipients.uniq
