@@ -64,11 +64,13 @@ export default {
     toggleCommitMessageEditor() {
       this.showCommitMessageEditor = !this.showCommitMessageEditor;
     },
-    handleMergeButtonClick(setMergeWhenBuildSucceeds) {
-      if (setMergeWhenBuildSucceeds === undefined) {
+    handleMergeButtonClick(mergeWhenBuildSucceeds) {
+      if (mergeWhenBuildSucceeds === undefined) {
         const { isPipelineActive } = this.mr;
-        setMergeWhenBuildSucceeds = isPipelineActive; // eslint-disable-line no-param-reassign
+        mergeWhenBuildSucceeds = isPipelineActive; // eslint-disable-line no-param-reassign
       }
+
+      this.setToMergeWhenBuildSucceeds = mergeWhenBuildSucceeds ? 1 : 0;
 
       const options = {
         sha: this.mr.sha,
@@ -77,12 +79,7 @@ export default {
         should_remove_source_branch: this.removeSourceBranch,
       };
 
-      if (setMergeWhenBuildSucceeds) {
-        this.service.setToMergeWhenBuildSucceeds();
-      } else {
-        // TODO: Handle success and error case when backend returns JSON
-        this.service.merge(options);
-      }
+      this.service.merge(options);
     },
   },
   template: `
