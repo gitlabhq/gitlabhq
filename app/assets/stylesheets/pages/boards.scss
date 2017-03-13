@@ -421,7 +421,8 @@
   display: flex;
 
   .issues-filters {
-    width: 100%;
+    -webkit-flex: 1;
+    flex: 1;
   }
 }
 

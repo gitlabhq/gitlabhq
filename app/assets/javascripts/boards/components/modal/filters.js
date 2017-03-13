@@ -15,7 +15,8 @@ export default {
 
     this.filteredSearch = new FilteredSearchBoards(this.store, false);
   },
-  destroyed() {
+  beforeDestroy() {
+    this.filteredSearch.cleanup();
     FilteredSearchContainer.container = document;
     this.store.path = '';
   },
