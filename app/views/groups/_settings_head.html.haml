@@ -9,7 +9,7 @@
           = link_to projects_group_path(@group), title: 'Projects' do
             %span
               Projects
-          - if can_edit 
+          - if can_edit
             - if ldap_enabled?
               = nav_link(path: 'ldap_group_links#index') do
                 = link_to group_ldap_group_links_path(@group), title: 'LDAP Group' do
