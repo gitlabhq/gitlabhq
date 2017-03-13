@@ -38,11 +38,11 @@ review:
   <<: *deploy
   stage: review
   variables:
-    APP: $CI_BUILD_REF_NAME
-    APP_HOST: $CI_PROJECT_NAME-$CI_BUILD_REF_NAME.$OPENSHIFT_DOMAIN
+    APP: $CI_COMMIT_REF_NAME
+    APP_HOST: $CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG.$OPENSHIFT_DOMAIN
   environment:
-    name: review/$CI_BUILD_REF_NAME
-    url: http://$CI_PROJECT_NAME-$CI_BUILD_REF_NAME.$OPENSHIFT_DOMAIN
+    name: review/$CI_COMMIT_REF_SLUG
+    url: http://$CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG.$OPENSHIFT_DOMAIN
     on_stop: stop-review
   only:
     - branches
@@ -56,10 +56,10 @@ stop-review:
     - oc delete all -l "app=$APP"
   when: manual
   variables:
-    APP: $CI_BUILD_REF_NAME
+    APP: $CI_COMMIT_REF_NAME
     GIT_STRATEGY: none
   environment:
-    name: review/$CI_BUILD_REF_NAME
+    name: review/$CI_COMMIT_REF_SLUG
     action: stop
   only:
     - branches
