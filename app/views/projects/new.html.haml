@@ -1,6 +1,6 @@
 - page_title    'New Project'
 - header_title  "Projects", dashboard_projects_path
-- visibility_level = params.try(:[], :project).try(:[], :visibility_level) || default_project_visibility
+- visibility_level = params.dig(:project, :visibility_level) || default_project_visibility
 
 .project-edit-container
   .project-edit-errors
