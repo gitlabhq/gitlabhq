@@ -31,6 +31,7 @@ export default class MergeRequestStore {
     this.conflictResolutionPath = data.conflict_resolution_ui_path;
     this.removeWIPPath = data.remove_wip_path;
     this.sourceBranchRemoved = !data.source_branch_exists;
+    this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
     this.mergePath = data.merge_path;
     this.emailPatchesPath = data.email_pathes_path;
     this.plainDiffPath = data.plain_diff_path;
@@ -43,6 +44,8 @@ export default class MergeRequestStore {
     this.canResolveConflictsInUI = data.conflicts_can_be_resolved_in_ui || false;
     this.canBeCherryPicked = data.can_be_cherry_picked || false;
     this.canBeMerged = data.can_be_merged || false;
+
+    this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
     this.isOpen = data.state === 'opened' || false;
 
     this.setState(data);

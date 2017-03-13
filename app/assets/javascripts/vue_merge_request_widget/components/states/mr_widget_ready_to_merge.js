@@ -31,13 +31,28 @@ export default {
     mergeButtonClass() {
       const defaultCls = 'btn btn-success';
       const failedCls = `${defaultCls} btn-danger`;
+      const inActionCls = `${defaultCls} btn-info`;
       const { pipeline } = this.mr;
 
       if (!pipeline) {
         return defaultCls;
+      } else if (this.mr.isPipelineActive) {
+        return inActionCls;
+      } else if (pipeline.details.status.label === 'failed') {
+        return failedCls;
       }
 
-      return pipeline.details.status.label === 'failed' ? failedCls : defaultCls;
+      return defaultCls;
+    },
+    mergeButtonText() {
+      if (this.mr.isPipelineActive) {
+        return 'Merge when pipeline succeeds';
+      }
+
+      return 'Merge';
+    },
+    shouldShowMergeOptionsDropdown() {
+      return this.mr.isPipelineActive && !this.mr.onlyAllowMergeIfPipelineSucceeds;
     },
   },
   methods: {
@@ -49,7 +64,12 @@ export default {
     toggleCommitMessageEditor() {
       this.showCommitMessageEditor = !this.showCommitMessageEditor;
     },
-    merge() {
+    handleMergeButtonClick(setMergeWhenBuildSucceeds) {
+      if (setMergeWhenBuildSucceeds === undefined) {
+        const { isPipelineActive } = this.mr;
+        setMergeWhenBuildSucceeds = isPipelineActive; // eslint-disable-line no-param-reassign
+      }
+
       const options = {
         sha: this.mr.sha,
         merge_when_build_succeeds: this.setToMergeWhenBuildSucceeds,
@@ -57,18 +77,48 @@ export default {
         should_remove_source_branch: this.removeSourceBranch,
       };
 
-      // TODO: Handle success and error case when backend returns JSON
-      this.service.merge(options);
+      if (setMergeWhenBuildSucceeds) {
+        this.service.setToMergeWhenBuildSucceeds();
+      } else {
+        // TODO: Handle success and error case when backend returns JSON
+        this.service.merge(options);
+      }
     },
   },
   template: `
     <div class="mr-widget-wrapper">
       <mr-widget-pipeline v-if="mr.pipeline" :mr="mr" />
       <div class="mr-widget-body">
-        <button
-          @click="merge"
-          :disabled="!commitMessage.length"
-          :class="mergeButtonClass">Merge</button>
+        <span class="btn-group">
+          <button
+            @click="handleMergeButtonClick()"
+            :disabled="!commitMessage.length"
+            :class="mergeButtonClass">{{mergeButtonText}}</button>
+          <button
+            v-if="shouldShowMergeOptionsDropdown"
+            class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-caret-down"></i>
+            <span class="sr-only">Select Merge Moment</span>
+          </button>
+          <ul
+            v-if="shouldShowMergeOptionsDropdown"
+            class="dropdown-menu dropdown-menu-right" role="menu">
+            <li>
+              <a
+                @click.prevent="handleMergeButtonClick(true)"
+                class="merge_when_pipeline_succeeds" href="#">
+                <i class="fa fa-check fa-fw"></i> Merge when pipeline succeeds
+              </a>
+            </li>
+            <li>
+              <a
+                @click.prevent="handleMergeButtonClick(false)"
+                class="accept-merge-request" href="#">
+                <i class="fa fa-warning fa-fw"></i> Merge immediately
+              </a>
+            </li>
+          </ul>
+        </span>
         <label><input type="checkbox" v-model="removeSourceBranch" /> Remove source branch</label>
         <a @click.prevent="toggleCommitMessageEditor"
           class="btn btn-default btn-xs" href="#">Modify commit message</a>

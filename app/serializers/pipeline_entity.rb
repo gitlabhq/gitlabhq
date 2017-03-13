@@ -3,6 +3,7 @@ class PipelineEntity < Grape::Entity
 
   expose :id
   expose :user, using: UserEntity
+  expose :active?, as: :active
 
   expose :path do |pipeline|
     namespace_project_pipeline_path(

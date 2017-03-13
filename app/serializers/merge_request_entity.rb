@@ -143,4 +143,9 @@ class MergeRequestEntity < IssuableEntity
                                          format: :diff)
   end
 
+  # TODO: @oswaldo, please verify this
+  expose :only_allow_merge_if_pipeline_succeeds do |merge_request|
+    merge_request.project.only_allow_merge_if_pipeline_succeeds?
+  end
+
 end
