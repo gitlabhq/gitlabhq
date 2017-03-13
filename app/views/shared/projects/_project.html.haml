@@ -7,16 +7,16 @@
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && project.commit
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
 - cache_key = [project.namespace, project, controller.controller_name, controller.action_name, current_application_settings, 'v2.3']
-- cache_key.push(project.commit.status) if project.commit.try(:status)
+- cache_key.push(project.pipeline_status) if project.pipeline_status.has_status?
 
 %li.project-row{ class: css_class }
   = cache(cache_key) do
     .controls
       - if project.archived
         %span.label.label-warning archived
-      - if project.commit.try(:status)
+      - if project.pipeline_status.has_status?
         %span
-          = render_commit_status(project.commit)
+          = render_project_pipeline_status(project.pipeline_status)
       - if forks
         %span
           = icon('code-fork')
