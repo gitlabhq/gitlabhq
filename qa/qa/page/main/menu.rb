@@ -36,7 +36,7 @@ module QA
         end
 
         def within_user_menu
-          page.within('.dropdown-menu-nav') do
+          page.within('.navbar-nav') do
             yield
           end
         end
