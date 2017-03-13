@@ -126,7 +126,6 @@ class User < ActiveRecord::Base
   validate :unique_email, if: ->(user) { user.email_changed? }
   validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
   validate :owns_public_email, if: ->(user) { user.public_email_changed? }
-  validate :ghost_users_must_be_blocked
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
@@ -350,10 +349,25 @@ class User < ActiveRecord::Base
     def ghost
       unique_internal(where(ghost: true), 'ghost', 'ghost%s@example.com') do |u|
         u.bio = 'This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.'
-        u.state = :blocked
         u.name = 'Ghost User'
       end
     end
+  end
+
+  def self.internal_attributes
+    [:ghost]
+  end
+
+  def internal?
+    self.class.internal_attributes.any? { |a| self[a] }
+  end
+
+  def self.internal
+    where(Hash[internal_attributes.zip([true] * internal_attributes.size)])
+  end
+
+  def self.non_internal
+    where(Hash[internal_attributes.zip([[false, nil]] * internal_attributes.size)])
   end
 
   #
@@ -450,12 +464,6 @@ class User < ActiveRecord::Base
     return if public_email.blank?
 
     errors.add(:public_email, "is not an email you own") unless all_emails.include?(public_email)
-  end
-
-  def ghost_users_must_be_blocked
-    if ghost? && !blocked?
-      errors.add(:ghost, 'cannot be enabled for a user who is not blocked.')
-    end
   end
 
   def update_emails_with_primary_email
@@ -563,14 +571,14 @@ class User < ActiveRecord::Base
   end
 
   def can_create_group?
-    can?(:create_group, nil)
+    can?(:create_group)
   end
 
   def can_select_namespace?
     several_namespaces? || admin
   end
 
-  def can?(action, subject)
+  def can?(action, subject = :global)
     Ability.allowed?(self, action, subject)
   end
 
@@ -955,6 +963,14 @@ class User < ActiveRecord::Base
     self.admin = (new_level == 'admin')
   end
 
+  protected
+
+  # override, from Devise::Validatable
+  def password_required?
+    return false if internal?
+    super
+  end
+
   private
 
   def ci_projects_union
@@ -1055,7 +1071,6 @@ class User < ActiveRecord::Base
 
     scope.create(
       username: username,
-      password: Devise.friendly_token,
       email: email,
       &creation_block
     )

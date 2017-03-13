@@ -118,7 +118,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def authorize_create_group!
-    unless can?(current_user, :create_group, nil)
+    unless can?(current_user, :create_group)
       return render_404
     end
   end
