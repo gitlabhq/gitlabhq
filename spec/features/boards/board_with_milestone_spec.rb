@@ -57,6 +57,7 @@ describe 'Board with milestone', :feature, :js do
 
       expect(page).not_to have_css('.js-visual-token')
       expect(find('.tokens-container')).not_to have_content(milestone.title)
+      expect(page).to have_selector('.board', count: 2)
       expect(all('.board')[1]).to have_selector('.card', count: 2)
     end
 
