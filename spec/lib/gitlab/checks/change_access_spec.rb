@@ -12,8 +12,16 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
         ref: 'refs/heads/master'
       }
     end
+    let(:protocol) { 'ssh' }
 
-    subject { described_class.new(changes, project: project, user_access: user_access).exec }
+    subject do
+      described_class.new(
+        changes,
+        project: project,
+        user_access: user_access,
+        protocol: protocol
+      ).exec
+    end
 
     before { allow(user_access).to receive(:can_do_action?).with(:push_code).and_return(true) }
 
@@ -116,7 +124,15 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
 
         it 'returns an error if the rule denies tag deletion' do
           expect(subject.status).to be(false)
-          expect(subject.message).to eq('You can not delete a tag')
+          expect(subject.message).to eq('You cannot delete a tag')
+        end
+
+        context 'when tag is deleted in web UI' do
+          let(:protocol) { 'web' }
+
+          it 'ignores the push rule' do
+            expect(subject.status).to be(true)
+          end
         end
       end
 
@@ -179,7 +195,14 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
 
         context 'blacklisted files check' do
           let(:push_rule) { create(:push_rule, prevent_secrets: true) }
-          let(:checker) { described_class.new(changes, project: project, user_access: user_access) }
+          let(:checker) do
+            described_class.new(
+              changes,
+              project: project,
+              user_access: user_access,
+              protocol: protocol
+            )
+          end
 
           it "returns status true if there is no blacklisted files" do
             new_rev = nil
