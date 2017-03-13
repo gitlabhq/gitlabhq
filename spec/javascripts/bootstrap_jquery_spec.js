@@ -1,9 +1,9 @@
 /* eslint-disable space-before-function-paren, no-var */
 
-require('~/extensions/jquery');
+import '~/commons/bootstrap';
 
 (function() {
-  describe('jQuery extensions', function() {
+  describe('Bootstrap jQuery extensions', function() {
     describe('disable', function() {
       beforeEach(function() {
         return setFixtures('<input type="text" />');

@@ -1,9 +1,11 @@
-/* eslint-disable no-new*/
+/* eslint-disable no-new */
+/* global Flash */
+
 import d3 from 'd3';
 import _ from 'underscore';
 import statusCodes from '~/lib/utils/http_status';
 import '~/lib/utils/common_utils';
-import Flash from '~/flash';
+import '~/flash';
 
 const prometheusGraphsContainer = '.prometheus-graph';
 const metricsEndpoint = 'metrics.json';
