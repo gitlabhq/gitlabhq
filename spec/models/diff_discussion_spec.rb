@@ -1,7 +1,13 @@
 require 'spec_helper'
 
 describe DiffDiscussion, model: true do
-  # TODO: Test
+  subject { described_class.new([first_note, second_note, third_note]) }
+
+  let(:first_note) { create(:diff_note_on_merge_request) }
+  let(:second_note) { create(:diff_note_on_merge_request) }
+  let(:third_note) { create(:diff_note_on_merge_request) }
+
+# TODO: Test
 
   describe "#truncated_diff_lines" do
     let(:truncated_lines) { subject.truncated_diff_lines }

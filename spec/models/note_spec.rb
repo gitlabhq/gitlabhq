@@ -414,7 +414,7 @@ describe Note, models: true do
 
   describe '#to_discussion' do
     subject { create(:discussion_note_on_merge_request) }
-    let!(:note2) { create(:discussion_note_on_merge_request, project: subject.project, noteable: subject.noteable, in_reply_to_discussion_id: subject.discussion_id) }
+    let!(:note2) { create(:discussion_note_on_merge_request, project: subject.project, noteable: subject.noteable, in_reply_to: subject) }
 
     it "returns a discussion with just this note" do
       discussion = subject.to_discussion
@@ -429,7 +429,7 @@ describe Note, models: true do
     let!(:note2) { create(:diff_note_on_merge_request, project: note1.project, noteable: note1.noteable) }
 
     context 'when the note is part of a discussion' do
-      subject { create(:discussion_note_on_merge_request, project: note1.project, noteable: note1.noteable, in_reply_to_discussion_id: note1.discussion_id) }
+      subject { create(:discussion_note_on_merge_request, project: note1.project, noteable: note1.noteable, in_reply_to: note1) }
 
       it "returns the discussion this note is in" do
         discussion = subject.discussion
