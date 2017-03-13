@@ -560,7 +560,7 @@ describe 'Copy as GFM', feature: true, js: true do
 
     def verify(selector, gfm)
       html = html_for_selector(selector)
-      output_gfm = html_to_gfm(html, 'transformCodeSelection');
+      output_gfm = html_to_gfm(html, 'transformCodeSelection')
       expect(output_gfm.strip).to eq(gfm.strip)
     end
   end
