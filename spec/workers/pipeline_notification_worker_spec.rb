@@ -46,33 +46,16 @@ describe PipelineNotificationWorker do
       context 'with success pipeline' do
         let(:status) { 'success' }
         let(:email_subject) { "Pipeline ##{pipeline.id} has succeeded" }
-        let(:receivers) { [pusher, watcher] }
+        let(:receivers) { [pusher] }
 
-        it_behaves_like 'sending emails'
 
-        context 'with pipeline from someone else' do
-          let(:pusher) { create(:user) }
-          let(:watcher) { user }
-
-          context 'with success pipeline notification on' do
-            before do
-              watcher.global_notification_setting.
-                update(level: 'custom', success_pipeline: true)
-            end
-
-            it_behaves_like 'sending emails'
+        context 'with custom notification success pipeline on' do
+          before do
+            pusher.global_notification_setting
+              .update(level: 'custom', success_pipeline: true)
           end
 
-          context 'with success pipeline notification off' do
-            let(:receivers) { [pusher] }
-
-            before do
-              watcher.global_notification_setting.
-                update(level: 'custom', success_pipeline: false)
-            end
-
-            it_behaves_like 'sending emails'
-          end
+          it_behaves_like 'sending emails'
         end
 
         context 'with failed pipeline' do
@@ -87,8 +70,8 @@ describe PipelineNotificationWorker do
 
             context 'with failed pipeline notification on' do
               before do
-                watcher.global_notification_setting.
-                  update(level: 'custom', failed_pipeline: true)
+                watcher.global_notification_setting
+                  .update(level: 'custom', failed_pipeline: true)
               end
 
               it_behaves_like 'sending emails'
@@ -98,8 +81,8 @@ describe PipelineNotificationWorker do
               let(:receivers) { [pusher] }
 
               before do
-                watcher.global_notification_setting.
-                  update(level: 'custom', failed_pipeline: false)
+                watcher.global_notification_setting
+                  .update(level: 'custom', failed_pipeline: false)
               end
 
               it_behaves_like 'sending emails'
