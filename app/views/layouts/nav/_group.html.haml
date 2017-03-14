@@ -1,5 +1,4 @@
 - can_admin_group = can?(current_user, :admin_group, @group)
-- can_edit = can?(current_user, :admin_group, @group)
 .scrolling-tabs-container{ class: nav_control_class }
   .fade-left
     = icon('angle-left')
@@ -26,9 +25,8 @@
       = link_to group_group_members_path(@group), title: 'Members' do
         %span
           Members
-    - if current_user
-      - if can_admin_group || can_edit
-        = nav_link(path: %w[groups#projects groups#edit]) do
-          = link_to projects_group_path(@group), title: 'Settings' do
-            %span
-              Settings
+    - if current_user && can_admin_group
+      = nav_link(path: %w[groups#projects groups#edit]) do
+        = link_to projects_group_path(@group), title: 'Settings' do
+          %span
+            Settings

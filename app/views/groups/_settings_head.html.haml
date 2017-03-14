@@ -1,3 +1,5 @@
+- can_admin_group = can?(current_user, :admin_group, @group)
+- can_edit = can?(current_user, :admin_group, @group)
 = content_for :sub_nav do
   .scrolling-tabs-container.sub-nav-scroll
     = render 'shared/nav_scroll'
@@ -8,7 +10,8 @@
             %span
               Projects
 
-        = nav_link(path: 'groups#edit') do
-          = link_to edit_group_path(@group), title: 'Edit Group' do
-            %span
-              Edit Group
+        - if can_edit && can_admin_group
+          = nav_link(path: 'groups#edit') do
+            = link_to edit_group_path(@group), title: 'Edit Group' do
+              %span
+                Edit Group
