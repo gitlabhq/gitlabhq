@@ -66,9 +66,9 @@ class MergeRequestEntity < IssuableEntity
   end
 
   expose :target_branch_path do |merge_request|
-    namespace_project_commits_path(merge_request.project.namespace,
-                                   merge_request.project,
-                                   merge_request.target_branch)
+    namespace_project_branch_path(merge_request.target_project.namespace,
+                                  merge_request.target_project,
+                                  merge_request.target_branch)
   end
 
   expose :source_branch_path do |merge_request|

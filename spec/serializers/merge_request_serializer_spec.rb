@@ -34,11 +34,6 @@ describe MergeRequestSerializer do
                               :has_conflicts)
   end
 
-  context 'current_user attributes' do
-    it '' do
-    end
-  end
-
   it 'has merge_path' do
     expect(subject[:merge_path])
       .to eql("/#{resource.project.full_path}/merge_requests/#{resource.iid}/merge")
@@ -70,8 +65,8 @@ describe MergeRequestSerializer do
   end
 
   it 'has target_branch_path' do
-    expect(subject[:source_branch_path])
-      .to eql("/#{resource.project.full_path}/branches/#{resource.source_branch}")
+    expect(subject[:target_branch_path])
+      .to eql("/#{resource.target_project.full_path}/branches/#{resource.target_branch}")
   end
 
   it 'has source_branch_path' do
