@@ -1916,4 +1916,15 @@ describe Project, models: true do
       end
     end
   end
+
+  describe '#pipeline_status' do
+    let(:project) { create(:project) }
+    it 'builds a pipeline status' do
+      expect(project.pipeline_status).to be_a(Ci::PipelineStatus)
+    end
+
+    it 'hase a loaded pipeline status' do
+      expect(project.pipeline_status).to be_loaded
+    end
+  end
 end
