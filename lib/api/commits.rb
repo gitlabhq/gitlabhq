@@ -10,7 +10,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: /.+/ } do
       desc 'Get a project repository commits' do
         success Entities::RepoCommit
       end

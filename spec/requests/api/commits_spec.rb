@@ -178,7 +178,7 @@ describe API::Commits, api: true  do
     end
   end
 
-  describe "Create a commit with multiple files and actions" do
+  describe "POST /projects/:id/repository/commits" do
     let!(:url) { "/projects/#{project.id}/repository/commits" }
 
     it 'returns a 403 unauthorized for user without permissions' do
@@ -193,7 +193,7 @@ describe API::Commits, api: true  do
       expect(response).to have_http_status(400)
     end
 
-    context :create do
+    describe 'create' do
       let(:message) { 'Created file' }
       let!(:invalid_c_params) do
         {
@@ -237,8 +237,9 @@ describe API::Commits, api: true  do
         expect(response).to have_http_status(400)
       end
 
-      context 'with project path in URL' do
-        let(:url) { "/projects/#{project.full_path.gsub('/', '%2F')}/repository/commits" }
+      context 'with project path containing a dot in URL' do
+        let!(:user) { create(:user, username: 'foo.bar') }
+        let(:url) { "/projects/#{CGI.escape(project.full_path)}/repository/commits" }
 
         it 'a new file in project repo' do
           post api(url, user), valid_c_params
@@ -248,7 +249,7 @@ describe API::Commits, api: true  do
       end
     end
 
-    context :delete do
+    describe 'delete' do
       let(:message) { 'Deleted file' }
       let!(:invalid_d_params) do
         {
@@ -289,7 +290,7 @@ describe API::Commits, api: true  do
       end
     end
 
-    context :move do
+    describe 'move' do
       let(:message) { 'Moved file' }
       let!(:invalid_m_params) do
         {
@@ -334,7 +335,7 @@ describe API::Commits, api: true  do
       end
     end
 
-    context :update do
+    describe 'update' do
       let(:message) { 'Updated file' }
       let!(:invalid_u_params) do
         {
@@ -377,7 +378,7 @@ describe API::Commits, api: true  do
       end
     end
 
-    context "multiple operations" do
+    describe 'multiple operations' do
       let(:message) { 'Multiple actions' }
       let!(:invalid_mo_params) do
         {
