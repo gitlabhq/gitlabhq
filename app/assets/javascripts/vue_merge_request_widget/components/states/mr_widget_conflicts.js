@@ -20,7 +20,7 @@ export default {
     <div class="mr-widget-wrapper">
       <mr-widget-pipeline v-if="mr.pipeline" :mr="mr" />
       <div class="mr-widget-body">
-        <button class="btn btn-success btn-small" disabled="disabled">Merge</button>
+        <button class="btn btn-success btn-small" disabled="true">Merge</button>
         <span class="bold">
           There are merge conflicts.
           <span v-if="!mr.canMerge">Resolve these conflicts or ask someone with write access to this repository to merge it locally.</span>

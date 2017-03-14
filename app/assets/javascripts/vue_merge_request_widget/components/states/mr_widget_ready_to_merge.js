@@ -29,20 +29,20 @@ export default {
       return this.useCommitMessageWithDescription ? withoutDesc : withDesc;
     },
     mergeButtonClass() {
-      const defaultCls = 'btn btn-success';
-      const failedCls = `${defaultCls} btn-danger`;
-      const inActionCls = `${defaultCls} btn-info`;
+      const defaultClass = 'btn btn-success';
+      const failedClass = `${defaultClass} btn-danger`;
+      const inActionClass = `${defaultClass} btn-info`;
       const { pipeline } = this.mr;
 
       if (!pipeline) {
-        return defaultCls;
+        return defaultClass;
       } else if (this.mr.isPipelineActive) {
-        return inActionCls;
+        return inActionClass;
       } else if (this.mr.isPipelineFailed) {
-        return failedCls;
+        return failedClass;
       }
 
-      return defaultCls;
+      return defaultClass;
     },
     mergeButtonText() {
       if (this.mr.isPipelineActive) {
@@ -55,7 +55,7 @@ export default {
       return this.mr.isPipelineActive && !this.mr.onlyAllowMergeIfPipelineSucceeds;
     },
     isMergeButtonDisabled() {
-      const { mr, commitMessage } = this;
+      const { commitMessage } = this;
       return !commitMessage.length || !this.isMergeAllowed();
     },
   },
@@ -73,8 +73,7 @@ export default {
     },
     handleMergeButtonClick(mergeWhenBuildSucceeds) {
       if (mergeWhenBuildSucceeds === undefined) {
-        const { isPipelineActive } = this.mr;
-        mergeWhenBuildSucceeds = isPipelineActive; // eslint-disable-line no-param-reassign
+        mergeWhenBuildSucceeds = this.mr.isPipelineActive; // eslint-disable-line no-param-reassign
       }
 
       this.setToMergeWhenBuildSucceeds = mergeWhenBuildSucceeds ? 1 : 0;
@@ -101,7 +100,7 @@ export default {
           <button
             v-if="shouldShowMergeOptionsDropdown"
             class="btn btn-info dropdown-toggle" data-toggle="dropdown">
-            <i class="fa fa-caret-down"></i>
+            <i class="fa fa-caret-down" aria-hidden="true"></i>
             <span class="sr-only">Select Merge Moment</span>
           </button>
           <ul
@@ -111,14 +110,14 @@ export default {
               <a
                 @click.prevent="handleMergeButtonClick(true)"
                 class="merge_when_pipeline_succeeds" href="#">
-                <i class="fa fa-check fa-fw"></i> Merge when pipeline succeeds
+                <i class="fa fa-check fa-fw" aria-hidden="true"></i> Merge when pipeline succeeds
               </a>
             </li>
             <li>
               <a
                 @click.prevent="handleMergeButtonClick(false)"
                 class="accept-merge-request" href="#">
-                <i class="fa fa-warning fa-fw"></i> Merge immediately
+                <i class="fa fa-warning fa-fw" aria-hidden="true"></i> Merge immediately
               </a>
             </li>
           </ul>
