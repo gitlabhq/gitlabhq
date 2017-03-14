@@ -43,23 +43,42 @@ describe API::Pipelines do
         end
 
         context 'when scope is passed' do
-          %w[running pending finished branches tags].each do |target|
+          %w[running pending].each do |target|
             it "returns only scope=#{target} pipelines" do
               get api("/projects/#{project.id}/pipelines?scope=#{target}", user)
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
               expect(json_response.count).to be > 0
-              if target == 'running' || target == 'pending'
-                json_response.each { |r| expect(r['status']).to eq(target) }
-              elsif target == 'finished'
-                json_response.each { |r| expect(r['status']).to be_in(%w[success failed canceled]) }
-              elsif target == 'branches'
-                expect(json_response.last['sha']).to eq(Ci::Pipeline.where(tag: false).last.sha)
-              elsif target == 'tags'
-                expect(json_response.last['sha']).to eq(Ci::Pipeline.where(tag: true).last.sha)
-              end
+              json_response.each { |r| expect(r['status']).to eq(target) }
             end
+          end
+
+          it "returns only scope=finished pipelines" do
+            get api("/projects/#{project.id}/pipelines?scope=finished", user)
+
+            expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
+            expect(json_response.count).to be > 0
+            json_response.each { |r| expect(r['status']).to be_in(%w[success failed canceled]) }
+          end
+
+          it "returns only scope=branches pipelines" do
+            get api("/projects/#{project.id}/pipelines?scope=branches", user)
+
+            expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
+            expect(json_response.count).to be > 0
+            expect(json_response.last['sha']).to eq(Ci::Pipeline.where(tag: false).last.sha)
+          end
+
+          it "returns only scope=tags pipelines" do
+            get api("/projects/#{project.id}/pipelines?scope=tags", user)
+
+            expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
+            expect(json_response.count).to be > 0
+            expect(json_response.last['sha']).to eq(Ci::Pipeline.where(tag: true).last.sha)
           end
         end
 
