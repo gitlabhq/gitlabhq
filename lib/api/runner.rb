@@ -47,6 +47,17 @@ module API
         authenticate_runner!
         Ci::Runner.find_by_token(params[:token]).destroy
       end
+
+      desc 'Validates authentication credentials' do
+        http_codes [[200, 'Credentials are valid'], [403, 'Forbidden']]
+      end
+      params do
+        requires :token, type: String, desc: %q(Runner's authentication token)
+      end
+      post '/verify' do
+        authenticate_runner!
+        status 200
+      end
     end
 
     resource :jobs do

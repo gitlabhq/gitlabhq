@@ -152,6 +152,34 @@ describe API::Runner do
         end
       end
     end
+
+    describe 'POST /api/v4/runners/verify' do
+      let(:runner) { create(:ci_runner) }
+
+      context 'when no token is provided' do
+        it 'returns 400 error' do
+          post api('/runners/verify')
+
+          expect(response).to have_http_status :bad_request
+        end
+      end
+
+      context 'when invalid token is provided' do
+        it 'returns 403 error' do
+          post api('/runners/verify'), token: 'invalid-token'
+
+          expect(response).to have_http_status 403
+        end
+      end
+
+      context 'when valid token is provided' do
+        it 'deletes Runner' do
+          post api('/runners/verify'), token: runner.token
+
+          expect(response).to have_http_status 200
+        end
+      end
+    end
   end
 
   describe '/api/v4/jobs' do
