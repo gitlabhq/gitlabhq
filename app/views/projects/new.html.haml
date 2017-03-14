@@ -123,15 +123,8 @@
     $(".btn_import_gitlab_project").attr("href", _href + '?namespace_id=' + $("#project_namespace_id").val() + '&path=' + $("#project_path").val());
   });
 
-  $('.btn_import_gitlab_project').attr('disabled',true)
+  $('.btn_import_gitlab_project').attr('disabled', $('#project_path').val().trim().length === 0);
   $('.import_gitlab_project').attr('title', 'Project path and name required.');
-
-  $('.import_gitlab_project').click(function( event ) {
-    if($('.btn_import_gitlab_project').attr('disabled')) {
-      event.preventDefault();
-      new Flash("Please enter path and name for the project to be imported to.");
-    }
-  });
 
   $('#new_project').submit(function(){
     var $path = $('#project_path');
@@ -139,7 +132,7 @@
   });
 
   $('#project_path').keyup(function(){
-    if($(this).val().length !=0) {
+    if($(this).val().trim().length !== 0) {
       $('.btn_import_gitlab_project').attr('disabled', false);
       $('.import_gitlab_project').attr('title','');
       $(".flash-container").html("")
