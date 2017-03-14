@@ -3,6 +3,7 @@
 /* global BoardService */
 
 import FilteredSearchBoards from './filtered_search_boards';
+import eventHub from './eventhub';
 
 window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
@@ -78,10 +79,10 @@ $(() => {
       this.filterManager = new FilteredSearchBoards(Store.filter, true, [(this.milestoneTitle ? 'milestone' : null)]);
 
       // Listen for updateTokens event
-      this.$on('updateTokens', this.updateTokens);
+      eventHub.$on('updateTokens', this.updateTokens);
     },
     beforeDestroy() {
-      this.$off('updateTokens', this.updateTokens);
+      eventHub.$off('updateTokens', this.updateTokens);
     },
     mounted () {
       Store.disabled = this.disabled;
