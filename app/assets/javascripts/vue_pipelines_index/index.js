@@ -7,13 +7,10 @@ require('../vue_shared/vue_resource_interceptor');
 require('./pipelines');
 
 $(() => new Vue({
-  el: document.querySelector('.vue-pipelines-index'),
+  el: document.querySelector('#pipelines-list-vue'),
 
   data() {
-    const project = document.querySelector('.pipelines');
-
     return {
-      scope: project.dataset.url,
       store: new gl.PipelineStore(),
     };
   },
@@ -21,9 +18,6 @@ $(() => new Vue({
     'vue-pipelines': gl.VuePipelines,
   },
   template: `
-    <vue-pipelines
-      :scope="scope"
-      :store="store">
-    </vue-pipelines>
+    <vue-pipelines :store="store"/>
   `,
 }));
