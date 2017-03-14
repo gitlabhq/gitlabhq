@@ -10,6 +10,7 @@ import NothingToMergeState from './components/states/mr_widget_nothing_to_merge'
 import MissingBranchState from './components/states/mr_widget_missing_branch';
 import NotAllowedState from './components/states/mr_widget_not_allowed';
 import ReadyToMergeState from './components/states/mr_widget_ready_to_merge';
+import UnresolvedDiscussionsState from './components/states/mr_widget_unresolved_discussions';
 import CheckingState from './components/states/mr_widget_checking';
 import stateToComponentMap from './stores/state_to_component_map';
 import MRWidgetStore from './stores/mr_widget_store';
@@ -44,6 +45,7 @@ const mrWidgetOptions = () => ({
     'mr-widget-missing-branch': MissingBranchState,
     'mr-widget-ready-to-merge': ReadyToMergeState,
     'mr-widget-checking': CheckingState,
+    'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
   },
   template: `
     <div class="mr-state-widget">

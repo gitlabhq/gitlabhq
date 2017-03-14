@@ -126,4 +126,11 @@ class MergeRequestEntity < IssuableEntity
   expose :only_allow_merge_if_pipeline_succeeds do |merge_request|
     merge_request.project.only_allow_merge_if_pipeline_succeeds?
   end
+
+  # TODO: @oswaldo, please verify this
+  expose :create_issue_to_resolve_discussions_path do |merge_request|
+    new_namespace_project_issue_path(merge_request.project.namespace,
+                                     merge_request.project,
+                                     merge_request_for_resolving_discussions: merge_request.iid)
+  end
 end

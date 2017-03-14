@@ -10,4 +10,5 @@ export default {
   notAllowedToMerge: 'mr-widget-not-allowed',
   archived: 'mr-widget-archived',
   checking: 'mr-widget-checking',
+  unresolvedDiscussions: 'mr-widget-unresolved-discussions',
 };

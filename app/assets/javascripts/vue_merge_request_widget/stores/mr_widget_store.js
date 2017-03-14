@@ -35,11 +35,13 @@ export default class MergeRequestStore {
     this.mergePath = data.merge_path;
     this.emailPatchesPath = data.email_patches_path;
     this.plainDiffPath = data.plain_diff_path;
+    this.createIssueToResolveDiscussionsPath = data.create_issue_to_resolve_discussions_path;
 
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
     this.canRevert = currentUser.can_revert || false;
     this.canResolveConflicts = currentUser.can_resolve_conflicts || false;
     this.canMerge = currentUser.can_merge || false;
+    this.canCreateIssue = currentUser.can_create_issue || false;
     this.canUpdateMergeRequest = currentUser.can_update_merge_request || false;
     this.canResolveConflictsInUI = data.conflicts_can_be_resolved_in_ui || false;
     this.canBeCherryPicked = data.can_be_cherry_picked || false;
@@ -60,16 +62,18 @@ export default class MergeRequestStore {
         this.state = 'missingBranch';
       } else if (data.has_no_commits) {
         this.state = 'nothingToMerge';
+      } else if (this.mergeStatus === 'unchecked') {
+        this.state = 'checking';
       } else if (data.has_conflicts) {
         this.state = 'conflicts';
       } else if (data.work_in_progress) {
         this.state = 'workInProgress';
       } else if (!this.canMerge) {
         this.state = 'notAllowedToMerge';
+      } else if (!this.mergeable_discussions_state) {
+        this.state = 'unresolvedDiscussions';
       } else if (this.canBeMerged) {
         this.state = 'readyToMerge';
-      } else if (this.mergeStatus === 'unchecked') {
-        this.state = 'checking';
       }
     } else {
       switch (data.state) {
