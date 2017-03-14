@@ -28,7 +28,7 @@ describe PipelinesFinder do
       end
 
       it 'orders in descending order on ID' do
-        expect(subject).to match_array(Ci::Pipeline.order(id: :desc))
+        expect(subject).to eq(Ci::Pipeline.order(id: :desc))
       end
     end
 
@@ -209,7 +209,7 @@ describe PipelinesFinder do
         let(:params) { { order_by: 'created_at', sort: 'asc' } }
 
         it 'sorts by created_at asc' do
-          expect(subject).to match_array(Ci::Pipeline.order(created_at: :asc))
+          expect(subject).to eq(Ci::Pipeline.order(created_at: :asc))
         end
       end
 
@@ -217,7 +217,7 @@ describe PipelinesFinder do
         let(:params) { { order_by: 'created_at', sort: 'desc' } }
 
         it 'sorts by created_at desc' do
-          expect(subject).to match_array(Ci::Pipeline.order(created_at: :desc))
+          expect(subject).to eq(Ci::Pipeline.order(created_at: :desc))
         end
       end
 
@@ -225,7 +225,7 @@ describe PipelinesFinder do
         let(:params) { { order_by: 'invalid_column', sort: 'desc' } }
 
         it 'sorts by default' do
-          expect(subject).to match_array(Ci::Pipeline.order(id: :desc))
+          expect(subject).to eq(Ci::Pipeline.order(id: :desc))
         end
       end
 
@@ -233,7 +233,7 @@ describe PipelinesFinder do
         let(:params) { { order_by: 'created_at', sort: 'invalid_sort' } }
 
         it 'sorts by default' do
-          expect(subject).to match_array(Ci::Pipeline.order(id: :desc))
+          expect(subject).to eq(Ci::Pipeline.order(id: :desc))
         end
       end
     end
