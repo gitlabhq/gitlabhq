@@ -136,6 +136,7 @@ production: &base
   ## Build Artifacts
   artifacts:
     enabled: true
+    object_store: false
     # The location where build artifacts are stored (default: shared/artifacts).
     # path: shared/artifacts
 
