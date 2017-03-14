@@ -37,6 +37,8 @@ module Ci
     end
 
     def load_from_commit
+      return unless commit
+
       self.sha = commit.sha
       self.status = commit.status
     end

@@ -79,6 +79,14 @@ describe Ci::PipelineStatus do
       expect(pipeline_status.status).to eq('success')
       expect(pipeline_status.sha).to eq(project.commit.sha)
     end
+
+    it "doesn't fail for an empty project" do
+      status_for_empty_commit = described_class.new(create(:empty_project))
+
+      status_for_empty_commit.load_status
+
+      expect(status_for_empty_commit).to be_loaded
+    end
   end
 
   describe "#store_in_cache", :redis do
