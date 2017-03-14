@@ -1,5 +1,5 @@
-const Store = require('~/environments/stores/environments_store');
-const { environmentsList, serverData } = require('./mock_data');
+import Store from '~/environments/stores/environments_store';
+import { environmentsList, serverData } from './mock_data';
 
 (() => {
   describe('Store', () => {

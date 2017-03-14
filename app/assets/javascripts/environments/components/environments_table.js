@@ -1,11 +1,9 @@
 /**
  * Render environments table.
  */
-const Vue = require('vue');
-const EnvironmentItem = require('./environment_item');
+import EnvironmentItem from './environment_item';
 
-module.exports = Vue.component('environment-table-component', {
-
+export default {
   components: {
     'environment-item': EnvironmentItem,
   },
@@ -28,6 +26,11 @@ module.exports = Vue.component('environment-table-component', {
       required: false,
       default: false,
     },
+
+    service: {
+      type: Object,
+      required: true,
+    },
   },
 
   template: `
@@ -48,9 +51,10 @@ module.exports = Vue.component('environment-table-component', {
           <tr is="environment-item"
             :model="model"
             :can-create-deployment="canCreateDeployment"
-            :can-read-environment="canReadEnvironment"></tr>
+            :can-read-environment="canReadEnvironment"
+            :service="service"></tr>
         </template>
       </tbody>
     </table>
   `,
-});
+};

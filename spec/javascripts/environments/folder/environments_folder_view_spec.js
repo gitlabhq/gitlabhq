@@ -1,7 +1,7 @@
-const Vue = require('vue');
-require('~/flash');
-const EnvironmentsFolderViewComponent = require('~/environments/folder/environments_folder_view');
-const { environmentsList } = require('../mock_data');
+import Vue from 'vue';
+import '~/flash';
+import EnvironmentsFolderViewComponent from '~/environments/folder/environments_folder_view';
+import { environmentsList } from '../mock_data';
 
 describe('Environments Folder View', () => {
   preloadFixtures('static/environments/environments_folder_view.html.raw');

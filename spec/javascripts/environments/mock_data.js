@@ -1,4 +1,4 @@
-const environmentsList = [
+export const environmentsList = [
   {
     name: 'DEV',
     size: 1,
@@ -30,7 +30,7 @@ const environmentsList = [
   },
 ];
 
-const serverData = [
+export const serverData = [
   {
     name: 'DEV',
     size: 1,
@@ -67,7 +67,7 @@ const serverData = [
   },
 ];
 
-const environment = {
+export const environment = {
   name: 'DEV',
   size: 1,
   latest: {
@@ -83,10 +83,4 @@ const environment = {
     created_at: '2017-01-31T10:53:46.894Z',
     updated_at: '2017-01-31T10:53:46.894Z',
   },
-};
-
-module.exports = {
-  environmentsList,
-  environment,
-  serverData,
 };
