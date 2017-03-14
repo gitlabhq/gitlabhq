@@ -70,7 +70,7 @@ export default class MergeRequestStore {
         this.state = 'workInProgress';
       } else if (!this.canMerge) {
         this.state = 'notAllowedToMerge';
-      } else if (!this.mergeable_discussions_state) {
+      } else if (this.mergeable_discussions_state === false) {
         this.state = 'unresolvedDiscussions';
       } else if (this.canBeMerged) {
         this.state = 'readyToMerge';
