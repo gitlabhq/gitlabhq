@@ -193,15 +193,15 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def rendered_title
     digest = hexdigest(@issue.title)
-    if digest == params.fetch(:digest)
-      response = { changed: false }
-    else
-      response = {
-        changed: true,
-        digest: digest,
-        title: view_context.markdown_field(@issue, :title)
-      }
-    end
+    response = if digest == params.fetch(:digest)
+                 { changed: false }
+               else
+                 {
+                   changed: true,
+                   digest: digest,
+                   title: view_context.markdown_field(@issue, :title)
+                 }
+               end
 
     respond_to do |format|
       format.json do
