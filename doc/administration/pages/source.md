@@ -1,5 +1,9 @@
 # GitLab Pages administration for source installations
 
+>**Note:**
+Before attempting to enable GitLab Pages, first make sure you have
+[installed GitLab](../../install/installation.md) successfully.
+
 This is the documentation for configuring a GitLab Pages when you have installed
 GitLab from source and not using the Omnibus packages.
 
@@ -13,7 +17,33 @@ Pages to the latest supported version.
 
 ## Overview
 
-[Read the Omnibus overview section.](index.md#overview)
+GitLab Pages makes use of the [GitLab Pages daemon], a simple HTTP server
+written in Go that can listen on an external IP address and provide support for
+custom domains and custom certificates. It supports dynamic certificates through
+SNI and exposes pages using HTTP2 by default.
+You are encouraged to read its [README][pages-readme] to fully understand how
+it works.
+
+---
+
+In the case of [custom domains](#custom-domains) (but not
+[wildcard domains](#wildcard-domains)), the Pages daemon needs to listen on
+ports `80` and/or `443`. For that reason, there is some flexibility in the way
+which you can set it up:
+
+1. Run the Pages daemon in the same server as GitLab, listening on a secondary IP.
+1. Run the Pages daemon in a separate server. In that case, the
+   [Pages path](#change-storage-path) must also be present in the server that
+   the Pages daemon is installed, so you will have to share it via network.
+1. Run the Pages daemon in the same server as GitLab, listening on the same IP
+   but on different ports. In that case, you will have to proxy the traffic with
+   a loadbalancer. If you choose that route note that you should use TCP load
+   balancing for HTTPS. If you use TLS-termination (HTTPS-load balancing) the
+   pages will not be able to be served with user provided certificates. For
+   HTTP it's OK to use HTTP or TCP load balancing.
+
+In this document, we will proceed assuming the first option. If you are not
+supporting custom domains a secondary IP is not needed.
 
 ## Prerequisites
 
@@ -75,7 +105,7 @@ The Pages daemon doesn't listen to the outside world.
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
     cd gitlab-pages
-    sudo -u git -H git checkout v0.2.4
+    sudo -u git -H git checkout v0.3.2
     sudo -u git -H make
     ```
 
@@ -100,14 +130,21 @@ The Pages daemon doesn't listen to the outside world.
        https: false
      ```
 
-1. Copy the `gitlab-pages-ssl` Nginx configuration file:
+1. Edit `/etc/default/gitlab` and set `gitlab_pages_enabled` to `true` in
+   order to enable the pages daemon. In `gitlab_pages_options` the
+   `-pages-domain` must match the `host` setting that you set above.
 
-    ```bash
-    sudo cp lib/support/nginx/gitlab-pages-ssl /etc/nginx/sites-available/gitlab-pages-ssl.conf
-    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages-ssl.conf
+    ```
+    gitlab_pages_enabled=true
+    gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090
     ```
 
-      Replace `gitlab-pages-ssl` with `gitlab-pages` if you are not using SSL.
+1. Copy the `gitlab-pages` Nginx configuration file:
+
+    ```bash
+    sudo cp lib/support/nginx/gitlab-pages /etc/nginx/sites-available/gitlab-pages.conf
+    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages.conf
+    ```
 
 1. Restart NGINX
 1. [Restart GitLab][restart]
@@ -131,7 +168,7 @@ outside world.
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
     cd gitlab-pages
-    sudo -u git -H git checkout v0.2.4
+    sudo -u git -H git checkout v0.3.2
     sudo -u git -H make
     ```
 
@@ -149,6 +186,17 @@ outside world.
        https: true
      ```
 
+1. Edit `/etc/default/gitlab` and set `gitlab_pages_enabled` to `true` in
+   order to enable the pages daemon. In `gitlab_pages_options` the
+   `-pages-domain` must match the `host` setting that you set above.
+   The `-root-cert` and `-root-key` settings are the wildcard TLS certificates
+   of the `example.io` domain:
+
+    ```
+    gitlab_pages_enabled=true
+    gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090 -root-cert /path/to/example.io.crt -root-key /path/to/example.io.key
+    ```
+
 1. Copy the `gitlab-pages-ssl` Nginx configuration file:
 
     ```bash
@@ -156,11 +204,8 @@ outside world.
     sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages-ssl.conf
     ```
 
-      Replace `gitlab-pages-ssl` with `gitlab-pages` if you are not using SSL.
-
 1. Restart NGINX
 1. [Restart GitLab][restart]
-
 
 ## Advanced configuration
 
@@ -189,7 +234,7 @@ world. Custom domains are supported, but no TLS.
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
     cd gitlab-pages
-    sudo -u git -H git checkout v0.2.4
+    sudo -u git -H git checkout v0.3.2
     sudo -u git -H make
     ```
 
@@ -224,11 +269,9 @@ world. Custom domains are supported, but no TLS.
 1. Copy the `gitlab-pages-ssl` Nginx configuration file:
 
     ```bash
-    sudo cp lib/support/nginx/gitlab-pages-ssl /etc/nginx/sites-available/gitlab-pages-ssl.conf
-    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages-ssl.conf
+    sudo cp lib/support/nginx/gitlab-pages /etc/nginx/sites-available/gitlab-pages.conf
+    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages.conf
     ```
-
-      Replace `gitlab-pages-ssl` with `gitlab-pages` if you are not using SSL.
 
 1. Edit all GitLab related configs in `/etc/nginx/site-available/` and replace
    `0.0.0.0` with `1.1.1.1`, where `1.1.1.1` the primary IP where GitLab
@@ -257,7 +300,7 @@ world. Custom domains and TLS are supported.
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
     cd gitlab-pages
-    sudo -u git -H git checkout v0.2.4
+    sudo -u git -H git checkout v0.3.2
     sudo -u git -H make
     ```
 
@@ -299,8 +342,6 @@ world. Custom domains and TLS are supported.
     sudo cp lib/support/nginx/gitlab-pages-ssl /etc/nginx/sites-available/gitlab-pages-ssl.conf
     sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages-ssl.conf
     ```
-
-      Replace `gitlab-pages-ssl` with `gitlab-pages` if you are not using SSL.
 
 1. Edit all GitLab related configs in `/etc/nginx/site-available/` and replace
    `0.0.0.0` with `1.1.1.1`, where `1.1.1.1` the primary IP where GitLab
@@ -392,5 +433,6 @@ than GitLab to prevent XSS attacks.
 [pages-userguide]: ../../user/project/pages/index.md
 [reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart]: ../restart_gitlab.md#installations-from-source
-[gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.2.4
+[gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.3.2
+[gl-example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/support/init.d/gitlab.default.example
 [shared runners]: ../../ci/runners/README.md
