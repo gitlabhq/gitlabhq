@@ -124,18 +124,12 @@
               return;
             }
 
-            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar') &&
-              !$dropdown.closest('.add-issues-modal').length) {
-              boardsStore = gl.issueBoards.BoardsStore.state.filters;
-            } else if ($dropdown.closest('.add-issues-modal').length) {
+            if ($dropdown.closest('.add-issues-modal').length) {
               boardsStore = gl.issueBoards.ModalStore.store.filter;
             }
 
             if (boardsStore) {
               boardsStore[$dropdown.data('field-name')] = selected.name;
-              if (!$dropdown.closest('.add-issues-modal').length) {
-                gl.issueBoards.BoardsStore.updateFiltersUrl();
-              }
               e.preventDefault();
             } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
               if (selected.name != null) {

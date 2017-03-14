@@ -51,7 +51,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
     end
 
     it 'does not show tooltip on add issues button' do
-      button = page.find('.issue-boards-search button', text: 'Add issues')
+      button = page.find('.filter-dropdown-container button', text: 'Add issues')
 
       expect(button[:title]).not_to eq("Please add a list to your board first")
     end
