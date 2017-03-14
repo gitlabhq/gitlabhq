@@ -63,7 +63,7 @@ namespace :gitlab do
       puts "URL:\t\t#{Gitlab.config.gitlab.url}"
       puts "HTTP Clone URL:\t#{http_clone_url}"
       puts "SSH Clone URL:\t#{ssh_clone_url}"
-      puts "Elasticsearch:\t#{Gitlab.config.elasticsearch.enabled ? "yes".color(:green) : "no"}"
+      puts "Elasticsearch:\t#{current_application_settings.elasticsearch_indexing? ? "yes".color(:green) : "no"}"
       puts "Geo:\t\t#{Gitlab::Geo.enabled? ? "yes".color(:green) : "no"}"
       puts "Geo node:\t#{geo_node_type}" if Gitlab::Geo.enabled?
       puts "Using LDAP:\t#{Gitlab.config.ldap.enabled ? "yes".color(:green) : "no"}"

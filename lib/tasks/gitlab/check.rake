@@ -28,7 +28,7 @@ namespace :gitlab do
       check_ruby_version
       check_git_version
       check_active_users
-      check_elasticsearch if ApplicationSetting.current.elasticsearch_indexing?
+      check_elasticsearch if current_application_settings.elasticsearch_indexing?
 
       finished_checking "GitLab"
     end
@@ -1076,7 +1076,7 @@ namespace :gitlab do
   end
 
   def check_elasticsearch
-    client = Gitlab::Elastic::Client.build(ApplicationSetting.current.elasticsearch_config)
+    client = Gitlab::Elastic::Client.build(current_application_settings.elasticsearch_config)
 
     print "Elasticsearch version 5.1.x? ... "
 
