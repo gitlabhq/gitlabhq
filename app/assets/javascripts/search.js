@@ -47,7 +47,7 @@
           fields: ['name']
         },
         data: function(term, callback) {
-          return Api.projects(term, 'id', function(data) {
+          return Api.projects(term, { order_by: 'id' }, function(data) {
             data.unshift({
               name_with_namespace: 'Any'
             });
