@@ -17,7 +17,7 @@ class MigrateProjectStatistics < ActiveRecord::Migration
   end
 
   def down
-    add_column_with_default :projects, :repository_size, :float, default: 0.0
-    add_column_with_default :projects, :commit_count, :integer, default: 0
+    add_column :projects, :repository_size, :float, default: 0.0
+    add_column :projects, :commit_count, :integer, default: 0
   end
 end
