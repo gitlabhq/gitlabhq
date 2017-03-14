@@ -16,6 +16,7 @@ class MigrateProjectStatistics < ActiveRecord::Migration
     remove_column :projects, :commit_count
   end
 
+  # rubocop: disable Migration/AddColumn
   def down
     add_column :projects, :repository_size, :float, default: 0.0
     add_column :projects, :commit_count, :integer, default: 0
