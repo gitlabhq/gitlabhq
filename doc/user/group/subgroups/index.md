@@ -2,7 +2,7 @@
 
 > [Introduced][ce-2772] in GitLab 9.0.
 
-With subgroups (also called nested groups or hierarchical groups) you can have
+With subgroups (aka nested groups or hierarchical groups) you can have
 up to 20 levels of nested groups, which among other things can help you to:
 
 - **Separate internal / external organizations.** Since every group
@@ -16,50 +16,45 @@ up to 20 levels of nested groups, which among other things can help you to:
 ## Overview
 
 A group can have many subgroups inside it, and at the same time a group can have
-only 1 parent group. It resembles a directory behavior, like the one below:
+only 1 parent group. It resembles a directory behavior or a nested items list:
 
-```
-group0
-└── subgroup01a
-└── subgroup01b
-    └── subgroup02
-        └── subgroup03
-```
+- Group 1
+  - Group 1.1
+  - Group 1.2
+      - Group 1.2.1
+      - Group 1.2.2
+          - Group 1.2.2.1
 
 In a real world example, imagine maintaining a GNU/Linux distribution with the
 first group being the name of the distro and subsequent groups split like:
 
-```
-Organization Group - GNU/Linux distro
-  └── Category Subgroup - Packages
-      └── project - Package01
-      └── project - Package02
-  └── Category Subgroup - Software
-      └── project - Core
-      └── project - CLI
-      └── project - Android app
-      └── project - iOS app
-  └── Category Subgroup - Infra tools
-      └── project - Ansible playbooks
-```
+- Organization Group - GNU/Linux distro
+  - Category Subgroup - Packages
+      - (project) Package01
+      - (project) Package02
+  - Category Subgroup - Software
+      - (project) Core
+      - (project) CLI
+      - (project) Android app
+      - (project) iOS app
+  - Category Subgroup - Infra tools
+      - (project) Ansible playbooks
 
 Another example of GitLab as a company would be the following:
 
-```
-Organization Group - GitLab
-  └── Category Subroup - Marketing
-      └── project - Design
-      └── project - General
-  └── Category Subgroup - Software
-      └── project - GitLab CE
-      └── project - GitLab EE
-      └── project - Omnibus GitLab
-      └── project - GitLab Runner
-      └── project - GitLab Pages daemon
-  └── Category Subgroup - Infra tools
-      └── project - Chef cookbooks
-  └── Category Subgroup - Executive team
-```
+- Organization Group - GitLab
+  - Category Subroup - Marketing
+      - (project) Design
+      - (project) General
+  - Category Subgroup - Software
+      - (project) GitLab CE
+      - (project) GitLab EE
+      - (project) Omnibus GitLab
+      - (project) GitLab Runner
+      - (project) GitLab Pages daemon
+  - Category Subgroup - Infra tools
+      - (project) Chef cookbooks
+  - Category Subgroup - Executive team
 
 ---
 
@@ -131,18 +126,15 @@ From the image above, we can deduct the following things:
 >**Note:**
 You need to be an Owner of a group in order to be able to add members to it.
 
-To override the membership of an ancestor group, simply add the user in the new
-subgroup again, but with different permissions.
+To override a user's membership of an ancestor group (the first group they were
+added to), simply add the user in the new subgroup again, but with different
+permissions.
 
-For example, if User0 was first added to group `one/two` with Developer
+For example, if User0 was first added to group `group-1/group-1-1` with Developer
 permissions, then they will inherit those permissions in every other subgroup
-of `one/two`. To give them Master access to `one/two/three`, you would add them
-again in that group as Master. Removing them from that group, the permissions
-will fallback to those of the ancestor group.
-
-Note that the higher permission wins, so if in the above example the permissions
-where reversed, User0 would have Master access to all groups, even to the one
-that was explicitly given Developer access.
+of `group-1/group-1-1`. To give them Master access to `group-1/group-1-1/group1-1-1`,
+you would add them again in that group as Master. Removing them from that group,
+the permissions will fallback to those of the ancestor group.
 
 ## Mentioning subgroups
 
