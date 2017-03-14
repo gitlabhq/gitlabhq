@@ -1,16 +1,16 @@
 /* eslint-disable no-param-reassign, no-new */
 /* global Flash */
+import EnvironmentsService from '../services/environments_service';
+import EnvironmentTable from '../components/environments_table';
+import EnvironmentsStore from '../stores/environments_store';
 
 const Vue = window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
-const EnvironmentsService = require('../services/environments_service');
-const EnvironmentTable = require('../components/environments_table');
-const EnvironmentsStore = require('../stores/environments_store');
 require('../../vue_shared/components/table_pagination');
 require('../../lib/utils/common_utils');
 require('../../vue_shared/vue_resource_interceptor');
 
-module.exports = Vue.component('environment-folder-view', {
+export default Vue.component('environment-folder-view', {
 
   components: {
     'environment-table': EnvironmentTable,
@@ -88,11 +88,11 @@ module.exports = Vue.component('environment-folder-view', {
 
     const endpoint = `${this.endpoint}?scope=${scope}&page=${pageNumber}`;
 
-    const service = new EnvironmentsService(endpoint);
+    this.service = new EnvironmentsService(endpoint);
 
     this.isLoading = true;
 
-    return service.get()
+    return this.service.get()
       .then(resp => ({
         headers: resp.headers,
         body: resp.json(),
@@ -168,13 +168,12 @@ module.exports = Vue.component('environment-folder-view', {
             :can-read-environment="canReadEnvironmentParsed"
             :play-icon-svg="playIconSvg"
             :terminal-icon-svg="terminalIconSvg"
-            :commit-icon-svg="commitIconSvg">
-          </environment-table>
+            :commit-icon-svg="commitIconSvg"
+            :service="service"/>
 
           <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
             :change="changePage"
-            :pageInfo="state.paginationInformation">
-          </table-pagination>
+            :pageInfo="state.paginationInformation"/>
         </div>
       </div>
     </div>
