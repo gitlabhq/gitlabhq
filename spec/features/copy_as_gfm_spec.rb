@@ -579,10 +579,15 @@ describe 'Copy as GFM', feature: true, js: true do
   def html_to_gfm(html, transformer = 'transformGFMSelection')
     js = <<-JS.strip_heredoc
       (function(html) {
+        var transformer = window.gl.CopyAsGFM[#{transformer.inspect}];
+
         var node = document.createElement('div');
         node.innerHTML = html;
-        var transformer = window.gl.CopyAsGFM[#{transformer.inspect}];
-        return window.gl.CopyAsGFM.selectionToGFM(node, transformer);
+
+        node = transformer(node);
+        if (!node) return null;
+
+        return window.gl.CopyAsGFM.nodeToGFM(node);
       })("#{escape_javascript(html)}")
     JS
     page.evaluate_script(js)

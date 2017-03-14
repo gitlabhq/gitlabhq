@@ -343,13 +343,6 @@ class CopyAsGFM {
     return codeEl;
   }
 
-  static selectionToGFM(documentFragment, transformer) {
-    const el = transformer(documentFragment.cloneNode(true));
-    if (!el) return null;
-
-    return CopyAsGFM.nodeToGFM(el);
-  }
-
   static nodeToGFM(node) {
     if (node.nodeType === Node.COMMENT_NODE) {
       return '';
