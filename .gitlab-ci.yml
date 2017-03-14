@@ -227,7 +227,8 @@ rake db:rollback:
   <<: *use-db
   <<: *dedicated-runner
   script:
-    - bundle exec rake db:rollback db:migrate STEP=120
+    - bundle exec rake db:rollback STEP=120
+    - bundle exec rake db:migrate
 
 rake db:seed_fu:
   stage: test
