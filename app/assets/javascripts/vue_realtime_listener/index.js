@@ -1,24 +1,9 @@
-const VueRealtimeListener = (removeIntervals, startIntervals) => {
-  const removeAll = () => {
-    window.removeEventListener('beforeunload', removeIntervals);
-    window.removeEventListener('focus', startIntervals);
-    window.removeEventListener('blur', removeIntervals);
-  };
+module.exports = (removeIntervals, startIntervals) => {
+  window.removeEventListener('focus', startIntervals);
+  window.removeEventListener('blur', removeIntervals);
+  window.removeEventListener('onbeforeload', removeIntervals);
 
-  window.addEventListener('beforeunload', removeIntervals);
   window.addEventListener('focus', startIntervals);
   window.addEventListener('blur', removeIntervals);
-
-  // add removeAll methods to stack
-  const stack = VueRealtimeListener.reset;
-  VueRealtimeListener.reset = () => {
-    VueRealtimeListener.reset = stack;
-    removeAll();
-    stack();
-  };
+  window.addEventListener('onbeforeload', removeIntervals);
 };
-
-// remove all event listeners and intervals
-VueRealtimeListener.reset = () => undefined; // noop
-
-module.exports = VueRealtimeListener;

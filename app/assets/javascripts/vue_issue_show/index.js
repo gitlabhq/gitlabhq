@@ -4,7 +4,6 @@
 const Vue = require('vue');
 Vue.use(require('vue-resource'));
 require('../vue_shared/vue_resource_interceptor');
-const VueRealtimeListener = require('../vue_realtime_listener');
 const IssueTitle = require('./issue_title');
 
 const token = document.querySelector('meta[name="csrf-token"]');
@@ -41,15 +40,5 @@ const vueOptions = () => ({
 (() => {
   Vue.activeResources = 0;
   const vm = new Vue(vueOptions());
-
-  if (notUser === 'false') {
-    const titleComp = vm.$children
-      .filter(e => e.$options._componentTag === 'IssueTitle')[0];
-
-    const startTitleFetch = () => titleComp.fetch();
-    const removeIntervalLoops = () => titleComp.clear();
-    const startIntervalLoops = () => startTitleFetch();
-
-    VueRealtimeListener(removeIntervalLoops, startIntervalLoops);
-  }
+  (() => vm)();
 })();

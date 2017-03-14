@@ -1,4 +1,4 @@
-/* global Vue, VueResource, Flash */
+const VuePoller = require('../vue_poller/index');
 
 module.exports = {
   props: {
@@ -19,19 +19,17 @@ module.exports = {
   },
   methods: {
     fetch() {
-      this.intervalId = setInterval(() => {
-        if (Vue.activeResources === 0) {
-          this.$http
-            .get(this.endpoint, { params: { digest: this.titleDigest } })
-              .then((res) => {
-                this.renderResponse(res);
-              })
-              .catch((err) => { throw new Error(err); });
-        }
-      }, 3000);
-    },
-    clear() {
-      clearInterval(this.intervalId);
+      const data = {
+        params: { digest: this.titleDigest },
+      };
+
+      return new VuePoller({
+        data,
+        url: this.endpoint,
+        time: 3000,
+        success: this.renderResponse,
+        error: (err) => { throw Error(err); },
+      }).run();
     },
     renderResponse(res) {
       const body = JSON.parse(res.body);
