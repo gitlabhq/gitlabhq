@@ -691,25 +691,4 @@ describe 'Issues', feature: true do
       expect(page).not_to have_text("updated title")
     end
   end
-
-  def drop_in_dropzone(file_path)
-    # Generate a fake input selector
-    page.execute_script <<-JS
-      var fakeFileInput = window.$('<input/>').attr(
-        {id: 'fakeFileInput', type: 'file'}
-      ).appendTo('body');
-    JS
-    # Attach the file to the fake input selector with Capybara
-    attach_file("fakeFileInput", file_path)
-    # Add the file to a fileList array and trigger the fake drop event
-    page.execute_script <<-JS
-      var fileList = [$('#fakeFileInput')[0].files[0]];
-      var e = jQuery.Event('drop', { dataTransfer : { files : fileList } });
-      $('.div-dropzone')[0].dropzone.listeners[0].events.drop(e);
-    JS
-  end
-
-  def test_image_file
-    File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
-  end
 end
