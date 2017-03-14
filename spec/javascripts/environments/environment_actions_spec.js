@@ -1,14 +1,16 @@
-const ActionsComponent = require('~/environments/components/environment_actions');
+import Vue from 'vue';
+import actionsComp from '~/environments/components/environment_actions';
 
 describe('Actions Component', () => {
-  preloadFixtures('static/environments/element.html.raw');
+  let ActionsComponent;
+  let actionsMock;
+  let spy;
+  let component;
 
   beforeEach(() => {
-    loadFixtures('static/environments/element.html.raw');
-  });
+    ActionsComponent = Vue.extend(actionsComp);
 
-  it('should render a dropdown with the provided actions', () => {
-    const actionsMock = [
+    actionsMock = [
       {
         name: 'bar',
         play_path: 'https://gitlab.com/play',
@@ -19,18 +21,27 @@ describe('Actions Component', () => {
       },
     ];
 
-    const component = new ActionsComponent({
-      el: document.querySelector('.test-dom-element'),
+    spy = jasmine.createSpy('spy').and.returnValue(Promise.resolve());
+    component = new ActionsComponent({
       propsData: {
         actions: actionsMock,
+        service: {
+          postAction: spy,
+        },
       },
-    });
+    }).$mount();
+  });
 
+  it('should render a dropdown with the provided actions', () => {
     expect(
       component.$el.querySelectorAll('.dropdown-menu li').length,
     ).toEqual(actionsMock.length);
-    expect(
-      component.$el.querySelector('.dropdown-menu li a').getAttribute('href'),
-    ).toEqual(actionsMock[0].play_path);
+  });
+
+  it('should call the service when an action is clicked', () => {
+    component.$el.querySelector('.dropdown').click();
+    component.$el.querySelector('.js-manual-action-link').click();
+
+    expect(spy).toHaveBeenCalledWith(actionsMock[0].play_path);
   });
 });

@@ -29,11 +29,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def impersonate
-    if user.blocked?
-      flash[:alert] = "You cannot impersonate a blocked user"
-
-      redirect_to admin_user_path(user)
-    else
+    if can?(user, :log_in)
       session[:impersonator_id] = current_user.id
 
       warden.set_user(user, scope: :user)
@@ -43,6 +39,17 @@ class Admin::UsersController < Admin::ApplicationController
       flash[:alert] = "You are now impersonating #{user.username}"
 
       redirect_to root_path
+    else
+      flash[:alert] =
+        if user.blocked?
+          "You cannot impersonate a blocked user"
+        elsif user.internal?
+          "You cannot impersonate an internal user"
+        else
+          "You cannot impersonate a user who cannot log in"
+        end
+
+      redirect_to admin_user_path(user)
     end
   end
 

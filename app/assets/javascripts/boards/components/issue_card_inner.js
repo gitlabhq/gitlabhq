@@ -1,4 +1,6 @@
 /* global Vue */
+import eventHub from '../eventhub';
+
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 
@@ -23,6 +25,11 @@
         type: String,
         required: true,
       },
+      updateFilters: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
     },
     methods: {
       showLabel(label) {
@@ -31,29 +38,25 @@
         return !this.list.label || label.id !== this.list.label.id;
       },
       filterByLabel(label, e) {
-        let labelToggleText = label.title;
-        const labelIndex = Store.state.filters.label_name.indexOf(label.title);
+        if (!this.updateFilters) return;
+
+        const filterPath = gl.issueBoards.BoardsStore.filter.path.split('&');
+        const labelTitle = encodeURIComponent(label.title);
+        const param = `label_name[]=${labelTitle}`;
+        const labelIndex = filterPath.indexOf(param);
         $(e.currentTarget).tooltip('hide');
 
         if (labelIndex === -1) {
-          Store.state.filters.label_name.push(label.title);
-          $('.labels-filter').prepend(`<input type="hidden" name="label_name[]" value="${label.title}" />`);
+          filterPath.push(param);
         } else {
-          Store.state.filters.label_name.splice(labelIndex, 1);
-          labelToggleText = Store.state.filters.label_name[0];
-          $(`.labels-filter input[name="label_name[]"][value="${label.title}"]`).remove();
+          filterPath.splice(labelIndex, 1);
         }
 
-        const selectedLabels = Store.state.filters.label_name;
-        if (selectedLabels.length === 0) {
-          labelToggleText = 'Label';
-        } else if (selectedLabels.length > 1) {
-          labelToggleText = `${selectedLabels[0]} + ${selectedLabels.length - 1} more`;
-        }
-
-        $('.labels-filter .dropdown-toggle-text').text(labelToggleText);
+        gl.issueBoards.BoardsStore.filter.path = filterPath.join('&');
 
         Store.updateFiltersUrl();
+
+        eventHub.$emit('updateTokens');
       },
       labelStyle(label) {
         return {

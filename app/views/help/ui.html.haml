@@ -410,7 +410,7 @@
     :javascript
       $('#js-project-dropdown').glDropdown({
         data: function (term, callback) {
-          Api.projects(term, "last_activity_at", function (data) {
+          Api.projects(term, { order_by: 'last_activity_at' }, function (data) {
             callback(data);
           });
         },

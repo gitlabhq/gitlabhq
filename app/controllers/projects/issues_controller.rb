@@ -64,8 +64,15 @@ class Projects::IssuesController < Projects::ApplicationController
     params[:issue] ||= ActionController::Parameters.new(
       assignee_id: ""
     )
-    build_params = issue_params.merge(merge_request_for_resolving_discussions: merge_request_for_resolving_discussions)
-    @issue = @noteable = Issues::BuildService.new(project, current_user, build_params).execute
+    build_params = issue_params.merge(
+      merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
+      discussion_to_resolve: params[:discussion_to_resolve]
+    )
+    service = Issues::BuildService.new(project, current_user, build_params)
+
+    @issue = @noteable = service.execute
+    @merge_request_to_resolve_discussions_of = service.merge_request_to_resolve_discussions_of
+    @discussion_to_resolve = service.discussions_to_resolve.first if params[:discussion_to_resolve]
 
     respond_with(@issue)
   end
@@ -94,11 +101,21 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create
-    create_params = issue_params
-      .merge(merge_request_for_resolving_discussions: merge_request_for_resolving_discussions)
-      .merge(spammable_params)
+    create_params = issue_params.merge(spammable_params).merge(
+      merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
+      discussion_to_resolve: params[:discussion_to_resolve]
+    )
 
-    @issue = Issues::CreateService.new(project, current_user, create_params).execute
+    service = Issues::CreateService.new(project, current_user, create_params)
+    @issue = service.execute
+
+    if service.discussions_to_resolve.count(&:resolved?) > 0
+      flash[:notice] = if service.discussion_to_resolve_id
+                         "Resolved 1 discussion."
+                       else
+                         "Resolved all discussions."
+                       end
+    end
 
     respond_to do |format|
       format.html do
@@ -203,14 +220,6 @@ class Projects::IssuesController < Projects::ApplicationController
   alias_method :issuable, :issue
   alias_method :awardable, :issue
   alias_method :spammable, :issue
-
-  def merge_request_for_resolving_discussions
-    return unless merge_request_iid = params[:merge_request_for_resolving_discussions]
-
-    @merge_request_for_resolving_discussions ||= MergeRequestsFinder.new(current_user, project_id: project.id).
-                                                   execute.
-                                                   find_by(iid: merge_request_iid)
-  end
 
   def authorize_read_issue!
     return render_404 unless can?(current_user, :read_issue, @issue)

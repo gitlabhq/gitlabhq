@@ -7,16 +7,12 @@ require('~/line_highlighter');
   describe('LineHighlighter', function() {
     var clickLine;
     preloadFixtures('static/line_highlighter.html.raw');
-    clickLine = function(number, eventData) {
-      var e;
-      if (eventData == null) {
-        eventData = {};
-      }
+    clickLine = function(number, eventData = {}) {
       if ($.isEmptyObject(eventData)) {
-        return $("#L" + number).mousedown().click();
+        return $("#L" + number).click();
       } else {
-        e = $.Event('mousedown', eventData);
-        return $("#L" + number).trigger(e).click();
+        const e = $.Event('click', eventData);
+        return $("#L" + number).trigger(e);
       }
     };
     beforeEach(function() {
@@ -63,12 +59,6 @@ require('~/line_highlighter');
       });
     });
     describe('#clickHandler', function() {
-      it('discards the mousedown event', function() {
-        var spy;
-        spy = spyOnEvent('a[data-line-number]', 'mousedown');
-        clickLine(13);
-        return expect(spy).toHaveBeenPrevented();
-      });
       it('handles clicking on a child icon element', function() {
         var spy;
         spy = spyOn(this["class"], 'setHash').and.callThrough();

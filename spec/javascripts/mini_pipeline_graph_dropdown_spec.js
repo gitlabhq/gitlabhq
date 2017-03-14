@@ -1,7 +1,7 @@
 /* eslint-disable no-new */
 
-require('~/flash');
-require('~/mini_pipeline_graph_dropdown');
+import MiniPipelineGraph from '~/mini_pipeline_graph_dropdown';
+import '~/flash';
 
 (() => {
   describe('Mini Pipeline Graph Dropdown', () => {
@@ -13,7 +13,7 @@ require('~/mini_pipeline_graph_dropdown');
 
     describe('When is initialized', () => {
       it('should initialize without errors when no options are given', () => {
-        const miniPipelineGraph = new window.gl.MiniPipelineGraph();
+        const miniPipelineGraph = new MiniPipelineGraph();
 
         expect(miniPipelineGraph.dropdownListSelector).toEqual('.js-builds-dropdown-container');
       });
@@ -21,7 +21,7 @@ require('~/mini_pipeline_graph_dropdown');
       it('should set the container as the given prop', () => {
         const container = '.foo';
 
-        const miniPipelineGraph = new window.gl.MiniPipelineGraph({ container });
+        const miniPipelineGraph = new MiniPipelineGraph({ container });
 
         expect(miniPipelineGraph.container).toEqual(container);
       });
@@ -29,9 +29,9 @@ require('~/mini_pipeline_graph_dropdown');
 
     describe('When dropdown is clicked', () => {
       it('should call getBuildsList', () => {
-        const getBuildsListSpy = spyOn(gl.MiniPipelineGraph.prototype, 'getBuildsList').and.callFake(function () {});
+        const getBuildsListSpy = spyOn(MiniPipelineGraph.prototype, 'getBuildsList').and.callFake(function () {});
 
-        new gl.MiniPipelineGraph({ container: '.js-builds-dropdown-tests' }).bindEvents();
+        new MiniPipelineGraph({ container: '.js-builds-dropdown-tests' }).bindEvents();
 
         document.querySelector('.js-builds-dropdown-button').click();
 
@@ -41,10 +41,31 @@ require('~/mini_pipeline_graph_dropdown');
       it('should make a request to the endpoint provided in the html', () => {
         const ajaxSpy = spyOn($, 'ajax').and.callFake(function () {});
 
-        new gl.MiniPipelineGraph({ container: '.js-builds-dropdown-tests' }).bindEvents();
+        new MiniPipelineGraph({ container: '.js-builds-dropdown-tests' }).bindEvents();
 
         document.querySelector('.js-builds-dropdown-button').click();
         expect(ajaxSpy.calls.allArgs()[0][0].url).toEqual('foobar');
+      });
+
+      it('should not close when user uses cmd/ctrl + click', () => {
+        spyOn($, 'ajax').and.callFake(function (params) {
+          params.success({
+            html: `<li>
+              <a class="mini-pipeline-graph-dropdown-item" href="#">
+                <span class="ci-status-icon ci-status-icon-failed"></span>
+                <span class="ci-build-text">build</span>
+              </a>
+              <a class="ci-action-icon-wrapper js-ci-action-icon" href="#"></a>
+            </li>`,
+          });
+        });
+        new MiniPipelineGraph({ container: '.js-builds-dropdown-tests' }).bindEvents();
+
+        document.querySelector('.js-builds-dropdown-button').click();
+
+        document.querySelector('a.mini-pipeline-graph-dropdown-item').click();
+
+        expect($('.js-builds-dropdown-list').is(':visible')).toEqual(true);
       });
     });
   });

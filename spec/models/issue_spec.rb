@@ -22,6 +22,21 @@ describe Issue, models: true do
     it { is_expected.to have_db_index(:deleted_at) }
   end
 
+  describe '#order_by_position_and_priority' do
+    let(:project) { create :empty_project }
+    let(:p1) { create(:label, title: 'P1', project: project, priority: 1) }
+    let(:p2) { create(:label, title: 'P2', project: project, priority: 2) }
+    let!(:issue1) { create(:labeled_issue, project: project, labels: [p1]) }
+    let!(:issue2) { create(:labeled_issue, project: project, labels: [p2]) }
+    let!(:issue3) { create(:issue, project: project, relative_position: 100) }
+    let!(:issue4) { create(:issue, project: project, relative_position: 200) }
+
+    it 'returns ordered list' do
+      expect(project.issues.order_by_position_and_priority).
+        to match [issue3, issue4, issue1, issue2]
+    end
+  end
+
   describe '#to_reference' do
     let(:namespace) { build(:namespace, path: 'sample-namespace') }
     let(:project)   { build(:empty_project, name: 'sample-project', namespace: namespace) }

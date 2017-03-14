@@ -210,22 +210,6 @@ describe User, models: true do
         end
       end
     end
-
-    describe 'ghost users' do
-      it 'does not allow a non-blocked ghost user' do
-        user = build(:user, :ghost)
-        user.state = 'active'
-
-        expect(user).to be_invalid
-      end
-
-      it 'allows a blocked ghost user' do
-        user = build(:user, :ghost)
-        user.state = 'blocked'
-
-        expect(user).to be_valid
-      end
-    end
   end
 
   describe "scopes" do
@@ -713,8 +697,9 @@ describe User, models: true do
   describe '.search_with_secondary_emails' do
     delegate :search_with_secondary_emails, to: :described_class
 
-    let!(:user) { create(:user) }
-    let!(:email) { create(:email) }
+    let!(:user) { create(:user, name: 'John Doe', username: 'john.doe', email: 'john.doe@example.com' ) }
+    let!(:another_user) { create(:user, name: 'Albert Smith', username: 'albert.smith', email: 'albert.smith@example.com' ) }
+    let!(:email) { create(:email, user: another_user) }
 
     it 'returns users with a matching name' do
       expect(search_with_secondary_emails(user.name)).to eq([user])

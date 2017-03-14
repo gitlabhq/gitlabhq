@@ -20,13 +20,17 @@ def instrument_classes(instrumentation)
 
   # Path to search => prefix to strip from constant
   paths_to_instrument = {
-    %w(app finders)               => %w(app finders),
-    %w(app mailers emails)        => %w(app mailers),
-    %w(app services **)           => %w(app services),
-    %w(lib gitlab conflicts)      => ['lib'],
-    %w(lib gitlab diff)           => ['lib'],
-    %w(lib gitlab email message)  => ['lib'],
-    %w(lib gitlab checks)         => ['lib']
+    %w(app finders)                => %w(app finders),
+    %w(app mailers emails)         => %w(app mailers),
+    # Don't instrument `app/services/concerns`
+    # It contains modules that are included in the services.
+    # The services themselves are instrumented so the methods from the modules
+    # are included.
+    %w(app services [^concerns]**) => %w(app services),
+    %w(lib gitlab conflicts)       => ['lib'],
+    %w(lib gitlab diff)            => ['lib'],
+    %w(lib gitlab email message)   => ['lib'],
+    %w(lib gitlab checks)          => ['lib']
   }
 
   paths_to_instrument.each do |(path, prefix)|
@@ -120,9 +124,9 @@ if Gitlab::Metrics.enabled?
 
   # These are manually require'd so the classes are registered properly with
   # ActiveSupport.
-  require 'gitlab/metrics/subscribers/action_view'
-  require 'gitlab/metrics/subscribers/active_record'
-  require 'gitlab/metrics/subscribers/rails_cache'
+  require_dependency 'gitlab/metrics/subscribers/action_view'
+  require_dependency 'gitlab/metrics/subscribers/active_record'
+  require_dependency 'gitlab/metrics/subscribers/rails_cache'
 
   Gitlab::Application.configure do |config|
     config.middleware.use(Gitlab::Metrics::RackMiddleware)

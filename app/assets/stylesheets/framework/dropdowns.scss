@@ -43,7 +43,7 @@
   white-space: nowrap;
 
   &[disabled] {
-    background-color: $input-bg-disabled;
+    opacity: .65;
     cursor: not-allowed;
   }
 

@@ -7,8 +7,6 @@ cache:
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
-  # retry tests only in CI environment
-  RSPEC_RETRY_RETRY_COUNT: "3"
   RAILS_ENV: "test"
   SIMPLECOV: "true"
   SETUP_DB: "true"
@@ -69,9 +67,11 @@ stages:
     - knapsack rspec "--color --format documentation"
   artifacts:
     expire_in: 31d
+    when: always
     paths:
-    - knapsack/
     - coverage/
+    - knapsack/
+    - tmp/capybara/
 
 .spinach-knapsack: &spinach-knapsack
   stage: test
@@ -87,9 +87,11 @@ stages:
     - knapsack spinach "-r rerun" || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
   artifacts:
     expire_in: 31d
+    when: always
     paths:
-    - knapsack/
     - coverage/
+    - knapsack/
+    - tmp/capybara/
 
 # Prepare and merge knapsack tests
 

@@ -217,11 +217,6 @@
               }
               if ($el.closest('.add-issues-modal').length) {
                 gl.issueBoards.ModalStore.store.filter[$dropdown.data('field-name')] = user.id;
-              } else if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar')) {
-                selectedId = user.id;
-                gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = user.id;
-                gl.issueBoards.BoardsStore.updateFiltersUrl();
-                e.preventDefault();
               } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
                 selectedId = user.id;
                 return Issuable.filterResults($dropdown.closest('form'));

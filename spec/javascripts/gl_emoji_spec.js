@@ -1,6 +1,3 @@
-import '~/extensions/string';
-import '~/extensions/array';
-
 import { glEmojiTag } from '~/behaviors/gl_emoji';
 import {
   isEmojiUnicodeSupported,

@@ -16,6 +16,22 @@ minification, and compression of our assets.
 [jQuery][jquery] is used throughout the application's JavaScript, with
 [Vue.js][vue] for particularly advanced, dynamic elements.
 
+### Architecture
+
+The Frontend Architect is an expert who makes high-level frontend design choices
+and decides on technical standards, including coding standards, and frameworks.
+
+When you are assigned a new feature that requires architectural design,
+make sure it is discussed with one of the Frontend Architecture Experts.
+
+This rule also applies if you plan to change the architecture of an existing feature.
+
+These decisions should be accessible to everyone, so please document it on the Merge Request.
+
+You can find the Frontend Architecture experts on the [team page][team-page].
+
+You can find documentation about the desired architecture for a new feature built with Vue.js in [here][vue-section].
+
 ### Vue
 
 For more complex frontend features, we recommend using Vue.js. It shares
@@ -50,6 +66,8 @@ Let's look into each of them:
 This is the index file of your new feature. This is where the root Vue instance
 of the new feature should be.
 
+The Store and the Service should be imported and initialized in this file and provided as a prop to the main component.
+
 Don't forget to follow [these steps.][page_specific_javascript]
 
 **A folder for Components**
@@ -70,7 +88,7 @@ You can read more about components in Vue.js site, [Component System][component-
 
 **A folder for the Store**
 
-The Store is a simple object that allows us to manage the state in a single
+The Store is a class that allows us to manage the state in a single
 source of truth.
 
 The concept we are trying to follow is better explained by Vue documentation
@@ -238,8 +256,8 @@ readability.
 See the relevant style guides for our guidelines and for information on linting:
 
 - [SCSS][scss-style-guide]
-- JavaScript - We defer to [AirBnb][airbnb-js-style-guide] on most style-related 
-conventions and enforce them with eslint. See [our current .eslintrc][eslistrc] 
+- JavaScript - We defer to [AirBnb][airbnb-js-style-guide] on most style-related
+conventions and enforce them with eslint. See [our current .eslintrc][eslintrc]
 for specific rules and patterns.
 
 ## Testing
@@ -273,7 +291,7 @@ When exactly one object is needed for a given task, prefer to define it as a
 `class` rather than as an object literal. Prefer also to explicitly restrict
 instantiation, unless flexibility is important (e.g. for testing).
 
-```
+```javascript
 // bad
 
 gl.MyThing = {
@@ -315,6 +333,33 @@ class MyThing {
 gl.MyThing = MyThing;
 
 ```
+
+### Manipulating the DOM in a JS Class
+
+When writing a class that needs to manipulate the DOM guarantee a container option is provided.
+This is useful when we need that class to be instantiated more than once in the same page.
+
+Bad:
+```javascript
+class Foo {
+  constructor() {
+    document.querySelector('.bar');
+  }
+}
+new Foo();
+```
+
+Good:
+```javascript
+class Foo {
+  constructor(opts) {
+    document.querySelector(`${opts.container} .bar`);
+  }
+}
+
+new Foo({ container: '.my-element' });
+```
+You can find an example of the above in this [class][container-class-example];
 
 ## Supported browsers
 
@@ -439,3 +484,6 @@ Scenario: Developer can approve merge request
 [issue-boards-service]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/boards/services/board_service.js.es6
 [airbnb-js-style-guide]: https://github.com/airbnb/javascript
 [eslintrc]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.eslintrc
+[team-page]: https://about.gitlab.com/team
+[vue-section]: https://docs.gitlab.com/ce/development/frontend.html#how-to-build-a-new-feature-with-vue-js
+[container-class-example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/mini_pipeline_graph_dropdown.js

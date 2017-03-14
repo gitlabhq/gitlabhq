@@ -97,7 +97,7 @@ module API
     end
 
     def authenticate!
-      unauthorized! unless current_user
+      unauthorized! unless current_user && can?(current_user, :access_api)
     end
 
     def authenticate_non_get!
@@ -116,7 +116,7 @@ module API
       forbidden! unless current_user.is_admin?
     end
 
-    def authorize!(action, subject = nil)
+    def authorize!(action, subject = :global)
       forbidden! unless can?(current_user, action, subject)
     end
 
@@ -134,7 +134,7 @@ module API
       end
     end
 
-    def can?(object, action, subject)
+    def can?(object, action, subject = :global)
       Ability.allowed?(object, action, subject)
     end
 
