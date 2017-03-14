@@ -23,7 +23,7 @@ describe PipelinesFinder do
     context 'when nothing is passed' do
       let(:params) { {} }
 
-      it 'selects all pipelines' do
+      it 'returns all pipelines' do
         expect(subject).to match_array(Ci::Pipeline.all)
       end
 
@@ -33,92 +33,92 @@ describe PipelinesFinder do
     end
 
     context 'when scope is passed' do
-      context 'when selecting running' do
+      context 'when scope is running' do
         let(:params) { { scope: 'running' } }
 
-        it 'has only running status' do
+        it 'returns matched pipelines' do
           expect(subject).to match_array(Ci::Pipeline.running)
         end
       end
 
-      context 'when selecting pending' do
+      context 'when scope is pending' do
         let(:params) { { scope: 'pending' } }
 
-        it 'has only pending status' do
+        it 'returns matched pipelines' do
           expect(subject).to match_array(Ci::Pipeline.pending)
         end
       end
 
-      context 'when selecting finished' do
+      context 'when scope is finished' do
         let(:params) { { scope: 'finished' } }
 
-        it 'has only finished status' do
+        it 'returns matched pipelines' do
           expect(subject).to match_array(Ci::Pipeline.finished)
         end
       end
 
-      context 'when selecting branches' do
+      context 'when scope is branches' do
         let(:params) { { scope: 'branches' } }
 
-        it 'excludes tags' do
+        it 'returns matched pipelines' do
           expect(subject).to eq([Ci::Pipeline.where(tag: false).last])
         end
       end
 
-      context 'when selecting tags' do
+      context 'when scope is tags' do
         let(:params) { { scope: 'tags' } }
 
-        it 'excludes branches' do
+        it 'returns matched pipelines' do
           expect(subject).to eq([Ci::Pipeline.where(tag: true).last])
         end
       end
     end
 
     context 'when status is passed' do
-      context 'when selecting running' do
+      context 'when status is running' do
         let(:params) { { status: 'running' } }
 
-        it 'has only running status' do
+        it 'returns matched pipelines' do
           expect(subject).to match_array(Ci::Pipeline.running)
         end
       end
 
-      context 'when selecting pending' do
+      context 'when status is pending' do
         let(:params) { { status: 'pending' } }
 
-        it 'has only pending status' do
+        it 'returns matched pipelines' do
           expect(subject).to match_array(Ci::Pipeline.pending)
         end
       end
 
-      context 'when selecting success' do
+      context 'when status is success' do
         let(:params) { { status: 'success' } }
 
-        it 'has only success status' do
+        it 'returns matched pipelines' do
           expect(subject).to match_array(Ci::Pipeline.success)
         end
       end
 
-      context 'when selecting failed' do
+      context 'when status is failed' do
         let(:params) { { status: 'failed' } }
 
-        it 'has only failed status' do
+        it 'returns matched pipelines' do
           expect(subject).to match_array(Ci::Pipeline.failed)
         end
       end
 
-      context 'when selecting canceled' do
+      context 'when status is canceled' do
         let(:params) { { status: 'canceled' } }
 
-        it 'has only canceled status' do
+        it 'returns matched pipelines' do
           expect(subject).to match_array(Ci::Pipeline.canceled)
         end
       end
 
-      context 'when selecting skipped' do
+      context 'when status is skipped' do
         let(:params) { { status: 'skipped' } }
 
-        it 'has only skipped status' do
+        it 'returns matched pipelines' do
           expect(subject).to match_array(Ci::Pipeline.skipped)
         end
       end
@@ -128,7 +128,7 @@ describe PipelinesFinder do
       context 'when ref exists' do
         let(:params) { { ref: 'master' } }
 
-        it 'selects all pipelines which belong to the ref' do
+        it 'returns matched pipelines' do
           expect(subject).to match_array(Ci::Pipeline.where(ref: 'master'))
         end
       end
@@ -136,7 +136,7 @@ describe PipelinesFinder do
       context 'when ref does not exist' do
         let(:params) { { ref: 'invalid-ref' } }
 
-        it 'selects nothing' do
+        it 'returns empty' do
           expect(subject).to be_empty
         end
       end
@@ -146,7 +146,7 @@ describe PipelinesFinder do
       context 'when name exists' do
         let(:params) { { name: user1.name } }
 
-        it 'selects all pipelines which belong to the name' do
+        it 'returns matched pipelines' do
           expect(subject).to match_array(Ci::Pipeline.where(user: user1))
         end
       end
@@ -154,7 +154,7 @@ describe PipelinesFinder do
       context 'when name does not exist' do
         let(:params) { { name: 'invalid-name' } }
 
-        it 'selects nothing' do
+        it 'returns empty' do
           expect(subject).to be_empty
         end
       end
@@ -164,7 +164,7 @@ describe PipelinesFinder do
       context 'when username exists' do
         let(:params) { { username: user1.username } }
 
-        it 'selects all pipelines which belong to the username' do
+        it 'returns matched pipelines' do
           expect(subject).to match_array(Ci::Pipeline.where(user: user1))
         end
       end
@@ -172,7 +172,7 @@ describe PipelinesFinder do
       context 'when username does not exist' do
         let(:params) { { username: 'invalid-username' } }
 
-        it 'selects nothing' do
+        it 'returns empty' do
           expect(subject).to be_empty
         end
       end
@@ -182,7 +182,7 @@ describe PipelinesFinder do
       context 'when yaml_errors is true' do
         let(:params) { { yaml_errors: true } }
 
-        it 'selects only pipelines have yaml_errors' do
+        it 'returns matched pipelines' do
           expect(subject).to match_array(Ci::Pipeline.where("yaml_errors IS NOT NULL"))
         end
       end
@@ -190,49 +190,41 @@ describe PipelinesFinder do
       context 'when yaml_errors is false' do
         let(:params) { { yaml_errors: false } }
 
-        it 'selects only pipelines do not have yaml_errors' do
+        it 'returns matched pipelines' do
           expect(subject).to match_array(Ci::Pipeline.where("yaml_errors IS NULL"))
         end
       end
 
-      context 'when an argument is invalid' do
+      context 'when yaml_errors is invalid' do
         let(:params) { { yaml_errors: "UnexpectedValue" } }
 
-        it 'selects all pipelines' do
+        it 'returns all pipelines' do
           expect(subject).to match_array(Ci::Pipeline.all)
         end
       end
     end
 
     context 'when order_by and sort are passed' do
-      context 'when order by created_at asc' do
+      context 'when order_by and sort are valid' do
         let(:params) { { order_by: 'created_at', sort: 'asc' } }
 
-        it 'sorts by created_at asc' do
+        it 'sorts pipelines' do
           expect(subject).to eq(Ci::Pipeline.order(created_at: :asc))
         end
       end
 
-      context 'when order by created_at desc' do
-        let(:params) { { order_by: 'created_at', sort: 'desc' } }
-
-        it 'sorts by created_at desc' do
-          expect(subject).to eq(Ci::Pipeline.order(created_at: :desc))
-        end
-      end
-
-      context 'when order_by does not exist' do
+      context 'when order_by is invalid' do
         let(:params) { { order_by: 'invalid_column', sort: 'desc' } }
 
-        it 'sorts by default' do
+        it 'sorts pipelines, but order_by is default' do
           expect(subject).to eq(Ci::Pipeline.order(id: :desc))
         end
       end
 
-      context 'when sort does not exist' do
+      context 'when sort is invalid' do
         let(:params) { { order_by: 'created_at', sort: 'invalid_sort' } }
 
-        it 'sorts by default' do
+        it 'sorts pipelines, but sort is default' do
           expect(subject).to eq(Ci::Pipeline.order(created_at: :desc))
         end
       end
