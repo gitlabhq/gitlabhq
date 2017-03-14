@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'omniauth/strategies/kerberos_spnego'
 
 describe OmniAuth::Strategies::KerberosSpnego do
   subject { described_class.new(:app) }

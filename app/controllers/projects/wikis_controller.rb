@@ -1,5 +1,3 @@
-require 'project_wiki'
-
 class Projects::WikisController < Projects::ApplicationController
   before_action :authorize_read_wiki!
   before_action :authorize_create_wiki!, only: [:edit, :create, :history]
