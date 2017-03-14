@@ -17,6 +17,9 @@ describe PipelineNotificationWorker do
   let(:watcher) { pusher }
 
   describe '#execute' do
+    let(:status) { 'success' }
+    let(:email_subject) { "Pipeline ##{pipeline.id} has succeeded" }
+
     before do
       reset_delivered_emails!
       pipeline.project.team << [pusher, Gitlab::Access::DEVELOPER]
@@ -44,8 +47,6 @@ describe PipelineNotificationWorker do
       end
 
       context 'with success pipeline' do
-        let(:status) { 'success' }
-        let(:email_subject) { "Pipeline ##{pipeline.id} has succeeded" }
         let(:receivers) { [pusher] }
 
         context 'with custom notification success pipeline on' do
@@ -56,36 +57,37 @@ describe PipelineNotificationWorker do
 
           it_behaves_like 'sending emails'
         end
+      end
 
-        context 'with failed pipeline' do
-          let(:status) { 'failed' }
-          let(:email_subject) { "Pipeline ##{pipeline.id} has failed" }
+      context 'with failed pipeline' do
+        let(:status) { 'failed' }
+        let(:email_subject) { "Pipeline ##{pipeline.id} has failed" }
+        let(:receivers) { [pusher, watcher] }
 
-          it_behaves_like 'sending emails'
+        it_behaves_like 'sending emails'
 
-          context 'with pipeline from someone else' do
-            let(:pusher) { create(:user) }
-            let(:watcher) { user }
+        context 'with pipeline from someone else' do
+          let(:pusher) { create(:user) }
+          let(:watcher) { user }
 
-            context 'with failed pipeline notification on' do
-              before do
-                watcher.global_notification_setting
-                  .update(level: 'custom', failed_pipeline: true)
-              end
-
-              it_behaves_like 'sending emails'
+          context 'with failed pipeline notification on' do
+            before do
+              watcher.global_notification_setting
+                .update(level: 'custom', failed_pipeline: true)
             end
 
-            context 'with failed pipeline notification off' do
-              let(:receivers) { [pusher] }
+            it_behaves_like 'sending emails'
+          end
 
-              before do
-                watcher.global_notification_setting
-                  .update(level: 'custom', failed_pipeline: false)
-              end
+          context 'with failed pipeline notification off' do
+            let(:receivers) { [pusher] }
 
-              it_behaves_like 'sending emails'
+            before do
+              watcher.global_notification_setting
+                .update(level: 'custom', failed_pipeline: false)
             end
+
+            it_behaves_like 'sending emails'
           end
         end
       end
