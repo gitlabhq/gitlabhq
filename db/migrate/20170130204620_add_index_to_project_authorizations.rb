@@ -10,6 +10,7 @@ class AddIndexToProjectAuthorizations < ActiveRecord::Migration
   end
 
   def down
-    remove_index(:project_authorizations, :project_id)
+    remove_index(:project_authorizations, :project_id) if
+      Gitlab::Database.postgresql?
   end
 end
