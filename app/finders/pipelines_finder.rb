@@ -82,7 +82,7 @@ class PipelinesFinder
 
   def by_name(items)
     if params[:name].present?
-      items.joins(:user).where("users.name = ?", params[:name])
+      items.joins(:user).where(users: { name: params[:name] })
     else
       items
     end
@@ -90,7 +90,7 @@ class PipelinesFinder
 
   def by_username(items)
     if params[:username].present?
-      items.joins(:user).where("users.username = ?", params[:username])
+      items.joins(:user).where(users: { username: params[:username] })
     else
       items
     end
