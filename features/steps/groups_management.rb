@@ -50,7 +50,7 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
       click_link 'Settings'
     end
     page.within '.sub-nav' do
-      click_link 'Edit Group'
+      click_link 'General'
     end    
   end
 
