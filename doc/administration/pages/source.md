@@ -105,7 +105,7 @@ The Pages daemon doesn't listen to the outside world.
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
     cd gitlab-pages
-    sudo -u git -H git checkout v0.3.2
+    sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
     sudo -u git -H make
     ```
 
@@ -168,7 +168,7 @@ outside world.
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
     cd gitlab-pages
-    sudo -u git -H git checkout v0.3.2
+    sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
     sudo -u git -H make
     ```
 
@@ -234,7 +234,7 @@ world. Custom domains are supported, but no TLS.
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
     cd gitlab-pages
-    sudo -u git -H git checkout v0.3.2
+    sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
     sudo -u git -H make
     ```
 
@@ -300,7 +300,7 @@ world. Custom domains and TLS are supported.
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
     cd gitlab-pages
-    sudo -u git -H git checkout v0.3.2
+    sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
     sudo -u git -H make
     ```
 
@@ -433,6 +433,6 @@ than GitLab to prevent XSS attacks.
 [pages-userguide]: ../../user/project/pages/index.md
 [reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart]: ../restart_gitlab.md#installations-from-source
-[gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.3.2
+[gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.4.0
 [gl-example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/support/init.d/gitlab.default.example
 [shared runners]: ../../ci/runners/README.md
