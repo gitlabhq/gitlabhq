@@ -67,9 +67,11 @@ stages:
     - knapsack rspec "--color --format documentation"
   artifacts:
     expire_in: 31d
+    when: always
     paths:
-    - knapsack/
     - coverage/
+    - knapsack/
+    - tmp/capybara/
 
 .spinach-knapsack: &spinach-knapsack
   stage: test
@@ -85,9 +87,11 @@ stages:
     - knapsack spinach "-r rerun" || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
   artifacts:
     expire_in: 31d
+    when: always
     paths:
-    - knapsack/
     - coverage/
+    - knapsack/
+    - tmp/capybara/
 
 # Prepare and merge knapsack tests
 
