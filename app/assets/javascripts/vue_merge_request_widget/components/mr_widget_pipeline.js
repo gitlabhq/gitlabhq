@@ -17,7 +17,7 @@ export default {
         <span>
           Pipeline
           <a :href="mr.pipeline.path">#{{mr.pipeline.id}}</a>
-          {{mr.pipeline.details.status.text}}
+          {{mr.pipeline.details.status.label}}
         </span>
         <div class="mr-widget-pipeline-graph">
           <div class="stage-cell">

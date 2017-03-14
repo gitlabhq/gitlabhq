@@ -11,4 +11,5 @@ export default {
   archived: 'mr-widget-archived',
   checking: 'mr-widget-checking',
   unresolvedDiscussions: 'mr-widget-unresolved-discussions',
+  pipelineBlocked: 'mr-widget-pipeline-blocked',
 };
