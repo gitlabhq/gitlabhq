@@ -233,7 +233,7 @@ describe PipelinesFinder do
         let(:params) { { order_by: 'created_at', sort: 'invalid_sort' } }
 
         it 'sorts by default' do
-          expect(subject).to eq(Ci::Pipeline.order(id: :desc))
+          expect(subject).to eq(Ci::Pipeline.order(created_at: :desc))
         end
       end
     end

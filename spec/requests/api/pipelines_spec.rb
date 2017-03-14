@@ -44,77 +44,109 @@ describe API::Pipelines do
 
         context 'when scope is passed' do
           %w[running pending].each do |target|
-            it "returns only scope=#{target} pipelines" do
-              get api("/projects/#{project.id}/pipelines?scope=#{target}", user)
+            context "when scope is #{target}" do
+              it "returns matched pipelines" do
+                get api("/projects/#{project.id}/pipelines?scope=#{target}", user)
+
+                expect(response).to have_http_status(200)
+                expect(response).to include_pagination_headers
+                expect(json_response.count).to be > 0
+                json_response.each { |r| expect(r['status']).to eq(target) }
+              end
+            end
+          end
+
+          context 'when scope is finished' do
+            it 'returns matched pipelines' do
+              get api("/projects/#{project.id}/pipelines?scope=finished", user)
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
               expect(json_response.count).to be > 0
-              json_response.each { |r| expect(r['status']).to eq(target) }
+              json_response.each { |r| expect(r['status']).to be_in(%w[success failed canceled]) }
             end
           end
 
-          it "returns only scope=finished pipelines" do
-            get api("/projects/#{project.id}/pipelines?scope=finished", user)
+          context 'when scope is branches' do
+            it 'returns matched pipelines' do
+              get api("/projects/#{project.id}/pipelines?scope=branches", user)
 
-            expect(response).to have_http_status(200)
-            expect(response).to include_pagination_headers
-            expect(json_response.count).to be > 0
-            json_response.each { |r| expect(r['status']).to be_in(%w[success failed canceled]) }
+              expect(response).to have_http_status(200)
+              expect(response).to include_pagination_headers
+              expect(json_response.count).to be > 0
+              expect(json_response.last['sha']).to eq(Ci::Pipeline.where(tag: false).last.sha)
+            end
           end
 
-          it "returns only scope=branches pipelines" do
-            get api("/projects/#{project.id}/pipelines?scope=branches", user)
+          context 'when scope is tags' do
+            it 'returns matched pipelines' do
+              get api("/projects/#{project.id}/pipelines?scope=tags", user)
 
-            expect(response).to have_http_status(200)
-            expect(response).to include_pagination_headers
-            expect(json_response.count).to be > 0
-            expect(json_response.last['sha']).to eq(Ci::Pipeline.where(tag: false).last.sha)
+              expect(response).to have_http_status(200)
+              expect(response).to include_pagination_headers
+              expect(json_response.count).to be > 0
+              expect(json_response.last['sha']).to eq(Ci::Pipeline.where(tag: true).last.sha)
+            end
           end
 
-          it "returns only scope=tags pipelines" do
-            get api("/projects/#{project.id}/pipelines?scope=tags", user)
+          context 'when scope is invalid' do
+            it 'returns 400' do
+              get api("/projects/#{project.id}/pipelines?scope=invalid-scope", user)
 
-            expect(response).to have_http_status(200)
-            expect(response).to include_pagination_headers
-            expect(json_response.count).to be > 0
-            expect(json_response.last['sha']).to eq(Ci::Pipeline.where(tag: true).last.sha)
+              expect(response).to have_http_status(400)
+            end
           end
         end
 
         context 'when status is passed' do
           %w[running pending success failed canceled skipped].each do |target|
-            it "returns only status=#{target} pipelines" do
-              get api("/projects/#{project.id}/pipelines?status=#{target}", user)
+            context "when status is #{target}" do
+              it 'returns matched pipelines' do
+                get api("/projects/#{project.id}/pipelines?status=#{target}", user)
 
-              expect(response).to have_http_status(200)
-              expect(response).to include_pagination_headers
-              expect(json_response.count).to be > 0
-              json_response.each { |r| expect(r['status']).to eq(target) }
+                expect(response).to have_http_status(200)
+                expect(response).to include_pagination_headers
+                expect(json_response.count).to be > 0
+                json_response.each { |r| expect(r['status']).to eq(target) }
+              end
+            end
+          end
+
+          context 'when status is invalid' do
+            it 'returns 400' do
+              get api("/projects/#{project.id}/pipelines?status=invalid-status", user)
+
+              expect(response).to have_http_status(400)
             end
           end
         end
 
         context 'when ref is passed' do
-          %w[master invalid-ref].each do |target|
-            it "returns only ref=#{target} pipelines" do
-              get api("/projects/#{project.id}/pipelines?ref=#{target}", user)
+          context 'when ref exists' do
+            it 'returns matched pipelines' do
+              get api("/projects/#{project.id}/pipelines?ref=master", user)
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
-              if target == 'master'
-                expect(json_response.count).to be > 0
-                json_response.each { |r| expect(r['ref']).to eq(target) }
-              else
-                expect(json_response.count).to eq(0)
-              end
+              expect(json_response.count).to be > 0
+              json_response.each { |r| expect(r['ref']).to eq('master') }
+            end
+          end
+
+          context 'when ref does not exist' do
+            it 'returns empty' do
+              get api("/projects/#{project.id}/pipelines?ref=invalid-ref", user)
+
+              expect(response).to have_http_status(200)
+              expect(response).to include_pagination_headers
+              expect(json_response.count).to eq(0)
             end
           end
         end
 
         context 'when name is passed' do
           context 'when name exists' do
-            it "returns only pipelines related to the name" do
+            it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines?name=#{user1.name}", user)
 
               expect(response).to have_http_status(200)
@@ -124,7 +156,7 @@ describe API::Pipelines do
           end
 
           context 'when name does not exist' do
-            it "returns nothing" do
+            it 'returns empty' do
               get api("/projects/#{project.id}/pipelines?name=invalid-name", user)
 
               expect(response).to have_http_status(200)
@@ -136,7 +168,7 @@ describe API::Pipelines do
 
         context 'when username is passed' do
           context 'when username exists' do
-            it "returns only pipelines related to the username" do
+            it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines?username=#{user1.username}", user)
 
               expect(response).to have_http_status(200)
@@ -146,7 +178,7 @@ describe API::Pipelines do
           end
 
           context 'when username does not exist' do
-            it "returns nothing" do
+            it 'returns empty' do
               get api("/projects/#{project.id}/pipelines?username=invalid-username", user)
 
               expect(response).to have_http_status(200)
@@ -158,7 +190,7 @@ describe API::Pipelines do
 
         context 'when yaml_errors is passed' do
           context 'when yaml_errors is true' do
-            it "returns only pipelines related to the yaml_errors" do
+            it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines?yaml_errors=true", user)
 
               expect(response).to have_http_status(200)
@@ -168,21 +200,48 @@ describe API::Pipelines do
           end
 
           context 'when yaml_errors is false' do
-            it "returns nothing" do
+            it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines?yaml_errors=false", user)
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
               expect(json_response.first['id']).to eq(Ci::Pipeline.where("yaml_errors IS NULL").order(id: :desc).first.id)
-              #TODO: Better checking all 
             end
           end
 
-          context 'when argument is invalid' do
-            it 'selects all pipelines' do
+          context 'when yaml_errors is invalid' do
+            it 'returns 400' do
               get api("/projects/#{project.id}/pipelines?yaml_errors=invalid-yaml_errors", user)
 
-              #TODO: Eliminate repeting
+              expect(response).to have_http_status(400)
+            end
+          end
+        end
+
+        context 'when order_by and sort are passed' do
+          context 'when order_by and sort are valid' do
+            it 'sorts pipelines' do
+              get api("/projects/#{project.id}/pipelines?order_by=id&sort=asc", user)
+
+              expect(response).to have_http_status(200)
+              expect(response).to include_pagination_headers
+              expect(json_response.first['id']).to eq(Ci::Pipeline.order(id: :asc).first.id)
+              expect(json_response.last['id']).to eq(Ci::Pipeline.order(id: :asc).last.id)
+            end
+          end
+
+          context 'when order_by is invalid' do
+            it 'returns 400' do
+              get api("/projects/#{project.id}/pipelines?order_by=lock_version&sort=asc", user)
+
+              expect(response).to have_http_status(400)
+            end
+          end
+
+          context 'when sort is invalid' do
+            it 'returns 400' do
+              get api("/projects/#{project.id}/pipelines?order_by=id&sort=hack", user)
+
               expect(response).to have_http_status(400)
             end
           end
