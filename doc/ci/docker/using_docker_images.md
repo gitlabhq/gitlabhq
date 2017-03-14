@@ -170,13 +170,17 @@ services:
 ```
 
 When the job is run, `tutum/wordpress` will be started and you will have
-access to it from your build container under the hostname `tutum__wordpress`.
+access to it from your build container under the hostnames `tutum-wordpress`
+(requires GitLab Runner v1.1.0 or newer) and `tutum__wordpress`.
 
-The alias hostname for the service is made from the image name following these
+*Note: hostname with underscores is not RFC valid and may cause problems in 3rd party applications.*
+
+The alias hostnames for the service are made from the image name following these
 rules:
 
 1. Everything after `:` is stripped
-2. Slash (`/`) is replaced with double underscores (`__`)
+2. Slash (`/`) is replaced with double underscores (`__`) - primary alias
+3. Slash (`/`) is replaced with dash (`-`) - secondary alias, requires GitLab Runner v1.1.0 or newer
 
 ## Configuring services
 
