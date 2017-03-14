@@ -9,7 +9,7 @@
   - case type
   - when 'match'
     = diff_match_line line.old_pos, line.new_pos, text: line.text
-  - when 'nonewline'
+  - when 'old-nonewline', 'new-nonewline'
     %td.old_line.diff-line-num
     %td.new_line.diff-line-num
     %td.line_content.match= line.text

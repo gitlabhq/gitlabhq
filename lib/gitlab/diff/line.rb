@@ -38,11 +38,11 @@ module Gitlab
       end
 
       def added?
-        type == 'new'
+        type == 'new' || type == 'new-nonewline'
       end
 
       def removed?
-        type == 'old'
+        type == 'old' || type == 'old-nonewline'
       end
 
       def rich_text
@@ -52,7 +52,7 @@ module Gitlab
       end
 
       def meta?
-        type == 'match' || type == 'nonewline'
+        type == 'match'
       end
 
       def as_json(opts = nil)
