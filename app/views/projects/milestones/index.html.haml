@@ -1,14 +1,14 @@
 - @no_container = true
-- page_title "Milestones"
-= render "projects/issues/head"
+- page_title 'Milestones'
+= render 'projects/issues/head'
 
 %div{ class: container_class }
   .top-area
-    = render 'shared/milestones_filter'
+    = render 'shared/milestones_filter', counts: milestone_counts(@project.milestones)
 
     .nav-controls
       - if can?(current_user, :admin_milestone, @project)
-        = link_to new_namespace_project_milestone_path(@project.namespace, @project), class: "btn btn-new", title: "New Milestone" do
+        = link_to new_namespace_project_milestone_path(@project.namespace, @project), class: 'btn btn-new', title: 'New Milestone' do
           New Milestone
 
   .milestones
@@ -19,4 +19,4 @@
         %li
           .nothing-here-block No milestones to show
 
-    = paginate @milestones, theme: "gitlab"
+    = paginate @milestones, theme: 'gitlab'
