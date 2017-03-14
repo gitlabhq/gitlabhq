@@ -1,4 +1,4 @@
-/* eslint-disable no-new*/
+/* eslint-disable no-new */
 /* global Flash */
 
 import d3 from 'd3';
@@ -21,9 +21,9 @@ class PrometheusGraph {
     const parentContainerWidth = $(prometheusGraphsContainer).parent().width() +
     extraAddedWidthParent;
     this.originalWidth = parentContainerWidth;
-    this.originalHeight = 400;
+    this.originalHeight = 330;
     this.width = parentContainerWidth - this.margin.left - this.margin.right;
-    this.height = 400 - this.margin.top - this.margin.bottom;
+    this.height = this.originalHeight - this.margin.top - this.margin.bottom;
     this.backOffRequestCounter = 0;
     this.configureGraph();
     this.init();
@@ -49,12 +49,15 @@ class PrometheusGraph {
     });
   }
 
-  plotValues(valuesToPlot, key) {
+  plotValues(key) {
     const x = d3.time.scale()
         .range([0, this.width]);
 
     const y = d3.scale.linear()
         .range([this.height, 0]);
+
+    this.graphSpecificProperties[key].xScale = x;
+    this.graphSpecificProperties[key].yScale = y;
 
     const prometheusGraphContainer = `${prometheusGraphsContainer}[graph-type=${key}]`;
 
@@ -67,13 +70,13 @@ class PrometheusGraph {
           .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
 
     const axisLabelContainer = d3.select(prometheusGraphContainer)
-      .attr('width', this.originalWidth + this.marginLabelContainer.left + this.marginLabelContainer.right)
-      .attr('height', this.originalHeight + this.marginLabelContainer.bottom + this.marginLabelContainer.top)
+      .attr('width', this.originalWidth)
+      .attr('height', this.originalHeight)
       .append('g')
         .attr('transform', `translate(${this.marginLabelContainer.left},${this.marginLabelContainer.top})`);
 
-    x.domain(d3.extent(valuesToPlot, d => d.time));
-    y.domain([0, d3.max(valuesToPlot.map(metricValue => metricValue.value))]);
+    x.domain(d3.extent(graphSpecifics.data, d => d.time));
+    y.domain([0, d3.max(graphSpecifics.data.map(metricValue => metricValue.value))]);
 
     const xAxis = d3.svg.axis()
         .scale(x)
@@ -108,13 +111,13 @@ class PrometheusGraph {
     .y(d => y(d.value));
 
     chart.append('path')
-    .datum(valuesToPlot)
+    .datum(graphSpecifics.data)
     .attr('d', area)
     .attr('class', 'metric-area')
     .attr('fill', graphSpecifics.area_fill_color);
 
     chart.append('path')
-      .datum(valuesToPlot)
+      .datum(graphSpecifics.data)
       .attr('class', 'metric-line')
       .attr('stroke', graphSpecifics.line_color)
       .attr('fill', 'none')
@@ -126,7 +129,7 @@ class PrometheusGraph {
       .attr('class', 'prometheus-graph-overlay')
       .attr('width', this.width)
       .attr('height', this.height)
-      .on('mousemove', this.handleMouseOverGraph.bind(this, x, y, valuesToPlot, chart, prometheusGraphContainer, key));
+      .on('mousemove', this.handleMouseOverGraph.bind(this, x, y, chart, prometheusGraphContainer, key));
   }
 
   // The legends from the metric
@@ -139,9 +142,9 @@ class PrometheusGraph {
         .attr('stroke-width', '1')
         .attr({
           x1: 0,
-          y1: this.originalHeight - this.marginLabelContainer.top,
+          y1: this.originalHeight - 80,
           x2: this.originalWidth - this.margin.right,
-          y2: this.originalHeight - this.marginLabelContainer.top,
+          y2: this.originalHeight - 80,
         });
 
     axisLabelContainer.append('line')
@@ -152,26 +155,26 @@ class PrometheusGraph {
             x1: 0,
             y1: 0,
             x2: 0,
-            y2: this.originalHeight - this.marginLabelContainer.top,
+            y2: this.originalHeight - 80,
           });
 
     axisLabelContainer.append('text')
           .attr('class', 'label-axis-text')
           .attr('text-anchor', 'middle')
-          .attr('transform', `translate(15, ${(this.originalHeight - this.marginLabelContainer.top) / 2}) rotate(-90)`)
+          .attr('transform', `translate(15, ${(this.originalHeight - 80) / 2}) rotate(-90)`)
           .text(graphSpecifics.graph_legend_title);
 
     axisLabelContainer.append('rect')
           .attr('class', 'rect-axis-text')
           .attr('x', (this.originalWidth / 2) - this.margin.right)
-          .attr('y', this.originalHeight - this.marginLabelContainer.top - 20)
+          .attr('y', this.originalHeight - 100)
           .attr('width', 30)
           .attr('height', 80);
 
     axisLabelContainer.append('text')
           .attr('class', 'label-axis-text')
           .attr('x', (this.originalWidth / 2) - this.margin.right)
-          .attr('y', this.originalHeight - this.marginLabelContainer.top)
+          .attr('y', this.originalHeight - 80)
           .attr('dy', '.35em')
           .text('Time');
 
@@ -197,16 +200,18 @@ class PrometheusGraph {
             .attr('y', (this.originalHeight / 2) - 25);
   }
 
-  handleMouseOverGraph(x, y, valuesToPlot, chart, prometheusGraphContainer, key) {
-    const rectOverlay = document.querySelector(`${prometheusGraphContainer} .prometheus-graph-overlay`);
-    const timeValueFromOverlay = x.invert(d3.mouse(rectOverlay)[0]);
-    const timeValueIndex = bisectDate(valuesToPlot, timeValueFromOverlay, 1);
-    const d0 = valuesToPlot[timeValueIndex - 1];
-    const d1 = valuesToPlot[timeValueIndex];
-    const currentData = timeValueFromOverlay - d0.time > d1.time - timeValueFromOverlay ? d1 : d0;
-    const maxValueMetric = y(d3.max(valuesToPlot.map(metricValue => metricValue.value)));
-    const currentTimeCoordinate = x(currentData.time);
+  handleMouseOverGraph(x, y, chart, prometheusGraphContainer, key) {
     const graphSpecifics = this.graphSpecificProperties[key];
+    const rectOverlay = document.querySelector(`${prometheusGraphContainer} .prometheus-graph-overlay`);
+    const mouseCoordOverlay = d3.mouse(rectOverlay)[0];
+    const timeValueFromOverlay = x.invert(mouseCoordOverlay);
+    const timeValueIndex = bisectDate(graphSpecifics.data, timeValueFromOverlay, 1);
+    const d0 = graphSpecifics.data[timeValueIndex - 1];
+    const d1 = graphSpecifics.data[timeValueIndex];
+    const currentData = timeValueFromOverlay - d0.time > d1.time - timeValueFromOverlay ? d1 : d0;
+    const maxValueMetric = y(d3.max(graphSpecifics.data.map(metricValue => metricValue.value)));
+    const currentTimeCoordinate = x(currentData.time);
+
     // Remove the current selectors
     d3.selectAll(`${prometheusGraphContainer} .selected-metric-line`).remove();
     d3.selectAll(`${prometheusGraphContainer} .circle-metric`).remove();
@@ -263,12 +268,14 @@ class PrometheusGraph {
       cpu_values: {
         area_fill_color: '#edf3fc',
         line_color: '#5b99f7',
-        graph_legend_title: 'CPU utilization (%)',
+        graph_legend_title: 'CPU Usage (Cores)',
+        data: [],
       },
       memory_values: {
         area_fill_color: '#fca326',
         line_color: '#fc6d26',
-        graph_legend_title: 'Memory usage (MB)',
+        graph_legend_title: 'Memory Usage (MB)',
+        data: [],
       },
     };
 
@@ -328,7 +335,6 @@ class PrometheusGraph {
         }));
       }
     });
-    this.data = metricTypes;
   }
 }
 
