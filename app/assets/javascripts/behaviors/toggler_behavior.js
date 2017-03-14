@@ -21,8 +21,13 @@
     //   %a.js-toggle-button
     //   %div.js-toggle-content
     //
-    $('body').on('click', '.js-toggle-button', function() {
+    $('body').on('click', '.js-toggle-button', function(e) {
       toggleContainer($(this).closest('.js-toggle-container'));
+
+      const targetTag = e.target.tagName.toLowerCase();
+      if (targetTag === 'a' || targetTag === 'button') {
+        e.preventDefault();
+      }
     });
 
     // If we're accessing a permalink, ensure it is not inside a
