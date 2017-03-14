@@ -20,5 +20,9 @@ describe Geo::FileDownloadService, services: true do
 
       expect{ subject.execute }.to change { Geo::FileRegistry.count }.by(1)
     end
+
+    it 'bad object type' do
+      expect{ described_class.new(:bad, lfs_object.id).execute }.to raise_error(NameError)
+    end
   end
 end
