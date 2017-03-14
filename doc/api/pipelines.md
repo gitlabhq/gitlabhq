@@ -17,7 +17,7 @@ GET /projects/:id/pipelines
 | `yaml_errors`| string  | no       | If true, returns only yaml error pipelines |
 | `name`| string  | no       | The name of user who triggered pipelines |
 | `username`| string  | no       | The username of user who triggered pipelines |
-| `order_by`| string  | no       | Return requests ordered by `id`, `status`, `ref`, `sha`, or `user_id` fields. Default is `id` |
+| `order_by`| string  | no       | Return requests ordered by `id`, `status`, `ref`, or `user_id` fields. Default is `id` |
 | `sort`    | string  | no       | Return requests sorted in `asc` or `desc` order. Default is `desc` |
 
 ```

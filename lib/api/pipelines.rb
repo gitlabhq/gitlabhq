@@ -22,7 +22,7 @@ module API
         optional :yaml_errors, type: Boolean, desc: 'If true, returns only yaml error pipelines'
         optional :name,     type: String, desc: 'The name of user who triggered pipelines'
         optional :username, type: String, desc: 'The username of user who triggered pipelines'
-        optional :order_by, type: String, values: %w[id status ref sha user_id], default: 'id',
+        optional :order_by, type: String, values: %w[id status ref user_id], default: 'id',
                             desc: 'The order_by which is combined with a sort'
         optional :sort,     type: String, values: %w[asc desc], default: 'desc',
                             desc: 'The sort method which is combined with an order_by'
