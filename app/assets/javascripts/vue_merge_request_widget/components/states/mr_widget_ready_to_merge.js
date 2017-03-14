@@ -13,7 +13,7 @@ export default {
   },
   data() {
     return {
-      removeSourceBranch: false,
+      removeSourceBranch: true,
       mergeWhenBuildSucceeds: false,
       useCommitMessageWithDescription: false,
       setToMergeWhenBuildSucceeds: false,
