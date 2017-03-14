@@ -542,7 +542,7 @@ describe MergeRequest, models: true do
   end
 
   describe "#hook_attrs" do
-    let(:attrs_hash) { subject.hook_attrs.to_h }
+    let(:attrs_hash) { subject.hook_attrs }
 
     [:source, :target].each do |key|
       describe "#{key} key" do
@@ -558,6 +558,10 @@ describe MergeRequest, models: true do
       expect(attrs_hash).to include(:target)
       expect(attrs_hash).to include(:last_commit)
       expect(attrs_hash).to include(:work_in_progress)
+      expect(attrs_hash).to include(:total_time_spent)
+      expect(attrs_hash).to include(:human_time_estimate)
+      expect(attrs_hash).to include(:human_total_time_spent)
+      expect(attrs_hash).to include('time_estimate')
     end
   end
 

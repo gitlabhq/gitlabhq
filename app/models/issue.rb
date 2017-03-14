@@ -58,7 +58,13 @@ class Issue < ActiveRecord::Base
   end
 
   def hook_attrs
-    attributes
+    attrs = {
+      total_time_spent: total_time_spent,
+      human_total_time_spent: human_total_time_spent,
+      human_time_estimate: human_time_estimate
+    }
+
+    attributes.merge!(attrs)
   end
 
   def self.reference_prefix
