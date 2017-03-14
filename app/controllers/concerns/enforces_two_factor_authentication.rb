@@ -21,7 +21,7 @@ module EnforcesTwoFactorAuthentication
 
   def two_factor_authentication_required?
     current_application_settings.require_two_factor_authentication? ||
-      current_user.try(:require_two_factor_authentication?)
+      current_user.try(:require_two_factor_authentication_from_group?)
   end
 
   def two_factor_authentication_reason(global: -> {}, group: -> {})
@@ -37,7 +37,7 @@ module EnforcesTwoFactorAuthentication
 
   def two_factor_grace_period
     periods = [current_application_settings.two_factor_grace_period]
-    periods << current_user.two_factor_grace_period if current_user.try(:require_two_factor_authentication?)
+    periods << current_user.two_factor_grace_period if current_user.try(:require_two_factor_authentication_from_group?)
     periods.min
   end
 

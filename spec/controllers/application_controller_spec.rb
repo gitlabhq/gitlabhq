@@ -183,7 +183,7 @@ describe ApplicationController do
       end
 
       it 'returns true if a 2FA requirement is set on the user' do
-        user.require_two_factor_authentication = true
+        user.require_two_factor_authentication_from_group = true
         allow(controller).to receive(:current_user).and_return(user)
 
         expect(subject).to be_truthy
@@ -201,7 +201,7 @@ describe ApplicationController do
       end
 
       context 'with a 2FA requirement set on the user' do
-        let(:user) { create :user, require_two_factor_authentication: true, two_factor_grace_period: 23 }
+        let(:user) { create :user, require_two_factor_authentication_from_group: true, two_factor_grace_period: 23 }
 
         it 'returns the user grace period if lower than the application grace period' do
           stub_application_setting two_factor_grace_period: 24

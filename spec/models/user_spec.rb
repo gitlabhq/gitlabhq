@@ -1548,7 +1548,7 @@ describe User, models: true do
       end
 
       it 'requires 2FA' do
-        expect(user.require_two_factor_authentication).to be true
+        expect(user.require_two_factor_authentication_from_group).to be true
       end
 
       it 'uses the shortest grace period' do
@@ -1567,7 +1567,7 @@ describe User, models: true do
       end
 
       it 'requires 2FA' do
-        expect(user.require_two_factor_authentication).to be true
+        expect(user.require_two_factor_authentication_from_group).to be true
       end
     end
 
@@ -1582,7 +1582,7 @@ describe User, models: true do
       end
 
       it 'requires 2FA' do
-        expect(user.require_two_factor_authentication).to be true
+        expect(user.require_two_factor_authentication_from_group).to be true
       end
     end
 
@@ -1596,7 +1596,7 @@ describe User, models: true do
       end
 
       it 'does not require 2FA' do
-        expect(user.require_two_factor_authentication).to be false
+        expect(user.require_two_factor_authentication_from_group).to be false
       end
 
       it 'falls back to the default grace period' do

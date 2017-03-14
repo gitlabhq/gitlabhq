@@ -974,7 +974,7 @@ class User < ActiveRecord::Base
   def update_two_factor_requirement
     periods = expanded_groups_requiring_two_factor_authentication.pluck(:two_factor_grace_period)
 
-    self.require_two_factor_authentication = periods.any?
+    self.require_two_factor_authentication_from_group = periods.any?
     self.two_factor_grace_period = periods.min || User.column_defaults['two_factor_grace_period']
 
     save
