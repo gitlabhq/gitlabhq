@@ -1,4 +1,6 @@
 /* global Vue */
+import eventHub from '../eventhub';
+
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 
@@ -54,7 +56,7 @@
 
         Store.updateFiltersUrl();
 
-        gl.IssueBoardsApp.$emit('updateTokens');
+        eventHub.$emit('updateTokens');
       },
       labelStyle(label) {
         return {
