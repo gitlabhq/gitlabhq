@@ -91,6 +91,7 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
       page.within('.add-issues-modal') do
         wait_for_vue_resource
 
+        expect(page).to have_selector('.js-visual-token', text: user2.username)
         expect(page).to have_selector('.card', count: 1)
       end
     end
@@ -113,6 +114,7 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
       page.within('.add-issues-modal') do
         wait_for_vue_resource
 
+        expect(page).to have_selector('.js-visual-token', text: 'none')
         expect(page).to have_selector('.card', count: 1)
       end
     end
@@ -125,6 +127,7 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
       page.within('.add-issues-modal') do
         wait_for_vue_resource
 
+        expect(page).to have_selector('.js-visual-token', text: user2.username)
         expect(page).to have_selector('.card', count: 1)
       end
     end
@@ -146,6 +149,7 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
       page.within('.add-issues-modal') do
         wait_for_vue_resource
 
+        expect(page).to have_selector('.js-visual-token', text: 'upcoming')
         expect(page).to have_selector('.card', count: 0)
       end
     end
@@ -158,6 +162,7 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
       page.within('.add-issues-modal') do
         wait_for_vue_resource
 
+        expect(page).to have_selector('.js-visual-token', text: milestone.name)
         expect(page).to have_selector('.card', count: 1)
       end
     end
@@ -179,18 +184,20 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
       page.within('.add-issues-modal') do
         wait_for_vue_resource
 
+        expect(page).to have_selector('.js-visual-token', text: 'none')
         expect(page).to have_selector('.card', count: 1)
       end
     end
 
     it 'filters by label' do
       set_filter('label')
-      click_filter_link('No Label')
+      click_filter_link(label.title)
       submit_filter
 
       page.within('.add-issues-modal') do
         wait_for_vue_resource
 
+        expect(page).to have_selector('.js-visual-token', text: label.title)
         expect(page).to have_selector('.card', count: 1)
       end
     end

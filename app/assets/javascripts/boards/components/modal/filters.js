@@ -1,4 +1,3 @@
-/* global Vue */
 import FilteredSearchBoards from '../../filtered_search_boards';
 import FilteredSearchContainer from '../../../filtered_search/container';
 
@@ -13,7 +12,7 @@ export default {
   mounted() {
     FilteredSearchContainer.container = this.$el;
 
-    this.filteredSearch = new FilteredSearchBoards(this.store, false);
+    this.filteredSearch = new FilteredSearchBoards(this.store);
   },
   beforeDestroy() {
     this.filteredSearch.cleanup();
