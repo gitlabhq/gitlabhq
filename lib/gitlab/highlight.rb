@@ -14,7 +14,7 @@ module Gitlab
     end
 
     def initialize(blob_name, blob_content, repository: nil)
-      @formatter = Rouge::Formatters::HTMLGitlab.new
+      @formatter = Rouge::Formatters::HTMLGitlab
       @repository = repository
       @blob_name = blob_name
       @blob_content = blob_content
@@ -28,7 +28,7 @@ module Gitlab
         hl_lexer = self.lexer
       end
 
-      @formatter.format(hl_lexer.lex(text, continue: continue)).html_safe
+      @formatter.format(hl_lexer.lex(text, continue: continue), tag: hl_lexer.tag).html_safe
     rescue
       @formatter.format(Rouge::Lexers::PlainText.lex(text)).html_safe
     end
