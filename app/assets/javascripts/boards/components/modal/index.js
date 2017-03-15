@@ -1,5 +1,6 @@
 /* global Vue */
 /* global ListIssue */
+import queryData from '../../utils/query_data';
 
 require('./header');
 require('./list');
@@ -72,29 +73,10 @@ require('./empty_state');
       loadIssues(clearIssues = false) {
         if (!this.showAddIssuesModal) return false;
 
-        const queryData = this.filter.path.split('&').reduce((dataParam, filterParam) => {
-          if (filterParam === '') return dataParam;
-
-          const data = dataParam;
-          const paramSplit = filterParam.split('=');
-          const paramKeyNormalized = paramSplit[0].replace('[]', '');
-          const isArray = paramSplit[0].indexOf('[]');
-          const value = decodeURIComponent(paramSplit[1]).replace(/\+/g, ' ');
-
-          if (isArray !== -1) {
-            if (!data[paramKeyNormalized]) {
-              data[paramKeyNormalized] = [];
-            }
-
-            data[paramKeyNormalized].push(value);
-          } else {
-            data[paramKeyNormalized] = value;
-          }
-
-          return data;
-        }, { page: this.page, per: this.perPage });
-
-        return gl.boardService.getBacklog(queryData).then((res) => {
+        return gl.boardService.getBacklog(queryData(this.filter.path, {
+          page: this.page,
+          per: this.perPage,
+        })).then((res) => {
           const data = res.json();
 
           if (clearIssues) {

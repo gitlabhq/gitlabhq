@@ -13,6 +13,7 @@ export default {
     FilteredSearchContainer.container = this.$el;
 
     this.filteredSearch = new FilteredSearchBoards(this.store);
+    this.filteredSearch.removeTokens();
   },
   beforeDestroy() {
     this.filteredSearch.cleanup();

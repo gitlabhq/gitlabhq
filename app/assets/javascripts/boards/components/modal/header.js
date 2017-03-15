@@ -1,4 +1,4 @@
-/* global Vue */
+import Vue from 'vue';
 import modalFilters from './filters';
 
 require('./tabs');
