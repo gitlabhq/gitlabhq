@@ -14,9 +14,10 @@ describe 'Dropdown author', js: true, feature: true do
   def send_keys_to_filtered_search(input)
     input.split("").each do |i|
       filtered_search.send_keys(i)
-      sleep 5
-      wait_for_ajax
     end
+
+    sleep 0.5
+    wait_for_ajax
   end
 
   def dropdown_author_size
