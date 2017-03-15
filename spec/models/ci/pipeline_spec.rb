@@ -1018,19 +1018,6 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe '#update_status' do
-    let(:pipeline) { create(:ci_pipeline, sha: '123456') }
-
-    it 'updates the cached status' do
-      fake_status = double
-      # after updating the status, the status is set to `skipped` for this pipeline's builds
-      expect(Ci::PipelineStatus).to receive(:new).with(pipeline.project, sha: '123456', status: 'skipped').and_return(fake_status)
-      expect(fake_status).to receive(:store_in_cache_if_needed)
-
-      pipeline.update_status
-    end
-  end
-
   describe 'notifications when pipeline success or failed' do
     let(:project) { create(:project, :repository) }
 
