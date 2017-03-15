@@ -59,6 +59,9 @@ const extraMilestones = require('../mixins/extra_milestones');
       },
     },
     methods: {
+      refreshPage() {
+        location.href = location.pathname;
+      },
       loadMilestones(e) {
         this.milestoneDropdownOpen = !this.milestoneDropdownOpen;
         BoardService.loadMilestones.call(this);
@@ -80,12 +83,9 @@ const extraMilestones = require('../mixins/extra_milestones');
             if (this.currentBoard && this.currentPage !== 'new') {
               this.currentBoard.name = this.board.name;
 
-              if (this.board.milestone) {
-                this.currentBoard.milestone_id = this.board.milestone_id;
-                this.currentBoard.milestone = this.board.milestone;
-
-                Store.state.filters.milestone_title = this.currentBoard.milestone_id ?
-                  this.currentBoard.milestone.title : null;
+              if (this.currentPage === 'milestone') {
+                // We reload the page to make sure the store & state of the app are correct
+                this.refreshPage();
               }
             }
 

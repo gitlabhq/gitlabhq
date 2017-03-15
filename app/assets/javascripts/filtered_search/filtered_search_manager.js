@@ -6,7 +6,7 @@
       this.tokensContainer = document.querySelector('.tokens-container');
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
 
-      if (page === 'issues') {
+      if (page === 'issues' || page === 'boards') {
         this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
       }
 
@@ -84,6 +84,8 @@
         const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
         if (this.filteredSearchInput.value === '' && lastVisualToken) {
+          if (this.canEdit && !this.canEdit(lastVisualToken)) return;
+
           this.filteredSearchInput.value = gl.FilteredSearchVisualTokens.getLastTokenPartial();
           gl.FilteredSearchVisualTokens.removeLastTokenPartial();
         }
@@ -109,8 +111,15 @@
         e.preventDefault();
 
         if (!activeElements.length) {
-          // Prevent droplab from opening dropdown
-          this.dropdownManager.destroyDroplab();
+          if (this.isHandledAsync) {
+            e.stopImmediatePropagation();
+
+            this.filteredSearchInput.blur();
+            this.dropdownManager.resetDropdowns();
+          } else {
+            // Prevent droplab from opening dropdown
+            this.dropdownManager.destroyDroplab();
+          }
 
           this.search();
         }
@@ -141,6 +150,8 @@
 
     editToken(e) {
       const token = e.target.closest('.js-visual-token');
+
+      if (this.canEdit && !this.canEdit(token)) return;
 
       if (token) {
         gl.FilteredSearchVisualTokens.editToken(token);
@@ -191,6 +202,8 @@
 
       [].forEach.call(this.tokensContainer.children, (t) => {
         if (t.classList.contains('js-visual-token')) {
+          if (this.canEdit && !this.canEdit(t)) return;
+
           removeElements.push(t);
         }
       });
@@ -203,6 +216,10 @@
       this.handleInputPlaceholder();
 
       this.dropdownManager.resetDropdowns();
+
+      if (this.isHandledAsync) {
+        this.search();
+      }
     }
 
     handleInputVisualToken() {
@@ -349,7 +366,11 @@
 
       const parameterizedUrl = `?scope=all&utf8=✓&${paths.join('&')}`;
 
-      gl.utils.visitUrl(parameterizedUrl);
+      if (this.updateObject) {
+        this.updateObject(parameterizedUrl);
+      } else {
+        gl.utils.visitUrl(parameterizedUrl);
+      }
     }
 
     getUsernameParams() {

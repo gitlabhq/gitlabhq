@@ -8,6 +8,9 @@
 
   gl.issueBoards.BoardsStore = {
     disabled: false,
+    filter: {
+      path: '',
+    },
     state: {},
     detail: {
       issue: {}
@@ -18,13 +21,7 @@
     },
     create () {
       this.state.lists = [];
-      this.state.filters = {
-        author_id: gl.utils.getParameterValues('author_id')[0],
-        assignee_id: gl.utils.getParameterValues('assignee_id')[0],
-        milestone_title: gl.utils.getParameterValues('milestone_title')[0],
-        label_name: gl.utils.getParameterValues('label_name[]'),
-        search: ''
-      };
+      this.filter.path = gl.utils.getUrlParamsArray().join('&');
     },
     createNewListDropdownData() {
       this.state.currentBoard = {};
@@ -127,8 +124,12 @@
         return list[key] === val && byType;
       })[0];
     },
-    updateFiltersUrl () {
-      history.pushState(null, null, `?${$.param(this.state.filters)}`);
+    updateFiltersUrl (replaceState = false) {
+      if (replaceState) {
+        history.replaceState(null, null, `?${this.filter.path}`);
+      } else {
+        history.pushState(null, null, `?${this.filter.path}`);
+      }
     }
   };
 })();

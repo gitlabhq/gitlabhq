@@ -26,7 +26,7 @@ describe 'Board with milestone', :feature, :js do
 
       click_link 'test'
 
-      expect(find('.js-milestone-select')).to have_content(milestone.title)
+      expect(find('.tokens-container')).to have_content(milestone.title)
       expect(all('.board')[1]).to have_selector('.card', count: 1)
     end
   end
@@ -48,22 +48,40 @@ describe 'Board with milestone', :feature, :js do
         click_link board.name
       end
 
-      expect(find('.js-milestone-select')).to have_content(milestone.title)
+      expect(find('.tokens-container')).to have_content(milestone.title)
       expect(all('.board')[1]).to have_selector('.card', count: 1)
     end
 
     it 'sets board to any milestone' do
       update_board_milestone('Any Milestone')
 
-      expect(find('.js-milestone-select')).not_to have_content(milestone.title)
+      expect(page).not_to have_css('.js-visual-token')
+      expect(find('.tokens-container')).not_to have_content(milestone.title)
+      expect(page).to have_selector('.board', count: 2)
       expect(all('.board')[1]).to have_selector('.card', count: 2)
     end
 
     it 'sets board to upcoming milestone' do
       update_board_milestone('Upcoming')
 
-      expect(find('.js-milestone-select')).not_to have_content(milestone.title)
+      expect(find('.tokens-container')).not_to have_content(milestone.title)
       expect(all('.board')[1]).to have_selector('.card', count: 0)
+    end
+
+    it 'does not allow milestone in filter to be editted' do
+      find('.filtered-search').native.send_keys(:backspace)
+
+      page.within('.tokens-container') do
+        expect(page).to have_selector('.value')
+      end
+    end
+
+    it 'does not render milestone in hint dropdown' do
+      find('.filtered-search').click
+
+      page.within('#js-dropdown-hint') do
+        expect(page).not_to have_button('Milestone')
+      end
     end
   end
 

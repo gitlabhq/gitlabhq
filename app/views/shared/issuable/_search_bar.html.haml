@@ -1,7 +1,11 @@
 - type = local_assigns.fetch(:type)
+- board = local_assigns.fetch(:board, nil)
 
 .issues-filters
   .issues-details-filters.row-content-block.second-block.filtered-search-block
+    - if type == :boards && board
+      #js-multiple-boards-switcher.inline.boards-switcher{ "v-cloak" => true }
+        = render "projects/boards/switcher", board: board
     = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search]), method: :get, class: 'filter-form js-filter-form' do
       - if params[:search].present?
         = hidden_field_tag :search, params[:search]
@@ -60,19 +64,20 @@
                       {{name}}
                     %span.dropdown-light-content
                       @{{username}}
-          #js-dropdown-milestone.dropdown-menu{ data: { icon: 'clock-o', hint: 'milestone', tag: '%milestone' } }
-            %ul{ data: { dropdown: true } }
-              %li.filter-dropdown-item{ data: { value: 'none' } }
-                %button.btn.btn-link
-                  No Milestone
-              %li.filter-dropdown-item{ data: { value: 'upcoming' } }
-                %button.btn.btn-link
-                  Upcoming
-              %li.divider
-            %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-              %li.filter-dropdown-item
-                %button.btn.btn-link.js-data-value
-                  {{title}}
+          - unless board && board.milestone_id
+            #js-dropdown-milestone.dropdown-menu{ data: { icon: 'clock-o', hint: 'milestone', tag: '%milestone' } }
+              %ul{ data: { dropdown: true } }
+                %li.filter-dropdown-item{ data: { value: 'none' } }
+                  %button.btn.btn-link
+                    No Milestone
+                %li.filter-dropdown-item{ data: { value: 'upcoming' } }
+                  %button.btn.btn-link
+                    Upcoming
+                %li.divider
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  %button.btn.btn-link.js-data-value
+                    {{title}}
           #js-dropdown-label.dropdown-menu{ data: { icon: 'tag', hint: 'label', tag: '~label' } }
             %ul{ data: { dropdown: true } }
               %li.filter-dropdown-item{ data: { value: 'none' } }
@@ -85,7 +90,7 @@
                   %span.dropdown-label-box{ style: 'background: {{color}}' }
                   %span.label-title.js-data-value
                     {{title}}
-          - if type == :issues
+          - if type == :issues || type == :boards
             #js-dropdown-weight.dropdown-menu{ data: { icon: 'balance-scale', hint: 'weight', tag: 'weight' } }
               %ul{ 'data-dropdown' => true }
                 %li.filter-dropdown-item{ 'data-value' => 'none' }
@@ -100,8 +105,20 @@
                   %li.filter-dropdown-item{ 'data-value' => "#{weight}" }
                     %button.btn.btn-link= weight
 
-        .pull-right.filter-dropdown-container
-          = render 'shared/sort_dropdown'
+        .filter-dropdown-container
+          - if type == :boards
+            - if can?(current_user, :admin_list, @project)
+              .dropdown.prepend-left-10#js-add-list
+                %button.btn.btn-create.btn-inverted.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path, namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path) } }
+                  Add list
+                .dropdown-menu.dropdown-menu-paging.dropdown-menu-align-right.dropdown-menu-issues-board-new.dropdown-menu-selectable
+                  = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Add list" }
+                  - if can?(current_user, :admin_label, @project)
+                    = render partial: "shared/issuable/label_page_create"
+                  = dropdown_loading
+              #js-add-issues-btn.prepend-left-10
+          - else
+            = render 'shared/sort_dropdown'
 
     - if @bulk_edit
       .issues_bulk_update.hide

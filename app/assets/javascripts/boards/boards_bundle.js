@@ -2,6 +2,9 @@
 /* global Vue */
 /* global BoardService */
 
+import FilteredSearchBoards from './filtered_search_boards';
+import eventHub from './eventhub';
+
 window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
 require('./models/issue');
@@ -61,10 +64,24 @@ $(() => {
     },
     created () {
       if (this.milestoneTitle) {
-        this.state.filters.milestone_title = this.milestoneTitle;
+        const milestoneTitleParam = `milestone_title=${this.milestoneTitle}`;
+
+        Store.filter.path = [milestoneTitleParam].concat(
+          Store.filter.path.split('&').filter(param => param.match(/^milestone_title=(.*)$/g) === null)
+        ).join('&');
+
+        Store.updateFiltersUrl(true);
       }
 
       gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
+
+      this.filterManager = new FilteredSearchBoards(Store.filter, true, [(this.milestoneTitle ? 'milestone' : null)]);
+
+      // Listen for updateTokens event
+      eventHub.$on('updateTokens', this.updateTokens);
+    },
+    beforeDestroy() {
+      eventHub.$off('updateTokens', this.updateTokens);
     },
     mounted () {
       Store.disabled = this.disabled;
@@ -83,11 +100,16 @@ $(() => {
           Store.addBlankState();
           this.loading = false;
         });
-    }
+    },
+    methods: {
+      updateTokens() {
+        this.filterManager.updateTokens();
+      }
+    },
   });
 
   gl.IssueBoardsSearch = new Vue({
-    el: document.getElementById('js-boards-search'),
+    el: document.getElementById('js-add-list'),
     data: {
       filters: Store.state.filters,
       milestoneTitle: $boardApp.dataset.boardMilestoneTitle,
