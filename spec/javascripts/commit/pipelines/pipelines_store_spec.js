@@ -7,9 +7,6 @@ describe('Store', () => {
     store = new PipelinesStore();
   });
 
-  // unregister intervals and event handlers
-  afterEach(() => gl.VueRealtimeListener.reset());
-
   it('should start with a blank state', () => {
     expect(store.state.pipelines.length).toBe(0);
   });
