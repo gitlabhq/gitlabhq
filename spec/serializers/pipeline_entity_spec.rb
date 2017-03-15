@@ -5,7 +5,7 @@ describe PipelineEntity do
   let(:request) { double('request') }
 
   before do
-    allow(request).to receive(:user).and_return(user)
+    allow(request).to receive(:current_user).and_return(user)
   end
 
   let(:entity) do

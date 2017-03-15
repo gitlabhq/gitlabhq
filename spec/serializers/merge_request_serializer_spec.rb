@@ -4,10 +4,10 @@ describe MergeRequestSerializer do
   let(:resource) { create(:merge_request) }
   let(:user)     { create(:user) }
 
-  subject { described_class.new(current_user: user, user: user).represent(resource) }
+  subject { described_class.new(current_user: user).represent(resource) }
 
   it 'includes author' do
-    req = double('request', user: user)
+    req = double('request')
 
     author_payload = UserEntity
       .represent(resource.author, request: req)
@@ -17,7 +17,7 @@ describe MergeRequestSerializer do
   end
 
   it 'includes pipeline' do
-    req = double('request', user: user)
+    req = double('request', current_user: user)
     pipeline = build_stubbed(:ci_pipeline)
     allow(resource).to receive(:head_pipeline).and_return(pipeline)
 

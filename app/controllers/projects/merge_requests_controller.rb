@@ -236,7 +236,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
       format.json do
         render json: PipelineSerializer
-          .new(project: @project, user: @current_user)
+          .new(project: @project, current_user: @current_user)
           .represent(@pipelines)
       end
     end
@@ -250,7 +250,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
         render json: {
           pipelines: PipelineSerializer
-          .new(project: @project, user: @current_user)
+          .new(project: @project, current_user: @current_user)
           .represent(@pipelines)
         }
       end
@@ -715,7 +715,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def serializer
-    # FIXME: @oswaldo, we should remove one of the user or current_user
-    MergeRequestSerializer.new(user: current_user, current_user: current_user, project: merge_request.project)
+    MergeRequestSerializer.new(current_user: current_user, project: merge_request.project)
   end
 end
