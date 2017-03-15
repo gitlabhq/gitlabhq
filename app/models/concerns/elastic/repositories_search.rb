@@ -31,7 +31,7 @@ module Elastic
 
         commits = response.map do |result|
           commit result["_source"]["commit"]["sha"]
-        end
+        end.compact
 
         # Before "map" we had a paginated array so we need to recover it
         offset = per_page * ((page || 1) - 1)
@@ -49,11 +49,16 @@ module Elastic
           options: options
         )[:commits][:results]
 
+        # Avoid one SELECT per result by loading all projects into a hash
+        project_ids = response.map {|result| result["_source"]["commit"]["rid"] }.uniq
+        projects = Project.where(id: project_ids).index_by(&:id)
+
         commits = response.map do |result|
           sha = result["_source"]["commit"]["sha"]
-          project = Project.find(result["_source"]["commit"]["rid"])
-          project.commit(sha)
-        end
+          project_id = result["_source"]["commit"]["rid"]
+
+          projects[project_id].try(:commit, sha)
+        end.compact
 
         # Before "map" we had a paginated array so we need to recover it
         offset = per_page * ((page || 1) - 1)
