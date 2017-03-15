@@ -215,6 +215,6 @@ module BlobHelper
   end
 
   def open_raw_file_button(path)
-    link_to icon('file-text-o'), path, class: 'btn btn-sm has-tooltip', target: '_blank', title: 'Open raw', data: { container: 'body' }
+    link_to icon('file-code-o'), path, class: 'btn btn-sm has-tooltip', target: '_blank', title: 'Open raw', data: { container: 'body' }
   end
 end
