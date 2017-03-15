@@ -2,8 +2,6 @@
 
 >**Notes:**
 - [Introduced][ce-8935] in GitLab 9.0.
-- Parts of this integration require access to the GitLab server. If you don't
-  have access but want to enable Prometheus integration, ask your administrator.
 
 GitLab offers powerful integration with [Prometheus] for monitoring your apps.
 Metrics are retrieved from the configured Prometheus server, and then displayed
@@ -60,7 +58,7 @@ which we can use as a starting point.
 To get started quickly, we have provided a [sample YML file][prometheus-yml]
 that can be used as a template. This file will create a `prometheus` **Namespace**,
 **Service**, **Deployment**, and **ConfigMap** in Kubernetes. You can upload
-this file to the Kubernetes dashboard using the **+ Create** at the top right.
+this file to the Kubernetes dashboard using **+ Create** at the top right.
 
 ![Deploy Prometheus](img/prometheus_yaml_deploy.png)
 
@@ -115,8 +113,8 @@ Create a new rule:
 
 ---
 
-Now that Prometheus is configured, proceed on
-[configuring the Prometheus project service in GitLab](##configuration-in-gitlab).
+Now that Prometheus is configured, proceed to
+[configure the Prometheus project service in GitLab](##configuration-in-gitlab).
 
 ## Configuration in GitLab
 
@@ -156,7 +154,20 @@ The queries utilized by GitLab are shown in the following table.
 | Average Memory (MB) | `(sum(container_memory_usage_bytes{container_name="app",environment="$CI_ENVIRONMENT_SLUG"}) / count(container_memory_usage_bytes{container_name="app",environment="$CI_ENVIRONMENT_SLUG"})) /1024/1024` |
 | Average CPU Utilization (%) | `sum(rate(container_cpu_usage_seconds_total{container_name="app",environment="$CI_ENVIRONMENT_SLUG"}[2m])) / count(container_cpu_usage_seconds_total{container_name="app",environment="$CI_ENVIRONMENT_SLUG"}) * 100` |
 
+## Monitoring CI/CD Environments
+
+Once configured, GitLab will attempt to retrieve performance metrics for any environment which has had a successful deployment. If monitoring data was successfully retrieved, a metrics button will appear on the environment's detail page.
+
+![Environment Detail with Metrics](img/prometheus_environment_detail_with_metrics.png)
+
+Clicking on the metrics button will display a new page, showing up to the last 8 hours of performance data. It may take a minute or two for data to appear after initial deployment.
+
 ## Troubleshooting
+
+If the metrics button is not appearing, then one of a few issues may be occurring:
+- GitLab is not able to reach the Prometheus server. A test request can be sent to the Prometheus server from the [Prometheus Service](#configuration-in-gitlab) configuration screen.
+- No successful deployments have occurred to this environment.
+- Prometheus does not have performance data for this environment, or the metrics are not labeled correctly. To test this, connect to the Prometheus server and run a [query](#gitlab-prometheus-queries), replacing $CI_ENVIRONMENT_SLUG with the name of your environment.
 
 [autodeploy]: ../../../ci/autodeploy/index.md
 [kubernetes]: https://kubernetes.io
