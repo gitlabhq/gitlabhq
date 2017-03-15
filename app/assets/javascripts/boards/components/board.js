@@ -1,5 +1,6 @@
 /* eslint-disable comma-dangle, space-before-function-paren, one-var */
 /* global Sortable */
+import boardList from './board_list';
 
 import Vue from 'vue';
 import boardBlankState from './board_blank_state';
@@ -16,7 +17,7 @@ require('./board_list');
   gl.issueBoards.Board = Vue.extend({
     template: '#js-board-template',
     components: {
-      'board-list': gl.issueBoards.BoardList,
+      boardList,
       'board-delete': gl.issueBoards.BoardDelete,
       boardBlankState,
     },
