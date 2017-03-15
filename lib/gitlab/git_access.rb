@@ -195,13 +195,6 @@ module Gitlab
         skip_authorization: deploy_key?,
         protocol: protocol
       ).exec
-<<<<<<< HEAD
-=======
-    end
-
-    def matching_merge_request?(newrev, branch_name)
-      Checks::MatchingMergeRequest.new(newrev, branch_name, project).match?
->>>>>>> ce/master
     end
 
     def deploy_key

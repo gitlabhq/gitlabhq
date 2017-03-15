@@ -1,11 +1,8 @@
 module Gitlab
   module Checks
     class ChangeAccess
-<<<<<<< HEAD
       include PathLocksHelper
 
-=======
->>>>>>> ce/master
       # protocol is currently used only in EE
       attr_reader :user_access, :project, :skip_authorization, :protocol
 
