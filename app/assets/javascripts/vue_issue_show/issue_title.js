@@ -24,13 +24,15 @@ module.exports = {
       }).run();
     },
     renderResponse(res) {
-      console.log(res);
       const body = JSON.parse(res.body);
       this.triggerAnimation(body);
     },
     triggerAnimation(body) {
       const { title } = body;
+      if (this.title === title) return;
+
       this.$el.style.opacity = 0;
+
       setTimeout(() => {
         this.title = title;
         this.$el.style.transition = 'opacity 0.2s ease';

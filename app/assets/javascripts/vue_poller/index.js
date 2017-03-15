@@ -30,6 +30,12 @@ class VueShortPoller {
   }
 
   fetchData({ url, data = {}, success, error }) {
+    const lastFetchedAt = new Date();
+
+    Object.assign(data, {
+      headers: { 'X-Last-Fetched-At': lastFetchedAt },
+    });
+
     this.state.polling = true;
 
     Vue.http.get(url, data)
