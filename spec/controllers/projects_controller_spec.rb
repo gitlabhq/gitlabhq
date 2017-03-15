@@ -78,6 +78,7 @@ describe ProjectsController do
 
         it 'shows issues list page if wiki is disabled' do
           project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
+          create(:issue, project: project)
 
           get :show, namespace_id: project.namespace, id: project
 
