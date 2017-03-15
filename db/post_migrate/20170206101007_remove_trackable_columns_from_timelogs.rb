@@ -18,6 +18,7 @@ class RemoveTrackableColumnsFromTimelogs < ActiveRecord::Migration
   # disable_ddl_transaction!
 
   def change
-    remove_columns :timelogs, :trackable_id, :trackable_type
+    remove_column :timelogs, :trackable_id, :integer
+    remove_column :timelogs, :trackable_type, :string
   end
 end

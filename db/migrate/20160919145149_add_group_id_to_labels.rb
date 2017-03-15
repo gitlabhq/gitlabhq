@@ -12,8 +12,8 @@ class AddGroupIdToLabels < ActiveRecord::Migration
   end
 
   def down
+    remove_foreign_key :labels, column: :group_id
     remove_index :labels, :group_id if index_exists? :labels, :group_id
-    remove_foreign_key :labels, :namespaces, column: :group_id
     remove_column :labels, :group_id
   end
 end

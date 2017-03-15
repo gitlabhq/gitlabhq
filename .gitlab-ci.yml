@@ -224,6 +224,14 @@ rake db:migrate:reset:
   script:
     - bundle exec rake db:migrate:reset
 
+rake db:rollback:
+  stage: test
+  <<: *use-db
+  <<: *dedicated-runner
+  script:
+    - bundle exec rake db:rollback STEP=120
+    - bundle exec rake db:migrate
+
 rake db:seed_fu:
   stage: test
   <<: *use-db
