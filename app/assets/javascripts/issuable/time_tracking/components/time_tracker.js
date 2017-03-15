@@ -10,13 +10,30 @@ require('./comparison_pane');
 (() => {
   Vue.component('issuable-time-tracker', {
     name: 'issuable-time-tracker',
-    props: [
-      'time_estimate',
-      'time_spent',
-      'human_time_estimate',
-      'human_time_spent',
-      'docsUrl',
-    ],
+    props: {
+      time_estimate: {
+        type: Number,
+        required: true,
+        default: 0,
+      },
+      time_spent: {
+        type: Number,
+        required: true,
+        default: 0,
+      },
+      human_time_estimate: {
+        type: String,
+        required: false,
+      },
+      human_time_spent: {
+        type: String,
+        required: false,
+      },
+      docsUrl: {
+        type: String,
+        required: true,
+      },
+    },
     data() {
       return {
         showHelp: false,
@@ -66,6 +83,7 @@ require('./comparison_pane');
       <div class='time_tracker time-tracking-component-wrap' v-cloak>
         <time-tracking-collapsed-state
           :show-comparison-state='showComparisonState'
+          :show-no-time-tracking-state='showNoTimeTrackingState'
           :show-help-state='showHelpState'
           :show-spent-only-state='showSpentOnlyState'
           :show-estimate-only-state='showEstimateOnlyState'
