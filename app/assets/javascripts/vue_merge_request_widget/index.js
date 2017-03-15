@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import WidgetHeader from './components/mr_widget_header';
 import WidgetMergeHelp from './components/mr_widget_merge_help';
+import WidgetPipeline from './components/mr_widget_pipeline';
 import MergedState from './components/states/mr_widget_merged';
 import ClosedState from './components/states/mr_widget_closed';
 import LockedState from './components/states/mr_widget_locked';
@@ -37,10 +38,14 @@ const mrWidgetOptions = () => ({
     shouldRenderMergeHelp() {
       return statesToShowHelpWidget.indexOf(this.mr.state) > -1;
     },
+    shouldRenderPipelines() {
+      return this.mr.pipeline ? true : false;
+    },
   },
   components: {
     'mr-widget-header': WidgetHeader,
     'mr-widget-merge-help': WidgetMergeHelp,
+    'mr-widget-pipeline': WidgetPipeline,
     'mr-widget-merged': MergedState,
     'mr-widget-closed': ClosedState,
     'mr-widget-locked': LockedState,
@@ -58,7 +63,9 @@ const mrWidgetOptions = () => ({
   template: `
     <div class="mr-state-widget">
       <mr-widget-header :mr="mr" />
+      <mr-widget-pipeline v-if="shouldRenderPipelines" :mr="mr" />
       <component :is="componentName" :mr="mr" :service="service"></component>
+      <mr-widget-related-issues v-if="shouldRenderMergeHelp" />
       <mr-widget-merge-help v-if="shouldRenderMergeHelp" />
     </div>
   `,
