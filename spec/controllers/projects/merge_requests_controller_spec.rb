@@ -267,88 +267,229 @@ describe Projects::MergeRequestsController do
         namespace_id: project.namespace,
         project_id: project,
         id: merge_request.iid,
-        format: 'raw'
+        format: format
       }
     end
 
-    context 'when the user does not have access' do
-      before do
-        project.team.truncate
-        project.team << [user, :reporter]
-        post :merge, base_params
-      end
+    context 'as JSON' do
+      let(:format) { 'json' }
 
-      it 'returns not found' do
-        expect(response).to be_not_found
-      end
-    end
-
-    context 'when the merge request is not mergeable' do
-      before do
-        merge_request.update_attributes(title: "WIP: #{merge_request.title}")
-
-        post :merge, base_params
-      end
-
-      it 'returns :failed' do
-        expect(assigns(:status)).to eq(:failed)
-      end
-    end
-
-    context 'when the sha parameter does not match the source SHA' do
-      before { post :merge, base_params.merge(sha: 'foo') }
-
-      it 'returns :sha_mismatch' do
-        expect(assigns(:status)).to eq(:sha_mismatch)
-      end
-    end
-
-    context 'when the sha parameter matches the source SHA' do
-      def merge_with_sha
-        post :merge, base_params.merge(sha: merge_request.diff_head_sha)
-      end
-
-      it 'returns :success' do
-        merge_with_sha
-
-        expect(assigns(:status)).to eq(:success)
-      end
-
-      it 'starts the merge immediately' do
-        expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, anything)
-
-        merge_with_sha
-      end
-
-      context 'when the pipeline succeeds is passed' do
-        def merge_when_pipeline_succeeds
-          post :merge, base_params.merge(sha: merge_request.diff_head_sha, merge_when_pipeline_succeeds: '1')
-        end
-
+      context 'when the user does not have access' do
         before do
-          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
+          project.team.truncate
+          project.team << [user, :reporter]
+          xhr :post, :merge, base_params
         end
 
-        it 'returns :merge_when_pipeline_succeeds' do
-          merge_when_pipeline_succeeds
+        it 'returns access denied' do
+          expect(response).to have_http_status(401)
+        end
+      end
 
-          expect(assigns(:status)).to eq(:merge_when_pipeline_succeeds)
+      context 'when the merge request is not mergeable' do
+        before do
+          merge_request.update_attributes(title: "WIP: #{merge_request.title}")
+
+          post :merge, base_params
         end
 
-        it 'sets the MR to merge when the pipeline succeeds' do
-          service = double(:merge_when_pipeline_succeeds_service)
+        it 'returns :failed' do
+          expect(json_response).to eq('status' => 'failed')
+        end
+      end
 
-          expect(MergeRequests::MergeWhenPipelineSucceedsService)
-            .to receive(:new).with(project, anything, anything)
-            .and_return(service)
-          expect(service).to receive(:execute).with(merge_request)
+      context 'when the sha parameter does not match the source SHA' do
+        before { post :merge, base_params.merge(sha: 'foo') }
 
-          merge_when_pipeline_succeeds
+        it 'returns :sha_mismatch' do
+          expect(json_response).to eq('status' => 'sha_mismatch')
+        end
+      end
+
+      context 'when the sha parameter matches the source SHA' do
+        def merge_with_sha
+          post :merge, base_params.merge(sha: merge_request.diff_head_sha)
         end
 
-        context 'when project.only_allow_merge_if_pipeline_succeeds? is true' do
+        it 'returns :success' do
+          merge_with_sha
+
+          expect(json_response).to eq('status' => 'success')
+        end
+
+        it 'starts the merge immediately' do
+          expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, anything)
+
+          merge_with_sha
+        end
+
+        context 'when the pipeline succeeds is passed' do
+          def merge_when_pipeline_succeeds
+            post :merge, base_params.merge(sha: merge_request.diff_head_sha, merge_when_pipeline_succeeds: '1')
+          end
+
           before do
-            project.update_column(:only_allow_merge_if_pipeline_succeeds, true)
+            create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
+          end
+
+          it 'returns :merge_when_pipeline_succeeds' do
+            merge_when_pipeline_succeeds
+
+            expect(json_response).to eq('status' => 'merge_when_pipeline_succeeds')
+          end
+
+          it 'sets the MR to merge when the pipeline succeeds' do
+            service = double(:merge_when_pipeline_succeeds_service)
+
+            expect(MergeRequests::MergeWhenPipelineSucceedsService)
+              .to receive(:new).with(project, anything, anything)
+              .and_return(service)
+            expect(service).to receive(:execute).with(merge_request)
+
+            merge_when_pipeline_succeeds
+          end
+
+          context 'when project.only_allow_merge_if_pipeline_succeeds? is true' do
+            before do
+              project.update_column(:only_allow_merge_if_pipeline_succeeds, true)
+            end
+
+            it 'returns :merge_when_pipeline_succeeds' do
+              merge_when_pipeline_succeeds
+
+              expect(json_response).to eq('status' => 'merge_when_pipeline_succeeds')
+            end
+          end
+        end
+
+        describe 'only_allow_merge_if_all_discussions_are_resolved? setting' do
+          let(:merge_request) { create(:merge_request_with_diff_notes, source_project: project, author: user) }
+
+          context 'when enabled' do
+            before do
+              project.update_column(:only_allow_merge_if_all_discussions_are_resolved, true)
+            end
+
+            context 'with unresolved discussion' do
+              before do
+                expect(merge_request).not_to be_discussions_resolved
+              end
+
+              it 'returns :failed' do
+                merge_with_sha
+
+                expect(json_response).to eq('status' => 'failed')
+              end
+            end
+
+            context 'with all discussions resolved' do
+              before do
+                merge_request.discussions.each { |d| d.resolve!(user) }
+                expect(merge_request).to be_discussions_resolved
+              end
+
+              it 'returns :success' do
+                merge_with_sha
+
+                expect(json_response).to eq('status' => 'success')
+              end
+            end
+          end
+
+          context 'when disabled' do
+            before do
+              project.update_column(:only_allow_merge_if_all_discussions_are_resolved, false)
+            end
+
+            context 'with unresolved discussion' do
+              before do
+                expect(merge_request).not_to be_discussions_resolved
+              end
+
+              it 'returns :success' do
+                merge_with_sha
+
+                expect(json_response).to eq('status' => 'success')
+              end
+            end
+
+            context 'with all discussions resolved' do
+              before do
+                merge_request.discussions.each { |d| d.resolve!(user) }
+                expect(merge_request).to be_discussions_resolved
+              end
+
+              it 'returns :success' do
+                merge_with_sha
+
+                expect(json_response).to eq('status' => 'success')
+              end
+            end
+          end
+        end
+      end
+    end
+
+    # TODO: Delete when removing old widget parts
+    context 'as any other format' do
+      let(:format) { 'js' }
+
+      context 'when the user does not have access' do
+        before do
+          project.team.truncate
+          project.team << [user, :reporter]
+          post :merge, base_params
+        end
+
+        it 'returns not found' do
+          expect(response).to be_not_found
+        end
+      end
+
+      context 'when the merge request is not mergeable' do
+        before do
+          merge_request.update_attributes(title: "WIP: #{merge_request.title}")
+
+          post :merge, base_params
+        end
+
+        it 'returns :failed' do
+          expect(assigns(:status)).to eq(:failed)
+        end
+      end
+
+      context 'when the sha parameter does not match the source SHA' do
+        before { post :merge, base_params.merge(sha: 'foo') }
+
+        it 'returns :sha_mismatch' do
+          expect(assigns(:status)).to eq(:sha_mismatch)
+        end
+      end
+
+      context 'when the sha parameter matches the source SHA' do
+        def merge_with_sha
+          post :merge, base_params.merge(sha: merge_request.diff_head_sha)
+        end
+
+        it 'returns :success' do
+          merge_with_sha
+
+          expect(assigns(:status)).to eq(:success)
+        end
+
+        it 'starts the merge immediately' do
+          expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, anything)
+
+          merge_with_sha
+        end
+
+        context 'when the pipeline succeeds is passed' do
+          def merge_when_pipeline_succeeds
+            post :merge, base_params.merge(sha: merge_request.diff_head_sha, merge_when_pipeline_succeeds: '1')
+          end
+
+          before do
+            create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
           end
 
           it 'returns :merge_when_pipeline_succeeds' do
@@ -356,70 +497,93 @@ describe Projects::MergeRequestsController do
 
             expect(assigns(:status)).to eq(:merge_when_pipeline_succeeds)
           end
-        end
-      end
 
-      describe 'only_allow_merge_if_all_discussions_are_resolved? setting' do
-        let(:merge_request) { create(:merge_request_with_diff_notes, source_project: project, author: user) }
+          it 'sets the MR to merge when the pipeline succeeds' do
+            service = double(:merge_when_pipeline_succeeds_service)
 
-        context 'when enabled' do
-          before do
-            project.update_column(:only_allow_merge_if_all_discussions_are_resolved, true)
+            expect(MergeRequests::MergeWhenPipelineSucceedsService)
+              .to receive(:new).with(project, anything, anything)
+              .and_return(service)
+            expect(service).to receive(:execute).with(merge_request)
+
+            merge_when_pipeline_succeeds
           end
 
-          context 'with unresolved discussion' do
+          context 'when project.only_allow_merge_if_pipeline_succeeds? is true' do
             before do
-              expect(merge_request).not_to be_discussions_resolved
+              project.update_column(:only_allow_merge_if_pipeline_succeeds, true)
             end
 
-            it 'returns :failed' do
-              merge_with_sha
+            it 'returns :merge_when_pipeline_succeeds' do
+              merge_when_pipeline_succeeds
 
-              expect(assigns(:status)).to eq(:failed)
-            end
-          end
-
-          context 'with all discussions resolved' do
-            before do
-              merge_request.discussions.each { |d| d.resolve!(user) }
-              expect(merge_request).to be_discussions_resolved
-            end
-
-            it 'returns :success' do
-              merge_with_sha
-
-              expect(assigns(:status)).to eq(:success)
+              expect(assigns(:status)).to eq(:merge_when_pipeline_succeeds)
             end
           end
         end
 
-        context 'when disabled' do
-          before do
-            project.update_column(:only_allow_merge_if_all_discussions_are_resolved, false)
+        describe 'only_allow_merge_if_all_discussions_are_resolved? setting' do
+          let(:merge_request) { create(:merge_request_with_diff_notes, source_project: project, author: user) }
+
+          context 'when enabled' do
+            before do
+              project.update_column(:only_allow_merge_if_all_discussions_are_resolved, true)
+            end
+
+            context 'with unresolved discussion' do
+              before do
+                expect(merge_request).not_to be_discussions_resolved
+              end
+
+              it 'returns :failed' do
+                merge_with_sha
+
+                expect(assigns(:status)).to eq(:failed)
+              end
+            end
+
+            context 'with all discussions resolved' do
+              before do
+                merge_request.discussions.each { |d| d.resolve!(user) }
+                expect(merge_request).to be_discussions_resolved
+              end
+
+              it 'returns :success' do
+                merge_with_sha
+
+                expect(assigns(:status)).to eq(:success)
+              end
+            end
           end
 
-          context 'with unresolved discussion' do
+          context 'when disabled' do
             before do
-              expect(merge_request).not_to be_discussions_resolved
+              project.update_column(:only_allow_merge_if_all_discussions_are_resolved, false)
             end
 
-            it 'returns :success' do
-              merge_with_sha
+            context 'with unresolved discussion' do
+              before do
+                expect(merge_request).not_to be_discussions_resolved
+              end
 
-              expect(assigns(:status)).to eq(:success)
+              it 'returns :success' do
+                merge_with_sha
+
+                expect(assigns(:status)).to eq(:success)
+              end
             end
-          end
 
-          context 'with all discussions resolved' do
-            before do
-              merge_request.discussions.each { |d| d.resolve!(user) }
-              expect(merge_request).to be_discussions_resolved
-            end
+            context 'with all discussions resolved' do
+              before do
+                merge_request.discussions.each { |d| d.resolve!(user) }
+                expect(merge_request).to be_discussions_resolved
+              end
 
-            it 'returns :success' do
-              merge_with_sha
+              it 'returns :success' do
+                merge_with_sha
 
-              expect(assigns(:status)).to eq(:success)
+                expect(assigns(:status)).to eq(:success)
+              end
             end
           end
         end
