@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Group, 'Routable' do
-  let!(:group) { create(:group, name: 'group 1') }
+  let!(:group) { create(:group, name: 'foo') }
 
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:route) }
@@ -92,20 +92,24 @@ describe Group, 'Routable' do
   end
 
   describe '.member_hierarchy' do
+    # foo/bar would also match foo/barbaz instead of just foo/bar and foo/bar/baz
     let!(:user) { create(:user) }
 
-    #        _______ group _______
+    #                group
+    #        _______ (foo) _______
     #       |                     |
     #       |                     |
     # nested_group_1        nested_group_2
+    # (bar)                 (barbaz)
     #       |                     |
     #       |                     |
     # nested_group_1_1      nested_group_2_1
+    # (baz)                 (baz)
     #
-    let!(:nested_group_1) { create :group, parent: group, name: 'group 1-1' }
-    let!(:nested_group_1_1) { create :group, parent: nested_group_1, name: 'group 1-1-1' }
-    let!(:nested_group_2) { create :group, parent: group, name: 'group 1-2' }
-    let!(:nested_group_2_1) { create :group, parent: nested_group_2, name: 'group 1-2-1' }
+    let!(:nested_group_1) { create :group, parent: group, name: 'bar' }
+    let!(:nested_group_1_1) { create :group, parent: nested_group_1, name: 'baz' }
+    let!(:nested_group_2) { create :group, parent: group, name: 'barbaz' }
+    let!(:nested_group_2_1) { create :group, parent: nested_group_2, name: 'baz' }
 
     context 'user is not a member of any group' do
       subject { described_class.member_hierarchy(user.id) }
@@ -147,7 +151,7 @@ describe Group, 'Routable' do
       end
     end
 
-    context 'user is member of the first child (internal node)' do
+    context 'user is member of the first child (internal node), branch 1' do
       before { nested_group_1.add_owner(user) }
       subject { described_class.member_hierarchy(user.id) }
 
@@ -155,6 +159,18 @@ describe Group, 'Routable' do
         is_expected.to match_array [
           group,
           nested_group_1, nested_group_1_1
+        ]
+      end
+    end
+
+    context 'user is member of the first child (internal node), branch 2' do
+      before { nested_group_2.add_owner(user) }
+      subject { described_class.member_hierarchy(user.id) }
+
+      it 'returns the groups in the hierarchy' do
+        is_expected.to match_array [
+          group,
+          nested_group_2, nested_group_2_1
         ]
       end
     end

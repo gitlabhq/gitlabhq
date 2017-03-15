@@ -144,7 +144,9 @@ module Routable
       return none if paths.empty?
 
       wheres = paths.map do |path|
-        "#{connection.quote(path)} LIKE CONCAT(routes.path, '%')"
+        "#{connection.quote(path)} = routes.path
+         OR
+         #{connection.quote(path)} LIKE CONCAT(routes.path, '/%')"
       end
 
       joins(:route).where(wheres.join(' OR '))
