@@ -65,7 +65,7 @@ $(() => {
     created () {
       if (this.milestoneTitle) {
         const milestoneTitleParam = `milestone_title=${this.milestoneTitle}`;
-        
+
         Store.filter.path = [milestoneTitleParam].concat(
           Store.filter.path.split('&').filter(param => param.match(/^milestone_title=(.*)$/g) === null)
         ).join('&');
