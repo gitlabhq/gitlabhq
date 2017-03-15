@@ -22,14 +22,11 @@
     create () {
       this.state.lists = [];
       this.filter.path = gl.utils.getUrlParamsArray().join('&');
-<<<<<<< HEAD
     },
     createNewListDropdownData() {
       this.state.currentBoard = {};
       this.state.currentPage = '';
       this.state.reload = false;
-=======
->>>>>>> ce/master
     },
     addList (listObj) {
       const list = new List(listObj);
@@ -127,17 +124,12 @@
         return list[key] === val && byType;
       })[0];
     },
-<<<<<<< HEAD
     updateFiltersUrl (replaceState = false) {
       if (replaceState) {
         history.replaceState(null, null, `?${this.filter.path}`);
       } else {
         history.pushState(null, null, `?${this.filter.path}`);
       }
-=======
-    updateFiltersUrl () {
-      history.pushState(null, null, `?${this.filter.path}`);
->>>>>>> ce/master
     }
   };
 })();

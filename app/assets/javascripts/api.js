@@ -10,10 +10,7 @@ var Api = {
   licensePath: "/api/:version/templates/licenses/:key",
   gitignorePath: "/api/:version/templates/gitignores/:key",
   gitlabCiYmlPath: "/api/:version/templates/gitlab_ci_ymls/:key",
-<<<<<<< HEAD
   ldapGroupsPath: "/api/:version/ldap/:provider/groups.json",
-=======
->>>>>>> ce/master
   dockerfilePath: "/api/:version/templates/dockerfiles/:key",
   issuableTemplatePath: "/:namespace_path/:project_path/templates/:type/:key",
   group: function(group_id, callback) {
@@ -146,7 +143,6 @@ var Api = {
       url = gon.relative_url_root + url;
     }
     return url.replace(':version', gon.api_version);
-<<<<<<< HEAD
   },
   ldap_groups: function(query, provider, callback) {
     var url;
@@ -164,8 +160,6 @@ var Api = {
     }).done(function(groups) {
       return callback(groups);
     });
-=======
->>>>>>> ce/master
   }
 };
 

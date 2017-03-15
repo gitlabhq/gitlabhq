@@ -1,9 +1,5 @@
 export default class FilteredSearchBoards extends gl.FilteredSearchManager {
-<<<<<<< HEAD
   constructor(store, updateUrl = false, cantEdit = []) {
-=======
-  constructor(store, updateUrl = false) {
->>>>>>> ce/master
     super('boards');
 
     this.store = store;
@@ -12,10 +8,7 @@ export default class FilteredSearchBoards extends gl.FilteredSearchManager {
     // Issue boards is slightly different, we handle all the requests async
     // instead or reloading the page, we just re-fire the list ajax requests
     this.isHandledAsync = true;
-<<<<<<< HEAD
     this.cantEdit = cantEdit;
-=======
->>>>>>> ce/master
   }
 
   updateObject(path) {
@@ -39,13 +32,10 @@ export default class FilteredSearchBoards extends gl.FilteredSearchManager {
     // Get the placeholder back if search is empty
     this.filteredSearchInput.dispatchEvent(new Event('input'));
   }
-<<<<<<< HEAD
 
   canEdit(token) {
     const tokenName = token.querySelector('.name').textContent.trim();
 
     return this.cantEdit.indexOf(tokenName) === -1;
   }
-=======
->>>>>>> ce/master
 }
