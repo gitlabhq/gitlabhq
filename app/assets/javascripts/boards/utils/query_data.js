@@ -1,22 +1,21 @@
-export default (path, extraData) => {
-  return path.split('&').reduce((data, filterParam) => {
-    if (filterParam === '') return data;
-    
-    const paramSplit = filterParam.split('=');
-    const paramKeyNormalized = paramSplit[0].replace('[]', '');
-    const isArray = paramSplit[0].indexOf('[]');
-    const value = decodeURIComponent(paramSplit[1]).replace(/\+/g, ' ');
+export default (path, extraData) => path.split('&').reduce((dataParam, filterParam) => {
+  if (filterParam === '') return dataParam;
 
-    if (isArray !== -1) {
-      if (!data[paramKeyNormalized]) {
-        data[paramKeyNormalized] = [];
-      }
+  const data = dataParam;
+  const paramSplit = filterParam.split('=');
+  const paramKeyNormalized = paramSplit[0].replace('[]', '');
+  const isArray = paramSplit[0].indexOf('[]');
+  const value = decodeURIComponent(paramSplit[1]).replace(/\+/g, ' ');
 
-      data[paramKeyNormalized].push(value);
-    } else {
-      data[paramKeyNormalized] = value;
+  if (isArray !== -1) {
+    if (!data[paramKeyNormalized]) {
+      data[paramKeyNormalized] = [];
     }
 
-    return data;
-  }, extraData);
-}
+    data[paramKeyNormalized].push(value);
+  } else {
+    data[paramKeyNormalized] = value;
+  }
+
+  return data;
+}, extraData);
