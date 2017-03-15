@@ -211,7 +211,6 @@ describe User, models: true do
         end
       end
     end
-<<<<<<< HEAD
 
     it 'does not allow a user to be both an auditor and an admin' do
       user = build(:user, :admin, :auditor)
@@ -234,8 +233,6 @@ describe User, models: true do
         expect(user).to be_valid
       end
     end
-=======
->>>>>>> ce/master
   end
 
   describe "non_ldap" do
