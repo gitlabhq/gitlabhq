@@ -217,6 +217,40 @@ describe Project, models: true do
 
       expect(project2.import_data).to be_nil
     end
+
+    it "does not allow blocked import_url localhost" do
+      project2 = build(:empty_project, import_url: 'http://localhost:9000/t.git')
+
+      expect(project2).to be_invalid
+      expect(project2.errors[:import_url]).to include('imports are not allowed from that URL')
+    end
+
+    it "does not allow blocked import_url port" do
+      project2 = build(:empty_project, import_url: 'http://github.com:25/t.git')
+
+      expect(project2).to be_invalid
+      expect(project2.errors[:import_url]).to include('imports are not allowed from that URL')
+    end
+
+    describe 'project pending deletion' do
+      let!(:project_pending_deletion) do
+        create(:empty_project,
+               pending_delete: true)
+      end
+      let(:new_project) do
+        build(:empty_project,
+              name: project_pending_deletion.name,
+              namespace: project_pending_deletion.namespace)
+      end
+
+      before do
+        new_project.validate
+      end
+
+      it 'contains errors related to the project being deleted' do
+        expect(new_project.errors.full_messages.first).to eq('The project is still being deleted. Please try again later.')
+      end
+    end
   end
 
   describe 'default_scope' do
