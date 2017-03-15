@@ -22,7 +22,7 @@ module Ci
 
       valid = true
 
-      builds.find do |build|
+      builds.find_each(batch_size: 15) do |build|
         next unless runner.can_pick?(build)
 
         begin
