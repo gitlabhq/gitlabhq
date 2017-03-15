@@ -51,7 +51,7 @@ Click on the service links to see further configuration instructions and details
 | [Slack Notifications](slack.md) | Receive event notifications in Slack |
 | [Slack slash commands](slack_slash_commands.md) | Slack chat and ChatOps slash commands |
 | PivotalTracker | Project Management Software (Source Commits Endpoint) |
-| Prometheus | Monitor the performance of your deployed apps |
+| [Prometheus](prometheus.md) | Monitor the performance of your deployed apps |
 | Pushover | Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop |
 | [Redmine](redmine.md) | Redmine issue tracker |
 

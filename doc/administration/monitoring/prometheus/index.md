@@ -96,6 +96,28 @@ Sample Prometheus queries:
 - **Data transmitted:** `irate(node_network_transmit_bytes[5m])`
 - **Data received:** `irate(node_network_receive_bytes[5m])`
 
+## Configuring Prometheus to monitor Kubernetes
+
+>**Note:**
+This is a project integration introduced in GitLab 9.0. Read more in the
+[Prometheus integration docs][].
+
+GitLab offers powerful integration with Prometheus for monitoring your apps.
+Metrics are retrieved from the configured Prometheus server, and then displayed
+within the GitLab interface.
+
+To enable the Kubernetes monitoring:
+
+1. Edit `/etc/gitlab/gitlab.rb`
+1. Add or find and uncomment the following line:
+
+    ```ruby
+    prometheus['monitor_kubernetes'] = true
+    ```
+
+1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
+   take effect
+
 ## Prometheus exporters
 
 There are a number of libraries and servers which help in exporting existing
@@ -145,3 +167,4 @@ The GitLab monitor exporter allows you to measure various GitLab metrics.
 [reconfigure]: ../../restart_gitlab.md#omnibus-gitlab-reconfigure
 [#27069]: https://gitlab.com/gitlab-org/gitlab-ce/issues/27069
 [1261]: https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1261
+[prometheus integration docs]: ../../../user/project/integrations/prometheus.md
