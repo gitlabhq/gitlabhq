@@ -2,12 +2,10 @@ const Vue = require('vue');
 const VueResource = require('vue-resource');
 const VueRealtimeListener = require('../vue_realtime_listener/index');
 
-Vue.use(VueResource);
-
-const NO_CHANGE = status => (status === 304);
-
 class VueShortPoller {
   constructor(options) {
+    Vue.use(VueResource);
+
     this.options = options;
     this.state = {
       pollId: null,
@@ -37,16 +35,14 @@ class VueShortPoller {
 
     Vue.http.get(url, data)
       .then((res) => {
-        const { status } = res;
-        return NO_CHANGE(status) ? null : success(res);
+        success(res);
       })
       .then(() => {
         this.state.polling = false;
       })
       .catch((err) => {
-        this.state.polling = false;
-        this.removePoll();
         error(err);
+        this.removePoll();
       });
   }
 

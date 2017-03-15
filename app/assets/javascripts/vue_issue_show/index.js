@@ -2,7 +2,6 @@
 /* eslint-disable no-underscore-dangle */
 
 const Vue = require('vue');
-Vue.use(require('vue-resource'));
 require('../vue_shared/vue_resource_interceptor');
 const IssueTitle = require('./issue_title');
 
