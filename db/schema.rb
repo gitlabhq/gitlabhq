@@ -1272,6 +1272,14 @@ ActiveRecord::Schema.define(version: 20170317203554) do
 
   add_index "subscriptions", ["subscribable_id", "subscribable_type", "user_id", "project_id"], name: "index_subscriptions_on_subscribable_and_user_id_and_project_id", unique: true, using: :btree
 
+  create_table "system_note_metadata", force: :cascade do |t|
+    t.integer "note_id", null: false
+    t.integer "commit_count"
+    t.string "icon"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "taggings", force: :cascade do |t|
     t.integer "tag_id"
     t.integer "taggable_id"
@@ -1518,6 +1526,7 @@ ActiveRecord::Schema.define(version: 20170317203554) do
   add_foreign_key "protected_branch_push_access_levels", "users"
   add_foreign_key "remote_mirrors", "projects"
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
+  add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
