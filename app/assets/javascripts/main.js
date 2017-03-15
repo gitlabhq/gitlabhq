@@ -16,17 +16,9 @@ import Sortable from 'vendor/Sortable';
 import 'mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';
 import 'vendor/fuzzaldrin-plus';
-import promisePolyfill from 'es6-promise';
 
 // extensions
-import './extensions/string';
 import './extensions/array';
-import './extensions/custom_event';
-import './extensions/element';
-import './extensions/jquery';
-import './extensions/object';
-
-promisePolyfill.polyfill();
 
 // expose common libraries as globals (TODO: remove these)
 window.jQuery = jQuery;
@@ -66,6 +58,8 @@ import './blob/blob_gitignore_selectors';
 import './blob/blob_license_selector';
 import './blob/blob_license_selectors';
 import './blob/template_selector';
+import './blob/create_branch_dropdown';
+import './blob/target_branch_dropdown';
 
 // templates
 import './templates/issuable_template_selector';
@@ -204,6 +198,7 @@ import './visibility_select';
 import './wikis';
 import './zen_mode';
 
+<<<<<<< HEAD
 // EE-only scripts
 require('./admin_email_select');
 require('./application_settings');
@@ -212,6 +207,8 @@ require('./ldap_groups_select');
 require('./path_locks');
 require('./weight_select');
 
+=======
+>>>>>>> ce/master
 document.addEventListener('beforeunload', function () {
   // Unbind scroll events
   $(document).off('scroll');
@@ -301,6 +298,7 @@ $(function () {
   if ($flash.length > 0) {
     $flash.click(function () {
       return $(this).fadeOut();
+<<<<<<< HEAD
     });
     $flash.show();
   }
@@ -364,6 +362,68 @@ $(function () {
     return new ConfirmDangerModal(form, text, {
       warningMessage: warningMessage
     });
+=======
+    });
+    $flash.show();
+  }
+  // Disable form buttons while a form is submitting
+  $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function (e) {
+    var buttons;
+    buttons = $('[type="submit"]', this);
+    switch (e.type) {
+      case 'ajax:beforeSend':
+      case 'submit':
+        return buttons.disable();
+      default:
+        return buttons.enable();
+    }
+  });
+  $(document).ajaxError(function (e, xhrObj) {
+    var ref = xhrObj.status;
+    if (xhrObj.status === 401) {
+      return new Flash('You need to be logged in.', 'alert');
+    } else if (ref === 404 || ref === 500) {
+      return new Flash('Something went wrong on our end.', 'alert');
+    }
+  });
+  $('.account-box').hover(function () {
+    // Show/Hide the profile menu when hovering the account box
+    return $(this).toggleClass('hover');
+  });
+  $document.on('click', '.diff-content .js-show-suppressed-diff', function () {
+    var $container;
+    $container = $(this).parent();
+    $container.next('table').show();
+    return $container.remove();
+  // Commit show suppressed diff
+  });
+  $('.navbar-toggle').on('click', function () {
+    $('.header-content .title').toggle();
+    $('.header-content .header-logo').toggle();
+    $('.header-content .navbar-collapse').toggle();
+    return $('.navbar-toggle').toggleClass('active');
+  });
+  // Show/hide comments on diff
+  $body.on('click', '.js-toggle-diff-comments', function (e) {
+    var $this = $(this);
+    var notesHolders = $this.closest('.diff-file').find('.notes_holder');
+    $this.toggleClass('active');
+    if ($this.hasClass('active')) {
+      notesHolders.show().find('.hide, .content').show();
+    } else {
+      notesHolders.hide().find('.content').hide();
+    }
+    $(document).trigger('toggle.comments');
+    return e.preventDefault();
+  });
+  $document.off('click', '.js-confirm-danger');
+  $document.on('click', '.js-confirm-danger', function (e) {
+    var btn = $(e.target);
+    var form = btn.closest('form');
+    var text = btn.data('confirm-danger-message');
+    e.preventDefault();
+    return new ConfirmDangerModal(form, text);
+>>>>>>> ce/master
   });
   $('input[type="search"]').each(function () {
     var $this = $(this);

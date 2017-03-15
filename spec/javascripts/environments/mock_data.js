@@ -1,4 +1,4 @@
-const environmentsList = [
+export const environmentsList = [
   {
     name: 'DEV',
     size: 1,
@@ -31,7 +31,7 @@ const environmentsList = [
   },
 ];
 
-const serverData = [
+export const serverData = [
   {
     name: 'DEV',
     size: 1,
@@ -68,7 +68,7 @@ const serverData = [
   },
 ];
 
-const environment = {
+export const environment = {
   name: 'DEV',
   size: 1,
   latest: {
@@ -86,6 +86,7 @@ const environment = {
     rollout_status_path: '/path',
   },
 };
+<<<<<<< HEAD
 
 const deployBoardMockData = {
   instances: [
@@ -138,3 +139,5 @@ module.exports = {
   deployBoardMockData,
   invalidDeployBoardMockData,
 };
+=======
+>>>>>>> ce/master

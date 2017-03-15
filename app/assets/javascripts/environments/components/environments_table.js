@@ -4,12 +4,17 @@
  * Dumb component used to render top level environments and
  * the folder view.
  */
+<<<<<<< HEAD
 const Vue = require('vue');
 const EnvironmentItem = require('./environment_item');
 const DeployBoard = require('./deploy_board_component').default;
 
 module.exports = Vue.component('environment-table-component', {
+=======
+import EnvironmentItem from './environment_item';
+>>>>>>> ce/master
 
+export default {
   components: {
     EnvironmentItem,
     DeployBoard,
@@ -34,6 +39,7 @@ module.exports = Vue.component('environment-table-component', {
       default: false,
     },
 
+<<<<<<< HEAD
     toggleDeployBoard: {
       type: Function,
       required: false,
@@ -50,6 +56,11 @@ module.exports = Vue.component('environment-table-component', {
       type: Object,
       required: false,
       default: () => ({}),
+=======
+    service: {
+      type: Object,
+      required: true,
+>>>>>>> ce/master
     },
   },
 
@@ -73,6 +84,7 @@ module.exports = Vue.component('environment-table-component', {
             :model="model"
             :can-create-deployment="canCreateDeployment"
             :can-read-environment="canReadEnvironment"
+<<<<<<< HEAD
             :toggleDeployBoard="toggleDeployBoard"></tr>
 
           <tr v-if="model.hasDeployBoard && model.isDeployBoardVisible" class="js-deploy-board-row">
@@ -86,8 +98,11 @@ module.exports = Vue.component('environment-table-component', {
               </deploy-board>
             </td>
           </tr>
+=======
+            :service="service"></tr>
+>>>>>>> ce/master
         </template>
       </tbody>
     </table>
   `,
-});
+};

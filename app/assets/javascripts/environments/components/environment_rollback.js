@@ -1,10 +1,14 @@
+/* global Flash */
+/* eslint-disable no-new */
 /**
  * Renders Rollback or Re deploy button in environments table depending
- * of the provided property `isLastDeployment`
+ * of the provided property `isLastDeployment`.
+ *
+ * Makes a post request when the button is clicked.
  */
-const Vue = require('vue');
+import eventHub from '../event_hub';
 
-module.exports = Vue.component('rollback-component', {
+export default {
   props: {
     retryUrl: {
       type: String,
@@ -15,16 +19,49 @@ module.exports = Vue.component('rollback-component', {
       type: Boolean,
       default: true,
     },
+
+    service: {
+      type: Object,
+      required: true,
+    },
+  },
+
+  data() {
+    return {
+      isLoading: false,
+    };
+  },
+
+  methods: {
+    onClick() {
+      this.isLoading = true;
+
+      this.service.postAction(this.retryUrl)
+      .then(() => {
+        this.isLoading = false;
+        eventHub.$emit('refreshEnvironments');
+      })
+      .catch(() => {
+        this.isLoading = false;
+        new Flash('An error occured while making the request.');
+      });
+    },
   },
 
   template: `
-    <a class="btn" :href="retryUrl" data-method="post" rel="nofollow">
+    <button type="button"
+      class="btn"
+      @click="onClick"
+      :disabled="isLoading">
+
       <span v-if="isLastDeployment">
         Re-deploy
       </span>
       <span v-else>
         Rollback
       </span>
-    </a>
+
+      <i v-if="isLoading" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+    </button>
   `,
-});
+};

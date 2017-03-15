@@ -8,7 +8,7 @@ module Gitlab
     end
 
     def can_do_action?(action)
-      return false if no_user_or_blocked?
+      return false unless can_access_git?
 
       @permission_cache ||= {}
       @permission_cache[action] ||= user.can?(action, project)
@@ -19,7 +19,7 @@ module Gitlab
     end
 
     def allowed?
-      return false if no_user_or_blocked?
+      return false unless can_access_git?
 
       if user.requires_ldap_check? && user.try_obtain_ldap_lease
         return false unless Gitlab::LDAP::Access.allowed?(user)
@@ -29,7 +29,7 @@ module Gitlab
     end
 
     def can_push_to_branch?(ref)
-      return false if no_user_or_blocked?
+      return false unless can_access_git?
 
       if project.protected_branch?(ref)
         return true if project.empty_repo? && project.user_can_push_to_empty_repo?(user)
@@ -44,7 +44,7 @@ module Gitlab
     end
 
     def can_merge_to_branch?(ref)
-      return false if no_user_or_blocked?
+      return false unless can_access_git?
 
       if project.protected_branch?(ref)
         access_levels = project.protected_branches.matching(ref).map(&:merge_access_levels).flatten
@@ -55,15 +55,15 @@ module Gitlab
     end
 
     def can_read_project?
-      return false if no_user_or_blocked?
+      return false unless can_access_git?
 
       user.can?(:read_project, project)
     end
 
     private
 
-    def no_user_or_blocked?
-      user.nil? || user.blocked?
+    def can_access_git?
+      user && user.can?(:access_git)
     end
   end
 end

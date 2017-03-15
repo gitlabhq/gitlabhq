@@ -1,7 +1,7 @@
-const Vue = require('vue');
-require('~/flash');
-const EnvironmentsComponent = require('~/environments/components/environment');
-const { environment } = require('./mock_data');
+import Vue from 'vue';
+import '~/flash';
+import EnvironmentsComponent from '~/environments/components/environment';
+import { environment } from './mock_data';
 
 describe('Environment', () => {
   preloadFixtures('static/environments/environments.html.raw');

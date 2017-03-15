@@ -111,10 +111,8 @@ feature 'Environments page', :feature, :js do
           find('.js-dropdown-play-icon-container').click
           expect(page).to have_content(action.name.humanize)
 
-          expect { click_link(action.name.humanize) }
+          expect { find('.js-manual-action-link').click }
             .not_to change { Ci::Pipeline.count }
-
-          expect(action.reload).to be_pending
         end
 
         scenario 'does show build name and id' do
@@ -156,12 +154,6 @@ feature 'Environments page', :feature, :js do
 
           scenario 'does show stop button' do
             expect(page).to have_selector('.stop-env-link')
-          end
-
-          scenario 'starts build when stop button clicked' do
-            find('.stop-env-link').click
-
-            expect(page).to have_content('close_app')
           end
 
           context 'for reporter' do

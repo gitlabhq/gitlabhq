@@ -4,3 +4,4 @@ lib/gitlab/diff/position_tracer.rb
 app/controllers/projects/approver_groups_controller.rb
 app/controllers/projects/approvers_controller.rb
 app/policies/project_policy.rb
+app/models/concerns/relative_positioning.rb

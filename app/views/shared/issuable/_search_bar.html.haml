@@ -90,6 +90,7 @@
                   %span.dropdown-label-box{ style: 'background: {{color}}' }
                   %span.label-title.js-data-value
                     {{title}}
+<<<<<<< HEAD
           - if type == :issues || type == :boards
             #js-dropdown-weight.dropdown-menu{ data: { icon: 'balance-scale', hint: 'weight', tag: 'weight' } }
               %ul{ 'data-dropdown' => true }
@@ -105,6 +106,8 @@
                   %li.filter-dropdown-item{ 'data-value' => "#{weight}" }
                     %button.btn.btn-link= weight
 
+=======
+>>>>>>> ce/master
         .filter-dropdown-container
           - if type == :boards
             - if can?(current_user, :admin_list, @project)

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* eslint-disable no-new */
 
 const Vue = window.Vue = require('vue');
@@ -9,8 +10,21 @@ const Flash = require('~/flash');
 require('~/vue_shared/components/table_pagination');
 require('~/lib/utils/common_utils');
 require('~/vue_shared/vue_resource_interceptor');
+=======
+/* eslint-disable no-param-reassign, no-new */
+/* global Flash */
+import EnvironmentsService from '../services/environments_service';
+import EnvironmentTable from '../components/environments_table';
+import EnvironmentsStore from '../stores/environments_store';
 
-module.exports = Vue.component('environment-folder-view', {
+const Vue = window.Vue = require('vue');
+window.Vue.use(require('vue-resource'));
+require('../../vue_shared/components/table_pagination');
+require('../../lib/utils/common_utils');
+require('../../vue_shared/vue_resource_interceptor');
+>>>>>>> ce/master
+
+export default Vue.component('environment-folder-view', {
 
   components: {
     'environment-table': EnvironmentTable,
@@ -181,15 +195,18 @@ module.exports = Vue.component('environment-folder-view', {
             :play-icon-svg="playIconSvg"
             :terminal-icon-svg="terminalIconSvg"
             :commit-icon-svg="commitIconSvg"
+<<<<<<< HEAD
             :toggleDeployBoard="toggleDeployBoard"
             :store="store"
             :service="service">
           </environment-table>
+=======
+            :service="service"/>
+>>>>>>> ce/master
 
           <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
             :change="changePage"
-            :pageInfo="state.paginationInformation">
-          </table-pagination>
+            :pageInfo="state.paginationInformation"/>
         </div>
       </div>
     </div>

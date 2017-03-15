@@ -274,6 +274,7 @@ GitLabDropdown = (function() {
             selector = '.dropdown-content li:not(' + NON_SELECTABLE_CLASSES + ')';
             if (_this.dropdown.find('.dropdown-toggle-page').length) {
               selector = ".dropdown-page-one " + selector;
+<<<<<<< HEAD
             }
             return $(selector);
           };
@@ -298,6 +299,32 @@ GitLabDropdown = (function() {
                 currentIndex = 0;
               }
             }
+=======
+            }
+            return $(selector);
+          };
+        })(this),
+        data: (function(_this) {
+          return function() {
+            return _this.fullData;
+          };
+        })(this),
+        callback: (function(_this) {
+          return function(data) {
+            _this.parseData(data);
+            if (_this.filterInput.val() !== '') {
+              selector = SELECTABLE_CLASSES;
+              if (_this.dropdown.find('.dropdown-toggle-page').length) {
+                selector = ".dropdown-page-one " + selector;
+              }
+              if ($(_this.el).is('input')) {
+                currentIndex = -1;
+              } else {
+                $(selector, _this.dropdown).first().find('a').addClass('is-focused');
+                currentIndex = 0;
+              }
+            }
+>>>>>>> ce/master
           };
         })(this)
       });
@@ -454,6 +481,7 @@ GitLabDropdown = (function() {
     } else {
       this.focusTextInput();
     }
+<<<<<<< HEAD
 
     if (this.options.showMenuAbove) {
       this.positionMenuAbove();
@@ -500,6 +528,54 @@ GitLabDropdown = (function() {
       for (var i = 0; i < html.length; i += 1) {
         var el = html[i];
 
+=======
+
+    if (this.options.showMenuAbove) {
+      this.positionMenuAbove();
+    }
+
+    if (this.options.opened) {
+      this.options.opened.call(this, e);
+    }
+
+    return this.dropdown.trigger('shown.gl.dropdown');
+  };
+
+  GitLabDropdown.prototype.positionMenuAbove = function() {
+    var $button = $(this.el);
+    var $menu = this.dropdown.find('.dropdown-menu');
+
+    $menu.css('top', ($button.height() + $menu.height()) * -1);
+  };
+
+  GitLabDropdown.prototype.hidden = function(e) {
+    var $input;
+    this.resetRows();
+    this.removeArrayKeyEvent();
+    $input = this.dropdown.find(".dropdown-input-field");
+    if (this.options.filterable) {
+      $input.blur();
+    }
+    if (this.dropdown.find(".dropdown-toggle-page").length) {
+      $('.dropdown-menu', this.dropdown).removeClass(PAGE_TWO_CLASS);
+    }
+    if (this.options.hidden) {
+      this.options.hidden.call(this, e);
+    }
+    return this.dropdown.trigger('hidden.gl.dropdown');
+  };
+
+  // Render the full menu
+  GitLabDropdown.prototype.renderMenu = function(html) {
+    if (this.options.renderMenu) {
+      return this.options.renderMenu(html);
+    } else {
+      var ul = document.createElement('ul');
+
+      for (var i = 0; i < html.length; i += 1) {
+        var el = html[i];
+
+>>>>>>> ce/master
         if (el instanceof jQuery) {
           el = el.get(0);
         }
@@ -514,6 +590,7 @@ GitLabDropdown = (function() {
       return ul;
     }
   };
+<<<<<<< HEAD
 
   // Append the menu into the dropdown
   GitLabDropdown.prototype.appendMenu = function(html) {
@@ -579,6 +656,57 @@ GitLabDropdown = (function() {
         if (field.length) {
           selected = true;
         }
+=======
+
+  // Append the menu into the dropdown
+  GitLabDropdown.prototype.appendMenu = function(html) {
+    return this.clearMenu().append(html);
+  };
+
+  GitLabDropdown.prototype.clearMenu = function() {
+    var selector;
+    selector = '.dropdown-content';
+    if (this.dropdown.find(".dropdown-toggle-page").length) {
+      selector = ".dropdown-page-one .dropdown-content";
+    }
+
+    return $(selector, this.dropdown).empty();
+  };
+
+  GitLabDropdown.prototype.renderItem = function(data, group, index) {
+    var field, fieldName, html, selected, text, url, value;
+    if (group == null) {
+      group = false;
+    }
+    if (index == null) {
+      // Render the row
+      index = false;
+    }
+    html = document.createElement('li');
+    if (data === 'divider' || data === 'separator') {
+      html.className = data;
+      return html;
+    }
+    // Header
+    if (data.header != null) {
+      html.className = 'dropdown-header';
+      html.innerHTML = data.header;
+      return html;
+    }
+    if (this.options.renderRow) {
+      // Call the render function
+      html = this.options.renderRow.call(this.options, data, this);
+    } else {
+      if (!selected) {
+        value = this.options.id ? this.options.id(data) : data.id;
+        fieldName = this.options.fieldName;
+
+        if (value) { value = value.toString().replace(/'/g, '\\\''); }
+
+        field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value + "']");
+        if (field.length) {
+          selected = true;
+        }
       }
       // Set URL
       if (this.options.url != null) {
@@ -605,6 +733,55 @@ GitLabDropdown = (function() {
         link.className = 'is-active';
       }
 
+      if (group) {
+        link.dataset.group = group;
+        link.dataset.index = index;
+>>>>>>> ce/master
+      }
+      // Set URL
+      if (this.options.url != null) {
+        url = this.options.url(data);
+      } else {
+        url = data.url != null ? data.url : '#';
+      }
+      // Set Text
+      if (this.options.text != null) {
+        text = this.options.text(data);
+      } else {
+        text = data.text != null ? data.text : '';
+      }
+      if (this.highlight) {
+        text = this.highlightTextMatches(text, this.filterInput.val());
+      }
+      // Create the list item & the link
+      var link = document.createElement('a');
+
+<<<<<<< HEAD
+      link.href = url;
+      link.innerHTML = text;
+
+      if (selected) {
+        link.className = 'is-active';
+=======
+      html.appendChild(link);
+    }
+    return html;
+  };
+
+  GitLabDropdown.prototype.highlightTextMatches = function(text, term) {
+    var occurrences;
+    occurrences = fuzzaldrinPlus.match(text, term);
+    return text.split('').map(function(character, i) {
+      if (indexOf.call(occurrences, i) !== -1) {
+        return "<b>" + character + "</b>";
+      } else {
+        return character;
+>>>>>>> ce/master
+      }
+    }).join('');
+  };
+
+<<<<<<< HEAD
       if (group) {
         link.dataset.group = group;
         link.dataset.index = index;
@@ -635,6 +812,16 @@ GitLabDropdown = (function() {
   GitLabDropdown.prototype.rowClicked = function(el) {
     var field, fieldName, groupName, isInput, selectedIndex, selectedObject, value, isMarking;
 
+=======
+  GitLabDropdown.prototype.noResults = function() {
+    var html;
+    return html = "<li class='dropdown-menu-empty-link'> <a href='#' class='is-focused'> No matching results. </a> </li>";
+  };
+
+  GitLabDropdown.prototype.rowClicked = function(el) {
+    var field, fieldName, groupName, isInput, selectedIndex, selectedObject, value, isMarking;
+
+>>>>>>> ce/master
     fieldName = this.options.fieldName;
     isInput = $(this.el).is('input');
     if (this.renderedData) {
@@ -845,12 +1032,21 @@ GitLabDropdown = (function() {
       instance = null;
     }
     return $(this.el).find(".dropdown-toggle-text").text(this.options.toggleLabel(selected, el, instance));
+<<<<<<< HEAD
   };
 
   GitLabDropdown.prototype.clearField = function(field, isInput) {
     return isInput ? field.val('') : field.remove();
   };
 
+=======
+  };
+
+  GitLabDropdown.prototype.clearField = function(field, isInput) {
+    return isInput ? field.val('') : field.remove();
+  };
+
+>>>>>>> ce/master
   return GitLabDropdown;
 })();
 

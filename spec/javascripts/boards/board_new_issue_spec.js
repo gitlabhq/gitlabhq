@@ -8,7 +8,6 @@ import boardNewIssue from '~/boards/components/board_new_issue';
 
 require('~/boards/models/list');
 require('./mock_data');
-require('es6-promise').polyfill();
 
 describe('Issue boards new issue form', () => {
   let vm;

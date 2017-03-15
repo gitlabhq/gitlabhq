@@ -48,6 +48,18 @@ feature 'Login', feature: true do
     end
   end
 
+  describe 'with the ghost user' do
+    it 'disallows login' do
+      login_with(User.ghost)
+
+      expect(page).to have_content('Invalid Login or password.')
+    end
+
+    it 'does not update Devise trackable attributes' do
+      expect { login_with(User.ghost) }.not_to change { User.ghost.reload.sign_in_count }
+    end
+  end
+
   describe 'with two-factor authentication' do
     def enter_code(code)
       fill_in 'user_otp_attempt', with: code

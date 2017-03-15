@@ -118,8 +118,10 @@ module API
         requires :title, type: String, desc: 'The title of an issue'
         optional :created_at, type: DateTime,
                               desc: 'Date time when the issue was created. Available only for admins and project owners.'
-        optional :merge_request_for_resolving_discussions, type: Integer,
+        optional :merge_request_to_resolve_discussions_of, type: Integer,
                                                            desc: 'The IID of a merge request for which to resolve discussions'
+        optional :discussion_to_resolve, type: String,
+                                         desc: 'The ID of a discussion to resolve, also pass `merge_request_to_resolve_discussions_of`'
         use :issue_params
       end
       post ':id/issues' do
@@ -129,12 +131,6 @@ module API
         end
 
         issue_params = declared_params(include_missing: false)
-
-        if merge_request_iid = params[:merge_request_for_resolving_discussions]
-          issue_params[:merge_request_for_resolving_discussions] = MergeRequestsFinder.new(current_user, project_id: user_project.id).
-            execute.
-            find_by(iid: merge_request_iid)
-        end
 
         issue = ::Issues::CreateService.new(user_project,
                                             current_user,

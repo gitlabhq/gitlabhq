@@ -1,16 +1,26 @@
 /* eslint-disable no-param-reassign, no-new */
 /* global Flash */
+import EnvironmentsService from '../services/environments_service';
+import EnvironmentTable from './environments_table';
+import EnvironmentsStore from '../stores/environments_store';
+import eventHub from '../event_hub';
 
 const Vue = window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
+<<<<<<< HEAD
 const EnvironmentsService = require('~/environments/services/environments_service');
 const EnvironmentTable = require('./environments_table');
 const EnvironmentsStore = require('~/environments/stores/environments_store');
 require('~/vue_shared/components/table_pagination');
 require('~/lib/utils/common_utils');
 require('~/vue_shared/vue_resource_interceptor');
+=======
+require('../../vue_shared/components/table_pagination');
+require('../../lib/utils/common_utils');
+require('../../vue_shared/vue_resource_interceptor');
+>>>>>>> ce/master
 
-module.exports = Vue.component('environment-component', {
+export default Vue.component('environment-component', {
 
   components: {
     'environment-table': EnvironmentTable,
@@ -77,6 +87,7 @@ module.exports = Vue.component('environment-component', {
    * Toggles loading property.
    */
   created() {
+<<<<<<< HEAD
     const scope = gl.utils.getParameterByName('scope') || this.visibility;
     const pageNumber = gl.utils.getParameterByName('page') || this.pageNumber;
 
@@ -104,6 +115,17 @@ module.exports = Vue.component('environment-component', {
         this.isLoading = false;
         new Flash('An error occurred while fetching the environments.', 'alert');
       });
+=======
+    this.service = new EnvironmentsService(this.endpoint);
+
+    this.fetchEnvironments();
+
+    eventHub.$on('refreshEnvironments', this.fetchEnvironments);
+  },
+
+  beforeDestroyed() {
+    eventHub.$off('refreshEnvironments');
+>>>>>>> ce/master
   },
 
   methods: {
@@ -129,6 +151,32 @@ module.exports = Vue.component('environment-component', {
 
       gl.utils.visitUrl(param);
       return param;
+    },
+
+    fetchEnvironments() {
+      const scope = gl.utils.getParameterByName('scope') || this.visibility;
+      const pageNumber = gl.utils.getParameterByName('page') || this.pageNumber;
+
+      this.isLoading = true;
+
+      return this.service.get(scope, pageNumber)
+        .then(resp => ({
+          headers: resp.headers,
+          body: resp.json(),
+        }))
+        .then((response) => {
+          this.store.storeAvailableCount(response.body.available_count);
+          this.store.storeStoppedCount(response.body.stopped_count);
+          this.store.storeEnvironments(response.body.environments);
+          this.store.setPagination(response.headers);
+        })
+        .then(() => {
+          this.isLoading = false;
+        })
+        .catch(() => {
+          this.isLoading = false;
+          new Flash('An error occurred while fetching the environments.');
+        });
     },
   },
 
@@ -162,7 +210,7 @@ module.exports = Vue.component('environment-component', {
 
       <div class="content-list environments-container">
         <div class="environments-list-loading text-center" v-if="isLoading">
-          <i class="fa fa-spinner fa-spin"></i>
+          <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
         </div>
 
         <div class="blank-state blank-state-no-icon"
@@ -192,8 +240,11 @@ module.exports = Vue.component('environment-component', {
             :environments="state.environments"
             :can-create-deployment="canCreateDeploymentParsed"
             :can-read-environment="canReadEnvironmentParsed"
+<<<<<<< HEAD
             :toggleDeployBoard="toggleDeployBoard"
             :store="store"
+=======
+>>>>>>> ce/master
             :service="service"/>
         </div>
 

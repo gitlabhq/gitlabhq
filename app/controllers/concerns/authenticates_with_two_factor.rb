@@ -23,7 +23,7 @@ module AuthenticatesWithTwoFactor
   #
   # Returns nil
   def prompt_for_two_factor(user)
-    return locked_user_redirect(user) if user.access_locked?
+    return locked_user_redirect(user) unless user.can?(:log_in)
 
     session[:otp_user_id] = user.id
     setup_u2f_authentication(user)
@@ -37,10 +37,9 @@ module AuthenticatesWithTwoFactor
 
   def authenticate_with_two_factor
     user = self.resource = find_user
+    return locked_user_redirect(user) unless user.can?(:log_in)
 
-    if user.access_locked?
-      locked_user_redirect(user)
-    elsif user_params[:otp_attempt].present? && session[:otp_user_id]
+    if user_params[:otp_attempt].present? && session[:otp_user_id]
       authenticate_with_two_factor_via_otp(user)
     elsif user_params[:device_response].present? && session[:otp_user_id]
       authenticate_with_two_factor_via_u2f(user)

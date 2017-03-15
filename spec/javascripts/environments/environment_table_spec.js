@@ -1,4 +1,5 @@
-const EnvironmentTable = require('~/environments/components/environments_table');
+import Vue from 'vue';
+import environmentTableComp from '~/environments/components/environments_table';
 
 describe('Environment item', () => {
   preloadFixtures('static/environments/element.html.raw');
@@ -15,17 +16,22 @@ describe('Environment item', () => {
       environment_path: 'url',
     };
 
+    const EnvironmentTable = Vue.extend(environmentTableComp);
+
     const component = new EnvironmentTable({
       el: document.querySelector('.test-dom-element'),
       propsData: {
         environments: [mockItem],
         canCreateDeployment: false,
         canReadEnvironment: true,
+<<<<<<< HEAD
         toggleDeployBoard: () => {},
         store: {},
+=======
+>>>>>>> ce/master
         service: {},
       },
-    });
+    }).$mount();
 
     expect(component.$el.tagName).toEqual('TABLE');
   });

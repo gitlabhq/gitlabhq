@@ -42,7 +42,8 @@
       this.editTokenWrapper = this.editToken.bind(this);
       this.tokenChange = this.tokenChange.bind(this);
 
-      this.filteredSearchInput.form.addEventListener('submit', this.handleFormSubmit);
+      this.filteredSearchInputForm = this.filteredSearchInput.form;
+      this.filteredSearchInputForm.addEventListener('submit', this.handleFormSubmit);
       this.filteredSearchInput.addEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.addEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.addEventListener('input', this.handleInputPlaceholderWrapper);
@@ -60,7 +61,7 @@
     }
 
     unbindEvents() {
-      this.filteredSearchInput.form.removeEventListener('submit', this.handleFormSubmit);
+      this.filteredSearchInputForm.removeEventListener('submit', this.handleFormSubmit);
       this.filteredSearchInput.removeEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.removeEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.removeEventListener('input', this.handleInputPlaceholderWrapper);

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 require 'spec_helper'
 
-describe API::Projects, api: true  do
-  include ApiHelpers
+describe API::Projects, :api  do
   include Gitlab::CurrentSettings
+
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }

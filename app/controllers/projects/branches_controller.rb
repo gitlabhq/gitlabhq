@@ -10,15 +10,16 @@ class Projects::BranchesController < Projects::ApplicationController
   def index
     @sort = params[:sort].presence || sort_value_name
     @branches = BranchesFinder.new(@repository, params).execute
-    @branches = Kaminari.paginate_array(@branches).page(params[:page])
 
-    @max_commits = @branches.reduce(0) do |memo, branch|
-      diverging_commit_counts = repository.diverging_commit_counts(branch)
-      [memo, diverging_commit_counts[:behind], diverging_commit_counts[:ahead]].max
-    end
+    @branches = Kaminari.paginate_array(@branches).page(params[:page]) unless params[:show_all].present?
 
     respond_to do |format|
-      format.html
+      format.html do
+        @max_commits = @branches.reduce(0) do |memo, branch|
+          diverging_commit_counts = repository.diverging_commit_counts(branch)
+          [memo, diverging_commit_counts[:behind], diverging_commit_counts[:ahead]].max
+        end
+      end
       format.json do
         render json: @branches.map(&:name)
       end

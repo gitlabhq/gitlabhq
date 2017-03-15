@@ -106,6 +106,13 @@ class Issue < ActiveRecord::Base
     end
   end
 
+  def self.order_by_position_and_priority
+    order_labels_priority.
+      reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
+              Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
+              "id DESC")
+  end
+
   # `from` argument can be a Namespace or Project.
   def to_reference(from = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"

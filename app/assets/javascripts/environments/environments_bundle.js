@@ -1,4 +1,4 @@
-const EnvironmentsComponent = require('./components/environment');
+import EnvironmentsComponent from './components/environment';
 
 $(() => {
   window.gl = window.gl || {};
