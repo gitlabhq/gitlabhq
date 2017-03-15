@@ -42,6 +42,7 @@ module Banzai
           element['title'] || element['alt'],
           href: element['src'],
           target: '_blank',
+          rel: 'noopener noreferrer',
           title: "Download '#{element['title'] || element['alt']}'")
         download_paragraph = doc.document.create_element('p')
         download_paragraph.children = link

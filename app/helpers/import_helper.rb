@@ -7,7 +7,7 @@ module ImportHelper
   def provider_project_link(provider, path_with_namespace)
     url = __send__("#{provider}_project_url", path_with_namespace)
 
-    link_to path_with_namespace, url, target: '_blank'
+    link_to path_with_namespace, url, target: '_blank', rel: 'noopener noreferrer'
   end
 
   private
