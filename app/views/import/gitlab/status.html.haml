@@ -43,7 +43,7 @@
       - @repos.each do |repo|
         %tr{ id: "repo_#{repo["id"]}" }
           %td
-            = link_to repo["path_with_namespace"], "https://gitlab.com/#{repo["path_with_namespace"]}", target: "_blank"
+            = link_to repo["path_with_namespace"], "https://gitlab.com/#{repo["path_with_namespace"]}", target: "_blank", rel: 'noopener noreferrer'
           %td.import-target
             = import_project_target(repo['namespace']['path'], repo['name'])
           %td.import-actions.job-status
