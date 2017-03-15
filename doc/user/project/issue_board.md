@@ -188,11 +188,15 @@ An issue board can be associated with a milestone which will automatically filte
 the issue to that milestone. This allows you to create unique boards for
 individual milestones.
 
-You can assign a milestone to a board by when creating a new issue board or you
-can update current issue boards to also have a milestone. There are also two
-pre-defined milestones, **Any milestone** and **Upcoming**. **Any milestone**
-will filter the issues with any milestone. **Upcoming** will filter issues to
-the milestone with the due date that is next.
+You can assign a milestone to a board when creating a new issue board or you
+can update current issue boards to also have a milestone. Once a specific
+milestone is assigned to an issue board, you will no longer be able to filter
+through any other milestone. In order to do that, you need to remove the
+defined milestone from the issue board.
+
+There are also two pre-defined milestones, **Any milestone** which will filter
+the issues with any milestone, and **Upcoming** which will filter issues to the
+milestone with the due date that is next.
 
 ![Update boards milestone](img/issue_board_multiple_milestone.png)
 
