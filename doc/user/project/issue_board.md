@@ -28,7 +28,7 @@ Below is a table of the definitions used for GitLab's Issue Board.
 | --------------  | ------------- |
 | **Issue Board** | It represents a different view for your issues. It can have multiple lists with each list consisting of issues represented by cards. |
 | **List**        | Each label that exists in the issue tracker can have its own dedicated list. Every list is named after the label it is based on and is represented by a column which contains all the issues associated with that label. You can think of a list like the results you get when you filter the issues by a label in your issue tracker. |
-| **Card**        | Every card represents an issue and it is shown under the list for which it has a label. The information you can see on a card consists of the issue number, the issue title, the assignee and the labels associated with it. You can drag cards around from one list to another. Issues inside lists are [ordered by priority](labels.md#prioritize-labels). |
+| **Card**        | Every card represents an issue and it is shown under the list for which it has a label. The information you can see on a card consists of the issue number, the issue title, the assignee and the labels associated with it. You can drag cards around from one list to another. You can re-order cards within a list. |
 
 There are two types of lists, the ones you create based on your labels, and
 one default:
@@ -45,6 +45,7 @@ In short, here's a list of actions you can take in an Issue Board:
 - [Create a new list](#creating-a-new-list).
 - [Delete an existing list](#deleting-a-list).
 - Drag issues between lists.
+- Re-order issues in lists.
 - Drag and reorder the lists themselves.
 - Change issue labels on-the-fly while dragging issues between lists.
 - Close an issue if you drag it to the **Done** list.
@@ -114,6 +115,13 @@ board itself.
 
 ![Remove issue from list](img/issue_boards_remove_issue.png)
 
+## Re-ordering an issue in a list
+
+> Introduced in GitLab 9.0.
+
+Issues can be re-ordered inside of lists. This is as simple as dragging and dropping
+an issue into the order you want.
+
 ## Filtering issues
 
 You should be able to use the filters on top of your Issue Board to show only
@@ -172,6 +180,26 @@ existing one.
 
 ![Multiple issue boards](img/issue_boards_multiple.png)
 
+### Board with a milestone
+
+> Introduced in [GitLab Enterprise Edition][ee] 9.0.
+
+An issue board can be associated with a milestone which will automatically filter
+the issue to that milestone. This allows you to create unique boards for
+individual milestones.
+
+You can assign a milestone to a board when creating a new issue board or you
+can update current issue boards to also have a milestone. Once a specific
+milestone is assigned to an issue board, you will no longer be able to filter
+through any other milestone. In order to do that, you need to remove the
+defined milestone from the issue board.
+
+There are also two pre-defined milestones, **Any milestone** which will filter
+the issues with any milestone, and **Upcoming** which will filter issues to the
+milestone with the due date that is next.
+
+![Update boards milestone](img/issue_board_multiple_milestone.png)
+
 ## Permissions
 
 [Developers and up](../permissions.md) can use all the functionality of the
@@ -191,7 +219,6 @@ A few things to remember:
 - Clicking on the issue title inside a card will take you to that issue.
 - Clicking on a label inside a card will quickly filter the entire Issue Board
   and show only the issues from all lists that have that label.
-- Issues inside lists are [ordered by priority][label-priority].
 - For performance and visibility reasons, each list shows the first 20 issues
   by default. If you have more than 20 issues start scrolling down and the next
   20 will appear.
