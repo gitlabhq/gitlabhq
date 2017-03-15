@@ -26,7 +26,12 @@ const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_s
         apiScope: 'all',
         pageInfo: {},
         pagenum: 1,
-        count: {},
+        count: {
+          all: 0,
+          pending: 0,
+          running: 0,
+          finished: 0,
+        },
         pageRequest: false,
         hasError: false,
         pipelinesEmptyStateSVG,
@@ -127,6 +132,7 @@ const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_s
                 All
               </a>
               <span class="badge js-totalbuilds-count">
+                {{count.all}}
               </span>
             </li>
             <li
@@ -135,25 +141,42 @@ const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_s
               <a :href="pendingPath">
                 Pending
               </a>
-              <span class="badge"></span>
+
+              <span class="badge">
+                {{count.pending}}
+              </span>
             </li>
             <li
               class="js-pipelines-tab-running"
               :class="{ 'active': scope === 'running'}">
-              <a :href="runningPath">Running</a>
-              <span class="badge"></span>
+
+              <a :href="runningPath">
+                Running
+              </a>
+
+              <span class="badge">
+                {{count.running}}
+              </span>
             </li>
+
             <li
               class="js-pipelines-tab-finished"
               :class="{ 'active': scope === 'finished'}">
-              <a :href="finishedPath">Finished</a>
-              <span class="badge"></span>
+
+              <a :href="finishedPath">
+                Finished
+              </a>
+              <span class="badge">
+                {{count.finished}}
+              </span>
             </li>
+
             <li
             class="js-pipelines-tab-branches"
             :class="{ 'active': scope === 'branches'}">
               <a :href="branchesPath">Branches</a>
             </li>
+
             <li
               class="js-pipelines-tab-tags"
               :class="{ 'active': scope === 'tags'}">
