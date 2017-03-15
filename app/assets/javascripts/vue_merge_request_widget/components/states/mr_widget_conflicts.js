@@ -1,4 +1,3 @@
-import mrWidgetMergeHelp from '../../components/mr_widget_merge_help';
 import mrWidgetPipeline from '../../components/mr_widget_pipeline';
 
 export default {
@@ -7,7 +6,6 @@ export default {
     mr: { type: Object, required: true },
   },
   components: {
-    'mr-widget-merge-help': mrWidgetMergeHelp,
     'mr-widget-pipeline': mrWidgetPipeline,
   },
   computed: {
@@ -36,7 +34,6 @@ export default {
           data-toggle="modal"
           href="#modal_merge_info"
         >Merge locally</a>
-        <mr-widget-merge-help />
       </div>
     </div>
   `,

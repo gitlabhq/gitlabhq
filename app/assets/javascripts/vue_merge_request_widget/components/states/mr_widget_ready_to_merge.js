@@ -1,5 +1,4 @@
 import mrWidgetPipeline from '../../components/mr_widget_pipeline';
-import mrWidgetMergeHelp from '../../components/mr_widget_merge_help';
 
 export default {
   name: 'MRWidgetReadyToMerge',
@@ -9,7 +8,6 @@ export default {
   },
   components: {
     'mr-widget-pipeline': mrWidgetPipeline,
-    'mr-widget-merge-help': mrWidgetMergeHelp,
   },
   data() {
     return {
@@ -151,7 +149,6 @@ export default {
             The pipeline for this merge request failed. Please retry the job or push a new commit to fix the failure.
           </span>
         </div>
-        <mr-widget-merge-help />
       </div>
     </div>
   `,

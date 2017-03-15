@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import WidgetHeader from './components/mr_widget_header';
+import WidgetMergeHelp from './components/mr_widget_merge_help';
 import MergedState from './components/states/mr_widget_merged';
 import ClosedState from './components/states/mr_widget_closed';
 import LockedState from './components/states/mr_widget_locked';
@@ -13,7 +14,8 @@ import ReadyToMergeState from './components/states/mr_widget_ready_to_merge';
 import UnresolvedDiscussionsState from './components/states/mr_widget_unresolved_discussions';
 import PipelineBlockedState from './components/states/mr_widget_pipeline_blocked';
 import CheckingState from './components/states/mr_widget_checking';
-import stateToComponentMap from './stores/state_to_component_map';
+import { stateToComponentMap } from './stores/state_maps';
+import { statesToShowHelpWidget } from './stores/state_maps';
 import MRWidgetStore from './stores/mr_widget_store';
 import MRWidgetService from './services/mr_widget_service';
 
@@ -32,9 +34,13 @@ const mrWidgetOptions = () => ({
     componentName() {
       return stateToComponentMap[this.mr.state];
     },
+    shouldRenderMergeHelp() {
+      return statesToShowHelpWidget.indexOf(this.mr.state) > -1;
+    },
   },
   components: {
     'mr-widget-header': WidgetHeader,
+    'mr-widget-merge-help': WidgetMergeHelp,
     'mr-widget-merged': MergedState,
     'mr-widget-closed': ClosedState,
     'mr-widget-locked': LockedState,
@@ -53,6 +59,7 @@ const mrWidgetOptions = () => ({
     <div class="mr-state-widget">
       <mr-widget-header :mr="mr" />
       <component :is="componentName" :mr="mr" :service="service"></component>
+      <mr-widget-merge-help v-if="shouldRenderMergeHelp" />
     </div>
   `,
 });
