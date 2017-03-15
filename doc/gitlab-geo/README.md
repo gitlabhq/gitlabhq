@@ -7,19 +7,6 @@ We recommend you use with at least GitLab 8.6 EE.
 GitLab Geo allows you to replicate your GitLab instance to other geographical
 locations as a read-only fully operational version.
 
-- [Overview](#overview)
-- [Setup instructions](#setup-instructions)
-    - [Database Replication](database.md)
-    - [Configuration](configuration.md)
-- [Current limitations](#current-limitations)
-- [Disaster Recovery](disaster-recovery.md)
-- [Frequently Asked Questions](#frequently-asked-questions)
-    - [Can I use Geo in a disaster recovery situation?](#can-i-use-geo-in-a-disaster-recovery-situation)
-    - [What data is replicated to a secondary node?](#what-data-is-replicated-to-a-secondary-node)
-    - [Can I git push to a secondary node?](#can-i-git-push-to-a-secondary-node)
-    - [How long does it take to have a commit replicated to a secondary node?](#how-long-does-it-take-to-have-a-commit-replicated-to-a-secondary-node)
-    - [What happens if the SSH server runs at a different port?](#what-happens-if-the-ssh-server-runs-at-a-different-port)
-
 ## Overview
 
 If you have two or more teams geographically spread out, but your GitLab
@@ -70,8 +57,8 @@ there are a few things to consider:
          ```
 
 >**Important**:
-The initialization of a new Geo secondary node on versions older than 8.14 
-requires data to be copied from the primary, as there is no backfill 
+The initialization of a new Geo secondary node on versions older than 8.14
+requires data to be copied from the primary, as there is no backfill
 feature bundled with those versions.
 See more details in the [Configure GitLab](configuration.md) step.
 
