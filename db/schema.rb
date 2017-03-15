@@ -1078,7 +1078,7 @@ ActiveRecord::Schema.define(version: 20170317203554) do
   create_table "system_note_metadata", force: :cascade do |t|
     t.integer "note_id", null: false
     t.integer "commit_count"
-    t.string "icon"
+    t.string "action"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

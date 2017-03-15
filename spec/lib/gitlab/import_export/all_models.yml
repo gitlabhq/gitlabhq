@@ -29,6 +29,7 @@ notes:
 - resolved_by
 - todos
 - events
+- system_note_metadata
 label_links:
 - target
 - label
