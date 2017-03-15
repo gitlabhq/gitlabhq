@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MergeRequestSerializer do
   let(:resource) { create(:merge_request) }
-  let(:user)     { build_stubbed(:user) }
+  let(:user)     { create(:user) }
 
   subject { described_class.new(current_user: user, user: user).represent(resource) }
 
@@ -102,6 +102,49 @@ describe MergeRequestSerializer do
         allow(resource).to receive_messages(open?: true, diverged_from_target_branch?: false)
 
         expect(subject[:diverged_commits_count]).to be_zero
+      end
+    end
+  end
+
+  context 'issues_links' do
+    let(:project) { create(:project, :private, creator: user, namespace: user.namespace) }
+    let(:issue_a) { create(:issue, project: project) }
+    let(:issue_b) { create(:issue, project: project) }
+
+    let(:resource) do
+      create(:merge_request,
+             source_project: project, target_project: project,
+             description: "Fixes #{issue_a.to_reference} Related #{issue_b.to_reference}")
+    end
+
+    before do
+      project.team << [user, :developer]
+
+      allow(resource.project).to receive(:default_branch)
+        .and_return(resource.target_branch)
+    end
+
+    describe 'closing' do
+      let(:sentence) { subject[:issues_links][:closing] }
+
+      it 'presents closing issues links' do
+        expect(sentence).to match("#{project.full_path}/issues/#{issue_a.iid}")
+      end
+
+      it 'does not present related issues links' do
+        expect(sentence).not_to match("#{project.full_path}/issues/#{issue_b.iid}")
+      end
+    end
+
+    describe 'mentioned_but_not_closing' do
+      let(:sentence) { subject[:issues_links][:mentioned_but_not_closing] }
+
+      it 'presents related issues links' do
+        expect(sentence).to match("#{project.full_path}/issues/#{issue_b.iid}")
+      end
+
+      it 'does not present closing issues links' do
+        expect(sentence).not_to match("#{project.full_path}/issues/#{issue_a.iid}")
       end
     end
   end

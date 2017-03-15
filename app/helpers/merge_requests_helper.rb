@@ -55,6 +55,7 @@ module MergeRequestsHelper
     end
   end
 
+  # TODO: Delete when removing old widget parts
   def issues_sentence(issues)
     # Sorting based on the `#123` or `group/project#123` reference will sort
     # local issues first.
@@ -63,10 +64,12 @@ module MergeRequestsHelper
     end.sort.to_sentence
   end
 
+  # TODO: Delete when removing old widget parts
   def mr_closes_issues
     @mr_closes_issues ||= @merge_request.closes_issues(current_user)
   end
 
+  # TODO: Delete when removing old widget parts
   def mr_issues_mentioned_but_not_closing
     @mr_issues_mentioned_but_not_closing ||= @merge_request.issues_mentioned_but_not_closing(current_user)
   end

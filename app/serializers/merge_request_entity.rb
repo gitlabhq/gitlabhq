@@ -1,5 +1,6 @@
 class MergeRequestEntity < IssuableEntity
   include RequestAwareEntity
+  include GitlabMarkdownHelper
 
   expose :author, using: UserEntity
 
@@ -31,6 +32,27 @@ class MergeRequestEntity < IssuableEntity
   expose :can_be_cherry_picked?, as: :can_be_cherry_picked
   expose :cannot_be_merged?, as: :has_conflicts
   expose :can_be_merged?, as: :can_be_merged
+
+  expose :issues_links do
+    expose :closing do |merge_request|
+      closes_issues = merge_request.closes_issues(current_user)
+
+      markdown issues_sentence(merge_request.project, closes_issues),
+        pipeline: :gfm,
+        author: merge_request.author,
+        project: merge_request.project
+    end
+
+    expose :mentioned_but_not_closing do |merge_request|
+      mentioned_but_not_closing_issues = merge_request
+        .issues_mentioned_but_not_closing(current_user)
+
+      markdown(issues_sentence(merge_request.project, mentioned_but_not_closing_issues),
+               pipeline: :gfm,
+               author: merge_request.author,
+               project: merge_request.project)
+    end
+  end
 
   expose :current_user do
     expose :can_create_issue do |merge_request|
@@ -132,5 +154,17 @@ class MergeRequestEntity < IssuableEntity
     new_namespace_project_issue_path(merge_request.project.namespace,
                                      merge_request.project,
                                      merge_request_for_resolving_discussions: merge_request.iid)
+  end
+
+  private
+
+  delegate :current_user, to: :request
+
+  def issues_sentence(project, issues)
+    # Sorting based on the `#123` or `group/project#123` reference will sort
+    # local issues first.
+    issues.map do |issue|
+      issue.to_reference(project)
+    end.sort.to_sentence
   end
 end
