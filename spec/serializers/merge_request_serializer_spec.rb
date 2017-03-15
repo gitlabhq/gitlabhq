@@ -59,11 +59,6 @@ describe MergeRequestSerializer do
       .to eql("/#{resource.project.full_path}/merge_requests/#{resource.iid}.diff")
   end
 
-  it 'has plain_diff_path' do
-    expect(subject[:plain_diff_path])
-      .to eql("/#{resource.project.full_path}/merge_requests/#{resource.iid}.diff")
-  end
-
   it 'has target_branch_path' do
     expect(subject[:target_branch_path])
       .to eql("/#{resource.target_project.full_path}/branches/#{resource.target_branch}")
@@ -102,6 +97,24 @@ describe MergeRequestSerializer do
         allow(resource).to receive_messages(open?: true, diverged_from_target_branch?: false)
 
         expect(subject[:diverged_commits_count]).to be_zero
+      end
+    end
+  end
+
+  context 'current_user' do
+    describe 'can_update_merge_request' do
+      context 'user can update issue' do
+        it 'returns true' do
+          resource.project.team << [user, :developer]
+
+          expect(subject[:current_user][:can_update_merge_request]).to eql(true)
+        end
+      end
+
+      context 'user cannot update issue' do
+        it 'returns false' do
+          expect(subject[:current_user][:can_update_merge_request]).to eql(false)
+        end
       end
     end
   end

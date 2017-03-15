@@ -47,10 +47,10 @@ class MergeRequestEntity < IssuableEntity
       mentioned_but_not_closing_issues = merge_request
         .issues_mentioned_but_not_closing(current_user)
 
-      markdown(issues_sentence(merge_request.project, mentioned_but_not_closing_issues),
+      markdown issues_sentence(merge_request.project, mentioned_but_not_closing_issues),
                pipeline: :gfm,
                author: merge_request.author,
-               project: merge_request.project)
+               project: merge_request.project
     end
   end
 
@@ -60,7 +60,6 @@ class MergeRequestEntity < IssuableEntity
         can?(request.current_user, :create_issue, merge_request.project)
     end
 
-    # TODO: @oswaldo, please verify this
     expose :can_update_merge_request do |merge_request|
       merge_request.project.merge_requests_enabled? &&
         can?(request.current_user, :update_merge_request, merge_request.project)
@@ -149,7 +148,6 @@ class MergeRequestEntity < IssuableEntity
     merge_request.project.only_allow_merge_if_pipeline_succeeds?
   end
 
-  # TODO: @oswaldo, please verify this
   expose :create_issue_to_resolve_discussions_path do |merge_request|
     new_namespace_project_issue_path(merge_request.project.namespace,
                                      merge_request.project,
