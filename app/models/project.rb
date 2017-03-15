@@ -134,6 +134,7 @@ class Project < ActiveRecord::Base
   has_many :snippets,           dependent: :destroy, class_name: 'ProjectSnippet'
   has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
   has_many :protected_branches, dependent: :destroy
+  has_many :protected_tags, dependent: :destroy
 
   has_many :project_authorizations
   has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
