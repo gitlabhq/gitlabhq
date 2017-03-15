@@ -68,6 +68,10 @@ var config = {
         loader: 'babel-loader'
       },
       {
+        test: /\.vue$/,
+        use: 'vue-loader'
+      },
+      {
         test: /\.svg$/,
         use: 'raw-loader'
       }, {
