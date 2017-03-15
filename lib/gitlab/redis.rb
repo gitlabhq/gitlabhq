@@ -1,6 +1,7 @@
 # This file should not have any direct dependency on Rails environment
 # please require all dependencies below:
 require 'active_support/core_ext/hash/keys'
+require 'active_support/core_ext/module/delegation'
 
 module Gitlab
   class Redis
