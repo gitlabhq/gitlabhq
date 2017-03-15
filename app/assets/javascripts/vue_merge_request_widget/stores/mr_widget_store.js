@@ -17,6 +17,14 @@ export default class MergeRequestStore {
     this.divergedCommitsCount = data.diverged_commits_count;
     this.pipeline = data.pipeline;
 
+    if (data.issues_links) {
+      const { closing, mentioned_but_not_closing } = data.issues_links;
+      this.relatedLinks = {
+        closing,
+        mentioned: mentioned_but_not_closing,
+      };
+    }
+
     this.updatedAt = data.updated_at;
     this.mergedAt = MergeRequestStore.getEventDate(data.merge_event);
     // FIXME: replace it with merge_event.author

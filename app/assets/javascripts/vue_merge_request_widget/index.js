@@ -2,6 +2,7 @@ import Vue from 'vue';
 import WidgetHeader from './components/mr_widget_header';
 import WidgetMergeHelp from './components/mr_widget_merge_help';
 import WidgetPipeline from './components/mr_widget_pipeline';
+import WidgetRelatedLinks from './components/mr_widget_related_links';
 import MergedState from './components/states/mr_widget_merged';
 import ClosedState from './components/states/mr_widget_closed';
 import LockedState from './components/states/mr_widget_locked';
@@ -15,10 +16,9 @@ import ReadyToMergeState from './components/states/mr_widget_ready_to_merge';
 import UnresolvedDiscussionsState from './components/states/mr_widget_unresolved_discussions';
 import PipelineBlockedState from './components/states/mr_widget_pipeline_blocked';
 import CheckingState from './components/states/mr_widget_checking';
-import { stateToComponentMap } from './stores/state_maps';
-import { statesToShowHelpWidget } from './stores/state_maps';
 import MRWidgetStore from './stores/mr_widget_store';
 import MRWidgetService from './services/mr_widget_service';
+import { stateToComponentMap, statesToShowHelpWidget } from './stores/state_maps';
 
 const mrWidgetOptions = () => ({
   el: '#js-vue-mr-widget',
@@ -39,13 +39,17 @@ const mrWidgetOptions = () => ({
       return statesToShowHelpWidget.indexOf(this.mr.state) > -1;
     },
     shouldRenderPipelines() {
-      return this.mr.pipeline ? true : false;
+      return this.mr.pipeline;
+    },
+    shouldRenderRelatedLinks() {
+      return this.mr.relatedLinks;
     },
   },
   components: {
     'mr-widget-header': WidgetHeader,
     'mr-widget-merge-help': WidgetMergeHelp,
     'mr-widget-pipeline': WidgetPipeline,
+    'mr-widget-related-links': WidgetRelatedLinks,
     'mr-widget-merged': MergedState,
     'mr-widget-closed': ClosedState,
     'mr-widget-locked': LockedState,
@@ -65,7 +69,7 @@ const mrWidgetOptions = () => ({
       <mr-widget-header :mr="mr" />
       <mr-widget-pipeline v-if="shouldRenderPipelines" :mr="mr" />
       <component :is="componentName" :mr="mr" :service="service"></component>
-      <mr-widget-related-issues v-if="shouldRenderMergeHelp" />
+      <mr-widget-related-links v-if="shouldRenderRelatedLinks" :related-links="mr.relatedLinks" />
       <mr-widget-merge-help v-if="shouldRenderMergeHelp" />
     </div>
   `,
