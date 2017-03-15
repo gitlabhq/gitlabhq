@@ -19,7 +19,6 @@ class VueShortPoller {
 
   poll() {
     const { time } = this.options;
-
     this.state.pollId = setInterval(() => {
       const { polling } = this.state;
       return polling ? null : this.fetchData(this.options);
@@ -41,12 +40,13 @@ class VueShortPoller {
         this.state.polling = false;
       })
       .catch((err) => {
-        error(err);
         this.removePoll();
+        error(err);
       });
   }
 
   run() {
+    this.poll();
     VueRealtimeListener(this.removePoll, this.poll);
   }
 }

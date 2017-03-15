@@ -1,4 +1,4 @@
-module.exports = (removeIntervals, startIntervals) => {
+const VueRealtimeListener = (removeIntervals, startIntervals) => {
   window.removeEventListener('focus', startIntervals);
   window.removeEventListener('blur', removeIntervals);
   window.removeEventListener('onbeforeload', removeIntervals);
@@ -7,3 +7,5 @@ module.exports = (removeIntervals, startIntervals) => {
   window.addEventListener('blur', removeIntervals);
   window.addEventListener('onbeforeload', removeIntervals);
 };
+
+module.exports = VueRealtimeListener;

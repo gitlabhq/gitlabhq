@@ -661,34 +661,20 @@ describe 'Issues', feature: true do
     end
   end
 
-  describe 'updates tiltle for logged in user in realtime from issue#show', js: true do
+  describe 'title issue#show', js: true do
     include WaitForVueResource
 
-    before do
-      @realtime_project = create(:project, :public)
-      @realtime_project.team << [[@user], :developer]
-      @realtime_issue = create(:issue, project: @realtime_project, title: "new title", author: @user, assignee: @user)
-    end
+    it 'updates the title', js: true do
+      issue = create(:issue, author: @user, assignee: @user, project: project, title: 'new title')
 
-    it 'updates the title if logged in', js: true do
-      visit namespace_project_issue_path(@realtime_project.namespace, @realtime_project, @realtime_issue)
+      visit namespace_project_issues_path(project.namespace, project, assignee_id: @user.id)
+
       expect(page).to have_text("new title")
 
-      @realtime_issue.update(title: "updated title")
+      issue.update(title: "updated title")
 
       wait_for_vue_resource
       expect(page).to have_text("updated title")
-    end
-
-    it 'does not update title if a guest is viewing a public issue', js: true do
-      logout
-      visit namespace_project_issue_path(@realtime_project.namespace, @realtime_project, @realtime_issue)
-      expect(page).to have_text("new title")
-
-      @realtime_issue.update(title: "updated title")
-
-      wait_for_vue_resource
-      expect(page).not_to have_text("updated title")
     end
   end
 end
