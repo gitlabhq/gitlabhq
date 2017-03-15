@@ -4,14 +4,16 @@ module API
     class MergeRequestDiffs < Grape::API
       before { authenticate! }
 
-      resource :projects do
+      params do
+        requires :id, type: String, desc: 'The ID of a project'
+      end
+      resource :projects, requirements: { id: %r{[^/]+} } do
         desc 'Get a list of merge request diff versions' do
           detail 'This feature was introduced in GitLab 8.12.'
           success ::API::Entities::MergeRequestDiff
         end
 
         params do
-          requires :id, type: String, desc: 'The ID of a project'
           requires :merge_request_id, type: Integer, desc: 'The ID of a merge request'
         end
 
@@ -27,7 +29,6 @@ module API
         end
 
         params do
-          requires :id, type: String, desc: 'The ID of a project'
           requires :merge_request_id, type: Integer, desc: 'The ID of a merge request'
           requires :version_id, type: Integer, desc: 'The ID of a merge request diff version'
         end

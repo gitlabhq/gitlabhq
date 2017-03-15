@@ -238,7 +238,6 @@ describe API::Commits, api: true  do
       end
 
       context 'with project path containing a dot in URL' do
-        let!(:user) { create(:user, username: 'foo.bar') }
         let(:url) { "/projects/#{CGI.escape(project.full_path)}/repository/commits" }
 
         it 'a new file in project repo' do
