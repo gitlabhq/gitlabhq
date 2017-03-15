@@ -33,6 +33,7 @@ module Projects
 
     def import_repository
       begin
+        raise Error, "Blocked import URL." if Gitlab::UrlBlocker.blocked_url?(project.import_url)
         gitlab_shell.import_repository(project.repository_storage_path, project.path_with_namespace, project.import_url)
       rescue => e
         # Expire cache to prevent scenarios such as:
@@ -40,7 +41,7 @@ module Projects
         # 2. Retried import, repo is broken or not imported but +exists?+ still returns true
         project.repository.before_import if project.repository_exists?
 
-        raise Error,  "Error importing repository #{project.import_url} into #{project.path_with_namespace} - #{e.message}"
+        raise Error, "Error importing repository #{project.import_url} into #{project.path_with_namespace} - #{e.message}"
       end
     end
 
