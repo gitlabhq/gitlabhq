@@ -151,7 +151,7 @@ class MergeRequestEntity < IssuableEntity
   expose :create_issue_to_resolve_discussions_path do |merge_request|
     new_namespace_project_issue_path(merge_request.project.namespace,
                                      merge_request.project,
-                                     merge_request_for_resolving_discussions: merge_request.iid)
+                                     merge_request_for_resolving_discussions_of: merge_request.iid)
   end
 
   private
