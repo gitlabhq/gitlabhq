@@ -9,7 +9,6 @@ describe Note, models: true do
     it { is_expected.to belong_to(:author).class_name('User') }
 
     it { is_expected.to have_many(:todos).dependent(:destroy) }
-    it { is_expected.to have_one(:system_note_metadata).dependent(:destroy) }
   end
 
   describe 'modules' do

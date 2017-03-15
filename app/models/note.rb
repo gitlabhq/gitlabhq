@@ -38,7 +38,7 @@ class Note < ActiveRecord::Base
 
   has_many :todos, dependent: :destroy
   has_many :events, as: :target, dependent: :destroy
-  has_one :system_note_metadata, dependent: :destroy
+  has_one :system_note_metadata
 
   delegate :gfm_reference, :local_reference, to: :noteable
   delegate :name, to: :project, prefix: true
