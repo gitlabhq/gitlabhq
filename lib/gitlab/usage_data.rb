@@ -32,7 +32,6 @@ module Gitlab
             merge_requests: MergeRequest.count,
             milestones: Milestone.count,
             notes: Note.count,
-            pushes: Event.code_push.count,
             pages_domains: PagesDomain.count,
             projects: Project.count,
             protected_branches: ProtectedBranch.count,

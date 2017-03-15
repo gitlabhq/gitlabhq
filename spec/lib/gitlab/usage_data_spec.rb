@@ -41,7 +41,6 @@ describe Gitlab::UsageData do
         milestones
         notes
         projects
-        pushes
         pages_domains
         protected_branches
         releases
