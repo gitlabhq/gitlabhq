@@ -51,14 +51,18 @@
 
     static filterHint(input, item) {
       const updatedItem = item;
-      const searchInput = gl.DropdownUtils.getSearchInput(input);
-      let { lastToken } = gl.FilteredSearchTokenizer.processTokens(searchInput);
-      lastToken = lastToken.key || lastToken || '';
+      const searchInput = gl.DropdownUtils.getSearchQuery(input);
+      const { lastToken, tokens } = gl.FilteredSearchTokenizer.processTokens(searchInput);
+      const lastKey = lastToken.key || lastToken || '';
+      const allowMultiple = item.type === 'array';
+      const itemInExistingTokens = tokens.some(t => t.key === item.hint);
 
-      if (!lastToken || searchInput.split('').last() === ' ') {
+      if (!allowMultiple && itemInExistingTokens) {
+        updatedItem.droplab_hidden = true;
+      } else if (!lastKey || searchInput.split('').last() === ' ') {
         updatedItem.droplab_hidden = false;
-      } else if (lastToken) {
-        const split = lastToken.split(':');
+      } else if (lastKey) {
+        const split = lastKey.split(':');
         const tokenName = split[0].split(' ').last();
 
         const match = updatedItem.hint.indexOf(tokenName.toLowerCase()) === -1;

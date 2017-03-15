@@ -126,7 +126,11 @@ require('~/filtered_search/filtered_search_dropdown_manager');
 
       beforeEach(() => {
         setFixtures(`
-          <input type="text" id="test" />
+          <ul class="tokens-container">
+            <li class="input-token">
+              <input class="filtered-search" type="text" id="test" />
+            </li>
+          </ul>
         `);
 
         input = document.getElementById('test');
@@ -142,13 +146,36 @@ require('~/filtered_search/filtered_search_dropdown_manager');
         input.value = 'o';
         updatedItem = gl.DropdownUtils.filterHint(input, {
           hint: 'label',
-        }, 'o');
+        });
         expect(updatedItem.droplab_hidden).toBe(true);
       });
 
       it('should return droplab_hidden false when item has no hint', () => {
         const updatedItem = gl.DropdownUtils.filterHint(input, {}, '');
         expect(updatedItem.droplab_hidden).toBe(false);
+      });
+
+      it('should allow multiple if item.type is array', () => {
+        input.value = 'label:~first la';
+        const updatedItem = gl.DropdownUtils.filterHint(input, {
+          hint: 'label',
+          type: 'array',
+        });
+        expect(updatedItem.droplab_hidden).toBe(false);
+      });
+
+      it('should prevent multiple if item.type is not array', () => {
+        input.value = 'milestone:~first mile';
+        let updatedItem = gl.DropdownUtils.filterHint(input, {
+          hint: 'milestone',
+        });
+        expect(updatedItem.droplab_hidden).toBe(true);
+
+        updatedItem = gl.DropdownUtils.filterHint(input, {
+          hint: 'milestone',
+          type: 'string',
+        });
+        expect(updatedItem.droplab_hidden).toBe(true);
       });
     });
 
