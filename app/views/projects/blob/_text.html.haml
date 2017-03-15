@@ -3,7 +3,7 @@
     .nothing-here-block
       File too large, you can
       = succeed '.' do
-        = link_to 'view the raw file', namespace_project_raw_path(@project.namespace, @project, @id), target: '_blank'
+        = link_to 'view the raw file', namespace_project_raw_path(@project.namespace, @project, @id), target: '_blank', rel: 'noopener noreferrer'
 
 - else
   - blob.load_all_data!(@repository)

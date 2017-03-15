@@ -12,7 +12,7 @@ module.exports = Vue.component('external-url-component', {
   },
 
   template: `
-    <a class="btn external_url" :href="externalUrl" target="_blank">
+    <a class="btn external_url" :href="externalUrl" target="_blank" rel="noopener noreferrer">
       <i class="fa fa-external-link"></i>
     </a>
   `,
