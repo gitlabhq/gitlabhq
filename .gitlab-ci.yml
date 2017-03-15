@@ -7,12 +7,7 @@ cache:
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
-<<<<<<< HEAD
-  # retry tests only in CI environment
-  RSPEC_RETRY_RETRY_COUNT: "3"
   ELASTIC_URL: "http://elasticsearch:9200"
-=======
->>>>>>> ce/master
   RAILS_ENV: "test"
   SIMPLECOV: "true"
   SETUP_DB: "true"
