@@ -3,7 +3,8 @@ module Gitlab
     class Middleware
       RESERVED_WORDS = ProjectPathValidator::RESERVED.map { |word| "/#{word}/" }.join('|')
       ROUTE_REGEXP = Regexp.union(
-        %r(^(?!.*(#{RESERVED_WORDS})).*/noteable/issue/\d+/notes\z)
+        %r(^(?!.*(#{RESERVED_WORDS})).*/noteable/issue/\d+/notes\z),
+        %r(/issues/\d+/rendered_title\z)
       )
 
       def initialize(app)
