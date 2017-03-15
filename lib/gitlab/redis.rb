@@ -9,7 +9,6 @@ module Gitlab
     SIDEKIQ_NAMESPACE = 'resque:gitlab'.freeze
     MAILROOM_NAMESPACE = 'mail_room:gitlab'.freeze
     DEFAULT_REDIS_URL = 'redis://localhost:6379'.freeze
-    CONFIG_FILE = File.expand_path('../../config/resque.yml', __dir__)
 
     class << self
       delegate :params, :url, to: :new
@@ -33,12 +32,16 @@ module Gitlab
         return @_raw_config if defined?(@_raw_config)
 
         begin
-          @_raw_config = ERB.new(File.read(CONFIG_FILE)).result.freeze
+          @_raw_config = ERB.new(File.read(config_file)).result.freeze
         rescue Errno::ENOENT
           @_raw_config = false
         end
 
         @_raw_config
+      end
+
+      def config_file
+        ENV['GITLAB_REDIS_CONFIG_FILE'] || File.expand_path('../../config/resque.yml', __dir__)
       end
     end
 
