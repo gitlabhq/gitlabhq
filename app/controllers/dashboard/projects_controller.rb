@@ -42,7 +42,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   private
 
   def load_projects(base_scope)
-    projects = base_scope.sorted_by_activity.includes(:namespace)
+    projects = base_scope.sorted_by_activity.includes(:route, namespace: :route)
 
     filter_projects(projects)
   end
