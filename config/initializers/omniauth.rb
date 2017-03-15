@@ -25,10 +25,7 @@ end
 if Gitlab.config.omniauth.enabled
   provider_names = Gitlab.config.omniauth.providers.map(&:name)
   require 'omniauth-kerberos' if provider_names.include?('kerberos')
-<<<<<<< HEAD
   require_dependency 'omni_auth/strategies/kerberos_spnego' if provider_names.include?('kerberos_spnego')
-=======
->>>>>>> ce/master
 end
 
 module OmniAuth
