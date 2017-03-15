@@ -91,6 +91,7 @@ import './droplab/droplab';
 import './droplab/plugins/ajax';
 import './droplab/plugins/ajax_filter';
 import './droplab/plugins/filter';
+import './droplab/plugins/input_setter';
 
 // everything else
 import './abuse_reports';

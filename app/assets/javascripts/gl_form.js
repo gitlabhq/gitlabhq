@@ -3,6 +3,8 @@
 /* global DropzoneInput */
 /* global autosize */
 
+import CommentTypeToggle from './comment_type_toggle';
+
 window.gl = window.gl || {};
 
 function GLForm(form) {
@@ -41,6 +43,19 @@ GLForm.prototype.setupForm = function() {
   this.form.find('.js-note-discard').hide();
   this.form.show();
   if (this.isAutosizeable) this.setupAutosize();
+
+  this.initCommentTypeToggle();
+};
+
+GLForm.prototype.initCommentTypeToggle = function () {
+  this.commentTypeToggle = new CommentTypeToggle(
+    this.form[0].querySelector('.js-comment-type-dropdown .dropdown-toggle'),
+    this.form[0].querySelector('.js-comment-type-dropdown .dropdown-menu'),
+    document.getElementById('note_noteable_type'),
+    this.form[0].querySelector('.js-comment-type-dropdown .js-comment-submit-button'),
+  );
+
+  this.commentTypeToggle.initDroplab();
 };
 
 GLForm.prototype.setupAutosize = function () {
