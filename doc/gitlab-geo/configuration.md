@@ -1,5 +1,14 @@
 # GitLab Geo configuration
 
+1. [Install GitLab Enterprise Edition][install-ee] on the server that will serve
+   as the secondary Geo node. Do not login or set up anything else in the
+   secondary node for the moment.
+1. [Setup the database replication](database.md)  (`primary (read-write) <-> secondary (read-only)` topology).
+1. **Configure GitLab to set the primary and secondary nodes.**
+1. [Follow the after setup steps](after_setup.md).
+
+[install-ee]: https://about.gitlab.com/downloads-ee/ "GitLab Enterprise Edition Omnibus packages downloads page"
+
 >**Note:**
 This is the documentation for the Omnibus GitLab packages. For installations
 from source, follow the [**GitLab Geo nodes configuration for installations
@@ -235,7 +244,7 @@ gitlab-rake gitlab:shell:setup
 This will enable `git` operations to authorize against your existing users.
 New users and SSH keys updated after this step, will be replicated automatically.
 
-### Next steps
+## Next steps
 
 Your nodes should now be ready to use. You can login to the secondary node
 with the same credentials as used in the primary. Visit the secondary node's
@@ -244,6 +253,8 @@ correctly identified as a secondary Geo node and if Geo is enabled.
 
 If your installation isn't working properly, check the
 [troubleshooting](#troubleshooting) section.
+
+Point your users to the [after setup steps](after_setup.md).
 
 ## Adding another secondary Geo node
 

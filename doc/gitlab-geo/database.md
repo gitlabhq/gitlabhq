@@ -1,5 +1,14 @@
 # GitLab Geo database replication
 
+1. [Install GitLab Enterprise Edition][install-ee] on the server that will serve
+   as the secondary Geo node. Do not login or set up anything else in the
+   secondary node for the moment.
+1. **Setup the database replication (`primary (read-write) <-> secondary (read-only)` topology).**
+1. [Configure GitLab](configuration.md) to set the primary and secondary nodes.
+1. [Follow the after setup steps](after_setup.md).
+
+[install-ee]: https://about.gitlab.com/downloads-ee/ "GitLab Enterprise Edition Omnibus packages downloads page"
+
 >**Note:**
 This is the documentation for the Omnibus GitLab packages. For installations
 from source, follow the
