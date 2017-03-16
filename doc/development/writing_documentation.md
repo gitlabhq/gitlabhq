@@ -59,4 +59,4 @@ All the documentation follow the same [styleguide](https://docs.gitlab.com/ce/de
 
 ### Markdown
 
-Currently GitLab docs use Redcarpet as markdown engine, but there's an open discussion for implementing Kramdown in the near future.
+Currently GitLab docs use Redcarpet as markdown engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.
