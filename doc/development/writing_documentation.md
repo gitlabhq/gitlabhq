@@ -29,11 +29,15 @@ They live under `doc/topics/topic-name/`, and can be searched per topic, within 
 
 #### Understanding Guides and Tutorials
 
-Suppose there's a process to go from point A to point B in 5 steps: (A) 1 > 2 > 3 > 4 > 5 (B).
+Suppose there's a process to go from point A to point B in 5 steps: `(A) 1 > 2 > 3 > 4 > 5 (B)`.
 
 A **guide** can be understood as a description of certain processes to achieve a particular objective. A guide brings you from A to B describing the characteristics of that process, but not necessarily going over each step. It can mention, for example, the step 3, but, assumes that that step is known by the reader, or out of the scope of that article.
 
+- Live example: "GitLab Pages from A to Z - [Part 1](../user/project/pages/getting_started_part_one.html) to [Part 4](../user/project/pages/getting_started_part_one.html)"
+
 A **tutorial** requires a clear **step-by-step** guidance to achieve a singular objective. It brings you from A to B, describing precisely all the necessary steps involved in that process, showing each of the 5 steps to go from A to B. It does not assume that you step 3: it shows you each of them.
+
+- Live example (on the blog): [Hosting on GitLab.com with GitLab Pages](https://about.gitlab.com/2016/04/07/gitlab-pages-setup/)
 
 #### Special Format
 
