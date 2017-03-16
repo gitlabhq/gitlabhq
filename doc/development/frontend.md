@@ -32,6 +32,20 @@ You can find the Frontend Architecture experts on the [team page][team-page].
 
 You can find documentation about the desired architecture for a new feature built with Vue.js in [here][vue-section].
 
+### Realtime
+
+When writing code for realtime features we have to keep a couple of things in mind:
+1. Do not overload the server with requests.
+1. It should feel realtime. 
+
+Thus, we must strike a balance between sending requests and the feeling of realtime. Use the following rules when creating realtime solutions.
+
+1. The server will tell you how much to poll by sending `X-Poll-Interval` in the header. Use that as your polling interval. This way it is easy for system administrators to change the polling rate. A `X-Poll-Interval: -1` means don't poll, and this must be implemented. 
+1. Use a common library for polling.
+1. Poll on active tabs only. Use a common library to find out which tab currently has eyes on it. Writing this functionality is trickier than it seems at first (cross browser). It has been solved by Gitter so we can use their code.
+1. Use regular polling intervals, do not use backoff polling, as it is not usually effective in the long run.
+1. The backend code will most likely be using etags. You do not and should not check for status `304 Not Modified`. The browser will transform it for you.
+
 ### Vue
 
 For more complex frontend features, we recommend using Vue.js. It shares
