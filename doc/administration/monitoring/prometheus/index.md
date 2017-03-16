@@ -22,25 +22,21 @@ dashboard tool like [Grafana].
 ## Configuring Prometheus
 
 >**Note:**
-Available since Omnibus GitLab 8.16. For installations from source you'll
-have to install and configure it yourself.
+- For installations from source you'll have to install and configure it yourself.
 
-To enable Prometheus:
+Prometheus and it's exporters are on by default, starting with GitLab 9.0. Prometheus will run as the `gitlab-prometheus` user and listen on `http://localhost:9090`. Each exporter will be automatically be set up as a monitoring target for Prometheus, unless individually disabled.
+
+To disable Prometheus and all of its exporters, as well as any added in the future:
 
 1. Edit `/etc/gitlab/gitlab.rb`
 1. Add or find and uncomment the following line, making sure it's set to `true`:
 
     ```ruby
-    prometheus['enable'] = true
+    prometheus['disable_all'] = true
     ```
 
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
    take effect
-
-By default, Prometheus will run as the `gitlab-prometheus` user and listen on
-`http://localhost:9090`. If the [node exporter](#node-exporter) service
-has been enabled, it will automatically be set up as a monitoring target for
-Prometheus.
 
 ## Changing the port Prometheus listens on
 
@@ -67,8 +63,7 @@ To change the address/port that Prometheus listens on:
 
 ## Viewing performance metrics
 
-After you have [enabled Prometheus](#configuring-prometheus), you can visit
-`http://localhost:9090` for the dashboard that Prometheus offers by default.
+You can visit `http://localhost:9090` for the dashboard that Prometheus offers by default.
 
 >**Note:**
 If SSL has been enabled on your GitLab instance, you may not be able to access
@@ -98,7 +93,7 @@ This feature was introduced in GitLab 9.0.
 
 If your GitLab server is running within Kubernetes, an option is now available to monitor the health of each node in the cluster. This is particularly helpful if your CI/CD environments run in the same cluster, and you would like enable [Prometheus integration][] to monitor them.
 
-When enabled, the bundled Prometheus server monitors Kubernetes and automatically [collects metrics](prometheus-cadvisor-metrics) from each Node in the cluster. 
+When enabled, the bundled Prometheus server monitors Kubernetes and automatically [collects metrics](prometheus-cadvisor-metrics) from each Node in the cluster.
 
 To enable the Kubernetes monitoring:
 

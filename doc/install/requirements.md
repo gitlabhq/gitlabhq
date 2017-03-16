@@ -108,7 +108,7 @@ use the CI features.
 
 ## Unicorn Workers
 
-It's possible to increase the amount of unicorn workers and this will usually help for to reduce the response time of the applications and increase the ability to handle parallel requests.
+It's possible to increase the amount of unicorn workers and this will usually help to reduce the response time of the applications and increase the ability to handle parallel requests.
 
 For most instances we recommend using: CPU cores + 1 = unicorn workers.
 So for a machine with 2 cores, 3 unicorn workers is ideal.
@@ -147,6 +147,12 @@ The storage requirements for Redis are minimal, about 25kB per user.
 Sidekiq processes the background jobs with a multithreaded process.
 This process starts with the entire Rails stack (200MB+) but it can grow over time due to memory leaks.
 On a very active server (10,000 active users) the Sidekiq process can use 1GB+ of memory.
+
+## Prometheus and its exporters
+
+As of GitLab 9.0, [Prometheus](https://prometheus.io) and its related exporters are enabled by default, to enable easy and in depth monitoring of GitLab. Approximately 200MB of memory will be consumed by these processes, with default settings.
+
+If you would like to disable Prometheus and it's exporters, simply set `prometheus['disable_all']=true` in `gitlab.rb`. More information is available in [the documentation](https://docs.gitlab.com/ce/doc/administration/monitoring/prometheus/index.html).
 
 ## Supported web browsers
 
