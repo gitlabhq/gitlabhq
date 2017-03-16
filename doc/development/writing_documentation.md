@@ -1,10 +1,10 @@
 # Writing Documentation
 
   - **General Documentation**: written by the developers responsible by creating features. Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
-  - **Documentation Articles**: written by any GitLab Team member, GitLab contributors, or Community Writers.
+  - **Technical Articles**: written by any GitLab Team member, GitLab contributors, or Community Writers.
   - **Indexes per topic**: initially prepared by the Technical Writing Team, and kept up-to-date by developers and PMs, in the same merge request containing code.
 
-## Distinction between General Documentation and Documentation Articles
+## Distinction between General Documentation and Technical Articles
 
 Every **Documentation Article** contains, in the very beginning, a blockquote with the following information:
 
@@ -20,7 +20,7 @@ Every **Documentation Article** contains, in the very beginning, a blockquote wi
 
 General documentation is categorized by _User_, _Admin_, and _Contributor_, and describe what that feature is, and how to use it or set it up.
 
-## Documentation Articles - Writing Method
+## Technical Articles - Writing Method
 
 Use the [writing method](https://about.gitlab.com/handbook/marketing/developer-relations/technical-writing/#writing-method) defined by the Technical Writing team.
 

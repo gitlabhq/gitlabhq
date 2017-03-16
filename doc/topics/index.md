@@ -3,7 +3,7 @@
 **Indexes per Topic** gather all resources already published by GitLab
 related to an specific subject or theme, including:
   - General Docs
-  - Documentation Articles
+  - Technical Articles
   - Blog Posts
   - Video Tutorials
 
