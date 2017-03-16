@@ -7,4 +7,8 @@ module.exports = [
     id: -2,
     title: 'Upcoming',
   },
+  {
+    id: -3,
+    title: 'Started',
+  },
 ];

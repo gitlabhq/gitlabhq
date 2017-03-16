@@ -202,6 +202,14 @@ describe 'Dropdown milestone', :feature, :js do
       expect_tokens([{ name: 'milestone', value: 'upcoming' }])
       expect_filtered_search_input_empty
     end
+
+    it 'selects `started milestones`' do
+      click_static_milestone('Started')
+
+      expect(page).to have_css(js_dropdown_milestone, visible: false)
+      expect_tokens([{ name: 'milestone', value: 'started' }])
+      expect_filtered_search_input_empty
+    end
   end
 
   describe 'input has existing content' do
