@@ -59,6 +59,10 @@ module CiStatusHelper
     custom_icon(icon_name)
   end
 
+  def pipeline_status_cache_key(pipeline_status)
+    "pipeline-status/#{pipeline_status.sha}-#{pipeline_status.status}"
+  end
+
   def render_project_pipeline_status(pipeline_status, tooltip_placement: 'auto left')
     project = pipeline_status.project
     path = pipelines_namespace_project_commit_path(

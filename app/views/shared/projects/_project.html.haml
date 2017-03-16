@@ -6,8 +6,7 @@
 - css_class = '' unless local_assigns[:css_class]
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && project.commit
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
-- cache_key = [project.namespace.cache_key, project.cache_key, controller.controller_name, controller.action_name, current_application_settings.cache_key, 'v2.3']
-- cache_key.push "pipeline-status/#{project.pipeline_status.sha}-#{project.pipeline_status.status}" if project.pipeline_status.has_status?
+- cache_key = project_list_cache_key(project)
 
 %li.project-row{ class: css_class }
   = cache(cache_key) do
