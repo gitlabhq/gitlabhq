@@ -82,12 +82,13 @@ module MilestonesHelper
   def milestone_remaining_days(milestone)
     if milestone.expired?
       content_tag(:strong, 'Past due')
-    elsif milestone.due_date
-      days    = milestone.remaining_days
-      content = content_tag(:strong, days)
-      content << " #{'day'.pluralize(days)} remaining"
     elsif milestone.upcoming?
       content_tag(:strong, 'Upcoming')
+    elsif milestone.due_date
+      time_ago = time_ago_in_words(milestone.due_date)
+      content = time_ago.gsub(/\d+/) { |match| "<strong>#{match}</strong>" }
+      content.slice!("about ")
+      content << " remaining"
     elsif milestone.start_date && milestone.start_date.past?
       days    = milestone.elapsed_days
       content = content_tag(:strong, days)
