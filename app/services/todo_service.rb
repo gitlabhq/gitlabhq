@@ -201,10 +201,12 @@ class TodoService
   def update_todos_state_by_ids(ids, current_user, state)
     todos = current_user.todos.where(id: ids)
 
-    # Only return those that are not really on that state
-    marked_todos = todos.where.not(state: state).update_all(state: state)
+    # Only update those that are not really on that state
+    todos = todos.where.not(state: state)
+    todos_ids = todos.pluck(:id)
+    todos.update_all(state: state)
     current_user.update_todos_count_cache
-    marked_todos
+    todos_ids
   end
 
   def create_todos(users, attributes)

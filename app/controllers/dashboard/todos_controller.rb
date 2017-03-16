@@ -22,17 +22,23 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   end
 
   def destroy_all
-    TodoService.new.mark_todos_as_done(@todos, current_user)
+    updated_ids = TodoService.new.mark_todos_as_done(@todos, current_user)
 
     respond_to do |format|
       format.html { redirect_to dashboard_todos_path, notice: 'All todos were marked as done.' }
       format.js { head :ok }
-      format.json { render json: todos_counts }
+      format.json { render json: todos_counts.merge(updated_ids: updated_ids) }
     end
   end
 
   def restore
     TodoService.new.mark_todos_as_pending_by_ids([params[:id]], current_user)
+
+    render json: todos_counts
+  end
+
+  def bulk_restore
+    TodoService.new.mark_todos_as_pending_by_ids(params[:ids], current_user)
 
     render json: todos_counts
   end
