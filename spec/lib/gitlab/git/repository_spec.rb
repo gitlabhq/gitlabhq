@@ -90,6 +90,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       expect(prefix).to eq("#{project_name}-test-branch-SHA")
     end
+
+    it 'returns correct string for a ref containing dots' do
+      prefix = repository.archive_prefix('test.branch', 'SHA')
+
+      expect(prefix).to eq("#{project_name}-test.branch-SHA")
+    end
   end
 
   describe '#archive' do
