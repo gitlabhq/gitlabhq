@@ -40,7 +40,8 @@ When writing code for realtime features we have to keep a couple of things in mi
 
 Thus, we must strike a balance between sending requests and the feeling of realtime. Use the following rules when creating realtime solutions.
 
-1. The server will tell you how much to poll by sending `X-Poll-Interval` in the header. Use that as your polling interval. This way it is easy for system administrators to change the polling rate. A `X-Poll-Interval: -1` means don't poll, and this must be implemented. 
+1. The server will tell you how much to poll by sending `X-Poll-Interval` in the header. Use that as your polling interval. This way it is easy for system administrators to change the polling rate. A `X-Poll-Interval: -1` means disabled polling, and this must be implemented. 
+1. A response of `HTTP 429 Too Many Requests`, should disable polling as well. This must also be implemented.
 1. Use a common library for polling.
 1. Poll on active tabs only. Use a common library to find out which tab currently has eyes on it. Please use [Focus](https://gitlab.com/andrewn/focus). Specifically [Eyeballs Detector](https://gitlab.com/andrewn/focus/blob/master/lib/eyeballs-detector.js).
 1. Use regular polling intervals, do not use backoff polling, or jitter, as the interval will be controlled by the server.
