@@ -18,6 +18,22 @@ describe Geo::GeoBackfillWorker, services: true do
       subject.perform
     end
 
+    it 'does not perform Geo::RepositoryBackfillService when tracking DB is not available' do
+      allow(Rails.configuration).to receive(:respond_to?).with(:geo_database) { false }
+
+      expect(Geo::RepositoryBackfillService).not_to receive(:new)
+
+      subject.perform
+    end
+
+    it 'does not perform Geo::RepositoryBackfillService when primary node does not exists' do
+      allow(Gitlab::Geo).to receive(:primary_node) { nil }
+
+      expect(Geo::RepositoryBackfillService).not_to receive(:new)
+
+      subject.perform
+    end
+
     it 'does not perform Geo::RepositoryBackfillService when node is disabled' do
       allow_any_instance_of(GeoNode).to receive(:enabled?) { false }
 

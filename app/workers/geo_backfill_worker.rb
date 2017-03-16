@@ -6,6 +6,7 @@ class GeoBackfillWorker
   BATCH_SIZE = 100.freeze
 
   def perform
+    return unless Rails.configuration.respond_to?(:geo_database)
     return unless Gitlab::Geo.primary_node.present?
 
     start_time  = Time.now
