@@ -236,8 +236,8 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ CI=true
 ++ export CI_DEBUG_TRACE=false
 ++ CI_DEBUG_TRACE=false
-++ export CI_COMMIT_REF=dd648b2e48ce6518303b0bb580b2ee32fadaf045
-++ CI_COMMIT_REF=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ export CI_COMMIT_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ CI_COMMIT_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
 ++ export CI_COMMIT_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
 ++ CI_COMMIT_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
 ++ export CI_COMMIT_REF_NAME=master
