@@ -23,7 +23,6 @@ GET /issues?state=closed
 GET /issues?labels=foo
 GET /issues?labels=foo,bar
 GET /issues?labels=foo,bar&state=opened
-GET /projects/:id/issues?labels_name=No+Label
 GET /issues?milestone=1.0.0
 GET /issues?milestone=1.0.0&state=opened
 GET /issues?iids[]=42&iids[]=43
@@ -32,8 +31,7 @@ GET /issues?iids[]=42&iids[]=43
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `state`   | string  | no    | Return all issues or just those that are `opened` or `closed`|
-| `labels`  | string  | no    | Comma-separated list of label names, issues must have all labels to be returned |
-| `labels_name`  | string  | no    | Return all issues with the mentioned label. `No+Label` lists all issues with no labels |
+| `labels`  | string  | no    | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
 | `milestone` | string| no    | The milestone title |
 | `iids`    | Array[integer] | no | Return only the issues having the given `iid` |
 | `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
@@ -103,7 +101,6 @@ GET /groups/:id/issues?state=closed
 GET /groups/:id/issues?labels=foo
 GET /groups/:id/issues?labels=foo,bar
 GET /groups/:id/issues?labels=foo,bar&state=opened
-GET /projects/:id/issues?labels_name=No+Label
 GET /groups/:id/issues?milestone=1.0.0
 GET /groups/:id/issues?milestone=1.0.0&state=opened
 GET /groups/:id/issues?iids[]=42&iids[]=43
@@ -113,8 +110,7 @@ GET /groups/:id/issues?iids[]=42&iids[]=43
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer | yes   | The ID of a group |
 | `state`   | string  | no    | Return all issues or just those that are `opened` or `closed`|
-| `labels`  | string  | no    | Comma-separated list of label names, issues must have all labels to be returned |
-| `labels_name`  | string  | no    | Return all issues with the mentioned label. `No+Label` lists all issues with no labels |
+| `labels`  | string  | no    | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
 | `iids`    | Array[integer] | no | Return only the issues having the given `iid` |
 | `milestone` | string| no    | The milestone title |
 | `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
@@ -185,7 +181,6 @@ GET /projects/:id/issues?state=closed
 GET /projects/:id/issues?labels=foo
 GET /projects/:id/issues?labels=foo,bar
 GET /projects/:id/issues?labels=foo,bar&state=opened
-GET /projects/:id/issues?labels_name=No+Label
 GET /projects/:id/issues?milestone=1.0.0
 GET /projects/:id/issues?milestone=1.0.0&state=opened
 GET /projects/:id/issues?iids[]=42&iids[]=43
@@ -196,8 +191,7 @@ GET /projects/:id/issues?iids[]=42&iids[]=43
 | `id`      | integer | yes   | The ID of a project |
 | `iids`    | Array[integer] | no | Return only the milestone having the given `iid` |
 | `state`   | string  | no    | Return all issues or just those that are `opened` or `closed`|
-| `labels`  | string  | no    | Comma-separated list of label names, issues must have all labels to be returned |
-| `labels_name`  | string  | no    | Return all issues with the mentioned label. `No+Label` lists all issues with no labels |
+| `labels`  | string  | no    | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
 | `milestone` | string| no    | The milestone title |
 | `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
 | `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
