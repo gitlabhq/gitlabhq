@@ -99,8 +99,7 @@ module TodosHelper
   end
 
   def todo_projects_options
-    projects = current_user.authorized_projects.sorted_by_activity.non_archived
-    projects = projects.includes(:namespace)
+    projects = current_user.authorized_projects.sorted_by_activity.non_archived.with_route
 
     projects = projects.map do |project|
       { id: project.id, text: project.name_with_namespace }
