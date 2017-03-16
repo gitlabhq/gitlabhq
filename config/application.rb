@@ -91,6 +91,8 @@ module Gitlab
 
     # Enable the asset pipeline
     config.assets.enabled = true
+    # Support legacy unicode file named img emojis, `1F939.png`
+    config.assets.paths << Gemojione.images_path
     config.assets.paths << "vendor/assets/fonts"
     config.assets.precompile << "*.png"
     config.assets.precompile << "print.css"
