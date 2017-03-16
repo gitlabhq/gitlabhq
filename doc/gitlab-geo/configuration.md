@@ -1,5 +1,10 @@
 # GitLab Geo configuration
 
+>**Note:**
+This is the documentation for the Omnibus GitLab packages. For installations
+from source, follow the [**GitLab Geo nodes configuration for installations
+from source**](configuration_source.md) guide.
+
 1. [Install GitLab Enterprise Edition][install-ee] on the server that will serve
    as the secondary Geo node. Do not login or set up anything else in the
    secondary node for the moment.
@@ -8,11 +13,6 @@
 1. [Follow the after setup steps](after_setup.md).
 
 [install-ee]: https://about.gitlab.com/downloads-ee/ "GitLab Enterprise Edition Omnibus packages downloads page"
-
->**Note:**
-This is the documentation for the Omnibus GitLab packages. For installations
-from source, follow the [**GitLab Geo nodes configuration for installations
-from source**](configuration_source.md) guide.
 
 This is the final step you need to follow in order to setup a Geo node.
 

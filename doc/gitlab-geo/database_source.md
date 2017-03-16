@@ -1,5 +1,10 @@
 # GitLab Geo database replication
 
+>**Note:**
+This is the documentation for installations from source. For installations
+using the Omnibus GitLab packages, follow the
+[**database replication for Omnibus GitLab**](database.md) guide.
+
 1. [Install GitLab Enterprise Edition][install-ee-source] on the server that
    will serve as the secondary Geo node. Do not login or set up anything else
    in the secondary node for the moment.
@@ -9,11 +14,6 @@
 1. [Follow the after setup steps](after_setup.md).
 
 [install-ee-source]: https://docs.gitlab.com/ee/install/installation.html "GitLab Enterprise Edition installation from source"
-
->**Note:**
-This is the documentation for installations from source. For installations
-using the Omnibus GitLab packages, follow the
-[**database replication for Omnibus GitLab**](database.md) guide.
 
 This document describes the minimal steps you have to take in order to
 replicate your GitLab database into another server. You may have to change
