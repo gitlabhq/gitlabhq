@@ -3,7 +3,7 @@ module Gitlab
     class HealthCheck
       def self.perform_checks
         return '' unless Gitlab::Geo.secondary?
-        return 'The Geo database configuration file is missing.' unless Rails.configuration.respond_to?(:geo_database)
+        return 'The Geo database configuration file is missing.' unless Gitlab::Geo.configuration_available?
 
         database_version  = self.get_database_version.to_i
         migration_version = self.get_migration_version.to_i
