@@ -117,6 +117,7 @@ of the body element here, we negate cascading side effects but allow momentum sc
     border-top: 0;
     // margin-top: 10px;
     // border-radius: 3px;
+    padding-bottom: 10px !important;
   }
 
   .nav-links {
@@ -124,6 +125,7 @@ of the body element here, we negate cascading side effects but allow momentum sc
       border: 0;
       margin-top: 0;
       border-radius: 0;
+      padding-bottom: 0 !important;
     }
   }
 }
