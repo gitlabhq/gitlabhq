@@ -14,7 +14,9 @@ class Projects::TagsController < Projects::ApplicationController
     @tags = TagsFinder.new(@repository, params).execute
     @tags = Kaminari.paginate_array(@tags).page(params[:page])
 
-    @releases = project.releases.where(tag: @tags.map(&:name))
+    tag_names = @tags.map(&:name)
+    @tags_pipelines = @project.pipelines.latest_successful_for_refs(tag_names)
+    @releases = project.releases.where(tag: tag_names)
   end
 
   def show
