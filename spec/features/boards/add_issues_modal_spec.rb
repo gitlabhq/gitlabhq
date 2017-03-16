@@ -109,6 +109,8 @@ describe 'Issue Boards add issue modal', :feature, :js do
           find('.form-control').native.send_keys(issue.title)
           find('.form-control').native.send_keys(:enter)
 
+          wait_for_vue_resource
+
           expect(page).to have_selector('.card', count: 1)
         end
       end
@@ -117,6 +119,8 @@ describe 'Issue Boards add issue modal', :feature, :js do
         page.within('.add-issues-modal') do
           find('.form-control').native.send_keys('testing search')
           find('.form-control').native.send_keys(:enter)
+
+          wait_for_vue_resource
 
           expect(page).not_to have_selector('.card')
           expect(page).not_to have_content("You haven't added any issues to your project yet")

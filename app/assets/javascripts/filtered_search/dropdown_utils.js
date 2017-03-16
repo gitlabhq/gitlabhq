@@ -117,7 +117,7 @@ import FilteredSearchContainer from './container';
           const { isLastVisualTokenValid } =
             gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
-          const input = document.querySelector('.filtered-search');
+          const input = FilteredSearchContainer.container.querySelector('.filtered-search');
           const inputValue = input && input.value;
 
           if (isLastVisualTokenValid) {
