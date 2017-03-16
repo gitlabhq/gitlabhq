@@ -1,24 +1,14 @@
-const RollbackComponent = require('~/environments/components/environment_rollback');
+import Vue from 'vue';
+import rollbackComp from '~/environments/components/environment_rollback';
 
 describe('Rollback Component', () => {
-  preloadFixtures('static/environments/element.html.raw');
-
   const retryURL = 'https://gitlab.com/retry';
+  let RollbackComponent;
+  let spy;
 
   beforeEach(() => {
-    loadFixtures('static/environments/element.html.raw');
-  });
-
-  it('Should link to the provided retryUrl', () => {
-    const component = new RollbackComponent({
-      el: document.querySelector('.test-dom-element'),
-      propsData: {
-        retryUrl: retryURL,
-        isLastDeployment: true,
-      },
-    });
-
-    expect(component.$el.getAttribute('href')).toEqual(retryURL);
+    RollbackComponent = Vue.extend(rollbackComp);
+    spy = jasmine.createSpy('spy').and.returnValue(Promise.resolve());
   });
 
   it('Should render Re-deploy label when isLastDeployment is true', () => {
@@ -27,8 +17,11 @@ describe('Rollback Component', () => {
       propsData: {
         retryUrl: retryURL,
         isLastDeployment: true,
+        service: {
+          postAction: spy,
+        },
       },
-    });
+    }).$mount();
 
     expect(component.$el.querySelector('span').textContent).toContain('Re-deploy');
   });
@@ -39,9 +32,28 @@ describe('Rollback Component', () => {
       propsData: {
         retryUrl: retryURL,
         isLastDeployment: false,
+        service: {
+          postAction: spy,
+        },
       },
-    });
+    }).$mount();
 
     expect(component.$el.querySelector('span').textContent).toContain('Rollback');
+  });
+
+  it('should call the service when the button is clicked', () => {
+    const component = new RollbackComponent({
+      propsData: {
+        retryUrl: retryURL,
+        isLastDeployment: false,
+        service: {
+          postAction: spy,
+        },
+      },
+    }).$mount();
+
+    component.$el.click();
+
+    expect(spy).toHaveBeenCalledWith(retryURL);
   });
 });

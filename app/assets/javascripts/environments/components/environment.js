@@ -1,16 +1,16 @@
 /* eslint-disable no-param-reassign, no-new */
 /* global Flash */
+import EnvironmentsService from '../services/environments_service';
+import EnvironmentTable from './environments_table';
+import EnvironmentsStore from '../stores/environments_store';
 
 const Vue = window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
-const EnvironmentsService = require('~/environments/services/environments_service');
-const EnvironmentTable = require('./environments_table');
-const EnvironmentsStore = require('~/environments/stores/environments_store');
-require('~/vue_shared/components/table_pagination');
-require('~/lib/utils/common_utils');
-require('~/vue_shared/vue_resource_interceptor');
+require('../../vue_shared/components/table_pagination');
+require('../../lib/utils/common_utils');
+require('../../vue_shared/vue_resource_interceptor');
 
-module.exports = Vue.component('environment-component', {
+export default Vue.component('environment-component', {
 
   components: {
     'environment-table': EnvironmentTable,
@@ -162,7 +162,7 @@ module.exports = Vue.component('environment-component', {
 
       <div class="content-list environments-container">
         <div class="environments-list-loading text-center" v-if="isLoading">
-          <i class="fa fa-spinner fa-spin"></i>
+          <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
         </div>
 
         <div class="blank-state blank-state-no-icon"
