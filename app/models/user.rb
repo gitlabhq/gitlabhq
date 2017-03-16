@@ -1,6 +1,13 @@
 require 'carrierwave/orm/activerecord'
 
 class User < ActiveRecord::Base
+  include RenameableColumn
+  rename_column :username, :handle, migrations: {
+    add_new:      '20170316184328_add_handle_column_to_users',
+    migrate_data: '20170316190016_migrate_users_username_to_handle',
+    remove_old:   '20170316190051_remove_username_column_from_users'
+  }
+
   extend Gitlab::ConfigHelper
 
   include Gitlab::ConfigHelper
