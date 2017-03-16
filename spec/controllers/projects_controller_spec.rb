@@ -83,6 +83,7 @@ describe ProjectsController do
           get :show, namespace_id: project.namespace, id: project
 
           expect(response).to render_template('projects/issues/_issues')
+          expect(assigns(:issuable_meta_data)).not_to be_nil
         end
 
         it 'shows customize workflow page if wiki and issues are disabled' do
