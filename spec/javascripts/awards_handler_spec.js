@@ -287,6 +287,20 @@ import AwardsHandler from '~/awards_handler';
             done.fail(`Failed to open and build emoji menu: ${err.message}`);
           });
       });
+
+      it('should disregard invalid frequently used emoji that are being attempted to be added', function() {
+        awardsHandler.addEmojiToFrequentlyUsedList('8ball');
+        awardsHandler.addEmojiToFrequentlyUsedList('invalid_emoji');
+        awardsHandler.addEmojiToFrequentlyUsedList('grinning');
+
+        expect(awardsHandler.getFrequentlyUsedEmojis()).toEqual(['8ball', 'grinning']);
+      });
+
+      it('should disregard invalid frequently used emoji already set in cookie', function() {
+        Cookies.set('frequently_used_emojis', '8ball,invalid_emoji,grinning');
+
+        expect(awardsHandler.getFrequentlyUsedEmojis()).toEqual(['8ball', 'grinning']);
+      });
     });
   });
 }).call(window);
