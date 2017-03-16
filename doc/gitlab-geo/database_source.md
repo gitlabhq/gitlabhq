@@ -226,5 +226,9 @@ Now that the database replication is done, the next step is to configure GitLab.
 
 We don't support MySQL replication for GitLab Geo.
 
+## Troubleshooting
+
+Read the [troubleshooting document](troubleshooting.md).
+
 [pgback]: http://www.postgresql.org/docs/9.2/static/app-pgbasebackup.html
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure

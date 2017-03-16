@@ -268,4 +268,4 @@ Read [Additional information for the SSH key pairs](configuration.md#additional-
 
 ## Troubleshooting
 
-Read the [Omnibus troubleshooting section](configuration.md#troubleshooting).
+Read the [troubleshooting document](troubleshooting.md).
