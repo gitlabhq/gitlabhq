@@ -14,7 +14,7 @@ General documentation is categorized by _User_, _Admin_, and _Contributor_, and 
 
 Technical articles replace technical content that once lived in the [GitLab Blog](https://about.gitlab.com/blog/), where they got out-of-date and weren't easily found.
 
-They are topic-related documentation, written with an user-friendly approach and language, aim to provide the community with guidance on specific processes to achieve certain objectives.
+They are topic-related documentation, written with an user-friendly approach and language, aiming to provide the community with guidance on specific processes to achieve certain objectives.
 
 A technical article guides users and/or admins to achieve certain objectives (within guides and tutorials), or provide an overview of that particular topic or feature (within technical overviews). It can also describe the use, implementation, or integration of third-party tools with GitLab.
 
