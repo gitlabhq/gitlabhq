@@ -78,6 +78,13 @@ towards getting your issue resolved.
 Issues and merge requests should be in English and contain appropriate language
 for audiences of all ages.
 
+If a contributor is no longer actively working on a submitted merge request
+we can decide that the merge request will be finished by one of our
+[Merge request coaches][team] or close the merge request. We make this decision
+based on how important the change is for our product vision. If a Merge request
+coach is going to finish the merge request we assign the 
+~"coach will finish" label.
+
 ## Helping others
 
 Please help other GitLab users when you can. The channels people will reach out
