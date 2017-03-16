@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'mail_room.yml' do
+  include StubENV
+
   let(:mailroom_config_path) { 'config/mail_room.yml' }
   let(:gitlab_config_path) { 'config/mail_room.yml' }
   let(:redis_config_path) { 'config/resque.yml' }
@@ -19,12 +21,11 @@ describe 'mail_room.yml' do
   end
 
   before(:each) do
-    ENV['GITLAB_REDIS_CONFIG_FILE'] = absolute_path(redis_config_path)
+    stub_env('GITLAB_REDIS_CONFIG_FILE', absolute_path(redis_config_path))
     clear_redis_raw_config
   end
 
   after(:each) do
-    ENV['GITLAB_REDIS_CONFIG_FILE'] = nil
     clear_redis_raw_config
   end
 
