@@ -6,7 +6,7 @@
 
 ## Distinction between General Documentation and Technical Articles
 
-Every **Documentation Article** contains, in the very beginning, a blockquote with the following information:
+Every **Technical Article** contains, in the very beginning, a blockquote with the following information:
 
 - A reference to the **type of article** (user guide, admin guide, tech overview, tutorial)
 - A reference to the **knowledge level** expected from the reader to be able to follow through (beginner, intermediate, advanced)
