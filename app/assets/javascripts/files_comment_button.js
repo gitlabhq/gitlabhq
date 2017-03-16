@@ -5,7 +5,7 @@
 let $commentButtonTemplate;
 var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
-this.FilesCommentButton = (function() {
+window.FilesCommentButton = (function() {
   var COMMENT_BUTTON_CLASS, EMPTY_CELL_CLASS, LINE_COLUMN_CLASSES, LINE_CONTENT_CLASS, LINE_HOLDER_CLASS, LINE_NUMBER_CLASS, OLD_LINE_CLASS, TEXT_FILE_SELECTOR, UNFOLDABLE_LINE_CLASS;
 
   COMMENT_BUTTON_CLASS = '.add-diff-note';
