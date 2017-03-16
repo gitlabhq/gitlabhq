@@ -536,6 +536,8 @@ describe Notify do
         allow(Note).to receive(:find).with(note.id).and_return(note)
       end
 
+      # TODO: Test discussions
+
       shared_examples 'a note email' do
         it_behaves_like 'it should have Gmail Actions links'
 

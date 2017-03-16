@@ -261,7 +261,7 @@ class Note < ActiveRecord::Base
   # Returns the entire discussion this note is part of
   def discussion
     if part_of_discussion?
-      self.noteable.notes.find_discussion(self.discussion_id)
+      self.noteable.notes.find_discussion(self.discussion_id) || to_discussion
     else
       to_discussion
     end

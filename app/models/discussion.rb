@@ -87,6 +87,10 @@ class Discussion
     false
   end
 
+  def new_discussion?
+    notes.length == 1
+  end
+
   def potentially_resolvable?
     first_note.for_merge_request?
   end
