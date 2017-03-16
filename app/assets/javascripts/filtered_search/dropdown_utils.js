@@ -1,3 +1,5 @@
+import FilteredSearchContainer from './container';
+
 (() => {
   class DropdownUtils {
     static getEscapedText(text) {
@@ -85,7 +87,8 @@
 
     // Determines the full search query (visual tokens + input)
     static getSearchQuery(untilInput = false) {
-      const tokens = [].slice.call(document.querySelectorAll('.tokens-container li'));
+      const container = FilteredSearchContainer.container;
+      const tokens = [].slice.call(container.querySelectorAll('.tokens-container li'));
       const values = [];
 
       if (untilInput) {
@@ -114,7 +117,7 @@
           const { isLastVisualTokenValid } =
             gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
-          const input = document.querySelector('.filtered-search');
+          const input = FilteredSearchContainer.container.querySelector('.filtered-search');
           const inputValue = input && input.value;
 
           if (isLastVisualTokenValid) {
