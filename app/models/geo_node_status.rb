@@ -1,6 +1,7 @@
 class GeoNodeStatus
   include ActiveModel::Model
 
+  attr_accessor :id
   attr_writer :health
 
   def health

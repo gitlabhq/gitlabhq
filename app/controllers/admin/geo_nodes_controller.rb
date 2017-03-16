@@ -1,6 +1,6 @@
 class Admin::GeoNodesController < Admin::ApplicationController
   before_action :check_license, except: [:index, :destroy]
-  before_action :load_node, only: [:destroy, :repair, :toggle]
+  before_action :load_node, only: [:destroy, :repair, :toggle, :status]
 
   def index
     # Ensure all nodes are using their Presenter
@@ -55,6 +55,16 @@ class Admin::GeoNodesController < Admin::ApplicationController
     end
 
     redirect_to admin_geo_nodes_path
+  end
+
+  def status
+    status = Geo::NodeStatusService.new.call(@node)
+
+    respond_to do |format|
+      format.json do
+        render json: GeoNodeStatusSerializer.new.represent(status)
+      end
+    end
   end
 
   private

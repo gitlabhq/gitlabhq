@@ -43,6 +43,8 @@ import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 
+import GeoNodes from './geo_nodes';
+
 const ShortcutsBlob = require('./shortcuts_blob');
 const UserCallout = require('./user_callout');
 
@@ -347,6 +349,9 @@ const UserCallout = require('./user_callout');
               }
             case 'abuse_reports':
               new gl.AbuseReports();
+              break;
+            case 'geo_nodes':
+              new GeoNodes($('.geo-nodes'));
               break;
           }
           break;
