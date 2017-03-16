@@ -1,10 +1,28 @@
-# GitLab Community Edition documentation
+# GitLab Community Edition Documentation
 
-## University
+All technical content published by GitLab lives in the documentation, including:
 
-[University](university/README.md) contain guides to learn Git and GitLab through courses and videos.
+- **General Documentation**
+  - [User docs](#user-documentation): general documentation dedicated to regular users of GitLab
+  - [Admin docs](#administrator-documentation): general documentation dedicated to administrators of GitLab instances
+  - [Contributor docs](#contributor-documentation): general documentation on how to develop and contribute to GitLab
+- **Documentation Articles**
+  - User guides: technical content to guide regular users from point A to point B
+  - Admin guides: technical content to guide administrators of GitLab instances from point A to point B
+  - Technical Overviews: technical content describing features, solutions, and third-party integrations
+  - Tutorials: technical content provided step-by-step on how to do things, or how to reach very specific objectives
+- **[Indexes per Topic](topics/)**: content gathering all resources already published by GitLab related to an specific subject or theme, including:
+  - General Docs
+  - Documentation Articles
+  - Blog Posts
+  - Video Tutorials
 
-## User documentation
+See also:
+
+- [Distinction between General Documentation and Documentation Articles](development/writing_documentation.md#distinction-between-general-documentation-and-documentation-articles)
+- GitLab [University](university/README.md): guides to learn Git and GitLab through courses and videos.
+
+## User Documentation
 
 - [Account Security](user/profile/account/two_factor_authentication.md) Securing your account via two-factor authentication, etc.
 - [API](api/README.md) Automate GitLab via a simple and powerful API.
@@ -28,7 +46,7 @@
 - [Git Attributes](user/project/git_attributes.md) Managing Git attributes using a `.gitattributes` file.
 - [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf) Download a PDF describing the most used Git operations.
 
-## Administrator documentation
+## Administrator Documentation
 
 - [Access restrictions](user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols) Define which Git access protocols can be used to talk to GitLab
 - [Authentication/Authorization](administration/auth/README.md) Configure
@@ -66,7 +84,8 @@
 - [High Availability](administration/high_availability/README.md) Configure multiple servers for scaling or high availability.
 - [Container Registry](administration/container_registry.md) Configure Docker Registry with GitLab.
 
-## Contributor documentation
+## Contributor Documentation
 
 - [Development](development/README.md) All styleguides and explanations how to contribute.
+- [Writing documentation](development/writing_documentation.md)
 - [Legal](legal/README.md) Contributor license agreements.
