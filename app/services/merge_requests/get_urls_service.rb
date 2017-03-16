@@ -23,10 +23,7 @@ module MergeRequests
 
     def opened_merge_requests_from_source_branches(branches)
       merge_requests = MergeRequest.from_project(project).opened.from_source_branches(branches)
-      merge_requests.inject({}) do |hash, mr|
-        hash[mr.source_branch] = mr
-        hash
-      end
+      merge_requests.index_by(&:source_branch)
     end
 
     def get_branches(changes)
