@@ -32,7 +32,8 @@ Keep in mind that:
 ## Setup instructions
 
 In order to set up one or more GitLab Geo instances, follow the steps below in
-the **exact order** they appear.
+the **exact order** they appear. Make sure the GitLab version is the same on
+all nodes.
 
 ### Using Omnibus GitLab
 

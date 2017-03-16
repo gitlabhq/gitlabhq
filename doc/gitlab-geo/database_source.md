@@ -40,9 +40,8 @@ The following guide assumes that:
   [`pg_basebackup` tool][pgback]. If you are using Omnibus it includes the required
   PostgreSQL version for Geo.
 - You have a primary server already set up (the GitLab server you are
-  replicating from), running Omnibus' PostgreSQL (or equivalent version), and you
-  have a new secondary server set up on the same OS and PostgreSQL version. If
-  you are using Omnibus, make sure the GitLab version is the same on all nodes.
+  replicating from), and you have a new secondary server set up on the same OS
+  and PostgreSQL version.
 - The IP of the primary server for our examples will be `1.2.3.4`, whereas the
   secondary's IP will be `5.6.7.8`.
 
