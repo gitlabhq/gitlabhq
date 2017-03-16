@@ -7,13 +7,8 @@
 
   #blob-content-holder.tree-holder
     .file-holder
-      .js-file-title.file-title
-        = blob_icon @blob.mode, @blob.name
-        %strong
-          = @path
-        %small= number_to_human_size @blob.size
-        .file-actions
-          = render "projects/blob/actions"
+      = render "projects/blob/header", blob: @blob
+
       .table-responsive.file-content.blame.code.js-syntax-highlight
         %table
           - current_line = 1

@@ -203,4 +203,18 @@ module BlobHelper
       'blob-language' => @blob && @blob.language.try(:ace_mode)
     }
   end
+
+  def copy_file_path_button(file_path)
+    clipboard_button(clipboard_text: file_path, class: 'btn-clipboard btn-transparent prepend-left-5', title: 'Copy file path to clipboard')
+  end
+
+  def copy_blob_content_button(blob)
+    return if markup?(blob.name)
+
+    clipboard_button(clipboard_target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm", title: "Copy content to clipboard")
+  end
+
+  def open_raw_file_button(path)
+    link_to icon('file-code-o'), path, class: 'btn btn-sm has-tooltip', target: '_blank', title: 'Open raw', data: { container: 'body' }
+  end
 end
