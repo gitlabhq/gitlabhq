@@ -108,3 +108,47 @@ of the body element here, we negate cascading side effects but allow momentum sc
 .page-with-sidebar {
   -webkit-overflow-scrolling: auto;
 }
+
+.content,
+.content-wrapper {
+  .container-limited {
+    padding: 8px 24px;
+    border: 1px solid #ebebeb;
+    border-top: 0;
+    // margin-top: 10px;
+    // border-radius: 3px;
+  }
+
+  .nav-links {
+    .container-limited {
+      border: 0;
+      margin-top: 0;
+      border-radius: 0;
+    }
+  }
+}
+
+html,
+.content-wrapper {
+  background: #fafafa;
+}
+
+.page-gutter {
+  background: #fafafa;
+}
+
+
+.navbar,
+.nav-links,
+.layout-nav,
+.right-sidebar {
+  background-color: white !important;
+}
+
+.layout-nav {
+  border-bottom: 1px solid #ebebeb !important;
+}
+
+.nav-links.sub-nav .container-fluid{
+    background-color: transparent !important;
+}
