@@ -369,13 +369,11 @@
     // Custom CSS for components
     .item-conmmit-component {
       .commit-icon {
-        position: relative;
-        top: 3px;
-        left: 1px;
-        display: inline-block;
-
         svg {
-          float: left;
+          display: inline-block;
+          width: 20px;
+          height: 20px;
+          vertical-align: bottom;
         }
       }
     }
