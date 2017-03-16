@@ -150,9 +150,13 @@ On a very active server (10,000 active users) the Sidekiq process can use 1GB+ o
 
 ## Prometheus and its exporters
 
-As of GitLab 9.0, [Prometheus](https://prometheus.io) and its related exporters are enabled by default, to enable easy and in depth monitoring of GitLab. Approximately 200MB of memory will be consumed by these processes, with default settings.
+As of Omnibus GitLab 9.0, [Prometheus](https://prometheus.io) and its related
+exporters are enabled by default, to enable easy and in depth monitoring of
+GitLab. Approximately 200MB of memory will be consumed by these processes, with
+default settings.
 
-If you would like to disable Prometheus and it's exporters, simply set `prometheus['disable_all']=true` in `gitlab.rb`. More information is available in [the documentation](https://docs.gitlab.com/ce/doc/administration/monitoring/prometheus/index.html).
+If you would like to disable Prometheus and it's exporters or read more information
+about it, check the [Prometheus documentation](../administration/monitoring/prometheus/index.md).
 
 ## Supported web browsers
 

@@ -2,9 +2,12 @@
 
 >**Notes:**
 - Prometheus and the various exporters listed in this page are bundled in the
-  Omnibus GitLab package. Check each exporter's documentation for the timeline they got added. For installations from source you will have to install them yourself. Over subsequent releases additional GitLab metrics will be captured.
+  Omnibus GitLab package. Check each exporter's documentation for the timeline
+  they got added. For installations from source you will have to install them
+  yourself. Over subsequent releases additional GitLab metrics will be captured.
 - Prometheus services are on by default with GitLab 9.0.
-- Prometheus and its exporters do not authenticate users, and will be available to anyone who can access them.
+- Prometheus and its exporters do not authenticate users, and will be available
+  to anyone who can access them.
 
 [Prometheus] is a powerful time-series monitoring service, providing a flexible
 platform for monitoring GitLab and other software products.
@@ -22,9 +25,12 @@ dashboard tool like [Grafana].
 ## Configuring Prometheus
 
 >**Note:**
-- For installations from source you'll have to install and configure it yourself.
+For installations from source you'll have to install and configure it yourself.
 
-Prometheus and it's exporters are on by default, starting with GitLab 9.0. Prometheus will run as the `gitlab-prometheus` user and listen on `http://localhost:9090`. Each exporter will be automatically be set up as a monitoring target for Prometheus, unless individually disabled.
+Prometheus and it's exporters are on by default, starting with GitLab 9.0.
+Prometheus will run as the `gitlab-prometheus` user and listen on
+`http://localhost:9090`. Each exporter will be automatically be set up as a
+monitoring target for Prometheus, unless individually disabled.
 
 To disable Prometheus and all of its exporters, as well as any added in the future:
 
@@ -88,12 +94,15 @@ Sample Prometheus queries:
 
 ## Configuring Prometheus to monitor Kubernetes
 
->**Note:**
-This feature was introduced in GitLab 9.0.
+> Introduced in GitLab 9.0.
 
-If your GitLab server is running within Kubernetes, an option is now available to monitor the health of each node in the cluster. This is particularly helpful if your CI/CD environments run in the same cluster, and you would like enable [Prometheus integration][] to monitor them.
+If your GitLab server is running within Kubernetes, an option is now available
+to monitor the health of each node in the cluster. This is particularly helpful
+if your CI/CD environments run in the same cluster, and you would like enable
+[Prometheus integration][] to monitor them.
 
-When enabled, the bundled Prometheus server monitors Kubernetes and automatically [collects metrics](prometheus-cadvisor-metrics) from each Node in the cluster.
+When enabled, the bundled Prometheus server monitors Kubernetes and automatically
+[collects metrics][prometheus-cadvisor-metrics] from each Node in the cluster.
 
 To enable the Kubernetes monitoring:
 

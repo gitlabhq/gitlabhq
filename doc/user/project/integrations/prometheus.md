@@ -1,7 +1,6 @@
 # Prometheus integration
 
->**Notes:**
-- [Introduced][ce-8935] in GitLab 9.0.
+> [Introduced][ce-8935] in GitLab 9.0.
 
 GitLab offers powerful integration with [Prometheus] for monitoring your apps.
 Metrics are retrieved from the configured Prometheus server, and then displayed
@@ -31,23 +30,26 @@ GitLab.
 In order for Prometheus to collect Kubernetes metrics, you first must have a
 Prometheus server up and running. You have two options here:
 
-1. If you installed Omnibus GitLab inside of Kubernetes, you can simply use the
-   [bundled version of Prometheus](#configuring-prometheus-to-collect-kubernetes-metrics).
-1. If you are using GitLab.com or installed GitLab outside of Kubernetes, you
-   will likely need to run a [Prometheus server within the Kubernetes cluster](#configuring-your-own-prometheus-server-within-kubernetes).
-   Once installed, the easiest way to monitor Kubernetes is to simply use
-   Prometheus' support for [Kubernetes Service Discovery][prometheus-k8s-sd].
+- If you installed Omnibus GitLab inside of Kubernetes, you can simply use the
+  [bundled version of Prometheus][promgldocs]. In that case, follow the info in the
+  [Omnibus GitLab section](#configuring-omnibus-gitlab-prometheus-to-monitor-kubernetes)
+  below.
+- If you are using GitLab.com or installed GitLab outside of Kubernetes, you
+  will likely need to run a Prometheus server within the Kubernetes cluster.
+  Once installed, the easiest way to monitor Kubernetes is to simply use
+  Prometheus' support for [Kubernetes Service Discovery][prometheus-k8s-sd].
+  In that case, follow the instructions on
+  [configuring your own Prometheus server within Kubernetes](#configuring-your-own-prometheus-server-within-kubernetes).
 
 ### Configuring Omnibus GitLab Prometheus to monitor Kubernetes
 
 With Omnibus GitLab running inside of Kubernetes, you can leverage the bundled
 version of Prometheus to collect the required metrics.
 
-Read how to configure the bundled Prometheus server in the
-[Administration guide][gitlab-prometheus-k8s-monitor].
-
-Now that Prometheus is configured, proceed on
-[configuring the Prometheus project service in GitLab](##configuration-in-gitlab).
+1. Read how to configure the bundled Prometheus server in the
+   [Administration guide][gitlab-prometheus-k8s-monitor].
+1. Now that Prometheus is configured, proceed on
+   [configuring the Prometheus project service in GitLab](#configuration-in-gitlab).
 
 ### Configuring your own Prometheus server within Kubernetes
 
@@ -156,18 +158,30 @@ The queries utilized by GitLab are shown in the following table.
 
 ## Monitoring CI/CD Environments
 
-Once configured, GitLab will attempt to retrieve performance metrics for any environment which has had a successful deployment. If monitoring data was successfully retrieved, a metrics button will appear on the environment's detail page.
+Once configured, GitLab will attempt to retrieve performance metrics for any
+environment which has had a successful deployment. If monitoring data was
+successfully retrieved, a metrics button will appear on the environment's
+detail page.
 
 ![Environment Detail with Metrics](img/prometheus_environment_detail_with_metrics.png)
 
-Clicking on the metrics button will display a new page, showing up to the last 8 hours of performance data. It may take a minute or two for data to appear after initial deployment.
+Clicking on the metrics button will display a new page, showing up to the last
+8 hours of performance data. It may take a minute or two for data to appear
+after initial deployment.
 
 ## Troubleshooting
 
-If the metrics button is not appearing, then one of a few issues may be occurring:
-- GitLab is not able to reach the Prometheus server. A test request can be sent to the Prometheus server from the [Prometheus Service](#configuration-in-gitlab) configuration screen.
+If the metrics button is not appearing, then one of a few issues may be
+occurring:
+
+- GitLab is not able to reach the Prometheus server. A test request can be sent
+  to the Prometheus server from the [Prometheus Service](#configuration-in-gitlab)
+  configuration screen.
 - No successful deployments have occurred to this environment.
-- Prometheus does not have performance data for this environment, or the metrics are not labeled correctly. To test this, connect to the Prometheus server and run a [query](#gitlab-prometheus-queries), replacing $CI_ENVIRONMENT_SLUG with the name of your environment.
+- Prometheus does not have performance data for this environment, or the metrics
+  are not labeled correctly. To test this, connect to the Prometheus server and
+  [run a query](#gitlab-prometheus-queries), replacing `$CI_ENVIRONMENT_SLUG`
+  with the name of your environment.
 
 [autodeploy]: ../../../ci/autodeploy/index.md
 [kubernetes]: https://kubernetes.io
