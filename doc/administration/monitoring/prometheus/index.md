@@ -3,10 +3,9 @@
 >**Notes:**
 - Prometheus and the various exporters listed in this page are bundled in the
   Omnibus GitLab package. Check each exporter's documentation for the timeline
-  they got added. For installations from source you will have to install
-  them yourself. Over subsequent releases additional GitLab metrics will be
-  captured.
-- Prometheus services are off by default but will be on starting with GitLab 9.0.
+  they got added. For installations from source you will have to install them
+  yourself. Over subsequent releases additional GitLab metrics will be captured.
+- Prometheus services are on by default with GitLab 9.0.
 - Prometheus and its exporters do not authenticate users, and will be available
   to anyone who can access them.
 
@@ -26,25 +25,24 @@ dashboard tool like [Grafana].
 ## Configuring Prometheus
 
 >**Note:**
-Available since Omnibus GitLab 8.16. For installations from source you'll
-have to install and configure it yourself.
+For installations from source you'll have to install and configure it yourself.
 
-To enable Prometheus:
+Prometheus and it's exporters are on by default, starting with GitLab 9.0.
+Prometheus will run as the `gitlab-prometheus` user and listen on
+`http://localhost:9090`. Each exporter will be automatically be set up as a
+monitoring target for Prometheus, unless individually disabled.
+
+To disable Prometheus and all of its exporters, as well as any added in the future:
 
 1. Edit `/etc/gitlab/gitlab.rb`
 1. Add or find and uncomment the following line, making sure it's set to `true`:
 
     ```ruby
-    prometheus['enable'] = true
+    prometheus['disable_all'] = true
     ```
 
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
    take effect
-
-By default, Prometheus will run as the `gitlab-prometheus` user and listen on
-`http://localhost:9090`. If the [node exporter](#node-exporter) service
-has been enabled, it will automatically be set up as a monitoring target for
-Prometheus.
 
 ## Changing the port Prometheus listens on
 
@@ -71,16 +69,14 @@ To change the address/port that Prometheus listens on:
 
 ## Viewing performance metrics
 
-After you have [enabled Prometheus](#configuring-prometheus), you can visit
-`http://localhost:9090` for the dashboard that Prometheus offers by default.
+You can visit `http://localhost:9090` for the dashboard that Prometheus offers by default.
 
 >**Note:**
 If SSL has been enabled on your GitLab instance, you may not be able to access
 Prometheus on the same browser as GitLab due to [HSTS][hsts]. We plan to
 [provide access via GitLab][multi-user-prometheus], but in the interim there are
 some workarounds: using a separate browser for Prometheus, resetting HSTS, or
-having [Nginx proxy it][nginx-custom-config]. Follow issue [#27069] for more
-information.
+having [Nginx proxy it][nginx-custom-config].
 
 The performance data collected by Prometheus can be viewed directly in the
 Prometheus console or through a compatible dashboard tool.
@@ -95,6 +91,30 @@ Sample Prometheus queries:
 - **% CPU load:** `1 - rate(node_cpu{mode="idle"}[5m])`
 - **Data transmitted:** `irate(node_network_transmit_bytes[5m])`
 - **Data received:** `irate(node_network_receive_bytes[5m])`
+
+## Configuring Prometheus to monitor Kubernetes
+
+> Introduced in GitLab 9.0.
+
+If your GitLab server is running within Kubernetes, an option is now available
+to monitor the health of each node in the cluster. This is particularly helpful
+if your CI/CD environments run in the same cluster, and you would like enable
+[Prometheus integration][] to monitor them.
+
+When enabled, the bundled Prometheus server monitors Kubernetes and automatically
+[collects metrics][prometheus-cadvisor-metrics] from each Node in the cluster.
+
+To enable the Kubernetes monitoring:
+
+1. Edit `/etc/gitlab/gitlab.rb`
+1. Add or find and uncomment the following line:
+
+    ```ruby
+    prometheus['monitor_kubernetes'] = true
+    ```
+
+1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
+   take effect
 
 ## Prometheus exporters
 
@@ -143,5 +163,6 @@ The GitLab monitor exporter allows you to measure various GitLab metrics.
 [prom-grafana]: https://prometheus.io/docs/visualization/grafana/
 [scrape-config]: https://prometheus.io/docs/operating/configuration/#%3Cscrape_config%3E
 [reconfigure]: ../../restart_gitlab.md#omnibus-gitlab-reconfigure
-[#27069]: https://gitlab.com/gitlab-org/gitlab-ce/issues/27069
 [1261]: https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1261
+[prometheus integration]: ../../../user/project/integrations/prometheus.md
+[rometheus-cadvisor-metrics]: https://github.com/google/cadvisor/blob/master/docs/storage/prometheus.md
