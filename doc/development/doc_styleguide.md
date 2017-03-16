@@ -27,6 +27,7 @@ The table below shows what kind of documentation goes where.
 | `doc/legal/` | Legal documents about contributing to GitLab. |
 | `doc/install/`| Probably the most visited directory, since `installation.md` is there. Ideally this should go under `doc/administration/`, but it's best to leave it as-is in order to avoid confusion (still debated though). |
 | `doc/update/` | Same with `doc/install/`. Should be under `administration/`, but this is a well known location, better leave as-is, at least for now. |
+| `doc/topics/` | Indexes per Topic (`doc/topics/topic-name/index.md`); Documentation Articles: user guides, admin guides, technical overviews, tutorials (`doc/topics/topic-name/`). |
 
 ---
 
