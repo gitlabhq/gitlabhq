@@ -1,8 +1,9 @@
 # GitLab Geo
 
-> **Note:**
-This feature was introduced in GitLab 8.5 EE as Alpha.
-We recommend you use with at least GitLab 8.6 EE.
+> **Notes:**
+- This feature was introduced in GitLab Enterprise Edition 8.5 as Alpha.
+  We recommend you use with at least GitLab Enterprise Edition 8.6.
+- GitLab Geo is part of [GitLab Enterprise Edition Premium][ee].
 
 GitLab Geo allows you to replicate your GitLab instance to other geographical
 locations as a read-only fully operational version.
@@ -70,41 +71,7 @@ See more details in the [Configure GitLab](configuration.md) step.
 
 ## Frequently Asked Questions
 
-### Can I use Geo in a disaster recovery situation?
+Read more in the [Geo FAQ](faq.md).
 
-There are limitations to what we replicate (see
-[What data is replicated to a secondary node?](#what-data-is-replicated-to-a-secondary-node)).
-In an extreme data-loss situation you can make a secondary Geo into your
-primary, but this is not officially supported yet.
-
-If you still want to proceed, see our step-by-step instructions on how to
-manually [promote a secondary node](disaster-recovery.md) into primary.
-
-### What data is replicated to a secondary node?
-
-We currently replicate project repositories and the whole database. This
-means user accounts, issues, merge requests, groups, project data, etc.,
-will be available for query.
-We currently don't replicate user generated attachments / avatars or any
-other file in `public/upload`. We also don't replicate LFS or
-artifacts data (`shared/folder`).
-
-### Can I git push to a secondary node?
-
-No. All writing operations (this includes `git push`) must be done in your
-primary node.
-
-### How long does it take to have a commit replicated to a secondary node?
-
-All replication operations are asynchronous and are queued to be dispatched in
-a batched request every 10 seconds. Besides that, it depends on a lot of other
-factors including the amount of traffic, how big your commit is, the
-connectivity between your nodes, your hardware, etc.
-
-### What happens if the SSH server runs at a different port?
-
-We send the clone url from the primary server to any secondaries, so it
-doesn't matter. If primary is running on port `2200` clone url will reflect
-that.
-
-[install-ee]: https://about.gitlab.com/downloads-ee/
+[ee]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition landing page"
+[install-ee]: https://about.gitlab.com/downloads-ee/ "GitLab Enterprise Edition Omnibus packages downloads page"
