@@ -267,8 +267,9 @@ class ProjectsController < Projects::ApplicationController
         @project_wiki = @project.wiki
         @wiki_home = @project_wiki.find_page('home', params[:version_id])
       elsif @project.feature_available?(:issues, current_user)
-        @issues = issues_collection
-        @issues = @issues.page(params[:page])
+        @issues = issues_collection.page(params[:page])
+        @collection_type = 'Issue'
+        @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
       end
 
       render :show
