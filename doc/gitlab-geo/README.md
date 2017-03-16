@@ -2,7 +2,7 @@
 
 > **Notes:**
 - GitLab Geo is part of [GitLab Enterprise Edition Premium][ee].
-- Introduced in GitLab Enterprise Edition 8.5 as Alpha.
+- Introduced in GitLab Enterprise Edition 8.9.
   We recommend you use it with at least GitLab Enterprise Edition 8.14.
 
 GitLab Geo allows you to replicate your GitLab instance to other geographical
