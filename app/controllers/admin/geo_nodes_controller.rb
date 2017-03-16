@@ -3,8 +3,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
   before_action :load_node, only: [:destroy, :repair, :toggle, :status]
 
   def index
-    # Ensure all nodes are using their Presenter
-    @nodes = GeoNode.all.map(&:present)
+    @nodes = GeoNode.all
     @node = GeoNode.new
 
     unless Gitlab::Geo.license_allows?
