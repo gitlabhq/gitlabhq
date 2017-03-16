@@ -417,7 +417,8 @@ describe API::Runner do
           end
 
           context 'when project and pipeline have multiple jobs' do
-            let!(:test_job) { create(:ci_build, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 1) }
+            let!(:job) { create(:ci_build_tag, pipeline: pipeline, token: 'job-token', name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:test_job) { create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'deploy', stage: 'deploy', stage_idx: 1) }
 
             before { job.success }
 
@@ -427,7 +428,7 @@ describe API::Runner do
               expect(response).to have_http_status(201)
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(1)
-              expect(json_response['dependencies'][0]).to include('id' => job.id, 'name' => 'spinach')
+              expect(json_response['dependencies'][0]).to include('id' => job.id, 'name' => 'spinach', 'token' => job.token)
             end
           end
 
