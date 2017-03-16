@@ -10,6 +10,8 @@ module Geo
     end
 
     def execute
+      return if backfilled?(project)
+
       try_obtain_lease do
         log('Started repository sync')
         started_at, finished_at = fetch_repositories
@@ -79,6 +81,29 @@ module Geo
       # for the lease timeout to try again.
       log('Releasing leases to sync repository')
       Gitlab::ExclusiveLease.cancel(lease_key, repository_lease)
+    end
+
+    def backfilled?(project)
+      return false unless project.repository.exists?
+      return false if project.repository.exists? && project.repository.empty?
+      return true if registry_exists?(project)
+
+      # When Geo customers upgrade to 9.0, the secondaries nodes that are
+      # enabled will start the backfilling process automatically. We need
+      # to populate the tracking database correctly for projects synced
+      # before the process being started or projects created during the
+      # backfilling. Otherwise, the query to retrieve the projects will
+      # always return the same projects because they don't have entries
+      # in the tracking database
+      update_registry(DateTime.now, DateTime.now)
+
+      true
+    end
+
+    def registry_exists?(project)
+      Geo::ProjectRegistry.where(project_id: project.id)
+                          .where.not(last_repository_synced_at: nil)
+                          .any?
     end
 
     def update_registry(started_at, finished_at)

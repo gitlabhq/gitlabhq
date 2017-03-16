@@ -26,30 +26,6 @@ describe Geo::GeoBackfillWorker, services: true do
       subject.perform
     end
 
-    context 'when repository exists' do
-      it 'does not perform Geo::RepositoryBackfillService for non empty repositories' do
-        create_list(:project, 2)
-
-        expect(Geo::RepositoryBackfillService).to receive(:new).twice.and_return(spy)
-
-        subject.perform
-      end
-
-      it 'performs Geo::RepositoryBackfillService for empty repositories' do
-        create(:empty_project)
-
-        expect(Geo::RepositoryBackfillService).to receive(:new).exactly(3).times.and_return(spy)
-
-        subject.perform
-      end
-
-      it 'creates missing registry for non empty repositories' do
-        create(:project)
-
-        expect { subject.perform }.to change(Geo::ProjectRegistry, :count).by(3)
-      end
-    end
-
     it 'does not perform Geo::RepositoryBackfillService when can not obtain a lease' do
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { false }
 
