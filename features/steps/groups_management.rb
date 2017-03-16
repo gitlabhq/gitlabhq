@@ -46,7 +46,12 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
   step 'I go to group settings page' do
     visit dashboard_groups_path
     click_link 'Sourcing'
-    click_link 'Edit Group'
+    page.within '.layout-nav' do
+      click_link 'Settings'
+    end
+    page.within '.sub-nav' do
+      click_link 'General'
+    end    
   end
 
   step 'I enable membership lock' do
@@ -56,7 +61,7 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
 
   step 'I go to project settings' do
     @project = Project.find_by(name: "Open")
-    page.within '.layout-nav' do
+    page.within '.sub-nav' do
       click_link 'Projects'
     end
 
