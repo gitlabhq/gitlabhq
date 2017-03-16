@@ -9,7 +9,11 @@ production:
   # username: git
   # password:
   # host: localhost
-  # port: 5432 
+  # port: 5432
+  # load_balancing:
+  #   hosts:
+  #     - host1.example.com
+  #     - host2.example.com
 
 #
 # Development specific

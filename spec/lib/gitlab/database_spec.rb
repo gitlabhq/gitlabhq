@@ -167,4 +167,21 @@ describe Gitlab::Database, lib: true do
       expect(MigrationTest.new.false_value).to eq 0
     end
   end
+
+  describe '#disable_prepared_statements' do
+    it 'disables prepared statements' do
+      config = {}
+
+      expect(ActiveRecord::Base.configurations).to receive(:[]).
+        with(Rails.env).
+        and_return(config)
+
+      expect(ActiveRecord::Base).to receive(:establish_connection).
+        with({ 'prepared_statements' => false })
+
+      described_class.disable_prepared_statements
+
+      expect(config['prepared_statements']).to eq(false)
+    end
+  end
 end
