@@ -1,8 +1,8 @@
 module Gitlab
   module GithubImport
     class PullRequestFormatter < IssuableFormatter
-      delegate :exists?, :project, :ref, :repo, :sha, to: :source_branch, prefix: true
-      delegate :exists?, :project, :ref, :repo, :sha, to: :target_branch, prefix: true
+      delegate :user, :exists?, :project, :ref, :repo, :sha, to: :source_branch, prefix: true
+      delegate :user, :exists?, :project, :ref, :repo, :sha, to: :target_branch, prefix: true
 
       def attributes
         {
@@ -39,11 +39,21 @@ module Gitlab
       def source_branch_name
         @source_branch_name ||= begin
           if cross_project?
-            "pull/#{number}/#{source_branch_repo.full_name}/#{source_branch_ref}"
+            if source_branch_repo
+              "pull/#{number}/#{source_branch_repo.full_name}/#{source_branch_ref}"
+            else
+              "pull/#{number}/#{source_branch_user}/#{source_branch_ref}"
+            end
           else
             source_branch_exists? ? source_branch_ref : "pull/#{number}/#{source_branch_ref}"
           end
         end
+      end
+
+      def source_branch_exists?
+        return false if cross_project?
+
+        source_branch.exists?
       end
 
       def target_branch
@@ -57,7 +67,9 @@ module Gitlab
       end
 
       def cross_project?
-        source_branch.repo.id != target_branch.repo.id
+        return true if source_branch_repo.nil?
+
+        source_branch_repo.id != target_branch_repo.id
       end
 
       def opened?

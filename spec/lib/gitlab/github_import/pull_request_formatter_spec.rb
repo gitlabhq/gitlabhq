@@ -13,6 +13,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   let(:target_branch) { double(ref: 'master', repo: target_repo, sha: target_sha) }
   let(:removed_branch) { double(ref: 'removed-branch', repo: source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b') }
   let(:forked_branch) { double(ref: 'master', repo: forked_source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b') }
+  let(:branch_deleted_repo) { double(ref: 'master', repo: nil, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b', user: octocat) }
   let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
@@ -215,6 +216,14 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
         expect(pull_request.source_branch_name).to eq 'pull/1347/company/otherproject/master'
       end
     end
+
+    context 'when source branch is from a deleted fork' do
+      let(:raw_data) { double(base_data.merge(head: branch_deleted_repo)) }
+
+      it 'prefixes branch name with pull request number and user login to avoid collision' do
+        expect(pull_request.source_branch_name).to eq 'pull/1347/octocat/master'
+      end
+    end
   end
 
   shared_examples 'Gitlab::GithubImport::PullRequestFormatter#target_branch_name' do
@@ -290,12 +299,28 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
       end
     end
 
+    context 'when source repository does not exist anymore' do
+      let(:raw_data) { double(base_data.merge(head: branch_deleted_repo)) }
+
+      it 'returns true' do
+        expect(pull_request.cross_project?).to eq true
+      end
+    end
+
     context 'when source and target repositories are the same' do
       let(:raw_data) { double(base_data.merge(head: source_branch)) }
 
       it 'returns false' do
         expect(pull_request.cross_project?).to eq false
       end
+    end
+  end
+
+  describe '#source_branch_exists?' do
+    let(:raw_data) { double(base_data.merge(head: forked_branch)) }
+
+    it 'returns false when is a cross_project' do
+      expect(pull_request.source_branch_exists?).to eq false
     end
   end
 
