@@ -132,7 +132,7 @@ var config = {
       'empty_states':   path.join(ROOT_PATH, 'app/views/shared/empty_states'),
       'icons':          path.join(ROOT_PATH, 'app/views/shared/icons'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
-      'vue$':           'vue/dist/vue.common.js',
+      'vue$':           'vue/dist/vue.esm.js',
     }
   }
 }
