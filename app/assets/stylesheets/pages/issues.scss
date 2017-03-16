@@ -56,7 +56,10 @@ ul.related-merge-requests > li {
 
 .merge-request-id {
   display: inline-block;
-  width: 3em;
+}
+
+.merge-request-info {
+  margin-left: 5px;
 }
 
 .merge-request-status {
