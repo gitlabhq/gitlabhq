@@ -417,10 +417,39 @@ describe API::Runner do
           end
 
           context 'when project and pipeline have multiple jobs' do
-            let!(:job) { create(:ci_build_tag, pipeline: pipeline, token: 'job-token', name: 'spinach', stage: 'test', stage_idx: 0) }
-            let!(:test_job) { create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'deploy', stage: 'deploy', stage_idx: 1) }
+            let!(:job) { create(:ci_build_tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job2) { create(:ci_build_tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
+            let!(:test_job) { create(:ci_build, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 1) }
 
-            before { job.success }
+            before do
+              job.success
+              job2.success
+            end
+
+            it 'returns dependent jobs' do
+              request_job
+
+              expect(response).to have_http_status(201)
+              expect(json_response['id']).to eq(test_job.id)
+              expect(json_response['dependencies'].count).to eq(2)
+              expect(json_response['dependencies']).to include({ 'id' => job.id, 'name' => job.name, 'token' => job.token },
+                                                               { 'id' => job2.id, 'name' => job2.name, 'token' => job2.token })
+            end
+          end
+
+          context 'when explicit dependencies are defined' do
+            let!(:job) { create(:ci_build_tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job2) { create(:ci_build_tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
+            let!(:test_job) do
+              create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'deploy',
+                                stage: 'deploy', stage_idx: 1,
+                                options: { dependencies: [job2.name] })
+            end
+
+            before do
+              job.success
+              job2.success
+            end
 
             it 'returns dependent jobs' do
               request_job
@@ -428,7 +457,7 @@ describe API::Runner do
               expect(response).to have_http_status(201)
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(1)
-              expect(json_response['dependencies'][0]).to include('id' => job.id, 'name' => 'spinach', 'token' => job.token)
+              expect(json_response['dependencies'][0]).to include('id' => job2.id, 'name' => job2.name, 'token' => job2.token)
             end
           end
 

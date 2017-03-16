@@ -796,7 +796,7 @@ module API
         expose :artifacts, using: Artifacts
         expose :cache, using: Cache
         expose :credentials, using: Credentials
-        expose :depends_on_builds, as: :dependencies, using: Dependency
+        expose :dependencies, using: Dependency
       end
     end
   end
