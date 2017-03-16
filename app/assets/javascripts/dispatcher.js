@@ -201,10 +201,13 @@ const UserCallout = require('./user_callout');
           new gl.Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
+          new MiniPipelineGraph({
+            container: '.js-commit-pipeline-graph',
+          }).bindEvents();
           break;
         case 'projects:commit:pipelines':
           new MiniPipelineGraph({
-            container: '.js-pipeline-table',
+            container: '.js-commit-pipeline-graph',
           }).bindEvents();
           break;
         case 'projects:commits:show':

@@ -212,6 +212,25 @@ eos
     end
   end
 
+  describe '#latest_pipeline' do
+    let!(:first_pipeline) do
+      create(:ci_empty_pipeline,
+        project: project,
+        sha: commit.sha,
+        status: 'success')
+    end
+    let!(:second_pipeline) do
+      create(:ci_empty_pipeline,
+        project: project,
+        sha: commit.sha,
+        status: 'success')
+    end
+
+    it 'returns latest pipeline' do
+      expect(commit.latest_pipeline).to eq second_pipeline
+    end
+  end
+
   describe '#status' do
     context 'without ref argument' do
       before do
