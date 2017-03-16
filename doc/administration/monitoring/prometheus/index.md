@@ -35,10 +35,10 @@ monitoring target for Prometheus, unless individually disabled.
 To disable Prometheus and all of its exporters, as well as any added in the future:
 
 1. Edit `/etc/gitlab/gitlab.rb`
-1. Add or find and uncomment the following line, making sure it's set to `true`:
+1. Add or find and uncomment the following line, making sure it's set to `false`:
 
     ```ruby
-    prometheus['disable_all'] = true
+    prometheus_monitoring['enable'] = false
     ```
 
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
