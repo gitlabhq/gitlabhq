@@ -60,13 +60,7 @@ var config = {
       {
         test: /\.(js|es6)$/,
         exclude: /(node_modules|vendor\/assets)/,
-        loader: 'babel-loader',
-        options: {
-          presets: [
-            ["es2015", {"modules": false}],
-            'stage-2'
-          ]
-        }
+        loader: 'babel-loader'
       },
       {
         test: /\.svg$/,
