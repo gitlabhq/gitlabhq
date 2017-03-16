@@ -7,18 +7,9 @@ import eventHub from '../event_hub';
 
 const Vue = window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
-<<<<<<< HEAD
-const EnvironmentsService = require('~/environments/services/environments_service');
-const EnvironmentTable = require('./environments_table');
-const EnvironmentsStore = require('~/environments/stores/environments_store');
-require('~/vue_shared/components/table_pagination');
-require('~/lib/utils/common_utils');
-require('~/vue_shared/vue_resource_interceptor');
-=======
 require('../../vue_shared/components/table_pagination');
 require('../../lib/utils/common_utils');
 require('../../vue_shared/vue_resource_interceptor');
->>>>>>> ce/master
 
 export default Vue.component('environment-component', {
 
@@ -87,35 +78,6 @@ export default Vue.component('environment-component', {
    * Toggles loading property.
    */
   created() {
-<<<<<<< HEAD
-    const scope = gl.utils.getParameterByName('scope') || this.visibility;
-    const pageNumber = gl.utils.getParameterByName('page') || this.pageNumber;
-
-    const endpoint = `${this.endpoint}?scope=${scope}&page=${pageNumber}`;
-
-    this.service = new EnvironmentsService(endpoint);
-
-    this.isLoading = true;
-
-    return this.service.get()
-      .then(resp => ({
-        headers: resp.headers,
-        body: resp.json(),
-      }))
-      .then((response) => {
-        this.store.storeAvailableCount(response.body.available_count);
-        this.store.storeStoppedCount(response.body.stopped_count);
-        this.store.storeEnvironments(response.body.environments);
-        this.store.setPagination(response.headers);
-      })
-      .then(() => {
-        this.isLoading = false;
-      })
-      .catch(() => {
-        this.isLoading = false;
-        new Flash('An error occurred while fetching the environments.', 'alert');
-      });
-=======
     this.service = new EnvironmentsService(this.endpoint);
 
     this.fetchEnvironments();
@@ -125,7 +87,6 @@ export default Vue.component('environment-component', {
 
   beforeDestroyed() {
     eventHub.$off('refreshEnvironments');
->>>>>>> ce/master
   },
 
   methods: {
@@ -240,11 +201,8 @@ export default Vue.component('environment-component', {
             :environments="state.environments"
             :can-create-deployment="canCreateDeploymentParsed"
             :can-read-environment="canReadEnvironmentParsed"
-<<<<<<< HEAD
             :toggleDeployBoard="toggleDeployBoard"
             :store="store"
-=======
->>>>>>> ce/master
             :service="service"/>
         </div>
 

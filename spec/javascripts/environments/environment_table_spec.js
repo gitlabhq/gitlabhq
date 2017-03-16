@@ -24,11 +24,8 @@ describe('Environment item', () => {
         environments: [mockItem],
         canCreateDeployment: false,
         canReadEnvironment: true,
-<<<<<<< HEAD
         toggleDeployBoard: () => {},
         store: {},
-=======
->>>>>>> ce/master
         service: {},
       },
     }).$mount();
@@ -55,6 +52,8 @@ describe('Environment item', () => {
       },
       isDeployBoardVisible: true,
     };
+
+    const EnvironmentTable = Vue.extend(environmentTableComp);
 
     const component = new EnvironmentTable({
       el: document.querySelector('.test-dom-element'),
@@ -95,6 +94,8 @@ describe('Environment item', () => {
     };
 
     const spy = jasmine.createSpy('spy');
+
+    const EnvironmentTable = Vue.extend(environmentTableComp);
 
     const component = new EnvironmentTable({
       el: document.querySelector('.test-dom-element'),

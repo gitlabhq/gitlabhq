@@ -27,11 +27,8 @@ describe('Environment item', () => {
           model: mockItem,
           canCreateDeployment: false,
           canReadEnvironment: true,
-<<<<<<< HEAD
           toggleDeployBoard: () => {},
           store: {},
-=======
->>>>>>> ce/master
           service: {},
         },
       }).$mount();
@@ -120,11 +117,8 @@ describe('Environment item', () => {
           model: environment,
           canCreateDeployment: true,
           canReadEnvironment: true,
-<<<<<<< HEAD
           toggleDeployBoard: () => {},
           store: {},
-=======
->>>>>>> ce/master
           service: {},
         },
       }).$mount();

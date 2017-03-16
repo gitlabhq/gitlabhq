@@ -86,9 +86,8 @@ export const environment = {
     rollout_status_path: '/path',
   },
 };
-<<<<<<< HEAD
 
-const deployBoardMockData = {
+export const deployBoardMockData = {
   instances: [
     { status: 'finished', tooltip: 'tanuki-2334 Finished' },
     { status: 'finished', tooltip: 'tanuki-2335 Finished' },
@@ -124,20 +123,10 @@ const deployBoardMockData = {
   valid: true,
 };
 
-const invalidDeployBoardMockData = {
+export const invalidDeployBoardMockData = {
   instances: [],
   abort_url: 'url',
   rollback_url: 'url',
   completion: 100,
   valid: false,
 };
-
-module.exports = {
-  environmentsList,
-  environment,
-  serverData,
-  deployBoardMockData,
-  invalidDeployBoardMockData,
-};
-=======
->>>>>>> ce/master

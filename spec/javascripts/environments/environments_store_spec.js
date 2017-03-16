@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-const Store = require('~/environments/stores/environments_store');
-const { serverData, deployBoardMockData } = require('./mock_data');
-=======
 import Store from '~/environments/stores/environments_store';
-import { environmentsList, serverData } from './mock_data';
->>>>>>> ce/master
+import { deployBoardMockData, serverData } from './mock_data';
 
 (() => {
   describe('Environments Store', () => {
