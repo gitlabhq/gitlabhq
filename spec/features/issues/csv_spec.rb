@@ -63,6 +63,14 @@ describe 'Issues csv', feature: true do
     expect(csv.count).to eq 0
   end
 
+  it 'uses array filters, such as label_name' do
+    issue.update!(labels: [idea_label])
+
+    request_csv("label_name[]" => 'Bug')
+
+    expect(csv.count).to eq 0
+  end
+
   it 'avoids excessive database calls' do
     control_count = ActiveRecord::QueryRecorder.new{ request_csv }.count
     create_list(:labeled_issue,

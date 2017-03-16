@@ -146,8 +146,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def export_csv
-    csv_params = filter_params.permit(IssuableFinder::VALID_PARAMS)
-    ExportCsvWorker.perform_async(@current_user.id, @project.id, csv_params)
+    ExportCsvWorker.perform_async(@current_user.id, @project.id, filter_params)
 
     index_path = namespace_project_issues_path(@project.namespace, @project)
     redirect_to(index_path, notice: "Your CSV export has started. It will be emailed to #{current_user.notification_email} when complete.")
