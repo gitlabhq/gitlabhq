@@ -2,7 +2,7 @@
 import FilteredSearchContainer from '../filtered_search/container';
 
 export default class FilteredSearchBoards extends gl.FilteredSearchManager {
-  constructor(store, updateUrl = false, canEdit = []) {
+  constructor(store, updateUrl = false, cantEdit = []) {
     super('boards');
 
     this.store = store;
