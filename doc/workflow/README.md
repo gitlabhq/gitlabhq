@@ -9,6 +9,7 @@
 - [Groups](groups.md)
 - Issues - The GitLab Issue Tracker is an advanced and complete tool for
   tracking the evolution of a new idea or the process of solving a problem.
+  - (EE) [Exporting Issues](../user/project/issues/csv_export.md) Export issues as a CSV, emailed as an attachment.
   - [Confidential issues](../user/project/issues/confidential_issues.md)
   - [Due date for issues](../user/project/issues/due_dates.md)
 - [Issue Board](../user/project/issue_board.md)
