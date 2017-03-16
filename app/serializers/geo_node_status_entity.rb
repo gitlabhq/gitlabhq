@@ -8,8 +8,8 @@ class GeoNodeStatusEntity < Grape::Entity
     node.healthy? ? 'No Health Problems Detected' : node.health
   end
 
-  expose :lfs_objects_total, as: :lfs_objects_count
-  expose :lfs_objects_synced, as: :lfs_objects_synced_count
+  expose :lfs_objects_count
+  expose :lfs_objects_synced_count
   expose :lfs_objects_synced_in_percentage do |node|
     number_to_percentage(node.lfs_objects_synced_in_percentage, precision: 2)
   end

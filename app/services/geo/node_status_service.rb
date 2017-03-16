@@ -3,7 +3,14 @@ module Geo
     include Gitlab::CurrentSettings
     include HTTParty
 
-    KEYS = %w(health repositories_count repositories_synced_count repositories_failed_count lfs_objects_total lfs_objects_synced).freeze
+    KEYS = %w(
+      health
+      repositories_count
+      repositories_synced_count
+      repositories_failed_count
+      lfs_objects_count
+      lfs_objects_synced_count
+    ).freeze
 
     def call(geo_node)
       values =
