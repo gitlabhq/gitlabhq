@@ -9,7 +9,7 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
     end
 
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'Get project variables' do
         success Entities::Variable
       end

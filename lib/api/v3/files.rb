@@ -40,7 +40,7 @@ module API
       params do
         requires :id, type: String, desc: 'The project ID'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         desc 'Get a file from repository'
         params do
           requires :file_path, type: String, desc: 'The path to the file. Ex. lib/class.rb'
