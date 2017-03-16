@@ -4,12 +4,14 @@ class DiffDiscussion < Discussion
   delegate  :line_code,
             :original_line_code,
             :diff_file,
+            :diff_line,
             :for_line?,
             :active?,
 
             to: :first_note
 
-  delegate  :blob,
+  delegate  :file_path,
+            :blob,
             :highlighted_diff_lines,
             :diff_lines,
 
