@@ -4,29 +4,25 @@ export default {
     relatedLinks: { type: Object, required: true },
   },
   methods: {
-    issuesText(field, isSuffix) {
-      const text = this.relatedLinks[field];
-      const matched = text ? text.match(/<\/a> and <a/) : null;
-
-      if (matched) {
-        if (isSuffix) {
-          return matched.length ? 'are' : 'is';
-        }
-        return matched.length ? 'issues' : 'issue';
-      }
-
-      return '';
+    hasMultipleIssues(text) {
+      return !text ? false : text.match(/<\/a> and <a/);
+    },
+    issueLabel(field) {
+      return this.hasMultipleIssues(this.relatedLinks[field]) ? 'issues' : 'issue';
+    },
+    verbLabel(field) {
+      return this.hasMultipleIssues(this.relatedLinks[field]) ? 'are' : 'is';
     },
   },
   template: `
     <section>
       <p v-if="relatedLinks.closing">
-        Closes {{issuesText('closing')}} <span v-html="relatedLinks.closing"></span>.
+        Closes {{issueLabel('closing')}} <span v-html="relatedLinks.closing"></span>.
       </p>
       <p v-if="relatedLinks.mentioned">
-        <span class="capitalize">{{issuesText('mentioned')}}</span>
+        <span class="capitalize">{{issueLabel('mentioned')}}</span>
         <span v-html="relatedLinks.mentioned"></span>
-        {{issuesText('mentioned', true)}} mentioned but will not be closed.
+        {{verbLabel('mentioned')}} mentioned but will not be closed.
       </p>
     </section>
   `,
