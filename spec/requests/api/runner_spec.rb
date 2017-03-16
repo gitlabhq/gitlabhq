@@ -248,18 +248,6 @@ describe API::Runner do
             it { expect(response).to have_http_status(204) }
           end
         end
-
-        context "when runner doesn't send version in User-Agent" do
-          let(:user_agent) { 'Go-http-client/1.1' }
-
-          it { expect(response).to have_http_status(404) }
-        end
-
-        context "when runner doesn't have a User-Agent" do
-          let(:user_agent) { nil }
-
-          it { expect(response).to have_http_status(404) }
-        end
       end
 
       context 'when no token is provided' do
@@ -282,10 +270,10 @@ describe API::Runner do
         context 'when Runner is not active' do
           let(:runner) { create(:ci_runner, :inactive) }
 
-          it 'returns 404 error' do
+          it 'returns 204 error' do
             request_job
 
-            expect(response).to have_http_status 404
+            expect(response).to have_http_status 204
           end
         end
 
