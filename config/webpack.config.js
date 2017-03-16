@@ -37,6 +37,7 @@ var config = {
     merge_request_widget: './merge_request_widget/ci_bundle.js',
     monitoring:           './monitoring/monitoring_bundle.js',
     network:              './network/network_bundle.js',
+    notebook_viewer:      './blob/notebook_viewer.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
@@ -105,6 +106,7 @@ var config = {
         'environments_folder',
         'issuable',
         'merge_conflicts',
+        'notebook_viewer',
         'vue_pipelines',
       ],
       minChunks: function(module, count) {
