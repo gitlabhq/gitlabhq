@@ -9,6 +9,9 @@ This document describes the minimal steps you have to take in order to
 replicate your GitLab database into another server. You may have to change
 some values according to your database setup, how big it is, etc.
 
+You are encouraged to first read through all the steps before executing them
+in your testing/production environment.
+
 ## PostgreSQL replication
 
 The GitLab primary node where the write operations happen will connect to
