@@ -1,7 +1,8 @@
+/* global BoardService */
 import Vue from 'vue';
-import store from '~/boards/stores/boards_store';
+import '~/boards/stores/boards_store';
 import boardBlankState from '~/boards/components/board_blank_state';
-import mockData from './mock_data';
+import './mock_data';
 
 describe('Boards blank state', () => {
   let vm;
@@ -27,7 +28,7 @@ describe('Boards blank state', () => {
               id: 2,
               title: 'Doing',
               label: { id: 2 },
-            }]
+            }];
           },
         });
       }
@@ -43,15 +44,15 @@ describe('Boards blank state', () => {
 
   it('renders pre-defined labels', () => {
     expect(
-      vm.$el.querySelectorAll('.board-blank-state-list li').length
+      vm.$el.querySelectorAll('.board-blank-state-list li').length,
     ).toBe(2);
 
     expect(
-      vm.$el.querySelectorAll('.board-blank-state-list li')[0].textContent.trim()
+      vm.$el.querySelectorAll('.board-blank-state-list li')[0].textContent.trim(),
     ).toEqual('To Do');
 
     expect(
-      vm.$el.querySelectorAll('.board-blank-state-list li')[1].textContent.trim()
+      vm.$el.querySelectorAll('.board-blank-state-list li')[1].textContent.trim(),
     ).toEqual('Doing');
   });
 

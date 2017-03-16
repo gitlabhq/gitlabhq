@@ -1,4 +1,5 @@
 /* global ListLabel */
+/* global Cookies */
 const Store = gl.issueBoards.BoardsStore;
 
 export default {
