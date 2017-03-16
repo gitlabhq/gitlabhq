@@ -69,6 +69,13 @@ export default {
             list.label.id = listObj.label.id;
             list.getIssues();
           });
+        })
+        .catch(() => {
+          Store.removeList(undefined, 'label');
+          Cookies.remove('issue_board_welcome_hidden', {
+            path: '',
+          });
+          Store.addBlankState();
         });
     },
     clearBlankState: Store.removeBlankState.bind(Store),
