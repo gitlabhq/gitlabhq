@@ -47,6 +47,7 @@ const playIconSvg = require('icons/_icon_play.svg');
                 data-toggle="dropdown"
                 title="Manual job"
                 data-placement="top"
+                data-container="body"
                 aria-label="Manual job">
                 <span v-html="playIconSvg" aria-hidden="true"></span>
                 <i class="fa fa-caret-down" aria-hidden="true"></i>
@@ -69,6 +70,7 @@ const playIconSvg = require('icons/_icon_play.svg');
                 class="dropdown-toggle btn btn-default build-artifacts has-tooltip js-pipeline-dropdown-download"
                 title="Artifacts"
                 data-placement="top"
+                data-container="body"
                 data-toggle="dropdown"
                 aria-label="Artifacts">
                 <i class="fa fa-download" aria-hidden="true"></i>
@@ -92,6 +94,7 @@ const playIconSvg = require('icons/_icon_play.svg');
                 rel="nofollow"
                 data-method="post"
                 data-placement="top"
+                data-container="body"
                 data-toggle="dropdown"
                 :href='pipeline.retry_path'
                 aria-label="Retry">
@@ -105,6 +108,7 @@ const playIconSvg = require('icons/_icon_play.svg');
                 rel="nofollow"
                 data-method="post"
                 data-placement="top"
+                data-container="body"
                 data-toggle="dropdown"
                 :href='pipeline.cancel_path'
                 aria-label="Cancel">
