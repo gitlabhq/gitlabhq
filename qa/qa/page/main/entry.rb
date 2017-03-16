@@ -1,3 +1,5 @@
+require 'timeout'
+
 module QA
   module Page
     module Main
@@ -5,8 +7,15 @@ module QA
         def initialize
           visit('/')
 
-          # This resolves cold boot problems with login page
-          find('.application', wait: 120)
+          # This resolves cold boot / post-deployment migrations running
+          # problems.
+          #
+          Timeout.timeout(240) do
+            loop do
+              break if page.has_css?('.application', wait: 10)
+              refresh
+            end
+          end
         end
 
         def sign_in_using_credentials
