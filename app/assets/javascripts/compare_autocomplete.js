@@ -19,7 +19,8 @@
             return $.ajax({
               url: $dropdown.data('refs-url'),
               data: {
-                ref: $dropdown.data('ref')
+                ref: $dropdown.data('ref'),
+                search: term,
               }
             }).done(function(refs) {
               return callback(refs);
@@ -27,7 +28,7 @@
           },
           selectable: true,
           filterable: true,
-          filterByText: true,
+          filterRemote: true,
           fieldName: $dropdown.data('field-name'),
           filterInput: 'input[type="search"]',
           renderRow: function(ref) {
