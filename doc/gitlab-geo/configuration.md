@@ -1,13 +1,21 @@
 # GitLab Geo configuration
 
+>**Note:**
+This is the documentation for the Omnibus GitLab packages. For installations
+from source, follow the [**GitLab Geo nodes configuration for installations
+from source**](configuration_source.md) guide.
+
 This is the final step you need to follow in order to setup a Geo node.
+
+You are encouraged to first read through all the steps before executing them
+in your testing/production environment.
 
 ## Setting up GitLab
 
 >**Notes:**
-- Don't setup any custom authentication in the secondary nodes, this will be
+- **Do not** setup any custom authentication in the secondary nodes, this will be
   handled by the primary node.
-- Do not add anything in the secondaries Geo nodes admin area
+- **Do not** add anything in the secondaries Geo nodes admin area
   (**Admin Area ➔ Geo Nodes**). This is handled solely by the primary node.
 
 After having installed GitLab Enterprise Edition in the instance that will serve
@@ -56,9 +64,6 @@ logins opened on all nodes as we will be moving back and forth.
     ```
     # Omnibus GitLab installations
     sudo -u git cat /var/opt/gitlab/.ssh/id_rsa.pub
-
-    # Installations from source
-    sudo -u git cat /home/git/.ssh/id_rsa.pub
     ```
 
 1. Visit the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`) in
@@ -95,9 +100,6 @@ logins opened on all nodes as we will be moving back and forth.
     ```
     # Omnibus GitLab installations
     cat /var/opt/gitlab/.ssh/known_hosts
-
-    # Installations from source
-    cat /home/git/.ssh/known_hosts
     ```
 
 ### Step 3. Copying the database encryption key
@@ -117,9 +119,6 @@ sensitive data in the database. Any secondary node must have the
      ```
      # Omnibus GitLab installations
      cat /etc/gitlab/gitlab-secrets.json | grep db_key_base
-
-     # Installations from source
-     cat /home/git/gitlab/config/secrets.yml | grep db_key_base
      ```
 
 1. SSH into the **secondary** node and login as root:
@@ -134,9 +133,6 @@ sensitive data in the database. Any secondary node must have the
      ```
      # Omnibus GitLab installations
      editor /etc/gitlab/gitlab-secrets.json
-
-     # Installations from source
-     editor /home/git/gitlab/config/secrets.yml
      ```
 
 1. Save and close the file.
@@ -163,9 +159,6 @@ sensitive data in the database. Any secondary node must have the
     ```
     # Omnibus installations
     sudo -u git cat /var/opt/gitlab/.ssh/id_rsa.pub
-
-    # Installations from source
-    sudo -u git cat /home/git/.ssh/id_rsa.pub
     ```
 
 1. Visit the **primary** node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`)
@@ -216,10 +209,6 @@ connection between the servers.
     # For Omnibus installations
     rsync -guavrP root@1.2.3.4:/var/opt/gitlab/git-data/repositories/ /var/opt/gitlab/git-data/repositories/
     gitlab-ctl reconfigure # to fix directory permissions
-
-    # For installations from source
-    rsync -guavrP root@1.2.3.4:/home/git/repositories/ /home/git/repositories/
-    chmod ug+rwX,o-rwx /home/git/repositories
     ```
 
 If this step is not followed, the secondary node will eventually clone and
@@ -241,9 +230,6 @@ run:
 ```
 # For Omnibus installations
 gitlab-rake gitlab:shell:setup
-
-# For source installations
-sudo -u git -H bundle exec rake gitlab:shell:setup RAILS_ENV=production
 ```
 
 This will enable `git` operations to authorize against your existing users.
@@ -292,6 +278,11 @@ Host example.com                    # The FQDN of the primary Geo node
 ```
 
 ## Troubleshooting
+
+>**Note:**
+This list is an attempt to document all the moving parts that can go wrong.
+We are working into getting all this steps verified automatically in a
+rake task in the future.
 
 Setting up Geo requires careful attention to details and sometimes it's easy to
 miss a step. Here is a checklist of questions you should ask to try to detect
@@ -345,10 +336,3 @@ where you have to fix (all commands and path locations are for Omnibus installs)
 - Can secondary nodes communicate with primary node by HTTP/HTTPS/SSH ports?
 - Can secondary nodes execute a successful git clone using git user's own
   SSH Key to primary node repository?
-
->**Note:**
-This list is an attempt to document all the moving parts that can go wrong.
-We are working into getting all this steps verified automatically in a
-rake task in the future.
-
-[ssh-pair]: #create-ssh-key-pairs-for-new-geo-nodes
