@@ -17,7 +17,7 @@ describe('Build', () => {
     spyOn($, 'ajax');
   });
 
-  describe('constructor', () => {
+  describe('class constructor', () => {
     beforeEach(() => {
       jasmine.clock().install();
     });
