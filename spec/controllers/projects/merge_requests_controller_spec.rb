@@ -981,6 +981,61 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  describe 'POST cancel_merge_when_pipeline_succeeds' do
+    context 'as JS' do
+      subject do
+        xhr :post, :cancel_merge_when_pipeline_succeeds,
+          namespace_id: merge_request.project.namespace.to_param,
+          project_id: merge_request.project,
+          id: merge_request.iid
+      end
+
+      it 'calls MergeRequests::MergeWhenPipelineSucceedsService' do
+        mwps_service = double
+
+        allow(MergeRequests::MergeWhenPipelineSucceedsService)
+          .to receive(:new)
+          .and_return(mwps_service)
+
+        expect(mwps_service).to receive(:cancel).with(merge_request)
+
+        subject
+      end
+
+      it { is_expected.to render_template('cancel_merge_when_pipeline_succeeds') }
+    end
+
+    context 'as JSON' do
+      subject do
+        xhr :post, :cancel_merge_when_pipeline_succeeds,
+          namespace_id: merge_request.project.namespace.to_param,
+          project_id: merge_request.project,
+          id: merge_request.iid,
+          format: :json
+      end
+
+      it 'calls MergeRequests::MergeWhenPipelineSucceedsService' do
+        mwps_service = double
+
+        allow(MergeRequests::MergeWhenPipelineSucceedsService)
+          .to receive(:new)
+          .and_return(mwps_service)
+
+        expect(mwps_service).to receive(:cancel).with(merge_request)
+
+        subject
+      end
+
+      it { is_expected.to have_http_status(:success) }
+
+      it 'renders MergeRequest as JSON' do
+        subject
+
+        expect(json_response.keys).to include('id', 'iid', 'description')
+      end
+    end
+  end
+
   describe 'GET conflict_for_path' do
     def conflict_for_path(path)
       get :conflict_for_path,

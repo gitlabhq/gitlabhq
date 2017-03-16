@@ -340,6 +340,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     MergeRequests::MergeWhenPipelineSucceedsService
       .new(@project, current_user)
       .cancel(@merge_request)
+
+    # TODO: @oswaldo - Handle only JSON after deleting existing MR widget.
+    respond_to do |format|
+      format.json do
+        render json: serializer.represent(@merge_request.reload).to_json
+      end
+
+      format.js
+    end
   end
 
   def merge
