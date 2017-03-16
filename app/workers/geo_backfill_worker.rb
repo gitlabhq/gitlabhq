@@ -51,13 +51,34 @@ class GeoBackfillWorker
   end
 
   def synced?(project)
-    project.repository_exists? || registry_exists?(project)
+    return true if registry_exists?(project)
+    return false unless project.repository.exists?
+    return false if project.repository.exists? && project.repository.empty?
+
+    # When Geo customers upgrade to 9.0, the secondaries nodes that are enabled
+    # will start the backfilling process automatically. We need to populate the
+    # tracking database correctly for projects synced before. Otherwise, the
+    # query to retrieve the projects will always return the same 100 projects
+    # because they don't have entries in the tracking database.
+    create_missing_registry(project)
+
+    true
   end
 
   def registry_exists?(project)
     Geo::ProjectRegistry.where(project_id: project.id)
                         .where.not(last_repository_synced_at: nil)
                         .any?
+  end
+
+  def create_missing_registry(project)
+    logger.info "Creating missing registry for project #{project.path_with_namespace} (#{project.id})"
+
+    Geo::ProjectRegistry.create(
+      project_id: project.id,
+      last_repository_synced_at: DateTime.now,
+      last_repository_successful_sync_at: DateTime.now
+    )
   end
 
   def try_obtain_lease
