@@ -6,6 +6,29 @@
 
 ## Distinction between General Documentation and Technical Articles
 
+### General Documentation
+
+General documentation is categorized by _User_, _Admin_, and _Contributor_, and describe what that feature is, what it does, and its available settings.
+
+### Technical Articles
+
+Technical articles replace technical content that once lived in the [GitLab Blog](https://about.gitlab.com/blog/), where they got out-of-date and weren't easily found.
+
+They are topic-related documentation, written with an user-friendly approach and language, aim to provide the community with guidance on specific processes to achieve certain objectives.
+
+A technical article guides users and/or admins to achieve certain objectives (within guides and tutorials), or provide an overview of that particular topic or feature (within technical overviews). It can also describe the use, implementation, or integration of third-party tools with GitLab.
+
+They live under `doc/topics/topic-name/`, and can be searched per topic, within "Indexes per Topic" pages. The topics are listed on the main [Indexes per Topic](../topics/) page.
+
+#### Types of Technical Articles
+
+- **User guides**: technical content to guide regular users from point A to point B
+- **Admin guides**: technical content to guide administrators of GitLab instances from point A to point B
+- **Technical Overviews**: technical content describing features, solutions, and third-party integrations
+- **Tutorials**: technical content provided step-by-step on how to do things, or how to reach very specific objectives
+
+#### Special Format
+
 Every **Technical Article** contains, in the very beginning, a blockquote with the following information:
 
 - A reference to the **type of article** (user guide, admin guide, tech overview, tutorial)
@@ -18,9 +41,7 @@ Every **Technical Article** contains, in the very beginning, a blockquote with t
 > Author: [Name Surname](https://gitlab.com/username)
 ```
 
-General documentation is categorized by _User_, _Admin_, and _Contributor_, and describe what that feature is, and how to use it or set it up.
-
-## Technical Articles - Writing Method
+#### Technical Articles - Writing Method
 
 Use the [writing method](https://about.gitlab.com/handbook/marketing/developer-relations/technical-writing/#writing-method) defined by the Technical Writing team.
 
