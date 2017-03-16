@@ -4,7 +4,9 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   let(:client) { double }
   let(:project) { create(:project, :repository) }
   let(:source_sha) { create(:commit, project: project).id }
-  let(:target_sha) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit).id }
+  let(:target_commit) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit) }
+  let(:target_sha) { target_commit.id }
+  let(:target_short_sha) { target_commit.id.to_s[0..7] }
   let(:repository) { double(id: 1, fork: false) }
   let(:source_repo) { repository }
   let(:source_branch) { double(ref: 'branch-merged', repo: source_repo, sha: source_sha) }
@@ -204,24 +206,24 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     context 'when source branch does not exist' do
       let(:raw_data) { double(base_data.merge(head: removed_branch)) }
 
-      it 'prefixes branch name with pull request number' do
-        expect(pull_request.source_branch_name).to eq 'pull/1347/removed-branch'
+      it 'prefixes branch name with to avoid collision' do
+        expect(pull_request.source_branch_name).to eq "gh-#{target_short_sha}/1347"
       end
     end
 
     context 'when source branch is from a fork' do
       let(:raw_data) { double(base_data.merge(head: forked_branch)) }
 
-      it 'prefixes branch name with pull request number and project with namespace to avoid collision' do
-        expect(pull_request.source_branch_name).to eq 'pull/1347/company/otherproject/master'
+      it 'prefixes branch name with to avoid collision' do
+        expect(pull_request.source_branch_name).to eq "gh-#{target_short_sha}/1347"
       end
     end
 
     context 'when source branch is from a deleted fork' do
       let(:raw_data) { double(base_data.merge(head: branch_deleted_repo)) }
 
-      it 'prefixes branch name with pull request number and user login to avoid collision' do
-        expect(pull_request.source_branch_name).to eq 'pull/1347/octocat/master'
+      it 'prefixes branch name with to avoid collision' do
+        expect(pull_request.source_branch_name).to eq "gh-#{target_short_sha}/1347"
       end
     end
   end
@@ -238,8 +240,8 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     context 'when target branch does not exist' do
       let(:raw_data) { double(base_data.merge(base: removed_branch)) }
 
-      it 'prefixes branch name with pull request number' do
-        expect(pull_request.target_branch_name).to eq 'pull/1347/removed-branch'
+      it 'prefixes branch name with to avoid collision' do
+        expect(pull_request.target_branch_name).to eq 'gl-2e5d3239/1347'
       end
     end
   end

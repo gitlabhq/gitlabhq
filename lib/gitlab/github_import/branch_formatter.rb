@@ -15,6 +15,10 @@ module Gitlab
         raw_data.user.login
       end
 
+      def short_sha(length = 7)
+        sha.to_s[0..length]
+      end
+
       private
 
       def branch_exists?

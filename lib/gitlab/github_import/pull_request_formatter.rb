@@ -1,8 +1,8 @@
 module Gitlab
   module GithubImport
     class PullRequestFormatter < IssuableFormatter
-      delegate :user, :exists?, :project, :ref, :repo, :sha, to: :source_branch, prefix: true
-      delegate :user, :exists?, :project, :ref, :repo, :sha, to: :target_branch, prefix: true
+      delegate :user, :project, :ref, :repo, :sha, to: :source_branch, prefix: true
+      delegate :user, :exists?, :project, :ref, :repo, :sha, :short_sha, to: :target_branch, prefix: true
 
       def attributes
         {
@@ -39,15 +39,15 @@ module Gitlab
       def source_branch_name
         @source_branch_name ||= begin
           if cross_project?
-            if source_branch_repo
-              "pull/#{number}/#{source_branch_repo.full_name}/#{source_branch_ref}"
-            else
-              "pull/#{number}/#{source_branch_user}/#{source_branch_ref}"
-            end
+            source_branch_name_prefixed
           else
-            source_branch_exists? ? source_branch_ref : "pull/#{number}/#{source_branch_ref}"
+            source_branch_exists? ? source_branch_ref : source_branch_name_prefixed
           end
         end
+      end
+
+      def source_branch_name_prefixed
+        "gh-#{target_branch_short_sha}/#{number}"
       end
 
       def source_branch_exists?
@@ -62,8 +62,12 @@ module Gitlab
 
       def target_branch_name
         @target_branch_name ||= begin
-          target_branch_exists? ? target_branch_ref : "pull/#{number}/#{target_branch_ref}"
+          target_branch_exists? ? target_branch_ref : target_branch_name_prefixed
         end
+      end
+
+      def target_branch_name_prefixed
+        "gl-#{target_branch_short_sha}/#{number}"
       end
 
       def cross_project?
