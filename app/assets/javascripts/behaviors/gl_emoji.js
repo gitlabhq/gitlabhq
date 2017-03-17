@@ -13,9 +13,14 @@ function emojiImageTag(name, src) {
 }
 
 function assembleFallbackImageSrc(inputName) {
-  const name = Object.prototype.hasOwnProperty.call(emojiAliases, inputName) ?
+  let name = Object.prototype.hasOwnProperty.call(emojiAliases, inputName) ?
     emojiAliases[inputName] : inputName;
-  const emojiInfo = emojiMap[name];
+  let emojiInfo = emojiMap[name];
+  // Fallback to question mark for unknown emojis
+  if (!emojiInfo) {
+    name = 'grey_question';
+    emojiInfo = emojiMap[name];
+  }
   const fallbackImageSrc = `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/emoji/${name}-${emojiInfo.digest}.png`;
 
   return fallbackImageSrc;
@@ -26,9 +31,15 @@ const glEmojiTagDefaults = {
 };
 function glEmojiTag(inputName, options) {
   const opts = Object.assign({}, glEmojiTagDefaults, options);
-  const name = Object.prototype.hasOwnProperty.call(emojiAliases, inputName) ?
+  let name = Object.prototype.hasOwnProperty.call(emojiAliases, inputName) ?
     emojiAliases[inputName] : inputName;
-  const emojiInfo = emojiMap[name];
+  let emojiInfo = emojiMap[name];
+  // Fallback to question mark for unknown emojis
+  if (!emojiInfo) {
+    name = 'grey_question';
+    emojiInfo = emojiMap[name];
+  }
+
   const fallbackImageSrc = assembleFallbackImageSrc(name);
   const fallbackSpriteClass = `emoji-${name}`;
 
