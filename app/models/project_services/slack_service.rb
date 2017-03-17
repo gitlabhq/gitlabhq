@@ -29,7 +29,6 @@ class SlackService < ChatNotificationService
     [
       { type: 'text', name: 'webhook', placeholder: 'e.g. https://hooks.slack.com/services/…' },
       { type: 'text', name: 'username', placeholder: 'e.g. GitLab' },
-      { type: 'checkbox', name: 'notify_only_broken_builds' },
       { type: 'checkbox', name: 'notify_only_broken_pipelines' },
     ]
   end

@@ -207,15 +207,6 @@ you expected.
 You are also able to view the status of any commit in the various pages in
 GitLab, such as **Commits** and **Merge requests**.
 
-## Enabling build emails
-
-If you want to receive e-mail notifications about the result status of the
-jobs, you should explicitly enable the **Builds Emails** service under your
-project's settings.
-
-For more information read the
-[Builds emails service documentation](../../user/project/integrations/builds_emails.md).
-
 ## Examples
 
 Visit the [examples README][examples] to see a list of examples using GitLab
