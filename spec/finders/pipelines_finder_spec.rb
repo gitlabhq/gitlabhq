@@ -208,7 +208,7 @@ describe PipelinesFinder do
       context 'when order_by and sort are valid' do
         let(:params) { { order_by: 'created_at', sort: 'asc' } }
 
-        it 'sorts pipelines' do
+        it 'sorts pipelines by default' do
           expect(subject).to eq(Ci::Pipeline.order(created_at: :asc))
         end
       end
@@ -226,6 +226,14 @@ describe PipelinesFinder do
 
         it 'sorts pipelines, but sort is default' do
           expect(subject).to eq(Ci::Pipeline.order(created_at: :desc))
+        end
+      end
+
+      context 'when both are nil' do
+        let(:params) { { order_by: nil, sort: nil } }
+
+        it 'sorts pipelines by default' do
+          expect(subject).to eq(Ci::Pipeline.order(id: :desc))
         end
       end
     end
