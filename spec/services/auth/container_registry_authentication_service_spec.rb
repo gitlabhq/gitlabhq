@@ -283,7 +283,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
   context 'delete authorized as admin' do
     let(:current_project) { create(:empty_project) }
-    let(:current_user) { create(:user) }
+    let(:current_user) { create(:admin) }
     let(:authentication_abilities) do
       [
         :admin_container_image
