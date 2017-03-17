@@ -1179,8 +1179,8 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe 'GET status.json' do
-    context 'when accessing status' do
+  describe 'GET pipeline_status.json' do
+    context 'when accessing pipeline_status' do
       let(:status) do
         Gitlab::Ci::Status::Success.new(double('object'), double('user'))
       end
@@ -1190,10 +1190,10 @@ describe Projects::MergeRequestsController do
                              ref: merge_request.source_branch,
                              sha: merge_request.diff_head_sha,
                              status: :success)
-        get :status, namespace_id: project.namespace,
-                     project_id: project,
-                     id: merge_request.iid,
-                     format: :json
+        get :pipeline_status, namespace_id: project.namespace,
+                              project_id: project,
+                              id: merge_request.iid,
+                              format: :json
       end
 
       it 'return a correct pipeline status' do
