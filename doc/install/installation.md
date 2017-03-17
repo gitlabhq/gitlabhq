@@ -483,6 +483,9 @@ the `gitaly:` section is uncommented.
       gitaly:
         socket_path: tmp/sockets/private/gitaly.socket
 
+For more information about configuring Gitaly see
+[doc/administration/gitaly](../administration/gitaly).
+
 ### Setup Logrotate
 
     sudo cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
