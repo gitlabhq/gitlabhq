@@ -1,6 +1,7 @@
-/* global Vue */
 /* global ListIssue */
 import queryData from '../../utils/query_data';
+
+import Vue from 'vue';
 
 require('./header');
 require('./list');

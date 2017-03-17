@@ -1,6 +1,7 @@
 /* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, quotes, no-lonely-if, max-len */
 /* global CommentsStore */
-const Vue = require('vue');
+
+import Vue from 'vue';
 
 (() => {
   const CommentAndResolveBtn = Vue.extend({

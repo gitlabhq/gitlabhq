@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars, space-before-function-paren, arrow-body-style, arrow-parens, comma-dangle, max-len */
-/* global Vue */
 /* global ListLabel */
 /* global ListMilestone */
 /* global ListUser */
+
+import Vue from 'vue';
 
 class ListIssue {
   constructor (obj) {
