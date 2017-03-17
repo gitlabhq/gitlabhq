@@ -1318,6 +1318,7 @@ ActiveRecord::Schema.define(version: 20170315174634) do
     t.string "incoming_email_token"
     t.string "organization"
     t.boolean "authorized_projects_populated"
+    t.boolean "notified_of_own_activity", default: false, null: false
     t.boolean "ghost"
   end
 
