@@ -6,12 +6,24 @@ require('../../../lib/utils/pretty_time');
 
   Vue.component('time-tracking-comparison-pane', {
     name: 'time-tracking-comparison-pane',
-    props: [
-      'timeSpent',
-      'timeEstimate',
-      'timeSpentHumanReadable',
-      'timeEstimateHumanReadable',
-    ],
+    props: {
+      timeSpent: {
+        type: Number,
+        required: true,
+      },
+      timeEstimate: {
+        type: Number,
+        required: true,
+      },
+      timeSpentHumanReadable: {
+        type: String,
+        required: true,
+      },
+      timeEstimateHumanReadable: {
+        type: String,
+        required: true,
+      },
+    },
     computed: {
       parsedRemaining() {
         const diffSeconds = this.timeEstimate - this.timeSpent;

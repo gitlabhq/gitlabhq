@@ -4,6 +4,7 @@ import EnvironmentsService from '../services/environments_service';
 import EnvironmentTable from '../components/environments_table';
 import EnvironmentsStore from '../stores/environments_store';
 
+const Flash = require('~/flash');
 const Vue = window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
 require('../../vue_shared/components/table_pagination');
@@ -183,8 +184,7 @@ export default Vue.component('environment-folder-view', {
             :commit-icon-svg="commitIconSvg"
             :toggleDeployBoard="toggleDeployBoard"
             :store="store"
-            :service="service">
-          </environment-table>
+            :service="service"/>
 
           <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
             :change="changePage"

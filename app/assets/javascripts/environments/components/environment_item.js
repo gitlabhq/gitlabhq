@@ -1,3 +1,9 @@
+/**
+ * Environment Item Component
+ *
+ * Renders a table row for each environment.
+ */
+
 import Timeago from 'timeago.js';
 import ActionsComponent from './environment_actions';
 import ExternalUrlComponent from './environment_external_url';
@@ -47,6 +53,7 @@ export default {
     service: {
       type: Object,
       required: true,
+      default: () => ({}),
     },
   },
 

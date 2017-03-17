@@ -1414,6 +1414,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def pipeline_status
+    @pipeline_status ||= Ci::PipelineStatus.load_for_project(self)
+  end
+
   def mark_import_as_failed(error_message)
     original_errors = errors.dup
     sanitized_message = Gitlab::UrlSanitizer.sanitize(error_message)

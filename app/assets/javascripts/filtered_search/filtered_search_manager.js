@@ -1,9 +1,12 @@
+import FilteredSearchContainer from './container';
+
 (() => {
   class FilteredSearchManager {
     constructor(page) {
-      this.filteredSearchInput = document.querySelector('.filtered-search');
-      this.clearSearchButton = document.querySelector('.clear-search');
-      this.tokensContainer = document.querySelector('.tokens-container');
+      this.container = FilteredSearchContainer.container;
+      this.filteredSearchInput = this.container.querySelector('.filtered-search');
+      this.clearSearchButton = this.container.querySelector('.clear-search');
+      this.tokensContainer = this.container.querySelector('.tokens-container');
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
 
       if (page === 'issues' || page === 'boards') {
@@ -138,7 +141,7 @@
     }
 
     unselectEditTokens(e) {
-      const inputContainer = document.querySelector('.filtered-search-input-container');
+      const inputContainer = this.container.querySelector('.filtered-search-input-container');
       const isElementInFilteredSearch = inputContainer && inputContainer.contains(e.target);
       const isElementInFilterDropdown = e.target.closest('.filter-dropdown') !== null;
       const isElementTokensContainer = e.target.classList.contains('tokens-container');

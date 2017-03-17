@@ -1,5 +1,5 @@
 import Store from '~/environments/stores/environments_store';
-import { deployBoardMockData, serverData } from './mock_data';
+import { serverData, deployBoardMockData } from './mock_data';
 
 (() => {
   describe('Environments Store', () => {

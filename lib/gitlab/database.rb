@@ -103,6 +103,14 @@ module Gitlab
       ActiveRecord::ConnectionAdapters::ConnectionPool.new(spec)
     end
 
+    # Disables prepared statements for the current database connection.
+    def self.disable_prepared_statements
+      config = ActiveRecord::Base.configurations[Rails.env]
+      config['prepared_statements'] = false
+
+      ActiveRecord::Base.establish_connection(config)
+    end
+
     def self.connection
       ActiveRecord::Base.connection
     end

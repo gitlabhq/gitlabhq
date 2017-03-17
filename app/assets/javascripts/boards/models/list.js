@@ -1,6 +1,7 @@
 /* eslint-disable space-before-function-paren, no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow, no-param-reassign, max-len, no-unused-vars */
 /* global ListIssue */
 /* global ListLabel */
+import queryData from '../utils/query_data';
 
 class List {
   constructor (obj) {
@@ -64,25 +65,7 @@ class List {
   }
 
   getIssues (emptyIssues = true) {
-    const data = gl.issueBoards.BoardsStore.filter.path.split('&').reduce((data, filterParam) => {
-      if (filterParam === '') return data;
-      const paramSplit = filterParam.split('=');
-      const paramKeyNormalized = paramSplit[0].replace('[]', '');
-      const isArray = paramSplit[0].indexOf('[]');
-      const value = decodeURIComponent(paramSplit[1]).replace(/\+/g, ' ');
-
-      if (isArray !== -1) {
-        if (!data[paramKeyNormalized]) {
-          data[paramKeyNormalized] = [];
-        }
-
-        data[paramKeyNormalized].push(value);
-      } else {
-        data[paramKeyNormalized] = value;
-      }
-
-      return data;
-    }, { page: this.page });
+    const data = queryData(gl.issueBoards.BoardsStore.filter.path, { page: this.page });
 
     if (this.label && data.label_name) {
       data.label_name = data.label_name.filter(label => label !== this.label.title);

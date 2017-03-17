@@ -2,7 +2,12 @@
 (() => {
   Vue.component('time-tracking-spent-only-pane', {
     name: 'time-tracking-spent-only-pane',
-    props: ['timeSpentHumanReadable'],
+    props: {
+      timeSpentHumanReadable: {
+        type: String,
+        required: true,
+      },
+    },
     template: `
       <div class='time-tracking-spend-only-pane'>
         <span class='bold'>Spent:</span>

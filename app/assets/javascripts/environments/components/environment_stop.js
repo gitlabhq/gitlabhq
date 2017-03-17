@@ -16,6 +16,7 @@ export default {
     service: {
       type: Object,
       required: true,
+      default: () => ({}),
     },
   },
 

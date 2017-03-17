@@ -39,9 +39,10 @@ describe('Milestone select component', () => {
     it('sets default data', () => {
       expect(vm.loading).toBe(false);
       expect(vm.milestones.length).toBe(0);
-      expect(vm.extraMilestones.length).toBe(2);
+      expect(vm.extraMilestones.length).toBe(3);
       expect(vm.extraMilestones[0].title).toBe('Any Milestone');
       expect(vm.extraMilestones[1].title).toBe('Upcoming');
+      expect(vm.extraMilestones[2].title).toBe('Started');
     });
   });
 
@@ -61,9 +62,9 @@ describe('Milestone select component', () => {
 
       it('renders the milestone list', () => {
         expect(vm.$el.querySelector('.fa-spinner')).toBeNull();
-        expect(vm.$el.querySelectorAll('.board-milestone-list li').length).toBe(4);
+        expect(vm.$el.querySelectorAll('.board-milestone-list li').length).toBe(5);
         expect(
-          vm.$el.querySelectorAll('.board-milestone-list li')[3].textContent,
+          vm.$el.querySelectorAll('.board-milestone-list li')[4].textContent,
         ).toContain('test');
       });
 
@@ -85,8 +86,17 @@ describe('Milestone select component', () => {
         });
       });
 
-      it('selects fetched milestone', () => {
+      it('selects started milestone', () => {
         vm.$el.querySelectorAll('.board-milestone-list a')[2].click();
+
+        expect(selectMilestoneSpy).toHaveBeenCalledWith({
+          id: -3,
+          title: 'Started',
+        });
+      });
+
+      it('selects fetched milestone', () => {
+        vm.$el.querySelectorAll('.board-milestone-list a')[3].click();
 
         expect(selectMilestoneSpy).toHaveBeenCalledWith({
           id: 1,

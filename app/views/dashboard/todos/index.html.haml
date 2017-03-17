@@ -57,8 +57,8 @@
               = icon('chevron-down')
             %ul.dropdown-menu.dropdown-menu-sort
               %li
-                = link_to todos_filter_path(sort: sort_value_priority) do
-                  = sort_title_priority
+                = link_to todos_filter_path(sort: sort_value_label_priority) do
+                  = sort_title_label_priority
                 = link_to todos_filter_path(sort: sort_value_recently_created) do
                   = sort_title_recently_created
                 = link_to todos_filter_path(sort: sort_value_oldest_created) do

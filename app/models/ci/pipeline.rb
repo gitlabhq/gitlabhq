@@ -22,6 +22,7 @@ module Ci
     validate :valid_commit_sha, unless: :importing?
 
     after_create :keep_around_commits, unless: :importing?
+    after_create :refresh_build_status_cache
 
     state_machine :status, initial: :created do
       event :enqueue do
@@ -328,6 +329,7 @@ module Ci
         when 'manual' then block
         end
       end
+      refresh_build_status_cache
     end
 
     def predefined_variables
@@ -367,6 +369,10 @@ module Ci
       Gitlab::Ci::Status::Pipeline::Factory
         .new(self, current_user)
         .fabricate!
+    end
+
+    def refresh_build_status_cache
+      Ci::PipelineStatus.new(project, sha: sha, status: status).store_in_cache_if_needed
     end
 
     private
