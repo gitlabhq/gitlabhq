@@ -5,7 +5,7 @@ class ReaddNotifiedOfOwnActivityToUsers < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
-    add_column_with_default :users, :notified_of_own_activity, :boolean, default: false
+    add_column :users, :notified_of_own_activity, :boolean
   end
 
   def down
