@@ -175,7 +175,7 @@ require('./smart_interval');
               _this.opts.ci_sha = data.sha;
               _this.updateCommitUrls(data.sha);
             }
-            if (showNotification) {
+            if (showNotification && data.status) {
               status = _this.ciLabelForStatus(data.status);
               if (status === "preparing") {
                 title = _this.opts.ci_title.preparing;
