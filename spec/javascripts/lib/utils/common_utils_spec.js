@@ -221,8 +221,8 @@ require('~/lib/utils/common_utils');
         gl.utils.backOff((next) => {
           return new Promise((resolve) => {
             resolve(expectedResponseValue);
-          }).then((resp) => {
-            setTimeout(next(resp), 5000); // it will time out
+          }).then(() => {
+            setTimeout(next(), 5000); // it will time out
           });
         }, 3000).catch((errBackoffResp) => {
           expect(errBackoffResp instanceof Error).toBe(true);
