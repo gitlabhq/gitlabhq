@@ -15,7 +15,7 @@ class PipelinesFinder
     items = by_name(items)
     items = by_username(items)
     items = by_yaml_errors(items)
-    order_and_sort(items)
+    sort_items(items)
   end
 
   private
@@ -107,7 +107,7 @@ class PipelinesFinder
     end
   end
 
-  def order_and_sort(items)
+  def sort_items(items)
     order_by = if %w[id status ref user_id].include?(params[:order_by]) # Allow only indexed columns
                  params[:order_by]
                else
