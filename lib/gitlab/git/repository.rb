@@ -86,14 +86,16 @@ module Gitlab
       end
 
       # Returns an Array of Branches
-      def branches
-        rugged.branches.map do |rugged_ref|
+      def branches(filter: nil, sort_by: nil)
+        branches = rugged.branches.each(filter).map do |rugged_ref|
           begin
             Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target)
           rescue Rugged::ReferenceError
             # Omit invalid branch
           end
-        end.compact.sort_by(&:name)
+        end.compact
+
+        sort_branches(branches, sort_by)
       end
 
       def reload_rugged
@@ -114,10 +116,21 @@ module Gitlab
         Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target) if rugged_ref
       end
 
-      def local_branches
-        rugged.branches.each(:local).map do |branch|
-          Gitlab::Git::Branch.new(self, branch.name, branch.target)
+      def local_branches(sort_by = nil)
+        Gitlab::GitalyClient.migrate(:local_branches) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.local_branches(sort_by).map do |branch|
+              target = branch_target_from_gitaly_response(branch)
+              Gitlab::Git::Branch.new(self, branch.name, target)
+            end
+          else
+            branches(filter: :local, sort_by: sort_by)
+          end
         end
+      rescue GRPC::NotFound => e
+        raise NoRepository.new(e)
+      rescue GRPC::BadStatus => e
+        raise CommandError.new(e)
       end
 
       # Returns the number of valid branches
@@ -1270,8 +1283,52 @@ module Gitlab
         diff.each_patch
       end
 
+      def sort_branches(branches, sort_by)
+        case sort_by
+        when 'name'
+          branches.sort_by(&:name)
+        when 'updated_desc'
+          branches.sort do |a, b|
+            b.dereferenced_target.committed_date <=> a.dereferenced_target.committed_date
+          end
+        when 'updated_asc'
+          branches.sort do |a, b|
+            a.dereferenced_target.committed_date <=> b.dereferenced_target.committed_date
+          end
+        else
+          branches
+        end
+      end
+
       def gitaly_ref_client
         @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(self)
+      end
+
+      def branch_target_from_gitaly_response(response)
+        # Git messages have no encoding enforcements. However, in the UI we only
+        # handle UTF-8, so basically we cross our fingers that the message force
+        # encoded to UTF-8 is readable.
+        message = response.commit_subject.dup.force_encoding('UTF-8')
+
+        # NOTE: For ease of parsing in Gitaly, we have only the subject of
+        # the commit and not the full message. This is ok, since all the
+        # code that uses `local_branches` only cares at most about the
+        # commit message.
+        # TODO: Once gitaly "takes over" Rugged consider separating the
+        # subject from the message to make it clearer when there's one
+        # available but not the other.
+        hash = {
+          id: response.commit_id,
+          message: message,
+          authored_date: Time.at(response.commit_author.date.seconds),
+          author_name: response.commit_author.name,
+          author_email: response.commit_author.email,
+          committed_date: Time.at(response.commit_committer.date.seconds),
+          committer_name: response.commit_committer.name,
+          committer_email: response.commit_committer.email,
+        }
+
+        Gitlab::Git::Commit.decorate(hash)
       end
     end
   end

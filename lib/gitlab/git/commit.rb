@@ -55,6 +55,7 @@ module Gitlab
         #   Commit.find(repo, 'master')
         #
         def find(repo, commit_id = "HEAD")
+          return commit_id if commit_id.is_a?(Gitlab::Git::Commit)
           return decorate(commit_id) if commit_id.is_a?(Rugged::Commit)
 
           obj = if commit_id.is_a?(String)

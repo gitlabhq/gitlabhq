@@ -644,22 +644,8 @@ class Repository
     "#{name}-#{highest_branch_id + 1}"
   end
 
-  # Remove archives older than 2 hours
   def branches_sorted_by(value)
-    case value
-    when 'name'
-      branches.sort_by(&:name)
-    when 'updated_desc'
-      branches.sort do |a, b|
-        commit(b.dereferenced_target).committed_date <=> commit(a.dereferenced_target).committed_date
-      end
-    when 'updated_asc'
-      branches.sort do |a, b|
-        commit(a.dereferenced_target).committed_date <=> commit(b.dereferenced_target).committed_date
-      end
-    else
-      branches
-    end
+    raw_repository.local_branches(value)
   end
 
   def tags_sorted_by(value)
