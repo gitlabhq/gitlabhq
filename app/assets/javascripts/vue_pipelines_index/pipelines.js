@@ -163,6 +163,7 @@ export default {
           this.pageRequest = false;
         })
         .catch(() => {
+          this.hasError = true;
           this.pageRequest = false;
           new Flash('An error occurred while fetching the pipelines, please reload the page again.');
         });
@@ -196,7 +197,7 @@ export default {
         <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
       </div>
 
-      <empty-state v-if="shouldRenderEmptyState" />
+      <empty-state v-if="shouldRenderEmptyState" :helpPagePath="helpPagePath" />
 
       <error-state v-if="shouldRenderErrorState" />
 

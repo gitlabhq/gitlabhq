@@ -5,6 +5,7 @@ import PipelinesTableComponent from '../../vue_shared/components/pipelines_table
 import PipelinesService from '../../vue_pipelines_index/services/pipelines_service';
 import PipelineStore from '../../vue_pipelines_index/stores/pipelines_store';
 import eventHub from '../../vue_pipelines_index/event_hub';
+import ErrorState from '../../vue_pipelines_index/components/error_state';
 import '../../lib/utils/common_utils';
 import '../../vue_shared/vue_resource_interceptor';
 
@@ -22,6 +23,7 @@ import '../../vue_shared/vue_resource_interceptor';
 export default Vue.component('pipelines-table', {
   components: {
     'pipelines-table-component': PipelinesTableComponent,
+    'error-state': ErrorState,
   },
 
   /**
@@ -39,7 +41,14 @@ export default Vue.component('pipelines-table', {
       store,
       state: store.state,
       isLoading: false,
+      hasError: false,
     };
+  },
+
+  computed: {
+    shouldRenderErrorState() {
+      return this.hasError && !this.pageRequest;
+    },
   },
 
   /**
@@ -80,6 +89,7 @@ export default Vue.component('pipelines-table', {
           this.isLoading = false;
         })
         .catch(() => {
+          this.hasError = true;
           this.isLoading = false;
           new Flash('An error occurred while fetching the pipelines, please reload the page again.');
         });
@@ -92,12 +102,7 @@ export default Vue.component('pipelines-table', {
         <i class="fa fa-spinner fa-spin"></i>
       </div>
 
-      <div class="blank-state blank-state-no-icon"
-        v-if="!isLoading && state.pipelines.length === 0">
-        <h2 class="blank-state-title js-blank-state-title">
-          No pipelines to show
-        </h2>
-      </div>
+      <error-state v-if="shouldRenderErrorState" />
 
       <div class="table-holder pipelines"
         v-if="!isLoading && state.pipelines.length > 0">
