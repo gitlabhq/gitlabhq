@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, wrap-iife, one-var, no-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, comma-dangle, prefer-arrow-callback, padded-blocks, func-names, max-len */
+
 (function() {
   this.PathLocks = (function() {
     function PathLocks() {}
