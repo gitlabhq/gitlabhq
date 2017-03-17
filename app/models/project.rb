@@ -866,6 +866,7 @@ class Project < ActiveRecord::Base
   end
 
   # Branches that are not _exactly_ matched by a protected branch.
+  #TODO: Move to Protections::BranchMatcher.new(project).unprotecte
   def open_branches
     exact_protected_branch_names = protected_branches.reject(&:wildcard?).map(&:name)
     branch_names = repository.branches.map(&:name)
