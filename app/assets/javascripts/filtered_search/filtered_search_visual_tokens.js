@@ -157,7 +157,7 @@ class FilteredSearchVisualTokens {
     const name = token.querySelector('.name');
     const value = token.querySelector('.value');
 
-    if (token.classList.contains('filtered-search-token')) {
+    if (token.classList.contains('filtered-search-token') && value) {
       FilteredSearchVisualTokens.addFilterVisualToken(name.innerText);
       input.value = value.innerText;
     } else {
