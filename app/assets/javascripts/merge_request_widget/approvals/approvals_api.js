@@ -1,9 +1,7 @@
 /* global Flash */
 
-window.Vue = require('vue');
-window.Vue.use(require('vue-resource'));
+import Vue from 'vue';
 
-const Vue = window.Vue;
 require('./approvals_store');
 
 class ApprovalsApi {

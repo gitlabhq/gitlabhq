@@ -1,5 +1,6 @@
 /* eslint-disable guard-for-in, no-restricted-syntax */
-/* global Vue */
+
+import Vue from 'vue';
 
 require('~/vue_common_component/link_to_member_avatar');
 

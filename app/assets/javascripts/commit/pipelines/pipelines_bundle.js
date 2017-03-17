@@ -1,8 +1,10 @@
 /* eslint-disable no-param-reassign */
+
+import Vue from 'vue';
+import VueResource from 'vue-resource';
 import CommitPipelinesTable from './pipelines_table';
 
-window.Vue = require('vue');
-window.Vue.use(require('vue-resource'));
+Vue.use(VueResource);
 
 /**
  * Commits View > Pipelines Tab > Pipelines Table.

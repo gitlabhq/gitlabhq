@@ -1,5 +1,6 @@
-/* global Vue */
 /* global CommentsStore */
+
+import Vue from 'vue';
 
 (() => {
   const NewIssueForDiscussion = Vue.extend({

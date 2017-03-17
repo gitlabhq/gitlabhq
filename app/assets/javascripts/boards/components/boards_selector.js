@@ -1,4 +1,4 @@
-/* global Vue */
+import Vue from 'vue';
 
 require('./board_new_form');
 

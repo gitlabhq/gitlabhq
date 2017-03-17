@@ -1,6 +1,5 @@
-/* global Vue */
+import Vue from 'vue';
 
-const Vue = require('vue');
 require('../approvals_store');
 require('../../../vue_common_component/link_to_member_avatar');
 
