@@ -278,6 +278,16 @@ describe Issue, "Issuable" do
       end
     end
 
+    context 'issue has labels' do
+      let(:labels) { [create(:label), create(:label)] }
+
+      before { issue.update_attribute(:labels, labels)}
+
+      it 'includes labels in the hook data' do
+        expect(data[:labels]).to eq(labels.map(&:hook_attrs))
+      end
+    end
+
     include_examples 'project hook data'
     include_examples 'deprecated repository hook data'
   end
