@@ -74,7 +74,7 @@ describe API::Pipelines do
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
               expect(json_response).not_to be_empty
-              expect(json_response.last['sha']).to eq(Ci::Pipeline.where(tag: false).last.sha)
+              expect(json_response.last['sha']).to eq(project.pipelines.where(tag: false).last.sha)
             end
           end
 
@@ -85,7 +85,7 @@ describe API::Pipelines do
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
               expect(json_response).not_to be_empty
-              expect(json_response.last['sha']).to eq(Ci::Pipeline.where(tag: true).last.sha)
+              expect(json_response.last['sha']).to eq(project.pipelines.where(tag: true).last.sha)
             end
           end
 
@@ -151,7 +151,7 @@ describe API::Pipelines do
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
-              expect(json_response.first['sha']).to eq(Ci::Pipeline.where(user: user1).order(id: :desc).first.sha)
+              expect(json_response.first['sha']).to eq(project.pipelines.where(user: user1).order(id: :desc).first.sha)
             end
           end
 
@@ -173,7 +173,7 @@ describe API::Pipelines do
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
-              expect(json_response.first['sha']).to eq(Ci::Pipeline.where(user: user1).order(id: :desc).first.sha)
+              expect(json_response.first['sha']).to eq(project.pipelines.where(user: user1).order(id: :desc).first.sha)
             end
           end
 
@@ -195,7 +195,7 @@ describe API::Pipelines do
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
-              expect(json_response.first['id']).to eq(Ci::Pipeline.where("yaml_errors IS NOT NULL").order(id: :desc).first.id)
+              expect(json_response.first['id']).to eq(project.pipelines.where("yaml_errors IS NOT NULL").order(id: :desc).first.id)
             end
           end
 
@@ -205,7 +205,7 @@ describe API::Pipelines do
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
-              expect(json_response.first['id']).to eq(Ci::Pipeline.where("yaml_errors IS NULL").order(id: :desc).first.id)
+              expect(json_response.first['id']).to eq(project.pipelines.where("yaml_errors IS NULL").order(id: :desc).first.id)
             end
           end
 
@@ -221,12 +221,12 @@ describe API::Pipelines do
         context 'when order_by and sort are passed' do
           context 'when order_by and sort are valid' do
             it 'sorts pipelines' do
-              get api("/projects/#{project.id}/pipelines?order_by=id&sort=asc", user)
+              get api("/projects/#{project.id}/pipelines?order_by=user_id&sort=asc", user)
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
-              expect(json_response.first['id']).to eq(Ci::Pipeline.order(id: :asc).first.id)
-              expect(json_response.last['id']).to eq(Ci::Pipeline.order(id: :asc).last.id)
+              expect(json_response.first['id']).to eq(project.pipelines.order(user_id: :asc).first.id)
+              expect(json_response.last['id']).to eq(project.pipelines.order(user_id: :asc).last.id)
             end
           end
 

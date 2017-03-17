@@ -24,11 +24,11 @@ describe PipelinesFinder do
       let(:params) { {} }
 
       it 'returns all pipelines' do
-        expect(subject).to match_array(Ci::Pipeline.all)
+        expect(subject).to match_array(project.pipelines)
       end
 
       it 'orders in descending order on ID' do
-        expect(subject).to eq(Ci::Pipeline.order(id: :desc))
+        expect(subject).to eq(project.pipelines.order(id: :desc))
       end
     end
 
@@ -37,7 +37,7 @@ describe PipelinesFinder do
         let(:params) { { scope: 'running' } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(Ci::Pipeline.running)
+          expect(subject).to match_array(project.pipelines.running)
         end
       end
 
@@ -45,7 +45,7 @@ describe PipelinesFinder do
         let(:params) { { scope: 'pending' } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(Ci::Pipeline.pending)
+          expect(subject).to match_array(project.pipelines.pending)
         end
       end
 
@@ -53,7 +53,7 @@ describe PipelinesFinder do
         let(:params) { { scope: 'finished' } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(Ci::Pipeline.finished)
+          expect(subject).to match_array(project.pipelines.finished)
         end
       end
 
@@ -61,7 +61,7 @@ describe PipelinesFinder do
         let(:params) { { scope: 'branches' } }
 
         it 'returns matched pipelines' do
-          expect(subject).to eq([Ci::Pipeline.where(tag: false).last])
+          expect(subject).to eq([project.pipelines.where(tag: false).last])
         end
       end
 
@@ -69,7 +69,7 @@ describe PipelinesFinder do
         let(:params) { { scope: 'tags' } }
 
         it 'returns matched pipelines' do
-          expect(subject).to eq([Ci::Pipeline.where(tag: true).last])
+          expect(subject).to eq([project.pipelines.where(tag: true).last])
         end
       end
     end
@@ -79,7 +79,7 @@ describe PipelinesFinder do
         let(:params) { { status: 'running' } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(Ci::Pipeline.running)
+          expect(subject).to match_array(project.pipelines.running)
         end
       end
 
@@ -87,7 +87,7 @@ describe PipelinesFinder do
         let(:params) { { status: 'pending' } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(Ci::Pipeline.pending)
+          expect(subject).to match_array(project.pipelines.pending)
         end
       end
 
@@ -95,7 +95,7 @@ describe PipelinesFinder do
         let(:params) { { status: 'success' } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(Ci::Pipeline.success)
+          expect(subject).to match_array(project.pipelines.success)
         end
       end
 
@@ -103,7 +103,7 @@ describe PipelinesFinder do
         let(:params) { { status: 'failed' } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(Ci::Pipeline.failed)
+          expect(subject).to match_array(project.pipelines.failed)
         end
       end
 
@@ -111,7 +111,7 @@ describe PipelinesFinder do
         let(:params) { { status: 'canceled' } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(Ci::Pipeline.canceled)
+          expect(subject).to match_array(project.pipelines.canceled)
         end
       end
 
@@ -119,7 +119,7 @@ describe PipelinesFinder do
         let(:params) { { status: 'skipped' } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(Ci::Pipeline.skipped)
+          expect(subject).to match_array(project.pipelines.skipped)
         end
       end
     end 
@@ -129,7 +129,7 @@ describe PipelinesFinder do
         let(:params) { { ref: 'master' } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(Ci::Pipeline.where(ref: 'master'))
+          expect(subject).to match_array(project.pipelines.where(ref: 'master'))
         end
       end
 
@@ -147,7 +147,7 @@ describe PipelinesFinder do
         let(:params) { { name: user1.name } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(Ci::Pipeline.where(user: user1))
+          expect(subject).to match_array(project.pipelines.where(user: user1))
         end
       end
 
@@ -165,7 +165,7 @@ describe PipelinesFinder do
         let(:params) { { username: user1.username } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(Ci::Pipeline.where(user: user1))
+          expect(subject).to match_array(project.pipelines.where(user: user1))
         end
       end
 
@@ -183,7 +183,7 @@ describe PipelinesFinder do
         let(:params) { { yaml_errors: true } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(Ci::Pipeline.where("yaml_errors IS NOT NULL"))
+          expect(subject).to match_array(project.pipelines.where("yaml_errors IS NOT NULL"))
         end
       end
 
@@ -191,7 +191,7 @@ describe PipelinesFinder do
         let(:params) { { yaml_errors: false } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(Ci::Pipeline.where("yaml_errors IS NULL"))
+          expect(subject).to match_array(project.pipelines.where("yaml_errors IS NULL"))
         end
       end
 
@@ -199,7 +199,7 @@ describe PipelinesFinder do
         let(:params) { { yaml_errors: "UnexpectedValue" } }
 
         it 'returns all pipelines' do
-          expect(subject).to match_array(Ci::Pipeline.all)
+          expect(subject).to match_array(project.pipelines.all)
         end
       end
     end
@@ -209,7 +209,7 @@ describe PipelinesFinder do
         let(:params) { { order_by: 'user_id', sort: 'asc' } }
 
         it 'sorts pipelines' do
-          expect(subject).to eq(Ci::Pipeline.order(user_id: :asc))
+          expect(subject).to eq(project.pipelines.order(user_id: :asc))
         end
       end
 
@@ -217,7 +217,7 @@ describe PipelinesFinder do
         let(:params) { { order_by: 'invalid_column', sort: 'asc' } }
 
         it 'sorts pipelines with id: (default)' do
-          expect(subject).to eq(Ci::Pipeline.order(id: :asc))
+          expect(subject).to eq(project.pipelines.order(id: :asc))
         end
       end
 
@@ -225,7 +225,7 @@ describe PipelinesFinder do
         let(:params) { { order_by: 'user_id', sort: 'invalid_sort' } }
 
         it 'sorts pipelines with :desc (default)' do
-          expect(subject).to eq(Ci::Pipeline.order(user_id: :desc))
+          expect(subject).to eq(project.pipelines.order(user_id: :desc))
         end
       end
 
@@ -233,7 +233,7 @@ describe PipelinesFinder do
         let(:params) { { order_by: nil, sort: nil } }
 
         it 'sorts pipelines by default' do
-          expect(subject).to eq(Ci::Pipeline.order(id: :desc))
+          expect(subject).to eq(project.pipelines.order(id: :desc))
         end
       end
     end
