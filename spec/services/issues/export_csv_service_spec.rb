@@ -108,4 +108,12 @@ describe Issues::ExportCsvService, services: true do
       expect(csv[0]['Labels']).to eq nil
     end
   end
+
+  it 'succeeds when author is non-existent' do
+    issue.author_id = 99999999
+    issue.save(validate: false)
+
+    expect(csv[0]['Author']).to eq nil
+    expect(csv[0]['Author Username']).to eq nil
+  end
 end
