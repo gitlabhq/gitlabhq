@@ -17,8 +17,6 @@ describe('Environment item', () => {
       environment_path: 'url',
     };
 
-    const EnvironmentTable = Vue.extend(environmentTableComp);
-
     const component = new EnvironmentTable({
       el: document.querySelector('.test-dom-element'),
       propsData: {
@@ -53,8 +51,6 @@ describe('Environment item', () => {
       },
       isDeployBoardVisible: true,
     };
-
-    const EnvironmentTable = Vue.extend(environmentTableComp);
 
     const component = new EnvironmentTable({
       el: document.querySelector('.test-dom-element'),
@@ -95,8 +91,6 @@ describe('Environment item', () => {
     };
 
     const spy = jasmine.createSpy('spy');
-
-    const EnvironmentTable = Vue.extend(environmentTableComp);
 
     const component = new EnvironmentTable({
       el: document.querySelector('.test-dom-element'),
