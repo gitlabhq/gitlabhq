@@ -1,5 +1,3 @@
-require 'timeout'
-
 module QA
   module Page
     module Main
@@ -7,14 +5,13 @@ module QA
         def initialize
           visit('/')
 
-          # This resolves cold boot / post-deployment migrations running
-          # problems.
+          # This resolves cold boot / background tasks problems
           #
-          Timeout.timeout(240) do
-            loop do
-              break if page.has_css?('.application', wait: 10)
-              refresh
-            end
+          start = Time.now
+
+          while Time.now - start < 240
+            break if page.has_css?('.application', wait: 10)
+            refresh
           end
         end
 
