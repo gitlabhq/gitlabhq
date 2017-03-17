@@ -29,7 +29,7 @@ module Gitlab
       Gitlab::Geo.current_node.reload.enabled?
     end
 
-    def self.configuration_available?
+    def self.configured?
       Rails.configuration.respond_to?(:geo_database)
     end
 
