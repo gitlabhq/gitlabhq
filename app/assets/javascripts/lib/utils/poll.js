@@ -11,21 +11,21 @@ Vue.use(VueResource);
  * new poll({
  *   url: 'endopoint',
  *   data: {},
- *   successCallback: () => {}
- *   errorCallback: () => {}
+ *   successCallback: () => {},
+ *   errorCallback: () => {},
  * }).makeRequest();
  *
  *
  * 1. Checks for response and headers before start polling
- * 2. Interval is provided by `X-Poll-Interval` header.
- * 3. If `X-Poll-Interval` is -1, we stop polling
+ * 2. Interval is provided by `Poll-Interval` header.
+ * 3. If `Poll-Interval` is -1, we stop polling
  * 4. If HTTP response is 200, we poll.
  * 5. If HTTP response is different from 200, we stop polling.
  *
  */
 export default class poll {
-  constructor(options) {
-    this.options = options || {};
+  constructor(options = {}) {
+    this.options = options;
 
     this.intervalHeader = 'POLL-INTERVAL';
   }
