@@ -98,6 +98,10 @@ describe Groups::DestroyService, services: true do
 
           expect(group_record).to be_nil
         end
+
+        after do
+          DatabaseCleaner.strategy = :transaction
+        end
       end
     end
   end
