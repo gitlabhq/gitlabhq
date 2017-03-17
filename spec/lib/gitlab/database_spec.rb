@@ -1,10 +1,16 @@
 require 'spec_helper'
 
-class MigrationTest
-  include Gitlab::Database
-end
-
 describe Gitlab::Database, lib: true do
+  before do
+    stub_const('MigrationTest', Class.new { include Gitlab::Database })
+  end
+
+  describe '.config' do
+    it 'returns a Hash' do
+      expect(described_class.config).to be_an_instance_of(Hash)
+    end
+  end
+
   describe '.adapter_name' do
     it 'returns the name of the adapter' do
       expect(described_class.adapter_name).to be_an_instance_of(String)
