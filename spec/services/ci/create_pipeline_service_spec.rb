@@ -34,6 +34,18 @@ describe Ci::CreatePipelineService, services: true do
       it { expect(pipeline).to have_attributes(status: 'pending') }
       it { expect(pipeline.builds.first).to be_kind_of(Ci::Build) }
 
+      it 'updates head pipeline of each merge request' do
+        merge_request_1 = create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)
+        merge_request_2 = create(:merge_request, source_branch: 'master', target_branch: "branch_2", source_project: project)
+        merge_request_3 = create(:merge_request, source_branch: 'other_branch', target_branch: "branch_2", source_project: project)
+
+        head_pipeline = pipeline
+
+        expect(merge_request_1.reload.head_pipeline).to eq(head_pipeline)
+        expect(merge_request_2.reload.head_pipeline).to eq(head_pipeline)
+        expect(merge_request_3.reload.head_pipeline).to be_nil
+      end
+
       context 'auto-cancel enabled' do
         before do
           project.update(auto_cancel_pending_pipelines: 'enabled')
