@@ -1,11 +1,11 @@
 /**
  * Render environments table.
  */
-import EnvironmentItem from './environment_item';
+import EnvironmentTableRowComponent from './environment_item';
 
 export default {
   components: {
-    'environment-item': EnvironmentItem,
+    'environment-item': EnvironmentTableRowComponent,
   },
 
   props: {
