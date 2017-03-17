@@ -2,17 +2,19 @@
 /* eslint-disable no-new */
 import Vue from 'vue';
 import '~/flash';
-import pipelinesEmptyStateSVG from 'empty_states/icons/_pipelines_empty.svg';
-import pipelinesErrorStateSVG from 'empty_states/icons/_pipelines_failed.svg';
 import PipelinesService from './services/pipelines_service';
 import eventHub from './event_hub';
 import PipelinesTableComponent from '../vue_shared/components/pipelines_table';
 import TablePaginationComponent from '../vue_shared/components/table_pagination';
+import EmptyState from './components/empty_state';
+import ErrorState from './components/error_state';
+import NavigationTabs from './components/navigation_tabs';
+import NavigationControls from './components/nav_controls';
 
 export default {
   props: {
-    endpoint: {
-      type: String,
+    store: {
+      type: Object,
       required: true,
     },
   },
@@ -20,6 +22,23 @@ export default {
   components: {
     'gl-pagination': TablePaginationComponent,
     'pipelines-table-component': PipelinesTableComponent,
+    'empty-state': EmptyState,
+    'error-state': ErrorState,
+    'navigation-tabs': NavigationTabs,
+    'navigation-controls': NavigationControls,
+  },
+
+  data() {
+    const pipelinesData = document.querySelector('#pipelines-list-vue').dataset;
+
+    return {
+      ...pipelinesData,
+      state: this.store.state,
+      apiScope: 'all',
+      pagenum: 1,
+      pageRequest: false,
+      hasError: false,
+    };
   },
 
   computed: {
@@ -28,7 +47,8 @@ export default {
     },
 
     scope() {
-      return gl.utils.getParameterByName('scope');
+      const scope = gl.utils.getParameterByName('scope');
+      return scope === null ? 'all' : scope;
     },
 
     shouldRenderErrorState() {
@@ -42,25 +62,28 @@ export default {
     * @return {Boolean}
     */
     shouldRenderEmptyState() {
-      return !this.hasError &&
-        !this.pageRequest && (
-          !this.pipelines.length && (this.scope === 'all' || this.scope === null)
-        );
+      return !this.pageRequest &&
+        !this.hasError &&
+        !this.state.pipelines.length &&
+        (this.scope === 'all' || this.scope === null);
+    },
+
+    /**
+     * When a specific scope does not have pipelines we render a message.
+     *
+     * @return {Boolean}
+     */
+    shouldRenderNoPipelinesMessage() {
+      return !this.pageRequest &&
+        !this.hasError &&
+        !this.state.pipelines.length &&
+        this.scope !== 'all' &&
+        this.scope !== null;
     },
 
     shouldRenderTable() {
       return !this.hasError &&
-        !this.pageRequest && this.pipelines.length;
-    },
-
-    /**
-    * Header tabs should only be rendered when we receive an error or a successfull response with
-    * pipelines.
-    *
-    * @return {Boolean}
-    */
-    shouldRenderTabs() {
-      return !this.pageRequest && !this.hasError && this.pipelines.length;
+        !this.pageRequest && this.state.pipelines.length;
     },
 
     /**
@@ -70,24 +93,24 @@ export default {
     */
     shouldRenderPagination() {
       return !this.pageRequest &&
-        this.pipelines.length &&
-        this.pageInfo.total > this.pageInfo.perPage;
+        this.state.pipelines.length &&
+        this.state.pageInfo.total > this.state.pageInfo.perPage;
     },
-  },
 
-  data() {
-    const pipelinesData = document.querySelector('#pipelines-list-vue').dataset;
+    hasCIEnabled() {
+      return this.hasCi !== undefined;
+    },
 
-    return {
-      ...pipelinesData,
-      state: this.store.state,
-      apiScope: 'all',
-      pagenum: 1,
-      pageRequest: false,
-      hasError: false,
-      pipelinesEmptyStateSVG,
-      pipelinesErrorStateSVG,
-    };
+    paths() {
+      return {
+        allPath: this.allPath,
+        pendingPath: this.pendingPath,
+        finishedPath: this.finishedPath,
+        runningPath: this.runningPath,
+        branchesPath: this.branchesPath,
+        tagsPath: this.tagsPath,
+      };
+    },
   },
 
   created() {
@@ -147,144 +170,57 @@ export default {
   },
 
   template: `
-    <div :class="cssClass">
-      <div class="top-area" v-if="!shouldRenderEmptyState">
-        <ul
-          class="nav-links">
+    <div
+      :class="cssClass"
+      class="pipelines">
 
-          <li :class="{ 'active': scope === null || scope === 'all'}">
-            <a :href="allPath">
-              All
-            </a>
-            <span class="badge js-totalbuilds-count">
-              {{count.all}}
-            </span>
-          </li>
-          <li
-            class="js-pipelines-tab-pending"
-            :class="{ 'active': scope === 'pending'}">
-            <a :href="pendingPath">
-              Pending
-            </a>
+      <div
+        class="top-area"
+        v-if="!pageRequest && !shouldRenderEmptyState">
+        <navigation-tabs
+          :scope="scope"
+          :count="state.count"
+          :paths="paths" />
 
-            <span class="badge">
-              {{count.pending}}
-            </span>
-          </li>
-          <li
-            class="js-pipelines-tab-running"
-            :class="{ 'active': scope === 'running'}">
-
-            <a :href="runningPath">
-              Running
-            </a>
-
-            <span class="badge">
-              {{count.running}}
-            </span>
-          </li>
-
-          <li
-            class="js-pipelines-tab-finished"
-            :class="{ 'active': scope === 'finished'}">
-
-            <a :href="finishedPath">
-              Finished
-            </a>
-            <span class="badge">
-              {{count.finished}}
-            </span>
-          </li>
-
-          <li
-          class="js-pipelines-tab-branches"
-          :class="{ 'active': scope === 'branches'}">
-            <a :href="branchesPath">Branches</a>
-          </li>
-
-          <li
-            class="js-pipelines-tab-tags"
-            :class="{ 'active': scope === 'tags'}">
-            <a :href="tagsPath">Tags</a>
-          </li>
-        </ul>
-
-        <div class="nav-controls">
-          <a
-            v-if="canCreatePipelineParsed"
-            :href="newPipelinePath"
-            class="btn btn-create">
-            Run Pipeline
-          </a>
-
-          <a
-            v-if="!hasCi"
-            :href="helpPagePath"
-            class="btn btn-info">
-            Get started with Pipelines
-          </a>
-
-          <a
-            :href="ciLintPath"
-            class="btn btn-default">
-            CI Lint
-          </a>
-        </div>
+        <navigation-controls
+          :newPipelinePath="newPipelinePath"
+          :hasCIEnabled="hasCIEnabled"
+          :helpPagePath="helpPagePath"
+          :ciLintPath="ciLintPath"
+          :canCreatePipeline="canCreatePipelineParsed " />
       </div>
 
-      <div class="pipelines realtime-loading"
+      <div
+        class="realtime-loading"
         v-if="pageRequest">
         <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
       </div>
 
-      <div v-if="shouldRenderEmptyState"
-        class="row empty-state">
-        <div class="col-xs-12 pull-right">
-          <div class="svg-content">
-            ${pipelinesEmptyStateSVG}
-          </div>
-        </div>
+      <empty-state v-if="shouldRenderEmptyState" />
 
-        <div class="col-xs-12 center">
-          <div class="text-content">
-            <h4>Build with confidence</h4>
-            <p>
-              Continous Integration can help catch bugs by running your tests automatically,
-              while Continuous Deployment can help you deliver code to your product environment.
-              <a :href="helpPagePath" class="btn btn-info">
-                Get started with Pipelines
-              </a>
-            </p>
-          </div>
-        </div>
+      <error-state v-if="shouldRenderErrorState" />
+
+      <div
+        class="blank-state blank-state-no-icon"
+        v-if="shouldRenderNoPipelinesMessage">
+        <h2 class="blank-state-title js-blank-state-title">No pipelines to show.</h2>
       </div>
 
-      <div v-if="shouldRenderErrorState"
-        class="row empty-state">
-        <div class="col-xs-12 pull-right">
-          <div class="svg-content">
-            ${pipelinesErrorStateSVG}
-          </div>
-        </div>
-
-        <div class="col-xs-12 center">
-          <div class="text-content">
-            <h4>The API failed to fetch the pipelines.</h4>
-          </div>
-        </div>
-      </div>
-
-      <div class="table-holder"
+      <div
+        class="table-holder"
         v-if="shouldRenderTable">
-        <pipelines-table-component :pipelines='pipelines'/>
+
+        <pipelines-table-component
+          :pipelines="state.pipelines"
+          :service="service"/>
       </div>
 
       <gl-pagination
         v-if="shouldRenderPagination"
         :pagenum="pagenum"
         :change="change"
-        :count="count.all"
-        :pageInfo="pageInfo"/>
+        :count="state.count.all"
+        :pageInfo="state.pageInfo"/>
     </div>
   `,
 };

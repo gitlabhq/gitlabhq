@@ -9,20 +9,16 @@ $(() => new Vue({
   el: document.querySelector('#pipelines-list-vue'),
 
   data() {
-    const project = document.querySelector('.pipelines');
     const store = new PipelinesStore();
 
     return {
       store,
-      endpoint: project.dataset.url,
     };
   },
   components: {
     'vue-pipelines': PipelinesComponent,
   },
   template: `
-    <vue-pipelines
-      :endpoint="endpoint"
-      :store="store" />
+    <vue-pipelines :store="store" />
   `,
 }));
