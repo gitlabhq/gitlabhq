@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170315174634) do
+ActiveRecord::Schema.define(version: 20170316061730) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1318,8 +1318,8 @@ ActiveRecord::Schema.define(version: 20170315174634) do
     t.string "incoming_email_token"
     t.string "organization"
     t.boolean "authorized_projects_populated"
-    t.boolean "notified_of_own_activity", default: false, null: false
     t.boolean "ghost"
+    t.boolean "notified_of_own_activity", default: false, null: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
