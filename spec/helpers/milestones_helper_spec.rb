@@ -50,10 +50,10 @@ describe MilestonesHelper do
 
   describe '#milestone_remaining_days' do
     context 'when less than 31 days remaining' do
-      let(:milestone_remaining) { milestone_remaining_days(build_stubbed(:milestone, due_date: 12.days.from_now)) }
+      let(:milestone_remaining) { milestone_remaining_days(build_stubbed(:milestone, due_date: 12.2.days.from_now)) }
 
       it 'returns days remaining' do
-        expect(milestone_remaining).to eq("<strong>11</strong> days remaining")
+        expect(milestone_remaining).to eq("<strong>12</strong> days remaining")
       end
     end
 
