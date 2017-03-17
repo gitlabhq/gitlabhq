@@ -782,8 +782,8 @@ module API
       expose :repositories_count
       expose :repositories_synced_count
       expose :repositories_failed_count
-      expose :lfs_objects_total
-      expose :lfs_objects_synced
+      expose :lfs_objects_count
+      expose :lfs_objects_synced_count
     end
 
     class PersonalAccessToken < Grape::Entity

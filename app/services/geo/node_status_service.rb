@@ -3,12 +3,19 @@ module Geo
     include Gitlab::CurrentSettings
     include HTTParty
 
-    KEYS = %w(health repositories_count repositories_synced_count repositories_failed_count lfs_objects_total lfs_objects_synced).freeze
+    KEYS = %w(
+      health
+      repositories_count
+      repositories_synced_count
+      repositories_failed_count
+      lfs_objects_count
+      lfs_objects_synced_count
+    ).freeze
 
-    def call(status_url)
+    def call(geo_node)
       values =
         begin
-          response = self.class.get(status_url, headers: headers, timeout: timeout)
+          response = self.class.get(geo_node.status_url, headers: headers, timeout: timeout)
 
           if response.success?
             response.parsed_response.values_at(*KEYS)
@@ -19,7 +26,7 @@ module Geo
           [e.message]
         end
 
-      GeoNodeStatus.new(KEYS.zip(values).to_h)
+      GeoNodeStatus.new(KEYS.zip(values).to_h.merge(id: geo_node.id))
     end
 
     private

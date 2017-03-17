@@ -195,4 +195,41 @@ describe Admin::GeoNodesController do
       end
     end
   end
+
+  describe '#status' do
+    let(:geo_node) { create(:geo_node) }
+
+    context 'without add-on license' do
+      before do
+        allow(Gitlab::Geo).to receive(:license_allows?).and_return(false)
+        get :status, id: geo_node, format: :json
+      end
+
+      it_behaves_like 'unlicensed geo action'
+    end
+
+    context 'with add-on license' do
+      let(:geo_node_status) do
+        GeoNodeStatus.new(
+          id: 1,
+          health: nil,
+          lfs_objects_count: 256,
+          lfs_objects_synced_count: 123,
+          repositories_count: 10,
+          repositories_synced_count: 5
+        )
+      end
+
+      before do
+        allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)
+        allow_any_instance_of(Geo::NodeStatusService).to receive(:call).and_return(geo_node_status)
+      end
+
+      it 'returns the status' do
+        get :status, id: geo_node, format: :json
+
+        expect(response).to match_response_schema('geo_node_status')
+      end
+    end
+  end
 end

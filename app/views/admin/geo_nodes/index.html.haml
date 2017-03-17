@@ -14,9 +14,9 @@
   .panel.panel-default
     .panel-heading
       Geo nodes (#{@nodes.count})
-    %ul.well-list
+    %ul.well-list.geo-nodes
       - @nodes.each do |node|
-        %li
+        %li{ id: dom_id(node), class: ('js-geo-secondary-node' if node.secondary?), data: { status_url: status_admin_geo_node_path(node) } }
           .list-item-name
             %span
               = node_status_icon(node)
@@ -24,17 +24,21 @@
             - if node.primary?
               %span.help-block Primary node
             - else
-              %p
-                %span.help-block
-                  Repositories synced: #{node.repositories_synced_count}/#{node.repositories_count} (#{number_to_percentage(node.repositories_synced_in_percentage, precision: 2)})
-              %p
-                %span.help-block
-                  Repositories failed: #{node.repositories_failed_count}
-              %p
-                %span.help-block
-                  LFS objects synced: #{node.lfs_objects_synced}/#{node.lfs_objects_total} (#{number_to_percentage(node.lfs_objects_synced_in_percentage, precision: 2)})
-              %p
-                %span.help-block= node.healthy? ? 'No Health Problems Detected' : node.health
+              .js-geo-node-status{ style: 'display: none' }
+                %p
+                  %span.help-block
+                    Repositories synced:
+                    %span.js-repositories-synced
+                %p
+                  %span.help-block
+                    Repositories failed:
+                    %span.js-repositories-failed
+                %p
+                  %span.help-block
+                    LFS objects synced:
+                    %span.js-lfs-objects-synced
+                %p
+                  %span.help-block.js-health
 
           .pull-right
             - if Gitlab::Geo.license_allows?
