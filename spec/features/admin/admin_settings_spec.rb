@@ -26,7 +26,7 @@ feature 'Admin updates settings', feature: true do
     fill_in 'Webhook', with: 'http://localhost'
     fill_in 'Username', with: 'test_user'
     fill_in 'service_push_channel', with: '#test_channel'
-    page.check('Notify only broken builds')
+    page.check('Notify only broken pipelines')
 
     check_all_events
     click_on 'Save'
@@ -50,7 +50,6 @@ feature 'Admin updates settings', feature: true do
     page.check('Note')
     page.check('Issue')
     page.check('Merge request')
-    page.check('Build')
     page.check('Pipeline')
   end
 end

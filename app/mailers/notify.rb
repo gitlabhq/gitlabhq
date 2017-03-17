@@ -8,7 +8,6 @@ class Notify < BaseMailer
   include Emails::Notes
   include Emails::Projects
   include Emails::Profile
-  include Emails::Builds
   include Emails::Pipelines
   include Emails::Members
 

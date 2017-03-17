@@ -138,7 +138,6 @@ project:
 - campfire_service
 - drone_ci_service
 - emails_on_push_service
-- builds_email_service
 - pipelines_email_service
 - mattermost_slash_commands_service
 - slack_slash_commands_service

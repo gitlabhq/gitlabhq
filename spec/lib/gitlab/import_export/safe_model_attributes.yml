@@ -179,7 +179,6 @@ Ci::Pipeline:
 - tag
 - yaml_errors
 - committed_at
-- gl_project_id
 - status
 - started_at
 - finished_at
@@ -214,7 +213,6 @@ CommitStatus:
 - target_url
 - description
 - artifacts_file
-- gl_project_id
 - artifacts_metadata
 - erased_by_id
 - erased_at
@@ -235,7 +233,6 @@ Ci::Variable:
 - encrypted_value
 - encrypted_value_salt
 - encrypted_value_iv
-- gl_project_id
 Ci::Trigger:
 - id
 - token
@@ -243,7 +240,6 @@ Ci::Trigger:
 - deleted_at
 - created_at
 - updated_at
-- gl_project_id
 - owner_id
 - description
 DeployKey:
