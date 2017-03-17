@@ -133,8 +133,8 @@ class CommitStatus < ActiveRecord::Base
     false
   end
 
-  # Added in 9.0 to keep compatibility to keep using the same I/E version as
-  # in 8.17. Remove it only whenever we decided to break this
+  # Added in 9.0 to keep backward compatibility for projects exported in 8.17
+  # and prior.
   def gl_project_id
     'dummy'
   end
