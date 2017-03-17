@@ -24,6 +24,7 @@ export default {
         title: this.title,
         labels,
         subscribed: true,
+        milestone_id: Store.state.currentBoard.milestone_id,
       });
 
       this.list.newIssue(issue)
