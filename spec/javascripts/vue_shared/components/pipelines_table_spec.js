@@ -1,24 +1,24 @@
-require('~/vue_shared/components/pipelines_table');
-require('~/lib/utils/datetime_utility');
-const pipeline = require('../../commit/pipelines/mock_data');
+import Vue from 'vue';
+import pipelinesTableComp from '~/vue_shared/components/pipelines_table';
+import '~/lib/utils/datetime_utility';
+import pipeline from '../../commit/pipelines/mock_data';
 
 describe('Pipelines Table', () => {
-  preloadFixtures('static/environments/element.html.raw');
+  let PipelinesTableComponent;
 
   beforeEach(() => {
-    loadFixtures('static/environments/element.html.raw');
+    PipelinesTableComponent = Vue.extend(pipelinesTableComp);
   });
 
   describe('table', () => {
     let component;
     beforeEach(() => {
-      component = new gl.pipelines.PipelinesTableComponent({
-        el: document.querySelector('.test-dom-element'),
+      component = new PipelinesTableComponent({
         propsData: {
           pipelines: [],
-          svgs: {},
+          service: {},
         },
-      });
+      }).$mount();
     });
 
     it('should render a table', () => {
@@ -37,26 +37,25 @@ describe('Pipelines Table', () => {
 
   describe('without data', () => {
     it('should render an empty table', () => {
-      const component = new gl.pipelines.PipelinesTableComponent({
-        el: document.querySelector('.test-dom-element'),
+      const component = new PipelinesTableComponent({
         propsData: {
           pipelines: [],
-          svgs: {},
+          service: {},
         },
-      });
+      }).$mount();
       expect(component.$el.querySelectorAll('tbody tr').length).toEqual(0);
     });
   });
 
   describe('with data', () => {
     it('should render rows', () => {
-      const component = new gl.pipelines.PipelinesTableComponent({
+      const component = new PipelinesTableComponent({
         el: document.querySelector('.test-dom-element'),
         propsData: {
           pipelines: [pipeline],
-          svgs: {},
+          service: {},
         },
-      });
+      }).$mount();
 
       expect(component.$el.querySelectorAll('tbody tr').length).toEqual(1);
     });

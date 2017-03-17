@@ -169,6 +169,10 @@ class Label < ActiveRecord::Base
     end
   end
 
+  def hook_attrs
+    attributes
+  end
+
   private
 
   def issues_count(user, params = {})

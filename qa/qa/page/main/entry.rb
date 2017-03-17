@@ -5,8 +5,14 @@ module QA
         def initialize
           visit('/')
 
-          # This resolves cold boot problems with login page
-          find('.application', wait: 120)
+          # This resolves cold boot / background tasks problems
+          #
+          start = Time.now
+
+          while Time.now - start < 240
+            break if page.has_css?('.application', wait: 10)
+            refresh
+          end
         end
 
         def sign_in_using_credentials
