@@ -1,5 +1,15 @@
 module MirrorCommon
   # TODO: Refactor in EE
+  def storage_path
+    @project.repository_storage_path
+  end
+
+  def add_remote(name, url)
+    raw_repository.remote_add(name, url)
+  rescue Rugged::ConfigError
+    raw_repository.remote_update(name, url: url)
+  end
+
   def set_remote_as_mirror(name)
     config = raw_repository.rugged.config
 

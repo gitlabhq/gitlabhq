@@ -24,9 +24,13 @@ module Gitlab
         yield(stdin) if block_given?
         stdin.close
 
+        err = stderr.read
+
         cmd_output << stdout.read
-        cmd_output << stderr.read
+        cmd_output << err
         cmd_status = wait_thr.value.exitstatus
+
+        puts '>>> ' + err unless cmd_status.zero?
       end
 
       [cmd_output, cmd_status]

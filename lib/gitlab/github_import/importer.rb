@@ -129,6 +129,10 @@ module Gitlab
       end
 
       def import_pull_requests
+        puts 'a'
+        project.repository.fetch_mirror(project.import_url)
+        puts 'b'
+
         fetch_resources(:pull_requests, repo, state: :all, sort: :created, direction: :asc, per_page: 100) do |pull_requests|
           pull_requests.each do |raw|
             gh_pull_request = PullRequestFormatter.new(project, raw, client)
@@ -136,7 +140,6 @@ module Gitlab
             next unless gh_pull_request.valid?
 
             begin
-              restore_source_branch(gh_pull_request) unless gh_pull_request.source_branch_exists?
               restore_target_branch(gh_pull_request) unless gh_pull_request.target_branch_exists?
 
               merge_request = gh_pull_request.create!
@@ -151,13 +154,14 @@ module Gitlab
               clean_up_restored_branches(gh_pull_request)
             end
           end
+
+          if project.merge_requests.count > 400
+            raise Projects::ImportService::Error,
+                  "Reached 400"
+          end
         end
 
         project.repository.after_remove_branch
-      end
-
-      def restore_source_branch(pull_request)
-        project.repository.fetch_ref(repo_url, "pull/#{pull_request.number}/head", pull_request.source_branch_name)
       end
 
       def restore_target_branch(pull_request)

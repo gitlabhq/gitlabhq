@@ -11,6 +11,8 @@ module Projects
 
       success
     rescue => e
+      puts e.message
+      puts e.backtrace.join("\n")
       error(e.message)
     end
 
