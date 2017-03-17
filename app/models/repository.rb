@@ -2,11 +2,14 @@ require 'securerandom'
 
 class Repository
   include Gitlab::ShellAdapter
+  include MirrorCommon
 
   attr_accessor :path_with_namespace, :project
 
   CommitError = Class.new(StandardError)
   CreateTreeError = Class.new(StandardError)
+
+  MIRROR_IMPORT = 'import'.freeze
 
   # Methods that cache data from the Git repository.
   #
@@ -1100,6 +1103,13 @@ class Repository
 
   def gitlab_ci_yml_for(sha)
     blob_data_at(sha, '.gitlab-ci.yml')
+  end
+
+  # TODO: Refactor in EE
+  def fetch_mirror(url)
+    add_remote(Repository::MIRROR_IMPORT, url)
+    set_remote_as_mirror(Repository::MIRROR_IMPORT)
+    fetch_remote(Repository::MIRROR_IMPORT, forced: true)
   end
 
   private
