@@ -10,7 +10,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         NOTEABLE_TYPES.each do |noteable_type|
           noteables_str = noteable_type.to_s.underscore.pluralize
 

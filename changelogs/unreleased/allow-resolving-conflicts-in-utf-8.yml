@@ -1,0 +1,4 @@
+---
+title: Fix conflict resolution when files contain valid UTF-8 characters
+merge_request:
+author:

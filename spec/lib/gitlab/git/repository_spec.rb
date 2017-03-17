@@ -90,6 +90,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       expect(prefix).to eq("#{project_name}-test-branch-SHA")
     end
+
+    it 'returns correct string for a ref containing dots' do
+      prefix = repository.archive_prefix('test.branch', 'SHA')
+
+      expect(prefix).to eq("#{project_name}-test.branch-SHA")
+    end
   end
 
   describe '#archive' do
@@ -507,7 +513,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   describe "#remote_add" do
     before(:all) do
       @repo = Gitlab::Git::Repository.new(TEST_MUTABLE_REPO_PATH)
-      @repo.remote_add("new_remote", SeedHelper::GITLAB_URL)
+      @repo.remote_add("new_remote", SeedHelper::GITLAB_GIT_TEST_REPO_URL)
     end
 
     it "should add the remote" do

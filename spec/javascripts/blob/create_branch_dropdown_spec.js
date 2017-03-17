@@ -1,5 +1,3 @@
-require('jquery');
-require('~/extensions/jquery.js');
 require('~/gl_dropdown');
 require('~/lib/utils/type_utility');
 require('~/blob/create_branch_dropdown');

@@ -44,27 +44,17 @@ module Gitlab
     end
 
     # CSS sprite fallback takes precedence over image fallback
-    def gl_emoji_tag(name, image: false, sprite: false, force_fallback: false)
+    def gl_emoji_tag(name)
       emoji_name = emojis_aliases[name] || name
       emoji_info = emojis[emoji_name]
-      emoji_fallback_image_source = ActionController::Base.helpers.url_to_image("emoji/#{emoji_info['name']}.png")
-      emoji_fallback_sprite_class = "emoji-#{emoji_name}"
+      return unless emoji_info
 
       data = {
         name: emoji_name,
         unicode_version: emoji_unicode_version(emoji_name)
       }
-      data[:fallback_src] = emoji_fallback_image_source if image
-      data[:fallback_sprite_class] = emoji_fallback_sprite_class if sprite
-      ActionController::Base.helpers.content_tag 'gl-emoji',
-        class: ("emoji-icon #{emoji_fallback_sprite_class}" if force_fallback && sprite),
-        data: data do
-        if force_fallback && !sprite
-          emoji_image_tag(emoji_name, emoji_fallback_image_source)
-        else
-          emoji_info['moji']
-        end
-      end
+
+      ActionController::Base.helpers.content_tag('gl-emoji', emoji_info['moji'], data: data)
     end
   end
 end

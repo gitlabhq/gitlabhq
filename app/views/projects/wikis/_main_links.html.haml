@@ -4,6 +4,6 @@
       New Page
   = link_to namespace_project_wiki_history_path(@project.namespace, @project, @page), class: "btn" do
     Page History
-  - if can?(current_user, :create_wiki, @project)
+  - if can?(current_user, :create_wiki, @project) && @page.latest?
     = link_to namespace_project_wiki_edit_path(@project.namespace, @project, @page), class: "btn" do
       Edit

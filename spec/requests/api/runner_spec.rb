@@ -39,6 +39,7 @@ describe API::Runner do
           expect(json_response['id']).to eq(runner.id)
           expect(json_response['token']).to eq(runner.token)
           expect(runner.run_untagged).to be true
+          expect(runner.token).not_to eq(registration_token)
         end
 
         context 'when project token is used' do
@@ -49,6 +50,8 @@ describe API::Runner do
 
             expect(response).to have_http_status 201
             expect(project.runners.size).to eq(1)
+            expect(Ci::Runner.first.token).not_to eq(registration_token)
+            expect(Ci::Runner.first.token).not_to eq(project.runners_token)
           end
         end
       end
@@ -309,8 +312,8 @@ describe API::Runner do
           end
 
           let(:expected_variables) do
-            [{ 'key' => 'CI_BUILD_NAME', 'value' => 'spinach', 'public' => true },
-             { 'key' => 'CI_BUILD_STAGE', 'value' => 'test', 'public' => true },
+            [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true },
+             { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true },
              { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true }]
           end
 
@@ -434,9 +437,9 @@ describe API::Runner do
 
           context 'when triggered job is available' do
             let(:expected_variables) do
-              [{ 'key' => 'CI_BUILD_NAME', 'value' => 'spinach', 'public' => true },
-               { 'key' => 'CI_BUILD_STAGE', 'value' => 'test', 'public' => true },
-               { 'key' => 'CI_BUILD_TRIGGERED', 'value' => 'true', 'public' => true },
+              [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true },
+               { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true },
+               { 'key' => 'CI_PIPELINE_TRIGGERED', 'value' => 'true', 'public' => true },
                { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true },
                { 'key' => 'SECRET_KEY', 'value' => 'secret_value', 'public' => false },
                { 'key' => 'TRIGGER_KEY_1', 'value' => 'TRIGGER_VALUE_1', 'public' => false }]

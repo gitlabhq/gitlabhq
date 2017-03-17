@@ -17,7 +17,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of the project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       before { authorize_admin_project }
 
       desc "Get a specific project's deploy keys" do

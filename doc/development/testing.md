@@ -35,8 +35,8 @@ GitLab uses [Karma] to run its [Jasmine] JavaScript specs. They can be run on
 the command line via `bundle exec karma`.
 
 - JavaScript tests live in `spec/javascripts/`, matching the folder structure of
-  `app/assets/javascripts/`: `app/assets/javascripts/behaviors/autosize.js.es6` has a corresponding
-  `spec/javascripts/behaviors/autosize_spec.js.es6` file.
+  `app/assets/javascripts/`: `app/assets/javascripts/behaviors/autosize.js` has a corresponding
+  `spec/javascripts/behaviors/autosize_spec.js` file.
 - Haml fixtures required for JavaScript tests live in
   `spec/javascripts/fixtures`. They should contain the bare minimum amount of
   markup necessary for the test.

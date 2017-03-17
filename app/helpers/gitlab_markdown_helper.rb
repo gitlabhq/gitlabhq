@@ -172,7 +172,9 @@ module GitlabMarkdownHelper
   # text hasn't already been truncated, then append "..." to the node contents
   # and return true.  Otherwise return false.
   def truncate_if_block(node, truncated)
-    if node.element? && node.description.block? && !truncated
+    return true if truncated
+
+    if node.element? && (node.description&.block? || node.matches?('pre > code > .line'))
       node.inner_html = "#{node.inner_html}..." if node.next_sibling
       true
     else

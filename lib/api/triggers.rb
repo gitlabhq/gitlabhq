@@ -5,7 +5,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'Trigger a GitLab project pipeline' do
         success Entities::Pipeline
       end

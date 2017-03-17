@@ -1,6 +1,7 @@
 /* eslint-disable space-before-function-paren, no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow, no-param-reassign, max-len, no-unused-vars */
 /* global ListIssue */
 /* global ListLabel */
+import queryData from '../utils/query_data';
 
 class List {
   constructor (obj) {
@@ -10,7 +11,6 @@ class List {
     this.title = obj.title;
     this.type = obj.list_type;
     this.preset = ['done', 'blank'].indexOf(this.type) > -1;
-    this.filters = gl.issueBoards.BoardsStore.state.filters;
     this.page = 1;
     this.loading = true;
     this.loadingMore = false;
@@ -65,12 +65,9 @@ class List {
   }
 
   getIssues (emptyIssues = true) {
-    const filters = this.filters;
-    const data = { page: this.page };
+    const data = queryData(gl.issueBoards.BoardsStore.filter.path, { page: this.page });
 
-    Object.keys(filters).forEach((key) => { data[key] = filters[key]; });
-
-    if (this.label) {
+    if (this.label && data.label_name) {
       data.label_name = data.label_name.filter(label => label !== this.label.title);
     }
 

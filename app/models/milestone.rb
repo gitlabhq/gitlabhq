@@ -5,6 +5,7 @@ class Milestone < ActiveRecord::Base
   None = MilestoneStruct.new('No Milestone', 'No Milestone', 0)
   Any = MilestoneStruct.new('Any Milestone', '', -1)
   Upcoming = MilestoneStruct.new('Upcoming', '#upcoming', -2)
+  Started = MilestoneStruct.new('Started', '#started', -3)
 
   include CacheMarkdownField
   include InternalId

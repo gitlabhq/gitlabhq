@@ -1,49 +1,24 @@
-/* global Vue */
-const userFilter = require('./filters/user');
-const milestoneFilter = require('./filters/milestone');
-const labelFilter = require('./filters/label');
+import FilteredSearchBoards from '../../filtered_search_boards';
+import FilteredSearchContainer from '../../../filtered_search/container';
 
-module.exports = Vue.extend({
+export default {
   name: 'modal-filters',
   props: {
-    projectId: {
-      type: Number,
-      required: true,
-    },
-    milestonePath: {
-      type: String,
-      required: true,
-    },
-    labelPath: {
-      type: String,
+    store: {
+      type: Object,
       required: true,
     },
   },
-  destroyed() {
-    gl.issueBoards.ModalStore.setDefaultFilter();
+  mounted() {
+    FilteredSearchContainer.container = this.$el;
+
+    this.filteredSearch = new FilteredSearchBoards(this.store);
+    this.filteredSearch.removeTokens();
   },
-  components: {
-    userFilter,
-    milestoneFilter,
-    labelFilter,
+  beforeDestroy() {
+    this.filteredSearch.cleanup();
+    FilteredSearchContainer.container = document;
+    this.store.path = '';
   },
-  template: `
-    <div class="modal-filters">
-      <user-filter
-        dropdown-class-name="dropdown-menu-author"
-        toggle-class-name="js-user-search js-author-search"
-        toggle-label="Author"
-        field-name="author_id"
-        :project-id="projectId"></user-filter>
-      <user-filter
-        dropdown-class-name="dropdown-menu-author"
-        toggle-class-name="js-assignee-search"
-        toggle-label="Assignee"
-        field-name="assignee_id"
-        :null-user="true"
-        :project-id="projectId"></user-filter>
-      <milestone-filter :milestone-path="milestonePath"></milestone-filter>
-      <label-filter :label-path="labelPath"></label-filter>
-    </div>
-  `,
-});
+  template: '#js-board-modal-filter',
+};

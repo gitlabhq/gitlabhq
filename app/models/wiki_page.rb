@@ -149,6 +149,12 @@ class WikiPage
   end
 
   # Returns boolean True or False if this instance
+  # is the latest commit version of the page.
+  def latest?
+    !historical?
+  end
+
+  # Returns boolean True or False if this instance
   # has been fully saved to disk or not.
   def persisted?
     @persisted == true

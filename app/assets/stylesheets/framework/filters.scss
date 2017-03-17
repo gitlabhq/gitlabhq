@@ -144,7 +144,7 @@
 .scroll-container {
   display: -webkit-flex;
   display: flex;
-  overflow-x: scroll;
+  overflow-x: auto;
   white-space: nowrap;
   width: 100%;
 }
@@ -156,7 +156,6 @@
   width: 100%;
   border: 1px solid $border-color;
   background-color: $white-light;
-  max-width: 87%;
 
   @media (max-width: $screen-xs-min) {
     -webkit-flex: 1 1 100%;
@@ -217,6 +216,11 @@
       color: $common-gray-dark;
     }
   }
+}
+
+.filter-dropdown-container {
+  display: -webkit-flex;
+  display: flex;
 }
 
 .dropdown-menu .filter-dropdown-item {
