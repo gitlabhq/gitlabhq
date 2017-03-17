@@ -877,7 +877,7 @@ class User < ActiveRecord::Base
   def ci_authorized_runners
     @ci_authorized_runners ||= begin
       runner_ids = Ci::RunnerProject.
-        where("ci_runner_projects.gl_project_id IN (#{ci_projects_union.to_sql})").
+        where("ci_runner_projects.project_id IN (#{ci_projects_union.to_sql})").
         select(:runner_id)
       Ci::Runner.specific.where(id: runner_ids)
     end
