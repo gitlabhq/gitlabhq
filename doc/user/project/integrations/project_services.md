@@ -32,7 +32,6 @@ Click on the service links to see further configuration instructions and details
 | Assembla 	| Project Management Software (Source Commits Endpoint) |
 | [Atlassian Bamboo CI](bamboo.md) | A continuous integration and build server |
 | Buildkite | Continuous integration and deployments |
-| [Builds emails](builds_emails.md) |	Email the builds status to a list of recipients |
 | [Bugzilla](bugzilla.md) | Bugzilla issue tracker |
 | Campfire | Simple web-based real-time group chat |
 | Custom Issue Tracker | Custom issue tracker |
@@ -48,6 +47,7 @@ Click on the service links to see further configuration instructions and details
 | [Kubernetes](kubernetes.md) | A containerized deployment service |
 | [Mattermost slash commands](mattermost_slash_commands.md) | Mattermost chat and ChatOps slash commands |
 | [Mattermost Notifications](mattermost.md) | Receive event notifications in Mattermost |
+| Pipelines emails | Email the pipeline status to a list of recipients |
 | [Slack Notifications](slack.md) | Receive event notifications in Slack |
 | [Slack slash commands](slack_slash_commands.md) | Slack chat and ChatOps slash commands |
 | PivotalTracker | Project Management Software (Source Commits Endpoint) |

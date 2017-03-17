@@ -37,7 +37,6 @@ module ServiceParams
     :namespace,
     :new_issue_url,
     :notify,
-    :notify_only_broken_builds,
     :notify_only_broken_pipelines,
     :password,
     :priority,

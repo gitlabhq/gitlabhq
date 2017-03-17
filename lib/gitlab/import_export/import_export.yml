@@ -73,6 +73,9 @@ excluded_attributes:
     - :milestone_id
   award_emoji:
     - :awardable_id
+  statuses:
+    - :trace
+    - :token
 
 methods:
   labels:
@@ -81,6 +84,7 @@ methods:
     - :type
   statuses:
     - :type
+    - :gl_project_id
   services:
     - :type
   merge_request_diff:
