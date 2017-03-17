@@ -101,6 +101,7 @@ knapsack:
   stage: prepare
   script:
     - mkdir -p knapsack/
+    - ls -l knapsack/
     - '[[ -f knapsack/rspec_report.json ]] || echo "{}" > knapsack/rspec_report.json'
     - '[[ -f knapsack/spinach_report.json ]] || echo "{}" > knapsack/spinach_report.json'
 
@@ -136,37 +137,37 @@ update-knapsack:
     - master@gitlab/gitlabhq
     - master@gitlab/gitlab-ee
 
-rspec 0 20: *rspec-knapsack
-rspec 1 20: *rspec-knapsack
-rspec 2 20: *rspec-knapsack
-rspec 3 20: *rspec-knapsack
-rspec 4 20: *rspec-knapsack
-rspec 5 20: *rspec-knapsack
-rspec 6 20: *rspec-knapsack
-rspec 7 20: *rspec-knapsack
-rspec 8 20: *rspec-knapsack
-rspec 9 20: *rspec-knapsack
-rspec 10 20: *rspec-knapsack
-rspec 11 20: *rspec-knapsack
-rspec 12 20: *rspec-knapsack
-rspec 13 20: *rspec-knapsack
-rspec 14 20: *rspec-knapsack
-rspec 15 20: *rspec-knapsack
-rspec 16 20: *rspec-knapsack
-rspec 17 20: *rspec-knapsack
-rspec 18 20: *rspec-knapsack
-rspec 19 20: *rspec-knapsack
-
-spinach 0 10: *spinach-knapsack
-spinach 1 10: *spinach-knapsack
-spinach 2 10: *spinach-knapsack
-spinach 3 10: *spinach-knapsack
-spinach 4 10: *spinach-knapsack
-spinach 5 10: *spinach-knapsack
-spinach 6 10: *spinach-knapsack
-spinach 7 10: *spinach-knapsack
-spinach 8 10: *spinach-knapsack
-spinach 9 10: *spinach-knapsack
+# rspec 0 20: *rspec-knapsack
+# rspec 1 20: *rspec-knapsack
+# rspec 2 20: *rspec-knapsack
+# rspec 3 20: *rspec-knapsack
+# rspec 4 20: *rspec-knapsack
+# rspec 5 20: *rspec-knapsack
+# rspec 6 20: *rspec-knapsack
+# rspec 7 20: *rspec-knapsack
+# rspec 8 20: *rspec-knapsack
+# rspec 9 20: *rspec-knapsack
+# rspec 10 20: *rspec-knapsack
+# rspec 11 20: *rspec-knapsack
+# rspec 12 20: *rspec-knapsack
+# rspec 13 20: *rspec-knapsack
+# rspec 14 20: *rspec-knapsack
+# rspec 15 20: *rspec-knapsack
+# rspec 16 20: *rspec-knapsack
+# rspec 17 20: *rspec-knapsack
+# rspec 18 20: *rspec-knapsack
+# rspec 19 20: *rspec-knapsack
+#
+# spinach 0 10: *spinach-knapsack
+# spinach 1 10: *spinach-knapsack
+# spinach 2 10: *spinach-knapsack
+# spinach 3 10: *spinach-knapsack
+# spinach 4 10: *spinach-knapsack
+# spinach 5 10: *spinach-knapsack
+# spinach 6 10: *spinach-knapsack
+# spinach 7 10: *spinach-knapsack
+# spinach 8 10: *spinach-knapsack
+# spinach 9 10: *spinach-knapsack
 
 # Other generic tests
 .ruby-static-analysis: &ruby-static-analysis
@@ -182,20 +183,20 @@ spinach 9 10: *spinach-knapsack
   script:
     - bundle exec $CI_JOB_NAME
 
-rubocop:
-  <<: *ruby-static-analysis
-  <<: *dedicated-runner
-  stage: test
-  script:
-    - bundle exec "rubocop --require rubocop-rspec"
-
-rake haml_lint: *exec
-rake scss_lint: *exec
-rake config_lint: *exec
-rake brakeman: *exec
-rake flay: *exec
-license_finder: *exec
-rake downtime_check: *exec
+# rubocop:
+#   <<: *ruby-static-analysis
+#   <<: *dedicated-runner
+#   stage: test
+#   script:
+#     - bundle exec "rubocop --require rubocop-rspec"
+#
+# rake haml_lint: *exec
+# rake scss_lint: *exec
+# rake config_lint: *exec
+# rake brakeman: *exec
+# rake flay: *exec
+# license_finder: *exec
+# rake downtime_check: *exec
 rake ee_compat_check:
   <<: *exec
   only:
@@ -206,245 +207,244 @@ rake ee_compat_check:
     - /^[\d-]+-stable(-ee)?$/
   allow_failure: yes
   cache:
-    key: "ruby233-ee_compat_check_repo"
+    key: "ee_compat_check_repo"
     paths:
       - ee_compat_check/repo/
-      - vendor/ruby
   artifacts:
-    name: "${CI_JOB_NAME}_${CI_COMIT_REF_NAME}_${CI_COMMIT_SHA}"
+    name: "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}_${CI_COMMIT_SHA}"
     when: on_failure
     expire_in: 10d
     paths:
       - ee_compat_check/patches/*.patch
 
-rake db:migrate:reset:
-  stage: test
-  <<: *use-db
-  <<: *dedicated-runner
-  script:
-    - bundle exec rake db:migrate:reset
-
-rake db:rollback:
-  stage: test
-  <<: *use-db
-  <<: *dedicated-runner
-  script:
-    - bundle exec rake db:rollback STEP=120
-    - bundle exec rake db:migrate
-
-rake db:seed_fu:
-  stage: test
-  <<: *use-db
-  <<: *dedicated-runner
-  variables:
-    SIZE: "1"
-    SETUP_DB: "false"
-    RAILS_ENV: "development"
-  script:
-    - git clone https://gitlab.com/gitlab-org/gitlab-test.git
-       /home/git/repositories/gitlab-org/gitlab-test.git
-    - bundle exec rake db:setup db:seed_fu
-  artifacts:
-    when: on_failure
-    expire_in: 1d
-    paths:
-      - log/development.log
-
-rake gitlab:assets:compile:
-  stage: test
-  <<: *dedicated-runner
-  dependencies: []
-  variables:
-    NODE_ENV: "production"
-    RAILS_ENV: "production"
-    SETUP_DB: "false"
-    USE_DB: "false"
-    SKIP_STORAGE_VALIDATION: "true"
-    WEBPACK_REPORT: "true"
-  script:
-    - bundle exec rake yarn:install gitlab:assets:compile
-  artifacts:
-    name: webpack-report
-    expire_in: 31d
-    paths:
-    - webpack-report/
-
-rake karma:
-  cache:
-    paths:
-      - vendor/ruby
-      - node_modules
-  stage: test
-  <<: *use-db
-  <<: *dedicated-runner
-  script:
-    - bundle exec rake karma
-  artifacts:
-    name: coverage-javascript
-    expire_in: 31d
-    paths:
-    - coverage-javascript/
-
-lint-doc:
-  stage: test
-  <<: *dedicated-runner
-  image: "phusion/baseimage:latest"
-  before_script: []
-  script:
-    - scripts/lint-doc.sh
-
-bundler:check:
-  stage: test
-  <<: *dedicated-runner
-  <<: *ruby-static-analysis
-  script:
-   - bundle check
-
-bundler:audit:
-  stage: test
-  <<: *ruby-static-analysis
-  <<: *dedicated-runner
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - master@gitlab/gitlabhq
-    - master@gitlab/gitlab-ee
-  script:
-    - "bundle exec bundle-audit check --update"
-
-migration paths:
-  stage: test
-  <<: *use-db
-  <<: *dedicated-runner
-  variables:
-    SETUP_DB: "false"
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - master@gitlab/gitlabhq
-    - master@gitlab/gitlab-ee
-  script:
-    - git fetch origin v8.5.9
-    - git checkout -f FETCH_HEAD
-    - cp config/resque.yml.example config/resque.yml
-    - sed -i 's/localhost/redis/g' config/resque.yml
-    - bundle install --without postgres production --jobs $(nproc) $FLAGS --retry=3
-    - bundle exec rake db:drop db:create db:schema:load db:seed_fu
-    - git checkout $CI_COMMIT_SHA
-    - source scripts/prepare_build.sh
-    - bundle exec rake db:migrate
-
-coverage:
-  stage: post-test
-  services: []
-  <<: *dedicated-runner
-  variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "true"
-  script:
-    - bundle exec scripts/merge-simplecov
-  artifacts:
-    name: coverage
-    expire_in: 31d
-    paths:
-    - coverage/index.html
-    - coverage/assets/
-
-lint:javascript:
-  <<: *dedicated-runner
-  cache:
-    paths:
-      - node_modules/
-  stage: test
-  before_script: []
-  script:
-    - yarn run eslint
-
-lint:javascript:report:
-  <<: *dedicated-runner
-  cache:
-    paths:
-      - node_modules/
-  stage: post-test
-  before_script: []
-  script:
-    - find app/ spec/ -name '*.js' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
-    - yarn run eslint-report || true # ignore exit code
-  artifacts:
-    name: eslint-report
-    expire_in: 31d
-    paths:
-    - eslint-report.html
-
-# Trigger docs build
-# https://gitlab.com/gitlab-com/doc-gitlab-com/blob/master/README.md#deployment-process
-trigger_docs:
-  stage: post-test
-  image: "alpine"
-  <<: *dedicated-runner
-  before_script:
-    - apk update && apk add curl
-  variables:
-    GIT_STRATEGY: none
-  cache: {}
-  artifacts: {}
-  script:
-    - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=ce https://gitlab.com/api/v3/projects/1794617/trigger/builds"
-  only:
-    - master@gitlab-org/gitlab-ce
-
-# Notify slack in the end
-notify:slack:
-  stage: post-test
-  <<: *dedicated-runner
-  variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "false"
-  script:
-    - ./scripts/notify_slack.sh "#development" "Build on \`$CI_COMMIT_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_COMMIT_SHA"/pipelines>"
-  when: on_failure
-  only:
-    - master@gitlab-org/gitlab-ce
-    - tags@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - tags@gitlab-org/gitlab-ee
-
-pages:
-  before_script: []
-  stage: pages
-  <<: *dedicated-runner
-  dependencies:
-    - coverage
-    - rake karma
-    - rake gitlab:assets:compile
-    - lint:javascript:report
-  script:
-    - mv public/ .public/
-    - mkdir public/
-    - mv coverage/ public/coverage-ruby/ || true
-    - mv coverage-javascript/ public/coverage-javascript/ || true
-    - mv eslint-report.html public/ || true
-    - mv webpack-report/ public/webpack-report/ || true
-  artifacts:
-    paths:
-      - public
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-
-# Insurance in case a gem needed by one of our releases gets yanked from
-# rubygems.org in the future.
-cache gems:
-  <<: *dedicated-runner
-  only:
-    - tags
-  variables:
-    SETUP_DB: "false"
-  script:
-    - bundle package --all --all-platforms
-  artifacts:
-    paths:
-      - vendor/cache
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
+# rake db:migrate:reset:
+#   stage: test
+#   <<: *use-db
+#   <<: *dedicated-runner
+#   script:
+#     - bundle exec rake db:migrate:reset
+#
+# rake db:rollback:
+#   stage: test
+#   <<: *use-db
+#   <<: *dedicated-runner
+#   script:
+#     - bundle exec rake db:rollback STEP=120
+#     - bundle exec rake db:migrate
+#
+# rake db:seed_fu:
+#   stage: test
+#   <<: *use-db
+#   <<: *dedicated-runner
+#   variables:
+#     SIZE: "1"
+#     SETUP_DB: "false"
+#     RAILS_ENV: "development"
+#   script:
+#     - git clone https://gitlab.com/gitlab-org/gitlab-test.git
+#        /home/git/repositories/gitlab-org/gitlab-test.git
+#     - bundle exec rake db:setup db:seed_fu
+#   artifacts:
+#     when: on_failure
+#     expire_in: 1d
+#     paths:
+#       - log/development.log
+#
+# rake gitlab:assets:compile:
+#   stage: test
+#   <<: *dedicated-runner
+#   dependencies: []
+#   variables:
+#     NODE_ENV: "production"
+#     RAILS_ENV: "production"
+#     SETUP_DB: "false"
+#     USE_DB: "false"
+#     SKIP_STORAGE_VALIDATION: "true"
+#     WEBPACK_REPORT: "true"
+#   script:
+#     - bundle exec rake yarn:install gitlab:assets:compile
+#   artifacts:
+#     name: webpack-report
+#     expire_in: 31d
+#     paths:
+#     - webpack-report/
+#
+# rake karma:
+#   cache:
+#     paths:
+#       - vendor/ruby
+#       - node_modules
+#   stage: test
+#   <<: *use-db
+#   <<: *dedicated-runner
+#   script:
+#     - bundle exec rake karma
+#   artifacts:
+#     name: coverage-javascript
+#     expire_in: 31d
+#     paths:
+#     - coverage-javascript/
+#
+# lint-doc:
+#   stage: test
+#   <<: *dedicated-runner
+#   image: "phusion/baseimage:latest"
+#   before_script: []
+#   script:
+#     - scripts/lint-doc.sh
+#
+# bundler:check:
+#   stage: test
+#   <<: *dedicated-runner
+#   <<: *ruby-static-analysis
+#   script:
+#    - bundle check
+#
+# bundler:audit:
+#   stage: test
+#   <<: *ruby-static-analysis
+#   <<: *dedicated-runner
+#   only:
+#     - master@gitlab-org/gitlab-ce
+#     - master@gitlab-org/gitlab-ee
+#     - master@gitlab/gitlabhq
+#     - master@gitlab/gitlab-ee
+#   script:
+#     - "bundle exec bundle-audit check --update"
+#
+# migration paths:
+#   stage: test
+#   <<: *use-db
+#   <<: *dedicated-runner
+#   variables:
+#     SETUP_DB: "false"
+#   only:
+#     - master@gitlab-org/gitlab-ce
+#     - master@gitlab-org/gitlab-ee
+#     - master@gitlab/gitlabhq
+#     - master@gitlab/gitlab-ee
+#   script:
+#     - git fetch origin v8.5.9
+#     - git checkout -f FETCH_HEAD
+#     - cp config/resque.yml.example config/resque.yml
+#     - sed -i 's/localhost/redis/g' config/resque.yml
+#     - bundle install --without postgres production --jobs $(nproc) $FLAGS --retry=3
+#     - bundle exec rake db:drop db:create db:schema:load db:seed_fu
+#     - git checkout $CI_COMMIT_SHA
+#     - source scripts/prepare_build.sh
+#     - bundle exec rake db:migrate
+#
+# coverage:
+#   stage: post-test
+#   services: []
+#   <<: *dedicated-runner
+#   variables:
+#     SETUP_DB: "false"
+#     USE_BUNDLE_INSTALL: "true"
+#   script:
+#     - bundle exec scripts/merge-simplecov
+#   artifacts:
+#     name: coverage
+#     expire_in: 31d
+#     paths:
+#     - coverage/index.html
+#     - coverage/assets/
+#
+# lint:javascript:
+#   <<: *dedicated-runner
+#   cache:
+#     paths:
+#       - node_modules/
+#   stage: test
+#   before_script: []
+#   script:
+#     - yarn run eslint
+#
+# lint:javascript:report:
+#   <<: *dedicated-runner
+#   cache:
+#     paths:
+#       - node_modules/
+#   stage: post-test
+#   before_script: []
+#   script:
+#     - find app/ spec/ -name '*.js' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
+#     - yarn run eslint-report || true # ignore exit code
+#   artifacts:
+#     name: eslint-report
+#     expire_in: 31d
+#     paths:
+#     - eslint-report.html
+#
+# # Trigger docs build
+# # https://gitlab.com/gitlab-com/doc-gitlab-com/blob/master/README.md#deployment-process
+# trigger_docs:
+#   stage: post-test
+#   image: "alpine"
+#   <<: *dedicated-runner
+#   before_script:
+#     - apk update && apk add curl
+#   variables:
+#     GIT_STRATEGY: none
+#   cache: {}
+#   artifacts: {}
+#   script:
+#     - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=ce https://gitlab.com/api/v3/projects/1794617/trigger/builds"
+#   only:
+#     - master@gitlab-org/gitlab-ce
+#
+# # Notify slack in the end
+# notify:slack:
+#   stage: post-test
+#   <<: *dedicated-runner
+#   variables:
+#     SETUP_DB: "false"
+#     USE_BUNDLE_INSTALL: "false"
+#   script:
+#     - ./scripts/notify_slack.sh "#development" "Build on \`$CI_COMMIT_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_COMMIT_SHA"/pipelines>"
+#   when: on_failure
+#   only:
+#     - master@gitlab-org/gitlab-ce
+#     - tags@gitlab-org/gitlab-ce
+#     - master@gitlab-org/gitlab-ee
+#     - tags@gitlab-org/gitlab-ee
+#
+# pages:
+#   before_script: []
+#   stage: pages
+#   <<: *dedicated-runner
+#   dependencies:
+#     - coverage
+#     - rake karma
+#     - rake gitlab:assets:compile
+#     - lint:javascript:report
+#   script:
+#     - mv public/ .public/
+#     - mkdir public/
+#     - mv coverage/ public/coverage-ruby/ || true
+#     - mv coverage-javascript/ public/coverage-javascript/ || true
+#     - mv eslint-report.html public/ || true
+#     - mv webpack-report/ public/webpack-report/ || true
+#   artifacts:
+#     paths:
+#       - public
+#   only:
+#     - master@gitlab-org/gitlab-ce
+#     - master@gitlab-org/gitlab-ee
+#
+# # Insurance in case a gem needed by one of our releases gets yanked from
+# # rubygems.org in the future.
+# cache gems:
+#   <<: *dedicated-runner
+#   only:
+#     - tags
+#   variables:
+#     SETUP_DB: "false"
+#   script:
+#     - bundle package --all --all-platforms
+#   artifacts:
+#     paths:
+#       - vendor/cache
+#   only:
+#     - master@gitlab-org/gitlab-ce
+#     - master@gitlab-org/gitlab-ee
