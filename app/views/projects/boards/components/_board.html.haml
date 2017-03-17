@@ -32,4 +32,4 @@
       ":root-path" => "rootPath",
       "ref" => "board-list" }
     - if can?(current_user, :admin_list, @project)
-      = render "projects/boards/components/blank_state"
+      %board-blank-state{ "v-if" => 'list.id == "blank"' }

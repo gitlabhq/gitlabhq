@@ -25,5 +25,19 @@ module Gitlab
     def self.enabled?
       gitaly_address.present?
     end
+
+    def self.feature_enabled?(feature)
+      enabled? && ENV["GITALY_#{feature.upcase}"] == '1'
+    end
+
+    def self.migrate(feature)
+      is_enabled  = feature_enabled?(feature)
+      metric_name = feature.to_s
+      metric_name += "_gitaly" if is_enabled
+
+      Gitlab::Metrics.measure(metric_name) do
+        yield is_enabled
+      end
+    end
   end
 end

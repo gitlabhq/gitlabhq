@@ -42,7 +42,7 @@ Sidekiq.configure_server do |config|
 
   Gitlab::SidekiqThrottler.execute!
 
-  config = ActiveRecord::Base.configurations[Rails.env] ||
+  config = Gitlab::Database.config ||
     Rails.application.config.database_configuration[Rails.env]
   config['pool'] = Sidekiq.options[:concurrency]
   ActiveRecord::Base.establish_connection(config)

@@ -758,7 +758,7 @@ describe NotificationService, services: true do
         update_custom_notification(:reopen_issue, @u_custom_global)
       end
 
-      it 'sends email to issue assignee and issue author' do
+      it 'sends email to issue notification recipients' do
         notification.reopen_issue(issue, @u_disabled)
 
         should_email(issue.assignee)
@@ -772,6 +772,7 @@ describe NotificationService, services: true do
         should_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
+        should_not_email(@u_disabled)
         should_not_email(@u_lazy_participant)
       end
 
@@ -779,6 +780,32 @@ describe NotificationService, services: true do
         let(:participant) { create(:user, username: 'user-participant') }
         let(:issuable) { issue }
         let(:notification_trigger) { notification.reopen_issue(issue, @u_disabled) }
+      end
+    end
+
+    describe '#issue_moved' do
+      let(:new_issue) { create(:issue) }
+
+      it 'sends email to issue notification recipients' do
+        notification.issue_moved(issue, new_issue, @u_disabled)
+
+        should_email(issue.assignee)
+        should_email(issue.author)
+        should_email(@u_watcher)
+        should_email(@u_guest_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+      end
+
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { issue }
+        let(:notification_trigger) { notification.issue_moved(issue, new_issue, @u_disabled) }
       end
     end
   end
@@ -1189,6 +1216,48 @@ describe NotificationService, services: true do
 
       should_not_email(guest)
       should_email(assignee)
+    end
+  end
+
+  describe 'Pipelines' do
+    describe '#pipeline_finished' do
+      let(:project) { create(:project, :public) }
+      let(:current_user) { create(:user) }
+      let(:u_member) { create(:user) }
+      let(:u_other) { create(:user) }
+
+      let(:commit) { project.commit }
+      let(:pipeline) do
+        create(:ci_pipeline, :success,
+               project: project,
+               user: current_user,
+               ref: 'refs/heads/master',
+               sha: commit.id,
+               before_sha: '00000000')
+      end
+
+      before do
+        project.add_master(current_user)
+        project.add_master(u_member)
+        reset_delivered_emails!
+      end
+
+      context 'without custom recipients' do
+        it 'notifies the pipeline user' do
+          notification.pipeline_finished(pipeline)
+
+          should_only_email(current_user, kind: :bcc)
+        end
+      end
+
+      context 'with custom recipients' do
+        it 'notifies the custom recipients' do
+          users = [u_member, u_other]
+          notification.pipeline_finished(pipeline, users.map(&:notification_email))
+
+          should_only_email(*users, kind: :bcc)
+        end
+      end
     end
   end
 
