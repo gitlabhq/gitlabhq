@@ -4,6 +4,7 @@
 - GitLab Geo is part of [GitLab Enterprise Edition Premium][ee].
 - Introduced in GitLab Enterprise Edition 8.9.
   We recommend you use it with at least GitLab Enterprise Edition 8.14.
+- You should make sure that all nodes run the same GitLab version.
 
 GitLab Geo allows you to replicate your GitLab instance to other geographical
 locations as a read-only fully operational version.
@@ -32,8 +33,8 @@ Keep in mind that:
 ## Setup instructions
 
 In order to set up one or more GitLab Geo instances, follow the steps below in
-the **exact order** they appear. Make sure the GitLab version is the same on
-all nodes.
+the **exact order** they appear. **Make sure the GitLab version is the same on
+all nodes.**
 
 ### Using Omnibus GitLab
 
