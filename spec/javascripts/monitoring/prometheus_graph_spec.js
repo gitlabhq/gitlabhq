@@ -1,10 +1,7 @@
 import 'jquery';
-import es6Promise from 'es6-promise';
 import '~/lib/utils/common_utils';
 import PrometheusGraph from '~/monitoring/prometheus_graph';
 import { prometheusMockData } from './prometheus_mock_data';
-
-es6Promise.polyfill();
 
 describe('PrometheusGraph', () => {
   const fixtureName = 'static/environments/metrics.html.raw';

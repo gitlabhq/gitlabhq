@@ -313,8 +313,19 @@ X-Gitlab-Event: System Hook
     "git_ssh_url":"git@example.com:mike/diaspora.git",
     "visibility_level":0
   },
-  "commits": [],
-  "total_commits_count": 0
+  "commits": [
+    {
+      "id": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
+      "message": "Add simple search to projects in public area",
+      "timestamp": "2013-05-13T18:18:08+00:00",
+      "url": "https://dev.gitlab.org/gitlab/gitlabhq/commit/c5feabde2d8cd023215af4d2ceeb7a64839fc428",
+      "author": {
+        "name": "Dmitriy Zaporozhets",
+        "email": "dmitriy.zaporozhets@gmail.com"
+      }
+    }
+  ],
+  "total_commits_count": 1
 }
 ```
 

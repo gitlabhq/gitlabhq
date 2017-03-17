@@ -32,6 +32,28 @@ You can find the Frontend Architecture experts on the [team page][team-page].
 
 You can find documentation about the desired architecture for a new feature built with Vue.js in [here][vue-section].
 
+### Realtime
+
+When writing code for realtime features we have to keep a couple of things in mind:
+1. Do not overload the server with requests.
+1. It should feel realtime.
+
+Thus, we must strike a balance between sending requests and the feeling of realtime.
+Use the following rules when creating realtime solutions.
+
+1. The server will tell you how much to poll by sending `Poll-Interval` in the header.
+Use that as your polling interval. This way it is easy for system administrators to change the
+polling rate.
+A `Poll-Interval: -1` means you should disable polling, and this must be implemented.
+1. A response with HTTP status `4XX` or `5XX` should disable polling as well.
+1. Use a common library for polling.
+1. Poll on active tabs only. Use a common library to find out which tab currently has eyes on it.
+Please use [Focus](https://gitlab.com/andrewn/focus). Specifically [Eyeballs Detector](https://gitlab.com/andrewn/focus/blob/master/lib/eyeballs-detector.js).
+1. Use regular polling intervals, do not use backoff polling, or jitter, as the interval will be
+controlled by the server.
+1. The backend code will most likely be using etags. You do not and should not check for status
+`304 Not Modified`. The browser will transform it for you.
+
 ### Vue
 
 For more complex frontend features, we recommend using Vue.js. It shares
@@ -66,6 +88,8 @@ Let's look into each of them:
 This is the index file of your new feature. This is where the root Vue instance
 of the new feature should be.
 
+The Store and the Service should be imported and initialized in this file and provided as a prop to the main component.
+
 Don't forget to follow [these steps.][page_specific_javascript]
 
 **A folder for Components**
@@ -86,7 +110,7 @@ You can read more about components in Vue.js site, [Component System][component-
 
 **A folder for the Store**
 
-The Store is a simple object that allows us to manage the state in a single
+The Store is a class that allows us to manage the state in a single
 source of truth.
 
 The concept we are trying to follow is better explained by Vue documentation
@@ -289,7 +313,7 @@ When exactly one object is needed for a given task, prefer to define it as a
 `class` rather than as an object literal. Prefer also to explicitly restrict
 instantiation, unless flexibility is important (e.g. for testing).
 
-```
+```javascript
 // bad
 
 gl.MyThing = {
@@ -331,6 +355,33 @@ class MyThing {
 gl.MyThing = MyThing;
 
 ```
+
+### Manipulating the DOM in a JS Class
+
+When writing a class that needs to manipulate the DOM guarantee a container option is provided.
+This is useful when we need that class to be instantiated more than once in the same page.
+
+Bad:
+```javascript
+class Foo {
+  constructor() {
+    document.querySelector('.bar');
+  }
+}
+new Foo();
+```
+
+Good:
+```javascript
+class Foo {
+  constructor(opts) {
+    document.querySelector(`${opts.container} .bar`);
+  }
+}
+
+new Foo({ container: '.my-element' });
+```
+You can find an example of the above in this [class][container-class-example];
 
 ## Supported browsers
 
@@ -457,3 +508,4 @@ Scenario: Developer can approve merge request
 [eslintrc]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.eslintrc
 [team-page]: https://about.gitlab.com/team
 [vue-section]: https://docs.gitlab.com/ce/development/frontend.html#how-to-build-a-new-feature-with-vue-js
+[container-class-example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/mini_pipeline_graph_dropdown.js

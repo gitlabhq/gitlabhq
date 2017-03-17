@@ -231,6 +231,10 @@ class Commit
     project.pipelines.where(sha: sha)
   end
 
+  def latest_pipeline
+    pipelines.last
+  end
+
   def status(ref = nil)
     @statuses ||= {}
 

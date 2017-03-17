@@ -217,7 +217,7 @@ class NotificationService
     recipients = reject_unsubscribed_users(recipients, note.noteable)
     recipients = reject_users_without_access(recipients, note.noteable)
 
-    recipients.delete(note.author) unless note.author.notified_of_own_activity?
+    recipients.delete(note.author)
     recipients = recipients.uniq
 
     notify_method = "note_#{note.to_ability_name}_email".to_sym
@@ -327,9 +327,8 @@ class NotificationService
     recipients ||= build_recipients(
       pipeline,
       pipeline.project,
-      pipeline.user,
-      action: pipeline.status,
-      skip_current_user: false).map(&:notification_email)
+      nil, # The acting user, who won't be added to recipients
+      action: pipeline.status).map(&:notification_email)
 
     if recipients.any?
       mailer.public_send(email_template, pipeline, recipients).deliver_later
@@ -465,7 +464,7 @@ class NotificationService
     end
 
     users = users.to_a.compact.uniq
-    users = users.reject(&:blocked?)
+    users = users.select { |u| u.can?(:receive_notifications) }
 
     users.reject do |user|
       global_notification_setting = user.global_notification_setting
@@ -628,7 +627,7 @@ class NotificationService
     recipients = reject_unsubscribed_users(recipients, target)
     recipients = reject_users_without_access(recipients, target)
 
-    recipients.delete(current_user) if skip_current_user && !current_user.notified_of_own_activity?
+    recipients.delete(current_user) if skip_current_user
 
     recipients.uniq
   end
@@ -637,7 +636,7 @@ class NotificationService
     recipients = add_labels_subscribers([], project, target, labels: labels)
     recipients = reject_unsubscribed_users(recipients, target)
     recipients = reject_users_without_access(recipients, target)
-    recipients.delete(current_user) unless current_user.notified_of_own_activity?
+    recipients.delete(current_user)
     recipients.uniq
   end
 

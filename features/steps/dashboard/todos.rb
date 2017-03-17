@@ -159,7 +159,11 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   end
 
   def should_not_see_todo(title)
-    expect(page).not_to have_content title
+    expect(page).not_to have_visible_content title
+  end
+
+  def have_visible_content(text)
+    have_css('*', text: text, visible: true)
   end
 
   def john_doe

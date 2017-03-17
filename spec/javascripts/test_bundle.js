@@ -48,10 +48,10 @@ describe('Uncovered files', function () {
     './network/branch_graph.js',
   ];
 
-  const sourceFiles = require.context('~', true, /^\.\/(?!application\.js).*\.(js|es6)$/);
+  const sourceFiles = require.context('~', true, /^\.\/(?!application\.js).*\.js$/);
   sourceFiles.keys().forEach(function (path) {
     // ignore if there is a matching spec file
-    if (testsContext.keys().indexOf(`${path.replace(/\.js(\.es6)?$/, '')}_spec`) > -1) {
+    if (testsContext.keys().indexOf(`${path.replace(/\.js$/, '')}_spec`) > -1) {
       return;
     }
 

@@ -41,7 +41,6 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
         </div>
       `);
 
-      spyOn(gl.FilteredSearchManager.prototype, 'cleanup').and.callFake(() => {});
       spyOn(gl.FilteredSearchManager.prototype, 'loadSearchParamsFromURL').and.callFake(() => {});
       spyOn(gl.FilteredSearchManager.prototype, 'tokenChange').and.callFake(() => {});
       spyOn(gl.FilteredSearchDropdownManager.prototype, 'setDropdown').and.callFake(() => {});
@@ -52,6 +51,10 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
       input = document.querySelector('.filtered-search');
       tokensContainer = document.querySelector('.tokens-container');
       manager = new gl.FilteredSearchManager();
+    });
+
+    afterEach(() => {
+      manager.cleanup();
     });
 
     describe('search', () => {

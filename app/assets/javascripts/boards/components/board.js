@@ -2,7 +2,8 @@
 /* global Vue */
 /* global Sortable */
 
-require('./board_blank_state');
+import boardBlankState from './board_blank_state';
+
 require('./board_delete');
 require('./board_list');
 
@@ -17,7 +18,7 @@ require('./board_list');
     components: {
       'board-list': gl.issueBoards.BoardList,
       'board-delete': gl.issueBoards.BoardDelete,
-      'board-blank-state': gl.issueBoards.BoardBlankState
+      boardBlankState,
     },
     props: {
       list: Object,
@@ -28,16 +29,16 @@ require('./board_list');
     data () {
       return {
         detailIssue: Store.detail,
-        filters: Store.state.filters,
+        filter: Store.filter,
       };
     },
     watch: {
-      filters: {
-        handler () {
+      filter: {
+        handler() {
           this.list.page = 1;
           this.list.getIssues(true);
         },
-        deep: true
+        deep: true,
       },
       detailIssue: {
         handler () {

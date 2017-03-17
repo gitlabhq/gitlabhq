@@ -2,7 +2,10 @@ require 'mime/types'
 
 module API
   class CommitStatuses < Grape::API
-    resource :projects do
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
+    resource :projects, requirements: { id: %r{[^/]+} } do
       include PaginationParams
 
       before { authenticate! }
@@ -11,7 +14,6 @@ module API
         success Entities::CommitStatus
       end
       params do
-        requires :id,    type: String, desc: 'The ID of a project'
         requires :sha,   type: String, desc: 'The commit hash'
         optional :ref,   type: String, desc: 'The ref'
         optional :stage, type: String, desc: 'The stage'
@@ -37,7 +39,6 @@ module API
         success Entities::CommitStatus
       end
       params do
-        requires :id,          type: String,  desc: 'The ID of a project'
         requires :sha,         type: String,  desc: 'The commit hash'
         requires :state,       type: String,  desc: 'The state of the status',
                                values: %w(pending running success failed canceled)

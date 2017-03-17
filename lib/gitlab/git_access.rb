@@ -153,7 +153,9 @@ module Gitlab
         user_access: user_access,
         project: project,
         env: @env,
-        skip_authorization: deploy_key?).exec
+        skip_authorization: deploy_key?,
+        protocol: protocol
+      ).exec
     end
 
     def matching_merge_request?(newrev, branch_name)

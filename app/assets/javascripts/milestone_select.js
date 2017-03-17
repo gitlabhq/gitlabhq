@@ -19,7 +19,7 @@
       }
 
       $els.each(function(i, dropdown) {
-        var $block, $dropdown, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, collapsedSidebarLabelTemplate, defaultLabel, issuableId, issueUpdateURL, milestoneLinkNoneTemplate, milestoneLinkTemplate, milestonesUrl, projectId, selectedMilestone, showAny, showNo, showUpcoming, useId, showMenuAbove;
+        var $block, $dropdown, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, collapsedSidebarLabelTemplate, defaultLabel, issuableId, issueUpdateURL, milestoneLinkNoneTemplate, milestoneLinkTemplate, milestonesUrl, projectId, selectedMilestone, showAny, showNo, showUpcoming, showStarted, useId, showMenuAbove;
         $dropdown = $(dropdown);
         projectId = $dropdown.data('project-id');
         milestonesUrl = $dropdown.data('milestones');
@@ -29,6 +29,7 @@
         showAny = $dropdown.data('show-any');
         showMenuAbove = $dropdown.data('showMenuAbove');
         showUpcoming = $dropdown.data('show-upcoming');
+        showStarted = $dropdown.data('show-started');
         useId = $dropdown.data('use-id');
         defaultLabel = $dropdown.data('default-label');
         issuableId = $dropdown.data('issuable-id');
@@ -69,6 +70,13 @@
                   id: -2,
                   name: '#upcoming',
                   title: 'Upcoming'
+                });
+              }
+              if (showStarted) {
+                extraOptions.push({
+                  id: -3,
+                  name: '#started',
+                  title: 'Started'
                 });
               }
               if (extraOptions.length) {
@@ -124,18 +132,12 @@
               return;
             }
 
-            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar') &&
-              !$dropdown.closest('.add-issues-modal').length) {
-              boardsStore = gl.issueBoards.BoardsStore.state.filters;
-            } else if ($dropdown.closest('.add-issues-modal').length) {
+            if ($dropdown.closest('.add-issues-modal').length) {
               boardsStore = gl.issueBoards.ModalStore.store.filter;
             }
 
             if (boardsStore) {
               boardsStore[$dropdown.data('field-name')] = selected.name;
-              if (!$dropdown.closest('.add-issues-modal').length) {
-                gl.issueBoards.BoardsStore.updateFiltersUrl();
-              }
               e.preventDefault();
             } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
               if (selected.name != null) {

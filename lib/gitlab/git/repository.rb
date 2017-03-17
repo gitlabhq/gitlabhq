@@ -201,7 +201,7 @@ module Gitlab
 
       def archive_prefix(ref, sha)
         project_name = self.name.chomp('.git')
-        "#{project_name}-#{ref.parameterize}-#{sha}"
+        "#{project_name}-#{ref.tr('/', '-')}-#{sha}"
       end
 
       def archive_metadata(ref, storage_path, format = "tar.gz")

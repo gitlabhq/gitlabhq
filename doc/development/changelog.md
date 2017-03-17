@@ -1,7 +1,7 @@
-# Generate a changelog entry
+# Changelog entries
 
-This guide contains instructions for generating a changelog entry data file, as
-well as information and history about our changelog process.
+This guide contains instructions for when and how to generate a changelog entry
+file, as well as information and history about our changelog process.
 
 ## Overview
 
@@ -19,19 +19,71 @@ author: Ozzy Osbourne
 
 The `merge_request` value is a reference to a merge request that adds this
 entry, and the `author` key is used to give attribution to community
-contributors. Both are optional.
+contributors. **Both are optional**.
 
 Community contributors and core team members are encouraged to add their name to
-the `author` field. GitLab team members should not.
-
-If you're working on the GitLab EE repository, the entry will be added to
-`changelogs/unreleased-ee/` instead.
+the `author` field. GitLab team members **should not**.
 
 [changelog.md]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md
 [unreleased]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/changelogs/
 [YAML]: https://en.wikipedia.org/wiki/YAML
 
-## Instructions
+## What warrants a changelog entry?
+
+- Any user-facing change **should** have a changelog entry. Example: "GitLab now
+  uses system fonts for all text."
+- A fix for a regression introduced and then fixed in the same release (i.e.,
+  fixing a bug introduced during a monthly release candidate) **should not**
+  have a changelog entry.
+- Any developer-facing change (e.g., refactoring, technical debt remediation,
+  test suite changes) **should not** have a changelog entry. Example: "Reduce
+  database records created during Cycle Analytics model spec."
+- _Any_ contribution from a community member, no matter how small, **may** have
+  a changelog entry regardless of these guidelines if the contributor wants one.
+  Example: "Fixed a typo on the search results page. (Jane Smith)"
+
+## Writing good changelog entries
+
+A good changelog entry should be descriptive and concise. It should explain the
+change to a reader who has _zero context_ about the change. If you have trouble
+making it both concise and descriptive, err on the side of descriptive.
+
+- **Bad:** Go to a project order.
+- **Good:** Show a user's starred projects at the top of the "Go to project"
+  dropdown.
+
+The first example provides no context of where the change was made, or why, or
+how it benefits the user.
+
+- **Bad:** Copy [some text] to clipboard.
+- **Good:** Update the "Copy to clipboard" tooltip to indicate what's being
+  copied.
+
+Again, the first example is too vague and provides no context.
+
+- **Bad:** Fixes and Improves CSS and HTML problems in mini pipeline graph and
+  builds dropdown.
+- **Good:** Fix tooltips and hover states in mini pipeline graph and builds
+  dropdown.
+
+The first example is too focused on implementation details. The user doesn't
+care that we changed CSS and HTML, they care about the _end result_ of those
+changes.
+
+- **Bad:** Strip out `nil`s in the Array of Commit objects returned from
+  `find_commits_by_message_with_elastic`
+- **Good:** Fix 500 errors caused by elasticsearch results referencing
+  garbage-collected commits
+
+The first example focuses on _how_ we fixed something, not on _what_ it fixes.
+The rewritten version clearly describes the _end benefit_ to the user (fewer 500
+errors), and _when_ (searching commits with ElasticSearch).
+
+Use your best judgement and try to put yourself in the mindset of someone
+reading the compiled changelog. Does this entry add value? Does it offer context
+about _where_ and _why_ the change was made?
+
+## How to generate a changelog entry
 
 A `bin/changelog` script is available to generate the changelog entry file
 automatically.
@@ -55,19 +107,28 @@ title: Hey DZ, I added a feature to GitLab!
 merge_request:
 author:
 ```
+If you're working on the GitLab EE repository, the entry will be added to
+`changelogs/unreleased-ee/` instead.
 
-### Arguments
+#### Arguments
 
-| Argument          | Shorthand | Purpose                                       |
-| ----------------- | --------- | --------------------------------------------- |
-| `--amend`         |           | Amend the previous commit                     |
-| `--force`         | `-f`      | Overwrite an existing entry                   |
-| `--merge-request` | `-m`      | Merge Request ID                              |
-| `--dry-run`       | `-n`      | Don't actually write anything, just print     |
-| `--git-username`  | `-u`      | Use Git user.name configuration as the author |
-| `--help`          | `-h`      | Print help message                            |
+| Argument            | Shorthand | Purpose                                       |
+| -----------------   | --------- | --------------------------------------------- |
+| [`--amend`]         |           | Amend the previous commit                     |
+| [`--force`]         | `-f`      | Overwrite an existing entry                   |
+| [`--merge-request`] | `-m`      | Set merge request ID                          |
+| [`--dry-run`]       | `-n`      | Don't actually write anything, just print     |
+| [`--git-username`]  | `-u`      | Use Git user.name configuration as the author |
+| [`--help`]          | `-h`      | Print help message                            |
 
-#### `--amend`
+[`--amend`]: #-amend
+[`--force`]: #-force-or-f
+[`--merge-request`]: #-merge-request-or-m
+[`--dry-run`]: #-dry-run-or-n
+[`--git-username`]: #-git-username-or-u
+[`--help`]: #-help
+
+##### `--amend`
 
 You can pass the **`--amend`** argument to automatically stage the generated
 file and amend it to the previous commit.
@@ -88,7 +149,7 @@ merge_request:
 author:
 ```
 
-#### `--force` or `-f`
+##### `--force` or `-f`
 
 Use **`--force`** or **`-f`** to overwrite an existing changelog entry if it
 already exists.
@@ -105,7 +166,7 @@ merge_request: 1983
 author:
 ```
 
-#### `--merge-request` or `-m`
+##### `--merge-request` or `-m`
 
 Use the **`--merge-request`** or **`-m`** argument to provide the
 `merge_request` value:
@@ -119,7 +180,7 @@ merge_request: 1983
 author:
 ```
 
-#### `--dry-run` or `-n`
+##### `--dry-run` or `-n`
 
 Use the **`--dry-run`** or **`-n`** argument to prevent actually writing or
 committing anything:
@@ -135,7 +196,7 @@ author:
 $ ls changelogs/unreleased/
 ```
 
-#### `--git-username` or `-u`
+##### `--git-username` or `-u`
 
 Use the **`--git-username`** or **`-u`** argument to automatically fill in the
 `author` value with your configured Git `user.name` value:
@@ -152,7 +213,7 @@ merge_request:
 author: Jane Doe
 ```
 
-## History and Reasoning
+### History and Reasoning
 
 Our `CHANGELOG` file was previously updated manually by each contributor that
 felt their change warranted an entry. When two merge requests added their own

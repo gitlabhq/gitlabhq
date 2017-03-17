@@ -32,8 +32,8 @@ class AddPipelineIdToMergeRequestMetrics < ActiveRecord::Migration
   end
 
   def down
+    remove_foreign_key :merge_request_metrics, column: :pipeline_id
     remove_index :merge_request_metrics, :pipeline_id if index_exists? :merge_request_metrics, :pipeline_id
-    remove_foreign_key :merge_request_metrics, :ci_commits, column: :pipeline_id
     remove_column :merge_request_metrics, :pipeline_id
   end
 end

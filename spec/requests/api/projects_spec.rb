@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 require 'spec_helper'
 
-describe API::Projects, api: true  do
-  include ApiHelpers
+describe API::Projects, :api  do
   include Gitlab::CurrentSettings
+
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -422,6 +422,14 @@ describe API::Projects, api: true  do
       post api('/projects', user), project
 
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_truthy
+    end
+
+    it 'ignores import_url when it is nil' do
+      project = attributes_for(:project, { import_url: nil })
+
+      post api('/projects', user), project
+
+      expect(response).to have_http_status(201)
     end
 
     context 'when a visibility level is restricted' do

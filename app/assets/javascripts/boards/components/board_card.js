@@ -17,7 +17,8 @@ export default {
         :list="list"
         :issue="issue"
         :issue-link-base="issueLinkBase"
-        :root-path="rootPath" />
+        :root-path="rootPath"
+        :update-filters="true" />
     </li>
   `,
   components: {

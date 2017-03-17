@@ -1,0 +1,4 @@
+---
+title: Make authorized projects worker use a specific queue instead of the default one
+merge_request: 9813
+author:

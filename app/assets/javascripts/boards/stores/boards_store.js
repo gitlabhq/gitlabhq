@@ -8,6 +8,9 @@
 
   gl.issueBoards.BoardsStore = {
     disabled: false,
+    filter: {
+      path: '',
+    },
     state: {},
     detail: {
       issue: {}
@@ -18,13 +21,7 @@
     },
     create () {
       this.state.lists = [];
-      this.state.filters = {
-        author_id: gl.utils.getParameterValues('author_id')[0],
-        assignee_id: gl.utils.getParameterValues('assignee_id')[0],
-        milestone_title: gl.utils.getParameterValues('milestone_title')[0],
-        label_name: gl.utils.getParameterValues('label_name[]'),
-        search: ''
-      };
+      this.filter.path = gl.utils.getUrlParamsArray().join('&');
     },
     addList (listObj) {
       const list = new List(listObj);
@@ -123,7 +120,7 @@
       })[0];
     },
     updateFiltersUrl () {
-      history.pushState(null, null, `?${$.param(this.state.filters)}`);
+      history.pushState(null, null, `?${this.filter.path}`);
     }
   };
 })();

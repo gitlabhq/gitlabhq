@@ -12,6 +12,10 @@ class BasePolicy
       new(Set.new, Set.new)
     end
 
+    def self.none
+      empty.freeze
+    end
+
     def can?(ability)
       @can_set.include?(ability) && !@cannot_set.include?(ability)
     end
@@ -49,7 +53,8 @@ class BasePolicy
   end
 
   def self.class_for(subject)
-    return GlobalPolicy if subject.nil?
+    return GlobalPolicy if subject == :global
+    raise ArgumentError, 'no policy for nil' if subject.nil?
 
     if subject.class.try(:presenter?)
       subject = subject.subject
@@ -79,7 +84,7 @@ class BasePolicy
   end
 
   def abilities
-    return RuleSet.empty if @user && @user.blocked?
+    return RuleSet.none if @user && @user.blocked?
     return anonymous_abilities if @user.nil?
     collect_rules { rules }
   end

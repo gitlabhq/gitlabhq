@@ -1,9 +1,12 @@
+import FilteredSearchContainer from './container';
+
 (() => {
   class FilteredSearchManager {
     constructor(page) {
-      this.filteredSearchInput = document.querySelector('.filtered-search');
-      this.clearSearchButton = document.querySelector('.clear-search');
-      this.tokensContainer = document.querySelector('.tokens-container');
+      this.container = FilteredSearchContainer.container;
+      this.filteredSearchInput = this.container.querySelector('.filtered-search');
+      this.clearSearchButton = this.container.querySelector('.clear-search');
+      this.tokensContainer = this.container.querySelector('.tokens-container');
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
 
       if (this.filteredSearchInput) {
@@ -38,7 +41,8 @@
       this.editTokenWrapper = this.editToken.bind(this);
       this.tokenChange = this.tokenChange.bind(this);
 
-      this.filteredSearchInput.form.addEventListener('submit', this.handleFormSubmit);
+      this.filteredSearchInputForm = this.filteredSearchInput.form;
+      this.filteredSearchInputForm.addEventListener('submit', this.handleFormSubmit);
       this.filteredSearchInput.addEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.addEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.addEventListener('input', this.handleInputPlaceholderWrapper);
@@ -56,7 +60,7 @@
     }
 
     unbindEvents() {
-      this.filteredSearchInput.form.removeEventListener('submit', this.handleFormSubmit);
+      this.filteredSearchInputForm.removeEventListener('submit', this.handleFormSubmit);
       this.filteredSearchInput.removeEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.removeEventListener('input', this.toggleClearSearchButtonWrapper);
       this.filteredSearchInput.removeEventListener('input', this.handleInputPlaceholderWrapper);
@@ -105,8 +109,15 @@
         e.preventDefault();
 
         if (!activeElements.length) {
-          // Prevent droplab from opening dropdown
-          this.dropdownManager.destroyDroplab();
+          if (this.isHandledAsync) {
+            e.stopImmediatePropagation();
+
+            this.filteredSearchInput.blur();
+            this.dropdownManager.resetDropdowns();
+          } else {
+            // Prevent droplab from opening dropdown
+            this.dropdownManager.destroyDroplab();
+          }
 
           this.search();
         }
@@ -124,7 +135,7 @@
     }
 
     unselectEditTokens(e) {
-      const inputContainer = document.querySelector('.filtered-search-input-container');
+      const inputContainer = this.container.querySelector('.filtered-search-input-container');
       const isElementInFilteredSearch = inputContainer && inputContainer.contains(e.target);
       const isElementInFilterDropdown = e.target.closest('.filter-dropdown') !== null;
       const isElementTokensContainer = e.target.classList.contains('tokens-container');
@@ -199,6 +210,10 @@
       this.handleInputPlaceholder();
 
       this.dropdownManager.resetDropdowns();
+
+      if (this.isHandledAsync) {
+        this.search();
+      }
     }
 
     handleInputVisualToken() {
@@ -345,7 +360,11 @@
 
       const parameterizedUrl = `?scope=all&utf8=✓&${paths.join('&')}`;
 
-      gl.utils.visitUrl(parameterizedUrl);
+      if (this.updateObject) {
+        this.updateObject(parameterizedUrl);
+      } else {
+        gl.utils.visitUrl(parameterizedUrl);
+      }
     }
 
     getUsernameParams() {

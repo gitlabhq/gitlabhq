@@ -221,7 +221,7 @@ Settings.gitlab['session_expire_delay'] ||= 10080
 Settings.gitlab.default_projects_features['issues']             = true if Settings.gitlab.default_projects_features['issues'].nil?
 Settings.gitlab.default_projects_features['merge_requests']     = true if Settings.gitlab.default_projects_features['merge_requests'].nil?
 Settings.gitlab.default_projects_features['wiki']               = true if Settings.gitlab.default_projects_features['wiki'].nil?
-Settings.gitlab.default_projects_features['snippets']           = false if Settings.gitlab.default_projects_features['snippets'].nil?
+Settings.gitlab.default_projects_features['snippets']           = true if Settings.gitlab.default_projects_features['snippets'].nil?
 Settings.gitlab.default_projects_features['builds']             = true if Settings.gitlab.default_projects_features['builds'].nil?
 Settings.gitlab.default_projects_features['container_registry'] = true if Settings.gitlab.default_projects_features['container_registry'].nil?
 Settings.gitlab.default_projects_features['visibility_level']   = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
@@ -278,8 +278,8 @@ Settings.pages['host']            ||= "example.com"
 Settings.pages['port']            ||= Settings.pages.https ? 443 : 80
 Settings.pages['protocol']        ||= Settings.pages.https ? "https" : "http"
 Settings.pages['url']             ||= Settings.send(:build_pages_url)
-Settings.pages['external_http']   ||= false if Settings.pages['external_http'].nil?
-Settings.pages['external_https']  ||= false if Settings.pages['external_https'].nil?
+Settings.pages['external_http']   ||= false unless Settings.pages['external_http'].present?
+Settings.pages['external_https']  ||= false unless Settings.pages['external_https'].present?
 
 #
 # Git LFS

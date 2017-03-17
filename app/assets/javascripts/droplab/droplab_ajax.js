@@ -74,6 +74,9 @@ require('../window')(function(w){
         this._loadUrlData(config.endpoint)
           .then(function(d) {
             self._loadData(d, config, self);
+          }, function(xhrError) {
+            // TODO: properly handle errors due to XHR cancellation
+            return;
           }).catch(function(e) {
             throw new droplabAjaxException(e.message || e);
           });

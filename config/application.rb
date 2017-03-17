@@ -26,7 +26,8 @@ module Gitlab
                                      #{config.root}/app/models/hooks
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
-                                     #{config.root}/app/workers/concerns))
+                                     #{config.root}/app/workers/concerns
+                                     #{config.root}/app/services/concerns))
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
@@ -91,6 +92,8 @@ module Gitlab
 
     # Enable the asset pipeline
     config.assets.enabled = true
+    # Support legacy unicode file named img emojis, `1F939.png`
+    config.assets.paths << Gemojione.images_path
     config.assets.paths << "vendor/assets/fonts"
     config.assets.precompile << "*.png"
     config.assets.precompile << "print.css"

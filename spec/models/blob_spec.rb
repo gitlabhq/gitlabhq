@@ -70,6 +70,8 @@ describe Blob do
   end
 
   describe '#to_partial_path' do
+    let(:project) { double(lfs_enabled?: true) }
+
     def stubbed_blob(overrides = {})
       overrides.reverse_merge!(
         image?: false,
@@ -84,34 +86,35 @@ describe Blob do
       end
     end
 
-    it 'handles LFS pointers' do
-      blob = stubbed_blob(lfs_pointer?: true)
+    it 'handles LFS pointers with LFS enabled' do
+      blob = stubbed_blob(lfs_pointer?: true, text?: true)
+      expect(blob.to_partial_path(project)).to eq 'download'
+    end
 
-      expect(blob.to_partial_path).to eq 'download'
+    it 'handles LFS pointers with LFS disabled' do
+      blob = stubbed_blob(lfs_pointer?: true, text?: true)
+      project = double(lfs_enabled?: false)
+      expect(blob.to_partial_path(project)).to eq 'text'
     end
 
     it 'handles SVGs' do
       blob = stubbed_blob(text?: true, svg?: true)
-
-      expect(blob.to_partial_path).to eq 'image'
+      expect(blob.to_partial_path(project)).to eq 'image'
     end
 
     it 'handles images' do
       blob = stubbed_blob(image?: true)
-
-      expect(blob.to_partial_path).to eq 'image'
+      expect(blob.to_partial_path(project)).to eq 'image'
     end
 
     it 'handles text' do
       blob = stubbed_blob(text?: true)
-
-      expect(blob.to_partial_path).to eq 'text'
+      expect(blob.to_partial_path(project)).to eq 'text'
     end
 
     it 'defaults to download' do
       blob = stubbed_blob
-
-      expect(blob.to_partial_path).to eq 'download'
+      expect(blob.to_partial_path(project)).to eq 'download'
     end
   end
 

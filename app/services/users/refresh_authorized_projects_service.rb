@@ -93,9 +93,7 @@ module Users
     end
 
     def current_authorizations_per_project
-      current_authorizations.each_with_object({}) do |row, hash|
-        hash[row.project_id] = row
-      end
+      current_authorizations.index_by(&:project_id)
     end
 
     def current_authorizations

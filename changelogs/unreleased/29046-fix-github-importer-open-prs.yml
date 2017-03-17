@@ -1,0 +1,4 @@
+---
+title: Fix GitHub Import deleting branches for open PRs from a fork
+merge_request: 9758
+author:

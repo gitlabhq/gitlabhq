@@ -78,6 +78,13 @@ towards getting your issue resolved.
 Issues and merge requests should be in English and contain appropriate language
 for audiences of all ages.
 
+If a contributor is no longer actively working on a submitted merge request
+we can decide that the merge request will be finished by one of our
+[Merge request coaches][team] or close the merge request. We make this decision
+based on how important the change is for our product vision. If a Merge request
+coach is going to finish the merge request we assign the 
+~"coach will finish" label.
+
 ## Helping others
 
 Please help other GitLab users when you can. The channels people will reach out
@@ -399,6 +406,12 @@ There are a few rules to get your merge request accepted:
 1. Contains functionality we think other users will benefit from too
 1. Doesn't add configuration options or settings options since they complicate
    making and testing future changes
+1. Changes do not adversely degrade performance.
+   - Avoid repeated polling of endpoints that require a significant amount of overhead
+   - Check for N+1 queries via the SQL log or [`QueryRecorder`](https://docs.gitlab.com/ce/development/merge_request_performance_guidelines.html)
+   - Avoid repeated access of filesystem
+1. If you need polling to support real-time features, please use
+   [polling with ETag caching][polling-etag].
 1. Changes after submitting the merge request should be in separate commits
    (no squashing). If necessary, you will be asked to squash when the review is
    over, before merging.
@@ -434,6 +447,7 @@ the feature you contribute through all of these steps.
 1. Description explaining the relevancy (see following item)
 1. Working and clean code that is commented where needed
 1. Unit and integration tests that pass on the CI server
+1. Performance/scalability implications have been considered, addressed, and tested
 1. [Documented][doc-styleguide] in the /doc directory
 1. Changelog entry added
 1. Reviewed and any concerns are addressed
@@ -540,6 +554,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [UX Guide for GitLab]: http://docs.gitlab.com/ce/development/ux_guide/
 [license-finder-doc]: doc/development/licensing.md
 [GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
+[polling-etag]: https://docs.gitlab.com/ce/development/polling.html
 
 [^1]: Specs other than JavaScript specs are considered backend code. Haml
       changes are considered backend code if they include Ruby code other than just

@@ -1,6 +1,3 @@
-import '~/extensions/string';
-import '~/extensions/array';
-
 import { glEmojiTag } from '~/behaviors/gl_emoji';
 import {
   isEmojiUnicodeSupported,
@@ -45,6 +42,11 @@ const emojiFixtureMap = {
     name: 'five',
     moji: '5️⃣',
     unicodeVersion: '3.0',
+  },
+  grey_question: {
+    name: 'grey_question',
+    moji: '❔',
+    unicodeVersion: '6.0',
   },
 };
 
@@ -153,6 +155,37 @@ describe('gl_emoji', () => {
         {
           forceFallback: true,
           sprite: true,
+        },
+      );
+    });
+
+    it('question mark when invalid emoji name given', () => {
+      const name = 'invalid_emoji';
+      const emojiKey = 'grey_question';
+      const markup = glEmojiTag(name);
+      const glEmojiElement = markupToDomElement(markup);
+      testGlEmojiElement(
+        glEmojiElement,
+        emojiFixtureMap[emojiKey].name,
+        emojiFixtureMap[emojiKey].unicodeVersion,
+        emojiFixtureMap[emojiKey].moji,
+      );
+    });
+
+    it('question mark with image fallback when invalid emoji name given', () => {
+      const name = 'invalid_emoji';
+      const emojiKey = 'grey_question';
+      const markup = glEmojiTag(name, {
+        forceFallback: true,
+      });
+      const glEmojiElement = markupToDomElement(markup);
+      testGlEmojiElement(
+        glEmojiElement,
+        emojiFixtureMap[emojiKey].name,
+        emojiFixtureMap[emojiKey].unicodeVersion,
+        emojiFixtureMap[emojiKey].moji,
+        {
+          forceFallback: true,
         },
       );
     });

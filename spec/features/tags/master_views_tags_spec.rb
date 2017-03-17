@@ -27,8 +27,18 @@ feature 'Master views tags', feature: true do
 
   context 'when project has tags' do
     let(:project) { create(:project, namespace: user.namespace) }
+    let(:repository) { project.repository }
+
     before do
       visit namespace_project_tags_path(project.namespace, project)
+    end
+
+    scenario 'avoids a N+1 query in branches index' do
+      control_count = ActiveRecord::QueryRecorder.new { visit namespace_project_tags_path(project.namespace, project) }.count
+
+      %w(one two three four five).each { |tag| repository.add_tag(user, tag, 'master', 'foo') }
+
+      expect { visit namespace_project_tags_path(project.namespace, project) }.not_to exceed_query_limit(control_count)
     end
 
     scenario 'views the tags list page' do
