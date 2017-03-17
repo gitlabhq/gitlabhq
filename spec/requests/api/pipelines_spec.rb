@@ -50,7 +50,7 @@ describe API::Pipelines do
 
                 expect(response).to have_http_status(200)
                 expect(response).to include_pagination_headers
-                expect(json_response.count).to be > 0
+                expect(json_response).not_to be_empty
                 json_response.each { |r| expect(r['status']).to eq(target) }
               end
             end
@@ -62,7 +62,7 @@ describe API::Pipelines do
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
-              expect(json_response.count).to be > 0
+              expect(json_response).not_to be_empty
               json_response.each { |r| expect(r['status']).to be_in(%w[success failed canceled]) }
             end
           end
@@ -73,7 +73,7 @@ describe API::Pipelines do
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
-              expect(json_response.count).to be > 0
+              expect(json_response).not_to be_empty
               expect(json_response.last['sha']).to eq(Ci::Pipeline.where(tag: false).last.sha)
             end
           end
@@ -84,7 +84,7 @@ describe API::Pipelines do
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
-              expect(json_response.count).to be > 0
+              expect(json_response).not_to be_empty
               expect(json_response.last['sha']).to eq(Ci::Pipeline.where(tag: true).last.sha)
             end
           end
@@ -106,7 +106,7 @@ describe API::Pipelines do
 
                 expect(response).to have_http_status(200)
                 expect(response).to include_pagination_headers
-                expect(json_response.count).to be > 0
+                expect(json_response).not_to be_empty
                 json_response.each { |r| expect(r['status']).to eq(target) }
               end
             end
@@ -128,7 +128,7 @@ describe API::Pipelines do
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
-              expect(json_response.count).to be > 0
+              expect(json_response).not_to be_empty
               json_response.each { |r| expect(r['ref']).to eq('master') }
             end
           end
@@ -139,7 +139,7 @@ describe API::Pipelines do
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
-              expect(json_response.count).to eq(0)
+              expect(json_response).to be_empty
             end
           end
         end
@@ -161,7 +161,7 @@ describe API::Pipelines do
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
-              expect(json_response.count).to eq(0)
+              expect(json_response).to be_empty
             end
           end
         end
@@ -183,7 +183,7 @@ describe API::Pipelines do
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
-              expect(json_response.count).to eq(0)
+              expect(json_response).to be_empty
             end
           end
         end
