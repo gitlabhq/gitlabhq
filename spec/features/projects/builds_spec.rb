@@ -494,10 +494,7 @@ feature 'Builds', :feature do
     end
 
     context 'when Project is public and builds_access_level is Everyone with access' do
-      let(:project) { create(:project, :public) }
-      before do
-        project.project_feature.update_attribute('builds_access_level', ProjectFeature::ENABLED)
-      end
+      let(:project) { create(:project, :public, :builds_enabled) }
 
       context 'when user belongs to the project' do
         before do
