@@ -50,6 +50,7 @@ module Issuable
              :email,
              :public_email,
              to: :author,
+             allow_nil: true,
              prefix: true
 
     delegate :name,
