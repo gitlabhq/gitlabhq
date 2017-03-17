@@ -604,8 +604,6 @@ GitLabDropdown = (function() {
       if (selected) {
         link.className = 'is-active';
       }
-    }).join('');
-  };
 
       if (group) {
         link.dataset.group = group;
