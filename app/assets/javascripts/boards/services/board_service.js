@@ -1,5 +1,6 @@
-/* eslint-disable space-before-function-paren, comma-dangle, no-param-reassign, camelcase, max-len, no-unused-vars, no-else-return */
-/* global Vue */
+/* eslint-disable space-before-function-paren, comma-dangle, no-param-reassign, camelcase, max-len, no-unused-vars */
+
+import Vue from 'vue';
 
 class BoardService {
   constructor (root, bulkUpdatePath, boardId) {
@@ -36,9 +37,8 @@ class BoardService {
   createBoard (board) {
     if (board.id) {
       return this.boards.update({ id: board.id }, board);
-    } else {
-      return this.boards.save({}, board);
     }
+    return this.boards.save({}, board);
   }
 
   all () {

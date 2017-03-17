@@ -1,7 +1,8 @@
 /* eslint-disable comma-dangle, object-shorthand, func-names, no-param-reassign */
 /* global DiscussionMixins */
 /* global CommentsStore */
-const Vue = require('vue');
+
+import Vue from 'vue';
 
 ((w) => {
   w.ResolveCount = Vue.extend({
