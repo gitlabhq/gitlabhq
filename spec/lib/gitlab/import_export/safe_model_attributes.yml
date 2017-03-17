@@ -154,6 +154,7 @@ MergeRequest:
 - approvals_before_merge
 - rebase_commit_sha
 - time_estimate
+- head_pipeline_id
 MergeRequestDiff:
 - id
 - state
