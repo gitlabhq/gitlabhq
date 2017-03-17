@@ -33,6 +33,7 @@ class NamespaceValidator < ActiveModel::EachValidator
     u
     unsubscribes
     users
+    system
   ].freeze
 
   WILDCARD_ROUTES = %w[tree commits wikis new edit create update logs_tree
@@ -47,9 +48,9 @@ class NamespaceValidator < ActiveModel::EachValidator
 
   def self.reserved?(value, strict: false)
     if strict
-      STRICT_RESERVED.include?(value)
+      STRICT_RESERVED.include?(value.to_s.downcase)
     else
-      RESERVED.include?(value)
+      RESERVED.include?(value.to_s.downcase)
     end
   end
 

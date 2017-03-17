@@ -18,7 +18,7 @@ feature 'User uploads avatar to group', feature: true do
 
     visit group_path(group)
 
-    expect(page).to have_selector(%Q(img[src$="/uploads/group/avatar/#{group.id}/dk.png"]))
+    expect(page).to have_selector(%Q(img[src$="/uploads/system/group/avatar/#{group.id}/dk.png"]))
 
     # Cheating here to verify something that isn't user-facing, but is important
     expect(group.reload.avatar.file).to exist

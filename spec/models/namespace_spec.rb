@@ -36,6 +36,12 @@ describe Namespace, models: true do
         it { expect(group).not_to be_valid }
       end
 
+      context "is case insensitive" do
+        let(:group) { build(:group, path: "System") }
+
+        it { expect(group).not_to be_valid }
+      end
+
       context 'top-level group' do
         let(:group) { build(:group, path: 'tree') }
 
@@ -170,8 +176,8 @@ describe Namespace, models: true do
       let(:parent) { create(:group, name: 'parent', path: 'parent') }
       let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
       let!(:project) { create(:project_empty_repo, path: 'the-project', namespace: child) }
-      let(:uploads_dir) { File.join(CarrierWave.root, 'uploads') }
-      let(:pages_dir) { TestEnv.pages_path }
+      let(:uploads_dir) { File.join(CarrierWave.root, 'uploads', 'system') }
+      let(:pages_dir) { File.join(TestEnv.pages_path) }
 
       before do
         FileUtils.mkdir_p(File.join(uploads_dir, 'parent', 'child', 'the-project'))
@@ -185,20 +191,6 @@ describe Namespace, models: true do
           expected_pages_path = File.join(pages_dir, 'parent', 'renamed', 'the-project')
 
           child.update_attributes!(path: 'renamed')
-
-          expect(File.directory?(expected_repository_path)).to be(true)
-          expect(File.directory?(expected_upload_path)).to be(true)
-          expect(File.directory?(expected_pages_path)).to be(true)
-        end
-      end
-
-      context 'renaming parent' do
-        it 'correctly moves the repository, uploads and pages' do
-          expected_repository_path = File.join(TestEnv.repos_path, 'renamed', 'child', 'the-project.git')
-          expected_upload_path = File.join(uploads_dir, 'renamed', 'child', 'the-project')
-          expected_pages_path = File.join(pages_dir, 'renamed', 'child', 'the-project')
-
-          parent.update_attributes!(path: 'renamed')
 
           expect(File.directory?(expected_repository_path)).to be(true)
           expect(File.directory?(expected_upload_path)).to be(true)

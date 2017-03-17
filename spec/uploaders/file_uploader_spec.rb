@@ -15,6 +15,16 @@ describe FileUploader do
     end
   end
 
+  describe "#store_dir" do
+    it "stores in the namespace path" do
+      project = build_stubbed(:empty_project)
+      uploader = described_class.new(project)
+
+      expect(uploader.store_dir).to include(project.path_with_namespace)
+      expect(uploader.store_dir).not_to include("system")
+    end
+  end
+
   describe 'initialize' do
     it 'generates a secret if none is provided' do
       expect(SecureRandom).to receive(:hex).and_return('secret')

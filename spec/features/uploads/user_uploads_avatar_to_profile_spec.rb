@@ -16,7 +16,7 @@ feature 'User uploads avatar to profile', feature: true do
 
     visit user_path(user)
 
-    expect(page).to have_selector(%Q(img[src$="/uploads/user/avatar/#{user.id}/dk.png"]))
+    expect(page).to have_selector(%Q(img[src$="/uploads/system/user/avatar/#{user.id}/dk.png"]))
 
     # Cheating here to verify something that isn't user-facing, but is important
     expect(user.reload.avatar.file).to exist

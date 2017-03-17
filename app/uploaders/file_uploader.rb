@@ -13,6 +13,13 @@ class FileUploader < GitlabUploader
     )
   end
 
+  # Not using `GitlabUploader.base_dir` because all project namespaces are in
+  # the `public/uploads` dir.
+  #
+  def self.base_dir
+    root_dir
+  end
+
   # Returns the part of `store_dir` that can change based on the model's current
   # path
   #

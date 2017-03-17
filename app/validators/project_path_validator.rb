@@ -15,7 +15,7 @@ class ProjectPathValidator < ActiveModel::EachValidator
   #  'tree' as project name and 'deploy_keys' as route.
   #
   RESERVED = (NamespaceValidator::STRICT_RESERVED -
-              %w[dashboard help ci admin search notes services assets profile public]).freeze
+              %w[dashboard help ci admin search notes services assets profile public system]).freeze
 
   def self.valid?(value)
     !reserved?(value)
