@@ -158,8 +158,8 @@
   background-color: $white-light;
 
   @media (max-width: $screen-xs-min) {
-    -webkit-flex: 1 1 100%;
-    flex: 1 1 100%;
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
     margin-bottom: 10px;
 
     .dropdown-menu {
