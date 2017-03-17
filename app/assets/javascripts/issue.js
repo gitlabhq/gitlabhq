@@ -2,6 +2,7 @@
 /* global Flash */
 
 require('./flash');
+require('~/lib/utils/text_utility');
 require('vendor/jquery.waitforimages');
 require('./task_list');
 
@@ -50,20 +51,21 @@ class Issue {
         success: function(data, textStatus, jqXHR) {
           if ('id' in data) {
             $(document).trigger('issuable:change');
-            const currentTotal = Number($('.issue_counter').text());
+            let total = Number($('.issue_counter').text().replace(/[^\d]/, ''));
             if (isClose) {
               $('a.btn-close').addClass('hidden');
               $('a.btn-reopen').removeClass('hidden');
               $('div.status-box-closed').removeClass('hidden');
               $('div.status-box-open').addClass('hidden');
-              $('.issue_counter').text(currentTotal - 1);
+              total -= 1;
             } else {
               $('a.btn-reopen').addClass('hidden');
               $('a.btn-close').removeClass('hidden');
               $('div.status-box-closed').addClass('hidden');
               $('div.status-box-open').removeClass('hidden');
-              $('.issue_counter').text(currentTotal + 1);
+              total += 1;
             }
+            $('.issue_counter').text(gl.text.addDelimiter(total));
           } else {
             new Flash(issueFailMessage, 'alert');
           }
