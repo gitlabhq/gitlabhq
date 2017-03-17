@@ -47,7 +47,7 @@ module Gitlab
       end
 
       def source_branch_name_prefixed
-        "gh-#{target_branch_short_sha}/#{number}"
+        "gh-#{target_branch_short_sha}/#{number}/#{source_branch_user}/#{source_branch_ref}"
       end
 
       def source_branch_exists?
@@ -67,7 +67,7 @@ module Gitlab
       end
 
       def target_branch_name_prefixed
-        "gl-#{target_branch_short_sha}/#{number}"
+        "gl-#{target_branch_short_sha}/#{number}/#{target_branch_user}/#{target_branch_ref}"
       end
 
       def cross_project?

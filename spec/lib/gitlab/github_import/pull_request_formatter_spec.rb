@@ -12,9 +12,9 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   let(:source_branch) { double(ref: 'branch-merged', repo: source_repo, sha: source_sha) }
   let(:forked_source_repo) { double(id: 2, fork: true, name: 'otherproject', full_name: 'company/otherproject') }
   let(:target_repo) { repository }
-  let(:target_branch) { double(ref: 'master', repo: target_repo, sha: target_sha) }
-  let(:removed_branch) { double(ref: 'removed-branch', repo: source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b') }
-  let(:forked_branch) { double(ref: 'master', repo: forked_source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b') }
+  let(:target_branch) { double(ref: 'master', repo: target_repo, sha: target_sha, user: octocat) }
+  let(:removed_branch) { double(ref: 'removed-branch', repo: source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b', user: octocat) }
+  let(:forked_branch) { double(ref: 'master', repo: forked_source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b', user: octocat) }
   let(:branch_deleted_repo) { double(ref: 'master', repo: nil, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b', user: octocat) }
   let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
@@ -207,7 +207,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
       let(:raw_data) { double(base_data.merge(head: removed_branch)) }
 
       it 'prefixes branch name with to avoid collision' do
-        expect(pull_request.source_branch_name).to eq "gh-#{target_short_sha}/1347"
+        expect(pull_request.source_branch_name).to eq "gh-#{target_short_sha}/1347/octocat/removed-branch"
       end
     end
 
@@ -215,7 +215,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
       let(:raw_data) { double(base_data.merge(head: forked_branch)) }
 
       it 'prefixes branch name with to avoid collision' do
-        expect(pull_request.source_branch_name).to eq "gh-#{target_short_sha}/1347"
+        expect(pull_request.source_branch_name).to eq "gh-#{target_short_sha}/1347/octocat/master"
       end
     end
 
@@ -223,7 +223,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
       let(:raw_data) { double(base_data.merge(head: branch_deleted_repo)) }
 
       it 'prefixes branch name with to avoid collision' do
-        expect(pull_request.source_branch_name).to eq "gh-#{target_short_sha}/1347"
+        expect(pull_request.source_branch_name).to eq "gh-#{target_short_sha}/1347/octocat/master"
       end
     end
   end
@@ -241,7 +241,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
       let(:raw_data) { double(base_data.merge(base: removed_branch)) }
 
       it 'prefixes branch name with to avoid collision' do
-        expect(pull_request.target_branch_name).to eq 'gl-2e5d3239/1347'
+        expect(pull_request.target_branch_name).to eq 'gl-2e5d3239/1347/octocat/removed-branch'
       end
     end
   end
