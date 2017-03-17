@@ -1,7 +1,7 @@
 class Discussion
   MEMOIZED_VALUES = [] # rubocop:disable Style/MutableConstant
 
-  attr_reader :notes
+  attr_reader :notes, :noteable
 
   delegate  :created_at,
             :project,
@@ -61,6 +61,13 @@ class Discussion
     @noteable = noteable
   end
 
+  def ==(other)
+    other.class == self.class &&
+      other.noteable == self.noteable &&
+      other.id == self.id &&
+      other.notes == self.notes
+  end
+
   def last_updated_at
     last_note.created_at
   end
@@ -83,7 +90,7 @@ class Discussion
     false
   end
 
-  def render_as_individual_notes?
+  def individual_note?
     false
   end
 
@@ -91,8 +98,9 @@ class Discussion
     notes.length == 1
   end
 
+  # Keep this method in sync with the `potentially_resolvable` scope on `ResolvableNote`
   def potentially_resolvable?
-    first_note.for_merge_request?
+    for_merge_request?
   end
 
   def resolvable?
@@ -162,12 +170,7 @@ class Discussion
   end
 
   def collapsed?
-    if resolvable?
-      # New diff discussions only disappear once they are marked resolved
-      resolved?
-    else
-      false
-    end
+    resolved?
   end
 
   def expanded?

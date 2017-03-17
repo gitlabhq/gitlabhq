@@ -1,6 +1,8 @@
 class DiffNote < Note
   include NoteOnDiff
 
+  NOTEABLE_TYPES = %w(MergeRequest Commit).freeze
+
   serialize :original_position, Gitlab::Diff::Position
   serialize :position, Gitlab::Diff::Position
 
@@ -8,7 +10,7 @@ class DiffNote < Note
   validates :position, presence: true
   validates :diff_line, presence: true
   validates :line_code, presence: true, line_code: true
-  validates :noteable_type, inclusion: { in: %w(Commit MergeRequest) }
+  validates :noteable_type, inclusion: { in: NOTEABLE_TYPES }
   validate :positions_complete
   validate :verify_supported
 

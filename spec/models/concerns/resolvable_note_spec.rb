@@ -3,16 +3,37 @@ require 'spec_helper'
 describe Note, ResolvableNote, models: true do
   subject { create(:discussion_note_on_merge_request) }
 
-  describe '.resolvable' do
-    # TODO: Test
-  end
+  context 'resolvability scopes' do
+    let!(:note1) { create(:note) }
+    let!(:note2) { create(:diff_note_on_commit) }
+    let!(:note3) { create(:diff_note_on_merge_request, :resolved) }
+    let!(:note4) { create(:discussion_note_on_merge_request) }
+    let!(:note5) { create(:discussion_note_on_issue) }
+    let!(:note6) { create(:discussion_note_on_merge_request, :system) }
 
-  describe '.resolved' do
-    # TODO: Test
-  end
+    describe '.potentially_resolvable' do
+      it 'includes diff and discussion notes on merge requests' do
+        expect(Note.potentially_resolvable).to match_array([note3, note4, note6])
+      end
+    end
 
-  describe '.unresolved' do
-    # TODO: Test
+    describe '.resolvable' do
+      it 'includes non-system diff and discussion notes on merge requests' do
+        expect(Note.resolvable).to match_array([note3, note4])
+      end
+    end
+
+    describe '.resolved' do
+      it 'includes resolved non-system diff and discussion notes on merge requests' do
+        expect(Note.resolved).to match_array([note3])
+      end
+    end
+
+    describe '.unresolved' do
+      it 'includes non-resolved non-system diff and discussion notes on merge requests' do
+        expect(Note.unresolved).to match_array([note4])
+      end
+    end
   end
 
   describe ".resolve!" do
@@ -55,7 +76,7 @@ describe Note, ResolvableNote, models: true do
   describe '#resolvable?' do
     context "when potentially resolvable" do
       before do
-        allow(subject).to receive(:discussion_resolvable?).and_return(true)
+        allow(subject).to receive(:potentially_resolvable?).and_return(true)
       end
 
       context "when a system note" do
@@ -77,7 +98,7 @@ describe Note, ResolvableNote, models: true do
 
     context "when not potentially resolvable" do
       before do
-        allow(subject).to receive(:discussion_resolvable?).and_return(false)
+        allow(subject).to receive(:potentially_resolvable?).and_return(false)
       end
 
       it "returns false" do
@@ -125,7 +146,37 @@ describe Note, ResolvableNote, models: true do
   end
 
   describe "#resolved?" do
-    # TODO: Test
+    let(:current_user) { create(:user) }
+
+    context 'when not resolvable' do
+      before do
+        subject.resolve!(current_user)
+
+        allow(subject).to receive(:resolvable?).and_return(false)
+      end
+
+      it 'returns false' do
+        expect(subject.resolved?).to be_falsey
+      end
+    end
+
+    context 'when resolvable' do
+      context 'when the note has been resolved' do
+        before do
+          subject.resolve!(current_user)
+        end
+
+        it 'returns true' do
+          expect(subject.resolved?).to be_truthy
+        end
+      end
+
+      context 'when the note has not been resolved' do
+        it 'returns false' do
+          expect(subject.resolved?).to be_falsey
+        end
+      end
+    end
   end
 
   describe "#resolve!" do

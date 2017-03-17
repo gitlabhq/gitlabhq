@@ -18,7 +18,7 @@ describe DummyService, services: true do
   end
 
   describe "for resolving discussions" do
-    let(:discussion) { Discussion.new([create(:diff_note_on_merge_request, project: project, note: "Almost done")]) }
+    let(:discussion) { create(:diff_note_on_merge_request, project: project, note: "Almost done").to_discussion }
     let(:merge_request) { discussion.noteable }
     let(:other_merge_request) { create(:merge_request, source_project: project, source_branch: "other") }
 

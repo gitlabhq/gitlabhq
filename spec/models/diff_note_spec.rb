@@ -58,7 +58,29 @@ describe DiffNote, models: true do
   end
 
   describe "#original_position=" do
-    # TODO: Test
+    context "when provided a string" do
+      it "sets the original position" do
+        subject.original_position = new_position.to_json
+
+        expect(subject.original_position).to eq(new_position)
+      end
+    end
+
+    context "when provided a hash" do
+      it "sets the original position" do
+        subject.original_position = new_position.to_h
+
+        expect(subject.original_position).to eq(new_position)
+      end
+    end
+
+    context "when provided a position object" do
+      it "sets the original position" do
+        subject.original_position = new_position
+
+        expect(subject.original_position).to eq(new_position)
+      end
+    end
   end
 
   describe "#diff_file" do

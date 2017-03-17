@@ -1225,16 +1225,12 @@ describe MergeRequest, models: true do
   end
 
   context "discussion status" do
-    let(:first_discussion) { Discussion.new([create(:discussion_note_on_merge_request)]) }
-    let(:second_discussion) { Discussion.new([create(:discussion_note_on_merge_request)]) }
-    let(:third_discussion) { Discussion.new([create(:discussion_note_on_merge_request)]) }
+    let(:first_discussion) { create(:discussion_note_on_merge_request).to_discussion }
+    let(:second_discussion) { create(:discussion_note_on_merge_request).to_discussion }
+    let(:third_discussion) { create(:discussion_note_on_merge_request).to_discussion }
 
     before do
       allow(subject).to receive(:resolvable_discussions).and_return([first_discussion, second_discussion, third_discussion])
-    end
-
-    describe '#resolvable_discussions' do
-      # TODO: Test
     end
 
     describe "#discussions_resolvable?" do

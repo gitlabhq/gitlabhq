@@ -1,4 +1,5 @@
 class Projects::NotesController < Projects::ApplicationController
+  include NotesHelper
   include ToggleAwardEmoji
 
   # Authorize
@@ -12,7 +13,8 @@ class Projects::NotesController < Projects::ApplicationController
 
     notes_json = { notes: [], last_fetched_at: current_fetched_at }
 
-    @notes = notes_finder.execute.inc_author
+    @notes = notes_finder.execute.inc_relations_for_view
+    @notes = prepare_notes_for_rendering(@notes)
 
     @notes.each do |note|
       next if note.cross_reference_not_visible_for?(current_user)
@@ -117,7 +119,7 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def discussion_html(discussion)
-    return if discussion.render_as_individual_notes?
+    return if discussion.individual_note?
 
     render_to_string(
       "discussions/_discussion",
@@ -153,21 +155,20 @@ class Projects::NotesController < Projects::ApplicationController
 
   def note_json(note)
     attrs = {
-      id: note.id
+      commands_changes: note.commands_changes
     }
 
     if note.persisted?
-      Banzai::NoteRenderer.render([note], @project, current_user)
-
       attrs.merge!(
         valid: true,
+        id: note.id,
         discussion_id: note.discussion_id(noteable),
         html: note_html(note),
         note: note.note
       )
 
       discussion = note.to_discussion(noteable)
-      unless discussion.render_as_individual_notes?
+      unless discussion.individual_note?
         attrs.merge!(
           discussion_resolvable: discussion.resolvable?,
 
@@ -187,7 +188,6 @@ class Projects::NotesController < Projects::ApplicationController
       )
     end
 
-    attrs[:commands_changes] = note.commands_changes
     attrs
   end
 
