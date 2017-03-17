@@ -1,32 +1,12 @@
 /* global Flash */
-import canceledSvg from 'icons/_icon_status_canceled_borderless.svg';
-import createdSvg from 'icons/_icon_status_created_borderless.svg';
-import failedSvg from 'icons/_icon_status_failed_borderless.svg';
-import manualSvg from 'icons/_icon_status_manual_borderless.svg';
-import pendingSvg from 'icons/_icon_status_pending_borderless.svg';
-import runningSvg from 'icons/_icon_status_running_borderless.svg';
-import skippedSvg from 'icons/_icon_status_skipped_borderless.svg';
-import successSvg from 'icons/_icon_status_success_borderless.svg';
-import warningSvg from 'icons/_icon_status_warning_borderless.svg';
+import { statusClassToBorderlessSvgMap } from '../vue_shared/pipeline_svg_icons';
 
 export default {
   data() {
-    const svgsDictionary = {
-      icon_status_canceled: canceledSvg,
-      icon_status_created: createdSvg,
-      icon_status_failed: failedSvg,
-      icon_status_manual: manualSvg,
-      icon_status_pending: pendingSvg,
-      icon_status_running: runningSvg,
-      icon_status_skipped: skippedSvg,
-      icon_status_success: successSvg,
-      icon_status_warning: warningSvg,
-    };
-
     return {
       builds: '',
       spinner: '<span class="fa fa-spinner fa-spin"></span>',
-      svg: svgsDictionary[this.stage.status.icon],
+      svg: statusClassToBorderlessSvgMap[this.stage.status.icon],
     };
   },
 
