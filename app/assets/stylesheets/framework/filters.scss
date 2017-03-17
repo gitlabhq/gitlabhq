@@ -221,6 +221,10 @@
 .filter-dropdown-container {
   display: -webkit-flex;
   display: flex;
+
+  .dropdown-toggle {
+    line-height: 22px;
+  }
 }
 
 .dropdown-menu .filter-dropdown-item {
@@ -246,7 +250,9 @@
     background-color: $white-light;
     border-top: 0;
   }
+}
 
+@media (max-width: $screen-xs) {
   .filter-dropdown-container {
     .dropdown-toggle,
     .dropdown {
