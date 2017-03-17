@@ -56,7 +56,7 @@ class Note < ActiveRecord::Base
 
   validate unless: [:for_commit?, :importing?, :for_personal_snippet?] do |note|
     unless note.noteable.try(:project) == note.project
-      errors.add(:invalid_project, 'Note and noteable project mismatch')
+      errors.add(:project, 'does not match noteable project')
     end
   end
 
@@ -236,14 +236,14 @@ class Note < ActiveRecord::Base
   end
 
   def can_be_discussion_note?
-    DiscussionNote::NOTEABLE_TYPES.include?(self.noteable_type)
+    DiscussionNote::NOTEABLE_TYPES.include?(self.noteable_type) && !part_of_discussion?
   end
 
   def discussion_class(noteable = nil)
     # When commit notes are rendered on an MR's Discussion page, they are
     # displayed in one discussion instead of individually
-    if noteable && noteable != self.noteable && for_commit?
-      CommitDiscussion
+    if noteable && noteable != self.noteable
+      OutOfContextDiscussion
     else
       IndividualNoteDiscussion
     end
@@ -268,7 +268,24 @@ class Note < ActiveRecord::Base
   end
 
   def part_of_discussion?
-    !to_discussion.render_as_individual_notes?
+    !to_discussion.individual_note?
+  end
+
+  def in_reply_to?(other)
+    case other
+    when Note
+      if part_of_discussion?
+        in_reply_to?(other.noteable) && in_reply_to?(other.to_discussion)
+      else
+        in_reply_to?(other.noteable)
+      end
+    when Discussion
+      self.discussion_id == other.id
+    when Noteable
+      self.noteable == other
+    else
+      false
+    end
   end
 
   private

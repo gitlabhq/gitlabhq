@@ -4,33 +4,34 @@ describe Discussion, model: true do
   subject { described_class.new([first_note, second_note, third_note]) }
 
   let(:first_note) { create(:discussion_note_on_merge_request) }
-  let(:second_note) { create(:discussion_note_on_merge_request) }
+  let(:merge_request) { first_note.noteable }
+  let(:second_note) { create(:discussion_note_on_merge_request, in_reply_to: first_note) }
   let(:third_note) { create(:discussion_note_on_merge_request) }
 
   describe '.build' do
-    # TODO: Test
+    it 'returns a discussion of the right type' do
+      discussion = described_class.build([first_note, second_note], merge_request)
+      expect(discussion).to be_a(SimpleDiscussion)
+      expect(discussion.notes.count).to be(2)
+      expect(discussion.first_note).to be(first_note)
+      expect(discussion.noteable).to be(merge_request)
+    end
   end
 
   describe '.build_collection' do
-    # TODO: Test
-  end
-
-  describe '#id' do
-    # TODO: Test
-  end
-
-  describe '#original_id' do
-    # TODO: Test
-  end
-
-  describe '#potentially_resolvable?' do
-    # TODO: Test
+    it 'returns an array of discussions of the right type' do
+      discussions = described_class.build_collection([first_note, second_note, third_note], merge_request)
+      expect(discussions).to eq([
+        SimpleDiscussion.new([first_note, second_note], merge_request),
+        SimpleDiscussion.new([third_note], merge_request)
+      ])
+    end
   end
 
   describe "#resolvable?" do
     context "when potentially resolvable" do
       before do
-        allow(subject).to receive(:discussion_resolvable?).and_return(true)
+        allow(subject).to receive(:potentially_resolvable?).and_return(true)
       end
 
       context "when all notes are unresolvable" do
@@ -72,7 +73,7 @@ describe Discussion, model: true do
 
     context "when not potentially resolvable" do
       before do
-        allow(subject).to receive(:discussion_resolvable?).and_return(false)
+        allow(subject).to receive(:potentially_resolvable?).and_return(false)
       end
 
       it "returns false" do
@@ -542,7 +543,7 @@ describe Discussion, model: true do
   end
 
   describe "#first_note_to_resolve" do
-    it "returns the first not that still needs to be resolved" do
+    it "returns the first note that still needs to be resolved" do
       allow(first_note).to receive(:to_be_resolved?).and_return(false)
       allow(second_note).to receive(:to_be_resolved?).and_return(true)
 
@@ -551,88 +552,16 @@ describe Discussion, model: true do
   end
 
   describe "#last_resolved_note" do
-    # TODO: Test
-  end
+    let(:current_user) { create(:user) }
 
-  describe "#collapsed?" do
-    context "when potentially resolvable" do
-      before do
-        allow(subject).to receive(:discussion_resolvable?).and_return(true)
-      end
-
-      context "when resolvable" do
-        before do
-          allow(subject).to receive(:resolvable?).and_return(true)
-        end
-
-        context "when resolved" do
-          before do
-            allow(subject).to receive(:resolved?).and_return(true)
-          end
-
-          it "returns true" do
-            expect(subject.collapsed?).to be true
-          end
-        end
-
-        context "when not resolved" do
-          before do
-            allow(subject).to receive(:resolved?).and_return(false)
-          end
-
-          it "returns false" do
-            expect(subject.collapsed?).to be false
-          end
-        end
-      end
-
-      context "when not resolvable" do
-        before do
-          allow(subject).to receive(:resolvable?).and_return(false)
-        end
-
-        context "when a diff discussion" do
-          before do
-            allow(subject).to receive(:diff_discussion?).and_return(true)
-          end
-
-          context "when active" do
-            before do
-              allow(subject).to receive(:active?).and_return(true)
-            end
-
-            it "returns false" do
-              expect(subject.collapsed?).to be false
-            end
-          end
-
-          context "when outdated" do
-            before do
-              allow(subject).to receive(:active?).and_return(false)
-            end
-
-            it "returns true" do
-              expect(subject.collapsed?).to be true
-            end
-          end
-        end
-
-        context "when not a diff discussion" do
-          it "returns false" do
-            expect(subject.collapsed?).to be false
-          end
-        end
-      end
+    before do
+      first_note.resolve!(current_user)
+      third_note.resolve!(current_user)
+      second_note.resolve!(current_user)
     end
 
-    context "when not potentially resolvable" do
-      before do
-        allow(subject).to receive(:discussion_resolvable?).and_return(false)
-      end
-
-      it "returns false" do
-        expect(subject.collapsed?).to be false
-      end
+    it "returns the last note that was resolved" do
+      expect(subject.last_resolved_note).to eq(second_note)
     end
   end
 end

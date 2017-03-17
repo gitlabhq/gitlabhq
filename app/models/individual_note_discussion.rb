@@ -3,11 +3,12 @@ class IndividualNoteDiscussion < Discussion
     [*super(note), SecureRandom.hex]
   end
 
+  # Keep this method in sync with the `potentially_resolvable` scope on `ResolvableNote`
   def potentially_resolvable?
     false
   end
 
-  def render_as_individual_notes?
+  def individual_note?
     true
   end
 end

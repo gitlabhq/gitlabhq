@@ -25,6 +25,14 @@ FactoryGirl.define do
       end
     end
 
+    factory :discussion_note_on_issue, traits: [:on_issue], class: DiscussionNote do
+      association :project, :repository
+    end
+
+    factory :discussion_note_on_commit, traits: [:on_commit], class: DiscussionNote do
+      association :project, :repository
+    end
+
     factory :legacy_diff_note_on_commit, traits: [:on_commit, :legacy_diff_note], class: LegacyDiffNote do
       association :project, :repository
     end
@@ -46,7 +54,7 @@ FactoryGirl.define do
           new_path: "files/ruby/popen.rb",
           old_line: nil,
           new_line: line_number,
-          diff_refs: noteable.diff_refs
+          diff_refs: noteable.try(:diff_refs)
         )
       end
 
@@ -127,8 +135,8 @@ FactoryGirl.define do
       next unless discussion
       discussion = discussion.to_discussion if discussion.is_a?(Note)
       next unless discussion
-      
-      note.assign_attributes(discussion.reply_attributes)
+
+      note.assign_attributes(discussion.reply_attributes.merge(project: discussion.project))
     end
   end
 end

@@ -23,9 +23,7 @@ class SentNotification < ActiveRecord::Base
       find_by(reply_key: reply_key)
     end
 
-    def record(noteable, recipient_id, reply_key, attrs = {})
-      return unless reply_key
-
+    def record(noteable, recipient_id, reply_key = self.reply_key, attrs = {})
       noteable_id = nil
       commit_id = nil
       if noteable.is_a?(Commit)
@@ -47,7 +45,7 @@ class SentNotification < ActiveRecord::Base
       create(attrs)
     end
 
-    def record_note(note, recipient_id, reply_key, attrs = {})
+    def record_note(note, recipient_id, reply_key = self.reply_key, attrs = {})
       attrs[:in_reply_to_discussion_id] = note.original_discussion_id
 
       record(note.noteable, recipient_id, reply_key, attrs)
@@ -87,7 +85,14 @@ class SentNotification < ActiveRecord::Base
     self.reply_key
   end
 
-  def note_params
+  def create_reply(message, dryrun: false)
+    klass = dryrun ? Notes::BuildService : Notes::CreateService
+    klass.new(self.project, self.recipient, reply_params.merge(note: message)).execute
+  end
+
+  private
+
+  def reply_params
     attrs = {
       noteable_type: self.noteable_type,
       noteable_id: self.noteable_id,
@@ -111,10 +116,12 @@ class SentNotification < ActiveRecord::Base
     attrs
   end
 
-  private
-
   def note_valid
-    Notes::BuildService.new(self.project, self.recipient, note_params.merge(note: 'Test')).execute.valid?
+    note = create_reply('Test', dryrun: true)
+
+    unless note.valid?
+      self.errors.add(:base, "Note parameters are invalid: #{note.errors.full_messages.to_sentence}")
+    end
   end
 
   def keep_around_commit

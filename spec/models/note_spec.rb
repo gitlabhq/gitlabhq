@@ -245,16 +245,32 @@ describe Note, models: true do
     end
   end
 
-  describe '.discussions' do
-    # TODO: Test
-  end
-
   describe '.find_original_discussion' do
-    # TODO: Test
+    let!(:note) { create(:discussion_note_on_merge_request) }
+    let!(:note2) { create(:discussion_note_on_merge_request, in_reply_to: note) }
+    let(:merge_request) { note.noteable }
+
+    it 'returns a discussion with one note' do
+      discussion = merge_request.notes.find_original_discussion(note.original_discussion_id)
+
+      expect(discussion).not_to be_nil
+      expect(discussion.notes.count).to be(1)
+      expect(discussion.first_note.original_discussion_id).to eq(note.original_discussion_id)
+    end
   end
 
   describe '.find_discussion' do
-    # TODO: Test
+    let!(:note) { create(:discussion_note_on_merge_request) }
+    let!(:note2) { create(:discussion_note_on_merge_request, in_reply_to: note) }
+    let(:merge_request) { note.noteable }
+
+    it 'returns a discussion with multiple note' do
+      discussion = merge_request.notes.find_discussion(note.discussion_id)
+
+      expect(discussion).not_to be_nil
+      expect(discussion.notes).to match_array([note, note2])
+      expect(discussion.first_note.discussion_id).to eq(note.discussion_id)
+    end
   end
 
   describe ".grouped_diff_discussions" do
@@ -376,15 +392,82 @@ describe Note, models: true do
   end
 
   describe '#can_be_discussion_note?' do
-    # TODO: Test
+    context 'for a note on a merge request' do
+      let(:note) { build(:note_on_merge_request) }
+
+      it 'returns true' do
+        expect(note.can_be_discussion_note?).to be_truthy
+      end
+    end
+
+    context 'for a note on an issue' do
+      let(:note) { build(:note_on_issue) }
+
+      it 'returns true' do
+        expect(note.can_be_discussion_note?).to be_truthy
+      end
+    end
+
+    context 'for a note on a commit' do
+      let(:note) { build(:note_on_commit) }
+
+      it 'returns true' do
+        expect(note.can_be_discussion_note?).to be_truthy
+      end
+    end
+
+    context 'for a note on a snippet' do
+      let(:note) { build(:note_on_project_snippet) }
+
+      it 'returns true' do
+        expect(note.can_be_discussion_note?).to be_truthy
+      end
+    end
+
+    context 'for a diff note on merge request' do
+      let(:note) { build(:diff_note_on_merge_request) }
+
+      it 'returns false' do
+        expect(note.can_be_discussion_note?).to be_falsey
+      end
+    end
+
+    context 'for a diff note on commit' do
+      let(:note) { build(:diff_note_on_commit) }
+
+      it 'returns false' do
+        expect(note.can_be_discussion_note?).to be_falsey
+      end
+    end
+
+    context 'for a discussion note' do
+      let(:note) { build(:discussion_note_on_merge_request) }
+
+      it 'returns false' do
+        expect(note.can_be_discussion_note?).to be_falsey
+      end
+    end
   end
 
   describe '#discussion_class' do
-    # TODO: Test
+    let(:note) { build(:note_on_commit) }
+    let(:merge_request) { create(:merge_request) }
+
+    context 'when the note is displayed out of context' do
+      it 'returns OutOfContextDiscussion' do
+        expect(note.discussion_class(merge_request)).to be(OutOfContextDiscussion)
+      end
+    end
+
+    context 'when the note is displayed in the original context' do
+      it 'returns IndividualNoteDiscussion' do
+        expect(note.discussion_class(note.noteable)).to be(IndividualNoteDiscussion)
+      end
+    end
   end
 
   describe "#discussion_id" do
-    let(:note) { create(:note) }
+    let(:note) { create(:note_on_commit) }
 
     context "when it is newly created" do
       it "has a discussion id" do
@@ -406,10 +489,39 @@ describe Note, models: true do
         expect(reloaded_note.discussion_id).to match(/\A\h{40}\z/)
       end
     end
+
+    context 'when the note is displayed out of context' do
+      let(:merge_request) { create(:merge_request) }
+
+      it 'overrides the discussion id' do
+        expect(note.discussion_id(merge_request)).not_to eq(note.discussion_id)
+      end
+    end
   end
 
   describe "#original_discussion_id" do
-    # TODO: Test
+    let(:note) { create(:diff_note_on_merge_request) }
+
+    context "when it is newly created" do
+      it "has a discussion id" do
+        expect(note.original_discussion_id).not_to be_nil
+        expect(note.original_discussion_id).to match(/\A\h{40}\z/)
+      end
+    end
+
+    context "when it didn't store a discussion id before" do
+      before do
+        note.update_column(:original_discussion_id, nil)
+      end
+
+      it "has a discussion id" do
+        # The original_discussion_id is set in `after_initialize`, so `reload` won't work
+        reloaded_note = Note.find(note.id)
+
+        expect(reloaded_note.original_discussion_id).not_to be_nil
+        expect(reloaded_note.original_discussion_id).to match(/\A\h{40}\z/)
+      end
+    end
   end
 
   describe '#to_discussion' do
@@ -452,7 +564,98 @@ describe Note, models: true do
   end
 
   describe "#part_of_discussion?" do
-    # TODO: Test
+    context 'for a regular note' do
+      let(:note) { build(:note) }
+
+      it 'returns false' do
+        expect(note.part_of_discussion?).to be_falsey
+      end
+    end
+
+    context 'for a diff note' do
+      let(:note) { build(:diff_note_on_commit) }
+
+      it 'returns true' do
+        expect(note.part_of_discussion?).to be_truthy
+      end
+    end
+
+    context 'for a discussion note' do
+      let(:note) { build(:discussion_note_on_merge_request) }
+
+      it 'returns true' do
+        expect(note.part_of_discussion?).to be_truthy
+      end
+    end
+  end
+
+  describe '#in_reply_to?' do
+    context 'for a note' do
+      context 'when part of a discussion' do
+        subject { create(:discussion_note_on_issue) }
+        let(:note) { create(:discussion_note_on_issue, in_reply_to: subject) }
+
+        it 'checks if the note is in reply to the other discussion' do
+          expect(subject).to receive(:in_reply_to?).with(note).and_call_original
+          expect(subject).to receive(:in_reply_to?).with(note.noteable).and_call_original
+          expect(subject).to receive(:in_reply_to?).with(note.to_discussion).and_call_original
+
+          subject.in_reply_to?(note)
+        end
+      end
+
+      context 'when not part of a discussion' do
+        subject { create(:note) }
+        let(:note) { create(:note, in_reply_to: subject) }
+
+        it 'checks if the note is in reply to the other noteable' do
+          expect(subject).to receive(:in_reply_to?).with(note).and_call_original
+          expect(subject).to receive(:in_reply_to?).with(note.noteable).and_call_original
+
+          subject.in_reply_to?(note)
+        end
+      end
+    end
+
+    context 'for a discussion' do
+      context 'when part of the same discussion' do
+        subject { create(:diff_note_on_merge_request) }
+        let(:note) { create(:diff_note_on_merge_request, in_reply_to: subject) }
+
+        it 'returns true' do
+          expect(subject.in_reply_to?(note.to_discussion)).to be_truthy
+        end
+      end
+
+      context 'when not part of the same discussion' do
+        subject { create(:diff_note_on_merge_request) }
+        let(:note) { create(:diff_note_on_merge_request) }
+
+        it 'returns false' do
+          expect(subject.in_reply_to?(note.to_discussion)).to be_falsey
+        end
+      end
+    end
+
+    context 'for a noteable' do
+      context 'when a comment on the same noteable' do
+        subject { create(:note) }
+        let(:note) { create(:note, in_reply_to: subject) }
+
+        it 'returns true' do
+          expect(subject.in_reply_to?(note.noteable)).to be_truthy
+        end
+      end
+
+      context 'when not a comment on the same noteable' do
+        subject { create(:note) }
+        let(:note) { create(:note) }
+
+        it 'returns false' do
+          expect(subject.in_reply_to?(note.noteable)).to be_falsey
+        end
+      end
+    end
   end
 
   describe 'expiring ETag cache' do

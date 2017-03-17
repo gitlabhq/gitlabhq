@@ -15,14 +15,163 @@ describe Projects::NotesController do
   end
 
   describe 'GET index' do
-    # It renders the discussion partial for any threaded note
-    # TODO: Test
+    let(:last_fetched_at) { '1487756246' }
+    let(:request_params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        target_type: 'issue',
+        target_id: issue.id,
+        format: 'json'
+      }
+    end
+
+    let(:parsed_response) { JSON.parse(response.body).with_indifferent_access }
+    let(:note_json) { parsed_response[:notes].first }
+
+    before do
+      sign_in(user)
+      project.team << [user, :developer]
+    end
+
+    it 'passes last_fetched_at from headers to NotesFinder' do
+      request.headers['X-Last-Fetched-At'] = last_fetched_at
+
+      expect(NotesFinder).to receive(:new)
+        .with(anything, anything, hash_including(last_fetched_at: last_fetched_at))
+        .and_call_original
+
+      get :index, request_params
+    end
+
+    context 'for a discussion note' do
+      let!(:note) { create(:discussion_note_on_issue, noteable: issue, project: project) }
+
+      it 'includes the ID' do
+        get :index, request_params
+
+        expect(note_json[:id]).to eq(note.id)
+      end
+
+      it 'includes discussion_html' do
+        get :index, request_params
+
+        expect(note_json[:discussion_html]).not_to be_nil
+      end
+
+      it "doesn't include diff_discussion_html" do
+        get :index, request_params
+
+        expect(note_json[:diff_discussion_html]).to be_nil
+      end
+    end
+
+    context 'for a diff discussion note' do
+      let(:project) { create(:project, :repository) }
+      let!(:note) { create(:diff_note_on_merge_request, project: project) }
+
+      let(:params) { request_params.merge(target_type: 'merge_request', target_id: note.noteable_id) }
+
+      it 'includes the ID' do
+        get :index, params
+
+        expect(note_json[:id]).to eq(note.id)
+      end
+
+      it 'includes discussion_html' do
+        get :index, params
+
+        expect(note_json[:discussion_html]).not_to be_nil
+      end
+
+      it 'includes diff_discussion_html' do
+        get :index, params
+
+        expect(note_json[:diff_discussion_html]).not_to be_nil
+      end
+    end
+
+    context 'for a commit note' do
+      let(:project) { create(:project, :repository) }
+      let!(:note) { create(:note_on_commit, project: project) }
+
+      context 'when displayed on a merge request' do
+        let(:merge_request) { create(:merge_request, source_project: project) }
+
+        let(:params) { request_params.merge(target_type: 'merge_request', target_id: merge_request.id) }
+
+        it 'includes the ID' do
+          get :index, params
+
+          expect(note_json[:id]).to eq(note.id)
+        end
+
+        it 'includes discussion_html' do
+          get :index, params
+
+          expect(note_json[:discussion_html]).not_to be_nil
+        end
+
+        it "doesn't include diff_discussion_html" do
+          get :index, params
+
+          expect(note_json[:diff_discussion_html]).to be_nil
+        end
+      end
+
+      context 'when displayed on the commit' do
+        let(:params) { request_params.merge(target_type: 'commit', target_id: note.commit_id) }
+
+        it 'includes the ID' do
+          get :index, params
+
+          expect(note_json[:id]).to eq(note.id)
+        end
+
+        it "doesn't include discussion_html" do
+          get :index, params
+
+          expect(note_json[:discussion_html]).to be_nil
+        end
+
+        it "doesn't include diff_discussion_html" do
+          get :index, params
+
+          expect(note_json[:diff_discussion_html]).to be_nil
+        end
+      end
+    end
+
+    context 'for a regular note' do
+      let!(:note) { create(:note, noteable: issue, project: project) }
+
+      it 'includes the ID' do
+        get :index, request_params
+
+        expect(note_json[:id]).to eq(note.id)
+      end
+
+      it 'includes html' do
+        get :index, request_params
+
+        expect(note_json[:html]).not_to be_nil
+      end
+
+      it "doesn't include discussion_html" do
+        get :index, request_params
+
+        expect(note_json[:discussion_html]).to be_nil
+      end
+
+      it "doesn't include diff_discussion_html" do
+        get :index, request_params
+
+        expect(note_json[:diff_discussion_html]).to be_nil
+      end
+    end
   end
 
   describe 'POST create' do
-    # Test :type, :new_discussion, :in_reply_to_discussion_id (in_reply_to_id?)
-    # TODO: Test
-
     let(:merge_request) { create(:merge_request) }
     let(:project) { merge_request.source_project }
     let(:request_params) do
@@ -208,33 +357,6 @@ describe Projects::NotesController do
           end
         end
       end
-    end
-  end
-
-  describe 'GET index' do
-    let(:last_fetched_at) { '1487756246' }
-    let(:request_params) do
-      {
-        namespace_id: project.namespace,
-        project_id: project,
-        target_type: 'issue',
-        target_id: issue.id
-      }
-    end
-
-    before do
-      sign_in(user)
-      project.team << [user, :developer]
-    end
-
-    it 'passes last_fetched_at from headers to NotesFinder' do
-      request.headers['X-Last-Fetched-At'] = last_fetched_at
-
-      expect(NotesFinder).to receive(:new)
-        .with(anything, anything, hash_including(last_fetched_at: last_fetched_at))
-        .and_call_original
-
-      get :index, request_params
     end
   end
 end
