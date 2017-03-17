@@ -60,9 +60,6 @@ feature 'Merge request created from fork' do
         expect(page).to have_content pipeline.status
         expect(page).to have_content pipeline.id
       end
-
-      expect(page.find('a.btn-remove')[:href])
-        .to include fork_project.path_with_namespace
     end
   end
 

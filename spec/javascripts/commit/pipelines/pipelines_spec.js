@@ -1,11 +1,6 @@
-/* global pipeline, Vue */
-
-require('~/flash');
-require('~/commit/pipelines/pipelines_store');
-require('~/commit/pipelines/pipelines_service');
-require('~/commit/pipelines/pipelines_table');
-require('~/vue_shared/vue_resource_interceptor');
-const pipeline = require('./mock_data');
+import Vue from 'vue';
+import PipelinesTable from '~/commit/pipelines/pipelines_table';
+import pipeline from './mock_data';
 
 describe('Pipelines table in Commits and Merge requests', () => {
   preloadFixtures('static/pipelines_table.html.raw');
@@ -33,7 +28,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
       });
 
       it('should render the empty state', (done) => {
-        const component = new gl.commits.pipelines.PipelinesTableView({
+        const component = new PipelinesTable({
           el: document.querySelector('#commit-pipeline-table-view'),
         });
 
@@ -62,7 +57,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
       });
 
       it('should render a table with the received pipelines', (done) => {
-        const component = new gl.commits.pipelines.PipelinesTableView({
+        const component = new PipelinesTable({
           el: document.querySelector('#commit-pipeline-table-view'),
         });
 
@@ -92,7 +87,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
     });
 
     it('should render empty state', (done) => {
-      const component = new gl.commits.pipelines.PipelinesTableView({
+      const component = new PipelinesTable({
         el: document.querySelector('#commit-pipeline-table-view'),
       });
 

@@ -1,29 +1,28 @@
-/* eslint-disable no-param-reassign */
-/* global Vue, VueResource, gl */
-window.Vue = require('vue');
+import PipelinesStore from './stores/pipelines_store';
+import PipelinesComponent from './pipelines';
+import '../vue_shared/vue_resource_interceptor';
+
+const Vue = window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
-require('../lib/utils/common_utils');
-require('../vue_shared/vue_resource_interceptor');
-require('./pipelines');
 
 $(() => new Vue({
   el: document.querySelector('.vue-pipelines-index'),
 
   data() {
     const project = document.querySelector('.pipelines');
+    const store = new PipelinesStore();
 
     return {
-      scope: project.dataset.url,
-      store: new gl.PipelineStore(),
+      store,
+      endpoint: project.dataset.url,
     };
   },
   components: {
-    'vue-pipelines': gl.VuePipelines,
+    'vue-pipelines': PipelinesComponent,
   },
   template: `
     <vue-pipelines
-      :scope="scope"
-      :store="store">
-    </vue-pipelines>
+      :endpoint="endpoint"
+      :store="store" />
   `,
 }));

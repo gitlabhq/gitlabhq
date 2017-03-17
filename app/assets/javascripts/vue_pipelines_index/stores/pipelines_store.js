@@ -1,31 +1,46 @@
 /* eslint-disable no-underscore-dangle*/
-/**
- * Pipelines' Store for commits view.
- *
- * Used to store the Pipelines rendered in the commit view in the pipelines table.
- */
-require('../../vue_realtime_listener');
+import '../../vue_realtime_listener';
 
-class PipelinesStore {
+export default class PipelinesStore {
   constructor() {
     this.state = {};
+
     this.state.pipelines = [];
+    this.state.count = {};
+    this.state.pageInfo = {};
   }
 
   storePipelines(pipelines = []) {
     this.state.pipelines = pipelines;
+  }
 
-    return pipelines;
+  storeCount(count = {}) {
+    this.state.count = count;
+  }
+
+  storePagination(pagination = {}) {
+    let paginationInfo;
+
+    if (Object.keys(pagination).length) {
+      const normalizedHeaders = gl.utils.normalizeHeaders(pagination);
+      paginationInfo = gl.utils.parseIntPagination(normalizedHeaders);
+    } else {
+      paginationInfo = pagination;
+    }
+
+    this.state.pageInfo = paginationInfo;
   }
 
   /**
+   * FIXME: Move this inside the component.
+   *
    * Once the data is received we will start the time ago loops.
    *
    * Everytime a request is made like retry or cancel a pipeline, every 10 seconds we
    * update the time to show how long as passed.
    *
    */
-  static startTimeAgoLoops() {
+  startTimeAgoLoops() {
     const startTimeLoops = () => {
       this.timeLoopInterval = setInterval(() => {
         this.$children[0].$children.reduce((acc, component) => {
@@ -44,5 +59,3 @@ class PipelinesStore {
     gl.VueRealtimeListener(removeIntervals, startIntervals);
   }
 }
-
-module.exports = PipelinesStore;
