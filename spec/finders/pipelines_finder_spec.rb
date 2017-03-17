@@ -206,26 +206,26 @@ describe PipelinesFinder do
 
     context 'when order_by and sort are passed' do
       context 'when order_by and sort are valid' do
-        let(:params) { { order_by: 'created_at', sort: 'asc' } }
+        let(:params) { { order_by: 'user_id', sort: 'asc' } }
 
         it 'sorts pipelines by default' do
-          expect(subject).to eq(Ci::Pipeline.order(created_at: :asc))
+          expect(subject).to eq(Ci::Pipeline.order(user_id: :asc))
         end
       end
 
       context 'when order_by is invalid' do
-        let(:params) { { order_by: 'invalid_column', sort: 'desc' } }
+        let(:params) { { order_by: 'invalid_column', sort: 'asc' } }
 
         it 'sorts pipelines with default order_by (id:)' do
-          expect(subject).to eq(Ci::Pipeline.order(id: :desc))
+          expect(subject).to eq(Ci::Pipeline.order(id: :asc))
         end
       end
 
       context 'when sort is invalid' do
-        let(:params) { { order_by: 'created_at', sort: 'invalid_sort' } }
+        let(:params) { { order_by: 'user_id', sort: 'invalid_sort' } }
 
         it 'sorts pipelines with default sort (:desc)' do
-          expect(subject).to eq(Ci::Pipeline.order(created_at: :desc))
+          expect(subject).to eq(Ci::Pipeline.order(user_id: :desc))
         end
       end
 
