@@ -278,7 +278,6 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         it_behaves_like 'an inaccessible'
         it_behaves_like 'not a container repository factory'
       end
-
     end
   end
 
@@ -287,13 +286,8 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
     let(:current_user) { create(:user) }
     let(:authentication_abilities) do
       [
-        :build_read_container_image,
-        :build_create_container_image
+        :admin_container_image
       ]
-    end
-
-    before do
-      current_project.team << [current_project, :admin]
     end
 
     it_behaves_like 'a valid token'
