@@ -542,16 +542,11 @@ module Ci
     def dependencies
       depended_jobs = depends_on_builds
 
-      return depended_jobs unless options[:dependencies] && !options[:dependencies].empty?
+      return depended_jobs unless options[:dependencies].present?
 
-      selected = []
-      depended_jobs.each do |job|
-        options[:dependencies].each do |job_name|
-          selected << job if job.name == job_name
-        end
+      depended_jobs.select do |job|
+        options[:dependencies].include?(job.name)
       end
-
-      selected
     end
 
     private
