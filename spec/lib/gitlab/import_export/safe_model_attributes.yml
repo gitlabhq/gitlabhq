@@ -183,6 +183,7 @@ Ci::Pipeline:
 - duration
 - user_id
 - lock_version
+- auto_canceled_by_id
 CommitStatus:
 - id
 - project_id
