@@ -47,7 +47,13 @@ describe Ci::CreatePipelineService, services: true do
           project.update(auto_cancel_pending_pipelines: 'enabled')
         end
 
-        it_behaves_like 'a pending pipeline'
+        it 'does not cancel HEAD pipeline' do
+          pipeline
+          previous_pipeline = pipeline_on_previous_commit
+
+          expect(pipeline.reload)
+            .to have_attributes(status: 'pending', auto_canceled_by: nil)
+        end
 
         it 'auto cancel pending non-HEAD pipelines' do
           pending_pipeline = pipeline_on_previous_commit
