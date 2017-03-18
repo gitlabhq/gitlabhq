@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class AddAutoCanceledByToPipeline < ActiveRecord::Migration
+class AddAutoCanceledByIdToPipeline < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
@@ -21,9 +21,15 @@ class AddAutoCanceledByToPipeline < ActiveRecord::Migration
   #
   # To disable transactions uncomment the following line and remove these
   # comments:
-  # disable_ddl_transaction!
+  disable_ddl_transaction!
 
-  def change
-    add_column :ci_commits, :auto_canceled_by, :integer
+  def up
+    add_column :ci_pipelines, :auto_canceled_by_id, :integer
+    add_concurrent_foreign_key :ci_pipelines, :ci_pipelines, column: :auto_canceled_by_id, on_delete: 'set null'
+  end
+
+  def down
+    remove_foreign_key :ci_pipelines, column: :auto_canceled_by_id
+    remove_column :ci_pipelines, :auto_canceled_by_id
   end
 end

@@ -69,7 +69,7 @@ module Ci
       Gitlab::OptimisticLocking.retry_lock(auto_cancelable_pipelines) do |cancelables|
         cancelables.find_each do |cancelable|
           cancelable.cancel_running
-          cancelable.update_attributes(auto_canceled_by: pipeline.id)
+          cancelable.update_attributes(auto_canceled_by_id: pipeline.id)
         end
       end
     end

@@ -61,7 +61,6 @@ ActiveRecord::Schema.define(version: 20170402231018) do
     t.boolean "shared_runners_enabled", default: true, null: false
     t.integer "max_artifacts_size", default: 100, null: false
     t.string "runners_registration_token"
-    t.integer "max_pages_size", default: 100, null: false
     t.boolean "require_two_factor_authentication", default: false
     t.integer "two_factor_grace_period", default: 48
     t.boolean "metrics_enabled", default: false
@@ -99,17 +98,18 @@ ActiveRecord::Schema.define(version: 20170402231018) do
     t.text "help_page_text_html"
     t.text "shared_runners_text_html"
     t.text "after_sign_up_text_html"
+    t.boolean "sidekiq_throttling_enabled", default: false
+    t.string "sidekiq_throttling_queues"
+    t.decimal "sidekiq_throttling_factor"
     t.boolean "housekeeping_enabled", default: true, null: false
     t.boolean "housekeeping_bitmaps_enabled", default: true, null: false
     t.integer "housekeeping_incremental_repack_period", default: 10, null: false
     t.integer "housekeeping_full_repack_period", default: 50, null: false
     t.integer "housekeeping_gc_period", default: 200, null: false
-    t.boolean "sidekiq_throttling_enabled", default: false
-    t.string "sidekiq_throttling_queues"
-    t.decimal "sidekiq_throttling_factor"
     t.boolean "html_emails_enabled", default: true
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
+    t.integer "max_pages_size", default: 100, null: false
     t.integer "terminal_max_session_time", default: 0, null: false
     t.string "default_artifacts_expire_in", default: "0", null: false
     t.integer "unique_ips_limit_per_user"
@@ -251,7 +251,7 @@ ActiveRecord::Schema.define(version: 20170402231018) do
     t.integer "duration"
     t.integer "user_id"
     t.integer "lock_version"
-    t.integer "auto_canceled_by"
+    t.integer "auto_canceled_by_id"
   end
 
   add_index "ci_pipelines", ["project_id", "ref", "status"], name: "index_ci_pipelines_on_project_id_and_ref_and_status", using: :btree
@@ -688,10 +688,10 @@ ActiveRecord::Schema.define(version: 20170402231018) do
     t.string "avatar"
     t.boolean "share_with_group_lock", default: false
     t.integer "visibility_level", default: 20, null: false
-    t.datetime "deleted_at"
     t.boolean "request_access_enabled", default: false, null: false
-    t.text "description_html"
+    t.datetime "deleted_at"
     t.boolean "lfs_enabled"
+    t.text "description_html"
     t.integer "parent_id"
   end
 
@@ -920,8 +920,8 @@ ActiveRecord::Schema.define(version: 20170402231018) do
     t.boolean "lfs_enabled"
     t.text "description_html"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
-    t.boolean "printing_merge_request_link_enabled", default: true, null: false
     t.integer "auto_cancel_pending_pipelines", default: 0, null: false
+    t.boolean "printing_merge_request_link_enabled", default: true, null: false
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1241,10 +1241,10 @@ ActiveRecord::Schema.define(version: 20170402231018) do
     t.boolean "hide_project_limit", default: false
     t.string "unlock_token"
     t.datetime "otp_grace_period_started_at"
-    t.string "incoming_email_token"
     t.boolean "ldap_email", default: false, null: false
     t.boolean "external", default: false
     t.string "organization"
+    t.string "incoming_email_token"
     t.boolean "authorized_projects_populated"
     t.boolean "ghost"
     t.boolean "notified_of_own_activity"
@@ -1299,6 +1299,7 @@ ActiveRecord::Schema.define(version: 20170402231018) do
 
   add_foreign_key "boards", "projects"
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
+  add_foreign_key "ci_pipelines", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_262d4c2d19", on_delete: :nullify
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade

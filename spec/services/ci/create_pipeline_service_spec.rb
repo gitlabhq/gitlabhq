@@ -52,14 +52,14 @@ describe Ci::CreatePipelineService, services: true do
           previous_pipeline = pipeline_on_previous_commit
 
           expect(pipeline.reload)
-            .to have_attributes(status: 'pending', auto_canceled_by: nil)
+            .to have_attributes(status: 'pending', auto_canceled_by_id: nil)
         end
 
         it 'auto cancel pending non-HEAD pipelines' do
           pending_pipeline = pipeline_on_previous_commit
           pipeline
 
-          expect(pending_pipeline.reload).to have_attributes(status: 'canceled', auto_canceled_by: pipeline.id)
+          expect(pending_pipeline.reload).to have_attributes(status: 'canceled', auto_canceled_by_id: pipeline.id)
         end
 
         it 'does not cancel running outdated pipelines' do
@@ -67,7 +67,7 @@ describe Ci::CreatePipelineService, services: true do
           running_pipeline.run
           execute_service
 
-          expect(running_pipeline.reload).to have_attributes(status: 'running', auto_canceled_by: nil)
+          expect(running_pipeline.reload).to have_attributes(status: 'running', auto_canceled_by_id: nil)
         end
 
         it 'cancel created outdated pipelines' do
@@ -75,7 +75,7 @@ describe Ci::CreatePipelineService, services: true do
           created_pipeline.update(status: 'created')
           pipeline
 
-          expect(created_pipeline.reload).to have_attributes(status: 'canceled', auto_canceled_by: pipeline.id)
+          expect(created_pipeline.reload).to have_attributes(status: 'canceled', auto_canceled_by_id: pipeline.id)
         end
 
         it 'does not cancel pipelines from the other branches' do
@@ -85,7 +85,7 @@ describe Ci::CreatePipelineService, services: true do
           )
           pipeline
 
-          expect(pending_pipeline.reload).to have_attributes(status: 'pending', auto_canceled_by: nil)
+          expect(pending_pipeline.reload).to have_attributes(status: 'pending', auto_canceled_by_id: nil)
         end
       end
     end

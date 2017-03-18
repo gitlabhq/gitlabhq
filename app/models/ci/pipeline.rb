@@ -7,7 +7,9 @@ module Ci
 
     belongs_to :project
     belongs_to :user
+    belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
 
+    has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
