@@ -1,4 +1,6 @@
 class AddIndexForPipelineUserId < ActiveRecord::Migration
+  DOWNTIME = false
+
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!

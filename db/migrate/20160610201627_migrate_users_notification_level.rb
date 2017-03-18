@@ -1,4 +1,6 @@
 class MigrateUsersNotificationLevel < ActiveRecord::Migration
+  DOWNTIME = false
+
   # Migrates only users who changed their default notification level :participating
   # creating a new record on notification settings table
 

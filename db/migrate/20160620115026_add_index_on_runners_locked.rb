@@ -2,6 +2,8 @@
 # for more information on how to write migrations for GitLab.
 
 class AddIndexOnRunnersLocked < ActiveRecord::Migration
+  DOWNTIME = false
+
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!
