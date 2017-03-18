@@ -167,7 +167,7 @@ describe Ci::CreatePipelineService, services: true do
       end
 
       shared_examples 'creating a pipeline' do
-        it 'does not skips pipeline creation' do
+        it 'does not skip pipeline creation' do
           allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { commit_message }
 
           pipeline = execute_service(message: commit_message)
