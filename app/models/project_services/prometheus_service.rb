@@ -30,7 +30,7 @@ class PrometheusService < MonitoringService
   end
 
   def help
-    'Retrieves `container_cpu_usage_seconds_total` and `container_memory_usage_bytes` from the configured Prometheus server. If you are not using <a href="https://docs.gitlab.com/ee/ci/autodeploy/index.html">Auto-Deploy</a> or have set up your own Prometheus server, an `environment` label is required on each metric to <a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html#metrics-and-labels">identify the Environment</a>.'
+    'Retrieves the Kubernetes node metrics `container_cpu_usage_seconds_total` and `container_memory_usage_bytes` from the configured Prometheus server. If you are not using <a href="https://docs.gitlab.com/ee/ci/autodeploy/index.html">Auto-Deploy</a> or have set up your own Prometheus server, an `environment` label is required on each metric to <a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html#metrics-and-labels">identify the Environment</a>.'
   end
 
   def self.to_param
