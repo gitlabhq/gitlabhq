@@ -60,6 +60,7 @@ var config = {
         exclude: /(node_modules|vendor\/assets)/,
         loader: 'babel-loader',
         options: {
+          plugins: ['lodash'],
           presets: [
             ["es2015", {"modules": false}],
             'stage-2'

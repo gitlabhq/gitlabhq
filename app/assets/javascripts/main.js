@@ -6,7 +6,7 @@
 /* global Aside */
 
 import jQuery from 'jquery';
-import _ from 'underscore';
+import _ from 'lodash';
 import Cookies from 'js-cookie';
 import Pikaday from 'pikaday';
 import Dropzone from 'dropzone';

@@ -2,7 +2,7 @@
 /* global Flash */
 
 import d3 from 'd3';
-import _ from 'underscore';
+import _ from 'lodash';
 import statusCodes from '~/lib/utils/http_status';
 import '~/lib/utils/common_utils';
 import '~/flash';

@@ -1,6 +1,9 @@
+import _map from 'lodash/map';
+import _reduce from 'lodash/reduce';
+
 (() => {
   /*
-   * TODO: Make these methods more configurable (e.g. parseSeconds timePeriodContstraints,
+     * TODO: Make these methods more configurable (e.g. parseSeconds timePeriodContstraints,
    * stringifyTime condensed or non-condensed, abbreviateTimelengths)
    * */
 
@@ -26,7 +29,7 @@
 
       let unorderedMinutes = prettyTime.secondsToMinutes(seconds);
 
-      return _.mapObject(timePeriodConstraints, (minutesPerPeriod) => {
+      return _map(timePeriodConstraints, (minutesPerPeriod) => {
         const periodCount = Math.floor(unorderedMinutes / minutesPerPeriod);
 
         unorderedMinutes -= (periodCount * minutesPerPeriod);
@@ -41,7 +44,7 @@
     */
 
     stringifyTime(timeObject) {
-      const reducedTime = _.reduce(timeObject, (memo, unitValue, unitName) => {
+      const reducedTime = _reduce(timeObject, (memo, unitValue, unitName) => {
         const isNonZero = !!unitValue;
         return isNonZero ? `${memo} ${unitValue}${unitName.charAt(0)}` : memo;
       }, '').trim();
