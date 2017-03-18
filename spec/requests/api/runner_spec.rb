@@ -173,7 +173,7 @@ describe API::Runner do
       end
 
       context 'when valid token is provided' do
-        it 'deletes Runner' do
+        it 'verifies Runner credentials' do
           post api('/runners/verify'), token: runner.token
 
           expect(response).to have_http_status 200
