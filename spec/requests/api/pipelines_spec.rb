@@ -225,8 +225,11 @@ describe API::Pipelines do
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
-              expect(json_response.first['id']).to eq(project.pipelines.order(user_id: :asc).first.id)
-              expect(json_response.last['id']).to eq(project.pipelines.order(user_id: :asc).last.id)
+              expect(json_response).not_to be_empty
+              pipelines = project.pipelines.order(user_id: :asc)
+              json_response.each_with_index do |r, i|
+                expect(r['id']).to eq(pipelines[i].id)
+              end
             end
           end
 

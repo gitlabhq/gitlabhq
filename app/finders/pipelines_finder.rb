@@ -118,6 +118,6 @@ class PipelinesFinder
            else
              :desc
            end
-    items.reorder(order_by => sort)
+    items.order(order_by => sort)
   end
 end
