@@ -25,7 +25,7 @@ class AddAutoCanceledByIdToPipeline < ActiveRecord::Migration
 
   def up
     add_column :ci_pipelines, :auto_canceled_by_id, :integer
-    add_concurrent_foreign_key :ci_pipelines, :ci_pipelines, column: :auto_canceled_by_id, on_delete: 'set null'
+    add_concurrent_foreign_key :ci_pipelines, :ci_pipelines, column: :auto_canceled_by_id, on_delete: :nullify
   end
 
   def down
