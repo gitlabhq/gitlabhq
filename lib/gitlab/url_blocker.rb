@@ -8,6 +8,8 @@ module Gitlab
       VALID_PORTS = [22, 80, 443].freeze
 
       def blocked_url?(url)
+        return false if url.nil?
+
         blocked_ips = ["127.0.0.1", "::1", "0.0.0.0"]
         blocked_ips.concat(Socket.ip_address_list.map(&:ip_address))
 
