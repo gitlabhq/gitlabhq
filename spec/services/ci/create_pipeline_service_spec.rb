@@ -40,7 +40,7 @@ describe Ci::CreatePipelineService, services: true do
         end
 
         def previous_commit_sha_from_ref(ref)
-          project.repository.find_commits(ref: ref, max_count: 2)[1].id
+          project.commit(ref).parent.sha
         end
 
         before do
