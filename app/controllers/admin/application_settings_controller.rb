@@ -45,6 +45,18 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def application_setting_params
+    default_visibilities = [:default_project_visibility, :default_snippet_visibility, :default_group_visibility]
+
+    default_visibilities.each do |visibility|
+      value = params[:application_setting][visibility]
+      params[:application_setting][visibility] =
+        if value.present?
+          value.to_i
+        else
+          Gitlab::VisibilityLevel::PRIVATE
+        end
+    end
+
     restricted_levels = params[:application_setting][:restricted_visibility_levels]
     if restricted_levels.nil?
       params[:application_setting][:restricted_visibility_levels] = []
