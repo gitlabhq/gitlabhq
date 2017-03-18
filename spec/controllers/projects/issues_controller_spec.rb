@@ -93,6 +93,29 @@ describe Projects::IssuesController do
   end
 
   describe 'PUT #update' do
+    before do
+      sign_in(user)
+      project.team << [user, :developer]
+    end
+
+    context 'changing the assignee' do
+      it 'limits the attributes exposed on the assignee' do
+        assignee = create(:user)
+        project.add_developer(assignee)
+
+        put :update,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: issue.iid,
+          issue: { assignee_id: assignee.id },
+          format: :json
+        body = JSON.parse(response.body)
+
+        expect(body['assignee'].keys)
+          .to match_array(%w(name username avatar_url))
+      end
+    end
+
     context 'when moving issue to another private project' do
       let(:another_project) { create(:project, :private) }
 
