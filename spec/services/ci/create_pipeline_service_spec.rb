@@ -39,17 +39,17 @@ describe Ci::CreatePipelineService, services: true do
           )
         end
 
-        def previous_commit_sha_from_ref(ref)
-          project.commit(ref).parent.sha
-        end
-
         before do
           project.update(auto_cancel_pending_pipelines: 'enabled')
         end
 
+        def previous_commit_sha_from_ref(ref)
+          project.commit(ref).parent.sha
+        end
+
         it 'does not cancel HEAD pipeline' do
           pipeline
-          previous_pipeline = pipeline_on_previous_commit
+          pipeline_on_previous_commit
 
           expect(pipeline.reload)
             .to have_attributes(status: 'pending', auto_canceled_by_id: nil)
