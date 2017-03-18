@@ -66,13 +66,20 @@ module Ci
     end
 
     def cancel_pending_pipelines
-      Gitlab::OptimisticLocking.retry_lock(
-        pipeline.auto_cancelable_pipelines) do |cancelables|
+      Gitlab::OptimisticLocking.retry_lock(auto_cancelable_pipelines) do |cancelables|
         cancelables.find_each do |cancelable|
           cancelable.cancel_running
           cancelable.update_attributes(auto_canceled_by: pipeline.id)
         end
       end
+    end
+
+    def auto_cancelable_pipelines
+      project.pipelines
+        .where(ref: pipeline.ref)
+        .where.not(id: pipeline.id)
+        .where.not(sha: project.repository.sha_from_ref(pipeline.ref))
+        .created_or_pending
     end
 
     def commit

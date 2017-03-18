@@ -127,14 +127,6 @@ module Ci
       where.not(duration: nil).sum(:duration)
     end
 
-    def auto_cancelable_pipelines
-      project.pipelines
-        .where(ref: ref)
-        .where.not(id: id)
-        .where.not(sha: project.repository.sha_from_ref(ref))
-        .created_or_pending
-    end
-
     def stage(name)
       stage = Ci::Stage.new(self, name: name)
       stage unless stage.statuses_count.zero?
