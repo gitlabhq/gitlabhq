@@ -78,6 +78,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Expose issue weight in the API. !1023 (Robert Schilling)
 - Copy <some text> to clipboard. !1048
 
+## 8.15.8 (2017-03-19)
+
+- Elastic security fix: Respect feature visibility level.
+
 ## 8.15.7 (2017-02-15)
 
 - No changes.
