@@ -37,6 +37,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 ## 8.16.8 (2017-03-19)
 
 - No changes.
+- No changes.
 - Elastic security fix: Respect feature visibility level.
 
 ## 8.16.7 (2017-02-27)
