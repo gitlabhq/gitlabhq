@@ -13,6 +13,7 @@ class PipelineEntity < Grape::Entity
 
   expose :details do
     expose :detailed_status, as: :status, with: StatusEntity
+    expose :status_tooltip
     expose :duration
     expose :finished_at
     expose :stages, using: StageEntity
@@ -80,5 +81,9 @@ class PipelineEntity < Grape::Entity
 
   def detailed_status
     pipeline.detailed_status(request.user)
+  end
+
+  def status_tooltip
+    "This pipeline is redundant as a newer pipeline exists (canceled by ##{pipeline.auto_canceled_by_id} pipeline)" if pipeline.auto_canceled_by_id? && pipeline.canceled?
   end
 end
