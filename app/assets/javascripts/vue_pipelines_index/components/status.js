@@ -50,7 +50,7 @@ export default {
 
     tooltipTitle() {
       return this.pipeline.details.status_tooltip;
-    }
+    },
   },
   template: `
     <td class="commit-link">
