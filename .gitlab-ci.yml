@@ -376,6 +376,16 @@ lint:javascript:report:
     paths:
     - eslint-report.html
 
+nsp:
+  <<: *dedicated-runner
+  cache:
+    paths:
+      - node_modules/
+  stage: test
+  before_script: []
+  script:
+    - yarn run nsp
+
 # Trigger docs build
 # https://gitlab.com/gitlab-com/doc-gitlab-com/blob/master/README.md#deployment-process
 trigger_docs:

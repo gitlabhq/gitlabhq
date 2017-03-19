@@ -1,4 +1,5 @@
 {
+  "name": "GitLab_Frontend",
   "private": true,
   "scripts": {
     "dev-server": "webpack-dev-server --config config/webpack.config.js",
@@ -8,7 +9,8 @@
     "karma": "karma start config/karma.config.js --single-run",
     "karma-start": "karma start config/karma.config.js",
     "webpack": "webpack --config config/webpack.config.js",
-    "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
+    "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js",
+    "nsp": "nsp check"
   },
   "dependencies": {
     "babel-core": "^6.22.1",
@@ -56,6 +58,7 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.2",
+    "nsp": "^2.6.3",
     "webpack-dev-server": "^2.3.0"
   },
   "nyc": {
