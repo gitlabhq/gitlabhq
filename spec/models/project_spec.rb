@@ -29,8 +29,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:campfire_service).dependent(:destroy) }
     it { is_expected.to have_one(:drone_ci_service).dependent(:destroy) }
     it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
-    it { is_expected.to have_one(:builds_email_service).dependent(:destroy) }
-    it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
+    it { is_expected.to have_one(:pipelines_email_service).dependent(:destroy) }
     it { is_expected.to have_one(:irker_service).dependent(:destroy) }
     it { is_expected.to have_one(:pivotaltracker_service).dependent(:destroy) }
     it { is_expected.to have_one(:hipchat_service).dependent(:destroy) }
@@ -1914,6 +1913,17 @@ describe Project, models: true do
 
         expect(project.http_url_to_repo(user)).to match(%r{https?:\/\/#{user.username}@})
       end
+    end
+  end
+
+  describe '#pipeline_status' do
+    let(:project) { create(:project) }
+    it 'builds a pipeline status' do
+      expect(project.pipeline_status).to be_a(Ci::PipelineStatus)
+    end
+
+    it 'hase a loaded pipeline status' do
+      expect(project.pipeline_status).to be_loaded
     end
   end
 end

@@ -20,9 +20,9 @@ module API
         desc 'Mark all todos as done'
         delete do
           status(200)
-          
+
           todos = TodosFinder.new(current_user, params).execute
-          TodoService.new.mark_todos_as_done(todos, current_user)
+          TodoService.new.mark_todos_as_done(todos, current_user).size
         end
       end
     end

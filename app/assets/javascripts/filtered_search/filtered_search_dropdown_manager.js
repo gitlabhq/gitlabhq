@@ -1,12 +1,14 @@
 /* global DropLab */
+import FilteredSearchContainer from './container';
 
 (() => {
   class FilteredSearchDropdownManager {
     constructor(baseEndpoint = '', page) {
+      this.container = FilteredSearchContainer.container;
       this.baseEndpoint = baseEndpoint.replace(/\/$/, '');
       this.tokenizer = gl.FilteredSearchTokenizer;
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
-      this.filteredSearchInput = document.querySelector('.filtered-search');
+      this.filteredSearchInput = this.container.querySelector('.filtered-search');
       this.page = page;
 
       this.setupMapping();
@@ -31,35 +33,35 @@
         author: {
           reference: null,
           gl: 'DropdownUser',
-          element: document.querySelector('#js-dropdown-author'),
+          element: this.container.querySelector('#js-dropdown-author'),
         },
         assignee: {
           reference: null,
           gl: 'DropdownUser',
-          element: document.querySelector('#js-dropdown-assignee'),
+          element: this.container.querySelector('#js-dropdown-assignee'),
         },
         milestone: {
           reference: null,
           gl: 'DropdownNonUser',
           extraArguments: [`${this.baseEndpoint}/milestones.json`, '%'],
-          element: document.querySelector('#js-dropdown-milestone'),
+          element: this.container.querySelector('#js-dropdown-milestone'),
         },
         label: {
           reference: null,
           gl: 'DropdownNonUser',
           extraArguments: [`${this.baseEndpoint}/labels.json`, '~'],
-          element: document.querySelector('#js-dropdown-label'),
+          element: this.container.querySelector('#js-dropdown-label'),
         },
         hint: {
           reference: null,
           gl: 'DropdownHint',
-          element: document.querySelector('#js-dropdown-hint'),
+          element: this.container.querySelector('#js-dropdown-hint'),
         },
       };
     }
 
     static addWordToInput(tokenName, tokenValue = '', clicked = false) {
-      const input = document.querySelector('.filtered-search');
+      const input = FilteredSearchContainer.container.querySelector('.filtered-search');
 
       gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue);
       input.value = '';
@@ -75,13 +77,13 @@
 
     updateDropdownOffset(key) {
       // Always align dropdown with the input field
-      let offset = this.filteredSearchInput.getBoundingClientRect().left - document.querySelector('.scroll-container').getBoundingClientRect().left;
+      let offset = this.filteredSearchInput.getBoundingClientRect().left - this.container.querySelector('.scroll-container').getBoundingClientRect().left;
 
       const maxInputWidth = 240;
       const currentDropdownWidth = this.mapping[key].element.clientWidth || maxInputWidth;
 
       // Make sure offset never exceeds the input container
-      const offsetMaxWidth = document.querySelector('.scroll-container').clientWidth - currentDropdownWidth;
+      const offsetMaxWidth = this.container.querySelector('.scroll-container').clientWidth - currentDropdownWidth;
       if (offsetMaxWidth < offset) {
         offset = offsetMaxWidth;
       }

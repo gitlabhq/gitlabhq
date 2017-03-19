@@ -129,6 +129,25 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
           expect(Ci::Build.where(token: 'abcd')).to be_empty
         end
       end
+
+      context 'has restored the correct number of records' do
+        it 'has the correct number of merge requests' do
+          expect(@project.merge_requests.size).to eq(9)
+        end
+
+        it 'has the correct number of triggers' do
+          expect(@project.triggers.size).to eq(1)
+        end
+
+        it 'has the correct number of pipelines and statuses' do
+          expect(@project.pipelines.size).to eq(5)
+
+          @project.pipelines.zip([2, 2, 2, 2, 2])
+            .each do |(pipeline, expected_status_size)|
+              expect(pipeline.statuses.size).to eq(expected_status_size)
+            end
+        end
+      end
     end
   end
 

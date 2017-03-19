@@ -420,12 +420,9 @@
   display: -webkit-flex;
   display: flex;
 
-  .form-control {
-    margin-left: auto;
-
-    @media (min-width: $screen-sm-min) {
-      max-width: 200px;
-    }
+  .issues-filters {
+    -webkit-flex: 1;
+    flex: 1;
   }
 }
 

@@ -215,7 +215,6 @@ class Service < ActiveRecord::Base
       assembla
       bamboo
       buildkite
-      builds_email
       bugzilla
       campfire
       custom_issue_tracker

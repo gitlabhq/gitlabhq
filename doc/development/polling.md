@@ -27,13 +27,13 @@ Instead you should use polling mechanism with ETag caching in Redis.
 1. When a client makes a request we set the `ETag` response header to the value
    from Redis.
 1. The client caches the response (client-side caching) and sends the ETag as
-   the `If-None-Modified` header with every subsequent request for the same
+   the `If-None-Match` header with every subsequent request for the same
    resource.
-1. If the `If-None-Modified` header matches the current value in Redis we know
+1. If the `If-None-Match` header matches the current value in Redis we know
    that the resource did not change so we can send 304 response immediately,
    without querying the database at all. The client's browser will use the
    cached response.
-1. If the `If-None-Modified` header does not match the current value in Redis
+1. If the `If-None-Match` header does not match the current value in Redis
    we have to generate a new response, because the resource changed.
 
 For more information see:

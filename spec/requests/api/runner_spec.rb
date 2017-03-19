@@ -312,8 +312,8 @@ describe API::Runner do
           end
 
           let(:expected_variables) do
-            [{ 'key' => 'CI_BUILD_NAME', 'value' => 'spinach', 'public' => true },
-             { 'key' => 'CI_BUILD_STAGE', 'value' => 'test', 'public' => true },
+            [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true },
+             { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true },
              { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true }]
           end
 
@@ -437,9 +437,9 @@ describe API::Runner do
 
           context 'when triggered job is available' do
             let(:expected_variables) do
-              [{ 'key' => 'CI_BUILD_NAME', 'value' => 'spinach', 'public' => true },
-               { 'key' => 'CI_BUILD_STAGE', 'value' => 'test', 'public' => true },
-               { 'key' => 'CI_BUILD_TRIGGERED', 'value' => 'true', 'public' => true },
+              [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true },
+               { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true },
+               { 'key' => 'CI_PIPELINE_TRIGGERED', 'value' => 'true', 'public' => true },
                { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true },
                { 'key' => 'SECRET_KEY', 'value' => 'secret_value', 'public' => false },
                { 'key' => 'TRIGGER_KEY_1', 'value' => 'TRIGGER_VALUE_1', 'public' => false }]

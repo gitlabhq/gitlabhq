@@ -144,7 +144,8 @@ module Issuable
                when 'milestone_due_desc' then order_milestone_due_desc
                when 'downvotes_desc' then order_downvotes_desc
                when 'upvotes_desc' then order_upvotes_desc
-               when 'priority' then order_labels_priority(excluded_labels: excluded_labels)
+               when 'label_priority' then order_labels_priority(excluded_labels: excluded_labels)
+               when 'priority' then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
                when 'position_asc' then  order_position_asc
                else
                  order_by(method)
@@ -154,7 +155,28 @@ module Issuable
       sorted.order(id: :desc)
     end
 
-    def order_labels_priority(excluded_labels: [])
+    def order_due_date_and_labels_priority(excluded_labels: [])
+      # The order_ methods also modify the query in other ways:
+      #
+      # - For milestones, we add a JOIN.
+      # - For label priority, we change the SELECT, and add a GROUP BY.#
+      #
+      # After doing those, we need to reorder to the order we want. The existing
+      # ORDER BYs won't work because:
+      #
+      # 1. We need milestone due date first.
+      # 2. We can't ORDER BY a column that isn't in the GROUP BY and doesn't
+      #    have an aggregate function applied, so we do a useless MIN() instead.
+      #
+      milestones_due_date = 'MIN(milestones.due_date)'
+
+      order_milestone_due_asc.
+        order_labels_priority(excluded_labels: excluded_labels, extra_select_columns: [milestones_due_date]).
+        reorder(Gitlab::Database.nulls_last_order(milestones_due_date, 'ASC'),
+                Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
+    end
+
+    def order_labels_priority(excluded_labels: [], extra_select_columns: [])
       params = {
         target_type: name,
         target_column: "#{table_name}.id",
@@ -164,7 +186,12 @@ module Issuable
 
       highest_priority = highest_label_priority(params).to_sql
 
-      select("#{table_name}.*, (#{highest_priority}) AS highest_priority").
+      select_columns = [
+        "#{table_name}.*",
+        "(#{highest_priority}) AS highest_priority"
+      ] + extra_select_columns
+
+      select(select_columns.join(', ')).
         group(arel_table[:id]).
         reorder(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
     end
@@ -234,6 +261,7 @@ module Issuable
       user: user.hook_attrs,
       project: project.hook_attrs,
       object_attributes: hook_attrs,
+      labels: labels.map(&:hook_attrs),
       # DEPRECATED
       repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
     }

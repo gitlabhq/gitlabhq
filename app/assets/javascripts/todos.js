@@ -5,6 +5,7 @@ class Todos {
   constructor() {
     this.initFilters();
     this.bindEvents();
+    this.todo_ids = [];
 
     this.cleanupWrapper = this.cleanup.bind(this);
     document.addEventListener('beforeunload', this.cleanupWrapper);
@@ -17,16 +18,16 @@ class Todos {
 
   unbindEvents() {
     $('.js-done-todo, .js-undo-todo, .js-add-todo').off('click', this.updateRowStateClickedWrapper);
-    $('.js-todos-mark-all').off('click', this.allDoneClickedWrapper);
+    $('.js-todos-mark-all', '.js-todos-undo-all').off('click', this.updateallStateClickedWrapper);
     $('.todo').off('click', this.goToTodoUrl);
   }
 
   bindEvents() {
     this.updateRowStateClickedWrapper = this.updateRowStateClicked.bind(this);
-    this.allDoneClickedWrapper = this.allDoneClicked.bind(this);
+    this.updateAllStateClickedWrapper = this.updateAllStateClicked.bind(this);
 
     $('.js-done-todo, .js-undo-todo, .js-add-todo').on('click', this.updateRowStateClickedWrapper);
-    $('.js-todos-mark-all').on('click', this.allDoneClickedWrapper);
+    $('.js-todos-mark-all, .js-todos-undo-all').on('click', this.updateAllStateClickedWrapper);
     $('.todo').on('click', this.goToTodoUrl);
   }
 
@@ -57,37 +58,18 @@ class Todos {
     e.preventDefault();
 
     const target = e.target;
-    target.setAttribute('disabled', '');
+    target.setAttribute('disabled', true);
     target.classList.add('disabled');
     $.ajax({
       type: 'POST',
-      url: target.getAttribute('href'),
+      url: target.dataset.href,
       dataType: 'json',
       data: {
-        '_method': target.getAttribute('data-method'),
+        '_method': target.dataset.method,
       },
       success: (data) => {
         this.updateRowState(target);
         return this.updateBadges(data);
-      },
-    });
-  }
-
-  allDoneClicked(e) {
-    e.preventDefault();
-    const $target = $(e.currentTarget);
-    $target.disable();
-    $.ajax({
-      type: 'POST',
-      url: $target.attr('href'),
-      dataType: 'json',
-      data: {
-        '_method': 'delete',
-      },
-      success: (data) => {
-        $target.remove();
-        $('.js-todos-all').html('<div class="nothing-here-block">You\'re all done!</div>');
-        this.updateBadges(data);
       },
     });
   }
@@ -110,6 +92,41 @@ class Todos {
     } else {
       row.parentNode.removeChild(row);
     }
+  }
+
+  updateAllStateClicked(e) {
+    e.preventDefault();
+
+    const target = e.currentTarget;
+    const requestData = { '_method': target.dataset.method, ids: this.todo_ids };
+    target.setAttribute('disabled', true);
+    target.classList.add('disabled');
+    $.ajax({
+      type: 'POST',
+      url: target.dataset.href,
+      dataType: 'json',
+      data: requestData,
+      success: (data) => {
+        this.updateAllState(target, data);
+        return this.updateBadges(data);
+      },
+    });
+  }
+
+  updateAllState(target, data) {
+    const markAllDoneBtn = document.querySelector('.js-todos-mark-all');
+    const undoAllBtn = document.querySelector('.js-todos-undo-all');
+    const todoListContainer = document.querySelector('.js-todos-list-container');
+    const nothingHereContainer = document.querySelector('.js-nothing-here-container');
+
+    target.removeAttribute('disabled');
+    target.classList.remove('disabled');
+
+    this.todo_ids = (target === markAllDoneBtn) ? data.updated_ids : [];
+    undoAllBtn.classList.toggle('hidden');
+    markAllDoneBtn.classList.toggle('hidden');
+    todoListContainer.classList.toggle('hidden');
+    nothingHereContainer.classList.toggle('hidden');
   }
 
   updateBadges(data) {

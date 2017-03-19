@@ -13,3 +13,7 @@
     = form.label :only_allow_merge_if_all_discussions_are_resolved do
       = form.check_box :only_allow_merge_if_all_discussions_are_resolved
       %strong Only allow merge requests to be merged if all discussions are resolved
+  .checkbox
+    = form.label :printing_merge_request_link_enabled do
+      = form.check_box :printing_merge_request_link_enabled
+      %strong Show link to create/view merge request when pushing from the command line

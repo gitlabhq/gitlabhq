@@ -107,26 +107,6 @@ module API
           desc: 'Enable SSL verification for communication'
         }
       ],
-      'builds-email' => [
-        {
-          required: true,
-          name: :recipients,
-          type: String,
-          desc: 'Comma-separated list of recipient email addresses'
-        },
-        {
-          required: false,
-          name: :add_pusher,
-          type: Boolean,
-          desc: 'Add pusher to recipients list'
-        },
-        {
-          required: false,
-          name: :notify_only_broken_jobs,
-          type: Boolean,
-          desc: 'Notify only broken jobs'
-        }
-      ],
       'campfire' => [
         {
           required: true,
@@ -403,9 +383,9 @@ module API
         },
         {
           required: false,
-          name: :notify_only_broken_jobs,
+          name: :notify_only_broken_pipelines,
           type: Boolean,
-          desc: 'Notify only broken jobs'
+          desc: 'Notify only broken pipelines'
         }
       ],
       'pivotaltracker' => [
@@ -550,7 +530,6 @@ module API
       BambooService,
       BugzillaService,
       BuildkiteService,
-      BuildsEmailService,
       CampfireService,
       CustomIssueTrackerService,
       DroneCiService,
@@ -604,7 +583,10 @@ module API
       ]
     }.freeze
 
-    resource :projects do
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
+    resource :projects, requirements: { id: %r{[^/]+} } do
       before { authenticate! }
       before { authorize_admin_project }
 
@@ -692,7 +674,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         desc "Trigger a slash command for #{service_slug}" do
           detail 'Added in GitLab 8.13'
         end

@@ -28,7 +28,7 @@ Below is a table of the definitions used for GitLab's Issue Board.
 | --------------  | ------------- |
 | **Issue Board** | It represents a different view for your issues. It can have multiple lists with each list consisting of issues represented by cards. |
 | **List**        | Each label that exists in the issue tracker can have its own dedicated list. Every list is named after the label it is based on and is represented by a column which contains all the issues associated with that label. You can think of a list like the results you get when you filter the issues by a label in your issue tracker. |
-| **Card**        | Every card represents an issue and it is shown under the list for which it has a label. The information you can see on a card consists of the issue number, the issue title, the assignee and the labels associated with it. You can drag cards around from one list to another. Issues inside lists are [ordered by priority](labels.md#prioritize-labels). |
+| **Card**        | Every card represents an issue and it is shown under the list for which it has a label. The information you can see on a card consists of the issue number, the issue title, the assignee and the labels associated with it. You can drag cards around from one list to another. You can re-order cards within a list. |
 
 There are two types of lists, the ones you create based on your labels, and
 one default:
@@ -45,6 +45,7 @@ In short, here's a list of actions you can take in an Issue Board:
 - [Create a new list](#creating-a-new-list).
 - [Delete an existing list](#deleting-a-list).
 - Drag issues between lists.
+- Re-order issues in lists.
 - Drag and reorder the lists themselves.
 - Change issue labels on-the-fly while dragging issues between lists.
 - Close an issue if you drag it to the **Done** list.
@@ -114,6 +115,13 @@ board itself.
 
 ![Remove issue from list](img/issue_boards_remove_issue.png)
 
+## Re-ordering an issue in a list
+
+> Introduced in GitLab 9.0.
+
+Issues can be re-ordered inside of lists. This is as simple as dragging and dropping
+an issue into the order you want.
+
 ## Filtering issues
 
 You should be able to use the filters on top of your Issue Board to show only
@@ -176,7 +184,6 @@ A few things to remember:
 - Clicking on the issue title inside a card will take you to that issue.
 - Clicking on a label inside a card will quickly filter the entire Issue Board
   and show only the issues from all lists that have that label.
-- Issues inside lists are [ordered by priority][label-priority].
 - For performance and visibility reasons, each list shows the first 20 issues
   by default. If you have more than 20 issues start scrolling down and the next
   20 will appear.

@@ -532,6 +532,19 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '.latest_successful_for_refs' do
+    include_context 'with some outdated pipelines'
+
+    let!(:latest_successful_pipeline1) { create_pipeline(:success, 'ref1', 'D') }
+    let!(:latest_successful_pipeline2) { create_pipeline(:success, 'ref2', 'D') }
+
+    it 'returns the latest successful pipeline for both refs' do
+      refs = %w(ref1 ref2 ref3)
+
+      expect(described_class.latest_successful_for_refs(refs)).to eq({ 'ref1' => latest_successful_pipeline1, 'ref2' => latest_successful_pipeline2 })
+    end
+  end
+
   describe '#status' do
     let(:build) do
       create(:ci_build, :created, pipeline: pipeline, name: 'test')
@@ -1015,6 +1028,19 @@ describe Ci::Pipeline, models: true do
       it 'does not containyaml errors' do
         expect(pipeline).not_to have_yaml_errors
       end
+    end
+  end
+
+  describe '#update_status' do
+    let(:pipeline) { create(:ci_pipeline, sha: '123456') }
+
+    it 'updates the cached status' do
+      fake_status = double
+      # after updating the status, the status is set to `skipped` for this pipeline's builds
+      expect(Ci::PipelineStatus).to receive(:new).with(pipeline.project, sha: '123456', status: 'skipped').and_return(fake_status)
+      expect(fake_status).to receive(:store_in_cache_if_needed)
+
+      pipeline.update_status
     end
   end
 

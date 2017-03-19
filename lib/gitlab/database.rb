@@ -5,8 +5,12 @@ module Gitlab
     # http://dev.mysql.com/doc/refman/5.7/en/integer-types.html
     MAX_INT_VALUE = 2147483647
 
+    def self.config
+      ActiveRecord::Base.configurations[Rails.env]
+    end
+
     def self.adapter_name
-      ActiveRecord::Base.configurations[Rails.env]['adapter']
+      config['adapter']
     end
 
     def self.mysql?

@@ -9,7 +9,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       helpers do
         def handle_project_member_errors(errors)
           if errors[:project_access].any?

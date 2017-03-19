@@ -16,4 +16,11 @@ describe CiStatusHelper do
       helper.ci_icon_for_status(failed_commit.status)
     end
   end
+
+  describe "#pipeline_status_cache_key" do
+    it "builds a cache key for pipeline status" do
+      pipeline_status = Ci::PipelineStatus.new(build(:project), sha: "123abc", status: "success")
+      expect(helper.pipeline_status_cache_key(pipeline_status)).to eq("pipeline-status/123abc-success")
+    end
+  end
 end

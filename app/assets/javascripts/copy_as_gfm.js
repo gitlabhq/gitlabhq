@@ -118,10 +118,10 @@ const gfmRules = {
   },
   SyntaxHighlightFilter: {
     'pre.code.highlight'(el, t) {
-      const text = t.trim();
+      const text = t.trimRight();
 
       let lang = el.getAttribute('lang');
-      if (lang === 'plaintext') {
+      if (!lang || lang === 'plaintext') {
         lang = '';
       }
 
@@ -157,7 +157,7 @@ const gfmRules = {
       const backticks = Array(backtickCount + 1).join('`');
       const spaceOrNoSpace = backtickCount > 1 ? ' ' : '';
 
-      return backticks + spaceOrNoSpace + text + spaceOrNoSpace + backticks;
+      return backticks + spaceOrNoSpace + text.trim() + spaceOrNoSpace + backticks;
     },
     'blockquote'(el, text) {
       return text.trim().split('\n').map(s => `> ${s}`.trim()).join('\n');
@@ -273,28 +273,29 @@ const gfmRules = {
 
 class CopyAsGFM {
   constructor() {
-    $(document).on('copy', '.md, .wiki', this.handleCopy);
-    $(document).on('paste', '.js-gfm-input', this.handlePaste);
+    $(document).on('copy', '.md, .wiki', (e) => { this.copyAsGFM(e, CopyAsGFM.transformGFMSelection); });
+    $(document).on('copy', 'pre.code.highlight, .diff-content .line_content', (e) => { this.copyAsGFM(e, CopyAsGFM.transformCodeSelection); });
+    $(document).on('paste', '.js-gfm-input', this.pasteGFM.bind(this));
   }
 
-  handleCopy(e) {
+  copyAsGFM(e, transformer) {
     const clipboardData = e.originalEvent.clipboardData;
     if (!clipboardData) return;
 
     const documentFragment = window.gl.utils.getSelectedFragment();
     if (!documentFragment) return;
 
-    // If the documentFragment contains more than just Markdown, don't copy as GFM.
-    if (documentFragment.querySelector('.md, .wiki')) return;
+    const el = transformer(documentFragment.cloneNode(true));
+    if (!el) return;
 
     e.preventDefault();
-    clipboardData.setData('text/plain', documentFragment.textContent);
+    e.stopPropagation();
 
-    const gfm = CopyAsGFM.nodeToGFM(documentFragment);
-    clipboardData.setData('text/x-gfm', gfm);
+    clipboardData.setData('text/plain', el.textContent);
+    clipboardData.setData('text/x-gfm', CopyAsGFM.nodeToGFM(el));
   }
 
-  handlePaste(e) {
+  pasteGFM(e) {
     const clipboardData = e.originalEvent.clipboardData;
     if (!clipboardData) return;
 
@@ -306,7 +307,47 @@ class CopyAsGFM {
     window.gl.utils.insertText(e.target, gfm);
   }
 
+  static transformGFMSelection(documentFragment) {
+    // If the documentFragment contains more than just Markdown, don't copy as GFM.
+    if (documentFragment.querySelector('.md, .wiki')) return null;
+
+    return documentFragment;
+  }
+
+  static transformCodeSelection(documentFragment) {
+    const lineEls = documentFragment.querySelectorAll('.line');
+
+    let codeEl;
+    if (lineEls.length > 1) {
+      codeEl = document.createElement('pre');
+      codeEl.className = 'code highlight';
+
+      const lang = lineEls[0].getAttribute('lang');
+      if (lang) {
+        codeEl.setAttribute('lang', lang);
+      }
+    } else {
+      codeEl = document.createElement('code');
+    }
+
+    if (lineEls.length > 0) {
+      for (let i = 0; i < lineEls.length; i += 1) {
+        const lineEl = lineEls[i];
+        codeEl.appendChild(lineEl);
+        codeEl.appendChild(document.createTextNode('\n'));
+      }
+    } else {
+      codeEl.appendChild(documentFragment);
+    }
+
+    return codeEl;
+  }
+
   static nodeToGFM(node) {
+    if (node.nodeType === Node.COMMENT_NODE) {
+      return '';
+    }
+
     if (node.nodeType === Node.TEXT_NODE) {
       return node.textContent;
     }

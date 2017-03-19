@@ -35,7 +35,7 @@ describe Projects::VariablesController do
 
     context 'updating a variable with valid characters' do
       before do
-        variable.gl_project_id = project.id
+        variable.project_id = project.id
         project.variables << variable
       end
 

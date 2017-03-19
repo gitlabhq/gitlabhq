@@ -11,7 +11,7 @@ module API
         params do
           requires :id, type: String, desc: "The #{source_type} ID"
         end
-        resource source_type.pluralize do
+        resource source_type.pluralize, requirements: { id: %r{[^/]+} } do
           desc 'Gets a list of group or project members viewable by the authenticated user.' do
             success ::API::Entities::Member
           end

@@ -1,6 +1,7 @@
-/* global Vue */
+import Vue from 'vue';
+import modalFilters from './filters';
+
 require('./tabs');
-const modalFilters = require('./filters');
 
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
@@ -66,16 +67,7 @@ const modalFilters = require('./filters');
         <div
           class="add-issues-search append-bottom-10"
           v-if="showSearch">
-          <modal-filters
-            :project-id="projectId"
-            :milestone-path="milestonePath"
-            :label-path="labelPath">
-          </modal-filters>
-          <input
-            placeholder="Search issues..."
-            class="form-control"
-            type="search"
-            v-model="searchTerm" />
+          <modal-filters :store="filter" />
           <button
             type="button"
             class="btn btn-success btn-inverted prepend-left-10"

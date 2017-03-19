@@ -89,7 +89,6 @@ class Project < ActiveRecord::Base
   has_one :campfire_service, dependent: :destroy
   has_one :drone_ci_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
-  has_one :builds_email_service, dependent: :destroy
   has_one :pipelines_email_service, dependent: :destroy
   has_one :irker_service, dependent: :destroy
   has_one :pivotaltracker_service, dependent: :destroy
@@ -159,13 +158,13 @@ class Project < ActiveRecord::Base
   has_one :project_feature, dependent: :destroy
   has_one :statistics, class_name: 'ProjectStatistics', dependent: :delete
 
-  has_many :commit_statuses, dependent: :destroy, foreign_key: :gl_project_id
-  has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline', foreign_key: :gl_project_id
-  has_many :builds, class_name: 'Ci::Build', foreign_key: :gl_project_id # the builds are created from the commit_statuses
-  has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject', foreign_key: :gl_project_id
+  has_many :commit_statuses, dependent: :destroy
+  has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline'
+  has_many :builds, class_name: 'Ci::Build' # the builds are created from the commit_statuses
+  has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
-  has_many :variables, dependent: :destroy, class_name: 'Ci::Variable', foreign_key: :gl_project_id
-  has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :gl_project_id
+  has_many :variables, dependent: :destroy, class_name: 'Ci::Variable'
+  has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger'
   has_many :environments, dependent: :destroy
   has_many :deployments, dependent: :destroy
 
@@ -1207,6 +1206,10 @@ class Project < ActiveRecord::Base
     Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], force: force) do
       builds.running_or_pending.count(:all)
     end
+  end
+
+  def pipeline_status
+    @pipeline_status ||= Ci::PipelineStatus.load_for_project(self)
   end
 
   def mark_import_as_failed(error_message)

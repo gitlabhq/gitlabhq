@@ -146,16 +146,6 @@ describe NotificationService, services: true do
           should_not_email(@u_lazy_participant)
         end
 
-        it "emails the note author if they've opted into notifications about their activity" do
-          add_users_with_subscription(note.project, issue)
-          note.author.notified_of_own_activity = true
-          reset_delivered_emails!
-
-          notification.new_note(note)
-
-          should_email(note.author)
-        end
-
         it 'filters out "mentioned in" notes' do
           mentioned_note = SystemNoteService.cross_reference(mentioned_issue, issue, issue.author)
 
@@ -486,20 +476,6 @@ describe NotificationService, services: true do
         should_not_email(issue.assignee)
       end
 
-      it "emails the author if they've opted into notifications about their activity" do
-        issue.author.notified_of_own_activity = true
-
-        notification.new_issue(issue, issue.author)
-
-        should_email(issue.author)
-      end
-
-      it "doesn't email the author if they haven't opted into notifications about their activity" do
-        notification.new_issue(issue, issue.author)
-
-        should_not_email(issue.author)
-      end
-
       it "emails subscribers of the issue's labels" do
         user_1 = create(:user)
         user_2 = create(:user)
@@ -689,19 +665,6 @@ describe NotificationService, services: true do
         should_email(subscriber_to_label_2)
       end
 
-      it "emails the current user if they've opted into notifications about their activity" do
-        subscriber_to_label_2.notified_of_own_activity = true
-        notification.relabeled_issue(issue, [group_label_2, label_2], subscriber_to_label_2)
-
-        should_email(subscriber_to_label_2)
-      end
-
-      it "doesn't email the current user if they haven't opted into notifications about their activity" do
-        notification.relabeled_issue(issue, [group_label_2, label_2], subscriber_to_label_2)
-
-        should_not_email(subscriber_to_label_2)
-      end
-
       it "doesn't send email to anyone but subscribers of the given labels" do
         notification.relabeled_issue(issue, [group_label_2, label_2], @u_disabled)
 
@@ -795,7 +758,7 @@ describe NotificationService, services: true do
         update_custom_notification(:reopen_issue, @u_custom_global)
       end
 
-      it 'sends email to issue assignee and issue author' do
+      it 'sends email to issue notification recipients' do
         notification.reopen_issue(issue, @u_disabled)
 
         should_email(issue.assignee)
@@ -809,6 +772,7 @@ describe NotificationService, services: true do
         should_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
+        should_not_email(@u_disabled)
         should_not_email(@u_lazy_participant)
       end
 
@@ -816,6 +780,32 @@ describe NotificationService, services: true do
         let(:participant) { create(:user, username: 'user-participant') }
         let(:issuable) { issue }
         let(:notification_trigger) { notification.reopen_issue(issue, @u_disabled) }
+      end
+    end
+
+    describe '#issue_moved' do
+      let(:new_issue) { create(:issue) }
+
+      it 'sends email to issue notification recipients' do
+        notification.issue_moved(issue, new_issue, @u_disabled)
+
+        should_email(issue.assignee)
+        should_email(issue.author)
+        should_email(@u_watcher)
+        should_email(@u_guest_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+      end
+
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { issue }
+        let(:notification_trigger) { notification.issue_moved(issue, new_issue, @u_disabled) }
       end
     end
   end
@@ -853,20 +843,6 @@ describe NotificationService, services: true do
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
         should_not_email(@u_lazy_participant)
-      end
-
-      it "emails the author if they've opted into notifications about their activity" do
-        merge_request.author.notified_of_own_activity = true
-
-        notification.new_merge_request(merge_request, merge_request.author)
-
-        should_email(merge_request.author)
-      end
-
-      it "doesn't email the author if they haven't opted into notifications about their activity" do
-        notification.new_merge_request(merge_request, merge_request.author)
-
-        should_not_email(merge_request.author)
       end
 
       it "emails subscribers of the merge request's labels" do
@@ -1064,14 +1040,6 @@ describe NotificationService, services: true do
         should_not_email(@u_watcher)
       end
 
-      it "notifies the merger when the pipeline succeeds is false but they've opted into notifications about their activity" do
-        merge_request.merge_when_pipeline_succeeds = false
-        @u_watcher.notified_of_own_activity = true
-        notification.merge_mr(merge_request, @u_watcher)
-
-        should_email(@u_watcher)
-      end
-
       it_behaves_like 'participating notifications' do
         let(:participant) { create(:user, username: 'user-participant') }
         let(:issuable) { merge_request }
@@ -1248,6 +1216,48 @@ describe NotificationService, services: true do
 
       should_not_email(guest)
       should_email(assignee)
+    end
+  end
+
+  describe 'Pipelines' do
+    describe '#pipeline_finished' do
+      let(:project) { create(:project, :public) }
+      let(:current_user) { create(:user) }
+      let(:u_member) { create(:user) }
+      let(:u_other) { create(:user) }
+
+      let(:commit) { project.commit }
+      let(:pipeline) do
+        create(:ci_pipeline, :success,
+               project: project,
+               user: current_user,
+               ref: 'refs/heads/master',
+               sha: commit.id,
+               before_sha: '00000000')
+      end
+
+      before do
+        project.add_master(current_user)
+        project.add_master(u_member)
+        reset_delivered_emails!
+      end
+
+      context 'without custom recipients' do
+        it 'notifies the pipeline user' do
+          notification.pipeline_finished(pipeline)
+
+          should_only_email(current_user, kind: :bcc)
+        end
+      end
+
+      context 'with custom recipients' do
+        it 'notifies the custom recipients' do
+          users = [u_member, u_other]
+          notification.pipeline_finished(pipeline, users.map(&:notification_email))
+
+          should_only_email(*users, kind: :bcc)
+        end
+      end
     end
   end
 

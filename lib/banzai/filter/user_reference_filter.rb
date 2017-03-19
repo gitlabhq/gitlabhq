@@ -74,10 +74,7 @@ module Banzai
       # The keys of this Hash are the namespace paths, the values the
       # corresponding Namespace objects.
       def namespaces
-        @namespaces ||=
-          Namespace.where_full_path_in(usernames).each_with_object({}) do |row, hash|
-            hash[row.full_path] = row
-          end
+        @namespaces ||= Namespace.where_full_path_in(usernames).index_by(&:full_path)
       end
 
       # Returns all usernames referenced in the current document.

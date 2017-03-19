@@ -30,7 +30,9 @@ module Gitlab
         elsif @deltas_only
           each_delta(&block)
         else
-          each_patch(&block)
+          Gitlab::GitalyClient.migrate(:commit_raw_diffs) do
+            each_patch(&block)
+          end
         end
       end
 
