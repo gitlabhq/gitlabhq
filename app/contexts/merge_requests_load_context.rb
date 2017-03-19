@@ -9,7 +9,7 @@ class MergeRequestsLoadContext < BaseContext
     merge_requests = case type
                      when 'all' then merge_requests
                      when 'closed' then merge_requests.closed
-                     when 'assigned-to-me' then merge_requests.opened.assigned(current_user)
+                     when 'assigned-to-me' then merge_requests.opened.assigned_to(current_user)
                      else merge_requests.opened
                      end
 

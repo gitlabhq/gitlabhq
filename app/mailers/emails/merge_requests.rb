@@ -8,7 +8,13 @@ module Emails
 
     def reassigned_merge_request_email(recipient_id, merge_request_id, previous_assignee_id)
       @merge_request = MergeRequest.find(merge_request_id)
-      @previous_assignee ||= User.find(previous_assignee_id)
+      unless @previous_assignee
+          if previous_assignee_id
+              @previous_assignee = User.find(previous_assignee_id)
+          else
+              @previous_assignee = User.new
+          end
+      end
       @project = @merge_request.project
       mail(to: recipient(recipient_id), subject: subject("changed merge request !#{@merge_request.id}", @merge_request.title))
     end
