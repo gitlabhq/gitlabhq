@@ -89,6 +89,8 @@ pipelines:
 - statuses
 - builds
 - trigger_requests
+- auto_canceled_by
+- auto_canceled_pipelines
 statuses:
 - project
 - pipeline
