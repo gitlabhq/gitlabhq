@@ -136,6 +136,21 @@ describe('Issue', function() {
       expectErrorMessage();
       expect($('.issue_counter')).toHaveText(1);
     });
+
+    it('updates counter', () => {
+      spyOn(jQuery, 'ajax').and.callFake(function(req) {
+        expectPendingRequest(req, $btnClose);
+        req.success({
+          id: 34
+        });
+      });
+
+      expect($('.issue_counter')).toHaveText(1);
+      $('.issue_counter').text('1,001');
+      expect($('.issue_counter').text()).toEqual('1,001');
+      $btnClose.trigger('click');
+      expect($('.issue_counter').text()).toEqual('1,000');
+    });
   });
 
   describe('reopen issue', function() {
