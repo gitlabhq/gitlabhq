@@ -277,6 +277,8 @@ rake karma:
   stage: test
   <<: *use-db
   <<: *dedicated-runner
+  variables:
+    BABEL_ENV: "coverage"
   script:
     - bundle exec rake karma
   artifacts:
@@ -389,9 +391,11 @@ trigger_docs:
   cache: {}
   artifacts: {}
   script:
-    - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=ce https://gitlab.com/api/v3/projects/1794617/trigger/builds"
+    - "HTTP_STATUS=$(curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=${CI_PROJECT_NAME} --silent --output curl.log --write-out '%{http_code}' https://gitlab.com/api/v3/projects/1794617/trigger/builds)"
+    - if [ "${HTTP_STATUS}" -ne "201" ]; then echo "Error ${HTTP_STATUS}"; cat curl.log; echo; exit 1; fi
   only:
     - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
 
 # Notify slack in the end
 notify:slack:

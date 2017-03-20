@@ -55,6 +55,14 @@ class Issue < ActiveRecord::Base
     state :opened
     state :reopened
     state :closed
+
+    before_transition any => :closed do |issue|
+      issue.closed_at = Time.zone.now
+    end
+
+    before_transition closed: any do |issue|
+      issue.closed_at = nil
+    end
   end
 
   def hook_attrs

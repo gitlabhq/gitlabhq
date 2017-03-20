@@ -49,6 +49,26 @@ feature 'Merge requests filter clear button', feature: true, js: true do
     end
   end
 
+  context 'when multiple label filters have been applied' do
+    let!(:label) { create(:label, project: project, name: 'Frontend') }
+    let(:filter_dropdown) { find("#js-dropdown-label .filter-dropdown") }
+
+    before do
+      visit_merge_requests(project)
+      init_label_search
+    end
+
+    it 'filters bug label' do
+      filtered_search.set('~bug')
+
+      filter_dropdown.find('.filter-dropdown-item', text: bug.title).click
+      init_label_search
+
+      expect(filter_dropdown.find('.filter-dropdown-item', text: bug.title)).to be_visible
+      expect(filter_dropdown.find('.filter-dropdown-item', text: label.title)).to be_visible
+    end
+  end
+
   context 'when a text search has been conducted' do
     it 'resets the text search filter' do
       visit_merge_requests(project, search: 'Bug')
