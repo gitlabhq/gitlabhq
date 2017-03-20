@@ -29,6 +29,10 @@ module Gitlab
       Gitlab::Geo.current_node.reload.enabled?
     end
 
+    def self.configured?
+      Rails.configuration.respond_to?(:geo_database)
+    end
+
     def self.license_allows?
       ::License.current && ::License.current.add_on?('GitLab_Geo')
     end

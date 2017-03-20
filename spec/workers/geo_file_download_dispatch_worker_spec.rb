@@ -13,11 +13,23 @@ describe GeoFileDownloadDispatchWorker do
   subject { described_class.new }
 
   describe '#perform' do
-    it 'does not schedule anything when node is disabled' do
+    it 'does not schedule anything when tracking DB is not available' do
+      create(:lfs_object, :with_file)
+
+      allow(Rails.configuration).to receive(:respond_to?).with(:geo_database) { false }
+
       expect(GeoFileDownloadWorker).not_to receive(:perform_async)
+
+      subject.perform
+    end
+
+    it 'does not schedule anything when node is disabled' do
+      create(:lfs_object, :with_file)
 
       @secondary.enabled = false
       @secondary.save
+
+      expect(GeoFileDownloadWorker).not_to receive(:perform_async)
 
       subject.perform
     end
