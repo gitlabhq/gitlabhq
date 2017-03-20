@@ -57,7 +57,6 @@ export default Vue.component('environment-component', {
     canCreateEnvironmentParsed() {
       return gl.utils.convertPermissionToBoolean(this.canCreateEnvironment);
     },
-<<<<<<< HEAD
 
     /**
      * Pagination should only be rendered when we have information about it and when the
@@ -68,9 +67,6 @@ export default Vue.component('environment-component', {
     shouldRenderPagination() {
       return this.state.paginationInformation && this.state.paginationInformation.totalPages > 1;
     },
-
-=======
->>>>>>> ce-com/master
   },
 
   /**

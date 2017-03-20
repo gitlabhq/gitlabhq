@@ -13,14 +13,6 @@ import RollbackComponent from './environment_rollback';
 import TerminalButtonComponent from './environment_terminal_button';
 import CommitComponent from '../../vue_shared/components/commit';
 
-<<<<<<< HEAD
-=======
-/**
- * Envrionment Item Component
- *
- * Renders a table row for each environment.
- */
->>>>>>> ce-com/master
 const timeagoInstance = new Timeago();
 
 export default {
