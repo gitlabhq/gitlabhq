@@ -25,7 +25,7 @@ describe 'projects/commit/_commit_box.html.haml' do
 
     render
 
-    expect(rendered).to have_text("Pipeline ##{third_pipeline.id} for #{Commit.truncate_sha(project.commit.sha)} failed")
+    expect(rendered).to have_text("Pipeline ##{third_pipeline.id} failed")
   end
 
   context 'viewing a commit' do

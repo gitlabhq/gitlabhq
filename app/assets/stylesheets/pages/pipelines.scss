@@ -72,11 +72,6 @@
           color: $gl-text-color-secondary;
           font-size: 14px;
         }
-
-        svg,
-        .fa {
-          margin-right: 0;
-        }
       }
 
       .btn-group {
@@ -923,5 +918,24 @@
     > div {
       min-height: 450px;
     }
+  }
+}
+
+/**
+ * Play button with icon in dropdowns
+ */
+.ci-table .no-btn {
+  border: none;
+  background: none;
+  outline: none;
+  width: 100%;
+  text-align: left;
+
+  .icon-play {
+    position: relative;
+    top: 2px;
+    margin-right: 5px;
+    height: 13px;
+    width: 12px;
   }
 }

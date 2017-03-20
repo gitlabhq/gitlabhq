@@ -81,8 +81,8 @@ describe Ci::API::Builds do
           expect(runner.reload.platform).to eq("darwin")
           expect(json_response["options"]).to eq({ "image" => "ruby:2.1", "services" => ["postgres"] })
           expect(json_response["variables"]).to include(
-            { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
-            { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
+            { "key" => "CI_JOB_NAME", "value" => "spinach", "public" => true },
+            { "key" => "CI_JOB_STAGE", "value" => "test", "public" => true },
             { "key" => "DB_NAME", "value" => "postgres", "public" => true }
           )
         end
@@ -182,9 +182,9 @@ describe Ci::API::Builds do
 
           expect(response).to have_http_status(201)
           expect(json_response["variables"]).to include(
-            { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
-            { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
-            { "key" => "CI_BUILD_TRIGGERED", "value" => "true", "public" => true },
+            { "key" => "CI_JOB_NAME", "value" => "spinach", "public" => true },
+            { "key" => "CI_JOB_STAGE", "value" => "test", "public" => true },
+            { "key" => "CI_PIPELINE_TRIGGERED", "value" => "true", "public" => true },
             { "key" => "DB_NAME", "value" => "postgres", "public" => true },
             { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false },
             { "key" => "TRIGGER_KEY_1", "value" => "TRIGGER_VALUE_1", "public" => false },

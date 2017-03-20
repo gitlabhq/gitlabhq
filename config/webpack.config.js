@@ -58,7 +58,7 @@ var config = {
   module: {
     rules: [
       {
-        test: /\.(js|es6)$/,
+        test: /\.js$/,
         exclude: /(node_modules|vendor\/assets)/,
         loader: 'babel-loader',
         options: {
@@ -133,7 +133,7 @@ var config = {
   ],
 
   resolve: {
-    extensions: ['.js', '.es6', '.js.es6'],
+    extensions: ['.js'],
     alias: {
       '~':              path.join(ROOT_PATH, 'app/assets/javascripts'),
       'emojis':         path.join(ROOT_PATH, 'fixtures/emojis'),

@@ -239,18 +239,13 @@ module Banzai
       # path.
       def projects_per_reference
         @projects_per_reference ||= begin
-          hash = {}
           refs = Set.new
 
           references_per_project.each do |project_ref, _|
             refs << project_ref
           end
 
-          find_projects_for_paths(refs.to_a).each do |project|
-            hash[project.path_with_namespace] = project
-          end
-
-          hash
+          find_projects_for_paths(refs.to_a).index_by(&:full_path)
         end
       end
 

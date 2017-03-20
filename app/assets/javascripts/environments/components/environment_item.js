@@ -5,20 +5,27 @@
  */
 
 import Timeago from 'timeago.js';
+import '../../lib/utils/text_utility';
 import ActionsComponent from './environment_actions';
 import ExternalUrlComponent from './environment_external_url';
 import StopComponent from './environment_stop';
 import RollbackComponent from './environment_rollback';
 import TerminalButtonComponent from './environment_terminal_button';
-import '../../lib/utils/text_utility';
-import '../../vue_shared/components/commit';
+import CommitComponent from '../../vue_shared/components/commit';
 
+<<<<<<< HEAD
+=======
+/**
+ * Envrionment Item Component
+ *
+ * Renders a table row for each environment.
+ */
+>>>>>>> ce-com/master
 const timeagoInstance = new Timeago();
 
 export default {
-
   components: {
-    'commit-component': gl.CommitComponent,
+    'commit-component': CommitComponent,
     'actions-component': ActionsComponent,
     'external-url-component': ExternalUrlComponent,
     'stop-component': StopComponent,

@@ -41,14 +41,6 @@ module API
           (Time.now - current_runner.contacted_at) >= contacted_at_max_age
       end
 
-      def job_not_found!
-        if headers['User-Agent'].to_s =~ /gitlab(-ci-multi)?-runner \d+\.\d+\.\d+(~beta\.\d+\.g[0-9a-f]+)? /
-          no_content!
-        else
-          not_found!
-        end
-      end
-
       def validate_job!(job)
         not_found! unless job
 

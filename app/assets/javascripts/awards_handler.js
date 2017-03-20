@@ -3,6 +3,7 @@
 import emojiMap from 'emojis/digests.json';
 import emojiAliases from 'emojis/aliases.json';
 import { glEmojiTag } from './behaviors/gl_emoji';
+import isEmojiNameValid from './behaviors/gl_emoji/is_emoji_name_valid';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const requestAnimationFrame = window.requestAnimationFrame ||
@@ -454,14 +455,21 @@ AwardsHandler.prototype.normalizeEmojiName = function normalizeEmojiName(emoji) 
 AwardsHandler
   .prototype
   .addEmojiToFrequentlyUsedList = function addEmojiToFrequentlyUsedList(emoji) {
-    const frequentlyUsedEmojis = this.getFrequentlyUsedEmojis();
-    frequentlyUsedEmojis.push(emoji);
-    Cookies.set('frequently_used_emojis', frequentlyUsedEmojis.join(','), { expires: 365 });
+    if (isEmojiNameValid(emoji)) {
+      this.frequentlyUsedEmojis = _.uniq(this.getFrequentlyUsedEmojis().concat(emoji));
+      Cookies.set('frequently_used_emojis', this.frequentlyUsedEmojis.join(','), { expires: 365 });
+    }
   };
 
 AwardsHandler.prototype.getFrequentlyUsedEmojis = function getFrequentlyUsedEmojis() {
-  const frequentlyUsedEmojis = (Cookies.get('frequently_used_emojis') || '').split(',');
-  return _.compact(_.uniq(frequentlyUsedEmojis));
+  return this.frequentlyUsedEmojis || (() => {
+    const frequentlyUsedEmojis = _.uniq((Cookies.get('frequently_used_emojis') || '').split(','));
+    this.frequentlyUsedEmojis = frequentlyUsedEmojis.filter(
+      inputName => isEmojiNameValid(inputName),
+    );
+
+    return this.frequentlyUsedEmojis;
+  })();
 };
 
 AwardsHandler.prototype.setupSearch = function setupSearch() {

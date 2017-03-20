@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170313133418) do
+ActiveRecord::Schema.define(version: 20170315174634) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -118,6 +118,9 @@ ActiveRecord::Schema.define(version: 20170313133418) do
     t.integer "shared_runners_minutes", default: 0, null: false
     t.integer "repository_size_limit", limit: 8, default: 0
     t.integer "terminal_max_session_time", default: 0, null: false
+    t.integer "unique_ips_limit_per_user"
+    t.integer "unique_ips_limit_time_window"
+    t.boolean "unique_ips_limit_enabled", default: false, null: false
     t.integer "minimum_mirror_sync_time", default: 15, null: false
     t.string "default_artifacts_expire_in", default: "0", null: false
     t.string "elasticsearch_url", default: "http://localhost:9200"
@@ -125,9 +128,6 @@ ActiveRecord::Schema.define(version: 20170313133418) do
     t.string "elasticsearch_aws_region", default: "us-east-1"
     t.string "elasticsearch_aws_access_key"
     t.string "elasticsearch_aws_secret_access_key"
-    t.integer "unique_ips_limit_per_user"
-    t.integer "unique_ips_limit_time_window"
-    t.boolean "unique_ips_limit_enabled", default: false, null: false
     t.integer "geo_status_timeout", default: 10
   end
 
@@ -456,10 +456,10 @@ ActiveRecord::Schema.define(version: 20170313133418) do
     t.integer "geo_node_key_id"
     t.integer "oauth_application_id"
     t.integer "system_hook_id"
+    t.boolean "enabled", default: true, null: false
     t.string "access_key"
     t.string "encrypted_secret_access_key"
     t.string "encrypted_secret_access_key_iv"
-    t.boolean "enabled", default: true, null: false
   end
 
   add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree
@@ -1068,6 +1068,7 @@ ActiveRecord::Schema.define(version: 20170313133418) do
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
     t.integer "repository_size_limit", limit: 8
     t.integer "sync_time", default: 60, null: false
+    t.boolean "printing_merge_request_link_enabled", default: true, null: false
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1432,7 +1433,6 @@ ActiveRecord::Schema.define(version: 20170313133418) do
     t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "auditor", default: false, null: false
-    t.boolean "notified_of_own_activity", default: false, null: false
     t.boolean "ghost"
   end
 

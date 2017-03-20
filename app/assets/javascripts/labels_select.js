@@ -76,7 +76,7 @@
           if (!selected.length) {
             data[abilityName].label_ids = [''];
           }
-          $loading.fadeIn();
+          $loading.removeClass('hidden').fadeIn();
           $dropdown.trigger('loading.gl.dropdown');
           return $.ajax({
             type: 'PUT',
