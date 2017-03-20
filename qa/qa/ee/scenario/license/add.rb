@@ -3,13 +3,13 @@ module QA
     module Scenario
       module License
         class Add < QA::Scenario::Template
-          def perform
+          def perform(license)
             QA::Page::Main::Entry.act { sign_in_using_credentials }
             QA::Page::Main::Menu.act { go_to_admin_area }
             QA::Page::Admin::Menu.act { go_to_license }
 
-            EE::Page::Admin::License.act do
-              add_new_license(ENV['EE_LICENSE']) if no_license?
+            EE::Page::Admin::License.act(license) do |key|
+              add_new_license(key) if no_license?
             end
 
             QA::Page::Main::Menu.act { sign_out }
