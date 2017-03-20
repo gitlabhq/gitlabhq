@@ -277,6 +277,8 @@ rake karma:
   stage: test
   <<: *use-db
   <<: *dedicated-runner
+  variables:
+    BABEL_ENV: "coverage"
   script:
     - bundle exec rake karma
   artifacts:
