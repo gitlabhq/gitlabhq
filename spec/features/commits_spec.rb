@@ -12,6 +12,7 @@ describe 'Commits' do
     end
 
     let(:creator) { create(:user) }
+
     let!(:pipeline) do
       create(:ci_pipeline,
              project: project,
