@@ -12,7 +12,8 @@
 
 = render "projects/issues/head"
 
-= render 'shared/issuable/filter', type: :boards
+.hidden-xs.hidden-sm
+  = render 'shared/issuable/filter', type: :boards
 
 #board-app.boards-app{ "v-cloak" => true, data: board_data }
   .boards-list{ ":class" => "{ 'is-compact': detailIssueVisible }" }
