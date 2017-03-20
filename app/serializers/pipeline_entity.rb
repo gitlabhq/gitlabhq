@@ -84,6 +84,6 @@ class PipelineEntity < Grape::Entity
   end
 
   def status_tooltip
-    "This pipeline is redundant as a newer pipeline exists (canceled by ##{pipeline.auto_canceled_by_id} pipeline)" if pipeline.auto_canceled_by_id? && pipeline.canceled?
+    Ci::PipelineStatusBadgePresenter.new(pipeline).status_title
   end
 end
