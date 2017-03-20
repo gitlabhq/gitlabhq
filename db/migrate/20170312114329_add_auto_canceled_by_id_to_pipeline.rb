@@ -24,8 +24,15 @@ class AddAutoCanceledByIdToPipeline < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
+    on_delete =
+      if Database.mysql?
+        :nullify
+      else
+        'SET NULL'
+      end
+
     add_column :ci_pipelines, :auto_canceled_by_id, :integer
-    add_concurrent_foreign_key :ci_pipelines, :ci_pipelines, column: :auto_canceled_by_id, on_delete: :nullify
+    add_concurrent_foreign_key :ci_pipelines, :ci_pipelines, column: :auto_canceled_by_id, on_delete: on_delete
   end
 
   def down
