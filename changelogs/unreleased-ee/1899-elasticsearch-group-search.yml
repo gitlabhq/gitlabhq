@@ -1,0 +1,4 @@
+---
+title: Fix Elasticsearch queries when a group_id is specified
+merge_request: 1423
+author:
