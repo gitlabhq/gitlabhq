@@ -880,13 +880,9 @@ class Project < ActiveRecord::Base
   end
 
   def http_url_to_repo(user = nil)
-    url = web_url
+    credentials = Gitlab::UrlSanitizer.http_credentials_for_user(user)
 
-    if user
-      url.sub!(%r{\Ahttps?://}) { |protocol| "#{protocol}#{user.username}@" }
-    end
-
-    "#{url}.git"
+    Gitlab::UrlSanitizer.new("#{web_url}.git", credentials: credentials).full_url
   end
 
   # Check if current branch name is marked as protected in the system
