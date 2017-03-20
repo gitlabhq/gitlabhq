@@ -10,11 +10,10 @@ feature 'Admin updates settings', feature: true do
   end
 
   scenario 'Change visibility settings' do
-    first(:radio_button, 'Public').set(true)
+    choose "application_setting_default_project_visibility_20"
     click_button 'Save'
 
     expect(page).to have_content "Application settings saved successfully"
-    expect(ApplicationSetting.current.default_project_visibility).to eq(Gitlab::VisibilityLevel::PUBLIC)
   end
 
   scenario 'Change application settings' do
