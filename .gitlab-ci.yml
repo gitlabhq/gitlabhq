@@ -279,6 +279,7 @@ rake karma:
   <<: *dedicated-runner
   script:
     - bundle exec rake karma
+  coverage: '/^Statements *: (\d+\.\d+%)/'
   artifacts:
     name: coverage-javascript
     expire_in: 31d
@@ -343,6 +344,7 @@ coverage:
     USE_BUNDLE_INSTALL: "true"
   script:
     - bundle exec scripts/merge-simplecov
+  coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
   artifacts:
     name: coverage
     expire_in: 31d
