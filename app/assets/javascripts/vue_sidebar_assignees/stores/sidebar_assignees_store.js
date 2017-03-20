@@ -1,45 +1,38 @@
 export default class SidebarAssigneesStore {
   constructor() {
     this.users = [{
-      avatar_url: 'http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon',
-      url: '/user4',
+      avatarUrl: 'http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon',
       name: 'test',
       username: 'username',
     }, {
-      avatar_url: 'http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon',
-      url: '/user4',
+      avatarUrl: 'http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon',
       name: 'test',
       username: 'username1',
     }, {
-      avatar_url: 'http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon',
-      url: '/user4',
+      avatarUrl: 'http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon',
       name: 'test',
       username: 'username2',
     }, {
-      avatar_url: 'http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon',
-      url: '/user4',
+      avatarUrl: 'http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon',
       name: 'test',
       username: 'username3',
     }, {
-      avatar_url: 'http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon',
-      url: '/user4',
+      avatarUrl: 'http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon',
       name: 'test',
       username: 'username4',
     }, {
-      avatar_url: 'http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon',
-      url: '/user4',
+      avatarUrl: 'http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon',
       name: 'test',
       username: 'username5',
     }];
     this.users = [];
   }
 
-  addUser() {
+  addUser(name, username, avatarUrl) {
     this.users.push({
-      avatar_url: 'http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon',
-      url: '/user4',
-      name: 'test',
-      username: 'username6',
+      avatarUrl,
+      name,
+      username,
     });
   }
 

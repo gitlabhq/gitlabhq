@@ -21,7 +21,7 @@ export default {
       return function() {
         this.showMore = !this.showMore;
       }.bind(this);
-    }
+    },
   },
   components: {
     'show-more-assignees': ShowMoreAssignees,
@@ -31,8 +31,8 @@ export default {
       <div class="hide-collapsed">
         <div class="user-list">
           <div class="user-item" v-for="(user, index) in assignees.users" v-if="showMore || (index < 5 && !showMore)">
-            <a class="user-link has-tooltip" data-placement="bottom" title="" :href="user.url" :data-title="user.name">
-              <img width="32" class="avatar avatar-inline s32 " alt="" :src="user.avatar_url">
+            <a class="user-link has-tooltip" data-placement="bottom" title="" :href="'/' + user.username" :data-title="user.name">
+              <img width="32" class="avatar avatar-inline s32 " alt="" :src="user.avatarUrl">
             </a>
           </div>
         </div>
