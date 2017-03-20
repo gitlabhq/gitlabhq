@@ -67,17 +67,26 @@
     flex: 0 1 100%;
     min-width: 0;
   }
-}
 
-.todos-list > .todo.todo-pending.done-reversible {
-  background-color: $gray-light;
+  &.todo.todo-pending.done-reversible {
+    background-color: $white-light;
 
-  &:hover {
-    border-color: $border-color;
-  }
+    &:hover {
+      border-color: $white-normal;
+    }
 
-  .title {
-    font-weight: normal;
+    .title {
+      font-weight: normal;
+    }
+
+    .todo-avatar,
+    .todo-item {
+      opacity: .2;
+    }
+
+    .btn {
+      background-color: $gray-light;
+    }
   }
 }
 
