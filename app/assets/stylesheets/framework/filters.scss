@@ -76,12 +76,14 @@
   }
 
   .input-token {
-    flex: 1;
-    -webkit-flex: 1;
+    max-width: 200px;
   }
 
-  .filtered-search-token + .input-token:not(:last-child) {
-    max-width: 200px;
+  .input-token:only-child,
+  .input-token:last-child {
+    flex: 1;
+    -webkit-flex: 1;
+    max-width: initial;
   }
 }
 
