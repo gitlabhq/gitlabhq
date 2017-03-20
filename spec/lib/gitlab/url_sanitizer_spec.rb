@@ -5,6 +5,7 @@ describe Gitlab::UrlSanitizer, lib: true do
   let(:url_sanitizer) do
     described_class.new("https://github.com/me/project.git", credentials: credentials)
   end
+  let(:user) { double(:user, username: 'john.doe') }
 
   describe '.sanitize' do
     def sanitize_url(url)
@@ -53,12 +54,33 @@ describe Gitlab::UrlSanitizer, lib: true do
     end
   end
 
+  describe '.valid?' do
+    it 'validates url strings' do
+      expect(described_class.valid?(nil)).to be(false)
+      expect(described_class.valid?('valid@project:url.git')).to be(true)
+      expect(described_class.valid?('123://invalid:url')).to be(false)
+    end
+  end
+
+  describe '.http_credentials_for_user' do
+    it { expect(described_class.http_credentials_for_user(user)).to eq({ user: 'john.doe' }) }
+    it { expect(described_class.http_credentials_for_user('foo')).to eq({}) }
+  end
+
   describe '#sanitized_url' do
     it { expect(url_sanitizer.sanitized_url).to eq("https://github.com/me/project.git") }
   end
 
   describe '#credentials' do
     it { expect(url_sanitizer.credentials).to eq(credentials) }
+
+    context 'when user is given to #initialize' do
+      let(:url_sanitizer) do
+        described_class.new("https://github.com/me/project.git", credentials: described_class.http_credentials_for_user(user))
+      end
+
+      it { expect(url_sanitizer.credentials).to eq({ user: 'john.doe' }) }
+    end
   end
 
   describe '#full_url' do
@@ -69,13 +91,13 @@ describe Gitlab::UrlSanitizer, lib: true do
 
       expect(sanitizer.full_url).to eq('user@server:project.git')
     end
-  end
 
-  describe '.valid?' do
-    it 'validates url strings' do
-      expect(described_class.valid?(nil)).to be(false)
-      expect(described_class.valid?('valid@project:url.git')).to be(true)
-      expect(described_class.valid?('123://invalid:url')).to be(false)
+    context 'when user is given to #initialize' do
+      let(:url_sanitizer) do
+        described_class.new("https://github.com/me/project.git", credentials: described_class.http_credentials_for_user(user))
+      end
+
+      it { expect(url_sanitizer.full_url).to eq("https://john.doe@github.com/me/project.git") }
     end
   end
 end
