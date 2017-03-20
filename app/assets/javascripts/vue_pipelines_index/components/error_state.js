@@ -8,18 +8,18 @@ export default {
   },
 
   template: `
-  <div class="row empty-state">
-    <div class="col-xs-12 pull-right">
-      <div class="svg-content">
-        ${pipelinesErrorStateSVG}
+    <div class="row empty-state js-pipelines-error-state">
+      <div class="col-xs-12 pull-right">
+        <div class="svg-content">
+          ${pipelinesErrorStateSVG}
+        </div>
       </div>
-    </div>
 
-    <div class="col-xs-12 center">
-      <div class="text-content">
-        <h4>The API failed to fetch the pipelines.</h4>
+      <div class="col-xs-12 center">
+        <div class="text-content">
+          <h4>The API failed to fetch the pipelines.</h4>
+        </div>
       </div>
     </div>
-  </div>
   `,
 };

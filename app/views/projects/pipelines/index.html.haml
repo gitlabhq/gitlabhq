@@ -2,10 +2,6 @@
 - page_title "Pipelines"
 = render "projects/pipelines/head"
 
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag("common_vue")
-  = page_specific_javascript_bundle_tag("vue_pipelines")
-
 #pipelines-list-vue{ data: { endpoint: namespace_project_pipelines_path(@project.namespace, @project, format: :json),
   "css-class" => container_class,
   "help-page-path" => help_page_path('ci/quick_start/README'),
@@ -19,3 +15,6 @@
   "tags-path" => project_pipelines_path(@project, scope: :tags),
   "has-ci" => @repository.gitlab_ci_yml,
   "ci-lint-path" => ci_lint_path } }
+
+= page_specific_javascript_bundle_tag('common_vue')
+= page_specific_javascript_bundle_tag('vue_pipelines')

@@ -33,7 +33,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
         });
 
         setTimeout(() => {
-          expect(component.$el.querySelector('.js-blank-state-title').textContent).toContain('No pipelines to show');
+          expect(component.$el.querySelector('.js-pipelines-empty-state')).toBeDefined();
           done();
         }, 1);
       });
@@ -92,7 +92,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
       });
 
       setTimeout(() => {
-        expect(component.$el.querySelector('.js-blank-state-title').textContent).toContain('No pipelines to show');
+        expect(component.$el.querySelector('.js-pipelines-error-state')).toBeDefined();
         done();
       }, 0);
     });

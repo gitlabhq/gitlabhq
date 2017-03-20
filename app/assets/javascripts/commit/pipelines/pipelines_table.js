@@ -5,6 +5,7 @@ import PipelinesTableComponent from '../../vue_shared/components/pipelines_table
 import PipelinesService from '../../vue_pipelines_index/services/pipelines_service';
 import PipelineStore from '../../vue_pipelines_index/stores/pipelines_store';
 import eventHub from '../../vue_pipelines_index/event_hub';
+import EmptyState from '../../vue_pipelines_index/components/empty_state';
 import ErrorState from '../../vue_pipelines_index/components/error_state';
 import '../../lib/utils/common_utils';
 import '../../vue_shared/vue_resource_interceptor';
@@ -24,6 +25,7 @@ export default Vue.component('pipelines-table', {
   components: {
     'pipelines-table-component': PipelinesTableComponent,
     'error-state': ErrorState,
+    'empty-state': EmptyState,
   },
 
   /**
@@ -38,6 +40,7 @@ export default Vue.component('pipelines-table', {
 
     return {
       endpoint: pipelinesTableData.endpoint,
+      helpPagePath: pipelinesTableData.helpPagePath,
       store,
       state: store.state,
       isLoading: false,
@@ -48,6 +51,10 @@ export default Vue.component('pipelines-table', {
   computed: {
     shouldRenderErrorState() {
       return this.hasError && !this.pageRequest;
+    },
+
+    shouldRenderEmptyState() {
+      return !this.state.pipelines.length && !this.pageRequest;
     },
   },
 
@@ -101,6 +108,8 @@ export default Vue.component('pipelines-table', {
       <div class="realtime-loading" v-if="isLoading">
         <i class="fa fa-spinner fa-spin"></i>
       </div>
+
+      <empty-state v-if="shouldRenderEmptyState" :helpPagePath="helpPagePath" />
 
       <error-state v-if="shouldRenderErrorState" />
 

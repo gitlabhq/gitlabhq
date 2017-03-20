@@ -32,7 +32,19 @@ export default {
     const pipelinesData = document.querySelector('#pipelines-list-vue').dataset;
 
     return {
-      ...pipelinesData,
+      endpoint: pipelinesData.endpoint,
+      cssClass: pipelinesData.cssClass,
+      helpPagePath: pipelinesData.helpPagePath,
+      newPipelinePath: pipelinesData.newPipelinePath,
+      canCreatePipeline: pipelinesData.canCreatePipeline,
+      allPath: pipelinesData.allPath,
+      pendingPath: pipelinesData.pendingPath,
+      runningPath: pipelinesData.runningPath,
+      finishedPath: pipelinesData.finishedPath,
+      branchesPath: pipelinesData.branchesPath,
+      tagsPath: pipelinesData.tagsPath,
+      hasCi: pipelinesData.hasCi,
+      ciLintPath: pipelinesData.ciLintPath,
       state: this.store.state,
       apiScope: 'all',
       pagenum: 1,
@@ -172,8 +184,7 @@ export default {
 
   template: `
     <div
-      :class="cssClass"
-      class="pipelines">
+      :class="cssClass">
 
       <div
         class="top-area"
@@ -191,37 +202,40 @@ export default {
           :canCreatePipeline="canCreatePipelineParsed " />
       </div>
 
-      <div
-        class="realtime-loading"
-        v-if="pageRequest">
-        <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+      <div class="content-list pipelines">
+
+        <div
+          class="realtime-loading"
+          v-if="pageRequest">
+          <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+        </div>
+
+        <empty-state v-if="shouldRenderEmptyState" :helpPagePath="helpPagePath" />
+
+        <error-state v-if="shouldRenderErrorState" />
+
+        <div
+          class="blank-state blank-state-no-icon"
+          v-if="shouldRenderNoPipelinesMessage">
+          <h2 class="blank-state-title js-blank-state-title">No pipelines to show.</h2>
+        </div>
+
+        <div
+          class="table-holder"
+          v-if="shouldRenderTable">
+
+          <pipelines-table-component
+            :pipelines="state.pipelines"
+            :service="service"/>
+        </div>
+
+        <gl-pagination
+          v-if="shouldRenderPagination"
+          :pagenum="pagenum"
+          :change="change"
+          :count="state.count.all"
+          :pageInfo="state.pageInfo"/>
       </div>
-
-      <empty-state v-if="shouldRenderEmptyState" :helpPagePath="helpPagePath" />
-
-      <error-state v-if="shouldRenderErrorState" />
-
-      <div
-        class="blank-state blank-state-no-icon"
-        v-if="shouldRenderNoPipelinesMessage">
-        <h2 class="blank-state-title js-blank-state-title">No pipelines to show.</h2>
-      </div>
-
-      <div
-        class="table-holder"
-        v-if="shouldRenderTable">
-
-        <pipelines-table-component
-          :pipelines="state.pipelines"
-          :service="service"/>
-      </div>
-
-      <gl-pagination
-        v-if="shouldRenderPagination"
-        :pagenum="pagenum"
-        :change="change"
-        :count="state.count.all"
-        :pageInfo="state.pageInfo"/>
     </div>
   `,
 };

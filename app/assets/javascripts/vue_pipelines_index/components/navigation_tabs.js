@@ -18,7 +18,9 @@ export default {
 
   template: `
     <ul class="nav-links">
-      <li :class="{ 'active': scope === 'all'}">
+      <li
+        class="js-pipelines-tab-all"
+        :class="{ 'active': scope === 'all'}">
         <a :href="paths.allPath">
           All
           <span class="badge js-totalbuilds-count">
