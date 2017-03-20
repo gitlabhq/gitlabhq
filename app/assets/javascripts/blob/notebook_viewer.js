@@ -5,6 +5,10 @@ import NotebookLab from 'vendor/notebooklab';
 Vue.use(VueResource);
 Vue.use(NotebookLab);
 
+Vue.config.errorHandler = (err) => {
+  console.log(err);
+}
+
 $(() => {
   const el = document.getElementById('js-notebook-viewer');
 
@@ -12,6 +16,7 @@ $(() => {
     el,
     data() {
       return {
+        error: false,
         loading: true,
         json: {},
       };
@@ -28,14 +33,11 @@ $(() => {
       </div>
     `,
     mounted() {
-      $.get(gon.katex_css_url, () => {
-        const css = $('<link>', {
-          rel: 'stylesheet',
-          type: 'text/css',
-          href: gon.katex_css_url,
-        });
-        css.appendTo('head');
-      });
+      $('<link>', {
+        rel: 'stylesheet',
+        type: 'text/css',
+        href: gon.katex_css_url,
+      }).appendTo('head');
 
       $.getScript(gon.katex_js_url, () => {
         this.$http.get(el.dataset.endpoint)

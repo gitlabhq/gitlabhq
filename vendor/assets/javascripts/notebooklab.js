@@ -235,15 +235,29 @@ exports.default = {
     output: function output() {
       return this.cell.outputs[0];
     },
+    outputType: function outputType() {
+      if (!this.output.text) {
+        return Object.keys(this.output.data)[0];
+      }
+    },
     outputText: function outputText() {
       if (this.output.text) {
         return this.output.text.join('');
       } else {
-        return this.output.data[Object.keys(this.output.data)[0]].join('');
+        var output = this.output.data[this.outputType];
+
+        if (typeof output === 'array') {
+          return output.join('');
+        } else if (typeof output === 'string') {
+          return output;
+        } else {
+          return '';
+        }
       }
     }
   }
 }; //
+//
 //
 //
 //
@@ -284,6 +298,11 @@ exports.default = {
       type: Number,
       required: false
     },
+    outputType: {
+      type: String,
+      required: false,
+      default: ''
+    },
     type: {
       type: String,
       required: true
@@ -305,9 +324,22 @@ exports.default = {
       var type = this.type.split('put')[0];
 
       return type.charAt(0).toUpperCase() + type.slice(1);;
+    },
+    isImage: function isImage() {
+      if (this.outputType) {
+        return this.outputType.indexOf('image/') === 0;
+      } else {
+        return false;
+      }
     }
   }
 }; //
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -1896,6 +1928,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "type": "output",
       "raw-code": _vm.outputText,
+      "output-type": _vm.outputType,
       "count": _vm.output.execution_count
     }
   }) : _vm._e()], 1)
@@ -1982,9 +2015,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "type": _vm.promptType,
       "count": _vm.count
     }
-  }), _vm._v(" "), _c('pre', {
+  }), _vm._v(" "), (!_vm.isImage) ? _c('pre', {
     domProps: {
       "innerHTML": _vm._s(_vm.code)
+    }
+  }, [_vm._v("\n  ")]) : _c('img', {
+    attrs: {
+      "src": 'data:' + _vm.outputType + ';base64,' + _vm.rawCode
     }
   })], 1)
 },staticRenderFns: []}
