@@ -110,12 +110,22 @@ describe HasStatus do
         it { is_expected.to eq 'running' }
       end
 
-      context 'when pipeline is in transition between stages' do
+      context 'when one status finished and second is still created' do
         let!(:statuses) do
           [create(type, status: :success), create(type, status: :created)]
         end
 
         it { is_expected.to eq 'running' }
+      end
+
+      context 'when there is a manual status before created status' do
+        let!(:statuses) do
+          [create(type, status: :success),
+           create(type, status: :manual, allow_failure: false),
+           create(type, status: :created)]
+        end
+
+        it { is_expected.to eq 'manual' }
       end
 
       context 'when one status is a blocking manual action' do
