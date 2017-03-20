@@ -1,24 +1,13 @@
 # GitLab Geo
 
-> **Note:**
-This feature was introduced in GitLab 8.5 EE as Alpha.
-We recommend you use with at least GitLab 8.6 EE.
+> **Notes:**
+- GitLab Geo is part of [GitLab Enterprise Edition Premium][ee].
+- Introduced in GitLab Enterprise Edition 8.9.
+  We recommend you use it with at least GitLab Enterprise Edition 8.14.
+- You should make sure that all nodes run the same GitLab version.
 
 GitLab Geo allows you to replicate your GitLab instance to other geographical
 locations as a read-only fully operational version.
-
-- [Overview](#overview)
-- [Setup instructions](#setup-instructions)
-    - [Database Replication](database.md)
-    - [Configuration](configuration.md)
-- [Current limitations](#current-limitations)
-- [Disaster Recovery](disaster-recovery.md)
-- [Frequently Asked Questions](#frequently-asked-questions)
-    - [Can I use Geo in a disaster recovery situation?](#can-i-use-geo-in-a-disaster-recovery-situation)
-    - [What data is replicated to a secondary node?](#what-data-is-replicated-to-a-secondary-node)
-    - [Can I git push to a secondary node?](#can-i-git-push-to-a-secondary-node)
-    - [How long does it take to have a commit replicated to a secondary node?](#how-long-does-it-take-to-have-a-commit-replicated-to-a-secondary-node)
-    - [What happens if the SSH server runs at a different port?](#what-happens-if-the-ssh-server-runs-at-a-different-port)
 
 ## Overview
 
@@ -44,36 +33,39 @@ Keep in mind that:
 ## Setup instructions
 
 In order to set up one or more GitLab Geo instances, follow the steps below in
-this **exact order**:
+the **exact order** they appear. **Make sure the GitLab version is the same on
+all nodes.**
 
-1. Follow the first 3 steps to [install GitLab Enterprise Edition][install-ee]
-   on the server that will serve as the secondary Geo node. Do not login or
-   set up anything else in the secondary node for the moment.
-1. [Setup the database replication](database.md)  (`primary <-> secondary (read-only)` topology)
+### Using Omnibus GitLab
+
+If you installed GitLab using the Omnibus packages (highly recommended):
+
+1. [Install GitLab Enterprise Edition][install-ee] on the server that will serve
+   as the **secondary** Geo node. Do not login or set up anything else in the
+   secondary node for the moment.
+1. [Setup the database replication](database.md)  (`primary (read-write) <-> secondary (read-only)` topology).
 1. [Configure GitLab](configuration.md) to set the primary and secondary nodes.
+1. [Follow the after setup steps](after_setup.md).
 
-## After setup
+[install-ee]: https://about.gitlab.com/downloads-ee/ "GitLab Enterprise Edition Omnibus packages downloads page"
 
-After you set up the database replication and configure the GitLab Geo nodes,
-there are a few things to consider:
+### Using GitLab installed from source
 
-1. When you create a new project in the primary node, the Git repository will
-   appear in the secondary only _after_ the first `git push`.
-1. You need an extra step to be able to fetch code from the `secondary` and push
-   to `primary`:
+If you installed GitLab from source:
 
-     1. Clone your repository as you would normally do from the `secondary` node
-     1. Change the remote push URL following this example:
+1. [Install GitLab Enterprise Edition][install-ee-source] on the server that
+   will serve as the **secondary** Geo node. Do not login or set up anything
+   else in the secondary node for the moment.
+1. [Setup the database replication](database_source.md)  (`primary (read-write) <-> secondary (read-only)` topology).
+1. [Configure GitLab](configuration_source.md) to set the primary and secondary
+   nodes.
+1. [Follow the after setup steps](after_setup.md).
 
-         ```bash
-         git remote set-url --push origin git@primary.gitlab.example.com:user/repo.git
-         ```
+[install-ee-source]: https://docs.gitlab.com/ee/install/installation.html "GitLab Enterprise Edition installation from source"
 
->**Important**:
-The initialization of a new Geo secondary node on versions older than 8.14 
-requires data to be copied from the primary, as there is no backfill 
-feature bundled with those versions.
-See more details in the [Configure GitLab](configuration.md) step.
+## Updating the Geo nodes
+
+Read how to [update your Geo nodes to the latest GitLab version](updating_the_geo_nodes.md).
 
 ## Current limitations
 
@@ -83,41 +75,12 @@ See more details in the [Configure GitLab](configuration.md) step.
 
 ## Frequently Asked Questions
 
-### Can I use Geo in a disaster recovery situation?
+Read more in the [Geo FAQ](faq.md).
 
-There are limitations to what we replicate (see
-[What data is replicated to a secondary node?](#what-data-is-replicated-to-a-secondary-node)).
-In an extreme data-loss situation you can make a secondary Geo into your
-primary, but this is not officially supported yet.
+## Troubleshooting
 
-If you still want to proceed, see our step-by-step instructions on how to
-manually [promote a secondary node](disaster-recovery.md) into primary.
+Read the [troubleshooting document](troubleshooting.md).
 
-### What data is replicated to a secondary node?
-
-We currently replicate project repositories and the whole database. This
-means user accounts, issues, merge requests, groups, project data, etc.,
-will be available for query.
-We currently don't replicate user generated attachments / avatars or any
-other file in `public/upload`. We also don't replicate LFS or
-artifacts data (`shared/folder`).
-
-### Can I git push to a secondary node?
-
-No. All writing operations (this includes `git push`) must be done in your
-primary node.
-
-### How long does it take to have a commit replicated to a secondary node?
-
-All replication operations are asynchronous and are queued to be dispatched in
-a batched request every 10 seconds. Besides that, it depends on a lot of other
-factors including the amount of traffic, how big your commit is, the
-connectivity between your nodes, your hardware, etc.
-
-### What happens if the SSH server runs at a different port?
-
-We send the clone url from the primary server to any secondaries, so it
-doesn't matter. If primary is running on port `2200` clone url will reflect
-that.
-
-[install-ee]: https://about.gitlab.com/downloads-ee/
+[ee]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition landing page"
+[install-ee]: https://about.gitlab.com/downloads-ee/ "GitLab Enterprise Edition Omnibus packages downloads page"
+[install-ee-source]: https://docs.gitlab.com/ee/install/installation.html "GitLab Enterprise Edition installation from source"
