@@ -3,8 +3,6 @@
   = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('issuable')
 
-- puts issuable.is_a?(Issue)
-
 %aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => "101", "spy" => "affix" }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar
     - can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
@@ -25,35 +23,41 @@
 
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
       .block.assignee
-        #js-vue-sidebar-assignees
-
-        - content_for :page_specific_javascripts do
-          = page_specific_javascript_bundle_tag('vue_sidebar_assignees')
-        -# .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee.name if issuable.assignee) }
-        -#   - if issuable.assignee
-        -#     = link_to_member(@project, issuable.assignee, size: 24)
-        -#   - else
-        -#     = icon('user', 'aria-hidden': 'true')
-        -# .title.hide-collapsed
-        -#   Assignee
-        -#   = icon('spinner spin', class: 'block-loading', 'aria-hidden': 'true')
-        -#   - if can_edit_issuable
-        -#     = link_to 'Edit', '#', class: 'edit-link pull-right'
-        -# .value.hide-collapsed
-        -#   - if issuable.assignee
-        -#     = link_to_member(@project, issuable.assignee, size: 32, extra_class: 'bold') do
-        -#       - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
-        -#         %span.pull-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: 'Not allowed to merge' }
-        -#           = icon('exclamation-triangle', 'aria-hidden': 'true')
-        -#       %span.username
-        -#         = issuable.assignee.to_reference
-        -#   - else
-        -#     %span.assign-yourself.no-value
-        -#       No assignee
-        -#       - if can_edit_issuable
-        -#         \-
-        -#         %a.js-assign-yourself{ href: '#' }
-        -#           assign yourself
+        - if issuable.instance_of?(Issue)
+          #js-vue-sidebar-assignees{ data: { path: issuable_json_path(issuable) }}
+            .title.hide-collapsed
+              Assignee
+              = icon('spinner spin', class: 'block-loading', 'aria-hidden': 'true')
+              - if can_edit_issuable
+                = link_to 'Edit', '#', class: 'edit-link pull-right'
+          - content_for :page_specific_javascripts do
+            = page_specific_javascript_bundle_tag('vue_sidebar_assignees')
+        - else
+          .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee.name if issuable.assignee) }
+            - if issuable.assignee
+              = link_to_member(@project, issuable.assignee, size: 24)
+            - else
+              = icon('user', 'aria-hidden': 'true')
+          .title.hide-collapsed
+            Assignee
+            = icon('spinner spin', class: 'block-loading', 'aria-hidden': 'true')
+            - if can_edit_issuable
+              = link_to 'Edit', '#', class: 'edit-link pull-right'
+          .value.hide-collapsed
+            - if issuable.assignee
+              = link_to_member(@project, issuable.assignee, size: 32, extra_class: 'bold') do
+                - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
+                  %span.pull-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: 'Not allowed to merge' }
+                    = icon('exclamation-triangle', 'aria-hidden': 'true')
+                %span.username
+                  = issuable.assignee.to_reference
+            - else
+              %span.assign-yourself.no-value
+                No assignee
+                - if can_edit_issuable
+                  \-
+                  %a.js-assign-yourself{ href: '#' }
+                    assign yourself
 
         .selectbox.hide-collapsed
           = f.hidden_field 'assignee_id', value: issuable.assignee_id, id: 'issue_assignee_id'

@@ -90,8 +90,13 @@
 }
 
 .right-sidebar {
-  a {
+  a,
+  .btn-link {
     color: inherit;
+  }
+
+  .btn-link {
+    outline: none;
   }
 
   .issuable-header-text {
@@ -237,6 +242,10 @@
       margin-left: 0;
     }
 
+    .assignee .user-list .avatar {
+      margin: 0;
+    }
+
     .username {
       display: block;
       margin-top: 4px;
@@ -368,13 +377,16 @@
   margin: -5px;
 }
 
+.user-list {
+  display: flex;
+  display: -webkit-flex;
+  flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+}
+
 .participants-author {
   display: inline-block;
   padding: 5px;
-
-  &:nth-of-type(7n) {
-    padding-right: 0;
-  }
 
   .author_link {
     display: block;
@@ -385,12 +397,43 @@
   }
 }
 
-.participants-more {
+.user-item {
+  display: inline-block;
+  padding: 5px;
+  flex-basis: 20%;
+  -webkit-flex-basis: 20%;
+
+  .user-link {
+    display: inline-block;
+  }
+}
+
+.participants-author:nth-of-type(7n) {
+  padding-right: 0;
+}
+
+.participants-more,
+.user-list-more {
   margin-top: 5px;
   margin-left: 5px;
 
-  a {
+  a,
+  .btn-link {
     color: $gl-text-color-secondary;
+  }
+
+  .btn-link {
+    outline: none;
+    padding: 0;
+  }
+
+  .btn-link:hover {
+    @extend a:hover;
+    text-decoration: none;
+  }
+
+  .btn-link:focus {
+    text-decoration: none;
   }
 }
 
