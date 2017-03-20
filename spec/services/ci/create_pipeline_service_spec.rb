@@ -18,19 +18,15 @@ describe Ci::CreatePipelineService, services: true do
       described_class.new(project, user, params).execute
     end
 
-    shared_examples 'a pending pipeline' do
+    context 'valid params' do
+      let(:pipeline) { execute_service }
+
       it { expect(pipeline).to be_kind_of(Ci::Pipeline) }
       it { expect(pipeline).to be_valid }
       it { expect(pipeline).to eq(project.pipelines.last) }
       it { expect(pipeline).to have_attributes(user: user) }
       it { expect(pipeline).to have_attributes(status: 'pending') }
       it { expect(pipeline.builds.first).to be_kind_of(Ci::Build) }
-    end
-
-    context 'valid params' do
-      let(:pipeline) { execute_service }
-
-      it_behaves_like 'a pending pipeline'
 
       context 'auto-cancel enabled' do
         let(:pipeline_on_previous_commit) do
