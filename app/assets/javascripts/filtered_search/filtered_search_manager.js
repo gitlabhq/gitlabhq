@@ -131,7 +131,11 @@ import FilteredSearchContainer from './container';
     }
 
     addInputContainerFocus() {
-      this.filteredSearchInput.closest('.filtered-search-input-container').classList.add('focus');
+      const inputContainer = this.filteredSearchInput.closest('.filtered-search-input-container');
+
+      if (inputContainer) {
+        inputContainer.classList.add('focus');
+      }
     }
 
     removeInputContainerFocus(e) {
