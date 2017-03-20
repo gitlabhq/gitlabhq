@@ -764,7 +764,8 @@ a.allowed-to-push {
   text-align: left;
 }
 
-.protected-branches-list {
+.protected-branches-list,
+.protected-tags-list {
   margin-bottom: 30px;
 
   a {

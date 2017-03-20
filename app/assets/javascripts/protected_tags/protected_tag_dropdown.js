@@ -1,0 +1,79 @@
+/* eslint-disable comma-dangle, no-unused-vars */
+
+class ProtectedTagDropdown {
+  constructor(options) {
+    this.onSelect = options.onSelect;
+    this.$dropdown = options.$dropdown;
+    this.$dropdownContainer = this.$dropdown.parent();
+    this.$dropdownFooter = this.$dropdownContainer.find('.dropdown-footer');
+    this.$protectedTag = this.$dropdownContainer.find('.create-new-protected-tag');
+
+    this.buildDropdown();
+    this.bindEvents();
+
+    // Hide footer
+    this.$dropdownFooter.addClass('hidden');
+  }
+
+  buildDropdown() {
+    this.$dropdown.glDropdown({
+      data: this.getProtectedTags.bind(this),
+      filterable: true,
+      remote: false,
+      search: {
+        fields: ['title']
+      },
+      selectable: true,
+      toggleLabel(selected) {
+        return (selected && 'id' in selected) ? selected.title : 'Protected Tag';
+      },
+      fieldName: 'protected_tag[name]',
+      text(protectedTag) {
+        return _.escape(protectedTag.title);
+      },
+      id(protectedTag) {
+        return _.escape(protectedTag.id);
+      },
+      onFilter: this.toggleCreateNewButton.bind(this),
+      clicked: (item, $el, e) => {
+        e.preventDefault();
+        this.onSelect();
+      }
+    });
+  }
+
+  bindEvents() {
+    this.$protectedTag.on('click', this.onClickCreateWildcard.bind(this));
+  }
+
+  onClickCreateWildcard() {
+    this.$dropdown.data('glDropdown').remote.execute();
+    this.$dropdown.data('glDropdown').selectRowAtIndex();
+  }
+
+  getProtectedTags(term, callback) {
+    if (this.selectedTag) {
+      callback(gon.open_branches.concat(this.selectedTag));
+    } else {
+      callback(gon.open_branches);
+    }
+  }
+
+  toggleCreateNewButton(tagName) {
+    this.selectedTag = {
+      title: tagName,
+      id: tagName,
+      text: tagName
+    };
+
+    if (tagName) {
+      this.$dropdownContainer
+        .find('.create-new-protected-tag code')
+        .text(tagName);
+    }
+
+    this.$dropdownFooter.toggleClass('hidden', !tagName);
+  }
+}
+
+window.ProtectedTagDropdown = ProtectedTagDropdown;

@@ -42,6 +42,7 @@ var config = {
     notebook_viewer:      './blob/notebook_viewer.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
+    protected_tags:       './protected_tags/protected_tags_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],

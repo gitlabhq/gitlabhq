@@ -336,6 +336,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
           new UsersSelect();
+          new gl.ProtectedTagCreate();
           break;
         case 'projects:ci_cd:show':
           new gl.ProjectVariables();
