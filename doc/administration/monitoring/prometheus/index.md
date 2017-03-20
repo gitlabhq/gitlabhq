@@ -96,7 +96,7 @@ Sample Prometheus queries:
 
 > Introduced in GitLab 9.0.
 
-If your GitLab server is running within Kubernetes, Prometheus will collect metrics from each Node in the cluster including performance data on each container. This is particularly helpful if your CI/CD environments run in the same cluster, as you can use the [Prometheus project integration][] to monitor them.
+If your GitLab server is running within Kubernetes, Prometheus will collect metrics from the Nodes in the cluster including performance data on each container. This is particularly helpful if your CI/CD environments run in the same cluster, as you can use the [Prometheus project integration][] to monitor them.
 
 When enabled, the bundled Prometheus server monitors Kubernetes and automatically
 [collects metrics][prometheus-cadvisor-metrics] from each Node in the cluster.
