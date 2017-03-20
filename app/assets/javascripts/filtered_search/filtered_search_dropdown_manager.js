@@ -176,6 +176,10 @@ import FilteredSearchContainer from './container';
     }
 
     resetDropdowns() {
+      if (!this.currentDropdown) {
+        return;
+      }
+
       // Force current dropdown to hide
       this.mapping[this.currentDropdown].reference.hideDropdown();
 

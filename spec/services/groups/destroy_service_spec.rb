@@ -61,8 +61,14 @@ describe Groups::DestroyService, services: true do
 
     context 'potential race conditions' do
       context "when the `GroupDestroyWorker` task runs immediately" do
-        before do
-          DatabaseCleaner.strategy = :deletion
+        around(:each) do |example|
+          old_strategy = DatabaseCleaner[:active_record, { connection: ActiveRecord::Base }].strategy
+          DatabaseCleaner[:active_record, { connection: ActiveRecord::Base }].strategy = :deletion
+          begin
+            example.run
+          ensure
+            DatabaseCleaner[:active_record, { connection: ActiveRecord::Base }].strategy = old_strategy
+          end
         end
 
         it "deletes the group" do

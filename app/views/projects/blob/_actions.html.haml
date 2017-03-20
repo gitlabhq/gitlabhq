@@ -12,7 +12,7 @@
           class: 'btn btn-sm'
     - else
       = link_to 'Blame', namespace_project_blame_path(@project.namespace, @project, @id),
-          class: 'btn btn-sm' unless @blob.empty?
+          class: 'btn btn-sm js-blob-blame-link' unless @blob.empty?
   = link_to 'History', namespace_project_commits_path(@project.namespace, @project, @id),
       class: 'btn btn-sm'
   = link_to 'Permalink', namespace_project_blob_path(@project.namespace, @project,

@@ -14,6 +14,6 @@ class AddUniqueIndexForEnvironmentSlug < ActiveRecord::Migration
   end
 
   def down
-    remove_index :environments, [:project_id, :slug], unique: true if index_exists? :environments, [:project_id, :slug]
+    remove_index :environments, [:project_id, :slug] if index_exists? :environments, [:project_id, :slug]
   end
 end

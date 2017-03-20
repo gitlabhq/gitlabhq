@@ -6,8 +6,8 @@ export default class EnvironmentsService {
     this.environments = Vue.resource(endpoint);
   }
 
-  get() {
-    return this.environments.get();
+  get(scope, page) {
+    return this.environments.get({ scope, page });
   }
 
   getDeployBoard(endpoint) {

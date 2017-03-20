@@ -1,10 +1,7 @@
 /* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, comma-dangle, new-parens, no-unused-vars, quotes, jasmine/no-spec-dupes, prefer-template, max-len */
 
-import promisePolyfill from 'es6-promise';
 import Cookies from 'js-cookie';
 import AwardsHandler from '~/awards_handler';
-
-promisePolyfill.polyfill();
 
 (function() {
   var awardsHandler, lazyAssert, urlRoot, openAndWaitForEmojiMenu;

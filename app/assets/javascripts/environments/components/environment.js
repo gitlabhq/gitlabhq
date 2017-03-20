@@ -3,6 +3,7 @@
 import EnvironmentsService from '../services/environments_service';
 import EnvironmentTable from './environments_table';
 import EnvironmentsStore from '../stores/environments_store';
+import eventHub from '../event_hub';
 
 const Vue = window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
@@ -77,33 +78,15 @@ export default Vue.component('environment-component', {
    * Toggles loading property.
    */
   created() {
-    const scope = gl.utils.getParameterByName('scope') || this.visibility;
-    const pageNumber = gl.utils.getParameterByName('page') || this.pageNumber;
+    this.service = new EnvironmentsService(this.endpoint);
 
-    const endpoint = `${this.endpoint}?scope=${scope}&page=${pageNumber}`;
+    this.fetchEnvironments();
 
-    this.service = new EnvironmentsService(endpoint);
+    eventHub.$on('refreshEnvironments', this.fetchEnvironments);
+  },
 
-    this.isLoading = true;
-
-    return this.service.get()
-      .then(resp => ({
-        headers: resp.headers,
-        body: resp.json(),
-      }))
-      .then((response) => {
-        this.store.storeAvailableCount(response.body.available_count);
-        this.store.storeStoppedCount(response.body.stopped_count);
-        this.store.storeEnvironments(response.body.environments);
-        this.store.setPagination(response.headers);
-      })
-      .then(() => {
-        this.isLoading = false;
-      })
-      .catch(() => {
-        this.isLoading = false;
-        new Flash('An error occurred while fetching the environments.', 'alert');
-      });
+  beforeDestroyed() {
+    eventHub.$off('refreshEnvironments');
   },
 
   methods: {
@@ -129,6 +112,32 @@ export default Vue.component('environment-component', {
 
       gl.utils.visitUrl(param);
       return param;
+    },
+
+    fetchEnvironments() {
+      const scope = gl.utils.getParameterByName('scope') || this.visibility;
+      const pageNumber = gl.utils.getParameterByName('page') || this.pageNumber;
+
+      this.isLoading = true;
+
+      return this.service.get(scope, pageNumber)
+        .then(resp => ({
+          headers: resp.headers,
+          body: resp.json(),
+        }))
+        .then((response) => {
+          this.store.storeAvailableCount(response.body.available_count);
+          this.store.storeStoppedCount(response.body.stopped_count);
+          this.store.storeEnvironments(response.body.environments);
+          this.store.setPagination(response.headers);
+        })
+        .then(() => {
+          this.isLoading = false;
+        })
+        .catch(() => {
+          this.isLoading = false;
+          new Flash('An error occurred while fetching the environments.');
+        });
     },
   },
 

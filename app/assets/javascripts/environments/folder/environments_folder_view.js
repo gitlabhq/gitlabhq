@@ -4,7 +4,6 @@ import EnvironmentsService from '../services/environments_service';
 import EnvironmentTable from '../components/environments_table';
 import EnvironmentsStore from '../stores/environments_store';
 
-const Flash = require('~/flash');
 const Vue = window.Vue = require('vue');
 window.Vue.use(require('vue-resource'));
 require('../../vue_shared/components/table_pagination');

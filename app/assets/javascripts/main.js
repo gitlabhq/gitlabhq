@@ -16,17 +16,9 @@ import Sortable from 'vendor/Sortable';
 import 'mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';
 import 'vendor/fuzzaldrin-plus';
-import promisePolyfill from 'es6-promise';
 
 // extensions
-import './extensions/string';
 import './extensions/array';
-import './extensions/custom_event';
-import './extensions/element';
-import './extensions/jquery';
-import './extensions/object';
-
-promisePolyfill.polyfill();
 
 // expose common libraries as globals (TODO: remove these)
 window.jQuery = jQuery;
@@ -66,6 +58,8 @@ import './blob/blob_gitignore_selectors';
 import './blob/blob_license_selector';
 import './blob/blob_license_selectors';
 import './blob/template_selector';
+import './blob/create_branch_dropdown';
+import './blob/target_branch_dropdown';
 
 // templates
 import './templates/issuable_template_selector';

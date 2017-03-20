@@ -39,6 +39,7 @@ describe API::Runner do
           expect(json_response['id']).to eq(runner.id)
           expect(json_response['token']).to eq(runner.token)
           expect(runner.run_untagged).to be true
+          expect(runner.token).not_to eq(registration_token)
         end
 
         context 'when project token is used' do
@@ -49,6 +50,8 @@ describe API::Runner do
 
             expect(response).to have_http_status 201
             expect(project.runners.size).to eq(1)
+            expect(Ci::Runner.first.token).not_to eq(registration_token)
+            expect(Ci::Runner.first.token).not_to eq(project.runners_token)
           end
         end
       end

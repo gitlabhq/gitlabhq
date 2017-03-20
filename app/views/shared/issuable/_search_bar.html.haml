@@ -94,6 +94,7 @@
                   %span.dropdown-label-box{ style: 'background: {{color}}' }
                   %span.label-title.js-data-value
                     {{title}}
+
           - if type == :issues || type == :boards
             #js-dropdown-weight.dropdown-menu{ data: { icon: 'balance-scale', hint: 'weight', tag: 'weight' } }
               %ul{ 'data-dropdown' => true }

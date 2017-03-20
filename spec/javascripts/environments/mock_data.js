@@ -1,4 +1,4 @@
-const environmentsList = [
+export const environmentsList = [
   {
     name: 'DEV',
     size: 1,
@@ -31,7 +31,7 @@ const environmentsList = [
   },
 ];
 
-const serverData = [
+export const serverData = [
   {
     name: 'DEV',
     size: 1,
@@ -68,7 +68,7 @@ const serverData = [
   },
 ];
 
-const environment = {
+export const environment = {
   name: 'DEV',
   size: 1,
   latest: {
@@ -87,7 +87,7 @@ const environment = {
   },
 };
 
-const deployBoardMockData = {
+export const deployBoardMockData = {
   instances: [
     { status: 'finished', tooltip: 'tanuki-2334 Finished' },
     { status: 'finished', tooltip: 'tanuki-2335 Finished' },
@@ -123,18 +123,10 @@ const deployBoardMockData = {
   valid: true,
 };
 
-const invalidDeployBoardMockData = {
+export const invalidDeployBoardMockData = {
   instances: [],
   abort_url: 'url',
   rollback_url: 'url',
   completion: 100,
   valid: false,
-};
-
-module.exports = {
-  environmentsList,
-  environment,
-  serverData,
-  deployBoardMockData,
-  invalidDeployBoardMockData,
 };

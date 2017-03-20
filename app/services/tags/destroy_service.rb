@@ -21,6 +21,8 @@ module Tags
       else
         error('Failed to remove tag')
       end
+    rescue GitHooksService::PreReceiveError => ex
+      error(ex.message)
     end
 
     def error(message, return_code = 400)
