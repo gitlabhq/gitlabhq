@@ -14,10 +14,12 @@ describe GeoFileDownloadDispatchWorker do
 
   describe '#perform' do
     it 'does not schedule anything when node is disabled' do
-      expect(GeoFileDownloadWorker).not_to receive(:perform_async)
+      create(:lfs_object, :with_file)
 
       @secondary.enabled = false
       @secondary.save
+
+      expect(GeoFileDownloadWorker).not_to receive(:perform_async)
 
       subject.perform
     end
