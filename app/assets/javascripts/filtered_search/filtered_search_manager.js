@@ -144,9 +144,8 @@ import FilteredSearchContainer from './container';
       const isElementInDynamicFilterDropdown = e.target.closest('.filter-dropdown') !== null;
       const isElementInStaticFilterDropdown = e.target.closest('ul[data-dropdown]') !== null;
 
-      if (!isElementInFilteredSearch &&
-        !isElementInDynamicFilterDropdown &&
-        !isElementInStaticFilterDropdown) {
+      if (!isElementInFilteredSearch && !isElementInDynamicFilterDropdown &&
+        !isElementInStaticFilterDropdown && inputContainer) {
         inputContainer.classList.remove('focus');
       }
     }
