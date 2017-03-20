@@ -539,6 +539,16 @@ module Ci
       Gitlab::Ci::Build::Credentials::Factory.new(self).create!
     end
 
+    def dependencies
+      depended_jobs = depends_on_builds
+
+      return depended_jobs unless options[:dependencies].present?
+
+      depended_jobs.select do |job|
+        options[:dependencies].include?(job.name)
+      end
+    end
+
     private
 
     def update_artifacts_size
