@@ -46,6 +46,12 @@ feature 'Create New Merge Request', feature: true, js: true do
     end
   end
 
+  it 'populates source branch button' do
+    visit new_namespace_project_merge_request_path(project.namespace, project, change_branches: true, merge_request: { target_branch: 'master', source_branch: 'fix' })
+
+    expect(find('.js-source-branch')).to have_content('fix')
+  end
+
   it 'allows to change the diff view' do
     visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'fix' })
 
