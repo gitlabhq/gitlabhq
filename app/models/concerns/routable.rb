@@ -51,11 +51,13 @@ module Routable
 
       paths.each do |path|
         path = connection.quote(path)
-        where = "(routes.path = #{path})"
 
-        if cast_lower
-          where = "(#{where} OR (LOWER(routes.path) = LOWER(#{path})))"
-        end
+        where =
+          if cast_lower
+            "(LOWER(routes.path) = LOWER(#{path}))"
+          else
+            "(routes.path = #{path})"
+          end
 
         wheres << where
       end
