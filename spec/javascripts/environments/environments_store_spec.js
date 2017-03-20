@@ -63,6 +63,16 @@ import { serverData, deployBoardMockData } from './mock_data';
         expect(store.state.environments[0].last_deployment).toEqual({});
         expect(store.state.environments[0].isStoppable).toEqual(true);
       });
+
+      it('should store latest.name when the environment is not a folder', () => {
+        store.storeEnvironments(serverData);
+        expect(store.state.environments[2].name).toEqual(serverData[2].latest.name);
+      });
+
+      it('should store root level name when environment is a folder', () => {
+        store.storeEnvironments(serverData);
+        expect(store.state.environments[1].name).toEqual(serverData[1].name);
+      });
     });
 
     it('should store available count', () => {

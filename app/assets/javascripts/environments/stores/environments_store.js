@@ -56,7 +56,7 @@ export default class EnvironmentsStore {
       if (filtered.size > 1) {
         filtered = Object.assign(filtered, env, { isFolder: true, folderName: env.name });
       } else if (filtered.size === 1 && filtered.rollout_status_path) {
-        filtered = Object.assign(filtered, env, {
+        filtered = Object.assign({}, env, filtered, {
           hasDeployBoard: true,
           isDeployBoardVisible: false,
           deployBoardData: {},
