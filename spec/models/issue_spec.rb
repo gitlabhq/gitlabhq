@@ -37,6 +37,30 @@ describe Issue, models: true do
     end
   end
 
+  describe '#closed_at' do
+    after do
+      Timecop.return
+    end
+
+    let!(:now) { Timecop.freeze(Time.now) }
+
+    it 'sets closed_at to Time.now when issue is closed' do
+      issue = create(:issue, state: 'opened')
+
+      issue.close
+
+      expect(issue.closed_at).to eq(now)
+    end
+
+    it 'sets closed_at to nil when issue is reopened' do
+      issue = create(:issue, state: 'closed')
+
+      issue.reopen
+
+      expect(issue.closed_at).to be_nil
+    end
+  end
+
   describe '#to_reference' do
     let(:namespace) { build(:namespace, path: 'sample-namespace') }
     let(:project)   { build(:empty_project, name: 'sample-project', namespace: namespace) }
