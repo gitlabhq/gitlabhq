@@ -390,7 +390,6 @@ describe Projects::MergeRequestsController do
         expect(body['assignee'].keys)
           .to match_array(%w(name username avatar_url))
       end
-
     end
 
     context 'there is no source project' do
