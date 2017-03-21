@@ -19,9 +19,6 @@ class GeoBackfillWorker
         break if over_time?(start_time)
         break unless Gitlab::Geo.current_node_enabled?
 
-        project = Project.find(project_id)
-        next if synced?(project)
-
         # We try to obtain a lease here for the entire backfilling process
         # because backfill the repositories continuously at a controlled rate
         # instead of hammering the primary node. Initially, we are backfilling
@@ -49,16 +46,6 @@ class GeoBackfillWorker
 
   def over_time?(start_time)
     Time.now - start_time >= RUN_TIME
-  end
-
-  def synced?(project)
-    project.repository_exists? || registry_exists?(project)
-  end
-
-  def registry_exists?(project)
-    Geo::ProjectRegistry.where(project_id: project.id)
-                        .where.not(last_repository_synced_at: nil)
-                        .any?
   end
 
   def try_obtain_lease

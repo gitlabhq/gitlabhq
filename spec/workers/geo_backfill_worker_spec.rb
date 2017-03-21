@@ -42,14 +42,6 @@ describe Geo::GeoBackfillWorker, services: true do
       subject.perform
     end
 
-    it 'does not perform Geo::RepositoryBackfillService for projects that repository exists' do
-      create_list(:project, 2)
-
-      expect(Geo::RepositoryBackfillService).to receive(:new).twice.and_return(spy)
-
-      subject.perform
-    end
-
     it 'does not perform Geo::RepositoryBackfillService when can not obtain a lease' do
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { false }
 
