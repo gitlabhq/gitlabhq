@@ -24,7 +24,6 @@ class TodosFinder
 
   def execute
     items = current_user.todos
-    items = include_associations(items)
     items = by_action_id(items)
     items = by_action(items)
     items = by_author(items)
@@ -38,17 +37,6 @@ class TodosFinder
   end
 
   private
-
-  def include_associations(items)
-    return items unless params[:include_associations]
-
-    items.includes(
-      [
-        target: { project: [:route, namespace: :route] },
-        author: { namespace: :route },
-      ]
-    )
-  end
 
   def action_id?
     action_id.present? && Todo::ACTION_NAMES.has_key?(action_id.to_i)
