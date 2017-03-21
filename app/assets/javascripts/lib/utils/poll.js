@@ -8,6 +8,7 @@ import httpStatusCodes from './http_status';
  * new poll({
  *   resource: resource,
  *   method: 'name',
+ *   data: {page: 1, scope: 'all'},
  *   successCallback: () => {},
  *   errorCallback: () => {},
  * }).makeRequest();
@@ -16,6 +17,7 @@ import httpStatusCodes from './http_status';
  * new poll({
  *   resource: this.service,
  *   method: 'get',
+ *   data: {page: 1, scope: 'all'},
  *   successCallback: () => {},
  *   errorCallback: () => {},
  * }).makeRequest();
@@ -30,7 +32,9 @@ import httpStatusCodes from './http_status';
  */
 export default class poll {
   constructor(options = {}) {
-    this.options = options;
+    this.options = Object.assign({}, {
+      data: {},
+    }, options);
 
     this.intervalHeader = 'POLL-INTERVAL';
   }
@@ -42,9 +46,7 @@ export default class poll {
     if (pollInterval > 0 && response.status === httpStatusCodes.OK) {
       this.options.successCallback(response);
       setTimeout(() => {
-        this.makeRequest()
-          .then(this.checkConditions)
-          .catch(error => this.options.errorCallback(error));
+        this.makeRequest();
       }, pollInterval);
     } else {
       this.options.successCallback(response);
@@ -52,8 +54,10 @@ export default class poll {
   }
 
   makeRequest() {
-    return this.options.resource[this.options.method]()
-    .then(this.checkConditions.bind(this))
-    .catch(error => this.options.errorCallback(error));
+    const { resource, method, data, errorCallback } = this.options;
+
+    return resource[method](data)
+    .then(response => this.checkConditions(response))
+    .catch(error => errorCallback(error));
   }
 }
