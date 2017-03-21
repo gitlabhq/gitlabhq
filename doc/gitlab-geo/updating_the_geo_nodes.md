@@ -25,22 +25,21 @@ For installations from source, [follow the instructions for your GitLab version]
 
 # Upgrade to 9.0.x
 
-> **IMPORTANT**: 9.0 requires manual steps in the secondary node,
+> **IMPORTANT**: 9.0 requires manual steps in the secondary nodes,
 because we are upgrading PostgreSQL to 9.6 on the primary and Postgres
 doesn't support upgrading secondary nodes while keeping the
 Streaming Replication working.
 
 Before starting the upgrade to 9.0 on both **primary** and **secondary** nodes,
-stop all service in the secondary node: `gitlab-ctl stop` and make a backup of the `recovery.conf`
-located at: `/var/opt/gitlab/postgresql/data/recovery.conf`
+stop all service in each secondary nodes: `gitlab-ctl stop` and make a backup of
+the `recovery.conf` located at: `/var/opt/gitlab/postgresql/data/recovery.conf`
 
 Follow regular upgrade instruction for 9.0 on the primary node.
 
 At the end of the upgrade procedures your primary node will be running with
 PostgreSQL on 9.6.x branch. To prevent a desynchronization of the repository
-replication, stop all services but the `postgresql` as we will use it to
-re-initialize the secondary node's database:
-
+replication, follow these steps to stop all services but the `postgresql` as
+we will use it to re-initialize the secondary node's database:
 
 **Run in the primary node:**
 
@@ -57,19 +56,20 @@ to Create the `replica.sh` script and execute the instructions below:
 ```
 gitlab-ctl stop
 
-sudo cp /var/opt/gitlab/postgresql/data/recovery.conf ~/
+# backup the recovery.conf from postgresql to preserv credentials
+sudo cp /var/opt/gitlab/postgresql/data/recovery.conf /var/opt/gitlab
 
 # prevent running database migrations on the secondary node:
-touch /etc/gitlab/skip-automigrations
+touch /etc/gitlab/skip-auto-migrations
 
-# we need to remove the old database:
-rm -rf /var/opt/gitlab/postgresql
+# let's disable the old database:
+mv /var/opt/gitlab/postgresql{,.bak}
 
 gitlab-ctl reconfigure
 gitlab-ctl pg-upgrade
 
 # see the stored credentials for the database, that you will need to re-initialize replication:
-grep -s primary_conninfo ~/recovery.conf
+grep -s primary_conninfo /var/opt/gitlab/recovery.conf
 
 # run the recovery script with the credentials above
 bash /tmp/replica.sh
