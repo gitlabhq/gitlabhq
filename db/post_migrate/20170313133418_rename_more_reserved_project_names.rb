@@ -6,41 +6,12 @@ class RenameMoreReservedProjectNames < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  THREAD_COUNT = 8
-
   KNOWN_PATHS = %w(artifacts graphs refs badges).freeze
 
   def up
-    queues = Array.new(THREAD_COUNT) { Queue.new }
-    start = false
-
-    threads = Array.new(THREAD_COUNT) do |index|
-      Thread.new do
-        queue = queues[index]
-
-        # Wait until we have input to process.
-        until start; end
-
-        rename_projects(queue.pop) until queue.empty?
-      end
-    end
-
-    enum = queues.each
-
     reserved_projects.each_slice(100) do |slice|
-      begin
-        queue = enum.next
-      rescue StopIteration
-        enum.rewind
-        retry
-      end
-
-      queue << slice
+      rename_projects(slice)
     end
-
-    start = true
-
-    threads.each(&:join)
   end
 
   def down
