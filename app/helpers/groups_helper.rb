@@ -12,17 +12,18 @@ module GroupsHelper
   end
 
   def group_title(group, name = nil, url = nil)
+    @has_group_title = true
     full_title = ''
 
     group.ancestors.each do |parent|
-      full_title += link_to(simple_sanitize(parent.name), group_path(parent))
-      full_title += ' / '.html_safe
+      full_title += link_to(simple_sanitize(parent.name), group_path(parent), class: 'group-path hidable')
+      full_title += '<span class="hidable"> / </span>'.html_safe
     end
 
-    full_title += link_to(simple_sanitize(group.name), group_path(group))
-    full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url) if name
+    full_title += link_to(simple_sanitize(group.name), group_path(group), class: 'group-path')
+    full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url, class: 'group-path') if name
 
-    content_tag :span do
+    content_tag :span, class: 'group-title' do
       full_title.html_safe
     end
   end

@@ -1,8 +1,9 @@
-/* eslint-disable no-new, no-param-reassign */
-/* global Vue, CommitsPipelineStore, PipelinesService, Flash */
+/* eslint-disable no-param-reassign */
+import CommitPipelinesTable from './pipelines_table';
 
 window.Vue = require('vue');
-require('./pipelines_table');
+window.Vue.use(require('vue-resource'));
+
 /**
  * Commits View > Pipelines Tab > Pipelines Table.
  * Merge Request View > Pipelines Tab > Pipelines Table.
@@ -21,7 +22,7 @@ $(() => {
   }
 
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
-  gl.commits.pipelines.PipelinesTableBundle = new gl.commits.pipelines.PipelinesTableView();
+  gl.commits.pipelines.PipelinesTableBundle = new CommitPipelinesTable();
 
   if (pipelineTableViewEl && pipelineTableViewEl.dataset.disableInitialization === undefined) {
     gl.commits.pipelines.PipelinesTableBundle.$mount(pipelineTableViewEl);

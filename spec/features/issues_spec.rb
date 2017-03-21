@@ -6,7 +6,7 @@ describe 'Issues', feature: true do
   include SortingHelper
   include WaitForAjax
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :public) }
 
   before do
     login_as :user
@@ -565,6 +565,24 @@ describe 'Issues', feature: true do
   end
 
   describe 'new issue' do
+    context 'by unauthenticated user' do
+      before do
+        logout
+      end
+
+      it 'redirects to signin then back to new issue after signin' do
+        visit namespace_project_issues_path(project.namespace, project)
+
+        click_link 'New issue'
+
+        expect(current_path).to eq new_user_session_path
+
+        login_as :user
+
+        expect(current_path).to eq new_namespace_project_issue_path(project.namespace, project)
+      end
+    end
+
     context 'dropzone upload file', js: true do
       before do
         visit new_namespace_project_issue_path(project.namespace, project)

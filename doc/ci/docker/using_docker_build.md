@@ -298,14 +298,14 @@ could look like:
    - docker:dind
    stage: build
    script:
-     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.example.com
+     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.example.com
      - docker build -t registry.example.com/group/project:latest .
      - docker push registry.example.com/group/project:latest
 ```
 
 You have to use the special `gitlab-ci-token` user created for you in order to
 push to the Registry connected to your project. Its password is provided in the
-`$CI_BUILD_TOKEN` variable. This allows you to automate building and deployment
+`$CI_JOB_TOKEN` variable. This allows you to automate building and deployment
 of your Docker images.
 
 You can also make use of [other variables](../variables/README.md) to avoid hardcoding:
@@ -315,10 +315,10 @@ services:
   - docker:dind
 
 variables:
-  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+  - docker login -u gitlab-ci-token -p $CI_COMMIT_TOKEN $CI_REGISTRY
 
 build:
   stage: build
@@ -328,7 +328,7 @@ build:
 ```
 
 Here, `$CI_REGISTRY_IMAGE` would be resolved to the address of the registry tied
-to this project, and `$CI_BUILD_REF_NAME` would be resolved to the branch or
+to this project, and `$CI_COMMIT_REF_NAME` would be resolved to the branch or
 tag name for this particular job. We also declare our own variable, `$IMAGE_TAG`,
 combining the two to save us some typing in the `script` section.
 
@@ -350,11 +350,11 @@ stages:
 - deploy
 
 variables:
-  CONTAINER_TEST_IMAGE: registry.example.com/my-group/my-project:$CI_BUILD_REF_NAME
+  CONTAINER_TEST_IMAGE: registry.example.com/my-group/my-project:$CI_COMMIT_REF_NAME
   CONTAINER_RELEASE_IMAGE: registry.example.com/my-group/my-project:latest
 
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.example.com
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.example.com
 
 build:
   stage: build

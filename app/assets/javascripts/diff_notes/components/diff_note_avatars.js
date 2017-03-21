@@ -25,6 +25,7 @@ import collapseIcon from '../icons/collapse_icon.svg';
             role="button"
             data-container="body"
             data-placement="top"
+            data-html="true"
             :data-line-type="lineType"
             :title="note.authorName + ': ' + note.noteTruncated"
             :src="note.authorAvatar"

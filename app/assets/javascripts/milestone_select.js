@@ -19,7 +19,7 @@
       }
 
       $els.each(function(i, dropdown) {
-        var $block, $dropdown, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, collapsedSidebarLabelTemplate, defaultLabel, issuableId, issueUpdateURL, milestoneLinkNoneTemplate, milestoneLinkTemplate, milestonesUrl, projectId, selectedMilestone, showAny, showNo, showUpcoming, useId, showMenuAbove;
+        var $block, $dropdown, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, collapsedSidebarLabelTemplate, defaultLabel, issuableId, issueUpdateURL, milestoneLinkNoneTemplate, milestoneLinkTemplate, milestonesUrl, projectId, selectedMilestone, showAny, showNo, showUpcoming, showStarted, useId, showMenuAbove;
         $dropdown = $(dropdown);
         projectId = $dropdown.data('project-id');
         milestonesUrl = $dropdown.data('milestones');
@@ -29,6 +29,7 @@
         showAny = $dropdown.data('show-any');
         showMenuAbove = $dropdown.data('showMenuAbove');
         showUpcoming = $dropdown.data('show-upcoming');
+        showStarted = $dropdown.data('show-started');
         useId = $dropdown.data('use-id');
         defaultLabel = $dropdown.data('default-label');
         issuableId = $dropdown.data('issuable-id');
@@ -69,6 +70,13 @@
                   id: -2,
                   name: '#upcoming',
                   title: 'Upcoming'
+                });
+              }
+              if (showStarted) {
+                extraOptions.push({
+                  id: -3,
+                  name: '#started',
+                  title: 'Started'
                 });
               }
               if (extraOptions.length) {
@@ -151,7 +159,7 @@
               }
 
               $dropdown.trigger('loading.gl.dropdown');
-              $loading.fadeIn();
+              $loading.removeClass('hidden').fadeIn();
 
               gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
                 .then(function () {
@@ -163,7 +171,7 @@
               data = {};
               data[abilityName] = {};
               data[abilityName].milestone_id = selected != null ? selected : null;
-              $loading.fadeIn();
+              $loading.removeClass('hidden').fadeIn();
               $dropdown.trigger('loading.gl.dropdown');
               return $.ajax({
                 type: 'PUT',

@@ -57,10 +57,24 @@ class Issue < ActiveRecord::Base
     state :opened
     state :reopened
     state :closed
+
+    before_transition any => :closed do |issue|
+      issue.closed_at = Time.zone.now
+    end
+
+    before_transition closed: any do |issue|
+      issue.closed_at = nil
+    end
   end
 
   def hook_attrs
-    attributes
+    attrs = {
+      total_time_spent: total_time_spent,
+      human_total_time_spent: human_total_time_spent,
+      human_time_estimate: human_time_estimate
+    }
+
+    attributes.merge!(attrs)
   end
 
   def self.reference_prefix

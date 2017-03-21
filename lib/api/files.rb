@@ -52,7 +52,7 @@ module API
     params do
       requires :id, type: String, desc: 'The project ID'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'Get raw file contents from the repository'
       params do
         requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'

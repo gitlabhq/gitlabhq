@@ -1,4 +1,3 @@
-import PrometheusGraph from './monitoring/prometheus_graph'; // TODO: Maybe Make this a bundle
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
 /* global UsernameValidator */
 /* global ActiveTabMemoizer */
@@ -37,6 +36,7 @@ import PrometheusGraph from './monitoring/prometheus_graph'; // TODO: Maybe Make
 import Issue from './issue';
 
 import BindInOut from './behaviors/bind_in_out';
+import GroupName from './group_name';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
@@ -200,10 +200,13 @@ const UserCallout = require('./user_callout');
           new gl.Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
+          new MiniPipelineGraph({
+            container: '.js-commit-pipeline-graph',
+          }).bindEvents();
           break;
         case 'projects:commit:pipelines':
           new MiniPipelineGraph({
-            container: '.js-pipeline-table',
+            container: '.js-commit-pipeline-graph',
           }).bindEvents();
           break;
         case 'projects:commits:show':
@@ -325,8 +328,6 @@ const UserCallout = require('./user_callout');
         case 'ci:lints:show':
           new gl.CILintEditor();
           break;
-        case 'projects:environments:metrics':
-          new PrometheusGraph();
         case 'users:show':
           new UserCallout();
           break;
@@ -368,6 +369,9 @@ const UserCallout = require('./user_callout');
           shortcut_handler = new ShortcutsDashboardNavigation();
           new UserCallout();
           break;
+        case 'groups':
+          new GroupName();
+          break;
         case 'profiles':
           new NotificationsForm();
           new NotificationsDropdown();
@@ -375,6 +379,7 @@ const UserCallout = require('./user_callout');
         case 'projects':
           new Project();
           new ProjectAvatar();
+          new GroupName();
           switch (path[1]) {
             case 'compare':
               new CompareAutocomplete();

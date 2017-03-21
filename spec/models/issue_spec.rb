@@ -37,6 +37,30 @@ describe Issue, models: true do
     end
   end
 
+  describe '#closed_at' do
+    after do
+      Timecop.return
+    end
+
+    let!(:now) { Timecop.freeze(Time.now) }
+
+    it 'sets closed_at to Time.now when issue is closed' do
+      issue = create(:issue, state: 'opened')
+
+      issue.close
+
+      expect(issue.closed_at).to eq(now)
+    end
+
+    it 'sets closed_at to nil when issue is reopened' do
+      issue = create(:issue, state: 'closed')
+
+      issue.reopen
+
+      expect(issue.closed_at).to be_nil
+    end
+  end
+
   describe '#to_reference' do
     let(:namespace) { build(:namespace, path: 'sample-namespace') }
     let(:project)   { build(:empty_project, name: 'sample-project', namespace: namespace) }
@@ -633,6 +657,17 @@ describe Issue, models: true do
 
         expect(issue).not_to be_falsy
       end
+    end
+  end
+
+  describe '#hook_attrs' do
+    let(:attrs_hash) { subject.hook_attrs }
+
+    it 'includes time tracking attrs' do
+      expect(attrs_hash).to include(:total_time_spent)
+      expect(attrs_hash).to include(:human_time_estimate)
+      expect(attrs_hash).to include(:human_total_time_spent)
+      expect(attrs_hash).to include('time_estimate')
     end
   end
 end

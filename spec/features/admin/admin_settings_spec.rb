@@ -9,6 +9,13 @@ feature 'Admin updates settings', feature: true do
     visit admin_application_settings_path
   end
 
+  scenario 'Change visibility settings' do
+    choose "application_setting_default_project_visibility_20"
+    click_button 'Save'
+
+    expect(page).to have_content "Application settings saved successfully"
+  end
+
   scenario 'Change application settings' do
     uncheck 'Gravatar enabled'
     fill_in 'Home page URL', with: 'https://about.gitlab.com/'
@@ -26,7 +33,7 @@ feature 'Admin updates settings', feature: true do
     fill_in 'Webhook', with: 'http://localhost'
     fill_in 'Username', with: 'test_user'
     fill_in 'service_push_channel', with: '#test_channel'
-    page.check('Notify only broken builds')
+    page.check('Notify only broken pipelines')
 
     check_all_events
     click_on 'Save'
@@ -50,7 +57,6 @@ feature 'Admin updates settings', feature: true do
     page.check('Note')
     page.check('Issue')
     page.check('Merge request')
-    page.check('Build')
     page.check('Pipeline')
   end
 end

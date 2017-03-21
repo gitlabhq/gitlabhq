@@ -1,5 +1,6 @@
 /* global Vue */
 /* global ListIssue */
+import queryData from '../../utils/query_data';
 
 require('./header');
 require('./list');
@@ -47,9 +48,6 @@ require('./empty_state');
       page() {
         this.loadIssues();
       },
-      searchTerm() {
-        this.searchOperation();
-      },
       showAddIssuesModal() {
         if (this.showAddIssuesModal && !this.issues.length) {
           this.loading = true;
@@ -66,25 +64,20 @@ require('./empty_state');
       },
       filter: {
         handler() {
+          this.page = 1;
           this.loadIssues(true);
         },
         deep: true,
       },
     },
     methods: {
-      searchOperation: _.debounce(function searchOperationDebounce() {
-        this.loadIssues(true);
-      }, 500),
       loadIssues(clearIssues = false) {
         if (!this.showAddIssuesModal) return false;
 
-        const queryData = Object.assign({}, this.filter, {
-          search: this.searchTerm,
+        return gl.boardService.getBacklog(queryData(this.filter.path, {
           page: this.page,
           per: this.perPage,
-        });
-
-        return gl.boardService.getBacklog(queryData).then((res) => {
+        })).then((res) => {
           const data = res.json();
 
           if (clearIssues) {
@@ -122,6 +115,9 @@ require('./empty_state');
 
         return this.activeTab === 'selected' && this.selectedIssues.length === 0;
       },
+    },
+    created() {
+      this.page = 1;
     },
     components: {
       'modal-header': gl.issueBoards.ModalHeader,

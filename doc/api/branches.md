@@ -3,6 +3,8 @@
 ## List repository branches
 
 Get a list of repository branches from a project, sorted by name alphabetically.
+This endpoint can be accessed without authentication if the repository is
+publicly accessible.
 
 ```
 GET /projects/:id/repository/branches
@@ -48,7 +50,8 @@ Example response:
 
 ## Get single repository branch
 
-Get a single project repository branch.
+Get a single project repository branch. This endpoint can be accessed without
+authentication if the repository is publicly accessible.
 
 ```
 GET /projects/:id/repository/branches/:branch

@@ -306,6 +306,11 @@ a > code {
  * Textareas intended for GFM
  *
  */
+textarea.js-gfm-input {
+  font-family: $monospace_font;
+  font-size: 13px;
+}
+
 .strikethrough {
   text-decoration: line-through;
 }

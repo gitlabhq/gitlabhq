@@ -12,7 +12,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       ISSUABLE_TYPES.each do |type, finder|
         type_id_str = "#{type.singularize}_iid".to_sym
 

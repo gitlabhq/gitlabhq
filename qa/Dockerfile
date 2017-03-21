@@ -8,7 +8,10 @@ RUN sed -i "s/httpredir.debian.org/ftp.us.debian.org/" /etc/apt/sources.list && 
 
 WORKDIR /home/qa
 
-COPY ./ ./
+COPY ./Gemfile* ./
+
 RUN bundle install
+
+COPY ./ ./
 
 ENTRYPOINT ["bin/test"]

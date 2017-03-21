@@ -31,6 +31,7 @@ module HasStatus
         WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN 'pending'
         WHEN (#{running})+(#{pending})>0 THEN 'running'
         WHEN (#{manual})>0 THEN 'manual'
+        WHEN (#{created})>0 THEN 'running'
         ELSE 'failed'
       END)"
     end

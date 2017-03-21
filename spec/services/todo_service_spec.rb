@@ -298,6 +298,10 @@ describe TodoService, services: true do
         expect(second_todo.reload.state?(new_state)).to be true
       end
 
+      it 'returns the updated ids' do
+        expect(service.send(meth, collection, john_doe)).to match_array([first_todo.id, second_todo.id])
+      end
+
       describe 'cached counts' do
         it 'updates when todos change' do
           expect(john_doe.todos.where(state: new_state).count).to eq(0)
@@ -706,7 +710,7 @@ describe TodoService, services: true do
         should_create_todo(user: admin, author: admin, target: mr_unassigned, action: Todo::UNMERGEABLE)
       end
     end
-    
+
     describe '#mark_todo' do
       it 'creates a todo from a merge request' do
         service.mark_todo(mr_unassigned, author)
@@ -779,29 +783,27 @@ describe TodoService, services: true do
         .to change { todo.reload.state }.from('pending').to('done')
     end
 
-    it 'returns the number of updated todos' do # Needed on API
+    it 'returns the ids of updated todos' do # Needed on API
       todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
 
-      expect(TodoService.new.mark_todos_as_done([todo], john_doe)).to eq(1)
+      expect(TodoService.new.mark_todos_as_done([todo], john_doe)).to eq([todo.id])
     end
 
     context 'when some of the todos are done already' do
-      before do
-        create(:todo, :mentioned, user: john_doe, target: issue, project: project)
-        create(:todo, :mentioned, user: john_doe, target: another_issue, project: project)
-      end
+      let!(:first_todo) { create(:todo, :mentioned, user: john_doe, target: issue, project: project) }
+      let!(:second_todo) { create(:todo, :mentioned, user: john_doe, target: another_issue, project: project) }
 
-      it 'returns the number of those still pending' do
+      it 'returns the ids of those still pending' do
         TodoService.new.mark_pending_todos_as_done(issue, john_doe)
 
-        expect(TodoService.new.mark_todos_as_done(Todo.all, john_doe)).to eq(1)
+        expect(TodoService.new.mark_todos_as_done(Todo.all, john_doe)).to eq([second_todo.id])
       end
 
-      it 'returns 0 if all are done' do
+      it 'returns an empty array if all are done' do
         TodoService.new.mark_pending_todos_as_done(issue, john_doe)
         TodoService.new.mark_pending_todos_as_done(another_issue, john_doe)
 
-        expect(TodoService.new.mark_todos_as_done(Todo.all, john_doe)).to eq(0)
+        expect(TodoService.new.mark_todos_as_done(Todo.all, john_doe)).to eq([])
       end
     end
 

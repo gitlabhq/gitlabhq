@@ -6,7 +6,7 @@ module MergeRequests
       merge_request.source_project  = find_source_project
       merge_request.target_project  = find_target_project
       merge_request.target_branch   = find_target_branch
-      merge_request.can_be_created  = branches_valid? && source_branch_specified? && target_branch_specified?
+      merge_request.can_be_created  = branches_valid?
 
       compare_branches if branches_present?
       assign_title_and_description if merge_request.can_be_created

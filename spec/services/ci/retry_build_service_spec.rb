@@ -19,7 +19,7 @@ describe Ci::RetryBuildService, :services do
        erased_at].freeze
 
   IGNORE_ACCESSORS =
-    %i[type lock_version target_url gl_project_id deploy job_id base_tags
+    %i[type lock_version target_url base_tags
        commit_id deployments erased_by_id last_deployment project_id
        runner_id tag_taggings taggings tags trigger_request_id
        user_id].freeze

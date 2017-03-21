@@ -2,6 +2,11 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 8.17.4 (2017-03-19)
+
+- Only show public emails in atom feeds.
+- To protect against Server-side Request Forgery project import URLs are now prohibited against localhost or the server IP except for the assigned instance URL and port. Imports are also prohibited from ports below 1024 with the exception of ports 22, 80, and 443.
+
 ## 8.17.3 (2017-03-07)
 
 - Fix the redirect to custom home page URL. !9518
@@ -210,6 +215,11 @@ entry.
 - Remove deprecated GitlabCiService.
 - Requeue pending deletion projects.
 
+## 8.16.8 (2017-03-19)
+
+- Only show public emails in atom feeds.
+- To protect against Server-side Request Forgery project import URLs are now prohibited against localhost or the server IP except for the assigned instance URL and port. Imports are also prohibited from ports below 1024 with the exception of ports 22, 80, and 443.
+
 ## 8.16.7 (2017-02-27)
 
 - No changes.
@@ -410,6 +420,11 @@ entry.
 - 26504 Fix styling of MR jump to discussion button.
 - Add margin to markdown math blocks.
 - Add hover state to MR comment reply button.
+
+## 8.15.8 (2017-03-19)
+
+- Only show public emails in atom feeds.
+- To protect against Server-side Request Forgery project import URLs are now prohibited against localhost or the server IP except for the assigned instance URL and port. Imports are also prohibited from ports below 1024 with the exception of ports 22, 80, and 443.
 
 ## 8.15.7 (2017-02-15)
 

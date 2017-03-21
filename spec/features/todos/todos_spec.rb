@@ -31,7 +31,7 @@ describe 'Dashboard Todos', feature: true do
       end
 
       it 'shows due date as today' do
-        page.within first('.todo') do
+        within first('.todo') do
           expect(page).to have_content 'Due today'
         end
       end
@@ -183,6 +183,60 @@ describe 'Dashboard Todos', feature: true do
           expect(page).to have_content 'To do 0'
           expect(page).to have_content "You're all done!"
           expect(page).not_to have_selector('.gl-pagination')
+        end
+
+        it 'shows "Undo mark all as done" button' do
+          expect(page).to have_selector('.js-todos-mark-all', visible: false)
+          expect(page).to have_selector('.js-todos-undo-all', visible: true)
+        end
+      end
+
+      describe 'undo mark all as done', js: true do
+        before do
+          visit dashboard_todos_path
+        end
+
+        it 'shows the restored todo list' do
+          mark_all_and_undo
+
+          expect(page).to have_selector('.todos-list .todo', count: 1)
+          expect(page).to have_selector('.gl-pagination')
+          expect(page).not_to have_content "You're all done!"
+        end
+
+        it 'updates todo count' do
+          mark_all_and_undo
+
+          expect(page).to have_content 'To do 2'
+          expect(page).to have_content 'Done 0'
+        end
+
+        it 'shows "Mark all as done" button' do
+          mark_all_and_undo
+
+          expect(page).to have_selector('.js-todos-mark-all', visible: true)
+          expect(page).to have_selector('.js-todos-undo-all', visible: false)
+        end
+
+        context 'User has deleted a todo' do
+          before do
+            within first('.todo') do
+              click_link 'Done'
+            end
+          end
+
+          it 'shows the restored todo list with the deleted todo' do
+            mark_all_and_undo
+
+            expect(page).to have_selector('.todos-list .todo.todo-pending', count: 1)
+          end
+        end
+
+        def mark_all_and_undo
+          click_link 'Mark all as done'
+          wait_for_ajax
+          click_link 'Undo mark all as done'
+          wait_for_ajax
         end
       end
     end

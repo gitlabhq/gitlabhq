@@ -87,6 +87,12 @@ describe Projects::IssuesController do
   end
 
   describe 'GET #new' do
+    it 'redirects to signin if not logged in' do
+      get :new, namespace_id: project.namespace, project_id: project
+
+      expect(response).to redirect_to(new_user_session_path)
+    end
+
     context 'internal issue tracker' do
       before do
         sign_in(user)
@@ -121,6 +127,11 @@ describe Projects::IssuesController do
     end
 
     context 'external issue tracker' do
+      before do
+        sign_in(user)
+        project.team << [user, :developer]
+      end
+
       it 'redirects to the external issue tracker' do
         external = double(new_issue_path: 'https://example.com/issues/new')
         allow(project).to receive(:external_issue_tracker).and_return(external)
@@ -140,6 +151,24 @@ describe Projects::IssuesController do
     end
 
     it_behaves_like 'update invalid issuable', Issue
+
+    context 'changing the assignee' do
+      it 'limits the attributes exposed on the assignee' do
+        assignee = create(:user)
+        project.add_developer(assignee)
+
+        put :update,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: issue.iid,
+          issue: { assignee_id: assignee.id },
+          format: :json
+        body = JSON.parse(response.body)
+
+        expect(body['assignee'].keys)
+          .to match_array(%w(name username avatar_url))
+      end
+    end
 
     context 'when moving issue to another private project' do
       let(:another_project) { create(:empty_project, :private) }

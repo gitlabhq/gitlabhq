@@ -23,7 +23,7 @@
               href="#"
               role="button"
               @click.prevent="changeTab('all')">
-              All issues
+              Open issues
               <span class="badge">
                 {{ issuesCount }}
               </span>

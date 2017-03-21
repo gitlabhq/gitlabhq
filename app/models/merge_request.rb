@@ -7,6 +7,7 @@ class MergeRequest < ActiveRecord::Base
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
+  belongs_to :project, foreign_key: :target_project_id
   belongs_to :merge_user, class_name: "User"
 
   has_many :merge_request_diffs, dependent: :destroy
@@ -523,7 +524,10 @@ class MergeRequest < ActiveRecord::Base
       source: source_project.try(:hook_attrs),
       target: target_project.hook_attrs,
       last_commit: nil,
-      work_in_progress: work_in_progress?
+      work_in_progress: work_in_progress?,
+      total_time_spent: total_time_spent,
+      human_total_time_spent: human_total_time_spent,
+      human_time_estimate: human_time_estimate
     }
 
     if diff_head_commit
@@ -535,10 +539,6 @@ class MergeRequest < ActiveRecord::Base
 
   def for_fork?
     target_project != source_project
-  end
-
-  def project
-    target_project
   end
 
   # If the merge request closes any issues, save this information in the
