@@ -120,7 +120,7 @@ namespace :gitlab do
 
       #### Check if this task has already been run ####
       mapping = client.indices.get(index: Project.index_name)
-      project_fields = mapping['gitlab-development']['mappings']['project']['properties'].keys
+      project_fields = mapping[Project.index_name]['mappings']['project']['properties'].keys
 
       if project_fields.include?('issues_access_level')
         puts 'Index mapping is already up to date'.color(:yellow)
