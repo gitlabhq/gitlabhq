@@ -12,6 +12,7 @@ export default class MergeRequestStore {
 
     const currentUser = data.current_user;
 
+    this.title = data.title;
     this.targetBranch = data.target_branch;
     this.sourceBranch = data.source_branch;
     this.mergeStatus = data.merge_status;

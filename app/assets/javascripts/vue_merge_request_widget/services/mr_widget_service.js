@@ -7,6 +7,7 @@ export default class MRWidgetService {
   constructor(mr) {
     this.mergeResource = Vue.resource(mr.mergePath);
     this.cancelAutoMergeResource = Vue.resource(mr.cancelAutoMergePath);
+    this.removeWIPResource = Vue.resource(mr.removeWIPPath);
   }
 
   merge(data) {
@@ -15,6 +16,10 @@ export default class MRWidgetService {
 
   cancelAutomaticMerge() {
     return this.cancelAutoMergeResource.save();
+  }
+
+  removeWIP() {
+    return this.removeWIPResource.save();
   }
 
 }
