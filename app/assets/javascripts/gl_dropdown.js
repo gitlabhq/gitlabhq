@@ -348,7 +348,7 @@ GitLabDropdown = (function() {
         selectedObj = selected ? selected[0] : null;
         isMarking = selected ? selected[1] : null;
         if (self.options.clicked) {
-          self.options.clicked(selectedObj, $el, e, isMarking);
+          self.options.clicked(selectedObj, $el, e, isMarking, self);
         }
 
         // Update label right after all modifications in dropdown has been done
@@ -724,6 +724,13 @@ GitLabDropdown = (function() {
     if (this.options.inputId != null) {
       $input.attr('id', this.options.inputId);
     }
+
+    if (this.options.saveUserDataToInput) {
+      $input.attr('data-name', selectedObject.name);
+      $input.attr('data-username', selectedObject.username);
+      $input.attr('data-avatar-url', selectedObject.avatar_url);
+    }
+
     return this.dropdown.before($input);
   };
 

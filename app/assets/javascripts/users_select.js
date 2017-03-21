@@ -166,9 +166,39 @@
                     };
                     users.unshift(anyUser);
                   }
-                }
-                if (showDivider) {
-                  users.splice(showDivider, 0, "divider");
+
+                  if (showDivider) {
+                    users.splice(showDivider, 0, "divider");
+                  }
+
+
+                  if ($dropdown.hasClass('js-multiselect')) {
+                    const selected = $selectbox
+                      .find('input[name="' + $dropdown.data('field-name') + '"]')
+                      .map(function () {
+                        return parseInt(this.value, 10);
+                      })
+                      .get()
+                      .filter((i) => i !== 0);
+
+                    // const unassignedSelected = selected.length === 1 && selected[0] === 0;
+//  && !unassignedSelected
+                    if (selected.length > 0) {
+                      const selectedUsers = users
+                        .filter((u) => selected.indexOf(u.id) !== -1)
+                        .sort((a, b) => a.name > b.name);
+
+                      users = users.filter((u) => selected.indexOf(u.id) === -1);
+
+                      selectedUsers.forEach((selectedUser) => {
+                        showDivider += 1;
+                        users.splice(showDivider, 0, selectedUser);
+                      });
+
+                      users.splice(showDivider + 1, 0, 'divider');
+                    }
+                  }
+
                 }
 
                 callback(users);
@@ -184,7 +214,14 @@
             },
             selectable: true,
             fieldName: $dropdown.data('field-name'),
-            toggleLabel: function(selected, el) {
+            toggleLabel: function(selected, el, glDropdown) {
+              if (this.multiSelect) {
+                  // debugger
+                // Update the data model
+                // debugger
+                this.data(glDropdown.filterInput.val(), glDropdown.parseData.bind(glDropdown));
+              }
+
               if (selected && 'id' in selected && $(el).hasClass('is-active')) {
                 if (selected.text) {
                   return selected.text;
@@ -197,14 +234,35 @@
             },
             defaultLabel: defaultLabel,
             // inputId: 'issue_assignee_id',
+
             hidden: function(e) {
               $selectbox.hide();
               // display:block overrides the hide-collapse rule
               return $value.css('display', '');
             },
             multiSelect: $dropdown.hasClass('js-multiselect'),
+            saveUserDataToInput: $dropdown.hasClass('js-save-user-data'),
             vue: $dropdown.hasClass('js-issue-board-sidebar'),
-            clicked: function(user, $el, e) {
+            clicked: function(user, $el, e, isMarking, glDropdown) {
+              if ($dropdown.hasClass('js-multiselect')) {
+
+                const isActive = $el.hasClass('is-active');
+                const previouslySelected = $dropdown.closest('.selectbox')
+                    .find("input[name='" + ($dropdown.data('field-name')) + "'][value!=0]");
+
+                if (user.beforeDivider && user.name.toLowerCase() === 'unassigned') {
+                  previouslySelected.each((index, element) => element.remove());
+                } else if (isActive) {
+                  const unassignedSelected = $dropdown.closest('.selectbox')
+                    .find("input[name='" + ($dropdown.data('field-name')) + "'][value=0]");
+
+                  if (unassignedSelected) {
+                    unassignedSelected.remove();
+                  }
+                } else if (!isActive && previouslySelected.length === 0) {
+                  glDropdown.addInput($dropdown.data('field-name'), 0, {});
+                }
+              }
 
               var isIssueIndex, isMRIndex, page, selected;
               page = $('body').data('page');

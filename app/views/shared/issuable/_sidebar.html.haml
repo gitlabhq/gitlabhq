@@ -61,9 +61,9 @@
 
         .selectbox.hide-collapsed
           - issuable.assignees.each do |assignee|
-            = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil
+            = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil, data: { name: assignee.name, username: assignee.username, 'avatar-url' => assignee.avatar_url }
           - if issuable.instance_of?(Issue)
-            = dropdown_tag('Select assignee(s)', options: { toggle_class: 'js-user-search js-author-search js-multiselect', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_ids][]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true, 'dropdown-title' => 'Select assignee(s)' } })
+            = dropdown_tag('Select assignee(s)', options: { toggle_class: 'js-user-search js-author-search js-multiselect js-save-user-data', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_ids][]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true, multi_select: true, 'dropdown-title' => 'Select assignee(s)' } })
           - else
             = dropdown_tag('Select assignee', options: { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_id]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } })
 
