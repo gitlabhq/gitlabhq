@@ -15,11 +15,9 @@ module Gitlab
         raise UnmergeableFile if text.blank? # Typically a binary file
         raise UnmergeableFile if text.length > 200.kilobytes
 
-        begin
-          text.to_json
-        rescue Encoding::UndefinedConversionError
-          raise UnsupportedEncoding
-        end
+        text.force_encoding('UTF-8')
+
+        raise UnsupportedEncoding unless text.valid_encoding?
 
         line_obj_index = 0
         line_old = 1

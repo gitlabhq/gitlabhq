@@ -38,6 +38,38 @@
   }
 }
 
+.pipeline-info {
+  .status-icon-container {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 3px;
+
+    svg {
+      display: block;
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  .mr-widget-pipeline-graph {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 -6px 0 0;
+
+    .dropdown-menu {
+      margin-top: 11px;
+    }
+  }
+}
+
+.branch-info .commit-icon {
+  margin-right: 3px;
+
+  svg {
+    top: 3px;
+  }
+}
+
 /*
  * Commit message textarea for web editor and
  * custom merge request message

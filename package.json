@@ -2,9 +2,9 @@
   "private": true,
   "scripts": {
     "dev-server": "webpack-dev-server --config config/webpack.config.js",
-    "eslint": "eslint --max-warnings 0 --ext .js,.js.es6 .",
-    "eslint-fix": "eslint --max-warnings 0 --ext .js,.js.es6 --fix .",
-    "eslint-report": "eslint --max-warnings 0 --ext .js,.js.es6 --format html --output-file ./eslint-report.html .",
+    "eslint": "eslint --max-warnings 0 --ext .js .",
+    "eslint-fix": "eslint --max-warnings 0 --ext .js --fix .",
+    "eslint-report": "eslint --max-warnings 0 --ext .js --format html --output-file ./eslint-report.html .",
     "karma": "karma start config/karma.config.js --single-run",
     "karma-coverage": "BABEL_ENV=coverage karma start config/karma.config.js --single-run",
     "karma-start": "karma start config/karma.config.js",

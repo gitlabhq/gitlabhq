@@ -113,6 +113,12 @@ module Ci
       success.latest(ref).order(id: :desc).first
     end
 
+    def self.latest_successful_for_refs(refs)
+      success.latest(refs).order(id: :desc).each_with_object({}) do |pipeline, hash|
+        hash[pipeline.ref] ||= pipeline
+      end
+    end
+
     def self.truncate_sha(sha)
       sha[0...8]
     end

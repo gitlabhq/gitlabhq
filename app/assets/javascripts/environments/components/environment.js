@@ -1,21 +1,18 @@
-/* eslint-disable no-param-reassign, no-new */
+/* eslint-disable no-new */
 /* global Flash */
+import Vue from 'vue';
 import EnvironmentsService from '../services/environments_service';
 import EnvironmentTable from './environments_table';
 import EnvironmentsStore from '../stores/environments_store';
+import TablePaginationComponent from '../../vue_shared/components/table_pagination';
+import '../../lib/utils/common_utils';
 import eventHub from '../event_hub';
-
-const Vue = window.Vue = require('vue');
-window.Vue.use(require('vue-resource'));
-require('../../vue_shared/components/table_pagination');
-require('../../lib/utils/common_utils');
-require('../../vue_shared/vue_resource_interceptor');
 
 export default Vue.component('environment-component', {
 
   components: {
     'environment-table': EnvironmentTable,
-    'table-pagination': gl.VueGlPagination,
+    'table-pagination': TablePaginationComponent,
   },
 
   data() {
@@ -70,7 +67,6 @@ export default Vue.component('environment-component', {
     shouldRenderPagination() {
       return this.state.paginationInformation && this.state.paginationInformation.totalPages > 1;
     },
-
   },
 
   /**

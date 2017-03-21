@@ -26,6 +26,14 @@ describe "Compare", js: true do
       click_button "Compare"
       expect(page).to have_content "Commits"
     end
+
+    it "filters branches" do
+      select_using_dropdown("from", "wip")
+
+      find(".js-compare-from-dropdown .compare-dropdown-toggle").click
+
+      expect(find(".js-compare-from-dropdown .dropdown-content")).to have_selector("li", count: 3)
+    end
   end
 
   describe "tags" do

@@ -14,7 +14,7 @@ module API
         requires :id, type: String, desc: 'The ID of a project'
         requires :subscribable_id, type: String, desc: 'The ID of a resource'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         subscribable_types.each do |type, finder|
           type_singularized = type.singularize
           entity_class = ::API::Entities.const_get(type_singularized.camelcase)

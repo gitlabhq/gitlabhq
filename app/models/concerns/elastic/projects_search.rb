@@ -8,7 +8,7 @@ module Elastic
       snippets_access_level
       wiki_access_level
       repository_access_level
-    )
+    ).freeze
 
     included do
       include ApplicationSearch

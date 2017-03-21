@@ -200,7 +200,7 @@ describe Ci::CreatePipelineService, services: true do
 
     context 'with environment' do
       before do
-        config = YAML.dump(deploy: { environment: { name: "review/$CI_BUILD_REF_NAME" }, script: 'ls' })
+        config = YAML.dump(deploy: { environment: { name: "review/$CI_COMMIT_REF_NAME" }, script: 'ls' })
         stub_ci_pipeline_yaml_file(config)
       end
 

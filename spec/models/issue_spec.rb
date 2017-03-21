@@ -659,4 +659,15 @@ describe Issue, models: true do
       end
     end
   end
+
+  describe '#hook_attrs' do
+    let(:attrs_hash) { subject.hook_attrs }
+
+    it 'includes time tracking attrs' do
+      expect(attrs_hash).to include(:total_time_spent)
+      expect(attrs_hash).to include(:human_time_estimate)
+      expect(attrs_hash).to include(:human_total_time_spent)
+      expect(attrs_hash).to include('time_estimate')
+    end
+  end
 end

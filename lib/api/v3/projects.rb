@@ -238,7 +238,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects, requirements: { id: /[^\/]+/ } do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         desc 'Get a single project' do
           success ::API::V3::Entities::ProjectWithAccess
         end

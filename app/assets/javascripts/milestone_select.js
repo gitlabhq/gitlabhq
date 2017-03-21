@@ -181,7 +181,7 @@
               }
 
               $dropdown.trigger('loading.gl.dropdown');
-              $loading.fadeIn();
+              $loading.removeClass('hidden').fadeIn();
 
               gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
                 .then(function () {
@@ -193,7 +193,7 @@
               data = {};
               data[abilityName] = {};
               data[abilityName].milestone_id = selected != null ? selected : null;
-              $loading.fadeIn();
+              $loading.removeClass('hidden').fadeIn();
               $dropdown.trigger('loading.gl.dropdown');
               return $.ajax({
                 type: 'PUT',

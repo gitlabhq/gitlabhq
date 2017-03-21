@@ -63,7 +63,7 @@ stages:
   <<: *dedicated-runner
   <<: *use-db
   script:
-    - JOB_NAME=( $CI_BUILD_NAME )
+    - JOB_NAME=( $CI_JOB_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
     - export KNAPSACK_REPORT_PATH=knapsack/rspec_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
@@ -83,7 +83,7 @@ stages:
   <<: *dedicated-runner
   <<: *use-db
   script:
-    - JOB_NAME=( $CI_BUILD_NAME )
+    - JOB_NAME=( $CI_JOB_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[1]}
     - export CI_NODE_TOTAL=${JOB_NAME[2]}
     - export KNAPSACK_REPORT_PATH=knapsack/spinach_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
@@ -185,7 +185,7 @@ spinach 9 10: *spinach-knapsack
   <<: *dedicated-runner
   stage: test
   script:
-    - bundle exec $CI_BUILD_NAME
+    - bundle exec $CI_JOB_NAME
 
 rubocop:
   <<: *ruby-static-analysis
@@ -317,7 +317,7 @@ migration paths:
     - sed -i 's/localhost/redis/g' config/resque.yml
     - bundle install --without postgres production --jobs $(nproc) $FLAGS --retry=3
     - bundle exec rake db:drop db:create db:schema:load db:seed_fu
-    - git checkout $CI_BUILD_REF
+    - git checkout $CI_COMMIT_SHA
     - source scripts/prepare_build.sh
     - bundle exec rake db:migrate
 
@@ -355,7 +355,7 @@ lint:javascript:report:
   stage: post-test
   before_script: []
   script:
-    - find app/ spec/ -name '*.js' -or -name '*.js.es6' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
+    - find app/ spec/ -name '*.js' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
     - yarn run eslint-report || true # ignore exit code
   artifacts:
     name: eslint-report
@@ -381,7 +381,6 @@ trigger_docs:
     - master@gitlab-org/gitlab-ee
 
 # Notify slack in the end
-
 notify:slack:
   stage: post-test
   <<: *dedicated-runner
@@ -389,7 +388,7 @@ notify:slack:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
   script:
-    - ./scripts/notify_slack.sh "#development" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/pipelines>"
+    - ./scripts/notify_slack.sh "#development" "Build on \`$CI_COMMIT_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_COMMIT_SHA"/pipelines>"
   when: on_failure
   only:
     - master@gitlab-org/gitlab-ce

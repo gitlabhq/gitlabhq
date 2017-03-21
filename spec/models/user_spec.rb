@@ -719,7 +719,9 @@ describe User, models: true do
 
     let!(:user) { create(:user, name: 'John Doe', username: 'john.doe', email: 'john.doe@example.com' ) }
     let!(:another_user) { create(:user, name: 'Albert Smith', username: 'albert.smith', email: 'albert.smith@example.com' ) }
-    let!(:email) { create(:email, user: another_user) }
+    let!(:email) do
+      create(:email, user: another_user, email: 'alias@example.com')
+    end
 
     it 'returns users with a matching name' do
       expect(search_with_secondary_emails(user.name)).to eq([user])

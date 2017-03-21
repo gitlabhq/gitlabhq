@@ -81,7 +81,8 @@ module Elastic
                        should: [
                          { term: { author_id: user.id } },
                          { terms: { project_id: user.authorized_projects.pluck(:id) } },
-                         { bool: {
+                         {
+                           bool: {
                              filter: { terms: { visibility_level: [Snippet::PUBLIC, Snippet::INTERNAL] } },
                              must_not: { exists: { field: 'project_id' } }
                            }

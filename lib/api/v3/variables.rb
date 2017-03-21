@@ -10,7 +10,7 @@ module API
         requires :id, type: String, desc: 'The ID of a project'
       end
 
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         desc 'Delete an existing variable from a project' do
           success ::API::Entities::Variable
         end
