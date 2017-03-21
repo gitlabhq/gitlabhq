@@ -1,8 +1,10 @@
 export default class SidebarAssigneesStore {
-  constructor() {
+  constructor(currentUser) {
+    this.currentUser = currentUser;
+
     this.users = [{
       avatarUrl: 'http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon',
-      name: 'test',
+      name: 'Administrator',
       username: 'username',
     }, {
       avatarUrl: 'http://www.gravatar.com/avatar/7e65550957227bd38fe2d7fbc6fd2f7b?s=80&d=identicon',
@@ -34,6 +36,10 @@ export default class SidebarAssigneesStore {
       name,
       username,
     });
+  }
+
+  addCurrentUser() {
+    this.users.push(this.currentUser);
   }
 
   removeUser(username) {

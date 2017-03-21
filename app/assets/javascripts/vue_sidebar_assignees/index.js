@@ -15,9 +15,16 @@ const sidebarAssigneesOptions = () => ({
     const selector = this.$options.el;
     const element = document.querySelector(selector);
     const path = element.dataset.path;
+    const field = element.dataset.field;
 
-    const service = new SidebarAssigneesService(path);
-    const assignees = new SidebarAssigneesStore();
+    const currentUser = {
+      id: parseInt(element.dataset.userId, 10),
+      name: element.dataset.name,
+      username: element.dataset.username,
+    }
+
+    const service = new SidebarAssigneesService(path, field);
+    const assignees = new SidebarAssigneesStore(currentUser);
 
     return {
       assignees,

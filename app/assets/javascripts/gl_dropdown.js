@@ -844,7 +844,13 @@ GitLabDropdown = (function() {
     if (instance == null) {
       instance = null;
     }
-    return $(this.el).find(".dropdown-toggle-text").text(this.options.toggleLabel(selected, el, instance));
+
+    let toggleText = this.options.toggleLabel(selected, el, instance);
+    if (this.options.updateLabel) {
+      toggleText = this.options.updateLabel;
+    }
+
+    return $(this.el).find(".dropdown-toggle-text").text(toggleText);
   };
 
   GitLabDropdown.prototype.clearField = function(field, isInput) {

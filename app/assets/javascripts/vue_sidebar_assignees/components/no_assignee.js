@@ -6,11 +6,12 @@ export default {
   },
   methods: {
     assignSelf() {
-      // const options = {
-
-      // }
-      // this.service.save(options);
-      this.assignees.addUser();
+      this.service.add(this.assignees.currentUser.id).then((response) => {
+        const assignee = response.assignee;
+        this.assignees.addUser(assignee.name, assignee.username, assignee.avatar_url);
+      }).catch((err) => {
+        console.log('error')
+      });
     }
   },
   template: `

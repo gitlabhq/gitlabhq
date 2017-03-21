@@ -86,22 +86,25 @@
             }
           });
           assignTo = function(selected) {
+
             var data;
             data = {};
             data[abilityName] = {};
             data[abilityName].assignee_id = selected != null ? selected : null;
             $loading.fadeIn();
             $dropdown.trigger('loading.gl.dropdown');
+
             return $.ajax({
               type: 'PUT',
               dataType: 'json',
               url: issueURL,
               data: data
             }).done(function(data) {
+
               var user;
               $dropdown.trigger('loaded.gl.dropdown');
               $loading.fadeOut();
-              $selectbox.hide();
+              // $selectbox.hide();
               if (data.assignee) {
                 user = {
                   name: data.assignee.name,
@@ -193,14 +196,16 @@
               }
             },
             defaultLabel: defaultLabel,
-            inputId: 'issue_assignee_id',
+            // inputId: 'issue_assignee_id',
             hidden: function(e) {
               $selectbox.hide();
               // display:block overrides the hide-collapse rule
               return $value.css('display', '');
             },
+            multiSelect: $dropdown.hasClass('js-multiselect'),
             vue: $dropdown.hasClass('js-issue-board-sidebar'),
             clicked: function(user, $el, e) {
+
               var isIssueIndex, isMRIndex, page, selected;
               page = $('body').data('page');
               isIssueIndex = page === 'projects:issues:index';
@@ -246,29 +251,57 @@
             opened: function(e) {
               const $el = $(e.currentTarget);
               $el.find('.is-active').removeClass('is-active');
-              $el.find(`li[data-user-id="${selectedId}"] .dropdown-menu-user-link`).addClass('is-active');
+
+              const initialSelected = $selectbox
+              .find('input[name="' + $dropdown.data('field-name') + '"]')
+              .map(function () {
+                return this.value;
+              }).get().forEach((selectedId) => {
+                $el.find(`li[data-user-id="${selectedId}"] .dropdown-menu-user-link`).addClass('is-active');
+              });
             },
+            updateLabel: $dropdown.data('dropdown-title'),
             renderRow: function(user) {
               var avatar, img, listClosingTags, listWithName, listWithUserName, selected, username;
               username = user.username ? "@" + user.username : "";
               avatar = user.avatar_url ? user.avatar_url : false;
-              selected = user.id === parseInt(selectedId, 10) ? "is-active" : "";
+
+              fieldName = this.fieldName;
+              field = $dropdown.closest('.selectbox').find("input[name='" + fieldName + "'][value='" + user.id + "']");
+              // debugger
+              if (field.length) {
+                selected = true;
+              }
+
+              // selected = user.id === parseInt(selectedId, 10) ? "is-active" : "";
               img = "";
               if (user.beforeDivider != null) {
-                "<li> <a href='#' class='" + selected + "'> " + user.name + " </a> </li>";
+                `<li><a href='#' class='${selected === true ? 'is-active' : ''}'>${user.name}</a></li>`;
               } else {
                 if (avatar) {
                   img = "<img src='" + avatar + "' class='avatar avatar-inline' width='30' />";
                 }
               }
               // split into three parts so we can remove the username section if nessesary
-              listWithName = "<li data-user-id=" + user.id + "> <a href='#' class='dropdown-menu-user-link " + selected + "'> " + img + " <strong class='dropdown-menu-user-full-name'> " + user.name + " </strong>";
-              listWithUserName = "<span class='dropdown-menu-user-username'> " + username + " </span>";
-              listClosingTags = "</a> </li>";
-              if (username === '') {
-                listWithUserName = '';
-              }
-              return listWithName + listWithUserName + listClosingTags;
+              const listItem = `
+                <li data-user-id=${user.id}>
+                  <a href='#' class='dropdown-menu-user-link ${selected === true ? 'is-active' : ''}'>
+                    ${img}
+                    <strong class='dropdown-menu-user-full-name'>
+                      ${user.name}
+                    </strong>
+                    ${username ? `<span class='dropdown-menu-user-username'>${username}</span>` : ''}
+                  </a>
+                </li>
+              `;
+              // listWithUserName = "<span class='dropdown-menu-user-username'> " + username + " </span>";
+              // listClosingTags = "</a> </li>";
+              // if (username === '') {
+              //   listWithUserName = '';
+              // }
+              // debugger
+              // return listWithName + listWithUserName + listClosingTags;
+              return listItem;
             }
           });
         };
