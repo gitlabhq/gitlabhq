@@ -21,7 +21,7 @@ class Route < ActiveRecord::Base
           attributes[:path] = route.path.sub(path_was, path)
         end
 
-        if name_changed? && route.name.present?
+        if name_changed? && name_was.present? && route.name.present?
           attributes[:name] = route.name.sub(name_was, name)
         end
 

@@ -366,12 +366,31 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'PUT update' do
+<<<<<<< HEAD
     def update_merge_request(params = {})
       post :update,
            namespace_id: project.namespace.to_param,
            project_id: project.to_param,
            id: merge_request.iid,
            merge_request: params
+=======
+    context 'changing the assignee' do
+      it 'limits the attributes exposed on the assignee' do
+        assignee = create(:user)
+        project.add_developer(assignee)
+
+        put :update,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: merge_request.iid,
+          merge_request: { assignee_id: assignee.id },
+          format: :json
+        body = JSON.parse(response.body)
+
+        expect(body['assignee'].keys)
+          .to match_array(%w(name username avatar_url))
+      end
+>>>>>>> b22d4c2e9f171b6cabeb537f3a3a0a688a4e0cc3
     end
 
     context 'there is no source project' do

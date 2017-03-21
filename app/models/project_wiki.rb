@@ -49,11 +49,14 @@ class ProjectWiki
     credentials = Gitlab::UrlSanitizer.http_credentials_for_user(user)
 
     Gitlab::UrlSanitizer.new(url, credentials: credentials).full_url
+<<<<<<< HEAD
   end
 
   # No need to have a Kerberos Web url. Kerberos URL will be used only to clone
   def kerberos_url_to_repo
     [Gitlab.config.build_gitlab_kerberos_url, "/", path_with_namespace, ".git"].join('')
+=======
+>>>>>>> b22d4c2e9f171b6cabeb537f3a3a0a688a4e0cc3
   end
 
   def wiki_base_path

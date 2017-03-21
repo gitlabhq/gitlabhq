@@ -246,5 +246,17 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
         expect(gl.FilteredSearchVisualTokens.unselectTokens).toHaveBeenCalled();
       });
     });
+
+    describe('toggleInputContainerFocus', () => {
+      it('toggles on focus', () => {
+        input.focus();
+        expect(document.querySelector('.filtered-search-input-container').classList.contains('focus')).toEqual(true);
+      });
+
+      it('toggles on blur', () => {
+        input.blur();
+        expect(document.querySelector('.filtered-search-input-container').classList.contains('focus')).toEqual(false);
+      });
+    });
   });
 })();

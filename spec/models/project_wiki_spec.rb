@@ -52,6 +52,7 @@ describe ProjectWiki, models: true do
 
         expect(project_wiki.http_url_to_repo(user)).to start_with("http://#{user.username}@")
       end
+<<<<<<< HEAD
     end
   end
 
@@ -60,6 +61,8 @@ describe ProjectWiki, models: true do
       gitlab_kerberos_url = Gitlab.config.build_gitlab_kerberos_url
       repo_kerberos_url = "#{gitlab_kerberos_url}/#{subject.path_with_namespace}.git"
       expect(subject.kerberos_url_to_repo).to eq(repo_kerberos_url)
+=======
+>>>>>>> b22d4c2e9f171b6cabeb537f3a3a0a688a4e0cc3
     end
   end
 

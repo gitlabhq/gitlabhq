@@ -376,8 +376,15 @@ trigger_docs:
   cache: {}
   artifacts: {}
   script:
+<<<<<<< HEAD
     - "curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=ee https://gitlab.com/api/v3/projects/1794617/trigger/builds"
   only:
+=======
+    - "HTTP_STATUS=$(curl -X POST -F token=${DOCS_TRIGGER_TOKEN} -F ref=master -F variables[PROJECT]=${CI_PROJECT_NAME} --silent --output curl.log --write-out '%{http_code}' https://gitlab.com/api/v3/projects/1794617/trigger/builds)"
+    - if [ "${HTTP_STATUS}" -ne "201" ]; then echo "Error ${HTTP_STATUS}"; cat curl.log; echo; exit 1; fi
+  only:
+    - master@gitlab-org/gitlab-ce
+>>>>>>> b22d4c2e9f171b6cabeb537f3a3a0a688a4e0cc3
     - master@gitlab-org/gitlab-ee
 
 # Notify slack in the end

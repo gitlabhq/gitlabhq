@@ -205,6 +205,7 @@ class Project < ActiveRecord::Base
   validates :name, uniqueness: { scope: :namespace_id }
   validates :path, uniqueness: { scope: :namespace_id }
   validates :import_url, addressable_url: true, if: :external_import?
+  validates :import_url, importable_url: true, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,
@@ -996,11 +997,14 @@ class Project < ActiveRecord::Base
     credentials = Gitlab::UrlSanitizer.http_credentials_for_user(user)
 
     Gitlab::UrlSanitizer.new("#{web_url}.git", credentials: credentials).full_url
+<<<<<<< HEAD
   end
 
   # No need to have a Kerberos Web url. Kerberos URL will be used only to clone
   def kerberos_url_to_repo
     "#{Gitlab.config.build_gitlab_kerberos_url + Gitlab::Application.routes.url_helpers.namespace_project_path(self.namespace, self)}.git"
+=======
+>>>>>>> b22d4c2e9f171b6cabeb537f3a3a0a688a4e0cc3
   end
 
   # Check if current branch name is marked as protected in the system

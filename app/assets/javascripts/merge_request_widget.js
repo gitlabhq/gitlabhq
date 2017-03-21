@@ -14,13 +14,13 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
          <%= ci_success_icon %>
          <span>
            Deployed to
-           <a href="<%- url %>" target="_blank" class="environment">
+           <a href="<%- url %>" target="_blank" rel="noopener noreferrer" class="environment">
              <%- name %>
            </a>
            <span class="js-environment-timeago" data-toggle="tooltip" data-placement="top" data-title="<%- deployed_at_formatted %>">
              <%- deployed_at %>
            </span>
-           <a class="js-environment-link" href="<%- external_url %>" target="_blank">
+           <a class="js-environment-link" href="<%- external_url %>" target="_blank" rel="noopener noreferrer">
              <i class="fa fa-external-link"></i>
              View on <%- external_url_formatted %>
            </a>
