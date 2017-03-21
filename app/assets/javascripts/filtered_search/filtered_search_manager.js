@@ -40,6 +40,8 @@ import FilteredSearchContainer from './container';
       this.unselectEditTokensWrapper = this.unselectEditTokens.bind(this);
       this.editTokenWrapper = this.editToken.bind(this);
       this.tokenChange = this.tokenChange.bind(this);
+      this.addInputContainerFocusWrapper = this.addInputContainerFocus.bind(this);
+      this.removeInputContainerFocusWrapper = this.removeInputContainerFocus.bind(this);
 
       this.filteredSearchInputForm = this.filteredSearchInput.form;
       this.filteredSearchInputForm.addEventListener('submit', this.handleFormSubmit);
@@ -51,11 +53,13 @@ import FilteredSearchContainer from './container';
       this.filteredSearchInput.addEventListener('keyup', this.checkForBackspaceWrapper);
       this.filteredSearchInput.addEventListener('click', this.tokenChange);
       this.filteredSearchInput.addEventListener('keyup', this.tokenChange);
+      this.filteredSearchInput.addEventListener('focus', this.addInputContainerFocusWrapper);
       this.tokensContainer.addEventListener('click', FilteredSearchManager.selectToken);
       this.tokensContainer.addEventListener('dblclick', this.editTokenWrapper);
       this.clearSearchButton.addEventListener('click', this.clearSearchWrapper);
       document.addEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
       document.addEventListener('click', this.unselectEditTokensWrapper);
+      document.addEventListener('click', this.removeInputContainerFocusWrapper);
       document.addEventListener('keydown', this.removeSelectedTokenWrapper);
     }
 
@@ -69,11 +73,13 @@ import FilteredSearchContainer from './container';
       this.filteredSearchInput.removeEventListener('keyup', this.checkForBackspaceWrapper);
       this.filteredSearchInput.removeEventListener('click', this.tokenChange);
       this.filteredSearchInput.removeEventListener('keyup', this.tokenChange);
+      this.filteredSearchInput.removeEventListener('focus', this.addInputContainerFocusWrapper);
       this.tokensContainer.removeEventListener('click', FilteredSearchManager.selectToken);
       this.tokensContainer.removeEventListener('dblclick', this.editTokenWrapper);
       this.clearSearchButton.removeEventListener('click', this.clearSearchWrapper);
       document.removeEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
       document.removeEventListener('click', this.unselectEditTokensWrapper);
+      document.removeEventListener('click', this.removeInputContainerFocusWrapper);
       document.removeEventListener('keydown', this.removeSelectedTokenWrapper);
     }
 
@@ -121,6 +127,26 @@ import FilteredSearchContainer from './container';
 
           this.search();
         }
+      }
+    }
+
+    addInputContainerFocus() {
+      const inputContainer = this.filteredSearchInput.closest('.filtered-search-input-container');
+
+      if (inputContainer) {
+        inputContainer.classList.add('focus');
+      }
+    }
+
+    removeInputContainerFocus(e) {
+      const inputContainer = this.filteredSearchInput.closest('.filtered-search-input-container');
+      const isElementInFilteredSearch = inputContainer && inputContainer.contains(e.target);
+      const isElementInDynamicFilterDropdown = e.target.closest('.filter-dropdown') !== null;
+      const isElementInStaticFilterDropdown = e.target.closest('ul[data-dropdown]') !== null;
+
+      if (!isElementInFilteredSearch && !isElementInDynamicFilterDropdown &&
+        !isElementInStaticFilterDropdown && inputContainer) {
+        inputContainer.classList.remove('focus');
       }
     }
 
