@@ -108,14 +108,10 @@
       const hook = this.getCurrentHook();
 
       if (hook) {
-<<<<<<< HEAD
-        const data = hook.list.data;
+        const data = hook.list.data || [];
 
         if (!data) return;
 
-=======
-        const data = hook.list.data || [];
->>>>>>> b22d4c2e9f171b6cabeb537f3a3a0a688a4e0cc3
         const results = data.map((o) => {
           const updated = o;
           updated.droplab_hidden = false;

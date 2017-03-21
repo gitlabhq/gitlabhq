@@ -6,11 +6,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableCollections
   include SpammableActions
 
-<<<<<<< HEAD
-  prepend_before_action :authenticate_user!, only: [:export_csv]
-=======
-  prepend_before_action :authenticate_user!, only: [:new]
->>>>>>> b22d4c2e9f171b6cabeb537f3a3a0a688a4e0cc3
+  prepend_before_action :authenticate_user!, only: [:new, :export_csv]
 
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled

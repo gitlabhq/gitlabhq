@@ -77,7 +77,6 @@ Below are the changes made between V3 and V4.
 - Change initial page from `0` to `1` on `GET /projects/:id/repository/commits` (like on the rest of the API) [!9679] (https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9679)
 - Return correct `Link` header data for `GET /projects/:id/repository/commits` [!9679] (https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9679)
 - Update endpoints for repository files [!9637](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9637)
-<<<<<<< HEAD
   - Moved `/projects/:id/repository/files?file_path=:file_path` to `/projects/:id/repository/files/:file_path` (`:file_path` should be URL-encoded)
   - `/projects/:id/repository/blobs/:sha` now returns JSON attributes for the blob identified by `:sha`, instead of finding the commit identified by `:sha` and returning the raw content of the blob in that commit identified by the required `?filepath=:filepath`
   - Moved `/projects/:id/repository/commits/:sha/blob?file_path=:file_path`  and `/projects/:id/repository/blobs/:sha?file_path=:file_path`  to `/projects/:id/repository/files/:file_path/raw?ref=:sha`
@@ -88,9 +87,3 @@ Below are the changes made between V3 and V4.
 - Remove the ProjectGitHook API. Use the ProjectPushRule API instead [!1301](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1301)
 - Removed `repository_storage` from `PUT /application/settings` and `GET /application/settings` (use `repository_storages` instead) [!1307](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1307)
 - Removed `elasticsearch_host` and `elasticsearch_port` from `PUT /application/settings` (use `elasticsearch_url` instead) [!1305](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1305)
-=======
-  - Moved `GET /projects/:id/repository/files?file_path=:file_path` to `GET /projects/:id/repository/files/:file_path` (`:file_path` should be URL-encoded)
-  - `GET /projects/:id/repository/blobs/:sha` now returns JSON attributes for the blob identified by `:sha`, instead of finding the commit identified by `:sha` and returning the raw content of the blob in that commit identified by the required `?filepath=:filepath`
-  - Moved `GET /projects/:id/repository/commits/:sha/blob?file_path=:file_path`  and `GET /projects/:id/repository/blobs/:sha?file_path=:file_path` to `GET /projects/:id/repository/files/:file_path/raw?ref=:sha`
-  - `GET /projects/:id/repository/tree` parameter `ref_name` has been renamed to `ref` for consistency
->>>>>>> b22d4c2e9f171b6cabeb537f3a3a0a688a4e0cc3

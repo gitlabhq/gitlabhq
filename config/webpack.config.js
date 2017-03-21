@@ -36,11 +36,8 @@ var config = {
     issuable:             './issuable/issuable_bundle.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     merge_request_widget: './merge_request_widget/ci_bundle.js',
-<<<<<<< HEAD
     mr_widget_ee:         './merge_request_widget/widget_bundle.js',
-=======
     monitoring:           './monitoring/monitoring_bundle.js',
->>>>>>> b22d4c2e9f171b6cabeb537f3a3a0a688a4e0cc3
     network:              './network/network_bundle.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
