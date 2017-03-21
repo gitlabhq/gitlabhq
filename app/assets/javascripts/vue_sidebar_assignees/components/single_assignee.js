@@ -1,7 +1,12 @@
 export default {
   name: 'SingleAssignee',
   props: {
-    user: { type: Object, required: true },
+    assignees: { type: Object, required: true },
+  },
+  computed: {
+    user() {
+      return this.assignees.users[0];
+    },
   },
   template: `
     <div class="value hide-collapsed">

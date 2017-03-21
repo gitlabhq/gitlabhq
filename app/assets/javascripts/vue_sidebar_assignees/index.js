@@ -31,6 +31,19 @@ const sidebarAssigneesOptions = () => ({
       service,
     };
   },
+  computed: {
+    componentName() {
+      const numberOfAssignees = this.assignees.users.length;
+
+      if (numberOfAssignees === 0) {
+        return 'no-assignee';
+      } else if (numberOfAssignees === 1) {
+        return 'single-assignee';
+      } else {
+        return 'multiple-assignees';
+      }
+    },
+  },
   components: {
     'no-assignee': NoAssignee,
     'single-assignee': SingleAssignee,
@@ -40,9 +53,7 @@ const sidebarAssigneesOptions = () => ({
   template: `
     <div class="sidebar-assignees">
       <assignee-title :numberOfAssignees="assignees.users.length" />
-      <no-assignee v-if="assignees.users.length === 0" :service="service" :assignees="assignees" />
-      <single-assignee v-else-if="assignees.users.length === 1" :user="assignees.users[0]" />
-      <multiple-assignees v-else :assignees="assignees" />
+      <component :is="componentName" :assignees="assignees" :service="service"></component>
     </div>
   `,
 });
