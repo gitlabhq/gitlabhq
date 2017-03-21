@@ -37,7 +37,7 @@
                   ":can-resolve" => can_resolve,
                   ":author-name" => "'#{j(note.author.name)}'",
                   "author-avatar" => note.author.avatar_url,
-                  ":note-truncated" => "'#{truncate(note.note, length: 17)}'",
+                  ":note-truncated" => "'#{j(truncate(note.note, length: 17))}'",
                   ":resolved-by" => "'#{j(note.resolved_by.try(:name))}'",
                   "v-show" => "#{can_resolve || note.resolved?}",
                   "inline-template" => true,
