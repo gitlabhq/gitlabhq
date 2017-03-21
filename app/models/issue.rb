@@ -29,6 +29,8 @@ class Issue < ActiveRecord::Base
 
   has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
 
+  has_and_belongs_to_many :assignees, class_name: "User", join_table: :issue_assignees
+
   validates :project, presence: true
 
   scope :cared, ->(user) { where(assignee_id: user) }
@@ -50,6 +52,8 @@ class Issue < ActiveRecord::Base
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
+
+  participant :assignees
 
   state_machine :state, initial: :opened do
     event :close do
@@ -125,6 +129,18 @@ class Issue < ActiveRecord::Base
       reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
               Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
               "id DESC")
+  end
+
+  # Returns a Hash of attributes to be used for Twitter card metadata
+  def card_attributes
+    {
+      'Author'   => author.try(:name),
+      'Assignee' => assignee_list
+    }
+  end
+
+  def assignee_list
+    assignees.pluck(:name).join(', ')
   end
 
   # `from` argument can be a Namespace or Project.

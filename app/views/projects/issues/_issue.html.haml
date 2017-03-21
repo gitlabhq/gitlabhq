@@ -13,9 +13,10 @@
             %li
               CLOSED
 
-          - if issue.assignee
+          - if issue.assignees.any?
             %li
-              = link_to_member(@project, issue.assignee, name: false, title: "Assigned to :name")
+              - issue.assignees.each do |assignee|
+                = link_to_member(@project, assignee, name: false, title: "Assigned to :name")
 
           = render 'shared/issuable_meta_data', issuable: issue
 

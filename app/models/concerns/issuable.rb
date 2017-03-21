@@ -25,7 +25,6 @@ module Issuable
     cache_markdown_field :description
 
     belongs_to :author, class_name: "User"
-    belongs_to :assignee, class_name: "User"
     belongs_to :updated_by, class_name: "User"
     belongs_to :milestone
     has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy do
@@ -94,7 +93,6 @@ module Issuable
     attr_mentionable :description
 
     participant :author
-    participant :assignee
     participant :notes_with_associations
 
     strip_attributes :title
@@ -311,14 +309,6 @@ module Issuable
 
   def human_class_name
     @human_class_name ||= self.class.name.titleize.downcase
-  end
-
-  # Returns a Hash of attributes to be used for Twitter card metadata
-  def card_attributes
-    {
-      'Author'   => author.try(:name),
-      'Assignee' => assignee.try(:name)
-    }
   end
 
   def notes_with_associations
