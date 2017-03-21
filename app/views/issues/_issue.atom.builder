@@ -7,7 +7,7 @@ xml.entry do
 
   xml.author do
     xml.name issue.author_name
-    xml.email issue.author_email
+    xml.email issue.author_public_email
   end
 
   xml.summary issue.title
@@ -26,7 +26,7 @@ xml.entry do
   if issue.assignee
     xml.assignee do
       xml.name issue.assignee.name
-      xml.email issue.assignee.email
+      xml.email issue.assignee_public_email
     end
   end
 end

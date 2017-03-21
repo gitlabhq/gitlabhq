@@ -43,13 +43,21 @@ describe Route, models: true do
     end
 
     context 'name update' do
-      before { route.update_attributes(name: 'bar') }
-
       it "updates children routes with new path" do
+        route.update_attributes(name: 'bar') 
+
         expect(described_class.exists?(name: 'bar')).to be_truthy
         expect(described_class.exists?(name: 'bar / test')).to be_truthy
         expect(described_class.exists?(name: 'bar / test / foo')).to be_truthy
         expect(described_class.exists?(name: 'gitlab-org')).to be_truthy
+      end
+
+      it 'handles a rename from nil' do
+        # Note: using `update_columns` to skip all validation and callbacks
+        route.update_columns(name: nil)
+
+        expect { route.update_attributes(name: 'bar') }
+          .to change { route.name }.from(nil).to('bar')
       end
     end
   end

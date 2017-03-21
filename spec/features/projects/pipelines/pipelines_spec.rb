@@ -99,15 +99,18 @@ describe 'Pipelines', :feature, :js do
         end
 
         it 'indicates that pipeline can be canceled' do
-          expect(page).to have_link('Cancel')
+          expect(page).to have_selector('.js-pipelines-cancel-button')
           expect(page).to have_selector('.ci-running')
         end
 
         context 'when canceling' do
-          before { click_link('Cancel') }
+          before do
+            find('.js-pipelines-cancel-button').click
+            wait_for_vue_resource
+          end
 
           it 'indicated that pipelines was canceled' do
-            expect(page).not_to have_link('Cancel')
+            expect(page).not_to have_selector('.js-pipelines-cancel-button')
             expect(page).to have_selector('.ci-canceled')
           end
         end
@@ -126,15 +129,18 @@ describe 'Pipelines', :feature, :js do
         end
 
         it 'indicates that pipeline can be retried' do
-          expect(page).to have_link('Retry')
+          expect(page).to have_selector('.js-pipelines-retry-button')
           expect(page).to have_selector('.ci-failed')
         end
 
         context 'when retrying' do
-          before { click_link('Retry') }
+          before do
+            find('.js-pipelines-retry-button').click
+            wait_for_vue_resource
+          end
 
           it 'shows running pipeline that is not retryable' do
-            expect(page).not_to have_link('Retry')
+            expect(page).not_to have_selector('.js-pipelines-retry-button')
             expect(page).to have_selector('.ci-running')
           end
         end
@@ -176,17 +182,17 @@ describe 'Pipelines', :feature, :js do
         it 'has link to the manual action' do
           find('.js-pipeline-dropdown-manual-actions').click
 
-          expect(page).to have_link('manual build')
+          expect(page).to have_button('manual build')
         end
 
         context 'when manual action was played' do
           before do
             find('.js-pipeline-dropdown-manual-actions').click
-            click_link('manual build')
+            click_button('manual build')
           end
 
           it 'enqueues manual action job' do
-            expect(manual.reload).to be_pending
+            expect(page).to have_selector('.js-pipeline-dropdown-manual-actions:disabled')
           end
         end
       end
@@ -203,7 +209,7 @@ describe 'Pipelines', :feature, :js do
           before { visit_project_pipelines }
 
           it 'is cancelable' do
-            expect(page).to have_link('Cancel')
+            expect(page).to have_selector('.js-pipelines-cancel-button')
           end
 
           it 'has pipeline running' do
@@ -211,10 +217,10 @@ describe 'Pipelines', :feature, :js do
           end
 
           context 'when canceling' do
-            before { click_link('Cancel') }
+            before { find('.js-pipelines-cancel-button').trigger('click') }
 
             it 'indicates that pipeline was canceled' do
-              expect(page).not_to have_link('Cancel')
+              expect(page).not_to have_selector('.js-pipelines-cancel-button')
               expect(page).to have_selector('.ci-canceled')
             end
           end
@@ -233,7 +239,7 @@ describe 'Pipelines', :feature, :js do
           end
 
           it 'is not retryable' do
-            expect(page).not_to have_link('Retry')
+            expect(page).not_to have_selector('.js-pipelines-retry-button')
           end
 
           it 'has failed pipeline' do

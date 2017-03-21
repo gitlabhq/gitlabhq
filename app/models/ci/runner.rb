@@ -9,7 +9,7 @@ module Ci
 
     has_many :builds
     has_many :runner_projects, dependent: :destroy
-    has_many :projects, through: :runner_projects, foreign_key: :gl_project_id
+    has_many :projects, through: :runner_projects
 
     has_one :last_build, ->() { order('id DESC') }, class_name: 'Ci::Build'
 
@@ -24,7 +24,7 @@ module Ci
 
     scope :owned_or_shared, ->(project_id) do
       joins('LEFT JOIN ci_runner_projects ON ci_runner_projects.runner_id = ci_runners.id')
-        .where("ci_runner_projects.gl_project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
+        .where("ci_runner_projects.project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
     end
 
     scope :assignable_for, ->(project) do
