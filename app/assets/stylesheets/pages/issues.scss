@@ -46,6 +46,10 @@ ul.related-merge-requests > li {
   .merge-request-id {
     flex-shrink: 0;
   }
+
+  .merge-request-info {
+    margin-left: 5px;
+  }
 }
 
 .merge-requests-title,
@@ -56,10 +60,6 @@ ul.related-merge-requests > li {
 
 .merge-request-id {
   display: inline-block;
-}
-
-.merge-request-info {
-  margin-left: 5px;
 }
 
 .merge-request-status {
