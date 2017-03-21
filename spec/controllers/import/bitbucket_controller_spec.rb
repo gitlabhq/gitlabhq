@@ -112,6 +112,17 @@ describe Import::BitbucketController do
           post :create, format: :js
         end
       end
+
+      context 'when the Bitbucket user is unauthorized' do
+        render_views
+
+        it 'returns unauthorized' do
+          allow(controller).to receive(:current_user).and_return(user)
+          allow(user).to receive(:can?).and_return(false)
+
+          post :create, format: :js
+        end
+      end
     end
 
     context "when the repository owner is not the Bitbucket user" do
