@@ -30,7 +30,14 @@ class PrometheusService < MonitoringService
   end
 
   def help
-    'Retrieves `container_cpu_usage_seconds_total` and `container_memory_usage_bytes` from the configured Prometheus server. An `environment` label is required on each metric to identify the Environment.'
+    <<-MD.strip_heredoc
+      Retrieves the Kubernetes node metrics `container_cpu_usage_seconds_total` 
+      and `container_memory_usage_bytes` from the configured Prometheus server.
+
+      If you are not using [Auto-Deploy](https://docs.gitlab.com/ee/ci/autodeploy/index.html)
+      or have set up your own Prometheus server, an `environment` label is required on each metric to
+      [identify the Environment](https://docs.gitlab.com/ce/user/project/integrations/prometheus.html#metrics-and-labels).
+    MD
   end
 
   def self.to_param
