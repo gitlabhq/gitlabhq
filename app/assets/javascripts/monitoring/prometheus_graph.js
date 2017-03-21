@@ -1,4 +1,6 @@
-/* eslint-disable no-new*/
+/* eslint-disable no-new */
+/* global Flash */
+
 import d3 from 'd3';
 import statusCodes from '~/lib/utils/http_status';
 import '../lib/utils/common_utils';
