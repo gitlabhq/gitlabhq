@@ -25,7 +25,7 @@ class AddAutoCanceledByIdToPipeline < ActiveRecord::Migration
 
   def up
     on_delete =
-      if Database.mysql?
+      if Gitlab::Database.mysql?
         :nullify
       else
         'SET NULL'
