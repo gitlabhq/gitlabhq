@@ -1,4 +1,3 @@
-/* global Vue */
 require('./issue_card_inner');
 
 const Store = gl.issueBoards.BoardsStore;

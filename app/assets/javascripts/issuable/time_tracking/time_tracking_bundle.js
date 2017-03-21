@@ -1,10 +1,11 @@
-/* global Vue */
+import Vue from 'vue';
+import VueResource from 'vue-resource';
 
-window.Vue = require('vue');
-window.Vue.use(require('vue-resource'));
 require('./components/time_tracker');
 require('../../smart_interval');
 require('../../subbable_resource');
+
+Vue.use(VueResource);
 
 (() => {
   /* This Vue instance represents what will become the parent instance for the
