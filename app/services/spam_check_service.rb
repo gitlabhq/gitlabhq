@@ -14,6 +14,9 @@ module SpamCheckService
     @spam_log_id        = params.delete(:spam_log_id)
   end
 
+  # In order to be proceed to the spam check process, @spammable has to be
+  # a dirty instance, which means it should be already assigned with the new
+  # attribute values.
   def spam_check(spammable, user)
     spam_service = SpamService.new(spammable, @request)
 

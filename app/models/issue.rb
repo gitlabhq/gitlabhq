@@ -211,9 +211,8 @@ class Issue < ActiveRecord::Base
     due_date.try(:past?) || false
   end
 
-  # Only issues on public projects should be checked for spam
   def check_for_spam?
-    project.public?
+    project.public? && (title_changed? || description_changed?)
   end
 
   def as_json(options = {})
