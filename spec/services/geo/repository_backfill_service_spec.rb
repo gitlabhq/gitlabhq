@@ -68,15 +68,9 @@ describe Geo::RepositoryBackfillService, services: true do
       let(:project) { create(:project) }
 
       it 'does not fetch the project repositories' do
-        fetch_count = 0
-
-        allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) do
-          fetch_count += 1
-        end
+        expect_any_instance_of(Repository).not_to receive(:fetch_geo_mirror)
 
         subject.execute
-
-        expect(fetch_count).to eq 0
       end
 
       context 'tracking database' do
@@ -87,7 +81,7 @@ describe Geo::RepositoryBackfillService, services: true do
     end
 
     context 'when repository was backfilled' do
-      let(:project)   { create(:project) }
+      let(:project) { create(:project) }
 
       let!(:registry) do
         Geo::ProjectRegistry.create(
@@ -98,15 +92,9 @@ describe Geo::RepositoryBackfillService, services: true do
       end
 
       it 'does not fetch the project repositories' do
-        fetch_count = 0
-
-        allow_any_instance_of(Repository).to receive(:fetch_geo_mirror) do
-          fetch_count += 1
-        end
+        expect_any_instance_of(Repository).not_to receive(:fetch_geo_mirror)
 
         subject.execute
-
-        expect(fetch_count).to eq 0
       end
 
       context 'tracking database' do
