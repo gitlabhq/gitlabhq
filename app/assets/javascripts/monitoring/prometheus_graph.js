@@ -129,7 +129,7 @@ class PrometheusGraph {
       .attr('class', 'prometheus-graph-overlay')
       .attr('width', this.width)
       .attr('height', this.height)
-      .on('mousemove', this.handleMouseOverGraph.bind(this, chart, prometheusGraphContainer));
+      .on('mousemove', this.handleMouseOverGraph.bind(this, prometheusGraphContainer));
   }
 
   // The legends from the metric
@@ -141,9 +141,9 @@ class PrometheusGraph {
         .attr('stroke', '#000000')
         .attr('stroke-width', '1')
         .attr({
-          x1: 0,
+          x1: 10,
           y1: this.originalHeight - 80,
-          x2: this.originalWidth - this.margin.right,
+          x2: (this.originalWidth - this.margin.right) + 10,
           y2: this.originalHeight - 80,
         });
 
@@ -152,11 +152,17 @@ class PrometheusGraph {
           .attr('stroke', '#000000')
           .attr('stroke-width', '1')
           .attr({
-            x1: 0,
+            x1: 10,
             y1: 0,
-            x2: 0,
+            x2: 10,
             y2: this.originalHeight - 80,
           });
+    axisLabelContainer.append('rect')
+          .attr('class', 'rect-axis-text')
+          .attr('x', 0)
+          .attr('y', 50)
+          .attr('width', 30)
+          .attr('height', 150);
 
     axisLabelContainer.append('text')
           .attr('class', 'label-axis-text')
@@ -189,7 +195,7 @@ class PrometheusGraph {
           .attr('height', 35);
 
     axisLabelContainer.append('text')
-          .attr('class', 'label-axis-text')
+          .attr('class', 'text-metric-title')
           .attr('x', this.originalWidth - 140)
           .attr('y', (this.originalHeight / 2) - 50)
           .text('Average');
@@ -200,7 +206,7 @@ class PrometheusGraph {
             .attr('y', (this.originalHeight / 2) - 25);
   }
 
-  handleMouseOverGraph(chart, prometheusGraphContainer) {
+  handleMouseOverGraph(prometheusGraphContainer) {
     const rectOverlay = document.querySelector(`${prometheusGraphContainer} .prometheus-graph-overlay`);
     const currentXCoordinate = d3.mouse(rectOverlay)[0];
 
