@@ -9,6 +9,13 @@ feature 'Admin updates settings', feature: true do
     visit admin_application_settings_path
   end
 
+  scenario 'Change visibility settings' do
+    choose "application_setting_default_project_visibility_20"
+    click_button 'Save'
+
+    expect(page).to have_content "Application settings saved successfully"
+  end
+
   scenario 'Change application settings' do
     uncheck 'Gravatar enabled'
     fill_in 'Home page URL', with: 'https://about.gitlab.com/'
