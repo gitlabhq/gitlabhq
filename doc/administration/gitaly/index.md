@@ -37,7 +37,7 @@ gitlab restart`.
 
 ## Configuring GitLab to not use Gitaly
 
-Gitaly is still an optional componennt in GitLab 9.0. This means you
+Gitaly is still an optional component in GitLab 9.0. This means you
 can choose to not use it.
 
 In Omnibus you can make the following change in
