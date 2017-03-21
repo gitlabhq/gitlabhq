@@ -1,7 +1,4 @@
-/* global Flash */
-/* eslint-disable no-new */
 import Vue from 'vue';
-import '~/flash';
 import PipelinesService from './services/pipelines_service';
 import eventHub from './event_hub';
 import PipelinesTableComponent from '../vue_shared/components/pipelines_table';
@@ -177,14 +174,12 @@ export default {
         .catch(() => {
           this.hasError = true;
           this.pageRequest = false;
-          new Flash('An error occurred while fetching the pipelines, please reload the page again.');
         });
     },
   },
 
   template: `
-    <div
-      :class="cssClass">
+    <div :class="cssClass">
 
       <div
         class="top-area"
@@ -207,10 +202,14 @@ export default {
         <div
           class="realtime-loading"
           v-if="pageRequest">
-          <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+          <i
+            class="fa fa-spinner fa-spin"
+            aria-hidden="true" />
         </div>
 
-        <empty-state v-if="shouldRenderEmptyState" :helpPagePath="helpPagePath" />
+        <empty-state
+          v-if="shouldRenderEmptyState"
+          :help-page-path="helpPagePath" />
 
         <error-state v-if="shouldRenderErrorState" />
 

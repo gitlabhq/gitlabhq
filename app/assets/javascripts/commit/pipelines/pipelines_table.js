@@ -109,7 +109,9 @@ export default Vue.component('pipelines-table', {
         <i class="fa fa-spinner fa-spin"></i>
       </div>
 
-      <empty-state v-if="shouldRenderEmptyState" :helpPagePath="helpPagePath" />
+      <empty-state
+        v-if="shouldRenderEmptyState"
+        :help-page-path="helpPagePath" />
 
       <error-state v-if="shouldRenderErrorState" />
 

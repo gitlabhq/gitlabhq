@@ -8,21 +8,15 @@ export default {
     },
   },
 
-  data() {
-    return {
-      pipelinesEmptyStateSVG,
-    };
-  },
-
   template: `
-    <div class="row empty-state js-pipelines-empty-state">
-      <div class="col-xs-12 pull-right">
+    <div class="row empty-state">
+      <div class="col-xs-12">
         <div class="svg-content">
           ${pipelinesEmptyStateSVG}
         </div>
       </div>
 
-      <div class="col-xs-12 center">
+      <div class="col-xs-12 text-center">
         <div class="text-content">
           <h4>Build with confidence</h4>
           <p>

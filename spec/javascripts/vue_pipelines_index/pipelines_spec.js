@@ -71,7 +71,7 @@ describe('Pipelines', () => {
         }).$mount();
 
         setTimeout(() => {
-          expect(component.$el.querySelector('.js-pipelines-empty-state')).toBeDefined();
+          expect(component.$el.querySelector('.empty-state')).toBeDefined();
           done();
         });
       });

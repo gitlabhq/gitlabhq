@@ -33,7 +33,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
         });
 
         setTimeout(() => {
-          expect(component.$el.querySelector('.js-pipelines-empty-state')).toBeDefined();
+          expect(component.$el.querySelector('.empty-state')).toBeDefined();
           done();
         }, 1);
       });
