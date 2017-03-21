@@ -1,7 +1,7 @@
 export default {
   name: 'MRWidgetLocked',
   props: {
-    targetBranch: { type: Object, required: true },
+    mr: { type: Object, required: true },
   },
   template: `
     <div class="mr-widget-body">
@@ -10,7 +10,7 @@ export default {
       <section>
         <p>The changes will be merged into
           <a :href="targetBranchPath" class="label-branch">
-            {{targetBranch}}
+            {{mr.targetBranch}}
           </a>
         </p>
       </section>
