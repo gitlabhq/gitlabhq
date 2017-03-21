@@ -24,7 +24,6 @@ class TodosFinder
 
   def execute
     items = current_user.todos
-    items = include_associations(items)
     items = by_action_id(items)
     items = by_action(items)
     items = by_author(items)
@@ -33,8 +32,9 @@ class TodosFinder
     # Filtering by project HAS TO be the last because we use
     # the project IDs yielded by the todos query thus far
     items = by_project(items)
+    items = sort(items)
 
-    sort(items)
+    include_associations(items)
   end
 
   private
@@ -43,11 +43,19 @@ class TodosFinder
     return items unless params[:include_associations]
 
     items.includes(
-      [
-        target: { project: [:route, namespace: :route] },
-        author: { namespace: :route },
-      ]
+      project: [:route, namespace: :route],
+      author: { namespace: :route },
     )
+
+    # We can't preload target nicely, because Commit is not an AR model. So we
+    # have to preload the targets manually.
+    #
+    ActiveRecord::Associations::Preloader.new.preload(
+      items.reject(&:for_commit?),
+      target: { project: [:route, namespace: :route] }
+    )
+
+    items
   end
 
   def action_id?

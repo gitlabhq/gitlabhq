@@ -299,5 +299,39 @@ describe 'Dashboard Todos', feature: true do
         expect(page).to have_link "merge request #{todo.target.to_reference(full: true)}", href
       end
     end
+
+    context 'user has todos of every type on multiple projects' do
+      def create_todo(params)
+        create(:todo, params.merge(user: user))
+      end
+
+      before do
+        project2 = create(:project, :public)
+
+        merge_request_build_failed = create(:merge_request, source_project: project)
+        merge_request_unmergeable = create(:merge_request, source_project: project2)
+        issue_added = create(:issue, project: project2)
+
+        create_todo(author: author, target: issue, project: project, action: Todo::ASSIGNED)
+        create(:on_commit_todo, author: author, commit_id: project.repository.commit.id, project: project, action: Todo::MENTIONED, user: user)
+        create_todo(author: author, target: merge_request_build_failed, project: project, action: Todo::BUILD_FAILED)
+        create_todo(author: author, target: merge_request_unmergeable, project: project2, action: Todo::UNMERGEABLE)
+        create_todo(author: author, target: issue_added, project: project2, action: Todo::MARKED)
+        create(:on_commit_todo, author: author, commit_id: project2.repository.commit.id, project: project2, action: Todo::DIRECTLY_ADDRESSED, user: user)
+
+        login_as user
+      end
+
+      it 'avoids N+1 database queries' do
+        control_count = ActiveRecord::QueryRecorder.new { visit dashboard_todos_path }.count
+
+        new_project = create(:empty_project, :public)
+        new_author = create(:user)
+        new_issue = create(:issue, project: new_project)
+        create_todo(author: new_author, target: new_issue, project: new_project, action: Todo::ASSIGNED)
+
+        expect { visit dashboard_todos_path }.not_to exceed_query_limit(control_count)
+      end
+    end
   end
 end

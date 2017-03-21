@@ -5,10 +5,12 @@ describe TodosHelper do
 
   describe '#todo_target_path' do
     let(:project)       { create(:project) }
+    let(:commit)        { project.repository.commit }
     let(:merge_request) { create(:merge_request, target_project: project, source_project: project) }
     let(:issue)         { create(:issue, project: project) }
     let(:note)          { create(:note_on_issue, noteable: issue, project: project) }
 
+    let(:commit_todo)       { build(:todo, project: project, target_type: 'Commit', commit_id: commit.id) }
     let(:mr_todo)           { build(:todo, project: project, target: merge_request) }
     let(:issue_todo)        { build(:todo, project: project, target: issue) }
     let(:note_todo)         { build(:todo, project: project, target: issue, note: note) }
@@ -17,6 +19,11 @@ describe TodosHelper do
     it 'returns correct path to the todo MR' do
       expect(todo_target_path(mr_todo)).
         to eq("/#{project.full_path}/merge_requests/#{merge_request.iid}")
+    end
+
+    it 'returns correct path to the todo MR' do
+      expect(todo_target_path(commit_todo)).
+        to eq("/#{project.full_path}/commit/#{commit.id}")
     end
 
     it 'returns correct path to the todo issue' do
@@ -29,7 +36,7 @@ describe TodosHelper do
         to eq("/#{project.full_path}/issues/#{issue.iid}#note_#{note.id}")
     end
 
-    it 'returns correct path to build_todo MR when pipeline failed' do
+    it 'returns correct path to build_failed MR when pipeline failed' do
       expect(todo_target_path(build_failed_todo)).
         to eq("/#{project.full_path}/merge_requests/#{merge_request.iid}/pipelines")
     end
