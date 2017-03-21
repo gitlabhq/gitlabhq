@@ -283,10 +283,6 @@ module SharedPaths
     visit group_hooks_path(@group)
   end
 
-  step 'I visit project push rules page' do
-    visit namespace_project_settings_repository_path(@project.namespace, @project)
-  end
-
   step 'I visit project deploy keys page' do
     visit namespace_project_deploy_keys_path(@project.namespace, @project)
   end
