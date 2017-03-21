@@ -23,5 +23,4 @@
     .nothing-here-block No container images in Container Registry for this project.
 
   - else
-    - @images.each do |image|
-      = render 'image', image: image
+    = render partial: 'image', collection: @images

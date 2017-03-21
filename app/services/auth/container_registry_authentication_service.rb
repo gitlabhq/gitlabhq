@@ -66,7 +66,7 @@ module Auth
       # per image authentication.
       # Removes only last occurence in light
       # of future nested groups
-      namespace, _ = ContainerImage::split_namespace(name)
+      namespace, a = ContainerImage::split_namespace(name)
       requested_project = Project.find_by_full_path(namespace)
       return unless requested_project
 

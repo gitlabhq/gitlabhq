@@ -44,7 +44,7 @@ module API
             project = Project::find_by_full_path(namespace)
 
             if project
-              container_image = project.container_images.find_or_create_by(name: container_image_name)
+              container_image = project.container_images.find_or_create_by(name: container_image_name, path: container_image_name)
 
               unless container_image.valid?
                 render_api_error!({ error: "Failed to create container image!" }, 400)

@@ -108,7 +108,6 @@ ActiveRecord::Schema.define(version: 20170315194013) do
     t.string "sidekiq_throttling_queues"
     t.decimal "sidekiq_throttling_factor"
     t.boolean "html_emails_enabled", default: true
-    t.string "container_registry_access_token"
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
     t.integer "terminal_max_session_time", default: 0, null: false
@@ -117,6 +116,7 @@ ActiveRecord::Schema.define(version: 20170315194013) do
     t.integer "unique_ips_limit_per_user"
     t.integer "unique_ips_limit_time_window"
     t.boolean "unique_ips_limit_enabled", default: false, null: false
+    t.string "container_registry_access_token"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -327,6 +327,7 @@ ActiveRecord::Schema.define(version: 20170315194013) do
   create_table "container_images", force: :cascade do |t|
     t.integer "project_id"
     t.string "name"
+    t.string "path"
   end
 
   create_table "deploy_keys_projects", force: :cascade do |t|

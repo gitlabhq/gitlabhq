@@ -1,4 +1,6 @@
 class ContainerImage < ActiveRecord::Base
+  include Routable
+
   belongs_to :project
 
   delegate :container_registry, :container_registry_allowed_paths,
@@ -17,9 +19,17 @@ class ContainerImage < ActiveRecord::Base
     client.update_token(token)
   end
 
-  def path
-    [container_registry.path, name_with_namespace].compact.join('/')
+  def parent
+    project
   end
+
+  def parent_changed?
+    project_id_changed?
+  end
+
+ # def path
+ #   [container_registry.path, name_with_namespace].compact.join('/')
+ # end
 
   def name_with_namespace
     [container_registry_path_with_namespace, name].reject(&:blank?).join('/')
