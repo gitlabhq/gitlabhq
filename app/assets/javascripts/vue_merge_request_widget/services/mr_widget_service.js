@@ -8,6 +8,7 @@ export default class MRWidgetService {
     this.mergeResource = Vue.resource(mr.mergePath);
     this.cancelAutoMergeResource = Vue.resource(mr.cancelAutoMergePath);
     this.removeWIPResource = Vue.resource(mr.removeWIPPath);
+    this.removeSourceBranchResource = Vue.resource(mr.sourceBranchPath);
   }
 
   merge(data) {
@@ -20,6 +21,10 @@ export default class MRWidgetService {
 
   removeWIP() {
     return this.removeWIPResource.save();
+  }
+
+  removeSourceBranch() {
+    return this.removeSourceBranchResource.delete();
   }
 
 }

@@ -4,6 +4,7 @@ export default {
   name: 'MRWidgetMerged',
   props: {
     mr: { type: Object, required: true },
+    service: { type: Object, required: true },
   },
   components: {
     'mr-widget-author-and-time': mrWidgetAuthorTime,
@@ -16,6 +17,8 @@ export default {
   methods: {
     removeSourceBranch() {
       this.isRemovingSourceBranch = true;
+      this.service.removeSourceBranch()
+        .then(res => res.json()) // TODO: Update widget, handle error
     },
   },
   template: `
@@ -35,12 +38,10 @@ export default {
         <p v-if="mr.sourceBranchRemoved">The source branch has been removed.</p>
         <p v-if="mr.canRemoveSourceBranch">
           You can remove source branch now.
-          <a
-            :href="mr.sourceBranchPath"
-            :class="{ disabled: isRemovingSourceBranch }"
+          <button
             @click="removeSourceBranch"
-            class="btn btn-default remove_source_branch"
-            data-remote="true" data-method="delete">Remove Source Branch</a>
+            :class="{ disabled: isRemovingSourceBranch }"
+            type="button" class="btn btn-xs btn-default">Remove Source Branch</button>
         </p>
         <p v-if="isRemovingSourceBranch">
           The source branch is being removed.
