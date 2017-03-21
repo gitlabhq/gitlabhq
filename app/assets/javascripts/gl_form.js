@@ -53,6 +53,7 @@ GLForm.prototype.initCommentTypeToggle = function () {
     this.form[0].querySelector('.js-comment-type-dropdown .dropdown-menu'),
     document.getElementById('note_noteable_type'),
     this.form[0].querySelector('.js-comment-type-dropdown .js-comment-submit-button'),
+    document.querySelector('.js-note-target-close'),
   );
 
   this.commentTypeToggle.initDroplab();

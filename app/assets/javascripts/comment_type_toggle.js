@@ -2,11 +2,13 @@
 /* global droplabInputSetter */
 
 class CommentTypeToggle {
-  constructor(trigger, list, input, button) {
+  constructor(trigger, list, input, button, secondaryButton) {
     this.trigger = trigger;
     this.list = list;
     this.input = input;
     this.button = button;
+    this.secondaryButton = secondaryButton;
+    console.log(secondaryButton)
   }
 
   initDroplab() {
@@ -19,6 +21,10 @@ class CommentTypeToggle {
       {
         input: this.button,
         valueAttribute: 'data-button-text',
+      },
+      {
+        input: this.secondaryButton,
+        valueAttribute: 'data-secondary-button-text',
       }],
     });
   }

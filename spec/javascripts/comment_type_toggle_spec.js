@@ -3,7 +3,7 @@ import '~/droplab/droplab';
 import '~/droplab/plugins/input_setter';
 
 describe('CommentTypeToggle', function () {
-  describe('constructor', function () {
+  describe('class constructor', function () {
     beforeEach(function () {
       this.trigger = {};
       this.list = {};

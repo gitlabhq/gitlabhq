@@ -32,16 +32,16 @@
     .btn-group.append-right-10.comment-type-dropdown.js-comment-type-dropdown
       = f.submit "#{ new_discussion && @note.can_be_discussion_note? ? 'Start discussion' : 'Comment' }", class: "btn btn-nr btn-create comment-btn js-comment-button js-comment-submit-button"
       - if @note.can_be_discussion_note?
-        = button_tag type: 'button', class: 'btn btn-nr dropdown-toggle comment-btn js-comment-button js-note-new-discussion', data: { 'dropdown-trigger' => '.dropdown-menu' } do
+        = button_tag type: 'button', class: 'btn btn-nr dropdown-toggle comment-btn js-comment-button js-note-new-discussion', data: { 'dropdown-trigger' => '#resolvable-comment-menu' } do
           = icon('caret-down')
-        %ul.dropdown-menu{ data: { dropdown: true } }
-          %li#comment{ data: { value: '', 'button-text' => 'Comment' }, class: "#{ 'droplab-item-selected' unless new_discussion }" }
+        %ul#resolvable-comment-menu.dropdown-menu{ data: { dropdown: true } }
+          %li#comment{ data: { value: '', 'button-text' => 'Comment', 'secondary-button-text' => 'Comment & close merge request' }, class: "#{ 'droplab-item-selected' unless new_discussion }" }
             = icon('check')
             .description
               %strong Comment
               %p Add a general comment to this merge request.
-          %hr
-          %li#discussion{ data: { value: 'DiscussionNote', 'button-text' => 'Start discussion' }, class: "#{ 'droplab-item-selected' if new_discussion }" }
+          %li.divider
+          %li#discussion{ data: { value: 'DiscussionNote', 'button-text' => 'Start discussion', 'secondary-button-text' => 'Start discussion & close merge request' }, class: "#{ 'droplab-item-selected' if new_discussion }" }
             = icon('check')
             .description
               %strong Start discussion

@@ -363,7 +363,9 @@
     padding-top: 2px;
   }
 
-  hr {
-    margin: 8px;
+  .divider {
+    margin: 0 8px;
+    padding: 0;
+    border-top: $gray-darkest;
   }
 }
