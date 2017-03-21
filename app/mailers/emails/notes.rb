@@ -66,6 +66,7 @@ module Emails
     def setup_note_mail(note_id, recipient_id)
       @note = Note.find(note_id)
       @project = @note.project
+      return unless @project
 
       @sent_notification = SentNotification.record_note(@note, recipient_id, reply_key)
     end

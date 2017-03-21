@@ -2,6 +2,8 @@ module Notes
   class BuildService < BaseService
     def execute
       in_reply_to_discussion_id = params.delete(:in_reply_to_discussion_id)
+      new_discussion = params.delete(:new_discussion)
+
       if project && in_reply_to_discussion_id.present?
         discussion =
           project.notes.find_original_discussion(in_reply_to_discussion_id) ||
@@ -14,7 +16,7 @@ module Notes
         end
 
         params.merge!(discussion.reply_attributes)
-      elsif params.delete(:new_discussion)
+      elsif new_discussion
         # TODO: Remove when we use a selectbox instead of a submit button
         params[:type] = DiscussionNote.name
       end

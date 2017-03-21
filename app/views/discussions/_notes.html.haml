@@ -11,7 +11,7 @@
           = link_to_reply_discussion(discussion, line_type)
 
         = render "discussions/resolve_all", discussion: discussion
-        
+
         .btn-group.discussion-actions
           = render "discussions/new_issue_for_discussion", discussion: discussion, merge_request: discussion.noteable
           = render "discussions/jump_to_next", discussion: discussion

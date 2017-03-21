@@ -4,7 +4,7 @@ describe SentNotification, model: true do
   describe 'validation' do
     describe 'note validity' do
       context "when the project doesn't match the noteable's project" do
-        subject { build(:sent_notification, project: create(:project)) }
+        subject { build(:sent_notification, noteable: create(:issue)) }
 
         it "is invalid" do
           expect(subject).not_to be_valid
