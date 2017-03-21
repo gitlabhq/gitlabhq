@@ -136,20 +136,6 @@ shared_examples 'an answer to an existing thread with reply-by-email enabled' do
   end
 end
 
-shared_examples 'a new user email' do
-  it 'is sent to the new user' do
-    is_expected.to deliver_to new_user_address
-  end
-
-  it 'has the correct subject' do
-    is_expected.to have_subject /^Account was created for you$/i
-  end
-
-  it 'contains the new user\'s login name' do
-    is_expected.to have_body_text /#{new_user_address}/
-  end
-end
-
 shared_examples 'it should have Gmail Actions links' do
   it { is_expected.to have_body_text '<script type="application/ld+json">' }
   it { is_expected.to have_body_text /ViewAction/ }
