@@ -25,6 +25,6 @@ class PipelineSerializer < BaseSerializer
 
   def represent_status(resource)
     data = represent(resource, { only: [{ details: [:status] }] })
-    data.fetch(:details, {}).fetch(:status, {})
+    data.dig(:details, :status) || {}
   end
 end
