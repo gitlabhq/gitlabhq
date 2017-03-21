@@ -492,34 +492,6 @@ feature 'Builds', :feature do
 
       it { expect(page.status_code).to eq(404) }
     end
-
-    context 'when Project is public and builds_access_level is Everyone with access' do
-      let(:project) { create(:project, :public, :builds_enabled) }
-
-      context 'when user belongs to the project' do
-        before do
-          visit trace_namespace_project_build_path(project.namespace, project, build, format: :json)
-        end
-
-        it 'traces build log' do
-          expect(page).to have_http_status(:ok)
-        end
-      end
-
-      context 'when user does not belong to the project' do
-        let(:non_member) { create(:user) }
-
-        before do
-          logout # Logout from :developer
-          login_as(non_member)
-          visit trace_namespace_project_build_path(project.namespace, project, build, format: :json)
-        end
-
-        it 'traces build log' do
-          expect(page).to have_http_status(:ok)
-        end
-      end
-    end
   end
 
   describe "GET /:project/builds/:id/status" do
