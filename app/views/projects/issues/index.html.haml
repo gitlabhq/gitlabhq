@@ -22,20 +22,9 @@
       .nav-controls
         = link_to params.merge(rss_url_options), class: 'btn append-right-10 has-tooltip', title: 'Subscribe' do
           = icon('rss')
-<<<<<<< HEAD
         - if current_user
           %button.csv_download_link.btn.append-right-10.has-tooltip{ title: 'Export as CSV' }
             = icon('download')
-        - if can? current_user, :create_issue, @project
-          = link_to new_namespace_project_issue_path(@project.namespace,
-                                                     @project,
-                                                     issue: { assignee_id: issues_finder.assignee.try(:id),
-                                                              milestone_id: issues_finder.milestones.first.try(:id) }),
-                                                     class: "btn btn-new",
-                                                     title: "New Issue",
-                                                     id: "new_issue_link" do
-            New Issue
-=======
         = link_to new_namespace_project_issue_path(@project.namespace,
                                                    @project,
                                                    issue: { assignee_id: issues_finder.assignee.try(:id),
@@ -44,7 +33,6 @@
                                                    title: "New Issue",
                                                    id: "new_issue_link" do
           New Issue
->>>>>>> b22d4c2e9f171b6cabeb537f3a3a0a688a4e0cc3
     = render 'shared/issuable/search_bar', type: :issues
 
     .issues-holder
