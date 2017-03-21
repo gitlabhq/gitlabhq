@@ -30,10 +30,10 @@ class PrometheusGraph {
   }
 
   createGraph() {
-    Object.keys(this.data).forEach((key) => {
-      const value = this.data[key];
-      if (value.length > 0) {
-        this.plotValues(value, key);
+    Object.keys(this.graphSpecificProperties).forEach((key) => {
+      const value = this.graphSpecificProperties[key];
+      if (value.data.length > 0) {
+        this.plotValues(key);
       }
     });
   }
@@ -129,7 +129,7 @@ class PrometheusGraph {
       .attr('class', 'prometheus-graph-overlay')
       .attr('width', this.width)
       .attr('height', this.height)
-      .on('mousemove', this.handleMouseOverGraph.bind(this, x, y, chart, prometheusGraphContainer, key));
+      .on('mousemove', this.handleMouseOverGraph.bind(this, chart, prometheusGraphContainer));
   }
 
   // The legends from the metric
@@ -200,67 +200,73 @@ class PrometheusGraph {
             .attr('y', (this.originalHeight / 2) - 25);
   }
 
-  handleMouseOverGraph(x, y, chart, prometheusGraphContainer, key) {
-    const graphSpecifics = this.graphSpecificProperties[key];
+  handleMouseOverGraph(chart, prometheusGraphContainer) {
     const rectOverlay = document.querySelector(`${prometheusGraphContainer} .prometheus-graph-overlay`);
-    const mouseCoordOverlay = d3.mouse(rectOverlay)[0];
-    const timeValueFromOverlay = x.invert(mouseCoordOverlay);
-    const timeValueIndex = bisectDate(graphSpecifics.data, timeValueFromOverlay, 1);
-    const d0 = graphSpecifics.data[timeValueIndex - 1];
-    const d1 = graphSpecifics.data[timeValueIndex];
-    const currentData = timeValueFromOverlay - d0.time > d1.time - timeValueFromOverlay ? d1 : d0;
-    const maxValueMetric = y(d3.max(graphSpecifics.data.map(metricValue => metricValue.value)));
-    const currentTimeCoordinate = x(currentData.time);
+    const currentXCoordinate = d3.mouse(rectOverlay)[0];
 
-    // Remove the current selectors
-    d3.selectAll(`${prometheusGraphContainer} .selected-metric-line`).remove();
-    d3.selectAll(`${prometheusGraphContainer} .circle-metric`).remove();
-    d3.selectAll(`${prometheusGraphContainer} .rect-text-metric`).remove();
-    d3.selectAll(`${prometheusGraphContainer} .text-metric`).remove();
+    Object.keys(this.graphSpecificProperties).forEach((key) => {
+      const currentGraphProps = this.graphSpecificProperties[key];
+      const timeValueOverlay = currentGraphProps.xScale.invert(currentXCoordinate);
+      const overlayIndex = bisectDate(currentGraphProps.data, timeValueOverlay, 1);
+      const d0 = currentGraphProps.data[overlayIndex - 1];
+      const d1 = currentGraphProps.data[overlayIndex];
+      const evalTime = timeValueOverlay - d0.time > d1.time - timeValueOverlay;
+      const currentData = evalTime ? d1 : d0;
+      const currentTimeCoordinate = currentGraphProps.xScale(currentData.time);
+      const currentPrometheusGraphContainer = `${prometheusGraphsContainer}[graph-type=${key}]`;
+      const maxValueFromData = d3.max(currentGraphProps.data.map(metricValue => metricValue.value));
+      const maxMetricValue = currentGraphProps.yScale(maxValueFromData);
 
-    chart.append('line')
-    .attr('class', 'selected-metric-line')
-    .attr({
-      x1: currentTimeCoordinate,
-      y1: y(0),
-      x2: currentTimeCoordinate,
-      y2: maxValueMetric,
-    });
+      // Clear up all the pieces of the flag
+      d3.selectAll(`${currentPrometheusGraphContainer} .selected-metric-line`).remove();
+      d3.selectAll(`${currentPrometheusGraphContainer} .circle-metric`).remove();
+      d3.selectAll(`${currentPrometheusGraphContainer} .rect-text-metric`).remove();
+      d3.selectAll(`${currentPrometheusGraphContainer} .text-metric`).remove();
 
-    chart.append('circle')
-    .attr('class', 'circle-metric')
-    .attr('fill', graphSpecifics.line_color)
-    .attr('cx', currentTimeCoordinate)
-    .attr('cy', y(currentData.value))
-    .attr('r', this.commonGraphProperties.circle_radius_metric);
+      const currentChart = d3.select(currentPrometheusGraphContainer).select('g');
+      currentChart.append('line')
+      .attr('class', 'selected-metric-line')
+      .attr({
+        x1: currentTimeCoordinate,
+        y1: currentGraphProps.yScale(0),
+        x2: currentTimeCoordinate,
+        y2: maxMetricValue,
+      });
 
-    // The little box with text
-    const rectTextMetric = chart.append('g')
-    .attr('class', 'rect-text-metric')
-    .attr('translate', `(${currentTimeCoordinate}, ${y(currentData.value)})`);
+      currentChart.append('circle')
+      .attr('class', 'circle-metric')
+      .attr('fill', currentGraphProps.line_color)
+      .attr('cx', currentTimeCoordinate)
+      .attr('cy', currentGraphProps.yScale(currentData.value))
+      .attr('r', this.commonGraphProperties.circle_radius_metric);
 
-    rectTextMetric.append('rect')
-    .attr('class', 'rect-metric')
-    .attr('x', currentTimeCoordinate + 10)
-    .attr('y', maxValueMetric)
-    .attr('width', this.commonGraphProperties.rect_text_width)
-    .attr('height', this.commonGraphProperties.rect_text_height);
+      // The little box with text
+      const rectTextMetric = currentChart.append('g')
+      .attr('class', 'rect-text-metric')
+      .attr('translate', `(${currentTimeCoordinate}, ${currentGraphProps.yScale(currentData.value)})`);
 
-    rectTextMetric.append('text')
-    .attr('class', 'text-metric')
-    .attr('x', currentTimeCoordinate + 35)
-    .attr('y', maxValueMetric + 35)
-    .text(timeFormat(currentData.time));
+      rectTextMetric.append('rect')
+      .attr('class', 'rect-metric')
+      .attr('x', currentTimeCoordinate + 10)
+      .attr('y', maxMetricValue)
+      .attr('width', this.commonGraphProperties.rect_text_width)
+      .attr('height', this.commonGraphProperties.rect_text_height);
 
-    rectTextMetric.append('text')
-    .attr('class', 'text-metric-date')
-    .attr('x', currentTimeCoordinate + 15)
-    .attr('y', maxValueMetric + 15)
-    .text(dayFormat(currentData.time));
+      rectTextMetric.append('text')
+      .attr('class', 'text-metric')
+      .attr('x', currentTimeCoordinate + 35)
+      .attr('y', maxMetricValue + 35)
+      .text(timeFormat(currentData.time));
 
-    // Update the text
-    d3.select(`${prometheusGraphContainer} .text-metric-usage`)
+      rectTextMetric.append('text')
+      .attr('class', 'text-metric-date')
+      .attr('x', currentTimeCoordinate + 15)
+      .attr('y', maxMetricValue + 15)
+      .text(dayFormat(currentData.time));
+
+      d3.select(`${currentPrometheusGraphContainer} .text-metric-usage`)
       .text(currentData.value.substring(0, 8));
+    });
   }
 
   configureGraph() {
@@ -270,12 +276,16 @@ class PrometheusGraph {
         line_color: '#5b99f7',
         graph_legend_title: 'CPU Usage (Cores)',
         data: [],
+        xScale: {},
+        yScale: {},
       },
       memory_values: {
         area_fill_color: '#fca326',
         line_color: '#fc6d26',
         graph_legend_title: 'Memory Usage (MB)',
         data: [],
+        xScale: {},
+        yScale: {},
       },
     };
 
@@ -325,17 +335,15 @@ class PrometheusGraph {
   }
 
   transformData(metricsResponse) {
-    const metricTypes = {};
     Object.keys(metricsResponse.metrics).forEach((key) => {
       if (key === 'cpu_values' || key === 'memory_values') {
         const metricValues = (metricsResponse.metrics[key])[0];
-        metricTypes[key] = metricValues.values.map(metric => ({
+        this.graphSpecificProperties[key].data = metricValues.values.map(metric => ({
           time: new Date(metric[0] * 1000),
           value: metric[1],
         }));
       }
     });
-    this.data = metricTypes;
   }
 }
 
