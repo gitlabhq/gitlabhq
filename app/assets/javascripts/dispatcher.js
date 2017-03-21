@@ -320,6 +320,7 @@ const UserCallout = require('./user_callout');
         case 'projects:repository:show':
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
+          new gl.ProtectedTagCreate();
           break;
         case 'projects:ci_cd:show':
           new gl.ProjectVariables();
