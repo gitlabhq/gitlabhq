@@ -43,29 +43,28 @@ The complete requirements for Deploy Boards to display for a specific [environme
 1. Configure the [Kubernetes service][kube-service] in your project for the cluster.
 1. GitLab Runner should be configured with the [Docker][docker-exec] or
    [Kubernetes][kube-exec] executor
-1. Use the Kubernetes labels and label your deployments `app=$CI_ENVIRONMENT_SLUG`
-   in the unique namespace specified in the Kubernetes service setting. GitLab has a
+1. Ensure a Kubernetes label of `app=$CI_ENVIRONMENT_SLUG`
+   is applied to the deployments, replica sets, and pods. These resources should be contained in the namespace defined in Kubernetes service setting.
+1. Optionally, use an [Autodeploy] `.gitlab-ci.yml`
+   template which has predefined stages and commands to use, and automatically applies the labeling. GitLab also has a
    [Kubernetes deployment example](#using-the-kubernetes-deploy-example-project)
    which can simplify the build and deployment process.
-1. Optionally, use an [Autodeploy] `.gitlab-ci.yml`
-   template which has predefined stages and commands to use.
 
 Once all of the above are set up and the pipeline has run at least once,
 navigate to the environments page under **Pipelines ➔ Environments**. GitLab
-will query Kubernetes for the state of each node (e.g., spinning up, down,
-running version A, running version B) and the Deploy Board status will be displayed on
+will query Kubernetes for the state of each node (e.g., waiting, deploying,
+finished, unknown) and the Deploy Board status will be displayed on
 the environments page.
 
-Bare in mind that Deploy Boards are collapsed under their respective environment,
-but can be expanded. Only top-level environments are expanded by default. So if
-you use `review/*` for [review apps], the Deploy Boards will appear collapsed initially.
+Bear in mind that Deploy Boards are collapsed under their respective environment,
+and can be expanded. Only top-level environments are expanded by default. For example if
+you use `review/*` for [review apps], the Deploy Board will appear collapsed initially.
 
 ## Using the Kubernetes deploy example project
 
 The [kubernetes-deploy][kube-deploy] project is used to simplify the deployment
-process to Kubernetes by providing the `build`, `deploy` and `destroy` commands
-which you can use in your `.gitlab-ci.yml` as-is.
-
+process to Kubernetes by providing intelligent `build`, `deploy` and `destroy` commands
+which you can use in your `.gitlab-ci.yml` as-is. 
 ---
 
 Another simple example would be the deployment of Nginx on Kubernetes.
