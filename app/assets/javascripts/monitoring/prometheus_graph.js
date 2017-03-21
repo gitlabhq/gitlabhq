@@ -1,4 +1,4 @@
-/* eslint-disable no-new */
+/* eslint-disable no-new*/
 /* global Flash */
 
 import d3 from 'd3';
@@ -180,7 +180,7 @@ class PrometheusGraph {
     // Metric Usage
     axisLabelContainer.append('rect')
           .attr('x', this.originalWidth - 170)
-          .attr('y', (this.originalHeight / 2) - 80)
+          .attr('y', (this.originalHeight / 2) - 60)
           .style('fill', graphSpecifics.area_fill_color)
           .attr('width', 20)
           .attr('height', 35);
@@ -188,13 +188,13 @@ class PrometheusGraph {
     axisLabelContainer.append('text')
           .attr('class', 'label-axis-text')
           .attr('x', this.originalWidth - 140)
-          .attr('y', (this.originalHeight / 2) - 65)
-          .text(graphSpecifics.graph_legend_title);
+          .attr('y', (this.originalHeight / 2) - 50)
+          .text('Average');
 
     axisLabelContainer.append('text')
             .attr('class', 'text-metric-usage')
             .attr('x', this.originalWidth - 140)
-            .attr('y', (this.originalHeight / 2) - 50);
+            .attr('y', (this.originalHeight / 2) - 25);
   }
 
   handleMouseOverGraph(x, y, valuesToPlot, chart, prometheusGraphContainer, key) {
@@ -263,12 +263,12 @@ class PrometheusGraph {
       cpu_values: {
         area_fill_color: '#edf3fc',
         line_color: '#5b99f7',
-        graph_legend_title: 'CPU Usage (Cores)',
+        graph_legend_title: 'CPU utilization (%)',
       },
       memory_values: {
         area_fill_color: '#fca326',
         line_color: '#fc6d26',
-        graph_legend_title: 'Memory Usage (MB)',
+        graph_legend_title: 'Memory usage (MB)',
       },
     };
 

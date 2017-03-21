@@ -74,16 +74,16 @@ class PrometheusService < MonitoringService
   def calculate_reactive_cache(environment_slug)
     return unless active? && project && !project.pending_delete?
 
-    memory_query = %{sum(container_memory_usage_bytes{container_name="app",environment="#{environment_slug}"})/1024/1024}
-    cpu_query = %{sum(rate(container_cpu_usage_seconds_total{container_name="app",environment="#{environment_slug}"}[2m]))}
+    memory_query = %{(sum(container_memory_usage_bytes{container_name="app",environment="#{environment_slug}"}) / count(container_memory_usage_bytes{container_name="app",environment="#{environment_slug}"})) /1024/1024}
+    cpu_query = %{sum(rate(container_cpu_usage_seconds_total{container_name="app",environment="#{environment_slug}"}[2m])) / count(container_cpu_usage_seconds_total{container_name="app",environment="#{environment_slug}"}) * 100}
 
     {
       success: true,
       metrics: {
-        # Memory used in MB
+        # Average Memory used in MB
         memory_values: client.query_range(memory_query, start: 8.hours.ago),
         memory_current: client.query(memory_query),
-        # CPU Usage rate in cores.
+        # Average CPU Utilization
         cpu_values: client.query_range(cpu_query, start: 8.hours.ago),
         cpu_current: client.query(cpu_query)
       },
