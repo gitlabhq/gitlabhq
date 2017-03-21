@@ -53,7 +53,7 @@ const sidebarAssigneesOptions = () => ({
   template: `
     <div class="sidebar-assignees">
       <assignee-title :numberOfAssignees="assignees.users.length" />
-      <component :is="componentName" :assignees="assignees" :service="service"></component>
+      <component :is="componentName" :assignees="assignees" :service="service" />
     </div>
   `,
 });
