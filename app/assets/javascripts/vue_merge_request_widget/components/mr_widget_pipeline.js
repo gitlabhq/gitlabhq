@@ -1,4 +1,4 @@
-import '../../vue_pipelines_index/stage';
+import PipelineStage from '../../vue_pipelines_index/components/stage';
 import pipelineStatusIcon from '../../vue_shared/components/pipeline_status_icon';
 
 export default {
@@ -7,7 +7,7 @@ export default {
     mr: { type: Object, required: true },
   },
   components: {
-    'pipeline-stage': gl.VueStage,
+    'pipeline-stage': PipelineStage,
     'pipeline-status-icon': pipelineStatusIcon,
   },
   template: `

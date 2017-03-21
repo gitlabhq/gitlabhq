@@ -1,3 +1,5 @@
+import MRWidgetAuthor from './mr_widget_author';
+
 export default {
   name: 'MRWidgetAuthorTime',
   props: {
@@ -6,13 +8,13 @@ export default {
     dateTitle: { type: String, required: true },
     dateReadable: { type: String, required: true },
   },
+  components: {
+    'mr-widget-author': MRWidgetAuthor,
+  },
   template: `
     <h4>
       {{actionText}}
-      <a class="author_link" :href="author.webUrl">
-        <img :src="author.avatarUrl" width="16" class="avatar avatar-inline s16" />
-        <span class="author">{{author.name}}</span>
-      </a>
+      <mr-widget-author :author="author" />
       <time :title='dateTitle' data-toggle="tooltip" data-placement="top" data-container="body">
         {{dateReadable}}
       </time>

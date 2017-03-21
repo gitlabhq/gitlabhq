@@ -45,7 +45,7 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
       //
       this.opts = opts;
       this.opts.pipeline_status_url = `${this.opts.pipeline_status_url}.json`;
-      this.$widgetBody = $('.mr-widget-body');
+      this.$widgetBody = $('.mr-widget-body:eq(0)');
       $('#modal_merge_info').modal({
         show: false
       });
@@ -236,8 +236,8 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
       if (state == null) {
         return;
       }
-      $('.ci_widget').hide();
-      $('.ci_widget.ci-' + state).show();
+      $('.ci_widget:eq(0)').hide();
+      $('.ci_widget.ci-' + state).eq(0).show();
 
       this.initMiniPipelineGraph();
     };

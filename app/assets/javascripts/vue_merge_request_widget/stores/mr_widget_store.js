@@ -3,6 +3,10 @@ import Timeago from 'timeago.js';
 export default class MergeRequestStore {
 
   constructor(data) {
+    this.setData(data);
+  }
+
+  setData(data) {
     // TODO: Remove this
     this.rawData = data || {};
 
@@ -27,29 +31,34 @@ export default class MergeRequestStore {
 
     this.updatedAt = data.updated_at;
     this.mergedAt = MergeRequestStore.getEventDate(data.merge_event);
-    // FIXME: replace it with merge_event.author
-    this.mergedBy = MergeRequestStore.getUserObject(data.author);
-
-    // FIXME: replace it with close_event.author
-    this.closedBy = MergeRequestStore.getUserObject(data.author);
     this.closedAt = MergeRequestStore.getEventDate(data.closed_event);
+    this.mergedBy = MergeRequestStore.getAuthorObject(data.merge_event);
+    this.closedBy = MergeRequestStore.getAuthorObject(data.closed_event);
+    this.setToMWPSBy = MergeRequestStore.getAuthorObject({ author: data.merge_user || {} });
+    this.mergeUserId = data.merge_user_id;
+    this.currentUserId = gon.current_user_id;
 
     this.sourceBranchPath = data.source_branch_path;
     this.targetBranchPath = data.target_branch_path;
     this.conflictResolutionPath = data.conflict_resolution_ui_path;
+    this.cancelAutoMergePath = data.cancel_merge_when_pipeline_succeeds_path;
     this.removeWIPPath = data.remove_wip_path;
     this.sourceBranchRemoved = !data.source_branch_exists;
     this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
+    this.mergeWhenPipelineSucceeds = data.merge_when_pipeline_succeeds || false;
     this.mergePath = data.merge_path;
+    this.statusPath = data.status_path;
     this.emailPatchesPath = data.email_patches_path;
     this.plainDiffPath = data.plain_diff_path;
     this.createIssueToResolveDiscussionsPath = data.create_issue_to_resolve_discussions_path;
+    this.shouldRemoveSourceBranch = (data.merge_params || {}).should_remove_source_branch || false;
 
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
     this.canRevert = currentUser.can_revert || false;
     this.canResolveConflicts = currentUser.can_resolve_conflicts || false;
     this.canMerge = currentUser.can_merge || false;
     this.canCreateIssue = currentUser.can_create_issue || false;
+    this.canCancelAutomaticMerge = currentUser.can_cancel_automatic_merge || false;
     this.canUpdateMergeRequest = currentUser.can_update_merge_request || false;
     this.canResolveConflictsInUI = data.conflicts_can_be_resolved_in_ui || false;
     this.canBeCherryPicked = data.can_be_cherry_picked || false;
@@ -58,13 +67,13 @@ export default class MergeRequestStore {
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
     this.isPipelineFailed = data.pipeline ? data.pipeline.details.status.group === 'failed' : false;
     this.isPipelineBlocked = data.pipeline ? data.pipeline.details.status.group === 'manual' : false;
-    this.isOpen = data.state === 'opened' || false;
+    this.isOpen = data.state === 'opened' || data.state === 'reopened' || false;
 
     this.setState(data);
   }
 
   setState(data) {
-    if (data.state === 'opened') {
+    if (this.isOpen) {
       if (data.project_archived) {
         this.state = 'archived';
       } else if (data.branch_missing) {
@@ -77,8 +86,12 @@ export default class MergeRequestStore {
         this.state = 'conflicts';
       } else if (data.work_in_progress) {
         this.state = 'workInProgress';
+      } else if (this.mergeWhenPipelineSucceeds) {
+        this.state = 'mergeWhenPipelineSucceeds';
       } else if (!this.canMerge) {
         this.state = 'notAllowedToMerge';
+      } else if (this.onlyAllowMergeIfPipelineSucceeds && this.isPipelineFailed) {
+        this.state = 'pipelineFailed';
       } else if (this.mergeable_discussions_state === false) {
         this.state = 'unresolvedDiscussions';
       } else if (this.isPipelineBlocked) {
@@ -103,12 +116,16 @@ export default class MergeRequestStore {
     }
   }
 
-  static getUserObject(user) {
+  static getAuthorObject(event) {
+    if (!event) {
+      return {};
+    }
+
     return {
-      name: user.name || '',
-      username: user.username || '',
-      webUrl: user.web_url || '',
-      avatarUrl: user.avatar_url || '',
+      name: event.author.name || '',
+      username: event.author.username || '',
+      webUrl: event.author.web_url || '',
+      avatarUrl: event.author.avatar_url || '',
     };
   }
 

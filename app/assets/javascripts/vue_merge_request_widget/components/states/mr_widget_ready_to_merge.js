@@ -9,7 +9,7 @@ export default {
       removeSourceBranch: true,
       mergeWhenBuildSucceeds: false,
       useCommitMessageWithDescription: false,
-      setToMergeWhenBuildSucceeds: false,
+      setToMergeWhenPipelineSucceeds: false,
       showCommitMessageEditor: false,
       commitMessage: this.mr.commitMessage,
     };
@@ -69,15 +69,16 @@ export default {
         mergeWhenBuildSucceeds = this.mr.isPipelineActive; // eslint-disable-line no-param-reassign
       }
 
-      this.setToMergeWhenBuildSucceeds = mergeWhenBuildSucceeds ? 1 : 0;
+      this.setToMergeWhenPipelineSucceeds = mergeWhenBuildSucceeds === true;
 
       const options = {
         sha: this.mr.sha,
-        merge_when_build_succeeds: this.setToMergeWhenBuildSucceeds,
         commit_message: this.commitMessage,
-        should_remove_source_branch: this.removeSourceBranch,
+        merge_when_pipeline_succeeds: this.setToMergeWhenPipelineSucceeds,
+        should_remove_source_branch: this.removeSourceBranch === true,
       };
 
+      // TODO: Response handling and widget update
       this.service.merge(options);
     },
   },
@@ -87,10 +88,11 @@ export default {
         <button
           @click="handleMergeButtonClick()"
           :disabled="isMergeButtonDisabled"
-          :class="mergeButtonClass">{{mergeButtonText}}</button>
+          :class="mergeButtonClass"
+          type="button">{{mergeButtonText}}</button>
         <button
           v-if="shouldShowMergeOptionsDropdown"
-          class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+          type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
           <i class="fa fa-caret-down" aria-hidden="true"></i>
           <span class="sr-only">Select Merge Moment</span>
         </button>

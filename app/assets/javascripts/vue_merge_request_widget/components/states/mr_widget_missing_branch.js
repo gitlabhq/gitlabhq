@@ -15,7 +15,7 @@ export default {
   },
   template: `
     <div class="mr-widget-body">
-      <button class="btn btn-success btn-small" disabled="true">Merge</button>
+      <button type="button" class="btn btn-success btn-small" disabled="true">Merge</button>
       <span class="bold">
         <span class="capitalize">{{missingBranchName}}</span> branch does not exist.
         Please restore the {{missingBranchName}} branch or use a different {{missingBranchName}} branch.

@@ -3,13 +3,13 @@ class MergeRequestEntity < IssuableEntity
   include GitlabMarkdownHelper
 
   expose :author, using: UserEntity
-
   expose :in_progress_merge_commit_sha
   expose :locked_at
   expose :merge_commit_sha
   expose :merge_error
   expose :merge_params
   expose :merge_status
+  expose :merge_user, using: UserEntity
   expose :merge_user_id
   expose :merge_when_pipeline_succeeds
   expose :source_branch
@@ -17,12 +17,11 @@ class MergeRequestEntity < IssuableEntity
   expose :target_branch
   expose :target_project_id
   expose :merge_commit_sha
-  expose :merge_event
-  expose :closed_event
+  expose :merge_event, using: EventEntity
+  expose :closed_event, using: EventEntity
   expose :diff_head_sha
   expose :head_pipeline, with: PipelineEntity, as: :pipeline
   expose :merge_commit_message
-
   expose :work_in_progress?, as: :work_in_progress
   expose :source_branch_exists?, as: :source_branch_exists
   expose :mergeable_discussions_state?, as: :mergeable_discussions_state
@@ -84,6 +83,10 @@ class MergeRequestEntity < IssuableEntity
     expose :can_revert do |merge_request|
       merge_request.can_be_reverted?(request.current_user)
     end
+
+    expose :can_cancel_automatic_merge do |merge_request|
+      merge_request.can_cancel_merge_when_pipeline_succeeds?(request.current_user)
+    end
   end
 
   expose :target_branch_path do |merge_request|
@@ -120,6 +123,13 @@ class MergeRequestEntity < IssuableEntity
                                                merge_request)
   end
 
+  expose :cancel_merge_when_pipeline_succeeds_path do |merge_request|
+    cancel_merge_when_pipeline_succeeds_namespace_project_merge_request_path(
+      merge_request.target_project.namespace,
+      merge_request.target_project,
+      merge_request)
+  end
+
   expose :merge_commit_message_with_description do |merge_request|
     merge_request.merge_commit_message(include_description: true)
   end
@@ -142,6 +152,15 @@ class MergeRequestEntity < IssuableEntity
                                          merge_request.target_project,
                                          merge_request,
                                          format: :diff)
+  end
+
+  # FIXME: @oswaldo, please implement this
+  expose :status_path do |merge_request|
+    path = namespace_project_merge_request_path(merge_request.target_project.namespace,
+                                         merge_request.target_project,
+                                         merge_request,
+                                         format: :diff)
+    path.sub! 'diff', 'json'
   end
 
   expose :only_allow_merge_if_pipeline_succeeds do |merge_request|

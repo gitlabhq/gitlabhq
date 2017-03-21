@@ -12,6 +12,8 @@ export const stateToComponentMap = {
   checking: 'mr-widget-checking',
   unresolvedDiscussions: 'mr-widget-unresolved-discussions',
   pipelineBlocked: 'mr-widget-pipeline-blocked',
+  pipelineFailed: 'mr-widget-pipeline-failed',
+  mergeWhenPipelineSucceeds: 'mr-widget-merge-when-pipeline-succeeds',
 };
 
 export const statesToShowHelpWidget = [
@@ -21,5 +23,6 @@ export const statesToShowHelpWidget = [
   'readyToMerge',
   'checking',
   'unresolvedDiscussions',
+  'pipelineFailed',
   'pipelineBlocked',
 ];

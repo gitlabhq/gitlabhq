@@ -11,7 +11,7 @@ export default {
   },
   template: `
     <div class="mr-widget-body">
-      <button class="btn btn-success btn-small" disabled="true">Merge</button>
+      <button type="button" class="btn btn-success btn-small" disabled="true">Merge</button>
       <span class="bold">
         There are merge conflicts.
         <span v-if="!mr.canMerge">Resolve these conflicts or ask someone with write access to this repository to merge it locally.</span>

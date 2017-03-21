@@ -1,5 +1,5 @@
 /* global Flash */
-import { statusClassToBorderlessSvgMap } from '../vue_shared/pipeline_svg_icons';
+import { statusClassToBorderlessSvgMap } from '../../vue_shared/pipeline_svg_icons';
 
 export default {
   data() {

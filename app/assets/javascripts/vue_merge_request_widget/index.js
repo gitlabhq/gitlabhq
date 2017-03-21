@@ -15,6 +15,8 @@ import NotAllowedState from './components/states/mr_widget_not_allowed';
 import ReadyToMergeState from './components/states/mr_widget_ready_to_merge';
 import UnresolvedDiscussionsState from './components/states/mr_widget_unresolved_discussions';
 import PipelineBlockedState from './components/states/mr_widget_pipeline_blocked';
+import PipelineFailedState from './components/states/mr_widget_pipeline_failed';
+import MergeWhenPipelineSucceedsState from './components/states/mr_widget_merge_when_pipeline_succeeds';
 import CheckingState from './components/states/mr_widget_checking';
 import MRWidgetStore from './stores/mr_widget_store';
 import MRWidgetService from './services/mr_widget_service';
@@ -63,6 +65,8 @@ const mrWidgetOptions = () => ({
     'mr-widget-checking': CheckingState,
     'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
     'mr-widget-pipeline-blocked': PipelineBlockedState,
+    'mr-widget-pipeline-failed': PipelineFailedState,
+    'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
   },
   template: `
     <div class="mr-state-widget">

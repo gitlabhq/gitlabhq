@@ -319,10 +319,22 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def remove_wip
-    MergeRequests::UpdateService.new(project, current_user, wip_event: 'unwip').execute(@merge_request)
+    @merge_request = MergeRequests::UpdateService
+      .new(project, current_user, wip_event: 'unwip')
+      .execute(@merge_request)
 
-    redirect_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
-      notice: "The merge request can now be merged."
+    # TODO: @oswaldo - Handle only JSON after deleting existing MR widget.
+    respond_to do |format|
+      format.json do
+        render json: serializer.represent(@merge_request).to_json
+      end
+
+      format.html do
+        redirect_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
+          notice: "The merge request can now be merged."
+
+      end
+    end
   end
 
   def merge_check

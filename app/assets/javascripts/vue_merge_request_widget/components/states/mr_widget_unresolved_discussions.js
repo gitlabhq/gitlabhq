@@ -5,7 +5,7 @@ export default {
   },
   template: `
     <div class="mr-widget-body">
-      <button class="btn btn-success btn-small" disabled="true">Merge</button>
+      <button type="button" class="btn btn-success btn-small" disabled="true">Merge</button>
       <span class="bold">
         This merge request has unresolved discussions. Please resolve these discussions allow this merge request to be merged.
       </span>

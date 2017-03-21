@@ -968,16 +968,47 @@ describe Projects::MergeRequestsController do
   end
 
   context 'POST remove_wip' do
-    it 'removes the wip status' do
+    before do
       merge_request.title = merge_request.wip_title
       merge_request.save
+    end
 
-      post :remove_wip,
-           namespace_id: merge_request.project.namespace.to_param,
-           project_id: merge_request.project,
-           id: merge_request.iid
+    context 'as HTML' do
+      before do
+        post :remove_wip,
+          namespace_id: merge_request.project.namespace.to_param,
+          project_id: merge_request.project,
+          id: merge_request.iid
+      end
 
-      expect(merge_request.reload.title).to eq(merge_request.wipless_title)
+      it 'removes the wip status' do
+        expect(merge_request.reload.title).to eq(merge_request.wipless_title)
+      end
+
+      it 'redirect to merge request show page' do
+        expect(response).to redirect_to(
+          namespace_project_merge_request_path(merge_request.project.namespace,
+                                               merge_request.project,
+                                               merge_request))
+      end
+    end
+
+    context 'as JSON' do
+      before do
+        xhr :post, :remove_wip,
+          namespace_id: merge_request.project.namespace.to_param,
+          project_id: merge_request.project,
+          id: merge_request.iid,
+          format: :json
+      end
+
+      it 'removes the wip status' do
+        expect(merge_request.reload.title).to eq(merge_request.wipless_title)
+      end
+
+      it 'renders MergeRequest as JSON' do
+        expect(json_response.keys).to include('id', 'iid', 'description')
+      end
     end
   end
 

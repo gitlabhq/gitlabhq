@@ -74,6 +74,26 @@ describe MergeRequestSerializer do
       .to eql(resource.merge_commit_message(include_description: true))
   end
 
+  it 'includes merge_event' do
+    event = create(:event, :merged, author: user, project: resource.project, target: resource)
+
+    event_payload = EventEntity
+      .represent(event)
+      .as_json
+
+    expect(subject[:merge_event]).to eql(event_payload)
+  end
+
+  it 'includes closed_event' do
+    event = create(:event, :closed, author: user, project: resource.project, target: resource)
+
+    event_payload = EventEntity
+      .represent(event)
+      .as_json
+
+    expect(subject[:closed_event]).to eql(event_payload)
+  end
+
   describe 'diverged_commits_count' do
     context 'when MR open and its diverging' do
       it 'returns diverged commits count' do
