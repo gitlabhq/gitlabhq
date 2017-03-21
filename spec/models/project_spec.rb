@@ -1914,10 +1914,8 @@ describe Project, models: true do
 
     context 'when no user is given' do
       it 'returns the url to the repo without a username' do
-        url = project.http_url_to_repo
-
-        expect(url).to eq(project.http_url_to_repo)
-        expect(url).not_to include('@')
+        expect(project.http_url_to_repo).to eq("#{project.web_url}.git")
+        expect(project.http_url_to_repo).not_to include('@')
       end
     end
 
@@ -1925,7 +1923,7 @@ describe Project, models: true do
       it 'returns the url to the repo with the username' do
         user = build_stubbed(:user)
 
-        expect(project.http_url_to_repo(user)).to match(%r{https?:\/\/#{user.username}@})
+        expect(project.http_url_to_repo(user)).to start_with("http://#{user.username}@")
       end
     end
   end
