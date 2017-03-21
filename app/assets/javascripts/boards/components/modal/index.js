@@ -64,6 +64,7 @@ require('./empty_state');
       },
       filter: {
         handler() {
+          this.page = 1;
           this.loadIssues(true);
         },
         deep: true,
@@ -114,6 +115,9 @@ require('./empty_state');
 
         return this.activeTab === 'selected' && this.selectedIssues.length === 0;
       },
+    },
+    created() {
+      this.page = 1;
     },
     components: {
       'modal-header': gl.issueBoards.ModalHeader,

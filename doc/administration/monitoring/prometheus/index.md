@@ -96,21 +96,15 @@ Sample Prometheus queries:
 
 > Introduced in GitLab 9.0.
 
-If your GitLab server is running within Kubernetes, an option is now available
-to monitor the health of each node in the cluster. This is particularly helpful
-if your CI/CD environments run in the same cluster, and you would like enable
-[Prometheus integration][] to monitor them.
+If your GitLab server is running within Kubernetes, Prometheus will collect metrics from the Nodes in the cluster including performance data on each container. This is particularly helpful if your CI/CD environments run in the same cluster, as you can use the [Prometheus project integration][] to monitor them.
 
-When enabled, the bundled Prometheus server monitors Kubernetes and automatically
-[collects metrics][prometheus-cadvisor-metrics] from each Node in the cluster.
-
-To enable the Kubernetes monitoring:
+To disable the monitoring of Kubernetes:
 
 1. Edit `/etc/gitlab/gitlab.rb`
-1. Add or find and uncomment the following line:
+1. Add or find and uncomment the following line and set it to `false`:
 
     ```ruby
-    prometheus['monitor_kubernetes'] = true
+    prometheus['monitor_kubernetes'] = false
     ```
 
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
@@ -165,4 +159,4 @@ The GitLab monitor exporter allows you to measure various GitLab metrics.
 [reconfigure]: ../../restart_gitlab.md#omnibus-gitlab-reconfigure
 [1261]: https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1261
 [prometheus integration]: ../../../user/project/integrations/prometheus.md
-[rometheus-cadvisor-metrics]: https://github.com/google/cadvisor/blob/master/docs/storage/prometheus.md
+[prometheus-cadvisor-metrics]: https://github.com/google/cadvisor/blob/master/docs/storage/prometheus.md

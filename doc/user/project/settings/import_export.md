@@ -34,7 +34,7 @@ with all their related data and be moved into a new GitLab instance.
 | 8.10.0   | 0.1.2    |
 | 8.9.5    | 0.1.1    |
 | 8.9.0    | 0.1.0    |
- 
+
  > The table reflects what GitLab version we updated the Import/Export version at.
  > For instance, 8.10.3 and 8.11 will have the same Import/Export version (0.1.3)
  > and the exports between them will be compatible.

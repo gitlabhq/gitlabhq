@@ -2,10 +2,9 @@
 /* global Flash */
 
 import d3 from 'd3';
-import _ from 'underscore';
 import statusCodes from '~/lib/utils/http_status';
-import '~/lib/utils/common_utils';
-import '~/flash';
+import '../lib/utils/common_utils';
+import '../flash';
 
 const prometheusGraphsContainer = '.prometheus-graph';
 const metricsEndpoint = 'metrics.json';
@@ -31,22 +30,21 @@ class PrometheusGraph {
   }
 
   createGraph() {
-    const self = this;
-    _.each(this.data, (value, key) => {
-      if (value.length > 0 && (key === 'cpu_values' || key === 'memory_values')) {
-        self.plotValues(value, key);
+    Object.keys(this.data).forEach((key) => {
+      const value = this.data[key];
+      if (value.length > 0) {
+        this.plotValues(value, key);
       }
     });
   }
 
   init() {
-    const self = this;
     this.getData().then((metricsResponse) => {
-      if (metricsResponse === {}) {
+      if (Object.keys(metricsResponse).length === 0) {
         new Flash('Empty metrics', 'alert');
       } else {
-        self.transformData(metricsResponse);
-        self.createGraph();
+        this.transformData(metricsResponse);
+        this.createGraph();
       }
     });
   }
@@ -321,12 +319,14 @@ class PrometheusGraph {
 
   transformData(metricsResponse) {
     const metricTypes = {};
-    _.each(metricsResponse.metrics, (value, key) => {
-      const metricValues = value[0].values;
-      metricTypes[key] = _.map(metricValues, metric => ({
-        time: new Date(metric[0] * 1000),
-        value: metric[1],
-      }));
+    Object.keys(metricsResponse.metrics).forEach((key) => {
+      if (key === 'cpu_values' || key === 'memory_values') {
+        const metricValues = (metricsResponse.metrics[key])[0];
+        metricTypes[key] = metricValues.values.map(metric => ({
+          time: new Date(metric[0] * 1000),
+          value: metric[1],
+        }));
+      }
     });
     this.data = metricTypes;
   }

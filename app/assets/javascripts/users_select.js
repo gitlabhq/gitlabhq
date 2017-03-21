@@ -53,7 +53,7 @@
           $loading = $block.find('.block-loading').fadeOut();
 
           var updateIssueBoardsIssue = function () {
-            $loading.fadeIn();
+            $loading.removeClass('hidden').fadeIn();
             gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
               .then(function () {
                 $loading.fadeOut();
@@ -90,7 +90,7 @@
             data = {};
             data[abilityName] = {};
             data[abilityName].assignee_id = selected != null ? selected : null;
-            $loading.fadeIn();
+            $loading.removeClass('hidden').fadeIn();
             $dropdown.trigger('loading.gl.dropdown');
             return $.ajax({
               type: 'PUT',

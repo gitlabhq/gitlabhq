@@ -120,6 +120,26 @@ describe Projects::ImportService, services: true do
       end
     end
 
+    context 'with blocked import_URL' do
+      it 'fails with localhost' do
+        project.import_url = 'https://localhost:9000/vim/vim.git'
+
+        result = described_class.new(project, user).execute
+
+        expect(result[:status]).to eq :error
+        expect(result[:message]).to end_with 'Blocked import URL.'
+      end
+
+      it 'fails with port 25' do
+        project.import_url = "https://github.com:25/vim/vim.git"
+
+        result = described_class.new(project, user).execute
+
+        expect(result[:status]).to eq :error
+        expect(result[:message]).to end_with 'Blocked import URL.'
+      end
+    end
+
     def stub_github_omniauth_provider
       provider = OpenStruct.new(
         'name' => 'github',

@@ -39,9 +39,13 @@ module TodosHelper
       namespace_project_commit_path(todo.project.namespace.becomes(Namespace), todo.project,
                                     todo.target, anchor: anchor)
     else
-      path = [todo.project.namespace.becomes(Namespace), todo.project, todo.target]
-
-      path.unshift(:pipelines) if todo.build_failed?
+      if todo.build_failed?
+        # associated namespace and route would be loaded from the db again if todo.project was used
+        project = todo.target.project
+        path = [:pipelines, project.namespace.becomes(Namespace), project, todo.target]
+      else
+        path = [todo.target]
+      end
 
       polymorphic_path(path, anchor: anchor)
     end

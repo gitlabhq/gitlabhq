@@ -132,7 +132,7 @@ class DueDateSelect {
         const selectedDateValue = this.datePayload[this.abilityName].due_date;
         const displayedDateStyle = this.displayedDate !== 'No due date' ? 'bold' : 'no-value';
 
-        this.$loading.fadeIn();
+        this.$loading.removeClass('hidden').fadeIn();
 
         if (isDropdown) {
           this.$dropdown.trigger('loading.gl.dropdown');
