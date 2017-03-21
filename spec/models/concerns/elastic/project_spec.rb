@@ -59,6 +59,16 @@ describe Project, elastic: true do
       'last_activity_at'
     )
 
+    expected_hash.merge!(
+      project.project_feature.attributes.extract!(
+        'issues_access_level',
+        'merge_requests_access_level',
+        'snippets_access_level',
+        'wiki_access_level',
+        'repository_access_level'
+      )
+    )
+
     expected_hash['name_with_namespace'] = project.name_with_namespace
     expected_hash['path_with_namespace'] = project.path_with_namespace
 

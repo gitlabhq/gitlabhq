@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 8.17.4 (2017-03-19)
+
+- Elastic security fix: Respect feature visibility level.
+
 ## 8.17.3 (2017-03-07)
 
 - No changes.
@@ -33,6 +37,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fixed merge request environment link not displaying.
 - Reduce queries needed to check if node is a primary or secondary Geo node.
 - Allow squashing merge requests into a single commit.
+
+## 8.16.8 (2017-03-19)
+
+- No changes.
+- No changes.
+- No changes.
+- Elastic security fix: Respect feature visibility level.
 
 ## 8.16.7 (2017-02-27)
 
@@ -77,6 +88,12 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Add more push rules to the API. !1022 (Robert Schilling)
 - Expose issue weight in the API. !1023 (Robert Schilling)
 - Copy <some text> to clipboard. !1048
+
+## 8.15.8 (2017-03-19)
+
+- No changes.
+- No changes.
+- Elastic security fix: Respect feature visibility level.
 
 ## 8.15.7 (2017-02-15)
 

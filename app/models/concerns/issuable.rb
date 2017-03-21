@@ -49,6 +49,7 @@ module Issuable
     delegate :name,
              :email,
              to: :author,
+             allow_nil: true,
              prefix: true
 
     delegate :name,

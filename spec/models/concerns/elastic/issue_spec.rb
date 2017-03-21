@@ -11,9 +11,9 @@ describe Issue, elastic: true do
     stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
-  it "searches issues" do
-    project = create :empty_project
+  let(:project) { create :empty_project }
 
+  it "searches issues" do
     Sidekiq::Testing.inline! do
       create :issue, title: 'bla-bla term', project: project
       create :issue, description: 'bla-bla term', project: project
@@ -31,7 +31,6 @@ describe Issue, elastic: true do
   end
 
   it "returns json with all needed elements" do
-    project = create :empty_project
     issue = create :issue, project: project
 
     expected_hash = issue.attributes.extract!('id', 'iid', 'title', 'description', 'created_at',

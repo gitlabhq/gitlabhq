@@ -32,10 +32,11 @@ testsContext.keys().forEach(function (path) {
   }
 });
 
-// workaround: include all source files to find files with 0% coverage
-// see also https://github.com/deepsweet/istanbul-instrumenter-loader/issues/15
-describe('Uncovered files', function () {
-  // the following files throw errors because of undefined variables
+// if we're generating coverage reports, make sure to include all files so
+// that we can catch files with 0% coverage
+// see: https://github.com/deepsweet/istanbul-instrumenter-loader/issues/15
+if (process.env.BABEL_ENV === 'coverage') {
+  // exempt these files from the coverage report
   const troubleMakers = [
     './blob_edit/blob_edit_bundle.js',
     './cycle_analytics/components/stage_plan_component.js',
@@ -48,21 +49,23 @@ describe('Uncovered files', function () {
     './network/branch_graph.js',
   ];
 
-  const sourceFiles = require.context('~', true, /^\.\/(?!application\.js).*\.js$/);
-  sourceFiles.keys().forEach(function (path) {
-    // ignore if there is a matching spec file
-    if (testsContext.keys().indexOf(`${path.replace(/\.js$/, '')}_spec`) > -1) {
-      return;
-    }
-
-    it(`includes '${path}'`, function () {
-      try {
-        sourceFiles(path);
-      } catch (err) {
-        if (troubleMakers.indexOf(path) === -1) {
-          expect(err).toBeNull();
-        }
+  describe('Uncovered files', function () {
+    const sourceFiles = require.context('~', true, /\.js$/);
+    sourceFiles.keys().forEach(function (path) {
+      // ignore if there is a matching spec file
+      if (testsContext.keys().indexOf(`${path.replace(/\.js$/, '')}_spec`) > -1) {
+        return;
       }
+
+      it(`includes '${path}'`, function () {
+        try {
+          sourceFiles(path);
+        } catch (err) {
+          if (troubleMakers.indexOf(path) === -1) {
+            expect(err).toBeNull();
+          }
+        }
+      });
     });
   });
-});
+}

@@ -30,17 +30,17 @@ describe Snippet, elastic: true do
     it 'returns only public snippets when user is blank' do
       result = described_class.elastic_search_code('password', options: { user: nil })
 
-      expect(result.total_count).to eq(2)
-      expect(result.records).to match_array [public_snippet, project_public_snippet]
+      expect(result.total_count).to eq(1)
+      expect(result.records).to match_array [public_snippet]
     end
 
-    it 'returns only public and internal snippets for regular users' do
-      regular_user = create(:user)
+    it 'returns only public and internal personal snippets for non-members' do
+      non_member = create(:user)
 
-      result = described_class.elastic_search_code('password', options: { user: regular_user })
+      result = described_class.elastic_search_code('password', options: { user: non_member })
 
-      expect(result.total_count).to eq(4)
-      expect(result.records).to match_array [public_snippet, internal_snippet, project_public_snippet, project_internal_snippet]
+      expect(result.total_count).to eq(2)
+      expect(result.records).to match_array [public_snippet, internal_snippet]
     end
 
     it 'returns public, internal snippets, and project private snippets for project members' do
@@ -56,8 +56,8 @@ describe Snippet, elastic: true do
     it 'returns private snippets where the user is the author' do
       result = described_class.elastic_search_code('password', options: { user: author })
 
-      expect(result.total_count).to eq(5)
-      expect(result.records).to match_array [public_snippet, internal_snippet, private_snippet, project_public_snippet, project_internal_snippet]
+      expect(result.total_count).to eq(3)
+      expect(result.records).to match_array [public_snippet, internal_snippet, private_snippet]
     end
 
     it 'returns all snippets for admins' do

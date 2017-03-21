@@ -123,7 +123,7 @@
                   = dropdown_loading
               #js-add-issues-btn.prepend-left-10
           - elsif type != :boards_modal
-            = render 'shared/sort_dropdown'
+            = render 'shared/sort_dropdown', type: local_assigns[:type]
 
     - if @bulk_edit
       .issues_bulk_update.hide
