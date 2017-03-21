@@ -5,6 +5,7 @@ describe API::V3::Boards, api: true  do
 
   let(:user)        { create(:user) }
   let(:guest)       { create(:user) }
+  let(:non_member)  { create(:user) }
   let!(:project)    { create(:empty_project, :public, creator_id: user.id, namespace: user.namespace ) }
 
   let!(:dev_label) do
@@ -74,6 +75,39 @@ describe API::V3::Boards, api: true  do
       get v3_api("/projects/#{project.id}/boards/22343/lists", user)
 
       expect(response).to have_http_status(404)
+    end
+  end
+
+  describe "DELETE /projects/:id/board/lists/:list_id" do
+    let(:base_url) { "/projects/#{project.id}/boards/#{board.id}/lists" }
+
+    it "rejects a non member from deleting a list" do
+      delete v3_api("#{base_url}/#{dev_list.id}", non_member)
+
+      expect(response).to have_http_status(403)
+    end
+
+    it "rejects a user with guest role from deleting a list" do
+      delete v3_api("#{base_url}/#{dev_list.id}", guest)
+
+      expect(response).to have_http_status(403)
+    end
+
+    it "returns 404 error if list id not found" do
+      delete v3_api("#{base_url}/44444", user)
+
+      expect(response).to have_http_status(404)
+    end
+
+    context "when the user is project owner" do
+      let(:owner)     { create(:user) }
+      let(:project)   { create(:empty_project, namespace: owner.namespace) }
+
+      it "deletes the list if an admin requests it" do
+        delete v3_api("#{base_url}/#{dev_list.id}", owner)
+
+        expect(response).to have_http_status(200)
+      end
     end
   end
 end

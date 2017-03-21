@@ -73,6 +73,13 @@ describe API::MergeRequests, api: true  do
         expect(json_response.first['title']).to eq(merge_request_merged.title)
       end
 
+      it 'matches V3 response schema' do
+        get v3_api("/projects/#{project.id}/merge_requests", user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v3/merge_requests')
+      end
+
       context "with ordering" do
         before do
           @mr_later = mr_with_later_created_and_updated_at_time
@@ -237,7 +244,7 @@ describe API::MergeRequests, api: true  do
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
-        expect(json_response['labels']).to eq(['label', 'label2'])
+        expect(json_response['labels']).to eq(%w(label label2))
         expect(json_response['milestone']['id']).to eq(milestone.id)
         expect(json_response['force_remove_source_branch']).to be_truthy
       end
@@ -705,7 +712,7 @@ describe API::MergeRequests, api: true  do
   describe 'Time tracking' do
     let(:issuable) { merge_request }
 
-    include_examples 'time tracking endpoints', 'merge_request'
+    include_examples 'V3 time tracking endpoints', 'merge_request'
   end
 
   def mr_with_later_created_and_updated_at_time

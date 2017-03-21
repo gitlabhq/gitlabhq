@@ -7,7 +7,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'Get all project boards' do
         detail 'This feature was introduced in 8.13'
         success Entities::Board
@@ -127,9 +127,7 @@ module API
 
           service = ::Boards::Lists::DestroyService.new(user_project, current_user)
 
-          if service.execute(list)
-            present list, with: Entities::List
-          else
+          unless service.execute(list)
             render_api_error!({ error: 'List could not be deleted!' }, 400)
           end
         end

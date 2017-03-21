@@ -1,16 +1,20 @@
 module Gitlab
   module Checks
     class ChangeAccess
-      attr_reader :user_access, :project, :skip_authorization
+      # protocol is currently used only in EE
+      attr_reader :user_access, :project, :skip_authorization, :protocol
 
       def initialize(
-        change, user_access:, project:, env: {}, skip_authorization: false)
+        change, user_access:, project:, env: {}, skip_authorization: false,
+        protocol:
+      )
         @oldrev, @newrev, @ref = change.values_at(:oldrev, :newrev, :ref)
         @branch_name = Gitlab::Git.branch_name(@ref)
         @user_access = user_access
         @project = project
         @env = env
         @skip_authorization = skip_authorization
+        @protocol = protocol
       end
 
       def exec

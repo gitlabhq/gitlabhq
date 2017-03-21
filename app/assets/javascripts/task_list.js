@@ -1,3 +1,4 @@
+/* global Flash */
 require('vendor/task_list');
 
 class TaskList {
@@ -6,6 +7,16 @@ class TaskList {
     this.dataType = options.dataType;
     this.fieldName = options.fieldName;
     this.onSuccess = options.onSuccess || (() => {});
+    this.onError = function showFlash(response) {
+      let errorMessages = '';
+
+      if (response.responseJSON) {
+        errorMessages = response.responseJSON.errors.join(' ');
+      }
+
+      return new Flash(errorMessages || 'Update failed', 'alert');
+    };
+
     this.init();
   }
 
@@ -32,6 +43,7 @@ class TaskList {
       url: $target.data('update-url') || $('form.js-issuable-update').attr('action'),
       data: patchData,
       success: this.onSuccess,
+      error: this.onError,
     });
   }
 }

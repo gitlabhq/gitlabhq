@@ -7,10 +7,12 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   let(:target_sha) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit).id }
   let(:repository) { double(id: 1, fork: false) }
   let(:source_repo) { repository }
-  let(:source_branch) { double(ref: 'feature', repo: source_repo, sha: source_sha) }
+  let(:source_branch) { double(ref: 'branch-merged', repo: source_repo, sha: source_sha) }
+  let(:forked_source_repo) { double(id: 2, fork: true, name: 'otherproject', full_name: 'company/otherproject') }
   let(:target_repo) { repository }
   let(:target_branch) { double(ref: 'master', repo: target_repo, sha: target_sha) }
   let(:removed_branch) { double(ref: 'removed-branch', repo: source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b') }
+  let(:forked_branch) { double(ref: 'master', repo: forked_source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b') }
   let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
@@ -49,7 +51,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           title: 'New feature',
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
-          source_branch: 'feature',
+          source_branch: 'branch-merged',
           source_branch_sha: source_sha,
           target_project: project,
           target_branch: 'master',
@@ -75,7 +77,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           title: 'New feature',
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
-          source_branch: 'feature',
+          source_branch: 'branch-merged',
           source_branch_sha: source_sha,
           target_project: project,
           target_branch: 'master',
@@ -102,7 +104,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           title: 'New feature',
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
-          source_branch: 'feature',
+          source_branch: 'branch-merged',
           source_branch_sha: source_sha,
           target_project: project,
           target_branch: 'master',
@@ -194,7 +196,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
       let(:raw_data) { double(base_data) }
 
       it 'returns branch ref' do
-        expect(pull_request.source_branch_name).to eq 'feature'
+        expect(pull_request.source_branch_name).to eq 'branch-merged'
       end
     end
 
@@ -205,10 +207,18 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
         expect(pull_request.source_branch_name).to eq 'pull/1347/removed-branch'
       end
     end
+
+    context 'when source branch is from a fork' do
+      let(:raw_data) { double(base_data.merge(head: forked_branch)) }
+
+      it 'prefixes branch name with pull request number and project with namespace to avoid collision' do
+        expect(pull_request.source_branch_name).to eq 'pull/1347/company/otherproject/master'
+      end
+    end
   end
 
   shared_examples 'Gitlab::GithubImport::PullRequestFormatter#target_branch_name' do
-    context 'when source branch exists' do
+    context 'when target branch exists' do
       let(:raw_data) { double(base_data) }
 
       it 'returns branch ref' do
@@ -271,11 +281,37 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     end
   end
 
+  describe '#cross_project?' do
+    context 'when source and target repositories are different' do
+      let(:raw_data) { double(base_data.merge(head: forked_branch)) }
+
+      it 'returns true' do
+        expect(pull_request.cross_project?).to eq true
+      end
+    end
+
+    context 'when source and target repositories are the same' do
+      let(:raw_data) { double(base_data.merge(head: source_branch)) }
+
+      it 'returns false' do
+        expect(pull_request.cross_project?).to eq false
+      end
+    end
+  end
+
   describe '#url' do
     let(:raw_data) { double(base_data) }
 
     it 'return raw url' do
       expect(pull_request.url).to eq 'https://api.github.com/repos/octocat/Hello-World/pulls/1347'
+    end
+  end
+
+  describe '#opened?' do
+    let(:raw_data) { double(base_data.merge(state: 'open')) }
+
+    it 'returns true when state is "open"' do
+      expect(pull_request.opened?).to be_truthy
     end
   end
 end

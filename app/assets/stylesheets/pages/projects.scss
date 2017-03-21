@@ -494,11 +494,11 @@ a.deploy-project-label {
 .project-stats {
   font-size: 0;
   text-align: center;
-  border-bottom: 1px solid $border-color;
 
   .nav {
     padding-top: 12px;
     padding-bottom: 12px;
+    border-bottom: 1px solid $border-color;
   }
 
   .nav > li {
@@ -638,37 +638,20 @@ pre.light-well {
   margin: 0;
 }
 
-.activity-filter-block {
-  .controls {
-    padding-bottom: 7px;
-    margin-top: 8px;
-    border-bottom: 1px solid $border-color;
-  }
-}
-
 .commits-search-form {
   .input-short {
     min-width: 200px;
   }
 }
 
-.container-fluid.project-stats-container {
-  @media (max-width: $screen-xs-max) {
-    padding: 12px 0;
-  }
-}
-
 .project-last-commit {
   background-color: $gray-light;
-  padding: 12px $gl-padding;
   border: 1px solid $border-color;
+  border-radius: $border-radius-base;
+  padding: 12px;
 
   @media (min-width: $screen-sm-min) {
     margin-top: $gl-padding;
-  }
-
-  @media (min-width: $screen-sm-min) {
-    border-radius: $border-radius-base;
   }
 
   .ci-status {
@@ -763,6 +746,8 @@ pre.light-well {
 }
 
 .protected-branches-list {
+  margin-bottom: 30px;
+
   a {
     color: $gl-text-color;
 
@@ -810,7 +795,8 @@ pre.light-well {
 }
 
 .project-refs-form .dropdown-menu,
-.dropdown-menu-projects {
+.dropdown-menu-projects,
+.dropdown-menu-branches {
   width: 300px;
 
   @media (min-width: $screen-sm-min) {

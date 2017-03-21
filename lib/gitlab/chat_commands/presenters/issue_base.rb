@@ -32,7 +32,7 @@ module Gitlab
             },
             {
               title: "Labels",
-              value: @resource.labels.any? ? @resource.label_names : "_None_",
+              value: @resource.labels.any? ? @resource.label_names.join(', ') : "_None_",
               short: true
             }
           ]

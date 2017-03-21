@@ -1,32 +1,48 @@
+## Contributor license agreement
+
+By submitting code as an individual you agree to the
+[individual contributor license agreement](doc/legal/individual_contributor_license_agreement.md).
+By submitting code as an entity you agree to the
+[corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
+
+_This notice should stay as the first item in the CONTRIBUTING.MD file._
+
+---
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+- [Contributor license agreement](#contributor-license-agreement)
 - [Contribute to GitLab](#contribute-to-gitlab)
-    - [Contributor license agreement](#contributor-license-agreement)
-    - [Security vulnerability disclosure](#security-vulnerability-disclosure)
-    - [Closing policy for issues and merge requests](#closing-policy-for-issues-and-merge-requests)
-    - [Helping others](#helping-others)
-    - [I want to contribute!](#i-want-to-contribute)
-    - [Implement design & UI elements](#implement-design-ui-elements)
-    - [Issue tracker](#issue-tracker)
-        - [Feature proposals](#feature-proposals)
-        - [Issue tracker guidelines](#issue-tracker-guidelines)
-        - [Issue weight](#issue-weight)
-        - [Regression issues](#regression-issues)
-        - [Technical debt](#technical-debt)
-        - [Stewardship](#stewardship)
-    - [Merge requests](#merge-requests)
-        - [Merge request guidelines](#merge-request-guidelines)
-        - [Contribution acceptance criteria](#contribution-acceptance-criteria)
-    - [Changes for Stable Releases](#changes-for-stable-releases)
-    - [Definition of done](#definition-of-done)
-    - [Style guides](#style-guides)
-    - [Code of conduct](#code-of-conduct)
+- [Security vulnerability disclosure](#security-vulnerability-disclosure)
+- [Closing policy for issues and merge requests](#closing-policy-for-issues-and-merge-requests)
+- [Helping others](#helping-others)
+- [I want to contribute!](#i-want-to-contribute)
+- [Implement design & UI elements](#implement-design-ui-elements)
+- [Release retrospective and kickoff](#release-retrospective-and-kickoff)
+    - [Retrospective](#retrospective)
+    - [Kickoff](#kickoff)
+- [Issue tracker](#issue-tracker)
+    - [Feature proposals](#feature-proposals)
+    - [Issue tracker guidelines](#issue-tracker-guidelines)
+    - [Issue weight](#issue-weight)
+    - [Regression issues](#regression-issues)
+    - [Technical debt](#technical-debt)
+    - [Stewardship](#stewardship)
+- [Merge requests](#merge-requests)
+    - [Merge request guidelines](#merge-request-guidelines)
+    - [Contribution acceptance criteria](#contribution-acceptance-criteria)
+- [Changes for Stable Releases](#changes-for-stable-releases)
+- [Definition of done](#definition-of-done)
+- [Style guides](#style-guides)
+- [Code of conduct](#code-of-conduct)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Contribute to GitLab
+---
+
+## Contribute to GitLab
 
 Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to GitLab in a way that is efficient for everyone.
@@ -40,13 +56,6 @@ If you have read this guide and want to know how the GitLab [core team]
 operates please see [the GitLab contributing process](PROCESS.md).
 
 - [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
-
-## Contributor license agreement
-
-By submitting code as an individual you agree to the
-[individual contributor license agreement](doc/legal/individual_contributor_license_agreement.md).
-By submitting code as an entity you agree to the
-[corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
 
 ## Security vulnerability disclosure
 
@@ -69,6 +78,13 @@ towards getting your issue resolved.
 Issues and merge requests should be in English and contain appropriate language
 for audiences of all ages.
 
+If a contributor is no longer actively working on a submitted merge request
+we can decide that the merge request will be finished by one of our
+[Merge request coaches][team] or close the merge request. We make this decision
+based on how important the change is for our product vision. If a Merge request
+coach is going to finish the merge request we assign the 
+~"coach will finish" label.
+
 ## Helping others
 
 Please help other GitLab users when you can. The channels people will reach out
@@ -84,6 +100,10 @@ If you want to contribute to GitLab, but are not sure where to start,
 look for [issues with the label `Accepting Merge Requests` and weight < 5][accepting-mrs-weight].
 These issues will be of reasonable size and challenge, for anyone to start
 contributing to GitLab.
+
+## Workflow labels
+
+Labelling issues is described in the [GitLab Inc engineering workflow].
 
 ## Implement design & UI elements
 
@@ -290,10 +310,13 @@ request is as follows:
 1. [Generate a changelog entry with `bin/changelog`][changelog]
 1. If you are writing documentation, make sure to follow the
    [documentation styleguide][doc-styleguide]
-1. If you have multiple commits please combine them into one commit by
-   [squashing them][git-squash]
+1. If you have multiple commits please combine them into a few logically
+  organized commits by [squashing them][git-squash]
 1. Push the commit(s) to your fork
 1. Submit a merge request (MR) to the `master` branch
+1. Leave the approvals settings as they are:
+  1. Your merge request needs at least 1 approval
+  1. You don't have to select any approvers
 1. The MR title should describe the change you want to make
 1. The MR description should give a motive for your change and the method you
    used to achieve it.
@@ -336,12 +359,30 @@ The ['How to get faster PR reviews' document of Kubernetes](https://github.com/k
 
 For examples of feedback on merge requests please look at already
 [closed merge requests][closed-merge-requests]. If you would like quick feedback
-on your merge request feel free to mention one of the Merge Marshalls in the
-[core team] or one of the [Merge request coaches](https://about.gitlab.com/team/).
+on your merge request feel free to mention someone from the [core team] or one
+of the [Merge request coaches][team].
 Please ensure that your merge request meets the contribution acceptance criteria.
 
 When having your code reviewed and when reviewing merge requests please take the
 [code review guidelines](doc/development/code_review.md) into account.
+
+### Getting your merge request reviewed, approved, and merged
+
+There are a few rules to get your merge request accepted:
+
+1. Your merge request should only be **merged by a [maintainer][team]**.
+  1. If your merge request includes only backend changes [^1], it must be
+    **approved by a [backend maintainer][team]**.
+  1. If your merge request includes only frontend changes [^1], it must be
+    **approved by a [frontend maintainer][team]**.
+  1. If your merge request includes frontend and backend changes [^1], it must
+    be approved by a frontend **and** a backend maintainer.
+1. To lower the amount of merge requests maintainers need to review, you can
+  ask or assign any [reviewers][team] for a first review.
+  1. If you need some guidance (e.g. it's your first merge request), feel free
+    to ask one of the [Merge request coaches][team].
+  1. The reviewer will assign the merge request to a maintainer once the
+    reviewer is satisfied with the state of the merge request.
 
 ### Contribution acceptance criteria
 
@@ -365,6 +406,12 @@ When having your code reviewed and when reviewing merge requests please take the
 1. Contains functionality we think other users will benefit from too
 1. Doesn't add configuration options or settings options since they complicate
    making and testing future changes
+1. Changes do not adversely degrade performance.
+   - Avoid repeated polling of endpoints that require a significant amount of overhead
+   - Check for N+1 queries via the SQL log or [`QueryRecorder`](https://docs.gitlab.com/ce/development/merge_request_performance_guidelines.html)
+   - Avoid repeated access of filesystem
+1. If you need polling to support real-time features, please use
+   [polling with ETag caching][polling-etag].
 1. Changes after submitting the merge request should be in separate commits
    (no squashing). If necessary, you will be asked to squash when the review is
    over, before merging.
@@ -400,6 +447,7 @@ the feature you contribute through all of these steps.
 1. Description explaining the relevancy (see following item)
 1. Working and clean code that is commented where needed
 1. Unit and integration tests that pass on the CI server
+1. Performance/scalability implications have been considered, addressed, and tested
 1. [Documented][doc-styleguide] in the /doc directory
 1. Changelog entry added
 1. Reviewed and any concerns are addressed
@@ -426,7 +474,7 @@ merge request:
 1.  [Ruby](https://github.com/bbatsov/ruby-style-guide).
     Important sections include [Source Code Layout][rss-source] and
     [Naming][rss-naming]. Use:
-    - multi-line method chaining style **Option B**: dot `.` on previous line
+    - multi-line method chaining style **Option A**: dot `.` on the second line
     - string literal quoting style **Option A**: single quoted by default
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
 1.  [Newlines styleguide][newlines-styleguide]
@@ -480,6 +528,7 @@ This Code of Conduct is adapted from the [Contributor Covenant][contributor-cove
 available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/).
 
 [core team]: https://about.gitlab.com/core-team/
+[team]: https://about.gitlab.com/team/
 [getting-help]: https://about.gitlab.com/getting-help/
 [codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
 [accepting-mrs-weight]: https://gitlab.com/gitlab-org/gitlab-ce/issues?assignee_id=0&label_name[]=Accepting%20Merge%20Requests&sort=weight_asc
@@ -504,3 +553,9 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [newlines-styleguide]: doc/development/newlines_styleguide.md "Newlines styleguide"
 [UX Guide for GitLab]: http://docs.gitlab.com/ce/development/ux_guide/
 [license-finder-doc]: doc/development/licensing.md
+[GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
+[polling-etag]: https://docs.gitlab.com/ce/development/polling.html
+
+[^1]: Specs other than JavaScript specs are considered backend code. Haml
+      changes are considered backend code if they include Ruby code other than just
+      pure HTML.

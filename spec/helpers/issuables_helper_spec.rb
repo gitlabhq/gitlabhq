@@ -51,7 +51,7 @@ describe IssuablesHelper do
           utf8: '✓',
           author_id: '11',
           assignee_id: '18',
-          label_name: ['bug', 'discussion', 'documentation'],
+          label_name: %w(bug discussion documentation),
           milestone_title: 'v4.0',
           sort: 'due_date_asc',
           namespace_id: 'gitlab-org',

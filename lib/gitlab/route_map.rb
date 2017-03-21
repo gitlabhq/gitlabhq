@@ -1,6 +1,6 @@
 module Gitlab
   class RouteMap
-    class FormatError < StandardError; end
+    FormatError = Class.new(StandardError)
 
     def initialize(data)
       begin

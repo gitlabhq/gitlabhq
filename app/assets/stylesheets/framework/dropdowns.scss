@@ -43,7 +43,7 @@
   white-space: nowrap;
 
   &[disabled] {
-    background-color: $input-bg-disabled;
+    opacity: .65;
     cursor: not-allowed;
   }
 
@@ -96,7 +96,7 @@
 
 .dropdown-menu-toggle {
   @extend .dropdown-toggle;
-  padding-right: 20px;
+  padding-right: 25px;
   position: relative;
   width: 163px;
   text-overflow: ellipsis;
@@ -107,11 +107,12 @@
 
     &.fa-spinner {
       font-size: 16px;
-      margin-top: -8px;
+      margin-top: -3px;
     }
   }
 
-  .fa-chevron-down {
+  .fa-chevron-down,
+  .fa-spinner {
     position: absolute;
     top: 11px;
     right: 8px;
@@ -158,12 +159,12 @@
   li {
     text-align: left;
     list-style: none;
-    padding: 0 8px;
+    padding: 0 10px;
   }
 
   .divider {
     height: 1px;
-    margin: 8px;
+    margin: 6px 10px;
     padding: 0;
     background-color: $dropdown-divider-color;
   }
@@ -180,7 +181,7 @@
     display: block;
     position: relative;
     padding: 5px 8px;
-    color: $dropdown-link-color;
+    color: $gl-text-color;
     line-height: initial;
     text-overflow: ellipsis;
     border-radius: 2px;
@@ -192,6 +193,10 @@
     &.is-focused {
       background-color: $dropdown-link-hover-bg;
       text-decoration: none;
+
+      .badge {
+        background-color: darken($row-hover, 5%);
+      }
     }
 
     &.dropdown-menu-empty-link {
@@ -213,10 +218,12 @@
   }
 
   .dropdown-header {
-    color: $gl-text-color-secondary;
+    color: $gl-text-color;
     font-size: 13px;
+    font-weight: 600;
     line-height: 22px;
-    padding: 0 10px;
+    text-transform: capitalize;
+    padding: 0 16px;
   }
 
   .separator + .dropdown-header {
@@ -227,6 +234,12 @@
     cursor: not-allowed;
     padding: 5px 8px;
     color: $gl-text-color-secondary;
+  }
+
+  .badge {
+    position: absolute;
+    right: 8px;
+    top: 5px;
   }
 }
 
@@ -313,14 +326,17 @@
 
 .dropdown-menu-selectable {
   a {
-    padding-left: 25px;
+    padding-left: 26px;
 
     &.is-indeterminate,
     &.is-active {
+      font-weight: 600;
+      color: $gl-text-color;
+
       &::before {
         position: absolute;
-        left: 5px;
-        top: 8px;
+        left: 6px;
+        top: 6px;
         font: normal normal normal 14px/1 FontAwesome;
         font-size: inherit;
         text-rendering: auto;
@@ -342,7 +358,7 @@
 
 .dropdown-title {
   position: relative;
-  padding: 0 25px 10px;
+  padding: 2px 25px 10px;
   margin: 0 10px 10px;
   font-weight: 600;
   line-height: 1;
@@ -372,7 +388,7 @@
   right: 5px;
   width: 20px;
   height: 20px;
-  top: -3px;
+  top: -1px;
 }
 
 .dropdown-menu-back {

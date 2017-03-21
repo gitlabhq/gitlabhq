@@ -89,7 +89,7 @@ production: &base
       issues: true
       merge_requests: true
       wiki: true
-      snippets: false
+      snippets: true
       builds: true
       container_registry: true
 
@@ -157,8 +157,8 @@ production: &base
     host: example.com
     port: 80 # Set to 443 if you serve the pages with HTTPS
     https: false # Set to true if you serve the pages with HTTPS
-    # external_http: "1.1.1.1:80" # If defined, enables custom domain support in GitLab Pages
-    # external_https: "1.1.1.1:443" # If defined, enables custom domain and certificate support in GitLab Pages
+    # external_http: ["1.1.1.1:80", "[2001::1]:80"] # If defined, enables custom domain support in GitLab Pages
+    # external_https: ["1.1.1.1:443", "[2001::1]:443"] # If defined, enables custom domain and certificate support in GitLab Pages
 
   ## Mattermost
   ## For enabling Add to Mattermost button
@@ -177,9 +177,9 @@ production: &base
   # Periodically executed jobs, to self-heal Gitlab, do external synchronizations, etc.
   # Please read here for more information: https://github.com/ondrejbartas/sidekiq-cron#adding-cron-job
   cron_jobs:
-    # Flag stuck CI builds as failed
-    stuck_ci_builds_worker:
-      cron: "0 0 * * *"
+    # Flag stuck CI jobs as failed
+    stuck_ci_jobs_worker:
+      cron: "0 * * * *"
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
@@ -441,18 +441,20 @@ production: &base
   shared:
     # path: /mnt/gitlab # Default: shared
 
+  # Gitaly settings
+  gitaly:
+    # The socket_path setting is optional and obsolete. When this is set
+    # GitLab assumes it can reach a Gitaly services via a Unix socket at
+    # this path. When this is commented out GitLab will not use Gitaly.
+    # 
+    # This setting is obsolete because we expect it to be moved under
+    # repositories/storages in GitLab 9.1.
+    #
+    # socket_path: tmp/sockets/gitaly.socket
 
   #
   # 4. Advanced settings
   # ==========================
-
-  # GitLab Satellites
-  #
-  # Note for maintainers: keep the satellites.path setting until GitLab 9.0 at
-  # least. This setting is fed to 'rm -rf' in
-  # db/migrate/20151023144219_remove_satellites.rb
-  satellites:
-    path: /home/git/gitlab-satellites/
 
   ## Repositories settings
   repositories:
@@ -461,7 +463,8 @@ production: &base
     # gitlab-shell invokes Dir.pwd inside the repository path and that results
     # real path not the symlink.
     storages: # You must have at least a `default` storage path.
-      default: /home/git/repositories/
+      default:
+        path: /home/git/repositories/
 
   ## Backup settings
   backup:
@@ -483,6 +486,8 @@ production: &base
     #   multipart_chunk_size: 104857600
     #   # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
     #   # encryption: 'AES256'
+    #   # Specifies Amazon S3 storage class to use for backups, this is optional
+    #   # storage_class: 'STANDARD'
 
   ## GitLab Shell settings
   gitlab_shell:
@@ -568,11 +573,10 @@ test:
     # In order to setup it correctly you need to specify
     # your system username you use to run GitLab
     # user: YOUR_USERNAME
-  satellites:
-    path: tmp/tests/gitlab-satellites/
   repositories:
     storages:
-      default: tmp/tests/repositories/
+      default:
+        path: tmp/tests/repositories/
   backup:
     path: tmp/tests/backups
   gitlab_shell:
@@ -586,7 +590,7 @@ test:
       new_issue_url: "http://redmine/projects/:issues_tracker_id/issues/new"
     jira:
       title: "JIRA"
-      url: https://sample_company.atlasian.net
+      url: https://sample_company.atlassian.net
       project_key: PROJECT
   ldap:
     enabled: false

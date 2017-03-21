@@ -387,4 +387,16 @@ describe Note, models: true do
       end
     end
   end
+
+  describe 'expiring ETag cache' do
+    let(:note) { build(:note_on_issue) }
+
+    it "expires cache for note's issue when note is saved" do
+      expect_any_instance_of(Gitlab::EtagCaching::Store)
+        .to receive(:touch)
+        .with("/#{note.project.namespace.to_param}/#{note.project.to_param}/noteable/issue/#{note.noteable.id}/notes")
+
+      note.save!
+    end
+  end
 end

@@ -29,8 +29,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:campfire_service).dependent(:destroy) }
     it { is_expected.to have_one(:drone_ci_service).dependent(:destroy) }
     it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
-    it { is_expected.to have_one(:builds_email_service).dependent(:destroy) }
-    it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
+    it { is_expected.to have_one(:pipelines_email_service).dependent(:destroy) }
     it { is_expected.to have_one(:irker_service).dependent(:destroy) }
     it { is_expected.to have_one(:pivotaltracker_service).dependent(:destroy) }
     it { is_expected.to have_one(:hipchat_service).dependent(:destroy) }
@@ -71,6 +70,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
+    it { is_expected.to have_many(:uploads).dependent(:destroy) }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -178,7 +178,7 @@ describe Project, models: true do
       let(:project2) { build(:empty_project, repository_storage: 'missing') }
 
       before do
-        storages = { 'custom' => 'tmp/tests/custom_repositories' }
+        storages = { 'custom' => { 'path' => 'tmp/tests/custom_repositories' } }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
       end
 
@@ -216,6 +216,20 @@ describe Project, models: true do
       project2 = build(:empty_project, import_url: 'test://')
 
       expect(project2.import_data).to be_nil
+    end
+
+    it "does not allow blocked import_url localhost" do
+      project2 = build(:empty_project, import_url: 'http://localhost:9000/t.git')
+
+      expect(project2).to be_invalid
+      expect(project2.errors[:import_url]).to include('imports are not allowed from that URL')
+    end
+
+    it "does not allow blocked import_url port" do
+      project2 = build(:empty_project, import_url: 'http://github.com:25/t.git')
+
+      expect(project2).to be_invalid
+      expect(project2.errors[:import_url]).to include('imports are not allowed from that URL')
     end
 
     describe 'project pending deletion' do
@@ -380,7 +394,7 @@ describe Project, models: true do
 
     before do
       FileUtils.mkdir('tmp/tests/custom_repositories')
-      storages = { 'custom' => 'tmp/tests/custom_repositories' }
+      storages = { 'custom' => { 'path' => 'tmp/tests/custom_repositories' } }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
     end
 
@@ -402,7 +416,7 @@ describe Project, models: true do
     let(:project) { create(:empty_project, path: "somewhere") }
 
     it 'returns the full web URL for this repo' do
-      expect(project.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.namespace.path}/somewhere")
+      expect(project.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.namespace.full_path}/somewhere")
     end
   end
 
@@ -803,7 +817,7 @@ describe Project, models: true do
       end
 
       let(:avatar_path) do
-        "/#{project.namespace.name}/#{project.path}/avatar"
+        "/#{project.full_path}/avatar"
       end
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
@@ -946,8 +960,8 @@ describe Project, models: true do
 
     before do
       storages = {
-        'default' => 'tmp/tests/repositories',
-        'picked'  => 'tmp/tests/repositories',
+        'default' => { 'path' => 'tmp/tests/repositories' },
+        'picked'  => { 'path' => 'tmp/tests/repositories' },
       }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
     end
@@ -1148,16 +1162,14 @@ describe Project, models: true do
     end
 
     it 'renames a repository' do
-      ns = project.namespace_dir
-
       expect(gitlab_shell).to receive(:mv_repository).
         ordered.
-        with(project.repository_storage_path, "#{ns}/foo", "#{ns}/#{project.path}").
+        with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}").
         and_return(true)
 
       expect(gitlab_shell).to receive(:mv_repository).
         ordered.
-        with(project.repository_storage_path, "#{ns}/foo.wiki", "#{ns}/#{project.path}.wiki").
+        with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki").
         and_return(true)
 
       expect_any_instance_of(SystemHooksService).
@@ -1166,7 +1178,7 @@ describe Project, models: true do
 
       expect_any_instance_of(Gitlab::UploadsTransfer).
         to receive(:rename_project).
-        with('foo', project.path, ns)
+        with('foo', project.path, project.namespace.full_path)
 
       expect(project).to receive(:expire_caches_before_rename)
 
@@ -1513,7 +1525,7 @@ describe Project, models: true do
       it 'schedules a RepositoryForkWorker job' do
         expect(RepositoryForkWorker).to receive(:perform_async).
           with(project.id, forked_from_project.repository_storage_path,
-              forked_from_project.path_with_namespace, project.namespace.path)
+              forked_from_project.path_with_namespace, project.namespace.full_path)
 
         project.add_import_job
       end
@@ -1727,7 +1739,7 @@ describe Project, models: true do
   describe 'inside_path' do
     let!(:project1) { create(:empty_project) }
     let!(:project2) { create(:empty_project) }
-    let!(:path) { project1.namespace.path }
+    let!(:path) { project1.namespace.full_path }
 
     it { expect(Project.inside_path(path)).to eq([project1]) }
   end
@@ -1742,7 +1754,7 @@ describe Project, models: true do
     end
 
     before do
-      project.repository.commit_file(User.last, '.gitlab/route-map.yml', route_map, message: 'Add .gitlab/route-map.yml', branch_name: 'master', update: false)
+      project.repository.create_file(User.last, '.gitlab/route-map.yml', route_map, message: 'Add .gitlab/route-map.yml', branch_name: 'master')
     end
 
     context 'when there is a .gitlab/route-map.yml at the commit' do
@@ -1869,6 +1881,36 @@ describe Project, models: true do
 
         it { is_expected.to eq(expected_url) }
       end
+    end
+  end
+
+  describe '#http_url_to_repo' do
+    let(:project) { create :empty_project }
+
+    context 'when no user is given' do
+      it 'returns the url to the repo without a username' do
+        expect(project.http_url_to_repo).to eq("#{project.web_url}.git")
+        expect(project.http_url_to_repo).not_to include('@')
+      end
+    end
+
+    context 'when user is given' do
+      it 'returns the url to the repo with the username' do
+        user = build_stubbed(:user)
+
+        expect(project.http_url_to_repo(user)).to start_with("http://#{user.username}@")
+      end
+    end
+  end
+
+  describe '#pipeline_status' do
+    let(:project) { create(:project) }
+    it 'builds a pipeline status' do
+      expect(project.pipeline_status).to be_a(Ci::PipelineStatus)
+    end
+
+    it 'hase a loaded pipeline status' do
+      expect(project.pipeline_status).to be_loaded
     end
   end
 end

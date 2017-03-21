@@ -37,12 +37,12 @@ describe MergeRequest, models: true do
       end
 
       it "is invalid without merge user" do
-        subject.merge_when_build_succeeds = true
+        subject.merge_when_pipeline_succeeds = true
         expect(subject).not_to be_valid
       end
 
       it "is valid with merge user" do
-        subject.merge_when_build_succeeds = true
+        subject.merge_when_pipeline_succeeds = true
         subject.merge_user = build(:user)
 
         expect(subject).to be_valid
@@ -55,7 +55,7 @@ describe MergeRequest, models: true do
     it { is_expected.to respond_to(:can_be_merged?) }
     it { is_expected.to respond_to(:cannot_be_merged?) }
     it { is_expected.to respond_to(:merge_params) }
-    it { is_expected.to respond_to(:merge_when_build_succeeds) }
+    it { is_expected.to respond_to(:merge_when_pipeline_succeeds) }
   end
 
   describe '.in_projects' do
@@ -209,6 +209,50 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#diff_size' do
+    let(:merge_request) do
+      build(:merge_request, source_branch: 'expand-collapse-files', target_branch: 'master')
+    end
+
+    context 'when there are MR diffs' do
+      before do
+        merge_request.save
+      end
+
+      it 'returns the correct count' do
+        expect(merge_request.diff_size).to eq(105)
+      end
+
+      it 'does not perform highlighting' do
+        expect(Gitlab::Diff::Highlight).not_to receive(:new)
+
+        merge_request.diff_size
+      end
+    end
+
+    context 'when there are no MR diffs' do
+      before do
+        merge_request.compare = CompareService.new(
+          merge_request.source_project,
+          merge_request.source_branch
+        ).execute(
+          merge_request.target_project,
+          merge_request.target_branch
+        )
+      end
+
+      it 'returns the correct count' do
+        expect(merge_request.diff_size).to eq(105)
+      end
+
+      it 'does not perform highlighting' do
+        expect(Gitlab::Diff::Highlight).not_to receive(:new)
+
+        merge_request.diff_size
+      end
+    end
+  end
+
   describe "#related_notes" do
     let!(:merge_request) { create(:merge_request) }
 
@@ -301,6 +345,23 @@ describe MergeRequest, models: true do
         and_return(subject.target_branch)
 
       expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue])
+    end
+
+    context 'when the project has an external issue tracker' do
+      before do
+        subject.project.team << [subject.author, :developer]
+        commit = double(:commit, safe_message: 'Fixes TEST-3')
+
+        create(:jira_service, project: subject.project)
+
+        allow(subject).to receive(:commits).and_return([commit])
+        allow(subject).to receive(:description).and_return('Is related to TEST-2 and TEST-3')
+        allow(subject.project).to receive(:default_branch).and_return(subject.target_branch)
+      end
+
+      it 'detects issues mentioned in description but not closed' do
+        expect(subject.issues_mentioned_but_not_closing(subject.author).map(&:to_s)).to match_array(['TEST-2'])
+      end
     end
   end
 
@@ -464,24 +525,24 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#reset_merge_when_build_succeeds" do
+  describe "#reset_merge_when_pipeline_succeeds" do
     let(:merge_if_green) do
-      create :merge_request, merge_when_build_succeeds: true, merge_user: create(:user),
+      create :merge_request, merge_when_pipeline_succeeds: true, merge_user: create(:user),
                              merge_params: { "should_remove_source_branch" => "1", "commit_message" => "msg" }
     end
 
     it "sets the item to false" do
-      merge_if_green.reset_merge_when_build_succeeds
+      merge_if_green.reset_merge_when_pipeline_succeeds
       merge_if_green.reload
 
-      expect(merge_if_green.merge_when_build_succeeds).to be_falsey
+      expect(merge_if_green.merge_when_pipeline_succeeds).to be_falsey
       expect(merge_if_green.merge_params["should_remove_source_branch"]).to be_nil
       expect(merge_if_green.merge_params["commit_message"]).to be_nil
     end
   end
 
   describe "#hook_attrs" do
-    let(:attrs_hash) { subject.hook_attrs.to_h }
+    let(:attrs_hash) { subject.hook_attrs }
 
     [:source, :target].each do |key|
       describe "#{key} key" do
@@ -497,6 +558,10 @@ describe MergeRequest, models: true do
       expect(attrs_hash).to include(:target)
       expect(attrs_hash).to include(:last_commit)
       expect(attrs_hash).to include(:work_in_progress)
+      expect(attrs_hash).to include(:total_time_spent)
+      expect(attrs_hash).to include(:human_time_estimate)
+      expect(attrs_hash).to include(:human_total_time_spent)
+      expect(attrs_hash).to include('time_estimate')
     end
   end
 
@@ -768,7 +833,7 @@ describe MergeRequest, models: true do
   end
 
   describe '#check_if_can_be_merged' do
-    let(:project) { create(:empty_project, only_allow_merge_if_build_succeeds: true) }
+    let(:project) { create(:empty_project, only_allow_merge_if_pipeline_succeeds: true) }
 
     subject { create(:merge_request, source_project: project, merge_status: :unchecked) }
 
@@ -788,12 +853,6 @@ describe MergeRequest, models: true do
 
       it 'becomes unmergeable' do
         expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
-      end
-
-      it 'creates Todo on unmergeability' do
-        expect_any_instance_of(TodoService).to receive(:merge_request_became_unmergeable).with(subject)
-
-        subject.check_if_can_be_merged
       end
     end
 
@@ -889,7 +948,7 @@ describe MergeRequest, models: true do
   end
 
   describe '#mergeable_ci_state?' do
-    let(:project) { create(:empty_project, only_allow_merge_if_build_succeeds: true) }
+    let(:project) { create(:empty_project, only_allow_merge_if_pipeline_succeeds: true) }
     let(:pipeline) { create(:ci_empty_pipeline) }
 
     subject { build(:merge_request, target_project: project) }
@@ -932,7 +991,7 @@ describe MergeRequest, models: true do
     end
 
     context 'when merges are not restricted to green builds' do
-      subject { build(:merge_request, target_project: build(:empty_project, only_allow_merge_if_build_succeeds: false)) }
+      subject { build(:merge_request, target_project: build(:empty_project, only_allow_merge_if_pipeline_succeeds: false)) }
 
       context 'and a failed pipeline is associated' do
         before do
@@ -1537,7 +1596,7 @@ describe MergeRequest, models: true do
         status:  status)
     end
 
-    let(:project)       { create(:project, :public, :repository, only_allow_merge_if_build_succeeds: true) }
+    let(:project)       { create(:project, :public, :repository, only_allow_merge_if_pipeline_succeeds: true) }
     let(:developer)     { create(:user) }
     let(:user)          { create(:user) }
     let(:merge_request) { create(:merge_request, source_project: project) }

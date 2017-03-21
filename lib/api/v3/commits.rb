@@ -11,7 +11,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         desc 'Get a project repository commits' do
           success ::API::Entities::RepoCommit
         end
@@ -54,13 +54,6 @@ module API
           attrs = declared_params.dup
           branch = attrs.delete(:branch_name)
           attrs.merge!(branch: branch, start_branch: branch, target_branch: branch)
-
-          attrs[:actions].map! do |action|
-            action[:action] = action[:action].to_sym
-            action[:file_path].slice!(0) if action[:file_path] && action[:file_path].start_with?('/')
-            action[:previous_path].slice!(0) if action[:previous_path] && action[:previous_path].start_with?('/')
-            action
-          end
 
           result = ::Files::MultiService.new(user_project, current_user, attrs).execute
 
@@ -137,9 +130,7 @@ module API
 
           commit_params = {
             commit: commit,
-            create_merge_request: false,
-            source_project: user_project,
-            source_branch: commit.cherry_pick_branch_name,
+            start_branch: params[:branch],
             target_branch: params[:branch]
           }
 
@@ -162,7 +153,7 @@ module API
           optional :path, type: String, desc: 'The file path'
           given :path do
             requires :line, type: Integer, desc: 'The line number'
-            requires :line_type, type: String, values: ['new', 'old'], default: 'new', desc: 'The type of the line'
+            requires :line_type, type: String, values: %w(new old), default: 'new', desc: 'The type of the line'
           end
         end
         post ':id/repository/commits/:sha/comments' do

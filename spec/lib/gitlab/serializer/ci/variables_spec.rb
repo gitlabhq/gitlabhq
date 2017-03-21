@@ -13,6 +13,7 @@ describe Gitlab::Serializer::Ci::Variables do
   it 'converts keys into strings' do
     is_expected.to eq([
       { key: 'key', value: 'value', public: true },
-      { key: 'wee', value: 1, public: false }])
+      { key: 'wee', value: 1, public: false }
+    ])
   end
 end

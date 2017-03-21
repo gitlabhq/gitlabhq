@@ -1,5 +1,0 @@
----
-title: use babel to transpile all non-vendor javascript assets regardless of file
-  extension
-merge_request: 8988
-author:

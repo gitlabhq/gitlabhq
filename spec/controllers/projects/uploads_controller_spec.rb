@@ -16,7 +16,7 @@ describe Projects::UploadsController do
       it "returns an error" do
         post :create,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           format: :json
         expect(response).to have_http_status(422)
       end
@@ -26,7 +26,7 @@ describe Projects::UploadsController do
       before do
         post :create,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           file: jpg,
           format: :json
       end
@@ -35,13 +35,26 @@ describe Projects::UploadsController do
         expect(response.body).to match '\"alt\":\"rails_sample\"'
         expect(response.body).to match "\"url\":\"/uploads"
       end
+
+      # NOTE: This is as close as we're getting to an Integration test for this
+      # behavior. We're avoiding a proper Feature test because those should be
+      # testing things entirely user-facing, which the Upload model is very much
+      # not.
+      it 'creates a corresponding Upload record' do
+        upload = Upload.last
+
+        aggregate_failures do
+          expect(upload).to exist
+          expect(upload.model).to eq project
+        end
+      end
     end
 
     context 'with valid non-image file' do
       before do
         post :create,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           file: txt,
           format: :json
       end
@@ -57,7 +70,7 @@ describe Projects::UploadsController do
     let(:go) do
       get :show,
         namespace_id: project.namespace.to_param,
-        project_id:   project.to_param,
+        project_id:   project,
         secret:       "123456",
         filename:     "image.jpg"
     end

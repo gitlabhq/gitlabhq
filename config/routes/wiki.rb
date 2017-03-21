@@ -1,4 +1,4 @@
-WIKI_SLUG_ID = { id: /\S+/ } unless defined? WIKI_SLUG_ID
+WIKI_SLUG_ID = { id: /\S+/ }.freeze unless defined? WIKI_SLUG_ID
 
 scope(controller: :wikis) do
   scope(path: 'wikis', as: :wikis) do

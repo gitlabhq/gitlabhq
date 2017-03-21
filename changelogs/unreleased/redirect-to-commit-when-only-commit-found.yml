@@ -1,5 +1,0 @@
----
-title: 'Search feature: redirects to commit page if query is commit sha and only commit
-  found'
-merge_request: 8028
-author: YarNayar

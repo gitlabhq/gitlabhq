@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::Todos, api: true do
   include ApiHelpers
 
-  let(:project_1) { create(:empty_project) }
+  let(:project_1) { create(:empty_project, :test_repo) }
   let(:project_2) { create(:empty_project) }
   let(:author_1) { create(:user) }
   let(:author_2) { create(:user) }
@@ -11,7 +11,7 @@ describe API::Todos, api: true do
   let(:merge_request) { create(:merge_request, source_project: project_1) }
   let!(:pending_1) { create(:todo, :mentioned, project: project_1, author: author_1, user: john_doe) }
   let!(:pending_2) { create(:todo, project: project_2, author: author_2, user: john_doe) }
-  let!(:pending_3) { create(:todo, project: project_1, author: author_2, user: john_doe) }
+  let!(:pending_3) { create(:on_commit_todo, project: project_1, author: author_2, user: john_doe) }
   let!(:done) { create(:todo, :done, project: project_1, author: author_1, user: john_doe) }
 
   before do
@@ -163,7 +163,7 @@ describe API::Todos, api: true do
 
   shared_examples 'an issuable' do |issuable_type|
     it 'creates a todo on an issuable' do
-      post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.id}/todo", john_doe)
+      post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.iid}/todo", john_doe)
 
       expect(response.status).to eq(201)
       expect(json_response['project']).to be_a Hash
@@ -180,7 +180,7 @@ describe API::Todos, api: true do
     it 'returns 304 there already exist a todo on that issuable' do
       create(:todo, project: project_1, author: author_1, user: john_doe, target: issuable)
 
-      post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.id}/todo", john_doe)
+      post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.iid}/todo", john_doe)
 
       expect(response.status).to eq(304)
     end
@@ -195,7 +195,7 @@ describe API::Todos, api: true do
       guest = create(:user)
       project_1.team << [guest, :guest]
 
-      post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.id}/todo", guest)
+      post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.iid}/todo", guest)
 
       if issuable_type == 'merge_requests'
         expect(response).to have_http_status(403)

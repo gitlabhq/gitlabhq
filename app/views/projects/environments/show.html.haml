@@ -8,6 +8,7 @@
       %h3.page-title= @environment.name
     .col-md-3
       .nav-controls
+        = render 'projects/environments/metrics_button', environment: @environment
         = render 'projects/environments/terminal_button', environment: @environment
         = render 'projects/environments/external_url', environment: @environment
         - if can?(current_user, :update_environment, @environment)
@@ -15,7 +16,7 @@
         - if can?(current_user, :create_deployment, @environment) && @environment.can_stop?
           = link_to 'Stop', stop_namespace_project_environment_path(@project.namespace, @project, @environment), data: { confirm: 'Are you sure you want to stop this environment?' }, class: 'btn btn-danger', method: :post
 
-  .deployments-container
+  .environments-container
     - if @deployments.blank?
       .blank-state.blank-state-no-icon
         %h2.blank-state-title

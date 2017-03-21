@@ -74,8 +74,10 @@ describe KubernetesService, models: true, caching: true do
 
   describe '#initialize_properties' do
     context 'with a project' do
-      it 'defaults to the project name' do
-        expect(described_class.new(project: project).namespace).to eq(project.name)
+      let(:namespace_name) { "#{project.path}-#{project.id}" }
+
+      it 'defaults to the project name with ID' do
+        expect(described_class.new(project: project).namespace).to eq(namespace_name)
       end
     end
 
@@ -163,6 +165,12 @@ describe KubernetesService, models: true, caching: true do
         { key: 'KUBE_CA_PEM', value: 'CA PEM DATA', public: true }
       )
     end
+
+    it 'sets KUBE_CA_PEM_FILE' do
+      expect(subject.predefined_variables).to include(
+        { key: 'KUBE_CA_PEM_FILE', value: 'CA PEM DATA', public: true, file: true }
+      )
+    end
   end
 
   describe '#terminals' do
@@ -171,7 +179,7 @@ describe KubernetesService, models: true, caching: true do
 
     context 'with invalid pods' do
       it 'returns no terminals' do
-        stub_reactive_cache(service, pods: [ { "bad" => "pod" } ])
+        stub_reactive_cache(service, pods: [{ "bad" => "pod" }])
 
         is_expected.to be_empty
       end
@@ -184,7 +192,7 @@ describe KubernetesService, models: true, caching: true do
       before do
         stub_reactive_cache(
           service,
-          pods: [ pod, pod, kube_pod(app: "should-be-filtered-out") ]
+          pods: [pod, pod, kube_pod(app: "should-be-filtered-out")]
         )
       end
 

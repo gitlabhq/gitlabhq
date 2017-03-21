@@ -49,6 +49,12 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
       expect(page).not_to have_selector('.add-issues-modal')
     end
+
+    it 'does not show tooltip on add issues button' do
+      button = page.find('.filter-dropdown-container button', text: 'Add issues')
+
+      expect(button[:title]).not_to eq("Please add a list to your board first")
+    end
   end
 
   context 'issues list' do
@@ -101,6 +107,9 @@ describe 'Issue Boards add issue modal', :feature, :js do
       it 'returns issues' do
         page.within('.add-issues-modal') do
           find('.form-control').native.send_keys(issue.title)
+          find('.form-control').native.send_keys(:enter)
+
+          wait_for_vue_resource
 
           expect(page).to have_selector('.card', count: 1)
         end
@@ -109,6 +118,9 @@ describe 'Issue Boards add issue modal', :feature, :js do
       it 'returns no issues' do
         page.within('.add-issues-modal') do
           find('.form-control').native.send_keys('testing search')
+          find('.form-control').native.send_keys(:enter)
+
+          wait_for_vue_resource
 
           expect(page).not_to have_selector('.card')
           expect(page).not_to have_content("You haven't added any issues to your project yet")

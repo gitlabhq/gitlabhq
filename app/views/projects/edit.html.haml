@@ -1,3 +1,4 @@
+= render "projects/settings/head"
 .project-edit-container
   .row.prepend-top-default
     .col-lg-3.profile-settings-sidebar
@@ -120,7 +121,7 @@
           .form-group
             - if @project.avatar?
               .avatar-container.s160
-                = project_icon("#{@project.namespace.to_param}/#{@project.to_param}", alt: '', class: 'avatar project-avatar s160')
+                = project_icon(@project.full_path, alt: '', class: 'avatar project-avatar s160')
             %p.light
               - if @project.avatar_in_git
                 Project avatar in repository: #{ @project.avatar_in_git }

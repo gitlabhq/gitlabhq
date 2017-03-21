@@ -8,7 +8,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         helpers do
           def handle_project_member_errors(errors)
             if errors[:project_access].any?
@@ -121,6 +121,8 @@ module API
 
           authorize! :admin_project_snippet, snippet
           snippet.destroy
+
+          status(200)
         end
 
         desc 'Get a raw project snippet'

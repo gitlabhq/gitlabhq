@@ -14,8 +14,8 @@ describe Projects::BlobController do
     render_views
 
     def do_get(opts = {})
-      params = { namespace_id: project.namespace.to_param,
-                 project_id: project.to_param,
+      params = { namespace_id: project.namespace,
+                 project_id: project,
                  id: 'master/CHANGELOG' }
       get :diff, params.merge(opts)
     end
@@ -40,8 +40,8 @@ describe Projects::BlobController do
   describe 'PUT update' do
     let(:default_params) do
       {
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param,
+        namespace_id: project.namespace,
+        project_id: project,
         id: 'master/CHANGELOG',
         target_branch: 'master',
         content: 'Added changes',
@@ -96,8 +96,8 @@ describe Projects::BlobController do
 
       context 'when editing on the fork' do
         before do
-          default_params[:namespace_id] = forked_project.namespace.to_param
-          default_params[:project_id] = forked_project.to_param
+          default_params[:namespace_id] = forked_project.namespace
+          default_params[:project_id] = forked_project
         end
 
         it 'redirects to blob' do

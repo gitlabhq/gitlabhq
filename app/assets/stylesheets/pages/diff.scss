@@ -89,6 +89,10 @@
 
       .diff-line-num {
         width: 50px;
+
+        a {
+          transition: none;
+        }
       }
 
       .line_holder td {
@@ -111,7 +115,7 @@
       }
 
       .add-diff-note {
-        margin-left: -65px;
+        margin-left: -55px;
       }
     }
 
@@ -133,8 +137,13 @@
         width: 35px;
         font-weight: normal;
 
-        &:hover {
-          text-decoration: underline;
+        &[disabled] {
+          cursor: default;
+
+          &:hover,
+          &:active {
+            text-decoration: none;
+          }
         }
       }
     }
@@ -483,5 +492,105 @@
         content: attr(data-linenumber);
       }
     }
+  }
+}
+
+.diff-comment-avatar-holders {
+  position: absolute;
+  height: 19px;
+  width: 19px;
+  margin-left: -15px;
+
+  &:hover {
+    .diff-comment-avatar,
+    .diff-comments-more-count {
+      @for $i from 1 through 4 {
+        $x-pos: 14px;
+
+        &:nth-child(#{$i}) {
+          @if $i == 4 {
+            $x-pos: 14.5px;
+          }
+
+          transform: translateX((($i * $x-pos) - $x-pos));
+
+          &:hover {
+            transform: translateX((($i * $x-pos) - $x-pos)) scale(1.2);
+          }
+        }
+      }
+    }
+
+    .diff-comments-more-count {
+      padding-left: 2px;
+      padding-right: 2px;
+      width: auto;
+    }
+  }
+}
+
+.diff-comment-avatar,
+.diff-comments-more-count {
+  position: absolute;
+  left: 0;
+  width: 19px;
+  height: 19px;
+  margin-right: 0;
+  border-color: $white-light;
+  cursor: pointer;
+  transition: all .1s ease-out;
+
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) {
+      z-index: (4 - $i);
+    }
+  }
+}
+
+.diff-comments-more-count {
+  width: 19px;
+  min-width: 19px;
+  padding-left: 0;
+  padding-right: 0;
+  overflow: hidden;
+}
+
+.diff-comments-more-count,
+.diff-notes-collapse {
+  background-color: $gray-darkest;
+  color: $white-light;
+  border: 1px solid $white-light;
+  border-radius: 1em;
+  font-family: $regular_font;
+  font-size: 9px;
+  line-height: 17px;
+  text-align: center;
+}
+
+.diff-notes-collapse {
+  position: relative;
+  width: 19px;
+  height: 19px;
+  padding: 0;
+  transition: transform .1s ease-out;
+
+  svg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -5.5px;
+    margin-top: -5.5px;
+  }
+
+  path {
+    fill: $white-light;
+  }
+
+  &:hover {
+    transform: scale(1.2);
+  }
+
+  &:focus {
+    outline: 0;
   }
 }

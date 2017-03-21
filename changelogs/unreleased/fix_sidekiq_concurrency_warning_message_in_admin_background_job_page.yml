@@ -1,4 +1,0 @@
----
-title: fix incorrect sidekiq concurrency count in admin background page
-merge_request:
-author: wendy0402

@@ -7,6 +7,7 @@ class Issue < ActiveRecord::Base
   include Sortable
   include Spammable
   include FasterCacheKeys
+  include RelativePositioning
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -14,8 +15,6 @@ class Issue < ActiveRecord::Base
   Overdue       = DueDateStruct.new('Overdue', 'overdue').freeze
   DueThisWeek   = DueDateStruct.new('Due This Week', 'week').freeze
   DueThisMonth  = DueDateStruct.new('Due This Month', 'month').freeze
-
-  ActsAsTaggableOn.strict_case_match = true
 
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
@@ -56,10 +55,24 @@ class Issue < ActiveRecord::Base
     state :opened
     state :reopened
     state :closed
+
+    before_transition any => :closed do |issue|
+      issue.closed_at = Time.zone.now
+    end
+
+    before_transition closed: any do |issue|
+      issue.closed_at = nil
+    end
   end
 
   def hook_attrs
-    attributes
+    attrs = {
+      total_time_spent: total_time_spent,
+      human_total_time_spent: human_total_time_spent,
+      human_time_estimate: human_time_estimate
+    }
+
+    attributes.merge!(attrs)
   end
 
   def self.reference_prefix
@@ -95,6 +108,13 @@ class Issue < ActiveRecord::Base
     else
       super
     end
+  end
+
+  def self.order_by_position_and_priority
+    order_labels_priority.
+      reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
+              Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
+              "id DESC")
   end
 
   # `from` argument can be a Namespace or Project.

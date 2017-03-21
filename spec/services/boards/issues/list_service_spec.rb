@@ -43,8 +43,8 @@ describe Boards::Issues::ListService, services: true do
       described_class.new(project, user, params).execute
     end
 
-    context 'sets default order to priority' do
-      it 'returns opened issues when list id is missing' do
+    context 'issues are ordered by priority' do
+      it 'returns opened issues when list_id is missing' do
         params = { board_id: board.id }
 
         issues = described_class.new(project, user, params).execute

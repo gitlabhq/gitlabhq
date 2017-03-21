@@ -7,6 +7,7 @@ Bundler.require(:default, Rails.env)
 module Gitlab
   class Application < Rails::Application
     require_dependency Rails.root.join('lib/gitlab/redis')
+    require_dependency Rails.root.join('lib/gitlab/request_context')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -25,7 +26,8 @@ module Gitlab
                                      #{config.root}/app/models/hooks
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
-                                     #{config.root}/app/workers/concerns))
+                                     #{config.root}/app/workers/concerns
+                                     #{config.root}/app/services/concerns))
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
@@ -90,6 +92,7 @@ module Gitlab
 
     # Enable the asset pipeline
     config.assets.enabled = true
+    # Support legacy unicode file named img emojis, `1F939.png`
     config.assets.paths << Gemojione.images_path
     config.assets.paths << "vendor/assets/fonts"
     config.assets.precompile << "*.png"
@@ -100,9 +103,6 @@ module Gitlab
     config.assets.precompile << "katex.js"
     config.assets.precompile << "xterm/xterm.css"
     config.assets.precompile << "lib/ace.js"
-    config.assets.precompile << "lib/cropper.js"
-    config.assets.precompile << "lib/raphael.js"
-    config.assets.precompile << "u2f.js"
     config.assets.precompile << "vendor/assets/fonts/*"
 
     # Version of your assets, change this if you want to expire all your assets
@@ -120,7 +120,7 @@ module Gitlab
           credentials: true,
           headers: :any,
           methods: :any,
-          expose: ['Link']
+          expose: ['Link', 'X-Total', 'X-Total-Pages', 'X-Per-Page', 'X-Page', 'X-Next-Page', 'X-Prev-Page']
       end
 
       # Cross-origin requests must not have the session cookie available
@@ -130,7 +130,7 @@ module Gitlab
           credentials: false,
           headers: :any,
           methods: :any,
-          expose: ['Link']
+          expose: ['Link', 'X-Total', 'X-Total-Pages', 'X-Per-Page', 'X-Page', 'X-Next-Page', 'X-Prev-Page']
       end
     end
 

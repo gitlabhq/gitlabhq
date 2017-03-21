@@ -2,9 +2,9 @@ module Projects
   class DestroyService < BaseService
     include Gitlab::ShellAdapter
 
-    class DestroyError < StandardError; end
+    DestroyError = Class.new(StandardError)
 
-    DELETED_FLAG = '+deleted'
+    DELETED_FLAG = '+deleted'.freeze
 
     def async_execute
       project.transaction do

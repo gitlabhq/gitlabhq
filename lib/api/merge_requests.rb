@@ -7,7 +7,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       include TimeTrackingEndpoints
 
       helpers do
@@ -25,6 +25,14 @@ module API
           render_api_error!(errors, 400)
         end
 
+        def issue_entity(project)
+          if project.has_external_issue_tracker?
+            Entities::ExternalIssue
+          else
+            Entities::IssueBasic
+          end
+        end
+
         params :optional_params do
           optional :description, type: String, desc: 'The description of the merge request'
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
@@ -35,7 +43,7 @@ module API
       end
 
       desc 'List merge requests' do
-        success Entities::MergeRequest
+        success Entities::MergeRequestBasic
       end
       params do
         optional :state, type: String, values: %w[opened closed merged all], default: 'all',
@@ -62,7 +70,7 @@ module API
           end
 
         merge_requests = merge_requests.reorder(params[:order_by] => params[:sort])
-        present paginate(merge_requests), with: Entities::MergeRequest, current_user: current_user, project: user_project
+        present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
       end
 
       desc 'Create a merge request' do
@@ -93,23 +101,23 @@ module API
 
       desc 'Delete a merge request'
       params do
-        requires :merge_request_id, type: Integer, desc: 'The ID of a merge request'
+        requires :merge_request_iid, type: Integer, desc: 'The IID of a merge request'
       end
-      delete ":id/merge_requests/:merge_request_id" do
-        merge_request = find_project_merge_request(params[:merge_request_id])
+      delete ":id/merge_requests/:merge_request_iid" do
+        merge_request = find_project_merge_request(params[:merge_request_iid])
 
         authorize!(:destroy_merge_request, merge_request)
         merge_request.destroy
       end
 
       params do
-        requires :merge_request_id, type: Integer, desc: 'The ID of a merge request'
+        requires :merge_request_iid, type: Integer, desc: 'The IID of a merge request'
       end
       desc 'Get a single merge request' do
         success Entities::MergeRequest
       end
-      get ':id/merge_requests/:merge_request_id' do
-        merge_request = find_merge_request_with_access(params[:merge_request_id])
+      get ':id/merge_requests/:merge_request_iid' do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
         present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
       end
@@ -117,8 +125,8 @@ module API
       desc 'Get the commits of a merge request' do
         success Entities::RepoCommit
       end
-      get ':id/merge_requests/:merge_request_id/commits' do
-        merge_request = find_merge_request_with_access(params[:merge_request_id])
+      get ':id/merge_requests/:merge_request_iid/commits' do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
         commits = ::Kaminari.paginate_array(merge_request.commits)
 
         present paginate(commits), with: Entities::RepoCommit
@@ -127,8 +135,8 @@ module API
       desc 'Show the merge request changes' do
         success Entities::MergeRequestChanges
       end
-      get ':id/merge_requests/:merge_request_id/changes' do
-        merge_request = find_merge_request_with_access(params[:merge_request_id])
+      get ':id/merge_requests/:merge_request_iid/changes' do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
         present merge_request, with: Entities::MergeRequestChanges, current_user: current_user
       end
@@ -146,8 +154,8 @@ module API
                         :milestone_id, :labels, :state_event,
                         :remove_source_branch
       end
-      put ':id/merge_requests/:merge_request_id' do
-        merge_request = find_merge_request_with_access(params.delete(:merge_request_id), :update_merge_request)
+      put ':id/merge_requests/:merge_request_iid' do
+        merge_request = find_merge_request_with_access(params.delete(:merge_request_iid), :update_merge_request)
 
         mr_params = declared_params(include_missing: false)
         mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch) if mr_params[:remove_source_branch].present?
@@ -168,12 +176,12 @@ module API
         optional :merge_commit_message, type: String, desc: 'Custom merge commit message'
         optional :should_remove_source_branch, type: Boolean,
                                                desc: 'When true, the source branch will be deleted if possible'
-        optional :merge_when_build_succeeds, type: Boolean,
-                                             desc: 'When true, this merge request will be merged when the pipeline succeeds'
+        optional :merge_when_pipeline_succeeds, type: Boolean,
+                                                desc: 'When true, this merge request will be merged when the pipeline succeeds'
         optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
       end
-      put ':id/merge_requests/:merge_request_id/merge' do
-        merge_request = find_project_merge_request(params[:merge_request_id])
+      put ':id/merge_requests/:merge_request_iid/merge' do
+        merge_request = find_project_merge_request(params[:merge_request_iid])
 
         # Merge request can not be merged
         # because user dont have permissions to push into target branch
@@ -192,7 +200,7 @@ module API
           should_remove_source_branch: params[:should_remove_source_branch]
         }
 
-        if params[:merge_when_build_succeeds] && merge_request.head_pipeline && merge_request.head_pipeline.active?
+        if params[:merge_when_pipeline_succeeds] && merge_request.head_pipeline && merge_request.head_pipeline.active?
           ::MergeRequests::MergeWhenPipelineSucceedsService
             .new(merge_request.target_project, current_user, merge_params)
             .execute(merge_request)
@@ -208,10 +216,10 @@ module API
       desc 'Cancel merge if "Merge When Pipeline Succeeds" is enabled' do
         success Entities::MergeRequest
       end
-      post ':id/merge_requests/:merge_request_id/cancel_merge_when_build_succeeds' do
-        merge_request = find_project_merge_request(params[:merge_request_id])
+      post ':id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds' do
+        merge_request = find_project_merge_request(params[:merge_request_iid])
 
-        unauthorized! unless merge_request.can_cancel_merge_when_build_succeeds?(current_user)
+        unauthorized! unless merge_request.can_cancel_merge_when_pipeline_succeeds?(current_user)
 
         ::MergeRequest::MergeWhenPipelineSucceedsService
           .new(merge_request.target_project, current_user)
@@ -224,8 +232,8 @@ module API
       params do
         use :pagination
       end
-      get ':id/merge_requests/:merge_request_id/comments' do
-        merge_request = find_merge_request_with_access(params[:merge_request_id])
+      get ':id/merge_requests/:merge_request_iid/comments' do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
         present paginate(merge_request.notes.fresh), with: Entities::MRNote
       end
 
@@ -235,8 +243,8 @@ module API
       params do
         requires :note, type: String, desc: 'The text of the comment'
       end
-      post ':id/merge_requests/:merge_request_id/comments' do
-        merge_request = find_merge_request_with_access(params[:merge_request_id], :create_note)
+      post ':id/merge_requests/:merge_request_iid/comments' do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid], :create_note)
 
         opts = {
           note: params[:note],
@@ -259,8 +267,8 @@ module API
       params do
         use :pagination
       end
-      get ':id/merge_requests/:merge_request_id/closes_issues' do
-        merge_request = find_merge_request_with_access(params[:merge_request_id])
+      get ':id/merge_requests/:merge_request_iid/closes_issues' do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
         issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
         present paginate(issues), with: issue_entity(user_project), current_user: current_user
       end

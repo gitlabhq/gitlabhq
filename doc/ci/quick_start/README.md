@@ -6,7 +6,7 @@ projects.
 
 GitLab offers a [continuous integration][ci] service. If you
 [add a `.gitlab-ci.yml` file][yaml] to the root directory of your repository,
-and configure your GitLab project to use a [Runner], then each merge request or
+and configure your GitLab project to use a [Runner], then each commit or
 push, triggers your CI [pipeline].
 
 The `.gitlab-ci.yml` file tells the GitLab runner what to do. By default it runs
@@ -14,8 +14,8 @@ a pipeline with three [stages]: `build`, `test`, and `deploy`. You don't need to
 use all three stages; stages with no jobs are simply ignored.
 
 If everything runs OK (no non-zero return values), you'll get a nice green
-checkmark associated with the pushed commit or merge request. This makes it
-easy to see whether a merge request caused any of the tests to fail before
+checkmark associated with the commit. This makes it
+easy to see whether a commit caused any of the tests to fail before
 you even look at the code.
 
 Most projects use GitLab's CI service to run the test suite so that
@@ -206,15 +206,6 @@ you expected.
 
 You are also able to view the status of any commit in the various pages in
 GitLab, such as **Commits** and **Merge requests**.
-
-## Enabling build emails
-
-If you want to receive e-mail notifications about the result status of the
-jobs, you should explicitly enable the **Builds Emails** service under your
-project's settings.
-
-For more information read the
-[Builds emails service documentation](../../user/project/integrations/builds_emails.md).
 
 ## Examples
 

@@ -6,7 +6,7 @@ class MergeRequestEntity < IssuableEntity
   expose :merge_params
   expose :merge_status
   expose :merge_user_id
-  expose :merge_when_build_succeeds
+  expose :merge_when_pipeline_succeeds
   expose :source_branch
   expose :source_project_id
   expose :target_branch

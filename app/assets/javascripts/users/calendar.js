@@ -1,5 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, camelcase, vars-on-top, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, max-len */
-/* global d3 */
+
+import d3 from 'd3';
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };

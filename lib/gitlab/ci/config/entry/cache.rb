@@ -8,7 +8,7 @@ module Gitlab
         class Cache < Node
           include Configurable
 
-          ALLOWED_KEYS = %i[key untracked paths]
+          ALLOWED_KEYS = %i[key untracked paths].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
@@ -22,6 +22,12 @@ module Gitlab
 
           entry :paths, Entry::Paths,
             description: 'Specify which paths should be cached across builds.'
+
+          helpers :key
+
+          def value
+            super.merge(key: key_value)
+          end
         end
       end
     end

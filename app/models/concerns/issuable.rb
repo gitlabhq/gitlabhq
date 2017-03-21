@@ -16,9 +16,9 @@ module Issuable
   include TimeTrackable
 
   # This object is used to gather issuable meta data for displaying
-  # upvotes, downvotes and notes count for issues and merge requests
+  # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
   # lists avoiding n+1 queries and improving performance.
-  IssuableMeta = Struct.new(:upvotes, :downvotes, :notes_count)
+  IssuableMeta = Struct.new(:upvotes, :downvotes, :notes_count, :merge_requests_count)
 
   included do
     cache_markdown_field :title, pipeline: :single_line
@@ -46,12 +46,26 @@ module Issuable
 
     has_one :metrics
 
+    delegate :name,
+             :email,
+             :public_email,
+             to: :author,
+             prefix: true
+
+    delegate :name,
+             :email,
+             :public_email,
+             to: :assignee,
+             allow_nil: true,
+             prefix: true
+
     validates :author, presence: true
     validates :title, presence: true, length: { maximum: 255 }
 
     scope :authored, ->(user) { where(author_id: user) }
     scope :assigned_to, ->(u) { where(assignee_id: u.id)}
     scope :recent, -> { reorder(id: :desc) }
+    scope :order_position_asc, -> { reorder(position: :asc) }
     scope :assigned, -> { where("assignee_id IS NOT NULL") }
     scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }
@@ -68,20 +82,9 @@ module Issuable
 
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
     scope :join_project, -> { joins(:project) }
-    scope :inc_notes_with_associations, -> { includes(notes: [ :project, :author, :award_emoji ]) }
+    scope :inc_notes_with_associations, -> { includes(notes: [:project, :author, :award_emoji]) }
     scope :references_project, -> { references(:project) }
     scope :non_archived, -> { join_project.where(projects: { archived: false }) }
-
-    delegate :name,
-             :email,
-             to: :author,
-             prefix: true
-
-    delegate :name,
-             :email,
-             to: :assignee,
-             allow_nil: true,
-             prefix: true
 
     attr_mentionable :title, pipeline: :single_line
     attr_mentionable :description
@@ -143,7 +146,9 @@ module Issuable
                when 'milestone_due_desc' then order_milestone_due_desc
                when 'downvotes_desc' then order_downvotes_desc
                when 'upvotes_desc' then order_upvotes_desc
-               when 'priority' then order_labels_priority(excluded_labels: excluded_labels)
+               when 'label_priority' then order_labels_priority(excluded_labels: excluded_labels)
+               when 'priority' then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
+               when 'position_asc' then  order_position_asc
                else
                  order_by(method)
                end
@@ -152,7 +157,28 @@ module Issuable
       sorted.order(id: :desc)
     end
 
-    def order_labels_priority(excluded_labels: [])
+    def order_due_date_and_labels_priority(excluded_labels: [])
+      # The order_ methods also modify the query in other ways:
+      #
+      # - For milestones, we add a JOIN.
+      # - For label priority, we change the SELECT, and add a GROUP BY.#
+      #
+      # After doing those, we need to reorder to the order we want. The existing
+      # ORDER BYs won't work because:
+      #
+      # 1. We need milestone due date first.
+      # 2. We can't ORDER BY a column that isn't in the GROUP BY and doesn't
+      #    have an aggregate function applied, so we do a useless MIN() instead.
+      #
+      milestones_due_date = 'MIN(milestones.due_date)'
+
+      order_milestone_due_asc.
+        order_labels_priority(excluded_labels: excluded_labels, extra_select_columns: [milestones_due_date]).
+        reorder(Gitlab::Database.nulls_last_order(milestones_due_date, 'ASC'),
+                Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
+    end
+
+    def order_labels_priority(excluded_labels: [], extra_select_columns: [])
       params = {
         target_type: name,
         target_column: "#{table_name}.id",
@@ -162,7 +188,12 @@ module Issuable
 
       highest_priority = highest_label_priority(params).to_sql
 
-      select("#{table_name}.*, (#{highest_priority}) AS highest_priority").
+      select_columns = [
+        "#{table_name}.*",
+        "(#{highest_priority}) AS highest_priority"
+      ] + extra_select_columns
+
+      select(select_columns.join(', ')).
         group(arel_table[:id]).
         reorder(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
     end
@@ -182,7 +213,7 @@ module Issuable
     def grouping_columns(sort)
       grouping_columns = [arel_table[:id]]
 
-      if ["milestone_due_desc", "milestone_due_asc"].include?(sort)
+      if %w(milestone_due_desc milestone_due_asc).include?(sort)
         milestone_table = Milestone.arel_table
         grouping_columns << milestone_table[:id]
         grouping_columns << milestone_table[:due_date]
@@ -232,10 +263,11 @@ module Issuable
       user: user.hook_attrs,
       project: project.hook_attrs,
       object_attributes: hook_attrs,
+      labels: labels.map(&:hook_attrs),
       # DEPRECATED
       repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
     }
-    hook_data.merge!(assignee: assignee.hook_attrs) if assignee
+    hook_data[:assignee] = assignee.hook_attrs if assignee
 
     hook_data
   end

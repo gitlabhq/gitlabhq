@@ -1,6 +1,12 @@
 require 'spec_helper'
 
 describe Ability, lib: true do
+  context 'using a nil subject' do
+    it 'is always empty' do
+      expect(Ability.allowed(nil, nil).to_set).to be_empty
+    end
+  end
+
   describe '.can_edit_note?' do
     let(:project) { create(:empty_project) }
     let(:note) { create(:note_on_issue, project: project) }

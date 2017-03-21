@@ -28,8 +28,9 @@ class SnippetsController < ApplicationController
       @snippets = SnippetsFinder.new.execute(current_user, {
         filter: :by_user,
         user: @user,
-        scope: params[:scope] }).
-      page(params[:page])
+        scope: params[:scope]
+      })
+      .page(params[:page])
 
       render 'index'
     else

@@ -176,7 +176,7 @@ describe 'Projects > Issuables > Default sort order', feature: true do
   end
 
   def selected_sort_order
-    find('.pull-right .dropdown button').text.downcase
+    find('.filter-dropdown-container .dropdown button').text.downcase
   end
 
   def visit_merge_requests_with_state(project, state)

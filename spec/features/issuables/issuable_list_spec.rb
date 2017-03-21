@@ -30,6 +30,13 @@ describe 'issuable list', feature: true do
     end
   end
 
+  it "counts merge requests closing issues icons for each issue" do
+    visit_issuable_list(:issue)
+
+    expect(page).to have_selector('.icon-merge-request-unmerged', count: 1)
+    expect(first('.icon-merge-request-unmerged').find(:xpath, '..')).to have_content(1)
+  end
+
   def visit_issuable_list(issuable_type)
     if issuable_type == :issue
       visit namespace_project_issues_path(project.namespace, project)
@@ -40,11 +47,12 @@ describe 'issuable list', feature: true do
 
   def create_issuables(issuable_type)
     3.times do
-      if issuable_type == :issue
-        issuable = create(:issue, project: project, author: user)
-      else
-        issuable = create(:merge_request, title: FFaker::Lorem.sentence, source_project: project, source_branch: FFaker::Name.name)
-      end
+      issuable =
+        if issuable_type == :issue
+          create(:issue, project: project, author: user)
+        else
+          create(:merge_request, title: FFaker::Lorem.sentence, source_project: project, source_branch: FFaker::Name.name)
+        end
 
       2.times do
         create(:note_on_issue, noteable: issuable, project: project, note: 'Test note')
@@ -52,6 +60,16 @@ describe 'issuable list', feature: true do
 
       create(:award_emoji, :downvote, awardable: issuable)
       create(:award_emoji, :upvote, awardable: issuable)
+    end
+
+    if issuable_type == :issue
+      issue = Issue.reorder(:iid).first
+      merge_request = create(:merge_request,
+                              title: FFaker::Lorem.sentence,
+                              source_project: project,
+                              source_branch: FFaker::Name.name)
+
+      MergeRequestsClosingIssues.create!(issue: issue, merge_request: merge_request)
     end
   end
 end

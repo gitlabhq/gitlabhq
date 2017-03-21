@@ -71,7 +71,7 @@ class MigrateSidekiqQueuesFromDefault < ActiveRecord::Migration
       'StuckCiBuildsWorker'                     => :cronjob,
       'UpdateMergeRequestsWorker'               => :update_merge_requests
     }
-  }
+  }.freeze
 
   def up
     Sidekiq.redis do |redis|
@@ -93,7 +93,7 @@ class MigrateSidekiqQueuesFromDefault < ActiveRecord::Migration
 
   def migrate_from_queue(redis, queue, job_mapping)
     while job = redis.lpop("queue:#{queue}")
-      payload = JSON.load(job)
+      payload = JSON.parse(job)
       new_queue = job_mapping[payload['class']]
 
       # If we have no target queue to migrate to we're probably dealing with

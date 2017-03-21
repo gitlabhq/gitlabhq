@@ -7,7 +7,7 @@ TEST_MUTABLE_REPO_PATH = File.join(SEED_REPOSITORY_PATH, "mutable-repo.git")
 TEST_BROKEN_REPO_PATH  = File.join(SEED_REPOSITORY_PATH, "broken-repo.git")
 
 module SeedHelper
-  GITLAB_URL = "https://gitlab.com/gitlab-org/gitlab-git-test.git"
+  GITLAB_GIT_TEST_REPO_URL = ENV.fetch('GITLAB_GIT_TEST_REPO_URL', 'https://gitlab.com/gitlab-org/gitlab-git-test.git').freeze
 
   def ensure_seeds
     if File.exist?(SEED_REPOSITORY_PATH)
@@ -25,7 +25,7 @@ module SeedHelper
   end
 
   def create_bare_seeds
-    system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --bare #{GITLAB_URL}),
+    system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --bare #{GITLAB_GIT_TEST_REPO_URL}),
            chdir: SEED_REPOSITORY_PATH,
            out:   '/dev/null',
            err:   '/dev/null')
@@ -45,7 +45,7 @@ module SeedHelper
     system(git_env, *%w(git branch -t feature origin/feature),
            chdir: TEST_MUTABLE_REPO_PATH, out: '/dev/null', err: '/dev/null')
 
-    system(git_env, *%W(#{Gitlab.config.git.bin_path} remote add expendable #{GITLAB_URL}),
+    system(git_env, *%W(#{Gitlab.config.git.bin_path} remote add expendable #{GITLAB_GIT_TEST_REPO_URL}),
            chdir: TEST_MUTABLE_REPO_PATH, out: '/dev/null', err: '/dev/null')
   end
 

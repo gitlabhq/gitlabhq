@@ -1,4 +1,0 @@
----
-title: Don't connect in Gitlab::Database.adapter_name
-merge_request:
-author:

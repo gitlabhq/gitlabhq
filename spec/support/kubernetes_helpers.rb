@@ -2,23 +2,24 @@ module KubernetesHelpers
   include Gitlab::Kubernetes
 
   def kube_discovery_body
-    { "kind" => "APIResourceList",
+    {
+      "kind" => "APIResourceList",
       "resources" => [
         { "name" => "pods", "namespaced" => true, "kind" => "Pod" },
-      ],
+      ]
     }
   end
 
   def kube_pods_body(*pods)
     { "kind" => "PodList",
-      "items" => [ kube_pod ],
-    }
+      "items" => [kube_pod] }
   end
 
   # This is a partial response, it will have many more elements in reality but
   # these are the ones we care about at the moment
   def kube_pod(app: "valid-pod-label")
-    { "metadata" => {
+    {
+      "metadata" => {
         "name" => "kube-pod",
         "creationTimestamp" => "2016-11-25T19:55:19Z",
         "labels" => { "app" => app },
@@ -29,7 +30,7 @@ module KubernetesHelpers
           { "name" => "container-1" },
         ],
       },
-      "status" => { "phase" => "Running" },
+      "status" => { "phase" => "Running" }
     }
   end
 

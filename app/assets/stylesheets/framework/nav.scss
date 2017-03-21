@@ -1,7 +1,7 @@
 @mixin fade($gradient-direction, $gradient-color) {
   visibility: hidden;
   opacity: 0;
-  z-index: 1;
+  z-index: 2;
   position: absolute;
   bottom: 12px;
   width: 43px;
@@ -18,7 +18,7 @@
 
   .fa {
     position: relative;
-    top: 6px;
+    top: 5px;
     font-size: 18px;
   }
 }
@@ -79,6 +79,7 @@
   }
 
   &.sub-nav {
+    text-align: center;
     background-color: $gray-normal;
 
     .container-fluid {
@@ -137,7 +138,6 @@
 
   .nav-links {
     display: inline-block;
-    width: 50%;
     margin-bottom: 0;
     border-bottom: none;
 
@@ -286,13 +286,14 @@
   background: $gray-light;
   border-bottom: 1px solid $border-color;
   transition: padding $sidebar-transition-duration;
+  text-align: center;
 
   .container-fluid {
     position: relative;
 
     .nav-control {
       @media (max-width: $screen-sm-max) {
-        margin-right: 75px;
+        margin-right: 2px;
       }
     }
   }
@@ -351,7 +352,7 @@
     right: -5px;
 
     .fa {
-      right: -28px;
+      right: -7px;
     }
   }
 
@@ -381,7 +382,7 @@
       left: 0;
 
       .fa {
-        left: -4px;
+        left: 10px;
       }
     }
   }

@@ -10,7 +10,7 @@ module API
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
       end
-      resource source_type.pluralize do
+      resource source_type.pluralize, requirements: { id: %r{[^/]+} } do
         desc 'Gets a list of group or project members viewable by the authenticated user.' do
           success Entities::Member
         end
@@ -55,7 +55,6 @@ module API
           authorize_admin_source!(source_type, source)
 
           member = source.members.find_by(user_id: params[:user_id])
-
           conflict!('Member already exists') if member
 
           member = source.add_user(params[:user_id], params[:access_level], current_user: current_user, expires_at: params[:expires_at])
@@ -63,9 +62,6 @@ module API
           if member.persisted? && member.valid?
             present member.user, with: Entities::Member, member: member
           else
-            # This is to ensure back-compatibility but 400 behavior should be used
-            # for all validation errors in 9.0!
-            render_api_error!('Access level is not known', 422) if member.errors.key?(:access_level)
             render_validation_error!(member)
           end
         end
@@ -79,18 +75,14 @@ module API
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
         end
         put ":id/members/:user_id" do
-          source = find_source(source_type, params[:id])
+          source = find_source(source_type, params.delete(:id))
           authorize_admin_source!(source_type, source)
 
-          member = source.members.find_by!(user_id: params[:user_id])
-          attrs = attributes_for_keys [:access_level, :expires_at]
+          member = source.members.find_by!(user_id: params.delete(:user_id))
 
-          if member.update_attributes(attrs)
+          if member.update_attributes(declared_params(include_missing: false))
             present member.user, with: Entities::Member, member: member
           else
-            # This is to ensure back-compatibility but 400 behavior should be used
-            # for all validation errors in 9.0!
-            render_api_error!('Access level is not known', 422) if member.errors.key?(:access_level)
             render_validation_error!(member)
           end
         end
@@ -101,24 +93,10 @@ module API
         end
         delete ":id/members/:user_id" do
           source = find_source(source_type, params[:id])
+          # Ensure that memeber exists
+          source.members.find_by!(user_id: params[:user_id])
 
-          # This is to ensure back-compatibility but find_by! should be used
-          # in that casse in 9.0!
-          member = source.members.find_by(user_id: params[:user_id])
-
-          # This is to ensure back-compatibility but this should be removed in
-          # favor of find_by! in 9.0!
-          not_found!("Member: user_id:#{params[:user_id]}") if source_type == 'group' && member.nil?
-
-          # This is to ensure back-compatibility but 204 behavior should be used
-          # for all DELETE endpoints in 9.0!
-          if member.nil?
-            { message: "Access revoked", id: params[:user_id].to_i }
-          else
-            ::Members::DestroyService.new(source, current_user, declared_params).execute
-
-            present member.user, with: Entities::Member, member: member
-          end
+          ::Members::DestroyService.new(source, current_user, declared_params).execute
         end
       end
     end

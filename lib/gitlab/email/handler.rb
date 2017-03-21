@@ -5,7 +5,7 @@ require 'gitlab/email/handler/unsubscribe_handler'
 module Gitlab
   module Email
     module Handler
-      HANDLERS = [UnsubscribeHandler, CreateNoteHandler, CreateIssueHandler]
+      HANDLERS = [UnsubscribeHandler, CreateNoteHandler, CreateIssueHandler].freeze
 
       def self.for(mail, mail_key)
         HANDLERS.find do |klass|

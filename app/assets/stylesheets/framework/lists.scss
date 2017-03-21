@@ -96,16 +96,6 @@ ul.unstyled-list > li {
   border-bottom: none;
 }
 
-ul.task-list {
-  li.task-list-item {
-    list-style-type: none;
-  }
-
-  ul:not(.task-list) {
-    padding-left: 1.3em;
-  }
-}
-
 // Generic content list
 ul.content-list {
   @include basic-list;
@@ -236,44 +226,6 @@ ul.content-list {
 
   .label-default {
     color: $gl-text-color-secondary;
-  }
-}
-
-// Table list
-.table-list {
-  display: table;
-  width: 100%;
-
-  .table-list-row {
-    display: table-row;
-  }
-
-  .table-list-cell {
-    display: table-cell;
-    vertical-align: top;
-    padding: 10px 16px;
-    border-bottom: 1px solid $gray-darker;
-
-    &.avatar-cell {
-      width: 36px;
-      padding-right: 0;
-
-      img {
-        margin-right: 0;
-      }
-    }
-  }
-
-  &.table-wide {
-    .table-list-cell {
-      &:last-of-type {
-        padding-right: 0;
-      }
-
-      &:first-of-type {
-        padding-left: 0;
-      }
-    }
   }
 }
 

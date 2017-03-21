@@ -12,7 +12,7 @@ module Projects
       @project = Project.new(params)
 
       # Make sure that the user is allowed to use the specified visibility level
-      unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
+      unless Gitlab::VisibilityLevel.allowed_for?(current_user, @project.visibility_level)
         deny_visibility_level(@project)
         return @project
       end

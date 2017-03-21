@@ -1,17 +1,9 @@
 module Ci
   class RetryBuildService < ::BaseService
-    CLONE_ATTRIBUTES = %i[pipeline ref tag options commands tag_list name
-                          allow_failure stage stage_idx trigger_request
-                          yaml_variables when environment coverage_regex]
-                            .freeze
-
-    REJECT_ATTRIBUTES = %i[id status user token coverage trace runner
-                           artifacts_file artifacts_metadata artifacts_size
-                           created_at updated_at started_at finished_at
-                           queued_at erased_by erased_at].freeze
-
-    IGNORE_ATTRIBUTES = %i[trace type lock_version project target_url
-                           deploy job_id description].freeze
+    CLONE_ACCESSORS = %i[pipeline project ref tag options commands name
+                         allow_failure stage stage_idx trigger_request
+                         yaml_variables when environment coverage_regex
+                         description tag_list].freeze
 
     def execute(build)
       reprocess(build).tap do |new_build|
@@ -30,7 +22,7 @@ module Ci
         raise Gitlab::Access::AccessDeniedError
       end
 
-      attributes = CLONE_ATTRIBUTES.map do |attribute|
+      attributes = CLONE_ACCESSORS.map do |attribute|
         [attribute, build.send(attribute)]
       end
 

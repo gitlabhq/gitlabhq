@@ -113,7 +113,7 @@ describe GitlabMarkdownHelper do
     it 'replaces commit message with emoji to link' do
       actual = link_to_gfm(':book:Book', '/foo')
       expect(actual).
-        to eq %Q(<img class="emoji" title=":book:" alt=":book:" src="http://#{Gitlab.config.gitlab.host}/assets/1F4D6.png" height="20" width="20" align="absmiddle"><a href="/foo">Book</a>)
+        to eq '<gl-emoji data-name="book" data-unicode-version="6.0">📖</gl-emoji><a href="/foo">Book</a>'
     end
   end
 
@@ -152,9 +152,8 @@ describe GitlabMarkdownHelper do
   end
 
   describe '#first_line_in_markdown' do
-    let(:text) { "@#{user.username}, can you look at this?\nHello world\n"}
-
     it 'truncates Markdown properly' do
+      text = "@#{user.username}, can you look at this?\nHello world\n"
       actual = first_line_in_markdown(text, 100, project: project)
 
       doc = Nokogiri::HTML.parse(actual)
@@ -168,6 +167,23 @@ describe GitlabMarkdownHelper do
       expect(doc.css('a')[0].text).to eq "@#{user.username}"
 
       expect(doc.content).to eq "@#{user.username}, can you look at this?..."
+    end
+
+    it 'truncates Markdown with emoji properly' do
+      text = "foo :wink:\nbar :grinning:"
+      actual = first_line_in_markdown(text, 100, project: project)
+
+      doc = Nokogiri::HTML.parse(actual)
+
+      # Make sure we didn't create invalid markup
+      # But also account for the 2 errors caused by the unknown `gl-emoji` elements
+      expect(doc.errors.length).to eq(2)
+
+      expect(doc.css('gl-emoji').length).to eq(2)
+      expect(doc.css('gl-emoji')[0].attr('data-name')).to eq 'wink'
+      expect(doc.css('gl-emoji')[1].attr('data-name')).to eq 'grinning'
+
+      expect(doc.content).to eq "foo 😉\nbar 😀"
     end
   end
 

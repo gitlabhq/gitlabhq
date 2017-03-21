@@ -38,7 +38,7 @@ module TestEnv
     'deleted-image-test'                 => '6c17798',
     'wip'                                => 'b9238ee',
     'csv'                                => '3dd0896'
-  }
+  }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
   # need to keep all the branches in sync.
@@ -48,7 +48,7 @@ module TestEnv
     'master'                     => '5937ac0',
     'remove-submodule'           => '2a33e0c',
     'conflict-resolvable-fork'   => '404fa3f'
-  }
+  }.freeze
 
   # Test environment
   #
@@ -135,7 +135,7 @@ module TestEnv
 
   def copy_repo(project)
     base_repo_path = File.expand_path(factory_repo_path_bare)
-    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.namespace.path}/#{project.path}.git")
+    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.full_path}.git")
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
@@ -143,7 +143,7 @@ module TestEnv
   end
 
   def repos_path
-    Gitlab.config.repositories.storages.default
+    Gitlab.config.repositories.storages.default['path']
   end
 
   def backup_path
@@ -152,7 +152,7 @@ module TestEnv
 
   def copy_forked_repo_with_submodules(project)
     base_repo_path = File.expand_path(forked_repo_path_bare)
-    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.namespace.path}/#{project.path}.git")
+    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.full_path}.git")
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path

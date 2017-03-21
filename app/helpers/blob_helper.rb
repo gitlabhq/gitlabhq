@@ -153,16 +153,17 @@ module BlobHelper
     # Because we are opionated we set the cache headers ourselves.
     response.cache_control[:public] = @project.public?
 
-    if @ref && @commit && @ref == @commit.id
-      # This is a link to a commit by its commit SHA. That means that the blob
-      # is immutable. The only reason to invalidate the cache is if the commit
-      # was deleted or if the user lost access to the repository.
-      response.cache_control[:max_age] = Blob::CACHE_TIME_IMMUTABLE
-    else
-      # A branch or tag points at this blob. That means that the expected blob
-      # value may change over time.
-      response.cache_control[:max_age] = Blob::CACHE_TIME
-    end
+    response.cache_control[:max_age] =
+      if @ref && @commit && @ref == @commit.id
+        # This is a link to a commit by its commit SHA. That means that the blob
+        # is immutable. The only reason to invalidate the cache is if the commit
+        # was deleted or if the user lost access to the repository.
+        Blob::CACHE_TIME_IMMUTABLE
+      else
+        # A branch or tag points at this blob. That means that the expected blob
+        # value may change over time.
+        Blob::CACHE_TIME
+      end
 
     response.etag = @blob.id
     !stale
@@ -201,5 +202,19 @@ module BlobHelper
       'assets-prefix' => Gitlab::Application.config.assets.prefix,
       'blob-language' => @blob && @blob.language.try(:ace_mode)
     }
+  end
+
+  def copy_file_path_button(file_path)
+    clipboard_button(clipboard_text: file_path, class: 'btn-clipboard btn-transparent prepend-left-5', title: 'Copy file path to clipboard')
+  end
+
+  def copy_blob_content_button(blob)
+    return if markup?(blob.name)
+
+    clipboard_button(clipboard_target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm", title: "Copy content to clipboard")
+  end
+
+  def open_raw_file_button(path)
+    link_to icon('file-code-o'), path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: 'Open raw', data: { container: 'body' }
   end
 end

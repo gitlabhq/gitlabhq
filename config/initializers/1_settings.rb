@@ -14,12 +14,15 @@ class Settings < Settingslogic
     end
 
     def build_gitlab_ci_url
-      if on_standard_port?(gitlab)
-        custom_port = nil
-      else
-        custom_port = ":#{gitlab.port}"
-      end
-      [ gitlab.protocol,
+      custom_port =
+        if on_standard_port?(gitlab)
+          nil
+        else
+          ":#{gitlab.port}"
+        end
+
+      [
+        gitlab.protocol,
         "://",
         gitlab.host,
         custom_port,
@@ -80,7 +83,9 @@ class Settings < Settingslogic
 
     def base_url(config)
       custom_port = on_standard_port?(config) ? nil : ":#{config.port}"
-      [ config.protocol,
+
+      [
+        config.protocol,
         "://",
         config.host,
         custom_port
@@ -160,15 +165,16 @@ if github_settings
 
   github_settings["args"] ||= Settingslogic.new({})
 
-  if github_settings["url"].include?(github_default_url)
-    github_settings["args"]["client_options"] = OmniAuth::Strategies::GitHub.default_options[:client_options]
-  else
-    github_settings["args"]["client_options"] = {
-      "site"          => File.join(github_settings["url"], "api/v3"),
-      "authorize_url" => File.join(github_settings["url"], "login/oauth/authorize"),
-      "token_url"     => File.join(github_settings["url"], "login/oauth/access_token")
-    }
-  end
+  github_settings["args"]["client_options"] =
+    if github_settings["url"].include?(github_default_url)
+      OmniAuth::Strategies::GitHub.default_options[:client_options]
+    else
+      {
+        "site"          => File.join(github_settings["url"], "api/v3"),
+        "authorize_url" => File.join(github_settings["url"], "login/oauth/authorize"),
+        "token_url"     => File.join(github_settings["url"], "login/oauth/access_token")
+      }
+    end
 end
 
 Settings['shared'] ||= Settingslogic.new({})
@@ -180,7 +186,7 @@ Settings['issues_tracker'] ||= {}
 # GitLab
 #
 Settings['gitlab'] ||= Settingslogic.new({})
-Settings.gitlab['default_projects_limit'] ||= 10
+Settings.gitlab['default_projects_limit'] ||= 100000
 Settings.gitlab['default_branch_protection'] ||= 2
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
 Settings.gitlab['host']       ||= ENV['GITLAB_HOST'] || 'localhost'
@@ -215,7 +221,7 @@ Settings.gitlab['session_expire_delay'] ||= 10080
 Settings.gitlab.default_projects_features['issues']             = true if Settings.gitlab.default_projects_features['issues'].nil?
 Settings.gitlab.default_projects_features['merge_requests']     = true if Settings.gitlab.default_projects_features['merge_requests'].nil?
 Settings.gitlab.default_projects_features['wiki']               = true if Settings.gitlab.default_projects_features['wiki'].nil?
-Settings.gitlab.default_projects_features['snippets']           = false if Settings.gitlab.default_projects_features['snippets'].nil?
+Settings.gitlab.default_projects_features['snippets']           = true if Settings.gitlab.default_projects_features['snippets'].nil?
 Settings.gitlab.default_projects_features['builds']             = true if Settings.gitlab.default_projects_features['builds'].nil?
 Settings.gitlab.default_projects_features['container_registry'] = true if Settings.gitlab.default_projects_features['container_registry'].nil?
 Settings.gitlab.default_projects_features['visibility_level']   = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
@@ -272,8 +278,8 @@ Settings.pages['host']            ||= "example.com"
 Settings.pages['port']            ||= Settings.pages.https ? 443 : 80
 Settings.pages['protocol']        ||= Settings.pages.https ? "https" : "http"
 Settings.pages['url']             ||= Settings.send(:build_pages_url)
-Settings.pages['external_http']   ||= false if Settings.pages['external_http'].nil?
-Settings.pages['external_https']  ||= false if Settings.pages['external_https'].nil?
+Settings.pages['external_http']   ||= false unless Settings.pages['external_http'].present?
+Settings.pages['external_https']  ||= false unless Settings.pages['external_https'].present?
 
 #
 # Git LFS
@@ -302,9 +308,9 @@ Settings.gravatar['host']         = Settings.host_without_www(Settings.gravatar[
 # Cron Jobs
 #
 Settings['cron_jobs'] ||= Settingslogic.new({})
-Settings.cron_jobs['stuck_ci_builds_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['stuck_ci_builds_worker']['cron'] ||= '0 0 * * *'
-Settings.cron_jobs['stuck_ci_builds_worker']['job_class'] = 'StuckCiBuildsWorker'
+Settings.cron_jobs['stuck_ci_jobs_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['stuck_ci_jobs_worker']['cron'] ||= '0 * * * *'
+Settings.cron_jobs['stuck_ci_jobs_worker']['job_class'] = 'StuckCiJobsWorker'
 Settings.cron_jobs['expire_build_artifacts_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['expire_build_artifacts_worker']['cron'] ||= '50 * * * *'
 Settings.cron_jobs['expire_build_artifacts_worker']['job_class'] = 'ExpireBuildArtifactsWorker'
@@ -360,8 +366,13 @@ Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_s
 #
 Settings['repositories'] ||= Settingslogic.new({})
 Settings.repositories['storages'] ||= {}
-# Setting gitlab_shell.repos_path is DEPRECATED and WILL BE REMOVED in version 9.0
-Settings.repositories.storages['default'] ||= Settings.gitlab_shell['repos_path'] || Settings.gitlab['user_home'] + '/repositories/'
+unless Settings.repositories.storages['default']
+  Settings.repositories.storages['default'] ||= {}
+  # We set the path only if the default storage doesn't exist, in case it exists
+  # but follows the pre-9.0 configuration structure. `6_validations.rb` initializer
+  # will validate all storages and throw a relevant error to the user if necessary.
+  Settings.repositories.storages['default']['path'] ||= Settings.gitlab['user_home'] + '/repositories/'
+end
 
 #
 # The repository_downloads_path is used to remove outdated repository
@@ -370,11 +381,11 @@ Settings.repositories.storages['default'] ||= Settings.gitlab_shell['repos_path'
 # data-integrity issue. In this case, we sets it to the default
 # repository_downloads_path value.
 #
-repositories_storages_path     = Settings.repositories.storages.values
+repositories_storages          = Settings.repositories.storages.values
 repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(/\/$/, '')
 repository_downloads_full_path = File.expand_path(repository_downloads_path, Settings.gitlab['user_home'])
 
-if repository_downloads_path.blank? || repositories_storages_path.any? { |path| [repository_downloads_path, repository_downloads_full_path].include?(path.gsub(/\/$/, '')) }
+if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs['path'].gsub(/\/$/, '')) }
   Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive')
 end
 
@@ -393,6 +404,7 @@ if Settings.backup['upload']['connection']
 end
 Settings.backup['upload']['multipart_chunk_size'] ||= 104857600
 Settings.backup['upload']['encryption'] ||= nil
+Settings.backup['upload']['storage_class'] ||= nil
 
 #
 # Git

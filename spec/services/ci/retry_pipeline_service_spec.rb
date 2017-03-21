@@ -69,35 +69,95 @@ describe Ci::RetryPipelineService, '#execute', :services do
       end
     end
 
+    context 'when the last stage was skipepd' do
+      before do
+        create_build('build 1', :success, 0)
+        create_build('test 2', :failed, 1)
+        create_build('report 3', :skipped, 2)
+        create_build('report 4', :skipped, 2)
+      end
+
+      it 'retries builds only in the first stage' do
+        service.execute(pipeline)
+
+        expect(build('build 1')).to be_success
+        expect(build('test 2')).to be_pending
+        expect(build('report 3')).to be_created
+        expect(build('report 4')).to be_created
+        expect(pipeline.reload).to be_running
+      end
+    end
+
     context 'when pipeline contains manual actions' do
-      context 'when there is a canceled manual action in first stage' do
-        before do
-          create_build('rspec 1', :failed, 0)
-          create_build('staging', :canceled, 0, :manual)
-          create_build('rspec 2', :canceled, 1)
+      context 'when there are optional manual actions only' do
+        context 'when there is a canceled manual action in first stage' do
+          before do
+            create_build('rspec 1', :failed, 0)
+            create_build('staging', :canceled, 0, when: :manual, allow_failure: true)
+            create_build('rspec 2', :canceled, 1)
+          end
+
+          it 'retries failed builds and marks subsequent for processing' do
+            service.execute(pipeline)
+
+            expect(build('rspec 1')).to be_pending
+            expect(build('staging')).to be_manual
+            expect(build('rspec 2')).to be_created
+            expect(pipeline.reload).to be_running
+          end
+        end
+      end
+
+      context 'when pipeline has blocking manual actions defined' do
+        context 'when pipeline retry should enqueue builds' do
+          before do
+            create_build('test', :failed, 0)
+            create_build('deploy', :canceled, 0, when: :manual, allow_failure: false)
+            create_build('verify', :canceled, 1)
+          end
+
+          it 'retries failed builds' do
+            service.execute(pipeline)
+
+            expect(build('test')).to be_pending
+            expect(build('deploy')).to be_manual
+            expect(build('verify')).to be_created
+            expect(pipeline.reload).to be_running
+          end
         end
 
-        it 'retries builds failed builds and marks subsequent for processing' do
-          service.execute(pipeline)
+        context 'when pipeline retry should block pipeline immediately' do
+          before do
+            create_build('test', :success, 0)
+            create_build('deploy:1', :success, 1, when: :manual, allow_failure: false)
+            create_build('deploy:2', :failed, 1, when: :manual, allow_failure: false)
+            create_build('verify', :canceled, 2)
+          end
 
-          expect(build('rspec 1')).to be_pending
-          expect(build('staging')).to be_skipped
-          expect(build('rspec 2')).to be_created
-          expect(pipeline.reload).to be_running
+          it 'reprocesses blocking manual action and blocks pipeline' do
+            service.execute(pipeline)
+
+            expect(build('deploy:1')).to be_success
+            expect(build('deploy:2')).to be_manual
+            expect(build('verify')).to be_created
+            expect(pipeline.reload).to be_blocked
+          end
         end
       end
 
       context 'when there is a skipped manual action in last stage' do
         before do
           create_build('rspec 1', :canceled, 0)
-          create_build('staging', :skipped, 1, :manual)
+          create_build('rspec 2', :skipped, 0, when: :manual, allow_failure: true)
+          create_build('staging', :skipped, 1, when: :manual, allow_failure: true)
         end
 
-        it 'retries canceled job and skips manual action' do
+        it 'retries canceled job and reprocesses manual actions' do
           service.execute(pipeline)
 
           expect(build('rspec 1')).to be_pending
-          expect(build('staging')).to be_skipped
+          expect(build('rspec 2')).to be_manual
+          expect(build('staging')).to be_created
           expect(pipeline.reload).to be_running
         end
       end
@@ -105,7 +165,7 @@ describe Ci::RetryPipelineService, '#execute', :services do
       context 'when there is a created manual action in the last stage' do
         before do
           create_build('rspec 1', :canceled, 0)
-          create_build('staging', :created, 1, :manual)
+          create_build('staging', :created, 1, when: :manual, allow_failure: true)
         end
 
         it 'retries canceled job and does not update the manual action' do
@@ -120,14 +180,14 @@ describe Ci::RetryPipelineService, '#execute', :services do
       context 'when there is a created manual action in the first stage' do
         before do
           create_build('rspec 1', :canceled, 0)
-          create_build('staging', :created, 0, :manual)
+          create_build('staging', :created, 0, when: :manual, allow_failure: true)
         end
 
-        it 'retries canceled job and skipps the manual action' do
+        it 'retries canceled job and processes the manual action' do
           service.execute(pipeline)
 
           expect(build('rspec 1')).to be_pending
-          expect(build('staging')).to be_skipped
+          expect(build('staging')).to be_manual
           expect(pipeline.reload).to be_running
         end
       end
@@ -162,13 +222,12 @@ describe Ci::RetryPipelineService, '#execute', :services do
     statuses.latest.find_by(name: name)
   end
 
-  def create_build(name, status, stage_num, on = 'on_success')
+  def create_build(name, status, stage_num, **opts)
     create(:ci_build, name: name,
                       status: status,
                       stage: "stage_#{stage_num}",
                       stage_idx: stage_num,
-                      when: on,
-                      pipeline: pipeline) do |build|
+                      pipeline: pipeline, **opts) do |build|
       pipeline.update_status
     end
   end

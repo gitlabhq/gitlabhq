@@ -10,7 +10,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         include TimeTrackingEndpoints
 
         helpers do
@@ -28,6 +28,14 @@ module API
             render_api_error!(errors, 400)
           end
 
+          def issue_entity(project)
+            if project.has_external_issue_tracker?
+              ::API::Entities::ExternalIssue
+            else
+              ::API::Entities::Issue
+            end
+          end
+
           params :optional_params do
             optional :description, type: String, desc: 'The description of the merge request'
             optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
@@ -39,7 +47,7 @@ module API
 
         desc 'List merge requests' do
           detail 'iid filter is deprecated have been removed on V4'
-          success ::API::Entities::MergeRequest
+          success ::API::V3::Entities::MergeRequest
         end
         params do
           optional :state, type: String, values: %w[opened closed merged all], default: 'all',
@@ -66,11 +74,11 @@ module API
             end
 
           merge_requests = merge_requests.reorder(params[:order_by] => params[:sort])
-          present paginate(merge_requests), with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
+          present paginate(merge_requests), with: ::API::V3::Entities::MergeRequest, current_user: current_user, project: user_project
         end
 
         desc 'Create a merge request' do
-          success ::API::Entities::MergeRequest
+          success ::API::V3::Entities::MergeRequest
         end
         params do
           requires :title, type: String, desc: 'The title of the merge request'
@@ -89,7 +97,7 @@ module API
           merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
 
           if merge_request.valid?
-            present merge_request, with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
+            present merge_request, with: ::API::V3::Entities::MergeRequest, current_user: current_user, project: user_project
           else
             handle_merge_request_errors! merge_request.errors
           end
@@ -103,6 +111,8 @@ module API
           merge_request = find_project_merge_request(params[:merge_request_id])
 
           authorize!(:destroy_merge_request, merge_request)
+
+          status(200)
           merge_request.destroy
         end
 
@@ -114,12 +124,12 @@ module API
             if status == :deprecated
               detail DEPRECATION_MESSAGE
             end
-            success ::API::Entities::MergeRequest
+            success ::API::V3::Entities::MergeRequest
           end
           get path do
             merge_request = find_merge_request_with_access(params[:merge_request_id])
 
-            present merge_request, with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
+            present merge_request, with: ::API::V3::Entities::MergeRequest, current_user: current_user, project: user_project
           end
 
           desc 'Get the commits of a merge request' do
@@ -141,7 +151,7 @@ module API
           end
 
           desc 'Update a merge request' do
-            success ::API::Entities::MergeRequest
+            success ::API::V3::Entities::MergeRequest
           end
           params do
             optional :title, type: String, allow_blank: false, desc: 'The title of the merge request'
@@ -162,21 +172,21 @@ module API
             merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, mr_params).execute(merge_request)
 
             if merge_request.valid?
-              present merge_request, with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
+              present merge_request, with: ::API::V3::Entities::MergeRequest, current_user: current_user, project: user_project
             else
               handle_merge_request_errors! merge_request.errors
             end
           end
 
           desc 'Merge a merge request' do
-            success ::API::Entities::MergeRequest
+            success ::API::V3::Entities::MergeRequest
           end
           params do
             optional :merge_commit_message, type: String, desc: 'Custom merge commit message'
             optional :should_remove_source_branch, type: Boolean,
                                                    desc: 'When true, the source branch will be deleted if possible'
             optional :merge_when_build_succeeds, type: Boolean,
-                                                 desc: 'When true, this merge request will be merged when the pipeline succeeds'
+                                                 desc: 'When true, this merge request will be merged when the build succeeds'
             optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
           end
           put "#{path}/merge" do
@@ -209,16 +219,16 @@ module API
                 .execute(merge_request)
             end
 
-            present merge_request, with: ::API::Entities::MergeRequest, current_user: current_user, project: user_project
+            present merge_request, with: ::API::V3::Entities::MergeRequest, current_user: current_user, project: user_project
           end
 
-          desc 'Cancel merge if "Merge When Pipeline Succeeds" is enabled' do
-            success ::API::Entities::MergeRequest
+          desc 'Cancel merge if "Merge When Build succeeds" is enabled' do
+            success ::API::V3::Entities::MergeRequest
           end
           post "#{path}/cancel_merge_when_build_succeeds" do
             merge_request = find_project_merge_request(params[:merge_request_id])
 
-            unauthorized! unless merge_request.can_cancel_merge_when_build_succeeds?(current_user)
+            unauthorized! unless merge_request.can_cancel_merge_when_pipeline_succeeds?(current_user)
 
             ::MergeRequest::MergeWhenPipelineSucceedsService
               .new(merge_request.target_project, current_user)

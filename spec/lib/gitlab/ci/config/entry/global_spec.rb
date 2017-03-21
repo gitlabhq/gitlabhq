@@ -21,12 +21,12 @@ describe Gitlab::Ci::Config::Entry::Global do
   context 'when configuration is valid' do
     context 'when some entries defined' do
       let(:hash) do
-        { before_script: ['ls', 'pwd'],
+        { before_script: %w(ls pwd),
           image: 'ruby:2.2',
           services: ['postgres:9.1', 'mysql:5.5'],
           variables: { VAR: 'value' },
           after_script: ['make clean'],
-          stages: ['build', 'pages'],
+          stages: %w(build pages),
           cache: { key: 'k', untracked: true, paths: ['public/'] },
           rspec: { script: %w[rspec ls] },
           spinach: { before_script: [], variables: {}, script: 'spinach' } }
@@ -89,7 +89,7 @@ describe Gitlab::Ci::Config::Entry::Global do
 
         describe '#before_script_value' do
           it 'returns correct script' do
-            expect(global.before_script_value).to eq ['ls', 'pwd']
+            expect(global.before_script_value).to eq %w(ls pwd)
           end
         end
 
@@ -126,7 +126,7 @@ describe Gitlab::Ci::Config::Entry::Global do
 
           context 'when deprecated types key defined' do
             let(:hash) do
-              { types: ['test', 'deploy'],
+              { types: %w(test deploy),
                 rspec: { script: 'rspec' } }
             end
 
@@ -148,13 +148,14 @@ describe Gitlab::Ci::Config::Entry::Global do
             expect(global.jobs_value).to eq(
               rspec: { name: :rspec,
                        script: %w[rspec ls],
-                       before_script: ['ls', 'pwd'],
+                       before_script: %w(ls pwd),
                        commands: "ls\npwd\nrspec\nls",
                        image: 'ruby:2.2',
                        services: ['postgres:9.1', 'mysql:5.5'],
                        stage: 'test',
                        cache: { key: 'k', untracked: true, paths: ['public/'] },
                        variables: { VAR: 'value' },
+                       ignore: false,
                        after_script: ['make clean'] },
               spinach: { name: :spinach,
                          before_script: [],
@@ -165,6 +166,7 @@ describe Gitlab::Ci::Config::Entry::Global do
                          stage: 'test',
                          cache: { key: 'k', untracked: true, paths: ['public/'] },
                          variables: {},
+                         ignore: false,
                          after_script: ['make clean'] },
             )
           end
@@ -186,7 +188,7 @@ describe Gitlab::Ci::Config::Entry::Global do
 
         it 'contains unspecified nodes' do
           expect(global.descendants.first)
-            .to be_an_instance_of Gitlab::Ci::Config::Entry::Unspecified
+            .not_to be_specified
         end
       end
 

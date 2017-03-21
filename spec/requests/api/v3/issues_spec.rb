@@ -232,6 +232,13 @@ describe API::V3::Issues, api: true  do
         expect(json_response).to be_an Array
         expect(response_dates).to eq(response_dates.sort)
       end
+
+      it 'matches V3 response schema' do
+        get v3_api('/issues', user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v3/issues')
+      end
     end
   end
 
@@ -431,6 +438,12 @@ describe API::V3::Issues, api: true  do
 
   describe "GET /projects/:id/issues" do
     let(:base_url) { "/projects/#{project.id}" }
+
+    it 'returns 404 when project does not exist' do
+      get v3_api('/projects/1000/issues', non_member)
+
+      expect(response).to have_http_status(404)
+    end
 
     it "returns 404 on private projects for other users" do
       private_project = create(:empty_project, :private)
@@ -722,7 +735,7 @@ describe API::V3::Issues, api: true  do
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
-      expect(json_response['labels']).to eq(['label', 'label2'])
+      expect(json_response['labels']).to eq(%w(label label2))
       expect(json_response['confidential']).to be_falsy
     end
 
@@ -1281,6 +1294,6 @@ describe API::V3::Issues, api: true  do
   describe 'time tracking endpoints' do
     let(:issuable) { issue }
 
-    include_examples 'time tracking endpoints', 'issue'
+    include_examples 'V3 time tracking endpoints', 'issue'
   end
 end

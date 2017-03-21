@@ -87,34 +87,6 @@ module IssuesHelper
     icon('eye-slash') if issue.confidential?
   end
 
-  def emoji_icon(name, unicode = nil, aliases = [], sprite: true)
-    unicode ||= Gitlab::Emoji.emoji_filename(name) rescue ""
-
-    data = {
-      aliases: aliases.join(" "),
-      emoji: name,
-      unicode_name: unicode
-    }
-
-    if sprite
-      # Emoji icons for the emoji menu, these use a spritesheet.
-      content_tag :div, "",
-        class: "icon emoji-icon emoji-#{unicode}",
-        title: name,
-        data: data
-    else
-      # Emoji icons displayed separately, used for the awards already given
-      # to an issue or merge request.
-      content_tag :img, "",
-        class: "icon emoji",
-        title: name,
-        height: "20px",
-        width: "20px",
-        src: url_to_image("#{unicode}.png"),
-        data: data
-    end
-  end
-
   def award_user_list(awards, current_user, limit: 10)
     names = awards.map do |award|
       award.user == current_user ? 'You' : award.user.name
@@ -160,6 +132,20 @@ module IssuesHelper
     ]
 
     options_from_collection_for_select(options, 'name', 'title', params[:due_date])
+  end
+
+  def link_to_discussions_to_resolve(merge_request, single_discussion = nil)
+    link_text = merge_request.to_reference
+    link_text += " (discussion #{single_discussion.first_note.id})" if single_discussion
+
+    path = if single_discussion
+             Gitlab::UrlBuilder.build(single_discussion.first_note)
+           else
+             project = merge_request.project
+             namespace_project_merge_request_path(project.namespace, project, merge_request)
+           end
+
+    link_to link_text, path
   end
 
   # Required for Banzai::Filter::IssueReferenceFilter

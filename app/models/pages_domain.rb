@@ -2,7 +2,7 @@ class PagesDomain < ActiveRecord::Base
   belongs_to :project
 
   validates :domain, hostname: true
-  validates_uniqueness_of :domain, case_sensitive: false
+  validates :domain, uniqueness: { case_sensitive: false }
   validates :certificate, certificate: true, allow_nil: true, allow_blank: true
   validates :key, certificate_key: true, allow_nil: true, allow_blank: true
 

@@ -1,9 +1,7 @@
-/* eslint-disable quotes, jasmine/no-suite-dupes, vars-on-top, no-var, max-len */
-/* global d3 */
-/* global ContributorsGraph */
-/* global ContributorsMasterGraph */
+/* eslint-disable quotes, jasmine/no-suite-dupes, vars-on-top, no-var */
 
-require('~/graphs/stat_graph_contributors_graph');
+import d3 from 'd3';
+import { ContributorsGraph, ContributorsMasterGraph } from '~/graphs/stat_graph_contributors_graph';
 
 describe("ContributorsGraph", function () {
   describe("#set_x_domain", function () {

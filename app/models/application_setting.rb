@@ -6,7 +6,7 @@ class ApplicationSetting < ActiveRecord::Base
   add_authentication_token_field :health_check_access_token
   add_authentication_token_field :container_registry_access_token
 
-  CACHE_KEY = 'application_setting.last'
+  CACHE_KEY = 'application_setting.last'.freeze
   DOMAIN_LIST_SEPARATOR = %r{\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
                             |               # or
                             \s              # any whitespace character
@@ -65,6 +65,16 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             if: :akismet_enabled
 
+  validates :unique_ips_limit_per_user,
+            numericality: { greater_than_or_equal_to: 1 },
+            presence: true,
+            if: :unique_ips_limit_enabled
+
+  validates :unique_ips_limit_time_window,
+            numericality: { greater_than_or_equal_to: 0 },
+            presence: true,
+            if: :unique_ips_limit_enabled
+
   validates :koding_url,
             presence: true,
             if: :koding_enabled
@@ -76,6 +86,12 @@ class ApplicationSetting < ActiveRecord::Base
   validates :max_attachment_size,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
+
+  validates :max_artifacts_size,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
+  validates :default_artifacts_expire_in, presence: true, duration: true
 
   validates :container_registry_token_expire_delay,
             presence: true,
@@ -149,6 +165,8 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def self.current
+    ensure_cache_setup
+
     Rails.cache.fetch(CACHE_KEY) do
       ApplicationSetting.last
     end
@@ -162,7 +180,14 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def self.cached
+    ensure_cache_setup
     Rails.cache.fetch(CACHE_KEY)
+  end
+
+  def self.ensure_cache_setup
+    # This is a workaround for a Rails bug that causes attribute methods not
+    # to be loaded when read from cache: https://github.com/rails/rails/issues/27348
+    ApplicationSetting.define_attribute_methods
   end
 
   def self.defaults_ce
@@ -170,14 +195,19 @@ class ApplicationSetting < ActiveRecord::Base
       after_sign_up_text: nil,
       akismet_enabled: false,
       container_registry_token_expire_delay: 5,
+      default_artifacts_expire_in: '30 days',
       default_branch_protection: Settings.gitlab['default_branch_protection'],
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_projects_limit: Settings.gitlab['default_projects_limit'],
       default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+      default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       disabled_oauth_sign_in_sources: [],
       domain_whitelist: Settings.gitlab['domain_whitelist'],
       gravatar_enabled: Settings.gravatar['enabled'],
       help_page_text: nil,
+      unique_ips_limit_per_user: 10,
+      unique_ips_limit_time_window: 3600,
+      unique_ips_limit_enabled: false,
       housekeeping_bitmaps_enabled: true,
       housekeeping_enabled: true,
       housekeeping_full_repack_period: 50,
@@ -203,9 +233,9 @@ class ApplicationSetting < ActiveRecord::Base
       sign_in_text: nil,
       signin_enabled: Settings.gitlab['signin_enabled'],
       signup_enabled: Settings.gitlab['signup_enabled'],
+      terminal_max_session_time: 0,
       two_factor_grace_period: 48,
-      user_default_external: false,
-      terminal_max_session_time: 0
+      user_default_external: false
     }
   end
 
@@ -215,6 +245,14 @@ class ApplicationSetting < ActiveRecord::Base
 
   def self.create_from_defaults
     create(defaults)
+  end
+
+  def self.human_attribute_name(attr, _options = {})
+    if attr == :default_artifacts_expire_in
+      'Default artifacts expiration'
+    else
+      super
+    end
   end
 
   def home_page_url_column_exist
@@ -262,6 +300,22 @@ class ApplicationSetting < ActiveRecord::Base
 
   def repository_storage=(value)
     self.repository_storages = [value]
+  end
+
+  def default_project_visibility=(level)
+    super(Gitlab::VisibilityLevel.level_value(level))
+  end
+
+  def default_snippet_visibility=(level)
+    super(Gitlab::VisibilityLevel.level_value(level))
+  end
+
+  def default_group_visibility=(level)
+    super(Gitlab::VisibilityLevel.level_value(level))
+  end
+
+  def restricted_visibility_levels=(levels)
+    super(levels.map { |level| Gitlab::VisibilityLevel.level_value(level) })
   end
 
   # Choose one of the available repository storage options. Currently all have

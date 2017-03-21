@@ -38,7 +38,7 @@ module AccessMatchers
   end
 
   def description_for(user, type)
-    if user.kind_of?(User)
+    if user.is_a?(User)
       # User#inspect displays too much information for RSpec's descriptions
       "be #{type} for the specified user"
     else

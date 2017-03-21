@@ -9,7 +9,7 @@ module RuboCop
         include MigrationHelpers
 
         MSG = '`add_column_with_default` is not reversible so you must manually define ' \
-          'the `up` and `down` methods in your migration class, using `remove_column` in `down`'
+          'the `up` and `down` methods in your migration class, using `remove_column` in `down`'.freeze
 
         def on_send(node)
           return unless in_migration?(node)

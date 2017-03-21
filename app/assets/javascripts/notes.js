@@ -1,12 +1,14 @@
 /* eslint-disable no-restricted-properties, func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, camelcase, no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line, default-case, prefer-template, consistent-return, no-alert, no-return-assign, no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new, brace-style, no-lonely-if, vars-on-top, no-unused-vars, no-sequences, no-shadow, newline-per-chained-call, no-useless-escape */
 /* global Flash */
 /* global Autosave */
+/* global Cookies */
 /* global ResolveService */
 /* global mrRefreshWidgetUrl */
 
 require('./autosave');
 window.autosize = require('vendor/autosize');
 window.Dropzone = require('dropzone');
+window.Cookies = require('js-cookie');
 require('./dropzone_input');
 require('./gfm_auto_complete');
 require('vendor/jquery.caret'); // required by jquery.atwho
@@ -42,7 +44,6 @@ require('./task_list');
       this.notes_url = notes_url;
       this.note_ids = note_ids;
       this.last_fetched_at = last_fetched_at;
-      this.view = view;
       this.noteable_url = document.URL;
       this.notesCountBadge || (this.notesCountBadge = $(".issuable-details").find(".notes-tab .badge"));
       this.basePollingInterval = 15000;
@@ -57,6 +58,7 @@ require('./task_list');
         selector: '.notes'
       });
       this.collapseLongCommitList();
+      this.setViewType(view);
 
       // We are in the Merge Requests page so we need another edit form for Changes tab
       if (gl.utils.getPagePath(1) === 'merge_requests') {
@@ -64,6 +66,10 @@ require('./task_list');
           .addClass('mr-note-edit-form').insertAfter('.note-edit-form');
       }
     }
+
+    Notes.prototype.setViewType = function(view) {
+      this.view = Cookies.get('diff_view') || view;
+    };
 
     Notes.prototype.addBinding = function() {
       // add note to UI after creation
@@ -198,7 +204,7 @@ require('./task_list');
       this.refreshing = true;
       return $.ajax({
         url: this.notes_url,
-        data: "last_fetched_at=" + this.last_fetched_at,
+        headers: { "X-Last-Fetched-At": this.last_fetched_at },
         dataType: "json",
         success: (function(_this) {
           return function(data) {
@@ -246,12 +252,21 @@ require('./task_list');
     };
 
     Notes.prototype.handleCreateChanges = function(note) {
+      var votesBlock;
       if (typeof note === 'undefined') {
         return;
       }
 
-      if (note.commands_changes && note.commands_changes.indexOf('merge') !== -1) {
-        $.get(mrRefreshWidgetUrl);
+      if (note.commands_changes) {
+        if ('merge' in note.commands_changes) {
+          $.get(mrRefreshWidgetUrl);
+        }
+
+        if ('emoji_award' in note.commands_changes) {
+          votesBlock = $('.js-awards-block').eq(0);
+          gl.awardsHandler.addAwardToEmojiBar(votesBlock, note.commands_changes.emoji_award);
+          return gl.awardsHandler.scrollToAwards();
+        }
       }
     };
 
@@ -262,26 +277,16 @@ require('./task_list');
      */
 
     Notes.prototype.renderNote = function(note) {
-      var $notesList, votesBlock;
+      var $notesList;
       if (!note.valid) {
-        if (note.award) {
-          new Flash('You have already awarded this emoji!', 'alert', this.parentTimeline);
-        }
-        else {
-          if (note.errors.commands_only) {
-            new Flash(note.errors.commands_only, 'notice', this.parentTimeline);
-            this.refresh();
-          }
+        if (note.errors.commands_only) {
+          new Flash(note.errors.commands_only, 'notice', this.parentTimeline);
+          this.refresh();
         }
         return;
       }
-      if (note.award) {
-        votesBlock = $('.js-awards-block').eq(0);
-        gl.awardsHandler.addAwardToEmojiBar(votesBlock, note.name);
-        return gl.awardsHandler.scrollToAwards();
-      // render note if it not present in loaded list
-      // or skip if rendered
-      } else if (this.isNewNote(note)) {
+
+      if (this.isNewNote(note)) {
         this.note_ids.push(note.id);
         $notesList = $('ul.main-notes-list');
         $notesList.append(note.html).syntaxHighlight();
@@ -303,7 +308,7 @@ require('./task_list');
     };
 
     Notes.prototype.isParallelView = function() {
-      return this.view === 'parallel';
+      return Cookies.get('diff_view') === 'parallel';
     };
 
     /*
@@ -313,7 +318,7 @@ require('./task_list');
      */
 
     Notes.prototype.renderDiscussionNote = function(note) {
-      var discussionContainer, form, note_html, row;
+      var discussionContainer, form, note_html, row, lineType, diffAvatarContainer;
       if (!this.isNewNote(note)) {
         return;
       }
@@ -323,6 +328,8 @@ require('./task_list');
         form = $("#new-discussion-note-form-" + note.original_discussion_id);
       }
       row = form.closest("tr");
+      lineType = this.isParallelView() ? form.find('#line_type').val() : 'old';
+      diffAvatarContainer = row.prevAll('.line_holder').first().find('.js-avatar-container.' + lineType + '_line');
       note_html = $(note.html);
       note_html.renderGFM();
       // is this the first note of discussion?
@@ -331,10 +338,26 @@ require('./task_list');
         discussionContainer = $(".notes[data-discussion-id='" + note.original_discussion_id + "']");
       }
       if (discussionContainer.length === 0) {
-        // insert the note and the reply button after the temp row
-        row.after(note.diff_discussion_html);
-        // remove the note (will be added again below)
-        row.next().find(".note").remove();
+        if (!this.isParallelView() || row.hasClass('js-temp-notes-holder')) {
+          // insert the note and the reply button after the temp row
+          row.after(note.diff_discussion_html);
+
+          // remove the note (will be added again below)
+          row.next().find(".note").remove();
+        } else {
+          // Merge new discussion HTML in
+          var $discussion = $(note.diff_discussion_html);
+          var $notes = $discussion.find('.notes[data-discussion-id="' + note.discussion_id + '"]');
+          var contentContainerClass = '.' + $notes.closest('.notes_content')
+            .attr('class')
+            .split(' ')
+            .join('.');
+
+          // remove the note (will be added again below)
+          $notes.find('.note').remove();
+
+          row.find(contentContainerClass + ' .content').append($notes.closest('.content').children());
+        }
         // Before that, the container didn't exist
         discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']");
         // Add note to 'Changes' page discussions
@@ -348,12 +371,38 @@ require('./task_list');
         discussionContainer.append(note_html);
       }
 
-      if (typeof gl.diffNotesCompileComponents !== 'undefined') {
+      if (typeof gl.diffNotesCompileComponents !== 'undefined' && note.discussion_id) {
         gl.diffNotesCompileComponents();
+        this.renderDiscussionAvatar(diffAvatarContainer, note);
       }
 
       gl.utils.localTimeAgo($('.js-timeago'), false);
       return this.updateNotesCount(1);
+    };
+
+    Notes.prototype.getLineHolder = function(changesDiscussionContainer) {
+      return $(changesDiscussionContainer).closest('.notes_holder')
+        .prevAll('.line_holder')
+        .first()
+        .get(0);
+    };
+
+    Notes.prototype.renderDiscussionAvatar = function(diffAvatarContainer, note) {
+      var commentButton = diffAvatarContainer.find('.js-add-diff-note-button');
+      var avatarHolder = diffAvatarContainer.find('.diff-comment-avatar-holders');
+
+      if (!avatarHolder.length) {
+        avatarHolder = document.createElement('diff-note-avatars');
+        avatarHolder.setAttribute('discussion-id', note.discussion_id);
+
+        diffAvatarContainer.append(avatarHolder);
+
+        gl.diffNotesCompileComponents();
+      }
+
+      if (commentButton.length) {
+        commentButton.remove();
+      }
     };
 
     /*
@@ -593,9 +642,14 @@ require('./task_list');
      */
 
     Notes.prototype.removeNote = function(e) {
-      var noteId;
-      noteId = $(e.currentTarget).closest(".note").attr("id");
-      $(".note[id='" + noteId + "']").each((function(_this) {
+      var noteElId, noteId, dataNoteId, $note, lineHolder;
+      $note = $(e.currentTarget).closest('.note');
+      noteElId = $note.attr('id');
+      noteId = $note.attr('data-note-id');
+      lineHolder = $(e.currentTarget).closest('.notes[data-discussion-id]')
+        .closest('.notes_holder')
+        .prev('.line_holder');
+      $(".note[id='" + noteElId + "']").each((function(_this) {
         // A same note appears in the "Discussion" and in the "Changes" tab, we have
         // to remove all. Using $(".note[id='noteId']") ensure we get all the notes,
         // where $("#noteId") would return only one.
@@ -605,17 +659,26 @@ require('./task_list');
           notes = note.closest(".notes");
 
           if (typeof gl.diffNotesCompileComponents !== 'undefined') {
-            if (gl.diffNoteApps[noteId]) {
-              gl.diffNoteApps[noteId].$destroy();
+            if (gl.diffNoteApps[noteElId]) {
+              gl.diffNoteApps[noteElId].$destroy();
             }
           }
 
+          note.remove();
+
           // check if this is the last note for this line
-          if (notes.find(".note").length === 1) {
+          if (notes.find(".note").length === 0) {
+            var notesTr = notes.closest("tr");
+
             // "Discussions" tab
             notes.closest(".timeline-entry").remove();
-            // "Changes" tab / commit view
-            notes.closest("tr").remove();
+
+            if (!_this.isParallelView() || notesTr.find('.note').length === 0) {
+              // "Changes" tab / commit view
+              notesTr.remove();
+            } else {
+              notes.closest('.content').empty();
+            }
           }
           return note.remove();
         };
@@ -708,15 +771,16 @@ require('./task_list');
      */
 
     Notes.prototype.addDiffNote = function(e) {
-      var $link, addForm, hasNotes, lineType, newForm, nextRow, noteForm, notesContent, notesContentSelector, replyButton, row, rowCssToAdd, targetContent;
+      var $link, addForm, hasNotes, lineType, newForm, nextRow, noteForm, notesContent, notesContentSelector, replyButton, row, rowCssToAdd, targetContent, isDiffCommentAvatar;
       e.preventDefault();
-      $link = $(e.currentTarget);
+      $link = $(e.currentTarget || e.target);
       row = $link.closest("tr");
       nextRow = row.next();
       hasNotes = nextRow.is(".notes_holder");
       addForm = false;
       notesContentSelector = ".notes_content";
       rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line\" colspan=\"2\"></td><td class=\"notes_content\"><div class=\"content\"></div></td></tr>";
+      isDiffCommentAvatar = $link.hasClass('js-diff-comment-avatar');
       // In parallel view, look inside the correct left/right pane
       if (this.isParallelView()) {
         lineType = $link.data("lineType");
@@ -724,7 +788,9 @@ require('./task_list');
         rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line old\"></td><td class=\"notes_content parallel old\"><div class=\"content\"></div></td><td class=\"notes_line new\"></td><td class=\"notes_content parallel new\"><div class=\"content\"></div></td></tr>";
       }
       notesContentSelector += " .content";
-      if (hasNotes) {
+      notesContent = nextRow.find(notesContentSelector);
+
+      if (hasNotes && !isDiffCommentAvatar) {
         nextRow.show();
         notesContent = nextRow.find(notesContentSelector);
         if (notesContent.length) {
@@ -741,13 +807,21 @@ require('./task_list');
             }
           }
         }
-      } else {
+      } else if (!isDiffCommentAvatar) {
         // add a notes row and insert the form
         row.after(rowCssToAdd);
         nextRow = row.next();
         notesContent = nextRow.find(notesContentSelector);
         addForm = true;
+      } else {
+        nextRow.show();
+        notesContent.toggle(!notesContent.is(':visible'));
+
+        if (!nextRow.find('.content:not(:empty)').is(':visible')) {
+          nextRow.hide();
+        }
       }
+
       if (addForm) {
         newForm = this.formClone.clone();
         newForm.appendTo(notesContent);

@@ -5,11 +5,11 @@ module API
     included do
       helpers do
         def issuable_name
-          declared_params.has_key?(:issue_id) ? 'issue' : 'merge_request'
+          declared_params.has_key?(:issue_iid) ? 'issue' : 'merge_request'
         end
 
         def issuable_key
-          "#{issuable_name}_id".to_sym
+          "#{issuable_name}_iid".to_sym
         end
 
         def update_issuable_key
@@ -50,7 +50,7 @@ module API
 
       issuable_name            = name.end_with?('Issues') ? 'issue' : 'merge_request'
       issuable_collection_name = issuable_name.pluralize
-      issuable_key             = "#{issuable_name}_id".to_sym
+      issuable_key             = "#{issuable_name}_iid".to_sym
 
       desc "Set a time estimate for a project #{issuable_name}"
       params do

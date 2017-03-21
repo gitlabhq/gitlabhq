@@ -18,7 +18,8 @@ module Groups
       end
 
       group.children.each do |group|
-        DestroyService.new(group, current_user).async_execute
+        # This needs to be synchronous since the namespace gets destroyed below
+        DestroyService.new(group, current_user).execute
       end
 
       group.really_destroy!

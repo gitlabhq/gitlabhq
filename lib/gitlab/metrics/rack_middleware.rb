@@ -2,8 +2,8 @@ module Gitlab
   module Metrics
     # Rack middleware for tracking Rails and Grape requests.
     class RackMiddleware
-      CONTROLLER_KEY = 'action_controller.instance'
-      ENDPOINT_KEY   = 'api.endpoint'
+      CONTROLLER_KEY = 'action_controller.instance'.freeze
+      ENDPOINT_KEY   = 'api.endpoint'.freeze
       CONTENT_TYPES = {
         'text/html' => :html,
         'text/plain' => :txt,
@@ -14,7 +14,7 @@ module Gitlab
         'image/jpeg' => :jpeg,
         'image/gif' => :gif,
         'image/svg+xml' => :svg
-      }
+      }.freeze
 
       def initialize(app)
         @app = app

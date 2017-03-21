@@ -6,8 +6,6 @@ namespace :gitlab do
                  gitlab:ldap:check
                  gitlab:app:check}
 
-
-
   namespace :app do
     desc "GitLab | Check the configuration of the GitLab Rails app"
     task check: :environment  do
@@ -33,7 +31,6 @@ namespace :gitlab do
 
       finished_checking "GitLab"
     end
-
 
     # Checks
     ########################
@@ -194,7 +191,7 @@ namespace :gitlab do
     def check_migrations_are_up
       print "All migrations up? ... "
 
-      migration_status, _ = Gitlab::Popen.popen(%W(bundle exec rake db:migrate:status))
+      migration_status, _ = Gitlab::Popen.popen(%w(bundle exec rake db:migrate:status))
 
       unless migration_status =~ /down\s+\d{14}/
         puts "yes".color(:green)
@@ -279,7 +276,7 @@ namespace :gitlab do
       upload_path_tmp = File.join(upload_path, 'tmp')
 
       if File.stat(upload_path).mode == 040700
-        unless Dir.exists?(upload_path_tmp)
+        unless Dir.exist?(upload_path_tmp)
           puts 'skipped (no tmp uploads folder yet)'.color(:magenta)
           return
         end
@@ -316,7 +313,7 @@ namespace :gitlab do
       min_redis_version = "2.8.0"
       print "Redis version >= #{min_redis_version}? ... "
 
-      redis_version = run_command(%W(redis-cli --version))
+      redis_version = run_command(%w(redis-cli --version))
       redis_version = redis_version.try(:match, /redis-cli (\d+\.\d+\.\d+)/)
       if redis_version &&
           (Gem::Version.new(redis_version[1]) > Gem::Version.new(min_redis_version))
@@ -351,14 +348,14 @@ namespace :gitlab do
       finished_checking "GitLab Shell"
     end
 
-
     # Checks
     ########################
 
     def check_repo_base_exists
       puts "Repo base directory exists?"
 
-      Gitlab.config.repositories.storages.each do |name, repo_base_path|
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        repo_base_path = repository_storage['path']
         print "#{name}... "
 
         if File.exist?(repo_base_path)
@@ -382,12 +379,13 @@ namespace :gitlab do
     def check_repo_base_is_not_symlink
       puts "Repo storage directories are symlinks?"
 
-      Gitlab.config.repositories.storages.each do |name, repo_base_path|
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        repo_base_path = repository_storage['path']
         print "#{name}... "
 
         unless File.exist?(repo_base_path)
           puts "can't check because of previous errors".color(:magenta)
-          return
+          break
         end
 
         unless File.symlink?(repo_base_path)
@@ -405,12 +403,13 @@ namespace :gitlab do
     def check_repo_base_permissions
       puts "Repo paths access is drwxrws---?"
 
-      Gitlab.config.repositories.storages.each do |name, repo_base_path|
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        repo_base_path = repository_storage['path']
         print "#{name}... "
 
         unless File.exist?(repo_base_path)
           puts "can't check because of previous errors".color(:magenta)
-          return
+          break
         end
 
         if File.stat(repo_base_path).mode.to_s(8).ends_with?("2770")
@@ -435,12 +434,13 @@ namespace :gitlab do
       gitlab_shell_owner_group = Gitlab.config.gitlab_shell.owner_group
       puts "Repo paths owned by #{gitlab_shell_ssh_user}:#{gitlab_shell_owner_group}?"
 
-      Gitlab.config.repositories.storages.each do |name, repo_base_path|
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        repo_base_path = repository_storage['path']
         print "#{name}... "
 
         unless File.exist?(repo_base_path)
           puts "can't check because of previous errors".color(:magenta)
-          return
+          break
         end
 
         uid = uid_for(gitlab_shell_ssh_user)
@@ -493,7 +493,6 @@ namespace :gitlab do
           )
           fix_and_rerun
         end
-
       end
     end
 
@@ -565,8 +564,6 @@ namespace :gitlab do
     end
   end
 
-
-
   namespace :sidekiq do
     desc "GitLab | Check the configuration of Sidekiq"
     task check: :environment  do
@@ -578,7 +575,6 @@ namespace :gitlab do
 
       finished_checking "Sidekiq"
     end
-
 
     # Checks
     ########################
@@ -621,11 +617,10 @@ namespace :gitlab do
     end
 
     def sidekiq_process_count
-      ps_ux, _ = Gitlab::Popen.popen(%W(ps ux))
+      ps_ux, _ = Gitlab::Popen.popen(%w(ps ux))
       ps_ux.scan(/sidekiq \d+\.\d+\.\d+/).count
     end
   end
-
 
   namespace :incoming_email do
     desc "GitLab | Check the configuration of Reply by email"
@@ -648,7 +643,6 @@ namespace :gitlab do
 
       finished_checking "Reply by email"
     end
-
 
     # Checks
     ########################
@@ -757,7 +751,7 @@ namespace :gitlab do
     end
 
     def mail_room_running?
-      ps_ux, _ = Gitlab::Popen.popen(%W(ps ux))
+      ps_ux, _ = Gitlab::Popen.popen(%w(ps ux))
       ps_ux.include?("mail_room")
     end
   end
@@ -805,13 +799,13 @@ namespace :gitlab do
     def check_ldap_auth(adapter)
       auth = adapter.config.has_auth?
 
-      if auth && adapter.ldap.bind
-        message = 'Success'.color(:green)
-      elsif auth
-        message = 'Failed. Check `bind_dn` and `password` configuration values'.color(:red)
-      else
-        message = 'Anonymous. No `bind_dn` or `password` configured'.color(:yellow)
-      end
+      message = if auth && adapter.ldap.bind
+                  'Success'.color(:green)
+                elsif auth
+                  'Failed. Check `bind_dn` and `password` configuration values'.color(:red)
+                else
+                  'Anonymous. No `bind_dn` or `password` configured'.color(:yellow)
+                end
 
       puts "LDAP authentication... #{message}"
     end
@@ -820,8 +814,8 @@ namespace :gitlab do
   namespace :repo do
     desc "GitLab | Check the integrity of the repositories managed by GitLab"
     task check: :environment do
-      Gitlab.config.repositories.storages.each do |name, path|
-        namespace_dirs = Dir.glob(File.join(path, '*'))
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        namespace_dirs = Dir.glob(File.join(repository_storage['path'], '*'))
 
         namespace_dirs.each do |namespace_dir|
           repo_dirs = Dir.glob(File.join(namespace_dir, '*'))
@@ -838,11 +832,11 @@ namespace :gitlab do
       user = User.find_by(username: username)
       if user
         repo_dirs = user.authorized_projects.map do |p|
-                      File.join(
-                        p.repository_storage_path,
-                        "#{p.path_with_namespace}.git"
-                      )
-                    end
+          File.join(
+            p.repository_storage_path,
+            "#{p.path_with_namespace}.git"
+          )
+        end
 
         repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }
       else
@@ -855,7 +849,7 @@ namespace :gitlab do
   ##########################
 
   def fix_and_rerun
-    puts "  Please #{"fix the error above"} and rerun the checks.".color(:red)
+    puts "  Please fix the error above and rerun the checks.".color(:red)
   end
 
   def for_more_information(*sources)
@@ -917,7 +911,7 @@ namespace :gitlab do
 
   def check_ruby_version
     required_version = Gitlab::VersionInfo.new(2, 1, 0)
-    current_version = Gitlab::VersionInfo.parse(run_command(%W(ruby --version)))
+    current_version = Gitlab::VersionInfo.parse(run_command(%w(ruby --version)))
 
     print "Ruby version >= #{required_version} ? ... "
 
@@ -988,13 +982,13 @@ namespace :gitlab do
   end
 
   def check_config_lock(repo_dir)
-    config_exists = File.exist?(File.join(repo_dir,'config.lock'))
+    config_exists = File.exist?(File.join(repo_dir, 'config.lock'))
     config_output = config_exists ? 'yes'.color(:red) : 'no'.color(:green)
     puts "'config.lock' file exists?".color(:yellow) + " ... #{config_output}"
   end
 
   def check_ref_locks(repo_dir)
-    lock_files = Dir.glob(File.join(repo_dir,'refs/heads/*.lock'))
+    lock_files = Dir.glob(File.join(repo_dir, 'refs/heads/*.lock'))
     if lock_files.present?
       puts "Ref lock files exist:".color(:red)
       lock_files.each do |lock_file|

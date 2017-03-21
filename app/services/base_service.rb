@@ -28,9 +28,7 @@ class BaseService
     SystemHooksService.new
   end
 
-  def repository
-    project.repository
-  end
+  delegate :repository, to: :project
 
   # Add an error to the specified model for restricted visibility levels
   def deny_visibility_level(model, denied_visibility_level = nil)

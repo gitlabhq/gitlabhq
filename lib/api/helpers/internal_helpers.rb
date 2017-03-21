@@ -9,11 +9,11 @@ module API
       # In addition, they may have a '.git' extension and multiple namespaces
       #
       # Transform all these cases to 'namespace/project'
-      def clean_project_path(project_path, storage_paths = Repository.storages.values)
+      def clean_project_path(project_path, storages = Gitlab.config.repositories.storages.values)
         project_path = project_path.sub(/\.git\z/, '')
 
-        storage_paths.each do |storage_path|
-          storage_path = File.expand_path(storage_path)
+        storages.each do |storage|
+          storage_path = File.expand_path(storage['path'])
 
           if project_path.start_with?(storage_path)
             project_path = project_path.sub(storage_path, '')

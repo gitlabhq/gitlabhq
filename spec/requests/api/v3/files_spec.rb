@@ -2,17 +2,6 @@ require 'spec_helper'
 
 describe API::V3::Files, api: true  do
   include ApiHelpers
-  let(:user) { create(:user) }
-  let!(:project) { create(:project, :repository, namespace: user.namespace ) }
-  let(:guest) { create(:user) { |u| project.add_guest(u) } }
-  let(:file_path) { 'files/ruby/popen.rb' }
-  let(:params) do
-    {
-      file_path: file_path,
-      ref: 'master'
-    }
-  end
-  let(:author_email) { FFaker::Internet.email }
 
   # I have to remove periods from the end of the name
   # This happened when the user's name had a suffix (i.e. "Sr.")
@@ -26,6 +15,18 @@ describe API::V3::Files, api: true  do
   # ...
   # Author: Foo Sr <foo@example.com>
   # ...
+
+  let(:user) { create(:user) }
+  let!(:project) { create(:project, :repository, namespace: user.namespace ) }
+  let(:guest) { create(:user) { |u| project.add_guest(u) } }
+  let(:file_path) { 'files/ruby/popen.rb' }
+  let(:params) do
+    {
+      file_path: file_path,
+      ref: 'master'
+    }
+  end
+  let(:author_email) { FFaker::Internet.email }
   let(:author_name) { FFaker::Name.name.chomp("\.") }
 
   before { project.team << [user, :developer] }
@@ -127,7 +128,7 @@ describe API::V3::Files, api: true  do
     end
 
     it "returns a 400 if editor fails to create file" do
-      allow_any_instance_of(Repository).to receive(:commit_file).
+      allow_any_instance_of(Repository).to receive(:create_file).
         and_return(false)
 
       post v3_api("/projects/#{project.id}/repository/files", user), valid_params
@@ -145,6 +146,20 @@ describe API::V3::Files, api: true  do
         last_commit = project.repository.commit.raw
         expect(last_commit.author_email).to eq(author_email)
         expect(last_commit.author_name).to eq(author_name)
+      end
+    end
+
+    context 'when the repo is empty' do
+      let!(:project) { create(:project_empty_repo, namespace: user.namespace ) }
+
+      it "creates a new file in project repo" do
+        post v3_api("/projects/#{project.id}/repository/files", user), valid_params
+
+        expect(response).to have_http_status(201)
+        expect(json_response['file_path']).to eq('newfile.rb')
+        last_commit = project.repository.commit.raw
+        expect(last_commit.author_email).to eq(user.email)
+        expect(last_commit.author_name).to eq(user.name)
       end
     end
   end
@@ -215,7 +230,7 @@ describe API::V3::Files, api: true  do
     end
 
     it "returns a 400 if fails to create file" do
-      allow_any_instance_of(Repository).to receive(:remove_file).and_return(false)
+      allow_any_instance_of(Repository).to receive(:delete_file).and_return(false)
 
       delete v3_api("/projects/#{project.id}/repository/files", user), valid_params
 

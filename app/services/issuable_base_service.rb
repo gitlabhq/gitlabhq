@@ -203,6 +203,7 @@ class IssuableBaseService < BaseService
     change_state(issuable)
     change_subscription(issuable)
     change_todo(issuable)
+    toggle_award(issuable)
     filter_params(issuable)
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
@@ -210,7 +211,7 @@ class IssuableBaseService < BaseService
     label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
     params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
 
-    if params.present?
+    if issuable.changed? || params.present?
       issuable.assign_attributes(params.merge(updated_by: current_user))
 
       before_update(issuable)
@@ -260,6 +261,14 @@ class IssuableBaseService < BaseService
     when 'done'
       todo = TodosFinder.new(current_user).execute.find_by(target: issuable)
       todo_service.mark_todos_as_done([todo], current_user) if todo
+    end
+  end
+
+  def toggle_award(issuable)
+    award = params.delete(:emoji_award)
+    if award
+      todo_service.new_award_emoji(issuable, current_user)
+      issuable.toggle_award_emoji(award, current_user)
     end
   end
 

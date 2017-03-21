@@ -4,7 +4,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
   describe 'saves the project tree into a json object' do
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.path_with_namespace) }
     let(:project_tree_saver) { described_class.new(project: project, current_user: user, shared: shared) }
-    let(:export_path) { "#{Dir::tmpdir}/project_tree_saver_spec" }
+    let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
     let(:user) { create(:user) }
     let(:project) { setup_project }
 
@@ -114,7 +114,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
       it 'has project and group labels' do
         label_types = saved_project_json['issues'].first['label_links'].map { |link| link['label']['type'] }
 
-        expect(label_types).to match_array(['ProjectLabel', 'GroupLabel'])
+        expect(label_types).to match_array(%w(ProjectLabel GroupLabel))
       end
 
       it 'has priorities associated to labels' do

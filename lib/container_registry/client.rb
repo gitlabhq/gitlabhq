@@ -5,7 +5,7 @@ module ContainerRegistry
   class Client
     attr_accessor :uri
 
-    MANIFEST_VERSION = 'application/vnd.docker.distribution.manifest.v2+json'
+    MANIFEST_VERSION = 'application/vnd.docker.distribution.manifest.v2+json'.freeze
 
     # Taken from: FaradayMiddleware::FollowRedirects
     REDIRECT_CODES = Set.new [301, 302, 303, 307]

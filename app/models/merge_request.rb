@@ -7,6 +7,7 @@ class MergeRequest < ActiveRecord::Base
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
+  belongs_to :project, foreign_key: :target_project_id
   belongs_to :merge_user, class_name: "User"
 
   has_many :merge_request_diffs, dependent: :destroy
@@ -91,17 +92,13 @@ class MergeRequest < ActiveRecord::Base
     around_transition do |merge_request, transition, block|
       Gitlab::Timeless.timeless(merge_request, &block)
     end
-
-    after_transition unchecked: :cannot_be_merged do |merge_request, transition|
-      TodoService.new.merge_request_became_unmergeable(merge_request)
-    end
   end
 
   validates :source_project, presence: true, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
-  validates :merge_user, presence: true, if: :merge_when_build_succeeds?, unless: :importing?
+  validates :merge_user, presence: true, if: :merge_when_pipeline_succeeds?, unless: :importing?
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validate :validate_fork, unless: :closed_without_fork?
 
@@ -203,7 +200,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_size
-    opts = diff_options || {}
+    # The `#diffs` method ends up at an instance of a class inheriting from
+    # `Gitlab::Diff::FileCollection::Base`, so use those options as defaults
+    # here too, to get the same diff size without performing highlighting.
+    #
+    opts = Gitlab::Diff::FileCollection::Base.default_options.merge(diff_options || {})
 
     raw_diffs(opts).size
   end
@@ -436,7 +437,7 @@ class MergeRequest < ActiveRecord::Base
     true
   end
 
-  def can_cancel_merge_when_build_succeeds?(current_user)
+  def can_cancel_merge_when_pipeline_succeeds?(current_user)
     can_be_merged_by?(current_user) || self.author == current_user
   end
 
@@ -523,11 +524,14 @@ class MergeRequest < ActiveRecord::Base
       source: source_project.try(:hook_attrs),
       target: target_project.hook_attrs,
       last_commit: nil,
-      work_in_progress: work_in_progress?
+      work_in_progress: work_in_progress?,
+      total_time_spent: total_time_spent,
+      human_total_time_spent: human_total_time_spent,
+      human_time_estimate: human_time_estimate
     }
 
     if diff_head_commit
-      attrs.merge!(last_commit: diff_head_commit.hook_attrs)
+      attrs[:last_commit] = diff_head_commit.hook_attrs
     end
 
     attributes.merge!(attrs)
@@ -535,10 +539,6 @@ class MergeRequest < ActiveRecord::Base
 
   def for_fork?
     target_project != source_project
-  end
-
-  def project
-    target_project
   end
 
   # If the merge request closes any issues, save this information in the
@@ -644,10 +644,10 @@ class MergeRequest < ActiveRecord::Base
     message.join("\n\n")
   end
 
-  def reset_merge_when_build_succeeds
-    return unless merge_when_build_succeeds?
+  def reset_merge_when_pipeline_succeeds
+    return unless merge_when_pipeline_succeeds?
 
-    self.merge_when_build_succeeds = false
+    self.merge_when_pipeline_succeeds = false
     self.merge_user = nil
     if merge_params
       merge_params.delete('should_remove_source_branch')
@@ -684,7 +684,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def has_ci?
-    source_project.try(:ci_service) && commits.any?
+    has_ci_integration = source_project.try(:ci_service)
+    uses_gitlab_ci = all_pipelines.any?
+
+    (has_ci_integration || uses_gitlab_ci) && commits.any?
   end
 
   def branch_missing?
@@ -706,7 +709,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mergeable_ci_state?
-    return true unless project.only_allow_merge_if_build_succeeds?
+    return true unless project.only_allow_merge_if_pipeline_succeeds?
 
     !head_pipeline || head_pipeline.success? || head_pipeline.skipped?
   end

@@ -210,12 +210,11 @@ class Service < ActiveRecord::Base
   end
 
   def self.available_services_names
-    %w[
+    service_names = %w[
       asana
       assembla
       bamboo
       buildkite
-      builds_email
       bugzilla
       campfire
       custom_issue_tracker
@@ -232,12 +231,16 @@ class Service < ActiveRecord::Base
       mattermost
       pipelines_email
       pivotaltracker
+      prometheus
       pushover
       redmine
       slack_slash_commands
       slack
       teamcity
     ]
+    service_names << 'mock_ci' if Rails.env.development?
+
+    service_names.sort_by(&:downcase)
   end
 
   def self.build_from_template(project_id, template)

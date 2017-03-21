@@ -17,6 +17,6 @@ class AddLowerPathIndexToRoutes < ActiveRecord::Migration
   def down
     return unless Gitlab::Database.postgresql?
 
-    remove_index :routes, name: :index_on_routes_lower_path
+    remove_index :routes, name: :index_on_routes_lower_path if index_exists?(:routes, name: :index_on_routes_lower_path)
   end
 end

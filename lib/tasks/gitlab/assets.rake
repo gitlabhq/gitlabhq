@@ -20,7 +20,7 @@ namespace :gitlab do
     desc 'GitLab | Assets | Fix all absolute url references in CSS'
     task :fix_urls do
       css_files = Dir['public/assets/*.css']
-      css_files.each do | file |
+      css_files.each do |file|
         # replace url(/assets/*) with url(./*)
         puts "Fixing #{file}"
         system "sed", "-i", "-e", 's/url(\([\"\']\?\)\/assets\//url(\1.\//g', file

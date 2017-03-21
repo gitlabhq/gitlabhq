@@ -5,21 +5,22 @@ module Ci
     include Importable
     include AfterCommitQueue
 
-    self.table_name = 'ci_commits'
-
-    belongs_to :project, foreign_key: :gl_project_id
+    belongs_to :project
     belongs_to :user
 
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
 
-    validates_presence_of :sha, unless: :importing?
-    validates_presence_of :ref, unless: :importing?
-    validates_presence_of :status, unless: :importing?
+    delegate :id, to: :project, prefix: true
+
+    validates :sha, presence: { unless: :importing? }
+    validates :ref, presence: { unless: :importing? }
+    validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
 
     after_create :keep_around_commits, unless: :importing?
+    after_create :refresh_build_status_cache
 
     state_machine :status, initial: :created do
       event :enqueue do
@@ -45,6 +46,10 @@ module Ci
 
       event :cancel do
         transition any - [:canceled] => :canceled
+      end
+
+      event :block do
+        transition any - [:manual] => :manual
       end
 
       # IMPORTANT
@@ -93,8 +98,11 @@ module Ci
         .select("max(#{quoted_table_name}.id)")
         .group(:ref, :sha)
 
-      relation = ref ? where(ref: ref) : self
-      relation.where(id: max_id)
+      if ref
+        where(ref: ref, id: max_id.where(ref: ref))
+      else
+        where(id: max_id)
+      end
     end
 
     def self.latest_status(ref = nil)
@@ -103,6 +111,12 @@ module Ci
 
     def self.latest_successful_for(ref)
       success.latest(ref).order(id: :desc).first
+    end
+
+    def self.latest_successful_for_refs(refs)
+      success.latest(refs).order(id: :desc).each_with_object({}) do |pipeline, hash|
+        hash[pipeline.ref] ||= pipeline
+      end
     end
 
     def self.truncate_sha(sha)
@@ -135,7 +149,7 @@ module Ci
 
       status_sql = statuses.latest.where('stage=sg.stage').status_sql
 
-      warnings_sql = statuses.latest.select('COUNT(*) > 0')
+      warnings_sql = statuses.latest.select('COUNT(*)')
         .where('stage=sg.stage').failed_but_allowed.to_sql
 
       stages_with_statuses = CommitStatus.from(stages_query, :sg)
@@ -148,10 +162,6 @@ module Ci
 
     def artifacts
       builds.latest.with_artifacts_not_expired.includes(project: [:namespace])
-    end
-
-    def project_id
-      project.id
     end
 
     # For now the only user who participates is the user who triggered
@@ -320,8 +330,10 @@ module Ci
         when 'failed' then drop
         when 'canceled' then cancel
         when 'skipped' then skip
+        when 'manual' then block
         end
       end
+      refresh_build_status_cache
     end
 
     def predefined_variables
@@ -361,6 +373,10 @@ module Ci
       Gitlab::Ci::Status::Pipeline::Factory
         .new(self, current_user)
         .fabricate!
+    end
+
+    def refresh_build_status_cache
+      Ci::PipelineStatus.new(project, sha: sha, status: status).store_in_cache_if_needed
     end
 
     private

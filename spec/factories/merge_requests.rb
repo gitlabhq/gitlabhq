@@ -4,6 +4,7 @@ FactoryGirl.define do
     author
     association :source_project, :repository, factory: :project
     target_project { source_project }
+    project { target_project }
 
     # $ git log --pretty=oneline feature..master
     # 5937ac0a7beb003549fc5fd26fc247adbce4a52e Add submodule from gitlab.com
@@ -59,8 +60,8 @@ FactoryGirl.define do
       target_branch "master"
     end
 
-    trait :merge_when_build_succeeds do
-      merge_when_build_succeeds true
+    trait :merge_when_pipeline_succeeds do
+      merge_when_pipeline_succeeds true
       merge_user author
     end
 

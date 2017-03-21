@@ -33,7 +33,8 @@ class IrkerService < Service
   end
 
   def settings
-    { server_host: server_host.present? ? server_host : 'localhost',
+    {
+      server_host: server_host.present? ? server_host : 'localhost',
       server_port: server_port.present? ? server_port : 6659
     }
   end

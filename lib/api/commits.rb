@@ -10,7 +10,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'Get a project repository commits' do
         success Entities::RepoCommit
       end
@@ -18,22 +18,34 @@ module API
         optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
         optional :since,    type: DateTime, desc: 'Only commits after or on this date will be returned'
         optional :until,    type: DateTime, desc: 'Only commits before or on this date will be returned'
-        optional :page,     type: Integer, default: 0, desc: 'The page for pagination'
-        optional :per_page, type: Integer, default: 20, desc: 'The number of results per page'
         optional :path,     type: String, desc: 'The file path'
+        use :pagination
       end
       get ":id/repository/commits" do
-        ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
-        offset = params[:page] * params[:per_page]
+        path   = params[:path]
+        before = params[:until]
+        after  = params[:since]
+        ref    = params[:ref_name] || user_project.try(:default_branch) || 'master'
+        offset = (params[:page] - 1) * params[:per_page]
 
         commits = user_project.repository.commits(ref,
-                                                  path: params[:path],
+                                                  path: path,
                                                   limit: params[:per_page],
                                                   offset: offset,
-                                                  after: params[:since],
-                                                  before: params[:until])
+                                                  before: before,
+                                                  after: after)
 
-        present commits, with: Entities::RepoCommit
+        commit_count =
+          if path || before || after
+            user_project.repository.count_commits(ref: ref, path: path, before: before, after: after)
+          else
+            # Cacheable commit count.
+            user_project.repository.commit_count_for_ref(ref)
+          end
+
+        paginated_commits = Kaminari.paginate_array(commits, total_count: commit_count)
+
+        present paginate(paginated_commits), with: Entities::RepoCommit
       end
 
       desc 'Commit multiple file changes as one commit' do
@@ -51,13 +63,6 @@ module API
         authorize! :push_code, user_project
 
         attrs = declared_params.merge(start_branch: declared_params[:branch], target_branch: declared_params[:branch])
-
-        attrs[:actions].map! do |action|
-          action[:action] = action[:action].to_sym
-          action[:file_path].slice!(0) if action[:file_path] && action[:file_path].start_with?('/')
-          action[:previous_path].slice!(0) if action[:previous_path] && action[:previous_path].start_with?('/')
-          action
-        end
 
         result = ::Files::MultiService.new(user_project, current_user, attrs).execute
 
@@ -134,7 +139,7 @@ module API
 
         commit_params = {
           commit: commit,
-          create_merge_request: false,
+          start_branch: params[:branch],
           target_branch: params[:branch]
         }
 
@@ -157,7 +162,7 @@ module API
         optional :path, type: String, desc: 'The file path'
         given :path do
           requires :line, type: Integer, desc: 'The line number'
-          requires :line_type, type: String, values: ['new', 'old'], default: 'new', desc: 'The type of the line'
+          requires :line_type, type: String, values: %w(new old), default: 'new', desc: 'The type of the line'
         end
       end
       post ':id/repository/commits/:sha/comments' do

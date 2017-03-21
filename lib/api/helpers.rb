@@ -3,7 +3,7 @@ module API
     include Gitlab::Utils
     include Helpers::Pagination
 
-    SUDO_HEADER = "HTTP_SUDO"
+    SUDO_HEADER = "HTTP_SUDO".freeze
     SUDO_PARAM = :sudo
 
     def declared_params(options = {})
@@ -82,22 +82,22 @@ module API
       label || not_found!('Label')
     end
 
-    def find_project_issue(id)
-      IssuesFinder.new(current_user, project_id: user_project.id).find(id)
+    def find_project_issue(iid)
+      IssuesFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
 
-    def find_project_merge_request(id)
-      MergeRequestsFinder.new(current_user, project_id: user_project.id).find(id)
+    def find_project_merge_request(iid)
+      MergeRequestsFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
 
-    def find_merge_request_with_access(id, access_level = :read_merge_request)
-      merge_request = user_project.merge_requests.find(id)
+    def find_merge_request_with_access(iid, access_level = :read_merge_request)
+      merge_request = user_project.merge_requests.find_by!(iid: iid)
       authorize! access_level, merge_request
       merge_request
     end
 
     def authenticate!
-      unauthorized! unless current_user
+      unauthorized! unless current_user && can?(current_user, :access_api)
     end
 
     def authenticate_non_get!
@@ -126,7 +126,7 @@ module API
       forbidden! unless current_user.is_admin?
     end
 
-    def authorize!(action, subject = nil)
+    def authorize!(action, subject = :global)
       forbidden! unless can?(current_user, action, subject)
     end
 
@@ -144,7 +144,7 @@ module API
       end
     end
 
-    def can?(object, action, subject)
+    def can?(object, action, subject = :global)
       Ability.allowed?(object, action, subject)
     end
 
@@ -172,6 +172,10 @@ module API
 
     def filter_by_iid(items, iid)
       items.where(iid: iid)
+    end
+
+    def filter_by_search(items, text)
+      items.search(text)
     end
 
     # error helpers
@@ -219,6 +223,10 @@ module API
       render_api_error!('204 No Content', 204)
     end
 
+    def accepted!
+      render_api_error!('202 Accepted', 202)
+    end
+
     def render_validation_error!(model)
       if model.errors.any?
         render_api_error!(model.errors.messages || '400 Bad Request', 400)
@@ -254,6 +262,10 @@ module API
     # project helpers
 
     def filter_projects(projects)
+      if params[:membership]
+        projects = projects.merge(current_user.authorized_projects)
+      end
+
       if params[:owned]
         projects = projects.merge(current_user.owned_projects)
       end
@@ -334,16 +346,17 @@ module API
 
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
+      Gitlab::Auth::UniqueIpsLimiter.limit_user! do
+        @initial_current_user ||= find_user_by_private_token(scopes: @scopes)
+        @initial_current_user ||= doorkeeper_guard(scopes: @scopes)
+        @initial_current_user ||= find_user_from_warden
 
-      @initial_current_user ||= find_user_by_private_token(scopes: @scopes)
-      @initial_current_user ||= doorkeeper_guard(scopes: @scopes)
-      @initial_current_user ||= find_user_from_warden
+        unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
+          @initial_current_user = nil
+        end
 
-      unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
-        @initial_current_user = nil
+        @initial_current_user
       end
-
-      @initial_current_user
     end
 
     def sudo!
@@ -384,14 +397,6 @@ module API
 
     def send_git_archive(repository, ref:, format:)
       header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
-    end
-
-    def issue_entity(project)
-      if project.has_external_issue_tracker?
-        Entities::ExternalIssue
-      else
-        Entities::Issue
-      end
     end
 
     # The Grape Error Middleware only has access to env but no params. We workaround this by

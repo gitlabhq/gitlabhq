@@ -171,6 +171,8 @@ module Gitlab
       end
 
       def clean_up_restored_branches(pull_request)
+        return if pull_request.opened?
+
         remove_branch(pull_request.source_branch_name) unless pull_request.source_branch_exists?
         remove_branch(pull_request.target_branch_name) unless pull_request.target_branch_exists?
       end
@@ -285,7 +287,7 @@ module Gitlab
       def fetch_resources(resource_type, *opts)
         return if imported?(resource_type)
 
-        opts.last.merge!(page: current_page(resource_type))
+        opts.last[:page] = current_page(resource_type)
 
         client.public_send(resource_type, *opts) do |resources|
           yield resources

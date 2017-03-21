@@ -54,7 +54,7 @@ for initial settings.
       gitlab_rails['omniauth_providers'] = [
         {
           "name" => "auth0",
-          "args" => { client_id: 'YOUR_AUTH0_CLIENT_ID'',
+          "args" => { client_id: 'YOUR_AUTH0_CLIENT_ID',
                       client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
                       namespace: 'YOUR_AUTH0_DOMAIN'
                     }

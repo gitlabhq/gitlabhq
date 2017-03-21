@@ -1,5 +1,7 @@
 module Ci
   class RetryPipelineService < ::BaseService
+    include Gitlab::OptimisticLocking
+
     def execute(pipeline)
       unless can?(current_user, :update_pipeline, pipeline)
         raise Gitlab::Access::AccessDeniedError
@@ -10,6 +12,10 @@ module Ci
 
         Ci::RetryBuildService.new(project, current_user)
           .reprocess(build)
+      end
+
+      pipeline.builds.skipped.find_each do |skipped|
+        retry_optimistic_lock(skipped) { |build| build.process }
       end
 
       MergeRequests::AddTodoWhenBuildFailsService

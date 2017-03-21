@@ -9,6 +9,11 @@ module API
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
       helpers do
+        def find_user(params)
+          id = params[:user_id] || params[:id]
+          User.find_by(id: id) || not_found!('User')
+        end
+
         params :optional_attributes do
           optional :skype, type: String, desc: 'The Skype username'
           optional :linkedin, type: String, desc: 'The LinkedIn username'
@@ -40,7 +45,7 @@ module API
         use :pagination
       end
       get do
-        unless can?(current_user, :read_users_list, nil)
+        unless can?(current_user, :read_users_list)
           render_api_error!("Not authorized.", 403)
         end
 
@@ -172,7 +177,7 @@ module API
           end
         end
 
-        user_params.merge!(password_expires_at: Time.now) if user_params[:password].present?
+        user_params[:password_expires_at] = Time.now if user_params[:password].present?
 
         if user.update_attributes(user_params.except(:extern_uid, :provider))
           present user, with: Entities::UserPublic
@@ -236,7 +241,7 @@ module API
         key = user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
-        present key.destroy, with: Entities::SSHKey
+        key.destroy
       end
 
       desc 'Add an email address to a specified user. Available only for admins.' do
@@ -362,6 +367,76 @@ module API
 
         present paginate(events), with: Entities::Event
       end
+
+      params do
+        requires :user_id, type: Integer, desc: 'The ID of the user'
+      end
+      segment ':user_id' do
+        resource :impersonation_tokens do
+          helpers do
+            def finder(options = {})
+              user = find_user(params)
+              PersonalAccessTokensFinder.new({ user: user, impersonation: true }.merge(options))
+            end
+
+            def find_impersonation_token
+              finder.find_by(id: declared_params[:impersonation_token_id]) || not_found!('Impersonation Token')
+            end
+          end
+
+          before { authenticated_as_admin! }
+
+          desc 'Retrieve impersonation tokens. Available only for admins.' do
+            detail 'This feature was introduced in GitLab 9.0'
+            success Entities::ImpersonationToken
+          end
+          params do
+            use :pagination
+            optional :state, type: String, default: 'all', values: %w[all active inactive], desc: 'Filters (all|active|inactive) impersonation_tokens'
+          end
+          get { present paginate(finder(declared_params(include_missing: false)).execute), with: Entities::ImpersonationToken }
+
+          desc 'Create a impersonation token. Available only for admins.' do
+            detail 'This feature was introduced in GitLab 9.0'
+            success Entities::ImpersonationToken
+          end
+          params do
+            requires :name, type: String, desc: 'The name of the impersonation token'
+            optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the impersonation token'
+            optional :scopes, type: Array, desc: 'The array of scopes of the impersonation token'
+          end
+          post do
+            impersonation_token = finder.build(declared_params(include_missing: false))
+
+            if impersonation_token.save
+              present impersonation_token, with: Entities::ImpersonationToken
+            else
+              render_validation_error!(impersonation_token)
+            end
+          end
+
+          desc 'Retrieve impersonation token. Available only for admins.' do
+            detail 'This feature was introduced in GitLab 9.0'
+            success Entities::ImpersonationToken
+          end
+          params do
+            requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
+          end
+          get ':impersonation_token_id' do
+            present find_impersonation_token, with: Entities::ImpersonationToken
+          end
+
+          desc 'Revoke a impersonation token. Available only for admins.' do
+            detail 'This feature was introduced in GitLab 9.0'
+          end
+          params do
+            requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
+          end
+          delete ':impersonation_token_id' do
+            find_impersonation_token.revoke!
+          end
+        end
+      end
     end
 
     resource :user do
@@ -422,7 +497,7 @@ module API
         key = current_user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
-        present key.destroy, with: Entities::SSHKey
+        key.destroy
       end
 
       desc "Get the currently authenticated user's email addresses" do

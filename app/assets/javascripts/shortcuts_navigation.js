@@ -32,7 +32,7 @@ require('./shortcuts');
         return ShortcutsNavigation.findAndFollowLink('.shortcuts-network');
       });
       Mousetrap.bind('g g', function() {
-        return ShortcutsNavigation.findAndFollowLink('.shortcuts-graphs');
+        return ShortcutsNavigation.findAndFollowLink('.shortcuts-repository-charts');
       });
       Mousetrap.bind('g i', function() {
         return ShortcutsNavigation.findAndFollowLink('.shortcuts-issues');

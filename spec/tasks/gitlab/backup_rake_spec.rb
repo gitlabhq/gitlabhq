@@ -108,7 +108,7 @@ describe 'gitlab:app namespace rake task' do
       $stdout = orig_stdout
     end
 
-    describe 'backup creation and deletion using annex and custom_hooks' do
+    describe 'backup creation and deletion using custom_hooks' do
       let(:project) { create(:project) }
       let(:user_backup_path) { "repositories/#{project.path_with_namespace}" }
 
@@ -130,25 +130,6 @@ describe 'gitlab:app namespace rake task' do
         ENV["SKIP"] = ""
         FileUtils.rm(@backup_tar)
         Dir.chdir(@origin_cd)
-      end
-
-      context 'project uses git-annex and successfully creates backup' do
-        let(:filename) { "annex" }
-
-        it 'creates annex.tar and project bundle' do
-          tar_contents, exit_status = Gitlab::Popen.popen(%W{tar -tvf #{@backup_tar}})
-
-          expect(exit_status).to eq(0)
-          expect(tar_contents).to match(user_backup_path)
-          expect(tar_contents).to match("#{user_backup_path}/annex.tar")
-          expect(tar_contents).to match("#{user_backup_path}.bundle")
-        end
-
-        it 'restores files correctly' do
-          restore_backup
-
-          expect(Dir.entries(File.join(project.repository.path, "annex"))).to include("dummy.txt")
-        end
       end
 
       context 'project uses custom_hooks and successfully creates backup' do
@@ -246,8 +227,8 @@ describe 'gitlab:app namespace rake task' do
         FileUtils.mkdir('tmp/tests/default_storage')
         FileUtils.mkdir('tmp/tests/custom_storage')
         storages = {
-          'default' => 'tmp/tests/default_storage',
-          'custom' => 'tmp/tests/custom_storage'
+          'default' => { 'path' => 'tmp/tests/default_storage' },
+          'custom' => { 'path' => 'tmp/tests/custom_storage' }
         }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
 

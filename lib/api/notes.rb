@@ -4,12 +4,12 @@ module API
 
     before { authenticate! }
 
-    NOTEABLE_TYPES = [Issue, MergeRequest, Snippet]
+    NOTEABLE_TYPES = [Issue, MergeRequest, Snippet].freeze
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       NOTEABLE_TYPES.each do |noteable_type|
         noteables_str = noteable_type.to_s.underscore.pluralize
 
@@ -85,7 +85,7 @@ module API
             note = ::Notes::CreateService.new(user_project, current_user, opts).execute
 
             if note.valid?
-              present note, with: Entities::const_get(note.class.name)
+              present note, with: Entities.const_get(note.class.name)
             else
               not_found!("Note #{note.errors.messages}")
             end
@@ -132,8 +132,6 @@ module API
           authorize! :admin_note, note
 
           ::Notes::DestroyService.new(user_project, current_user).execute(note)
-
-          present note, with: Entities::Note
         end
       end
     end

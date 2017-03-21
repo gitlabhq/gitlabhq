@@ -89,8 +89,8 @@ describe ProjectMember, models: true do
       @user_1 = create :user
       @user_2 = create :user
 
-      @project_1.team << [ @user_1, :developer ]
-      @project_2.team << [ @user_2, :reporter ]
+      @project_1.team << [@user_1, :developer]
+      @project_2.team << [@user_2, :reporter]
 
       @status = @project_2.team.import(@project_1)
     end
@@ -137,8 +137,8 @@ describe ProjectMember, models: true do
       @user_1 = create :user
       @user_2 = create :user
 
-      @project_1.team << [ @user_1, :developer]
-      @project_2.team << [ @user_2, :reporter]
+      @project_1.team << [@user_1, :developer]
+      @project_2.team << [@user_2, :reporter]
 
       ProjectMember.truncate_teams([@project_1.id, @project_2.id])
     end

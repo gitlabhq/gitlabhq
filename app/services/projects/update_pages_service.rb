@@ -2,7 +2,7 @@ module Projects
   class UpdatePagesService < BaseService
     BLOCK_SIZE = 32.kilobytes
     MAX_SIZE = 1.terabyte
-    SITE_PATH = 'public/'
+    SITE_PATH = 'public/'.freeze
 
     attr_reader :build
 
@@ -34,6 +34,8 @@ module Projects
       end
     rescue => e
       error(e.message)
+    ensure
+      build.erase_artifacts! unless build.has_expiring_artifacts?
     end
 
     private

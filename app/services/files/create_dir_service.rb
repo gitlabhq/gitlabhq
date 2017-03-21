@@ -1,7 +1,7 @@
 module Files
   class CreateDirService < Files::BaseService
     def commit
-      repository.commit_dir(
+      repository.create_dir(
         current_user,
         @file_path,
         message: @commit_message,

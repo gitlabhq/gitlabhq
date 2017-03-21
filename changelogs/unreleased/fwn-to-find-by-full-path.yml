@@ -1,4 +1,0 @@
----
-title: replace `find_with_namespace` with `find_by_full_path`
-merge_request: 8949
-author: Adam Pahlevi

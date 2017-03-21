@@ -55,7 +55,7 @@
   padding-right: 0;
 
   @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-    &:not(.build-sidebar):not(.wiki-sidebar) {
+    .content-wrapper {
       padding-right: $gutter_collapsed_width;
     }
   }
@@ -72,10 +72,6 @@
     &.with-overlay .merge-request-tabs-holder.affix {
       right: $gutter_collapsed_width;
     }
-  }
-
-  &.with-overlay {
-    padding-right: $gutter_collapsed_width;
   }
 }
 

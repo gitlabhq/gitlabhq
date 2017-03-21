@@ -248,7 +248,7 @@ $diff-view-modes-border: #c1c1c1;
  * Fonts
  */
 $monospace_font: 'Menlo', 'Liberation Mono', 'Consolas', 'DejaVu Sans Mono', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
-$regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+$regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
 /*
 * Dropdowns
@@ -540,3 +540,12 @@ Pipeline Graph
 $stage-hover-bg: #eaf3fc;
 $stage-hover-border: #d1e7fc;
 $action-icon-color: #d6d6d6;
+
+/*
+Filtered Search
+*/
+$filter-name-resting-color: #f8f8f8;
+$filter-name-text-color: rgba(0, 0, 0, 0.55);
+$filter-value-text-color: rgba(0, 0, 0, 0.85);
+$filter-name-selected-color: #ebebeb;
+$filter-value-selected-color: #d7d7d7;

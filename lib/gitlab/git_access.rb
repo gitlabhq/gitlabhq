@@ -10,10 +10,10 @@ module Gitlab
       deploy_key_upload:
         'This deploy key does not have write access to this project.',
       no_repo: 'A repository for this project does not exist yet.'
-    }
+    }.freeze
 
-    DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }
-    PUSH_COMMANDS = %w{ git-receive-pack }
+    DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
+    PUSH_COMMANDS = %w{ git-receive-pack }.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
     attr_reader :actor, :project, :protocol, :user_access, :authentication_abilities
@@ -153,7 +153,9 @@ module Gitlab
         user_access: user_access,
         project: project,
         env: @env,
-        skip_authorization: deploy_key?).exec
+        skip_authorization: deploy_key?,
+        protocol: protocol
+      ).exec
     end
 
     def matching_merge_request?(newrev, branch_name)

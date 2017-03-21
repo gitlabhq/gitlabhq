@@ -120,7 +120,6 @@ describe 'project routing' do
     end
   end
 
-  # emojis_namespace_project_autocomplete_sources_path         GET /:project_id/autocomplete_sources/emojis(.:format)         projects/autocomplete_sources#emojis
   # members_namespace_project_autocomplete_sources_path        GET /:project_id/autocomplete_sources/members(.:format)        projects/autocomplete_sources#members
   # issues_namespace_project_autocomplete_sources_path         GET /:project_id/autocomplete_sources/issues(.:format)         projects/autocomplete_sources#issues
   # merge_requests_namespace_project_autocomplete_sources_path GET /:project_id/autocomplete_sources/merge_requests(.:format) projects/autocomplete_sources#merge_requests
@@ -128,7 +127,7 @@ describe 'project routing' do
   # milestones_namespace_project_autocomplete_sources_path     GET /:project_id/autocomplete_sources/milestones(.:format)     projects/autocomplete_sources#milestones
   # commands_namespace_project_autocomplete_sources_path       GET /:project_id/autocomplete_sources/commands(.:format)       projects/autocomplete_sources#commands
   describe Projects::AutocompleteSourcesController, 'routing' do
-    [:emojis, :members, :issues, :merge_requests, :labels, :milestones, :commands].each do |action|
+    [:members, :issues, :merge_requests, :labels, :milestones, :commands].each do |action|
       it "to ##{action}" do
         expect(get("/gitlab/gitlabhq/autocomplete_sources/#{action}")).to route_to("projects/autocomplete_sources##{action}", namespace_id: 'gitlab', project_id: 'gitlabhq')
       end
@@ -431,12 +430,22 @@ describe 'project routing' do
     end
   end
 
-  #         project_notes GET    /:project_id/notes(.:format)         notes#index
-  #                       POST   /:project_id/notes(.:format)         notes#create
-  #          project_note DELETE /:project_id/notes/:id(.:format)     notes#destroy
+  # project_noteable_notes GET    /:project_id/noteable/:target_type/:target_id/notes notes#index
+  #                        POST   /:project_id/notes(.:format)                        notes#create
+  #           project_note DELETE /:project_id/notes/:id(.:format)                    notes#destroy
   describe Projects::NotesController, 'routing' do
+    it 'to #index' do
+      expect(get('/gitlab/gitlabhq/noteable/issue/1/notes')).to route_to(
+        'projects/notes#index',
+        namespace_id: 'gitlab',
+        project_id: 'gitlabhq',
+        target_type: 'issue',
+        target_id: '1'
+      )
+    end
+
     it_behaves_like 'RESTful project resources' do
-      let(:actions)    { [:index, :create, :destroy] }
+      let(:actions)    { [:create, :destroy] }
       let(:controller) { 'notes' }
     end
   end

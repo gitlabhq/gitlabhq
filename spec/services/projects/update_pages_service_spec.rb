@@ -26,6 +26,28 @@ describe Projects::UpdatePagesService do
         build.update_attributes(artifacts_metadata: metadata)
       end
 
+      describe 'pages artifacts' do
+        context 'with expiry date' do
+          before do
+            build.artifacts_expire_in = "2 days"
+          end
+
+          it "doesn't delete artifacts" do
+            expect(execute).to eq(:success)
+
+            expect(build.reload.artifacts_file?).to eq(true)
+          end
+        end
+
+        context 'without expiry date' do
+          it "does delete artifacts" do
+            expect(execute).to eq(:success)
+
+            expect(build.reload.artifacts_file?).to eq(false)
+          end
+        end
+      end
+
       it 'succeeds' do
         expect(project.pages_deployed?).to be_falsey
         expect(execute).to eq(:success)

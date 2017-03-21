@@ -58,7 +58,7 @@ describe ApplicationHelper do
       project = create(:empty_project, avatar: File.open(uploaded_image_temp_path))
 
       avatar_url = "http://#{Gitlab.config.gitlab.host}/uploads/project/avatar/#{project.id}/banana_sample.gif"
-      expect(helper.project_icon("#{project.namespace.to_param}/#{project.to_param}").to_s).
+      expect(helper.project_icon(project.full_path).to_s).
         to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
     end
 
@@ -68,7 +68,7 @@ describe ApplicationHelper do
       allow_any_instance_of(Project).to receive(:avatar_in_git).and_return(true)
 
       avatar_url = "http://#{Gitlab.config.gitlab.host}#{namespace_project_avatar_path(project.namespace, project)}"
-      expect(helper.project_icon("#{project.namespace.to_param}/#{project.to_param}").to_s).to match(
+      expect(helper.project_icon(project.full_path).to_s).to match(
         image_tag(avatar_url))
     end
   end
@@ -193,8 +193,8 @@ describe ApplicationHelper do
   describe 'time_ago_with_tooltip' do
     def element(*arguments)
       Time.zone = 'UTC'
-      time = Time.zone.parse('2015-07-02 08:23')
-      element = helper.time_ago_with_tooltip(time, *arguments)
+      @time = Time.zone.parse('2015-07-02 08:23')
+      element = helper.time_ago_with_tooltip(@time, *arguments)
 
       Nokogiri::HTML::DocumentFragment.parse(element).first_element_child
     end
@@ -204,7 +204,7 @@ describe ApplicationHelper do
     end
 
     it 'includes the date string' do
-      expect(element.text).to eq '2015-07-02 08:23:00 UTC'
+      expect(element.text).to eq @time.strftime("%b %d, %Y")
     end
 
     it 'has a datetime attribute' do

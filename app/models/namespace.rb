@@ -20,6 +20,7 @@ class Namespace < ActiveRecord::Base
 
   belongs_to :parent, class_name: "Namespace"
   has_many :children, class_name: "Namespace", foreign_key: :parent_id
+  has_one :chat_team, dependent: :destroy
 
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
@@ -98,14 +99,8 @@ class Namespace < ActiveRecord::Base
       # Work around that by setting their username to "blank", followed by a counter.
       path = "blank" if path.blank?
 
-      counter = 0
-      base = path
-      while Namespace.find_by_path_or_name(path)
-        counter += 1
-        path = "#{base}#{counter}"
-      end
-
-      path
+      uniquify = Uniquify.new
+      uniquify.string(path) { |s| Namespace.find_by_path_or_name(s) }
     end
   end
 

@@ -4,8 +4,8 @@ describe API::Milestones, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let!(:project) { create(:empty_project, namespace: user.namespace ) }
-  let!(:closed_milestone) { create(:closed_milestone, project: project) }
-  let!(:milestone) { create(:milestone, project: project) }
+  let!(:closed_milestone) { create(:closed_milestone, project: project, title: 'version1', description: 'closed milestone') }
+  let!(:milestone) { create(:milestone, project: project, title: 'version2', description: 'open milestone') }
 
   before { project.team << [user, :developer] }
 
@@ -45,8 +45,37 @@ describe API::Milestones, api: true  do
       expect(json_response.first['id']).to eq(closed_milestone.id)
     end
 
-    it 'returns a project milestone by iid' do
-      get api("/projects/#{project.id}/milestones?iid=#{closed_milestone.iid}", user)
+    it 'returns an array of milestones specified by iids' do
+      other_milestone = create(:milestone, project: project)
+
+      get api("/projects/#{project.id}/milestones", user), iids: [closed_milestone.iid, other_milestone.iid]
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(2)
+      expect(json_response.map{ |m| m['id'] }).to match_array([closed_milestone.id, other_milestone.id])
+    end
+
+    it 'does not return any milestone if none found' do
+      get api("/projects/#{project.id}/milestones", user), iids: [Milestone.maximum(:iid).succ]
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
+    end
+  end
+
+  describe 'GET /projects/:id/milestones/:milestone_id' do
+    it 'returns a project milestone by id' do
+      get api("/projects/#{project.id}/milestones/#{milestone.id}", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response['title']).to eq(milestone.title)
+      expect(json_response['iid']).to eq(milestone.iid)
+    end
+
+    it 'returns a project milestone by iids array' do
+      get api("/projects/#{project.id}/milestones?iids=#{closed_milestone.iid}", user)
 
       expect(response.status).to eq 200
       expect(response).to include_pagination_headers
@@ -56,21 +85,22 @@ describe API::Milestones, api: true  do
       expect(json_response.first['id']).to eq closed_milestone.id
     end
 
-    it 'returns a project milestone by iid array' do
-      get api("/projects/#{project.id}/milestones", user), iid: [milestone.iid, closed_milestone.iid]
+    it 'returns a project milestone by searching for title' do
+      get api("/projects/#{project.id}/milestones", user), search: 'version2'
 
       expect(response).to have_http_status(200)
-      expect(json_response.size).to eq(2)
+      expect(response).to include_pagination_headers
+      expect(json_response.size).to eq(1)
       expect(json_response.first['title']).to eq milestone.title
       expect(json_response.first['id']).to eq milestone.id
     end
 
-    it 'returns a project milestone by iid array' do
-      get api("/projects/#{project.id}/milestones", user), iid: [milestone.iid, closed_milestone.iid]
+    it 'returns a project milestones by searching for description' do
+      get api("/projects/#{project.id}/milestones", user), search: 'open'
 
       expect(response).to have_http_status(200)
       expect(response).to include_pagination_headers
-      expect(json_response.size).to eq(2)
+      expect(json_response.size).to eq(1)
       expect(json_response.first['title']).to eq milestone.title
       expect(json_response.first['id']).to eq milestone.id
     end
@@ -197,6 +227,13 @@ describe API::Milestones, api: true  do
       expect(json_response.first['milestone']['title']).to eq(milestone.title)
     end
 
+    it 'matches V4 response schema for a list of issues' do
+      get api("/projects/#{project.id}/milestones/#{milestone.id}/issues", user)
+
+      expect(response).to have_http_status(200)
+      expect(response).to match_response_schema('public_api/v4/issues')
+    end
+
     it 'returns a 401 error if user not authenticated' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}/issues")
 
@@ -206,8 +243,8 @@ describe API::Milestones, api: true  do
     describe 'confidential issues' do
       let(:public_project) { create(:empty_project, :public) }
       let(:milestone) { create(:milestone, project: public_project) }
-      let(:issue) { create(:issue, project: public_project) }
-      let(:confidential_issue) { create(:issue, confidential: true, project: public_project) }
+      let(:issue) { create(:issue, project: public_project, position: 2) }
+      let(:confidential_issue) { create(:issue, confidential: true, project: public_project, position: 1) }
 
       before do
         public_project.team << [user, :developer]
@@ -246,11 +283,24 @@ describe API::Milestones, api: true  do
         expect(json_response.size).to eq(1)
         expect(json_response.map { |issue| issue['id'] }).to include(issue.id)
       end
+
+      it 'returns issues ordered by position asc' do
+        get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(2)
+        expect(json_response.first['id']).to eq(confidential_issue.id)
+        expect(json_response.second['id']).to eq(issue.id)
+      end
     end
   end
 
   describe 'GET /projects/:id/milestones/:milestone_id/merge_requests' do
-    let(:merge_request) { create(:merge_request, source_project: project) }
+    let(:merge_request) { create(:merge_request, source_project: project, position: 2) }
+    let(:another_merge_request) { create(:merge_request, :simple, source_project: project, position: 1) }
+
     before do
       milestone.merge_requests << merge_request
     end
@@ -282,6 +332,19 @@ describe API::Milestones, api: true  do
       get api("/projects/#{project.id}/milestones/#{milestone.id}/merge_requests")
 
       expect(response).to have_http_status(401)
+    end
+
+    it 'returns merge_requests ordered by position asc' do
+      milestone.merge_requests << another_merge_request
+
+      get api("/projects/#{project.id}/milestones/#{milestone.id}/merge_requests", user)
+
+      expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.size).to eq(2)
+      expect(json_response.first['id']).to eq(another_merge_request.id)
+      expect(json_response.second['id']).to eq(merge_request.id)
     end
   end
 end

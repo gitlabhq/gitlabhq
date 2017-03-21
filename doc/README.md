@@ -19,7 +19,7 @@
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md) Convert a SVN repository to Git and GitLab.
 - [Permissions](user/permissions.md) Learn what each role in a project (external/guest/reporter/developer/master/owner) can do.
 - [Profile Settings](profile/README.md)
-- [Project Services](user/project/integrations//project_services.md) Integrate a project with external services, such as CI and chat.
+- [Project Services](user/project/integrations/project_services.md) Integrate a project with external services, such as CI and chat.
 - [Public access](public_access/public_access.md) Learn how you can allow public and internal access to projects.
 - [Snippets](user/snippets.md) Snippets allow you to create little bits of code.
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
@@ -51,6 +51,7 @@
 - [System hooks](system_hooks/system_hooks.md) Notifications when users, projects and keys are changed.
 - [Update](update/README.md) Update guides to upgrade your installation.
 - [Welcome message](customization/welcome_message.md) Add a custom welcome message to the sign-in page.
+- [Header logo](customization/branded_page_and_email_header.md) Change the logo on the overall page and email header.
 - [Reply by email](administration/reply_by_email.md) Allow users to comment on issues and merge requests by replying to notification emails.
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)

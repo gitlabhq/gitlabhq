@@ -165,7 +165,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 
 #### 3.4. Large Files
 
-1. [Big files in Git (Git LFS, Annex) - Video](https://www.youtube.com/watch?v=DawznUxYDe4)
+1. [Big files in Git (Git LFS) - Video](https://www.youtube.com/watch?v=DawznUxYDe4)
 
 #### 3.5. LDAP and Active Directory
 

@@ -5,8 +5,12 @@ module Gitlab
     # http://dev.mysql.com/doc/refman/5.7/en/integer-types.html
     MAX_INT_VALUE = 2147483647
 
+    def self.config
+      ActiveRecord::Base.configurations[Rails.env]
+    end
+
     def self.adapter_name
-      ActiveRecord::Base.configurations[Rails.env]['adapter']
+      config['adapter']
     end
 
     def self.mysql?
@@ -24,7 +28,7 @@ module Gitlab
     def self.nulls_last_order(field, direction = 'ASC')
       order = "#{field} #{direction}"
 
-      if Gitlab::Database.postgresql?
+      if postgresql?
         order << ' NULLS LAST'
       else
         # `field IS NULL` will be `0` for non-NULL columns and `1` for NULL
@@ -38,7 +42,7 @@ module Gitlab
     def self.nulls_first_order(field, direction = 'ASC')
       order = "#{field} #{direction}"
 
-      if Gitlab::Database.postgresql?
+      if postgresql?
         order << ' NULLS FIRST'
       else
         # `field IS NULL` will be `0` for non-NULL columns and `1` for NULL
@@ -50,7 +54,7 @@ module Gitlab
     end
 
     def self.random
-      Gitlab::Database.postgresql? ? "RANDOM()" : "RAND()"
+      postgresql? ? "RANDOM()" : "RAND()"
     end
 
     def true_value
@@ -79,11 +83,16 @@ module Gitlab
       end
     end
 
-    def self.create_connection_pool(pool_size)
+    # pool_size - The size of the DB pool.
+    # host - An optional host name to use instead of the default one.
+    def self.create_connection_pool(pool_size, host = nil)
       # See activerecord-4.2.7.1/lib/active_record/connection_adapters/connection_specification.rb
       env = Rails.env
       original_config = ActiveRecord::Base.configurations
+
       env_config = original_config[env].merge('pool' => pool_size)
+      env_config['host'] = host if host
+
       config = original_config.merge(env => env_config)
 
       spec =

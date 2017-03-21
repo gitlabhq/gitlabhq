@@ -2,7 +2,7 @@ require 'yaml'
 
 module Backup
   class Repository
-
+    # rubocop:disable Metrics/AbcSize
     def dump
       prepare
 
@@ -68,7 +68,8 @@ module Backup
     end
 
     def restore
-      Gitlab.config.repositories.storages.each do |name, path|
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        path = repository_storage['path']
         next unless File.exist?(path)
 
         # Move repos dir to 'repositories.old' dir
@@ -85,11 +86,11 @@ module Backup
 
         project.ensure_dir_exist
 
-        if File.exists?(path_to_project_bundle)
-          cmd = %W(#{Gitlab.config.git.bin_path} clone --bare #{path_to_project_bundle} #{path_to_project_repo})
-        else
-          cmd = %W(#{Gitlab.config.git.bin_path} init --bare #{path_to_project_repo})
-        end
+        cmd = if File.exist?(path_to_project_bundle)
+                %W(#{Gitlab.config.git.bin_path} clone --bare #{path_to_project_bundle} #{path_to_project_repo})
+              else
+                %W(#{Gitlab.config.git.bin_path} init --bare #{path_to_project_repo})
+              end
 
         output, status = Gitlab::Popen.popen(cmd)
         if status.zero?
@@ -150,6 +151,7 @@ module Backup
         puts output
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     protected
 
@@ -179,9 +181,8 @@ module Backup
       return unless Dir.exist?(path)
 
       dir_entries = Dir.entries(path)
-      %w[annex custom_hooks].each do |entry|
-        yield(entry) if dir_entries.include?(entry)
-      end
+
+      yield('custom_hooks') if dir_entries.include?('custom_hooks')
     end
 
     def prepare
@@ -193,13 +194,13 @@ module Backup
     end
 
     def silent
-      {err: '/dev/null', out: '/dev/null'}
+      { err: '/dev/null', out: '/dev/null' }
     end
 
     private
 
     def repository_storage_paths_args
-      Gitlab.config.repositories.storages.values
+      Gitlab.config.repositories.storages.values.map { |rs| rs['path'] }
     end
   end
 end

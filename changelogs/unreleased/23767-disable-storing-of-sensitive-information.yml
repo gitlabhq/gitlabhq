@@ -1,4 +1,0 @@
----
-title: Fix disable storing of sensitive information when importing a new repo
-merge_request: 8885
-author: Bernard Pietraga

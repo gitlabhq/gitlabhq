@@ -27,7 +27,7 @@ module SpammableActions
 
       render :verify
     else
-      fallback.call
+      yield
     end
   end
 

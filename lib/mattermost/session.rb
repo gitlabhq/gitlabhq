@@ -5,7 +5,7 @@ module Mattermost
     end
   end
 
-  class ConnectionError < Mattermost::Error; end
+  ConnectionError = Class.new(Mattermost::Error)
 
   # This class' prime objective is to obtain a session token on a Mattermost
   # instance with SSO configured where this GitLab instance is the provider.
@@ -153,7 +153,7 @@ module Mattermost
       yield
     rescue HTTParty::Error => e
       raise Mattermost::ConnectionError.new(e.message)
-    rescue Errno::ECONNREFUSED
+    rescue Errno::ECONNREFUSED => e
       raise Mattermost::ConnectionError.new(e.message)
     end
   end

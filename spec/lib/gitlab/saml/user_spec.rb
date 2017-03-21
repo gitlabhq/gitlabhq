@@ -155,11 +155,10 @@ describe Gitlab::Saml::User, lib: true do
                 expect(gl_user).to be_valid
                 expect(gl_user.username).to eql uid
                 expect(gl_user.email).to eql 'john@mail.com'
-                expect(gl_user.identities.length).to eql 2
+                expect(gl_user.identities.length).to be 2
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                expect(identities_as_hash).to match_array([ { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
-                                                            { provider: 'saml', extern_uid: uid }
-                                                          ])
+                expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                                                           { provider: 'saml', extern_uid: uid }])
               end
             end
 
@@ -178,11 +177,10 @@ describe Gitlab::Saml::User, lib: true do
                 expect(gl_user).to be_valid
                 expect(gl_user.username).to eql 'john'
                 expect(gl_user.email).to eql 'john@mail.com'
-                expect(gl_user.identities.length).to eql 2
+                expect(gl_user.identities.length).to be 2
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                expect(identities_as_hash).to match_array([ { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
-                                                            { provider: 'saml', extern_uid: uid }
-                                                          ])
+                expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                                                           { provider: 'saml', extern_uid: uid }])
               end
 
               it 'saves successfully on subsequent tries, when both identities are present' do
@@ -204,11 +202,10 @@ describe Gitlab::Saml::User, lib: true do
                 local_gl_user = local_saml_user.gl_user
 
                 expect(local_gl_user).to be_valid
-                expect(local_gl_user.identities.length).to eql 2
+                expect(local_gl_user.identities.length).to be 2
                 identities_as_hash = local_gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
-                expect(identities_as_hash).to match_array([ { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
-                                                            { provider: 'saml', extern_uid: 'uid=user1,ou=People,dc=example' }
-                                                          ])
+                expect(identities_as_hash).to match_array([{ provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                                                           { provider: 'saml', extern_uid: 'uid=user1,ou=People,dc=example' }])
               end
             end
           end

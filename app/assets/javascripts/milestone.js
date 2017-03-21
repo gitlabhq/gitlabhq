@@ -78,7 +78,6 @@
       } else {
         $(element).find('.assignee-icon').empty();
       }
-      return $(element).effect('highlight');
     };
 
     function Milestone() {

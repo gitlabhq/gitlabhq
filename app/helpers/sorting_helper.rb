@@ -16,7 +16,8 @@ module SortingHelper
       sort_value_oldest_signin => sort_title_oldest_signin,
       sort_value_downvotes => sort_title_downvotes,
       sort_value_upvotes => sort_title_upvotes,
-      sort_value_priority => sort_title_priority
+      sort_value_priority => sort_title_priority,
+      sort_value_label_priority => sort_title_label_priority
     }
   end
 
@@ -30,7 +31,7 @@ module SortingHelper
     }
 
     if current_controller?('admin/projects')
-      options.merge!(sort_value_largest_repo => sort_title_largest_repo)
+      options[sort_value_largest_repo] = sort_title_largest_repo
     end
 
     options
@@ -51,6 +52,10 @@ module SortingHelper
 
   def sort_title_priority
     'Priority'
+  end
+
+  def sort_title_label_priority
+    'Label priority'
   end
 
   def sort_title_oldest_updated
@@ -159,6 +164,10 @@ module SortingHelper
 
   def sort_value_priority
     'priority'
+  end
+
+  def sort_value_label_priority
+    'label_priority'
   end
 
   def sort_value_oldest_updated

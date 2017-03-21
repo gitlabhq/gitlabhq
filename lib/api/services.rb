@@ -107,26 +107,6 @@ module API
           desc: 'Enable SSL verification for communication'
         }
       ],
-      'builds-email' => [
-        {
-          required: true,
-          name: :recipients,
-          type: String,
-          desc: 'Comma-separated list of recipient email addresses'
-        },
-        {
-          required: false,
-          name: :add_pusher,
-          type: Boolean,
-          desc: 'Add pusher to recipients list'
-        },
-        {
-          required: false,
-          name: :notify_only_broken_builds,
-          type: Boolean,
-          desc: 'Notify only broken builds'
-        }
-      ],
       'campfire' => [
         {
           required: true,
@@ -403,9 +383,9 @@ module API
         },
         {
           required: false,
-          name: :notify_only_broken_builds,
+          name: :notify_only_broken_pipelines,
           type: Boolean,
-          desc: 'Notify only broken builds'
+          desc: 'Notify only broken pipelines'
         }
       ],
       'pivotaltracker' => [
@@ -420,6 +400,14 @@ module API
           name: :restrict_to_branch,
           type: String,
           desc: 'Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.'
+        }
+      ],
+      'prometheus' => [
+        {
+          required: true,
+          name: :api_url,
+          type: String,
+          desc: 'Prometheus API Base URL, like http://prometheus.example.com/'
         }
       ],
       'pushover' => [
@@ -542,7 +530,6 @@ module API
       BambooService,
       BugzillaService,
       BuildkiteService,
-      BuildsEmailService,
       CampfireService,
       CustomIssueTrackerService,
       DroneCiService,
@@ -558,12 +545,26 @@ module API
       SlackSlashCommandsService,
       PipelinesEmailService,
       PivotaltrackerService,
+      PrometheusService,
       PushoverService,
       RedmineService,
       SlackService,
       MattermostService,
       TeamcityService,
-    ].freeze
+    ]
+
+    if Rails.env.development?
+      services['mock-ci'] = [
+        {
+          required: true,
+          name: :mock_service_url,
+          type: String,
+          desc: 'URL to the mock service'
+        }
+      ]
+
+      service_classes << MockCiService
+    end
 
     trigger_services = {
       'mattermost-slash-commands' => [
@@ -582,7 +583,10 @@ module API
       ]
     }.freeze
 
-    resource :projects do
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
+    resource :projects, requirements: { id: %r{[^/]+} } do
       before { authenticate! }
       before { authorize_admin_project }
 
@@ -598,7 +602,7 @@ module API
         desc "Set #{service_slug} service for project"
         params do
           service_classes.each do |service|
-            event_names = service.try(:event_names) || []
+            event_names = service.try(:event_names) || next
             event_names.each do |event_name|
               services[service.to_param.tr("_", "-")] << {
                 required: false,
@@ -641,9 +645,7 @@ module API
           hash.merge!(key => nil)
         end
 
-        if service.update_attributes(attrs.merge(active: false))
-          true
-        else
+        unless service.update_attributes(attrs.merge(active: false))
           render_api_error!('400 Bad Request', 400)
         end
       end
@@ -672,7 +674,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         desc "Trigger a slash command for #{service_slug}" do
           detail 'Added in GitLab 8.13'
         end

@@ -37,11 +37,14 @@ require('../window')(function(w){
         }
       }
 
-      self.hook.list[config.method].call(self.hook.list, data);
+      if (!self.destroyed) {
+        self.hook.list[config.method].call(self.hook.list, data);
+      }
     },
 
     init: function init(hook) {
       var self = this;
+      self.destroyed = false;
       self.cache = self.cache || {};
       var config = hook.config.droplabAjax;
       this.hook = hook;
@@ -71,6 +74,9 @@ require('../window')(function(w){
         this._loadUrlData(config.endpoint)
           .then(function(d) {
             self._loadData(d, config, self);
+          }, function(xhrError) {
+            // TODO: properly handle errors due to XHR cancellation
+            return;
           }).catch(function(e) {
             throw new droplabAjaxException(e.message || e);
           });
@@ -79,6 +85,7 @@ require('../window')(function(w){
 
     destroy: function() {
       var dynamicList = this.hook.list.list.querySelector('[data-dynamic]');
+      this.destroyed = true;
       if (this.listTemplate && dynamicList) {
         dynamicList.outerHTML = this.listTemplate;
       }

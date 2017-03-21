@@ -1,7 +1,8 @@
 - type = local_assigns.fetch(:type)
+- block_css_class = type != :boards_modal ? 'row-content-block second-block' : ''
 
 .issues-filters
-  .issues-details-filters.row-content-block.second-block.filtered-search-block
+  .issues-details-filters.filtered-search-block{ class: block_css_class, "v-pre" => type == :boards_modal }
     = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search]), method: :get, class: 'filter-form js-filter-form' do
       - if params[:search].present?
         = hidden_field_tag :search, params[:search]
@@ -11,18 +12,21 @@
             class: "check_all_issues left"
       .issues-other-filters.filtered-search-container
         .filtered-search-input-container
-          %input.form-control.filtered-search{ placeholder: 'Search or filter results...', 'data-id' => 'filtered-search', 'data-project-id' => @project.id, 'data-username-params' => @users.to_json(only: [:id, :username]), 'data-base-endpoint' => namespace_project_path(@project.namespace, @project) }
-          = icon('filter')
-          %button.clear-search.hidden{ type: 'button' }
-            = icon('times')
+          .scroll-container
+            %ul.tokens-container.list-unstyled
+              %li.input-token
+                %input.form-control.filtered-search{ placeholder: 'Search or filter results...', data: { id: "filtered-search-#{type.to_s}", 'project-id' => @project.id, 'username-params' => @users.to_json(only: [:id, :username]), 'base-endpoint' => namespace_project_path(@project.namespace, @project) } }
+            = icon('filter')
+            %button.clear-search.hidden{ type: 'button' }
+              = icon('times')
           #js-dropdown-hint.dropdown-menu.hint-dropdown
-            %ul{ 'data-dropdown' => true }
-              %li.filter-dropdown-item{ 'data-action' => 'submit' }
+            %ul{ data: { dropdown: true } }
+              %li.filter-dropdown-item{ data: { action: 'submit' } }
                 %button.btn.btn-link
                   = icon('search')
                   %span
                     Keep typing and press Enter
-            %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
+            %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
               %li.filter-dropdown-item
                 %button.btn.btn-link
                   -# Encapsulate static class name `{{icon}}` inside #{} to bypass
@@ -33,57 +37,72 @@
                   %span.js-filter-tag.dropdown-light-content
                     {{tag}}
           #js-dropdown-author.dropdown-menu{ data: { icon: 'pencil', hint: 'author', tag: '@author' } }
-            %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
+            %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
               %li.filter-dropdown-item
                 %button.btn.btn-link.dropdown-user
-                  %img.avatar.avatar-inline{ 'data-src' => '{{avatar_url}}', alt: '{{name}}\'s avatar', width: '30' }
+                  %img.avatar{ alt: '{{name}}\'s avatar', width: '30', data: { src: '{{avatar_url}}' } }
                   .dropdown-user-details
                     %span
                       {{name}}
                     %span.dropdown-light-content
                       @{{username}}
           #js-dropdown-assignee.dropdown-menu{ data: { icon: 'user', hint: 'assignee', tag: '@assignee' } }
-            %ul{ 'data-dropdown' => true }
-              %li.filter-dropdown-item{ 'data-value' => 'none' }
+            %ul{ data: { dropdown: true } }
+              %li.filter-dropdown-item{ data: { value: 'none' } }
                 %button.btn.btn-link
                   No Assignee
               %li.divider
-            %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
+            %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
               %li.filter-dropdown-item
                 %button.btn.btn-link.dropdown-user
-                  %img.avatar.avatar-inline{ 'data-src' => '{{avatar_url}}', alt: '{{name}}\'s avatar', width: '30' }
+                  %img.avatar{ alt: '{{name}}\'s avatar', width: '30', data: { src: '{{avatar_url}}' } }
                   .dropdown-user-details
                     %span
                       {{name}}
                     %span.dropdown-light-content
                       @{{username}}
           #js-dropdown-milestone.dropdown-menu{ data: { icon: 'clock-o', hint: 'milestone', tag: '%milestone' } }
-            %ul{ 'data-dropdown' => true }
-              %li.filter-dropdown-item{ 'data-value' => 'none' }
+            %ul{ data: { dropdown: true } }
+              %li.filter-dropdown-item{ data: { value: 'none' } }
                 %button.btn.btn-link
                   No Milestone
-              %li.filter-dropdown-item{ 'data-value' => 'upcoming' }
+              %li.filter-dropdown-item{ data: { value: 'upcoming' } }
                 %button.btn.btn-link
                   Upcoming
+              %li.filter-dropdown-item{ 'data-value' => 'started' }
+                %button.btn.btn-link
+                  Started
               %li.divider
-            %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
+            %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
               %li.filter-dropdown-item
                 %button.btn.btn-link.js-data-value
                   {{title}}
-          #js-dropdown-label.dropdown-menu{ data: { icon: 'tag', hint: 'label', tag: '~label' } }
-            %ul{ 'data-dropdown' => true }
-              %li.filter-dropdown-item{ 'data-value' => 'none' }
+          #js-dropdown-label.dropdown-menu{ data: { icon: 'tag', hint: 'label', tag: '~label', type: 'array' } }
+            %ul{ data: { dropdown: true } }
+              %li.filter-dropdown-item{ data: { value: 'none' } }
                 %button.btn.btn-link
                   No Label
               %li.divider
-            %ul.filter-dropdown{ 'data-dynamic' => true, 'data-dropdown' => true }
+            %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
               %li.filter-dropdown-item
                 %button.btn.btn-link
                   %span.dropdown-label-box{ style: 'background: {{color}}' }
                   %span.label-title.js-data-value
                     {{title}}
-        .pull-right
-          = render 'shared/sort_dropdown'
+        .filter-dropdown-container
+          - if type == :boards
+            - if can?(current_user, :admin_list, @project)
+              .dropdown.prepend-left-10#js-add-list
+                %button.btn.btn-create.btn-inverted.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path, namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path) } }
+                  Add list
+                .dropdown-menu.dropdown-menu-paging.dropdown-menu-align-right.dropdown-menu-issues-board-new.dropdown-menu-selectable
+                  = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Add list" }
+                  - if can?(current_user, :admin_label, @project)
+                    = render partial: "shared/issuable/label_page_create"
+                  = dropdown_loading
+              #js-add-issues-btn.prepend-left-10
+          - elsif type != :boards_modal
+            = render 'shared/sort_dropdown'
 
     - if @bulk_edit
       .issues_bulk_update.hide
@@ -112,22 +131,23 @@
 
           = hidden_field_tag 'update[issuable_ids]', []
           = hidden_field_tag :state_event, params[:state_event]
-          .filter-item.inline
+          .filter-item.inline.update-issues-btn
             = button_tag "Update #{type.to_s.humanize(capitalize: false)}", class: "btn update_selected_issues btn-save"
 
-:javascript
-  new UsersSelect();
-  new LabelsSelect();
-  new MilestoneSelect();
-  new IssueStatusSelect();
-  new SubscriptionSelect();
+- unless type === :boards_modal
+  :javascript
+    new UsersSelect();
+    new LabelsSelect();
+    new MilestoneSelect();
+    new IssueStatusSelect();
+    new SubscriptionSelect();
 
-  $(document).off('page:restore').on('page:restore', function (event) {
-    if (gl.FilteredSearchManager) {
-      new gl.FilteredSearchManager();
-    }
-    Issuable.init();
-    new gl.IssuableBulkActions({
-      prefixId: 'issue_',
+    $(document).off('page:restore').on('page:restore', function (event) {
+      if (gl.FilteredSearchManager) {
+        new gl.FilteredSearchManager();
+      }
+      Issuable.init();
+      new gl.IssuableBulkActions({
+        prefixId: 'issue_',
+      });
     });
-  });

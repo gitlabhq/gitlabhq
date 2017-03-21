@@ -10,6 +10,11 @@
     .issue-labels {
       display: inline-block;
     }
+
+    .icon-merge-request-unmerged {
+      height: 13px;
+      margin-bottom: 3px;
+     }
   }
 }
 
@@ -51,7 +56,10 @@ ul.related-merge-requests > li {
 
 .merge-request-id {
   display: inline-block;
-  width: 3em;
+}
+
+.merge-request-info {
+  margin-left: 5px;
 }
 
 .merge-request-status {

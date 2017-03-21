@@ -1,7 +1,7 @@
 - page_title       @user.name
 - page_description @user.bio
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('lib_d3')
+  = page_specific_javascript_bundle_tag('common_d3')
   = page_specific_javascript_bundle_tag('users')
 - header_title     @user.name, user_path(@user)
 - @no_container = true
@@ -24,17 +24,16 @@
           = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: 'btn btn-gray',
             title: 'Report abuse', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
             = icon('exclamation-circle')
-      - if current_user
-        = link_to user_path(@user, :atom, { private_token: current_user.private_token }), class: 'btn btn-gray' do
-          = icon('rss')
-        - if current_user.admin?
-          = link_to [:admin, @user], class: 'btn btn-gray', title: 'View user in admin area',
-            data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-            = icon('users')
+      = link_to user_path(@user, rss_url_options), class: 'btn btn-gray' do
+        = icon('rss')
+      - if current_user && current_user.admin?
+        = link_to [:admin, @user], class: 'btn btn-gray', title: 'View user in admin area',
+          data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+          = icon('users')
 
     .profile-header
       .avatar-holder
-        = link_to avatar_icon(@user, 400), target: '_blank' do
+        = link_to avatar_icon(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
           = image_tag avatar_icon(@user, 90), class: "avatar s90", alt: ''
 
       .user-info
@@ -98,6 +97,7 @@
           Snippets
 
   %div{ class: container_class }
+    .user-callout{ 'callout-svg' => custom_icon('icon_customization') }
     .tab-content
       #activity.tab-pane
         .row-content-block.calender-block.white.second-block.hidden-xs

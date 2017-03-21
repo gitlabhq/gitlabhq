@@ -9,7 +9,7 @@ module Gitlab
           include Validatable
           include Attributable
 
-          ALLOWED_KEYS = %i[name untracked paths when expire_in]
+          ALLOWED_KEYS = %i[name untracked paths when expire_in].freeze
 
           attributes ALLOWED_KEYS
 

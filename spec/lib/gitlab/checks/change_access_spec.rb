@@ -12,8 +12,16 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
         ref: 'refs/heads/master'
       }
     end
+    let(:protocol) { 'ssh' }
 
-    subject { described_class.new(changes, project: project, user_access: user_access).exec }
+    subject do
+      described_class.new(
+        changes,
+        project: project,
+        user_access: user_access,
+        protocol: protocol
+      ).exec
+    end
 
     before { allow(user_access).to receive(:can_do_action?).with(:push_code).and_return(true) }
 

@@ -18,18 +18,11 @@
         - else
           = link_to title, '#'
 
-%ul.blob-commit-info.table-list.hidden-xs
+%ul.blob-commit-info.hidden-xs
   - blob_commit = @repository.last_commit_for_path(@commit.id, blob.path)
   = render blob_commit, project: @project, ref: @ref
 
 #blob-content-holder.blob-content-holder
   %article.file-holder
-    .js-file-title.file-title
-      = blob_icon blob.mode, blob.name
-      %strong
-        = blob.name
-      %small
-        = number_to_human_size(blob_size(blob))
-      .file-actions.hidden-xs
-        = render "actions"
-    = render blob, blob: blob
+    = render "projects/blob/header", blob: blob
+    = render blob.to_partial_path(@project), blob: blob

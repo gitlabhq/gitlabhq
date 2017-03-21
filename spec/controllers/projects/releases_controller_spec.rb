@@ -16,7 +16,7 @@ describe Projects::ReleasesController do
       tag_id = release.tag
       project.releases.destroy_all
 
-      get :edit, namespace_id: project.namespace.path, project_id: project.path, tag_id: tag_id
+      get :edit, namespace_id: project.namespace, project_id: project, tag_id: tag_id
 
       release = assigns(:release)
       expect(release).not_to be_nil
@@ -24,7 +24,7 @@ describe Projects::ReleasesController do
     end
 
     it 'retrieves an existing release' do
-      get :edit, namespace_id: project.namespace.path, project_id: project.path, tag_id: release.tag
+      get :edit, namespace_id: project.namespace, project_id: project, tag_id: release.tag
 
       release = assigns(:release)
       expect(release).not_to be_nil
@@ -48,7 +48,7 @@ describe Projects::ReleasesController do
   def update_release(description)
     put :update,
       namespace_id: project.namespace.to_param,
-      project_id: project.to_param,
+      project_id: project,
       tag_id: release.tag,
       release: { description: description }
   end

@@ -24,6 +24,14 @@ describe Ci::Pipeline, models: true do
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
 
+  describe '#block' do
+    it 'changes pipeline status to manual' do
+      expect(pipeline.block).to be true
+      expect(pipeline.reload).to be_manual
+      expect(pipeline.reload).to be_blocked
+    end
+  end
+
   describe '#valid_commit_sha' do
     context 'commit.sha can not start with 00000000' do
       before do
@@ -168,9 +176,9 @@ describe Ci::Pipeline, models: true do
         end
 
         it 'returns list of stages with correct statuses' do
-          expect(statuses).to eq([['build', 'failed'],
-                                  ['test', 'success'],
-                                  ['deploy', 'running']])
+          expect(statuses).to eq([%w(build failed),
+                                  %w(test success),
+                                  %w(deploy running)])
         end
 
         context 'when commit status  is retried' do
@@ -183,10 +191,28 @@ describe Ci::Pipeline, models: true do
           end
 
           it 'ignores the previous state' do
-            expect(statuses).to eq([['build', 'success'],
-                                    ['test', 'success'],
-                                    ['deploy', 'running']])
+            expect(statuses).to eq([%w(build success),
+                                    %w(test success),
+                                    %w(deploy running)])
           end
+        end
+      end
+
+      context 'when there is a stage with warnings' do
+        before do
+          create(:commit_status, pipeline: pipeline,
+                                 stage: 'deploy',
+                                 name: 'prod:2',
+                                 stage_idx: 2,
+                                 status: 'failed',
+                                 allow_failure: true)
+        end
+
+        it 'populates stage with correct number of warnings' do
+          deploy_stage = pipeline.stages.third
+
+          expect(deploy_stage).not_to receive(:statuses)
+          expect(deploy_stage).to have_warnings
         end
       end
     end
@@ -199,7 +225,7 @@ describe Ci::Pipeline, models: true do
 
     describe '#stages_name' do
       it 'returns a valid names of stages' do
-        expect(pipeline.stages_name).to eq(['build', 'test', 'deploy'])
+        expect(pipeline.stages_name).to eq(%w(build test deploy))
       end
     end
   end
@@ -506,6 +532,19 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '.latest_successful_for_refs' do
+    include_context 'with some outdated pipelines'
+
+    let!(:latest_successful_pipeline1) { create_pipeline(:success, 'ref1', 'D') }
+    let!(:latest_successful_pipeline2) { create_pipeline(:success, 'ref2', 'D') }
+
+    it 'returns the latest successful pipeline for both refs' do
+      refs = %w(ref1 ref2 ref3)
+
+      expect(described_class.latest_successful_for_refs(refs)).to eq({ 'ref1' => latest_successful_pipeline1, 'ref2' => latest_successful_pipeline2 })
+    end
+  end
+
   describe '#status' do
     let(:build) do
       create(:ci_build, :created, pipeline: pipeline, name: 'test')
@@ -632,6 +671,14 @@ describe Ci::Pipeline, models: true do
 
       it 'returns detailed status for skipped pipeline' do
         expect(subject.text).to eq 'skipped'
+      end
+    end
+
+    context 'when pipeline is blocked' do
+      let(:pipeline) { create(:ci_pipeline, status: :manual) }
+
+      it 'returns detailed status for blocked pipeline' do
+        expect(subject.text).to eq 'blocked'
       end
     end
 
@@ -767,7 +814,7 @@ describe Ci::Pipeline, models: true do
       end
 
       it 'cancels created builds' do
-        expect(latest_status).to eq ['canceled', 'canceled']
+        expect(latest_status).to eq %w(canceled canceled)
       end
     end
   end
@@ -981,6 +1028,19 @@ describe Ci::Pipeline, models: true do
       it 'does not containyaml errors' do
         expect(pipeline).not_to have_yaml_errors
       end
+    end
+  end
+
+  describe '#update_status' do
+    let(:pipeline) { create(:ci_pipeline, sha: '123456') }
+
+    it 'updates the cached status' do
+      fake_status = double
+      # after updating the status, the status is set to `skipped` for this pipeline's builds
+      expect(Ci::PipelineStatus).to receive(:new).with(pipeline.project, sha: '123456', status: 'skipped').and_return(fake_status)
+      expect(fake_status).to receive(:store_in_cache_if_needed)
+
+      pipeline.update_status
     end
   end
 

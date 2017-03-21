@@ -215,13 +215,13 @@ describe SystemNoteService, services: true do
     end
   end
 
-  describe '.merge_when_build_succeeds' do
+  describe '.merge_when_pipeline_succeeds' do
     let(:pipeline) { build(:ci_pipeline_without_jobs )}
     let(:noteable) do
       create(:merge_request, source_project: project, target_project: project)
     end
 
-    subject { described_class.merge_when_build_succeeds(noteable, project, author, noteable.diff_head_commit) }
+    subject { described_class.merge_when_pipeline_succeeds(noteable, project, author, noteable.diff_head_commit) }
 
     it_behaves_like 'a system note'
 
@@ -230,12 +230,12 @@ describe SystemNoteService, services: true do
     end
   end
 
-  describe '.cancel_merge_when_build_succeeds' do
+  describe '.cancel_merge_when_pipeline_succeeds' do
     let(:noteable) do
       create(:merge_request, source_project: project, target_project: project)
     end
 
-    subject { described_class.cancel_merge_when_build_succeeds(noteable, project, author) }
+    subject { described_class.cancel_merge_when_pipeline_succeeds(noteable, project, author) }
 
     it_behaves_like 'a system note'
 
@@ -418,45 +418,6 @@ describe SystemNoteService, services: true do
           to be_truthy
       end
     end
-
-    context 'when noteable is an Issue' do
-      let(:issue) { create(:issue, project: project) }
-
-      it 'is truthy when issue is closed' do
-        issue.close
-
-        expect(described_class.cross_reference_disallowed?(issue, project.commit)).
-          to be_truthy
-      end
-
-      it 'is falsey when issue is open' do
-        expect(described_class.cross_reference_disallowed?(issue, project.commit)).
-          to be_falsy
-      end
-    end
-
-    context 'when noteable is a Merge Request' do
-      let(:merge_request) { create(:merge_request, :simple, source_project: project) }
-
-      it 'is truthy when merge request is closed' do
-        allow(merge_request).to receive(:closed?).and_return(:true)
-
-        expect(described_class.cross_reference_disallowed?(merge_request, project.commit)).
-          to be_truthy
-      end
-
-      it 'is truthy when merge request is merged' do
-        allow(merge_request).to receive(:closed?).and_return(:true)
-
-        expect(described_class.cross_reference_disallowed?(merge_request, project.commit)).
-          to be_truthy
-      end
-
-      it 'is falsey when merge request is open' do
-        expect(described_class.cross_reference_disallowed?(merge_request, project.commit)).
-          to be_falsy
-      end
-    end
   end
 
   describe '.cross_reference_exists?' do
@@ -631,7 +592,7 @@ describe SystemNoteService, services: true do
       jira_service_settings
     end
 
-    noteable_types = ["merge_requests", "commit"]
+    noteable_types = %w(merge_requests commit)
 
     noteable_types.each do |type|
       context "when noteable is a #{type}" do

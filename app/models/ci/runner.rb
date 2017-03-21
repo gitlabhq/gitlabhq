@@ -4,12 +4,12 @@ module Ci
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     LAST_CONTACT_TIME = 1.hour.ago
-    AVAILABLE_SCOPES = %w[specific shared active paused online]
-    FORM_EDITABLE = %i[description tag_list active run_untagged locked]
+    AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
+    FORM_EDITABLE = %i[description tag_list active run_untagged locked].freeze
 
     has_many :builds
     has_many :runner_projects, dependent: :destroy
-    has_many :projects, through: :runner_projects, foreign_key: :gl_project_id
+    has_many :projects, through: :runner_projects
 
     has_one :last_build, ->() { order('id DESC') }, class_name: 'Ci::Build'
 
@@ -24,7 +24,7 @@ module Ci
 
     scope :owned_or_shared, ->(project_id) do
       joins('LEFT JOIN ci_runner_projects ON ci_runner_projects.runner_id = ci_runners.id')
-        .where("ci_runner_projects.gl_project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
+        .where("ci_runner_projects.project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
     end
 
     scope :assignable_for, ->(project) do
@@ -127,18 +127,15 @@ module Ci
 
     def tick_runner_queue
       SecureRandom.hex.tap do |new_update|
-        Gitlab::Redis.with do |redis|
-          redis.set(runner_queue_key, new_update, ex: RUNNER_QUEUE_EXPIRY_TIME)
-        end
+        ::Gitlab::Workhorse.set_key_and_notify(runner_queue_key, new_update,
+          expire: RUNNER_QUEUE_EXPIRY_TIME, overwrite: true)
       end
     end
 
     def ensure_runner_queue_value
-      Gitlab::Redis.with do |redis|
-        value = SecureRandom.hex
-        redis.set(runner_queue_key, value, ex: RUNNER_QUEUE_EXPIRY_TIME, nx: true)
-        redis.get(runner_queue_key)
-      end
+      new_value = SecureRandom.hex
+      ::Gitlab::Workhorse.set_key_and_notify(runner_queue_key, new_value,
+        expire: RUNNER_QUEUE_EXPIRY_TIME, overwrite: false)
     end
 
     def is_runner_queue_value_latest?(value)

@@ -6,7 +6,7 @@ describe Gitlab::Ci::Status::Success do
   end
 
   describe '#text' do
-    it { expect(subject.label).to eq 'passed' }
+    it { expect(subject.text).to eq 'passed' }
   end
 
   describe '#label' do

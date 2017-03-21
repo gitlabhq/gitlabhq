@@ -155,10 +155,9 @@ page](https://golang.org/dl).
 ## 4. Node
 
 Since GitLab 8.17, GitLab requires the use of node >= v4.3.0 to compile
-javascript assets, and starting in GitLab 9.0, yarn >= v0.17.0 is required to
-manage javascript dependencies. In many distros the versions provided by the
-official package repositories are out of date, so we'll need to install through
-the following commands:
+javascript assets, and yarn >= v0.17.0 to manage javascript dependencies.
+In many distros the versions provided by the official package  repositories
+are out of date, so we'll need to install through the following commands:
 
     # install node v7.x
     curl --location https://deb.nodesource.com/setup_7.x | bash -
@@ -289,9 +288,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-17-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 9-0-stable gitlab
 
-**Note:** You can change `8-17-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `9-0-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -658,6 +657,12 @@ this is likely due to an outdated Nginx or Apache configuration, or a missing or
 misconfigured gitlab-workhorse instance. Double-check that you've
 [installed Go](#3-go), [installed gitlab-workhorse](#install-gitlab-workhorse),
 and correctly [configured Nginx](#site-configuration).
+
+### google-protobuf "LoadError: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.14' not found"
+
+This can happen on some platforms for some versions of the
+google-protobuf gem. The workaround is to [install a source-only
+version of this gem](google-protobuf.md).
 
 [RVM]: https://rvm.io/ "RVM Homepage"
 [rbenv]: https://github.com/sstephenson/rbenv "rbenv on GitHub"

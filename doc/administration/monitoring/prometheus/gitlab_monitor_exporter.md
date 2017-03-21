@@ -13,7 +13,7 @@ To enable the GitLab monitor exporter:
 1. Add or find and uncomment the following line, making sure it's set to `true`:
 
     ```ruby
-    gitlab_monitor_exporter['enable'] = true
+    gitlab_monitor['enable'] = true
     ```
 
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to

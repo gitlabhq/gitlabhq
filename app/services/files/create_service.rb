@@ -1,13 +1,12 @@
 module Files
   class CreateService < Files::BaseService
     def commit
-      repository.commit_file(
+      repository.create_file(
         current_user,
         @file_path,
         @file_content,
         message: @commit_message,
         branch_name: @target_branch,
-        update: false,
         author_email: @author_email,
         author_name: @author_name,
         start_project: @start_project,
@@ -16,6 +15,10 @@ module Files
 
     def validate
       super
+
+      if @file_content.nil?
+        raise_error("You must provide content.")
+      end
 
       if @file_path =~ Gitlab::Regex.directory_traversal_regex
         raise_error(

@@ -33,7 +33,7 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
         expect(json_response.first['merge_requests_events']).to eq(true)
         expect(json_response.first['tag_push_events']).to eq(true)
         expect(json_response.first['note_events']).to eq(true)
-        expect(json_response.first['build_events']).to eq(true)
+        expect(json_response.first['job_events']).to eq(true)
         expect(json_response.first['pipeline_events']).to eq(true)
         expect(json_response.first['wiki_page_events']).to eq(true)
         expect(json_response.first['enable_ssl_verification']).to eq(true)
@@ -59,7 +59,7 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
         expect(json_response['merge_requests_events']).to eq(hook.merge_requests_events)
         expect(json_response['tag_push_events']).to eq(hook.tag_push_events)
         expect(json_response['note_events']).to eq(hook.note_events)
-        expect(json_response['build_events']).to eq(hook.build_events)
+        expect(json_response['job_events']).to eq(hook.build_events)
         expect(json_response['pipeline_events']).to eq(hook.pipeline_events)
         expect(json_response['wiki_page_events']).to eq(hook.wiki_page_events)
         expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)
@@ -98,7 +98,7 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
       expect(json_response['merge_requests_events']).to eq(false)
       expect(json_response['tag_push_events']).to eq(false)
       expect(json_response['note_events']).to eq(false)
-      expect(json_response['build_events']).to eq(false)
+      expect(json_response['job_events']).to eq(false)
       expect(json_response['pipeline_events']).to eq(false)
       expect(json_response['wiki_page_events']).to eq(true)
       expect(json_response['enable_ssl_verification']).to eq(true)
@@ -144,7 +144,7 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
       expect(json_response['merge_requests_events']).to eq(hook.merge_requests_events)
       expect(json_response['tag_push_events']).to eq(hook.tag_push_events)
       expect(json_response['note_events']).to eq(hook.note_events)
-      expect(json_response['build_events']).to eq(hook.build_events)
+      expect(json_response['job_events']).to eq(hook.build_events)
       expect(json_response['pipeline_events']).to eq(hook.pipeline_events)
       expect(json_response['wiki_page_events']).to eq(hook.wiki_page_events)
       expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)
@@ -183,13 +183,9 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
     it "deletes hook from project" do
       expect do
         delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
-      end.to change {project.hooks.count}.by(-1)
-      expect(response).to have_http_status(200)
-    end
 
-    it "returns success when deleting hook" do
-      delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
-      expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
+      end.to change {project.hooks.count}.by(-1)
     end
 
     it "returns a 404 error when deleting non existent hook" do

@@ -2,7 +2,7 @@
 module Gitlab
   module Git
     class Diff
-      class TimeoutError < StandardError; end
+      TimeoutError = Class.new(StandardError)
       include Gitlab::Git::EncodingHelper
 
       # Diff properties
@@ -176,9 +176,13 @@ module Gitlab
       def initialize(raw_diff, collapse: false)
         case raw_diff
         when Hash
-          init_from_hash(raw_diff, collapse: collapse)
+          init_from_hash(raw_diff)
+          prune_diff_if_eligible(collapse)
         when Rugged::Patch, Rugged::Diff::Delta
           init_from_rugged(raw_diff, collapse: collapse)
+        when Gitaly::CommitDiffResponse
+          init_from_gitaly(raw_diff)
+          prune_diff_if_eligible(collapse)
         when nil
           raise "Nil as raw diff passed"
         else
@@ -266,13 +270,26 @@ module Gitlab
         @diff = encode!(strip_diff_headers(patch.to_s))
       end
 
-      def init_from_hash(hash, collapse: false)
+      def init_from_hash(hash)
         raw_diff = hash.symbolize_keys
 
         serialize_keys.each do |key|
           send(:"#{key}=", raw_diff[key.to_sym])
         end
+      end
 
+      def init_from_gitaly(diff_msg)
+        @diff = diff_msg.raw_chunks.join
+        @new_path = encode!(diff_msg.to_path.dup)
+        @old_path = encode!(diff_msg.from_path.dup)
+        @a_mode = diff_msg.old_mode.to_s(8)
+        @b_mode = diff_msg.new_mode.to_s(8)
+        @new_file = diff_msg.from_id == BLANK_SHA
+        @renamed_file = diff_msg.from_path != diff_msg.to_path
+        @deleted_file = diff_msg.to_id == BLANK_SHA
+      end
+
+      def prune_diff_if_eligible(collapse = false)
         prune_large_diff! if too_large?
         prune_collapsed_diff! if collapse && collapsible?
       end

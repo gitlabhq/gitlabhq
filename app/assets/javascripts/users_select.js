@@ -53,12 +53,21 @@
           $loading = $block.find('.block-loading').fadeOut();
 
           var updateIssueBoardsIssue = function () {
-            $loading.fadeIn();
+            $loading.removeClass('hidden').fadeIn();
             gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
               .then(function () {
                 $loading.fadeOut();
               });
           };
+
+          $('.assign-to-me-link').on('click', (e) => {
+            e.preventDefault();
+            $(e.currentTarget).hide();
+            const $input = $(`input[name="${$dropdown.data('field-name')}"]`);
+            $input.val(gon.current_user_id);
+            selectedId = $input.val();
+            $dropdown.find('.dropdown-toggle-text').text(gon.current_user_fullname).removeClass('is-default');
+          });
 
           $block.on('click', '.js-assign-yourself', function(e) {
             e.preventDefault();
@@ -81,7 +90,7 @@
             data = {};
             data[abilityName] = {};
             data[abilityName].assignee_id = selected != null ? selected : null;
-            $loading.fadeIn();
+            $loading.removeClass('hidden').fadeIn();
             $dropdown.trigger('loading.gl.dropdown');
             return $.ajax({
               type: 'PUT',
@@ -199,15 +208,15 @@
               if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
                 e.preventDefault();
                 selectedId = user.id;
+                if (selectedId === gon.current_user_id) {
+                  $('.assign-to-me-link').hide();
+                } else {
+                  $('.assign-to-me-link').show();
+                }
                 return;
               }
               if ($el.closest('.add-issues-modal').length) {
                 gl.issueBoards.ModalStore.store.filter[$dropdown.data('field-name')] = user.id;
-              } else if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar')) {
-                selectedId = user.id;
-                gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = user.id;
-                gl.issueBoards.BoardsStore.updateFiltersUrl();
-                e.preventDefault();
               } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
                 selectedId = user.id;
                 return Issuable.filterResults($dropdown.closest('form'));
@@ -234,11 +243,16 @@
             id: function (user) {
               return user.id;
             },
+            opened: function(e) {
+              const $el = $(e.currentTarget);
+              $el.find('.is-active').removeClass('is-active');
+              $el.find(`li[data-user-id="${selectedId}"] .dropdown-menu-user-link`).addClass('is-active');
+            },
             renderRow: function(user) {
               var avatar, img, listClosingTags, listWithName, listWithUserName, selected, username;
               username = user.username ? "@" + user.username : "";
               avatar = user.avatar_url ? user.avatar_url : false;
-              selected = user.id === selectedId ? "is-active" : "";
+              selected = user.id === parseInt(selectedId, 10) ? "is-active" : "";
               img = "";
               if (user.beforeDivider != null) {
                 "<li> <a href='#' class='" + selected + "'> " + user.name + " </a> </li>";
@@ -248,7 +262,7 @@
                 }
               }
               // split into three parts so we can remove the username section if nessesary
-              listWithName = "<li> <a href='#' class='dropdown-menu-user-link " + selected + "'> " + img + " <strong class='dropdown-menu-user-full-name'> " + user.name + " </strong>";
+              listWithName = "<li data-user-id=" + user.id + "> <a href='#' class='dropdown-menu-user-link " + selected + "'> " + img + " <strong class='dropdown-menu-user-full-name'> " + user.name + " </strong>";
               listWithUserName = "<span class='dropdown-menu-user-username'> " + username + " </span>";
               listClosingTags = "</a> </li>";
               if (username === '') {

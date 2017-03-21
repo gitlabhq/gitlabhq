@@ -76,6 +76,8 @@ describe API::Groups, api: true  do
           lfs_objects_size: 234,
           build_artifacts_size: 345,
         }.stringify_keys
+        exposed_attributes = attributes.dup
+        exposed_attributes['job_artifacts_size'] = exposed_attributes.delete('build_artifacts_size')
 
         project1.statistics.update!(attributes)
 
@@ -85,7 +87,7 @@ describe API::Groups, api: true  do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response)
-          .to satisfy_one { |group| group['statistics'] == attributes }
+          .to satisfy_one { |group| group['statistics'] == exposed_attributes }
       end
     end
 
@@ -150,20 +152,10 @@ describe API::Groups, api: true  do
         expect(response_groups).to eq([group1.name, group3.name])
       end
     end
-  end
 
-  describe 'GET /groups/owned' do
-    context 'when unauthenticated' do
-      it 'returns authentication error' do
-        get api('/groups/owned')
-
-        expect(response).to have_http_status(401)
-      end
-    end
-
-    context 'when authenticated as group owner' do
+    context 'when using owned in the request' do
       it 'returns an array of groups the user owns' do
-        get api('/groups/owned', user2)
+        get api('/groups', user2), owned: true
 
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
@@ -186,7 +178,7 @@ describe API::Groups, api: true  do
         expect(json_response['name']).to eq(group1.name)
         expect(json_response['path']).to eq(group1.path)
         expect(json_response['description']).to eq(group1.description)
-        expect(json_response['visibility_level']).to eq(group1.visibility_level)
+        expect(json_response['visibility']).to eq(Gitlab::VisibilityLevel.string_level(group1.visibility_level))
         expect(json_response['avatar_url']).to eq(group1.avatar_url)
         expect(json_response['web_url']).to eq(group1.web_url)
         expect(json_response['request_access_enabled']).to eq(group1.request_access_enabled)
@@ -303,9 +295,9 @@ describe API::Groups, api: true  do
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response.length).to eq(2)
-        project_names = json_response.map { |proj| proj['name' ] }
+        project_names = json_response.map { |proj| proj['name'] }
         expect(project_names).to match_array([project1.name, project3.name])
-        expect(json_response.first['visibility_level']).to be_present
+        expect(json_response.first['visibility']).to be_present
       end
 
       it "returns the group's projects with simple representation" do
@@ -314,9 +306,9 @@ describe API::Groups, api: true  do
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response.length).to eq(2)
-        project_names = json_response.map { |proj| proj['name' ] }
+        project_names = json_response.map { |proj| proj['name'] }
         expect(project_names).to match_array([project1.name, project3.name])
-        expect(json_response.first['visibility_level']).not_to be_present
+        expect(json_response.first['visibility']).not_to be_present
       end
 
       it 'filters the groups projects' do
@@ -398,7 +390,7 @@ describe API::Groups, api: true  do
 
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
-        project_names = json_response.map { |proj| proj['name' ] }
+        project_names = json_response.map { |proj| proj['name'] }
         expect(project_names).to match_array([project1.name, project3.name])
       end
 
@@ -477,7 +469,7 @@ describe API::Groups, api: true  do
       it "removes group" do
         delete api("/groups/#{group1.id}", user1)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
       end
 
       it "does not remove a group if not an owner" do
@@ -506,7 +498,7 @@ describe API::Groups, api: true  do
       it "removes any existing group" do
         delete api("/groups/#{group2.id}", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
       end
 
       it "does not remove a non existing group" do
@@ -519,7 +511,7 @@ describe API::Groups, api: true  do
 
   describe "POST /groups/:id/projects/:project_id" do
     let(:project) { create(:empty_project) }
-    let(:project_path) { "#{project.namespace.path}%2F#{project.path}" }
+    let(:project_path) { project.full_path.gsub('/', '%2F') }
 
     before(:each) do
       allow_any_instance_of(Projects::TransferService).

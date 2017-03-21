@@ -9,14 +9,7 @@ module CycleAnalyticsHelpers
     commit_shas = Array.new(count) do |index|
       filename = random_git_name
 
-      options = {
-        committer: project.repository.user_to_committer(user),
-        author: project.repository.user_to_committer(user),
-        commit: { message: message, branch: branch_name, update_ref: true },
-        file: { content: "content", path: filename, update: false }
-      }
-
-      commit_sha = Gitlab::Git::Blob.commit(project.repository, options)
+      commit_sha = project.repository.create_file(user, filename, "content", message: message, branch_name: branch_name)
       project.repository.commit(commit_sha)
 
       commit_sha
@@ -35,13 +28,12 @@ module CycleAnalyticsHelpers
       project.repository.add_branch(user, source_branch, 'master')
     end
 
-    sha = project.repository.commit_file(
+    sha = project.repository.create_file(
       user,
       random_git_name,
       'content',
       message: 'commit message',
-      branch_name: source_branch,
-      update: false)
+      branch_name: source_branch)
     project.repository.commit(sha)
 
     opts = {

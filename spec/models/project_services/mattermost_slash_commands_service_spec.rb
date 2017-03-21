@@ -36,7 +36,8 @@ describe MattermostSlashCommandsService, :models do
               description: "Perform common operations on: #{project.name_with_namespace}",
               display_name: "GitLab / #{project.name_with_namespace}",
               method: 'P',
-              username: 'GitLab' }.to_json).
+              username: 'GitLab'
+            }.to_json).
             to_return(
               status: 200,
               headers: { 'Content-Type' => 'application/json' },
@@ -91,7 +92,7 @@ describe MattermostSlashCommandsService, :models do
             to_return(
               status: 200,
               headers: { 'Content-Type' => 'application/json' },
-              body: ['list'].to_json
+              body: { 'list' => true }.to_json
             )
         end
 

@@ -2,7 +2,7 @@ require 'securerandom'
 
 module Gitlab
   class Shell
-    class Error < StandardError; end
+    Error = Class.new(StandardError)
 
     KeyAdder = Struct.new(:io) do
       def add_key(id, key)
@@ -82,8 +82,8 @@ module Gitlab
     def import_repository(storage, name, url)
       # Timeout should be less than 900 ideally, to prevent the memory killer
       # to silently kill the process without knowing we are timing out here.
-      output, status = Popen::popen([gitlab_shell_projects_path, 'import-project',
-                                     storage, "#{name}.git", url, '800'])
+      output, status = Popen.popen([gitlab_shell_projects_path, 'import-project',
+                                    storage, "#{name}.git", url, '800'])
       raise Error, output unless status.zero?
       true
     end
@@ -145,7 +145,7 @@ module Gitlab
     #   batch_add_keys { |adder| adder.add_key("key-42", "sha-rsa ...") }
     def batch_add_keys(&block)
       IO.popen(%W(#{gitlab_shell_path}/bin/gitlab-keys batch-add-keys), 'w') do |io|
-        block.call(KeyAdder.new(io))
+        yield(KeyAdder.new(io))
       end
     end
 

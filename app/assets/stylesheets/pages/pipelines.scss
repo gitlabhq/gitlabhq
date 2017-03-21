@@ -13,21 +13,16 @@
     white-space: nowrap;
   }
 
+  .table-holder {
+    width: 100%;
+    overflow: auto;
+  }
+
   .commit-title {
     margin: 0;
   }
 
-  .controls {
-    white-space: nowrap;
-  }
-
-  .btn {
-    margin: 4px;
-  }
-
   .table.ci-table {
-    min-width: 1200px;
-    table-layout: fixed;
 
     .label {
       margin-bottom: 3px;
@@ -37,16 +32,67 @@
       color: $black;
     }
 
-    .pipeline-date,
-    .pipeline-status {
-      width: 10%;
+    .stage-cell {
+      min-width: 130px; // Guarantees we show at least 4 stages in line
+      width: 20%;
     }
 
-    .pipeline-info,
-    .pipeline-commit,
-    .pipeline-stages,
+    .pipelines-time-ago {
+      text-align: right;
+    }
+
     .pipeline-actions {
-      width: 20%;
+      padding-right: 0;
+      min-width: 170px; //Guarantees buttons don't break in several lines.
+
+      .btn-default {
+        color: $gl-text-color-secondary;
+      }
+
+      .btn.btn-retry:hover,
+      .btn.btn-retry:focus {
+        border-color: $gray-darkest;
+        background-color: $white-normal;
+      }
+
+      svg path {
+        fill: $gl-text-color-secondary;
+      }
+
+      .dropdown-menu {
+        max-height: 250px;
+        overflow-y: auto;
+      }
+
+      .dropdown-toggle,
+      .dropdown-menu {
+        color: $gl-text-color-secondary;
+
+        .fa {
+          color: $gl-text-color-secondary;
+          font-size: 14px;
+        }
+      }
+
+      .btn-group {
+        &.open {
+          .btn-default {
+            background-color: $white-normal;
+            border-color: $border-white-normal;
+          }
+        }
+
+        .btn {
+          .icon-play {
+            height: 13px;
+            width: 12px;
+          }
+        }
+      }
+
+      .tooltip {
+        white-space: nowrap;
+      }
     }
   }
 }
@@ -54,6 +100,7 @@
 @media (max-width: $screen-md-max) {
   .content-list {
     &.pipelines,
+    &.environments-container,
     &.builds-content-list {
       width: 100%;
       overflow: auto;
@@ -61,27 +108,10 @@
   }
 }
 
-.content-list.pipelines .table-holder {
-  min-height: 300px;
-}
-
-.pipeline-holder {
-  width: 100%;
-  overflow: auto;
-}
-
 .table.ci-table {
-  min-width: 900px;
 
-  &.pipeline {
-    min-width: 650px;
-  }
-
-  &.builds-page {
-
-    tr {
-      height: 71px;
-    }
+  &.builds-page tbody tr {
+    height: 71px;
   }
 
   tr {
@@ -94,12 +124,16 @@
       padding: 10px 8px;
     }
 
+    td.environments-actions {
+      padding-right: 0;
+    }
+
     td.stage-cell {
       padding: 10px 0;
     }
 
     .commit-link {
-      padding: 9px 8px 10px;
+      padding: 9px 8px 10px 2px;
     }
   }
 
@@ -206,72 +240,8 @@
     }
   }
 
-  .pipeline-actions {
-    min-width: 140px;
-
-    .btn {
-      margin: 0;
-      color: $gl-text-color-secondary;
-    }
-
-    .cancel-retry-btns {
-      vertical-align: middle;
-
-      .btn:not(:first-child) {
-        margin-left: 8px;
-      }
-    }
-
-    .dropdown-menu {
-      max-height: 250px;
-      overflow-y: auto;
-    }
-
-    .dropdown-toggle,
-    .dropdown-menu {
-      color: $gl-text-color-secondary;
-
-      .fa {
-        color: $gl-text-color-secondary;
-        font-size: 14px;
-      }
-
-      svg,
-      .fa {
-        margin-right: 0;
-      }
-    }
-
-    .btn-remove {
-      color: $white-light;
-    }
-
-    .btn-group {
-      &.open {
-        .btn-default {
-          background-color: $white-normal;
-          border-color: $border-white-normal;
-        }
-      }
-
-      .btn {
-        .icon-play {
-          height: 13px;
-          width: 12px;
-        }
-      }
-    }
-
-    .tooltip {
-      white-space: nowrap;
-    }
-  }
-
-  .build-link {
-
-    a {
-      color: $gl-text-color;
-    }
+  .build-link a {
+    color: $gl-text-color;
   }
 
   .btn-group.open .dropdown-toggle {
@@ -335,31 +305,8 @@
 }
 
 .tab-pane {
-  &.pipelines {
-    .ci-table {
-      min-width: 900px;
-    }
-
-    .content-list.pipelines {
-      overflow: auto;
-    }
-
-    .stage {
-      max-width: 100px;
-      width: 100px;
-    }
-
-    .pipeline-actions {
-      min-width: initial;
-    }
-  }
-
-  &.builds {
-    .ci-table {
-      tr {
-        height: 71px;
-      }
-    }
+  &.builds .ci-table tr {
+    height: 71px;
   }
 }
 
@@ -967,5 +914,24 @@
     > div {
       min-height: 450px;
     }
+  }
+}
+
+/**
+ * Play button with icon in dropdowns
+ */
+.ci-table .no-btn {
+  border: none;
+  background: none;
+  outline: none;
+  width: 100%;
+  text-align: left;
+
+  .icon-play {
+    position: relative;
+    top: 2px;
+    margin-right: 5px;
+    height: 13px;
+    width: 12px;
   }
 }

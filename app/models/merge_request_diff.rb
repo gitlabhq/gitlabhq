@@ -7,7 +7,7 @@ class MergeRequestDiff < ActiveRecord::Base
   COMMITS_SAFE_SIZE = 100
 
   # Valid types of serialized diffs allowed by Gitlab::Git::Diff
-  VALID_CLASSES = [Hash, Rugged::Patch, Rugged::Diff::Delta]
+  VALID_CLASSES = [Hash, Rugged::Patch, Rugged::Diff::Delta].freeze
 
   belongs_to :merge_request
 

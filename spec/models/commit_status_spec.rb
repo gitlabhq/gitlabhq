@@ -158,7 +158,7 @@ describe CommitStatus, :models do
     end
   end
 
-  describe '.exclude_ignored' do
+  describe '.after_stage' do
     subject { described_class.after_stage(0) }
 
     let(:statuses) do
@@ -185,11 +185,32 @@ describe CommitStatus, :models do
        create_status(allow_failure: true, status: 'success'),
        create_status(allow_failure: true, status: 'failed'),
        create_status(allow_failure: false, status: 'success'),
-       create_status(allow_failure: false, status: 'failed')]
+       create_status(allow_failure: false, status: 'failed'),
+       create_status(allow_failure: true, status: 'manual'),
+       create_status(allow_failure: false, status: 'manual')]
     end
 
     it 'returns statuses without what we want to ignore' do
-      is_expected.to eq(statuses.values_at(0, 1, 2, 3, 4, 5, 6, 8, 9))
+      is_expected.to eq(statuses.values_at(0, 1, 2, 3, 4, 5, 6, 8, 9, 11))
+    end
+  end
+
+  describe '.failed_but_allowed' do
+    subject { described_class.failed_but_allowed.order(:id) }
+
+    let(:statuses) do
+      [create_status(allow_failure: true, status: 'success'),
+       create_status(allow_failure: true, status: 'failed'),
+       create_status(allow_failure: false, status: 'success'),
+       create_status(allow_failure: false, status: 'failed'),
+       create_status(allow_failure: true, status: 'canceled'),
+       create_status(allow_failure: false, status: 'canceled'),
+       create_status(allow_failure: true, status: 'manual'),
+       create_status(allow_failure: false, status: 'manual')]
+    end
+
+    it 'returns statuses without what we want to ignore' do
+      is_expected.to eq(statuses.values_at(1, 4))
     end
   end
 

@@ -139,18 +139,10 @@
 .blob-commit-info {
   list-style: none;
   background: $gray-light;
-  padding: 6px 0;
+  padding: 16px 16px 16px 6px;
   border: 1px solid $border-color;
   border-bottom: none;
   margin: 0;
-
-  .table-list-cell {
-    border-bottom: none;
-  }
-
-  .commit-actions {
-    width: 260px;
-  }
 }
 
 #modal-remove-blob > .modal-dialog { width: 850px; }
@@ -176,5 +168,31 @@
 
   .project-action-button {
     margin-left: $btn-side-margin;
+  }
+}
+
+.repo-charts {
+  .sub-header {
+    margin: 20px 0;
+  }
+
+  .sub-header-block.border-top {
+    margin-top: 20px;
+    padding: 0;
+    border-top: 1px solid $white-dark;
+    border-bottom: none;
+  }
+
+  .commit-stats li {
+    font-size: 16px;
+  }
+
+  .tree-ref-header {
+    margin-bottom: 20px;
+
+    h4 {
+      margin: 0;
+      line-height: 36px;
+    }
   }
 }

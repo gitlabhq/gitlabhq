@@ -21,13 +21,12 @@ describe 'CycleAnalytics#production', feature: true do
        ["production deploy happens after merge request is merged (along with other changes)",
         lambda do |context, data|
           # Make other changes on master
-          sha = context.project.repository.commit_file(
+          sha = context.project.repository.create_file(
             context.user,
             context.random_git_name,
             'content',
             message: 'commit message',
-            branch_name: 'master',
-            update: false)
+            branch_name: 'master')
           context.project.repository.commit(sha)
 
           context.deploy_master

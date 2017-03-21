@@ -3,6 +3,24 @@ require 'spec_helper'
 describe Gitlab::Auth, lib: true do
   let(:gl_auth) { described_class }
 
+  describe 'constants' do
+    it 'API_SCOPES contains all scopes for API access' do
+      expect(subject::API_SCOPES).to eq [:api, :read_user]
+    end
+
+    it 'OPENID_SCOPES contains all scopes for OpenID Connect' do
+      expect(subject::OPENID_SCOPES).to eq [:openid]
+    end
+
+    it 'DEFAULT_SCOPES contains all default scopes' do
+      expect(subject::DEFAULT_SCOPES).to eq [:api]
+    end
+
+    it 'OPTIONAL_SCOPES contains all non-default scopes' do
+      expect(subject::OPTIONAL_SCOPES).to eq [:read_user, :openid]
+    end
+  end
+
   describe 'find_for_git_client' do
     context 'build token' do
       subject { gl_auth.find_for_git_client('gitlab-ci-token', build.token, project: project, ip: 'ip') }
@@ -58,6 +76,14 @@ describe Gitlab::Auth, lib: true do
       expect(gl_auth.find_for_git_client(user.username, 'password', project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities))
     end
 
+    include_examples 'user login operation with unique ip limit' do
+      let(:user) { create(:user, password: 'password') }
+
+      def operation
+        expect(gl_auth.find_for_git_client(user.username, 'password', project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities))
+      end
+    end
+
     context 'while using LFS authenticate' do
       it 'recognizes user lfs tokens' do
         user = create(:user)
@@ -110,25 +136,37 @@ describe Gitlab::Auth, lib: true do
     end
 
     context 'while using personal access tokens as passwords' do
-      let(:user) { create(:user) }
-      let(:token_w_api_scope) { create(:personal_access_token, user: user, scopes: ['api']) }
-
       it 'succeeds for personal access tokens with the `api` scope' do
-        expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: user.email)
-        expect(gl_auth.find_for_git_client(user.email, token_w_api_scope.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(user, nil, :personal_token, full_authentication_abilities))
+        personal_access_token = create(:personal_access_token, scopes: ['api'])
+
+        expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')
+        expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(personal_access_token.user, nil, :personal_token, full_authentication_abilities))
+      end
+
+      it 'succeeds if it is an impersonation token' do
+        impersonation_token = create(:personal_access_token, :impersonation, scopes: ['api'])
+
+        expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')
+        expect(gl_auth.find_for_git_client('', impersonation_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(impersonation_token.user, nil, :personal_token, full_authentication_abilities))
       end
 
       it 'fails for personal access tokens with other scopes' do
-        personal_access_token = create(:personal_access_token, user: user, scopes: ['read_user'])
+        personal_access_token = create(:personal_access_token, scopes: ['read_user'])
 
-        expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: user.email)
-        expect(gl_auth.find_for_git_client(user.email, personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(nil, nil))
+        expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
+        expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(nil, nil))
       end
 
-      it 'does not try password auth before personal access tokens' do
-        expect(gl_auth).not_to receive(:find_with_user_password)
+      it 'fails for impersonation token with other scopes' do
+        impersonation_token = create(:personal_access_token, scopes: ['read_user'])
 
-        gl_auth.find_for_git_client(user.email, token_w_api_scope.token, project: nil, ip: 'ip')
+        expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
+        expect(gl_auth.find_for_git_client('', impersonation_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(nil, nil))
+      end
+
+      it 'fails if password is nil' do
+        expect(gl_auth).to receive(:rate_limit!).with('ip', success: false, login: '')
+        expect(gl_auth.find_for_git_client('', nil, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(nil, nil))
       end
     end
 
@@ -193,6 +231,24 @@ describe Gitlab::Auth, lib: true do
 
     it "does not find user with invalid login" do
       user = 'wrong'
+      expect( gl_auth.find_with_user_password(username, password) ).not_to eql user
+    end
+
+    include_examples 'user login operation with unique ip limit' do
+      def operation
+        expect(gl_auth.find_with_user_password(username, password)).to eq(user)
+      end
+    end
+
+    it "does not find user in blocked state" do
+      user.block
+
+      expect( gl_auth.find_with_user_password(username, password) ).not_to eql user
+    end
+
+    it "does not find user in ldap_blocked state" do
+      user.ldap_block
+
       expect( gl_auth.find_with_user_password(username, password) ).not_to eql user
     end
 

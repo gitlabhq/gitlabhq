@@ -5,15 +5,16 @@ class CommitStatus < ActiveRecord::Base
 
   self.table_name = 'ci_builds'
 
-  belongs_to :project, foreign_key: :gl_project_id
+  belongs_to :project
   belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
   belongs_to :user
 
   delegate :commit, to: :pipeline
+  delegate :sha, :short_sha, to: :pipeline
 
   validates :pipeline, presence: true, unless: :importing?
 
-  validates_presence_of :name
+  validates :name, presence: true
 
   alias_attribute :author, :user
 
@@ -28,9 +29,11 @@ class CommitStatus < ActiveRecord::Base
   end
 
   scope :exclude_ignored, -> do
-    # We want to ignore failed_but_allowed jobs
+    # We want to ignore failed but allowed to fail jobs.
+    #
+    # TODO, we also skip ignored optional manual actions.
     where("allow_failure = ? OR status IN (?)",
-      false, all_state_names - [:failed, :canceled])
+      false, all_state_names - [:failed, :canceled, :manual])
   end
 
   scope :retried, -> { where.not(id: latest) }
@@ -41,11 +44,11 @@ class CommitStatus < ActiveRecord::Base
 
   state_machine :status do
     event :enqueue do
-      transition [:created, :skipped] => :pending
+      transition [:created, :skipped, :manual] => :pending
     end
 
     event :process do
-      transition skipped: :created
+      transition [:skipped, :manual] => :created
     end
 
     event :run do
@@ -65,7 +68,7 @@ class CommitStatus < ActiveRecord::Base
     end
 
     event :cancel do
-      transition [:created, :pending, :running] => :canceled
+      transition [:created, :pending, :running, :manual] => :canceled
     end
 
     before_transition created: [:pending, :running] do |commit_status|
@@ -85,7 +88,7 @@ class CommitStatus < ActiveRecord::Base
 
       commit_status.run_after_commit do
         pipeline.try do |pipeline|
-          if complete?
+          if complete? || manual?
             PipelineProcessWorker.perform_async(pipeline.id)
           else
             PipelineUpdateWorker.perform_async(pipeline.id)
@@ -101,8 +104,6 @@ class CommitStatus < ActiveRecord::Base
       end
     end
   end
-
-  delegate :sha, :short_sha, to: :pipeline
 
   def before_sha
     pipeline.before_sha || Gitlab::Git::BLANK_SHA
@@ -130,6 +131,12 @@ class CommitStatus < ActiveRecord::Base
 
   def has_trace?
     false
+  end
+
+  # Added in 9.0 to keep backward compatibility for projects exported in 8.17
+  # and prior.
+  def gl_project_id
+    'dummy'
   end
 
   def detailed_status(current_user)

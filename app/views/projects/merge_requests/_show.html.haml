@@ -3,6 +3,7 @@
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('diff_notes')
 
 .merge-request{ 'data-url' => merge_request_path(@merge_request), 'data-project-path' => project_path(@merge_request.project) }
@@ -15,7 +16,7 @@
         .pull-right
           - if @merge_request.source_branch_exists?
             - if koding_enabled? && @repository.koding_yml
-              = link_to koding_project_url(@merge_request.source_project, @merge_request.source_branch, @merge_request.commits.first.short_id), class: "btn inline btn-grouped btn-sm", target: '_blank' do
+              = link_to koding_project_url(@merge_request.source_project, @merge_request.source_branch, @merge_request.commits.first.short_id), class: "btn inline btn-grouped btn-sm", target: '_blank', rel: 'noopener noreferrer' do
                 Run in IDE (Koding)
             = link_to "#modal_merge_info", class: "btn inline btn-grouped btn-sm", "data-toggle" => "modal" do
               Check out branch
@@ -28,9 +29,9 @@
               %li= link_to "Email Patches", merge_request_path(@merge_request, format: :patch)
               %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
       .normal
-        %span Request to merge
+        %span <b>Request to merge</b>
         %span.label-branch= source_branch_with_namespace(@merge_request)
-        %span into
+        %span <b>into</b>
         %span.label-branch
           = link_to_if @merge_request.target_branch_exists?, @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch)
         - if @merge_request.open? && @merge_request.diverged_from_target_branch?
@@ -81,6 +82,7 @@
                     = render "shared/icons/icon_status_success.svg"
                   %span.line-resolve-text
                     {{ resolvedDiscussionCount }}/{{ discussionCount }} {{ resolvedCountText }} resolved
+                = render "discussions/new_issue_for_all_discussions", merge_request: @merge_request
                 = render "discussions/jump_to_next"
 
     .tab-content#diff-notes-app

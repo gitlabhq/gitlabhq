@@ -1,5 +1,5 @@
 module Mattermost
-  class ClientError < Mattermost::Error; end
+  ClientError = Class.new(Mattermost::Error)
 
   class Client
     attr_reader :user
@@ -26,7 +26,7 @@ module Mattermost
 
     def session_get(path, options = {})
       with_session do |session|
-        get(session, path, options)  
+        get(session, path, options)
       end
     end
 

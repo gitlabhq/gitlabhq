@@ -278,6 +278,16 @@ describe Issue, "Issuable" do
       end
     end
 
+    context 'issue has labels' do
+      let(:labels) { [create(:label), create(:label)] }
+
+      before { issue.update_attribute(:labels, labels)}
+
+      it 'includes labels in the hook data' do
+        expect(data[:labels]).to eq(labels.map(&:hook_attrs))
+      end
+    end
+
     include_examples 'project hook data'
     include_examples 'deprecated repository hook data'
   end
@@ -341,6 +351,46 @@ describe Issue, "Issuable" do
     it "returns correct values" do
       expect(issue.upvotes).to eq(1)
       expect(issue.downvotes).to eq(1)
+    end
+  end
+
+  describe '.order_due_date_and_labels_priority' do
+    let(:project) { create(:empty_project) }
+
+    def create_issue(milestone, labels)
+      create(:labeled_issue, milestone: milestone, labels: labels, project: project)
+    end
+
+    it 'sorts issues in order of milestone due date, then label priority' do
+      first_priority = create(:label, project: project, priority: 1)
+      second_priority = create(:label, project: project, priority: 2)
+      no_priority = create(:label, project: project)
+
+      first_milestone = create(:milestone, project: project, due_date: Time.now)
+      second_milestone = create(:milestone, project: project, due_date: Time.now + 1.month)
+      third_milestone = create(:milestone, project: project)
+
+      # The issues here are ordered by label priority, to ensure that we don't
+      # accidentally just sort by creation date.
+      second_milestone_first_priority = create_issue(second_milestone, [first_priority, second_priority, no_priority])
+      third_milestone_first_priority = create_issue(third_milestone, [first_priority, second_priority, no_priority])
+      first_milestone_second_priority = create_issue(first_milestone, [second_priority, no_priority])
+      second_milestone_second_priority = create_issue(second_milestone, [second_priority, no_priority])
+      no_milestone_second_priority = create_issue(nil, [second_priority, no_priority])
+      first_milestone_no_priority = create_issue(first_milestone, [no_priority])
+      second_milestone_no_labels = create_issue(second_milestone, [])
+      third_milestone_no_priority = create_issue(third_milestone, [no_priority])
+
+      result = Issue.order_due_date_and_labels_priority
+
+      expect(result).to eq([first_milestone_second_priority,
+                            first_milestone_no_priority,
+                            second_milestone_first_priority,
+                            second_milestone_second_priority,
+                            second_milestone_no_labels,
+                            third_milestone_first_priority,
+                            no_milestone_second_priority,
+                            third_milestone_no_priority])
     end
   end
 

@@ -31,13 +31,9 @@ require('~/shortcuts_issuable');
           this.shortcut.replyWithSelectedText();
           expect($(this.selector).val()).toBe('');
         });
-        it('triggers `input`', function() {
-          var focused = false;
-          $(this.selector).on('focus', function() {
-            focused = true;
-          });
+        it('triggers `focus`', function() {
           this.shortcut.replyWithSelectedText();
-          expect(focused).toBe(true);
+          expect(document.activeElement).toBe(document.querySelector(this.selector));
         });
       });
       describe('with any selection', function() {

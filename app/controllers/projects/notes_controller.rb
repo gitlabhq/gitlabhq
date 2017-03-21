@@ -148,17 +148,10 @@ class Projects::NotesController < Projects::ApplicationController
 
   def note_json(note)
     attrs = {
-      award: false,
       id: note.id
     }
 
-    if note.is_a?(AwardEmoji)
-      attrs.merge!(
-        valid:  note.valid?,
-        award:  true,
-        name:   note.name
-      )
-    elsif note.persisted?
+    if note.persisted?
       Banzai::NoteRenderer.render([note], @project, current_user)
 
       attrs.merge!(
@@ -198,7 +191,7 @@ class Projects::NotesController < Projects::ApplicationController
       )
     end
 
-    attrs[:commands_changes] = note.commands_changes unless attrs[:award]
+    attrs[:commands_changes] = note.commands_changes
     attrs
   end
 
@@ -218,6 +211,11 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def find_current_user_notes
-    @notes = NotesFinder.new(project, current_user, params).execute.inc_author
+    @notes = NotesFinder.new(project, current_user, params.merge(last_fetched_at: last_fetched_at))
+      .execute.inc_author
+  end
+
+  def last_fetched_at
+    request.headers['X-Last-Fetched-At']
   end
 end

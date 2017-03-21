@@ -1,9 +1,9 @@
 - @no_container = true
 
 = content_for :meta_tags do
-  - if current_user
-    = auto_discovery_link_tag(:atom, group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} activity")
+  = auto_discovery_link_tag(:atom, group_url(@group, rss_url_options), title: "#{@group.name} activity")
 
+= render 'groups/head'
 = render 'groups/home_panel'
 
 
@@ -11,8 +11,7 @@
   .top-area
     = render 'groups/show_nav'
     .nav-controls
-      = form_tag request.path, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
-        = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control', spellcheck: false
+      = render 'shared/projects/search_form'
       = render 'shared/projects/dropdown'
       - if can? current_user, :create_projects, @group
         = link_to new_project_path(namespace_id: @group.id), class: 'btn btn-new pull-right' do

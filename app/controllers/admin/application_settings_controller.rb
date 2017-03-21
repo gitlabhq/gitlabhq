@@ -89,6 +89,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :akismet_api_key,
       :akismet_enabled,
       :container_registry_token_expire_delay,
+      :default_artifacts_expire_in,
       :default_branch_protection,
       :default_group_visibility,
       :default_project_visibility,
@@ -143,6 +144,9 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :two_factor_grace_period,
       :user_default_external,
       :user_oauth_applications,
+      :unique_ips_limit_per_user,
+      :unique_ips_limit_time_window,
+      :unique_ips_limit_enabled,
       :version_check_enabled,
       :terminal_max_session_time,
 

@@ -212,8 +212,16 @@
       .col-sm-10
         = f.number_field :max_artifacts_size, class: 'form-control'
         .help-block
-          Set the maximum file size each jobs's artifacts can have
-          = link_to "(?)", help_page_path("user/admin_area/settings/continuous_integration", anchor: "maximum-artifacts-size")
+          Set the maximum file size for each job's artifacts
+          = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size')
+    .form-group
+      = f.label :default_artifacts_expire_in, 'Default artifacts expiration', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :default_artifacts_expire_in, class: 'form-control'
+        .help-block
+          Set the default expiration time for each job's artifacts.
+          0 for unlimited.
+          = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'default-artifacts-expiration')
 
   - if Gitlab.config.registry.enabled
     %fieldset
@@ -352,6 +360,29 @@
           Generate API key at
           %a{ href: 'http://www.akismet.com', target: 'blank' } http://www.akismet.com
 
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :unique_ips_limit_enabled do
+            = f.check_box :unique_ips_limit_enabled
+            Limit sign in from multiple ips
+          %span.help-block#unique_ip_help_block
+            Helps prevent malicious users hide their activity
+
+    .form-group
+      = f.label :unique_ips_limit_per_user, 'IPs per user', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :unique_ips_limit_per_user, class: 'form-control'
+        .help-block
+          Maximum number of unique IPs per user
+
+    .form-group
+      = f.label :unique_ips_limit_time_window, 'IP expiration time', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :unique_ips_limit_time_window, class: 'form-control'
+        .help-block
+          How many seconds an IP will be counted towards the limit
+
   %fieldset
     %legend Abuse reports
     .form-group
@@ -373,7 +404,7 @@
             Enable Sentry
           .help-block
             Sentry is an error reporting and logging tool which is currently not shipped with GitLab, get it here:
-            %a{ href: 'https://getsentry.com', target: '_blank' } https://getsentry.com
+            %a{ href: 'https://getsentry.com', target: '_blank', rel: 'noopener noreferrer' } https://getsentry.com
 
     .form-group
       = f.label :sentry_dsn, 'Sentry DSN', class: 'control-label col-sm-2'

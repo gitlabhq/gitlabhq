@@ -35,7 +35,7 @@ task :spinach do
 end
 
 def run_system_command(cmd)
-  system({'RAILS_ENV' => 'test', 'force' => 'yes'}, *cmd)
+  system({ 'RAILS_ENV' => 'test', 'force' => 'yes' }, *cmd)
 end
 
 def run_spinach_command(args)

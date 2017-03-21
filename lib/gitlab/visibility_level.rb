@@ -33,8 +33,10 @@ module Gitlab
     PUBLIC   = 20 unless const_defined?(:PUBLIC)
 
     class << self
-      def values
-        options.values
+      delegate :values, to: :options
+
+      def string_values
+        string_options.keys
       end
 
       def options
@@ -42,6 +44,14 @@ module Gitlab
           'Private'  => PRIVATE,
           'Internal' => INTERNAL,
           'Public'   => PUBLIC
+        }
+      end
+
+      def string_options
+        {
+          'private'  => PRIVATE,
+          'internal' => INTERNAL,
+          'public'   => PUBLIC
         }
       end
 
@@ -84,18 +94,39 @@ module Gitlab
 
         level_name
       end
+
+      def level_value(level)
+        return level.to_i if level.to_i.to_s == level.to_s && string_options.key(level.to_i)
+        string_options[level] || PRIVATE
+      end
+
+      def string_level(level)
+        string_options.key(level)
+      end
     end
 
     def private?
-      visibility_level_field == PRIVATE
+      visibility_level_value == PRIVATE
     end
 
     def internal?
-      visibility_level_field == INTERNAL
+      visibility_level_value == INTERNAL
     end
 
     def public?
-      visibility_level_field == PUBLIC
+      visibility_level_value == PUBLIC
+    end
+
+    def visibility_level_value
+      self[visibility_level_field]
+    end
+
+    def visibility
+      Gitlab::VisibilityLevel.string_level(visibility_level_value)
+    end
+
+    def visibility=(level)
+      self[visibility_level_field] = Gitlab::VisibilityLevel.level_value(level)
     end
   end
 end

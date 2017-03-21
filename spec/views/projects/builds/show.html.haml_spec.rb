@@ -209,6 +209,10 @@ describe 'projects/builds/show', :view do
     it 'does not show retry button' do
       expect(rendered).not_to have_link('Retry')
     end
+
+    it 'does not show New issue button' do
+      expect(rendered).not_to have_link('New issue')
+    end
   end
 
   context 'when job is not running' do
@@ -219,6 +223,23 @@ describe 'projects/builds/show', :view do
 
     it 'shows retry button' do
       expect(rendered).to have_link('Retry')
+    end
+
+    context 'if build passed' do
+      it 'does not show New issue button' do
+        expect(rendered).not_to have_link('New issue')
+      end
+    end
+
+    context 'if build failed' do
+      before do
+        build.status = 'failed'
+        render
+      end
+
+      it 'shows New issue button' do
+        expect(rendered).to have_link('New issue')
+      end
     end
   end
 
@@ -246,6 +267,27 @@ describe 'projects/builds/show', :view do
       expect(rendered).to have_css('.js-build-variable', visible: false, text: 'TRIGGER_KEY_2')
       expect(rendered).to have_css('.js-build-value', visible: false, text: 'TRIGGER_VALUE_1')
       expect(rendered).to have_css('.js-build-value', visible: false, text: 'TRIGGER_VALUE_2')
+    end
+  end
+
+  describe 'New issue button' do
+    before do
+      build.status = 'failed'
+      render
+    end
+
+    it 'links to issues/new with the title and description filled in' do
+      title = "Build Failed ##{build.id}"
+      build_url = namespace_project_build_url(project.namespace, project, build)
+      href = new_namespace_project_issue_path(
+        project.namespace,
+        project,
+        issue: {
+          title: title,
+          description: build_url
+        }
+      )
+      expect(rendered).to have_link('New issue', href: href)
     end
   end
 end

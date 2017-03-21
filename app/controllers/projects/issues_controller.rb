@@ -6,6 +6,8 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableCollections
   include SpammableActions
 
+  prepend_before_action :authenticate_user!, only: [:new]
+
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
@@ -26,7 +28,7 @@ class Projects::IssuesController < Projects::ApplicationController
     @collection_type    = "Issue"
     @issues             = issues_collection
     @issues             = @issues.page(params[:page])
-    @issuable_meta_data = issuable_meta_data(@issues)
+    @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
 
     if @issues.out_of_range? && @issues.total_pages != 0
       return redirect_to url_for(params.merge(page: @issues.total_pages))
@@ -64,8 +66,15 @@ class Projects::IssuesController < Projects::ApplicationController
     params[:issue] ||= ActionController::Parameters.new(
       assignee_id: ""
     )
-    build_params = issue_params.merge(merge_request_for_resolving_discussions: merge_request_for_resolving_discussions)
-    @issue = @noteable = Issues::BuildService.new(project, current_user, build_params).execute
+    build_params = issue_params.merge(
+      merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
+      discussion_to_resolve: params[:discussion_to_resolve]
+    )
+    service = Issues::BuildService.new(project, current_user, build_params)
+
+    @issue = @noteable = service.execute
+    @merge_request_to_resolve_discussions_of = service.merge_request_to_resolve_discussions_of
+    @discussion_to_resolve = service.discussions_to_resolve.first if params[:discussion_to_resolve]
 
     respond_with(@issue)
   end
@@ -94,11 +103,21 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create
-    create_params = issue_params
-      .merge(merge_request_for_resolving_discussions: merge_request_for_resolving_discussions)
-      .merge(spammable_params)
+    create_params = issue_params.merge(spammable_params).merge(
+      merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],
+      discussion_to_resolve: params[:discussion_to_resolve]
+    )
 
-    @issue = Issues::CreateService.new(project, current_user, create_params).execute
+    service = Issues::CreateService.new(project, current_user, create_params)
+    @issue = service.execute
+
+    if service.discussions_to_resolve.count(&:resolved?) > 0
+      flash[:notice] = if service.discussion_to_resolve_id
+                         "Resolved 1 discussion."
+                       else
+                         "Resolved all discussions."
+                       end
+    end
 
     respond_to do |format|
       format.html do
@@ -129,13 +148,12 @@ class Projects::IssuesController < Projects::ApplicationController
       end
 
       format.json do
-        render json: @issue.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
+        render json: @issue.to_json(include: { milestone: {}, assignee: { only: [:name, :username], methods: [:avatar_url] }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
       end
     end
 
   rescue ActiveRecord::StaleObjectError
-    @conflict = true
-    render :edit
+    render_conflict_response
   end
 
   def referenced_merge_requests
@@ -185,14 +203,6 @@ class Projects::IssuesController < Projects::ApplicationController
   alias_method :issuable, :issue
   alias_method :awardable, :issue
   alias_method :spammable, :issue
-
-  def merge_request_for_resolving_discussions
-    return unless merge_request_iid = params[:merge_request_for_resolving_discussions]
-
-    @merge_request_for_resolving_discussions ||= MergeRequestsFinder.new(current_user, project_id: project.id).
-                                                   execute.
-                                                   find_by(iid: merge_request_iid)
-  end
 
   def authorize_read_issue!
     return render_404 unless can?(current_user, :read_issue, @issue)

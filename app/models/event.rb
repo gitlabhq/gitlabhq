@@ -16,7 +16,7 @@ class Event < ActiveRecord::Base
 
   RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
 
-  delegate :name, :email, to: :author, prefix: true, allow_nil: true
+  delegate :name, :email, :public_email, to: :author, prefix: true, allow_nil: true
   delegate :title, to: :issue, prefix: true, allow_nil: true
   delegate :title, to: :merge_request, prefix: true, allow_nil: true
   delegate :title, to: :note, prefix: true, allow_nil: true
@@ -36,7 +36,7 @@ class Event < ActiveRecord::Base
   scope :code_push, -> { where(action: PUSHED) }
 
   scope :in_projects, ->(projects) do
-    where(project_id: projects).recent
+    where(project_id: projects.pluck(:id)).recent
   end
 
   scope :with_associations, -> { includes(:author, :project, project: :namespace).preload(:target) }
@@ -47,7 +47,7 @@ class Event < ActiveRecord::Base
     def contributions
       where("action = ? OR (target_type IN (?) AND action IN (?)) OR (target_type = ? AND action = ?)",
             Event::PUSHED,
-            ["MergeRequest", "Issue"], [Event::CREATED, Event::CLOSED, Event::MERGED],
+            %w(MergeRequest Issue), [Event::CREATED, Event::CLOSED, Event::MERGED],
             "Note", Event::COMMENTED)
     end
 

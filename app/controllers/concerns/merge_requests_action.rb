@@ -9,7 +9,7 @@ module MergeRequestsAction
                       .page(params[:page])
 
     @collection_type    = "MergeRequest"
-    @issuable_meta_data = issuable_meta_data(@merge_requests)
+    @issuable_meta_data = issuable_meta_data(@merge_requests, @collection_type)
   end
 
   private

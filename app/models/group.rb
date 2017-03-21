@@ -28,6 +28,7 @@ class Group < Namespace
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   mount_uploader :avatar, AvatarUploader
+  has_many :uploads, as: :model, dependent: :destroy
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
@@ -93,7 +94,7 @@ class Group < Namespace
   end
 
   def visibility_level_field
-    visibility_level
+    :visibility_level
   end
 
   def visibility_level_allowed_by_projects
@@ -211,5 +212,15 @@ class Group < Namespace
 
   def users_with_parents
     User.where(id: members_with_parents.select(:user_id))
+  end
+
+  def mattermost_team_params
+    max_length = 59
+
+    {
+      name: path[0..max_length],
+      display_name: name[0..max_length],
+      type: public? ? 'O' : 'I' # Open vs Invite-only
+    }
   end
 end

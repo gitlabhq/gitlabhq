@@ -38,13 +38,17 @@ FactoryGirl.define do
 
     trait :empty_repo do
       after(:create) do |project|
-        project.create_repository
+        raise "Failed to create repository!" unless project.create_repository
+
+        # We delete hooks so that gitlab-shell will not try to authenticate with
+        # an API that isn't running
+        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.path_with_namespace}.git", 'hooks'))
       end
     end
 
     trait :broken_repo do
       after(:create) do |project|
-        project.create_repository
+        raise "Failed to create repository!" unless project.create_repository
 
         FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.path_with_namespace}.git", 'refs'))
       end
@@ -138,27 +142,24 @@ FactoryGirl.define do
 
         project.add_user(args[:user], args[:access])
 
-        project.repository.commit_file(
+        project.repository.create_file(
           args[:user],
           ".gitlab/#{args[:path]}/bug.md",
           'something valid',
           message: 'test 3',
-          branch_name: 'master',
-          update: false)
-        project.repository.commit_file(
+          branch_name: 'master')
+        project.repository.create_file(
           args[:user],
           ".gitlab/#{args[:path]}/template_test.md",
           'template_test',
           message: 'test 1',
-          branch_name: 'master',
-          update: false)
-        project.repository.commit_file(
+          branch_name: 'master')
+        project.repository.create_file(
           args[:user],
           ".gitlab/#{args[:path]}/feature_proposal.md",
           'feature_proposal',
           message: 'test 2',
-          branch_name: 'master',
-          update: false)
+          branch_name: 'master')
       end
     end
   end
@@ -188,27 +189,19 @@ FactoryGirl.define do
 
   factory :jira_project, parent: :project do
     has_external_issue_tracker true
-
-    after :create do |project|
-      project.create_jira_service(
-        active: true,
-        properties: {
-          title: 'JIRA tracker',
-          url: 'http://jira.example.net',
-          project_key: 'JIRA'
-        }
-      )
-    end
+    jira_service
   end
 
   factory :kubernetes_project, parent: :empty_project do
+    kubernetes_service
+  end
+
+  factory :prometheus_project, parent: :empty_project do
     after :create do |project|
-      project.create_kubernetes_service(
+      project.create_prometheus_service(
         active: true,
         properties: {
-          namespace: project.path,
-          api_url: 'https://kubernetes.example.com',
-          token: 'a' * 40,
+          api_url: 'https://prometheus.example.com'
         }
       )
     end

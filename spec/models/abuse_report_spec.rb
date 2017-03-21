@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe AbuseReport, type: :model do
   subject     { create(:abuse_report) }
-  let(:user)  { create(:user) }
+  let(:user)  { create(:admin) }
 
   it { expect(subject).to be_valid }
 

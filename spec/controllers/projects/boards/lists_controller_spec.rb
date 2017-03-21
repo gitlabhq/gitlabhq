@@ -47,7 +47,7 @@ describe Projects::Boards::ListsController do
       sign_in(user)
 
       get :index, namespace_id: project.namespace.to_param,
-                  project_id: project.to_param,
+                  project_id: project,
                   board_id: board.to_param,
                   format: :json
     end
@@ -104,7 +104,7 @@ describe Projects::Boards::ListsController do
       sign_in(user)
 
       post :create, namespace_id: project.namespace.to_param,
-                    project_id: project.to_param,
+                    project_id: project,
                     board_id: board.to_param,
                     list: { label_id: label_id },
                     format: :json
@@ -157,7 +157,7 @@ describe Projects::Boards::ListsController do
       sign_in(user)
 
       patch :update, namespace_id: project.namespace.to_param,
-                     project_id: project.to_param,
+                     project_id: project,
                      board_id: board.to_param,
                      id: list.to_param,
                      list: { position: position },
@@ -200,7 +200,7 @@ describe Projects::Boards::ListsController do
       sign_in(user)
 
       delete :destroy, namespace_id: project.namespace.to_param,
-                       project_id: project.to_param,
+                       project_id: project,
                        board_id: board.to_param,
                        id: list.to_param,
                        format: :json
@@ -244,7 +244,7 @@ describe Projects::Boards::ListsController do
       sign_in(user)
 
       post :generate, namespace_id: project.namespace.to_param,
-                      project_id: project.to_param,
+                      project_id: project,
                       board_id: board.to_param,
                       format: :json
     end

@@ -5,7 +5,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :authorize_create_deployment!, only: [:stop]
   before_action :authorize_update_environment!, only: [:edit, :update]
   before_action :authorize_admin_environment!, only: [:terminal, :terminal_websocket_authorize]
-  before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize]
+  before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
 
   def index
@@ -106,6 +106,19 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       render json: Gitlab::Workhorse.terminal_websocket(terminal)
     else
       render text: 'Not found', status: 404
+    end
+  end
+
+  def metrics
+    # Currently, this acts as a hint to load the metrics details into the cache
+    # if they aren't there already
+    @metrics = environment.metrics || {}
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: @metrics, status: @metrics.any? ? :ok : :no_content
+      end
     end
   end
 

@@ -46,7 +46,7 @@
         %span.label.label-info triggered
       - if build.try(:allow_failure)
         %span.label.label-danger allowed to fail
-      - if build.manual?
+      - if build.action?
         %span.label.label-info manual
 
   - if pipeline_link

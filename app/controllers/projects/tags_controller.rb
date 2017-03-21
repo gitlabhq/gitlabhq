@@ -14,7 +14,9 @@ class Projects::TagsController < Projects::ApplicationController
     @tags = TagsFinder.new(@repository, params).execute
     @tags = Kaminari.paginate_array(@tags).page(params[:page])
 
-    @releases = project.releases.where(tag: @tags.map(&:name))
+    tag_names = @tags.map(&:name)
+    @tags_pipelines = @project.pipelines.latest_successful_for_refs(tag_names)
+    @releases = project.releases.where(tag: tag_names)
   end
 
   def show
@@ -41,13 +43,27 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   def destroy
-    Tags::DestroyService.new(project, current_user).execute(params[:id])
+    result = Tags::DestroyService.new(project, current_user).execute(params[:id])
 
     respond_to do |format|
-      format.html do
-        redirect_to namespace_project_tags_path(@project.namespace, @project)
+      if result[:status] == :success
+        format.html do
+          redirect_to namespace_project_tags_path(@project.namespace, @project)
+        end
+
+        format.js
+      else
+        @error = result[:message]
+
+        format.html do
+          redirect_to namespace_project_tags_path(@project.namespace, @project),
+            alert: @error
+        end
+
+        format.js do
+          render status: :unprocessable_entity
+        end
       end
-      format.js
     end
   end
 end
