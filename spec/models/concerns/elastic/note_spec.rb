@@ -54,6 +54,8 @@ describe Note, elastic: true do
       id
       note
       project_id
+      noteable_type
+      noteable_id
       created_at
       updated_at
       issue

@@ -158,43 +158,76 @@ module Elastic
       end
 
       def project_ids_filter(query_hash, options)
-        if options[:project_ids]
-          condition = project_ids_condition(
-            options[:current_user],
-            options[:project_ids],
-            options[:public_and_internal_projects]
-          )
+        project_query = project_ids_query(
+          options[:current_user],
+          options[:project_ids],
+          options[:public_and_internal_projects],
+          options[:feature]
+        )
 
-          query_hash[:query][:bool][:filter] ||= []
-          query_hash[:query][:bool][:filter] << {
-            has_parent: {
-              parent_type: "project",
-              query: {
-                bool: {
-                  should: condition
-                }
-              }
+        query_hash[:query][:bool][:filter] ||= []
+        query_hash[:query][:bool][:filter] << {
+          has_parent: {
+            parent_type: "project",
+            query: {
+              bool: project_query
             }
           }
-        end
+        }
 
         query_hash
       end
 
-      def project_ids_condition(current_user, project_ids, public_and_internal_projects)
-        conditions = [{
-          terms: { id: project_ids }
-        }]
+      def project_ids_query(current_user, project_ids, public_and_internal_projects, feature = nil)
+        conditions = []
+
+        private_project_condition = {
+          bool: {
+            filter: {
+              terms: { id: project_ids }
+            }
+          }
+        }
+
+        if feature
+          private_project_condition[:bool][:must_not] = {
+            term: { "#{feature}_access_level" => ProjectFeature::DISABLED }
+          }
+        end
+
+        conditions << private_project_condition
 
         if public_and_internal_projects
-          conditions << { term: { visibility_level: Project::PUBLIC } }
+          conditions << if feature
+                          {
+                            bool: {
+                              filter: [
+                                { term: { visibility_level: Project::PUBLIC } },
+                                { term: { "#{feature}_access_level" => ProjectFeature::ENABLED } }
+                              ]
+                            }
+                          }
+                        else
+                          { term: { visibility_level: Project::PUBLIC } }
+                        end
 
           if current_user
-            conditions << { term: { visibility_level: Project::INTERNAL } }
+            conditions << if feature
+                            {
+                              bool: {
+                                filter: [
+                                  { term: { visibility_level: Project::INTERNAL } },
+                                  { term: { "#{feature}_access_level" => ProjectFeature::ENABLED } }
+                                ]
+                              }
+                            }
+                          else
+                            { term: { visibility_level: Project::INTERNAL } }
+                          end
           end
         end
 
-        conditions
+        { should: conditions }
       end
     end
   end
