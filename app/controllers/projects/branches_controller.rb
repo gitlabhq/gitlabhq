@@ -71,7 +71,9 @@ class Projects::BranchesController < Projects::ApplicationController
         redirect_to namespace_project_branches_path(@project.namespace,
                                                     @project), status: 303
       end
+      # TODO: @oswaldo - Handle only JSON and HTML after deleting existing MR widget.
       format.js { render nothing: true, status: status[:return_code] }
+      format.json { render json: { message: status[:message] }, status: status[:return_code] }
     end
   end
 
