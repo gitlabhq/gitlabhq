@@ -34,10 +34,7 @@ class Diff {
   handleClickUnfold(e) {
     const $target = $(e.target);
     // current babel config relies on iterators implementation, so we cannot simply do:
-    // const [oldLineNumber, newLineNumber] = this.lineNumbers($target.parent());
-    const ref = this.lineNumbers($target.parent());
-    const oldLineNumber = ref[0];
-    const newLineNumber = ref[1];
+    const [oldLineNumber, newLineNumber] = this.lineNumbers($target.parent());
     const offset = newLineNumber - oldLineNumber;
     const bottom = $target.hasClass('js-unfold-bottom');
     let since;
