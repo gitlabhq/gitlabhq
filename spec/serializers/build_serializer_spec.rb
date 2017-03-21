@@ -29,10 +29,8 @@ describe BuildSerializer do
 
   describe '#represent_status' do
     context 'when represents only status' do
-      let(:status) do
-        Gitlab::Ci::Status::Success.new(double('object'), double('user'))
-      end
-      let(:resource) { create(:ci_build, status: :success) }
+      let(:resource) { create(:ci_build) }
+      let(:status) { resource.detailed_status(double('user')) }
 
       subject { serializer.represent_status(resource) }
 

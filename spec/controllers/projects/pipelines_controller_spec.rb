@@ -71,26 +71,22 @@ describe Projects::PipelinesController do
   end
 
   describe 'GET status.json' do
-    context 'when accessing status' do
-      let(:status) do
-        Gitlab::Ci::Status::Success.new(double('object'), double('user'))
-      end
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:status) { pipeline.detailed_status(double('user')) }
 
-      before do
-        pipeline = create(:ci_pipeline, project: project, status: :success)
-        get :status, namespace_id: project.namespace,
-                     project_id: project,
-                     id: pipeline.id,
-                     format: :json
-      end
+    before do
+      get :status, namespace_id: project.namespace,
+                   project_id: project,
+                   id: pipeline.id,
+                   format: :json
+    end
 
-      it 'return a correct pipeline status' do
-        expect(response).to have_http_status(:ok)
-        expect(json_response['text']).to eq status.text
-        expect(json_response['label']).to eq status.label
-        expect(json_response['icon']).to eq status.icon
-        expect(json_response['favicon']).to eq status.favicon
-      end
+    it 'return a detailed pipeline status in json' do
+      expect(response).to have_http_status(:ok)
+      expect(json_response['text']).to eq status.text
+      expect(json_response['label']).to eq status.label
+      expect(json_response['icon']).to eq status.icon
+      expect(json_response['favicon']).to eq status.favicon
     end
   end
 end
