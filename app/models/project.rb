@@ -238,7 +238,7 @@ class Project < ActiveRecord::Base
     # We need routes alias rs for JOIN so it does not conflict with
     # includes(:route) which we use in ProjectsFinder.
     joins("INNER JOIN routes rs ON rs.source_id = projects.id AND rs.source_type = 'Project'").
-      where('rs.path LIKE ?', "#{path}/%")
+      where('rs.path LIKE ?', "#{sanitize_sql_like(path)}/%")
   end
 
   # "enabled" here means "not disabled". It includes private features!
