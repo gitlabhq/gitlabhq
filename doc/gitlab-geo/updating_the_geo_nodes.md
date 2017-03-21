@@ -1,5 +1,10 @@
 # Updating the Geo nodes
 
+Depending on which version of Geo you are updating to/from, there may be
+different steps.
+
+## General update steps
+
 In order to update the GitLab Geo nodes when a new GitLab version is released,
 all you need to do is update GitLab itself:
 
@@ -52,9 +57,6 @@ is prepended with the relevant node for better clarity:
 
 1. **[secondary]** Run the following steps on each of the secondaries:
 
-    1. **[secondary]** Create the `replica.sh` script as described in the
-       [database configuration document](database.md#step-3-initiate-the-replication-process).
-
     1. **[secondary]**  Stop all services:
 
         ```
@@ -95,11 +97,20 @@ is prepended with the relevant node for better clarity:
         sudo grep -s primary_conninfo /var/opt/gitlab/recovery.conf
         ```
 
+    1. **[secondary]** Create the `replica.sh` script as described in the
+       [database configuration document](database.md#step-3-initiate-the-replication-process).
+
     1. **[secondary]** Run the recovery script using the credentials from the
        previous step:
 
         ```
         sudo bash /tmp/replica.sh
+        ```
+
+    1. **[secondary]** Reconfigure GitLab:
+
+        ```
+        sudo gitlab-ctl reconfigure
         ```
 
     1. **[secondary]** Start all services:
@@ -109,5 +120,27 @@ is prepended with the relevant node for better clarity:
         ```
 
     1. **[secondary]** Repeat the steps for the rest of the secondaries.
+
+1. **[primary]** After all secondaries are updated, start all services in
+   primary:
+
+    ```
+    sudo gitlab-ctl start
+    ```
+
+## Check status after updating
+
+Now that the update process is complete, you may want to check whether
+everything is working correctly:
+
+1. Run the Geo raketask on all nodes, everything should be green:
+
+    ```
+    sudo gitlab-rake gitlab:geo:check
+    ```
+
+1. Check the primary's Geo dashboard for any errors
+1. Test the data replication by pushing code to the primary and see if it
+   is received by the secondaries
 
 [update]: ../update/README.md
