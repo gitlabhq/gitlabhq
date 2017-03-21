@@ -41,6 +41,7 @@ describe('Pipelines', () => {
 
         setTimeout(() => {
           expect(component.$el.querySelector('.table-holder')).toBeDefined();
+          expect(component.$el.querySelector('.realtime-loading')).toBe(null);
           done();
         });
       });
@@ -72,6 +73,7 @@ describe('Pipelines', () => {
 
         setTimeout(() => {
           expect(component.$el.querySelector('.empty-state')).toBeDefined();
+          expect(component.$el.querySelector('.realtime-loading')).toBe(null);
           done();
         });
       });
@@ -104,6 +106,7 @@ describe('Pipelines', () => {
 
       setTimeout(() => {
         expect(component.$el.querySelector('.js-pipelines-error-state')).toBeDefined();
+        expect(component.$el.querySelector('.realtime-loading')).toBe(null);
         done();
       });
     });

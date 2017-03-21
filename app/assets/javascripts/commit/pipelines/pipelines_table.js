@@ -1,5 +1,3 @@
-/* eslint-disable no-new*/
-/* global Flash */
 import Vue from 'vue';
 import PipelinesTableComponent from '../../vue_shared/components/pipelines_table';
 import PipelinesService from '../../vue_pipelines_index/services/pipelines_service';
@@ -50,11 +48,11 @@ export default Vue.component('pipelines-table', {
 
   computed: {
     shouldRenderErrorState() {
-      return this.hasError && !this.pageRequest;
+      return this.hasError && !this.isLoading;
     },
 
     shouldRenderEmptyState() {
-      return !this.state.pipelines.length && !this.pageRequest;
+      return !this.state.pipelines.length && !this.isLoading;
     },
   },
 
@@ -98,7 +96,6 @@ export default Vue.component('pipelines-table', {
         .catch(() => {
           this.hasError = true;
           this.isLoading = false;
-          new Flash('An error occurred while fetching the pipelines, please reload the page again.');
         });
     },
   },

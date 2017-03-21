@@ -45,7 +45,7 @@ export default {
       state: this.store.state,
       apiScope: 'all',
       pagenum: 1,
-      pageRequest: false,
+      isLoading: false,
       hasError: false,
     };
   },
@@ -61,7 +61,7 @@ export default {
     },
 
     shouldRenderErrorState() {
-      return this.hasError && !this.pageRequest;
+      return this.hasError && !this.isLoading;
     },
 
     /**
@@ -71,7 +71,7 @@ export default {
     * @return {Boolean}
     */
     shouldRenderEmptyState() {
-      return !this.pageRequest &&
+      return !this.isLoading &&
         !this.hasError &&
         !this.state.pipelines.length &&
         (this.scope === 'all' || this.scope === null);
@@ -83,7 +83,7 @@ export default {
      * @return {Boolean}
      */
     shouldRenderNoPipelinesMessage() {
-      return !this.pageRequest &&
+      return !this.isLoading &&
         !this.hasError &&
         !this.state.pipelines.length &&
         this.scope !== 'all' &&
@@ -92,7 +92,7 @@ export default {
 
     shouldRenderTable() {
       return !this.hasError &&
-        !this.pageRequest && this.state.pipelines.length;
+        !this.isLoading && this.state.pipelines.length;
     },
 
     /**
@@ -101,7 +101,7 @@ export default {
     * @return {Boolean}
     */
     shouldRenderPagination() {
-      return !this.pageRequest &&
+      return !this.isLoading &&
         this.state.pipelines.length &&
         this.state.pageInfo.total > this.state.pageInfo.perPage;
     },
@@ -157,7 +157,7 @@ export default {
       const pageNumber = gl.utils.getParameterByName('page') || this.pagenum;
       const scope = gl.utils.getParameterByName('scope') || this.apiScope;
 
-      this.pageRequest = true;
+      this.isLoading = true;
       return this.service.getPipelines(scope, pageNumber)
         .then(resp => ({
           headers: resp.headers,
@@ -169,11 +169,11 @@ export default {
           this.store.storePagination(response.headers);
         })
         .then(() => {
-          this.pageRequest = false;
+          this.isLoading = false;
         })
         .catch(() => {
           this.hasError = true;
-          this.pageRequest = false;
+          this.isLoading = false;
         });
     },
   },
@@ -183,7 +183,7 @@ export default {
 
       <div
         class="top-area"
-        v-if="!pageRequest && !shouldRenderEmptyState">
+        v-if="!isLoading && !shouldRenderEmptyState">
         <navigation-tabs
           :scope="scope"
           :count="state.count"
@@ -201,7 +201,7 @@ export default {
 
         <div
           class="realtime-loading"
-          v-if="pageRequest">
+          v-if="isLoading">
           <i
             class="fa fa-spinner fa-spin"
             aria-hidden="true" />
