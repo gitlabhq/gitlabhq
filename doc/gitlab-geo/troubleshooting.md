@@ -49,3 +49,14 @@ where you have to fix (all commands and path locations are for Omnibus installs)
         ```
         # remove old entries to your primary gitlab in known_hosts
         ssh-keyscan -R your-primary-gitlab.example.com
+
+Visit the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`) in
+your browser. We perform the following health checks on each secondary node
+to help identify if something is wrong:
+
+- Is the node running?
+- Is the node's secondary tracking database configured?
+- Is the node's secondary tracking database connected?
+- Is the node's secondary tracking database up-to-date?
+
+![GitLab Geo health check](img/geo-node-healthcheck.png)
