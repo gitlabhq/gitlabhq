@@ -1,16 +1,21 @@
-import Vue from 'vue';
-import VueResource from 'vue-resource';
 import httpStatusCodes from './http_status';
 
-Vue.use(VueResource);
-
 /**
- * Polling utility for handling realtime updates with Vue.Resource get method.
+ * Polling utility for handling realtime updates.
+ * Service for vue resouce and method need to be provided as props
  *
  * @example
  * new poll({
- *   url: 'endopoint',
- *   data: {},
+ *   resource: resource,
+ *   method: 'name',
+ *   successCallback: () => {},
+ *   errorCallback: () => {},
+ * }).makeRequest();
+ *
+ * this.service = new BoardsService(endpoint);
+ * new poll({
+ *   resource: this.service,
+ *   method: 'get',
  *   successCallback: () => {},
  *   errorCallback: () => {},
  * }).makeRequest();
@@ -47,8 +52,8 @@ export default class poll {
   }
 
   makeRequest() {
-    return Vue.http.get(this.options.url, this.options.data)
-    .then(this.checkConditions)
+    return this.options.resource[this.options.method]()
+    .then(this.checkConditions.bind(this))
     .catch(error => this.options.errorCallback(error));
   }
 }
