@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170315194013) do
+ActiveRecord::Schema.define(version: 20170317203554) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 20170315194013) do
     t.boolean "shared_runners_enabled", default: true, null: false
     t.integer "max_artifacts_size", default: 100, null: false
     t.string "runners_registration_token"
+    t.integer "max_pages_size", default: 100, null: false
     t.boolean "require_two_factor_authentication", default: false
     t.integer "two_factor_grace_period", default: 48
     t.boolean "metrics_enabled", default: false
@@ -110,7 +111,6 @@ ActiveRecord::Schema.define(version: 20170315194013) do
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
     t.integer "terminal_max_session_time", default: 0, null: false
-    t.integer "max_pages_size", default: 100, null: false
     t.string "default_artifacts_expire_in", default: "0", null: false
     t.integer "unique_ips_limit_per_user"
     t.integer "unique_ips_limit_time_window"
@@ -688,8 +688,8 @@ ActiveRecord::Schema.define(version: 20170315194013) do
     t.integer "visibility_level", default: 20, null: false
     t.boolean "request_access_enabled", default: false, null: false
     t.datetime "deleted_at"
-    t.boolean "lfs_enabled"
     t.text "description_html"
+    t.boolean "lfs_enabled"
     t.integer "parent_id"
   end
 
@@ -985,6 +985,7 @@ ActiveRecord::Schema.define(version: 20170315194013) do
   end
 
   add_index "routes", ["path"], name: "index_routes_on_path", unique: true, using: :btree
+  add_index "routes", ["path"], name: "index_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
   add_index "routes", ["source_type", "source_id"], name: "index_routes_on_source_type_and_source_id", unique: true, using: :btree
 
   create_table "sent_notifications", force: :cascade do |t|
@@ -1231,8 +1232,8 @@ ActiveRecord::Schema.define(version: 20170315194013) do
     t.datetime "otp_grace_period_started_at"
     t.boolean "ldap_email", default: false, null: false
     t.boolean "external", default: false
-    t.string "organization"
     t.string "incoming_email_token"
+    t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "ghost"
   end
