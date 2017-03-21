@@ -2,12 +2,7 @@
 
 > [Introduced][ce-1589] in [GitLab Enterprise Edition Premium][ee] 9.0.
 
-If [Kubernetes] is your tool of choice for your application deployments, GitLab
-offers a single place to view the current health and deployment status of each
-[environment], displaying the specific status of each pod in the deployment.
-Developers and other teammates can view the progress and status of a rollout,
-pod by pod, in the workflow they already use without any need to access
-Kubernetes.
+GitLab's Deploy Boards offer a consolidated view of the current health and status of each CI [environment] running on Kubernetes, displaying the status of the pods in the deployment. Developers and other teammates can view the progress and status of a rollout, pod by pod, in the workflow they already use without any need to access Kubernetes.
 
 ## Overview
 
@@ -15,7 +10,7 @@ With Deploy Boards you can gain more insight into deploys with benefits such as:
 
 - Following a deploy from the start, not just when it's done
 - Watching the rollout of a build across multiple servers
-- Finer state detail (Ready, Preparing, Waiting, Deploying, Finished, Failed)
+- Finer state detail (Waiting, Deploying, Finished, Unknown)
 
 Since Deploy Boards are tightly coupled with Kubernetes, there is some required
 knowledge. In particular you should be familiar with:
@@ -32,43 +27,38 @@ the given environment. Hovering above each square you can see the state of a
 deploy rolling out. The percentage is the percent of the pods that are updated
 to the latest release.
 
-## Enabling deploy boards
+## Deploy Board Requirements
 
-In order to have the Deploy Boards show up, you need to label your
-deployments, replica sets and pods with `app=$CI_ENVIRONMENT_SLUG`.
+In order to gather the deployment status you need to label your deployments, replica sets and pods with `app=$CI_ENVIRONMENT_SLUG`.
 Each project will need to have a unique namespace in Kubernetes as well.
 
-In particular, here are the requirements for the Deploy Boards to show up in
-your environments page:
+The complete requirements for Deploy Boards to display for a specific [environment] are:
 
 1. You should have a Kubernetes cluster up and running
-1. You should be using GitLab Runner using the [Docker][docker-exec] or
-   [Kubernetes executor][kube-exec]
-1. Enable the [Kubernetes service](integrations/kubernetes.md) in your project
+1. Configure the [Kubernetes service](integrations/kubernetes.md) in your project for the cluster.
+1. GitLab Runner should be configured with the [Docker][docker-exec] or
+   [Kubernetes][kube-exec] executor
 1. Use the Kubernetes labels and label your deployments `app=$CI_ENVIRONMENT_SLUG`
-   in the unique namespace specified in the Kubernetes service setting.
-   Simplified by using the
-   [Kubernetes deploy example](#using-the-kubernetes-deploy-example-project)
-   Docker image.
+   in the unique namespace specified in the Kubernetes service setting. GitLab has a  
+   [Kubernetes deployment example](#using-the-kubernetes-deploy-example-project)
+   which can simplify the build and deployment process.
 1. Optionally, use an [auto-deploy](../../ci/autodeploy/index.md) `.gitlab-ci.yml`
-   template which has some predefined stages and commands to use.
+   template which has predefined stages and commands to use.
 
 Once all of the above are set up and the pipeline has run at least once,
 navigate to the environments page under **Pipelines ➔ Environments**. GitLab
-will inspect Kubernetes for the state of each node (e.g., spinning up, down,
-running version A, running version B) and Deploy Boards will be displayed on
+will query Kubernetes for the state of each node (e.g., spinning up, down,
+running version A, running version B) and the Deploy Board status will be displayed on
 the environments page.
 
-Bare in mind that Deploy Boards are by default collapsed under their respective
-environment but can be expanded. Only top-level environments can be expanded
-by default, so if you for example use `review/*` for [review apps], the Deploy
-Boards won't show up for that environment.
+Bear in mind that Deploy Boards are collapsed under their respective environment, but can be expanded. Only top-level environments are expanded
+by default. So if you use `review/*` for [review apps], the Deploy Boards will appear collapsed initially.
 
 ## Using the Kubernetes deploy example project
 
 The [kubernetes-deploy] project is used to simplify the deployment process to
 Kubernetes by providing the `build`, `deploy` and `destroy` commands which you
-can use to your `.gitlab-ci.yml` as-is.
+can use in your `.gitlab-ci.yml` as-is.
 
 ## Example
 
