@@ -37,6 +37,8 @@ In order to gather the deployment status you need to label your deployments,
 replica sets and pods with the `app` key and use the `CI_ENVIRONMENT_SLUG` as
 a value. Each project will need to have a unique namespace in Kubernetes as well.
 
+![Deploy Boards Kubernetes Label](img/deploy_boards_kubernetes_label.png)
+
 The complete requirements for Deploy Boards to display for a specific [environment] are:
 
 1. You should have a Kubernetes cluster up and running
@@ -64,7 +66,7 @@ you use `review/*` for [review apps], the Deploy Board will appear collapsed ini
 
 The [kubernetes-deploy][kube-deploy] project is used to simplify the deployment
 process to Kubernetes by providing intelligent `build`, `deploy` and `destroy` commands
-which you can use in your `.gitlab-ci.yml` as-is. 
+which you can use in your `.gitlab-ci.yml` as-is.
 ---
 
 Another simple example would be the deployment of Nginx on Kubernetes.
