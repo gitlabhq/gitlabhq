@@ -15,6 +15,14 @@ module API
         attributes_for_keys(%w(name version revision platform architecture), params['info'])
       end
 
+      def get_runner_version
+        params.fetch('info', {}).fetch('version', "unknown")
+      end
+
+      def header_last_update(value)
+        header 'X-GitLab-Last-Update', value
+      end
+
       def authenticate_runner!
         forbidden! unless current_runner
       end

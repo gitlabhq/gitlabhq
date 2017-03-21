@@ -79,6 +79,14 @@ module Ci
       def max_artifacts_size
         current_application_settings.max_artifacts_size.megabytes.to_i
       end
+
+      def get_runner_version
+        params.fetch('info', {}).fetch('version', "unknown")
+      end
+
+      def header_last_update(value)
+        header 'X-GitLab-Last-Update', value
+      end
     end
   end
 end

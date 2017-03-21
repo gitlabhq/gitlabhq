@@ -13,35 +13,44 @@ module Ci
         post "register" do
           authenticate_runner!
           required_attributes! [:token]
-          not_found! unless current_runner.active?
           update_runner_info
 
           if current_runner.is_runner_queue_value_latest?(params[:last_update])
-            header 'X-GitLab-Last-Update', params[:last_update]
-            Gitlab::Metrics.add_event(:build_not_found_cached)
+            Gitlab::Metrics.add_event(:build_not_found_cached,
+              version: get_runner_version)
+            header_last_update(params[:last_update])
             return build_not_found!
           end
 
           new_update = current_runner.ensure_runner_queue_value
+
+          unless current_runner.active?
+            Gitlab::Metrics.add_event(:runner_inactive,
+              version: get_runner_version)
+            header_last_update(new_update)
+            return build_not_found!
+          end
 
           result = Ci::RegisterJobService.new(current_runner).execute
 
           if result.valid?
             if result.build
               Gitlab::Metrics.add_event(:build_found,
-                                        project: result.build.project.path_with_namespace)
-
+                project: result.build.project.path_with_namespace,
+                version: get_runner_version)
+              header_last_update(current_runner.tick_runner_queue_value)
               present result.build, with: Entities::BuildDetails
             else
-              Gitlab::Metrics.add_event(:build_not_found)
-
-              header 'X-GitLab-Last-Update', new_update
-
+              Gitlab::Metrics.add_event(:build_not_found,
+                version: get_runner_version)
+              header_last_update(new_update)
               build_not_found!
             end
           else
             # We received build that is invalid due to concurrency conflict
-            Gitlab::Metrics.add_event(:build_invalid)
+            Gitlab::Metrics.add_event(:build_invalid,
+              version: get_runner_version)
+            header_last_update(current_runner.tick_runner_queue_value)
             conflict!
           end
         end
