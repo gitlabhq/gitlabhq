@@ -12,12 +12,12 @@ manually [promote a secondary node](disaster-recovery.md) into primary.
 
 ## What data is replicated to a secondary node?
 
-We currently replicate project repositories and the whole database. This
-means user accounts, issues, merge requests, groups, project data, etc.,
-will be available for query.
+We currently replicate project repositories, LFS objects and the whole
+database. This means user accounts, issues, merge requests, groups, project
+data, etc., will be available for query.
 We currently don't replicate user generated attachments / avatars or any
-other file in `public/upload`. We also don't replicate LFS or
-artifacts data (`shared/folder`).
+other file in `public/upload`. We also don't replicate artifact data
+data (`shared/folder`).
 
 ## Can I git push to a secondary node?
 
