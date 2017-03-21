@@ -335,6 +335,7 @@ class PrometheusGraph {
         }));
       }
     });
+    this.data = metricTypes;
   }
 }
 
