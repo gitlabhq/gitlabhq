@@ -147,6 +147,34 @@ sensitive data in the database. Any secondary node must have the
     sudo -i
     ```
 
+1. Edit the /etc/gitlab/gitlab.rb:
+
+    ```
+    geo_secondary_role['enable'] = true
+    geo_postgresql['enable'] = true
+    ```
+
+1. Create `database_geo.yml` with the information of your secondary PostgreSQL
+   database.  Note that GitLab will set up another database instance separate
+   from the primary, since this is where the secondary will track its internal
+   state:
+
+    ```
+    sudo cp /opt/gitlab/embedded/service/gitlab-rails/config/database_geo.yml.postgresql /opt/gitlab/embedded/service/gitlab-rails/config/database_geo.yml
+    ```
+
+1. Reconfigure GitLab:
+
+    ```
+    sudo gitlab-ctl reconfigure
+    ```
+
+1. Set up the Geo tracking database:
+
+    ```
+    sudo gitlab-rake geo:db:setup
+    ```
+
 1. Create a new SSH key pair for the secondary node. Choose the default location
    and leave the password blank by hitting 'Enter' three times:
 
