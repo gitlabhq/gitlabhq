@@ -27,6 +27,8 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
       status: status)
     end
 
+    before { merge_request.update(head_pipeline: pipeline) }
+
     context 'when merge requests can only be merged if the pipeline succeeds' do
       before do
         project.update_attribute(:only_allow_merge_if_pipeline_succeeds, true)

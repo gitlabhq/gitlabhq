@@ -354,7 +354,8 @@ describe Projects::MergeRequestsController do
         end
 
         before do
-          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
+          pipeline = create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
+          merge_request.update(head_pipeline: pipeline)
         end
 
         it 'returns :merge_when_pipeline_succeeds' do

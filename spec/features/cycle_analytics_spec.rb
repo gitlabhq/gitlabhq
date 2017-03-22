@@ -9,10 +9,13 @@ feature 'Cycle Analytics', feature: true, js: true do
   let(:mr) { create_merge_request_closing_issue(issue) }
   let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha) }
 
+  before { mr.update(head_pipeline: pipeline) }
+
   context 'as an allowed user' do
     context 'when project is new' do
       before  do
-        project.team << [user, :master]
+        project.add_master(user)
+        mr.update(head_pipeline_id: pipeline.id)
         login_as(user)
         visit namespace_project_cycle_analytics_path(project.namespace, project)
         wait_for_ajax

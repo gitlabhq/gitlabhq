@@ -4,16 +4,18 @@ feature 'Merge immediately', :feature, :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
 
-  let(:merge_request) do
+  let!(:merge_request) do
     create(:merge_request_with_diffs, source_project: project,
                                       author: user,
-                                      title: 'Bug NS-04')
+                                      title: 'Bug NS-04',
+                                      head_pipeline: pipeline,
+                                      source_branch: pipeline.ref)
   end
 
   let(:pipeline) do
     create(:ci_pipeline, project: project,
-                         sha: merge_request.diff_head_sha,
-                         ref: merge_request.source_branch)
+                         ref: 'master',
+                         sha: project.repository.commit('master').id)
   end
 
   before { project.team << [user, :master] }
