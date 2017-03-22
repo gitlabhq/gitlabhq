@@ -41,14 +41,16 @@ a value. Each project will need to have a unique namespace in Kubernetes as well
 
 The complete requirements for Deploy Boards to display for a specific [environment] are:
 
-1. You should have a Kubernetes cluster up and running
+1. You should have a Kubernetes cluster up and running.
 1. Configure the [Kubernetes service][kube-service] in your project for the cluster.
 1. GitLab Runner should be configured with the [Docker][docker-exec] or
-   [Kubernetes][kube-exec] executor
+   [Kubernetes][kube-exec] executor.
 1. Ensure a Kubernetes label of `app=$CI_ENVIRONMENT_SLUG`
-   is applied to the deployments, replica sets, and pods. These resources should be contained in the namespace defined in Kubernetes service setting.
+   is applied to the deployments, replica sets, and pods. These resources should
+   be contained in the namespace defined in Kubernetes service setting.
 1. Optionally, use an [Autodeploy] `.gitlab-ci.yml`
-   template which has predefined stages and commands to use, and automatically applies the labeling. GitLab also has a
+   template which has predefined stages and commands to use, and automatically
+   applies the labeling. GitLab also has a
    [Kubernetes deployment example](#using-the-kubernetes-deploy-example-project)
    which can simplify the build and deployment process.
 
@@ -65,8 +67,10 @@ you use `review/*` for [review apps], the Deploy Board will appear collapsed ini
 ## Using the Kubernetes deploy example project
 
 The [kubernetes-deploy][kube-deploy] project is used to simplify the deployment
-process to Kubernetes by providing intelligent `build`, `deploy` and `destroy` commands
-which you can use in your `.gitlab-ci.yml` as-is.
+process to Kubernetes by providing intelligent `build`, `deploy` and `destroy`
+commands which you can use in your `.gitlab-ci.yml` as-is. For your convenience,
+a [Docker image][kube-image] is also provided.
+
 ---
 
 Another simple example would be the deployment of Nginx on Kubernetes.
@@ -99,11 +103,13 @@ The `.gitlab-ci.yml` would be:
 ```yaml
 image: registry.gitlab.com/gitlab-examples/kubernetes-deploy
 
+stages:
+  - deploy
+
 kubernetes deploy:
-  stage:
-    - deploy
+  stage: deploy
   environment:
-    name: $CI_BUILD_REF_NAME
+    name: production
   script:
     - echo "$KUBE_CA_PEM" > kube_ca.pem
     - cat kube_ca.pem
@@ -148,3 +154,4 @@ Finally, the Nginx pod is created from the definition of the
 [review apps]: ../../ci/review_apps/index.md "Review Apps documentation"
 [variables]: ../../ci/variables/README.md "GitLab CI variables"
 [autodeploy]: ../../ci/autodeploy/index.md "GitLab Autodeploy"
+[kube-image]: https://gitlab.com/gitlab-examples/kubernetes-deploy/container_registry "Kubernetes deploy Container Registry"
