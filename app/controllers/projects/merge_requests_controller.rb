@@ -741,6 +741,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def serializer
-    MergeRequestSerializer.new(current_user: current_user, project: merge_request.project)
+    if params[:basic]
+      MergeRequestBasicSerializer.new
+    else
+      MergeRequestSerializer.new(current_user: current_user, project: merge_request.project)
+    end
   end
 end
