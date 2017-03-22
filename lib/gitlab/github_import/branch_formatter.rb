@@ -12,7 +12,7 @@ module Gitlab
       end
 
       def user
-        raw_data.user.login
+        raw_data.user&.login || 'unknown'
       end
 
       def short_sha(length = 7)
