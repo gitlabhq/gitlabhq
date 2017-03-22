@@ -188,10 +188,28 @@ the clocks must be synchronized to within 60 seconds of each other.
     sudo gitlab-ctl reconfigure
     ```
 
+1. Edit the content of `database_geo.yml` in `production:` like the example below:
+    
+   ```yaml
+   #
+   # PRODUCTION
+   #
+   production:
+     adapter: postgresql
+     encoding: unicode
+     database: gitlabhq_geo_production
+     pool: 10
+     username: gitlab_geo
+     # password:
+     host: /var/opt/gitlab/geo-postgresql
+     port: 5431
+    
+   ```
+
 1. Set up the Geo tracking database:
 
     ```
-    sudo gitlab-rake geo:db:setup
+    sudo gitlab-rake geo:db:migrate
     ```
 
 [update]: ../update/README.md
