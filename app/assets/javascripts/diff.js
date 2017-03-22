@@ -33,7 +33,6 @@ class Diff {
 
   handleClickUnfold(e) {
     const $target = $(e.target);
-    // current babel config relies on iterators implementation, so we cannot simply do:
     const [oldLineNumber, newLineNumber] = this.lineNumbers($target.parent());
     const offset = newLineNumber - oldLineNumber;
     const bottom = $target.hasClass('js-unfold-bottom');
@@ -102,10 +101,11 @@ class Diff {
   }
 
   lineNumbers(line) {
-    if (!line.children().length) {
+    const children = line.find('.diff-line-num').toArray();
+    if (children.length !== 2) {
       return [0, 0];
     }
-    return line.find('.diff-line-num').map((i, elm) => parseInt($(elm).data('linenumber'), 10));
+    return children.map(elm => parseInt($(elm).data('linenumber'), 10) || 0);
   }
 
   highlightSelectedLine() {
