@@ -30,7 +30,7 @@ import httpStatusCodes from './http_status';
  * 5. If HTTP response is different from 200, we stop polling.
  *
  */
-export default class poll {
+export default class Poll {
   constructor(options = {}) {
     this.options = Object.assign({}, {
       data: {},
