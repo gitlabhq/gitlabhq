@@ -39,7 +39,7 @@ class UsersController < ApplicationController
       format.html { render 'show' }
       format.json do
         render json: {
-          html: view_to_html_string("shared/projects/_list", projects: @projects, remote: true)
+          html: view_to_html_string("shared/projects/_list", projects: @projects)
         }
       end
     end
@@ -65,7 +65,7 @@ class UsersController < ApplicationController
       format.html { render 'show' }
       format.json do
         render json: {
-          html: view_to_html_string("snippets/_snippets", collection: @snippets, remote: true)
+          html: view_to_html_string("snippets/_snippets", collection: @snippets)
         }
       end
     end
