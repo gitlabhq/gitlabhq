@@ -21,10 +21,6 @@ describe Route, models: true do
     let!(:similar_group) { create(:group, path: 'gitllab') }
     let!(:another_group_nested) { create(:group, path: 'another', name: 'another', parent: similar_group) }
 
-    it 'returns 2 routes' do
-      expect(Route.inside_path('git_lab').count).to eq(2)
-    end
-
     it 'returns correct routes' do
       expect(Route.inside_path('git_lab')).to match_array([nested_group.route, deep_nested_group.route])
     end

@@ -1767,10 +1767,6 @@ describe Project, models: true do
     let!(:project3) { create(:empty_project, namespace: create(:namespace, path: 'namespace')) }
     let!(:path) { project1.namespace.full_path }
 
-    it 'returns 1 project' do
-      expect(Project.inside_path(path).count).to eq(1)
-    end
-
     it 'returns correct project' do
       expect(Project.inside_path(path)).to eq([project1])
     end
