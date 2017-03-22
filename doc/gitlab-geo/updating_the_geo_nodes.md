@@ -164,7 +164,8 @@ the same time zone, but when the respective times are converted to UTC time,
 the clocks must be synchronized to within 60 seconds of each other.
 
 1. Setup clock synchronization service in your Linux distro.
-   This can easily be done via any NTP compatible daemon.
+   This can easily be done via any NTP-compatible daemon. For example,
+   here are [instructions for setting up NTP with Ubuntu](https://help.ubuntu.com/lts/serverguide/NTP.html).
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
