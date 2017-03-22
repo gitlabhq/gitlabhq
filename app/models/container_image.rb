@@ -1,6 +1,4 @@
 class ContainerImage < ActiveRecord::Base
-  include Routable
-
   belongs_to :project
 
   delegate :container_registry,  to: :project
@@ -45,14 +43,13 @@ class ContainerImage < ActiveRecord::Base
     end
   end
 
-  # rubocop:disable RedundantReturn
+  def self.from_path(full_path)
+    return unless full_path.include?('/')
 
-  def self.split_namespace(full_path)
-    image_name = full_path.split('/').last
-    namespace = full_path.gsub(/(.*)(#{Regexp.escape('/' + image_name)})/, '\1')
-    if namespace.count('/') < 1
-      namespace, image_name = full_path, ""
-    end
-    return namespace, image_name
+    path = full_path[0...full_path.rindex('/')]
+    name = full_path[full_path.rindex('/')+1..-1]
+    project = Project.find_by_full_path(path)
+
+    self.new(name: name, path: path, project: project)
   end
 end

@@ -62,12 +62,7 @@ module Auth
     end
 
     def process_repository_access(type, name, actions)
-      # Strips image name due to lack of
-      # per image authentication.
-      # Removes only last occurence in light
-      # of future nested groups
-      namespace, a = ContainerImage::split_namespace(name)
-      requested_project = Project.find_by_full_path(namespace)
+      requested_project = ContainerImage.from_path(name).project
       return unless requested_project
 
       actions = actions.select do |action|
