@@ -131,81 +131,82 @@
               var isAuthorFilter;
               isAuthorFilter = $('.js-author-search');
               return _this.users(term, options, function(users) {
-                var anyUser, index, j, len, name, obj, showDivider;
-                if (term.length === 0) {
-                  showDivider = 0;
-                  if (firstUser) {
-                    // Move current user to the front of the list
-                    for (index = j = 0, len = users.length; j < len; index = (j += 1)) {
-                      obj = users[index];
-                      if (obj.username === firstUser) {
-                        users.splice(index, 1);
-                        users.unshift(obj);
-                        break;
-                      }
+                const glDropdown = this.instance || this.options.instance;
+                glDropdown.options.processData(term, users, callback);
+              }.bind(this));
+            },
+            processData: function(term, users, callback) {
+              var anyUser, index, j, len, name, obj, showDivider;
+              if (term.length === 0) {
+                showDivider = 0;
+                if (firstUser) {
+                  // Move current user to the front of the list
+                  for (index = j = 0, len = users.length; j < len; index = (j += 1)) {
+                    obj = users[index];
+                    if (obj.username === firstUser) {
+                      users.splice(index, 1);
+                      users.unshift(obj);
+                      break;
                     }
                   }
-                  if (showNullUser) {
-                    showDivider += 1;
-                    users.unshift({
-                      beforeDivider: true,
-                      name: 'Unassigned',
-                      id: 0
+                }
+                if (showNullUser) {
+                  showDivider += 1;
+                  users.unshift({
+                    beforeDivider: true,
+                    name: 'Unassigned',
+                    id: 0
+                  });
+                }
+                if (showAnyUser) {
+                  showDivider += 1;
+                  name = showAnyUser;
+                  if (name === true) {
+                    name = 'Any User';
+                  }
+                  anyUser = {
+                    beforeDivider: true,
+                    name: name,
+                    id: null
+                  };
+                  users.unshift(anyUser);
+                }
+
+                if (showDivider) {
+                  users.splice(showDivider, 0, "divider");
+                }
+
+                if ($dropdown.hasClass('js-multiselect')) {
+                  const selected = $selectbox
+                    .find('input[name="' + $dropdown.data('field-name') + '"]')
+                    .map(function () {
+                      return parseInt(this.value, 10);
+                    })
+                    .get()
+                    .filter((i) => i !== 0);
+
+                  if (selected.length > 0) {
+                    const selectedUsers = users
+                      .filter((u) => selected.indexOf(u.id) !== -1)
+                      .sort((a, b) => a.name > b.name);
+
+                    users = users.filter((u) => selected.indexOf(u.id) === -1);
+
+                    selectedUsers.forEach((selectedUser) => {
+                      showDivider += 1;
+                      users.splice(showDivider, 0, selectedUser);
                     });
+
+                    users.splice(showDivider + 1, 0, 'divider');
                   }
-                  if (showAnyUser) {
-                    showDivider += 1;
-                    name = showAnyUser;
-                    if (name === true) {
-                      name = 'Any User';
-                    }
-                    anyUser = {
-                      beforeDivider: true,
-                      name: name,
-                      id: null
-                    };
-                    users.unshift(anyUser);
-                  }
-
-                  if (showDivider) {
-                    users.splice(showDivider, 0, "divider");
-                  }
-
-
-                  if ($dropdown.hasClass('js-multiselect')) {
-                    const selected = $selectbox
-                      .find('input[name="' + $dropdown.data('field-name') + '"]')
-                      .map(function () {
-                        return parseInt(this.value, 10);
-                      })
-                      .get()
-                      .filter((i) => i !== 0);
-
-                    // const unassignedSelected = selected.length === 1 && selected[0] === 0;
-//  && !unassignedSelected
-                    if (selected.length > 0) {
-                      const selectedUsers = users
-                        .filter((u) => selected.indexOf(u.id) !== -1)
-                        .sort((a, b) => a.name > b.name);
-
-                      users = users.filter((u) => selected.indexOf(u.id) === -1);
-
-                      selectedUsers.forEach((selectedUser) => {
-                        showDivider += 1;
-                        users.splice(showDivider, 0, selectedUser);
-                      });
-
-                      users.splice(showDivider + 1, 0, 'divider');
-                    }
-                  }
-
                 }
 
-                callback(users);
-                if (showMenuAbove) {
-                  $dropdown.data('glDropdown').positionMenuAbove();
-                }
-              });
+              }
+
+              callback(users);
+              if (showMenuAbove) {
+                $dropdown.data('glDropdown').positionMenuAbove();
+              }
             },
             filterable: true,
             filterRemote: true,
@@ -216,10 +217,16 @@
             fieldName: $dropdown.data('field-name'),
             toggleLabel: function(selected, el, glDropdown) {
               if (this.multiSelect) {
-                  // debugger
+                const inputValue = glDropdown.filterInput.val();
+
+                const users = glDropdown.fullData.filter((r) => {
+                  return typeof r === 'object' && !Object.prototype.hasOwnProperty.call(r, 'beforeDivider');
+                });
+
+                const callback = glDropdown.parseData.bind(glDropdown);
+
                 // Update the data model
-                // debugger
-                this.data(glDropdown.filterInput.val(), glDropdown.parseData.bind(glDropdown));
+                this.processData(inputValue, users, callback);
               }
 
               if (selected && 'id' in selected && $(el).hasClass('is-active')) {
@@ -309,7 +316,7 @@
                 }
 
                 updateIssueBoardsIssue();
-              } else {
+              } else if (!$dropdown.hasClass('js-multiselect')) {
                 selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").val();
                 return assignTo(selected);
               }

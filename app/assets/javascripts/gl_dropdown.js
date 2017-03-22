@@ -255,7 +255,8 @@ GitLabDropdown = (function() {
               }
             };
           // Remote data
-          })(this)
+          })(this),
+          instance: this,
         });
       }
     }
@@ -269,6 +270,7 @@ GitLabDropdown = (function() {
         remote: this.options.filterRemote,
         query: this.options.data,
         keys: searchFields,
+        instance: this,
         elements: (function(_this) {
           return function() {
             selector = '.dropdown-content li:not(' + NON_SELECTABLE_CLASSES + ')';
