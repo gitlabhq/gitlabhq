@@ -50,8 +50,8 @@ const sidebarAssigneesOptions = () => ({
   },
   template: `
     <div class="sidebar-assignees">
-      <assignee-title :numberOfAssignees="assignees.users.length" />
-      <component :is="componentName" :assignees="assignees" :class="{ hidden: hideComponent }" />
+      <assignee-title :numberOfAssignees="assignees.users.length" :loading="assignees.loading" />
+      <component class="value" :is="componentName" :assignees="assignees" :class="{ hidden: hideComponent }" />
     </div>
   `,
 });

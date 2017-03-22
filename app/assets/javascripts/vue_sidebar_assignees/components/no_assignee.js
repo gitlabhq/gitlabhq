@@ -9,7 +9,7 @@ export default {
     }
   },
   template: `
-    <div class="value hide-collapsed">
+    <div class="hide-collapsed">
       <span class="assign-yourself no-value">
         No assignee -
         <button type="button" class="btn-link" @click="assignSelf">

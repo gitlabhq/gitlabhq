@@ -1,6 +1,7 @@
 export default {
   name: 'AssigneeTitle',
   props: {
+    loading: { type: Boolean, required: true },
     numberOfAssignees: { type: Number, required: true },
   },
   computed: {
@@ -16,7 +17,7 @@ export default {
       <template v-else>
         Assignee
       </template>
-      <i aria-hidden="true" class="fa fa-spinner fa-spin block-loading" style="display: none;"></i>
+      <i aria-hidden="true" class="fa fa-spinner fa-spin block-loading" :class="{ hidden: !loading }"></i>
       <a class="edit-link pull-right" href="#">Edit</a>
     </div>
   `,

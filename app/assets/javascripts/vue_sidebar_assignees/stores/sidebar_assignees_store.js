@@ -4,6 +4,7 @@ export default class SidebarAssigneesStore {
     this.service = service;
     this.users = [];
     this.saved = true;
+    this.loading = false;
   }
 
   addUser(id, name, username, avatarUrl, saved) {
@@ -31,6 +32,7 @@ export default class SidebarAssigneesStore {
   saveUsers() {
     const ids = this.users.map((u) => u.id) || 0;
 
+    this.loading = true;
     this.service.update(ids.length > 0 ? ids : 0)
       .then((response) => {
           const data = response.data;
@@ -42,9 +44,11 @@ export default class SidebarAssigneesStore {
             this.addUser(assignee.id, assignee.name, assignee.username, assignee.avatar_url, true);
           }
           this.saved = true;
+          this.loading = false;
         }).catch((err) => {
           console.log(err);
           console.log('error');
+          this.loading = false;
         });
   }
 }

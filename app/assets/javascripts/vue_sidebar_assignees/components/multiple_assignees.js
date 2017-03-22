@@ -27,7 +27,7 @@ export default {
     'show-more-assignees': ShowMoreAssignees,
   },
   template: `
-    <div class="value hide-collapsed">
+    <div class="hide-collapsed">
       <div class="hide-collapsed">
         <div class="user-list">
           <div class="user-item" v-for="(user, index) in assignees.users" v-if="showMore || (index < 5 && !showMore)">
