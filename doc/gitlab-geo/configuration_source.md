@@ -148,6 +148,24 @@ sensitive data in the database. Any secondary node must have the
     sudo cp /home/git/gitlab/config/database_geo.yml.postgresql /home/git/gitlab/config/database_geo.yml
     ```
 
+1. Edit the content of `database_geo.yml` in `production:` like the example below:
+   
+   ```yaml
+   #
+   # PRODUCTION
+   #
+   production:
+     adapter: postgresql
+     encoding: unicode
+     database: gitlabhq_geo_production
+     pool: 10
+     username: gitlab_geo
+     # password:
+     host: /var/opt/gitlab/geo-postgresql
+     port: 5431
+   
+   ```
+
 1. Set up the Geo tracking database:
 
     ```
