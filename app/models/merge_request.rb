@@ -9,7 +9,6 @@ class MergeRequest < ActiveRecord::Base
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
-  belongs_to :project, foreign_key: :target_project_id
   belongs_to :merge_user, class_name: "User"
 
   has_many :approvals, dependent: :destroy
@@ -562,6 +561,10 @@ class MergeRequest < ActiveRecord::Base
 
   def for_fork?
     target_project != source_project
+  end
+
+  def project
+    target_project
   end
 
   # If the merge request closes any issues, save this information in the

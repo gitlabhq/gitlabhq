@@ -1,4 +1,0 @@
----
-title: Return 404 in project issues API endpoint when project cannot be found
-merge_request: 10093
-author:

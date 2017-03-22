@@ -4,6 +4,11 @@
 
 import Vue from 'vue';
 
+<<<<<<< HEAD
+=======
+import Vue from 'vue';
+
+>>>>>>> ce/master
 require('./models/discussion');
 require('./models/note');
 require('./stores/comments');

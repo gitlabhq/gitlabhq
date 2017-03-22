@@ -51,7 +51,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   private
 
   def find_todos
-    @todos ||= TodosFinder.new(current_user, params.merge(include_associations: true)).execute
+    @todos ||= TodosFinder.new(current_user, params).execute
   end
 
   def todos_counts
