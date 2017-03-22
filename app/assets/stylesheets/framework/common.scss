@@ -433,3 +433,9 @@ table {
     @include str-truncated(100%);
   }
 }
+
+.tooltip {
+  .tooltip-inner {
+    word-wrap: break-word;
+  }
+}

@@ -2,6 +2,7 @@ require 'spec_helper'
 
 feature 'New blob creation', feature: true, js: true do
   include WaitForAjax
+  include TargetBranchHelpers
 
   given(:user) { create(:user) }
   given(:role) { :developer }
@@ -18,19 +19,6 @@ feature 'New blob creation', feature: true, js: true do
     wait_for_ajax
     fill_in 'file_name', with: 'feature.rb'
     execute_script("ace.edit('editor').setValue('#{content}')")
-  end
-
-  def select_branch_index(index)
-    first('button.js-target-branch').click
-    wait_for_ajax
-    all('a[data-group="Branches"]')[index].click
-  end
-
-  def create_new_branch(name)
-    first('button.js-target-branch').click
-    click_link 'Create new branch'
-    fill_in 'new_branch_name', with: name
-    click_button 'Create'
   end
 
   def commit_file
@@ -53,12 +41,12 @@ feature 'New blob creation', feature: true, js: true do
   context 'with different target branch' do
     background do
       edit_file
-      select_branch_index(0)
+      select_branch('feature')
       commit_file
     end
 
     scenario 'creates the blob in the different branch' do
-      expect(page).to have_content 'test'
+      expect(page).to have_content 'feature'
       expect(page).to have_content 'successfully created'
     end
   end

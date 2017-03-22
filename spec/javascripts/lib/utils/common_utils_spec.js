@@ -163,5 +163,72 @@ require('~/lib/utils/common_utils');
         expect(gl.utils.isMetaClick(e)).toBe(true);
       });
     });
+
+    describe('gl.utils.backOff', () => {
+      it('solves the promise from the callback', (done) => {
+        const expectedResponseValue = 'Success!';
+        gl.utils.backOff((next, stop) => (
+          new Promise((resolve) => {
+            resolve(expectedResponseValue);
+          }).then((resp) => {
+            stop(resp);
+          })
+        )).then((respBackoff) => {
+          expect(respBackoff).toBe(expectedResponseValue);
+          done();
+        });
+      });
+
+      it('catches the rejected promise from the callback ', (done) => {
+        const errorMessage = 'Mistakes were made!';
+        gl.utils.backOff((next, stop) => {
+          new Promise((resolve, reject) => {
+            reject(new Error(errorMessage));
+          }).then((resp) => {
+            stop(resp);
+          }).catch(err => stop(err));
+        }).catch((errBackoffResp) => {
+          expect(errBackoffResp instanceof Error).toBe(true);
+          expect(errBackoffResp.message).toBe(errorMessage);
+          done();
+        });
+      });
+
+      it('solves the promise correctly after retrying a third time', (done) => {
+        let numberOfCalls = 1;
+        const expectedResponseValue = 'Success!';
+        gl.utils.backOff((next, stop) => (
+          new Promise((resolve) => {
+            resolve(expectedResponseValue);
+          }).then((resp) => {
+            if (numberOfCalls < 3) {
+              numberOfCalls += 1;
+              next();
+            } else {
+              stop(resp);
+            }
+          })
+        )).then((respBackoff) => {
+          expect(respBackoff).toBe(expectedResponseValue);
+          expect(numberOfCalls).toBe(3);
+          done();
+        });
+      }, 10000);
+
+      it('rejects the backOff promise after timing out', (done) => {
+        const expectedResponseValue = 'Success!';
+        gl.utils.backOff(next => (
+          new Promise((resolve) => {
+            resolve(expectedResponseValue);
+          }).then(() => {
+            setTimeout(next(), 5000); // it will time out
+          })
+        ), 3000).catch((errBackoffResp) => {
+          expect(errBackoffResp instanceof Error).toBe(true);
+          expect(errBackoffResp.message).toBe('BACKOFF_TIMEOUT');
+          done();
+        });
+      }, 10000);
+    });
   });
 })();

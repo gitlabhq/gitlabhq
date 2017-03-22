@@ -8,7 +8,7 @@
   .alert.alert-danger
     Someone edited the #{issuable.class.model_name.human.downcase} the same time you did.
     Please check out
-    = link_to "the #{issuable.class.model_name.human.downcase}", polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), target: "_blank"
+    = link_to "the #{issuable.class.model_name.human.downcase}", polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), target: "_blank", rel: 'noopener noreferrer'
     and make sure your changes will not unintentionally remove theirs
 
 .form-group

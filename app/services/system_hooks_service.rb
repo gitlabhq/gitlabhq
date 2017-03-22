@@ -24,10 +24,9 @@ class SystemHooksService
         key: model.key,
         id: model.id
       )
+ 
       if model.user
-        data.merge!(
-          username: model.user.username
-        )
+        data[:username] = model.user.username
       end
     when Project
       data.merge!(project_data(model))
@@ -35,8 +34,6 @@ class SystemHooksService
       if event == :rename || event == :transfer
         data[:old_path_with_namespace] = model.old_path_with_namespace
       end
-
-      data
     when User
       data.merge!({
         name: model.name,
@@ -59,6 +56,8 @@ class SystemHooksService
     when GroupMember
       data.merge!(group_member_data(model))
     end
+    
+    data
   end
 
   def build_event_name(model, event)

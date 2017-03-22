@@ -205,6 +205,7 @@ class Project < ActiveRecord::Base
   validates :name, uniqueness: { scope: :namespace_id }
   validates :path, uniqueness: { scope: :namespace_id }
   validates :import_url, addressable_url: true, if: :external_import?
+  validates :import_url, importable_url: true, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,

@@ -6,7 +6,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableCollections
   include SpammableActions
 
-  prepend_before_action :authenticate_user!, only: [:export_csv]
+  prepend_before_action :authenticate_user!, only: [:new, :export_csv]
 
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
@@ -154,7 +154,7 @@ class Projects::IssuesController < Projects::ApplicationController
       end
 
       format.json do
-        render json: @issue.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
+        render json: @issue.to_json(include: { milestone: {}, assignee: { only: [:name, :username], methods: [:avatar_url] }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
       end
     end
 

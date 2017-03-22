@@ -37,6 +37,7 @@ var config = {
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     merge_request_widget: './merge_request_widget/ci_bundle.js',
     mr_widget_ee:         './merge_request_widget/widget_bundle.js',
+    monitoring:           './monitoring/monitoring_bundle.js',
     network:              './network/network_bundle.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
@@ -117,7 +118,7 @@ var config = {
     // create cacheable common library bundle for all d3 chunks
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common_d3',
-      chunks: ['graphs', 'users'],
+      chunks: ['graphs', 'users', 'monitoring'],
     }),
 
     // create cacheable common library bundles
