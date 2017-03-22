@@ -1,4 +1,0 @@
----
-title: 'API: - Make subscription API more RESTful. Use `post ":project_id/:subscribable_type/:subscribable_id/subscribe"` to subscribe and `post ":project_id/:subscribable_type/:subscribable_id/unsubscribe"` to unsubscribe from a resource.'
-merge_request: 9325
-author: Robert Schilling

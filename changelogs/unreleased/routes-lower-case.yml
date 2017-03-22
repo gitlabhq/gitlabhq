@@ -1,4 +1,0 @@
----
-title: Remove repeated routes.path check for postgresql database
-merge_request:
-author: mhasbini
