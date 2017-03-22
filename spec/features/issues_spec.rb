@@ -13,6 +13,13 @@ describe 'Issues', feature: true do
     user2 = create(:user)
 
     project.team << [[@user, user2], :developer]
+
+    project.repository.create_file(
+      @user,
+      '.gitlab/issue_templates/bug.md',
+      'this is a test "bug" template',
+      message: 'added issue template',
+      branch_name: 'master')
   end
 
   describe 'Edit issue' do
@@ -598,6 +605,16 @@ describe 'Issues', feature: true do
         dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
 
         expect(page.find_field("issue_description").value).to match /\n\n$/
+      end
+    end
+
+    context 'form filled by URL parameters' do
+      before do
+        visit new_namespace_project_issue_path(project.namespace, project, issuable_template: 'bug')
+      end
+
+      it 'fills in template' do
+        expect(find('.js-issuable-selector .dropdown-toggle-text')).to have_content('bug')
       end
     end
   end
