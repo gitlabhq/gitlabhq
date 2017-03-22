@@ -151,6 +151,9 @@ everything is working correctly:
 
 ## Enable tracking database
 
+NOTE: This step is required only if you want to enable the new Disaster
+Recovery feature in Alpha shipped in GitLab 9.0.
+
 Geo secondary nodes now can keep track of replication status and recover
 automatically from some replication issues. To get this feature enabled,
 you need to activate the Tracking Database.
