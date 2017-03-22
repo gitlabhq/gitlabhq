@@ -104,7 +104,6 @@ module API
     mount ::API::Namespaces
     mount ::API::Notes
     mount ::API::NotificationSettings
-    mount ::API::RegistryEvents
     mount ::API::Pipelines
     mount ::API::ProjectHooks
     mount ::API::Projects

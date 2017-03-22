@@ -63,7 +63,6 @@ namespace :admin do
   resource :background_jobs, controller: 'background_jobs', only: [:show]
   resource :system_info, controller: 'system_info', only: [:show]
   resources :requests_profiles, only: [:index, :show], param: :name, constraints: { name: /.+\.html/ }
-  resource :container_registry, controller: 'container_registry', only: [:show]
 
   resources :projects, only: [:index]
 
@@ -94,7 +93,6 @@ namespace :admin do
     resources :services, only: [:index, :edit, :update]
     put :reset_runners_token
     put :reset_health_check_token
-    put :reset_container_registry_token
     put :clear_repository_check_states
   end
 

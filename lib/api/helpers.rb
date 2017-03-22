@@ -111,16 +111,6 @@ module API
       end
     end
 
-    def authenticate_container_registry_access_token!
-      token = request.headers['X-Registry-Token']
-      unless token.present? && ActiveSupport::SecurityUtils.variable_size_secure_compare(
-        token,
-        current_application_settings.container_registry_access_token
-      )
-        unauthorized!
-      end
-    end
-
     def authenticated_as_admin!
       authenticate!
       forbidden! unless current_user.is_admin?

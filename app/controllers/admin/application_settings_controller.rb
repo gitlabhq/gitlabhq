@@ -29,12 +29,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     redirect_to :back
   end
 
-  def reset_container_registry_token
-    @application_setting.reset_container_registry_access_token!
-    flash[:notice] = 'New container registry access token has been generated!'
-    redirect_to :back
-  end
-
   def clear_repository_check_states
     RepositoryCheck::ClearWorker.perform_async
 

@@ -4,7 +4,6 @@ class ApplicationSetting < ActiveRecord::Base
 
   add_authentication_token_field :runners_registration_token
   add_authentication_token_field :health_check_access_token
-  add_authentication_token_field :container_registry_access_token
 
   CACHE_KEY = 'application_setting.last'.freeze
   DOMAIN_LIST_SEPARATOR = %r{\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
@@ -158,7 +157,6 @@ class ApplicationSetting < ActiveRecord::Base
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
-  before_save :ensure_container_registry_access_token
 
   after_commit do
     Rails.cache.write(CACHE_KEY, self)
@@ -330,10 +328,6 @@ class ApplicationSetting < ActiveRecord::Base
 
   def health_check_access_token
     ensure_health_check_access_token!
-  end
-
-  def container_registry_access_token
-    ensure_container_registry_access_token!
   end
 
   def sidekiq_throttling_enabled?

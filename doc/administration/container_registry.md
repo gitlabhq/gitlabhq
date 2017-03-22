@@ -87,23 +87,6 @@ auth:
     rootcertbundle: /root/certs/certbundle
 ```
 
-Also a notification endpoint must be configured with the token from
-Admin Area -> Overview -> Registry (`/admin/container_registry`) like in the following sample:
-
-```
-notifications:
-  endpoints:
-    - name: listener
-      url: https://gitlab.example.com/api/v3/registry_events
-      headers:
-        X-Registry-Token: [57Cx95fc2zHFh93VTiGD]
-      timeout: 500ms
-      threshold: 5
-      backoff: 1s
-```
-
-Check the [Registry endpoint configuration][registry-endpoint] for details.
-
 ## Container Registry domain configuration
 
 There are two ways you can configure the Registry's external domain.
@@ -600,7 +583,6 @@ notifications:
 [storage-config]: https://docs.docker.com/registry/configuration/#storage
 [registry-http-config]: https://docs.docker.com/registry/configuration/#http
 [registry-auth]: https://docs.docker.com/registry/configuration/#auth
-[registry-endpoint]: https://docs.docker.com/registry/notifications/#/configuration
 [token-config]: https://docs.docker.com/registry/configuration/#token
 [8-8-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-8-stable/doc/administration/container_registry.md
 [registry-ssl]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/support/nginx/registry-ssl
