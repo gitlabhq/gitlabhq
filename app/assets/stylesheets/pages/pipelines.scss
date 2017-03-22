@@ -13,6 +13,14 @@
     white-space: nowrap;
   }
 
+  .table-holder {
+    width: 100%;
+
+    @media (max-width: $screen-sm-max) {
+      overflow: auto;
+    }
+  }
+
   .commit-title {
     margin: 0;
   }
@@ -100,7 +108,6 @@
       width: 100%;
       overflow: auto;
     }
-
   }
 }
 
