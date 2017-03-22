@@ -140,7 +140,9 @@ sensitive data in the database. Any secondary node must have the
     sudo -i
     ```
 
-1. Create `database_geo.yml` with the information of your secondary PostgreSQL database.
+1. (This step is required only if you want to enable the new Disaster Recovery
+   feature in Alpha shipped in GitLab 9.0) Create `database_geo.yml` with the
+   information of your secondary PostgreSQL database.
    Note that this must be a totally different instance from the primary, since this
    is where the secondary will track its internal state:
 
@@ -148,27 +150,31 @@ sensitive data in the database. Any secondary node must have the
     sudo cp /home/git/gitlab/config/database_geo.yml.postgresql /home/git/gitlab/config/database_geo.yml
     ```
 
-1. Edit the content of `database_geo.yml` in `production:` like the example below:
-   
-   ```yaml
-   #
-   # PRODUCTION
-   #
-   production:
-     adapter: postgresql
-     encoding: unicode
-     database: gitlabhq_geo_production
-     pool: 10
-     username: gitlab_geo
-     # password:
-     host: /var/opt/gitlab/geo-postgresql
-     port: 5431
-   
-   ```
+1. (This step is required only if you want to enable the new Disaster Recovery
+   feature in Alpha shipped in GitLab 9.0) Edit the content of `database_geo.yml`
+   in `production:` to be like the following:
 
-1. Create the database `gitlabhq_geo_production` in that PostgreSQL instance.
+     ```yaml
+     #
+     # PRODUCTION
+     #
+     production:
+       adapter: postgresql
+       encoding: unicode
+       database: gitlabhq_geo_production
+       pool: 10
+       username: gitlab_geo
+       # password:
+       host: /var/opt/gitlab/geo-postgresql
+       port: 5431
+     ```
 
-1. Set up the Geo tracking database:
+1. (This step is required only if you want to enable the new Disaster Recovery
+   feature in Alpha shipped in GitLab 9.0) Create the database
+   `gitlabhq_geo_production` in that PostgreSQL instance.
+
+1. (This step is required only if you want to enable the new Disaster Recovery
+   feature in Alpha shipped in GitLab 9.0) Set up the Geo tracking database:
 
     ```
     bundle exec rake geo:db:migrate
