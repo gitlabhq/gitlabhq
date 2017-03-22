@@ -48,8 +48,8 @@ Every **Technical Article** contains, in the very beginning, a blockquote with t
 - A reference to the **author's name** and **GitLab.com handle**
 
 ```md
-> Type: tutorial
-> Level: intermediary
+> Type: tutorial ||
+> Level: intermediary ||
 > Author: [Name Surname](https://gitlab.com/username)
 ```
 
