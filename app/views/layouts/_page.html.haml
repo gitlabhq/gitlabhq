@@ -3,7 +3,7 @@
     .layout-nav
       .container-fluid
         = render "layouts/nav/#{nav}"
-  .content-wrapper{ class: "#{layout_nav_class}" }
+  .content-wrapper{ class: layout_nav_class }
     = yield :sub_nav
     .alert-wrapper
       = render "layouts/broadcast"
