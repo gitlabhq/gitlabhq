@@ -1,7 +1,5 @@
 import Vue from 'vue';
-import VueResource from 'vue-resource';
-
-Vue.use(VueResource);
+import './vue_resource_interceptor';
 
 if (process.env.NODE_ENV !== 'production') {
   Vue.config.productionTip = false;
