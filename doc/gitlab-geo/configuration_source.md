@@ -33,6 +33,7 @@ next steps can be summed up to:
 
 1. Configure the primary node
 1. Replicate some required configurations between the primary and the secondaries
+1. Configure a second, tracking database for each secondary
 1. Start GitLab in the secondary node's machine
 1. Configure every secondary node in the primary's Admin screen
 
@@ -46,6 +47,9 @@ first two steps of the [Setup instructions](README.md#setup-instructions):
 1. You have set up the database replication.
 1. Your secondary node is allowed to communicate via HTTP/HTTPS and SSH with
    your primary node (make sure your firewall is not blocking that).
+1. You have set up another PostgreSQL database that can store writes for the secondary.
+   Note that this MUST be on another instance, since the primary replicated database
+   is read-only.
 
 Some of the following steps require to configure the primary and secondary
 nodes almost at the same time. For your convenience make sure you have SSH
@@ -134,6 +138,46 @@ sensitive data in the database. Any secondary node must have the
 
     ```
     sudo -i
+    ```
+
+1. (This step is required only if you want to enable the new Disaster Recovery
+   feature in Alpha shipped in GitLab 9.0) Create `database_geo.yml` with the
+   information of your secondary PostgreSQL database.
+   Note that this must be a totally different instance from the primary, since this
+   is where the secondary will track its internal state:
+
+    ```
+    sudo cp /home/git/gitlab/config/database_geo.yml.postgresql /home/git/gitlab/config/database_geo.yml
+    ```
+
+1. (This step is required only if you want to enable the new Disaster Recovery
+   feature in Alpha shipped in GitLab 9.0) Edit the content of `database_geo.yml`
+   in `production:` to be like the following:
+
+     ```yaml
+     #
+     # PRODUCTION
+     #
+     production:
+       adapter: postgresql
+       encoding: unicode
+       database: gitlabhq_geo_production
+       pool: 10
+       username: gitlab_geo
+       # password:
+       host: /var/opt/gitlab/geo-postgresql
+       port: 5431
+     ```
+
+1. (This step is required only if you want to enable the new Disaster Recovery
+   feature in Alpha shipped in GitLab 9.0) Create the database
+   `gitlabhq_geo_production` in that PostgreSQL instance.
+
+1. (This step is required only if you want to enable the new Disaster Recovery
+   feature in Alpha shipped in GitLab 9.0) Set up the Geo tracking database:
+
+    ```
+    bundle exec rake geo:db:migrate
     ```
 
 1. Open the secrets file and paste the value of `db_key_base` you copied in the
