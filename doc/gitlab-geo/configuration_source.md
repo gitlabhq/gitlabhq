@@ -166,6 +166,8 @@ sensitive data in the database. Any secondary node must have the
    
    ```
 
+1. Create the database `gitlabhq_geo_production` in that PostgreSQL instance.
+
 1. Set up the Geo tracking database:
 
     ```
