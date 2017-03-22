@@ -83,6 +83,8 @@ module API
           return no_content!
         end
 
+        Gitlab::Database::LoadBalancing::Session.current.use_primary!
+
         new_update = current_runner.ensure_runner_queue_value
         result = ::Ci::RegisterJobService.new(current_runner).execute
 
