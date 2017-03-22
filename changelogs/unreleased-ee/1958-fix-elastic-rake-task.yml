@@ -1,4 +1,0 @@
----
-title: Check the right index mapping based on Rails environment for rake gitlab:elastic:add_feature_visiblity_levels_to_project
-merge_request: 1473
-author:
