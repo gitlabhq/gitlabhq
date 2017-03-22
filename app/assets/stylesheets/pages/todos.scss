@@ -47,6 +47,7 @@
 
   .todo-avatar,
   .todo-actions {
+    @include transition(opacity);
     -webkit-flex: 0 0 auto;
     flex: 0 0 auto;
   }
@@ -75,10 +76,6 @@
       border-color: $white-normal;
     }
 
-    .title {
-      font-weight: normal;
-    }
-
     .todo-avatar,
     .todo-item {
       opacity: .2;
@@ -91,6 +88,8 @@
 }
 
 .todo-item {
+  @include transition(opacity);
+
   .todo-title {
     display: flex;
 
