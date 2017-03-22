@@ -214,9 +214,9 @@
 
     - issuable.assignees.each do |assignee|
       :javascript
-        //document.addEventListener('DOMContentLoaded', () => {
-        //  gl.sidebarAssigneesOptions.assignees.addUser("#{assignee.name}", "#{assignee.username}", "#{assignee.avatar_url}");
-        //});
+        document.addEventListener('DOMContentLoaded', () => {
+          gl.sidebarAssigneesOptions.assignees.addUser(parseInt("#{assignee.id}", 10), "#{assignee.name}", "#{assignee.username}", "#{assignee.avatar_url}", true);
+        });
 
     :javascript
       gl.IssuableResource = new gl.SubbableResource('#{issuable_json_path(issuable)}');

@@ -37,6 +37,10 @@ const sidebarAssigneesOptions = () => ({
         return 'multiple-assignees';
       }
     },
+    hideComponent() {
+      return !this.assignees.saved;
+    }
+
   },
   components: {
     'no-assignee': NoAssignee,
@@ -47,7 +51,7 @@ const sidebarAssigneesOptions = () => ({
   template: `
     <div class="sidebar-assignees">
       <assignee-title :numberOfAssignees="assignees.users.length" />
-      <component :is="componentName" :assignees="assignees" />
+      <component :is="componentName" :assignees="assignees" :class="{ hidden: hideComponent }" />
     </div>
   `,
 });

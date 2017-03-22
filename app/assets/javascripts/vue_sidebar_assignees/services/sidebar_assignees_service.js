@@ -3,6 +3,7 @@ import VueResource from 'vue-resource';
 
 require('~/vue_shared/vue_resource_interceptor');
 
+Vue.http.options.emulateJSON = true;
 Vue.use(VueResource);
 
 export default class SidebarAssigneesService {
@@ -11,11 +12,9 @@ export default class SidebarAssigneesService {
     this.sidebarAssigneeResource = Vue.resource(path);
   }
 
-  add(userIds) {
+  update(userIds) {
     return this.sidebarAssigneeResource.update({
       [this.field]: userIds
-    }, {
-      emulateJSON: true
     });
   }
 }

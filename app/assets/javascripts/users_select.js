@@ -258,7 +258,7 @@
                   })
                   .get();
 
-                gl.sidebarAssigneesOptions.assignees.addUserIds(selected);
+                gl.sidebarAssigneesOptions.assignees.saveUsers();
               }
 
               $selectbox.hide();
@@ -276,16 +276,30 @@
                     .find("input[name='" + ($dropdown.data('field-name')) + "'][value!=0]");
 
                 if (user.beforeDivider && user.name.toLowerCase() === 'unassigned') {
-                  previouslySelected.each((index, element) => element.remove());
+                  // Unassigned selected
+                  previouslySelected.each((index, element) => {
+                    const id = parseInt(element.value, 10);
+                    gl.sidebarAssigneesOptions.assignees.removeUser(id);
+                    element.remove()
+                  });
                 } else if (isActive) {
+                  // user selected
+                  gl.sidebarAssigneesOptions.assignees.addUser(user.id, user.name, user.username, user.avatar_url);
+
+                  // Remove unassigned selection (if it was previously selected)
                   const unassignedSelected = $dropdown.closest('.selectbox')
                     .find("input[name='" + ($dropdown.data('field-name')) + "'][value=0]");
 
                   if (unassignedSelected) {
                     unassignedSelected.remove();
+                    gl.sidebarAssigneesOptions.assignees.removeUser(unassignedSelected);
                   }
                 } else if (!isActive && previouslySelected.length === 0) {
+                  // Select unassigned because there is no more selected users
                   glDropdown.addInput($dropdown.data('field-name'), 0, {});
+                } else {
+                  // User unselected
+                  gl.sidebarAssigneesOptions.assignees.removeUser(user.id);
                 }
               }
 
