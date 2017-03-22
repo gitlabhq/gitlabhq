@@ -5,10 +5,13 @@ Vue.use(VueResource);
 
 export default class MRWidgetService {
   constructor(mr) {
+    this.store = mr;
+
     this.mergeResource = Vue.resource(mr.mergePath);
     this.cancelAutoMergeResource = Vue.resource(mr.cancelAutoMergePath);
     this.removeWIPResource = Vue.resource(mr.removeWIPPath);
     this.removeSourceBranchResource = Vue.resource(mr.sourceBranchPath);
+    this.deploymentsResource = Vue.resource(mr.ciEnvironmentsStatusPath);
   }
 
   merge(data) {
@@ -25,6 +28,16 @@ export default class MRWidgetService {
 
   removeSourceBranch() {
     return this.removeSourceBranchResource.delete();
+  }
+
+  fetchDeployments() {
+    this.deploymentsResource.get()
+      .then(res => res.json())
+      .then((res) => {
+        if (res.length) {
+          this.store.deployments = res;
+        }
+      });
   }
 
 }

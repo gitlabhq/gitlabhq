@@ -2,6 +2,7 @@ import Vue from 'vue';
 import WidgetHeader from './components/mr_widget_header';
 import WidgetMergeHelp from './components/mr_widget_merge_help';
 import WidgetPipeline from './components/mr_widget_pipeline';
+import WidgetDeployment from './components/mr_widget_deployment';
 import WidgetRelatedLinks from './components/mr_widget_related_links';
 import MergedState from './components/states/mr_widget_merged';
 import ClosedState from './components/states/mr_widget_closed';
@@ -46,11 +47,21 @@ const mrWidgetOptions = () => ({
     shouldRenderRelatedLinks() {
       return this.mr.relatedLinks;
     },
+    hasDeployment() {
+      return this.mr.deployments.length;
+    },
+  },
+  created() {
+    this.service.startPolling();
+  },
+  mounted() {
+    this.service.fetchDeployments();
   },
   components: {
     'mr-widget-header': WidgetHeader,
     'mr-widget-merge-help': WidgetMergeHelp,
     'mr-widget-pipeline': WidgetPipeline,
+    'mr-widget-deployment': WidgetDeployment,
     'mr-widget-related-links': WidgetRelatedLinks,
     'mr-widget-merged': MergedState,
     'mr-widget-closed': ClosedState,
@@ -72,6 +83,7 @@ const mrWidgetOptions = () => ({
     <div class="mr-state-widget">
       <mr-widget-header :mr="mr" />
       <mr-widget-pipeline v-if="shouldRenderPipelines" :mr="mr" />
+      <mr-widget-deployment v-if="hasDeployment" :mr="mr" />
       <component :is="componentName" :mr="mr" :service="service" />
       <mr-widget-related-links v-if="shouldRenderRelatedLinks" :related-links="mr.relatedLinks" />
       <mr-widget-merge-help v-if="shouldRenderMergeHelp" />

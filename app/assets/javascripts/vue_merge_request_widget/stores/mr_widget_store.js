@@ -21,6 +21,7 @@ export default class MergeRequestStore {
     this.commitMessageWithDescription = data.merge_commit_message_with_description;
     this.divergedCommitsCount = data.diverged_commits_count;
     this.pipeline = data.pipeline;
+    this.deployments = data.deployments || [];
 
     if (data.issues_links) {
       const { closing, mentioned_but_not_closing } = data.issues_links;
@@ -53,6 +54,7 @@ export default class MergeRequestStore {
     this.emailPatchesPath = data.email_patches_path;
     this.plainDiffPath = data.plain_diff_path;
     this.createIssueToResolveDiscussionsPath = data.create_issue_to_resolve_discussions_path;
+    this.ciEnvironmentsStatusPath = data.ci_environments_status_url;
 
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
     this.canRevert = currentUser.can_revert || false;

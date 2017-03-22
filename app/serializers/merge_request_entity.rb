@@ -173,6 +173,12 @@ class MergeRequestEntity < IssuableEntity
                                      merge_request_for_resolving_discussions_of: merge_request.iid)
   end
 
+  expose :ci_environments_status_url do |merge_request|
+    ci_environments_status_namespace_project_merge_request_path(merge_request.project.namespace,
+                                                                merge_request.project,
+                                                                merge_request)
+  end
+
   private
 
   delegate :current_user, to: :request
