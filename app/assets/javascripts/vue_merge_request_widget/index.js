@@ -51,9 +51,6 @@ const mrWidgetOptions = () => ({
       return this.mr.deployments.length;
     },
   },
-  created() {
-    this.service.startPolling();
-  },
   mounted() {
     this.service.fetchDeployments();
   },
