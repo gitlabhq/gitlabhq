@@ -35,7 +35,7 @@ to the latest release.
 ## Deploy Board requirements
 
 In order to gather the deployment status you need to label your deployments,
-replica sets and pods with the `app` key and use the `CI_ENVIRONMENT_SLUG` as
+replica sets, and pods with the `app` key and use the `CI_ENVIRONMENT_SLUG` as
 a value. Each project will need to have a unique namespace in Kubernetes as well.
 
 ![Deploy Boards Kubernetes Label](img/deploy_boards_kubernetes_label.png)
@@ -59,14 +59,16 @@ The complete requirements for Deploy Boards to display for a specific [environme
    which can simplify the build and deployment process.
 
 Once all of the above are set up and the pipeline has run at least once,
-navigate to the environments page under **Pipelines ➔ Environments**. GitLab
-will query Kubernetes for the state of each node (e.g., waiting, deploying,
-finished, unknown) and the Deploy Board status will be displayed on
-the environments page.
+navigate to the environments page under **Pipelines ➔ Environments**.
 
-Bear in mind that Deploy Boards are collapsed under their respective environment,
-and can be expanded. Only top-level environments are expanded by default. For example if
-you use `review/*` for [review apps], the Deploy Board will appear collapsed initially.
+Deploy Boards will be collapsed by default, and you have to explicitly click
+the triangle next to their respective environment name in order to see them.
+GitLab will then query Kubernetes for the state of each node (e.g., waiting,
+deploying, finished, unknown), and the Deploy Board status will finally appear.
+
+GitLab will only display a Deploy Board for top-level environments. Foldered
+environments like `review/*` (usually used for [Review Apps]) won't have a
+Deploy Board attached to them.
 
 ## Using the Kubernetes deploy example project
 
