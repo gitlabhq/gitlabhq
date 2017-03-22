@@ -16,19 +16,13 @@ const sidebarAssigneesOptions = () => ({
     const element = document.querySelector(selector);
     const path = element.dataset.path;
     const field = element.dataset.field;
-
-    const currentUser = {
-      id: parseInt(element.dataset.userId, 10),
-      name: element.dataset.name,
-      username: element.dataset.username,
-    }
+    const currentUserId = parseInt(element.dataset.userId, 10);
 
     const service = new SidebarAssigneesService(path, field);
-    const assignees = new SidebarAssigneesStore(currentUser);
+    const assignees = new SidebarAssigneesStore(currentUserId, service);
 
     return {
       assignees,
-      service,
     };
   },
   computed: {
@@ -53,7 +47,7 @@ const sidebarAssigneesOptions = () => ({
   template: `
     <div class="sidebar-assignees">
       <assignee-title :numberOfAssignees="assignees.users.length" />
-      <component :is="componentName" :assignees="assignees" :service="service" />
+      <component :is="componentName" :assignees="assignees" />
     </div>
   `,
 });

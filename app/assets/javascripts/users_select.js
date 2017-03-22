@@ -236,6 +236,17 @@
             // inputId: 'issue_assignee_id',
 
             hidden: function(e) {
+              if ($dropdown.hasClass('js-multiselect')) {
+                const selected = $selectbox
+                  .find('input[name="' + $dropdown.data('field-name') + '"]')
+                  .map(function() {
+                    return parseInt(this.value, 10);
+                  })
+                  .get();
+
+                gl.sidebarAssigneesOptions.assignees.addUserIds(selected);
+              }
+
               $selectbox.hide();
               // display:block overrides the hide-collapse rule
               return $value.css('display', '');

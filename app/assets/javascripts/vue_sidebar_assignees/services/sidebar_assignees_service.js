@@ -11,9 +11,9 @@ export default class SidebarAssigneesService {
     this.sidebarAssigneeResource = Vue.resource(path);
   }
 
-  add(userId) {
+  add(userIds) {
     return this.sidebarAssigneeResource.update({
-      [this.field]: userId
+      [this.field]: userIds
     }, {
       emulateJSON: true
     });
