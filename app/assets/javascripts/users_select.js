@@ -216,9 +216,9 @@
             selectable: true,
             fieldName: $dropdown.data('field-name'),
             toggleLabel: function(selected, el, glDropdown) {
-              if (this.multiSelect) {
-                const inputValue = glDropdown.filterInput.val();
+              const inputValue = glDropdown.filterInput.val();
 
+              if (this.multiSelect && inputValue === '') {
                 const users = glDropdown.fullData.filter((r) => {
                   return typeof r === 'object' && !Object.prototype.hasOwnProperty.call(r, 'beforeDivider');
                 });
