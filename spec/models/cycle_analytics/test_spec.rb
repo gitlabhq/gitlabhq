@@ -14,6 +14,7 @@ describe 'CycleAnalytics#test', feature: true do
       issue = context.create(:issue, project: context.project)
       merge_request = context.create_merge_request_closing_issue(issue)
       pipeline = context.create(:ci_pipeline, ref: merge_request.source_branch, sha: merge_request.diff_head_sha, project: context.project)
+      merge_request.update(head_pipeline: pipeline)
       { pipeline: pipeline, issue: issue }
     end,
     start_time_conditions: [["pipeline is started", -> (context, data) { data[:pipeline].run! }]],
