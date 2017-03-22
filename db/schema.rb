@@ -61,7 +61,6 @@ ActiveRecord::Schema.define(version: 20170405080720) do
     t.boolean "shared_runners_enabled", default: true, null: false
     t.integer "max_artifacts_size", default: 100, null: false
     t.string "runners_registration_token"
-    t.integer "max_pages_size", default: 100, null: false
     t.boolean "require_two_factor_authentication", default: false
     t.integer "two_factor_grace_period", default: 48
     t.boolean "metrics_enabled", default: false
@@ -111,6 +110,7 @@ ActiveRecord::Schema.define(version: 20170405080720) do
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
     t.integer "terminal_max_session_time", default: 0, null: false
+    t.integer "max_pages_size", default: 100, null: false
     t.string "default_artifacts_expire_in", default: "0", null: false
     t.integer "unique_ips_limit_per_user"
     t.integer "unique_ips_limit_time_window"
@@ -289,6 +289,23 @@ ActiveRecord::Schema.define(version: 20170405080720) do
   add_index "ci_runners", ["is_shared"], name: "index_ci_runners_on_is_shared", using: :btree
   add_index "ci_runners", ["locked"], name: "index_ci_runners_on_locked", using: :btree
   add_index "ci_runners", ["token"], name: "index_ci_runners_on_token", using: :btree
+
+  create_table "ci_scheduled_triggers", force: :cascade do |t|
+    t.integer "project_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer "owner_id"
+    t.string "description"
+    t.string "cron"
+    t.string "cron_time_zone"
+    t.datetime "next_run_at"
+    t.datetime "last_run_at"
+    t.string "ref"
+  end
+
+  add_index "ci_scheduled_triggers", ["next_run_at"], name: "index_ci_scheduled_triggers_on_next_run_at", using: :btree
+  add_index "ci_scheduled_triggers", ["project_id"], name: "index_ci_scheduled_triggers_on_project_id", using: :btree
 
   create_table "ci_trigger_requests", force: :cascade do |t|
     t.integer "trigger_id", null: false
@@ -689,8 +706,8 @@ ActiveRecord::Schema.define(version: 20170405080720) do
     t.integer "visibility_level", default: 20, null: false
     t.boolean "request_access_enabled", default: false, null: false
     t.datetime "deleted_at"
-    t.text "description_html"
     t.boolean "lfs_enabled"
+    t.text "description_html"
     t.integer "parent_id"
   end
 
@@ -1242,8 +1259,8 @@ ActiveRecord::Schema.define(version: 20170405080720) do
     t.datetime "otp_grace_period_started_at"
     t.boolean "ldap_email", default: false, null: false
     t.boolean "external", default: false
-    t.string "incoming_email_token"
     t.string "organization"
+    t.string "incoming_email_token"
     t.boolean "authorized_projects_populated"
     t.boolean "ghost"
     t.boolean "notified_of_own_activity"
@@ -1298,6 +1315,7 @@ ActiveRecord::Schema.define(version: 20170405080720) do
 
   add_foreign_key "boards", "projects"
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
+  add_foreign_key "ci_scheduled_triggers", "users", column: "owner_id", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
