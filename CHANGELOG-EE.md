@@ -1,5 +1,50 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.0.0 (2017-03-22)
+
+- Geo: Replicate repository creation in Geo secondary node. !952
+- Make approval system notes lowercase. !1125
+- Issues can be exported as CSV, via email. !1126
+- Try to update mirrors again after 15 minutes if the previous update failed. !1183
+- Adds abitlity to render deploy boards in the frontend side. !1233
+- Add filtered search to MR page. !1243
+- Update project list API returns with approvals_before_merge attribute. !1245 (Geoff Webster)
+- Catch Net::LDAP::DN exceptions in EE::Gitlab::LDAP::Group. !1260
+- API: Use `post ":id/#{type}/:subscribable_id/subscribe"` to subscribe and `post ":id/#{type}/:subscribable_id/unsubscribe"` to unsubscribe from a resource. !1274 (Robert Schilling)
+- API: Remove deprecated fields Notes#upvotes and Notes#downvotes. !1275 (Robert Schilling)
+- Deploy board backend. !1278
+- API: Remove the ProjectGitHook API. !1301 (Robert Schilling)
+- Expose elasticsearch client params for AWS signing and HTTPS. !1305 (Matt Gresko)
+- Fix LDAP DN case-mismatch bug in LDAP group sync. !1337
+- Remove es6 file extension from JavaScript files. !1344 (winniehell)
+- Geo: Don't load dependent models when fetching an existing GeoNode from the database. !1348
+- Parallelise the gitlab:elastic:index_database Rake task. !1361
+- Robustify reading attributes for elasticsearch. !1365
+- Introduce one additional thread into bin/elastic_repo_indexer. !1372
+- Show hook errors for fast-forward merges. !1375
+- Allow all parameters of group webhooks to be set through the UI. !1376
+- Fix Elasticsearch queries when a group_id is specified. !1423
+- Check the right index mapping based on Rails environment for rake gitlab:elastic:add_feature_visiblity_levels_to_project. !1473
+- Fix issues with another milestone that has a matching list label could not be added to a board.
+- Only admins or group owners can set LDAP overrides.
+- Add support for load balancing database queries.
+- Only replace non-approval mr-widget-footer on getMergeStatus.
+- Remove repository_storage from V4 "/application/settings" settings API.
+- Added headers to protected branches access dropdowns.
+- Remove support for Git Annex.
+- Repositioned multiple issue boards selector.
+- Added back weight in issue rows on issue list.
+- Add basic support for GitLab Geo file transfers over HTTP.
+- Added weight slash command.
+- Set deployment status invalid when the environments does not match a k8s label.
+- Combined deploy keys, push rules, protect branches and mirror repository settings options into a single one called Repository.
+- Rebase - fix commiter email & name.
+- Adds a EE specific dev favicon.
+- Elastic security fix: Respect feature visibility level.
+- Update Elasticsearch to 5.1.
+- [Elasticsearch] More efficient search.
+- Get Geo secondaries nodes statuses over AJAX.
+
 ## 8.17.4 (2017-03-19)
 
 - Elastic security fix: Respect feature visibility level.

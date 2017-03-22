@@ -1,4 +1,0 @@
----
-title: Parallelise the gitlab:elastic:index_database Rake task
-merge_request: 1361
-author:

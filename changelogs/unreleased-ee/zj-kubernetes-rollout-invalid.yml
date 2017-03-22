@@ -1,4 +1,0 @@
----
-title: Set deployment status invalid when the environments does not match a k8s label
-merge_request:
-author:

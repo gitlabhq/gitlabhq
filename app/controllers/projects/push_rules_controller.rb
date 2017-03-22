@@ -8,12 +8,6 @@ class Projects::PushRulesController < Projects::ApplicationController
 
   layout "project_settings"
 
-  def index
-    project.create_push_rule unless project.push_rule
-
-    @push_rule = project.push_rule
-  end
-
   def update
     @push_rule = project.push_rule
     @push_rule.update_attributes(push_rule_params)
