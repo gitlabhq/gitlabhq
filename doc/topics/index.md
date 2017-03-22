@@ -9,14 +9,24 @@ related to an specific subject or theme, including:
 
 ## Topics
 
-- [Continuous Integration (GitLab CI)](ci/)
+- Idea to Production
+  - GitLab Installation
+  - GitLab Workflow
+    - Chat
+    - Issue
+    - Plan
+    - Code
+    - Commit
+    - Test
+    - Review
+    - Staging
+    - Production
+    - Feedback
+- Authentication
+- Continuous Integration (GitLab CI)
+- GitLab Flow (branching strategy)
 - [GitLab Pages](pages/)
-- [Idea to Production](idea-to-production/)
-  - [GitLab Installation](idea-to-production/installation/)
-  - [GitLab Workflow](idea-to-production/workflow/)
-- [Authentication](authentication/)
-- [Deployment from GitLab](deployment/)
-- [Integrations](integration/)
-- [GitLab Flow (branching strategy)](gitlab-flow/)
+- Integrations
 
-> Note: indexes currently under development. Will be available soon.
+> Note: non-linked indexes are currently under development and subjected to change.
+More indexes will be available along the time.
