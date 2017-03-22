@@ -45,6 +45,7 @@ export default class MergeRequestStore {
     this.cancelAutoMergePath = data.cancel_merge_when_pipeline_succeeds_path;
     this.removeWIPPath = data.remove_wip_path;
     this.sourceBranchRemoved = !data.source_branch_exists;
+    this.shouldRemoveSourceBranch = (data.merge_params || {}).should_remove_source_branch || false;
     this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
     this.mergeWhenPipelineSucceeds = data.merge_when_pipeline_succeeds || false;
     this.mergePath = data.merge_path;
@@ -52,7 +53,6 @@ export default class MergeRequestStore {
     this.emailPatchesPath = data.email_patches_path;
     this.plainDiffPath = data.plain_diff_path;
     this.createIssueToResolveDiscussionsPath = data.create_issue_to_resolve_discussions_path;
-    this.shouldRemoveSourceBranch = (data.merge_params || {}).should_remove_source_branch || false;
 
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
     this.canRevert = currentUser.can_revert || false;

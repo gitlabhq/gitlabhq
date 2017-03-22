@@ -72,13 +72,11 @@ const mrWidgetOptions = () => ({
     <div class="mr-state-widget">
       <mr-widget-header :mr="mr" />
       <mr-widget-pipeline v-if="shouldRenderPipelines" :mr="mr" />
-      <component :is="componentName" :mr="mr" :service="service"></component>
+      <component :is="componentName" :mr="mr" :service="service" />
       <mr-widget-related-links v-if="shouldRenderRelatedLinks" :related-links="mr.relatedLinks" />
       <mr-widget-merge-help v-if="shouldRenderMergeHelp" />
     </div>
   `,
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-  new Vue(mrWidgetOptions()); // eslint-disable-line
-});
+document.addEventListener('DOMContentLoaded', () => new Vue(mrWidgetOptions()));
