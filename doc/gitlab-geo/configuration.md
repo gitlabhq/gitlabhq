@@ -46,6 +46,9 @@ first two steps of the [Setup instructions](README.md#setup-instructions):
 1. You have set up the database replication.
 1. Your secondary node is allowed to communicate via HTTP/HTTPS and SSH with
    your primary node (make sure your firewall is not blocking that).
+1. You nodes must have a NTP service running to synchronize the clocks. 
+   You can use different timezones, but the hour relative to UTC can't be more
+   than 60 seconds off from each node.
 
 Some of the following steps require to configure the primary and secondary
 nodes almost at the same time. For your convenience make sure you have SSH
@@ -150,7 +153,6 @@ sensitive data in the database. Any secondary node must have the
 1. Edit the /etc/gitlab/gitlab.rb:
 
     ```
-    geo_secondary_role['enable'] = true
     geo_postgresql['enable'] = true
     ```
 
@@ -162,6 +164,24 @@ sensitive data in the database. Any secondary node must have the
     ```
     sudo cp /opt/gitlab/embedded/service/gitlab-rails/config/database_geo.yml.postgresql /opt/gitlab/embedded/service/gitlab-rails/config/database_geo.yml
     ```
+
+1. Edit the content of `database_geo.yml` in `production:` like the example below:
+   
+   ```yaml
+   #
+   # PRODUCTION
+   #
+   production:
+     adapter: postgresql
+     encoding: unicode
+     database: gitlabhq_geo_production
+     pool: 10
+     username: gitlab_geo
+     # password:
+     host: /var/opt/gitlab/geo-postgresql
+     port: 5431
+   
+   ```
 
 1. Reconfigure GitLab:
 
