@@ -10,7 +10,6 @@ class Projects::BranchesController < Projects::ApplicationController
   def index
     @sort = params[:sort].presence || sort_value_name
     @branches = BranchesFinder.new(@repository, params).execute
-    @branches = Kaminari.paginate_array(@branches).page(params[:page])
 
     respond_to do |format|
       format.html do
