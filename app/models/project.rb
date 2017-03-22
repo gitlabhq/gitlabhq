@@ -405,29 +405,23 @@ class Project < ActiveRecord::Base
     @repository ||= Repository.new(path_with_namespace, self)
   end
 
-  def container_registry_path_with_namespace
-    path_with_namespace.downcase
-  end
-
-  def container_registry_allowed_paths
-    @container_registry_allowed_paths ||= [container_registry_path_with_namespace] +
-      container_images.map { |i| i.name_with_namespace }
-  end
-
   def container_registry
     return unless Gitlab.config.registry.enabled
 
     @container_registry ||= begin
-      token = Auth::ContainerRegistryAuthenticationService.full_access_token(container_registry_allowed_paths)
+      token = Auth::ContainerRegistryAuthenticationService.full_access_token(project)
+
       url = Gitlab.config.registry.api_url
       host_port = Gitlab.config.registry.host_port
+      # TODO, move configuration vars into ContainerRegistry::Registry, clean
+      # this method up afterwards
       ContainerRegistry::Registry.new(url, token: token, path: host_port)
     end
   end
 
   def container_registry_url
     if Gitlab.config.registry.enabled
-      "#{Gitlab.config.registry.host_port}/#{container_registry_path_with_namespace}"
+      "#{Gitlab.config.registry.host_port}/#{path_with_namespace.downcase}"
     end
   end
 

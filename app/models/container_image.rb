@@ -3,36 +3,16 @@ class ContainerImage < ActiveRecord::Base
 
   belongs_to :project
 
-  delegate :container_registry, :container_registry_allowed_paths,
-    :container_registry_path_with_namespace, to: :project
-
+  delegate :container_registry,  to: :project
   delegate :client, to: :container_registry
 
   validates :manifest, presence: true
 
   before_destroy :delete_tags
 
-  before_validation :update_token, on: :create
-  def update_token
-    paths = container_registry_allowed_paths << name_with_namespace
-    token = Auth::ContainerRegistryAuthenticationService.full_access_token(paths)
-    client.update_token(token)
-  end
-
-  def parent
-    project
-  end
-
-  def parent_changed?
-    project_id_changed?
-  end
-
- # def path
- #   [container_registry.path, name_with_namespace].compact.join('/')
- # end
-
-  def name_with_namespace
-    [container_registry_path_with_namespace, name].reject(&:blank?).join('/')
+  def registry
+    # TODO, container registry with image access level
+    token = Auth::ContainerRegistryAuthenticationService.image_token(self)
   end
 
   def tag(tag)
