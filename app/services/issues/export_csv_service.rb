@@ -36,7 +36,7 @@ module Issues
        'Author' => 'author_name',
        'Author Username' => -> (issue) { issue.author&.username },
        'Assignee' => 'assignee_name',
-       'Assignee Username' => -> (issue) { issue.assignee&.username },
+       'Assignee Username' => -> (issue) { issue.assignee_list },
        'Confidential' => -> (issue) { issue.confidential? ? 'Yes' : 'No' },
        'Due Date' => -> (issue) { issue.due_date&.to_s(:csv) },
        'Created At (UTC)' => -> (issue) { issue.created_at&.to_s(:csv) },

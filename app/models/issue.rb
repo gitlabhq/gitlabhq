@@ -139,6 +139,10 @@ class Issue < ActiveRecord::Base
     }
   end
 
+  def assignee_or_author?(user)
+    author_id == user.id || assignees.exists?(user)
+  end
+
   def assignee_list
     assignees.pluck(:name).join(', ')
   end

@@ -193,6 +193,10 @@ class MergeRequest < ActiveRecord::Base
     }
   end
 
+  def assignee_or_author?(user)
+    author_id == user.id || assignee_id == user.id
+  end
+
   # `from` argument can be a Namespace or Project.
   def to_reference(from = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"

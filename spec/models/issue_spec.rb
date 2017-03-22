@@ -132,6 +132,27 @@ describe Issue, models: true do
     end
   end
 
+  describe '#assignee_or_author?' do
+    let(:user) { create(:user) }
+    let(:issue) { create(:issue) }
+
+    it 'returns true for a user that is assigned to an issue' do
+      issue.assignees << user
+
+      expect(issue.assignee_or_author?(user)).to be_truthy
+    end
+
+    it 'returns true for a user that is the author of an issue' do
+      issue.update(author: user)
+
+      expect(issue.assignee_or_author?(user)).to be_truthy
+    end
+
+    it 'returns false for a user that is not the assignee or author' do
+      expect(issue.assignee_or_author?(user)).to be_falsey
+    end
+  end
+
   describe '#is_being_reassigned?' do
     it 'returns true if the issue assignee has changed' do
       subject.assignee = create(:user)
