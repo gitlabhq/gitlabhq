@@ -18,7 +18,7 @@ var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
     common:               './commons/index.js',
-    common_vue:           ['vue', 'vue-resource'],
+    common_vue:           ['vue', './vue_shared/common_vue.js'],
     common_d3:            ['d3'],
     main:                 './main.js',
     blob_edit:            './blob_edit/blob_edit_bundle.js',
@@ -132,7 +132,7 @@ var config = {
       'empty_states':   path.join(ROOT_PATH, 'app/views/shared/empty_states'),
       'icons':          path.join(ROOT_PATH, 'app/views/shared/icons'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
-      'vue$':           'vue/dist/vue.common.js',
+      'vue$':           'vue/dist/vue.esm.js',
     }
   }
 }
