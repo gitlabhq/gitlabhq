@@ -69,11 +69,17 @@
     min-width: 0;
   }
 
-  &.todo.todo-pending.done-reversible {
+  &.todo-pending.done-reversible {
     background-color: $white-light;
 
     &:hover {
-      border-color: $white-normal;
+      border-color: $white-dark;
+      background-color: $gray-light;
+
+      .todo-avatar,
+      .todo-item {
+        opacity: .6;
+      }
     }
 
     .todo-avatar,
