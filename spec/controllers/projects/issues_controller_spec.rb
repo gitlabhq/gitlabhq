@@ -241,10 +241,27 @@ describe Projects::IssuesController do
               expect(spam_logs.first.recaptcha_verified).to be_falsey
             end
 
-            it 'renders verify template' do
-              update_spam_issue
+            context 'as HTML' do
+              it 'renders verify template' do
+                update_spam_issue
 
-              expect(response).to render_template(:verify)
+                expect(response).to render_template(:verify)
+              end
+            end
+
+            context 'as JSON' do
+              before do
+                update_issue({ title: 'Spam Title', description: 'Spam lives here' }, format: :json)
+              end
+
+              it 'renders json errors' do
+                expect(json_response)
+                  .to eql("errors" => ["Your issue has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."])
+              end
+
+              it 'returns 422 status' do
+                expect(response).to have_http_status(422)
+              end
             end
           end
 
