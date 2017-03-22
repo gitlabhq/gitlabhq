@@ -143,4 +143,46 @@ everything is working correctly:
 1. Test the data replication by pushing code to the primary and see if it
    is received by the secondaries
 
+## Enable Tracking Database
+
+Geo secondary nodes now can keep track of replication status and recover
+automatically from some replication issues. To get this feature enabled 
+you need to activate the Tracking Database.
+
+> **IMPORTANT:** For this feature to work correctly, all nodes must be
+with their clocks synchronized. It's not required to set the same timezone,  
+but they can' be more than 60 seconds of difference from each other
+considering UTC time.
+
+1. Setup clock synchronization service in your Linux distro.
+   This can easily be done via any NTP compatible daemon.
+
+1. Edit the /etc/gitlab/gitlab.rb:
+
+    ```
+    geo_postgresql['enable'] = true
+    ```
+
+1. Create `database_geo.yml` with the information of your secondary PostgreSQL
+   database.  Note that GitLab will set up another database instance separate
+   from the primary, since this is where the secondary will track its internal
+   state:
+
+    ```
+    sudo cp /opt/gitlab/embedded/service/gitlab-rails/config/database_geo.yml.postgresql /opt/gitlab/embedded/service/gitlab-rails/config/database_geo.yml
+    ```
+
+1. Reconfigure GitLab:
+
+    ```
+    sudo gitlab-ctl start
+    sudo gitlab-ctl reconfigure
+    ```
+
+1. Set up the Geo tracking database:
+
+    ```
+    sudo gitlab-rake geo:db:setup
+    ```
+
 [update]: ../update/README.md
