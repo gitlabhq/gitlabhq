@@ -10,7 +10,7 @@ export default {
       return statusClassToSvgMap[this.pipelineStatus.icon];
     },
     statusClass() {
-      return `ci-status-icon ci-status-icon-${this.pipelineStatus.label}`;
+      return `ci-status-icon ci-status-icon-${this.pipelineStatus.group}`;
     },
   },
   template: `
