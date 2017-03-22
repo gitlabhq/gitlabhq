@@ -32,9 +32,8 @@ import httpStatusCodes from './http_status';
  */
 export default class Poll {
   constructor(options = {}) {
-    this.options = Object.assign({}, {
-      data: {},
-    }, options);
+    this.options = options;
+    this.options.data = options.data || {};
 
     this.intervalHeader = 'POLL-INTERVAL';
   }

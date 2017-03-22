@@ -109,12 +109,14 @@ describe('Poll', () => {
     new Poll({
       resource: service,
       method: 'fetch',
+      data: { page: 1 },
       successCallback: callbacks.success,
       errorCallback: callbacks.error,
     }).makeRequest();
 
     setTimeout(() => {
       expect(service.fetch.calls.count()).toEqual(2);
+      expect(service.fetch).toHaveBeenCalledWith({ page: 1 });
       expect(callbacks.success).toHaveBeenCalled();
       expect(callbacks.error).not.toHaveBeenCalled();
       done();
