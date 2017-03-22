@@ -21,6 +21,7 @@ knowledge. In particular you should be familiar with:
 
 - [Kubernetes pods](https://kubernetes.io/docs/user-guide/pods)
 - [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
+- [Kubernetes namespaces](https://kubernetes.io/docs/user-guide/namespaces/)
 
 Here's an example of a Deploy Board of the production environment.
 
@@ -42,16 +43,19 @@ a value. Each project will need to have a unique namespace in Kubernetes as well
 The complete requirements for Deploy Boards to display for a specific [environment] are:
 
 1. You should have a Kubernetes cluster up and running.
-1. Configure the [Kubernetes service][kube-service] in your project for the cluster.
 1. GitLab Runner should be configured with the [Docker][docker-exec] or
    [Kubernetes][kube-exec] executor.
-1. Ensure a Kubernetes label of `app=$CI_ENVIRONMENT_SLUG`
-   is applied to the deployments, replica sets, and pods. These resources should
-   be contained in the namespace defined in Kubernetes service setting.
-1. Optionally, use an [Autodeploy] `.gitlab-ci.yml`
-   template which has predefined stages and commands to use, and automatically
-   applies the labeling. GitLab also has a
-   [Kubernetes deployment example](#using-the-kubernetes-deploy-example-project)
+1. Configure the [Kubernetes service][kube-service] in your project for the
+   cluster. The Kubernetes namespace is of particular note as you will need it
+   for your deployment scripts (exposed by the `KUBE_NAMESPACE` env variable).
+1. Ensure a Kubernetes label of `app=$CI_ENVIRONMENT_SLUG` is applied to the
+   deployments, replica sets, and pods, where `$CI_ENVIRONMENT_SLUG` the value
+   of the CI variable. This is so we can lookup the proper environment in a
+   cluster/namespace which may have more than one. These resources should be
+   contained in the namespace defined in the Kubernetes service setting.
+   You can use an [Autodeploy] `.gitlab-ci.yml` template which has predefined
+   stages and commands to use, and automatically applies the labeling. GitLab
+   also has a [Kubernetes deployment example](#using-the-kubernetes-deploy-example-project)
    which can simplify the build and deployment process.
 
 Once all of the above are set up and the pipeline has run at least once,
@@ -68,8 +72,9 @@ you use `review/*` for [review apps], the Deploy Board will appear collapsed ini
 
 The [kubernetes-deploy][kube-deploy] project is used to simplify the deployment
 process to Kubernetes by providing intelligent `build`, `deploy` and `destroy`
-commands which you can use in your `.gitlab-ci.yml` as-is. For your convenience,
-a [Docker image][kube-image] is also provided.
+commands which you can use in your `.gitlab-ci.yml` as-is. It uses Heroku'ish
+build packs to do some of the work, plus some of GitLab's own tools to package
+it all up. For your convenience, a [Docker image][kube-image] is also provided.
 
 ---
 
@@ -128,6 +133,8 @@ kubernetes deploy:
 Notice that we use a couple of environment Kubernetes variables to configure
 the Kubernetes cluster. These are exposed from the
 [Kubernetes service](integrations/kubernetes.md#deployment-variables).
+The most important one is the `$KUBE_NAMESPACE` which should be unique for
+every project.
 
 Next, we replace `__CI_ENVIRONMENT_SLUG__` with the content of the
 `CI_ENVIRONMENT_SLUG` variable, so that the `app` label has the correct value.
