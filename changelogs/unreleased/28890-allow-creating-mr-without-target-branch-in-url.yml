@@ -1,5 +1,0 @@
----
-title: Allow creating merge request even if target branch is not specified in query
-  params
-merge_request: 9968
-author:
