@@ -159,19 +159,21 @@
   text {
     fill: $stat-graph-axis-fill;
   }
+
   .label-axis-text,
   .text-metric-usage {
     fill: $black;
     font-weight: 500;
   }
-  .legend-axis-text{
+
+  .legend-axis-text {
     fill: $black;
   }
 }
 
 .x-axis path,
 .y-axis path,
-.x-axis-line,
+.label-x-axis-line,
 .label-y-axis-line {
   fill: none;
   stroke-width: 1;
