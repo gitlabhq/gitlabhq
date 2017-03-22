@@ -17,6 +17,7 @@ module Ci
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
+    has_many :merge_requests, foreign_key: "head_pipeline_id"
 
     has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :retryable_builds, -> { latest.failed_or_canceled }, foreign_key: :commit_id, class_name: 'Ci::Build'

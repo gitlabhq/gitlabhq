@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe PipelineMetricsWorker do
   let(:project) { create(:project, :repository) }
-  let!(:merge_request) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
+  let!(:merge_request) { create(:merge_request, source_project: project, source_branch: pipeline.ref, head_pipeline_id: pipeline.id) }
 
   let(:pipeline) do
     create(:ci_empty_pipeline,
