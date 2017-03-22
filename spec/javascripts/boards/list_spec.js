@@ -1,11 +1,12 @@
 /* eslint-disable comma-dangle */
-/* global Vue */
 /* global boardsMockInterceptor */
 /* global BoardService */
 /* global List */
 /* global ListIssue */
 /* global listObj */
 /* global listObjDuplicate */
+
+import Vue from 'vue';
 
 require('~/lib/utils/url_utility');
 require('~/boards/models/issue');

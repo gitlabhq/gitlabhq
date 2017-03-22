@@ -1,9 +1,9 @@
 /* eslint-disable func-names, comma-dangle, new-cap, no-new, max-len */
-/* global Vue */
 /* global ResolveCount */
 /* global ResolveServiceClass */
 
-const Vue = require('vue');
+import Vue from 'vue';
+
 require('./models/discussion');
 require('./models/note');
 require('./stores/comments');

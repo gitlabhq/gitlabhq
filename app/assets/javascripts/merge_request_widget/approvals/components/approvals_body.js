@@ -1,6 +1,5 @@
-/* global Vue */
+import Vue from 'vue';
 
-const Vue = require('vue');
 require('../approvals_store');
 require('../approvals_api');
 

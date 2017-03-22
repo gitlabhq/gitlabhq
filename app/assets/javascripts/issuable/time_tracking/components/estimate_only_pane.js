@@ -1,4 +1,5 @@
-/* global Vue */
+import Vue from 'vue';
+
 (() => {
   Vue.component('time-tracking-estimate-only-pane', {
     name: 'time-tracking-estimate-only-pane',

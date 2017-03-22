@@ -1,5 +1,5 @@
 /* global BoardService */
-/* global Vue */
+
 const extraMilestones = require('../mixins/extra_milestones');
 
 module.exports = {

@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, prefer-arrow-callback, no-var, one-var, one-var-declaration-per-line, object-shorthand, quotes, comma-dangle, consistent-return, no-unused-vars, padded-blocks, func-names, max-len */
+/* global Api */
+
 (function() {
   $(function() {
     var groupFormatSelection, ldapGroupResult;

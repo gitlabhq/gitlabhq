@@ -1,4 +1,4 @@
-/* global Vue */
+import Vue from 'vue';
 import eventHub from '../eventhub';
 
 (() => {

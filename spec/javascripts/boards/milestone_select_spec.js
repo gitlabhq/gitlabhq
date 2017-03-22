@@ -1,7 +1,9 @@
-/* global Vue */
 /* global boardsMockInterceptor */
 /* global boardObj */
 /* global BoardService */
+
+import Vue from 'vue';
+
 const milestoneSelect = require('~/boards/components/milestone_select');
 require('~/boards/services/board_service');
 require('~/boards/stores/boards_store');

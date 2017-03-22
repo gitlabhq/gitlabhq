@@ -1,14 +1,13 @@
 /* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
-/* global Vue */
 /* global BoardService */
 
+import Vue from 'vue';
+import VueResource from 'vue-resource';
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
 import collapseIcon from './icons/fullscreen_collapse.svg';
 import expandIcon from './icons/fullscreen_expand.svg';
 
-window.Vue = require('vue');
-window.Vue.use(require('vue-resource'));
 require('./models/issue');
 require('./models/label');
 require('./models/list');
@@ -26,6 +25,8 @@ require('./components/board_sidebar');
 require('./components/new_list_dropdown');
 require('./components/modal/index');
 require('../vue_shared/vue_resource_interceptor');
+
+Vue.use(VueResource);
 
 $(() => {
   const $boardApp = document.getElementById('board-app');
