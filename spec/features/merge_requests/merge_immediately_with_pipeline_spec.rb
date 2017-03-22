@@ -32,9 +32,11 @@ feature 'Merge immediately', :feature, :js do
       page.within '.mr-widget-body' do
         find('.dropdown-toggle').click
 
-        Sidekiq::Testing.fake! { click_link 'Merge Immediately' }
+        click_link 'Merge Immediately'
 
         expect(find('.js-merge-when-pipeline-succeeds-button')).to have_content('Merge in progress')
+
+        wait_for_ajax
       end
     end
   end
