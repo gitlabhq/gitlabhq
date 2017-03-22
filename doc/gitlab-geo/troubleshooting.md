@@ -55,6 +55,7 @@ your browser. We perform the following health checks on each secondary node
 to help identify if something is wrong:
 
 - Is the node running?
+- Is the node's secondary database configured for streaming replication?
 - Is the node's secondary tracking database configured?
 - Is the node's secondary tracking database connected?
 - Is the node's secondary tracking database up-to-date?
