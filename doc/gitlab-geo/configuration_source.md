@@ -169,7 +169,7 @@ sensitive data in the database. Any secondary node must have the
 1. Set up the Geo tracking database:
 
     ```
-    bundle exec rake geo:db:setup
+    bundle exec rake geo:db:migrate
     ```
 
 1. Open the secrets file and paste the value of `db_key_base` you copied in the
