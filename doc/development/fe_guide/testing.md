@@ -80,18 +80,17 @@ If an integration test depends on JavaScript to run correctly, you need to make
 sure the spec is configured to enable JavaScript when the tests are run. If you
 don't do this you'll see vague error messages from the spec runner.
 
-To enable a JavaScript driver in an `rspec` test, add `js: true` to the
+To enable a JavaScript driver in an `rspec` test, add `:js` to the
 individual spec or the context block containing multiple specs that need
 JavaScript enabled:
 
 ```ruby
-
 # For one spec
-it 'presents information about abuse report', js: true do
+it 'presents information about abuse report', :js do
     # assertions...
 end
 
-describe "Admin::AbuseReports", js: true do
+describe "Admin::AbuseReports", :js do
     it 'presents information about abuse report' do
         # assertions...
     end
