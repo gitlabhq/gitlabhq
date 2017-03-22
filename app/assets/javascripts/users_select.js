@@ -173,7 +173,7 @@
                 }
 
                 if (showDivider) {
-                  users.splice(showDivider, 0, "divider");
+                  users.splice(showDivider, 0, 'divider');
                 }
 
                 if ($dropdown.hasClass('js-multiselect')) {
@@ -186,6 +186,11 @@
                     .filter((i) => i !== 0);
 
                   if (selected.length > 0) {
+                    showDivider += 1;
+                    users.splice(showDivider, 0, {
+                      header: $dropdown.data('dropdown-header') || 'Assignee(s)',
+                    });
+
                     const selectedUsers = users
                       .filter((u) => selected.indexOf(u.id) !== -1)
                       .sort((a, b) => a.name > b.name);
@@ -220,7 +225,9 @@
 
               if (this.multiSelect && inputValue === '') {
                 const users = glDropdown.fullData.filter((r) => {
-                  return typeof r === 'object' && !Object.prototype.hasOwnProperty.call(r, 'beforeDivider');
+                  return typeof r === 'object'
+                    && !Object.prototype.hasOwnProperty.call(r, 'beforeDivider')
+                    && !Object.prototype.hasOwnProperty.call(r, 'header');
                 });
 
                 const callback = glDropdown.parseData.bind(glDropdown);
