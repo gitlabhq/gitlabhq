@@ -4,28 +4,24 @@ module Gitlab
   module GitalyClient
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'.freeze
 
-    def self.gitaly_address
-      if Gitlab.config.gitaly.socket_path
-        "unix://#{Gitlab.config.gitaly.socket_path}"
-      end
+    def self.configure_channel(shard, socket_path)
+      @channel ||= {}
+      @channel[shard] = new_channel("unix://#{socket_path}")
     end
 
-    def self.channel
-      return @channel if defined?(@channel)
+    def self.new_channel(address)
+      # NOTE: Gitaly currently runs on a Unix socket, so permissions are
+      # handled using the file system and no additional authentication is
+      # required (therefore the :this_channel_is_insecure flag)
+      GRPC::Core::Channel.new(address, {}, :this_channel_is_insecure)
+    end
 
-      @channel =
-        if enabled?
-          # NOTE: Gitaly currently runs on a Unix socket, so permissions are
-          # handled using the file system and no additional authentication is
-          # required (therefore the :this_channel_is_insecure flag)
-          GRPC::Core::Channel.new(gitaly_address, {}, :this_channel_is_insecure)
-        else
-          nil
-        end
+    def self.get_channel(shard)
+      @channel.fetch(shard)
     end
 
     def self.enabled?
-      gitaly_address.present?
+      Gitlab.config.gitaly.enabled
     end
 
     def self.feature_enabled?(feature)

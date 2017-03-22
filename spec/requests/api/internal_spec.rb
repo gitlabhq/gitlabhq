@@ -429,7 +429,7 @@ describe API::Internal, api: true  do
 
     it "calls the Gitaly client if it's enabled" do
       expect_any_instance_of(Gitlab::GitalyClient::Notifications).
-        to receive(:post_receive).with(project.repository.path)
+        to receive(:post_receive)
 
       post api("/internal/notify_post_receive"), valid_params
 
@@ -438,7 +438,7 @@ describe API::Internal, api: true  do
 
     it "returns 500 if the gitaly call fails" do
       expect_any_instance_of(Gitlab::GitalyClient::Notifications).
-        to receive(:post_receive).with(project.repository.path).and_raise(GRPC::Unavailable)
+        to receive(:post_receive).and_raise(GRPC::Unavailable)
 
       post api("/internal/notify_post_receive"), valid_params
 

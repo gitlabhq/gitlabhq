@@ -139,7 +139,7 @@ module API
         return unless Gitlab::GitalyClient.enabled?
 
         begin
-          Gitlab::GitalyClient::Notifications.new.post_receive(params[:repo_path])
+          Gitlab::GitalyClient::Notifications.new(params[:repo_path]).post_receive
         rescue GRPC::Unavailable => e
           render_api_error(e, 500)
         end
