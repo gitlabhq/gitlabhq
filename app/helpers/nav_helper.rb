@@ -31,7 +31,11 @@ module NavHelper
   end
 
   def layout_nav_class
-    "page-with-layout-nav" if defined?(nav) && nav
+    class_name = ''
+    class_name << " page-with-layout-nav" if defined?(nav) && nav
+    class_name << " page-with-sub-nav" if content_for?(:sub_nav)
+
+    class_name
   end
 
   def nav_control_class
