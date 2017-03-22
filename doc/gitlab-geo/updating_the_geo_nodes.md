@@ -181,13 +181,6 @@ the clocks must be synchronized to within 60 seconds of each other.
     sudo cp /opt/gitlab/embedded/service/gitlab-rails/config/database_geo.yml.postgresql /opt/gitlab/embedded/service/gitlab-rails/config/database_geo.yml
     ```
 
-1. Reconfigure GitLab:
-
-    ```
-    sudo gitlab-ctl start
-    sudo gitlab-ctl reconfigure
-    ```
-
 1. Edit the content of `database_geo.yml` in `production:` like the example below:
     
    ```yaml
@@ -205,6 +198,13 @@ the clocks must be synchronized to within 60 seconds of each other.
      port: 5431
     
    ```
+
+1. Reconfigure GitLab:
+
+    ```
+    sudo gitlab-ctl start
+    sudo gitlab-ctl reconfigure
+    ```
 
 1. Set up the Geo tracking database:
 
