@@ -82,6 +82,10 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
                              sha: merge_request_head, status: 'success')
       end
 
+      before do
+        mr_merge_if_green_enabled.update(head_pipeline: triggering_pipeline)
+      end
+
       it "merges all merge requests with merge when the pipeline succeeds enabled" do
         expect(MergeWorker).to receive(:perform_async)
         service.trigger(triggering_pipeline)
@@ -123,6 +127,8 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
         create(:ci_pipeline, project: project, ref: mr_conflict.source_branch,
                              sha: mr_conflict.diff_head_sha, status: 'success')
       end
+
+      before { mr_conflict.update(head_pipeline_id: conflict_pipeline.id) }
 
       it 'does not merge the merge request' do
         expect(MergeWorker).not_to receive(:perform_async)
