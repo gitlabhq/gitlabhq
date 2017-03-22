@@ -12,6 +12,14 @@ describe Gitlab::Geo::HealthCheck do
       expect(subject.perform_checks).to be_blank
     end
 
+    it 'returns an error when database is not configured for streaming replication' do
+      allow(Gitlab::Geo).to receive(:secondary?) { true }
+      allow(Gitlab::Database).to receive(:postgresql?) { true }
+      allow(ActiveRecord::Base).to receive_message_chain(:connection, :execute, :first, :fetch) { 'f' }
+
+      expect(subject.perform_checks).not_to be_blank
+    end
+
     it 'returns an error when configuration file is missing for tracking DB' do
       allow(Rails.configuration).to receive(:respond_to?).with(:geo_database) { false }
 
