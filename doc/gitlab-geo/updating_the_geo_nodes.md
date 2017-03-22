@@ -78,6 +78,12 @@ is prepended with the relevant node for better clarity:
     1. **[secondary]** Update to GitLab 9.0 following the [regular update docs][update].
        At the end of the update, the node will be running with PostgreSQL 9.6.
 
+    1. **[secondary]** Make sure all services are up:
+
+        ```
+        sudo gitlab-ctl start
+        ```
+
     1. **[secondary]** Reconfigure GitLab:
 
         ```
@@ -143,21 +149,21 @@ everything is working correctly:
 1. Test the data replication by pushing code to the primary and see if it
    is received by the secondaries
 
-## Enable Tracking Database
+## Enable tracking database
 
 Geo secondary nodes now can keep track of replication status and recover
-automatically from some replication issues. To get this feature enabled 
+automatically from some replication issues. To get this feature enabled,
 you need to activate the Tracking Database.
 
 > **IMPORTANT:** For this feature to work correctly, all nodes must be
-with their clocks synchronized. It's not required to set the same timezone,  
-but they can' be more than 60 seconds of difference from each other
-considering UTC time.
+with their clocks synchronized. It is not required for all nodes to be set to
+the same time zone, but when the respective times are converted to UTC time,
+the clocks must be synchronized to within 60 seconds of each other.
 
 1. Setup clock synchronization service in your Linux distro.
    This can easily be done via any NTP compatible daemon.
 
-1. Edit the /etc/gitlab/gitlab.rb:
+1. Edit `/etc/gitlab/gitlab.rb`:
 
     ```
     geo_postgresql['enable'] = true
