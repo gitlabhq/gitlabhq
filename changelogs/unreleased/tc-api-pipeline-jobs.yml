@@ -1,4 +1,0 @@
----
-title: Add GET /projects/:id/pipelines/:pipeline_id/jobs endpoint
-merge_request: 9727
-author:
