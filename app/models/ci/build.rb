@@ -315,11 +315,17 @@ module Ci
       !artifacts_expired? && artifacts_file.exists?
     end
 
+    def browsable_artifacts?
+      !Gitlab.config.artifacts.object_store.enabled && artifacts_metadata?
+    end
+
     def artifacts_metadata?
       artifacts? && artifacts_metadata.exists?
     end
 
     def artifacts_metadata_entry(path, **options)
+      puts "artifacts metadata_entry for path: #{path} and options: #{options}"
+
       metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
         artifacts_metadata.path,
         path,

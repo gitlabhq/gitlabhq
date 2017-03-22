@@ -7,12 +7,14 @@ class PagesWorker
     send(action, *arg)
   end
 
-  def deploy(build_id)
-    build = Ci::Build.find_by(id: build_id)
-    result = Projects::UpdatePagesService.new(build.project, build).execute
+  def deploy(job_id)
+    job = Ci::Build.find_by(id: job_id)
+    result = Projects::UpdatePagesService.new(job.project, job).execute
+
     if result[:status] == :success
-      result = Projects::UpdatePagesConfigurationService.new(build.project).execute
+      result = Projects::UpdatePagesConfigurationService.new(job.project).execute
     end
+
     result
   end
 

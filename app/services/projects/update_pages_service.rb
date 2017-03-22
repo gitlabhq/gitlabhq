@@ -1,13 +1,15 @@
+require 'tempfile'
+
 module Projects
   class UpdatePagesService < BaseService
     BLOCK_SIZE = 32.kilobytes
     MAX_SIZE = 1.terabyte
     SITE_PATH = 'public/'.freeze
 
-    attr_reader :build
+    attr_reader :job
 
-    def initialize(project, build)
-      @project, @build = project, build
+    def initialize(project, job)
+      @project, @job = project, job
     end
 
     def execute
@@ -16,7 +18,7 @@ module Projects
       @status.enqueue!
       @status.run!
 
-      raise 'missing pages artifacts' unless build.artifacts_file?
+      raise 'missing pages artifacts' unless job.artifacts_file?
       raise 'pages are outdated' unless latest?
 
       # Create temporary directory in which we will extract the artifacts
@@ -35,7 +37,9 @@ module Projects
     rescue => e
       error(e.message)
     ensure
-      build.erase_artifacts! unless build.has_expiring_artifacts?
+      job.erase_artifacts! unless job.has_expiring_artifacts?
+      temp_file&.close
+      temp_file&.unlink
     end
 
     private
@@ -56,9 +60,9 @@ module Projects
     def create_status
       GenericCommitStatus.new(
         project: project,
-        pipeline: build.pipeline,
-        user: build.user,
-        ref: build.ref,
+        pipeline: job.pipeline,
+        user: job.user,
+        ref: job.ref,
         stage: 'deploy',
         name: 'pages:deploy'
       )
@@ -75,28 +79,20 @@ module Projects
     end
 
     def extract_tar_archive!(temp_path)
-      results = Open3.pipeline(%W(gunzip -c #{artifacts}),
+      results = Open3.pipeline(%W(gunzip -c #{extractable_artifacts}),
                                %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
                                %W(tar -x -C #{temp_path} #{SITE_PATH}),
                                err: '/dev/null')
+
       raise 'pages failed to extract' unless results.compact.all?(&:success?)
     end
 
     def extract_zip_archive!(temp_path)
-      raise 'missing artifacts metadata' unless build.artifacts_metadata?
-
-      # Calculate page size after extract
-      public_entry = build.artifacts_metadata_entry(SITE_PATH, recursive: true)
-
-      if public_entry.total_size > max_size
-        raise "artifacts for pages are too large: #{public_entry.total_size}"
-      end
-
       # Requires UnZip at least 6.00 Info-ZIP.
       # -n  never overwrite existing files
       # We add * to end of SITE_PATH, because we want to extract SITE_PATH and all subdirectories
       site_path = File.join(SITE_PATH, '*')
-      unless system(*%W(unzip -n #{artifacts} #{site_path} -d #{temp_path}))
+      unless system(*%W(unzip -n #{extractable_artifacts} #{site_path} -d #{temp_path}))
         raise 'pages failed to extract'
       end
     end
@@ -149,19 +145,39 @@ module Projects
     end
 
     def ref
-      build.ref
+      job.ref
     end
 
     def artifacts
-      build.artifacts_file.path
+      job.artifacts_file.path
+    end
+
+    # If we're using S3 for storage, we first need to read all the data.
+    # This is done using a tempfile as artifacts will be GC'ed
+    def extractable_artifacts
+      if Gitlab.config.artifacts.object_store.enabled
+        artifacts
+      else
+        temp_file.path
+      end
+    end
+
+    def temp_file
+      @temp_file ||=
+        begin
+          file = Tempfile.new("pages-artifacts-#{job.id}")
+          File.open(file, 'wb') { file.write(job.artifacts_file.read) }
+
+          file
+        end
     end
 
     def latest_sha
-      project.commit(build.ref).try(:sha).to_s
+      project.commit(job.ref).try(:sha).to_s
     end
 
     def sha
-      build.sha
+      job.sha
     end
   end
 end
