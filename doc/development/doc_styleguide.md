@@ -57,6 +57,10 @@ The table below shows what kind of documentation goes where.
          own document located at `doc/user/admin_area/settings/`. For example,
          the **Visibility and Access Controls** category should have a document
          located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
+1. The `doc/topics/` directory holds topic-related technical content. Create
+   `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
+   Note that `topics` holds the index page per topic, and techical articles. General
+   user- and admin- related documentation, should be placed accordingly.
 
 ---
 
