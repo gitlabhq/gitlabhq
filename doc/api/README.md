@@ -168,7 +168,7 @@ returned with status code `404`:
 Example of a valid API call and a request using cURL with sudo request,
 providing a username:
 
-```shell
+```
 GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=username
 ```
 
@@ -179,7 +179,7 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: username" "h
 Example of a valid API call and a request using cURL with sudo request,
 providing an ID:
 
-```shell
+```
 GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=23
 ```
 
@@ -194,8 +194,8 @@ is defined in [`lib/api.rb`][lib-api-url].
 
 Example of a valid API request:
 
-```shell
-GET https://gitlab.example.com/api/v4/projects?private_token=9koXpg98eAheJpvBs5tK
+```
+GET /projects?private_token=9koXpg98eAheJpvBs5tK
 ```
 
 Example of a valid API request using cURL and authentication via header:
@@ -317,14 +317,14 @@ For example, an issue might have `id: 46` and `iid: 5`.
 
 That means that if you want to get an issue via the API you should use the `id`:
 
-```bash
+```
 GET /projects/42/issues/:id
 ```
 
 On the other hand, if you want to create a link to a web page you should use
 the `iid`:
 
-```bash
+```
 GET /projects/42/issues/:iid
 ```
 
