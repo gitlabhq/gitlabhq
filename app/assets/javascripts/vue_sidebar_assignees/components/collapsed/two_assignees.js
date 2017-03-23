@@ -12,14 +12,14 @@ export default {
     <div class="sidebar-collapsed-icon sidebar-collapsed-user multiple-users"
           data-container="body" data-placement="left"
           data-toggle="tooltip" title="" :data-original-title="title">
-      <a class="author_link" :href="'/' + users[0].username">
+      <button class="btn-link" type="button">
         <img width="24" class="avatar avatar-inline s24 " alt="" :src="users[0].avatarUrl">
         <span class="author">{{users[0].name}}</span>
-      </a>
-      <a class="author_link" :href="'/' + users[1].username">
+      </button>
+      <button class="btn-link" type="button">
         <img width="24" class="avatar avatar-inline s24 " alt="" :src="users[1].avatarUrl">
         <span class="author">{{users[1].name}}</span>
-      </a>
+      </button>
     </div>
   `,
 };
