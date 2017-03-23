@@ -6,7 +6,7 @@ class CreateContainerRepository < ActiveRecord::Migration
   def change
     create_table :container_repositories do |t|
       t.integer :project_id
-      t.string :path
+      t.string :name
     end
   end
 end

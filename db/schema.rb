@@ -324,7 +324,7 @@ ActiveRecord::Schema.define(version: 20170322013926) do
 
   create_table "container_repositories", force: :cascade do |t|
     t.integer "project_id"
-    t.string "path"
+    t.string "name"
   end
 
   create_table "deploy_keys_projects", force: :cascade do |t|
