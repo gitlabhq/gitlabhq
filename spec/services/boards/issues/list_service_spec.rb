@@ -65,12 +65,8 @@ describe Boards::Issues::ListService, services: true do
 
           issues = described_class.new(project, user, params).execute
 
-<<<<<<< HEAD
           expect(issues).to eq [opened_issue2, list1_issue2, reopened_issue1, opened_issue1]
         end
-=======
-        expect(issues).to eq [closed_issue4, closed_issue2, closed_issue5, closed_issue3, closed_issue1]
->>>>>>> ce/master
       end
     end
 
@@ -79,7 +75,7 @@ describe Boards::Issues::ListService, services: true do
 
       issues = described_class.new(project, user, params).execute
 
-      expect(issues).to eq [closed_issue4, closed_issue2, closed_issue3, closed_issue1]
+      expect(issues).to eq [closed_issue4, closed_issue2, closed_issue5, closed_issue3, closed_issue1]
     end
 
     it 'returns opened issues that have label list applied when listing issues from a label list' do

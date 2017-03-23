@@ -71,22 +71,19 @@
           = reply_email
           %span.light.pull-right
             = boolean_to_icon Gitlab::IncomingEmail.enabled?
-<<<<<<< HEAD
-        %p
-          Elasticsearch
+        - elastic = "Elasticsearch"
+        %p{ "aria-label" => "#{elastic}: status " + (current_application_settings.elasticsearch_search? ? "on" : "off") }
+          = elastic
           %span.light.pull-right
             = boolean_to_icon current_application_settings.elasticsearch_search?
-        %p
-          Geo
+        - geo = "Geo"
+        %p{ "aria-label" => "#{geo}: status " + (Gitlab::Geo.enabled? ? "on" : "off") }
+          = geo
           %span.light.pull-right
             = boolean_to_icon Gitlab::Geo.enabled?
-        %p
-          Container Registry
-=======
         - container_reg = "Container Registry"
         %p{ "aria-label" => "#{container_reg}: status " + (Gitlab.config.registry.enabled ? "on" : "off") }
           = container_reg
->>>>>>> ce/master
           %span.light.pull-right
             = boolean_to_icon Gitlab.config.registry.enabled
 
