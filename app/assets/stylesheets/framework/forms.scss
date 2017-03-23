@@ -211,3 +211,11 @@ label {
     color: $gl-text-color;
   }
 }
+
+@media(max-width: $screen-xs-max) {
+  .remember-me {
+    .remember-me-checkbox {
+      margin-top: 0;
+    }
+  }
+}
