@@ -2,12 +2,12 @@ shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
   before do
     @issuable_ids = []
 
-    2.times do
+    2.times do |n|
       issuable =
         if issuable_type == :issue
           create(issuable_type, project: project)
         else
-          create(issuable_type, title: FFaker::Lorem.sentence, source_project: project, source_branch: FFaker::Name.name)
+          create(issuable_type, source_project: project, source_branch: "#{n}-feature")
         end
 
       @issuable_ids << issuable.id

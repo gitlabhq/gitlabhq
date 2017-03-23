@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :label, class: ProjectLabel do
-    sequence(:title) { |n| "label#{n}" }
+    title { generate(:label) }
     color "#990000"
     project factory: :empty_project
 
@@ -16,7 +16,7 @@ FactoryGirl.define do
   end
 
   factory :group_label, class: GroupLabel do
-    sequence(:title) { |n| "label#{n}" }
+    title { generate(:label) }
     color "#990000"
     group
   end
