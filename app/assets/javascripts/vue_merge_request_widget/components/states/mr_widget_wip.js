@@ -27,7 +27,7 @@ export default {
         <i class="fa fa-question-circle has-tooltip" title="When this merge request is ready, remove the WIP: prefix from the title to allow it to be merged."></i>
         <button
           @click="removeWIP"
-          type="button" class="btn btn-default btn-xs">Resolve WIP status</a>
+          type="button" class="btn btn-default btn-xs">Resolve WIP status</button>
       </template>
     </div>
   `,

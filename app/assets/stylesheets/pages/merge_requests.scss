@@ -89,12 +89,12 @@
   }
 
   .ci_widget {
-    border-bottom: 1px solid $well-inner-border;
     color: $gl-text-color;
     display: -webkit-flex;
     display: flex;
     -webkit-align-items: center;
     align-items: center;
+    padding: $gl-padding-top $gl-padding 0 $gl-padding;
 
     i,
     svg {
@@ -122,9 +122,8 @@
   }
 
   .mr-widget-body,
-  .ci_widget,
   .mr-widget-footer {
-    padding: 16px;
+    margin: 16px;
   }
 
   .mr-widget-pipeline-graph {
@@ -168,8 +167,21 @@
     color: $gl-text-color;
   }
 
+  .capitalize {
+    text-transform: capitalize;
+  }
+
   .js-deployment-link {
     display: inline-block;
+  }
+
+  .mr-widget-help {
+    margin: $gl-padding;
+    color: $ci-skipped-color;
+  }
+
+  .mr-links.mr-info-list {
+    margin: 0 0 0 26px;
   }
 
   .mr-widget-body {
@@ -187,6 +199,23 @@
     .btn-grouped {
       margin-left: 0;
       margin-right: 7px;
+    }
+
+    label {
+      font-weight: normal;
+    }
+
+    .spacing {
+      margin: 0 $gl-padding;
+    }
+
+    .bold {
+      font-weight: bold;
+      color: #5c5c5c;
+    }
+
+    .mr-widget-help {
+      margin: $gl-padding 0;
     }
 
     @media (max-width: $screen-xs-max) {
@@ -218,6 +247,12 @@
         width: 100%;
         text-align: center;
         margin: 0;
+      }
+    }
+
+    .commit-message-editor {
+      label {
+        padding: 0;
       }
     }
   }
@@ -343,61 +378,50 @@
   }
 }
 
-.remove-message-pipes {
-  ul {
-    margin: 10px 0 0 12px;
-    padding: 0;
-    list-style: none;
-    border-left: 2px solid $border-color;
-    display: inline-block;
-  }
+.mr-info-list {
+  position: relative;
+  overflow: hidden;
+  margin: 10px 0 0 12px;
 
-  li {
+  p {
+    margin: 6px 0;
     position: relative;
-    margin: 0;
-    padding: 0;
-    display: block;
+    padding-left: 15px;
 
-    span {
-      margin-left: 15px;
-      max-height: 20px;
-    }
-  }
-
-  li::before {
-    content: '';
-    position: absolute;
-    border-top: 2px solid $border-color;
-    height: 1px;
-    top: 8px;
-    width: 8px;
-  }
-
-  li:last-child {
     &::before {
-      top: 18px;
+      content: '';
+      position: absolute;
+      border-top: 2px solid $border-color;
+      height: 1px;
+      top: 8px;
+      width: 8px;
+      left: 0px;
     }
 
-    span {
-      display: block;
-      position: relative;
-      top: 5px;
-      margin-top: 5px;
+    &:last-child {
+      margin-bottom: 0;
+      &::before {
+        top: 14px;
+      }
     }
+  }
+
+  .legend {
+    height: 100%;
+    width: 2px;
+    background: $border-color;
+    position: absolute;
+    top: -5px;
   }
 }
 
 .mr-source-target {
   background-color: $gray-light;
-  line-height: 31px;
-  border-style: solid;
-  border-width: 1px;
-  border-color: $border-color;
-  border-top-right-radius: 3px;
-  border-top-left-radius: 3px;
-  border-bottom: none;
-  padding: 16px;
-  margin-bottom: -1px;
+  border-radius: 3px 3px 0 0;
+  border-bottom: 1px solid $border-color;
+  padding: 0 $gl-padding;
+  margin-bottom: 6px;
+  line-height: 44px;
 }
 
 .panel-new-merge-request {

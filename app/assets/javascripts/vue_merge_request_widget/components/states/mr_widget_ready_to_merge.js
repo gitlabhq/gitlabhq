@@ -115,14 +115,15 @@ export default {
           </li>
         </ul>
       </span>
-      <div v-if="isMergeAllowed()">
-        <label>
+      <template v-if="isMergeAllowed()">
+        <label class="spacing">
           <input type="checkbox" v-model="removeSourceBranch" /> Remove source branch
         </label>
-        <a @click.prevent="toggleCommitMessageEditor"
+        <a
+          @click.prevent="toggleCommitMessageEditor"
           class="btn btn-default btn-xs" href="#">Modify commit message</a>
-        <div class="prepend-top-default clearfix" v-if="showCommitMessageEditor">
-          <div class="form-group">
+        <div class="prepend-top-default commit-message-editor" v-if="showCommitMessageEditor">
+          <div class="form-group clearfix">
             <label class="control-label" for="commit-message">Commit message</label>
             <div class="col-sm-10">
               <div class="commit-message-container">
@@ -138,12 +139,12 @@ export default {
             </div>
           </div>
         </div>
-      </div>
-      <div v-else>
+      </template>
+      <template v-else>
         <span class="bold">
           The pipeline for this merge request failed. Please retry the job or push a new commit to fix the failure.
         </span>
-      </div>
+      </template>
     </div>
   `,
 };

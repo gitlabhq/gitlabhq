@@ -20,7 +20,7 @@ export default {
         <p>The changes were not merged into
           <a :href="mr.targetBranchPath" class="label-branch">
             {{mr.targetBranch}}
-          </a>
+          </a>.
         </p>
       </section>
     </div>

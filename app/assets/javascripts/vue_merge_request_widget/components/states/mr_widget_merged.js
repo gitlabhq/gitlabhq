@@ -29,8 +29,10 @@ export default {
         :dateTitle="mr.updatedAt"
         :dateReadable="mr.mergedAt"
       />
-      <section>
-        <p>The changes were merged into
+      <section class="mr-info-list">
+        <div class="legend"></div>
+        <p>
+          The changes were merged into
           <a :href="mr.targetBranchPath" class="label-branch">
             {{mr.targetBranch}}
           </a>
@@ -51,14 +53,14 @@ export default {
       <div class="merged-buttons clearfix">
         <a
           v-if="mr.canRevert"
-          class="btn btn-warning has-tooltip"
+          class="btn btn-close btn-sm has-tooltip"
           href="#modal-revert-commit"
           data-toggle="modal"
           data-container="body"
           data-original-title="Revert this merge request in a new merge request">Revert</a>
         <a
           v-if="mr.canBeCherryPicked"
-          class="btn btn-default has-tooltip"
+          class="btn btn-default btn-sm has-tooltip"
           href="#modal-cherry-pick-commit"
           data-toggle="modal"
           data-container="body"

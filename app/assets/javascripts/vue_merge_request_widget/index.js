@@ -77,7 +77,7 @@ const mrWidgetOptions = () => ({
     'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
   },
   template: `
-    <div class="mr-state-widget">
+    <div class="mr-state-widget prepend-top-default">
       <mr-widget-header :mr="mr" />
       <mr-widget-pipeline v-if="shouldRenderPipelines" :mr="mr" />
       <mr-widget-deployment v-if="shouldRenderDeployments" :mr="mr" />
