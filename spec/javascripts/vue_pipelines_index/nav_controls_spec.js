@@ -11,7 +11,7 @@ describe('Pipelines Nav Controls', () => {
   it('should render link to create a new pipeline', () => {
     const mockData = {
       newPipelinePath: 'foo',
-      hasCIEnabled: true,
+      hasCiEnabled: true,
       helpPagePath: 'foo',
       ciLintPath: 'foo',
       canCreatePipeline: true,
@@ -28,7 +28,7 @@ describe('Pipelines Nav Controls', () => {
   it('should not render link to create pipeline if no permission is provided', () => {
     const mockData = {
       newPipelinePath: 'foo',
-      hasCIEnabled: true,
+      hasCiEnabled: true,
       helpPagePath: 'foo',
       ciLintPath: 'foo',
       canCreatePipeline: false,
@@ -44,7 +44,7 @@ describe('Pipelines Nav Controls', () => {
   it('should render link for CI lint', () => {
     const mockData = {
       newPipelinePath: 'foo',
-      hasCIEnabled: true,
+      hasCiEnabled: true,
       helpPagePath: 'foo',
       ciLintPath: 'foo',
       canCreatePipeline: true,
@@ -61,7 +61,7 @@ describe('Pipelines Nav Controls', () => {
   it('should render link to help page when CI is not enabled', () => {
     const mockData = {
       newPipelinePath: 'foo',
-      hasCIEnabled: false,
+      hasCiEnabled: false,
       helpPagePath: 'foo',
       ciLintPath: 'foo',
       canCreatePipeline: true,
@@ -78,7 +78,7 @@ describe('Pipelines Nav Controls', () => {
   it('should not render link to help page when CI is enabled', () => {
     const mockData = {
       newPipelinePath: 'foo',
-      hasCIEnabled: true,
+      hasCiEnabled: true,
       helpPagePath: 'foo',
       ciLintPath: 'foo',
       canCreatePipeline: true,

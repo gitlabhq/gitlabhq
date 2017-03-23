@@ -5,7 +5,7 @@ export default {
       required: true,
     },
 
-    hasCIEnabled: {
+    hasCiEnabled: {
       type: Boolean,
       required: true,
     },
@@ -36,7 +36,7 @@ export default {
       </a>
 
       <a
-        v-if="!hasCIEnabled"
+        v-if="!hasCiEnabled"
         :href="helpPagePath"
         class="btn btn-info">
         Get started with Pipelines

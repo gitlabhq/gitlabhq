@@ -106,7 +106,7 @@ export default {
         this.state.pageInfo.total > this.state.pageInfo.perPage;
     },
 
-    hasCIEnabled() {
+    hasCiEnabled() {
       return this.hasCi !== undefined;
     },
 
@@ -190,11 +190,11 @@ export default {
           :paths="paths" />
 
         <navigation-controls
-          :newPipelinePath="newPipelinePath"
-          :hasCIEnabled="hasCIEnabled"
-          :helpPagePath="helpPagePath"
+          :new-pipeline-path="newPipelinePath"
+          :has-ci-enabled="hasCiEnabled"
+          :help-page-path="helpPagePath"
           :ciLintPath="ciLintPath"
-          :canCreatePipeline="canCreatePipelineParsed " />
+          :can-create-pipeline="canCreatePipelineParsed " />
       </div>
 
       <div class="content-list pipelines">
