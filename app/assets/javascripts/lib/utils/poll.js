@@ -36,6 +36,7 @@ export default class Poll {
     this.options.data = options.data || {};
 
     this.intervalHeader = 'POLL-INTERVAL';
+    this.timeoutID = null;
     this.canPoll = true;
   }
 
@@ -44,11 +45,8 @@ export default class Poll {
     const pollInterval = headers[this.intervalHeader];
 
     if (pollInterval > 0 && response.status === httpStatusCodes.OK && this.canPoll) {
-      setTimeout(() => {
-        // Stop can be called in the meanwhile, so let's check again.
-        if (this.canPoll) {
-          this.makeRequest();
-        }
+      this.timeoutID = setTimeout(() => {
+        this.makeRequest();
       }, pollInterval);
     }
 
@@ -63,7 +61,13 @@ export default class Poll {
     .catch(error => errorCallback(error));
   }
 
+  /**
+   * Stops the polling recursive chain
+   * and guarantees if the timeout is already running it won't make another request by
+   * cancelling the previously established timeout.
+   */
   stop() {
     this.canPoll = false;
+    clearTimeout(this.timeoutID);
   }
 }
