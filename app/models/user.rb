@@ -344,6 +344,8 @@ class User < ActiveRecord::Base
     end
 
     def find_by_personal_access_token(token_string)
+      return unless token_string
+
       PersonalAccessTokensFinder.new(state: 'active').find_by(token: token_string)&.user
     end
 

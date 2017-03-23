@@ -33,6 +33,10 @@
     };
 
     Shortcuts.prototype.toggleMarkdownPreview = function(e) {
+      // Check if short-cut was triggered while in Write Mode
+      if ($(e.target).hasClass('js-note-text')) {
+        $('.js-md-preview-button').focus();
+      }
       return $(document).triggerHandler('markdown-preview:toggle', [e]);
     };
 

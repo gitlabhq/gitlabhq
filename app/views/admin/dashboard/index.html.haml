@@ -46,26 +46,32 @@
         %h4
           Features
         %hr
-        %p
-          Sign up
+        - sign_up = "Sign up"
+        %p{ "aria-label" => "#{sign_up}: status " + (signup_enabled? ? "on" : "off") }
+          = sign_up
           %span.light.pull-right
             = boolean_to_icon signup_enabled?
-        %p
-          LDAP
+        - ldap = "LDAP"
+        %p{ "aria-label" => "#{ldap}: status " + (Gitlab.config.ldap.enabled ? "on" : "off") }
+          = ldap
           %span.light.pull-right
             = boolean_to_icon Gitlab.config.ldap.enabled
-        %p
-          Gravatar
+        - gravatar = "Gravatar"
+        %p{ "aria-label" => "#{gravatar}: status " + (gravatar_enabled? ? "on" : "off") }
+          = gravatar
           %span.light.pull-right
             = boolean_to_icon gravatar_enabled?
-        %p
-          OmniAuth
+        - omniauth = "OmniAuth"
+        %p{ "aria-label" => "#{omniauth}: status " + (Gitlab.config.omniauth.enabled ? "on" : "off") }
+          = omniauth
           %span.light.pull-right
             = boolean_to_icon Gitlab.config.omniauth.enabled
-        %p
-          Reply by email
+        - reply_email = "Reply by email"
+        %p{ "aria-label" => "#{reply_email}: status " + (Gitlab::IncomingEmail.enabled? ? "on" : "off") }
+          = reply_email
           %span.light.pull-right
             = boolean_to_icon Gitlab::IncomingEmail.enabled?
+<<<<<<< HEAD
         %p
           Elasticsearch
           %span.light.pull-right
@@ -76,6 +82,11 @@
             = boolean_to_icon Gitlab::Geo.enabled?
         %p
           Container Registry
+=======
+        - container_reg = "Container Registry"
+        %p{ "aria-label" => "#{container_reg}: status " + (Gitlab.config.registry.enabled ? "on" : "off") }
+          = container_reg
+>>>>>>> ce/master
           %span.light.pull-right
             = boolean_to_icon Gitlab.config.registry.enabled
 

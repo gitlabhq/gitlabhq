@@ -44,8 +44,11 @@ import ProjectsList from './projects_list';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import UserCallout from './user_callout';
+<<<<<<< HEAD
 
 import GeoNodes from './geo_nodes';
+=======
+>>>>>>> ce/master
 
 const ShortcutsBlob = require('./shortcuts_blob');
 

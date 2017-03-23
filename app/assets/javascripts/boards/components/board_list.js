@@ -48,7 +48,7 @@ import boardCard from './board_card';
             this.list.getIssues(false);
           }
 
-          if (this.scrollHeight() > this.listHeight()) {
+          if (this.scrollHeight() > Math.ceil(this.listHeight())) {
             this.showCount = true;
           } else {
             this.showCount = false;
