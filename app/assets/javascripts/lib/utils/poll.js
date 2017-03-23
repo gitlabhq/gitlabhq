@@ -36,20 +36,21 @@ export default class Poll {
     this.options.data = options.data || {};
 
     this.intervalHeader = 'POLL-INTERVAL';
+    this.timeoutID = null;
+    this.canPoll = true;
   }
 
   checkConditions(response) {
     const headers = gl.utils.normalizeHeaders(response.headers);
     const pollInterval = headers[this.intervalHeader];
 
-    if (pollInterval > 0 && response.status === httpStatusCodes.OK) {
-      this.options.successCallback(response);
-      setTimeout(() => {
+    if (pollInterval > 0 && response.status === httpStatusCodes.OK && this.canPoll) {
+      this.timeoutID = setTimeout(() => {
         this.makeRequest();
       }, pollInterval);
-    } else {
-      this.options.successCallback(response);
     }
+
+    this.options.successCallback(response);
   }
 
   makeRequest() {
@@ -58,5 +59,15 @@ export default class Poll {
     return resource[method](data)
     .then(response => this.checkConditions(response))
     .catch(error => errorCallback(error));
+  }
+
+  /**
+   * Stops the polling recursive chain
+   * and guarantees if the timeout is already running it won't make another request by
+   * cancelling the previously established timeout.
+   */
+  stop() {
+    this.canPoll = false;
+    clearTimeout(this.timeoutID);
   }
 }
