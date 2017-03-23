@@ -587,7 +587,7 @@ pre.light-well {
   display: flex;
   flex-direction: column;
 
-  > li {
+  .project-row {
     display: flex;
     align-items: center;
   }
