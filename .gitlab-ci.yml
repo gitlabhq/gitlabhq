@@ -333,6 +333,7 @@ migration paths:
     - bundle install --without postgres production --jobs $(nproc) $FLAGS --retry=3
     - bundle exec rake db:drop db:create db:schema:load db:seed_fu
     - git checkout $CI_COMMIT_SHA
+    - bundle install --without postgres production --jobs $(nproc) $FLAGS --retry=3
     - source scripts/prepare_build.sh
     - bundle exec rake db:migrate
 
