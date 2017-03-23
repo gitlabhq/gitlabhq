@@ -71,6 +71,7 @@ export default class MergeRequestStore {
     this.isPipelineFailed = data.pipeline ? data.pipeline.details.status.group === 'failed' : false;
     this.isPipelineBlocked = data.pipeline ? data.pipeline.details.status.group === 'manual' : false;
     this.isOpen = data.state === 'opened' || data.state === 'reopened' || false;
+    this.hasMergeableDiscussionsState = data.mergeable_discussions_state === false;
 
     this.setState(data);
   }
@@ -95,7 +96,7 @@ export default class MergeRequestStore {
         this.state = 'notAllowedToMerge';
       } else if (this.onlyAllowMergeIfPipelineSucceeds && this.isPipelineFailed) {
         this.state = 'pipelineFailed';
-      } else if (this.mergeable_discussions_state === false) {
+      } else if (this.hasMergeableDiscussionsState) {
         this.state = 'unresolvedDiscussions';
       } else if (this.isPipelineBlocked) {
         this.state = 'pipelineBlocked';

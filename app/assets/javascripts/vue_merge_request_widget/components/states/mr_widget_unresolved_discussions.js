@@ -7,7 +7,9 @@ export default {
     <div class="mr-widget-body">
       <button type="button" class="btn btn-success btn-small" disabled="true">Merge</button>
       <span class="bold">
-        This merge request has unresolved discussions. Please resolve these discussions allow this merge request to be merged.
+        There are unresolved discussions. Please resolve these discussions
+        <span v-if="mr.canCreateIssue">or</span>
+        <span v-else>.</span>
       </span>
       <a
         v-if="mr.canCreateIssue"
