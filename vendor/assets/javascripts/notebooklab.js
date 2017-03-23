@@ -414,13 +414,13 @@ exports.default = {
   },
   computed: {
     markdown: function markdown() {
-      var regex = new RegExp(/^\$\$(.*)\$\$$/, 'g');
+      var regex = new RegExp('^\$\$(.*)\$\$$', 'g');
 
       var source = this.cell.source.map(function (line) {
         var matches = regex.exec(line.trim());
 
         // Only render use the Katex library if it is actually loaded
-        if (matches && matches.length > 0 && katex) {
+        if (matches && matches.length > 0 && typeof katex !== 'undefined') {
           return katex.renderToString(matches[1]);
         } else {
           return line;
@@ -3047,7 +3047,7 @@ function escape(html, encode) {
 }
 
 function unescape(html) {
-	// explicitly match decimal, hex, and named HTML entities 
+	// explicitly match decimal, hex, and named HTML entities
   return html.replace(/&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/g, function(_, n) {
     n = n.toLowerCase();
     if (n === 'colon') return ':';
