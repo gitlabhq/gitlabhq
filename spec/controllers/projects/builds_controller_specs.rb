@@ -12,7 +12,7 @@ describe Projects::BuildsController do
 
     context 'when user is logged in as developer' do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
         sign_in(user)
         get_trace
       end
