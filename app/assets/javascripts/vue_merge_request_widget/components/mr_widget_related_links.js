@@ -3,6 +3,11 @@ export default {
   props: {
     relatedLinks: { type: Object, required: true },
   },
+  computed: {
+    hasLinks() {
+      return this.relatedLinks.closing || this.relatedLinks.mentioned;
+    },
+  },
   methods: {
     hasMultipleIssues(text) {
       return !text ? false : text.match(/<\/a> and <a/);
@@ -15,7 +20,8 @@ export default {
     },
   },
   template: `
-    <section>
+    <section class="mr-info-list mr-links" v-if="hasLinks">
+      <div class="legend"></div>
       <p v-if="relatedLinks.closing">
         Closes {{issueLabel('closing')}} <span v-html="relatedLinks.closing"></span>.
       </p>
