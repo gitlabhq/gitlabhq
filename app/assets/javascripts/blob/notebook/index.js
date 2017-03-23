@@ -32,7 +32,8 @@ export default () => {
         </div>
         <notebook-lab
           v-if="!loading && !error"
-          :notebook="json" />
+          :notebook="json"
+          code-css-class="code white" />
         <p
           class="text-center"
           v-if="error">
