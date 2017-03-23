@@ -180,6 +180,9 @@ production: &base
     # Flag stuck CI jobs as failed
     stuck_ci_jobs_worker:
       cron: "0 * * * *"
+    # Execute scheduled triggers
+    scheduled_trigger_worker:
+      cron: "0 * * * *"
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
