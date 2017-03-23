@@ -311,8 +311,13 @@
         display: none;
       }
 
-      .avatar:hover {
+      .avatar:hover,
+      .avatar-counter:hover {
         border-color: $issuable-sidebar-color;
+      }
+
+      .avatar-counter:hover {
+        color: $issuable-sidebar-color;
       }
 
       .btn-clipboard {
@@ -337,9 +342,8 @@
       line-height: 2.5em;
       z-index: 1;
       position: relative;
-      left: inherit;
-      margin-left: -2px;
-      margin-top: -1px;
+      top: -1px;
+      left: -2px;
     }
 
     .sidebar-collapsed-user {
