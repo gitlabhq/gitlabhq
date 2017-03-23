@@ -14,6 +14,7 @@ import Vue from 'vue';
       <div>
         <div class="events-description">
           {{ stage.description }}
+          <limit-warning :count="items.length" />
         </div>
         <ul class="stage-event-list">
           <li v-for="issue in items" class="stage-event-item">
