@@ -324,6 +324,22 @@
           color: $gl-text-color;
         }
       }
+
+      &.multiple-users {
+        display: flex;
+      }
+    }
+
+    .sidebar-avatar-counter {
+      width: 25px;
+      height: 25px;
+      border-radius: 12px;
+      line-height: 2.5em;
+      z-index: 1;
+      position: relative;
+      left: inherit;
+      margin-left: -2px;
+      margin-top: -1px;
     }
 
     .sidebar-collapsed-user {
@@ -333,6 +349,23 @@
 
     .issuable-header-btn {
       display: none;
+    }
+
+    .multiple-users {
+      .author_link:first-child {
+        z-index: 2;
+
+        .avatar {
+          margin-left: 6px;
+          margin-right: 0;
+          transform: translateX(2px);
+        }
+      }
+
+      .author_link .avatar {
+        margin-left: 0;
+        transform: translateX(-2px);
+      }
     }
   }
 

@@ -262,6 +262,10 @@
               }
 
               $selectbox.hide();
+
+              // Recalculate where .value is because vue might have changed it
+              $block = $selectbox.closest('.block');
+              $value = $block.find('.value');
               // display:block overrides the hide-collapse rule
               return $value.css('display', '');
             },

@@ -1,10 +1,11 @@
 export default class SidebarAssigneesStore {
-  constructor(currentUserId, service) {
+  constructor(currentUserId, service, editable) {
     this.currentUserId = currentUserId;
     this.service = service;
     this.users = [];
     this.saved = true;
     this.loading = false;
+    this.editable = editable;
   }
 
   addUser(id, name, username, avatarUrl, saved) {

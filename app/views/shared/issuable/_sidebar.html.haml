@@ -24,7 +24,7 @@
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
       .block.assignee
         - if issuable.instance_of?(Issue)
-          #js-vue-sidebar-assignees{ data: { path: issuable_json_path(issuable), field: "#{issuable.to_ability_name}[assignee_id]", user: { id: current_user.id } } }
+          #js-vue-sidebar-assignees{ data: { path: issuable_json_path(issuable), field: "#{issuable.to_ability_name}[assignee_id]",'editable' => can_edit_issuable ? true : false, user: { id: current_user.id } } }
             .title.hide-collapsed
               Assignee
               = icon('spinner spin', class: 'block-loading', 'aria-hidden': 'true')
@@ -212,11 +212,13 @@
               = project_ref
           = clipboard_button(clipboard_text: project_ref, title: "Copy reference to clipboard", placement: "left")
 
-    - issuable.assignees.each do |assignee|
-      :javascript
-        document.addEventListener('DOMContentLoaded', () => {
-          gl.sidebarAssigneesOptions.assignees.addUser(parseInt("#{assignee.id}", 10), "#{assignee.name}", "#{assignee.username}", "#{assignee.avatar_url}", true);
-        });
+
+    - if issuable.instance_of?(Issue)
+      - issuable.assignees.each do |assignee|
+        :javascript
+          document.addEventListener('DOMContentLoaded', () => {
+            gl.sidebarAssigneesOptions.assignees.addUser(parseInt("#{assignee.id}", 10), "#{assignee.name}", "#{assignee.username}", "#{assignee.avatar_url}", true);
+          });
 
     :javascript
       gl.IssuableResource = new gl.SubbableResource('#{issuable_json_path(issuable)}');

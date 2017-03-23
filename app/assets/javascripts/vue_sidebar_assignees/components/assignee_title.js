@@ -3,6 +3,7 @@ export default {
   props: {
     loading: { type: Boolean, required: true },
     numberOfAssignees: { type: Number, required: true },
+    editable: { type: Boolean, required: true},
   },
   computed: {
     hasMultipleAssignees() {
@@ -18,7 +19,7 @@ export default {
         Assignee
       </template>
       <i aria-hidden="true" class="fa fa-spinner fa-spin block-loading" :class="{ hidden: !loading }"></i>
-      <a class="edit-link pull-right" href="#">Edit</a>
+      <a class="edit-link pull-right" :class="{ hidden: !editable }" href="#">Edit</a>
     </div>
   `,
 };
