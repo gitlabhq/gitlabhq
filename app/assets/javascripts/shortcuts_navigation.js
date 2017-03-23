@@ -43,6 +43,9 @@ require('./shortcuts');
       Mousetrap.bind('g m', function() {
         return ShortcutsNavigation.findAndFollowLink('.shortcuts-merge_requests');
       });
+      Mousetrap.bind('g t', function() {
+        return ShortcutsNavigation.findAndFollowLink('.shortcuts-todos');
+      });
       Mousetrap.bind('g w', function() {
         return ShortcutsNavigation.findAndFollowLink('.shortcuts-wiki');
       });

@@ -10,9 +10,11 @@ class Route < ActiveRecord::Base
 
   after_update :rename_descendants
 
+  scope :inside_path, -> (path) { where('routes.path LIKE ?', "#{sanitize_sql_like(path)}/%") }
+
   def rename_descendants
     if path_changed? || name_changed?
-      descendants = Route.where('path LIKE ?', "#{path_was}/%")
+      descendants = self.class.inside_path(path_was)
 
       descendants.each do |route|
         attributes = {}
