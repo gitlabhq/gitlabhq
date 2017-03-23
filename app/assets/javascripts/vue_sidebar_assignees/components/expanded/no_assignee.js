@@ -6,7 +6,7 @@ export default {
   methods: {
     assignSelf() {
       this.assignees.addCurrentUser();
-    }
+    },
   },
   template: `
     <div class="hide-collapsed">

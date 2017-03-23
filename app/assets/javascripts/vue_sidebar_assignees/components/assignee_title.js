@@ -3,12 +3,12 @@ export default {
   props: {
     loading: { type: Boolean, required: true },
     numberOfAssignees: { type: Number, required: true },
-    editable: { type: Boolean, required: true},
+    editable: { type: Boolean, required: true },
   },
   computed: {
     hasMultipleAssignees() {
       return this.numberOfAssignees > 1;
-    }
+    },
   },
   template: `
     <div class="title hide-collapsed">

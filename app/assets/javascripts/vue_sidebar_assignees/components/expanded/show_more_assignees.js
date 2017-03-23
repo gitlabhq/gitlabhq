@@ -2,12 +2,12 @@ export default {
   name: 'ShowMoreAssignees',
   props: {
     hiddenAssignees: { type: Number, required: true },
-    toggle: { type: Function, required: true }
+    toggle: { type: Function, required: true },
   },
   computed: {
     showMore() {
       return this.hiddenAssignees > 0;
-    }
+    },
   },
   template: `
     <div class="user-list-more">

@@ -8,7 +8,7 @@ export default class SidebarAssigneesStore {
     this.editable = editable;
   }
 
-  addUser(id, name, username, avatarUrl, saved) {
+  addUser(id, name = '', username = '', avatarUrl = '', saved = false) {
     this.users.push({
       id,
       name,
@@ -16,40 +16,44 @@ export default class SidebarAssigneesStore {
       avatarUrl,
     });
 
-    if (!saved) {
-      this.saved = false;
-    }
+    // !saved means that this user was added to UI but not service
+    this.saved = saved;
   }
 
   addCurrentUser() {
-    this.addUserIds(this.currentUserId);
+    this.addUser(this.currentUserId);
+    this.saveUsers();
   }
 
   removeUser(id) {
     this.saved = false;
-    this.users = this.users.filter((u) => u.id !== id);
+    this.users = this.users.filter(u => u.id !== id);
   }
 
   saveUsers() {
-    const ids = this.users.map((u) => u.id) || 0;
+    const ids = this.users.map(u => u.id);
+    // If there are no ids, that means we have to unassign (which is id = 0)
+    const payload = ids.length > 0 ? ids : 0;
 
     this.loading = true;
-    this.service.update(ids.length > 0 ? ids : 0)
+    this.service.update(payload)
       .then((response) => {
-          const data = response.data;
-          const assignee = data.assignee;
+        const data = response.data;
+        const assignee = data.assignee;
 
-          this.users = [];
+        this.users = [];
 
-          if (assignee) {
-            this.addUser(assignee.id, assignee.name, assignee.username, assignee.avatar_url, true);
-          }
-          this.saved = true;
-          this.loading = false;
-        }).catch((err) => {
-          console.log(err);
-          console.log('error');
-          this.loading = false;
-        });
+        // TODO: Update this to match backend response
+        if (assignee) {
+          this.addUser(assignee.id, assignee.name, assignee.username, assignee.avatar_url, true);
+        }
+
+        this.saved = true;
+        this.loading = false;
+      }).catch((err) => {
+        this.loading = false;
+        // TODO: Add correct error handling
+        throw err;
+      });
   }
 }

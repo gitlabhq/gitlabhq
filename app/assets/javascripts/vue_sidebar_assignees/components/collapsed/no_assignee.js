@@ -1,7 +1,7 @@
 export default {
   name: 'CollapsedNoAssignee',
   props: {
-    users: { type: Array, required: true }
+    users: { type: Array, required: true },
   },
   template: `
     <div class="sidebar-collapsed-icon sidebar-collapsed-user">

@@ -4,11 +4,11 @@ export default {
   name: 'MultipleAssignees',
   data() {
     return {
-      showMore: false
-    }
+      showMore: false,
+    };
   },
   props: {
-    assignees: { type: Object, required: true }
+    assignees: { type: Object, required: true },
   },
   computed: {
     shouldShowMoreAssignees() {
@@ -18,7 +18,7 @@ export default {
       return this.showMore ? 0 : this.assignees.users.length - 5;
     },
     toggleShowMore() {
-      return function() {
+      return function toggleShowMore() {
         this.showMore = !this.showMore;
       }.bind(this);
     },
@@ -30,13 +30,22 @@ export default {
     <div class="hide-collapsed">
       <div class="hide-collapsed">
         <div class="user-list">
-          <div class="user-item" v-for="(user, index) in assignees.users" v-if="showMore || (index < 5 && !showMore)">
-            <a class="user-link has-tooltip" data-placement="bottom" title="" :href="'/' + user.username" :data-title="user.name">
-              <img width="32" class="avatar avatar-inline s32 " alt="" :src="user.avatarUrl">
+          <div class="user-item" v-for="(user, index) in assignees.users"
+              v-if="showMore || (index < 5 && !showMore)" >
+            <a class="user-link has-tooltip"
+              data-placement="bottom"
+              :href="'/' + user.username"
+              :data-title="user.name" >
+              <img width="32"
+                class="avatar avatar-inline s32"
+                alt="PLACEHOLDER"
+                :src="user.avatarUrl" >
             </a>
           </div>
         </div>
-        <show-more-assignees v-if="shouldShowMoreAssignees" :hiddenAssignees="numberOfHiddenAssignees" :toggle="toggleShowMore" />
+        <show-more-assignees v-if="shouldShowMoreAssignees"
+          :hiddenAssignees="numberOfHiddenAssignees"
+          :toggle="toggleShowMore" />
       </div>
     </div>
   `,

@@ -856,6 +856,7 @@ GitLabDropdown = (function() {
 
     let toggleText = this.options.toggleLabel(selected, el, instance);
     if (this.options.updateLabel) {
+      // Option to override the dropdown label text
       toggleText = this.options.updateLabel;
     }
 

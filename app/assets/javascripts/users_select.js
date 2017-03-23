@@ -52,6 +52,13 @@
           $collapsedSidebar = $block.find('.sidebar-collapsed-user');
           $loading = $block.find('.block-loading').fadeOut();
 
+          var getSelected = function() {
+            return $selectbox
+              .find(`input[name="${$dropdown.data('field-name')}"]`)
+              .map((index, input) => parseInt(input.value, 10))
+              .get();
+          };
+
           var updateIssueBoardsIssue = function () {
             $loading.fadeIn();
             gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
@@ -86,7 +93,6 @@
             }
           });
           assignTo = function(selected) {
-
             var data;
             data = {};
             data[abilityName] = {};
@@ -100,11 +106,9 @@
               url: issueURL,
               data: data
             }).done(function(data) {
-
               var user;
               $dropdown.trigger('loaded.gl.dropdown');
               $loading.fadeOut();
-              // $selectbox.hide();
               if (data.assignee) {
                 user = {
                   name: data.assignee.name,
@@ -131,6 +135,8 @@
               var isAuthorFilter;
               isAuthorFilter = $('.js-author-search');
               return _this.users(term, options, function(users) {
+                // GitLabDropdownFilter returns this.instance
+                // GitLabDropdownRemote returns this.options.instance
                 const glDropdown = this.instance || this.options.instance;
                 glDropdown.options.processData(term, users, callback);
               }.bind(this));
@@ -177,25 +183,21 @@
                 }
 
                 if ($dropdown.hasClass('js-multiselect')) {
-                  const selected = $selectbox
-                    .find('input[name="' + $dropdown.data('field-name') + '"]')
-                    .map(function () {
-                      return parseInt(this.value, 10);
-                    })
-                    .get()
-                    .filter((i) => i !== 0);
+                  const selected = getSelected().filter(i => i !== 0);
 
                   if (selected.length > 0) {
-                    showDivider += 1;
-                    users.splice(showDivider, 0, {
-                      header: $dropdown.data('dropdown-header') || 'Assignee(s)',
-                    });
+                    if ($dropdown.data('dropdown-header')) {
+                      showDivider += 1;
+                      users.splice(showDivider, 0, {
+                        header: $dropdown.data('dropdown-header') || 'Assignee(s)',
+                      });
+                    }
 
                     const selectedUsers = users
-                      .filter((u) => selected.indexOf(u.id) !== -1)
+                      .filter(u => selected.indexOf(u.id) !== -1)
                       .sort((a, b) => a.name > b.name);
 
-                    users = users.filter((u) => selected.indexOf(u.id) === -1);
+                    users = users.filter(u => selected.indexOf(u.id) === -1);
 
                     selectedUsers.forEach((selectedUser) => {
                       showDivider += 1;
@@ -205,7 +207,6 @@
                     users.splice(showDivider + 1, 0, 'divider');
                   }
                 }
-
               }
 
               callback(users);
@@ -224,12 +225,11 @@
               const inputValue = glDropdown.filterInput.val();
 
               if (this.multiSelect && inputValue === '') {
-                const users = glDropdown.fullData.filter((r) => {
-                  return typeof r === 'object'
+                // Remove non-users from the fullData array
+                const users = glDropdown.fullData.filter(r => typeof r === 'object'
                     && !Object.prototype.hasOwnProperty.call(r, 'beforeDivider')
-                    && !Object.prototype.hasOwnProperty.call(r, 'header');
-                });
-
+                    && !Object.prototype.hasOwnProperty.call(r, 'header')
+                  );
                 const callback = glDropdown.parseData.bind(glDropdown);
 
                 // Update the data model
@@ -247,17 +247,8 @@
               }
             },
             defaultLabel: defaultLabel,
-            // inputId: 'issue_assignee_id',
-
             hidden: function(e) {
               if ($dropdown.hasClass('js-multiselect')) {
-                const selected = $selectbox
-                  .find('input[name="' + $dropdown.data('field-name') + '"]')
-                  .map(function() {
-                    return parseInt(this.value, 10);
-                  })
-                  .get();
-
                 gl.sidebarAssigneesOptions.assignees.saveUsers();
               }
 
@@ -274,7 +265,6 @@
             vue: $dropdown.hasClass('js-issue-board-sidebar'),
             clicked: function(user, $el, e, isMarking, glDropdown) {
               if ($dropdown.hasClass('js-multiselect')) {
-
                 const isActive = $el.hasClass('is-active');
                 const previouslySelected = $dropdown.closest('.selectbox')
                     .find("input[name='" + ($dropdown.data('field-name')) + "'][value!=0]");
@@ -284,7 +274,7 @@
                   previouslySelected.each((index, element) => {
                     const id = parseInt(element.value, 10);
                     gl.sidebarAssigneesOptions.assignees.removeUser(id);
-                    element.remove()
+                    element.remove();
                   });
                 } else if (isActive) {
                   // user selected
@@ -353,11 +343,7 @@
               const $el = $(e.currentTarget);
               $el.find('.is-active').removeClass('is-active');
 
-              const initialSelected = $selectbox
-              .find('input[name="' + $dropdown.data('field-name') + '"]')
-              .map(function () {
-                return this.value;
-              }).get().forEach((selectedId) => {
+              const initialSelected = getSelected().forEach((selectedId) => {
                 $el.find(`li[data-user-id="${selectedId}"] .dropdown-menu-user-link`).addClass('is-active');
               });
             },
@@ -367,14 +353,12 @@
               username = user.username ? "@" + user.username : "";
               avatar = user.avatar_url ? user.avatar_url : false;
 
-              fieldName = this.fieldName;
-              field = $dropdown.closest('.selectbox').find("input[name='" + fieldName + "'][value='" + user.id + "']");
-              // debugger
+              const fieldName = this.fieldName;
+              const field = $dropdown.closest('.selectbox').find("input[name='" + fieldName + "'][value='" + user.id + "']");
               if (field.length) {
                 selected = true;
               }
 
-              // selected = user.id === parseInt(selectedId, 10) ? "is-active" : "";
               img = "";
               if (user.beforeDivider != null) {
                 `<li><a href='#' class='${selected === true ? 'is-active' : ''}'>${user.name}</a></li>`;
@@ -383,8 +367,8 @@
                   img = "<img src='" + avatar + "' class='avatar avatar-inline' width='30' />";
                 }
               }
-              // split into three parts so we can remove the username section if nessesary
-              const listItem = `
+
+              return `
                 <li data-user-id=${user.id}>
                   <a href='#' class='dropdown-menu-user-link ${selected === true ? 'is-active' : ''}'>
                     ${img}
@@ -395,14 +379,6 @@
                   </a>
                 </li>
               `;
-              // listWithUserName = "<span class='dropdown-menu-user-username'> " + username + " </span>";
-              // listClosingTags = "</a> </li>";
-              // if (username === '') {
-              //   listWithUserName = '';
-              // }
-              // debugger
-              // return listWithName + listWithUserName + listClosingTags;
-              return listItem;
             }
           });
         };

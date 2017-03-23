@@ -36,26 +36,28 @@ const sidebarAssigneesOptions = () => ({
       return this.assignees.users.length;
     },
     componentName() {
-      if (this.numberOfAssignees === 0) {
-        return 'no-assignee';
-      } else if (this.numberOfAssignees === 1) {
-        return 'single-assignee';
-      } else {
-        return 'multiple-assignees';
+      switch (this.numberOfAssignees) {
+        case 0:
+          return 'no-assignee';
+        case 1:
+          return 'single-assignee';
+        default:
+          return 'multiple-assignees';
       }
     },
     hideComponent() {
       return !this.assignees.saved;
     },
     collapsedComponentName() {
-      if (this.numberOfAssignees === 0) {
-        return 'collapsed-no-assignee';
-      } else if (this.numberOfAssignees === 1) {
-        return 'collapsed-single-assignee';
-      } else if (this.numberOfAssignees === 2) {
-        return 'collapsed-two-assignees';
-      } else {
-        return 'collapsed-multiple-assignees';
+      switch (this.numberOfAssignees) {
+        case 0:
+          return 'collapsed-no-assignee';
+        case 1:
+          return 'collapsed-single-assignee';
+        case 2:
+          return 'collapsed-two-assignees';
+        default:
+          return 'collapsed-multiple-assignees';
       }
     },
   },
@@ -78,7 +80,7 @@ const sidebarAssigneesOptions = () => ({
   `,
 });
 
-
 document.addEventListener('DOMContentLoaded', () => {
+  // Expose this to window so that we can add assignees from glDropdown
   window.gl.sidebarAssigneesOptions = new Vue(sidebarAssigneesOptions());
 });

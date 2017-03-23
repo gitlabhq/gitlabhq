@@ -14,7 +14,7 @@ export default class SidebarAssigneesService {
 
   update(userIds) {
     return this.sidebarAssigneeResource.update({
-      [this.field]: userIds
+      [this.field]: userIds,
     });
   }
 }
