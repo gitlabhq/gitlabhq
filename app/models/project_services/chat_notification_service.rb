@@ -17,7 +17,7 @@ class ChatNotificationService < Service
     if properties.nil?
       self.properties = {}
       self.notify_only_broken_pipelines = true
-      self.notify_only_default_branch = false
+      self.notify_only_default_branch = true
     end
   end
 
@@ -137,20 +137,17 @@ class ChatNotificationService < Service
   end
 
   def should_pipeline_be_notified?(data)
-    notify_for_branch(data) && notify_for_pipeline(data)
+    notify_for_ref?(data) && notify_for_pipeline?(data)
   end
 
-  def notify_for_branch(data)
-    ref_type = data[:object_attributes][:tag] ? 'tag' : 'branch'
+  def notify_for_ref?(data)
+    return true if data[:object_attributes][:tag]
+    return true unless notify_only_default_branch
 
-    if ref_type == 'branch' && notify_only_default_branch
-      data[:object_attributes][:ref] == project.default_branch
-    else
-      true
-    end
+    data[:object_attributes][:ref] == project.default_branch
   end
 
-  def notify_for_pipeline(data)
+  def notify_for_pipeline?(data)
     case data[:object_attributes][:status]
     when 'success'
       !notify_only_broken_pipelines?
