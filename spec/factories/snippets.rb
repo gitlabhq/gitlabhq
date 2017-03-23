@@ -1,11 +1,6 @@
 FactoryGirl.define do
-  sequence :title, aliases: [:content] do
-    FFaker::Lorem.sentence
-  end
-
-  sequence :file_name do
-    FFaker::Internet.user_name
-  end
+  sequence(:title, aliases: [:content]) { |n| "My snippet #{n}" }
+  sequence(:file_name) { |n| "snippet-#{n}.rb" }
 
   factory :snippet do
     author

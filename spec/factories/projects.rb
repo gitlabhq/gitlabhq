@@ -25,7 +25,7 @@ FactoryGirl.define do
     end
 
     trait :import_started do
-      import_url FFaker::Internet.uri('http')
+      import_url { generate(:url) }
       import_status :started
     end
 

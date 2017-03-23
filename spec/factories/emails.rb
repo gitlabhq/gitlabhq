@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :email do
     user
-    email { FFaker::Internet.email('alias') }
+    email { generate(:email_alias) }
   end
 end
