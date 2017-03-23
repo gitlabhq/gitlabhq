@@ -3,8 +3,6 @@ require 'spec_helper'
 describe Admin::ApplicationSettingsController do
   include StubENV
 
-  let(:group) { create(:group) }
-  let(:project) { create(:project, namespace: group) }
   let(:admin) { create(:admin) }
   let(:user) { create(:user)}
 
@@ -17,7 +15,21 @@ describe Admin::ApplicationSettingsController do
       sign_in(admin)
     end
 
-    context 'with valid params' do
+    it 'updates the default_project_visibility for string value' do
+      put :update, application_setting: { default_project_visibility: "20" }
+
+      expect(response).to redirect_to(admin_application_settings_path)
+      expect(ApplicationSetting.current.default_project_visibility).to eq Gitlab::VisibilityLevel::PUBLIC
+    end
+
+    it 'falls back to default with default_project_visibility setting is omitted' do
+      put :update, application_setting: {}
+
+      expect(response).to redirect_to(admin_application_settings_path)
+      expect(ApplicationSetting.current.default_project_visibility).to eq Gitlab::VisibilityLevel::PRIVATE
+    end
+
+    context 'with valid repository_size_limit' do
       subject { put :update, application_setting: { repository_size_limit: '100' } }
 
       it 'redirect to application settings page' do
@@ -29,7 +41,7 @@ describe Admin::ApplicationSettingsController do
       end
     end
 
-    context 'with invalid params' do
+    context 'with invalid repository_size_limit' do
       subject! { put :update, application_setting: { repository_size_limit: '-100' } }
 
       it 'render show template' do
