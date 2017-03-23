@@ -62,7 +62,7 @@ module Auth
     end
 
     def process_repository_access(type, name, actions)
-      requested_project = ContainerImage.project_from_path(name)
+      requested_project = ContainerRepository.project_from_path(name)
 
       return unless requested_project
 

@@ -1,4 +1,4 @@
-class ContainerImage < ActiveRecord::Base
+class ContainerRepository < ActiveRecord::Base
   belongs_to :project
 
   delegate :container_registry,  to: :project
@@ -18,7 +18,7 @@ class ContainerImage < ActiveRecord::Base
   end
 
   def manifest
-    @manifest ||= client.repository_tags(name_with_namespace)
+    @manifest ||= client.repository_tags(self.path)
   end
 
   def tags
@@ -39,24 +39,24 @@ class ContainerImage < ActiveRecord::Base
 
     digests = tags.map {|tag| tag.digest }.to_set
     digests.all? do |digest|
-      client.delete_repository_tag(name_with_namespace, digest)
+      client.delete_repository_tag(self.path, digest)
     end
   end
 
-  def self.project_from_path(image_path)
-    return unless image_path.include?('/')
+  def self.project_from_path(repository_path)
+    return unless repository_path.include?('/')
 
     ##
     # Projects are always located inside a namespace, so we can remove
     # the last node, and see if project with that path exists.
     #
-    truncated_path = image_path.slice(0...image_path.rindex('/'))
+    truncated_path = repository_path.slice(0...repository_path.rindex('/'))
 
     ##
     # We still make it possible to search projects by a full image path
     # in order to maintain backwards compatibility.
     #
     Project.find_by_full_path(truncated_path) ||
-        Project.find_by_full_path(image_path)
+        Project.find_by_full_path(repository_path)
   end
 end
