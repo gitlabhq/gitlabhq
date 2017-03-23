@@ -384,7 +384,7 @@ import FilteredSearchContainer from './container';
         paths.push(`search=${sanitized}`);
       }
 
-      const parameterizedUrl = `?scope=all&utf8=✓&${paths.join('&')}`;
+      const parameterizedUrl = `?scope=all&utf8=%E2%9C%93&${paths.join('&')}`;
 
       if (this.updateObject) {
         this.updateObject(parameterizedUrl);
