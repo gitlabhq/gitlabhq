@@ -76,11 +76,11 @@ describe('iPython notebook renderer', () => {
 
     it('highlights code', () => {
       expect(
-        document.querySelector('.hljs'),
+        document.querySelector('.token'),
       ).not.toBeNull();
 
       expect(
-        document.querySelector('.python'),
+        document.querySelector('.language-python'),
       ).not.toBeNull();
     });
   });
