@@ -70,7 +70,7 @@ module Gitlab
             # Sticking has to be enabled before calling the method. Not doing so
             # could lead to methods called in a block still being performed on a
             # secondary instead of on a primary (when necessary).
-            Session.current.use_primary! if sticky
+            Session.current.write! if sticky
 
             connection.send(name, *args, &block)
           end

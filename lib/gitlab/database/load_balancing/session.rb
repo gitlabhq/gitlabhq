@@ -19,6 +19,7 @@ module Gitlab
 
         def initialize
           @use_primary = false
+          @performed_write = false
         end
 
         def use_primary?
@@ -27,6 +28,15 @@ module Gitlab
 
         def use_primary!
           @use_primary = true
+        end
+
+        def write!
+          @performed_write = true
+          use_primary!
+        end
+
+        def performed_write?
+          @performed_write
         end
       end
     end

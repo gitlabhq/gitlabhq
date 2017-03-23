@@ -8,134 +8,100 @@ describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
     Gitlab::Database::LoadBalancing::Session.clear_session
   end
 
+  describe '.stick_or_unstick' do
+    it 'sticks or unsticks and updates the Rack environment' do
+      allow(Gitlab::Database::LoadBalancing).to receive(:enable?).
+        and_return(true)
+
+      expect(Gitlab::Database::LoadBalancing::Sticking).
+        to receive(:unstick_or_continue_sticking).
+        with(:user, 42)
+
+      env = {}
+
+      described_class.stick_or_unstick(env, :user, 42)
+
+      expect(env[described_class::STICK_OBJECT]).to eq([:user, 42])
+    end
+  end
+
   describe '#call' do
-    let(:lb) { double(:lb) }
-    let(:user) { double(:user, id: 42) }
-
-    before do
-      expect(app).to receive(:call).with(an_instance_of(Hash))
-
-      allow(middleware).to receive(:load_balancer).and_return(lb)
+    it 'handles a request' do
+      env = {}
 
       expect(middleware).to receive(:clear).twice
-    end
 
-    context 'when the primary was used' do
-      it 'assigns the user to the primary' do
-        allow(middleware).to receive(:user_for_request).and_return(user)
+      expect(middleware).to receive(:unstick_or_continue_sticking).with(env)
+      expect(middleware).to receive(:stick_if_necessary).with(env)
 
-        allow(middleware).to receive(:last_write_location_for).
-          with(user).
-          and_return('123')
+      expect(app).to receive(:call).with(env).and_return(10)
 
-        allow(lb).to receive(:all_caught_up?).with('123').and_return(false)
-
-        expect(middleware).to receive(:assign_primary_for_user).with(user)
-
-        middleware.call({})
-      end
-    end
-
-    context 'when a primary was not used' do
-      it 'does not assign the user to the primary' do
-        allow(middleware).to receive(:user_for_request).and_return(user)
-
-        allow(middleware).to receive(:last_write_location_for).
-          with(user).
-          and_return('123')
-
-        allow(lb).to receive(:all_caught_up?).with('123').and_return(true)
-
-        expect(middleware).not_to receive(:assign_primary_for_user)
-
-        middleware.call({})
-      end
+      expect(middleware.call(env)).to eq(10)
     end
   end
 
-  describe '#check_primary_requirement' do
-    let(:lb) { double(:lb) }
-    let(:user) { double(:user, id: 42) }
+  describe '#unstick_or_continue_sticking' do
+    it 'does not stick if no namespace and identifier could be found' do
+      expect(Gitlab::Database::LoadBalancing::Sticking).
+        not_to receive(:unstick_or_continue_sticking)
 
-    before do
-      allow(middleware).to receive(:load_balancer).and_return(lb)
+      middleware.unstick_or_continue_sticking({})
     end
 
-    it 'marks the primary as the host to use when necessary' do
-      expect(middleware).to receive(:last_write_location_for).
-        with(user).
-        and_return('foo')
+    it 'sticks to the primary if a sticking namespace and identifier were found' do
+      env = { described_class::STICK_OBJECT => [:user, 42] }
 
-      expect(lb).to receive(:all_caught_up?).with('foo').and_return(false)
+      expect(Gitlab::Database::LoadBalancing::Sticking).
+        to receive(:unstick_or_continue_sticking).
+        with(:user, 42)
 
-      expect(Gitlab::Database::LoadBalancing::Session.current).
-        to receive(:use_primary!)
-
-      middleware.check_primary_requirement(user)
-    end
-
-    it 'does not use the primary when there is no cached write location' do
-      expect(middleware).to receive(:last_write_location_for).
-        with(user).
-        and_return(nil)
-
-      expect(lb).not_to receive(:all_caught_up?)
-
-      expect(Gitlab::Database::LoadBalancing::Session.current).
-        not_to receive(:use_primary!)
-
-      middleware.check_primary_requirement(user)
-    end
-
-    it 'does not use the primary when all hosts have caught up' do
-      expect(middleware).to receive(:last_write_location_for).
-        with(user).
-        and_return('foo')
-
-      expect(lb).to receive(:all_caught_up?).with('foo').and_return(true)
-
-      expect(middleware).to receive(:delete_write_location_for).with(user)
-
-      middleware.check_primary_requirement(user)
+      middleware.unstick_or_continue_sticking(env)
     end
   end
 
-  describe '#assign_primary_for_user' do
-    it 'stores primary instance details for the current user' do
-      user = double(:user, id: 42)
+  describe '#stick_if_necessary' do
+    it 'does not stick to the primary if not necessary' do
+      expect(Gitlab::Database::LoadBalancing::Sticking).
+        not_to receive(:stick_if_necessary)
 
-      lb = double(:load_balancer, primary_write_location: '123')
+      middleware.stick_if_necessary({})
+    end
 
-      allow(middleware).to receive(:load_balancer).and_return(lb)
+    it 'sticks to the primary if necessary' do
+      env = { described_class::STICK_OBJECT => [:user, 42] }
 
-      expect(middleware).to receive(:set_write_location_for).with(user, '123')
+      expect(Gitlab::Database::LoadBalancing::Sticking).
+        to receive(:stick_if_necessary).
+        with(:user, 42)
 
-      middleware.assign_primary_for_user(user)
+      middleware.stick_if_necessary(env)
     end
   end
 
   describe '#clear' do
     it 'clears the currently used host and session' do
-      proxy = double(:proxy)
       lb = double(:lb)
+      session = double(:session)
 
-      allow(Gitlab::Database::LoadBalancing).to receive(:proxy).and_return(proxy)
-      allow(proxy).to receive(:load_balancer).and_return(lb)
+      allow(middleware).to receive(:load_balancer).and_return(lb)
+
       expect(lb).to receive(:release_host)
 
+      stub_const('Gitlab::Database::LoadBalancing::RackMiddleware::Session',
+                 session)
+
+      expect(session).to receive(:clear_session)
+
       middleware.clear
-
-      thread_key = Gitlab::Database::LoadBalancing::Session::CACHE_KEY
-
-      expect(RequestStore[thread_key]).to be_nil
     end
   end
 
-  describe '#load_balancer' do
-    it 'returns the load balancer' do
+  describe '.load_balancer' do
+    it 'returns a the load balancer' do
       proxy = double(:proxy)
 
-      allow(Gitlab::Database::LoadBalancing).to receive(:proxy).and_return(proxy)
+      expect(Gitlab::Database::LoadBalancing).to receive(:proxy).
+        and_return(proxy)
 
       expect(proxy).to receive(:load_balancer)
 
@@ -143,63 +109,36 @@ describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
     end
   end
 
-  describe '#user_for_request' do
-    let(:user) { double(:user, id: 42) }
+  describe '#sticking_namespace_and_id' do
+    context 'using a Warden request' do
+      it 'returns the warden user if present' do
+        user = double(:user, id: 42)
+        warden = double(:warden, user: user)
+        env = { 'warden' => warden }
 
-    it 'returns the current user for a Grape request' do
-      env = { 'api.endpoint' => double(:api, current_user: user) }
+        expect(middleware.sticking_namespace_and_id(env)).to eq([:user, 42])
+      end
 
-      expect(middleware.user_for_request(env)).to eq(user)
+      it 'returns an empty Array if no user was present' do
+        warden = double(:warden, user: nil)
+        env = { 'warden' => warden }
+
+        expect(middleware.sticking_namespace_and_id(env)).to eq([])
+      end
     end
 
-    it 'returns the current user for a Rails request' do
-      env = { 'warden' => double(:warden, user: user) }
+    context 'using a request with a manually set sticking object' do
+      it 'returns the sticking object' do
+        env = { described_class::STICK_OBJECT => [:user, 42] }
 
-      expect(middleware.user_for_request(env)).to eq(user)
+        expect(middleware.sticking_namespace_and_id(env)).to eq([:user, 42])
+      end
     end
 
-    it 'returns nil if no user could be found' do
-      expect(middleware.user_for_request({})).to be_nil
-    end
-  end
-
-  describe '#last_write_location_for' do
-    it 'returns the last WAL write location for a user' do
-      user = double(:user, id: 42)
-
-      middleware.set_write_location_for(user, '123')
-
-      expect(middleware.last_write_location_for(user)).to eq('123')
-    end
-  end
-
-  describe '#delete_write_location' do
-    it 'removes the WAL write location from Redis' do
-      user = double(:user, id: 42)
-
-      middleware.set_write_location_for(user, '123')
-      middleware.delete_write_location_for(user)
-
-      expect(middleware.last_write_location_for(user)).to be_nil
-    end
-  end
-
-  describe '#set_write_location' do
-    it 'stores the WAL write location in Redis' do
-      user = double(:user, id: 42)
-
-      middleware.set_write_location_for(user, '123')
-
-      expect(middleware.last_write_location_for(user)).to eq('123')
-    end
-  end
-
-  describe '#redis_key_for' do
-    it 'returns a String' do
-      user = double(:user, id: 42)
-
-      expect(middleware.redis_key_for(user)).
-        to eq('database-load-balancing/write-location/42')
+    context 'using a regular request' do
+      it 'returns an empty Array' do
+        expect(middleware.sticking_namespace_and_id({})).to eq([])
+      end
     end
   end
 end
