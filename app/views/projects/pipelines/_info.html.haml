@@ -5,8 +5,8 @@
     triggered #{time_ago_with_tooltip(@pipeline.created_at)}
     - if @pipeline.user
       by
-      = pipeline_user_avatar(@pipeline)
-      = pipeline_user_link(@pipeline)
+      = user_avatar(user: @pipeline.user, size: 24)
+      = user_link(@pipeline.user)
   .header-action-buttons
     - if can?(current_user, :update_pipeline, @pipeline.project)
       - if @pipeline.retryable?
