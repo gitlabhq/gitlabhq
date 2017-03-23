@@ -35,7 +35,7 @@ between the property and its value.
 
 ```scss
 // Bad
-.container-item { 
+.container-item {
   width: 100px; height: 100px;
   margin-top: 0;
 }
@@ -63,7 +63,7 @@ between the property and its value.
 }
 ```
 
-Note that there is an exception for single-line rulesets, although these are 
+Note that there is an exception for single-line rulesets, although these are
 not typically recommended.
 
 ```scss
@@ -72,7 +72,7 @@ p { margin: 0; padding: 0; }
 
 ### Colors
 
-HEX (hexadecimal) colors should use shorthand where possible, and should use 
+HEX (hexadecimal) colors should use shorthand where possible, and should use
 lower case letters to differentiate between letters and numbers, e.g. `#E3E3E3`
 vs. `#e3e3e3`.
 
@@ -111,7 +111,7 @@ p {
 
 ### Semicolons
 
-Always include semicolons after every property. When the stylesheets are 
+Always include semicolons after every property. When the stylesheets are
 minified, the semicolons will be removed automatically.
 
 ```scss
@@ -144,7 +144,7 @@ padding: 10px;
 
 ### Zero Units
 
-Omit length units on zero values, they're unnecessary and not including them 
+Omit length units on zero values, they're unnecessary and not including them
 is slightly more performant.
 
 ```scss
@@ -161,36 +161,56 @@ is slightly more performant.
 
 ### Selectors with a `js-` Prefix
 
-Do not use any selector prefixed with `js-` for styling purposes. These 
-selectors are intended for use only with JavaScript to allow for removal or 
+Do not use any selector prefixed with `js-` for styling purposes. These
+selectors are intended for use only with JavaScript to allow for removal or
 renaming without breaking styling.
+
+### IDs
+Don't use ID selectors in CSS.
+
+```scss
+// Bad
+#my-element {
+  padding: 0;
+}
+
+// Good
+.my-element {
+  padding: 0;
+}
+```
+
+### Variables
+Before adding a new variable for a color or a size, guarantee:
+1. There isn't already one
+2. There isn't a similar one we can use instead.
 
 ## Linting
 
-We use [SCSS Lint][scss-lint] to check for style guide conformity. It uses the 
-ruleset in `.scss-lint.yml`, which is located in the home directory of the 
+We use [SCSS Lint][scss-lint] to check for style guide conformity. It uses the
+ruleset in `.scss-lint.yml`, which is located in the home directory of the
 project.
 
-To check if any warnings will be produced by your changes, you can run `rake 
-scss_lint` in the GitLab directory. SCSS Lint will also run in GitLab CI to 
+To check if any warnings will be produced by your changes, you can run `rake
+scss_lint` in the GitLab directory. SCSS Lint will also run in GitLab CI to
 catch any warnings.
 
-If the Rake task is throwing warnings you don't understand, SCSS Lint's 
+If the Rake task is throwing warnings you don't understand, SCSS Lint's
 documentation includes [a full list of their linters][scss-lint-documentation].
 
 ### Fixing issues
 
-If you want to automate changing a large portion of the codebase to conform to 
+If you want to automate changing a large portion of the codebase to conform to
 the SCSS style guide, you can use [CSSComb][csscomb]. First install
-[Node][node] and [NPM][npm], then run `npm install csscomb -g` to install 
-CSSComb globally (system-wide). Run it in the GitLab directory with 
+[Node][node] and [NPM][npm], then run `npm install csscomb -g` to install
+CSSComb globally (system-wide). Run it in the GitLab directory with
 `csscomb app/assets/stylesheets` to automatically fix issues with CSS/SCSS.
 
 Note that this won't fix every problem, but it should fix a majority.
 
 ### Ignoring issues
 
-If you want a line or set of lines to be ignored by the linter, you can use 
+If you want a line or set of lines to be ignored by the linter, you can use
 `// scss-lint:disable RuleName` ([more info][disabling-linters]):
 
 ```scss
@@ -203,8 +223,8 @@ If you want a line or set of lines to be ignored by the linter, you can use
 ```
 
 Make sure a comment is added on the line above the `disable` rule, otherwise the
-linter will throw a warning. `DisableLinterReason` is enabled to make sure the 
-style guide isn't being ignored, and to communicate to others why the style 
+linter will throw a warning. `DisableLinterReason` is enabled to make sure the
+style guide isn't being ignored, and to communicate to others why the style
 guide is ignored in this instance.
 
 [csscomb]: https://github.com/csscomb/csscomb.js

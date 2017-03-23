@@ -35,7 +35,8 @@ RSpec.configure do |config|
   config.include Warden::Test::Helpers, type: :request
   config.include LoginHelpers, type: :feature
   config.include SearchHelpers, type: :feature
-  config.include WaitForAjax, type: :feature
+  config.include WaitForRequests, :js
+  config.include WaitForAjax, :js
   config.include StubConfiguration
   config.include EmailHelpers, type: :mailer
   config.include TestEnv

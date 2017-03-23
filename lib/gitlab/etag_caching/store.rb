@@ -1,7 +1,7 @@
 module Gitlab
   module EtagCaching
     class Store
-      EXPIRY_TIME = 10.minutes
+      EXPIRY_TIME = 20.minutes
       REDIS_NAMESPACE = 'etag:'.freeze
 
       def get(key)

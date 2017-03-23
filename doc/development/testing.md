@@ -34,16 +34,17 @@ GitLab uses [factory_girl] as a test fixture replacement.
 GitLab uses [Karma] to run its [Jasmine] JavaScript specs. They can be run on
 the command line via `bundle exec karma`.
 
-- JavaScript tests live in `spec/javascripts/`, matching the folder structure of
-  `app/assets/javascripts/`: `app/assets/javascripts/behaviors/autosize.js` has a corresponding
-  `spec/javascripts/behaviors/autosize_spec.js` file.
+- JavaScript tests live in `spec/javascripts/`, matching the folder structure
+  of `app/assets/javascripts/`: `app/assets/javascripts/behaviors/autosize.js`
+  has a corresponding `spec/javascripts/behaviors/autosize_spec.js` file.
 - Haml fixtures required for JavaScript tests live in
   `spec/javascripts/fixtures`. They should contain the bare minimum amount of
   markup necessary for the test.
 
     > **Warning:** Keep in mind that a Rails view may change and
     invalidate your test, but everything will still pass because your fixture
-    doesn't reflect the latest view.
+    doesn't reflect the latest view. Because of this we encourage you to
+    generate fixtures from actual rails views whenever possible.
 
 - Keep in mind that in a CI environment, these tests are run in a headless
   browser and you will not have access to certain APIs, such as
@@ -52,6 +53,8 @@ the command line via `bundle exec karma`.
 
 [Karma]: https://github.com/karma-runner/karma
 [Jasmine]: https://github.com/jasmine/jasmine
+
+For more information, see the [frontend testing guide](fe_guide/testing.md).
 
 ## RSpec
 

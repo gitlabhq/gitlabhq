@@ -24,7 +24,7 @@
     $('body').on('click', '.js-toggle-button', function(e) {
       toggleContainer($(this).closest('.js-toggle-container'));
 
-      const targetTag = e.target.tagName.toLowerCase();
+      const targetTag = e.currentTarget.tagName.toLowerCase();
       if (targetTag === 'a' || targetTag === 'button') {
         e.preventDefault();
       }
