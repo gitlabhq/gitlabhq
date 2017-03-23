@@ -1,4 +1,6 @@
-/* global CommentsStore Cookies notes */
+/* global CommentsStore */
+/* global notes */
+
 import Vue from 'vue';
 import collapseIcon from '../icons/collapse_icon.svg';
 

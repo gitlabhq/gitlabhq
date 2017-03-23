@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this, comma-dangle, arrow-parens, no-param-reassign */
-/* global Cookies */
+
+import Cookies from 'js-cookie';
 
 ((global) => {
   global.User = class {
