@@ -9,15 +9,13 @@ module Ci
 
     def schedule_next_run!
       next_time = Ci::CronParser.new(cron, cron_time_zone).next_time_from_now
-      update(:next_run_at => next_time) if next_time.present?
-    end
-
-    def valid_ref?
-      true #TODO:
+      if next_time.present?
+        update_attributes(next_run_at: next_time)
+      end
     end
 
     def update_last_run!
-      update(:last_run_at => Time.now)
+      update_attributes(last_run_at: Time.now)
     end
   end
 end

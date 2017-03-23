@@ -214,5 +214,9 @@ describe Ci::CreatePipelineService, services: true do
         expect(Environment.find_by(name: "review/master")).not_to be_nil
       end
     end
+
+    context 'when scheduled_trigger' do
+      # TODO: spec if approved
+    end
   end
 end
