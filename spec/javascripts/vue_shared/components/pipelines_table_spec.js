@@ -1,6 +1,9 @@
-require('~/vue_shared/components/pipelines_table');
 require('~/lib/utils/datetime_utility');
+const Vue = require('vue');
 const pipeline = require('../../commit/pipelines/mock_data');
+const PipelinesTable = require('~/vue_shared/components/pipelines_table');
+
+const PipelinesTableComponent = Vue.extend(PipelinesTable);
 
 describe('Pipelines Table', () => {
   preloadFixtures('static/environments/element.html.raw');
@@ -12,13 +15,17 @@ describe('Pipelines Table', () => {
   describe('table', () => {
     let component;
     beforeEach(() => {
-      component = new gl.pipelines.PipelinesTableComponent({
+      component = new PipelinesTableComponent({
         el: document.querySelector('.test-dom-element'),
         propsData: {
           pipelines: [],
           svgs: {},
         },
       });
+    });
+
+    afterEach(() => {
+      component.$destroy();
     });
 
     it('should render a table', () => {
@@ -37,7 +44,7 @@ describe('Pipelines Table', () => {
 
   describe('without data', () => {
     it('should render an empty table', () => {
-      const component = new gl.pipelines.PipelinesTableComponent({
+      const component = new PipelinesTableComponent({
         el: document.querySelector('.test-dom-element'),
         propsData: {
           pipelines: [],
@@ -50,7 +57,7 @@ describe('Pipelines Table', () => {
 
   describe('with data', () => {
     it('should render rows', () => {
-      const component = new gl.pipelines.PipelinesTableComponent({
+      const component = new PipelinesTableComponent({
         el: document.querySelector('.test-dom-element'),
         propsData: {
           pipelines: [pipeline],
