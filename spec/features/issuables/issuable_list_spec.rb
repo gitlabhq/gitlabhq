@@ -51,7 +51,7 @@ describe 'issuable list', feature: true do
         if issuable_type == :issue
           create(:issue, project: project, author: user)
         else
-          create(:merge_request, source_project: project, source_branch: "#{n}-feature")
+          create(:merge_request, source_project: project, source_branch: generate(:branch))
         end
 
       2.times do
@@ -66,7 +66,7 @@ describe 'issuable list', feature: true do
       issue = Issue.reorder(:iid).first
       merge_request = create(:merge_request,
                               source_project: project,
-                              source_branch: 'my-bug-fix')
+                              source_branch: generate(:branch))
 
       MergeRequestsClosingIssues.create!(issue: issue, merge_request: merge_request)
     end

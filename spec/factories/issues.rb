@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :issue do
-    title
+    title { generate(:title) }
     author
     project factory: :empty_project
 

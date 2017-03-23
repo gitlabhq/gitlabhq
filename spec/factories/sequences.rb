@@ -3,6 +3,8 @@ FactoryGirl.define do
   sequence(:name) { |n| "John Doe#{n}" }
   sequence(:email) { |n| "user#{n}@example.org" }
   sequence(:email_alias) { |n| "user.alias#{n}@example.org" }
+  sequence(:title) { |n| "My title #{n}" }
+  sequence(:filename) { |n| "filename-#{n}.rb" }
   sequence(:url) { |n| "http://example#{n}.org" }
   sequence(:label) { |n| "label#{n}" }
   sequence(:branch) { |n| "my-branch-#{n}" }
