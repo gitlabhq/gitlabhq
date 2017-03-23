@@ -324,5 +324,24 @@ RSpec.shared_examples 'slack or mattermost notifications' do
         it_behaves_like 'call Slack/Mattermost API'
       end
     end
+
+    context 'only notify for the default branch' do
+      context 'when enabled' do
+        let(:pipeline) do
+          create(:ci_pipeline, project: project, status: 'failed', ref: 'not-the-default-branch')
+        end
+
+        before do
+          chat_service.notify_only_default_branch = true
+        end
+
+        it 'does not call the Slack/Mattermost API for pipeline events' do
+          data = Gitlab::DataBuilder::Pipeline.build(pipeline)
+          result = chat_service.execute(data)
+
+          expect(result).to be_falsy
+        end
+      end
+    end
   end
 end

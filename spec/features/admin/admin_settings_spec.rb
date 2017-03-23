@@ -34,6 +34,7 @@ feature 'Admin updates settings', feature: true do
     fill_in 'Username', with: 'test_user'
     fill_in 'service_push_channel', with: '#test_channel'
     page.check('Notify only broken pipelines')
+    page.check('Notify only default branch')
 
     check_all_events
     click_on 'Save'
