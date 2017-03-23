@@ -140,11 +140,17 @@ class Issue < ActiveRecord::Base
   end
 
   def assignee_or_author?(user)
-    author_id == user.id || assignees.exists?(user)
+    author_id == user.id || assignees.exists?(user.id)
   end
 
   def assignee_list
-    assignees.pluck(:name).join(', ')
+    assignees.map(&:to_reference).to_sentence
+  end
+
+  # TODO: This method will help us to find some silent failures.
+  # We should remove it before merging to master
+  def assignee_id
+    raise "assignee_id is deprecated"
   end
 
   # `from` argument can be a Namespace or Project.

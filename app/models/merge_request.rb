@@ -193,6 +193,11 @@ class MergeRequest < ActiveRecord::Base
     }
   end
 
+  # This method is needed for compatibility with issues
+  def assignees
+    [assignee]
+  end
+
   def assignee_or_author?(user)
     author_id == user.id || assignee_id == user.id
   end

@@ -25,8 +25,10 @@ class CreateIssueAssigneesTable < ActiveRecord::Migration
 
   def change
     create_table :issue_assignees do |t|
-      t.references :user, foreign_key: true, index: true
-      t.references :issue, foreign_key: true, index: true
+      t.references :user, foreign_key: { on_delete: :cascade }, index: true, null: false
+      t.references :issue, foreign_key: { on_delete: :cascade }, null: false
     end
+
+    add_index :issue_assignees, [:issue_id, :user_id], unique: true
   end
 end
