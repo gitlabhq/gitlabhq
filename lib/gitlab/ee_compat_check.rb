@@ -6,6 +6,16 @@ module Gitlab
     EE_REPO = 'https://gitlab.com/gitlab-org/gitlab-ee.git'.freeze
     CHECK_DIR = Rails.root.join('ee_compat_check')
     IGNORED_FILES_REGEX = /(VERSION|CHANGELOG\.md:\d+)/.freeze
+    PLEASE_READ_THIS_BANNER = %Q{
+      ============================================================
+      ===================== PLEASE READ THIS =====================
+      ============================================================
+    }.freeze
+    THANKS_FOR_READING_BANNER = %Q{
+      ============================================================
+      ==================== THANKS FOR READING ====================
+      ============================================================\n
+    }.freeze
 
     attr_reader :ee_repo_dir, :patches_dir, :ce_repo, :ce_branch, :ee_branch_found
     attr_reader :failed_files
@@ -239,37 +249,31 @@ module Gitlab
     end
 
     def applies_cleanly_msg(branch)
-      <<-MSG.strip_heredoc
-        ============================================================
-        ===================== PLEASE READ THIS =====================
-        ============================================================
+      %Q{
+        #{PLEASE_READ_THIS_BANNER}
         🎉 Congratulations!! 🎉
 
-        The #{branch} branch applies cleanly to EE/master!
+        The `#{branch}` branch applies cleanly to EE/master!
 
         Much ❤️! For more information, see
         https://docs.gitlab.com/ce/development/limit_ee_conflicts.html#check-the-rake-ee_compat_check-in-your-merge-requests
-        ============================================================
-        ==================== THANKS FOR READING ====================
-        ============================================================\n
-      MSG
+        #{THANKS_FOR_READING_BANNER}
+      }
     end
 
     def ce_branch_doesnt_apply_cleanly_and_no_ee_branch_msg
-      <<-MSG.strip_heredoc
-        ============================================================
-        ===================== PLEASE READ THIS =====================
-        ============================================================
+      %Q{
+        #{PLEASE_READ_THIS_BANNER}
         💥 Oh no! 💥
 
-        The #{ce_branch} branch does not apply cleanly to the current
+        The `#{ce_branch}` branch does not apply cleanly to the current
         EE/master, and no `#{ee_branch_prefix}` or `#{ee_branch_suffix}` branch
         was found in the EE repository.
 
         #{conflicting_files_msg}
 
         We advise you to create a `#{ee_branch_prefix}` or `#{ee_branch_suffix}`
-        branch that includes changes from #{ce_branch} but also specific changes
+        branch that includes changes from `#{ce_branch}` but also specific changes
         than can be applied cleanly to EE/master. In some cases, the conflicts
         are trivial and you can ignore the warning from this job. As always,
         use your best judgment!
@@ -284,7 +288,7 @@ module Gitlab
           $ git fetch #{ce_repo} #{ce_branch}
           $ git cherry-pick SHA # Repeat for all the commits you want to pick
 
-          You can squash the #{ce_branch} commits into a single "Port of #{ce_branch} to EE" commit.
+          You can squash the `#{ce_branch}` commits into a single "Port of #{ce_branch} to EE" commit.
 
         2. Apply your branch's patch to EE
 
@@ -318,20 +322,16 @@ module Gitlab
 
         Stay 💪 ! For more information, see
         https://docs.gitlab.com/ce/development/limit_ee_conflicts.html#check-the-rake-ee_compat_check-in-your-merge-requests
-        ============================================================
-        ==================== THANKS FOR READING ====================
-        ============================================================\n
-      MSG
+        #{THANKS_FOR_READING_BANNER}
+      }
     end
 
     def ee_branch_doesnt_apply_cleanly_msg
-      <<-MSG.strip_heredoc
-        ============================================================
-        ===================== PLEASE READ THIS =====================
-        ============================================================
+      %Q{
+        #{PLEASE_READ_THIS_BANNER}
         💥 Oh no! 💥
 
-        The #{ce_branch} does not apply cleanly to the current EE/master, and
+        The `#{ce_branch}` does not apply cleanly to the current EE/master, and
         even though a `#{ee_branch_found}` branch
         exists in the EE repository, it does not apply cleanly either to
         EE/master!
@@ -343,10 +343,8 @@ module Gitlab
 
         Stay 💪 ! For more information, see
         https://docs.gitlab.com/ce/development/limit_ee_conflicts.html#check-the-rake-ee_compat_check-in-your-merge-requests
-        ============================================================
-        ==================== THANKS FOR READING ====================
-        ============================================================\n
-      MSG
+        #{THANKS_FOR_READING_BANNER}
+      }
     end
 
     def conflicting_files_msg
