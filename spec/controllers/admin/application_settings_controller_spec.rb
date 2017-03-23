@@ -37,28 +37,32 @@ describe Admin::ApplicationSettingsController do
       expect(ApplicationSetting.current.restricted_visibility_levels).to be_empty
     end
 
-    context 'with valid repository_size_limit' do
-      subject { put :update, application_setting: { repository_size_limit: '100' } }
+    it 'updates repository_size_limit' do
+      put :update, application_setting: { repository_size_limit: '100' }
 
-      it 'redirect to application settings page' do
-        is_expected.to redirect_to(admin_application_settings_path)
-      end
-
-      it 'set flash notice' do
-        is_expected.to set_flash[:notice].to('Application settings saved successfully')
-      end
+      expect(response).to redirect_to(admin_application_settings_path)
+      expect(response).to set_flash[:notice].to('Application settings saved successfully')
     end
 
-    context 'with invalid repository_size_limit' do
-      subject! { put :update, application_setting: { repository_size_limit: '-100' } }
+    it 'does not accept negative repository_size_limit' do
+      put :update, application_setting: { repository_size_limit: '-100' }
 
-      it 'render show template' do
-        is_expected.to render_template(:show)
-      end
+      expect(response).to render_template(:show)
+      expect(assigns(:application_setting).errors[:repository_size_limit]).to be_present
+    end
 
-      it 'assigned @application_settings has errors' do
-        expect(assigns(:application_setting).errors[:repository_size_limit]).to be_present
-      end
+    it 'does not accept invalid repository_size_limit' do
+      put :update, application_setting: { repository_size_limit: 'one thousand' }
+
+      expect(response).to render_template(:show)
+      expect(assigns(:application_setting).errors[:repository_size_limit]).to be_present
+    end
+
+    it 'does not accept empty repository_size_limit' do
+      put :update, application_setting: { repository_size_limit: '' }
+
+      expect(response).to render_template(:show)
+      expect(assigns(:application_setting).errors[:repository_size_limit]).to be_present
     end
   end
 
