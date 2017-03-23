@@ -474,7 +474,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def pipeline_status
-    render json: {} and return unless @merge_request.head_pipeline.present?
     render json: PipelineSerializer
       .new(project: @project, user: @current_user)
       .represent_status(@merge_request.head_pipeline)
