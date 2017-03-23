@@ -44,7 +44,7 @@
           %span.middle-dot-divider
             @#{@user.username}
           %span.middle-dot-divider
-            Member since #{@user.created_at.to_s(:medium)}
+            Member since #{@user.created_at.to_date.to_s(:long)}
 
         .cover-desc
           - unless @user.public_email.blank?
