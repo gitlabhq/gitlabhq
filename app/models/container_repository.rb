@@ -64,6 +64,6 @@ class ContainerRepository < ActiveRecord::Base
     # in order to maintain backwards compatibility.
     #
     Project.find_by_full_path(truncated_path) ||
-        Project.find_by_full_path(repository_path)
+      Project.find_by_full_path(repository_path)
   end
 end
