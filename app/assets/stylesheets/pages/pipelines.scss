@@ -15,7 +15,10 @@
 
   .table-holder {
     width: 100%;
-    overflow: auto;
+
+    @media (max-width: $screen-sm-max) {
+      overflow: auto;
+    }
   }
 
   .commit-title {
@@ -99,8 +102,6 @@
 
 @media (max-width: $screen-md-max) {
   .content-list {
-    &.pipelines,
-    &.environments-container,
     &.builds-content-list {
       width: 100%;
       overflow: auto;

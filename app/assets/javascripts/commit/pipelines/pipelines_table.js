@@ -87,7 +87,7 @@ export default Vue.component('pipelines-table', {
   },
 
   template: `
-    <div class="pipelines">
+    <div class="content-list pipelines">
       <div class="realtime-loading" v-if="isLoading">
         <i class="fa fa-spinner fa-spin"></i>
       </div>
@@ -99,7 +99,7 @@ export default Vue.component('pipelines-table', {
         </h2>
       </div>
 
-      <div class="table-holder pipelines"
+      <div class="table-holder"
         v-if="!isLoading && state.pipelines.length > 0">
         <pipelines-table-component
           :pipelines="state.pipelines"
