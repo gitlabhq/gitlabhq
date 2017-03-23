@@ -36,20 +36,23 @@ export default class Poll {
     this.options.data = options.data || {};
 
     this.intervalHeader = 'POLL-INTERVAL';
+    this.canPoll = true;
   }
 
   checkConditions(response) {
     const headers = gl.utils.normalizeHeaders(response.headers);
     const pollInterval = headers[this.intervalHeader];
 
-    if (pollInterval > 0 && response.status === httpStatusCodes.OK) {
-      this.options.successCallback(response);
+    if (pollInterval > 0 && response.status === httpStatusCodes.OK && this.canPoll) {
       setTimeout(() => {
-        this.makeRequest();
+        // Stop can be called in the meanwhile, so let's check again.
+        if (this.canPoll) {
+          this.makeRequest();
+        }
       }, pollInterval);
-    } else {
-      this.options.successCallback(response);
     }
+
+    this.options.successCallback(response);
   }
 
   makeRequest() {
@@ -58,5 +61,9 @@ export default class Poll {
     return resource[method](data)
     .then(response => this.checkConditions(response))
     .catch(error => errorCallback(error));
+  }
+
+  stop() {
+    this.canPoll = false;
   }
 }
