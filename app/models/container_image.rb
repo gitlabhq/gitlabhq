@@ -43,13 +43,20 @@ class ContainerImage < ActiveRecord::Base
     end
   end
 
-  def self.from_path(full_path)
-    return unless full_path.include?('/')
+  def self.project_from_path(image_path)
+    return unless image_path.include?('/')
 
-    path = full_path[0...full_path.rindex('/')]
-    name = full_path[full_path.rindex('/')+1..-1]
-    project = Project.find_by_full_path(path)
+    ##
+    # Projects are always located inside a namespace, so we can remove
+    # the last node, and see if project with that path exists.
+    #
+    truncated_path = image_path.slice(0...image_path.rindex('/'))
 
-    self.new(name: name, path: path, project: project)
+    ##
+    # We still make it possible to search projects by a full image path
+    # in order to maintain backwards compatibility.
+    #
+    Project.find_by_full_path(truncated_path) ||
+        Project.find_by_full_path(image_path)
   end
 end

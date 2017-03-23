@@ -38,13 +38,13 @@ module Auth
     private
 
     def authorized_token(*accesses)
-      token = JSONWebToken::RSAToken.new(registry.key)
-      token.issuer = registry.issuer
-      token.audience = params[:service]
-      token.subject = current_user.try(:username)
-      token.expire_time = self.class.token_expire_at
-      token[:access] = accesses.compact
-      token
+      JSONWebToken::RSAToken.new(registry.key).tap do |token|
+        token.issuer = registry.issuer
+        token.audience = params[:service]
+        token.subject = current_user.try(:username)
+        token.expire_time = self.class.token_expire_at
+        token[:access] = accesses.compact
+      end
     end
 
     def scope
@@ -62,7 +62,8 @@ module Auth
     end
 
     def process_repository_access(type, name, actions)
-      requested_project = ContainerImage.from_path(name).project
+      requested_project = ContainerImage.project_from_path(name)
+
       return unless requested_project
 
       actions = actions.select do |action|
