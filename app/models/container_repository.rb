@@ -1,16 +1,23 @@
 class ContainerRepository < ActiveRecord::Base
   belongs_to :project
-
-  delegate :container_registry,  to: :project
-  delegate :client, to: :container_registry
-
+  delegate :client, to: :registry
   validates :manifest, presence: true
-
+  validates :name, presence: true
   before_destroy :delete_tags
 
   def registry
-    # TODO, container registry with image access level
-    token = Auth::ContainerRegistryAuthenticationService.image_token(self)
+    @registry ||= begin
+      token = Auth::ContainerRegistryAuthenticationService.full_access_token(path)
+
+      url = Gitlab.config.registry.api_url
+      host_port = Gitlab.config.registry.host_port
+
+      ContainerRegistry::Registry.new(url, token: token, path: host_port)
+    end
+  end
+
+  def path
+    @path ||= "#{project.full_path}/#{name}"
   end
 
   def tag(tag)
