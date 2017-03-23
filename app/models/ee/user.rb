@@ -17,6 +17,22 @@ module EE
       validate :cannot_be_admin_and_auditor
     end
 
+    module ClassMethods
+      def support_bot
+        email = Settings.service_desk.email || "support%s@#{Settings.gitlab.host}"
+
+        unique_internal(where(support_bot: true), 'support-bot', email) do |u|
+          u.bio = 'The GitLab support bot'
+          u.name = 'GitLab Support Bot'
+        end
+      end
+
+      # override
+      def internal_attributes
+        super + [:support_bot]
+      end
+    end
+
     def cannot_be_admin_and_auditor
       if admin? && auditor?
         errors.add(:admin, "user cannot also be an Auditor.")
@@ -36,5 +52,6 @@ module EE
     def admin_or_auditor?
       admin? || auditor?
     end
+
   end
 end
