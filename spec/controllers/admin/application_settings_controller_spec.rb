@@ -19,14 +19,22 @@ describe Admin::ApplicationSettingsController do
       put :update, application_setting: { default_project_visibility: "20" }
 
       expect(response).to redirect_to(admin_application_settings_path)
-      expect(ApplicationSetting.current.default_project_visibility).to eq Gitlab::VisibilityLevel::PUBLIC
+      expect(ApplicationSetting.current.default_project_visibility).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
 
-    it 'falls back to default with default_project_visibility setting is omitted' do
+    it 'update the restricted levels for string values' do
+      put :update, application_setting: { restricted_visibility_levels: %w[10 20] }
+
+      expect(response).to redirect_to(admin_application_settings_path)
+      expect(ApplicationSetting.current.restricted_visibility_levels).to eq([10, 20])
+    end
+
+    it 'falls back to defaults when settings are omitted' do
       put :update, application_setting: {}
 
       expect(response).to redirect_to(admin_application_settings_path)
-      expect(ApplicationSetting.current.default_project_visibility).to eq Gitlab::VisibilityLevel::PRIVATE
+      expect(ApplicationSetting.current.default_project_visibility).to eq(Gitlab::VisibilityLevel::PRIVATE)
+      expect(ApplicationSetting.current.restricted_visibility_levels).to be_empty
     end
 
     context 'with valid repository_size_limit' do
