@@ -15,7 +15,6 @@ describe('UserCallout', () => {
     this.closeButton = $('.close-user-callout');
     this.userCalloutBtn = $('.user-callout-btn');
     this.userCalloutContainer = $('.user-callout');
-    Cookies.set(USER_CALLOUT_COOKIE, 'false');
   });
 
   it('does not show when cookie is set not defined', () => {
