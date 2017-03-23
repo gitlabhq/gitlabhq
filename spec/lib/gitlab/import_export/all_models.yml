@@ -115,7 +115,7 @@ merge_access_levels:
 - protected_branch
 push_access_levels:
 - protected_branch
-container_images:
+container_repositories:
 - name
 project:
 - taggings

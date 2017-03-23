@@ -90,12 +90,12 @@ describe Projects::DestroyService, services: true do
   end
 
   context 'container registry' do
-    let(:container_image) { create(:container_image) }
+    let(:container_repository) { create(:container_repository) }
 
     before do
       stub_container_registry_config(enabled: true)
       stub_container_registry_tags('tag')
-      project.container_images << container_image
+      project.container_repositorys << container_repository
     end
 
     context 'images deletion succeeds' do

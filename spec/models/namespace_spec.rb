@@ -149,13 +149,13 @@ describe Namespace, models: true do
     end
 
     context "when any project has container images" do
-      let(:container_image) { create(:container_image) }
+      let(:container_repository) { create(:container_repository) }
 
       before do
         stub_container_registry_config(enabled: true)
         stub_container_registry_tags('tag')
 
-        create(:empty_project, namespace: @namespace, container_images: [container_image])
+        create(:empty_project, namespace: @namespace, container_repositories: [container_repository])
 
         allow(@namespace).to receive(:path_was).and_return(@namespace.path)
         allow(@namespace).to receive(:path).and_return('new_path')

@@ -443,12 +443,12 @@ describe "Internal Project Access", feature: true  do
   end
 
   describe "GET /:project_path/container_registry" do
-    let(:container_image) { create(:container_image) }
+    let(:container_repository) { create(:container_repository) }
 
     before do
       stub_container_registry_tags('latest')
       stub_container_registry_config(enabled: true)
-      project.container_images << container_image
+      project.container_repositories << container_repository
     end
 
     subject { namespace_project_container_registry_index_path(project.namespace, project) }

@@ -36,7 +36,7 @@ module Projects
           raise TransferError.new("Project with same path in target namespace already exists")
         end
 
-        unless project.container_images.empty?
+        unless project.container_repositories.empty?
           # we currently doesn't support renaming repository if it contains images in container registry
           raise TransferError.new('Project cannot be transferred, because images are present in its container registry')
         end

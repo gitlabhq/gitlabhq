@@ -5,7 +5,7 @@ describe ContainerRegistry::Tag do
   let(:project) { create(:project, path: 'test', group: group) }
   let(:example_host) { 'example.com' }
   let(:registry_url) { 'http://' + example_host }
-  let(:repository) { create(:container_image, name: '', project: project) }
+  let(:repository) { create(:container_repository, name: '', project: project) }
   let(:tag) { repository.tag('tag') }
   let(:headers) { { 'Accept' => 'application/vnd.docker.distribution.manifest.v2+json' } }
 

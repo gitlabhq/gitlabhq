@@ -157,7 +157,7 @@ class Project < ActiveRecord::Base
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
   has_one :project_feature, dependent: :destroy
   has_one :statistics, class_name: 'ProjectStatistics', dependent: :delete
-  has_many :container_images, dependent: :destroy
+  has_many :container_repositories, dependent: :destroy
 
   has_many :commit_statuses, dependent: :destroy
   has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline'
@@ -908,7 +908,7 @@ class Project < ActiveRecord::Base
 
     expire_caches_before_rename(old_path_with_namespace)
 
-    if container_images.present?
+    if container_repositories.present?
       Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry images are present"
 
       # we currently doesn't support renaming repository if it contains images in container registry

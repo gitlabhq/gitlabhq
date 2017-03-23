@@ -29,12 +29,12 @@ describe Projects::TransferService, services: true do
   end
 
   context 'disallow transfering of project with tags' do
-    let(:container_image) { create(:container_image) }
+    let(:container_repository) { create(:container_repository) }
 
     before do
       stub_container_registry_config(enabled: true)
       stub_container_registry_tags('tag')
-      project.container_images << container_image
+      project.container_repositorys << container_repository
     end
 
     subject { transfer_project(project, user, group) }

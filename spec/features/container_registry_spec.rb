@@ -5,15 +5,15 @@ describe "Container Registry" do
   let(:registry) { project.container_registry }
   let(:tag_name) { 'latest' }
   let(:tags) { [tag_name] }
-  let(:container_image) { create(:container_image) }
-  let(:image_name) { container_image.name }
+  let(:container_repository) { create(:container_repository) }
+  let(:image_name) { container_repository.name }
 
   before do
     login_as(:user)
     project.team << [@user, :developer]
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(*tags)
-    project.container_images << container_image unless container_image.nil?
+    project.container_repositories << container_repository unless container_repository.nil?
     allow(Auth::ContainerRegistryAuthenticationService).to receive(:full_access_token).and_return('token')
   end
 
@@ -23,7 +23,7 @@ describe "Container Registry" do
     end
 
     context 'when no images' do
-      let(:container_image) { }
+      let(:container_repository) { }
 
       it { expect(page).to have_content('No container images in Container Registry for this project') }
     end
