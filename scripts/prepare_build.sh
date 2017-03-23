@@ -11,7 +11,7 @@ if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
 
     if [ "$GITLAB_DATABASE" = 'postgresql' ]; then
         sed -i 's/# host:.*/host: postgres/g' config/database.yml
-    else # assume it's mysql
+    else # Assume it's mysql
         sed -i 's/username:.*/username: root/g' config/database.yml
         sed -i 's/password:.*/password:/g' config/database.yml
         sed -i 's/# socket:.*/host: mysql/g' config/database.yml
@@ -36,6 +36,8 @@ if [ "$USE_BUNDLE_INSTALL" != "false" ]; then
     retry bundle install --without production --jobs $(nproc) --clean $FLAGS
 fi
 
+# Only install knapsack after bundle install! Otherwise oddly some native
+# gems could not be found under some circumstance. No idea why, hours wasted.
 retry gem install knapsack
 
 if [ "$SETUP_DB" != "false" ]; then
