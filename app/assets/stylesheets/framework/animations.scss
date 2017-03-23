@@ -145,3 +145,55 @@ a {
 .dropdown-menu-nav a {
   transition: none;
 }
+
+.spinner-new {
+  height: 20px;
+  width: 20px;
+  margin: 94px auto 0 auto;
+  position: relative;
+  -webkit-animation: rotation .8s infinite linear;
+  -moz-animation: rotation .8s infinite linear;
+  -o-animation: rotation .8s infinite linear;
+  animation: rotation .8s infinite linear;
+  border-left: 3px solid rgba(226,67,41, .2);
+  border-right: 3px solid rgba(226,67,41, .2);
+  border-bottom: 3px solid rgba(226,67,41, .2);
+  border-top: 3px solid rgba(226,67,41, .8);
+  border-radius: 100%;
+}
+
+@-webkit-keyframes rotation {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
+@-moz-keyframes rotation {
+  from {
+    -moz-transform: rotate(0deg);
+  }
+  to {
+    -moz-transform: rotate(359deg);
+  }
+}
+
+@-o-keyframes rotation {
+  from {
+    -o-transform: rotate(0deg);
+  }
+  to {
+    -o-transform: rotate(359deg);
+  }
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
