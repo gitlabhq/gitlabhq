@@ -3,6 +3,9 @@
 require('~/merge_request_tabs');
 require('~/breakpoints');
 require('~/lib/utils/common_utils');
+require('~/diff');
+require('~/single_file_diff');
+require('~/files_comment_button');
 require('vendor/jquery.scrollTo');
 
 (function () {
@@ -213,6 +216,10 @@ require('vendor/jquery.scrollTo');
       describe('with "Side-by-side"/parallel diff view', () => {
         beforeEach(function () {
           this.class.diffViewType = () => 'parallel';
+          gl.Diff.prototype.diffViewType = () => 'parallel';
+          spyOn($, 'ajax').and.callFake(function (options) {
+            options.success({ html: '' });
+          });
         });
 
         it('maintains `container-limited` for pipelines tab', function (done) {
@@ -224,10 +231,31 @@ require('vendor/jquery.scrollTo');
               });
             });
           };
-
           asyncClick('.merge-request-tabs .pipelines-tab a')
             .then(() => asyncClick('.merge-request-tabs .diffs-tab a'))
             .then(() => asyncClick('.merge-request-tabs .pipelines-tab a'))
+            .then(() => {
+              const hasContainerLimitedClass = document.querySelector('.content-wrapper .container-fluid').classList.contains('container-limited');
+              expect(hasContainerLimitedClass).toBe(true);
+            })
+            .then(done)
+            .catch((err) => {
+              done.fail(`Something went wrong clicking MR tabs: ${err.message}\n${err.stack}`);
+            });
+        });
+
+        it('maintains `container-limited` when switching from "Changes" tab before it loads', function (done) {
+          const asyncClick = function (selector) {
+            return new Promise((resolve) => {
+              setTimeout(() => {
+                document.querySelector(selector).click();
+                resolve();
+              });
+            });
+          };
+
+          asyncClick('.merge-request-tabs .diffs-tab a')
+            .then(() => asyncClick('.merge-request-tabs .notes-tab a'))
             .then(() => {
               const hasContainerLimitedClass = document.querySelector('.content-wrapper .container-fluid').classList.contains('container-limited');
               expect(hasContainerLimitedClass).toBe(true);
