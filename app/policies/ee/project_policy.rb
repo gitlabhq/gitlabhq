@@ -11,6 +11,11 @@ module EE
         cannot! :push_code
         cannot! :push_code_to_protected_branches
       end
+
+      if @user && @user.support_bot? && !@subject.service_desk_enabled?
+        cannot! :create_note
+        cannot! :read_project
+      end
     end
   end
 end
