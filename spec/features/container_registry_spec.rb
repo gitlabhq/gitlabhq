@@ -39,7 +39,7 @@ describe "Container Registry" do
     end
 
     it do
-      expect_any_instance_of(ContainerImage).to receive(:delete_tags).and_return(true)
+      expect_any_instance_of(ContainerRepository).to receive(:delete_tags).and_return(true)
 
       click_on 'Remove image'
     end
