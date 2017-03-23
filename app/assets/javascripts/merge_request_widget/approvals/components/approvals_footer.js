@@ -83,7 +83,7 @@ Vue.component('approvals-footer', {
           @click='unapproveMergeRequest'
           class='btn btn-link unapprove-btn'>
           <i class='fa fa-close'></i>
-          Remove your approval</span>
+          Remove your approval
         </button>
       </span>
     </div>
