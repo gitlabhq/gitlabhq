@@ -1,6 +1,8 @@
 require 'carrierwave/orm/activerecord'
 
 class Issue < ActiveRecord::Base
+  prepend EE::Issue
+
   include InternalId
   include Issuable
   include Referable
