@@ -16,7 +16,7 @@ export default {
   },
   methods: {
     formatDate(date) {
-      return gl.utils.getTimeago().format(date, 'gl_en');
+      return gl.utils.getTimeago().format(date);
     },
     hasExternalUrls(deployment) {
       return deployment.external_url && deployment.external_url_formatted;
