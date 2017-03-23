@@ -1,14 +1,14 @@
 # GitLab
 
-[![Build status](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-ce/commits/master)
-[![Overall test coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg)](https://gitlab.com/gitlab-org/gitlab-ce/pipelines)
+[![Build status](https://gitlab.com/gitlab-org/gitlab-ee/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-ee/commits/master)
+[![Overall test coverage](https://gitlab.com/gitlab-org/gitlab-ee/badges/master/coverage.svg)](https://gitlab.com/gitlab-org/gitlab-ee/pipelines)
 [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
 [![Core Infrastructure Initiative Best Practices](https://bestpractices.coreinfrastructure.org/projects/42/badge)](https://bestpractices.coreinfrastructure.org/projects/42)
 
 ## Test coverage
 
-- [![Ruby coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby) Ruby
-- [![JavaScript coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=rake+karma)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-javascript) JavaScript
+- [![Ruby coverage](https://gitlab.com/gitlab-org/gitlab-ee/badges/master/coverage.svg?job=coverage)](https://gitlab-org.gitlab.io/gitlab-ee/coverage-ruby) Ruby
+- [![JavaScript coverage](https://gitlab.com/gitlab-org/gitlab-ee/badges/master/coverage.svg?job=rake+karma)](https://gitlab-org.gitlab.io/gitlab-ee/coverage-javascript) JavaScript
 
 ## Canonical source
 
