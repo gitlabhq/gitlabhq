@@ -31,7 +31,7 @@
               = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
         .form-group
           = f.label :tag_list, "Tags", class: 'label-light'
-          = f.text_field :tag_list, value: @project.tag_list.to_s, maxlength: 2000, class: "form-control"
+          = f.text_field :tag_list, value: @project.tag_list.sort.join(', '), maxlength: 2000, class: "form-control"
           %p.help-block Separate tags with commas.
         %hr
         %fieldset
