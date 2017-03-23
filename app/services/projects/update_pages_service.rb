@@ -24,6 +24,7 @@ module Projects
       # Create temporary directory in which we will extract the artifacts
       FileUtils.mkdir_p(tmp_path)
       Dir.mktmpdir(nil, tmp_path) do |archive_path|
+        puts 'starting extraction'
         extract_archive!(archive_path)
 
         # Check if we did extract public directory
@@ -156,17 +157,17 @@ module Projects
     # This is done using a tempfile as artifacts will be GC'ed
     def extractable_artifacts
       if Gitlab.config.artifacts.object_store.enabled
-        artifacts
-      else
         temp_file.path
+      else
+        artifacts
       end
     end
 
     def temp_file
       @temp_file ||=
         begin
-          file = Tempfile.new("pages-artifacts-#{job.id}")
-          File.open(file, 'wb') { file.write(job.artifacts_file.read) }
+          file = Tempfile.new(["#{job.id}-pages-artifacts", File.extname(artifacts)])
+          IO.binwrite(file, job.artifacts_file.read)
 
           file
         end
