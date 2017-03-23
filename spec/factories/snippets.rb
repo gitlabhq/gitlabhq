@@ -1,12 +1,9 @@
 FactoryGirl.define do
-  sequence(:title, aliases: [:content]) { |n| "My snippet #{n}" }
-  sequence(:file_name) { |n| "snippet-#{n}.rb" }
-
   factory :snippet do
     author
-    title
-    content
-    file_name
+    title { generate(:title) }
+    content { generate(:title) }
+    file_name { generate(:filename) }
 
     trait :public do
       visibility_level Snippet::PUBLIC

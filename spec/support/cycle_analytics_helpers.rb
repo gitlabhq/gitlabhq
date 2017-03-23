@@ -1,6 +1,6 @@
 module CycleAnalyticsHelpers
-  def create_commit_referencing_issue(issue, branch_name: nil)
-    project.repository.add_branch(user, branch_name || generate(:branch), 'master')
+  def create_commit_referencing_issue(issue, branch_name: generate(:branch))
+    project.repository.add_branch(user, branch_name, 'master')
     create_commit("Commit for ##{issue.iid}", issue.project, user, branch_name)
   end
 
