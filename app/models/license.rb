@@ -2,7 +2,7 @@ class License < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
 
   validate :valid_license
-  validate :active_user_count, if: :new_record?, unless: :validate_with_trueup?
+  validate :check_users_limit, if: :new_record?, unless: :validate_with_trueup?
   validate :check_trueup, unless: :persisted?, if: :validate_with_trueup?
   validate :not_expired, unless: :persisted?
 
@@ -99,6 +99,10 @@ class License < ActiveRecord::Base
     restricted_attr(:previous_user_count)
   end
 
+  def current_active_users_count
+    @current_active_users_count ||= User.active.count
+  end
+
   def validate_with_trueup?
     [restricted_attr(:trueup_quantity),
      restricted_attr(:trueup_from),
@@ -127,37 +131,41 @@ class License < ActiveRecord::Base
     self.errors.add(:base, "The license key is invalid. Make sure it is exactly as you received it from GitLab Inc.")
   end
 
-  def historical_max(from, to)
+  def historical_max(from = nil, to = nil)
+    from ||= starts_at - 1.year
+    to   ||= starts_at
+
     HistoricalData.during(from..to).maximum(:active_user_count) || 0
   end
 
-  def active_user_count
+  def check_users_limit
     return unless restricted_user_count
 
-    historical_user_count = historical_max((starts_at - 1.year), starts_at)
-    overage               = historical_user_count - restricted_user_count
+    if previous_user_count && (historical_max <= previous_user_count)
+      return if restricted_user_count >= current_active_users_count
+    else
+      return if restricted_user_count >= historical_max
+    end
 
-    return if historical_user_count <= restricted_user_count
-
-    add_limit_error(user_count: historical_user_count, restricted_user_count: restricted_user_count, overage: overage)
+    overage = historical_max - restricted_user_count
+    add_limit_error(user_count: historical_max, restricted_user_count: restricted_user_count, overage: overage)
   end
 
   def check_trueup
     trueup_qty          = restrictions[:trueup_quantity]
     trueup_from         = Date.parse(restrictions[:trueup_from]) rescue (starts_at - 1.year)
     trueup_to           = Date.parse(restrictions[:trueup_to]) rescue starts_at
-    active_user_count   = User.active.count
     max_historical      = historical_max(trueup_from, trueup_to)
-    overage             = active_user_count - restricted_user_count
+    overage             = current_active_users_count - restricted_user_count
     expected_trueup_qty = if previous_user_count
                             max_historical - previous_user_count
                           else
-                            max_historical - active_user_count
+                            max_historical - current_active_users_count
                           end
 
     if trueup_qty >= expected_trueup_qty
-      if restricted_user_count < active_user_count
-        add_limit_error(trueup: true, user_count: active_user_count, restricted_user_count: restricted_user_count, overage: overage)
+      if restricted_user_count < current_active_users_count
+        add_limit_error(trueup: true, user_count: current_active_users_count, restricted_user_count: restricted_user_count, overage: overage)
       end
     else
       message = "You have applied a True-up for #{trueup_qty} #{"user".pluralize(trueup_qty)} "
