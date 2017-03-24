@@ -6,23 +6,6 @@
 
     .milestone-stats-and-buttons
       .milestone-stats
-        - if !project || can?(current_user, :read_issue, project)
-          %span.milestone-stat.with-drilldown
-            %strong= milestone.issues_visible_to_user(current_user).size
-            issues:
-          %span.milestone-stat
-            %strong= milestone.issues_visible_to_user(current_user).opened.size
-            open and
-            %strong= milestone.issues_visible_to_user(current_user).closed.size
-            closed
-        %span.milestone-stat.with-drilldown
-          %strong= milestone.merge_requests.size
-          merge requests:
-        %span.milestone-stat
-          %strong= milestone.merge_requests.opened.size
-          open and
-          %strong= milestone.merge_requests.merged.size
-          merged
         %span.milestone-stat
           %strong== #{milestone.percent_complete(current_user)}%
           complete

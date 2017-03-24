@@ -31,6 +31,45 @@
             = surround '(', ')' do
               %span.remaining-days= remaining_days
 
+    - if !project || can?(current_user, :read_issue, project)
+      .block
+        .sidebar-collapsed-icon
+          %strong
+            = icon('hashtag', 'aria-hidden': 'true')
+          %span= milestone.issues_visible_to_user(current_user).size
+        .title.hide-collapsed
+          Issues
+          %span.badge= milestone.issues_visible_to_user(current_user).size
+          - if project && can?(current_user, :create_issue, project)
+            = link_to new_namespace_project_issue_path(project.namespace, project, issue: { milestone_id: milestone.id }), class: "pull-right", title: "New Issue" do
+              New issue
+        .value.hide-collapsed
+          %span.milestone-stat
+            Open:
+            = milestone.issues_visible_to_user(current_user).opened.size
+          %span.milestone-stat
+            Closed:
+            = milestone.issues_visible_to_user(current_user).closed.size
+
+    .block
+      .sidebar-collapsed-icon
+        %strong
+          = icon('exclamation', 'aria-hidden': 'true')
+        %span= milestone.issues_visible_to_user(current_user).size
+      .title.hide-collapsed
+        Merge requests
+        %span.badge= milestone.merge_requests.size
+      .value.hide-collapsed
+        %span.milestone-stat
+          Open:
+          = milestone.merge_requests.opened.size
+        %span.milestone-stat
+          Closed:
+          = milestone.merge_requests.closed.size
+        %span.milestone-stat
+          Merged:
+          = milestone.merge_requests.merged.size
+
     - milestone_ref = milestone.try(:to_reference, full: true)
     - if milestone_ref.present?
       .block
