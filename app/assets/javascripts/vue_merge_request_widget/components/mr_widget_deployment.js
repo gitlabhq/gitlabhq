@@ -19,13 +19,13 @@ export default {
     formatDate(date) {
       return gl.utils.getTimeago().format(date);
     },
-    hasExternalUrls(deployment) {
+    hasExternalUrls(deployment = {}) {
       return deployment.external_url && deployment.external_url_formatted;
     },
-    hasDeploymentTime(deployment) {
+    hasDeploymentTime(deployment = {}) {
       return deployment.deployed_at && deployment.deployed_at_formatted;
     },
-    hasDeploymentMeta(deployment) {
+    hasDeploymentMeta(deployment = {}) {
       return deployment.url && deployment.name;
     },
     stopEnvironment(deployment) {
@@ -46,24 +46,24 @@ export default {
           </span>
         </div>
         <span>
-          Deployed to
+          <span v-if="hasDeploymentMeta(deployment)">Deployed to</span>
           <a
             v-if="hasDeploymentMeta(deployment)"
             :href="deployment.url"
-            target="_blank" rel="noopener noreferrer">
+            target="_blank" rel="noopener noreferrer" class="deploy-meta">
             {{deployment.name}}
           </a>
-          on
+          <span v-if="hasExternalUrls(deployment)">on</span>
           <a
             v-if="hasExternalUrls(deployment)"
             :href="deployment.external_url"
-            target="_blank" rel="noopener noreferrer">
+            target="_blank" rel="noopener noreferrer" class="deploy-url">
             {{deployment.external_url_formatted}}
           </a>
           <span
             v-if="hasDeploymentTime(deployment)"
             :data-title="deployment.deployed_at_formatted"
-            class="js-environment-timeago" data-toggle="tooltip" data-placement="top">
+            class="deploy-time" data-toggle="tooltip" data-placement="top">
             {{formatDate(deployment.deployed_at)}}
           </span>
           <button
