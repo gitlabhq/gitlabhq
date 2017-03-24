@@ -7,14 +7,14 @@ export default {
   },
   computed: {
     title() {
-      const max = this.users.length > 5 ? 5 : this.users.length;
-      const firstFive = this.users.slice(0, max);
+      const maxRender = Math.min(5, this.users.length);
+      const renderUsers = this.users.slice(0, maxRender);
       const names = [];
 
-      firstFive.forEach(u => names.push(u.name));
+      renderUsers.forEach(u => names.push(u.name));
 
-      if (this.users.length > max) {
-        names.push(`+${this.users.length - max} more`);
+      if (this.users.length > maxRender) {
+        names.push(`+${this.users.length - maxRender} more`);
       }
 
       return names.join(', ');
