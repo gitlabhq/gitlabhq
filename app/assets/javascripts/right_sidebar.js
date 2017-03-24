@@ -200,7 +200,7 @@ import Cookies from 'js-cookie';
     Sidebar.prototype.setSidebarHeight = function() {
       const $navHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight();
       const $rightSidebar = $('.js-right-sidebar');
-      const diff = $navHeight - $('body').scrollTop();
+      const diff = $navHeight - $(window).scrollTop();
       if (diff > 0) {
         $rightSidebar.outerHeight($(window).height() - diff);
       } else {
