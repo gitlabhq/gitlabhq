@@ -56,10 +56,12 @@ require('../window')(function(w){
 
       this.hookInput = hookInput;
       this.hookInput.trigger.addEventListener('keyup.dl', this.keydownWrapper);
+      this.hookInput.trigger.addEventListener('mousedown.dl', this.keydownWrapper);
     },
 
     destroy: function destroy(){
       this.hookInput.trigger.removeEventListener('keyup.dl', this.keydownWrapper);
+      this.hookInput.trigger.removeEventListener('mousedown.dl', this.keydownWrapper);
     }
   };
 });
