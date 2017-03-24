@@ -474,6 +474,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
+  # TODO: @oswaldo - remove it when deleting old widget parts
   def ci_status
     pipeline = @merge_request.head_pipeline
     @pipelines = @merge_request.all_pipelines

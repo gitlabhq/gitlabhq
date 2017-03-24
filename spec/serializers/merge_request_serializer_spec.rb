@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequestSerializer do
-  let(:resource) { create(:merge_request) }
+  let(:project)  { create :empty_project }
+  let(:resource) { create(:merge_request, source_project: project, target_project: project) }
   let(:user)     { create(:user) }
 
   subject { described_class.new(current_user: user).represent(resource) }
@@ -31,7 +32,7 @@ describe MergeRequestSerializer do
   it 'has important MergeRequest attributes' do
     expect(subject).to include(:diff_head_sha, :merge_commit_message,
                               :can_be_merged, :can_be_cherry_picked,
-                              :has_conflicts)
+                              :has_conflicts, :has_ci)
   end
 
   it 'has merge_path' do
@@ -72,6 +73,90 @@ describe MergeRequestSerializer do
   it 'has merge_commit_message_with_description' do
     expect(subject[:merge_commit_message_with_description])
       .to eql(resource.merge_commit_message(include_description: true))
+  end
+
+  describe 'diff_head_commit_short_id' do
+    context 'when no diff head commit' do
+      let(:project) { create :empty_project }
+
+      it 'returns nil' do
+        expect(subject[:diff_head_commit_short_id]).to be_nil
+      end
+    end
+
+    context 'when diff head commit present' do
+      let(:project) { create :project }
+
+      it 'returns diff head commit short id' do
+        expect(subject[:diff_head_commit_short_id]).to eql(resource.diff_head_commit.short_id)
+      end
+    end
+  end
+
+  describe 'ci_status' do
+    let(:project) { create :project }
+
+    context 'when no head pipeline' do
+      it 'return status using CiService' do
+        ci_service = double(MockCiService)
+        ci_status = double
+
+        allow(resource.source_project)
+          .to receive(:ci_service)
+          .and_return(ci_service)
+
+        allow(resource).to receive(:head_pipeline).and_return(nil)
+
+
+        expect(ci_service).to receive(:commit_status)
+          .with(resource.diff_head_sha, resource.source_branch)
+          .and_return(ci_status)
+
+        expect(subject[:ci_status]).to eql(ci_status)
+      end
+    end
+
+    context 'when head pipeline present' do
+      let(:pipeline) { build_stubbed(:ci_pipeline) }
+
+      before do
+        allow(resource).to receive(:head_pipeline).and_return(pipeline)
+      end
+
+      context 'success with warnings' do
+        before do
+          allow(pipeline).to receive(:success?) { true }
+          allow(pipeline).to receive(:has_warnings?) { true }
+        end
+
+        it 'returns "success_with_warnings"' do
+          expect(subject[:ci_status]).to eql('success_with_warnings')
+        end
+      end
+
+      context 'pipeline HAS status AND its not success with warnings' do
+        before do
+          allow(pipeline).to receive(:success?) { false }
+          allow(pipeline).to receive(:has_warnings?) { false }
+        end
+
+        it 'returns pipeline status' do
+          expect(subject[:ci_status]).to eql('pending')
+        end
+      end
+
+      context 'pipeline has NO status AND its not success with warnings' do
+        before do
+          allow(pipeline).to receive(:status) { nil }
+          allow(pipeline).to receive(:success?) { false }
+          allow(pipeline).to receive(:has_warnings?) { false }
+        end
+
+        it 'returns "preparing"' do
+          expect(subject[:ci_status]).to eql('preparing')
+        end
+      end
+    end
   end
 
   it 'includes merge_event' do

@@ -2,26 +2,38 @@ class MergeRequestEntity < IssuableEntity
   include RequestAwareEntity
   include GitlabMarkdownHelper
 
-  expose :author, using: UserEntity
   expose :in_progress_merge_commit_sha
   expose :locked_at
   expose :merge_commit_sha
   expose :merge_error
   expose :merge_params
   expose :merge_status
-  expose :merge_user, using: UserEntity
   expose :merge_user_id
   expose :merge_when_pipeline_succeeds
   expose :source_branch
   expose :source_project_id
   expose :target_branch
   expose :target_project_id
-  expose :merge_commit_sha
+
+  # Events
   expose :merge_event, using: EventEntity
   expose :closed_event, using: EventEntity
+
+  # User entities
+  expose :author, using: UserEntity
+  expose :merge_user, using: UserEntity
+
+  # Diff sha's
   expose :diff_head_sha
-  expose :head_pipeline, with: PipelineEntity, as: :pipeline
+  expose :diff_head_commit_short_id do |merge_request|
+    merge_request.diff_head_commit.try(:short_id)
+  end
+
+  expose :merge_commit_sha
   expose :merge_commit_message
+  expose :head_pipeline, with: PipelineEntity, as: :pipeline
+
+  # Booleans
   expose :work_in_progress?, as: :work_in_progress
   expose :source_branch_exists?, as: :source_branch_exists
   expose :mergeable_discussions_state?, as: :mergeable_discussions_state
@@ -31,6 +43,22 @@ class MergeRequestEntity < IssuableEntity
   expose :can_be_cherry_picked?, as: :can_be_cherry_picked
   expose :cannot_be_merged?, as: :has_conflicts
   expose :can_be_merged?, as: :can_be_merged
+
+  # CI related
+  expose :has_ci?, as: :has_ci
+  expose :ci_status do |merge_request|
+    pipeline = merge_request.head_pipeline
+
+    if pipeline
+      status = pipeline.status
+      status = "success_with_warnings" if pipeline.success? && pipeline.has_warnings?
+
+      status || "preparing"
+    else
+      ci_service = merge_request.source_project.try(:ci_service)
+      ci_service.commit_status(merge_request.diff_head_sha, merge_request.source_branch) if ci_service
+    end
+  end
 
   expose :issues_links do
     expose :closing do |merge_request|
