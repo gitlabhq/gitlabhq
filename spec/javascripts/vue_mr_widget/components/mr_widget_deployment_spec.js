@@ -110,12 +110,12 @@ describe('MRWidgetDeployment', () => {
 
     it('should render template elements correctly', () => {
       expect(el.classList.contains('mr-widget-heading')).toBeTruthy();
-      expect(el.querySelector('.icon-link')).toBeDefined();
-      expect(el.querySelector('.deploy-meta').getAttribute('href')).toEqual(deployment.url);
-      expect(el.querySelector('.deploy-meta').innerText).toContain(deployment.name);
-      expect(el.querySelector('.deploy-url').getAttribute('href')).toEqual(deployment.external_url);
-      expect(el.querySelector('.deploy-url').innerText).toContain(deployment.external_url_formatted);
-      expect(el.querySelector('.deploy-time').innerText).toContain(vm.formatDate(deployment.deployed_at));
+      expect(el.querySelector('.js-icon-link')).toBeDefined();
+      expect(el.querySelector('.js-deploy-meta').getAttribute('href')).toEqual(deployment.url);
+      expect(el.querySelector('.js-deploy-meta').innerText).toContain(deployment.name);
+      expect(el.querySelector('.js-deploy-url').getAttribute('href')).toEqual(deployment.external_url);
+      expect(el.querySelector('.js-deploy-url').innerText).toContain(deployment.external_url_formatted);
+      expect(el.querySelector('.js-deploy-time').innerText).toContain(vm.formatDate(deployment.deployed_at));
       expect(el.querySelector('button')).toBeDefined();
     });
 
@@ -133,9 +133,9 @@ describe('MRWidgetDeployment', () => {
       vm.mr.deployments = [{}];
 
       Vue.nextTick(() => {
-        expect(el.querySelectorAll('.deploy-meta').length).toEqual(0);
-        expect(el.querySelectorAll('.deploy-url').length).toEqual(0);
-        expect(el.querySelectorAll('.deploy-time').length).toEqual(0);
+        expect(el.querySelectorAll('.js-deploy-meta').length).toEqual(0);
+        expect(el.querySelectorAll('.js-deploy-url').length).toEqual(0);
+        expect(el.querySelectorAll('.js-deploy-time').length).toEqual(0);
         expect(el.querySelectorAll('.button').length).toEqual(0);
         done();
       });

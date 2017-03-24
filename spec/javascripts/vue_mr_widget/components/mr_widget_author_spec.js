@@ -1,13 +1,13 @@
 import Vue from 'vue';
 import authorComponent from '~/vue_merge_request_widget/components/mr_widget_author';
 
+const author = {
+  webUrl: 'http://foo.bar',
+  avatarUrl: 'http://gravatar.com/foo',
+  name: 'fatihacet',
+};
 const createComponent = () => {
   const Component = Vue.extend(authorComponent);
-  const author = {
-    webUrl: 'http://foo.bar',
-    avatarUrl: 'http://gravatar.com/foo',
-    name: 'fatihacet',
-  };
 
   return new Component({
     el: document.createElement('div'),
@@ -31,9 +31,9 @@ describe('MRWidgetAuthor', () => {
       const el = createComponent().$el;
 
       expect(el.tagName).toEqual('A');
-      expect(el.getAttribute('href')).toEqual('http://foo.bar');
-      expect(el.querySelector('img').getAttribute('src')).toEqual('http://gravatar.com/foo');
-      expect(el.querySelector('.author').innerText).toEqual('fatihacet');
+      expect(el.getAttribute('href')).toEqual(author.webUrl);
+      expect(el.querySelector('img').getAttribute('src')).toEqual(author.avatarUrl);
+      expect(el.querySelector('.author').innerText).toEqual(author.name);
     });
   });
 });

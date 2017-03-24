@@ -18,7 +18,7 @@ describe('MRWidgetMergeHelp', () => {
   describe('props', () => {
     it('should have props', () => {
       const { missingBranch } = mergeHelpComponent.props;
-      const MissingBranchTypeClass = missingBranch.type();
+      const MissingBranchTypeClass = missingBranch.type;
 
       expect(new MissingBranchTypeClass() instanceof String).toBeTruthy();
       expect(missingBranch.required).toBeFalsy();

@@ -32,7 +32,7 @@ export default {
         </div>
         <span>
           for
-          <a class="monospace commit-link"
+          <a class="monospace js-commit-link"
             :href="mr.pipeline.commit.commit_path">{{mr.pipeline.commit.short_id}}</a>.
         </span>
       </div>

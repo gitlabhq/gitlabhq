@@ -41,7 +41,7 @@ export default {
     <div class="mr-widget-heading">
       <div class="ci_widget" v-for="deployment in mr.deployments">
         <div class="ci-status-icon ci-status-icon-success">
-          <span class="icon-link">
+          <span class="js-icon-link">
             <span v-html="svg" aria-hidden="true"></span>
           </span>
         </div>
@@ -50,20 +50,20 @@ export default {
           <a
             v-if="hasDeploymentMeta(deployment)"
             :href="deployment.url"
-            target="_blank" rel="noopener noreferrer" class="deploy-meta">
+            target="_blank" rel="noopener noreferrer" class="js-deploy-meta">
             {{deployment.name}}
           </a>
           <span v-if="hasExternalUrls(deployment)">on</span>
           <a
             v-if="hasExternalUrls(deployment)"
             :href="deployment.external_url"
-            target="_blank" rel="noopener noreferrer" class="deploy-url">
+            target="_blank" rel="noopener noreferrer" class="js-deploy-url">
             {{deployment.external_url_formatted}}
           </a>
           <span
             v-if="hasDeploymentTime(deployment)"
             :data-title="deployment.deployed_at_formatted"
-            class="deploy-time" data-toggle="tooltip" data-placement="top">
+            class="js-deploy-time" data-toggle="tooltip" data-placement="top">
             {{formatDate(deployment.deployed_at)}}
           </span>
           <button

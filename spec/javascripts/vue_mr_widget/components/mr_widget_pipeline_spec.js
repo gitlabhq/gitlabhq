@@ -46,8 +46,8 @@ describe('MRWidgetPipeline', () => {
       expect(el.innerText).toContain('failed');
       expect(el.querySelector('.pipeline-id').getAttribute('href')).toEqual(pipelineMockData.path);
       expect(el.querySelectorAll('.stage-container').length).toEqual(1);
-      expect(el.querySelector('.commit-link').getAttribute('href')).toEqual(pipelineMockData.commit.commit_path);
-      expect(el.querySelector('.commit-link').innerText).toEqual(pipelineMockData.commit.short_id);
+      expect(el.querySelector('.js-commit-link').getAttribute('href')).toEqual(pipelineMockData.commit.commit_path);
+      expect(el.querySelector('.js-commit-link').innerText).toEqual(pipelineMockData.commit.short_id);
     });
 
     it('should list multiple stages', (done) => {
