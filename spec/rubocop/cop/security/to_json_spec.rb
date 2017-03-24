@@ -18,12 +18,6 @@ describe RuboCop::Cop::Security::ToJson do
 
   context 'to_json with options' do
     it 'does nothing when provided `only`' do
-      # s(:hash,
-      #   s(:pair,
-      #     s(:sym, :only),
-      #     s(:array,
-      #       s(:sym, :name),
-      #       s(:sym, :username))))
       inspect_source(cop, <<~EOS)
         render json: @issue.to_json(only: [:name, :username])
       EOS
@@ -32,51 +26,23 @@ describe RuboCop::Cop::Security::ToJson do
     end
 
     it 'does nothing when provided `only` and `methods`' do
-      # s(:hash,
-      #   s(:pair,
-      #     s(:sym, :only),
-      #     s(:array,
-      #       s(:sym, :name),
-      #       s(:sym, :username))),
-      #   s(:pair,
-      #     s(:sym, :methods),
-      #     s(:array,
-      #       s(:sym, :avatar_url))))
       inspect_source(cop, <<~EOS)
-        render json: @issue.to_json(only: [:name, :username], methods: [:avatar_url])
+        render json: @issue.to_json(
+          only: [:name, :username],
+          methods: [:avatar_url]
+        )
       EOS
 
       expect(cop.offenses).to be_empty
     end
 
     it 'adds an offense to `include`d attributes without `only` option' do
-      # s(:hash,
-      #   s(:pair,
-      #     s(:sym, :include),
-      #     s(:hash,
-      #       s(:pair,
-      #         s(:sym, :milestone),
-      #         s(:hash)),
-      #       s(:pair,
-      #         s(:sym, :assignee),
-      #         s(:hash,
-      #           s(:pair,
-      #             s(:sym, :methods),
-      #             s(:sym, :avatar_url)))),
-      #       s(:pair,
-      #         s(:sym, :author),
-      #         s(:hash,
-      #           s(:pair,
-      #             s(:sym, :only),
-      #             s(:array,
-      #               s(:str, "foo"),
-      #               s(:str, "bar"))))))))
       inspect_source(cop, <<~EOS)
         render json: @issue.to_json(
           include: {
             milestone: {},
             assignee: { methods: :avatar_url },
-            author: { only: %w[foo bar] },
+            author: { only: %i[foo bar] },
           }
         )
       EOS
@@ -87,6 +53,35 @@ describe RuboCop::Cop::Security::ToJson do
           'milestone: {}',
           'assignee: { methods: :avatar_url }'
         )
+      end
+    end
+
+    it 'handles a top-level `only` with child `include`s' do
+      inspect_source(cop, <<~EOS)
+        render json: @issue.to_json(
+          only: [:foo, :bar],
+          include: {
+            assignee: { methods: :avatar_url },
+            author: { only: %i[foo bar] }
+          }
+        )
+      EOS
+
+      aggregate_failures do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.highlights)
+          .to contain_exactly('assignee: { methods: :avatar_url }')
+      end
+    end
+
+    it 'adds an offense for `include: [...]`' do
+      inspect_source(cop, <<~EOS)
+        render json: @issue.to_json(include: %i[foo bar baz])
+      EOS
+
+      aggregate_failures do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.highlights).to contain_exactly('include: %i[foo bar baz]')
       end
     end
 
