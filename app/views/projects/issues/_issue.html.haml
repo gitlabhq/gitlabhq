@@ -15,7 +15,7 @@
 
           - if issue.assignee
             %li
-              = link_to_member(@project, issue.assignee, name: false, title: "Assigned to :name")
+              = render 'shared/issuable/assignees', project: @project, issue: issue
 
           = render 'shared/issuable_meta_data', issuable: issue
 

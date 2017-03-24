@@ -116,6 +116,10 @@ module Issuable
     def locking_enabled?
       title_changed? || description_changed?
     end
+
+    def assignees
+      [User.first, User.last, User.first, User.last, User.first, User.last, User.first, User.last, User.first, User.last, User.first, User.last, User.first, User.last]
+    end
   end
 
   module ClassMethods

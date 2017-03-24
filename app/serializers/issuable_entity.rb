@@ -2,6 +2,7 @@ class IssuableEntity < Grape::Entity
   expose :id
   expose :iid
   expose :assignee_id
+  expose :assignees, using: UserEntity
   expose :author_id
   expose :description
   expose :lock_version
