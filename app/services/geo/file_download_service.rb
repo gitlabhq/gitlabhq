@@ -11,16 +11,23 @@ module Geo
 
     def execute
       try_obtain_lease do |lease|
-        case object_type
-        when :lfs
-          download_lfs_object
-        else
-          log("unknown file type: #{object_type}")
-        end
+        bytes_downloaded = downloader.execute
+        success = bytes_downloaded && bytes_downloaded >= 0
+        update_registry(bytes_downloaded) if success
       end
     end
 
     private
+
+    def downloader
+      begin
+        klass = Gitlab::Geo.const_get("#{object_type.capitalize}Downloader")
+        klass.new(object_db_id)
+      rescue NameError
+        log("unknown file type: #{object_type}")
+        raise
+      end
+    end
 
     def try_obtain_lease
       uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT).try_obtain
@@ -32,20 +39,6 @@ module Geo
       ensure
         Gitlab::ExclusiveLease.cancel(lease_key, uuid)
       end
-    end
-
-    def download_lfs_object
-      lfs_object = LfsObject.find_by_id(object_db_id)
-
-      return unless lfs_object.present?
-
-      transfer = ::Gitlab::Geo::LfsTransfer.new(lfs_object)
-      bytes_downloaded = transfer.download_from_primary
-
-      success = bytes_downloaded && bytes_downloaded >= 0
-      update_registry(bytes_downloaded) if success
-
-      success
     end
 
     def log(message)

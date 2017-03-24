@@ -63,15 +63,15 @@
 
   - if @commit.status
     .well-segment.pipeline-info
-      %div{ class: "icon-container ci-status-icon-#{@commit.status}" }
-        = link_to namespace_project_pipeline_path(@project.namespace, @project, @commit.pipelines.last.id) do
+      .status-icon-container{ class: "ci-status-icon-#{@commit.status}" }
+        = link_to namespace_project_pipeline_path(@project.namespace, @project, @commit.latest_pipeline.id) do
           = ci_icon_for_status(@commit.status)
       Pipeline
-      = link_to "##{@commit.pipelines.last.id}", namespace_project_pipeline_path(@project.namespace, @project, @commit.pipelines.last.id), class: "monospace"
-      for
-      = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
-      %span.ci-status-label
-        = ci_label_for_status(@commit.status)
+      = link_to "##{@commit.latest_pipeline.id}", namespace_project_pipeline_path(@project.namespace, @project, @commit.latest_pipeline.id), class: "monospace"
+      = ci_label_for_status(@commit.status)
+      - if @commit.latest_pipeline.stages.any?
+        .mr-widget-pipeline-graph
+          = render 'shared/mini_pipeline_graph', pipeline: @commit.latest_pipeline, klass: 'js-commit-pipeline-graph'
       in
       = time_interval_in_words @commit.pipelines.total_duration
 

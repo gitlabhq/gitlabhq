@@ -2,6 +2,7 @@
 /* eslint-disable no-new */
 
 import playIconSvg from 'icons/_icon_play.svg';
+import eventHub from '../event_hub';
 
 export default {
   props: {
@@ -32,10 +33,11 @@ export default {
       this.service.postAction(endpoint)
       .then(() => {
         this.isLoading = false;
+        eventHub.$emit('refreshEnvironments');
       })
       .catch(() => {
         this.isLoading = false;
-        new Flash('An error occured while making the request.', 'alert');
+        new Flash('An error occured while making the request.');
       });
     },
   },

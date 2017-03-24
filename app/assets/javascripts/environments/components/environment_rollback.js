@@ -6,6 +6,7 @@
  *
  * Makes a post request when the button is clicked.
  */
+import eventHub from '../event_hub';
 
 export default {
   props: {
@@ -39,10 +40,11 @@ export default {
       this.service.postAction(this.retryUrl)
       .then(() => {
         this.isLoading = false;
+        eventHub.$emit('refreshEnvironments');
       })
       .catch(() => {
         this.isLoading = false;
-        new Flash('An error occured while making the request.', 'alert');
+        new Flash('An error occured while making the request.');
       });
     },
   },

@@ -69,7 +69,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a group'
       end
-      resource :groups do
+      resource :groups, requirements: { id: %r{[^/]+} } do
         desc 'Get a list of group issues' do
           success ::API::Entities::Issue
         end
@@ -90,7 +90,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         include TimeTrackingEndpoints
 
         desc 'Get a list of project issues' do
@@ -104,7 +104,7 @@ module API
           use :issues_params
         end
         get ":id/issues" do
-          project = find_project(params[:id])
+          project = find_project!(params[:id])
 
           issues = find_issues(project_id: project.id)
 
@@ -140,12 +140,7 @@ module API
           end
 
           issue_params = declared_params(include_missing: false)
-
-          if merge_request_iid = params[:merge_request_for_resolving_discussions]
-            issue_params[:merge_request_for_resolving_discussions] = MergeRequestsFinder.new(current_user, project_id: user_project.id).
-              execute.
-              find_by(iid: merge_request_iid)
-          end
+          issue_params = issue_params.merge(merge_request_to_resolve_discussions_of: issue_params.delete(:merge_request_for_resolving_discussions))
 
           issue = ::Issues::CreateService.new(user_project,
                                               current_user,

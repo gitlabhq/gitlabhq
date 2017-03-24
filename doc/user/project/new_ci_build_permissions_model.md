@@ -119,7 +119,7 @@ And then the users could also use it in their CI jobs all Docker related
 commands to interact with GitLab Container Registry. For example:
 
 ```
-docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
 ```
 
 Using single token had multiple security implications:
@@ -208,7 +208,7 @@ This is how an example usage can look like:
 ```
 test:
   script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $CI_REGISTRY/group/other-project:latest
     - docker run $CI_REGISTRY/group/other-project:latest
 ```

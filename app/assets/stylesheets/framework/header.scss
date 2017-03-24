@@ -164,11 +164,25 @@ header {
       }
     }
 
+    .group-name-toggle {
+      margin: 0 5px;
+      vertical-align: sub;
+    }
+
+    .group-title {
+      &.is-hidden {
+        .hidable:not(:last-of-type) {
+          display: none;
+        }
+      }
+    }
+
     .title {
       position: relative;
       padding-right: 20px;
       margin: 0;
       font-size: 18px;
+      max-width: 385px;
       display: inline-block;
       line-height: $header-height;
       font-weight: normal;
@@ -177,6 +191,14 @@ header {
       text-overflow: ellipsis;
       vertical-align: top;
       white-space: nowrap;
+
+      &.initializing {
+        display: none;
+      }
+
+      @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+        max-width: 300px;
+      }
 
       @media (max-width: $screen-xs-max) {
         max-width: 190px;
@@ -243,7 +265,7 @@ header {
   }
 
   .impersonation i {
-    color: $red-normal;
+    color: $red-500;
   }
 }
 

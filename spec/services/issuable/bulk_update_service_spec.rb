@@ -138,7 +138,7 @@ describe Issuable::BulkUpdateService, services: true do
       let(:labels) { [bug, regression] }
 
       it 'updates the labels of all issues passed to the labels passed' do
-        expect(issues.map(&:reload).map(&:label_ids)).to all(eq(labels.map(&:id)))
+        expect(issues.map(&:reload).map(&:label_ids)).to all(match_array(labels.map(&:id)))
       end
 
       it 'does not update issues not passed in' do

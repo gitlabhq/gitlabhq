@@ -1,4 +1,4 @@
-/* global Vue */
+import Vue from 'vue';
 
 require('~/merge_request_widget/approvals/components/approvals_footer');
 

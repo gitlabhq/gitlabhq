@@ -6,6 +6,9 @@ describe Boards::Issues::ListService, services: true do
     let(:project) { create(:empty_project) }
     let(:board)   { create(:board, project: project) }
 
+    let(:m1) { create(:milestone, project: project) }
+    let(:m2) { create(:milestone, project: project) }
+
     let(:bug) { create(:label, project: project, name: 'Bug') }
     let(:development) { create(:label, project: project, name: 'Development') }
     let(:testing)  { create(:label, project: project, name: 'Testing') }
@@ -17,19 +20,20 @@ describe Boards::Issues::ListService, services: true do
     let!(:list2)   { create(:list, board: board, label: testing, position: 1) }
     let!(:done)    { board.done_list }
 
-    let!(:opened_issue1) { create(:labeled_issue, project: project, labels: [bug]) }
-    let!(:opened_issue2) { create(:labeled_issue, project: project, labels: [p2]) }
-    let!(:reopened_issue1) { create(:issue, :reopened, project: project) }
+    let!(:opened_issue1) { create(:labeled_issue, project: project, milestone: m1, title: 'Issue 1', labels: [bug]) }
+    let!(:opened_issue2) { create(:labeled_issue, project: project, milestone: m2, title: 'Issue 2', labels: [p2]) }
+    let!(:reopened_issue1) { create(:issue, :reopened, project: project, title: 'Issue 3', ) }
 
-    let!(:list1_issue1) { create(:labeled_issue, project: project, labels: [p2, development]) }
-    let!(:list1_issue2) { create(:labeled_issue, project: project, labels: [development]) }
-    let!(:list1_issue3) { create(:labeled_issue, project: project, labels: [development, p1]) }
-    let!(:list2_issue1) { create(:labeled_issue, project: project, labels: [testing]) }
+    let!(:list1_issue1) { create(:labeled_issue, project: project, milestone: m1, labels: [p2, development]) }
+    let!(:list1_issue2) { create(:labeled_issue, project: project, milestone: m2, labels: [development]) }
+    let!(:list1_issue3) { create(:labeled_issue, project: project, milestone: m1, labels: [development, p1]) }
+    let!(:list2_issue1) { create(:labeled_issue, project: project, milestone: m1, labels: [testing]) }
 
     let!(:closed_issue1) { create(:labeled_issue, :closed, project: project, labels: [bug]) }
     let!(:closed_issue2) { create(:labeled_issue, :closed, project: project, labels: [p3]) }
     let!(:closed_issue3) { create(:issue, :closed, project: project) }
     let!(:closed_issue4) { create(:labeled_issue, :closed, project: project, labels: [p1]) }
+    let!(:closed_issue5) { create(:labeled_issue, :closed, project: project, labels: [development]) }
 
     before do
       project.team << [user, :developer]
@@ -41,6 +45,45 @@ describe Boards::Issues::ListService, services: true do
       expect_any_instance_of(IssuesFinder).to receive(:execute).once.and_call_original
 
       described_class.new(project, user, params).execute
+    end
+
+    context 'when list_id is missing' do
+      context 'when board does not have a milestone' do
+        it 'returns opened issues without board labels applied' do
+          params = { board_id: board.id }
+
+          issues = described_class.new(project, user, params).execute
+
+          expect(issues).to eq [opened_issue2, reopened_issue1, opened_issue1]
+        end
+      end
+
+      context 'when board have a milestone' do
+        it 'returns opened issues without board labels and milestone applied' do
+          params = { board_id: board.id }
+          board.update_attribute(:milestone, m1)
+
+          issues = described_class.new(project, user, params).execute
+
+          expect(issues).to eq [opened_issue2, list1_issue2, reopened_issue1, opened_issue1]
+        end
+      end
+    end
+
+    it 'returns closed issues when listing issues from Done' do
+      params = { board_id: board.id, id: done.id }
+
+      issues = described_class.new(project, user, params).execute
+
+      expect(issues).to eq [closed_issue4, closed_issue2, closed_issue5, closed_issue3, closed_issue1]
+    end
+
+    it 'returns opened issues that have label list applied when listing issues from a label list' do
+      params = { board_id: board.id, id: list1.id }
+
+      issues = described_class.new(project, user, params).execute
+
+      expect(issues).to eq [list1_issue3, list1_issue1, list1_issue2]
     end
 
     context 'with list that does not belong to the board' do

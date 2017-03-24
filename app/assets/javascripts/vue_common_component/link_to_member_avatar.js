@@ -1,4 +1,5 @@
-/* global Vue */
+import Vue from 'vue';
+
 // Analogue of link_to_member_avatar in app/helpers/projects_helper.rb
 
 (() => {

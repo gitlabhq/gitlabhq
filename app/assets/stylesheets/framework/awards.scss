@@ -92,14 +92,16 @@
 .award-menu-holder {
   display: inline-block;
   position: relative;
+
+  .tooltip {
+    white-space: nowrap;
+  }
 }
 
 .award-control {
   margin: 3px 5px 3px 0;
-  padding: 5px 6px;
+  padding: .35em .4em;
   outline: 0;
-
-  line-height: 1;
 
   &.disabled {
     cursor: default;
@@ -126,6 +128,10 @@
     &:focus {
       outline: 0;
     }
+
+    .award-control-icon {
+      margin: 0;
+    }
   }
 
   &.is-loading {
@@ -140,10 +146,12 @@
   }
 
   .icon,
+  gl-emoji,
   .award-control-icon {
-    float: left;
-    margin-right: 5px;
-    font-size: 18px;
+    vertical-align: middle;
+    margin-right: 0.15em;
+    font-size: 1.5em;
+    line-height: 1;
   }
 
   .award-control-icon-loading {
@@ -153,5 +161,10 @@
   .award-control-icon {
     color: $border-gray-normal;
     margin-top: 1px;
+    padding: 0 2px;
+  }
+
+  .award-control-text {
+    vertical-align: middle;
   }
 }

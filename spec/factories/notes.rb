@@ -26,12 +26,17 @@ FactoryGirl.define do
 
     factory :diff_note_on_merge_request, traits: [:on_merge_request], class: DiffNote do
       association :project, :repository
+
+      transient do
+        line_number 14
+      end
+
       position do
         Gitlab::Diff::Position.new(
           old_path: "files/ruby/popen.rb",
           new_path: "files/ruby/popen.rb",
           old_line: nil,
-          new_line: 14,
+          new_line: line_number,
           diff_refs: noteable.diff_refs
         )
       end

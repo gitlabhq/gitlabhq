@@ -48,11 +48,14 @@ module Issuable
 
     delegate :name,
              :email,
+             :public_email,
              to: :author,
+             allow_nil: true,
              prefix: true
 
     delegate :name,
              :email,
+             :public_email,
              to: :assignee,
              allow_nil: true,
              prefix: true
@@ -276,6 +279,7 @@ module Issuable
       user: user.hook_attrs,
       project: project.hook_attrs,
       object_attributes: hook_attrs,
+      labels: labels.map(&:hook_attrs),
       # DEPRECATED
       repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
     }

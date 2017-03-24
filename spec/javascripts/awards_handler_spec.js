@@ -1,10 +1,7 @@
 /* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, comma-dangle, new-parens, no-unused-vars, quotes, jasmine/no-spec-dupes, prefer-template, max-len */
 
-import promisePolyfill from 'es6-promise';
 import Cookies from 'js-cookie';
 import AwardsHandler from '~/awards_handler';
-
-promisePolyfill.polyfill();
 
 (function() {
   var awardsHandler, lazyAssert, urlRoot, openAndWaitForEmojiMenu;
@@ -289,6 +286,20 @@ promisePolyfill.polyfill();
           .catch((err) => {
             done.fail(`Failed to open and build emoji menu: ${err.message}`);
           });
+      });
+
+      it('should disregard invalid frequently used emoji that are being attempted to be added', function() {
+        awardsHandler.addEmojiToFrequentlyUsedList('8ball');
+        awardsHandler.addEmojiToFrequentlyUsedList('invalid_emoji');
+        awardsHandler.addEmojiToFrequentlyUsedList('grinning');
+
+        expect(awardsHandler.getFrequentlyUsedEmojis()).toEqual(['8ball', 'grinning']);
+      });
+
+      it('should disregard invalid frequently used emoji already set in cookie', function() {
+        Cookies.set('frequently_used_emojis', '8ball,invalid_emoji,grinning');
+
+        expect(awardsHandler.getFrequentlyUsedEmojis()).toEqual(['8ball', 'grinning']);
       });
     });
   });

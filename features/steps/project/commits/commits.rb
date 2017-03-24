@@ -163,7 +163,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I see commit ci info' do
-    expect(page).to have_content "Pipeline #1 for 570e7b2a pending"
+    expect(page).to have_content "Pipeline #1 pending"
   end
 
   step 'I search "submodules" commits' do

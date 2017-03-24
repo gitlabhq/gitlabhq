@@ -36,7 +36,8 @@ class NamespaceValidator < ActiveModel::EachValidator
   ].freeze
 
   WILDCARD_ROUTES = %w[tree commits wikis new edit create update logs_tree
-                       preview blob blame raw files create_dir find_file].freeze
+                       preview blob blame raw files create_dir find_file
+                       artifacts graphs refs badges].freeze
 
   STRICT_RESERVED = (RESERVED + WILDCARD_ROUTES).freeze
 

@@ -39,6 +39,7 @@ describe API::Runner do
           expect(json_response['id']).to eq(runner.id)
           expect(json_response['token']).to eq(runner.token)
           expect(runner.run_untagged).to be true
+          expect(runner.token).not_to eq(registration_token)
         end
 
         context 'when project token is used' do
@@ -49,6 +50,8 @@ describe API::Runner do
 
             expect(response).to have_http_status 201
             expect(project.runners.size).to eq(1)
+            expect(Ci::Runner.first.token).not_to eq(registration_token)
+            expect(Ci::Runner.first.token).not_to eq(project.runners_token)
           end
         end
       end
@@ -149,6 +152,34 @@ describe API::Runner do
         end
       end
     end
+
+    describe 'POST /api/v4/runners/verify' do
+      let(:runner) { create(:ci_runner) }
+
+      context 'when no token is provided' do
+        it 'returns 400 error' do
+          post api('/runners/verify')
+
+          expect(response).to have_http_status :bad_request
+        end
+      end
+
+      context 'when invalid token is provided' do
+        it 'returns 403 error' do
+          post api('/runners/verify'), token: 'invalid-token'
+
+          expect(response).to have_http_status 403
+        end
+      end
+
+      context 'when valid token is provided' do
+        it 'verifies Runner credentials' do
+          post api('/runners/verify'), token: runner.token
+
+          expect(response).to have_http_status 200
+        end
+      end
+    end
   end
 
   describe '/api/v4/jobs' do
@@ -217,18 +248,6 @@ describe API::Runner do
             it { expect(response).to have_http_status(204) }
           end
         end
-
-        context "when runner doesn't send version in User-Agent" do
-          let(:user_agent) { 'Go-http-client/1.1' }
-
-          it { expect(response).to have_http_status(404) }
-        end
-
-        context "when runner doesn't have a User-Agent" do
-          let(:user_agent) { nil }
-
-          it { expect(response).to have_http_status(404) }
-        end
       end
 
       context 'when no token is provided' do
@@ -251,10 +270,10 @@ describe API::Runner do
         context 'when Runner is not active' do
           let(:runner) { create(:ci_runner, :inactive) }
 
-          it 'returns 404 error' do
+          it 'returns 204 error' do
             request_job
 
-            expect(response).to have_http_status 404
+            expect(response).to have_http_status 204
           end
         end
 
@@ -309,8 +328,8 @@ describe API::Runner do
           end
 
           let(:expected_variables) do
-            [{ 'key' => 'CI_BUILD_NAME', 'value' => 'spinach', 'public' => true },
-             { 'key' => 'CI_BUILD_STAGE', 'value' => 'test', 'public' => true },
+            [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true },
+             { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true },
              { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true }]
           end
 
@@ -398,9 +417,39 @@ describe API::Runner do
           end
 
           context 'when project and pipeline have multiple jobs' do
+            let!(:job) { create(:ci_build_tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job2) { create(:ci_build_tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
             let!(:test_job) { create(:ci_build, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 1) }
 
-            before { job.success }
+            before do
+              job.success
+              job2.success
+            end
+
+            it 'returns dependent jobs' do
+              request_job
+
+              expect(response).to have_http_status(201)
+              expect(json_response['id']).to eq(test_job.id)
+              expect(json_response['dependencies'].count).to eq(2)
+              expect(json_response['dependencies']).to include({ 'id' => job.id, 'name' => job.name, 'token' => job.token },
+                                                               { 'id' => job2.id, 'name' => job2.name, 'token' => job2.token })
+            end
+          end
+
+          context 'when explicit dependencies are defined' do
+            let!(:job) { create(:ci_build_tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job2) { create(:ci_build_tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
+            let!(:test_job) do
+              create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'deploy',
+                                stage: 'deploy', stage_idx: 1,
+                                options: { dependencies: [job2.name] })
+            end
+
+            before do
+              job.success
+              job2.success
+            end
 
             it 'returns dependent jobs' do
               request_job
@@ -408,7 +457,7 @@ describe API::Runner do
               expect(response).to have_http_status(201)
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(1)
-              expect(json_response['dependencies'][0]).to include('id' => job.id, 'name' => 'spinach')
+              expect(json_response['dependencies'][0]).to include('id' => job2.id, 'name' => job2.name, 'token' => job2.token)
             end
           end
 
@@ -434,9 +483,9 @@ describe API::Runner do
 
           context 'when triggered job is available' do
             let(:expected_variables) do
-              [{ 'key' => 'CI_BUILD_NAME', 'value' => 'spinach', 'public' => true },
-               { 'key' => 'CI_BUILD_STAGE', 'value' => 'test', 'public' => true },
-               { 'key' => 'CI_BUILD_TRIGGERED', 'value' => 'true', 'public' => true },
+              [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true },
+               { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true },
+               { 'key' => 'CI_PIPELINE_TRIGGERED', 'value' => 'true', 'public' => true },
                { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true },
                { 'key' => 'SECRET_KEY', 'value' => 'secret_value', 'public' => false },
                { 'key' => 'TRIGGER_KEY_1', 'value' => 'TRIGGER_VALUE_1', 'public' => false }]

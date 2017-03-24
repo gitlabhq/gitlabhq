@@ -338,6 +338,7 @@ group :test do
   gem 'test_after_commit', '~> 1.1'
   gem 'sham_rack', '~> 1.3.6'
   gem 'timecop', '~> 0.8.0'
+  gem 'concurrent-ruby', '~> 1.0.5'
 end
 
 gem 'octokit', '~> 4.6.2'
@@ -363,4 +364,4 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.2.1'
+gem 'gitaly', '~> 0.3.0'

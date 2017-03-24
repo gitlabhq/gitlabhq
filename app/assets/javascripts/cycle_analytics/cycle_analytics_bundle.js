@@ -1,9 +1,8 @@
-/* global Vue */
-/* global Cookies */
 /* global Flash */
 
-window.Vue = require('vue');
-window.Cookies = require('js-cookie');
+import Vue from 'vue';
+import Cookies from 'js-cookie';
+
 require('./components/stage_code_component');
 require('./components/stage_issue_component');
 require('./components/stage_plan_component');

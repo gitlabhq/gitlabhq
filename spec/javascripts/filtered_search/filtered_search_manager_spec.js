@@ -41,7 +41,6 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
         </div>
       `);
 
-      spyOn(gl.FilteredSearchManager.prototype, 'cleanup').and.callFake(() => {});
       spyOn(gl.FilteredSearchManager.prototype, 'loadSearchParamsFromURL').and.callFake(() => {});
       spyOn(gl.FilteredSearchManager.prototype, 'tokenChange').and.callFake(() => {});
       spyOn(gl.FilteredSearchDropdownManager.prototype, 'setDropdown').and.callFake(() => {});
@@ -54,8 +53,12 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
       manager = new gl.FilteredSearchManager();
     });
 
+    afterEach(() => {
+      manager.cleanup();
+    });
+
     describe('search', () => {
-      const defaultParams = '?scope=all&utf8=✓&state=opened';
+      const defaultParams = '?scope=all&utf8=%E2%9C%93&state=opened';
 
       it('should search with a single word', (done) => {
         input.value = 'searchTerm';
@@ -241,6 +244,18 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
 
         expect(selectedToken.classList.contains('selected')).toEqual(false);
         expect(gl.FilteredSearchVisualTokens.unselectTokens).toHaveBeenCalled();
+      });
+    });
+
+    describe('toggleInputContainerFocus', () => {
+      it('toggles on focus', () => {
+        input.focus();
+        expect(document.querySelector('.filtered-search-input-container').classList.contains('focus')).toEqual(true);
+      });
+
+      it('toggles on blur', () => {
+        input.blur();
+        expect(document.querySelector('.filtered-search-input-container').classList.contains('focus')).toEqual(false);
       });
     });
   });

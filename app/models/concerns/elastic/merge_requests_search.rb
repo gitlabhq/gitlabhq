@@ -67,6 +67,7 @@ module Elastic
             basic_query_hash(%w(title^2 description), query)
           end
 
+        options[:feature] = 'merge_requests'
         query_hash = project_ids_filter(query_hash, options)
 
         self.__elasticsearch__.search(query_hash)

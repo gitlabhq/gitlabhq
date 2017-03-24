@@ -82,6 +82,9 @@ require('../window')(function(w){
         this._loadUrlData(url)
           .then(function(data) {
             self._loadData(data, config, self);
+          }, function(xhrError) {
+            // TODO: properly handle errors due to XHR cancellation
+            return;
           });
       }
     },

@@ -3,9 +3,9 @@ module Boards
     class ListService < BaseService
       def execute
         issues = IssuesFinder.new(current_user, filter_params).execute
-        issues = without_board_labels(issues) unless movable_list?
+        issues = without_board_labels(issues) unless list
         issues = with_list_label(issues) if movable_list?
-        issues.reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'))
+        issues.order_by_position_and_priority
       end
 
       private
@@ -51,10 +51,14 @@ module Boards
       def without_board_labels(issues)
         return issues unless board_label_ids.any?
 
-        issues.where.not(
-          LabelLink.where("label_links.target_type = 'Issue' AND label_links.target_id = issues.id")
-                   .where(label_id: board_label_ids).limit(1).arel.exists
-        )
+        label_links = LabelLink.where("label_links.target_type = 'Issue' AND label_links.target_id = issues.id")
+                               .where(label_id: board_label_ids)
+
+        if board.milestone.present?
+          label_links = label_links.where("issues.milestone_id = ?", board.milestone_id)
+        end
+
+        issues.where.not(label_links.limit(1).arel.exists)
       end
 
       def with_list_label(issues)

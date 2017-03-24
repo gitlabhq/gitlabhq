@@ -1,9 +1,10 @@
-/* global Vue */
 /* global List */
 /* global ListLabel */
 /* global listObj */
 /* global boardsMockInterceptor */
 /* global BoardService */
+
+import Vue from 'vue';
 
 require('~/boards/models/list');
 require('~/boards/models/label');

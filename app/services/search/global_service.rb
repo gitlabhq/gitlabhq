@@ -17,14 +17,15 @@ module Search
       end
 
       if current_application_settings.elasticsearch_search?
-        projects = current_user ? current_user.authorized_projects : Project.none
-        projects = projects.inside_path(group.id) if group
+        unless group
+          projects = current_user ? current_user.authorized_projects : Project.none
+        end
 
         Gitlab::Elastic::SearchResults.new(
           current_user,
           params[:search],
           projects.pluck(:id),
-          !group
+          !group # Ignore public projects outside of the group if provided
         )
       else
         Gitlab::SearchResults.new(current_user, projects, params[:search])

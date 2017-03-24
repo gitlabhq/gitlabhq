@@ -16,7 +16,6 @@
           Also, issues are searchable and filterable.
         - if project_select_button
           = render 'shared/new_project_item_select', path: 'issues/new', label: 'New issue'
-        - else
-          = link_to 'New issue', button_path, class: 'btn btn-new', title: 'New issue', id: 'new_issue_link'
       - else
-        %h4.text-center There are no issues to show.
+        %h4 There are no issues to show.
+      = link_to 'New issue', button_path, class: 'btn btn-new', title: 'New issue', id: 'new_issue_link'

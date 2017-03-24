@@ -2,7 +2,6 @@ module Projects
   module Settings
     class RepositoryController < Projects::ApplicationController
       before_action :authorize_admin_project!
-      before_action :push_rule, only: [:show]
       before_action :remote_mirror, only: [:show]
 
       def show
@@ -10,6 +9,9 @@ module Projects
           .new(@project, current_user: current_user)
 
         define_protected_branches
+
+        project.create_push_rule unless project.push_rule
+        @push_rule = project.push_rule
       end
 
       private
@@ -18,10 +20,6 @@ module Projects
         load_protected_branches
         @protected_branch = @project.protected_branches.new
         load_gon_index
-      end
-
-      def push_rule
-        @push_rule ||= PushRule.find_or_create_by(is_sample: true)
       end
 
       def remote_mirror

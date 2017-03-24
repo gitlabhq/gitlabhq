@@ -115,7 +115,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a group'
       end
-      resource :groups do
+      resource :groups, requirements: { id: %r{[^/]+} } do
         desc 'Update a group. Available only for users who can administrate groups.' do
           success Entities::Group
         end
@@ -185,7 +185,7 @@ module API
         params do
           requires :project_id, type: String, desc: 'The ID or path of the project'
         end
-        post ":id/projects/:project_id" do
+        post ":id/projects/:project_id", requirements: { project_id: /.+/ } do
           authenticated_as_admin!
           group = find_group!(params[:id])
           project = find_project!(params[:project_id])

@@ -532,6 +532,19 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '.latest_successful_for_refs' do
+    include_context 'with some outdated pipelines'
+
+    let!(:latest_successful_pipeline1) { create_pipeline(:success, 'ref1', 'D') }
+    let!(:latest_successful_pipeline2) { create_pipeline(:success, 'ref2', 'D') }
+
+    it 'returns the latest successful pipeline for both refs' do
+      refs = %w(ref1 ref2 ref3)
+
+      expect(described_class.latest_successful_for_refs(refs)).to eq({ 'ref1' => latest_successful_pipeline1, 'ref2' => latest_successful_pipeline2 })
+    end
+  end
+
   describe '#status' do
     let(:build) do
       create(:ci_build, :created, pipeline: pipeline, name: 'test')

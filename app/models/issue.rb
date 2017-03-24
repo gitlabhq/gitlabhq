@@ -63,10 +63,24 @@ class Issue < ActiveRecord::Base
     state :opened
     state :reopened
     state :closed
+
+    before_transition any => :closed do |issue|
+      issue.closed_at = Time.zone.now
+    end
+
+    before_transition closed: any do |issue|
+      issue.closed_at = nil
+    end
   end
 
   def hook_attrs
-    attributes
+    attrs = {
+      total_time_spent: total_time_spent,
+      human_total_time_spent: human_total_time_spent,
+      human_time_estimate: human_time_estimate
+    }
+
+    attributes.merge!(attrs)
   end
 
   def self.reference_prefix
@@ -104,6 +118,13 @@ class Issue < ActiveRecord::Base
     else
       super
     end
+  end
+
+  def self.order_by_position_and_priority
+    order_labels_priority.
+      reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
+              Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
+              "id DESC")
   end
 
   # `from` argument can be a Namespace or Project.
@@ -208,9 +229,8 @@ class Issue < ActiveRecord::Base
     due_date.try(:past?) || false
   end
 
-  # Only issues on public projects should be checked for spam
   def check_for_spam?
-    project.public?
+    project.public? && (title_changed? || description_changed?)
   end
 
   def as_json(options = {})

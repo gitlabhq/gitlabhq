@@ -17,7 +17,18 @@ class DropUserActivitiesTable < ActiveRecord::Migration
   # comments:
   # disable_ddl_transaction!
 
-  def change
-    drop_table :user_activities
+  def up
+    drop_table :user_activities if table_exists?(:user_activities)
+  end
+
+  def down
+    unless table_exists?(:user_activities)
+      create_table "user_activities", force: :cascade do |t|
+        t.integer "user_id"
+        t.datetime "last_activity_at", null: false
+      end
+
+      add_index "user_activities", ["user_id"], name: "index_user_activities_on_user_id", unique: true, using: :btree
+    end
   end
 end

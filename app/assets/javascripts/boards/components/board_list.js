@@ -1,7 +1,7 @@
 /* eslint-disable comma-dangle, space-before-function-paren, max-len */
-/* global Vue */
 /* global Sortable */
 
+import Vue from 'vue';
 import boardNewIssue from './board_new_issue';
 import boardCard from './board_card';
 
@@ -48,7 +48,7 @@ import boardCard from './board_card';
             this.list.getIssues(false);
           }
 
-          if (this.scrollHeight() > this.listHeight()) {
+          if (this.scrollHeight() > Math.ceil(this.listHeight())) {
             this.showCount = true;
           } else {
             this.showCount = false;

@@ -49,4 +49,18 @@ describe Dashboard::TodosController do
       expect(json_response).to eq({ "count" => "1", "done_count" => "0" })
     end
   end
+
+  describe 'PATCH #bulk_restore' do
+    let(:todos) { create_list(:todo, 2, :done, user: user, project: project, author: author) }
+
+    it 'restores the todos to pending state' do
+      patch :bulk_restore, ids: todos.map(&:id)
+
+      todos.each do |todo|
+        expect(todo.reload).to be_pending
+      end
+      expect(response).to have_http_status(200)
+      expect(json_response).to eq({ 'count' => '2', 'done_count' => '0' })
+    end
+  end
 end

@@ -23,6 +23,8 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def create
+    update_ref
+
     create_commit(Files::CreateService, success_notice: "The file has been successfully created.",
                                         success_path: -> { namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @file_path)) },
                                         failure_view: :new,

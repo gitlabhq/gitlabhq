@@ -5,9 +5,7 @@ module Ci
     include Importable
     include AfterCommitQueue
 
-    self.table_name = 'ci_commits'
-
-    belongs_to :project, foreign_key: :gl_project_id
+    belongs_to :project
     belongs_to :user
 
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
@@ -113,6 +111,12 @@ module Ci
 
     def self.latest_successful_for(ref)
       success.latest(ref).order(id: :desc).first
+    end
+
+    def self.latest_successful_for_refs(refs)
+      success.latest(refs).order(id: :desc).each_with_object({}) do |pipeline, hash|
+        hash[pipeline.ref] ||= pipeline
+      end
     end
 
     def self.truncate_sha(sha)

@@ -1,4 +1,3 @@
-require('es6-promise').polyfill();
 require('~/merge_request_widget/approvals/approvals_store');
 
 $.rails = {

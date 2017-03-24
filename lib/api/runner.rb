@@ -47,11 +47,25 @@ module API
         authenticate_runner!
         Ci::Runner.find_by_token(params[:token]).destroy
       end
+
+      desc 'Validates authentication credentials' do
+        http_codes [[200, 'Credentials are valid'], [403, 'Forbidden']]
+      end
+      params do
+        requires :token, type: String, desc: %q(Runner's authentication token)
+      end
+      post '/verify' do
+        authenticate_runner!
+        status 200
+      end
     end
 
     resource :jobs do
       desc 'Request a job' do
         success Entities::JobRequest::Response
+        http_codes [[201, 'Job was scheduled'],
+                    [204, 'No job for Runner'],
+                    [403, 'Forbidden']]
       end
       params do
         requires :token, type: String, desc: %q(Runner's authentication token)
@@ -60,13 +74,13 @@ module API
       end
       post '/request' do
         authenticate_runner!
-        not_found! unless current_runner.active?
+        no_content! unless current_runner.active?
         update_runner_info
 
         if current_runner.is_runner_queue_value_latest?(params[:last_update])
           header 'X-GitLab-Last-Update', params[:last_update]
           Gitlab::Metrics.add_event(:build_not_found_cached)
-          return job_not_found!
+          return no_content!
         end
 
         new_update = current_runner.ensure_runner_queue_value
@@ -80,7 +94,7 @@ module API
           else
             Gitlab::Metrics.add_event(:build_not_found)
             header 'X-GitLab-Last-Update', new_update
-            job_not_found!
+            no_content!
           end
         else
           # We received build that is invalid due to concurrency conflict

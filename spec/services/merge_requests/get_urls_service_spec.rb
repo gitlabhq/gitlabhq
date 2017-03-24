@@ -130,5 +130,15 @@ describe MergeRequests::GetUrlsService do
         }])
       end
     end
+
+    context 'when printing_merge_request_link_enabled is false' do
+      it 'returns empty array' do
+        project.update!(printing_merge_request_link_enabled: false)
+
+        result = service.execute(existing_branch_changes)
+
+        expect(result).to eq([])
+      end
+    end
   end
 end

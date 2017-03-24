@@ -22,20 +22,11 @@ class MattermostService < ChatNotificationService
     </ol>'
   end
 
-  def fields
-    default_fields + build_event_channels
-  end
-
-  def default_fields
-    [
-      { type: 'text', name: 'webhook', placeholder: 'e.g. http://mattermost_host/hooks/…' },
-      { type: 'text', name: 'username', placeholder: 'e.g. GitLab' },
-      { type: 'checkbox', name: 'notify_only_broken_builds' },
-      { type: 'checkbox', name: 'notify_only_broken_pipelines' },
-    ]
-  end
-
   def default_channel_placeholder
     "Channel handle (e.g. town-square)"
+  end
+
+  def webhook_placeholder
+    'http://mattermost.example.com/hooks/…'
   end
 end

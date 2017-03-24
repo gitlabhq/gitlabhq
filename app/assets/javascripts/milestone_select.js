@@ -1,7 +1,8 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, comma-dangle, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
-/* global Vue */
 /* global Issuable */
 /* global ListMilestone */
+
+import Vue from 'vue';
 
 (function() {
   this.MilestoneSelect = (function() {
@@ -181,7 +182,7 @@
               }
 
               $dropdown.trigger('loading.gl.dropdown');
-              $loading.fadeIn();
+              $loading.removeClass('hidden').fadeIn();
 
               gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
                 .then(function () {
@@ -193,7 +194,7 @@
               data = {};
               data[abilityName] = {};
               data[abilityName].milestone_id = selected != null ? selected : null;
-              $loading.fadeIn();
+              $loading.removeClass('hidden').fadeIn();
               $dropdown.trigger('loading.gl.dropdown');
               return $.ajax({
                 type: 'PUT',

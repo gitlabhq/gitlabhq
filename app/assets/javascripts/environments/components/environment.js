@@ -1,20 +1,18 @@
-/* eslint-disable no-param-reassign, no-new */
+/* eslint-disable no-new */
 /* global Flash */
+import Vue from 'vue';
 import EnvironmentsService from '../services/environments_service';
 import EnvironmentTable from './environments_table';
 import EnvironmentsStore from '../stores/environments_store';
-
-const Vue = window.Vue = require('vue');
-window.Vue.use(require('vue-resource'));
-require('../../vue_shared/components/table_pagination');
-require('../../lib/utils/common_utils');
-require('../../vue_shared/vue_resource_interceptor');
+import TablePaginationComponent from '../../vue_shared/components/table_pagination';
+import '../../lib/utils/common_utils';
+import eventHub from '../event_hub';
 
 export default Vue.component('environment-component', {
 
   components: {
     'environment-table': EnvironmentTable,
-    'table-pagination': gl.VueGlPagination,
+    'table-pagination': TablePaginationComponent,
   },
 
   data() {
@@ -69,7 +67,6 @@ export default Vue.component('environment-component', {
     shouldRenderPagination() {
       return this.state.paginationInformation && this.state.paginationInformation.totalPages > 1;
     },
-
   },
 
   /**
@@ -77,33 +74,15 @@ export default Vue.component('environment-component', {
    * Toggles loading property.
    */
   created() {
-    const scope = gl.utils.getParameterByName('scope') || this.visibility;
-    const pageNumber = gl.utils.getParameterByName('page') || this.pageNumber;
+    this.service = new EnvironmentsService(this.endpoint);
 
-    const endpoint = `${this.endpoint}?scope=${scope}&page=${pageNumber}`;
+    this.fetchEnvironments();
 
-    this.service = new EnvironmentsService(endpoint);
+    eventHub.$on('refreshEnvironments', this.fetchEnvironments);
+  },
 
-    this.isLoading = true;
-
-    return this.service.get()
-      .then(resp => ({
-        headers: resp.headers,
-        body: resp.json(),
-      }))
-      .then((response) => {
-        this.store.storeAvailableCount(response.body.available_count);
-        this.store.storeStoppedCount(response.body.stopped_count);
-        this.store.storeEnvironments(response.body.environments);
-        this.store.setPagination(response.headers);
-      })
-      .then(() => {
-        this.isLoading = false;
-      })
-      .catch(() => {
-        this.isLoading = false;
-        new Flash('An error occurred while fetching the environments.', 'alert');
-      });
+  beforeDestroyed() {
+    eventHub.$off('refreshEnvironments');
   },
 
   methods: {
@@ -129,6 +108,32 @@ export default Vue.component('environment-component', {
 
       gl.utils.visitUrl(param);
       return param;
+    },
+
+    fetchEnvironments() {
+      const scope = gl.utils.getParameterByName('scope') || this.visibility;
+      const pageNumber = gl.utils.getParameterByName('page') || this.pageNumber;
+
+      this.isLoading = true;
+
+      return this.service.get(scope, pageNumber)
+        .then(resp => ({
+          headers: resp.headers,
+          body: resp.json(),
+        }))
+        .then((response) => {
+          this.store.storeAvailableCount(response.body.available_count);
+          this.store.storeStoppedCount(response.body.stopped_count);
+          this.store.storeEnvironments(response.body.environments);
+          this.store.setPagination(response.headers);
+        })
+        .then(() => {
+          this.isLoading = false;
+        })
+        .catch(() => {
+          this.isLoading = false;
+          new Flash('An error occurred while fetching the environments.');
+        });
     },
   },
 

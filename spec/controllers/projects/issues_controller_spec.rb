@@ -87,6 +87,12 @@ describe Projects::IssuesController do
   end
 
   describe 'GET #new' do
+    it 'redirects to signin if not logged in' do
+      get :new, namespace_id: project.namespace, project_id: project
+
+      expect(response).to redirect_to(new_user_session_path)
+    end
+
     context 'internal issue tracker' do
       before do
         sign_in(user)
@@ -104,7 +110,16 @@ describe Projects::IssuesController do
         project_with_repository.team << [user, :developer]
         mr = create(:merge_request_with_diff_notes, source_project: project_with_repository)
 
-        get :new, namespace_id: project_with_repository.namespace, project_id: project_with_repository, merge_request_for_resolving_discussions: mr.iid
+        get :new, namespace_id: project_with_repository.namespace, project_id: project_with_repository, merge_request_to_resolve_discussions_of: mr.iid
+
+        expect(assigns(:issue).title).not_to be_empty
+        expect(assigns(:issue).description).not_to be_empty
+      end
+
+      it 'fills in an issue for a discussion' do
+        note = create(:note_on_merge_request, project: project)
+
+        get :new, namespace_id: project.namespace.path, project_id: project, merge_request_to_resolve_discussions_of: note.noteable.iid, discussion_to_resolve: note.discussion_id
 
         expect(assigns(:issue).title).not_to be_empty
         expect(assigns(:issue).description).not_to be_empty
@@ -112,6 +127,11 @@ describe Projects::IssuesController do
     end
 
     context 'external issue tracker' do
+      before do
+        sign_in(user)
+        project.team << [user, :developer]
+      end
+
       it 'redirects to the external issue tracker' do
         external = double(new_issue_path: 'https://example.com/issues/new')
         allow(project).to receive(:external_issue_tracker).and_return(external)
@@ -131,6 +151,24 @@ describe Projects::IssuesController do
     end
 
     it_behaves_like 'update invalid issuable', Issue
+
+    context 'changing the assignee' do
+      it 'limits the attributes exposed on the assignee' do
+        assignee = create(:user)
+        project.add_developer(assignee)
+
+        put :update,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: issue.iid,
+          issue: { assignee_id: assignee.id },
+          format: :json
+        body = JSON.parse(response.body)
+
+        expect(body['assignee'].keys)
+          .to match_array(%w(name username avatar_url))
+      end
+    end
 
     context 'when moving issue to another private project' do
       let(:another_project) { create(:empty_project, :private) }
@@ -203,10 +241,27 @@ describe Projects::IssuesController do
               expect(spam_logs.first.recaptcha_verified).to be_falsey
             end
 
-            it 'renders verify template' do
-              update_spam_issue
+            context 'as HTML' do
+              it 'renders verify template' do
+                update_spam_issue
 
-              expect(response).to render_template(:verify)
+                expect(response).to render_template(:verify)
+              end
+            end
+
+            context 'as JSON' do
+              before do
+                update_issue({ title: 'Spam Title', description: 'Spam lives here' }, format: :json)
+              end
+
+              it 'renders json errors' do
+                expect(json_response)
+                  .to eql("errors" => ["Your issue has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."])
+              end
+
+              it 'returns 422 status' do
+                expect(response).to have_http_status(422)
+              end
             end
           end
 
@@ -462,11 +517,11 @@ describe Projects::IssuesController do
       end
 
       let(:merge_request_params) do
-        { merge_request_for_resolving_discussions: merge_request.iid }
+        { merge_request_to_resolve_discussions_of: merge_request.iid }
       end
 
-      def post_issue(issue_params)
-        post :create, namespace_id: project.namespace.to_param, project_id: project, issue: issue_params, merge_request_for_resolving_discussions: merge_request.iid
+      def post_issue(issue_params, other_params: {})
+        post :create, { namespace_id: project.namespace.to_param, project_id: project, issue: issue_params, merge_request_to_resolve_discussions_of: merge_request.iid }.merge(other_params)
       end
 
       it 'creates an issue for the project' do
@@ -484,6 +539,27 @@ describe Projects::IssuesController do
         discussion.first_note.reload
 
         expect(discussion.resolved?).to eq(true)
+      end
+
+      it 'sets a flash message' do
+        post_issue(title: 'Hello')
+
+        expect(flash[:notice]).to eq('Resolved all discussions.')
+      end
+
+      describe "resolving a single discussion" do
+        before do
+          post_issue({ title: 'Hello' }, other_params: { discussion_to_resolve: discussion.id })
+        end
+        it 'resolves a single discussion' do
+          discussion.first_note.reload
+
+          expect(discussion.resolved?).to eq(true)
+        end
+
+        it 'sets a flash message that one discussion was resolved' do
+          expect(flash[:notice]).to eq('Resolved 1 discussion.')
+        end
       end
     end
 

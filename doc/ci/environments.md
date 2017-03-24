@@ -295,7 +295,7 @@ deploy_review:
   script:
     - echo "Deploy a review app"
   environment:
-    name: review/$CI_BUILD_REF_NAME
+    name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
   only:
     - branches
@@ -306,22 +306,22 @@ deploy_review:
 Let's break it down in pieces. The job's name is `deploy_review` and it runs
 on the `deploy` stage. The `script` at this point is fictional, you'd have to
 use your own based on your deployment. Then, we set the `environment` with the
-`environment:name` being `review/$CI_BUILD_REF_NAME`. Now that's an interesting
+`environment:name` being `review/$CI_COMMIT_REF_NAME`. Now that's an interesting
 one. Since the [environment name][env-name] can contain slashes (`/`), we can
 use this pattern to distinguish between dynamic environments and the regular
 ones.
 
-So, the first part is `review`, followed by a `/` and then `$CI_BUILD_REF_NAME`
-which takes the value of the branch name. Since `$CI_BUILD_REF_NAME` itself may
+So, the first part is `review`, followed by a `/` and then `$CI_COMMIT_REF_NAME`
+which takes the value of the branch name. Since `$CI_COMMIT_REF_NAME` itself may
 also contain `/`, or other characters that would be invalid in a domain name or
 URL, we use `$CI_ENVIRONMENT_SLUG` in the `environment:url` so that the
 environment can get a specific and distinct URL for each branch. In this case,
-given a `$CI_BUILD_REF_NAME` of `100-Do-The-Thing`, the URL will be something
+given a `$CI_COMMIT_REF_NAME` of `100-Do-The-Thing`, the URL will be something
 like `https://100-do-the-4f99a2.example.com`. Again, the way you set up
 the web server to serve these requests is based on your setup.
 
-You could also use `$CI_BUILD_REF_SLUG` in `environment:url`, e.g.:
-`https://$CI_BUILD_REF_SLUG.example.com`. We use `$CI_ENVIRONMENT_SLUG`
+You could also use `$CI_COMMIT_REF_SLUG` in `environment:url`, e.g.:
+`https://$CI_COMMIT_REF_SLUG.example.com`. We use `$CI_ENVIRONMENT_SLUG`
 here because it is guaranteed to be unique, but if you're using a workflow like
 [GitLab Flow][gitlab-flow], collisions are very unlikely, and you may prefer
 environment names to be more closely based on the branch name - the example
@@ -356,7 +356,7 @@ deploy_review:
   script:
     - echo "Deploy a review app"
   environment:
-    name: review/$CI_BUILD_REF_NAME
+    name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
   only:
     - branches
@@ -387,16 +387,16 @@ deploy_prod:
 
 A more realistic example would include copying files to a location where a
 webserver (NGINX) could then read and serve. The example below will copy the
-`public` directory to `/srv/nginx/$CI_BUILD_REF_SLUG/public`:
+`public` directory to `/srv/nginx/$CI_COMMIT_REF_SLUG/public`:
 
 ```yaml
 review_app:
   stage: deploy
   script:
-    - rsync -av --delete public /srv/nginx/$CI_BUILD_REF_SLUG
+    - rsync -av --delete public /srv/nginx/$CI_COMMIT_REF_SLUG
   environment:
-    name: review/$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_SLUG.example.com
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://$CI_COMMIT_REF_SLUG.example.com
 ```
 
 It is assumed that the user has already setup NGINX and GitLab Runner in the
@@ -526,7 +526,7 @@ deploy_review:
   script:
     - echo "Deploy a review app"
   environment:
-    name: review/$CI_BUILD_REF_NAME
+    name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
     on_stop: stop_review
   only:
@@ -542,7 +542,7 @@ stop_review:
     - echo "Remove review app"
   when: manual
   environment:
-    name: review/$CI_BUILD_REF_NAME
+    name: review/$CI_COMMIT_REF_NAME
     action: stop
 ```
 
@@ -568,13 +568,13 @@ You can read more in the [`.gitlab-ci.yml` reference][onstop].
 
 As we've seen in the [dynamic environments](#dynamic-environments), you can
 prepend their name with a word, then followed by a `/` and finally the branch
-name which is automatically defined by the `CI_BUILD_REF_NAME` variable.
+name which is automatically defined by the `CI_COMMIT_REF_NAME` variable.
 
 In short, environments that are named like `type/foo` are presented under a
 group named `type`.
 
-In our minimal example, we name the environments `review/$CI_BUILD_REF_NAME`
-where `$CI_BUILD_REF_NAME` is the branch name:
+In our minimal example, we name the environments `review/$CI_COMMIT_REF_NAME`
+where `$CI_COMMIT_REF_NAME` is the branch name:
 
 ```yaml
 deploy_review:
@@ -582,7 +582,7 @@ deploy_review:
   script:
     - echo "Deploy a review app"
   environment:
-    name: review/$CI_BUILD_REF_NAME
+    name: review/$CI_COMMIT_REF_NAME
 ```
 
 In that case, if you visit the Environments page, and provided the branches
@@ -615,6 +615,7 @@ Below are some links you may find interesting:
 - [The `.gitlab-ci.yml` definition of environments](yaml/README.md#environment)
 - [A blog post on Deployments & Environments](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
 - [Review Apps - Use dynamic environments to deploy your code for every branch](review_apps/index.md)
+- [Deploy Boards for your applications running on Kubernetes](../user/project/deploy_boards.md)
 
 [Pipelines]: pipelines.md
 [jobs]: yaml/README.md#jobs

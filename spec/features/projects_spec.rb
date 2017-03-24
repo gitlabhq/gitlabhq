@@ -56,7 +56,7 @@ feature 'Project', feature: true do
   end
 
   describe 'removal', js: true do
-    let(:user)    { create(:user) }
+    let(:user)    { create(:user, username: 'test', name: 'test') }
     let(:project) { create(:project, namespace: user.namespace, name: 'project1') }
 
     before do
@@ -67,7 +67,7 @@ feature 'Project', feature: true do
 
     it 'removes a project' do
       expect { remove_with_confirm('Remove project', project.path) }.to change {Project.count}.by(-1)
-      expect(page).to have_content "Project 'project1' will be deleted."
+      expect(page).to have_content "Project 'test / project1' will be deleted."
       expect(Project.all.count).to be_zero
       expect(project.issues).to be_empty
       expect(project.merge_requests).to be_empty

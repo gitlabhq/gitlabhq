@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign, class-methods-use-this */
 /* global Pager */
-/* global Cookies */
+
+import Cookies from 'js-cookie';
 
 class Activities {
   constructor() {

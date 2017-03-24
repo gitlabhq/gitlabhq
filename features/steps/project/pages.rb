@@ -53,13 +53,13 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   end
 
   step 'pages are exposed on external HTTP address' do
-    allow(Gitlab.config.pages).to receive(:external_http).and_return('1.1.1.1:80')
+    allow(Gitlab.config.pages).to receive(:external_http).and_return(['1.1.1.1:80'])
     allow(Gitlab.config.pages).to receive(:external_https).and_return(nil)
   end
 
   step 'pages are exposed on external HTTPS address' do
-    allow(Gitlab.config.pages).to receive(:external_http).and_return('1.1.1.1:80')
-    allow(Gitlab.config.pages).to receive(:external_https).and_return('1.1.1.1:443')
+    allow(Gitlab.config.pages).to receive(:external_http).and_return(['1.1.1.1:80'])
+    allow(Gitlab.config.pages).to receive(:external_https).and_return(['1.1.1.1:443'])
   end
 
   step 'I should be able to add a New Domain' do

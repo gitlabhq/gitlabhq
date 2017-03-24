@@ -64,10 +64,13 @@ class ApplicationController < ActionController::Base
 
   # This filter handles both private tokens and personal access tokens
   def authenticate_user_from_private_token!
-    token_string = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
-    user = User.find_by_authentication_token(token_string) || User.find_by_personal_access_token(token_string)
+    token = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
 
-    if user
+    return unless token.present?
+
+    user = User.find_by_authentication_token(token) || User.find_by_personal_access_token(token)
+
+    if user && can?(user, :log_in)
       # Notice we are passing store false, so the user is not
       # actually stored in the session and a token is needed
       # for every request. If you want the token to work as a
@@ -94,7 +97,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def can?(object, action, subject)
+  def can?(object, action, subject = :global)
     Ability.allowed?(object, action, subject)
   end
 

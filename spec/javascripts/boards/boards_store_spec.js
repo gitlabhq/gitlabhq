@@ -1,11 +1,12 @@
 /* eslint-disable comma-dangle, one-var, no-unused-vars */
-/* global Vue */
 /* global BoardService */
 /* global boardsMockInterceptor */
-/* global Cookies */
 /* global listObj */
 /* global listObjDuplicate */
 /* global ListIssue */
+
+import Vue from 'vue';
+import Cookies from 'js-cookie';
 
 require('~/lib/utils/url_utility');
 require('~/boards/models/issue');
@@ -15,7 +16,6 @@ require('~/boards/models/user');
 require('~/boards/services/board_service');
 require('~/boards/stores/boards_store');
 require('./mock_data');
-require('es6-promise').polyfill();
 
 describe('Store', () => {
   beforeEach(() => {

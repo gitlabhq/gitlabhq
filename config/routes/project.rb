@@ -175,7 +175,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :update_now
         end
       end
-      resources :push_rules, constraints: { id: /\d+/ }
+      resources :push_rules, constraints: { id: /\d+/ }, only: [:update]
       ## EE-specific
 
       resources :pipelines, only: [:index, :new, :create, :show] do

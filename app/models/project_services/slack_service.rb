@@ -21,20 +21,11 @@ class SlackService < ChatNotificationService
     </ol>'
   end
 
-  def fields
-    default_fields + build_event_channels
-  end
-
-  def default_fields
-    [
-      { type: 'text', name: 'webhook', placeholder: 'e.g. https://hooks.slack.com/services/…' },
-      { type: 'text', name: 'username', placeholder: 'e.g. GitLab' },
-      { type: 'checkbox', name: 'notify_only_broken_builds' },
-      { type: 'checkbox', name: 'notify_only_broken_pipelines' },
-    ]
-  end
-
   def default_channel_placeholder
     "Channel name (e.g. general)"
+  end
+
+  def webhook_placeholder
+    'https://hooks.slack.com/services/…'
   end
 end

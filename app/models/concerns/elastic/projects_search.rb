@@ -2,6 +2,14 @@ module Elastic
   module ProjectsSearch
     extend ActiveSupport::Concern
 
+    TRACKED_FEATURE_SETTINGS = %w(
+      issues_access_level
+      merge_requests_access_level
+      snippets_access_level
+      wiki_access_level
+      repository_access_level
+    ).freeze
+
     included do
       include ApplicationSearch
 
@@ -22,7 +30,14 @@ module Elastic
         indexes :created_at,          type: :date
         indexes :updated_at,          type: :date
         indexes :archived,            type: :boolean
-        indexes :visibility_level,    type: :integer
+
+        indexes :visibility_level,            type: :integer
+        indexes :issues_access_level,         type: :integer
+        indexes :merge_requests_access_level, type: :integer
+        indexes :snippets_access_level,       type: :integer
+        indexes :wiki_access_level,           type: :integer
+        indexes :repository_access_level,     type: :integer
+
         indexes :last_activity_at,    type: :date
         indexes :last_pushed_at,      type: :date
       end
@@ -47,6 +62,10 @@ module Elastic
           :path_with_namespace
         ].each do |attr|
           data[attr.to_s] = safely_read_attribute_for_elasticsearch(attr)
+        end
+
+        TRACKED_FEATURE_SETTINGS.each do |feature|
+          data[feature] = project_feature.public_send(feature)
         end
 
         data
@@ -85,9 +104,7 @@ module Elastic
 
         if options[:project_ids]
           filters << {
-            bool: {
-              should: project_ids_condition(options[:current_user], options[:project_ids], options[:public_and_internal_projects])
-            }
+            bool: project_ids_query(options[:current_user], options[:project_ids], options[:public_and_internal_projects])
           }
         end
 

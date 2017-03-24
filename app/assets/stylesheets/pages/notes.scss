@@ -384,7 +384,7 @@ ul.notes {
   top: 0;
 
   .note-action-button {
-    margin-left: 10px;
+    margin-left: 8px;
   }
 }
 
@@ -400,8 +400,7 @@ ul.notes {
 }
 
 .note-action-button {
-  display: inline-block;
-  margin-left: 0;
+  display: inline;
   line-height: 20px;
 
   @media (min-width: $screen-sm-min) {
@@ -463,17 +462,18 @@ ul.notes {
   background: $white-light;
   padding: 1px 5px;
   font-size: 12px;
-  color: $gl-link-color;
+  color: $blue-500;
   margin-left: -55px;
   position: absolute;
   z-index: 10;
   width: 23px;
   height: 23px;
-  border: 1px solid $border-color;
+  border: 1px solid $blue-500;
   transition: transform .1s ease-in-out;
 
   &:hover {
-    background: $gl-info;
+    background: $blue-500;
+    border-color: $blue-600;
     color: $white-light;
     transform: scale(1.15);
   }
@@ -510,6 +510,7 @@ ul.notes {
 }
 
 .line-resolve-all-container {
+
   .btn-group {
     margin-left: -4px;
   }
@@ -518,6 +519,27 @@ ul.notes {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
+
+  .btn.discussion-create-issue-btn {
+    margin-left: -4px;
+    border-radius: 0;
+    border-right: 0;
+
+    a {
+      padding: 0;
+      line-height: 0;
+
+      &:hover {
+        text-decoration: none;
+        border: 0;
+      }
+    }
+
+    .new-issue-for-discussion path {
+      fill: $gray-darkest;
+    }
+  }
+
 }
 
 .line-resolve-all {
@@ -540,7 +562,6 @@ ul.notes {
 }
 
 .line-resolve-btn {
-  display: inline-block;
   position: relative;
   top: 2px;
   padding: 0;
@@ -563,8 +584,9 @@ ul.notes {
   }
 
   svg {
-    position: relative;
     fill: $gray-darkest;
+    height: 15px;
+    width: 15px;
   }
 }
 

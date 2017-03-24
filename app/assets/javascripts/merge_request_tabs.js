@@ -1,10 +1,10 @@
 /* eslint-disable no-new, class-methods-use-this */
 /* global Breakpoints */
-/* global Cookies */
 /* global Flash */
 
+import Cookies from 'js-cookie';
+
 require('./breakpoints');
-window.Cookies = require('js-cookie');
 require('./flash');
 
 /* eslint-disable max-len */

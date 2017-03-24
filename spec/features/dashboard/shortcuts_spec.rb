@@ -21,6 +21,11 @@ feature 'Dashboard shortcuts', feature: true, js: true do
     find('body').native.send_key('m')
 
     check_page_title('Merge Requests')
+
+    find('body').native.send_key('g')
+    find('body').native.send_key('t')
+
+    check_page_title('Todos')
   end
 
   def check_page_title(title)

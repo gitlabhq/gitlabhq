@@ -79,14 +79,24 @@ module Elastic
                    {
                      bool: {
                        should: [
-                         { terms: { visibility_level: [Snippet::PUBLIC, Snippet::INTERNAL] } },
                          { term: { author_id: user.id } },
                          { terms: { project_id: user.authorized_projects.pluck(:id) } },
+                         {
+                           bool: {
+                             filter: { terms: { visibility_level: [Snippet::PUBLIC, Snippet::INTERNAL] } },
+                             must_not: { exists: { field: 'project_id' } }
+                           }
+                         }
                        ]
                      }
                    }
                  else
-                   { term: { visibility_level: Snippet::PUBLIC } }
+                   {
+                     bool: {
+                       filter: { term: { visibility_level: Snippet::PUBLIC } },
+                       must_not: { exists: { field: 'project_id' } }
+                     }
+                   }
                  end
 
         query_hash[:query][:bool][:filter] = filter

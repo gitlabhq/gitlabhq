@@ -120,43 +120,61 @@ CONFLICT
     end
 
     context 'when the file contents include conflict delimiters' do
-      it 'raises UnexpectedDelimiter when there is a non-start delimiter first' do
-        expect { parse_text('=======') }.
-          to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+      context 'when there is a non-start delimiter first' do
+        it 'raises UnexpectedDelimiter when there is a middle delimiter first' do
+          expect { parse_text('=======') }.
+            to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        end
 
-        expect { parse_text('>>>>>>> README.md') }.
-          to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        it 'raises UnexpectedDelimiter when there is an end delimiter first' do
+          expect { parse_text('>>>>>>> README.md') }.
+            to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        end
 
-        expect { parse_text('>>>>>>> some-other-path.md') }.
-          not_to raise_error
+        it 'does not raise when there is an end delimiter for a different path first' do
+          expect { parse_text('>>>>>>> some-other-path.md') }.
+            not_to raise_error
+        end
       end
 
-      it 'raises UnexpectedDelimiter when a start delimiter is followed by a non-middle delimiter' do
-        start_text = "<<<<<<< README.md\n"
-        end_text = "\n=======\n>>>>>>> README.md"
+      context 'when a start delimiter is followed by a non-middle delimiter' do
+        let(:start_text) { "<<<<<<< README.md\n" }
+        let(:end_text) { "\n=======\n>>>>>>> README.md" }
 
-        expect { parse_text(start_text + '>>>>>>> README.md' + end_text) }.
-          to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        it 'raises UnexpectedDelimiter when it is followed by an end delimiter' do
+          expect { parse_text(start_text + '>>>>>>> README.md' + end_text) }.
+            to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        end
 
-        expect { parse_text(start_text + start_text + end_text) }.
-          to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        it 'raises UnexpectedDelimiter when it is followed by another start delimiter' do
+          expect { parse_text(start_text + start_text + end_text) }.
+            to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        end
 
-        expect { parse_text(start_text + '>>>>>>> some-other-path.md' + end_text) }.
-          not_to raise_error
+        it 'does not raise when it is followed by a start delimiter for a different path' do
+          expect { parse_text(start_text + '>>>>>>> some-other-path.md' + end_text) }.
+            not_to raise_error
+        end
       end
 
-      it 'raises UnexpectedDelimiter when a middle delimiter is followed by a non-end delimiter' do
-        start_text = "<<<<<<< README.md\n=======\n"
-        end_text = "\n>>>>>>> README.md"
+      context 'when a middle delimiter is followed by a non-end delimiter' do
+        let(:start_text) { "<<<<<<< README.md\n=======\n" }
+        let(:end_text) { "\n>>>>>>> README.md" }
 
-        expect { parse_text(start_text + '=======' + end_text) }.
-          to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        it 'raises UnexpectedDelimiter when it is followed by another middle delimiter' do
+          expect { parse_text(start_text + '=======' + end_text) }.
+            to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        end
 
-        expect { parse_text(start_text + start_text + end_text) }.
-          to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        it 'raises UnexpectedDelimiter when it is followed by a start delimiter' do
+          expect { parse_text(start_text + start_text + end_text) }.
+            to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+        end
 
-        expect { parse_text(start_text + '>>>>>>> some-other-path.md' + end_text) }.
-          not_to raise_error
+        it 'does not raise when it is followed by a start delimiter for another path' do
+          expect { parse_text(start_text + '<<<<<<< some-other-path.md' + end_text) }.
+            not_to raise_error
+        end
       end
 
       it 'raises MissingEndDelimiter when there is no end delimiter at the end' do
@@ -184,9 +202,20 @@ CONFLICT
           to raise_error(Gitlab::Conflict::Parser::UnmergeableFile)
       end
 
-      it 'raises UnsupportedEncoding when the file contains non-UTF-8 characters' do
-        expect { parse_text("a\xC4\xFC".force_encoding(Encoding::ASCII_8BIT)) }.
-          to raise_error(Gitlab::Conflict::Parser::UnsupportedEncoding)
+      # All text from Rugged has an encoding of ASCII_8BIT, so force that in
+      # these strings.
+      context 'when the file contains UTF-8 characters' do
+        it 'does not raise' do
+          expect { parse_text("Espa\xC3\xB1a".force_encoding(Encoding::ASCII_8BIT)) }.
+            not_to raise_error
+        end
+      end
+
+      context 'when the file contains non-UTF-8 characters' do
+        it 'raises UnsupportedEncoding' do
+          expect { parse_text("a\xC4\xFC".force_encoding(Encoding::ASCII_8BIT)) }.
+            to raise_error(Gitlab::Conflict::Parser::UnsupportedEncoding)
+        end
       end
     end
   end

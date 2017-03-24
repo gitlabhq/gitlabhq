@@ -546,7 +546,10 @@ class MergeRequest < ActiveRecord::Base
       source: source_project.try(:hook_attrs),
       target: target_project.hook_attrs,
       last_commit: nil,
-      work_in_progress: work_in_progress?
+      work_in_progress: work_in_progress?,
+      total_time_spent: total_time_spent,
+      human_total_time_spent: human_total_time_spent,
+      human_time_estimate: human_time_estimate
     }
 
     if diff_head_commit

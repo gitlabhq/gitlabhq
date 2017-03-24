@@ -28,7 +28,7 @@ class MigrateOldElasticsearchSettings < ActiveRecord::Migration
           .set(settings[:elasticsearch_url] => urls.join(','))
           .where(settings[:id].eq(id))
 
-      connection.exec_update(updater.to_sql)
+      connection.exec_update(updater.to_sql, self.class.name, [])
     end
   end
 

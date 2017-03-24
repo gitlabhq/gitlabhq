@@ -184,6 +184,7 @@
   .deploy-board-instances {
     order: 2;
     margin-left: 20px;
+    width: 100%;
 
     .text {
       color: $gl-text-color-secondary;
@@ -238,18 +239,18 @@
   margin: 1px;
 
   &-finished {
-    background-color: lighten($green-light, 25%);
-    border-color: $green-light;
+    background-color: $green-100;
+    border-color: $green-400;
   }
 
   &-deploying {
-    background-color: lighten($green-light, 40%);
-    border-color: $green-light;
+    background-color: $green-50;
+    border-color: $green-400;
   }
 
   &-failed {
-    background-color: lighten($red-light, 20%);
-    border-color: $red-normal;
+    background-color: $red-200;
+    border-color: $red-500;
   }
 
   &-ready {

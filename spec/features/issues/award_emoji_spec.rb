@@ -17,8 +17,21 @@ describe 'Awards Emoji', feature: true do
       login_as(user)
     end
 
+    describe 'visiting an issue with a legacy award emoji that is not valid anymore' do
+      before do
+        # The `heart_tip` emoji is not valid anymore so we need to skip validation
+        issue.award_emoji.build(user: user, name: 'heart_tip').save!(validate: false)
+        visit namespace_project_issue_path(project.namespace, project, issue)
+      end
+
+      # Regression test: https://gitlab.com/gitlab-org/gitlab-ce/issues/29529
+      it 'does not shows a 500 page' do
+        expect(page).to have_text(issue.title)
+      end
+    end
+
     describe 'Click award emoji from issue#show' do
-      let!(:note) {  create(:note_on_issue, noteable: issue, project: issue.project, note: "Hello world") }
+      let!(:note) { create(:note_on_issue, noteable: issue, project: issue.project, note: "Hello world") }
 
       before do
         visit namespace_project_issue_path(project.namespace, project, issue)

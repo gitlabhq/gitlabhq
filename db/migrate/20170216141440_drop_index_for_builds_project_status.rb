@@ -3,6 +3,6 @@ class DropIndexForBuildsProjectStatus < ActiveRecord::Migration
   DOWNTIME = false
 
   def change
-    remove_index(:ci_commits, [:gl_project_id, :status])
+    remove_index(:ci_commits, column: [:gl_project_id, :status])
   end
 end

@@ -18,10 +18,10 @@ var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
     common:               './commons/index.js',
-    common_vue:           ['vue', 'vue-resource'],
+    common_vue:           ['vue', './vue_shared/common_vue.js'],
     common_d3:            ['d3'],
     main:                 './main.js',
-    blob_edit:            './blob_edit/blob_edit_bundle.js',
+    blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
     simulate_drag:        './test_utils/simulate_drag.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
@@ -37,6 +37,7 @@ var config = {
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
     merge_request_widget: './merge_request_widget/ci_bundle.js',
     mr_widget_ee:         './merge_request_widget/widget_bundle.js',
+    monitoring:           './monitoring/monitoring_bundle.js',
     network:              './network/network_bundle.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
@@ -59,15 +60,9 @@ var config = {
   module: {
     rules: [
       {
-        test: /\.(js|es6)$/,
+        test: /\.js$/,
         exclude: /(node_modules|vendor\/assets)/,
-        loader: 'babel-loader',
-        options: {
-          presets: [
-            ["es2015", {"modules": false}],
-            'stage-2'
-          ]
-        }
+        loader: 'babel-loader'
       },
       {
         test: /\.svg$/,
@@ -124,7 +119,7 @@ var config = {
     // create cacheable common library bundle for all d3 chunks
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common_d3',
-      chunks: ['graphs', 'users'],
+      chunks: ['graphs', 'users', 'monitoring'],
     }),
 
     // create cacheable common library bundles
@@ -134,14 +129,14 @@ var config = {
   ],
 
   resolve: {
-    extensions: ['.js', '.es6', '.js.es6'],
+    extensions: ['.js'],
     alias: {
       '~':              path.join(ROOT_PATH, 'app/assets/javascripts'),
       'emojis':         path.join(ROOT_PATH, 'fixtures/emojis'),
       'empty_states':   path.join(ROOT_PATH, 'app/views/shared/empty_states'),
       'icons':          path.join(ROOT_PATH, 'app/views/shared/icons'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
-      'vue$':           'vue/dist/vue.common.js',
+      'vue$':           'vue/dist/vue.esm.js',
     }
   }
 }

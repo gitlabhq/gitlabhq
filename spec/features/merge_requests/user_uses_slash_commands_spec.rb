@@ -133,7 +133,6 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
 
       it 'changes target_branch in new merge_request' do
         visit new_namespace_project_merge_request_path(another_project.namespace, another_project, new_url_opts)
-        click_button "Compare branches and continue"
 
         fill_in "merge_request_title", with: 'My brand new feature'
         fill_in "merge_request_description", with: "le feature \n/target_branch fix\nFeature description:"

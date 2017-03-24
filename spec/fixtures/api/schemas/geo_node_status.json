@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "required" : [
+    "id",
+    "healthy",
+    "health",
+    "lfs_objects_count",
+    "lfs_objects_synced_count",
+    "lfs_objects_synced_in_percentage",
+    "repositories_count",
+    "repositories_failed_count",
+    "repositories_synced_count",
+    "repositories_synced_in_percentage"
+  ],
+  "properties" : {
+    "id": { "type": "integer" },
+    "healthy": { "type": "boolean" },
+    "health": { "type": "string" },
+    "lfs_objects_count": { "type": "integer" },
+    "lfs_objects_synced_count": { "type": "integer" },
+    "lfs_objects_synced_in_percentage": { "type": "string" },
+    "repositories_count": { "type": "integer" },
+    "repositories_failed_count": { "type": "integer" },
+    "repositories_synced_count": { "type": "integer" },
+    "repositories_synced_in_percentage": { "type": "string" }
+  },
+  "additionalProperties": false
+}

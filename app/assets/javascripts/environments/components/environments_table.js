@@ -4,12 +4,12 @@
  * Dumb component used to render top level environments and
  * the folder view.
  */
-import EnvironmentItem from './environment_item';
+import EnvironmentTableRowComponent from './environment_item';
 import DeployBoard from './deploy_board_component';
 
 export default {
   components: {
-    EnvironmentItem,
+    'environment-item': EnvironmentTableRowComponent,
     DeployBoard,
   },
 

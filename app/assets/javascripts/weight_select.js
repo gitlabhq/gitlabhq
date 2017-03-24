@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable space-before-function-paren, wrap-iife, prefer-arrow-callback, max-len, one-var, no-var, one-var-declaration-per-line, object-shorthand, comma-dangle, no-shadow, quotes, no-unused-vars, no-else-return, consistent-return, no-param-reassign, prefer-template, padded-blocks, func-names */
+
 (function() {
   this.WeightSelect = (function() {
     function WeightSelect() {

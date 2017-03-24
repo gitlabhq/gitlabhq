@@ -8,6 +8,7 @@ export default {
   props: {
     terminalPath: {
       type: String,
+      required: false,
       default: '',
     },
   },

@@ -22,6 +22,45 @@ describe Issue, models: true do
     it { is_expected.to have_db_index(:deleted_at) }
   end
 
+  describe '#order_by_position_and_priority' do
+    let(:project) { create :empty_project }
+    let(:p1) { create(:label, title: 'P1', project: project, priority: 1) }
+    let(:p2) { create(:label, title: 'P2', project: project, priority: 2) }
+    let!(:issue1) { create(:labeled_issue, project: project, labels: [p1]) }
+    let!(:issue2) { create(:labeled_issue, project: project, labels: [p2]) }
+    let!(:issue3) { create(:issue, project: project, relative_position: 100) }
+    let!(:issue4) { create(:issue, project: project, relative_position: 200) }
+
+    it 'returns ordered list' do
+      expect(project.issues.order_by_position_and_priority).
+        to match [issue3, issue4, issue1, issue2]
+    end
+  end
+
+  describe '#closed_at' do
+    after do
+      Timecop.return
+    end
+
+    let!(:now) { Timecop.freeze(Time.now) }
+
+    it 'sets closed_at to Time.now when issue is closed' do
+      issue = create(:issue, state: 'opened')
+
+      issue.close
+
+      expect(issue.closed_at).to eq(now)
+    end
+
+    it 'sets closed_at to nil when issue is reopened' do
+      issue = create(:issue, state: 'closed')
+
+      issue.reopen
+
+      expect(issue.closed_at).to be_nil
+    end
+  end
+
   describe '#to_reference' do
     let(:namespace) { build(:namespace, path: 'sample-namespace') }
     let(:project)   { build(:empty_project, name: 'sample-project', namespace: namespace) }
@@ -617,6 +656,54 @@ describe Issue, models: true do
         issue = build(:issue, :confidential, project: project)
 
         expect(issue).not_to be_falsy
+      end
+    end
+  end
+
+  describe '#hook_attrs' do
+    let(:attrs_hash) { subject.hook_attrs }
+
+    it 'includes time tracking attrs' do
+      expect(attrs_hash).to include(:total_time_spent)
+      expect(attrs_hash).to include(:human_time_estimate)
+      expect(attrs_hash).to include(:human_total_time_spent)
+      expect(attrs_hash).to include('time_estimate')
+    end
+  end
+
+  describe '#check_for_spam' do
+    let(:project) { create :project, visibility_level: visibility_level }
+    let(:issue) { create :issue, project: project }
+
+    subject do
+      issue.assign_attributes(description: description)
+      issue.check_for_spam?
+    end
+
+    context 'when project is public and spammable attributes changed' do
+      let(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
+      let(:description) { 'woo' }
+
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when project is private' do
+      let(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
+      let(:description) { issue.description }
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+
+    context 'when spammable attributes have not changed' do
+      let(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
+      let(:description) { issue.description }
+
+      it 'returns false' do
+        is_expected.to be_falsey
       end
     end
   end

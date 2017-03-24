@@ -1,6 +1,5 @@
-/* global Vue */
+import Vue from 'vue';
 
-const Vue = require('vue');
 require('../approvals_store');
 require('../../../vue_common_component/link_to_member_avatar');
 
@@ -84,7 +83,7 @@ Vue.component('approvals-footer', {
           @click='unapproveMergeRequest'
           class='btn btn-link unapprove-btn'>
           <i class='fa fa-close'></i>
-          Remove your approval</span>
+          Remove your approval
         </button>
       </span>
     </div>

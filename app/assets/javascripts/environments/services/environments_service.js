@@ -1,13 +1,16 @@
 /* eslint-disable class-methods-use-this */
 import Vue from 'vue';
+import VueResource from 'vue-resource';
+
+Vue.use(VueResource);
 
 export default class EnvironmentsService {
   constructor(endpoint) {
     this.environments = Vue.resource(endpoint);
   }
 
-  get() {
-    return this.environments.get();
+  get(scope, page) {
+    return this.environments.get({ scope, page });
   }
 
   getDeployBoard(endpoint) {

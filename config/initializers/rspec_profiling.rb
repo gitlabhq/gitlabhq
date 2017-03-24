@@ -7,7 +7,7 @@ module RspecProfilingExt
 
   module Git
     def branch
-      ENV['CI_BUILD_REF_NAME'] || super
+      ENV['CI_COMMIT_REF_NAME'] || super
     end
   end
 

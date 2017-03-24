@@ -9,6 +9,7 @@ module Projects
 
         @skip_groups = @group_links.pluck(:group_id)
         @skip_groups << @project.namespace_id unless @project.personal?
+        @skip_groups += @project.group.ancestors.pluck(:id) if @project.group
 
         @project_members = MembersFinder.new(@project, current_user).execute
 

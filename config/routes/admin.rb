@@ -119,6 +119,7 @@ namespace :admin do
     member do
       post :repair
       post :toggle
+      get  :status
     end
   end
   ## EE-specific
