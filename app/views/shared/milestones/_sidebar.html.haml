@@ -96,7 +96,7 @@
 
     - milestone_ref = milestone.try(:to_reference, full: true)
     - if milestone_ref.present?
-      .block
+      .block.reference
         .sidebar-collapsed-icon.dont-change-state
           = clipboard_button(clipboard_text: milestone_ref, title: "Copy reference to clipboard", placement: "left")
         .cross-project-reference.hide-collapsed

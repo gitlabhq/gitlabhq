@@ -66,6 +66,12 @@
   .milestone-stat:last-child {
     margin-right: 0;
   }
+
+  .right-sidebar-collapsed & {
+    .reference {
+      border-top: 1px solid $border-gray-normal;
+    }
+  }
 }
 
 .milestone-summary {
