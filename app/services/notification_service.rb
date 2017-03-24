@@ -6,6 +6,8 @@
 #   NotificationService.new.new_issue(issue, current_user)
 #
 class NotificationService
+  prepend EE::NotificationService
+
   # Always notify user about ssh key added
   # only if ssh key is not deploy key
   #
