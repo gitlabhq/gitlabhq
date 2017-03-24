@@ -132,9 +132,10 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
     };
 
     MergeRequestWidget.prototype.getMergeStatus = function() {
+      var that = this;
       return $.get(this.opts.merge_check_url, function(data) {
         var $html = $(data);
-        this.updateMergeButton(this.status, this.hasCi, $html);
+        that.updateMergeButton(this.status, this.hasCi, $html);
         $('.mr-widget-body:eq(0)').replaceWith($html.find('.mr-widget-body'));
         $('.mr-widget-footer:eq(0)').replaceWith($html.find('.mr-widget-footer'));
       });
