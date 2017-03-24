@@ -95,7 +95,7 @@ describe Projects::DestroyService, services: true do
     before do
       stub_container_registry_config(enabled: true)
       stub_container_registry_tags('tag')
-      project.container_repositorys << container_repository
+      project.container_repositories << container_repository
     end
 
     context 'images deletion succeeds' do

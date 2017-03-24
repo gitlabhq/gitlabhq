@@ -34,7 +34,7 @@ describe Projects::TransferService, services: true do
     before do
       stub_container_registry_config(enabled: true)
       stub_container_registry_tags('tag')
-      project.container_repositorys << container_repository
+      project.container_repositories << container_repository
     end
 
     subject { transfer_project(project, user, group) }
