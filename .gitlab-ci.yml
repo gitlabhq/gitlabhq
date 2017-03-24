@@ -57,6 +57,16 @@ stages:
   variables:
     GITLAB_DATABASE: "mysql"
 
+.only-master-and-ee-or-mysql: &only-master-and-ee-or-mysql
+  only:
+    - /\-(?i)mysql$/
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab/gitlabhq
+    - tags@gitlab-org/gitlab-ce
+    - tags@gitlab/gitlabhq
+    - //@gitlab-org/gitlab-ee
+    - //@gitlab/gitlab-ee
+
 .rspec-knapsack: &rspec-knapsack
   stage: test
   <<: *dedicated-runner
@@ -83,6 +93,7 @@ stages:
 .rspec-knapsack-mysql: &rspec-knapsack-mysql
   <<: *rspec-knapsack
   <<: *use-mysql
+  <<: *only-master-and-ee-or-mysql
 
 .spinach-knapsack: &spinach-knapsack
   stage: test
@@ -110,6 +121,7 @@ stages:
 .spinach-knapsack-mysql: &spinach-knapsack-mysql
   <<: *spinach-knapsack
   <<: *use-mysql
+  <<: *only-master-and-ee-or-mysql
 
 # Prepare and merge knapsack tests
 
