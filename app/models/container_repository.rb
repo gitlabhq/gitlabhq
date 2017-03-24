@@ -1,8 +1,10 @@
 class ContainerRepository < ActiveRecord::Base
   belongs_to :project
-  delegate :client, to: :registry
+
   validates :manifest, presence: true
-  validates :name, presence: true
+  validates :name, length: { minimum: 0, allow_nil: false }
+
+  delegate :client, to: :registry
   before_destroy :delete_tags
 
   def registry
@@ -17,7 +19,7 @@ class ContainerRepository < ActiveRecord::Base
   end
 
   def path
-    @path ||= "#{project.full_path}/#{name}"
+    @path ||= [project.full_path, name].select(&:present?).join('/')
   end
 
   def tag(tag)

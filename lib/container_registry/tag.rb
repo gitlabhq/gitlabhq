@@ -22,7 +22,7 @@ module ContainerRegistry
     end
 
     def manifest
-      @manifest ||= client.repository_manifest(repository.name_with_namespace, name)
+      @manifest ||= client.repository_manifest(repository.path, name)
     end
 
     def path
@@ -38,7 +38,7 @@ module ContainerRegistry
     def digest
       return @digest if defined?(@digest)
 
-      @digest = client.repository_tag_digest(repository.name_with_namespace, name)
+      @digest = client.repository_tag_digest(repository.path, name)
     end
 
     def config_blob
@@ -80,7 +80,7 @@ module ContainerRegistry
     def delete
       return unless digest
 
-      client.delete_repository_tag(repository.name_with_namespace, digest)
+      client.delete_repository_tag(repository.path, digest)
     end
   end
 end
