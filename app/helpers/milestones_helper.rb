@@ -86,12 +86,14 @@ module MilestonesHelper
       days    = milestone.remaining_days
       content = content_tag(:strong, days)
       content << " #{'day'.pluralize(days)} remaining"
+      content.html_safe
     elsif milestone.upcoming?
       content_tag(:strong, 'Upcoming')
     elsif milestone.start_date && milestone.start_date.past?
       days    = milestone.elapsed_days
       content = content_tag(:strong, days)
       content << " #{'day'.pluralize(days)} elapsed"
+      content.html_safe
     end
   end
 
