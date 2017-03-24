@@ -172,7 +172,7 @@ FactoryGirl.define do
         {
             image: 'ruby:2.1',
             services: ['postgres'],
-            after_script: "ls\ndate",
+            after_script: %w(ls date),
             artifacts: {
                 name: 'artifacts_file',
                 untracked: false,
