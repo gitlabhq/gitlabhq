@@ -5,7 +5,7 @@ describe Profiles::NotificationsController do
     create(:user) do |user|
       user.emails.create(email: 'original@example.com')
       user.emails.create(email: 'new@example.com')
-      user.update(notification_email: 'original@example.com')
+      user.notification_email = 'original@example.com'
       user.save!
     end
   end
