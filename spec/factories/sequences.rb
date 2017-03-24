@@ -6,7 +6,7 @@ FactoryGirl.define do
   sequence(:title) { |n| "My title #{n}" }
   sequence(:filename) { |n| "filename-#{n}.rb" }
   sequence(:url) { |n| "http://example#{n}.org" }
-  sequence(:label) { |n| "label#{n}" }
+  sequence(:label_title) { |n| "label#{n}" }
   sequence(:branch) { |n| "my-branch-#{n}" }
-  sequence(:issue_created_at) { |n| 4.hours.ago + (2 * n).seconds }
+  sequence(:past_time) { |n| 4.hours.ago + (2 * n).seconds }
 end

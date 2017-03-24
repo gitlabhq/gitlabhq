@@ -1,20 +1,22 @@
 module Db
   module Fixtures
-    class Development
-      def self.seed
-        Gitlab::Seeder.quiet do
-          (AbuseReport.default_per_page + 3).times do
-            reported_user =
-              User.create!(
-                username: FFaker::Internet.user_name,
-                name: FFaker::Name.name,
-                email: FFaker::Internet.email,
-                confirmed_at: DateTime.now,
-                password: '12345678'
-              )
+    module Development
+      class AbuseReport
+        def self.seed
+          Gitlab::Seeder.quiet do
+            (::AbuseReport.default_per_page + 3).times do
+              reported_user =
+                ::User.create!(
+                  username: FFaker::Internet.user_name,
+                  name: FFaker::Name.name,
+                  email: FFaker::Internet.email,
+                  confirmed_at: DateTime.now,
+                  password: '12345678'
+                )
 
-            AbuseReport.create(reporter: User.take, user: reported_user, message: 'User sends spam')
-            print '.'
+              ::AbuseReport.create(reporter: ::User.take, user: reported_user, message: 'User sends spam')
+              print '.'
+            end
           end
         end
       end
@@ -22,4 +24,4 @@ module Db
   end
 end
 
-Db::Fixtures::Development.seed
+Db::Fixtures::Development::AbuseReport.seed
