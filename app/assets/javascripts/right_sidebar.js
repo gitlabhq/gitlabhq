@@ -97,10 +97,10 @@ import Cookies from 'js-cookie';
 
       if (data.delete_path != null) {
         $btn.attr('aria-label', $btn.data('mark-text')).attr('data-delete-path', data.delete_path);
-        return $btnText.text($btn.data('mark-text'));
+        return $btnText.html($btn.data('mark-text'));
       } else {
         $btn.attr('aria-label', $btn.data('todo-text')).removeAttr('data-delete-path');
-        return $btnText.text($btn.data('todo-text'));
+        return $btnText.html($btn.data('todo-text'));
       }
     };
 

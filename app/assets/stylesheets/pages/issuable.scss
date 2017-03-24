@@ -294,6 +294,14 @@
         margin-top: 0;
       }
 
+      .todo-undone {
+        color: $gl-link-color;
+
+        &:hover {
+          color: $gl-text-color;
+        }
+      }
+
       .author {
         display: none;
       }

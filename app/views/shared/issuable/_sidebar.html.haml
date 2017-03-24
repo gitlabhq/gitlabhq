@@ -22,6 +22,15 @@
           = icon('spin spinner', class: 'hidden js-issuable-todo-loading', 'aria-hidden': 'true')
 
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
+      - if current_user
+        .block.todo
+          .sidebar-collapsed-icon.dont-change-state.js-issuable-todo{ type: "div", aria: { label: (todo.nil? ? icon('plus-square') : icon('check-square', class: 'todo-undone')) }, data: { todo_text: icon('plus-square'), mark_text: icon('check-square', class: 'todo-undone'), issuable_id: issuable.id, issuable_type: issuable.class.name.underscore, url: namespace_project_todos_path(@project.namespace, @project), delete_path: (dashboard_todo_path(todo) if todo) } }
+            %span.js-issuable-todo-text
+              - if todo
+                = icon('check-square', class: 'todo-undone')
+              - else
+                = icon('plus-square')
+            = icon('spin spinner', class: 'hidden js-issuable-todo-loading')
       .block.assignee
         .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee.name if issuable.assignee) }
           - if issuable.assignee
