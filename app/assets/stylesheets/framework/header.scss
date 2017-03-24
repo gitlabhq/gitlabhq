@@ -269,14 +269,6 @@ header {
   }
 }
 
-.page-sidebar-pinned.right-sidebar-expanded {
-  @media (max-width: $screen-md-max) {
-    .header-content .title {
-      width: 300px;
-    }
-  }
-}
-
 @media (max-width: $screen-xs-max) {
   header .container-fluid {
     font-size: 18px;
