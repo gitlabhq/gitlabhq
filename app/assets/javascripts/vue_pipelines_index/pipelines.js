@@ -182,7 +182,7 @@ export default {
     <div :class="cssClass">
 
       <div
-        class="top-area"
+        class="top-area scrolling-tabs-container"
         v-if="!isLoading && !shouldRenderEmptyState">
         <navigation-tabs
           :scope="scope"
