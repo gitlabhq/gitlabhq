@@ -17,7 +17,7 @@ export default {
     this.filteredSearch.handleInputPlaceholder();
     this.filteredSearch.toggleClearSearchButton();
   },
-  beforeDestroy() {
+  destroyed() {
     this.filteredSearch.cleanup();
     FilteredSearchContainer.container = document;
     this.store.path = '';
