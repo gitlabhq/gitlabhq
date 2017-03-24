@@ -2,6 +2,16 @@ module Gitlab
   module Geo
     OauthApplicationUndefinedError = Class.new(StandardError)
 
+    CACHE_KEYS = [
+      :geo_primary_node,
+      :geo_secondary_nodes,
+      :geo_node_enabled,
+      :geo_node_primary,
+      :geo_node_secondary,
+      :geo_primary_ssh_path_prefix,
+      :geo_oauth_application
+    ]
+
     def self.current_node
       self.cache_value(:geo_node_current) do
         GeoNode.find_by(host: Gitlab.config.gitlab.host,
@@ -80,7 +90,18 @@ module Gitlab
     def self.cache_value(key, &block)
       return yield unless RequestStore.active?
 
-      RequestStore.fetch(key) { yield }
+      RequestStore.fetch(key) { Rails.cache.fetch(key) { yield } }
+    end
+
+    def self.expire_cache!
+      return true unless RequestStore.active?
+
+      CACHE_KEYS.each do |key|
+        Rails.cache.delete(key)
+        RequestStore.delete(key)
+      end
+
+      true
     end
 
     def self.generate_access_keys
