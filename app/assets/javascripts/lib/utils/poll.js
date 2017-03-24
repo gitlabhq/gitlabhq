@@ -8,10 +8,10 @@ import httpStatusCodes from './http_status';
  * new Poll({
  *   resource: resource,
  *   method: 'name',
- *   data: {page: 1, scope: 'all'},
+ *   data: {page: 1, scope: 'all'}, // optional
  *   successCallback: () => {},
  *   errorCallback: () => {},
- *   auxiliarCallback: () => {},
+ *   notificationCallback: () => {}, // optional
  * }).makeRequest();
  *
  * Usage in pipelines table with visibility lib:
@@ -22,7 +22,7 @@ import httpStatusCodes from './http_status';
  *  data: { page: pageNumber, scope },
  *  successCallback: this.successCallback,
  *  errorCallback: this.errorCallback,
- *  auxiliarCallback: this.updateLoading,
+ *  notificationCallback: this.updateLoading,
  * });
  *
  * if (!Visibility.hidden()) {
@@ -48,6 +48,8 @@ export default class Poll {
   constructor(options = {}) {
     this.options = options;
     this.options.data = options.data || {};
+    this.options.notificationCallback = options.notificationCallback ||
+      function notificationCallback() {};
 
     this.intervalHeader = 'POLL-INTERVAL';
     this.timeoutID = null;
@@ -68,14 +70,14 @@ export default class Poll {
   }
 
   makeRequest() {
-    const { resource, method, data, errorCallback, auxiliarCallback } = this.options;
+    const { resource, method, data, errorCallback, notificationCallback } = this.options;
 
     // It's called everytime a new request is made. Useful to update the status.
-    auxiliarCallback(true);
+    notificationCallback(true);
 
     return resource[method](data)
-    .then(response => this.checkConditions(response))
-    .catch(error => errorCallback(error));
+      .then(response => this.checkConditions(response))
+      .catch(error => errorCallback(error));
   }
 
   /**
