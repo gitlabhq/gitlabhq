@@ -312,7 +312,7 @@ bundler:audit:
     - master@gitlab/gitlabhq
     - master@gitlab/gitlab-ee
   script:
-    - "bundle exec bundle-audit check --update"
+    - "bundle exec bundle-audit check --update --ignore CVE-2016-4658"
 
 migration paths:
   stage: test
