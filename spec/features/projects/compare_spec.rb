@@ -53,6 +53,7 @@ describe "Compare", js: true do
     dropdown = find(".js-compare-#{dropdown_type}-dropdown")
     dropdown.find(".compare-dropdown-toggle").click
     dropdown.fill_in("Filter by Git revision", with: selection)
-    find_link(selection, visible: true).click
+    wait_for_ajax
+    dropdown.find_all("a[data-ref=\"#{selection}\"]", visible: true).last.click
   end
 end

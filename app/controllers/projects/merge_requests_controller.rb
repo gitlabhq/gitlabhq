@@ -402,7 +402,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if params[:ref].present?
       @ref = params[:ref]
-      @commit = @repository.commit(@ref)
+      @commit = @repository.commit("refs/heads/#{@ref}")
     end
 
     render layout: false
@@ -413,7 +413,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if params[:ref].present?
       @ref = params[:ref]
-      @commit = @target_project.commit(@ref)
+      @commit = @target_project.commit("refs/heads/#{@ref}")
     end
 
     render layout: false
