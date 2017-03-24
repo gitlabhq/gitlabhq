@@ -1,0 +1,131 @@
+- affix_offset = local_assigns.fetch(:affix_offset, "102")
+- project = local_assigns[:project]
+
+%aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => affix_offset, "spy" => "affix" }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
+  .issuable-sidebar.milestone-sidebar
+    .block.milestone-progress.issuable-sidebar-header
+      %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => "Toggle sidebar" }
+        = sidebar_gutter_toggle_icon
+
+      .sidebar-collapsed-icon
+        %span== #{milestone.percent_complete(current_user)}%
+        = milestone_progress_bar(milestone)
+      .title.hide-collapsed
+        %strong== #{milestone.percent_complete(current_user)}%
+        %span.hide-collapsed
+          complete
+      .value.hide-collapsed
+        = milestone_progress_bar(milestone)
+
+    - if project
+      .block.due_date
+        .sidebar-collapsed-icon
+          = icon('calendar', 'aria-hidden': 'true')
+          %span.js-due-date-sidebar-value
+            = milestone.due_date.try(:to_s, :medium) || 'None'
+        .title.hide-collapsed
+          Due date
+          - if can?(current_user, :admin_milestone, @project)
+            = link_to 'Edit', edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: 'edit-link pull-right'
+        .value.hide-collapsed
+          %span.value-content
+            - if milestone.due_date
+              %span.bold= milestone.due_date.to_s(:medium)
+            - else
+              %span.no-value No due date
+          - remaining_days = milestone_remaining_days(milestone)
+          - if remaining_days.present?
+            = surround '(', ')' do
+              %span.remaining-days= remaining_days
+
+    - if !project || can?(current_user, :read_issue, project)
+      .block
+        .sidebar-collapsed-icon
+          %strong
+            = icon('hashtag', 'aria-hidden': 'true')
+          %span= milestone.issues_visible_to_user(current_user).size
+        .title.hide-collapsed
+          Issues
+          %span.badge= milestone.issues_visible_to_user(current_user).size
+          - if project && can?(current_user, :create_issue, project)
+            = link_to new_namespace_project_issue_path(project.namespace, project, issue: { milestone_id: milestone.id }), class: "pull-right", title: "New Issue" do
+              New issue
+        .value.hide-collapsed
+          - if project && can?(current_user, :read_issue, project)
+            %span.milestone-stat
+              = link_to milestones_browse_issuables_path(milestone, type: :issues) do
+                Open:
+                = milestone.issues_visible_to_user(current_user).opened.size
+            %span.milestone-stat
+              = link_to milestones_browse_issuables_path(milestone, type: :issues, state: 'closed') do
+                Closed:
+                = milestone.issues_visible_to_user(current_user).closed.size
+          - else
+            %span.milestone-stat
+              Open:
+              = milestone.issues_visible_to_user(current_user).opened.size
+            %span.milestone-stat
+              Closed:
+              = milestone.issues_visible_to_user(current_user).closed.size
+
+    - total_weight = milestone.issues_visible_to_user(current_user).sum(:weight)
+    .block.weight
+      .sidebar-collapsed-icon
+        = icon('balance-scale')
+        %span
+          - unless total_weight.zero?
+            = total_weight
+          - else
+            None
+      .title.hide-collapsed
+        Total issue weight
+      .value.hide-collapsed
+        - unless total_weight.zero?
+          %strong= total_weight
+        - else
+          .no-value None
+
+    .block
+      .sidebar-collapsed-icon
+        %strong
+          = icon('exclamation', 'aria-hidden': 'true')
+        %span= milestone.issues_visible_to_user(current_user).size
+      .title.hide-collapsed
+        Merge requests
+        %span.badge= milestone.merge_requests.size
+      .value.hide-collapsed
+        - if project && can?(current_user, :read_merge_request, project)
+          %span.milestone-stat
+            = link_to milestones_browse_issuables_path(milestone, type: :merge_requests) do
+              Open:
+              = milestone.merge_requests.opened.size
+          %span.milestone-stat
+            = link_to milestones_browse_issuables_path(milestone, type: :merge_requests, state: 'closed') do
+              Closed:
+              = milestone.merge_requests.closed.size
+          %span.milestone-stat
+            = link_to milestones_browse_issuables_path(milestone, type: :merge_requests, state: 'merged') do
+              Merged:
+              = milestone.merge_requests.merged.size
+        - else
+          %span.milestone-stat
+            Open:
+            = milestone.merge_requests.opened.size
+          %span.milestone-stat
+            Closed:
+            = milestone.merge_requests.closed.size
+          %span.milestone-stat
+            Merged:
+            = milestone.merge_requests.merged.size
+
+    - milestone_ref = milestone.try(:to_reference, full: true)
+    - if milestone_ref.present?
+      .block.reference
+        .sidebar-collapsed-icon.dont-change-state
+          = clipboard_button(clipboard_text: milestone_ref, title: "Copy reference to clipboard", placement: "left")
+        .cross-project-reference.hide-collapsed
+          %span
+            Reference:
+            %cite{ title: milestone_ref }
+              = milestone_ref
+          = clipboard_button(clipboard_text: milestone_ref, title: "Copy reference to clipboard", placement: "left")

@@ -33,8 +33,10 @@
 /* global ProjectShow */
 /* global Labels */
 /* global Shortcuts */
+/* global Sidebar */
 /* global WeightSelect */
 /* global AdminEmailSelect */
+
 import Issue from './issue';
 
 import BindInOut from './behaviors/bind_in_out';
@@ -122,6 +124,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'groups:milestones:show':
         case 'dashboard:milestones:show':
           new Milestone();
+          new Sidebar();
           break;
         case 'dashboard:todos:index':
           new gl.Todos();

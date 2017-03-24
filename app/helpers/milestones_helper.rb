@@ -19,8 +19,8 @@ module MilestonesHelper
     end
   end
 
-  def milestones_browse_issuables_path(milestone, type:)
-    opts = { milestone_title: milestone.title }
+  def milestones_browse_issuables_path(milestone, state: nil, type:)
+    opts = { milestone_title: milestone.title, state: state }
 
     if @project
       polymorphic_path([@project.namespace.becomes(Namespace), @project, type], opts)
@@ -89,10 +89,12 @@ module MilestonesHelper
       content = time_ago.gsub(/\d+/) { |match| "<strong>#{match}</strong>" }
       content.slice!("about ")
       content << " remaining"
+      content.html_safe
     elsif milestone.start_date && milestone.start_date.past?
       days    = milestone.elapsed_days
       content = content_tag(:strong, days)
       content << " #{'day'.pluralize(days)} elapsed"
+      content.html_safe
     end
   end
 
