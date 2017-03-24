@@ -184,18 +184,14 @@ describe Gitlab::Workhorse, lib: true do
 
     it { expect(subject).to eq({ GL_ID: "user-#{user.id}", RepoPath: repository.path_to_repo }) }
 
-    context 'when Gitaly socket path is present' do
-      let(:gitaly_socket_path) { '/tmp/gitaly.sock' }
-
+    context 'when Gitaly is enabled' do
       before do
-        allow(Gitlab.config.gitaly).to receive(:socket_path).and_return(gitaly_socket_path)
+        allow(Gitlab.config.gitaly).to receive(:enabled).and_return(true)
       end
 
       it 'includes Gitaly params in the returned value' do
-        expect(subject).to include({
-          GitalyResourcePath: "/projects/#{repository.project.id}/git-http/info-refs",
-          GitalySocketPath: gitaly_socket_path,
-        })
+        gitaly_socket_path = URI(Gitlab::GitalyClient.get_address('default')).path
+        expect(subject).to include({ GitalySocketPath: gitaly_socket_path })
       end
     end
   end

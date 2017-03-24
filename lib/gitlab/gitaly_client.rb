@@ -4,9 +4,11 @@ module Gitlab
   module GitalyClient
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'.freeze
 
-    def self.configure_channel(shard, socket_path)
-      @channel ||= {}
-      @channel[shard] = new_channel("unix://#{socket_path}")
+    def self.configure_channel(storage, address)
+      @addresses ||= {}
+      @addresses[storage] = address
+      @channels ||= {}
+      @channels[storage] = new_channel(address)
     end
 
     def self.new_channel(address)
@@ -16,8 +18,12 @@ module Gitlab
       GRPC::Core::Channel.new(address, {}, :this_channel_is_insecure)
     end
 
-    def self.get_channel(shard)
-      @channel.fetch(shard)
+    def self.get_channel(storage)
+      @channels[storage]
+    end
+
+    def self.get_address(storage)
+      @addresses[storage]
     end
 
     def self.enabled?

@@ -424,7 +424,7 @@ describe API::Internal, api: true  do
     end
 
     before do
-      allow(Gitlab.config.gitaly).to receive(:socket_path).and_return('path/to/gitaly.socket')
+      allow(Gitlab.config.gitaly).to receive(:enabled).and_return(true)
     end
 
     it "calls the Gitaly client if it's enabled" do

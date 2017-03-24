@@ -443,14 +443,10 @@ production: &base
 
   # Gitaly settings
   gitaly:
-    # The socket_path setting is optional and obsolete. When this is set
-    # GitLab assumes it can reach a Gitaly services via a Unix socket at
-    # this path. When this is commented out GitLab will not use Gitaly.
-    # 
-    # This setting is obsolete because we expect it to be moved under
-    # repositories/storages in GitLab 9.1.
-    #
-    # socket_path: tmp/sockets/private/gitaly.socket
+    # This setting controls whether GitLab uses Gitaly (new component
+    # introduced in 9.0). Eventually Gitaly use will become mandatory and
+    # this option will disappear.
+    enabled: false
 
   #
   # 4. Advanced settings
@@ -465,6 +461,7 @@ production: &base
     storages: # You must have at least a `default` storage path.
       default:
         path: /home/git/repositories/
+        gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket
 
   ## Backup settings
   backup:
@@ -577,6 +574,9 @@ test:
     storages:
       default:
         path: tmp/tests/repositories/
+        gitaly_address: unix:<%= Rails.root.join('tmp/sockets/private/gitaly.socket') %>
+  gitaly:
+    enabled: false
   backup:
     path: tmp/tests/backups
   gitlab_shell:
