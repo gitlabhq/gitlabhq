@@ -43,7 +43,6 @@ import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
-import PrometheusGraph from './monitoring/prometheus_graph';
 import UserCallout from './user_callout';
 
 const ShortcutsBlob = require('./shortcuts_blob');
