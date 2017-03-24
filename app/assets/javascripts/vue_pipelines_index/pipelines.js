@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import Visibility from 'visibilityjs';
 import PipelinesService from './services/pipelines_service';
 import eventHub from './event_hub';
 import PipelinesTableComponent from '../vue_shared/components/pipelines_table';
@@ -7,6 +8,7 @@ import EmptyState from './components/empty_state';
 import ErrorState from './components/error_state';
 import NavigationTabs from './components/navigation_tabs';
 import NavigationControls from './components/nav_controls';
+import Poll from '../lib/utils/poll';
 
 export default {
   props: {
@@ -123,9 +125,31 @@ export default {
   },
 
   created() {
+    const pageNumber = gl.utils.getParameterByName('page') || this.pagenum;
+    const scope = gl.utils.getParameterByName('scope') || this.apiScope;
+
     this.service = new PipelinesService(this.endpoint);
 
-    this.fetchPipelines();
+    const poll = new Poll({
+      resource: this.service,
+      method: 'getPipelines',
+      data: { page: pageNumber, scope },
+      successCallback: this.successCallback,
+      errorCallback: this.errorCallback,
+    });
+
+    if (!Visibility.hidden()) {
+      this.isLoading = true;
+      poll.makeRequest();
+    }
+
+    Visibility.change((e, state) => {
+      if (state === 'visible') {
+        poll.restart();
+      } else {
+        poll.stop();
+      }
+    });
 
     eventHub.$on('refreshPipelines', this.fetchPipelines);
   },
@@ -158,23 +182,27 @@ export default {
       const scope = gl.utils.getParameterByName('scope') || this.apiScope;
 
       this.isLoading = true;
-      return this.service.getPipelines(scope, pageNumber)
-        .then(resp => ({
-          headers: resp.headers,
-          body: resp.json(),
-        }))
-        .then((response) => {
-          this.store.storeCount(response.body.count);
-          this.store.storePipelines(response.body.pipelines);
-          this.store.storePagination(response.headers);
-        })
-        .then(() => {
-          this.isLoading = false;
-        })
-        .catch(() => {
-          this.hasError = true;
-          this.isLoading = false;
-        });
+      return this.service.getPipelines({ scope, page: pageNumber })
+        .then(response => this.successCallback(response))
+        .catch(() => this.errorCallback());
+    },
+
+    successCallback(resp) {
+      const response = {
+        headers: resp.headers,
+        body: resp.json(),
+      };
+
+      this.store.storeCount(response.body.count);
+      this.store.storePipelines(response.body.pipelines);
+      this.store.storePagination(response.headers);
+
+      this.isLoading = false;
+    },
+
+    errorCallback() {
+      this.hasError = true;
+      this.isLoading = false;
     },
   },
 
