@@ -20,11 +20,11 @@ export default {
         <a
           :href="mr.conflictResolutionPath"
           v-if="showResolveConflictsButton"
-          class="btn btn-default btn-xs how_to_merge_link vlink"
+          class="btn btn-default btn-xs js-resolve-conflicts-button"
         >Resolve conflicts</a>
         <a
           v-if="mr.canMerge"
-          class="btn btn-default btn-xs how_to_merge_link vlink"
+          class="btn btn-default btn-xs js-merge-locally-button"
           data-toggle="modal"
           href="#modal_merge_info"
         >Merge locally</a>
