@@ -52,6 +52,22 @@
   }
 }
 
+.milestone-sidebar {
+  .remaining-days strong {
+    font-weight: normal;
+  }
+
+  .milestone-stat {
+    float: left;
+    font-weight: bold;
+    margin-right: 14px;
+  }
+
+  .milestone-stat:last-child {
+    margin-right: 0;
+  }
+}
+
 .milestone-summary {
   .milestone-stat {
     white-space: nowrap;
