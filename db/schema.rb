@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170403141442) do
+ActiveRecord::Schema.define(version: 20170404223037) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -534,6 +534,7 @@ ActiveRecord::Schema.define(version: 20170403141442) do
     t.integer "time_estimate"
     t.integer "relative_position"
     t.datetime "closed_at"
+    t.string "service_desk_reply_to"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -1073,6 +1074,8 @@ ActiveRecord::Schema.define(version: 20170403141442) do
     t.integer "repository_size_limit", limit: 8
     t.integer "sync_time", default: 60, null: false
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
+    t.boolean "service_desk_enabled"
+    t.string "service_desk_mail_key"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1088,6 +1091,7 @@ ActiveRecord::Schema.define(version: 20170403141442) do
   add_index "projects", ["path"], name: "index_projects_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
   add_index "projects", ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
+  add_index "projects", ["service_desk_mail_key"], name: "index_projects_on_service_desk_mail_key", unique: true, using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["sync_time"], name: "index_projects_on_sync_time", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
@@ -1448,6 +1452,7 @@ ActiveRecord::Schema.define(version: 20170403141442) do
     t.boolean "auditor", default: false, null: false
     t.boolean "ghost"
     t.boolean "notified_of_own_activity"
+    t.boolean "support_bot"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1462,6 +1467,7 @@ ActiveRecord::Schema.define(version: 20170403141442) do
   add_index "users", ["name"], name: "index_users_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["state"], name: "index_users_on_state", using: :btree
+  add_index "users", ["support_bot"], name: "index_users_on_support_bot", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree
   add_index "users", ["username"], name: "index_users_on_username_trigram", using: :gin, opclasses: {"username"=>"gin_trgm_ops"}
 
