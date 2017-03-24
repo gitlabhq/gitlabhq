@@ -107,6 +107,21 @@ class Milestone < ActiveRecord::Base
     end
   end
 
+  def self.sort(method)
+    case method.to_s
+    when 'due_date_asc'
+      reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC'))
+    when 'due_date_desc'
+      reorder(Gitlab::Database.nulls_last_order('due_date', 'DESC'))
+    when 'start_date_asc'
+      reorder(Gitlab::Database.nulls_last_order('start_date', 'ASC'))
+    when 'start_date_desc'
+      reorder(Gitlab::Database.nulls_last_order('start_date', 'DESC'))
+    else
+      order_by(method)
+    end
+  end
+
   ##
   # Returns the String necessary to reference this Milestone in Markdown
   #
