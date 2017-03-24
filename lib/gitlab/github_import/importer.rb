@@ -161,7 +161,7 @@ module Gitlab
       end
 
       def restore_target_branch(pull_request)
-        project.repository.create_branch(pull_request.target_branch_name, pull_request.target_branch_sha)
+        project.repository.fetch_ref(repo_url, "pull/#{pull_request.number}/merge", pull_request.target_branch_name)
       end
 
       def remove_branch(name)
