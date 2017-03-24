@@ -595,17 +595,28 @@ class NotificationService
     end
   end
 
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/28836
+  def log_recipients(target, recipients, stage)
+    Rails.logger.info("NotificationService recipients for #{target.class} #{target.id} were #{recipients.compact.map(&:id).sort.inspect} at #{stage}")
+  rescue => e
+    Rails.logger.info("NotificationService failed to log with params #{[target, recipients, stage]}: #{e.message}")
+  end
+
   def build_recipients(target, project, current_user, action: nil, previous_assignee: nil, skip_current_user: true)
     custom_action = build_custom_key(action, target)
 
     recipients = target.participants(current_user)
+    log_recipients(target, recipients, 'add participants')
 
     unless NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(custom_action)
       recipients = add_project_watchers(recipients, project)
+      log_recipients(target, recipients, 'add project watchers')
     end
 
     recipients = add_custom_notifications(recipients, project, custom_action)
+    log_recipients(target, recipients, 'add custom notifications')
     recipients = reject_mention_users(recipients, project)
+    log_recipients(target, recipients, 'reject mention users')
 
     recipients = recipients.uniq
 
@@ -617,15 +628,22 @@ class NotificationService
       recipients << target.assignee
     end
 
+    log_recipients(target, recipients, 'add previous and current assignees')
+
     recipients = reject_muted_users(recipients, project)
+    log_recipients(target, recipients, 'reject muted users')
     recipients = add_subscribed_users(recipients, project, target)
+    log_recipients(target, recipients, 'add subscribed users')
 
     if [:new_issue, :new_merge_request].include?(custom_action)
       recipients = add_labels_subscribers(recipients, project, target)
+      log_recipients(target, recipients, 'add label subscribers')
     end
 
     recipients = reject_unsubscribed_users(recipients, target)
+    log_recipients(target, recipients, 'reject unsubscribed users')
     recipients = reject_users_without_access(recipients, target)
+    log_recipients(target, recipients, 'reject users without access')
 
     recipients.delete(current_user) if skip_current_user
 
