@@ -462,17 +462,18 @@ ul.notes {
   background: $white-light;
   padding: 1px 5px;
   font-size: 12px;
-  color: $gl-link-color;
+  color: $blue-500;
   margin-left: -55px;
   position: absolute;
   z-index: 10;
   width: 23px;
   height: 23px;
-  border: 1px solid $border-color;
+  border: 1px solid $blue-500;
   transition: transform .1s ease-in-out;
 
   &:hover {
-    background: $gl-info;
+    background: $blue-500;
+    border-color: $blue-600;
     color: $white-light;
     transform: scale(1.15);
   }
