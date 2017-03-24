@@ -1,6 +1,7 @@
 /* eslint-disable comma-dangle, space-before-function-paren, one-var, no-shadow, dot-notation, max-len */
-/* global Cookies */
 /* global List */
+
+import Cookies from 'js-cookie';
 
 (() => {
   window.gl = window.gl || {};

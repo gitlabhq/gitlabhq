@@ -215,10 +215,12 @@ describe Namespace, models: true do
   end
 
   describe '#descendants' do
-    let!(:group) { create(:group) }
+    let!(:group) { create(:group, path: 'git_lab') }
     let!(:nested_group) { create(:group, parent: group) }
     let!(:deep_nested_group) { create(:group, parent: nested_group) }
     let!(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
+    let!(:another_group) { create(:group, path: 'gitllab') }
+    let!(:another_group_nested) { create(:group, path: 'foo', parent: another_group) }
 
     it 'returns the correct descendants' do
       expect(very_deep_nested_group.descendants.to_a).to eq([])

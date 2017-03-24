@@ -1,4 +1,4 @@
-/* global Cookies */
+import Cookies from 'js-cookie';
 
 const userCalloutElementName = '.user-callout';
 const closeButton = '.close-user-callout';
@@ -27,7 +27,7 @@ const USER_CALLOUT_TEMPLATE = `
   </div>
 </div>`;
 
-class UserCallout {
+export default class UserCallout {
   constructor() {
     this.isCalloutDismissed = Cookies.get(USER_CALLOUT_COOKIE);
     this.userCalloutBody = $(userCalloutElementName);
@@ -56,5 +56,3 @@ class UserCallout {
     }
   }
 }
-
-module.exports = UserCallout;

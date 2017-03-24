@@ -1,8 +1,9 @@
-/* global Vue */
 /* global ListUser */
 /* global ListLabel */
 /* global listObj */
 /* global ListIssue */
+
+import Vue from 'vue';
 
 require('~/boards/models/issue');
 require('~/boards/models/label');

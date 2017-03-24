@@ -534,6 +534,12 @@ describe API::Issues, api: true  do
   describe "GET /projects/:id/issues" do
     let(:base_url) { "/projects/#{project.id}" }
 
+    it 'returns 404 when project does not exist' do
+      get api('/projects/1000/issues', non_member)
+
+      expect(response).to have_http_status(404)
+    end
+
     it "returns 404 on private projects for other users" do
       private_project = create(:empty_project, :private)
       create(:issue, project: private_project)

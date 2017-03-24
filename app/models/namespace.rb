@@ -195,7 +195,7 @@ class Namespace < ActiveRecord::Base
 
   # Scopes the model on direct and indirect children of the record
   def descendants
-    self.class.joins(:route).where('routes.path LIKE ?', "#{route.path}/%").reorder('routes.path ASC')
+    self.class.joins(:route).merge(Route.inside_path(route.path)).reorder('routes.path ASC')
   end
 
   def user_ids_for_project_authorizations

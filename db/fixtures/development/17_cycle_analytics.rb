@@ -155,7 +155,7 @@ class Gitlab::Seeder::CycleAnalytics
 
       issue.project.repository.add_branch(@user, branch_name, 'master')
 
-      commit_sha = issue.project.repository.create_file(@user, filename, "content", options, message: "Commit for ##{issue.iid}", branch_name: branch_name)
+      commit_sha = issue.project.repository.create_file(@user, filename, "content", message: "Commit for ##{issue.iid}", branch_name: branch_name)
       issue.project.repository.commit(commit_sha)
 
       GitPushService.new(issue.project,

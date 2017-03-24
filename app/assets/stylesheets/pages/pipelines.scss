@@ -2,6 +2,7 @@
   .realtime-loading {
     font-size: 40px;
     text-align: center;
+    margin: 0 auto;
   }
 
   .stage {
@@ -13,9 +14,16 @@
     white-space: nowrap;
   }
 
+  .empty-state {
+    margin: 5% auto 0;
+  }
+
   .table-holder {
     width: 100%;
-    overflow: auto;
+
+    @media (max-width: $screen-sm-max) {
+      overflow: auto;
+    }
   }
 
   .commit-title {
@@ -99,8 +107,6 @@
 
 @media (max-width: $screen-md-max) {
   .content-list {
-    &.pipelines,
-    &.environments-container,
     &.builds-content-list {
       width: 100%;
       overflow: auto;
@@ -667,51 +673,71 @@
 
   // Dropdown button animation in mini pipeline graph
   &.ci-status-icon-success {
-    border-color: $gl-success;
-    color: $gl-success;
+    border-color: $green-500;
+    color: $green-500;
 
     &:hover,
     &:focus,
     &:active {
-      background-color: rgba($gl-success, 0.1);
-      border-color: $gl-success;
+      background-color: $green-50;
+      border-color: $green-600;
+      color: $green-600;
+
+      svg {
+        fill: $green-600;
+      }
     }
   }
 
   &.ci-status-icon-failed {
-    border-color: $gl-danger;
-    color: $gl-danger;
+    border-color: $red-500;
+    color: $red-500;
 
     &:hover,
     &:focus,
     &:active {
-      background-color: rgba($gl-danger, 0.1);
-      border-color: $gl-danger;
+      background-color: $red-50;
+      border-color: $red-600;
+      color: $red-600;
+
+      svg {
+        fill: $red-600;
+      }
     }
   }
 
   &.ci-status-icon-pending,
   &.ci-status-icon-success_with_warnings {
-    border-color: $gl-warning;
-    color: $gl-warning;
+    border-color: $orange-500;
+    color: $orange-500;
 
     &:hover,
     &:focus,
     &:active {
-      background-color: rgba($gl-warning, 0.1);
-      border-color: $gl-warning;
+      background-color: $orange-50;
+      border-color: $orange-600;
+      color: $orange-600;
+
+      svg {
+        fill: $orange-600;
+      }
     }
   }
 
   &.ci-status-icon-running {
-    border-color: $blue-normal;
-    color: $blue-normal;
+    border-color: $blue-400;
+    color: $blue-400;
 
     &:hover,
     &:focus,
     &:active {
-      background-color: rgba($blue-normal, 0.1);
-      border-color: $blue-normal;
+      background-color: $blue-50;
+      border-color: $blue-600;
+      color: $blue-600;
+
+      svg {
+        fill: $blue-600;
+      }
     }
   }
 

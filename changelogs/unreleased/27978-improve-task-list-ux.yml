@@ -1,4 +1,0 @@
----
-title: Only add a newline in the Markdown Editor if the current line is not empty
-merge_request: 9455
-author: Jan Christophersen

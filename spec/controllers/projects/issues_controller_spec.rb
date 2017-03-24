@@ -152,6 +152,24 @@ describe Projects::IssuesController do
 
     it_behaves_like 'update invalid issuable', Issue
 
+    context 'changing the assignee' do
+      it 'limits the attributes exposed on the assignee' do
+        assignee = create(:user)
+        project.add_developer(assignee)
+
+        put :update,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: issue.iid,
+          issue: { assignee_id: assignee.id },
+          format: :json
+        body = JSON.parse(response.body)
+
+        expect(body['assignee'].keys)
+          .to match_array(%w(name username avatar_url))
+      end
+    end
+
     context 'when moving issue to another private project' do
       let(:another_project) { create(:empty_project, :private) }
 
@@ -223,10 +241,27 @@ describe Projects::IssuesController do
               expect(spam_logs.first.recaptcha_verified).to be_falsey
             end
 
-            it 'renders verify template' do
-              update_spam_issue
+            context 'as HTML' do
+              it 'renders verify template' do
+                update_spam_issue
 
-              expect(response).to render_template(:verify)
+                expect(response).to render_template(:verify)
+              end
+            end
+
+            context 'as JSON' do
+              before do
+                update_issue({ title: 'Spam Title', description: 'Spam lives here' }, format: :json)
+              end
+
+              it 'renders json errors' do
+                expect(json_response)
+                  .to eql("errors" => ["Your issue has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."])
+              end
+
+              it 'returns 422 status' do
+                expect(response).to have_http_status(422)
+              end
             end
           end
 

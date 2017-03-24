@@ -26,7 +26,7 @@ options:
   circumstances it could lead to data loss if a failure occurs before data has
   synced.
 
-## Client mount options
+## NFS Client mount options
 
 Below is an example of an NFS mount point we use on GitLab.com:
 

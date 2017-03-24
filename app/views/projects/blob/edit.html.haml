@@ -2,14 +2,14 @@
 - page_title "Edit", @blob.path, @ref
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag('lib/ace.js')
-  = page_specific_javascript_bundle_tag('blob_edit')
+  = page_specific_javascript_bundle_tag('blob')
 = render "projects/commits/head"
 
 %div{ class: container_class }
   - if @conflict
     .alert.alert-danger
       Someone edited the file the same time you did. Please check out
-      = link_to "the file", namespace_project_blob_path(@project.namespace, @project, tree_join(@target_branch, @file_path)), target: "_blank"
+      = link_to "the file", namespace_project_blob_path(@project.namespace, @project, tree_join(@target_branch, @file_path)), target: "_blank", rel: 'noopener noreferrer'
       and make sure your changes will not unintentionally remove theirs.
 
   .file-editor

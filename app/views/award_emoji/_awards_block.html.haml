@@ -10,8 +10,8 @@
 
   - if current_user
     .award-menu-holder.js-award-holder
-      %button.btn.award-control.js-add-award{ type: "button" }
+      %button.btn.award-control.has-tooltip.js-add-award{ type: 'button',
+        'aria-label': 'Add emoji',
+        data: { title: 'Add emoji', placement: "bottom" } }
         = icon('smile-o', class: "award-control-icon award-control-icon-normal")
         = icon('spinner spin', class: "award-control-icon award-control-icon-loading")
-        %span.award-control-text
-          Add

@@ -1,6 +1,7 @@
 /* eslint-disable no-new */
-/* global Vue */
 /* global Flash */
+
+import Vue from 'vue';
 
 require('./lists_dropdown');
 

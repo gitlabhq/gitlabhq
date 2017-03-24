@@ -308,7 +308,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
 
       format.json do
-        render json: @merge_request.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
+        render json: @merge_request.to_json(include: { milestone: {}, assignee: { only: [:name, :username], methods: [:avatar_url] }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
       end
     end
   rescue ActiveRecord::StaleObjectError
@@ -402,7 +402,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if params[:ref].present?
       @ref = params[:ref]
-      @commit = @repository.commit(@ref)
+      @commit = @repository.commit("refs/heads/#{@ref}")
     end
 
     render layout: false
@@ -413,7 +413,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if params[:ref].present?
       @ref = params[:ref]
-      @commit = @target_project.commit(@ref)
+      @commit = @target_project.commit("refs/heads/#{@ref}")
     end
 
     render layout: false

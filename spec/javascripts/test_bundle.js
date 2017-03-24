@@ -8,9 +8,6 @@ jasmine.getJSONFixtures().fixturesPath = 'base/spec/javascripts/fixtures';
 require('~/commons/index.js');
 window.$ = window.jQuery = require('jquery');
 window._ = require('underscore');
-window.Cookies = require('js-cookie');
-window.Vue = require('vue');
-window.Vue.use(require('vue-resource'));
 
 // stub expected globals
 window.gl = window.gl || {};
@@ -38,7 +35,8 @@ testsContext.keys().forEach(function (path) {
 if (process.env.BABEL_ENV === 'coverage') {
   // exempt these files from the coverage report
   const troubleMakers = [
-    './blob_edit/blob_edit_bundle.js',
+    './blob_edit/blob_bundle.js',
+    './boards/boards_bundle.js',
     './cycle_analytics/components/stage_plan_component.js',
     './cycle_analytics/components/stage_staging_component.js',
     './cycle_analytics/components/stage_test_component.js',

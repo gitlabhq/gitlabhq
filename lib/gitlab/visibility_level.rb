@@ -96,8 +96,8 @@ module Gitlab
       end
 
       def level_value(level)
-        return string_options[level] if level.is_a? String
-        level
+        return level.to_i if level.to_i.to_s == level.to_s && string_options.key(level.to_i)
+        string_options[level] || PRIVATE
       end
 
       def string_level(level)

@@ -41,7 +41,7 @@ module Spammable
   def check_for_spam
     error_msg = if Gitlab::Recaptcha.enabled?
                   "Your #{spammable_entity_type} has been recognized as spam. "\
-                  "You can still submit it by solving Captcha."
+                  "Please, change the content or solve the reCAPTCHA to proceed."
                 else
                   "Your #{spammable_entity_type} has been recognized as spam and has been discarded."
                 end

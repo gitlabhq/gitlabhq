@@ -1,4 +1,0 @@
----
-title: Fixes n+1 query for tags and branches index page
-merge_request: 9905
-author:

@@ -35,7 +35,8 @@
     "stats-webpack-plugin": "^0.4.3",
     "timeago.js": "^2.0.5",
     "underscore": "^1.8.3",
-    "vue": "^2.1.10",
+    "visibilityjs": "^1.2.4",
+    "vue": "^2.2.4",
     "vue-resource": "^0.9.3",
     "webpack": "^2.2.1",
     "webpack-bundle-analyzer": "^2.3.0"

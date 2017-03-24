@@ -17,7 +17,7 @@
     %br
     Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
     %br
-    Read more about GitLab at #{link_to promo_host, promo_url, target: '_blank'}.
+    Read more about GitLab at #{link_to promo_host, promo_url, target: '_blank', rel: 'noopener noreferrer'}.
     - if current_application_settings.help_page_text.present?
       %hr
       = markdown_field(current_application_settings, :help_page_text)
