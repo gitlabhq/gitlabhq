@@ -89,10 +89,12 @@ module MilestonesHelper
       content = time_ago.gsub(/\d+/) { |match| "<strong>#{match}</strong>" }
       content.slice!("about ")
       content << " remaining"
+      content.html_safe
     elsif milestone.start_date && milestone.start_date.past?
       days    = milestone.elapsed_days
       content = content_tag(:strong, days)
       content << " #{'day'.pluralize(days)} elapsed"
+      content.html_safe
     end
   end
 
