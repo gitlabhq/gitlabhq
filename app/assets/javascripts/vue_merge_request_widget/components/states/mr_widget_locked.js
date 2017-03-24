@@ -9,7 +9,7 @@ export default {
       <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
       <section>
         <p>The changes will be merged into
-          <a :href="targetBranchPath" class="label-branch">
+          <a :href="mr.targetBranchPath" class="label-branch">
             {{mr.targetBranch}}
           </a>
         </p>
