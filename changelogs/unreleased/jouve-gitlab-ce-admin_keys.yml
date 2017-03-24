@@ -1,0 +1,5 @@
+---
+title: Redirect to user's keys index instead of user's index after a key is deleted
+  in the admin
+merge_request: 10227
+author: Cyril Jouve
