@@ -14,7 +14,6 @@ describe "Container Registry" do
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(*tags)
     project.container_repositories << container_repository unless container_repository.nil?
-    allow(Auth::ContainerRegistryAuthenticationService).to receive(:full_access_token).and_return('token')
   end
 
   describe 'GET /:project/container_registry' do

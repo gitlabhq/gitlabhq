@@ -13,6 +13,10 @@ describe ContainerImages::DestroyService, '#execute', :services do
                      container_repositories: [container_repository])
   end
 
+  before do
+    stub_container_registry_config(enabled: true)
+  end
+
   it { expect(container_repository).to be_valid }
   it { expect(project.container_repositories).not_to be_empty }
 
