@@ -612,7 +612,8 @@ pre.light-well {
   .project-details {
     min-width: 0;
 
-    p {
+    p,
+    .commit-row-message {
       @include str-truncated(100%);
       margin-bottom: 0;
     }
