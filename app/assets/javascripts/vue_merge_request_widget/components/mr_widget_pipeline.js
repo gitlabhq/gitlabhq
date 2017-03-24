@@ -16,7 +16,9 @@ export default {
         <pipeline-status-icon :pipelineStatus="mr.pipeline.details.status" />
         <span>
           Pipeline
-          <a :href="mr.pipeline.path">#{{mr.pipeline.id}}</a>
+          <a
+            :href="mr.pipeline.path"
+            class="pipeline-id">#{{mr.pipeline.id}}</a>
           {{mr.pipeline.details.status.label}}
         </span>
         <div class="mr-widget-pipeline-graph">
@@ -30,7 +32,7 @@ export default {
         </div>
         <span>
           for
-          <a class="monospace js-commit-link"
+          <a class="monospace commit-link"
             :href="mr.pipeline.commit.commit_path">{{mr.pipeline.commit.short_id}}</a>.
         </span>
       </div>

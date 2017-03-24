@@ -10,7 +10,7 @@ const createComponent = (data) => {
   });
 };
 
-describe('MRWidgetRelatedLinksComponent', () => {
+describe('MRWidgetRelatedLinks', () => {
   describe('props', () => {
     it('should have props', () => {
       const { relatedLinks } = relatedLinksComponent.props;

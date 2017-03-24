@@ -38,7 +38,11 @@ export default {
         <span class="label-branch">
           <a href="#">{{mr.targetBranch}}</a>
         </span>
-        <span v-if="shouldShowCommitsBehindText">({{mr.divergedCommitsCount}} {{commitsText}} behind)</span>
+        <span
+          v-if="shouldShowCommitsBehindText"
+          class="diverged-commits-count">
+          ({{mr.divergedCommitsCount}} {{commitsText}} behind)
+        </span>
       </div>
     </div>
   `,
