@@ -1,7 +1,6 @@
 class ContainerRepository < ActiveRecord::Base
   belongs_to :project
 
-  validates :manifest, presence: true
   validates :name, length: { minimum: 0, allow_nil: false }
 
   delegate :client, to: :registry
@@ -43,6 +42,8 @@ class ContainerRepository < ActiveRecord::Base
     ContainerRegistry::Blob.new(self, config)
   end
 
+  # TODO, add bang to this method
+  #
   def delete_tags
     return unless tags
 
@@ -52,6 +53,14 @@ class ContainerRepository < ActiveRecord::Base
     end
   end
 
+  # TODO, specs needed
+  #
+  def empty?
+    tags.none?
+  end
+
+  # TODO, we will return a new ContainerRepository object here
+  #
   def self.project_from_path(repository_path)
     return unless repository_path.include?('/')
 
