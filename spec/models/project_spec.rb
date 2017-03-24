@@ -1389,25 +1389,6 @@ describe Project, models: true do
     end
   end
 
-  describe '#container_registry_path_with_namespace' do
-    let(:project) { create(:empty_project, path: 'PROJECT') }
-
-    subject { project.container_registry_path_with_namespace }
-
-    it { is_expected.not_to eq(project.path_with_namespace) }
-    it { is_expected.to eq(project.path_with_namespace.downcase) }
-  end
-
-  describe '#container_registry' do
-    let(:project) { create(:empty_project) }
-
-    before { stub_container_registry_config(enabled: true) }
-
-    subject { project.container_registry }
-
-    it { is_expected.not_to be_nil }
-  end
-
   describe '#container_registry_url' do
     let(:project) { create(:empty_project) }
 
@@ -1417,10 +1398,8 @@ describe Project, models: true do
 
     context 'for enabled registry' do
       let(:registry_settings) do
-        {
-          enabled: true,
-          host_port: 'example.com',
-        }
+        { enabled: true,
+          host_port: 'example.com' }
       end
 
       it { is_expected.not_to be_nil }
@@ -1428,9 +1407,7 @@ describe Project, models: true do
 
     context 'for disabled registry' do
       let(:registry_settings) do
-        {
-          enabled: false
-        }
+        { enabled: false }
       end
 
       it { is_expected.to be_nil }
