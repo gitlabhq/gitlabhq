@@ -56,6 +56,5 @@
     .alert.alert-success.prepend-top-default
       %span All issues for this milestone are closed. You may close this milestone now.
 
-  = render 'shared/milestones/summary', milestone: @milestone, project: @project
   = render 'shared/milestones/tabs', milestone: @milestone
   = render 'shared/milestones/sidebar', milestone: @milestone, project: @project, affix_offset: 153
