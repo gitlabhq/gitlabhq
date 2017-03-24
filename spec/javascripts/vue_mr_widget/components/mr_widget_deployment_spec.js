@@ -57,7 +57,8 @@ describe('MRWidgetDeployment', () => {
 
     describe('formatDate', () => {
       it('should work', () => {
-        expect(vm.formatDate(deployment.deployed_at)).toEqual('1 day ago');
+        const readable = gl.utils.getTimeago().format(deployment.deployed_at);
+        expect(vm.formatDate(deployment.deployed_at)).toEqual(readable);
       });
     });
 
