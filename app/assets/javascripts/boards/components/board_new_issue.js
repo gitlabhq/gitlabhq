@@ -26,6 +26,10 @@ export default {
         subscribed: true,
       });
 
+      if (Store.state.currentBoard) {
+        issue.milestone_id = Store.state.currentBoard.milestone_id;
+      }
+
       this.list.newIssue(issue)
         .then(() => {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions
