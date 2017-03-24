@@ -79,7 +79,7 @@ $(() => {
           resp.json().forEach((board) => {
             const list = Store.addList(board);
 
-            if (list.type === 'done') {
+            if (list.type === 'closed') {
               list.position = Infinity;
             }
           });
