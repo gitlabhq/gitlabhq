@@ -2,6 +2,7 @@
   .realtime-loading {
     font-size: 40px;
     text-align: center;
+    margin: 0 auto;
   }
 
   .stage {
@@ -11,6 +12,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .empty-state {
+    margin: 5% auto 0;
   }
 
   .table-holder {
