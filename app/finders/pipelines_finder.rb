@@ -108,20 +108,16 @@ class PipelinesFinder
   end
 
   def sort_items(items)
-    return items.order(id: :desc) unless params[:sort].present?
-    params[:sort].each do |s|
-      order_by = if %w[id status ref user_id].include?(s['order_by']) # Allow only indexed columns
-                   s['order_by']
-                 else
-                   :id
-                 end
-      sort = if s['asc_desc'] =~ /\A(ASC|DESC)\z/i
-               s['asc_desc']
-             else
-               :desc
-             end
-      items = items.order(order_by => sort)
-    end
-    items
+    order_by = if %w[id status ref user_id].include?(params[:order_by]) # Allow only indexed columns
+                 params[:order_by]
+               else
+                 :id
+               end
+    sort = if params[:sort] =~ /\A(ASC|DESC)\z/i
+             params[:sort]
+           else
+             :desc
+           end
+    items.order(order_by => sort)
   end
 end
