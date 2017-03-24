@@ -16,6 +16,12 @@ describe RuboCop::Cop::Security::ToJson do
     expect(cop.offenses).to be_empty
   end
 
+  it 'ignores `to_json` sent to a Serializer instance' do
+    inspect_source(cop, 'MergeRequestSerializer.new.represent(issuable).to_json')
+
+    expect(cop.offenses).to be_empty
+  end
+
   context 'to_json with options' do
     it 'does nothing when provided `only`' do
       inspect_source(cop, <<~EOS)

@@ -4,8 +4,10 @@ module RuboCop
       class ToJson < RuboCop::Cop::Cop
         MSG = "Don't use `to_json` without specifying `only`".freeze
 
+        # Check for `to_json` sent to any object that's not a Hash literal or
+        # Serializer instance
         def_node_matcher :to_json?, <<~PATTERN
-          (send !{nil hash} :to_json $...)
+          (send !{nil hash #serializer?} :to_json $...)
         PATTERN
 
         # Check if node is a `only: ...` pair
@@ -51,6 +53,14 @@ module RuboCop
         end
 
         private
+
+        def_node_search :constant_init, <<~PATTERN
+          (send (const nil $_) :new)
+        PATTERN
+
+        def serializer?(node)
+          constant_init(node).any? { |name| name.to_s.end_with?('Serializer') }
+        end
 
         def requires_only?
           return false if @_has_top_level_only
