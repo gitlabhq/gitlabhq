@@ -49,6 +49,7 @@ export default {
       pagenum: 1,
       isLoading: false,
       hasError: false,
+      isMakingRequest: false,
     };
   },
 
@@ -136,6 +137,7 @@ export default {
       data: { page: pageNumber, scope },
       successCallback: this.successCallback,
       errorCallback: this.errorCallback,
+      notificationCallback: this.setIsMakingRequest,
     });
 
     if (!Visibility.hidden()) {
@@ -143,8 +145,8 @@ export default {
       poll.makeRequest();
     }
 
-    Visibility.change((e, state) => {
-      if (state === 'visible') {
+    Visibility.change(() => {
+      if (!Visibility.hidden()) {
         poll.restart();
       } else {
         poll.stop();
@@ -155,7 +157,7 @@ export default {
   },
 
   beforeUpdate() {
-    if (this.state.pipelines.length && this.$children) {
+    if (this.state.pipelines.length && this.$children && !this.isMakingRequest) {
       this.store.startTimeAgoLoops.call(this, Vue);
     }
   },
@@ -181,10 +183,13 @@ export default {
       const pageNumber = gl.utils.getParameterByName('page') || this.pagenum;
       const scope = gl.utils.getParameterByName('scope') || this.apiScope;
 
-      this.isLoading = true;
-      return this.service.getPipelines({ scope, page: pageNumber })
-        .then(response => this.successCallback(response))
-        .catch(() => this.errorCallback());
+      if (!this.isMakingRequest) {
+        this.isLoading = true;
+
+        this.service.getPipelines({ scope, page: pageNumber })
+          .then(response => this.successCallback(response))
+          .catch(() => this.errorCallback());
+      }
     },
 
     successCallback(resp) {
@@ -203,6 +208,10 @@ export default {
     errorCallback() {
       this.hasError = true;
       this.isLoading = false;
+    },
+
+    setIsMakingRequest(isMakingRequest) {
+      this.isMakingRequest = isMakingRequest;
     },
   },
 
