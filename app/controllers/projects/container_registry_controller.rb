@@ -5,7 +5,7 @@ class Projects::ContainerRegistryController < Projects::ApplicationController
   layout 'project'
 
   def index
-    @images = project.container_images
+    @images = project.container_repositories
   end
 
   def destroy
@@ -44,7 +44,7 @@ class Projects::ContainerRegistryController < Projects::ApplicationController
   end
 
   def image
-    @image ||= project.container_images.find_by(id: params[:id])
+    @image ||= project.container_repositories.find_by(id: params[:id])
   end
 
   def tag
