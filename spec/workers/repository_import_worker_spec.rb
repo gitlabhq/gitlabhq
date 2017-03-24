@@ -23,10 +23,12 @@ describe RepositoryImportWorker do
         error = %q{remote: Not Found fatal: repository 'https://user:pass@test.com/root/repoC.git/' not found }
         expect_any_instance_of(Projects::ImportService).to receive(:execute).
           and_return({ status: :error, message: error })
+        allow(subject).to receive(:jid).and_return('123')
 
         subject.perform(project.id)
 
         expect(project.reload.import_error).to include("https://*****:*****@test.com/root/repoC.git/")
+        expect(project.reload.import_jid).not_to be_nil
       end
     end
   end

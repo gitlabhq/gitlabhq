@@ -920,6 +920,7 @@ ActiveRecord::Schema.define(version: 20170402231018) do
     t.text "description_html"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
+    t.string "import_jid"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
