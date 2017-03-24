@@ -73,26 +73,6 @@
     }
   }
 
-  .milestone-progress-buttons {
-    order: 1;
-    margin-top: 10px;
-
-    @media (min-width: $screen-xs-min) {
-      order: 2;
-      margin-top: 0;
-      flex-shrink: 0;
-    }
-
-    .btn {
-      float: left;
-      margin-right: $btn-side-margin;
-
-      &:last-child {
-        margin-right: 0;
-      }
-    }
-  }
-
   .milestone-stats {
     order: 2;
     width: 100%;
