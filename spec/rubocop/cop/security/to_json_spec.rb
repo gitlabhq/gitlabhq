@@ -16,13 +16,36 @@ describe RuboCop::Cop::Security::ToJson do
     expect(cop.offenses).to be_empty
   end
 
-  it 'ignores `to_json` sent to a Serializer instance' do
-    inspect_source(cop, 'MergeRequestSerializer.new.represent(issuable).to_json')
+  context '`to_json` without options' do
+    it 'does nothing when sent to nil receiver' do
+      inspect_source(cop, 'to_json')
 
-    expect(cop.offenses).to be_empty
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'does nothing when sent to a Hash' do
+      inspect_source(cop, '{}.to_json')
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'does nothing when sent to a Serializer instance' do
+      inspect_source(cop, 'MergeRequestSerializer.new.represent(issuable).to_json')
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'adds an offense when sent to any other receiver' do
+      inspect_source(cop, 'foo.to_json')
+
+      aggregate_failures do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.highlights).to contain_exactly('foo.to_json')
+      end
+    end
   end
 
-  context 'to_json with options' do
+  context '`to_json` with options' do
     it 'does nothing when provided `only`' do
       inspect_source(cop, <<~EOS)
         render json: @issue.to_json(only: [:name, :username])
@@ -99,28 +122,6 @@ describe RuboCop::Cop::Security::ToJson do
       aggregate_failures do
         expect(cop.offenses.size).to eq(1)
         expect(cop.highlights).to contain_exactly('except: [:private_token]')
-      end
-    end
-  end
-
-  context 'to_json without options' do
-    it 'does nothing when called with nil receiver' do
-      inspect_source(cop, 'to_json')
-
-      expect(cop.offenses).to be_empty
-    end
-    it 'does nothing when called directly on a Hash' do
-      inspect_source(cop, '{}.to_json')
-
-      expect(cop.offenses).to be_empty
-    end
-
-    it 'adds an offense when called on variable' do
-      inspect_source(cop, 'foo.to_json')
-
-      aggregate_failures do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.highlights).to contain_exactly('foo.to_json')
       end
     end
   end
