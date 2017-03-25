@@ -1,4 +1,4 @@
-import DropLab from '../droplab/droplab';
+import DropLab from '@gitlab-org/droplab';
 import FilteredSearchContainer from './container';
 
 (() => {
