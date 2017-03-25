@@ -296,7 +296,7 @@ group :development, :test do
   gem 'capybara-screenshot', '~> 1.0.0'
   gem 'poltergeist', '~> 1.9.0'
 
-  gem 'spring', '~> 1.7.0'
+  gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
   gem 'spring-commands-spinach', '~> 1.1.0'
 
