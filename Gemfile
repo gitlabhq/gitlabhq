@@ -305,7 +305,7 @@ group :development, :test do
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.21.0', require: false
   gem 'simplecov', '0.12.0', require: false
-  gem 'flay', '~> 2.6.1', require: false
+  gem 'flay', '~> 2.8.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
