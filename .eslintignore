@@ -5,6 +5,5 @@
 /public/
 /tmp/
 /vendor/
-/app/assets/javascripts/droplab
 karma.config.js
 webpack.config.js

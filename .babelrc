@@ -8,7 +8,6 @@
       "plugins": [
         ["istanbul", {
           "exclude": [
-            "app/assets/javascripts/droplab/**/*",
             "spec/javascripts/**/*"
           ]
         }],
