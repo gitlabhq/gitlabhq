@@ -1,4 +1,4 @@
-import droplabAjaxFilter from '../droplab/plugins/ajax_filter';
+import AjaxFilter from '@gitlab-org/droplab/dist/plugins/AjaxFilter';
 
 require('./filtered_search_dropdown');
 
@@ -7,7 +7,7 @@ require('./filtered_search_dropdown');
     constructor(droplab, dropdown, input, filter) {
       super(droplab, dropdown, input, filter);
       this.config = {
-        droplabAjaxFilter: {
+        AjaxFilter: {
           endpoint: `${gon.relative_url_root || ''}/autocomplete/users.json`,
           searchKey: 'search',
           params: {
@@ -28,7 +28,7 @@ require('./filtered_search_dropdown');
     }
 
     renderContent(forceShowList = false) {
-      this.droplab.changeHookList(this.hookId, this.dropdown, [droplabAjaxFilter], this.config);
+      this.droplab.changeHookList(this.hookId, this.dropdown, [AjaxFilter], this.config);
       super.renderContent(forceShowList);
     }
 
@@ -56,7 +56,7 @@ require('./filtered_search_dropdown');
     }
 
     init() {
-      this.droplab.addHook(this.input, this.dropdown, [droplabAjaxFilter], this.config).init();
+      this.droplab.addHook(this.input, this.dropdown, [AjaxFilter], this.config).init();
     }
   }
 

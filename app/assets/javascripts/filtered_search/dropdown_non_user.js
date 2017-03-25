@@ -1,5 +1,5 @@
-import droplabAjax from '../droplab/plugins/ajax';
-import droplabFilter from '../droplab/plugins/filter';
+import Ajax from '@gitlab-org/droplab/dist/plugins/Ajax';
+import Filter from '@gitlab-org/droplab/dist/plugins/Filter';
 
 require('./filtered_search_dropdown');
 
@@ -9,12 +9,12 @@ require('./filtered_search_dropdown');
       super(droplab, dropdown, input, filter);
       this.symbol = symbol;
       this.config = {
-        droplabAjax: {
+        Ajax: {
           endpoint,
           method: 'setData',
           loadingTemplate: this.loadingTemplate,
         },
-        droplabFilter: {
+        Filter: {
           filterFunction: gl.DropdownUtils.filterWithSymbol.bind(null, this.symbol, input),
           template: 'title',
         },
@@ -30,13 +30,13 @@ require('./filtered_search_dropdown');
 
     renderContent(forceShowList = false) {
       this.droplab
-        .changeHookList(this.hookId, this.dropdown, [droplabAjax, droplabFilter], this.config);
+        .changeHookList(this.hookId, this.dropdown, [Ajax, Filter], this.config);
       super.renderContent(forceShowList);
     }
 
     init() {
       this.droplab
-        .addHook(this.input, this.dropdown, [droplabAjax, droplabFilter], this.config).init();
+        .addHook(this.input, this.dropdown, [Ajax, Filter], this.config).init();
     }
   }
 
