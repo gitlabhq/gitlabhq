@@ -265,7 +265,7 @@ group :development do
   gem 'web-console', '~> 2.0'
 
   # Better errors handler
-  gem 'better_errors', '~> 1.0.1'
+  gem 'better_errors', '~> 2.1.0'
   gem 'binding_of_caller', '~> 0.7.2'
 
   # thin instead webrick
