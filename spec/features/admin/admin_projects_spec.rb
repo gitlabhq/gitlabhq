@@ -24,15 +24,6 @@ describe "Admin::Projects", feature: true  do
       expect(page).to have_content(project.name)
       expect(page).not_to have_content(archived_project.name)
     end
-
-    it 'renders all projects', js: true do
-      find(:css, '#sort-projects-dropdown').click
-      click_link 'Show archived projects'
-
-      expect(page).to have_content(project.name)
-      expect(page).to have_content(archived_project.name)
-      expect(page).to have_xpath("//span[@class='label label-warning']", text: 'archived')
-    end
   end
 
   describe "GET /admin/projects/:namespace_id/:id" do

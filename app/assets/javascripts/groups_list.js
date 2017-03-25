@@ -11,7 +11,7 @@ export default class GroupsList {
     const holder = document.querySelector('.js-groups-list-holder');
 
     if (form && filter && holder) {
-      const list = new FilterableList(form, filter, holder);
+      const list = new FilterableList({ form, filter, holder });
       list.initSearch();
     }
   }

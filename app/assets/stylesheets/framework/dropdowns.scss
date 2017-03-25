@@ -433,6 +433,44 @@
   }
 }
 
+.project-filter-form .dropdown {
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: top;
+
+  .dropdown-filter-label {
+    @include dropdown-link;
+    cursor: pointer;
+    margin-bottom: 0;
+    font-weight: normal;
+  }
+
+  .dropdown-filter-radio {
+    position: absolute;
+    opacity: 0;
+    top: auto;
+    overflow: hidden;
+
+    + .dropdown-filter-label .dropdown-filter-check {
+      visibility: hidden;
+      line-height: 1.5;
+      margin-right: 4px;
+    }
+
+    &:focus + .dropdown-filter-label {
+      outline: 5px auto $focus-border-color;
+      outline-offset: -2px;
+    }
+
+    &:checked + .dropdown-filter-label {
+      font-weight: bold;
+
+      .dropdown-filter-check {
+        visibility: visible;
+      }
+    }
+  }
+}
 
 .dropdown-title {
   position: relative;

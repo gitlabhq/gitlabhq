@@ -197,7 +197,7 @@ input[type="checkbox"]:hover {
 
   .search-field-holder,
   .project-filter-form {
-    -webkit-flex: 1 0 auto;
+    display: flex;
     flex: 1 0 auto;
     position: relative;
     margin-right: 0;

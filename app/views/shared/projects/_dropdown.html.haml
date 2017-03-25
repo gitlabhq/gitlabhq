@@ -7,32 +7,51 @@
       Sort by
     - projects_sort_options_hash.each do |value, title|
       %li
-        = link_to filter_projects_path(sort: value), class: ("is-active" if @sort == value) do
-          = title
+        = radio_button_tag :sort, value, @sort == value, title: title, class: 'dropdown-filter-radio'
+        = label_tag "sort_#{value}", { class: 'dropdown-filter-label' } do
+          = icon 'check', class: 'dropdown-filter-check'
+          %span= title
 
     %li.divider
     %li
-      = link_to filter_projects_path(archived: nil), class: ("is-active" unless params[:archived].present?) do
-        Hide archived projects
+      = radio_button_tag :archived, '', !params[:archived].present?, { class: 'dropdown-filter-radio' }
+      = label_tag :archived_, { class: 'dropdown-filter-label' } do
+        = icon 'check', class: 'dropdown-filter-check'
+        %span Hide archived projects
     %li
-      = link_to filter_projects_path(archived: true), class: ("is-active" if params[:archived].present?) do
-        Show archived projects
+      = radio_button_tag :archived, true, params[:archived].present?, { class: 'dropdown-filter-radio' }
+      = label_tag :archived_true, { class: 'dropdown-filter-label' } do
+        = icon 'check', class: 'dropdown-filter-check'
+        %span Show archived projects
+
     - if current_user
       %li.divider
       %li
-        = link_to filter_projects_path(personal: nil), class: ("is-active" unless params[:personal].present?) do
-          Owned by anyone
+        = radio_button_tag :personal, '', !params[:personal].present?, { class: 'dropdown-filter-radio' }
+        = label_tag :personal_, { class: 'dropdown-filter-label' } do
+          = icon 'check', class: 'dropdown-filter-check'
+          %span Owned by anyone
+
       %li
-        = link_to filter_projects_path(personal: true), class: ("is-active" if params[:personal].present?) do
-          Owned by me
+        = radio_button_tag :personal, true, params[:personal].present?, { class: 'dropdown-filter-radio' }
+        = label_tag :personal_true, { class: 'dropdown-filter-label' } do
+          = icon 'check', class: 'dropdown-filter-check'
+          %span Owned by me
+
       - if @group && @group.shared_projects.present?
         %li.divider
         %li
-          = link_to filter_projects_path(shared: nil), class: ("is-active" unless params[:shared].present?) do
-            All projects
+          = radio_button_tag :shared, '', !params[:shared].present?, { class: 'dropdown-filter-radio' }
+          = label_tag :shared_, { class: 'dropdown-filter-label' } do
+            = icon 'check', class: 'dropdown-filter-check'
+            %span All projects
         %li
-          = link_to filter_projects_path(shared: 0), class: ("is-active" if params[:shared] == '0') do
-            Hide shared projects
+          = radio_button_tag :shared, '0', params[:shared] == '0', { class: 'dropdown-filter-radio' }
+          = label_tag :shared_0, { class: 'dropdown-filter-label' } do
+            = icon 'check', class: 'dropdown-filter-check'
+            %span Hide shared projects
         %li
-          = link_to filter_projects_path(shared: 1), class: ("is-active" if params[:shared] == '1') do
-            Hide group projects
+          = radio_button_tag :shared, '1', params[:shared] == '1', { class: 'dropdown-filter-radio' }
+          = label_tag :shared_1, { class: 'dropdown-filter-label' } do
+            = icon 'check', class: 'dropdown-filter-check'
+            %span Hide group projects

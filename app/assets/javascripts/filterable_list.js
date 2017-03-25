@@ -3,16 +3,34 @@
  * Updates the html content of the page with the received one.
  */
 
+import './lib/utils/url_utility';
+
 export default class FilterableList {
-  constructor(form, filter, holder) {
+  constructor({ form, filter, holder, dropdownMenu }) {
     this.filterForm = form;
     this.listFilterElement = filter;
     this.listHolderElement = holder;
+    this.dropdownMenu = dropdownMenu;
+    if (dropdownMenu) {
+      this.dropdownLabel = dropdownMenu.parentElement.querySelector('.dropdown-toggle-text');
+    }
     this.isBusy = false;
   }
 
   getFilterEndpoint() {
-    return `${this.filterForm.getAttribute('action')}?${$(this.filterForm).serialize()}`;
+    const url = this.filterForm.getAttribute('action');
+    const params = this.getFormParams();
+    return gl.utils.mergeUrlParams(params, url);
+  }
+
+  getFormParams() {
+    return $(this.filterForm)
+      .serializeArray()
+      .filter(field => field.value !== '')
+      .reduce((acc, field) => ({
+        ...acc,
+        [field.name]: field.value,
+      }), {});
   }
 
   getPagePath() {
@@ -22,6 +40,7 @@ export default class FilterableList {
   initSearch() {
     // Wrap to prevent passing event arguments to .filterResults;
     this.debounceFilter = _.debounce(this.onFilterInput.bind(this), 500);
+    this.updateButtonText = this.updateButtonText.bind(this);
 
     this.unbindEvents();
     this.bindEvents();
@@ -45,10 +64,23 @@ export default class FilterableList {
 
   bindEvents() {
     this.listFilterElement.addEventListener('input', this.debounceFilter);
+
+    if (this.dropdownMenu) {
+      $(this.dropdownMenu).closest('form').on('change', this.debounceFilter);
+      $(this.dropdownMenu).find('input[name="sort"]').on('change', this.updateButtonText);
+    }
+  }
+
+  updateButtonText(evt) {
+    this.dropdownLabel.innerText = evt.target.title;
   }
 
   unbindEvents() {
     this.listFilterElement.removeEventListener('input', this.debounceFilter);
+    if (this.dropdownMenu) {
+      $(this.dropdownMenu).closest('form').off('change', this.debounceFilter);
+      $(this.dropdownMenu).find('input[name="sort"]').off('change', this.updateButtonText);
+    }
   }
 
   filterResults(queryData) {

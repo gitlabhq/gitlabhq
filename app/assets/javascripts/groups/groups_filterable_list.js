@@ -3,7 +3,7 @@ import eventHub from './event_hub';
 
 export default class GroupFilterableList extends FilterableList {
   constructor({ form, filter, holder, filterEndpoint, pagePath }) {
-    super(form, filter, holder);
+    super({ form, filter, holder });
     this.form = form;
     this.filterEndpoint = filterEndpoint;
     this.pagePath = pagePath;

@@ -412,6 +412,9 @@ import initSettingsPanels from './settings_panels';
         case 'import:fogbugz:new_user_map':
           new UsersSelect();
           break;
+        case 'root:index':
+          new ProjectsList();
+          break;
       }
       switch (path.first()) {
         case 'sessions':
