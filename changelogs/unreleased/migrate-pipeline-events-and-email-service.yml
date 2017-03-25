@@ -1,4 +1,0 @@
----
-title: Migrate SlackService and MattermostService from build_events to pipeline_events, and migrate BuildsEmailService to PipelinesEmailService. Update Hipchat to use pipeline events rather than build events.
-merge_request: 8196
-author:

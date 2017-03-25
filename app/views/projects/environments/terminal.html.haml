@@ -16,7 +16,7 @@
 
       .col-sm-6
         .nav-controls
-          = link_to @environment.external_url, class: 'btn btn-default' do
+          = link_to @environment.external_url, class: 'btn btn-default', target: '_blank', rel: 'noopener noreferrer nofollow' do
             = icon('external-link')
           = render 'projects/deployments/actions', deployment: @environment.last_deployment
 

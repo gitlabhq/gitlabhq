@@ -25,12 +25,12 @@ class CreateBranchService < BaseService
   private
 
   def create_master_branch
-    project.repository.commit_file(
+    project.repository.create_file(
       current_user,
       '/README.md',
       '',
       message: 'Add README.md',
-      branch_name: 'master',
-      update: false)
+      branch_name: 'master'
+    )
   end
 end

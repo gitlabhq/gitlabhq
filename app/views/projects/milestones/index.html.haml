@@ -7,6 +7,7 @@
     = render 'shared/milestones_filter', counts: milestone_counts(@project.milestones)
 
     .nav-controls
+      = render 'shared/milestones_sort_dropdown'
       - if can?(current_user, :admin_milestone, @project)
         = link_to new_namespace_project_milestone_path(@project.namespace, @project), class: 'btn btn-new', title: 'New Milestone' do
           New Milestone

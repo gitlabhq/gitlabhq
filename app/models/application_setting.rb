@@ -163,6 +163,8 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def self.current
+    ensure_cache_setup
+
     Rails.cache.fetch(CACHE_KEY) do
       ApplicationSetting.last
     end
@@ -176,7 +178,14 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def self.cached
+    ensure_cache_setup
     Rails.cache.fetch(CACHE_KEY)
+  end
+
+  def self.ensure_cache_setup
+    # This is a workaround for a Rails bug that causes attribute methods not
+    # to be loaded when read from cache: https://github.com/rails/rails/issues/27348
+    ApplicationSetting.define_attribute_methods
   end
 
   def self.defaults_ce

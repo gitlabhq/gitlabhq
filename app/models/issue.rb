@@ -55,6 +55,14 @@ class Issue < ActiveRecord::Base
     state :opened
     state :reopened
     state :closed
+
+    before_transition any => :closed do |issue|
+      issue.closed_at = Time.zone.now
+    end
+
+    before_transition closed: any do |issue|
+      issue.closed_at = nil
+    end
   end
 
   def hook_attrs
@@ -203,9 +211,8 @@ class Issue < ActiveRecord::Base
     due_date.try(:past?) || false
   end
 
-  # Only issues on public projects should be checked for spam
   def check_for_spam?
-    project.public?
+    project.public? && (title_changed? || description_changed?)
   end
 
   def as_json(options = {})

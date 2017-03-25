@@ -1,4 +1,0 @@
----
-title: Gather issuable metadata to avoid n+1 queries on index view
-merge_request:
-author:

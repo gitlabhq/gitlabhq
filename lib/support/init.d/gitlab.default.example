@@ -84,3 +84,7 @@ mail_room_pid_path="$pid_path/mail_room.pid"
 # shell other than "bash"
 # The default is "/bin/bash"
 shell_path="/bin/bash"
+
+# This variable controls whether the init script starts/stops Gitaly
+gitaly_enabled=false
+gitaly_log="$app_root/log/gitaly.log"

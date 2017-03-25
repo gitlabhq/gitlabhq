@@ -1,4 +1,0 @@
----
-title: 'API: Return 400 for all validation erros in the mebers API'
-merge_request: 9523
-author: Robert Schilling

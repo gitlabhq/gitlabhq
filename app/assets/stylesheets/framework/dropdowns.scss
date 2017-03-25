@@ -195,7 +195,7 @@
       text-decoration: none;
 
       .badge {
-        background-color: darken($row-hover, 5%);
+        background-color: darken($dropdown-link-hover-bg, 5%);
       }
     }
 

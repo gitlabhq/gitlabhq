@@ -1,4 +1,5 @@
-/* global Vue */
+import Vue from 'vue';
+
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 
@@ -30,7 +31,7 @@
         if (this.activeTab === 'selected') {
           obj.title = 'You haven\'t selected any issues yet';
           obj.content = `
-            Go back to <strong>All issues</strong> and select some issues
+            Go back to <strong>Open issues</strong> and select some issues
             to add to your board.
           `;
         }
@@ -59,7 +60,7 @@
                 class="btn btn-default"
                 @click="changeTab('all')"
                 v-if="activeTab === 'selected'">
-                All issues
+                Open issues
               </button>
             </div>
           </div>

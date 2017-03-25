@@ -30,6 +30,7 @@ describe Boards::Issues::ListService, services: true do
     let!(:closed_issue2) { create(:labeled_issue, :closed, project: project, labels: [p3]) }
     let!(:closed_issue3) { create(:issue, :closed, project: project) }
     let!(:closed_issue4) { create(:labeled_issue, :closed, project: project, labels: [p1]) }
+    let!(:closed_issue5) { create(:labeled_issue, :closed, project: project, labels: [development]) }
 
     before do
       project.team << [user, :developer]
@@ -57,7 +58,7 @@ describe Boards::Issues::ListService, services: true do
 
         issues = described_class.new(project, user, params).execute
 
-        expect(issues).to eq [closed_issue4, closed_issue2, closed_issue3, closed_issue1]
+        expect(issues).to eq [closed_issue4, closed_issue2, closed_issue5, closed_issue3, closed_issue1]
       end
 
       it 'returns opened issues that have label list applied when listing issues from a label list' do

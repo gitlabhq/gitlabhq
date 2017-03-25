@@ -498,7 +498,7 @@
     svg {
       width: 16px;
       height: 16px;
-      fill: $sidebar-collapsed-icon-color;
+      fill: $issuable-sidebar-color;
     }
 
     &:hover svg {
@@ -520,12 +520,12 @@
 
     &.over_estimate {
       .meter-fill {
-        background: $red-light;
+        background: $red-500;
       }
 
       .time-remaining,
       .compare-value.spent {
-        color: $red-light;
+        color: $red-500;
       }
     }
   }

@@ -45,8 +45,9 @@ class Projects::WikisController < Projects::ApplicationController
     return render('empty') unless can?(current_user, :create_wiki, @project)
 
     @page = @project_wiki.find_page(params[:id])
+    @page = WikiPages::UpdateService.new(@project, current_user, wiki_params).execute(@page)
 
-    if @page = WikiPages::UpdateService.new(@project, current_user, wiki_params).execute(@page)
+    if @page.valid?
       redirect_to(
         namespace_project_wiki_path(@project.namespace, @project, @page),
         notice: 'Wiki was successfully updated.'

@@ -582,54 +582,55 @@ pre.light-well {
 /*
  * Projects list rendered on dashboard and user page
  */
-
 .projects-list {
   @include basic-list;
+  display: flex;
+  flex-direction: column;
 
   .project-row {
-    border-color: $white-normal;
+    display: flex;
+    align-items: center;
+  }
 
-    .project-full-name {
-      @include str-truncated;
+  h3 {
+    font-size: $gl-font-size;
+  }
 
-      @media (max-width: $screen-xs-max) {
-        max-width: 50%;
-      }
-    }
+  a {
+    color: $gl-text-color;
+  }
 
-    .controls {
-      line-height: $list-text-height;
+  .avatar-container,
+  .controls {
+    flex: 0 0 auto;
+  }
 
-      .badge {
-        @media (max-width: $screen-xs-max) {
-          display: none;
-        }
-      }
+  .avatar-container {
+    align-self: flex-start;
+  }
 
-      a:hover {
-        text-decoration: none;
-      }
+  .project-details {
+    min-width: 0;
 
-      > span {
-        margin-left: 10px;
-      }
-
-      svg {
-        position: relative;
-        top: 2px;
-      }
-    }
-
-    .description p {
-      @media (max-width: $screen-xs-max) {
-        max-width: 50%;
-      }
+    p,
+    .commit-row-message {
+      @include str-truncated(100%);
+      margin-bottom: 0;
     }
   }
 
-  .bottom {
-    padding-top: $gl-padding;
-    padding-bottom: 0;
+  .controls {
+    margin-left: auto;
+  }
+
+  .ci-status-link {
+    display: inline-block;
+    line-height: 17px;
+    vertical-align: middle;
+
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 

@@ -38,6 +38,7 @@
           gl.FilteredSearchDropdownManager.addWordToInput(this.filter, value, true);
         }
 
+        this.resetFilters();
         this.dismissDropdown();
         this.dispatchInputEvent();
       }
@@ -107,7 +108,7 @@
       const hook = this.getCurrentHook();
 
       if (hook) {
-        const data = hook.list.data;
+        const data = hook.list.data || [];
         const results = data.map((o) => {
           const updated = o;
           updated.droplab_hidden = false;

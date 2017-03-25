@@ -18,7 +18,10 @@
 .environments-container {
   .table-holder {
     width: 100%;
-    overflow: auto;
+
+    @media (max-width: $screen-sm-max) {
+      overflow: auto;
+    }
   }
 
   .table.ci-table {

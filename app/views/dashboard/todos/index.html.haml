@@ -19,12 +19,13 @@
 
     .nav-controls
       - if @todos.any?(&:pending?)
-        = link_to destroy_all_dashboard_todos_path(todos_filter_params), class: 'btn btn-loading js-todos-mark-all', method: :delete, data: { href: destroy_all_dashboard_todos_path(todos_filter_params) } do
-          Mark all as done
-          = icon('spinner spin')
-        = link_to bulk_restore_dashboard_todos_path, class: 'btn btn-loading js-todos-undo-all hidden', method: :patch , data: { href: bulk_restore_dashboard_todos_path(todos_filter_params) } do
-          Undo mark all as done
-          = icon('spinner spin')
+        .append-right-default
+          = link_to destroy_all_dashboard_todos_path(todos_filter_params), class: 'btn btn-loading js-todos-mark-all', method: :delete, data: { href: destroy_all_dashboard_todos_path(todos_filter_params) } do
+            Mark all as done
+            = icon('spinner spin')
+          = link_to bulk_restore_dashboard_todos_path, class: 'btn btn-loading js-todos-undo-all hidden', method: :patch , data: { href: bulk_restore_dashboard_todos_path(todos_filter_params) } do
+            Undo mark all as done
+            = icon('spinner spin')
 
   .todos-filters
     .row-content-block.second-block
@@ -67,12 +68,11 @@
                 = link_to todos_filter_path(sort: sort_value_oldest_created) do
                   = sort_title_oldest_created
 
-
 .js-todos-all
   - if @todos.any?
     .js-todos-list-container
       .js-todos-options{ data: { per_page: @todos.limit_value, current_page: @todos.current_page, total_pages: @todos.total_pages } }
-        .panel.panel-default.panel-small.panel-without-border
+        .panel.panel-default.panel-without-border.panel-without-margin
           %ul.content-list.todos-list
             = render @todos
       = paginate @todos, theme: "gitlab"

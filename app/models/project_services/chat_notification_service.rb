@@ -6,7 +6,7 @@ class ChatNotificationService < Service
   default_value_for :category, 'chat'
 
   prop_accessor :webhook, :username, :channel
-  boolean_accessor :notify_only_broken_pipelines
+  boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
 
   validates :webhook, presence: true, url: true, if: :activated?
 
@@ -17,6 +17,7 @@ class ChatNotificationService < Service
     if properties.nil?
       self.properties = {}
       self.notify_only_broken_pipelines = true
+      self.notify_only_default_branch = true
     end
   end
 
@@ -27,6 +28,19 @@ class ChatNotificationService < Service
   def self.supported_events
     %w[push issue confidential_issue merge_request note tag_push
        pipeline wiki_page]
+  end
+
+  def fields
+    default_fields + build_event_channels
+  end
+
+  def default_fields
+    [
+      { type: 'text', name: 'webhook', placeholder: "e.g. #{webhook_placeholder}" },
+      { type: 'text', name: 'username', placeholder: 'e.g. GitLab' },
+      { type: 'checkbox', name: 'notify_only_broken_pipelines' },
+      { type: 'checkbox', name: 'notify_only_default_branch' },
+    ]
   end
 
   def execute(data)
@@ -123,6 +137,17 @@ class ChatNotificationService < Service
   end
 
   def should_pipeline_be_notified?(data)
+    notify_for_ref?(data) && notify_for_pipeline?(data)
+  end
+
+  def notify_for_ref?(data)
+    return true if data[:object_attributes][:tag]
+    return true unless notify_only_default_branch
+
+    data[:object_attributes][:ref] == project.default_branch
+  end
+
+  def notify_for_pipeline?(data)
     case data[:object_attributes][:status]
     when 'success'
       !notify_only_broken_pipelines?

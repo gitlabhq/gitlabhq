@@ -1,6 +1,7 @@
 /* eslint-disable object-shorthand, func-names, camelcase, no-restricted-syntax, guard-for-in, comma-dangle, max-len, no-param-reassign */
-/* global Vue */
 /* global DiscussionModel */
+
+import Vue from 'vue';
 
 ((w) => {
   w.CommentsStore = {

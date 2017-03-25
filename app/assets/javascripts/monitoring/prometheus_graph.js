@@ -1,11 +1,10 @@
-/* eslint-disable no-new */
+/* eslint-disable no-new*/
 /* global Flash */
 
 import d3 from 'd3';
-import _ from 'underscore';
 import statusCodes from '~/lib/utils/http_status';
-import '~/lib/utils/common_utils';
-import '~/flash';
+import '../lib/utils/common_utils';
+import '../flash';
 
 const prometheusGraphsContainer = '.prometheus-graph';
 const metricsEndpoint = 'metrics.json';
@@ -31,22 +30,21 @@ class PrometheusGraph {
   }
 
   createGraph() {
-    const self = this;
-    _.each(this.data, (value, key) => {
-      if (value.length > 0 && (key === 'cpu_values' || key === 'memory_values')) {
-        self.plotValues(value, key);
+    Object.keys(this.data).forEach((key) => {
+      const value = this.data[key];
+      if (value.length > 0) {
+        this.plotValues(value, key);
       }
     });
   }
 
   init() {
-    const self = this;
     this.getData().then((metricsResponse) => {
-      if (metricsResponse === {}) {
+      if (Object.keys(metricsResponse).length === 0) {
         new Flash('Empty metrics', 'alert');
       } else {
-        self.transformData(metricsResponse);
-        self.createGraph();
+        this.transformData(metricsResponse);
+        this.createGraph();
       }
     });
   }
@@ -182,7 +180,7 @@ class PrometheusGraph {
     // Metric Usage
     axisLabelContainer.append('rect')
           .attr('x', this.originalWidth - 170)
-          .attr('y', (this.originalHeight / 2) - 80)
+          .attr('y', (this.originalHeight / 2) - 60)
           .style('fill', graphSpecifics.area_fill_color)
           .attr('width', 20)
           .attr('height', 35);
@@ -190,13 +188,13 @@ class PrometheusGraph {
     axisLabelContainer.append('text')
           .attr('class', 'label-axis-text')
           .attr('x', this.originalWidth - 140)
-          .attr('y', (this.originalHeight / 2) - 65)
-          .text(graphSpecifics.graph_legend_title);
+          .attr('y', (this.originalHeight / 2) - 50)
+          .text('Average');
 
     axisLabelContainer.append('text')
             .attr('class', 'text-metric-usage')
             .attr('x', this.originalWidth - 140)
-            .attr('y', (this.originalHeight / 2) - 50);
+            .attr('y', (this.originalHeight / 2) - 25);
   }
 
   handleMouseOverGraph(x, y, valuesToPlot, chart, prometheusGraphContainer, key) {
@@ -265,12 +263,12 @@ class PrometheusGraph {
       cpu_values: {
         area_fill_color: '#edf3fc',
         line_color: '#5b99f7',
-        graph_legend_title: 'CPU Usage (Cores)',
+        graph_legend_title: 'CPU utilization (%)',
       },
       memory_values: {
         area_fill_color: '#fca326',
         line_color: '#fc6d26',
-        graph_legend_title: 'Memory Usage (MB)',
+        graph_legend_title: 'Memory usage (MB)',
       },
     };
 
@@ -321,12 +319,14 @@ class PrometheusGraph {
 
   transformData(metricsResponse) {
     const metricTypes = {};
-    _.each(metricsResponse.metrics, (value, key) => {
-      const metricValues = value[0].values;
-      metricTypes[key] = _.map(metricValues, metric => ({
-        time: new Date(metric[0] * 1000),
-        value: metric[1],
-      }));
+    Object.keys(metricsResponse.metrics).forEach((key) => {
+      if (key === 'cpu_values' || key === 'memory_values') {
+        const metricValues = (metricsResponse.metrics[key])[0];
+        metricTypes[key] = metricValues.values.map(metric => ({
+          time: new Date(metric[0] * 1000),
+          value: metric[1],
+        }));
+      }
     });
     this.data = metricTypes;
   }

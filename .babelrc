@@ -1,0 +1,21 @@
+{
+  "presets": [
+    ["latest", { "es2015": { "modules": false } }],
+    "stage-2"
+  ],
+  "env": {
+    "coverage": {
+      "plugins": [
+        ["istanbul", {
+          "exclude": [
+            "app/assets/javascripts/droplab/**/*",
+            "spec/javascripts/**/*"
+          ]
+        }],
+        ["transform-define", {
+          "process.env.BABEL_ENV": "coverage"
+        }]
+      ]
+    }
+  }
+}

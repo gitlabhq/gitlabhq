@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'User Callouts', js: true do
   let(:user) { create(:user) }
+  let(:another_user) { create(:user) }
   let(:project) { create(:empty_project, path: 'gitlab', name: 'sample') }
 
   before do
@@ -32,6 +33,11 @@ describe 'User Callouts', js: true do
     within('.user-callout') do
       find('.close-user-callout').click
     end
-    expect(page).not_to have_selector('#user-callout')
+    expect(page).not_to have_selector('.user-callout')
+  end
+
+  it 'does not show callout on another users profile' do
+    visit user_path(another_user)
+    expect(page).not_to have_selector('.user-callout')
   end
 end

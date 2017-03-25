@@ -103,7 +103,7 @@ module API
           use :issues_params
         end
         get ":id/issues" do
-          project = find_project(params[:id])
+          project = find_project!(params[:id])
 
           issues = find_issues(project_id: project.id)
 

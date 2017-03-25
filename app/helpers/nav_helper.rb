@@ -16,6 +16,7 @@ module NavHelper
       "page-gutter build-sidebar right-sidebar-expanded"
     elsif current_path?('wikis#show') ||
         current_path?('wikis#edit') ||
+        current_path?('wikis#update') ||
         current_path?('wikis#history') ||
         current_path?('wikis#git_access')
       "page-gutter wiki-sidebar right-sidebar-expanded"
@@ -30,7 +31,11 @@ module NavHelper
   end
 
   def layout_nav_class
-    "page-with-layout-nav" if defined?(nav) && nav
+    class_name = ''
+    class_name << " page-with-layout-nav" if defined?(nav) && nav
+    class_name << " page-with-sub-nav" if content_for?(:sub_nav)
+
+    class_name
   end
 
   def nav_control_class

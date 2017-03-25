@@ -1,6 +1,8 @@
 /* eslint-disable no-new */
-/* global Vue */
 /* global Flash */
+
+import Vue from 'vue';
+
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 

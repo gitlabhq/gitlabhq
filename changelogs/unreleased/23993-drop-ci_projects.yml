@@ -1,6 +1,0 @@
----
-title: Drop unused ci_projects table and some unused project_id columns,
-  then rename gl_project_id to project_id. Stop exporting job trace when
-  exporting projects.
-merge_request: 9378
-author: David Wagner

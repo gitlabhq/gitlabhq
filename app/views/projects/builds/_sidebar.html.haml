@@ -1,6 +1,6 @@
 - builds = @build.pipeline.builds.to_a
 
-%aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar.js-right-sidebar{ data: { "offset-top" => "151", "spy" => "affix" } }
+%aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar.js-right-sidebar{ data: { "offset-top" => "153", "spy" => "affix" } }
   .block.build-sidebar-header.visible-xs-block.visible-sm-block.append-bottom-default
     Job
     %strong ##{@build.id}
@@ -137,3 +137,6 @@
                 = build.id
             - if build.retried?
               %i.fa.fa-refresh.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Job was retried' }
+
+:javascript
+  new Sidebar();

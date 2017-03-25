@@ -9,9 +9,6 @@ describe 'gitlab:workhorse namespace rake task' do
     let(:repo) { 'https://gitlab.com/gitlab-org/gitlab-workhorse.git' }
     let(:clone_path) { Rails.root.join('tmp/tests/gitlab-workhorse').to_s }
     let(:tag) { "v#{File.read(Rails.root.join(Gitlab::Workhorse::VERSION_FILE)).chomp}" }
-    before do
-      allow(ENV).to receive(:[])
-    end
 
     context 'no dir given' do
       it 'aborts and display a help message' do
