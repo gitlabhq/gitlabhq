@@ -343,6 +343,7 @@ GEM
       temple (~> 0.7.6)
       thor
       tilt
+    hashdiff (0.3.2)
     hashie (3.5.5)
     health_check (2.6.0)
       rails (>= 4.0)
@@ -818,9 +819,10 @@ GEM
     vmstat (2.3.0)
     warden (1.2.6)
       rack (>= 1.0)
-    webmock (1.21.0)
+    webmock (1.24.6)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
+      hashdiff
     webpack-rails (0.9.9)
       rails (>= 3.2.0)
     websocket-driver (0.6.3)
@@ -1023,7 +1025,7 @@ DEPENDENCIES
   version_sorter (~> 2.1.0)
   virtus (~> 1.0.1)
   vmstat (~> 2.3.0)
-  webmock (~> 1.21.0)
+  webmock (~> 1.24.0)
   webpack-rails (~> 0.9.9)
   wikicloth (= 0.8.1)
 
