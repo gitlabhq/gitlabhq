@@ -1,6 +1,6 @@
-require('./filtered_search_dropdown');
+import droplabFilter from '../droplab/plugins/filter';
 
-/* global droplabFilter */
+require('./filtered_search_dropdown');
 
 (() => {
   class DropdownHint extends gl.FilteredSearchDropdown {

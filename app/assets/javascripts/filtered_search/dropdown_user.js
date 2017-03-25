@@ -1,6 +1,6 @@
-require('./filtered_search_dropdown');
+import droplabAjaxFilter from '../droplab/plugins/ajax_filter';
 
-/* global droplabAjaxFilter */
+require('./filtered_search_dropdown');
 
 (() => {
   class DropdownUser extends gl.FilteredSearchDropdown {

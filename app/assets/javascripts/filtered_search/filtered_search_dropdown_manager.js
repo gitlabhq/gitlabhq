@@ -1,4 +1,4 @@
-/* global DropLab */
+import DropLab from '../droplab/droplab';
 import FilteredSearchContainer from './container';
 
 (() => {
