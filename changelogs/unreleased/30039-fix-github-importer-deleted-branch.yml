@@ -1,0 +1,4 @@
+---
+title: Fix GitHub Importer failing when target_branch_sha doesn't exist in local repository
+merge_request: 10225
+author:
