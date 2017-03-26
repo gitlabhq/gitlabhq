@@ -187,6 +187,33 @@
     }
   }
 
+  .kbd {
+    display: none;
+  }
+
+  &.shortcuts span{
+    display: inline-block;
+    width: 140px;
+  }
+
+  &.shortcuts .kbd {
+    display: inline-block;
+    padding: 3px 5px;
+    font-size: 11px;
+    line-height: 10px;
+    color: #555;
+    vertical-align: middle;
+    background-color: #fcfcfc;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #ccc #ccc #bbb;
+    border-image: none;
+    border-radius: 3px;
+    box-shadow: 0 -1px 0 #bbb inset;
+    width: 21px;
+    text-align: center;
+  }
+
   ul {
     margin: 0;
     padding: 0;

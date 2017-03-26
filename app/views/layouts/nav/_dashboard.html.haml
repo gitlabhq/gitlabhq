@@ -3,37 +3,51 @@
     = link_to dashboard_projects_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
       %span
         Projects
+      .kbd
+        P
   = nav_link(path: 'dashboard#activity') do
     = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
       %span
         Activity
+      .kbd
+        A
   - if koding_enabled?
     = nav_link(controller: :koding) do
       = link_to koding_path, title: 'Koding' do
         %span
           Koding
   = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
-    = link_to dashboard_groups_path, title: 'Groups' do
+    = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', title: 'Groups' do
       %span
         Groups
+      .kbd
+        G
   = nav_link(controller: 'dashboard/milestones') do
-    = link_to dashboard_milestones_path, title: 'Milestones' do
+    = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones', title: 'Milestones' do
       %span
         Milestones
+      .kbd
+        L
   = nav_link(path: 'dashboard#issues') do
     = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues' do
       %span
         Issues
       .badge= number_with_delimiter(cached_assigned_issuables_count(current_user, :issues, :opened))
+      .kbd
+        I
   = nav_link(path: 'dashboard#merge_requests') do
     = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'dashboard-shortcuts-merge_requests' do
       %span
         Merge Requests
       .badge= number_with_delimiter(cached_assigned_issuables_count(current_user, :merge_requests, :opened))
+      .kbd
+        M
   = nav_link(controller: 'dashboard/snippets') do
-    = link_to dashboard_snippets_path, title: 'Snippets' do
+    = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', title: 'Snippets' do
       %span
         Snippets
+      .kbd
+        S
   %li.divider
   %li
     = link_to "Help", help_path, title: 'About GitLab CE', class: 'about-gitlab'

@@ -19,6 +19,45 @@
           return _this.focusFilter(e);
         };
       })(this));
+      function gotoMenu(menu){
+        if($('.global-dropdown.open').length) {
+          window.location.href = $('.global-dropdown-menu .dashboard-shortcuts-'+menu).attr('href');
+        }
+      }
+
+      Mousetrap.bind('m', function() {
+        $('.global-dropdown-menu').addClass('shortcuts')
+        $('.global-dropdown-toggle').trigger('click');
+      });
+
+      Mousetrap.bind('P', function() {
+        gotoMenu('projects');
+      });
+
+      Mousetrap.bind('A', function() {
+        gotoMenu('activity');
+      });
+
+      Mousetrap.bind('G', function() {
+        gotoMenu('groups');
+      });
+
+      Mousetrap.bind('L', function() {
+        gotoMenu('milestones');
+      });
+
+      Mousetrap.bind('I', function() {
+        gotoMenu('issues');
+      });
+
+      Mousetrap.bind('M', function() {
+        gotoMenu('merge_requests');
+      });
+
+      Mousetrap.bind('S', function() {
+        gotoMenu('snippets');
+      });
+
       Mousetrap.bind(['ctrl+shift+p', 'command+shift+p'], this.toggleMarkdownPreview);
       if (typeof findFileURL !== "undefined" && findFileURL !== null) {
         Mousetrap.bind('t', function() {
