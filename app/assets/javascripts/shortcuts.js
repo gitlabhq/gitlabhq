@@ -25,7 +25,7 @@
         }
       }
 
-      Mousetrap.bind('m', function() {
+      Mousetrap.bind('n', function() {
         $('.global-dropdown-menu').addClass('shortcuts')
         $('.global-dropdown-toggle').trigger('click');
       });
