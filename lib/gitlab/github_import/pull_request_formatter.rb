@@ -37,13 +37,12 @@ module Gitlab
       end
 
       def source_branch_name
-        @source_branch_name ||= begin
-          if cross_project?
+        @source_branch_name ||=
+          if cross_project? || !source_branch_exists?
             source_branch_name_prefixed
           else
-            source_branch_exists? ? source_branch_ref : source_branch_name_prefixed
+            source_branch_ref
           end
-        end
       end
 
       def source_branch_name_prefixed
@@ -51,9 +50,7 @@ module Gitlab
       end
 
       def source_branch_exists?
-        return false if cross_project?
-
-        source_branch.exists?
+        !cross_project? && source_branch.exists?
       end
 
       def target_branch
@@ -61,9 +58,7 @@ module Gitlab
       end
 
       def target_branch_name
-        @target_branch_name ||= begin
-          target_branch_exists? ? target_branch_ref : target_branch_name_prefixed
-        end
+        @target_branch_name ||= target_branch_exists? ? target_branch_ref : target_branch_name_prefixed
       end
 
       def target_branch_name_prefixed

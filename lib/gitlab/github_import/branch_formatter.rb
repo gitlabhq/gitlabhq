@@ -15,8 +15,8 @@ module Gitlab
         raw_data.user&.login || 'unknown'
       end
 
-      def short_sha(length = 7)
-        sha.to_s[0..length]
+      def short_sha
+        Commit.truncate_sha(sha)
       end
 
       private
