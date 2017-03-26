@@ -115,7 +115,9 @@ class User < ActiveRecord::Base
   validates :notification_email, email: true, if: ->(user) { user.notification_email != user.email }
   validates :public_email, presence: true, uniqueness: true, email: true, allow_blank: true
   validates :bio, length: { maximum: 255 }, allow_blank: true
-  validates :projects_limit, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :projects_limit,
+    presence: true,
+    numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
   validates :username,
     namespace: true,
     presence: true,

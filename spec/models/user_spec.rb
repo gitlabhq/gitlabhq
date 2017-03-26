@@ -81,6 +81,7 @@ describe User, models: true do
     it { is_expected.to validate_numericality_of(:projects_limit) }
     it { is_expected.to allow_value(0).for(:projects_limit) }
     it { is_expected.not_to allow_value(-1).for(:projects_limit) }
+    it { is_expected.not_to allow_value(Gitlab::Database::MAX_INT_VALUE + 1).for(:projects_limit) }
 
     it { is_expected.to validate_length_of(:bio).is_at_most(255) }
 
