@@ -75,3 +75,9 @@ You can see GitLab's keyboard shortcuts by using 'shift + ?'
 | <kbd>r</kbd> | Reply (quoting selected text) |
 | <kbd>e</kbd> | Edit issue/merge request |
 | <kbd>l</kbd> | Change label |
+
+## Wiki pages
+
+| Keyboard Shortcut | Description |
+| ----------------- | ----------- |
+| <kbd>e</kbd> | Edit wiki page|

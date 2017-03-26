@@ -33,6 +33,7 @@
 /* global Labels */
 /* global Shortcuts */
 /* global Sidebar */
+/* global ShortcutsWiki */
 
 import Issue from './issue';
 
@@ -416,7 +417,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
               break;
             case 'wikis':
               new gl.Wikis();
-              shortcut_handler = new ShortcutsNavigation();
+              shortcut_handler = new ShortcutsWiki();
               new ZenMode();
               new gl.GLForm($('.wiki-form'));
               break;
