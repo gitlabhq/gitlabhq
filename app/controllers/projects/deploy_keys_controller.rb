@@ -35,16 +35,14 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def disable
-<<<<<<< HEAD
-    load_key
-    @project.deploy_keys_projects.find_by(deploy_key_id: params[:id]).destroy
-    log_audit_event(@key.title, action: :destroy)
-=======
     deploy_key_project = @project.deploy_keys_projects.find_by(deploy_key_id: params[:id])
     return render_404 unless deploy_key_project
->>>>>>> ce/master
 
     deploy_key_project.destroy!
+
+    load_key
+    log_audit_event(@key.title, action: :destroy)
+
     redirect_to_repository_settings(@project)
   end
 
