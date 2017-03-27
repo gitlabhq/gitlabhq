@@ -41,7 +41,7 @@ export default {
     <div class="mr-widget-heading">
       <div class="ci_widget" v-for="deployment in mr.deployments">
         <div class="ci-status-icon ci-status-icon-success">
-          <span class="js-icon-link">
+          <span class="js-icon-link icon-link">
             <span v-html="svg" aria-hidden="true"></span>
           </span>
         </div>
