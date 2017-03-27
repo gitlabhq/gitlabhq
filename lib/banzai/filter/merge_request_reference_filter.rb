@@ -21,6 +21,10 @@ module Banzai
                                             only_path: context[:only_path])
       end
 
+      def project_from_ref(ref)
+        projects_per_reference[ref || current_project_path]
+      end
+
       # Returns a Hash containing the merge_requests per Project instance.
       def merge_requests_per_project
         @merge_requests_per_project ||= begin
