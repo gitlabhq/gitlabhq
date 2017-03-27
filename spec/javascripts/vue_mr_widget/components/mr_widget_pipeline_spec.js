@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import pipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline';
 import pipelineMockData from '../../commit/pipelines/mock_data';
+import { statusClassToSvgMap } from '~/vue_shared/pipeline_svg_icons';
 
 const createComponent = (mr) => {
   const Component = Vue.extend(pipelineComponent);
@@ -27,11 +28,45 @@ describe('MRWidgetPipeline', () => {
     });
   });
 
+  describe('computed', () => {
+    describe('svg', () => {
+      it('should have the proper SVG icon', () => {
+        const vm = createComponent({ pipeline: pipelineMockData });
+
+        expect(vm.svg).toEqual(statusClassToSvgMap.icon_status_failed);
+      });
+    });
+
+    describe('hasCIError', () => {
+      it('should return false when there is no CI error', () => {
+        const vm = createComponent({
+          pipeline: pipelineMockData,
+          hasCI: true,
+          ciStatus: 'success',
+        });
+
+        expect(vm.hasCIError).toBeFalsy();
+      });
+
+      it('should return true when there is a CI error', () => {
+        const vm = createComponent({
+          pipeline: pipelineMockData,
+          hasCI: true,
+          ciStatus: null,
+        });
+
+        expect(vm.hasCIError).toBeTruthy();
+      });
+    });
+  });
+
   describe('template', () => {
     let vm;
     let el;
     const mr = {
       pipeline: pipelineMockData,
+      hasCI: true,
+      ciStatus: 'failed',
     };
 
     beforeEach(() => {
@@ -46,6 +81,7 @@ describe('MRWidgetPipeline', () => {
       expect(el.innerText).toContain('failed');
       expect(el.querySelector('.pipeline-id').getAttribute('href')).toEqual(pipelineMockData.path);
       expect(el.querySelectorAll('.stage-container').length).toEqual(1);
+      expect(el.querySelector('.js-ci-error')).toEqual(null);
       expect(el.querySelector('.js-commit-link').getAttribute('href')).toEqual(pipelineMockData.commit.commit_path);
       expect(el.querySelector('.js-commit-link').textContent).toEqual(pipelineMockData.commit.short_id);
       expect(el.querySelector('.js-mr-coverage').textContent).toContain(`Coverage ${pipelineMockData.coverage}%`);
@@ -73,8 +109,19 @@ describe('MRWidgetPipeline', () => {
 
     it('should not have coverage text when pipeline has no coverage info', (done) => {
       vm.mr.pipeline.coverage = null;
+
       Vue.nextTick(() => {
         expect(el.querySelector('.js-mr-coverage')).toEqual(null);
+        done();
+      });
+    });
+
+    it('should show CI error when there is a CI error', (done) => {
+      vm.mr.ciStatus = null;
+
+      Vue.nextTick(() => {
+        expect(el.querySelectorAll('.js-ci-error').length).toEqual(1);
+        expect(el.innerText).toContain('Could not connect to the CI server');
         done();
       });
     });

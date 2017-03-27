@@ -42,7 +42,9 @@ const mrWidgetOptions = () => ({
       return statesToShowHelpWidget.indexOf(this.mr.state) > -1;
     },
     shouldRenderPipelines() {
-      return this.mr.pipeline;
+      const { pipeline, hasCI } = this.mr;
+
+      return pipeline || hasCI;
     },
     shouldRenderRelatedLinks() {
       return this.mr.relatedLinks;

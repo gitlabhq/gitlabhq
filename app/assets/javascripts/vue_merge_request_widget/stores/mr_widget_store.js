@@ -72,6 +72,8 @@ export default class MergeRequestStore {
     this.isPipelineBlocked = data.pipeline ? data.pipeline.details.status.group === 'manual' : false;
     this.isOpen = data.state === 'opened' || data.state === 'reopened' || false;
     this.hasMergeableDiscussionsState = data.mergeable_discussions_state === false;
+    this.hasCI = data.has_ci;
+    this.ciStatus = data.ci_status;
 
     this.setState(data);
   }
