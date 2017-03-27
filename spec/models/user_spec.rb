@@ -361,21 +361,9 @@ describe User, models: true do
   end
 
   describe '#generate_password' do
-    it "executes callback when force_random_password specified" do
-      user = build(:user, force_random_password: true)
-      expect(user).to receive(:generate_password)
-      user.save
-    end
-
     it "does not generate password by default" do
       user = create(:user, password: 'abcdefghe')
       expect(user.password).to eq('abcdefghe')
-    end
-
-    it "generates password when forcing random password" do
-      allow(Devise).to receive(:friendly_token).and_return('123456789')
-      user = create(:user, password: 'abcdefg', force_random_password: true)
-      expect(user.password).to eq('12345678')
     end
   end
 
