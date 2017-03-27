@@ -85,7 +85,7 @@ describe ProjectPolicy, models: true do
   end
 
   it 'does not include the read_issue permission when the issue author is not a member of the private project' do
-    project = create(:project, :private)
+    project = create(:empty_project, :private)
     issue   = create(:issue, project: project)
     user    = issue.author
 
