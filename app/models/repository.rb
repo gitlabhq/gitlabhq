@@ -2,6 +2,7 @@ require 'securerandom'
 
 class Repository
   include Gitlab::ShellAdapter
+  include RepositoryMirroring
 
   attr_accessor :path_with_namespace, :project
 
@@ -1031,6 +1032,13 @@ class Repository
 
   ensure
     rugged.references.delete(tmp_ref) if tmp_ref
+  end
+
+  def fetch_mirror(remote, url)
+    add_remote(remote, url)
+    set_remote_as_mirror(remote)
+    fetch_remote(remote, forced: true)
+    remove_remote(remote)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
