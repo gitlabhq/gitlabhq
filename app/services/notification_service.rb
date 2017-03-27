@@ -280,8 +280,9 @@ class NotificationService
 
     recipients ||= NotificationRecipientService.new(pipeline.project).build_recipients(
       pipeline,
-      nil, # The acting user, who won't be added to recipients
-      action: pipeline.status).map(&:notification_email)
+      pipeline.user,
+      action: pipeline.status,
+      skip_current_user: false).map(&:notification_email)
 
     if recipients.any?
       mailer.public_send(email_template, pipeline, recipients).deliver_later

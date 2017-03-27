@@ -1236,6 +1236,7 @@ ActiveRecord::Schema.define(version: 20170317203554) do
     t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "ghost"
+    t.boolean "notified_of_own_activity"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
