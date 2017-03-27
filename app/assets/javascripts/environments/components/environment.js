@@ -24,6 +24,7 @@ export default Vue.component('environment-component', {
       state: store.state,
       visibility: 'available',
       isLoading: false,
+      isLoadingFolderContent: false,
       cssContainerClass: environmentsData.cssClass,
       endpoint: environmentsData.environmentsDataEndpoint,
       canCreateDeployment: environmentsData.canCreateDeployment,
@@ -68,15 +69,21 @@ export default Vue.component('environment-component', {
     this.fetchEnvironments();
 
     eventHub.$on('refreshEnvironments', this.fetchEnvironments);
+    eventHub.$on('toggleFolder', this.toggleFolder);
   },
 
   beforeDestroyed() {
     eventHub.$off('refreshEnvironments');
+    eventHub.$off('toggleFolder');
   },
 
   methods: {
-    toggleRow(model) {
-      return this.store.toggleFolder(model.name);
+    toggleFolder(folder) {
+      this.store.toggleFolder(folder);
+
+      if (!folder.isOpen) {
+        this.fetchChildEnvironments(folder);
+      }
     },
 
     /**
@@ -114,6 +121,24 @@ export default Vue.component('environment-component', {
         })
         .catch(() => {
           this.isLoading = false;
+          new Flash('An error occurred while fetching the environments.');
+        });
+    },
+
+    fetchChildEnvironments(folder) {
+      this.isLoadingFolderContent = true;
+
+      this.service.getFolderContent(folder.folderName)
+        .then(resp => resp.json())
+        .then((response) => {
+          console.log(response);
+          this.store.folderContent(folder, response.environments);
+        })
+        .then(() => {
+          this.isLoadingFolderContent = false;
+        })
+        .catch(() => {
+          this.isLoadingFolderContent = false;
           new Flash('An error occurred while fetching the environments.');
         });
     },

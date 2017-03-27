@@ -38,7 +38,12 @@ export default class EnvironmentsStore {
       let filtered = {};
 
       if (env.size > 1) {
-        filtered = Object.assign({}, env, { isFolder: true, folderName: env.name });
+        filtered = Object.assign({}, env, {
+          isFolder: true,
+          folderName: env.name,
+          isOpen: false,
+          children: [],
+        });
       }
 
       if (env.latest) {
@@ -86,7 +91,36 @@ export default class EnvironmentsStore {
     return count;
   }
 
-  toggleRow(name) {
-
+  /**
+    * Toggles folder open property given the given folder.
+    *
+    * @param  {String} envType
+    * @return {Array}
+    */
+  toggleFolder(folder) {
+    return this.updateFolder(folder, 'isOpen', !folder.isOpen);
   }
+
+  folderContent(folder, environments) {
+    debugger;
+    return this.updateFolder(folder, 'children', environments);
+  }
+
+  updateFolder(folder, prop, newValue) {
+    const environments = this.state.environments;
+    debugger;
+    const updatedEnvironments = environments.map((env) => {
+      const updateEnv = Object.assign({}, env);
+      if (env.isFolder && env.id === folder.id) {
+        updateEnv[prop] = newValue;
+      }
+
+      return updateEnv;
+    });
+    debugger;
+
+    console.log(updatedEnvironments);
+    this.state.environments = updatedEnvironments;
+  }
+
 }

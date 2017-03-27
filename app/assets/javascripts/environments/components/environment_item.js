@@ -6,6 +6,7 @@ import StopComponent from './environment_stop';
 import RollbackComponent from './environment_rollback';
 import TerminalButtonComponent from './environment_terminal_button';
 import CommitComponent from '../../vue_shared/components/commit';
+import eventHub from '../event_hub';
 
 /**
  * Envrionment Item Component
@@ -391,16 +392,6 @@ export default {
 
       return '';
     },
-
-    /**
-     * Constructs folder URL based on the current location and the folder id.
-     *
-     * @return {String}
-     */
-    folderUrl() {
-      return `${window.location.pathname}/folders/${this.model.folderName}`;
-    },
-
   },
 
   /**
@@ -418,6 +409,12 @@ export default {
     return true;
   },
 
+  methods: {
+    onClickFolder() {
+      eventHub.$emit('toggleFolder', this.model);
+    },
+  },
+
   template: `
     <tr>
       <td>
@@ -426,7 +423,21 @@ export default {
           :href="environmentPath">
           {{model.name}}
         </a>
-        <a v-else class="folder-name" :href="folderUrl">
+        <span v-else
+          class="folder-name"
+          @click="onClickFolder">
+
+          <span class="folder-icon">
+            <i
+              v-show="model.isOpen"
+              class="fa fa-caret-down"
+              aria-hidden="true" />
+            <i
+              v-show="!model.isOpen"
+              class="fa fa-caret-right"
+              aria-hidden="true"/>
+          </span>
+
           <span class="folder-icon">
             <i class="fa fa-folder" aria-hidden="true"></i>
           </span>
@@ -438,7 +449,7 @@ export default {
           <span class="badge">
             {{model.size}}
           </span>
-        </a>
+        </span>
       </td>
 
       <td class="deployment-column">

@@ -54,11 +54,10 @@ export default {
             :can-read-environment="canReadEnvironment"
             :service="service"></tr>
 
-          <tr v-if="model.isOpen && model.children && model.children.length > 0"
+          <tr v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0"
             is="environment-item"
             v-for="children in model.children"
             :model="children"
-            :toggleRow="toggleRow.bind(children)"
             :can-create-deployment="canCreateDeploymentParsed"
             :can-read-environment="canReadEnvironmentParsed"
             :service="service"></tr>
