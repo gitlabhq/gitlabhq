@@ -4,7 +4,7 @@ class Groups::AnalyticsController < Groups::ApplicationController
   layout 'group'
 
   def show
-    @users = @group.users
+    @users = @group.users.select(:id, :name, :username)
     @start_date = params[:start_date] || Date.today - 1.week
     @events = Event.contributions
       .where("created_at > ?", @start_date)
@@ -12,16 +12,21 @@ class Groups::AnalyticsController < Groups::ApplicationController
 
     @stats = {}
 
-    @stats[:merge_requests] = @users.map do |user|
-      @events.merge_requests.created.where(author_id: user).count
-    end
+    @stats[:total_events] = count_by_user(@events.totals_by_author)
+    @stats[:push] = count_by_user(@events.code_push.totals_by_author)
+    @stats[:merge_requests_created] = count_by_user(@events.merge_requests.created.totals_by_author)
+    @stats[:merge_requests_merged] = count_by_user(@events.merge_requests.merged.totals_by_author)
+    @stats[:issues_created] = count_by_user(@events.issues.created.totals_by_author)
+    @stats[:issues_closed] = count_by_user(@events.issues.closed.totals_by_author)
+  end
 
-    @stats[:issues] = @users.map do |user|
-      @events.issues.closed.where(author_id: user).count
-    end
+  private
 
-    @stats[:push] = @users.map do |user|
-      @events.code_push.where(author_id: user).count
-    end
+  def count_by_user(data)
+    user_ids.map { |id| data.fetch(id, 0) }
+  end
+
+  def user_ids
+    @user_ids ||= @users.map(&:id)
   end
 end
