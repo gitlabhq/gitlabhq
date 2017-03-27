@@ -11,7 +11,7 @@
         %span== #{milestone.percent_complete(current_user)}%
         = milestone_progress_bar(milestone)
       .title.hide-collapsed
-        %strong== #{milestone.percent_complete(current_user)}%
+        %strong.bold== #{milestone.percent_complete(current_user)}%
         %span.hide-collapsed
           complete
       .value.hide-collapsed
@@ -50,7 +50,7 @@
           - if project && can?(current_user, :create_issue, project)
             = link_to new_namespace_project_issue_path(project.namespace, project, issue: { milestone_id: milestone.id }), class: "pull-right", title: "New Issue" do
               New issue
-        .value.hide-collapsed
+        .value.hide-collapsed.bold
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :issues) do
               Open:
@@ -73,7 +73,7 @@
         Total issue weight
       .value.hide-collapsed
         - unless total_weight.zero?
-          %strong= total_weight
+          %strong.bold= total_weight
         - else
           .no-value None
 
@@ -85,7 +85,7 @@
       .title.hide-collapsed
         Merge requests
         %span.badge= milestone.merge_requests.size
-      .value.hide-collapsed
+      .value.hide-collapsed.bold
         - if !project || can?(current_user, :read_merge_request, project)
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :merge_requests) do
