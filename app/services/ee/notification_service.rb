@@ -1,3 +1,5 @@
+require 'gitlab/ee/service_desk'
+
 module EE
   module NotificationService
     # override
