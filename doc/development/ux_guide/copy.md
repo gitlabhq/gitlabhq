@@ -106,6 +106,14 @@ When using verbs or adjectives:
 * If the context clearly refers to the object, use them alone. Example: `Edit` or `Closed`
 * If the context isn’t clear enough, use them with the object. Example: `Edit issue` or `Closed issues`
 
+### Search
+
+| Term | Use |
+| ---- | --- |
+| Search | When using all metadata to add criteria that match/don't match. Search can also affect ordering, by ranking best results. |
+| Filter | When taking a single criteria that removes items within a list that match/don't match. Filters do not affect ordering. |
+| Sort   | Orders a list based on a single or grouped criteria |
+
 ### Projects and Groups
 
 | Term | Use | :no_entry_sign: Don't |
