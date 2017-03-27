@@ -1,7 +1,7 @@
 # Writing Documentation
 
   - **General Documentation**: written by the developers responsible by creating features. Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
-  - **Technical Articles**: written by any GitLab Team member, GitLab contributors, or [Community Writers](https://about.gitlab.com/handbook/product/technical-writing/community-writers/).
+  - **Technical Articles**: written by any [GitLab Team](https://about.gitlab.com/team/) member, GitLab contributors, or [Community Writers](https://about.gitlab.com/handbook/product/technical-writing/community-writers/).
   - **Indexes per topic**: initially prepared by the Technical Writing Team, and kept up-to-date by developers and PMs, in the same merge request containing code.
 
 ## Distinction between General Documentation and Technical Articles
@@ -33,15 +33,16 @@ They live under `doc/topics/topic-name/`, and can be searched per topic, within 
 
 Suppose there's a process to go from point A to point B in 5 steps: `(A) 1 > 2 > 3 > 4 > 5 (B)`.
 
-A **guide** can be understood as a description of certain processes to achieve a particular objective. A guide brings you from A to B describing the characteristics of that process, but not necessarily going over each step. It can mention, for example, the step 3, but, assumes that that step is known by the reader, or out of the scope of that article.
+A **guide** can be understood as a description of certain processes to achieve a particular objective. A guide brings you from A to B describing the characteristics of that process, but not necessarily going over each step. It can mention, for example, steps 2 and 3, but does not necessarily explain how to accomplish them.
 
 - Live example: "GitLab Pages from A to Z - [Part 1](../user/project/pages/getting_started_part_one.html) to [Part 4](../user/project/pages/getting_started_part_one.html)"
 
-A **tutorial** requires a clear **step-by-step** guidance to achieve a singular objective. It brings you from A to B, describing precisely all the necessary steps involved in that process, showing each of the 5 steps to go from A to B. It does not assume that you step 3: it shows you each of them.
+A **tutorial** requires a clear **step-by-step** guidance to achieve a singular objective. It brings you from A to B, describing precisely all the necessary steps involved in that process, showing each of the 5 steps to go from A to B.
+It does not only describes steps 2 and 3, but also shows you how to accomplish them.
 
 - Live example (on the blog): [Hosting on GitLab.com with GitLab Pages](https://about.gitlab.com/2016/04/07/gitlab-pages-setup/)
 
-A **technical overview** is an overview of that feature. It describes that it is, and what it does, but does not walks
+A **technical overview** is a description of what a certain feature is, and what it does, but does not walk
 through the process of how to use it systematically.
 
 - Live example (on the blog): [GitLab Workflow, an overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/)
@@ -62,7 +63,7 @@ Every **Technical Article** contains, in the very beginning, a blockquote with t
 
 #### Technical Articles - Writing Method
 
-Use the [writing method](https://about.gitlab.com/handbook/marketing/developer-relations/technical-writing/#writing-method) defined by the Technical Writing team.
+Use the [writing method](https://about.gitlab.com/handbook/product/technical-writing/#writing-method) defined by the Technical Writing team.
 
 ## Documentation Style Guidelines
 
@@ -70,4 +71,4 @@ All the documentation follow the same [styleguide](https://docs.gitlab.com/ce/de
 
 ### Markdown
 
-Currently GitLab docs use Redcarpet as markdown engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.
+Currently GitLab docs use Redcarpet as [markdown](../user/markdown.html) engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.
