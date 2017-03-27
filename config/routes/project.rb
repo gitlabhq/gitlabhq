@@ -102,6 +102,7 @@ constraints(ProjectUrlConstrainer.new) do
           get :merge_widget_refresh
           post :cancel_merge_when_pipeline_succeeds
           get :ci_status
+          get :pipeline_status
           get :ci_environments_status
           post :toggle_subscription
 
@@ -189,6 +190,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :cancel
           post :retry
           get :builds
+          get :status
         end
       end
 

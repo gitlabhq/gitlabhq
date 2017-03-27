@@ -9,9 +9,17 @@
   }
 }
 
+<<<<<<< HEAD
 .content-list .group-name {
   font-weight: 600;
   color: $pages-group-name-color;
+=======
+.group-root-path {
+  max-width: 40vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: nowrap;
+>>>>>>> ce/master
 }
 
 .group-row {

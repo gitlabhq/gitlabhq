@@ -39,9 +39,13 @@ module TestEnv
     'deleted-image-test'                 => '6c17798',
     'wip'                                => 'b9238ee',
     'csv'                                => '3dd0896',
+<<<<<<< HEAD
     'squash-large-files'                 => '54cec52'
+=======
+    'v1.1.0'                             => 'b83d6e3'
+>>>>>>> ce/master
   }.freeze
-
+  
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
   # need to keep all the branches in sync.
   # We currently only need a subset of the branches

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::ForkService, services: true do
-  describe :fork_by_user do
+  describe 'fork by user' do
     before do
       @from_namespace = create(:namespace)
       @from_user = create(:user, namespace: @from_namespace )
@@ -100,7 +100,7 @@ describe Projects::ForkService, services: true do
     end
   end
 
-  describe :fork_to_namespace do
+  describe 'fork to namespace' do
     before do
       @group_owner = create(:user)
       @developer   = create(:user)

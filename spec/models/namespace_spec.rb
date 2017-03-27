@@ -163,6 +163,7 @@ describe Namespace, models: true do
     end
   end
 
+<<<<<<< HEAD
   describe '#actual_size_limit' do
     let(:namespace) { build(:namespace) }
 
@@ -176,6 +177,9 @@ describe Namespace, models: true do
   end
 
   describe :rm_dir do
+=======
+  describe '#rm_dir', 'callback' do
+>>>>>>> ce/master
     let!(:project) { create(:empty_project, namespace: namespace) }
     let!(:path) { File.join(Gitlab.config.repositories.storages.default['path'], namespace.full_path) }
 
