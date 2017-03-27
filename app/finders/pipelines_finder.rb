@@ -113,11 +113,13 @@ class PipelinesFinder
                else
                  :id
                end
+
     sort = if params[:sort] =~ /\A(ASC|DESC)\z/i
              params[:sort]
            else
              :desc
            end
+
     items.order(order_by => sort)
   end
 end
