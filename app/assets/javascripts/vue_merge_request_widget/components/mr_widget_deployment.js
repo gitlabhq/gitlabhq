@@ -12,9 +12,6 @@ export default {
       return statusClassToSvgMap.icon_status_success;
     },
   },
-  components: {
-    'pipeline-status-icon': pipelineStatusIcon,
-  },
   methods: {
     formatDate(date) {
       return gl.utils.getTimeago().format(date);

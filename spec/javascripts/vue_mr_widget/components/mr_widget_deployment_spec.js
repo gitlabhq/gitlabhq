@@ -36,12 +36,6 @@ describe('MRWidgetDeployment', () => {
     });
   });
 
-  describe('components', () => {
-    it('should have components added', () => {
-      expect(deploymentComponent.components['pipeline-status-icon']).toBeDefined();
-    });
-  });
-
   describe('computed', () => {
     describe('svg', () => {
       it('should have the proper SVG icon', () => {
