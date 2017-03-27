@@ -27,6 +27,7 @@ describe Gitlab::Ci::Status::Build::Factory do
     it 'fabricates status with correct details' do
       expect(status.text).to eq 'passed'
       expect(status.icon).to eq 'icon_status_success'
+      expect(status.favicon).to eq 'favicon_status_success'
       expect(status.label).to eq 'passed'
       expect(status).to have_details
       expect(status).to have_action
@@ -53,6 +54,7 @@ describe Gitlab::Ci::Status::Build::Factory do
       it 'fabricates status with correct details' do
         expect(status.text).to eq 'failed'
         expect(status.icon).to eq 'icon_status_failed'
+        expect(status.favicon).to eq 'favicon_status_failed'
         expect(status.label).to eq 'failed'
         expect(status).to have_details
         expect(status).to have_action
@@ -79,6 +81,7 @@ describe Gitlab::Ci::Status::Build::Factory do
       it 'fabricates status with correct details' do
         expect(status.text).to eq 'failed'
         expect(status.icon).to eq 'icon_status_warning'
+        expect(status.favicon).to eq 'favicon_status_failed'
         expect(status.label).to eq 'failed (allowed to fail)'
         expect(status).to have_details
         expect(status).to have_action
@@ -107,6 +110,7 @@ describe Gitlab::Ci::Status::Build::Factory do
     it 'fabricates status with correct details' do
       expect(status.text).to eq 'canceled'
       expect(status.icon).to eq 'icon_status_canceled'
+      expect(status.favicon).to eq 'favicon_status_canceled'
       expect(status.label).to eq 'canceled'
       expect(status).to have_details
       expect(status).to have_action
@@ -132,6 +136,7 @@ describe Gitlab::Ci::Status::Build::Factory do
     it 'fabricates status with correct details' do
       expect(status.text).to eq 'running'
       expect(status.icon).to eq 'icon_status_running'
+      expect(status.favicon).to eq 'favicon_status_running'
       expect(status.label).to eq 'running'
       expect(status).to have_details
       expect(status).to have_action
@@ -157,6 +162,7 @@ describe Gitlab::Ci::Status::Build::Factory do
     it 'fabricates status with correct details' do
       expect(status.text).to eq 'pending'
       expect(status.icon).to eq 'icon_status_pending'
+      expect(status.favicon).to eq 'favicon_status_pending'
       expect(status.label).to eq 'pending'
       expect(status).to have_details
       expect(status).to have_action
@@ -181,6 +187,7 @@ describe Gitlab::Ci::Status::Build::Factory do
     it 'fabricates status with correct details' do
       expect(status.text).to eq 'skipped'
       expect(status.icon).to eq 'icon_status_skipped'
+      expect(status.favicon).to eq 'favicon_status_skipped'
       expect(status.label).to eq 'skipped'
       expect(status).to have_details
       expect(status).not_to have_action
@@ -208,6 +215,7 @@ describe Gitlab::Ci::Status::Build::Factory do
         expect(status.text).to eq 'manual'
         expect(status.group).to eq 'manual'
         expect(status.icon).to eq 'icon_status_manual'
+        expect(status.favicon).to eq 'favicon_status_manual'
         expect(status.label).to eq 'manual play action'
         expect(status).to have_details
         expect(status).to have_action
@@ -235,6 +243,7 @@ describe Gitlab::Ci::Status::Build::Factory do
         expect(status.text).to eq 'manual'
         expect(status.group).to eq 'manual'
         expect(status.icon).to eq 'icon_status_manual'
+        expect(status.favicon).to eq 'favicon_status_manual'
         expect(status.label).to eq 'manual stop action'
         expect(status).to have_details
         expect(status).to have_action
