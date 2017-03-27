@@ -72,6 +72,7 @@ GET /users
     "organization": "",
     "last_sign_in_at": "2012-06-01T11:41:01Z",
     "confirmed_at": "2012-05-23T09:05:22Z",
+    "last_activity_on": "2012-05-23",
     "color_scheme_id": 2,
     "projects_limit": 100,
     "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -104,6 +105,7 @@ GET /users
     "organization": "",
     "last_sign_in_at": null,
     "confirmed_at": "2012-05-30T16:53:06.148Z",
+    "last_activity_on": "2012-05-23",
     "color_scheme_id": 3,
     "projects_limit": 100,
     "current_sign_in_at": "2014-03-19T17:54:13Z",
@@ -196,6 +198,7 @@ Parameters:
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -320,6 +323,7 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -365,6 +369,7 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -998,15 +1003,8 @@ The activities that update the timestamp are:
   - Git HTTP/SSH activities (such as clone, push)
   - User logging in into GitLab
 
-The data is stored in Redis and it depends on it for being recorded and displayed
-over time. This means that we will lose the data if Redis gets flushed, or a custom
-TTL is reached.
-
 By default, it shows the activity for all users in the last 6 months, but this can be
 amended by using the `from` parameter.
-
-This function takes pagination parameters `page` and `per_page` to restrict the list of users.
-
 
 ```
 GET /user/activities
@@ -1028,14 +1026,20 @@ Example response:
 [
   {
     "username": "user1",
-    "last_activity_at": "2015-12-14 01:00:00"
+    "last_activity_on": "2015-12-14",
+    "last_activity_at": "2015-12-14"
   },
   {
     "username": "user2",
-    "last_activity_at": "2015-12-15 01:00:00"
+    "last_activity_on": "2015-12-15",
+    "last_activity_at": "2015-12-15"
   },
   {
     "username": "user3",
-    "last_activity_at": "2015-12-16 01:00:00"
+    "last_activity_on": "2015-12-16",
+    "last_activity_at": "2015-12-16"
   }
 ]
+```
+
+Please note that `last_activity_at` is deprecated, please use `last_activity_on`.

@@ -1158,6 +1158,49 @@ describe API::Users, api: true do
     end
   end
 
+  context "user activities", :redis do
+    let!(:old_active_user) { create(:user, last_activity_on: Time.utc(2000, 1, 1)) }
+    let!(:newly_active_user) { create(:user, last_activity_on: 2.days.ago.midday) }
+
+    context 'last activity as normal user' do
+      it 'has no permission' do
+        get api("/user/activities", user)
+
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'as admin' do
+      it 'returns the activities from the last 6 months' do
+        get api("/user/activities", admin)
+
+        expect(response).to include_pagination_headers
+        expect(json_response.size).to eq(1)
+
+        activity = json_response.last
+
+        expect(activity['username']).to eq(newly_active_user.username)
+        expect(activity['last_activity_on']).to eq(2.days.ago.to_date.to_s)
+        expect(activity['last_activity_at']).to eq(2.days.ago.to_date.to_s)
+      end
+
+      context 'passing a :from parameter' do
+        it 'returns the activities from the given date' do
+          get api("/user/activities?from=2000-1-1", admin)
+
+          expect(response).to include_pagination_headers
+          expect(json_response.size).to eq(2)
+
+          activity = json_response.first
+
+          expect(activity['username']).to eq(old_active_user.username)
+          expect(activity['last_activity_on']).to eq(Time.utc(2000, 1, 1).to_date.to_s)
+          expect(activity['last_activity_at']).to eq(Time.utc(2000, 1, 1).to_date.to_s)
+        end
+      end
+    end
+  end
+
   describe 'GET /users/:user_id/impersonation_tokens' do
     let!(:active_personal_access_token) { create(:personal_access_token, user: user) }
     let!(:revoked_personal_access_token) { create(:personal_access_token, :revoked, user: user) }

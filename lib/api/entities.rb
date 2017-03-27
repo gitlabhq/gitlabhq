@@ -20,7 +20,8 @@ module API
 
     class UserActivity < Grape::Entity
       expose :username
-      expose :last_activity_at
+      expose :last_activity_on
+      expose :last_activity_on, as: :last_activity_at # Back-compat
     end
 
     class Identity < Grape::Entity
@@ -30,6 +31,7 @@ module API
     class UserPublic < User
       expose :last_sign_in_at
       expose :confirmed_at
+      expose :last_activity_on
       expose :email
       expose :color_scheme_id, :projects_limit, :current_sign_in_at
       expose :identities, using: Entities::Identity
