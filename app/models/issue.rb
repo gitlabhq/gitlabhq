@@ -33,9 +33,10 @@ class Issue < ActiveRecord::Base
 
   validates :project, presence: true
 
-  scope :cared, ->(user) { where(assignee_id: user) }
+  scope :cared, ->(user) { with_assignees.where("issue_assignees.user_id IN(?)", user.id) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
+  scope :with_assignees, -> { joins(:assignees) }
 
   scope :without_due_date, -> { where(due_date: nil) }
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }
@@ -287,7 +288,7 @@ class Issue < ActiveRecord::Base
       true
     elsif confidential?
       author == user ||
-        assignee == user ||
+        assignees.include?(user) ||
         project.team.member?(user, Gitlab::Access::REPORTER)
     else
       project.public? ||

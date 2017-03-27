@@ -48,7 +48,13 @@ class IssuableBaseService < BaseService
       params.delete(:add_label_ids)
       params.delete(:remove_label_ids)
       params.delete(:label_ids)
-      params.delete(:assignee_id)
+
+      if issuable.is_a?(Issue)
+        params.delete(:assignee_ids)
+      else
+        params.delete(:assignee_id)
+      end
+
       params.delete(:due_date)
     end
 

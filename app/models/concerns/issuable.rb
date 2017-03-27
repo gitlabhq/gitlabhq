@@ -277,7 +277,11 @@ module Issuable
       # DEPRECATED
       repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
     }
-    hook_data[:assignee] = assignee.hook_attrs if assignee
+    if self.is_a?(Issue)
+      hook_data[:assignees] = assignees.map(&:hook_attrs) if assignees.any?
+    else
+      hook_data[:assignee] = assignee.hook_attrs if assignee
+    end
 
     hook_data
   end
