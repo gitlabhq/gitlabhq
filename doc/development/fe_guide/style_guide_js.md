@@ -200,7 +200,6 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
 #### Naming
 - **Extensions**: Use `.vue` extension for Vue components.
 - **Reference Naming**: Use PascalCase for Vue components and camelCase for their instances:
-
   ```javascript
   // bad
   import cardBoard from 'cardBoard';
@@ -218,15 +217,23 @@ See [our current .eslintrc][eslintrc] for specific rules and patterns.
     cardBoard: CardBoard
   };
   ```
-- **Props Naming**: Avoid using DOM component prop names.
+- **Props Naming:**
+- Avoid using DOM component prop names.
+- Use kebab-case instead of camelCase to provide props in templates.
 
   ```javascript
   // bad
   <component class="btn">
 
   // good
-  <component cssClass="btn">
-  ```
+  <component css-class="btn">
+
+  // bad
+  <component myProp="prop" />
+
+  // good
+  <component my-prop="prop" />
+```
 
 #### Alignment
 - Follow these alignment styles for the template method:
