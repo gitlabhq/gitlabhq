@@ -17,7 +17,7 @@ class RemoveUnusedCiTablesAndColumns < ActiveRecord::Migration
     end
 
     remove_column :ci_pipelines, :push_data, :text
-    remove_column :ci_builds, :job_id, :integer
+    remove_column :ci_builds, :job_id, :integer if column_exists?(:ci_builds, :job_id)
     remove_column :ci_builds, :deploy, :boolean
   end
 
