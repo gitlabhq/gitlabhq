@@ -200,3 +200,48 @@
   cursor: -webkit-grab;
   cursor: grab;
 }
+
+// EE-only
+
+.burndown-hint.container-fluid {
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+  position: relative;
+  margin: $gl-padding 0;
+  overflow: hidden;
+  padding-top: 15px;
+  padding-bottom: 15px;
+
+  .dismiss-icon {
+    position: absolute;
+    right: $gl-padding;
+    cursor: pointer;
+    color: $cycle-analytics-dismiss-icon-color;
+    z-index: 1;
+  }
+
+  .svg-container {
+    text-align: center;
+
+    svg {
+      max-width: 200px;
+    }
+  }
+
+  .inner-content {
+    @media (max-width: $screen-xs-max) {
+      padding: 0 28px;
+      text-align: center;
+    }
+
+    h4 {
+      color: $gl-text-color;
+      font-size: 17px;
+    }
+
+    p {
+      color: $cycle-analytics-box-text-color;
+      margin-bottom: $gl-padding;
+    }
+  }
+}
