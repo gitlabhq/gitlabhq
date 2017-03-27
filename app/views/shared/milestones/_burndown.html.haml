@@ -1,0 +1,6 @@
+- milestone = local_assigns[:milestone]
+- project = local_assigns[:project]
+
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('common_d3')
+  = page_specific_javascript_bundle_tag('burndown_chart')
