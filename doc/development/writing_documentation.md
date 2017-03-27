@@ -1,7 +1,7 @@
 # Writing Documentation
 
   - **General Documentation**: written by the developers responsible by creating features. Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
-  - **Technical Articles**: written by any GitLab Team member, GitLab contributors, or Community Writers.
+  - **Technical Articles**: written by any GitLab Team member, GitLab contributors, or [Community Writers](https://about.gitlab.com/handbook/product/technical-writing/community-writers/).
   - **Indexes per topic**: initially prepared by the Technical Writing Team, and kept up-to-date by developers and PMs, in the same merge request containing code.
 
 ## Distinction between General Documentation and Technical Articles
@@ -27,7 +27,9 @@ They live under `doc/topics/topic-name/`, and can be searched per topic, within 
 - **Technical Overviews**: technical content describing features, solutions, and third-party integrations
 - **Tutorials**: technical content provided step-by-step on how to do things, or how to reach very specific objectives
 
-#### Understanding Guides and Tutorials
+<style></style>
+
+#### Understanding Guides, Tutorials, and Technical Overviews
 
 Suppose there's a process to go from point A to point B in 5 steps: `(A) 1 > 2 > 3 > 4 > 5 (B)`.
 
@@ -38,6 +40,11 @@ A **guide** can be understood as a description of certain processes to achieve a
 A **tutorial** requires a clear **step-by-step** guidance to achieve a singular objective. It brings you from A to B, describing precisely all the necessary steps involved in that process, showing each of the 5 steps to go from A to B. It does not assume that you step 3: it shows you each of them.
 
 - Live example (on the blog): [Hosting on GitLab.com with GitLab Pages](https://about.gitlab.com/2016/04/07/gitlab-pages-setup/)
+
+A **technical overview** is an overview of that feature. It describes that it is, and what it does, but does not walks
+through the process of how to use it systematically.
+
+- Live example (on the blog): [GitLab Workflow, an overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/)
 
 #### Special Format
 
