@@ -113,9 +113,11 @@ ActiveRecord::Schema.define(version: 20170504102911) do
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
     t.integer "terminal_max_session_time", default: 0, null: false
+    t.string "default_artifacts_expire_in", default: "0", null: false
     t.integer "unique_ips_limit_per_user"
     t.integer "unique_ips_limit_time_window"
     t.boolean "unique_ips_limit_enabled", default: false, null: false
+<<<<<<< 6fa0e950d2cce0104e0c5f36e0dee43c77224afd
 <<<<<<< 6ae76738dde8fecb117f7706ae2ef74c1d83cdb7
     t.decimal "polling_interval_multiplier", default: 1.0, null: false
     t.integer "cached_markdown_version"
@@ -128,7 +130,12 @@ ActiveRecord::Schema.define(version: 20170504102911) do
 =======
     t.string "default_artifacts_expire_in", default: "0", null: false
 >>>>>>> Preloads head pipeline for each merge request
+<<<<<<< 362bf76f9fb7cfbc4bbbeeaa7eed6b3e26a91d72
 >>>>>>> Preloads head pipeline for each merge request
+=======
+=======
+>>>>>>> Populate merge requests head_pipeline_id
+>>>>>>> Populate merge requests head_pipeline_id
   end
 
   create_table "audit_events", force: :cascade do |t|
