@@ -27,7 +27,7 @@ module API
           optional :location, type: String, desc: 'The location of the user'
           optional :admin, type: Boolean, desc: 'Flag indicating the user is an administrator'
           optional :can_create_group, type: Boolean, desc: 'Flag indicating the user can create groups'
-          optional :confirm, type: Boolean, desc: 'Flag indicating the account needs to be confirmed'
+          optional :skip_confirmation, type: Boolean, default: false, desc: 'Flag indicating the account is confirmed'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
           all_or_none_of :extern_uid, :provider
         end
@@ -97,29 +97,10 @@ module API
       post do
         authenticated_as_admin!
 
-        # Filter out params which are used later
-        user_params = declared_params(include_missing: false)
-        identity_attrs = user_params.slice(:provider, :extern_uid)
-        confirm = user_params.delete(:confirm)
-        user = User.new(user_params.except(:extern_uid, :provider, :reset_password))
+        params = declared_params(include_missing: false)
+        user = ::Users::CreateService.new(current_user, params).execute
 
-        if user_params.delete(:reset_password)
-          user.attributes = {
-            force_random_password: true,
-            password_expires_at: nil,
-            created_by_id: current_user.id
-          }
-          user.generate_password
-          user.generate_reset_token
-        end
-
-        user.skip_confirmation! unless confirm
-
-        if identity_attrs.any?
-          user.identities.build(identity_attrs)
-        end
-
-        if user.save
+        if user.persisted?
           present user, with: Entities::UserPublic
         else
           conflict!('Email has already been taken') if User.
