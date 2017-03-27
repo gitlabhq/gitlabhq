@@ -85,4 +85,8 @@ export default class EnvironmentsStore {
     this.state.stoppedCounter = count;
     return count;
   }
+
+  toggleRow(name) {
+
+  }
 }
