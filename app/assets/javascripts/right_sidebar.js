@@ -103,15 +103,15 @@ import Cookies from 'js-cookie';
           .attr('data-delete-path', deletePath)
           .attr('title', $el.data(`${attrPrefix}-text`));
 
-          if ($el.hasClass('has-tooltip')) {
-            $el.tooltip('fixTitle');
-          }
+        if ($el.hasClass('has-tooltip')) {
+          $el.tooltip('fixTitle');
+        }
 
-          if ($el.data(`${attrPrefix}-icon`)) {
-            $elText.html($el.data(`${attrPrefix}-icon`));
-          } else {
-            $elText.text($el.data(`${attrPrefix}-text`));
-          }
+        if ($el.data(`${attrPrefix}-icon`)) {
+          $elText.html($el.data(`${attrPrefix}-icon`));
+        } else {
+          $elText.text($el.data(`${attrPrefix}-text`));
+        }
       });
     };
 
