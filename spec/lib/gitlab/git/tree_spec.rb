@@ -11,7 +11,7 @@ describe Gitlab::Git::Tree, seed_helper: true do
     it { expect(tree.select(&:file?).size).to eq(10) }
     it { expect(tree.select(&:submodule?).size).to eq(2) }
 
-    describe :dir do
+    describe '#dir?' do
       let(:dir) { tree.select(&:dir?).first }
 
       it { expect(dir).to be_kind_of Gitlab::Git::Tree }
@@ -41,7 +41,7 @@ describe Gitlab::Git::Tree, seed_helper: true do
       end
     end
 
-    describe :file do
+    describe '#file?' do
       let(:file) { tree.select(&:file?).first }
 
       it { expect(file).to be_kind_of Gitlab::Git::Tree }
@@ -50,21 +50,21 @@ describe Gitlab::Git::Tree, seed_helper: true do
       it { expect(file.name).to eq('.gitignore') }
     end
 
-    describe :readme do
+    describe '#readme?' do
       let(:file) { tree.select(&:readme?).first }
 
       it { expect(file).to be_kind_of Gitlab::Git::Tree }
       it { expect(file.name).to eq('README.md') }
     end
 
-    describe :contributing do
+    describe '#contributing?' do
       let(:file) { tree.select(&:contributing?).first }
 
       it { expect(file).to be_kind_of Gitlab::Git::Tree }
       it { expect(file.name).to eq('CONTRIBUTING.md') }
     end
 
-    describe :submodule do
+    describe '#submodule?' do
       let(:submodule) { tree.select(&:submodule?).first }
 
       it { expect(submodule).to be_kind_of Gitlab::Git::Tree }

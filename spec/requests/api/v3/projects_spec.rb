@@ -949,7 +949,7 @@ describe API::V3::Projects, api: true do
     end
   end
 
-  describe :fork_admin do
+  describe 'fork management' do
     let(:project_fork_target) { create(:empty_project) }
     let(:project_fork_source) { create(:empty_project, :public) }
 
