@@ -19,13 +19,14 @@ const sidebarAssigneesOptions = () => ({
   data() {
     const selector = this.$options.el;
     const element = document.querySelector(selector);
+    const rootPath = element.dataset.rootPath;
     const path = element.dataset.path;
     const field = element.dataset.field;
     const editable = element.hasAttribute('data-editable');
     const currentUserId = parseInt(element.dataset.userId, 10);
 
     const service = new SidebarAssigneesService(path, field);
-    const assignees = new SidebarAssigneesStore(currentUserId, service, editable);
+    const assignees = new SidebarAssigneesStore(currentUserId, service, rootPath, editable);
 
     return {
       assignees,

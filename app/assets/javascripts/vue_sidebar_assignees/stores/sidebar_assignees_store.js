@@ -1,7 +1,8 @@
 export default class SidebarAssigneesStore {
-  constructor(currentUserId, service, editable) {
+  constructor(currentUserId, service, rootPath, editable) {
     this.currentUserId = currentUserId;
     this.service = service;
+    this.rootPath = rootPath;
     this.users = [];
     this.saved = true;
     this.loading = false;

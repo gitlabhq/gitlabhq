@@ -4,6 +4,9 @@ export default {
     assignees: { type: Object, required: true },
   },
   computed: {
+    rootPath() {
+      return this.assignees.rootPath;
+    },
     user() {
       return this.assignees.users[0];
     },
@@ -13,7 +16,7 @@ export default {
   },
   template: `
     <div class="hide-collapsed">
-      <a class="author_link bold" :href="'/' + user.username">
+      <a class="author_link bold" :href="rootPath + user.username">
         <img width="32"
           class="avatar avatar-inline s32"
           :alt="avatarAlt"

@@ -11,6 +11,9 @@ export default {
     assignees: { type: Object, required: true },
   },
   computed: {
+    rootPath() {
+      return this.assignees.rootPath;
+    },
     shouldShowMoreAssignees() {
       return this.assignees.users.length > 5;
     },
@@ -34,11 +37,11 @@ export default {
               v-if="showMore || (index < 5 && !showMore)" >
             <a class="user-link has-tooltip"
               data-placement="bottom"
-              :href="'/' + user.username"
+              :href="rootPath + user.username"
               :data-title="user.name" >
               <img width="32"
                 class="avatar avatar-inline s32"
-                alt="PLACEHOLDER"
+                :alt="user.name + '\\'s avatar'"
                 :src="user.avatarUrl" >
             </a>
           </div>
