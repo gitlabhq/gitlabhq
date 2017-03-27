@@ -17,26 +17,41 @@
       .value.hide-collapsed
         = milestone_progress_bar(milestone)
 
-    - if project
-      .block.due_date
-        .sidebar-collapsed-icon
-          = icon('calendar', 'aria-hidden': 'true')
-          %span.js-due-date-sidebar-value
-            = milestone.due_date.try(:to_s, :medium) || 'None'
-        .title.hide-collapsed
-          Due date
-          - if can?(current_user, :admin_milestone, @project)
-            = link_to 'Edit', edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: 'edit-link pull-right'
-        .value.hide-collapsed
-          %span.value-content
-            - if milestone.due_date
-              %span.bold= milestone.due_date.to_s(:medium)
-            - else
-              %span.no-value No due date
-          - remaining_days = milestone_remaining_days(milestone)
-          - if remaining_days.present?
-            = surround '(', ')' do
-              %span.remaining-days= remaining_days
+    .block.start_date
+      .sidebar-collapsed-icon
+        = icon('calendar', 'aria-hidden': 'true')
+        %span.js-due-date-sidebar-value
+          = milestone.start_date.try(:to_s, :medium) || 'None'
+      .title.hide-collapsed
+        Start date
+        - if @project && can?(current_user, :admin_milestone, @project)
+          = link_to 'Edit', edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: 'edit-link pull-right'
+      .value.hide-collapsed
+        %span.value-content
+          - if milestone.start_date
+            %span.bold= milestone.start_date.to_s(:medium)
+          - else
+            %span.no-value No start date
+
+    .block.due_date
+      .sidebar-collapsed-icon
+        = icon('calendar', 'aria-hidden': 'true')
+        %span.js-due-date-sidebar-value
+          = milestone.due_date.try(:to_s, :medium) || 'None'
+      .title.hide-collapsed
+        Due date
+        - if @project && can?(current_user, :admin_milestone, @project)
+          = link_to 'Edit', edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: 'edit-link pull-right'
+      .value.hide-collapsed
+        %span.value-content
+          - if milestone.due_date
+            %span.bold= milestone.due_date.to_s(:medium)
+          - else
+            %span.no-value No due date
+        - remaining_days = milestone_remaining_days(milestone)
+        - if remaining_days.present?
+          = surround '(', ')' do
+            %span.remaining-days= remaining_days
 
     - if !project || can?(current_user, :read_issue, project)
       .block
