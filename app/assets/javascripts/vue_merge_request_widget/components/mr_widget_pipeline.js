@@ -35,6 +35,11 @@ export default {
           <a class="monospace js-commit-link"
             :href="mr.pipeline.commit.commit_path">{{mr.pipeline.commit.short_id}}</a>.
         </span>
+        <span
+          v-if="mr.pipeline.coverage"
+          class="js-mr-coverage">
+          Coverage {{mr.pipeline.coverage}}%
+        </span>
       </div>
     </div>
   `,

@@ -47,7 +47,8 @@ describe('MRWidgetPipeline', () => {
       expect(el.querySelector('.pipeline-id').getAttribute('href')).toEqual(pipelineMockData.path);
       expect(el.querySelectorAll('.stage-container').length).toEqual(1);
       expect(el.querySelector('.js-commit-link').getAttribute('href')).toEqual(pipelineMockData.commit.commit_path);
-      expect(el.querySelector('.js-commit-link').innerText).toEqual(pipelineMockData.commit.short_id);
+      expect(el.querySelector('.js-commit-link').textContent).toEqual(pipelineMockData.commit.short_id);
+      expect(el.querySelector('.js-mr-coverage').textContent).toContain(`Coverage ${pipelineMockData.coverage}%`);
     });
 
     it('should list multiple stages', (done) => {
@@ -66,6 +67,14 @@ describe('MRWidgetPipeline', () => {
 
       Vue.nextTick(() => {
         expect(el.querySelectorAll('.stage-container button').length).toEqual(0);
+        done();
+      });
+    });
+
+    it('should not have coverage text when pipeline has no coverage info', (done) => {
+      vm.mr.pipeline.coverage = null;
+      Vue.nextTick(() => {
+        expect(el.querySelector('.js-mr-coverage')).toEqual(null);
         done();
       });
     });
