@@ -37,14 +37,7 @@ import './shortcuts_issuable';
 import './shortcuts_network';
 
 // behaviors
-import './behaviors/autosize';
-import './behaviors/details_behavior';
-import './behaviors/quick_submit';
-import './behaviors/requires_input';
-import './behaviors/toggler_behavior';
-import './behaviors/bind_in_out';
-import { installGlEmojiElement } from './behaviors/gl_emoji';
-installGlEmojiElement();
+import './behaviors/';
 
 // blob
 import './blob/create_branch_dropdown';
