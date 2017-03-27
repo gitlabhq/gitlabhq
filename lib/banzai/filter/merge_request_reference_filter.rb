@@ -33,7 +33,9 @@ module Banzai
           projects_per_reference.each do |path, project|
             merge_request_ids = references_per_project[path]
 
-            merge_requests = project.merge_requests.where(iid: merge_request_ids.to_a)
+            merge_requests = project.merge_requests
+              .where(iid: merge_request_ids.to_a)
+              .includes(target_project: :namespace)
 
             merge_requests.each do |merge_request|
               hash[project][merge_request.iid.to_i] = merge_request
