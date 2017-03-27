@@ -106,9 +106,9 @@ describe('Store', () => {
       expect(gl.issueBoards.BoardsStore.shouldAddBlankState()).toBe(false);
     });
 
-    it('check for blank state adding when done list exist', () => {
+    it('check for blank state adding when closed list exist', () => {
       gl.issueBoards.BoardsStore.addList({
-        list_type: 'done'
+        list_type: 'closed'
       });
 
       expect(gl.issueBoards.BoardsStore.shouldAddBlankState()).toBe(true);

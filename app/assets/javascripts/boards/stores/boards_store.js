@@ -45,7 +45,7 @@ import Cookies from 'js-cookie';
     },
     shouldAddBlankState () {
       // Decide whether to add the blank state
-      return !(this.state.lists.filter(list => list.type !== 'done')[0]);
+      return !(this.state.lists.filter(list => list.type !== 'closed')[0]);
     },
     addBlankState () {
       if (!this.shouldAddBlankState() || this.welcomeIsHidden() || this.disabled) return;
@@ -98,7 +98,7 @@ import Cookies from 'js-cookie';
         issueTo.removeLabel(listFrom.label);
       }
 
-      if (listTo.type === 'done') {
+      if (listTo.type === 'closed') {
         issueLists.forEach((list) => {
           list.removeIssue(issue);
         });
