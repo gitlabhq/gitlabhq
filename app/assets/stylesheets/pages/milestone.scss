@@ -68,6 +68,18 @@
     }
   }
 
+  .collapsed-milestone-date {
+    font-size: 12px;
+  }
+
+  .milestone-date {
+    display: block;
+  }
+
+  .date-separator {
+    line-height: 5px;
+  }
+
   .remaining-days strong {
     font-weight: normal;
   }
