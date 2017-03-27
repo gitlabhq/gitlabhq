@@ -46,7 +46,7 @@ describe API::Pipelines do
           %w[running pending].each do |target|
             context "when scope is #{target}" do
               it "returns matched pipelines" do
-                get api("/projects/#{project.id}/pipelines?scope=#{target}", user)
+                get api("/projects/#{project.id}/pipelines", user), { scope: target }
 
                 expect(response).to have_http_status(200)
                 expect(response).to include_pagination_headers
@@ -58,7 +58,7 @@ describe API::Pipelines do
 
           context 'when scope is finished' do
             it 'returns matched pipelines' do
-              get api("/projects/#{project.id}/pipelines?scope=finished", user)
+              get api("/projects/#{project.id}/pipelines", user), { scope: 'finished' }
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
@@ -69,7 +69,7 @@ describe API::Pipelines do
 
           context 'when scope is branches' do
             it 'returns matched pipelines' do
-              get api("/projects/#{project.id}/pipelines?scope=branches", user)
+              get api("/projects/#{project.id}/pipelines", user), { scope: 'branches' }
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
@@ -80,7 +80,7 @@ describe API::Pipelines do
 
           context 'when scope is tags' do
             it 'returns matched pipelines' do
-              get api("/projects/#{project.id}/pipelines?scope=tags", user)
+              get api("/projects/#{project.id}/pipelines", user), { scope: 'tags' }
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
@@ -91,7 +91,7 @@ describe API::Pipelines do
 
           context 'when scope is invalid' do
             it 'returns 400' do
-              get api("/projects/#{project.id}/pipelines?scope=invalid-scope", user)
+              get api("/projects/#{project.id}/pipelines", user), { scope: 'invalid-scope' }
 
               expect(response).to have_http_status(400)
             end
@@ -102,7 +102,7 @@ describe API::Pipelines do
           %w[running pending success failed canceled skipped].each do |target|
             context "when status is #{target}" do
               it 'returns matched pipelines' do
-                get api("/projects/#{project.id}/pipelines?status=#{target}", user)
+                get api("/projects/#{project.id}/pipelines", user), { status: target }
 
                 expect(response).to have_http_status(200)
                 expect(response).to include_pagination_headers
@@ -114,7 +114,7 @@ describe API::Pipelines do
 
           context 'when status is invalid' do
             it 'returns 400' do
-              get api("/projects/#{project.id}/pipelines?status=invalid-status", user)
+              get api("/projects/#{project.id}/pipelines", user), { status: 'invalid-status' }
 
               expect(response).to have_http_status(400)
             end
@@ -124,7 +124,7 @@ describe API::Pipelines do
         context 'when ref is passed' do
           context 'when ref exists' do
             it 'returns matched pipelines' do
-              get api("/projects/#{project.id}/pipelines?ref=master", user)
+              get api("/projects/#{project.id}/pipelines", user), { ref: 'master' }
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
@@ -135,7 +135,7 @@ describe API::Pipelines do
 
           context 'when ref does not exist' do
             it 'returns empty' do
-              get api("/projects/#{project.id}/pipelines?ref=invalid-ref", user)
+              get api("/projects/#{project.id}/pipelines", user), { ref: 'invalid-ref' }
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
@@ -147,7 +147,7 @@ describe API::Pipelines do
         context 'when name is passed' do
           context 'when name exists' do
             it 'returns matched pipelines' do
-              get api("/projects/#{project.id}/pipelines?name=#{user1.name}", user)
+              get api("/projects/#{project.id}/pipelines", user), { name: user1.name }
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
@@ -157,7 +157,7 @@ describe API::Pipelines do
 
           context 'when name does not exist' do
             it 'returns empty' do
-              get api("/projects/#{project.id}/pipelines?name=invalid-name", user)
+              get api("/projects/#{project.id}/pipelines", user), { name: 'invalid-name' }
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
@@ -169,7 +169,7 @@ describe API::Pipelines do
         context 'when username is passed' do
           context 'when username exists' do
             it 'returns matched pipelines' do
-              get api("/projects/#{project.id}/pipelines?username=#{user1.username}", user)
+              get api("/projects/#{project.id}/pipelines", user), { username: user1.username }
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
@@ -179,7 +179,7 @@ describe API::Pipelines do
 
           context 'when username does not exist' do
             it 'returns empty' do
-              get api("/projects/#{project.id}/pipelines?username=invalid-username", user)
+              get api("/projects/#{project.id}/pipelines", user), { username: 'invalid-username' }
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
@@ -191,7 +191,7 @@ describe API::Pipelines do
         context 'when yaml_errors is passed' do
           context 'when yaml_errors is true' do
             it 'returns matched pipelines' do
-              get api("/projects/#{project.id}/pipelines?yaml_errors=true", user)
+              get api("/projects/#{project.id}/pipelines", user), { yaml_errors: true }
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
@@ -201,7 +201,7 @@ describe API::Pipelines do
 
           context 'when yaml_errors is false' do
             it 'returns matched pipelines' do
-              get api("/projects/#{project.id}/pipelines?yaml_errors=false", user)
+              get api("/projects/#{project.id}/pipelines", user), { yaml_errors: false }
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
@@ -211,7 +211,7 @@ describe API::Pipelines do
 
           context 'when yaml_errors is invalid' do
             it 'returns 400' do
-              get api("/projects/#{project.id}/pipelines?yaml_errors=invalid-yaml_errors", user)
+              get api("/projects/#{project.id}/pipelines", user), { yaml_errors: 'invalid-yaml_errors' }
 
               expect(response).to have_http_status(400)
             end
@@ -221,7 +221,7 @@ describe API::Pipelines do
         context 'when order_by and sort are passed' do
           context 'when order_by and sort are valid' do
             it 'sorts pipelines' do
-              get api("/projects/#{project.id}/pipelines?order_by=user_id&sort=asc", user)
+              get api("/projects/#{project.id}/pipelines", user), { order_by: 'user_id', sort: 'asc' }
 
               expect(response).to have_http_status(200)
               expect(response).to include_pagination_headers
@@ -235,7 +235,7 @@ describe API::Pipelines do
 
           context 'when order_by is invalid' do
             it 'returns 400' do
-              get api("/projects/#{project.id}/pipelines?order_by=lock_version&sort=asc", user)
+              get api("/projects/#{project.id}/pipelines", user), { order_by: 'lock_version', sort: 'asc' }
 
               expect(response).to have_http_status(400)
             end
@@ -243,7 +243,7 @@ describe API::Pipelines do
 
           context 'when sort is invalid' do
             it 'returns 400' do
-              get api("/projects/#{project.id}/pipelines?order_by=id&sort=hack", user)
+              get api("/projects/#{project.id}/pipelines", user), { order_by: 'id', sort: 'hack' }
 
               expect(response).to have_http_status(400)
             end
