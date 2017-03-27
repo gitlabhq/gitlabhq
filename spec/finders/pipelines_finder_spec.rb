@@ -1,67 +1,49 @@
 require 'spec_helper'
 
 describe PipelinesFinder do
-  let(:user1) { create(:user) }
-  let(:user2) { create(:user) }
   let(:project) { create(:project, :repository) }
-
-  before do
-    create(:ci_pipeline, project: project, user: user1, ref: 'v1.0.0', tag: true)
-    create(:ci_pipeline, project: project, user: user1, status: 'created')
-    create(:ci_pipeline, project: project, user: user1, status: 'pending')
-    create(:ci_pipeline, project: project, user: user1, status: 'running')
-    create(:ci_pipeline, project: project, user: user1, status: 'success')
-    create(:ci_pipeline, project: project, user: user2, status: 'failed')
-    create(:ci_pipeline, project: project, user: user2, status: 'canceled')
-    create(:ci_pipeline, project: project, user: user2, status: 'skipped')
-    create(:ci_pipeline, project: project, user: user2, yaml_errors: 'Syntax error')
-  end
 
   subject { described_class.new(project, params).execute }
 
   describe "#execute" do
-    context 'when nothing is passed' do
+    context 'when params is empty' do
       let(:params) { {} }
+      let!(:pipelines) { create_list(:ci_pipeline, 2, project: project) }
 
       it 'returns all pipelines' do
-        expect(subject).to match_array(project.pipelines)
-      end
-
-      it 'orders in descending order on ID' do
-        expect(subject).to eq(project.pipelines.order(id: :desc))
+        is_expected.to eq(pipelines.sort_by{ |p| -p.id })
       end
     end
 
-    context 'when scope is passed' do
-      context 'when scope is running' do
-        let(:params) { { scope: 'running' } }
+    %w[running pending].each do |target|
+      context "when scope is #{target}" do
+        let(:params) { { scope: target } }
+        let!(:pipeline) { create(:ci_pipeline, project: project, status: target) }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(project.pipelines.running)
+          is_expected.to eq([pipeline])
         end
       end
+    end
 
-      context 'when scope is pending' do
-        let(:params) { { scope: 'pending' } }
+    context 'when scope is finished' do
+      let(:params) { { scope: 'finished' } }
+      let!(:pipeline) { create(:ci_pipeline, project: project, status: 'success') }
 
-        it 'returns matched pipelines' do
-          expect(subject).to match_array(project.pipelines.pending)
-        end
+      it 'returns matched pipelines' do
+        is_expected.to eq([pipeline])
       end
+    end
 
-      context 'when scope is finished' do
-        let(:params) { { scope: 'finished' } }
-
-        it 'returns matched pipelines' do
-          expect(subject).to match_array(project.pipelines.finished)
-        end
-      end
+    context 'when scope is branches or tags' do
+      let!(:pipeline_branch) { create(:ci_pipeline, project: project) }
+      let!(:pipeline_tag) { create(:ci_pipeline, project: project, ref: 'v1.0.0', tag: true) }
 
       context 'when scope is branches' do
         let(:params) { { scope: 'branches' } }
 
         it 'returns matched pipelines' do
-          expect(subject).to eq([project.pipelines.where(tag: false).last])
+          is_expected.to eq([pipeline_branch])
         end
       end
 
@@ -69,67 +51,30 @@ describe PipelinesFinder do
         let(:params) { { scope: 'tags' } }
 
         it 'returns matched pipelines' do
-          expect(subject).to eq([project.pipelines.where(tag: true).last])
+          is_expected.to eq([pipeline_tag])
         end
       end
     end
 
-    context 'when status is passed' do
-      context 'when status is running' do
-        let(:params) { { status: 'running' } }
+    %w[running pending success failed canceled skipped].each do |target|
+      context "when status is #{target}" do
+        let(:params) { { status: target } }
+        let!(:pipeline) { create(:ci_pipeline, project: project, status: target) }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(project.pipelines.running)
+          is_expected.to eq([pipeline])
         end
       end
+    end
 
-      context 'when status is pending' do
-        let(:params) { { status: 'pending' } }
+    context 'when ref is specified' do
+      let!(:pipeline) { create(:ci_pipeline, project: project) }
 
-        it 'returns matched pipelines' do
-          expect(subject).to match_array(project.pipelines.pending)
-        end
-      end
-
-      context 'when status is success' do
-        let(:params) { { status: 'success' } }
-
-        it 'returns matched pipelines' do
-          expect(subject).to match_array(project.pipelines.success)
-        end
-      end
-
-      context 'when status is failed' do
-        let(:params) { { status: 'failed' } }
-
-        it 'returns matched pipelines' do
-          expect(subject).to match_array(project.pipelines.failed)
-        end
-      end
-
-      context 'when status is canceled' do
-        let(:params) { { status: 'canceled' } }
-
-        it 'returns matched pipelines' do
-          expect(subject).to match_array(project.pipelines.canceled)
-        end
-      end
-
-      context 'when status is skipped' do
-        let(:params) { { status: 'skipped' } }
-
-        it 'returns matched pipelines' do
-          expect(subject).to match_array(project.pipelines.skipped)
-        end
-      end
-    end 
-    
-    context 'when ref is passed' do
       context 'when ref exists' do
         let(:params) { { ref: 'master' } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(project.pipelines.where(ref: 'master'))
+          is_expected.to eq([pipeline])
         end
       end
 
@@ -137,17 +82,20 @@ describe PipelinesFinder do
         let(:params) { { ref: 'invalid-ref' } }
 
         it 'returns empty' do
-          expect(subject).to be_empty
+          is_expected.to be_empty
         end
       end
     end
 
-    context 'when name is passed' do
+    context 'when name is specified' do
+      let(:user) { create(:user) }
+      let!(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+
       context 'when name exists' do
-        let(:params) { { name: user1.name } }
+        let(:params) { { name: user.name } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(project.pipelines.where(user: user1))
+          is_expected.to eq([pipeline])
         end
       end
 
@@ -155,17 +103,20 @@ describe PipelinesFinder do
         let(:params) { { name: 'invalid-name' } }
 
         it 'returns empty' do
-          expect(subject).to be_empty
+          is_expected.to be_empty
         end
       end
     end
 
-    context 'when username is passed' do
+    context 'when username is specified' do
+      let(:user) { create(:user) }
+      let!(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+
       context 'when username exists' do
-        let(:params) { { username: user1.username } }
+        let(:params) { { username: user.username } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(project.pipelines.where(user: user1))
+          is_expected.to eq([pipeline])
         end
       end
 
@@ -173,17 +124,20 @@ describe PipelinesFinder do
         let(:params) { { username: 'invalid-username' } }
 
         it 'returns empty' do
-          expect(subject).to be_empty
+          is_expected.to be_empty
         end
       end
     end
 
-    context 'when yaml_errors is passed' do
+    context 'when yaml_errors is specified' do
+      let!(:pipeline1) { create(:ci_pipeline, project: project, yaml_errors: 'Syntax error') }
+      let!(:pipeline2) { create(:ci_pipeline, project: project) }
+
       context 'when yaml_errors is true' do
         let(:params) { { yaml_errors: true } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(project.pipelines.where("yaml_errors IS NOT NULL"))
+          is_expected.to eq([pipeline1])
         end
       end
 
@@ -191,49 +145,52 @@ describe PipelinesFinder do
         let(:params) { { yaml_errors: false } }
 
         it 'returns matched pipelines' do
-          expect(subject).to match_array(project.pipelines.where("yaml_errors IS NULL"))
+          is_expected.to eq([pipeline2])
         end
       end
 
       context 'when yaml_errors is invalid' do
-        let(:params) { { yaml_errors: "UnexpectedValue" } }
+        let(:params) { { yaml_errors: "invalid-yaml_errors" } }
 
         it 'returns all pipelines' do
-          expect(subject).to match_array(project.pipelines.all)
+          is_expected.to eq([pipeline1, pipeline2].sort_by{ |p| -p.id })
         end
       end
     end
 
-    context 'when order_by and sort are passed' do
-      context 'when order_by and sort are valid' do
+    context 'when order_by and sort are specified' do
+      context 'when order_by user_id' do
         let(:params) { { order_by: 'user_id', sort: 'asc' } }
+        let!(:pipelines) { create_list(:ci_pipeline, 2, project: project, user: create(:user)) }
 
-        it 'sorts pipelines' do
-          expect(subject).to eq(project.pipelines.order(user_id: :asc))
+        it 'sorts as user_id: :desc' do
+          is_expected.to eq(pipelines.sort_by{ |p| p.user.id })
+        end
+
+        context 'when sort is invalid' do
+          let(:params) { { order_by: 'user_id', sort: 'invalid_sort' } }
+
+          it 'sorts as user_id: :desc' do
+            is_expected.to eq(pipelines.sort_by{ |p| -p.user.id })
+          end
         end
       end
 
       context 'when order_by is invalid' do
         let(:params) { { order_by: 'invalid_column', sort: 'asc' } }
+        let!(:pipelines) { create_list(:ci_pipeline, 2, project: project) }
 
-        it 'sorts pipelines with id: (default)' do
-          expect(subject).to eq(project.pipelines.order(id: :asc))
-        end
-      end
-
-      context 'when sort is invalid' do
-        let(:params) { { order_by: 'user_id', sort: 'invalid_sort' } }
-
-        it 'sorts pipelines with :desc (default)' do
-          expect(subject).to eq(project.pipelines.order(user_id: :desc))
+        it 'sorts as id: :asc' do
+          is_expected.to eq(pipelines.sort_by{ |p| p.id })
         end
       end
 
       context 'when both are nil' do
         let(:params) { { order_by: nil, sort: nil } }
+        let!(:pipelines) { create_list(:ci_pipeline, 2, project: project) }
 
-        it 'sorts pipelines by default' do
-          expect(subject).to eq(project.pipelines.order(id: :desc))
+        it 'sorts as id: :desc' do
+          is_expected.to eq(pipelines.sort_by{ |p| -p.id })
         end
       end
     end
