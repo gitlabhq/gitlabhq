@@ -9,13 +9,13 @@ Notes are comments on snippets, issues or merge requests.
 Gets a list of all notes for a single issue.
 
 ```
-GET /projects/:id/issues/:issue_id/notes
+GET /projects/:id/issues/:issue_iid/notes
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
-- `issue_id` (required) - The ID of an issue
+- `issue_iid` (required) - The IID of an issue
 
 ```json
 [
@@ -63,13 +63,13 @@ Parameters:
 Returns a single note for a specific project issue
 
 ```
-GET /projects/:id/issues/:issue_id/notes/:note_id
+GET /projects/:id/issues/:issue_iid/notes/:note_id
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
-- `issue_id` (required) - The ID of a project issue
+- `issue_iid` (required) - The IID of a project issue
 - `note_id` (required) - The ID of an issue note
 
 ### Create new issue note
@@ -78,13 +78,13 @@ Creates a new note to a single project issue. If you create a note where the bod
 only contains an Award Emoji, you'll receive this object back.
 
 ```
-POST /projects/:id/issues/:issue_id/notes
+POST /projects/:id/issues/:issue_iid/notes
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
-- `issue_id` (required) - The ID of an issue
+- `issue_id` (required) - The IID of an issue
 - `body` (required) - The content of a note
 - `created_at` (optional) - Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z
 
@@ -93,13 +93,13 @@ Parameters:
 Modify existing note of an issue.
 
 ```
-PUT /projects/:id/issues/:issue_id/notes/:note_id
+PUT /projects/:id/issues/:issue_iid/notes/:note_id
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
-- `issue_id` (required) - The ID of an issue
+- `issue_iid` (required) - The IID of an issue
 - `note_id` (required) - The ID of a note
 - `body` (required) - The content of a note
 
@@ -108,7 +108,7 @@ Parameters:
 Deletes an existing note of an issue.
 
 ```
-DELETE /projects/:id/issues/:issue_id/notes/:note_id
+DELETE /projects/:id/issues/:issue_iid/notes/:note_id
 ```
 
 Parameters:
@@ -116,7 +116,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of a project |
-| `issue_id` | integer | yes | The ID of an issue |
+| `issue_iid` | integer | yes | The IID of an issue |
 | `note_id` | integer | yes | The ID of a note |
 
 ```bash
@@ -228,26 +228,26 @@ curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://git
 Gets a list of all notes for a single merge request.
 
 ```
-GET /projects/:id/merge_requests/:merge_request_id/notes
+GET /projects/:id/merge_requests/:merge_request_iid/notes
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
-- `merge_request_id` (required) - The ID of a project merge request
+- `merge_request_iid` (required) - The IID of a project merge request
 
 ### Get single merge request note
 
 Returns a single note for a given merge request.
 
 ```
-GET /projects/:id/merge_requests/:merge_request_id/notes/:note_id
+GET /projects/:id/merge_requests/:merge_request_iid/notes/:note_id
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
-- `merge_request_id` (required) - The ID of a project merge request
+- `merge_request_iid` (required) - The IID of a project merge request
 - `note_id` (required) - The ID of a merge request note
 
 ```json
@@ -278,13 +278,13 @@ If you create a note where the body only contains an Award Emoji, you'll receive
 this object back.
 
 ```
-POST /projects/:id/merge_requests/:merge_request_id/notes
+POST /projects/:id/merge_requests/:merge_request_iid/notes
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
-- `merge_request_id` (required) - The ID of a merge request
+- `merge_request_iid` (required) - The IID of a merge request
 - `body` (required) - The content of a note
 
 ### Modify existing merge request note
@@ -292,13 +292,13 @@ Parameters:
 Modify existing note of a merge request.
 
 ```
-PUT /projects/:id/merge_requests/:merge_request_id/notes/:note_id
+PUT /projects/:id/merge_requests/:merge_request_iid/notes/:note_id
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
-- `merge_request_id` (required) - The ID of a merge request
+- `merge_request_iid` (required) - The IID of a merge request
 - `note_id` (required) - The ID of a note
 - `body` (required) - The content of a note
 
@@ -307,7 +307,7 @@ Parameters:
 Deletes an existing note of a merge request.
 
 ```
-DELETE /projects/:id/merge_requests/:merge_request_id/notes/:note_id
+DELETE /projects/:id/merge_requests/:merge_request_iid/notes/:note_id
 ```
 
 Parameters:
@@ -315,7 +315,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of a project |
-| `merge_request_id` | integer | yes | The ID of a merge request |
+| `merge_request_iid` | integer | yes | The IID of a merge request |
 | `note_id` | integer | yes | The ID of a note |
 
 ```bash
