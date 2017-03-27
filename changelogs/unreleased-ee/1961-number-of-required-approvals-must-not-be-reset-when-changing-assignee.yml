@@ -1,0 +1,4 @@
+---
+title: Fix approver count reset when editing assignee or labels
+merge_request:
+author:

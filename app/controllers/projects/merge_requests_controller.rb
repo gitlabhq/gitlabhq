@@ -745,12 +745,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     ]
   end
 
+  # If the number of approvals is not greater than the project default, set to
+  # nil, so that we fall back to the project default. If it's not set, we can
+  # let the normal update logic handle this.
   def clamp_approvals_before_merge(mr_params)
+    return mr_params unless mr_params[:approvals_before_merge]
+
     target_project = @project.forked_from_project if @project.id.to_s != mr_params[:target_project_id]
     target_project ||= @project
 
-    # If the number of approvals is not greater than the project default, set to nil,
-    # so that we fall back to the project default.
     if mr_params[:approvals_before_merge].to_i <= target_project.approvals_before_merge
       mr_params[:approvals_before_merge] = nil
     end
