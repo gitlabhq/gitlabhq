@@ -838,7 +838,7 @@ describe API::MergeRequests, api: true  do
     end
   end
 
-  describe 'GET :id/merge_requests/:merge_request_id/approvals' do
+  describe 'GET :id/merge_requests/:merge_request_iid/approvals' do
     it 'retrieves the approval status' do
       approver = create :user
       project.update_attribute(:approvals_before_merge, 2)
@@ -846,7 +846,7 @@ describe API::MergeRequests, api: true  do
       project.team << [create(:user), :developer]
       merge_request.approvals.create(user: approver)
 
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approvals", user)
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approvals", user)
 
       expect(response.status).to eq(200)
       expect(json_response['approvals_required']).to eq 2
@@ -857,11 +857,11 @@ describe API::MergeRequests, api: true  do
     end
   end
 
-  describe 'POST :id/merge_requests/:merge_request_id/approve' do
+  describe 'POST :id/merge_requests/:merge_request_iid/approve' do
     before { project.update_attribute(:approvals_before_merge, 2) }
 
     context 'as the author of the merge request' do
-      before { post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", user) }
+      before { post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approve", user) }
 
       it 'returns a 401' do
         expect(response).to have_http_status(401)
@@ -875,7 +875,7 @@ describe API::MergeRequests, api: true  do
         project.team << [approver, :developer]
         project.team << [create(:user), :developer]
 
-        post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", approver)
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approve", approver)
       end
 
       it 'approves the merge request' do
@@ -887,7 +887,7 @@ describe API::MergeRequests, api: true  do
     end
   end
 
-  describe 'DELETE :id/merge_requests/:merge_request_id/unapprove' do
+  describe 'DELETE :id/merge_requests/:merge_request_iid/unapprove' do
     before { project.update_attribute(:approvals_before_merge, 2) }
 
     context 'as a user who has approved the merge request' do
@@ -901,7 +901,7 @@ describe API::MergeRequests, api: true  do
         merge_request.approvals.create(user: approver)
         merge_request.approvals.create(user: unapprover)
 
-        delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}/unapprove", unapprover)
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unapprove", unapprover)
       end
 
       it 'unapproves the merge request' do
