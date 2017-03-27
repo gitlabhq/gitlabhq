@@ -59,10 +59,10 @@
               .dropdown-menu-nav.dropdown-menu-align-right
                 %ul
                   %li
-                    Signed in as
-                    %strong
-                      %p
-                        #{@current_user.username.truncate(8)}
+                    Hello
+                    = succeed '!' do
+                      %strong
+                        #{@current_user.username}
                   %li.divider
                   %li
                     = link_to "Profile", current_user, class: 'profile-link', aria: { label: "Profile" }, data: { user: current_user.username }
