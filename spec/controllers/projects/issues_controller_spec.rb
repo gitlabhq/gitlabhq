@@ -90,6 +90,7 @@ describe Projects::IssuesController do
     it 'redirects to signin if not logged in' do
       get :new, namespace_id: project.namespace, project_id: project
 
+      expect(flash[:notice]).to eq 'Please sign in to create the new issue.'
       expect(response).to redirect_to(new_user_session_path)
     end
 
