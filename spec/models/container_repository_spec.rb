@@ -92,4 +92,29 @@ describe ContainerRepository do
       end
     end
   end
+
+  describe '#from_repository_path' do
+    context 'when received multi-level repository path' do
+      let(:repository) do
+        described_class.from_repository_path('group/test/some/image/name')
+      end
+
+      pending 'fabricates object within a correct project' do
+        expect(repository.project).to eq project
+      end
+
+      pending 'it fabricates project with a correct name' do
+        expect(repository.name).to eq 'some/image/name'
+      end
+    end
+
+    context 'when path contains too many nodes' do
+    end
+
+    context 'when received multi-level repository with nested groups' do
+    end
+
+    context 'when received root repository path' do
+    end
+  end
 end
