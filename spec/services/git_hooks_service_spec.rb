@@ -3,8 +3,8 @@ require 'spec_helper'
 describe GitHooksService, services: true do
   include RepoHelpers
 
-  let(:user)    { create :user }
-  let(:project) { create :project }
+  let(:user)    { create(:user) }
+  let(:project) { create(:project, :repository) }
   let(:service) { GitHooksService.new }
 
   before do
