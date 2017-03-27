@@ -87,12 +87,12 @@ your Runners in the most possible secure way, by avoiding the following:
 By using an insecure GitLab Runner configuration, you allow the rogue developers
 to steal the tokens of other jobs.
 
-## job triggers
+## Pipeline triggers
 
-[job triggers][triggers] do not support the new permission model.
-They continue to use the old authentication mechanism where the CI job
-can access only its own sources. We plan to remove that limitation in one of
-the upcoming releases.
+Since 9.0 [pipelnie triggers][triggers] do support the new permission model.
+The new triggers do impersonate their associated user including their access
+to projects and their project permissions. To migrate trigger to use new permisison
+model use **Take ownership**.
 
 ## Before GitLab 8.12
 
