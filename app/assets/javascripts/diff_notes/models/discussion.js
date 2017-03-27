@@ -1,6 +1,7 @@
 /* eslint-disable space-before-function-paren, camelcase, guard-for-in, no-restricted-syntax, no-unused-vars, max-len */
-/* global Vue */
 /* global NoteModel */
+
+import Vue from 'vue';
 
 class DiscussionModel {
   constructor (discussionId) {

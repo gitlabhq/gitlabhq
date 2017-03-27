@@ -92,6 +92,10 @@
 .award-menu-holder {
   display: inline-block;
   position: relative;
+
+  .tooltip {
+    white-space: nowrap;
+  }
 }
 
 .award-control {
@@ -124,6 +128,10 @@
     &:focus {
       outline: 0;
     }
+
+    .award-control-icon {
+      margin: 0;
+    }
   }
 
   &.is-loading {
@@ -153,6 +161,7 @@
   .award-control-icon {
     color: $border-gray-normal;
     margin-top: 1px;
+    padding: 0 2px;
   }
 
   .award-control-text {

@@ -7,7 +7,6 @@ class MergeRequest < ActiveRecord::Base
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
-  belongs_to :project, foreign_key: :target_project_id
   belongs_to :merge_user, class_name: "User"
 
   has_many :merge_request_diffs, dependent: :destroy
@@ -155,8 +154,10 @@ class MergeRequest < ActiveRecord::Base
   #
   # Returns an ActiveRecord::Relation.
   def self.in_projects(relation)
-    source = where(source_project_id: relation).select(:id)
-    target = where(target_project_id: relation).select(:id)
+    # unscoping unnecessary conditions that'll be applied
+    # when executing `where("merge_requests.id IN (#{union.to_sql})")`
+    source = unscoped.where(source_project_id: relation).select(:id)
+    target = unscoped.where(target_project_id: relation).select(:id)
     union  = Gitlab::SQL::Union.new([source, target])
 
     where("merge_requests.id IN (#{union.to_sql})")
@@ -539,6 +540,10 @@ class MergeRequest < ActiveRecord::Base
 
   def for_fork?
     target_project != source_project
+  end
+
+  def project
+    target_project
   end
 
   # If the merge request closes any issues, save this information in the

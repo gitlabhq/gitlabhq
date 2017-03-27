@@ -30,7 +30,14 @@ class PrometheusService < MonitoringService
   end
 
   def help
-    'Retrieves `container_cpu_usage_seconds_total` and `container_memory_usage_bytes` from the configured Prometheus server. An `environment` label is required on each metric to identify the Environment.'
+    <<-MD.strip_heredoc
+      Retrieves the Kubernetes node metrics `container_cpu_usage_seconds_total` 
+      and `container_memory_usage_bytes` from the configured Prometheus server.
+
+      If you are not using [Auto-Deploy](https://docs.gitlab.com/ee/ci/autodeploy/index.html)
+      or have set up your own Prometheus server, an `environment` label is required on each metric to
+      [identify the Environment](https://docs.gitlab.com/ce/user/project/integrations/prometheus.html#metrics-and-labels).
+    MD
   end
 
   def self.to_param
@@ -67,16 +74,16 @@ class PrometheusService < MonitoringService
   def calculate_reactive_cache(environment_slug)
     return unless active? && project && !project.pending_delete?
 
-    memory_query = %{sum(container_memory_usage_bytes{container_name="app",environment="#{environment_slug}"})/1024/1024}
-    cpu_query = %{sum(rate(container_cpu_usage_seconds_total{container_name="app",environment="#{environment_slug}"}[2m]))}
+    memory_query = %{(sum(container_memory_usage_bytes{container_name="app",environment="#{environment_slug}"}) / count(container_memory_usage_bytes{container_name="app",environment="#{environment_slug}"})) /1024/1024}
+    cpu_query = %{sum(rate(container_cpu_usage_seconds_total{container_name="app",environment="#{environment_slug}"}[2m])) / count(container_cpu_usage_seconds_total{container_name="app",environment="#{environment_slug}"}) * 100}
 
     {
       success: true,
       metrics: {
-        # Memory used in MB
+        # Average Memory used in MB
         memory_values: client.query_range(memory_query, start: 8.hours.ago),
         memory_current: client.query(memory_query),
-        # CPU Usage rate in cores.
+        # Average CPU Utilization
         cpu_values: client.query_range(cpu_query, start: 8.hours.ago),
         cpu_current: client.query(cpu_query)
       },

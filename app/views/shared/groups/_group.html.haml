@@ -17,7 +17,7 @@
   .stats
     %span
       = icon('bookmark')
-      = number_with_delimiter(group.projects.count)
+      = number_with_delimiter(group.projects.non_archived.count)
 
     %span
       = icon('users')

@@ -1,4 +1,3 @@
-/* global Vue */
 /* global ListIssue */
 
 require('~/boards/models/issue');

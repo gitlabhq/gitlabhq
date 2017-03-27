@@ -80,3 +80,4 @@ Below are the changes made between V3 and V4.
   - `GET /projects/:id/repository/blobs/:sha` now returns JSON attributes for the blob identified by `:sha`, instead of finding the commit identified by `:sha` and returning the raw content of the blob in that commit identified by the required `?filepath=:filepath`
   - Moved `GET /projects/:id/repository/commits/:sha/blob?file_path=:file_path`  and `GET /projects/:id/repository/blobs/:sha?file_path=:file_path` to `GET /projects/:id/repository/files/:file_path/raw?ref=:sha`
   - `GET /projects/:id/repository/tree` parameter `ref_name` has been renamed to `ref` for consistency
+- `confirm` parameter for `POST /users` has been deprecated in favor of `skip_confirmation` parameter

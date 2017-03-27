@@ -196,7 +196,7 @@ module SharedDiffNote
   step 'The diff comment preview tab should display rendered Markdown' do
     page.within(diff_file_selector) do
       find('.js-md-preview-button').click
-      expect(find('.js-md-preview')).to have_css('img.emoji', visible: true)
+      expect(find('.js-md-preview')).to have_css('gl-emoji', visible: true)
     end
   end
 
@@ -210,7 +210,7 @@ module SharedDiffNote
 
   step 'I should see a diff comment with an emoji image' do
     page.within("#{diff_file_selector} .note") do
-      expect(page).to have_xpath("//img[@alt=':smile:']")
+      expect(page).to have_xpath("//gl-emoji[@data-name='smile']")
     end
   end
 

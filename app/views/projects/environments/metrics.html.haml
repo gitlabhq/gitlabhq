@@ -18,7 +18,11 @@
           = render 'projects/deployments/actions', deployment: @environment.last_deployment
   .row
     .col-sm-12
+      %h4
+        CPU utilization
       %svg.prometheus-graph{ 'graph-type' => 'cpu_values' }
   .row
     .col-sm-12
+      %h4
+        Memory usage
       %svg.prometheus-graph{ 'graph-type' => 'memory_values' }

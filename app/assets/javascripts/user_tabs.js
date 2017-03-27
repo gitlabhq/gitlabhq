@@ -1,4 +1,4 @@
-/* eslint-disable max-len, space-before-function-paren, no-underscore-dangle, consistent-return, comma-dangle, no-unused-vars, dot-notation, no-new, no-return-assign, camelcase, no-param-reassign */
+/* eslint-disable max-len, space-before-function-paren, no-underscore-dangle, consistent-return, comma-dangle, no-unused-vars, dot-notation, no-new, no-return-assign, camelcase, no-param-reassign, class-methods-use-this */
 
 /*
 UserTabs
@@ -82,8 +82,19 @@ content on the Users#show page.
     }
 
     bindEvents() {
-      return this.$parentEl.off('shown.bs.tab', '.nav-links a[data-toggle="tab"]')
+      this.changeProjectsPageWrapper = this.changeProjectsPage.bind(this);
+
+      this.$parentEl.off('shown.bs.tab', '.nav-links a[data-toggle="tab"]')
         .on('shown.bs.tab', '.nav-links a[data-toggle="tab"]', event => this.tabShown(event));
+
+      this.$parentEl.on('click', '.gl-pagination a', this.changeProjectsPageWrapper);
+    }
+
+    changeProjectsPage(e) {
+      e.preventDefault();
+
+      $('.tab-pane.active').empty();
+      this.loadTab($(e.target).attr('href'), this.getCurrentAction());
     }
 
     tabShown(event) {
@@ -119,7 +130,7 @@ content on the Users#show page.
         complete: () => this.toggleLoading(false),
         dataType: 'json',
         type: 'GET',
-        url: `${source}.json`,
+        url: source,
         success: (data) => {
           const tabSelector = `div#${action}`;
           this.$parentEl.find(tabSelector).html(data.html);
@@ -152,6 +163,10 @@ content on the Users#show page.
         url: new_state
       }, document.title, new_state);
       return new_state;
+    }
+
+    getCurrentAction() {
+      return this.$parentEl.find('.nav-links .active a').data('action');
     }
   }
   global.UserTabs = UserTabs;

@@ -82,7 +82,7 @@ If a contributor is no longer actively working on a submitted merge request
 we can decide that the merge request will be finished by one of our
 [Merge request coaches][team] or close the merge request. We make this decision
 based on how important the change is for our product vision. If a Merge request
-coach is going to finish the merge request we assign the 
+coach is going to finish the merge request we assign the
 ~"coach will finish" label.
 
 ## Helping others
@@ -479,8 +479,7 @@ merge request:
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
 1.  [Newlines styleguide][newlines-styleguide]
 1.  [Testing](doc/development/testing.md)
-1.  [JavaScript (ES6)](https://github.com/airbnb/javascript)
-1.  [JavaScript (ES5)](https://github.com/airbnb/javascript/tree/es5-deprecated/es5)
+1.  [JavaScript styleguide][js-styleguide]
 1.  [SCSS styleguide][scss-styleguide]
 1.  [Shell commands](doc/development/shell_commands.md) created by GitLab
     contributors to enhance security
@@ -549,7 +548,8 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
 [changelog]: doc/development/changelog.md "Generate a changelog entry"
 [doc-styleguide]: doc/development/doc_styleguide.md "Documentation styleguide"
-[scss-styleguide]: doc/development/scss_styleguide.md "SCSS styleguide"
+[js-styleguide]: doc/development/fe_guide/style_guide_js.md "JavaScript styleguide"
+[scss-styleguide]: doc/development/fe_guide/style_guide_scss.md "SCSS styleguide"
 [newlines-styleguide]: doc/development/newlines_styleguide.md "Newlines styleguide"
 [UX Guide for GitLab]: http://docs.gitlab.com/ce/development/ux_guide/
 [license-finder-doc]: doc/development/licensing.md

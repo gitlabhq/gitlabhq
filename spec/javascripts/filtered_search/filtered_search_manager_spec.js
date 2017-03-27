@@ -58,7 +58,7 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
     });
 
     describe('search', () => {
-      const defaultParams = '?scope=all&utf8=✓&state=opened';
+      const defaultParams = '?scope=all&utf8=%E2%9C%93&state=opened';
 
       it('should search with a single word', (done) => {
         input.value = 'searchTerm';

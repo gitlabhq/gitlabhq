@@ -13,7 +13,7 @@
   .cover-block.user-cover-block
     .cover-controls
       - if @user == current_user
-        = link_to profile_path, class: 'btn btn-gray' do
+        = link_to profile_path, class: 'btn btn-gray has-tooltip', title: 'Edit profile', 'aria-label': 'Edit profile' do
           = icon('pencil')
       - elsif current_user
         - if @user.abuse_report
@@ -24,7 +24,7 @@
           = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: 'btn btn-gray',
             title: 'Report abuse', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
             = icon('exclamation-circle')
-      = link_to user_path(@user, rss_url_options), class: 'btn btn-gray' do
+      = link_to user_path(@user, rss_url_options), class: 'btn btn-gray has-tooltip', title: 'Subscribe', 'aria-label': 'Subscribe' do
         = icon('rss')
       - if current_user && current_user.admin?
         = link_to [:admin, @user], class: 'btn btn-gray', title: 'View user in admin area',
@@ -44,7 +44,7 @@
           %span.middle-dot-divider
             @#{@user.username}
           %span.middle-dot-divider
-            Member since #{@user.created_at.to_s(:medium)}
+            Member since #{@user.created_at.to_date.to_s(:long)}
 
         .cover-desc
           - unless @user.public_email.blank?
@@ -97,7 +97,8 @@
           Snippets
 
   %div{ class: container_class }
-    .user-callout{ 'callout-svg' => custom_icon('icon_customization') }
+    - if @user == current_user
+      .user-callout{ 'callout-svg' => custom_icon('icon_customization') }
     .tab-content
       #activity.tab-pane
         .row-content-block.calender-block.white.second-block.hidden-xs

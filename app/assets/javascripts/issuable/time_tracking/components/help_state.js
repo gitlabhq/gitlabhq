@@ -1,4 +1,5 @@
-/* global Vue */
+import Vue from 'vue';
+
 (() => {
   Vue.component('time-tracking-help-state', {
     name: 'time-tracking-help-state',

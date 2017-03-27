@@ -18,7 +18,7 @@
           %th Last edit
       - @services.sort_by(&:title).each do |service|
         %tr
-          %td
+          %td{ "aria-label" => "#{service.title}: status " + (service.activated? ? "on" : "off") }
             = boolean_to_icon service.activated?
           %td
             = link_to edit_namespace_project_service_path(@project.namespace, @project, service.to_param) do

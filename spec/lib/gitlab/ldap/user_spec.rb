@@ -57,7 +57,7 @@ describe Gitlab::LDAP::User, lib: true do
     end
   end
 
-  describe :find_or_create do
+  describe 'find or create' do
     it "finds the user if already existing" do
       create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
 
