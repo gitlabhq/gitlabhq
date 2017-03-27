@@ -15,6 +15,13 @@
         %span.sr-only Toggle navigation
         = icon('ellipsis-v')
 
+      .header-logo
+        = link_to root_path, class: 'home', title: 'Dashboard', id: 'logo' do
+          = brand_header_logo
+
+      .title-container
+        %h1.title{ class: ('initializing' if @has_group_title) }= title
+
       .navbar-collapse.collapse
         %ul.nav.navbar-nav
           %li.hidden-sm.hidden-xs
@@ -62,12 +69,6 @@
             %li
               %div
                 = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-success'
-
-      .header-logo
-        = link_to root_path, class: 'home', title: 'Dashboard', id: 'logo' do
-          = brand_header_logo
-
-      %h1.title{ class: ('initializing' if @has_group_title) }= title
 
       = yield :header_content
 
