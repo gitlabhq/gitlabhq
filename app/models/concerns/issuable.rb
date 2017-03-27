@@ -118,7 +118,9 @@ module Issuable
     end
 
     def assignees
-      [User.first, User.last, User.first, User.last, User.first, User.last, User.first, User.last, User.first, User.last, User.first, User.last, User.first, User.last]
+      [User.first, User.last, User.first, User.last]
+
+      # [User.first, User.last, User.first, User.last, User.first, User.last, User.first, User.last, User.first, User.last, User.first, User.last, User.last]
     end
   end
 
