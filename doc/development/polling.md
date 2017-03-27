@@ -22,6 +22,9 @@ Instead you should use polling mechanism with ETag caching in Redis.
 
 ## How it works
 
+![Cache miss](img/cache-miss.svg)
+![Cache hit](img/cache-hit.svg)
+
 1. Whenever a resource changes we generate a random value and store it in
    Redis.
 1. When a client makes a request we set the `ETag` response header to the value
