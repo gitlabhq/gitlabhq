@@ -114,6 +114,7 @@ ActiveRecord::Schema.define(version: 20170506185517) do
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
     t.integer "terminal_max_session_time", default: 0, null: false
+    t.string "default_artifacts_expire_in", default: "0", null: false
     t.integer "unique_ips_limit_per_user"
     t.integer "unique_ips_limit_time_window"
     t.boolean "unique_ips_limit_enabled", default: false, null: false
@@ -123,7 +124,6 @@ ActiveRecord::Schema.define(version: 20170506185517) do
     t.integer "cached_markdown_version"
     t.boolean "clientside_sentry_enabled", default: false, null: false
     t.string "clientside_sentry_dsn"
-    t.string "default_artifacts_expire_in", default: "0", null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
