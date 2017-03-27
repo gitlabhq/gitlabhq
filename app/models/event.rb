@@ -46,6 +46,7 @@ class Event < ActiveRecord::Base
   scope :created, -> { where(action: CREATED) }
   scope :closed, -> { where(action: CLOSED) }
   scope :merged, -> { where(action: MERGED) }
+  scope :totals_by_author, -> { group(:author_id).count }
 
   class << self
     # Update Gitlab::ContributionsCalendar#activity_dates if this changes
