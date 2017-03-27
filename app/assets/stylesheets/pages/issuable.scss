@@ -289,7 +289,8 @@
       margin-bottom: 10px;
       color: $issuable-sidebar-color;
 
-      &:hover {
+      &:hover,
+      &:hover .todo-undone {
         color: $gl-text-color;
       }
 
@@ -300,10 +301,6 @@
 
       .todo-undone {
         color: $gl-link-color;
-
-        &:hover {
-          color: $gl-text-color;
-        }
       }
 
       .author {
