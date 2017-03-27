@@ -9,6 +9,13 @@
   }
 }
 
+.group-root-path {
+  max-width: 40vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: nowrap;
+}
+
 .group-row {
   .stats {
     float: right;

@@ -260,4 +260,13 @@ class Projects::IssuesController < Projects::ApplicationController
       :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: []
     )
   end
+
+  def authenticate_user!
+    return if current_user
+
+    notice = "Please sign in to create the new issue."
+
+    store_location_for :user, request.fullpath
+    redirect_to new_user_session_path, notice: notice
+  end
 end

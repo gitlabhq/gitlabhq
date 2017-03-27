@@ -127,9 +127,6 @@ require('./flash');
         if (this.diffViewType() === 'parallel') {
           this.expandViewContainer();
         }
-        $.scrollTo('.merge-request-details .merge-request-tabs', {
-          offset: 0,
-        });
       } else if (action === 'pipelines') {
         if (this.pipelinesLoaded) {
           return;

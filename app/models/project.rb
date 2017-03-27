@@ -314,20 +314,15 @@ class Project < ActiveRecord::Base
       ntable  = Namespace.arel_table
       pattern = "%#{query}%"
 
-      projects = select(:id).where(
+      # unscoping unnecessary conditions that'll be applied
+      # when executing `where("projects.id IN (#{union.to_sql})")`
+      projects = unscoped.select(:id).where(
         ptable[:path].matches(pattern).
           or(ptable[:name].matches(pattern)).
           or(ptable[:description].matches(pattern))
       )
 
-      # We explicitly remove any eager loading clauses as they're:
-      #
-      # 1. Not needed by this query
-      # 2. Combined with .joins(:namespace) lead to all columns from the
-      #    projects & namespaces tables being selected, leading to a SQL error
-      #    due to the columns of all UNION'd queries no longer being the same.
-      namespaces = select(:id).
-        except(:includes).
+      namespaces = unscoped.select(:id).
         joins(:namespace).
         where(ntable[:name].matches(pattern))
 

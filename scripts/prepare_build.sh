@@ -38,7 +38,7 @@ fi
 
 # Only install knapsack after bundle install! Otherwise oddly some native
 # gems could not be found under some circumstance. No idea why, hours wasted.
-retry gem install knapsack
+retry gem install knapsack fog-aws mime-types
 
 if [ "$SETUP_DB" != "false" ]; then
     bundle exec rake db:drop db:create db:schema:load db:migrate

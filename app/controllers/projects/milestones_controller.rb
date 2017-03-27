@@ -13,10 +13,13 @@ class Projects::MilestonesController < Projects::ApplicationController
   def index
     @milestones =
       case params[:state]
-      when 'all' then @project.milestones.reorder(due_date: :desc, title: :asc)
-      when 'closed' then @project.milestones.closed.reorder(due_date: :desc, title: :asc)
-      else @project.milestones.active.reorder(due_date: :asc, title: :asc)
+      when 'all' then @project.milestones
+      when 'closed' then @project.milestones.closed
+      else @project.milestones.active
       end
+
+    @sort = params[:sort] || 'due_date_asc'
+    @milestones = @milestones.sort(@sort)
 
     @milestones = @milestones.includes(:project)
     respond_to do |format|

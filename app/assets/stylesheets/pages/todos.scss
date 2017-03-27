@@ -47,6 +47,7 @@
 
   .todo-avatar,
   .todo-actions {
+    @include transition(opacity);
     -webkit-flex: 0 0 auto;
     flex: 0 0 auto;
   }
@@ -67,21 +68,34 @@
     flex: 0 1 100%;
     min-width: 0;
   }
-}
 
-.todos-list > .todo.todo-pending.done-reversible {
-  background-color: $gray-light;
+  &.todo-pending.done-reversible {
+    background-color: $white-light;
 
-  &:hover {
-    border-color: $border-color;
-  }
+    &:hover {
+      border-color: $white-dark;
+      background-color: $gray-light;
 
-  .title {
-    font-weight: normal;
+      .todo-avatar,
+      .todo-item {
+        opacity: .6;
+      }
+    }
+
+    .todo-avatar,
+    .todo-item {
+      opacity: .2;
+    }
+
+    .btn {
+      background-color: $gray-light;
+    }
   }
 }
 
 .todo-item {
+  @include transition(opacity);
+
   .todo-title {
     display: flex;
 

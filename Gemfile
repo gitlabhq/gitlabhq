@@ -244,7 +244,7 @@ gem 'net-ssh', '~> 3.0.1'
 gem 'base32', '~> 0.3.0'
 
 # Sentry integration
-gem 'sentry-raven', '~> 2.0.0'
+gem 'sentry-raven', '~> 2.4.0'
 
 gem 'premailer-rails', '~> 1.9.0'
 
@@ -257,15 +257,14 @@ end
 
 group :development do
   gem 'foreman', '~> 0.78.0'
-  gem 'brakeman', '~> 3.4.0', require: false
+  gem 'brakeman', '~> 3.6.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
-  gem 'bullet', '~> 5.2.0', require: false
+  gem 'bullet', '~> 5.5.0', require: false
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
-  gem 'web-console', '~> 2.0'
 
   # Better errors handler
-  gem 'better_errors', '~> 1.0.1'
+  gem 'better_errors', '~> 2.1.0'
   gem 'binding_of_caller', '~> 0.7.2'
 
   # thin instead webrick
@@ -297,7 +296,7 @@ group :development, :test do
   gem 'capybara-screenshot', '~> 1.0.0'
   gem 'poltergeist', '~> 1.9.0'
 
-  gem 'spring', '~> 1.7.0'
+  gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
   gem 'spring-commands-spinach', '~> 1.1.0'
 
@@ -305,8 +304,8 @@ group :development, :test do
   gem 'rubocop-rspec', '~> 1.12.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.21.0', require: false
-  gem 'simplecov', '0.12.0', require: false
-  gem 'flay', '~> 2.6.1', require: false
+  gem 'simplecov', '~> 0.14.0', require: false
+  gem 'flay', '~> 2.8.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
@@ -323,7 +322,7 @@ group :test do
   gem 'shoulda-matchers', '~> 2.8.0', require: false
   gem 'email_spec', '~> 1.6.0'
   gem 'json-schema', '~> 2.6.2'
-  gem 'webmock', '~> 1.21.0'
+  gem 'webmock', '~> 1.24.0'
   gem 'test_after_commit', '~> 1.1'
   gem 'sham_rack', '~> 1.3.6'
   gem 'timecop', '~> 0.8.0'

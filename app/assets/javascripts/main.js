@@ -47,15 +47,6 @@ import { installGlEmojiElement } from './behaviors/gl_emoji';
 installGlEmojiElement();
 
 // blob
-import './blob/blob_ci_yaml';
-import './blob/blob_dockerfile_selector';
-import './blob/blob_dockerfile_selectors';
-import './blob/blob_file_dropzone';
-import './blob/blob_gitignore_selector';
-import './blob/blob_gitignore_selectors';
-import './blob/blob_license_selector';
-import './blob/blob_license_selectors';
-import './blob/template_selector';
 import './blob/create_branch_dropdown';
 import './blob/target_branch_dropdown';
 
