@@ -109,6 +109,8 @@
     %p Please wait a moment, this page will automatically refresh when ready.
 
 :javascript
+  var importBtnTooltip = "Please enter a valid project name.";
+
   $('.how_to_import_link').bind('click', function (e) {
     e.preventDefault();
     var import_modal = $(this).next(".modal").show();
@@ -124,7 +126,7 @@
   });
 
   $('.btn_import_gitlab_project').attr('disabled', $('#project_path').val().trim().length === 0);
-  $('.import_gitlab_project').attr('title', 'Project path and name required.');
+  $('.import_gitlab_project').attr('title', importBtnTooltip);
 
   $('#new_project').submit(function(){
     var $path = $('#project_path');
@@ -138,7 +140,7 @@
       $(".flash-container").html("")
     } else {
       $('.btn_import_gitlab_project').attr('disabled',true);
-      $('.import_gitlab_project').attr('title', 'Project path and name required.');
+      $('.import_gitlab_project').attr('title', importBtnTooltip);
     }
   });
 
