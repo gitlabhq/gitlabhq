@@ -87,12 +87,12 @@ your Runners in the most possible secure way, by avoiding the following:
 By using an insecure GitLab Runner configuration, you allow the rogue developers
 to steal the tokens of other jobs.
 
-## job triggers
+## Pipeline triggers
 
-[job triggers][triggers] do not support the new permission model.
-They continue to use the old authentication mechanism where the CI job
-can access only its own sources. We plan to remove that limitation in one of
-the upcoming releases.
+Since 9.0 [pipelnie triggers][triggers] do support the new permission model.
+The new triggers do impersonate their associated user including their access
+to projects and their project permissions. To migrate trigger to use new permisison
+model use **Take ownership**.
 
 ## Before GitLab 8.12
 
@@ -119,7 +119,7 @@ And then the users could also use it in their CI jobs all Docker related
 commands to interact with GitLab Container Registry. For example:
 
 ```
-docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
 ```
 
 Using single token had multiple security implications:
@@ -208,7 +208,7 @@ This is how an example usage can look like:
 ```
 test:
   script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker pull $CI_REGISTRY/group/other-project:latest
     - docker run $CI_REGISTRY/group/other-project:latest
 ```

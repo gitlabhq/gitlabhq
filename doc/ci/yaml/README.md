@@ -153,7 +153,7 @@ thus allowing to fine tune them. Variables can be also defined on a
 [job level](#job-variables).
 
 Except for the user defined variables, there are also the ones set up by the
-Runner itself. One example would be `CI_BUILD_REF_NAME` which has the value of
+Runner itself. One example would be `CI_COMMIT_REF_NAME` which has the value of
 the branch or tag name for which project is built. Apart from the variables
 you can set in `.gitlab-ci.yml`, there are also the so called secret variables
 which can be set in GitLab's UI.
@@ -252,7 +252,7 @@ To enable per-job caching:
 
 ```yaml
 cache:
-  key: "$CI_BUILD_NAME"
+  key: "$CI_JOB_NAME"
   untracked: true
 ```
 
@@ -260,7 +260,7 @@ To enable per-branch caching:
 
 ```yaml
 cache:
-  key: "$CI_BUILD_REF_NAME"
+  key: "$CI_COMMIT_REF_NAME"
   untracked: true
 ```
 
@@ -268,7 +268,7 @@ To enable per-job and per-branch caching:
 
 ```yaml
 cache:
-  key: "$CI_BUILD_NAME/$CI_BUILD_REF_NAME"
+  key: "$CI_JOB_NAME/$CI_COMMIT_REF_NAME"
   untracked: true
 ```
 
@@ -276,7 +276,7 @@ To enable per-branch and per-stage caching:
 
 ```yaml
 cache:
-  key: "$CI_BUILD_STAGE/$CI_BUILD_REF_NAME"
+  key: "$CI_JOB_STAGE/$CI_COMMIT_REF_NAME"
   untracked: true
 ```
 
@@ -285,7 +285,7 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "%CI_BUILD_STAGE%/%CI_BUILD_REF_NAME%"
+  key: "%CI_JOB_STAGE%/%CI_COMMIT_REF_NAME%"
   untracked: true
 ```
 
@@ -739,12 +739,12 @@ deploy as review app:
   stage: deploy
   script: make deploy
   environment:
-    name: review/$CI_BUILD_REF_NAME
+    name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com/
 ```
 
 The `deploy as review app` job will be marked as deployment to dynamically
-create the `review/$CI_BUILD_REF_NAME` environment, where `$CI_BUILD_REF_NAME`
+create the `review/$CI_COMMIT_REF_NAME` environment, where `$CI_COMMIT_REF_NAME`
 is an [environment variable][variables] set by the Runner. The
 `$CI_ENVIRONMENT_SLUG` variable is based on the environment name, but suitable
 for inclusion in URLs. In this case, if the `deploy as review app` job was run
@@ -850,7 +850,7 @@ To create an archive with a name of the current job:
 ```yaml
 job:
   artifacts:
-    name: "$CI_BUILD_NAME"
+    name: "$CI_JOB_NAME"
 ```
 
 To create an archive with a name of the current branch or tag including only
@@ -859,7 +859,7 @@ the files that are untracked by Git:
 ```yaml
 job:
    artifacts:
-     name: "$CI_BUILD_REF_NAME"
+     name: "$CI_COMMIT_REF_NAME"
      untracked: true
 ```
 
@@ -869,7 +869,7 @@ tag including only the files that are untracked by Git:
 ```yaml
 job:
   artifacts:
-    name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
+    name: "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}"
     untracked: true
 ```
 
@@ -878,7 +878,7 @@ To create an archive with a name of the current [stage](#stages) and branch name
 ```yaml
 job:
   artifacts:
-    name: "${CI_BUILD_STAGE}_${CI_BUILD_REF_NAME}"
+    name: "${CI_JOB_STAGE}_${CI_COMMIT_REF_NAME}"
     untracked: true
 ```
 
@@ -890,7 +890,7 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 ```yaml
 job:
   artifacts:
-    name: "%CI_BUILD_STAGE%_%CI_BUILD_REF_NAME%"
+    name: "%CI_JOB_STAGE%_%CI_COMMIT_REF_NAME%"
     untracked: true
 ```
 

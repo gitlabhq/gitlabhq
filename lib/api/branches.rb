@@ -4,13 +4,12 @@ module API
   class Branches < Grape::API
     include PaginationParams
 
-    before { authenticate! }
     before { authorize! :download_code, user_project }
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'Get a project repository branches' do
         success Entities::RepoBranch
       end
@@ -102,6 +101,7 @@ module API
       end
       post ":id/repository/branches" do
         authorize_push_project
+
         result = CreateBranchService.new(user_project, current_user).
                  execute(params[:branch], params[:ref])
 

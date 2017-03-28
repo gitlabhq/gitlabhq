@@ -1,7 +1,8 @@
 - type = local_assigns.fetch(:type)
+- block_css_class = type != :boards_modal ? 'row-content-block second-block' : ''
 
 .issues-filters
-  .issues-details-filters.row-content-block.second-block.filtered-search-block
+  .issues-details-filters.filtered-search-block{ class: block_css_class, "v-pre" => type == :boards_modal }
     = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search]), method: :get, class: 'filter-form js-filter-form' do
       - if params[:search].present?
         = hidden_field_tag :search, params[:search]
@@ -14,7 +15,7 @@
           .scroll-container
             %ul.tokens-container.list-unstyled
               %li.input-token
-                %input.form-control.filtered-search{ placeholder: 'Search or filter results...', data: { id: 'filtered-search', 'project-id' => @project.id, 'username-params' => @users.to_json(only: [:id, :username]), 'base-endpoint' => namespace_project_path(@project.namespace, @project) } }
+                %input.form-control.filtered-search{ placeholder: 'Search or filter results...', data: { id: "filtered-search-#{type.to_s}", 'project-id' => @project.id, 'username-params' => @users.to_json(only: [:id, :username]), 'base-endpoint' => namespace_project_path(@project.namespace, @project) } }
             = icon('filter')
             %button.clear-search.hidden{ type: 'button' }
               = icon('times')
@@ -100,7 +101,7 @@
                     = render partial: "shared/issuable/label_page_create"
                   = dropdown_loading
               #js-add-issues-btn.prepend-left-10
-          - else
+          - elsif type != :boards_modal
             = render 'shared/sort_dropdown'
 
     - if @bulk_edit
@@ -133,19 +134,20 @@
           .filter-item.inline.update-issues-btn
             = button_tag "Update #{type.to_s.humanize(capitalize: false)}", class: "btn update_selected_issues btn-save"
 
-:javascript
-  new UsersSelect();
-  new LabelsSelect();
-  new MilestoneSelect();
-  new IssueStatusSelect();
-  new SubscriptionSelect();
+- unless type === :boards_modal
+  :javascript
+    new UsersSelect();
+    new LabelsSelect();
+    new MilestoneSelect();
+    new IssueStatusSelect();
+    new SubscriptionSelect();
 
-  $(document).off('page:restore').on('page:restore', function (event) {
-    if (gl.FilteredSearchManager) {
-      new gl.FilteredSearchManager();
-    }
-    Issuable.init();
-    new gl.IssuableBulkActions({
-      prefixId: 'issue_',
+    $(document).off('page:restore').on('page:restore', function (event) {
+      if (gl.FilteredSearchManager) {
+        new gl.FilteredSearchManager();
+      }
+      Issuable.init();
+      new gl.IssuableBulkActions({
+        prefixId: 'issue_',
+      });
     });
-  });

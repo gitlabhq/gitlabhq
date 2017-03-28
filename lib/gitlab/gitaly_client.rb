@@ -2,6 +2,8 @@ require 'gitaly'
 
 module Gitlab
   module GitalyClient
+    SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'.freeze
+
     def self.gitaly_address
       if Gitlab.config.gitaly.socket_path
         "unix://#{Gitlab.config.gitaly.socket_path}"
@@ -24,6 +26,25 @@ module Gitlab
 
     def self.enabled?
       gitaly_address.present?
+    end
+
+    def self.feature_enabled?(feature)
+      enabled? && ENV["GITALY_#{feature.upcase}"] == '1'
+    end
+
+    def self.migrate(feature)
+      is_enabled  = feature_enabled?(feature)
+      metric_name = feature.to_s
+      metric_name += "_gitaly" if is_enabled
+
+      Gitlab::Metrics.measure(metric_name) do
+        yield is_enabled
+      end
+    end
+
+    def self.expected_server_version
+      path = Rails.root.join(SERVER_VERSION_FILE)
+      path.read.chomp
     end
   end
 end

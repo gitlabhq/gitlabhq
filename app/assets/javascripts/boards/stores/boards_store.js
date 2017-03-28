@@ -1,6 +1,7 @@
 /* eslint-disable comma-dangle, space-before-function-paren, one-var, no-shadow, dot-notation, max-len */
-/* global Cookies */
 /* global List */
+
+import Cookies from 'js-cookie';
 
 (() => {
   window.gl = window.gl || {};
@@ -44,7 +45,7 @@
     },
     shouldAddBlankState () {
       // Decide whether to add the blank state
-      return !(this.state.lists.filter(list => list.type !== 'done')[0]);
+      return !(this.state.lists.filter(list => list.type !== 'closed')[0]);
     },
     addBlankState () {
       if (!this.shouldAddBlankState() || this.welcomeIsHidden() || this.disabled) return;
@@ -97,7 +98,7 @@
         issueTo.removeLabel(listFrom.label);
       }
 
-      if (listTo.type === 'done') {
+      if (listTo.type === 'closed') {
         issueLists.forEach((list) => {
           list.removeIssue(issue);
         });

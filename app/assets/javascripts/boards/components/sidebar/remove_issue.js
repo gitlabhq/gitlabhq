@@ -1,6 +1,8 @@
 /* eslint-disable no-new */
-/* global Vue */
 /* global Flash */
+
+import Vue from 'vue';
+
 (() => {
   const Store = gl.issueBoards.BoardsStore;
 
@@ -46,7 +48,7 @@
     template: `
       <div
         class="block list"
-        v-if="list.type !== 'done'">
+        v-if="list.type !== 'closed'">
         <button
           class="btn btn-default btn-block"
           type="button"

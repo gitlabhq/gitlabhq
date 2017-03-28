@@ -15,7 +15,7 @@ module Ci
     def persisted_environment
       @persisted_environment ||= Environment.find_by(
         name: expanded_environment_name,
-        project_id: gl_project_id
+        project: project
       )
     end
 
@@ -223,16 +223,13 @@ module Ci
 
     def merge_request
       merge_requests = MergeRequest.includes(:merge_request_diff)
-                                   .where(source_branch: ref, source_project_id: pipeline.gl_project_id)
+                                   .where(source_branch: ref,
+                                          source_project: pipeline.project)
                                    .reorder(iid: :asc)
 
       merge_requests.find do |merge_request|
         merge_request.commits_sha.include?(pipeline.sha)
       end
-    end
-
-    def project_id
-      gl_project_id
     end
 
     def repo_url
@@ -542,6 +539,16 @@ module Ci
       Gitlab::Ci::Build::Credentials::Factory.new(self).create!
     end
 
+    def dependencies
+      depended_jobs = depends_on_builds
+
+      return depended_jobs unless options[:dependencies].present?
+
+      depended_jobs.select do |job|
+        options[:dependencies].include?(job.name)
+      end
+    end
+
     private
 
     def update_artifacts_size
@@ -561,7 +568,7 @@ module Ci
     end
 
     def unscoped_project
-      @unscoped_project ||= Project.unscoped.find_by(id: gl_project_id)
+      @unscoped_project ||= Project.unscoped.find_by(id: project_id)
     end
 
     CI_REGISTRY_USER = 'gitlab-ci-token'.freeze

@@ -1,4 +1,3 @@
-import PrometheusGraph from './monitoring/prometheus_graph'; // TODO: Maybe Make this a bundle
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
 /* global UsernameValidator */
 /* global ActiveTabMemoizer */
@@ -42,9 +41,9 @@ import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
+import UserCallout from './user_callout';
 
 const ShortcutsBlob = require('./shortcuts_blob');
-const UserCallout = require('./user_callout');
 
 (function() {
   var Dispatcher;
@@ -329,8 +328,6 @@ const UserCallout = require('./user_callout');
         case 'ci:lints:show':
           new gl.CILintEditor();
           break;
-        case 'projects:environments:metrics':
-          new PrometheusGraph();
         case 'users:show':
           new UserCallout();
           break;

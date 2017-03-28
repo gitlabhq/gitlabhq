@@ -49,9 +49,12 @@ describe MergeRequests::BuildService, services: true do
       let(:commits) { Commit.decorate([commit_1], project) }
 
       it 'creates compare object with target branch as default branch' do
-        expect(merge_request.can_be_created).to eq(false)
         expect(merge_request.compare).to be_present
         expect(merge_request.target_branch).to eq(project.default_branch)
+      end
+
+      it 'allows the merge request to be created' do
+        expect(merge_request.can_be_created).to eq(true)
       end
     end
 

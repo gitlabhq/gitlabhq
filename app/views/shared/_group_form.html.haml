@@ -1,4 +1,6 @@
 - parent = Group.find_by(id: params[:parent_id] || @group.parent_id)
+- group_path = root_url
+- group_path << parent.full_path + '/' if parent
 - if @group.persisted?
   .form-group
     = f.label :name, class: 'control-label' do
@@ -11,7 +13,7 @@
     Group path
   .col-sm-10
     .input-group.gl-field-error-anchor
-      .input-group-addon
+      .group-root-path.input-group-addon.has-tooltip{ title: group_path, :'data-placement' => 'bottom' }
         %span>= root_url
         - if parent
           %strong= parent.full_path + '/'

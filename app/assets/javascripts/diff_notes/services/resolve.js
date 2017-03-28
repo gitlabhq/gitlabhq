@@ -2,9 +2,12 @@
 /* global Flash */
 /* global CommentsStore */
 
-const Vue = window.Vue = require('vue');
-window.Vue.use(require('vue-resource'));
+import Vue from 'vue';
+import VueResource from 'vue-resource';
+
 require('../../vue_shared/vue_resource_interceptor');
+
+Vue.use(VueResource);
 
 (() => {
   window.gl = window.gl || {};

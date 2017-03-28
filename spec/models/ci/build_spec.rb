@@ -795,8 +795,8 @@ describe Ci::Build, :models do
 
   describe '#merge_request' do
     def create_mr(build, pipeline, factory: :merge_request, created_at: Time.now)
-      create(factory, source_project_id: pipeline.gl_project_id,
-                      target_project_id: pipeline.gl_project_id,
+      create(factory, source_project: pipeline.project,
+                      target_project: pipeline.project,
                       source_branch: build.ref,
                       created_at: created_at)
     end

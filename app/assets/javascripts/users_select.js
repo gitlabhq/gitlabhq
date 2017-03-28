@@ -1,7 +1,8 @@
 /* eslint-disable func-names, space-before-function-paren, one-var, no-var, prefer-rest-params, wrap-iife, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, no-lonely-if, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
-/* global Vue */
 /* global Issuable */
 /* global ListUser */
+
+import Vue from 'vue';
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
@@ -53,7 +54,7 @@
           $loading = $block.find('.block-loading').fadeOut();
 
           var updateIssueBoardsIssue = function () {
-            $loading.fadeIn();
+            $loading.removeClass('hidden').fadeIn();
             gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
               .then(function () {
                 $loading.fadeOut();
@@ -90,7 +91,7 @@
             data = {};
             data[abilityName] = {};
             data[abilityName].assignee_id = selected != null ? selected : null;
-            $loading.fadeIn();
+            $loading.removeClass('hidden').fadeIn();
             $dropdown.trigger('loading.gl.dropdown');
             return $.ajax({
               type: 'PUT',

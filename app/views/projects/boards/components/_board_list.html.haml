@@ -3,7 +3,7 @@
     = icon("spinner spin")
   - if can? current_user, :create_issue, @project
     %board-new-issue{ ":list" => "list",
-      "v-if" => 'list.type !== "done" && showIssueForm' }
+      "v-if" => 'list.type !== "closed" && showIssueForm' }
   %ul.board-list{ "ref" => "list",
     "v-show" => "!loading",
     ":data-board" => "list.id",

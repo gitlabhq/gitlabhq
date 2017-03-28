@@ -154,8 +154,10 @@ class MergeRequest < ActiveRecord::Base
   #
   # Returns an ActiveRecord::Relation.
   def self.in_projects(relation)
-    source = where(source_project_id: relation).select(:id)
-    target = where(target_project_id: relation).select(:id)
+    # unscoping unnecessary conditions that'll be applied
+    # when executing `where("merge_requests.id IN (#{union.to_sql})")`
+    source = unscoped.where(source_project_id: relation).select(:id)
+    target = unscoped.where(target_project_id: relation).select(:id)
     union  = Gitlab::SQL::Union.new([source, target])
 
     where("merge_requests.id IN (#{union.to_sql})")

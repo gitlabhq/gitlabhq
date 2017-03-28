@@ -176,6 +176,10 @@ summary {
   &.panel-without-border {
     border: 0;
   }
+
+  &.panel-without-margin {
+    margin: 0;
+  }
 }
 
 .panel-succes .panel-heading,

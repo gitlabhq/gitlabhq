@@ -42,6 +42,20 @@ To run several tests inside one directory:
 If you want to use [Spring](https://github.com/rails/spring) set
 `ENABLE_SPRING=1` in your environment.
 
+## Compile Frontend Assets
+
+You shouldn't ever need to compile frontend assets manually in development, but
+if you ever need to test how the assets get compiled in a production
+environment you can do so with the following command:
+
+```
+RAILS_ENV=production NODE_ENV=production bundle exec rake gitlab:assets:compile
+```
+
+This will compile and minify all JavaScript and CSS assets and copy them along
+with all other frontend assets (images, fonts, etc) into `/public/assets` where
+they can be easily inspected.
+
 ## Generate API documentation for project services (e.g. Slack)
 
 ```

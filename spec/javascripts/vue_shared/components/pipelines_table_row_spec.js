@@ -1,20 +1,20 @@
-require('~/vue_shared/components/pipelines_table_row');
-const pipeline = require('../../commit/pipelines/mock_data');
+import Vue from 'vue';
+import tableRowComp from '~/vue_shared/components/pipelines_table_row';
+import pipeline from '../../commit/pipelines/mock_data';
 
 describe('Pipelines Table Row', () => {
   let component;
-  preloadFixtures('static/environments/element.html.raw');
 
   beforeEach(() => {
-    loadFixtures('static/environments/element.html.raw');
+    const PipelinesTableRowComponent = Vue.extend(tableRowComp);
 
-    component = new gl.pipelines.PipelinesTableRowComponent({
+    component = new PipelinesTableRowComponent({
       el: document.querySelector('.test-dom-element'),
       propsData: {
         pipeline,
-        svgs: {},
+        service: {},
       },
-    });
+    }).$mount();
   });
 
   it('should render a table row', () => {

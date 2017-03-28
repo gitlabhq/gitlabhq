@@ -134,9 +134,7 @@ module Banzai
         ids = unique_attribute_values(nodes, attribute)
         rows = collection_objects_for_ids(collection, ids)
 
-        rows.each_with_object({}) do |row, hash|
-          hash[row.id] = row
-        end
+        rows.index_by(&:id)
       end
 
       # Returns an Array containing all unique values of an attribute of the

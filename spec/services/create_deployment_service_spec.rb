@@ -104,16 +104,16 @@ describe CreateDeploymentService, services: true do
     context 'when variables are used' do
       let(:params) do
         {
-          environment: 'review-apps/$CI_BUILD_REF_NAME',
+          environment: 'review-apps/$CI_COMMIT_REF_NAME',
           ref: 'master',
           tag: false,
           sha: '97de212e80737a608d939f648d959671fb0a0142',
           options: {
-            name: 'review-apps/$CI_BUILD_REF_NAME',
-            url: 'http://$CI_BUILD_REF_NAME.review-apps.gitlab.com'
+            name: 'review-apps/$CI_COMMIT_REF_NAME',
+            url: 'http://$CI_COMMIT_REF_NAME.review-apps.gitlab.com'
           },
           variables: [
-            { key: 'CI_BUILD_REF_NAME', value: 'feature-review-apps' }
+            { key: 'CI_COMMIT_REF_NAME', value: 'feature-review-apps' }
           ]
         }
       end

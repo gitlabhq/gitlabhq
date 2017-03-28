@@ -20,7 +20,7 @@ describe 'Copy as GFM', feature: true, js: true do
     end
 
     # The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb convert GitLab Flavored Markdown (GFM) to HTML.
-    # The handlers defined in app/assets/javascripts/copy_as_gfm.js.es6 consequently convert that same HTML to GFM.
+    # The handlers defined in app/assets/javascripts/copy_as_gfm.js consequently convert that same HTML to GFM.
     # To make sure these filters and handlers are properly aligned, this spec tests the GFM-to-HTML-to-GFM cycle
     # by verifying (`html_to_gfm(gfm_to_html(gfm)) == gfm`) for a number of examples of GFM for every filter, using the `verify` helper.
 

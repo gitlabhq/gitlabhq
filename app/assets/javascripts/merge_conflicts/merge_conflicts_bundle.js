@@ -1,8 +1,8 @@
 /* eslint-disable new-cap, comma-dangle, no-new */
-/* global Vue */
 /* global Flash */
 
-window.Vue = require('vue');
+import Vue from 'vue';
+
 require('./merge_conflict_store');
 require('./merge_conflict_service');
 require('./mixins/line_conflict_utils');

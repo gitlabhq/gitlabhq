@@ -1,5 +1,4 @@
 import '~/lib/utils/common_utils';
-
 /**
  * Environments Store.
  *

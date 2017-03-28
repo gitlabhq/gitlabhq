@@ -45,7 +45,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   end
 
   step 'I have new comment with emoji added' do
-    expect(page).to have_selector ".emoji[title=':smile:']"
+    expect(page).to have_selector 'gl-emoji[data-name="smile"]'
   end
 
   step 'I have award added' do

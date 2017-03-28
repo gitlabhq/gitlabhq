@@ -1,4 +1,0 @@
----
-title: Fix for creating a project through API when import_url is nil
-merge_request: 9841
-author:

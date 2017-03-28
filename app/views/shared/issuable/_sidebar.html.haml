@@ -3,7 +3,7 @@
   = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('issuable')
 
-%aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => "101", "spy" => "affix" }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
+%aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => "102", "spy" => "affix" }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar
     - can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
     .block.issuable-sidebar-header
@@ -30,7 +30,7 @@
             = icon('user', 'aria-hidden': 'true')
         .title.hide-collapsed
           Assignee
-          = icon('spinner spin', class: 'block-loading', 'aria-hidden': 'true')
+          = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
           - if can_edit_issuable
             = link_to 'Edit', '#', class: 'edit-link pull-right'
         .value.hide-collapsed
@@ -64,7 +64,7 @@
               None
         .title.hide-collapsed
           Milestone
-          = icon('spinner spin', class: 'block-loading', 'aria-hidden': 'true')
+          = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
           - if can_edit_issuable
             = link_to 'Edit', '#', class: 'edit-link pull-right'
         .value.hide-collapsed
@@ -91,7 +91,7 @@
               = issuable.due_date.try(:to_s, :medium) || 'None'
           .title.hide-collapsed
             Due date
-            = icon('spinner spin', class: 'block-loading', 'aria-hidden': 'true')
+            = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
               = link_to 'Edit', '#', class: 'edit-link pull-right'
           .value.hide-collapsed
@@ -121,12 +121,12 @@
         - selected_labels = issuable.labels
         .block.labels
           .sidebar-collapsed-icon.js-sidebar-labels-tooltip{ title: issuable_labels_tooltip(issuable.labels_array), data: { placement: "left", container: "body" } }
-            = icon('tags', 'aria-hidden': 'true')
+            = icon('tags', class: 'hidden', 'aria-hidden': 'true')
             %span
               = selected_labels.size
           .title.hide-collapsed
             Labels
-            = icon('spinner spin', class: 'block-loading', 'aria-hidden': 'true')
+            = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
             - if can_edit_issuable
               = link_to 'Edit', '#', class: 'edit-link pull-right'
           .value.issuable-show-labels.hide-collapsed{ class: ("has-labels" if selected_labels.any?) }

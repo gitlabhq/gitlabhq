@@ -26,6 +26,14 @@ describe "Compare", js: true do
       click_button "Compare"
       expect(page).to have_content "Commits"
     end
+
+    it "filters branches" do
+      select_using_dropdown("from", "wip")
+
+      find(".js-compare-from-dropdown .compare-dropdown-toggle").click
+
+      expect(find(".js-compare-from-dropdown .dropdown-content")).to have_selector("li", count: 3)
+    end
   end
 
   describe "tags" do
@@ -45,6 +53,7 @@ describe "Compare", js: true do
     dropdown = find(".js-compare-#{dropdown_type}-dropdown")
     dropdown.find(".compare-dropdown-toggle").click
     dropdown.fill_in("Filter by Git revision", with: selection)
-    find_link(selection, visible: true).click
+    wait_for_ajax
+    dropdown.find_all("a[data-ref=\"#{selection}\"]", visible: true).last.click
   end
 end

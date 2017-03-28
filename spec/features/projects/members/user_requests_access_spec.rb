@@ -61,7 +61,7 @@ feature 'Projects > Members > User requests access', feature: true do
       click_link('Settings')
     end
 
-    page.within('.page-with-layout-nav .sub-nav') do
+    page.within('.sub-nav') do
       click_link('Members')
     end
   end

@@ -1,3 +1,5 @@
+- pipeline = local_assigns.fetch(:pipeline) { project.pipelines.latest_successful_for(ref) }
+
 - if !project.empty_repo? && can?(current_user, :download_code, project)
   .project-action-button.dropdown.inline>
     %button.btn{ 'data-toggle' => 'dropdown' }
@@ -24,7 +26,6 @@
           %i.fa.fa-download
           %span Download tar
 
-      - pipeline = project.pipelines.latest_successful_for(ref)
       - if pipeline
         - artifacts = pipeline.builds.latest.with_artifacts
         - if artifacts.any?

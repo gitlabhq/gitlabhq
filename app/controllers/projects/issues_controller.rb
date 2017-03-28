@@ -6,6 +6,8 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableCollections
   include SpammableActions
 
+  prepend_before_action :authenticate_user!, only: [:new]
+
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
@@ -146,7 +148,14 @@ class Projects::IssuesController < Projects::ApplicationController
       end
 
       format.json do
-        render json: @issue.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
+        if @issue.valid?
+          render json: @issue.to_json(methods: [:task_status, :task_status_short],
+                                      include: { milestone: {},
+                                                 assignee: { only: [:name, :username], methods: [:avatar_url] },
+                                                 labels: { methods: :text_color } })
+        else
+          render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity
+        end
       end
     end
 
@@ -250,5 +259,14 @@ class Projects::IssuesController < Projects::ApplicationController
       :title, :assignee_id, :position, :description, :confidential,
       :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: []
     )
+  end
+
+  def authenticate_user!
+    return if current_user
+
+    notice = "Please sign in to create the new issue."
+
+    store_location_for :user, request.fullpath
+    redirect_to new_user_session_path, notice: notice
   end
 end

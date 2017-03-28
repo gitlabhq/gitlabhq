@@ -23,6 +23,20 @@ describe 'Issue Boards add issue modal', :feature, :js do
     wait_for_vue_resource
   end
 
+  it 'resets filtered search state' do
+    visit namespace_project_board_path(project.namespace, project, board, search: 'testing')
+
+    wait_for_vue_resource
+
+    click_button('Add issues')
+
+    page.within('.add-issues-modal') do
+      expect(find('.form-control').value).to eq('')
+      expect(page).to have_selector('.clear-search', visible: false)
+      expect(find('.form-control')[:placeholder]).to eq('Search or filter results...')
+    end
+  end
+
   context 'modal interaction' do
     it 'opens modal' do
       click_button('Add issues')
@@ -107,6 +121,9 @@ describe 'Issue Boards add issue modal', :feature, :js do
       it 'returns issues' do
         page.within('.add-issues-modal') do
           find('.form-control').native.send_keys(issue.title)
+          find('.form-control').native.send_keys(:enter)
+
+          wait_for_vue_resource
 
           expect(page).to have_selector('.card', count: 1)
         end
@@ -115,6 +132,9 @@ describe 'Issue Boards add issue modal', :feature, :js do
       it 'returns no issues' do
         page.within('.add-issues-modal') do
           find('.form-control').native.send_keys('testing search')
+          find('.form-control').native.send_keys(:enter)
+
+          wait_for_vue_resource
 
           expect(page).not_to have_selector('.card')
           expect(page).not_to have_content("You haven't added any issues to your project yet")

@@ -1,4 +1,4 @@
-/* global Vue */
+import Vue from 'vue';
 
 require('./help_state');
 require('./collapsed_state');

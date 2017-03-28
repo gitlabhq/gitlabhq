@@ -45,10 +45,10 @@ describe ExpandVariables do
           { key: 'variable', value: 'value' },
           { key: 'variable2', value: 'result' }
         ] },
-      { value: 'review/$CI_BUILD_REF_NAME',
+      { value: 'review/$CI_COMMIT_REF_NAME',
         result: 'review/feature/add-review-apps',
         variables: [
-          { key: 'CI_BUILD_REF_NAME', value: 'feature/add-review-apps' }
+          { key: 'CI_COMMIT_REF_NAME', value: 'feature/add-review-apps' }
         ] },
     ]
 

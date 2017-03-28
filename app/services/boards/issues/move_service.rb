@@ -48,8 +48,8 @@ module Boards
       end
 
       def issue_state
-        return 'reopen' if moving_from_list.done?
-        return 'close'  if moving_to_list.done?
+        return 'reopen' if moving_from_list.closed?
+        return 'close'  if moving_to_list.closed?
       end
 
       def add_label_ids

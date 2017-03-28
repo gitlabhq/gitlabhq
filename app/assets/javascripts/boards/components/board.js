@@ -1,8 +1,9 @@
 /* eslint-disable comma-dangle, space-before-function-paren, one-var */
-/* global Vue */
 /* global Sortable */
 
-require('./board_blank_state');
+import Vue from 'vue';
+import boardBlankState from './board_blank_state';
+
 require('./board_delete');
 require('./board_list');
 
@@ -17,7 +18,7 @@ require('./board_list');
     components: {
       'board-list': gl.issueBoards.BoardList,
       'board-delete': gl.issueBoards.BoardDelete,
-      'board-blank-state': gl.issueBoards.BoardBlankState
+      boardBlankState,
     },
     props: {
       list: Object,

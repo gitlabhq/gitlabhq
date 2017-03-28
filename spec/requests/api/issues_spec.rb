@@ -153,6 +153,16 @@ describe API::Issues, api: true  do
         expect(json_response.first['state']).to eq('opened')
       end
 
+      it 'returns unlabeled issues for "No Label" label' do
+        get api("/issues", user), labels: 'No Label'
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['labels']).to be_empty
+      end
+
       it 'returns an empty array if no issue matches labels and state filters' do
         get api("/issues?labels=#{label.title}&state=closed", user)
 
@@ -523,6 +533,12 @@ describe API::Issues, api: true  do
 
   describe "GET /projects/:id/issues" do
     let(:base_url) { "/projects/#{project.id}" }
+
+    it 'returns 404 when project does not exist' do
+      get api('/projects/1000/issues', non_member)
+
+      expect(response).to have_http_status(404)
+    end
 
     it "returns 404 on private projects for other users" do
       private_project = create(:empty_project, :private)

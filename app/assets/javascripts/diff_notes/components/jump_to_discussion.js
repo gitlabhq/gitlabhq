@@ -1,7 +1,8 @@
 /* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, one-var, space-before-function-paren, no-lonely-if, no-continue, brace-style, max-len, quotes */
 /* global DiscussionMixins */
 /* global CommentsStore */
-const Vue = require('vue');
+
+import Vue from 'vue';
 
 (() => {
   const JumpToDiscussion = Vue.extend({

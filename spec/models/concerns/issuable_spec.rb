@@ -44,6 +44,34 @@ describe Issue, "Issuable" do
     it { expect(described_class).to respond_to(:assigned) }
   end
 
+  describe 'author_name' do
+    it 'is delegated to author' do
+      expect(issue.author_name).to eq issue.author.name
+    end
+
+    it 'returns nil when author is nil' do
+      issue.author_id = nil
+      issue.save(validate: false)
+
+      expect(issue.author_name).to eq nil
+    end
+  end
+
+  describe 'assignee_name' do
+    it 'is delegated to assignee' do
+      issue.update!(assignee: create(:user))
+
+      expect(issue.assignee_name).to eq issue.assignee.name
+    end
+
+    it 'returns nil when assignee is nil' do
+      issue.assignee_id = nil
+      issue.save(validate: false)
+
+      expect(issue.assignee_name).to eq nil
+    end
+  end
+
   describe "before_save" do
     describe "#update_cache_counts" do
       context "when previous assignee exists" do
@@ -275,6 +303,16 @@ describe Issue, "Issuable" do
       it "returns correct hook data" do
         expect(data[:object_attributes]['assignee_id']).to eq(user.id)
         expect(data[:assignee]).to eq(user.hook_attrs)
+      end
+    end
+
+    context 'issue has labels' do
+      let(:labels) { [create(:label), create(:label)] }
+
+      before { issue.update_attribute(:labels, labels)}
+
+      it 'includes labels in the hook data' do
+        expect(data[:labels]).to eq(labels.map(&:hook_attrs))
       end
     end
 

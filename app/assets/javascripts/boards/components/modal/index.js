@@ -1,5 +1,7 @@
-/* global Vue */
 /* global ListIssue */
+
+import Vue from 'vue';
+import queryData from '../../utils/query_data';
 
 require('./header');
 require('./list');
@@ -47,9 +49,6 @@ require('./empty_state');
       page() {
         this.loadIssues();
       },
-      searchTerm() {
-        this.searchOperation();
-      },
       showAddIssuesModal() {
         if (this.showAddIssuesModal && !this.issues.length) {
           this.loading = true;
@@ -66,25 +65,27 @@ require('./empty_state');
       },
       filter: {
         handler() {
-          this.loadIssues(true);
+          if (this.$el.tagName) {
+            this.page = 1;
+            this.filterLoading = true;
+
+            this.loadIssues(true)
+              .then(() => {
+                this.filterLoading = false;
+              });
+          }
         },
         deep: true,
       },
     },
     methods: {
-      searchOperation: _.debounce(function searchOperationDebounce() {
-        this.loadIssues(true);
-      }, 500),
       loadIssues(clearIssues = false) {
         if (!this.showAddIssuesModal) return false;
 
-        const queryData = Object.assign({}, this.filter, {
-          search: this.searchTerm,
+        return gl.boardService.getBacklog(queryData(this.filter.path, {
           page: this.page,
           per: this.perPage,
-        });
-
-        return gl.boardService.getBacklog(queryData).then((res) => {
+        })).then((res) => {
           const data = res.json();
 
           if (clearIssues) {
@@ -123,6 +124,9 @@ require('./empty_state');
         return this.activeTab === 'selected' && this.selectedIssues.length === 0;
       },
     },
+    created() {
+      this.page = 1;
+    },
     components: {
       'modal-header': gl.issueBoards.ModalHeader,
       'modal-list': gl.issueBoards.ModalList,
@@ -143,14 +147,14 @@ require('./empty_state');
             :image="blankStateImage"
             :issue-link-base="issueLinkBase"
             :root-path="rootPath"
-            v-if="!loading && showList"></modal-list>
+            v-if="!loading && showList && !filterLoading"></modal-list>
           <empty-state
             v-if="showEmptyState"
             :image="blankStateImage"
             :new-issue-path="newIssuePath"></empty-state>
           <section
             class="add-issues-list text-center"
-            v-if="loading">
+            v-if="loading || filterLoading">
             <div class="add-issues-list-loading">
               <i class="fa fa-spinner fa-spin"></i>
             </div>

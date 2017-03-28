@@ -15,15 +15,30 @@ feature 'Projects > Wiki > User updates wiki page', feature: true do
   context 'in the user namespace' do
     let(:project) { create(:project, namespace: user.namespace) }
 
-    scenario 'the home page' do
-      click_link 'Edit'
+    context 'the home page' do
+      scenario 'success when the wiki content is not empty' do
+        click_link 'Edit'
 
-      fill_in :wiki_content, with: 'My awesome wiki!'
-      click_button 'Save changes'
+        fill_in :wiki_content, with: 'My awesome wiki!'
+        click_button 'Save changes'
 
-      expect(page).to have_content('Home')
-      expect(page).to have_content("Last edited by #{user.name}")
-      expect(page).to have_content('My awesome wiki!')
+        expect(page).to have_content('Home')
+        expect(page).to have_content("Last edited by #{user.name}")
+        expect(page).to have_content('My awesome wiki!')
+      end
+
+      scenario 'failure when the wiki content is empty' do
+        click_link 'Edit'
+
+        fill_in :wiki_content, with: ''
+        click_button 'Save changes'
+
+        expect(page).to have_selector('.wiki-form')
+        expect(page).to have_content('Edit Page')
+        expect(page).to have_content('The form contains the following error:')
+        expect(page).to have_content('Content can\'t be blank')
+        expect(find('textarea#wiki_content').value).to eq ''
+      end
     end
   end
 

@@ -5,7 +5,7 @@ class AddIndexForLatestSuccessfulPipeline < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index :ci_commits, [:gl_project_id, :ref, :status]
+    add_concurrent_index(:ci_commits, [:gl_project_id, :ref, :status])
   end
 
   def down

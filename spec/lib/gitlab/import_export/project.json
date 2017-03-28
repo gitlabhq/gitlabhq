@@ -6507,7 +6507,6 @@
       "tag": null,
       "yaml_errors": null,
       "committed_at": null,
-      "gl_project_id": 5,
       "status": "failed",
       "started_at": null,
       "finished_at": null,
@@ -6565,7 +6564,6 @@
           "artifacts_file": {
             "url": null
           },
-          "gl_project_id": 5,
           "artifacts_metadata": {
             "url": null
           },
@@ -6603,7 +6601,6 @@
           "artifacts_file": {
             "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/72/p5_build_artifacts.zip"
           },
-          "gl_project_id": 5,
           "artifacts_metadata": {
             "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/72/p5_build_artifacts_metadata.gz"
           },
@@ -6624,7 +6621,6 @@
       "tag": null,
       "yaml_errors": null,
       "committed_at": null,
-      "gl_project_id": 5,
       "status": "failed",
       "started_at": null,
       "finished_at": null,
@@ -6659,7 +6655,6 @@
           "artifacts_file": {
             "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/74/p5_build_artifacts.zip"
           },
-          "gl_project_id": 5,
           "artifacts_metadata": {
             "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/74/p5_build_artifacts_metadata.gz"
           },
@@ -6695,7 +6690,6 @@
           "artifacts_file": {
             "url": null
           },
-          "gl_project_id": 5,
           "artifacts_metadata": {
             "url": null
           },
@@ -6716,7 +6710,6 @@
       "tag": null,
       "yaml_errors": null,
       "committed_at": null,
-      "gl_project_id": 5,
       "status": "failed",
       "started_at": null,
       "finished_at": null,
@@ -6751,7 +6744,6 @@
           "artifacts_file": {
             "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/76/p5_build_artifacts.zip"
           },
-          "gl_project_id": 5,
           "artifacts_metadata": {
             "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/76/p5_build_artifacts_metadata.gz"
           },
@@ -6787,7 +6779,6 @@
           "artifacts_file": {
             "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/75/p5_build_artifacts.zip"
           },
-          "gl_project_id": 5,
           "artifacts_metadata": {
             "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/75/p5_build_artifacts_metadata.gz"
           },
@@ -6808,7 +6799,6 @@
       "tag": null,
       "yaml_errors": null,
       "committed_at": null,
-      "gl_project_id": 5,
       "status": "failed",
       "started_at": null,
       "finished_at": null,
@@ -6843,7 +6833,6 @@
           "artifacts_file": {
             "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/78/p5_build_artifacts.zip"
           },
-          "gl_project_id": 5,
           "artifacts_metadata": {
             "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/78/p5_build_artifacts_metadata.gz"
           },
@@ -6879,7 +6868,6 @@
           "artifacts_file": {
             "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/77/p5_build_artifacts.zip"
           },
-          "gl_project_id": 5,
           "artifacts_metadata": {
             "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/77/p5_build_artifacts_metadata.gz"
           },
@@ -6900,7 +6888,6 @@
       "tag": null,
       "yaml_errors": null,
       "committed_at": null,
-      "gl_project_id": 5,
       "status": "failed",
       "started_at": null,
       "finished_at": null,
@@ -6935,7 +6922,6 @@
           "artifacts_file": {
             "url": null
           },
-          "gl_project_id": 5,
           "artifacts_metadata": {
             "url": null
           },
@@ -6971,7 +6957,6 @@
           "artifacts_file": {
             "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/80/p5_build_artifacts.zip"
           },
-          "gl_project_id": 5,
           "artifacts_metadata": {
             "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/80/p5_build_artifacts_metadata.gz"
           },
@@ -6985,11 +6970,10 @@
     {
       "id": 123,
       "token": "cdbfasdf44a5958c83654733449e585",
-      "project_id": null,
+      "project_id": 5,
       "deleted_at": null,
       "created_at": "2017-01-16T15:25:28.637Z",
-      "updated_at": "2017-01-16T15:25:28.637Z",
-      "gl_project_id": 123
+      "updated_at": "2017-01-16T15:25:28.637Z"
     }
   ],
   "deploy_keys": [
@@ -7047,7 +7031,7 @@
       "updated_at": "2016-06-14T15:01:51.303Z",
       "active": false,
       "properties": {
-        "notify_only_broken_builds": true
+        "notify_only_broken_pipelines": true
       },
       "template": false,
       "push_events": true,
@@ -7055,7 +7039,7 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
+      "pipeline_events": true,
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7174,7 +7158,7 @@
       "updated_at": "2016-06-14T15:01:51.219Z",
       "active": false,
       "properties": {
-        "notify_only_broken_builds": true
+        "notify_only_broken_pipelines": true
       },
       "template": false,
       "push_events": true,
@@ -7182,7 +7166,7 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
+      "pipeline_events": true,
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7322,27 +7306,6 @@
       "active": false,
       "properties": {
 
-      },
-      "template": false,
-      "push_events": true,
-      "issues_events": true,
-      "merge_requests_events": true,
-      "tag_push_events": true,
-      "note_events": true,
-      "build_events": true,
-      "category": "common",
-      "default": false,
-      "wiki_page_events": true
-    },
-    {
-      "id": 85,
-      "title": "Builds emails",
-      "project_id": 5,
-      "created_at": "2016-06-14T15:01:51.090Z",
-      "updated_at": "2016-06-14T15:01:51.090Z",
-      "active": false,
-      "properties": {
-        "notify_only_broken_builds": true
       },
       "template": false,
       "push_events": true,

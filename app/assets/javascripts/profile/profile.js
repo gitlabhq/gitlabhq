@@ -25,6 +25,7 @@
     bindEvents() {
       $('.js-preferences-form').on('change.preference', 'input[type=radio]', this.submitForm);
       $('#user_notification_email').on('change', this.submitForm);
+      $('#user_notified_of_own_activity').on('change', this.submitForm);
       $('.update-username').on('ajax:before', this.beforeUpdateUsername);
       $('.update-username').on('ajax:complete', this.afterUpdateUsername);
       $('.update-notifications').on('ajax:success', this.onUpdateNotifs);

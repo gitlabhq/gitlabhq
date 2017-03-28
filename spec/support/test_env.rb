@@ -37,9 +37,10 @@ module TestEnv
     'conflict-too-large'                 => '39fa04f',
     'deleted-image-test'                 => '6c17798',
     'wip'                                => 'b9238ee',
-    'csv'                                => '3dd0896'
+    'csv'                                => '3dd0896',
+    'v1.1.0'                             => 'b83d6e3'
   }.freeze
-
+  
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
   # need to keep all the branches in sync.
   # We currently only need a subset of the branches
