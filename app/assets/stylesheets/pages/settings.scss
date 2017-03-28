@@ -39,3 +39,24 @@
 .nested-settings {
   padding-left: 20px;
 }
+
+.input-btn-group {
+  display: flex;
+
+  .input-large {
+    flex: 1;
+  }
+
+  .btn {
+    margin-left: 10px;
+  }
+}
+
+.settings-flex-row {
+  display: flex;
+  align-items: center;
+
+  a {
+    flex: 1;
+  }
+}

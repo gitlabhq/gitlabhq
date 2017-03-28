@@ -56,13 +56,19 @@
   .form-group
     = form.label :approver_ids, class: 'label-light' do
       Approvers
-    = users_select_tag("project[approver_ids]", multiple: true, class: 'input-large', scope: :all, email_user: true)
+    .input-group.input-btn-group
+      = users_select_tag("project[approver_ids]", multiple: true, class: 'input-large', scope: :all, email_user: true)
+      //TODO obviously shouldn't be root_path
+      = link_to "Add", root_path, class: "btn btn-success", title: 'Add approver(s)'
     .help-block
       Add an approver suggestion for each merge request
+
     = form.label :approver_group_ids, class: 'label-light' do
       Approver groups
-    - skip_groups = project.approver_groups.pluck(:group_id)
-    = groups_select_tag('project[approver_group_ids]', multiple: true, data: { skip_groups: skip_groups, all_available: true }, class: 'input-large')
+    .input-group.input-btn-group
+      - skip_groups = project.approver_groups.pluck(:group_id)
+      = groups_select_tag('project[approver_group_ids]', multiple: true, data: { skip_groups: skip_groups, all_available: true }, class: 'input-large')
+      = link_to "Add", root_path, class: "btn btn-success", title: 'Add group(s)'
     .help-block
       Add a group as an approver suggestion for each merge request
 
@@ -71,20 +77,18 @@
         Approvers
       %ul.well-list.approver-list
         - project.approvers.each do |approver|
-          %li.approver
+          %li.approver.settings-flex-row
             = link_to approver.user.name, approver.user
             .pull-right
-              = link_to namespace_project_approver_path(project.namespace, project, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove approver' do
-                = icon("sign-out")
-                Remove
+              = link_to namespace_project_approver_path(project.namespace, project, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, method: :delete, class: "btn btn-remove", title: 'Remove approver' do
+                = icon("trash")
         - project.approver_groups.each do |approver_group|
-          %li.approver-group
+          %li.approver-group.settings-flex-row
             Group:
             = link_to approver_group.group.name, approver_group.group
             .pull-right
-              = link_to namespace_project_approver_group_path(project.namespace, project, approver_group), data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}" }, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove group' do
-                = icon("sign-out")
-                Remove
+              = link_to namespace_project_approver_group_path(project.namespace, project, approver_group), data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}" }, method: :delete, class: "btn btn-remove", title: 'Remove group' do
+                = icon("trash")
         - if project.approvers.empty? && project.approver_groups.empty?
           %li There are no approvers
 
