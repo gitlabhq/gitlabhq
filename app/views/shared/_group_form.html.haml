@@ -1,4 +1,5 @@
-- parent = Group.find_by(id: params[:parent_id] || @group.parent_id)
+- parent = GroupFinder.new(current_user).execute(id: params[:parent_id] || @group.parent_id)
+
 - if @group.persisted?
   .form-group
     = f.label :name, class: 'control-label' do
