@@ -279,7 +279,7 @@ module API
         present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
       end
 
-      delete ':id/merge_requests/:merge_request_iid/unapprove' do
+      post ':id/merge_requests/:merge_request_iid/unapprove' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
         not_found! unless merge_request.has_approved?(current_user)

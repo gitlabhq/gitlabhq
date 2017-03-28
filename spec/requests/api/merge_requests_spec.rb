@@ -887,7 +887,7 @@ describe API::MergeRequests, api: true  do
     end
   end
 
-  describe 'DELETE :id/merge_requests/:merge_request_iid/unapprove' do
+  describe 'POST :id/merge_requests/:merge_request_iid/unapprove' do
     before { project.update_attribute(:approvals_before_merge, 2) }
 
     context 'as a user who has approved the merge request' do
@@ -901,11 +901,11 @@ describe API::MergeRequests, api: true  do
         merge_request.approvals.create(user: approver)
         merge_request.approvals.create(user: unapprover)
 
-        delete api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unapprove", unapprover)
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unapprove", unapprover)
       end
 
       it 'unapproves the merge request' do
-        expect(response.status).to eq(200)
+        expect(response.status).to eq(201)
         expect(json_response['approvals_left']).to eq(1)
         usernames = json_response['approved_by'].map { |u| u['user']['username'] }
         expect(usernames).not_to include(unapprover.username)
