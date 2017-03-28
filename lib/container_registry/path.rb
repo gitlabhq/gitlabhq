@@ -3,6 +3,7 @@ module ContainerRegistry
     InvalidRegistryPathError = Class.new(StandardError)
 
     def initialize(name)
+      @name = name
       @nodes = name.to_s.split('/')
     end
 
@@ -19,11 +20,18 @@ module ContainerRegistry
       end
     end
 
+    def has_repository?
+      # ContainerRepository.find_by_full_path(@name).present?
+    end
+
     def repository_project
       @project ||= Project.where_full_path_in(components.first(3))&.first
     end
 
     def repository_name
+      return unless repository_project
+
+      @name.remove(%r(^?#{Regexp.escape(repository_project.full_path)}/?))
     end
   end
 end

@@ -114,6 +114,49 @@ describe ContainerRegistry::Path do
   end
 
   describe '#repository_name' do
-    pending 'returns a correct name'
+    context 'when project does not exist' do
+      let(:name) { 'some/name' }
+
+      it 'returns nil' do
+        expect(path.repository_name).to be_nil
+      end
+    end
+
+    context 'when project exists' do
+      let(:group) { create(:group, path: 'some_group') }
+
+      let(:project) do
+        create(:empty_project, group: group, name: 'some_project')
+      end
+
+      before do
+        allow(path).to receive(:repository_project)
+          .and_return(project)
+      end
+
+      context 'when project path equal repository path' do
+        let(:name) { 'some_group/some_project' }
+
+        it 'returns an empty string' do
+          expect(path.repository_name).to eq ''
+        end
+      end
+
+      context 'when repository path has one additional level' do
+        let(:name) { 'some_group/some_project/repository' }
+
+        it 'returns a correct repository name' do
+          expect(path.repository_name).to eq 'repository'
+        end
+      end
+
+      context 'when repository path has two additional levels' do
+        let(:name) { 'some_group/some_project/repository/image' }
+
+        it 'returns a correct repository name' do
+          expect(path.repository_name).to eq 'repository/image'
+        end
+      end
+    end
   end
 end
