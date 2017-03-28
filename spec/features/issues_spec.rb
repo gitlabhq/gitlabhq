@@ -6,20 +6,13 @@ describe 'Issues', feature: true do
   include SortingHelper
   include WaitForAjax
 
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:empty_project, :public) }
 
   before do
     login_as :user
     user2 = create(:user)
 
     project.team << [[@user, user2], :developer]
-
-    project.repository.create_file(
-      @user,
-      '.gitlab/issue_templates/bug.md',
-      'this is a test "bug" template',
-      message: 'added issue template',
-      branch_name: 'master')
   end
 
   describe 'Edit issue' do
@@ -378,7 +371,7 @@ describe 'Issues', feature: true do
   end
 
   describe 'when I want to reset my incoming email token' do
-    let(:project1) { create(:project, namespace: @user.namespace) }
+    let(:project1) { create(:empty_project, namespace: @user.namespace) }
     let!(:issue) { create(:issue, project: project1) }
 
     before do
@@ -609,7 +602,16 @@ describe 'Issues', feature: true do
     end
 
     context 'form filled by URL parameters' do
+      let(:project) { create(:project, :public, :repository) }
+
       before do
+        project.repository.create_file(
+          @user,
+          '.gitlab/issue_templates/bug.md',
+          'this is a test "bug" template',
+          message: 'added issue template',
+          branch_name: 'master')
+
         visit new_namespace_project_issue_path(project.namespace, project, issuable_template: 'bug')
       end
 

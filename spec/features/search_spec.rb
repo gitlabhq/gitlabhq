@@ -5,7 +5,7 @@ describe "Search", feature: true  do
   include WaitForAjax
 
   let(:user) { create(:user) }
-  let(:project) { create(:project, namespace: user.namespace) }
+  let(:project) { create(:empty_project, namespace: user.namespace) }
   let!(:issue) { create(:issue, project: project, assignee: user) }
   let!(:issue2) { create(:issue, project: project, author: user) }
 
@@ -62,6 +62,7 @@ describe "Search", feature: true  do
 
   context 'search for comments' do
     context 'when comment belongs to a invalid commit' do
+      let(:project) { create(:project, :repository) }
       let(:note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'Bug here') }
 
       before { note.update_attributes(commit_id: 12345678) }
@@ -103,6 +104,7 @@ describe "Search", feature: true  do
     end
 
     it 'finds a commit' do
+      project = create(:project, :repository) { |p| p.add_reporter(user) }
       visit namespace_project_path(project.namespace, project)
 
       page.within '.search' do
@@ -116,6 +118,7 @@ describe "Search", feature: true  do
     end
 
     it 'finds a code' do
+      project = create(:project, :repository) { |p| p.add_reporter(user) }
       visit namespace_project_path(project.namespace, project)
 
       page.within '.search' do
@@ -222,6 +225,8 @@ describe "Search", feature: true  do
   end
 
   describe 'search for commits' do
+    let(:project) { create(:project, :repository) }
+
     before do
       visit search_path(project_id: project.id)
     end
