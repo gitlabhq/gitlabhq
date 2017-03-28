@@ -1200,7 +1200,10 @@ describe Projects::MergeRequestsController do
 
       let(:status) { pipeline.detailed_status(double('user')) }
 
-      before { get_pipeline_status }
+      before do
+        merge_request.update(head_pipeline: pipeline)
+        get_pipeline_status
+      end
 
       it 'return a detailed head_pipeline status in json' do
         expect(response).to have_http_status(:ok)

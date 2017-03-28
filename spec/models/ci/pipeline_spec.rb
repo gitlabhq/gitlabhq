@@ -1044,7 +1044,7 @@ describe Ci::Pipeline, models: true do
 
     it "returns merge requests whose `diff_head_sha` matches the pipeline's SHA" do
       allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { 'a288a022a53a5a944fae87bcec6efc87b7061808' }
-      merge_request = create(:merge_request, source_project: project, head_pipeline: pipeline, , source_branch: pipeline.ref)
+      merge_request = create(:merge_request, source_project: project, head_pipeline: pipeline, source_branch: pipeline.ref)
 
       expect(pipeline.merge_requests).to eq([merge_request])
     end

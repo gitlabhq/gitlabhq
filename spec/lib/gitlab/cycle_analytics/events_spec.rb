@@ -132,7 +132,7 @@ describe 'cycle analytics events' do
     end
 
     before do
-      merge_request.update(head_pipeline_id: pipeline.id)
+      merge_request.update(head_pipeline: pipeline)
 
       create(:ci_build, pipeline: pipeline, status: :success, author: user)
       create(:ci_build, pipeline: pipeline, status: :success, author: user)
@@ -230,7 +230,7 @@ describe 'cycle analytics events' do
     end
 
     before do
-      merge_request.update(head_pipeline_id: pipeline.id)
+      merge_request.update(head_pipeline: pipeline)
 
       create(:ci_build, pipeline: pipeline, status: :success, author: user)
       create(:ci_build, pipeline: pipeline, status: :success, author: user)
