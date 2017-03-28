@@ -226,41 +226,6 @@ module API
           .cancel(merge_request)
       end
 
-      desc 'Get the comments of a merge request' do
-        success Entities::MRNote
-      end
-      params do
-        use :pagination
-      end
-      get ':id/merge_requests/:merge_request_iid/comments' do
-        merge_request = find_merge_request_with_access(params[:merge_request_iid])
-        present paginate(merge_request.notes.fresh), with: Entities::MRNote
-      end
-
-      desc 'Post a comment to a merge request' do
-        success Entities::MRNote
-      end
-      params do
-        requires :note, type: String, desc: 'The text of the comment'
-      end
-      post ':id/merge_requests/:merge_request_iid/comments' do
-        merge_request = find_merge_request_with_access(params[:merge_request_iid], :create_note)
-
-        opts = {
-          note: params[:note],
-          noteable_type: 'MergeRequest',
-          noteable_id: merge_request.id
-        }
-
-        note = ::Notes::CreateService.new(user_project, current_user, opts).execute
-
-        if note.save
-          present note, with: Entities::MRNote
-        else
-          render_api_error!("Failed to save note #{note.errors.messages}", 400)
-        end
-      end
-
       desc 'List issues that will be closed on merge' do
         success Entities::MRNote
       end
