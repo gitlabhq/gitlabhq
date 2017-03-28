@@ -758,6 +758,15 @@ a.allowed-to-push {
   }
 }
 
+.create-new-protected-branch-button {
+  @include dropdown-link;
+
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  text-align: left;
+}
+
 .protected-branches-list {
   margin-bottom: 30px;
 
