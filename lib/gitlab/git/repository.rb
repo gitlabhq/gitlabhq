@@ -1112,56 +1112,6 @@ module Gitlab
         end
       end
 
-      def archive_to_file(treeish = 'master', filename = 'archive.tar.gz', format = nil, compress_cmd = %w(gzip -n))
-        git_archive_cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path} archive)
-
-        # Put files into a directory before archiving
-        prefix = "#{archive_name(treeish)}/"
-        git_archive_cmd << "--prefix=#{prefix}"
-
-        # Format defaults to tar
-        git_archive_cmd << "--format=#{format}" if format
-
-        git_archive_cmd += %W(-- #{treeish})
-
-        open(filename, 'w') do |file|
-          # Create a pipe to act as the '|' in 'git archive ... | gzip'
-          pipe_rd, pipe_wr = IO.pipe
-
-          # Get the compression process ready to accept data from the read end
-          # of the pipe
-          compress_pid = spawn(*nice(compress_cmd), in: pipe_rd, out: file)
-          # The read end belongs to the compression process now; we should
-          # close our file descriptor for it.
-          pipe_rd.close
-
-          # Start 'git archive' and tell it to write into the write end of the
-          # pipe.
-          git_archive_pid = spawn(*nice(git_archive_cmd), out: pipe_wr)
-          # The write end belongs to 'git archive' now; close it.
-          pipe_wr.close
-
-          # When 'git archive' and the compression process are finished, we are
-          # done.
-          Process.waitpid(git_archive_pid)
-          raise "#{git_archive_cmd.join(' ')} failed" unless $?.success?
-          Process.waitpid(compress_pid)
-          raise "#{compress_cmd.join(' ')} failed" unless $?.success?
-        end
-      end
-
-      def nice(cmd)
-        nice_cmd = %w(nice -n 20)
-        unless unsupported_platform?
-          nice_cmd += %w(ionice -c 2 -n 7)
-        end
-        nice_cmd + cmd
-      end
-
-      def unsupported_platform?
-        %w[darwin freebsd solaris].map { |platform| RUBY_PLATFORM.include?(platform) }.any?
-      end
-
       # Returns true if the index entry has the special file mode that denotes
       # a submodule.
       def submodule?(index_entry)
