@@ -324,8 +324,6 @@ module Ci
     end
 
     def artifacts_metadata_entry(path, **options)
-      puts "artifacts metadata_entry for path: #{path} and options: #{options}"
-
       metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
         artifacts_metadata.path,
         path,
