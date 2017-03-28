@@ -485,8 +485,9 @@
     .avatar-counter {
       display: inline-block;
       vertical-align: middle;
-      // margin-top: 1px;
-      min-width: 18px;
+      min-width: 16px;
+      line-height: 14px;
+      height: 16px;
     }
 
     .wide-counter {
