@@ -2,8 +2,9 @@ module Gitlab
   class AuthorityAnalyzer
     COMMITS_TO_CONSIDER = 25
 
-    def initialize(merge_request)
+    def initialize(merge_request, skip_user)
       @merge_request = merge_request
+      @skip_user = skip_user
       @users = Hash.new(0)
     end
 
@@ -20,7 +21,7 @@ module Gitlab
       @repo = @merge_request.target_project.repository
 
       @repo.commits(@merge_request.target_branch, path: list_of_involved_files, limit: COMMITS_TO_CONSIDER).each do |commit|
-        if commit.author && commit.author != @merge_request.author
+        if commit.author && commit.author != @skip_user
           @users[commit.author] += 1
         end
       end
