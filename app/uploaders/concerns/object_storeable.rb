@@ -39,6 +39,6 @@ module ObjectStoreable
   end
 
   def use_object_store?
-    @storage_options.object_stor.enabled
+    @storage_options.object_store.enabled
   end
 end

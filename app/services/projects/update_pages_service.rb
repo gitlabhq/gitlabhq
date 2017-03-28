@@ -38,8 +38,8 @@ module Projects
     rescue => e
       error(e.message)
     ensure
-      job.erase_artifacts! unless job.has_expiring_artifacts?
-      FileUtils.rm_rf(artifacts) if Gitlab.config.artifacts.object_store.enabled
+     job.erase_artifacts! unless job.has_expiring_artifacts?
+     FileUtils.rm_rf(artifacts) if Gitlab.config.artifacts.object_store.enabled
     end
 
     private
@@ -69,22 +69,11 @@ module Projects
     end
 
     def extract_archive!(temp_path)
-      if artifacts.ends_with?('.tar.gz') || artifacts.ends_with?('.tgz')
-        extract_tar_archive!(temp_path)
-      elsif artifacts.ends_with?('.zip')
+      if artifacts.ends_with?('.zip')
         extract_zip_archive!(temp_path)
       else
         raise 'unsupported artifacts format'
       end
-    end
-
-    def extract_tar_archive!(temp_path)
-      results = Open3.pipeline(%W(gunzip -c #{artifacts}),
-                               %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
-                               %W(tar -x -C #{temp_path} #{SITE_PATH}),
-                               err: '/dev/null')
-
-      raise 'pages failed to extract' unless results.compact.all?(&:success?)
     end
 
     def extract_zip_archive!(temp_path)
