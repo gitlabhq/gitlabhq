@@ -18,7 +18,11 @@ describe Boards::Issues::ListService, services: true do
 
     let!(:list1)   { create(:list, board: board, label: development, position: 0) }
     let!(:list2)   { create(:list, board: board, label: testing, position: 1) }
+<<<<<<< HEAD
     let!(:done)    { board.done_list }
+=======
+    let!(:closed)  { create(:closed_list, board: board) }
+>>>>>>> ce/master
 
     let!(:opened_issue1) { create(:labeled_issue, project: project, milestone: m1, title: 'Issue 1', labels: [bug]) }
     let!(:opened_issue2) { create(:labeled_issue, project: project, milestone: m2, title: 'Issue 2', labels: [p2]) }
@@ -58,10 +62,15 @@ describe Boards::Issues::ListService, services: true do
         end
       end
 
+<<<<<<< HEAD
       context 'when board have a milestone' do
         it 'returns opened issues without board labels and milestone applied' do
           params = { board_id: board.id }
           board.update_attribute(:milestone, m1)
+=======
+      it 'returns closed issues when listing issues from Closed' do
+        params = { board_id: board.id, id: closed.id }
+>>>>>>> ce/master
 
           issues = described_class.new(project, user, params).execute
 

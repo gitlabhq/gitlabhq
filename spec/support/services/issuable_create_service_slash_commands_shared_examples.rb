@@ -2,7 +2,7 @@
 # It can take a `default_params`.
 
 shared_examples 'new issuable record that supports slash commands' do
-  let!(:project) { create(:project) }
+  let!(:project) { create(:project, :repository) }
   let(:user) { create(:user).tap { |u| project.team << [u, :master] } }
   let(:assignee) { create(:user) }
   let!(:milestone) { create(:milestone, project: project) }

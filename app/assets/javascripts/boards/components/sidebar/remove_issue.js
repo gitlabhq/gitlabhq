@@ -53,7 +53,7 @@ import Vue from 'vue';
     template: `
       <div
         class="block list"
-        v-if="list.type !== 'done'">
+        v-if="list.type !== 'closed'">
         <button
           class="btn btn-default btn-block"
           type="button"

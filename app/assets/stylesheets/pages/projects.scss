@@ -477,20 +477,6 @@ a.deploy-project-label {
   }
 }
 
-.page-sidebar-pinned {
-  .project-stats .nav > li.right {
-    @media (min-width: $screen-lg-min) {
-      float: none;
-    }
-  }
-
-  .download-button {
-    @media (min-width: $screen-lg-min) {
-      margin-left: 0;
-    }
-  }
-}
-
 .project-stats {
   font-size: 0;
   text-align: center;
