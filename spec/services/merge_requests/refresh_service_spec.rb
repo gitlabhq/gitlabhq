@@ -11,11 +11,7 @@ describe MergeRequests::RefreshService, services: true do
       group = create(:group)
       group.add_owner(@user)
 
-<<<<<<< HEAD
-      @project = create(:project, namespace: group, approvals_before_merge: 1, reset_approvals_on_push: true)
-=======
-      @project = create(:project, :repository, namespace: group)
->>>>>>> ce/master
+      @project = create(:project, :repository, namespace: group, approvals_before_merge: 1, reset_approvals_on_push: true)
       @fork_project = Projects::ForkService.new(@project, @user).execute
       # The call to project.repository.after_import in RepositoryForkWorker does
       # not reset the @exists variable of @fork_project.repository so we have to

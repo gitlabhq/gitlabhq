@@ -12,11 +12,7 @@ describe Boards::Issues::MoveService, services: true do
 
     let!(:list1)   { create(:list, board: board1, label: development, position: 0) }
     let!(:list2)   { create(:list, board: board1, label: testing, position: 1) }
-<<<<<<< HEAD
-    let!(:done)    { board1.done_list }
-=======
     let!(:closed)  { create(:closed_list, board: board1) }
->>>>>>> ce/master
 
     before do
       project.team << [user, :developer]

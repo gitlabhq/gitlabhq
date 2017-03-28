@@ -10,11 +10,7 @@ describe Boards::Lists::MoveService, services: true do
     let!(:development) { create(:list, board: board, position: 1) }
     let!(:review)      { create(:list, board: board, position: 2) }
     let!(:staging)     { create(:list, board: board, position: 3) }
-<<<<<<< HEAD
-    let!(:done)        { board.done_list }
-=======
     let!(:closed)      { create(:closed_list, board: board) }
->>>>>>> ce/master
 
     context 'when list type is set to label' do
       it 'keeps position of lists when new position is nil' do
