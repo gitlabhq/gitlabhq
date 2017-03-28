@@ -10,7 +10,7 @@ related to an specific subject or theme, including:
 ## Topics
 
 - Idea to Production
-  - GitLab Installation
+  - [GitLab Installation](../install/README.md)
   - GitLab Workflow
     - Chat
     - Issue
@@ -23,9 +23,9 @@ related to an specific subject or theme, including:
     - Production
     - Feedback
 - Authentication
-- Continuous Integration (GitLab CI)
+- [Continuous Integration (GitLab CI)](../ci/)
 - GitLab Flow (branching strategy)
-- [GitLab Pages](pages/)
+- [GitLab Pages](../user/project/pages/)
 - Integrations
 
 > Note: non-linked indexes are currently under development and subjected to change.
