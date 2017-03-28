@@ -11,6 +11,7 @@ module Gitlab
 
           def execute
             raise EmailUnparsableError if from_address.blank?
+            raise ProjectNotFound if project.nil?
 
             create_issue!
             send_thank_you_email!
