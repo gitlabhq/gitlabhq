@@ -17,8 +17,7 @@ polling rate.
 A `Poll-Interval: -1` means you should disable polling, and this must be implemented.
 1. A response with HTTP status `4XX` or `5XX` should disable polling as well.
 1. Use a common library for polling.
-1. Poll on active tabs only. Use a common library to find out which tab currently has eyes on it.
-Please use [Focus](https://gitlab.com/andrewn/focus). Specifically [Eyeballs Detector](https://gitlab.com/andrewn/focus/blob/master/lib/eyeballs-detector.js).
+1. Poll on active tabs only. Please use [Visibility](https://github.com/ai/visibilityjs).
 1. Use regular polling intervals, do not use backoff polling, or jitter, as the interval will be
 controlled by the server.
 1. The backend code will most likely be using etags. You do not and should not check for status
