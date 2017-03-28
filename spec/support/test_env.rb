@@ -61,9 +61,6 @@ module TestEnv
 
     clean_test_path
 
-    FileUtils.mkdir_p(repos_path)
-    FileUtils.mkdir_p(backup_path)
-
     # Setup GitLab shell for test instance
     setup_gitlab_shell
 
@@ -95,10 +92,14 @@ module TestEnv
     tmp_test_path = Rails.root.join('tmp', 'tests', '**')
 
     Dir[tmp_test_path].each do |entry|
-      unless File.basename(entry) =~ /\Agitlab-(shell|test|test-fork)\z/
+      unless File.basename(entry) =~ /\Agitlab-(shell|test|test_bare|test-fork)\z/
         FileUtils.rm_rf(entry)
       end
     end
+
+    FileUtils.mkdir_p(repos_path)
+    FileUtils.mkdir_p(backup_path)
+    FileUtils.mkdir_p(pages_path)
   end
 
   def setup_gitlab_shell
@@ -149,6 +150,10 @@ module TestEnv
 
   def backup_path
     Gitlab.config.backup.path
+  end
+
+  def pages_path
+    Gitlab.config.pages.path
   end
 
   def copy_forked_repo_with_submodules(project)

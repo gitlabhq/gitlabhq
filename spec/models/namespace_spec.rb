@@ -129,10 +129,10 @@ describe Namespace, models: true do
     end
   end
 
-  describe '#move_dir' do
+  describe '#move_dir', repository: true do
     before do
       @namespace = create :namespace
-      @project = create(:empty_project, namespace: @namespace)
+      @project = create(:project_empty_repo, namespace: @namespace)
       allow(@namespace).to receive(:path_changed?).and_return(true)
     end
 
@@ -141,9 +141,9 @@ describe Namespace, models: true do
     end
 
     it "moves dir if path changed" do
-      new_path = @namespace.path + "_new"
-      allow(@namespace).to receive(:path_was).and_return(@namespace.path)
-      allow(@namespace).to receive(:path).and_return(new_path)
+      new_path = @namespace.full_path + "_new"
+      allow(@namespace).to receive(:full_path_was).and_return(@namespace.full_path)
+      allow(@namespace).to receive(:full_path).and_return(new_path)
       expect(@namespace).to receive(:remove_exports!)
       expect(@namespace.move_dir).to be_truthy
     end
@@ -161,16 +161,75 @@ describe Namespace, models: true do
 
       it { expect { @namespace.move_dir }.to raise_error('Namespace cannot be moved, because at least one project has tags in container registry') }
     end
+
+    context 'renaming a sub-group' do
+      let(:parent) { create(:group, name: 'parent', path: 'parent') }
+      let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
+      let!(:project) { create(:project_empty_repo, path: 'the-project', namespace: child) }
+      let(:uploads_dir) { File.join(CarrierWave.root, 'uploads', 'parent') }
+      let(:pages_dir) { File.join(TestEnv.pages_path, 'parent') }
+
+      before do
+        FileUtils.mkdir_p(File.join(uploads_dir, 'child', 'the-project'))
+        FileUtils.mkdir_p(File.join(pages_dir, 'child', 'the-project'))
+      end
+
+      it 'correctly moves the repository, uploads and pages' do
+        expected_repository_path = File.join(TestEnv.repos_path, 'parent', 'renamed', 'the-project.git')
+        expected_upload_path = File.join(uploads_dir, 'renamed', 'the-project')
+        expected_pages_path = File.join(pages_dir, 'renamed', 'the-project')
+
+        child.update_attributes!(path: 'renamed')
+
+        expect(File.directory?(expected_repository_path)).to be(true)
+        expect(File.directory?(expected_upload_path)).to be(true)
+        expect(File.directory?(expected_pages_path)).to be(true)
+      end
+    end
   end
 
-  describe '#rm_dir', 'callback' do
-    let!(:project) { create(:empty_project, namespace: namespace) }
-    let!(:path) { File.join(Gitlab.config.repositories.storages.default['path'], namespace.full_path) }
+  describe '#rm_dir', 'callback', repository: true do
+    let!(:project) { create(:project_empty_repo, namespace: namespace) }
+    let(:repository_storage_path) { Gitlab.config.repositories.storages.default['path'] }
+    let(:path_in_dir) { File.join(repository_storage_path, namespace.full_path) }
+    let(:deleted_path) { namespace.full_path.gsub(namespace.path, "#{namespace.full_path}+#{namespace.id}+deleted") }
+    let(:deleted_path_in_dir) { File.join(repository_storage_path, deleted_path) }
 
-    it "removes its dirs when deleted" do
+    it 'renames its dirs when deleted' do
+      allow(GitlabShellWorker).to receive(:perform_in)
+
       namespace.destroy
 
-      expect(File.exist?(path)).to be(false)
+      expect(File.exist?(deleted_path_in_dir)).to be(true)
+    end
+
+    it 'schedules the namespace for deletion' do
+      expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage_path, deleted_path)
+
+      namespace.destroy
+    end
+
+    context 'in sub-groups' do
+      let(:parent) { create(:namespace, path: 'parent') }
+      let(:child) { create(:namespace, parent: parent, path: 'child') }
+      let!(:project) { create(:project_empty_repo, namespace: child) }
+      let(:path_in_dir) { File.join(repository_storage_path, 'parent', 'child') }
+      let(:deleted_path) { File.join('parent', "child+#{child.id}+deleted") }
+      let(:deleted_path_in_dir) { File.join(repository_storage_path, deleted_path) }
+
+      it 'renames its dirs when deleted' do
+        allow(GitlabShellWorker).to receive(:perform_in)
+
+        child.destroy
+
+        expect(File.exist?(deleted_path_in_dir)).to be(true)
+      end
+
+      it 'schedules the namespace for deletion' do
+        expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage_path, deleted_path)
+
+        child.destroy
+      end
     end
 
     it 'removes the exports folder' do
