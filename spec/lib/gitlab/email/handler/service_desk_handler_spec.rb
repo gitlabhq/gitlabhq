@@ -33,4 +33,21 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
       expect(new_issue.all_references.all).to be_empty
     end
   end
+
+  context 'when service desk is not enabled' do
+    before do
+      project.update_attributes(
+        service_desk_enabled: false,
+        service_desk_mail_key: 'somemailkey',
+      )
+    end
+
+    it 'bounces the email' do
+      expect { receiver.execute }.to raise_error(Gitlab::Email::ProcessingError)
+    end
+
+    it 'doesn\'t create an issue' do
+      expect { receiver.execute rescue nil }.not_to change { Issue.count }
+    end
+  end
 end
