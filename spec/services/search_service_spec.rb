@@ -44,7 +44,7 @@ describe 'Search::GlobalService', services: true do
 
       context 'nested group' do
         let!(:nested_group) { create(:group, :nested) }
-        let!(:project) { create(:project, namespace: nested_group) }
+        let!(:project) { create(:empty_project, namespace: nested_group) }
 
         before { project.add_master(user) }
 

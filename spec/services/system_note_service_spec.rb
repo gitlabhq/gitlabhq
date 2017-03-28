@@ -3,7 +3,7 @@ require 'spec_helper'
 describe SystemNoteService, services: true do
   include Gitlab::Routing.url_helpers
 
-  let(:project)  { create(:project) }
+  let(:project)  { create(:empty_project) }
   let(:author)   { create(:user) }
   let(:noteable) { create(:issue, project: project) }
 
@@ -32,6 +32,7 @@ describe SystemNoteService, services: true do
   describe '.add_commits' do
     subject { described_class.add_commits(noteable, project, author, new_commits, old_commits, oldrev) }
 
+    let(:project)     { create(:project, :repository) }
     let(:noteable)    { create(:merge_request, source_project: project) }
     let(:new_commits) { noteable.commits }
     let(:old_commits) { [] }
@@ -216,6 +217,7 @@ describe SystemNoteService, services: true do
   end
 
   describe '.merge_when_pipeline_succeeds' do
+    let(:project)  { create(:project, :repository) }
     let(:pipeline) { build(:ci_pipeline_without_jobs )}
     let(:noteable) do
       create(:merge_request, source_project: project, target_project: project)
@@ -226,11 +228,12 @@ describe SystemNoteService, services: true do
     it_behaves_like 'a system note'
 
     it "posts the 'merge when pipeline succeeds' system note" do
-      expect(subject.note).to match  /enabled an automatic merge when the pipeline for (\w+\/\w+@)?\h{40} succeeds/
+      expect(subject.note).to match(/enabled an automatic merge when the pipeline for (\w+\/\w+@)?\h{40} succeeds/)
     end
   end
 
   describe '.cancel_merge_when_pipeline_succeeds' do
+    let(:project) { create(:project, :repository) }
     let(:noteable) do
       create(:merge_request, source_project: project, target_project: project)
     end
@@ -273,6 +276,8 @@ describe SystemNoteService, services: true do
 
   describe '.change_branch' do
     subject { described_class.change_branch(noteable, project, author, 'target', old_branch, new_branch) }
+
+    let(:project)    { create(:project, :repository) }
     let(:old_branch) { 'old_branch'}
     let(:new_branch) { 'new_branch'}
 
@@ -288,6 +293,8 @@ describe SystemNoteService, services: true do
   describe '.change_branch_presence' do
     subject { described_class.change_branch_presence(noteable, project, author, :source, 'feature', :delete) }
 
+    let(:project) { create(:project, :repository) }
+
     it_behaves_like 'a system note'
 
     context 'when source branch deleted' do
@@ -300,11 +307,13 @@ describe SystemNoteService, services: true do
   describe '.new_issue_branch' do
     subject { described_class.new_issue_branch(noteable, project, author, "1-mepmep") }
 
+    let(:project) { create(:project, :repository) }
+
     it_behaves_like 'a system note'
 
     context 'when a branch is created from the new branch button' do
       it 'sets the note text' do
-        expect(subject.note).to match /\Acreated branch [`1-mepmep`]/
+        expect(subject.note).to start_with("created branch [`1-mepmep`]")
       end
     end
   end
@@ -333,7 +342,7 @@ describe SystemNoteService, services: true do
 
       describe 'note_body' do
         context 'cross-project' do
-          let(:project2)  { create(:project) }
+          let(:project2)  { create(:project, :repository) }
           let(:mentioner) { create(:issue, project: project2) }
 
           context 'from Commit' do
@@ -353,6 +362,7 @@ describe SystemNoteService, services: true do
 
         context 'within the same project' do
           context 'from Commit' do
+            let(:project) { create(:project, :repository) }
             let(:mentioner) { project.repository.commit }
 
             it 'references the mentioning commit' do
@@ -394,6 +404,7 @@ describe SystemNoteService, services: true do
     end
 
     context 'when mentioner is a MergeRequest' do
+      let(:project)   { create(:project, :repository) }
       let(:mentioner) { create(:merge_request, :simple, source_project: project) }
       let(:noteable)  { project.commit }
 
@@ -421,6 +432,7 @@ describe SystemNoteService, services: true do
   end
 
   describe '.cross_reference_exists?' do
+    let(:project) { create(:project, :repository) }
     let(:commit0) { project.commit }
     let(:commit1) { project.commit('HEAD~2') }
 
@@ -513,7 +525,7 @@ describe SystemNoteService, services: true do
   end
 
   describe '.noteable_moved' do
-    let(:new_project) { create(:project) }
+    let(:new_project) { create(:empty_project) }
     let(:new_noteable) { create(:issue, project: new_project) }
 
     subject do
@@ -542,7 +554,7 @@ describe SystemNoteService, services: true do
       it_behaves_like 'cross project mentionable'
 
       it 'notifies about noteable being moved to' do
-        expect(subject.note).to match /moved to/
+        expect(subject.note).to match('moved to')
       end
     end
 
@@ -552,7 +564,7 @@ describe SystemNoteService, services: true do
       it_behaves_like 'cross project mentionable'
 
       it 'notifies about noteable being moved from' do
-        expect(subject.note).to match /moved from/
+        expect(subject.note).to match('moved from')
       end
     end
 
@@ -574,13 +586,13 @@ describe SystemNoteService, services: true do
     end
   end
 
-  include JiraServiceHelper
-
   describe 'JIRA integration' do
+    include JiraServiceHelper
+
     let(:project)         { create(:jira_project) }
     let(:author)          { create(:user) }
     let(:issue)           { create(:issue, project: project) }
-    let(:merge_request)        { create(:merge_request, :simple, target_project: project, source_project: project) }
+    let(:merge_request)   { create(:merge_request, :simple, target_project: project, source_project: project) }
     let(:jira_issue)      { ExternalIssue.new("JIRA-1", project)}
     let(:jira_tracker)    { project.jira_service }
     let(:commit)          { project.commit }
@@ -809,6 +821,7 @@ describe SystemNoteService, services: true do
   end
 
   describe '.add_merge_request_wip_from_commit' do
+    let(:project) { create(:project, :repository) }
     let(:noteable) do
       create(:merge_request, source_project: project, target_project: project)
     end

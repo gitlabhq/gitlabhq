@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MergeRequests::ResolveService do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   let(:fork_project) do
     create(:forked_project_with_submodules) do |fork_project|

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Projects::UpdateService, services: true do
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
+  let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
 
   describe 'update_by_user' do
     context 'when visibility_level is INTERNAL' do
@@ -56,7 +56,7 @@ describe Projects::UpdateService, services: true do
   end
 
   describe 'visibility_level' do
-    let(:project) { create(:project, :internal) }
+    let(:project) { create(:empty_project, :internal) }
     let(:forked_project) { create(:forked_project_with_submodules, :internal) }
 
     before do
