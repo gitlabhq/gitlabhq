@@ -19,7 +19,7 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
       )
     end
 
-    it 'receives the email', jneen: true do
+    it 'receives the email' do
       setup_attachment
 
       expect(Notify).to receive(:thank_you_email).with(instance_of(Fixnum))
