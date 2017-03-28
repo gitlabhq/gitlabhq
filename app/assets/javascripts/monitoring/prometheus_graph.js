@@ -25,7 +25,6 @@ class PrometheusGraph {
     this.width = parentContainerWidth - this.margin.left - this.margin.right;
     this.height = this.originalHeight - this.margin.top - this.margin.bottom;
     this.backOffRequestCounter = 0;
-    this.cpuNumberFormatInput = $('input[graph-type="cpu_values"]');
     this.configureGraph();
     this.init();
   }
@@ -271,12 +270,11 @@ class PrometheusGraph {
       .attr('y', maxMetricValue + 15)
       .text(dayFormat(currentData.time));
 
-      let currentMetricValue = currentData.value;
+      let currentMetricValue = gl.text.formatRelevantDigits(currentData.value);
       if (key === 'cpu_values') {
-        currentMetricValue = Number(currentMetricValue).toFixed(this.cpuNumberFormatInput.val());
         currentMetricValue = `${currentMetricValue}%`;
       } else {
-        currentMetricValue = currentMetricValue.substring(0, 8);
+        currentMetricValue = `${currentMetricValue} MB`;
       }
       d3.select(`${currentPrometheusGraphContainer} .text-metric-usage`)
       .text(currentMetricValue);

@@ -19,16 +19,8 @@
           = render 'projects/deployments/actions', deployment: @environment.last_deployment
   .row
     .col-sm-12
-      .row
-        .col-sm-10
-          %h4
-            CPU utilization
-        .col-sm-2.form-horizontal
-          .form-group
-            %label{ for: 'decimal_format', class:'control-label col-sm-6' }
-              Format
-            .col-sm-6
-              %input.form-control{ name: 'decimal_format', type: 'number', value: '4', 'graph-type': 'cpu_values', min: '1' }
+      %h4
+        CPU utilization
       %svg.prometheus-graph{ 'graph-type' => 'cpu_values' }
   .row
     .col-sm-12

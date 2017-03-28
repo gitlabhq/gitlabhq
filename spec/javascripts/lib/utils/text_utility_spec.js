@@ -105,6 +105,32 @@ require('~/lib/utils/text_utility');
           expect(textArea.value).toEqual(`${initialValue}* `);
         });
       });
+
+      describe('gl.text.formatRelevantDigits', () => {
+        it('returns 0 when the number is NaN', () => {
+          expect(gl.text.formatRelevantDigits('fail')).toBe(0);
+        });
+
+        it('returns 4 decimals when there is 4 plus digits to the left', () => {
+          const formattedNumber = gl.text.formatRelevantDigits('1000.1234567').split('.')[1];
+          expect(formattedNumber.length).toBe(4);
+        });
+
+        it('returns 3 decimals when there is 1 digit to the left', () => {
+          const formattedNumber = gl.text.formatRelevantDigits('0.1234567').split('.')[1];
+          expect(formattedNumber.length).toBe(3);
+        });
+
+        it('returns 2 decimals when there is 2 digits to the left', () => {
+          const formattedNumber = gl.text.formatRelevantDigits('10.1234567').split('.')[1];
+          expect(formattedNumber.length).toBe(2);
+        });
+
+        it('returns 1 decimal when there is 3 digits to the left', () => {
+          const formattedNumber = gl.text.formatRelevantDigits('100.1234567').split('.')[1];
+          expect(formattedNumber.length).toBe(1);
+        });
+      });
     });
   });
 })();
