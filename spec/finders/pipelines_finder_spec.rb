@@ -28,10 +28,14 @@ describe PipelinesFinder do
 
     context 'when scope is finished' do
       let(:params) { { scope: 'finished' } }
-      let!(:pipeline) { create(:ci_pipeline, project: project, status: 'success') }
+      let!(:pipelines) do
+        [create(:ci_pipeline, project: project, status: 'success'),
+         create(:ci_pipeline, project: project, status: 'failed'),
+         create(:ci_pipeline, project: project, status: 'canceled')]
+      end
 
       it 'returns matched pipelines' do
-        is_expected.to eq([pipeline])
+        is_expected.to eq(pipelines.sort_by { |p| -p.id })
       end
     end
 
@@ -168,7 +172,7 @@ describe PipelinesFinder do
         let(:params) { { order_by: 'user_id', sort: 'asc' } }
         let!(:pipelines) { create_list(:ci_pipeline, 2, project: project, user: create(:user)) }
 
-        it 'sorts as user_id: :desc' do
+        it 'sorts as user_id: :asc' do
           is_expected.to eq(pipelines.sort_by { |p| p.user.id })
         end
 

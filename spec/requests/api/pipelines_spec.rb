@@ -26,55 +26,52 @@ describe API::Pipelines do
       end
 
       context 'when parameter is passed' do
-        let(:user1) { create(:user) }
-        let(:user2) { create(:user) }
-        let(:project) { create(:project, :repository) }
-
-        before do
-          create(:ci_pipeline, project: project, user: user1, ref: 'v1.0.0', tag: true)
-          create(:ci_pipeline, project: project, user: user1, status: 'created')
-          create(:ci_pipeline, project: project, user: user1, status: 'pending')
-          create(:ci_pipeline, project: project, user: user1, status: 'running')
-          create(:ci_pipeline, project: project, user: user1, status: 'success')
-          create(:ci_pipeline, project: project, user: user2, status: 'failed')
-          create(:ci_pipeline, project: project, user: user2, status: 'canceled')
-          create(:ci_pipeline, project: project, user: user2, status: 'skipped')
-          create(:ci_pipeline, project: project, user: user2, yaml_errors: 'Syntax error')
-        end
-
-        context 'when scope is passed' do
-          %w[running pending].each do |target|
-            context "when scope is #{target}" do
-              it "returns matched pipelines" do
-                get api("/projects/#{project.id}/pipelines", user), scope: target
-
-                expect(response).to have_http_status(200)
-                expect(response).to include_pagination_headers
-                expect(json_response).not_to be_empty
-                json_response.each { |r| expect(r['status']).to eq(target) }
-              end
+        %w[running pending].each do |target|
+          context "when scope is #{target}" do
+            before do
+              create(:ci_pipeline, project: project, status: target)
             end
-          end
 
-          context 'when scope is finished' do
             it 'returns matched pipelines' do
-              get api("/projects/#{project.id}/pipelines", user), scope: 'finished'
+              get api("/projects/#{project.id}/pipelines", user), scope: target
 
-              expect(response).to have_http_status(200)
+              expect(response).to have_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).not_to be_empty
-              json_response.each { |r| expect(r['status']).to be_in(%w[success failed canceled]) }
+              json_response.each { |r| expect(r['status']).to eq(target) }
             end
           end
+        end
+
+        context 'when scope is finished' do
+          before do
+            create(:ci_pipeline, project: project, status: 'success')
+            create(:ci_pipeline, project: project, status: 'failed')
+            create(:ci_pipeline, project: project, status: 'canceled')
+          end
+
+          it 'returns matched pipelines' do
+            get api("/projects/#{project.id}/pipelines", user), scope: 'finished'
+
+            expect(response).to have_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response).not_to be_empty
+            json_response.each { |r| expect(r['status']).to be_in(%w[success failed canceled]) }
+          end
+        end
+
+        context 'when scope is branches or tags' do
+          let!(:pipeline_branch) { create(:ci_pipeline, project: project) }
+          let!(:pipeline_tag) { create(:ci_pipeline, project: project, ref: 'v1.0.0', tag: true) }
 
           context 'when scope is branches' do
             it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines", user), scope: 'branches'
 
-              expect(response).to have_http_status(200)
+              expect(response).to have_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).not_to be_empty
-              expect(json_response.last['sha']).to eq(project.pipelines.where(tag: false).last.sha)
+              expect(json_response.last['id']).to eq(pipeline_branch.id)
             end
           end
 
@@ -82,51 +79,59 @@ describe API::Pipelines do
             it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines", user), scope: 'tags'
 
-              expect(response).to have_http_status(200)
+              expect(response).to have_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).not_to be_empty
-              expect(json_response.last['sha']).to eq(project.pipelines.where(tag: true).last.sha)
-            end
-          end
-
-          context 'when scope is invalid' do
-            it 'returns 400' do
-              get api("/projects/#{project.id}/pipelines", user), scope: 'invalid-scope'
-
-              expect(response).to have_http_status(400)
+              expect(json_response.last['id']).to eq(pipeline_tag.id)
             end
           end
         end
 
-        context 'when status is passed' do
-          %w[running pending success failed canceled skipped].each do |target|
-            context "when status is #{target}" do
-              it 'returns matched pipelines' do
-                get api("/projects/#{project.id}/pipelines", user), status: target
+        context 'when scope is invalid' do
+          it 'returns 400' do
+            get api("/projects/#{project.id}/pipelines", user), scope: 'invalid-scope'
 
-                expect(response).to have_http_status(200)
-                expect(response).to include_pagination_headers
-                expect(json_response).not_to be_empty
-                json_response.each { |r| expect(r['status']).to eq(target) }
-              end
-            end
+            expect(response).to have_http_status(:bad_request)
           end
+        end
 
-          context 'when status is invalid' do
-            it 'returns 400' do
-              get api("/projects/#{project.id}/pipelines", user), status: 'invalid-status'
+        %w[running pending success failed canceled skipped].each do |target|
+          context "when status is #{target}" do
+            before do
+              create(:ci_pipeline, project: project, status: target)
+              exception_status = %w[running pending success failed canceled skipped] - [target]
+              create(:ci_pipeline, project: project, status: exception_status.sample)
+            end
 
-              expect(response).to have_http_status(400)
+            it 'returns matched pipelines' do
+              get api("/projects/#{project.id}/pipelines", user), status: target
+
+              expect(response).to have_http_status(:ok)
+              expect(response).to include_pagination_headers
+              expect(json_response).not_to be_empty
+              json_response.each { |r| expect(r['status']).to eq(target) }
             end
           end
         end
 
-        context 'when ref is passed' do
+        context 'when status is invalid' do
+          it 'returns :bad_request' do
+            get api("/projects/#{project.id}/pipelines", user), status: 'invalid-status'
+
+            expect(response).to have_http_status(:bad_request)
+          end
+        end
+
+        context 'when ref is specified' do
+          before do
+            create(:ci_pipeline, project: project)
+          end
+
           context 'when ref exists' do
             it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines", user), ref: 'master'
 
-              expect(response).to have_http_status(200)
+              expect(response).to have_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).not_to be_empty
               json_response.each { |r| expect(r['ref']).to eq('master') }
@@ -137,21 +142,23 @@ describe API::Pipelines do
             it 'returns empty' do
               get api("/projects/#{project.id}/pipelines", user), ref: 'invalid-ref'
 
-              expect(response).to have_http_status(200)
+              expect(response).to have_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).to be_empty
             end
           end
         end
 
-        context 'when name is passed' do
+        context 'when name is specified' do
+          let!(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+
           context 'when name exists' do
             it 'returns matched pipelines' do
-              get api("/projects/#{project.id}/pipelines", user), name: user1.name
+              get api("/projects/#{project.id}/pipelines", user), name: user.name
 
-              expect(response).to have_http_status(200)
+              expect(response).to have_http_status(:ok)
               expect(response).to include_pagination_headers
-              expect(json_response.first['sha']).to eq(project.pipelines.where(user: user1).order(id: :desc).first.sha)
+              expect(json_response.first['id']).to eq(pipeline.id)
             end
           end
 
@@ -159,21 +166,23 @@ describe API::Pipelines do
             it 'returns empty' do
               get api("/projects/#{project.id}/pipelines", user), name: 'invalid-name'
 
-              expect(response).to have_http_status(200)
+              expect(response).to have_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).to be_empty
             end
           end
         end
 
-        context 'when username is passed' do
+        context 'when username is specified' do
+          let!(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+
           context 'when username exists' do
             it 'returns matched pipelines' do
-              get api("/projects/#{project.id}/pipelines", user), username: user1.username
+              get api("/projects/#{project.id}/pipelines", user), username: user.username
 
-              expect(response).to have_http_status(200)
+              expect(response).to have_http_status(:ok)
               expect(response).to include_pagination_headers
-              expect(json_response.first['sha']).to eq(project.pipelines.where(user: user1).order(id: :desc).first.sha)
+              expect(json_response.first['id']).to eq(pipeline.id)
             end
           end
 
@@ -181,21 +190,24 @@ describe API::Pipelines do
             it 'returns empty' do
               get api("/projects/#{project.id}/pipelines", user), username: 'invalid-username'
 
-              expect(response).to have_http_status(200)
+              expect(response).to have_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).to be_empty
             end
           end
         end
 
-        context 'when yaml_errors is passed' do
+        context 'when yaml_errors is specified' do
+          let!(:pipeline1) { create(:ci_pipeline, project: project, yaml_errors: 'Syntax error') }
+          let!(:pipeline2) { create(:ci_pipeline, project: project) }
+
           context 'when yaml_errors is true' do
             it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines", user), yaml_errors: true
 
-              expect(response).to have_http_status(200)
+              expect(response).to have_http_status(:ok)
               expect(response).to include_pagination_headers
-              expect(json_response.first['id']).to eq(project.pipelines.where("yaml_errors IS NOT NULL").order(id: :desc).first.id)
+              expect(json_response.first['id']).to eq(pipeline1.id)
             end
           end
 
@@ -203,49 +215,50 @@ describe API::Pipelines do
             it 'returns matched pipelines' do
               get api("/projects/#{project.id}/pipelines", user), yaml_errors: false
 
-              expect(response).to have_http_status(200)
+              expect(response).to have_http_status(:ok)
               expect(response).to include_pagination_headers
-              expect(json_response.first['id']).to eq(project.pipelines.where("yaml_errors IS NULL").order(id: :desc).first.id)
+              expect(json_response.first['id']).to eq(pipeline2.id)
             end
           end
 
           context 'when yaml_errors is invalid' do
-            it 'returns 400' do
+            it 'returns :bad_request' do
               get api("/projects/#{project.id}/pipelines", user), yaml_errors: 'invalid-yaml_errors'
 
-              expect(response).to have_http_status(400)
+              expect(response).to have_http_status(:bad_request)
             end
           end
         end
 
-        context 'when order_by and sort are passed' do
-          context 'when order_by and sort are valid' do
-            it 'sorts pipelines' do
+        context 'when order_by and sort are specified' do
+          context 'when order_by user_id' do
+            let!(:pipeline) { create_list(:ci_pipeline, 2, project: project, user: create(:user)) }
+
+            it 'sorts as user_id: :asc' do
               get api("/projects/#{project.id}/pipelines", user), order_by: 'user_id', sort: 'asc'
 
-              expect(response).to have_http_status(200)
+              expect(response).to have_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).not_to be_empty
-              pipelines = project.pipelines.order(user_id: :asc)
-              json_response.each_with_index do |r, i|
-                expect(r['id']).to eq(pipelines[i].id)
+              pipeline.sort_by { |p| p.user.id }.tap do |sorted_pipeline|
+                json_response.each_with_index { |r, i| expect(r['id']).to eq(sorted_pipeline[i].id) }
+              end
+            end
+
+            context 'when sort is invalid' do
+              it 'sorts as user_id: :desc' do
+                get api("/projects/#{project.id}/pipelines", user), order_by: 'user_id', sort: 'invalid_sort'
+
+                expect(response).to have_http_status(:bad_request)
               end
             end
           end
 
           context 'when order_by is invalid' do
-            it 'returns 400' do
+            it 'returns :bad_request' do
               get api("/projects/#{project.id}/pipelines", user), order_by: 'lock_version', sort: 'asc'
 
-              expect(response).to have_http_status(400)
-            end
-          end
-
-          context 'when sort is invalid' do
-            it 'returns 400' do
-              get api("/projects/#{project.id}/pipelines", user), order_by: 'id', sort: 'hack'
-
-              expect(response).to have_http_status(400)
+              expect(response).to have_http_status(:bad_request)
             end
           end
         end
