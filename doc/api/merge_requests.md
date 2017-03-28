@@ -546,15 +546,15 @@ You can request information about a merge request's approval status using the
 following endpoint:
 
 ```
-GET /projects/:id/merge_requests/:merge_request_id/approvals
+GET /projects/:id/merge_requests/:merge_request_iid/approvals
 ```
 
 **Parameters:**
 
-| Attribute          | Type    | Required | Description         |
-|--------------------|---------|----------|---------------------|
-| `id`               | integer | yes      | The ID of a project |
-| `merge_request_id` | integer | yes      | The ID of MR        |
+| Attribute           | Type    | Required | Description         |
+|---------------------|---------|----------|---------------------|
+| `id`                | integer | yes      | The ID of a project |
+| `merge_request_iid` | integer | yes      | The IID of MR       |
 
 ```json
 {
@@ -592,15 +592,15 @@ If you are allowed to, you can approve a merge request using the following
 endpoint:
 
 ```
-POST /projects/:id/merge_requests/:merge_request_id/approve
+POST /projects/:id/merge_requests/:merge_request_iid/approve
 ```
 
 **Parameters:**
 
-| Attribute          | Type    | Required | Description         |
-|--------------------|---------|----------|---------------------|
-| `id`               | integer | yes      | The ID of a project |
-| `merge_request_id` | integer | yes      | The ID of MR        |
+| Attribute           | Type    | Required | Description         |
+|---------------------|---------|----------|---------------------|
+| `id`                | integer | yes      | The ID of a project |
+| `merge_request_iid` | integer | yes      | The IID of MR       |
 
 ```json
 {
@@ -639,6 +639,24 @@ POST /projects/:id/merge_requests/:merge_request_id/approve
   ]
 }
 ```
+
+## Unapprove Merge Request
+
+>**Note:** This API endpoint is only available on 9.0 EE and above.
+
+If you did approve a merge request, you can unapprove it using the following
+endpoint:
+
+```
+POST /projects/:id/merge_requests/:merge_request_iid/unapprove
+```
+
+**Parameters:**
+
+| Attribute           | Type    | Required | Description         |
+|---------------------|---------|----------|---------------------|
+| `id`                | integer | yes      | The ID of a project |
+| `merge_request_iid` | integer | yes      | The IID of MR       |
 
 ## Cancel Merge When Pipeline Succeeds
 

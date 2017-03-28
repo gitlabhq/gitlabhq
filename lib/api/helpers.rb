@@ -90,6 +90,11 @@ module API
       MergeRequestsFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
 
+    def find_project_snippet(id)
+      finder_params = { filter: :by_project, project: user_project }
+      SnippetsFinder.new.execute(current_user, finder_params).find(id)
+    end
+
     def find_merge_request_with_access(iid, access_level = :read_merge_request)
       merge_request = user_project.merge_requests.find_by!(iid: iid)
       authorize! access_level, merge_request

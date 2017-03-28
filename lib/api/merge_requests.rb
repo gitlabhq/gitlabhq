@@ -233,41 +233,6 @@ module API
           .cancel(merge_request)
       end
 
-      desc 'Get the comments of a merge request' do
-        success Entities::MRNote
-      end
-      params do
-        use :pagination
-      end
-      get ':id/merge_requests/:merge_request_iid/comments' do
-        merge_request = find_merge_request_with_access(params[:merge_request_iid])
-        present paginate(merge_request.notes.fresh), with: Entities::MRNote
-      end
-
-      desc 'Post a comment to a merge request' do
-        success Entities::MRNote
-      end
-      params do
-        requires :note, type: String, desc: 'The text of the comment'
-      end
-      post ':id/merge_requests/:merge_request_iid/comments' do
-        merge_request = find_merge_request_with_access(params[:merge_request_iid], :create_note)
-
-        opts = {
-          note: params[:note],
-          noteable_type: 'MergeRequest',
-          noteable_id: merge_request.id
-        }
-
-        note = ::Notes::CreateService.new(user_project, current_user, opts).execute
-
-        if note.save
-          present note, with: Entities::MRNote
-        else
-          render_api_error!("Failed to save note #{note.errors.messages}", 400)
-        end
-      end
-
       desc 'List issues that will be closed on merge' do
         success Entities::MRNote
       end
@@ -284,14 +249,13 @@ module API
       #
       # Parameters:
       #   id (required)                 - The ID of a project
-      #   merge_request_id (required)   - ID of MR
+      #   merge_request_idd (required)  - IID of MR
       # Examples:
-      #   GET /projects/:id/merge_requests/:merge_request_id/approvals
+      #   GET /projects/:id/merge_requests/:merge_request_iid/approvals
       #
-      get ':id/merge_requests/:merge_request_id/approvals' do
-        merge_request = user_project.merge_requests.find(params[:merge_request_id])
+      get ':id/merge_requests/:merge_request_iid/approvals' do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        authorize! :read_merge_request, merge_request
         present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
       end
 
@@ -299,12 +263,12 @@ module API
       #
       # Parameters:
       #   id (required)                 - The ID of a project
-      #   merge_request_id (required)   - ID of MR
+      #   merge_request_iid (required)  - IID of MR
       # Examples:
-      #   POST /projects/:id/merge_requests/:merge_request_id/approvals
+      #   POST /projects/:id/merge_requests/:merge_request_iid/approve
       #
-      post ':id/merge_requests/:merge_request_id/approve' do
-        merge_request = user_project.merge_requests.find(params[:merge_request_id])
+      post ':id/merge_requests/:merge_request_iid/approve' do
+        merge_request = find_project_merge_request(params[:merge_request_iid])
 
         unauthorized! unless merge_request.can_approve?(current_user)
 
@@ -315,8 +279,8 @@ module API
         present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
       end
 
-      delete ':id/merge_requests/:merge_request_id/unapprove' do
-        merge_request = user_project.merge_requests.find(params[:merge_request_id])
+      post ':id/merge_requests/:merge_request_iid/unapprove' do
+        merge_request = find_project_merge_request(params[:merge_request_iid])
 
         not_found! unless merge_request.has_approved?(current_user)
 
@@ -333,8 +297,8 @@ module API
       params do
         use :pagination
       end
-      get ':id/merge_requests/:merge_request_id/closes_issues' do
-        merge_request = find_merge_request_with_access(params[:merge_request_id])
+      get ':id/merge_requests/:merge_request_iid/closes_issues' do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
         issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
         present paginate(issues), with: issue_entity(user_project), current_user: current_user
       end
