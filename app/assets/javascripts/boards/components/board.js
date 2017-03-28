@@ -1,8 +1,7 @@
 /* eslint-disable comma-dangle, space-before-function-paren, one-var */
 /* global Sortable */
-import boardList from './board_list';
-
 import Vue from 'vue';
+import boardList from './board_list';
 import boardBlankState from './board_blank_state';
 
 require('./board_delete');

@@ -1,6 +1,4 @@
 /* global Sortable */
-
-import Vue from 'vue';
 import boardNewIssue from './board_new_issue';
 import boardCard from './board_card';
 import eventHub from '../eventhub';
@@ -12,8 +10,12 @@ export default {
     <div class="board-list-component">
       <div
         class="board-list-loading text-center"
+        aria-label="Loading issues"
         v-if="loading">
-        <i class="fa fa-spinner fa-spin"></i>
+        <i
+          class="fa fa-spinner fa-spin"
+          aria-hidden="true">
+        </i>
       </div>
       <board-new-issue
         :list="list"
@@ -40,10 +42,12 @@ export default {
           data-id="-1">
           <i
             class="fa fa-spinner fa-spin"
+            aria-label="Loading more issues"
+            aria-hidden="true"
             v-show="list.loadingMore">
           </i>
           <span v-if="list.issues.length === list.issuesSize">
-            Show all issues
+            Showing all issues
           </span>
           <span v-else>
             Showing {{ list.issues.length }} of {{ list.issuesSize }} issues
