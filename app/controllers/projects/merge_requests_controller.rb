@@ -341,7 +341,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request.check_if_can_be_merged
     @pipelines = @merge_request.all_pipelines
 
-    render partial: "projects/merge_requests/widget/show.html.haml", layout: false
+    respond_to do |format|
+      format.js do
+        render partial: "projects/merge_requests/widget/show.html.haml", layout: false
+      end
+
+      format.json do
+        render json: serializer.represent(@merge_request).to_json
+      end
+    end
   end
 
   def cancel_merge_when_pipeline_succeeds
