@@ -262,7 +262,7 @@ describe('Environment', () => {
 
           // wait for next async request
           setTimeout(() => {
-            expect(component.$el.querySelectorAll('.child-row').length).toEqual(1);
+            expect(component.$el.querySelectorAll('.js-child-row').length).toEqual(1);
             expect(component.$el.querySelector('td.text-center > a.btn').textContent).toContain('Show all');
 
             Vue.http.interceptors = _.without(Vue.http.interceptors, folderInterceptor);

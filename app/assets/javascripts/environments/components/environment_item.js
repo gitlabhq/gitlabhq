@@ -425,7 +425,7 @@ export default {
   },
 
   template: `
-    <tr>
+    <tr :class="{ 'js-child-row': model.isChildren }">
       <td>
         <a v-if="!model.isFolder"
           class="environment-name"
