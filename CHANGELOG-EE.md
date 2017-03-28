@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.0.1 (2017-03-28)
+
+- No changes.
+
 ## 9.0.0 (2017-03-22)
 
 - Geo: Replicate repository creation in Geo secondary node. !952
