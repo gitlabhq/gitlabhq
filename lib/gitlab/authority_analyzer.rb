@@ -1,6 +1,6 @@
 module Gitlab
   class AuthorityAnalyzer
-    COMMITS_TO_CONSIDER = 5
+    COMMITS_TO_CONSIDER = 25
 
     def initialize(merge_request)
       @merge_request = merge_request
@@ -19,11 +19,9 @@ module Gitlab
     def involved_users
       @repo = @merge_request.target_project.repository
 
-      list_of_involved_files.each do |path|
-        @repo.commits(@merge_request.target_branch, path: path, limit: COMMITS_TO_CONSIDER).each do |commit|
-          if commit.author && commit.author != @merge_request.author
-            @users[commit.author] += 1
-          end
+      @repo.commits(@merge_request.target_branch, path: list_of_involved_files, limit: COMMITS_TO_CONSIDER).each do |commit|
+        if commit.author && commit.author != @merge_request.author
+          @users[commit.author] += 1
         end
       end
     end
