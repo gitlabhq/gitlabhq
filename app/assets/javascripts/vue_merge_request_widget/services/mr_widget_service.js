@@ -8,6 +8,7 @@ export default class MRWidgetService {
     this.store = mr;
 
     this.mergeResource = Vue.resource(mr.mergePath);
+    this.mergeCheckResource = Vue.resource(mr.mergeCheckPath);
     this.cancelAutoMergeResource = Vue.resource(mr.cancelAutoMergePath);
     this.removeWIPResource = Vue.resource(mr.removeWIPPath);
     this.removeSourceBranchResource = Vue.resource(mr.sourceBranchPath);
@@ -40,4 +41,7 @@ export default class MRWidgetService {
       });
   }
 
+  checkStatus() {
+    return this.mergeCheckResource.get();
+  }
 }

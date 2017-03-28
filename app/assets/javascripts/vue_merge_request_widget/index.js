@@ -55,6 +55,14 @@ const mrWidgetOptions = () => ({
   },
   mounted() {
     this.service.fetchDeployments();
+
+    if (this.mr.state === 'checking') {
+      this.service.checkStatus()
+        .then(res => res.json())
+        .then((res) => {
+          this.mr.setData(res);
+        });
+    }
   },
   components: {
     'mr-widget-header': WidgetHeader,

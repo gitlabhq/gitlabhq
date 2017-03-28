@@ -191,6 +191,13 @@ class MergeRequestEntity < IssuableEntity
     path.sub! 'diff', 'json'
   end
 
+  # TODO: @oswaldo, please verify this
+  expose :merge_check_path do |merge_request|
+    merge_check_namespace_project_merge_request_path(merge_request.target_project.namespace,
+                                         merge_request.target_project,
+                                         merge_request)
+  end
+
   expose :only_allow_merge_if_pipeline_succeeds do |merge_request|
     merge_request.project.only_allow_merge_if_pipeline_succeeds?
   end
