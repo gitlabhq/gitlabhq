@@ -1,25 +1,47 @@
 require 'spec_helper'
 
 describe Profiles::AccountsController do
-  let(:user) { create(:omniauth_user, provider: 'saml') }
+  describe 'DELETE unlink' do
+    let(:user) { create(:omniauth_user) }
 
-  before do
-    sign_in(user)
-  end
+    before do
+      sign_in(user)
+    end
 
-  it 'does not allow to unlink SAML connected account' do
-    identity = user.identities.last
-    delete :unlink, provider: 'saml'
-    updated_user = User.find(user.id)
+    it 'renders 404 if someone tries to unlink a non existent provider' do
+      delete :unlink, provider: 'github'
 
-    expect(response).to have_http_status(302)
-    expect(updated_user.identities.size).to eq(1)
-    expect(updated_user.identities).to include(identity)
-  end
+      expect(response).to have_http_status(404)
+    end
 
-  it 'does allow to delete other linked accounts' do
-    user.identities.create(provider: 'twitter', extern_uid: 'twitter_123')
+    [:saml, :cas3].each do |provider|
+      describe "#{provider} provider" do
+        let(:user) { create(:omniauth_user, provider: provider.to_s) }
 
-    expect { delete :unlink, provider: 'twitter' }.to change(Identity.all, :size).by(-1)
+        it "does not allow to unlink connected account" do
+          identity = user.identities.last
+
+          delete :unlink, provider: provider.to_s
+
+          expect(response).to have_http_status(302)
+          expect(user.reload.identities).to include(identity)
+        end
+      end
+    end
+
+    [:twitter, :facebook, :google_oauth2, :gitlab, :github, :bitbucket, :crowd, :auth0].each do |provider|
+      describe "#{provider} provider" do
+        let(:user) { create(:omniauth_user, provider: provider.to_s) }
+
+        it 'allows to unlink connected account' do
+          identity = user.identities.last
+
+          delete :unlink, provider: provider.to_s
+
+          expect(response).to have_http_status(302)
+          expect(user.reload.identities).not_to include(identity)
+        end
+      end
+    end
   end
 end
