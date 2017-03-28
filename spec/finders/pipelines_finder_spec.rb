@@ -61,6 +61,11 @@ describe PipelinesFinder do
         let(:params) { { status: target } }
         let!(:pipeline) { create(:ci_pipeline, project: project, status: target) }
 
+        before do
+          exception_status = %w[running pending success failed canceled skipped] - [target]
+          create(:ci_pipeline, project: project, status: exception_status.sample)
+        end
+
         it 'returns matched pipelines' do
           is_expected.to eq([pipeline])
         end
