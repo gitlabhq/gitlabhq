@@ -1,21 +1,23 @@
 class AddHeadPipelineForEachMergeRequest < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+
   DOWNTIME = false
 
-  class Pipeline < ActiveRecord::Base
-    self.table_name = "ci_pipelines"
-
-    def self.last_per_branch
-      select('ref, MAX(id) as head_id, project_id').group(:ref).group(:project_id)
-    end
-  end
-
-  class MergeRequest < ActiveRecord::Base; end
-
   def up
-    Pipeline.last_per_branch.each do |pipeline|
-      mrs = MergeRequest.where(source_branch: pipeline.ref, source_project_id: pipeline.project_id)
-      mrs.update_all(head_pipeline_id: pipeline.head_id)
-    end
+    disable_statement_timeout
+
+    pipelines = Arel::Table.new(:ci_pipelines)
+    merge_requests = Arel::Table.new(:merge_requests)
+
+    head_id = pipelines.
+      project(Arel::Nodes::NamedFunction.new('max', [pipelines[:id]])).
+      from(pipelines).
+      where(pipelines[:ref].eq(merge_requests[:source_branch])).
+      where(pipelines[:project_id].eq(merge_requests[:source_project_id]))
+
+    sub_query = Arel::Nodes::SqlLiteral.new(Arel::Nodes::Grouping.new(head_id).to_sql)
+
+    update_column_in_batches(:merge_requests, :head_pipeline_id, sub_query)
   end
 
   def down

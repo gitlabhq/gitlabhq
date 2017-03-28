@@ -1507,6 +1507,8 @@ describe MergeRequest, models: true do
         status:  status)
 
       merge_request.update(head_pipeline: pipeline)
+
+      pipeline
     end
 
     let(:project)       { create(:project, :public, :repository, only_allow_merge_if_pipeline_succeeds: true) }
@@ -1592,7 +1594,7 @@ describe MergeRequest, models: true do
 
       context 'with running pipeline'  do
         before do
-          merge_request.update(head_pipeline: create_pipeline(:running))
+          create_pipeline(:running)
         end
 
         it 'is mergeable' do

@@ -128,7 +128,7 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
                              sha: mr_conflict.diff_head_sha, status: 'success')
       end
 
-      before { mr_conflict.update(head_pipeline_id: conflict_pipeline.id) }
+      before { mr_conflict.update(head_pipeline: conflict_pipeline) }
 
       it 'does not merge the merge request' do
         expect(MergeWorker).not_to receive(:perform_async)
