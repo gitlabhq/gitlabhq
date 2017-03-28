@@ -20,7 +20,7 @@ describe Projects::DeploymentsController do
       create(:deployment, environment: environment, created_at: 7.hours.ago)
       create(:deployment, environment: environment)
 
-      get :index, environment_params(:after => 8.hours.ago)
+      get :index, environment_params(after: 8.hours.ago)
 
       expect(response).to be_ok
 
@@ -41,7 +41,7 @@ describe Projects::DeploymentsController do
     end
   end
 
-  def environment_params(opts={})
+  def environment_params(opts = {})
     opts.reverse_merge(namespace_id: project.namespace, project_id: project, environment_id: environment.id)
   end
 end
