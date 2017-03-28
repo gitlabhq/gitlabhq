@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import Visibility from 'visibilityjs';
 import PipelinesTableComponent from '../../vue_shared/components/pipelines_table';
 import PipelinesService from '../../vue_pipelines_index/services/pipelines_service';
 import PipelineStore from '../../vue_pipelines_index/stores/pipelines_store';
@@ -7,6 +8,7 @@ import EmptyState from '../../vue_pipelines_index/components/empty_state';
 import ErrorState from '../../vue_pipelines_index/components/error_state';
 import '../../lib/utils/common_utils';
 import '../../vue_shared/vue_resource_interceptor';
+import Poll from '../../lib/utils/poll';
 
 /**
  *
@@ -42,6 +44,7 @@ export default Vue.component('pipelines-table', {
       state: store.state,
       isLoading: false,
       hasError: false,
+      setIsMakingRequest: false,
     };
   },
 
@@ -70,11 +73,32 @@ export default Vue.component('pipelines-table', {
 
     this.fetchPipelines();
 
+    const poll = new Poll({
+      resource: this.service,
+      method: 'getPipelines',
+      successCallback: this.successCallback,
+      errorCallback: this.errorCallback,
+      notificationCallback: this.setIsMakingRequest,
+    });
+
+    if (!Visibility.hidden()) {
+      this.isLoading = true;
+      poll.makeRequest();
+    }
+
+    Visibility.change(() => {
+      if (!Visibility.hidden()) {
+        poll.restart();
+      } else {
+        poll.stop();
+      }
+    });
+
     eventHub.$on('refreshPipelines', this.fetchPipelines);
   },
 
   beforeUpdate() {
-    if (this.state.pipelines.length && this.$children) {
+    if (this.state.pipelines.length && this.$children && !this.isMakingRequest) {
       this.store.startTimeAgoLoops.call(this, Vue);
     }
   },
@@ -86,18 +110,28 @@ export default Vue.component('pipelines-table', {
   methods: {
     fetchPipelines() {
       this.isLoading = true;
+
       return this.service.getPipelines()
-        .then(response => response.json())
-        .then((json) => {
-          // depending of the endpoint the response can either bring a `pipelines` key or not.
-          const pipelines = json.pipelines || json;
-          this.store.storePipelines(pipelines);
-          this.isLoading = false;
-        })
-        .catch(() => {
-          this.hasError = true;
-          this.isLoading = false;
-        });
+        .then(response => this.successCallback(response))
+        .catch(() => this.errorCallback());
+    },
+
+    successCallback(resp) {
+      const response = resp.json();
+
+      // depending of the endpoint the response can either bring a `pipelines` key or not.
+      const pipelines = response.pipelines || response;
+      this.store.storePipelines(pipelines);
+      this.isLoading = false;
+    },
+
+    errorCallback() {
+      this.hasError = true;
+      this.isLoading = false;
+    },
+
+    setIsMakingRequest(isMakingRequest) {
+      this.isMakingRequest = isMakingRequest;
     },
   },
 
