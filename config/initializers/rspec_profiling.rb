@@ -7,7 +7,11 @@ module RspecProfilingExt
 
   module Git
     def branch
-      ENV['CI_COMMIT_REF_NAME'] || super
+      if ENV['CI_COMMIT_REF_NAME']
+        "#{defined?(Gitlab::License) ? 'ee' : 'ce'}:#{ENV['CI_COMMIT_REF_NAME']}"
+      else
+        super
+      end
     end
   end
 

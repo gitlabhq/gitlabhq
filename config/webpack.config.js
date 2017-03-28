@@ -115,7 +115,11 @@ var config = {
     // create cacheable common library bundle for all d3 chunks
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common_d3',
-      chunks: ['graphs', 'users', 'monitoring'],
+      chunks: [
+        'graphs',
+        'users',
+        'monitoring',
+      ],
     }),
 
     // create cacheable common library bundles

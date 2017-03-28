@@ -5,7 +5,7 @@ describe Users::DestroyService, services: true do
     let!(:user)      { create(:user) }
     let!(:admin)     { create(:admin) }
     let!(:namespace) { create(:namespace, owner: user) }
-    let!(:project)   { create(:project, namespace: namespace) }
+    let!(:project)   { create(:empty_project, namespace: namespace) }
     let(:service)    { described_class.new(admin) }
 
     context 'no options are given' do
@@ -25,7 +25,7 @@ describe Users::DestroyService, services: true do
     end
 
     context "a deleted user's issues" do
-      let(:project) { create :project }
+      let(:project) { create(:project) }
 
       before do
         project.add_developer(user)

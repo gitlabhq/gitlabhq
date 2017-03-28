@@ -8,7 +8,7 @@ describe TodoService, services: true do
   let(:guest) { create(:user) }
   let(:admin) { create(:admin) }
   let(:john_doe) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:mentions) { 'FYI: ' + [author, assignee, john_doe, member, guest, non_member, admin].map(&:to_reference).join(' ') }
   let(:directly_addressed) { [author, assignee, john_doe, member, guest, non_member, admin].map(&:to_reference).join(' ') }
   let(:directly_addressed_and_mentioned) { member.to_reference + ", what do you think? cc: " + [guest, admin].map(&:to_reference).join(' ') }
@@ -99,9 +99,9 @@ describe TodoService, services: true do
       end
 
       context 'when a private group is mentioned' do
-        let(:group) { create :group, :private }
-        let(:project) { create :project, :private, group: group }
-        let(:issue) { create :issue, author: author, project: project, description: group.to_reference }
+        let(:group)   { create(:group, :private) }
+        let(:project) { create(:empty_project, :private, group: group) }
+        let(:issue)   { create(:issue, author: author, project: project, description: group.to_reference) }
 
         before do
           group.add_owner(author)
@@ -422,22 +422,26 @@ describe TodoService, services: true do
         should_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_confidential_issue)
       end
 
-      it 'creates a todo for each valid mentioned user when leaving a note on commit' do
-        service.new_note(note_on_commit, john_doe)
+      context 'on commit' do
+        let(:project)  { create(:project, :repository) }
 
-        should_create_todo(user: member, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
-        should_create_todo(user: author, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
-        should_create_todo(user: john_doe, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
-        should_not_create_todo(user: non_member, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
-      end
+        it 'creates a todo for each valid mentioned user when leaving a note on commit' do
+          service.new_note(note_on_commit, john_doe)
 
-      it 'creates a directly addressed todo for each valid mentioned user when leaving a note on commit' do
-        service.new_note(addressed_note_on_commit, john_doe)
+          should_create_todo(user: member, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
+          should_create_todo(user: author, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
+          should_create_todo(user: john_doe, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
+          should_not_create_todo(user: non_member, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
+        end
 
-        should_create_todo(user: member, target_id: nil, target_type: 'Commit', commit_id: addressed_note_on_commit.commit_id, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_commit)
-        should_create_todo(user: author, target_id: nil, target_type: 'Commit', commit_id: addressed_note_on_commit.commit_id, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_commit)
-        should_create_todo(user: john_doe, target_id: nil, target_type: 'Commit', commit_id: addressed_note_on_commit.commit_id, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_commit)
-        should_not_create_todo(user: non_member, target_id: nil, target_type: 'Commit', commit_id: addressed_note_on_commit.commit_id, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_commit)
+        it 'creates a directly addressed todo for each valid mentioned user when leaving a note on commit' do
+          service.new_note(addressed_note_on_commit, john_doe)
+
+          should_create_todo(user: member, target_id: nil, target_type: 'Commit', commit_id: addressed_note_on_commit.commit_id, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_commit)
+          should_create_todo(user: author, target_id: nil, target_type: 'Commit', commit_id: addressed_note_on_commit.commit_id, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_commit)
+          should_create_todo(user: john_doe, target_id: nil, target_type: 'Commit', commit_id: addressed_note_on_commit.commit_id, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_commit)
+          should_not_create_todo(user: non_member, target_id: nil, target_type: 'Commit', commit_id: addressed_note_on_commit.commit_id, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_commit)
+        end
       end
 
       it 'does not create todo when leaving a note on snippet' do
@@ -720,6 +724,7 @@ describe TodoService, services: true do
     end
 
     describe '#new_note' do
+      let(:project) { create(:project, :repository) }
       let(:mention) { john_doe.to_reference }
       let(:diff_note_on_merge_request) { create(:diff_note_on_merge_request, project: project, noteable: mr_unassigned, author: author, note: "Hey #{mention}") }
       let(:addressed_diff_note_on_merge_request) { create(:diff_note_on_merge_request, project: project, noteable: mr_unassigned, author: author, note: "#{mention}, hey!") }

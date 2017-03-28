@@ -13,7 +13,7 @@ describe Groups::UpdateService, services: true do
 
         before do
           public_group.add_user(user, Gitlab::Access::MASTER)
-          create(:project, :public, group: public_group)
+          create(:empty_project, :public, group: public_group)
         end
 
         it "does not change permission level" do
@@ -27,7 +27,7 @@ describe Groups::UpdateService, services: true do
 
         before do
           internal_group.add_user(user, Gitlab::Access::MASTER)
-          create(:project, :internal, group: internal_group)
+          create(:empty_project, :internal, group: internal_group)
         end
 
         it "does not change permission level" do
@@ -55,7 +55,7 @@ describe Groups::UpdateService, services: true do
 
     before do
       internal_group.add_user(user, Gitlab::Access::MASTER)
-      create(:project, :internal, group: internal_group)
+      create(:empty_project, :internal, group: internal_group)
     end
 
     it 'returns true' do

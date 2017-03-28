@@ -3,8 +3,8 @@ require 'spec_helper'
 describe GitPushService, services: true do
   include RepoHelpers
 
-  let(:user)          { create :user }
-  let(:project)       { create :project }
+  let(:user)    { create(:user) }
+  let(:project) { create(:project, :repository) }
 
   before do
     project.team << [user, :master]

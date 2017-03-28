@@ -124,6 +124,6 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def wiki_params
-    params[:wiki].slice(:title, :content, :format, :message)
+    params.require(:wiki).permit(:title, :content, :format, :message)
   end
 end

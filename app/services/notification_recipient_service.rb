@@ -38,7 +38,7 @@ class NotificationRecipientService
     recipients = reject_unsubscribed_users(recipients, target)
     recipients = reject_users_without_access(recipients, target)
 
-    recipients.delete(current_user) if skip_current_user
+    recipients.delete(current_user) if skip_current_user && !current_user.notified_of_own_activity?
 
     recipients.uniq
   end
@@ -47,7 +47,7 @@ class NotificationRecipientService
     recipients = add_labels_subscribers([], target, labels: labels)
     recipients = reject_unsubscribed_users(recipients, target)
     recipients = reject_users_without_access(recipients, target)
-    recipients.delete(current_user)
+    recipients.delete(current_user) unless current_user.notified_of_own_activity?
     recipients.uniq
   end
 
@@ -88,7 +88,7 @@ class NotificationRecipientService
     recipients = reject_unsubscribed_users(recipients, note.noteable)
     recipients = reject_users_without_access(recipients, note.noteable)
 
-    recipients.delete(note.author)
+    recipients.delete(note.author) unless note.author.notified_of_own_activity?
     recipients.uniq
   end
 
