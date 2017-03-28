@@ -683,6 +683,9 @@ require('./task_list');
           return note.remove();
         };
       })(this));
+
+      gl.mrWidget.checkStatus();
+
       // Decrement the "Discussions" counter only once
       return this.updateNotesCount(-1);
     };
