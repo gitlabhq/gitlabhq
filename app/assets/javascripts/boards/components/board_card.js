@@ -1,3 +1,6 @@
+import IssueCardHeader from './issue_card_header';
+import IssueCardLabels from './issue_card_labels';
+
 require('./issue_card_inner');
 
 const Store = gl.issueBoards.BoardsStore;
@@ -12,7 +15,13 @@ export default {
       @mousedown="mouseDown"
       @mousemove="mouseMove"
       @mouseup="showIssue($event)">
-      <issue-card-inner
+      <issue-card-header
+        :list="list"
+        :issue="issue"
+        :issue-link-base="issueLinkBase"
+        :root-path="rootPath"
+        :update-filters="true" />
+      <issue-card-labels
         :list="list"
         :issue="issue"
         :issue-link-base="issueLinkBase"
@@ -22,6 +31,8 @@ export default {
   `,
   components: {
     'issue-card-inner': gl.issueBoards.IssueCardInner,
+    'issue-card-header': IssueCardHeader,
+    'issue-card-labels': IssueCardLabels,
   },
   props: {
     list: Object,
