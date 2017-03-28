@@ -488,7 +488,24 @@ describe Projects::MergeRequestsController do
       end
 
       context 'approvals_before_merge set for the existing MR' do
-        before { merge_request.update_attribute(:approvals_before_merge, 4) }
+        before do
+          merge_request.update_attribute(:approvals_before_merge, 4)
+        end
+
+        context 'when it is not set' do
+          before do
+            update_merge_request(title: 'New title')
+          end
+
+          it 'does not change the merge request' do
+            expect(merge_request.reload.approvals_before_merge).to eq(4)
+          end
+
+          it 'updates the merge request' do
+            expect(merge_request.reload).to be_valid
+            expect(response).to redirect_to(namespace_project_merge_request_path(id: merge_request.iid, project_id: project.to_param))
+          end
+        end
 
         context 'when it is less than the one in the target project' do
           before { update_merge_request(approvals_before_merge: 1) }
