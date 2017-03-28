@@ -20,7 +20,7 @@ describe Projects::DeploymentsController do
       create(:deployment, environment: environment, created_at: 7.hours.ago)
       create(:deployment, environment: environment)
 
-      get :index, environment_params
+      get :index, environment_params(:after => 8.hours.ago)
 
       expect(response).to be_ok
 
