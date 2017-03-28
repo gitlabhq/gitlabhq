@@ -480,12 +480,6 @@
 .inner-page-scroll-tabs {
   position: relative;
 
-  .fade-right,
-  .fade-left {
-    top: 17px;
-    bottom: 0;
-  }
-
   .fade-right {
     @include fade(left, $white-light);
     right: 0;
@@ -503,6 +497,19 @@
 
     .fa {
       left: 5px;
+    }
+  }
+
+  .fade-right,
+  .fade-left {
+    top: 16px;
+    bottom: auto;
+  }
+
+  &.is-smaller {
+    .fade-right,
+    .fade-left {
+      top: 11px;
     }
   }
 }

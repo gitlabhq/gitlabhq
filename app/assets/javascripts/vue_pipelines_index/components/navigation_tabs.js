@@ -16,6 +16,10 @@ export default {
     },
   },
 
+  mounted() {
+    $(document).trigger('init.scrolling-tabs');
+  },
+
   template: `
     <ul class="nav-links scrolling-tabs">
       <li
