@@ -264,7 +264,7 @@ import Vue from 'vue';
             multiSelect: $dropdown.hasClass('js-multiselect'),
             saveUserDataToInput: $dropdown.hasClass('js-save-user-data'),
             vue: $dropdown.hasClass('js-issue-board-sidebar'),
-            clicked: function(user, $el, e, isMarking, glDropdown) {
+            clicked: function(user, $el, e, isMarking) {
               if ($dropdown.hasClass('js-multiselect')) {
                 const isActive = $el.hasClass('is-active');
                 const previouslySelected = $dropdown.closest('.selectbox')
@@ -289,10 +289,12 @@ import Vue from 'vue';
                     unassignedSelected.remove();
                     gl.sidebarAssigneesOptions.assignees.removeUser(unassignedSelected);
                   }
-                } else if (!isActive && previouslySelected.length === 0) {
-                  // Select unassigned because there is no more selected users
-                  glDropdown.addInput($dropdown.data('field-name'), 0, {});
                 } else {
+                  if (previouslySelected.length === 0) {
+                  // Select unassigned because there is no more selected users
+                    this.addInput($dropdown.data('field-name'), 0, {});
+                  }
+
                   // User unselected
                   gl.sidebarAssigneesOptions.assignees.removeUser(user.id);
                 }

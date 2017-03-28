@@ -345,21 +345,21 @@ GitLabDropdown = (function() {
       }
       this.dropdown.on("click", selector, function(e) {
         var $el, selected, selectedObj, isMarking;
-        $el = $(this);
+        $el = $(e.currentTarget);
         selected = self.rowClicked($el);
         selectedObj = selected ? selected[0] : null;
         isMarking = selected ? selected[1] : null;
-        if (self.options.clicked) {
-          self.options.clicked(selectedObj, $el, e, isMarking, self);
+        if (this.options.clicked) {
+          this.options.clicked.call(this, selectedObj, $el, e, isMarking);
         }
 
         // Update label right after all modifications in dropdown has been done
-        if (self.options.toggleLabel) {
-          self.updateLabel(selectedObj, $el, self);
+        if (this.options.toggleLabel) {
+          this.updateLabel(selectedObj, $el, this);
         }
 
         $el.trigger('blur');
-      });
+      }.bind(this));
     }
   }
 
