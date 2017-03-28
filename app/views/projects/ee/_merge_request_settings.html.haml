@@ -46,7 +46,7 @@
 .form-group.reset-approvals-on-push
   .checkbox
     = label_tag :require_approvals do
-      = check_box_tag :require_approvals
+      = check_box_tag :require_approvals, nil, project.approvals_before_merge > 0
       %strong Activate merge request approvals
       //TODO: correct help path
       = link_to icon('question-circle'), "https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#merge-request-approvals", target: '_blank'

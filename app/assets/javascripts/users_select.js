@@ -367,9 +367,8 @@ import Vue from 'vue';
         };
       })(this));
 
-      $('#require_approvals').on('change', (e) => {
-        var $approvalInput = $('#project_approvals_before_merge');
-        $approvalInput.val($('#require_approvals').prop("checked") ? 1 : 0);
+      $('#require_approvals').on('change', function() {
+        $('#project_approvals_before_merge').val($(this).prop('checked') ? 1 : 0);
       });
     }
 
