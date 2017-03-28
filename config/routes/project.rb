@@ -166,7 +166,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
 
         collection do
-          get :folder, path: 'folders/:id'
+          get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
         end
       end
 
