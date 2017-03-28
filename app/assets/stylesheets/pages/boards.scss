@@ -240,8 +240,13 @@
     font-size: (14px / $issue-boards-font-size) * 1em;
   }
 
+  .card-assignee {
+    margin-right: 5px;
+  }
+
   .avatar {
     margin-left: 0;
+    margin-right: 0;
   }
 }
 
