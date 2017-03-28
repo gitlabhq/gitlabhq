@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe MergeRequests::RefreshService, services: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:service) { MergeRequests::RefreshService }
 
@@ -11,7 +11,7 @@ describe MergeRequests::RefreshService, services: true do
       group = create(:group)
       group.add_owner(@user)
 
-      @project = create(:project, namespace: group, approvals_before_merge: 1, reset_approvals_on_push: true)
+      @project = create(:project, :repository, namespace: group, approvals_before_merge: 1, reset_approvals_on_push: true)
       @fork_project = Projects::ForkService.new(@project, @user).execute
       # The call to project.repository.after_import in RepositoryForkWorker does
       # not reset the @exists variable of @fork_project.repository so we have to
@@ -351,7 +351,7 @@ describe MergeRequests::RefreshService, services: true do
 
       context 'when the merge request is sourced from a different project' do
         it 'creates a `MergeRequestsClosingIssues` record for each issue closed by a commit' do
-          forked_project = create(:project)
+          forked_project = create(:project, :repository)
           create(:forked_project_link, forked_to_project: forked_project, forked_from_project: @project)
 
           merge_request = create(:merge_request,

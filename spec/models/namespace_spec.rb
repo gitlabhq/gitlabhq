@@ -175,7 +175,7 @@ describe Namespace, models: true do
     end
   end
 
-  describe :rm_dir do
+  describe '#rm_dir', 'callback' do
     let!(:project) { create(:empty_project, namespace: namespace) }
     let!(:path) { File.join(Gitlab.config.repositories.storages.default['path'], namespace.full_path) }
 

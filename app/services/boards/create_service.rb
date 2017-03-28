@@ -4,7 +4,7 @@ module Boards
       board = project.boards.create(params)
 
       if board.persisted?
-        board.lists.create(list_type: :done)
+        board.lists.create(list_type: :closed)
       end
 
       board

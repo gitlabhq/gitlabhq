@@ -830,6 +830,163 @@ Example response:
 ]
 ```
 
+## Get all impersonation tokens of a user
+
+> Requires admin permissions.
+
+It retrieves every impersonation token of the user. Use the pagination
+parameters `page` and `per_page` to restrict the list of impersonation tokens.
+
+```
+GET /users/:user_id/impersonation_tokens
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `state`   | string  | no | filter tokens based on state (`all`, `active`, `inactive`) |
+
+```
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/42/impersonation_tokens
+```
+
+Example response:
+
+```json
+[
+   {
+      "active" : true,
+      "token" : "EsMo-vhKfXGwX9RKrwiy",
+      "scopes" : [
+         "api"
+      ],
+      "revoked" : false,
+      "name" : "mytoken",
+      "id" : 2,
+      "created_at" : "2017-03-17T17:18:09.283Z",
+      "impersonation" : true,
+      "expires_at" : "2017-04-04"
+   },
+   {
+      "active" : false,
+      "scopes" : [
+         "read_user"
+      ],
+      "revoked" : true,
+      "token" : "ZcZRpLeEuQRprkRjYydY",
+      "name" : "mytoken2",
+      "created_at" : "2017-03-17T17:19:28.697Z",
+      "id" : 3,
+      "impersonation" : true,
+      "expires_at" : "2017-04-14"
+   }
+]
+```
+
+## Get an impersonation token of a user
+
+> Requires admin permissions.
+
+It shows a user's impersonation token.
+
+```
+GET /users/:user_id/impersonation_tokens/:impersonation_token_id
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `impersonation_token_id` | integer | yes | The ID of the impersonation token |
+
+```
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/42/impersonation_tokens/2
+```
+
+Example response:
+
+```json
+{
+   "active" : true,
+   "token" : "EsMo-vhKfXGwX9RKrwiy",
+   "scopes" : [
+      "api"
+   ],
+   "revoked" : false,
+   "name" : "mytoken",
+   "id" : 2,
+   "created_at" : "2017-03-17T17:18:09.283Z",
+   "impersonation" : true,
+   "expires_at" : "2017-04-04"
+}
+```
+
+## Create an impersonation token
+
+> Requires admin permissions.
+
+It creates a new impersonation token. Note that only administrators can do this.
+You are only able to create impersonation tokens to impersonate the user and perform
+both API calls and Git reads and writes. The user will not see these tokens in his profile
+settings page.
+
+```
+POST /users/:user_id/impersonation_tokens
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `name`    | string  | yes | The name of the impersonation token |
+| `expires_at` | date | no  | The expiration date of the impersonation token in ISO format (`YYYY-MM-DD`)|
+| `scopes` | array    | yes | The array of scopes of the impersonation token (`api`, `read_user`) |
+
+```
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "name=mytoken" --data "expires_at=2017-04-04" --data "scopes[]=api" https://gitlab.example.com/api/v4/users/42/impersonation_tokens
+```
+
+Example response:
+
+```json
+{
+   "id" : 2,
+   "revoked" : false,
+   "scopes" : [
+      "api"
+   ],
+   "token" : "EsMo-vhKfXGwX9RKrwiy",
+   "active" : true,
+   "impersonation" : true,
+   "name" : "mytoken",
+   "created_at" : "2017-03-17T17:18:09.283Z",
+   "expires_at" : "2017-04-04"
+}
+```
+
+## Revoke an impersonation token
+
+> Requires admin permissions.
+
+It revokes an impersonation token.
+
+```
+DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id
+```
+
+```
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/42/impersonation_tokens/1
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `impersonation_token_id` | integer | yes | The ID of the impersonation token |
+
 ### Get user activities (admin only)
 
 >**Note:** This API endpoint is only available on 8.15 EE and above.
@@ -884,97 +1041,3 @@ Example response:
   }
 ]
 ```
-
-## Retrieve user impersonation tokens
-
-It retrieves every impersonation token of the user. Note that only administrators can do this.
-This function takes pagination parameters `page` and `per_page` to restrict the list of impersonation tokens.
-
-```
-GET /users/:user_id/impersonation_tokens
-```
-
-Parameters:
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `user_id` | integer | yes | The ID of the user |
-| `state`   | string | no | filter tokens based on state (all, active, inactive) |
-
-Example response:
-```json
-[
-  {
-    "id": 1,
-    "name": "mytoken",
-    "revoked": false,
-    "expires_at": "2017-01-04",
-    "scopes": ['api'],
-    "active": true,
-    "impersonation": true,
-    "token": "9koXpg98eAheJpvBs5tK"
-  }
-]
-```
-
-## Show a user's impersonation token
-
-It shows a user's impersonation token. Note that only administrators can do this.
-
-```
-GET /users/:user_id/impersonation_tokens/:impersonation_token_id
-```
-
-Parameters:
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `user_id` | integer | yes | The ID of the user |
-| `impersonation_token_id` | integer | yes | The ID of the impersonation token |
-
-## Create a impersonation token
-
-It creates a new impersonation token. Note that only administrators can do this.
-You are only able to create impersonation tokens to impersonate the user and perform
-both API calls and Git reads and writes. The user will not see these tokens in his profile
-settings page.
-
-```
-POST /users/:user_id/impersonation_tokens
-```
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `user_id` | integer | yes | The ID of the user |
-| `name` | string | yes | The name of the impersonation token |
-| `expires_at` | date | no | The expiration date of the impersonation token |
-| `scopes` | array | no | The array of scopes of the impersonation token (api, read_user) |
-
-Example response:
-```json
-{
-  "id": 1,
-  "name": "mytoken",
-  "revoked": false,
-  "expires_at": "2017-01-04",
-  "scopes": ['api'],
-  "active": true,
-  "impersonation": true,
-  "token": "9koXpg98eAheJpvBs5tK"
-}
-```
-
-## Revoke an impersonation token
-
-It revokes an impersonation token. Note that only administrators can revoke impersonation tokens.
-
-```
-DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id
-```
-
-Parameters:
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `user_id` | integer | yes | The ID of the user |
-| `impersonation_token_id` | integer | yes | The ID of the impersonation token |

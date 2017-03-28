@@ -15,7 +15,7 @@ describe SpamService, services: true do
     end
 
     context 'when recaptcha was not verified' do
-      let(:project) { create(:project, :public) }
+      let(:project) { create(:empty_project, :public) }
       let(:issue)   { create(:issue, project: project) }
       let(:request) { double(:request, env: {}) }
 

@@ -39,6 +39,7 @@ module TestEnv
     'deleted-image-test'                 => '6c17798',
     'wip'                                => 'b9238ee',
     'csv'                                => '3dd0896',
+    'v1.1.0'                             => 'b83d6e3',
     'squash-large-files'                 => '54cec52'
   }.freeze
 

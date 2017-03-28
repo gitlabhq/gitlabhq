@@ -124,4 +124,40 @@ describe('Poll', () => {
 
     Vue.http.interceptors = _.without(Vue.http.interceptors, pollInterceptor);
   });
+
+  describe('stop', () => {
+    it('stops polling when method is called', (done) => {
+      const pollInterceptor = (request, next) => {
+        next(request.respondWith(JSON.stringify([]), { status: 200, headers: { 'poll-interval': 2 } }));
+      };
+
+      Vue.http.interceptors.push(pollInterceptor);
+
+      const service = new ServiceMock('endpoint');
+      spyOn(service, 'fetch').and.callThrough();
+
+      const Polling = new Poll({
+        resource: service,
+        method: 'fetch',
+        data: { page: 1 },
+        successCallback: () => {
+          Polling.stop();
+        },
+        errorCallback: callbacks.error,
+      });
+
+      spyOn(Polling, 'stop').and.callThrough();
+
+      Polling.makeRequest();
+
+      setTimeout(() => {
+        expect(service.fetch.calls.count()).toEqual(1);
+        expect(service.fetch).toHaveBeenCalledWith({ page: 1 });
+        expect(Polling.stop).toHaveBeenCalled();
+        done();
+      }, 100);
+
+      Vue.http.interceptors = _.without(Vue.http.interceptors, pollInterceptor);
+    });
+  });
 });

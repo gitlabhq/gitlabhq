@@ -3,7 +3,7 @@ require "spec_helper"
 describe Files::UpdateService do
   subject { described_class.new(project, user, commit_params) }
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:file_path) { 'files/ruby/popen.rb' }
   let(:new_contents) { 'New Content' }

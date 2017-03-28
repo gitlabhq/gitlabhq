@@ -15,7 +15,7 @@ describe Boards::CreateService, services: true do
         board = service.execute
 
         expect(board.lists.size).to eq 1
-        expect(board.lists.first).to be_done
+        expect(board.lists.first).to be_closed
       end
     end
 
@@ -44,7 +44,7 @@ describe Boards::CreateService, services: true do
         board = service.execute
 
         expect(board.lists.size).to eq 1
-        expect(board.lists.first).to be_done
+        expect(board.lists.first).to be_closed
       end
     end
   end

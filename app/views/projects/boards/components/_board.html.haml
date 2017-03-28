@@ -7,12 +7,12 @@
           data: { container: "body", placement: "bottom" } }
           {{ list.title }}
         .board-issue-count-holder.pull-right.clearfix{ "v-if" => 'list.type !== "blank"' }
-          %span.board-issue-count.pull-left{ ":class" => '{ "has-btn": list.type !== "done" && !disabled }' }
+          %span.board-issue-count.pull-left{ ":class" => '{ "has-btn": list.type !== "closed" && !disabled }' }
             {{ list.issuesSize }}
           - if can?(current_user, :admin_issue, @project)
             %button.btn.btn-small.btn-default.pull-right.has-tooltip{ type: "button",
               "@click" => "showNewIssueForm",
-              "v-if" => 'list.type !== "done"',
+              "v-if" => 'list.type !== "closed"',
               "aria-label" => "Add an issue",
               "title" => "Add an issue",
               data: { placement: "top", container: "body" } }

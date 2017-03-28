@@ -1,7 +1,7 @@
 class Projects::BuildsController < Projects::ApplicationController
   before_action :build, except: [:index, :cancel_all]
   before_action :authorize_read_build!, except: [:cancel, :cancel_all, :retry, :play]
-  before_action :authorize_update_build!, except: [:index, :show, :status, :raw]
+  before_action :authorize_update_build!, except: [:index, :show, :status, :raw, :trace]
   layout 'project'
 
   def index
@@ -74,7 +74,9 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def status
-    render json: @build.to_json(only: [:status, :id, :sha, :coverage], methods: :sha)
+    render json: BuildSerializer
+      .new(project: @project, user: @current_user)
+      .represent_status(@build)
   end
 
   def erase

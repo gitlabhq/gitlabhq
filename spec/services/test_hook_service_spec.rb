@@ -3,7 +3,7 @@ require 'spec_helper'
 describe TestHookService, services: true do
   let(:user)         { create :user }
   let(:group)        { create :group }
-  let(:project)      { create :project, group: group }
+  let(:project)      { create :project, :repository, group: group }
   let(:project_hook) { create :project_hook, project: project }
   let(:group_hook)   { create :group_hook, group: group }
 
