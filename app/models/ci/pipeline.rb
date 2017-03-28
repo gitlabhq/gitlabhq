@@ -4,6 +4,7 @@ module Ci
     include HasStatus
     include Importable
     include AfterCommitQueue
+    include Presentable
 
     belongs_to :project
     belongs_to :user

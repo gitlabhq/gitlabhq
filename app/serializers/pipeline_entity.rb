@@ -84,6 +84,6 @@ class PipelineEntity < Grape::Entity
   end
 
   def status_tooltip
-    Ci::PipelinePresenter.new(pipeline).status_title
+    pipeline.present(current_user: request.user).status_title
   end
 end

@@ -121,8 +121,4 @@ module CiStatusHelper
       status.respond_to?(:label) &&
       status.respond_to?(:icon)
   end
-
-  def status_title(pipeline)
-    Ci::PipelinePresenter.new(pipeline).status_title
-  end
 end
