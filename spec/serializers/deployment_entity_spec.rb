@@ -24,4 +24,8 @@ describe DeploymentEntity do
     expect(subject[:ref][:name]).to eq 'master'
     expect(subject[:ref][:ref_path]).not_to be_empty
   end
+
+  it 'exposes creation date' do
+    expect(subject).to include(:created_at)
+  end
 end

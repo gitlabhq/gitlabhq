@@ -2,8 +2,9 @@ class Projects::DeploymentsController < Projects::ApplicationController
   before_action :authorize_read_deployment!
 
   def index
+    serializer = DeploymentSerializer.new(user: @current_user)
     deployments = environment.deployments.where('created_at > ?', 8.hours.ago)
-                    .map { |d| d.slice(:id, :iid, :created_at, :sha, :ref, :tag) }
+                    .map { |d| serializer.represent(d) }
 
     render json: { deployments: deployments }
   end

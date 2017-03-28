@@ -28,19 +28,16 @@ describe Projects::DeploymentsController do
     end
 
     it 'returns a list with deployments information' do
-      deployment = create(:deployment, environment: environment)
+      create(:deployment, environment: environment)
 
       get :index, environment_params
       expect(response).to be_ok
 
       deployments = json_response['deployments']
       deployment_info = deployments.first.with_indifferent_access
-      created_at = deployment_info.delete(:created_at).to_time.utc
 
       expect(deployments.count).to eq(1)
-      expect(deployment_info).to include(:id, :iid, :sha, :ref, :tag)
-      expect(deployment).to have_attributes(deployment_info)
-      expect(deployment.created_at).to be_within(1.second).of(created_at)
+      expect(deployment_info).to include(:id, :iid, :sha, :ref, :tag, :created_at)
     end
   end
 
