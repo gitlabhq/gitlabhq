@@ -1024,7 +1024,7 @@ class Repository
   end
 
   def diverged_from_upstream?(branch_name)
-    branch_commit = commit(branch_name)
+    branch_commit = commit("refs/heads/#{branch_name}")
     upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
 
     if upstream_commit
@@ -1035,7 +1035,7 @@ class Repository
   end
 
   def upstream_has_diverged?(branch_name, remote_ref)
-    branch_commit = commit(branch_name)
+    branch_commit = commit("refs/heads/#{branch_name}")
     upstream_commit = commit("refs/remotes/#{remote_ref}/#{branch_name}")
 
     if upstream_commit
@@ -1046,7 +1046,7 @@ class Repository
   end
 
   def up_to_date_with_upstream?(branch_name)
-    branch_commit = commit(branch_name)
+    branch_commit = commit("refs/heads/#{branch_name}")
     upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
 
     if upstream_commit
