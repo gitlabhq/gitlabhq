@@ -366,6 +366,11 @@ import Vue from 'vue';
           });
         };
       })(this));
+
+      $('#require_approvals').on('change', (e) => {
+        var $approvalInput = $('#project_approvals_before_merge');
+        $approvalInput.val($('#require_approvals').prop("checked") ? 1 : 0);
+      });
     }
 
     UsersSelect.prototype.initSelection = function(element, callback) {
