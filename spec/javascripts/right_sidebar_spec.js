@@ -78,5 +78,11 @@ require('~/extensions/jquery.js');
 
       expect(todoToggleSpy.calls.count()).toEqual(1);
     });
+
+    it('should not hide collapsed icons', () => {
+      [].forEach.call(document.querySelectorAll('.sidebar-collapsed-icon'), (el) => {
+        expect(el.querySelector('.fa, svg').classList.contains('hidden')).toBeFalsy();
+      });
+    });
   });
 }).call(window);
