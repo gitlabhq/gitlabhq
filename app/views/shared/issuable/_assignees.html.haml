@@ -8,7 +8,7 @@
 - if issue.assignees.length > max_render
   - counter = issue.assignees.length - max_render
 
-  %span{ class: "avatar-counter has-tooltip #{"wide-counter" if counter > 9}", data: { container: 'body', placement: 'bottom', 'line-type' => 'old', 'original-title' => "+#{counter} more assignees" } }
+  %span{ class: 'avatar-counter has-tooltip', data: { container: 'body', placement: 'bottom', 'line-type' => 'old', 'original-title' => "+#{counter} more assignees" } }
     - if counter < 99
       = "+#{counter}"
     - else
