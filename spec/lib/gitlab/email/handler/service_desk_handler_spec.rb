@@ -22,7 +22,7 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
     it 'receives the email' do
       setup_attachment
 
-      expect(Notify).to receive(:thank_you_email).with(instance_of(Fixnum))
+      expect(Notify).to receive(:service_desk_thank_you_email).with(instance_of(Fixnum))
 
       expect { receiver.execute }.to change { Issue.count }.by(1)
 
