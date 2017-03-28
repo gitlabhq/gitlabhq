@@ -32,13 +32,7 @@ export default class MRWidgetService {
   }
 
   fetchDeployments() {
-    this.deploymentsResource.get()
-      .then(res => res.json())
-      .then((res) => {
-        if (res.length) {
-          this.store.deployments = res;
-        }
-      });
+    return this.deploymentsResource.get();
   }
 
   checkStatus() {

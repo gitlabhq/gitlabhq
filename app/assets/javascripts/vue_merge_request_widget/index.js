@@ -53,15 +53,32 @@ const mrWidgetOptions = () => ({
       return this.mr.deployments.length;
     },
   },
-  mounted() {
-    this.service.fetchDeployments();
-
-    if (this.mr.state === 'checking') {
+  methods: {
+    checkStatus() {
       this.service.checkStatus()
         .then(res => res.json())
         .then((res) => {
-          this.mr.setData(res);
+          this.updateStore(res);
         });
+    },
+    updateStore(data) {
+      const newData = data;
+      newData.deployments = this.mr.deployments; // Don't override the deployments data
+
+      this.mr.setData(newData);
+    },
+  },
+  mounted() {
+    this.service.fetchDeployments()
+      .then(res => res.json())
+      .then((res) => {
+        if (res.length) {
+          this.mr.deployments = res;
+        }
+      });
+
+    if (this.mr.state === 'checking') {
+      this.checkStatus();
     }
   },
   components: {
