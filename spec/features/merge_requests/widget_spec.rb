@@ -89,7 +89,7 @@ describe 'Merge request', :feature, :js do
                                       statuses: [commit_status])
       create(:ci_build, :pending, pipeline: pipeline)
 
-      merge_request.update(head_pipeline_id: pipeline.id)
+      merge_request.update(head_pipeline: pipeline)
 
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
@@ -111,7 +111,7 @@ describe 'Merge request', :feature, :js do
         status: :manual
       )
 
-      merge_request.update(head_pipeline_id: pipeline.id)
+      merge_request.update(head_pipeline: pipeline)
 
       visit namespace_project_merge_request_path(project.namespace,
                                                  project,
@@ -136,7 +136,7 @@ describe 'Merge request', :feature, :js do
                                       statuses: [commit_status])
       create(:ci_build, :pending, pipeline: pipeline)
 
-      merge_request.update(head_pipeline_id: pipeline.id)
+      merge_request.update(head_pipeline: pipeline)
 
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
