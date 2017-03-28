@@ -31,6 +31,18 @@ export default {
       type: Object,
       required: true,
     },
+
+    isLoadingFolderContent: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+
+  methods: {
+    folderUrl(model) {
+      return `${window.location.pathname}/folders/${model.folderName}`;
+    },
   },
 
   template: `
@@ -54,13 +66,30 @@ export default {
             :can-read-environment="canReadEnvironment"
             :service="service"></tr>
 
-          <tr v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0"
-            is="environment-item"
-            v-for="children in model.children"
-            :model="children"
-            :can-create-deployment="canCreateDeploymentParsed"
-            :can-read-environment="canReadEnvironmentParsed"
-            :service="service"></tr>
+          <template v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0">
+            <tr v-if="isLoadingFolderContent">
+              <td colspan="6" class="text-center">
+                <i class="fa fa-spin fa-spinner" aria-hidden="true"/>
+              </td>
+            </tr>
+
+            <tr v-if="!isLoadingFolderContent"
+              is="environment-item"
+              v-for="children in model.children"
+              :model="children"
+              :can-create-deployment="canCreateDeployment"
+              :can-read-environment="canReadEnvironment"
+              :service="service"></tr>
+
+            <tr v-if="!isLoadingFolderContent">
+              <td colspan="6" class="text-center">
+                <a :href="folderUrl(model)" class="btn btn-default">
+                  Show all
+                </a>
+              </td>
+            </tr>
+          </template>
+
         </template>
       </tbody>
     </table>

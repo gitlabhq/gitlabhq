@@ -6,14 +6,7 @@ Vue.use(VueResource);
 
 export default class EnvironmentsService {
   constructor(endpoint) {
-    /**
-     * FIX ME: This should be sent by backend.
-     */
-    const customActions = {
-      folderContent: { method: 'GET', url: `${window.location.pathname}/folders{/name}?perPage=2` },
-    };
-
-    this.environments = Vue.resource(endpoint, {}, customActions);
+    this.environments = Vue.resource(endpoint);
   }
 
   get(scope, page) {
@@ -24,8 +17,7 @@ export default class EnvironmentsService {
     return Vue.http.post(endpoint, {}, { emulateJSON: true });
   }
 
-  getFolderContent(folderName) {
-    debugger
-    return this.environments.folderContent({ name: folderName });
+  getFolderContent(folderUrl) {
+    return Vue.http.get(`${folderUrl}.json?per_page=3`);
   }
 }

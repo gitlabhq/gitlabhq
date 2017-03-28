@@ -78,11 +78,11 @@ export default Vue.component('environment-component', {
   },
 
   methods: {
-    toggleFolder(folder) {
+    toggleFolder(folder, folderUrl) {
       this.store.toggleFolder(folder);
 
       if (!folder.isOpen) {
-        this.fetchChildEnvironments(folder);
+        this.fetchChildEnvironments(folder, folderUrl);
       }
     },
 
@@ -125,14 +125,13 @@ export default Vue.component('environment-component', {
         });
     },
 
-    fetchChildEnvironments(folder) {
+    fetchChildEnvironments(folder, folderUrl) {
       this.isLoadingFolderContent = true;
 
-      this.service.getFolderContent(folder.folderName)
+      this.service.getFolderContent(folderUrl)
         .then(resp => resp.json())
         .then((response) => {
-          console.log(response);
-          this.store.folderContent(folder, response.environments);
+          this.store.setfolderContent(folder, response.environments);
         })
         .then(() => {
           this.isLoadingFolderContent = false;
@@ -204,7 +203,8 @@ export default Vue.component('environment-component', {
             :environments="state.environments"
             :can-create-deployment="canCreateDeploymentParsed"
             :can-read-environment="canReadEnvironmentParsed"
-            :service="service"/>
+            :service="service"
+            :is-loading-folder-content="isLoadingFolderContent" />
         </div>
 
         <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"

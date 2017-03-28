@@ -392,6 +392,15 @@ export default {
 
       return '';
     },
+
+    /**
+     * Constructs folder URL based on the current location and the folder id.
+     *
+     * @return {String}
+     */
+    folderUrl() {
+      return `${window.location.pathname}/folders/${this.model.folderName}`;
+    },
   },
 
   /**
@@ -411,12 +420,12 @@ export default {
 
   methods: {
     onClickFolder() {
-      eventHub.$emit('toggleFolder', this.model);
+      eventHub.$emit('toggleFolder', this.model, this.folderUrl);
     },
   },
 
   template: `
-    <tr>
+    <tr :class="{ 'child-row': model.isChildren }">
       <td>
         <a v-if="!model.isFolder"
           class="environment-name"
