@@ -69,7 +69,7 @@ export default {
           <template v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0">
             <tr v-if="isLoadingFolderContent">
               <td colspan="6" class="text-center">
-                <i class="fa fa-spin fa-spinner" aria-hidden="true"/>
+                <i class="fa fa-spin fa-spinner fa-2x" aria-hidden="true"/>
               </td>
             </tr>
 

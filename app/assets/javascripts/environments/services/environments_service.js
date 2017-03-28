@@ -18,6 +18,7 @@ export default class EnvironmentsService {
   }
 
   getFolderContent(folderUrl) {
-    return Vue.http.get(`${folderUrl}.json?per_page=3`);
+    const results = 3;
+    return Vue.http.get(`${folderUrl}.json?per_page=${results}`);
   }
 }

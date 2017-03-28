@@ -425,16 +425,18 @@ export default {
   },
 
   template: `
-    <tr :class="{ 'child-row': model.isChildren }">
+    <tr>
       <td>
         <a v-if="!model.isFolder"
           class="environment-name"
+          :class="{ 'prepend-left-default': model.isChildren }"
           :href="environmentPath">
           {{model.name}}
         </a>
         <span v-else
           class="folder-name"
-          @click="onClickFolder">
+          @click="onClickFolder"
+          role="button">
 
           <span class="folder-icon">
             <i
