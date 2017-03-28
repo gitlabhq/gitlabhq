@@ -58,7 +58,7 @@ export default class Poll {
 
   checkConditions(response) {
     const headers = gl.utils.normalizeHeaders(response.headers);
-    const pollInterval = headers[this.intervalHeader];
+    const pollInterval = parseInt(headers[this.intervalHeader], 10);
 
     if (pollInterval > 0 && response.status === httpStatusCodes.OK && this.canPoll) {
       this.timeoutID = setTimeout(() => {
