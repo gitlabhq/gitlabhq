@@ -97,8 +97,8 @@
           Snippets
 
   %div{ class: container_class }
-    - if @user == current_user
-      .user-callout{ 'callout-svg' => custom_icon('icon_customization') }
+    - if @user == current_user && !show_user_callout?
+      = render 'shared/user_callout'
     .tab-content
       #activity.tab-pane
         .row-content-block.calender-block.white.second-block.hidden-xs
