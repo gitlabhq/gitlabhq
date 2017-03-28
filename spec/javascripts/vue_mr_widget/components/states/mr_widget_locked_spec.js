@@ -17,7 +17,7 @@ describe('MRWidgetLocked', () => {
       const mr = {
         targetBranchPath: '/branch-path',
         targetBranch: 'branch',
-      }
+      };
       const el = new Component({
         el: document.createElement('div'),
         propsData: { mr },

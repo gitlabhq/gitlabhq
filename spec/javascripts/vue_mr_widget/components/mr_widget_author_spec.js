@@ -18,11 +18,11 @@ const createComponent = () => {
 describe('MRWidgetAuthor', () => {
   describe('props', () => {
     it('should have props', () => {
-      const { author } = authorComponent.props;
+      const authorProp = authorComponent.props.author;
 
-      expect(author).toBeDefined();
-      expect(author.type instanceof Object).toBeTruthy();
-      expect(author.required).toBeTruthy();
+      expect(authorProp).toBeDefined();
+      expect(authorProp.type instanceof Object).toBeTruthy();
+      expect(authorProp.required).toBeTruthy();
     });
   });
 

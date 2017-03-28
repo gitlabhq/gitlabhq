@@ -24,10 +24,10 @@ const createComponent = () => {
 describe('MRWidgetClosed', () => {
   describe('props', () => {
     it('should have props', () => {
-      const { mr } = closedComponent.props;
+      const mrProp = closedComponent.props.mr;
 
-      expect(mr.type instanceof Object).toBeTruthy();
-      expect(mr.required).toBeTruthy();
+      expect(mrProp.type instanceof Object).toBeTruthy();
+      expect(mrProp.required).toBeTruthy();
     });
   });
 

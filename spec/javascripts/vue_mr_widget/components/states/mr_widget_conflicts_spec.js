@@ -13,7 +13,7 @@ const createComponent = () => {
         canResolveConflicts: true,
         canResolveConflictsInUI: true,
         conflictResolutionPath: path,
-      }
+      },
     },
   });
 };
@@ -44,7 +44,6 @@ describe('MRWidgetConflicts', () => {
       vm.mr.canResolveConflicts = true;
       vm.mr.canResolveConflictsInUI = false;
       expect(vm.showResolveConflictsButton).toBeFalsy();
-
 
       vm.mr.canMerge = false;
       vm.mr.canResolveConflicts = false;

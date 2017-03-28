@@ -1,7 +1,7 @@
 import Vue from 'vue';
+import { statusClassToSvgMap } from '~/vue_shared/pipeline_svg_icons';
 import pipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline';
 import pipelineMockData from '../../commit/pipelines/mock_data';
-import { statusClassToSvgMap } from '~/vue_shared/pipeline_svg_icons';
 
 const createComponent = (mr) => {
   const Component = Vue.extend(pipelineComponent);

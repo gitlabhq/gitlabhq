@@ -1,5 +1,4 @@
 import '~/lib/utils/datetime_utility';
-import pipelineStatusIcon from '../../vue_shared/components/pipeline_status_icon';
 import { statusClassToSvgMap } from '../../vue_shared/pipeline_svg_icons';
 
 export default {
