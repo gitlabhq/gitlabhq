@@ -123,6 +123,6 @@ module CiStatusHelper
   end
 
   def status_title(pipeline)
-    Ci::PipelineStatusBadgePresenter.new(pipeline).status_title
+    Ci::PipelinePresenter.new(pipeline).status_title
   end
 end

@@ -1,5 +1,5 @@
 module Ci
-  class PipelineStatusBadgePresenter < Gitlab::View::Presenter::Delegated
+  class PipelinePresenter < Gitlab::View::Presenter::Delegated
     presents :pipeline
 
     def auto_canceled?
