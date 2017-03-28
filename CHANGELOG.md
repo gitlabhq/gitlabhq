@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.0.1 (2017-03-28)
+
+- Resolve "404 when requesting build trace". !9759 (dosuken123)
+- Simplify search queries for projects and merge requests. !10053 (mhasbini)
+- Fix after_script processing for Runners APIv4. !10185
+- Fix escaped html appearing in milestone page. !10224
+- Fix bug that caused jobs that already had been retried to be retried again when retrying a pipeline. !10249
+- Allow filtering by all started milestones.
+- Allow sorting by due date and priority.
+- Fixed branches pagination not displaying.
+- Fixed filtered search not working in IE.
+- Optimize labels finder query when searching for a project with a group. (mhasbini)
+
 ## 9.0.0 (2017-03-22)
 
 - Fix inconsistent naming for services that delete things. !5803 (dixpac)
