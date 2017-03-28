@@ -100,6 +100,16 @@ feature 'Group', feature: true do
     end
   end
 
+  it 'checks permissions to avoid exposing groups by parent_id' do
+    group = create(:group, :private, path: 'secret-group')
+
+    logout
+    login_as(:user)
+    visit new_group_path(parent_id: group.id)
+
+    expect(page).not_to have_content('secret-group')
+  end
+
   describe 'group edit' do
     let(:group) { create(:group) }
     let(:path)  { edit_group_path(group) }
