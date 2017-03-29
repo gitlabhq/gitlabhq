@@ -46,14 +46,14 @@ export default {
           <a
             v-if="hasDeploymentMeta(deployment)"
             :href="deployment.url"
-            target="_blank" rel="noopener noreferrer" class="js-deploy-meta">
+            target="_blank" rel="noopener noreferrer nofollow" class="js-deploy-meta">
             {{deployment.name}}
           </a>
           <span v-if="hasExternalUrls(deployment)">on</span>
           <a
             v-if="hasExternalUrls(deployment)"
             :href="deployment.external_url"
-            target="_blank" rel="noopener noreferrer" class="js-deploy-url">
+            target="_blank" rel="noopener noreferrer nofollow" class="js-deploy-url">
             {{deployment.external_url_formatted}}
           </a>
           <span
