@@ -573,9 +573,19 @@ pre.light-well {
   display: flex;
   flex-direction: column;
 
+  // Disable Flexbox for admin page
+  &.admin-projects {
+    display: block;
+
+    .project-row {
+      display: block;
+    }
+  }
+
   .project-row {
     display: flex;
     align-items: center;
+    @include basic-list-stats;
   }
 
   h3 {
