@@ -74,7 +74,7 @@ import '~/right_sidebar';
 
       var todoToggleSpy = spyOnEvent(document, 'todo:toggle');
 
-      $('.js-issuable-todo').click();
+      $('.issuable-sidebar-header .js-issuable-todo').click();
 
       expect(todoToggleSpy.calls.count()).toEqual(1);
     });

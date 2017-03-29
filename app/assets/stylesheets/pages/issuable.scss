@@ -243,6 +243,10 @@
       font-size: 13px;
       font-weight: normal;
     }
+
+    .hide-expanded {
+      display: none;
+    }
   }
 
   &.right-sidebar-collapsed {
@@ -282,16 +286,21 @@
       display: block;
       width: 100%;
       text-align: center;
-      padding-bottom: 10px;
+      margin-bottom: 10px;
       color: $issuable-sidebar-color;
 
-      &:hover {
+      &:hover,
+      &:hover .todo-undone {
         color: $gl-text-color;
       }
 
       span {
         display: block;
         margin-top: 0;
+      }
+
+      .todo-undone {
+        color: $gl-link-color;
       }
 
       .author {
@@ -580,5 +589,23 @@
   .help-state-toggle-enter,
   .help-state-toggle-leave-active {
     opacity: 0;
+  }
+}
+
+.issuable-todo-btn {
+  .fa-spinner {
+    display: none;
+  }
+
+  &.is-loading {
+    .fa-spinner {
+      display: inline-block;
+    }
+
+    &.sidebar-collapsed-icon {
+      .issuable-todo-inner {
+        display: none;
+      }
+    }
   }
 }

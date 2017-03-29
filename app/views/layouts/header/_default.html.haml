@@ -40,7 +40,7 @@
                   = icon('wrench fw')
             %li
               = link_to dashboard_todos_path, title: 'Todos', aria: { label: "Todos" }, class: 'shortcuts-todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = icon('bell fw')
+                = icon('check-square fw')
                 %span.badge.todos-pending-count{ class: ("hidden" if todos_pending_count == 0) }
                   = todos_count_format(todos_pending_count)
             - if current_user.can_create_project?
