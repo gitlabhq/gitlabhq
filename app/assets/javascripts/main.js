@@ -381,4 +381,6 @@ $(function () {
   new Aside();
 
   gl.utils.initTimeagoTimeout();
+
+  $(document).trigger('init.scrolling-tabs');
 });
