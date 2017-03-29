@@ -1,13 +1,11 @@
-# Indexes per Topic
+# Topics
 
-**Indexes per Topic** gather all resources already published by GitLab
-related to an specific subject or theme, including:
-  - General Docs
-  - Technical Articles
-  - Blog Posts
-  - Video Tutorials
-
-## Topics
+We have organized our content resources into topics
+to get you started on areas of your interest. Each topic page
+consists of an index listing all related content. It will guide
+you through better understanding GitLab's concepts 
+through our regular docs, and, when available, through articles (guides,
+tutorials, technical overviews, blog posts) and videos.
 
 - Idea to Production
   - [GitLab Installation](../install/README.md)
