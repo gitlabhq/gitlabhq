@@ -794,7 +794,9 @@ describe SystemNoteService, services: true do
     let(:noteable)    { create(:merge_request, source_project: project) }
     subject { described_class.approve_mr(noteable, author) }
 
-    it_behaves_like 'a system note'
+    it_behaves_like 'a system note' do
+      let(:action) { 'approvals' }
+    end
 
     context 'when merge request approved' do
       it 'sets the note text' do
@@ -806,7 +808,9 @@ describe SystemNoteService, services: true do
   describe '.change_time_estimate' do
     subject { described_class.change_time_estimate(noteable, project, author) }
 
-    it_behaves_like 'a system note'
+    it_behaves_like 'a system note' do
+      let(:action) { 'time_tracking' }
+    end
 
     context 'with a time estimate' do
       it 'sets the note text' do
@@ -836,7 +840,9 @@ describe SystemNoteService, services: true do
       described_class.change_time_spent(noteable, project, author)
     end
 
-    it_behaves_like 'a system note'
+    it_behaves_like 'a system note' do
+      let(:action) { 'time_tracking' }
+    end
 
     context 'when time was added' do
       it 'sets the note text' do
