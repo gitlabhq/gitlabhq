@@ -60,7 +60,7 @@ export default class BurndownChart {
       .y(d => this.yScale(d.value));
 
     // render the chart
-    this.render();
+    this.queueRender();
   }
 
   // set data and force re-render
@@ -84,7 +84,7 @@ export default class BurndownChart {
       this.idealData = [idealStart, idealEnd];
     }
 
-    this.render();
+    this.queueRender();
   }
 
   // reset width and height to match the svg element, then re-render if necessary
@@ -101,11 +101,13 @@ export default class BurndownChart {
       this.xScale.range([0, this.chartWidth]);
       this.yScale.range([this.chartHeight, 0]);
 
-      this.render();
+      this.queueRender();
     }
   }
 
   render() {
+    this.queuedRender = null;
+
     this.xAxis.ticks(Math.floor(this.chartWidth / 120));
     this.yAxis.ticks(Math.min(Math.floor(this.chartHeight / 60), this.yMax));
 
@@ -119,6 +121,10 @@ export default class BurndownChart {
       this.actualLinePath.datum(this.data).attr('d', this.line);
       this.idealLinePath.datum(this.idealData).attr('d', this.line);
     }
+  }
+
+  queueRender() {
+    this.queuedRender = this.queuedRender || requestAnimationFrame(() => this.render());
   }
 
   animate(seconds = 5) {
