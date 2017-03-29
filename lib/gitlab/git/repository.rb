@@ -45,13 +45,15 @@ module Gitlab
 
       # Default branch in the repository
       def root_ref
-        @root_ref ||= Gitlab::GitalyClient.migrate(:root_ref) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.default_branch_name
-          else
-            discover_default_branch
-          end
-        end
+        # NOTE: This feature is intentionally disabled until
+        # https://gitlab.com/gitlab-org/gitaly/issues/179 is resolved
+        # @root_ref ||= Gitlab::GitalyClient.migrate(:root_ref) do |is_enabled|
+        #   if is_enabled
+        #     gitaly_ref_client.default_branch_name
+        #   else
+        @root_ref ||= discover_default_branch
+        #   end
+        # end
       rescue GRPC::BadStatus => e
         raise CommandError.new(e)
       end
@@ -70,13 +72,15 @@ module Gitlab
       # Returns an Array of branch names
       # sorted by name ASC
       def branch_names
-        Gitlab::GitalyClient.migrate(:branch_names) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.branch_names
-          else
-            branches.map(&:name)
-          end
-        end
+        # Gitlab::GitalyClient.migrate(:branch_names) do |is_enabled|
+        #   NOTE: This feature is intentionally disabled until
+        #   https://gitlab.com/gitlab-org/gitaly/issues/179 is resolved
+        #   if is_enabled
+        #     gitaly_ref_client.branch_names
+        #   else
+        branches.map(&:name)
+        #   end
+        # end
       rescue GRPC::BadStatus => e
         raise CommandError.new(e)
       end
@@ -131,13 +135,15 @@ module Gitlab
 
       # Returns an Array of tag names
       def tag_names
-        Gitlab::GitalyClient.migrate(:tag_names) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.tag_names
-          else
-            rugged.tags.map { |t| t.name }
-          end
-        end
+        # Gitlab::GitalyClient.migrate(:tag_names) do |is_enabled|
+        #   NOTE: This feature is intentionally disabled until
+        #   https://gitlab.com/gitlab-org/gitaly/issues/179 is resolved
+        #   if is_enabled
+        #     gitaly_ref_client.tag_names
+        #   else
+        rugged.tags.map { |t| t.name }
+        #   end
+        # end
       rescue GRPC::BadStatus => e
         raise CommandError.new(e)
       end
@@ -458,17 +464,19 @@ module Gitlab
 
       # Returns a RefName for a given SHA
       def ref_name_for_sha(ref_path, sha)
-        Gitlab::GitalyClient.migrate(:find_ref_name) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.find_ref_name(sha, ref_path)
-          else
-            args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
+        # NOTE: This feature is intentionally disabled until
+        # https://gitlab.com/gitlab-org/gitaly/issues/180 is resolved
+        # Gitlab::GitalyClient.migrate(:find_ref_name) do |is_enabled|
+        #   if is_enabled
+        #     gitaly_ref_client.find_ref_name(sha, ref_path)
+        #   else
+        args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
 
-            # Not found -> ["", 0]
-            # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
-            Gitlab::Popen.popen(args, @path).first.split.last
-          end
-        end
+        # Not found -> ["", 0]
+        # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
+        Gitlab::Popen.popen(args, @path).first.split.last
+        #   end
+        # end
       end
 
       # Returns commits collection
