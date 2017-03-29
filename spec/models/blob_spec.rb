@@ -53,6 +53,20 @@ describe Blob do
     end
   end
 
+  describe '#ipython_notebook?' do
+    it 'is falsey when language is not Jupyter Notebook' do
+      git_blob = double(text?: true, language: double(name: 'JSON'))
+
+      expect(described_class.decorate(git_blob)).not_to be_ipython_notebook
+    end
+
+    it 'is truthy when language is Jupyter Notebook' do
+      git_blob = double(text?: true, language: double(name: 'Jupyter Notebook'))
+
+      expect(described_class.decorate(git_blob)).to be_ipython_notebook
+    end
+  end
+
   describe '#video?' do
     it 'is falsey with image extension' do
       git_blob = Gitlab::Git::Blob.new(name: 'image.png')
@@ -115,6 +129,11 @@ describe Blob do
     it 'defaults to download' do
       blob = stubbed_blob
       expect(blob.to_partial_path(project)).to eq 'download'
+    end
+
+    it 'handles iPython notebooks' do
+      blob = stubbed_blob(text?: true, ipython_notebook?: true)
+      expect(blob.to_partial_path(project)).to eq 'notebook'
     end
   end
 

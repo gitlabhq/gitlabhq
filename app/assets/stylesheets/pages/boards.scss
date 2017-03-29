@@ -269,8 +269,13 @@
     font-size: (14px / $issue-boards-font-size) * 1em;
   }
 
+  .card-assignee {
+    margin-right: 5px;
+  }
+
   .avatar {
     margin-left: 0;
+    margin-right: 0;
   }
 }
 
@@ -325,6 +330,7 @@
   }
 }
 
+<<<<<<< HEAD
 .boards-title-holder {
   padding: 25px 13px $gl-padding;
 
@@ -346,6 +352,9 @@
 }
 
 .issue-boards-sidebar {
+=======
+.page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar {
+>>>>>>> ce/master
   &.right-sidebar {
     top: 0;
     bottom: 0;

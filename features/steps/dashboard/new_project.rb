@@ -19,7 +19,7 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
     expect(page).to have_link('Bitbucket')
     expect(page).to have_link('GitLab.com')
     expect(page).to have_link('Google Code')
-    expect(page).to have_link('Repo by URL')
+    expect(page).to have_button('Repo by URL')
     expect(page).to have_link('GitLab export')
   end
 
