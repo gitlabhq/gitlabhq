@@ -1,6 +1,6 @@
 import d3 from 'd3';
 
-const margin = { top: 5, right: 15, bottom: 30, left: 40 };
+const margin = { top: 5, right: 65, bottom: 30, left: 40 };
 const parseDate = d3.time.format('%Y-%m-%d').parse;
 
 export default class BurndownChart {
@@ -116,6 +116,9 @@ export default class BurndownChart {
 
     this.xAxisGroup.call(this.xAxis);
     this.yAxisGroup.call(this.yAxis);
+
+    this.xAxisGroup.select('.domain').remove();
+    this.xAxisGroup.append('line').attr('x1', 0).attr('x2', this.chartWidth + margin.right);
 
     if (this.data != null && this.data.length > 1) {
       this.actualLinePath.datum(this.data).attr('d', this.line);
