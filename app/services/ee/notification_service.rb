@@ -9,14 +9,15 @@ module EE
     end
 
     def send_service_desk_notification(note)
-      return true unless Gitlab::EE::ServiceDesk.enabled?
-      return true unless note.noteable_type == 'Issue'
-      issue = note.issuable
-      reply_to = issue.service_desk_reply_to
-      return nil unless issue.service_desk_reply_to.present?
-      return nil unless issue.project.service_desk_enabled?
+      return unless ::Gitlab::EE::ServiceDesk.enabled?
+      return unless note.noteable_type == 'Issue'
 
-      return nil unless issue.subscribed?(user, issue.project)
+      issue = note.noteable
+      reply_to = issue.service_desk_reply_to
+
+      return unless issue.service_desk_reply_to.present?
+      return unless issue.project.service_desk_enabled?
+      return unless issue.subscribed?(::User.support_bot, issue.project)
 
       Notify.service_desk_new_note_email(issue.id, note.id)
     end
