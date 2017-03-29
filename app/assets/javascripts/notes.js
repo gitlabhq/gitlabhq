@@ -377,6 +377,7 @@ require('./task_list');
       }
 
       gl.utils.localTimeAgo($('.js-timeago'), false);
+      gl.mrWidget.checkStatus();
       return this.updateNotesCount(1);
     };
 
