@@ -49,9 +49,8 @@ export default {
     },
   },
   template: `
-    <div style="margin-top: 3px;display: flex;flex-wrap: wrap;">
+    <div class="card-footer">
       <button
-        style="margin-top:5px;margin-right:6px;"
         class="label color-label has-tooltip"
         v-for="label in issue.labels"
         type="button"
