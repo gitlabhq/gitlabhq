@@ -477,12 +477,12 @@ with setting up Gitaly until you upgrade to GitLab 9.1 or later.
     # Enable Gitaly in the init script
     echo 'gitaly_enabled=true' | sudo tee -a /etc/default/gitlab
 
-Next, edit `/home/git/gitlab/config/gitlab.yml` and make sure `socket_path` in
+Next, edit `/home/git/gitlab/config/gitlab.yml` and make sure `enabled: true` in
 the `gitaly:` section is uncommented.
 
     # <- gitlab.yml indentation starts here
       gitaly:
-        socket_path: tmp/sockets/private/gitaly.socket
+        enabled: true
 
 For more information about configuring Gitaly see
 [doc/administration/gitaly](../administration/gitaly).
