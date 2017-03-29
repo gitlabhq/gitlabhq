@@ -6,20 +6,22 @@ module Ci
     end
 
     def next_time_from_now
-      cronLine = try_parse_cron
+      cronLine = try_parse_cron(@cron, @cron_time_zone)
       return nil unless cronLine.present?
       cronLine.next_time
     end
 
-    def valid_syntax?
-      try_parse_cron.present? ? true : false
+    def validation
+      is_valid_cron = try_parse_cron(@cron, 'Europe/Istanbul').present?
+      is_valid_cron_time_zone = try_parse_cron('* * * * *', @cron_time_zone).present?
+      return is_valid_cron, is_valid_cron_time_zone
     end
 
     private
 
-    def try_parse_cron
+    def try_parse_cron(cron, cron_time_zone)
       begin
-        Rufus::Scheduler.parse("#{@cron} #{@cron_time_zone}")
+        Rufus::Scheduler.parse("#{cron} #{cron_time_zone}")
       rescue
         nil
       end
