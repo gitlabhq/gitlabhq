@@ -120,4 +120,18 @@ export default class BurndownChart {
       this.idealLinePath.datum(this.idealData).attr('d', this.line);
     }
   }
+
+  animate(seconds = 5) {
+    this.ticksLeft = this.ticksLeft || 0;
+    if (this.ticksLeft <= 0) {
+      const interval = setInterval(() => {
+        this.ticksLeft -= 1;
+        if (this.ticksLeft <= 0) {
+          clearInterval(interval);
+        }
+        this.resize();
+      }, 20);
+    }
+    this.ticksLeft = seconds * 50;
+  }
 }
