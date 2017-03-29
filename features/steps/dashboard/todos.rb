@@ -28,7 +28,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
     merge_request_reference = merge_request.to_reference(full: true)
     issue_reference = issue.to_reference(full: true)
 
-    page.within('.todos-pending-count') { expect(page).to have_content '4' }
+    page.within('.todos-count') { expect(page).to have_content '4' }
     expect(page).to have_content 'To do 4'
     expect(page).to have_content 'Done 0'
 
@@ -44,7 +44,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
       click_link 'Done'
     end
 
-    page.within('.todos-pending-count') { expect(page).to have_content '3' }
+    page.within('.todos-count') { expect(page).to have_content '3' }
     expect(page).to have_content 'To do 3'
     expect(page).to have_content 'Done 1'
     should_see_todo(1, "John Doe assigned you merge request #{merge_request.to_reference(full: true)}", merge_request.title, state: :done_reversible)
@@ -56,7 +56,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
 
     click_link 'Mark all as done'
 
-    page.within('.todos-pending-count') { expect(page).to have_content '0' }
+    page.within('.todos-count') { expect(page).to have_content '0' }
     expect(page).to have_content 'To do 0'
     expect(page).to have_content 'Done 4'
     expect(page).to have_content "You're all done!"

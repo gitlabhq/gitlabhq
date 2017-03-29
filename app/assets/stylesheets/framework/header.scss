@@ -267,7 +267,7 @@ header {
       color: $white-light;
       padding: 1px 5px 2px;
       border-radius: 7px;
-      box-shadow: 0px 1px 0px rgba($gl-header-color, .2);
+      box-shadow: 0 1px 0 rgba($gl-header-color, .2);
 
       &.issues-count {
         background-color: $green-500;
