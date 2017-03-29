@@ -36,6 +36,9 @@
         = link_to namespace_project_milestone_path(@project.namespace, @project, @milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-grouped btn-danger" do
           Delete
 
+      %a.btn.btn-default.btn-grouped.pull-right.visible-xs-block.js-sidebar-toggle{ href: "#" }
+        = icon('angle-double-left')
+
   .detail-page-description.milestone-detail{ class: ('hide-bottom-border' unless @milestone.description.present? ) }
     %h2.title
       = markdown_field(@milestone, :title)
@@ -53,5 +56,5 @@
     .alert.alert-success.prepend-top-default
       %span All issues for this milestone are closed. You may close this milestone now.
 
-  = render 'shared/milestones/summary', milestone: @milestone, project: @project
   = render 'shared/milestones/tabs', milestone: @milestone
+  = render 'shared/milestones/sidebar', milestone: @milestone, project: @project, affix_offset: 153

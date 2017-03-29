@@ -4,5 +4,5 @@
   = page_specific_javascript_bundle_tag('simulate_drag') if Rails.env.test?
 
 = render 'shared/milestones/top', milestone: @milestone, group: @group
-= render 'shared/milestones/summary', milestone: @milestone
 = render 'shared/milestones/tabs', milestone: @milestone, show_project_name: true
+= render 'shared/milestones/sidebar', milestone: @milestone, affix_offset: 102
