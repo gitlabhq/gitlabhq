@@ -1,3 +1,7 @@
-import renderSketch from './sketch';
+import SketchLoader from './sketch';
 
-document.addEventListener('DOMContentLoaded', renderSketch);
+document.addEventListener('DOMContentLoaded', () => {
+  const el = document.getElementById('js-sketch-viewer');
+  
+  new SketchLoader(el);
+});
