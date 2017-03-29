@@ -51,14 +51,6 @@ describe Issue, models: true do
 
       expect(issue.closed_at).to eq(now)
     end
-
-    it 'sets closed_at to nil when issue is reopened' do
-      issue = create(:issue, state: 'closed')
-
-      issue.reopen
-
-      expect(issue.closed_at).to be_nil
-    end
   end
 
   describe '#to_reference' do
