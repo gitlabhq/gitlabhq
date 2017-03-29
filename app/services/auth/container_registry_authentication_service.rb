@@ -56,13 +56,15 @@ module Auth
     def process_scope(scope)
       type, name, actions = scope.split(':', 3)
       actions = actions.split(',')
+      path = ContainerRegistry::Path.new(name)
+
       return unless type == 'repository'
 
-      process_repository_access(type, name, actions)
+      process_repository_access(type, path, actions)
     end
 
-    def process_repository_access(type, name, actions)
-      requested_project = ContainerRepository.project_from_path(name)
+    def process_repository_access(type, path, actions)
+      requested_project = path.repository_project
 
       return unless requested_project
 
@@ -70,7 +72,9 @@ module Auth
         can_access?(requested_project, action)
       end
 
-      { type: type, name: name, actions: actions } if actions.present?
+      return unless actions.present?
+
+      { type: type, name: path.to_s, actions: actions }
     end
 
     def can_access?(requested_project, requested_action)

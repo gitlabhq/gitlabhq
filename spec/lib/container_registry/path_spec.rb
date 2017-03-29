@@ -9,8 +9,8 @@ describe ContainerRegistry::Path do
 
       it 'return all project-like components in reverse order' do
         expect(subject.components).to eq %w[path/to/some/project
-                                         path/to/some
-                                         path/to]
+                                            path/to/some
+                                            path/to]
       end
     end
 
