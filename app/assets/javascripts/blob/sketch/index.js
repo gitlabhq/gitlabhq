@@ -18,7 +18,6 @@ export default () => {
     },
     methods: {
       tryUnzip() {
-        // return this.$http.get(el.dataset.endpoint)
         return new JSZip.external.Promise((resolve, reject) => {
           JSZipUtils.getBinaryContent(el.dataset.endpoint, (err, data) => {
             if (err) {
@@ -32,18 +31,12 @@ export default () => {
     },
     mounted() {
       this.tryUnzip()
-        // .then((res) => {
-        //   JSZip.loadAsync(res)
-        //   .then((something) => {
-        //     console.log(something);
-        //   });
-        // });
         .then(data => JSZip.loadAsync(data))
         .then((asyncResult) => {
           asyncResult.files['previews/preview.png'].async('uint8array')
             .then((content) => {
               const url = window.URL || window.webkitURL;
-              const blob = new Blob(content, { type: 'image/png' });
+              const blob = new Blob([new Uint8Array(content)], { type: 'image/png' });
               const previewUrl = url.createObjectURL(blob);
 
               this.previewURL = previewUrl;
