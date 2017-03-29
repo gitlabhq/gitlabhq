@@ -132,8 +132,6 @@ export default Vue.component('environment-component', {
         .then(resp => resp.json())
         .then((response) => {
           this.store.setfolderContent(folder, response.environments);
-        })
-        .then(() => {
           this.isLoadingFolderContent = false;
         })
         .catch(() => {

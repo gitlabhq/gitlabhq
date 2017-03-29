@@ -7,6 +7,7 @@ Vue.use(VueResource);
 export default class EnvironmentsService {
   constructor(endpoint) {
     this.environments = Vue.resource(endpoint);
+    this.folderResults = 3;
   }
 
   get(scope, page) {
@@ -18,7 +19,6 @@ export default class EnvironmentsService {
   }
 
   getFolderContent(folderUrl) {
-    const results = 3;
-    return Vue.http.get(`${folderUrl}.json?per_page=${results}`);
+    return Vue.http.get(`${folderUrl}.json?per_page=${this.folderResults}`);
   }
 }

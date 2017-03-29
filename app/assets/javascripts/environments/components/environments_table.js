@@ -73,23 +73,23 @@ export default {
               </td>
             </tr>
 
-            <tr v-if="!isLoadingFolderContent"
-              is="environment-item"
-              v-for="children in model.children"
-              :model="children"
-              :can-create-deployment="canCreateDeployment"
-              :can-read-environment="canReadEnvironment"
-              :service="service"></tr>
+            <template v-else>
+              <tr is="environment-item"
+                v-for="children in model.children"
+                :model="children"
+                :can-create-deployment="canCreateDeployment"
+                :can-read-environment="canReadEnvironment"
+                :service="service"></tr>
 
-            <tr v-if="!isLoadingFolderContent">
-              <td colspan="6" class="text-center">
-                <a :href="folderUrl(model)" class="btn btn-default">
-                  Show all
-                </a>
-              </td>
-            </tr>
+              <tr>
+                <td colspan="6" class="text-center">
+                  <a :href="folderUrl(model)" class="btn btn-default">
+                    Show all
+                  </a>
+                </td>
+              </tr>
+            </template>
           </template>
-
         </template>
       </tbody>
     </table>
