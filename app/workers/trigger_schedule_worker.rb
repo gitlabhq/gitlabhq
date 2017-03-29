@@ -3,14 +3,15 @@ class TriggerScheduleWorker
   include CronjobQueue
 
   def perform
-    Ci::TriggerSchedule.where("next_run_at < ?", Time.now).find_each do |trigger|
+    Ci::TriggerSchedule.where("next_run_at < ?", Time.now).find_each do |trigger_schedule|
       begin
-        Ci::CreatePipelineService.new(trigger.project, trigger.owner, ref: trigger.ref).
-          execute(ignore_skip_ci: true, scheduled_trigger: true)
+        Ci::CreateTriggerRequestService.new.execute(trigger_schedule.trigger.project,
+                                                    trigger_schedule.trigger,
+                                                    trigger_schedule.trigger.ref)
       rescue => e
-        Rails.logger.error "#{trigger.id}: Failed to trigger job: #{e.message}"
+        Rails.logger.error "#{trigger_schedule.id}: Failed to trigger_schedule job: #{e.message}"
       ensure
-        trigger.schedule_next_run!
+        trigger_schedule.schedule_next_run!
       end
     end
   end

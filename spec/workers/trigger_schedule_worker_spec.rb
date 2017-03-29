@@ -8,9 +8,17 @@ describe TriggerScheduleWorker do
   end
 
   context 'when there is a scheduled trigger within next_run_at' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project) }
+    let(:trigger) { create(:ci_trigger, owner: user, project: project, ref: 'master') }
+    let!(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build, :force_triggable, trigger: trigger, project: project) }
+
     before do
-      create(:ci_trigger_schedule, :cron_nightly_build, :force_triggable)
       worker.perform
+    end
+
+    it 'creates a new trigger request' do
+      expect(Ci::TriggerRequest.first.trigger_id).to eq(trigger.id)
     end
 
     it 'creates a new pipeline' do
@@ -18,8 +26,8 @@ describe TriggerScheduleWorker do
     end
 
     it 'schedules next_run_at' do
-      trigger_schedule2 = create(:ci_trigger_schedule, :cron_nightly_build)
-      expect(Ci::TriggerSchedule.last.next_run_at).to eq(trigger_schedule2.next_run_at)
+      next_time = Ci::CronParser.new('0 1 * * *', 'Europe/Istanbul').next_time_from_now
+      expect(Ci::TriggerSchedule.last.next_run_at).to eq(next_time)
     end
   end
 
