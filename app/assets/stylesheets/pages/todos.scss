@@ -2,26 +2,6 @@
  * Dashboard Todos
  *
  */
-
-.navbar-nav {
-  li {
-    .badge.todos-pending-count {
-      position: inherit;
-      top: -6px;
-      margin-top: -5px;
-      font-weight: normal;
-      background: $todo-alert-blue;
-      margin-left: -17px;
-      font-size: 11px;
-      color: $white-light;
-      padding: 3px;
-      padding-top: 1px;
-      padding-bottom: 1px;
-      border-radius: 3px;
-    }
-  }
-}
-
 .todos-list > .todo {
   // workaround because we cannot use border-colapse
   border-top: 1px solid transparent;

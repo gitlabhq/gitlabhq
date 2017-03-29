@@ -48,10 +48,10 @@ header {
         color: $gl-text-color-secondary;
         font-size: 18px;
         padding: 0;
-        margin: ($header-height - 28) / 2 0;
+        margin: (($header-height - 28) / 2) 3px;
         margin-left: 8px;
         height: 28px;
-        min-width: 28px;
+        min-width: 32px;
         line-height: 28px;
         text-align: center;
 
@@ -73,13 +73,22 @@ header {
           background-color: $gray-light;
           color: $gl-text-color;
 
-          .todos-pending-count {
-            background: darken($todo-alert-blue, 10%);
+          svg {
+            fill: $gl-text-color;
           }
         }
 
         .fa-caret-down {
           font-size: 14px;
+        }
+
+        svg {
+          position: relative;
+          top: 2px;
+          height: 17px;
+          // hack to get SVG to line up with FA icons
+          width: 23px;
+          fill: $gl-text-color-secondary;
         }
       }
 
@@ -251,6 +260,34 @@ header {
   @media (max-width: $screen-md-max) {
     .header-content .title {
       width: 300px;
+    }
+  }
+}
+
+.navbar-nav {
+  li {
+    .badge {
+      position: inherit;
+      top: -3px;
+      font-weight: normal;
+      margin-left: -12px;
+      font-size: 11px;
+      color: $white-light;
+      padding: 1px 5px 2px;
+      border-radius: 7px;
+      box-shadow: 0px 1px 0px rgba($gl-header-color, .2);
+
+      &.issues-count {
+        background-color: $green-500;
+      }
+
+      &.merge-requests-count {
+        background-color: $orange-600;
+      }
+
+      &.todos-count {
+        background-color: $blue-500;
+      }
     }
   }
 }
