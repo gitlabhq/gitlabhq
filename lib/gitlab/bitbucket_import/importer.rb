@@ -130,8 +130,13 @@ module Gitlab
       end
 
       def create_labels
-        LABELS.each do |label|
-          @labels[label[:title]] = project.labels.create!(label)
+        LABELS.each do |label_params|
+          label = ::Labels::CreateService.new(label_params).execute(project: project)
+          if label.valid?
+            @labels[label_params[:title]] = label
+          else
+            raise "Failed to create label \"#{label_params[:title]}\" for project \"#{project.name_with_namespace}\""
+          end
         end
       end
 

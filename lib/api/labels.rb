@@ -23,7 +23,7 @@ module API
       end
       params do
         requires :name, type: String, desc: 'The name of the label to be created'
-        requires :color, type: String, desc: "The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB)"
+        requires :color, type: String, desc: "The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
         optional :description, type: String, desc: 'The description of label to be created'
         optional :priority, type: Integer, desc: 'The priority of the label', allow_blank: true
       end
@@ -34,7 +34,7 @@ module API
         conflict!('Label already exists') if label
 
         priority = params.delete(:priority)
-        label = user_project.labels.create(declared_params(include_missing: false))
+        label = ::Labels::CreateService.new(declared_params(include_missing: false)).execute(project: user_project)
 
         if label.valid?
           label.prioritize!(user_project, priority) if priority
@@ -65,7 +65,7 @@ module API
       params do
         requires :name,  type: String, desc: 'The name of the label to be updated'
         optional :new_name, type: String, desc: 'The new name of the label'
-        optional :color, type: String, desc: "The new color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB)"
+        optional :color, type: String, desc: "The new color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
         optional :description, type: String, desc: 'The new description of label'
         optional :priority, type: Integer, desc: 'The priority of the label', allow_blank: true
         at_least_one_of :new_name, :color, :description, :priority
@@ -82,7 +82,8 @@ module API
         # Rename new name to the actual label attribute name
         label_params[:name] = label_params.delete(:new_name) if label_params.key?(:new_name)
 
-        render_validation_error!(label) unless label.update(label_params)
+        label = ::Labels::UpdateService.new(label_params).execute(label)
+        render_validation_error!(label) unless label.valid?
 
         if update_priority
           if priority.nil?
