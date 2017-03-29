@@ -1,4 +1,4 @@
-# Writing Documentation
+# Writing documentation
 
   - **General Documentation**: written by the developers responsible by creating features. Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
   - **Technical Articles**: written by any [GitLab Team](https://about.gitlab.com/team/) member, GitLab contributors, or [Community Writers](https://about.gitlab.com/handbook/product/technical-writing/community-writers/).
@@ -6,7 +6,7 @@
 
 ## Distinction between General Documentation and Technical Articles
 
-### General Documentation
+### General documentation
 
 General documentation is categorized by _User_, _Admin_, and _Contributor_, and describe what that feature is, what it does, and its available settings.
 
@@ -29,7 +29,7 @@ They live under `doc/topics/topic-name/`, and can be searched per topic, within 
 
 <style></style>
 
-#### Understanding Guides, Tutorials, and Technical Overviews
+#### Understanding guides, tutorials, and technical overviews
 
 Suppose there's a process to go from point A to point B in 5 steps: `(A) 1 > 2 > 3 > 4 > 5 (B)`.
 
@@ -47,7 +47,7 @@ through the process of how to use it systematically.
 
 - Live example (on the blog): [GitLab Workflow, an overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/)
 
-#### Special Format
+#### Special format
 
 Every **Technical Article** contains, in the very beginning, a blockquote with the following information:
 
@@ -56,16 +56,16 @@ Every **Technical Article** contains, in the very beginning, a blockquote with t
 - A reference to the **author's name** and **GitLab.com handle**
 
 ```md
-> Type: tutorial ||
-> Level: intermediary ||
-> Author: [Name Surname](https://gitlab.com/username)
+> **Type:** tutorial ||
+> **Level:** intermediary ||
+> **Author:** [Name Surname](https://gitlab.com/username)
 ```
 
 #### Technical Articles - Writing Method
 
 Use the [writing method](https://about.gitlab.com/handbook/product/technical-writing/#writing-method) defined by the Technical Writing team.
 
-## Documentation Style Guidelines
+## Documentation style guidelines
 
 All the documentation follow the same [styleguide](doc_styleguide.html).
 

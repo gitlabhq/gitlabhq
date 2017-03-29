@@ -17,7 +17,7 @@ All technical content published by GitLab lives in the documentation, including:
   - Blog Posts
   - Video Tutorials
 
-## User Documentation
+## User documentation
 
 - [Account Security](user/profile/account/two_factor_authentication.md) Securing your account via two-factor authentication, etc.
 - [API](api/README.md) Automate GitLab via a simple and powerful API.
@@ -41,7 +41,7 @@ All technical content published by GitLab lives in the documentation, including:
 - [Git Attributes](user/project/git_attributes.md) Managing Git attributes using a `.gitattributes` file.
 - [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf) Download a PDF describing the most used Git operations.
 
-## Administrator Documentation
+## Administrator documentation
 
 - [Access restrictions](user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols) Define which Git access protocols can be used to talk to GitLab
 - [Authentication/Authorization](administration/auth/README.md) Configure
@@ -79,7 +79,7 @@ All technical content published by GitLab lives in the documentation, including:
 - [High Availability](administration/high_availability/README.md) Configure multiple servers for scaling or high availability.
 - [Container Registry](administration/container_registry.md) Configure Docker Registry with GitLab.
 
-## Contributor Documentation
+## Contributor documentation
 
 - [Development](development/README.md) All styleguides and explanations how to contribute.
 - [Writing documentation](development/writing_documentation.md)
