@@ -34,6 +34,7 @@ class SessionsController < Devise::SessionsController
       end
       # hide the signed-in notification
       flash[:notice] = nil
+      PromService.instance.login.increment
       log_audit_event(current_user, with: authentication_method)
       log_user_activity(current_user)
     end

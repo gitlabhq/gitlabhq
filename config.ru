@@ -13,6 +13,13 @@ if defined?(Unicorn)
     # Max memory size (RSS) per worker
     use Unicorn::WorkerKiller::Oom, min, max
   end
+
+  # TODO(lyda): Needs to be set externally.
+  ENV['prometheus_multiproc_dir'] = '/tmp'
+
+  require 'prometheus/client/rack/exporter'
+
+  use Prometheus::Client::Rack::Exporter, path: '/admin/metrics'
 end
 
 require ::File.expand_path('../config/environment',  __FILE__)
