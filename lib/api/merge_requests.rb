@@ -233,7 +233,6 @@ module API
           .cancel(merge_request)
       end
 
-<<<<<<< HEAD
       desc 'List issues that will be closed on merge' do
         success Entities::MRNote
       end
@@ -292,8 +291,6 @@ module API
         present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
       end
 
-=======
->>>>>>> ce/master
       desc 'List issues that will be closed on merge' do
         success Entities::MRNote
       end

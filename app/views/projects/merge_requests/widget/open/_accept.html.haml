@@ -45,13 +45,13 @@
             = link_to icon('question-circle'), help_page_path('user/project/merge_requests/squash_and_merge'), title: 'About this feature', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'}
 
       .accept-control
-<<<<<<< HEAD
         - if @project.merge_requests_ff_only_enabled
           Fast-forward merge without a merge commit
         - else
-          = link_to "#", class: "modify-merge-commit-link js-toggle-button" do
+          %button.modify-merge-commit-link.js-toggle-button{ type: "button" }
             = icon('edit')
             Modify commit message
+
     - unless @project.merge_requests_ff_only_enabled
       .js-toggle-content.hide.prepend-top-default
         = render 'shared/commit_message_container', params: params,
@@ -59,16 +59,5 @@
             message_without_description: @merge_request.merge_commit_message,
             text: @merge_request.merge_commit_message,
             rows: 14, hint: true
-=======
-        %button.modify-merge-commit-link.js-toggle-button{ type: "button" }
-          = icon('edit')
-          Modify commit message
-    .js-toggle-content.hide.prepend-top-default
-      = render 'shared/commit_message_container', params: params,
-          message_with_description: @merge_request.merge_commit_message(include_description: true),
-          message_without_description: @merge_request.merge_commit_message,
-          text: @merge_request.merge_commit_message,
-          rows: 14, hint: true
->>>>>>> ce/master
 
     = hidden_field_tag :merge_when_pipeline_succeeds, "", autocomplete: "off"
