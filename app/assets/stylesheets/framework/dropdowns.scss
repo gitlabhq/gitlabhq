@@ -119,6 +119,46 @@
   }
 }
 
+@mixin dropdown-link {
+  display: block;
+  position: relative;
+  padding: 5px 8px;
+  color: $gl-text-color;
+  line-height: initial;
+  text-overflow: ellipsis;
+  border-radius: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+
+  &:hover,
+  &:focus,
+  &.is-focused {
+    background-color: $dropdown-link-hover-bg;
+    text-decoration: none;
+
+    .badge {
+      background-color: darken($dropdown-link-hover-bg, 5%);
+    }
+  }
+
+  &.dropdown-menu-empty-link {
+    &.is-focused {
+      background-color: $dropdown-empty-row-bg;
+    }
+  }
+
+  &.dropdown-menu-user-link {
+    line-height: 16px;
+  }
+
+  .icon-play {
+    fill: $gl-text-color-secondary;
+    margin-right: 6px;
+    height: 12px;
+    width: 11px;
+  }
+}
+
 .dropdown-menu,
 .dropdown-menu-nav {
   display: none;
@@ -178,43 +218,7 @@
   }
 
   a {
-    display: block;
-    position: relative;
-    padding: 5px 8px;
-    color: $gl-text-color;
-    line-height: initial;
-    text-overflow: ellipsis;
-    border-radius: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-
-    &:hover,
-    &:focus,
-    &.is-focused {
-      background-color: $dropdown-link-hover-bg;
-      text-decoration: none;
-
-      .badge {
-        background-color: darken($dropdown-link-hover-bg, 5%);
-      }
-    }
-
-    &.dropdown-menu-empty-link {
-      &.is-focused {
-        background-color: $dropdown-empty-row-bg;
-      }
-    }
-
-    &.dropdown-menu-user-link {
-      line-height: 16px;
-    }
-
-    .icon-play {
-      fill: $gl-text-color-secondary;
-      margin-right: 6px;
-      height: 12px;
-      width: 11px;
-    }
+    @include dropdown-link;
   }
 
   .dropdown-header {
