@@ -3,6 +3,8 @@
 This styleguide recommends best practices to improve documentation and to keep
 it organized and easy to find.
 
+See also [writing documentation](writing_documentation.md).
+
 ## Location and naming of documents
 
 >**Note:**
@@ -59,7 +61,7 @@ The table below shows what kind of documentation goes where.
          located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
 1. The `doc/topics/` directory holds topic-related technical content. Create
    `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
-   Note that `topics` holds the index page per topic, and techical articles. General
+   Note that `topics` holds the index page per topic, and technical articles. General
    user- and admin- related documentation, should be placed accordingly.
 
 ---
