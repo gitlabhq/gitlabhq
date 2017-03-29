@@ -12,7 +12,11 @@ module Issues
       spam_check(issue, current_user)
     end
 
-    def handle_changes(issue, old_labels: [], old_mentioned_users: [], old_assignees: [])
+    def handle_changes(issue, options)
+      old_labels = options[:old_labels] || []
+      old_mentioned_users = options[:old_mentioned_users] || []
+      old_assignees = options[:old_assignees] || []
+
       if has_changes?(issue, old_labels: old_labels)
         todo_service.mark_pending_todos_as_done(issue, current_user)
       end

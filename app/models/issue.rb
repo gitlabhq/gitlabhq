@@ -36,7 +36,7 @@ class Issue < ActiveRecord::Base
   scope :cared, ->(user) { with_assignees.where("issue_assignees.user_id IN(?)", user.id) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
-  scope :with_assignees, -> { includes(:assignees).references(:users) }
+  scope :with_assignees, -> { joins('LEFT JOIN issue_assignees ON issue_id = issues.id') }
 
   scope :without_due_date, -> { where(due_date: nil) }
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }
@@ -145,7 +145,7 @@ class Issue < ActiveRecord::Base
   end
 
   def assignee_list
-    assignees.map(&:to_reference).to_sentence
+    assignees.map(&:name).to_sentence
   end
 
   # TODO: This method will help us to find some silent failures.

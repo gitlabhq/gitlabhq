@@ -36,11 +36,11 @@ describe Notify do
       end
 
       context 'for issues' do
-        let(:issue) { create(:issue, author: current_user, assignee: assignee, project: project) }
-        let(:issue_with_description) { create(:issue, author: current_user, assignee: assignee, project: project, description: FFaker::Lorem.sentence) }
+        let(:issue) { create(:issue, author: current_user, assignees: [assignee], project: project) }
+        let(:issue_with_description) { create(:issue, author: current_user, assignees: [assignee], project: project, description: FFaker::Lorem.sentence) }
 
         describe 'that are new' do
-          subject { Notify.new_issue_email(issue.assignee_id, issue.id) }
+          subject { Notify.new_issue_email(issue.assignees.first.id, issue.id) }
 
           it_behaves_like 'an assignee email'
           it_behaves_like 'an email starting a new thread with reply-by-email enabled' do
@@ -70,7 +70,7 @@ describe Notify do
         end
 
         describe 'that are new with a description' do
-          subject { Notify.new_issue_email(issue_with_description.assignee_id, issue_with_description.id) }
+          subject { Notify.new_issue_email(issue_with_description.assignees.first.id, issue_with_description.id) }
 
           it_behaves_like 'it should show Gmail Actions View Issue link'
 
@@ -80,7 +80,7 @@ describe Notify do
         end
 
         describe 'that have been reassigned' do
-          subject { Notify.reassigned_issue_email(recipient.id, issue.id, previous_assignee.id, current_user.id) }
+          subject { Notify.reassigned_issue_email(recipient.id, issue.id, [previous_assignee.id], current_user.id) }
 
           it_behaves_like 'a multiple recipients email'
           it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do

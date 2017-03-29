@@ -50,15 +50,15 @@ describe 'Filter issues', js: true, feature: true do
     create(:issue, title: "issue with 'single quotes'", project: project)
     create(:issue, title: "issue with \"double quotes\"", project: project)
     create(:issue, title: "issue with !@\#{$%^&*()-+", project: project)
-    create(:issue, title: "issue by assignee", project: project, milestone: milestone, author: user, assignee: user)
-    create(:issue, title: "issue by assignee with searchTerm", project: project, milestone: milestone, author: user, assignee: user)
+    create(:issue, title: "issue by assignee", project: project, milestone: milestone, author: user, assignees: [user])
+    create(:issue, title: "issue by assignee with searchTerm", project: project, milestone: milestone, author: user, assignees: [user])
 
     issue = create(:issue,
       title: "Bug 2",
       project: project,
       milestone: milestone,
       author: user,
-      assignee: user)
+      assignees: [user])
     issue.labels << bug_label
 
     issue_with_caps_label = create(:issue,
@@ -66,7 +66,7 @@ describe 'Filter issues', js: true, feature: true do
       project: project,
       milestone: milestone,
       author: user,
-      assignee: user)
+      assignees: [user])
     issue_with_caps_label.labels << caps_sensitive_label
 
     issue_with_everything = create(:issue,
@@ -74,7 +74,7 @@ describe 'Filter issues', js: true, feature: true do
       project: project,
       milestone: milestone,
       author: user,
-      assignee: user)
+      assignees: [user])
     issue_with_everything.labels << bug_label
     issue_with_everything.labels << caps_sensitive_label
 

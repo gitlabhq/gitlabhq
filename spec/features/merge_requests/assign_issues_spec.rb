@@ -33,7 +33,7 @@ feature 'Merge request issue assignment', js: true, feature: true do
     end
 
     it "doesn't display if related issues are already assigned" do
-      [issue1, issue2].each { |issue| issue.update!(assignee: user) }
+      [issue1, issue2].each { |issue| issue.update!(assignees: [user]) }
 
       visit_merge_request
 
