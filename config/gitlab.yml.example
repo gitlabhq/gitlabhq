@@ -181,7 +181,7 @@ production: &base
     stuck_ci_jobs_worker:
       cron: "0 * * * *"
     # Execute scheduled triggers
-    scheduled_trigger_worker:
+    trigger_schedule_worker:
       cron: "0 * * * *"
     # Remove expired build artifacts
     expire_build_artifacts_worker:

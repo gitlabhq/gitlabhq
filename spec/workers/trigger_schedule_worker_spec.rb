@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ScheduledTriggerWorker do
+describe TriggerScheduleWorker do
   let(:worker) { described_class.new }
 
   before do
@@ -9,7 +9,7 @@ describe ScheduledTriggerWorker do
 
   context 'when there is a scheduled trigger within next_run_at' do
     before do
-      create(:ci_scheduled_trigger, :cron_nightly_build, :force_triggable)
+      create(:ci_trigger_schedule, :cron_nightly_build, :force_triggable)
       worker.perform
     end
 
@@ -18,13 +18,13 @@ describe ScheduledTriggerWorker do
     end
 
     it 'schedules next_run_at' do
-      scheduled_trigger2 = create(:ci_scheduled_trigger, :cron_nightly_build)
-      expect(Ci::ScheduledTrigger.last.next_run_at).to eq(scheduled_trigger2.next_run_at)
+      trigger_schedule2 = create(:ci_trigger_schedule, :cron_nightly_build)
+      expect(Ci::TriggerSchedule.last.next_run_at).to eq(trigger_schedule2.next_run_at)
     end
   end
 
   context 'when there are no scheduled triggers within next_run_at' do
-    let!(:scheduled_trigger) { create(:ci_scheduled_trigger, :cron_nightly_build) }
+    let!(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build) }
 
     before do
       worker.perform
@@ -35,12 +35,12 @@ describe ScheduledTriggerWorker do
     end
 
     it 'do not reschedule next_run_at' do
-      expect(Ci::ScheduledTrigger.last.next_run_at).to eq(scheduled_trigger.next_run_at)
+      expect(Ci::TriggerSchedule.last.next_run_at).to eq(trigger_schedule.next_run_at)
     end
   end
 
   context 'when next_run_at is nil' do
-    let!(:scheduled_trigger) { create(:ci_scheduled_trigger, :cron_nightly_build, next_run_at: nil) }
+    let!(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build, next_run_at: nil) }
 
     before do
       worker.perform
@@ -51,7 +51,7 @@ describe ScheduledTriggerWorker do
     end
 
     it 'do not reschedule next_run_at' do
-      expect(Ci::ScheduledTrigger.last.next_run_at).to eq(scheduled_trigger.next_run_at)
+      expect(Ci::TriggerSchedule.last.next_run_at).to eq(trigger_schedule.next_run_at)
     end
   end
 end

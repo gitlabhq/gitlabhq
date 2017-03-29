@@ -1,8 +1,7 @@
 FactoryGirl.define do
-  factory :ci_scheduled_trigger, class: Ci::ScheduledTrigger do
+  factory :ci_trigger_schedule, class: Ci::TriggerSchedule do
     project factory: :project
-    owner factory: :user
-    ref 'master'
+    trigger factory: :ci_trigger
 
     trait :force_triggable do
       next_run_at Time.now - 1.month
