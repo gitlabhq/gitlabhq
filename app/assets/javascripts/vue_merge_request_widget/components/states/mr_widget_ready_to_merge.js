@@ -25,11 +25,10 @@ export default {
       const defaultClass = 'btn btn-success';
       const failedClass = `${defaultClass} btn-danger`;
       const inActionClass = `${defaultClass} btn-info`;
-      const warningClass = `${defaultClass} btn-warning`;
       const { pipeline, isPipelineActive, isPipelineFailed, hasCI, ciStatus } = this.mr;
 
       if (hasCI && !ciStatus) {
-        return warningClass;
+        return failedClass;
       } else if (!pipeline) {
         return defaultClass;
       } else if (isPipelineActive) {
