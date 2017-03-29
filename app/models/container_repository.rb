@@ -62,19 +62,7 @@ class ContainerRepository < ActiveRecord::Base
   # TODO, we will return a new ContainerRepository object here
   #
   def self.project_from_path(repository_path)
-    return unless repository_path.include?('/')
-
-    ##
-    # Projects are always located inside a namespace, so we can remove
-    # the last node, and see if project with that path exists.
-    #
-    truncated_path = repository_path.slice(0...repository_path.rindex('/'))
-
-    ##
-    # We still make it possible to search projects by a full image path
-    # in order to maintain backwards compatibility.
-    #
-    Project.find_by_full_path(truncated_path) ||
-      Project.find_by_full_path(repository_path)
+    ContainerRegistry::Path.new(repository_path)
+      .repository_project
   end
 end
