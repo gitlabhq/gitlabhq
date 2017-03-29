@@ -1,10 +1,24 @@
 module ContainerRegistry
+  ##
+  # Class reponsible for extracting project and repository name from
+  # image repository path provided by a containers registry API response.
+  #
+  # Example:
+  #
+  # some/group/my_project/my/image ->
+  #   project: some/group/my_project
+  #   repository: my/image
+  #
   class Path
     InvalidRegistryPathError = Class.new(StandardError)
 
-    def initialize(name)
-      @name = name
-      @nodes = name.to_s.split('/')
+    def initialize(path)
+      @path = path
+      @nodes = path.to_s.split('/')
+    end
+
+    def to_s
+      @path
     end
 
     def valid?
@@ -20,7 +34,7 @@ module ContainerRegistry
     end
 
     def has_repository?
-      # ContainerRepository.find_by_full_path(@name).present?
+      # ContainerRepository.find_by_full_path(@path).present?
     end
 
     def repository_project
@@ -30,7 +44,7 @@ module ContainerRegistry
     def repository_name
       return unless repository_project
 
-      @name.remove(%r(^?#{Regexp.escape(repository_project.full_path)}/?))
+      @path.remove(%r(^?#{Regexp.escape(repository_project.full_path)}/?))
     end
   end
 end

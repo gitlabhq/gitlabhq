@@ -1,51 +1,59 @@
 require 'spec_helper'
 
 describe ContainerRegistry::Path do
-  let(:path) { described_class.new(name) }
+  subject { described_class.new(path) }
 
   describe '#components' do
     context 'when repository path is valid' do
-      let(:name) { 'path/to/some/project' }
+      let(:path) { 'path/to/some/project' }
 
       it 'return all project-like components in reverse order' do
-        expect(path.components).to eq %w[path/to/some/project
+        expect(subject.components).to eq %w[path/to/some/project
                                          path/to/some
                                          path/to]
       end
     end
 
     context 'when repository path is invalid' do
-      let(:name) { '' }
+      let(:path) { '' }
 
       it 'rasises en error' do
-        expect { path.components }
+        expect { subject.components }
           .to raise_error described_class::InvalidRegistryPathError
       end
     end
   end
 
+  describe '#to_s' do
+    let(:path) { 'some/image' }
+
+    it 'return a string with a repository path' do
+      expect(subject.to_s).to eq path
+    end
+  end
+
   describe '#valid?' do
     context 'when path has less than two components' do
-      let(:name) { 'something/' }
+      let(:path) { 'something/' }
 
       it 'is not valid' do
-        expect(path).not_to be_valid
+        expect(subject).not_to be_valid
       end
     end
 
     context 'when path has more than allowed number of components' do
-      let(:name) { 'a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/r/s/t/u/w/y/z' }
+      let(:path) { 'a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/r/s/t/u/w/y/z' }
 
       it 'is not valid' do
-        expect(path).not_to be_valid
+        expect(subject).not_to be_valid
       end
     end
 
     context 'when path has two or more components' do
-      let(:name) { 'some/path' }
+      let(:path) { 'some/path' }
 
       it 'is valid' do
-        expect(path).to be_valid
+        expect(subject).to be_valid
       end
     end
   end
@@ -54,7 +62,7 @@ describe ContainerRegistry::Path do
     let(:group) { create(:group, path: 'some_group') }
 
     context 'when project for given path exists' do
-      let(:name) { 'some_group/some_project' }
+      let(:path) { 'some_group/some_project' }
 
       before do
         create(:empty_project, group: group, name: 'some_project')
@@ -62,15 +70,15 @@ describe ContainerRegistry::Path do
       end
 
       it 'returns a correct project' do
-        expect(path.repository_project.group).to eq group
+        expect(subject.repository_project.group).to eq group
       end
     end
 
     context 'when project for given path does not exist' do
-      let(:name) { 'not/matching' }
+      let(:path) { 'not/matching' }
 
       it 'returns nil' do
-        expect(path.repository_project).to be_nil
+        expect(subject.repository_project).to be_nil
       end
     end
 
@@ -80,34 +88,34 @@ describe ContainerRegistry::Path do
       end
 
       context 'when using the zero-level path' do
-        let(:name) { project.full_path }
+        let(:path) { project.full_path }
 
         it 'supports zero-level path' do
-          expect(path.repository_project).to eq project
+          expect(subject.repository_project).to eq project
         end
       end
 
       context 'when using first-level path' do
-        let(:name) { "#{project.full_path}/repository" }
+        let(:path) { "#{project.full_path}/repository" }
 
         it 'supports first-level path' do
-          expect(path.repository_project).to eq project
+          expect(subject.repository_project).to eq project
         end
       end
 
       context 'when using second-level path' do
-        let(:name) { "#{project.full_path}/repository/name" }
+        let(:path) { "#{project.full_path}/repository/name" }
 
         it 'supports second-level path' do
-          expect(path.repository_project).to eq project
+          expect(subject.repository_project).to eq project
         end
       end
 
       context 'when using too deep nesting in the path' do
-        let(:name) { "#{project.full_path}/repository/name/invalid" }
+        let(:path) { "#{project.full_path}/repository/name/invalid" }
 
         it 'does not support three-levels of nesting' do
-          expect(path.repository_project).to be_nil
+          expect(subject.repository_project).to be_nil
         end
       end
     end
@@ -115,10 +123,10 @@ describe ContainerRegistry::Path do
 
   describe '#repository_name' do
     context 'when project does not exist' do
-      let(:name) { 'some/name' }
+      let(:path) { 'some/name' }
 
       it 'returns nil' do
-        expect(path.repository_name).to be_nil
+        expect(subject.repository_name).to be_nil
       end
     end
 
@@ -135,26 +143,26 @@ describe ContainerRegistry::Path do
       end
 
       context 'when project path equal repository path' do
-        let(:name) { 'some_group/some_project' }
+        let(:path) { 'some_group/some_project' }
 
         it 'returns an empty string' do
-          expect(path.repository_name).to eq ''
+          expect(subject.repository_name).to eq ''
         end
       end
 
       context 'when repository path has one additional level' do
-        let(:name) { 'some_group/some_project/repository' }
+        let(:path) { 'some_group/some_project/repository' }
 
         it 'returns a correct repository name' do
-          expect(path.repository_name).to eq 'repository'
+          expect(subject.repository_name).to eq 'repository'
         end
       end
 
       context 'when repository path has two additional levels' do
-        let(:name) { 'some_group/some_project/repository/image' }
+        let(:path) { 'some_group/some_project/repository/image' }
 
         it 'returns a correct repository name' do
-          expect(path.repository_name).to eq 'repository/image'
+          expect(subject.repository_name).to eq 'repository/image'
         end
       end
     end
