@@ -68,10 +68,10 @@
         .sidebar-collapsed-icon
           %strong
             = icon('hashtag', 'aria-hidden': 'true')
-          %span= milestone.issues_visible_to_user(current_user).size
+          %span= milestone.issues_visible_to_user(current_user).count
         .title.hide-collapsed
           Issues
-          %span.badge= milestone.issues_visible_to_user(current_user).size
+          %span.badge= milestone.issues_visible_to_user(current_user).count
           - if project && can?(current_user, :create_issue, project)
             = link_to new_namespace_project_issue_path(project.namespace, project, issue: { milestone_id: milestone.id }), class: "pull-right", title: "New Issue" do
               New issue
@@ -79,11 +79,11 @@
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :issues) do
               Open:
-              = milestone.issues_visible_to_user(current_user).opened.size
+              = milestone.issues_visible_to_user(current_user).opened.count
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :issues, state: 'closed') do
               Closed:
-              = milestone.issues_visible_to_user(current_user).closed.size
+              = milestone.issues_visible_to_user(current_user).closed.count
 
     - total_weight = milestone.issues_visible_to_user(current_user).sum(:weight)
     .block.weight
@@ -106,34 +106,34 @@
       .sidebar-collapsed-icon
         %strong
           = icon('exclamation', 'aria-hidden': 'true')
-        %span= milestone.issues_visible_to_user(current_user).size
+        %span= milestone.issues_visible_to_user(current_user).count
       .title.hide-collapsed
         Merge requests
-        %span.badge= milestone.merge_requests.size
+        %span.badge= milestone.merge_requests.count
       .value.hide-collapsed.bold
         - if !project || can?(current_user, :read_merge_request, project)
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :merge_requests) do
               Open:
-              = milestone.merge_requests.opened.size
+              = milestone.merge_requests.opened.count
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :merge_requests, state: 'closed') do
               Closed:
-              = milestone.merge_requests.closed.size
+              = milestone.merge_requests.closed.count
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :merge_requests, state: 'merged') do
               Merged:
-              = milestone.merge_requests.merged.size
+              = milestone.merge_requests.merged.count
         - else
           %span.milestone-stat
             Open:
-            = milestone.merge_requests.opened.size
+            = milestone.merge_requests.opened.count
           %span.milestone-stat
             Closed:
-            = milestone.merge_requests.closed.size
+            = milestone.merge_requests.closed.count
           %span.milestone-stat
             Merged:
-            = milestone.merge_requests.merged.size
+            = milestone.merge_requests.merged.count
 
     - milestone_ref = milestone.try(:to_reference, full: true)
     - if milestone_ref.present?
