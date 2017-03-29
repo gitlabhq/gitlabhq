@@ -308,6 +308,7 @@ ActiveRecord::Schema.define(version: 20170405080720) do
     t.integer "project_id"
     t.integer "owner_id"
     t.string "description"
+    t.string "ref"
   end
 
   add_index "ci_triggers", ["project_id"], name: "index_ci_triggers_on_project_id", using: :btree
