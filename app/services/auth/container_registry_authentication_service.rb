@@ -107,6 +107,11 @@ module Auth
         can?(current_user, :read_container_image, requested_project)
     end
 
+    ##
+    # We still support legacy pipeline triggers which do not have associated
+    # actor. New permissions model and new triggers are always associated with
+    # an actor, so this should be improved in 10.0 version of GitLab.
+    #
     def build_can_push?(requested_project)
       # Build can push only to the project from which it originates
       has_authentication_ability?(:build_create_container_image) &&
@@ -119,14 +124,11 @@ module Auth
     end
 
     def error(code, status:, message: '')
-      {
-        errors: [{ code: code, message: message }],
-        http_status: status
-      }
+      { errors: [{ code: code, message: message }], http_status: status }
     end
 
     def has_authentication_ability?(capability)
-      (@authentication_abilities || []).include?(capability)
+      @authentication_abilities.to_a.include?(capability)
     end
   end
 end
