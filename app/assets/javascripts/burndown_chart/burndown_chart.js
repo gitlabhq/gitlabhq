@@ -13,6 +13,8 @@ export default class BurndownChart {
     this.chartGroup = this.canvas.append('g').attr('class', 'chart');
     this.xAxisGroup = this.chartGroup.append('g').attr('class', 'x axis');
     this.yAxisGroup = this.chartGroup.append('g').attr('class', 'y axis');
+    this.idealLinePath = this.chartGroup.append('path').attr('class', 'ideal line');
+    this.actualLinePath = this.chartGroup.append('path').attr('class', 'actual line');
 
     // parse start and due dates
     this.startDate = parseDate(startDate);
@@ -52,6 +54,11 @@ export default class BurndownChart {
       .tickPadding(6)
       .tickSize(4, 0);
 
+    // create lines
+    this.line = d3.svg.line()
+      .x(d => this.xScale(d.date))
+      .y(d => this.yScale(d.value));
+
     // render the chart
     this.render();
   }
@@ -69,6 +76,13 @@ export default class BurndownChart {
 
     this.xScale.domain([this.startDate, this.xMax]);
     this.yScale.domain([0, this.yMax]);
+
+    // set our ideal line data
+    if (this.data.length > 1) {
+      const idealStart = this.data[0] || { date: this.startDate, value: 0 };
+      const idealEnd = { date: this.xMax, value: 0 };
+      this.idealData = [idealStart, idealEnd];
+    }
 
     this.render();
   }
@@ -100,5 +114,10 @@ export default class BurndownChart {
 
     this.xAxisGroup.call(this.xAxis);
     this.yAxisGroup.call(this.yAxis);
+
+    if (this.data != null && this.data.length > 1) {
+      this.actualLinePath.datum(this.data).attr('d', this.line);
+      this.idealLinePath.datum(this.idealData).attr('d', this.line);
+    }
   }
 }

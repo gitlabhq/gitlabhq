@@ -247,6 +247,7 @@
 }
 
 $burndown-chart-axis-color: #aaa;
+$burndown-chart-line-color: #2faa60;
 
 .burndown-chart {
   width: 100%;
@@ -267,6 +268,20 @@ $burndown-chart-axis-color: #aaa;
       fill: none;
       stroke: $burndown-chart-axis-color;
       shape-rendering: crispEdges;
+    }
+  }
+
+  .line {
+    stroke-width: 2px;
+    fill: none;
+
+    &.actual {
+      stroke: $burndown-chart-line-color;
+    }
+
+    &.ideal {
+      stroke: $burndown-chart-axis-color;
+      stroke-dasharray: 6px 6px;
     }
   }
 }
