@@ -39,13 +39,14 @@ export default () => {
         //   });
         // });
         .then(data => JSZip.loadAsync(data))
-        .then((something) => {
-          something.files['previews/preview.png'].async('uint8array')
+        .then((asyncResult) => {
+          asyncResult.files['previews/preview.png'].async('uint8array')
             .then((content) => {
+              const url = window.URL || window.webkitURL;
               const blob = new Blob(content, { type: 'image/png' });
-              const url = URL.createObjectURL(blob);
+              const previewUrl = url.createObjectURL(blob);
 
-              this.previewURL = url;
+              this.previewURL = previewUrl;
             });
         });
     },
