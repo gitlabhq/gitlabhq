@@ -507,21 +507,21 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 
 ## Contribution Flow
 
-As mentioned above, when contributing to GitLab, your merge request is subject to review by merge request maintainers of a particular specialty.
+When contributing to GitLab, your merge request is subject to review by merge request maintainers of a particular specialty.
 
-When you submit code to GitLab, we really want your merge request to get merged, but there will be times when it will not be merged.
+When you submit code to GitLab, we really want it to get merged, but there will be times when it will not be merged.
 
 When maintainers are reading through a merge request they may request guidance from other maintainers. If merge request maintainers conclude that the code should not be merged, our reasons will be fully disclosed. If it has been decided that the code quality is not up to GitLab’s standards, the merge request maintainer will refer the author to our docs and code style guides, and provide some guidance.
 
-Sometimes style guides will be followed but the code will lack structural integrity, or the maintainer will have reservations about the code’s overall quality. When there is a reservation the maintainer will inform the author and provide some guidance.  The author may then choose to update the merge request. Once the merge request has been rewritten and resubmitted to the maintainer, the maintainer will review the code again. The maintainer may choose to not merge the merge request. Once the code has been resubmitted any number of times, the maintainer may choose to close the merge request with a summary of why it will not be merged, as well as some guidance. Once the merge request is closed the maintainer will be open to discussion as to how to improve the code so it can be approved in the future.
+Sometimes style guides will be followed but the code will lack structural integrity, or the maintainer will have reservations about the code’s overall quality. When there is a reservation the maintainer will inform the author and provide some guidance.  The author may then choose to update the merge request. Once the merge request has been updated and reassigned to the maintainer, they will review the code again. Once the code has been resubmitted any number of times, the maintainer may choose to close the merge request with a summary of why it will not be merged, as well as some guidance. If the merge request is closed the maintainer will be open to discussion as to how to improve the code so it can be approved in the future.
 
-GitLab will do its best to review community contributions as quick as possible. Specially appointed developers review community contributions on a daily basis. You may take a look at the [team page](https://about.gitlab.com/team/) for the merge request coach who specializes in the type of code you have written and mention them in the merge request.  For example, if you have written some JavaScript in your code then you should mention the frontend merge request coach. If your code has multiple disciplines you may mention multiple merge request coaches.
+GitLab will do its best to review community contributions as quickly as possible. Specially appointed developers review community contributions daily. You may take a look at the [team page](https://about.gitlab.com/team/) for the merge request coach who specializes in the type of code you have written and mention them in the merge request.  For example, if you have written some JavaScript in your code then you should mention the frontend merge request coach. If your code has multiple disciplines you may mention multiple merge request coaches.
 
 GitLab receives a lot of community contributions, so if your code has not been reviewed within 4 days of its initial submission feel free to re-mention the appropriate merge request coach.
 
-When submitting code to GitLab, you may feel that your contribution requires the aide of an external library. If your code includes an external library please provide a link to the library, as well as reasons for including this library.
+When submitting code to GitLab, you may feel that your contribution requires the aid of an external library. If your code includes an external library please provide a link to the library, as well as reasons for including it.
 
-When your code contains more than 500 changes, an external library, or any other major breaking changes, an maintainer will be consulted early in the merge request process.
+When your code contains more than 500 changes, any major breaking changes, or an external library, `@mention` a maintainer in the merge request. If you are not sure who to mention, the reviewer will add one early in the merge request process.
 
 [core team]: https://about.gitlab.com/core-team/
 [team]: https://about.gitlab.com/team/
