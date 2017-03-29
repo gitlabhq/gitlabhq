@@ -6,7 +6,7 @@ describe "Search", feature: true  do
 
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
-  let!(:issue) { create(:issue, project: project, assignee: user) }
+  let!(:issue) { create(:issue, project: project, assignees: [user]) }
   let!(:issue2) { create(:issue, project: project, author: user) }
 
   before do

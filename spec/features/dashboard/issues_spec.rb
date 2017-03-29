@@ -11,7 +11,7 @@ RSpec.describe 'Dashboard Issues', feature: true do
 
   let!(:authored_issue) { create :issue, author: current_user, project: project }
   let!(:authored_issue_on_public_project) { create :issue, author: current_user, project: public_project }
-  let!(:assigned_issue) { create :issue, assignee: current_user, project: project }
+  let!(:assigned_issue) { create :issue, assignees: [current_user], project: project }
   let!(:other_issue) { create :issue, project: project }
 
   before do

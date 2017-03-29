@@ -19,7 +19,7 @@ describe 'Issues', feature: true do
     let!(:issue) do
       create(:issue,
              author: @user,
-             assignee: @user,
+             assignees: [@user],
              project: project)
     end
 
@@ -44,7 +44,7 @@ describe 'Issues', feature: true do
     let!(:issue) do
       create(:issue,
              author: @user,
-             assignee: @user,
+             assignees: [@user],
              project: project)
     end
 
@@ -139,7 +139,7 @@ describe 'Issues', feature: true do
 
   describe 'Issue info' do
     it 'excludes award_emoji from comment count' do
-      issue = create(:issue, author: @user, assignee: @user, project: project, title: 'foobar')
+      issue = create(:issue, author: @user, assignees: [@user], project: project, title: 'foobar')
       create(:award_emoji, awardable: issue)
 
       visit namespace_project_issues_path(project.namespace, project, assignee_id: @user.id)
@@ -165,14 +165,14 @@ describe 'Issues', feature: true do
       %w(foobar barbaz gitlab).each do |title|
         create(:issue,
                author: @user,
-               assignee: @user,
+               assignees: [@user],
                project: project,
                title: title)
       end
 
       @issue = Issue.find_by(title: 'foobar')
       @issue.milestone = create(:milestone, project: project)
-      @issue.assignee = nil
+      @issue.assignees = []
       @issue.save
     end
 
@@ -408,7 +408,7 @@ describe 'Issues', feature: true do
   end
 
   describe 'update labels from issue#show', js: true do
-    let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
+    let(:issue) { create(:issue, project: project, author: @user, assignees: [@user]) }
     let!(:label) { create(:label, project: project) }
 
     before do
@@ -426,7 +426,7 @@ describe 'Issues', feature: true do
   end
 
   describe 'update assignee from issue#show' do
-    let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
+    let(:issue) { create(:issue, project: project, author: @user, assignees: [@user]) }
 
     context 'by authorized user' do
       it 'allows user to select unassigned', js: true do
@@ -668,7 +668,7 @@ describe 'Issues', feature: true do
 
   describe 'due date' do
     context 'update due on issue#show', js: true do
-      let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
+      let(:issue) { create(:issue, project: project, author: @user, assignees: [@user]) }
 
       before do
         visit namespace_project_issue_path(project.namespace, project, issue)

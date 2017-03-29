@@ -15,7 +15,7 @@ describe API::Issues, api: true  do
   let!(:closed_issue) do
     create :closed_issue,
            author: user,
-           assignee: user,
+           assignees: [user],
            project: project,
            state: :closed,
            milestone: milestone,
@@ -27,14 +27,14 @@ describe API::Issues, api: true  do
            :confidential,
            project: project,
            author: author,
-           assignee: assignee,
+           assignees: [assignee],
            created_at: generate(:issue_created_at),
            updated_at: 2.hours.ago
   end
   let!(:issue) do
     create :issue,
            author: user,
-           assignee: user,
+           assignees: [user],
            project: project,
            milestone: milestone,
            created_at: generate(:issue_created_at),
@@ -296,7 +296,7 @@ describe API::Issues, api: true  do
     let!(:group_closed_issue) do
       create :closed_issue,
              author: user,
-             assignee: user,
+             assignees: [user],
              project: group_project,
              state: :closed,
              milestone: group_milestone,
@@ -307,13 +307,13 @@ describe API::Issues, api: true  do
              :confidential,
              project: group_project,
              author: author,
-             assignee: assignee,
+             assignees: [assignee],
              updated_at: 2.hours.ago
     end
     let!(:group_issue) do
       create :issue,
              author: user,
-             assignee: user,
+             assignees: [user],
              project: group_project,
              milestone: group_milestone,
              updated_at: 1.hour.ago

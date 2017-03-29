@@ -166,7 +166,7 @@ describe Issue, models: true do
   describe '#is_being_reassigned?' do
     it 'returns issues assigned to user' do
       user = create(:user)
-      create_list(:issue, 2, assignee: user)
+      create_list(:issue, 2, assignees: [user])
 
       expect(Issue.open_for(user).count).to eq 2
     end
@@ -399,7 +399,7 @@ describe Issue, models: true do
     it 'updates when assignees change' do
       user1 = create(:user)
       user2 = create(:user)
-      issue = create(:issue, assignee: user1)
+      issue = create(:issue, assignees: [user1])
 
       expect(user1.assigned_open_issues_count).to eq(1)
       expect(user2.assigned_open_issues_count).to eq(0)
