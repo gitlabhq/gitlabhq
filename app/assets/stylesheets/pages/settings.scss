@@ -56,7 +56,7 @@
   display: flex;
   align-items: center;
 
-  a {
-    flex: 1;
+  .pull-right {
+    margin-left: auto;
   }
 }
