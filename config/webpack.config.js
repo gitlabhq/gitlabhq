@@ -37,6 +37,7 @@ var config = {
     monitoring:           './monitoring/monitoring_bundle.js',
     network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
+    sketch_viewer:        './blob/sketch_viewer.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     snippet:              './snippet/snippet_bundle.js',

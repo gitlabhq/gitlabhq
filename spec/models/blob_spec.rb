@@ -67,6 +67,20 @@ describe Blob do
     end
   end
 
+  describe '#sketch?' do
+    it 'is falsey with image extension' do
+      git_blob = Gitlab::Git::Blob.new(name: "design.png")
+
+      expect(described_class.decorate(git_blob)).not_to be_sketch
+    end
+
+    it 'is truthy with sketch extension' do
+      git_blob = Gitlab::Git::Blob.new(name: "design.sketch")
+
+      expect(described_class.decorate(git_blob)).to be_sketch
+    end
+  end
+
   describe '#video?' do
     it 'is falsey with image extension' do
       git_blob = Gitlab::Git::Blob.new(name: 'image.png')
@@ -92,7 +106,8 @@ describe Blob do
         language: nil,
         lfs_pointer?: false,
         svg?: false,
-        text?: false
+        text?: false,
+        binary?: false
       )
 
       described_class.decorate(double).tap do |blob|
@@ -134,6 +149,11 @@ describe Blob do
     it 'handles iPython notebooks' do
       blob = stubbed_blob(text?: true, ipython_notebook?: true)
       expect(blob.to_partial_path(project)).to eq 'notebook'
+    end
+
+    it 'handles Sketch files' do
+      blob = stubbed_blob(text?: true, sketch?: true, binary?: true)
+      expect(blob.to_partial_path(project)).to eq 'sketch'
     end
   end
 
