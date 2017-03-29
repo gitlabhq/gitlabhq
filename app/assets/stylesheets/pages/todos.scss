@@ -3,25 +3,6 @@
  *
  */
 
-.navbar-nav {
-  li {
-    .badge.todos-pending-count {
-      position: inherit;
-      top: -10px;
-      margin-top: -5px;
-      font-weight: normal;
-      background: $todo-alert-blue;
-      margin-left: -13px;
-      font-size: 11px;
-      color: $white-light;
-      padding: 4px;
-      padding-top: 1px;
-      padding-bottom: 2px;
-      border-radius: 7px;
-    }
-  }
-}
-
 .todos-list > .todo {
   // workaround because we cannot use border-colapse
   border-top: 1px solid transparent;
