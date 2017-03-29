@@ -11,9 +11,6 @@
             = render 'layouts/nav/dashboard'
           - else
             = render 'layouts/nav/explore'
-      %button.navbar-toggle{ type: 'button' }
-        %span.sr-only Toggle navigation
-        = icon('ellipsis-v')
 
       .navbar-collapse.collapse
         %ul.nav.navbar-nav
@@ -44,7 +41,7 @@
             %li
               = link_to dashboard_todos_path, title: 'Todos', aria: { label: "Todos" }, class: 'shortcuts-todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = icon('check-circle fw')
-                %span.badge.todos-count{ class: ("hidden" if todos_pending_count == 0) }
+                %span.badge.todos-count
                   = todos_count_format(todos_pending_count)
             - if current_user.can_create_project?
               %li
@@ -83,6 +80,10 @@
           = brand_header_logo
 
       %h1.title= title
+
+      %button.navbar-toggle{ type: 'button' }
+        %span.sr-only Toggle navigation
+        = icon('ellipsis-v')
 
       = yield :header_content
 

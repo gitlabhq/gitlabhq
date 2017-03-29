@@ -94,9 +94,8 @@ header {
 
       .navbar-toggle {
         color: $nav-toggle-gray;
-        margin: 6px 0;
+        margin: 5px 0;
         border-radius: 0;
-        position: absolute;
         right: -10px;
         padding: 6px 10px;
 
@@ -147,10 +146,6 @@ header {
     position: relative;
     height: $header-height;
     padding-left: 30px;
-
-    @media (min-width: $screen-sm-min) {
-      padding-right: 0;
-    }
 
     .dropdown-menu {
       margin-top: -5px;
@@ -236,10 +231,7 @@ header {
     .navbar-collapse {
       float: right;
       border-top: none;
-
-      @media (min-width: $screen-md-min) {
-        padding: 0;
-      }
+      padding: 0;
 
       @media (max-width: $screen-xs-max) {
         float: none;
