@@ -19,43 +19,49 @@
           return _this.focusFilter(e);
         };
       })(this));
+
       function gotoMenu(menu){
-        if($('.global-dropdown.open').length) {
-          window.location.href = $('.global-dropdown-menu .dashboard-shortcuts-'+menu).attr('href');
-        }
+        window.location.href = $('.js-dashboard-shortcuts-'+menu).attr('href');
       }
 
+      $('.global-dropdown').on('hide.bs.dropdown', function() {
+        $('.global-dropdown-menu').removeClass('shortcuts');
+        Mousetrap.unbind(['p', 'a', 'r', 'l', 'i', 'm', 'e']);
+      });
+
+      $('.global-dropdown').on('show.bs.dropdown', function() {
+        Mousetrap.bind('p', function() {
+          gotoMenu('projects');
+        });
+
+        Mousetrap.bind('a', function() {
+          gotoMenu('activity');
+        });
+
+        Mousetrap.bind('r', function() {
+          gotoMenu('groups');
+        });
+
+        Mousetrap.bind('l', function() {
+          gotoMenu('milestones');
+        });
+
+        Mousetrap.bind('i', function() {
+          gotoMenu('issues');
+        });
+
+        Mousetrap.bind('m', function() {
+          gotoMenu('merge_requests');
+        });
+
+        Mousetrap.bind('e', function() {
+          gotoMenu('snippets');
+        });
+      });
+
       Mousetrap.bind('n', function() {
-        $('.global-dropdown-menu').addClass('shortcuts')
+        $('.global-dropdown-menu').addClass('shortcuts');
         $('.global-dropdown-toggle').trigger('click');
-      });
-
-      Mousetrap.bind('P', function() {
-        gotoMenu('projects');
-      });
-
-      Mousetrap.bind('A', function() {
-        gotoMenu('activity');
-      });
-
-      Mousetrap.bind('G', function() {
-        gotoMenu('groups');
-      });
-
-      Mousetrap.bind('L', function() {
-        gotoMenu('milestones');
-      });
-
-      Mousetrap.bind('I', function() {
-        gotoMenu('issues');
-      });
-
-      Mousetrap.bind('M', function() {
-        gotoMenu('merge_requests');
-      });
-
-      Mousetrap.bind('S', function() {
-        gotoMenu('snippets');
       });
 
       Mousetrap.bind(['ctrl+shift+p', 'command+shift+p'], this.toggleMarkdownPreview);
