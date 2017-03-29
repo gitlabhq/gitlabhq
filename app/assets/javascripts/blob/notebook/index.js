@@ -63,16 +63,20 @@ export default () => {
       },
     },
     mounted() {
-      $('<link>', {
-        rel: 'stylesheet',
-        type: 'text/css',
-        href: gon.katex_css_url,
-      }).appendTo('head');
+      if (gon.katex_css_url) {
+        const katexStyles = document.createElement('link');
+        katexStyles.setAttribute('rel', 'stylesheet');
+        katexStyles.setAttribute('href', gon.katex_css_url);
+        document.head.appendChild(katexStyles);
+      }
 
       if (gon.katex_js_url) {
-        $.getScript(gon.katex_js_url, () => {
+        const katexScript = document.createElement('script');
+        katexScript.addEventListener('load', () => {
           this.loadFile();
         });
+        katexScript.setAttribute('src', gon.katex_js_url);
+        document.head.appendChild(katexScript);
       } else {
         this.loadFile();
       }
