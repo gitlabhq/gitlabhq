@@ -27,8 +27,6 @@ They live under `doc/topics/topic-name/`, and can be searched per topic, within 
 - **Technical Overviews**: technical content describing features, solutions, and third-party integrations
 - **Tutorials**: technical content provided step-by-step on how to do things, or how to reach very specific objectives
 
-<style></style>
-
 #### Understanding guides, tutorials, and technical overviews
 
 Suppose there's a process to go from point A to point B in 5 steps: `(A) 1 > 2 > 3 > 4 > 5 (B)`.
