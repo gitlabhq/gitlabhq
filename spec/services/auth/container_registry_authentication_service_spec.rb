@@ -6,14 +6,15 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   let(:current_params) { {} }
   let(:rsa_key) { OpenSSL::PKey::RSA.generate(512) }
   let(:payload) { JWT.decode(subject[:token], rsa_key).first }
+
   let(:authentication_abilities) do
-    [
-      :read_container_image,
-      :create_container_image
-    ]
+    [:read_container_image, :create_container_image]
   end
 
-  subject { described_class.new(current_project, current_user, current_params).execute(authentication_abilities: authentication_abilities) }
+  subject do
+    described_class.new(current_project, current_user, current_params)
+      .execute(authentication_abilities: authentication_abilities)
+  end
 
   before do
     allow(Gitlab.config.registry).to receive_messages(enabled: true, issuer: 'rspec', key: nil)
@@ -40,13 +41,11 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
     end
   end
 
-  shared_examples 'a accessible' do
+  shared_examples 'an accessible' do
     let(:access) do
-      [{
-         'type' => 'repository',
+      [{ 'type' => 'repository',
          'name' => project.path_with_namespace,
-         'actions' => actions,
-       }]
+         'actions' => actions }]
     end
 
     it_behaves_like 'a valid token'
@@ -59,19 +58,19 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   end
 
   shared_examples 'a pullable' do
-    it_behaves_like 'a accessible' do
+    it_behaves_like 'an accessible' do
       let(:actions) { ['pull'] }
     end
   end
 
   shared_examples 'a pushable' do
-    it_behaves_like 'a accessible' do
+    it_behaves_like 'an accessible' do
       let(:actions) { ['push'] }
     end
   end
 
   shared_examples 'a pullable and pushable' do
-    it_behaves_like 'a accessible' do
+    it_behaves_like 'an accessible' do
       let(:actions) { %w(pull push) }
     end
   end
@@ -87,7 +86,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
     subject { { token: token } }
 
-    it_behaves_like 'a accessible' do
+    it_behaves_like 'an accessible' do
       let(:actions) { ['*'] }
     end
   end
@@ -198,11 +197,9 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   context 'build authorized as user' do
     let(:current_project) { create(:empty_project) }
     let(:current_user) { create(:user) }
+
     let(:authentication_abilities) do
-      [
-        :build_read_container_image,
-        :build_create_container_image
-      ]
+      [:build_read_container_image, :build_create_container_image]
     end
 
     before do
