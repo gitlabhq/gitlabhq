@@ -182,8 +182,14 @@ export default {
     <div :class="cssClass">
 
       <div
-        class="top-area"
+        class="top-area scrolling-tabs-container inner-page-scroll-tabs"
         v-if="!isLoading && !shouldRenderEmptyState">
+        <div class="fade-left">
+          <i class="fa fa-angle-left" aria-hidden="true"></i>
+        </div>
+        <div class="fade-right">
+          <i class="fa fa-angle-right" aria-hidden="true"></i>
+        </div>
         <navigation-tabs
           :scope="scope"
           :count="state.count"
