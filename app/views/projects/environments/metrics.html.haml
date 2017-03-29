@@ -11,8 +11,7 @@
       .col-sm-6
         %h3.page-title
           Environment:
-          = link_to environment_path(@environment) do
-            = @environment.name
+          = link_to @environment.name, environment_path(@environment)
 
       .col-sm-6
         .nav-controls

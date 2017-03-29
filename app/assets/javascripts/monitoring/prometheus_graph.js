@@ -50,18 +50,18 @@ class PrometheusGraph {
   }
 
   plotValues(key) {
+    const graphSpecifics = this.graphSpecificProperties[key];
+
     const x = d3.time.scale()
         .range([0, this.width]);
 
     const y = d3.scale.linear()
         .range([this.height, 0]);
 
-    this.graphSpecificProperties[key].xScale = x;
-    this.graphSpecificProperties[key].yScale = y;
+    graphSpecifics.xScale = x;
+    graphSpecifics.yScale = y;
 
     const prometheusGraphContainer = `${prometheusGraphsContainer}[graph-type=${key}]`;
-
-    const graphSpecifics = this.graphSpecificProperties[key];
 
     const chart = d3.select(prometheusGraphContainer)
         .attr('width', this.width + this.margin.left + this.margin.right)
@@ -142,9 +142,9 @@ class PrometheusGraph {
         .attr('stroke-width', '1')
         .attr({
           x1: 10,
-          y1: this.originalHeight - 80,
+          y1: this.originalHeight - this.margin.top,
           x2: (this.originalWidth - this.margin.right) + 10,
-          y2: this.originalHeight - 80,
+          y2: this.originalHeight - this.margin.top,
         });
 
     axisLabelContainer.append('line')
@@ -155,7 +155,7 @@ class PrometheusGraph {
             x1: 10,
             y1: 0,
             x2: 10,
-            y2: this.originalHeight - 80,
+            y2: this.originalHeight - this.margin.top,
           });
     axisLabelContainer.append('rect')
           .attr('class', 'rect-axis-text')
@@ -167,7 +167,7 @@ class PrometheusGraph {
     axisLabelContainer.append('text')
           .attr('class', 'label-axis-text')
           .attr('text-anchor', 'middle')
-          .attr('transform', `translate(15, ${(this.originalHeight - 80) / 2}) rotate(-90)`)
+          .attr('transform', `translate(15, ${(this.originalHeight - this.margin.top) / 2}) rotate(-90)`)
           .text(graphSpecifics.graph_legend_title);
 
     axisLabelContainer.append('rect')
@@ -180,7 +180,7 @@ class PrometheusGraph {
     axisLabelContainer.append('text')
           .attr('class', 'label-axis-text')
           .attr('x', (this.originalWidth / 2) - this.margin.right)
-          .attr('y', this.originalHeight - 80)
+          .attr('y', this.originalHeight - this.margin.top)
           .attr('dy', '.35em')
           .text('Time');
 
