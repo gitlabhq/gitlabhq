@@ -21,7 +21,7 @@ export default class MergeRequestStore {
     this.commitMessageWithDescription = data.merge_commit_message_with_description;
     this.divergedCommitsCount = data.diverged_commits_count;
     this.pipeline = data.pipeline;
-    this.deployments = data.deployments || [];
+    this.deployments = this.deployments || data.deployments || [];
 
     if (data.issues_links) {
       const { closing, mentioned_but_not_closing } = data.issues_links;

@@ -58,14 +58,8 @@ const mrWidgetOptions = () => ({
       this.service.checkStatus()
         .then(res => res.json())
         .then((res) => {
-          this.updateStore(res);
+          this.mr.setData(res);
         });
-    },
-    updateStore(data) {
-      const newData = data;
-      newData.deployments = this.mr.deployments; // Don't override the deployments data
-
-      this.mr.setData(newData);
     },
   },
   mounted() {
