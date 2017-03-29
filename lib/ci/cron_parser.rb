@@ -1,5 +1,3 @@
-require 'rufus-scheduler' # Included in sidekiq-cron
-
 module Ci
   class CronParser
     def initialize(cron, cron_time_zone = 'UTC')
