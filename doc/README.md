@@ -11,16 +11,11 @@ All technical content published by GitLab lives in the documentation, including:
   - Admin guides: technical content to guide administrators of GitLab instances from point A to point B
   - Technical Overviews: technical content describing features, solutions, and third-party integrations
   - Tutorials: technical content provided step-by-step on how to do things, or how to reach very specific objectives
-- **[Indexes per Topic](topics/)**: content gathering all resources already published by GitLab related to an specific subject or theme, including:
+- **[Topics](topics/)**: indexes pages organized per topic, gathering all resources already published by GitLab related to an specific subject or theme, including:
   - General Docs
   - Technical Articles
   - Blog Posts
   - Video Tutorials
-
-See also:
-
-- [Distinction between General Documentation and Technical Articles](development/writing_documentation.md#distinction-between-general-documentation-and-technical-articles)
-- GitLab [University](university/README.md): guides to learn Git and GitLab through courses and videos.
 
 ## User Documentation
 
@@ -88,4 +83,6 @@ See also:
 
 - [Development](development/README.md) All styleguides and explanations how to contribute.
 - [Writing documentation](development/writing_documentation.md)
+- [Distinction between General Documentation and Technical Articles](development/writing_documentation.md#distinction-between-general-documentation-and-technical-articles)
+- [GitLab University](university/README.md): guides to learn Git and GitLab through courses and videos.
 - [Legal](legal/README.md) Contributor license agreements.
