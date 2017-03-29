@@ -42,6 +42,12 @@ class ContainerRepository < ActiveRecord::Base
     ContainerRegistry::Blob.new(self, config)
   end
 
+  # TODO, specs needed
+  #
+  def has_tags?
+    tags.any?
+  end
+
   # TODO, add bang to this method
   #
   def delete_tags
@@ -51,12 +57,6 @@ class ContainerRepository < ActiveRecord::Base
     digests.all? do |digest|
       client.delete_repository_tag(self.path, digest)
     end
-  end
-
-  # TODO, specs needed
-  #
-  def empty?
-    tags.none?
   end
 
   # TODO, we will return a new ContainerRepository object here
