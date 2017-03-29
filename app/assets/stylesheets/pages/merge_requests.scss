@@ -37,12 +37,6 @@
           @include btn-red;
         }
       }
-
-      .dropdown-toggle {
-        .fa {
-          color: inherit;
-        }
-      }
     }
 
     .accept-control {
@@ -181,7 +175,7 @@
   }
 
   .mr-links.mr-info-list {
-    margin: 0 0 0 26px;
+    margin: 0 0 $gl-padding 26px;
   }
 
   .mr-widget-body {
@@ -216,6 +210,12 @@
 
     .mr-widget-help {
       margin: $gl-padding 0;
+    }
+
+    .dropdown-toggle {
+      .fa {
+        color: inherit;
+      }
     }
 
     @media (max-width: $screen-xs-max) {
