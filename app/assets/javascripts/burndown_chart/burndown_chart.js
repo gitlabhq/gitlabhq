@@ -64,8 +64,8 @@ export default class BurndownChart {
     })).sort((a, b) => (a.date - b.date));
 
     // adjust axis domain to correspond with data
-    this.xMax = Math.max(d3.max(this.data, d => d.date), this.dueDate);
-    this.yMax = Math.max(d3.max(this.data, d => d.value), 1);
+    this.xMax = Math.max(d3.max(this.data, d => d.date) || 0, this.dueDate);
+    this.yMax = d3.max(this.data, d => d.value) || 1;
 
     this.xScale.domain([this.startDate, this.xMax]);
     this.yScale.domain([0, this.yMax]);
