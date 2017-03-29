@@ -70,7 +70,6 @@ Read how to [update your Geo nodes to the latest GitLab version](updating_the_ge
 ## Current limitations
 
 - You cannot push code to secondary nodes
-- Git LFS is not supported yet
 - Primary node has to be online for OAuth login to happen (existing sessions and git are not affected)
 
 ## Frequently Asked Questions
