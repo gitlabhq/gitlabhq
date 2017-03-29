@@ -12,7 +12,7 @@ feature 'Wiki shortcuts', :feature, :js do
     visit namespace_project_wiki_path(project.namespace, project, wiki_page)
   end
 
-  scenario 'Visit edit wiki page using "e" heyboard shortcut' do
+  scenario 'Visit edit wiki page using "e" keyboard shortcut' do
     find('body').native.send_key('e')
 
     expect(find('.wiki-page-title')).to have_content('Edit Page')
