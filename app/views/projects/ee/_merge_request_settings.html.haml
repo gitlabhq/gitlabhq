@@ -48,8 +48,7 @@
     = label_tag :require_approvals do
       = check_box_tag :require_approvals, nil, project.approvals_before_merge > 0
       %strong Activate merge request approvals
-      //TODO: correct help path
-      = link_to icon('question-circle'), "https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#merge-request-approvals", target: '_blank'
+      = link_to icon('question-circle'), help_page_path("user/project/merge_requests/merge_request_approvals"), target: '_blank'
       .descr Merge request approvals allow you to set the number of necessary approvals and predefine a list of approvers that you will need to approve every merge request in a project.
 
 .nested-settings
@@ -58,8 +57,8 @@
       Approvers
     .input-group.input-btn-group
       = users_select_tag("project[approver_ids]", multiple: true, class: 'input-large', scope: :all, email_user: true)
-      //TODO obviously shouldn't be root_path
-      = link_to "Add", root_path, class: "btn btn-success", title: 'Add approver(s)'
+      %button.btn.btn-success{ type: 'submit', title: 'Add approver(s)' }
+        Add
     .help-block
       Add an approver suggestion for each merge request
 
@@ -68,7 +67,8 @@
     .input-group.input-btn-group
       - skip_groups = project.approver_groups.pluck(:group_id)
       = groups_select_tag('project[approver_group_ids]', multiple: true, data: { skip_groups: skip_groups, all_available: true }, class: 'input-large')
-      = link_to "Add", root_path, class: "btn btn-success", title: 'Add group(s)'
+      %button.btn.btn-success{ type: 'submit', title: 'Add group(s)' }
+        Add
     .help-block
       Add a group as an approver suggestion for each merge request
 
