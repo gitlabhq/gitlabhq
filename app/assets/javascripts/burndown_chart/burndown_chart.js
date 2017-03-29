@@ -1,6 +1,6 @@
 import d3 from 'd3';
 
-const margin = { top: 5, right: 65, bottom: 30, left: 40 };
+const margin = { top: 5, right: 65, bottom: 30, left: 50 };
 const parseDate = d3.time.format('%Y-%m-%d').parse;
 
 export default class BurndownChart {
@@ -15,6 +15,8 @@ export default class BurndownChart {
     this.yAxisGroup = this.chartGroup.append('g').attr('class', 'y axis');
     this.idealLinePath = this.chartGroup.append('path').attr('class', 'ideal line');
     this.actualLinePath = this.chartGroup.append('path').attr('class', 'actual line');
+
+    this.xAxisGroup.append('line').attr('class', 'domain-line');
 
     // parse start and due dates
     this.startDate = parseDate(startDate);
@@ -117,8 +119,9 @@ export default class BurndownChart {
     this.xAxisGroup.call(this.xAxis);
     this.yAxisGroup.call(this.yAxis);
 
+    // replace x-axis line with one which continues into the right margin
     this.xAxisGroup.select('.domain').remove();
-    this.xAxisGroup.append('line').attr('x1', 0).attr('x2', this.chartWidth + margin.right);
+    this.xAxisGroup.select('.domain-line').attr('x1', 0).attr('x2', this.chartWidth + margin.right);
 
     if (this.data != null && this.data.length > 1) {
       this.actualLinePath.datum(this.data).attr('d', this.line);
