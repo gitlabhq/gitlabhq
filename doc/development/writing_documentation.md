@@ -67,7 +67,7 @@ Use the [writing method](https://about.gitlab.com/handbook/product/technical-wri
 
 ## Documentation Style Guidelines
 
-All the documentation follow the same [styleguide](https://docs.gitlab.com/ce/development/doc_styleguide.html).
+All the documentation follow the same [styleguide](doc_styleguide.html).
 
 ### Markdown
 
