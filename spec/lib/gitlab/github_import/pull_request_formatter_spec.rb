@@ -206,7 +206,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     context 'when source branch does not exist' do
       let(:raw_data) { double(base_data.merge(head: removed_branch)) }
 
-      it 'prefixes branch name with to avoid collision' do
+      it 'prefixes branch name with gh-:short_sha/:number/:user pattern to avoid collision' do
         expect(pull_request.source_branch_name).to eq "gh-#{target_short_sha}/1347/octocat/removed-branch"
       end
     end
@@ -214,7 +214,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     context 'when source branch is from a fork' do
       let(:raw_data) { double(base_data.merge(head: forked_branch)) }
 
-      it 'prefixes branch name with to avoid collision' do
+      it 'prefixes branch name with gh-:short_sha/:number/:user pattern to avoid collision' do
         expect(pull_request.source_branch_name).to eq "gh-#{target_short_sha}/1347/octocat/master"
       end
     end
@@ -222,7 +222,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     context 'when source branch is from a deleted fork' do
       let(:raw_data) { double(base_data.merge(head: branch_deleted_repo)) }
 
-      it 'prefixes branch name with to avoid collision' do
+      it 'prefixes branch name with gh-:short_sha/:number/:user pattern to avoid collision' do
         expect(pull_request.source_branch_name).to eq "gh-#{target_short_sha}/1347/octocat/master"
       end
     end
