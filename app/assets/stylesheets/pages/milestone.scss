@@ -245,3 +245,28 @@
     }
   }
 }
+
+$burndown-chart-axis-color: #aaa;
+
+.burndown-chart {
+  width: 100%;
+  height: 400px;
+  margin-top: 30px;
+
+  @media (max-width: $screen-sm-max) {
+    height: 320px;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    height: 220px;
+  }
+
+  .axis {
+    line,
+    path {
+      fill: none;
+      stroke: $burndown-chart-axis-color;
+      shape-rendering: crispEdges;
+    }
+  }
+}
