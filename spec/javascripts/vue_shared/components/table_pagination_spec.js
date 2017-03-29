@@ -83,7 +83,7 @@ describe('Pagination component', () => {
       },
     }).$mount();
 
-    component.changePage({ target: { innerText: 'Last >>' } });
+    component.changePage({ target: { innerText: 'Last »' } });
 
     expect(changeChanges.one).toEqual(10);
   });
@@ -100,7 +100,7 @@ describe('Pagination component', () => {
       },
     }).$mount();
 
-    component.changePage({ target: { innerText: '<< First' } });
+    component.changePage({ target: { innerText: '« First' } });
 
     expect(changeChanges.one).toEqual(1);
   });
