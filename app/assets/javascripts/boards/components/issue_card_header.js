@@ -1,35 +1,41 @@
 export default {
   name: 'IssueCardHeader',
   props: {
-    issue: { type: Object, required: true },
+    confidential: { type: Boolean, required: false, default: false },
+    title: { type: String, required: true },
+    issueId: { type: Number, required: true },
+    assignee: { type: Object, required: true },
     issueLinkBase: { type: String, required: true },
-    list: { type: Object, required: false },
     rootPath: { type: String, required: true },
-    updateFilters: { type: Boolean, required: false, default: false },
+  },
+  computed: {
+    hasAssignee() {
+      return Object.keys(this.assignee).length;
+    },
   },
   template: `
     <div class="card-header">
       <i class="fa fa-eye-slash confidential-icon"
-        v-if="issue.confidential">
+        v-if="confidential">
       </i>
       <h4 class="card-title">
-        <a :href="issueLinkBase + '/' + issue.id"
-          :title="issue.title">{{ issue.title.trim() }}</a>
+        <a :href="issueLinkBase + '/' + issueId"
+          :title="title">{{ title }}</a>
         <span class="card-number"
-          v-if="issue.id">
-          #{{ issue.id }}
+          v-if="issueId">
+          #{{ issueId }}
         </span>
       </h4>
       <a class="card-assignee has-tooltip"
-        :href="rootPath + issue.assignee.username"
-        :title="'Assigned to ' + issue.assignee.name"
-        v-if="issue.assignee"
+        :href="rootPath + assignee.username"
+        :title="'Assigned to ' + assignee.name"
+        v-if="hasAssignee"
         data-container="body">
         <img class="avatar avatar-inline s20"
-          :src="issue.assignee.avatar"
+          :src="assignee.avatar"
           width="20"
           height="20"
-          :alt="'Avatar for ' + issue.assignee.name" />
+          :alt="'Avatar for ' + assignee.name" />
       </a>
     </div>
   `,

@@ -8,10 +8,8 @@ window.gl.issueBoards = window.gl.issueBoards || {};
 export default {
   name: 'IssueCardLabels',
   props: {
-    issue: { type: Object, required: true },
-    issueLinkBase: { type: String, required: true },
+    labels: { type: Array, required: true },
     list: { type: Object, required: false },
-    rootPath: { type: String, required: true },
     updateFilters: { type: Boolean, required: false, default: false },
   },
   methods: {
@@ -52,7 +50,7 @@ export default {
     <div class="card-footer">
       <button
         class="label color-label has-tooltip"
-        v-for="label in issue.labels"
+        v-for="label in labels"
         type="button"
         v-if="showLabel(label)"
         @click="filterByLabel(label, $event)"
