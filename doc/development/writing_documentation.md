@@ -18,7 +18,7 @@ They are topic-related documentation, written with an user-friendly approach and
 
 A technical article guides users and/or admins to achieve certain objectives (within guides and tutorials), or provide an overview of that particular topic or feature (within technical overviews). It can also describe the use, implementation, or integration of third-party tools with GitLab.
 
-They live under `doc/topics/topic-name/`, and can be searched per topic, within "Indexes per Topic" pages. The topics are listed on the main [Indexes per Topic](../topics/) page.
+They live under `doc/topics/topic-name/`, and can be searched per topic, within "Indexes per Topic" pages. The topics are listed on the main [Indexes per Topic](../topics/index.md) page.
 
 #### Types of Technical Articles
 
@@ -33,7 +33,7 @@ Suppose there's a process to go from point A to point B in 5 steps: `(A) 1 > 2 >
 
 A **guide** can be understood as a description of certain processes to achieve a particular objective. A guide brings you from A to B describing the characteristics of that process, but not necessarily going over each step. It can mention, for example, steps 2 and 3, but does not necessarily explain how to accomplish them.
 
-- Live example: "GitLab Pages from A to Z - [Part 1](../user/project/pages/getting_started_part_one.html) to [Part 4](../user/project/pages/getting_started_part_one.html)"
+- Live example: "GitLab Pages from A to Z - [Part 1](../user/project/pages/getting_started_part_one.md) to [Part 4](../user/project/pages/getting_started_part_four.md)"
 
 A **tutorial** requires a clear **step-by-step** guidance to achieve a singular objective. It brings you from A to B, describing precisely all the necessary steps involved in that process, showing each of the 5 steps to go from A to B.
 It does not only describes steps 2 and 3, but also shows you how to accomplish them.
@@ -65,8 +65,8 @@ Use the [writing method](https://about.gitlab.com/handbook/product/technical-wri
 
 ## Documentation style guidelines
 
-All the documentation follow the same [styleguide](doc_styleguide.html).
+All the docs follow the same [styleguide](doc_styleguide.md).
 
 ### Markdown
 
-Currently GitLab docs use Redcarpet as [markdown](../user/markdown.html) engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.
+Currently GitLab docs use Redcarpet as [markdown](../user/markdown.md) engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.

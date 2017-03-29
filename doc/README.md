@@ -1,4 +1,4 @@
-# GitLab Community Edition Documentation
+# GitLab Community Edition
 
 All technical content published by GitLab lives in the documentation, including:
 
@@ -6,16 +6,12 @@ All technical content published by GitLab lives in the documentation, including:
   - [User docs](#user-documentation): general documentation dedicated to regular users of GitLab
   - [Admin docs](#administrator-documentation): general documentation dedicated to administrators of GitLab instances
   - [Contributor docs](#contributor-documentation): general documentation on how to develop and contribute to GitLab
-- **[Technical Articles](development/writing_documentation.md#technical-articles)**
-  - User guides: technical content to guide regular users from point A to point B
-  - Admin guides: technical content to guide administrators of GitLab instances from point A to point B
-  - Technical Overviews: technical content describing features, solutions, and third-party integrations
-  - Tutorials: technical content provided step-by-step on how to do things, or how to reach very specific objectives
-- **[Topics](topics/)**: indexes pages organized per topic, gathering all resources already published by GitLab related to an specific subject or theme, including:
-  - General Docs
-  - Technical Articles
-  - Blog Posts
-  - Video Tutorials
+- [Topics](topics/index.md): pages organized per topic, gathering all the
+  resources already published by GitLab related to a specific subject, including
+  general docs, [technical articles](development/writing_documentation.md#technical-articles),
+  blog posts and video tutorials.
+- [GitLab University](university/README.md): guides to learn Git and GitLab
+  through courses and videos.
 
 ## User documentation
 
@@ -82,7 +78,4 @@ All technical content published by GitLab lives in the documentation, including:
 ## Contributor documentation
 
 - [Development](development/README.md) All styleguides and explanations how to contribute.
-- [Writing documentation](development/writing_documentation.md)
-- [Distinction between General Documentation and Technical Articles](development/writing_documentation.md#distinction-between-general-documentation-and-technical-articles)
-- [GitLab University](university/README.md): guides to learn Git and GitLab through courses and videos.
 - [Legal](legal/README.md) Contributor license agreements.
