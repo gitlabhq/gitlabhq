@@ -157,7 +157,10 @@ export default {
   },
 
   beforeUpdate() {
-    if (this.state.pipelines.length && this.$children && !this.isMakingRequest) {
+    if (this.state.pipelines.length &&
+        this.$children &&
+        !this.isMakingRequest &&
+        !this.isLoading) {
       this.store.startTimeAgoLoops.call(this, Vue);
     }
   },

@@ -98,7 +98,10 @@ export default Vue.component('pipelines-table', {
   },
 
   beforeUpdate() {
-    if (this.state.pipelines.length && this.$children && !this.isMakingRequest) {
+    if (this.state.pipelines.length &&
+        this.$children &&
+        !this.isMakingRequest &&
+        !this.isLoading) {
       this.store.startTimeAgoLoops.call(this, Vue);
     }
   },
