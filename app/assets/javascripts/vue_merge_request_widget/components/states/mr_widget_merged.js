@@ -17,8 +17,9 @@ export default {
   methods: {
     removeSourceBranch() {
       this.isRemovingSourceBranch = true;
+      // TODO: Update widget, error handling
       this.service.removeSourceBranch()
-        .then(res => res.json()); // TODO: Update widget, handle error
+        .then(res => res.json());
     },
   },
   template: `

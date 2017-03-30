@@ -8,6 +8,7 @@ export default {
   },
   methods: {
     removeWIP() {
+      // TODO: Error handling
       this.service.removeWIP()
         .then(res => res.json())
         .then((res) => {
@@ -16,7 +17,6 @@ export default {
           new Flash('The merge request can now be merged.', 'notice'); // eslint-disable-line
           $('.merge-request .detail-page-description .title').text(this.mr.title);
         });
-        // TODO: Catch error state
     },
   },
   template: `

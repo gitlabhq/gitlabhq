@@ -53,6 +53,7 @@ const mrWidgetOptions = () => ({
   },
   methods: {
     checkStatus() {
+      // TODO: Error handling
       this.service.checkStatus()
         .then(res => res.json())
         .then((res) => {
@@ -61,6 +62,7 @@ const mrWidgetOptions = () => ({
     },
   },
   mounted() {
+    // TODO: Error handling
     this.service.fetchDeployments()
       .then(res => res.json())
       .then((res) => {

@@ -26,12 +26,12 @@ export default {
   methods: {
     cancelAutomaticMerge() {
       this.isCancellingAutoMerge = true;
+      // TODO: Error handling
       this.service.cancelAutomaticMerge()
         .then(res => res.json())
         .then((res) => {
           this.mr.setData(res); // TODO: Should find a better way to update store.
         });
-        // TODO: Handle catch here.
     },
     removeSourceBranch() {
       const options = {
