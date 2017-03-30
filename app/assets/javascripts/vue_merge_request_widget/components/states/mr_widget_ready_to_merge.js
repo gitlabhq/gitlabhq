@@ -146,7 +146,13 @@ export default {
           @click="handleMergeButtonClick()"
           :disabled="isMergeButtonDisabled"
           :class="mergeButtonClass"
-          type="button">{{mergeButtonText}}</button>
+          type="button">
+          <i
+            v-if="isWorking"
+            class="fa fa-spinner fa-spin"
+            aria-hidden="true"></i>
+          {{mergeButtonText}}
+        </button>
         <button
           v-if="shouldShowMergeOptionsDropdown"
           type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
