@@ -74,7 +74,23 @@ module Auth
 
       return unless actions.present?
 
+      # At this point user/build is already authenticated.
+      #
+      ensure_container_repository!(path, actions)
+
       { type: type, name: path.to_s, actions: actions }
+    end
+
+    ##
+    # Because we do not have two way communication with registry yet,
+    # we create a container repository image resource when push to the
+    # registry is successfuly authorized.
+    #
+    def ensure_container_repository!(path, actions)
+      return if path.has_repository?
+      return unless actions.include?('push')
+
+      ContainerRepository.create_from_path(path)
     end
 
     def can_access?(requested_project, requested_action)

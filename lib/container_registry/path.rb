@@ -44,6 +44,10 @@ module ContainerRegistry
         .where(name: repository_name).any?
     end
 
+    def root_repository?
+      @path == repository_project.full_path
+    end
+
     def repository_project
       @project ||= Project.where_full_path_in(components.first(3))&.first
     end
