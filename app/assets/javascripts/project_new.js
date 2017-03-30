@@ -21,7 +21,71 @@
       this.toggleSettings();
       this.toggleSettingsOnclick();
       this.toggleRepoVisibility();
+
+      $('.js-approvers').on('click', this.addApprover.bind(this));
+      $(document).on('click', '.js-approver-remove', this.removeApprover.bind(this));
     }
+
+    ProjectNew.prototype.removeApprover = function(evt) {
+      evt.preventDefault();
+      const target = evt.currentTarget;
+      $('.load-wrapper').removeClass('hidden');
+      $.ajax({
+        url: target.href,
+        type: 'POST',
+        data: {
+          _method: 'DELETE',
+        },
+        success(res) {
+          const fakeEl = document.createElement('template');
+          fakeEl.innerHTML = res;
+          document.querySelector('.well-list.approver-list').innerHTML = fakeEl.content.querySelector('.well-list.approver-list').innerHTML;
+        },
+        complete: () => $('.load-wrapper').addClass('hidden'),
+        error(err) {
+          window.Flash('Failed to remove Approver', 'alert');
+        },
+      });
+    };
+
+    ProjectNew.prototype.updateApproverList = function(html) {
+      const fakeEl = document.createElement('template');
+      fakeEl.innerHTML = html;
+      document.querySelector('.well-list.approver-list').innerHTML = fakeEl.content.querySelector('.well-list.approver-list').innerHTML;
+    };
+
+    ProjectNew.prototype.addApprover = function(evt) {
+      const fieldName = evt.target.getAttribute('data-for');
+      const $select = $(`[name="${fieldName}"]`);
+      const newValue = $select.val();
+
+      if (!newValue) {
+        return;
+      }
+
+      if (evt.target.type === 'submit') {
+        evt.preventDefault();
+      }
+
+      const $form = $('.js-approvers').closest('form');
+      $('.load-wrapper').removeClass('hidden');
+      $.ajax({
+        url: $form.attr('action'),
+        type: 'POST',
+        data: {
+          _method: 'PATCH',
+          [fieldName]: newValue,
+        },
+        success: this.updateApproverList,
+        complete() {
+          $select.select2('val', '');
+          $('.load-wrapper').addClass('hidden');
+        },
+        error(err) {
+          window.Flash('Failed to add Approver', 'alert');
+        },
+      });
+    };
 
     ProjectNew.prototype.initVisibilitySelect = function() {
       const visibilityContainer = document.querySelector('.js-visibility-select');
