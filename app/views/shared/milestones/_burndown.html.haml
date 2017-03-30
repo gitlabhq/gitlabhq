@@ -22,4 +22,7 @@
         = link_to "Add start and due date", edit_namespace_project_milestone_path(project.namespace, project, milestone), class: 'btn'
 
 - if can_generate_chart
+  .burndown-header
+    %h3
+      Open issues
   .burndown-chart
