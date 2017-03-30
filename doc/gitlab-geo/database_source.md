@@ -36,7 +36,7 @@ and `secondary` as either `slave` or `standby` server (read-only).
 
 The following guide assumes that:
 
-- You are using PostgreSQL 9.2 or later which includes the
+- You are using PostgreSQL 9.6 or later which includes the
   [`pg_basebackup` tool][pgback]. If you are using Omnibus it includes the required
   PostgreSQL version for Geo.
 - You have a primary server already set up (the GitLab server you are
@@ -66,7 +66,8 @@ The following guide assumes that:
     listen_address = '1.2.3.4'
     wal_level = hot_standby
     max_wal_senders = 5
-    checkpoint_segments = 10
+    min_wal_size = 80MB
+    max_wal_size = 1GB
     wal_keep_segments = 10
     hot_standby = on
     ```
@@ -229,5 +230,5 @@ We don't support MySQL replication for GitLab Geo.
 
 Read the [troubleshooting document](troubleshooting.md).
 
-[pgback]: http://www.postgresql.org/docs/9.2/static/app-pgbasebackup.html
+[pgback]: http://www.postgresql.org/docs/9.6/static/app-pgbasebackup.html
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure

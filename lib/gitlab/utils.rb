@@ -21,5 +21,11 @@ module Gitlab
 
       nil
     end
+
+    def try_megabytes_to_bytes(size)
+      Integer(size).megabytes
+    rescue ArgumentError
+      size
+    end
   end
 end

@@ -51,6 +51,7 @@
           %button.modify-merge-commit-link.js-toggle-button{ type: "button" }
             = icon('edit')
             Modify commit message
+
     - unless @project.merge_requests_ff_only_enabled
       .js-toggle-content.hide.prepend-top-default
         = render 'shared/commit_message_container', params: params,

@@ -262,7 +262,8 @@ class ApplicationSetting < ActiveRecord::Base
       elasticsearch_aws: false,
       elasticsearch_aws_region: ENV['ELASTIC_REGION'] || 'us-east-1',
       usage_ping_enabled: true,
-      minimum_mirror_sync_time: Gitlab::Mirror::FIFTEEN
+      minimum_mirror_sync_time: Gitlab::Mirror::FIFTEEN,
+      repository_size_limit: 0
     }
   end
 

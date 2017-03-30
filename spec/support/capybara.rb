@@ -4,7 +4,7 @@ require 'capybara/poltergeist'
 require 'capybara-screenshot/rspec'
 
 # Give CI some extra time
-timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 30 : 10
+timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 40 : 10
 
 Capybara.javascript_driver = :poltergeist
 Capybara.register_driver :poltergeist do |app|
@@ -27,6 +27,6 @@ Capybara::Screenshot.prune_strategy = :keep_last_run
 
 RSpec.configure do |config|
   config.before(:suite) do
-    TestEnv.warm_asset_cache
+    TestEnv.warm_asset_cache unless ENV['CI'] || ENV['CI_SERVER']
   end
 end
