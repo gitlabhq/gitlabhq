@@ -12,8 +12,10 @@ module Ci
     end
 
     def validation
-      is_valid_cron = try_parse_cron(@cron, 'Europe/Istanbul').present?
-      is_valid_cron_time_zone = try_parse_cron('* * * * *', @cron_time_zone).present?
+      VALID_SYNTAX_TIME_ZONE = 'Europe/Istanbul'
+      VALID_SYNTAX_CRON = '* * * * *'
+      is_valid_cron = try_parse_cron(@cron, VALID_SYNTAX_TIME_ZONE).present?
+      is_valid_cron_time_zone = try_parse_cron(VALID_SYNTAX_CRON, @cron_time_zone).present?
       return is_valid_cron, is_valid_cron_time_zone
     end
 
