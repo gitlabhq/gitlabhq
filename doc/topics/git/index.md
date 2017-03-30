@@ -13,9 +13,9 @@ We've gathered some resources to help you to get the best from Git with GitLab.
 
 ## Getting started
 
-- [Git concepts](../../university/training/user_training.html#git-concepts)
-- [Start using Git on the command line](../../gitlab-basics/start-using-git.html)
-- [Command Line basic commands](../../gitlab-basics/command-line-commands.html)
+- [Git concepts](../../university/training/user_training.md#git-concepts)
+- [Start using Git on the command line](../../gitlab-basics/start-using-git.md)
+- [Command Line basic commands](../../gitlab-basics/command-line-commands.md)
 - [GitLab Git Cheat Sheet (download)](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf)
 - **Articles:**
   - [Git Tips & Tricks](https://about.gitlab.com/2016/12/08/git-tips-and-tricks/)
@@ -39,17 +39,17 @@ We've gathered some resources to help you to get the best from Git with GitLab.
 
 ## Advanced use
 
-- [Custom Git Hooks](../../administration/custom_hooks.html)
-- [Git Attributes](../../user/project/git_attributes.html)
-- Git Submodules: [Using Git submodules with GitLab CI](../../ci/git_submodules.html#using-git-submodules-with-gitlab-ci)
+- [Custom Git Hooks](../../administration/custom_hooks.md)
+- [Git Attributes](../../user/project/git_attributes.md)
+- Git Submodules: [Using Git submodules with GitLab CI](../../ci/git_submodules.md#using-git-submodules-with-gitlab-ci)
 
 ## API
 
-- [Gitignore templates](../../api/templates/gitignores.html)
+- [Gitignore templates](../../api/templates/gitignores.md)
 
 ## Git LFS
 
-- [Git LFS](https://docs.gitlab.com/ce/workflow/lfs/manage_large_binaries_with_git_lfs.html)
+- [Git LFS](../../workflow/lfs/manage_large_binaries_with_git_lfs.md)
 - [Git-Annex to Git-LFS migration guide](https://docs.gitlab.com/ee/workflow/lfs/migrate_from_git_annex_to_git_lfs.html)
 - **Articles:**
   - [Getting Started with Git LFS](https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/)
