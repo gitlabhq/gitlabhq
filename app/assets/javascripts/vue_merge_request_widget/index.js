@@ -53,17 +53,22 @@ const mrWidgetOptions = () => ({
     },
   },
   methods: {
-    checkStatus() {
+    checkStatus(cb) {
       // TODO: Error handling
       this.service.checkStatus()
         .then(res => res.json())
         .then((res) => {
           this.mr.setData(res);
+          if (cb) {
+            cb.call(null, res);
+          }
         });
     },
   },
   created() {
-    eventHub.$on('MRWidgetUpdateRequested', this.checkStatus);
+    eventHub.$on('MRWidgetUpdateRequested', (cb) => {
+      this.checkStatus(cb);
+    });
   },
   mounted() {
     // TODO: Error handling
