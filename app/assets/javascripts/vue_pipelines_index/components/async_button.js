@@ -83,6 +83,7 @@ export default {
       :class="buttonClass"
       :title="title"
       :aria-label="title"
+      data-container="body"
       data-placement="top"
       :disabled="isLoading">
       <i :class="iconClass" aria-hidden="true"/>
