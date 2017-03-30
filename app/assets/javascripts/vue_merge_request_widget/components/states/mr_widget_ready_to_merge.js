@@ -1,3 +1,5 @@
+import eventHub from '../../event_hub';
+
 export default {
   name: 'MRWidgetReadyToMerge',
   props: {
@@ -80,8 +82,14 @@ export default {
         should_remove_source_branch: this.removeSourceBranch === true,
       };
 
-      // TODO: Response handling and widget update
-      this.service.merge(options);
+      // TODO: Error handling
+      this.service.merge(options)
+        .then(res => res.json())
+        .then((res) => {
+          if (res.status === 'merge_when_pipeline_succeeds') {
+            eventHub.$emit('MRWidgetUpdateRequested');
+          }
+        });
     },
   },
   template: `

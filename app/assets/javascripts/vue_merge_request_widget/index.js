@@ -62,6 +62,9 @@ const mrWidgetOptions = () => ({
         });
     },
   },
+  created() {
+    eventHub.$on('MRWidgetUpdateRequested', this.checkStatus);
+  },
   mounted() {
     // TODO: Error handling
     this.service.fetchDeployments()
