@@ -109,7 +109,7 @@ describe 'gitlab:app namespace rake task' do
     end
 
     describe 'backup creation and deletion using custom_hooks' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
       let(:user_backup_path) { "repositories/#{project.path_with_namespace}" }
 
       before(:each) do
@@ -220,8 +220,8 @@ describe 'gitlab:app namespace rake task' do
     end
 
     context 'multiple repository storages' do
-      let(:project_a) { create(:project, repository_storage: 'default') }
-      let(:project_b) { create(:project, repository_storage: 'custom') }
+      let(:project_a) { create(:project, :repository, repository_storage: 'default') }
+      let(:project_b) { create(:project, :repository, repository_storage: 'custom') }
 
       before do
         FileUtils.mkdir('tmp/tests/default_storage')
