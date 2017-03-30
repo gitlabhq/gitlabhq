@@ -1055,9 +1055,12 @@ describe Ci::Pipeline, models: true do
     end
 
     before do
-      reset_delivered_emails!
-
       project.team << [pipeline.user, Gitlab::Access::DEVELOPER]
+
+      pipeline.user.global_notification_setting.
+        update(level: 'custom', failed_pipeline: true, success_pipeline: true)
+
+      reset_delivered_emails!
 
       perform_enqueued_jobs do
         pipeline.enqueue
