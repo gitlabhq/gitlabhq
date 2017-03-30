@@ -64,6 +64,10 @@ module Auth
     end
 
     def process_repository_access(type, path, actions)
+      # TODO, add specs for invalid paths
+      #
+      return unless path.valid?
+
       requested_project = path.repository_project
 
       return unless requested_project
