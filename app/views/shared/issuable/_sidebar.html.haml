@@ -217,7 +217,12 @@
       - issuable.assignees.each do |assignee|
         :javascript
           document.addEventListener('DOMContentLoaded', () => {
-            gl.sidebarAssigneesOptions.assignees.addUser(parseInt("#{assignee.id}", 10), "#{assignee.name}", "#{assignee.username}", "#{assignee.avatar_url}", true);
+            gl.sidebarAssigneesOptions.assignees.addUser({
+              id: parseInt("#{assignee.id}", 10),
+              name: "#{assignee.name}",
+              username: "#{assignee.username}",
+              avatarUrl: "#{assignee.avatar_url}"
+            }, true);
           });
 
     :javascript

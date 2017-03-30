@@ -12,7 +12,9 @@ export default class SidebarAssigneesStore {
     this.editable = editable;
   }
 
-  addUser(id, name = '', username = '', avatarUrl = '', saved = false) {
+  addUser(user, saved = false) {
+    const { id, name, username, avatarUrl } = user;
+
     this.users.push({
       id,
       name,

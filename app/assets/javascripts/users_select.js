@@ -279,7 +279,12 @@ import Vue from 'vue';
                   });
                 } else if (isActive) {
                   // user selected
-                  gl.sidebarAssigneesOptions.assignees.addUser(user.id, user.name, user.username, user.avatar_url);
+                  gl.sidebarAssigneesOptions.assignees.addUser({
+                    id: user.id,
+                    name: user.name,
+                    username: user.username,
+                    avatarUrl: user.avatar_url
+                  });
 
                   // Remove unassigned selection (if it was previously selected)
                   const unassignedSelected = $dropdown.closest('.selectbox')
