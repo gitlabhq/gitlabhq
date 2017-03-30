@@ -40,6 +40,8 @@ export default {
       eventHub.$emit('updateTokens');
     },
     labelStyle(label) {
+      // TODO: What happens if label.color and/or label.textColor is not defined?
+
       return {
         backgroundColor: label.color,
         color: label.textColor,

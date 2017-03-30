@@ -35,7 +35,7 @@ export default {
       <issue-card-labels
         :labels="issue.labels"
         :list="list"
-        :update-filters="true" />
+        :update-filters="updateFilters" />
     </div>
   `,
 };

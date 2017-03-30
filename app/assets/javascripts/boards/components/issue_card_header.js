@@ -1,7 +1,7 @@
 export default {
   name: 'IssueCardHeader',
   props: {
-    confidential: { type: Boolean, required: false, default: false },
+    confidential: { type: Boolean, required: true },
     title: { type: String, required: true },
     issueId: { type: Number, required: true },
     assignee: { type: Object, required: true },
@@ -10,7 +10,7 @@ export default {
   },
   computed: {
     hasAssignee() {
-      return Object.keys(this.assignee).length;
+      return Object.keys(this.assignee).length > 0;
     },
   },
   template: `
@@ -21,10 +21,7 @@ export default {
       <h4 class="card-title">
         <a :href="issueLinkBase + '/' + issueId"
           :title="title">{{ title }}</a>
-        <span class="card-number"
-          v-if="issueId">
-          #{{ issueId }}
-        </span>
+        <span class="card-number">#{{ issueId }}</span>
       </h4>
       <a class="card-assignee has-tooltip"
         :href="rootPath + assignee.username"
