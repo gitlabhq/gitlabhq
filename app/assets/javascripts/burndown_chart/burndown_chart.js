@@ -113,6 +113,7 @@ export default class BurndownChart {
       this.idealData = [idealStart, idealEnd];
     }
 
+    this.queueLineAnimation = true;
     this.queueRender();
   }
 
@@ -207,6 +208,11 @@ export default class BurndownChart {
     if (this.data != null && this.data.length > 1) {
       this.actualLinePath.datum(this.data).attr('d', this.line);
       this.idealLinePath.datum(this.idealData).attr('d', this.line);
+
+      if (this.queueLineAnimation === true) {
+        this.queueLineAnimation = false;
+        this.constructor.animateLinePath(this.actualLinePath, 800);
+      }
     }
   }
 
@@ -226,5 +232,30 @@ export default class BurndownChart {
       }, 20);
     }
     this.ticksLeft = seconds * 50;
+  }
+
+  static animateLinePath(path, duration = 1000) {
+    // hack to run a callback at transition end
+    function after(transition, callback) {
+      let i = 0;
+      transition
+        .each(() => (i += 1))
+        .each('end', function end(...args) {
+          i -= 1;
+          if (i === 0) {
+            callback.apply(this, args);
+          }
+        });
+    }
+
+    const lineLength = path.node().getTotalLength();
+    path
+      .attr('stroke-dasharray', `${lineLength} ${lineLength}`)
+      .attr('stroke-dashoffset', lineLength)
+      .transition()
+        .duration(duration)
+        .ease('linear')
+        .attr('stroke-dashoffset', 0)
+        .call(after, () => path.attr('stroke-dasharray', null));
   }
 }
