@@ -1,6 +1,7 @@
 require 'base64'
 require 'json'
 require 'securerandom'
+require 'uri'
 
 module Gitlab
   class Workhorse
@@ -21,10 +22,10 @@ module Gitlab
           RepoPath: repository.path_to_repo,
         }
 
-        params.merge!(
-          GitalySocketPath: Gitlab.config.gitaly.socket_path,
-          GitalyResourcePath: "/projects/#{repository.project.id}/git-http/info-refs",
-        ) if Gitlab.config.gitaly.socket_path.present?
+        if Gitlab.config.gitaly.enabled
+          address = Gitlab::GitalyClient.get_address(repository.project.repository_storage)
+          params[:GitalySocketPath] = URI(address).path
+        end
 
         params
       end

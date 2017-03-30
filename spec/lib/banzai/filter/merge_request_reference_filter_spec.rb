@@ -17,6 +17,19 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
     end
   end
 
+  describe 'performance' do
+    let(:another_merge) { create(:merge_request, source_project: project, source_branch: 'fix') }
+
+    it 'does not have a N+1 query problem' do
+      single_reference = "Merge request #{merge.to_reference}"
+      multiple_references = "Merge requests #{merge.to_reference} and #{another_merge.to_reference}"
+
+      control_count = ActiveRecord::QueryRecorder.new { reference_filter(single_reference).to_html }.count
+
+      expect { reference_filter(multiple_references).to_html }.not_to exceed_query_limit(control_count)
+    end
+  end
+
   context 'internal reference' do
     let(:reference) { merge.to_reference }
 

@@ -331,6 +331,10 @@ describe SystemNoteService, services: true do
     subject { described_class.change_branch_presence(noteable, project, author, :source, 'feature', :delete) }
 
     let(:project) { create(:project, :repository) }
+<<<<<<< HEAD
+=======
+
+>>>>>>> ce/master
     it_behaves_like 'a system note' do
       let(:action) { 'branch' }
     end

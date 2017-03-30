@@ -15,10 +15,15 @@ variables:
   GIT_DEPTH: "20"
   PHANTOMJS_VERSION: "2.1.1"
   GET_SOURCES_ATTEMPTS: "3"
+<<<<<<< HEAD
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-${CI_COMMIT_REF_SLUG}.json
   KNAPSACK_SPINACH_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/spinach_report-${CI_COMMIT_REF_SLUG}.json
   # This hack is needed to make ES not that memory hungry
   ES_JAVA_OPTS: "-Xms600m -Xmx600m"
+=======
+  KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json
+  KNAPSACK_SPINACH_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/spinach_report-master.json
+>>>>>>> ce/master
 
 before_script:
   - source ./scripts/prepare_build.sh
@@ -278,13 +283,34 @@ rake karma:
     paths:
     - coverage-javascript/
 
-lint-doc:
+docs:check:apilint:
+  image: "phusion/baseimage"
   stage: test
   <<: *dedicated-runner
-  image: "phusion/baseimage:latest"
+  variables:
+    GIT_DEPTH: "3"
+  cache: {}
+  dependencies: []
   before_script: []
   script:
     - scripts/lint-doc.sh
+
+docs:check:links:
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
+  stage: test
+  <<: *dedicated-runner
+  variables:
+    GIT_DEPTH: "3"
+  cache: {}
+  dependencies: []
+  before_script: []
+  script:
+    - mv doc/ /nanoc/content/
+    - cd /nanoc
+    # Build HTML from Markdown
+    - bundle exec nanoc
+    # Check the internal links
+    - bundle exec nanoc check internal_links
 
 bundler:check:
   stage: test

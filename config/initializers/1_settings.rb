@@ -105,6 +105,10 @@ class Settings < Settingslogic
       value
     end
 
+    def absolute(path)
+      File.expand_path(path, Rails.root)
+    end
+
     private
 
     def base_url(config)
@@ -220,7 +224,7 @@ if github_settings
 end
 
 Settings['shared'] ||= Settingslogic.new({})
-Settings.shared['path'] = File.expand_path(Settings.shared['path'] || "shared", Rails.root)
+Settings.shared['path'] = Settings.absolute(Settings.shared['path'] || "shared")
 
 Settings['issues_tracker'] ||= {}
 
@@ -286,7 +290,7 @@ Settings['gitlab_ci'] ||= Settingslogic.new({})
 Settings.gitlab_ci['shared_runners_enabled'] = true if Settings.gitlab_ci['shared_runners_enabled'].nil?
 Settings.gitlab_ci['all_broken_builds']     = true if Settings.gitlab_ci['all_broken_builds'].nil?
 Settings.gitlab_ci['add_pusher']            = false if Settings.gitlab_ci['add_pusher'].nil?
-Settings.gitlab_ci['builds_path']           = File.expand_path(Settings.gitlab_ci['builds_path'] || "builds/", Rails.root)
+Settings.gitlab_ci['builds_path']           = Settings.absolute(Settings.gitlab_ci['builds_path'] || "builds/")
 Settings.gitlab_ci['url']                 ||= Settings.send(:build_gitlab_ci_url)
 
 #
@@ -300,7 +304,7 @@ Settings.incoming_email['enabled'] = false if Settings.incoming_email['enabled']
 #
 Settings['artifacts'] ||= Settingslogic.new({})
 Settings.artifacts['enabled']      = true if Settings.artifacts['enabled'].nil?
-Settings.artifacts['path']         = File.expand_path(Settings.artifacts['path'] || File.join(Settings.shared['path'], "artifacts"), Rails.root)
+Settings.artifacts['path']         = Settings.absolute(Settings.artifacts['path'] || File.join(Settings.shared['path'], "artifacts"))
 Settings.artifacts['max_size']   ||= 100 # in megabytes
 
 #
@@ -314,14 +318,14 @@ Settings.registry['api_url']       ||= "http://localhost:5000/"
 Settings.registry['key']           ||= nil
 Settings.registry['issuer']        ||= nil
 Settings.registry['host_port']     ||= [Settings.registry['host'], Settings.registry['port']].compact.join(':')
-Settings.registry['path']            = File.expand_path(Settings.registry['path'] || File.join(Settings.shared['path'], 'registry'), Rails.root)
+Settings.registry['path']            = Settings.absolute(Settings.registry['path'] || File.join(Settings.shared['path'], 'registry'))
 
 #
 # Pages
 #
 Settings['pages'] ||= Settingslogic.new({})
 Settings.pages['enabled']         = false if Settings.pages['enabled'].nil?
-Settings.pages['path']            = File.expand_path(Settings.pages['path'] || File.join(Settings.shared['path'], "pages"), Rails.root)
+Settings.pages['path']            = Settings.absolute(Settings.pages['path'] || File.join(Settings.shared['path'], "pages"))
 Settings.pages['https']           = false if Settings.pages['https'].nil?
 Settings.pages['host']            ||= "example.com"
 Settings.pages['port']            ||= Settings.pages.https ? 443 : 80
@@ -340,7 +344,7 @@ Settings.gitlab['geo_status_timeout'] ||= 10
 #
 Settings['lfs'] ||= Settingslogic.new({})
 Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
-Settings.lfs['storage_path'] = File.expand_path(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"), Rails.root)
+Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"))
 
 #
 # Mattermost
@@ -429,8 +433,8 @@ Settings.cron_jobs['clear_shared_runners_minutes_worker']['job_class'] = 'ClearS
 # GitLab Shell
 #
 Settings['gitlab_shell'] ||= Settingslogic.new({})
-Settings.gitlab_shell['path']         ||= Settings.gitlab['user_home'] + '/gitlab-shell/'
-Settings.gitlab_shell['hooks_path']   ||= Settings.gitlab['user_home'] + '/gitlab-shell/hooks/'
+Settings.gitlab_shell['path']           = Settings.absolute(Settings.gitlab_shell['path'] || Settings.gitlab['user_home'] + '/gitlab-shell/')
+Settings.gitlab_shell['hooks_path']     = Settings.absolute(Settings.gitlab_shell['hooks_path'] || Settings.gitlab['user_home'] + '/gitlab-shell/hooks/')
 Settings.gitlab_shell['secret_file'] ||= Rails.root.join('.gitlab_shell_secret')
 Settings.gitlab_shell['receive_pack']   = true if Settings.gitlab_shell['receive_pack'].nil?
 Settings.gitlab_shell['upload_pack']    = true if Settings.gitlab_shell['upload_pack'].nil?
@@ -451,6 +455,11 @@ unless Settings.repositories.storages['default']
   # but follows the pre-9.0 configuration structure. `6_validations.rb` initializer
   # will validate all storages and throw a relevant error to the user if necessary.
   Settings.repositories.storages['default']['path'] ||= Settings.gitlab['user_home'] + '/repositories/'
+end
+
+Settings.repositories.storages.values.each do |storage|
+  # Expand relative paths
+  storage['path'] = Settings.absolute(storage['path'])
 end
 
 #
@@ -474,7 +483,7 @@ end
 Settings['backup'] ||= Settingslogic.new({})
 Settings.backup['keep_time']  ||= 0
 Settings.backup['pg_schema']    = nil
-Settings.backup['path']         = File.expand_path(Settings.backup['path'] || "tmp/backups/", Rails.root)
+Settings.backup['path']         = Settings.absolute(Settings.backup['path'] || "tmp/backups/")
 Settings.backup['archive_permissions'] ||= 0600
 Settings.backup['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'connection' => nil })
 # Convert upload connection settings to use symbol keys, to make Fog happy
@@ -497,7 +506,7 @@ Settings.git['timeout']   ||= 10
 # least. This setting is fed to 'rm -rf' in
 # db/migrate/20151023144219_remove_satellites.rb
 Settings['satellites'] ||= Settingslogic.new({})
-Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "tmp/repo_satellites/", Rails.root)
+Settings.satellites['path'] = Settings.absolute(Settings.satellites['path'] || "tmp/repo_satellites/")
 
 #
 # Kerberos
@@ -534,7 +543,7 @@ Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour
 # Gitaly
 #
 Settings['gitaly'] ||= Settingslogic.new({})
-Settings.gitaly['socket_path'] ||= ENV['GITALY_SOCKET_PATH']
+Settings.gitaly['enabled'] ||= false
 
 #
 # Webpack settings

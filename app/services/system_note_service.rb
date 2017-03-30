@@ -467,6 +467,7 @@ module SystemNoteService
     body = "moved #{direction} #{cross_reference}"
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'moved'))
+<<<<<<< HEAD
   end
 
   # Called when the merge request is approved by user
@@ -489,6 +490,8 @@ module SystemNoteService
     body = "unapproved this merge request"
 
     create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'approvals'))
+=======
+>>>>>>> ce/master
   end
 
   private

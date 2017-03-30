@@ -382,7 +382,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I modify merge commit message' do
-    find('.modify-merge-commit-link').click
+    click_button "Modify commit message"
     fill_in 'commit_message', with: 'wow such merge'
   end
 

@@ -1,5 +1,3 @@
-import spreadString from './spread_string';
-
 // On Windows, flags render as two-letter country codes, see http://emojipedia.org/flags/
 const flagACodePoint = 127462; // parseInt('1F1E6', 16)
 const flagZCodePoint = 127487; // parseInt('1F1FF', 16)
@@ -20,7 +18,7 @@ function isKeycapEmoji(emojiUnicode) {
 const tone1 = 127995;// parseInt('1F3FB', 16)
 const tone5 = 127999;// parseInt('1F3FF', 16)
 function isSkinToneComboEmoji(emojiUnicode) {
-  return emojiUnicode.length > 2 && spreadString(emojiUnicode).some((char) => {
+  return emojiUnicode.length > 2 && Array.from(emojiUnicode).some((char) => {
     const cp = char.codePointAt(0);
     return cp >= tone1 && cp <= tone5;
   });
@@ -30,7 +28,7 @@ function isSkinToneComboEmoji(emojiUnicode) {
 // doesn't support the skin tone versions of horse racing
 const horseRacingCodePoint = 127943;// parseInt('1F3C7', 16)
 function isHorceRacingSkinToneComboEmoji(emojiUnicode) {
-  return spreadString(emojiUnicode)[0].codePointAt(0) === horseRacingCodePoint &&
+  return Array.from(emojiUnicode)[0].codePointAt(0) === horseRacingCodePoint &&
     isSkinToneComboEmoji(emojiUnicode);
 }
 
@@ -42,7 +40,7 @@ const personEndCodePoint = 128105; // parseInt('1F469', 16)
 function isPersonZwjEmoji(emojiUnicode) {
   let hasPersonEmoji = false;
   let hasZwj = false;
-  spreadString(emojiUnicode).forEach((character) => {
+  Array.from(emojiUnicode).forEach((character) => {
     const cp = character.codePointAt(0);
     if (cp === zwj) {
       hasZwj = true;

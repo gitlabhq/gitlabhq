@@ -46,6 +46,10 @@ class Blob < SimpleDelegator
     text? && language && language.name == 'SVG'
   end
 
+  def ipython_notebook?
+    text? && language && language.name == 'Jupyter Notebook'
+  end
+
   def size_within_svg_limits?
     size <= MAXIMUM_SVG_SIZE
   end
@@ -63,6 +67,8 @@ class Blob < SimpleDelegator
       end
     elsif image? || svg?
       'image'
+    elsif ipython_notebook?
+      'notebook'
     elsif text?
       'text'
     else

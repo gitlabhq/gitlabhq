@@ -573,9 +573,19 @@ pre.light-well {
   display: flex;
   flex-direction: column;
 
+  // Disable Flexbox for admin page
+  &.admin-projects {
+    display: block;
+
+    .project-row {
+      display: block;
+    }
+  }
+
   .project-row {
     display: flex;
     align-items: center;
+    @include basic-list-stats;
   }
 
   h3 {
@@ -732,6 +742,7 @@ pre.light-well {
   }
 }
 
+<<<<<<< HEAD
 a.allowed-to-merge,
 a.allowed-to-push {
   cursor: pointer;
@@ -745,6 +756,8 @@ a.allowed-to-push {
   }
 }
 
+=======
+>>>>>>> ce/master
 .create-new-protected-branch-button {
   @include dropdown-link;
 

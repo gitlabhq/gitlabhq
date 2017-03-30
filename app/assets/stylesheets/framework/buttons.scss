@@ -362,3 +362,13 @@
     width: 100%;
   }
 }
+
+.btn-blank {
+  padding: 0;
+  background: transparent;
+  border: 0;
+
+  &:focus {
+    outline: 0;
+  }
+}

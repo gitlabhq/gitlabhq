@@ -320,7 +320,7 @@ module Gitlab
       def log_by_walk(sha, options)
         walk_options = {
           show: sha,
-          sort: Rugged::SORT_DATE,
+          sort: Rugged::SORT_NONE,
           limit: options[:limit],
           offset: options[:offset]
         }
@@ -382,7 +382,7 @@ module Gitlab
       # a detailed list of valid arguments.
       def commits_between(from, to)
         walker = Rugged::Walker.new(rugged)
-        walker.sorting(Rugged::SORT_DATE | Rugged::SORT_REVERSE)
+        walker.sorting(Rugged::SORT_NONE | Rugged::SORT_REVERSE)
 
         sha_from = sha_from_ref(from)
         sha_to = sha_from_ref(to)
@@ -460,7 +460,7 @@ module Gitlab
         if actual_options[:order] == :topo
           walker.sorting(Rugged::SORT_TOPO)
         else
-          walker.sorting(Rugged::SORT_DATE)
+          walker.sorting(Rugged::SORT_NONE)
         end
 
         commits = []
@@ -826,23 +826,6 @@ module Gitlab
           update_ref: "refs/heads/#{target_name}"
         )
         Rugged::Commit.create(rugged, actual_options)
-      end
-
-      def commits_since(from_date)
-        walker = Rugged::Walker.new(rugged)
-        walker.sorting(Rugged::SORT_DATE | Rugged::SORT_REVERSE)
-
-        rugged.references.each("refs/heads/*") do |ref|
-          walker.push(ref.target_id)
-        end
-
-        commits = []
-        walker.each do |commit|
-          break if commit.author[:time].to_date < from_date
-          commits.push(commit)
-        end
-
-        commits
       end
 
       AUTOCRLF_VALUES = {
