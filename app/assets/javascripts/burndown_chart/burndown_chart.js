@@ -2,6 +2,7 @@ import d3 from 'd3';
 
 const margin = { top: 5, right: 65, bottom: 30, left: 50 };
 const parseDate = d3.time.format('%Y-%m-%d').parse;
+const bisectDate = d3.bisector(d => d.date).left;
 
 export default class BurndownChart {
   constructor({ container, startDate, dueDate }) {
@@ -38,6 +39,16 @@ export default class BurndownChart {
     this.chartLegendActualKey.append('line').attr('class', 'actual line');
     this.chartLegendActualKey.append('text').text('Progress');
     this.chartLegendActualKeyBBox = this.chartLegendActualKey.select('text').node().getBBox();
+
+    // create tooltips
+    this.chartFocus = this.chartGroup.append('g').attr('class', 'focus').style('display', 'none');
+    this.chartFocus.append('circle').attr('r', 4);
+    this.chartFocus.append('text').attr('x', 9).attr('dy', '.35em');
+
+    this.chartOverlay = this.chartGroup.append('rect').attr('class', 'overlay')
+      .on('mouseover', () => this.chartFocus.style('display', null))
+      .on('mouseout', () => this.chartFocus.style('display', 'none'))
+      .on('mousemove', () => this.handleMousemove());
 
     // parse start and due dates
     this.startDate = parseDate(startDate);
@@ -117,6 +128,31 @@ export default class BurndownChart {
     this.queueRender();
   }
 
+  handleMousemove() {
+    if (!this.data) return;
+
+    const mouseOffsetX = d3.mouse(this.chartOverlay.node())[0];
+    const dateOffset = this.xScale.invert(mouseOffsetX);
+    const i = bisectDate(this.data, dateOffset, 1);
+    const d0 = this.data[i - 1];
+    const d1 = this.data[i];
+    if (d1 == null || dateOffset - d0.date < d1.date - dateOffset) {
+      this.handleTooltip(d0);
+    } else {
+      this.handleTooltip(d1);
+    }
+  }
+
+  handleTooltip(datum) {
+    if (this.currentPoint === datum) return;
+
+    this.currentPoint = datum;
+    const x = this.xScale(datum.date);
+    const y = this.yScale(datum.value);
+    this.chartFocus.attr('transform', `translate(${x}, ${y})`);
+    this.chartFocus.select('text').text(`Remaining: ${datum.value}`);
+  }
+
   // reset width and height to match the svg element, then re-render if necessary
   resize() {
     const dimensions = this.canvas.node().getBoundingClientRect();
@@ -137,6 +173,7 @@ export default class BurndownChart {
 
   render() {
     this.queuedRender = null;
+    this.currentPoint = null; // force recalculate tooltip
 
     this.xAxis.ticks(Math.floor(this.chartWidth / 120));
     this.yAxis.ticks(Math.min(Math.floor(this.chartHeight / 60), this.yMax));
@@ -203,6 +240,13 @@ export default class BurndownChart {
     this.chartLegendGroup.attr('transform', `translate(${legendOffset}, 0)`);
     this.chartLegendIdealKey.attr('transform', `translate(${legendPadding}, ${idealKeyOffset})`);
     this.chartLegendActualKey.attr('transform', `translate(${legendPadding}, ${actualKeyOffset})`);
+
+    // update overlay
+    this.chartOverlay
+      .attr('fill', 'none')
+      .attr('pointer-events', 'all')
+      .attr('width', this.chartWidth)
+      .attr('height', this.chartHeight);
 
     // render lines if data available
     if (this.data != null && this.data.length > 1) {

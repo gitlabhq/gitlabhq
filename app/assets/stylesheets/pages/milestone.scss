@@ -323,4 +323,17 @@ $burndown-chart-axis-label-stroke: #e5e5e5;
       stroke-dasharray: 6px 6px;
     }
   }
+
+  .focus {
+    text {
+      font-size: 13px;
+      fill: $burndown-chart-legend-color;
+    }
+
+    circle {
+      fill: $white-light;
+      stroke: $burndown-chart-line-color;
+      stroke-width: 2px;
+    }
+  }
 }
