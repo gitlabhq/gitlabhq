@@ -95,7 +95,7 @@ export default class BurndownChart {
     // set our ideal line data
     if (this.data.length > 1) {
       const idealStart = this.data[0] || { date: this.startDate, value: 0 };
-      const idealEnd = { date: this.xMax, value: 0 };
+      const idealEnd = { date: this.dueDate, value: 0 };
       this.idealData = [idealStart, idealEnd];
     }
 
