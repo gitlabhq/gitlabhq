@@ -59,13 +59,13 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 
 - [Example projects](https://gitlab.com/pages)
 - **Articles:**
-  - [Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](../../project/pages/getting_started_part_four.html)
+  - [Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](../../user/project/pages/getting_started_part_four.md)
   - [SSGs Part 3: Build any SSG site with GitLab Pages](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/):
   examples for Ruby-, NodeJS-, Python-, and GoLang-based SSGs
   - [Building a new GitLab docs site with Nanoc, GitLab CI, and GitLab Pages](https://about.gitlab.com/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
   - [Publish code coverage reports with GitLab Pages](https://about.gitlab.com/2016/11/03/publish-code-coverage-report-with-gitlab-pages/)
 
-See the topic [GitLab Pages](../../user/project/pages/index.html) for a complete overview.
+See the topic [GitLab Pages](../../user/project/pages/index.md) for a complete overview.
 
 ## More
 
