@@ -1,5 +1,6 @@
 class GeoRepositoryFetchWorker
   include Sidekiq::Worker
+  include ::GeoDynamicBackoff
   include GeoQueue
   include Gitlab::ShellAdapter
 
