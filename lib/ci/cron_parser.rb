@@ -1,5 +1,8 @@
 module Ci
   class CronParser
+    VALID_SYNTAX_SAMPLE_TIME_ZONE = 'UTC'
+    VALID_SYNTAX_SAMPLE_CRON = '* * * * *'
+
     def initialize(cron, cron_time_zone = 'UTC')
       @cron = cron
       @cron_time_zone = cron_time_zone
@@ -12,10 +15,8 @@ module Ci
     end
 
     def validation
-      VALID_SYNTAX_TIME_ZONE = 'Europe/Istanbul'
-      VALID_SYNTAX_CRON = '* * * * *'
-      is_valid_cron = try_parse_cron(@cron, VALID_SYNTAX_TIME_ZONE).present?
-      is_valid_cron_time_zone = try_parse_cron(VALID_SYNTAX_CRON, @cron_time_zone).present?
+      is_valid_cron = try_parse_cron(@cron, VALID_SYNTAX_SAMPLE_TIME_ZONE).present?
+      is_valid_cron_time_zone = try_parse_cron(VALID_SYNTAX_SAMPLE_CRON, @cron_time_zone).present?
       return is_valid_cron, is_valid_cron_time_zone
     end
 

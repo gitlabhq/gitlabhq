@@ -5,37 +5,85 @@ describe Ci::TriggerSchedule, models: true do
   let(:project) { create(:project) }
   let(:trigger) { create(:ci_trigger, owner: user, project: project, ref: 'master') }
 
-  describe 'associations' do
-    it { is_expected.to belong_to(:project) }
-    it { is_expected.to belong_to(:trigger) }
-  end
+  it { is_expected.to belong_to(:project) }
+  it { is_expected.to belong_to(:trigger) }
+  # it { is_expected.to validate_presence_of :cron }
+  # it { is_expected.to validate_presence_of :cron_time_zone }
+  it { is_expected.to respond_to :ref }
 
-  describe 'validation' do
-    let(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build, trigger: trigger) }
+  # describe '#schedule_next_run!' do
+  #   let(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build, next_run_at: nil, trigger: trigger) }
 
-    it { expect(trigger_schedule).to validate_presence_of(:trigger) }
-    it { is_expected.to validate_presence_of(:cron) }
-    it { is_expected.to validate_presence_of(:cron_time_zone) }
+  #   before do
+  #     trigger_schedule.schedule_next_run!
+  #   end
 
-    it '#check_cron' do
-      subject.cron = 'Hack'
-      subject.valid?
-      subject.errors[:screen_name].to include(' is invalid syntax')
+  #   it 'updates next_run_at' do
+  #     expect(Ci::TriggerSchedule.last.next_run_at).not_to be_nil
+  #   end
+  # end
+
+  describe '#real_next_run' do
+    subject { trigger_schedule.real_next_run(worker_cron: worker_cron, worker_time_zone: worker_time_zone) }
+
+    context 'when next_run_at > worker_next_time' do
+      let(:worker_cron) { '0 */12 * * *' } # each 00:00, 12:00
+      let(:worker_time_zone) { 'UTC' }
+      let(:trigger_schedule) { create(:ci_trigger_schedule, :cron_weekly_build, cron_time_zone: user_time_zone, trigger: trigger) }
+
+      context 'when user is in Europe/London(+00:00)' do
+        let(:user_time_zone) { 'Europe/London' }
+
+        it 'returns next_run_at' do
+          is_expected.to eq(trigger_schedule.next_run_at)
+        end
+      end
+
+      context 'when user is in Asia/Hong_Kong(+08:00)' do
+        let(:user_time_zone) { 'Asia/Hong_Kong' }
+
+        it 'returns next_run_at' do
+          is_expected.to eq(trigger_schedule.next_run_at)
+        end
+      end
+
+      context 'when user is in Canada/Pacific(-08:00)' do
+        let(:user_time_zone) { 'Canada/Pacific' }
+
+        it 'returns next_run_at' do
+          is_expected.to eq(trigger_schedule.next_run_at)
+        end
+      end
     end
 
-    it '#check_ref' do
-    end
-  end
+    context 'when worker_next_time > next_run_at' do
+      let(:worker_cron) { '0 0 */2 * *' } # every 2 days
+      let(:worker_time_zone) { 'UTC' }
+      let(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build, cron_time_zone: user_time_zone, trigger: trigger) }
 
-  describe '#schedule_next_run!' do
-    let(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build, next_run_at: nil, trigger: trigger) }
+      context 'when user is in Europe/London(+00:00)' do
+        let(:user_time_zone) { 'Europe/London' }
 
-    before do
-      trigger_schedule.schedule_next_run!
-    end
+        it 'returns worker_next_time' do
+          is_expected.to eq(Ci::CronParser.new(worker_cron, worker_time_zone).next_time_from_now)
+        end
+      end
 
-    it 'updates next_run_at' do
-      expect(Ci::TriggerSchedule.last.next_run_at).not_to be_nil
+      context 'when user is in Asia/Hong_Kong(+08:00)' do
+        let(:user_time_zone) { 'Asia/Hong_Kong' }
+
+        it 'returns worker_next_time' do
+          is_expected.to eq(Ci::CronParser.new(worker_cron, worker_time_zone).next_time_from_now)
+        end
+      end
+
+      context 'when user is in Canada/Pacific(-08:00)' do
+        let(:user_time_zone) { 'Canada/Pacific' }
+
+        it 'returns worker_next_time' do
+          is_expected.to eq(Ci::CronParser.new(worker_cron, worker_time_zone).next_time_from_now)
+        end
+      end
     end
   end
 end
