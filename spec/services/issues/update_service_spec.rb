@@ -491,6 +491,62 @@ describe Issues::UpdateService, services: true do
       include_examples 'updating mentions', Issues::UpdateService
     end
 
+    context 'duplicate issue' do
+      let(:issues_finder) { spy(:issues_finder) }
+      let(:close_service) { spy(:close_service) }
+
+      before do
+        allow(IssuesFinder).to receive(:new).and_return(issues_finder)
+        allow(Issues::CloseService).to receive(:new).and_return(close_service)
+        allow(SystemNoteService).to receive(:cross_reference)
+        allow(SystemNoteService).to receive(:mark_duplicate_issue)
+      end
+
+      context 'invalid original_issue_id' do
+        let(:original_issue_id) { double }
+        before { update_issue({ original_issue_id: original_issue_id }) }
+
+        it 'finds the root issue' do
+          expect(issues_finder).to have_received(:find).with(original_issue_id)
+        end
+
+        it 'does not close the issue' do
+          expect(close_service).not_to have_received(:execute)
+        end
+
+        it 'does not create system notes' do
+          expect(SystemNoteService).not_to have_received(:cross_reference)
+          expect(SystemNoteService).not_to have_received(:mark_duplicate_issue)
+        end
+      end
+
+      context 'valid original_issue_id' do
+        let(:original_issue) { create(:issue, project: project) }
+        let(:original_issue_id) { double }
+
+        before do
+          allow(issues_finder).to receive(:find).and_return(original_issue)
+          update_issue({ original_issue_id: original_issue_id })
+        end
+
+        it 'finds the root issue' do
+          expect(issues_finder).to have_received(:find).with(original_issue_id)
+        end
+
+        it 'closes the issue' do
+          expect(close_service).to have_received(:execute).with(issue)
+        end
+
+        it 'creates a system note that this issue is a duplicate' do
+          expect(SystemNoteService).to have_received(:mark_duplicate_issue).with(issue, project, user, original_issue)
+        end
+
+        it 'creates a cross reference system note in the other issue' do
+          expect(SystemNoteService).to have_received(:cross_reference).with(original_issue, issue, user)
+        end
+      end
+    end
+
     include_examples 'issuable update service' do
       let(:open_issuable) { issue }
       let(:closed_issuable) { create(:closed_issue, project: project) }

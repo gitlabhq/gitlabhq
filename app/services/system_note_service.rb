@@ -552,6 +552,25 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, project, author, body, action: 'moved'))
   end
 
+  # Called when a Notable has been marked as a duplicate of another Issue
+  #
+  # noteable   - Noteable object
+  # project    - Project owning noteable
+  # author     - User performing the change
+  # original_issue - Issue that this is a duplicate of
+  #
+  # Example Note text:
+  #
+  #   "marked this issue as a duplicate of #1234"
+  #
+  #   "marked this issue as a duplicate of other_project#5678"
+  #
+  # Returns the created Note object
+  def mark_duplicate_issue(noteable, project, author, original_issue)
+    body = "marked this issue as a duplicate of #{original_issue.to_reference(project)}"
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'duplicate'))
+  end
+
   private
 
   def notes_for_mentioner(mentioner, noteable, notes)

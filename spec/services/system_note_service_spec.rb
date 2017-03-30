@@ -1101,4 +1101,29 @@ describe SystemNoteService, services: true do
       expect(subject.note).to include(diffs_project_merge_request_url(project, merge_request, diff_id: diff_id, anchor: line_code))
     end
   end
+
+  describe '.mark_duplicate_issue' do
+    subject { described_class.mark_duplicate_issue(noteable, project, author, original_issue) }
+
+    context 'within the same project' do
+      let(:original_issue) { create(:issue, project: project) }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'duplicate' }
+      end
+
+      it { expect(subject.note).to eq "marked this issue as a duplicate of #{original_issue.to_reference}" }
+    end
+
+    context 'across different projects' do
+      let(:other_project)  { create(:empty_project) }
+      let(:original_issue) { create(:issue, project: other_project) }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'duplicate' }
+      end
+
+      it { expect(subject.note).to eq "marked this issue as a duplicate of #{original_issue.to_reference(project)}" }
+    end
+  end
 end

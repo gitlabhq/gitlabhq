@@ -134,5 +134,46 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
         expect(page).not_to have_content '/wip'
       end
     end
+
+    describe 'mark issue as duplicate' do
+      let(:issue) { create(:issue, project: project) }
+      let(:original_issue) { create(:issue, project: project) }
+
+      context 'when the current user can update issues' do
+        it 'does not create a note, and marks the issue as a duplicate' do
+          write_note("/duplicate ##{original_issue.to_reference}")
+
+          expect(page).not_to have_content "/duplicate #{original_issue.to_reference}"
+          expect(page).to have_content 'Commands applied'
+          expect(page).to have_content "marked this issue as a duplicate of #{original_issue.to_reference}"
+
+          issue.reload
+
+          expect(issue.closed?).to be_truthy
+        end
+      end
+
+      context 'when the current user cannot update the issue' do
+        let(:guest) { create(:user) }
+        before do
+          project.team << [guest, :guest]
+          logout
+          login_with(guest)
+          visit namespace_project_issue_path(project.namespace, project, issue)
+        end
+
+        it 'does not create a note, and does not mark the issue as a duplicate' do
+          write_note("/duplicate ##{original_issue.to_reference}")
+
+          expect(page).to have_content "/duplicate ##{original_issue.to_reference}"
+          expect(page).not_to have_content 'Commands applied'
+          expect(page).not_to have_content "marked this issue as a duplicate of #{original_issue.to_reference}"
+
+          issue.reload
+
+          expect(issue.closed?).to be_falsey
+        end
+      end
+    end
   end
 end

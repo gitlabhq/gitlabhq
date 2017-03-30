@@ -471,6 +471,20 @@ module QuickActions
       end
     end
 
+    desc 'Mark this issue as a duplicate of another issue'
+    params '#issue'
+    condition do
+      issuable.is_a?(Issue) &&
+        issuable.persisted? &&
+        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+    end
+    command :duplicate do |duplicate_param|
+      original_issue = extract_references(duplicate_param, :issue).first
+      if original_issue.present? && original_issue != issuable
+        @updates[:original_issue_id] = original_issue.id
+      end
+    end
+
     def extract_users(params)
       return [] if params.nil?
 
