@@ -85,9 +85,7 @@ const mrWidgetOptions = () => ({
         }
       });
 
-    if (this.mr.state === 'checking') {
-      this.checkStatus();
-    }
+    this.checkStatus();
   },
   components: {
     'mr-widget-header': WidgetHeader,

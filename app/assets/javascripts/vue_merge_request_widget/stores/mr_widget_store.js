@@ -25,6 +25,7 @@ export default class MergeRequestStore {
 
     if (data.issues_links) {
       const { closing, mentioned_but_not_closing } = data.issues_links;
+
       this.relatedLinks = {
         closing,
         mentioned: mentioned_but_not_closing,
