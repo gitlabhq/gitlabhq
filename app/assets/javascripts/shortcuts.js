@@ -1,5 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, prefer-arrow-callback, consistent-return, object-shorthand, no-unused-vars, one-var, one-var-declaration-per-line, no-else-return, comma-dangle, max-len */
-/* global Mousetrap */
+/* global Mousetrap, ShortcutsDashboardNavigation */
 /* global findFileURL */
 
 (function() {
