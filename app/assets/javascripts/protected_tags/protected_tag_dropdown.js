@@ -53,9 +53,9 @@ class ProtectedTagDropdown {
 
   getProtectedTags(term, callback) {
     if (this.selectedTag) {
-      callback(gon.open_branches.concat(this.selectedTag));
+      callback(gon.open_tags.concat(this.selectedTag));
     } else {
-      callback(gon.open_branches);
+      callback(gon.open_tags);
     }
   }
 

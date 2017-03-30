@@ -1,6 +1,26 @@
 .panel.panel-default.protected-tags-list
-  .panel-heading
-    %h3.panel-title
-      Protected tag (0)
-  %p.settings-message.text-center
-    There are currently no protected tags, protect a tag with the form above.
+  - if @protected_tags.empty?
+    .panel-heading
+      %h3.panel-title
+        Protected tag (#{@protected_tags.size})
+    %p.settings-message.text-center
+      There are currently no protected tags, protect a tag with the form above.
+  - else
+    - can_admin_project = can?(current_user, :admin_project, @project)
+
+    %table.table.table-bordered
+      %colgroup
+        %col{ width: "25%" }
+        %col{ width: "55%" }
+        %col{ width: "20%" }
+      %thead
+        %tr
+          %th Protected tag (#{@protected_tags.size})
+          %th Last commit
+          %th Allowed to push
+          - if can_admin_project
+            %th
+      %tbody
+        = render partial: 'projects/protected_tags/protected_tag', collection: @protected_tags, locals: { can_admin_project: can_admin_project}
+
+    = paginate @protected_tags, theme: 'gitlab'
