@@ -7,6 +7,8 @@ module Ci
     belongs_to :project
     belongs_to :trigger
 
+    delegate :ref, to: :trigger
+
     validates :trigger, presence: true
     validates :cron, presence: true
     validates :cron_time_zone, presence: true
