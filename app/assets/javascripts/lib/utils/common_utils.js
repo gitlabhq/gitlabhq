@@ -263,7 +263,7 @@
     });
 
     /**
-     * Updates the search parameter of a URL given the parameter and values provided.
+     * Updates the search parameter of a URL given the parameter and value provided.
      *
      * If no search params are present we'll add it.
      * If param for page is already present, we'll update it
@@ -278,17 +278,24 @@
       let search;
       const locationSearch = window.location.search;
 
-      if (locationSearch.length === 0) {
+      if (locationSearch.length) {
+        const parameters = locationSearch.substring(1, locationSearch.length)
+          .split('&')
+          .reduce((acc, element) => {
+            const val = element.split('=');
+            acc[val[0]] = decodeURIComponent(val[1]);
+            return acc;
+          }, {});
+
+        parameters[param] = value;
+
+        const toString = Object.keys(parameters)
+          .map(val => `${val}=${encodeURIComponent(parameters[val])}`)
+          .join('&');
+
+        search = `?${toString}`;
+      } else {
         search = `?${param}=${value}`;
-      }
-
-      if (locationSearch.indexOf(param) !== -1) {
-        const regex = new RegExp(param + '=\\d');
-        search = locationSearch.replace(regex, `${param}=${value}`);
-      }
-
-      if (locationSearch.length && locationSearch.indexOf(param) === -1) {
-        search = `${locationSearch}&${param}=${value}`;
       }
 
       return search;
