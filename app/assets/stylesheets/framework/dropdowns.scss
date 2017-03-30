@@ -329,6 +329,7 @@
 .dropdown-menu-selectable {
   a {
     padding-left: 26px;
+    position: relative;
 
     &.is-indeterminate,
     &.is-active {
@@ -353,6 +354,9 @@
 
     &.is-active::before {
       content: "\f00c";
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 }
