@@ -1,6 +1,8 @@
 class PipelinesFinder
   attr_reader :project, :pipelines, :params
 
+  ALLOWED_INDEXED_COLUMNS = %w[id status ref user_id].freeze
+
   def initialize(project, params = {})
     @project = project
     @pipelines = project.pipelines
@@ -95,7 +97,7 @@ class PipelinesFinder
   end
 
   def sort_items(items)
-    order_by = if %w[id status ref user_id].include?(params[:order_by]) # Allow only indexed columns
+    order_by = if ALLOWED_INDEXED_COLUMNS.include?(params[:order_by])
                  params[:order_by]
                else
                  :id
