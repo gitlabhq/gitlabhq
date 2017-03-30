@@ -336,4 +336,15 @@ $burndown-chart-axis-label-stroke: #e5e5e5;
       stroke-width: 2px;
     }
   }
+
+  .chart-tooltip {
+    text {
+      font-size: 12px;
+      fill: $white-light;
+    }
+
+    rect {
+      fill: $black;
+    }
+  }
 }

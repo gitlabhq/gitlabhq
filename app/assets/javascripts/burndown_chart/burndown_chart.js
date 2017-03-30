@@ -3,6 +3,8 @@ import d3 from 'd3';
 const margin = { top: 5, right: 65, bottom: 30, left: 50 };
 const parseDate = d3.time.format('%Y-%m-%d').parse;
 const bisectDate = d3.bisector(d => d.date).left;
+const tooltipPadding = { x: 8, y: 3 };
+const tooltipDistance = 15;
 
 export default class BurndownChart {
   constructor({ container, startDate, dueDate }) {
@@ -43,7 +45,9 @@ export default class BurndownChart {
     // create tooltips
     this.chartFocus = this.chartGroup.append('g').attr('class', 'focus').style('display', 'none');
     this.chartFocus.append('circle').attr('r', 4);
-    this.chartFocus.append('text').attr('x', 9).attr('dy', '.35em');
+    this.tooltipGroup = this.chartFocus.append('g').attr('class', 'chart-tooltip');
+    this.tooltipGroup.append('rect').attr('rx', 3).attr('ry', 3);
+    this.tooltipGroup.append('text');
 
     this.chartOverlay = this.chartGroup.append('rect').attr('class', 'overlay')
       .on('mouseover', () => this.chartFocus.style('display', null))
@@ -145,12 +149,58 @@ export default class BurndownChart {
 
   handleTooltip(datum) {
     if (this.currentPoint === datum) return;
-
     this.currentPoint = datum;
+
+    // generate tooltip content
+    const format = d3.time.format('%b %-d, %Y');
+    const date = format(datum.date);
+    const tooltip = `${datum.value} Remaining / ${date}`;
+
+    // move the tooltip point of origin to the point on the graph
     const x = this.xScale(datum.date);
     const y = this.yScale(datum.value);
+
+    const textSize = this.tooltipGroup.select('text').text(tooltip).node().getBBox();
+    const width = textSize.width + (tooltipPadding.x * 2);
+    const height = textSize.height + (tooltipPadding.y * 2);
+
+    // calculate bounraries
+    const xMin = 0 - x - margin.left;
+    const yMin = 0 - y - margin.top;
+    const xMax = (this.chartWidth + margin.right) - x - width;
+    const yMax = (this.chartHeight + margin.bottom) - y - height;
+
+    // try to fit tooltip above point
+    let xOffset = 0 - Math.floor(width / 2);
+    let yOffset = 0 - tooltipDistance - height;
+
+    if (yOffset <= yMin) {
+      // else try to fit tooltip to the right
+      xOffset = tooltipDistance;
+      yOffset = 0 - Math.floor(height / 2);
+
+      if (xOffset >= xMax) {
+        // else place tooltip on the left
+        xOffset = 0 - tooltipDistance - width;
+      }
+    }
+
+    // ensure coordinates keep the entire tooltip in-bounds
+    xOffset = Math.max(xMin, Math.min(xMax, xOffset));
+    yOffset = Math.max(yMin, Math.min(yMax, yOffset));
+
+    // move everything into place
     this.chartFocus.attr('transform', `translate(${x}, ${y})`);
-    this.chartFocus.select('text').text(`Remaining: ${datum.value}`);
+    this.tooltipGroup.attr('transform', `translate(${xOffset}, ${yOffset})`);
+
+    this.tooltipGroup.select('text')
+      .attr('dy', '1em')
+      .attr('x', tooltipPadding.x)
+      .attr('y', tooltipPadding.y);
+
+    this.tooltipGroup.select('rect')
+      .attr('width', width)
+      .attr('height', height);
   }
 
   // reset width and height to match the svg element, then re-render if necessary
