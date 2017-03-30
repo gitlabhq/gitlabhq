@@ -11,7 +11,7 @@ describe PipelineNotificationWorker do
            status: status)
   end
 
-  let(:project) { create(:project, public_builds: false) }
+  let(:project) { create(:project, :repository, public_builds: false) }
   let(:user) { create(:user) }
   let(:pusher) { user }
   let(:watcher) { pusher }

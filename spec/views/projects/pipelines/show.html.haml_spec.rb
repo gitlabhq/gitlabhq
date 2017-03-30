@@ -4,7 +4,7 @@ describe 'projects/pipelines/show' do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id, user: user) }
 
   before do
