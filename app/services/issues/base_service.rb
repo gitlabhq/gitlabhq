@@ -22,15 +22,9 @@ module Issues
     end
 
     def filter_assignee(issuable)
-      return if params[:assignee_ids].blank?
+      return if params[:assignee_ids].to_a.empty?
 
-      assignee_ids = params[:assignee_ids].split(',').map(&:strip)
-
-      if assignee_ids == [ IssuableFinder::NONE ]
-        params[:assignee_ids] = ""
-      else
-        params.delete(:assignee_ids) unless assignee_ids.all?{ |assignee_id| assignee_can_read?(issuable, assignee_id)}
-      end
+      params[:assignee_ids] = params[:assignee_ids].select{ |assignee_id| assignee_can_read?(issuable, assignee_id)}
     end
   end
 end

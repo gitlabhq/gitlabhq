@@ -231,17 +231,6 @@ class IssuableFinder
     klass.all
   end
 
-  def by_scope(items)
-    case params[:scope]
-    when 'created-by-me', 'authored'
-      items.where(author_id: current_user.id)
-    when 'assigned-to-me'
-      items.where(assignee_id: current_user.id)
-    else
-      items
-    end
-  end
-
   def by_state(items)
     case params[:state].to_s
     when 'closed'

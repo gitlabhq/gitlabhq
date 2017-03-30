@@ -22,7 +22,7 @@ module Issues
       end
 
       if issue.previous_changes.include?('title') ||
-          issue.previous_changes.include?('description')
+        issue.previous_changes.include?('description')
         todo_service.update_issue(issue, current_user)
       end
 
@@ -30,7 +30,7 @@ module Issues
         create_milestone_note(issue)
       end
 
-      if issue.previous_changes.include?('assignee_ids')
+      if issue.assignees != old_assignees
         create_assignee_note(issue)
         notification_service.reassigned_issue(issue, current_user, old_assignees)
         todo_service.reassigned_issue(issue, current_user)
