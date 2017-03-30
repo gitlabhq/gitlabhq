@@ -437,9 +437,7 @@
 
 .user-list {
   display: flex;
-  display: -webkit-flex;
   flex-wrap: wrap;
-  -webkit-flex-wrap: wrap;
 }
 
 .participants-author {
@@ -459,7 +457,6 @@
   display: inline-block;
   padding: 5px;
   flex-basis: 20%;
-  -webkit-flex-basis: 20%;
 
   .user-link {
     display: inline-block;
