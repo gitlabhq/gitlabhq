@@ -190,7 +190,7 @@ import Vue from 'vue';
                     if ($dropdown.data('dropdown-header')) {
                       showDivider += 1;
                       users.splice(showDivider, 0, {
-                        header: $dropdown.data('dropdown-header') || 'Assignee(s)',
+                        header: $dropdown.data('dropdown-header'),
                       });
                     }
 
