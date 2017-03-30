@@ -45,15 +45,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def application_setting_params
-    restricted_levels = params[:application_setting][:restricted_visibility_levels]
-    if restricted_levels.nil?
-      params[:application_setting][:restricted_visibility_levels] = []
-    else
-      restricted_levels.map! do |level|
-        level.to_i
-      end
-    end
-
     import_sources = params[:application_setting][:import_sources]
     if import_sources.nil?
       params[:application_setting][:import_sources] = []
