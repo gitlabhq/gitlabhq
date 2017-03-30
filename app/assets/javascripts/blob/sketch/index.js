@@ -70,4 +70,4 @@ export default class SketchLoader {
       this.loadingIcon.remove();
     }
   }
-};
+}

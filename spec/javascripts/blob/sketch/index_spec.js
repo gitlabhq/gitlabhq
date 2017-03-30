@@ -1,7 +1,20 @@
+/* eslint-disable no-new */
 import JSZip from 'jszip';
-import SketchLoader from '~/blob/sketch/index.js';
+import SketchLoader from '~/blob/sketch';
 
-fdescribe('Sketch viewer', () => {
+describe('Sketch viewer', () => {
+  const generateZipFileArrayBuffer = (zipFile, resolve, done) => {
+    zipFile
+      .generateAsync({ type: 'arrayBuffer' })
+      .then((content) => {
+        resolve(content);
+
+        setTimeout(() => {
+          done();
+        }, 100);
+      });
+  };
+
   preloadFixtures('static/sketch_viewer.html.raw');
 
   beforeEach(() => {
@@ -18,7 +31,7 @@ fdescribe('Sketch viewer', () => {
         });
       }));
 
-      const sketch = new SketchLoader(document.getElementById('js-sketch-viewer'));
+      new SketchLoader(document.getElementById('js-sketch-viewer'));
     });
 
     it('renders error message', () => {
@@ -40,25 +53,17 @@ fdescribe('Sketch viewer', () => {
 
   describe('success', () => {
     beforeEach((done) => {
-      spyOn(SketchLoader.prototype, 'getZipFile').and.callFake(() => new Promise((resolve, reject) => {
+      spyOn(SketchLoader.prototype, 'getZipFile').and.callFake(() => new Promise((resolve) => {
         const zipFile = new JSZip();
         zipFile.folder('previews')
           .file('preview.png', 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAA1JREFUeNoBAgD9/wAAAAIAAVMrnDAAAAAASUVORK5CYII=', {
             base64: true,
           });
 
-        zipFile
-          .generateAsync({ type: 'arrayBuffer' })
-          .then((content) => {
-            resolve(content);
-
-            setTimeout(() => {
-              done();
-            }, 100);
-          });
+        generateZipFileArrayBuffer(zipFile, resolve, done);
       }));
 
-      const sketch = new SketchLoader(document.getElementById('js-sketch-viewer'));
+      new SketchLoader(document.getElementById('js-sketch-viewer'));
     });
 
     it('does not render error message', () => {
@@ -91,21 +96,13 @@ fdescribe('Sketch viewer', () => {
 
   describe('incorrect file', () => {
     beforeEach((done) => {
-      spyOn(SketchLoader.prototype, 'getZipFile').and.callFake(() => new Promise((resolve, reject) => {
+      spyOn(SketchLoader.prototype, 'getZipFile').and.callFake(() => new Promise((resolve) => {
         const zipFile = new JSZip();
 
-        zipFile
-          .generateAsync({ type: 'arrayBuffer' })
-          .then((content) => {
-            resolve(content);
-
-            setTimeout(() => {
-              done();
-            }, 100);
-          });
+        generateZipFileArrayBuffer(zipFile, resolve, done);
       }));
 
-      const sketch = new SketchLoader(document.getElementById('js-sketch-viewer'));
+      new SketchLoader(document.getElementById('js-sketch-viewer'));
     });
 
     it('renders error message', () => {
