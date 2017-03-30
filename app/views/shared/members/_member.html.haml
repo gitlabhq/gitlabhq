@@ -31,7 +31,7 @@
           Joined #{time_ago_with_tooltip(member.created_at)}
         - if member.expires?
           ·
-          %span{ class: ('text-warning' if member.expires_soon?) }
+          %span{ class: "#{"text-warning" if member.expires_soon?} has-tooltip", title: member.expires_at.to_time.in_time_zone.to_s(:medium) }
             Expires in #{distance_of_time_in_words_to_now(member.expires_at)}
 
     - else
@@ -47,7 +47,7 @@
     - current_resource = @project || @group
     .controls.member-controls
       - if show_controls && member.source == current_resource
-        - if user != current_user
+        - if user != current_user && can_admin_member
           = form_for member, remote: true, html: { class: 'form-horizontal js-edit-member-form' } do |f|
             = f.hidden_field :access_level
             .member-form-control.dropdown.append-right-5
