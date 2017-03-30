@@ -1,10 +1,9 @@
-import ShowMoreAssignees from './show_more_assignees';
-
 export default {
   name: 'MultipleAssignees',
   data() {
     return {
-      showMore: false,
+      showLess: true,
+      defaultRenderCount: 5,
     };
   },
   props: {
@@ -14,41 +13,57 @@ export default {
     rootPath() {
       return this.assignees.rootPath;
     },
-    shouldShowMoreAssignees() {
-      return this.assignees.users.length > 5;
+    renderShowMoreSection() {
+      return this.assignees.users.length > this.defaultRenderCount;
     },
     numberOfHiddenAssignees() {
-      return this.showMore ? 0 : this.assignees.users.length - 5;
+      return this.assignees.users.length - this.defaultRenderCount;
     },
-    toggleShowMore() {
-      return function toggleShowMore() {
-        this.showMore = !this.showMore;
-      }.bind(this);
+    isHiddenAssignees() {
+      return this.numberOfHiddenAssignees > 0;
     },
   },
-  components: {
-    'show-more-assignees': ShowMoreAssignees,
+  methods: {
+    toggleShowLess() {
+      this.showLess = !this.showLess;
+    },
+    renderAssignee(index) {
+      return !this.showLess || (index < this.defaultRenderCount && this.showLess);
+    },
+    assigneeUrl(username) {
+      return `${this.rootPath}${username}`;
+    },
+    assigneeAlt(name) {
+      return `${name}'s avatar`;
+    },
   },
   template: `
     <div class="hide-collapsed">
       <div class="hide-collapsed">
         <div class="user-list">
           <div class="user-item" v-for="(user, index) in assignees.users"
-              v-if="showMore || (index < 5 && !showMore)" >
+              v-if="renderAssignee(index)" >
             <a class="user-link has-tooltip"
               data-placement="bottom"
-              :href="rootPath + user.username"
+              :href="assigneeUrl(user.username)"
               :data-title="user.name" >
               <img width="32"
                 class="avatar avatar-inline s32"
-                :alt="user.name + '\\'s avatar'"
+                :alt="assigneeAlt(user.name)"
                 :src="user.avatarUrl" >
             </a>
           </div>
         </div>
-        <show-more-assignees v-if="shouldShowMoreAssignees"
-          :hiddenAssignees="numberOfHiddenAssignees"
-          :toggle="toggleShowMore" />
+        <div class="user-list-more" v-if="renderShowMoreSection">
+          <button type="button" class="btn-link" @click="toggleShowLess">
+            <template v-if="showLess">
+              + {{numberOfHiddenAssignees}} more
+            </template>
+            <template v-else>
+              - show less
+            </template>
+          </button>
+        </div>
       </div>
     </div>
   `,
