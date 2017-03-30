@@ -2,6 +2,11 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.0.2 (2017-03-29)
+
+- Correctly update paths when changing a child group.
+- Fixed private group name disclosure via new/update forms.
+
 ## 9.0.1 (2017-03-28)
 
 - Resolve "404 when requesting build trace". !9759 (dosuken123)
