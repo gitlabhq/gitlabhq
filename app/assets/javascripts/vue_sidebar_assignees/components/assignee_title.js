@@ -18,8 +18,8 @@ export default {
       <template v-else>
         Assignee
       </template>
-      <i aria-hidden="true" class="fa fa-spinner fa-spin block-loading" :class="{ hidden: !loading }"></i>
-      <a class="edit-link pull-right" :class="{ hidden: !editable }" href="#">Edit</a>
+      <i v-if="loading" aria-hidden="true" class="fa fa-spinner fa-spin block-loading"></i>
+      <a v-if="editable" class="edit-link pull-right" href="#">Edit</a>
     </div>
   `,
 };

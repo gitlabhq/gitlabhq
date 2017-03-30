@@ -146,7 +146,7 @@ import Cookies from 'js-cookie';
     Sidebar.prototype.openDropdown = function(blockOrName) {
       var $block;
       $block = _.isString(blockOrName) ? this.getBlock(blockOrName) : blockOrName;
-      $block.find('.edit-link:not(.hidden)').trigger('click');
+      $block.find('.edit-link').trigger('click');
       if (!this.isOpen()) {
         this.setCollapseAfterUpdate($block);
         return this.toggleSidebar('open');
