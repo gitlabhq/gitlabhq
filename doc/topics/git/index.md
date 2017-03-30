@@ -29,7 +29,7 @@ We've gathered some resources to help you to get the best from Git with GitLab.
     - [Getting Started - Installing Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
     - [Git on the Server - GitLab](https://git-scm.com/book/en/v2/Git-on-the-Server-GitLab)
 
-### Branching strategies
+## Branching strategies
 
 - **Articles:**
   - [GitLab Flow](https://about.gitlab.com/2014/09/29/gitlab-flow/)
