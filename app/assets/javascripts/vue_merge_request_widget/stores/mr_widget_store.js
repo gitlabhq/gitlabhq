@@ -56,6 +56,7 @@ export default class MergeRequestStore {
     this.createIssueToResolveDiscussionsPath = data.create_issue_to_resolve_discussions_path;
     this.ciEnvironmentsStatusPath = data.ci_environments_status_url;
     this.mergeCheckPath = data.merge_check_path;
+    this.isRemovingSourceBranch = this.isRemovingSourceBranch || false;
 
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
     this.canRevert = currentUser.can_revert || false;

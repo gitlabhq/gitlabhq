@@ -1,3 +1,5 @@
+import Vue from 'vue';
+import simplePoll from '~/lib/utils/simple_poll';
 import eventHub from '../../event_hub';
 
 export default {
@@ -13,6 +15,7 @@ export default {
       useCommitMessageWithDescription: false,
       setToMergeWhenPipelineSucceeds: false,
       showCommitMessageEditor: false,
+      isWorking: false,
       commitMessage: this.mr.commitMessage,
     };
   },
@@ -42,18 +45,14 @@ export default {
       return defaultClass;
     },
     mergeButtonText() {
-      if (this.mr.isPipelineActive) {
-        return 'Merge when pipeline succeeds';
-      }
-
-      return 'Merge';
+      return this.mr.isPipelineActive ? 'Merge when pipeline succeeds' : 'Merge';
     },
     shouldShowMergeOptionsDropdown() {
       return this.mr.isPipelineActive && !this.mr.onlyAllowMergeIfPipelineSucceeds;
     },
     isMergeButtonDisabled() {
       const { commitMessage } = this;
-      return !commitMessage.length || !this.isMergeAllowed();
+      return !commitMessage.length || !this.isMergeAllowed() || this.isWorking;
     },
   },
   methods: {
@@ -82,14 +81,62 @@ export default {
         should_remove_source_branch: this.removeSourceBranch === true,
       };
 
+      this.isWorking = true;
+
       // TODO: Error handling
       this.service.merge(options)
         .then(res => res.json())
         .then((res) => {
           if (res.status === 'merge_when_pipeline_succeeds') {
             eventHub.$emit('MRWidgetUpdateRequested');
+          } else if (res.status === 'success') {
+            this.initiateMergePolling();
           }
         });
+    },
+    initiateMergePolling() {
+      simplePoll((continuePolling, stopPolling) => {
+        this.service.pollResource.get()
+          .then(res => res.json())
+          .then((res) => {
+            if (res.state === 'merged') {
+              // If state is merged we should update the widget and stop the polling
+              eventHub.$emit('MRWidgetUpdateRequested');
+              stopPolling();
+
+              // If user checked remove source branch and we didn't remove the branch yet
+              // we should start another polling for source branch remove process
+              if (this.removeSourceBranch && res.source_branch_exists) {
+                this.initiateRemoveSourceBranchPolling();
+              }
+            } else {
+              // MR is not merged yet, continue polling until the state becomes 'merged'
+              continuePolling();
+            }
+          });
+      });
+    },
+    initiateRemoveSourceBranchPolling() {
+      // We need to show source branch is being removed spinner in another component
+      eventHub.$emit('SetBranchRemoveFlag', [true]);
+
+      simplePoll((continuePolling, stopPolling) => {
+        this.service.pollResource.get()
+          .then(res => res.json())
+          .then((res) => {
+            // If source branch exists then we should continue polling
+            // because removing a source branch is a background task and takes time
+            if (res.source_branch_exists) {
+              continuePolling();
+            } else {
+              // Branch is removed. Update widget, stop polling and hide the spinner
+              eventHub.$emit('MRWidgetUpdateRequested', () => {
+                eventHub.$emit('SetBranchRemoveFlag', [false]);
+              });
+              stopPolling();
+            }
+          });
+      });
     },
   },
   template: `

@@ -17,7 +17,12 @@ export default {
   },
   computed: {
     shouldShowRemoveSourceBranch() {
-      return this.mr.canRemoveSourceBranch && !this.isRemovingSourceBranch;
+      const { isRemovingSourceBranch, canRemoveSourceBranch } = this.mr;
+
+      return canRemoveSourceBranch && !this.isRemovingSourceBranch && !isRemovingSourceBranch;
+    },
+    shouldShowSourceBranchRemoving() {
+      return this.isRemovingSourceBranch || this.mr.isRemovingSourceBranch;
     },
   },
   methods: {
@@ -59,7 +64,7 @@ export default {
             :class="{ disabled: isRemovingSourceBranch }"
             type="button" class="btn btn-xs btn-default">Remove Source Branch</button>
         </p>
-        <p v-if="isRemovingSourceBranch">
+        <p v-if="shouldShowSourceBranchRemoving">
           The source branch is being removed.
           <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
         </p>

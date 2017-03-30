@@ -69,6 +69,11 @@ const mrWidgetOptions = () => ({
     eventHub.$on('MRWidgetUpdateRequested', (cb) => {
       this.checkStatus(cb);
     });
+
+    eventHub.$on('SetBranchRemoveFlag', (params) => {
+      const [flag] = params;
+      this.mr.isRemovingSourceBranch = flag;
+    });
   },
   mounted() {
     // TODO: Error handling
