@@ -1,3 +1,6 @@
+/* global Flash */
+import '~/flash';
+
 export default class SidebarAssigneesStore {
   constructor(currentUserId, service, rootPath, editable) {
     this.currentUserId = currentUserId;
@@ -51,10 +54,9 @@ export default class SidebarAssigneesStore {
 
         this.saved = true;
         this.loading = false;
-      }).catch((err) => {
+      }).catch(() => {
         this.loading = false;
-        // TODO: Add correct error handling
-        throw err;
+        return new Flash('An error occured while saving assignees', 'alert');
       });
   }
 }
