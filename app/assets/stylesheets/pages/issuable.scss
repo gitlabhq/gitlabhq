@@ -419,6 +419,8 @@
 }
 
 .participants-list {
+  display: flex;
+  justify-content: space-between;
   margin: -5px;
 }
 
@@ -430,7 +432,7 @@
 }
 
 .participants-author {
-  display: inline-block;
+  flex-basis: 14%;
   padding: 5px;
 
   .author_link {
@@ -451,10 +453,6 @@
   .user-link {
     display: inline-block;
   }
-}
-
-.participants-author:nth-of-type(7n) {
-  padding-right: 0;
 }
 
 .participants-more,
