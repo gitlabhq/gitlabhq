@@ -1,0 +1,37 @@
+.bs-callout.clearfix
+  %p
+    User cohorts are shown for the last twelve months. Only users with
+    activity are counted in the cohort total; inactive users are counted
+    separately.
+
+.table-holder
+  %table.table
+    %thead
+      %tr
+        %th Registration month
+        %th Inactive users
+        %th Cohort total
+        %th Month 0
+        %th Month 1
+        %th Month 2
+        %th Month 3
+        %th Month 4
+        %th Month 5
+        %th Month 6
+        %th Month 7
+        %th Month 8
+        %th Month 9
+        %th Month 10
+        %th Month 11
+    %tbody
+      - @cohorts.each do |registration_month, cohort|
+        %tr
+          %td= registration_month.strftime('%b %Y')
+          %td= number_with_delimiter(cohort[:inactive])
+          %td= number_with_delimiter(cohort[:total])
+          - cohort[:months].each do |running_total|
+            %td
+              - next if cohort[:total].zero?
+              = number_to_percentage(100 * running_total / cohort[:total], precision: 0)
+              %br
+              (#{number_with_delimiter(running_total)})
