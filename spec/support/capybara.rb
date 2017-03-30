@@ -27,6 +27,6 @@ Capybara::Screenshot.prune_strategy = :keep_last_run
 
 RSpec.configure do |config|
   config.before(:suite) do
-    TestEnv.warm_asset_cache unless ENV['CI'] || ENV['CI_SERVER']
+    TestEnv.eager_load_driver_server
   end
 end

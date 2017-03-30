@@ -169,7 +169,7 @@ module TestEnv
   #
   # Otherwise they'd be created by the first test, often timing out and
   # causing a transient test failure
-  def warm_asset_cache
+  def eager_load_driver_server
     return unless defined?(Capybara)
 
     Capybara.current_session.driver.visit '/'
