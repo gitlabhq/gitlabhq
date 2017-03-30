@@ -1,4 +1,5 @@
 import mrWidgetAuthorTime from '../../components/mr_widget_author_time';
+import eventHub from '../../event_hub';
 
 export default {
   name: 'MRWidgetMerged',
@@ -14,12 +15,24 @@ export default {
       isRemovingSourceBranch: false,
     };
   },
+  computed: {
+    shouldShowRemoveSourceBranch() {
+      return this.mr.canRemoveSourceBranch && !this.isRemovingSourceBranch;
+    },
+  },
   methods: {
     removeSourceBranch() {
       this.isRemovingSourceBranch = true;
-      // TODO: Update widget, error handling
+      // TODO: Error handling
       this.service.removeSourceBranch()
-        .then(res => res.json());
+        .then(res => res.json())
+        .then((res) => {
+          if (res.message === 'Branch was removed') {
+            eventHub.$emit('MRWidgetUpdateRequested', () => {
+              this.isRemovingSourceBranch = false;
+            });
+          }
+        });
     },
   },
   template: `
@@ -39,7 +52,7 @@ export default {
           </a>
         </p>
         <p v-if="mr.sourceBranchRemoved">The source branch has been removed.</p>
-        <p v-if="mr.canRemoveSourceBranch">
+        <p v-if="shouldShowRemoveSourceBranch">
           You can remove source branch now.
           <button
             @click="removeSourceBranch"
