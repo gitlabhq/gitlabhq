@@ -108,6 +108,37 @@ require('~/lib/utils/common_utils');
       });
     });
 
+    describe('gl.utils.normalizeCRLFHeaders', () => {
+      beforeEach(function () {
+        this.CLRFHeaders = 'a-header: a-value\nAnother-Header: ANOTHER-VALUE\nLaSt-HeAdEr: last-VALUE';
+
+        spyOn(String.prototype, 'split').and.callThrough();
+        spyOn(gl.utils, 'normalizeHeaders').and.callThrough();
+
+        this.normalizeCRLFHeaders = gl.utils.normalizeCRLFHeaders(this.CLRFHeaders);
+      });
+
+      it('should split by newline', function () {
+        expect(String.prototype.split).toHaveBeenCalledWith('\n');
+      });
+
+      it('should split by colon+space for each header', function () {
+        expect(String.prototype.split.calls.allArgs().filter(args => args[0] === ': ').length).toBe(3);
+      });
+
+      it('should call gl.utils.normalizeHeaders with a parsed headers object', function () {
+        expect(gl.utils.normalizeHeaders).toHaveBeenCalledWith(jasmine.any(Object));
+      });
+
+      it('should return a normalized headers object', function () {
+        expect(this.normalizeCRLFHeaders).toEqual({
+          'A-HEADER': 'a-value',
+          'ANOTHER-HEADER': 'ANOTHER-VALUE',
+          'LAST-HEADER': 'last-VALUE',
+        });
+      });
+    });
+
     describe('gl.utils.parseIntPagination', () => {
       it('should parse to integers all string values and return pagination object', () => {
         const pagination = {
