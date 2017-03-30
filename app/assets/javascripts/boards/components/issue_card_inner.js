@@ -69,25 +69,33 @@ import eventHub from '../eventhub';
     template: `
       <div>
         <div class="card-header">
-          <i class="fa fa-eye-slash confidential-icon"
+          <i
+            class="fa fa-eye-slash confidential-icon"
             v-if="issue.confidential"
-            aria-hidden="true">
-          </i>
+            aria-hidden="true"
+          />
           <h4 class="card-title">
-            <a :href="issueLinkBase + '/' + issue.id"
+            <a
+              :href="issueLinkBase + '/' + issue.id"
               :title="issue.title">{{ issue.title }}</a>
-            <span class="card-number">#{{ issue.id }}</span>
+            <span class="card-number">
+              #{{ issue.id }}
+            </span>
           </h4>
-          <a class="card-assignee has-tooltip"
+          <a
+            class="card-assignee has-tooltip"
             :href="rootPath + issue.assignee.username"
             :title="'Assigned to ' + issue.assignee.name"
             v-if="issue.assignee"
-            data-container="body">
-            <img class="avatar avatar-inline s20"
+            data-container="body"
+          >
+            <img
+              class="avatar avatar-inline s20"
               :src="issue.assignee.avatar"
               width="20"
               height="20"
-              :alt="'Avatar for ' + issue.assignee.name" />
+              :alt="'Avatar for ' + issue.assignee.name"
+            />
           </a>
         </div>
         <div class="card-footer">
@@ -99,7 +107,8 @@ import eventHub from '../eventhub';
             @click="filterByLabel(label, $event)"
             :style="labelStyle(label)"
             :title="label.description"
-            data-container="body">
+            data-container="body"
+          >
             {{ label.title }}
           </button>
         </div>
