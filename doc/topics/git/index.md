@@ -1,5 +1,16 @@
 # Git documentation
 
+Git is a [free and open source](https://git-scm.com/about/free-and-open-source)
+distributed version control system designed to handle everything from small to
+very large projects with speed and efficiency.
+
+[GitLab](https://about.gitlab.com) is a Git-based fully integrated platform for
+software development. It has all functionalities Git has, plus a lot of
+powerful [features](https://about.gitlab.com/features/) to enhance your
+[workflow](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
+
+We've gathered some resources to help you to get the best from Git with GitLab.
+
 ## Getting started
 
 - [Git concepts](../../university/training/user_training.html#git-concepts)
@@ -8,7 +19,9 @@
 - [GitLab Git Cheat Sheet (download)](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf)
 - **Articles:**
   - [Git Tips & Tricks](https://about.gitlab.com/2016/12/08/git-tips-and-tricks/)
-  - [8 Tips to help you work better with Git](https://about.gitlab.com/2015/02/19/8-tips-to-help-you-work-better-with-git/)
+  - [Eight Tips to help you work better with Git](https://about.gitlab.com/2015/02/19/8-tips-to-help-you-work-better-with-git/)
+- **Presentations:**
+  - [GLU Course: About Version Control](https://docs.google.com/presentation/d/16sX7hUrCZyOFbpvnrAFrg6tVO5_yT98IgdAqOmXwBho/edit?usp=sharing)
 - **Third-party resources:**
   - What is [Git](https://git-scm.com)
     - [Version control](https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control)
@@ -23,11 +36,6 @@
 - **Third-party resources:**
   - [Git Branching - Branches in a Nutshell](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
   - [Git Branching - Branching Workflows](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows)
-
-### Version control
-
-- **Presentations:**
-  - [GLU Course: About Version Control](https://docs.google.com/presentation/d/16sX7hUrCZyOFbpvnrAFrg6tVO5_yT98IgdAqOmXwBho/edit?usp=sharing)
 
 ## Advanced use
 
