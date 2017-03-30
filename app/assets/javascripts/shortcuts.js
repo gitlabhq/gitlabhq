@@ -1,6 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, prefer-arrow-callback, consistent-return, object-shorthand, no-unused-vars, one-var, one-var-declaration-per-line, no-else-return, comma-dangle, max-len */
-/* global Mousetrap, ShortcutsDashboardNavigation */
+/* global Mousetrap */
 /* global findFileURL */
+import findAndFollowLink from './shortcuts_dashboard_navigation';
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
@@ -14,47 +15,27 @@
       }
       Mousetrap.bind('?', this.onToggleHelp);
       Mousetrap.bind('s', Shortcuts.focusSearch);
-      Mousetrap.bind('f', (function(_this) {
-        return function(e) {
-          return _this.focusFilter(e);
-        };
-      })(this));
+      Mousetrap.bind('f', (e => this.focusFilter(e)));
 
       const globalDropdownMenu = $('.global-dropdown-menu');
 
-      $('.global-dropdown').on('hide.bs.dropdown', function() {
-        globalDropdownMenu.removeClass('shortcuts');
+      $('.global-dropdown').on('hide.bs.dropdown', () => {
+        globalDropdownMenu.toggleClass('shortcuts');
       });
 
-      Mousetrap.bind('n', function() {
-        globalDropdownMenu.addClass('shortcuts');
+      Mousetrap.bind('n', () => {
+        globalDropdownMenu.toggleClass('shortcuts');
         $('.global-dropdown-toggle').trigger('click');
       });
 
-      Mousetrap.bind('shift+t', function() {
-        return ShortcutsDashboardNavigation.findAndFollowLink('.shortcuts-todos');
-      });
-      Mousetrap.bind('shift+a', function() {
-        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-activity');
-      });
-      Mousetrap.bind('shift+i', function() {
-        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-issues');
-      });
-      Mousetrap.bind('shift+m', function() {
-        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-merge_requests');
-      });
-      Mousetrap.bind('shift+p', function() {
-        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-projects');
-      });
-      Mousetrap.bind('shift+g', function() {
-        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-groups');
-      });
-      Mousetrap.bind('shift+l', function() {
-        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-milestones');
-      });
-      Mousetrap.bind('shift+s', function() {
-        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-snippets');
-      });
+      Mousetrap.bind('shift+t', () => findAndFollowLink('.shortcuts-todos'));
+      Mousetrap.bind('shift+a', () => findAndFollowLink('.dashboard-shortcuts-activity'));
+      Mousetrap.bind('shift+i', () => findAndFollowLink('.dashboard-shortcuts-issues'));
+      Mousetrap.bind('shift+m', () => findAndFollowLink('.dashboard-shortcuts-merge_requests'));
+      Mousetrap.bind('shift+p', () => findAndFollowLink('.dashboard-shortcuts-projects'));
+      Mousetrap.bind('shift+g', () => findAndFollowLink('.dashboard-shortcuts-groups'));
+      Mousetrap.bind('shift+l', () => findAndFollowLink('.dashboard-shortcuts-milestones'));
+      Mousetrap.bind('shift+s', () => findAndFollowLink('.dashboard-shortcuts-snippets'));
 
       Mousetrap.bind(['ctrl+shift+p', 'command+shift+p'], this.toggleMarkdownPreview);
       if (typeof findFileURL !== "undefined" && findFileURL !== null) {
