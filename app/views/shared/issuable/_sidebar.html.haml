@@ -176,11 +176,11 @@
             = icon('spinner spin', class: 'block-loading')
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
               = link_to 'Edit', '#', class: 'edit-link pull-right'
-          .value.bold.hide-collapsed
+          .value.hide-collapsed
             - if issuable.weight
-              = issuable.weight
+              %strong= issuable.weight
             - else
-              .light None
+              %span.no-value None
           .selectbox.hide-collapsed
             = weight_dropdown_tag(issuable, title: 'Change weight', data: { field_name: 'weight', issue_update: "#{issuable_json_path(issuable)}", ability_name: "#{issuable.to_ability_name}" }) do
               %ul

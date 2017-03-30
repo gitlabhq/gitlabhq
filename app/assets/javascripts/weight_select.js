@@ -30,9 +30,9 @@
             $loading.fadeOut();
             $selectbox.hide();
             if (data.weight != null) {
-              $value.html(data.weight);
+              $value.html(`<strong>${data.weight}</strong>`);
             } else {
-              $value.html('None');
+              $value.html('<span class="no-value">None</span>');
             }
             return $sidebarCollapsedValue.html(data.weight);
           });

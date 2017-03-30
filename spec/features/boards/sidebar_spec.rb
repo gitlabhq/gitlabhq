@@ -11,7 +11,7 @@ describe 'Issue Boards', feature: true, js: true do
   let!(:bug)         { create(:label, project: project, name: 'Bug') }
   let!(:regression)  { create(:label, project: project, name: 'Regression') }
   let!(:stretch)     { create(:label, project: project, name: 'Stretch') }
-  let!(:issue1)      { create(:labeled_issue, project: project, assignee: user, milestone: milestone, labels: [development], relative_position: 2) }
+  let!(:issue1)      { create(:labeled_issue, project: project, assignees: [user], milestone: milestone, labels: [development], relative_position: 2) }
   let!(:issue2)      { create(:labeled_issue, project: project, labels: [development, stretch], relative_position: 1) }
   let(:board)        { create(:board, project: project) }
   let!(:list)        { create(:list, board: board, label: development, position: 0) }

@@ -65,7 +65,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def new
     params[:issue] ||= ActionController::Parameters.new(
-      assignee_id: ""
+      assignee_ids: ""
     )
     build_params = issue_params.merge(
       merge_request_to_resolve_discussions_of: params[:merge_request_to_resolve_discussions_of],

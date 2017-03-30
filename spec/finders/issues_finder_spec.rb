@@ -7,12 +7,12 @@ describe IssuesFinder do
   let(:project2) { create(:empty_project) }
   let(:milestone) { create(:milestone, project: project1) }
   let(:label) { create(:label, project: project2) }
-  let(:issue1) { create(:issue, author: user, assignee: user, project: project1, milestone: milestone, title: 'gitlab') }
-  let(:issue2) { create(:issue, author: user, assignee: user, project: project2, description: 'gitlab') }
-  let(:issue3) { create(:issue, author: user2, assignee: user2, project: project2) }
+  let(:issue1) { create(:issue, author: user, assignees: [user], project: project1, milestone: milestone, title: 'gitlab') }
+  let(:issue2) { create(:issue, author: user, assignees: [user], project: project2, description: 'gitlab') }
+  let(:issue3) { create(:issue, author: user2, assignees: [user2], project: project2) }
 
   describe '#execute' do
-    let(:closed_issue) { create(:issue, author: user2, assignee: user2, project: project2, state: 'closed') }
+    let(:closed_issue) { create(:issue, author: user2, assignees: [user2], project: project2, state: 'closed') }
     let!(:label_link) { create(:label_link, label: label, target: issue2) }
     let(:search_user) { user }
     let(:params) { {} }
@@ -107,7 +107,7 @@ describe IssuesFinder do
 
         before do
           milestones.each do |milestone|
-            create(:issue, project: milestone.project, milestone: milestone, author: user, assignee: user)
+            create(:issue, project: milestone.project, milestone: milestone, author: user, assignees: [user])
           end
         end
 
@@ -142,7 +142,7 @@ describe IssuesFinder do
 
         before do
           milestones.each do |milestone|
-            create(:issue, project: milestone.project, milestone: milestone, author: user, assignee: user)
+            create(:issue, project: milestone.project, milestone: milestone, author: user, assignees: [user])
           end
         end
 

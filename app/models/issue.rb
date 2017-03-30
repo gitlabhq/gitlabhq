@@ -29,11 +29,14 @@ class Issue < ActiveRecord::Base
 
   has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
 
+  has_and_belongs_to_many :assignees, class_name: "User", join_table: :issue_assignees
+
   validates :project, presence: true
 
-  scope :cared, ->(user) { where(assignee_id: user) }
+  scope :cared, ->(user) { with_assignees.where("issue_assignees.user_id IN(?)", user.id) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
+  scope :with_assignees, -> { joins('LEFT JOIN issue_assignees ON issue_id = issues.id') }
 
   scope :without_due_date, -> { where(due_date: nil) }
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }
@@ -50,6 +53,8 @@ class Issue < ActiveRecord::Base
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
+
+  participant :assignees
 
   state_machine :state, initial: :opened do
     event :close do
@@ -125,6 +130,28 @@ class Issue < ActiveRecord::Base
       reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
               Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
               "id DESC")
+  end
+
+  # Returns a Hash of attributes to be used for Twitter card metadata
+  def card_attributes
+    {
+      'Author'   => author.try(:name),
+      'Assignee' => assignee_list
+    }
+  end
+
+  def assignee_or_author?(user)
+    author_id == user.id || assignees.exists?(user.id)
+  end
+
+  def assignee_list
+    assignees.map(&:name).to_sentence
+  end
+
+  # TODO: This method will help us to find some silent failures.
+  # We should remove it before merging to master
+  def assignee_id
+    raise "assignee_id is deprecated"
   end
 
   # `from` argument can be a Namespace or Project.
@@ -261,7 +288,7 @@ class Issue < ActiveRecord::Base
       true
     elsif confidential?
       author == user ||
-        assignee == user ||
+        assignees.include?(user) ||
         project.team.member?(user, Gitlab::Access::REPORTER)
     else
       project.public? ||

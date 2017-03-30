@@ -20,7 +20,7 @@ describe Issues::CreateService, services: true do
       let(:opts) do
         { title: 'Awesome issue',
           description: 'please fix',
-          assignee_id: assignee.id,
+          assignee_ids: assignee.id.to_s,
           label_ids: labels.map(&:id),
           milestone_id: milestone.id,
           due_date: Date.tomorrow }
@@ -29,7 +29,7 @@ describe Issues::CreateService, services: true do
       it 'creates the issue with the given params' do
         expect(issue).to be_persisted
         expect(issue.title).to eq('Awesome issue')
-        expect(issue.assignee).to eq assignee
+        expect(issue.assignees).to eq [assignee]
         expect(issue.labels).to match_array labels
         expect(issue.milestone).to eq milestone
         expect(issue.due_date).to eq Date.tomorrow
@@ -37,6 +37,7 @@ describe Issues::CreateService, services: true do
 
       context 'when current user cannot admin issues in the project' do
         let(:guest) { create(:user) }
+        
         before do
           project.team << [guest, :guest]
         end
@@ -47,7 +48,7 @@ describe Issues::CreateService, services: true do
           expect(issue).to be_persisted
           expect(issue.title).to eq('Awesome issue')
           expect(issue.description).to eq('please fix')
-          expect(issue.assignee).to be_nil
+          expect(issue.assignees).to be_empty
           expect(issue.labels).to be_empty
           expect(issue.milestone).to be_nil
           expect(issue.due_date).to be_nil

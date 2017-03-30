@@ -87,6 +87,26 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#assignee_or_author?' do
+    let(:user) { build(:user) }
+
+    it 'returns true for a user that is assigned to a merge request' do
+      subject.assignee = user
+
+      expect(subject.assignee_or_author?(user)).to eq(true)
+    end
+
+    it 'returns true for a user that is the author of a merge request' do
+      subject.author = user
+
+      expect(subject.assignee_or_author?(user)).to eq(true)
+    end
+
+    it 'returns false for a user that is not the assignee or author' do
+      expect(subject.assignee_or_author?(user)).to eq(false)
+    end
+  end
+
   describe '#cache_merge_request_closes_issues!' do
     before do
       subject.project.team << [subject.author, :developer]

@@ -22,6 +22,8 @@ class MergeRequest < ActiveRecord::Base
 
   has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
 
+  belongs_to :assignee, class_name: "User"
+
   serialize :merge_params, Hash
 
   after_create :ensure_merge_request_diff, unless: :importing?
@@ -121,6 +123,7 @@ class MergeRequest < ActiveRecord::Base
   scope :references_project, -> { references(:target_project) }
 
   participant :approvers_left
+  participant :assignee
 
   after_save :keep_around_commit
 
@@ -180,6 +183,23 @@ class MergeRequest < ActiveRecord::Base
 
   def self.wip_title(title)
     work_in_progress?(title) ? title : "WIP: #{title}"
+  end
+
+  # Returns a Hash of attributes to be used for Twitter card metadata
+  def card_attributes
+    {
+      'Author'   => author.try(:name),
+      'Assignee' => assignee.try(:name)
+    }
+  end
+
+  # This method is needed for compatibility with issues
+  def assignees
+    [assignee]
+  end
+
+  def assignee_or_author?(user)
+    author_id == user.id || assignee_id == user.id
   end
 
   # `from` argument can be a Namespace or Project.

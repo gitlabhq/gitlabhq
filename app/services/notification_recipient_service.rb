@@ -3,11 +3,12 @@
 #
 class NotificationRecipientService
   attr_reader :project
-  
+
   def initialize(project)
     @project = project
   end
 
+  # TODO: refactor this: previous_assignee argument can be a user object or an array which is not really nice
   def build_recipients(target, current_user, action: nil, previous_assignee: nil, skip_current_user: true)
     custom_action = build_custom_key(action, target)
 
@@ -23,9 +24,13 @@ class NotificationRecipientService
     # Re-assign is considered as a mention of the new assignee so we add the
     # new assignee to the list of recipients after we rejected users with
     # the "on mention" notification level
-    if [:reassign_merge_request, :reassign_issue].include?(custom_action)
+    case custom_action
+    when :reassign_merge_request
       recipients << previous_assignee if previous_assignee
       recipients << target.assignee
+    when :reassign_issue
+      recipients.concat(previous_assignee) if previous_assignee.any?
+      recipients.concat(target.assignees)
     end
 
     recipients = reject_muted_users(recipients)
