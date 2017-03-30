@@ -161,7 +161,7 @@ describe Projects::IssuesController do
           namespace_id: project.namespace.to_param,
           project_id: project,
           id: issue.iid,
-          issue: { assignee_id: assignee.id },
+          issue: { assignee_ids: assignee.id.to_s },
           format: :json
         body = JSON.parse(response.body)
 

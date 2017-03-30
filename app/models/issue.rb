@@ -29,14 +29,18 @@ class Issue < ActiveRecord::Base
 
   has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
 
-  has_and_belongs_to_many :assignees, class_name: "User", join_table: :issue_assignees
+  has_many :issue_assignees
+  has_many :assignees, class_name: "User", through: :issue_assignees
 
   validates :project, presence: true
 
   scope :cared, ->(user) { with_assignees.where("issue_assignees.user_id IN(?)", user.id) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
-  scope :with_assignees, -> { joins('LEFT JOIN issue_assignees ON issue_id = issues.id') }
+  scope :with_assignees, -> { joins("LEFT JOIN issue_assignees ON issue_id = issues.id") }
+  scope :assigned, -> { with_assignees.where('issue_assignees.user_id IS NOT NULL') }
+  scope :unassigned, -> { with_assignees.where('issue_assignees.user_id IS NULL') }
+  scope :assigned_to, ->(u) { with_assignees.where('issue_assignees.user_id = ?', u.id)}
 
   scope :without_due_date, -> { where(due_date: nil) }
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }
@@ -49,7 +53,7 @@ class Issue < ActiveRecord::Base
 
   scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
 
-  scope :include_associations, -> { includes(:assignee, :labels, project: :namespace) }
+  scope :include_associations, -> { includes(:labels, project: :namespace) }
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
@@ -132,6 +136,14 @@ class Issue < ActiveRecord::Base
               "id DESC")
   end
 
+  def update_assignee_cache_counts
+    return true # TODO implement it properly
+    # make sure we flush the cache for both the old *and* new assignees(if they exist)
+    previous_assignee = User.find_by_id(assignee_id_was) if assignee_id_was
+    previous_assignee&.update_cache_counts
+    assignee&.update_cache_counts
+  end
+
   # Returns a Hash of attributes to be used for Twitter card metadata
   def card_attributes
     {
@@ -146,12 +158,6 @@ class Issue < ActiveRecord::Base
 
   def assignee_list
     assignees.map(&:name).to_sentence
-  end
-
-  # TODO: This method will help us to find some silent failures.
-  # We should remove it before merging to master
-  def assignee_id
-    raise "assignee_id is deprecated"
   end
 
   # `from` argument can be a Namespace or Project.

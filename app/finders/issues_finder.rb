@@ -38,6 +38,17 @@ class IssuesFinder < IssuableFinder
     items
   end
 
+  def by_scope(items)
+    case params[:scope]
+    when 'created-by-me', 'authored'
+      items.where(author_id: current_user.id)
+    when 'assigned-to-me'
+      items.where("issue_assignees.user_id = ?", current_user.id)
+    else
+      items
+    end
+  end
+
   def self.not_restricted_by_confidentiality(user)
     issues = Issue.with_assignees
 

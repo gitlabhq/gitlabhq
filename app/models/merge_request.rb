@@ -121,11 +121,15 @@ class MergeRequest < ActiveRecord::Base
   scope :from_source_branches, ->(branches) { where(source_branch: branches) }
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
+  scope :assigned, -> { where("assignee_id IS NOT NULL") }
+  scope :unassigned, -> { where("assignee_id IS NULL") }
+  scope :assigned_to, ->(u) { where(assignee_id: u.id)}
 
   participant :approvers_left
   participant :assignee
 
   after_save :keep_around_commit
+  after_save :update_assignee_cache_counts, if: :assignee_id_changed?
 
   def self.reference_prefix
     '!'
@@ -185,6 +189,17 @@ class MergeRequest < ActiveRecord::Base
     work_in_progress?(title) ? title : "WIP: #{title}"
   end
 
+  def is_being_reassigned?
+    assignee_id_changed?
+  end
+
+  def update_assignee_cache_counts
+    # make sure we flush the cache for both the old *and* new assignees(if they exist)
+    previous_assignee = User.find_by_id(assignee_id_was) if assignee_id_was
+    previous_assignee&.update_cache_counts
+    assignee&.update_cache_counts
+  end
+
   # Returns a Hash of attributes to be used for Twitter card metadata
   def card_attributes
     {
@@ -193,9 +208,9 @@ class MergeRequest < ActiveRecord::Base
     }
   end
 
-  # This method is needed for compatibility with issues
+  # This method is needed for compatibility with issues to not mess view and other code
   def assignees
-    [assignee]
+    assignee ? [assignee] : []
   end
 
   def assignee_or_author?(user)

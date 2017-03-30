@@ -13,7 +13,7 @@ describe Issues::UpdateService, services: true do
 
   let(:issue) do
     create(:issue, title: 'Old title',
-                   assignee_id: user3.id,
+                   assignees: [user3],
                    project: project)
   end
 
@@ -39,7 +39,7 @@ describe Issues::UpdateService, services: true do
         {
           title: 'New title',
           description: 'Also please fix',
-          assignee_id: user2.id,
+          assignee_ids: "#{user2.id}, #{user3.id}",
           state_event: 'close',
           label_ids: [label.id],
           due_date: Date.tomorrow
@@ -52,15 +52,15 @@ describe Issues::UpdateService, services: true do
         expect(issue).to be_valid
         expect(issue.title).to eq 'New title'
         expect(issue.description).to eq 'Also please fix'
-        expect(issue.assignee).to eq user2
+        expect(issue.assignees).to eq [user2, user3]
         expect(issue).to be_closed
         expect(issue.labels).to match_array [label]
         expect(issue.due_date).to eq Date.tomorrow
       end
 
       it 'sorts issues as specified by parameters' do
-        issue1 = create(:issue, project: project, assignee_id: user3.id)
-        issue2 = create(:issue, project: project, assignee_id: user3.id)
+        issue1 = create(:issue, project: project, assignees: [user3])
+        issue2 = create(:issue, project: project, assignees: [user3])
 
         [issue, issue1, issue2].each do |issue|
           issue.move_to_end
@@ -86,7 +86,7 @@ describe Issues::UpdateService, services: true do
           expect(issue).to be_valid
           expect(issue.title).to eq 'New title'
           expect(issue.description).to eq 'Also please fix'
-          expect(issue.assignee).to eq user3
+          expect(issue.assignees).to eq [user3]
           expect(issue.labels).to be_empty
           expect(issue.milestone).to be_nil
           expect(issue.due_date).to be_nil
@@ -136,7 +136,7 @@ describe Issues::UpdateService, services: true do
         {
           title: 'New title',
           description: 'Also please fix',
-          assignee_id: user2.id,
+          assignee_ids: [user2],
           state_event: 'close',
           label_ids: [label.id],
           confidential: true
@@ -163,11 +163,11 @@ describe Issues::UpdateService, services: true do
         project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
         update_issue(confidential: true)
         non_member        = create(:user)
-        original_assignee = issue.assignee
+        original_assignees = issue.assignees
 
-        update_issue(assignee_id: non_member.id)
+        update_issue(assignee_ids: non_member.id.to_s)
 
-        expect(issue.reload.assignee_id).to eq(original_assignee.id)
+        expect(issue.reload.assignees).to eq(original_assignees)
       end
     end
 
