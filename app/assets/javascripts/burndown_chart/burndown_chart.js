@@ -18,6 +18,13 @@ export default class BurndownChart {
 
     this.xAxisGroup.append('line').attr('class', 'domain-line');
 
+    // create y-axis label
+    const yAxisLabel = this.yAxisGroup.append('g').attr('class', 'axis-label');
+    this.yAxisLabelText = yAxisLabel.append('text').text('Remaining');
+    this.yAxisLabelBBox = this.yAxisLabelText.node().getBBox();
+    this.yAxisLabelLineA = yAxisLabel.append('line');
+    this.yAxisLabelLineB = yAxisLabel.append('line');
+
     // parse start and due dates
     this.startDate = parseDate(startDate);
     this.dueDate = parseDate(dueDate);
@@ -66,7 +73,7 @@ export default class BurndownChart {
   }
 
   // set data and force re-render
-  setData(data) {
+  setData(data, label) {
     this.data = data.map(datum => ({
       date: parseDate(datum[0]),
       value: parseInt(datum[1], 10),
@@ -78,6 +85,12 @@ export default class BurndownChart {
 
     this.xScale.domain([this.startDate, this.xMax]);
     this.yScale.domain([0, this.yMax]);
+
+    // calculate the bounding box for our axis label if we've updated it
+    // (we must do this here to prevent layout thrashing)
+    if (label !== undefined) {
+      this.yAxisLabelBBox = this.yAxisLabelText.text(label).node().getBBox();
+    }
 
     // set our ideal line data
     if (this.data.length > 1) {
@@ -123,6 +136,28 @@ export default class BurndownChart {
     this.xAxisGroup.select('.domain').remove();
     this.xAxisGroup.select('.domain-line').attr('x1', 0).attr('x2', this.chartWidth + margin.right);
 
+    // update our y-axis label
+    const axisLabelOffset = (this.yAxisLabelBBox.height / 2) - margin.left;
+    const axisLabelPadding = (this.chartHeight - this.yAxisLabelBBox.width - 10) / 2;
+
+    this.yAxisLabelText
+      .attr('y', 0 - margin.left)
+      .attr('x', 0 - (this.chartHeight / 2))
+      .attr('dy', '1em')
+      .style('text-anchor', 'middle')
+      .attr('transform', 'rotate(-90)');
+    this.yAxisLabelLineA
+      .attr('x1', axisLabelOffset)
+      .attr('x2', axisLabelOffset)
+      .attr('y1', 0)
+      .attr('y2', axisLabelPadding);
+    this.yAxisLabelLineB
+      .attr('x1', axisLabelOffset)
+      .attr('x2', axisLabelOffset)
+      .attr('y1', this.chartHeight - axisLabelPadding)
+      .attr('y2', this.chartHeight);
+
+    // render lines if data available
     if (this.data != null && this.data.length > 1) {
       this.actualLinePath.datum(this.data).attr('d', this.line);
       this.idealLinePath.datum(this.idealData).attr('d', this.line);

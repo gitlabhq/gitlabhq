@@ -248,6 +248,8 @@
 
 $burndown-chart-axis-color: #aaa;
 $burndown-chart-line-color: #2faa60;
+$burndown-chart-axis-label-color: #5c5c5c;
+$burndown-chart-axis-label-stroke: #e5e5e5;
 
 .burndown-chart {
   width: 100%;
@@ -270,6 +272,16 @@ $burndown-chart-line-color: #2faa60;
       fill: none;
       stroke: $burndown-chart-axis-color;
       shape-rendering: crispEdges;
+    }
+  }
+
+  .axis-label {
+    text {
+      fill: $burndown-chart-axis-label-color;
+    }
+
+    line {
+      stroke: $burndown-chart-axis-label-stroke;
     }
   }
 
