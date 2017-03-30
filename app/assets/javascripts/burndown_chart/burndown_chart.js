@@ -305,7 +305,13 @@ export default class BurndownChart {
 
       if (this.queueLineAnimation === true) {
         this.queueLineAnimation = false;
-        this.constructor.animateLinePath(this.actualLinePath, 800);
+
+        // hide tooltips until animation is finished
+        this.chartFocus.attr('opacity', 0);
+
+        this.constructor.animateLinePath(this.actualLinePath, 800, () => {
+          this.chartFocus.attr('opacity', null);
+        });
       }
     }
   }
@@ -328,7 +334,7 @@ export default class BurndownChart {
     this.ticksLeft = seconds * 50;
   }
 
-  static animateLinePath(path, duration = 1000) {
+  static animateLinePath(path, duration = 1000, cb) {
     // hack to run a callback at transition end
     function after(transition, callback) {
       let i = 0;
@@ -350,6 +356,9 @@ export default class BurndownChart {
         .duration(duration)
         .ease('linear')
         .attr('stroke-dashoffset', 0)
-        .call(after, () => path.attr('stroke-dasharray', null));
+        .call(after, () => {
+          path.attr('stroke-dasharray', null);
+          if (cb) cb();
+        });
   }
 }
