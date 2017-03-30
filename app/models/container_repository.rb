@@ -58,4 +58,8 @@ class ContainerRepository < ActiveRecord::Base
       client.delete_repository_tag(self.path, digest)
     end
   end
+
+  def self.create_from_path(path)
+    self.create(project: path.repository_project, name: path.repository_name)
+  end
 end
