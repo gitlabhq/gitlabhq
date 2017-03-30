@@ -31,6 +31,9 @@
         $('.global-dropdown-toggle').trigger('click');
       });
 
+      Mousetrap.bind('shift+t', function() {
+        return ShortcutsDashboardNavigation.findAndFollowLink('.shortcuts-todos');
+      });
       Mousetrap.bind('shift+a', function() {
         return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-activity');
       });
