@@ -81,12 +81,19 @@ describe 'gitlab:app namespace rake task' do
   end # backup_restore task
 
   describe 'backup' do
+    before(:all) do
+      ENV['force'] = 'yes'
+    end
+
     def tars_glob
       Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar'))
     end
 
     def create_backup
       FileUtils.rm tars_glob
+
+      # This reconnect makes our project fixture disappear, breaking the restore. Stub it out.
+      allow(ActiveRecord::Base.connection).to receive(:reconnect!)
 
       # Redirect STDOUT and run the rake task
       orig_stdout = $stdout
@@ -118,9 +125,6 @@ describe 'gitlab:app namespace rake task' do
         path = File.join(project.repository.path_to_repo, filename)
         FileUtils.mkdir_p(path)
         FileUtils.touch(File.join(path, "dummy.txt"))
-
-        # We need to use the full path instead of the relative one
-        allow(Gitlab.config.gitlab_shell).to receive(:path).and_return(File.expand_path(Gitlab.config.gitlab_shell.path, Rails.root.to_s))
 
         ENV["SKIP"] = "db"
         create_backup
@@ -227,8 +231,8 @@ describe 'gitlab:app namespace rake task' do
         FileUtils.mkdir('tmp/tests/default_storage')
         FileUtils.mkdir('tmp/tests/custom_storage')
         storages = {
-          'default' => { 'path' => 'tmp/tests/default_storage' },
-          'custom' => { 'path' => 'tmp/tests/custom_storage' }
+          'default' => { 'path' => Settings.absolute('tmp/tests/default_storage') },
+          'custom' => { 'path' => Settings.absolute('tmp/tests/custom_storage') }
         }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
 
