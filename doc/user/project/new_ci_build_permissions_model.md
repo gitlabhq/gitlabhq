@@ -238,4 +238,4 @@ test:
 [triggers]: ../../ci/triggers/README.md
 [update-docs]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update
 [workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse
-[jobenv]: ../../ci/variables/#predefined-variables-environment-variables
+[jobenv]: ../../ci/variables/README.md#predefined-variables-environment-variables
