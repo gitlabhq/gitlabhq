@@ -21,6 +21,7 @@ import MergeWhenPipelineSucceedsState from './components/states/mr_widget_merge_
 import CheckingState from './components/states/mr_widget_checking';
 import MRWidgetStore from './stores/mr_widget_store';
 import MRWidgetService from './services/mr_widget_service';
+import eventHub from './event_hub';
 import { stateToComponentMap, statesToShowHelpWidget } from './stores/state_maps';
 
 const mrWidgetOptions = () => ({
