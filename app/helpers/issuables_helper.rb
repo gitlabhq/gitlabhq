@@ -234,6 +234,6 @@ module IssuablesHelper
   end
 
   def selected_template(issuable)
-    params[:issuable_template] if issuable_templates(issuable).include?(params[:issuable_template])
+    params[:issuable_template] if issuable_templates(issuable).any?{ |template| template[:name] == params[:issuable_template] }
   end
 end
