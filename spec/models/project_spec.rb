@@ -1949,7 +1949,7 @@ describe Project, models: true do
   describe '#pipeline_status' do
     let(:project) { create(:project) }
     it 'builds a pipeline status' do
-      expect(project.pipeline_status).to be_a(Ci::PipelineStatus)
+      expect(project.pipeline_status).to be_a(Gitlab::Cache::Ci::ProjectBuildStatus)
     end
 
     it 'hase a loaded pipeline status' do

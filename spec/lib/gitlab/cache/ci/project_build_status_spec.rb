@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::PipelineStatus do
+describe Gitlab::Cache::Ci::ProjectBuildStatus do
   let(:project) { create(:project) }
   let(:pipeline_status) { described_class.new(project) }
 

@@ -1084,8 +1084,9 @@ describe Ci::Pipeline, models: true do
 
     it 'updates the cached status' do
       fake_status = double
-      # after updating the status, the status is set to `skipped` for this pipeline's builds
-      expect(Ci::PipelineStatus).to receive(:new).with(pipeline.project, sha: '123456', status: 'skipped').and_return(fake_status)
+      expect(Gitlab::Cache::Ci::ProjectBuildStatus).to receive(:new).
+                                                         with(pipeline.project, sha: '123456', status: 'skipped').
+                                                         and_return(fake_status)
       expect(fake_status).to receive(:store_in_cache_if_needed)
 
       pipeline.update_status

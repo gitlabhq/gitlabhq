@@ -394,7 +394,7 @@ module Ci
     end
 
     def refresh_build_status_cache
-      Ci::PipelineStatus.new(project, sha: sha, status: status).store_in_cache_if_needed
+      Gitlab::Cache::Ci::ProjectBuildStatus.new(project, sha: sha, status: status).store_in_cache_if_needed
     end
 
     private
