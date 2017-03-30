@@ -1,6 +1,7 @@
 class GeoRepositoryFetchWorker
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
+
   sidekiq_options queue: 'geo_repository_update'
 
   def perform(project_id, clone_url)
@@ -12,5 +13,7 @@ class GeoRepositoryFetchWorker
     project.repository.expire_all_method_caches
     project.repository.expire_branch_cache
     project.repository.expire_content_cache
+  rescue Gitlab::Shell::Error => e
+    logger.error "Error fetching repository for project #{project.path_with_namespace}: #{e}"
   end
 end
