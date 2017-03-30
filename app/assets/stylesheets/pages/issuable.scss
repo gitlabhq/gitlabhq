@@ -307,6 +307,10 @@
         margin-top: 0;
       }
 
+      .sidebar-avatar-counter {
+        padding-top: 2px;
+      }
+
       .author {
         display: none;
       }
@@ -340,7 +344,6 @@
       width: 24px;
       height: 24px;
       border-radius: 12px;
-      line-height: 24px;
     }
 
     .sidebar-collapsed-user {
@@ -353,6 +356,11 @@
     }
 
     .multiple-users {
+      height: 24px;
+      margin-bottom: 17px;
+      margin-top: 4px;
+      padding-bottom: 4px;
+
       .btn-link {
         padding: 0;
         border: 0;
@@ -363,12 +371,14 @@
       }
 
       .btn-link:first-child {
+        position: absolute;
+        left: 10px;
         z-index: 1;
-        transform: translateX(3px);
       }
 
       .btn-link:last-child {
-        transform: translateX(-3px);
+        position: absolute;
+        right: 10px;
 
         &:hover {
           text-decoration: none;
