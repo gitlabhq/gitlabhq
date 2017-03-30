@@ -2,12 +2,13 @@
 
 ## Getting started
 
-- [Git concepts](../university/training/user_training.html#git-concepts)
-- [Start using Git on the command line](../gitlab-basics/start-using-git.html)
-- [Command Line basic commands](../gitlab-basics/command-line-commands.html)
+- [Git concepts](../../university/training/user_training.html#git-concepts)
+- [Start using Git on the command line](../../gitlab-basics/start-using-git.html)
+- [Command Line basic commands](../../gitlab-basics/command-line-commands.html)
 - [GitLab Git Cheat Sheet (download)](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf)
 - **Articles:**
   - [Git Tips & Tricks](https://about.gitlab.com/2016/12/08/git-tips-and-tricks/)
+  - [8 Tips to help you work better with Git](https://about.gitlab.com/2015/02/19/8-tips-to-help-you-work-better-with-git/)
 - **Third-party resources:**
   - What is [Git](https://git-scm.com)
     - [Version control](https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control)
@@ -30,17 +31,24 @@
 
 ## Advanced use
 
-- [Custom Git Hooks](../administration/custom_hooks.html)
-- [Git Attributes](../user/project/git_attributes.html)
-- Git Submodules: [Using Git submodules with GitLab CI](../ci/git_submodules.html#using-git-submodules-with-gitlab-ci)
+- [Custom Git Hooks](../../administration/custom_hooks.html)
+- [Git Attributes](../../user/project/git_attributes.html)
+- Git Submodules: [Using Git submodules with GitLab CI](../../ci/git_submodules.html#using-git-submodules-with-gitlab-ci)
 
 ## API
 
-- [Gitignore templates](../api/templates/gitignores.html)
+- [Gitignore templates](../../api/templates/gitignores.html)
 
 ## Git LFS
 
 - [Git LFS](https://docs.gitlab.com/ce/workflow/lfs/manage_large_binaries_with_git_lfs.html)
+- [Git-Annex to Git-LFS migration guide](https://docs.gitlab.com/ee/workflow/lfs/migrate_from_git_annex_to_git_lfs.html)
 - **Articles:**
   - [Getting Started with Git LFS](https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/)
-  - [Git-Annex to Git-LFS migration guide](https://docs.gitlab.com/ee/workflow/lfs/migrate_from_git_annex_to_git_lfs.html)
+  - [Towards a production quality open source Git LFS server](https://about.gitlab.com/2015/08/13/towards-a-production-quality-open-source-git-lfs-server/)
+
+## General information
+
+- **Articles:**
+  - [The future of SaaS hosted Git repository pricing](https://about.gitlab.com/2016/05/11/git-repository-pricing/)
+  - [Did you install GitLab from source? Check your Git version](https://about.gitlab.com/2015/06/12/did-you-install-gitlab-from-source-recently-check-your-git-version/)
