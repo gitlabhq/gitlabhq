@@ -23,9 +23,12 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 
 ### Java
 
-- [Test a Scala application](test-scala-application.md)
 - **Articles:**
   - [Continuous Delivery of a Spring Boot application with GitLab CI and Kubernetes](https://about.gitlab.com/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/)
+
+### Scala
+
+- [Test a Scala application](test-scala-application.md)
 
 ### Clojure
 
@@ -69,7 +72,7 @@ See the topic [GitLab Pages](../../user/project/pages/index.md) for a complete o
 
 ## More
 
-Help your favorite programming language and GitLab by sending a merge request
-with a guide for that language.
+Contributions are very much welcomed! You can help your favorite programming
+language and GitLab by sending a merge request with a guide for that language.
 
 [gitlab-ci-templates]: https://gitlab.com/gitlab-org/gitlab-ci-yml
