@@ -147,7 +147,7 @@ module Projects
 
     def set_repository_size_limit_as_bytes
       limit = params.delete(:repository_size_limit)
-      @project.repository_size_limit = (limit.to_i.megabytes if limit.present?)
+      @project.repository_size_limit = Gitlab::Utils.try_megabytes_to_bytes(limit) if limit
     end
 
     def set_project_name_from_path
