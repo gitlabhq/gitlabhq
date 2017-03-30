@@ -240,7 +240,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     context 'when target branch does not exist' do
       let(:raw_data) { double(base_data.merge(base: removed_branch)) }
 
-      it 'prefixes branch name with to avoid collision' do
+      it 'prefixes branch name with gh-:short_sha/:number/:user pattern to avoid collision' do
         expect(pull_request.target_branch_name).to eq 'gl-2e5d3239/1347/octocat/removed-branch'
       end
     end
