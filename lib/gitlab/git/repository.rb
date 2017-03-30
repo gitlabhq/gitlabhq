@@ -346,7 +346,12 @@ module Gitlab
         cmd << "--after=#{options[:after].iso8601}" if options[:after]
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
         cmd << sha
-        cmd += %W[-- #{options[:path]}] if options[:path].present?
+
+        # :path can be a string or an array of strings
+        if options[:path].present?
+          cmd << '--'
+          cmd += Array(options[:path])
+        end
 
         raw_output = IO.popen(cmd) { |io| io.read }
         lines = offset_in_ruby ? raw_output.lines.drop(offset) : raw_output.lines

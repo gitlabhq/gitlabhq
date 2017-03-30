@@ -6,7 +6,7 @@ describe Gitlab::AuthorityAnalyzer, lib: true do
     let(:author) { create(:user) }
     let(:user_a) { create(:user) }
     let(:user_b) { create(:user) }
-    let(:merge_request) { create(:merge_request, target_project: project, source_project: project, author: author) }
+    let(:merge_request) { create(:merge_request, target_project: project, source_project: project) }
     let(:files) { [double(:file, deleted_file: true, old_path: 'foo')] }
 
     let(:commits) do
@@ -19,7 +19,7 @@ describe Gitlab::AuthorityAnalyzer, lib: true do
       ]
     end
 
-    let(:approvers) { Gitlab::AuthorityAnalyzer.new(merge_request).calculate(number_of_approvers) }
+    let(:approvers) { Gitlab::AuthorityAnalyzer.new(merge_request, author).calculate(number_of_approvers) }
 
     before do
       merge_request.compare = double(:compare, raw_diffs: files)
