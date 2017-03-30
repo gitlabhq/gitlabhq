@@ -39,6 +39,7 @@ var config = {
     mr_widget_ee:         './merge_request_widget/widget_bundle.js',
     monitoring:           './monitoring/monitoring_bundle.js',
     network:              './network/network_bundle.js',
+    notebook_viewer:      './blob/notebook_viewer.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
@@ -107,8 +108,9 @@ var config = {
         'environments_folder',
         'issuable',
         'merge_conflicts',
-        'mr_widget_ee',
+        'notebook_viewer',
         'vue_pipelines',
+        'mr_widget_ee',
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);

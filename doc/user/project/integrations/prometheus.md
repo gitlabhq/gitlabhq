@@ -153,8 +153,8 @@ The queries utilized by GitLab are shown in the following table.
 
 | Metric | Query |
 | ------ | ----- |
-| Average Memory (MB) | `(sum(container_memory_usage_bytes{container_name="app",environment="$CI_ENVIRONMENT_SLUG"}) / count(container_memory_usage_bytes{container_name="app",environment="$CI_ENVIRONMENT_SLUG"})) /1024/1024` |
-| Average CPU Utilization (%) | `sum(rate(container_cpu_usage_seconds_total{container_name="app",environment="$CI_ENVIRONMENT_SLUG"}[2m])) / count(container_cpu_usage_seconds_total{container_name="app",environment="$CI_ENVIRONMENT_SLUG"}) * 100` |
+| Average Memory (MB) | `(sum(container_memory_usage_bytes{container_name!="POD",environment="$CI_ENVIRONMENT_SLUG"}) / count(container_memory_usage_bytes{container_name!="POD",environment="$CI_ENVIRONMENT_SLUG"})) /1024/1024` |
+| Average CPU Utilization (%) | `sum(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="$CI_ENVIRONMENT_SLUG"}[2m])) / count(container_cpu_usage_seconds_total{container_name!="POD",environment="$CI_ENVIRONMENT_SLUG"}) * 100` |
 
 ## Monitoring CI/CD Environments
 

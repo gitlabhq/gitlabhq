@@ -46,7 +46,7 @@ feature 'Group', feature: true do
 
     describe 'Mattermost team creation' do
       before do
-        allow(Settings.mattermost).to receive_messages(enabled: mattermost_enabled)
+        stub_mattermost_setting(enabled: mattermost_enabled)
 
         visit new_group_path
       end

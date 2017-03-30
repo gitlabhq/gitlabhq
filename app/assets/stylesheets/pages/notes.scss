@@ -410,8 +410,22 @@ ul.notes {
 }
 
 .discussion-toggle-button {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
   line-height: 20px;
   font-size: 13px;
+  transition: color 0.1s linear;
+
+  &:hover {
+    color: $gl-link-color;
+  }
+
+  &:focus {
+    text-decoration: underline;
+    outline: none;
+    color: $gl-link-color;
+  }
 
   .fa {
     margin-right: 3px;
