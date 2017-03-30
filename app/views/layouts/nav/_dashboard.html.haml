@@ -19,13 +19,13 @@
   = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
     = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', title: 'Groups' do
       .shortcut-mappings
-        .key shift l
+        .key shift g
       %span
         Groups
   = nav_link(controller: 'dashboard/milestones') do
     = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones', title: 'Milestones' do
       .shortcut-mappings
-        .key shift w
+        .key shift l
       %span
         Milestones
   = nav_link(path: 'dashboard#issues') do

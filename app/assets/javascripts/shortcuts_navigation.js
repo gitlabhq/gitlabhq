@@ -25,7 +25,7 @@ require('./shortcuts');
       Mousetrap.bind('g c', function() {
         return ShortcutsNavigation.findAndFollowLink('.shortcuts-commits');
       });
-      Mousetrap.bind('g b', function() {
+      Mousetrap.bind('g j', function() {
         return ShortcutsNavigation.findAndFollowLink('.shortcuts-builds');
       });
       Mousetrap.bind('g n', function() {
@@ -37,7 +37,7 @@ require('./shortcuts');
       Mousetrap.bind('g i', function() {
         return ShortcutsNavigation.findAndFollowLink('.shortcuts-issues');
       });
-      Mousetrap.bind('g l', function() {
+      Mousetrap.bind('g b', function() {
         ShortcutsNavigation.findAndFollowLink('.shortcuts-issue-boards');
       });
       Mousetrap.bind('g m', function() {
