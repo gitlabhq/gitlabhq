@@ -151,6 +151,7 @@ class Issue < ActiveRecord::Base
   # TODO: This method will help us to find some silent failures.
   # We should remove it before merging to master
   def assignee_id
+    return ''
     raise "assignee_id is deprecated"
   end
 
