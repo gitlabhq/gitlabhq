@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# GitLab Enterprise Edition documentation
-=======
-# GitLab Community Edition
->>>>>>> ce/master
+# GitLab Enterprise Edition
 
 All technical content published by GitLab lives in the documentation, including:
 

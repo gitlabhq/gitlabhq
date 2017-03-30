@@ -233,7 +233,6 @@ module API
           .cancel(merge_request)
       end
 
-<<<<<<< HEAD
       desc 'List issues that will be closed on merge' do
         success Entities::MRNote
       end
@@ -290,20 +289,6 @@ module API
           .execute(merge_request)
 
         present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
-      end
-
-=======
->>>>>>> ce/master
-      desc 'List issues that will be closed on merge' do
-        success Entities::MRNote
-      end
-      params do
-        use :pagination
-      end
-      get ':id/merge_requests/:merge_request_iid/closes_issues' do
-        merge_request = find_merge_request_with_access(params[:merge_request_iid])
-        issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
-        present paginate(issues), with: issue_entity(user_project), current_user: current_user
       end
     end
   end

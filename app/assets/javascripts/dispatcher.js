@@ -34,11 +34,8 @@
 /* global Labels */
 /* global Shortcuts */
 /* global Sidebar */
-<<<<<<< HEAD
 /* global WeightSelect */
 /* global AdminEmailSelect */
-=======
->>>>>>> ce/master
 
 import Issue from './issue';
 

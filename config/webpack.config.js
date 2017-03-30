@@ -108,12 +108,9 @@ var config = {
         'environments_folder',
         'issuable',
         'merge_conflicts',
-<<<<<<< HEAD
-        'mr_widget_ee',
-=======
         'notebook_viewer',
->>>>>>> ce/master
         'vue_pipelines',
+        'mr_widget_ee',
       ],
       minChunks: function(module, count) {
         return module.resource && (/vue_shared/).test(module.resource);

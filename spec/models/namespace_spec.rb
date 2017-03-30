@@ -188,7 +188,6 @@ describe Namespace, models: true do
     end
   end
 
-<<<<<<< HEAD
   describe '#actual_size_limit' do
     let(:namespace) { build(:namespace) }
 
@@ -201,10 +200,6 @@ describe Namespace, models: true do
     end
   end
 
-  describe '#rm_dir', 'callback' do
-    let!(:project) { create(:empty_project, namespace: namespace) }
-    let!(:path) { File.join(Gitlab.config.repositories.storages.default['path'], namespace.full_path) }
-=======
   describe '#rm_dir', 'callback', repository: true do
     let!(:project) { create(:project_empty_repo, namespace: namespace) }
     let(:repository_storage_path) { Gitlab.config.repositories.storages.default['path'] }
@@ -214,7 +209,6 @@ describe Namespace, models: true do
 
     it 'renames its dirs when deleted' do
       allow(GitlabShellWorker).to receive(:perform_in)
->>>>>>> ce/master
 
       namespace.destroy
 
