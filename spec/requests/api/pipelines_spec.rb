@@ -95,11 +95,11 @@ describe API::Pipelines do
           end
         end
 
-        %w[running pending success failed canceled skipped].each do |target|
+        HasStatus::AVAILABLE_STATUSES.each do |target|
           context "when status is #{target}" do
             before do
               create(:ci_pipeline, project: project, status: target)
-              exception_status = %w[running pending success failed canceled skipped] - [target]
+              exception_status = HasStatus::AVAILABLE_STATUSES - [target]
               create(:ci_pipeline, project: project, status: exception_status.sample)
             end
 

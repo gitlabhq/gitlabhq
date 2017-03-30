@@ -60,13 +60,13 @@ describe PipelinesFinder do
       end
     end
 
-    %w[running pending success failed canceled skipped].each do |target|
+    HasStatus::AVAILABLE_STATUSES.each do |target|
       context "when status is #{target}" do
         let(:params) { { status: target } }
         let!(:pipeline) { create(:ci_pipeline, project: project, status: target) }
 
         before do
-          exception_status = %w[running pending success failed canceled skipped] - [target]
+          exception_status = HasStatus::AVAILABLE_STATUSES - [target]
           create(:ci_pipeline, project: project, status: exception_status.sample)
         end
 

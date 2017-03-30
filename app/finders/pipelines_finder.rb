@@ -54,22 +54,9 @@ class PipelinesFinder
   end
 
   def by_status(items)
-    case params[:status]
-    when 'running'
-      items.running
-    when 'pending'
-      items.pending
-    when 'success'
-      items.success
-    when 'failed'
-      items.failed
-    when 'canceled'
-      items.canceled
-    when 'skipped'
-      items.skipped
-    else
-      items
-    end
+    return items unless HasStatus::AVAILABLE_STATUSES.include?(params[:status])
+
+    items.where(status: params[:status])
   end
 
   def by_ref(items)

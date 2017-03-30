@@ -16,7 +16,7 @@ module API
         use :pagination
         optional :scope,    type: String, values: %w[running pending finished branches tags],
                             desc: 'The scope of pipelines'
-        optional :status,   type: String, values: %w[running pending success failed canceled skipped],
+        optional :status,   type: String, values: HasStatus::AVAILABLE_STATUSES,
                             desc: 'The status of pipelines'
         optional :ref,      type: String, desc: 'The ref of pipelines'
         optional :yaml_errors, type: Boolean, desc: 'If true, returns only yaml error pipelines'
