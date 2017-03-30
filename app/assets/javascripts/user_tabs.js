@@ -94,15 +94,17 @@ content on the Users#show page.
       e.preventDefault();
 
       $('.tab-pane.active').empty();
-      this.loadTab($(e.target).attr('href'), this.getCurrentAction());
+      const endpoint = $(e.target).attr('href');
+      this.loadTab(this.getCurrentAction(), endpoint);
     }
 
     tabShown(event) {
       const $target = $(event.target);
       const action = $target.data('action');
       const source = $target.attr('href');
-      this.setTab(source, action);
-      return this.setCurrentAction(source, action);
+      const endpoint = $target.data('endpoint');
+      this.setTab(action, endpoint);
+      return this.setCurrentAction(source);
     }
 
     activateTab(action) {
@@ -110,27 +112,27 @@ content on the Users#show page.
         .tab('show');
     }
 
-    setTab(source, action) {
+    setTab(action, endpoint) {
       if (this.loaded[action]) {
         return;
       }
       if (action === 'activity') {
-        this.loadActivities(source);
+        this.loadActivities();
       }
 
       const loadableActions = ['groups', 'contributed', 'projects', 'snippets'];
       if (loadableActions.indexOf(action) > -1) {
-        return this.loadTab(source, action);
+        return this.loadTab(action, endpoint);
       }
     }
 
-    loadTab(source, action) {
+    loadTab(action, endpoint) {
       return $.ajax({
         beforeSend: () => this.toggleLoading(true),
         complete: () => this.toggleLoading(false),
         dataType: 'json',
         type: 'GET',
-        url: source,
+        url: endpoint,
         success: (data) => {
           const tabSelector = `div#${action}`;
           this.$parentEl.find(tabSelector).html(data.html);
@@ -140,7 +142,7 @@ content on the Users#show page.
       });
     }
 
-    loadActivities(source) {
+    loadActivities() {
       if (this.loaded['activity']) {
         return;
       }
@@ -155,7 +157,7 @@ content on the Users#show page.
         .toggle(status);
     }
 
-    setCurrentAction(source, action) {
+    setCurrentAction(source) {
       let new_state = source;
       new_state = new_state.replace(/\/+$/, '');
       new_state += this._location.search + this._location.hash;
