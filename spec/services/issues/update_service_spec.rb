@@ -196,7 +196,7 @@ describe Issues::UpdateService, services: true do
 
       context 'when is reassigned' do
         before do
-          update_issue(assignee: user2)
+          update_issue(assignees: [user2])
         end
 
         it 'marks previous assignee todos as done' do

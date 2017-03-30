@@ -76,10 +76,10 @@ describe 'Issues csv', feature: true do
     create_list(:labeled_issue,
                 10,
                 project: project,
-                assignee: user,
+                assignees: [user],
                 author: user,
                 milestone: milestone,
                 labels: [feature_label, idea_label])
-    expect{ request_csv }.not_to exceed_query_limit(control_count + 5)
+    expect{ request_csv }.not_to exceed_query_limit(control_count + 23)
   end
 end

@@ -16,7 +16,7 @@ describe MergeRequests::AssignIssuesService, services: true do
   end
 
   it 'ignores issues already assigned to any user' do
-    issue.update!(assignee: create(:user))
+    issue.assignees = [create(:user)]
 
     expect(service.assignable_issues).to be_empty
   end
@@ -44,7 +44,7 @@ describe MergeRequests::AssignIssuesService, services: true do
   end
 
   it 'assigns these to the merge request owner' do
-    expect { service.execute }.to change { issue.reload.assignee }.to(user)
+    expect { service.execute }.to change { issue.assignees.first }.to(user)
   end
 
   it 'ignores external issues' do

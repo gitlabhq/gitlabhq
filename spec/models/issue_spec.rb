@@ -132,6 +132,27 @@ describe Issue, models: true do
     end
   end
 
+  describe '#assignee_or_author?' do
+    let(:user) { create(:user) }
+    let(:issue) { create(:issue) }
+
+    it 'returns true for a user that is assigned to an issue' do
+      issue.assignees << user
+
+      expect(issue.assignee_or_author?(user)).to be_truthy
+    end
+
+    it 'returns true for a user that is the author of an issue' do
+      issue.update(author: user)
+
+      expect(issue.assignee_or_author?(user)).to be_truthy
+    end
+
+    it 'returns false for a user that is not the assignee or author' do
+      expect(issue.assignee_or_author?(user)).to be_falsey
+    end
+  end
+
   describe '#is_being_reassigned?' do
     it 'returns true if the issue assignee has changed' do
       subject.assignee = create(:user)
@@ -145,7 +166,7 @@ describe Issue, models: true do
   describe '#is_being_reassigned?' do
     it 'returns issues assigned to user' do
       user = create(:user)
-      create_list(:issue, 2, assignee: user)
+      create_list(:issue, 2, assignees: [user])
 
       expect(Issue.open_for(user).count).to eq 2
     end
@@ -378,7 +399,7 @@ describe Issue, models: true do
     it 'updates when assignees change' do
       user1 = create(:user)
       user2 = create(:user)
-      issue = create(:issue, assignee: user1)
+      issue = create(:issue, assignees: [user1])
 
       expect(user1.assigned_open_issues_count).to eq(1)
       expect(user2.assigned_open_issues_count).to eq(0)

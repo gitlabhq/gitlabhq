@@ -60,7 +60,7 @@
   .col-md-8
     %div
       %p.light Merge requests created per group member
-      %canvas#merge_requests{ height: 250 }
+      %canvas#merge_requests_created{ height: 250 }
 
 %h3 Issues
 
@@ -77,7 +77,7 @@
   .col-md-8
     %div
       %p.light Issues closed per group member
-      %canvas#issues{ height: 250 }
+      %canvas#issues_closed{ height: 250 }
 
 .gray-content-block
   .oneline
@@ -109,21 +109,21 @@
           Total Contributions
           = icon('sort')
     %tbody
-      - @users.each do |user|
+      - @users.each_with_index do |user, index|
         %tr
           %td
             %strong
               = link_to user.name, user
-          %td= @events.code_push.where(author_id: user).count
-          %td= @events.issues.created.where(author_id: user).count
-          %td= @events.issues.closed.where(author_id: user).count
-          %td= @events.merge_requests.created.where(author_id: user).count
-          %td= @events.merge_requests.merged.where(author_id: user).count
-          %td= @events.where(author_id: user).count
+          %td= @stats[:push][index]
+          %td= @stats[:issues_created][index]
+          %td= @stats[:issues_closed][index]
+          %td= @stats[:merge_requests_created][index]
+          %td= @stats[:merge_requests_merged][index]
+          %td= @stats[:total_events][index]
 
 
 
-- [:push, :issues, :merge_requests].each do |scope|
+- [:push, :issues_closed, :merge_requests_created].each do |scope|
   :javascript
     var data = {
       labels : #{@users.map(&:name).to_json},

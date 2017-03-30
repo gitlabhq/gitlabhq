@@ -9,7 +9,7 @@ describe 'New/edit issue', feature: true, js: true do
   let!(:milestone) { create(:milestone, project: project) }
   let!(:label)     { create(:label, project: project) }
   let!(:label2)    { create(:label, project: project) }
-  let!(:issue)     { create(:issue, project: project, assignee: user, milestone: milestone) }
+  let!(:issue)     { create(:issue, project: project, assignees: [user], milestone: milestone) }
 
   before do
     project.team << [user, :master]

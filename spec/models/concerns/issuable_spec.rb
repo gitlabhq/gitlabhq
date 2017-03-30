@@ -57,21 +57,6 @@ describe Issue, "Issuable" do
     end
   end
 
-  describe 'assignee_name' do
-    it 'is delegated to assignee' do
-      issue.update!(assignee: create(:user))
-
-      expect(issue.assignee_name).to eq issue.assignee.name
-    end
-
-    it 'returns nil when assignee is nil' do
-      issue.assignee_id = nil
-      issue.save(validate: false)
-
-      expect(issue.assignee_name).to eq nil
-    end
-  end
-
   describe "before_save" do
     describe "#update_cache_counts" do
       context "when previous assignee exists" do
@@ -490,27 +475,6 @@ describe Issue, "Issuable" do
 
     it 'finds the correct issues containing only both labels' do
       expect(Issue.with_label([bug.title, enhancement.title])).to match_array([issue2])
-    end
-  end
-
-  describe '#assignee_or_author?' do
-    let(:user) { build(:user, id: 1) }
-    let(:issue) { build(:issue) }
-
-    it 'returns true for a user that is assigned to an issue' do
-      issue.assignee = user
-
-      expect(issue.assignee_or_author?(user)).to eq(true)
-    end
-
-    it 'returns true for a user that is the author of an issue' do
-      issue.author = user
-
-      expect(issue.assignee_or_author?(user)).to eq(true)
-    end
-
-    it 'returns false for a user that is not the assignee or author' do
-      expect(issue.assignee_or_author?(user)).to eq(false)
     end
   end
 

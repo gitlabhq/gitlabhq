@@ -10,8 +10,8 @@ describe "Dashboard Issues filtering", feature: true, js: true do
       project.team << [user, :master]
       login_as(user)
 
-      create(:issue, project: project, author: user, assignee: user)
-      create(:issue, project: project, author: user, assignee: user, milestone: milestone)
+      create(:issue, project: project, author: user, assignees: [user])
+      create(:issue, project: project, author: user, assignees: [user], milestone: milestone)
 
       visit_issues
     end

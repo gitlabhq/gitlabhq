@@ -90,16 +90,6 @@ describe License do
       end
 
       context 'with true-up info' do
-        def set_restrictions(opts)
-          gl_license.restrictions = {
-            active_user_count: opts[:restricted_user_count],
-            previous_user_count: opts[:previous_user_count],
-            trueup_quantity: opts[:trueup_quantity],
-            trueup_from: (Date.today - 1.year).to_s,
-            trueup_to: Date.today.to_s
-          }
-        end
-
         context 'when quantity is ok' do
           before do
             set_restrictions(restricted_user_count: 5, trueup_quantity: 10)
@@ -170,7 +160,7 @@ describe License do
           gl_license.expires_at = Date.yesterday
         end
 
-        it "is valid" do
+        it "is invalid" do
           expect(license).not_to be_valid
         end
       end
@@ -181,6 +171,32 @@ describe License do
         end
 
         it "is valid" do
+          expect(license).to be_valid
+        end
+      end
+    end
+
+    describe 'downgrade' do
+      context 'when more users were added in previous period' do
+        before do
+          HistoricalData.create!(date: 6.months.ago, active_user_count: 15)
+
+          set_restrictions(restricted_user_count: 5, previous_user_count: 10)
+        end
+
+        it 'is invalid without a true-up' do
+          expect(license).not_to be_valid
+        end
+      end
+
+      context 'when no users were added in the previous period' do
+        before do
+          HistoricalData.create!(date: 6.months.ago, active_user_count: 15)
+
+          set_restrictions(restricted_user_count: 10, previous_user_count: 15)
+        end
+
+        it 'is valid' do
           expect(license).to be_valid
         end
       end
@@ -327,5 +343,15 @@ describe License do
       gl_license = build(:gitlab_license, restrictions: { add_ons: add_ons })
       build(:license, data: gl_license.export)
     end
+  end
+
+  def set_restrictions(opts)
+    gl_license.restrictions = {
+      active_user_count: opts[:restricted_user_count],
+      previous_user_count: opts[:previous_user_count],
+      trueup_quantity: opts[:trueup_quantity],
+      trueup_from: (Date.today - 1.year).to_s,
+      trueup_to: Date.today.to_s
+    }
   end
 end

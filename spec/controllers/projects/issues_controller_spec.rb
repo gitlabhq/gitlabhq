@@ -336,7 +336,7 @@ describe Projects::IssuesController do
     let(:admin) { create(:admin) }
     let!(:issue) { create(:issue, project: project) }
     let!(:unescaped_parameter_value) { create(:issue, :confidential, project: project, author: author) }
-    let!(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignee: assignee) }
+    let!(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignees: [assignee]) }
 
     describe 'GET #index' do
       it 'does not list confidential issues for guests' do

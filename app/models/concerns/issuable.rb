@@ -25,7 +25,6 @@ module Issuable
     cache_markdown_field :description
 
     belongs_to :author, class_name: "User"
-    belongs_to :assignee, class_name: "User"
     belongs_to :updated_by, class_name: "User"
     belongs_to :milestone
     has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy do
@@ -94,7 +93,6 @@ module Issuable
     attr_mentionable :description
 
     participant :author
-    participant :assignee
     participant :notes_with_associations
 
     strip_attributes :title
@@ -285,7 +283,11 @@ module Issuable
       # DEPRECATED
       repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
     }
-    hook_data[:assignee] = assignee.hook_attrs if assignee
+    if self.is_a?(Issue)
+      hook_data[:assignees] = assignees.map(&:hook_attrs) if assignees.any?
+    else
+      hook_data[:assignee] = assignee.hook_attrs if assignee
+    end
 
     hook_data
   end
@@ -319,14 +321,6 @@ module Issuable
     @human_class_name ||= self.class.name.titleize.downcase
   end
 
-  # Returns a Hash of attributes to be used for Twitter card metadata
-  def card_attributes
-    {
-      'Author'   => author.try(:name),
-      'Assignee' => assignee.try(:name)
-    }
-  end
-
   def notes_with_associations
     # If A has_many Bs, and B has_many Cs, and you do
     # `A.includes(b: :c).each { |a| a.b.includes(:c) }`, sadly ActiveRecord
@@ -356,11 +350,6 @@ module Issuable
   #
   def can_move?(*)
     false
-  end
-
-  def assignee_or_author?(user)
-    # We're comparing IDs here so we don't need to load any associations.
-    author_id == user.id || assignee_id == user.id
   end
 
   def record_metrics

@@ -13,7 +13,7 @@
             %li
               CLOSED
 
-          - if issue.assignee
+          - if issue.assignees.any?
             %li
               = render 'shared/issuable/assignees', project: @project, issue: issue
 

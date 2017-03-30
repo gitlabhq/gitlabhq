@@ -530,12 +530,12 @@
 
     &.over_estimate {
       .meter-fill {
-        background: $red-light;
+        background: $red-500;
       }
 
       .time-remaining,
       .compare-value.spent {
-        color: $red-light;
+        color: $red-500;
       }
     }
   }
