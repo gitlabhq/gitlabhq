@@ -13,21 +13,6 @@ require('./shortcuts');
 
     function ShortcutsDashboardNavigation() {
       ShortcutsDashboardNavigation.__super__.constructor.call(this);
-      Mousetrap.bind('g a', function() {
-        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-activity');
-      });
-      Mousetrap.bind('g i', function() {
-        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-issues');
-      });
-      Mousetrap.bind('g m', function() {
-        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-merge_requests');
-      });
-      Mousetrap.bind('g t', function() {
-        return ShortcutsDashboardNavigation.findAndFollowLink('.shortcuts-todos');
-      });
-      Mousetrap.bind('g p', function() {
-        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-projects');
-      });
     }
 
     ShortcutsDashboardNavigation.findAndFollowLink = function(selector) {

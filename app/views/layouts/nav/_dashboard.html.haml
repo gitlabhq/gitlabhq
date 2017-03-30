@@ -1,14 +1,14 @@
 %ul
   = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: {class: "#{project_tab_class} home"}) do
-    = link_to dashboard_projects_path, title: 'Projects', class: 'js-dashboard-shortcuts-projects' do
-      .kbd
-        p
+    = link_to dashboard_projects_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
+      .shortcut-mappings
+        .key shift p
       %span
         Projects
   = nav_link(path: 'dashboard#activity') do
-    = link_to activity_dashboard_path, class: 'js-dashboard-shortcuts-activity', title: 'Activity' do
-      .kbd
-        a
+    = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
+      .shortcut-mappings
+        .key shift a
       %span
         Activity
   - if koding_enabled?
@@ -17,35 +17,35 @@
         %span
           Koding
   = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
-    = link_to dashboard_groups_path, class: 'js-dashboard-shortcuts-groups', title: 'Groups' do
-      .kbd
-        r
+    = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', title: 'Groups' do
+      .shortcut-mappings
+        .key shift l
       %span
         Groups
   = nav_link(controller: 'dashboard/milestones') do
-    = link_to dashboard_milestones_path, class: 'js-dashboard-shortcuts-milestones', title: 'Milestones' do
-      .kbd
-        l
+    = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones', title: 'Milestones' do
+      .shortcut-mappings
+        .key shift w
       %span
         Milestones
   = nav_link(path: 'dashboard#issues') do
-    = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'js-dashboard-shortcuts-issues' do
-      .kbd
-        i
+    = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues' do
+      .shortcut-mappings
+        .key shift i
       %span
         Issues
       .badge= number_with_delimiter(cached_assigned_issuables_count(current_user, :issues, :opened))
   = nav_link(path: 'dashboard#merge_requests') do
-    = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'js-dashboard-shortcuts-merge_requests' do
-      .kbd
-        m
+    = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'dashboard-shortcuts-merge_requests' do
+      .shortcut-mappings
+        .key shift m
       %span
         Merge Requests
       .badge= number_with_delimiter(cached_assigned_issuables_count(current_user, :merge_requests, :opened))
   = nav_link(controller: 'dashboard/snippets') do
-    = link_to dashboard_snippets_path, class: 'js-dashboard-shortcuts-snippets', title: 'Snippets' do
-      .kbd
-        e
+    = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', title: 'Snippets' do
+      .shortcut-mappings
+        .key shift s
       %span
         Snippets
   %li.divider

@@ -31,7 +31,7 @@ require('./shortcuts');
       Mousetrap.bind('g n', function() {
         return ShortcutsNavigation.findAndFollowLink('.shortcuts-network');
       });
-      Mousetrap.bind('g g', function() {
+      Mousetrap.bind('g d', function() {
         return ShortcutsNavigation.findAndFollowLink('.shortcuts-repository-charts');
       });
       Mousetrap.bind('g i', function() {

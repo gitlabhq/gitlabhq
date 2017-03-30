@@ -187,24 +187,13 @@
     }
   }
 
-  .kbd {
+  .shortcut-mappings {
     display: none;
   }
 
-  &.shortcuts .kbd {
-    background-color: $gray-light;
-    color: $gl-text-color;
-    border: 1px solid $gray-darkest;
-    box-shadow: 0 -1px 0 $gray-darkest inset;
+  &.shortcuts .shortcut-mappings {
     display: inline-block;
-    vertical-align: top;
-    padding: 3px 0;
     margin-right: 5px;
-    font-size: 11px;
-    line-height: 10px;
-    border-radius: 3px;
-    width: 20px;
-    text-align: center;
   }
 
   ul {

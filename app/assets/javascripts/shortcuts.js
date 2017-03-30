@@ -20,48 +20,37 @@
         };
       })(this));
 
-      function gotoMenu(menu){
-        window.location.href = $('.js-dashboard-shortcuts-'+menu).attr('href');
-      }
+      const globalDropdownMenu = $('.global-dropdown-menu');
 
       $('.global-dropdown').on('hide.bs.dropdown', function() {
-        $('.global-dropdown-menu').removeClass('shortcuts');
-        Mousetrap.unbind(['p', 'a', 'r', 'l', 'i', 'm', 'e']);
-      });
-
-      $('.global-dropdown').on('show.bs.dropdown', function() {
-        Mousetrap.bind('p', function() {
-          gotoMenu('projects');
-        });
-
-        Mousetrap.bind('a', function() {
-          gotoMenu('activity');
-        });
-
-        Mousetrap.bind('r', function() {
-          gotoMenu('groups');
-        });
-
-        Mousetrap.bind('l', function() {
-          gotoMenu('milestones');
-        });
-
-        Mousetrap.bind('i', function() {
-          gotoMenu('issues');
-        });
-
-        Mousetrap.bind('m', function() {
-          gotoMenu('merge_requests');
-        });
-
-        Mousetrap.bind('e', function() {
-          gotoMenu('snippets');
-        });
+        globalDropdownMenu.removeClass('shortcuts');
       });
 
       Mousetrap.bind('n', function() {
-        $('.global-dropdown-menu').addClass('shortcuts');
+        globalDropdownMenu.addClass('shortcuts');
         $('.global-dropdown-toggle').trigger('click');
+      });
+
+      Mousetrap.bind('shift+a', function() {
+        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-activity');
+      });
+      Mousetrap.bind('shift+i', function() {
+        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-issues');
+      });
+      Mousetrap.bind('shift+m', function() {
+        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-merge_requests');
+      });
+      Mousetrap.bind('shift+p', function() {
+        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-projects');
+      });
+      Mousetrap.bind('shift+g', function() {
+        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-groups');
+      });
+      Mousetrap.bind('shift+l', function() {
+        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-milestones');
+      });
+      Mousetrap.bind('shift+s', function() {
+        return ShortcutsDashboardNavigation.findAndFollowLink('.dashboard-shortcuts-snippets');
       });
 
       Mousetrap.bind(['ctrl+shift+p', 'command+shift+p'], this.toggleMarkdownPreview);
