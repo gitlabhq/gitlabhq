@@ -20,9 +20,9 @@ class Spinach::Features::ProjectShortcuts < Spinach::FeatureSteps
     find('body').native.send_key('n')
   end
 
-  step 'I press "g" and "g"' do
+  step 'I press "g" and "d"' do
     find('body').native.send_key('g')
-    find('body').native.send_key('g')
+    find('body').native.send_key('d')
   end
 
   step 'I press "g" and "s"' do
