@@ -26,7 +26,7 @@ Feature: Project Shortcuts
 
   @javascript
   Scenario: Navigate to repository charts tab
-    Given I press "g" and "g"
+    Given I press "g" and "d"
     Then the active sub tab should be Charts
     And the active main tab should be Repository
 
