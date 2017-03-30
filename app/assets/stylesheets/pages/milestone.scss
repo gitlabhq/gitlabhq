@@ -248,6 +248,8 @@
 
 $burndown-chart-axis-color: #aaa;
 $burndown-chart-line-color: #2faa60;
+$burndown-chart-legend-color: #8e8e8e;
+$burndown-chart-legend-stroke: #e5e5e5;
 $burndown-chart-axis-label-color: #5c5c5c;
 $burndown-chart-axis-label-stroke: #e5e5e5;
 
@@ -282,6 +284,20 @@ $burndown-chart-axis-label-stroke: #e5e5e5;
 
     line {
       stroke: $burndown-chart-axis-label-stroke;
+    }
+  }
+
+  .legend {
+    shape-rendering: crispEdges;
+
+    text {
+      font-size: 13px;
+      fill: $burndown-chart-legend-color;
+    }
+
+    rect {
+      stroke: $burndown-chart-legend-stroke;
+      fill: none;
     }
   }
 

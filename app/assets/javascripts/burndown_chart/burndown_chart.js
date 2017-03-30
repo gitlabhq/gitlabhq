@@ -25,6 +25,20 @@ export default class BurndownChart {
     this.yAxisLabelLineA = yAxisLabel.append('line');
     this.yAxisLabelLineB = yAxisLabel.append('line');
 
+    // create chart legend
+    this.chartLegendGroup = this.chartGroup.append('g').attr('class', 'legend');
+    this.chartLegendGroup.append('rect');
+
+    this.chartLegendIdealKey = this.chartLegendGroup.append('g');
+    this.chartLegendIdealKey.append('line').attr('class', 'ideal line');
+    this.chartLegendIdealKey.append('text').text('Guideline');
+    this.chartLegendIdealKeyBBox = this.chartLegendIdealKey.select('text').node().getBBox();
+
+    this.chartLegendActualKey = this.chartLegendGroup.append('g');
+    this.chartLegendActualKey.append('line').attr('class', 'actual line');
+    this.chartLegendActualKey.append('text').text('Progress');
+    this.chartLegendActualKeyBBox = this.chartLegendActualKey.select('text').node().getBBox();
+
     // parse start and due dates
     this.startDate = parseDate(startDate);
     this.dueDate = parseDate(dueDate);
@@ -156,6 +170,38 @@ export default class BurndownChart {
       .attr('x2', axisLabelOffset)
       .attr('y1', this.chartHeight - axisLabelPadding)
       .attr('y2', this.chartHeight);
+
+    // update our legend
+    const legendPadding = 10;
+    const legendSpacing = 5;
+
+    const idealBBox = this.chartLegendIdealKeyBBox;
+    const actualBBox = this.chartLegendActualKeyBBox;
+    const keyWidth = Math.ceil(Math.max(idealBBox.width, actualBBox.width));
+    const keyHeight = Math.ceil(Math.max(idealBBox.height, actualBBox.height));
+
+    const idealKeyOffset = legendPadding;
+    const actualKeyOffset = legendPadding + keyHeight + legendSpacing;
+    const legendWidth = (legendPadding * 2) + 24 + keyWidth;
+    const legendHeight = (legendPadding * 2) + (keyHeight * 2) + legendSpacing;
+    const legendOffset = (this.chartWidth + margin.right) - legendWidth - 1;
+
+    this.chartLegendGroup.select('rect')
+      .attr('width', legendWidth)
+      .attr('height', legendHeight);
+
+    this.chartLegendGroup.selectAll('text')
+      .attr('x', 24)
+      .attr('dy', '1em');
+    this.chartLegendGroup.selectAll('line')
+      .attr('y1', keyHeight / 2)
+      .attr('y2', keyHeight / 2)
+      .attr('x1', 0)
+      .attr('x2', 18);
+
+    this.chartLegendGroup.attr('transform', `translate(${legendOffset}, 0)`);
+    this.chartLegendIdealKey.attr('transform', `translate(${legendPadding}, ${idealKeyOffset})`);
+    this.chartLegendActualKey.attr('transform', `translate(${legendPadding}, ${actualKeyOffset})`);
 
     // render lines if data available
     if (this.data != null && this.data.length > 1) {
