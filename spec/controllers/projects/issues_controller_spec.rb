@@ -161,11 +161,11 @@ describe Projects::IssuesController do
           namespace_id: project.namespace.to_param,
           project_id: project,
           id: issue.iid,
-          issue: { assignee_ids: assignee.id.to_s },
+          issue: { assignee_ids: [assignee.id] },
           format: :json
         body = JSON.parse(response.body)
 
-        expect(body['assignee'].keys)
+        expect(body['assignees'].first.keys)
           .to match_array(%w(name username avatar_url))
       end
     end
