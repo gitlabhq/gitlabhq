@@ -1,5 +1,6 @@
 class GeoRepositoryFetchWorker
   include Sidekiq::Worker
+  include GeoQueue
   include Gitlab::ShellAdapter
 
   sidekiq_options queue: 'geo_repository_update'
