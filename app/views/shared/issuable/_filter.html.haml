@@ -40,21 +40,21 @@
       .issues_bulk_update.hide
         = form_tag [:bulk_update, @project.namespace.becomes(Namespace), @project, type], method: :post, class: 'bulk-update'  do
           .filter-item.inline
-            = dropdown_tag("Status", options: { toggle_class: "js-issue-status", title: "Change status", dropdown_class: "dropdown-menu-status dropdown-menu-selectable", data: { field_name: "update[state_event]", default_label: "Status" } } ) do
+            = dropdown_tag("Status", options: { toggle_class: "issue-bulk-update-dropdown-toggle js-issue-status", title: "Change status", dropdown_class: "dropdown-menu-status dropdown-menu-selectable", data: { field_name: "update[state_event]", default_label: "Status" } } ) do
               %ul
                 %li
                   %a{ href: "#", data: { id: "reopen" } } Open
                 %li
                   %a{ href: "#", data: {id: "close" } } Closed
           .filter-item.inline
-            = dropdown_tag("Assignee", options: { toggle_class: "js-user-search js-update-assignee js-filter-submit js-filter-bulk-update", title: "Assign to", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
+            = dropdown_tag("Assignee", options: { toggle_class: "issue-bulk-update-dropdown-toggle js-user-search js-update-assignee js-filter-submit js-filter-bulk-update", title: "Assign to", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
               placeholder: "Search authors", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: @project.id, field_name: "update[assignee_id]", default_label: "Assignee" } })
           .filter-item.inline
-            = dropdown_tag("Milestone", options: { title: "Assign milestone", toggle_class: 'js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update', filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: "Search milestones", data: { show_no: true, field_name: "update[milestone_id]", default_label: "Milestone", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), use_id: true } })
+            = dropdown_tag("Milestone", options: { title: "Assign milestone", toggle_class: 'issue-bulk-update-dropdown-toggle js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update', filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: "Search milestones", data: { show_no: true, field_name: "update[milestone_id]", default_label: "Milestone", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), use_id: true } })
           .filter-item.inline.labels-filter
             = render "shared/issuable/label_dropdown", classes: ['js-filter-bulk-update', 'js-multiselect'], dropdown_title: 'Apply a label', show_create: false, show_footer: false, extra_options: false, filter_submit: false, data_options: { persist_when_hide: "true", field_name: "update[label_ids][]", show_no: false, show_any: false, use_id: true }
           .filter-item.inline
-            = dropdown_tag("Subscription", options: { toggle_class: "js-subscription-event", title: "Change subscription", dropdown_class: "dropdown-menu-selectable", data: { field_name: "update[subscription_event]", default_label: "Subscription" } } ) do
+            = dropdown_tag("Subscription", options: { toggle_class: "issue-bulk-update-dropdown-toggle js-subscription-event", title: "Change subscription", dropdown_class: "dropdown-menu-selectable", data: { field_name: "update[subscription_event]", default_label: "Subscription" } } ) do
               %ul
                 %li
                   %a{ href: "#", data: { id: "subscribe" } } Subscribe
