@@ -123,18 +123,23 @@ export default {
         tagsPath: this.tagsPath,
       };
     },
+
+    pageParameter() {
+      return gl.utils.getParameterByName('page') || this.pagenum;
+    },
+
+    scopeParameter() {
+      return gl.utils.getParameterByName('scope') || this.apiScope;
+    },
   },
 
   created() {
-    const pageNumber = gl.utils.getParameterByName('page') || this.pagenum;
-    const scope = gl.utils.getParameterByName('scope') || this.apiScope;
-
     this.service = new PipelinesService(this.endpoint);
 
     const poll = new Poll({
       resource: this.service,
       method: 'getPipelines',
-      data: { page: pageNumber, scope },
+      data: { page: this.pageParameter, scope: this.scopeParameter },
       successCallback: this.successCallback,
       errorCallback: this.errorCallback,
       notificationCallback: this.setIsMakingRequest,
@@ -183,13 +188,10 @@ export default {
     },
 
     fetchPipelines() {
-      const pageNumber = gl.utils.getParameterByName('page') || this.pagenum;
-      const scope = gl.utils.getParameterByName('scope') || this.apiScope;
-
       if (!this.isMakingRequest) {
         this.isLoading = true;
 
-        this.service.getPipelines({ scope, page: pageNumber })
+        this.service.getPipelines({ scope: this.scopeParameter, page: this.pageParameter })
           .then(response => this.successCallback(response))
           .catch(() => this.errorCallback());
       }

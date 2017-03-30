@@ -44,7 +44,7 @@ export default Vue.component('pipelines-table', {
       state: store.state,
       isLoading: false,
       hasError: false,
-      setIsMakingRequest: false,
+      isMakingRequest: false,
     };
   },
 
