@@ -33,8 +33,15 @@ module ContainerRegistry
       end
     end
 
+    def has_project?
+      repository_project.present?
+    end
+
     def has_repository?
-      # ContainerRepository.find_by_full_path(@path).present?
+      return false unless has_project?
+
+      repository_project.container_repositories
+        .where(name: repository_name).any?
     end
 
     def repository_project
@@ -42,7 +49,7 @@ module ContainerRegistry
     end
 
     def repository_name
-      return unless repository_project
+      return unless has_project?
 
       @path.remove(%r(^?#{Regexp.escape(repository_project.full_path)}/?))
     end

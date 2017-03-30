@@ -39,7 +39,7 @@ describe ContainerRegistry::Path do
       it 'is not valid' do
         expect(subject).not_to be_valid
       end
-    end
+   end
 
     context 'when path has more than allowed number of components' do
       let(:path) { 'a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/r/s/t/u/w/y/z' }
@@ -55,6 +55,34 @@ describe ContainerRegistry::Path do
       it 'is valid' do
         expect(subject).to be_valid
       end
+    end
+  end
+
+  describe '#has_repository?' do
+    context 'when project exists' do
+      let(:project) { create(:empty_project) }
+      let(:path) { "#{project.full_path}/my/image" }
+
+      context 'when path already has matching repository' do
+        before do
+          create(:container_repository, project: project, name: 'my/image')
+        end
+
+        it { is_expected.to have_repository }
+        it { is_expected.to have_project }
+      end
+
+      context 'when path does not have matching repository' do
+        it { is_expected.not_to have_repository }
+        it { is_expected.to have_project }
+      end
+    end
+
+    context 'when project does not exist' do
+      let(:path) { 'some/project/my/image' }
+
+      it { is_expected.not_to have_repository }
+      it { is_expected.not_to have_project }
     end
   end
 
