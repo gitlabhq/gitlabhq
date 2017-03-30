@@ -40,7 +40,7 @@ module TestEnv
     'csv'                                => '3dd0896',
     'v1.1.0'                             => 'b83d6e3'
   }.freeze
-  
+
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
   # need to keep all the branches in sync.
   # We currently only need a subset of the branches
@@ -92,7 +92,7 @@ module TestEnv
     tmp_test_path = Rails.root.join('tmp', 'tests', '**')
 
     Dir[tmp_test_path].each do |entry|
-      unless File.basename(entry) =~ /\Agitlab-(shell|test|test_bare|test-fork)\z/
+      unless File.basename(entry) =~ /\Agitlab-(shell|test|test_bare|test-fork|test-fork_bare)\z/
         FileUtils.rm_rf(entry)
       end
     end
