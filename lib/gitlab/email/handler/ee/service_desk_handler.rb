@@ -20,7 +20,11 @@ module Gitlab
           private
 
           def service_desk_key
-            @service_desk_key ||= (mail_key =~ /\Aservice-desk[+](\w+)\z/ and $1)
+            @service_desk_key ||=
+              begin
+                mail_key =~ /\Aservice-desk[+](\w+)\z/
+                $1
+              end
           end
 
           def project
