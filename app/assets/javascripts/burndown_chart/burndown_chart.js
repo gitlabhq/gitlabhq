@@ -22,8 +22,9 @@ export default class BurndownChart {
     this.xAxisGroup.append('line').attr('class', 'domain-line');
 
     // create y-axis label
+    this.label = 'Remaining';
     const yAxisLabel = this.yAxisGroup.append('g').attr('class', 'axis-label');
-    this.yAxisLabelText = yAxisLabel.append('text').text('Remaining');
+    this.yAxisLabelText = yAxisLabel.append('text').text(this.label);
     this.yAxisLabelBBox = this.yAxisLabelText.node().getBBox();
     this.yAxisLabelLineA = yAxisLabel.append('line');
     this.yAxisLabelLineB = yAxisLabel.append('line');
@@ -102,7 +103,7 @@ export default class BurndownChart {
   }
 
   // set data and force re-render
-  setData(data, label) {
+  setData(data, { label = 'Remaining', animate } = {}) {
     this.data = data.map(datum => ({
       date: parseDate(datum[0]),
       value: parseInt(datum[1], 10),
@@ -117,7 +118,8 @@ export default class BurndownChart {
 
     // calculate the bounding box for the axis label if updated
     // (this must be done here to prevent layout thrashing)
-    if (label !== undefined) {
+    if (this.label !== label) {
+      this.label = label;
       this.yAxisLabelBBox = this.yAxisLabelText.text(label).node().getBBox();
     }
 
@@ -128,7 +130,7 @@ export default class BurndownChart {
       this.idealData = [idealStart, idealEnd];
     }
 
-    this.scheduleLineAnimation = true;
+    this.scheduleLineAnimation = !!animate;
     this.scheduleRender();
   }
 
@@ -272,8 +274,7 @@ export default class BurndownChart {
 
     // generate tooltip content
     const format = d3.time.format('%b %-d, %Y');
-    const date = format(datum.date);
-    const tooltip = `${datum.value} Remaining / ${date}`;
+    const tooltip = `${datum.value} ${this.label} / ${format(datum.date)}`;
 
     // move the tooltip point of origin to the point on the graph
     const x = this.xScale(datum.date);

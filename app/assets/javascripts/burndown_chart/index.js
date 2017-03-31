@@ -17,7 +17,7 @@ $(() => {
     dueDate: '2017-03-31',
   });
 
-  chart.setData(testData);
+  chart.setData(testData, { label: 'Open Issues', animate: true });
   window.addEventListener('resize', () => chart.animateResize(1));
   $(document).on('click', '.js-sidebar-toggle', () => chart.animateResize(2));
 });
