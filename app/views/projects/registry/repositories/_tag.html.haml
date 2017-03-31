@@ -25,5 +25,10 @@
   - if can?(current_user, :update_container_image, @project)
     %td.content
       .controls.hidden-xs.pull-right
-        = link_to namespace_project_container_registry_path(@project.namespace, @project, { id: tag.repository.id, tag: tag.name} ), class: 'btn btn-remove has-tooltip', title: "Remove tag", data: { confirm: "Due to a Docker limitation, all tags with the same ID will also be deleted. Are you sure?" }, method: :delete do
-          = icon("trash cred")
+        - notice = 'Due to a Docker limitation, all tags with the same ID will also be deleted. Are you sure?'
+        = link_to namespace_project_registry_repository_tag_path(@project.namespace, @project, tag.repository, tag.name),
+                  method: :delete,
+                  class: 'btn btn-remove has-tooltip',
+                  title: 'Remove image tag',
+                  data: { confirm: notice } do
+          = icon('trash cred')

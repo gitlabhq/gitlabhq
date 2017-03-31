@@ -224,6 +224,12 @@ constraints(ProjectUrlConstrainer.new) do
         only: [:index, :destroy],
         constraints: { id: Gitlab::Regex.container_registry_reference_regex }
 
+      namespace :registry do
+        resources :repository, only: [] do
+          resources :tags, only: [:destroy]
+        end
+      end
+
       resources :milestones, constraints: { id: /\d+/ } do
         member do
           put :sort_issues
