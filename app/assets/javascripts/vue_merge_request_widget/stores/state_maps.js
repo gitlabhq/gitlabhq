@@ -1,4 +1,4 @@
-export default {
+export const stateToComponentMap = {
   merged: 'mr-widget-merged',
   closed: 'mr-widget-closed',
   locked: 'mr-widget-locked',
@@ -15,3 +15,14 @@ export default {
   pipelineFailed: 'mr-widget-pipeline-failed',
   mergeWhenPipelineSucceeds: 'mr-widget-merge-when-pipeline-succeeds',
 };
+
+export const statesToShowHelpWidget = [
+  'locked',
+  'conflicts',
+  'workInProgress',
+  'readyToMerge',
+  'checking',
+  'unresolvedDiscussions',
+  'pipelineFailed',
+  'pipelineBlocked',
+];
