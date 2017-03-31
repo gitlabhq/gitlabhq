@@ -1,29 +1,4 @@
-import Vue from 'vue';
-import '~/smart_interval';
-import WidgetHeader from './components/mr_widget_header';
-import WidgetMergeHelp from './components/mr_widget_merge_help';
-import WidgetPipeline from './components/mr_widget_pipeline';
-import WidgetDeployment from './components/mr_widget_deployment';
-import WidgetRelatedLinks from './components/mr_widget_related_links';
-import MergedState from './components/states/mr_widget_merged';
-import ClosedState from './components/states/mr_widget_closed';
-import LockedState from './components/states/mr_widget_locked';
-import WipState from './components/states/mr_widget_wip';
-import ArchivedState from './components/states/mr_widget_archived';
-import ConflictsState from './components/states/mr_widget_conflicts';
-import NothingToMergeState from './components/states/mr_widget_nothing_to_merge';
-import MissingBranchState from './components/states/mr_widget_missing_branch';
-import NotAllowedState from './components/states/mr_widget_not_allowed';
-import ReadyToMergeState from './components/states/mr_widget_ready_to_merge';
-import UnresolvedDiscussionsState from './components/states/mr_widget_unresolved_discussions';
-import PipelineBlockedState from './components/states/mr_widget_pipeline_blocked';
-import PipelineFailedState from './components/states/mr_widget_pipeline_failed';
-import MergeWhenPipelineSucceedsState from './components/states/mr_widget_merge_when_pipeline_succeeds';
-import CheckingState from './components/states/mr_widget_checking';
-import MRWidgetStore from './stores/mr_widget_store';
-import MRWidgetService from './services/mr_widget_service';
-import eventHub from './event_hub';
-import { stateToComponentMap, statesToShowHelpWidget } from './stores/state_maps';
+import { Vue, WidgetHeader, WidgetMergeHelp, WidgetPipeline, WidgetDeployment, WidgetRelatedLinks, MergedState, ClosedState, LockedState, WipState, ArchivedState, ConflictsState, NothingToMergeState, MissingBranchState, NotAllowedState, ReadyToMergeState, UnresolvedDiscussionsState, PipelineBlockedState, PipelineFailedState, MergeWhenPipelineSucceedsState, CheckingState, MRWidgetStore, MRWidgetService, eventHub, stateToComponentMap, statesToShowHelpWidget } from './dependencies';
 
 const mrWidgetOptions = () => ({
   el: '#js-vue-mr-widget',
