@@ -263,7 +263,12 @@ require('~/lib/utils/common_utils');
     });
 
     describe('gl.utils.setParamInURL', () => {
+      afterEach(() => {
+        window.history.pushState({}, null, '');
+      });
+
       it('should return the parameter', () => {
+        window.history.pushState({}, null, '');
         expect(gl.utils.setParamInURL('page', 156)).toBe('?page=156');
         expect(gl.utils.setParamInURL('page', '156')).toBe('?page=156');
       });
