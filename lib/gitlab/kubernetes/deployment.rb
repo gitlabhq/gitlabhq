@@ -13,6 +13,18 @@ module Gitlab
         metadata['labels']
       end
 
+      def track
+        labels.fetch('track', 'stable')
+      end
+
+      def stable?
+        track.nil? || track == 'stable'
+      end
+
+      def canary?
+        !stable?
+      end
+
       def outdated?
         observed_generation < generation
       end
@@ -52,7 +64,13 @@ module Gitlab
       end
 
       def deployment_instance(n, name, status)
-        { status: status, tooltip: "#{name} (pod #{n}) #{status.capitalize}" }
+        {
+          status: status,
+          tooltip: "#{name} (pod #{n}) #{status.capitalize}",
+          track: track,
+          canary: canary?,
+          stable: stable?
+        }
       end
 
       def metadata
