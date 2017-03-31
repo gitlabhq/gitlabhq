@@ -204,7 +204,7 @@ export default class BurndownChart {
   }
 
   // reset width and height to match the svg element, then re-render if necessary
-  resize() {
+  handleResize() {
     const dimensions = this.canvas.node().getBoundingClientRect();
     if (this.width !== dimensions.width || this.height !== dimensions.height) {
       this.width = dimensions.width;
@@ -320,7 +320,7 @@ export default class BurndownChart {
     this.queuedRender = this.queuedRender || requestAnimationFrame(() => this.render());
   }
 
-  animate(seconds = 5) {
+  animateResize(seconds = 5) {
     this.ticksLeft = this.ticksLeft || 0;
     if (this.ticksLeft <= 0) {
       const interval = setInterval(() => {
@@ -328,7 +328,7 @@ export default class BurndownChart {
         if (this.ticksLeft <= 0) {
           clearInterval(interval);
         }
-        this.resize();
+        this.handleResize();
       }, 20);
     }
     this.ticksLeft = seconds * 50;

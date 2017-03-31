@@ -18,6 +18,6 @@ $(() => {
   });
 
   chart.setData(testData);
-  window.addEventListener('resize', () => chart.animate(1));
-  $(document).on('click', '.js-sidebar-toggle', () => chart.animate(2));
+  window.addEventListener('resize', () => chart.animateResize(1));
+  $(document).on('click', '.js-sidebar-toggle', () => chart.animateResize(2));
 });
