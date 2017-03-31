@@ -62,6 +62,7 @@ module Users
         :email,
         :external,
         :force_random_password,
+        :password_automatically_set,
         :hide_no_password,
         :hide_no_ssh_key,
         :key_id,
@@ -85,6 +86,7 @@ module Users
       [
         :email,
         :email_confirmation,
+        :password_automatically_set,
         :name,
         :password,
         :username
