@@ -504,8 +504,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       sha: (merge_request.diff_head_commit.short_id if merge_request.diff_head_sha),
       status: status,
       coverage: coverage,
+      has_ci: @merge_request.has_ci?,
       pipeline: pipeline.try(:id),
-      has_ci: @merge_request.has_ci?
+      stages: PipelineSerializer
+        .new(project: @project, current_user: @current_user)
+        .represent_stages(pipeline)
     }
 
     render json: response
