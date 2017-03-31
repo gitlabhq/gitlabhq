@@ -49,7 +49,7 @@
             = preserve do
               = markdown_field(@milestone, :description)
 
-  = render 'shared/milestones/burndown', milestone: @milestone, project: @project
+  = render 'shared/milestones/burndown', milestone: @milestone, project: @project, burndown: @burndown
 
   - if can?(current_user, :read_issue, @project) && @milestone.total_items_count(current_user).zero?
     .alert.alert-success.prepend-top-default

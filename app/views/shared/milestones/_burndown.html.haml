@@ -1,6 +1,7 @@
 - milestone = local_assigns[:milestone]
 - project = local_assigns[:project]
-- can_generate_chart = @milestone.start_date && @milestone.due_date
+- burndown = local_assigns[:burndown]
+- can_generate_chart = burndown.start_date && burndown.end_date && burndown
 
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('common_d3')
@@ -25,4 +26,4 @@
   .burndown-header
     %h3
       Open issues
-  .burndown-chart
+  .burndown-chart{ data: { start_date: burndown.start_date.strftime("%Y-%m-%d"), end_date: burndown.end_date.strftime("%Y-%m-%d"), chart_data: burndown.chart_data.to_json } }
