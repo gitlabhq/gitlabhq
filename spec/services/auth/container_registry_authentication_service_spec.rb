@@ -81,13 +81,13 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   end
 
   shared_examples 'container repository factory' do
-    it 'creates a new containe repository resource' do
+    it 'creates a new container repository resource' do
       expect { subject }
         .to change { project.container_repositories.count }.by(1)
     end
   end
 
-  shared_examples 'container repository factory' do
+  shared_examples 'not a container repository factory' do
     it 'does not create a new container repository resource' do
       expect { subject }.not_to change { ContainerRepository.count }
     end
@@ -178,6 +178,15 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
       context 'disallow anyone to push images' do
         let(:current_params) do
           { scope: "repository:#{project.path_with_namespace}:push" }
+        end
+
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
+      end
+
+      context 'when repository name is invalid' do
+        let(:current_params) do
+          { scope: 'repository:invalid:push' }
         end
 
         it_behaves_like 'an inaccessible'
