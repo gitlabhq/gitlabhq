@@ -1,7 +1,10 @@
 - project = event.project
 
 .profile-icon
-  = custom_icon("icon_commit")
+  - if event.action_name == "deleted"
+    = custom_icon("trash_o")
+  - else
+    = custom_icon("icon_commit")
 
 .event-title
   %span.pushed #{event.action_name} #{event.ref_type}
