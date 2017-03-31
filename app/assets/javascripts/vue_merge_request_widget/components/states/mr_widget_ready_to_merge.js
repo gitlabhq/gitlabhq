@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import simplePoll from '~/lib/utils/simple_poll';
 import eventHub from '../../event_hub';
 
@@ -50,9 +49,9 @@ export default {
         return 'Merge in progress';
       } else if (this.mr.isPipelineActive) {
         return 'Merge when pipeline succeeds';
-      } else {
-        return 'Merge';
       }
+
+      return 'Merge';
     },
     shouldShowMergeOptionsDropdown() {
       return this.mr.isPipelineActive && !this.mr.onlyAllowMergeIfPipelineSucceeds;
