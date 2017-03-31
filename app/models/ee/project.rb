@@ -26,6 +26,16 @@ module EE
       !public? && shared_runners_enabled? && namespace.shared_runners_minutes_limit_enabled?
     end
 
+    def service_desk_address
+      return nil unless ::Gitlab::EE::ServiceDesk.enabled?
+      return nil unless self.service_desk_enabled?
+
+      refresh_service_desk_key if service_desk_mail_key.blank?
+
+      from = "service_desk+#{service_desk_mail_key}"
+      Gitlab::IncomingEmail.reply_address(from)
+    end
+
     private
     def refresh_service_desk_key
       return unless ::Gitlab::EE::ServiceDesk.enabled?
