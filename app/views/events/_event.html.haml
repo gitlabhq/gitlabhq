@@ -4,13 +4,10 @@
       #{time_ago_with_tooltip(event.created_at)}
 
     - if event.created_project?
-      = custom_icon("icon_status_open")
       = render "events/event/created_project", event: event
     - elsif event.push?
-      = custom_icon("icon_commit")
       = render "events/event/push", event: event
     - elsif event.commented?
-      = custom_icon("comment_o")
       = render "events/event/note", event: event
     - else
       = render "events/event/common", event: event

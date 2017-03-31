@@ -4,7 +4,7 @@
  */
 .event-item {
   font-size: $gl-font-size;
-  padding: $gl-padding;
+  padding: $gl-padding 0;
   border-bottom: 1px solid $white-normal;
   color: $list-text-color;
 
@@ -23,6 +23,11 @@
     @include str-truncated(calc(100% - 174px));
     font-weight: 600;
     color: $list-text-color;
+  }
+
+  .event-icon {
+    display: inline-block;
+    margin: 0 10px;
   }
 
   svg {
