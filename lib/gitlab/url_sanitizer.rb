@@ -25,8 +25,8 @@ module Gitlab
     end
 
     def initialize(url, credentials: nil)
-      @url = Addressable::URI.parse(url.strip)
       @credentials = credentials
+      @url = parse_url(url)
     end
 
     def sanitized_url
@@ -35,8 +35,8 @@ module Gitlab
 
     def masked_url
       url = @url.dup
-      url.password = "*****" unless url.password.nil?
-      url.user = "*****" unless url.user.nil?
+      url.password = "*****" if url.password
+      url.user = "*****" if url.user
       url.to_s
     end
 
@@ -49,6 +49,24 @@ module Gitlab
     end
 
     private
+
+    def parse_url(url)
+      url             = url.strip
+      match           = url.match(%r{\A(?:ssh|http(?:s?))\://(?:(.+)(?:@))?(.+)})
+      raw_credentials = match[1] if match
+
+      if raw_credentials.present?
+        url.sub!("#{raw_credentials}@", '')
+
+        user, password = raw_credentials.split(':')
+        @credentials ||= { user: user, password: password }
+      end
+
+      url = Addressable::URI.parse(url)
+      url.user = user
+      url.password = password
+      url
+    end
 
     def generate_full_url
       return @url unless valid_credentials?
