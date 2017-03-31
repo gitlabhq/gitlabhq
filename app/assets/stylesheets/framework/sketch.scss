@@ -1,0 +1,101 @@
+#sketch-browser, #sketch-browser-props {
+  position: absolute;
+  top: 0;
+  font-size: 12px;
+  background: #F3F3F3;
+  border: 1px solid #B8B8B8;
+  width: 200px;
+}
+
+#sketch-browser-props {
+  right: 0;
+  fieldset {
+    padding: 5px;
+  }
+  legend {
+    font-size: 12px;
+    float: left;
+    display: inline-block;
+    width: 30%;
+  }
+  label {
+    float:right;
+    margin-left: 5px;
+    span {
+      display: inline-block;
+    }
+
+    input {
+      width: 40px;
+      font-size: 10px;
+      font-weight: normal;
+      height: 20px;
+      padding-left: 4px;
+      margin-left: 2px;
+      display: inline-block;
+    }
+  }
+}
+
+.sketch-panel {
+  .heading {
+    border-bottom: 1px solid #B8B8B8;
+    padding: 5px 5px;
+  }
+  
+  ul {
+    padding-left: 0;
+    list-style: none;
+
+    li.page:nth-child(odd), li.layer:nth-child(odd) {
+      background: #EBEBEB;
+    }
+    
+    li.page, li.layer {
+      background: #F0F0F0;
+      padding: 5px 10px;
+
+      &.artboard {
+        background: #F9F9F9;
+        border-bottom: 1px solid #9E9E9E;
+      }
+
+      a {
+        color: #000000;
+        &:hover {
+          text-decoration: none;
+        }
+
+        &.expand {
+          margin-right: 5px;
+          text-decoration: none;
+        }
+      }
+
+      &.active {
+        background: #6D9EE1;
+        a {
+          color: #FFFFFF;
+          &:hover {
+            text-decoration: none;
+          }
+        }
+      }
+
+      i.fa.fa-folder {
+        color: #77D0F6;
+        margin-top: 3px;
+      }
+
+      i.fa.fa-font {
+        color: #9B57BD;
+        margin-top: 3px;
+      }
+
+      i.fa.fa-lock {
+        color: #A6A6A6;
+        margin-top: 3px;
+      }
+    }
+  }
+}
