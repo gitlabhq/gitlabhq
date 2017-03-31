@@ -232,6 +232,22 @@
     };
 
     /**
+      this will take in the getAllResponseHeaders result and normalize them
+      this way we don't run into production issues when nginx gives us lowercased header keys
+    */
+    w.gl.utils.normalizeCRLFHeaders = (headers) => {
+      const headersObject = {};
+      const headersArray = headers.split('\n');
+
+      headersArray.forEach((header) => {
+        const keyValue = header.split(': ');
+        headersObject[keyValue[0]] = keyValue[1];
+      });
+
+      return w.gl.utils.normalizeHeaders(headersObject);
+    };
+
+    /**
      * Parses pagination object string values into numbers.
      *
      * @param {Object} paginationInformation

@@ -228,5 +228,19 @@ shared_examples 'a GitHub-ish import controller: POST create' do
         post :create, { new_name: test_name, format: :js }
       end
     end
+
+    context 'user has chosen a nested namespace and name for the project' do
+      let(:parent_namespace) { create(:namespace, name: 'foo', owner: user) }
+      let(:nested_namespace) { create(:namespace, name: 'bar', parent: parent_namespace, owner: user) }
+      let(:test_name) { 'test_name' }
+
+      it 'takes the selected namespace and name' do
+        expect(Gitlab::GithubImport::ProjectCreator).
+          to receive(:new).with(provider_repo, test_name, nested_namespace, user, access_params, type: provider).
+            and_return(double(execute: true))
+
+        post :create, { target_namespace: nested_namespace.full_path, new_name: test_name, format: :js }
+      end
+    end
   end
 end

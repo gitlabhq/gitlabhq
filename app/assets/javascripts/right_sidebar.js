@@ -209,7 +209,7 @@ import Cookies from 'js-cookie';
     };
 
     Sidebar.prototype.setSidebarHeight = function() {
-      const $navHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight();
+      const $navHeight = $('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight() + $('.sub-nav-scroll').outerHeight();
       const $rightSidebar = $('.js-right-sidebar');
       const diff = $navHeight - $(window).scrollTop();
       if (diff > 0) {

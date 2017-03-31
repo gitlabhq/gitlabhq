@@ -94,7 +94,7 @@ module Users
     def build_user_params
       if current_user&.is_admin?
         user_params = params.slice(*admin_create_params)
-        user_params[:created_by_id] = current_user.id
+        user_params[:created_by_id] = current_user&.id
 
         if params[:reset_password]
           user_params.merge!(force_random_password: true, password_expires_at: nil)
