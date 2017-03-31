@@ -12,6 +12,7 @@ module Gitlab
       )
         @oldrev, @newrev, @ref = change.values_at(:oldrev, :newrev, :ref)
         @branch_name = Gitlab::Git.branch_name(@ref)
+        @tag_name = Gitlab::Git.tag_name(@ref)
         @user_access = user_access
         @project = project
         @env = env
@@ -38,7 +39,7 @@ module Gitlab
 
         if forced_push?
           return "You are not allowed to force push code to a protected branch on this project."
-        elsif Gitlab::Git.blank_ref?(@newrev)
+        elsif blank_ref?
           return "You are not allowed to delete protected branches from this project."
         end
 
@@ -60,11 +61,33 @@ module Gitlab
       def tag_checks
         return if skip_authorization
 
-        tag_ref = Gitlab::Git.tag_name(@ref)
+        return unless @tag_name
 
-        if tag_ref && protected_tag?(tag_ref) && user_access.cannot_do_action?(:admin_project)
+        if tag_exists? && user_access.cannot_do_action?(:admin_project)
           "You are not allowed to change existing tags on this project."
         end
+
+        protected_tag_checks
+      end
+
+      def protected_tag_checks
+        return unless tag_protected?
+
+        if forced_push?
+          return "You are not allowed to force push protected tags." #TODO: Wording, 'not allowed to update proteted tags'?
+        end
+
+        if Gitlab::Git.blank_ref?(@newrev)
+          return "You are not allowed to delete protected tags." #TODO: Wording, do these need to mention 'you' if the rule applies to everyone
+        end
+
+        if !user_access.can_push_tag?(@tag_name)
+          return "You are not allowed to create protected tags on this project." #TODO: Wording, it is a specific tag which you don't have access too, not all protected tags which might have different levels
+        end
+      end
+
+      def tag_protected?
+        project.protected_tag?(@tag_name)
       end
 
       def push_checks
@@ -77,12 +100,16 @@ module Gitlab
 
       private
 
-      def protected_tag?(tag_name)
-        project.repository.tag_exists?(tag_name)
+      def tag_exists?
+        project.repository.tag_exists?(@tag_name)
       end
 
       def forced_push?
         Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev, env: @env)
+      end
+
+      def blank_ref?
+        Gitlab::Git.blank_ref?(@newrev)
       end
 
       def matching_merge_request?
