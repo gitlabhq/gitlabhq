@@ -1,12 +1,13 @@
-<%  if @discussion -%>
+<%  discussion = @note.discussion unless @discussion.individual_note? -%>
+<%  if discussion && !discussion.individual_note? -%>
 <%=   @note.author_name -%>
-<%    if @discussion.new_discussion? -%>
+<%    if discussion.new_discussion? -%>
 <%=     " started a new discussion" -%>
 <%    else -%>
 <%=     " commented on a discussion" -%>
 <%    end -%>
-<%    if @discussion.diff_discussion? -%>
-<%=     " on #{@discussion.file_path}" -%>
+<%    if discussion.diff_discussion? -%>
+<%=     " on #{discussion.file_path}" -%>
 <%    end -%>
 <%=   ":" -%>
 
@@ -16,8 +17,8 @@
 
 
 <%  end -%>
-<%  if @discussion&.diff_discussion? -%>
-<%    @discussion.truncated_diff_lines(highlight: false).each do |line| -%>
+<%  if discussion&.diff_discussion? -%>
+<%    discussion.truncated_diff_lines(highlight: false).each do |line| -%>
 <%=     "> #{line.text}\n" -%>
 <%    end -%>
 

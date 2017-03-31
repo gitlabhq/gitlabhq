@@ -20,9 +20,9 @@ class NotesFinder
   end
 
   def execute
-    @notes = init_collection
-    @notes = since_fetch_at(@params[:last_fetched_at], @notes) if @params[:last_fetched_at]
-    @notes
+    notes = init_collection
+    notes = since_fetch_at(notes)
+    notes.fresh
   end
 
   def target
@@ -56,7 +56,7 @@ class NotesFinder
   def notes_of_any_type
     types = %w(commit issue merge_request snippet)
     note_relations = types.map { |t| notes_for_type(t) }
-    note_relations.map! { |notes| search(@params[:search], notes) } if @params[:search]
+    note_relations.map! { |notes| search(notes) }
     UnionFinder.new.find_union(note_relations, Note)
   end
 
@@ -98,16 +98,21 @@ class NotesFinder
   #
   # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
   #
-  def search(query, notes_relation = @notes)
+  def search(query, notes)
+    query = @params[:search]
+    return unless query
+
     pattern = "%#{query}%"
-    notes_relation.where(Note.arel_table[:note].matches(pattern))
+    notes.where(Note.arel_table[:note].matches(pattern))
   end
 
   # Notes changed since last fetch
   # Uses overlapping intervals to avoid worrying about race conditions
-  def since_fetch_at(fetch_time, notes_relation = @notes)
+  def since_fetch_at(notes)
+    return notes unless @params[:last_fetched_at]
+
     # Default to 0 to remain compatible with old clients
     last_fetched_at = Time.at(@params.fetch(:last_fetched_at, 0).to_i)
-    notes_relation.where('updated_at > ?', last_fetched_at - FETCH_OVERLAP).fresh
+    notes.updated_after(last_fetched_at - FETCH_OVERLAP)
   end
 end

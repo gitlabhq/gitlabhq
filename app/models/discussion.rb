@@ -39,6 +39,7 @@ class Discussion
     [:discussion, note.noteable_type.try(:underscore), noteable_id]
   end
 
+  # Returns an array of discussion ID components
   def self.build_discussion_id(note)
     [*build_discussion_id_base(note), SecureRandom.hex]
   end

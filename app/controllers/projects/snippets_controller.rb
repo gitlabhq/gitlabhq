@@ -1,5 +1,5 @@
 class Projects::SnippetsController < Projects::ApplicationController
-  include NotesHelper
+  include RendersNotes
   include ToggleAwardEmoji
   include SpammableActions
   include SnippetsActions

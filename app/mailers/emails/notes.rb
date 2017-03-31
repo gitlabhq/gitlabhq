@@ -4,7 +4,6 @@ module Emails
       setup_note_mail(note_id, recipient_id)
 
       @commit = @note.noteable
-      @discussion = @note.discussion if @note.part_of_discussion?
       @target_url = namespace_project_commit_url(*note_target_url_options)
 
       mail_answer_thread(@commit,
@@ -17,7 +16,6 @@ module Emails
       setup_note_mail(note_id, recipient_id)
 
       @issue = @note.noteable
-      @discussion = @note.discussion if @note.part_of_discussion?
       @target_url = namespace_project_issue_url(*note_target_url_options)
       mail_answer_thread(@issue, note_thread_options(recipient_id))
     end
@@ -26,7 +24,6 @@ module Emails
       setup_note_mail(note_id, recipient_id)
 
       @merge_request = @note.noteable
-      @discussion = @note.discussion if @note.part_of_discussion?
       @target_url = namespace_project_merge_request_url(*note_target_url_options)
       mail_answer_thread(@merge_request, note_thread_options(recipient_id))
     end
@@ -35,7 +32,6 @@ module Emails
       setup_note_mail(note_id, recipient_id)
 
       @snippet = @note.noteable
-      @discussion = @note.discussion if @note.part_of_discussion?
       @target_url = namespace_project_snippet_url(*note_target_url_options)
       mail_answer_thread(@snippet, note_thread_options(recipient_id))
     end
@@ -44,7 +40,6 @@ module Emails
       setup_note_mail(note_id, recipient_id)
 
       @snippet = @note.noteable
-      @discussion = @note.discussion if @note.part_of_discussion?
       @target_url = snippet_url(@note.noteable)
       mail_answer_thread(@snippet, note_thread_options(recipient_id))
     end

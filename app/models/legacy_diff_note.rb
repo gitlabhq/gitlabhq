@@ -1,3 +1,4 @@
+# A note on merge request or commit diffs, using the legacy implementation
 class LegacyDiffNote < Note
   include NoteOnDiff
 

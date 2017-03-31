@@ -15,7 +15,6 @@ describe Projects::NotesController do
   end
 
   describe 'GET index' do
-    let(:last_fetched_at) { '1487756246' }
     let(:request_params) do
       {
         namespace_id: project.namespace,
@@ -35,6 +34,8 @@ describe Projects::NotesController do
     end
 
     it 'passes last_fetched_at from headers to NotesFinder' do
+      last_fetched_at = 3.hours.ago.to_i
+
       request.headers['X-Last-Fetched-At'] = last_fetched_at
 
       expect(NotesFinder).to receive(:new)
@@ -47,21 +48,11 @@ describe Projects::NotesController do
     context 'for a discussion note' do
       let!(:note) { create(:discussion_note_on_issue, noteable: issue, project: project) }
 
-      it 'includes the ID' do
+      it 'responds with the expected attributes' do
         get :index, request_params
 
         expect(note_json[:id]).to eq(note.id)
-      end
-
-      it 'includes discussion_html' do
-        get :index, request_params
-
         expect(note_json[:discussion_html]).not_to be_nil
-      end
-
-      it "doesn't include diff_discussion_html" do
-        get :index, request_params
-
         expect(note_json[:diff_discussion_html]).to be_nil
       end
     end
@@ -72,21 +63,11 @@ describe Projects::NotesController do
 
       let(:params) { request_params.merge(target_type: 'merge_request', target_id: note.noteable_id) }
 
-      it 'includes the ID' do
+      it 'responds with the expected attributes' do
         get :index, params
 
         expect(note_json[:id]).to eq(note.id)
-      end
-
-      it 'includes discussion_html' do
-        get :index, params
-
         expect(note_json[:discussion_html]).not_to be_nil
-      end
-
-      it 'includes diff_discussion_html' do
-        get :index, params
-
         expect(note_json[:diff_discussion_html]).not_to be_nil
       end
     end
@@ -100,21 +81,11 @@ describe Projects::NotesController do
 
         let(:params) { request_params.merge(target_type: 'merge_request', target_id: merge_request.id) }
 
-        it 'includes the ID' do
+        it 'responds with the expected attributes' do
           get :index, params
 
           expect(note_json[:id]).to eq(note.id)
-        end
-
-        it 'includes discussion_html' do
-          get :index, params
-
           expect(note_json[:discussion_html]).not_to be_nil
-        end
-
-        it "doesn't include diff_discussion_html" do
-          get :index, params
-
           expect(note_json[:diff_discussion_html]).to be_nil
         end
       end
@@ -122,21 +93,11 @@ describe Projects::NotesController do
       context 'when displayed on the commit' do
         let(:params) { request_params.merge(target_type: 'commit', target_id: note.commit_id) }
 
-        it 'includes the ID' do
+        it 'responds with the expected attributes' do
           get :index, params
 
           expect(note_json[:id]).to eq(note.id)
-        end
-
-        it "doesn't include discussion_html" do
-          get :index, params
-
           expect(note_json[:discussion_html]).to be_nil
-        end
-
-        it "doesn't include diff_discussion_html" do
-          get :index, params
-
           expect(note_json[:diff_discussion_html]).to be_nil
         end
       end
@@ -145,27 +106,12 @@ describe Projects::NotesController do
     context 'for a regular note' do
       let!(:note) { create(:note, noteable: issue, project: project) }
 
-      it 'includes the ID' do
+      it 'responds with the expected attributes' do
         get :index, request_params
 
         expect(note_json[:id]).to eq(note.id)
-      end
-
-      it 'includes html' do
-        get :index, request_params
-
         expect(note_json[:html]).not_to be_nil
-      end
-
-      it "doesn't include discussion_html" do
-        get :index, request_params
-
         expect(note_json[:discussion_html]).to be_nil
-      end
-
-      it "doesn't include diff_discussion_html" do
-        get :index, request_params
-
         expect(note_json[:diff_discussion_html]).to be_nil
       end
     end

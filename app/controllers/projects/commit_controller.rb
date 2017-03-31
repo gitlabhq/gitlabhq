@@ -2,7 +2,7 @@
 #
 # Not to be confused with CommitsController, plural.
 class Projects::CommitController < Projects::ApplicationController
-  include NotesHelper
+  include RendersNotes
   include CreatesCommit
   include DiffForPath
   include DiffHelper

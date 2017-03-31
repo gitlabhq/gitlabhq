@@ -1,3 +1,5 @@
+# A discussion to wrap a number of `Note` notes on the root of a commit when they
+# are displayed in context of a merge request as if they were part of a discussion.
 class OutOfContextDiscussion < Discussion
   # To make sure all out-of-context notes are displayed in one discussion,
   # we override the discussion ID to be a newly generated but consistent ID.

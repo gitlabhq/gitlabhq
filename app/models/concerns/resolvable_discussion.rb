@@ -2,12 +2,14 @@ module ResolvableDiscussion
   extend ActiveSupport::Concern
 
   included do
-    memoized_values << :resolvable
-    memoized_values << :resolved
-    memoized_values << :first_note
-    memoized_values << :first_note_to_resolve
-    memoized_values << :last_resolved_note
-    memoized_values << :last_note
+    memoized_values.push(
+      :resolvable,
+      :resolved,
+      :first_note,
+      :first_note_to_resolve,
+      :last_resolved_note,
+      :last_note
+    )
 
     delegate  :resolved_at,
               :resolved_by,

@@ -1,3 +1,4 @@
+# A discussion on merge request or commit diffs consisting of `LegacyDiffNote` notes
 class LegacyDiffDiscussion < Discussion
   include DiscussionOnDiff
 

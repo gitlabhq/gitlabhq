@@ -1,3 +1,4 @@
+# A note on merge request or commit diffs
 class DiffNote < Note
   include NoteOnDiff
 

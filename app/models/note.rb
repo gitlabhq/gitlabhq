@@ -68,6 +68,7 @@ class Note < ActiveRecord::Base
   scope :user, ->{ where(system: false) }
   scope :common, ->{ where(noteable_type: ["", nil]) }
   scope :fresh, ->{ order(created_at: :asc, id: :asc) }
+  scope :updated_after, ->(time){ where('updated_at > ?', time) }
   scope :inc_author_project, ->{ includes(:project, :author) }
   scope :inc_author, ->{ includes(:author) }
   scope :inc_relations_for_view, -> do
@@ -238,18 +239,20 @@ class Note < ActiveRecord::Base
     discussion_class(noteable).override_discussion_id(self) || super()
   end
 
-  # Returns a discussion containing just this note
+  # Returns a discussion containing just this note.
+  # This method exists as an alternative to `#discussion` to use when the methods
+  # we intend to call on the Discussion object don't require it to have all of its notes,
+  # and just depend on the first note or the type of discussion. This saves us a DB query.
   def to_discussion(noteable = nil)
     Discussion.build([self], noteable)
   end
 
-  # Returns the entire discussion this note is part of
+  # Returns the entire discussion this note is part of.
+  # Consider using `#to_discussion` if we do not need to render the discussion
+  # and all its notes and if we don't care about the discussion's resolvability status.
   def discussion
-    if part_of_discussion?
-      self.noteable.notes.find_discussion(self.discussion_id) || to_discussion
-    else
-      to_discussion
-    end
+    full_discussion = self.noteable.notes.find_discussion(self.discussion_id) if part_of_discussion?
+    full_discussion || to_discussion
   end
 
   def part_of_discussion?

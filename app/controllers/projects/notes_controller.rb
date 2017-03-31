@@ -1,5 +1,5 @@
 class Projects::NotesController < Projects::ApplicationController
-  include NotesHelper
+  include RendersNotes
   include ToggleAwardEmoji
 
   # Authorize

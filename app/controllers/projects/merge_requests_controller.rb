@@ -3,7 +3,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   include DiffForPath
   include DiffHelper
   include IssuableActions
-  include NotesHelper
+  include RendersNotes
   include ToggleAwardEmoji
   include IssuableCollections
 

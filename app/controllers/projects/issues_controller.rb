@@ -1,5 +1,5 @@
 class Projects::IssuesController < Projects::ApplicationController
-  include NotesHelper
+  include RendersNotes
   include ToggleSubscriptionAction
   include IssuableActions
   include ToggleAwardEmoji
