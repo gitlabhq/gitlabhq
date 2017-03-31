@@ -9,6 +9,7 @@ export default class SketchLoader {
 
     this.sketchBrowserId = 'sketch-browser';
     this.sketchBrowserPropsId = 'sketch-browser-props';
+    this.canvasId = 'sketch-canvas';
 
     this.load();
   }
@@ -19,7 +20,7 @@ export default class SketchLoader {
         return JSZip.loadAsync(data)
       })
       .then(asyncResult => {
-        this.sketchRender = new SketchRender(this.sketchBrowserId, this.sketchBrowserPropsId, asyncResult.files);
+        this.sketchRender = new SketchRender(this.sketchBrowserId, this.sketchBrowserPropsId, this.canvasId, asyncResult.files);
         return asyncResult.files['previews/preview.png'].async('uint8array')
       })
       .then((content) => {
@@ -49,6 +50,7 @@ export default class SketchLoader {
   render(previewUrl) {
     const previewLink = document.createElement('a');
     const previewImage = document.createElement('img');
+    const sketchCanvas = document.createElement('canvas');
     const sketchBrowser = document.createElement('aside');
     const sketchBrowserProps = document.createElement('aside');
     const sketchBrowserInner = `
@@ -61,7 +63,7 @@ export default class SketchLoader {
         </ul>
         <div class="heading">{{currentPage.name}}</div>
         <ul>
-          <layer v-for="layer in currentPage.layers" @layerselected="layerSelected" :key="layer.do_objectID" :layer="layer"></layer>
+          <layer v-for="layer in currentPage.layers" @layerselected="layerSelected" :active-layer="activeLayer" :class="{active: activeLayer === layer.do_objectID}" :key="layer.do_objectID" :layer="layer"></layer>
         </ul>
       </div>
     `;
@@ -91,10 +93,20 @@ export default class SketchLoader {
               <input type="text" v-model="currentPos.height" class="form-control" readonly="readonly"/>
             </label>
           </fieldset>
+          <fieldset v-if="backgroundColor">
+            <legend>BG Color</legend>
+            <label>
+              <span>Hex</span>
+              <code>{{backgroundColor.hex}}</code>
+            </label>
+            <div class="swatch" :title="backgroundColor.rgba" :style="{background: backgroundColor.rgba}"></div>
+          </fieldset>
         </section>
       </div>
     `;
 
+    sketchCanvas.id = this.canvasId;
+    
     sketchBrowser.id = this.sketchBrowserId;
     sketchBrowser.innerHTML = sketchBrowserInner;
 
@@ -110,6 +122,7 @@ export default class SketchLoader {
     this.container.appendChild(previewLink);
     this.container.appendChild(sketchBrowser);
     this.container.appendChild(sketchBrowserProps);
+    this.container.appendChild(sketchCanvas);
     this.sketchRender.render();
     this.removeLoadingIcon();
   }

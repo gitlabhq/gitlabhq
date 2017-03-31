@@ -1,12 +1,18 @@
 import Vue from 'vue';
 
 export default class SketchRender {
-  constructor(browserId, browserPropsId, files) {
+  constructor(browserId, browserPropsId, canvasId, files) {
     this.browserId = browserId;
     this.browserPropsId = browserPropsId;
     this.browserStore = {
       currentPageIndex: 0,
       pages: [],
+      activeLayer: '',
+      backgroundColor: {
+        hex: '#000000',
+        rgba: 'rgba(0,0,0,1)'
+      },
+      hasBackgroundColor: false,
       currentPos: {
         x: 0,
         y: 0,
@@ -34,15 +40,21 @@ export default class SketchRender {
           </a>
           <i v-if="layer._class === 'group'" class="fa fa-folder pull-left"></i>
           <i v-if="layer._class === 'text'" class="fa fa-font pull-left"></i>
+          <i v-if="layer._class === 'shapeGroup'" class="fa fa-th-large"></i>
+          <i v-if="layer._class === 'rectangle'" class="fa fa-square"></i>
+          <i v-if="layer._class === 'shapePath'" class="fa fa-heart-o"></i>
+          <i v-if="layer._class === 'symbolInstance'" class="fa fa-refresh"></i>
+          <i v-if="layer._class === 'symbolMaster'" class="fa fa-refresh"></i>
           <i v-if="layer.isLocked" class="fa fa-lock pull-right"></i>
-          <a href='#' @click.prevent="layerSelected(layer)">{{layer.name}}</a>
-          <ul v-if="layer.layers" v-show="expanded">
-            <layer v-for="layer in layer.layers" @layerselected="layerSelected" :key="layer.do_objectID" :layer="layer"></layer>
+          <a href='#' @click.prevent="layerSelected(layer)" :title="layer.name">{{layer.name}}</a>
+          <ul v-if="layer.layers && expanded">
+            <layer :active-layer="activeLayer" :class="{active: activeLayer === layer.do_objectID}" v-for="layer in layer.layers" @layerselected="layerSelected" :key="layer.do_objectID" :layer="layer"></layer>
           </ul>
         </li>`,
       
       props: {
         layer: Object,
+        activeLayer: ""
       },
 
       data() {
@@ -72,6 +84,14 @@ export default class SketchRender {
       },
 
       methods: {
+
+        rgbToHex(r, g, b) {
+          r *= 255;
+          g *= 255;
+          b *= 255;
+          return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        },
+
         pageSelected(pageIndex) {
           this.currentPageIndex = pageIndex;
           this.browserStore.currentPos.x = this.browserStore.pages[this.currentPageIndex].frame.x;
@@ -80,11 +100,27 @@ export default class SketchRender {
           this.browserStore.currentPos.height = this.browserStore.pages[this.currentPageIndex].frame.height;
         },
 
+        setBackgroundColor(bgColor) {
+          if(bgColor){
+            this.backgroundColor = this.backgroundColor || {};
+            this.backgroundColor.hex = this.rgbToHex(bgColor.red, bgColor.green, bgColor.blue);
+            bgColor.red = parseInt(bgColor.red * 255);
+            bgColor.green = parseInt(bgColor.green * 255);
+            bgColor.blue = parseInt(bgColor.blue * 255);
+            this.backgroundColor.rgba = `rgba(${bgColor.red}, ${bgColor.green}, ${bgColor.blue}, ${bgColor.alpha})`
+          }
+        },
+
         layerSelected(layer) {
           this.currentPos.x = layer.frame.x;
           this.currentPos.y = layer.frame.y;
           this.currentPos.width = layer.frame.width;
           this.currentPos.height = layer.frame.height;
+          this.activeLayer = layer.do_objectID;
+          this.hasBackgroundColor = layer.hasBackgroundColor;
+          this.setBackgroundColor(layer.backgroundColor);
+          console.log('layer._class',layer._class);
+          console.log('layer',layer);
         }
       }
     });
