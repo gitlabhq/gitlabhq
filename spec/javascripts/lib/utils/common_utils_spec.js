@@ -46,6 +46,10 @@ require('~/lib/utils/common_utils');
         spyOn(window.document, 'getElementById').and.callThrough();
       });
 
+      afterEach(() => {
+        window.history.pushState({}, null, '');
+      });
+
       function expectGetElementIdToHaveBeenCalledWith(elementId) {
         expect(window.document.getElementById).toHaveBeenCalledWith(elementId);
       }
@@ -78,6 +82,10 @@ require('~/lib/utils/common_utils');
     describe('gl.utils.getParameterByName', () => {
       beforeEach(() => {
         window.history.pushState({}, null, '?scope=all&p=2');
+      });
+
+      afterEach(() => {
+        window.history.pushState({}, null, '');
       });
 
       it('should return valid parameter', () => {
