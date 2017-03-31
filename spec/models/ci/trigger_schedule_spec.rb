@@ -4,8 +4,6 @@ describe Ci::TriggerSchedule, models: true do
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:trigger) }
-  # it { is_expected.to validate_presence_of :cron }
-  # it { is_expected.to validate_presence_of :cron_time_zone }
   it { is_expected.to respond_to :ref }
 
   it 'should validate ref existence' do
@@ -26,7 +24,7 @@ describe Ci::TriggerSchedule, models: true do
     context 'when every hour' do
       let(:cron) { '0 * * * *' } # 00:00, 01:00, 02:00, ..., 23:00
 
-      it 'fails' do
+      it 'gets an error' do
         expect(trigger_schedule.errors[:cron].first).to include('can not be less than 1 hour')
       end
     end
@@ -34,7 +32,7 @@ describe Ci::TriggerSchedule, models: true do
     context 'when each six hours' do
       let(:cron) { '0 */6 * * *' } # 00:00, 06:00, 12:00, 18:00
 
-      it 'succeeds' do
+      it 'gets no errors' do
         expect(trigger_schedule.errors[:cron]).to be_empty
       end
     end

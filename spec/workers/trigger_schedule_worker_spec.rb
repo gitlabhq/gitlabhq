@@ -28,23 +28,6 @@ describe TriggerScheduleWorker do
     end
   end
 
-  context 'when there is a scheduled trigger within next_run_at and a runnign pipeline' do
-    let!(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build, :force_triggable) }
-
-    before do
-      create(:ci_pipeline, project: trigger_schedule.project, ref: trigger_schedule.ref, status: 'running')
-      worker.perform
-    end
-
-    it 'do not create a new pipeline' do
-      expect(Ci::Pipeline.count).to eq(1)
-    end
-
-    it 'do not reschedule next_run_at' do
-      expect(Ci::TriggerSchedule.last.next_run_at).to eq(trigger_schedule.next_run_at)
-    end
-  end
-
   context 'when there are no scheduled triggers within next_run_at' do
     let!(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build) }
 

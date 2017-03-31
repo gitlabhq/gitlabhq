@@ -10,10 +10,10 @@ module Ci
     delegate :ref, to: :trigger
 
     validates :trigger, presence: true
-    validates :cron, presence: true
+    validates :cron, cron: true, presence: true
     validates :cron_time_zone, presence: true
-    validate :check_cron
-    validate :check_ref
+    validates :ref, ref: true, presence: true
+    validate :check_cron_frequency
 
     after_create :schedule_next_run!
 
@@ -31,25 +31,11 @@ module Ci
       ((time - Time.now).abs < 1.hour) ? true : false
     end
 
-    def check_cron
-      cron_parser = Ci::CronParser.new(cron, cron_time_zone)
-      is_valid_cron, is_valid_cron_time_zone = cron_parser.validation
-      next_time = cron_parser.next_time_from(Time.now)
+    def check_cron_frequency
+      next_time = Ci::CronParser.new(cron, cron_time_zone).next_time_from(Time.now)
 
-      if !is_valid_cron
-        self.errors.add(:cron, " is invalid syntax")
-      elsif !is_valid_cron_time_zone
-        self.errors.add(:cron_time_zone, " is invalid timezone")
-      elsif less_than_1_hour_from_now?(next_time)
+      if less_than_1_hour_from_now?(next_time)
         self.errors.add(:cron, " can not be less than 1 hour")
-      end
-    end
-
-    def check_ref
-      if !ref.present?
-        self.errors.add(:ref, " is empty")
-      elsif !project.repository.branch_exists?(ref)
-        self.errors.add(:ref, " does not exist")
       end
     end
   end
