@@ -13,7 +13,6 @@ class MockDeploymentService < DeploymentService
 
   # No terminals support
   def terminals(environment)
-    binding.pry
     []
   end
 end
