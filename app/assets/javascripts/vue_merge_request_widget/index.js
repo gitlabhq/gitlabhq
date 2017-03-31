@@ -1,4 +1,31 @@
-import { Vue, WidgetHeader, WidgetMergeHelp, WidgetPipeline, WidgetDeployment, WidgetRelatedLinks, MergedState, ClosedState, LockedState, WipState, ArchivedState, ConflictsState, NothingToMergeState, MissingBranchState, NotAllowedState, ReadyToMergeState, UnresolvedDiscussionsState, PipelineBlockedState, PipelineFailedState, MergeWhenPipelineSucceedsState, CheckingState, MRWidgetStore, MRWidgetService, eventHub, stateToComponentMap, statesToShowHelpWidget } from './dependencies';
+import {
+  Vue,
+  WidgetHeader,
+  WidgetMergeHelp,
+  WidgetPipeline,
+  WidgetDeployment,
+  WidgetRelatedLinks,
+  MergedState,
+  ClosedState,
+  LockedState,
+  WipState,
+  ArchivedState,
+  ConflictsState,
+  NothingToMergeState,
+  MissingBranchState,
+  NotAllowedState,
+  ReadyToMergeState,
+  UnresolvedDiscussionsState,
+  PipelineBlockedState,
+  PipelineFailedState,
+  MergeWhenPipelineSucceedsState,
+  CheckingState,
+  MRWidgetStore,
+  MRWidgetService,
+  eventHub,
+  stateToComponentMap,
+  statesToShowHelpWidget,
+} from './dependencies';
 
 const mrWidgetOptions = () => ({
   el: '#js-vue-mr-widget',
