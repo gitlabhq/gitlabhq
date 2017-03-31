@@ -25,5 +25,10 @@
 - if can_generate_chart
   .burndown-header
     %h3
-      Open issues
+      Burndown Chart
+      .btn-group
+        %button.btn.btn-xs.btn-primary.active{ data: { show: 'count' } }
+          Issues
+        %button.btn.btn-xs.btn-primary{ data: { show: 'weight' } }
+          Issue Weight
   .burndown-chart{ data: { start_date: burndown.start_date.strftime("%Y-%m-%d"), end_date: burndown.end_date.strftime("%Y-%m-%d"), chart_data: burndown.chart_data.to_json } }
