@@ -82,7 +82,7 @@ module Gitlab
         end
 
         if !user_access.can_push_tag?(@tag_name)
-          return "You are not allowed to create protected tags on this project." #TODO: Wording, it is a specific tag which you don't have access too, not all protected tags which might have different levels
+          return "You are not allowed to create this tag as it is protected."
         end
       end
 
