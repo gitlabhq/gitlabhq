@@ -23,7 +23,7 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
       ).exec
     end
 
-    before { allow(user_access).to receive(:can_do_action?).with(:push_code).and_return(true) }
+    before { project.add_developer(user) }
 
     context 'without failed checks' do
       it "doesn't return any error" do
@@ -50,10 +50,50 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
       end
 
       it 'returns an error if the user is not allowed to update tags' do
+        allow(user_access).to receive(:can_do_action?).with(:push_code).and_return(true)
         expect(user_access).to receive(:can_do_action?).with(:admin_project).and_return(false)
 
         expect(subject.status).to be(false)
         expect(subject.message).to eq('You are not allowed to change existing tags on this project.')
+      end
+
+      context 'with protected tag' do
+        let!(:protected_tag) { create(:protected_tag, project: project, name: 'v*') }
+
+        context 'deletion' do
+          let(:changes) do
+            {
+              oldrev: 'be93687618e4b132087f430a4d8fc3a609c9b77c',
+              newrev: '0000000000000000000000000000000000000000',
+              ref: 'refs/tags/v1.0.0'
+            }
+          end
+
+          it 'is prevented' do
+            expect(subject.status).to be(false)
+            expect(subject.message).to include('delete protected tags')
+          end
+        end
+
+        it 'prevents force push' do
+          expect(Gitlab::Checks::ForcePush).to receive(:force_push?).and_return(true)
+
+          expect(subject.status).to be(false)
+          expect(subject.message).to include('force push protected tags')
+        end
+
+        it 'prevents creation below access level' do
+          expect(subject.status).to be(false)
+          expect(subject.message).to include('allowed to')
+        end
+
+        context 'when user has access' do
+          let!(:protected_tag) { create(:protected_tag, :developers_can_push, project: project, name: 'v*') }
+
+          it 'allows tag creation' do
+            expect(subject.status).to be(true)
+          end
+        end
       end
     end
 

@@ -28,6 +28,22 @@ module Gitlab
       true
     end
 
+    #TODO: Test this
+    #TODO move most to ProtectedTag::AccessChecker. Or maybe UserAccess::Protections::Tag
+    #TODO: then consider removing method, if it turns out can_access_git? and can?(:push_code are checked in change_access
+    def can_push_tag?(ref)
+      return false unless can_access_git?
+
+      if project.protected_tag?(ref)
+        access_levels = project.protected_tags.matching(ref).map(&:push_access_levels).flatten
+        has_access = access_levels.any? { |access_level| access_level.check_access(user) }
+
+        has_access
+      else
+        user.can?(:push_code, project)
+      end
+    end
+
     def can_push_to_branch?(ref)
       return false unless can_access_git?
 
