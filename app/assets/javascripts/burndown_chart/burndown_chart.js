@@ -115,13 +115,13 @@ export default class BurndownChart {
     this.xScale.domain([this.startDate, this.xMax]);
     this.yScale.domain([0, this.yMax]);
 
-    // calculate the bounding box for our axis label if we've updated it
-    // (we must do this here to prevent layout thrashing)
+    // calculate the bounding box for the axis label if updated
+    // (this must be done here to prevent layout thrashing)
     if (label !== undefined) {
       this.yAxisLabelBBox = this.yAxisLabelText.text(label).node().getBBox();
     }
 
-    // set our ideal line data
+    // set ideal line data
     if (this.data.length > 1) {
       const idealStart = this.data[0] || { date: this.startDate, value: 0 };
       const idealEnd = { date: this.dueDate, value: 0 };
@@ -238,7 +238,7 @@ export default class BurndownChart {
     this.xAxisGroup.select('.domain').remove();
     this.xAxisGroup.select('.domain-line').attr('x1', 0).attr('x2', this.chartWidth + margin.right);
 
-    // update our y-axis label
+    // update y-axis label
     const axisLabelOffset = (this.yAxisLabelBBox.height / 2) - margin.left;
     const axisLabelPadding = (this.chartHeight - this.yAxisLabelBBox.width - 10) / 2;
 
@@ -259,7 +259,7 @@ export default class BurndownChart {
       .attr('y1', this.chartHeight - axisLabelPadding)
       .attr('y2', this.chartHeight);
 
-    // update our legend
+    // update legend
     const legendPadding = 10;
     const legendSpacing = 5;
 
