@@ -50,6 +50,12 @@ describe Burndown, models: true do
     expect(subject).to eq([])
   end
 
+  it "it counts until today if milestone due date > Date.today" do
+    Timecop.travel(milestone.due_date - 1.day)
+
+    expect(subject.last[0]).to eq(Time.now.strftime("%Y-%m-%d"))
+  end
+
   # Creates, closes and reopens issues only for odd days numbers
   def build_sample
     milestone.start_date.upto(milestone.due_date) do |date|

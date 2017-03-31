@@ -2,11 +2,12 @@ class Burndown
   attr_accessor :start_date, :end_date, :issues_count, :issues_weight
 
   def initialize(milestone)
-    @milestone     = milestone
-    @start_date    = @milestone.start_date
-    @end_date      = @milestone.due_date
+    @milestone = milestone
+    @start_date = @milestone.start_date
+    @end_date = @milestone.due_date
+    @end_date = Date.today if @end_date.present? && @end_date > Date.today
 
-    issues         = @milestone.issues
+    issues = @milestone.issues
 
     @issues_count  = issues.count
     @issues_weight = issues.sum(:weight)
