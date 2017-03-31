@@ -32,6 +32,20 @@ import eventHub from '../eventhub';
         default: false,
       },
     },
+    computed: {
+      cardUrl() {
+        return `${this.issueLinkBase}/${this.issue.id}`;
+      },
+      assigneeUrl() {
+        return `${this.rootPath}${this.issue.assignee.username}`;
+      },
+      assigneeUrlTitle() {
+        return `Assigned to ${this.issue.assignee.name}`;
+      },
+      issueId() {
+        return `#${this.issue.id}`;
+      },
+    },
     methods: {
       showLabel(label) {
         if (!this.list) return true;
@@ -76,16 +90,16 @@ import eventHub from '../eventhub';
           />
           <h4 class="card-title">
             <a
-              :href="issueLinkBase + '/' + issue.id"
+              :href="cardUrl"
               :title="issue.title">{{ issue.title }}</a>
             <span class="card-number">
-              #{{ issue.id }}
+              {{ issueId }}
             </span>
           </h4>
           <a
             class="card-assignee has-tooltip"
-            :href="rootPath + issue.assignee.username"
-            :title="'Assigned to ' + issue.assignee.name"
+            :href="assigneeUrl"
+            :title="assigneeUrlTitle"
             v-if="issue.assignee"
             data-container="body"
           >
@@ -94,7 +108,7 @@ import eventHub from '../eventhub';
               :src="issue.assignee.avatar"
               width="20"
               height="20"
-              :alt="'Avatar for ' + issue.assignee.name"
+              :alt="assigneeUrlTitle"
             />
           </a>
         </div>
