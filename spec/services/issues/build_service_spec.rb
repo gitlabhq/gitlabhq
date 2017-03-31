@@ -91,9 +91,7 @@ describe Issues::BuildService, services: true do
       end
 
       describe 'with multiple discussions' do
-        before do
-          create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.target_project, line_number: 15)
-        end
+        let!(:diff_note) { create(:diff_note_on_merge_request, noteable: merge_request, project: merge_request.target_project, line_number: 15) }
 
         it 'mentions all the authors in the description' do
           authors = merge_request.resolvable_discussions.map(&:author)
@@ -109,7 +107,7 @@ describe Issues::BuildService, services: true do
         end
 
         it 'mentions additional notes' do
-          create_list(:diff_note_on_merge_request, 2, noteable: merge_request, project: merge_request.target_project, line_number: 15)
+          create_list(:diff_note_on_merge_request, 2, noteable: merge_request, project: merge_request.target_project, in_reply_to: diff_note)
 
           expect(issue.description).to include('(+2 comments)')
         end

@@ -755,7 +755,7 @@ describe Notify do
       end
 
       shared_examples 'an email for a note on a diff discussion' do  |model|
-        let(:note) { create(model, project: project, author: note_author) }
+        let(:note) { create(model, author: note_author) }
 
         it "includes diffs with character-level highlighting" do
           is_expected.to have_body_text '<span class="p">}</span></span>'

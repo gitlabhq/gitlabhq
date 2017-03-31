@@ -98,9 +98,9 @@ class NotesFinder
   #
   # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
   #
-  def search(query, notes)
+  def search(notes)
     query = @params[:search]
-    return unless query
+    return notes unless query
 
     pattern = "%#{query}%"
     notes.where(Note.arel_table[:note].matches(pattern))

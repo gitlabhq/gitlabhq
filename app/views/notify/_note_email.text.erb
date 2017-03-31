@@ -1,4 +1,4 @@
-<%  discussion = @note.discussion unless @discussion.individual_note? -%>
+<%  discussion = @note.discussion if @note.part_of_discussion? -%>
 <%  if discussion && !discussion.individual_note? -%>
 <%=   @note.author_name -%>
 <%    if discussion.new_discussion? -%>

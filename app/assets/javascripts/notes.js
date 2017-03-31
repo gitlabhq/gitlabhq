@@ -769,6 +769,10 @@ require('./task_list');
       form.find('.js-note-new-discussion').remove();
       this.setupNoteForm(form);
 
+      form
+        .removeClass('js-main-target-form')
+        .addClass("discussion-form js-discussion-note-form");
+
       if (typeof gl.diffNotesCompileComponents !== 'undefined') {
         var $commentBtn = form.find('comment-and-resolve-btn');
         $commentBtn.attr(':discussion-id', "'" + discussionID + "'");
@@ -780,9 +784,6 @@ require('./task_list');
       form
         .find('.js-comment-resolve-button')
         .attr('data-discussion-id', discussionID);
-      form
-        .removeClass('js-main-target-form')
-        .addClass("discussion-form js-discussion-note-form");
     };
 
     /*

@@ -4,14 +4,14 @@ describe MergeRequest, Noteable, model: true do
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
   let!(:active_diff_note1) { create(:diff_note_on_merge_request, project: project, noteable: merge_request) }
-  let!(:active_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: merge_request) }
+  let!(:active_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, in_reply_to: active_diff_note1) }
   let!(:active_diff_note3) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: active_position2) }
   let!(:outdated_diff_note1) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: outdated_position) }
-  let!(:outdated_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: outdated_position) }
+  let!(:outdated_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: outdated_position, in_reply_to: outdated_diff_note1) }
   let!(:discussion_note1) { create(:discussion_note_on_merge_request, project: project, noteable: merge_request) }
   let!(:discussion_note2) { create(:discussion_note_on_merge_request, in_reply_to: discussion_note1) }
   let!(:commit_diff_note1) { create(:diff_note_on_commit, project: project) }
-  let!(:commit_diff_note2) { create(:diff_note_on_commit, project: project) }
+  let!(:commit_diff_note2) { create(:diff_note_on_commit, project: project, in_reply_to: commit_diff_note1) }
   let!(:commit_note1) { create(:note_on_commit, project: project) }
   let!(:commit_note2) { create(:note_on_commit, project: project) }
   let!(:commit_discussion_note1) { create(:discussion_note_on_commit, project: project) }
@@ -63,7 +63,7 @@ describe MergeRequest, Noteable, model: true do
     subject { merge_request.grouped_diff_discussions }
 
     it "includes active discussions" do
-      discussions = subject.values
+      discussions = subject.values.flatten
 
       expect(discussions.count).to eq(2)
       expect(discussions.map(&:id)).to eq([active_diff_note1.discussion_id, active_diff_note3.discussion_id])
@@ -74,12 +74,12 @@ describe MergeRequest, Noteable, model: true do
     end
 
     it "doesn't include outdated discussions" do
-      expect(subject.values.map(&:id)).not_to include(outdated_diff_note1.discussion_id)
+      expect(subject.values.flatten.map(&:id)).not_to include(outdated_diff_note1.discussion_id)
     end
 
     it "groups the discussions by line code" do
-      expect(subject[active_diff_note1.line_code].id).to eq(active_diff_note1.discussion_id)
-      expect(subject[active_diff_note3.line_code].id).to eq(active_diff_note3.discussion_id)
+      expect(subject[active_diff_note1.line_code].first.id).to eq(active_diff_note1.discussion_id)
+      expect(subject[active_diff_note3.line_code].first.id).to eq(active_diff_note3.discussion_id)
     end
   end
 end
