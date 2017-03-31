@@ -8,10 +8,10 @@ module Ci
       context 'when cron and cron_time_zone are valid' do
         context 'when specific time' do
           let(:cron) { '3 4 5 6 *' }
-          let(:cron_time_zone) { 'Europe/London' }
+          let(:cron_time_zone) { 'UTC' }
 
           it 'returns exact time in the future' do
-            expect(subject).to be > Time.now.in_time_zone(cron_time_zone)
+            expect(subject).to be > Time.now
             expect(subject.min).to eq(3)
             expect(subject.hour).to eq(4)
             expect(subject.day).to eq(5)
@@ -21,20 +21,20 @@ module Ci
 
         context 'when specific day of week' do
           let(:cron) { '* * * * 0' }
-          let(:cron_time_zone) { 'Europe/London' }
+          let(:cron_time_zone) { 'UTC' }
 
           it 'returns exact day of week in the future' do
-            expect(subject).to be > Time.now.in_time_zone(cron_time_zone)
+            expect(subject).to be > Time.now
             expect(subject.wday).to eq(0)
           end
         end
 
         context 'when slash used' do
           let(:cron) { '*/10 */6 */10 */10 *' }
-          let(:cron_time_zone) { 'US/Pacific' }
+          let(:cron_time_zone) { 'UTC' }
 
           it 'returns exact minute' do
-            expect(subject).to be > Time.now.in_time_zone(cron_time_zone)
+            expect(subject).to be > Time.now
             expect(subject.min).to be_in([0, 10, 20, 30, 40, 50])
             expect(subject.hour).to be_in([0, 6, 12, 18])
             expect(subject.day).to be_in([1, 11, 21, 31])
@@ -44,22 +44,25 @@ module Ci
 
         context 'when range used' do
           let(:cron) { '0,20,40 * 1-5 * *' }
-          let(:cron_time_zone) { 'US/Pacific' }
+          let(:cron_time_zone) { 'UTC' }
 
           it 'returns next time from now' do
-            expect(subject).to be > Time.now.in_time_zone(cron_time_zone)
+            expect(subject).to be > Time.now
             expect(subject.min).to be_in([0, 20, 40])
             expect(subject.day).to be_in((1..5).to_a)
           end
         end
 
         context 'when cron_time_zone is US/Pacific' do
-          let(:cron) { '* * * * *' }
+          let(:cron) { '0 0 * * *' }
           let(:cron_time_zone) { 'US/Pacific' }
 
           it 'returns next time from now' do
-            expect(subject).to be > Time.now.in_time_zone(cron_time_zone)
-            expect(subject.utc_offset/60/60).to eq(-7)
+            expect(subject).to be > Time.now
+          end
+
+          it 'converts time in server time zone' do
+            expect(subject.hour).to eq(7)
           end
         end
       end

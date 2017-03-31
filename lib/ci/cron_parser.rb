@@ -11,7 +11,7 @@ module Ci
     def next_time_from(time)
       cronLine = try_parse_cron(@cron, @cron_time_zone)
       if cronLine.present?
-        cronLine.next_time(time)
+        cronLine.next_time(time).in_time_zone(Time.zone)
       else
         nil
       end

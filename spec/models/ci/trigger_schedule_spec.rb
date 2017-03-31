@@ -8,11 +8,36 @@ describe Ci::TriggerSchedule, models: true do
   # it { is_expected.to validate_presence_of :cron_time_zone }
   it { is_expected.to respond_to :ref }
 
-  it 'should validate less_than_1_hour_from_now' do
+  it 'should validate ref existence' do
     trigger_schedule = create(:ci_trigger_schedule, :cron_nightly_build)
-    trigger_schedule.cron = '* * * * *'
+    trigger_schedule.trigger.ref = 'invalid-ref'
     trigger_schedule.valid?
-    expect(trigger_schedule.errors[:cron].first).to include('can not be less than 1 hour')
+    expect(trigger_schedule.errors[:ref].first).to include('does not exist')
+  end
+
+  describe 'cron limitation' do
+    let(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build) }
+
+    before do
+      trigger_schedule.cron = cron
+      trigger_schedule.valid?
+    end
+
+    context 'when every hour' do
+      let(:cron) { '0 * * * *' } # 00:00, 01:00, 02:00, ..., 23:00
+
+      it 'fails' do
+        expect(trigger_schedule.errors[:cron].first).to include('can not be less than 1 hour')
+      end
+    end
+
+    context 'when each six hours' do
+      let(:cron) { '0 */6 * * *' } # 00:00, 06:00, 12:00, 18:00
+
+      it 'succeeds' do
+        expect(trigger_schedule.errors[:cron]).to be_empty
+      end
+    end
   end
 
   describe '#schedule_next_run!' do
@@ -31,65 +56,25 @@ describe Ci::TriggerSchedule, models: true do
   end
 
   describe '#real_next_run' do
-    subject { trigger_schedule.real_next_run(worker_cron: worker_cron, worker_time_zone: worker_time_zone) }
+    let(:trigger_schedule) { create(:ci_trigger_schedule, cron: user_cron, cron_time_zone: 'UTC') }
+
+    subject { trigger_schedule.real_next_run(worker_cron: worker_cron, worker_time_zone: 'UTC') }
 
     context 'when next_run_at > worker_next_time' do
-      let(:worker_cron) { '0 */12 * * *' } # each 00:00, 12:00
-      let(:worker_time_zone) { 'UTC' }
-      let(:trigger_schedule) { create(:ci_trigger_schedule, :cron_weekly_build, cron_time_zone: user_time_zone, trigger: trigger) }
+      let(:worker_cron) { '* * * * *' } # every minutes
+      let(:user_cron) { '0 0 1 1 *' } # every 00:00, January 1st
 
-      context 'when user is in Europe/London(+00:00)' do
-        let(:user_time_zone) { 'Europe/London' }
-
-        it 'returns next_run_at' do
-          is_expected.to eq(trigger_schedule.next_run_at)
-        end
-      end
-
-      context 'when user is in Asia/Hong_Kong(+08:00)' do
-        let(:user_time_zone) { 'Asia/Hong_Kong' }
-
-        it 'returns next_run_at' do
-          is_expected.to eq(trigger_schedule.next_run_at)
-        end
-      end
-
-      context 'when user is in Canada/Pacific(-08:00)' do
-        let(:user_time_zone) { 'Canada/Pacific' }
-
-        it 'returns next_run_at' do
-          is_expected.to eq(trigger_schedule.next_run_at)
-        end
+      it 'returns next_run_at' do
+        is_expected.to eq(trigger_schedule.next_run_at)
       end
     end
 
     context 'when worker_next_time > next_run_at' do
-      let(:worker_cron) { '0 0 */2 * *' } # every 2 days
-      let(:worker_time_zone) { 'UTC' }
-      let(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build, cron_time_zone: user_time_zone, trigger: trigger) }
+      let(:worker_cron) { '0 0 1 1 *' } # every 00:00, January 1st
+      let(:user_cron) { '0 */6 * * *' } # each six hours
 
-      context 'when user is in Europe/London(+00:00)' do
-        let(:user_time_zone) { 'Europe/London' }
-
-        it 'returns worker_next_time' do
-          is_expected.to eq(Ci::CronParser.new(worker_cron, worker_time_zone).next_time_from_now)
-        end
-      end
-
-      context 'when user is in Asia/Hong_Kong(+08:00)' do
-        let(:user_time_zone) { 'Asia/Hong_Kong' }
-
-        it 'returns worker_next_time' do
-          is_expected.to eq(Ci::CronParser.new(worker_cron, worker_time_zone).next_time_from_now)
-        end
-      end
-
-      context 'when user is in Canada/Pacific(-08:00)' do
-        let(:user_time_zone) { 'Canada/Pacific' }
-
-        it 'returns worker_next_time' do
-          is_expected.to eq(Ci::CronParser.new(worker_cron, worker_time_zone).next_time_from_now)
-        end
+      it 'returns worker_next_time' do
+        is_expected.to eq(Ci::CronParser.new(worker_cron, 'UTC').next_time_from(Time.now))
       end
     end
   end
