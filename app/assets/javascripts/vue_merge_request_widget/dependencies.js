@@ -23,4 +23,5 @@ export { default as CheckingState } from './components/states/mr_widget_checking
 export { default as MRWidgetStore } from './stores/mr_widget_store';
 export { default as MRWidgetService } from './services/mr_widget_service';
 export { default as eventHub } from './event_hub';
+export { default as deviseState } from './stores/devise_state';
 export { stateToComponentMap, statesToShowHelpWidget } from './stores/state_maps';

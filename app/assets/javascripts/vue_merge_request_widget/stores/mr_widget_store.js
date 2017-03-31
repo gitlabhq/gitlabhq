@@ -1,5 +1,6 @@
 import Timeago from 'timeago.js';
 import eventHub from '../event_hub';
+import { deviseState } from '../dependencies';
 
 export default class MergeRequestStore {
 
@@ -85,31 +86,7 @@ export default class MergeRequestStore {
 
   setState(data) {
     if (this.isOpen) {
-      if (data.project_archived) {
-        this.state = 'archived';
-      } else if (data.branch_missing) {
-        this.state = 'missingBranch';
-      } else if (data.has_no_commits) {
-        this.state = 'nothingToMerge';
-      } else if (this.mergeStatus === 'unchecked') {
-        this.state = 'checking';
-      } else if (data.has_conflicts) {
-        this.state = 'conflicts';
-      } else if (data.work_in_progress) {
-        this.state = 'workInProgress';
-      } else if (this.mergeWhenPipelineSucceeds) {
-        this.state = 'mergeWhenPipelineSucceeds';
-      } else if (!this.canMerge) {
-        this.state = 'notAllowedToMerge';
-      } else if (this.onlyAllowMergeIfPipelineSucceeds && this.isPipelineFailed) {
-        this.state = 'pipelineFailed';
-      } else if (this.hasMergeableDiscussionsState) {
-        this.state = 'unresolvedDiscussions';
-      } else if (this.isPipelineBlocked) {
-        this.state = 'pipelineBlocked';
-      } else if (this.canBeMerged) {
-        this.state = 'readyToMerge';
-      }
+      this.state = deviseState.call(this, data);
     } else {
       switch (data.state) {
         case 'merged':
