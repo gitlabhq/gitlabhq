@@ -58,7 +58,7 @@ class ContainerRepository < ActiveRecord::Base
     end
   end
 
-  def self.create_from_path(path)
+  def self.create_from_path!(path)
     self.create(project: path.repository_project,
                 name: path.repository_name)
   end

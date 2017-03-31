@@ -94,7 +94,7 @@ module Auth
       return if path.has_repository?
       return unless actions.include?('push')
 
-      ContainerRepository.create_from_path(path)
+      ContainerRepository.create_from_path!(path)
     end
 
     def can_access?(requested_project, requested_action)

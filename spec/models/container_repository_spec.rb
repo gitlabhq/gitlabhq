@@ -85,28 +85,63 @@ describe ContainerRepository do
     end
   end
 
-  describe '#from_repository_path' do
-    context 'when received multi-level repository path' do
-      let(:repository) do
-        described_class.from_repository_path('group/test/some/image/name')
-      end
+  describe '.create_from_path!' do
+    let(:repository) do
+      described_class.create_from_path!(ContainerRegistry::Path.new(path))
+    end
 
-      pending 'fabricates object within a correct project' do
+    let(:repository_path) { ContainerRegistry::Path.new(path) }
+
+    context 'when received multi-level repository path' do
+      let(:path) { project.full_path + '/some/image' }
+
+      it 'fabricates repository assigned to a correct project' do
         expect(repository.project).to eq project
       end
 
-      pending 'it fabricates project with a correct name' do
-        expect(repository.name).to eq 'some/image/name'
+      it 'fabricates repository with a correct name' do
+        expect(repository.name).to eq 'some/image'
       end
     end
 
-    context 'when path contains too many nodes' do
+    context 'when path is too long' do
+      let(:path) do
+        project.full_path + '/a/b/c/d/e/f/g/h/i/j/k/l/n/o/p/s/t/u/x/y/z'
+      end
+
+      it 'does not create repository and raises error' do
+        expect { repository }.to raise_error(
+          ContainerRegistry::Path::InvalidRegistryPathError)
+      end
     end
 
     context 'when received multi-level repository with nested groups' do
+      let(:group) { create(:group, :nested, name: 'nested') }
+      let(:path) { project.full_path + '/some/image' }
+
+      it 'fabricates repository assigned to a correct project' do
+        expect(repository.project).to eq project
+      end
+
+      it 'fabricates repository with a correct name' do
+        expect(repository.name).to eq 'some/image'
+      end
+
+      it 'has path including a nested group' do
+        expect(repository.path).to include 'nested/test/some/image'
+      end
     end
 
     context 'when received root repository path' do
+      let(:path) { project.full_path }
+
+      it 'fabricates repository assigned to a correct project' do
+        expect(repository.project).to eq project
+      end
+
+      it 'fabricates repository with an empty name' do
+        expect(repository.name).to be_empty
+      end
     end
   end
 end
