@@ -2,8 +2,8 @@ require 'spec_helper'
 
 module Ci
   describe CronParser, lib: true do
-    describe '#next_time_from_now' do
-      subject { described_class.new(cron, cron_time_zone).next_time_from_now }
+    describe '#next_time_from' do
+      subject { described_class.new(cron, cron_time_zone).next_time_from(Time.now) }
 
       context 'when cron and cron_time_zone are valid' do
         context 'when specific time' do
@@ -65,8 +65,8 @@ module Ci
       end
 
       context 'when cron and cron_time_zone are invalid' do
-        let(:cron) { 'hack' }
-        let(:cron_time_zone) { 'hack' }
+        let(:cron) { 'invalid_cron' }
+        let(:cron_time_zone) { 'invalid_cron_time_zone' }
 
         it 'returns nil' do
           is_expected.to be_nil
@@ -74,25 +74,23 @@ module Ci
       end
     end
 
-    describe '#valid_syntax?' do
-      subject { described_class.new(cron, cron_time_zone).valid_syntax? }
-
-      context 'when cron and cron_time_zone are valid' do
-        let(:cron) { '* * * * *' }
-        let(:cron_time_zone) { 'Europe/Istanbul' }
-
-        it 'returns true' do
-          is_expected.to eq(true)
-        end 
+    describe '#validation' do
+      it 'returns results' do
+        is_valid_cron, is_valid_cron_time_zone = described_class.new('* * * * *', 'Europe/Istanbul').validation
+        expect(is_valid_cron).to eq(true)
+        expect(is_valid_cron_time_zone).to eq(true)
       end
 
-      context 'when cron and cron_time_zone are invalid' do
-        let(:cron) { 'hack' }
-        let(:cron_time_zone) { 'hack' }
+      it 'returns results' do
+        is_valid_cron, is_valid_cron_time_zone = described_class.new('*********', 'Europe/Istanbul').validation
+        expect(is_valid_cron).to eq(false)
+        expect(is_valid_cron_time_zone).to eq(true)
+      end
 
-        it 'returns false' do
-          is_expected.to eq(false)
-        end 
+      it 'returns results' do
+        is_valid_cron, is_valid_cron_time_zone = described_class.new('* * * * *', 'Invalid-zone').validation
+        expect(is_valid_cron).to eq(true)
+        expect(is_valid_cron_time_zone).to eq(false)
       end
     end
   end

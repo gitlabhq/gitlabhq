@@ -18,20 +18,22 @@ module Ci
     after_create :schedule_next_run!
 
     def schedule_next_run!
-      puts "cron: #{cron.inspect} | cron_time_zone: #{cron_time_zone.inspect}"
-      next_time = Ci::CronParser.new(cron, cron_time_zone).next_time_from_now
-      if next_time.present?
+      # puts "cron: #{cron.inspect} | cron_time_zone: #{cron_time_zone.inspect}"
+      next_time = Ci::CronParser.new(cron, cron_time_zone).next_time_from(Time.now)
+
+      if next_time.present? && !less_than_1_hour_from_now?(next_time)
         update!(next_run_at: next_time)
       end
     end
 
     def real_next_run(worker_cron: nil, worker_time_zone: nil)
-      puts "worker_cron: #{worker_cron.inspect} | worker_time_zone: #{worker_time_zone.inspect}"
       worker_cron = Settings.cron_jobs['trigger_schedule_worker']['cron'] unless worker_cron.present?
       worker_time_zone = Time.zone.name unless worker_time_zone.present?
-      worker_next_time = Ci::CronParser.new(worker_cron, worker_time_zone).next_time_from_now
+      # puts "real_next_run: worker_cron: #{worker_cron.inspect} | worker_time_zone: #{worker_time_zone.inspect}"
 
-      puts "next_run_at: #{next_run_at.inspect} | worker_next_time: #{worker_next_time.inspect}"
+      worker_next_time = Ci::CronParser.new(worker_cron, worker_time_zone).next_time_from(Time.now)
+
+      # puts "real_next_run: next_run_at: #{next_run_at.inspect} | worker_next_time: #{worker_next_time.inspect}"
       if next_run_at > worker_next_time
         next_run_at
       else
@@ -41,15 +43,20 @@ module Ci
 
     private
 
+    def less_than_1_hour_from_now?(time)
+      ((time - Time.now).abs < 1.hour) ? true : false
+    end
+
     def check_cron
       cron_parser = Ci::CronParser.new(cron, cron_time_zone)
       is_valid_cron, is_valid_cron_time_zone = cron_parser.validation
+      next_time = cron_parser.next_time_from(Time.now)
 
       if !is_valid_cron
         self.errors.add(:cron, " is invalid syntax")
       elsif !is_valid_cron_time_zone
         self.errors.add(:cron_time_zone, " is invalid timezone")
-      elsif (cron_parser.next_time_from_now - Time.now).abs < 1.hour
+      elsif less_than_1_hour_from_now?(next_time)
         self.errors.add(:cron, " can not be less than 1 hour")
       end
     end

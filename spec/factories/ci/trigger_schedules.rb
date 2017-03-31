@@ -1,11 +1,14 @@
 FactoryGirl.define do
   factory :ci_trigger_schedule, class: Ci::TriggerSchedule do
-    project factory: :project
-    trigger factory: :ci_trigger_with_ref
+    trigger factory: :ci_trigger_for_trigger_schedule
+
+    after(:build) do |trigger_schedule, evaluator|
+      trigger_schedule.update!(project: trigger_schedule.trigger.project)
+    end
 
     trait :force_triggable do
       after(:create) do |trigger_schedule, evaluator|
-        trigger_schedule.next_run_at -= 1.month
+        trigger_schedule.update!(next_run_at: trigger_schedule.next_run_at - 1.year)
       end
     end
 

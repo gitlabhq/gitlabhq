@@ -8,10 +8,13 @@ module Ci
       @cron_time_zone = cron_time_zone
     end
 
-    def next_time_from_now
+    def next_time_from(time)
       cronLine = try_parse_cron(@cron, @cron_time_zone)
-      return nil unless cronLine.present?
-      cronLine.next_time
+      if cronLine.present?
+        cronLine.next_time(time)
+      else
+        nil
+      end
     end
 
     def validation

@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 describe Ci::TriggerSchedule, models: true do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
-  let(:trigger) { create(:ci_trigger, owner: user, project: project, ref: 'master') }
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:trigger) }
@@ -11,17 +8,27 @@ describe Ci::TriggerSchedule, models: true do
   # it { is_expected.to validate_presence_of :cron_time_zone }
   it { is_expected.to respond_to :ref }
 
-  # describe '#schedule_next_run!' do
-  #   let(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build, next_run_at: nil, trigger: trigger) }
+  it 'should validate less_than_1_hour_from_now' do
+    trigger_schedule = create(:ci_trigger_schedule, :cron_nightly_build)
+    trigger_schedule.cron = '* * * * *'
+    trigger_schedule.valid?
+    expect(trigger_schedule.errors[:cron].first).to include('can not be less than 1 hour')
+  end
 
-  #   before do
-  #     trigger_schedule.schedule_next_run!
-  #   end
+  describe '#schedule_next_run!' do
+    context 'when more_than_1_hour_from_now' do
+      let(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build) }
 
-  #   it 'updates next_run_at' do
-  #     expect(Ci::TriggerSchedule.last.next_run_at).not_to be_nil
-  #   end
-  # end
+      before do
+        trigger_schedule.schedule_next_run!
+      end
+
+      it 'updates next_run_at' do
+        next_time = Ci::CronParser.new(trigger_schedule.cron, trigger_schedule.cron_time_zone).next_time_from(Time.now)
+        expect(Ci::TriggerSchedule.last.next_run_at).to eq(next_time)
+      end
+    end
+  end
 
   describe '#real_next_run' do
     subject { trigger_schedule.real_next_run(worker_cron: worker_cron, worker_time_zone: worker_time_zone) }
