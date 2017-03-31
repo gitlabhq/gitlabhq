@@ -1083,12 +1083,8 @@ describe Ci::Pipeline, models: true do
     let(:pipeline) { create(:ci_pipeline, sha: '123456') }
 
     it 'updates the cached status' do
-      fake_status = double
-      expect(Gitlab::Cache::Ci::ProjectBuildStatus).to receive(:new).
-                                                         with(pipeline.project, sha: '123456', status: 'manual').
-                                                         and_return(fake_status)
-
-      expect(fake_status).to receive(:store_in_cache_if_needed)
+      expect(Gitlab::Cache::Ci::ProjectBuildStatus).to receive(:update_for_pipeline).
+                                                         with(pipeline)
 
       pipeline.block
     end

@@ -12,6 +12,20 @@ describe Gitlab::Cache::Ci::ProjectBuildStatus do
     end
   end
 
+  describe '.update_for_pipeline' do
+    it 'refreshes the cache if nescessary' do
+      pipeline = build_stubbed(:ci_pipeline, sha: '123456', status: 'success')
+      fake_status = double
+      expect(described_class).to receive(:new).
+                                   with(pipeline.project, sha: '123456', status: 'success').
+                                   and_return(fake_status)
+
+      expect(fake_status).to receive(:store_in_cache_if_needed)
+
+      described_class.update_for_pipeline(pipeline)
+    end
+  end
+
   describe '#has_status?' do
     it "is false when the status wasn't loaded yet" do
       expect(pipeline_status.has_status?).to be_falsy

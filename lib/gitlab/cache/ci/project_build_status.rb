@@ -15,6 +15,10 @@ module Gitlab
           end
         end
 
+        def self.update_for_pipeline(pipeline)
+          new(pipeline.project, sha: pipeline.sha, status: pipeline.status).store_in_cache_if_needed
+        end
+
         def initialize(project, sha: nil, status: nil)
           @project = project
           @sha = sha
