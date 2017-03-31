@@ -130,18 +130,6 @@ ul.notes {
         }
       }
     }
-
-    .timeline-icon {
-      display: none;
-
-      .avatar {
-        visibility: hidden;
-
-        .discussion-body & {
-          visibility: visible;
-        }
-      }
-    }
   }
 
   .discussion-body {

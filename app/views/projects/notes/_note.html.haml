@@ -5,8 +5,13 @@
 %li.timeline-entry{ id: dom_id(note), class: ["note", "note-row-#{note.id}", ('system-note' if note.system)], data: {author_id: note.author.id, editable: note_editable, note_id: note.id} }
   .timeline-entry-inner
     .timeline-icon
-      %a{ href: user_path(note.author) }
-        = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
+      - if note.system
+        -# = render "#{note.system_note_metadata.action}.svg"
+        = icon_for_system_note(note)
+        %h1= note.system_note_metadata.action.inspect
+      - else
+        %a{ href: user_path(note.author) }
+          = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
     .timeline-content
       .note-header
         %a.visible-xs{ href: user_path(note.author) }
