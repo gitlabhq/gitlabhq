@@ -1110,10 +1110,6 @@ class Project < ActiveRecord::Base
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
-  def build_coverage_enabled?
-    build_coverage_regex.present?
-  end
-
   def build_timeout_in_minutes
     build_timeout / 60
   end
