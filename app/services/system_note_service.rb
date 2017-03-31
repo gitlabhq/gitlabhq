@@ -67,18 +67,18 @@ module SystemNoteService
   #   "assigned to @user1 and @user2"
   #
   # Returns the created Note object
-  def change_issue_assignees(issue, project, author, assignees)
+  def change_issue_assignees(issue, project, author, old_assignees)
     # TODO: basic implementation, should be improved before merging the MR
     body =
-      if issue.assignees.any? && assignees.any?
-        unassigned_users = issue.assignees - assignees
-        added_users = assignees - issue.assignees
+      if issue.assignees.any? && old_assignees.any?
+        unassigned_users = old_assignees - issue.assignees
+        added_users = issue.assignees.to_a - old_assignees
 
         "assigned to #{added_users.map(&:to_reference).to_sentence} and unassigned #{unassigned_users.map(&:to_reference).to_sentence}"
-      elsif issue.assignees.any?
+      elsif old_assignees.any?
         "removed all assignees"
-      elsif assignees.any?
-        "assigned to #{assignees.map(&:to_reference).to_sentence}"
+      elsif issue.assignees.any?
+        "assigned to #{issue.assignees.map(&:to_reference).to_sentence}"
       end
 
     create_note(noteable: issue, project: project, author: author, note: body)

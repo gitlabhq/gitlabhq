@@ -165,7 +165,7 @@ describe Issues::UpdateService, services: true do
         non_member        = create(:user)
         original_assignees = issue.assignees
 
-        update_issue(assignee_ids: non_member.id.to_s)
+        update_issue(assignee_ids: [non_member.id])
 
         expect(issue.reload.assignees).to eq(original_assignees)
       end
