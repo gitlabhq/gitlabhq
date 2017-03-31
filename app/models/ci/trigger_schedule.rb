@@ -25,19 +25,6 @@ module Ci
       end
     end
 
-    def real_next_run(worker_cron: nil, worker_time_zone: nil)
-      worker_cron = Settings.cron_jobs['trigger_schedule_worker']['cron'] unless worker_cron.present?
-      worker_time_zone = Time.zone.name unless worker_time_zone.present?
-
-      worker_next_time = Ci::CronParser.new(worker_cron, worker_time_zone).next_time_from(Time.now)
-
-      if next_run_at > worker_next_time
-        next_run_at
-      else
-        worker_next_time
-      end
-    end
-
     private
 
     def less_than_1_hour_from_now?(time)
