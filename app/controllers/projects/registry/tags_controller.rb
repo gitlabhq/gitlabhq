@@ -5,7 +5,8 @@ module Projects
 
       def destroy
         if tag.delete
-          redirect_to project_container_registry_path(@project)
+          redirect_to project_container_registry_path(@project),
+                      notice: 'Tag removed successfull!'
         else
           redirect_to project_container_registry_path(@project),
                       alert: 'Failed to remove repository tag!'

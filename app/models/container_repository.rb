@@ -4,7 +4,8 @@ class ContainerRepository < ActiveRecord::Base
   validates :name, length: { minimum: 0, allow_nil: false }
 
   delegate :client, to: :registry
-  before_destroy :delete_tags
+
+  before_destroy :delete_tags!
 
   def registry
     @registry ||= begin

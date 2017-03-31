@@ -10,7 +10,11 @@
       = escape_once(image.path)
     = clipboard_button(clipboard_text: "docker pull #{image.path}")
     .controls.hidden-xs.pull-right
-      = link_to namespace_project_container_registry_path(@project.namespace, @project, image.id), class: 'btn btn-remove has-tooltip', title: "Remove image", data: { confirm: "Are you sure?" }, method: :delete do
+      = link_to namespace_project_container_registry_path(@project.namespace, @project, image),
+                class: 'btn btn-remove has-tooltip',
+                title: 'Remove repository',
+                data: { confirm: 'Are you sure?' },
+                method: :delete do
         = icon("trash cred")
 
 

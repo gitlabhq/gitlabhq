@@ -36,9 +36,7 @@ module ContainerRegistry
     end
 
     def digest
-      return @digest if defined?(@digest)
-
-      @digest = client.repository_tag_digest(repository.path, name)
+      @digest ||= client.repository_tag_digest(repository.path, name)
     end
 
     def config_blob
