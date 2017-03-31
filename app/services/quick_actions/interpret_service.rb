@@ -465,6 +465,20 @@ module QuickActions
       @updates[:target_branch] = branch_name if project.repository.branch_exists?(branch_name)
     end
 
+    desc 'Creates a new branch'
+    params '<new-branch-name>'
+    condition do
+      issuable.is_a?(Issue) &&
+        issuable.persisted? &&
+        Ability.can_create_branch_from_issue?(current_user, project, issuable)
+    end
+    command :create_branch do |branch_name = nil|
+      branch_name ||= issuable.to_branch_name
+      ref = project.default_branch || 'master'
+      result = Issues::CreateBranchService.new(project, current_user).execute(issuable, branch_name, ref)
+      @updates[:branch] = result
+    end
+
     desc 'Move issue from one column of the board to another'
     explanation do |target_list_name|
       label = find_label_references(target_list_name).first
