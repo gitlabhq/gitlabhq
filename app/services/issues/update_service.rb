@@ -17,7 +17,7 @@ module Issues
       old_mentioned_users = options[:old_mentioned_users] || []
       old_assignees = options[:old_assignees] || []
 
-      if has_changes?(issue, old_labels: old_labels)
+      if has_changes?(issue, old_labels: old_labels, old_assignees: old_assignees)
         todo_service.mark_pending_todos_as_done(issue, current_user)
       end
 
@@ -31,7 +31,7 @@ module Issues
       end
 
       if issue.assignees != old_assignees
-        create_assignee_note(issue)
+        create_assignee_note(issue, old_assignees)
         notification_service.reassigned_issue(issue, current_user, old_assignees)
         todo_service.reassigned_issue(issue, current_user)
       end

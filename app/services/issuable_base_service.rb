@@ -48,13 +48,8 @@ class IssuableBaseService < BaseService
       params.delete(:add_label_ids)
       params.delete(:remove_label_ids)
       params.delete(:label_ids)
-
-      if issuable.is_a?(Issue)
-        params.delete(:assignee_ids)
-      else
-        params.delete(:assignee_id)
-      end
-
+      params.delete(:assignee_ids)
+      params.delete(:assignee_id)
       params.delete(:due_date)
     end
 
@@ -280,7 +275,7 @@ class IssuableBaseService < BaseService
     end
   end
 
-  def has_changes?(issuable, old_labels: [])
+  def has_changes?(issuable, old_labels: [], old_assignees: [])
     valid_attrs = [:title, :description, :assignee_id, :milestone_id, :target_branch]
 
     attrs_changed = valid_attrs.any? do |attr|
@@ -289,7 +284,9 @@ class IssuableBaseService < BaseService
 
     labels_changed = issuable.labels != old_labels
 
-    attrs_changed || labels_changed
+    assignees_changed = issuable.assignees != old_assignees
+
+    attrs_changed || labels_changed || assignees_changed
   end
 
   def handle_common_system_notes(issuable, old_labels: [])
