@@ -261,6 +261,27 @@ $burndown-chart-axis-label-stroke: #e5e5e5;
     font-size: 16px;
     margin: 0;
   }
+
+  .btn-group {
+    margin-left: 20px;
+    margin-bottom: 2px;
+  }
+
+  .btn {
+    font-size: 12px;
+
+    @include btn-outline($white-light, $blue-500, $blue-500, $blue-500, $white-light, $blue-600, $blue-600, $blue-700);
+
+    &.active {
+      background-color: $blue-500;
+      border-color: $blue-600;
+      color: $white-light;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
 }
 
 .burndown-chart {
