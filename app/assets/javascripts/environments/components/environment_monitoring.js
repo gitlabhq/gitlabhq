@@ -1,30 +1,31 @@
 /**
- * Renders the external url link in environments table.
+ * Renders the Monitoring (Metrics) link in environments table.
  */
 export default {
   props: {
-    externalUrl: {
+    monitoringUrl: {
       type: String,
       default: '',
+      required: true,
     },
   },
 
   computed: {
     title() {
-      return 'Open';
+      return 'Monitoring';
     },
   },
 
   template: `
     <a
-      class="btn external-url has-tooltip"
+      class="btn monitoring-url has-tooltip"
       data-container="body"
-      :href="externalUrl"
+      :href="monitoringUrl"
       target="_blank"
       rel="noopener noreferrer nofollow"
       :title="title"
       :aria-label="title">
-      <i class="fa fa-external-link" aria-hidden="true"></i>
+      <i class="fa fa-area-chart" aria-hidden="true"></i>
     </a>
   `,
 };

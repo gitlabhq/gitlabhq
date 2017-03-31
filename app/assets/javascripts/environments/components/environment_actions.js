@@ -25,6 +25,12 @@ export default {
     };
   },
 
+  computed: {
+    title() {
+      return 'Deploy to...';
+    },
+  },
+
   methods: {
     onClickAction(endpoint) {
       this.isLoading = true;
@@ -44,8 +50,11 @@ export default {
   template: `
     <div class="btn-group" role="group">
       <button
-        class="dropdown btn btn-default dropdown-new js-dropdown-play-icon-container"
+        class="dropdown btn btn-default dropdown-new js-dropdown-play-icon-container has-tooltip"
+        data-container="body"
         data-toggle="dropdown"
+        :title="title"
+        :aria-label="title"
         :disabled="isLoading">
         <span>
           <span v-html="playIconSvg"></span>

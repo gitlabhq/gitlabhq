@@ -32,7 +32,12 @@ describe('Actions Component', () => {
     }).$mount();
   });
 
-  it('should render a dropdown with the provided actions', () => {
+  it('should render a dropdown button with icon and title attribute', () => {
+    expect(component.$el.querySelector('.fa-caret-down')).toBeDefined();
+    expect(component.$el.querySelector('.dropdown-new').getAttribute('title')).toEqual('Deploy to...');
+  });
+
+  it('should render a dropdown with the provided list of actions', () => {
     expect(
       component.$el.querySelectorAll('.dropdown-menu li').length,
     ).toEqual(actionsMock.length);
