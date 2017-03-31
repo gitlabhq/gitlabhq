@@ -88,7 +88,7 @@ describe MergeRequest, models: true do
   end
 
   describe '#assignee_or_author?' do
-    let(:user) { build(:user) }
+    let(:user) { build(:user, id: 1) }
 
     it 'returns true for a user that is assigned to a merge request' do
       subject.assignee = user
