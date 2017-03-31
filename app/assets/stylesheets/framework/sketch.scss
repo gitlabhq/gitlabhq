@@ -4,8 +4,18 @@
   overflow: hidden;
 
   > .sketch-panel {
+    font-size: 12px;
+    background: #F3F3F3;
     overflow-y: scroll;
     overflow-x: hidden;
+
+    &:first-child {
+      border-right: 1px solid #B8B8B8;
+    }
+
+    &:last-child {
+      border-left: 1px solid #B8B8B8;
+    }
   }
 
   > a {
