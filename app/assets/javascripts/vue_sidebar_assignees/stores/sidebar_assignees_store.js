@@ -27,7 +27,9 @@ export default class SidebarAssigneesStore {
   }
 
   addCurrentUser() {
-    this.addUser(this.currentUserId);
+    this.addUser({
+      id: this.currentUserId,
+    });
     this.saveUsers();
   }
 
@@ -45,14 +47,18 @@ export default class SidebarAssigneesStore {
     this.service.update(payload)
       .then((response) => {
         const data = response.data;
-        const assignee = data.assignee;
+        const assignees = data.assignees;
 
         this.users = [];
 
-        // TODO: Update this to match backend response
-        if (assignee) {
-          this.addUser(assignee.id, assignee.name, assignee.username, assignee.avatar_url, true);
-        }
+        assignees.forEach(function(a) {
+          this.addUser({
+            id: a.id,
+            name: a.name,
+            username: a.username,
+            avatarUrl: a.avatar_url,
+          }, true)
+        }.bind(this));
 
         this.saved = true;
         this.loading = false;
