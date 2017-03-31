@@ -115,4 +115,33 @@ describe Project, models: true do
       it { is_expected.to be_falsey }
     end
   end
+
+  describe '#regenerate_service_desk_key' do
+    subject { create(:project) }
+
+    it 'leaves it blank by default' do
+      expect(subject.service_desk_mail_key).to be_blank
+    end
+
+    it 'updates when enabled' do
+      subject.service_desk_enabled = true
+      subject.validate
+      expect(subject.service_desk_mail_key).not_to be_blank
+    end
+
+    it 'changes when enabled' do
+      subject.update!(service_desk_mail_key: '12345')
+      subject.service_desk_enabled = true
+      expect { subject.validate }.to change { subject.service_desk_mail_key }
+    end
+
+    it 'ensures mail key is never nil when enabled' do
+      subject.update!(service_desk_enabled: true)
+
+      expect { subject.update!(service_desk_mail_key: nil) }
+        .to change { subject.service_desk_mail_key }
+
+      expect(subject.service_desk_mail_key).not_to be_blank
+    end
+  end
 end

@@ -14,6 +14,8 @@ module EE
 
       delegate :actual_shared_runners_minutes_limit,
         :shared_runners_minutes_used?, to: :namespace
+
+      before_validation :refresh_service_desk_key
     end
 
     def shared_runners_available?
@@ -22,6 +24,16 @@ module EE
 
     def shared_runners_minutes_limit_enabled?
       !public? && shared_runners_enabled? && namespace.shared_runners_minutes_limit_enabled?
+    end
+
+    private
+    def refresh_service_desk_key
+      return unless ::Gitlab::EE::ServiceDesk.enabled?
+      return unless self.service_desk_enabled?
+
+      if service_desk_mail_key.blank? || service_desk_enabled_changed?
+        self.service_desk_mail_key = Devise.friendly_token(16)
+      end
     end
   end
 end
