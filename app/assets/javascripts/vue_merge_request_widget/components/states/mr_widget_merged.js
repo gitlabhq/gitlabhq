@@ -12,29 +12,29 @@ export default {
   },
   data() {
     return {
-      isRemovingSourceBranch: false,
+      isMakingRequest: false,
     };
   },
   computed: {
     shouldShowRemoveSourceBranch() {
       const { isRemovingSourceBranch, canRemoveSourceBranch } = this.mr;
 
-      return canRemoveSourceBranch && !this.isRemovingSourceBranch && !isRemovingSourceBranch;
+      return canRemoveSourceBranch && !this.isMakingRequest && !isRemovingSourceBranch;
     },
     shouldShowSourceBranchRemoving() {
-      return this.isRemovingSourceBranch || this.mr.isRemovingSourceBranch;
+      return this.isMakingRequest || this.mr.isRemovingSourceBranch;
     },
   },
   methods: {
     removeSourceBranch() {
-      this.isRemovingSourceBranch = true;
+      this.isMakingRequest = true;
       // TODO: Error handling
       this.service.removeSourceBranch()
         .then(res => res.json())
         .then((res) => {
           if (res.message === 'Branch was removed') {
             eventHub.$emit('MRWidgetUpdateRequested', () => {
-              this.isRemovingSourceBranch = false;
+              this.isMakingRequest = false;
             });
           }
         });
@@ -61,7 +61,7 @@ export default {
           You can remove source branch now.
           <button
             @click="removeSourceBranch"
-            :class="{ disabled: isRemovingSourceBranch }"
+            :class="{ disabled: isMakingRequest }"
             type="button" class="btn btn-xs btn-default">Remove Source Branch</button>
         </p>
         <p v-if="shouldShowSourceBranchRemoving">
