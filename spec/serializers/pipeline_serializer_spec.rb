@@ -4,7 +4,7 @@ describe PipelineSerializer do
   let(:user) { create(:user) }
 
   let(:serializer) do
-    described_class.new(user: user)
+    described_class.new(current_user: user)
   end
 
   subject { serializer.represent(resource) }
@@ -44,7 +44,7 @@ describe PipelineSerializer do
       end
 
       let(:serializer) do
-        described_class.new(user: user)
+        described_class.new(current_user: user)
           .with_pagination(request, response)
       end
 
