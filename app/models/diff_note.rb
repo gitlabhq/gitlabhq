@@ -21,23 +21,12 @@ class DiffNote < Note
   before_validation :set_discussion_id, if: :position_changed?
   after_save :keep_around_commits
 
-  def new_diff_note?
-    true
-  end
-
   def discussion_class(*)
     DiffDiscussion
   end
 
-  def diff_attributes
-    {
-      original_position: original_position.to_json,
-      position: position.to_json,
-    }
-  end
-
-  %i(original_position= position=).each do |meth|
-    define_method meth do |new_position|
+  %i(original_position position).each do |meth|
+    define_method "#{meth}=" do |new_position|
       if new_position.is_a?(String)
         new_position = JSON.parse(new_position) rescue nil
       end

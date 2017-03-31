@@ -75,6 +75,7 @@ class Note < ActiveRecord::Base
   end
 
   scope :diff_notes, ->{ where(type: %w(LegacyDiffNote DiffNote)) }
+  scope :new_diff_notes, ->{ where(type: 'DiffNote') }
   scope :non_diff_notes, ->{ where(type: ['Note', 'DiscussionNote', nil]) }
 
   scope :with_associations, -> do
@@ -133,14 +134,6 @@ class Note < ActiveRecord::Base
   end
 
   def diff_note?
-    false
-  end
-
-  def legacy_diff_note?
-    false
-  end
-
-  def new_diff_note?
     false
   end
 

@@ -846,8 +846,8 @@ class MergeRequest < ActiveRecord::Base
     return unless has_complete_diff_refs?
     return if new_diff_refs == old_diff_refs
 
-    active_diff_notes = self.notes.diff_notes.select do |note|
-      note.new_diff_note? && note.active?(old_diff_refs)
+    active_diff_notes = self.notes.new_diff_notes.select do |note|
+      note.active?(old_diff_refs)
     end
 
     return if active_diff_notes.empty?

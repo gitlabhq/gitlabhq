@@ -11,14 +11,6 @@ class LegacyDiffNote < Note
     LegacyDiffDiscussion
   end
 
-  def legacy_diff_note?
-    true
-  end
-
-  def diff_attributes
-    { line_code: line_code }
-  end
-
   def project_repository
     if RequestStore.active?
       RequestStore.fetch("project:#{project_id}:repository") { self.project.repository }

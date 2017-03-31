@@ -1,10 +1,8 @@
-class LegacyDiffDiscussion < DiffDiscussion
-  def self.unique_position_identifier(note)
-    note.line_code
-  end
+class LegacyDiffDiscussion < Discussion
+  include DiscussionOnDiff
 
-  def self.build_original_discussion_id(note)
-    Discussion.build_original_discussion_id(note)
+  def self.build_discussion_id(note)
+    [*super(note), note.line_code]
   end
 
   def legacy_diff_discussion?
@@ -18,5 +16,9 @@ class LegacyDiffDiscussion < DiffDiscussion
 
   def collapsed?
     !active?
+  end
+
+  def reply_attributes
+    super.merge(line_code: line_code)
   end
 end
