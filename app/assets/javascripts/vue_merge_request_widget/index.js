@@ -23,9 +23,8 @@ import {
   MRWidgetStore,
   MRWidgetService,
   eventHub,
-  stateToComponentMap,
-  statesToShowHelpWidget,
   baseTemplate,
+  baseComputed,
 } from './dependencies';
 
 const mrWidgetOptions = () => ({
@@ -39,23 +38,7 @@ const mrWidgetOptions = () => ({
       service,
     };
   },
-  computed: {
-    componentName() {
-      return stateToComponentMap[this.mr.state];
-    },
-    shouldRenderMergeHelp() {
-      return statesToShowHelpWidget.indexOf(this.mr.state) > -1;
-    },
-    shouldRenderPipelines() {
-      return Object.keys(this.mr.pipeline).length || this.mr.hasCI;
-    },
-    shouldRenderRelatedLinks() {
-      return this.mr.relatedLinks;
-    },
-    shouldRenderDeployments() {
-      return this.mr.deployments.length;
-    },
-  },
+  computed: baseComputed.call(this),
   methods: {
     checkStatus(cb) {
       // TODO: Error handling
