@@ -1,0 +1,12 @@
+.memory-graph-container {
+  svg {
+    background: $white-light;
+    border: 1px solid $white-dark;
+  }
+
+  path {
+    stroke: $blue-500;
+    stroke-width: 1px;
+    fill: none;
+  }
+}
