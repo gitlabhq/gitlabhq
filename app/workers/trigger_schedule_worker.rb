@@ -9,7 +9,6 @@ class TriggerScheduleWorker
                                                     trigger_schedule.trigger,
                                                     trigger_schedule.ref)
       rescue => e
-        puts "#{trigger_schedule.id}: Failed to trigger_schedule job: #{e.message}" # TODO: Remove before merge
         Rails.logger.error "#{trigger_schedule.id}: Failed to trigger_schedule job: #{e.message}"
       ensure
         trigger_schedule.schedule_next_run!
