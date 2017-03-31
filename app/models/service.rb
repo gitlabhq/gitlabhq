@@ -240,7 +240,9 @@ class Service < ActiveRecord::Base
       slack
       teamcity
     ]
-    service_names << 'mock_ci' if Rails.env.development?
+    if Rails.env.development?
+      service_names += ['mock_ci', 'mock_deployment', 'mock_monitoring']
+    end
 
     service_names.sort_by(&:downcase)
   end
