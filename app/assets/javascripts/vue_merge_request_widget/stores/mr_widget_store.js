@@ -107,12 +107,15 @@ export default class MergeRequestStore {
   updatePipelineData(data) {
     const newStatus = data.status;
 
-    if (newStatus !== this.pipeline.details.status.group) {
-      eventHub.$emit('MRWidgetUpdateRequested');
-    } else {
-      this.pipeline.coverage = data.coverage;
-      this.pipeline.details.status.group = newStatus;
-      this.pipeline.details.stages = data.stages;
+    if (newStatus) {
+      if (newStatus !== this.pipeline.details.status.group) {
+        eventHub.$emit('MRWidgetUpdateRequested');
+      } else {
+        // TODO: Make sure `this.pipeline.details.status` always exists before access it.
+        this.pipeline.coverage = data.coverage;
+        this.pipeline.details.status.group = newStatus;
+        this.pipeline.details.stages = data.stages;
+      }
     }
   }
 
