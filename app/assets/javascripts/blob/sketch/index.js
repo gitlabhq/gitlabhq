@@ -106,7 +106,7 @@ export default class SketchLoader {
     `;
 
     sketchCanvas.id = this.canvasId;
-    
+
     sketchBrowser.id = this.sketchBrowserId;
     sketchBrowser.className = 'sketch-panel';
     sketchBrowser.innerHTML = sketchBrowserInner;
@@ -123,7 +123,6 @@ export default class SketchLoader {
     this.container.appendChild(previewLink);
     this.container.insertBefore(sketchBrowser, previewLink);
     this.container.appendChild(sketchBrowserProps);
-    this.container.appendChild(sketchCanvas);
     this.sketchRender.render();
     this.removeLoadingIcon();
   }
