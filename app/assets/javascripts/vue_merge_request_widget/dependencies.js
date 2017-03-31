@@ -24,4 +24,6 @@ export { default as MRWidgetStore } from './stores/mr_widget_store';
 export { default as MRWidgetService } from './services/mr_widget_service';
 export { default as eventHub } from './event_hub';
 export { default as deviseState } from './stores/devise_state';
-export { stateToComponentMap, statesToShowHelpWidget } from './stores/state_maps';
+export { default as baseTemplate } from './config/base_template';
+export { default as stateToComponentMap } from './config/state_to_component_map';
+export { default as statesToShowHelpWidget } from './config/states_to_show_help_widget';
