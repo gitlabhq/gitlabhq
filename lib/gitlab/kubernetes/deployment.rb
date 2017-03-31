@@ -21,10 +21,6 @@ module Gitlab
         track.nil? || track == 'stable'
       end
 
-      def canary?
-        !stable?
-      end
-
       def outdated?
         observed_generation < generation
       end
@@ -68,7 +64,6 @@ module Gitlab
           status: status,
           tooltip: "#{name} (pod #{n}) #{status.capitalize}",
           track: track,
-          canary: canary?,
           stable: stable?
         }
       end
