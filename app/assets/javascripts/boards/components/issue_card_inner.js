@@ -20,7 +20,7 @@ import eventHub from '../eventhub';
       list: {
         type: Object,
         required: false,
-        default: {},
+        default: () => ({}),
       },
       rootPath: {
         type: String,
