@@ -34,24 +34,13 @@ class Discussion
     nil
   end
 
-  def self.build_discussion_id(note)
+  def self.build_discussion_id_base(note)
     noteable_id = note.noteable_id || note.commit_id
     [:discussion, note.noteable_type.try(:underscore), noteable_id]
   end
 
-  def self.original_discussion_id(note)
-    original_discussion_id = build_original_discussion_id(note)
-    if original_discussion_id
-      Digest::SHA1.hexdigest(original_discussion_id.join("-"))
-    else
-      note.discussion_id
-    end
-  end
-
-  # Optionally build a separate original discussion ID that will never change,
-  # if the main discussion ID _can_ change, like in the case of DiffDiscussion.
-  def self.build_original_discussion_id(note)
-    nil
+  def self.build_discussion_id(note)
+    [*build_discussion_id_base(note), SecureRandom.hex]
   end
 
   def initialize(notes, noteable = nil)
@@ -80,10 +69,6 @@ class Discussion
 
   alias_method :to_param, :id
 
-  def original_id
-    first_note.original_discussion_id
-  end
-
   def diff_discussion?
     false
   end
@@ -109,7 +94,7 @@ class Discussion
   end
 
   def reply_attributes
-    first_note.slice(:type, :noteable_type, :noteable_id, :commit_id)
+    first_note.slice(:type, :noteable_type, :noteable_id, :commit_id, :discussion_id)
   end
 
   private

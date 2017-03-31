@@ -272,10 +272,10 @@ require('./task_list');
     Note: for rendering inline notes use renderDiscussionNote
      */
 
-    Notes.prototype.renderNote = function(note) {
+    Notes.prototype.renderNote = function(note, $form) {
       var $notesList;
       if (note.discussion_html != null) {
-        return this.renderDiscussionNote(note);
+        return this.renderDiscussionNote(note, $form);
       }
 
       if (!note.valid) {
@@ -317,16 +317,13 @@ require('./task_list');
     Note: for rendering inline notes use renderDiscussionNote
      */
 
-    Notes.prototype.renderDiscussionNote = function(note) {
+    Notes.prototype.renderDiscussionNote = function(note, $form) {
       var discussionContainer, form, note_html, row, lineType, diffAvatarContainer;
       if (!this.isNewNote(note)) {
         return;
       }
       this.note_ids.push(note.id);
-      form = $(".js-discussion-note-form[data-discussion-id='" + note.discussion_id + "']");
-      if (form.length === 0) {
-        form = $(".js-discussion-note-form[data-original-discussion-id='" + note.original_discussion_id + "']");
-      }
+      form = $form || $(".js-discussion-note-form[data-discussion-id='" + note.discussion_id + "']");
       row = form.closest("tr");
       lineType = this.isParallelView() ? form.find('#line_type').val() : 'old';
       diffAvatarContainer = row.prevAll('.line_holder').first().find('.js-avatar-container.' + lineType + '_line');
@@ -334,8 +331,8 @@ require('./task_list');
       note_html.renderGFM();
       // is this the first note of discussion?
       discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']");
-      if (discussionContainer.length === 0) {
-        discussionContainer = $(".notes[data-original-discussion-id='" + note.original_discussion_id + "']");
+      if (!discussionContainer.length) {
+        discussionContainer = form.closest('.discussion').find('.notes');
       }
       if (discussionContainer.length === 0) {
         if (!this.isParallelView() || row.hasClass('js-temp-notes-holder')) {
@@ -525,7 +522,7 @@ require('./task_list');
         }
       }
 
-      this.renderNote(note);
+      this.renderNote(note, $form);
       // cleanup after successfully creating a diff/discussion note
       this.removeDiscussionNoteForm($form);
     };
@@ -749,13 +746,13 @@ require('./task_list');
       // setup note target
       var discussionID = dataHolder.data("discussionId");
 
-      form.attr('id', "new-discussion-note-form-" + discussionID);
-      form.attr("data-discussion-id", discussionID);
-      form.attr("data-original-discussion-id", dataHolder.data("originalDiscussionId") || discussionID);
-      form.attr("data-line-code", dataHolder.data("lineCode"));
+      if (discussionID) {
+        form.attr("data-discussion-id", discussionID);
+        form.find("#in_reply_to_discussion_id").val(discussionID);
+      }
 
+      form.attr("data-line-code", dataHolder.data("lineCode"));
       form.find("#line_type").val(dataHolder.data("lineType"));
-      form.find("#in_reply_to_discussion_id").val(dataHolder.data("originalDiscussionId"));
 
       form.find("#note_noteable_type").val(dataHolder.data("noteableType"));
       form.find("#note_noteable_id").val(dataHolder.data("noteableId"));
@@ -775,8 +772,7 @@ require('./task_list');
 
       if (typeof gl.diffNotesCompileComponents !== 'undefined') {
         var $commentBtn = form.find('comment-and-resolve-btn');
-        $commentBtn
-          .attr(':discussion-id', "'" + dataHolder.data('discussionId') + "'");
+        $commentBtn.attr(':discussion-id', "'" + discussionID + "'");
 
         gl.diffNotesCompileComponents();
       }
@@ -784,7 +780,7 @@ require('./task_list');
       form.find(".js-note-text").focus();
       form
         .find('.js-comment-resolve-button')
-        .attr('data-discussion-id', dataHolder.data('discussionId'));
+        .attr('data-discussion-id', discussionID);
       form
         .removeClass('js-main-target-form')
         .addClass("discussion-form js-discussion-note-form");

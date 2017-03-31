@@ -3,7 +3,7 @@ module Noteable
     notes
   end
 
-  delegate :find_discussion, :find_original_discussion, to: :discussion_notes
+  delegate :find_discussion, to: :discussion_notes
 
   def discussions
     @discussions ||= discussion_notes

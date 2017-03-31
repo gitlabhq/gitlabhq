@@ -46,7 +46,7 @@ class SentNotification < ActiveRecord::Base
     end
 
     def record_note(note, recipient_id, reply_key = self.reply_key, attrs = {})
-      attrs[:in_reply_to_discussion_id] = note.original_discussion_id
+      attrs[:in_reply_to_discussion_id] = note.discussion_id
 
       record(note.noteable, recipient_id, reply_key, attrs)
     end

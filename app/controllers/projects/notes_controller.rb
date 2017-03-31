@@ -173,12 +173,7 @@ class Projects::NotesController < Projects::ApplicationController
           discussion_resolvable: discussion.resolvable?,
 
           diff_discussion_html: diff_discussion_html(discussion),
-          discussion_html: discussion_html(discussion),
-
-          # Since the `discussion_id` can change, for example when new commits are pushed into an MR,
-          # the never-changing `original_discussion_id` is used as a fallback to the find the relevant
-          # discussion container to add this note to.
-          original_discussion_id: note.original_discussion_id
+          discussion_html: discussion_html(discussion)
         )
       end
     else

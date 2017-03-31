@@ -53,23 +53,19 @@ module NotesHelper
     }
 
     if use_legacy_diff_note
-      new_note = LegacyDiffNote.new(@new_diff_note_attrs.merge(line_code: line_code))
+      data[:note_type] = LegacyDiffNote.name
     else
-      new_note = DiffNote.new(@new_diff_note_attrs.merge(position: position))
-
+      data[:note_type] = DiffNote.name
       data[:position] = position.to_json
     end
 
-    data.merge(
-      note_type: new_note.type,
-      discussion_id: new_note.discussion_class.discussion_id(new_note)
-    )
+    data
   end
 
   def link_to_reply_discussion(discussion, line_type = nil)
     return unless current_user
 
-    data = { discussion_id: discussion.id, original_discussion_id: discussion.original_id, line_type: line_type }
+    data = { discussion_id: discussion.id, line_type: line_type }
     data[:line_code] = discussion.line_code if discussion.respond_to?(:line_code)
 
     button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',

@@ -1,10 +1,6 @@
 class LegacyDiffDiscussion < Discussion
   include DiscussionOnDiff
 
-  def self.build_discussion_id(note)
-    [*super(note), note.line_code]
-  end
-
   def legacy_diff_discussion?
     true
   end

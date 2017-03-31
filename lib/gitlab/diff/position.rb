@@ -42,7 +42,7 @@ module Gitlab
       def encode_with(coder)
         coder['attributes'] = self.to_h
       end
-
+      
       def key
         @key ||= [base_sha, start_sha, head_sha, Digest::SHA1.hexdigest(old_path || ""), Digest::SHA1.hexdigest(new_path || ""), old_line, new_line]
       end

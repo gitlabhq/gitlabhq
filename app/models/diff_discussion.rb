@@ -6,14 +6,6 @@ class DiffDiscussion < Discussion
 
             to: :first_note
 
-  def self.build_discussion_id(note)
-    [*super(note), *note.position.key]
-  end
-
-  def self.build_original_discussion_id(note)
-    [*Discussion.build_discussion_id(note), *note.original_position.key]
-  end
-
   def legacy_diff_discussion?
     false
   end

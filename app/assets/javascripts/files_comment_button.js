@@ -131,7 +131,7 @@ window.FilesCommentButton = (function() {
   };
 
   FilesCommentButton.prototype.validateLineContent = function(lineContentElement) {
-    return lineContentElement.attr('data-discussion-id') && lineContentElement.attr('data-discussion-id') !== '';
+    return lineContentElement.attr('data-note-type') && lineContentElement.attr('data-note-type') !== '';
   };
 
   return FilesCommentButton;

@@ -52,7 +52,7 @@ class Note < ActiveRecord::Base
   validates :noteable_id, presence: true, unless: [:for_commit?, :importing?]
   validates :commit_id, presence: true, if: :for_commit?
   validates :author, presence: true
-  validates :discussion_id, :original_discussion_id, presence: true, format: { with: /\A\h{40}\z/ }
+  validates :discussion_id, presence: true, format: { with: /\A\h{40}\z/ }
 
   validate unless: [:for_commit?, :importing?, :for_personal_snippet?] do |note|
     unless note.noteable.try(:project) == note.project
@@ -84,9 +84,9 @@ class Note < ActiveRecord::Base
              project: [:project_members, { group: [:group_members] }])
   end
 
-  after_initialize :ensure_discussion_id, :ensure_original_discussion_id
+  after_initialize :ensure_discussion_id
   before_validation :nullify_blank_type, :nullify_blank_line_code
-  before_validation :set_discussion_id, :set_original_discussion_id, on: :create
+  before_validation :set_discussion_id, on: :create
   after_save :keep_around_commit, unless: :for_personal_snippet?
   after_save :expire_etag_cache
 
@@ -97,13 +97,6 @@ class Note < ActiveRecord::Base
 
     def discussions(noteable = nil)
       Discussion.build_collection(fresh, noteable)
-    end
-
-    def find_original_discussion(discussion_id)
-      note = find_by(original_discussion_id: discussion_id)
-      return unless note
-
-      note.to_discussion
     end
 
     def find_discussion(discussion_id)
@@ -307,20 +300,6 @@ class Note < ActiveRecord::Base
 
   def set_discussion_id
     self.discussion_id ||= discussion_class.discussion_id(self)
-  end
-
-  def ensure_original_discussion_id
-    return unless self.persisted?
-    # Needed in case the SELECT statement doesn't ask for `original_discussion_id`
-    return unless self.has_attribute?(:original_discussion_id)
-    return if self.original_discussion_id
-
-    set_original_discussion_id
-    update_column(:original_discussion_id, self.original_discussion_id)
-  end
-
-  def set_original_discussion_id
-    self.original_discussion_id = discussion_class.original_discussion_id(self)
   end
 
   def expire_etag_cache

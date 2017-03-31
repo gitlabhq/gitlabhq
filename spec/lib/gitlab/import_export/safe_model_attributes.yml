@@ -55,7 +55,6 @@ Note:
 - resolved_at
 - resolved_by_id
 - discussion_id
-- original_discussion_id
 LabelLink:
 - id
 - label_id

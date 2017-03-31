@@ -9,7 +9,7 @@ describe Notes::BuildService, services: true do
     context 'when in_reply_to_discussion_id is specified' do
       context 'when a note with that original discussion ID exists' do
         it 'sets the note up to be in reply to that note' do
-          new_note = described_class.new(project, author, note: 'Test', in_reply_to_discussion_id: note.original_discussion_id).execute
+          new_note = described_class.new(project, author, note: 'Test', in_reply_to_discussion_id: note.discussion_id).execute
           expect(new_note).to be_valid
           expect(new_note.in_reply_to?(note)).to be_truthy
         end

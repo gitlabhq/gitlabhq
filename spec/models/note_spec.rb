@@ -245,20 +245,6 @@ describe Note, models: true do
     end
   end
 
-  describe '.find_original_discussion' do
-    let!(:note) { create(:discussion_note_on_merge_request) }
-    let!(:note2) { create(:discussion_note_on_merge_request, in_reply_to: note) }
-    let(:merge_request) { note.noteable }
-
-    it 'returns a discussion with one note' do
-      discussion = merge_request.notes.find_original_discussion(note.original_discussion_id)
-
-      expect(discussion).not_to be_nil
-      expect(discussion.notes.count).to be(1)
-      expect(discussion.first_note.original_discussion_id).to eq(note.original_discussion_id)
-    end
-  end
-
   describe '.find_discussion' do
     let!(:note) { create(:discussion_note_on_merge_request) }
     let!(:note2) { create(:discussion_note_on_merge_request, in_reply_to: note) }
@@ -495,31 +481,6 @@ describe Note, models: true do
 
       it 'overrides the discussion id' do
         expect(note.discussion_id(merge_request)).not_to eq(note.discussion_id)
-      end
-    end
-  end
-
-  describe "#original_discussion_id" do
-    let(:note) { create(:diff_note_on_merge_request) }
-
-    context "when it is newly created" do
-      it "has a discussion id" do
-        expect(note.original_discussion_id).not_to be_nil
-        expect(note.original_discussion_id).to match(/\A\h{40}\z/)
-      end
-    end
-
-    context "when it didn't store a discussion id before" do
-      before do
-        note.update_column(:original_discussion_id, nil)
-      end
-
-      it "has a discussion id" do
-        # The original_discussion_id is set in `after_initialize`, so `reload` won't work
-        reloaded_note = Note.find(note.id)
-
-        expect(reloaded_note.original_discussion_id).not_to be_nil
-        expect(reloaded_note.original_discussion_id).to match(/\A\h{40}\z/)
       end
     end
   end

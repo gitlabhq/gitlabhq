@@ -12,7 +12,7 @@ describe SentNotification, model: true do
       end
 
       context "when the project doesn't match the discussion project" do
-        let(:discussion_id) { create(:note).original_discussion_id }
+        let(:discussion_id) { create(:note).discussion_id }
         subject { build(:sent_notification, in_reply_to_discussion_id: discussion_id) }
 
         it "is invalid" do
@@ -23,7 +23,7 @@ describe SentNotification, model: true do
       context "when the noteable project and discussion project match" do
         let(:project) { create(:project) }
         let(:issue) { create(:issue, project: project) }
-        let(:discussion_id) { create(:note, project: project, noteable: issue).original_discussion_id }
+        let(:discussion_id) { create(:note, project: project, noteable: issue).discussion_id }
         subject { build(:sent_notification, project: project, noteable: issue, in_reply_to_discussion_id: discussion_id) }
 
         it "is valid" do

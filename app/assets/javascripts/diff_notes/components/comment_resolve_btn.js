@@ -42,10 +42,14 @@ import Vue from 'vue';
       }
     },
     created() {
-      this.discussion = CommentsStore.state[this.discussionId];
+      if (this.discussionId) {
+        this.discussion = CommentsStore.state[this.discussionId];
+      }
     },
     mounted: function () {
-      const $textarea = $(`#new-discussion-note-form-${this.discussionId} .note-textarea`);
+      if (!this.discussionId) return;
+
+      const $textarea = $(`.js-discussion-note-form[data-discussion-id=${this.discussionId}] .note-textarea`);
       this.textareaIsEmpty = $textarea.val() === '';
 
       $textarea.on('input.comment-and-resolve-btn', () => {
@@ -53,7 +57,9 @@ import Vue from 'vue';
       });
     },
     destroyed: function () {
-      $(`#new-discussion-note-form-${this.discussionId} .note-textarea`).off('input.comment-and-resolve-btn');
+      if (!this.discussionId) return;
+
+      $(`.js-discussion-note-form[data-discussion-id=${this.discussionId}] .note-textarea`).off('input.comment-and-resolve-btn');
     }
   });
 

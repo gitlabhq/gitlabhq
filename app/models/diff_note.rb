@@ -16,9 +16,6 @@ class DiffNote < Note
 
   before_validation :set_original_position, :update_position, on: :create
   before_validation :set_line_code
-  # We need to do this again, because it's already in `Note`, but is affected by
-  # `update_position` and needs to run after that.
-  before_validation :set_discussion_id, if: :position_changed?
   after_save :keep_around_commits
 
   def discussion_class(*)

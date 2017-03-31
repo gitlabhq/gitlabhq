@@ -5,9 +5,7 @@ module Notes
       new_discussion = params.delete(:new_discussion)
 
       if project && in_reply_to_discussion_id.present?
-        discussion =
-          project.notes.find_original_discussion(in_reply_to_discussion_id) ||
-          project.notes.find_discussion(in_reply_to_discussion_id)
+        discussion = project.notes.find_discussion(in_reply_to_discussion_id)
 
         unless discussion
           note = Note.new
