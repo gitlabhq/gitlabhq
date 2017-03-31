@@ -368,7 +368,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_request_diff_for(diff_refs)
-    merge_request_diffs.viewable.select_without_diff.with_diff_refs(diff_refs).take
+    @merge_request_diffs_by_diff_refs ||= Hash.new do |h, diff_refs|
+      h[diff_refs] = merge_request_diffs.viewable.select_without_diff.with_diff_refs(diff_refs).take
+    end
+
+    @merge_request_diffs_by_diff_refs[diff_refs]
   end
 
   def reload_diff_if_branch_changed
