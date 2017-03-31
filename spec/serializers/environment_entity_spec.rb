@@ -16,17 +16,6 @@ describe EnvironmentEntity do
     expect(subject).to include(:id, :name, :state, :environment_path)
   end
 
-<<<<<<< HEAD
-  context 'with deployment service ready' do
-    before do
-      allow(environment).to receive(:deployment_service_ready?).and_return(true)
-    end
-
-    it 'exposes rollout_status_path' do
-      expected = '/' + [environment.project.full_path, 'environments', environment.id, 'status.json'].join('/')
-
-      expect(subject[:rollout_status_path]).to eq(expected)
-=======
   context 'metrics disabled' do
     before do
       allow(environment).to receive(:has_metrics?).and_return(false)
@@ -44,7 +33,18 @@ describe EnvironmentEntity do
 
     it 'exposes metrics path' do
       expect(subject).to include(:metrics_path)
->>>>>>> ce/master
+    end
+  end
+
+  context 'with deployment service ready' do
+    before do
+      allow(environment).to receive(:deployment_service_ready?).and_return(true)
+    end
+
+    it 'exposes rollout_status_path' do
+      expected = '/' + [environment.project.full_path, 'environments', environment.id, 'status.json'].join('/')
+
+      expect(subject[:rollout_status_path]).to eq(expected)
     end
   end
 end
