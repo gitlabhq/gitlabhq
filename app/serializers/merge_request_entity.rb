@@ -182,6 +182,12 @@ class MergeRequestEntity < IssuableEntity
                                          format: :diff)
   end
 
+  expose :ci_status_path do |merge_request|
+    ci_status_namespace_project_merge_request_path(merge_request.target_project.namespace,
+                                         merge_request.target_project,
+                                         merge_request)
+  end
+
   # FIXME: @oswaldo, please implement this
   expose :status_path do |merge_request|
     path = namespace_project_merge_request_path(merge_request.target_project.namespace,
