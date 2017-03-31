@@ -3,7 +3,7 @@ require 'capybara/poltergeist'
 require 'capybara-screenshot/spinach'
 
 # Give CI some extra time
-timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 40 : 10
+timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 60 : 30
 
 Capybara.javascript_driver = :poltergeist
 Capybara.register_driver :poltergeist do |app|

@@ -172,7 +172,8 @@ module TestEnv
   def eager_load_driver_server
     return unless defined?(Capybara)
 
-    Capybara.current_session.driver.visit '/'
+    puts "Starting the Capybara driver' server..."
+    Capybara.current_session.visit '/'
   end
 
   private
