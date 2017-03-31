@@ -26,6 +26,7 @@ module API
                         desc: 'Return issues sorted in `asc` or `desc` order.'
         optional :milestone, type: String, desc: 'Return issues for a specific milestone'
         optional :iids, type: Array[Integer], desc: 'The IID array of issues'
+        optional :search, type: String, desc: 'Search issues for text present in the title or description'
         use :pagination
       end
 
