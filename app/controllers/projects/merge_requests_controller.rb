@@ -591,7 +591,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @use_legacy_diff_notes = !@merge_request.has_complete_diff_refs?
 
     @grouped_diff_discussions = @merge_request.grouped_diff_discussions
-    @notes = prepare_notes_for_rendering(@grouped_diff_discussions.values.flat_map(&:notes))
+    @notes = prepare_notes_for_rendering(@grouped_diff_discussions.values.flatten.flat_map(&:notes))
   end
 
   def define_pipelines_vars

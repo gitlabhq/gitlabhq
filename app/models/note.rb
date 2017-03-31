@@ -109,10 +109,9 @@ class Note < ActiveRecord::Base
     def grouped_diff_discussions
       diff_notes.
         fresh.
+        discussions.
         select(&:active?).
-        group_by(&:line_code).
-        map { |line_code, notes| [line_code, DiffDiscussion.build(notes)] }.
-        to_h
+        group_by(&:line_code)
     end
 
     def count_for_collection(ids, type)

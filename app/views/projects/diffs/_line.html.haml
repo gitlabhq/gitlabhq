@@ -4,7 +4,7 @@
 - type = line.type
 - line_code = diff_file.line_code(line)
 - if discussions && !line.meta?
-  - discussion = discussions[line_code]
+  - line_discussions = discussions[line_code]
 %tr.line_holder{ class: type, id: (line_code unless plain) }
   - case type
   - when 'match'
@@ -20,6 +20,7 @@
         = link_text
       - else
         %a{ href: "##{line_code}", data: { linenumber: link_text } }
+      - discussion = line_discussions.try(:first)
       - if discussion && discussion.resolvable? && !plain
         %diff-note-avatars{ "discussion-id" => discussion.id }
     %td.new_line.diff-line-num{ class: type, data: { linenumber: line.new_pos } }
@@ -34,6 +35,6 @@
       - else
         = diff_line_content(line.text)
 
-- if discussion
-  - discussion_expanded = local_assigns.fetch(:discussion_expanded, discussion.expanded?)
-  = render "discussions/diff_discussion", discussion: discussion, expanded: discussion_expanded
+- if line_discussions
+  - discussion_expanded = local_assigns.fetch(:discussion_expanded, line_discussions.any?(&:expanded?))
+  = render "discussions/diff_discussion", discussions: line_discussions, expanded: discussion_expanded

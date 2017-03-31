@@ -136,13 +136,13 @@ class Projects::NotesController < Projects::ApplicationController
       template = "discussions/_parallel_diff_discussion"
       locals =
         if params[:line_type] == 'old'
-          { discussion_left: discussion, discussion_right: nil }
+          { discussions_left: [discussion], discussions_right: nil }
         else
-          { discussion_left: nil, discussion_right: discussion }
+          { discussions_left: nil, discussions_right: [discussion] }
         end
     else
       template = "discussions/_diff_discussion"
-      locals = { discussion: discussion }
+      locals = { discussions: [discussion] }
     end
 
     render_to_string(

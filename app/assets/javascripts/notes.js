@@ -668,7 +668,7 @@ require('./task_list');
         return function(i, el) {
           var note, notes;
           note = $(el);
-          notes = note.closest(".notes");
+          notes = note.closest(".discussion-notes");
 
           if (typeof gl.diffNotesCompileComponents !== 'undefined') {
             if (gl.diffNoteApps[noteElId]) {
@@ -685,14 +685,13 @@ require('./task_list');
             // "Discussions" tab
             notes.closest(".timeline-entry").remove();
 
-            if (!_this.isParallelView() || notesTr.find('.note').length === 0) {
-              // "Changes" tab / commit view
-              notesTr.remove();
+            // The notes tr can contain multiple lists of notes, like on the parallel diff
+            if (notesTr.find('.discussion-notes').length > 1) {
+              notes.remove();
             } else {
-              notes.closest('.content').empty();
+              notesTr.remove();
             }
           }
-          return note.remove();
         };
       })(this));
       // Decrement the "Discussions" counter only once

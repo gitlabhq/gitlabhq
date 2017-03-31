@@ -123,7 +123,7 @@ class Projects::CommitController < Projects::ApplicationController
     @grouped_diff_discussions = commit.grouped_diff_discussions
     @discussions = commit.discussions
 
-    @notes = (@grouped_diff_discussions.values + @discussions).flat_map(&:notes)
+    @notes = (@grouped_diff_discussions.values.flatten + @discussions).flat_map(&:notes)
     @notes = prepare_notes_for_rendering(@notes)
   end
 
