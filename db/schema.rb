@@ -132,8 +132,6 @@ ActiveRecord::Schema.define(version: 20170328010804) do
     t.string "uuid"
   end
 
-  add_index "application_settings", ["uuid"], name: "index_application_settings_on_uuid", using: :btree
-
   create_table "approvals", force: :cascade do |t|
     t.integer "merge_request_id", null: false
     t.integer "user_id", null: false
