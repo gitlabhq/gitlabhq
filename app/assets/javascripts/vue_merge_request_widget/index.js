@@ -70,9 +70,10 @@ const mrWidgetOptions = () => ({
       this.checkStatus(cb);
     });
 
+    // `params` should be an Array contains a Boolean, like `[true]`
+    // Passing parameter as Boolean didn't work.
     eventHub.$on('SetBranchRemoveFlag', (params) => {
-      const [flag] = params;
-      this.mr.isRemovingSourceBranch = flag;
+      this.mr.isRemovingSourceBranch = params[0];
     });
   },
   mounted() {
