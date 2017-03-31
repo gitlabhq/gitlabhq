@@ -57,38 +57,30 @@ describe ContainerRepository do
     it { is_expected.not_to be_empty }
   end
 
-  # TODO, improve these specs
-  #
-  describe '#delete_tags' do
-    let(:tag) { ContainerRegistry::Tag.new(container_repository, 'tag') }
-
-    before do
-      allow(container_repository).to receive(:tags).twice.and_return([tag])
-      allow(tag).to receive(:digest)
-        .and_return('sha256:4c8e63ca4cb663ce6c688cb06f1c3672a172b088dac5b6d7ad7d49cd620d85cf')
+  describe '#delete_tags!' do
+    let(:container_repository) do
+      create(:container_repository, name: 'my_image',
+                                    tags: %w[latest rc1],
+                                    project: project)
     end
 
     context 'when action succeeds' do
-      before do
-        allow(container_repository.client)
+      it 'returns status that indicates success' do
+        expect(container_repository.client)
           .to receive(:delete_repository_tag)
           .and_return(true)
-      end
 
-      it 'returns status that indicates success' do
-        expect(container_repository.delete_tags).to be_truthy
+        expect(container_repository.delete_tags!).to be_truthy
       end
     end
 
     context 'when action fails' do
-      before do
-        allow(container_repository.client)
+      it 'returns status that indicates failure' do
+        expect(container_repository.client)
           .to receive(:delete_repository_tag)
           .and_return(false)
-      end
 
-      it 'returns status that indicates failure' do
-        expect(container_repository.delete_tags).to be_falsey
+        expect(container_repository.delete_tags!).to be_falsey
       end
     end
   end

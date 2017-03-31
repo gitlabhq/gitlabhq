@@ -45,15 +45,14 @@ class ContainerRepository < ActiveRecord::Base
   # TODO, specs needed
   #
   def has_tags?
-    tags.any?
+    tags.to_a.any?
   end
 
-  # TODO, add bang to this method
-  #
-  def delete_tags
-    return unless tags
+  def delete_tags!
+    return unless has_tags?
 
-    digests = tags.map {|tag| tag.digest }.to_set
+    digests = tags.map { |tag| tag.digest }.to_set
+
     digests.all? do |digest|
       client.delete_repository_tag(self.path, digest)
     end

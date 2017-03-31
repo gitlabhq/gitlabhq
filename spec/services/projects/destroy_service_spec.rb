@@ -100,7 +100,8 @@ describe Projects::DestroyService, services: true do
 
     context 'images deletion succeeds' do
       it do
-        expect_any_instance_of(ContainerRepository).to receive(:delete_tags).and_return(true)
+        expect_any_instance_of(ContainerRepository)
+          .to receive(:delete_tags!).and_return(true)
 
         destroy_project(project, user, {})
       end
@@ -108,7 +109,8 @@ describe Projects::DestroyService, services: true do
 
     context 'images deletion fails' do
       before do
-        expect_any_instance_of(ContainerRepository).to receive(:delete_tags).and_return(false)
+        expect_any_instance_of(ContainerRepository)
+          .to receive(:delete_tags!).and_return(false)
       end
 
       subject { destroy_project(project, user, {}) }
