@@ -46,11 +46,10 @@ module Gitlab
               title: mail.subject,
               description: message,
               confidential: true,
+              service_desk_reply_to: from_address,
             ).execute
 
-            @issue.update_attributes(
-              service_desk_reply_to: from_address
-            )
+            raise InvalidIssueError unless @issue.persisted?
           end
 
           def send_thank_you_email!
