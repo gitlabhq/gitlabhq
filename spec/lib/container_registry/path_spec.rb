@@ -39,7 +39,7 @@ describe ContainerRegistry::Path do
       it 'is not valid' do
         expect(subject).not_to be_valid
       end
-   end
+    end
 
     context 'when path has more than allowed number of components' do
       let(:path) { 'a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/r/s/t/u/w/y/z' }
