@@ -81,11 +81,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
     stop_action = @environment.stop_with_action!(current_user)
 
-    if stop_action
-      redirect_to polymorphic_path([project.namespace.becomes(Namespace), project, stop_action])
+    action_or_env_url = if stop_action
+      polymorphic_url([project.namespace.becomes(Namespace), project, stop_action])
     else
-      redirect_to namespace_project_environment_path(project.namespace, project, @environment)
+      namespace_project_environment_url(project.namespace, project, @environment)
     end
+
+    render json: { redirect_url: action_or_env_url }
   end
 
   def terminal
