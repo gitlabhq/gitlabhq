@@ -98,7 +98,7 @@ export default class BurndownChart {
       .y(d => this.yScale(d.value));
 
     // render the chart
-    this.queueRender();
+    this.scheduleRender();
   }
 
   // set data and force re-render
@@ -128,8 +128,8 @@ export default class BurndownChart {
       this.idealData = [idealStart, idealEnd];
     }
 
-    this.queueLineAnimation = true;
-    this.queueRender();
+    this.scheduleLineAnimation = true;
+    this.scheduleRender();
   }
 
   handleMousemove() {
@@ -141,66 +141,10 @@ export default class BurndownChart {
     const d0 = this.data[i - 1];
     const d1 = this.data[i];
     if (d1 == null || dateOffset - d0.date < d1.date - dateOffset) {
-      this.handleTooltip(d0);
+      this.renderTooltip(d0);
     } else {
-      this.handleTooltip(d1);
+      this.renderTooltip(d1);
     }
-  }
-
-  handleTooltip(datum) {
-    if (this.currentPoint === datum) return;
-    this.currentPoint = datum;
-
-    // generate tooltip content
-    const format = d3.time.format('%b %-d, %Y');
-    const date = format(datum.date);
-    const tooltip = `${datum.value} Remaining / ${date}`;
-
-    // move the tooltip point of origin to the point on the graph
-    const x = this.xScale(datum.date);
-    const y = this.yScale(datum.value);
-
-    const textSize = this.tooltipGroup.select('text').text(tooltip).node().getBBox();
-    const width = textSize.width + (tooltipPadding.x * 2);
-    const height = textSize.height + (tooltipPadding.y * 2);
-
-    // calculate bounraries
-    const xMin = 0 - x - margin.left;
-    const yMin = 0 - y - margin.top;
-    const xMax = (this.chartWidth + margin.right) - x - width;
-    const yMax = (this.chartHeight + margin.bottom) - y - height;
-
-    // try to fit tooltip above point
-    let xOffset = 0 - Math.floor(width / 2);
-    let yOffset = 0 - tooltipDistance - height;
-
-    if (yOffset <= yMin) {
-      // else try to fit tooltip to the right
-      xOffset = tooltipDistance;
-      yOffset = 0 - Math.floor(height / 2);
-
-      if (xOffset >= xMax) {
-        // else place tooltip on the left
-        xOffset = 0 - tooltipDistance - width;
-      }
-    }
-
-    // ensure coordinates keep the entire tooltip in-bounds
-    xOffset = Math.max(xMin, Math.min(xMax, xOffset));
-    yOffset = Math.max(yMin, Math.min(yMax, yOffset));
-
-    // move everything into place
-    this.chartFocus.attr('transform', `translate(${x}, ${y})`);
-    this.tooltipGroup.attr('transform', `translate(${xOffset}, ${yOffset})`);
-
-    this.tooltipGroup.select('text')
-      .attr('dy', '1em')
-      .attr('x', tooltipPadding.x)
-      .attr('y', tooltipPadding.y);
-
-    this.tooltipGroup.select('rect')
-      .attr('width', width)
-      .attr('height', height);
   }
 
   // reset width and height to match the svg element, then re-render if necessary
@@ -217,13 +161,19 @@ export default class BurndownChart {
       this.xScale.range([0, this.chartWidth]);
       this.yScale.range([this.chartHeight, 0]);
 
-      this.queueRender();
+      this.scheduleRender();
+    }
+  }
+
+  scheduleRender() {
+    if (this.queuedRender == null) {
+      this.queuedRender = requestAnimationFrame(() => this.render());
     }
   }
 
   render() {
     this.queuedRender = null;
-    this.currentPoint = null; // force recalculate tooltip
+    this.renderedTooltipPoint = null; // force tooltip re-render
 
     this.xAxis.ticks(Math.floor(this.chartWidth / 120));
     this.yAxis.ticks(Math.min(Math.floor(this.chartHeight / 60), this.yMax));
@@ -303,8 +253,8 @@ export default class BurndownChart {
       this.actualLinePath.datum(this.data).attr('d', this.line);
       this.idealLinePath.datum(this.idealData).attr('d', this.line);
 
-      if (this.queueLineAnimation === true) {
-        this.queueLineAnimation = false;
+      if (this.scheduleLineAnimation === true) {
+        this.scheduleLineAnimation = false;
 
         // hide tooltips until animation is finished
         this.chartFocus.attr('opacity', 0);
@@ -316,8 +266,60 @@ export default class BurndownChart {
     }
   }
 
-  queueRender() {
-    this.queuedRender = this.queuedRender || requestAnimationFrame(() => this.render());
+  renderTooltip(datum) {
+    if (this.renderedTooltipPoint === datum) return;
+    this.renderedTooltipPoint = datum;
+
+    // generate tooltip content
+    const format = d3.time.format('%b %-d, %Y');
+    const date = format(datum.date);
+    const tooltip = `${datum.value} Remaining / ${date}`;
+
+    // move the tooltip point of origin to the point on the graph
+    const x = this.xScale(datum.date);
+    const y = this.yScale(datum.value);
+
+    const textSize = this.tooltipGroup.select('text').text(tooltip).node().getBBox();
+    const width = textSize.width + (tooltipPadding.x * 2);
+    const height = textSize.height + (tooltipPadding.y * 2);
+
+    // calculate bounraries
+    const xMin = 0 - x - margin.left;
+    const yMin = 0 - y - margin.top;
+    const xMax = (this.chartWidth + margin.right) - x - width;
+    const yMax = (this.chartHeight + margin.bottom) - y - height;
+
+    // try to fit tooltip above point
+    let xOffset = 0 - Math.floor(width / 2);
+    let yOffset = 0 - tooltipDistance - height;
+
+    if (yOffset <= yMin) {
+      // else try to fit tooltip to the right
+      xOffset = tooltipDistance;
+      yOffset = 0 - Math.floor(height / 2);
+
+      if (xOffset >= xMax) {
+        // else place tooltip on the left
+        xOffset = 0 - tooltipDistance - width;
+      }
+    }
+
+    // ensure coordinates keep the entire tooltip in-bounds
+    xOffset = Math.max(xMin, Math.min(xMax, xOffset));
+    yOffset = Math.max(yMin, Math.min(yMax, yOffset));
+
+    // move everything into place
+    this.chartFocus.attr('transform', `translate(${x}, ${y})`);
+    this.tooltipGroup.attr('transform', `translate(${xOffset}, ${yOffset})`);
+
+    this.tooltipGroup.select('text')
+      .attr('dy', '1em')
+      .attr('x', tooltipPadding.x)
+      .attr('y', tooltipPadding.y);
+
+    this.tooltipGroup.select('rect')
+      .attr('width', width)
+      .attr('height', height);
   }
 
   animateResize(seconds = 5) {
