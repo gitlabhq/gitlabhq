@@ -16,6 +16,7 @@ export default {
       setToMergeWhenPipelineSucceeds: false,
       showCommitMessageEditor: false,
       isWorking: false,
+      isMergingImmediately: false,
       commitMessage: this.mr.commitMessage,
     };
   },
@@ -45,7 +46,13 @@ export default {
       return defaultClass;
     },
     mergeButtonText() {
-      return this.mr.isPipelineActive ? 'Merge when pipeline succeeds' : 'Merge';
+      if (this.isMergingImmediately) {
+        return 'Merge in progress';
+      } else if (this.mr.isPipelineActive) {
+        return 'Merge when pipeline succeeds';
+      } else {
+        return 'Merge';
+      }
     },
     shouldShowMergeOptionsDropdown() {
       return this.mr.isPipelineActive && !this.mr.onlyAllowMergeIfPipelineSucceeds;
@@ -67,9 +74,11 @@ export default {
     toggleCommitMessageEditor() {
       this.showCommitMessageEditor = !this.showCommitMessageEditor;
     },
-    handleMergeButtonClick(mergeWhenBuildSucceeds) {
+    handleMergeButtonClick(mergeWhenBuildSucceeds, mergeImmediately) {
       if (mergeWhenBuildSucceeds === undefined) {
         mergeWhenBuildSucceeds = this.mr.isPipelineActive; // eslint-disable-line no-param-reassign
+      } else if (mergeImmediately) {
+        this.isMergingImmediately = true;
       }
 
       this.setToMergeWhenPipelineSucceeds = mergeWhenBuildSucceeds === true;
@@ -155,6 +164,7 @@ export default {
         </button>
         <button
           v-if="shouldShowMergeOptionsDropdown"
+          :disabled="isMergeButtonDisabled"
           type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
           <i class="fa fa-caret-down" aria-hidden="true"></i>
           <span class="sr-only">Select Merge Moment</span>
@@ -171,7 +181,7 @@ export default {
           </li>
           <li>
             <a
-              @click.prevent="handleMergeButtonClick(false)"
+              @click.prevent="handleMergeButtonClick(false, true)"
               class="accept-merge-request" href="#">
               <i class="fa fa-warning fa-fw" aria-hidden="true"></i> Merge immediately
             </a>
@@ -180,11 +190,16 @@ export default {
       </span>
       <template v-if="isMergeAllowed()">
         <label class="spacing">
-          <input type="checkbox" v-model="removeSourceBranch" /> Remove source branch
+          <input
+            v-model="removeSourceBranch"
+            :disabled="isMergeButtonDisabled"
+            type="checkbox"  /> Remove source branch
         </label>
         <a
           @click.prevent="toggleCommitMessageEditor"
-          class="btn btn-default btn-xs" href="#">Modify commit message</a>
+          :disabled="isMergeButtonDisabled"
+          class="btn btn-default btn-xs"
+          href="#">Modify commit message</a>
         <div class="prepend-top-default commit-message-editor" v-if="showCommitMessageEditor">
           <div class="form-group clearfix">
             <label class="control-label" for="commit-message">Commit message</label>
