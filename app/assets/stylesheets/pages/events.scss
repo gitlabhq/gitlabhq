@@ -4,11 +4,16 @@
  */
 .event-item {
   font-size: $gl-font-size;
-  padding: $gl-padding 0;
+  padding: $gl-padding-top 0 $gl-padding-top ($gl-avatar-size + $gl-padding-top);
   border-bottom: 1px solid $white-normal;
   color: $list-text-color;
+  position: relative;
 
   &.event-inline {
+    .profile-icon {
+      top: 20px;
+    }
+
     .event-title,
     .event-item-timestamp {
       line-height: 40px;
@@ -19,20 +24,34 @@
     color: $gl-text-color;
   }
 
+  .profile-icon {
+    position: absolute;
+    left: 0;
+    top: 14px;
+
+    svg {
+      width: 20px;
+      height: auto;
+      fill: $gl-text-color-secondary;
+    }
+
+    &.open-icon svg {
+      fill: $green-300;
+    }
+
+    &.closed-icon svg {
+      fill: $red-300;
+    }
+
+    &.fork-icon svg {
+      fill: $blue-300;
+    }
+  }
+
   .event-title {
     @include str-truncated(calc(100% - 174px));
     font-weight: 600;
     color: $list-text-color;
-  }
-
-  .event-icon {
-    display: inline-block;
-    margin: 0 10px;
-  }
-
-  svg {
-    height: 16px;
-    width: 16px;
   }
 
   .event-body {
@@ -164,7 +183,7 @@
       max-width: 100%;
     }
 
-    .avatar {
+    .profile-icon {
       display: none;
     }
 

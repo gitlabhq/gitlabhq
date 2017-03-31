@@ -1,13 +1,13 @@
 - if event.target
   - if event.action_name == "opened"
-    .event-icon.open-icon
+    .profile-icon.open-icon
       = custom_icon("icon_status_open")
   - elsif event.action_name == "closed"
-    .event-icon.closed-icon
-    = custom_icon("icon_status_closed")
+    .profile-icon.closed-icon
+      = custom_icon("icon_status_closed")
   - else
-    .event-icon.fork-icon
-    = custom_icon("code_fork")
+    .profile-icon.fork-icon
+      = custom_icon("code_fork")
 
 .event-title
   %span{ class: event.action_name }
