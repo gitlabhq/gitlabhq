@@ -108,19 +108,20 @@ export default class SketchLoader {
     sketchCanvas.id = this.canvasId;
     
     sketchBrowser.id = this.sketchBrowserId;
+    sketchBrowser.className = 'sketch-panel';
     sketchBrowser.innerHTML = sketchBrowserInner;
 
     sketchBrowserProps.id = this.sketchBrowserPropsId;
+    sketchBrowserProps.className = 'sketch-panel';
     sketchBrowserProps.innerHTML = sketchBrowserPropsInner;
 
     previewLink.href = previewUrl;
     previewLink.target = '_blank';
     previewImage.src = previewUrl;
-    previewImage.className = 'img-responsive';
 
     previewLink.appendChild(previewImage);
     this.container.appendChild(previewLink);
-    this.container.appendChild(sketchBrowser);
+    this.container.insertBefore(sketchBrowser, previewLink);
     this.container.appendChild(sketchBrowserProps);
     this.container.appendChild(sketchCanvas);
     this.sketchRender.render();

@@ -1,10 +1,21 @@
-#sketch-browser, #sketch-browser-props {
-  position: absolute;
-  top: 0;
-  font-size: 12px;
-  background: #F3F3F3;
-  border: 1px solid #B8B8B8;
-  width: 200px;
+.sketch-viewer {
+  display: flex;
+  max-height: 800px;
+  overflow: hidden;
+
+  > .sketch-panel {
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  > a {
+    flex: 1 1 100%;
+    overflow: scroll;
+  }
+}
+
+.sketch-panel {
+  flex: 1 0 200px;
 }
 
 #sketch-browser-props {
@@ -48,7 +59,7 @@
     border-bottom: 1px solid #B8B8B8;
     padding: 5px 5px;
   }
-  
+
   ul {
     padding-left: 0;
     list-style: none;
@@ -56,7 +67,7 @@
     li.page:nth-child(odd), li.layer:nth-child(odd) {
       background: #EBEBEB;
     }
-    
+
     li.page, li.layer {
       background: #F0F0F0;
       padding: 5px 10px;
