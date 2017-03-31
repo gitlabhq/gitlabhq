@@ -93,7 +93,7 @@ export default class SketchLoader {
               <input type="text" v-model="currentPos.height" class="form-control" readonly="readonly"/>
             </label>
           </fieldset>
-          <fieldset v-if="backgroundColor">
+          <fieldset v-if="hasBackgroundColor">
             <legend>BG Color</legend>
             <label>
               <span>Hex</span>

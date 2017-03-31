@@ -13,6 +13,11 @@ export default class SketchRender {
         rgba: 'rgba(0,0,0,1)'
       },
       hasBackgroundColor: false,
+      hasFill: false,
+      style: {
+        blendingMode: 0,
+        opacity: 1
+      }
       currentPos: {
         x: 0,
         y: 0,
@@ -111,6 +116,22 @@ export default class SketchRender {
           }
         },
 
+        setFill(bgColor) {
+
+        },
+
+        setBlendingMode(layer) {
+          if(layer.hasOwnProperty('style')){
+            
+          }
+        },
+
+        setOpacity(layer) {
+          if(layer.hasOwnProperty('style')){
+            
+          }
+        },
+
         layerSelected(layer) {
           this.currentPos.x = layer.frame.x;
           this.currentPos.y = layer.frame.y;
@@ -119,7 +140,8 @@ export default class SketchRender {
           this.activeLayer = layer.do_objectID;
           this.hasBackgroundColor = layer.hasBackgroundColor;
           this.setBackgroundColor(layer.backgroundColor);
-          console.log('layer._class',layer._class);
+          setBlendingMode(layer);
+          setOpacity(layer);
           console.log('layer',layer);
         }
       }
