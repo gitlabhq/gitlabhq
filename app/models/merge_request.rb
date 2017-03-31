@@ -367,6 +367,10 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff(true)
   end
 
+  def merge_request_diff_for(diff_refs)
+    merge_request_diffs.viewable.select_without_diff.with_diff_refs(diff_refs).take
+  end
+
   def reload_diff_if_branch_changed
     if source_branch_changed? || target_branch_changed?
       reload_diff

@@ -16,7 +16,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
   before_action :define_widget_vars, only: [:merge, :cancel_merge_when_pipeline_succeeds, :merge_check]
   before_action :define_commit_vars, only: [:diffs]
-  before_action :define_diff_comment_vars, only: [:diffs]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds, :conflicts, :conflict_for_path, :pipelines]
   before_action :close_merge_request_without_source_project, only: [:show, :diffs, :commits, :builds, :pipelines]
   before_action :apply_diff_view_cookie!, only: [:new_diffs]
@@ -108,6 +107,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
             @merge_request.merge_request_diff
           end
 
+        define_diff_comment_vars
+
         @merge_request_diffs = @merge_request.merge_request_diffs.viewable.select_without_diff
         @comparable_diffs = @merge_request_diffs.select { |diff| diff.id < @merge_request_diff.id }
 
@@ -123,11 +124,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
         @environment = @merge_request.environments_for(current_user).last
 
-        if @start_sha
-          compared_diff_version
-        else
-          original_diff_version
-        end
+        @diff_notes_disabled = !@merge_request_diff.latest? || @start_sha
+
+        @diffs =
+          if @start_sha
+            @merge_request_diff.compare_with(@start_sha).diffs(diff_options)
+          else
+            @merge_request_diff.diffs(diff_options)
+          end
 
         render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") }
       end
@@ -594,7 +598,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @use_legacy_diff_notes = !@merge_request.has_complete_diff_refs?
 
-    @grouped_diff_discussions = @merge_request.grouped_diff_discussions
+    @grouped_diff_discussions = @merge_request.grouped_diff_discussions(@merge_request_diff.diff_refs)
     @notes = prepare_notes_for_rendering(@grouped_diff_discussions.values.flatten.flat_map(&:notes))
   end
 
@@ -676,16 +680,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def build_merge_request
     params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
     @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params.merge(diff_options: diff_options)).execute
-  end
-
-  def compared_diff_version
-    @diff_notes_disabled = true
-    @diffs = @merge_request_diff.compare_with(@start_sha).diffs(diff_options)
-  end
-
-  def original_diff_version
-    @diff_notes_disabled = !@merge_request_diff.latest?
-    @diffs = @merge_request_diff.diffs(diff_options)
   end
 
   def close_merge_request_without_source_project
