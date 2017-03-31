@@ -175,8 +175,16 @@
     color: $ci-skipped-color;
   }
 
-  .mr-links.mr-info-list {
-    margin: 0 0 $gl-padding 26px;
+  .mr-info-list {
+
+    &.mr-links,
+    &.mr-memory-usage {
+      margin: 0 0 $gl-padding 26px;
+    }
+
+    &.mr-memory-usage {
+      margin-top: 10px;
+    }
   }
 
   .mr-widget-heading,
@@ -480,6 +488,26 @@
     background: $border-color;
     position: absolute;
     top: -5px;
+  }
+}
+
+.mr-info-list.mr-memory-usage {
+  .legend {
+    height: 75%;
+  }
+
+  p {
+    float: left;
+    padding-left: 20px;
+
+    &::before {
+      top: 13px;
+    }
+  }
+
+  .memory-graph-container {
+    float: left;
+    margin-left: 5px;
   }
 }
 
