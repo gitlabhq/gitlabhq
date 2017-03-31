@@ -4,16 +4,11 @@
  */
 .event-item {
   font-size: $gl-font-size;
-  padding: $gl-padding-top 0 $gl-padding-top ($gl-avatar-size + $gl-padding-top);
+  padding: $gl-padding;
   border-bottom: 1px solid $white-normal;
   color: $list-text-color;
 
   &.event-inline {
-    .avatar {
-      position: relative;
-      top: -2px;
-    }
-
     .event-title,
     .event-item-timestamp {
       line-height: 40px;
@@ -24,14 +19,15 @@
     color: $gl-text-color;
   }
 
-  .avatar {
-    margin-left: -($gl-avatar-size + $gl-padding-top);
-  }
-
   .event-title {
     @include str-truncated(calc(100% - 174px));
     font-weight: 600;
     color: $list-text-color;
+  }
+
+  svg {
+    height: 16px;
+    width: 16px;
   }
 
   .event-body {
