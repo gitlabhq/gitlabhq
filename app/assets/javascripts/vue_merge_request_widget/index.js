@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import '~/smart_interval';
 import WidgetHeader from './components/mr_widget_header';
 import WidgetMergeHelp from './components/mr_widget_merge_help';
 import WidgetPipeline from './components/mr_widget_pipeline';
@@ -64,6 +65,25 @@ const mrWidgetOptions = () => ({
           }
         });
     },
+    initCIPolling() {
+      this.ciStatusInterval = new gl.SmartInterval({
+        callback: this.getCIStatus,
+        startingInterval: 10000,
+        maxInterval: 30000,
+        hiddenInterval: 120000,
+        incrementByFactorOf: 5000,
+      });
+    },
+    getCIStatus() {
+      // TODO: Error handling
+      this.service.ciStatusResorce.get()
+        .then(res => res.json())
+        .then((res) => {
+          if (res.has_ci) {
+            this.mr.updatePipelineData(res);
+          }
+        });
+    },
   },
   created() {
     eventHub.$on('MRWidgetUpdateRequested', (cb) => {
@@ -77,6 +97,9 @@ const mrWidgetOptions = () => ({
     });
   },
   mounted() {
+    this.checkStatus();
+    this.getCIStatus();
+
     // TODO: Error handling
     this.service.fetchDeployments()
       .then(res => res.json())
@@ -86,7 +109,9 @@ const mrWidgetOptions = () => ({
         }
       });
 
-    this.checkStatus();
+    if (this.mr.hasCI) {
+      this.initCIPolling();
+    }
   },
   components: {
     'mr-widget-header': WidgetHeader,

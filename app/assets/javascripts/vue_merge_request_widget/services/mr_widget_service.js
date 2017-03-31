@@ -12,6 +12,7 @@ export default class MRWidgetService {
     this.cancelAutoMergeResource = Vue.resource(mr.cancelAutoMergePath);
     this.removeWIPResource = Vue.resource(mr.removeWIPPath);
     this.removeSourceBranchResource = Vue.resource(mr.sourceBranchPath);
+    this.ciStatusResorce = Vue.resource(mr.ciStatusPath);
     this.deploymentsResource = Vue.resource(mr.ciEnvironmentsStatusPath);
     this.pollResource = Vue.resource(`${mr.statusPath}?basic=true`);
   }
@@ -34,6 +35,10 @@ export default class MRWidgetService {
 
   fetchDeployments() {
     return this.deploymentsResource.get();
+  }
+
+  fetchCIStatus() {
+    return this.ciStatusResorce.get();
   }
 
   checkStatus() {

@@ -1,4 +1,5 @@
 import Timeago from 'timeago.js';
+import eventHub from '../event_hub';
 
 export default class MergeRequestStore {
 
@@ -56,6 +57,7 @@ export default class MergeRequestStore {
     this.plainDiffPath = data.plain_diff_path;
     this.createIssueToResolveDiscussionsPath = data.create_issue_to_resolve_discussions_path;
     this.ciEnvironmentsStatusPath = data.ci_environments_status_url;
+    this.ciStatusPath = data.ci_status_path;
     this.mergeCheckPath = data.merge_check_path;
     this.isRemovingSourceBranch = this.isRemovingSourceBranch || false;
 
@@ -122,6 +124,18 @@ export default class MergeRequestStore {
         default:
           this.state = null;
       }
+    }
+  }
+
+  updatePipelineData(data) {
+    const newStatus = data.status;
+
+    if (newStatus !== this.pipeline.details.status.group) {
+      eventHub.$emit('MRWidgetUpdateRequested');
+    } else {
+      this.pipeline.coverage = data.coverage;
+      this.pipeline.details.status.group = newStatus;
+      this.pipeline.details.stages = data.stages;
     }
   }
 
