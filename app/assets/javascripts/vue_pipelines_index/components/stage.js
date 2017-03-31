@@ -6,7 +6,6 @@ export default {
     return {
       builds: '',
       spinner: '<span class="fa fa-spinner fa-spin"></span>',
-      svg: statusClassToBorderlessSvgMap[this.stage.status.icon],
     };
   },
 
@@ -68,6 +67,9 @@ export default {
     },
     triggerButtonClass() {
       return `mini-pipeline-graph-dropdown-toggle has-tooltip js-builds-dropdown-button ci-status-icon-${this.stage.status.group}`;
+    },
+    svg() {
+      return statusClassToBorderlessSvgMap[this.stage.status.icon];
     },
   },
   template: `
