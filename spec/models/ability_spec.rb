@@ -267,4 +267,25 @@ describe Ability do
       end
     end
   end
+
+  describe '.can_create_branch_from_issue?' do
+    let(:project) { create(:empty_project) }
+    let(:issue) { create(:issue, project: project) }
+
+    context 'users with different access' do
+      it 'returns true for developer' do
+        developer = create(:user)
+        project.add_developer(developer)
+
+        expect(described_class.can_create_branch_from_issue?(developer, project, issue)).to eq(true)
+      end
+
+      it 'returns false for guest' do
+        guest = create(:user)
+        project.add_guest(guest)
+
+        expect(described_class.can_create_branch_from_issue?(guest, project, issue)).to eq(false)
+      end
+    end
+  end
 end

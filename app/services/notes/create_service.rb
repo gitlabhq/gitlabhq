@@ -36,12 +36,21 @@ module Notes
       end
 
       if command_params.present?
+
+        # Special handling for branch command, because it is not supposed to call
+        # any updates on the issue.
+        branch_command_result = command_params.try(:delete, :branch)
+
         quick_actions_service.execute(command_params, note)
 
         # We must add the error after we call #save because errors are reset
         # when #save is called
         if only_commands
           note.errors.add(:commands_only, 'Commands applied')
+        end
+
+        if branch_command_result && branch_command_result[:status] == :error
+          note.errors.add(:commands_only, "Error creating branch: #{branch_command_result[:message]}")
         end
 
         note.commands_changes = command_params

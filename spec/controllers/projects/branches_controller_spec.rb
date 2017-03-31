@@ -102,7 +102,6 @@ describe Projects::BranchesController do
           result = { status: :success, branch: double(name: branch) }
 
           expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
-          expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
 
           post :create,
             namespace_id: project.namespace.to_param,

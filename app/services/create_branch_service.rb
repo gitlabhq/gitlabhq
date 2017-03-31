@@ -1,15 +1,20 @@
 class CreateBranchService < BaseService
-  def execute(branch_name, ref)
+  include ActionView::Helpers::SanitizeHelper
+
+  def execute(branch_name, ref, issue = nil)
     create_master_branch if project.empty_repo?
 
+    sanitized_branch_name = sanitize_branch_name_for(branch_name)
+
     result = ValidateNewBranchService.new(project, current_user)
-      .execute(branch_name)
+      .execute(sanitized_branch_name)
 
     return result if result[:status] == :error
 
-    new_branch = repository.add_branch(current_user, branch_name, ref)
+    new_branch = repository.add_branch(current_user, sanitized_branch_name, ref)
 
     if new_branch
+      SystemNoteService.new_issue_branch(issue, project, current_user, sanitized_branch_name) if issue
       success(new_branch)
     else
       error('Invalid reference name')
@@ -32,5 +37,9 @@ class CreateBranchService < BaseService
       message: 'Add README.md',
       branch_name: 'master'
     )
+  end
+
+  def sanitize_branch_name_for(branch_name)
+    Addressable::URI.unescape(sanitize(strip_tags(branch_name)))
   end
 end

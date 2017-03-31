@@ -322,6 +322,33 @@ describe QuickActions::InterpretService do
       end
     end
 
+    shared_examples 'create branch command' do
+      context 'without params' do
+        it 'creates a new branch with issue title as branch name' do
+          _content, updates = service.execute('/create_branch', issuable)
+
+          expect(project.repository.branch_names).to include(issuable.to_branch_name)
+          expect(updates[:branch]).to include({ status: :success })
+        end
+      end
+
+      context 'with params' do
+        it 'creates a new branch if the params is a valid branch name' do
+          _content, updates = service.execute("/create_branch #{valid_branch_name}", issuable)
+
+          expect(project.repository.branch_names).to include(valid_branch_name)
+          expect(updates[:branch]).to include({ status: :success })
+        end
+
+        it 'does not create a new branch if the params is an invalid branch name' do
+          _content, updates = service.execute("/create_branch #{invalid_branch_name}", issuable)
+
+          expect(project.repository.branch_names).not_to include(invalid_branch_name)
+          expect(updates[:branch]).to include({ status: :error })
+        end
+      end
+    end
+
     it_behaves_like 'reopen command' do
       let(:content) { '/reopen' }
       let(:issuable) { issue }
@@ -915,6 +942,35 @@ describe QuickActions::InterpretService do
         it_behaves_like 'empty command' do
           let(:content) { '/target_branch totally_non_existing_branch' }
           let(:issuable) { another_merge_request }
+        end
+      end
+    end
+
+    context '/create_branch command' do
+      let(:project) { create(:project, :repository) }
+      let(:service) { described_class.new(project, developer) }
+      let(:issue) { create(:issue, title: 'Some Big Issue', project: project) }
+      let(:valid_branch_name) { 'valid/branch-Name' }
+
+      it_behaves_like 'create branch command' do
+        let(:issuable) { issue }
+        let(:invalid_branch_name) { 'Invalid Name For A Branch' }
+      end
+
+      context 'unprivileged user' do
+        let(:other_user) { create(:user) }
+        let(:service) { described_class.new(project, other_user)}
+
+        it_behaves_like 'empty command' do
+          let(:content) { "/create_branch #{valid_branch_name}" }
+          let(:issuable) { issue }
+        end
+      end
+
+      context 'on merge requests' do
+        it_behaves_like 'empty command' do
+          let(:content) { "/create_branch #{valid_branch_name}" }
+          let(:issuable) { create(:merge_request, source_project: project) }
         end
       end
     end

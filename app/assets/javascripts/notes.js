@@ -354,7 +354,7 @@ export default class Notes {
             Object.keys(noteEntity.commands_changes).length > 0) {
           $notesList.find('.system-note.being-posted').remove();
         }
-        this.addFlash(noteEntity.errors.commands_only, 'notice', this.parentTimeline.get(0));
+        this.addFlash(noteEntity.errors.commands_only.join(", "), 'notice', this.parentTimeline.get(0));
         this.refresh();
       }
       return;
