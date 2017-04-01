@@ -30,11 +30,10 @@
               - else
                 a deleted commit
             - else
+              - unless discussion.active?
+                a now outdated portion of
               = conditional_link_to url.present?, url do
-                - if discussion.active?
-                  the diff
-                - else
-                  an outdated diff
+                the diff
 
             = time_ago_with_tooltip(discussion.created_at, placement: "bottom", html_class: "note-created-ago")
           = render "discussions/headline", discussion: discussion
