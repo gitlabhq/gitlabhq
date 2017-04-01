@@ -45,6 +45,9 @@ import eventHub from '../eventhub';
       issueId() {
         return `#${this.issue.id}`;
       },
+      showLabelFooter() {
+        return this.issue.labels.find(l => this.showLabel(l)) !== undefined;
+      },
     },
     methods: {
       showLabel(label) {
@@ -83,12 +86,12 @@ import eventHub from '../eventhub';
     template: `
       <div>
         <div class="card-header">
-          <i
-            class="fa fa-eye-slash confidential-icon"
-            v-if="issue.confidential"
-            aria-hidden="true"
-          />
           <h4 class="card-title">
+            <i
+              class="fa fa-eye-slash confidential-icon"
+              v-if="issue.confidential"
+              aria-hidden="true"
+            />
             <a
               :href="cardUrl"
               :title="issue.title">{{ issue.title }}</a>
@@ -112,7 +115,7 @@ import eventHub from '../eventhub';
             />
           </a>
         </div>
-        <div class="card-footer">
+        <div class="card-footer" v-if="showLabelFooter">
           <button
             class="label color-label has-tooltip"
             v-for="label in issue.labels"

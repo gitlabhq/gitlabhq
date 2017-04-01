@@ -61,5 +61,38 @@ describe('IssueCardInner', () => {
         expect(vm.issueId).toEqual(`#${issue.id}`);
       });
     });
+
+    describe('showLabelFooter', () => {
+      it('should return true when showLabel is true for one label', () => {
+        vm = createComponent({
+          list: [],
+          issue,
+          issueLinkBase,
+          rootPath,
+        });
+
+        expect(vm.showLabelFooter).toEqual(true);
+      });
+
+      it('should return false when there are no labels', () => {
+        vm = createComponent({
+          list: [],
+          issue: new ListIssue({
+            title: 'Testing',
+            iid: 1,
+            confidential: false,
+            labels: [],
+          }),
+          issueLinkBase,
+          rootPath,
+        });
+
+        expect(vm.showLabelFooter).toEqual(false);
+      });
+
+      it('should return false when showLabel is false for all labels', () => {
+        expect(vm.showLabelFooter).toEqual(false);
+      });
+    });
   });
 });
