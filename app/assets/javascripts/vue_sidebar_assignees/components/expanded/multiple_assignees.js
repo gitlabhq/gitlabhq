@@ -3,7 +3,6 @@ export default {
   data() {
     return {
       showLess: true,
-      defaultRenderCount: 5,
     };
   },
   props: {
@@ -14,10 +13,10 @@ export default {
       return this.assignees.rootPath;
     },
     renderShowMoreSection() {
-      return this.assignees.users.length > this.defaultRenderCount;
+      return this.assignees.users.length > this.assignees.defaultRenderCount;
     },
     numberOfHiddenAssignees() {
-      return this.assignees.users.length - this.defaultRenderCount;
+      return this.assignees.users.length - this.assignees.defaultRenderCount;
     },
     isHiddenAssignees() {
       return this.numberOfHiddenAssignees > 0;
@@ -28,7 +27,7 @@ export default {
       this.showLess = !this.showLess;
     },
     renderAssignee(index) {
-      return !this.showLess || (index < this.defaultRenderCount && this.showLess);
+      return !this.showLess || (index < this.assignees.defaultRenderCount && this.showLess);
     },
     assigneeUrl(username) {
       return `${this.rootPath}${username}`;

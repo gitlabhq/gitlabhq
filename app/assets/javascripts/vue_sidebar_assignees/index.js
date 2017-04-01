@@ -5,10 +5,7 @@ import NoAssignee from './components/expanded/no_assignee';
 import SingleAssignee from './components/expanded/single_assignee';
 import MultipleAssignees from './components/expanded/multiple_assignees';
 
-import CollapsedNoAssignee from './components/collapsed/no_assignee';
-import CollapsedSingleAssignee from './components/collapsed/single_assignee';
-import CollapsedTwoAssignees from './components/collapsed/two_assignees';
-import CollapsedMultipleAssignees from './components/collapsed/multiple_assignees';
+import CollapsedAssignees from './components/collapsed/assignees';
 
 import SidebarAssigneesService from './services/sidebar_assignees_service';
 import SidebarAssigneesStore from './stores/sidebar_assignees_store';
@@ -19,6 +16,8 @@ const sidebarAssigneesOptions = () => ({
   data() {
     const selector = this.$options.el;
     const element = document.querySelector(selector);
+
+    // Get data from data attributes passed from haml
     const rootPath = element.dataset.rootPath;
     const path = element.dataset.path;
     const field = element.dataset.field;
@@ -49,34 +48,27 @@ const sidebarAssigneesOptions = () => ({
     hideComponent() {
       return !this.assignees.saved;
     },
-    collapsedComponentName() {
-      switch (this.numberOfAssignees) {
-        case 0:
-          return 'collapsed-no-assignee';
-        case 1:
-          return 'collapsed-single-assignee';
-        case 2:
-          return 'collapsed-two-assignees';
-        default:
-          return 'collapsed-multiple-assignees';
-      }
-    },
   },
   components: {
     'no-assignee': NoAssignee,
     'single-assignee': SingleAssignee,
     'multiple-assignees': MultipleAssignees,
     'assignee-title': AssigneeTitle,
-    'collapsed-single-assignee': CollapsedSingleAssignee,
-    'collapsed-no-assignee': CollapsedNoAssignee,
-    'collapsed-two-assignees': CollapsedTwoAssignees,
-    'collapsed-multiple-assignees': CollapsedMultipleAssignees,
+    'collapsed-assignees': CollapsedAssignees,
   },
   template: `
     <div>
-      <component :is="collapsedComponentName" :users="assignees.users" />
-      <assignee-title :numberOfAssignees="assignees.users.length" :loading="assignees.loading" :editable="assignees.editable"/>
-      <component class="value" :is="componentName" :assignees="assignees" :class="{ hidden: hideComponent }" />
+      <collapsed-assignees :users="assignees.users"/>
+      <assignee-title
+        :numberOfAssignees="assignees.users.length"
+        :loading="assignees.loading"
+        :editable="assignees.editable"
+      />
+      <component v-if="assignees.saved"
+        class="value"
+        :is="componentName"
+        :assignees="assignees"
+      />
     </div>
   `,
 });

@@ -10,6 +10,7 @@ export default class SidebarAssigneesStore {
     this.saved = true;
     this.loading = false;
     this.editable = editable;
+    this.defaultRenderCount = 5;
   }
 
   addUser(user, saved = false) {
