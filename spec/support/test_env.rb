@@ -169,16 +169,11 @@ module TestEnv
   #
   # Otherwise they'd be created by the first test, often timing out and
   # causing a transient test failure
-  def warm_asset_cache
-    return if warm_asset_cache?
+  def eager_load_driver_server
     return unless defined?(Capybara)
 
-    Capybara.current_session.driver.visit '/'
-  end
-
-  def warm_asset_cache?
-    cache = Rails.root.join(*%w(tmp cache assets test))
-    Dir.exist?(cache) && Dir.entries(cache).length > 2
+    puts "Starting the Capybara driver' server..."
+    Capybara.current_session.visit '/'
   end
 
   private
