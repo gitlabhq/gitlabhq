@@ -20,24 +20,19 @@
             = discussion.author.to_reference
             started a discussion
 
+            - url = discussion_diff_path(discussion)
             - if discussion.for_commit? && @noteable != discussion.noteable
               on
               - commit = discussion.noteable
               - if commit
                 commit
-                - anchor = discussion.line_code if discussion.diff_discussion?
-                = link_to commit.short_id, namespace_project_commit_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: anchor), class: 'monospace'
+                = link_to commit.short_id, discussion_diff_path(discussion), class: 'monospace'
               - else
                 a deleted commit
-            - elsif discussion.diff_discussion?
-              on
-              - if discussion.active?
-                = link_to 'the diff', discussion_diff_path(discussion)
-              - else
-                - merge_request_diff = discussion.latest_merge_request_diff
-                - if merge_request_diff
-                  = link_to diffs_namespace_project_merge_request_path(discussion.project.namespace, discussion.project, discussion.noteable, diff_id: merge_request_diff, anchor: discussion.line_code) do
-                    an outdated diff
+            - else
+              = conditional_link_to url.present?, url do
+                - if discussion.active?
+                  the diff
                 - else
                   an outdated diff
 
