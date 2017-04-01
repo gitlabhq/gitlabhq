@@ -39,7 +39,7 @@ project_tree:
       - :author
       - :events
     - :statuses
-  - :triggers
+  - :triggers # TODO: Need to confirm
   - :deploy_keys
   - :services
   - :hooks
