@@ -1313,7 +1313,7 @@ ActiveRecord::Schema.define(version: 20170405080720) do
 
   add_foreign_key "boards", "projects"
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
-  add_foreign_key "ci_trigger_schedules", "ci_triggers", column: "trigger_id", on_delete: :cascade
+  add_foreign_key "ci_trigger_schedules", "ci_triggers", column: "trigger_id", name: "fk_90a406cc94", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade

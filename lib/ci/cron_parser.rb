@@ -1,7 +1,7 @@
 module Ci
   class CronParser
-    VALID_SYNTAX_SAMPLE_TIME_ZONE = 'UTC'
-    VALID_SYNTAX_SAMPLE_CRON = '* * * * *'
+    VALID_SYNTAX_SAMPLE_TIME_ZONE = 'UTC'.freeze
+    VALID_SYNTAX_SAMPLE_CRON = '* * * * *'.freeze
 
     def initialize(cron, cron_time_zone = 'UTC')
       @cron = cron
@@ -9,9 +9,9 @@ module Ci
     end
 
     def next_time_from(time)
-      cronLine = try_parse_cron(@cron, @cron_time_zone)
-      if cronLine.present?
-        cronLine.next_time(time).in_time_zone(Time.zone)
+      cron_line = try_parse_cron(@cron, @cron_time_zone)
+      if cron_line.present?
+        cron_line.next_time(time).in_time_zone(Time.zone)
       else
         nil
       end
