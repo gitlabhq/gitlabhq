@@ -28,6 +28,7 @@
     "jquery-ujs": "^1.2.1",
     "js-cookie": "^2.1.3",
     "mousetrap": "^1.4.6",
+    "pdfjs": "^1.0.0-alpha.5",
     "pikaday": "^1.5.1",
     "raphael": "^2.2.7",
     "raw-loader": "^0.5.1",
