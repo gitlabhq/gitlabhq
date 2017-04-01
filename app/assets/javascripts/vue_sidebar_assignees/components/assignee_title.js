@@ -1,9 +1,18 @@
 export default {
   name: 'AssigneeTitle',
   props: {
-    loading: { type: Boolean, required: true },
-    numberOfAssignees: { type: Number, required: true },
-    editable: { type: Boolean, required: true },
+    loading: {
+      type: Boolean,
+      required: true
+    },
+    numberOfAssignees: {
+      type: Number,
+      required: true
+    },
+    editable: {
+      type: Boolean,
+      required: true
+    },
   },
   computed: {
     hasMultipleAssignees() {

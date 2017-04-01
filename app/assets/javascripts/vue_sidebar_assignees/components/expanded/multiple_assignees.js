@@ -6,7 +6,10 @@ export default {
     };
   },
   props: {
-    assignees: { type: Object, required: true },
+    assignees: {
+      type: Object,
+      required: true
+    },
   },
   computed: {
     rootPath() {

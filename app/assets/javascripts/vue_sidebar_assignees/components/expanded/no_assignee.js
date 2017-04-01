@@ -1,7 +1,10 @@
 export default {
   name: 'NoAssignee',
   props: {
-    assignees: { type: Object, required: true },
+    assignees: {
+      type: Object,
+      required: true
+    },
   },
   methods: {
     assignSelf() {

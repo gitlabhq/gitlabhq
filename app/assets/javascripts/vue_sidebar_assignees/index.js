@@ -58,12 +58,12 @@ const sidebarAssigneesOptions = () => ({
   },
   template: `
     <div>
-      <collapsed-assignees :users="assignees.users"/>
       <assignee-title
         :numberOfAssignees="assignees.users.length"
         :loading="assignees.loading"
         :editable="assignees.editable"
       />
+      <collapsed-assignees :users="assignees.users"/>
       <component v-if="assignees.saved"
         class="value"
         :is="componentName"

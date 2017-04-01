@@ -1,7 +1,10 @@
 export default {
   name: 'CollapsedAvatar',
   props: {
-    user: { type: Object, required: true },
+    user: {
+      type: Object,
+      required: true
+    },
   },
   computed: {
     alt() {

@@ -8,7 +8,10 @@ export default {
     };
   },
   props: {
-    users: { type: Array, required: true },
+    users: {
+      type: Array,
+      required: true
+    },
   },
   computed: {
     title() {
