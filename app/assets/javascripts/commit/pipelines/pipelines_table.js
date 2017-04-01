@@ -71,8 +71,6 @@ export default Vue.component('pipelines-table', {
     this.helpPagePath = this.$el.dataset.helpPagePath;
     this.service = new PipelinesService(this.endpoint);
 
-    this.fetchPipelines();
-
     const poll = new Poll({
       resource: this.service,
       method: 'getPipelines',
