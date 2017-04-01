@@ -23,6 +23,7 @@ All technical content published by GitLab lives in the documentation, including:
 - [Importing and exporting projects between instances](user/project/settings/import_export.md).
 - [Importing to GitLab](workflow/importing/README.md) Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
 - [Markdown](user/markdown.md) GitLab's advanced formatting system.
+- [Discussions](user/discussions.md) Get the most out of your conversations.
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md) Convert a SVN repository to Git and GitLab.
 - [Permissions](user/permissions.md) Learn what each role in a project (external/guest/reporter/developer/master/owner) can do.
 - [Profile Settings](profile/README.md)
