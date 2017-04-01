@@ -12,33 +12,8 @@ describe Ci::TriggerSchedule, models: true do
     expect(trigger_schedule.errors[:ref].first).to include('does not exist')
   end
 
-  describe 'cron limitation' do
-    let(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build) }
-
-    before do
-      trigger_schedule.cron = cron
-      trigger_schedule.valid?
-    end
-
-    context 'when cron frequency is too short' do
-      let(:cron) { '0 * * * *' } # 00:00, 01:00, 02:00, ..., 23:00
-
-      it 'gets an error' do
-        expect(trigger_schedule.errors[:cron].first).to include('can not be less than 1 hour')
-      end
-    end
-
-    context 'when cron frequency is eligible' do
-      let(:cron) { '0 0 1 1 *' } # every 00:00, January 1st
-
-      it 'gets no errors' do
-        expect(trigger_schedule.errors[:cron]).to be_empty
-      end
-    end
-  end
-
   describe '#schedule_next_run!' do
-    let(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build) }
+    let(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build, next_run_at: nil) }
 
     before do
       trigger_schedule.schedule_next_run!
