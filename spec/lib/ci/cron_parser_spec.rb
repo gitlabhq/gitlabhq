@@ -2,6 +2,10 @@ require 'spec_helper'
 
 module Ci
   describe CronParser, lib: true do
+    shared_examples_for "returns time in the future" do
+      it { is_expected.to be > Time.now }
+    end
+
     describe '#next_time_from' do
       subject { described_class.new(cron, cron_time_zone).next_time_from(Time.now) }
 
@@ -10,8 +14,9 @@ module Ci
           let(:cron) { '3 4 5 6 *' }
           let(:cron_time_zone) { 'UTC' }
 
-          it 'returns exact time in the future' do
-            expect(subject).to be > Time.now
+          it_behaves_like "returns time in the future"
+
+          it 'returns exact time' do
             expect(subject.min).to eq(3)
             expect(subject.hour).to eq(4)
             expect(subject.day).to eq(5)
@@ -23,8 +28,9 @@ module Ci
           let(:cron) { '* * * * 0' }
           let(:cron_time_zone) { 'UTC' }
 
-          it 'returns exact day of week in the future' do
-            expect(subject).to be > Time.now
+          it_behaves_like "returns time in the future"
+
+          it 'returns exact day of week' do
             expect(subject.wday).to eq(0)
           end
         end
@@ -33,8 +39,9 @@ module Ci
           let(:cron) { '*/10 */6 */10 */10 *' }
           let(:cron_time_zone) { 'UTC' }
 
-          it 'returns exact minute' do
-            expect(subject).to be > Time.now
+          it_behaves_like "returns time in the future"
+
+          it 'returns specific time' do
             expect(subject.min).to be_in([0, 10, 20, 30, 40, 50])
             expect(subject.hour).to be_in([0, 6, 12, 18])
             expect(subject.day).to be_in([1, 11, 21, 31])
@@ -46,8 +53,9 @@ module Ci
           let(:cron) { '0,20,40 * 1-5 * *' }
           let(:cron_time_zone) { 'UTC' }
 
-          it 'returns next time from now' do
-            expect(subject).to be > Time.now
+          it_behaves_like "returns time in the future"
+
+          it 'returns specific time' do
             expect(subject.min).to be_in([0, 20, 40])
             expect(subject.day).to be_in((1..5).to_a)
           end
@@ -57,9 +65,7 @@ module Ci
           let(:cron) { '0 0 * * *' }
           let(:cron_time_zone) { 'US/Pacific' }
 
-          it 'returns next time from now' do
-            expect(subject).to be > Time.now
-          end
+          it_behaves_like "returns time in the future"
 
           it 'converts time in server time zone' do
             expect(subject.hour).to eq(7)
