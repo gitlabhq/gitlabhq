@@ -1,17 +1,25 @@
-# Merge Request discussion resolution
+# Discussions
 
-> [Introduced][ce-5022] in GitLab 8.11.
+The ability to contribute conversationally is offered throughout GitLab.
 
-Discussion resolution helps keep track of progress during code review.
+## Standard Comments
+
+Standard comments can be added to issues, merge requests, snippets, commits and commit diffs.
+
+## Resolvable Discussions
+
+Resolvable discussions can be added to merge request diffs, merge requests, issues, commits and snippets.
+
+Discussion resolution helps keep track of progress during planning or code review.
 Resolving comments prevents you from forgetting to address feedback and lets you
 hide discussions that are no longer relevant.
 
 !["A discussion between two people on a piece of code"][discussion-view]
 
 Comments and discussions can be resolved by anyone with at least Developer
-access to the project, as well as by the author of the merge request.
+access to the project or the author of the merge request.
 
-## Marking a comment or discussion as resolved
+### Marking a comment or discussion as resolved
 
 You can mark a discussion as resolved by clicking the "Resolve discussion"
 button at the bottom of the discussion.
@@ -22,7 +30,42 @@ Alternatively, you can mark each comment as resolved individually.
 
 !["Resolve comment" button][resolve-comment-button]
 
-## Jumping between unresolved discussions
+### Moving a single discussion to a new issue
+
+> [Introduced][ce-8266] in GitLab 9.1
+
+To create a new issue for a single discussion, you can use the **Resolve this
+discussion in a new issue** button.
+
+![Create issue for discussion](img/new_issue_for_discussion.png)
+
+This will direct you to a new issue prefilled with the content of the
+discussion, similar to the issues created for delegating multiple
+discussions at once.
+
+![New issue for a single discussion](img/preview_issue_for_discussion.png)
+
+Saving the issue will mark the discussion as resolved and add a note
+to the discussion referencing the new issue.
+
+[ce-5022]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5022
+[ce-7125]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7125
+[ce-7180]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7180
+[ce-8266]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8266
+[resolve-discussion-button]: img/resolve_discussion_button.png
+[resolve-comment-button]: img/resolve_comment_button.png
+[discussion-view]: img/discussion_view.png
+[discussions-resolved]: img/discussions_resolved.png
+
+## Merge request diffs
+
+> [Introduced][ce-5022] in GitLab 8.11.
+
+Discussions can be started on merge request diffs to keep track of progress during code review.
+
+!["A discussion between two people on a piece of code"][discussion-view]
+
+### Jumping between unresolved discussions
 
 When a merge request has a large number of comments it can be difficult to track
 what remains unresolved. You can jump between unresolved discussions with the
@@ -33,7 +76,7 @@ resolved discussions tracker.
 
 !["3/4 discussions resolved"][discussions-resolved]
 
-## Only allow merge requests to be merged if all discussions are resolved
+### Only allow merge requests to be merged if all discussions are resolved
 
 > [Introduced][ce-7125] in GitLab 8.14.
 
@@ -51,9 +94,9 @@ are resolved.
 
 ![Only allow merge if all the discussions are resolved message](img/only_allow_merge_if_all_discussions_are_resolved_msg.png)
 
-## Move all unresolved discussions in a merge request to an issue
+### Move all unresolved discussions in a merge request to an issue
 
-> [Introduced][ce-8266]
+> [Introduced][ce-8266] in GitLab 9.1
 
 To continue all open discussions in a merge request, click the button **Resolve
 all discussions in new issue**
@@ -78,29 +121,13 @@ add a note referring to the newly created issue.
 
 You can now proceed to merge the merge request from the UI.
 
-## Moving a single discussion to a new issue
 
-> [Introduced][ce-8266]
+## Issues, commits, snippets and merge requests
 
-To create a new issue for a single discussion, you can use the **Resolve this
-discussion in a new issue** button.
+> [Introduced][ce-7527] in GitLab 9.1.
 
-![Create issue for discussion](img/new_issue_for_discussion.png)
+Discussions can be started on issues, commits, snippets and merge requests.
 
-This will direct you to a new issue prefilled with the content of the
-discussion, similar to the issues created for delegating multiple
-discussions at once.
+Resolvable discussions can be added to merge request diffs, but they can also be added without a diff.
 
-![New issue for a single discussion](img/preview_issue_for_discussion.png)
-
-Saving the issue will mark the discussion as resolved and add a note
-to the discussion referencing the new issue.
-
-[ce-5022]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5022
-[ce-7125]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7125
-[ce-7180]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7180
-[ce-8266]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8266
-[resolve-discussion-button]: img/resolve_discussion_button.png
-[resolve-comment-button]: img/resolve_comment_button.png
-[discussion-view]: img/discussion_view.png
-[discussions-resolved]: img/discussions_resolved.png
+To start a resolvable discussion, you can click on the `Comment` button dropdown and select `Start discussion`.
