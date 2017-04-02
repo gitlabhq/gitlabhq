@@ -2,8 +2,10 @@ require 'spec_helper'
 
 describe EventsHelper do
   describe '#event_note' do
+    let(:user) { build(:user) }
+
     before do
-      allow(helper).to receive(:current_user).and_return(double)
+      allow(helper).to receive(:current_user).and_return(user)
     end
 
     it 'displays one line of plain text without alteration' do
@@ -60,6 +62,28 @@ describe EventsHelper do
         "<span class=\"k\">end</span>\n" \
         '</code></pre>'
       expect(helper.event_note(input)).to eq(expected)
+    end
+
+    context 'labels formatting' do
+      let(:input) { 'this should be ~label_1' }
+
+      def format_event_note(project)
+        create(:label, title: 'label_1', project: project)
+
+        helper.event_note(input, { project: project })
+      end
+
+      it 'preserves style attribute for a label that can be accessed by current_user' do
+        project = create(:empty_project, :public)
+
+        expect(format_event_note(project)).to match(/span class=.*style=.*/)
+      end
+
+      it 'does not style a label that can not be accessed by current_user' do
+        project = create(:empty_project, :private)
+
+        expect(format_event_note(project)).to eq("<p>#{input}</p>")
+      end
     end
   end
 
