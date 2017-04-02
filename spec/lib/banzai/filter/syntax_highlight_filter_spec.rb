@@ -12,14 +12,14 @@ describe Banzai::Filter::SyntaxHighlightFilter, lib: true do
 
   context "when a valid language is specified" do
     it "highlights as that language" do
-      result = filter('<pre><code class="ruby">def fun end</code></pre>')
+      result = filter('<pre><code lang="ruby">def fun end</code></pre>')
       expect(result.to_html).to eq('<pre class="code highlight js-syntax-highlight ruby" lang="ruby" v-pre="true"><code><span class="k">def</span> <span class="nf">fun</span> <span class="k">end</span></code></pre>')
     end
   end
 
   context "when an invalid language is specified" do
     it "highlights as plaintext" do
-      result = filter('<pre><code class="gnuplot">This is a test</code></pre>')
+      result = filter('<pre><code lang="gnuplot">This is a test</code></pre>')
       expect(result.to_html).to eq('<pre class="code highlight js-syntax-highlight plaintext" lang="plaintext" v-pre="true"><code>This is a test</code></pre>')
     end
   end
@@ -30,7 +30,7 @@ describe Banzai::Filter::SyntaxHighlightFilter, lib: true do
     end
 
     it "highlights as plaintext" do
-      result = filter('<pre><code class="ruby">This is a test</code></pre>')
+      result = filter('<pre><code lang="ruby">This is a test</code></pre>')
       expect(result.to_html).to eq('<pre class="code highlight" lang="" v-pre="true"><code>This is a test</code></pre>')
     end
   end

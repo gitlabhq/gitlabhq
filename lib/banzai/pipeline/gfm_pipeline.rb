@@ -9,9 +9,9 @@ module Banzai
       # The GFM-to-HTML-to-GFM cycle is tested in spec/features/copy_as_gfm_spec.rb.
       def self.filters
         @filters ||= FilterArray[
-          Filter::SyntaxHighlightFilter,
           Filter::PlantumlFilter,
           Filter::SanitizationFilter,
+          Filter::SyntaxHighlightFilter,
 
           Filter::MathFilter,
           Filter::UploadLinkFilter,
