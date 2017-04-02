@@ -210,7 +210,7 @@ module Ci
     end
 
     def stuck?
-      builds.pending.any?(&:stuck?)
+      builds.pending.includes(:project).any?(&:stuck?)
     end
 
     def retryable?
