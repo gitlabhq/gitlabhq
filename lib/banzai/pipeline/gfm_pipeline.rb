@@ -3,8 +3,8 @@ module Banzai
     class GfmPipeline < BasePipeline
       def self.filters
         @filters ||= FilterArray[
-          Filter::SyntaxHighlightFilter,
           Filter::SanitizationFilter,
+          Filter::SyntaxHighlightFilter,
 
           Filter::MathFilter,
           Filter::UploadLinkFilter,

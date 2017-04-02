@@ -16,7 +16,7 @@ module Banzai
       end
 
       def highlight_node(node)
-        language = node.attr('class')
+        language = node.attr('lang')
         code = node.text
         css_classes = "code highlight"
         lexer = lexer_for(language)
