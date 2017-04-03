@@ -247,13 +247,6 @@
   }
 }
 
-$burndown-chart-axis-color: #aaa;
-$burndown-chart-line-color: #2faa60;
-$burndown-chart-legend-color: #8e8e8e;
-$burndown-chart-legend-stroke: #e5e5e5;
-$burndown-chart-axis-label-color: #5c5c5c;
-$burndown-chart-axis-label-stroke: #e5e5e5;
-
 .burndown-header {
   margin: 24px 0 12px;
 
@@ -277,10 +270,6 @@ $burndown-chart-axis-label-stroke: #e5e5e5;
       border-color: $blue-600;
       color: $white-light;
     }
-
-    &:focus {
-      outline: none;
-    }
   }
 }
 
@@ -303,18 +292,18 @@ $burndown-chart-axis-label-stroke: #e5e5e5;
     line,
     path {
       fill: none;
-      stroke: $burndown-chart-axis-color;
+      stroke: $stat-graph-axis-fill;
       shape-rendering: crispEdges;
     }
   }
 
   .axis-label {
     text {
-      fill: $burndown-chart-axis-label-color;
+      fill: $gl-text-color-secondary;
     }
 
     line {
-      stroke: $burndown-chart-axis-label-stroke;
+      stroke: $border-color;
     }
   }
 
@@ -323,11 +312,11 @@ $burndown-chart-axis-label-stroke: #e5e5e5;
 
     text {
       font-size: 13px;
-      fill: $burndown-chart-legend-color;
+      fill: $gl-text-color-disabled;
     }
 
     rect {
-      stroke: $burndown-chart-legend-stroke;
+      stroke: $border-color;
       fill: none;
     }
   }
@@ -337,24 +326,19 @@ $burndown-chart-axis-label-stroke: #e5e5e5;
     fill: none;
 
     &.actual {
-      stroke: $burndown-chart-line-color;
+      stroke: $gl-success;
     }
 
     &.ideal {
-      stroke: $burndown-chart-axis-color;
+      stroke: $stat-graph-axis-fill;
       stroke-dasharray: 6px 6px;
     }
   }
 
   .focus {
-    text {
-      font-size: 13px;
-      fill: $burndown-chart-legend-color;
-    }
-
     circle {
       fill: $white-light;
-      stroke: $burndown-chart-line-color;
+      stroke: $gl-success;
       stroke-width: 2px;
     }
   }
