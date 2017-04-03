@@ -241,7 +241,7 @@ class Service < ActiveRecord::Base
       teamcity
     ]
     if Rails.env.development?
-      service_names += ['mock_ci', 'mock_deployment', 'mock_monitoring']
+      service_names += %w[mock_ci mock_deployment mock_monitoring]
     end
 
     service_names.sort_by(&:downcase)
