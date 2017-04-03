@@ -179,10 +179,11 @@ describe Gitlab::Workhorse, lib: true do
 
   describe '.git_http_ok' do
     let(:user) { create(:user) }
+    let(:repo_path) { repository.path_to_repo }
 
     subject { described_class.git_http_ok(repository, user) }
 
-    it { expect(subject).to eq({ GL_ID: "user-#{user.id}", RepoPath: repository.path_to_repo }) }
+    it { expect(subject).to eq({ GL_ID: "user-#{user.id}", RepoPath: repo_path }) }
 
     context 'when Gitaly is enabled' do
       before do
@@ -192,6 +193,11 @@ describe Gitlab::Workhorse, lib: true do
       it 'includes Gitaly params in the returned value' do
         gitaly_socket_path = URI(Gitlab::GitalyClient.get_address('default')).path
         expect(subject).to include({ GitalySocketPath: gitaly_socket_path })
+        expect(subject[:Repository]).to include({
+          path: repo_path,
+          storage_name: 'default',
+          relative_path: project.full_path + '.git',
+        })
       end
     end
   end
