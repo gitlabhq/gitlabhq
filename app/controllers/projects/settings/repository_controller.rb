@@ -13,7 +13,7 @@ module Projects
 
       def define_protected_refs
         @protected_branches = @project.protected_branches.order(:name).page(params[:page])
-        @protected_tags = @project.protected_tags.order(:name).page(params[:page])
+        @protected_tags = @project.protected_tags.order(:name).page(params[:page]) #TODO duplicated pagination param?
         @protected_branch = @project.protected_branches.new
         @protected_tag = @project.protected_tags.new
         load_gon_index

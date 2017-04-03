@@ -18,8 +18,6 @@ module ProtectedRef
       self.matching(ref).map(&:"@#{action}_access_levels").flatten
     end
 
-    private
-
     def self.matching(ref_name, protected_refs: nil)
       ProtectedRefMatcher.matching(self, ref_name, protected_refs: protected_refs)
     end

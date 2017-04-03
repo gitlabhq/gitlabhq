@@ -71,15 +71,15 @@ module Gitlab
       def protected_tag_checks
         return unless tag_protected?
 
-        if forced_push?
-          return "You are not allowed to force push protected tags." #TODO: Wording, 'not allowed to update proteted tags'?
+        if forced_push? #TODO: Verify if this should prevent all updates, and mention in UI and documentation
+          return "Protected tags cannot be updated."
         end
 
         if Gitlab::Git.blank_ref?(@newrev)
-          return "You are not allowed to delete protected tags." #TODO: Wording, do these need to mention 'you' if the rule applies to everyone
+          return "Protected tags cannot be deleted."
         end
 
-        if !user_access.can_push_tag?(@tag_name)
+        unless user_access.can_push_tag?(@tag_name)
           return "You are not allowed to create this tag as it is protected."
         end
       end

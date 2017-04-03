@@ -7,7 +7,7 @@ module Gitlab
                     triggers: 'Ci::Trigger',
                     builds: 'Ci::Build',
                     hooks: 'ProjectHook',
-                    merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
+                    merge_access_levels: 'ProtectedBranch::MergeAccessLevel', #TODO: Tags
                     push_access_levels: 'ProtectedBranch::PushAccessLevel',
                     labels: :project_labels,
                     priorities: :label_priorities,
