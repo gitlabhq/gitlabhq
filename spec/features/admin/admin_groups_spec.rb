@@ -24,7 +24,7 @@ feature 'Admin Groups', feature: true do
     it 'creates new group' do
       visit admin_groups_path
 
-      click_link "New Group"
+      click_link "New group"
       fill_in 'group_path', with: 'gitlab'
       fill_in 'group_description', with: 'Group description'
       click_button "Create group"
