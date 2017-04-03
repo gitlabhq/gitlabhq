@@ -40,4 +40,4 @@
   .tab-pane#tab-participants
     = render 'shared/milestones/participants_tab', users: milestone.participants
   .tab-pane#tab-labels
-    = render 'shared/milestones/labels_tab', labels: milestone.labels
+    = render 'shared/milestones/labels_tab', labels: milestone.labels.includes(:project)
