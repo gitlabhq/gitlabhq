@@ -28,6 +28,15 @@
               %li
                 = link_to admin_root_path, title: 'Admin Area', aria: { label: "Admin Area" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                   = icon('wrench fw')
+            - if current_user.can_create_project?
+              %li
+                = link_to new_project_path, title: 'New project', aria: { label: "New project" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                  = icon('plus fw')
+            - if Gitlab::Sherlock.enabled?
+              %li
+                = link_to sherlock_transactions_path, title: 'Sherlock Transactions',
+                  data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                  = icon('tachometer fw')
             %li
               = link_to assigned_issues_dashboard_path, title: 'Issues', aria: { label: "Issues" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = icon('hashtag fw')
@@ -42,20 +51,6 @@
               = link_to dashboard_todos_path, title: 'Todos', aria: { label: "Todos" }, class: 'shortcuts-todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = icon('check-circle fw')
                 %span.badge.todos-count
-                  = todos_count_format(todos_pending_count)
-            - if current_user.can_create_project?
-              %li
-                = link_to new_project_path, title: 'New project', aria: { label: "New project" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                  = icon('plus fw')
-            - if Gitlab::Sherlock.enabled?
-              %li
-                = link_to sherlock_transactions_path, title: 'Sherlock Transactions',
-                  data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                  = icon('tachometer fw')
-            %li
-              = link_to dashboard_todos_path, title: 'Todos', aria: { label: "Todos" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = icon('bell fw')
-                %span.badge.todos-pending-count{ class: ("hidden" if todos_pending_count == 0) }
                   = todos_count_format(todos_pending_count)
             %li.header-user.dropdown
               = link_to current_user, class: "header-user-dropdown-toggle", data: { toggle: "dropdown" } do
