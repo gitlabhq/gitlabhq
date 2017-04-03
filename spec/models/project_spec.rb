@@ -1272,62 +1272,6 @@ describe Project, models: true do
     end
   end
 
-  describe '#protected_branch?' do
-    context 'existing project' do
-      let(:project) { create(:project, :repository) }
-
-      it 'returns true when the branch matches a protected branch via direct match' do
-        create(:protected_branch, project: project, name: "foo")
-
-        expect(project.protected_branch?('foo')).to eq(true)
-      end
-
-      it 'returns true when the branch matches a protected branch via wildcard match' do
-        create(:protected_branch, project: project, name: "production/*")
-
-        expect(project.protected_branch?('production/some-branch')).to eq(true)
-      end
-
-      it 'returns false when the branch does not match a protected branch via direct match' do
-        expect(project.protected_branch?('foo')).to eq(false)
-      end
-
-      it 'returns false when the branch does not match a protected branch via wildcard match' do
-        create(:protected_branch, project: project, name: "production/*")
-
-        expect(project.protected_branch?('staging/some-branch')).to eq(false)
-      end
-    end
-
-    context "new project" do
-      let(:project) { create(:empty_project) }
-
-      it 'returns false when default_protected_branch is unprotected' do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
-
-        expect(project.protected_branch?('master')).to be false
-      end
-
-      it 'returns false when default_protected_branch lets developers push' do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
-
-        expect(project.protected_branch?('master')).to be false
-      end
-
-      it 'returns true when default_branch_protection does not let developers push but let developer merge branches' do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
-
-        expect(project.protected_branch?('master')).to be true
-      end
-
-      it 'returns true when default_branch_protection is in full protection' do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
-
-        expect(project.protected_branch?('master')).to be true
-      end
-    end
-  end
-
   describe '#user_can_push_to_empty_repo?' do
     let(:project) { create(:empty_project) }
     let(:user)    { create(:user) }

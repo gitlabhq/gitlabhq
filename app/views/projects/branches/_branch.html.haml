@@ -15,7 +15,7 @@
       %span.label.label-info.has-tooltip{ title: "Merged into #{@repository.root_ref}" }
         merged
 
-    - if @project.protected_branch? branch.name
+    - if ProtectedBranch.protected?(@project, branch.name)
       %span.label.label-success
         protected
     .controls.hidden-xs<
