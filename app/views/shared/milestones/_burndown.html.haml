@@ -7,7 +7,18 @@
   = page_specific_javascript_bundle_tag('common_d3')
   = page_specific_javascript_bundle_tag('burndown_chart')
 
-- unless can_generate_chart || !can?(current_user, :admin_milestone, @project) || cookies['hide_burndown_message'].present?
+- if burndown&.valid?
+  .burndown-header
+    %h3
+      Burndown Chart
+      .btn-group
+        %button.btn.btn-xs.active{ data: { show: 'count' } }
+          Issues
+        %button.btn.btn-xs{ data: { show: 'weight' } }
+          Issue Weight
+  .burndown-chart{ data: { start_date: milestone.start_date.strftime("%Y-%m-%d"), due_date: milestone.due_date.strftime("%Y-%m-%d"), chart_data: burndown.chart_data.to_json } }
+
+- elsif can?(current_user, :admin_milestone, @project) && cookies['hide_burndown_message'].nil?
   .burndown-hint.content-block.container-fluid
     = icon("times", class: "dismiss-icon")
     .row
@@ -21,14 +32,3 @@
           this milestone and the chart will appear here, always up-to-date.
 
         = link_to "Add start and due date", edit_namespace_project_milestone_path(project.namespace, project, milestone), class: 'btn'
-
-- if can_generate_chart
-  .burndown-header
-    %h3
-      Burndown Chart
-      .btn-group
-        %button.btn.btn-xs.active{ data: { show: 'count' } }
-          Issues
-        %button.btn.btn-xs{ data: { show: 'weight' } }
-          Issue Weight
-  .burndown-chart{ data: { start_date: milestone.start_date.strftime("%Y-%m-%d"), due_date: milestone.due_date.strftime("%Y-%m-%d"), chart_data: burndown.chart_data.to_json } }
