@@ -97,7 +97,7 @@ module SharedProject
 
   step 'I should see project "Shop" activity feed' do
     project = Project.find_by(name: "Shop")
-    expect(page).to have_content "#{@user.name} pushed new branch fix at #{project.name_with_namespace}"
+    expect(page).to have_content "pushed new branch fix at #{project.name_with_namespace}"
   end
 
   step 'I should see project settings' do
