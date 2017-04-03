@@ -6,6 +6,8 @@ module ProtectedRef
     validates :name, presence: true
     validates :project, presence: true
 
+    delegate :matching, :matches?, :wildcard?, to: :ref_matcher
+
     def self.matching_refs_accesible_to(ref, user, action: :push)
       access_levels_for_ref(ref, action).any? do |access_level|
         access_level.check_access(user)
@@ -25,18 +27,6 @@ module ProtectedRef
 
   def commit
     project.commit(self.name)
-  end
-
-  def matching(refs)
-    ref_matcher.matching(refs)
-  end
-
-  def matches?(refs)
-    ref_matcher.matches?(refs)
-  end
-
-  def wildcard?
-    ref_matcher.wildcard?
   end
 
   private
