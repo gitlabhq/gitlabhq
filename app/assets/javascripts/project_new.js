@@ -35,12 +35,11 @@
         multiple: true,
         minimumInputLength: 0,
         query(query) {
-          var options = { };
-          const groupsApi = Api.groups(query.term, options, function(groups) {
+          const groupsApi = Api.groups(query.term, {}, function(groups) {
             return groups;
           });
 
-          const usersApi = Api.users(query.term, options, function(groups) {
+          const usersApi = Api.users(query.term, {}, function(groups) {
             return groups;
           });
 
@@ -143,7 +142,7 @@
       const target = evt.currentTarget;
       $('.load-wrapper').removeClass('hidden');
       $.ajax({
-        url: target.href,
+        url: target.getAttribute('href'),
         type: 'POST',
         data: {
           _method: 'DELETE',

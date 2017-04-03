@@ -75,7 +75,7 @@
           %li.approver.settings-flex-row
             = link_to approver.user.name, approver.user
             .pull-right
-              = link_to namespace_project_approver_path(project.namespace, project, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, class: "btn btn-remove js-approver-remove", title: 'Remove approver' do
+              %button{ href: namespace_project_approver_path(project.namespace, project, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, class: "btn btn-remove js-approver-remove", title: 'Remove approver' }
                 = icon("trash")
         - project.approver_groups.each do |approver_group|
           %li.approver-group.settings-flex-row
@@ -86,7 +86,7 @@
               %span.badge
                 = approver_group.group.members.count
             .pull-right
-              = link_to namespace_project_approver_group_path(project.namespace, project, approver_group), data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}" }, class: "btn btn-remove js-approver-remove", title: 'Remove group' do
+              %button{ href: namespace_project_approver_group_path(project.namespace, project, approver_group), data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}" }, class: "btn btn-remove js-approver-remove", title: 'Remove group' }
                 = icon("trash")
         - if project.approvers.empty? && project.approver_groups.empty?
           %li There are no approvers
