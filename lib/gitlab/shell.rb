@@ -88,6 +88,26 @@ module Gitlab
       true
     end
 
+    # Fetch remote for repository
+    #
+    # name - project path with namespace
+    # remote - remote name
+    # forced - should we use --force flag?
+    # no_tags - should we use --no-tags flag?
+    #
+    # Ex.
+    #   fetch_remote("gitlab/gitlab-ci", "upstream")
+    #
+    def fetch_remote(storage, name, remote, forced: false, no_tags: false)
+      args = [gitlab_shell_projects_path, 'fetch-remote', storage, "#{name}.git", remote, '800']
+      args << '--force' if forced
+      args << '--no-tags' if no_tags
+
+      output, status = Popen.popen(args)
+      raise Error, output unless status.zero?
+      true
+    end
+
     # Move repository
     # storage - project's storage path
     # path - project path with namespace
