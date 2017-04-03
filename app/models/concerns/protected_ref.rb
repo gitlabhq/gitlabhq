@@ -9,13 +9,13 @@ module ProtectedRef
     delegate :matching, :matches?, :wildcard?, to: :ref_matcher
 
     def self.matching_refs_accesible_to(ref, user, action: :push)
-      access_levels_for_ref(ref, action).any? do |access_level|
+      access_levels_for_ref(ref, action: action).any? do |access_level|
         access_level.check_access(user)
       end
     end
 
     def self.access_levels_for_ref(ref, action: :push)
-      self.matching(ref).map(&:"@#{action}_access_levels").flatten
+      self.matching(ref).map(&:"#{action}_access_levels").flatten
     end
 
     def self.matching(ref_name, protected_refs: nil)

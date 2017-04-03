@@ -1,5 +1,4 @@
 class Projects::ProtectedTagsController < Projects::ProtectedRefsController
-
   protected
 
   def protected_ref

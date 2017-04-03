@@ -19,7 +19,6 @@ module Projects
         load_gon_index
       end
 
-
       def access_levels_options
         #TODO: consider protected tags
         #TODO: Refactor ProtectedBranch::PushAccessLevel so it doesn't mention branches

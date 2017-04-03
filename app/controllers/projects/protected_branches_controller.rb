@@ -1,5 +1,4 @@
 class Projects::ProtectedBranchesController < Projects::ProtectedRefsController
-
   protected
 
   def protected_ref
