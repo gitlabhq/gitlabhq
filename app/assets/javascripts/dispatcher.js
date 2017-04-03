@@ -318,9 +318,12 @@ const UserCallout = require('./user_callout');
           new Search();
           break;
         case 'projects:repository:show':
+          // Initialize Protected Branch Settings
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
+          // Initialize Protected Tag Settings
           new gl.ProtectedTagCreate();
+          new gl.ProtectedTagEditList();
           break;
         case 'projects:ci_cd:show':
           new gl.ProjectVariables();
