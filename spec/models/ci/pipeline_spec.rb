@@ -1083,7 +1083,7 @@ describe Ci::Pipeline, models: true do
     let(:pipeline) { create(:ci_pipeline, sha: '123456') }
 
     it 'updates the cached status' do
-      expect(Gitlab::Cache::Ci::ProjectBuildStatus).to receive(:update_for_pipeline).
+      expect(Gitlab::Cache::Ci::ProjectPipelineStatus).to receive(:update_for_pipeline).
                                                          with(pipeline)
 
       pipeline.block

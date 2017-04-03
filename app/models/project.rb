@@ -1197,7 +1197,7 @@ class Project < ActiveRecord::Base
   end
 
   def pipeline_status
-    @pipeline_status ||= Gitlab::Cache::Ci::ProjectBuildStatus.load_for_project(self)
+    @pipeline_status ||= Gitlab::Cache::Ci::ProjectPipelineStatus.load_for_project(self)
   end
 
   def mark_import_as_failed(error_message)

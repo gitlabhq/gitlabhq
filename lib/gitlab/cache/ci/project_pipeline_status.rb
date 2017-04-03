@@ -4,7 +4,7 @@
 module Gitlab
   module Cache
     module Ci
-      class ProjectBuildStatus
+      class ProjectPipelineStatus
         attr_accessor :sha, :status, :project, :loaded
 
         delegate :commit, to: :project
