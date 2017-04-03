@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe MarkupHelper do
-  include ApplicationHelper
-
   let!(:project) { create(:project, :repository) }
 
   let(:user)          { create(:user, username: 'gfm') }

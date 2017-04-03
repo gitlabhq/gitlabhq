@@ -1,6 +1,22 @@
 require 'nokogiri'
 
 module MarkupHelper
+  def plain?(filename)
+    Gitlab::MarkupHelper.plain?(filename)
+  end
+
+  def markup?(filename)
+    Gitlab::MarkupHelper.markup?(filename)
+  end
+
+  def gitlab_markdown?(filename)
+    Gitlab::MarkupHelper.gitlab_markdown?(filename)
+  end
+
+  def asciidoc?(filename)
+    Gitlab::MarkupHelper.asciidoc?(filename)
+  end
+
   # Use this in places where you would normally use link_to(gfm(...), ...).
   #
   # It solves a problem occurring with nested links (i.e.
@@ -108,6 +124,22 @@ module MarkupHelper
     else
       wiki_page.formatted_content.html_safe
     end
+  end
+
+  def render_markup(file_name, file_content)
+    if gitlab_markdown?(file_name)
+      Hamlit::RailsHelpers.preserve(markdown(file_content))
+    elsif asciidoc?(file_name)
+      asciidoc(file_content)
+    elsif plain?(file_name)
+      content_tag :pre, class: 'plain-readme' do
+        file_content
+      end
+    else
+      other_markup(file_name, file_content)
+    end
+  rescue RuntimeError
+    simple_format(file_content)
   end
 
   # Returns the text necessary to reference `entity` across projects
