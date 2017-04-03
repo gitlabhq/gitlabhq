@@ -29,6 +29,6 @@
         = link_to namespace_project_registry_repository_tag_path(@project.namespace, @project, tag.repository, tag.name),
                   method: :delete,
                   class: 'btn btn-remove has-tooltip',
-                  title: 'Remove image tag',
+                  title: 'Remove tag',
                   data: { confirm: notice } do
           = icon('trash cred')

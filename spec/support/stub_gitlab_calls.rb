@@ -32,15 +32,15 @@ module StubGitlabCalls
   end
 
   def stub_container_registry_tags(*tags)
-    allow_any_instance_of(ContainerRegistry::Client).to receive(:repository_tags).and_return(
-      { "tags" => tags }
-    )
-    allow_any_instance_of(ContainerRegistry::Client).to receive(:repository_manifest).and_return(
-      JSON.parse(File.read(Rails.root + 'spec/fixtures/container_registry/tag_manifest.json'))
-    )
+    allow_any_instance_of(ContainerRegistry::Client)
+      .to receive(:repository_tags).and_return({ 'tags' => tags })
+
+    allow_any_instance_of(ContainerRegistry::Client)
+      .to receive(:repository_manifest).and_return(
+      JSON.parse(File.read(Rails.root + 'spec/fixtures/container_registry/tag_manifest.json')))
+
     allow_any_instance_of(ContainerRegistry::Client).to receive(:blob).and_return(
-      File.read(Rails.root + 'spec/fixtures/container_registry/config_blob.json')
-    )
+      File.read(Rails.root + 'spec/fixtures/container_registry/config_blob.json'))
   end
 
   private
