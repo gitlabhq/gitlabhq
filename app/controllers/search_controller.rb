@@ -6,20 +6,16 @@ class SearchController < ApplicationController
   layout 'search'
 
   def show
-    if params[:project_id].present?
-      @project = Project.find_by(id: params[:project_id])
-      @project = nil unless can?(current_user, :download_code, @project)
-    end
+    search_service = SearchService.new(current_user, params)
 
-    if params[:group_id].present?
-      @group = Group.find_by(id: params[:group_id])
-      @group = nil unless can?(current_user, :read_group, @group)
-    end
+    @project = search_service.project
+    @group = search_service.group
 
     return if params[:search].blank?
 
     @search_term = params[:search]
 
+<<<<<<< HEAD
     @scope = params[:scope]
     @show_snippets = params[:snippets].eql? 'true'
 
@@ -46,6 +42,12 @@ class SearchController < ApplicationController
       end
 
     @search_objects = @search_results.objects(@scope, params[:page])
+=======
+    @scope = search_service.scope
+    @show_snippets = search_service.show_snippets?
+    @search_results = search_service.search_results
+    @search_objects = search_service.search_objects
+>>>>>>> ce-com/master
 
     check_single_commit_result
   end

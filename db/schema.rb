@@ -122,6 +122,7 @@ ActiveRecord::Schema.define(version: 20170329124448) do
     t.integer "unique_ips_limit_per_user"
     t.integer "unique_ips_limit_time_window"
     t.boolean "unique_ips_limit_enabled", default: false, null: false
+<<<<<<< HEAD
     t.integer "minimum_mirror_sync_time", default: 15, null: false
     t.string "default_artifacts_expire_in", default: "0", null: false
     t.string "elasticsearch_url", default: "http://localhost:9200"
@@ -157,6 +158,9 @@ ActiveRecord::Schema.define(version: 20170329124448) do
     t.integer "user_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+=======
+    t.decimal "polling_interval_multiplier", default: 1.0, null: false
+>>>>>>> ce-com/master
   end
 
   add_index "approvers", ["target_id", "target_type"], name: "index_approvers_on_target_id_and_target_type", using: :btree

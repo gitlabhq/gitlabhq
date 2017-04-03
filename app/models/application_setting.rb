@@ -148,10 +148,13 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { greater_than_or_equal_to: 0 }
 
+<<<<<<< HEAD
   validates :minimum_mirror_sync_time,
             presence: true,
             inclusion: { in: Gitlab::Mirror::SYNC_TIME_OPTIONS.values }
 
+=======
+>>>>>>> ce-com/master
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
       unless Gitlab::VisibilityLevel.options.has_value?(level)
@@ -258,6 +261,7 @@ class ApplicationSetting < ActiveRecord::Base
       two_factor_grace_period: 48,
       user_default_external: false,
       polling_interval_multiplier: 1
+<<<<<<< HEAD
     }
   end
 
@@ -269,6 +273,8 @@ class ApplicationSetting < ActiveRecord::Base
       usage_ping_enabled: true,
       minimum_mirror_sync_time: Gitlab::Mirror::FIFTEEN,
       repository_size_limit: 0
+=======
+>>>>>>> ce-com/master
     }
   end
 

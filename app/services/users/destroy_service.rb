@@ -20,10 +20,10 @@ module Users
         Groups::DestroyService.new(group, current_user).execute
       end
 
-      user.personal_projects.each do |project|
+      user.personal_projects.with_deleted.each do |project|
         # Skip repository removal because we remove directory with namespace
         # that contain all this repositories
-        ::Projects::DestroyService.new(project, current_user, skip_repo: true).async_execute
+        ::Projects::DestroyService.new(project, current_user, skip_repo: true).execute
       end
 
       move_issues_to_ghost_user(user)

@@ -146,6 +146,10 @@
       display: block;
     }
 
+    &.scrolling-tabs {
+      float: left;
+    }
+
     li a {
       padding: 16px 15px 11px;
     }
@@ -479,6 +483,10 @@
 
 .inner-page-scroll-tabs {
   position: relative;
+
+  .nav-links {
+    padding-bottom: 1px;
+  }
 
   .fade-right {
     @include fade(left, $white-light);
