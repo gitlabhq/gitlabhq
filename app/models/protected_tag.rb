@@ -9,7 +9,6 @@ class ProtectedTag < ActiveRecord::Base
   accepts_nested_attributes_for :push_access_levels
 
   def self.protected?(project, ref_name)
-    protected_refs = project.protected_tags_array
-    self.matching(ref_name, protected_refs: protected_refs).present?
+    self.matching(ref_name, protected_refs: project.protected_tags).present?
   end
 end
