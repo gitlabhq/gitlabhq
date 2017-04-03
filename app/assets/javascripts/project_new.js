@@ -26,6 +26,10 @@
       $('.js-approvers').on('click', this.addApprover.bind(this));
       $(document).on('click', '.js-approver-remove', this.removeApprover.bind(this));
 
+      this.initApproverSelect();
+    }
+
+    ProjectNew.prototype.initApproverSelect = function() {
       $('.js-select-user-and-group').select2({
         placeholder: 'Search for users or groups',
         multiple: true,
@@ -72,7 +76,7 @@
           }
         }
       });
-    }
+    };
 
     ProjectNew.prototype.formatResult = function(group) {
       if (group.username) {
@@ -99,34 +103,6 @@
 
     ProjectNew.prototype.formatSelection = function(group) {
       return group.full_name || group.name;
-    };
-
-    ProjectNew.prototype.removeApprover = function(evt) {
-      evt.preventDefault();
-      const target = evt.currentTarget;
-      $('.load-wrapper').removeClass('hidden');
-      $.ajax({
-        url: target.href,
-        type: 'POST',
-        data: {
-          _method: 'DELETE',
-        },
-        success(res) {
-          const fakeEl = document.createElement('template');
-          fakeEl.innerHTML = res;
-          document.querySelector('.well-list.approver-list').innerHTML = fakeEl.content.querySelector('.well-list.approver-list').innerHTML;
-        },
-        complete: () => $('.load-wrapper').addClass('hidden'),
-        error(err) {
-          window.Flash('Failed to remove Approver', 'alert');
-        },
-      });
-    };
-
-    ProjectNew.prototype.updateApproverList = function(html) {
-      const fakeEl = document.createElement('template');
-      fakeEl.innerHTML = html;
-      document.querySelector('.well-list.approver-list').innerHTML = fakeEl.content.querySelector('.well-list.approver-list').innerHTML;
     };
 
     ProjectNew.prototype.addApprover = function(evt) {
@@ -160,6 +136,30 @@
           },
         });
       });
+    };
+
+    ProjectNew.prototype.removeApprover = function(evt) {
+      evt.preventDefault();
+      const target = evt.currentTarget;
+      $('.load-wrapper').removeClass('hidden');
+      $.ajax({
+        url: target.href,
+        type: 'POST',
+        data: {
+          _method: 'DELETE',
+        },
+        success: this.updateApproverList,
+        complete: () => $('.load-wrapper').addClass('hidden'),
+        error(err) {
+          window.Flash('Failed to remove Approver', 'alert');
+        },
+      });
+    };
+
+    ProjectNew.prototype.updateApproverList = function(html) {
+      const fakeEl = document.createElement('template');
+      fakeEl.innerHTML = html;
+      document.querySelector('.well-list.approver-list').innerHTML = fakeEl.content.querySelector('.well-list.approver-list').innerHTML;
     };
 
     ProjectNew.prototype.initVisibilitySelect = function() {
