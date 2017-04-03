@@ -5,13 +5,10 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
     let(:user) { create(:user) }
     let(:project) { create(:project, :repository) }
     let(:user_access) { Gitlab::UserAccess.new(user, project: project) }
-    let(:changes) do
-      {
-        oldrev: 'be93687618e4b132087f430a4d8fc3a609c9b77c',
-        newrev: '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51',
-        ref: 'refs/heads/master'
-      }
-    end
+    let(:oldrev) { 'be93687618e4b132087f430a4d8fc3a609c9b77c' }
+    let(:newrev) { '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51' }
+    let(:ref) { 'refs/heads/master' }
+    let(:changes) { { oldrev: oldrev, newrev: newrev, ref: ref } }
     let(:protocol) { 'ssh' }
 
     subject do
@@ -41,13 +38,7 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
     end
 
     context 'tags check' do
-      let(:changes) do
-        {
-          oldrev: 'be93687618e4b132087f430a4d8fc3a609c9b77c',
-          newrev: '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51',
-          ref: 'refs/tags/v1.0.0'
-        }
-      end
+      let(:ref) { 'refs/tags/v1.0.0' }
 
       it 'returns an error if the user is not allowed to update tags' do
         allow(user_access).to receive(:can_do_action?).with(:push_code).and_return(true)
@@ -60,38 +51,46 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
       context 'with protected tag' do
         let!(:protected_tag) { create(:protected_tag, project: project, name: 'v*') }
 
-        context 'deletion' do
-          let(:changes) do
-            {
-              oldrev: 'be93687618e4b132087f430a4d8fc3a609c9b77c',
-              newrev: '0000000000000000000000000000000000000000',
-              ref: 'refs/tags/v1.0.0'
-            }
+        context 'as master' do
+          before { project.add_master(user) }
+
+          context 'deletion' do
+            let(:oldrev) { 'be93687618e4b132087f430a4d8fc3a609c9b77c' }
+            let(:newrev) { '0000000000000000000000000000000000000000' }
+
+            it 'is prevented' do
+              expect(subject.status).to be(false)
+              expect(subject.message).to include('cannot be deleted')
+            end
           end
 
-          it 'is prevented' do
+          context 'update' do
+            let(:oldrev) { 'be93687618e4b132087f430a4d8fc3a609c9b77c' }
+            let(:newrev) { '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51' }
+
+            it 'is prevented' do
+              expect(subject.status).to be(false)
+              expect(subject.message).to include('cannot be updated')
+            end
+          end
+        end
+
+        context 'creation' do
+          let(:oldrev) { '0000000000000000000000000000000000000000' }
+          let(:newrev) { '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51' }
+          let(:ref) { 'refs/tags/v9.1.0' }
+
+          it 'prevents creation below access level' do
             expect(subject.status).to be(false)
-            expect(subject.message).to include('delete protected tags')
+            expect(subject.message).to include('allowed to create this tag as it is protected')
           end
-        end
 
-        it 'prevents force push' do
-          expect(Gitlab::Checks::ForcePush).to receive(:force_push?).and_return(true)
+          context 'when user has access' do
+            let!(:protected_tag) { create(:protected_tag, :developers_can_push, project: project, name: 'v*') }
 
-          expect(subject.status).to be(false)
-          expect(subject.message).to include('force push protected tags')
-        end
-
-        it 'prevents creation below access level' do
-          expect(subject.status).to be(false)
-          expect(subject.message).to include('allowed to')
-        end
-
-        context 'when user has access' do
-          let!(:protected_tag) { create(:protected_tag, :developers_can_push, project: project, name: 'v*') }
-
-          it 'allows tag creation' do
-            expect(subject.status).to be(true)
+            it 'allows tag creation' do
+              expect(subject.status).to be(true)
+            end
           end
         end
       end
@@ -126,13 +125,7 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
       end
 
       context 'branch deletion' do
-        let(:changes) do
-          {
-            oldrev: 'be93687618e4b132087f430a4d8fc3a609c9b77c',
-            newrev: '0000000000000000000000000000000000000000',
-            ref: 'refs/heads/master'
-          }
-        end
+        let(:newrev) { '0000000000000000000000000000000000000000' }
 
         it 'returns an error if the user is not allowed to delete protected branches' do
           expect(subject.status).to be(false)

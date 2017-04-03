@@ -37,7 +37,7 @@ module Gitlab
 
         if forced_push?
           return "You are not allowed to force push code to a protected branch on this project."
-        elsif blank_ref?
+        elsif deletion?
           return "You are not allowed to delete protected branches from this project."
         end
 
@@ -62,7 +62,7 @@ module Gitlab
         return unless @tag_name
 
         if tag_exists? && user_access.cannot_do_action?(:admin_project)
-          "You are not allowed to change existing tags on this project."
+          return "You are not allowed to change existing tags on this project."
         end
 
         protected_tag_checks
@@ -71,11 +71,11 @@ module Gitlab
       def protected_tag_checks
         return unless tag_protected?
 
-        if forced_push? #TODO: Verify if this should prevent all updates, and mention in UI and documentation
+        if update?
           return "Protected tags cannot be updated."
         end
 
-        if Gitlab::Git.blank_ref?(@newrev)
+        if deletion?
           return "Protected tags cannot be deleted."
         end
 
@@ -106,7 +106,11 @@ module Gitlab
         Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev, env: @env)
       end
 
-      def blank_ref?
+      def update?
+        !Gitlab::Git.blank_ref?(@oldrev) && !deletion?
+      end
+
+      def deletion?
         Gitlab::Git.blank_ref?(@newrev)
       end
 
