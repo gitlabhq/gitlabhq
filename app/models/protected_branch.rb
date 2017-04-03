@@ -44,4 +44,12 @@ class ProtectedBranch < ActiveRecord::Base
       frequencies
     end
   end
+
+  # Check if branch name is marked as protected in the system
+  def self.protected?(project, ref_name)
+    return true if project.empty_and_default_branch_protected?
+
+    protected_refs = project.protected_branches_array
+    self.matching(ref_name, protected_refs: protected_refs).present?
+  end
 end

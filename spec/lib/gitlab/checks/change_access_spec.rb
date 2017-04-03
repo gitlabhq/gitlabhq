@@ -99,7 +99,7 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
 
     context 'protected branches check' do
       before do
-        allow(project).to receive(:protected_branch?).with('master').and_return(true)
+        allow(ProtectedBranch).to receive(:protected?).with(project, 'master').and_return(true)
       end
 
       it 'returns an error if the user is not allowed to do forced pushes to protected branches' do

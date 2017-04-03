@@ -996,20 +996,19 @@ class Project < ActiveRecord::Base
     "#{Gitlab.config.build_gitlab_kerberos_url + Gitlab::Application.routes.url_helpers.namespace_project_path(self.namespace, self)}.git"
   end
 
-  # Check if current branch name is marked as protected in the system
-  #TODO: Move elsewhere
-  def protected_branch?(branch_name)
-    return true if empty_repo? && default_branch_protected?
 
-    @protected_branches ||= self.protected_branches.to_a
-    ProtectedBranch.matching(branch_name, protected_refs: @protected_branches).present?
+  def empty_and_default_branch_protected?
+    empty_repo? && default_branch_protected?
   end
 
-  #TODO: Move elsewhere
-  def protected_tag?(tag_name)
-    #TODO: Check if memoization necessary, find way to have it work elsewhere
-    @protected_tags ||= self.protected_tags.to_a
-    ProtectedTag.matching(tag_name, protected_refs: @protected_tags).present?
+  #TODO: Check with if this is still needed, maybe because of `.select {` in ProtectedRefsMatcher
+  #Either with tests or by asking Tim
+  def protected_tags_array
+    @protected_tags_array ||= self.protected_tags.to_a
+  end
+
+  def protected_branches_array
+    @protected_branches_array ||= self.protected_branches.to_a
   end
 
   def user_can_push_to_empty_repo?(user)
@@ -1607,6 +1606,7 @@ class Project < ActiveRecord::Base
     "projects/#{id}/pushes_since_gc"
   end
 
+  #TODO: Move this and methods which depend upon it
   def default_branch_protected?
     current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
       current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE

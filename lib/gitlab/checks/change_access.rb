@@ -35,7 +35,7 @@ module Gitlab
       def protected_branch_checks
         return if skip_authorization
         return unless @branch_name
-        return unless project.protected_branch?(@branch_name)
+        return unless ProtectedBranch.protected?(project, @branch_name)
 
         if forced_push?
           return "You are not allowed to force push code to a protected branch on this project."
@@ -87,7 +87,7 @@ module Gitlab
       end
 
       def tag_protected?
-        project.protected_tag?(@tag_name)
+        ProtectedTag.protected?(project, @tag_name)
       end
 
       def push_checks

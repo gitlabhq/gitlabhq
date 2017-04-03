@@ -210,7 +210,7 @@ module API
       end
 
       expose :protected do |repo_branch, options|
-        options[:project].protected_branch?(repo_branch.name)
+        ProtectedBranch.protected?(options[:project], repo_branch.name)
       end
 
       expose :developers_can_push do |repo_branch, options|

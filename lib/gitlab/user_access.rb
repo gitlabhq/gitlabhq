@@ -34,7 +34,7 @@ module Gitlab
     def can_push_tag?(ref)
       return false unless can_access_git?
 
-      if project.protected_tag?(ref)
+      if ProtectedTag.protected?(project, ref)
         project.protected_tags.matching_refs_accesible_to(ref, user)
       else
         user.can?(:push_code, project)
@@ -44,7 +44,7 @@ module Gitlab
     def can_push_to_branch?(ref)
       return false unless can_access_git?
 
-      if project.protected_branch?(ref)
+      if ProtectedBranch.protected?(project, ref)
         return true if project.empty_repo? && project.user_can_push_to_empty_repo?(user)
 
         has_access = project.protected_branches.matching_refs_accesible_to(ref, user, action: :push)
@@ -58,7 +58,7 @@ module Gitlab
     def can_merge_to_branch?(ref)
       return false unless can_access_git?
 
-      if project.protected_branch?(ref)
+      if ProtectedBranch.protected?(project, ref)
         project.protected_branches.matching_refs_accesible_to(ref, user, action: :merge)
       else
         user.can?(:push_code, project)
