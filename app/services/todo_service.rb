@@ -204,7 +204,7 @@ class TodoService
     # Only update those that are not really on that state
     todos = todos.where.not(state: state)
     todos_ids = todos.pluck(:id)
-    todos.update_all(state: state)
+    todos.unscope(:order).update_all(state: state)
     current_user.update_todos_count_cache
     todos_ids
   end
