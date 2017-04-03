@@ -58,12 +58,12 @@ describe Issue, "Issuable" do
   end
 
   describe "before_save" do
-    describe "#update_cache_counts" do
+    describe "#update_cache_counts when an issue is reassigned" do
       context "when previous assignee exists" do
         before do
           assignee = create(:user)
           issue.project.team << [assignee, :developer]
-          issue.update(assignee: assignee)
+          issue.assignees << assignee
         end
 
         it "updates cache counts for new assignee" do
@@ -71,26 +71,65 @@ describe Issue, "Issuable" do
 
           expect(user).to receive(:update_cache_counts)
 
-          issue.update(assignee: user)
+          issue.assignees << user
         end
 
         it "updates cache counts for previous assignee" do
-          old_assignee = issue.assignee
-          allow(User).to receive(:find_by_id).with(old_assignee.id).and_return(old_assignee)
+          old_assignee = issue.assignees.first
 
-          expect(old_assignee).to receive(:update_cache_counts)
+          expect_any_instance_of(User).to receive(:update_cache_counts)
 
-          issue.update(assignee: nil)
+          issue.assignees.destroy_all
         end
       end
 
       context "when previous assignee does not exist" do
-        before{ issue.update(assignee: nil) }
+        before{ issue.assignees = [] }
 
         it "updates cache count for the new assignee" do
           expect_any_instance_of(User).to receive(:update_cache_counts)
 
-          issue.update(assignee: user)
+          issue.assignees << user
+        end
+      end
+    end
+
+    describe "#update_cache_counts when a merge request is reassigned" do
+      let(:project) { create :project }
+      let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+      context "when previous assignee exists" do
+        before do
+          assignee = create(:user)
+          project.team << [assignee, :developer]
+          merge_request.update(assignee: assignee)
+        end
+
+        it "updates cache counts for new assignee" do
+          user = create(:user)
+
+          expect(user).to receive(:update_cache_counts)
+
+          merge_request.update(assignee: user)
+        end
+
+        it "updates cache counts for previous assignee" do
+          old_assignee = merge_request.assignee
+          allow(User).to receive(:find_by_id).with(old_assignee.id).and_return(old_assignee)
+
+          expect(old_assignee).to receive(:update_cache_counts)
+
+          merge_request.update(assignee: nil)
+        end
+      end
+
+      context "when previous assignee does not exist" do
+        before { merge_request.update(assignee: nil) }
+
+        it "updates cache count for the new assignee" do
+          expect_any_instance_of(User).to receive(:update_cache_counts)
+
+          merge_request.update(assignee: user)
         end
       end
     end

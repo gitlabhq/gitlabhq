@@ -210,7 +210,7 @@ class MergeRequest < ActiveRecord::Base
 
   # This method is needed for compatibility with issues to not mess view and other code
   def assignees
-    assignee ? [assignee] : []
+    Array(assignee)
   end
 
   def assignee_or_author?(user)
