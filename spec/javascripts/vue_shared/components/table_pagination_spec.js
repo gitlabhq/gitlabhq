@@ -124,6 +124,10 @@ describe('Pagination component', () => {
 });
 
 describe('paramHelper', () => {
+  afterEach(() => {
+    window.history.pushState({}, null, '');
+  });
+
   it('can parse url parameters correctly', () => {
     window.history.pushState({}, null, '?scope=all&p=2');
 
