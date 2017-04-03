@@ -153,7 +153,7 @@ describe Namespace, models: true do
 
       before do
         stub_container_registry_config(enabled: true)
-        stub_container_registry_tags('tag')
+        stub_container_registry_tags(repository: :any, tags: ['tag'])
 
         create(:empty_project, namespace: @namespace, container_repositories: [container_repository])
 

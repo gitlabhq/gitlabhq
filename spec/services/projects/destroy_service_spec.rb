@@ -94,7 +94,7 @@ describe Projects::DestroyService, services: true do
 
     before do
       stub_container_registry_config(enabled: true)
-      stub_container_registry_tags('tag')
+      stub_container_registry_tags(repository: :any, tags: ['tag'])
       project.container_repositories << container_repository
     end
 

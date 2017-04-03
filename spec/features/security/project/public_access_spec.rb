@@ -446,7 +446,7 @@ describe "Public Project Access", feature: true  do
     let(:container_repository) { create(:container_repository) }
 
     before do
-      stub_container_registry_tags('latest')
+      stub_container_registry_tags(repository: :any, tags:['latest'])
       stub_container_registry_config(enabled: true)
       project.container_repositories << container_repository
     end

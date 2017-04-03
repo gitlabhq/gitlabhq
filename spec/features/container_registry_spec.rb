@@ -12,7 +12,7 @@ describe "Container Registry" do
     login_as(user)
     project.add_developer(user)
     stub_container_registry_config(enabled: true)
-    stub_container_registry_tags(%w[latest])
+    stub_container_registry_tags(repository: :any, tags: [])
   end
 
   context 'when there are no image repositories' do
@@ -25,6 +25,7 @@ describe "Container Registry" do
 
   context 'when there are image repositories' do
     before do
+      stub_container_registry_tags(repository: %r{my/image}, tags: %w[latest])
       project.container_repositories << container_repository
     end
 
