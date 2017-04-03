@@ -69,20 +69,39 @@ export default {
     },
     initCIPolling() {
       this.ciStatusInterval = new gl.SmartInterval({
-        callback: this.getCIStatus,
+        callback: this.fetchCIStatus,
         startingInterval: 10000,
         maxInterval: 30000,
         hiddenInterval: 120000,
         incrementByFactorOf: 5000,
       });
     },
-    getCIStatus() {
+    initDeploymentsPolling() {
+      this.deploymentsInterval = new gl.SmartInterval({
+        callback: this.fetchDeployments,
+        startingInterval: 30000,
+        maxInterval: 120000,
+        hiddenInterval: 240000,
+        incrementByFactorOf: 15000,
+        immediateExecution: true,
+      });
+    },
+    fetchCIStatus() {
       // TODO: Error handling
       this.service.ciStatusResorce.get()
         .then(res => res.json())
         .then((res) => {
           if (res.has_ci) {
             this.mr.updatePipelineData(res);
+          }
+        });
+    },
+    fetchDeployments() {
+      this.service.fetchDeployments()
+        .then(res => res.json())
+        .then((res) => {
+          if (res.length) {
+            this.mr.deployments = res;
           }
         });
     },
@@ -104,20 +123,12 @@ export default {
   },
   mounted() {
     this.checkStatus();
-    this.getCIStatus();
-
-    // TODO: Error handling
-    this.service.fetchDeployments()
-      .then(res => res.json())
-      .then((res) => {
-        if (res.length) {
-          this.mr.deployments = res;
-        }
-      });
+    this.fetchCIStatus();
 
     if (this.mr.hasCI) {
       this.initCIPolling();
     }
+    this.initDeploymentsPolling();
   },
   components: {
     'mr-widget-header': WidgetHeader,
