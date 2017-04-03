@@ -1,4 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-unused-vars, one-var, no-underscore-dangle, prefer-template, no-else-return, prefer-arrow-callback, max-len */
+/* global Api */
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
@@ -24,7 +25,81 @@
 
       $('.js-approvers').on('click', this.addApprover.bind(this));
       $(document).on('click', '.js-approver-remove', this.removeApprover.bind(this));
+
+      $('.js-select-user-and-group').select2({
+        placeholder: 'Search for users or groups',
+        multiple: true,
+        minimumInputLength: 0,
+        query(query) {
+          var options = { };
+          const groupsApi = Api.groups(query.term, options, function(groups) {
+            return groups;
+          });
+
+          const usersApi = Api.users(query.term, options, function(groups) {
+            return groups;
+          });
+
+          return $.when(groupsApi, usersApi).then((groups, users) => {
+            const data = {
+              results: groups[0].concat(users[0]),
+            };
+            return query.callback(data);
+          });
+        },
+        formatResult: this.formatResult,
+        formatSelection: this.formatSelection,
+        dropdownCssClass: 'ajax-groups-dropdown',
+      })
+      .on('change', (evt) => {
+        const { added, removed } = evt;
+        const groupInput = $('[name="project[approver_group_ids]"]');
+        const userInput = $('[name="project[approver_ids]"]');
+
+        if (added) {
+          if (added.full_name) {
+            groupInput.val(`${groupInput.val()},${added.id}`.replace(/^,/, ''));
+          } else {
+            userInput.val(`${userInput.val()},${added.id}`.replace(/^,/, ''));
+          }
+        }
+
+        if (removed) {
+          if (removed.full_name) {
+            groupInput.val(groupInput.val().replace(new RegExp(`,?${removed.id}`), ''));
+          } else {
+            userInput.val(userInput.val().replace(new RegExp(`,?${removed.id}`), ''));
+          }
+        }
+      });
     }
+
+    ProjectNew.prototype.formatResult = function(group) {
+      if (group.username) {
+        return "<div class='group-result'> <div class='group-name'>" + group.name + "</div> <div class='group-path'></div> </div>";
+      }
+
+      let avatar;
+      if (group.avatar_url) {
+        avatar = group.avatar_url;
+      } else {
+        avatar = gon.default_avatar_url;
+      }
+      return `
+        <div class='group-result'>
+          <div class='group-name'>
+            ${group.full_name}
+          </div>
+          <div class='group-path'>
+            ${group.full_path}
+          </div>
+        </div>
+      `;
+    };
+
+    ProjectNew.prototype.formatSelection = function(group) {
+      return group.full_name || group.name;
+    };
 
     ProjectNew.prototype.removeApprover = function(evt) {
       evt.preventDefault();

@@ -23,6 +23,17 @@ var Api = {
       return callback(group);
     });
   },
+  users: function(search, options, callback) {
+    var url = Api.buildUrl("/autocomplete/users.json");
+    return $.ajax({
+      url,
+      data: $.extend({
+        search,
+        per_page: 20
+      }, options),
+      dataType: 'json'
+    }).done(callback);
+  },
   // Return groups list. Filtered by query
   groups: function(query, options, callback) {
     var url = Api.buildUrl(Api.groupsPath);
