@@ -401,6 +401,8 @@ module Ci
     def steps
       [Gitlab::Ci::Build::Step.from_commands(self),
        Gitlab::Ci::Build::Step.from_after_script(self)].compact
+    rescue
+       []
     end
 
     def image

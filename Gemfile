@@ -85,14 +85,14 @@ gem 'kaminari', '~> 0.17.0'
 gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
-gem 'carrierwave', '~> 0.11.0'
+gem 'carrierwave', '~> 1.0'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
-gem 'fog-aws', '~> 0.9'
-gem 'fog-core', '~> 1.40'
+gem 'fog-aws', '~> 1.3.0'
+gem 'fog-core', '~> 1.42.0'
 gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'

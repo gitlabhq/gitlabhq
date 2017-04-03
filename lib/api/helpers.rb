@@ -283,7 +283,7 @@ module API
 
     # file helpers
 
-    def uploaded_file(field, uploads_path)
+    def uploaded_file(uploader, field)
       if params[field]
         bad_request!("#{field} is not a file") unless params[field].respond_to?(:filename)
         return params[field]
@@ -294,9 +294,16 @@ module API
       # sanitize file paths
       # this requires all paths to exist
       required_attributes! %W(#{field}.path)
-      uploads_path = File.realpath(uploads_path)
+      uploads_path = File.realpath(uploader.artifacts_path)
       file_path = File.realpath(params["#{field}.path"])
       bad_request!('Bad file path') unless file_path.start_with?(uploads_path)
+
+      # if file was uploaded, retrieve the cached filed
+      if params["#{field}.upload_path"]
+        file = uploader.retrive_uploaded!(params["#{field}.upload_path"])
+
+        return file
+      end
 
       UploadedFile.new(
         file_path,
