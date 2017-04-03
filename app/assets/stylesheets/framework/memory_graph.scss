@@ -4,9 +4,18 @@
     border: 1px solid $white-dark;
   }
 
+  path,
+  circle {
+    fill: none;
+    stroke-width: 1px;
+  }
+
   path {
     stroke: $blue-500;
-    stroke-width: 1px;
-    fill: none;
+  }
+
+  circle {
+    stroke: $blue-700;
+    fill: $blue-700;
   }
 }
