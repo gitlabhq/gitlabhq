@@ -11,6 +11,7 @@ import ExternalUrlComponent from './environment_external_url';
 import StopComponent from './environment_stop';
 import RollbackComponent from './environment_rollback';
 import TerminalButtonComponent from './environment_terminal_button';
+import MonitoringButtonComponent from './environment_monitoring';
 import CommitComponent from '../../vue_shared/components/commit';
 
 const timeagoInstance = new Timeago();
@@ -23,6 +24,7 @@ export default {
     'stop-component': StopComponent,
     'rollback-component': RollbackComponent,
     'terminal-button-component': TerminalButtonComponent,
+    'monitoring-button-component': MonitoringButtonComponent,
   },
 
   props: {
@@ -399,6 +401,14 @@ export default {
       return '';
     },
 
+    monitoringUrl() {
+      if (this.model && this.model.metrics_path) {
+        return this.model.metrics_path;
+      }
+
+      return '';
+    },
+
     /**
      * Constructs folder URL based on the current location and the folder id.
      *
@@ -518,12 +528,15 @@ export default {
           <external-url-component v-if="externalURL && canReadEnvironment"
             :external-url="externalURL"/>
 
-          <stop-component v-if="hasStopAction && canCreateDeployment"
-            :stop-url="model.stop_path"
-            :service="service"/>
+          <monitoring-button-component v-if="monitoringUrl && canReadEnvironment"
+            :monitoring-url="monitoringUrl"/>
 
           <terminal-button-component v-if="model && model.terminal_path"
             :terminal-path="model.terminal_path"/>
+
+          <stop-component v-if="hasStopAction && canCreateDeployment"
+            :stop-url="model.stop_path"
+            :service="service"/>
 
           <rollback-component v-if="canRetry && canCreateDeployment"
             :is-last-deployment="isLastDeployment"

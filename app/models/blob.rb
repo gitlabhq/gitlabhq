@@ -47,7 +47,7 @@ class Blob < SimpleDelegator
   end
 
   def ipython_notebook?
-    text? && language && language.name == 'Jupyter Notebook'
+    text? && language&.name == 'Jupyter Notebook'
   end
 
   def size_within_svg_limits?
