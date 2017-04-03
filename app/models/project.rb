@@ -996,16 +996,6 @@ class Project < ActiveRecord::Base
     "#{Gitlab.config.build_gitlab_kerberos_url + Gitlab::Application.routes.url_helpers.namespace_project_path(self.namespace, self)}.git"
   end
 
-  #TODO: Check with if this is still needed, maybe because of `.select {` in ProtectedRefsMatcher
-  #Either with tests or by asking Tim
-  def protected_tags_array
-    @protected_tags_array ||= self.protected_tags.to_a
-  end
-
-  def protected_branches_array
-    @protected_branches_array ||= self.protected_branches.to_a
-  end
-
   def user_can_push_to_empty_repo?(user)
     !ProtectedBranch.default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
   end

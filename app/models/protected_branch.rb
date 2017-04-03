@@ -49,8 +49,7 @@ class ProtectedBranch < ActiveRecord::Base
   def self.protected?(project, ref_name)
     return true if project.empty_repo? && default_branch_protected?
 
-    protected_refs = project.protected_branches_array
-    self.matching(ref_name, protected_refs: protected_refs).present?
+    self.matching(ref_name, protected_refs: project.protected_branches).present?
   end
 
   def self.default_branch_protected?
