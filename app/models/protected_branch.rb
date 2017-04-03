@@ -1,9 +1,6 @@
 class ProtectedBranch < ActiveRecord::Base
   include Gitlab::ShellAdapter
-
-  belongs_to :project
-  validates :name, presence: true
-  validates :project, presence: true
+  include ProtectedRef
 
   has_many :merge_access_levels, dependent: :destroy
   has_many :push_access_levels, dependent: :destroy
@@ -30,26 +27,6 @@ class ProtectedBranch < ActiveRecord::Base
   # access to the given group.
   scope :push_access_by_group, -> (group) { PushAccessLevel.joins(:protected_branch).where(protected_branch_id: self.ids).merge(PushAccessLevel.by_group(group)) }
 
-  def commit
-    project.commit(self.name)
-  end
-
-  def self.matching(branch_name, protected_branches: nil)
-    ProtectedRefMatcher.matching(ProtectedBranch, branch_name, protected_refs: protected_branches)
-  end
-
-  def matching(branches)
-    ref_matcher.matching(branches)
-  end
-
-  def matches?(branch_name)
-    ref_matcher.matches?(branch_name)
-  end
-
-  def wildcard?
-    ref_matcher.wildcard?
-  end
-
   # Returns a hash were keys are types of push access levels (user, role), and
   # values are the number of access levels of the particular type.
   def push_access_level_frequencies
@@ -66,11 +43,5 @@ class ProtectedBranch < ActiveRecord::Base
       frequencies[access_level.type] = frequencies[access_level.type] + 1
       frequencies
     end
-  end
-
-  private
-
-  def ref_matcher
-    @ref_matcher ||= ProtectedRefMatcher.new(self)
   end
 end
