@@ -7,7 +7,7 @@ module Db
             (::AbuseReport.default_per_page + 3).times do
               reported_user =
                 ::User.create!(
-                  username: FFaker::Internet.user_name,
+                  username: "#{FFaker::Internet.user_name}-reported",
                   name: FFaker::Name.name,
                   email: FFaker::Internet.email,
                   confirmed_at: DateTime.now,
