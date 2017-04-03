@@ -48,6 +48,10 @@ class ContainerRepository < ActiveRecord::Base
     tags.to_a.any?
   end
 
+  def root_repository?
+    name.empty?
+  end
+
   def delete_tags!
     return unless has_tags?
 
@@ -58,8 +62,12 @@ class ContainerRepository < ActiveRecord::Base
     end
   end
 
+  def self.build_from_path(path)
+    self.new(project: path.repository_project,
+             name: path.repository_name)
+  end
+
   def self.create_from_path!(path)
-    self.create(project: path.repository_project,
-                name: path.repository_name)
+    build_from_path(path).tap(&:save!)
   end
 end

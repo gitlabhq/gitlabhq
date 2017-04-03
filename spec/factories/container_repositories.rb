@@ -7,6 +7,10 @@ FactoryGirl.define do
       tags []
     end
 
+    trait :root do
+      name ''
+    end
+
     after(:build) do |repository, evaluator|
       next if evaluator.tags.to_a.none?
 

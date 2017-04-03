@@ -98,6 +98,43 @@ describe ContainerRepository do
     end
   end
 
+  describe '#root_repository?' do
+    context 'when repository is a root repository' do
+      let(:repository) { create(:container_repository, :root) }
+
+      it 'returns true' do
+        expect(repository).to be_root_repository
+      end
+    end
+
+    context 'when repository is not a root repository' do
+      it 'returns false' do
+        expect(container_repository).not_to be_root_repository
+      end
+    end
+  end
+
+  describe '.build_from_path' do
+    let(:path) { project.full_path + '/some/image' }
+    let(:repository_path) { ContainerRegistry::Path.new(path) }
+
+    let(:repository) do
+      described_class.build_from_path(ContainerRegistry::Path.new(path))
+    end
+
+    it 'fabricates repository assigned to a correct project' do
+      expect(repository.project).to eq project
+    end
+
+    it 'fabricates repository with a correct name' do
+      expect(repository.name).to eq 'some/image'
+    end
+
+    it 'is not persisted' do
+      expect(repository).not_to be_persisted
+    end
+  end
+
   describe '.create_from_path!' do
     let(:repository) do
       described_class.create_from_path!(ContainerRegistry::Path.new(path))
