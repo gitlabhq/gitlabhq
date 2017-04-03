@@ -91,6 +91,10 @@ describe('Environment', () => {
       });
 
       describe('pagination', () => {
+        afterEach(() => {
+          window.history.pushState({}, null, '');
+        });
+
         it('should render pagination', (done) => {
           setTimeout(() => {
             expect(
