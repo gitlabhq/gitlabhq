@@ -110,6 +110,7 @@ module API
         requires :housekeeping_gc_period, type: Integer, desc: "Number of Git pushes after which 'git gc' is run."
       end
       optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
+      optional :polling_interval_multiplier, type: BigDecimal, desc: 'Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling.'
       at_least_one_of :default_branch_protection, :default_project_visibility, :default_snippet_visibility,
                       :default_group_visibility, :restricted_visibility_levels, :import_sources,
                       :enabled_git_access_protocol, :gravatar_enabled, :default_projects_limit,
@@ -125,7 +126,7 @@ module API
                       :akismet_enabled, :admin_notification_email, :sentry_enabled,
                       :repository_storage, :repository_checks_enabled, :koding_enabled, :plantuml_enabled,
                       :version_check_enabled, :email_author_in_body, :html_emails_enabled,
-                      :housekeeping_enabled, :terminal_max_session_time
+                      :housekeeping_enabled, :terminal_max_session_time, :polling_interval_multiplier
     end
     put "application/settings" do
       attrs = declared_params(include_missing: false)
