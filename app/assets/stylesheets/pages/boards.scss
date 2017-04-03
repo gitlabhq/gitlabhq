@@ -197,7 +197,7 @@
 
 .card {
   position: relative;
-  padding: 11px $gl-padding;
+  padding: 11px 10px 11px $gl-padding;
   background: $white-light;
   border-radius: $border-radius-default;
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
@@ -250,7 +250,7 @@
 }
 
 .card-footer {
-  margin: 5px;
+  margin: 5px 0;
 
   .label {
     margin-top: 5px;
