@@ -402,10 +402,6 @@ class Repository
     expire_tags_cache
   end
 
-  def before_import
-    expire_content_cache
-  end
-
   # Runs code after the HEAD of a repository is changed.
   def after_change_head
     expire_method_caches(METHOD_CACHES_FOR_FILE_TYPES.keys)
