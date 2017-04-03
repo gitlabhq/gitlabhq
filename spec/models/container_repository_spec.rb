@@ -21,6 +21,13 @@ describe ContainerRepository do
         headers: { 'Content-Type' => 'application/json' })
   end
 
+  describe 'validations' do
+    it 'validates uniqueness of name scoped to project' do
+      expect(subject).to validate_uniqueness_of(:name)
+        .scoped_to(:project_id)
+    end
+  end
+
   describe 'associations' do
     it 'belongs to the project' do
       expect(container_repository).to belong_to(:project)

@@ -2,6 +2,7 @@ class ContainerRepository < ActiveRecord::Base
   belongs_to :project
 
   validates :name, length: { minimum: 0, allow_nil: false }
+  validates :name, uniqueness: { scope: :project_id }
 
   delegate :client, to: :registry
 
