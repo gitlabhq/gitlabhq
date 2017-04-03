@@ -4,6 +4,8 @@ describe MergeRequests::BuildService, services: true do
   include RepoHelpers
 
   let(:project) { create(:project) }
+  let(:source_project) { nil }
+  let(:target_project) { nil }
   let(:user) { create(:user) }
   let(:issue_confidential) { false }
   let(:issue) { create(:issue, project: project, title: 'A bug', confidential: issue_confidential) }
@@ -20,7 +22,9 @@ describe MergeRequests::BuildService, services: true do
     MergeRequests::BuildService.new(project, user,
                                     description: description,
                                     source_branch: source_branch,
-                                    target_branch: target_branch)
+                                    target_branch: target_branch,
+                                    source_project: source_project,
+                                    target_project: target_project)
   end
 
   before do
@@ -254,6 +258,42 @@ describe MergeRequests::BuildService, services: true do
           'Source branch "feature-branch" does not exist',
           'Target branch "master" does not exist'
         )
+      end
+    end
+
+    context 'target_project is set and accessible by current_user' do
+      let(:target_project) { create(:project, :public, :repository)}
+      let(:commits) { Commit.decorate([commit_1], project) }
+
+      it 'sets target project correctly' do
+        expect(merge_request.target_project).to eq(target_project)
+      end
+    end
+
+    context 'target_project is set but not accessible by current_user' do
+      let(:target_project) { create(:project, :private, :repository)}
+      let(:commits) { Commit.decorate([commit_1], project) }
+
+      it 'sets target project correctly' do
+        expect(merge_request.target_project).to eq(project)
+      end
+    end
+
+    context 'source_project is set and accessible by current_user' do
+      let(:source_project) { create(:project, :public, :repository)}
+      let(:commits) { Commit.decorate([commit_1], project) }
+
+      it 'sets target project correctly' do
+        expect(merge_request.source_project).to eq(source_project)
+      end
+    end
+
+    context 'source_project is set but not accessible by current_user' do
+      let(:source_project) { create(:project, :private, :repository)}
+      let(:commits) { Commit.decorate([commit_1], project) }
+
+      it 'sets target project correctly' do
+        expect(merge_request.source_project).to eq(project)
       end
     end
   end

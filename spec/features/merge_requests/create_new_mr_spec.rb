@@ -43,6 +43,18 @@ feature 'Create New Merge Request', feature: true, js: true do
       visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_project_id: private_project.id })
 
       expect(page).not_to have_content private_project.path_with_namespace
+      expect(page).to have_content project.path_with_namespace
+    end
+  end
+
+  context 'when source project cannot be viewed by the current user' do
+    it 'does not leak the private project name & namespace' do
+      private_project = create(:project, :private)
+
+      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { source_project_id: private_project.id })
+
+      expect(page).not_to have_content private_project.path_with_namespace
+      expect(page).to have_content project.path_with_namespace
     end
   end
 
