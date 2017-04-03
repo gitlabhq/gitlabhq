@@ -65,7 +65,7 @@ class Repository
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
-      File.join(@project.repository_storage_path, path_with_namespace + ".git")
+      File.join(repository_storage_path, path_with_namespace + ".git")
     )
   end
 
@@ -1034,11 +1034,21 @@ class Repository
     rugged.references.delete(tmp_ref) if tmp_ref
   end
 
-  def fetch_mirror(remote, url)
-    add_remote(remote, url)
-    set_remote_as_mirror(remote)
-    fetch_remote(remote, forced: true)
-    remove_remote(remote)
+  def add_remote(name, url)
+    raw_repository.remote_add(name, url)
+  rescue Rugged::ConfigError
+    raw_repository.remote_update(name, url: url)
+  end
+
+  def remove_remote(name)
+    raw_repository.remote_delete(name)
+    true
+  rescue Rugged::ConfigError
+    false
+  end
+
+  def fetch_remote(remote, forced: false, no_tags: false)
+    gitlab_shell.fetch_remote(repository_storage_path, path_with_namespace, remote, forced: forced, no_tags: no_tags)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
@@ -1157,5 +1167,9 @@ class Repository
 
   def repository_event(event, tags = {})
     Gitlab::Metrics.add_event(event, { path: path_with_namespace }.merge(tags))
+  end
+
+  def repository_storage_path
+    @project.repository_storage_path
   end
 end
