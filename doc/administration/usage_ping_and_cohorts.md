@@ -56,7 +56,7 @@ calculation is made.
 By default, usage ping is opt-out. If you want to deactivate, go to the Settings
 page of your administration panel and uncheck the Usage ping checkbox.
 
-![User cohort example](img/cohorts.png)
+[IMAGE]
 
 ## Cohorts
 
@@ -65,10 +65,10 @@ activities of your GitLab installation. Under [LINK], when the usage ping is
 active, GitLab will show the monthly cohorts of new users and their activities
 over time.
 
-How do we read user cohorts table? Let's take an example with the following user
-cohorts.
+How do we read the user cohorts table? Let's take an example with the following
+user cohorts.
 
-[IMAGE]
+![User cohort example](img/cohorts.png)
 
 For the cohort of June 2016, 163 users have been created on this server. One
 month after, in July 2016, 155 users (or 95% of the June cohort) are still
@@ -77,9 +77,12 @@ we can see that only 6% of this cohort are still active.
 
 How do we measure the activity of users? GitLab considers a user active if:
 * the user signs in
-* the user has a git activity (wether push or pull).
+* the user has a git activity (whether push or pull).
 
 ### Setup
 
 1. Activate the usage ping as defined in [LINK]
 2. Go to [LINK] to see the user cohorts of the server
+
+[ee-380]: https://gitlab.com/gitlab-org/gitlab-ee/issues/380
+[ce-23361]: https://gitlab.com/gitlab-org/gitlab-ce/issues/23361
