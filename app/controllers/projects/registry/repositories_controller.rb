@@ -31,7 +31,7 @@ module Projects
       #
       def ensure_root_container_repository!
         ContainerRegistry::Path.new(@project.full_path).tap do |path|
-          return if path.has_repository?
+          break if path.has_repository?
 
           ContainerRepository.build_from_path(path).tap do |repository|
             repository.save if repository.has_tags?
