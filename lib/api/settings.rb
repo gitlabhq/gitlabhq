@@ -109,7 +109,7 @@ module API
         requires :housekeeping_full_repack_period, type: Integer, desc: "Number of Git pushes after which a full 'git repack' is run."
         requires :housekeeping_gc_period, type: Integer, desc: "Number of Git pushes after which 'git gc' is run."
       end
-      optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
+      optional :polling_interval_multiplier, type: BigDecimal, desc: 'Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling.'
       # GitLab-EE specific settings
       optional :help_text, type: String, desc: 'GitLab server administrator information'
       optional :elasticsearch_indexing, type: Boolean, desc: 'Enable Elasticsearch indexing'
@@ -141,6 +141,7 @@ module API
                       :akismet_enabled, :admin_notification_email, :sentry_enabled,
                       :repository_checks_enabled, :koding_enabled, :housekeeping_enabled, :terminal_max_session_time, :plantuml_enabled,
                       :version_check_enabled, :email_author_in_body, :html_emails_enabled,
+                      :polling_interval_multiplier,
                       # GitLab-EE specific settings
                       :help_text, :elasticsearch_indexing, :usage_ping_enabled,
                       :repository_storages, :repository_size_limit

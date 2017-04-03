@@ -636,6 +636,7 @@ module API
       expose :plantuml_enabled
       expose :plantuml_url
       expose :terminal_max_session_time
+      expose :polling_interval_multiplier
     end
 
     class Release < Grape::Entity
