@@ -84,7 +84,6 @@ module SystemNoteService
     create_note(noteable: issue, project: project, author: author, note: body)
   end
 
-
   # Called when one or more labels on a Noteable are added and/or removed
   #
   # noteable       - Noteable object

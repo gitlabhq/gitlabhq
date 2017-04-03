@@ -20,7 +20,7 @@ describe Issues::CreateService, services: true do
       let(:opts) do
         { title: 'Awesome issue',
           description: 'please fix',
-          assignee_ids: assignee.id.to_s,
+          assignee_ids: [assignee.id],
           label_ids: labels.map(&:id),
           milestone_id: milestone.id,
           due_date: Date.tomorrow }
@@ -37,7 +37,7 @@ describe Issues::CreateService, services: true do
 
       context 'when current user cannot admin issues in the project' do
         let(:guest) { create(:user) }
-        
+
         before do
           project.team << [guest, :guest]
         end

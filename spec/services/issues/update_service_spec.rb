@@ -162,7 +162,7 @@ describe Issues::UpdateService, services: true do
       it 'does not update assignee_id with unauthorized users' do
         project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
         update_issue(confidential: true)
-        non_member        = create(:user)
+        non_member = create(:user)
         original_assignees = issue.assignees
 
         update_issue(assignee_ids: [non_member.id])

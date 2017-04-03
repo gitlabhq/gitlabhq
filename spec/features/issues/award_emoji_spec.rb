@@ -7,7 +7,7 @@ describe 'Awards Emoji', feature: true do
   let!(:user)      { create(:user) }
   let(:issue) do
     create(:issue,
-           assignees: [@user],
+           assignees: [user],
            project: project)
   end
 
