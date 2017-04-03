@@ -3,6 +3,14 @@ require 'spec_helper'
 describe ContainerRegistry::Path do
   subject { described_class.new(path) }
 
+  describe '#nodes' do
+    let(:path) { 'path/to/some/project' }
+
+    it 'splits elements by a forward slash' do
+      expect(subject.nodes).to eq %w[path to some project]
+    end
+  end
+
   describe '#components' do
     context 'when repository path is valid' do
       let(:path) { 'path/to/some/project' }
