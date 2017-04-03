@@ -406,6 +406,11 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def has_container_registry_tags?
+    container_repositories.to_a.any?(&:has_tags?) ||
+      has_root_container_repository_tags?
+  end
+
   def commit(ref = 'HEAD')
     repository.commit(ref)
   end
@@ -1372,5 +1377,20 @@ class Project < ActiveRecord::Base
     return false unless path
 
     Project.unscoped.where(pending_delete: true).find_by_full_path(path_with_namespace)
+  end
+
+  ##
+  # This method is here because of support for legacy container repository
+  # which has exactly the same path like project does, but which might not be
+  # persisted in `container_repositories` table.
+  #
+  def has_root_container_repository_tags?
+    return false unless Gitlab.config.registry.enabled
+
+    ContainerRegistry::Path.new(self.full_path).tap do |path|
+      ContainerRepository.build_from_path(path).tap do |repository|
+        return repository.has_tags?
+      end
+    end
   end
 end

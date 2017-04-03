@@ -1414,6 +1414,66 @@ describe Project, models: true do
     end
   end
 
+  describe '#has_container_registry_tags?' do
+    let(:project) { create(:empty_project) }
+
+    context 'when container registry is enabled' do
+      before { stub_container_registry_config(enabled: true) }
+
+      context 'when tags are present for multi-level registries' do
+        before do
+          create(:container_repository, project: project, name: 'image')
+
+          stub_container_registry_tags(repository: /image/,
+                                       tags: %w[latest rc1])
+        end
+
+        it 'should have image tags' do
+          expect(project).to have_container_registry_tags
+        end
+      end
+
+      context 'when tags are present for root repository' do
+        before do
+          stub_container_registry_tags(repository: project.full_path,
+                                       tags: %w[latest rc1 pre1])
+        end
+
+        it 'should have image tags' do
+          expect(project).to have_container_registry_tags
+        end
+      end
+
+      context 'when there are no tags at all' do
+        before do
+          stub_container_registry_tags(repository: :any, tags: [])
+        end
+
+        it 'should not have image tags' do
+          expect(project).not_to have_container_registry_tags
+        end
+      end
+    end
+
+    context 'when container registry is disabled' do
+      before { stub_container_registry_config(enabled: false) }
+
+      it 'should not have image tags' do
+        expect(project).not_to have_container_registry_tags
+      end
+
+      it 'should not check root repository tags' do
+        expect(project).not_to receive(:full_path)
+        expect(project).not_to have_container_registry_tags
+      end
+
+      it 'should iterate through container repositories' do
+        expect(project).to receive(:container_repositories)
+        expect(project).not_to have_container_registry_tags
+      end
+    end
+  end
+
   describe '#latest_successful_builds_for' do
     def create_pipeline(status = 'success')
       create(:ci_pipeline, project: project,
