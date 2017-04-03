@@ -5,22 +5,27 @@ module CreatesCommit
     set_commit_variables
 
     commit_params = @commit_params.merge(
-      source_project: @project,
-      source_branch: @ref,
-      target_branch: @target_branch
+      start_project: @mr_target_project,
+      start_branch: @mr_target_branch,
+      target_branch: @mr_source_branch
     )
 
-    result = service.new(@tree_edit_project, current_user, commit_params).execute
+    result = service.new(
+      @mr_source_project, current_user, commit_params).execute
 
     if result[:status] == :success
       update_flash_notice(success_notice)
 
+      success_path = final_success_path(success_path)
+
       respond_to do |format|
-        format.html { redirect_to final_success_path(success_path) }
-        format.json { render json: { message: "success", filePath: final_success_path(success_path) } }
+        format.html { redirect_to success_path }
+        format.json { render json: { message: "success", filePath: success_path } }
       end
     else
       flash[:alert] = result[:message]
+      failure_path = failure_path.call if failure_path.respond_to?(:call)
+
       respond_to do |format|
         format.html do
           if failure_view
@@ -56,9 +61,13 @@ module CreatesCommit
   end
 
   def final_success_path(success_path)
-    return success_path unless create_merge_request?
+    if create_merge_request?
+      merge_request_exists? ? existing_merge_request_path : new_merge_request_path
+    else
+      success_path = success_path.call if success_path.respond_to?(:call)
 
-    merge_request_exists? ? existing_merge_request_path : new_merge_request_path
+      success_path
+    end
   end
 
   def new_merge_request_path
@@ -81,48 +90,35 @@ module CreatesCommit
   def merge_request_exists?
     return @merge_request if defined?(@merge_request)
 
-    @merge_request = @mr_target_project.merge_requests.opened.find_by(
-      source_branch: @mr_source_branch,
-      target_branch: @mr_target_branch
-    )
+    @merge_request = MergeRequestsFinder.new(current_user, project_id: @mr_target_project.id).execute.opened.
+      find_by(source_branch: @mr_source_branch, target_branch: @mr_target_branch, source_project_id: @mr_source_project)
   end
 
   def different_project?
     @mr_source_project != @mr_target_project
   end
 
-  def different_branch?
-    @mr_source_branch != @mr_target_branch || different_project?
-  end
-
   def create_merge_request?
-    params[:create_merge_request].present? && different_branch?
+    # Even if the field is set, if we're checking the same branch
+    # as the target branch in the same project,
+    # we don't want to create a merge request.
+    params[:create_merge_request].present? &&
+      (different_project? || @mr_target_branch != @mr_source_branch)
   end
 
   def set_commit_variables
-    @mr_source_branch ||= @target_branch
-
     if can?(current_user, :push_code, @project)
-      # Edit file in this project
-      @tree_edit_project = @project
       @mr_source_project = @project
-
-      if @project.forked?
-        # Merge request from this project to fork origin
-        @mr_target_project = @project.forked_from_project
-        @mr_target_branch = @mr_target_project.repository.root_ref
-      else
-        # Merge request to this project
-        @mr_target_project = @project
-        @mr_target_branch ||= @ref
-      end
+      @target_branch ||= @ref
     else
-      # Edit file in fork
-      @tree_edit_project = current_user.fork_of(@project)
-      # Merge request from fork to this project
-      @mr_source_project = @tree_edit_project
-      @mr_target_project = @project
-      @mr_target_branch ||= @ref
+      @mr_source_project = current_user.fork_of(@project)
+      @target_branch ||= @mr_source_project.repository.next_branch('patch')
     end
+
+    # Merge request to this project
+    @mr_target_project = @project
+    @mr_target_branch ||= @ref || @target_branch
+
+    @mr_source_branch = @target_branch
   end
 end

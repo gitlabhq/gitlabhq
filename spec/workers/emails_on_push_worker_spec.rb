@@ -2,9 +2,10 @@ require 'spec_helper'
 
 describe EmailsOnPushWorker do
   include RepoHelpers
+  include EmailHelpers
   include EmailSpec::Matchers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
   let(:recipients) { user.email }
@@ -87,7 +88,7 @@ describe EmailsOnPushWorker do
 
     context "when there is an SMTP error" do
       before do
-        ActionMailer::Base.deliveries.clear
+        reset_delivered_emails!
         allow(Notify).to receive(:repository_push_email).and_raise(Net::SMTPFatalError)
         allow(subject).to receive_message_chain(:logger, :info)
         perform
@@ -112,7 +113,7 @@ describe EmailsOnPushWorker do
           original.call(Mail.new(mail.encoded))
         end
 
-        ActionMailer::Base.deliveries.clear
+        reset_delivered_emails!
       end
 
       it "sends the mail to each of the recipients" do

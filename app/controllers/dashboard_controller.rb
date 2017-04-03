@@ -4,6 +4,7 @@ class DashboardController < Dashboard::ApplicationController
 
   before_action :event_filter, only: :activity
   before_action :projects, only: [:issues, :merge_requests]
+  before_action :set_show_full_reference, only: [:issues, :merge_requests]
 
   respond_to :html
 
@@ -33,5 +34,9 @@ class DashboardController < Dashboard::ApplicationController
     @events = Event.in_projects(projects)
     @events = @event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
+  end
+
+  def set_show_full_reference
+    @show_full_reference = true
   end
 end

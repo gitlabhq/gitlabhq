@@ -32,8 +32,14 @@ class NotificationSetting < ActiveRecord::Base
     :reopen_merge_request,
     :close_merge_request,
     :reassign_merge_request,
-    :merge_merge_request
-  ]
+    :merge_merge_request,
+    :failed_pipeline,
+    :success_pipeline
+  ].freeze
+
+  EXCLUDED_WATCHER_EVENTS = [
+    :success_pipeline
+  ].freeze
 
   store :events, accessors: EMAIL_EVENTS, coder: JSON
 

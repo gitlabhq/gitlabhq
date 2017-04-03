@@ -5,7 +5,7 @@
 #
 module Gitlab
   module OAuth
-    class SignupDisabledError < StandardError; end
+    SignupDisabledError = Class.new(StandardError)
 
     class User
       attr_accessor :auth_hash, :gl_user
@@ -29,17 +29,16 @@ module Gitlab
       def save(provider = 'OAuth')
         unauthorized_to_create unless gl_user
 
-        if needs_blocking?
-          gl_user.save!
-          gl_user.block
-        else
-          gl_user.save!
-        end
+        block_after_save = needs_blocking?
+
+        gl_user.save!
+
+        gl_user.block if block_after_save
 
         log.info "(#{provider}) saving user #{auth_hash.email} from login with extern_uid => #{auth_hash.uid}"
         gl_user
       rescue ActiveRecord::RecordInvalid => e
-        log.info "(#{provider}) Error saving user: #{gl_user.errors.full_messages}"
+        log.info "(#{provider}) Error saving user #{auth_hash.uid} (#{auth_hash.email}): #{gl_user.errors.full_messages}"
         return self, e.record.errors
       end
 
@@ -102,6 +101,8 @@ module Gitlab
         Gitlab::LDAP::Config.providers.each do |provider|
           adapter = Gitlab::LDAP::Adapter.new(provider)
           @ldap_person = Gitlab::LDAP::Person.find_by_uid(auth_hash.uid, adapter)
+          # The `uid` might actually be a DN. Try it next.
+          @ldap_person ||= Gitlab::LDAP::Person.find_by_dn(auth_hash.uid, adapter)
           break if @ldap_person
         end
         @ldap_person
@@ -146,10 +147,8 @@ module Gitlab
       end
 
       def build_new_user
-        user = ::User.new(user_attributes)
-        user.skip_confirmation!
-        user.identities.new(extern_uid: auth_hash.uid, provider: auth_hash.provider)
-        user
+        user_params = user_attributes.merge(extern_uid: auth_hash.uid, provider: auth_hash.provider, skip_confirmation: true)
+        Users::CreateService.new(nil, user_params).build
       end
 
       def user_attributes

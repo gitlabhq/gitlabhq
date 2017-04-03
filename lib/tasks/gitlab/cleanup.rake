@@ -6,7 +6,8 @@ namespace :gitlab do
       remove_flag = ENV['REMOVE']
 
       namespaces = Namespace.pluck(:path)
-      Gitlab.config.repositories.storages.each do |name, git_base_path|
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        git_base_path = repository_storage['path']
         all_dirs = Dir.glob(git_base_path + '/*')
 
         puts git_base_path.color(:yellow)
@@ -25,7 +26,6 @@ namespace :gitlab do
         end
 
         all_dirs.each do |dir_path|
-
           if remove_flag
             if FileUtils.rm_rf dir_path
               puts "Removed...#{dir_path}".color(:red)
@@ -48,17 +48,18 @@ namespace :gitlab do
       warn_user_is_not_gitlab
 
       move_suffix = "+orphaned+#{Time.now.to_i}"
-      Gitlab.config.repositories.storages.each do |name, repo_root|
+      Gitlab.config.repositories.storages.each do |name, repository_storage|
+        repo_root = repository_storage['path']
         # Look for global repos (legacy, depth 1) and normal repos (depth 2)
         IO.popen(%W(find #{repo_root} -mindepth 1 -maxdepth 2 -name *.git)) do |find|
           find.each_line do |path|
             path.chomp!
-            repo_with_namespace = path.
-              sub(repo_root, '').
-              sub(%r{^/*}, '').
-              chomp('.git').
-              chomp('.wiki')
-            next if Project.find_with_namespace(repo_with_namespace)
+            repo_with_namespace = path
+              .sub(repo_root, '')
+              .sub(%r{^/*}, '')
+              .chomp('.git')
+              .chomp('.wiki')
+            next if Project.find_by_full_path(repo_with_namespace)
             new_path = path + move_suffix
             puts path.inspect + ' -> ' + new_path.inspect
             File.rename(path, new_path)
@@ -89,6 +90,29 @@ namespace :gitlab do
 
       unless block_flag
         puts "To block these users run this command with BLOCK=true".color(:yellow)
+      end
+    end
+
+    # This is a rake task which removes faulty refs. These refs where only
+    # created in the 8.13.RC cycle, and fixed in the stable builds which were
+    # released. So likely this should only be run once on gitlab.com
+    # Faulty refs are moved so they are kept around, else some features break.
+    desc 'GitLab | Cleanup | Remove faulty deployment refs'
+    task move_faulty_deployment_refs: :environment do
+      projects = Project.where(id: Deployment.select(:project_id).distinct)
+
+      projects.find_each do |project|
+        rugged = project.repository.rugged
+
+        max_iid = project.deployments.maximum(:iid)
+
+        rugged.references.each('refs/environments/**/*') do |ref|
+          id = ref.name.split('/').last.to_i
+          next unless id > max_iid
+
+          project.deployments.find(id).create_ref
+          rugged.references.delete(ref)
+        end
       end
     end
   end

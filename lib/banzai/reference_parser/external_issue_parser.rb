@@ -20,6 +20,12 @@ module Banzai
       def issue_ids_per_project(nodes)
         gather_attributes_per_project(nodes, self.class.data_attribute)
       end
+
+      private
+
+      def can_read_reference?(user, ref_project)
+        can?(user, :read_issue, ref_project)
+      end
     end
   end
 end

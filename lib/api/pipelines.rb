@@ -1,26 +1,48 @@
 module API
   class Pipelines < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     params do
       requires :id, type: String, desc: 'The project ID'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'Get all Pipelines of the project' do
         detail 'This feature was introduced in GitLab 8.11.'
-        success Entities::Pipeline
+        success Entities::PipelineBasic
       end
       params do
-        optional :page,     type: Integer, desc: 'Page number of the current request'
-        optional :per_page, type: Integer, desc: 'Number of items per page'
-        optional :scope,    type: String, values: ['running', 'branches', 'tags'],
+        use :pagination
+        optional :scope,    type: String, values: %w(running branches tags),
                             desc: 'Either running, branches, or tags'
       end
       get ':id/pipelines' do
         authorize! :read_pipeline, user_project
 
         pipelines = PipelinesFinder.new(user_project).execute(scope: params[:scope])
-        present paginate(pipelines), with: Entities::Pipeline
+        present paginate(pipelines), with: Entities::PipelineBasic
+      end
+
+      desc 'Create a new pipeline' do
+        detail 'This feature was introduced in GitLab 8.14'
+        success Entities::Pipeline
+      end
+      params do
+        requires :ref, type: String,  desc: 'Reference'
+      end
+      post ':id/pipeline' do
+        authorize! :create_pipeline, user_project
+
+        new_pipeline = Ci::CreatePipelineService.new(user_project,
+                                                     current_user,
+                                                     declared_params(include_missing: false))
+                           .execute(ignore_skip_ci: true, save_on_errors: false)
+        if new_pipeline.persisted?
+          present new_pipeline, with: Entities::Pipeline
+        else
+          render_validation_error!(new_pipeline)
+        end
       end
 
       desc 'Gets a specific pipeline for the project' do
@@ -36,7 +58,7 @@ module API
         present pipeline, with: Entities::Pipeline
       end
 
-      desc 'Retry failed builds in the pipeline' do
+      desc 'Retry builds in the pipeline' do
         detail 'This feature was introduced in GitLab 8.11.'
         success Entities::Pipeline
       end

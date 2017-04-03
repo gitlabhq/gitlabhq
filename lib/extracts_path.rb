@@ -2,7 +2,7 @@
 # file path string when combined in a request parameter
 module ExtractsPath
   # Raised when given an invalid file path
-  class InvalidPathError < StandardError; end
+  InvalidPathError = Class.new(StandardError)
 
   # Given a string containing both a Git tree-ish, such as a branch or tag, and
   # a filesystem path joined by forward slashes, attempts to separate the two.
@@ -42,7 +42,7 @@ module ExtractsPath
 
     return pair unless @project
 
-    if id.match(/^([[:alnum:]]{40})(.+)/)
+    if id =~ /^(\h{40})(.+)/
       # If the ref appears to be a SHA, we're done, just split the string
       pair = $~.captures
     else
@@ -106,7 +106,7 @@ module ExtractsPath
   # resolved (e.g., when a user inserts an invalid path or ref).
   def assign_ref_vars
     # assign allowed options
-    allowed_options = ["filter_ref", "extended_sha1"]
+    allowed_options = ["filter_ref"]
     @options = params.select {|key, value| allowed_options.include?(key) && !value.blank? }
     @options = HashWithIndifferentAccess.new(@options)
 
@@ -114,17 +114,13 @@ module ExtractsPath
     @ref, @path = extract_ref(@id)
     @repo = @project.repository
 
-    if @options[:extended_sha1].present?
-      @commit = @repo.commit(@options[:extended_sha1])
-    else
+    @commit = @repo.commit(@ref)
+
+    if @path.empty? && !@commit && @id.ends_with?('.atom')
+      @id = @ref = extract_ref_without_atom(@id)
       @commit = @repo.commit(@ref)
 
-      if @path.empty? && !@commit && @id.ends_with?('.atom')
-        @id = @ref = extract_ref_without_atom(@id)
-        @commit = @repo.commit(@ref)
-
-        request.format = :atom if @commit
-      end
+      request.format = :atom if @commit
     end
 
     raise InvalidPathError unless @commit

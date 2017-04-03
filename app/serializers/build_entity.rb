@@ -4,21 +4,31 @@ class BuildEntity < Grape::Entity
   expose :id
   expose :name
 
-  expose :build_url do |build|
-    url_to(:namespace_project_build, build)
+  expose :build_path do |build|
+    path_to(:namespace_project_build, build)
   end
 
-  expose :retry_url do |build|
-    url_to(:retry_namespace_project_build, build)
+  expose :retry_path do |build|
+    path_to(:retry_namespace_project_build, build)
   end
 
-  expose :play_url, if: ->(build, _) { build.manual? } do |build|
-    url_to(:play_namespace_project_build, build)
+  expose :play_path, if: ->(build, _) { build.playable? } do |build|
+    path_to(:play_namespace_project_build, build)
   end
+
+  expose :created_at
+  expose :updated_at
+  expose :detailed_status, as: :status, with: StatusEntity
 
   private
 
-  def url_to(route, build)
-    send("#{route}_url", build.project.namespace, build.project, build)
+  alias_method :build, :object
+
+  def path_to(route, build)
+    send("#{route}_path", build.project.namespace, build.project, build)
+  end
+
+  def detailed_status
+    build.detailed_status(request.user)
   end
 end

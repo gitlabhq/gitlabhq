@@ -3,8 +3,9 @@ FactoryGirl.define do
     sha '97de212e80737a608d939f648d959671fb0a0142'
     ref 'master'
     tag false
+    user
     project nil
-
+    deployable factory: :ci_build
     environment factory: :environment
 
     after(:build) do |deployment, evaluator|

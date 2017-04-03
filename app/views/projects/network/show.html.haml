@@ -1,7 +1,6 @@
-- page_title "Network", @ref
+- page_title "Graph", @ref
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('lib/raphael.js')
-  = page_specific_javascript_tag('network/network_bundle.js')
+  = page_specific_javascript_bundle_tag('network')
 = render "projects/commits/head"
 = render "head"
 %div{ class: container_class }
@@ -17,5 +16,6 @@
               = check_box_tag :filter_ref, 1, @options[:filter_ref]
               %span Begin with the selected commit
 
-    .network-graph{ data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id } }
-      = spinner nil, true
+    - if @commit
+      .network-graph{ data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id } }
+        = spinner nil, true

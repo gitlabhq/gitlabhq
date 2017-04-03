@@ -26,12 +26,6 @@ Feature: Project Issues
     Given I click link "Release 0.4"
     Then I should see issue "Release 0.4"
 
-  @javascript
-  Scenario: I filter by author
-    Given I add a user to project "Shop"
-    And I click "author" dropdown
-    Then I see current user as the first user
-
   Scenario: I submit new unassigned issue
     Given I click link "New Issue"
     And I submit new issue "500 error on profile"
@@ -83,56 +77,6 @@ Feature: Project Issues
     Then The list should be sorted by "Most popular"
     And I sort the list by "Least popular"
     Then The list should be sorted by "Least popular"
-
-  @javascript
-  Scenario: I search issue
-    Given I fill in issue search with "Re"
-    Then I should see "Release 0.4" in issues
-    And I should not see "Release 0.3" in issues
-    And I should not see "Tweet control" in issues
-
-  @javascript
-  Scenario: I search issue that not exist
-    Given I fill in issue search with "Bu"
-    Then I should not see "Release 0.4" in issues
-    And I should not see "Release 0.3" in issues
-
-  @javascript
-  Scenario: I search all issues
-    Given I click link "All"
-    And I fill in issue search with ".3"
-    Then I should see "Release 0.3" in issues
-    And I should not see "Release 0.4" in issues
-
-  @javascript
-  Scenario: Search issues when search string exactly matches issue description
-    Given project 'Shop' has issue 'Bugfix1' with description: 'Description for issue1'
-    And I fill in issue search with 'Description for issue1'
-    Then I should see 'Bugfix1' in issues
-    And I should not see "Release 0.4" in issues
-    And I should not see "Release 0.3" in issues
-    And I should not see "Tweet control" in issues
-
-  @javascript
-  Scenario: Search issues when search string partially matches issue description
-    Given project 'Shop' has issue 'Bugfix1' with description: 'Description for issue1'
-    And project 'Shop' has issue 'Feature1' with description: 'Feature submitted for issue1'
-    And I fill in issue search with 'issue1'
-    Then I should see 'Feature1' in issues
-    Then I should see 'Bugfix1' in issues
-    And I should not see "Release 0.4" in issues
-    And I should not see "Release 0.3" in issues
-    And I should not see "Tweet control" in issues
-
-  @javascript
-  Scenario: Search issues when search string matches no issue description
-    Given project 'Shop' has issue 'Bugfix1' with description: 'Description for issue1'
-    And I fill in issue search with 'Rock and roll'
-    Then I should not see 'Bugfix1' in issues
-    And I should not see "Release 0.4" in issues
-    And I should not see "Release 0.3" in issues
-    And I should not see "Tweet control" in issues
-
 
   # Markdown
 

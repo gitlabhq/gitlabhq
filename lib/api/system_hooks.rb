@@ -1,6 +1,7 @@
 module API
-  # Hooks API
   class SystemHooks < Grape::API
+    include PaginationParams
+
     before do
       authenticate!
       authenticated_as_admin!
@@ -10,10 +11,11 @@ module API
       desc 'Get the list of system hooks' do
         success Entities::Hook
       end
+      params do
+        use :pagination
+      end
       get do
-        hooks = SystemHook.all
-
-        present hooks, with: Entities::Hook
+        present paginate(SystemHook.all), with: Entities::Hook
       end
 
       desc 'Create a new system hook' do
@@ -27,12 +29,12 @@ module API
         optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
       end
       post do
-        hook = SystemHook.new declared(params, include_missing: false).to_h
+        hook = SystemHook.new(declared_params(include_missing: false))
 
         if hook.save
           present hook, with: Entities::Hook
         else
-          not_found!
+          render_validation_error!(hook)
         end
       end
 
@@ -64,7 +66,7 @@ module API
         hook = SystemHook.find_by(id: params[:id])
         not_found!('System hook') unless hook
 
-        present hook.destroy, with: Entities::Hook
+        hook.destroy
       end
     end
   end

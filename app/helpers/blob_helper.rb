@@ -21,7 +21,7 @@ module BlobHelper
                                      options[:link_opts])
 
     if !on_top_of_branch?(project, ref)
-      button_tag "Edit", class: "btn disabled has-tooltip btn-file-option", title: "You can only edit files when you are on a branch", data: { container: 'body' }
+      button_tag "Edit", class: "btn disabled has-tooltip", title: "You can only edit files when you are on a branch", data: { container: 'body' }
     elsif can_edit_blob?(blob, project, ref)
       link_to "Edit", edit_path, class: 'btn btn-sm'
     elsif can?(current_user, :fork_project, project)
@@ -32,7 +32,7 @@ module BlobHelper
       }
       fork_path = namespace_project_forks_path(project.namespace, project, namespace_key: current_user.namespace.id, continue: continue_params)
 
-      link_to "Edit", fork_path, class: 'btn btn-file-option', method: :post
+      link_to "Edit", fork_path, class: 'btn', method: :post
     end
   end
 
@@ -153,16 +153,17 @@ module BlobHelper
     # Because we are opionated we set the cache headers ourselves.
     response.cache_control[:public] = @project.public?
 
-    if @ref && @commit && @ref == @commit.id
-      # This is a link to a commit by its commit SHA. That means that the blob
-      # is immutable. The only reason to invalidate the cache is if the commit
-      # was deleted or if the user lost access to the repository.
-      response.cache_control[:max_age] = Blob::CACHE_TIME_IMMUTABLE
-    else
-      # A branch or tag points at this blob. That means that the expected blob
-      # value may change over time.
-      response.cache_control[:max_age] = Blob::CACHE_TIME
-    end
+    response.cache_control[:max_age] =
+      if @ref && @commit && @ref == @commit.id
+        # This is a link to a commit by its commit SHA. That means that the blob
+        # is immutable. The only reason to invalidate the cache is if the commit
+        # was deleted or if the user lost access to the repository.
+        Blob::CACHE_TIME_IMMUTABLE
+      else
+        # A branch or tag points at this blob. That means that the expected blob
+        # value may change over time.
+        Blob::CACHE_TIME
+      end
 
     response.etag = @blob.id
     !stale
@@ -179,33 +180,6 @@ module BlobHelper
     }
   end
 
-  def selected_template(issuable)
-    templates = issuable_templates(issuable)
-    params[:issuable_template] if templates.include?(params[:issuable_template])
-  end
-
-  def can_add_template?(issuable)
-    names = issuable_templates(issuable)
-    names.empty? && can?(current_user, :push_code, @project) && !@project.private?
-  end
-
-  def merge_request_template_names
-    @merge_request_templates ||= Gitlab::Template::MergeRequestTemplate.dropdown_names(ref_project)
-  end
-
-  def issue_template_names
-    @issue_templates ||= Gitlab::Template::IssueTemplate.dropdown_names(ref_project)
-  end
-
-  def issuable_templates(issuable)
-    @issuable_templates ||=
-      if issuable.is_a?(Issue)
-        issue_template_names
-      elsif issuable.is_a?(MergeRequest)
-        merge_request_template_names
-      end
-  end
-
   def ref_project
     @ref_project ||= @target_project || @project
   end
@@ -215,7 +189,11 @@ module BlobHelper
   end
 
   def gitlab_ci_ymls
-    @gitlab_ci_ymls ||= Gitlab::Template::GitlabCiYmlTemplate.dropdown_names
+    @gitlab_ci_ymls ||= Gitlab::Template::GitlabCiYmlTemplate.dropdown_names(params[:context])
+  end
+
+  def dockerfile_names
+    @dockerfile_names ||= Gitlab::Template::DockerfileTemplate.dropdown_names
   end
 
   def blob_editor_paths
@@ -224,5 +202,19 @@ module BlobHelper
       'assets-prefix' => Gitlab::Application.config.assets.prefix,
       'blob-language' => @blob && @blob.language.try(:ace_mode)
     }
+  end
+
+  def copy_file_path_button(file_path)
+    clipboard_button(clipboard_text: file_path, class: 'btn-clipboard btn-transparent prepend-left-5', title: 'Copy file path to clipboard')
+  end
+
+  def copy_blob_content_button(blob)
+    return if markup?(blob.name)
+
+    clipboard_button(clipboard_target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm", title: "Copy content to clipboard")
+  end
+
+  def open_raw_file_button(path)
+    link_to icon('file-code-o'), path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: 'Open raw', data: { container: 'body' }
   end
 end

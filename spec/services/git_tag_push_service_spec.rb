@@ -3,8 +3,8 @@ require 'spec_helper'
 describe GitTagPushService, services: true do
   include RepoHelpers
 
-  let(:user) { create :user }
-  let(:project) { create :project }
+  let(:user) { create(:user) }
+  let(:project) { create(:project, :repository) }
   let(:service) { GitTagPushService.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref) }
 
   let(:oldrev) { Gitlab::Git::BLANK_SHA }
@@ -18,19 +18,13 @@ describe GitTagPushService, services: true do
     end
 
     it 'flushes general cached data' do
-      expect(project.repository).to receive(:expire_cache)
+      expect(project.repository).to receive(:before_push_tag)
 
       subject
     end
 
     it 'flushes the tags cache' do
       expect(project.repository).to receive(:expire_tags_cache)
-
-      subject
-    end
-
-    it 'flushes the tag count cache' do
-      expect(project.repository).to receive(:expire_tag_count_cache)
 
       subject
     end

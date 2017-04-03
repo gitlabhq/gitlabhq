@@ -67,7 +67,7 @@ With GitLab flow we offer additional guidance for these questions.
 ![Master branch and production branch with arrow that indicate deployments](production_branch.png)
 
 GitHub flow does assume you are able to deploy to production every time you merge a feature branch.
-This is possible for SaaS applications but are many cases where this is not possible.
+This is possible for SaaS applications but there are many cases where this is not possible.
 One would be a situation where you are not in control of the exact release moment, for example an iOS application that needs to pass App Store validation.
 Another example is when you have deployment windows (workdays from 10am to 4pm when the operations team is at full capacity) but you also merge code at other times.
 In these cases you can make a production branch that reflects the deployed code.
@@ -203,7 +203,7 @@ But the advantages of having stable identifiers outweigh this drawback.
 And to understand a change in context one can always look at the merge commit that groups all the commits together when the code is merged into the master branch.
 
 After you merge multiple commits from a feature branch into the master branch this is harder to undo.
-If you would have squashed all the commits into one you could have just reverted this commit but as we indicated you should not rebase commits after they are pushed.
+If you had squashed all the commits into one you could have just reverted this commit but as we indicated you should not rebase commits after they are pushed.
 Fortunately [reverting a merge made some time ago](https://git-scm.com/blog/2010/03/02/undoing-merges.html) can be done with git.
 This however, requires having specific merge commits for the commits your want to revert.
 If you revert a merge and you change your mind, revert the revert instead of merging again since git will not allow you to merge the code again otherwise.
@@ -279,7 +279,7 @@ The trick is to use the merge/pull request with multiple commits when your work 
 The commit message should reflect your intention, not the contents of the commit.
 The contents of the commit can be easily seen anyway, the question is why you did it.
 An example of a good commit message is: "Combine templates to dry up the user views.".
-Some words that are bad commit messages because they don't contain munch information are: change, improve and refactor.
+Some words that are bad commit messages because they don't contain much information are: change, improve and refactor.
 The word fix or fixes is also a red flag, unless it comes after the commit sentence and references an issue number.
 To see more information about the formatting of commit messages please see this great [blog post by Tim Pope](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 

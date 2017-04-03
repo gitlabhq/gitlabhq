@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe TreeHelper do
   describe 'flatten_tree' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     before do
       @repository = project.repository

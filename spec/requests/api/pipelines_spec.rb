@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe API::API, api: true do
+describe API::Pipelines, api: true do
   include ApiHelpers
 
   let(:user)        { create(:user) }
   let(:non_member)  { create(:user) }
-  let(:project)     { create(:project, creator_id: user.id) }
+  let(:project)     { create(:project, :repository, creator: user) }
 
   let!(:pipeline) do
     create(:ci_empty_pipeline, project: project, sha: project.commit.id,
@@ -15,24 +15,68 @@ describe API::API, api: true do
   before { project.team << [user, :master] }
 
   describe 'GET /projects/:id/pipelines ' do
-    it_behaves_like 'a paginated resources' do
-      let(:request) { get api("/projects/#{project.id}/pipelines", user) }
-    end
-
     context 'authorized user' do
       it 'returns project pipelines' do
         get api("/projects/#{project.id}/pipelines", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['sha']).to match /\A\h{40}\z/
         expect(json_response.first['id']).to eq pipeline.id
+        expect(json_response.first.keys).to contain_exactly(*%w[id sha ref status])
       end
     end
 
     context 'unauthorized user' do
       it 'does not return project pipelines' do
         get api("/projects/#{project.id}/pipelines", non_member)
+
+        expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq '404 Project Not Found'
+        expect(json_response).not_to be_an Array
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/pipeline ' do
+    context 'authorized user' do
+      context 'with gitlab-ci.yml' do
+        before { stub_ci_pipeline_to_return_yaml_file }
+
+        it 'creates and returns a new pipeline' do
+          expect do
+            post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
+          end.to change { Ci::Pipeline.count }.by(1)
+
+          expect(response).to have_http_status(201)
+          expect(json_response).to be_a Hash
+          expect(json_response['sha']).to eq project.commit.id
+        end
+
+        it 'fails when using an invalid ref' do
+          post api("/projects/#{project.id}/pipeline", user), ref: 'invalid_ref'
+
+          expect(response).to have_http_status(400)
+          expect(json_response['message']['base'].first).to eq 'Reference not found'
+          expect(json_response).not_to be_an Array
+        end
+      end
+
+      context 'without gitlab-ci.yml' do
+        it 'fails to create pipeline' do
+          post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
+
+          expect(response).to have_http_status(400)
+          expect(json_response['message']['base'].first).to eq 'Missing .gitlab-ci.yml file'
+          expect(json_response).not_to be_an Array
+        end
+      end
+    end
+
+    context 'unauthorized user' do
+      it 'does not create pipeline' do
+        post api("/projects/#{project.id}/pipeline", non_member), ref: project.default_branch
 
         expect(response).to have_http_status(404)
         expect(json_response['message']).to eq '404 Project Not Found'
@@ -56,6 +100,18 @@ describe API::API, api: true do
         expect(response).to have_http_status(404)
         expect(json_response['message']).to eq '404 Not found'
         expect(json_response['id']).to be nil
+      end
+
+      context 'with coverage' do
+        before do
+          create(:ci_build, coverage: 30, pipeline: pipeline)
+        end
+
+        it 'exposes the coverage' do
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
+
+          expect(json_response["coverage"].to_i).to eq(30)
+        end
       end
     end
 

@@ -2,6 +2,7 @@ resources :snippets, concerns: :awardable do
   member do
     get 'raw'
     get 'download'
+    post :mark_as_spam
   end
 end
 

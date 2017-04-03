@@ -1,8 +1,15 @@
 require 'spec_helper'
 
 describe DeploymentEntity do
+  let(:user) { create(:user) }
+  let(:request) { double('request') }
+
+  before do
+    allow(request).to receive(:user).and_return(user)
+  end
+
   let(:entity) do
-    described_class.new(deployment, request: double)
+    described_class.new(deployment, request: request)
   end
 
   let(:deployment) { create(:deployment) }
@@ -15,6 +22,6 @@ describe DeploymentEntity do
 
   it 'exposes nested information about branch' do
     expect(subject[:ref][:name]).to eq 'master'
-    expect(subject[:ref][:ref_url]).not_to be_empty
+    expect(subject[:ref][:ref_path]).not_to be_empty
   end
 end

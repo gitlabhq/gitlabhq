@@ -76,7 +76,7 @@ shared_examples 'issuable record that supports slash commands in its description
         expect(page).not_to have_content '/assign @bob'
         expect(page).not_to have_content '/label ~bug'
         expect(page).not_to have_content '/milestone %"ASAP"'
-        expect(page).to have_content 'Your commands have been executed!'
+        expect(page).to have_content 'Commands applied'
 
         issuable.reload
 
@@ -97,7 +97,7 @@ shared_examples 'issuable record that supports slash commands in its description
           write_note("/close")
 
           expect(page).not_to have_content '/close'
-          expect(page).to have_content 'Your commands have been executed!'
+          expect(page).to have_content 'Commands applied'
 
           expect(issuable.reload).to be_closed
         end
@@ -114,7 +114,7 @@ shared_examples 'issuable record that supports slash commands in its description
           write_note("/close")
 
           expect(page).not_to have_content '/close'
-          expect(page).not_to have_content 'Your commands have been executed!'
+          expect(page).not_to have_content 'Commands applied'
 
           expect(issuable).to be_open
         end
@@ -132,7 +132,7 @@ shared_examples 'issuable record that supports slash commands in its description
           write_note("/reopen")
 
           expect(page).not_to have_content '/reopen'
-          expect(page).to have_content 'Your commands have been executed!'
+          expect(page).to have_content 'Commands applied'
 
           expect(issuable.reload).to be_open
         end
@@ -149,7 +149,7 @@ shared_examples 'issuable record that supports slash commands in its description
           write_note("/reopen")
 
           expect(page).not_to have_content '/reopen'
-          expect(page).not_to have_content 'Your commands have been executed!'
+          expect(page).not_to have_content 'Commands applied'
 
           expect(issuable).to be_closed
         end
@@ -162,7 +162,7 @@ shared_examples 'issuable record that supports slash commands in its description
           write_note("/title Awesome new title")
 
           expect(page).not_to have_content '/title'
-          expect(page).to have_content 'Your commands have been executed!'
+          expect(page).to have_content 'Commands applied'
 
           expect(issuable.reload.title).to eq 'Awesome new title'
         end
@@ -179,7 +179,7 @@ shared_examples 'issuable record that supports slash commands in its description
           write_note("/title Awesome new title")
 
           expect(page).not_to have_content '/title'
-          expect(page).not_to have_content 'Your commands have been executed!'
+          expect(page).not_to have_content 'Commands applied'
 
           expect(issuable.reload.title).not_to eq 'Awesome new title'
         end
@@ -191,7 +191,7 @@ shared_examples 'issuable record that supports slash commands in its description
         write_note("/todo")
 
         expect(page).not_to have_content '/todo'
-        expect(page).to have_content 'Your commands have been executed!'
+        expect(page).to have_content 'Commands applied'
 
         todos = TodosFinder.new(master).execute
         todo = todos.first
@@ -222,7 +222,7 @@ shared_examples 'issuable record that supports slash commands in its description
         write_note("/done")
 
         expect(page).not_to have_content '/done'
-        expect(page).to have_content 'Your commands have been executed!'
+        expect(page).to have_content 'Commands applied'
 
         expect(todo.reload).to be_done
       end
@@ -230,31 +230,31 @@ shared_examples 'issuable record that supports slash commands in its description
 
     context "with a note subscribing to the #{issuable_type}" do
       it "creates a new todo for the #{issuable_type}" do
-        expect(issuable.subscribed?(master)).to be_falsy
+        expect(issuable.subscribed?(master, project)).to be_falsy
 
         write_note("/subscribe")
 
         expect(page).not_to have_content '/subscribe'
-        expect(page).to have_content 'Your commands have been executed!'
+        expect(page).to have_content 'Commands applied'
 
-        expect(issuable.subscribed?(master)).to be_truthy
+        expect(issuable.subscribed?(master, project)).to be_truthy
       end
     end
 
     context "with a note unsubscribing to the #{issuable_type} as done" do
       before do
-        issuable.subscribe(master)
+        issuable.subscribe(master, project)
       end
 
       it "creates a new todo for the #{issuable_type}" do
-        expect(issuable.subscribed?(master)).to be_truthy
+        expect(issuable.subscribed?(master, project)).to be_truthy
 
         write_note("/unsubscribe")
 
         expect(page).not_to have_content '/unsubscribe'
-        expect(page).to have_content 'Your commands have been executed!'
+        expect(page).to have_content 'Commands applied'
 
-        expect(issuable.subscribed?(master)).to be_falsy
+        expect(issuable.subscribed?(master, project)).to be_falsy
       end
     end
   end

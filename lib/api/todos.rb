@@ -1,25 +1,26 @@
 module API
-  # Todos API
   class Todos < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     ISSUABLE_TYPES = {
-      'merge_requests' => ->(id) { user_project.merge_requests.find(id) },
-      'issues' => ->(id) { find_project_issue(id) }
-    }
+      'merge_requests' => ->(iid) { find_merge_request_with_access(iid) },
+      'issues' => ->(iid) { find_project_issue(iid) }
+    }.freeze
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       ISSUABLE_TYPES.each do |type, finder|
-        type_id_str = "#{type.singularize}_id".to_sym
+        type_id_str = "#{type.singularize}_iid".to_sym
 
         desc 'Create a todo on an issuable' do
           success Entities::Todo
         end
         params do
-          requires type_id_str, type: Integer, desc: 'The ID of an issuable'
+          requires type_id_str, type: Integer, desc: 'The IID of an issuable'
         end
         post ":id/#{type}/:#{type_id_str}/todo" do
           issuable = instance_exec(params[type_id_str], &finder)
@@ -44,10 +45,11 @@ module API
       desc 'Get a todo list' do
         success Entities::Todo
       end
+      params do
+        use :pagination
+      end
       get do
-        todos = find_todos
-
-        present paginate(todos), with: Entities::Todo, current_user: current_user
+        present paginate(find_todos), with: Entities::Todo, current_user: current_user
       end
 
       desc 'Mark a todo as done' do
@@ -56,7 +58,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of the todo being marked as done'
       end
-      delete ':id' do
+      post ':id/mark_as_done' do
         todo = current_user.todos.find(params[:id])
         TodoService.new.mark_todos_as_done([todo], current_user)
 
@@ -64,9 +66,11 @@ module API
       end
 
       desc 'Mark all todos as done'
-      delete do
+      post '/mark_as_done' do
         todos = find_todos
         TodoService.new.mark_todos_as_done(todos, current_user)
+
+        no_content!
       end
     end
   end

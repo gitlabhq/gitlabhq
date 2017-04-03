@@ -1,6 +1,9 @@
 - @no_container = true
-- page_title "Contributors", "Graphs"
-= render 'head'
+- page_title "Contributors"
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('common_d3')
+  = page_specific_javascript_bundle_tag('graphs')
+= render 'projects/commits/head'
 
 %div{ class: container_class }
   .sub-header-block
@@ -21,7 +24,7 @@
       %h3#date_header.page-title
       %p.light
         Commits to #{@ref}, excluding merge commits. Limited to 6,000 commits.
-      %input#brush_change{:type => "hidden"}
+      %input#brush_change{ :type => "hidden" }
     .graphs.row
       #contributors-master
       #contributors.clearfix

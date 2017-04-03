@@ -11,12 +11,16 @@ describe 'Commits' do
       stub_ci_pipeline_to_return_yaml_file
     end
 
+    let(:creator) { create(:user) }
+
     let!(:pipeline) do
       create(:ci_pipeline,
              project: project,
+             user: creator,
              ref: project.default_branch,
              sha: project.commit.sha,
-             status: :success)
+             status: :success,
+             created_at: 5.months.ago)
     end
 
     context 'commit status is Generic Commit Status' do
@@ -80,7 +84,8 @@ describe 'Commits' do
           it 'shows pipeline`s data' do
             expect(page).to have_content pipeline.sha[0..7]
             expect(page).to have_content pipeline.git_commit_message
-            expect(page).to have_content pipeline.git_author_name
+            expect(page).to have_content pipeline.user.name
+            expect(page).to have_content pipeline.created_at.strftime('%b %d, %Y')
           end
         end
 
@@ -107,7 +112,7 @@ describe 'Commits' do
         describe 'Cancel build' do
           it 'cancels build' do
             visit ci_status_path(pipeline)
-            click_on 'Cancel'
+            find('a.btn[title="Cancel"]').click
             expect(page).to have_content 'canceled'
           end
         end
@@ -150,10 +155,10 @@ describe 'Commits' do
         it do
           expect(page).to have_content pipeline.sha[0..7]
           expect(page).to have_content pipeline.git_commit_message
-          expect(page).to have_content pipeline.git_author_name
+          expect(page).to have_content pipeline.user.name
           expect(page).to have_link('Download artifacts')
           expect(page).not_to have_link('Cancel running')
-          expect(page).not_to have_link('Retry failed')
+          expect(page).not_to have_link('Retry')
         end
       end
 
@@ -169,11 +174,30 @@ describe 'Commits' do
         it do
           expect(page).to have_content pipeline.sha[0..7]
           expect(page).to have_content pipeline.git_commit_message
-          expect(page).to have_content pipeline.git_author_name
+          expect(page).to have_content pipeline.user.name
           expect(page).not_to have_link('Download artifacts')
           expect(page).not_to have_link('Cancel running')
-          expect(page).not_to have_link('Retry failed')
+          expect(page).not_to have_link('Retry')
         end
+      end
+    end
+  end
+
+  context 'viewing commits for a branch' do
+    let(:branch_name) { 'master' }
+    let(:user) { create(:user) }
+
+    before do
+      project.team << [user, :master]
+      login_with(user)
+      visit namespace_project_commits_path(project.namespace, project, branch_name)
+    end
+
+    it 'includes the committed_date for each commit' do
+      commits = project.repository.commits(branch_name)
+
+      commits.each do |commit|
+        expect(page).to have_content("committed #{commit.committed_date.strftime("%b %d, %Y")}")
       end
     end
   end

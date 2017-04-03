@@ -1,4 +1,8 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, quotes, consistent-return, no-new, prefer-arrow-callback, no-return-assign, one-var, one-var-declaration-per-line, object-shorthand, comma-dangle, no-else-return, newline-per-chained-call, no-shadow, vars-on-top, prefer-template, max-len */
+/* global ProjectSelect */
+
+import Cookies from 'js-cookie';
+
 (function() {
   this.Project = (function() {
     function Project() {
@@ -54,6 +58,11 @@
     };
 
     Project.prototype.initRefSwitcher = function() {
+      var refListItem = document.createElement('li');
+      var refLink = document.createElement('a');
+
+      refLink.href = '#';
+
       return $('.js-project-refs-dropdown').each(function() {
         var $dropdown, selected;
         $dropdown = $(this);
@@ -63,7 +72,8 @@
             return $.ajax({
               url: $dropdown.data('refs-url'),
               data: {
-                ref: $dropdown.data('ref')
+                ref: $dropdown.data('ref'),
+                search: term
               },
               dataType: "json"
             }).done(function(refs) {
@@ -72,16 +82,29 @@
           },
           selectable: true,
           filterable: true,
+          filterRemote: true,
           filterByText: true,
           fieldName: $dropdown.data('field-name'),
           renderRow: function(ref) {
-            var link;
+            var li = refListItem.cloneNode(false);
+
             if (ref.header != null) {
-              return $('<li />').addClass('dropdown-header').text(ref.header);
+              li.className = 'dropdown-header';
+              li.textContent = ref.header;
             } else {
-              link = $('<a />').attr('href', '#').addClass(ref === selected ? 'is-active' : '').text(ref).attr('data-ref', ref);
-              return $('<li />').append(link);
+              var link = refLink.cloneNode(false);
+
+              if (ref === selected) {
+                link.className = 'is-active';
+              }
+
+              link.textContent = ref;
+              link.dataset.ref = ref;
+
+              li.appendChild(link);
             }
+
+            return li;
           },
           id: function(obj, $el) {
             return $el.attr('data-ref');
@@ -90,12 +113,12 @@
             return $el.text().trim();
           },
           clicked: function(selected, $el, e) {
-            e.preventDefault()
+            e.preventDefault();
             if ($('input[name="ref"]').length) {
-              var $form = $dropdown.closest('form'),
-                  action = $form.attr('action'),
-                  divider = action.indexOf('?') < 0 ? '?' : '&';
-              Turbolinks.visit(action + '' + divider + '' + $form.serialize());
+              var $form = $dropdown.closest('form');
+              var action = $form.attr('action');
+              var divider = action.indexOf('?') === -1 ? '?' : '&';
+              gl.utils.visitUrl(action + '' + divider + '' + $form.serialize());
             }
           }
         });
@@ -103,7 +126,5 @@
     };
 
     return Project;
-
   })();
-
-}).call(this);
+}).call(window);

@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe Gitlab::ClosingIssueExtractor, lib: true do
-  let(:project)   { create(:project) }
-  let(:project2)   { create(:project) }
+  let(:project) { create(:empty_project) }
+  let(:project2) { create(:empty_project) }
   let(:forked_project) { Projects::ForkService.new(project, project.creator).execute }
-  let(:issue)     { create(:issue, project: project) }
-  let(:issue2)     { create(:issue, project: project2) }
+  let(:issue) { create(:issue, project: project) }
+  let(:issue2) { create(:issue, project: project2) }
   let(:reference) { issue.to_reference }
   let(:cross_reference) { issue2.to_reference(project) }
   let(:fork_cross_reference) { issue.to_reference(forked_project) }
@@ -257,8 +257,9 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
       context 'with an external issue tracker reference' do
         it 'extracts the referenced issue' do
           jira_project = create(:jira_project, name: 'JIRA_EXT1')
+          jira_project.team << [jira_project.creator, :master]
           jira_issue = ExternalIssue.new("#{jira_project.name}-1", project: jira_project)
-          closing_issue_extractor = described_class.new jira_project
+          closing_issue_extractor = described_class.new(jira_project, jira_project.creator)
           message = "Resolve #{jira_issue.to_reference}"
 
           expect(closing_issue_extractor.closed_by_message(message)).to eq([jira_issue])

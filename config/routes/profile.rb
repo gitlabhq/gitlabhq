@@ -4,6 +4,7 @@ resource :profile, only: [:show, :update] do
     get :applications, to: 'oauth/applications#index'
 
     put :reset_private_token
+    put :reset_incoming_email_token
     put :update_username
   end
 
@@ -20,8 +21,14 @@ resource :profile, only: [:show, :update] do
       end
     end
     resource :preferences, only: [:show, :update]
-    resources :keys, only: [:index, :show, :new, :create, :destroy]
+    resources :keys, only: [:index, :show, :create, :destroy]
     resources :emails, only: [:index, :create, :destroy]
+    resources :chat_names, only: [:index, :new, :create, :destroy] do
+      collection do
+        delete :deny
+      end
+    end
+
     resource :avatar, only: [:destroy]
 
     resources :personal_access_tokens, only: [:index, :create] do

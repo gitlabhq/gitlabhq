@@ -5,10 +5,7 @@ class OnlyAllowMergeIfAllDiscussionsAreResolved < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:projects,
-                            :only_allow_merge_if_all_discussions_are_resolved,
-                            :boolean,
-                            default: false)
+    add_column :projects, :only_allow_merge_if_all_discussions_are_resolved, :boolean
   end
 
   def down

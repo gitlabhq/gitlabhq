@@ -9,6 +9,9 @@ This archive will be saved in `backup_path`, which is specified in the
 The filename will be `[TIMESTAMP]_gitlab_backup.tar`, where `TIMESTAMP`
 identifies the time at which each backup was created.
 
+> In GitLab 8.15 we changed the timestamp format from `EPOCH` (`1393513186`)
+> to `EPOCH_YYYY_MM_DD` (`1393513186_2014_02_27`)
+
 You can only restore a backup to exactly the same version of GitLab on which it
 was created.  The best way to migrate your repositories from one server to
 another is through backup restore.
@@ -32,24 +35,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 If you are running GitLab within a Docker container, you can run the backup from the host:
 ```
-docker -t exec <container name> gitlab-rake gitlab:backup:create
-```
-
-You can specify that portions of the application data be skipped using the
-environment variable `SKIP`. You can skip:
-
-- `db` (database)
-- `uploads` (attachments)
-- `repositories` (Git repositories data)
-- `builds` (CI build output logs)
-- `artifacts` (CI build artifacts)
-- `lfs` (LFS objects)
-- `registry` (Container Registry images)
-
-Separate multiple data types to skip using a comma. For example:
-
-```
-sudo gitlab-rake gitlab:backup:create SKIP=db,uploads
+docker exec -t <container name> gitlab-rake gitlab:backup:create
 ```
 
 Example output:
@@ -81,6 +67,52 @@ Deleting tmp directories...[DONE]
 Deleting old backups... [SKIPPING]
 ```
 
+## Backup Strategy Option
+
+> **Note:** Introduced as an option in 8.17
+
+The default backup strategy is to essentially stream data from the respective
+data locations to the backup using the Linux command `tar` and `gzip`. This works
+fine in most cases, but can cause problems when data is rapidly changing.
+
+When data changes while `tar` is reading it, the error `file changed as we read
+it` may occur, and will cause the backup process to fail. To combat this, 8.17
+introduces a new backup strategy called `copy`. The strategy copies data files
+to a temporary location before calling `tar` and `gzip`, avoiding the error.
+
+A side-effect is that the backup process with take up to an additional 1X disk
+space. The process does its best to clean up the temporary files at each stage
+so the problem doesn't compound, but it could be a considerable change for large
+installations. This is why the `copy` strategy is not the default in 8.17.
+
+To use the `copy` strategy instead of the default streaming strategy, specify
+`STRATEGY=copy` in the Rake task command. For example,
+`sudo gitlab-rake gitlab:backup:create STRATEGY=copy`.
+
+## Exclude specific directories from the backup
+
+You can choose what should be backed up by adding the environment variable `SKIP`.
+The available options are:
+
+- `db` (database)
+- `uploads` (attachments)
+- `repositories` (Git repositories data)
+- `builds` (CI job output logs)
+- `artifacts` (CI job artifacts)
+- `lfs` (LFS objects)
+- `registry` (Container Registry images)
+- `pages` (Pages content)
+
+Use a comma to specify several options at the same time:
+
+```
+# use this command if you've installed GitLab with the Omnibus package
+sudo gitlab-rake gitlab:backup:create SKIP=db,uploads
+
+# if you've installed GitLab from source
+sudo -u git -H bundle exec rake gitlab:backup:create SKIP=db,uploads RAILS_ENV=production
+```
+
 ## Upload backups to remote (cloud) storage
 
 Starting with GitLab 7.4 you can let the backup script upload the '.tar' file it creates.
@@ -88,10 +120,10 @@ It uses the [Fog library](http://fog.io/) to perform the upload.
 In the example below we use Amazon S3 for storage, but Fog also lets you use
 [other storage providers](http://fog.io/storage/). GitLab
 [imports cloud drivers](https://gitlab.com/gitlab-org/gitlab-ce/blob/30f5b9a5b711b46f1065baf755e413ceced5646b/Gemfile#L88)
-for AWS, Azure, Google, OpenStack Swift and Rackspace as well. A local driver is
+for AWS, Google, OpenStack Swift and Rackspace as well. A local driver is
 [also available](#uploading-to-locally-mounted-shares).
 
-For omnibus packages:
+For omnibus packages, add the following to `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 gitlab_rails['backup_upload_connection'] = {
@@ -105,6 +137,8 @@ gitlab_rails['backup_upload_connection'] = {
 }
 gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
 ```
+
+Make sure to run `sudo gitlab-ctl reconfigure` after editing `/etc/gitlab/gitlab.rb` to reflect the changes.
 
 For installations from source:
 
@@ -125,6 +159,8 @@ For installations from source:
       remote_directory: 'my.s3.bucket'
       # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
       # encryption: 'AES256'
+      # Specifies Amazon S3 storage class to use for backups, this is optional
+      # storage_class: 'STANDARD'
 ```
 
 If you are uploading your backups to S3 you will probably want to create a new
@@ -223,7 +259,8 @@ For installations from source:
 
 ## Backup archive permissions
 
-The backup archives created by GitLab (123456_gitlab_backup.tar) will have owner/group git:git and 0600 permissions by default.
+The backup archives created by GitLab (`1393513186_2014_02_27_gitlab_backup.tar`)
+will have owner/group git:git and 0600 permissions by default.
 This is meant to avoid other system users reading GitLab's data.
 If you need the backup archives to have different permissions you can use the 'archive_permissions' setting.
 
@@ -335,7 +372,7 @@ First make sure your backup tar file is in the backup directory described in the
 `/var/opt/gitlab/backups`.
 
 ```shell
-sudo cp 1393513186_gitlab_backup.tar /var/opt/gitlab/backups/
+sudo cp 1393513186_2014_02_27_gitlab_backup.tar /var/opt/gitlab/backups/
 ```
 
 Stop the processes that are connected to the database.  Leave the rest of GitLab
@@ -353,7 +390,7 @@ restore:
 
 ```shell
 # This command will overwrite the contents of your GitLab database!
-sudo gitlab-rake gitlab:backup:restore BACKUP=1393513186
+sudo gitlab-rake gitlab:backup:restore BACKUP=1393513186_2014_02_27
 ```
 
 Restart and check GitLab:
@@ -365,7 +402,7 @@ sudo gitlab-rake gitlab:check SANITIZE=true
 
 If there is a GitLab version mismatch between your backup tar file and the installed
 version of GitLab, the restore command will abort with an error. Install the
-[correct GitLab version](https://www.gitlab.com/downloads/archives/) and try again.
+[correct GitLab version](https://about.gitlab.com/downloads/archives/) and try again.
 
 ## Configure cron to make daily backups
 

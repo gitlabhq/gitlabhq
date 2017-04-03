@@ -35,7 +35,7 @@ if the job surpasses the threshold, it is marked as failed.
 ## Test coverage parsing
 
 If you use test coverage in your code, GitLab can capture its output in the
-build log using a regular expression. In the pipelines settings, search for the
+job log using a regular expression. In the pipelines settings, search for the
 "Test coverage parsing" section.
 
 ![Pipelines settings test coverage](img/pipelines_settings_test_coverage.png)
@@ -44,7 +44,7 @@ Leave blank if you want to disable it or enter a ruby regular expression. You
 can use http://rubular.com to test your regex.
 
 If the pipeline succeeds, the coverage is shown in the merge request widget and
-in the builds table.
+in the jobs table.
 
 ![MR widget coverage](img/pipelines_test_coverage_mr_widget.png)
 
@@ -62,9 +62,9 @@ pipelines** checkbox and save the changes.
 
 ## Badges
 
-In the pipelines settings page you can find build status and test coverage
+In the pipelines settings page you can find pipeline status and test coverage
 badges for your project. The latest successful pipeline will be used to read
-the build status and test coverage values.
+the pipeline status and test coverage values.
 
 Visit the pipelines settings page in your project to see the exact link to
 your badges, as well as ways to embed the badge image in your HTML or Markdown
@@ -72,9 +72,9 @@ pages.
 
 ![Pipelines badges](img/pipelines_settings_badges.png)
 
-### Build status badge
+### Pipeline status badge
 
-Depending on the status of your build, a badge can have the following values:
+Depending on the status of your job, a badge can have the following values:
 
 - running
 - success
@@ -82,7 +82,7 @@ Depending on the status of your build, a badge can have the following values:
 - skipped
 - unknown
 
-You can access a build status badge image using the following link:
+You can access a pipeline status badge image using the following link:
 
 ```
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/build.svg
@@ -91,7 +91,7 @@ https://example.gitlab.com/<namespace>/<project>/badges/<branch>/build.svg
 ### Test coverage report badge
 
 GitLab makes it possible to define the regular expression for [coverage report],
-that each build log will be matched against. This means that each build in the
+that each job log will be matched against. This means that each job in the
 pipeline can have the test coverage percentage value defined.
 
 The test coverage badge can be accessed using following link:

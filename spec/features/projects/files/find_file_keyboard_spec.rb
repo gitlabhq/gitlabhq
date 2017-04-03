@@ -22,7 +22,7 @@ feature 'Find file keyboard shortcuts', feature: true, js: true do
 
     expect(page).to have_selector('.blob-content-holder')
 
-    page.within('.file-title') do
+    page.within('.js-file-title') do
       expect(page).to have_content('CHANGELOG')
     end
   end
@@ -35,7 +35,7 @@ feature 'Find file keyboard shortcuts', feature: true, js: true do
 
     expect(page).to have_selector('.blob-content-holder')
 
-    page.within('.file-title') do
+    page.within('.js-file-title') do
       expect(page).to have_content('application.js')
     end
   end

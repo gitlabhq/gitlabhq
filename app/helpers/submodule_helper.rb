@@ -37,8 +37,8 @@ module SubmoduleHelper
   end
 
   def self_url?(url, namespace, project)
-    return true if url == [ Gitlab.config.gitlab.url, '/', namespace, '/',
-                            project, '.git' ].join('')
+    return true if url == [Gitlab.config.gitlab.url, '/', namespace, '/',
+                           project, '.git'].join('')
     url == gitlab_shell.url_to_repo([namespace, '/', project].join(''))
   end
 
@@ -48,8 +48,8 @@ module SubmoduleHelper
   end
 
   def standard_links(host, namespace, project, commit)
-    base = [ 'https://', host, '/', namespace, '/', project ].join('')
-    [base, [ base, '/tree/', commit ].join('')]
+    base = ['https://', host, '/', namespace, '/', project].join('')
+    [base, [base, '/tree/', commit].join('')]
   end
 
   def relative_self_links(url, commit)
@@ -63,7 +63,7 @@ module SubmoduleHelper
     namespace = components.pop.gsub(/^\.\.$/, '')
 
     if namespace.empty?
-      namespace = @project.namespace.path
+      namespace = @project.namespace.full_path
     end
 
     [

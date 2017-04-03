@@ -59,11 +59,6 @@ Feature: Profile
     When I unsuccessfully change my password
     Then I should see a password error message
 
-  Scenario: I reset my token
-    Given I visit profile account page
-    Then I reset my token
-    And I should see new token
-
   Scenario: I visit history tab
     Given I have activity
     When I visit Audit Log page

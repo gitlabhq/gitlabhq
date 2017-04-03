@@ -30,11 +30,11 @@ module Gitlab
 
     def retrieve_project_and_type
       @type = :project
-      @project = Project.find_with_namespace(@repo_path)
+      @project = Project.find_by_full_path(@repo_path)
 
       if @repo_path.end_with?('.wiki') && !@project
         @type = :wiki
-        @project = Project.find_with_namespace(@repo_path.gsub(/\.wiki\z/, ''))
+        @project = Project.find_by_full_path(@repo_path.gsub(/\.wiki\z/, ''))
       end
     end
 

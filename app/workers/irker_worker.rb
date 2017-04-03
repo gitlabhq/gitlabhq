@@ -120,8 +120,8 @@ class IrkerWorker
   end
 
   def compare_url(data, repo_path)
-    sha1 = Commit::truncate_sha(data['before'])
-    sha2 = Commit::truncate_sha(data['after'])
+    sha1 = Commit.truncate_sha(data['before'])
+    sha2 = Commit.truncate_sha(data['after'])
     compare_url = "#{Gitlab.config.gitlab.url}/#{repo_path}/compare"
     compare_url += "/#{sha1}...#{sha2}"
     colorize_url compare_url
@@ -129,7 +129,7 @@ class IrkerWorker
 
   def send_one_commit(project, hook_attrs, repo_name, branch)
     commit = commit_from_id project, hook_attrs['id']
-    sha = colorize_sha Commit::truncate_sha(hook_attrs['id'])
+    sha = colorize_sha Commit.truncate_sha(hook_attrs['id'])
     author = hook_attrs['author']['name']
     files = colorize_nb_files(files_count commit)
     title = commit.title

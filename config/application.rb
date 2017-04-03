@@ -7,6 +7,7 @@ Bundler.require(:default, Rails.env)
 module Gitlab
   class Application < Rails::Application
     require_dependency Rails.root.join('lib/gitlab/redis')
+    require_dependency Rails.root.join('lib/gitlab/request_context')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -25,7 +26,8 @@ module Gitlab
                                      #{config.root}/app/models/hooks
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
-                                     #{config.root}/app/workers/concerns))
+                                     #{config.root}/app/workers/concerns
+                                     #{config.root}/app/services/concerns))
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
@@ -45,7 +47,7 @@ module Gitlab
     #
     # Parameters filtered:
     # - Password (:password, :password_confirmation)
-    # - Private tokens (:private_token)
+    # - Private tokens
     # - Two-factor tokens (:otp_attempt)
     # - Repo/Project Import URLs (:import_url)
     # - Build variables (:variables)
@@ -55,15 +57,18 @@ module Gitlab
     # - Sentry DSN (:sentry_dsn)
     # - Deploy keys (:key)
     config.filter_parameters += %i(
+      authentication_token
       certificate
       encrypted_key
       hook
       import_url
+      incoming_email_token
       key
       otp_attempt
       password
       password_confirmation
       private_token
+      runners_token
       secret_token
       sentry_dsn
       variables
@@ -77,28 +82,28 @@ module Gitlab
     # like if you have constraints or database-specific column types
     # config.active_record.schema_format = :sql
 
+    # Configure webpack
+    config.webpack.config_file = "config/webpack.config.js"
+    config.webpack.output_dir  = "public/assets/webpack"
+    config.webpack.public_path = "assets/webpack"
+
+    # Webpack dev server configuration is handled in initializers/static_files.rb
+    config.webpack.dev_server.enabled = false
+
     # Enable the asset pipeline
     config.assets.enabled = true
+    # Support legacy unicode file named img emojis, `1F939.png`
     config.assets.paths << Gemojione.images_path
+    config.assets.paths << "vendor/assets/fonts"
     config.assets.precompile << "*.png"
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
-    config.assets.precompile << "graphs/graphs_bundle.js"
-    config.assets.precompile << "users/users_bundle.js"
-    config.assets.precompile << "network/network_bundle.js"
-    config.assets.precompile << "profile/profile_bundle.js"
-    config.assets.precompile << "protected_branches/protected_branches_bundle.js"
-    config.assets.precompile << "diff_notes/diff_notes_bundle.js"
-    config.assets.precompile << "boards/boards_bundle.js"
-    config.assets.precompile << "cycle_analytics/cycle_analytics_bundle.js"
-    config.assets.precompile << "merge_conflicts/merge_conflicts_bundle.js"
-    config.assets.precompile << "boards/test_utils/simulate_drag.js"
-    config.assets.precompile << "blob_edit/blob_edit_bundle.js"
-    config.assets.precompile << "snippet/snippet_bundle.js"
-    config.assets.precompile << "lib/utils/*.js"
-    config.assets.precompile << "lib/*.js"
-    config.assets.precompile << "u2f.js"
+    config.assets.precompile << "katex.css"
+    config.assets.precompile << "katex.js"
+    config.assets.precompile << "xterm/xterm.css"
+    config.assets.precompile << "lib/ace.js"
+    config.assets.precompile << "vendor/assets/fonts/*"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
@@ -115,7 +120,7 @@ module Gitlab
           credentials: true,
           headers: :any,
           methods: :any,
-          expose: ['Link']
+          expose: ['Link', 'X-Total', 'X-Total-Pages', 'X-Per-Page', 'X-Page', 'X-Next-Page', 'X-Prev-Page']
       end
 
       # Cross-origin requests must not have the session cookie available
@@ -125,7 +130,7 @@ module Gitlab
           credentials: false,
           headers: :any,
           methods: :any,
-          expose: ['Link']
+          expose: ['Link', 'X-Total', 'X-Total-Pages', 'X-Per-Page', 'X-Page', 'X-Next-Page', 'X-Prev-Page']
       end
     end
 

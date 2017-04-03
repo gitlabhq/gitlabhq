@@ -1,7 +1,5 @@
-# This file should be identical in GitLab Community Edition and Enterprise Edition
-
 class Projects::GitHttpController < Projects::GitHttpClientController
-  before_action :verify_workhorse_api!
+  include WorkhorseRequest
 
   # GET /foo/bar.git/info/refs?service=git-upload-pack (git pull)
   # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
@@ -67,26 +65,26 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def render_denied
-    if user && user.can?(:read_project, project)
-      render plain: 'Access denied', status: :forbidden
+    if user && can?(user, :read_project, project)
+      render plain: access_denied_message, status: :forbidden
     else
       # Do not leak information about project existence
       render_not_found
     end
   end
 
+  def access_denied_message
+    'Access denied'
+  end
+
   def upload_pack_allowed?
     return false unless Gitlab.config.gitlab_shell.upload_pack
 
-    if user
-      access_check.allowed?
-    else
-      ci? || project.public?
-    end
+    access_check.allowed? || ci?
   end
 
   def access
-    @access ||= Gitlab::GitAccess.new(user, project, 'http', authentication_abilities: authentication_abilities)
+    @access ||= access_klass.new(user, project, 'http', authentication_abilities: authentication_abilities)
   end
 
   def access_check
@@ -103,5 +101,9 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     return false unless Gitlab.config.gitlab_shell.receive_pack
 
     access_check.allowed?
+  end
+
+  def access_klass
+    @access_klass ||= wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
   end
 end

@@ -11,10 +11,10 @@
 
   .diff-header {
     position: relative;
-    background: $background-color;
+    background: $gray-light;
     border-bottom: 1px solid $border-color;
     padding: 10px 16px;
-    color: #555;
+    color: $gl-text-color;
     z-index: 10;
     border-radius: 3px 3px 0 0;
 
@@ -24,7 +24,7 @@
       display: block;
 
       .file-mode {
-        color: #777;
+        color: $file-mode-changed;
       }
     }
 
@@ -34,11 +34,16 @@
     }
   }
 
-  .file-title {
+  .file-title,
+  .file-title-flex-parent {
     cursor: pointer;
 
+    a:hover {
+      text-decoration: none;
+    }
+
     &:hover {
-      background-color: $dark-background-color;
+      background-color: $gray-normal;
     }
 
     .diff-toggle-caret {
@@ -49,8 +54,8 @@
   .diff-content {
     overflow: auto;
     overflow-y: hidden;
-    background: #fff;
-    color: #333;
+    background: $white-light;
+    color: $gl-text-color;
     border-radius: 0 0 3px 3px;
 
     .unfold {
@@ -59,7 +64,7 @@
 
     .file-mode-changed {
       padding: 10px;
-      color: #777;
+      color: $file-mode-changed;
     }
 
     .suppressed-container {
@@ -84,6 +89,10 @@
 
       .diff-line-num {
         width: 50px;
+
+        a {
+          transition: none;
+        }
       }
 
       .line_holder td {
@@ -92,20 +101,6 @@
 
         &.noteable_line {
           position: relative;
-
-          &.old {
-            &::before {
-              content: '-';
-              position: absolute;
-            }
-          }
-
-          &.new {
-            &::before {
-              content: '+';
-              position: absolute;
-            }
-          }
         }
 
         span {
@@ -120,7 +115,7 @@
       }
 
       .add-diff-note {
-        margin-left: -65px;
+        margin-left: -55px;
       }
     }
 
@@ -142,8 +137,13 @@
         width: 35px;
         font-weight: normal;
 
-        &:hover {
-          text-decoration: underline;
+        &[disabled] {
+          cursor: default;
+
+          &:hover,
+          &:active {
+            text-decoration: none;
+          }
         }
       }
     }
@@ -151,14 +151,31 @@
     .line_content {
       display: block;
       margin: 0;
-      padding: 0 0.5em;
+      padding: 0 1.5em;
       border: none;
+      position: relative;
 
       &.parallel {
         display: table-cell;
 
         span {
           word-break: break-all;
+        }
+      }
+
+      &.old {
+        &::before {
+          content: '-';
+          position: absolute;
+          left: 0.5em;
+        }
+      }
+
+      &.new {
+        &::before {
+          content: '+';
+          position: absolute;
+          left: 0.5em;
         }
       }
     }
@@ -169,7 +186,7 @@
   }
 
   .image {
-    background: #ddd;
+    background: $diff-image-bg;
     text-align: center;
     padding: 30px;
 
@@ -179,13 +196,13 @@
 
     .frame {
       display: inline-block;
-      background-color: #fff;
+      background-color: $white-light;
       line-height: 0;
 
       img {
-        border: 1px solid #fff;
-        background-image: linear-gradient(45deg, #e5e5e5 25%, transparent 25%, transparent 75%, #e5e5e5 75%, #e5e5e5 100%),
-        linear-gradient(45deg, #e5e5e5 25%, transparent 25%, transparent 75%, #e5e5e5 75%, #e5e5e5 100%);
+        border: 1px solid $white-light;
+        background-image: linear-gradient(45deg, $border-color 25%, transparent 25%, transparent 75%, $border-color 75%, $border-color 100%),
+        linear-gradient(45deg, $border-color 25%, transparent 25%, transparent 75%, $border-color 75%, $border-color 100%);
         background-size: 10px 10px;
         background-position: 0 0, 5px 5px;
         max-width: 100%;
@@ -203,7 +220,7 @@
     .image-info {
       font-size: 12px;
       margin: 5px 0 0;
-      color: grey;
+      color: $diff-image-info-color;
     }
 
     .view.swipe {
@@ -217,7 +234,7 @@
 
       .swipe-wrap {
         overflow: hidden;
-        border-left: 1px solid #999;
+        border-left: 1px solid $diff-swipe-border;
         position: absolute;
         display: block;
         top: 13px;
@@ -347,7 +364,7 @@
   .view-modes {
     padding: 10px;
     text-align: center;
-    background: #eee;
+    background: $gray-darker;
 
     ul,
     li {
@@ -358,8 +375,8 @@
     }
 
     li {
-      color: grey;
-      border-left: 1px solid #c1c1c1;
+      color: $diff-view-modes-color;
+      border-left: 1px solid $diff-view-modes-border;
       padding: 0 12px 0 16px;
       cursor: pointer;
 
@@ -377,7 +394,7 @@
         }
 
         cursor: default;
-        color: #333;
+        color: $gl-text-color;
       }
 
       &.disabled {
@@ -412,6 +429,21 @@
 
 .files-changed {
   border-bottom: none;
+}
+
+.diff-stats-summary-toggler {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  color: $gl-link-color;
+  transition: color 0.1s linear;
+
+  &:hover,
+  &:focus {
+    outline: none;
+    text-decoration: underline;
+    color: $gl-link-hover-color;
+  }
 }
 
 // Mobile
@@ -475,5 +507,105 @@
         content: attr(data-linenumber);
       }
     }
+  }
+}
+
+.diff-comment-avatar-holders {
+  position: absolute;
+  height: 19px;
+  width: 19px;
+  margin-left: -15px;
+
+  &:hover {
+    .diff-comment-avatar,
+    .diff-comments-more-count {
+      @for $i from 1 through 4 {
+        $x-pos: 14px;
+
+        &:nth-child(#{$i}) {
+          @if $i == 4 {
+            $x-pos: 14.5px;
+          }
+
+          transform: translateX((($i * $x-pos) - $x-pos));
+
+          &:hover {
+            transform: translateX((($i * $x-pos) - $x-pos)) scale(1.2);
+          }
+        }
+      }
+    }
+
+    .diff-comments-more-count {
+      padding-left: 2px;
+      padding-right: 2px;
+      width: auto;
+    }
+  }
+}
+
+.diff-comment-avatar,
+.diff-comments-more-count {
+  position: absolute;
+  left: 0;
+  width: 19px;
+  height: 19px;
+  margin-right: 0;
+  border-color: $white-light;
+  cursor: pointer;
+  transition: all .1s ease-out;
+
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) {
+      z-index: (4 - $i);
+    }
+  }
+}
+
+.diff-comments-more-count {
+  width: 19px;
+  min-width: 19px;
+  padding-left: 0;
+  padding-right: 0;
+  overflow: hidden;
+}
+
+.diff-comments-more-count,
+.diff-notes-collapse {
+  background-color: $gray-darkest;
+  color: $white-light;
+  border: 1px solid $white-light;
+  border-radius: 1em;
+  font-family: $regular_font;
+  font-size: 9px;
+  line-height: 17px;
+  text-align: center;
+}
+
+.diff-notes-collapse {
+  position: relative;
+  width: 19px;
+  height: 19px;
+  padding: 0;
+  transition: transform .1s ease-out;
+
+  svg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -5.5px;
+    margin-top: -5.5px;
+  }
+
+  path {
+    fill: $white-light;
+  }
+
+  &:hover {
+    transform: scale(1.2);
+  }
+
+  &:focus {
+    outline: 0;
   }
 }

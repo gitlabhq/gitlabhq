@@ -2,16 +2,7 @@ module Projects
   class ImportService < BaseService
     include Gitlab::ShellAdapter
 
-    class Error < StandardError; end
-
-    ALLOWED_TYPES = [
-      'bitbucket',
-      'fogbugz',
-      'gitlab',
-      'github',
-      'google_code',
-      'gitlab_project'
-    ]
+    Error = Class.new(StandardError)
 
     def execute
       add_repository_to_project unless project.gitlab_project_import?
@@ -42,6 +33,7 @@ module Projects
 
     def import_repository
       begin
+        raise Error, "Blocked import URL." if Gitlab::UrlBlocker.blocked_url?(project.import_url)
         gitlab_shell.import_repository(project.repository_storage_path, project.path_with_namespace, project.import_url)
       rescue => e
         # Expire cache to prevent scenarios such as:
@@ -49,7 +41,7 @@ module Projects
         # 2. Retried import, repo is broken or not imported but +exists?+ still returns true
         project.repository.before_import if project.repository_exists?
 
-        raise Error,  "Error importing repository #{project.import_url} into #{project.path_with_namespace} - #{e.message}"
+        raise Error, "Error importing repository #{project.import_url} into #{project.path_with_namespace} - #{e.message}"
       end
     end
 
@@ -64,14 +56,11 @@ module Projects
     end
 
     def has_importer?
-      ALLOWED_TYPES.include?(project.import_type)
+      Gitlab::ImportSources.importer_names.include?(project.import_type)
     end
 
     def importer
-      return Gitlab::ImportExport::Importer.new(project) if @project.gitlab_project_import?
-
-      class_name = "Gitlab::#{project.import_type.camelize}Import::Importer"
-      class_name.constantize.new(project)
+      Gitlab::ImportSources.importer(project.import_type).new(project)
     end
 
     def unknown_url?

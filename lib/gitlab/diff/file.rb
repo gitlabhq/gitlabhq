@@ -55,6 +55,12 @@ module Gitlab
         repository.commit(deleted_file ? old_ref : new_ref)
       end
 
+      def old_content_commit
+        return unless diff_refs
+
+        repository.commit(old_ref)
+      end
+
       def old_ref
         diff_refs.try(:base_sha)
       end
@@ -111,13 +117,10 @@ module Gitlab
         diff_lines.count(&:removed?)
       end
 
-      def old_blob(commit = content_commit)
+      def old_blob(commit = old_content_commit)
         return unless commit
 
-        parent_id = commit.parent_id
-        return unless parent_id
-
-        repository.blob_at(parent_id, old_path)
+        repository.blob_at(commit.id, old_path)
       end
 
       def blob(commit = content_commit)
@@ -126,7 +129,7 @@ module Gitlab
         repository.blob_at(commit.id, file_path)
       end
 
-      def cache_key
+      def file_identifier
         "#{file_path}-#{new_file}-#{deleted_file}-#{renamed_file}"
       end
     end

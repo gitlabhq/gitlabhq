@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Workhorse, lib: true do
-  let(:project)    { create(:project) }
+  let(:project)    { create(:project, :repository) }
   let(:repository) { project.repository }
 
   def decode_workhorse_header(array)
@@ -34,6 +34,44 @@ describe Gitlab::Workhorse, lib: true do
       expect(key).to eq("Gitlab-Workhorse-Send-Data")
       expect(command).to eq("git-format-patch")
       expect(params).to eq("RepoPath" => repository.path_to_repo, "ShaFrom" => "base", "ShaTo" => "head")
+    end
+  end
+
+  describe '.terminal_websocket' do
+    def terminal(ca_pem: nil)
+      out = {
+        subprotocols: ['foo'],
+        url: 'wss://example.com/terminal.ws',
+        headers: { 'Authorization' => ['Token x'] },
+        max_session_time: 600
+      }
+      out[:ca_pem] = ca_pem if ca_pem
+      out
+    end
+
+    def workhorse(ca_pem: nil)
+      out = {
+        'Terminal' => {
+          'Subprotocols' => ['foo'],
+          'Url' => 'wss://example.com/terminal.ws',
+          'Header' => { 'Authorization' => ['Token x'] },
+          'MaxSessionTime' => 600
+        }
+      }
+      out['Terminal']['CAPem'] = ca_pem if ca_pem
+      out
+    end
+
+    context 'without ca_pem' do
+      subject { Gitlab::Workhorse.terminal_websocket(terminal) }
+
+      it { is_expected.to eq(workhorse) }
+    end
+
+    context 'with ca_pem' do
+      subject { Gitlab::Workhorse.terminal_websocket(terminal(ca_pem: "foo")) }
+
+      it { is_expected.to eq(workhorse(ca_pem: "foo")) }
     end
   end
 
@@ -136,6 +174,79 @@ describe Gitlab::Workhorse, lib: true do
 
     def call_verify(headers)
       described_class.verify_api_request!(headers)
+    end
+  end
+
+  describe '.git_http_ok' do
+    let(:user) { create(:user) }
+
+    subject { described_class.git_http_ok(repository, user) }
+
+    it { expect(subject).to eq({ GL_ID: "user-#{user.id}", RepoPath: repository.path_to_repo }) }
+
+    context 'when Gitaly is enabled' do
+      before do
+        allow(Gitlab.config.gitaly).to receive(:enabled).and_return(true)
+      end
+
+      it 'includes Gitaly params in the returned value' do
+        gitaly_socket_path = URI(Gitlab::GitalyClient.get_address('default')).path
+        expect(subject).to include({ GitalySocketPath: gitaly_socket_path })
+      end
+    end
+  end
+
+  describe '.set_key_and_notify' do
+    let(:key) { 'test-key' }
+    let(:value) { 'test-value' }
+
+    subject { described_class.set_key_and_notify(key, value, overwrite: overwrite) }
+
+    shared_examples 'set and notify' do
+      it 'set and return the same value' do
+        is_expected.to eq(value)
+      end
+
+      it 'set and notify' do
+        expect_any_instance_of(Redis).to receive(:publish)
+          .with(described_class::NOTIFICATION_CHANNEL, "test-key=test-value")
+
+        subject
+      end
+    end
+
+    context 'when we set a new key' do
+      let(:overwrite) { true }
+
+      it_behaves_like 'set and notify'
+    end
+
+    context 'when we set an existing key' do
+      let(:old_value) { 'existing-key' }
+
+      before do
+        described_class.set_key_and_notify(key, old_value, overwrite: true)
+      end
+
+      context 'and overwrite' do
+        let(:overwrite) { true }
+
+        it_behaves_like 'set and notify'
+      end
+
+      context 'and do not overwrite' do
+        let(:overwrite) { false }
+
+        it 'try to set but return the previous value' do
+          is_expected.to eq(old_value)
+        end
+
+        it 'does not notify' do
+          expect_any_instance_of(Redis).not_to receive(:publish)
+
+          subject
+        end
+      end
     end
   end
 end

@@ -29,7 +29,7 @@
         System hook will be triggered on set of events like creating project
         or adding ssh key. But you can also enable extra triggers like Push events.
 
-      %div.prepend-top-default
+      .prepend-top-default
         = f.check_box :push_events, class: 'pull-left'
         .prepend-left-20
           = f.label :push_events, class: 'list-label' do
@@ -54,7 +54,7 @@
     = f.submit "Add System Hook", class: "btn btn-create"
 %hr
 
--if @hooks.any?
+- if @hooks.any?
   .panel.panel-default
     .panel-heading
       System hooks (#{@hooks.count})
@@ -70,4 +70,3 @@
               - if hook.send(trigger)
                 %span.label.label-gray= trigger.titleize
             %span.label.label-gray SSL Verification: #{hook.enable_ssl_verification ? "enabled" : "disabled"}
-

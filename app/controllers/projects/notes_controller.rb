@@ -23,7 +23,8 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def create
-    @note = Notes::CreateService.new(project, current_user, note_params).execute
+    create_params = note_params.merge(merge_request_diff_head_sha: params[:merge_request_diff_head_sha])
+    @note = Notes::CreateService.new(project, current_user, create_params).execute
 
     if @note.is_a?(Note)
       Banzai::NoteRenderer.render([@note], @project, current_user)
@@ -50,7 +51,7 @@ class Projects::NotesController < Projects::ApplicationController
 
   def destroy
     if note.editable?
-      Notes::DeleteService.new(project, current_user).execute(note)
+      Notes::DestroyService.new(project, current_user).execute(note)
     end
 
     respond_to do |format|
@@ -146,24 +147,19 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def note_json(note)
-    if note.is_a?(AwardEmoji)
-      {
-        valid:  note.valid?,
-        award:  true,
-        id:     note.id,
-        name:   note.name
-      }
-    elsif note.persisted?
+    attrs = {
+      id: note.id
+    }
+
+    if note.persisted?
       Banzai::NoteRenderer.render([note], @project, current_user)
 
-      attrs = {
+      attrs.merge!(
         valid: true,
-        id: note.id,
         discussion_id: note.discussion_id,
         html: note_html(note),
-        award: false,
         note: note.note
-      }
+      )
 
       if note.diff_note?
         discussion = note.to_discussion
@@ -188,15 +184,15 @@ class Projects::NotesController < Projects::ApplicationController
           attrs[:original_discussion_id] = note.original_discussion_id
         end
       end
-
-      attrs
     else
-      {
+      attrs.merge!(
         valid: false,
-        award: false,
         errors: note.errors
-      }
+      )
     end
+
+    attrs[:commands_changes] = note.commands_changes
+    attrs
   end
 
   def authorize_admin_note!
@@ -215,6 +211,11 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def find_current_user_notes
-    @notes = NotesFinder.new.execute(project, current_user, params)
+    @notes = NotesFinder.new(project, current_user, params.merge(last_fetched_at: last_fetched_at))
+      .execute.inc_author
+  end
+
+  def last_fetched_at
+    request.headers['X-Last-Fetched-At']
   end
 end

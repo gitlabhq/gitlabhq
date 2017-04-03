@@ -1,4 +1,4 @@
-class ArtifactUploader < CarrierWave::Uploader::Base
+class ArtifactUploader < GitlabUploader
   storage :file
 
   attr_accessor :build, :field
@@ -27,23 +27,11 @@ class ArtifactUploader < CarrierWave::Uploader::Base
     File.join(self.class.artifacts_cache_path, @build.artifacts_path)
   end
 
-  def file_storage?
-    self.class.storage == CarrierWave::Storage::File
-  end
-
   def filename
     file.try(:filename)
   end
 
   def exists?
     file.try(:exists?)
-  end
-
-  def move_to_cache
-    true
-  end
-
-  def move_to_store
-    true
   end
 end

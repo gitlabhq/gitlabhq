@@ -1,5 +1,9 @@
 class CreateSnippetService < BaseService
+  include SpamCheckService
+
   def execute
+    filter_spam_check_params
+
     snippet = if project
                 project.snippets.build(params)
               else
@@ -13,7 +17,12 @@ class CreateSnippetService < BaseService
 
     snippet.author = current_user
 
-    snippet.save
+    spam_check(snippet, current_user)
+
+    if snippet.save
+      UserAgentDetailService.new(snippet, @request).create
+    end
+
     snippet
   end
 end

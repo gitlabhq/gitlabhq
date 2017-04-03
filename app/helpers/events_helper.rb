@@ -45,6 +45,12 @@ module EventsHelper
     @project.feature_available?(feature_key, current_user)
   end
 
+  def comments_visible?
+    event_filter_visible(:repository) ||
+      event_filter_visible(:merge_requests) ||
+      event_filter_visible(:issues)
+  end
+
   def event_preposition(event)
     if event.push? || event.commented? || event.target
       "at"
@@ -86,7 +92,7 @@ module EventsHelper
     elsif event.merge_request?
       namespace_project_merge_request_url(event.project.namespace,
                                           event.project, event.merge_request)
-    elsif event.note? && event.commit_note?
+    elsif event.commit_note?
       namespace_project_commit_url(event.project.namespace, event.project,
                                    event.note_target)
     elsif event.note?
@@ -127,7 +133,7 @@ module EventsHelper
   end
 
   def event_note_target_path(event)
-    if event.note? && event.commit_note?
+    if event.commit_note?
       namespace_project_commit_path(event.project.namespace,
                                     event.project,
                                     event.note_target,
@@ -156,7 +162,12 @@ module EventsHelper
 
   def event_note(text, options = {})
     text = first_line_in_markdown(text, 150, options)
-    sanitize(text, tags: %w(a img b pre code p span))
+
+    sanitize(
+      text,
+      tags: %w(a img gl-emoji b pre code p span),
+      attributes: Rails::Html::WhiteListSanitizer.allowed_attributes + ['style', 'data-name', 'data-unicode-version']
+    )
   end
 
   def event_commit_title(message)

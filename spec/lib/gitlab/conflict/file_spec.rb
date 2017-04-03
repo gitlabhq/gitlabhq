@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Conflict::File, lib: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:rugged) { repository.rugged }
   let(:their_commit) { rugged.branches['conflict-start'].target }
@@ -44,7 +44,7 @@ describe Gitlab::Conflict::File, lib: true do
 
       it 'returns a file containing only the chosen parts of the resolved sections' do
         expect(resolved_lines.chunk { |line| line.type || 'both' }.map(&:first)).
-          to eq(['both', 'new', 'both', 'old', 'both', 'new', 'both'])
+          to eq(%w(both new both old both new both))
       end
     end
 
@@ -123,7 +123,7 @@ describe Gitlab::Conflict::File, lib: true do
     it 'sets conflict to true for sections with only changed lines' do
       conflict_file.sections.select { |section| section[:conflict] }.each do |section|
         section[:lines].each do |line|
-          expect(line.type).to be_in(['new', 'old'])
+          expect(line.type).to be_in(%w(new old))
         end
       end
     end
@@ -251,7 +251,7 @@ FILE
   describe '#as_json' do
     it 'includes the blob path for the file' do
       expect(conflict_file.as_json[:blob_path]).
-        to eq("/#{project.namespace.to_param}/#{merge_request.project.to_param}/blob/#{our_commit.oid}/files/ruby/regex.rb")
+        to eq("/#{project.full_path}/blob/#{our_commit.oid}/files/ruby/regex.rb")
     end
 
     it 'includes the blob icon for the file' do

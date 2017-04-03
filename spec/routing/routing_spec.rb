@@ -9,7 +9,7 @@ require 'spec_helper'
 # user_calendar_activities   GET    /u/:username/calendar_activities(.:format)
 describe UsersController, "routing" do
   it "to #show" do
-    allow(User).to receive(:find_by).and_return(true)
+    allow_any_instance_of(UserUrlConstrainer).to receive(:matches?).and_return(true)
 
     expect(get("/User")).to route_to('users#show', username: 'User')
   end
@@ -195,6 +195,8 @@ describe Profiles::KeysController, "routing" do
 
   # get all the ssh-keys of a user
   it "to #get_keys" do
+    allow_any_instance_of(UserUrlConstrainer).to receive(:matches?).and_return(true)
+
     expect(get("/foo.keys")).to route_to('profiles/keys#get_keys', username: 'foo')
   end
 end
@@ -261,20 +263,36 @@ describe "Authentication", "routing" do
 end
 
 describe "Groups", "routing" do
+  let(:name) { 'complex.group-namegit' }
+
+  before { allow_any_instance_of(GroupUrlConstrainer).to receive(:matches?).and_return(true) }
+
   it "to #show" do
-    expect(get("/groups/1")).to route_to('groups#show', id: '1')
+    expect(get("/groups/#{name}")).to route_to('groups#show', id: name)
+  end
+
+  it "also supports nested groups" do
+    expect(get("/#{name}/#{name}")).to route_to('groups#show', id: "#{name}/#{name}")
   end
 
   it "also display group#show on the short path" do
-    allow(Group).to receive(:find_by_path).and_return(true)
-
-    expect(get('/1')).to route_to('groups#show', id: '1')
+    expect(get("/#{name}")).to route_to('groups#show', id: name)
   end
 
-  it "also display group#show with dot in the path" do
-    allow(Group).to receive(:find_by_path).and_return(true)
+  it "to #activity" do
+    expect(get("/groups/#{name}/activity")).to route_to('groups#activity', id: name)
+  end
 
-    expect(get('/group.with.dot')).to route_to('groups#show', id: 'group.with.dot')
+  it "to #issues" do
+    expect(get("/groups/#{name}/issues")).to route_to('groups#issues', id: name)
+  end
+
+  it "to #members" do
+    expect(get("/groups/#{name}/group_members")).to route_to('groups/group_members#index', group_id: name)
+  end
+
+  it "also display group#show with slash in the path" do
+    expect(get('/group/subgroup')).to route_to('groups#show', id: 'group/subgroup')
   end
 end
 

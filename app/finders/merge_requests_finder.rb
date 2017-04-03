@@ -14,6 +14,7 @@
 #     search: string
 #     label_name: string
 #     sort: string
+#     non_archived: boolean
 #
 class MergeRequestsFinder < IssuableFinder
   def klass
@@ -22,11 +23,7 @@ class MergeRequestsFinder < IssuableFinder
 
   private
 
-  def iid_pattern
-    @iid_pattern ||= %r{\A[
-      #{Regexp.escape(MergeRequest.reference_prefix)}
-      #{Regexp.escape(Issue.reference_prefix)}
-      ](?<iid>\d+)\z
-    }x
+  def item_project_ids(items)
+    items&.reorder(nil)&.select(:target_project_id)
   end
 end

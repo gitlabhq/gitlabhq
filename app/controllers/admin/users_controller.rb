@@ -16,9 +16,6 @@ class Admin::UsersController < Admin::ApplicationController
     @joined_projects = user.projects.joined(@user)
   end
 
-  def groups
-  end
-
   def keys
     @keys = user.keys
   end
@@ -32,11 +29,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def impersonate
-    if user.blocked?
-      flash[:alert] = "You cannot impersonate a blocked user"
-
-      redirect_to admin_user_path(user)
-    else
+    if can?(user, :log_in)
       session[:impersonator_id] = current_user.id
 
       warden.set_user(user, scope: :user)
@@ -46,6 +39,17 @@ class Admin::UsersController < Admin::ApplicationController
       flash[:alert] = "You are now impersonating #{user.username}"
 
       redirect_to root_path
+    else
+      flash[:alert] =
+        if user.blocked?
+          "You cannot impersonate a blocked user"
+        elsif user.internal?
+          "You cannot impersonate an internal user"
+        else
+          "You cannot impersonate a user who cannot log in"
+        end
+
+      redirect_to admin_user_path(user)
     end
   end
 
@@ -91,18 +95,14 @@ class Admin::UsersController < Admin::ApplicationController
 
   def create
     opts = {
-      force_random_password: true,
-      password_expires_at: nil
+      reset_password: true,
+      skip_confirmation: true
     }
 
-    @user = User.new(user_params.merge(opts))
-    @user.created_by_id = current_user.id
-    @user.generate_password
-    @user.generate_reset_token
-    @user.skip_confirmation!
+    @user = Users::CreateService.new(current_user, user_params.merge(opts)).execute
 
     respond_to do |format|
-      if @user.save
+      if @user.persisted?
         format.html { redirect_to [:admin, @user], notice: 'User was successfully created.' }
         format.json { render json: @user, status: :created, location: @user }
       else
@@ -164,20 +164,42 @@ class Admin::UsersController < Admin::ApplicationController
     @user ||= User.find_by!(username: params[:id])
   end
 
-  def user_params
-    params.require(:user).permit(
-      :email, :remember_me, :bio, :name, :username,
-      :skype, :linkedin, :twitter, :website_url, :color_scheme_id, :theme_id, :force_random_password,
-      :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key, :hide_no_password,
-      :projects_limit, :can_create_group, :admin, :key_id, :external
-    )
-  end
-
   def redirect_back_or_admin_user(options = {})
     redirect_back_or_default(default: default_route, options: options)
   end
 
   def default_route
     [:admin, @user]
+  end
+
+  def user_params
+    params.require(:user).permit(user_params_ce)
+  end
+
+  def user_params_ce
+    [
+      :access_level,
+      :avatar,
+      :bio,
+      :can_create_group,
+      :color_scheme_id,
+      :email,
+      :extern_uid,
+      :external,
+      :force_random_password,
+      :hide_no_password,
+      :hide_no_ssh_key,
+      :key_id,
+      :linkedin,
+      :name,
+      :password_expires_at,
+      :projects_limit,
+      :provider,
+      :remember_me,
+      :skype,
+      :twitter,
+      :username,
+      :website_url
+    ]
   end
 end

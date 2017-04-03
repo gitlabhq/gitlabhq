@@ -13,10 +13,12 @@ Database Service (RDS) that runs PostgreSQL.
 
 If you use a cloud-managed service, or provide your own PostgreSQL:
 
+1. Setup PostgreSQL according to the
+   [database requirements document](../../install/requirements.md#database).
 1. Set up a `gitlab` username with a password of your choice. The `gitlab` user
    needs privileges to create the `gitlabhq_production` database.
 1. Configure the GitLab application servers with the appropriate details.
-   This step is covered in [Configuring GitLab for HA](gitlab.md)
+   This step is covered in [Configuring GitLab for HA](gitlab.md).
 
 ## Configure using Omnibus
 
@@ -41,9 +43,12 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
     mailroom['enable'] = false
 
     # PostgreSQL configuration
-    postgresql['sql_password'] = 'DB password'
+    gitlab_rails['db_password'] = 'DB password'
     postgresql['md5_auth_cidr_addresses'] = ['0.0.0.0/0']
     postgresql['listen_address'] = '0.0.0.0'
+
+    # Disable automatic database migrations
+    gitlab_rails['auto_migrate'] = false
     ```
 
 1. Run `sudo gitlab-ctl reconfigure` to install and configure PostgreSQL.
@@ -80,7 +85,7 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
 
 1. Similarly, set the password for the `gitlab` database user. Use the same
    password that you specified in the `/etc/gitlab/gitlab.rb` file for
-   `postgresql['sql_password']`.
+   `gitlab_rails['db_password']`.
 
     ```
     \password gitlab
@@ -102,9 +107,8 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
 1. Exit the database prompt by typing `\q` and Enter.
 1. Exit the `gitlab-psql` user by running `exit` twice.
 1. Run `sudo gitlab-ctl reconfigure` a final time.
-1. Run `touch /etc/gitlab/skip-auto-migrations` to prevent database migrations
-   from running on upgrade. Only the primary GitLab application server should
-   handle migrations.
+1. Configure the GitLab application servers with the appropriate details.
+   This step is covered in [Configuring GitLab for HA](gitlab.md).
 
 ---
 

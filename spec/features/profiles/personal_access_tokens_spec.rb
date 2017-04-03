@@ -4,11 +4,11 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
   let(:user) { create(:user) }
 
   def active_personal_access_tokens
-    find(".table.active-personal-access-tokens")
+    find(".table.active-tokens")
   end
 
   def inactive_personal_access_tokens
-    find(".table.inactive-personal-access-tokens")
+    find(".table.inactive-tokens")
   end
 
   def created_personal_access_token
@@ -26,29 +26,26 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
   end
 
   describe "token creation" do
-    it "allows creation of a token" do
-      visit profile_personal_access_tokens_path
-      fill_in "Name", with: FFaker::Product.brand
+    it "allows creation of a personal access token" do
+      name = FFaker::Product.brand
 
-      expect {click_on "Create Personal Access Token"}.to change { PersonalAccessToken.count }.by(1)
-      expect(created_personal_access_token).to eq(PersonalAccessToken.last.token)
-      expect(active_personal_access_tokens).to have_text(PersonalAccessToken.last.name)
-      expect(active_personal_access_tokens).to have_text("Never")
-    end
-
-    it "allows creation of a token with an expiry date" do
       visit profile_personal_access_tokens_path
-      fill_in "Name", with: FFaker::Product.brand
+      fill_in "Name", with: name
 
       # Set date to 1st of next month
       find_field("Expires at").trigger('focus')
-      find("a[title='Next']").click
+      find(".pika-next").click
       click_on "1"
 
-      expect {click_on "Create Personal Access Token"}.to change { PersonalAccessToken.count }.by(1)
-      expect(created_personal_access_token).to eq(PersonalAccessToken.last.token)
-      expect(active_personal_access_tokens).to have_text(PersonalAccessToken.last.name)
-      expect(active_personal_access_tokens).to have_text(Date.today.next_month.at_beginning_of_month.to_s(:medium))
+      # Scopes
+      check "api"
+      check "read_user"
+
+      click_on "Create Personal Access Token"
+      expect(active_personal_access_tokens).to have_text(name)
+      expect(active_personal_access_tokens).to have_text('In')
+      expect(active_personal_access_tokens).to have_text('api')
+      expect(active_personal_access_tokens).to have_text('read_user')
     end
 
     context "when creation fails" do
@@ -60,6 +57,18 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
         expect { click_on "Create Personal Access Token" }.not_to change { PersonalAccessToken.count }
         expect(page).to have_content("Name cannot be nil")
       end
+    end
+  end
+
+  describe 'active tokens' do
+    let!(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
+    let!(:personal_access_token) { create(:personal_access_token, user: user) }
+
+    it 'only shows personal access tokens' do
+      visit profile_personal_access_tokens_path
+
+      expect(active_personal_access_tokens).to have_text(personal_access_token.name)
+      expect(active_personal_access_tokens).not_to have_text(impersonation_token.name)
     end
   end
 
@@ -85,7 +94,7 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
         disallow_personal_access_token_saves!
         visit profile_personal_access_tokens_path
 
-        expect { click_on "Revoke" }.not_to change { PersonalAccessToken.inactive.count }
+        click_on "Revoke"
         expect(active_personal_access_tokens).to have_text(personal_access_token.name)
         expect(page).to have_content("Could not revoke")
       end

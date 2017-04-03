@@ -25,7 +25,7 @@ describe WebHook, models: true do
   end
 
   describe "execute" do
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
     let(:project_hook) { create(:project_hook) }
 
     before(:each) do

@@ -1,6 +1,6 @@
 # == Mentionable concern
 #
-# Contains functionality related to objects that can mention Users, Issues, MergeRequests, or Commits by
+# Contains functionality related to objects that can mention Users, Issues, MergeRequests, Commits or Snippets by
 # GFM references.
 #
 # Used by Issue, Note, MergeRequest, and Commit.
@@ -44,21 +44,36 @@ module Mentionable
   end
 
   def all_references(current_user = nil, extractor: nil)
-    extractor ||= Gitlab::ReferenceExtractor.
-      new(project, current_user)
+    # Use custom extractor if it's passed in the function parameters.
+    if extractor
+      @extractor = extractor
+    else
+      @extractor ||= Gitlab::ReferenceExtractor.
+        new(project, current_user)
+
+      @extractor.reset_memoized_values
+    end
 
     self.class.mentionable_attrs.each do |attr, options|
       text    = __send__(attr)
-      options = options.merge(cache_key: [self, attr], author: author)
+      options = options.merge(
+        cache_key: [self, attr],
+        author: author,
+        skip_project_check: skip_project_check?
+      )
 
-      extractor.analyze(text, options)
+      @extractor.analyze(text, options)
     end
 
-    extractor
+    @extractor
   end
 
   def mentioned_users(current_user = nil)
     all_references(current_user).users
+  end
+
+  def directly_addressed_users(current_user = nil)
+    all_references(current_user).directly_addressed_users
   end
 
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
@@ -120,5 +135,9 @@ module Mentionable
   # the specified target.
   def cross_reference_exists?(target)
     SystemNoteService.cross_reference_exists?(target, local_reference)
+  end
+
+  def skip_project_check?
+    false
   end
 end

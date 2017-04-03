@@ -1,6 +1,6 @@
 .issues-list {
   .issue {
-    padding: 10px $gl-padding;
+    padding: 10px 0 10px $gl-padding;
     position: relative;
 
     .title {
@@ -10,6 +10,11 @@
     .issue-labels {
       display: inline-block;
     }
+
+    .icon-merge-request-unmerged {
+      height: 13px;
+      margin-bottom: 3px;
+     }
   }
 }
 
@@ -41,6 +46,10 @@ ul.related-merge-requests > li {
   .merge-request-id {
     flex-shrink: 0;
   }
+
+  .merge-request-info {
+    margin-left: 5px;
+  }
 }
 
 .merge-requests-title,
@@ -51,30 +60,44 @@ ul.related-merge-requests > li {
 
 .merge-request-id {
   display: inline-block;
-  width: 3em;
 }
 
 .merge-request-status {
-  color: $gl-gray;
-  font-size: 15px;
-  font-weight: bold;
+  font-size: 13px;
+  padding: 0 5px;
+  color: $white-light;
+  height: 20px;
+  border-radius: 3px;
+  line-height: 18px;
+
+  &.merged {
+    background: $blue-500;
+  }
+
+  &.closed {
+    background: $red-500;
+  }
+
+  &.open {
+    background: $green-500;
+  }
 }
 
 .merge-request,
 .issue {
   &.today {
-    background: #f3fff2;
-    border-color: #e1e8d5;
+    background: $issues-today-bg;
+    border-color: $issues-today-border;
   }
 
   &.closed {
     background: $gray-light;
-    border-color: #e5e5e5;
+    border-color: $border-color;
   }
 
   &.merged {
     background: $gray-light;
-    border-color: #e5e5e5;
+    border-color: $border-color;
   }
 }
 
@@ -125,7 +148,11 @@ ul.related-merge-requests > li {
   }
 
   .btn {
-    background-color: $background-color;
-    border: 1px solid $border-gray-light;
+    background-color: $gray-light;
+    border: 1px solid $border-gray-normal;
   }
+}
+
+.recaptcha {
+  margin-bottom: 30px;
 }

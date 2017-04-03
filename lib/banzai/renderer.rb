@@ -52,9 +52,9 @@ module Banzai
     end
 
     # Same as +render_field+, but without consulting or updating the cache field
-    def cacheless_render_field(object, field)
+    def cacheless_render_field(object, field, options = {})
       text = object.__send__(field)
-      context = object.banzai_render_context(field)
+      context = object.banzai_render_context(field).merge(options)
 
       cacheless_render(text, context)
     end

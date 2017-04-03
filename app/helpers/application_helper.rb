@@ -37,7 +37,7 @@ module ApplicationHelper
       if project_id.is_a?(Project)
         project_id
       else
-        Project.find_with_namespace(project_id)
+        Project.find_by_full_path(project_id)
       end
 
     if project.avatar_url
@@ -69,11 +69,12 @@ module ApplicationHelper
   end
 
   def avatar_icon(user_or_email = nil, size = nil, scale = 2)
-    if user_or_email.is_a?(User)
-      user = user_or_email
-    else
-      user = User.find_by_any_email(user_or_email.try(:downcase))
-    end
+    user =
+      if user_or_email.is_a?(User)
+        user_or_email
+      else
+        User.find_by_any_email(user_or_email.try(:downcase))
+      end
 
     if user
       user.avatar_url(size) || default_avatar
@@ -151,7 +152,6 @@ module ApplicationHelper
   # time       - Time object
   # placement  - Tooltip placement String (default: "top")
   # html_class - Custom class for `time` element (default: "time_ago")
-  # skip_js    - When true, exclude the `script` tag (default: false)
   #
   # By default also includes a `script` element with Javascript necessary to
   # initialize the `timeago` jQuery extension. If this method is called many
@@ -163,22 +163,19 @@ module ApplicationHelper
   # `html_class` argument is provided.
   #
   # Returns an HTML-safe String
-  def time_ago_with_tooltip(time, placement: 'top', html_class: '', skip_js: false, short_format: false)
+  def time_ago_with_tooltip(time, placement: 'top', html_class: '', short_format: false)
     css_classes = short_format ? 'js-short-timeago' : 'js-timeago'
     css_classes << " #{html_class}" unless html_class.blank?
-    css_classes << ' js-timeago-pending' unless skip_js
 
-    element = content_tag :time, time.to_s,
+    element = content_tag :time, time.strftime("%b %d, %Y"),
       class: css_classes,
-      datetime: time.to_time.getutc.iso8601,
       title: time.to_time.in_time_zone.to_s(:medium),
-      data: { toggle: 'tooltip', placement: placement, container: 'body' }
-
-    unless skip_js
-      element << javascript_tag(
-        "$('.js-timeago-pending').removeClass('js-timeago-pending').timeago()"
-      )
-    end
+      datetime: time.to_time.getutc.iso8601,
+      data: {
+        toggle: 'tooltip',
+        placement: placement,
+        container: 'body'
+      }
 
     element
   end
@@ -248,7 +245,9 @@ module ApplicationHelper
       scope: params[:scope],
       milestone_title: params[:milestone_title],
       assignee_id: params[:assignee_id],
+      assignee_username: params[:assignee_username],
       author_id: params[:author_id],
+      author_username: params[:author_username],
       search: params[:search],
       label_name: params[:label_name]
     }
@@ -297,5 +296,18 @@ module ApplicationHelper
 
   def page_class
     "issue-boards-page" if current_controller?(:boards)
+  end
+
+  # Returns active css class when condition returns true
+  # otherwise returns nil.
+  #
+  # Example:
+  #   %li{ class: active_when(params[:filter] == '1') }
+  def active_when(condition)
+    'active' if condition
+  end
+
+  def show_user_callout?
+    cookies[:user_callout_dismissed] == 'true'
   end
 end

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'CycleAnalytics#plan', feature: true do
   extend CycleAnalyticsHelpers::TestGeneration
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:from_date) { 10.days.ago }
   let(:user) { create(:user, :admin) }
   subject { CycleAnalytics.new(project, from: from_date) }
@@ -44,7 +44,7 @@ describe 'CycleAnalytics#plan', feature: true do
       create_merge_request_closing_issue(issue, source_branch: branch_name)
       merge_merge_requests_closing_issue(issue)
 
-      expect(subject.issue).to be_nil
+      expect(subject[:issue].median).to be_nil
     end
   end
 end

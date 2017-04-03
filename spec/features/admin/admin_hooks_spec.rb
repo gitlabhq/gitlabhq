@@ -26,16 +26,17 @@ describe "Admin::Hooks", feature: true do
   end
 
   describe "New Hook" do
-    before do
-      @url = FFaker::Internet.uri("http")
-      visit admin_hooks_path
-      fill_in "hook_url", with: @url
-      expect { click_button "Add System Hook" }.to change(SystemHook, :count).by(1)
-    end
+    let(:url) { FFaker::Internet.uri('http') }
 
-    it "opens new hook popup" do
+    it 'adds new hook' do
+      visit admin_hooks_path
+      fill_in 'hook_url', with: url
+      check 'Enable SSL verification'
+
+      expect { click_button 'Add System Hook' }.to change(SystemHook, :count).by(1)
+      expect(page).to have_content 'SSL Verification: enabled'
       expect(current_path).to eq(admin_hooks_path)
-      expect(page).to have_content(@url)
+      expect(page).to have_content(url)
     end
   end
 

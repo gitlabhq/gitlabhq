@@ -3,7 +3,7 @@ require 'spec_helper'
 describe MergeRequests::BuildService, services: true do
   include RepoHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:issue_confidential) { false }
   let(:issue) { create(:issue, project: project, title: 'A bug', confidential: issue_confidential) }
@@ -24,6 +24,8 @@ describe MergeRequests::BuildService, services: true do
   end
 
   before do
+    project.team << [user, :guest]
+
     allow(CompareService).to receive_message_chain(:new, :execute).and_return(compare)
     allow(project).to receive(:commit).and_return(commit_1)
     allow(project).to receive(:commit).and_return(commit_2)
@@ -42,15 +44,17 @@ describe MergeRequests::BuildService, services: true do
       end
     end
 
-    context 'missing target branch' do
-      let(:target_branch) { '' }
+    context 'when target branch is missing' do
+      let(:target_branch) { nil }
+      let(:commits) { Commit.decorate([commit_1], project) }
 
-      it 'forbids the merge request from being created' do
-        expect(merge_request.can_be_created).to eq(false)
+      it 'creates compare object with target branch as default branch' do
+        expect(merge_request.compare).to be_present
+        expect(merge_request.target_branch).to eq(project.default_branch)
       end
 
-      it 'adds an error message to the merge request' do
-        expect(merge_request.errors).to contain_exactly('You must select source and target branch')
+      it 'allows the merge request to be created' do
+        expect(merge_request.can_be_created).to eq(true)
       end
     end
 
@@ -166,6 +170,16 @@ describe MergeRequests::BuildService, services: true do
 
         it 'sets the title to: Resolves "$issue-title"' do
           expect(merge_request.title).to eq("Resolve \"#{issue.title}\"")
+        end
+
+        context 'when issue is not accessible to user' do
+          before do
+            project.team.truncate
+          end
+
+          it 'uses branch title as the merge request title' do
+            expect(merge_request.title).to eq("#{issue.iid} fix issue")
+          end
         end
 
         context 'issue does not exist' do

@@ -6,19 +6,19 @@ describe ProjectsFinder do
     let(:group) { create(:group, :public) }
 
     let!(:private_project) do
-      create(:project, :private, name: 'A', path: 'A')
+      create(:empty_project, :private, name: 'A', path: 'A')
     end
 
     let!(:internal_project) do
-      create(:project, :internal, group: group, name: 'B', path: 'B')
+      create(:empty_project, :internal, group: group, name: 'B', path: 'B')
     end
 
     let!(:public_project) do
-      create(:project, :public, group: group, name: 'C', path: 'C')
+      create(:empty_project, :public, group: group, name: 'C', path: 'C')
     end
 
     let!(:shared_project) do
-      create(:project, :private, name: 'D', path: 'D')
+      create(:empty_project, :private, name: 'D', path: 'D')
     end
 
     let(:finder) { described_class.new }

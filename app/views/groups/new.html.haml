@@ -26,5 +26,7 @@
           = link_to icon('question-circle'), help_page_path("public_access/public_access")
         = render('shared/visibility_radios', model_method: :visibility_level, form: f, can_change_visibility_level: true, selected_level: default_group_visibility, form_model: @group)
 
+      = render 'create_chat_team', f: f if Gitlab.config.mattermost.enabled
+
       = f.submit 'Create group', class: "btn btn-create", tabindex: 3
       = link_to 'Cancel', dashboard_groups_path, class: 'btn btn-cancel'

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::CompareController do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:ref_from) { "improve%2Fawesome" }
   let(:ref_to) { "feature" }
@@ -13,8 +13,8 @@ describe Projects::CompareController do
 
   it 'compare shows some diffs' do
     get(:show,
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param,
+        namespace_id: project.namespace,
+        project_id: project,
         from: ref_from,
         to: ref_to)
 
@@ -25,8 +25,8 @@ describe Projects::CompareController do
 
   it 'compare shows some diffs with ignore whitespace change option' do
     get(:show,
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param,
+        namespace_id: project.namespace,
+        project_id: project,
         from: '08f22f25',
         to: '66eceea0',
         w: 1)
@@ -43,8 +43,8 @@ describe Projects::CompareController do
   describe 'non-existent refs' do
     it 'uses invalid source ref' do
       get(:show,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          namespace_id: project.namespace,
+          project_id: project,
           from: 'non-existent',
           to: ref_to)
 
@@ -55,8 +55,8 @@ describe Projects::CompareController do
 
     it 'uses invalid target ref' do
       get(:show,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          namespace_id: project.namespace,
+          project_id: project,
           from: ref_from,
           to: 'non-existent')
 
@@ -64,13 +64,43 @@ describe Projects::CompareController do
       expect(assigns(:diffs)).to eq(nil)
       expect(assigns(:commits)).to eq(nil)
     end
+
+    it 'redirects back to index when params[:from] is empty and preserves params[:to]' do
+      post(:create,
+           namespace_id: project.namespace,
+           project_id: project,
+           from: '',
+           to: 'master')
+
+      expect(response).to redirect_to(namespace_project_compare_index_path(project.namespace, project, to: 'master'))
+    end
+
+    it 'redirects back to index when params[:to] is empty and preserves params[:from]' do
+      post(:create,
+           namespace_id: project.namespace,
+           project_id: project,
+           from: 'master',
+           to: '')
+
+      expect(response).to redirect_to(namespace_project_compare_index_path(project.namespace, project, from: 'master'))
+    end
+
+    it 'redirects back to index when params[:from] and params[:to] are empty' do
+      post(:create,
+           namespace_id: project.namespace,
+           project_id: project,
+           from: '',
+           to: '')
+
+      expect(response).to redirect_to(namespace_project_compare_index_path)
+    end
   end
 
   describe 'GET diff_for_path' do
     def diff_for_path(extra_params = {})
       params = {
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param
+        namespace_id: project.namespace,
+        project_id: project
       }
 
       get :diff_for_path, params.merge(extra_params)

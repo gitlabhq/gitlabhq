@@ -1,14 +1,16 @@
 class HelpController < ApplicationController
-  skip_before_action :authenticate_user!, :reject_blocked!
+  skip_before_action :authenticate_user!
 
   layout 'help'
 
   def index
     @help_index = File.read(Rails.root.join('doc', 'README.md'))
 
-    # Prefix Markdown links with `help/` unless they already have been
-    # See http://rubular.com/r/nwwhzH6Z8X
-    @help_index.gsub!(/(\]\()(?!help\/)([^\)\(]+)(\))/, '\1help/\2\3')
+    # Prefix Markdown links with `help/` unless they are external links
+    # See http://rubular.com/r/X3baHTbPO2
+    @help_index.gsub!(%r{(?<delim>\]\()(?!.+://)(?!/)(?<link>[^\)\(]+\))}) do
+      "#{$~[:delim]}#{Gitlab.config.gitlab.relative_url_root}/help/#{$~[:link]}"
+    end
   end
 
   def show

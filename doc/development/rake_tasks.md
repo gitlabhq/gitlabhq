@@ -17,14 +17,14 @@ Note: `db:setup` calls `db:seed` but this does nothing.
 In order to run the test you can use the following commands:
 - `rake spinach` to run the spinach suite
 - `rake spec` to run the rspec suite
-- `rake teaspoon` to run the teaspoon test suite
+- `rake karma` to run the karma test suite
 - `rake gitlab:test` to run all the tests
 
-Note: Both `rake spinach` and `rake spec` takes significant time to pass. 
+Note: Both `rake spinach` and `rake spec` takes significant time to pass.
 Instead of running full test suite locally you can save a lot of time by running
-a single test or directory related to your changes. After you submit merge request 
-CI will run full test suite for you. Green CI status in the merge request means 
-full test suite is passed.  
+a single test or directory related to your changes. After you submit merge request
+CI will run full test suite for you. Green CI status in the merge request means
+full test suite is passed.
 
 Note: You can't run `rspec .` since this will try to run all the `_spec.rb`
 files it can find, also the ones in `/tmp`
@@ -41,6 +41,20 @@ To run several tests inside one directory:
 
 If you want to use [Spring](https://github.com/rails/spring) set
 `ENABLE_SPRING=1` in your environment.
+
+## Compile Frontend Assets
+
+You shouldn't ever need to compile frontend assets manually in development, but
+if you ever need to test how the assets get compiled in a production
+environment you can do so with the following command:
+
+```
+RAILS_ENV=production NODE_ENV=production bundle exec rake gitlab:assets:compile
+```
+
+This will compile and minify all JavaScript and CSS assets and copy them along
+with all other frontend assets (images, fonts, etc) into `/public/assets` where
+they can be easily inspected.
 
 ## Generate API documentation for project services (e.g. Slack)
 

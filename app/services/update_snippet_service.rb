@@ -1,4 +1,6 @@
 class UpdateSnippetService < BaseService
+  include SpamCheckService
+
   attr_accessor :snippet
 
   def initialize(project, user, snippet, params)
@@ -9,7 +11,7 @@ class UpdateSnippetService < BaseService
   def execute
     # check that user is allowed to set specified visibility_level
     new_visibility = params[:visibility_level]
-    
+
     if new_visibility && new_visibility.to_i != snippet.visibility_level
       unless Gitlab::VisibilityLevel.allowed_for?(current_user, new_visibility)
         deny_visibility_level(snippet, new_visibility)
@@ -17,6 +19,10 @@ class UpdateSnippetService < BaseService
       end
     end
 
-    snippet.update_attributes(params)
+    filter_spam_check_params
+    snippet.assign_attributes(params)
+    spam_check(snippet, current_user)
+
+    snippet.save
   end
 end

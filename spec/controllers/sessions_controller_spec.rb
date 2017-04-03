@@ -22,13 +22,20 @@ describe SessionsController do
         it 'authenticates user correctly' do
           post(:create, user: { login: user.username, password: user.password })
 
-          expect(response).to set_flash.to /Signed in successfully/
           expect(subject.current_user). to eq user
         end
 
-        it "creates an audit log record" do
+        it 'creates an audit log record' do
           expect { post(:create, user: { login: user.username, password: user.password }) }.to change { SecurityEvent.count }.by(1)
-          expect(SecurityEvent.last.details[:with]).to eq("standard")
+          expect(SecurityEvent.last.details[:with]).to eq('standard')
+        end
+
+        include_examples 'user login request with unique ip limit', 302 do
+          def request
+            post(:create, user: { login: user.username, password: user.password })
+            expect(subject.current_user).to eq user
+            subject.sign_out user
+          end
         end
       end
     end
@@ -202,6 +209,22 @@ describe SessionsController do
         expect { authenticate_2fa_u2f(login: user.username, device_response: "{}") }.to change { SecurityEvent.count }.by(1)
         expect(SecurityEvent.last.details[:with]).to eq("two-factor-via-u2f-device")
       end
+    end
+  end
+
+  describe '#new' do
+    before do
+      @request.env['devise.mapping'] = Devise.mappings[:user]
+    end
+
+    it 'redirects correctly for referer on same host with params' do
+      search_path = '/search?search=seed_project'
+      allow(controller.request).to receive(:referer).
+        and_return('http://%{host}%{path}' % { host: Gitlab.config.gitlab.host, path: search_path })
+
+      get(:new, redirect_to_referer: :yes)
+
+      expect(controller.stored_location_for(:redirect)).to eq(search_path)
     end
   end
 end

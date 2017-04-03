@@ -1,16 +1,22 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
+describe API::API, api: true do
   include ApiHelpers
 
   let!(:user) { create(:user) }
   let!(:application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
-  let!(:token) { Doorkeeper::AccessToken.create! application_id: application.id, resource_owner_id: user.id }
+  let!(:token) { Doorkeeper::AccessToken.create! application_id: application.id, resource_owner_id: user.id, scopes: "api" }
 
-  describe "when unauthenticated" do
+  describe "unauthenticated" do
     it "returns authentication success" do
       get api("/user"), access_token: token.token
       expect(response).to have_http_status(200)
+    end
+
+    include_examples 'user login request with unique ip limit' do
+      def request
+        get api('/user'), access_token: token.token
+      end
     end
   end
 
@@ -25,6 +31,30 @@ describe API::API, api: true  do
     it "returns authentication success" do
       get api("/user", user)
       expect(response).to have_http_status(200)
+    end
+
+    include_examples 'user login request with unique ip limit' do
+      def request
+        get api('/user', user)
+      end
+    end
+  end
+
+  describe "when user is blocked" do
+    it "returns authentication error" do
+      user.block
+      get api("/user"), access_token: token.token
+
+      expect(response).to have_http_status(401)
+    end
+  end
+
+  describe "when user is ldap_blocked" do
+    it "returns authentication error" do
+      user.ldap_block
+      get api("/user"), access_token: token.token
+
+      expect(response).to have_http_status(401)
     end
   end
 end

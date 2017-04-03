@@ -6,10 +6,11 @@ feature 'Users', feature: true, js: true do
   scenario 'GET /users/sign_in creates a new user account' do
     visit new_user_session_path
     click_link 'Register'
-    fill_in 'new_user_name',     with: 'Name Surname'
-    fill_in 'new_user_username', with: 'Great'
-    fill_in 'new_user_email',    with: 'name@mail.com'
-    fill_in 'new_user_password', with: 'password1234'
+    fill_in 'new_user_name',                with: 'Name Surname'
+    fill_in 'new_user_username',            with: 'Great'
+    fill_in 'new_user_email',               with: 'name@mail.com'
+    fill_in 'new_user_email_confirmation',  with: 'name@mail.com'
+    fill_in 'new_user_password',            with: 'password1234'
     expect { click_button 'Register' }.to change { User.count }.by(1)
   end
 
@@ -33,10 +34,11 @@ feature 'Users', feature: true, js: true do
   scenario 'Should show one error if email is already taken' do
     visit new_user_session_path
     click_link 'Register'
-    fill_in 'new_user_name',     with: 'Another user name'
-    fill_in 'new_user_username', with: 'anotheruser'
-    fill_in 'new_user_email',    with: user.email
-    fill_in 'new_user_password', with: '12341234'
+    fill_in 'new_user_name',                with: 'Another user name'
+    fill_in 'new_user_username',            with: 'anotheruser'
+    fill_in 'new_user_email',               with: user.email
+    fill_in 'new_user_email_confirmation',  with: user.email
+    fill_in 'new_user_password',            with: '12341234'
     expect { click_button 'Register' }.to change { User.count }.by(0)
     expect(page).to have_text('Email has already been taken')
     expect(number_of_errors_on_page(page)).to be(1), 'errors on page:\n #{errors_on_page page}'
@@ -74,16 +76,29 @@ feature 'Users', feature: true, js: true do
       visit new_user_session_path
       click_link 'Register'
     end
+
+    scenario 'doesn\'t show an error border if the username is available' do
+      fill_in username_input, with: 'new-user'
+      wait_for_ajax
+      expect(find('.username')).not_to have_css '.gl-field-error-outline'
+    end
+
+    scenario 'does not show an error border if the username contains dots (.)' do
+      fill_in username_input, with: 'new.user.username'
+      wait_for_ajax
+      expect(find('.username')).not_to have_css '.gl-field-error-outline'
+    end
+
     scenario 'shows an error border if the username already exists' do
       fill_in username_input, with: user.username
       wait_for_ajax
       expect(find('.username')).to have_css '.gl-field-error-outline'
     end
 
-    scenario 'doesn\'t show an error border if the username is available' do
-      fill_in username_input, with: 'new-user'
+    scenario 'shows an  error border if the username contains special characters' do
+      fill_in username_input, with: 'new$user!username'
       wait_for_ajax
-      expect(find('#new_user_username')).not_to have_css '.gl-field-error-outline'
+      expect(find('.username')).to have_css '.gl-field-error-outline'
     end
   end
 

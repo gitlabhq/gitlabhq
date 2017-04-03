@@ -21,7 +21,7 @@ describe 'projects/notes/_form' do
       let(:note) { build(:"note_on_#{noteable}", project: project) }
 
       it 'says that only markdown is supported, not slash commands' do
-        expect(rendered).to have_content('Styling with Markdown and slash commands are supported')
+        expect(rendered).to have_content('Markdown and slash commands are supported')
       end
     end
   end
@@ -30,7 +30,7 @@ describe 'projects/notes/_form' do
     let(:note) { build(:note_on_commit, project: project) }
 
     it 'says that only markdown is supported, not slash commands' do
-      expect(rendered).to have_content('Styling with Markdown is supported')
+      expect(rendered).to have_content('Markdown is supported')
     end
   end
 end

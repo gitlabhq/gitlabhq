@@ -14,8 +14,21 @@ FactoryGirl.define do
       admin true
     end
 
+    trait :blocked do
+      after(:build) { |user, _| user.block! }
+    end
+
+    trait :external do
+      external true
+    end
+
     trait :two_factor do
       two_factor_via_otp
+    end
+
+    trait :ghost do
+      ghost true
+      after(:build) { |user, _| user.block! }
     end
 
     trait :two_factor_via_otp do

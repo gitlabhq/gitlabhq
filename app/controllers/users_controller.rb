@@ -39,7 +39,7 @@ class UsersController < ApplicationController
       format.html { render 'show' }
       format.json do
         render json: {
-          html: view_to_html_string("shared/projects/_list", projects: @projects, remote: true)
+          html: view_to_html_string("shared/projects/_list", projects: @projects)
         }
       end
     end
@@ -65,7 +65,7 @@ class UsersController < ApplicationController
       format.html { render 'show' }
       format.json do
         render json: {
-          html: view_to_html_string("snippets/_snippets", collection: @snippets, remote: true)
+          html: view_to_html_string("snippets/_snippets", collection: @snippets)
         }
       end
     end
@@ -86,7 +86,7 @@ class UsersController < ApplicationController
   end
 
   def exists
-    render json: { exists: Namespace.where(path: params[:username].downcase).any? }
+    render json: { exists: !!Namespace.find_by_path_or_name(params[:username]) }
   end
 
   private
@@ -104,8 +104,7 @@ class UsersController < ApplicationController
   end
 
   def contributions_calendar
-    @contributions_calendar ||= Gitlab::ContributionsCalendar.
-      new(contributed_projects, user)
+    @contributions_calendar ||= Gitlab::ContributionsCalendar.new(user, current_user)
   end
 
   def load_events

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Groups::GroupMembersController do
   let(:user)  { create(:user) }
-  let(:group) { create(:group, :public) }
+  let(:group) { create(:group, :public, :access_requestable) }
 
   describe 'GET index' do
     it 'renders index with 200 status code' do

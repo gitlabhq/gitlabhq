@@ -1,7 +1,8 @@
 module Backup
   class Manager
-    ARCHIVES_TO_BACKUP = %w[uploads builds artifacts lfs registry]
-    FOLDERS_TO_BACKUP = %w[repositories db]
+    ARCHIVES_TO_BACKUP = %w[uploads builds artifacts pages lfs registry].freeze
+    FOLDERS_TO_BACKUP = %w[repositories db].freeze
+    FILE_NAME_SUFFIX = '_gitlab_backup.tar'.freeze
 
     def pack
       # Make sure there is a connection
@@ -14,18 +15,18 @@ module Backup
       s[:gitlab_version]     = Gitlab::VERSION
       s[:tar_version]        = tar_version
       s[:skipped]            = ENV["SKIP"]
-      tar_file = "#{s[:backup_created_at].to_i}_gitlab_backup.tar"
+      tar_file = "#{s[:backup_created_at].strftime('%s_%Y_%m_%d')}#{FILE_NAME_SUFFIX}"
 
       Dir.chdir(Gitlab.config.backup.path) do
         File.open("#{Gitlab.config.backup.path}/backup_information.yml",
                   "w+") do |file|
-          file << s.to_yaml.gsub(/^---\n/,'')
+          file << s.to_yaml.gsub(/^---\n/, '')
         end
 
         # create archive
         $progress.print "Creating backup archive: #{tar_file} ... "
         # Set file permissions on open to prevent chmod races.
-        tar_system_options = {out: [tar_file, 'w', Gitlab.config.backup.archive_permissions]}
+        tar_system_options = { out: [tar_file, 'w', Gitlab.config.backup.archive_permissions] }
         if Kernel.system('tar', '-cf', '-', *backup_contents, tar_system_options)
           $progress.puts "done".color(:green)
         else
@@ -49,8 +50,9 @@ module Backup
       directory = connect_to_remote_directory(connection_settings)
 
       if directory.files.create(key: tar_file, body: File.open(tar_file), public: false,
-          multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
-          encryption: Gitlab.config.backup.upload.encryption)
+                                multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
+                                encryption: Gitlab.config.backup.upload.encryption,
+                                storage_class: Gitlab.config.backup.upload.storage_class)
         $progress.puts "done".color(:green)
       else
         puts "uploading backup to #{remote_directory} failed".color(:red)
@@ -82,12 +84,17 @@ module Backup
         removed = 0
 
         Dir.chdir(Gitlab.config.backup.path) do
-          file_list = Dir.glob('*_gitlab_backup.tar')
-          file_list.map! { |f| $1.to_i if f =~ /(\d+)_gitlab_backup.tar/ }
-          file_list.sort.each do |timestamp|
+          Dir.glob("*#{FILE_NAME_SUFFIX}").each do |file|
+            next unless file =~ /(\d+)(?:_\d{4}_\d{2}_\d{2})?_gitlab_backup\.tar/
+
+            timestamp = $1.to_i
+
             if Time.at(timestamp) < (Time.now - keep_time)
-              if Kernel.system(*%W(rm #{timestamp}_gitlab_backup.tar))
+              begin
+                FileUtils.rm(file)
                 removed += 1
+              rescue => e
+                $progress.puts "Deleting #{file} failed: #{e.message}".color(:red)
               end
             end
           end
@@ -103,47 +110,56 @@ module Backup
       Dir.chdir(Gitlab.config.backup.path)
 
       # check for existing backups in the backup dir
-      file_list = Dir.glob("*_gitlab_backup.tar").each.map { |f| f.split(/_/).first.to_i }
-      puts "no backups found" if file_list.count == 0
+      file_list = Dir.glob("*#{FILE_NAME_SUFFIX}")
+
+      if file_list.count == 0
+        $progress.puts "No backups found in #{Gitlab.config.backup.path}"
+        $progress.puts "Please make sure that file name ends with #{FILE_NAME_SUFFIX}"
+        exit 1
+      end
 
       if file_list.count > 1 && ENV["BACKUP"].nil?
-        puts "Found more than one backup, please specify which one you want to restore:"
-        puts "rake gitlab:backup:restore BACKUP=timestamp_of_backup"
+        $progress.puts 'Found more than one backup, please specify which one you want to restore:'
+        $progress.puts 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
         exit 1
       end
 
-      tar_file = ENV["BACKUP"].nil? ? File.join("#{file_list.first}_gitlab_backup.tar") : File.join(ENV["BACKUP"] + "_gitlab_backup.tar")
+      tar_file = if ENV['BACKUP'].present?
+                   "#{ENV['BACKUP']}#{FILE_NAME_SUFFIX}"
+                 else
+                   file_list.first
+                 end
 
       unless File.exist?(tar_file)
-        puts "The specified backup doesn't exist!"
+        $progress.puts "The backup file #{tar_file} does not exist!"
         exit 1
       end
 
-      $progress.print "Unpacking backup ... "
+      $progress.print 'Unpacking backup ... '
 
       unless Kernel.system(*%W(tar -xf #{tar_file}))
-        puts "unpacking backup failed".color(:red)
+        $progress.puts 'unpacking backup failed'.color(:red)
         exit 1
       else
-        $progress.puts "done".color(:green)
+        $progress.puts 'done'.color(:green)
       end
 
       ENV["VERSION"] = "#{settings[:db_version]}" if settings[:db_version].to_i > 0
 
       # restoring mismatching backups can lead to unexpected problems
       if settings[:gitlab_version] != Gitlab::VERSION
-        puts "GitLab version mismatch:".color(:red)
-        puts "  Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!".color(:red)
-        puts "  Please switch to the following version and try again:".color(:red)
-        puts "  version: #{settings[:gitlab_version]}".color(:red)
-        puts
-        puts "Hint: git checkout v#{settings[:gitlab_version]}"
+        $progress.puts 'GitLab version mismatch:'.color(:red)
+        $progress.puts "  Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!".color(:red)
+        $progress.puts '  Please switch to the following version and try again:'.color(:red)
+        $progress.puts "  version: #{settings[:gitlab_version]}".color(:red)
+        $progress.puts
+        $progress.puts "Hint: git checkout v#{settings[:gitlab_version]}"
         exit 1
       end
     end
 
     def tar_version
-      tar_version, _ = Gitlab::Popen.popen(%W(tar --version))
+      tar_version, _ = Gitlab::Popen.popen(%w(tar --version))
       tar_version.force_encoding('locale').split("\n").first
     end
 

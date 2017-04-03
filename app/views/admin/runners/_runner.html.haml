@@ -1,4 +1,4 @@
-%tr{id: dom_id(runner)}
+%tr{ id: dom_id(runner) }
   %td
     - if runner.shared?
       %span.label.label-success shared
@@ -15,6 +15,8 @@
   %td
     = runner.description
   %td
+    = runner.version
+  %td
     - if runner.shared?
       n/a
     - else
@@ -22,7 +24,7 @@
   %td
     #{runner.builds.count(:all)}
   %td
-    - runner.tag_list.each do |tag|
+    - runner.tag_list.sort.each do |tag|
       %span.label.label-primary
         = tag
   %td

@@ -14,6 +14,10 @@ class EventFilter
       'merged'
     end
 
+    def issue
+      'issue'
+    end
+
     def comments
       'comments'
     end
@@ -32,32 +36,20 @@ class EventFilter
   end
 
   def apply_filter(events)
-    return events unless params.present?
+    return events if params.blank? || params == EventFilter.all
 
-    filter = params.dup
-    actions = []
-
-    case filter
+    case params
     when EventFilter.push
-      actions = [Event::PUSHED]
+      events.where(action: Event::PUSHED)
     when EventFilter.merged
-      actions = [Event::MERGED]
+      events.where(action: Event::MERGED)
     when EventFilter.comments
-      actions = [Event::COMMENTED]
+      events.where(action: Event::COMMENTED)
     when EventFilter.team
-      actions = [Event::JOINED, Event::LEFT, Event::EXPIRED]
-    when EventFilter.all
-      actions = [
-        Event::PUSHED,
-        Event::MERGED,
-        Event::COMMENTED,
-        Event::JOINED,
-        Event::LEFT,
-        Event::EXPIRED
-      ]
+      events.where(action: [Event::JOINED, Event::LEFT, Event::EXPIRED])
+    when EventFilter.issue
+      events.where(action: [Event::CREATED, Event::UPDATED, Event::CLOSED, Event::REOPENED])
     end
-
-    events.where(action: actions)
   end
 
   def options(key)
@@ -73,6 +65,10 @@ class EventFilter
   end
 
   def active?(key)
-    params.include? key
+    if params.present?
+      params.include? key
+    else
+      key == EventFilter.all
+    end
   end
 end

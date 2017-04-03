@@ -33,6 +33,18 @@ GET /users
 ]
 ```
 
+In addition, you can filter users based on states eg. `blocked`, `active`
+This works only to filter users who are `blocked` or `active`.
+It does not support `active=false` or `blocked=false`.
+
+```
+GET /users?active=true
+```
+
+```
+GET /users?blocked=true
+```
+
 ### For admins
 
 ```
@@ -60,7 +72,6 @@ GET /users
     "organization": "",
     "last_sign_in_at": "2012-06-01T11:41:01Z",
     "confirmed_at": "2012-05-23T09:05:22Z",
-    "theme_id": 1,
     "color_scheme_id": 2,
     "projects_limit": 100,
     "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -93,7 +104,6 @@ GET /users
     "organization": "",
     "last_sign_in_at": null,
     "confirmed_at": "2012-05-30T16:53:06.148Z",
-    "theme_id": 1,
     "color_scheme_id": 3,
     "projects_limit": 100,
     "current_sign_in_at": "2014-03-19T17:54:13Z",
@@ -119,6 +129,8 @@ For example:
 ```
 GET /users?username=jack_smith
 ```
+
+You can search for users who are external with: `/users?external=true`
 
 ## Single user
 
@@ -184,7 +196,6 @@ Parameters:
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
-  "theme_id": 1,
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -202,7 +213,7 @@ Parameters:
 
 ## User creation
 
-Creates a new user. Note only administrators can create new users.
+Creates a new user. Note only administrators can create new users. Either `password` or `reset_password` should be specified (`reset_password` takes priority).
 
 ```
 POST /users
@@ -211,7 +222,8 @@ POST /users
 Parameters:
 
 - `email` (required)            - Email
-- `password` (required)         - Password
+- `password` (optional)         - Password
+- `reset_password` (optional)   - Send user password reset link - true or false(default)
 - `username` (required)         - Username
 - `name` (required)             - Name
 - `skype` (optional)            - Skype ID
@@ -257,8 +269,9 @@ Parameters:
 - `can_create_group` (optional) - User can create groups - true or false
 - `external` (optional)         - Flags the user as external - true or false(default)
 
-Note, at the moment this method does only return a 404 error,
-even in cases where a 409 (Conflict) would be more appropriate,
+On password update, user will be forced to change it upon next login.
+Note, at the moment this method does only return a `404` error,
+even in cases where a `409` (Conflict) would be more appropriate,
 e.g. when renaming the email address to some existing one.
 
 ## User deletion
@@ -277,7 +290,9 @@ Parameters:
 
 - `id` (required) - The ID of the user
 
-## Current user
+## User
+
+### For normal users
 
 Gets currently authenticated user.
 
@@ -305,7 +320,6 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
-  "theme_id": 1,
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -318,6 +332,52 @@ GET /user
   "can_create_project": true,
   "two_factor_enabled": true,
   "external": false
+}
+```
+
+### For admins
+
+Parameters:
+
+- `sudo` (required) - the ID of a user
+
+```
+GET /user
+```
+
+```json
+{
+  "id": 1,
+  "username": "john_smith",
+  "email": "john@example.com",
+  "name": "John Smith",
+  "state": "active",
+  "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
+  "web_url": "http://localhost:3000/john_smith",
+  "created_at": "2012-05-23T08:00:58Z",
+  "is_admin": false,
+  "bio": null,
+  "location": null,
+  "skype": "",
+  "linkedin": "",
+  "twitter": "",
+  "website_url": "",
+  "organization": "",
+  "last_sign_in_at": "2012-06-01T11:41:01Z",
+  "confirmed_at": "2012-05-23T09:05:22Z",
+  "color_scheme_id": 2,
+  "projects_limit": 100,
+  "current_sign_in_at": "2012-06-02T06:36:55Z",
+  "identities": [
+    {"provider": "github", "extern_uid": "2435223452345"},
+    {"provider": "bitbucket", "extern_uid": "john_smith"},
+    {"provider": "google_oauth2", "extern_uid": "8776128412476123468721346"}
+  ],
+  "can_create_group": true,
+  "can_create_project": true,
+  "two_factor_enabled": true,
+  "external": false,
+  "private_token": "dd34asd13as"
 }
 ```
 
@@ -355,24 +415,24 @@ Parameters:
 Get a list of a specified user's SSH keys. Available only for admin
 
 ```
-GET /users/:uid/keys
+GET /users/:id/keys
 ```
 
 Parameters:
 
-- `uid` (required) - id of specified user
+- `id` (required) - id of specified user
 
 ## Single SSH key
 
 Get a single key.
 
 ```
-GET /user/keys/:id
+GET /user/keys/:key_id
 ```
 
 Parameters:
 
-- `id` (required) - The ID of an SSH key
+- `key_id` (required) - The ID of an SSH key
 
 ```json
 {
@@ -435,8 +495,6 @@ Parameters:
 - `title` (required) - new SSH Key's title
 - `key` (required)   - new SSH key
 
-Will return created key with status `201 Created` on success, or `404 Not found` on fail.
-
 ## Delete SSH key for current user
 
 Deletes key owned by currently authenticated user.
@@ -444,25 +502,25 @@ This is an idempotent function and calling it on a key that is already deleted
 or not available results in `200 OK`.
 
 ```
-DELETE /user/keys/:id
+DELETE /user/keys/:key_id
 ```
 
 Parameters:
 
-- `id` (required) - SSH key ID
+- `key_id` (required) - SSH key ID
 
 ## Delete SSH key for given user
 
 Deletes key owned by a specified user. Available only for admin.
 
 ```
-DELETE /users/:uid/keys/:id
+DELETE /users/:id/keys/:key_id
 ```
 
 Parameters:
 
-- `uid` (required) - id of specified user
-- `id` (required)  - SSH key ID
+- `id` (required) - id of specified user
+- `key_id` (required)  - SSH key ID
 
 Will return `200 OK` on success, or `404 Not found` if either user or key cannot be found.
 
@@ -496,24 +554,24 @@ Parameters:
 Get a list of a specified user's emails. Available only for admin
 
 ```
-GET /users/:uid/emails
+GET /users/:id/emails
 ```
 
 Parameters:
 
-- `uid` (required) - id of specified user
+- `id` (required) - id of specified user
 
 ## Single email
 
 Get a single email.
 
 ```
-GET /user/emails/:id
+GET /user/emails/:email_id
 ```
 
 Parameters:
 
-- `id` (required) - email ID
+- `email_id` (required) - email ID
 
 ```json
 {
@@ -567,8 +625,6 @@ Parameters:
 - `id` (required)    - id of specified user
 - `email` (required) - email address
 
-Will return created email with status `201 Created` on success, or `404 Not found` on fail.
-
 ## Delete email for current user
 
 Deletes email owned by currently authenticated user.
@@ -576,25 +632,25 @@ This is an idempotent function and calling it on a email that is already deleted
 or not available results in `200 OK`.
 
 ```
-DELETE /user/emails/:id
+DELETE /user/emails/:email_id
 ```
 
 Parameters:
 
-- `id` (required) - email ID
+- `email_id` (required) - email ID
 
 ## Delete email for given user
 
 Deletes email owned by a specified user. Available only for admin.
 
 ```
-DELETE /users/:uid/emails/:id
+DELETE /users/:id/emails/:email_id
 ```
 
 Parameters:
 
-- `uid` (required) - id of specified user
-- `id` (required)  - email ID
+- `id` (required) - id of specified user
+- `email_id` (required)  - email ID
 
 Will return `200 OK` on success, or `404 Not found` if either user or email cannot be found.
 
@@ -603,14 +659,14 @@ Will return `200 OK` on success, or `404 Not found` if either user or email cann
 Blocks the specified user.  Available only for admin.
 
 ```
-PUT /users/:uid/block
+POST /users/:id/block
 ```
 
 Parameters:
 
-- `uid` (required) - id of specified user
+- `id` (required) - id of specified user
 
-Will return `200 OK` on success, `404 User Not Found` is user cannot be found or
+Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to block an already blocked user by LDAP synchronization.
 
 ## Unblock user
@@ -618,14 +674,14 @@ Will return `200 OK` on success, `404 User Not Found` is user cannot be found or
 Unblocks the specified user.  Available only for admin.
 
 ```
-PUT /users/:uid/unblock
+POST /users/:id/unblock
 ```
 
 Parameters:
 
-- `uid` (required) - id of specified user
+- `id` (required) - id of specified user
 
-Will return `200 OK` on success, `404 User Not Found` is user cannot be found or
+Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to unblock a user blocked by LDAP synchronization.
 
 ### Get user contribution events
@@ -643,7 +699,7 @@ Parameters:
 | `id` | integer | yes | The ID of the user |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/users/:id/events
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/:id/events
 ```
 
 Example response:
@@ -756,8 +812,6 @@ Example response:
       },
       "created_at": "2015-12-04T10:33:56.698Z",
       "system": false,
-      "upvote": false,
-      "downvote": false,
       "noteable_id": 377,
       "noteable_type": "Issue"
     },
@@ -773,3 +827,162 @@ Example response:
   }
 ]
 ```
+
+## Get all impersonation tokens of a user
+
+> Requires admin permissions.
+
+It retrieves every impersonation token of the user. Use the pagination
+parameters `page` and `per_page` to restrict the list of impersonation tokens.
+
+```
+GET /users/:user_id/impersonation_tokens
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `state`   | string  | no | filter tokens based on state (`all`, `active`, `inactive`) |
+
+```
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/42/impersonation_tokens
+```
+
+Example response:
+
+```json
+[
+   {
+      "active" : true,
+      "token" : "EsMo-vhKfXGwX9RKrwiy",
+      "scopes" : [
+         "api"
+      ],
+      "revoked" : false,
+      "name" : "mytoken",
+      "id" : 2,
+      "created_at" : "2017-03-17T17:18:09.283Z",
+      "impersonation" : true,
+      "expires_at" : "2017-04-04"
+   },
+   {
+      "active" : false,
+      "scopes" : [
+         "read_user"
+      ],
+      "revoked" : true,
+      "token" : "ZcZRpLeEuQRprkRjYydY",
+      "name" : "mytoken2",
+      "created_at" : "2017-03-17T17:19:28.697Z",
+      "id" : 3,
+      "impersonation" : true,
+      "expires_at" : "2017-04-14"
+   }
+]
+```
+
+## Get an impersonation token of a user
+
+> Requires admin permissions.
+
+It shows a user's impersonation token.
+
+```
+GET /users/:user_id/impersonation_tokens/:impersonation_token_id
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `impersonation_token_id` | integer | yes | The ID of the impersonation token |
+
+```
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/42/impersonation_tokens/2
+```
+
+Example response:
+
+```json
+{
+   "active" : true,
+   "token" : "EsMo-vhKfXGwX9RKrwiy",
+   "scopes" : [
+      "api"
+   ],
+   "revoked" : false,
+   "name" : "mytoken",
+   "id" : 2,
+   "created_at" : "2017-03-17T17:18:09.283Z",
+   "impersonation" : true,
+   "expires_at" : "2017-04-04"
+}
+```
+
+## Create an impersonation token
+
+> Requires admin permissions.
+
+It creates a new impersonation token. Note that only administrators can do this.
+You are only able to create impersonation tokens to impersonate the user and perform
+both API calls and Git reads and writes. The user will not see these tokens in his profile
+settings page.
+
+```
+POST /users/:user_id/impersonation_tokens
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `name`    | string  | yes | The name of the impersonation token |
+| `expires_at` | date | no  | The expiration date of the impersonation token in ISO format (`YYYY-MM-DD`)|
+| `scopes` | array    | yes | The array of scopes of the impersonation token (`api`, `read_user`) |
+
+```
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "name=mytoken" --data "expires_at=2017-04-04" --data "scopes[]=api" https://gitlab.example.com/api/v4/users/42/impersonation_tokens
+```
+
+Example response:
+
+```json
+{
+   "id" : 2,
+   "revoked" : false,
+   "scopes" : [
+      "api"
+   ],
+   "token" : "EsMo-vhKfXGwX9RKrwiy",
+   "active" : true,
+   "impersonation" : true,
+   "name" : "mytoken",
+   "created_at" : "2017-03-17T17:18:09.283Z",
+   "expires_at" : "2017-04-04"
+}
+```
+
+## Revoke an impersonation token
+
+> Requires admin permissions.
+
+It revokes an impersonation token.
+
+```
+DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id
+```
+
+```
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/42/impersonation_tokens/1
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | integer | yes | The ID of the user |
+| `impersonation_token_id` | integer | yes | The ID of the impersonation token |

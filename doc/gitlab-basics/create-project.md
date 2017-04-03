@@ -14,8 +14,8 @@ There are two ways to create a new project in GitLab.
 
 1. Fill out the information:
 
-  1. "Project name" is the name of your project (you can't use spaces, but you
-     can use hyphens or underscores).
+  1. "Project name" is the name of your project (you can't use special characters,
+     but you can use spaces, hyphens, underscores or even emojis).
   1. The "Project description" is optional and will be shown in your project's
      dashboard so others can briefly understand what your project is about.
   1. Select a [visibility level](../public_access/public_access.md).

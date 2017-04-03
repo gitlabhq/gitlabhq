@@ -17,6 +17,25 @@ class Projects::GraphsController < Projects::ApplicationController
   end
 
   def commits
+    redirect_to action: 'charts'
+  end
+
+  def languages
+    redirect_to action: 'charts'
+  end
+
+  def charts
+    get_commits
+    get_languages
+  end
+
+  def ci
+    redirect_to charts_namespace_project_pipelines_path(@project.namespace, @project)
+  end
+
+  private
+
+  def get_commits
     @commits = @project.repository.commits(@ref, limit: 2000, skip_merges: true)
     @commits_graph = Gitlab::Graphs::Commits.new(@commits)
     @commits_per_week_days = @commits_graph.commits_per_week_days
@@ -24,15 +43,7 @@ class Projects::GraphsController < Projects::ApplicationController
     @commits_per_month = @commits_graph.commits_per_month
   end
 
-  def ci
-    @charts = {}
-    @charts[:week] = Ci::Charts::WeekChart.new(project)
-    @charts[:month] = Ci::Charts::MonthChart.new(project)
-    @charts[:year] = Ci::Charts::YearChart.new(project)
-    @charts[:build_times] = Ci::Charts::BuildTime.new(project)
-  end
-
-  def languages
+  def get_languages
     @languages = Linguist::Repository.new(@repository.rugged, @repository.rugged.head.target_id).languages
     total = @languages.map(&:last).sum
 
@@ -51,8 +62,6 @@ class Projects::GraphsController < Projects::ApplicationController
       y[:value] <=> x[:value]
     end
   end
-
-  private
 
   def fetch_graph
     @commits = @project.repository.commits(@ref, limit: 6000, skip_merges: true)

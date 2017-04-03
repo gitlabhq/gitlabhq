@@ -3,11 +3,12 @@ require 'spec_helper'
 feature 'Merge Request versions', js: true, feature: true do
   let(:merge_request) { create(:merge_request, importing: true) }
   let(:project) { merge_request.source_project }
+  let!(:merge_request_diff1) { merge_request.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+  let!(:merge_request_diff2) { merge_request.merge_request_diffs.create(head_commit_sha: nil) }
+  let!(:merge_request_diff3) { merge_request.merge_request_diffs.create(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
 
   before do
     login_as :admin
-    merge_request.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
-    merge_request.merge_request_diffs.create(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e')
     visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
   end
 
@@ -23,7 +24,7 @@ feature 'Merge Request versions', js: true, feature: true do
     before do
       page.within '.mr-version-dropdown' do
         find('.btn-default').click
-        click_link 'version 1'
+        find(:link, 'version 1').trigger('click')
       end
     end
 
@@ -44,7 +45,7 @@ feature 'Merge Request versions', js: true, feature: true do
     before do
       page.within '.mr-version-compare-dropdown' do
         find('.btn-default').click
-        click_link 'version 1'
+        find(:link, 'version 1').trigger('click')
       end
     end
 
@@ -53,7 +54,7 @@ feature 'Merge Request versions', js: true, feature: true do
         project.namespace,
         project,
         merge_request.iid,
-        diff_id: 2,
+        diff_id: merge_request_diff3.id,
         start_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9'
       )
     end
@@ -78,6 +79,54 @@ feature 'Merge Request versions', js: true, feature: true do
         expect(page).to have_content 'latest version'
       end
       expect(page).to have_content '8 changed files'
+    end
+  end
+
+  describe 'compare with same version' do
+    before do
+      page.within '.mr-version-compare-dropdown' do
+        find('.btn-default').click
+        click_link 'version 1'
+      end
+    end
+
+    it 'should have 0 chages between versions' do
+      page.within '.mr-version-compare-dropdown' do
+        expect(page).to have_content 'version 1'
+      end
+
+      page.within '.mr-version-dropdown' do
+        find('.btn-default').click
+        find(:link, 'version 1').trigger('click')
+      end
+
+      expect(page).to have_content '0 changed files'
+    end
+  end
+
+  describe 'compare with newer version' do
+    before do
+      page.within '.mr-version-compare-dropdown' do
+        find('.btn-default').click
+        click_link 'version 2'
+      end
+    end
+
+    it 'should set the compared versions to be the same' do
+      page.within '.mr-version-compare-dropdown' do
+        expect(page).to have_content 'version 2'
+      end
+
+      page.within '.mr-version-dropdown' do
+        find('.btn-default').click
+        find(:link, 'version 1').trigger('click')
+      end
+
+      page.within '.mr-version-compare-dropdown' do
+        expect(page).to have_content 'version 1'
+      end
+
+      expect(page).to have_content '0 changed files'
     end
   end
 end

@@ -5,7 +5,7 @@ require:
 inherit_from: .rubocop_todo.yml
 
 AllCops:
-  TargetRubyVersion: 2.1
+  TargetRubyVersion: 2.3
   # Cop names are not d§splayed in offense messages by default. Change behavior
   # by overriding DisplayCopNames, or by giving the -D/--display-cop-names
   # option.
@@ -17,21 +17,19 @@ AllCops:
   # Exclude some GitLab files
   Exclude:
     - 'vendor/**/*'
+    - 'node_modules/**/*'
     - 'db/*'
     - 'db/fixtures/**/*'
     - 'tmp/**/*'
     - 'bin/**/*'
-    - 'lib/backup/**/*'
-    - 'lib/ci/backup/**/*'
-    - 'lib/tasks/**/*'
-    - 'lib/ci/migrate/**/*'
-    - 'lib/email_validator.rb'
-    - 'lib/gitlab/upgrader.rb'
-    - 'lib/gitlab/seeder.rb'
     - 'generator_templates/**/*'
+    - 'builds/**/*'
 
+# Gems in consecutive lines should be alphabetically sorted
+Bundler/OrderedGems:
+  Enabled: false
 
-##################### Style ##################################
+# Style #######################################################################
 
 # Check indentation of private/protected visibility modifiers.
 Style/AccessModifierIndentation:
@@ -52,6 +50,16 @@ Style/AlignArray:
 
 # Align the elements of a hash literal if they span more than one line.
 Style/AlignHash:
+  Enabled: true
+
+# Here we check if the parameters on a multi-line method call or
+# definition are aligned.
+Style/AlignParameters:
+  Enabled: false
+
+# Whether `and` and `or` are banned only in conditionals (conditionals)
+# or completely (always).
+Style/AndOr:
   Enabled: true
 
 # Use `Array#join` instead of `Array#*`.
@@ -78,14 +86,23 @@ Style/BeginBlock:
 Style/BlockComments:
   Enabled: true
 
-# Put end statement of multiline block on its own line.
-Style/BlockEndNewline:
-  Enabled: true
-
 # Avoid using {...} for multi-line blocks (multiline chaining is # always
 # ugly). Prefer {...} over do...end for single-line blocks.
 Style/BlockDelimiters:
   Enabled: true
+
+# Put end statement of multiline block on its own line.
+Style/BlockEndNewline:
+  Enabled: true
+
+ # This cop checks for braces around the last parameter in a method call
+# if the last parameter is a hash.
+Style/BracesAroundHashParameters:
+  Enabled: false
+
+# This cop checks for uses of the case equality operator(===).
+Style/CaseEquality:
+  Enabled: false
 
 # Indentation of when in a case/when/[else/]end.
 Style/CaseIndentation:
@@ -105,7 +122,7 @@ Style/ClassAndModuleChildren:
 
 # Enforces consistent use of `Object#is_a?` or `Object#kind_of?`.
 Style/ClassCheck:
-  Enabled: false
+  Enabled: true
 
 # Use self when defining module/class methods.
 Style/ClassMethods:
@@ -115,8 +132,24 @@ Style/ClassMethods:
 Style/ClassVars:
   Enabled: true
 
+# This cop checks for methods invoked via the :: operator instead
+# of the . operator (like FileUtils::rmdir instead of FileUtils.rmdir).
+Style/ColonMethodCall:
+  Enabled: true
+
+# This cop checks that comment annotation keywords are written according
+# to guidelines.
+Style/CommentAnnotation:
+  Enabled: false
+
 # Indentation of comments.
 Style/CommentIndentation:
+  Enabled: true
+
+# Check for `if` and `case` statements where each branch is used for
+# assignment to the same variable when using the return of the
+# condition can be used instead.
+Style/ConditionalAssignment:
   Enabled: true
 
 # Constants should use SCREAMING_SNAKE_CASE.
@@ -131,13 +164,19 @@ Style/DefWithParentheses:
 Style/Documentation:
   Enabled: false
 
+# This cop checks for uses of double negation (!!) to convert something
+# to a boolean value. As this is both cryptic and usually redundant, it
+# should be avoided.
+Style/DoubleNegation:
+  Enabled: false
+
 # Align elses and elsifs correctly.
 Style/ElseAlignment:
   Enabled: true
 
 # Use empty lines between defs.
 Style/EmptyLineBetweenDefs:
-  Enabled: false
+  Enabled: true
 
 # Don't use several empty lines in a row.
 Style/EmptyLines:
@@ -155,12 +194,12 @@ Style/EmptyLinesAroundBlockBody:
 Style/EmptyLinesAroundClassBody:
   Enabled: true
 
-# Keeps track of empty lines around module bodies.
-Style/EmptyLinesAroundModuleBody:
-  Enabled: true
-
 # Keeps track of empty lines around method bodies.
 Style/EmptyLinesAroundMethodBody:
+  Enabled: true
+
+# Keeps track of empty lines around module bodies.
+Style/EmptyLinesAroundModuleBody:
   Enabled: true
 
 # Avoid the use of END blocks.
@@ -195,22 +234,26 @@ Style/For:
 # Checks if there is a magic comment to enforce string literals
 Style/FrozenStringLiteralComment:
   Enabled: false
+
 # Do not introduce global variables.
 Style/GlobalVars:
   Enabled: true
+  Exclude:
+    - 'lib/backup/**/*'
+    - 'lib/tasks/**/*'
 
 # Prefer Ruby 1.9 hash syntax `{ a: 1, b: 2 }`
 # over 1.8 syntax `{ :a => 1, :b => 2 }`.
 Style/HashSyntax:
   Enabled: true
 
-# Do not use if x; .... Use the ternary operator instead.
-Style/IfWithSemicolon:
-  Enabled: true
-
 # Checks that conditional statements do not have an identical line at the
 # end of each branch, which can validly be moved out of the conditional.
 Style/IdenticalConditionalBranches:
+  Enabled: true
+
+# Do not use if x; .... Use the ternary operator instead.
+Style/IfWithSemicolon:
   Enabled: true
 
 # Checks the indentation of the first line of the right-hand-side of a
@@ -253,7 +296,7 @@ Style/ModuleFunction:
 # Checks that the closing brace in an array literal is either on the same line
 # as the last array element, or a new line.
 Style/MultilineArrayBraceLayout:
-  Enabled: false
+  Enabled: true
   EnforcedStyle: symmetrical
 
 # Avoid multi-line chains of blocks.
@@ -267,7 +310,7 @@ Style/MultilineBlockLayout:
 # Checks that the closing brace in a hash literal is either on the same line as
 # the last hash element, or a new line.
 Style/MultilineHashBraceLayout:
-  Enabled: false
+  Enabled: true
   EnforcedStyle: symmetrical
 
 # Do not use then for multi-line if/unless.
@@ -292,11 +335,20 @@ Style/MultilineMethodDefinitionBraceLayout:
 
 # Checks indentation of binary operations that span more than one line.
 Style/MultilineOperationIndentation:
-  Enabled: false
+  Enabled: true
+  EnforcedStyle: indented
 
 # Avoid multi-line `? :` (the ternary operator), use if/unless instead.
 Style/MultilineTernaryOperator:
   Enabled: true
+
+# This cop checks whether some constant value isn't a
+# mutable literal (e.g. array or hash).
+Style/MutableConstant:
+  Enabled: true
+  Exclude:
+    - 'db/migrate/**/*'
+    - 'db/post_migrate/**/*'
 
 # Favor unless over if for negative conditions (or control flow or).
 Style/NegatedIf:
@@ -338,12 +390,12 @@ Style/OpMethod:
 Style/ParenthesesAroundCondition:
   Enabled: true
 
-# Checks for parentheses that seem not to serve any purpose.
-Style/RedundantParentheses:
+# Checks for an obsolete RuntimeException argument in raise/fail.
+Style/RedundantException:
   Enabled: true
 
-# Don't use return where it's not required.
-Style/RedundantReturn:
+# Checks for parentheses that seem not to serve any purpose.
+Style/RedundantParentheses:
   Enabled: true
 
 # Don't use semicolons to terminate expressions.
@@ -400,6 +452,10 @@ Style/SpaceBeforeComment:
 Style/SpaceBeforeSemicolon:
   Enabled: true
 
+# Checks for spaces inside square brackets.
+Style/SpaceInsideBrackets:
+  Enabled: true
+
 # Use spaces inside hash literal braces - or don't.
 Style/SpaceInsideHashLiteralBraces:
   Enabled: true
@@ -436,6 +492,10 @@ Style/Tab:
 Style/TrailingBlankLines:
   Enabled: true
 
+# This cop checks for trailing comma in array and hash literals.
+Style/TrailingCommaInLiteral:
+  Enabled: false
+
 # Checks for %W when interpolation is not needed.
 Style/UnneededCapitalW:
   Enabled: true
@@ -471,15 +531,19 @@ Style/WhileUntilModifier:
 
 # Use %w or %W for arrays of words.
 Style/WordArray:
-  Enabled: false
+  Enabled: true
 
-#################### Metrics ################################
+# Metrics #####################################################################
 
 # A calculated magnitude based on number of assignments,
 # branches, and conditions.
 Metrics/AbcSize:
   Enabled: true
   Max: 60
+
+# This cop checks if the length of a block exceeds some maximum value.
+Metrics/BlockLength:
+  Enabled: false
 
 # Avoid excessive block nesting.
 Metrics/BlockNesting:
@@ -518,22 +582,22 @@ Metrics/PerceivedComplexity:
   Enabled: true
   Max: 18
 
-
-#################### Lint ################################
-
-# Checks for useless access modifiers.
-Lint/UselessAccessModifier:
-  Enabled: true
-
-# Checks for attempts to use `private` or `protected` to set the visibility
-# of a class method, which does not work.
-Lint/IneffectiveAccessModifier:
-  Enabled: false
+# Lint ########################################################################
 
 # Checks for ambiguous operators in the first argument of a method invocation
 # without parentheses.
 Lint/AmbiguousOperator:
   Enabled: true
+
+# This cop checks for ambiguous regexp literals in the first argument of
+# a method invocation without parentheses.
+Lint/AmbiguousRegexpLiteral:
+  Enabled: false
+
+# This cop checks for assignments in the conditions of
+# if/while/until.
+Lint/AssignmentInCondition:
+  Enabled: false
 
 # Align block ends correctly.
 Lint/BlockAlignment:
@@ -572,6 +636,10 @@ Lint/ElseLayout:
 Lint/EmptyEnsure:
   Enabled: true
 
+# Checks for the presence of `when` branches without a body.
+Lint/EmptyWhen:
+  Enabled: true
+
 # Align ends correctly.
 Lint/EndAlignment:
   Enabled: true
@@ -584,10 +652,6 @@ Lint/EndInMethod:
 Lint/EnsureReturn:
   Enabled: true
 
-# The use of eval represents a serious security risk.
-Lint/Eval:
-  Enabled: true
-
 # Catches floating-point literals too large or small for Ruby to represent.
 Lint/FloatOutOfRange:
   Enabled: true
@@ -596,10 +660,19 @@ Lint/FloatOutOfRange:
 Lint/FormatParameterMismatch:
   Enabled: true
 
+# This cop checks for *rescue* blocks with no body.
+Lint/HandleExceptions:
+  Enabled: false
+
 # Checks for adjacent string literals on the same line, which could better be
 # represented as a single string literal.
 Lint/ImplicitStringConcatenation:
   Enabled: true
+
+# Checks for attempts to use `private` or `protected` to set the visibility
+# of a class method, which does not work.
+Lint/IneffectiveAccessModifier:
+  Enabled: false
 
 # Checks for invalid character literals with a non-escaped whitespace
 # character.
@@ -613,6 +686,10 @@ Lint/LiteralInCondition:
 # Checks for literals used in interpolation.
 Lint/LiteralInInterpolation:
   Enabled: true
+
+# This cop checks for uses of *begin...end while/until something*.
+Lint/Loop:
+  Enabled: false
 
 # Do not use nested method definitions.
 Lint/NestedMethodDefinition:
@@ -643,6 +720,11 @@ Lint/RescueException:
 Lint/ShadowedException:
   Enabled: false
 
+# This cop looks for use of the same name as outer local variables
+# for block arguments or block local variables.
+Lint/ShadowingOuterLocalVariable:
+  Enabled: false
+
 # Checks for Object#to_s usage in string interpolation.
 Lint/StringConversionInInterpolation:
   Enabled: true
@@ -651,14 +733,34 @@ Lint/StringConversionInInterpolation:
 Lint/UnderscorePrefixedVariableName:
   Enabled: true
 
+# This cop checks for using Fixnum or Bignum constant
+Lint/UnifiedInteger:
+  Enabled: true
+
 # Checks for rubocop:disable comments that can be removed.
 # Note: this cop is not disabled when disabling all cops.
 # It must be explicitly disabled.
 Lint/UnneededDisable:
   Enabled: false
 
+# This cop checks for unneeded usages of splat expansion
+Lint/UnneededSplatExpansion:
+  Enabled: false
+
 # Unreachable code.
 Lint/UnreachableCode:
+  Enabled: true
+
+# This cop checks for unused block arguments.
+Lint/UnusedBlockArgument:
+  Enabled: false
+
+# This cop checks for unused method arguments.
+Lint/UnusedMethodArgument:
+  Enabled: false
+
+# Checks for useless access modifiers.
+Lint/UselessAccessModifier:
   Enabled: true
 
 # Checks for useless assignment to a local variable.
@@ -681,8 +783,7 @@ Lint/UselessSetterCall:
 Lint/Void:
   Enabled: true
 
-
-##################### Performance ############################
+# Performance #################################################################
 
 # Use `casecmp` rather than `downcase ==`.
 Performance/Casecmp:
@@ -700,6 +801,22 @@ Performance/LstripRstrip:
 # Use `Range#cover?` instead of `Range#include?`.
 Performance/RangeInclude:
   Enabled: true
+
+# This cop identifies the use of a `&block` parameter and `block.call`
+# where `yield` would do just as well.
+Performance/RedundantBlockCall:
+  Enabled: true
+
+# This cop identifies use of `Regexp#match` or `String#match in a context
+# where the integral return value of `=~` would do just as well.
+Performance/RedundantMatch:
+  Enabled: true
+
+# This cop identifies places where `Hash#merge!` can be replaced by
+# `Hash#[]=`.
+Performance/RedundantMerge:
+  Enabled: true
+  MaxKeyValuePairs: 1
 
 # Use `sort` instead of `sort_by { |x| x }`.
 Performance/RedundantSortBy:
@@ -720,8 +837,18 @@ Performance/StringReplacement:
 Performance/TimesMap:
   Enabled: true
 
+# Security ####################################################################
 
-##################### Rails ##################################
+# This cop checks for the use of JSON class methods which have potential
+# security issues.
+Security/JSONLoad:
+  Enabled: true
+
+# This cop checks for the use of *Kernel#eval*.
+Security/Eval:
+  Enabled: true
+
+# Rails #######################################################################
 
 # Enables Rails cops.
 Rails:
@@ -739,7 +866,18 @@ Rails/Date:
 
 # Prefer delegate method for delegations.
 Rails/Delegate:
+  Enabled: true
+
+# This cop checks dynamic `find_by_*` methods.
+Rails/DynamicFindBy:
   Enabled: false
+
+# This cop enforces that 'exit' calls are not used within a rails app.
+Rails/Exit:
+  Enabled: true
+  Exclude:
+    - lib/gitlab/upgrader.rb
+    - 'lib/backup/**/*'
 
 # Prefer `find_by` over `where.first`.
 Rails/FindBy:
@@ -753,9 +891,25 @@ Rails/FindEach:
 Rails/HasAndBelongsToMany:
   Enabled: true
 
+# This cop is used to identify usages of http methods like `get`, `post`,
+# `put`, `patch` without the usage of keyword arguments in your tests and
+# change them to use keyword args.
+Rails/HttpPositionalArguments:
+  Enabled: false
+
 # Checks for calls to puts, print, etc.
 Rails/Output:
   Enabled: true
+  Exclude:
+    - lib/gitlab/seeder.rb
+    - lib/gitlab/upgrader.rb
+    - 'lib/backup/**/*'
+    - 'lib/tasks/**/*'
+
+# This cop checks for the use of output safety calls like html_safe and
+# raw.
+Rails/OutputSafety:
+  Enabled: false
 
 # Checks for incorrect grammar when using methods like `3.day.ago`.
 Rails/PluralizationGrammar:
@@ -769,11 +923,23 @@ Rails/ReadWriteAttribute:
 Rails/ScopeArgs:
   Enabled: true
 
-##################### RSpec ##################################
+# This cop checks for the use of Time methods without zone.
+Rails/TimeZone:
+  Enabled: false
+
+# This cop checks for the use of old-style attribute validation macros.
+Rails/Validation:
+  Enabled: true
+
+# RSpec #######################################################################
 
 # Check that instances are not being stubbed globally.
 RSpec/AnyInstance:
   Enabled: false
+
+# Check for expectations where `be(...)` can replace `eql(...)`.
+RSpec/BeEql:
+  Enabled: true
 
 # Check that the first argument to the top level describe is the tested class or
 # module.
@@ -803,6 +969,10 @@ RSpec/ExampleWording:
     not: does not
   IgnoredWords: []
 
+# Checks for `expect(...)` calls containing literal values.
+RSpec/ExpectActual:
+  Enabled: true
+
 # Checks the file and folder naming of the spec file.
 RSpec/FilePath:
   Enabled: false
@@ -818,14 +988,50 @@ RSpec/Focus:
 RSpec/InstanceVariable:
   Enabled: false
 
+# Checks for `subject` definitions that come after `let` definitions.
+RSpec/LeadingSubject:
+  Enabled: false
+
+# Checks unreferenced `let!` calls being used for test setup.
+RSpec/LetSetup:
+  Enabled: false
+
+# Check that chains of messages are not being stubbed.
+RSpec/MessageChain:
+  Enabled: false
+
+# Checks that message expectations are set using spies.
+RSpec/MessageSpies:
+  Enabled: false
+
 # Checks for multiple top-level describes.
 RSpec/MultipleDescribes:
+  Enabled: false
+
+# Checks if examples contain too many `expect` calls.
+RSpec/MultipleExpectations:
+  Enabled: false
+
+# Checks for explicitly referenced test subjects.
+RSpec/NamedSubject:
+  Enabled: false
+
+# Checks for nested example groups.
+RSpec/NestedGroups:
   Enabled: false
 
 # Enforces the usage of the same method on all negative message expectations.
 RSpec/NotToNot:
   EnforcedStyle: not_to
   Enabled: true
+
+# Check for repeated description strings in example groups.
+RSpec/RepeatedDescription:
+  Enabled: false
+
+# Checks for stubbed test subjects.
+RSpec/SubjectStub:
+  Enabled: false
 
 # Prefer using verifying doubles over normal doubles.
 RSpec/VerifiedDoubles:

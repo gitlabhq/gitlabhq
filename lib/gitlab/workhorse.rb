@@ -1,13 +1,15 @@
 require 'base64'
 require 'json'
 require 'securerandom'
+require 'uri'
 
 module Gitlab
   class Workhorse
-    SEND_DATA_HEADER = 'Gitlab-Workhorse-Send-Data'
-    VERSION_FILE = 'GITLAB_WORKHORSE_VERSION'
-    INTERNAL_API_CONTENT_TYPE = 'application/vnd.gitlab-workhorse+json'
-    INTERNAL_API_REQUEST_HEADER = 'Gitlab-Workhorse-Api-Request'
+    SEND_DATA_HEADER = 'Gitlab-Workhorse-Send-Data'.freeze
+    VERSION_FILE = 'GITLAB_WORKHORSE_VERSION'.freeze
+    INTERNAL_API_CONTENT_TYPE = 'application/vnd.gitlab-workhorse+json'.freeze
+    INTERNAL_API_REQUEST_HEADER = 'Gitlab-Workhorse-Api-Request'.freeze
+    NOTIFICATION_CHANNEL = 'workhorse:notifications'.freeze
 
     # Supposedly the effective key size for HMAC-SHA256 is 256 bits, i.e. 32
     # bytes https://tools.ietf.org/html/rfc4868#section-2.6
@@ -15,10 +17,17 @@ module Gitlab
 
     class << self
       def git_http_ok(repository, user)
-        {
+        params = {
           GL_ID: Gitlab::GlId.gl_id(user),
           RepoPath: repository.path_to_repo,
         }
+
+        if Gitlab.config.gitaly.enabled
+          address = Gitlab::GitalyClient.get_address(repository.project.repository_storage)
+          params[:GitalySocketPath] = URI(address).path
+        end
+
+        params
       end
 
       def lfs_upload_ok(oid, size)
@@ -95,6 +104,20 @@ module Gitlab
         ]
       end
 
+      def terminal_websocket(terminal)
+        details = {
+          'Terminal' => {
+            'Subprotocols' => terminal[:subprotocols],
+            'Url' => terminal[:url],
+            'Header' => terminal[:headers],
+            'MaxSessionTime' => terminal[:max_session_time],
+          }
+        }
+        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.has_key?(:ca_pem)
+
+        details
+      end
+
       def version
         path = Rails.root.join(VERSION_FILE)
         path.readable? ? path.read.chomp : 'unknown'
@@ -117,8 +140,12 @@ module Gitlab
       end
 
       def verify_api_request!(request_headers)
+        decode_jwt(request_headers[INTERNAL_API_REQUEST_HEADER])
+      end
+
+      def decode_jwt(encoded_message)
         JWT.decode(
-          request_headers[INTERNAL_API_REQUEST_HEADER],
+          encoded_message,
           secret,
           true,
           { iss: 'gitlab-workhorse', verify_iss: true, algorithm: 'HS256' },
@@ -127,6 +154,18 @@ module Gitlab
 
       def secret_path
         Rails.root.join('.gitlab_workhorse_secret')
+      end
+
+      def set_key_and_notify(key, value, expire: nil, overwrite: true)
+        Gitlab::Redis.with do |redis|
+          result = redis.set(key, value, ex: expire, nx: !overwrite)
+          if result
+            redis.publish(NOTIFICATION_CHANNEL, "#{key}=#{value}")
+            value
+          else
+            redis.get(key)
+          end
+        end
       end
 
       protected

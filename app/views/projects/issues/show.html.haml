@@ -1,3 +1,4 @@
+- @content_class = "limit-container-width" unless fluid_layout
 - page_title           "#{@issue.title} (#{@issue.to_reference})", "Issues"
 - page_description     @issue.description
 - page_card_attributes @issue.card_attributes
@@ -19,37 +20,34 @@
       = confidential_icon(@issue)
       = issuable_meta(@issue, @project, "Issue")
 
-  - if can?(current_user, :create_issue, @project) || can?(current_user, :update_issue, @issue)
-    .issuable-actions
-      .clearfix.issue-btn-group.dropdown
-        %button.btn.btn-default.pull-left.hidden-md.hidden-lg{ type: "button", data: { toggle: "dropdown" } }
-          Options
-          = icon('caret-down')
-        .dropdown-menu.dropdown-menu-align-right.hidden-lg
-          %ul
-            - if can?(current_user, :create_issue, @project)
-              %li
-                = link_to 'New issue', new_namespace_project_issue_path(@project.namespace, @project), title: 'New issue', id: 'new_issue_link'
-            - if can?(current_user, :update_issue, @issue)
-              %li
-                = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, status_only: true, format: 'json'), data: {no_turbolink: true}, class: "btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
-              %li
-                = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, status_only: true, format: 'json'), data: {no_turbolink: true}, class: "btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
-              %li
-                = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue)
-            - if @issue.submittable_as_spam? && current_user.admin?
-              %li
-                = link_to 'Submit as spam', mark_as_spam_namespace_project_issue_path(@project.namespace, @project, @issue), method: :post, class: 'btn-spam', title: 'Submit as spam'
+  .issuable-actions
+    .clearfix.issue-btn-group.dropdown
+      %button.btn.btn-default.pull-left.hidden-md.hidden-lg{ type: "button", data: { toggle: "dropdown" } }
+        Options
+        = icon('caret-down')
+      .dropdown-menu.dropdown-menu-align-right.hidden-lg
+        %ul
+          %li
+            = link_to 'New issue', new_namespace_project_issue_path(@project.namespace, @project), title: 'New issue', id: 'new_issue_link'
+          - if can?(current_user, :update_issue, @issue)
+            %li
+              = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, format: 'json'), data: {no_turbolink: true}, class: "btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
+            %li
+              = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, format: 'json'), data: {no_turbolink: true}, class: "btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
+            %li
+              = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue)
+          - if @issue.submittable_as_spam_by?(current_user)
+            %li
+              = link_to 'Submit as spam', mark_as_spam_namespace_project_issue_path(@project.namespace, @project, @issue), method: :post, class: 'btn-spam', title: 'Submit as spam'
 
-        - if can?(current_user, :create_issue, @project)
-          = link_to new_namespace_project_issue_path(@project.namespace, @project), class: 'hidden-xs hidden-sm btn btn-grouped new-issue-link btn-new btn-inverted', title: 'New issue', id: 'new_issue_link' do
-            New issue
-        - if can?(current_user, :update_issue, @issue)
-          = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, status_only: true, format: 'json'), data: {no_turbolink: true}, class: "hidden-xs hidden-sm btn btn-grouped btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
-          = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, status_only: true, format: 'json'), data: {no_turbolink: true}, class: "hidden-xs hidden-sm btn btn-grouped btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
-          - if @issue.submittable_as_spam? && current_user.admin?
-            = link_to 'Submit as spam', mark_as_spam_namespace_project_issue_path(@project.namespace, @project, @issue), method: :post, class: 'hidden-xs hidden-sm btn btn-grouped btn-spam', title: 'Submit as spam'
-          = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'hidden-xs hidden-sm btn btn-grouped issuable-edit'
+    = link_to new_namespace_project_issue_path(@project.namespace, @project), class: 'hidden-xs hidden-sm btn btn-grouped new-issue-link btn-new btn-inverted', title: 'New issue', id: 'new_issue_link' do
+      New issue
+    - if can?(current_user, :update_issue, @issue)
+      = link_to 'Reopen issue', issue_path(@issue, issue: { state_event: :reopen }, format: 'json'), data: {no_turbolink: true}, class: "hidden-xs hidden-sm btn btn-grouped btn-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
+      = link_to 'Close issue', issue_path(@issue, issue: { state_event: :close }, format: 'json'), data: {no_turbolink: true}, class: "hidden-xs hidden-sm btn btn-grouped btn-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
+      - if @issue.submittable_as_spam_by?(current_user)
+        = link_to 'Submit as spam', mark_as_spam_namespace_project_issue_path(@project.namespace, @project, @issue), method: :post, class: 'hidden-xs hidden-sm btn btn-grouped btn-spam', title: 'Submit as spam'
+      = link_to 'Edit', edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'hidden-xs hidden-sm btn btn-grouped issuable-edit'
 
 
 .issue-details.issuable-details
@@ -72,7 +70,7 @@
       // This element is filled in using JavaScript.
 
   .content-block.content-block-small
-    = render 'new_branch'
+    = render 'new_branch' unless @issue.confidential?
     = render 'award_emoji/awards_block', awardable: @issue, inline: true
 
   %section.issuable-discussion

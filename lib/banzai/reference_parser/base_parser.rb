@@ -33,7 +33,7 @@ module Banzai
     # they have access to.
     class BaseParser
       class << self
-        attr_accessor :reference_type
+        attr_accessor :reference_type, :reference_options
       end
 
       # Returns the attribute name containing the value for every object to be
@@ -63,12 +63,7 @@ module Banzai
         nodes.select do |node|
           if node.has_attribute?(project_attr)
             node_id = node.attr(project_attr).to_i
-
-            if project && project.id == node_id
-              true
-            else
-              can?(user, :read_project, projects[node_id])
-            end
+            can_read_reference?(user, projects[node_id])
           else
             true
           end
@@ -139,9 +134,7 @@ module Banzai
         ids = unique_attribute_values(nodes, attribute)
         rows = collection_objects_for_ids(collection, ids)
 
-        rows.each_with_object({}) do |row, hash|
-          hash[row.id] = row
-        end
+        rows.index_by(&:id)
       end
 
       # Returns an Array containing all unique values of an attribute of the
@@ -187,9 +180,10 @@ module Banzai
       # the references.
       def process(documents)
         type = self.class.reference_type
+        reference_options = self.class.reference_options
 
         nodes = documents.flat_map do |document|
-          Querying.css(document, "a[data-reference-type='#{type}'].gfm").to_a
+          Querying.css(document, "a[data-reference-type='#{type}'].gfm", reference_options).to_a
         end
 
         gather_references(nodes)
@@ -214,7 +208,7 @@ module Banzai
           grouped_objects_for_nodes(nodes, Project, 'data-project')
       end
 
-      def can?(user, permission, subject)
+      def can?(user, permission, subject = :global)
         Ability.allowed?(user, permission, subject)
       end
 
@@ -225,6 +219,15 @@ module Banzai
       private
 
       attr_reader :current_user, :project
+
+      # When a feature is disabled or visible only for
+      # team members we should not allow team members
+      # see reference comments.
+      # Override this method on subclasses
+      # to check if user can read resource
+      def can_read_reference?(user, ref_project)
+        raise NotImplementedError
+      end
 
       def lazy(&block)
         Gitlab::Lazy.new(&block)

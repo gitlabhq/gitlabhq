@@ -1,4 +1,6 @@
 class Groups::LabelsController < Groups::ApplicationController
+  include ToggleSubscriptionAction
+
   before_action :label, only: [:edit, :update, :destroy]
   before_action :authorize_admin_labels!, only: [:new, :create, :edit, :update, :destroy]
   before_action :save_previous_label_path, only: [:edit]
@@ -24,7 +26,7 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def create
-    @label = @group.labels.create(label_params)
+    @label = Labels::CreateService.new(label_params).execute(group: group)
 
     if @label.valid?
       redirect_to group_labels_path(@group)
@@ -38,7 +40,9 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def update
-    if @label.update_attributes(label_params)
+    @label = Labels::UpdateService.new(label_params).execute(@label)
+
+    if @label.valid?
       redirect_back_or_group_labels_path
     else
       render :edit
@@ -68,6 +72,11 @@ class Groups::LabelsController < Groups::ApplicationController
 
   def label
     @label ||= @group.labels.find(params[:id])
+  end
+  alias_method :subscribable_resource, :label
+
+  def subscribable_project
+    nil
   end
 
   def label_params

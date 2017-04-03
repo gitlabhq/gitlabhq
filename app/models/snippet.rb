@@ -6,6 +6,8 @@ class Snippet < ActiveRecord::Base
   include Referable
   include Sortable
   include Awardable
+  include Mentionable
+  include Spammable
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :content
@@ -16,7 +18,7 @@ class Snippet < ActiveRecord::Base
     default_content_html_invalidator || file_name_changed?
   end
 
-  default_value_for :visibility_level, Snippet::PRIVATE
+  default_value_for(:visibility_level) { current_application_settings.default_snippet_visibility }
 
   belongs_to :author, class_name: 'User'
   belongs_to :project
@@ -26,9 +28,9 @@ class Snippet < ActiveRecord::Base
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
   validates :author, presence: true
-  validates :title, presence: true, length: { within: 0..255 }
+  validates :title, presence: true, length: { maximum: 255 }
   validates :file_name,
-    length: { within: 0..255 },
+    length: { maximum: 255 },
     format: { with: Gitlab::Regex.file_name_regex,
               message: Gitlab::Regex.file_name_regex_message }
 
@@ -44,6 +46,9 @@ class Snippet < ActiveRecord::Base
 
   participant :author
   participant :notes_with_associations
+
+  attr_spammable :title, spam_title: true
+  attr_spammable :content, spam_description: true
 
   def self.reference_prefix
     '$'
@@ -63,14 +68,14 @@ class Snippet < ActiveRecord::Base
     @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
   end
 
-  def to_reference(from_project = nil)
+  def to_reference(from_project = nil, full: false)
     reference = "#{self.class.reference_prefix}#{id}"
 
-    if cross_project_reference?(from_project)
-      reference = project.to_reference + reference
+    if project.present?
+      "#{project.to_reference(from_project, full: full)}#{reference}"
+    else
+      reference
     end
-
-    reference
   end
 
   def self.content_types
@@ -93,6 +98,10 @@ class Snippet < ActiveRecord::Base
     0
   end
 
+  def file_name
+    super.to_s
+  end
+
   # alias for compatibility with blobs and highlighting
   def path
     file_name
@@ -111,7 +120,7 @@ class Snippet < ActiveRecord::Base
   end
 
   def visibility_level_field
-    visibility_level
+    :visibility_level
   end
 
   def no_highlighting?
@@ -120,6 +129,15 @@ class Snippet < ActiveRecord::Base
 
   def notes_with_associations
     notes.includes(:author)
+  end
+
+  def check_for_spam?
+    visibility_level_changed?(to: Snippet::PUBLIC) ||
+      (public? && (title_changed? || content_changed?))
+  end
+
+  def spammable_entity_type
+    'snippet'
   end
 
   class << self

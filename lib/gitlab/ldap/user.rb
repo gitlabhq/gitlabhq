@@ -1,5 +1,3 @@
-require 'gitlab/o_auth/user'
-
 # LDAP extension for User model
 #
 # * Find or create user from omniauth.auth data

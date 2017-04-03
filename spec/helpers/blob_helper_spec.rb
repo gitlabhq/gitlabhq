@@ -19,12 +19,12 @@ describe BlobHelper do
   describe '#highlight' do
     it 'returns plaintext for unknown lexer context' do
       result = helper.highlight(blob_name, no_context_content)
-      expect(result).to eq(%[<pre class="code highlight"><code><span id="LC1" class="line">:type "assem"))</span></code></pre>])
+      expect(result).to eq(%[<pre class="code highlight"><code><span id="LC1" class="line" lang="">:type "assem"))</span></code></pre>])
     end
 
     it 'highlights single block' do
-      expected = %Q[<pre class="code highlight"><code><span id="LC1" class="line"><span class="p">(</span><span class="nb">make-pathname</span> <span class="ss">:defaults</span> <span class="nv">name</span></span>
-<span id="LC2" class="line"><span class="ss">:type</span> <span class="s">"assem"</span><span class="p">))</span></span></code></pre>]
+      expected = %Q[<pre class="code highlight"><code><span id="LC1" class="line" lang="common_lisp"><span class="p">(</span><span class="nb">make-pathname</span> <span class="ss">:defaults</span> <span class="nv">name</span></span>
+<span id="LC2" class="line" lang="common_lisp"><span class="ss">:type</span> <span class="s">"assem"</span><span class="p">))</span></span></code></pre>]
 
       expect(helper.highlight(blob_name, blob_content)).to eq(expected)
     end
@@ -43,10 +43,10 @@ describe BlobHelper do
       let(:blob_name) { 'test.diff' }
       let(:blob_content) { "+aaa\n+bbb\n- ccc\n ddd\n"}
       let(:expected) do
-        %q(<pre class="code highlight"><code><span id="LC1" class="line"><span class="gi">+aaa</span></span>
-<span id="LC2" class="line"><span class="gi">+bbb</span></span>
-<span id="LC3" class="line"><span class="gd">- ccc</span></span>
-<span id="LC4" class="line"> ddd</span></code></pre>)
+        %q(<pre class="code highlight"><code><span id="LC1" class="line" lang="diff"><span class="gi">+aaa</span></span>
+<span id="LC2" class="line" lang="diff"><span class="gi">+bbb</span></span>
+<span id="LC3" class="line" lang="diff"><span class="gd">- ccc</span></span>
+<span id="LC4" class="line" lang="diff"> ddd</span></code></pre>)
       end
 
       it 'highlights each line properly' do
@@ -70,7 +70,7 @@ describe BlobHelper do
 
   describe "#edit_blob_link" do
     let(:namespace) { create(:namespace, name: 'gitlab' )}
-    let(:project) { create(:project, namespace: namespace) }
+    let(:project) { create(:project, :repository, namespace: namespace) }
 
     before do
       allow(self).to receive(:current_user).and_return(double)

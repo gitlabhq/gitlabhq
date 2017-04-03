@@ -1,37 +1,37 @@
-/* eslint-disable */
-(function() {
-  this.Activities = (function() {
-    function Activities() {
-      Pager.init(20, true, false, this.updateTooltips);
-      $(".event-filter-link").on("click", (function(_this) {
-        return function(event) {
-          event.preventDefault();
-          _this.toggleFilter($(event.currentTarget));
-          return _this.reloadActivities();
-        };
-      })(this));
-    }
+/* eslint-disable no-param-reassign, class-methods-use-this */
+/* global Pager */
 
-    Activities.prototype.updateTooltips = function() {
-      return gl.utils.localTimeAgo($('.js-timeago', '.content_list'));
-    };
+import Cookies from 'js-cookie';
 
-    Activities.prototype.reloadActivities = function() {
-      $(".content_list").html('');
-      return Pager.init(20, true);
-    };
+class Activities {
+  constructor() {
+    Pager.init(20, true, false, this.updateTooltips);
+    $('.event-filter-link').on('click', (e) => {
+      e.preventDefault();
+      this.toggleFilter(e.currentTarget);
+      this.reloadActivities();
+    });
+  }
 
-    Activities.prototype.toggleFilter = function(sender) {
-      var filter = sender.attr("id").split("_")[0];
+  updateTooltips() {
+    gl.utils.localTimeAgo($('.js-timeago', '.content_list'));
+  }
 
-      $('.event-filter .active').removeClass("active");
-      Cookies.set("event_filter", filter);
+  reloadActivities() {
+    $('.content_list').html('');
+    Pager.init(20, true, false, this.updateTooltips);
+  }
 
-      sender.closest('li').toggleClass("active");
-    };
+  toggleFilter(sender) {
+    const $sender = $(sender);
+    const filter = $sender.attr('id').split('_')[0];
 
-    return Activities;
+    $('.event-filter .active').removeClass('active');
+    Cookies.set('event_filter', filter);
 
-  })();
+    $sender.closest('li').toggleClass('active');
+  }
+}
 
-}).call(this);
+window.gl = window.gl || {};
+window.gl.Activities = Activities;

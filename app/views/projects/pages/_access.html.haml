@@ -1,0 +1,13 @@
+- if @project.pages_deployed?
+  .panel.panel-default
+    .panel-heading
+      Access pages
+    .panel-body
+      %p
+        %strong
+          Congratulations! Your pages are served under:
+
+      %p= link_to @project.pages_url, @project.pages_url
+
+      - @project.pages_domains.each do |domain|
+        %p= link_to domain.url, domain.url

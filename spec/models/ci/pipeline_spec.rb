@@ -1,8 +1,14 @@
 require 'spec_helper'
 
 describe Ci::Pipeline, models: true do
-  let(:project) { FactoryGirl.create :empty_project }
-  let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, status: 'created', project: project }
+  include EmailHelpers
+
+  let(:user) { create(:user) }
+  let(:project) { create(:empty_project) }
+
+  let(:pipeline) do
+    create(:ci_empty_pipeline, status: :created, project: project)
+  end
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }
@@ -18,7 +24,13 @@ describe Ci::Pipeline, models: true do
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
 
-  it { is_expected.to delegate_method(:stages).to(:statuses) }
+  describe '#block' do
+    it 'changes pipeline status to manual' do
+      expect(pipeline.block).to be true
+      expect(pipeline.reload).to be_manual
+      expect(pipeline.reload).to be_blocked
+    end
+  end
 
   describe '#valid_commit_sha' do
     context 'commit.sha can not start with 00000000' do
@@ -122,17 +134,123 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe '#stages' do
-    let(:pipeline2) { FactoryGirl.create :ci_pipeline, project: project }
-    subject { CommitStatus.where(pipeline: [pipeline, pipeline2]).stages }
-
+  describe 'pipeline stages' do
     before do
-      FactoryGirl.create :ci_build, pipeline: pipeline2, stage: 'test', stage_idx: 1
-      FactoryGirl.create :ci_build, pipeline: pipeline, stage: 'build', stage_idx: 0
+      create(:commit_status, pipeline: pipeline,
+                             stage: 'build',
+                             name: 'linux',
+                             stage_idx: 0,
+                             status: 'success')
+
+      create(:commit_status, pipeline: pipeline,
+                             stage: 'build',
+                             name: 'mac',
+                             stage_idx: 0,
+                             status: 'failed')
+
+      create(:commit_status, pipeline: pipeline,
+                             stage: 'deploy',
+                             name: 'staging',
+                             stage_idx: 2,
+                             status: 'running')
+
+      create(:commit_status, pipeline: pipeline,
+                             stage: 'test',
+                             name: 'rspec',
+                             stage_idx: 1,
+                             status: 'success')
     end
 
-    it 'return all stages' do
-      is_expected.to eq(%w(build test))
+    describe '#stages' do
+      subject { pipeline.stages }
+
+      context 'stages list' do
+        it 'returns ordered list of stages' do
+          expect(subject.map(&:name)).to eq(%w[build test deploy])
+        end
+      end
+
+      context 'stages with statuses' do
+        let(:statuses) do
+          subject.map { |stage| [stage.name, stage.status] }
+        end
+
+        it 'returns list of stages with correct statuses' do
+          expect(statuses).to eq([%w(build failed),
+                                  %w(test success),
+                                  %w(deploy running)])
+        end
+
+        context 'when commit status  is retried' do
+          before do
+            create(:commit_status, pipeline: pipeline,
+                                   stage: 'build',
+                                   name: 'mac',
+                                   stage_idx: 0,
+                                   status: 'success')
+          end
+
+          it 'ignores the previous state' do
+            expect(statuses).to eq([%w(build success),
+                                    %w(test success),
+                                    %w(deploy running)])
+          end
+        end
+      end
+
+      context 'when there is a stage with warnings' do
+        before do
+          create(:commit_status, pipeline: pipeline,
+                                 stage: 'deploy',
+                                 name: 'prod:2',
+                                 stage_idx: 2,
+                                 status: 'failed',
+                                 allow_failure: true)
+        end
+
+        it 'populates stage with correct number of warnings' do
+          deploy_stage = pipeline.stages.third
+
+          expect(deploy_stage).not_to receive(:statuses)
+          expect(deploy_stage).to have_warnings
+        end
+      end
+    end
+
+    describe '#stages_count' do
+      it 'returns a valid number of stages' do
+        expect(pipeline.stages_count).to eq(3)
+      end
+    end
+
+    describe '#stages_name' do
+      it 'returns a valid names of stages' do
+        expect(pipeline.stages_name).to eq(%w(build test deploy))
+      end
+    end
+  end
+
+  describe '#stage' do
+    subject { pipeline.stage('test') }
+
+    context 'with status in stage' do
+      before do
+        create(:commit_status, pipeline: pipeline, stage: 'test')
+      end
+
+      it { expect(subject).to be_a Ci::Stage }
+      it { expect(subject.name).to eq 'test' }
+      it { expect(subject.statuses).not_to be_empty }
+    end
+
+    context 'without status in stage' do
+      before do
+        create(:commit_status, pipeline: pipeline, stage: 'build')
+      end
+
+      it 'return stage object' do
+        is_expected.to be_nil
+      end
     end
   end
 
@@ -196,7 +314,7 @@ describe Ci::Pipeline, models: true do
     end
 
     describe 'merge request metrics' do
-      let(:project) { FactoryGirl.create :project }
+      let(:project) { create(:project, :repository) }
       let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
       let!(:merge_request) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
 
@@ -251,7 +369,7 @@ describe Ci::Pipeline, models: true do
   end
 
   context 'with non-empty project' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     let(:pipeline) do
       create(:ci_pipeline,
@@ -342,8 +460,95 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  shared_context 'with some outdated pipelines' do
+    before do
+      create_pipeline(:canceled, 'ref', 'A')
+      create_pipeline(:success, 'ref', 'A')
+      create_pipeline(:failed, 'ref', 'B')
+      create_pipeline(:skipped, 'feature', 'C')
+    end
+
+    def create_pipeline(status, ref, sha)
+      create(:ci_empty_pipeline, status: status, ref: ref, sha: sha)
+    end
+  end
+
+  describe '.latest' do
+    include_context 'with some outdated pipelines'
+
+    context 'when no ref is specified' do
+      let(:pipelines) { described_class.latest.all }
+
+      it 'returns the latest pipeline for the same ref and different sha' do
+        expect(pipelines.map(&:sha)).to contain_exactly('A', 'B', 'C')
+        expect(pipelines.map(&:status)).
+          to contain_exactly('success', 'failed', 'skipped')
+      end
+    end
+
+    context 'when ref is specified' do
+      let(:pipelines) { described_class.latest('ref').all }
+
+      it 'returns the latest pipeline for ref and different sha' do
+        expect(pipelines.map(&:sha)).to contain_exactly('A', 'B')
+        expect(pipelines.map(&:status)).
+          to contain_exactly('success', 'failed')
+      end
+    end
+  end
+
+  describe '.latest_status' do
+    include_context 'with some outdated pipelines'
+
+    context 'when no ref is specified' do
+      let(:latest_status) { described_class.latest_status }
+
+      it 'returns the latest status for the same ref and different sha' do
+        expect(latest_status).to eq(described_class.latest.status)
+        expect(latest_status).to eq('failed')
+      end
+    end
+
+    context 'when ref is specified' do
+      let(:latest_status) { described_class.latest_status('ref') }
+
+      it 'returns the latest status for ref and different sha' do
+        expect(latest_status).to eq(described_class.latest_status('ref'))
+        expect(latest_status).to eq('failed')
+      end
+    end
+  end
+
+  describe '.latest_successful_for' do
+    include_context 'with some outdated pipelines'
+
+    let!(:latest_successful_pipeline) do
+      create_pipeline(:success, 'ref', 'D')
+    end
+
+    it 'returns the latest successful pipeline' do
+      expect(described_class.latest_successful_for('ref')).
+        to eq(latest_successful_pipeline)
+    end
+  end
+
+  describe '.latest_successful_for_refs' do
+    include_context 'with some outdated pipelines'
+
+    let!(:latest_successful_pipeline1) { create_pipeline(:success, 'ref1', 'D') }
+    let!(:latest_successful_pipeline2) { create_pipeline(:success, 'ref2', 'D') }
+
+    it 'returns the latest successful pipeline for both refs' do
+      refs = %w(ref1 ref2 ref3)
+
+      expect(described_class.latest_successful_for_refs(refs)).to eq({ 'ref1' => latest_successful_pipeline1, 'ref2' => latest_successful_pipeline2 })
+    end
+  end
+
   describe '#status' do
-    let!(:build) { create(:ci_build, :created, pipeline: pipeline, name: 'test') }
+    let(:build) do
+      create(:ci_build, :created, pipeline: pipeline, name: 'test')
+    end
 
     subject { pipeline.reload.status }
 
@@ -385,13 +590,21 @@ describe Ci::Pipeline, models: true do
         build.cancel
       end
 
-      it { is_expected.to eq('canceled') }
+      context 'when build is pending' do
+        let(:build) do
+          create(:ci_build, :pending, pipeline: pipeline)
+        end
+
+        it { is_expected.to eq('canceled') }
+      end
     end
 
     context 'on failure and build retry' do
       before do
         build.drop
-        Ci::Build.retry(build)
+        project.add_developer(user)
+
+        Ci::Build.retry(build, user)
       end
 
       # We are changing a state: created > failed > running
@@ -399,6 +612,257 @@ describe Ci::Pipeline, models: true do
       # Since the pipeline already run, so it should not be pending anymore
 
       it { is_expected.to eq('running') }
+    end
+  end
+
+  describe '#detailed_status' do
+    subject { pipeline.detailed_status(user) }
+
+    context 'when pipeline is created' do
+      let(:pipeline) { create(:ci_pipeline, status: :created) }
+
+      it 'returns detailed status for created pipeline' do
+        expect(subject.text).to eq 'created'
+      end
+    end
+
+    context 'when pipeline is pending' do
+      let(:pipeline) { create(:ci_pipeline, status: :pending) }
+
+      it 'returns detailed status for pending pipeline' do
+        expect(subject.text).to eq 'pending'
+      end
+    end
+
+    context 'when pipeline is running' do
+      let(:pipeline) { create(:ci_pipeline, status: :running) }
+
+      it 'returns detailed status for running pipeline' do
+        expect(subject.text).to eq 'running'
+      end
+    end
+
+    context 'when pipeline is successful' do
+      let(:pipeline) { create(:ci_pipeline, status: :success) }
+
+      it 'returns detailed status for successful pipeline' do
+        expect(subject.text).to eq 'passed'
+      end
+    end
+
+    context 'when pipeline is failed' do
+      let(:pipeline) { create(:ci_pipeline, status: :failed) }
+
+      it 'returns detailed status for failed pipeline' do
+        expect(subject.text).to eq 'failed'
+      end
+    end
+
+    context 'when pipeline is canceled' do
+      let(:pipeline) { create(:ci_pipeline, status: :canceled) }
+
+      it 'returns detailed status for canceled pipeline' do
+        expect(subject.text).to eq 'canceled'
+      end
+    end
+
+    context 'when pipeline is skipped' do
+      let(:pipeline) { create(:ci_pipeline, status: :skipped) }
+
+      it 'returns detailed status for skipped pipeline' do
+        expect(subject.text).to eq 'skipped'
+      end
+    end
+
+    context 'when pipeline is blocked' do
+      let(:pipeline) { create(:ci_pipeline, status: :manual) }
+
+      it 'returns detailed status for blocked pipeline' do
+        expect(subject.text).to eq 'blocked'
+      end
+    end
+
+    context 'when pipeline is successful but with warnings' do
+      let(:pipeline) { create(:ci_pipeline, status: :success) }
+
+      before do
+        create(:ci_build, :allowed_to_fail, :failed, pipeline: pipeline)
+      end
+
+      it 'retruns detailed status for successful pipeline with warnings' do
+        expect(subject.label).to eq 'passed with warnings'
+      end
+    end
+  end
+
+  describe '#cancelable?' do
+    %i[created running pending].each do |status0|
+      context "when there is a build #{status0}" do
+        before do
+          create(:ci_build, status0, pipeline: pipeline)
+        end
+
+        it 'is cancelable' do
+          expect(pipeline.cancelable?).to be_truthy
+        end
+      end
+
+      context "when there is an external job #{status0}" do
+        before do
+          create(:generic_commit_status, status0, pipeline: pipeline)
+        end
+
+        it 'is cancelable' do
+          expect(pipeline.cancelable?).to be_truthy
+        end
+      end
+
+      %i[success failed canceled].each do |status1|
+        context "when there are generic_commit_status jobs for #{status0} and #{status1}" do
+          before do
+            create(:generic_commit_status, status0, pipeline: pipeline)
+            create(:generic_commit_status, status1, pipeline: pipeline)
+          end
+
+          it 'is cancelable' do
+            expect(pipeline.cancelable?).to be_truthy
+          end
+        end
+
+        context "when there are generic_commit_status and ci_build jobs for #{status0} and #{status1}" do
+          before do
+            create(:generic_commit_status, status0, pipeline: pipeline)
+            create(:ci_build, status1, pipeline: pipeline)
+          end
+
+          it 'is cancelable' do
+            expect(pipeline.cancelable?).to be_truthy
+          end
+        end
+
+        context "when there are ci_build jobs for #{status0} and #{status1}" do
+          before do
+            create(:ci_build, status0, pipeline: pipeline)
+            create(:ci_build, status1, pipeline: pipeline)
+          end
+
+          it 'is cancelable' do
+            expect(pipeline.cancelable?).to be_truthy
+          end
+        end
+      end
+    end
+
+    %i[success failed canceled].each do |status|
+      context "when there is a build #{status}" do
+        before do
+          create(:ci_build, status, pipeline: pipeline)
+        end
+
+        it 'is not cancelable' do
+          expect(pipeline.cancelable?).to be_falsey
+        end
+      end
+
+      context "when there is an external job #{status}" do
+        before do
+          create(:generic_commit_status, status, pipeline: pipeline)
+        end
+
+        it 'is not cancelable' do
+          expect(pipeline.cancelable?).to be_falsey
+        end
+      end
+    end
+  end
+
+  describe '#cancel_running' do
+    let(:latest_status) { pipeline.statuses.pluck(:status) }
+
+    context 'when there is a running external job and a regular job' do
+      before do
+        create(:ci_build, :running, pipeline: pipeline)
+        create(:generic_commit_status, :running, pipeline: pipeline)
+
+        pipeline.cancel_running
+      end
+
+      it 'cancels both jobs' do
+        expect(latest_status).to contain_exactly('canceled', 'canceled')
+      end
+    end
+
+    context 'when jobs are in different stages' do
+      before do
+        create(:ci_build, :running, stage_idx: 0, pipeline: pipeline)
+        create(:ci_build, :running, stage_idx: 1, pipeline: pipeline)
+
+        pipeline.cancel_running
+      end
+
+      it 'cancels both jobs' do
+        expect(latest_status).to contain_exactly('canceled', 'canceled')
+      end
+    end
+
+    context 'when there are created builds present in the pipeline' do
+      before do
+        create(:ci_build, :running, stage_idx: 0, pipeline: pipeline)
+        create(:ci_build, :created, stage_idx: 1, pipeline: pipeline)
+
+        pipeline.cancel_running
+      end
+
+      it 'cancels created builds' do
+        expect(latest_status).to eq %w(canceled canceled)
+      end
+    end
+  end
+
+  describe '#retry_failed' do
+    let(:latest_status) { pipeline.statuses.latest.pluck(:status) }
+
+    before do
+      project.add_developer(user)
+    end
+
+    context 'when there is a failed build and failed external status' do
+      before do
+        create(:ci_build, :failed, name: 'build', pipeline: pipeline)
+        create(:generic_commit_status, :failed, name: 'jenkins', pipeline: pipeline)
+
+        pipeline.retry_failed(user)
+      end
+
+      it 'retries only build' do
+        expect(latest_status).to contain_exactly('pending', 'failed')
+      end
+    end
+
+    context 'when builds are in different stages' do
+      before do
+        create(:ci_build, :failed, name: 'build', stage_idx: 0, pipeline: pipeline)
+        create(:ci_build, :failed, name: 'jenkins', stage_idx: 1, pipeline: pipeline)
+
+        pipeline.retry_failed(user)
+      end
+
+      it 'retries both builds' do
+        expect(latest_status).to contain_exactly('pending', 'created')
+      end
+    end
+
+    context 'when there are canceled and failed' do
+      before do
+        create(:ci_build, :failed, name: 'build', stage_idx: 0, pipeline: pipeline)
+        create(:ci_build, :canceled, name: 'jenkins', stage_idx: 1, pipeline: pipeline)
+
+        pipeline.retry_failed(user)
+      end
+
+      it 'retries both builds' do
+        expect(latest_status).to contain_exactly('pending', 'created')
+      end
     end
   end
 
@@ -502,7 +966,7 @@ describe Ci::Pipeline, models: true do
   end
 
   describe "#merge_requests" do
-    let(:project) { FactoryGirl.create :project }
+    let(:project) { create(:project, :repository) }
     let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
 
     it "returns merge requests whose `diff_head_sha` matches the pipeline's SHA" do
@@ -522,6 +986,138 @@ describe Ci::Pipeline, models: true do
       allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { '97de212e80737a608d939f648d959671fb0a0142b' }
 
       expect(pipeline.merge_requests).to be_empty
+    end
+  end
+
+  describe '#stuck?' do
+    before do
+      create(:ci_build, :pending, pipeline: pipeline)
+    end
+
+    context 'when pipeline is stuck' do
+      it 'is stuck' do
+        expect(pipeline).to be_stuck
+      end
+    end
+
+    context 'when pipeline is not stuck' do
+      before { create(:ci_runner, :shared, :online) }
+
+      it 'is not stuck' do
+        expect(pipeline).not_to be_stuck
+      end
+    end
+  end
+
+  describe '#has_yaml_errors?' do
+    context 'when pipeline has errors' do
+      let(:pipeline) do
+        create(:ci_pipeline, config: { rspec: nil })
+      end
+
+      it 'contains yaml errors' do
+        expect(pipeline).to have_yaml_errors
+      end
+    end
+
+    context 'when pipeline does not have errors' do
+      let(:pipeline) do
+        create(:ci_pipeline, config: { rspec: { script: 'rake test' } })
+      end
+
+      it 'does not containyaml errors' do
+        expect(pipeline).not_to have_yaml_errors
+      end
+    end
+  end
+
+  describe '#update_status' do
+    let(:pipeline) { create(:ci_pipeline, sha: '123456') }
+
+    it 'updates the cached status' do
+      fake_status = double
+      # after updating the status, the status is set to `skipped` for this pipeline's builds
+      expect(Ci::PipelineStatus).to receive(:new).with(pipeline.project, sha: '123456', status: 'skipped').and_return(fake_status)
+      expect(fake_status).to receive(:store_in_cache_if_needed)
+
+      pipeline.update_status
+    end
+  end
+
+  describe 'notifications when pipeline success or failed' do
+    let(:project) { create(:project, :repository) }
+
+    let(:pipeline) do
+      create(:ci_pipeline,
+             project: project,
+             sha: project.commit('master').sha,
+             user: create(:user))
+    end
+
+    before do
+      reset_delivered_emails!
+
+      project.team << [pipeline.user, Gitlab::Access::DEVELOPER]
+
+      perform_enqueued_jobs do
+        pipeline.enqueue
+        pipeline.run
+      end
+    end
+
+    shared_examples 'sending a notification' do
+      it 'sends an email' do
+        should_only_email(pipeline.user, kind: :bcc)
+      end
+    end
+
+    shared_examples 'not sending any notification' do
+      it 'does not send any email' do
+        should_not_email_anyone
+      end
+    end
+
+    context 'with success pipeline' do
+      before do
+        perform_enqueued_jobs do
+          pipeline.succeed
+        end
+      end
+
+      it_behaves_like 'sending a notification'
+    end
+
+    context 'with failed pipeline' do
+      before do
+        perform_enqueued_jobs do
+          create(:ci_build, :failed, pipeline: pipeline)
+          create(:generic_commit_status, :failed, pipeline: pipeline)
+
+          pipeline.drop
+        end
+      end
+
+      it_behaves_like 'sending a notification'
+    end
+
+    context 'with skipped pipeline' do
+      before do
+        perform_enqueued_jobs do
+          pipeline.skip
+        end
+      end
+
+      it_behaves_like 'not sending any notification'
+    end
+
+    context 'with cancelled pipeline' do
+      before do
+        perform_enqueued_jobs do
+          pipeline.cancel
+        end
+      end
+
+      it_behaves_like 'not sending any notification'
     end
   end
 end

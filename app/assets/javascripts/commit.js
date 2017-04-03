@@ -1,14 +1,12 @@
-/* eslint-disable */
-(function() {
-  this.Commit = (function() {
-    function Commit() {
-      $('.files .diff-file').each(function() {
-        return new CommitFile(this);
-      });
-    }
+/* eslint-disable func-names, space-before-function-paren, wrap-iife */
+/* global CommitFile */
 
-    return Commit;
+window.Commit = (function() {
+  function Commit() {
+    $('.files .diff-file').each(function() {
+      return new CommitFile(this);
+    });
+  }
 
-  })();
-
-}).call(this);
+  return Commit;
+})();

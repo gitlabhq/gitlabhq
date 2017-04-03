@@ -1,6 +1,9 @@
-/* eslint-disable */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, prefer-arrow-callback, consistent-return, object-shorthand, no-unused-vars, one-var, one-var-declaration-per-line, no-else-return, comma-dangle, max-len */
+/* global Mousetrap */
+/* global findFileURL */
+
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.Shortcuts = (function() {
     function Shortcuts(skipResetBindings) {
@@ -19,7 +22,7 @@
       Mousetrap.bind(['ctrl+shift+p', 'command+shift+p'], this.toggleMarkdownPreview);
       if (typeof findFileURL !== "undefined" && findFileURL !== null) {
         Mousetrap.bind('t', function() {
-          return Turbolinks.visit(findFileURL);
+          return gl.utils.visitUrl(findFileURL);
         });
       }
     }
@@ -30,6 +33,10 @@
     };
 
     Shortcuts.prototype.toggleMarkdownPreview = function(e) {
+      // Check if short-cut was triggered while in Write Mode
+      if ($(e.target).hasClass('js-note-text')) {
+        $('.js-md-preview-button').focus();
+      }
       return $(document).triggerHandler('markdown-preview:toggle', [e]);
     };
 
@@ -47,7 +54,7 @@
           var i, l, len, results;
           if (location && location.length > 0) {
             results = [];
-            for (i = 0, len = location.length; i < len; i++) {
+            for (i = 0, len = location.length; i < len; i += 1) {
               l = location[i];
               results.push($(l).show());
             }
@@ -74,7 +81,6 @@
     };
 
     return Shortcuts;
-
   })();
 
   $(document).on('click.more_help', '.js-more-help-button', function(e) {
@@ -95,5 +101,4 @@
       }
     };
   })();
-
-}).call(this);
+}).call(window);

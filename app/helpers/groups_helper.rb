@@ -5,22 +5,26 @@ module GroupsHelper
 
   def group_icon(group)
     if group.is_a?(String)
-      group = Group.find_by(path: group)
+      group = Group.find_by_full_path(group)
     end
 
-    if group && group.avatar.present?
-      group.avatar.url
-    else
-      image_path('no_group_avatar.png')
-    end
+    group.try(:avatar_url) || image_path('no_group_avatar.png')
   end
 
   def group_title(group, name = nil, url = nil)
-    full_title = link_to(simple_sanitize(group.name), group_path(group))
-    full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url) if name
+    @has_group_title = true
+    full_title = ''
 
-    content_tag :span do
-      full_title
+    group.ancestors.each do |parent|
+      full_title += link_to(simple_sanitize(parent.name), group_path(parent), class: 'group-path hidable')
+      full_title += '<span class="hidable"> / </span>'.html_safe
+    end
+
+    full_title += link_to(simple_sanitize(group.name), group_path(group), class: 'group-path')
+    full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url, class: 'group-path') if name
+
+    content_tag :span, class: 'group-title' do
+      full_title.html_safe
     end
   end
 
@@ -47,5 +51,9 @@ module GroupsHelper
     content_tag(:span, class: "lfs-#{status}") do
       "#{status.humanize} #{projects_lfs_status(group)}"
     end
+  end
+
+  def group_issues(group)
+    IssuesFinder.new(current_user, group_id: group.id).execute
   end
 end
