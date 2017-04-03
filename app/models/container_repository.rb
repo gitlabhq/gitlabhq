@@ -43,8 +43,6 @@ class ContainerRepository < ActiveRecord::Base
     ContainerRegistry::Blob.new(self, config)
   end
 
-  # TODO, specs needed
-  #
   def has_tags?
     tags.to_a.any?
   end

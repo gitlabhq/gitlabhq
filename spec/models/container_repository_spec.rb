@@ -57,6 +57,12 @@ describe ContainerRepository do
     it { is_expected.not_to be_empty }
   end
 
+  describe '#has_tags?' do
+    it 'has tags' do
+      expect(container_repository).to have_tags
+    end
+  end
+
   describe '#delete_tags!' do
     let(:container_repository) do
       create(:container_repository, name: 'my_image',
