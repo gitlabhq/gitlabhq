@@ -33,14 +33,14 @@ module EE
       refresh_service_desk_key! if service_desk_mail_key.blank?
 
       from = "service_desk+#{service_desk_mail_key}"
-      Gitlab::IncomingEmail.reply_address(from)
+      ::Gitlab::IncomingEmail.reply_address(from)
     end
 
     def refresh_service_desk_key!
       return unless ::Gitlab::EE::ServiceDesk.enabled?
       return unless self.service_desk_enabled?
 
-      self.service_desk_mail_key = Devise.friendly_token(16)
+      self.service_desk_mail_key = SentNotification.reply_key
     end
 
     private
