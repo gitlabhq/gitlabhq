@@ -151,6 +151,7 @@
           success: this.updateApproverList,
           complete() {
             $select.select2('val', '');
+            $('.js-select-user-and-group').select2('val', '');
             $('.load-wrapper').addClass('hidden');
           },
           error(err) {
