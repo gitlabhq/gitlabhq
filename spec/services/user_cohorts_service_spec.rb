@@ -32,11 +32,7 @@ describe UserCohortsService do
         month_start(0) => { months: [2], total: 2, inactive: 1 }
       }
 
-      result = described_class.new.execute(12)
-
-      expect(result.length).to eq(12)
-      expect(result.keys).to all(be_a(Date))
-      expect(result).to eq(expected)
+      expect(described_class.new.execute).to eq(expected)
     end
   end
 end
