@@ -46,6 +46,10 @@ class Blob < SimpleDelegator
     text? && language && language.name == 'SVG'
   end
 
+  def pdf?
+    name && File.extname(name) == '.pdf'
+  end
+
   def ipython_notebook?
     text? && language&.name == 'Jupyter Notebook'
   end
@@ -71,6 +75,8 @@ class Blob < SimpleDelegator
       end
     elsif image? || svg?
       'image'
+    elsif pdf?
+      'pdf'
     elsif ipython_notebook?
       'notebook'
     elsif sketch?

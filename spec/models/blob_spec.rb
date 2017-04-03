@@ -53,6 +53,20 @@ describe Blob do
     end
   end
 
+  describe '#pdf?' do
+    it 'is falsey when file extension is not .pdf' do
+      git_blob = double(name: 'git_blob.txt')
+
+      expect(described_class.decorate(git_blob)).not_to be_pdf
+    end
+
+    it 'is truthy when file extension is .pdf' do
+      git_blob = double(name: 'git_blob.pdf')
+
+      expect(described_class.decorate(git_blob)).to be_pdf
+    end
+  end
+
   describe '#ipython_notebook?' do
     it 'is falsey when language is not Jupyter Notebook' do
       git_blob = double(text?: true, language: double(name: 'JSON'))
@@ -102,6 +116,7 @@ describe Blob do
 
     def stubbed_blob(overrides = {})
       overrides.reverse_merge!(
+        name: nil,
         image?: false,
         language: nil,
         lfs_pointer?: false,
@@ -144,6 +159,11 @@ describe Blob do
     it 'defaults to download' do
       blob = stubbed_blob
       expect(blob.to_partial_path(project)).to eq 'download'
+    end
+
+    it 'handles PDFs' do
+      blob = stubbed_blob(name: 'blob.pdf', pdf?: true)
+      expect(blob.to_partial_path(project)).to eq 'pdf'
     end
 
     it 'handles iPython notebooks' do
