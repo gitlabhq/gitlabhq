@@ -109,7 +109,7 @@ module API
         requires :housekeeping_full_repack_period, type: Integer, desc: "Number of Git pushes after which a full 'git repack' is run."
         requires :housekeeping_gc_period, type: Integer, desc: "Number of Git pushes after which 'git gc' is run."
       end
-<<<<<<< HEAD
+      optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
       optional :polling_interval_multiplier, type: BigDecimal, desc: 'Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling.'
       # GitLab-EE specific settings
       optional :help_text, type: String, desc: 'GitLab server administrator information'
@@ -127,10 +127,6 @@ module API
       optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
       optional :repository_storages, type: Array[String], desc: 'A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random.'
       optional :repository_size_limit, type: Integer, desc: 'Size limit per repository (MB)'
-=======
-      optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
-      optional :polling_interval_multiplier, type: BigDecimal, desc: 'Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling.'
->>>>>>> ce-com/master
       at_least_one_of :default_branch_protection, :default_project_visibility, :default_snippet_visibility,
                       :default_group_visibility, :restricted_visibility_levels, :import_sources,
                       :enabled_git_access_protocol, :gravatar_enabled, :default_projects_limit,
@@ -144,16 +140,12 @@ module API
                       :container_registry_token_expire_delay,
                       :metrics_enabled, :sidekiq_throttling_enabled, :recaptcha_enabled,
                       :akismet_enabled, :admin_notification_email, :sentry_enabled,
-                      :repository_checks_enabled, :koding_enabled, :housekeeping_enabled, :terminal_max_session_time, :plantuml_enabled,
+                      :repository_checks_enabled, :koding_enabled, :plantuml_enabled,
                       :version_check_enabled, :email_author_in_body, :html_emails_enabled,
-<<<<<<< HEAD
-                      :polling_interval_multiplier,
+                      :housekeeping_enabled, :terminal_max_session_time, :polling_interval_multiplier,
                       # GitLab-EE specific settings
                       :help_text, :elasticsearch_indexing, :usage_ping_enabled,
                       :repository_storages, :repository_size_limit
-=======
-                      :housekeeping_enabled, :terminal_max_session_time, :polling_interval_multiplier
->>>>>>> ce-com/master
     end
     put "application/settings" do
       attrs = declared_params(include_missing: false)
