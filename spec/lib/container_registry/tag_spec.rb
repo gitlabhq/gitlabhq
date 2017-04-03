@@ -5,10 +5,9 @@ describe ContainerRegistry::Tag do
   let(:project) { create(:project, path: 'test', group: group) }
 
   let(:repository) do
-    create(:container_repository, name: '', tags: %w[latest], project: project)
+    create(:container_repository, name: '', project: project)
   end
 
-  # TODO, move stubs to helper with this header
   let(:headers) do
     { 'Accept' => 'application/vnd.docker.distribution.manifest.v2+json' }
   end
@@ -41,7 +40,7 @@ describe ContainerRegistry::Tag do
     context 'when tag belongs to first-level repository' do
       let(:repository) do
         create(:container_repository, name: 'my_image',
-                                      tags: %w[latest],
+                                      tags: %w[tag],
                                       project: project)
       end
 
@@ -158,29 +157,29 @@ describe ContainerRegistry::Tag do
     end
   end
 
-  context 'manifest digest' do
+  context 'with stubbed digest' do
     before do
-      stub_request(:head, 'http://registry.gitlab/v2/group/test/manifests/tag').
-        with(headers: headers).
-        to_return(status: 200, headers: { 'Docker-Content-Digest' => 'sha256:digest' })
+      stub_request(:head, 'http://registry.gitlab/v2/group/test/manifests/tag')
+        .with(headers: headers)
+        .to_return(status: 200, headers: { 'Docker-Content-Digest' => 'sha256:digest' })
     end
 
-    context '#digest' do
-      subject { tag.digest }
-
-      it { is_expected.to eq('sha256:digest') }
+    describe '#digest' do
+      it 'returns a correct tag digest' do
+        expect(tag.digest).to eq 'sha256:digest'
+      end
     end
 
-    context '#delete' do
+    describe '#delete' do
       before do
-        stub_request(:delete, 'http://registry.gitlab/v2/group/test/manifests/sha256:digest').
-          with(headers: headers).
-          to_return(status: 200)
+        stub_request(:delete, 'http://registry.gitlab/v2/group/test/manifests/sha256:digest')
+          .with(headers: headers)
+          .to_return(status: 200)
       end
 
-      subject { tag.delete }
-
-      it { is_expected.to be_truthy }
+      it 'correctly deletes the tag' do
+        expect(tag.delete).to be_truthy
+      end
     end
   end
 end
