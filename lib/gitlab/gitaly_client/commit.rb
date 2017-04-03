@@ -7,8 +7,10 @@ module Gitlab
 
       class << self
         def diff_from_parent(commit, options = {})
-          stub      = Gitaly::Diff::Stub.new(nil, nil, channel_override: GitalyClient.channel)
-          repo      = Gitaly::Repository.new(path: commit.project.repository.path_to_repo)
+          project   = commit.project
+          channel   = GitalyClient.get_channel(project.repository_storage)
+          stub      = Gitaly::Diff::Stub.new(nil, nil, channel_override: channel)
+          repo      = Gitaly::Repository.new(path: project.repository.path_to_repo)
           parent    = commit.parents[0]
           parent_id = parent ? parent.id : EMPTY_TREE_ID
           request   = Gitaly::CommitDiffRequest.new(
@@ -18,6 +20,20 @@ module Gitlab
           )
 
           Gitlab::Git::DiffCollection.new(stub.commit_diff(request), options)
+        end
+
+        def is_ancestor(repository, ancestor_id, child_id)
+          project = Project.find_by_path(repository.path)
+          channel = GitalyClient.get_channel(project.repository_storage)
+          stub = Gitaly::Commit::Stub.new(nil, nil, channel_override: channel)
+          repo = Gitaly::Repository.new(path: repository.path_to_repo)
+          request = Gitaly::CommitIsAncestorRequest.new(
+            repository: repo,
+            ancestor_id: ancestor_id,
+            child_id: child_id
+          )
+
+          stub.commit_is_ancestor(request).value
         end
       end
     end

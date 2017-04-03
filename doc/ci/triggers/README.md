@@ -4,6 +4,7 @@
 - [Introduced][ci-229] in GitLab CE 7.14.
 - GitLab 8.12 has a completely redesigned job permissions system. Read all
   about the [new model and its implications](../../user/project/new_ci_build_permissions_model.md#job-triggers).
+- GitLab 9.0 introduced a trigger ownership to solve permission problems.
 
 Triggers can be used to force a rebuild of a specific `ref` (branch or tag)
 with an API call.
@@ -21,13 +22,30 @@ overview of the time the triggers were last used.
 
 ![Triggers page overview](img/triggers_page.png)
 
+## Take ownership
+
+Each created trigger when run will impersonate their associated user including
+their access to projects and their project permissions.
+
+You can take ownership of existing triggers by clicking *Take ownership*.
+From now on the trigger will be run as you.
+
+## Legacy triggers
+
+Old triggers, created before 9.0 will be marked as Legacy. Triggers with
+the legacy label do not have an associated user and only have access
+to the current project.
+
+Legacy trigger are considered deprecated and will be removed
+with one of the future versions of GitLab.
+
 ## Revoke a trigger
 
 You can revoke a trigger any time by going at your project's
 **Settings > Triggers** and hitting the **Revoke** button. The action is
 irreversible.
 
-## Trigger a job
+## Trigger a pipeline
 
 > **Note**:
 Valid refs are only the branches and tags. If you pass a commit SHA as a ref,
@@ -63,7 +81,7 @@ below.
 See the [Examples](#examples) section for more details on how to actually
 trigger a rebuild.
 
-## Trigger a job from webhook
+## Trigger a pipeline from webhook
 
 > Introduced in GitLab 8.14.
 
@@ -117,7 +135,7 @@ curl --request POST \
     "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline?token=TOKEN&ref=master"
 ```
 
-### Triggering a job within `.gitlab-ci.yml`
+### Triggering a pipeline within `.gitlab-ci.yml`
 
 You can also benefit by using triggers in your `.gitlab-ci.yml`. Let's say that
 you have two projects, A and B, and you want to trigger a rebuild on the `master`

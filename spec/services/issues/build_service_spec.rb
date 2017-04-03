@@ -1,7 +1,7 @@
 require 'spec_helper.rb'
 
 describe Issues::BuildService, services: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   before do

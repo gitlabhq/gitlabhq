@@ -83,6 +83,14 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
       expect(doc.css('a').length).to eq 1
     end
 
+    it 'links to a User with different case-sensitivity' do
+      user = create(:user, username: 'RescueRanger')
+
+      doc = reference_filter("Hey #{user.to_reference.upcase}")
+      expect(doc.css('a').length).to eq 1
+      expect(doc.css('a').text).to eq(user.to_reference)
+    end
+
     it 'includes a data-user attribute' do
       doc = reference_filter("Hey #{reference}")
       link = doc.css('a').first

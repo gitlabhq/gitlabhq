@@ -26,7 +26,7 @@
 
   .table.ci-table {
     .environments-actions {
-      min-width: 200px;
+      min-width: 300px;
     }
 
     .environments-commit,
@@ -221,4 +221,13 @@
 .selected-metric-line {
   stroke: $black;
   stroke-width: 1;
+}
+
+.environments-actions {
+  .external-url,
+  .monitoring-url,
+  .terminal-button,
+  .stop-env-link {
+    width: 38px;
+  }
 }

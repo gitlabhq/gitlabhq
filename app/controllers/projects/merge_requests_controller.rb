@@ -10,7 +10,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :pipelines, :merge, :merge_check,
-    :ci_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues
+    :ci_status, :pipeline_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
@@ -97,31 +97,31 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def diffs
     apply_diff_view_cookie!
 
-    @merge_request_diff =
-      if params[:diff_id]
-        @merge_request.merge_request_diffs.viewable.find(params[:diff_id])
-      else
-        @merge_request.merge_request_diff
-      end
-
-    @merge_request_diffs = @merge_request.merge_request_diffs.viewable.select_without_diff
-    @comparable_diffs = @merge_request_diffs.select { |diff| diff.id < @merge_request_diff.id }
-
-    if params[:start_sha].present?
-      @start_sha = params[:start_sha]
-      @start_version = @comparable_diffs.find { |diff| diff.head_commit_sha == @start_sha }
-
-      unless @start_version
-        @start_sha = @merge_request_diff.head_commit_sha
-        @start_version = @merge_request_diff
-      end
-    end
-
-    @environment = @merge_request.environments_for(current_user).last
-
     respond_to do |format|
       format.html { define_discussion_vars }
       format.json do
+        @merge_request_diff =
+          if params[:diff_id]
+            @merge_request.merge_request_diffs.viewable.find(params[:diff_id])
+          else
+            @merge_request.merge_request_diff
+          end
+
+        @merge_request_diffs = @merge_request.merge_request_diffs.viewable.select_without_diff
+        @comparable_diffs = @merge_request_diffs.select { |diff| diff.id < @merge_request_diff.id }
+
+        if params[:start_sha].present?
+          @start_sha = params[:start_sha]
+          @start_version = @comparable_diffs.find { |diff| diff.head_commit_sha == @start_sha }
+
+          unless @start_version
+            @start_sha = @merge_request_diff.head_commit_sha
+            @start_version = @merge_request_diff
+          end
+        end
+
+        @environment = @merge_request.environments_for(current_user).last
+
         if @start_sha
           compared_diff_version
         else
@@ -471,6 +471,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     }
 
     render json: response
+  end
+
+  def pipeline_status
+    render json: PipelineSerializer
+      .new(project: @project, user: @current_user)
+      .represent_status(@merge_request.head_pipeline)
   end
 
   def ci_environments_status

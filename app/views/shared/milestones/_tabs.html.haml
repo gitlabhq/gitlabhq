@@ -1,26 +1,29 @@
-%ul.nav-links.no-top.no-bottom
-  - if milestone.is_a?(GlobalMilestone) || can?(current_user, :read_issue, @project)
-    %li.active
-      = link_to '#tab-issues', 'data-toggle' => 'tab', 'data-show' => '.tab-issues-buttons' do
-        Issues
-        %span.badge= milestone.issues_visible_to_user(current_user).size
+.scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
+  .fade-left= icon('angle-left')
+  .fade-right= icon('angle-right')
+  %ul.nav-links.scrolling-tabs
+    - if milestone.is_a?(GlobalMilestone) || can?(current_user, :read_issue, @project)
+      %li.active
+        = link_to '#tab-issues', 'data-toggle' => 'tab', 'data-show' => '.tab-issues-buttons' do
+          Issues
+          %span.badge= milestone.issues_visible_to_user(current_user).size
+      %li
+        = link_to '#tab-merge-requests', 'data-toggle' => 'tab', 'data-show' => '.tab-merge-requests-buttons' do
+          Merge Requests
+          %span.badge= milestone.merge_requests.size
+    - else
+      %li.active
+        = link_to '#tab-merge-requests', 'data-toggle' => 'tab', 'data-show' => '.tab-merge-requests-buttons' do
+          Merge Requests
+          %span.badge= milestone.merge_requests.size
     %li
-      = link_to '#tab-merge-requests', 'data-toggle' => 'tab', 'data-show' => '.tab-merge-requests-buttons' do
-        Merge Requests
-        %span.badge= milestone.merge_requests.size
-  - else
-    %li.active
-      = link_to '#tab-merge-requests', 'data-toggle' => 'tab', 'data-show' => '.tab-merge-requests-buttons' do
-        Merge Requests
-        %span.badge= milestone.merge_requests.size
-  %li
-    = link_to '#tab-participants', 'data-toggle' => 'tab' do
-      Participants
-      %span.badge= milestone.participants.count
-  %li
-    = link_to '#tab-labels', 'data-toggle' => 'tab' do
-      Labels
-      %span.badge= milestone.labels.count
+      = link_to '#tab-participants', 'data-toggle' => 'tab' do
+        Participants
+        %span.badge= milestone.participants.count
+    %li
+      = link_to '#tab-labels', 'data-toggle' => 'tab' do
+        Labels
+        %span.badge= milestone.labels.count
 
 - show_project_name = local_assigns.fetch(:show_project_name, false)
 - show_full_project_name = local_assigns.fetch(:show_full_project_name, false)

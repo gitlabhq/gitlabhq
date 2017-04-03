@@ -72,6 +72,12 @@ class Projects::PipelinesController < Projects::ApplicationController
     end
   end
 
+  def status
+    render json: PipelineSerializer
+      .new(project: @project, user: @current_user)
+      .represent_status(@pipeline)
+  end
+
   def stage
     @stage = pipeline.stage(params[:stage])
     return not_found unless @stage

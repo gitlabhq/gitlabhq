@@ -771,8 +771,8 @@ describe Gitlab::Git::Repository, seed_helper: true do
         commits = repository.log(options)
 
         expect(commits.size).to be > 0
-        satisfy do
-          commits.all? { |commit| commit.created_at >= options[:after] }
+        expect(commits).to satisfy do |commits|
+          commits.all? { |commit| commit.time >= options[:after] }
         end
       end
     end
@@ -784,8 +784,27 @@ describe Gitlab::Git::Repository, seed_helper: true do
         commits = repository.log(options)
 
         expect(commits.size).to be > 0
-        satisfy do
-          commits.all? { |commit| commit.created_at <= options[:before] }
+        expect(commits).to satisfy do |commits|
+          commits.all? { |commit| commit.time <= options[:before] }
+        end
+      end
+    end
+
+    context 'when multiple paths are provided' do
+      let(:options) { { ref: 'master', path: ['PROCESS.md', 'README.md'] } }
+
+      def commit_files(commit)
+        commit.diff(commit.parent_ids.first).deltas.flat_map do |delta|
+          [delta.old_file[:path], delta.new_file[:path]].uniq.compact
+        end
+      end
+
+      it 'only returns commits matching at least one path' do
+        commits = repository.log(options)
+
+        expect(commits.size).to be > 0
+        expect(commits).to satisfy do |commits|
+          commits.none? { |commit| (commit_files(commit) & options[:path]).empty? }
         end
       end
     end

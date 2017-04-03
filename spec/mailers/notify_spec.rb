@@ -184,6 +184,7 @@ describe Notify do
       end
 
       context 'for merge requests' do
+        let(:project) { create(:project, :repository) }
         let(:merge_author) { create(:user) }
         let(:merge_request) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project) }
         let(:merge_request_with_description) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project, description: FFaker::Lorem.sentence) }
@@ -334,7 +335,7 @@ describe Notify do
     end
 
     describe 'project was moved' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project) }
       let(:user) { create(:user) }
       subject { Notify.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
 
@@ -460,7 +461,7 @@ describe Notify do
     end
 
     describe 'project invitation' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project) }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
       let(:project_member) { invite_to_project(project, inviter: master) }
 
@@ -480,7 +481,7 @@ describe Notify do
     end
 
     describe 'project invitation accepted' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project) }
       let(:invited_user) { create(:user, name: 'invited user') }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
       let(:project_member) do
@@ -505,7 +506,7 @@ describe Notify do
     end
 
     describe 'project invitation declined' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project) }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
       let(:project_member) do
         invitee = invite_to_project(project, inviter: master)
@@ -569,6 +570,7 @@ describe Notify do
       end
 
       describe 'on a commit' do
+        let(:project) { create(:project, :repository) }
         let(:commit) { project.commit }
 
         before(:each) { allow(note).to receive(:noteable).and_return(commit) }
@@ -636,6 +638,7 @@ describe Notify do
     end
 
     context 'items that are noteable, emails for a note on a diff' do
+      let(:project) { create(:project, :repository) }
       let(:note_author) { create(:user, name: 'author_name') }
 
       before :each do
@@ -977,6 +980,7 @@ describe Notify do
   end
 
   describe 'email on push with multiple commits' do
+    let(:project) { create(:project, :repository) }
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
     let(:raw_compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_image_commit.id, sample_commit.id) }
@@ -1070,6 +1074,7 @@ describe Notify do
   end
 
   describe 'email on push with a single commit' do
+    let(:project) { create(:project, :repository) }
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
     let(:raw_compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_commit.parent_id, sample_commit.id) }
@@ -1102,7 +1107,7 @@ describe Notify do
   end
 
   describe 'HTML emails setting' do
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
     let(:user) { create(:user) }
     let(:multipart_mail) { Notify.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
 

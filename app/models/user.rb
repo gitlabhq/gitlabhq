@@ -22,6 +22,7 @@ class User < ActiveRecord::Base
   default_value_for :hide_no_ssh_key, false
   default_value_for :hide_no_password, false
   default_value_for :project_view, :files
+  default_value_for :notified_of_own_activity, false
 
   attr_encrypted :otp_secret,
     key:       Gitlab::Application.secrets.otp_key_base,
@@ -634,8 +635,10 @@ class User < ActiveRecord::Base
   end
 
   def fork_of(project)
-    links = ForkedProjectLink.where(forked_from_project_id: project, forked_to_project_id: personal_projects)
-
+    links = ForkedProjectLink.where(
+      forked_from_project_id: project,
+      forked_to_project_id: personal_projects.unscope(:order)
+    )
     if links.any?
       links.first.forked_to_project
     else

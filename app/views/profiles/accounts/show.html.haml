@@ -75,12 +75,12 @@
           .provider-btn-image
             = provider_image_tag(provider)
           - if auth_active?(provider)
-            - if provider.to_s == 'saml'
-              %a.provider-btn
-                Active
-            - else
+            - if unlink_allowed?(provider)
               = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'provider-btn' do
                 Disconnect
+            - else
+              %a.provider-btn
+                Active
           - else
             = link_to omniauth_authorize_path(:user, provider), method: :post, class: 'provider-btn not-active' do
               Connect

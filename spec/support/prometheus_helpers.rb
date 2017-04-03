@@ -1,10 +1,10 @@
 module PrometheusHelpers
   def prometheus_memory_query(environment_slug)
-    %{(sum(container_memory_usage_bytes{container_name="app",environment="#{environment_slug}"}) / count(container_memory_usage_bytes{container_name="app",environment="#{environment_slug}"})) /1024/1024}
+    %{(sum(container_memory_usage_bytes{container_name!="POD",environment="#{environment_slug}"}) / count(container_memory_usage_bytes{container_name!="POD",environment="#{environment_slug}"})) /1024/1024}
   end
 
   def prometheus_cpu_query(environment_slug)
-    %{sum(rate(container_cpu_usage_seconds_total{container_name="app",environment="#{environment_slug}"}[2m])) / count(container_cpu_usage_seconds_total{container_name="app",environment="#{environment_slug}"}) * 100}
+    %{sum(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="#{environment_slug}"}[2m])) / count(container_cpu_usage_seconds_total{container_name!="POD",environment="#{environment_slug}"}) * 100}
   end
 
   def prometheus_query_url(prometheus_query)

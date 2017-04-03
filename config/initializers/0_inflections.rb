@@ -10,5 +10,5 @@
 # end
 #
 ActiveSupport::Inflector.inflections do |inflect|
-  inflect.uncountable %w(award_emoji project_statistics)
+  inflect.uncountable %w(award_emoji project_statistics system_note_metadata)
 end

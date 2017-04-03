@@ -169,6 +169,9 @@ class ProjectTeam
 
     # Lookup only the IDs we need
     user_ids = user_ids - access.keys
+
+    return access if user_ids.empty?
+
     users_access = project.project_authorizations.
       where(user: user_ids).
       group(:user_id).

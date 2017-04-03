@@ -285,8 +285,16 @@ describe API::V3::Issues, api: true  do
     end
     let(:base_url) { "/groups/#{group.id}/issues" }
 
+    it 'returns all group issues (including opened and closed)' do
+      get v3_api(base_url, admin)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(3)
+    end
+
     it 'returns group issues without confidential issues for non project members' do
-      get v3_api(base_url, non_member)
+      get v3_api("#{base_url}?state=opened", non_member)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -295,7 +303,7 @@ describe API::V3::Issues, api: true  do
     end
 
     it 'returns group confidential issues for author' do
-      get v3_api(base_url, author)
+      get v3_api("#{base_url}?state=opened", author)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -303,7 +311,7 @@ describe API::V3::Issues, api: true  do
     end
 
     it 'returns group confidential issues for assignee' do
-      get v3_api(base_url, assignee)
+      get v3_api("#{base_url}?state=opened", assignee)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -311,7 +319,7 @@ describe API::V3::Issues, api: true  do
     end
 
     it 'returns group issues with confidential issues for project members' do
-      get v3_api(base_url, user)
+      get v3_api("#{base_url}?state=opened", user)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -319,7 +327,7 @@ describe API::V3::Issues, api: true  do
     end
 
     it 'returns group confidential issues for admin' do
-      get v3_api(base_url, admin)
+      get v3_api("#{base_url}?state=opened", admin)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -368,7 +376,7 @@ describe API::V3::Issues, api: true  do
     end
 
     it 'returns an array of issues in given milestone' do
-      get v3_api("#{base_url}?milestone=#{group_milestone.title}", user)
+      get v3_api("#{base_url}?state=opened&milestone=#{group_milestone.title}", user)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array

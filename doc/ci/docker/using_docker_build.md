@@ -318,7 +318,7 @@ variables:
   IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_COMMIT_TOKEN $CI_REGISTRY
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
 build:
   stage: build

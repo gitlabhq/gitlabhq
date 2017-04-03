@@ -63,7 +63,7 @@ Example response:
 ## List board lists
 
 Get a list of the board's lists.
-Does not include `backlog` and `done` lists
+Does not include `backlog` and `closed` lists
 
 ```
 GET /projects/:id/boards/:board_id/lists

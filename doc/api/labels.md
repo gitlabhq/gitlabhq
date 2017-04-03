@@ -90,7 +90,7 @@ POST /projects/:id/labels
 | ------------- | ------- | -------- | ---------------------------- |
 | `id`          | integer | yes      | The ID of the project        |
 | `name`        | string  | yes      | The name of the label        |
-| `color`       | string  | yes      | The color of the label in 6-digit hex notation with leading `#` sign |
+| `color`       | string  | yes      | The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
 | `description` | string  | no       | The description of the label |
 | `priority`    | integer | no       | The priority of the label. Must be greater or equal than zero or `null` to remove the priority. |
 
@@ -145,7 +145,7 @@ PUT /projects/:id/labels
 | `id`            | integer | yes                               | The ID of the project            |
 | `name`          | string  | yes                               | The name of the existing label   |
 | `new_name`      | string  | yes if `color` is not provided    | The new name of the label        |
-| `color`         | string  | yes if `new_name` is not provided | The new color of the label in 6-digit hex notation with leading `#` sign |
+| `color`         | string  | yes if `new_name` is not provided | The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
 | `description`   | string  | no                                | The new description of the label |
 | `priority`    | integer | no       | The new priority of the label. Must be greater or equal than zero or `null` to remove the priority. |
 

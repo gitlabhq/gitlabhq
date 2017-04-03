@@ -4,11 +4,8 @@ describe 'projects/merge_requests/show/_commits.html.haml' do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
-  let(:target_project) { create(:project) }
-
-  let(:source_project) do
-    create(:project, forked_from_project: target_project)
-  end
+  let(:target_project) { create(:project, :repository) }
+  let(:source_project) { create(:project, :repository, forked_from_project: target_project) }
 
   let(:merge_request) do
     create(:merge_request, :simple,

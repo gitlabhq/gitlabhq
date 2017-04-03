@@ -38,6 +38,10 @@ require('vendor/jquery.scrollTo');
       }
     });
 
+    afterEach(function () {
+      this.class.destroy();
+    });
+
     describe('#activateTab', function () {
       beforeEach(function () {
         spyOn($, 'ajax').and.callFake(function () {});
@@ -200,6 +204,42 @@ require('vendor/jquery.scrollTo');
         expect(this.subject('show')).toBe('/foo/bar/merge_requests/1');
       });
     });
+
+    describe('#tabShown', () => {
+      beforeEach(function () {
+        loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+      });
+
+      describe('with "Side-by-side"/parallel diff view', () => {
+        beforeEach(function () {
+          this.class.diffViewType = () => 'parallel';
+        });
+
+        it('maintains `container-limited` for pipelines tab', function (done) {
+          const asyncClick = function (selector) {
+            return new Promise((resolve) => {
+              setTimeout(() => {
+                document.querySelector(selector).click();
+                resolve();
+              });
+            });
+          };
+
+          asyncClick('.merge-request-tabs .pipelines-tab a')
+            .then(() => asyncClick('.merge-request-tabs .diffs-tab a'))
+            .then(() => asyncClick('.merge-request-tabs .pipelines-tab a'))
+            .then(() => {
+              const hasContainerLimitedClass = document.querySelector('.content-wrapper .container-fluid').classList.contains('container-limited');
+              expect(hasContainerLimitedClass).toBe(true);
+            })
+            .then(done)
+            .catch((err) => {
+              done.fail(`Something went wrong clicking MR tabs: ${err.message}\n${err.stack}`);
+            });
+        });
+      });
+    });
+
     describe('#loadDiff', function () {
       it('requires an absolute pathname', function () {
         spyOn($, 'ajax').and.callFake(function (options) {

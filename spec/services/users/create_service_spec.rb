@@ -61,6 +61,23 @@ describe Users::CreateService, services: true do
           )
         end
 
+        context 'when the current_user is not persisted' do
+          let(:admin_user) { build(:admin) }
+
+          it 'persists the given attributes and sets created_by_id to nil' do
+            user = service.execute
+            user.reload
+
+            expect(user).to have_attributes(
+              name: params[:name],
+              username: params[:username],
+              email: params[:email],
+              password: params[:password],
+              created_by_id: nil
+            )
+          end
+        end
+
         it 'user is not confirmed if skip_confirmation param is not present' do
           expect(service.execute).not_to be_confirmed
         end

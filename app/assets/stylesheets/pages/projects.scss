@@ -477,20 +477,6 @@ a.deploy-project-label {
   }
 }
 
-.page-sidebar-pinned {
-  .project-stats .nav > li.right {
-    @media (min-width: $screen-lg-min) {
-      float: none;
-    }
-  }
-
-  .download-button {
-    @media (min-width: $screen-lg-min) {
-      margin-left: 0;
-    }
-  }
-}
-
 .project-stats {
   font-size: 0;
   text-align: center;
@@ -587,9 +573,19 @@ pre.light-well {
   display: flex;
   flex-direction: column;
 
+  // Disable Flexbox for admin page
+  &.admin-projects {
+    display: block;
+
+    .project-row {
+      display: block;
+    }
+  }
+
   .project-row {
     display: flex;
     align-items: center;
+    @include basic-list-stats;
   }
 
   h3 {
@@ -744,6 +740,15 @@ pre.light-well {
     margin-top: 6px;
     font-weight: normal;
   }
+}
+
+.create-new-protected-branch-button {
+  @include dropdown-link;
+
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  text-align: left;
 }
 
 .protected-branches-list {

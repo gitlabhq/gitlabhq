@@ -3,7 +3,7 @@ require 'spec_helper'
 describe MergeRequests::BuildService, services: true do
   include RepoHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:issue_confidential) { false }
   let(:issue) { create(:issue, project: project, title: 'A bug', confidential: issue_confidential) }

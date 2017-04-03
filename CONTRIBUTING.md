@@ -314,9 +314,12 @@ request is as follows:
   organized commits by [squashing them][git-squash]
 1. Push the commit(s) to your fork
 1. Submit a merge request (MR) to the `master` branch
-1. Leave the approvals settings as they are:
-  1. Your merge request needs at least 1 approval
-  1. You don't have to select any approvers
+  1. Your merge request needs at least 1 approval but feel free to require more.
+    For instance if you're touching backend and frontend code, it's a good idea
+    to require 2 approvals: 1 from a backend maintainer and 1 from a frontend
+    maintainer
+  1. You don't have to select any approvers, but you can if you really want
+    specific people to approve your merge request
 1. The MR title should describe the change you want to make
 1. The MR description should give a motive for your change and the method you
    used to achieve it.
@@ -376,7 +379,7 @@ There are a few rules to get your merge request accepted:
   1. If your merge request includes only frontend changes [^1], it must be
     **approved by a [frontend maintainer][team]**.
   1. If your merge request includes frontend and backend changes [^1], it must
-    be approved by a frontend **and** a backend maintainer.
+    be **approved by a [frontend and a backend maintainer][team]**.
 1. To lower the amount of merge requests maintainers need to review, you can
   ask or assign any [reviewers][team] for a first review.
   1. If you need some guidance (e.g. it's your first merge request), feel free
@@ -556,6 +559,5 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
 [polling-etag]: https://docs.gitlab.com/ce/development/polling.html
 
-[^1]: Specs other than JavaScript specs are considered backend code. Haml
-      changes are considered backend code if they include Ruby code other than just
-      pure HTML.
+[^1]: Please note that specs other than JavaScript specs are considered backend
+      code.

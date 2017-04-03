@@ -6,7 +6,7 @@ class ProtectedBranchDropdown {
     this.$dropdown = options.$dropdown;
     this.$dropdownContainer = this.$dropdown.parent();
     this.$dropdownFooter = this.$dropdownContainer.find('.dropdown-footer');
-    this.$protectedBranch = this.$dropdownContainer.find('.create-new-protected-branch');
+    this.$protectedBranch = this.$dropdownContainer.find('.js-create-new-protected-branch');
 
     this.buildDropdown();
     this.bindEvents();
@@ -46,7 +46,9 @@ class ProtectedBranchDropdown {
     this.$protectedBranch.on('click', this.onClickCreateWildcard.bind(this));
   }
 
-  onClickCreateWildcard() {
+  onClickCreateWildcard(e) {
+    e.preventDefault();
+
     // Refresh the dropdown's data, which ends up calling `getProtectedBranches`
     this.$dropdown.data('glDropdown').remote.execute();
     this.$dropdown.data('glDropdown').selectRowAtIndex();
@@ -69,7 +71,7 @@ class ProtectedBranchDropdown {
 
     if (branchName) {
       this.$dropdownContainer
-        .find('.create-new-protected-branch code')
+        .find('.js-create-new-protected-branch code')
         .text(branchName);
     }
 
