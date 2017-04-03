@@ -29,11 +29,11 @@
           - if current_user
             - if session[:impersonator_id]
               %li.impersonation
-                = link_to admin_impersonation_path, method: :delete, title: "Stop Impersonation", aria: { label: 'Stop Impersonation' }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
+                = link_to admin_impersonation_path, method: :delete, title: "Stop impersonation", aria: { label: 'Stop impersonation' }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
                   = icon('user-secret fw')
             - if current_user.is_admin?
               %li
-                = link_to admin_root_path, title: 'Admin Area', aria: { label: "Admin Area" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                = link_to admin_root_path, title: 'Admin area', aria: { label: "Admin area" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                   = icon('wrench fw')
             - if current_user.can_create_project?
               %li
