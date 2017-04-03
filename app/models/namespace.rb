@@ -113,8 +113,8 @@ class Namespace < ActiveRecord::Base
   end
 
   def move_dir
-    if any_project_has_container_registry_images?
-      raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has images in container registry')
+    if any_project_has_container_registry_tags?
+      raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has tags in container registry')
     end
 
     # Move the namespace directory in all storages paths used by member projects
@@ -149,7 +149,7 @@ class Namespace < ActiveRecord::Base
     end
   end
 
-  def any_project_has_container_registry_images?
+  def any_project_has_container_registry_tags?
     projects.any?(&:has_container_registry_tags?)
   end
 
