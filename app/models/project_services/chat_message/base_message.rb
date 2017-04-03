@@ -7,7 +7,7 @@ module ChatMessage
     end
 
     def pretext
-      format(message)
+      markdown_format ? message : format(message)
     end
 
     def fallback

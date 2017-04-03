@@ -9,6 +9,7 @@ module ChatMessage
     attr_reader :ref_type
     attr_reader :user_name
     attr_reader :user_avatar
+    attr_reader :markdown_format
 
     def initialize(params)
       @after = params[:after]
@@ -20,7 +21,7 @@ module ChatMessage
       @ref = Gitlab::Git.ref_name(params[:ref])
       @user_name = params[:user_name]
       @user_avatar = params[:user_avatar]
-      @format = params[:format]
+      @markdown_format = params[:format]
     end
 
     def activity
@@ -28,18 +29,14 @@ module ChatMessage
         title: activity_title,
         subtitle: "to: #{project_link}",
         text: compare_link,
-        image: params[:user_avatar]
+        image: user_avatar
       }
-    end
-
-    def pretext
-      @format ? format(message) : message
     end
 
     def attachments
       return [] if new_branch? || removed_branch?
 
-      @format ? commit_message_attachments : commit_messages
+      markdown_format ? commit_messages : commit_message_attachments
     end
 
     private

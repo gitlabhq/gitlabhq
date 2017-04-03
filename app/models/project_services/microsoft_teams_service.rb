@@ -50,7 +50,7 @@ class MicrosoftTeamsService < ChatNotificationService
     data = data.merge(
       project_url: project_url,
       project_name: project_name,
-      format: false
+      format: true
     )
 
     message = get_message(object_kind, data)
