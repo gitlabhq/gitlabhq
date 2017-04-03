@@ -202,7 +202,7 @@ class TodoService
     todos = current_user.todos.where(id: ids)
 
     # Only return those that are not really on that state
-    marked_todos = todos.where.not(state: state).update_all(state: state)
+    marked_todos = todos.where.not(state: state).unscope(:order).update_all(state: state)
     current_user.update_todos_count_cache
     marked_todos
   end
