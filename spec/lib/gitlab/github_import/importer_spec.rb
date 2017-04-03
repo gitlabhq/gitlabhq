@@ -130,9 +130,9 @@ describe Gitlab::GithubImport::Importer, lib: true do
     let!(:user) { create(:user, email: octocat.email) }
     let(:repository) { double(id: 1, fork: false) }
     let(:source_sha) { create(:commit, project: project).id }
-    let(:source_branch) { double(ref: 'feature', repo: repository, sha: source_sha, user: octoca) }
+    let(:source_branch) { double(ref: 'feature', repo: repository, sha: source_sha, user: octocat) }
     let(:target_sha) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit).id }
-    let(:target_branch) { double(ref: 'master', repo: repository, sha: target_sha, user: octoca) }
+    let(:target_branch) { double(ref: 'master', repo: repository, sha: target_sha, user: octocat) }
     let(:pull_request) do
       double(
         number: 1347,
