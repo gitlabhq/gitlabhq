@@ -555,13 +555,6 @@ Settings.webpack.dev_server['host']    ||= 'localhost'
 Settings.webpack.dev_server['port']    ||= 3808
 
 #
-# ServiceDesk settings
-#
-Settings['service_desk'] ||= Settingslogic.new({})
-Settings.service_desk['user'] ||= nil
-Settings.service_desk['email'] ||= nil
-
-#
 # Testing settings
 #
 if Rails.env.test?

@@ -19,7 +19,7 @@ module EE
 
     module ClassMethods
       def support_bot
-        email = Settings.service_desk.email || "support%s@#{Settings.gitlab.host}"
+        email_pattern = "support%s@#{Settings.gitlab.host}"
 
         unique_internal(where(support_bot: true), 'support-bot', email) do |u|
           u.bio = 'The GitLab support bot'
