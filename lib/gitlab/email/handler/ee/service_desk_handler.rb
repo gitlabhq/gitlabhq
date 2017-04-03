@@ -43,7 +43,7 @@ module Gitlab
             @issue = Issues::CreateService.new(
               project,
               User.support_bot,
-              title: mail.subject,
+              title: issue_title
               description: message,
               confidential: true,
               service_desk_reply_to: from_address,
@@ -58,6 +58,10 @@ module Gitlab
 
           def from_address
             (mail.reply_to || []).first || mail.sender || mail.from.first
+          end
+
+          def issue_title
+            "Service Desk (from `#{from_address}`): #{mail.subject}"
           end
         end
       end
