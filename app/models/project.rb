@@ -894,8 +894,8 @@ class Project < ActiveRecord::Base
 
     expire_caches_before_rename(old_path_with_namespace)
 
-    if container_repositories.present?
-      Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry images are present"
+    if has_container_registry_tags?
+      Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry tags are present!"
 
       # we currently doesn't support renaming repository if it contains images in container registry
       raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
