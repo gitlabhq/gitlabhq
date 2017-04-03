@@ -883,11 +883,6 @@ class Project < ActiveRecord::Base
     "#{url}.git"
   end
 
-
-  def empty_and_default_branch_protected?
-    empty_repo? && default_branch_protected?
-  end
-
   #TODO: Check with if this is still needed, maybe because of `.select {` in ProtectedRefsMatcher
   #Either with tests or by asking Tim
   def protected_tags_array
@@ -899,7 +894,7 @@ class Project < ActiveRecord::Base
   end
 
   def user_can_push_to_empty_repo?(user)
-    !default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
+    !ProtectedBranch.default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
   end
 
   def forked?
@@ -1364,12 +1359,6 @@ class Project < ActiveRecord::Base
 
   def pushes_since_gc_redis_key
     "projects/#{id}/pushes_since_gc"
-  end
-
-  #TODO: Move this and methods which depend upon it
-  def default_branch_protected?
-    current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
-      current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
   end
 
   # Similar to the normal callbacks that hook into the life cycle of an
