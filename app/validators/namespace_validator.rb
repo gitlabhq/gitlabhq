@@ -33,6 +33,22 @@ class NamespaceValidator < ActiveModel::EachValidator
     u
     unsubscribes
     users
+    api
+    autocomplete
+    search
+    member
+    explore
+    uploads
+    import
+    notification_settings
+    abuse_reports
+    invites
+    help
+    koding
+    health_check
+    jwt
+    oauth
+    sent_notifications
   ].freeze
 
   WILDCARD_ROUTES = %w[tree commits wikis new edit create update logs_tree
