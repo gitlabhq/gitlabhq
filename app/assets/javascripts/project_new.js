@@ -35,11 +35,31 @@
         multiple: true,
         minimumInputLength: 0,
         query(query) {
-          const groupsApi = Api.groups(query.term, {}, function(groups) {
+          const existingGroupApprovers = [].map.call(
+            document.querySelectorAll('.js-approver-group'),
+            item => parseInt(item.getAttribute('data-id'), 10),
+          );
+          const selectedGroupApprovers = $('[name="project[approver_group_ids]"]').val()
+            .split(',')
+            .filter(val => val !== '');
+          const groupOptions = {
+            skip_groups: [...existingGroupApprovers, ...selectedGroupApprovers],
+          };
+          const groupsApi = Api.groups(query.term, groupOptions, function(groups) {
             return groups;
           });
 
-          const usersApi = Api.users(query.term, {}, function(groups) {
+          const existingApprovers = [].map.call(
+            document.querySelectorAll('.js-approver'),
+            item => parseInt(item.getAttribute('data-id'), 10),
+          );
+          const selectedApprovers = $('[name="project[approver_ids]"]').val()
+            .split(',')
+            .filter(id => id !== '');
+          const userOptions = {
+            skip_users: [...existingApprovers, ...selectedApprovers],
+          };
+          const usersApi = Api.users(query.term, userOptions, function(groups) {
             return groups;
           });
 
