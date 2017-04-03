@@ -5,10 +5,6 @@ ENV['RAILS_ENV'] = 'test'
 require './config/environment'
 require 'rspec/expectations'
 
-require_relative 'capybara'
-require_relative 'db_cleaner'
-require_relative 'rerun'
-
 if ENV['CI']
   require 'knapsack'
   Knapsack::Adapters::SpinachAdapter.bind
