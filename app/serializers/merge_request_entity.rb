@@ -1,6 +1,7 @@
 class MergeRequestEntity < IssuableEntity
   include RequestAwareEntity
   include GitlabMarkdownHelper
+  include TreeHelper
 
   expose :in_progress_merge_commit_sha
   expose :locked_at
@@ -115,6 +116,43 @@ class MergeRequestEntity < IssuableEntity
     expose :can_cancel_automatic_merge do |merge_request|
       merge_request.can_cancel_merge_when_pipeline_succeeds?(request.current_user)
     end
+
+    expose :can_collaborate_with_project do |merge_request|
+      can?(current_user, :push_code, merge_request.project) ||
+        (current_user && current_user.already_forked?(merge_request.project))
+    end
+
+    expose :can_fork_project do |merge_request|
+      can?(current_user, :fork_project, merge_request.project)
+    end
+
+    expose :cherry_pick_in_fork_path do |merge_request|
+      if current_user
+        continue_params = {
+          to: mr_path(merge_request),
+          notice: "#{edit_in_new_fork_notice} Try to cherry-pick this commit again.",
+          notice_now: edit_in_new_fork_notice_now
+        }
+
+        namespace_project_forks_path(merge_request.project.namespace, merge_request.project,
+                                     namespace_key: current_user.namespace.id,
+                                     continue: continue_params)
+      end
+    end
+
+    expose :revert_in_fork_path do |merge_request|
+      if current_user
+        continue_params = {
+          to: mr_path(merge_request),
+          notice: "#{edit_in_new_fork_notice} Try to revert this commit again.",
+          notice_now: edit_in_new_fork_notice_now
+        }
+
+        namespace_project_forks_path(merge_request.project.namespace, merge_request.project,
+                                     namespace_key: current_user.namespace.id,
+                                     continue: continue_params)
+      end
+    end
   end
 
   expose :target_branch_path do |merge_request|
@@ -221,6 +259,12 @@ class MergeRequestEntity < IssuableEntity
   end
 
   private
+
+  def mr_path(merge_request)
+    namespace_project_merge_request_path(merge_request.project.namespace,
+                                         merge_request.project,
+                                         merge_request)
+  end
 
   delegate :current_user, to: :request
 

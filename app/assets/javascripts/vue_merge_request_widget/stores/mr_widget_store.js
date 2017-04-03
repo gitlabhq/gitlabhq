@@ -63,15 +63,21 @@ export default class MergeRequestStore {
     this.isRemovingSourceBranch = this.isRemovingSourceBranch || false;
 
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
-    this.canRevert = currentUser.can_revert || false;
     this.canResolveConflicts = currentUser.can_resolve_conflicts || false;
     this.canMerge = currentUser.can_merge || false;
     this.canCreateIssue = currentUser.can_create_issue || false;
     this.canCancelAutomaticMerge = currentUser.can_cancel_automatic_merge || false;
     this.canUpdateMergeRequest = currentUser.can_update_merge_request || false;
     this.canResolveConflictsInUI = data.conflicts_can_be_resolved_in_ui || false;
-    this.canBeCherryPicked = data.can_be_cherry_picked || false;
     this.canBeMerged = data.can_be_merged || false;
+
+    // Cherry-pick and Revert actions related
+    this.canBeCherryPicked = data.can_be_cherry_picked || false;
+    this.canBeReverted = currentUser.can_revert || false;
+    this.userCanCollaborateWithProject = currentUser.can_collaborate_with_project || false;
+    this.userCanForkProject = currentUser.can_fork_project || false;
+    this.revertInForkPath = currentUser.revert_in_fork_path;
+    this.cherryPickInForkPath = currentUser.cherry_pick_in_fork_path;
 
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
     this.isPipelineFailed = data.pipeline ? data.pipeline.details.status.group === 'failed' : false;

@@ -24,6 +24,24 @@ export default {
     shouldShowSourceBranchRemoving() {
       return this.isMakingRequest || this.mr.isRemovingSourceBranch;
     },
+
+    shouldShowRevertForCurrentMR() {
+      return (this.mr.canBeReverted && this.mr.userCanCollaborateWithProject);
+    },
+
+    // TODO: @fatih, we need to handle this case without UJS post in the future
+    shouldShowRevertForForkMR() {
+      return (this.mr.canBeReverted && this.mr.userCanForkProject);
+    },
+
+    shouldShowCherryPickForCurrentMR() {
+      return (this.mr.canBeCherryPicked && this.mr.userCanCollaborateWithProject);
+    },
+
+    // TODO: @fatih, we need to handle this case without UJS post in the future
+    shouldShowCherryPickForForkMR() {
+      return (this.mr.canBeCherryPicked && this.mr.userCanForkProject);
+    },
   },
   methods: {
     removeSourceBranch() {
@@ -71,19 +89,32 @@ export default {
       </section>
       <div class="merged-buttons clearfix">
         <a
-          v-if="mr.canRevert"
+          v-if="shouldShowRevertForCurrentMR"
           class="btn btn-close btn-sm has-tooltip"
           href="#modal-revert-commit"
           data-toggle="modal"
           data-container="body"
           data-original-title="Revert this merge request in a new merge request">Revert</a>
         <a
-          v-if="mr.canBeCherryPicked"
+          v-else-if="shouldShowRevertForForkMR"
+          class="btn btn-close btn-sm has-tooltip"
+          data-method='post'
+          :href="mr.revertInForkPath"
+          data-original-title="Revert this merge request in a new merge request">Revert</a>
+        <a
+          v-if="shouldShowCherryPickForCurrentMR"
           class="btn btn-default btn-sm has-tooltip"
           href="#modal-cherry-pick-commit"
           data-toggle="modal"
           data-container="body"
           data-original-title="Cherry-pick this merge request in a new merge request">Cherry-pick</a>
+        <a
+          v-else-if="shouldShowCherryPickForForkMR"
+          class="btn btn-default btn-sm has-tooltip"
+          data-method='post'
+          :href="mr.cherryPickInForkPath"
+          data-original-title="Cherry-pick this merge request in a new merge request">Cherry-pick</a>
+
       </div>
     </div>
   `,
