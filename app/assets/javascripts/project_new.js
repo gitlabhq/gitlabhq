@@ -6,7 +6,7 @@
   this.ProjectNew = (function() {
     function ProjectNew() {
       this.toggleSettings = bind(this.toggleSettings, this);
-      this.$selects = $('.features select');
+      this.$selects = $('.project-feature select');
       this.$repoSelects = this.$selects.filter('.js-repo-select');
 
       $('.project-edit-container').on('ajax:before', (function(_this) {
@@ -55,35 +55,34 @@
     };
 
     ProjectNew.prototype.addApprover = function(evt) {
-      const fieldName = evt.target.getAttribute('data-for');
-      const $select = $(`[name="${fieldName}"]`);
-      const newValue = $select.val();
+      const fieldNames = ['project[approver_ids]', 'project[approver_group_ids]'];
+      fieldNames.forEach((fieldName) => {
+        const $select = $(`[name="${fieldName}"]`);
+        const newValue = $select.val();
 
-      if (!newValue) {
-        return;
-      }
+        if (!newValue) {
+          return;
+        }
 
-      if (evt.target.type === 'submit') {
-        evt.preventDefault();
-      }
-
-      const $form = $('.js-approvers').closest('form');
-      $('.load-wrapper').removeClass('hidden');
-      $.ajax({
-        url: $form.attr('action'),
-        type: 'POST',
-        data: {
-          _method: 'PATCH',
-          [fieldName]: newValue,
-        },
-        success: this.updateApproverList,
-        complete() {
-          $select.select2('val', '');
-          $('.load-wrapper').addClass('hidden');
-        },
-        error(err) {
-          window.Flash('Failed to add Approver', 'alert');
-        },
+        const $form = $('.js-approvers').closest('form');
+        $('.load-wrapper').removeClass('hidden');
+        $.ajax({
+          url: $form.attr('action'),
+          type: 'POST',
+          data: {
+            _method: 'PATCH',
+            [fieldName]: newValue,
+          },
+          success: this.updateApproverList,
+          complete() {
+            $select.select2('val', '');
+            $('.load-wrapper').addClass('hidden');
+          },
+          error(err) {
+            // TODO: scroll into view or toast
+            window.Flash('Failed to add Approver', 'alert');
+          },
+        });
       });
     };
 

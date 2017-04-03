@@ -55,22 +55,14 @@
   .form-group
     = form.label :approver_ids, class: 'label-light' do
       Approvers
+    = hidden_field_tag "project[approver_ids]"
+    = hidden_field_tag "project[approver_group_ids]"
     .input-group.input-btn-group
-      = users_select_tag("project[approver_ids]", multiple: true, class: 'input-large', scope: :all, email_user: true)
-      %button.btn.btn-success.js-approvers{ type: 'button', title: 'Add approver(s)', data: { for: 'project[approver_ids]' } }
+      = hidden_field_tag :approver_user_and_group_ids, '', { class: 'js-select-user-and-group input-large', tabindex: 1 }
+      %button.btn.btn-success.js-approvers{ type: 'button', title: 'Add approvers(s)' }
         Add
     .help-block
-      Add an approver suggestion for each merge request
-
-    = form.label :approver_group_ids, class: 'label-light' do
-      Approver groups
-    .input-group.input-btn-group
-      - skip_groups = project.approver_groups.pluck(:group_id)
-      = groups_select_tag('project[approver_group_ids]', multiple: true, data: { skip_groups: skip_groups, all_available: true }, class: 'input-large')
-      %button.btn.btn-success.js-approvers{ type: 'button', title: 'Add group(s)', data: { for: 'project[approver_group_ids]' } }
-        Add
-    .help-block
-      Add a group as an approver suggestion for each merge request
+      Add an approver or group suggestion for each merge request
 
     .panel.panel-default.prepend-top-10
       .panel-heading
