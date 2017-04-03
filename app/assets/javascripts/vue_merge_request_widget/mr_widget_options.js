@@ -17,6 +17,7 @@ import {
   UnresolvedDiscussionsState,
   PipelineBlockedState,
   PipelineFailedState,
+  FailedToMerge,
   MergeWhenPipelineSucceedsState,
   CheckingState,
   MRWidgetStore,
@@ -96,6 +97,10 @@ export default {
     eventHub.$on('SetBranchRemoveFlag', (params) => {
       this.mr.isRemovingSourceBranch = params[0];
     });
+
+    eventHub.$on('FailedToMerge', () => {
+      this.mr.state = 'failedToMerge';
+    });
   },
   mounted() {
     this.checkStatus();
@@ -123,6 +128,7 @@ export default {
     'mr-widget-merged': MergedState,
     'mr-widget-closed': ClosedState,
     'mr-widget-locked': LockedState,
+    'mr-widget-failed-to-merge': FailedToMerge,
     'mr-widget-wip': WipState,
     'mr-widget-archived': ArchivedState,
     'mr-widget-conflicts': ConflictsState,

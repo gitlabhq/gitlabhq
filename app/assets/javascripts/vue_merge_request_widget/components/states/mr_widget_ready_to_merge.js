@@ -74,6 +74,7 @@ export default {
       this.showCommitMessageEditor = !this.showCommitMessageEditor;
     },
     handleMergeButtonClick(mergeWhenBuildSucceeds, mergeImmediately) {
+      // TODO: Remove no-param-reassign
       if (mergeWhenBuildSucceeds === undefined) {
         mergeWhenBuildSucceeds = this.mr.isPipelineActive; // eslint-disable-line no-param-reassign
       } else if (mergeImmediately) {
@@ -99,6 +100,8 @@ export default {
             eventHub.$emit('MRWidgetUpdateRequested');
           } else if (res.status === 'success') {
             this.initiateMergePolling();
+          } else if (res.status === 'failed') {
+            eventHub.$emit('FailedToMerge');
           }
         });
     },

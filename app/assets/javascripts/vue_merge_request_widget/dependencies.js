@@ -6,6 +6,7 @@ export { default as WidgetPipeline } from './components/mr_widget_pipeline';
 export { default as WidgetDeployment } from './components/mr_widget_deployment';
 export { default as WidgetRelatedLinks } from './components/mr_widget_related_links';
 export { default as MergedState } from './components/states/mr_widget_merged';
+export { default as FailedToMerge } from './components/states/mr_widget_failed_to_merge';
 export { default as ClosedState } from './components/states/mr_widget_closed';
 export { default as LockedState } from './components/states/mr_widget_locked';
 export { default as WipState } from './components/states/mr_widget_wip';

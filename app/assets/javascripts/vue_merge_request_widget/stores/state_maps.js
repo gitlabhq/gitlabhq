@@ -14,6 +14,7 @@ export const stateToComponentMap = {
   pipelineBlocked: 'mr-widget-pipeline-blocked',
   pipelineFailed: 'mr-widget-pipeline-failed',
   mergeWhenPipelineSucceeds: 'mr-widget-merge-when-pipeline-succeeds',
+  failedToMerge: 'mr-widget-failed-to-merge',
 };
 
 export const statesToShowHelpWidget = [
