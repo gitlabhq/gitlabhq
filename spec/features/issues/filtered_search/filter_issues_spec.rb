@@ -6,8 +6,8 @@ describe 'Filter issues', js: true, feature: true do
 
   let!(:group) { create(:group) }
   let!(:project) { create(:project, group: group) }
-  let!(:user) { create(:user) }
-  let!(:user2) { create(:user) }
+  let!(:user) { create(:user, username: 'joe') }
+  let!(:user2) { create(:user, username: 'jane') }
   let!(:label) { create(:label, project: project) }
   let!(:wontfix) { create(:label, project: project, title: "Won't fix") }
 
@@ -70,7 +70,7 @@ describe 'Filter issues', js: true, feature: true do
     issue_with_caps_label.labels << caps_sensitive_label
 
     issue_with_everything = create(:issue,
-      title: "Bug report with everything you thought was possible",
+      title: "Bug report foo was possible",
       project: project,
       milestone: milestone,
       author: user,
@@ -687,10 +687,10 @@ describe 'Filter issues', js: true, feature: true do
       end
 
       it 'filters issues by searched text, author, more text, assignee and even more text' do
-        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with")
+        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} foo")
 
         expect_issues_list_count(1)
-        expect_filtered_search_input('bug report with')
+        expect_filtered_search_input('bug report foo')
       end
 
       it 'filters issues by searched text, author, assignee and label' do
@@ -701,10 +701,10 @@ describe 'Filter issues', js: true, feature: true do
       end
 
       it 'filters issues by searched text, author, text, assignee, text, label and text' do
-        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with label:~#{bug_label.title} everything")
+        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} report label:~#{bug_label.title} foo")
 
         expect_issues_list_count(1)
-        expect_filtered_search_input('bug report with everything')
+        expect_filtered_search_input('bug report foo')
       end
 
       it 'filters issues by searched text, author, assignee, label and milestone' do
@@ -715,10 +715,10 @@ describe 'Filter issues', js: true, feature: true do
       end
 
       it 'filters issues by searched text, author, text, assignee, text, label, text, milestone and text' do
-        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with label:~#{bug_label.title} everything milestone:%#{milestone.title} you")
+        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} report label:~#{bug_label.title} milestone:%#{milestone.title} foo")
 
         expect_issues_list_count(1)
-        expect_filtered_search_input('bug report with everything you')
+        expect_filtered_search_input('bug report foo')
       end
 
       it 'filters issues by searched text, author, assignee, multiple labels and milestone' do
@@ -729,10 +729,10 @@ describe 'Filter issues', js: true, feature: true do
       end
 
       it 'filters issues by searched text, author, text, assignee, text, label1, text, label2, text, milestone and text' do
-        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with label:~#{bug_label.title} everything label:~#{caps_sensitive_label.title} you milestone:%#{milestone.title} thought")
+        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} report label:~#{bug_label.title} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} foo")
 
         expect_issues_list_count(1)
-        expect_filtered_search_input('bug report with everything you thought')
+        expect_filtered_search_input('bug report foo')
       end
     end
 
