@@ -185,7 +185,7 @@ export default {
             <a
               @click.prevent="handleMergeButtonClick(false, true)"
               class="accept-merge-request" href="#">
-              <i class="fa fa-warning fa-fw" aria-hidden="true"></i> Merge immediately
+              <i class="fa fa-exclamation fa-fw" aria-hidden="true"></i> Merge immediately
             </a>
           </li>
         </ul>
