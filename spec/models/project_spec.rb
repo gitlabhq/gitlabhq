@@ -702,25 +702,6 @@ describe Project, models: true do
     end
   end
 
-  describe '#open_branches' do
-    let(:project) { create(:project, :repository) }
-
-    before do
-      project.protected_branches.create(name: 'master')
-    end
-
-    it { expect(project.open_branches.map(&:name)).to include('feature') }
-    it { expect(project.open_branches.map(&:name)).not_to include('master') }
-
-    it "includes branches matching a protected branch wildcard" do
-      expect(project.open_branches.map(&:name)).to include('feature')
-
-      create(:protected_branch, name: 'feat*', project: project)
-
-      expect(Project.find(project.id).open_branches.map(&:name)).to include('feature')
-    end
-  end
-
   describe '#star_count' do
     it 'counts stars from multiple users' do
       user1 = create :user

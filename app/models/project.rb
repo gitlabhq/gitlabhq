@@ -865,15 +865,6 @@ class Project < ActiveRecord::Base
     @repo_exists = false
   end
 
-  # Branches that are not _exactly_ matched by a protected branch.
-  #TODO: Move to Protections::BranchMatcher.new(project).unprotecte
-  def open_branches
-    exact_protected_branch_names = protected_branches.reject(&:wildcard?).map(&:name)
-    branch_names = repository.branches.map(&:name)
-    non_open_branch_names = Set.new(exact_protected_branch_names).intersection(Set.new(branch_names))
-    repository.branches.reject { |branch| non_open_branch_names.include? branch.name }
-  end
-
   def root_ref?(branch)
     repository.root_ref == branch
   end
