@@ -18,8 +18,7 @@ module Gitlab
         if_none_match = env['HTTP_IF_NONE_MATCH']
 
         if if_none_match == etag
-          Gitlab::Metrics.add_event(:etag_caching_cache_hit)
-          [304, { 'ETag' => etag }, ['']]
+          handle_cache_hit(etag)
         else
           track_cache_miss(if_none_match, cached_value_present)
 
@@ -50,6 +49,14 @@ module Gitlab
 
       def weak_etag_format(value)
         %Q{W/"#{value}"}
+      end
+
+      def handle_cache_hit(etag)
+        Gitlab::Metrics.add_event(:etag_caching_cache_hit)
+
+        status_code = Gitlab::PollingInterval.polling_enabled? ? 304 : 429
+
+        [status_code, { 'ETag' => etag }, ['']]
       end
 
       def track_cache_miss(if_none_match, cached_value_present)
