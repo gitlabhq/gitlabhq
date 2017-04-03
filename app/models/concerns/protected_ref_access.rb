@@ -1,3 +1,4 @@
+#TODO: Refactor, checking EE
 # module ProtectedRefAccess
 #   extend ActiveSupport::Concern
 
