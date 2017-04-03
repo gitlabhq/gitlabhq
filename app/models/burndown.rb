@@ -7,50 +7,56 @@ class Burndown
     @end_date = @milestone.due_date
     @end_date = Date.today if @end_date.present? && @end_date > Date.today
 
-    issues = @milestone.issues
+    milestone_issues = @milestone.issues
 
-    @issues_count  = issues.count
-    @issues_weight = issues.sum(:weight)
+    @issues_count  = milestone_issues.count
+    @issues_weight = milestone_issues.sum(:weight)
   end
 
   # Returns the chart data in the following format:
   # [date, issue count, issue weight] eg: [["2017-03-01", 33, 127], ["2017-03-02", 35, 73], ["2017-03-03", 28, 50]...]
   def chart_data
-    return [] unless @start_date && @end_date
+    return [] unless valid?
 
-    open_count = @issues_count
-    open_weight = @issues_weight
+    open_issues_count  = issues_count
+    open_issues_weight = issues_weight
 
-    @start_date.upto(@end_date).each_with_object([]) do |date, chart_data|
-      closed, reopened = opened_and_closed_issues_by(date)
+    start_date.upto(end_date).each_with_object([]) do |date, chart_data|
+      closed, reopened = closed_and_reopened_issues_by(date)
 
-      closed_count, closed_weight = count_and_weight_of(closed)
-      chart_data << [date.strftime("%Y-%m-%d"), open_count -= closed_count, open_weight -= closed_weight]
+      closed_issues_count = closed.count
+      closed_issues_weight = sum_issues_weight(closed)
 
-      reopened_count, reopened_weight = count_and_weight_of(reopened)
-      open_count += reopened_count
-      open_weight += reopened_weight
+      chart_data << [date.strftime("%Y-%m-%d"), open_issues_count -= closed_issues_count, open_issues_weight -= closed_issues_weight]
+
+      reopened_count = reopened.count
+      reopened_weight = sum_issues_weight(reopened)
+
+      open_issues_count += reopened_count
+      open_issues_weight += reopened_weight
     end
+  end
+
+  def valid?
+    start_date && end_date
   end
 
   private
 
-  def count_and_weight_of(issues)
-    weight = issues.map{ |i| i.weight }.compact.reduce(:+)
-
-    return issues.count, weight || 0
+  def sum_issues_weight(issues)
+    issues.map(&:weight).compact.reduce(:+) || 0
   end
 
-  def opened_and_closed_issues_by(date)
+  def closed_and_reopened_issues_by(date)
     current_date = date.beginning_of_day
 
-    closed   = issues.select { |issue| issue.closed_at.beginning_of_day.to_i == current_date.to_i }
+    closed   = issues_with_closed_at.select { |issue| issue.closed_at.beginning_of_day.to_i == current_date.to_i }
     reopened = closed.select { |issue| issue.state == 'reopened' }
 
     return closed, reopened
   end
 
-  def issues
+  def issues_with_closed_at
     @issues ||=
       @milestone.issues.select('closed_at, weight, state').
       where('closed_at IS NOT NULL').

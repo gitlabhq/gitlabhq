@@ -13,7 +13,8 @@ describe Burndown, models: true do
       description: FFaker::Lorem.sentence,
       state: 'opened',
       milestone: milestone,
-      weight: 2
+      weight: 2,
+      project_id: project.id
     }
   end
 
@@ -62,19 +63,18 @@ describe Burndown, models: true do
       day = date.day
       next if day.even?
 
-      count =  day * 4
-      issues = []
+      count = day * 4
       Timecop.travel(date)
 
       # Create issues
-      count.times { issues << Issues::CreateService.new(project, user, issue_params).execute }
+      issues = create_list(:issue, count, issue_params)
 
       # Close issues
       closed = issues.slice(0..count / 2)
-      closed.each { |i| Issues::CloseService.new(project, user, {}).execute(i) }
+      closed.each(&:close)
 
       # Reopen issues
-      closed.slice(0..count / 4).each { |i| i.reopen }
+      closed.slice(0..count / 4).each(&:reopen)
     end
 
     Timecop.travel(due_date)
