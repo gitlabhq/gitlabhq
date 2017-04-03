@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GitlabMarkdownHelper do
+describe MarkupHelper do
   include ApplicationHelper
 
   let!(:project) { create(:project, :repository) }

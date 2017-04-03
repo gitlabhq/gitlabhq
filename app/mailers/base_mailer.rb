@@ -1,6 +1,6 @@
 class BaseMailer < ActionMailer::Base
   helper ApplicationHelper
-  helper GitlabMarkdownHelper
+  helper MarkupHelper
 
   attr_accessor :current_user
   helper_method :current_user, :can?
