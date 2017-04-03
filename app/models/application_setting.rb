@@ -131,6 +131,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :polling_interval_multiplier,
+            presence: true,
+            numericality: { greater_than_or_equal_to: 0 }
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
       unless Gitlab::VisibilityLevel.options.has_value?(level)
@@ -163,6 +167,8 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def self.current
+    ensure_cache_setup
+
     Rails.cache.fetch(CACHE_KEY) do
       ApplicationSetting.last
     end
@@ -176,7 +182,14 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def self.cached
+    ensure_cache_setup
     Rails.cache.fetch(CACHE_KEY)
+  end
+
+  def self.ensure_cache_setup
+    # This is a workaround for a Rails bug that causes attribute methods not
+    # to be loaded when read from cache: https://github.com/rails/rails/issues/27348
+    ApplicationSetting.define_attribute_methods
   end
 
   def self.defaults_ce
@@ -224,7 +237,8 @@ class ApplicationSetting < ActiveRecord::Base
       signup_enabled: Settings.gitlab['signup_enabled'],
       terminal_max_session_time: 0,
       two_factor_grace_period: 48,
-      user_default_external: false
+      user_default_external: false,
+      polling_interval_multiplier: 1
     }
   end
 

@@ -23,7 +23,7 @@
                 - if current_user.can_select_namespace?
                   .input-group-addon
                     = root_url
-                  = f.select :namespace_id, namespaces_options(namespace_id_from(params) || :current_user, display_path: true), {}, {class: 'select2 js-select-namespace', tabindex: 1}
+                  = f.select :namespace_id, namespaces_options(namespace_id_from(params) || :current_user, display_path: true, extra_group: namespace_id_from(params)), {}, { class: 'select2 js-select-namespace', tabindex: 1}
 
                 - else
                   .input-group-addon.static-namespace
@@ -76,7 +76,7 @@
                       Gitea
                 %div
                   - if git_import_enabled?
-                    = link_to "#", class: 'btn js-toggle-button import_git' do
+                    %button.btn.js-toggle-button.import_git{ type: "button" }
                       = icon('git', text: 'Repo by URL')
                 .import_gitlab_project
                   - if gitlab_project_import_enabled?

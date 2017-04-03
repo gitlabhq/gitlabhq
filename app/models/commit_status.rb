@@ -5,7 +5,7 @@ class CommitStatus < ActiveRecord::Base
 
   self.table_name = 'ci_builds'
 
-  belongs_to :project, foreign_key: :gl_project_id
+  belongs_to :project
   belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
   belongs_to :user
 
@@ -105,6 +105,10 @@ class CommitStatus < ActiveRecord::Base
     end
   end
 
+  def locking_enabled?
+    status_changed?
+  end
+
   def before_sha
     pipeline.before_sha || Gitlab::Git::BLANK_SHA
   end
@@ -131,6 +135,12 @@ class CommitStatus < ActiveRecord::Base
 
   def has_trace?
     false
+  end
+
+  # Added in 9.0 to keep backward compatibility for projects exported in 8.17
+  # and prior.
+  def gl_project_id
+    'dummy'
   end
 
   def detailed_status(current_user)

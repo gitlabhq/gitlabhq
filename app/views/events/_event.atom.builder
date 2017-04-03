@@ -9,7 +9,7 @@ xml.entry do
 
   xml.author do
     xml.name event.author_name
-    xml.email event.author_email
+    xml.email event.author_public_email
   end
 
   xml.summary(type: "xhtml") do |summary|

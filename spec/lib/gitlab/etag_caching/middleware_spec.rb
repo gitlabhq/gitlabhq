@@ -99,6 +99,19 @@ describe Gitlab::EtagCaching::Middleware do
 
       middleware.call(build_env(path, if_none_match))
     end
+
+    context 'when polling is disabled' do
+      before do
+        allow(Gitlab::PollingInterval).to receive(:polling_enabled?).
+          and_return(false)
+      end
+
+      it 'returns status code 429' do
+        status, _, _ = middleware.call(build_env(path, if_none_match))
+
+        expect(status).to eq 429
+      end
+    end
   end
 
   context 'when If-None-Match header does not match ETag in store' do

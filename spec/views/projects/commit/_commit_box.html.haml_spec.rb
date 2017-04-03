@@ -4,7 +4,7 @@ describe 'projects/commit/_commit_box.html.haml' do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   before do
     assign(:project, project)

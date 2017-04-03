@@ -477,20 +477,6 @@ a.deploy-project-label {
   }
 }
 
-.page-sidebar-pinned {
-  .project-stats .nav > li.right {
-    @media (min-width: $screen-lg-min) {
-      float: none;
-    }
-  }
-
-  .download-button {
-    @media (min-width: $screen-lg-min) {
-      margin-left: 0;
-    }
-  }
-}
-
 .project-stats {
   font-size: 0;
   text-align: center;
@@ -582,54 +568,65 @@ pre.light-well {
 /*
  * Projects list rendered on dashboard and user page
  */
-
 .projects-list {
   @include basic-list;
+  display: flex;
+  flex-direction: column;
 
-  .project-row {
-    border-color: $white-normal;
+  // Disable Flexbox for admin page
+  &.admin-projects {
+    display: block;
 
-    .project-full-name {
-      @include str-truncated;
-
-      @media (max-width: $screen-xs-max) {
-        max-width: 50%;
-      }
-    }
-
-    .controls {
-      line-height: $list-text-height;
-
-      .badge {
-        @media (max-width: $screen-xs-max) {
-          display: none;
-        }
-      }
-
-      a:hover {
-        text-decoration: none;
-      }
-
-      > span {
-        margin-left: 10px;
-      }
-
-      svg {
-        position: relative;
-        top: 2px;
-      }
-    }
-
-    .description p {
-      @media (max-width: $screen-xs-max) {
-        max-width: 50%;
-      }
+    .project-row {
+      display: block;
     }
   }
 
-  .bottom {
-    padding-top: $gl-padding;
-    padding-bottom: 0;
+  .project-row {
+    display: flex;
+    align-items: center;
+    @include basic-list-stats;
+  }
+
+  h3 {
+    font-size: $gl-font-size;
+  }
+
+  a {
+    color: $gl-text-color;
+  }
+
+  .avatar-container,
+  .controls {
+    flex: 0 0 auto;
+  }
+
+  .avatar-container {
+    align-self: flex-start;
+  }
+
+  .project-details {
+    min-width: 0;
+
+    p,
+    .commit-row-message {
+      @include str-truncated(100%);
+      margin-bottom: 0;
+    }
+  }
+
+  .controls {
+    margin-left: auto;
+  }
+
+  .ci-status-link {
+    display: inline-block;
+    line-height: 17px;
+    vertical-align: middle;
+
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 
@@ -743,6 +740,15 @@ pre.light-well {
     margin-top: 6px;
     font-weight: normal;
   }
+}
+
+.create-new-protected-branch-button {
+  @include dropdown-link;
+
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  text-align: left;
 }
 
 .protected-branches-list {

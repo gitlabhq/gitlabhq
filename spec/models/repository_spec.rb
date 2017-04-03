@@ -1083,7 +1083,7 @@ describe Repository, models: true do
     end
   end
 
-  describe :skip_merged_commit do
+  describe 'skip_merges option' do
     subject { repository.commits(Gitlab::Git::BRANCH_REF_PREFIX + "'test'", limit: 100, skip_merges: true).map{ |k| k.id } }
 
     it { is_expected.not_to include('e56497bb5f03a90a51293fc6d516788730953899') }
@@ -1848,6 +1848,19 @@ describe Repository, models: true do
     context 'when there is no .gitlab/route-map.yml at the commit' do
       it 'returns nil' do
         expect(repository.route_map_for(repository.commit.parent.sha)).to be_nil
+      end
+    end
+  end
+
+  describe '#is_ancestor?' do
+    context 'Gitaly is_ancestor feature enabled' do
+      it 'asks Gitaly server if it\'s an ancestor' do
+        commit = repository.commit
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(true)
+        expect(Gitlab::GitalyClient::Commit).to receive(:is_ancestor).
+          with(repository.raw_repository, commit.id, commit.id).and_return(true)
+
+        expect(repository.is_ancestor?(commit.id, commit.id)).to be true
       end
     end
   end

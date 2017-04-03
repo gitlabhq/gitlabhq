@@ -203,6 +203,24 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'PUT update' do
+    context 'changing the assignee' do
+      it 'limits the attributes exposed on the assignee' do
+        assignee = create(:user)
+        project.add_developer(assignee)
+
+        put :update,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: merge_request.iid,
+          merge_request: { assignee_id: assignee.id },
+          format: :json
+        body = JSON.parse(response.body)
+
+        expect(body['assignee'].keys)
+          .to match_array(%w(name username avatar_url))
+      end
+    end
+
     context 'there is no source project' do
       let(:project)       { create(:project) }
       let(:fork_project)  { create(:forked_project_with_submodules) }
@@ -1158,6 +1176,44 @@ describe Projects::MergeRequestsController do
         expect(assigns(:status)).to eq(:success)
         expect(response).to render_template('merge')
       end
+    end
+  end
+
+  describe 'GET pipeline_status.json' do
+    context 'when head_pipeline exists' do
+      let!(:pipeline) do
+        create(:ci_pipeline, project: merge_request.source_project,
+                             ref: merge_request.source_branch,
+                             sha: merge_request.diff_head_sha)
+      end
+
+      let(:status) { pipeline.detailed_status(double('user')) }
+
+      before { get_pipeline_status }
+
+      it 'return a detailed head_pipeline status in json' do
+        expect(response).to have_http_status(:ok)
+        expect(json_response['text']).to eq status.text
+        expect(json_response['label']).to eq status.label
+        expect(json_response['icon']).to eq status.icon
+        expect(json_response['favicon']).to eq status.favicon
+      end
+    end
+
+    context 'when head_pipeline does not exist' do
+      before { get_pipeline_status }
+
+      it 'return empty' do
+        expect(response).to have_http_status(:ok)
+        expect(json_response).to be_empty
+      end
+    end
+
+    def get_pipeline_status
+      get :pipeline_status, namespace_id: project.namespace,
+                            project_id: project,
+                            id: merge_request.iid,
+                            format: :json
     end
   end
 end

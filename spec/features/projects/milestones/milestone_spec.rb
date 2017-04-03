@@ -23,12 +23,14 @@ feature 'Project milestone', :feature do
     end
 
     it 'shows issues stats' do
-      expect(page).to have_content 'issues:'
+      expect(find('.milestone-sidebar')).to have_content 'Issues 0'
     end
 
-    it 'shows Browse Issues button' do
-      within('#content-body') do
-        expect(page).to have_link 'Browse Issues'
+    it 'shows link to browse and add issues' do
+      within('.milestone-sidebar') do
+        expect(page).to have_link 'New issue'
+        expect(page).to have_link 'Open: 0'
+        expect(page).to have_link 'Closed: 0'
       end
     end
   end
@@ -48,12 +50,12 @@ feature 'Project milestone', :feature do
     end
 
     it 'hides issues stats' do
-      expect(page).to have_no_content 'issues:'
+      expect(find('.milestone-sidebar')).not_to have_content 'Issues 0'
     end
 
-    it 'hides Browse Issues button' do
-      within('#content-body') do
-        expect(page).not_to have_link 'Browse Issues'
+    it 'hides new issue button' do
+      within('.milestone-sidebar') do
+        expect(page).not_to have_link 'New issue'
       end
     end
 

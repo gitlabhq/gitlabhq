@@ -31,8 +31,10 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def disable
-    @project.deploy_keys_projects.find_by(deploy_key_id: params[:id]).destroy
+    deploy_key_project = @project.deploy_keys_projects.find_by(deploy_key_id: params[:id])
+    return render_404 unless deploy_key_project
 
+    deploy_key_project.destroy!
     redirect_to_repository_settings(@project)
   end
 

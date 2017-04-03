@@ -60,7 +60,17 @@
       }
 
       .modify-merge-commit-link {
+        padding: 0;
+
+        background-color: transparent;
+        border: 0;
+
         color: $gl-text-color;
+
+        &:hover,
+        &:focus {
+          text-decoration: underline;
+        }
       }
 
       .merge-param-checkbox {
@@ -535,7 +545,7 @@
   }
 
   .fa-info-circle {
-    color: $orange-normal;
+    color: $orange-500;
     padding-right: 5px;
   }
 }

@@ -676,7 +676,7 @@ describe API::Users, api: true  do
     before { admin }
 
     it "deletes user" do
-      delete api("/users/#{user.id}", admin)
+      Sidekiq::Testing.inline! { delete api("/users/#{user.id}", admin) }
 
       expect(response).to have_http_status(204)
       expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
@@ -684,23 +684,23 @@ describe API::Users, api: true  do
     end
 
     it "does not delete for unauthenticated user" do
-      delete api("/users/#{user.id}")
+      Sidekiq::Testing.inline! { delete api("/users/#{user.id}") }
       expect(response).to have_http_status(401)
     end
 
     it "is not available for non admin users" do
-      delete api("/users/#{user.id}", user)
+      Sidekiq::Testing.inline! { delete api("/users/#{user.id}", user) }
       expect(response).to have_http_status(403)
     end
 
     it "returns 404 for non-existing user" do
-      delete api("/users/999999", admin)
+      Sidekiq::Testing.inline! { delete api("/users/999999", admin) }
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
     it "returns a 404 for invalid ID" do
-      delete api("/users/ASDF", admin)
+      Sidekiq::Testing.inline! { delete api("/users/ASDF", admin) }
 
       expect(response).to have_http_status(404)
     end

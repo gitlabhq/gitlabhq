@@ -25,7 +25,7 @@ describe Gitlab::GithubImport::LabelFormatter, lib: true do
 
     context 'when label exists' do
       it 'does not create a new label' do
-        project.labels.create(name: raw.name)
+        Labels::CreateService.new(name: raw.name).execute(project: project)
 
         expect { subject.create! }.not_to change(Label, :count)
       end

@@ -5,7 +5,7 @@
         %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h3.page-title= title
       .modal-body
-        = form_tag form_path, method: method, class: 'js-quick-submit js-upload-blob-form form-horizontal' do
+        = form_tag form_path, method: method, class: 'js-quick-submit js-upload-blob-form form-horizontal', data: { method: method } do
           .dropzone
             .dropzone-previews.blob-upload-dropzone-previews
               %p.dz-message.light
@@ -24,8 +24,5 @@
               .inline.prepend-left-10
                 = commit_in_fork_help
 
-
-:javascript
-  gl.utils.disableButtonIfEmptyField($('.js-upload-blob-form').find('.js-commit-message'), '.btn-upload-file');
-  new BlobFileDropzone($('.js-upload-blob-form'), '#{method}');
-  new NewCommitForm($('.js-upload-blob-form'))
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('blob')

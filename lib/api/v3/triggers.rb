@@ -15,7 +15,7 @@ module API
           requires :token, type: String, desc: 'The unique token of trigger'
           optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
         end
-        post ":id/(ref/:ref/)trigger/builds" do
+        post ":id/(ref/:ref/)trigger/builds", requirements: { ref: /.+/ } do
           project = find_project(params[:id])
           trigger = Ci::Trigger.find_by_token(params[:token].to_s)
           not_found! unless project && trigger

@@ -2,6 +2,7 @@ module SortingHelper
   def sort_options_hash
     {
       sort_value_name => sort_title_name,
+      sort_value_name_desc => sort_title_name_desc,
       sort_value_recently_updated => sort_title_recently_updated,
       sort_value_oldest_updated => sort_title_oldest_updated,
       sort_value_recently_created => sort_title_recently_created,
@@ -50,6 +51,17 @@ module SortingHelper
     }
   end
 
+  def milestone_sort_options_hash
+    {
+      sort_value_name => sort_title_name_asc,
+      sort_value_name_desc => sort_title_name_desc,
+      sort_value_due_date_soon => sort_title_due_date_soon,
+      sort_value_due_date_later => sort_title_due_date_later,
+      sort_value_start_date_soon => sort_title_start_date_soon,
+      sort_value_start_date_later => sort_title_start_date_later,
+    }
+  end
+
   def sort_title_priority
     'Priority'
   end
@@ -88,6 +100,14 @@ module SortingHelper
 
   def sort_title_due_date_later
     'Due later'
+  end
+
+  def sort_title_start_date_soon
+    'Start soon'
+  end
+
+  def sort_title_start_date_later
+    'Start later'
   end
 
   def sort_title_name
@@ -200,6 +220,14 @@ module SortingHelper
 
   def sort_value_due_date_later
     'due_date_desc'
+  end
+
+  def sort_value_start_date_soon
+    'start_date_asc'
+  end
+
+  def sort_value_start_date_later
+    'start_date_desc'
   end
 
   def sort_value_name

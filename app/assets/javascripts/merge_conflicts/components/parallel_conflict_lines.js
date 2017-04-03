@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign, comma-dangle */
-/* global Vue */
+
+import Vue from 'vue';
 
 ((global) => {
   global.mergeConflicts = global.mergeConflicts || {};

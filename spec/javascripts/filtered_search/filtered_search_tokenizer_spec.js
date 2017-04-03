@@ -122,6 +122,14 @@ require('~/filtered_search/filtered_search_tokenizer');
         expect(results.lastToken).toBe('std::includes');
         expect(results.searchToken).toBe('std::includes');
       });
+
+      it('removes duplicated values', () => {
+        const results = gl.FilteredSearchTokenizer.processTokens('label:~foo label:~foo');
+        expect(results.tokens.length).toBe(1);
+        expect(results.tokens[0].key).toBe('label');
+        expect(results.tokens[0].value).toBe('foo');
+        expect(results.tokens[0].symbol).toBe('~');
+      });
     });
   });
 })();

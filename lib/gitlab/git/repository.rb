@@ -320,7 +320,7 @@ module Gitlab
       def log_by_walk(sha, options)
         walk_options = {
           show: sha,
-          sort: Rugged::SORT_DATE,
+          sort: Rugged::SORT_NONE,
           limit: options[:limit],
           offset: options[:offset]
         }
@@ -346,7 +346,12 @@ module Gitlab
         cmd << "--after=#{options[:after].iso8601}" if options[:after]
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
         cmd << sha
-        cmd += %W[-- #{options[:path]}] if options[:path].present?
+
+        # :path can be a string or an array of strings
+        if options[:path].present?
+          cmd << '--'
+          cmd += Array(options[:path])
+        end
 
         raw_output = IO.popen(cmd) { |io| io.read }
         lines = offset_in_ruby ? raw_output.lines.drop(offset) : raw_output.lines
@@ -382,7 +387,7 @@ module Gitlab
       # a detailed list of valid arguments.
       def commits_between(from, to)
         walker = Rugged::Walker.new(rugged)
-        walker.sorting(Rugged::SORT_DATE | Rugged::SORT_REVERSE)
+        walker.sorting(Rugged::SORT_NONE | Rugged::SORT_REVERSE)
 
         sha_from = sha_from_ref(from)
         sha_to = sha_from_ref(to)
@@ -404,6 +409,11 @@ module Gitlab
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
       def merge_base_commit(from, to)
         rugged.merge_base(from, to)
+      end
+
+      # Returns true is +from+ is direct ancestor to +to+, otherwise false
+      def is_ancestor?(from, to)
+        Gitlab::GitalyClient::Commit.is_ancestor(self, from, to)
       end
 
       # Return an array of Diff objects that represent the diff
@@ -460,7 +470,7 @@ module Gitlab
         if actual_options[:order] == :topo
           walker.sorting(Rugged::SORT_TOPO)
         else
-          walker.sorting(Rugged::SORT_DATE)
+          walker.sorting(Rugged::SORT_NONE)
         end
 
         commits = []
@@ -826,23 +836,6 @@ module Gitlab
           update_ref: "refs/heads/#{target_name}"
         )
         Rugged::Commit.create(rugged, actual_options)
-      end
-
-      def commits_since(from_date)
-        walker = Rugged::Walker.new(rugged)
-        walker.sorting(Rugged::SORT_DATE | Rugged::SORT_REVERSE)
-
-        rugged.references.each("refs/heads/*") do |ref|
-          walker.push(ref.target_id)
-        end
-
-        commits = []
-        walker.each do |commit|
-          break if commit.author[:time].to_date < from_date
-          commits.push(commit)
-        end
-
-        commits
       end
 
       AUTOCRLF_VALUES = {

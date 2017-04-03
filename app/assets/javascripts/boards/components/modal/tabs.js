@@ -1,4 +1,5 @@
-/* global Vue */
+import Vue from 'vue';
+
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 
@@ -23,7 +24,7 @@
               href="#"
               role="button"
               @click.prevent="changeTab('all')">
-              All issues
+              Open issues
               <span class="badge">
                 {{ issuesCount }}
               </span>

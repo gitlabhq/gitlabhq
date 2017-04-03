@@ -6,7 +6,8 @@ module NavHelper
         current_path?('merge_requests#builds') ||
         current_path?('merge_requests#conflicts') ||
         current_path?('merge_requests#pipelines') ||
-        current_path?('issues#show')
+        current_path?('issues#show') ||
+        current_path?('milestones#show')
       if cookies[:collapsed_gutter] == 'true'
         "page-gutter right-sidebar-collapsed"
       else
@@ -16,6 +17,7 @@ module NavHelper
       "page-gutter build-sidebar right-sidebar-expanded"
     elsif current_path?('wikis#show') ||
         current_path?('wikis#edit') ||
+        current_path?('wikis#update') ||
         current_path?('wikis#history') ||
         current_path?('wikis#git_access')
       "page-gutter wiki-sidebar right-sidebar-expanded"
@@ -30,7 +32,11 @@ module NavHelper
   end
 
   def layout_nav_class
-    "page-with-layout-nav" if defined?(nav) && nav
+    class_name = ''
+    class_name << " page-with-layout-nav" if defined?(nav) && nav
+    class_name << " page-with-sub-nav" if content_for?(:sub_nav)
+
+    class_name
   end
 
   def nav_control_class

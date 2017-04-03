@@ -5,9 +5,7 @@ module Ci
     include Importable
     include AfterCommitQueue
 
-    self.table_name = 'ci_commits'
-
-    belongs_to :project, foreign_key: :gl_project_id
+    belongs_to :project
     belongs_to :user
 
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
@@ -212,7 +210,7 @@ module Ci
     end
 
     def stuck?
-      builds.pending.any?(&:stuck?)
+      builds.pending.includes(:project).any?(&:stuck?)
     end
 
     def retryable?

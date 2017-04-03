@@ -1,4 +1,4 @@
-/* global Cookies */
+import Cookies from 'js-cookie';
 
 import emojiMap from 'emojis/digests.json';
 import emojiAliases from 'emojis/aliases.json';

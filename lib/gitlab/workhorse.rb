@@ -1,6 +1,7 @@
 require 'base64'
 require 'json'
 require 'securerandom'
+require 'uri'
 
 module Gitlab
   class Workhorse
@@ -16,15 +17,23 @@ module Gitlab
 
     class << self
       def git_http_ok(repository, user)
+        repo_path = repository.path_to_repo
         params = {
           GL_ID: Gitlab::GlId.gl_id(user),
-          RepoPath: repository.path_to_repo,
+          RepoPath: repo_path,
         }
 
-        params.merge!(
-          GitalySocketPath: Gitlab.config.gitaly.socket_path,
-          GitalyResourcePath: "/projects/#{repository.project.id}/git-http/info-refs",
-        ) if Gitlab.config.gitaly.socket_path.present?
+        if Gitlab.config.gitaly.enabled
+          storage = repository.project.repository_storage
+          address = Gitlab::GitalyClient.get_address(storage)
+          params[:GitalySocketPath] = URI(address).path
+          # TODO: use GitalyClient code to assemble the Repository message
+          params[:Repository] = Gitaly::Repository.new(
+            path: repo_path,
+            storage_name: storage,
+            relative_path: Gitlab::RepoPath.strip_storage_path(repo_path),
+          ).to_h
+        end
 
         params
       end

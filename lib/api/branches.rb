@@ -4,7 +4,6 @@ module API
   class Branches < Grape::API
     include PaginationParams
 
-    before { authenticate! }
     before { authorize! :download_code, user_project }
 
     params do
@@ -102,6 +101,7 @@ module API
       end
       post ":id/repository/branches" do
         authorize_push_project
+
         result = CreateBranchService.new(user_project, current_user).
                  execute(params[:branch], params[:ref])
 

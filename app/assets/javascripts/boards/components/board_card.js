@@ -1,4 +1,3 @@
-/* global Vue */
 require('./issue_card_inner');
 
 const Store = gl.issueBoards.BoardsStore;
@@ -51,9 +50,7 @@ export default {
       this.showDetail = false;
     },
     showIssue(e) {
-      const targetTagName = e.target.tagName.toLowerCase();
-
-      if (targetTagName === 'a' || targetTagName === 'button') return;
+      if (e.target.classList.contains('js-no-trigger')) return;
 
       if (this.showDetail) {
         this.showDetail = false;

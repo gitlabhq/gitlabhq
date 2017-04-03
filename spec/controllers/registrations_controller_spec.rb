@@ -30,6 +30,15 @@ describe RegistrationsController do
           expect(subject.current_user).to be_nil
         end
       end
+
+      context 'when signup_enabled? is false' do
+        it 'redirects to sign_in' do
+          allow_any_instance_of(ApplicationSetting).to receive(:signup_enabled?).and_return(false)
+
+          expect { post(:create, user_params) }.not_to change(User, :count)
+          expect(response).to redirect_to(new_user_session_path)
+        end
+      end
     end
 
     context 'when reCAPTCHA is enabled' do
@@ -57,6 +66,22 @@ describe RegistrationsController do
 
         expect(flash[:notice]).to include 'Welcome! You have signed up successfully.'
       end
+    end
+  end
+
+  describe '#destroy' do
+    let(:user) { create(:user) }
+
+    before do
+      sign_in(user)
+    end
+
+    it 'schedules the user for destruction' do
+      expect(DeleteUserWorker).to receive(:perform_async).with(user.id, user.id)
+
+      post(:destroy)
+
+      expect(response.status).to eq(302)
     end
   end
 end

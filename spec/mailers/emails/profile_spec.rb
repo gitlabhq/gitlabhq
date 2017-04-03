@@ -5,6 +5,16 @@ describe Notify do
   include EmailSpec::Matchers
   include_context 'gitlab email notification'
 
+  shared_examples 'a new user email' do
+    it 'is sent to the new user with the correct subject and body' do
+      aggregate_failures do
+        is_expected.to deliver_to new_user_address
+        is_expected.to have_subject(/^Account was created for you$/i)
+        is_expected.to have_body_text(new_user_address)
+      end
+    end
+  end
+
   describe 'profile notifications' do
     describe 'for new users, the email' do
       let(:example_site_path) { root_path }

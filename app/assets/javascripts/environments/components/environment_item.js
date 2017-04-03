@@ -1,29 +1,29 @@
 import Timeago from 'timeago.js';
+import '../../lib/utils/text_utility';
 import ActionsComponent from './environment_actions';
 import ExternalUrlComponent from './environment_external_url';
 import StopComponent from './environment_stop';
 import RollbackComponent from './environment_rollback';
 import TerminalButtonComponent from './environment_terminal_button';
-import '../../lib/utils/text_utility';
-import '../../vue_shared/components/commit';
+import MonitoringButtonComponent from './environment_monitoring';
+import CommitComponent from '../../vue_shared/components/commit';
 
 /**
  * Envrionment Item Component
  *
  * Renders a table row for each environment.
  */
-
 const timeagoInstance = new Timeago();
 
 export default {
-
   components: {
-    'commit-component': gl.CommitComponent,
+    'commit-component': CommitComponent,
     'actions-component': ActionsComponent,
     'external-url-component': ExternalUrlComponent,
     'stop-component': StopComponent,
     'rollback-component': RollbackComponent,
     'terminal-button-component': TerminalButtonComponent,
+    'monitoring-button-component': MonitoringButtonComponent,
   },
 
   props: {
@@ -395,6 +395,14 @@ export default {
       return '';
     },
 
+    monitoringUrl() {
+      if (this.model && this.model.metrics_path) {
+        return this.model.metrics_path;
+      }
+
+      return '';
+    },
+
     /**
      * Constructs folder URL based on the current location and the folder id.
      *
@@ -499,12 +507,15 @@ export default {
           <external-url-component v-if="externalURL && canReadEnvironment"
             :external-url="externalURL"/>
 
-          <stop-component v-if="hasStopAction && canCreateDeployment"
-            :stop-url="model.stop_path"
-            :service="service"/>
+          <monitoring-button-component v-if="monitoringUrl && canReadEnvironment"
+            :monitoring-url="monitoringUrl"/>
 
           <terminal-button-component v-if="model && model.terminal_path"
             :terminal-path="model.terminal_path"/>
+
+          <stop-component v-if="hasStopAction && canCreateDeployment"
+            :stop-url="model.stop_path"
+            :service="service"/>
 
           <rollback-component v-if="canRetry && canCreateDeployment"
             :is-last-deployment="isLastDeployment"

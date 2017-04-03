@@ -1,8 +1,10 @@
-require('~/lib/utils/common_utils');
-require('~/vue_shared/components/table_pagination');
+import Vue from 'vue';
+import paginationComp from '~/vue_shared/components/table_pagination';
+import '~/lib/utils/common_utils';
 
 describe('Pagination component', () => {
   let component;
+  let PaginationComponent;
 
   const changeChanges = {
     one: '',
@@ -12,11 +14,12 @@ describe('Pagination component', () => {
     changeChanges.one = one;
   };
 
-  it('should render and start at page 1', () => {
-    setFixtures('<div class="test-pagination-container"></div>');
+  beforeEach(() => {
+    PaginationComponent = Vue.extend(paginationComp);
+  });
 
-    component = new window.gl.VueGlPagination({
-      el: document.querySelector('.test-pagination-container'),
+  it('should render and start at page 1', () => {
+    component = new PaginationComponent({
       propsData: {
         pageInfo: {
           totalPages: 10,
@@ -25,7 +28,7 @@ describe('Pagination component', () => {
         },
         change,
       },
-    });
+    }).$mount();
 
     expect(component.$el.classList).toContain('gl-pagination');
 
@@ -35,10 +38,7 @@ describe('Pagination component', () => {
   });
 
   it('should go to the previous page', () => {
-    setFixtures('<div class="test-pagination-container"></div>');
-
-    component = new window.gl.VueGlPagination({
-      el: document.querySelector('.test-pagination-container'),
+    component = new PaginationComponent({
       propsData: {
         pageInfo: {
           totalPages: 10,
@@ -47,7 +47,7 @@ describe('Pagination component', () => {
         },
         change,
       },
-    });
+    }).$mount();
 
     component.changePage({ target: { innerText: 'Prev' } });
 
@@ -55,10 +55,7 @@ describe('Pagination component', () => {
   });
 
   it('should go to the next page', () => {
-    setFixtures('<div class="test-pagination-container"></div>');
-
-    component = new window.gl.VueGlPagination({
-      el: document.querySelector('.test-pagination-container'),
+    component = new PaginationComponent({
       propsData: {
         pageInfo: {
           totalPages: 10,
@@ -67,7 +64,7 @@ describe('Pagination component', () => {
         },
         change,
       },
-    });
+    }).$mount();
 
     component.changePage({ target: { innerText: 'Next' } });
 
@@ -75,10 +72,7 @@ describe('Pagination component', () => {
   });
 
   it('should go to the last page', () => {
-    setFixtures('<div class="test-pagination-container"></div>');
-
-    component = new window.gl.VueGlPagination({
-      el: document.querySelector('.test-pagination-container'),
+    component = new PaginationComponent({
       propsData: {
         pageInfo: {
           totalPages: 10,
@@ -87,18 +81,15 @@ describe('Pagination component', () => {
         },
         change,
       },
-    });
+    }).$mount();
 
-    component.changePage({ target: { innerText: 'Last >>' } });
+    component.changePage({ target: { innerText: 'Last »' } });
 
     expect(changeChanges.one).toEqual(10);
   });
 
   it('should go to the first page', () => {
-    setFixtures('<div class="test-pagination-container"></div>');
-
-    component = new window.gl.VueGlPagination({
-      el: document.querySelector('.test-pagination-container'),
+    component = new PaginationComponent({
       propsData: {
         pageInfo: {
           totalPages: 10,
@@ -107,18 +98,15 @@ describe('Pagination component', () => {
         },
         change,
       },
-    });
+    }).$mount();
 
-    component.changePage({ target: { innerText: '<< First' } });
+    component.changePage({ target: { innerText: '« First' } });
 
     expect(changeChanges.one).toEqual(1);
   });
 
   it('should do nothing', () => {
-    setFixtures('<div class="test-pagination-container"></div>');
-
-    component = new window.gl.VueGlPagination({
-      el: document.querySelector('.test-pagination-container'),
+    component = new PaginationComponent({
       propsData: {
         pageInfo: {
           totalPages: 10,
@@ -127,7 +115,7 @@ describe('Pagination component', () => {
         },
         change,
       },
-    });
+    }).$mount();
 
     component.changePage({ target: { innerText: '...' } });
 
@@ -136,6 +124,10 @@ describe('Pagination component', () => {
 });
 
 describe('paramHelper', () => {
+  afterEach(() => {
+    window.history.pushState({}, null, '');
+  });
+
   it('can parse url parameters correctly', () => {
     window.history.pushState({}, null, '?scope=all&p=2');
 

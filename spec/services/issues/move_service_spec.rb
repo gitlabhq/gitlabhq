@@ -5,8 +5,8 @@ describe Issues::MoveService, services: true do
   let(:author) { create(:user) }
   let(:title) { 'Some issue' }
   let(:description) { 'Some issue description' }
-  let(:old_project) { create(:project) }
-  let(:new_project) { create(:project) }
+  let(:old_project) { create(:empty_project) }
+  let(:new_project) { create(:empty_project) }
   let(:milestone1) { create(:milestone, project_id: old_project.id, title: 'v9.0') }
 
   let(:old_issue) do

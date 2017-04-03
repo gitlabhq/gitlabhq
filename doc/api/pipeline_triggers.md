@@ -41,10 +41,10 @@ Get details of project's build trigger.
 GET /projects/:id/triggers/:trigger_id
 ```
 
-| Attribute | Type    | required | Description              |
-|-----------|---------|----------|--------------------------|
-| `id`      | integer | yes      | The ID of a project      |
-| `token`   | string  | yes      | The `token` of a trigger |
+| Attribute    | Type    | required | Description              |
+|--------------|---------|----------|--------------------------|
+| `id`         | integer | yes      | The ID of a project      |
+| `trigger_id` | integer | yes      | The trigger id           |
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/triggers/5"
@@ -103,6 +103,7 @@ PUT /projects/:id/triggers/:trigger_id
 
 | Attribute     | Type    | required | Description              |
 |---------------|---------|----------|--------------------------|
+| `id`          | integer | yes      | The ID of a project      |
 | `trigger_id`  | integer | yes      | The trigger id           |
 | `description` | string  | no       | The trigger name         |
 
@@ -133,6 +134,7 @@ POST /projects/:id/triggers/:trigger_id/take_ownership
 
 | Attribute     | Type    | required | Description              |
 |---------------|---------|----------|--------------------------|
+| `id`          | integer | yes      | The ID of a project      |
 | `trigger_id`  | integer | yes      | The trigger id           |
 
 ```

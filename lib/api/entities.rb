@@ -204,7 +204,7 @@ module API
       expose :id, :name, :type, :path
 
       expose :mode do |obj, options|
-        filemode = obj.mode.to_s(8)
+        filemode = obj.mode
         filemode = "0" + filemode if filemode.length < 6
         filemode
       end
@@ -581,6 +581,7 @@ module API
       expose :plantuml_enabled
       expose :plantuml_url
       expose :terminal_max_session_time
+      expose :polling_interval_multiplier
     end
 
     class Release < Grape::Entity
@@ -768,7 +769,7 @@ module API
       end
 
       class Dependency < Grape::Entity
-        expose :id, :name
+        expose :id, :name, :token
         expose :artifacts_file, using: ArtifactFile, if: ->(job, _) { job.artifacts? }
       end
 
@@ -796,7 +797,7 @@ module API
         expose :artifacts, using: Artifacts
         expose :cache, using: Cache
         expose :credentials, using: Credentials
-        expose :depends_on_builds, as: :dependencies, using: Dependency
+        expose :dependencies, using: Dependency
       end
     end
   end

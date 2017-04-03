@@ -3,7 +3,7 @@ module Boards
     class ListService < BaseService
       def execute
         issues = IssuesFinder.new(current_user, filter_params).execute
-        issues = without_board_labels(issues) unless movable_list?
+        issues = without_board_labels(issues) unless list
         issues = with_list_label(issues) if movable_list?
         issues.order_by_position_and_priority
       end
@@ -41,7 +41,7 @@ module Boards
       end
 
       def set_state
-        params[:state] = list && list.done? ? 'closed' : 'opened'
+        params[:state] = list && list.closed? ? 'closed' : 'opened'
       end
 
       def board_label_ids

@@ -1,6 +1,6 @@
 - builds = @build.pipeline.builds.to_a
 
-%aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar.js-right-sidebar{ data: { "offset-top" => "151", "spy" => "affix" } }
+%aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar.js-right-sidebar{ data: { "offset-top" => "153", "spy" => "affix" } }
   .block.build-sidebar-header.visible-xs-block.visible-sm-block.append-bottom-default
     Job
     %strong ##{@build.id}
@@ -33,7 +33,7 @@
               = link_to keep_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default', method: :post do
                 Keep
 
-            = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default' do
+            = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, @build), rel: 'nofollow', download: '', class: 'btn btn-sm btn-default' do
               Download
 
             - if @build.artifacts_metadata?
@@ -137,3 +137,6 @@
                 = build.id
             - if build.retried?
               %i.fa.fa-refresh.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Job was retried' }
+
+:javascript
+  new Sidebar();

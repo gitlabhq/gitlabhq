@@ -89,7 +89,6 @@ class Project < ActiveRecord::Base
   has_one :campfire_service, dependent: :destroy
   has_one :drone_ci_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
-  has_one :builds_email_service, dependent: :destroy
   has_one :pipelines_email_service, dependent: :destroy
   has_one :irker_service, dependent: :destroy
   has_one :pivotaltracker_service, dependent: :destroy
@@ -159,13 +158,13 @@ class Project < ActiveRecord::Base
   has_one :project_feature, dependent: :destroy
   has_one :statistics, class_name: 'ProjectStatistics', dependent: :delete
 
-  has_many :commit_statuses, dependent: :destroy, foreign_key: :gl_project_id
-  has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline', foreign_key: :gl_project_id
-  has_many :builds, class_name: 'Ci::Build', foreign_key: :gl_project_id # the builds are created from the commit_statuses
-  has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject', foreign_key: :gl_project_id
+  has_many :commit_statuses, dependent: :destroy
+  has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline'
+  has_many :builds, class_name: 'Ci::Build' # the builds are created from the commit_statuses
+  has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
-  has_many :variables, dependent: :destroy, class_name: 'Ci::Variable', foreign_key: :gl_project_id
-  has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :gl_project_id
+  has_many :variables, dependent: :destroy, class_name: 'Ci::Variable'
+  has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger'
   has_many :environments, dependent: :destroy
   has_many :deployments, dependent: :destroy
 
@@ -197,6 +196,7 @@ class Project < ActiveRecord::Base
   validates :name, uniqueness: { scope: :namespace_id }
   validates :path, uniqueness: { scope: :namespace_id }
   validates :import_url, addressable_url: true, if: :external_import?
+  validates :import_url, importable_url: true, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,
@@ -238,7 +238,7 @@ class Project < ActiveRecord::Base
     # We need routes alias rs for JOIN so it does not conflict with
     # includes(:route) which we use in ProjectsFinder.
     joins("INNER JOIN routes rs ON rs.source_id = projects.id AND rs.source_type = 'Project'").
-      where('rs.path LIKE ?', "#{path}/%")
+      where('rs.path LIKE ?', "#{sanitize_sql_like(path)}/%")
   end
 
   # "enabled" here means "not disabled". It includes private features!
@@ -314,20 +314,15 @@ class Project < ActiveRecord::Base
       ntable  = Namespace.arel_table
       pattern = "%#{query}%"
 
-      projects = select(:id).where(
+      # unscoping unnecessary conditions that'll be applied
+      # when executing `where("projects.id IN (#{union.to_sql})")`
+      projects = unscoped.select(:id).where(
         ptable[:path].matches(pattern).
           or(ptable[:name].matches(pattern)).
           or(ptable[:description].matches(pattern))
       )
 
-      # We explicitly remove any eager loading clauses as they're:
-      #
-      # 1. Not needed by this query
-      # 2. Combined with .joins(:namespace) lead to all columns from the
-      #    projects & namespaces tables being selected, leading to a SQL error
-      #    due to the columns of all UNION'd queries no longer being the same.
-      namespaces = select(:id).
-        except(:includes).
+      namespaces = unscoped.select(:id).
         joins(:namespace).
         where(ntable[:name].matches(pattern))
 
@@ -881,13 +876,9 @@ class Project < ActiveRecord::Base
   end
 
   def http_url_to_repo(user = nil)
-    url = web_url
+    credentials = Gitlab::UrlSanitizer.http_credentials_for_user(user)
 
-    if user
-      url.sub!(%r{\Ahttps?://}) { |protocol| "#{protocol}#{user.username}@" }
-    end
-
-    "#{url}.git"
+    Gitlab::UrlSanitizer.new("#{web_url}.git", credentials: credentials).full_url
   end
 
   # Check if current branch name is marked as protected in the system

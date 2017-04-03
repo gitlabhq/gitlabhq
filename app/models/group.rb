@@ -207,7 +207,7 @@ class Group < Namespace
   end
 
   def members_with_parents
-    GroupMember.non_request.where(source_id: ancestors.map(&:id).push(id))
+    GroupMember.non_request.where(source_id: ancestors.pluck(:id).push(id))
   end
 
   def users_with_parents

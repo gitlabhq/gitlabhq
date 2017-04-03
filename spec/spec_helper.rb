@@ -9,7 +9,8 @@ require 'rspec/rails'
 require 'shoulda/matchers'
 require 'rspec/retry'
 
-if ENV['RSPEC_PROFILING_POSTGRES_URL'] || ENV['RSPEC_PROFILING']
+if (ENV['RSPEC_PROFILING_POSTGRES_URL'] || ENV['RSPEC_PROFILING']) &&
+    (!ENV.has_key?('CI') || ENV['CI_COMMIT_REF_NAME'] == 'master')
   require 'rspec_profiling/rspec'
 end
 
@@ -35,7 +36,8 @@ RSpec.configure do |config|
   config.include Warden::Test::Helpers, type: :request
   config.include LoginHelpers, type: :feature
   config.include SearchHelpers, type: :feature
-  config.include WaitForAjax, type: :feature
+  config.include WaitForRequests, :js
+  config.include WaitForAjax, :js
   config.include StubConfiguration
   config.include EmailHelpers, type: :mailer
   config.include TestEnv

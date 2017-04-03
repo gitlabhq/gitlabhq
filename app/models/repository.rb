@@ -981,7 +981,13 @@ class Repository
   end
 
   def is_ancestor?(ancestor_id, descendant_id)
-    merge_base(ancestor_id, descendant_id) == ancestor_id
+    Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
+      if is_enabled
+        raw_repository.is_ancestor?(ancestor_id, descendant_id)
+      else
+        merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+      end
+    end
   end
 
   def empty_repo?

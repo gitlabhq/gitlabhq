@@ -243,22 +243,6 @@ ul.notes {
   }
 }
 
-.page-sidebar-pinned.right-sidebar-expanded {
-  @media (max-width: $screen-md-max) {
-    .note-header {
-      .note-headline-light {
-        display: block;
-      }
-
-      .note-actions {
-        position: absolute;
-        right: 0;
-        top: 0;
-      }
-    }
-  }
-}
-
 // Diff code in discussion view
 .discussion-body .diff-file {
   .file-title {
@@ -426,8 +410,22 @@ ul.notes {
 }
 
 .discussion-toggle-button {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
   line-height: 20px;
   font-size: 13px;
+  transition: color 0.1s linear;
+
+  &:hover {
+    color: $gl-link-color;
+  }
+
+  &:focus {
+    text-decoration: underline;
+    outline: none;
+    color: $gl-link-color;
+  }
 
   .fa {
     margin-right: 3px;
@@ -462,17 +460,18 @@ ul.notes {
   background: $white-light;
   padding: 1px 5px;
   font-size: 12px;
-  color: $gl-link-color;
+  color: $blue-500;
   margin-left: -55px;
   position: absolute;
   z-index: 10;
   width: 23px;
   height: 23px;
-  border: 1px solid $border-color;
+  border: 1px solid $blue-500;
   transition: transform .1s ease-in-out;
 
   &:hover {
-    background: $gl-info;
+    background: $blue-500;
+    border-color: $blue-600;
     color: $white-light;
     transform: scale(1.15);
   }

@@ -132,7 +132,8 @@ class Snippet < ActiveRecord::Base
   end
 
   def check_for_spam?
-    public?
+    visibility_level_changed?(to: Snippet::PUBLIC) ||
+      (public? && (title_changed? || content_changed?))
   end
 
   def spammable_entity_type

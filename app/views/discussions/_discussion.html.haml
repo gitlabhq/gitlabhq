@@ -8,7 +8,7 @@
       .discussion.js-toggle-container{ class: discussion.id, data: { discussion_id: discussion.id } }
         .discussion-header
           .discussion-actions
-            = link_to "#", class: "note-action-button discussion-toggle-button js-toggle-button" do
+            %button.note-action-button.discussion-toggle-button.js-toggle-button{ type: "button" }
               - if expanded
                 = icon("chevron-up")
               - else

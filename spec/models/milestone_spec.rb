@@ -109,7 +109,7 @@ describe Milestone, models: true do
     it { expect(milestone.percent_complete(user)).to eq(75) }
   end
 
-  describe :items_count do
+  describe '#is_empty?' do
     before do
       milestone.issues << create(:issue, project: project)
       milestone.issues << create(:closed_issue, project: project)

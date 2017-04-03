@@ -18,18 +18,18 @@ describe Boards::Lists::DestroyService, services: true do
         development = create(:list, board: board, position: 0)
         review      = create(:list, board: board, position: 1)
         staging     = create(:list, board: board, position: 2)
-        done        = board.done_list
+        closed      = board.closed_list
 
         described_class.new(project, user).execute(development)
 
         expect(review.reload.position).to eq 0
         expect(staging.reload.position).to eq 1
-        expect(done.reload.position).to be_nil
+        expect(closed.reload.position).to be_nil
       end
     end
 
-    it 'does not remove list from board when list type is done' do
-      list = board.done_list
+    it 'does not remove list from board when list type is closed' do
+      list = board.closed_list
       service = described_class.new(project, user)
 
       expect { service.execute(list) }.not_to change(board.lists, :count)

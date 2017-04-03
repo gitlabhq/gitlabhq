@@ -1,4 +1,4 @@
-/* global Vue */
+import Vue from 'vue';
 import eventHub from '../eventhub';
 
 (() => {
@@ -84,20 +84,20 @@ import eventHub from '../eventhub';
             #{{ issue.id }}
           </span>
           <a
-            class="card-assignee has-tooltip"
+            class="card-assignee has-tooltip js-no-trigger"
             :href="rootPath + issue.assignee.username"
             :title="'Assigned to ' + issue.assignee.name"
             v-if="issue.assignee"
             data-container="body">
             <img
-              class="avatar avatar-inline s20"
+              class="avatar avatar-inline s20 js-no-trigger"
               :src="issue.assignee.avatar"
               width="20"
               height="20"
               :alt="'Avatar for ' + issue.assignee.name" />
           </a>
           <button
-            class="label color-label has-tooltip"
+            class="label color-label has-tooltip js-no-trigger"
             v-for="label in issue.labels"
             type="button"
             v-if="showLabel(label)"
