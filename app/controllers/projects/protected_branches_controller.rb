@@ -1,64 +1,37 @@
-class Projects::ProtectedBranchesController < Projects::ApplicationController
-  include RepositorySettingsRedirect
-  # Authorize
-  before_action :require_non_empty_project
-  before_action :authorize_admin_project!
-  before_action :load_protected_branch, only: [:show, :update, :destroy]
+class Projects::ProtectedBranchesController < Projects::ProtectedRefsController
+  protected
 
-  layout "project_settings"
-
-  def index
-    redirect_to_repository_settings(@project)
+  def protected_ref
+    @protected_branch
   end
 
-  def create
-    @protected_branch = ::ProtectedBranches::CreateService.new(@project, current_user, protected_branch_params).execute
-    unless @protected_branch.persisted?
-      flash[:alert] = @protected_branches.errors.full_messages.join(', ').html_safe
-    end
-    redirect_to_repository_settings(@project)
+  def protected_ref=(val)
+    @protected_branch = val
   end
 
-  def show
-    @matching_branches = @protected_branch.matching(@project.repository.branches)
+  def matching_refs=(val)
+    @matching_branches = val
   end
 
-  def update
-    @protected_branch = ::ProtectedBranches::UpdateService.new(@project, current_user, protected_branch_params).execute(@protected_branch)
-
-    if @protected_branch.valid?
-      respond_to do |format|
-        format.json { render json: @protected_branch, status: :ok, include: [:merge_access_levels, :push_access_levels] }
-      end
-    else
-      respond_to do |format|
-        format.json { render json: @protected_branch.errors, status: :unprocessable_entity }
-      end
-    end
+  def project_refs
+    @project.repository.branches
   end
 
-  def destroy
-    @protected_branch.destroy
-
-    respond_to do |format|
-      format.html { redirect_to_repository_settings(@project) }
-      format.js { head :ok }
-    end
+  def create_service
+    ::ProtectedBranches::CreateService
   end
 
-  private
-
-  def load_protected_branch
-    @protected_branch = @project.protected_branches.find(params[:id])
+  def update_service
+    ::ProtectedBranches::UpdateService
   end
 
-  def protected_branch_params
+  def load_protected_ref
+    self.protected_ref = @project.protected_branches.find(params[:id])
+  end
+
+  def protected_ref_params
     params.require(:protected_branch).permit(:name,
                                              merge_access_levels_attributes: [:access_level, :id, :user_id, :_destroy, :group_id],
                                              push_access_levels_attributes: [:access_level, :id, :user_id, :_destroy, :group_id])
-  end
-
-  def load_protected_branches
-    @protected_branches = @project.protected_branches.order(:name).page(params[:page])
   end
 end
