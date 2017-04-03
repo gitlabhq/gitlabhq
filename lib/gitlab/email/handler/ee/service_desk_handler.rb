@@ -53,7 +53,7 @@ module Gitlab
           end
 
           def send_thank_you_email!
-            Notify.service_desk_thank_you_email(@issue.id)
+            Notify.service_desk_thank_you_email(@issue.id).deliver_later!
           end
 
           def from_address
