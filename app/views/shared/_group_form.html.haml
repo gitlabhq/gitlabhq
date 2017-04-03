@@ -7,7 +7,6 @@
       %span Group name
     = f.text_field :name, placeholder: 'open-source', class: 'form-control'
 
-<<<<<<< HEAD
 .form-group.col-xs-12
   = f.label :path, class: 'label-light' do
     %span Group path
@@ -35,6 +34,6 @@
 .form-group.col-xs-12
   = f.label :description, class: 'label-light' do
     Description
-    %span.lighter (optional)
+    %span.hint (optional)
   = f.text_area :description, maxlength: 250,
       class: 'form-control js-gfm-input', rows: 4

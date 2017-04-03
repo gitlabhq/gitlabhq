@@ -15,9 +15,7 @@
       = render 'shared/group_form', f: f, autofocus: true
 
       .form-group.col-xs-12
-        = f.label :description, class: 'label-light' do
-          Group avatar
-        %br
+        = f.label :description, 'Group avatar', class: 'label-light label-block'
         = render 'shared/choose_group_avatar_button', f: f
 
       .form-group.col-xs-12.project-visibility-level-holder
@@ -28,5 +26,5 @@
 
       = render 'create_chat_team', f: f if Gitlab.config.mattermost.enabled
 
-      = f.submit 'Create group', class: "btn btn-create", tabindex: 3
+      = f.submit 'Create group', class: 'btn btn-create', tabindex: 3
       = link_to 'Cancel', dashboard_groups_path, class: 'btn btn-cancel'

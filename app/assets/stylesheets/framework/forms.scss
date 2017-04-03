@@ -34,6 +34,10 @@ label {
   &.label-light {
     font-weight: 600;
   }
+
+  &.label-block {
+    display: block;
+  }
 }
 
 .control-label {

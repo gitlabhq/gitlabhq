@@ -1,16 +1,14 @@
-.form-group
-  = f.label :create_chat_team, class: 'control-label' do
+.form-group.col-xs-12
+  = f.label :create_chat_team, class: 'label-block' do
     %span.mattermost-icon
       = custom_icon('icon_mattermost')
     Mattermost
-  .col-sm-10
-    .checkbox.js-toggle-container
-      = f.label :create_chat_team do
-        .js-toggle-button= f.check_box(:create_chat_team, { checked: true }, true, false)
-        Create a Mattermost team for this group
-      %br
-      %small.light.js-toggle-content
-        Mattermost URL:
-        = Settings.mattermost.host
-        %span> /
-        %span{ "data-bind-out" => "create_chat_team" }
+  .checkbox.js-toggle-container
+    = f.label :create_chat_team, class: 'label-block' do
+      .js-toggle-button= f.check_box(:create_chat_team, { checked: true }, true, false)
+      Create a Mattermost team for this group
+    %small.hint.js-toggle-content
+      Mattermost URL:
+      = Settings.mattermost.host
+      %span> /
+      %span{ "data-bind-out" => "create_chat_team" }
