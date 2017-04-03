@@ -23,10 +23,10 @@ export default {
           </a>
           <ul class="dropdown-menu dropdown-menu-align-right">
             <li>
-              <a :href="mr.emailPatchesPath">Email patches</a>
+              <a :href="mr.emailPatchesPath" download>Email patches</a>
             </li>
             <li>
-              <a :href="mr.plainDiffPath">Plain diff</a>
+              <a :href="mr.plainDiffPath" download>Plain diff</a>
             </li>
           </ul>
         </span>
