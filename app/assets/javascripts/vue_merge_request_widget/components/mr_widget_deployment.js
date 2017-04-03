@@ -5,6 +5,7 @@ export default {
   name: 'MRWidgetDeployment',
   props: {
     mr: { type: Object, required: true },
+    service: { type: Object, required: true },
   },
   computed: {
     svg() {
@@ -29,7 +30,13 @@ export default {
       const isConfirmed = confirm(msg); // eslint-disable-line
 
       if (isConfirmed) {
-        // TODO: Handle deployment cancel when backend is implemented.
+        this.service.stopEnvironment(deployment.stop_url)
+          .then(res => res.json())
+          .then((res) => {
+            if (res.redirect_url) {
+              document.location.href = res.redirect_url;
+            }
+          });
       }
     },
   },
@@ -54,6 +61,7 @@ export default {
             v-if="hasExternalUrls(deployment)"
             :href="deployment.external_url"
             target="_blank" rel="noopener noreferrer nofollow" class="js-deploy-url">
+            <i class="fa fa-external-link" aria-hidden="true"></i>
             {{deployment.external_url_formatted}}
           </a>
           <span

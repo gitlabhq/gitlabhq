@@ -44,4 +44,8 @@ export default class MRWidgetService {
   checkStatus() {
     return this.mergeCheckResource.get();
   }
+
+  stopEnvironment(url) {
+    return Vue.http.post(url);
+  }
 }
