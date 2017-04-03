@@ -50,6 +50,7 @@ export default {
   template: `
     <div class="btn-group" role="group">
       <button
+        type="button"
         class="dropdown btn btn-default dropdown-new js-dropdown-play-icon-container has-tooltip"
         data-container="body"
         data-toggle="dropdown"
@@ -65,8 +66,11 @@ export default {
       <ul class="dropdown-menu dropdown-menu-align-right">
         <li v-for="action in actions">
           <button
+            type="button"
             @click="onClickAction(action.play_path)"
-            class="js-manual-action-link no-btn">
+            class="js-manual-action-link no-btn btn"
+            :class="{ 'disabled': !actions.playable }"
+            :disabled="!action.playable">
             ${playIconSvg}
             <span>
               {{action.name}}

@@ -49,7 +49,7 @@ export default {
         data-toggle="dropdown"
         data-placement="top"
         aria-label="Manual job"
-        :disabled="isLoading">
+        :disabled="isDisabled">
         ${playIconSvg}
         <i class="fa fa-caret-down" aria-hidden="true"></i>
         <i v-if="isLoading" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
@@ -59,8 +59,10 @@ export default {
         <li v-for="action in actions">
           <button
             type="button"
-            class="js-pipeline-action-link no-btn"
-            @click="onClickAction(action.path)">
+            class="js-pipeline-action-link no-btn btn"
+            :class="{ 'disabled': !actions.playable }"
+            @click="onClickAction(action.path)"
+            :disabled="!actions.playable">
             ${playIconSvg}
             <span>{{action.name}}</span>
           </button>
