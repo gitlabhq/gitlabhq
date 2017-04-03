@@ -317,16 +317,6 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe '#is_being_reassigned?' do
-    it 'returns true if the merge_request assignee has changed' do
-      subject.assignee = create(:user)
-      expect(subject.is_being_reassigned?).to be_truthy
-    end
-    it 'returns false if the merge request assignee has not changed' do
-      expect(subject.is_being_reassigned?).to be_falsey
-    end
-  end
-
   describe '#for_fork?' do
     it 'returns true if the merge request is for a fork' do
       subject.source_project = build_stubbed(:empty_project, namespace: create(:group))

@@ -172,25 +172,6 @@ describe Issue, models: true do
     end
   end
 
-  describe '#is_being_reassigned?' do
-    it 'returns true if the issue assignee has changed' do
-      subject.assignee = create(:user)
-      expect(subject.is_being_reassigned?).to be_truthy
-    end
-    it 'returns false if the issue assignee has not changed' do
-      expect(subject.is_being_reassigned?).to be_falsey
-    end
-  end
-
-  describe '#is_being_reassigned?' do
-    it 'returns issues assigned to user' do
-      user = create(:user)
-      create_list(:issue, 2, assignees: [user])
-
-      expect(Issue.open_for(user).count).to eq 2
-    end
-  end
-
   describe '#closed_by_merge_requests' do
     let(:project) { create(:project, :repository) }
     let(:issue) { create(:issue, project: project)}
@@ -423,7 +404,7 @@ describe Issue, models: true do
       expect(user1.assigned_open_issues_count).to eq(1)
       expect(user2.assigned_open_issues_count).to eq(0)
 
-      issue.assignee = user2
+      issue.assignees = [user2]
       issue.save
 
       expect(user1.assigned_open_issues_count).to eq(0)
