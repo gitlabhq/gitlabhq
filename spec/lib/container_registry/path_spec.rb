@@ -36,25 +36,31 @@ describe ContainerRegistry::Path do
     context 'when path has less than two components' do
       let(:path) { 'something/' }
 
-      it 'is not valid' do
-        expect(subject).not_to be_valid
-      end
+      it { is_expected.not_to be_valid }
     end
 
     context 'when path has more than allowed number of components' do
       let(:path) { 'a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/r/s/t/u/w/y/z' }
 
-      it 'is not valid' do
-        expect(subject).not_to be_valid
-      end
+      it { is_expected.not_to be_valid }
+    end
+
+    context 'when path has invalid characters' do
+      let(:path) { 'some\path' }
+
+      it { is_expected.not_to be_valid }
     end
 
     context 'when path has two or more components' do
       let(:path) { 'some/path' }
 
-      it 'is valid' do
-        expect(subject).to be_valid
-      end
+      it { is_expected.to be_valid }
+    end
+
+    context 'when path is related to multi-level image' do
+      let(:path) { 'some/path/my/image' }
+
+      it { is_expected.to be_valid }
     end
   end
 

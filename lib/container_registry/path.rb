@@ -22,7 +22,9 @@ module ContainerRegistry
     end
 
     def valid?
-      @nodes.size > 1 && @nodes.size < Namespace::NUMBER_OF_ANCESTORS_ALLOWED
+      @path =~ Gitlab::Regex.container_repository_name_regex &&
+        @nodes.size > 1 &&
+        @nodes.size < Namespace::NUMBER_OF_ANCESTORS_ALLOWED
     end
 
     def components
