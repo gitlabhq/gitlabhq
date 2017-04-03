@@ -3,7 +3,7 @@
 
 import d3 from 'd3';
 import statusCodes from '~/lib/utils/http_status';
-import '../lib/utils/common_utils';
+import { formatRelevantDigits } from '~/lib/utils/number_utils';
 import '../flash';
 
 const prometheusGraphsContainer = '.prometheus-graph';
@@ -64,10 +64,10 @@ class PrometheusGraph {
     const prometheusGraphContainer = `${prometheusGraphsContainer}[graph-type=${key}]`;
 
     const chart = d3.select(prometheusGraphContainer)
-        .attr('width', this.width + this.margin.left + this.margin.right)
-        .attr('height', this.height + this.margin.bottom + this.margin.top)
-        .append('g')
-          .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
+      .attr('width', this.width + this.margin.left + this.margin.right)
+      .attr('height', this.height + this.margin.bottom + this.margin.top)
+      .append('g')
+        .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
 
     const axisLabelContainer = d3.select(prometheusGraphContainer)
       .attr('width', this.originalWidth)
@@ -79,26 +79,26 @@ class PrometheusGraph {
     y.domain([0, d3.max(graphSpecifics.data.map(metricValue => metricValue.value))]);
 
     const xAxis = d3.svg.axis()
-        .scale(x)
-        .ticks(this.commonGraphProperties.axis_no_ticks)
-        .orient('bottom');
+      .scale(x)
+      .ticks(this.commonGraphProperties.axis_no_ticks)
+      .orient('bottom');
 
     const yAxis = d3.svg.axis()
-        .scale(y)
-        .ticks(this.commonGraphProperties.axis_no_ticks)
-        .tickSize(-this.width)
-        .orient('left');
+      .scale(y)
+      .ticks(this.commonGraphProperties.axis_no_ticks)
+      .tickSize(-this.width)
+      .orient('left');
 
     this.createAxisLabelContainers(axisLabelContainer, key);
 
     chart.append('g')
-        .attr('class', 'x-axis')
-        .attr('transform', `translate(0,${this.height})`)
-        .call(xAxis);
+      .attr('class', 'x-axis')
+      .attr('transform', `translate(0,${this.height})`)
+      .call(xAxis);
 
     chart.append('g')
-        .attr('class', 'y-axis')
-        .call(yAxis);
+      .attr('class', 'y-axis')
+      .call(yAxis);
 
     const area = d3.svg.area()
       .x(d => x(d.time))
@@ -111,10 +111,10 @@ class PrometheusGraph {
     .y(d => y(d.value));
 
     chart.append('path')
-    .datum(graphSpecifics.data)
-    .attr('d', area)
-    .attr('class', 'metric-area')
-    .attr('fill', graphSpecifics.area_fill_color);
+      .datum(graphSpecifics.data)
+      .attr('d', area)
+      .attr('class', 'metric-area')
+      .attr('fill', graphSpecifics.area_fill_color);
 
     chart.append('path')
       .datum(graphSpecifics.data)
@@ -137,73 +137,74 @@ class PrometheusGraph {
     const graphSpecifics = this.graphSpecificProperties[key];
 
     axisLabelContainer.append('line')
-        .attr('class', 'label-x-axis-line')
-        .attr('stroke', '#000000')
-        .attr('stroke-width', '1')
-        .attr({
-          x1: 10,
-          y1: this.originalHeight - this.margin.top,
-          x2: (this.originalWidth - this.margin.right) + 10,
-          y2: this.originalHeight - this.margin.top,
-        });
+      .attr('class', 'label-x-axis-line')
+      .attr('stroke', '#000000')
+      .attr('stroke-width', '1')
+      .attr({
+        x1: 10,
+        y1: this.originalHeight - this.margin.top,
+        x2: (this.originalWidth - this.margin.right) + 10,
+        y2: this.originalHeight - this.margin.top,
+      });
 
     axisLabelContainer.append('line')
-          .attr('class', 'label-y-axis-line')
-          .attr('stroke', '#000000')
-          .attr('stroke-width', '1')
-          .attr({
-            x1: 10,
-            y1: 0,
-            x2: 10,
-            y2: this.originalHeight - this.margin.top,
-          });
-    axisLabelContainer.append('rect')
-          .attr('class', 'rect-axis-text')
-          .attr('x', 0)
-          .attr('y', 50)
-          .attr('width', 30)
-          .attr('height', 150);
-
-    axisLabelContainer.append('text')
-          .attr('class', 'label-axis-text')
-          .attr('text-anchor', 'middle')
-          .attr('transform', `translate(15, ${(this.originalHeight - this.margin.top) / 2}) rotate(-90)`)
-          .text(graphSpecifics.graph_legend_title);
+      .attr('class', 'label-y-axis-line')
+      .attr('stroke', '#000000')
+      .attr('stroke-width', '1')
+      .attr({
+        x1: 10,
+        y1: 0,
+        x2: 10,
+        y2: this.originalHeight - this.margin.top,
+      });
 
     axisLabelContainer.append('rect')
-          .attr('class', 'rect-axis-text')
-          .attr('x', (this.originalWidth / 2) - this.margin.right)
-          .attr('y', this.originalHeight - 100)
-          .attr('width', 30)
-          .attr('height', 80);
+      .attr('class', 'rect-axis-text')
+      .attr('x', 0)
+      .attr('y', 50)
+      .attr('width', 30)
+      .attr('height', 150);
 
     axisLabelContainer.append('text')
-          .attr('class', 'label-axis-text')
-          .attr('x', (this.originalWidth / 2) - this.margin.right)
-          .attr('y', this.originalHeight - this.margin.top)
-          .attr('dy', '.35em')
-          .text('Time');
+      .attr('class', 'label-axis-text')
+      .attr('text-anchor', 'middle')
+      .attr('transform', `translate(15, ${(this.originalHeight - this.margin.top) / 2}) rotate(-90)`)
+      .text(graphSpecifics.graph_legend_title);
+
+    axisLabelContainer.append('rect')
+      .attr('class', 'rect-axis-text')
+      .attr('x', (this.originalWidth / 2) - this.margin.right)
+      .attr('y', this.originalHeight - 100)
+      .attr('width', 30)
+      .attr('height', 80);
+
+    axisLabelContainer.append('text')
+      .attr('class', 'label-axis-text')
+      .attr('x', (this.originalWidth / 2) - this.margin.right)
+      .attr('y', this.originalHeight - this.margin.top)
+      .attr('dy', '.35em')
+      .text('Time');
 
     // Legends
 
     // Metric Usage
     axisLabelContainer.append('rect')
-          .attr('x', this.originalWidth - 170)
-          .attr('y', (this.originalHeight / 2) - 60)
-          .style('fill', graphSpecifics.area_fill_color)
-          .attr('width', 20)
-          .attr('height', 35);
+      .attr('x', this.originalWidth - 170)
+      .attr('y', (this.originalHeight / 2) - 60)
+      .style('fill', graphSpecifics.area_fill_color)
+      .attr('width', 20)
+      .attr('height', 35);
 
     axisLabelContainer.append('text')
-          .attr('class', 'text-metric-title')
-          .attr('x', this.originalWidth - 140)
-          .attr('y', (this.originalHeight / 2) - 50)
-          .text('Average');
+      .attr('class', 'text-metric-title')
+      .attr('x', this.originalWidth - 140)
+      .attr('y', (this.originalHeight / 2) - 50)
+      .text('Average');
 
     axisLabelContainer.append('text')
-            .attr('class', 'text-metric-usage')
-            .attr('x', this.originalWidth - 140)
-            .attr('y', (this.originalHeight / 2) - 25);
+      .attr('class', 'text-metric-usage')
+      .attr('x', this.originalWidth - 140)
+      .attr('y', (this.originalHeight / 2) - 25);
   }
 
   handleMouseOverGraph(prometheusGraphContainer) {
@@ -240,44 +241,45 @@ class PrometheusGraph {
       });
 
       currentChart.append('circle')
-      .attr('class', 'circle-metric')
-      .attr('fill', currentGraphProps.line_color)
-      .attr('cx', currentTimeCoordinate)
-      .attr('cy', currentGraphProps.yScale(currentData.value))
-      .attr('r', this.commonGraphProperties.circle_radius_metric);
+        .attr('class', 'circle-metric')
+        .attr('fill', currentGraphProps.line_color)
+        .attr('cx', currentTimeCoordinate)
+        .attr('cy', currentGraphProps.yScale(currentData.value))
+        .attr('r', this.commonGraphProperties.circle_radius_metric);
 
       // The little box with text
       const rectTextMetric = currentChart.append('g')
-      .attr('class', 'rect-text-metric')
-      .attr('translate', `(${currentTimeCoordinate}, ${currentGraphProps.yScale(currentData.value)})`);
+        .attr('class', 'rect-text-metric')
+        .attr('translate', `(${currentTimeCoordinate}, ${currentGraphProps.yScale(currentData.value)})`);
 
       rectTextMetric.append('rect')
-      .attr('class', 'rect-metric')
-      .attr('x', currentTimeCoordinate + 10)
-      .attr('y', maxMetricValue)
-      .attr('width', this.commonGraphProperties.rect_text_width)
-      .attr('height', this.commonGraphProperties.rect_text_height);
+        .attr('class', 'rect-metric')
+        .attr('x', currentTimeCoordinate + 10)
+        .attr('y', maxMetricValue)
+        .attr('width', this.commonGraphProperties.rect_text_width)
+        .attr('height', this.commonGraphProperties.rect_text_height);
 
       rectTextMetric.append('text')
-      .attr('class', 'text-metric')
-      .attr('x', currentTimeCoordinate + 35)
-      .attr('y', maxMetricValue + 35)
-      .text(timeFormat(currentData.time));
+        .attr('class', 'text-metric')
+        .attr('x', currentTimeCoordinate + 35)
+        .attr('y', maxMetricValue + 35)
+        .text(timeFormat(currentData.time));
 
       rectTextMetric.append('text')
-      .attr('class', 'text-metric-date')
-      .attr('x', currentTimeCoordinate + 15)
-      .attr('y', maxMetricValue + 15)
-      .text(dayFormat(currentData.time));
+        .attr('class', 'text-metric-date')
+        .attr('x', currentTimeCoordinate + 15)
+        .attr('y', maxMetricValue + 15)
+        .text(dayFormat(currentData.time));
 
-      let currentMetricValue = gl.text.formatRelevantDigits(currentData.value);
+      let currentMetricValue = formatRelevantDigits(currentData.value);
       if (key === 'cpu_values') {
         currentMetricValue = `${currentMetricValue}%`;
       } else {
         currentMetricValue = `${currentMetricValue} MB`;
       }
+
       d3.select(`${currentPrometheusGraphContainer} .text-metric-usage`)
-      .text(currentMetricValue);
+        .text(currentMetricValue);
     });
   }
 

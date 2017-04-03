@@ -188,29 +188,5 @@ require('vendor/latinise');
     gl.text.slugify = function(str) {
       return str.trim().toLowerCase().latinise();
     };
-    gl.text.formatRelevantDigits = function(number) {
-      var digitsLeft = '';
-      var relevantDigits = 0;
-      if (isNaN(Number(number))) {
-        return 0;
-      } else {
-        digitsLeft = number.split('.')[0];
-        switch (digitsLeft.length) {
-          case 1:
-            relevantDigits = 3;
-            break;
-          case 2:
-            relevantDigits = 2;
-            break;
-          case 3:
-            relevantDigits = 1;
-            break;
-          default:
-            relevantDigits = 4;
-            break;
-        }
-        return Number(number).toFixed(relevantDigits);
-      }
-    };
   })(window);
 }).call(window);
