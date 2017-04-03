@@ -333,10 +333,13 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new AdminEmailSelect();
           break;
         case 'projects:repository:show':
+          // Initialize Protected Branch Settings
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
           new UsersSelect();
+          // Initialize Protected Tag Settings
           new gl.ProtectedTagCreate();
+          new gl.ProtectedTagEditList();
           break;
         case 'projects:ci_cd:show':
           new gl.ProjectVariables();
