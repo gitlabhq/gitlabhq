@@ -113,8 +113,8 @@ describe ProtectedBranch, models: true do
         staging = build(:protected_branch, name: "staging")
 
         expect(ProtectedBranch.matching("production")).to be_empty
-        expect(ProtectedBranch.matching("production", protected_branches: [production, staging])).to include(production)
-        expect(ProtectedBranch.matching("production", protected_branches: [production, staging])).not_to include(staging)
+        expect(ProtectedBranch.matching("production", protected_refs: [production, staging])).to include(production)
+        expect(ProtectedBranch.matching("production", protected_refs: [production, staging])).not_to include(staging)
       end
     end
 
@@ -132,8 +132,8 @@ describe ProtectedBranch, models: true do
         staging = build(:protected_branch, name: "staging/*")
 
         expect(ProtectedBranch.matching("production/some-branch")).to be_empty
-        expect(ProtectedBranch.matching("production/some-branch", protected_branches: [production, staging])).to include(production)
-        expect(ProtectedBranch.matching("production/some-branch", protected_branches: [production, staging])).not_to include(staging)
+        expect(ProtectedBranch.matching("production/some-branch", protected_refs: [production, staging])).to include(production)
+        expect(ProtectedBranch.matching("production/some-branch", protected_refs: [production, staging])).not_to include(staging)
       end
     end
   end

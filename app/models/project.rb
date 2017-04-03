@@ -898,14 +898,14 @@ class Project < ActiveRecord::Base
     return true if empty_repo? && default_branch_protected?
 
     @protected_branches ||= self.protected_branches.to_a
-    ProtectedBranch.matching(branch_name, protected_branches: @protected_branches).present?
+    ProtectedBranch.matching(branch_name, protected_refs: @protected_branches).present?
   end
 
   #TODO: Move elsewhere
   def protected_tag?(tag_name)
     #TODO: Check if memoization necessary, find way to have it work elsewhere
     @protected_tags ||= self.protected_tags.to_a
-    ProtectedTag.matching(tag_name, protected_tags: @protected_tags).present?
+    ProtectedTag.matching(tag_name, protected_refs: @protected_tags).present?
   end
 
   def user_can_push_to_empty_repo?(user)
