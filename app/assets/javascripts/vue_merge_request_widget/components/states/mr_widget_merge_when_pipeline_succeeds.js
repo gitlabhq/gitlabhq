@@ -60,7 +60,8 @@ export default {
             class="fa fa-spinner fa-spin" aria-hidden="true"></i>
             Cancel automatic merge</button>
       </h4>
-      <section>
+      <section class="mr-info-list mr-links">
+        <div class="legend"></div>
         <p>The changes will be merged into
           <a :href="mr.targetBranchPath" class="label-branch">
             {{mr.targetBranch}}
