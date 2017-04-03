@@ -38,7 +38,8 @@ module Projects
     rescue => e
       error(e.message)
     ensure
-     job.erase_artifacts! unless job.has_expiring_artifacts?
+      job.erase_artifacts! unless job.has_expiring_artifacts?
+      FileUtils.rm_rf(artifacts) if Gitlab.config.artifacts.object_store.enabled
     end
 
     private
