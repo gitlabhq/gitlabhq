@@ -8,6 +8,7 @@ module ChatMessage
     attr_reader :ref
     attr_reader :ref_type
     attr_reader :user_name
+    attr_reader :user_avatar
 
     def initialize(params)
       @after = params[:after]
@@ -18,16 +19,27 @@ module ChatMessage
       @ref_type = Gitlab::Git.tag_ref?(params[:ref]) ? 'tag' : 'branch'
       @ref = Gitlab::Git.ref_name(params[:ref])
       @user_name = params[:user_name]
+      @user_avatar = params[:user_avatar]
+      @format = params[:format]
+    end
+
+    def activity
+      {
+        title: activity_title,
+        subtitle: "to: #{project_link}",
+        text: compare_link,
+        image: params[:user_avatar]
+      }
     end
 
     def pretext
-      format(message)
+      @format ? format(message) : message
     end
 
     def attachments
       return [] if new_branch? || removed_branch?
 
-      commit_message_attachments
+      @format ? commit_message_attachments : commit_messages
     end
 
     private
@@ -59,7 +71,7 @@ module ChatMessage
     end
 
     def commit_messages
-      commits.map { |commit| compose_commit_message(commit) }.join("\n")
+      commits.map { |commit| compose_commit_message(commit) }.join("\n\n")
     end
 
     def commit_message_attachments
@@ -101,6 +113,19 @@ module ChatMessage
 
     def compare_link
       "[Compare changes](#{compare_url})"
+    end
+
+    def activity_title
+      action =
+        if new_branch?
+          "created"
+        elsif removed_branch?
+          "removed"
+        else
+          "pushed to"
+        end
+
+      "#{user_name} #{action} #{ref_type}"
     end
 
     def attachment_color

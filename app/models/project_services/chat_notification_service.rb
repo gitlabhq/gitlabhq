@@ -51,7 +51,8 @@ class ChatNotificationService < Service
 
     data = data.merge(
       project_url: project_url,
-      project_name: project_name
+      project_name: project_name,
+      format: true
     )
 
     # WebHook events often have an 'update' event that follows a 'open' or

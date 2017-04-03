@@ -10,6 +10,7 @@ module ChatMessage
     def initialize(params)
       params = HashWithIndifferentAccess.new(params)
       @user_name = params[:user][:username]
+      @user_avatar = params[:user][:avatar]
       @project_name = params[:project_name]
       @project_url = params[:project_url]
 
@@ -18,7 +19,6 @@ module ChatMessage
       @note = obj_attr[:note]
       @note_url = obj_attr[:url]
       noteable_type = obj_attr[:noteable_type]
-
       case noteable_type
       when "Commit"
         create_commit_note(HashWithIndifferentAccess.new(params[:commit]))
