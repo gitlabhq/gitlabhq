@@ -7,7 +7,6 @@ describe Issue, "Issuable" do
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:author) }
-    it { is_expected.to belong_to(:assignee) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
 
@@ -339,7 +338,20 @@ describe Issue, "Issuable" do
     end
 
     context "issue is assigned" do
-      before { issue.update_attribute(:assignee, user) }
+      before { issue.assignees << user }
+
+      it "returns correct hook data" do
+        expect(data[:assignees].first).to eq(user.hook_attrs)
+      end
+    end
+
+    context "merge_request is assigned" do
+      let(:merge_request) { create(:merge_request) }
+      let(:data) { merge_request.to_hook_data(user) }
+
+      before do
+        merge_request.update_attribute(:assignee, user)
+      end
 
       it "returns correct hook data" do
         expect(data[:object_attributes]['assignee_id']).to eq(user.id)
@@ -359,24 +371,6 @@ describe Issue, "Issuable" do
 
     include_examples 'project hook data'
     include_examples 'deprecated repository hook data'
-  end
-
-  describe '#card_attributes' do
-    it 'includes the author name' do
-      allow(issue).to receive(:author).and_return(double(name: 'Robert'))
-      allow(issue).to receive(:assignee).and_return(nil)
-
-      expect(issue.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => nil })
-    end
-
-    it 'includes the assignee name' do
-      allow(issue).to receive(:author).and_return(double(name: 'Robert'))
-      allow(issue).to receive(:assignee).and_return(double(name: 'Douwe'))
-
-      expect(issue.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
-    end
   end
 
   describe '#labels_array' do

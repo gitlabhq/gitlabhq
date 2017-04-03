@@ -9,6 +9,7 @@ describe MergeRequest, models: true do
     it { is_expected.to belong_to(:target_project).class_name('Project') }
     it { is_expected.to belong_to(:source_project).class_name('Project') }
     it { is_expected.to belong_to(:merge_user).class_name("User") }
+    it { is_expected.to belong_to(:assignee) }
     it { is_expected.to have_many(:merge_request_diffs).dependent(:destroy) }
     it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
   end
@@ -84,6 +85,24 @@ describe MergeRequest, models: true do
       subject.target_branch_sha = '8ffb3c15a5475e59ae909384297fede4badcb4c7'
 
       expect(subject.target_branch_sha).to eq '8ffb3c15a5475e59ae909384297fede4badcb4c7'
+    end
+  end
+
+  describe '#card_attributes' do
+    it 'includes the author name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignee).and_return(nil)
+
+      expect(subject.card_attributes).
+        to eq({ 'Author' => 'Robert', 'Assignee' => nil })
+    end
+
+    it 'includes the assignee name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignee).and_return(double(name: 'Douwe'))
+
+      expect(subject.card_attributes).
+        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
     end
   end
 

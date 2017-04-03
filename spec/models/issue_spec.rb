@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Issue, models: true do
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
+    it { is_expected.to have_many(:assignees) }
   end
 
   describe 'modules' do
@@ -34,6 +35,24 @@ describe Issue, models: true do
     it 'returns ordered list' do
       expect(project.issues.order_by_position_and_priority).
         to match [issue3, issue4, issue1, issue2]
+    end
+  end
+
+  describe '#card_attributes' do
+    it 'includes the author name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignees).and_return([])
+
+      expect(subject.card_attributes).
+        to eq({ 'Author' => 'Robert', 'Assignee' => '' })
+    end
+
+    it 'includes the assignee name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignees).and_return([double(name: 'Douwe')])
+
+      expect(subject.card_attributes).
+        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
     end
   end
 
