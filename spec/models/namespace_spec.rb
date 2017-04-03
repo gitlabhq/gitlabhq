@@ -161,7 +161,9 @@ describe Namespace, models: true do
         allow(@namespace).to receive(:path).and_return('new_path')
       end
 
-      it { expect { @namespace.move_dir }.to raise_error('Namespace cannot be moved, because at least one project has images in container registry') }
+      it 'raises an error about not movable project' do
+        expect { @namespace.move_dir }.to raise_error(/Namespace cannot be moved/)
+      end
     end
 
     context 'renaming a sub-group' do
