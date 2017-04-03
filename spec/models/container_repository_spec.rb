@@ -115,11 +115,12 @@ describe ContainerRepository do
   end
 
   describe '.build_from_path' do
-    let(:path) { project.full_path + '/some/image' }
-    let(:repository_path) { ContainerRegistry::Path.new(path) }
+    let(:registry_path) do
+      ContainerRegistry::Path.new(project.full_path + '/some/image')
+    end
 
     let(:repository) do
-      described_class.build_from_path(ContainerRegistry::Path.new(path))
+      described_class.build_from_path(registry_path)
     end
 
     it 'fabricates repository assigned to a correct project' do
