@@ -1,6 +1,7 @@
 module ChatMessage
   class IssueMessage < BaseMessage
     attr_reader :user_name
+    attr_reader :user_avatar
     attr_reader :title
     attr_reader :project_name
     attr_reader :project_url
@@ -9,9 +10,11 @@ module ChatMessage
     attr_reader :action
     attr_reader :state
     attr_reader :description
+    attr_reader :markdown_format
 
     def initialize(params)
       @user_name = params[:user][:username]
+      @user_avatar = params[:user][:avatar_url]
       @project_name = params[:project_name]
       @project_url = params[:project_url]
 
@@ -23,23 +26,28 @@ module ChatMessage
       @action = obj_attr[:action]
       @state = obj_attr[:state]
       @description = obj_attr[:description] || ''
+      @markdown_format = params[:format]
     end
 
     def attachments
       return [] unless opened_issue?
 
-      description_message
+      markdown_format ? description : description_message
+    end
+
+    def activity
+      {
+        title: "Issue #{state} by #{user_name}",
+        subtitle: "to: #{project_link}",
+        text: issue_link,
+        image: user_avatar
+      }
     end
 
     private
 
     def message
-      case state
-      when "opened"
-        "[#{project_link}] Issue #{state} by #{user_name}"
-      else
-        "[#{project_link}] Issue #{issue_link} #{state} by #{user_name}"
-      end
+      "[#{project_link}] Issue #{issue_link} #{state} by #{user_name}"
     end
 
     def opened_issue?
@@ -52,7 +60,7 @@ module ChatMessage
         title_link: issue_url,
         text: format(description),
         color: "#C95823"
-      }]
+       }]
     end
 
     def project_link

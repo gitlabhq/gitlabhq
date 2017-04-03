@@ -25,7 +25,10 @@ module MicrosoftTeams
         'activityText' => options[:activity][:text],
         'activityImage' => options[:activity][:image]
       }
-      result['sections'] << { 'title' => 'Details', 'facts' => attachments(options[:attachments]) } if options[:attachments]
+
+      if options[:attachments].present? && !options[:attachments].empty?
+        result['sections'] << { 'title' => 'Details', 'facts' => attachments(options[:attachments]) }
+      end
 
       result.to_json
     end

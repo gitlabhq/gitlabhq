@@ -1,7 +1,15 @@
 module ChatMessage
   class PipelineMessage < BaseMessage
-    attr_reader :ref_type, :ref, :status, :project_name, :project_url,
-                :user_name, :duration, :pipeline_id
+    attr_reader :ref_type
+    attr_reader :ref
+    attr_reader :status
+    attr_reader :project_name
+    attr_reader :project_url
+    attr_reader :user_name
+    attr_reader :duration
+    attr_reader :pipeline_id
+    attr_reader :user_avatar
+    attr_reader :markdown_format
 
     def initialize(data)
       pipeline_attributes = data[:object_attributes]
@@ -14,6 +22,9 @@ module ChatMessage
       @project_name = data[:project][:path_with_namespace]
       @project_url = data[:project][:web_url]
       @user_name = (data[:user] && data[:user][:name]) || 'API'
+      @user_avatar = data[:user][:avatar_url] || ''
+
+      @markdown_format = params[:format]
     end
 
     def pretext
@@ -24,18 +35,23 @@ module ChatMessage
       format(message)
     end
 
+    def activity
+      {
+        title: "Pipeline #{pipeline_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status}",
+        subtitle: "to: #{project_link}",
+        text: "in #{duration} #{'second'.pluralize(duration)}",
+        image: user_avatar
+      }
+    end
+
     def attachments
-      [{ text: format(message), color: attachment_color }]
+      markdown_format ? message : [{ text: format(message), color: attachment_color }]
     end
 
     private
 
     def message
       "#{project_link}: Pipeline #{pipeline_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status} in #{duration} #{'second'.pluralize(duration)}"
-    end
-
-    def format(string)
-      Slack::Notifier::LinkFormatter.format(string)
     end
 
     def humanized_status

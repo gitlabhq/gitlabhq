@@ -1,6 +1,7 @@
 module ChatMessage
   class MergeMessage < BaseMessage
     attr_reader :user_name
+    attr_reader :user_avatar
     attr_reader :project_name
     attr_reader :project_url
     attr_reader :merge_request_id
@@ -8,9 +9,11 @@ module ChatMessage
     attr_reader :target_branch
     attr_reader :state
     attr_reader :title
+    attr_reader :markdown_format
 
     def initialize(params)
       @user_name = params[:user][:username]
+      @user_avatar = params[:user][:avatar_url]
       @project_name = params[:project_name]
       @project_url = params[:project_url]
 
@@ -21,10 +24,16 @@ module ChatMessage
       @target_branch = obj_attr[:target_branch]
       @state = obj_attr[:state]
       @title = format_title(obj_attr[:title])
+      @markdown_format = params[:format]
     end
 
-    def pretext
-      format(message)
+    def activity
+      {
+        title: "Merge Request #{state} by #{user_name}",
+        subtitle: "to: #{project_link}",
+        text: merge_request_link,
+        image: user_avatar
+      }
     end
 
     def attachments

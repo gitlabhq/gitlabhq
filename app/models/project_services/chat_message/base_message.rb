@@ -17,6 +17,10 @@ module ChatMessage
       raise NotImplementedError
     end
 
+    def activity
+      raise NotImplementedError
+    end
+
     private
 
     def message
