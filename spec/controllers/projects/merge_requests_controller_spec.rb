@@ -61,6 +61,18 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  describe 'GET commit_change_content' do
+    it 'renders commit_change_content template' do
+      get :commit_change_content,
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: merge_request.iid,
+        format: 'html'
+
+      expect(response).to render_template('_commit_change_content')
+    end
+  end
+
   shared_examples "loads labels" do |action|
     it "loads labels into the @labels variable" do
       get action,
