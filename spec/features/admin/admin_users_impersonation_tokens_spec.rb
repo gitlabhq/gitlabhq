@@ -16,7 +16,7 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
 
   describe "token creation" do
     it "allows creation of a token" do
-      name = FFaker::Product.brand
+      name = 'Hello World'
 
       visit admin_user_impersonation_tokens_path(user_id: user.username)
       fill_in "Name", with: name

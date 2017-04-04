@@ -12,7 +12,7 @@ describe Profiles::PersonalAccessTokensController do
     end
 
     it "allows creation of a token with scopes" do
-      name = FFaker::Product.brand
+      name = 'My PAT'
       scopes = %w[api read_user]
 
       post :create, personal_access_token: token_attributes.merge(scopes: scopes, name: name)
