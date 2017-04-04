@@ -1,7 +1,7 @@
 export default {
   name: 'MemoryGraph',
   props: {
-    metrics: { type: Array, required: true, default: [] },
+    metrics: { type: Array, required: true },
     width: { type: Number, required: true },
     height: { type: Number, required: true },
     marker: { type: Number, required: true },
