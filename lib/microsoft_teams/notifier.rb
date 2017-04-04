@@ -15,26 +15,19 @@ module MicrosoftTeams
     private
 
     def body(options = {})
+      attachments = options[:attachments]
       result = { 'sections' => [] }
 
-      result['title'] = options[:title] if options[:title]
-      result['summary'] = options[:activity][:title]
-      result['sections'] << {
-        'activityTitle' => options[:activity][:title],
-        'activitySubtitle' => options[:activity][:subtitle],
-        'activityText' => options[:activity][:text],
-        'activityImage' => options[:activity][:image]
-      }
+      result['title'] = options[:title]
+      result['summary'] = options[:pretext]
+      result['sections'] << options[:activity]
 
-      if options[:attachments].present? && !options[:attachments].empty?
-        result['sections'] << { 'title' => 'Details', 'facts' => attachments(options[:attachments]) }
-      end
+      result['sections'] << {
+        'title' => 'Details',
+        'facts' => [{ 'name' => 'Attachments', 'value' => attachments }]
+      } if attachments.present? && attachments.empty?
 
       result.to_json
-    end
-
-    def attachments(content)
-      [{ 'name' => 'Attachments', 'value' => content }]
     end
   end
 end

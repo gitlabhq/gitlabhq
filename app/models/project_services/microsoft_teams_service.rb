@@ -50,7 +50,7 @@ class MicrosoftTeamsService < ChatNotificationService
     data = data.merge(
       project_url: project_url,
       project_name: project_name,
-      format: true
+      markdown_format: true
     )
 
     message = get_message(object_kind, data)
@@ -59,8 +59,9 @@ class MicrosoftTeamsService < ChatNotificationService
 
     MicrosoftTeams::Notifier.new(webhook).ping({
       title: message.project_name,
+      pretext: message.pretext,
       activity: message.activity,
-      attachments: message.attachments,
+      attachments: message.attachments
     })
   end
 end

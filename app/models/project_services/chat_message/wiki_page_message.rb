@@ -7,9 +7,10 @@ module ChatMessage
     attr_reader :wiki_page_url
     attr_reader :action
     attr_reader :description
-    attr_reader :markdown_format
 
     def initialize(params)
+      super(params)
+
       @user_name = params[:user][:username]
       @user_avatar = params[:user][:avatar_url]
       @project_name = params[:project_name]
@@ -28,17 +29,15 @@ module ChatMessage
         when "update"
           "edited"
         end
-
-       @markdown_format = params[:format]
     end
 
     def activity
-      {
-        title: "#{user_name} #{action} #{wiki_page_link}",
-        subtitle: "in: #{project_link}",
-        text: title,
-        image: user_avatar
-      }
+      MicrosoftTeams::Activity.new(
+        "#{user_name} #{action} #{wiki_page_link}",
+        "in: #{project_link}",
+        title,
+        user_avatar
+      ).to_json
     end
 
     def attachments

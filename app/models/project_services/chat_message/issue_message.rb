@@ -10,9 +10,10 @@ module ChatMessage
     attr_reader :action
     attr_reader :state
     attr_reader :description
-    attr_reader :markdown_format
 
     def initialize(params)
+      super(params)
+
       @user_name = params[:user][:username]
       @user_avatar = params[:user][:avatar_url]
       @project_name = params[:project_name]
@@ -26,7 +27,6 @@ module ChatMessage
       @action = obj_attr[:action]
       @state = obj_attr[:state]
       @description = obj_attr[:description] || ''
-      @markdown_format = params[:format]
     end
 
     def attachments
@@ -36,12 +36,12 @@ module ChatMessage
     end
 
     def activity
-      {
-        title: "Issue #{state} by #{user_name}",
-        subtitle: "to: #{project_link}",
-        text: issue_link,
-        image: user_avatar
-      }
+      MicrosoftTeams::Activity.new(
+        "Issue #{state} by #{user_name}",
+        "to: #{project_link}",
+        issue_link,
+        user_avatar
+      ).to_json
     end
 
     private
@@ -60,7 +60,7 @@ module ChatMessage
         title_link: issue_url,
         text: format(description),
         color: "#C95823"
-       }]
+      }]
     end
 
     def project_link

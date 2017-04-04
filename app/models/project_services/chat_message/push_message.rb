@@ -9,9 +9,10 @@ module ChatMessage
     attr_reader :ref_type
     attr_reader :user_name
     attr_reader :user_avatar
-    attr_reader :markdown_format
 
     def initialize(params)
+      super(params)
+
       @after = params[:after]
       @before = params[:before]
       @commits = params.fetch(:commits, [])
@@ -21,16 +22,24 @@ module ChatMessage
       @ref = Gitlab::Git.ref_name(params[:ref])
       @user_name = params[:user_name]
       @user_avatar = params[:user_avatar]
-      @markdown_format = params[:format]
     end
 
     def activity
-      {
-        title: activity_title,
-        subtitle: "to: #{project_link}",
-        text: compare_link,
-        image: user_avatar
-      }
+      action =
+        if new_branch?
+          "created"
+        elsif removed_branch?
+          "removed"
+        else
+          "pushed to"
+        end
+
+      MicrosoftTeams::Activity.new(
+        "#{user_name} #{action} #{ref_type}",
+        "to: #{project_link}",
+        compare_link,
+        user_avatar
+      ).to_json
     end
 
     def attachments
@@ -110,19 +119,6 @@ module ChatMessage
 
     def compare_link
       "[Compare changes](#{compare_url})"
-    end
-
-    def activity_title
-      action =
-        if new_branch?
-          "created"
-        elsif removed_branch?
-          "removed"
-        else
-          "pushed to"
-        end
-
-      "#{user_name} #{action} #{ref_type}"
     end
 
     def attachment_color

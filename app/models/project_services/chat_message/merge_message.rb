@@ -9,9 +9,10 @@ module ChatMessage
     attr_reader :target_branch
     attr_reader :state
     attr_reader :title
-    attr_reader :markdown_format
 
     def initialize(params)
+      super(params)
+
       @user_name = params[:user][:username]
       @user_avatar = params[:user][:avatar_url]
       @project_name = params[:project_name]
@@ -24,16 +25,15 @@ module ChatMessage
       @target_branch = obj_attr[:target_branch]
       @state = obj_attr[:state]
       @title = format_title(obj_attr[:title])
-      @markdown_format = params[:format]
     end
 
     def activity
-      {
-        title: "Merge Request #{state} by #{user_name}",
-        subtitle: "to: #{project_link}",
-        text: merge_request_link,
-        image: user_avatar
-      }
+      MicrosoftTeams::Activity.new(
+        "Merge Request #{state} by #{user_name}",
+        "to: #{project_link}",
+        merge_request_link,
+        user_avatar
+      ).to_json
     end
 
     def attachments

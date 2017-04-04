@@ -2,8 +2,10 @@ require 'slack-notifier'
 
 module ChatMessage
   class BaseMessage
+    attr_reader :markdown_format
+
     def initialize(params)
-      raise NotImplementedError
+      @markdown_format = params[:markdown_format] || false
     end
 
     def pretext
