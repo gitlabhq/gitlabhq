@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :ci_trigger_schedule, class: Ci::TriggerSchedule do
     trigger factory: :ci_trigger_for_trigger_schedule
     cron '0 1 * * *'
-    cron_time_zone Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
+    cron_time_zone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
 
     after(:build) do |trigger_schedule, evaluator|
       trigger_schedule.update!(project: trigger_schedule.trigger.project)
@@ -16,17 +16,17 @@ FactoryGirl.define do
 
     trait :cron_nightly_build do
       cron '0 1 * * *'
-      cron_time_zone Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
+      cron_time_zone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
     end
 
     trait :cron_weekly_build do
       cron '0 1 * * 6'
-      cron_time_zone Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
+      cron_time_zone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
     end
 
     trait :cron_monthly_build do
       cron '0 1 22 * *'
-      cron_time_zone Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
+      cron_time_zone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
     end
   end
 end

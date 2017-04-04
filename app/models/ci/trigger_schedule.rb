@@ -18,7 +18,7 @@ module Ci
     after_create :schedule_next_run!
 
     def schedule_next_run!
-      next_time = Ci::CronParser.new(cron, cron_time_zone).next_time_from(Time.now)
+      next_time = Gitlab::Ci::CronParser.new(cron, cron_time_zone).next_time_from(Time.now)
       update!(next_run_at: next_time) if next_time.present?
     end
   end

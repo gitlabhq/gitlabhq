@@ -3,7 +3,7 @@
 # Custom validator for Cron.
 class CronValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
-    cron_parser = Ci::CronParser.new(record.cron, record.cron_time_zone)
+    cron_parser = Gitlab::Ci::CronParser.new(record.cron, record.cron_time_zone)
     is_valid_cron, is_valid_cron_time_zone = cron_parser.validation
 
     if !is_valid_cron

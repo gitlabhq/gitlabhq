@@ -14,7 +14,7 @@ module TriggersHelper
   def real_next_run(trigger_schedule,
                     worker_cron: Settings.cron_jobs['trigger_schedule_worker']['cron'],
                     worker_time_zone: Time.zone.name)
-    Ci::CronParser.new(worker_cron, worker_time_zone)
-                  .next_time_from(trigger_schedule.next_run_at)
+    Gitlab::Ci::CronParser.new(worker_cron, worker_time_zone)
+                          .next_time_from(trigger_schedule.next_run_at)
   end
 end
