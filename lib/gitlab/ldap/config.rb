@@ -107,7 +107,7 @@ module Gitlab
       end
 
       def attributes
-        options['attributes']
+        default_attributes.merge(options['attributes'])
       end
 
       def timeout
@@ -124,10 +124,20 @@ module Gitlab
 
       def name_proc
         if allow_username_or_email_login
-          Proc.new { |name| name.gsub(/@.*\z/, '') }
+          proc { |name| name.gsub(/@.*\z/, '') }
         else
-          Proc.new { |name| name }
+          proc { |name| name }
         end
+      end
+
+      def default_attributes
+        {
+          'username'    => %w(uid userid sAMAccountName),
+          'email'       => %w(mail email userPrincipalName),
+          'name'        => 'cn',
+          'first_name'  => 'givenName',
+          'last_name'   => 'sn'
+        }
       end
 
       protected

@@ -129,6 +129,14 @@ describe Member, models: true do
       it { expect(described_class.request).not_to include @accepted_request_member }
     end
 
+    describe '.non_request' do
+      it { expect(described_class.non_request).to include @master }
+      it { expect(described_class.non_request).to include @invited_member }
+      it { expect(described_class.non_request).to include @accepted_invite_member }
+      it { expect(described_class.non_request).not_to include @requested_member }
+      it { expect(described_class.non_request).to include @accepted_request_member }
+    end
+
     describe '.developers' do
       subject { described_class.developers.to_a }
 
@@ -481,7 +489,7 @@ describe Member, models: true do
 
   describe "destroying a record", truncate: true do
     it "refreshes user's authorized projects" do
-      project = create(:project, :private)
+      project = create(:empty_project, :private)
       user    = create(:user)
       member  = project.team << [user, :reporter]
 

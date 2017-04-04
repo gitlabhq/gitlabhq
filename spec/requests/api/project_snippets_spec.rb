@@ -1,35 +1,26 @@
 require 'rails_helper'
 
-describe API::API, api: true do
+describe API::ProjectSnippets, api: true do
   include ApiHelpers
 
   let(:project) { create(:empty_project, :public) }
+  let(:user) { create(:user) }
   let(:admin) { create(:admin) }
-
-  describe 'GET /projects/:project_id/snippets/:id' do
-    # TODO (rspeicher): Deprecated; remove in 9.0
-    it 'always exposes expires_at as nil' do
-      snippet = create(:project_snippet, author: admin)
-
-      get api("/projects/#{snippet.project.id}/snippets/#{snippet.id}", admin)
-
-      expect(json_response).to have_key('expires_at')
-      expect(json_response['expires_at']).to be_nil
-    end
-  end
 
   describe 'GET /projects/:project_id/snippets/' do
     let(:user) { create(:user) }
 
     it 'returns all snippets available to team member' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       public_snippet = create(:project_snippet, :public, project: project)
       internal_snippet = create(:project_snippet, :internal, project: project)
       private_snippet = create(:project_snippet, :private, project: project)
 
-      get api("/projects/#{project.id}/snippets/", user)
+      get api("/projects/#{project.id}/snippets", user)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
       expect(json_response.size).to eq(3)
       expect(json_response.map{ |snippet| snippet['id']} ).to include(public_snippet.id, internal_snippet.id, private_snippet.id)
       expect(json_response.last).to have_key('web_url')
@@ -39,7 +30,10 @@ describe API::API, api: true do
       create(:project_snippet, :private, project: project)
 
       get api("/projects/#{project.id}/snippets/", user)
+
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
       expect(json_response.size).to eq(0)
     end
   end
@@ -50,7 +44,7 @@ describe API::API, api: true do
         title: 'Test Title',
         file_name: 'test.rb',
         code: 'puts "hello world"',
-        visibility_level: Gitlab::VisibilityLevel::PUBLIC
+        visibility: 'public'
       }
     end
 
@@ -62,7 +56,7 @@ describe API::API, api: true do
       expect(snippet.content).to eq(params[:code])
       expect(snippet.title).to eq(params[:title])
       expect(snippet.file_name).to eq(params[:file_name])
-      expect(snippet.visibility_level).to eq(params[:visibility_level])
+      expect(snippet.visibility_level).to eq(Snippet::PUBLIC)
     end
 
     it 'returns 400 for missing parameters' do
@@ -72,10 +66,45 @@ describe API::API, api: true do
 
       expect(response).to have_http_status(400)
     end
+
+    context 'when the snippet is spam' do
+      def create_snippet(project, snippet_params = {})
+        project.add_developer(user)
+
+        post api("/projects/#{project.id}/snippets", user), params.merge(snippet_params)
+      end
+
+      before do
+        allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+      end
+
+      context 'when the snippet is private' do
+        it 'creates the snippet' do
+          expect { create_snippet(project, visibility: 'private') }.
+            to change { Snippet.count }.by(1)
+        end
+      end
+
+      context 'when the snippet is public' do
+        it 'rejects the snippet' do
+          expect { create_snippet(project, visibility: 'public') }.
+            not_to change { Snippet.count }
+
+          expect(response).to have_http_status(400)
+          expect(json_response['message']).to eq({ "error" => "Spam detected" })
+        end
+
+        it 'creates a spam log' do
+          expect { create_snippet(project, visibility: 'public') }.
+            to change { SpamLog.count }.by(1)
+        end
+      end
+    end
   end
 
   describe 'PUT /projects/:project_id/snippets/:id/' do
-    let(:snippet) { create(:project_snippet, author: admin) }
+    let(:visibility_level) { Snippet::PUBLIC }
+    let(:snippet) { create(:project_snippet, author: admin, visibility_level: visibility_level) }
 
     it 'updates snippet' do
       new_content = 'New content'
@@ -99,6 +128,56 @@ describe API::API, api: true do
 
       expect(response).to have_http_status(400)
     end
+
+    context 'when the snippet is spam' do
+      def update_snippet(snippet_params = {})
+        put api("/projects/#{snippet.project.id}/snippets/#{snippet.id}", admin), snippet_params
+      end
+
+      before do
+        allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+      end
+
+      context 'when the snippet is private' do
+        let(:visibility_level) { Snippet::PRIVATE }
+
+        it 'creates the snippet' do
+          expect { update_snippet(title: 'Foo') }.
+            to change { snippet.reload.title }.to('Foo')
+        end
+      end
+
+      context 'when the snippet is public' do
+        let(:visibility_level) { Snippet::PUBLIC }
+
+        it 'rejects the snippet' do
+          expect { update_snippet(title: 'Foo') }.
+            not_to change { snippet.reload.title }
+        end
+
+        it 'creates a spam log' do
+          expect { update_snippet(title: 'Foo') }.
+            to change { SpamLog.count }.by(1)
+        end
+      end
+
+      context 'when the private snippet is made public' do
+        let(:visibility_level) { Snippet::PRIVATE }
+
+        it 'rejects the snippet' do
+          expect { update_snippet(title: 'Foo', visibility: 'public') }.
+            not_to change { snippet.reload.title }
+
+          expect(response).to have_http_status(400)
+          expect(json_response['message']).to eq({ "error" => "Spam detected" })
+        end
+
+        it 'creates a spam log' do
+          expect { update_snippet(title: 'Foo', visibility: 'public') }.
+            to change { SpamLog.count }.by(1)
+        end
+      end
+    end
   end
 
   describe 'DELETE /projects/:project_id/snippets/:id/' do
@@ -110,7 +189,7 @@ describe API::API, api: true do
 
       delete api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(204)
     end
 
     it 'returns 404 for invalid snippet id' do
@@ -133,7 +212,7 @@ describe API::API, api: true do
     end
 
     it 'returns 404 for invalid snippet id' do
-      delete api("/projects/#{snippet.project.id}/snippets/1234", admin)
+      get api("/projects/#{snippet.project.id}/snippets/1234/raw", admin)
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')

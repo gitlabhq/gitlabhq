@@ -1,22 +1,29 @@
-/* eslint-disable space-before-function-paren, no-unused-expressions, no-undef, no-var, object-shorthand, comma-dangle, semi, padded-blocks, max-len */
-/*= require notes */
-/*= require autosize */
-/*= require gl_form */
-/*= require lib/utils/text_utility */
+/* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
+/* global Notes */
+
+require('~/notes');
+require('vendor/autosize');
+require('~/gl_form');
+require('~/lib/utils/text_utility');
 
 (function() {
   window.gon || (window.gon = {});
-
-  window.disableButtonIfEmptyField = function() {
-    return null;
-  };
+  window.gl = window.gl || {};
+  gl.utils = gl.utils || {};
 
   describe('Notes', function() {
-    describe('task lists', function() {
-      fixture.preload('issue_note.html');
+    var commentsTemplate = 'issues/issue_with_comment.html.raw';
+    preloadFixtures(commentsTemplate);
 
+    beforeEach(function () {
+      loadFixtures(commentsTemplate);
+      gl.utils.disableButtonIfEmptyField = _.noop;
+      window.project_uploads_path = 'http://test.host/uploads';
+      $('body').data('page', 'projects:issues:show');
+    });
+
+    describe('task lists', function() {
       beforeEach(function() {
-        fixture.load('issue_note.html');
         $('form').on('submit', function(e) {
           e.preventDefault();
         });
@@ -28,25 +35,20 @@
         expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
       });
 
-      it('submits the form on tasklist:changed', function() {
-        var submitted = false;
-        $('form').on('submit', function(e) {
-          submitted = true;
-          e.preventDefault();
+      it('submits an ajax request on tasklist:changed', function() {
+        spyOn(jQuery, 'ajax').and.callFake(function(req) {
+          expect(req.type).toBe('PATCH');
+          expect(req.url).toBe('http://test.host/frontend-fixtures/issues-project/notes/1');
+          return expect(req.data.note).not.toBe(null);
         });
-
         $('.js-task-list-field').trigger('tasklist:changed');
-        expect(submitted).toBe(true);
       });
     });
 
     describe('comments', function() {
-      var commentsTemplate = 'comments.html';
       var textarea = '.js-note-text';
-      fixture.preload(commentsTemplate);
 
       beforeEach(function() {
-        fixture.load(commentsTemplate);
         this.notes = new Notes();
 
         this.autoSizeSpy = spyOnEvent($(textarea), 'autosize:update');
@@ -68,8 +70,7 @@
 
         $('.js-comment-button').click();
         expect(this.autoSizeSpy).toHaveBeenTriggered();
-      })
+      });
     });
   });
-
-}).call(this);
+}).call(window);

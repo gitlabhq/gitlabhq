@@ -12,7 +12,7 @@ describe 'Git HTTP requests', lib: true do
 
   describe "User with no identities" do
     let(:user)    { create(:user) }
-    let(:project) { create(:project, path: 'project.git-project') }
+    let(:project) { create(:project, :repository, path: 'project.git-project') }
 
     context "when the project doesn't exist" do
       context "when no authentication is provided" do
@@ -53,6 +53,28 @@ describe 'Git HTTP requests', lib: true do
           expect(response).to have_http_status(200)
           expect(json_body['RepoPath']).to include(wiki.repository.path_with_namespace)
           expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+        end
+      end
+
+      context 'but the repo is disabled' do
+        let(:project) { create(:project, :repository_disabled, :wiki_enabled) }
+        let(:wiki) { ProjectWiki.new(project) }
+        let(:path) { "/#{wiki.repository.path_with_namespace}.git" }
+
+        before do
+          project.team << [user, :developer]
+        end
+
+        it 'allows clones' do
+          download(path, user: user.username, password: user.password) do |response|
+            expect(response).to have_http_status(200)
+          end
+        end
+
+        it 'allows pushes' do
+          upload(path, user: user.username, password: user.password) do |response|
+            expect(response).to have_http_status(200)
+          end
         end
       end
     end
@@ -119,7 +141,7 @@ describe 'Git HTTP requests', lib: true do
         context 'when the repo is public' do
           context 'but the repo is disabled' do
             it 'does not allow to clone the repo' do
-              project = create(:project, :public, repository_access_level: ProjectFeature::DISABLED)
+              project = create(:project, :public, :repository_disabled)
 
               download("#{project.path_with_namespace}.git", {}) do |response|
                 expect(response).to have_http_status(:unauthorized)
@@ -129,7 +151,7 @@ describe 'Git HTTP requests', lib: true do
 
           context 'but the repo is enabled' do
             it 'allows to clone the repo' do
-              project = create(:project, :public, repository_access_level: ProjectFeature::ENABLED)
+              project = create(:project, :public, :repository_enabled)
 
               download("#{project.path_with_namespace}.git", {}) do |response|
                 expect(response).to have_http_status(:ok)
@@ -139,7 +161,7 @@ describe 'Git HTTP requests', lib: true do
 
           context 'but only project members are allowed' do
             it 'does not allow to clone the repo' do
-              project = create(:project, :public, repository_access_level: ProjectFeature::PRIVATE)
+              project = create(:project, :public, :repository_private)
 
               download("#{project.path_with_namespace}.git", {}) do |response|
                 expect(response).to have_http_status(:unauthorized)
@@ -199,12 +221,20 @@ describe 'Git HTTP requests', lib: true do
               end
 
               context "when the user is blocked" do
-                it "responds with status 404" do
+                it "responds with status 401" do
                   user.block
                   project.team << [user, :master]
 
                   download(path, env) do |response|
-                    expect(response).to have_http_status(404)
+                    expect(response).to have_http_status(401)
+                  end
+                end
+
+                it "responds with status 401 for unknown projects (no project existence information leak)" do
+                  user.block
+
+                  download('doesnt/exist.git', env) do |response|
+                    expect(response).to have_http_status(401)
                   end
                 end
               end
@@ -230,7 +260,7 @@ describe 'Git HTTP requests', lib: true do
               context "when an oauth token is provided" do
                 before do
                   application = Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user)
-                  @token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id)
+                  @token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "api")
                 end
 
                 it "downloads get status 200" do
@@ -338,10 +368,6 @@ describe 'Git HTTP requests', lib: true do
           let(:project) { build.project }
           let(:other_project) { create(:empty_project) }
 
-          before do
-            project.project_feature.update_attributes(builds_access_level: ProjectFeature::ENABLED)
-          end
-
           context 'when build created by system is authenticated' do
             it "downloads get status 200" do
               clone_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
@@ -371,10 +397,24 @@ describe 'Git HTTP requests', lib: true do
 
             shared_examples 'can download code only' do
               it 'downloads get status 200' do
-                clone_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+                allow_any_instance_of(Repository).
+                  to receive(:exists?).and_return(true)
+
+                clone_get "#{project.path_with_namespace}.git",
+                  user: 'gitlab-ci-token', password: build.token
 
                 expect(response).to have_http_status(200)
                 expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+              end
+
+              it 'downloads from non-existing repository and gets 403' do
+                allow_any_instance_of(Repository).
+                  to receive(:exists?).and_return(false)
+
+                clone_get "#{project.path_with_namespace}.git",
+                  user: 'gitlab-ci-token', password: build.token
+
+                expect(response).to have_http_status(403)
               end
 
               it 'uploads get status 403' do

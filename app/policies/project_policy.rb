@@ -3,7 +3,7 @@ class ProjectPolicy < BasePolicy
     team_access!(user)
 
     owner = project.owner == user ||
-            (project.group && project.group.has_owner?(user))
+      (project.group && project.group.has_owner?(user))
 
     owner_access! if user.admin? || owner
     team_member_owner_access! if owner
@@ -12,11 +12,8 @@ class ProjectPolicy < BasePolicy
       guest_access!
       public_access!
 
-      # Allow to read builds for internal projects
-      can! :read_build if project.public_builds?
-
       if project.request_access_enabled &&
-         !(owner || user.admin? || project.team.member?(user) || project_group_member?(user))
+          !(owner || user.admin? || project.team.member?(user) || project_group_member?(user))
         can! :request_access
       end
     end
@@ -46,10 +43,16 @@ class ProjectPolicy < BasePolicy
     can! :create_note
     can! :upload_file
     can! :read_cycle_analytics
+
+    if project.public_builds?
+      can! :read_pipeline
+      can! :read_build
+    end
   end
 
   def reporter_access!
     can! :download_code
+    can! :download_wiki_code
     can! :fork_project
     can! :create_project_snippet
     can! :update_issue
@@ -107,6 +110,9 @@ class ProjectPolicy < BasePolicy
     can! :admin_pipeline
     can! :admin_environment
     can! :admin_deployment
+    can! :admin_pages
+    can! :read_pages
+    can! :update_pages
   end
 
   def public_access!
@@ -133,6 +139,7 @@ class ProjectPolicy < BasePolicy
     can! :remove_fork_project
     can! :destroy_merge_request
     can! :destroy_issue
+    can! :remove_pages
   end
 
   def team_member_owner_access!
@@ -168,9 +175,7 @@ class ProjectPolicy < BasePolicy
   def disabled_features!
     repository_enabled = project.feature_available?(:repository, user)
 
-    unless project.feature_available?(:issues, user)
-      cannot!(*named_abilities(:issue))
-    end
+    block_issues_abilities
 
     unless project.feature_available?(:merge_requests, user) && repository_enabled
       cannot!(*named_abilities(:merge_request))
@@ -187,6 +192,7 @@ class ProjectPolicy < BasePolicy
 
     unless project.feature_available?(:wiki, user) || project.has_external_wiki?
       cannot!(*named_abilities(:wiki))
+      cannot!(:download_wiki_code)
     end
 
     unless project.feature_available?(:builds, user) && repository_enabled
@@ -212,6 +218,46 @@ class ProjectPolicy < BasePolicy
   def anonymous_rules
     return unless project.public?
 
+    base_readonly_access!
+
+    # Allow to read builds by anonymous user if guests are allowed
+    can! :read_build if project.public_builds?
+
+    disabled_features!
+  end
+
+  def project_group_member?(user)
+    project.group &&
+      (
+        project.group.members_with_parents.exists?(user_id: user.id) ||
+        project.group.requesters.exists?(user_id: user.id)
+      )
+  end
+
+  def block_issues_abilities
+    unless project.feature_available?(:issues, user)
+      cannot! :read_issue if project.default_issues_tracker?
+      cannot! :create_issue
+      cannot! :update_issue
+      cannot! :admin_issue
+    end
+  end
+
+  def named_abilities(name)
+    [
+      :"read_#{name}",
+      :"create_#{name}",
+      :"update_#{name}",
+      :"admin_#{name}"
+    ]
+  end
+
+  private
+
+  # A base set of abilities for read-only users, which
+  # is then augmented as necessary for anonymous and other
+  # read-only users.
+  def base_readonly_access!
     can! :read_project
     can! :read_board
     can! :read_list
@@ -226,31 +272,10 @@ class ProjectPolicy < BasePolicy
     can! :read_commit_status
     can! :read_container_image
     can! :download_code
+    can! :download_wiki_code
     can! :read_cycle_analytics
 
     # NOTE: may be overridden by IssuePolicy
     can! :read_issue
-
-    # Allow to read builds by anonymous user if guests are allowed
-    can! :read_build if project.public_builds?
-
-    disabled_features!
-  end
-
-  def project_group_member?(user)
-    project.group &&
-    (
-      project.group.members.exists?(user_id: user.id) ||
-      project.group.requesters.exists?(user_id: user.id)
-    )
-  end
-
-  def named_abilities(name)
-    [
-      :"read_#{name}",
-      :"create_#{name}",
-      :"update_#{name}",
-      :"admin_#{name}"
-    ]
   end
 end

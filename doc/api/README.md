@@ -11,8 +11,6 @@ following locations:
 - [Award Emoji](award_emoji.md)
 - [Branches](branches.md)
 - [Broadcast Messages](broadcast_messages.md)
-- [Builds](builds.md)
-- [Build Triggers](build_triggers.md)
 - [Build Variables](build_variables.md)
 - [Commits](commits.md)
 - [Deployments](deployments.md)
@@ -24,6 +22,7 @@ following locations:
 - [Group Members](members.md)
 - [Issues](issues.md)
 - [Issue Boards](boards.md)
+- [Jobs](jobs.md)
 - [Keys](keys.md)
 - [Labels](labels.md)
 - [Merge Requests](merge_requests.md)
@@ -33,6 +32,7 @@ following locations:
 - [Notes](notes.md) (comments)
 - [Notification settings](notification_settings.md)
 - [Pipelines](pipelines.md)
+- [Pipeline Triggers](pipeline_triggers.md)
 - [Projects](projects.md) including setting Webhooks
 - [Project Access Requests](access_requests.md)
 - [Project Members](members.md)
@@ -49,6 +49,7 @@ following locations:
 - [Todos](todos.md)
 - [Users](users.md)
 - [Validate CI configuration](ci/lint.md)
+- [V3 to V4](v3_to_v4.md)
 - [Version](version.md)
 
 ### Internal CI API
@@ -73,6 +74,12 @@ returned with status code `401`:
 }
 ```
 
+### Session Cookie
+
+When signing in to GitLab as an ordinary user, a `_gitlab_session` cookie is
+set. The API will use this cookie for authentication if it is present, but using
+the API to generate a new session cookie is currently not supported.
+
 ### Private Tokens
 
 You need to pass a `private_token` parameter via query string or header. If passed as a
@@ -88,7 +95,7 @@ You can use an OAuth 2 token to authenticate with the API by passing it either i
 Example of using the OAuth2 token in the header:
 
 ```shell
-curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api/v3/projects
+curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api/v4/projects
 ```
 
 Read more about [GitLab as an OAuth2 client](oauth2.md).
@@ -104,65 +111,33 @@ that needs access to the GitLab API.
 Once you have your token, pass it to the API using either the `private_token`
 parameter or the `PRIVATE-TOKEN` header.
 
+> [Introduced][ce-5951] in GitLab 8.15.
 
-### Session Cookie
+Personal Access Tokens can be created with one or more scopes that allow various actions
+that a given token can perform. Although there are only two scopes available at the
+moment – `read_user` and `api` – the groundwork has been laid to add more scopes easily.
 
-When signing in to GitLab as an ordinary user, a `_gitlab_session` cookie is
-set. The API will use this cookie for authentication if it is present, but using
-the API to generate a new session cookie is currently not supported.
+At any time you can revoke any personal access token by just clicking **Revoke**.
 
-## Basic Usage
+### Impersonation tokens
 
-API requests should be prefixed with `api` and the API version. The API version
-is defined in [`lib/api.rb`][lib-api-url].
+> [Introduced][ce-9099] in GitLab 9.0. Needs admin permissions.
 
-Example of a valid API request:
+Impersonation tokens are a type of [Personal Access Token](#personal-access-tokens)
+that can only be created by an admin for a specific user.
 
-```shell
-GET https://gitlab.example.com/api/v3/projects?private_token=9koXpg98eAheJpvBs5tK
-```
+They are a better alternative to using the user's password/private token
+or using the [Sudo](#sudo) feature which also requires the admin's password
+or private token, since the password/token can change over time. Impersonation
+tokens are a great fit if you want to build applications or tools which
+authenticate with the API as a specific user.
 
-Example of a valid API request using cURL and authentication via header:
+For more information about the usage please refer to the
+[users API](users.md#retrieve-user-impersonation-tokens) docs.
 
-```shell
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects"
-```
+### Sudo
 
-The API uses JSON to serialize data. You don't need to specify `.json` at the
-end of an API URL.
-
-## Status codes
-
-The API is designed to return different status codes according to context and
-action. This way, if a request results in an error, the caller is able to get
-insight into what went wrong.
-
-The following table gives an overview of how the API functions generally behave.
-
-| Request type | Description |
-| ------------ | ----------- |
-| `GET`   | Access one or more resources and return the result as JSON. |
-| `POST`  | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON. |
-| `GET` / `PUT` / `DELETE` | Return `200 OK` if the resource is accessed, modified or deleted successfully. The (modified) result is returned as JSON. |
-| `DELETE` | Designed to be idempotent, meaning a request to a resource still returns `200 OK` even it was deleted before or is not available. The reasoning behind this, is that the user is not really interested if the resource existed before or not. |
-
-The following table shows the possible return codes for API requests.
-
-| Return values | Description |
-| ------------- | ----------- |
-| `200 OK` | The `GET`, `PUT` or `DELETE` request was successful, the resource(s) itself is returned as JSON. |
-| `201 Created` | The `POST` request was successful and the resource is returned as JSON. |
-| `304 Not Modified` | Indicates that the resource has not been modified since the last request. |
-| `400 Bad Request` | A required attribute of the API request is missing, e.g., the title of an issue is not given. |
-| `401 Unauthorized` | The user is not authenticated, a valid [user token](#authentication) is necessary. |
-| `403 Forbidden` | The request is not allowed, e.g., the user is not allowed to delete a project. |
-| `404 Not Found` | A resource could not be accessed, e.g., an ID for a resource could not be found. |
-| `405 Method Not Allowed` | The request is not supported. |
-| `409 Conflict` | A conflicting resource already exists, e.g., creating a project with a name that already exists. |
-| `422 Unprocessable` | The entity could not be processed. |
-| `500 Server Error` | While handling the request something went wrong server-side. |
-
-## Sudo
+> Needs admin permissions.
 
 All API requests support performing an API call as if you were another user,
 provided your private token is from an administrator account. You need to pass
@@ -193,24 +168,76 @@ returned with status code `404`:
 Example of a valid API call and a request using cURL with sudo request,
 providing a username:
 
-```shell
+```
 GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=username
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: username" "https://gitlab.example.com/api/v3/projects"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: username" "https://gitlab.example.com/api/v4/projects"
 ```
 
 Example of a valid API call and a request using cURL with sudo request,
 providing an ID:
 
-```shell
+```
 GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=23
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: 23" "https://gitlab.example.com/api/v3/projects"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: 23" "https://gitlab.example.com/api/v4/projects"
 ```
+
+## Basic Usage
+
+API requests should be prefixed with `api` and the API version. The API version
+is defined in [`lib/api.rb`][lib-api-url].
+
+Example of a valid API request:
+
+```
+GET /projects?private_token=9koXpg98eAheJpvBs5tK
+```
+
+Example of a valid API request using cURL and authentication via header:
+
+```shell
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects"
+```
+
+The API uses JSON to serialize data. You don't need to specify `.json` at the
+end of an API URL.
+
+## Status codes
+
+The API is designed to return different status codes according to context and
+action. This way, if a request results in an error, the caller is able to get
+insight into what went wrong.
+
+The following table gives an overview of how the API functions generally behave.
+
+| Request type | Description |
+| ------------ | ----------- |
+| `GET`   | Access one or more resources and return the result as JSON. |
+| `POST`  | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON. |
+| `GET` / `PUT` / `DELETE` | Return `200 OK` if the resource is accessed, modified or deleted successfully. The (modified) result is returned as JSON. |
+| `DELETE` | Designed to be idempotent, meaning a request to a resource still returns `200 OK` even it was deleted before or is not available. The reasoning behind this, is that the user is not really interested if the resource existed before or not. |
+
+The following table shows the possible return codes for API requests.
+
+| Return values | Description |
+| ------------- | ----------- |
+| `200 OK` | The `GET`, `PUT` or `DELETE` request was successful, the resource(s) itself is returned as JSON. |
+| `204 No Content` | The server has successfully fulfilled the request and that there is no additional content to send in the response payload body. |
+| `201 Created` | The `POST` request was successful and the resource is returned as JSON. |
+| `304 Not Modified` | Indicates that the resource has not been modified since the last request. |
+| `400 Bad Request` | A required attribute of the API request is missing, e.g., the title of an issue is not given. |
+| `401 Unauthorized` | The user is not authenticated, a valid [user token](#authentication) is necessary. |
+| `403 Forbidden` | The request is not allowed, e.g., the user is not allowed to delete a project. |
+| `404 Not Found` | A resource could not be accessed, e.g., an ID for a resource could not be found. |
+| `405 Method Not Allowed` | The request is not supported. |
+| `409 Conflict` | A conflicting resource already exists, e.g., creating a project with a name that already exists. |
+| `422 Unprocessable` | The entity could not be processed. |
+| `500 Server Error` | While handling the request something went wrong server-side. |
 
 ## Pagination
 
@@ -225,7 +252,7 @@ resources you can pass the following parameters:
 In the example below, we list 50 [namespaces](namespaces.md) per page.
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/namespaces?per_page=50
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/namespaces?per_page=50
 ```
 
 ### Pagination Link header
@@ -239,7 +266,7 @@ and we request the second page (`page=2`) of [comments](notes.md) of the issue
 with ID `8` which belongs to the project with ID `8`:
 
 ```bash
-curl --head --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/8/issues/8/notes?per_page=3&page=2
+curl --head --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/8/issues/8/notes?per_page=3&page=2
 ```
 
 The response will then be:
@@ -250,7 +277,7 @@ Cache-Control: no-cache
 Content-Length: 1103
 Content-Type: application/json
 Date: Mon, 18 Jan 2016 09:43:18 GMT
-Link: <https://gitlab.example.com/api/v3/projects/8/issues/8/notes?page=1&per_page=3>; rel="prev", <https://gitlab.example.com/api/v3/projects/8/issues/8/notes?page=3&per_page=3>; rel="next", <https://gitlab.example.com/api/v3/projects/8/issues/8/notes?page=1&per_page=3>; rel="first", <https://gitlab.example.com/api/v3/projects/8/issues/8/notes?page=3&per_page=3>; rel="last"
+Link: <https://gitlab.example.com/api/v4/projects/8/issues/8/notes?page=1&per_page=3>; rel="prev", <https://gitlab.example.com/api/v4/projects/8/issues/8/notes?page=3&per_page=3>; rel="next", <https://gitlab.example.com/api/v4/projects/8/issues/8/notes?page=1&per_page=3>; rel="first", <https://gitlab.example.com/api/v4/projects/8/issues/8/notes?page=3&per_page=3>; rel="last"
 Status: 200 OK
 Vary: Origin
 X-Next-Page: 3
@@ -290,14 +317,14 @@ For example, an issue might have `id: 46` and `iid: 5`.
 
 That means that if you want to get an issue via the API you should use the `id`:
 
-```bash
+```
 GET /projects/42/issues/:id
 ```
 
 On the other hand, if you want to create a link to a web page you should use
 the `iid`:
 
-```bash
+```
 GET /projects/42/issues/:iid
 ```
 
@@ -380,3 +407,5 @@ programming languages. Visit the [GitLab website] for a complete list.
 [GitLab website]: https://about.gitlab.com/applications/#api-clients "Clients using the GitLab API"
 [lib-api-url]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api/api.rb
 [ce-3749]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3749
+[ce-5951]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5951
+[ce-9099]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9099

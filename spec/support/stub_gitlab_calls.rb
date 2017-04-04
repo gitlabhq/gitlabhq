@@ -35,7 +35,7 @@ module StubGitlabCalls
       { "tags" => tags }
     )
     allow_any_instance_of(ContainerRegistry::Client).to receive(:repository_manifest).and_return(
-      JSON.load(File.read(Rails.root + 'spec/fixtures/container_registry/tag_manifest.json'))
+      JSON.parse(File.read(Rails.root + 'spec/fixtures/container_registry/tag_manifest.json'))
     )
     allow_any_instance_of(ContainerRegistry::Client).to receive(:blob).and_return(
       File.read(Rails.root + 'spec/fixtures/container_registry/config_blob.json')

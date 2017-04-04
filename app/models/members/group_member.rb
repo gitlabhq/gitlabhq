@@ -1,11 +1,11 @@
 class GroupMember < Member
-  SOURCE_TYPE = 'Namespace'
+  SOURCE_TYPE = 'Namespace'.freeze
 
   belongs_to :group, foreign_key: 'source_id'
 
   # Make sure group member points only to group as it source
   default_value_for :source_type, SOURCE_TYPE
-  validates_format_of :source_type, with: /\ANamespace\z/
+  validates :source_type, format: { with: /\ANamespace\z/ }
   default_scope { where(source_type: SOURCE_TYPE) }
 
   def self.access_level_roles

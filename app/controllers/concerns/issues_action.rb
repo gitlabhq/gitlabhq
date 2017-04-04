@@ -9,6 +9,9 @@ module IssuesAction
               .non_archived
               .page(params[:page])
 
+    @collection_type    = "Issue"
+    @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
+
     respond_to do |format|
       format.html
       format.atom { render layout: false }

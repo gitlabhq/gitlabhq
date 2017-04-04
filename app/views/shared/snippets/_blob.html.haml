@@ -1,7 +1,25 @@
-- unless @snippet.content.empty?
+.js-file-title.file-title-flex-parent
+  .file-header-content
+    = blob_icon @snippet.mode, @snippet.path
+
+    %strong.file-title-name
+      = @snippet.path
+
+    = copy_file_path_button(@snippet.path)
+
+  .file-actions.hidden-xs
+    .btn-group{ role: "group" }<
+      = copy_blob_content_button(@snippet)
+      = open_raw_file_button(raw_path)
+
+      - if defined?(download_path) && download_path
+        = link_to icon('download'), download_path, class: "btn btn-sm has-tooltip", title: 'Download', data: { container: 'body' }
+
+- if @snippet.content.empty?
+  .file-content.code
+    .nothing-here-block Empty file
+- else
   - if markup?(@snippet.file_name)
-    %textarea.markdown-snippet-copy.blob-content{data: {blob_id: @snippet.id}}
-      = @snippet.content
     .file-content.wiki
       - if gitlab_markdown?(@snippet.file_name)
         = preserve(markdown_field(@snippet, :content))
@@ -9,6 +27,3 @@
         = render_markup(@snippet.file_name, @snippet.content)
   - else
     = render 'shared/file_highlight', blob: @snippet
-- else
-  .file-content.code
-    .nothing-here-block Empty file

@@ -379,6 +379,10 @@ Read more about the individual driver's config options in the
 filesystem. Remember to enable backups with your object storage provider if
 desired.
 
+> **Important** Enabling storage driver other than `filesystem` would mean
+that your Docker client needs to be able to access the storage backend directly.
+So you must use an address that resolves and is accessible outside GitLab server.
+
 ---
 
 **Omnibus GitLab installations**
@@ -462,11 +466,107 @@ If Registry is enabled in your GitLab instance, but you don't need it for your
 project, you can disable it from your project's settings. Read the user guide
 on how to achieve that.
 
+## Disable Container Registry but use GitLab as an auth endpoint
+
+You can disable the embedded Container Registry to use an external one, but
+still use GitLab as an auth endpoint.
+
+**Omnibus GitLab**
+1. Open `/etc/gitlab/gitlab.rb` and set necessary configurations:
+
+    ```ruby
+    registry['enable'] = false
+    gitlab_rails['registry_enabled'] = true
+    gitlab_rails['registry_host'] = "registry.gitlab.example.com"
+    gitlab_rails['registry_port'] = "5005"
+    gitlab_rails['registry_api_url'] = "http://localhost:5000"
+    gitlab_rails['registry_key_path'] = "/var/opt/gitlab/gitlab-rails/certificate.key"
+    gitlab_rails['registry_path'] = "/var/opt/gitlab/gitlab-rails/shared/registry"
+    gitlab_rails['registry_issuer'] = "omnibus-gitlab-issuer"
+    ```
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+
+**Installations from source**
+
+1. Open `/home/git/gitlab/config/gitlab.yml`, and edit the configuration settings under `registry`:
+
+    ```
+    ## Container Registry
+
+    registry:
+      enabled: true
+      host: "registry.gitlab.example.com"
+      port: "5005"
+      api_url: "http://localhost:5000"
+      path: /var/opt/gitlab/gitlab-rails/shared/registry
+      key: /var/opt/gitlab/gitlab-rails/certificate.key
+      issuer: omnibus-gitlab-issuer
+    ```
+
+1. Save the file and [restart GitLab][] for the changes to take effect.
+
 ## Storage limitations
 
 Currently, there is no storage limitation, which means a user can upload an
 infinite amount of Docker images with arbitrary sizes. This setting will be
 configurable in future releases.
+
+## Configure Container Registry notifications
+
+You can configure the Container Registry to send webhook notifications in 
+response to events happening within the registry.  
+
+Read more about the Container Registry notifications config options in the
+[Docker Registry notifications documentation][notifications-config].
+
+>**Note:**
+Multiple endpoints can be configured for the Container Registry.
+
+
+**Omnibus GitLab installations**
+
+To configure a notification endpoint in Omnibus:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    registry['notifications'] = [
+      {
+        'name' => 'test_endpoint',
+        'url' => 'https://gitlab.example.com/notify',
+        'timeout' => '500ms',
+        'threshold' => 5,
+        'backoff' => '1s',
+        'headers' => {
+          "Authorization" => ["AUTHORIZATION_EXAMPLE_TOKEN"]
+        }
+      }
+    ]
+    ```
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+
+---
+
+**Installations from source**
+
+Configuring the notification endpoint is done in your registry config YML file created
+when you [deployed your docker registry][registry-deploy].
+
+Example:
+
+```
+notifications:
+  endpoints:
+    - name: alistener
+      disabled: false
+      url: https://my.listener.com/event
+      headers: <http.Header>
+      timeout: 500
+      threshold: 5
+      backoff: 1000
+```
 
 ## Changelog
 
@@ -488,3 +588,5 @@ configurable in future releases.
 [registry-ssl]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/support/nginx/registry-ssl
 [existing-domain]: #configure-container-registry-under-an-existing-gitlab-domain
 [new-domain]: #configure-container-registry-under-its-own-domain
+[notifications-config]: https://docs.docker.com/registry/notifications/
+[registry-notifications-config]: https://docs.docker.com/registry/configuration/#notifications

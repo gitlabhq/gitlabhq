@@ -5,6 +5,7 @@ class Milestone < ActiveRecord::Base
   None = MilestoneStruct.new('No Milestone', 'No Milestone', 0)
   Any = MilestoneStruct.new('Any Milestone', '', -1)
   Upcoming = MilestoneStruct.new('Upcoming', '#upcoming', -2)
+  Started = MilestoneStruct.new('Started', '#started', -3)
 
   include CacheMarkdownField
   include InternalId
@@ -29,6 +30,7 @@ class Milestone < ActiveRecord::Base
 
   validates :title, presence: true, uniqueness: { scope: :project_id }
   validates :project, presence: true
+  validate :start_date_should_be_less_than_due_date, if: proc { |m| m.start_date.present? && m.due_date.present? }
 
   strip_attributes :title
 
@@ -105,6 +107,21 @@ class Milestone < ActiveRecord::Base
     end
   end
 
+  def self.sort(method)
+    case method.to_s
+    when 'due_date_asc'
+      reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC'))
+    when 'due_date_desc'
+      reorder(Gitlab::Database.nulls_last_order('due_date', 'DESC'))
+    when 'start_date_asc'
+      reorder(Gitlab::Database.nulls_last_order('start_date', 'ASC'))
+    when 'start_date_desc'
+      reorder(Gitlab::Database.nulls_last_order('start_date', 'DESC'))
+    else
+      order_by(method)
+    end
+  end
+
   ##
   # Returns the String necessary to reference this Milestone in Markdown
   #
@@ -112,41 +129,24 @@ class Milestone < ActiveRecord::Base
   #
   # Examples:
   #
-  #   Milestone.first.to_reference                # => "%1"
-  #   Milestone.first.to_reference(format: :name) # => "%\"goal\""
-  #   Milestone.first.to_reference(project)       # => "gitlab-org/gitlab-ce%1"
+  #   Milestone.first.to_reference                           # => "%1"
+  #   Milestone.first.to_reference(format: :name)            # => "%\"goal\""
+  #   Milestone.first.to_reference(cross_namespace_project)  # => "gitlab-org/gitlab-ce%1"
+  #   Milestone.first.to_reference(same_namespace_project)   # => "gitlab-ce%1"
   #
-  def to_reference(from_project = nil, format: :iid)
+  def to_reference(from_project = nil, format: :iid, full: false)
     format_reference = milestone_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    if cross_project_reference?(from_project)
-      project.to_reference + reference
-    else
-      reference
-    end
+    "#{project.to_reference(from_project, full: full)}#{reference}"
   end
 
   def reference_link_text(from_project = nil)
     self.title
   end
 
-  def expired?
-    if due_date
-      due_date.past?
-    else
-      false
-    end
-  end
-
-  def expires_at
-    if due_date
-      if due_date.past?
-        "expired on #{due_date.to_s(:medium)}"
-      else
-        "expires on #{due_date.to_s(:medium)}"
-      end
-    end
+  def milestoneish_ids
+    id
   end
 
   def can_be_closed?
@@ -211,5 +211,15 @@ class Milestone < ActiveRecord::Base
 
   def sanitize_title(value)
     CGI.unescape_html(Sanitize.clean(value.to_s))
+  end
+
+  def start_date_should_be_less_than_due_date
+    if due_date <= start_date
+      errors.add(:start_date, "Can't be greater than due date")
+    end
+  end
+
+  def issues_finder_params
+    { project_id: project_id }
   end
 end

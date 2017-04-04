@@ -25,7 +25,7 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
     %(<a href="#{path}">#{path}</a>)
   end
 
-  let(:project)        { create(:project) }
+  let(:project)        { create(:project, :repository) }
   let(:project_path)   { project.path_with_namespace }
   let(:ref)            { 'markdown' }
   let(:commit)         { project.commit(ref) }
@@ -175,7 +175,7 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
       allow_any_instance_of(described_class).to receive(:uri_type).and_return(:raw)
 
       doc = filter(image(escaped))
-      expect(doc.at_css('img')['src']).to match '/raw/'
+      expect(doc.at_css('img')['src']).to eq "/#{project_path}/raw/#{Addressable::URI.escape(ref)}/#{escaped}"
     end
 
     context 'when requested path is a file in the repo' do

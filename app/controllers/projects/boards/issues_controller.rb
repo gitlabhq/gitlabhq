@@ -7,7 +7,8 @@ module Projects
 
       def index
         issues = ::Boards::Issues::ListService.new(project, current_user, filter_params).execute
-        issues = issues.page(params[:page])
+        issues = issues.page(params[:page]).per(params[:per] || 20)
+        make_sure_position_is_set(issues)
 
         render json: {
           issues: serialize_as_json(issues),
@@ -38,6 +39,12 @@ module Projects
 
       private
 
+      def make_sure_position_is_set(issues)
+        issues.each do |issue|
+          issue.move_to_end && issue.save unless issue.relative_position
+        end
+      end
+
       def issue
         @issue ||=
           IssuesFinder.new(current_user, project_id: project.id)
@@ -59,11 +66,11 @@ module Projects
       end
 
       def filter_params
-        params.merge(board_id: params[:board_id], id: params[:list_id])
+        params.merge(board_id: params[:board_id], id: params[:list_id]).compact
       end
 
       def move_params
-        params.permit(:board_id, :id, :from_list_id, :to_list_id)
+        params.permit(:board_id, :id, :from_list_id, :to_list_id, :move_before_iid, :move_after_iid)
       end
 
       def issue_params
@@ -73,7 +80,7 @@ module Projects
       def serialize_as_json(resource)
         resource.as_json(
           labels: true,
-          only: [:iid, :title, :confidential, :due_date],
+          only: [:id, :iid, :title, :confidential, :due_date, :relative_position],
           include: {
             assignee: { only: [:id, :name, :username], methods: [:avatar_url] },
             milestone: { only: [:id, :title] }

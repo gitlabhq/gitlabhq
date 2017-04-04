@@ -45,15 +45,22 @@ module Ci
         return error('No builds for this pipeline.')
       end
 
-      pipeline.save
-      pipeline.process!
-      pipeline
+      Ci::Pipeline.transaction do
+        pipeline.save
+
+        Ci::CreatePipelineBuildsService
+          .new(project, current_user)
+          .execute(pipeline)
+      end
+
+      pipeline.tap(&:process!)
     end
 
     private
 
     def skip_ci?
-      pipeline.git_commit_message =~ /\[(ci skip|skip ci)\]/i if pipeline.git_commit_message
+      return false unless pipeline.git_commit_message
+      pipeline.git_commit_message =~ /\[(ci[ _-]skip|skip[ _-]ci)\]/i
     end
 
     def commit

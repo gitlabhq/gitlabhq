@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
+describe API::SystemHooks, api: true  do
   include ApiHelpers
 
   let(:user) { create(:user) }
@@ -31,6 +31,7 @@ describe API::API, api: true  do
         get api("/hooks", admin)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['url']).to eq(hook.url)
         expect(json_response.first['push_events']).to be true
@@ -90,6 +91,8 @@ describe API::API, api: true  do
     it "deletes a hook" do
       expect do
         delete api("/hooks/#{hook.id}", admin)
+
+        expect(response).to have_http_status(204)
       end.to change { SystemHook.count }.by(-1)
     end
 

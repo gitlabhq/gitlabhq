@@ -117,7 +117,12 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
     member = mary_jane_member
 
     page.within "#group_member_#{member.id}" do
-      select 'Developer', from: "member_access_level_#{member.id}"
+      click_button member.human_access
+
+      page.within '.dropdown-menu' do
+        click_link 'Developer'
+      end
+
       wait_for_ajax
     end
   end

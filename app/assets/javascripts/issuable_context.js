@@ -1,4 +1,9 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-new, no-undef, comma-dangle, quotes, prefer-arrow-callback, consistent-return, one-var, no-var, one-var-declaration-per-line, no-underscore-dangle, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-new, comma-dangle, quotes, prefer-arrow-callback, consistent-return, one-var, no-var, one-var-declaration-per-line, no-underscore-dangle, max-len */
+/* global UsersSelect */
+/* global bp */
+
+import Cookies from 'js-cookie';
+
 (function() {
   this.IssuableContext = (function() {
     function IssuableContext(currentUser) {
@@ -35,6 +40,13 @@
           }, 0);
         }
       });
+      window.addEventListener('beforeunload', function() {
+        // collapsed_gutter cookie hides the sidebar
+        var bpBreakpoint = bp.getBreakpointSize();
+        if (bpBreakpoint === 'xs' || bpBreakpoint === 'sm') {
+          Cookies.set('collapsed_gutter', true);
+        }
+      });
       $(".right-sidebar").niceScroll();
     }
 
@@ -64,7 +76,5 @@
     };
 
     return IssuableContext;
-
   })();
-
-}).call(this);
+}).call(window);

@@ -22,7 +22,7 @@ describe FlowdockService, models: true do
 
   describe "Execute" do
     let(:user)    { create(:user) }
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     before do
       @flowdock_service = FlowdockService.new

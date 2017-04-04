@@ -12,7 +12,17 @@ These guiding principles set a solid foundation for our design system, and shoul
 ---
 
 ### [Basics](basics.md)
-The basic ingredients of our experience establish our personality and feel. This section includes details about typography, color, and motion.
+The basic ingredients of our experience establish our personality and feel. This section includes details about typography, iconography, and color.
+
+---
+
+### [Animation](animation.md)
+Guidance on the timing, curving and motion for GitLab.
+
+---
+
+### [Copy](copy.md)
+Conventions on text and messaging within labels, buttons, and other components.
 
 ---
 
@@ -23,11 +33,6 @@ Components are the controls that make up the GitLab experience, including guidan
 
 ### [Surfaces](surfaces.md)
 The GitLab experience is broken apart into several surfaces. Each of these surfaces is designated for a specific scope or type of content. Examples include the header, global menu, side pane, etc.
-
----
-
-### [Copy](copy.md)
-Conventions on text and messaging within labels, buttons, and other components.
 
 ---
 

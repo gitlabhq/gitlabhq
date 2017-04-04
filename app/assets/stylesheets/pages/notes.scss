@@ -3,9 +3,9 @@
  */
 
 @-webkit-keyframes targe3-note {
-  from { background: #fffff0; }
-  50% { background: #ffffd3; }
-  to { background: #fffff0; }
+  from { background: $note-targe3-outside; }
+  50% { background: $note-targe3-inside; }
+  to { background: $note-targe3-outside; }
 }
 
 ul.notes {
@@ -43,11 +43,24 @@ ul.notes {
     }
 
     .system-note-message {
-      text-transform: lowercase;
+      display: inline;
+
+      &::first-letter {
+        text-transform: lowercase;
+      }
 
       a {
         color: $gl-link-color;
         text-decoration: none;
+      }
+
+      p {
+        display: inline;
+        margin: 0;
+
+        &::first-letter {
+          text-transform: lowercase;
+        }
       }
     }
 
@@ -59,9 +72,17 @@ ul.notes {
       overflow: hidden;
 
       .system-note-commit-list-toggler {
+        color: $gl-link-color;
         display: none;
         padding: 10px 0 0;
         cursor: pointer;
+        position: relative;
+        z-index: 2;
+
+        &:hover {
+          color: $gl-link-color;
+          text-decoration: underline;
+        }
       }
 
       .note-text {
@@ -70,14 +91,14 @@ ul.notes {
         }
 
         &.system-note-commit-list {
-          max-height: 63px;
+          max-height: 70px;
           overflow: hidden;
           display: block;
 
           ul {
-            margin: 3px 0 3px 15px !important;
+            margin: 3px 0 3px 16px !important;
 
-            li {
+            .gfm-commit {
               font-family: $monospace_font;
               font-size: 12px;
             }
@@ -90,11 +111,11 @@ ul.notes {
           &::after {
             content: '';
             width: 100%;
-            height: 20px;
+            height: 67px;
             position: absolute;
             left: 0;
-            bottom: 50px;
-            background: linear-gradient(rgba($gray-light, .3) 0, $white-light);
+            bottom: 0;
+            background: linear-gradient(rgba($white-light, 0.1) -100px, $white-light 100%);
           }
 
           &.hide-shade {
@@ -136,11 +157,15 @@ ul.notes {
   .note {
     display: block;
     position: relative;
-    border-bottom: 1px solid $table-border-gray;
+    border-bottom: 1px solid $white-normal;
 
     &.note-discussion {
       &.timeline-entry {
         padding: 14px 10px;
+      }
+
+      .system-note {
+        padding: 0;
       }
     }
 
@@ -161,10 +186,10 @@ ul.notes {
     }
 
     .note-body {
-      overflow: auto;
+      overflow-x: auto;
+      overflow-y: hidden;
 
       .note-text {
-        overflow: auto;
         word-wrap: break-word;
         @include md-typography;
         // Reset ul style types since we're nested inside a ul already
@@ -187,11 +212,6 @@ ul.notes {
     .note-header {
       padding-bottom: 3px;
       padding-right: 20px;
-
-      p {
-        display: inline;
-        margin: 0;
-      }
 
       @media (min-width: $screen-sm-min) {
         padding-right: 0;
@@ -223,22 +243,6 @@ ul.notes {
   }
 }
 
-.page-sidebar-pinned.right-sidebar-expanded {
-  @media (max-width: $screen-lg-min) {
-    .note-header {
-      .note-headline-light {
-        display: block;
-      }
-
-      .note-actions {
-        position: absolute;
-        right: 0;
-        top: 0;
-      }
-    }
-  }
-}
-
 // Diff code in discussion view
 .discussion-body .diff-file {
   .file-title {
@@ -262,25 +266,25 @@ ul.notes {
   font-family: $regular_font;
 
   td {
-    border: 1px solid $table-border-gray;
+    border: 1px solid $white-normal;
     border-left: none;
 
     &.notes_line {
       vertical-align: middle;
       text-align: center;
       padding: 10px 0;
-      background: $background-color;
+      background: $gray-light;
       color: $text-color;
     }
 
     &.notes_line2 {
       text-align: center;
       padding: 10px 0;
-      border-left: 1px solid #ddd !important;
+      border-left: 1px solid $note-line2-border !important;
     }
 
     &.notes_content {
-      background-color: $background-color;
+      background-color: $gray-light;
       border-width: 1px 0;
       padding: 0;
       vertical-align: top;
@@ -311,17 +315,29 @@ ul.notes {
 
     &:hover {
       color: $gl-link-color;
+    }
+
+    &:focus,
+    &:hover {
       text-decoration: none;
     }
   }
 
   .author_link {
-    color: $gl-gray;
+    color: $gl-text-color;
   }
 }
 
 .discussion-header {
   font-size: 14px;
+}
+
+.note-headline-light {
+  display: inline;
+
+  @media (max-width: $screen-xs-min) {
+    display: block;
+  }
 }
 
 .note-headline-light,
@@ -343,7 +359,7 @@ ul.notes {
 .note-actions {
   float: right;
   margin-left: 10px;
-  color: $notes-action-color;
+  color: $gray-darkest;
 }
 
 .note-actions {
@@ -352,11 +368,7 @@ ul.notes {
   top: 0;
 
   .note-action-button {
-    margin-left: 10px;
-  }
-
-  @media (min-width: $screen-sm-min) {
-    position: relative;
+    margin-left: 8px;
   }
 }
 
@@ -372,8 +384,7 @@ ul.notes {
 }
 
 .note-action-button {
-  display: inline-block;
-  margin-left: 0;
+  display: inline;
   line-height: 20px;
 
   @media (min-width: $screen-sm-min) {
@@ -382,9 +393,8 @@ ul.notes {
   }
 
   .fa {
-    color: $notes-action-color;
+    color: $gray-darkest;
     position: relative;
-    top: 1px;
     font-size: 17px;
   }
 
@@ -400,8 +410,22 @@ ul.notes {
 }
 
 .discussion-toggle-button {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
   line-height: 20px;
   font-size: 13px;
+  transition: color 0.1s linear;
+
+  &:hover {
+    color: $gl-link-color;
+  }
+
+  &:focus {
+    text-decoration: underline;
+    outline: none;
+    color: $gl-link-color;
+  }
 
   .fa {
     margin-right: 3px;
@@ -420,13 +444,8 @@ ul.notes {
   color: $notes-role-color;
   font-size: 12px;
   line-height: 20px;
-  border: 1px solid $notes-role-border-color;
+  border: 1px solid $border-color;
   border-radius: $border-radius-base;
-}
-
-.diff-file .note .note-actions {
-  right: 0;
-  top: 0;
 }
 
 
@@ -434,36 +453,38 @@ ul.notes {
  * Line note button on the side of diffs
  */
 
-.diff-file tr.line_holder {
-  @mixin show-add-diff-note {
-    display: inline-block;
+.add-diff-note {
+  display: none;
+  margin-top: -2px;
+  border-radius: 50%;
+  background: $white-light;
+  padding: 1px 5px;
+  font-size: 12px;
+  color: $blue-500;
+  margin-left: -55px;
+  position: absolute;
+  z-index: 10;
+  width: 23px;
+  height: 23px;
+  border: 1px solid $blue-500;
+  transition: transform .1s ease-in-out;
+
+  &:hover {
+    background: $blue-500;
+    border-color: $blue-600;
+    color: $white-light;
+    transform: scale(1.15);
   }
 
-  .add-diff-note {
-    margin-top: -4px;
-    border-radius: 40px;
-    background: #fff;
-    padding: 4px;
-    font-size: 16px;
-    color: $gl-link-color;
-    margin-left: -56px;
-    position: absolute;
-    z-index: 10;
-    width: 32px;
-    // "hide" it by default
-    display: none;
-
-    &:hover {
-      background: $gl-info;
-      color: #fff;
-      @include show-add-diff-note;
-    }
+  &:active {
+    outline: 0;
   }
+}
 
-  // "show" the icon also if we just hover somewhere over the line
-  &:hover > td {
+.diff-file {
+  .is-over {
     .add-diff-note {
-      @include show-add-diff-note;
+      display: inline-block;
     }
   }
 }
@@ -487,8 +508,8 @@ ul.notes {
 }
 
 .line-resolve-all-container {
+
   .btn-group {
-    margin-top: -1px;
     margin-left: -4px;
   }
 
@@ -496,32 +517,49 @@ ul.notes {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
+
+  .btn.discussion-create-issue-btn {
+    margin-left: -4px;
+    border-radius: 0;
+    border-right: 0;
+
+    a {
+      padding: 0;
+      line-height: 0;
+
+      &:hover {
+        text-decoration: none;
+        border: 0;
+      }
+    }
+
+    .new-issue-for-discussion path {
+      fill: $gray-darkest;
+    }
+  }
+
 }
 
 .line-resolve-all {
+  vertical-align: middle;
   display: inline-block;
-  padding: 5px 10px;
-  background-color: $background-color;
+  padding: 6px 10px;
+  background-color: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
 
   &.has-next-btn {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    border-right: 0;
   }
 
   .line-resolve-btn {
-    vertical-align: middle;
     margin-right: 5px;
   }
 }
 
-.line-resolve-text {
-  vertical-align: middle;
-}
-
 .line-resolve-btn {
-  display: inline-block;
   position: relative;
   top: 2px;
   padding: 0;
@@ -538,18 +576,15 @@ ul.notes {
   &.is-active {
     color: $gl-text-green;
 
-    svg path {
+    svg {
       fill: $gl-text-green;
     }
   }
 
   svg {
-    position: relative;
-    color: $notes-action-color;
-
-    path {
-      fill: $notes-action-color;
-    }
+    fill: $gray-darkest;
+    height: 15px;
+    width: 15px;
   }
 }
 
@@ -560,5 +595,19 @@ ul.notes {
     path {
       fill: $gray-darkest;
     }
+  }
+}
+
+// Merge request notes in diffs
+.diff-file {
+  // Diff is side by side
+  .notes_content.parallel .note-header .note-headline-light {
+    display: block;
+    position: relative;
+  }
+  // Diff is inline
+  .notes_content .note-header .note-headline-light {
+    display: inline-block;
+    position: relative;
   }
 }

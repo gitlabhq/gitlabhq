@@ -1,9 +1,9 @@
 ---
-# IGNORED GROUPS AND GEMS
 - - :ignore_group
   - development
   - :who: Connor Shea
-    :why: Development gems are not distributed with the final product and are therefore exempt.
+    :why: Development gems are not distributed with the final product and are therefore
+      exempt.
     :versions: []
     :when: 2016-04-17 21:27:01.054140000 Z
 - - :ignore_group
@@ -18,8 +18,6 @@
     :why: Bundler is MIT licensed but will sometimes fail in CI.
     :versions: []
     :when: 2016-05-02 06:42:08.045090000 Z
-
-# LICENSE WHITELIST
 - - :whitelist
   - MIT
   - :who: Connor Shea
@@ -86,9 +84,6 @@
     :why: https://opensource.org/licenses/BSD-2-Clause
     :versions: []
     :when: 2016-07-26 21:24:07.248480000 Z
-
-
-# LICENSE BLACKLIST
 - - :blacklist
   - GPLv2
   - :who: Connor Shea
@@ -107,9 +102,6 @@
     :why: The OSL license is a copyleft license
     :versions: []
     :when: 2016-10-28 11:02:15.540105000 Z
-
-
-# GEM LICENSES
 - - :license
   - raphael-rails
   - MIT
@@ -201,3 +193,136 @@
     :why: https://github.com/jmcnevin/rubypants/blob/master/LICENSE.rdoc
     :versions: []
     :when: 2016-05-02 05:56:50.696858000 Z
+- - :approve
+  - after
+  - :who: Matt Lee
+    :why: https://github.com/Raynos/after/blob/master/LICENCE
+    :versions: []
+    :when: 2017-01-14 20:00:32.473125000 Z
+- - :approve
+  - amdefine
+  - :who: Matt Lee
+    :why: MIT License
+    :versions: []
+    :when: 2017-01-14 20:08:31.810633000 Z
+- - :approve
+  - base64id
+  - :who: Matt Lee
+    :why: https://github.com/faeldt/base64id/blob/master/LICENSE
+    :versions: []
+    :when: 2017-01-14 20:08:33.174760000 Z
+- - :approve
+  - blob
+  - :who: Matt Lee
+    :why: https://github.com/webmodules/blob/blob/master/LICENSE
+    :versions: []
+    :when: 2017-01-14 20:08:34.564048000 Z
+- - :approve
+  - callsite
+  - :who: Matt Lee
+    :why: https://github.com/tj/callsite/blob/master/LICENSE
+    :versions: []
+    :when: 2017-01-14 20:08:35.976025000 Z
+- - :approve
+  - component-bind
+  - :who: Matt Lee
+    :why: https://github.com/component/bind/blob/master/LICENSE
+    :versions: []
+    :when: 2017-01-14 20:08:37.291219000 Z
+- - :approve
+  - component-inherit
+  - :who: Matt Lee
+    :why: https://github.com/component/inherit/blob/master/LICENSE
+    :versions: []
+    :when: 2017-01-14 20:10:41.804804000 Z
+- - :approve
+  - fsevents
+  - :who: Matt Lee
+    :why: https://github.com/strongloop/fsevents/blob/master/LICENSE
+    :versions: []
+    :when: 2017-01-14 20:50:20.037775000 Z
+- - :approve
+  - indexof
+  - :who: Matt Lee
+    :why: https://github.com/component/indexof/blob/master/LICENSE
+    :versions: []
+    :when: 2017-01-14 20:10:43.209900000 Z
+- - :approve
+  - is-integer
+  - :who: Matt Lee
+    :why: https://github.com/parshap/js-is-integer/blob/master/LICENSE
+    :versions: []
+    :when: 2017-01-14 20:10:44.540916000 Z
+- - :approve
+  - jsonify
+  - :who: Matt Lee
+    :why: Public Domain - no formal license on this one. probably okay as its been
+      the same for along time. would prefer to see CC0
+    :versions: []
+    :when: 2017-01-14 20:10:45.857261000 Z
+- - :approve
+  - object-component
+  - :who: Matt Lee
+    :why: https://github.com/component/object/blob/master/LICENSE
+    :versions: []
+    :when: 2017-01-14 20:10:47.190148000 Z
+- - :approve
+  - optimist
+  - :who: Matt Lee
+    :why: https://github.com/substack/node-optimist/blob/master/LICENSE
+    :versions: []
+    :when: 2017-01-14 20:10:48.563077000 Z
+- - :approve
+  - path-is-inside
+  - :who: Matt Lee
+    :why: https://github.com/domenic/path-is-inside/blob/master/LICENSE.txt
+    :versions: []
+    :when: 2017-01-14 20:10:49.910497000 Z
+- - :approve
+  - rc
+  - :who: Matt Lee
+    :why: https://github.com/dominictarr/rc/blob/master/LICENSE.MIT
+    :versions: []
+    :when: 2017-01-14 20:10:51.244695000 Z
+- - :approve
+  - ripemd160
+  - :who: Matt Lee
+    :why: https://github.com/crypto-browserify/ripemd160/blob/master/LICENSE.md
+    :versions: []
+    :when: 2017-01-14 20:10:52.560282000 Z
+- - :approve
+  - select2
+  - :who: Matt Lee
+    :why: https://github.com/select2/select2/blob/master/LICENSE.md
+    :versions: []
+    :when: 2017-01-14 20:10:53.909618000 Z
+- - :approve
+  - tweetnacl
+  - :who: Matt Lee
+    :why: https://github.com/dchest/tweetnacl-js/blob/master/LICENSE
+    :versions: []
+    :when: 2017-01-14 20:10:57.812077000 Z
+- - :approve
+  - wordwrap
+  - :who: Mike Greiling
+    :why: https://github.com/substack/node-wordwrap/blob/0.0.3/LICENSE
+    :versions: []
+    :when: 2017-02-08 20:17:13.084968000 Z
+- - :approve
+  - spdx-expression-parse
+  - :who: Mike Greiling
+    :why: https://github.com/kemitchell/spdx-expression-parse.js/blob/v1.0.4/LICENSE
+    :versions: []
+    :when: 2017-02-08 22:33:01.806977000 Z
+- - :approve
+  - spdx-license-ids
+  - :who: Mike Greiling
+    :why: https://github.com/shinnn/spdx-license-ids/blob/v1.2.2/LICENSE
+    :versions: []
+    :when: 2017-02-08 22:35:00.225232000 Z
+- - :approve
+  - opener
+  - :who: Mike Greiling
+    :why: https://github.com/domenic/opener/blob/1.4.3/LICENSE.txt
+    :versions: []
+    :when: 2017-02-21 22:33:41.729629000 Z

@@ -56,8 +56,8 @@ describe "Dashboard > User sorts todos", feature: true do
       expect(results_list.all('p')[4]).to have_content("merge_request_1")
     end
 
-    it "sorts by priority" do
-      click_link "Priority"
+    it "sorts by label priority" do
+      click_link "Label priority"
 
       results_list = page.find('.todos-list')
       expect(results_list.all('p')[0]).to have_content("issue_3")
@@ -85,8 +85,8 @@ describe "Dashboard > User sorts todos", feature: true do
       visit dashboard_todos_path
     end
 
-    it "doesn't mix issues and merge requests priorities" do
-      click_link "Priority"
+    it "doesn't mix issues and merge requests label priorities" do
+      click_link "Label priority"
 
       results_list = page.find('.todos-list')
       expect(results_list.all('p')[0]).to have_content("issue_1")

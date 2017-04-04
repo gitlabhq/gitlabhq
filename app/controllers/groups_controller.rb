@@ -13,8 +13,10 @@ class GroupsController < Groups::ApplicationController
   before_action :authorize_create_group!, only: [:new, :create]
 
   # Load group projects
-  before_action :group_projects, only: [:show, :projects, :activity, :issues, :merge_requests]
+  before_action :group_projects, only: [:projects, :activity, :issues, :merge_requests]
   before_action :event_filter, only: [:activity]
+
+  before_action :user_actions, only: [:show, :subgroups]
 
   layout :determine_layout
 
@@ -30,18 +32,19 @@ class GroupsController < Groups::ApplicationController
     @group = Groups::CreateService.new(current_user, group_params).execute
 
     if @group.persisted?
-      redirect_to @group, notice: "Group '#{@group.name}' was successfully created."
+      notice = if @group.chat_team.present?
+                 "Group '#{@group.name}' and its Mattermost team were successfully created."
+               else
+                 "Group '#{@group.name}' was successfully created."
+               end
+
+      redirect_to @group, notice: notice
     else
       render action: "new"
     end
   end
 
   def show
-    if current_user
-      @last_push            = current_user.recent_push
-      @notification_setting = current_user.notification_settings_for(group)
-    end
-
     setup_projects
 
     respond_to do |format|
@@ -60,6 +63,11 @@ class GroupsController < Groups::ApplicationController
     end
   end
 
+  def subgroups
+    @nested_groups = group.children
+    @nested_groups = @nested_groups.search(params[:filter_groups]) if params[:filter_groups].present?
+  end
+
   def activity
     respond_to do |format|
       format.html
@@ -75,19 +83,21 @@ class GroupsController < Groups::ApplicationController
   end
 
   def projects
-    @projects = @group.projects.page(params[:page])
+    @projects = @group.projects.with_statistics.page(params[:page])
   end
 
   def update
     if Groups::UpdateService.new(@group, current_user, group_params).execute
       redirect_to edit_group_path(@group), notice: "Group '#{@group.name}' was successfully updated."
     else
+      @group.restore_path!
+
       render action: "edit"
     end
   end
 
   def destroy
-    DestroyGroupService.new(@group, current_user).async_execute
+    Groups::DestroyService.new(@group, current_user).async_execute
 
     redirect_to root_path, alert: "Group '#{@group.name}' was scheduled for deletion."
   end
@@ -95,17 +105,20 @@ class GroupsController < Groups::ApplicationController
   protected
 
   def setup_projects
+    options = {}
+    options[:only_owned] = true if params[:shared] == '0'
+    options[:only_shared] = true if params[:shared] == '1'
+
+    @projects = GroupProjectsFinder.new(group, options).execute(current_user)
     @projects = @projects.includes(:namespace)
     @projects = @projects.sorted_by_activity
     @projects = filter_projects(@projects)
     @projects = @projects.sort(@sort = params[:sort])
-    @projects = @projects.page(params[:page]) if params[:filter_projects].blank?
-
-    @shared_projects = GroupProjectsFinder.new(group, only_shared: true).execute(current_user)
+    @projects = @projects.page(params[:page]) if params[:name].blank?
   end
 
   def authorize_create_group!
-    unless can?(current_user, :create_group, nil)
+    unless can?(current_user, :create_group)
       return render_404
     end
   end
@@ -121,7 +134,11 @@ class GroupsController < Groups::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(
+    params.require(:group).permit(group_params_ce)
+  end
+
+  def group_params_ce
+    [
       :avatar,
       :description,
       :lfs_enabled,
@@ -130,13 +147,23 @@ class GroupsController < Groups::ApplicationController
       :public,
       :request_access_enabled,
       :share_with_group_lock,
-      :visibility_level
-    )
+      :visibility_level,
+      :parent_id,
+      :create_chat_team,
+      :chat_team_name
+    ]
   end
 
   def load_events
     @events = Event.in_projects(@projects)
     @events = event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
+  end
+
+  def user_actions
+    if current_user
+      @last_push = current_user.recent_push
+      @notification_setting = current_user.notification_settings_for(group)
+    end
   end
 end

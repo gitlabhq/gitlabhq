@@ -3,8 +3,7 @@
  *
  */
 .mr-state-widget {
-  background: $background-color;
-  color: $gl-gray;
+  color: $gl-text-color;
   border: 1px solid $border-color;
   border-radius: 2px;
 
@@ -21,10 +20,14 @@
       display: inline-block;
       float: left;
 
-      .accept_merge_request {
+      .btn-success.dropdown-toggle .fa {
+        color: inherit;
+      }
+
+      .accept-merge-request {
         &.ci-pending,
         &.ci-running {
-          @include btn-orange;
+          @include btn-blue;
         }
 
         &.ci-skipped,
@@ -32,6 +35,12 @@
         &.ci-canceled,
         &.ci-error {
           @include btn-red;
+        }
+      }
+
+      .dropdown-toggle {
+        .fa {
+          color: inherit;
         }
       }
     }
@@ -48,80 +57,115 @@
       &.right {
         float: right;
         padding-right: 0;
+      }
 
-        a {
-          color: $gl-gray;
+      .modify-merge-commit-link {
+        padding: 0;
+
+        background-color: transparent;
+        border: 0;
+
+        color: $gl-text-color;
+
+        &:hover,
+        &:focus {
+          text-decoration: underline;
         }
       }
 
-      .remove_source_checkbox {
+      .merge-param-checkbox {
         margin: 0;
+      }
+
+      a .fa-question-circle {
+        color: $gl-text-color-secondary;
+
+        &:hover,
+        &:focus {
+          color: $link-hover-color;
+        }
       }
     }
   }
 
   .ci_widget {
     border-bottom: 1px solid $well-inner-border;
+    color: $gl-text-color;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+
+    i,
+    svg {
+      margin-right: 8px;
+    }
 
     svg {
-      margin-right: 4px;
       position: relative;
       top: 1px;
       overflow: visible;
     }
 
-    &.ci-success {
-      color: $gl-success;
-
-      a.environment,
-      a.pipeline {
-        color: inherit;
-      }
+    & > span {
+      padding-right: 4px;
     }
 
-    &.ci-success_with_warnings {
-      color: $gl-success;
-
-      i {
-        color: $gl-warning;
-      }
+    @media (max-width: $screen-xs-max) {
+      flex-wrap: wrap;
     }
 
-    &.ci-skipped {
-      background-color: #eee;
-      color: #888;
-    }
-
-    &.ci-pending {
-      color: $gl-warning;
-    }
-
-    &.ci-running {
-      color: $blue-normal;
-    }
-
-    &.ci-failed,
-    &.ci-error {
-      color: $gl-danger;
-    }
-
-    &.ci-canceled {
-      color: $gl-gray;
-    }
-
-    a.monospace {
-      color: inherit;
+    .ci-status-icon > .icon-link > svg {
+      width: 22px;
+      height: 22px;
     }
   }
 
   .mr-widget-body,
   .ci_widget,
   .mr-widget-footer {
-    padding: $gl-padding;
+    padding: 16px;
+  }
+
+  .mr-widget-pipeline-graph {
+    flex-shrink: 0;
+
+    .dropdown-menu {
+      margin-top: 11px;
+    }
+
+    .ci-action-icon-wrapper {
+      line-height: 16px;
+    }
+
+    @media (min-width: $screen-sm-min) {
+      .stage-cell {
+        padding: 0 4px;
+      }
+    }
+
+    @media (max-width: $screen-xs-max) {
+      order: 1;
+      margin-top: $gl-padding-top;
+      border-radius: 3px;
+      background-color: $white-light;
+      border: 1px solid $gray-darker;
+      width: 100%;
+      text-align: center;
+
+      .dropdown-menu {
+        margin-left: -97.5px;
+      }
+
+      .arrow-up::before,
+      .arrow-up::after, {
+        margin-left: 97.5px;
+      }
+    }
   }
 
   .normal {
-    color: #5c5d5e;
+    color: $gl-text-color;
   }
 
   .js-deployment-link {
@@ -131,17 +175,13 @@
   .mr-widget-body {
     h4 {
       font-weight: 600;
-      font-size: 17px;
+      font-size: 16px;
       margin: 5px 0;
-      color: $gl-gray-dark;
+      color: $gl-text-color;
 
       &.has-conflicts .fa-exclamation-triangle {
         color: $gl-warning;
       }
-    }
-
-    p:last-child {
-      margin-bottom: 0;
     }
 
     .btn-grouped {
@@ -151,7 +191,7 @@
 
     @media (max-width: $screen-xs-max) {
       h4 {
-        font-size: 15px;
+        font-size: 14px;
       }
 
       p {
@@ -162,6 +202,11 @@
       .btn-group,
       .accept-action {
         margin-bottom: 4px;
+      }
+
+      .btn-grouped {
+        float: none;
+        margin-right: 0;
       }
 
       .accept-action {
@@ -178,7 +223,7 @@
   }
 
   .mr-widget-footer {
-    border-top: 1px solid #eee;
+    border-top: 1px solid $gray-darker;
   }
 
   .ci-coverage {
@@ -201,8 +246,7 @@
 
   .commit {
     margin: 0;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding: 10px 0;
     list-style: none;
 
     &:hover {
@@ -212,7 +256,7 @@
 }
 
 .label-branch {
-  color: $gl-gray-dark;
+  color: $gl-text-color;
   font-family: $monospace_font;
   font-weight: bold;
   overflow: hidden;
@@ -236,8 +280,15 @@
 
 .mr-list {
   .merge-request {
-    padding: 10px 15px;
+    padding: 10px  0 10px 15px;
     position: relative;
+    display: -webkit-flex;
+    display: flex;
+
+    .issue-info-container {
+      -webkit-flex: 1;
+      flex: 1;
+    }
 
     .merge-request-title {
       margin-bottom: 2px;
@@ -294,8 +345,61 @@
   }
 }
 
+.remove-message-pipes {
+  ul {
+    margin: 10px 0 0 12px;
+    padding: 0;
+    list-style: none;
+    border-left: 2px solid $border-color;
+    display: inline-block;
+  }
+
+  li {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    display: block;
+
+    span {
+      margin-left: 15px;
+      max-height: 20px;
+    }
+  }
+
+  li::before {
+    content: '';
+    position: absolute;
+    border-top: 2px solid $border-color;
+    height: 1px;
+    top: 8px;
+    width: 8px;
+  }
+
+  li:last-child {
+    &::before {
+      top: 18px;
+    }
+
+    span {
+      display: block;
+      position: relative;
+      top: 5px;
+      margin-top: 5px;
+    }
+  }
+}
+
 .mr-source-target {
+  background-color: $gray-light;
   line-height: 31px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: $border-color;
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+  border-bottom: none;
+  padding: 16px;
+  margin-bottom: -1px;
 }
 
 .panel-new-merge-request {
@@ -310,7 +414,7 @@
   }
 
   .panel-footer {
-    padding: 5px 10px;
+    padding: 0;
 
     .btn {
       min-width: auto;
@@ -331,10 +435,6 @@
     .avatar {
       left: 0;
       top: 2px;
-    }
-
-    .commit-row-info {
-      line-height: 20px;
     }
   }
 
@@ -384,17 +484,24 @@
   }
 }
 
+.assign-to-me-link {
+  padding-left: 12px;
+  white-space: nowrap;
+}
+
 .table-holder {
   .ci-table {
 
     th {
       background-color: $white-light;
-      color: $gl-placeholder-color;
+      color: $gl-text-color-secondary;
     }
   }
 }
 
 .merged-buttons {
+  margin-top: 20px;
+
   .btn {
     float: left;
 
@@ -405,7 +512,7 @@
 }
 
 .mr-version-controls {
-  background: $background-color;
+  background: $gray-light;
   border-bottom: 1px solid $border-color;
   color: $gl-text-color;
 
@@ -438,7 +545,7 @@
   }
 
   .fa-info-circle {
-    color: $orange-normal;
+    color: $orange-500;
     padding-right: 5px;
   }
 }
@@ -447,14 +554,34 @@
   background-color: $white-light;
 
   &.affix {
-    top: 100px;
+    top: 0;
     left: 0;
     z-index: 10;
     transition: right .15s;
-  }
 
-  &:not(.affix) .container-fluid {
-    padding-left: 0;
-    padding-right: 0;
+    @media (max-width: $screen-xs-max) {
+      right: 0;
+    }
+
+    .merge-request-tabs-container {
+      padding-left: $gl-padding;
+      padding-right: $gl-padding;
+    }
+  }
+}
+
+.limit-container-width {
+  .merge-request-tabs-container {
+    max-width: $limited-layout-width;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.limit-container-width:not(.container-limited) {
+  .merge-request-tabs-holder:not(.affix) {
+    .merge-request-tabs-container {
+      max-width: $limited-layout-width - ($gl-padding * 2);
+    }
   }
 }

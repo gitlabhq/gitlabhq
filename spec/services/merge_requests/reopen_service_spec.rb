@@ -41,7 +41,7 @@ describe MergeRequests::ReopenService, services: true do
 
       it 'creates system note about merge_request reopen' do
         note = merge_request.notes.last
-        expect(note.note).to include 'Status changed to reopened'
+        expect(note.note).to include 'reopened'
       end
     end
 

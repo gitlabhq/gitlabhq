@@ -1,49 +1,20 @@
 - @no_container = true
 
 = content_for :meta_tags do
-  - if current_user
-    = auto_discovery_link_tag(:atom, group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} activity")
+  = auto_discovery_link_tag(:atom, group_url(@group, rss_url_options), title: "#{@group.name} activity")
 
-.group-home-panel.text-center
-  %div{ class: container_class }
-    .avatar-container.s70.group-avatar
-      = image_tag group_icon(@group), class: "avatar s70 avatar-tile"
-    %h1.group-title
-      @#{@group.path}
-      %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
-        = visibility_level_icon(@group.visibility_level, fw: false)
+= render 'groups/head'
+= render 'groups/home_panel'
 
-    - if @group.description.present?
-      .group-home-desc
-        = markdown_field(@group, :description)
 
-    - if current_user
-      .group-buttons
-        = render 'shared/members/access_request_buttons', source: @group
-        = render 'shared/notifications/button', notification_setting: @notification_setting
-
-%div.groups-header{ class: container_class }
+.groups-header{ class: container_class }
   .top-area
-    %ul.nav-links
-      %li.active
-        = link_to "#projects", 'data-toggle' => 'tab' do
-          All Projects
-      - if @shared_projects.present?
-        %li
-          = link_to "#shared", 'data-toggle' => 'tab' do
-            Shared Projects
+    = render 'groups/show_nav'
     .nav-controls
-      = form_tag request.path, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
-        = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control', spellcheck: false
+      = render 'shared/projects/search_form'
       = render 'shared/projects/dropdown'
       - if can? current_user, :create_projects, @group
         = link_to new_project_path(namespace_id: @group.id), class: 'btn btn-new pull-right' do
           New Project
 
-  .tab-content
-    .tab-pane.active#projects
-      = render "projects", projects: @projects
-
-    - if @shared_projects.present?
-      .tab-pane#shared
-        = render "shared_projects", projects: @shared_projects
+  = render "projects", projects: @projects

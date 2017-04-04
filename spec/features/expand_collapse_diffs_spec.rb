@@ -4,10 +4,10 @@ feature 'Expand and collapse diffs', js: true, feature: true do
   include WaitForAjax
 
   let(:branch) { 'expand-collapse-diffs' }
+  let(:project) { create(:project) }
 
   before do
     login_as :admin
-    project = create(:project)
 
     # Ensure that undiffable.md is in .gitattributes
     project.repository.copy_gitattributes(branch)
@@ -31,6 +31,33 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     define_method(file.split('.').first) { file_container(file) }
   end
 
+  it 'should show the diff content with a highlighted line when linking to line' do
+    expect(large_diff).not_to have_selector('.code')
+    expect(large_diff).to have_selector('.nothing-here-block')
+
+    visit namespace_project_commit_path(project.namespace, project, project.commit(branch), anchor: "#{large_diff[:id]}_0_1")
+    execute_script('window.location.reload()')
+
+    wait_for_ajax
+
+    expect(large_diff).to have_selector('.code')
+    expect(large_diff).not_to have_selector('.nothing-here-block')
+    expect(large_diff).to have_selector('.hll')
+  end
+
+  it 'should show the diff content when linking to file' do
+    expect(large_diff).not_to have_selector('.code')
+    expect(large_diff).to have_selector('.nothing-here-block')
+
+    visit namespace_project_commit_path(project.namespace, project, project.commit(branch), anchor: large_diff[:id])
+    execute_script('window.location.reload()')
+
+    wait_for_ajax
+
+    expect(large_diff).to have_selector('.code')
+    expect(large_diff).not_to have_selector('.nothing-here-block')
+  end
+
   context 'visiting a commit with collapsed diffs' do
     it 'shows small diffs immediately' do
       expect(small_diff).to have_selector('.code')
@@ -45,8 +72,8 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     it 'collapses large diffs for renamed files by default' do
       expect(large_diff_renamed).not_to have_selector('.code')
       expect(large_diff_renamed).to have_selector('.nothing-here-block')
-      expect(large_diff_renamed).to have_selector('.file-title .deletion')
-      expect(large_diff_renamed).to have_selector('.file-title .addition')
+      expect(large_diff_renamed).to have_selector('.js-file-title .deletion')
+      expect(large_diff_renamed).to have_selector('.js-file-title .addition')
     end
 
     it 'shows non-renderable diffs as such immediately, regardless of their size' do
@@ -88,9 +115,9 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     context 'expanding a large diff' do
       before do
         # Wait for diffs
-        find('.file-title', match: :first)
+        find('.js-file-title', match: :first)
         # Click `large_diff.md` title
-        all('.file-title')[1].click
+        all('.diff-toggle-caret')[1].click
         wait_for_ajax
       end
 
@@ -132,9 +159,9 @@ feature 'Expand and collapse diffs', js: true, feature: true do
           context 'expanding the diff' do
             before do
               # Wait for diffs
-              find('.file-title', match: :first)
+              find('.js-file-title', match: :first)
               # Click `large_diff.md` title
-              all('.file-title')[1].click
+              all('.diff-toggle-caret')[1].click
               wait_for_ajax
             end
 
@@ -154,9 +181,9 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     context 'collapsing an expanded diff' do
       before do
         # Wait for diffs
-        find('.file-title', match: :first)
+        find('.js-file-title', match: :first)
         # Click `small_diff.md` title
-        all('.file-title')[3].click
+        all('.diff-toggle-caret')[3].click
       end
 
       it 'hides the diff content' do
@@ -167,9 +194,9 @@ feature 'Expand and collapse diffs', js: true, feature: true do
       context 're-expanding the same diff' do
         before do
           # Wait for diffs
-          find('.file-title', match: :first)
+          find('.js-file-title', match: :first)
           # Click `small_diff.md` title
-          all('.file-title')[3].click
+          all('.diff-toggle-caret')[3].click
         end
 
         it 'shows the diff content' do
@@ -263,9 +290,9 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     context 'collapsing an expanded diff' do
       before do
         # Wait for diffs
-        find('.file-title', match: :first)
+        find('.js-file-title', match: :first)
         # Click `small_diff.md` title
-        all('.file-title')[3].click
+        all('.diff-toggle-caret')[3].click
       end
 
       it 'hides the diff content' do
@@ -276,9 +303,9 @@ feature 'Expand and collapse diffs', js: true, feature: true do
       context 're-expanding the same diff' do
         before do
           # Wait for diffs
-          find('.file-title', match: :first)
+          find('.js-file-title', match: :first)
           # Click `small_diff.md` title
-          all('.file-title')[3].click
+          all('.diff-toggle-caret')[3].click
         end
 
         it 'shows the diff content' do

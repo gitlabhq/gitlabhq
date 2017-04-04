@@ -1,52 +1,50 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, vars-on-top, no-unused-vars, one-var, one-var-declaration-per-line, camelcase, consistent-return, no-undef, padded-blocks, max-len */
-(function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+import Vue from 'vue';
 
-  this.Subscription = (function() {
-    function Subscription(container) {
-      this.toggleSubscription = bind(this.toggleSubscription, this);
-      var $container;
-      this.$container = $(container);
-      this.url = this.$container.attr('data-url');
-      this.subscribe_button = this.$container.find('.js-subscribe-button');
-      this.subscription_status = this.$container.find('.subscription-status');
-      this.subscribe_button.unbind('click').click(this.toggleSubscription);
+(() => {
+  class Subscription {
+    constructor(containerElm) {
+      this.containerElm = containerElm;
+
+      const subscribeButton = containerElm.querySelector('.js-subscribe-button');
+      if (subscribeButton) {
+        // remove class so we don't bind twice
+        subscribeButton.classList.remove('js-subscribe-button');
+        subscribeButton.addEventListener('click', this.toggleSubscription.bind(this));
+      }
     }
 
-    Subscription.prototype.toggleSubscription = function(event) {
-      var action, btn, current_status;
-      btn = $(event.currentTarget);
-      action = btn.find('span').text();
-      current_status = this.subscription_status.attr('data-status');
-      btn.addClass('disabled');
-
-      if ($('html').hasClass('issue-boards-page')) {
-        this.url = this.$container.attr('data-url');
+    toggleSubscription(event) {
+      const button = event.currentTarget;
+      const buttonSpan = button.querySelector('span');
+      if (!buttonSpan || button.classList.contains('disabled')) {
+        return;
       }
+      button.classList.add('disabled');
 
-      return $.post(this.url, (function(_this) {
-        return function() {
-          var status;
-          btn.removeClass('disabled');
+      const isSubscribed = buttonSpan.innerHTML.trim().toLowerCase() !== 'subscribe';
+      const toggleActionUrl = this.containerElm.dataset.url;
 
-          if ($('html').hasClass('issue-boards-page')) {
-            Vue.set(gl.issueBoards.BoardsStore.detail.issue, 'subscribed', !gl.issueBoards.BoardsStore.detail.issue.subscribed);
-          } else {
-            status = current_status === 'subscribed' ? 'unsubscribed' : 'subscribed';
-            _this.subscription_status.attr('data-status', status);
-            action = status === 'subscribed' ? 'Unsubscribe' : 'Subscribe';
-            btn.find('span').text(action);
-            _this.subscription_status.find('>div').toggleClass('hidden');
-            if (btn.attr('data-original-title')) {
-              return btn.tooltip('hide').attr('data-original-title', action).tooltip('fixTitle');
-            }
-          }
-        };
-      })(this));
-    };
+      $.post(toggleActionUrl, () => {
+        button.classList.remove('disabled');
 
-    return Subscription;
+        // hack to allow this to work with the issue boards Vue object
+        if (document.querySelector('html').classList.contains('issue-boards-page')) {
+          Vue.set(
+            gl.issueBoards.BoardsStore.detail.issue,
+            'subscribed',
+            !gl.issueBoards.BoardsStore.detail.issue.subscribed,
+          );
+        } else {
+          buttonSpan.innerHTML = isSubscribed ? 'Subscribe' : 'Unsubscribe';
+        }
+      });
+    }
 
-  })();
+    static bindAll(selector) {
+      [].forEach.call(document.querySelectorAll(selector), elm => new Subscription(elm));
+    }
+  }
 
-}).call(this);
+  window.gl = window.gl || {};
+  window.gl.Subscription = Subscription;
+})();

@@ -2,6 +2,8 @@
 require 'spec_helper'
 
 describe Issues::UpdateService, services: true do
+  include EmailHelpers
+
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -11,6 +13,7 @@ describe Issues::UpdateService, services: true do
 
   let(:issue) do
     create(:issue, title: 'Old title',
+                   description: "for #{user2.to_reference}",
                    assignee_id: user3.id,
                    project: project)
   end
@@ -56,6 +59,22 @@ describe Issues::UpdateService, services: true do
         expect(issue.due_date).to eq Date.tomorrow
       end
 
+      it 'sorts issues as specified by parameters' do
+        issue1 = create(:issue, project: project, assignee_id: user3.id)
+        issue2 = create(:issue, project: project, assignee_id: user3.id)
+
+        [issue, issue1, issue2].each do |issue|
+          issue.move_to_end
+          issue.save
+        end
+
+        opts[:move_between_iids] = [issue1.iid, issue2.iid]
+
+        update_issue(opts)
+
+        expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
+      end
+
       context 'when current user cannot admin issues in the project' do
         let(:guest) { create(:user) }
         before do
@@ -91,24 +110,24 @@ describe Issues::UpdateService, services: true do
         end
 
         it 'creates system note about issue reassign' do
-          note = find_note('Reassigned to')
+          note = find_note('assigned to')
 
           expect(note).not_to be_nil
-          expect(note.note).to include "Reassigned to \@#{user2.username}"
+          expect(note.note).to include "assigned to #{user2.to_reference}"
         end
 
         it 'creates system note about issue label edit' do
-          note = find_note('Added ~')
+          note = find_note('added ~')
 
           expect(note).not_to be_nil
-          expect(note.note).to include "Added ~#{label.id} label"
+          expect(note.note).to include "added #{label.to_reference} label"
         end
 
         it 'creates system note about title change' do
-          note = find_note('Changed title:')
+          note = find_note('changed title')
 
           expect(note).not_to be_nil
-          expect(note.note).to eq 'Changed title: **{-Old-} title** → **{+New+} title**'
+          expect(note.note).to eq 'changed title from **{-Old-} title** to **{+New+} title**'
         end
       end
     end
@@ -128,10 +147,10 @@ describe Issues::UpdateService, services: true do
       it 'creates system note about confidentiality change' do
         update_issue(confidential: true)
 
-        note = find_note('Made the issue confidential')
+        note = find_note('made the issue confidential')
 
         expect(note).not_to be_nil
-        expect(note.note).to eq 'Made the issue confidential'
+        expect(note.note).to eq 'made the issue confidential'
       end
 
       it 'executes confidential issue hooks' do
@@ -139,6 +158,17 @@ describe Issues::UpdateService, services: true do
         expect(project).to receive(:execute_services).with(an_instance_of(Hash), :confidential_issue_hooks)
 
         update_issue(confidential: true)
+      end
+
+      it 'does not update assignee_id with unauthorized users' do
+        project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        update_issue(confidential: true)
+        non_member        = create(:user)
+        original_assignee = issue.assignee
+
+        update_issue(assignee_id: non_member.id)
+
+        expect(issue.reload.assignee_id).to eq(original_assignee.id)
       end
     end
 
@@ -153,15 +183,23 @@ describe Issues::UpdateService, services: true do
         it 'marks pending todos as done' do
           expect(todo.reload.done?).to eq true
         end
+
+        it 'does not create any new todos' do
+          expect(Todo.count).to eq(1)
+        end
       end
 
       context 'when the description change' do
         before do
-          update_issue(description: 'Also please fix')
+          update_issue(description: "Also please fix #{user2.to_reference} #{user3.to_reference}")
         end
 
         it 'marks todos as done' do
           expect(todo.reload.done?).to eq true
+        end
+
+        it 'creates only 1 new todo' do
+          expect(Todo.count).to eq(2)
         end
       end
 
@@ -269,8 +307,8 @@ describe Issues::UpdateService, services: true do
         before { update_issue(description: "- [x] Task 1\n- [X] Task 2") }
 
         it 'creates system note about task status change' do
-          note1 = find_note('Marked the task **Task 1** as completed')
-          note2 = find_note('Marked the task **Task 2** as completed')
+          note1 = find_note('marked the task **Task 1** as completed')
+          note2 = find_note('marked the task **Task 2** as completed')
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
@@ -284,8 +322,8 @@ describe Issues::UpdateService, services: true do
         end
 
         it 'creates system note about task status change' do
-          note1 = find_note('Marked the task **Task 1** as incomplete')
-          note2 = find_note('Marked the task **Task 2** as incomplete')
+          note1 = find_note('marked the task **Task 1** as incomplete')
+          note2 = find_note('marked the task **Task 2** as incomplete')
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
@@ -299,7 +337,7 @@ describe Issues::UpdateService, services: true do
         end
 
         it 'does not create a system note' do
-          note = find_note('Marked the task **Task 2** as incomplete')
+          note = find_note('marked the task **Task 2** as incomplete')
 
           expect(note).to be_nil
         end
@@ -312,7 +350,7 @@ describe Issues::UpdateService, services: true do
         end
 
         it 'does not create a system note referencing the position the old item' do
-          note = find_note('Marked the task **Two** as incomplete')
+          note = find_note('marked the task **Two** as incomplete')
 
           expect(note).to be_nil
         end
@@ -373,6 +411,11 @@ describe Issues::UpdateService, services: true do
     context 'updating mentions' do
       let(:mentionable) { issue }
       include_examples 'updating mentions', Issues::UpdateService
+    end
+
+    include_examples 'issuable update service' do
+      let(:open_issuable) { issue }
+      let(:closed_issuable) { create(:closed_issue, project: project) }
     end
   end
 end

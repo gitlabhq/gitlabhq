@@ -1,15 +1,21 @@
-- page_title "Projects", @user.name, "Users"
+- page_title "Groups and projects", @user.name, "Users"
 = render 'admin/users/head'
 
 - if @user.groups.any?
   .panel.panel-default
     .panel-heading Group projects
     %ul.well-list
-      - @user.groups.each do |group|
-        %li
-          %strong= group.name
+      - @user.group_members.includes(:source).each do |group_member|
+        - group = group_member.group
+        %li.group_member
+          %strong= link_to group.name, admin_group_path(group)
           &ndash; access to
           #{pluralize(group.projects.count, 'project')}
+          .pull-right
+            %span.light.vertical-align-middle= group_member.human_access
+            - unless group_member.owner?
+              = link_to group_group_member_path(group, group_member), data: { confirm: remove_member_message(group_member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove prepend-left-10", title: 'Remove user from group' do
+                %i.fa.fa-times.fa-inverse
 
 .row
   .col-md-6
@@ -35,8 +41,8 @@
                 - if member.owner?
                   %span.light Owner
                 - else
-                  %span.light= member.human_access
+                  %span.light.vertical-align-middle= member.human_access
 
                   - if member.respond_to? :project
-                    = link_to namespace_project_project_member_path(project.namespace, project, member), data: { confirm: remove_member_message(member) }, remote: true, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove user from project' do
+                    = link_to namespace_project_project_member_path(project.namespace, project, member), data: { confirm: remove_member_message(member) }, remote: true, method: :delete, class: "btn-xs btn btn-remove prepend-left-10", title: 'Remove user from project' do
                       %i.fa.fa-times

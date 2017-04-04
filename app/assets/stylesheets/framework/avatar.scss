@@ -8,7 +8,7 @@
   float: left;
   margin-right: 15px;
   border-radius: $avatar_radius;
-  border: 1px solid rgba(0, 0, 0, .1);
+  border: 1px solid $avatar-border;
   &.s16 { @include avatar-size(16px, 6px); }
   &.s20 { @include avatar-size(20px, 7px); }
   &.s24 { @include avatar-size(24px, 8px); }
@@ -28,6 +28,8 @@
 
 .avatar {
   @extend .avatar-circle;
+  @include transition-property(none);
+
   width: 40px;
   height: 40px;
   padding: 0;
@@ -37,6 +39,8 @@
     display: inline-block;
     margin-left: 4px;
     margin-bottom: 2px;
+    flex-shrink: 0;
+    -webkit-flex-shrink: 0;
 
     &.s16 { margin-right: 4px; }
     &.s24 { margin-right: 4px; }
@@ -52,6 +56,10 @@
     border-radius: 0;
     border: none;
   }
+
+  &:not([href]):hover {
+    border-color: rgba($avatar-border, .2);
+  }
 }
 
 .identicon {
@@ -64,7 +72,7 @@
   &.s32 { font-size: 20px; line-height: 30px; }
   &.s40 { font-size: 16px; line-height: 38px; }
   &.s60 { font-size: 32px; line-height: 58px; }
-  &.s70 { font-size: 34px; line-height: 68px; }
+  &.s70 { font-size: 34px; line-height: 70px; }
   &.s90 { font-size: 36px; line-height: 88px; }
   &.s110 { font-size: 40px; line-height: 108px; font-weight: 300; }
   &.s140 { font-size: 72px; line-height: 138px; }
@@ -80,6 +88,7 @@
     border-radius: 0;
     border: none;
     height: auto;
+    width: 100%;
     margin: 0;
     align-self: center;
   }

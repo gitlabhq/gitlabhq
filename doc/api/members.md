@@ -16,8 +16,6 @@ The access levels are defined in the `Gitlab::Access` module. Currently, these l
 
 Gets a list of group or project members viewable by the authenticated user.
 
-Returns `200` if the request succeeds.
-
 ```
 GET /groups/:id/members
 GET /projects/:id/members
@@ -29,8 +27,8 @@ GET /projects/:id/members
 | `query`   | string | no     | A query string to search for members |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/:id/members
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/:id/members
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/:id/members
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:id/members
 ```
 
 Example response:
@@ -60,8 +58,6 @@ Example response:
 
 Gets a member of a group or project.
 
-Returns `200` if the request succeeds.
-
 ```
 GET /groups/:id/members/:user_id
 GET /projects/:id/members/:user_id
@@ -73,8 +69,8 @@ GET /projects/:id/members/:user_id
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/:id/members/:user_id
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/:id/members/:user_id
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/:id/members/:user_id
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:id/members/:user_id
 ```
 
 Example response:
@@ -95,8 +91,6 @@ Example response:
 
 Adds a member to a group or project.
 
-Returns `201` if the request succeeds.
-
 ```
 POST /groups/:id/members
 POST /projects/:id/members
@@ -110,8 +104,8 @@ POST /projects/:id/members
 | `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "user_id=1&access_level=30" https://gitlab.example.com/api/v3/groups/:id/members
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "user_id=1&access_level=30" https://gitlab.example.com/api/v3/projects/:id/members
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "user_id=1&access_level=30" https://gitlab.example.com/api/v4/groups/:id/members
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "user_id=1&access_level=30" https://gitlab.example.com/api/v4/projects/:id/members
 ```
 
 Example response:
@@ -131,8 +125,6 @@ Example response:
 
 Updates a member of a group or project.
 
-Returns `200` if the request succeeds.
-
 ```
 PUT /groups/:id/members/:user_id
 PUT /projects/:id/members/:user_id
@@ -146,8 +138,8 @@ PUT /projects/:id/members/:user_id
 | `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/:id/members/:user_id?access_level=40
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/:id/members/:user_id?access_level=40
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/:id/members/:user_id?access_level=40
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:id/members/:user_id?access_level=40
 ```
 
 Example response:
@@ -167,8 +159,6 @@ Example response:
 
 Removes a user from a group or project.
 
-Returns `200` if the request succeeds.
-
 ```
 DELETE /groups/:id/members/:user_id
 DELETE /projects/:id/members/:user_id
@@ -180,6 +170,6 @@ DELETE /projects/:id/members/:user_id
 | `user_id` | integer | yes   | The user ID of the member |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/:id/members/:user_id
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/:id/members/:user_id
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/:id/members/:user_id
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:id/members/:user_id
 ```

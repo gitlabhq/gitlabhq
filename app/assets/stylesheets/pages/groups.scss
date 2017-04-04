@@ -9,27 +9,20 @@
   }
 }
 
-.group-row {
-  .stats {
-    float: right;
-    line-height: $list-text-height;
-    color: $gl-gray;
+.group-root-path {
+  max-width: 40vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: nowrap;
+}
 
-    span {
-      margin-right: 15px;
-    }
-  }
+.group-row {
+  @include basic-list-stats;
 }
 
 .ldap-group-links {
   .form-actions {
     margin-bottom: $gl-padding;
-  }
-}
-
-.group-buttons {
-  .notification-dropdown {
-    display: inline-block;
   }
 }
 
@@ -49,14 +42,14 @@
   padding: 50px 100px;
   overflow: hidden;
 
-  @media (max-width: $screen-md-min) {
+  @media (max-width: $screen-sm-max) {
     padding: 50px 0;
   }
 
   svg {
     float: right;
 
-    @media (max-width: $screen-md-min) {
+    @media (max-width: $screen-sm-max) {
       float: none;
       display: block;
       width: 250px;
@@ -71,11 +64,27 @@
     width: 460px;
     margin-top: 120px;
 
-    @media (max-width: $screen-md-min) {
+    @media (max-width: $screen-sm-max) {
       float: none;
       margin-top: 60px;
       width: auto;
       text-align: center;
     }
   }
+}
+
+.mattermost-icon svg {
+  width: 16px;
+  height: 16px;
+  vertical-align: text-bottom;
+}
+
+.mattermost-team-name {
+  color: $gl-text-color-secondary;
+}
+
+.mattermost-info {
+  display: block;
+  color: $gl-text-color-secondary;
+  margin-top: 10px;
 }

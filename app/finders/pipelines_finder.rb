@@ -10,7 +10,11 @@ class PipelinesFinder
     scoped_pipelines =
       case scope
       when 'running'
-        pipelines.running_or_pending
+        pipelines.running
+      when 'pending'
+        pipelines.pending
+      when 'finished'
+        pipelines.finished
       when 'branches'
         from_ids(ids_for_ref(branches))
       when 'tags'

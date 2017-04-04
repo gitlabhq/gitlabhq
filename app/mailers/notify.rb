@@ -6,7 +6,6 @@ class Notify < BaseMailer
   include Emails::Notes
   include Emails::Projects
   include Emails::Profile
-  include Emails::Builds
   include Emails::Pipelines
   include Emails::Members
 
@@ -107,14 +106,10 @@ class Notify < BaseMailer
 
   def mail_thread(model, headers = {})
     add_project_headers
+    add_unsubscription_headers_and_links
+
     headers["X-GitLab-#{model.class.name}-ID"] = model.id
     headers['X-GitLab-Reply-Key'] = reply_key
-
-    if !@labels_url && @sent_notification && @sent_notification.unsubscribable?
-      headers['List-Unsubscribe'] = "<#{unsubscribe_sent_notification_url(@sent_notification, force: true)}>"
-
-      @sent_notification_url = unsubscribe_sent_notification_url(@sent_notification)
-    end
 
     if Gitlab::IncomingEmail.enabled?
       address = Mail::Address.new(Gitlab::IncomingEmail.reply_address(reply_key))
@@ -155,7 +150,7 @@ class Notify < BaseMailer
     headers['In-Reply-To'] = message_id(model)
     headers['References'] = message_id(model)
 
-    headers[:subject].prepend('Re: ') if headers[:subject]
+    headers[:subject]&.prepend('Re: ')
 
     mail_thread(model, headers)
   end
@@ -170,5 +165,17 @@ class Notify < BaseMailer
     headers['X-GitLab-Project'] = @project.name
     headers['X-GitLab-Project-Id'] = @project.id
     headers['X-GitLab-Project-Path'] = @project.path_with_namespace
+  end
+
+  def add_unsubscription_headers_and_links
+    return unless !@labels_url && @sent_notification && @sent_notification.unsubscribable?
+
+    list_unsubscribe_methods = [unsubscribe_sent_notification_url(@sent_notification, force: true)]
+    if Gitlab::IncomingEmail.enabled? && Gitlab::IncomingEmail.supports_wildcard?
+      list_unsubscribe_methods << "mailto:#{Gitlab::IncomingEmail.unsubscribe_address(reply_key)}"
+    end
+
+    headers['List-Unsubscribe'] = list_unsubscribe_methods.map { |e| "<#{e}>" }.join(',')
+    @sent_notification_url = unsubscribe_sent_notification_url(@sent_notification)
   end
 end

@@ -28,17 +28,21 @@ module Gitlab
             value.is_a?(String) || value.is_a?(Symbol)
           end
 
+          def validate_regexp(value)
+            !value.nil? && Regexp.new(value.to_s) && true
+          rescue RegexpError, TypeError
+            false
+          end
+
           def validate_string_or_regexp(value)
             return true if value.is_a?(Symbol)
             return false unless value.is_a?(String)
 
             if value.first == '/' && value.last == '/'
-              Regexp.new(value[1...-1])
+              validate_regexp(value[1...-1])
             else
               true
             end
-          rescue RegexpError
-            false
           end
 
           def validate_boolean(value)

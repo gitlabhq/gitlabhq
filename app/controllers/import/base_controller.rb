@@ -11,7 +11,7 @@ class Import::BaseController < ApplicationController
       namespace.add_owner(current_user)
       namespace
     rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
-      Namespace.find_by_path_or_name(name)
+      Namespace.find_by_full_path(name)
     end
   end
 end

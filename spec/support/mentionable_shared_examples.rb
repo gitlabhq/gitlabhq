@@ -12,7 +12,7 @@ shared_context 'mentionable context' do
   let!(:mentioned_mr)     { create(:merge_request, source_project: project) }
   let(:mentioned_commit) { project.commit("HEAD~1") }
 
-  let(:ext_proj)   { create(:project, :public) }
+  let(:ext_proj)   { create(:project, :public, :repository) }
   let(:ext_issue)  { create(:issue, project: ext_proj) }
   let(:ext_mr)     { create(:merge_request, :simple, source_project: ext_proj) }
   let(:ext_commit) { ext_proj.commit("HEAD~2") }

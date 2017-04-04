@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe API::API, api: true do
+describe API::Variables, api: true do
   include ApiHelpers
 
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let!(:project) { create(:project, creator_id: user.id) }
+  let!(:project) { create(:empty_project, creator_id: user.id) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:developer) { create(:project_member, :developer, user: user2, project: project) }
   let!(:variable) { create(:ci_variable, project: project) }
@@ -152,8 +152,9 @@ describe API::API, api: true do
       it 'deletes variable' do
         expect do
           delete api("/projects/#{project.id}/variables/#{variable.key}", user)
+
+          expect(response).to have_http_status(204)
         end.to change{project.variables.count}.by(-1)
-        expect(response).to have_http_status(200)
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do

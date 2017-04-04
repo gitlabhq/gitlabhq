@@ -15,6 +15,7 @@ issues:
 - events
 - merge_requests_closing_issues
 - metrics
+- timelogs
 events:
 - author
 - project
@@ -28,6 +29,7 @@ notes:
 - resolved_by
 - todos
 - events
+- system_note_metadata
 label_links:
 - target
 - label
@@ -51,6 +53,7 @@ snippets:
 - project
 - notes
 - award_emoji
+- user_agent_detail
 releases:
 - project
 project_members:
@@ -77,6 +80,7 @@ merge_requests:
 - events
 - merge_requests_closing_issues
 - metrics
+- timelogs
 merge_request_diff:
 - merge_request
 pipelines:
@@ -94,6 +98,7 @@ variables:
 triggers:
 - project
 - trigger_requests
+- owner
 deploy_keys:
 - user
 - deploy_keys_projects
@@ -126,17 +131,19 @@ project:
 - campfire_service
 - drone_ci_service
 - emails_on_push_service
-- builds_email_service
 - pipelines_email_service
 - mattermost_slash_commands_service
+- slack_slash_commands_service
 - irker_service
 - pivotaltracker_service
+- prometheus_service
 - hipchat_service
 - flowdock_service
 - assembla_service
 - asana_service
 - gemnasium_service
 - slack_service
+- mattermost_service
 - buildkite_service
 - bamboo_service
 - teamcity_service
@@ -147,6 +154,8 @@ project:
 - bugzilla_service
 - gitlab_issue_tracker_service
 - external_wiki_service
+- kubernetes_service
+- mock_ci_service
 - forked_project_link
 - forked_from_project
 - forked_project_links
@@ -186,8 +195,18 @@ project:
 - environments
 - deployments
 - project_feature
+- pages_domains
+- authorized_users
+- project_authorizations
+- route
+- statistics
+- uploads
 award_emoji:
 - awardable
 - user
 priorities:
 - label
+timelogs:
+- issue
+- merge_request
+- user

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::API::API do
+describe Ci::API::Runners do
   include ApiHelpers
   include StubGitlabCalls
 
@@ -18,6 +18,7 @@ describe Ci::API::API do
       it 'creates runner with default values' do
         expect(response).to have_http_status 201
         expect(Ci::Runner.first.run_untagged).to be true
+        expect(Ci::Runner.first.token).not_to eq(registration_token)
       end
     end
 
@@ -41,7 +42,7 @@ describe Ci::API::API do
 
       it 'creates runner' do
         expect(response).to have_http_status 201
-        expect(Ci::Runner.first.tag_list.sort).to eq(["tag1", "tag2"])
+        expect(Ci::Runner.first.tag_list.sort).to eq(%w(tag1 tag2))
       end
     end
 
@@ -74,6 +75,8 @@ describe Ci::API::API do
       it 'creates runner' do
         expect(response).to have_http_status 201
         expect(project.runners.size).to eq(1)
+        expect(Ci::Runner.first.token).not_to eq(registration_token)
+        expect(Ci::Runner.first.token).not_to eq(project.runners_token)
       end
     end
 

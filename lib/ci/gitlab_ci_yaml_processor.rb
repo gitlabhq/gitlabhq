@@ -1,6 +1,6 @@
 module Ci
   class GitlabCiYamlProcessor
-    class ValidationError < StandardError; end
+    ValidationError = Class.new(StandardError)
 
     include Gitlab::Ci::Config::Entry::LegacyValidationHelpers
 
@@ -58,9 +58,10 @@ module Ci
         commands: job[:commands],
         tag_list: job[:tags] || [],
         name: job[:name].to_s,
-        allow_failure: job[:allow_failure] || false,
+        allow_failure: job[:ignore],
         when: job[:when] || 'on_success',
         environment: job[:environment_name],
+        coverage_regex: job[:coverage],
         yaml_variables: yaml_variables(name),
         options: {
           image: job[:image],
@@ -118,7 +119,7 @@ module Ci
         .merge(job_variables(name))
 
       variables.map do |key, value|
-        { key: key, value: value, public: true }
+        { key: key.to_s, value: value, public: true }
       end
     end
 

@@ -29,82 +29,60 @@ get '/edit/*id', to: 'blob#edit', constraints: { id: /.+/ }, as: 'edit_blob'
 put '/update/*id', to: 'blob#update', constraints: { id: /.+/ }, as: 'update_blob'
 post '/preview/*id', to: 'blob#preview', constraints: { id: /.+/ }, as: 'preview_blob'
 
-scope do
-  get(
-    '/blob/*id/diff',
-    to: 'blob#diff',
-    constraints: { id: /.+/, format: false },
-    as: :blob_diff
-  )
-  get(
-    '/blob/*id',
-    to: 'blob#show',
-    constraints: { id: /.+/, format: false },
-    as: :blob
-  )
-  delete(
-    '/blob/*id',
-    to: 'blob#destroy',
-    constraints: { id: /.+/, format: false }
-  )
-  put(
-    '/blob/*id',
-    to: 'blob#update',
-    constraints: { id: /.+/, format: false }
-  )
-  post(
-    '/blob/*id',
-    to: 'blob#create',
-    constraints: { id: /.+/, format: false }
-  )
-
-  get(
-    '/raw/*id',
-    to: 'raw#show',
-    constraints: { id: /.+/, format: /(html|js)/ },
-    as: :raw
-  )
-
-  get(
-    '/tree/*id',
-    to: 'tree#show',
-    constraints: { id: /.+/, format: /(html|js)/ },
-    as: :tree
-  )
-
-  get(
-    '/find_file/*id',
-    to: 'find_file#show',
-    constraints: { id: /.+/, format: /html/ },
-    as: :find_file
-  )
-
-  get(
-    '/files/*id',
-    to: 'find_file#list',
-    constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ },
-    as: :files
-  )
-
-  post(
-    '/create_dir/*id',
-      to: 'tree#create_dir',
-      constraints: { id: /.+/ },
-      as: 'create_dir'
-  )
-
-  get(
-    '/blame/*id',
-    to: 'blame#show',
-    constraints: { id: /.+/, format: /(html|js)/ },
-    as: :blame
-  )
-
-  # File/dir history
-  get(
-    '/commits/*id',
-    to: 'commits#show',
-    constraints: { id: /.+/, format: false },
-    as: :commits
-  )
+scope('/blob/*id', as: :blob, controller: :blob, constraints: { id: /.+/, format: false }) do
+  get :diff
+  get '/', action: :show
+  delete '/', action: :destroy
+  post '/', action: :create
+  put '/', action: :update
 end
+
+get(
+  '/raw/*id',
+  to: 'raw#show',
+  constraints: { id: /.+/, format: /(html|js)/ },
+  as: :raw
+)
+
+get(
+  '/tree/*id',
+  to: 'tree#show',
+  constraints: { id: /.+/, format: /(html|js)/ },
+  as: :tree
+)
+
+get(
+  '/find_file/*id',
+  to: 'find_file#show',
+  constraints: { id: /.+/, format: /html/ },
+  as: :find_file
+)
+
+get(
+  '/files/*id',
+  to: 'find_file#list',
+  constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ },
+  as: :files
+)
+
+post(
+  '/create_dir/*id',
+    to: 'tree#create_dir',
+    constraints: { id: /.+/ },
+    as: 'create_dir'
+)
+
+get(
+  '/blame/*id',
+  to: 'blame#show',
+  constraints: { id: /.+/, format: /(html|js)/ },
+  as: :blame
+)
+
+# File/dir history
+get(
+  '/commits/*id',
+  to: 'commits#show',
+  constraints: { id: /.+/, format: false },
+  as: :commits
+)

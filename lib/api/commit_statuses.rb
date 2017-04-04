@@ -1,21 +1,25 @@
 require 'mime/types'
 
 module API
-  # Project commit statuses API
   class CommitStatuses < Grape::API
-    resource :projects do
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
+    resource :projects, requirements: { id: %r{[^/]+} } do
+      include PaginationParams
+
       before { authenticate! }
 
       desc "Get a commit's statuses" do
         success Entities::CommitStatus
       end
       params do
-        requires :id,    type: String, desc: 'The ID of a project'
         requires :sha,   type: String, desc: 'The commit hash'
         optional :ref,   type: String, desc: 'The ref'
         optional :stage, type: String, desc: 'The stage'
         optional :name,  type: String, desc: 'The name'
         optional :all,   type: String, desc: 'Show all statuses, default: false'
+        use :pagination
       end
       get ':id/repository/commits/:sha/statuses' do
         authorize!(:read_commit_status, user_project)
@@ -35,15 +39,15 @@ module API
         success Entities::CommitStatus
       end
       params do
-        requires :id,          type: String,  desc: 'The ID of a project'
         requires :sha,         type: String,  desc: 'The commit hash'
         requires :state,       type: String,  desc: 'The state of the status',
-                               values: ['pending', 'running', 'success', 'failed', 'canceled']
+                               values: %w(pending running success failed canceled)
         optional :ref,         type: String,  desc: 'The ref'
         optional :target_url,  type: String,  desc: 'The target URL to associate with this status'
         optional :description, type: String,  desc: 'A short description of the status'
         optional :name,        type: String,  desc: 'A string label to differentiate this status from the status of other systems. Default: "default"'
         optional :context,     type: String,  desc: 'A string label to differentiate this status from the status of other systems. Default: "default"'
+        optional :coverage,    type: Float,   desc: 'The total code coverage'
       end
       post ':id/statuses/:sha' do
         authorize! :create_commit_status, user_project
@@ -69,15 +73,19 @@ module API
         status = GenericCommitStatus.running_or_pending.find_or_initialize_by(
           project: @project,
           pipeline: pipeline,
-          user: current_user,
           name: name,
           ref: ref,
-          target_url: params[:target_url],
-          description: params[:description]
+          user: current_user
         )
 
+        optional_attributes =
+          attributes_for_keys(%w[target_url description coverage])
+
+        status.update(optional_attributes) if optional_attributes.any?
+        render_validation_error!(status) if status.invalid?
+
         begin
-          case params[:state].to_s
+          case params[:state]
           when 'pending'
             status.enqueue!
           when 'running'

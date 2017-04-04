@@ -2,7 +2,7 @@ module SlashCommands
   class InterpretService < BaseService
     include Gitlab::SlashCommands::Dsl
 
-    attr_reader :issuable
+    attr_reader :issuable, :options
 
     # Takes a text and interprets the commands that are extracted from it.
     # Returns the content without commands, and hash of changes to be applied to a record.
@@ -13,7 +13,8 @@ module SlashCommands
       opts = {
         issuable:     issuable,
         current_user: current_user,
-        project:      project
+        project:      project,
+        params:       params
       }
 
       content, commands = extractor.extract_commands(content, opts)
@@ -56,6 +57,17 @@ module SlashCommands
     end
     command :reopen do
       @updates[:state_event] = 'reopen'
+    end
+
+    desc 'Merge (when the pipeline succeeds)'
+    condition do
+      last_diff_sha = params && params[:merge_request_diff_head_sha]
+      issuable.is_a?(MergeRequest) &&
+        issuable.persisted? &&
+        issuable.mergeable_with_slash_command?(current_user, autocomplete_precheck: !last_diff_sha, last_diff_sha: last_diff_sha)
+    end
+    command :merge do
+      @updates[:merge] = params[:merge_request_diff_head_sha]
     end
 
     desc 'Change title'
@@ -243,10 +255,78 @@ module SlashCommands
       @updates[:wip_event] = issuable.work_in_progress? ? 'unwip' : 'wip'
     end
 
+    desc 'Toggle emoji reward'
+    params ':emoji:'
+    condition do
+      issuable.persisted?
+    end
+    command :award do |emoji|
+      name = award_emoji_name(emoji)
+      if name && issuable.user_can_award?(current_user, name)
+        @updates[:emoji_award] = name
+      end
+    end
+
+    desc 'Set time estimate'
+    params '<1w 3d 2h 14m>'
+    condition do
+      current_user.can?(:"admin_#{issuable.to_ability_name}", project)
+    end
+    command :estimate do |raw_duration|
+      time_estimate = Gitlab::TimeTrackingFormatter.parse(raw_duration)
+
+      if time_estimate
+        @updates[:time_estimate] = time_estimate
+      end
+    end
+
+    desc 'Add or substract spent time'
+    params '<1h 30m | -1h 30m>'
+    condition do
+      current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
+    end
+    command :spend do |raw_duration|
+      time_spent = Gitlab::TimeTrackingFormatter.parse(raw_duration)
+
+      if time_spent
+        @updates[:spend_time] = { duration: time_spent, user: current_user }
+      end
+    end
+
+    desc 'Remove time estimate'
+    condition do
+      issuable.persisted? &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
+    end
+    command :remove_estimate do
+      @updates[:time_estimate] = 0
+    end
+
+    desc 'Remove spent time'
+    condition do
+      issuable.persisted? &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
+    end
+    command :remove_time_spent do
+      @updates[:spend_time] = { duration: :reset, user: current_user }
+    end
+
     # This is a dummy command, so that it appears in the autocomplete commands
     desc 'CC'
     params '@user'
     command :cc
+
+    desc 'Defines target branch for MR'
+    params '<Local branch name>'
+    condition do
+      issuable.respond_to?(:target_branch) &&
+        (current_user.can?(:"update_#{issuable.to_ability_name}", issuable) ||
+          issuable.new_record?)
+    end
+    command :target_branch do |target_branch_param|
+      branch_name = target_branch_param.strip
+      @updates[:target_branch] = branch_name if project.repository.branch_names.include?(branch_name)
+    end
 
     def find_label_ids(labels_param)
       label_ids_by_reference = extract_references(labels_param, :label).map(&:id)
@@ -260,6 +340,11 @@ module SlashCommands
       ext.analyze(arg, author: current_user)
 
       ext.references(type)
+    end
+
+    def award_emoji_name(emoji)
+      match = emoji.match(Banzai::Filter::EmojiFilter.emoji_pattern)
+      match[1] if match
     end
   end
 end

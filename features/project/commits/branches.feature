@@ -13,6 +13,7 @@ Feature: Project Commits Branches
     Given I visit project protected branches page
     Then I should see "Shop" protected branches list
 
+  @javascript
   Scenario: I create a branch
     Given I visit project branches page
     And I click new branch link
@@ -33,12 +34,7 @@ Feature: Project Commits Branches
     And I submit new branch form with invalid name
     Then I should see new an error that branch is invalid
 
-  Scenario: I create a branch with invalid reference
-    Given I visit project branches page
-    And I click new branch link
-    And I submit new branch form with invalid reference
-    Then I should see new an error that ref is invalid
-
+  @javascript
   Scenario: I create a branch that already exists
     Given I visit project branches page
     And I click new branch link

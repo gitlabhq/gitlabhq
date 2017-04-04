@@ -44,7 +44,7 @@ describe Gitlab::LDAP::AuthHash, lib: true do
   context "with overridden attributes" do
     let(:attributes) do
       {
-        'username'  => ['mail', 'email'],
+        'username'  => %w(mail email),
         'name'      => 'fullName'
       }
     end

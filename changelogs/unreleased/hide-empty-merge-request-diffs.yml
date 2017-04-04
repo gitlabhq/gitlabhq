@@ -1,4 +1,0 @@
----
-title: Fix errors happening when source branch of merge request is removed and then restored
-merge_request: 7568
-author:

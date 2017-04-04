@@ -9,15 +9,12 @@ class Projects::ServicesController < Projects::ApplicationController
 
   layout "project_settings"
 
-  def index
-    @services = @project.find_or_initialize_services
-  end
-
   def edit
   end
 
   def update
-    if @service.update_attributes(service_params[:service])
+    @service.assign_attributes(service_params[:service])
+    if @service.save(context: :manual_change)
       redirect_to(
         edit_namespace_project_service_path(@project.namespace, @project, @service.to_param),
         notice: 'Successfully updated.'

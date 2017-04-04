@@ -12,20 +12,31 @@
 * [Panels](#panels)
 * [Alerts](#alerts)
 * [Forms](#forms)
+* [Search box](#search-box)
 * [File holders](#file-holders)
 * [Data formats](#data-formats)
 
 ---
 
 ## Tooltips
+Tooltips identify elements or provide additional, useful information about the referring elements. Tooltips are different from ALT-attributes, which are intended primarily for static images. Tooltips are summoned by:
+
+* Hovering over an element with a cursor
+* Focusing on an element with a keyboard (usually the tab key)
+* Upon touch
 
 ### Usage
-A tooltip should only be added if additional information is required.
+A tooltip should be used:
+* When there isn’t enough space to show the information
+* When it isn’t critical for the user to see the information
+* For icons that don’t have a label
+
+Tooltips shouldn’t repeat information that is shown near the referring element. However, they can show the same data in a different format (e.g. date or timestamps).
 
 ![Tooltip usage](img/tooltip-usage.png)
 
 ### Placement
-By default, tooltips should be placed below the element that they refer to. However, if there is not enough space in the viewpoint, the tooltip should be moved to the side as needed.
+By default, tooltips should be placed below the referring element. However, if there isn’t enough space in the viewport, the tooltip should be moved to the side as needed.
 
 ![Tooltip placement location](img/tooltip-placement.png)
 
@@ -43,7 +54,7 @@ Primary links are blue in their rest state. Secondary links (such as the time st
 
 #### Hover
 
-An underline should always be added on hover. A gray link becomes blue on hover.
+On hover, an underline should be added and the color should change. Both the primary and secondary link should become the darker blue color on hover.
 
 #### Focus
 
@@ -72,26 +83,57 @@ Secondary buttons are for alternative commands. They should be conveyed by a bu
 ### Icon and text treatment
 Text should be in sentence case, where only the first word is capitalized. "Create issue" is correct, not "Create Issue". Buttons should only contain an icon or a text, not both.
 
->>>
-TODO: Rationalize this. Ensure that we still believe this.
->>>
+> TODO: Rationalize this. Ensure that we still believe this.
 
 ### Colors
-Follow the color guidance on the [basics](basics.md#color) page. The default color treatment is the white/grey button.
+The default color treatment is the white/grey button. Follow the guidance on the [basics](basics.md#color) page to add meaningful color to a button.
+
+### Secondary states
+
+Primary buttons darken the color of their background and border for hover, focus and active states. An inner shadow is added to the active state to denote the button being pressed.
+
+| Values | Info | Success | Warning | Danger |
+| :------ | :------: | :------: | :------: | :------: |
+| Background: `$color-light` <br> Border: `$border-color-light` | ![](img/button-info--resting.png) | ![](img/button-success--resting.png) | ![](img/button-warning--resting.png) | ![](img/button-danger--resting.png) |
+| Background: `$color-normal` <br> Border: `$border-color-normal` | ![](img/button-info--hover.png) | ![](img/button-success--hover.png) | ![](img/button-warning--hover.png) | ![](img/button-danger--hover.png) |
+| Background: `$color-dark` <br> Border: `$border-color-dark` | ![](img/button-info--active.png) | ![](img/button-success--active.png) | ![](img/button-warning--active.png) | ![](img/button-danger--active.png) |
+
+Since secondary buttons only have a border on their resting state, their hover and focus states add a background color, which gets darkened on active.
+
+| Values | Success Secondary | Close | Spam |
+| :------ | :------: | :------: | :------: |
+| Font: `$border-color-light` <br> Border: `$border-color-light` | ![](img/button-success-secondary--resting.png) | ![](img/button-close--resting.png) | ![](img/button-spam--resting.png) |
+| Background: `$color-light` <br> Border: `$border-color-light` | ![](img/button-success-secondary--hover.png) | ![](img/button-close--hover.png) | ![](img/button-spam--hover.png) |
+| Background: `$color-normal` <br> Border: `$border-color-normal` | ![](img/button-success-secondary--active.png) | ![](img/button-close--active.png) | ![](img/button-spam--active.png) |
+
+### Placement
+
+When there are a group of buttons in a dialog or a form, we need to be consistent with the placement.
+
+#### Dismissive actions on the left
+The dismissive action returns the user to the previous state.
+
+> Example: Cancel
+
+#### Affirmative actions on the right
+Affirmative actions continue to progress towards the user goal that triggered the dialog or form.
+
+> Example: Submit, Ok, Delete
 
 ---
+
 
 ## Dropdowns
 
 Dropdowns are used to allow users to choose one (or many) options from a list of options. If this list of options is more 20, there should generally be a way to search through and filter the options (see the complex filter dropdowns below.)
 
->>>
-TODO: Will update this section when the new filters UI is implemented.
->>>
+> TODO: Will update this section when the new filters UI is implemented.
 
 ![Dropdown states](img/components-dropdown.png)
 
+### Max size
 
+The max height for dropdowns should target **10-15** single line items, or **7-10** multi-line items. If the height of the dropdown is too large, the list becomes very hard to parse and it is easy to visually lose track of the item you are looking for. Usability also suffers as more mouse movement is required, and you have a larger area in which you hijack the scroll away from the page level. While it may initially seem counterintuitive to not show as many items as you can, it is actually quicker and easier to process the information when it is cropped at a reasonable height.
 
 ---
 
@@ -164,9 +206,7 @@ Cover blocks are generally used to create a heading element for a page, such as 
 
 ## Panels
 
->>>
-TODO: Catalog how we are currently using panels and rationalize how they relate to alerts
->>>
+> TODO: Catalog how we are currently using panels and rationalize how they relate to alerts
 
 ![Panels](img/components-panels.png)
 
@@ -174,9 +214,7 @@ TODO: Catalog how we are currently using panels and rationalize how they relate 
 
 ## Alerts
 
->>>
-TODO: Catalog how we are currently using alerts
->>>
+> TODO: Catalog how we are currently using alerts
 
 ![Alerts](img/components-alerts.png)
 
@@ -199,6 +237,18 @@ Form (`form`) with label rendered above input.
 Horizontal form (`form.horizontal-form`) with label rendered inline with input.
 
 ![Horizontal form](img/components-horizontalform.png)
+
+---
+
+## Search box
+
+Search boxes across GitLab have a consistent rest, active and text entered state. When text isn't entered in the box, there should be a magnifying glass right aligned with the input field. When text is entered, the magnifying glass should become a x, allowing users to clear their text.
+
+![Search box](img/components-searchbox.png)
+
+If needed, we indicate the scope of the search in the search box.
+
+![Scoped Search box](img/components-searchboxscoped.png)
 
 ---
 

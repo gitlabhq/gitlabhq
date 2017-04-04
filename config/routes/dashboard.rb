@@ -13,6 +13,10 @@ resource :dashboard, controller: 'dashboard', only: [] do
     resources :todos, only: [:index, :destroy] do
       collection do
         delete :destroy_all
+        patch :bulk_restore
+      end
+      member do
+        patch :restore
       end
     end
 

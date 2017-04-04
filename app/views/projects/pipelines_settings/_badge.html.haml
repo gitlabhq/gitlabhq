@@ -1,4 +1,4 @@
-.row{ class: badge.title.gsub(' ', '-') }
+%div{ class: badge.title.gsub(' ', '-') }
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
       = badge.title.capitalize
@@ -25,3 +25,10 @@
               HTML
             .col-md-10.code.js-syntax-highlight
               = highlight('.html', badge.to_html)
+          .row
+            %hr
+          .row
+            .col-md-2.text-center
+              AsciiDoc
+            .col-md-10.code.js-syntax-highlight
+              = highlight('.adoc', badge.to_asciidoc)

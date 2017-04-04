@@ -1,6 +1,13 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-use-before-define, no-useless-escape, no-undef, no-new, quotes, object-shorthand, no-unused-vars, comma-dangle, radix, no-alert, consistent-return, no-else-return, prefer-template, one-var, one-var-declaration-per-line, curly, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, no-useless-escape, no-new, quotes, object-shorthand, no-unused-vars, comma-dangle, no-alert, consistent-return, no-else-return, prefer-template, one-var, one-var-declaration-per-line, curly, max-len */
+/* global GitLab */
+/* global UsersSelect */
+/* global ZenMode */
+/* global Autosave */
+/* global dateFormat */
+/* global Pikaday */
+
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.IssuableForm = (function() {
     IssuableForm.prototype.issueMoveConfirmMsg = 'Are you sure you want to move this issue to another project?';
@@ -8,13 +15,13 @@
     IssuableForm.prototype.wipRegex = /^\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i;
 
     function IssuableForm(form) {
-      var $issuableDueDate;
+      var $issuableDueDate, calendar;
       this.form = form;
       this.toggleWip = bind(this.toggleWip, this);
       this.renderWipExplanation = bind(this.renderWipExplanation, this);
       this.resetAutosave = bind(this.resetAutosave, this);
       this.handleSubmit = bind(this.handleSubmit, this);
-      GitLab.GfmAutoComplete.setup();
+      gl.GfmAutoComplete.setup();
       new UsersSelect();
       new ZenMode();
       this.titleField = this.form.find("input[name*='[title]']");
@@ -30,12 +37,15 @@
       this.initMoveDropdown();
       $issuableDueDate = $('#issuable-due-date');
       if ($issuableDueDate.length) {
-        $('.datepicker').datepicker({
-          dateFormat: 'yy-mm-dd',
-          onSelect: function(dateText, inst) {
-            return $issuableDueDate.val(dateText);
+        calendar = new Pikaday({
+          field: $issuableDueDate.get(0),
+          theme: 'gitlab-theme',
+          format: 'yyyy-mm-dd',
+          onSelect: function(dateText) {
+            $issuableDueDate.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
           }
-        }).datepicker('setDate', $.datepicker.parseDate('yy-mm-dd', $issuableDueDate.val()));
+        });
+        calendar.setDate(new Date($issuableDueDate.val()));
       }
     }
 
@@ -46,7 +56,7 @@
 
     IssuableForm.prototype.handleSubmit = function() {
       var fieldId = (this.issueMoveField != null) ? this.issueMoveField.val() : null;
-      if ((parseInt(fieldId) || 0) > 0) {
+      if ((parseInt(fieldId, 10) || 0) > 0) {
         if (!confirm(this.issueMoveConfirmMsg)) {
           return false;
         }
@@ -145,7 +155,5 @@
     };
 
     return IssuableForm;
-
   })();
-
-}).call(this);
+}).call(window);

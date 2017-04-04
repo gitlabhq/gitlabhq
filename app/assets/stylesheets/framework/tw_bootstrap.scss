@@ -86,24 +86,34 @@
   position: fixed;
 }
 
+/*
+ * Fix <summary> elements on firefox
+ * See https://github.com/necolas/normalize.css/issues/640
+ * and https://github.com/twbs/bootstrap/issues/21060
+ *
+ */
+summary {
+  display: list-item;
+}
+
 @import "bootstrap/responsive-utilities";
 
 // Labels
 .label {
   padding: 4px 5px;
-  font-size: 13px;
+  font-size: 12px;
   font-style: normal;
   font-weight: normal;
   display: inline-block;
 
   &.label-gray {
-    background-color: #f8fafc;
-    color: $gl-gray;
+    background-color: $label-gray-bg;
+    color: $gl-text-color;
     text-shadow: none;
   }
 
   &.label-inverse {
-    background-color: #333;
+    background-color: $label-inverse-bg;
   }
 }
 
@@ -158,9 +168,17 @@
       font-weight: normal;
 
       a {
-        color: #777;
+        color: $panel-heading-link-color;
       }
     }
+  }
+
+  &.panel-without-border {
+    border: 0;
+  }
+
+  &.panel-without-margin {
+    margin: 0;
   }
 }
 
@@ -172,7 +190,7 @@
 .alert {
   a:not(.btn) {
     @extend .alert-link;
-    color: #fff;
+    color: $white-light;
     text-decoration: underline;
   }
 }

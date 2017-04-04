@@ -1,4 +1,0 @@
----
-title: Ensure merge request's "remove branch" accessors return booleans
-merge_request: 7267
-author:

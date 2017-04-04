@@ -76,23 +76,23 @@ namespace :services do
         end
 
         param_hash
-      end.sort_by { |p| p[:required] ? 0 : 1 }
+      end
+      service_hash[:params].sort_by! { |p| p[:required] ? 0 : 1 }
 
-      puts "Collected data for: #{service.title}, #{Time.now-service_start}"
+      puts "Collected data for: #{service.title}, #{Time.now - service_start}"
       service_hash
     end
 
     doc_start = Time.now
     doc_path = File.join(Rails.root, 'doc', 'api', 'services.md')
 
-    result = ERB.new(services_template, 0 , '>')
+    result = ERB.new(services_template, 0, '>')
       .result(OpenStruct.new(services: services).instance_eval { binding })
 
     File.open(doc_path, 'w') do |f|
       f.write result
     end
 
-    puts "write a new service.md to: #{doc_path.to_s}, #{Time.now-doc_start}"
-
+    puts "write a new service.md to: #{doc_path}, #{Time.now - doc_start}"
   end
 end

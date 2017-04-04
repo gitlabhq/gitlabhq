@@ -1,6 +1,5 @@
 module Gitlab
   module Conflict
-    class ResolutionError < StandardError
-    end
+    ResolutionError = Class.new(StandardError)
   end
 end

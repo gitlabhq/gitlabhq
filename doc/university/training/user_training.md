@@ -389,4 +389,4 @@ GUI Clients [http://git-scm.com/downloads/guis](http://git-scm.com/downloads/gui
 Pro git book [http://git-scm.com/book](http://git-scm.com/book)
 Platzi Course [https://courses.platzi.com/courses/git-gitlab/](https://courses.platzi.com/courses/git-gitlab/)
 Code School tutorial [http://try.github.io/](http://try.github.io/)
-Contact Us - [subscribers@gitlab.com](subscribers@gitlab.com)
+Contact Us at `subscribers@gitlab.com`

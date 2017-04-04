@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe ProjectFeature do
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
 
   describe '#feature_available?' do
@@ -35,7 +35,7 @@ describe ProjectFeature do
 
       it "returns true when user is a member of project group" do
         group = create(:group)
-        project = create(:project, namespace: group)
+        project = create(:empty_project, namespace: group)
         group.add_developer(user)
 
         features.each do |feature|
@@ -57,7 +57,6 @@ describe ProjectFeature do
     context 'when feature is enabled for everyone' do
       it "returns true" do
         features.each do |feature|
-          project.project_feature.update_attribute("#{feature}_access_level".to_sym, ProjectFeature::ENABLED)
           expect(project.feature_available?(:issues, user)).to eq(true)
         end
       end
@@ -104,7 +103,6 @@ describe ProjectFeature do
 
     it "returns true when feature is enabled for everyone" do
       features.each do |feature|
-        project.project_feature.update_attribute("#{feature}_access_level".to_sym, ProjectFeature::ENABLED)
         expect(project.public_send("#{feature}_enabled?")).to eq(true)
       end
     end

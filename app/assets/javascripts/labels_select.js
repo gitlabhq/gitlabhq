@@ -1,12 +1,23 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, no-unused-vars, one-var-declaration-per-line, prefer-template, no-new, consistent-return, object-shorthand, comma-dangle, no-shadow, no-param-reassign, brace-style, vars-on-top, quotes, no-lonely-if, no-else-return, no-undef, semi, dot-notation, no-empty, no-return-assign, camelcase, prefer-spread, padded-blocks, max-len */
+/* eslint-disable no-useless-return, func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, no-unused-vars, one-var-declaration-per-line, prefer-template, no-new, consistent-return, object-shorthand, comma-dangle, no-shadow, no-param-reassign, brace-style, vars-on-top, quotes, no-lonely-if, no-else-return, dot-notation, no-empty, no-return-assign, camelcase, prefer-spread */
+/* global Issuable */
+/* global ListLabel */
+
 (function() {
   this.LabelsSelect = (function() {
-    function LabelsSelect() {
-      var _this;
+    function LabelsSelect(els) {
+      var _this, $els;
       _this = this;
-      $('.js-label-select').each(function(i, dropdown) {
-        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, namespacePath, projectPath, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip, initialSelected, $toggleText, fieldName, useId, propertyName, showMenuAbove;
+
+      $els = $(els);
+
+      if (!els) {
+        $els = $('.js-label-select');
+      }
+
+      $els.each(function(i, dropdown) {
+        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, namespacePath, projectPath, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip, initialSelected, $toggleText, fieldName, useId, propertyName, showMenuAbove, $container, $dropdownContainer;
         $dropdown = $(dropdown);
+        $dropdownContainer = $dropdown.closest('.labels-filter');
         $toggleText = $dropdown.find('.dropdown-toggle-text');
         namespacePath = $dropdown.data('namespace-path');
         projectPath = $dropdown.data('project-path');
@@ -65,7 +76,7 @@
           if (!selected.length) {
             data[abilityName].label_ids = [''];
           }
-          $loading.fadeIn();
+          $loading.removeClass('hidden').fadeIn();
           $dropdown.trigger('loading.gl.dropdown');
           return $.ajax({
             type: 'PUT',
@@ -122,7 +133,7 @@
             });
           });
         };
-        return $dropdown.glDropdown({
+        $dropdown.glDropdown({
           showMenuAbove: showMenuAbove,
           data: function(term, callback) {
             return $.ajax({
@@ -169,33 +180,40 @@
             });
           },
           renderRow: function(label, instance) {
-            var $a, $li, active, color, colorEl, indeterminate, removesAll, selectedClass, spacing;
+            var $a, $li, color, colorEl, indeterminate, removesAll, selectedClass, spacing, i, marked, dropdownName, dropdownValue;
             $li = $('<li>');
             $a = $('<a href="#">');
             selectedClass = [];
             removesAll = label.id <= 0 || (label.id == null);
             if ($dropdown.hasClass('js-filter-bulk-update')) {
-              indeterminate = instance.indeterminateIds;
-              active = instance.activeIds;
+              indeterminate = $dropdown.data('indeterminate') || [];
+              marked = $dropdown.data('marked') || [];
+
               if (indeterminate.indexOf(label.id) !== -1) {
                 selectedClass.push('is-indeterminate');
               }
-              if (active.indexOf(label.id) !== -1) {
+
+              if (marked.indexOf(label.id) !== -1) {
                 // Remove is-indeterminate class if the item will be marked as active
                 i = selectedClass.indexOf('is-indeterminate');
                 if (i !== -1) {
                   selectedClass.splice(i, 1);
                 }
                 selectedClass.push('is-active');
-                // Add input manually
-                instance.addInput(this.fieldName, label.id);
               }
-            }
-            if (this.id(label) && $form.find("input[type='hidden'][name='" + ($dropdown.data('fieldName')) + "'][value='" + this.id(label).toString().replace(/'/g, '\\\'') + "']").length) {
-              selectedClass.push('is-active');
-            }
-            if ($dropdown.hasClass('js-multiselect') && removesAll) {
-              selectedClass.push('dropdown-clear-active');
+            } else {
+              if (this.id(label)) {
+                dropdownName = $dropdown.data('fieldName');
+                dropdownValue = this.id(label).toString().replace(/'/g, '\\\'');
+
+                if ($form.find("input[type='hidden'][name='" + dropdownName + "'][value='" + dropdownValue + "']").length) {
+                  selectedClass.push('is-active');
+                }
+              }
+
+              if ($dropdown.hasClass('js-multiselect') && removesAll) {
+                selectedClass.push('dropdown-clear-active');
+              }
             }
             if (label.duplicate) {
               spacing = 100 / label.color.length;
@@ -231,7 +249,6 @@
             // Return generated html
             return $li.html($a).prop('outerHTML');
           },
-          persistWhenHide: $dropdown.data('persistWhenHide'),
           search: {
             fields: ['title']
           },
@@ -310,48 +327,43 @@
                 }
               }
             }
-            if ($dropdown.hasClass('js-filter-bulk-update')) {
-              // If we are persisting state we need the classes
-              if (!this.options.persistWhenHide) {
-                return $dropdown.parent().find('.is-active, .is-indeterminate').removeClass();
-              }
-            }
           },
           multiSelect: $dropdown.hasClass('js-multiselect'),
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
-          clicked: function(label, $el, e) {
-            var isIssueIndex, isMRIndex, page;
-            _this.enableBulkLabelDropdown();
-
-            if ($dropdown.parent().find('.is-active:not(.dropdown-clear-active)').length) {
-              $dropdown.parent()
-                .find('.dropdown-clear-active')
-                .removeClass('is-active')
-            }
-
-            if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
-              return;
-            }
+          clicked: function(label, $el, e, isMarking) {
+            var isIssueIndex, isMRIndex, page, boardsModel;
 
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = page === 'projects:merge_requests:index';
-            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar')) {
+
+            if ($dropdown.parent().find('.is-active:not(.dropdown-clear-active)').length) {
+              $dropdown.parent()
+                .find('.dropdown-clear-active')
+                .removeClass('is-active');
+            }
+
+            if ($dropdown.hasClass('js-issuable-form-dropdown')) {
+              return;
+            }
+
+            if ($dropdown.hasClass('js-filter-bulk-update')) {
+              _this.enableBulkLabelDropdown();
+              _this.setDropdownData($dropdown, isMarking, this.id(label));
+              return;
+            }
+
+            if ($dropdown.closest('.add-issues-modal').length) {
+              boardsModel = gl.issueBoards.ModalStore.store.filter;
+            }
+
+            if (boardsModel) {
               if (label.isAny) {
-                gl.issueBoards.BoardsStore.state.filters['label_name'] = [];
-              }
-              else if ($el.hasClass('is-active')) {
-                gl.issueBoards.BoardsStore.state.filters['label_name'].push(label.title);
-              }
-              else {
-                var filters = gl.issueBoards.BoardsStore.state.filters['label_name'];
-                filters = filters.filter(function (filteredLabel) {
-                  return filteredLabel !== label.title;
-                });
-                gl.issueBoards.BoardsStore.state.filters['label_name'] = filters;
+                boardsModel['label_name'] = [];
+              } else if ($el.hasClass('is-active')) {
+                boardsModel['label_name'].push(label.title);
               }
 
-              gl.issueBoards.BoardsStore.updateFiltersUrl();
               e.preventDefault();
               return;
             }
@@ -397,17 +409,10 @@
               }
             }
           },
-          setIndeterminateIds: function() {
-            if (this.dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')) {
-              return this.indeterminateIds = _this.getIndeterminateIds();
-            }
-          },
-          setActiveIds: function() {
-            if (this.dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')) {
-              return this.activeIds = _this.getActiveIds();
-            }
-          }
         });
+
+        // Set dropdown data
+        _this.setOriginalDropdownData($dropdownContainer, $dropdown);
       });
       this.bindEvents();
     }
@@ -420,32 +425,7 @@
       if ($('.selected_issue:checked').length) {
         return;
       }
-      // Remove inputs
-      $('.issues_bulk_update .labels-filter input[type="hidden"]').remove();
-      // Also restore button text
       return $('.issues_bulk_update .labels-filter .dropdown-toggle-text').text('Label');
-    };
-
-    LabelsSelect.prototype.getIndeterminateIds = function() {
-      var label_ids;
-      label_ids = [];
-      $('.selected_issue:checked').each(function(i, el) {
-        var issue_id;
-        issue_id = $(el).data('id');
-        return label_ids.push($("#issue_" + issue_id).data('labels'));
-      });
-      return _.flatten(label_ids);
-    };
-
-    LabelsSelect.prototype.getActiveIds = function() {
-      var label_ids;
-      label_ids = [];
-      $('.selected_issue:checked').each(function(i, el) {
-        var issue_id;
-        issue_id = $(el).data('id');
-        return label_ids.push($("#issue_" + issue_id).data('labels'));
-      });
-      return _.intersection.apply(_, label_ids);
     };
 
     LabelsSelect.prototype.enableBulkLabelDropdown = function() {
@@ -456,8 +436,58 @@
       }
     };
 
+    LabelsSelect.prototype.setDropdownData = function($dropdown, isMarking, value) {
+      var i, markedIds, unmarkedIds, indeterminateIds;
+      var issuableBulkActions = $('.bulk-update').data('bulkActions');
+
+      markedIds = $dropdown.data('marked') || [];
+      unmarkedIds = $dropdown.data('unmarked') || [];
+      indeterminateIds = $dropdown.data('indeterminate') || [];
+
+      if (isMarking) {
+        markedIds.push(value);
+
+        i = indeterminateIds.indexOf(value);
+        if (i > -1) {
+          indeterminateIds.splice(i, 1);
+        }
+
+        i = unmarkedIds.indexOf(value);
+        if (i > -1) {
+          unmarkedIds.splice(i, 1);
+        }
+      } else {
+        // If marked item (not common) is unmarked
+        i = markedIds.indexOf(value);
+        if (i > -1) {
+          markedIds.splice(i, 1);
+        }
+
+        // If an indeterminate item is being unmarked
+        if (issuableBulkActions.getOriginalIndeterminateIds().indexOf(value) > -1) {
+          unmarkedIds.push(value);
+        }
+
+        // If a marked item is being unmarked
+        // (a marked item could also be a label that is present in all selection)
+        if (issuableBulkActions.getOriginalCommonIds().indexOf(value) > -1) {
+          unmarkedIds.push(value);
+        }
+      }
+
+      $dropdown.data('marked', markedIds);
+      $dropdown.data('unmarked', unmarkedIds);
+      $dropdown.data('indeterminate', indeterminateIds);
+    };
+
+    LabelsSelect.prototype.setOriginalDropdownData = function($container, $dropdown) {
+      var labels = [];
+      $container.find('[name="label_name[]"]').map(function() {
+        return labels.push(this.value);
+      });
+      $dropdown.data('marked', labels);
+    };
+
     return LabelsSelect;
-
   })();
-
-}).call(this);
+}).call(window);

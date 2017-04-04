@@ -1,15 +1,14 @@
 require 'spec_helper'
 
 describe AnalyticsMergeRequestSerializer do
-  let(:serializer) do
+  subject do
     described_class
       .new(project: project, entity: :merge_request)
       .represent(resource)
   end
 
   let(:user) { create(:user) }
-  let(:json) { serializer.as_json }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:resource) do
     {
       total_time: "172802.724419",
@@ -23,12 +22,8 @@ describe AnalyticsMergeRequestSerializer do
   end
 
   context 'when there is a single object provided' do
-    it 'it generates payload for single object' do
-      expect(json).to be_an_instance_of Hash
-    end
-
     it 'contains important elements of the merge request' do
-      expect(json).to include(:title, :iid, :created_at, :total_time, :url, :author, :state)
+      expect(subject).to include(:title, :iid, :created_at, :total_time, :url, :author, :state)
     end
   end
 end

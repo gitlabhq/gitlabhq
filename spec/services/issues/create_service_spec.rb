@@ -46,6 +46,7 @@ describe Issues::CreateService, services: true do
 
           expect(issue).to be_persisted
           expect(issue.title).to eq('Awesome issue')
+          expect(issue.description).to eq('please fix')
           expect(issue.assignee).to be_nil
           expect(issue.labels).to be_empty
           expect(issue.milestone).to be_nil
@@ -135,6 +136,182 @@ describe Issues::CreateService, services: true do
       end
     end
 
+    it_behaves_like 'issuable create service'
+
     it_behaves_like 'new issuable record that supports slash commands'
+
+    context 'resolving discussions' do
+      let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
+      let(:merge_request) { discussion.noteable }
+      let(:project) { merge_request.source_project }
+
+      before do
+        project.team << [user, :master]
+      end
+
+      describe 'for a single discussion' do
+        let(:opts) { { discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid } }
+
+        it 'resolves the discussion' do
+          described_class.new(project, user, opts).execute
+          discussion.first_note.reload
+
+          expect(discussion.resolved?).to be(true)
+        end
+
+        it 'added a system note to the discussion' do
+          described_class.new(project, user, opts).execute
+
+          reloaded_discussion = MergeRequest.find(merge_request.id).discussions.first
+
+          expect(reloaded_discussion.last_note.system).to eq(true)
+        end
+
+        it 'assigns the title and description for the issue' do
+          issue = described_class.new(project, user, opts).execute
+
+          expect(issue.title).not_to be_nil
+          expect(issue.description).not_to be_nil
+        end
+
+        it 'can set nil explicitly to the title and description' do
+          issue = described_class.new(project, user,
+                                      merge_request_to_resolve_discussions_of: merge_request,
+                                      description: nil,
+                                      title: nil).execute
+
+          expect(issue.description).to be_nil
+          expect(issue.title).to be_nil
+        end
+      end
+
+      describe 'for a merge request' do
+        let(:opts) { { merge_request_to_resolve_discussions_of: merge_request.iid } }
+
+        it 'resolves the discussion' do
+          described_class.new(project, user, opts).execute
+          discussion.first_note.reload
+
+          expect(discussion.resolved?).to be(true)
+        end
+
+        it 'added a system note to the discussion' do
+          described_class.new(project, user, opts).execute
+
+          reloaded_discussion = MergeRequest.find(merge_request.id).discussions.first
+
+          expect(reloaded_discussion.last_note.system).to eq(true)
+        end
+
+        it 'assigns the title and description for the issue' do
+          issue = described_class.new(project, user, opts).execute
+
+          expect(issue.title).not_to be_nil
+          expect(issue.description).not_to be_nil
+        end
+
+        it 'can set nil explicitly to the title and description' do
+          issue = described_class.new(project, user,
+                                      merge_request_to_resolve_discussions_of: merge_request,
+                                      description: nil,
+                                      title: nil).execute
+
+          expect(issue.description).to be_nil
+          expect(issue.title).to be_nil
+        end
+      end
+    end
+
+    context 'checking spam' do
+      let(:opts) do
+        {
+          title: 'Awesome issue',
+          description: 'please fix',
+          request: double(:request, env: {})
+        }
+      end
+
+      before do
+        allow_any_instance_of(SpamService).to receive(:check_for_spam?).and_return(true)
+      end
+
+      context 'when recaptcha was verified' do
+        let(:log_user)  { user }
+        let(:spam_logs) { create_list(:spam_log, 2, user: log_user, title: 'Awesome issue') }
+
+        before do
+          opts[:recaptcha_verified] = true
+          opts[:spam_log_id]        = spam_logs.last.id
+
+          expect(AkismetService).not_to receive(:new)
+        end
+
+        it 'does no mark an issue as a spam ' do
+          expect(issue).not_to be_spam
+        end
+
+        it 'an issue is valid ' do
+          expect(issue.valid?).to be_truthy
+        end
+
+        it 'does not assign a spam_log to an issue' do
+          expect(issue.spam_log).to be_nil
+        end
+
+        it 'marks related spam_log as recaptcha_verified' do
+          expect { issue }.to change{SpamLog.last.recaptcha_verified}.from(false).to(true)
+        end
+
+        context 'when spam log does not belong to a user' do
+          let(:log_user) { create(:user) }
+
+          it 'does not mark spam_log as recaptcha_verified' do
+            expect { issue }.not_to change{SpamLog.last.recaptcha_verified}
+          end
+        end
+      end
+
+      context 'when recaptcha was not verified' do
+        context 'when akismet detects spam' do
+          before do
+            allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+          end
+
+          it 'marks an issue as a spam ' do
+            expect(issue).to be_spam
+          end
+
+          it 'an issue is not valid ' do
+            expect(issue.valid?).to be_falsey
+          end
+
+          it 'creates a new spam_log' do
+            expect{issue}.to change{SpamLog.count}.from(0).to(1)
+          end
+
+          it 'assigns a spam_log to an issue' do
+            expect(issue.spam_log).to eq(SpamLog.last)
+          end
+        end
+
+        context 'when akismet does not detect spam' do
+          before do
+            allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(false)
+          end
+
+          it 'does not mark an issue as a spam ' do
+            expect(issue).not_to be_spam
+          end
+
+          it 'an issue is valid ' do
+            expect(issue.valid?).to be_truthy
+          end
+
+          it 'does not assign a spam_log to an issue' do
+            expect(issue.spam_log).to be_nil
+          end
+        end
+      end
+    end
   end
 end

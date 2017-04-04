@@ -1,4 +1,4 @@
-%div{xmlns: "http://www.w3.org/1999/xhtml"}
+%div{ xmlns: "http://www.w3.org/1999/xhtml" }
   - event.commits.first(15).each do |commit|
     %p
       %strong= commit[:author][:name]

@@ -1,6 +1,7 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, no-undef, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, max-len */
+
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 
   this.MergedButtons = (function() {
     function MergedButtons() {
@@ -40,7 +41,5 @@
     };
 
     return MergedButtons;
-
   })();
-
-}).call(this);
+}).call(window);

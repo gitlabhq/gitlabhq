@@ -3,8 +3,8 @@ require 'spec_helper'
 describe GitPushService, services: true do
   include RepoHelpers
 
-  let(:user)          { create :user }
-  let(:project)       { create :project }
+  let(:user)    { create(:user) }
+  let(:project) { create(:project, :repository) }
 
   before do
     project.team << [user, :master]
@@ -150,6 +150,13 @@ describe GitPushService, services: true do
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
       end
     end
+    
+    context "Sends System Push data" do
+      it "when pushing on a branch" do
+        expect(SystemHookPushWorker).to receive(:perform_async).with(@push_data, :push_hooks)
+        execute_service(project, user, @oldrev, @newrev, @ref )
+      end
+    end
   end
 
   describe "Updates git attributes" do
@@ -263,7 +270,7 @@ describe GitPushService, services: true do
         author_email: commit_author.email
       )
 
-      allow_any_instance_of(ProcessCommitWorker).to receive(:find_commit).
+      allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit).
         and_return(commit)
 
       allow(project.repository).to receive(:commits_between).and_return([commit])
@@ -321,7 +328,7 @@ describe GitPushService, services: true do
         committed_date: commit_time
       )
 
-      allow_any_instance_of(ProcessCommitWorker).to receive(:find_commit).
+      allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit).
         and_return(commit)
 
       allow(project.repository).to receive(:commits_between).and_return([commit])
@@ -360,7 +367,7 @@ describe GitPushService, services: true do
       allow(project.repository).to receive(:commits_between).
         and_return([closing_commit])
 
-      allow_any_instance_of(ProcessCommitWorker).to receive(:find_commit).
+      allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit).
         and_return(closing_commit)
 
       project.team << [commit_author, :master]
@@ -583,7 +590,7 @@ describe GitPushService, services: true do
         service.push_commits = [commit]
 
         expect(ProjectCacheWorker).to receive(:perform_async).
-          with(project.id, %i(readme))
+          with(project.id, %i(readme), %i(commit_count repository_size))
 
         service.update_caches
       end
@@ -596,11 +603,30 @@ describe GitPushService, services: true do
 
       it 'does not flush any conditional caches' do
         expect(ProjectCacheWorker).to receive(:perform_async).
-          with(project.id, []).
+          with(project.id, [], %i(commit_count repository_size)).
           and_call_original
 
         service.update_caches
       end
+    end
+  end
+
+  describe '#process_commit_messages' do
+    let(:service) do
+      described_class.new(project,
+                          user,
+                          oldrev: sample_commit.parent_id,
+                          newrev: sample_commit.id,
+                          ref: 'refs/heads/master')
+    end
+
+    it 'only schedules a limited number of commits' do
+      allow(service).to receive(:push_commits).
+        and_return(Array.new(1000, double(:commit, to_hash: {})))
+
+      expect(ProcessCommitWorker).to receive(:perform_async).exactly(100).times
+
+      service.process_commit_messages
     end
   end
 

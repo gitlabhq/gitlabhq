@@ -1,15 +1,16 @@
 .dropdown.inline.prepend-left-10
-  %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
-    %span.light
+  %button.dropdown-toggle{ type: 'button', data: {toggle: 'dropdown' } }
     - if @sort.present?
       = sort_options_hash[@sort]
     - else
       = sort_title_recently_created
-    = icon('caret-down')
+    = icon('chevron-down')
   %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-sort
     %li
       = link_to page_filter_path(sort: sort_value_priority, label: true) do
         = sort_title_priority
+      = link_to page_filter_path(sort: sort_value_label_priority, label: true) do
+        = sort_title_label_priority
       = link_to page_filter_path(sort: sort_value_recently_created, label: true) do
         = sort_title_recently_created
       = link_to page_filter_path(sort: sort_value_oldest_created, label: true) do

@@ -9,7 +9,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I am a member of project "Shop"' do
-    @project = create(:project, name: "Shop")
+    @project = create(:project, :repository, name: "Shop")
     @project.team << [@user, :reporter]
   end
 
@@ -18,7 +18,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I already have a project named "Shop" in my namespace' do
-    @my_project = create(:project, name: "Shop", namespace: current_user.namespace)
+    @my_project = create(:project, :repository, name: "Shop", namespace: current_user.namespace)
   end
 
   step 'I should see a "Name has already been taken" warning' do
@@ -56,7 +56,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I should see my fork on the list' do
-    page.within('.projects-list-holder') do
+    page.within('.js-projects-list-holder') do
       project = @user.fork_of(@project)
       expect(page).to have_content("#{project.namespace.human_name} / #{project.name}")
     end

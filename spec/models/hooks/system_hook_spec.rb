@@ -4,8 +4,11 @@ describe SystemHook, models: true do
   describe "execute" do
     let(:system_hook) { create(:system_hook) }
     let(:user)        { create(:user) }
-    let(:project)     { create(:project, namespace: user.namespace) }
+    let(:project)     { create(:empty_project, namespace: user.namespace) }
     let(:group)       { create(:group) }
+    let(:params) do
+      { name: 'John Doe', username: 'jduser', email: 'jg@example.com', password: 'mydummypass' }
+    end
 
     before do
       WebMock.stub_request(:post, system_hook.url)
@@ -29,7 +32,7 @@ describe SystemHook, models: true do
     end
 
     it "user_create hook" do
-      create(:user)
+      Users::CreateService.new(nil, params).execute
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /user_create/,

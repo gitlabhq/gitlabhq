@@ -26,6 +26,23 @@ module IssuableActions
 
   private
 
+  def render_conflict_response
+    respond_to do |format|
+      format.html do
+        @conflict = true
+        render :edit
+      end
+
+      format.json do
+        render json: {
+          errors: [
+            "Someone edited this #{issuable.human_class_name} at the same time you did. Please refresh your browser and make sure your changes will not unintentionally remove theirs."
+          ]
+        }, status: 409
+      end
+    end
+  end
+
   def labels
     @labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
   end

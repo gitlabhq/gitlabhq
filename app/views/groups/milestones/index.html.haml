@@ -1,8 +1,9 @@
 - page_title "Milestones"
+= render "groups/head_issues"
 
 - if group_milestones(@group).exists?
   .top-area
-    = render 'shared/milestones_filter'
+    = render 'shared/milestones_filter', counts: @milestone_states
 
     .nav-controls
       - if can?(current_user, :admin_milestones, @group)
@@ -10,8 +11,8 @@
           New Milestone
 
   .row-content-block
-    Only milestones from the
-    %strong #{@group.name}
+    Only milestones from
+    %strong= @group.name
     group are listed here.
 
   .milestones

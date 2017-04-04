@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
+describe API::Labels, api: true  do
   include ApiHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
+  let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
   let!(:label1) { create(:label, title: 'label1', project: project) }
   let!(:priority_label) { create(:label, title: 'bug', project: project, priority: 3) }
 
@@ -21,15 +21,16 @@ describe API::API, api: true  do
       create(:labeled_issue, project: project, labels: [label1], author: user, state: :closed)
       create(:labeled_merge_request, labels: [priority_label], author: user, source_project: project )
 
-      expected_keys = [
-        'id', 'name', 'color', 'description',
-        'open_issues_count', 'closed_issues_count', 'open_merge_requests_count',
-        'subscribed', 'priority'
-      ]
+      expected_keys = %w(
+        id name color description
+        open_issues_count closed_issues_count open_merge_requests_count
+        subscribed priority
+      )
 
       get api("/projects/#{project.id}/labels", user)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(3)
       expect(json_response.first.keys).to match_array expected_keys
@@ -174,9 +175,10 @@ describe API::API, api: true  do
   end
 
   describe 'DELETE /projects/:id/labels' do
-    it 'returns 200 for existing label' do
+    it 'returns 204 for existing label' do
       delete api("/projects/#{project.id}/labels", user), name: 'label1'
-      expect(response).to have_http_status(200)
+
+      expect(response).to have_http_status(204)
     end
 
     it 'returns 404 for non existing label' do
@@ -317,10 +319,10 @@ describe API::API, api: true  do
     end
   end
 
-  describe "POST /projects/:id/labels/:label_id/subscription" do
+  describe "POST /projects/:id/labels/:label_id/subscribe" do
     context "when label_id is a label title" do
       it "subscribes to the label" do
-        post api("/projects/#{project.id}/labels/#{label1.title}/subscription", user)
+        post api("/projects/#{project.id}/labels/#{label1.title}/subscribe", user)
 
         expect(response).to have_http_status(201)
         expect(json_response["name"]).to eq(label1.title)
@@ -330,7 +332,7 @@ describe API::API, api: true  do
 
     context "when label_id is a label ID" do
       it "subscribes to the label" do
-        post api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
+        post api("/projects/#{project.id}/labels/#{label1.id}/subscribe", user)
 
         expect(response).to have_http_status(201)
         expect(json_response["name"]).to eq(label1.title)
@@ -342,7 +344,7 @@ describe API::API, api: true  do
       before { label1.subscribe(user, project) }
 
       it "returns 304" do
-        post api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
+        post api("/projects/#{project.id}/labels/#{label1.id}/subscribe", user)
 
         expect(response).to have_http_status(304)
       end
@@ -350,21 +352,21 @@ describe API::API, api: true  do
 
     context "when label ID is not found" do
       it "returns 404 error" do
-        post api("/projects/#{project.id}/labels/1234/subscription", user)
+        post api("/projects/#{project.id}/labels/1234/subscribe", user)
 
         expect(response).to have_http_status(404)
       end
     end
   end
 
-  describe "DELETE /projects/:id/labels/:label_id/subscription" do
+  describe "POST /projects/:id/labels/:label_id/unsubscribe" do
     before { label1.subscribe(user, project) }
 
     context "when label_id is a label title" do
       it "unsubscribes from the label" do
-        delete api("/projects/#{project.id}/labels/#{label1.title}/subscription", user)
+        post api("/projects/#{project.id}/labels/#{label1.title}/unsubscribe", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(201)
         expect(json_response["name"]).to eq(label1.title)
         expect(json_response["subscribed"]).to be_falsey
       end
@@ -372,9 +374,9 @@ describe API::API, api: true  do
 
     context "when label_id is a label ID" do
       it "unsubscribes from the label" do
-        delete api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
+        post api("/projects/#{project.id}/labels/#{label1.id}/unsubscribe", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(201)
         expect(json_response["name"]).to eq(label1.title)
         expect(json_response["subscribed"]).to be_falsey
       end
@@ -384,7 +386,7 @@ describe API::API, api: true  do
       before { label1.unsubscribe(user, project) }
 
       it "returns 304" do
-        delete api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
+        post api("/projects/#{project.id}/labels/#{label1.id}/unsubscribe", user)
 
         expect(response).to have_http_status(304)
       end
@@ -392,7 +394,7 @@ describe API::API, api: true  do
 
     context "when label ID is not found" do
       it "returns 404 error" do
-        delete api("/projects/#{project.id}/labels/1234/subscription", user)
+        post api("/projects/#{project.id}/labels/1234/unsubscribe", user)
 
         expect(response).to have_http_status(404)
       end

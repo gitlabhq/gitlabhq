@@ -13,7 +13,7 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def update
-    if @runner.update_attributes(runner_params)
+    if Ci::UpdateRunnerService.new(@runner).update(runner_params)
       respond_to do |format|
         format.js
         format.html { redirect_to admin_runner_path(@runner) }
@@ -31,7 +31,7 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def resume
-    if @runner.update_attributes(active: true)
+    if Ci::UpdateRunnerService.new(@runner).update(active: true)
       redirect_to admin_runners_path, notice: 'Runner was successfully updated.'
     else
       redirect_to admin_runners_path, alert: 'Runner was not updated.'
@@ -39,7 +39,7 @@ class Admin::RunnersController < Admin::ApplicationController
   end
 
   def pause
-    if @runner.update_attributes(active: false)
+    if Ci::UpdateRunnerService.new(@runner).update(active: false)
       redirect_to admin_runners_path, notice: 'Runner was successfully updated.'
     else
       redirect_to admin_runners_path, alert: 'Runner was not updated.'

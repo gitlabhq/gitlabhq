@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe MergeRequests::CreateService, services: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:assignee) { create(:user) }
 
@@ -83,6 +83,8 @@ describe MergeRequests::CreateService, services: true do
         }
       end
     end
+
+    it_behaves_like 'issuable create service'
 
     context 'while saving references to issues that the created merge request closes' do
       let(:first_issue) { create(:issue, project: project) }

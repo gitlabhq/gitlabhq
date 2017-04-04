@@ -22,8 +22,8 @@ module Emails
       mail(bcc: recipients,
            subject: pipeline_subject(status),
            skip_premailer: true) do |format|
-        format.html { render layout: false }
-        format.text
+        format.html { render layout: 'mailer' }
+        format.text { render layout: 'mailer' }
       end
     end
 

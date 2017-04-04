@@ -23,7 +23,8 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def create
-    @note = Notes::CreateService.new(project, current_user, note_params).execute
+    create_params = note_params.merge(merge_request_diff_head_sha: params[:merge_request_diff_head_sha])
+    @note = Notes::CreateService.new(project, current_user, create_params).execute
 
     if @note.is_a?(Note)
       Banzai::NoteRenderer.render([@note], @project, current_user)
@@ -50,7 +51,7 @@ class Projects::NotesController < Projects::ApplicationController
 
   def destroy
     if note.editable?
-      Notes::DeleteService.new(project, current_user).execute(note)
+      Notes::DestroyService.new(project, current_user).execute(note)
     end
 
     respond_to do |format|
@@ -147,17 +148,10 @@ class Projects::NotesController < Projects::ApplicationController
 
   def note_json(note)
     attrs = {
-      award: false,
       id: note.id
     }
 
-    if note.is_a?(AwardEmoji)
-      attrs.merge!(
-        valid:  note.valid?,
-        award:  true,
-        name:   note.name
-      )
-    elsif note.persisted?
+    if note.persisted?
       Banzai::NoteRenderer.render([note], @project, current_user)
 
       attrs.merge!(
@@ -197,6 +191,7 @@ class Projects::NotesController < Projects::ApplicationController
       )
     end
 
+    attrs[:commands_changes] = note.commands_changes
     attrs
   end
 
@@ -216,6 +211,11 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def find_current_user_notes
-    @notes = NotesFinder.new.execute(project, current_user, params)
+    @notes = NotesFinder.new(project, current_user, params.merge(last_fetched_at: last_fetched_at))
+      .execute.inc_author
+  end
+
+  def last_fetched_at
+    request.headers['X-Last-Fetched-At']
   end
 end

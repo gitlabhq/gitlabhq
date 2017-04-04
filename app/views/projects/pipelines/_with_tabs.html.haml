@@ -1,27 +1,19 @@
 .tabs-holder
-  %ul.nav-links.no-top.no-bottom
-    %li.active
-      = link_to "Pipeline", "#js-tab-pipeline", data: { target: '#js-tab-pipeline', action: 'pipeline', toggle: 'tab' }, class: 'pipeline-tab'
-    %li
-      = link_to "#js-tab-builds", data: { target: '#js-tab-builds', action: 'build', toggle: 'tab' }, class: 'builds-tab' do
-        Builds
-        %span.badge= pipeline.statuses.count
+  %ul.pipelines-tabs.nav-links.no-top.no-bottom
+    %li.js-pipeline-tab-link
+      = link_to namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: { target: 'div#js-tab-pipeline', action: 'pipelines', toggle: 'tab' },  class: 'pipeline-tab' do
+        Pipeline
+    %li.js-builds-tab-link
+      = link_to builds_namespace_project_pipeline_path(@project.namespace, @project, @pipeline), data: {target: 'div#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
+        Jobs
+        %span.badge.js-builds-counter= pipeline.statuses.count
+
+
 
 .tab-content
-  #js-tab-pipeline.tab-pane.active
-    .build-content.middle-block.pipeline-graph
-      .pipeline-visualization
-        %ul.stage-column-list
-          - stages = pipeline.stages_with_latest_statuses
-          - stages.each do |stage, statuses|
-            %li.stage-column
-              .stage-name
-                %a{name: stage}
-                - if stage
-                  = stage.titleize
-              .builds-container
-                %ul
-                  = render "projects/commit/pipeline_stage", statuses: statuses
+  #js-tab-pipeline.tab-pane
+    .build-content.middle-block.js-pipeline-graph
+      = render "projects/pipelines/graph", pipeline: pipeline
 
   #js-tab-builds.tab-pane
     - if pipeline.yaml_errors.present?
@@ -41,11 +33,10 @@
         %thead
           %tr
             %th Status
-            %th Build ID
+            %th Job ID
             %th Name
             %th
             - if pipeline.project.build_coverage_enabled?
               %th Coverage
             %th
-        - pipeline.statuses.relevant.stages.each do |stage|
-          = render 'projects/commit/ci_stage', stage: stage, statuses: pipeline.statuses.relevant.where(stage: stage)
+        = render partial: "projects/stage/stage", collection: pipeline.stages, as: :stage

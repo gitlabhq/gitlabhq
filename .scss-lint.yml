@@ -30,7 +30,7 @@ linters:
   # variable declarations. They should be referred to via variables everywhere
   # else.
   ColorVariable:
-    enabled: false
+    enabled: true
   
   # Which form of comments to prefer in CSS.
   Comment:

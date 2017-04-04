@@ -1,27 +1,27 @@
 .runner-state {
   padding: 6px 12px;
   margin-right: 10px;
-  color: #fff;
+  color: $white-light;
 
   &.runner-state-shared {
-    background: #32b186;
+    background: $runner-state-shared-bg;
   }
 
   &.runner-state-specific {
-    background: #3498db;
+    background: $runner-state-specific-bg;
   }
 }
 
 .runner-status-online {
-  color: green;
+  color: $runner-status-online-color;
 }
 
 .runner-status-offline {
-  color: gray;
+  color: $runner-status-offline-color;
 }
 
 .runner-status-paused {
-  color: red;
+  color: $runner-status-paused-color;
 }
 
 .runner {

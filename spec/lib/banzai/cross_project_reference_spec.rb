@@ -24,7 +24,7 @@ describe Banzai::CrossProjectReference, lib: true do
       it 'returns the referenced project' do
         project2 = double('referenced project')
 
-        expect(Project).to receive(:find_with_namespace).
+        expect(Project).to receive(:find_by_full_path).
           with('cross/reference').and_return(project2)
 
         expect(project_from_ref('cross/reference')).to eq project2

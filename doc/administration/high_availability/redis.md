@@ -287,13 +287,13 @@ The prerequisites for a HA Redis setup are the following:
     redis['password'] = 'redis-password-goes-here'
     ```
 
-1. To prevent database migrations from running on upgrade, run:
+1. Only the primary GitLab application server should handle migrations. To
+   prevent database migrations from running on upgrade, add the following
+   configuration to your `/etc/gitlab/gitlab.rb` file:
 
     ```
-    sudo touch /etc/gitlab/skip-auto-migrations
+    gitlab_rails['auto_migrate'] = false
     ```
-
-    Only the primary GitLab application server should handle migrations.
 
 1. [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 

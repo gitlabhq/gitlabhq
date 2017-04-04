@@ -1,10 +1,16 @@
-/* eslint-disable func-names, space-before-function-paren, one-var, no-var, space-before-blocks, prefer-rest-params, wrap-iife, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, no-undef, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-plusplus, no-else-return, no-self-compare, prefer-template, no-unused-expressions, no-lonely-if, yoda, prefer-spread, no-void, camelcase, keyword-spacing, no-param-reassign, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, one-var, no-var, prefer-rest-params, wrap-iife, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, no-lonely-if, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
+/* global Issuable */
+/* global ListUser */
+
+import Vue from 'vue';
+
 (function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
     slice = [].slice;
 
   this.UsersSelect = (function() {
-    function UsersSelect(currentUser) {
+    function UsersSelect(currentUser, els) {
+      var $els;
       this.users = bind(this.users, this);
       this.user = bind(this.user, this);
       this.usersPath = "/autocomplete/users.json";
@@ -16,7 +22,14 @@
           this.currentUser = JSON.parse(currentUser);
         }
       }
-      $('.js-user-search').each((function(_this) {
+
+      $els = $(els);
+
+      if (!els) {
+        $els = $('.js-user-search');
+      }
+
+      $els.each((function(_this) {
         return function(i, dropdown) {
           var options = {};
           var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, firstUser, issueURL, selectedId, showAnyUser, showNullUser, showMenuAbove;
@@ -41,12 +54,21 @@
           $loading = $block.find('.block-loading').fadeOut();
 
           var updateIssueBoardsIssue = function () {
-            $loading.fadeIn();
+            $loading.removeClass('hidden').fadeIn();
             gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
               .then(function () {
                 $loading.fadeOut();
               });
           };
+
+          $('.assign-to-me-link').on('click', (e) => {
+            e.preventDefault();
+            $(e.currentTarget).hide();
+            const $input = $(`input[name="${$dropdown.data('field-name')}"]`);
+            $input.val(gon.current_user_id);
+            selectedId = $input.val();
+            $dropdown.find('.dropdown-toggle-text').text(gon.current_user_fullname).removeClass('is-default');
+          });
 
           $block.on('click', '.js-assign-yourself', function(e) {
             e.preventDefault();
@@ -69,7 +91,7 @@
             data = {};
             data[abilityName] = {};
             data[abilityName].assignee_id = selected != null ? selected : null;
-            $loading.fadeIn();
+            $loading.removeClass('hidden').fadeIn();
             $dropdown.trigger('loading.gl.dropdown');
             return $.ajax({
               type: 'PUT',
@@ -112,7 +134,7 @@
                   showDivider = 0;
                   if (firstUser) {
                     // Move current user to the front of the list
-                    for (index = j = 0, len = users.length; j < len; index = ++j) {
+                    for (index = j = 0, len = users.length; j < len; index = (j += 1)) {
                       obj = users[index];
                       if (obj.username === firstUser) {
                         users.splice(index, 1);
@@ -187,13 +209,15 @@
               if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
                 e.preventDefault();
                 selectedId = user.id;
+                if (selectedId === gon.current_user_id) {
+                  $('.assign-to-me-link').hide();
+                } else {
+                  $('.assign-to-me-link').show();
+                }
                 return;
               }
-              if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar')) {
-                selectedId = user.id;
-                gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = user.id;
-                gl.issueBoards.BoardsStore.updateFiltersUrl();
-                e.preventDefault();
+              if ($el.closest('.add-issues-modal').length) {
+                gl.issueBoards.ModalStore.store.filter[$dropdown.data('field-name')] = user.id;
               } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
                 selectedId = user.id;
                 return Issuable.filterResults($dropdown.closest('form'));
@@ -220,11 +244,16 @@
             id: function (user) {
               return user.id;
             },
+            opened: function(e) {
+              const $el = $(e.currentTarget);
+              $el.find('.is-active').removeClass('is-active');
+              $el.find(`li[data-user-id="${selectedId}"] .dropdown-menu-user-link`).addClass('is-active');
+            },
             renderRow: function(user) {
               var avatar, img, listClosingTags, listWithName, listWithUserName, selected, username;
               username = user.username ? "@" + user.username : "";
               avatar = user.avatar_url ? user.avatar_url : false;
-              selected = user.id === selectedId ? "is-active" : "";
+              selected = user.id === parseInt(selectedId, 10) ? "is-active" : "";
               img = "";
               if (user.beforeDivider != null) {
                 "<li> <a href='#' class='" + selected + "'> " + user.name + " </a> </li>";
@@ -234,7 +263,7 @@
                 }
               }
               // split into three parts so we can remove the username section if nessesary
-              listWithName = "<li> <a href='#' class='dropdown-menu-user-link " + selected + "'> " + img + " <strong class='dropdown-menu-user-full-name'> " + user.name + " </strong>";
+              listWithName = "<li data-user-id=" + user.id + "> <a href='#' class='dropdown-menu-user-link " + selected + "'> " + img + " <strong class='dropdown-menu-user-full-name'> " + user.name + " </strong>";
               listWithUserName = "<span class='dropdown-menu-user-username'> " + username + " </span>";
               listClosingTags = "</a> </li>";
               if (username === '') {
@@ -274,7 +303,7 @@
                   if (firstUser) {
                     // Move current user to the front of the list
                     ref = data.results;
-                    for (index = j = 0, len = ref.length; j < len; index = ++j) {
+                    for (index = j = 0, len = ref.length; j < len; index = (j += 1)) {
                       obj = ref[index];
                       if (obj.username === firstUser) {
                         data.results.splice(index, 1);
@@ -367,7 +396,7 @@
     };
 
     UsersSelect.prototype.user = function(user_id, callback) {
-      if(!/^\d+$/.test(user_id)) {
+      if (!/^\d+$/.test(user_id)) {
         return false;
       }
 
@@ -417,7 +446,5 @@
     };
 
     return UsersSelect;
-
   })();
-
-}).call(this);
+}).call(window);

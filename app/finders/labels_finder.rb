@@ -20,8 +20,17 @@ class LabelsFinder < UnionFinder
 
     if project?
       if project
-        label_ids << project.group.labels if project.group.present?
-        label_ids << project.labels
+        if project.group.present?
+          labels_table = Label.arel_table
+
+          label_ids << Label.where(
+            labels_table[:type].eq('GroupLabel').and(labels_table[:group_id].eq(project.group.id)).or(
+              labels_table[:type].eq('ProjectLabel').and(labels_table[:project_id].eq(project.id))
+            )
+          )
+        else
+          label_ids << project.labels
+        end
       end
     else
       label_ids << Label.where(group_id: projects.group_ids)

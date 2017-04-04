@@ -1,37 +1,55 @@
 module Gitlab
   module Auth
-    class MissingPersonalTokenError < StandardError; end
+    MissingPersonalTokenError = Class.new(StandardError)
+
+    # Scopes used for GitLab API access
+    API_SCOPES = [:api, :read_user].freeze
+
+    # Scopes used for OpenID Connect
+    OPENID_SCOPES = [:openid].freeze
+
+    # Default scopes for OAuth applications that don't define their own
+    DEFAULT_SCOPES = [:api].freeze
+
+    # Other available scopes
+    OPTIONAL_SCOPES = (API_SCOPES + OPENID_SCOPES - DEFAULT_SCOPES).freeze
 
     class << self
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 
+        # `user_with_password_for_git` should be the last check
+        # because it's the most expensive, especially when LDAP
+        # is enabled.
         result =
           service_request_check(login, password, project) ||
           build_access_token_check(login, password) ||
-          user_with_password_for_git(login, password) ||
-          oauth_access_token_check(login, password) ||
           lfs_token_check(login, password) ||
-          personal_access_token_check(login, password) ||
+          oauth_access_token_check(login, password) ||
+          user_with_password_for_git(login, password) ||
+          personal_access_token_check(password) ||
           Gitlab::Auth::Result.new
 
         rate_limit!(ip, success: result.success?, login: login)
+        Gitlab::Auth::UniqueIpsLimiter.limit_user!(result.actor)
 
         result
       end
 
       def find_with_user_password(login, password)
-        user = User.by_login(login)
+        Gitlab::Auth::UniqueIpsLimiter.limit_user! do
+          user = User.by_login(login)
 
-        # If no user is found, or it's an LDAP server, try LDAP.
-        #   LDAP users are only authenticated via LDAP
-        if user.nil? || user.ldap_user?
-          # Second chance - try LDAP authentication
-          return nil unless Gitlab::LDAP::Config.enabled?
+          # If no user is found, or it's an LDAP server, try LDAP.
+          #   LDAP users are only authenticated via LDAP
+          if user.nil? || user.ldap_user?
+            # Second chance - try LDAP authentication
+            return nil unless Gitlab::LDAP::Config.enabled?
 
-          Gitlab::LDAP::Authentication.login(login, password)
-        else
-          user if user.valid_password?(password)
+            Gitlab::LDAP::Authentication.login(login, password)
+          else
+            user if user.active? && user.valid_password?(password)
+          end
         end
       end
 
@@ -88,19 +106,29 @@ module Gitlab
       def oauth_access_token_check(login, password)
         if login == "oauth2" && password.present?
           token = Doorkeeper::AccessToken.by_token(password)
-          if token && token.accessible?
+          if valid_oauth_token?(token)
             user = User.find_by(id: token.resource_owner_id)
             Gitlab::Auth::Result.new(user, nil, :oauth, read_authentication_abilities)
           end
         end
       end
 
-      def personal_access_token_check(login, password)
-        if login && password
-          user = User.find_by_personal_access_token(password)
-          validation = User.by_login(login)
-          Gitlab::Auth::Result.new(user, nil, :personal_token, full_authentication_abilities) if user.present? && user == validation
+      def personal_access_token_check(password)
+        return unless password.present?
+
+        token = PersonalAccessTokensFinder.new(state: 'active').find_by(token: password)
+
+        if token && valid_api_token?(token)
+          Gitlab::Auth::Result.new(token.user, nil, :personal_token, full_authentication_abilities)
         end
+      end
+
+      def valid_oauth_token?(token)
+        token && token.accessible? && valid_api_token?(token)
+      end
+
+      def valid_api_token?(token)
+        AccessTokenValidationService.new(token).include_any_scope?(['api'])
       end
 
       def lfs_token_check(login, password)
@@ -124,7 +152,9 @@ module Gitlab
             read_authentication_abilities
           end
 
-        Result.new(actor, nil, token_handler.type, authentication_abilities) if Devise.secure_compare(token_handler.token, password)
+        if Devise.secure_compare(token_handler.token, password)
+          Gitlab::Auth::Result.new(actor, nil, token_handler.type, authentication_abilities)
+        end
       end
 
       def build_access_token_check(login, password)

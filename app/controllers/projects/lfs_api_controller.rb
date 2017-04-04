@@ -1,8 +1,7 @@
 class Projects::LfsApiController < Projects::GitHttpClientController
-  include LfsHelper
+  include LfsRequest
 
-  before_action :require_lfs_enabled!
-  before_action :lfs_check_access!, except: [:deprecated]
+  skip_before_action :lfs_check_access!, only: [:deprecated]
 
   def batch
     unless objects.present?
@@ -31,6 +30,14 @@ class Projects::LfsApiController < Projects::GitHttpClientController
 
   private
 
+  def download_request?
+    params[:operation] == 'download'
+  end
+
+  def upload_request?
+    params[:operation] == 'upload'
+  end
+
   def existing_oids
     @existing_oids ||= begin
       storage_project.lfs_objects.where(oid: objects.map { |o| o['oid'].to_s }).pluck(:oid)
@@ -41,6 +48,10 @@ class Projects::LfsApiController < Projects::GitHttpClientController
     objects.each do |object|
       if existing_oids.include?(object[:oid])
         object[:actions] = download_actions(object)
+
+        if Guest.can?(:download_code, project)
+          object[:authenticated] = true
+        end
       else
         object[:error] = {
           code: 404,
@@ -78,13 +89,5 @@ class Projects::LfsApiController < Projects::GitHttpClientController
         }.compact
       }
     }
-  end
-
-  def download_request?
-    params[:operation] == 'download'
-  end
-
-  def upload_request?
-    params[:operation] == 'upload'
   end
 end

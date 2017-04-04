@@ -1,8 +1,9 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, one-var, one-var-declaration-per-line, consistent-return, no-param-reassign, padded-blocks, no-undef, max-len */
-(function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+/* eslint-disable func-names, prefer-arrow-callback, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, one-var-declaration-per-line, consistent-return, no-param-reassign, max-len */
 
-  this.SingleFileDiff = (function() {
+(function() {
+  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
+
+  window.SingleFileDiff = (function() {
     var COLLAPSED_HTML, ERROR_HTML, LOADING_HTML, WRAPPER;
 
     WRAPPER = '<div class="diff-content diff-wrap-lines"></div>';
@@ -13,7 +14,7 @@
 
     COLLAPSED_HTML = '<div class="nothing-here-block diff-collapsed">This diff is collapsed. <a class="click-to-expand">Click to expand it.</a></div>';
 
-    function SingleFileDiff(file, forceLoad, cb) {
+    function SingleFileDiff(file) {
       this.file = file;
       this.toggleDiff = bind(this.toggleDiff, this);
       this.content = $('.diff-content', this.file);
@@ -31,15 +32,14 @@
         this.content.after(this.collapsedContent);
         this.$toggleIcon.addClass('fa-caret-down');
       }
-      $('.file-title, .click-to-expand', this.file).on('click', this.toggleDiff);
-      if (forceLoad) {
-        this.toggleDiff(null, cb);
-      }
+
+      $('.js-file-title, .click-to-expand', this.file).on('click', (function (e) {
+        this.toggleDiff($(e.target));
+      }).bind(this));
     }
 
-    SingleFileDiff.prototype.toggleDiff = function(e, cb) {
-      var $target = $(e.target);
-      if (!$target.hasClass('file-title') && !$target.hasClass('click-to-expand') && !$target.hasClass('diff-toggle-caret')) return;
+    SingleFileDiff.prototype.toggleDiff = function($target, cb) {
+      if (!$target.hasClass('js-file-title') && !$target.hasClass('click-to-expand') && !$target.hasClass('diff-toggle-caret')) return;
       this.isOpen = !this.isOpen;
       if (!this.isOpen && !this.hasError) {
         this.content.hide();
@@ -86,15 +86,13 @@
     };
 
     return SingleFileDiff;
-
   })();
 
-  $.fn.singleFileDiff = function(forceLoad, cb) {
+  $.fn.singleFileDiff = function() {
     return this.each(function() {
-      if (!$.data(this, 'singleFileDiff') || forceLoad) {
-        return $.data(this, 'singleFileDiff', new SingleFileDiff(this, forceLoad, cb));
+      if (!$.data(this, 'singleFileDiff')) {
+        return $.data(this, 'singleFileDiff', new window.SingleFileDiff(this));
       }
     });
   };
-
-}).call(this);
+}).call(window);

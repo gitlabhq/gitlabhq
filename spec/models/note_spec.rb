@@ -42,7 +42,7 @@ describe Note, models: true do
     context 'when noteable and note project differ' do
       subject do
         build(:note, noteable: build_stubbed(:issue),
-                     project: build_stubbed(:project))
+                     project: build_stubbed(:empty_project))
       end
 
       it { is_expected.to be_invalid }
@@ -51,6 +51,19 @@ describe Note, models: true do
     context 'when noteable and note project are the same' do
       subject { create(:note) }
       it { is_expected.to be_valid }
+    end
+
+    context 'when project is missing for a project related note' do
+      subject { build(:note, project: nil, noteable: build_stubbed(:issue)) }
+      it { is_expected.to be_invalid }
+    end
+
+    context 'when noteable is a personal snippet' do
+      subject { build(:note_on_personal_snippet) }
+
+      it 'is valid without project' do
+        is_expected.to be_valid
+      end
     end
   end
 
@@ -80,8 +93,8 @@ describe Note, models: true do
 
   describe 'authorization' do
     before do
-      @p1 = create(:project)
-      @p2 = create(:project)
+      @p1 = create(:empty_project)
+      @p2 = create(:empty_project)
       @u1 = create(:user)
       @u2 = create(:user)
       @u3 = create(:user)
@@ -125,7 +138,7 @@ describe Note, models: true do
   it_behaves_like 'an editable mentionable' do
     subject { create :note, noteable: issue, project: issue.project }
 
-    let(:issue) { create :issue }
+    let(:issue) { create(:issue, project: create(:project, :repository)) }
     let(:backref_text) { issue.gfm_reference }
     let(:set_mentionable_text) { ->(txt) { subject.note = txt } }
   end
@@ -139,6 +152,7 @@ describe Note, models: true do
         with([{
           text: note1.note,
           context: {
+            skip_project_check: false,
             pipeline: :note,
             cache_key: [note1, "note"],
             project: note1.project,
@@ -150,6 +164,7 @@ describe Note, models: true do
         with([{
           text: note2.note,
           context: {
+            skip_project_check: false,
             pipeline: :note,
             cache_key: [note2, "note"],
             project: note2.project,
@@ -159,44 +174,6 @@ describe Note, models: true do
 
       note1.all_references.users
       note2.all_references.users
-    end
-  end
-
-  describe '.search' do
-    let(:note) { create(:note_on_issue, note: 'WoW') }
-
-    it 'returns notes with matching content' do
-      expect(described_class.search(note.note)).to eq([note])
-    end
-
-    it 'returns notes with matching content regardless of the casing' do
-      expect(described_class.search('WOW')).to eq([note])
-    end
-
-    context "confidential issues" do
-      let(:user) { create(:user) }
-      let(:project) { create(:project) }
-      let(:confidential_issue) { create(:issue, :confidential, project: project, author: user) }
-      let(:confidential_note) { create(:note, note: "Random", noteable: confidential_issue, project: confidential_issue.project) }
-
-      it "returns notes with matching content if user can see the issue" do
-        expect(described_class.search(confidential_note.note, as_user: user)).to eq([confidential_note])
-      end
-
-      it "does not return notes with matching content if user can not see the issue" do
-        user = create(:user)
-        expect(described_class.search(confidential_note.note, as_user: user)).to be_empty
-      end
-
-      it "does not return notes with matching content for project members with guest role" do
-        user = create(:user)
-        project.team << [user, :guest]
-        expect(described_class.search(confidential_note.note, as_user: user)).to be_empty
-      end
-
-      it "does not return notes with matching content for unauthenticated users" do
-        expect(described_class.search(confidential_note.note)).to be_empty
-      end
     end
   end
 
@@ -214,16 +191,16 @@ describe Note, models: true do
 
   describe "cross_reference_not_visible_for?" do
     let(:private_user)    { create(:user) }
-    let(:private_project) { create(:project, namespace: private_user.namespace).tap { |p| p.team << [private_user, :master] } }
+    let(:private_project) { create(:empty_project, namespace: private_user.namespace) { |p| p.team << [private_user, :master] } }
     let(:private_issue)   { create(:issue, project: private_project) }
 
-    let(:ext_proj)  { create(:project, :public) }
+    let(:ext_proj)  { create(:empty_project, :public) }
     let(:ext_issue) { create(:issue, project: ext_proj) }
 
     let(:note) do
       create :note,
         noteable: ext_issue, project: ext_proj,
-        note: "Mentioned in issue #{private_issue.to_reference(ext_proj)}",
+        note: "mentioned in issue #{private_issue.to_reference(ext_proj)}",
         system: true
     end
 
@@ -260,7 +237,7 @@ describe Note, models: true do
 
   describe '#participants' do
     it 'includes the note author' do
-      project = create(:project, :public)
+      project = create(:empty_project, :public)
       issue = create(:issue, project: project)
       note = create(:note_on_issue, noteable: issue, project: project)
 
@@ -342,6 +319,84 @@ describe Note, models: true do
         expect(reloaded_note.discussion_id).not_to be_nil
         expect(reloaded_note.discussion_id).to match(/\A\h{40}\z/)
       end
+    end
+  end
+
+  describe '#for_personal_snippet?' do
+    it 'returns false for a project snippet note' do
+      expect(build(:note_on_project_snippet).for_personal_snippet?).to be_falsy
+    end
+
+    it 'returns true for a personal snippet note' do
+      expect(build(:note_on_personal_snippet).for_personal_snippet?).to be_truthy
+    end
+  end
+
+  describe '#to_ability_name' do
+    it 'returns snippet for a project snippet note' do
+      expect(build(:note_on_project_snippet).to_ability_name).to eq('snippet')
+    end
+
+    it 'returns personal_snippet for a personal snippet note' do
+      expect(build(:note_on_personal_snippet).to_ability_name).to eq('personal_snippet')
+    end
+
+    it 'returns merge_request for an MR note' do
+      expect(build(:note_on_merge_request).to_ability_name).to eq('merge_request')
+    end
+
+    it 'returns issue for an issue note' do
+      expect(build(:note_on_issue).to_ability_name).to eq('issue')
+    end
+
+    it 'returns issue for a commit note' do
+      expect(build(:note_on_commit).to_ability_name).to eq('commit')
+    end
+  end
+
+  describe '#cache_markdown_field' do
+    let(:html) { '<p>some html</p>'}
+
+    context 'note for a project snippet' do
+      let(:note) { build(:note_on_project_snippet) }
+
+      before do
+        expect(Banzai::Renderer).to receive(:cacheless_render_field).
+          with(note, :note, { skip_project_check: false }).and_return(html)
+
+        note.save
+      end
+
+      it 'creates a note' do
+        expect(note.note_html).to eq(html)
+      end
+    end
+
+    context 'note for a personal snippet' do
+      let(:note) { build(:note_on_personal_snippet) }
+
+      before do
+        expect(Banzai::Renderer).to receive(:cacheless_render_field).
+          with(note, :note, { skip_project_check: true }).and_return(html)
+
+        note.save
+      end
+
+      it 'creates a note' do
+        expect(note.note_html).to eq(html)
+      end
+    end
+  end
+
+  describe 'expiring ETag cache' do
+    let(:note) { build(:note_on_issue) }
+
+    it "expires cache for note's issue when note is saved" do
+      expect_any_instance_of(Gitlab::EtagCaching::Store)
+        .to receive(:touch)
+        .with("/#{note.project.namespace.to_param}/#{note.project.to_param}/noteable/issue/#{note.noteable.id}/notes")
+
+      note.save!
     end
   end
 end

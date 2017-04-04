@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'CI Lint' do
+describe 'CI Lint', js: true do
   before do
     login_as :user
   end
@@ -8,7 +8,10 @@ describe 'CI Lint' do
   describe 'YAML parsing' do
     before do
       visit ci_lint_path
-      fill_in 'content', with: yaml_content
+      # Ace editor updates a hidden textarea and it happens asynchronously
+      # `sleep 0.1` is actually needed here because of this
+      execute_script("ace.edit('ci-editor').setValue(" + yaml_content.to_json + ");")
+      sleep 0.1
       click_on 'Validate'
     end
 
@@ -40,7 +43,7 @@ describe 'CI Lint' do
       let(:yaml_content) { 'my yaml content' }
 
       it 'loads previous YAML content after validation' do
-        expect(page).to have_field('content', with: 'my yaml content', type: 'textarea')
+        expect(page).to have_field('content', with: 'my yaml content', visible: false, type: 'textarea')
       end
     end
   end

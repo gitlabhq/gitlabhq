@@ -12,7 +12,17 @@ describe Banzai::ReferenceParser::ExternalIssueParser, lib: true do
     context 'when the link has a data-issue attribute' do
       before { link['data-external-issue'] = 123 }
 
-      it_behaves_like "referenced feature visibility", "issues"
+      levels = [ProjectFeature::DISABLED, ProjectFeature::PRIVATE, ProjectFeature::ENABLED]
+
+      levels.each do |level|
+        it "creates reference when the feature is #{level}" do
+          project.project_feature.update(issues_access_level: level)
+
+          visible_nodes = subject.nodes_visible_to_user(user, [link])
+
+          expect(visible_nodes).to include(link)
+        end
+      end
     end
   end
 

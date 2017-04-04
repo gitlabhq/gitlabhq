@@ -19,7 +19,7 @@ GET /namespaces
 Example request:
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/namespaces
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/namespaces
 ```
 
 Example response:
@@ -35,6 +35,12 @@ Example response:
     "id": 2,
     "path": "group1",
     "kind": "group"
+  },
+  {
+    "id": 3,
+    "path": "bar",
+    "kind": "group",
+    "full_path": "foo/bar",
   }
 ]
 ```
@@ -54,7 +60,7 @@ GET /namespaces?search=foobar
 Example request:
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/namespaces?search=twitter
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/namespaces?search=twitter
 ```
 
 Example response:
@@ -64,7 +70,8 @@ Example response:
   {
     "id": 4,
     "path": "twitter",
-    "kind": "group"
+    "kind": "group",
+    "full_path": "twitter",
   }
 ]
 ```

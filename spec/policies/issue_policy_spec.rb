@@ -5,7 +5,7 @@ describe IssuePolicy, models: true do
 
   describe '#rules' do
     context 'using a regular issue' do
-      let(:project) { create(:project, :public) }
+      let(:project) { create(:empty_project, :public) }
       let(:issue) { create(:issue, project: project) }
       let(:policies) { described_class.abilities(user, issue).to_set }
 

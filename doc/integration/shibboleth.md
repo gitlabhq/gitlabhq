@@ -2,7 +2,7 @@
 
 This documentation is for enabling shibboleth with omnibus-gitlab package.
 
-In order to enable Shibboleth support in gitlab we need to use Apache instead of Nginx (It may be possible to use Nginx, however this is difficult to configure using the bundled NIGNX provided in the omnibus-gitlab package). Apache uses mod_shib2 module for shibboleth authentication and can pass attributes as headers to omniauth-shibboleth provider.
+In order to enable Shibboleth support in gitlab we need to use Apache instead of Nginx (It may be possible to use Nginx, however this is difficult to configure using the bundled Nginx provided in the omnibus-gitlab package). Apache uses mod_shib2 module for shibboleth authentication and can pass attributes as headers to omniauth-shibboleth provider.
 
 
 To enable the Shibboleth OmniAuth provider you must:
@@ -70,10 +70,9 @@ gitlab_rails['omniauth_providers'] = [
 ]
 
 ```
-1. Save changes and reconfigure gitlab:
-```
-sudo gitlab-ctl reconfigure
-```
+
+1. [Reconfigure][] or [restart GitLab][] for the changes to take effect if you
+   installed GitLab via Omnibus or from source respectively.
 
 On the sign in page there should now be a "Sign in with: Shibboleth" icon below the regular sign in form. Click the icon to begin the authentication process. You will be redirected to IdP server (Depends on your Shibboleth module configuration). If everything goes well the user will be returned to GitLab and will be signed in.
 
@@ -123,3 +122,6 @@ you will not get a shibboleth session!
   RequestHeader set X_FORWARDED_PROTO 'https'
   RequestHeader set X-Forwarded-Ssl on
 ```
+
+[reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source
