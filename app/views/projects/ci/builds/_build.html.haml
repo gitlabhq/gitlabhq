@@ -6,10 +6,11 @@
 - stage = local_assigns.fetch(:stage, false)
 - coverage = local_assigns.fetch(:coverage, false)
 - allow_retry = local_assigns.fetch(:allow_retry, false)
+- pipeline = build.pipeline.present(current_user: current_user)
 
 %tr.build.commit{ class: ('retried' if retried) }
   %td.status
-    = render "ci/status/badge", status: build.detailed_status(current_user), title: status_title(build.pipeline)
+    = render "ci/status/badge", status: build.detailed_status(current_user), title: pipeline.status_title
 
   %td.branch-commit
     - if can?(current_user, :read_build, build)
@@ -51,11 +52,11 @@
 
   - if pipeline_link
     %td
-      = link_to pipeline_path(build.pipeline) do
-        %span.pipeline-id ##{build.pipeline.id}
+      = link_to pipeline_path(pipeline) do
+        %span.pipeline-id ##{pipeline.id}
       %span by
-      - if build.pipeline.user
-        = user_avatar(user: build.pipeline.user, size: 20)
+      - if pipeline.user
+        = user_avatar(user: pipeline.user, size: 20)
       - else
         %span.monospace API
 
