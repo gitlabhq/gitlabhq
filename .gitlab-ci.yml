@@ -9,6 +9,7 @@ variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
   ELASTIC_URL: "http://elasticsearch:9200"
   RAILS_ENV: "test"
+  NODE_ENV: "test"
   SIMPLECOV: "true"
   SETUP_DB: "true"
   USE_BUNDLE_INSTALL: "true"
@@ -134,9 +135,7 @@ setup-test-env:
   stage: prepare
   script:
     - node --version
-    - yarn --version
     - yarn install --pure-lockfile
-    - yarn check # ensure that yarn.lock matches package.json
     - bundle exec rake gitlab:assets:compile
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
   artifacts:
