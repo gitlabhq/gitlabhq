@@ -4,9 +4,13 @@ require 'forwardable'
 
 class Repository
   include Gitlab::ShellAdapter
+<<<<<<< HEAD
   include Elastic::RepositoriesSearch
   include RepositoryMirroring
   prepend EE::Repository
+=======
+  include RepositoryMirroring
+>>>>>>> ce/master
 
   attr_accessor :path_with_namespace, :project
 

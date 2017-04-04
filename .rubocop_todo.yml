@@ -226,7 +226,11 @@ Style/PredicateName:
 Style/PreferredHashMethods:
   Enabled: false
 
+<<<<<<< HEAD
 # Offense count: 64
+=======
+# Offense count: 62
+>>>>>>> ce/master
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: compact, exploded

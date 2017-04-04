@@ -24,8 +24,5 @@ Capybara.ignore_hidden_elements = false
 Capybara::Screenshot.prune_strategy = :keep_last_run
 
 Spinach.hooks.before_run do
-  require 'spinach/capybara'
-  require 'capybara/rails'
-
   TestEnv.eager_load_driver_server
 end

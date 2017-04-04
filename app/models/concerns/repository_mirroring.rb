@@ -1,4 +1,5 @@
 module RepositoryMirroring
+<<<<<<< HEAD
   def storage_path
     @project.repository_storage_path
   end
@@ -11,6 +12,8 @@ module RepositoryMirroring
     gitlab_shell.delete_remote_branches(storage_path, path_with_namespace, remote, branches)
   end
 
+=======
+>>>>>>> ce/master
   def set_remote_as_mirror(name)
     config = raw_repository.rugged.config
 
@@ -26,6 +29,7 @@ module RepositoryMirroring
     fetch_remote(remote, forced: true)
     remove_remote(remote)
   end
+<<<<<<< HEAD
 
   def remote_tags(remote)
     gitlab_shell.list_remote_tags(storage_path, path_with_namespace, remote).map do |name, target|
@@ -48,4 +52,6 @@ module RepositoryMirroring
 
     branches
   end
+=======
+>>>>>>> ce/master
 end

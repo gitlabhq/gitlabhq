@@ -12,9 +12,11 @@ module Gitlab
     end
 
     def self.new_channel(address)
-      # NOTE: Gitaly currently runs on a Unix socket, so permissions are
+      address = address.sub(%r{^tcp://}, '') if URI(address).scheme == 'tcp'
+      # NOTE: When Gitaly runs on a Unix socket, permissions are
       # handled using the file system and no additional authentication is
       # required (therefore the :this_channel_is_insecure flag)
+      # TODO: Add authentication support when Gitaly is running on a TCP socket.
       GRPC::Core::Channel.new(address, {}, :this_channel_is_insecure)
     end
 

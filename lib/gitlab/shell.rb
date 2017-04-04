@@ -88,6 +88,7 @@ module Gitlab
       true
     end
 
+<<<<<<< HEAD
     def list_remote_tags(storage, name, remote)
       output, status = Popen.popen([gitlab_shell_projects_path, 'list-remote-tags', storage, "#{name}.git", remote])
       tags_with_targets = []
@@ -116,6 +117,8 @@ module Gitlab
       Hash[*tags_with_targets]
     end
 
+=======
+>>>>>>> ce/master
     # Fetch remote for repository
     #
     # name - project path with namespace
@@ -236,7 +239,10 @@ module Gitlab
     #   add_namespace("/path/to/storage", "gitlab")
     #
     def add_namespace(storage, name)
-      FileUtils.mkdir_p(full_path(storage, name), mode: 0770) unless exists?(storage, name)
+      path = full_path(storage, name)
+      FileUtils.mkdir_p(path, mode: 0770) unless exists?(storage, name)
+    rescue Errno::EEXIST => e
+      Rails.logger.warn("Directory exists as a file: #{e} at: #{path}")
     end
 
     # Remove directory from repositories storage
