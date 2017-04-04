@@ -23,7 +23,6 @@ var config = {
     main:                 './main.js',
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
-    simulate_drag:        './test_utils/simulate_drag.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',

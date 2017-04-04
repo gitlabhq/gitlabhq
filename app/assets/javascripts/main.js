@@ -195,6 +195,9 @@ require('./ldap_groups_select');
 require('./path_locks');
 require('./weight_select');
 
+// eslint-disable-next-line global-require
+if (process.env.NODE_ENV !== 'production') require('./test_utils/');
+
 document.addEventListener('beforeunload', function () {
   // Unbind scroll events
   $(document).off('scroll');
