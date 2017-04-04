@@ -37,7 +37,7 @@ module Gitlab
       def serialize_commit(event, st_commit, query)
         commit = Commit.new(Gitlab::Git::Commit.new(st_commit), @project)
 
-        AnalyticsCommitSerializer.new(project: @project, total_time: event['total_time']).represent(commit).as_json
+        AnalyticsCommitSerializer.new(project: @project, total_time: event['total_time']).represent(commit)
       end
     end
   end

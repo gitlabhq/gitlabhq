@@ -132,6 +132,18 @@ module API
 
         { success: true, recovery_codes: codes }
       end
+
+      post "/notify_post_receive" do
+        status 200
+
+        return unless Gitlab::GitalyClient.enabled?
+
+        begin
+          Gitlab::GitalyClient::Notifications.new(params[:repo_path]).post_receive
+        rescue GRPC::Unavailable => e
+          render_api_error(e, 500)
+        end
+      end
     end
   end
 end

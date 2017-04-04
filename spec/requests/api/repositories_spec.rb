@@ -8,7 +8,7 @@ describe API::Repositories, api: true  do
 
   let(:user) { create(:user) }
   let(:guest) { create(:user).tap { |u| create(:project_member, :guest, user: u, project: project) } }
-  let!(:project) { create(:project, creator_id: user.id) }
+  let!(:project) { create(:project, :repository, creator: user) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
 
   describe "GET /projects/:id/repository/tree" do
@@ -19,10 +19,10 @@ describe API::Repositories, api: true  do
         get api(route, current_user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
 
         first_commit = json_response.first
-
-        expect(json_response).to be_an Array
         expect(first_commit['name']).to eq('bar')
         expect(first_commit['type']).to eq('tree')
         expect(first_commit['mode']).to eq('040000')
@@ -30,7 +30,7 @@ describe API::Repositories, api: true  do
 
       context 'when ref does not exist' do
         it_behaves_like '404 response' do
-          let(:request) { get api("#{route}?ref_name=foo", current_user) }
+          let(:request) { get api("#{route}?ref=foo", current_user) }
           let(:message) { '404 Tree Not Found' }
         end
       end
@@ -49,6 +49,7 @@ describe API::Repositories, api: true  do
 
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
+          expect(response).to include_pagination_headers
           expect(json_response[4]['name']).to eq('html')
           expect(json_response[4]['path']).to eq('files/html')
           expect(json_response[4]['type']).to eq('tree')
@@ -65,7 +66,7 @@ describe API::Repositories, api: true  do
 
         context 'when ref does not exist' do
           it_behaves_like '404 response' do
-            let(:request) { get api("#{route}?recursive=1&ref_name=foo", current_user) }
+            let(:request) { get api("#{route}?recursive=1&ref=foo", current_user) }
             let(:message) { '404 Tree Not Found' }
           end
         end
@@ -74,7 +75,7 @@ describe API::Repositories, api: true  do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository tree' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -99,82 +100,70 @@ describe API::Repositories, api: true  do
     end
   end
 
-  {
-    'blobs/:sha' => 'blobs/master',
-    'commits/:sha/blob' => 'commits/master/blob'
-  }.each do |desc_path, example_path|
-    describe "GET /projects/:id/repository/#{desc_path}" do
-      let(:route) { "/projects/#{project.id}/repository/#{example_path}?filepath=README.md" }
+  describe "GET /projects/:id/repository/blobs/:sha" do
+    let(:route) { "/projects/#{project.id}/repository/blobs/#{sample_blob.oid}" }
 
-      shared_examples_for 'repository blob' do
-        it 'returns the repository blob' do
-          get api(route, current_user)
+    shared_examples_for 'repository blob' do
+      it 'returns blob attributes as json' do
+        get api(route, current_user)
 
-          expect(response).to have_http_status(200)
-        end
-
-        context 'when sha does not exist' do
-          it_behaves_like '404 response' do
-            let(:request) { get api(route.sub('master', 'invalid_branch_name'), current_user) }
-            let(:message) { '404 Commit Not Found' }
-          end
-        end
-
-        context 'when filepath does not exist' do
-          it_behaves_like '404 response' do
-            let(:request) { get api(route.sub('README.md', 'README.invalid'), current_user) }
-            let(:message) { '404 File Not Found' }
-          end
-        end
-
-        context 'when no filepath is given' do
-          it_behaves_like '400 response' do
-            let(:request) { get api(route.sub('?filepath=README.md', ''), current_user) }
-          end
-        end
-
-        context 'when repository is disabled' do
-          include_context 'disabled repository'
-
-          it_behaves_like '403 response' do
-            let(:request) { get api(route, current_user) }
-          end
-        end
+        expect(response).to have_http_status(200)
+        expect(json_response['size']).to eq(111)
+        expect(json_response['encoding']).to eq("base64")
+        expect(Base64.decode64(json_response['content']).lines.first).to eq("class Commit\n")
+        expect(json_response['sha']).to eq(sample_blob.oid)
       end
 
-      context 'when unauthenticated', 'and project is public' do
-        it_behaves_like 'repository blob' do
-          let(:project) { create(:project, :public) }
-          let(:current_user) { nil }
-        end
-      end
-
-      context 'when unauthenticated', 'and project is private' do
+      context 'when sha does not exist' do
         it_behaves_like '404 response' do
-          let(:request) { get api(route) }
-          let(:message) { '404 Project Not Found' }
+          let(:request) { get api(route.sub(sample_blob.oid, '123456'), current_user) }
+          let(:message) { '404 Blob Not Found' }
         end
       end
 
-      context 'when authenticated', 'as a developer' do
-        it_behaves_like 'repository blob' do
-          let(:current_user) { user }
-        end
-      end
+      context 'when repository is disabled' do
+        include_context 'disabled repository'
 
-      context 'when authenticated', 'as a guest' do
         it_behaves_like '403 response' do
-          let(:request) { get api(route, guest) }
+          let(:request) { get api(route, current_user) }
         end
+      end
+    end
+
+    context 'when unauthenticated', 'and project is public' do
+      it_behaves_like 'repository blob' do
+        let(:project) { create(:project, :public, :repository) }
+        let(:current_user) { nil }
+      end
+    end
+
+    context 'when unauthenticated', 'and project is private' do
+      it_behaves_like '404 response' do
+        let(:request) { get api(route) }
+        let(:message) { '404 Project Not Found' }
+      end
+    end
+
+    context 'when authenticated', 'as a developer' do
+      it_behaves_like 'repository blob' do
+        let(:current_user) { user }
+      end
+    end
+
+    context 'when authenticated', 'as a guest' do
+      it_behaves_like '403 response' do
+        let(:request) { get api(route, guest) }
       end
     end
   end
 
-  describe "GET /projects/:id/repository/raw_blobs/:sha" do
-    let(:route) { "/projects/#{project.id}/repository/raw_blobs/#{sample_blob.oid}" }
+  describe "GET /projects/:id/repository/blobs/:sha/raw" do
+    let(:route) { "/projects/#{project.id}/repository/blobs/#{sample_blob.oid}/raw" }
 
     shared_examples_for 'repository raw blob' do
       it 'returns the repository raw blob' do
+        expect(Gitlab::Workhorse).to receive(:send_git_blob)
+
         get api(route, current_user)
 
         expect(response).to have_http_status(200)
@@ -198,7 +187,7 @@ describe API::Repositories, api: true  do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository raw blob' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -273,7 +262,7 @@ describe API::Repositories, api: true  do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository archive' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -347,7 +336,7 @@ describe API::Repositories, api: true  do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository compare' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -380,10 +369,10 @@ describe API::Repositories, api: true  do
         get api(route, current_user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
 
         first_contributor = json_response.first
-
         expect(first_contributor['email']).to eq('tiagonbotelho@hotmail.com')
         expect(first_contributor['name']).to eq('tiagonbotelho')
         expect(first_contributor['commits']).to eq(1)
@@ -394,7 +383,7 @@ describe API::Repositories, api: true  do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository contributors' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end

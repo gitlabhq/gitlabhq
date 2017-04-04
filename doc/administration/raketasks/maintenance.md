@@ -27,6 +27,7 @@ Ruby Version:     2.1.5p273
 Gem Version:      2.4.3
 Bundler Version:  1.7.6
 Rake Version:     10.3.2
+Redis Version:    3.2.5
 Sidekiq Version:  2.17.8
 
 GitLab information
@@ -171,14 +172,14 @@ Omnibus packages.
 
 ```
 cd /home/git/gitlab
-sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production
 ```
 
 For omnibus versions, the unoptimized assets (JavaScript, CSS) are frozen at
 the release of upstream GitLab. The omnibus version includes optimized versions
 of those assets. Unless you are modifying the JavaScript / CSS code on your
 production machine after installing the package, there should be no reason to redo
-rake assets:precompile on the production machine. If you suspect that assets
+rake gitlab:assets:compile on the production machine. If you suspect that assets
 have been corrupted, you should reinstall the omnibus package.
 
 ## Tracking Deployments

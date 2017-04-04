@@ -2,7 +2,7 @@
   = f.label :import_url, class: 'control-label' do
     %span Git repository URL
   .col-sm-10
-    = f.text_field :import_url, class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git', disabled: true
+    = f.text_field :import_url, autocomplete: 'off', class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git', disabled: true
 
     .well.prepend-top-20
       %ul
@@ -13,4 +13,4 @@
         %li
           The import will time out after 15 minutes. For repositories that take longer, use a clone/push combination.
         %li
-          To migrate an SVN repository, check out #{link_to "this document", "http://doc.gitlab.com/ce/workflow/importing/migrating_from_svn.html"}.
+          To migrate an SVN repository, check out #{link_to "this document", help_page_path('workflow/importing/migrating_from_svn')}.

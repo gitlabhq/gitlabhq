@@ -33,13 +33,13 @@
         this.$toggleIcon.addClass('fa-caret-down');
       }
 
-      $('.file-title, .click-to-expand', this.file).on('click', (function (e) {
+      $('.js-file-title, .click-to-expand', this.file).on('click', (function (e) {
         this.toggleDiff($(e.target));
       }).bind(this));
     }
 
     SingleFileDiff.prototype.toggleDiff = function($target, cb) {
-      if (!$target.hasClass('file-title') && !$target.hasClass('click-to-expand') && !$target.hasClass('diff-toggle-caret')) return;
+      if (!$target.hasClass('js-file-title') && !$target.hasClass('click-to-expand') && !$target.hasClass('diff-toggle-caret')) return;
       this.isOpen = !this.isOpen;
       if (!this.isOpen && !this.hasError) {
         this.content.hide();
@@ -95,4 +95,4 @@
       }
     });
   };
-}).call(this);
+}).call(window);

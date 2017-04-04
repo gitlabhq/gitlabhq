@@ -211,7 +211,7 @@ describe "Admin::Users", feature: true do
         fill_in "user_email", with: "bigbang@mail.com"
         fill_in "user_password", with: "AValidPassword1"
         fill_in "user_password_confirmation", with: "AValidPassword1"
-        check "user_admin"
+        choose "user_access_level_admin"
         click_button "Save changes"
       end
 

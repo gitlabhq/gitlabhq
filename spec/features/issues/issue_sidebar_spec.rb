@@ -2,13 +2,14 @@ require 'rails_helper'
 
 feature 'Issue Sidebar', feature: true do
   include WaitForAjax
+  include MobileHelpers
 
   let(:project) { create(:project, :public) }
   let(:issue) { create(:issue, project: project) }
   let!(:user) { create(:user)}
+  let!(:label) { create(:label, project: project, title: 'bug') }
 
   before do
-    create(:label, project: project, title: 'bug')
     login_as(user)
   end
 
@@ -49,46 +50,70 @@ feature 'Issue Sidebar', feature: true do
       visit_issue(project, issue)
     end
 
-    describe 'when clicking on edit labels', js: true do
-      it 'shows dropdown option to create a new label' do
-        find('.block.labels .edit-link').click
-
-        page.within('.block.labels') do
-          expect(page).to have_content 'Create new'
-        end
+    context 'sidebar', js: true do
+      it 'changes size when the screen size is smaller' do
+        sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
+        # Resize the window
+        resize_screen_sm
+        # Make sure the sidebar is collapsed
+        expect(page).to have_css(sidebar_selector)
+        # Once is collapsed let's open the sidebard and reload
+        open_issue_sidebar
+        refresh
+        expect(page).to have_css(sidebar_selector)
+        # Restore the window size as it was including the sidebar
+        restore_window_size
+        open_issue_sidebar
       end
     end
 
-    context 'creating a new label', js: true do
-      it 'shows option to crate a new label is present' do
+    context 'editing issue labels', js: true do
+      before do
         page.within('.block.labels') do
           find('.edit-link').click
+        end
+      end
 
+      it 'shows option to create a new label' do
+        page.within('.block.labels') do
           expect(page).to have_content 'Create new'
         end
       end
 
-      it 'shows dropdown switches to "create label" section' do
-        page.within('.block.labels') do
-          find('.edit-link').click
-          click_link 'Create new'
-
-          expect(page).to have_content 'Create new label'
+      context 'creating a new label', js: true do
+        before do
+          page.within('.block.labels') do
+            click_link 'Create new'
+          end
         end
-      end
 
-      it 'adds new label' do
-        page.within('.block.labels') do
-          find('.edit-link').click
-          sleep 1
-          click_link 'Create new'
+        it 'shows dropdown switches to "create label" section' do
+          page.within('.block.labels') do
+            expect(page).to have_content 'Create new label'
+          end
+        end
 
-          fill_in 'new_label_name', with: 'wontfix'
-          page.find(".suggest-colors a", match: :first).click
-          click_button 'Create'
+        it 'adds new label' do
+          page.within('.block.labels') do
+            fill_in 'new_label_name', with: 'wontfix'
+            page.find(".suggest-colors a", match: :first).click
+            click_button 'Create'
 
-          page.within('.dropdown-page-one') do
-            expect(page).to have_content 'wontfix'
+            page.within('.dropdown-page-one') do
+              expect(page).to have_content 'wontfix'
+            end
+          end
+        end
+
+        it 'shows error message if label title is taken' do
+          page.within('.block.labels') do
+            fill_in 'new_label_name', with: label.title
+            page.find('.suggest-colors a', match: :first).click
+            click_button 'Create'
+
+            page.within('.dropdown-page-two') do
+              expect(page).to have_content 'Title has already been taken'
+            end
           end
         end
       end
@@ -108,5 +133,12 @@ feature 'Issue Sidebar', feature: true do
 
   def visit_issue(project, issue)
     visit namespace_project_issue_path(project.namespace, project, issue)
+  end
+
+  def open_issue_sidebar
+    page.within('aside.right-sidebar.right-sidebar-collapsed') do
+      find('.js-sidebar-toggle').click
+      sleep 1
+    end
   end
 end

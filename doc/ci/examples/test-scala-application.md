@@ -51,14 +51,14 @@ The `deploy` stage automatically deploys the project to Heroku using dpl.
 You can use other versions of Scala and SBT by defining them in
 `build.sbt`.
 
-## Display test coverage in build
+## Display test coverage in job
 
 Add the `Coverage was \[\d+.\d+\%\]` regular expression in the
-**Settings ➔ Edit Project ➔ Test coverage parsing** project setting to
+**Settings ➔ CI/CD Pipelines ➔ Coverage report** project setting to
 retrieve the [test coverage] rate from the build trace and have it
-displayed with your builds.
+displayed with your jobs.
 
-**Builds** must be enabled for this option to appear.
+**Pipelines** must be enabled for this option to appear.
 
 ## Heroku application
 

@@ -4,7 +4,7 @@ describe PostReceive do
   let(:changes) { "123456 789012 refs/heads/tést\n654321 210987 refs/tags/tag" }
   let(:wrongly_encoded_changes) { changes.encode("ISO-8859-1").force_encoding("UTF-8") }
   let(:base64_changes) { Base64.encode64(wrongly_encoded_changes) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:key) { create(:key, user: project.owner) }
   let(:key_id) { key.shell_id }
 
@@ -74,7 +74,7 @@ describe PostReceive do
 
   context "webhook" do
     it "fetches the correct project" do
-      expect(Project).to receive(:find_with_namespace).with(project.path_with_namespace).and_return(project)
+      expect(Project).to receive(:find_by_full_path).with(project.path_with_namespace).and_return(project)
       PostReceive.new.perform(pwd(project), key_id, base64_changes)
     end
 
@@ -89,7 +89,7 @@ describe PostReceive do
     end
 
     it "asks the project to trigger all hooks" do
-      allow(Project).to receive(:find_with_namespace).and_return(project)
+      allow(Project).to receive(:find_by_full_path).and_return(project)
       expect(project).to receive(:execute_hooks).twice
       expect(project).to receive(:execute_services).twice
 
@@ -97,7 +97,7 @@ describe PostReceive do
     end
 
     it "enqueues a UpdateMergeRequestsWorker job" do
-      allow(Project).to receive(:find_with_namespace).and_return(project)
+      allow(Project).to receive(:find_by_full_path).and_return(project)
       expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(project.id, project.owner.id, any_args)
 
       PostReceive.new.perform(pwd(project), key_id, base64_changes)
@@ -105,6 +105,6 @@ describe PostReceive do
   end
 
   def pwd(project)
-    File.join(Gitlab.config.repositories.storages.default, project.path_with_namespace)
+    File.join(Gitlab.config.repositories.storages.default['path'], project.path_with_namespace)
   end
 end

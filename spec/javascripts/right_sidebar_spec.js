@@ -1,11 +1,8 @@
 /* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, new-parens, no-return-assign, new-cap, vars-on-top, max-len */
 /* global Sidebar */
 
-/*= require right_sidebar */
-/*= require jquery */
-/*= require js.cookie */
-
-/*= require extensions/jquery.js */
+import '~/commons/bootstrap';
+import '~/right_sidebar';
 
 (function() {
   var $aside, $icon, $labelsIcon, $page, $toggle, assertSidebarState;
@@ -37,6 +34,8 @@
   describe('RightSidebar', function() {
     var fixtureName = 'issues/open-issue.html.raw';
     preloadFixtures(fixtureName);
+    loadJSONFixtures('todos/todos.json');
+
     beforeEach(function() {
       loadFixtures(fixtureName);
       this.sidebar = new Sidebar;
@@ -65,7 +64,7 @@
     });
 
     it('should broadcast todo:toggle event when add todo clicked', function() {
-      var todos = getJSONFixture('todos.json');
+      var todos = getJSONFixture('todos/todos.json');
       spyOn(jQuery, 'ajax').and.callFake(function() {
         var d = $.Deferred();
         var response = todos;
@@ -75,9 +74,15 @@
 
       var todoToggleSpy = spyOnEvent(document, 'todo:toggle');
 
-      $('.js-issuable-todo').click();
+      $('.issuable-sidebar-header .js-issuable-todo').click();
 
       expect(todoToggleSpy.calls.count()).toEqual(1);
     });
+
+    it('should not hide collapsed icons', () => {
+      [].forEach.call(document.querySelectorAll('.sidebar-collapsed-icon'), (el) => {
+        expect(el.querySelector('.fa, svg').classList.contains('hidden')).toBeFalsy();
+      });
+    });
   });
-}).call(this);
+}).call(window);

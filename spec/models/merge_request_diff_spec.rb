@@ -109,7 +109,7 @@ describe MergeRequestDiff, models: true do
         { id: 'sha2' }
       ]
 
-      expect(subject.commits_sha).to eq(['sha1', 'sha2'])
+      expect(subject.commits_sha).to eq(%w(sha1 sha2))
     end
   end
 

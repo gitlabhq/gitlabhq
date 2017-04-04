@@ -51,7 +51,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
 
   include RepoHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:current_user) { project.owner }
   let(:repository) { project.repository }
   let(:file_name) { "test-file" }
@@ -99,7 +99,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
     Files::CreateService.new(
       project,
       current_user,
-      source_branch: branch_name,
+      start_branch: branch_name,
       target_branch: branch_name,
       commit_message: "Create file",
       file_path: file_name,
@@ -112,7 +112,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
     Files::UpdateService.new(
       project,
       current_user,
-      source_branch: branch_name,
+      start_branch: branch_name,
       target_branch: branch_name,
       commit_message: "Update file",
       file_path: file_name,
@@ -122,10 +122,10 @@ describe Gitlab::Diff::PositionTracer, lib: true do
   end
 
   def delete_file(branch_name, file_name)
-    Files::DeleteService.new(
+    Files::DestroyService.new(
       project,
       current_user,
-      source_branch: branch_name,
+      start_branch: branch_name,
       target_branch: branch_name,
       commit_message: "Delete file",
       file_path: file_name
@@ -1640,7 +1640,9 @@ describe Gitlab::Diff::PositionTracer, lib: true do
         }
 
         merge_request = create(:merge_request, source_branch: second_create_file_commit.sha, target_branch: branch_name, source_project: project)
-        repository.merge(current_user, merge_request, options)
+
+        repository.merge(current_user, merge_request.diff_head_sha, merge_request, options)
+
         project.commit(branch_name)
       end
 

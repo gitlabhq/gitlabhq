@@ -13,12 +13,12 @@
         filterable: true,
         fieldName: 'group_id',
         search: {
-          fields: ['name']
+          fields: ['full_name']
         },
         data: function(term, callback) {
           return Api.groups(term, {}, function(data) {
             data.unshift({
-              name: 'Any'
+              full_name: 'Any'
             });
             data.splice(1, 0, 'divider');
             return callback(data);
@@ -28,10 +28,10 @@
           return obj.id;
         },
         text: function(obj) {
-          return obj.name;
+          return obj.full_name;
         },
         toggleLabel: function(obj) {
-          return ($groupDropdown.data('default-label')) + " " + obj.name;
+          return ($groupDropdown.data('default-label')) + " " + obj.full_name;
         },
         clicked: (function(_this) {
           return function() {
@@ -47,7 +47,7 @@
           fields: ['name']
         },
         data: function(term, callback) {
-          return Api.projects(term, 'id', function(data) {
+          return Api.projects(term, { order_by: 'id' }, function(data) {
             data.unshift({
               name_with_namespace: 'Any'
             });
@@ -97,4 +97,4 @@
 
     return Search;
   })();
-}).call(this);
+}).call(window);

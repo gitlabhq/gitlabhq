@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::FindFileController do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
 
   before do
@@ -17,8 +17,8 @@ describe Projects::FindFileController do
 
     before do
       get(:show,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          namespace_id: project.namespace,
+          project_id: project,
           id: id)
     end
 
@@ -36,8 +36,8 @@ describe Projects::FindFileController do
   describe "GET #list" do
     def go(format: 'json')
       get :list,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          namespace_id: project.namespace,
+          project_id: project,
           id: id,
           format: format
     end

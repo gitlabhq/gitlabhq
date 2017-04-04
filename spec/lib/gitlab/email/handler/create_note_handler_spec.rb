@@ -3,7 +3,7 @@ require_relative '../email_shared_blocks'
 
 describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
   include_context :email_shared_context
-  it_behaves_like :email_shared_examples
+  it_behaves_like :reply_processing_shared_examples
 
   before do
     stub_incoming_email_setting(enabled: true, address: "reply+%{key}@appmail.adventuretime.ooo")
@@ -11,7 +11,7 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
   end
 
   let(:email_raw) { fixture_file('emails/valid_reply.eml') }
-  let(:project)   { create(:project, :public) }
+  let(:project)   { create(:project, :public, :repository) }
   let(:user)      { create(:user) }
   let(:note)      { create(:diff_note_on_merge_request, project: project) }
   let(:noteable)  { note.noteable }
@@ -171,6 +171,12 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
 
       context 'mail key is in the References header' do
         let(:email_raw) { fixture_file('emails/reply_without_subaddressing_and_key_inside_references.eml') }
+
+        it_behaves_like 'an email that contains a mail key', 'References'
+      end
+
+      context 'mail key is in the References header with a comma' do
+        let(:email_raw) { fixture_file('emails/reply_without_subaddressing_and_key_inside_references_with_a_comma.eml') }
 
         it_behaves_like 'an email that contains a mail key', 'References'
       end

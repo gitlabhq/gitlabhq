@@ -74,7 +74,6 @@
   display: inline;
 
   a {
-    color: $blue-dark;
     text-decoration: none;
   }
 }
@@ -201,10 +200,6 @@
   color: $note-disabled-comment-color;
 }
 
-.datepicker.personal-access-tokens-expires-at .ui-state-disabled span {
-  text-align: center;
-}
-
 .created-personal-access-token-container {
   #created-personal-access-token {
     width: 90%;
@@ -279,5 +274,44 @@ table.u2f-registrations {
 
   .scopes-list {
     padding-left: 18px;
+  }
+}
+
+.user-callout {
+  margin: 0 auto;
+
+  .bordered-box {
+    border: 1px solid $border-color;
+    border-radius: $border-radius-default;
+  }
+
+  .landing {
+    margin-top: $gl-padding;
+    margin-bottom: $gl-padding;
+
+    .close {
+      margin-right: 20px;
+    }
+
+    .dismiss-icon {
+      float: right;
+      cursor: pointer;
+      color: $cycle-analytics-dismiss-icon-color;
+    }
+
+    .svg-container {
+      text-align: center;
+
+      svg {
+        width: 136px;
+        height: 136px;
+      }
+    }
+  }
+
+  @media(max-width: $screen-xs-max) {
+    .inner-content {
+      padding-left: 30px;
+    }
   }
 }

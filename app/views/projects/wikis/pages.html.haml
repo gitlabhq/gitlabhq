@@ -13,11 +13,7 @@
         = icon('cloud-download')
         Clone repository
 
-  %ul.content-list
-    - @wiki_pages.each do |wiki_page|
-      %li
-        = link_to wiki_page.title, namespace_project_wiki_path(@project.namespace, @project, wiki_page)
-        %small (#{wiki_page.format})
-        .pull-right
-          %small Last edited #{time_ago_with_tooltip(wiki_page.commit.authored_date)}
+  %ul.wiki-pages-list.content-list
+    = render @wiki_entries, context: 'pages'
+
   = paginate @wiki_pages, theme: 'gitlab'

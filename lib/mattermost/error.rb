@@ -1,3 +1,3 @@
 module Mattermost
-  class Error < StandardError; end
+  Error = Class.new(StandardError)
 end

@@ -57,7 +57,7 @@ sudo -u git -H bundle clean
 sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
 
 # Clean up assets and cache
-sudo -u git -H bundle exec rake assets:clean assets:precompile cache:clear RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:assets:clean gitlab:assets:compile cache:clear RAILS_ENV=production
 ```
 
 ### 4. Update gitlab-workhorse to the corresponding version

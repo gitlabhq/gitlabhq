@@ -5,7 +5,7 @@ module Projects
     end
 
     def execute
-      return nil unless @file and @file.size <= max_attachment_size
+      return nil unless @file && @file.size <= max_attachment_size
 
       uploader = FileUploader.new(@project)
       uploader.store!(@file)

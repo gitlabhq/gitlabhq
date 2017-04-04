@@ -1,8 +1,6 @@
 FactoryGirl.define do
   factory :ci_runner, class: Ci::Runner do
-    sequence :description do |n|
-      "My runner#{n}"
-    end
+    sequence(:description) { |n| "My runner#{n}" }
 
     platform  "darwin"
     is_shared false
@@ -14,6 +12,10 @@ FactoryGirl.define do
 
     trait :shared do
       is_shared true
+    end
+
+    trait :specific do
+      is_shared false
     end
 
     trait :inactive do

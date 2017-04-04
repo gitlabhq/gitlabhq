@@ -18,7 +18,6 @@
 .file-finder-input:hover,
 .issuable-search-form:hover,
 .search-text-input:hover,
-textarea:hover,
 .form-control:hover {
   border-color: lighten($dropdown-input-focus-border, 20%);
   box-shadow: 0 0 4px lighten($search-input-focus-shadow-color, 20%);
@@ -183,7 +182,8 @@ input[type="checkbox"]:hover {
     display: flex;
   }
 
-  .search-field-holder {
+  .search-field-holder,
+  .project-filter-form {
     -webkit-flex: 1 0 auto;
     flex: 1 0 auto;
     position: relative;
@@ -202,7 +202,8 @@ input[type="checkbox"]:hover {
     pointer-events: none;
   }
 
-  .search-text-input {
+  .search-text-input,
+  .project-filter-form-field {
     padding-left: $gl-padding + 15px;
     padding-right: $gl-padding + 15px;
   }

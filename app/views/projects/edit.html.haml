@@ -1,3 +1,4 @@
+= render "projects/settings/head"
 .project-edit-container
   .row.prepend-top-default
     .col-lg-3.profile-settings-sidebar
@@ -6,11 +7,18 @@
     .col-lg-9
       .project-edit-errors
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
-        %fieldset.append-bottom-0
-          .form-group
-            = f.label :name, class: 'label-light' do
-              Project name
-            = f.text_field :name, class: "form-control", id: "project_name_edit"
+        %fieldset
+          .row
+            .form-group.col-md-9
+              = f.label :name, class: 'label-light', for: 'project_name_edit' do
+                Project name
+              = f.text_field :name, class: "form-control", id: "project_name_edit"
+
+            .form-group.col-md-3
+              = f.label :id, class: 'label-light' do
+                Project ID
+              = f.text_field :id, class: 'form-control', readonly: true
+
           .form-group
             = f.label :description, class: 'label-light' do
               Project description
@@ -23,10 +31,10 @@
               = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
         .form-group
           = f.label :tag_list, "Tags", class: 'label-light'
-          = f.text_field :tag_list, value: @project.tag_list.to_s, maxlength: 2000, class: "form-control"
+          = f.text_field :tag_list, value: @project.tag_list.sort.join(', '), maxlength: 2000, class: "form-control"
           %p.help-block Separate tags with commas.
         %hr
-        %fieldset.append-bottom-0
+        %fieldset
           %h5.prepend-top-0
             Sharing &amp; Permissions
           .form_group.prepend-top-20.sharing-and-permissions
@@ -56,7 +64,7 @@
 
                 .row
                   .col-md-9.project-feature.nested
-                    = feature_fields.label :builds_access_level, "Builds", class: 'label-light'
+                    = feature_fields.label :builds_access_level, "Pipelines", class: 'label-light'
                     %span.help-block Submit, test and deploy your changes before merge
                   .col-md-3
                     = project_feature_access_select(:builds_access_level)
@@ -113,7 +121,7 @@
           .form-group
             - if @project.avatar?
               .avatar-container.s160
-                = project_icon("#{@project.namespace.to_param}/#{@project.to_param}", alt: '', class: 'avatar project-avatar s160')
+                = project_icon(@project.full_path, alt: '', class: 'avatar project-avatar s160')
             %p.light
               - if @project.avatar_in_git
                 Project avatar in repository: #{ @project.avatar_in_git }
@@ -126,6 +134,7 @@
               %hr
               = link_to 'Remove avatar', namespace_project_avatar_path(@project.namespace, @project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
         = f.submit 'Save changes', class: "btn btn-save"
+
   .row.prepend-top-default
   %hr
   .row.prepend-top-default
@@ -154,7 +163,7 @@
 
       - if @project.export_project_path
         = link_to 'Download export',  download_export_namespace_project_path(@project.namespace, @project),
-                method: :get, class: "btn btn-default"
+                rel: 'nofollow', download: '', method: :get, class: "btn btn-default"
         = link_to 'Generate new export',  generate_new_export_namespace_project_path(@project.namespace, @project),
                 method: :post, class: "btn btn-default"
       - else
@@ -173,11 +182,13 @@
           %p
             The following items will NOT be exported:
           %ul
-            %li Build traces and artifacts
+            %li Job traces and artifacts
             %li LFS objects
             %li Container registry images
-  %hr
+            %li CI variables
+            %li Any encrypted tokens
   - if can? current_user, :archive_project, @project
+    %hr
     .row.prepend-top-default
       .col-lg-3
         %h4.warning-title.prepend-top-0
@@ -222,7 +233,7 @@
           .form-group
             .input-group
               .input-group-addon
-                #{URI.join(root_url, @project.namespace.path)}/
+                #{URI.join(root_url, @project.namespace.full_path)}/
               = f.text_field :path, class: 'form-control'
           %ul
             %li Be careful. Renaming a project's repository can have unintended side effects.

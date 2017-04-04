@@ -5,8 +5,6 @@ module Ci
     def execute(pipeline)
       @pipeline = pipeline
 
-      ensure_created_builds! # TODO, remove me in 9.0
-
       new_builds =
         stage_indexes_of_created_builds.map do |index|
           process_stage(index)
@@ -22,6 +20,8 @@ module Ci
     def process_stage(index)
       current_status = status_for_prior_stages(index)
 
+      return if HasStatus::BLOCKED_STATUS == current_status
+
       if HasStatus::COMPLETED_STATUSES.include?(current_status)
         created_builds_in_stage(index).select do |build|
           Gitlab::OptimisticLocking.retry_lock(build) do |subject|
@@ -33,7 +33,7 @@ module Ci
 
     def process_build(build, current_status)
       if valid_statuses_for_when(build.when).include?(current_status)
-        build.enqueue
+        build.action? ? build.actionize : build.enqueue
         true
       else
         build.skip
@@ -49,6 +49,8 @@ module Ci
         %w[failed]
       when 'always'
         %w[success failed skipped]
+      when 'manual'
+        %w[success]
       else
         []
       end
@@ -68,19 +70,6 @@ module Ci
 
     def created_builds
       pipeline.builds.created
-    end
-
-    # This method is DEPRECATED and should be removed in 9.0.
-    #
-    # We need it to maintain backwards compatibility with  previous versions
-    # when builds were not created within one transaction with the pipeline.
-    #
-    def ensure_created_builds!
-      return if created_builds.any?
-
-      Ci::CreatePipelineBuildsService
-        .new(project, current_user)
-        .execute(pipeline)
     end
   end
 end

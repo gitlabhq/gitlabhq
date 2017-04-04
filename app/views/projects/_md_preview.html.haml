@@ -23,7 +23,7 @@
           = markdown_toolbar_button({ icon: "list-ol fw", data: { "md-tag" => "1. ", "md-prepend" => true }, title: "Add a numbered list" })
           = markdown_toolbar_button({ icon: "check-square-o fw", data: { "md-tag" => "* [ ] ", "md-prepend" => true }, title: "Add a task list" })
         .toolbar-group
-          %button.toolbar-btn.js-zen-enter.has-tooltip.hidden-xs{ type: "button", tabindex: -1, aria: { label: "Go full screen" }, title: "Go full screen", data: { container: "body" } }
+          %button.toolbar-btn.js-zen-enter.has-tooltip{ type: "button", tabindex: -1, aria: { label: "Go full screen" }, title: "Go full screen", data: { container: "body" } }
             = icon("arrows-alt fw")
 
   .md-write-holder

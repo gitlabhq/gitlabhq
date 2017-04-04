@@ -34,7 +34,9 @@ feature 'Merge immediately', :feature, :js do
 
         click_link 'Merge Immediately'
 
-        expect(find('.js-merge-button')).to have_content('Merge in progress')
+        expect(find('.js-merge-when-pipeline-succeeds-button')).to have_content('Merge in progress')
+
+        wait_for_ajax
       end
     end
   end

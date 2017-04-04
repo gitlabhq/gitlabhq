@@ -181,7 +181,7 @@ describe BambooService, models: true, caching: true do
       end
 
       it 'sets commit status to "pending" when response has no results' do
-        stub_request(body: %Q({"results":{"results":{"size":"0"}}}))
+        stub_request(body: %q({"results":{"results":{"size":"0"}}}))
 
         is_expected.to eq('pending')
       end

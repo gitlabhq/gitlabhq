@@ -72,6 +72,7 @@ ul.notes {
       overflow: hidden;
 
       .system-note-commit-list-toggler {
+        color: $gl-link-color;
         display: none;
         padding: 10px 0 0;
         cursor: pointer;
@@ -105,16 +106,6 @@ ul.notes {
 
           p:first-child {
             display: none;
-          }
-
-          p:last-child {
-            a {
-              color: $gl-text-color;
-
-              &:hover {
-                color: $gl-link-color;
-              }
-            }
           }
 
           &::after {
@@ -195,10 +186,10 @@ ul.notes {
     }
 
     .note-body {
-      overflow: auto;
+      overflow-x: auto;
+      overflow-y: hidden;
 
       .note-text {
-        overflow: auto;
         word-wrap: break-word;
         @include md-typography;
         // Reset ul style types since we're nested inside a ul already
@@ -249,22 +240,6 @@ ul.notes {
       }
     }
 
-  }
-}
-
-.page-sidebar-pinned.right-sidebar-expanded {
-  @media (max-width: $screen-md-max) {
-    .note-header {
-      .note-headline-light {
-        display: block;
-      }
-
-      .note-actions {
-        position: absolute;
-        right: 0;
-        top: 0;
-      }
-    }
   }
 }
 
@@ -340,6 +315,10 @@ ul.notes {
 
     &:hover {
       color: $gl-link-color;
+    }
+
+    &:focus,
+    &:hover {
       text-decoration: none;
     }
   }
@@ -389,7 +368,7 @@ ul.notes {
   top: 0;
 
   .note-action-button {
-    margin-left: 10px;
+    margin-left: 8px;
   }
 }
 
@@ -405,8 +384,7 @@ ul.notes {
 }
 
 .note-action-button {
-  display: inline-block;
-  margin-left: 0;
+  display: inline;
   line-height: 20px;
 
   @media (min-width: $screen-sm-min) {
@@ -432,8 +410,22 @@ ul.notes {
 }
 
 .discussion-toggle-button {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
   line-height: 20px;
   font-size: 13px;
+  transition: color 0.1s linear;
+
+  &:hover {
+    color: $gl-link-color;
+  }
+
+  &:focus {
+    text-decoration: underline;
+    outline: none;
+    color: $gl-link-color;
+  }
 
   .fa {
     margin-right: 3px;
@@ -461,36 +453,38 @@ ul.notes {
  * Line note button on the side of diffs
  */
 
-.diff-file tr.line_holder {
-  @mixin show-add-diff-note {
-    display: inline-block;
+.add-diff-note {
+  display: none;
+  margin-top: -2px;
+  border-radius: 50%;
+  background: $white-light;
+  padding: 1px 5px;
+  font-size: 12px;
+  color: $blue-500;
+  margin-left: -55px;
+  position: absolute;
+  z-index: 10;
+  width: 23px;
+  height: 23px;
+  border: 1px solid $blue-500;
+  transition: transform .1s ease-in-out;
+
+  &:hover {
+    background: $blue-500;
+    border-color: $blue-600;
+    color: $white-light;
+    transform: scale(1.15);
   }
 
-  .add-diff-note {
-    margin-top: -4px;
-    border-radius: 40px;
-    background: $white-light;
-    padding: 4px;
-    font-size: 16px;
-    color: $gl-link-color;
-    margin-left: -56px;
-    position: absolute;
-    z-index: 10;
-    width: 32px;
-    // "hide" it by default
-    display: none;
-
-    &:hover {
-      background: $gl-info;
-      color: $white-light;
-      @include show-add-diff-note;
-    }
+  &:active {
+    outline: 0;
   }
+}
 
-  // "show" the icon also if we just hover somewhere over the line
-  &:hover > td {
+.diff-file {
+  .is-over {
     .add-diff-note {
-      @include show-add-diff-note;
+      display: inline-block;
     }
   }
 }
@@ -514,6 +508,7 @@ ul.notes {
 }
 
 .line-resolve-all-container {
+
   .btn-group {
     margin-left: -4px;
   }
@@ -522,6 +517,27 @@ ul.notes {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
+
+  .btn.discussion-create-issue-btn {
+    margin-left: -4px;
+    border-radius: 0;
+    border-right: 0;
+
+    a {
+      padding: 0;
+      line-height: 0;
+
+      &:hover {
+        text-decoration: none;
+        border: 0;
+      }
+    }
+
+    .new-issue-for-discussion path {
+      fill: $gray-darkest;
+    }
+  }
+
 }
 
 .line-resolve-all {
@@ -544,7 +560,6 @@ ul.notes {
 }
 
 .line-resolve-btn {
-  display: inline-block;
   position: relative;
   top: 2px;
   padding: 0;
@@ -567,8 +582,9 @@ ul.notes {
   }
 
   svg {
-    position: relative;
     fill: $gray-darkest;
+    height: 15px;
+    width: 15px;
   }
 }
 

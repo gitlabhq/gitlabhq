@@ -1,7 +1,7 @@
 .top-area
   .nav-text
     - full_count_title = "#{@public_forks_count} public and #{@private_forks_count} private"
-    = "#{pluralize(@total_forks_count, 'fork')}: #{full_count_title}"
+    #{pluralize(@total_forks_count, 'fork')}: #{full_count_title}
 
   .nav-controls
     = form_tag request.original_url, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|

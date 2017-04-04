@@ -9,8 +9,6 @@ describe NotesFinder do
   end
 
   describe '#execute' do
-    it 'finds notes on snippets when project is public and user isnt a member'
-
     it 'finds notes on merge requests' do
       create(:note_on_merge_request, project: project)
 
@@ -28,7 +26,7 @@ describe NotesFinder do
     end
 
     it "excludes notes on commits the author can't download" do
-      project = create(:project, :private)
+      project = create(:project, :private, :repository)
       note = create(:note_on_commit, project: project)
       params = { target_type: 'commit', target_id: note.noteable.id }
 
@@ -45,9 +43,11 @@ describe NotesFinder do
 
     context 'on restricted projects' do
       let(:project) do
-        create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE,
-                                        snippets_access_level: ProjectFeature::PRIVATE,
-                                        merge_requests_access_level: ProjectFeature::PRIVATE)
+        create(:empty_project,
+               :public,
+               :issues_private,
+               :snippets_private,
+               :merge_requests_private)
       end
 
       it 'publicly excludes notes on merge requests' do
@@ -76,7 +76,7 @@ describe NotesFinder do
     end
 
     context 'for target' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
       let(:note1) { create :note_on_commit, project: project }
       let(:note2) { create :note_on_commit, project: project }
       let(:commit) { note1.noteable }
@@ -111,7 +111,7 @@ describe NotesFinder do
       end
 
       it 'raises an exception for an invalid target_type' do
-        params.merge!(target_type: 'invalid')
+        params[:target_type] = 'invalid'
         expect { described_class.new(project, user, params).execute }.to raise_error('invalid target_type')
       end
 

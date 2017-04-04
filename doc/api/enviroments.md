@@ -13,7 +13,7 @@ GET /projects/:id/environments
 | `id`      | integer | yes      | The ID of the project |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/environments
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/environments
 ```
 
 Example response:
@@ -33,7 +33,7 @@ Example response:
 
 Creates a new environment with the given name and external_url.
 
-It returns 201 if the environment was successfully created, 400 for wrong parameters.
+It returns `201` if the environment was successfully created, `400` for wrong parameters.
 
 ```
 POST /projects/:id/environment
@@ -46,7 +46,7 @@ POST /projects/:id/environment
 | `external_url` | string  | no     | Place to link to for this environment |
 
 ```bash
-curl --data "name=deploy&external_url=https://deploy.example.gitlab.com" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environments"
+curl --data "name=deploy&external_url=https://deploy.example.gitlab.com" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/environments"
 ```
 
 Example response:
@@ -64,7 +64,7 @@ Example response:
 
 Updates an existing environment's name and/or external_url.
 
-It returns 200 if the environment was successfully updated. In case of an error, a status code 400 is returned.
+It returns `200` if the environment was successfully updated. In case of an error, a status code `400` is returned.
 
 ```
 PUT /projects/:id/environments/:environments_id
@@ -78,7 +78,7 @@ PUT /projects/:id/environments/:environments_id
 | `external_url`  | string  | no                                | The new external_url             |
 
 ```bash
-curl --request PUT --data "name=staging&external_url=https://staging.example.gitlab.com" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environment/1"
+curl --request PUT --data "name=staging&external_url=https://staging.example.gitlab.com" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
 Example response:
@@ -94,7 +94,7 @@ Example response:
 
 ## Delete an environment
 
-It returns 200 if the environment was successfully deleted, and 404 if the environment does not exist.
+It returns `200` if the environment was successfully deleted, and `404` if the environment does not exist.
 
 ```
 DELETE /projects/:id/environments/:environment_id
@@ -106,7 +106,24 @@ DELETE /projects/:id/environments/:environment_id
 | `environment_id` | integer | yes | The ID of the environment |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environment/1"
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/environments/1"
+```
+
+## Stop an environment
+
+It returns `200` if the environment was successfully stopped, and `404` if the environment does not exist.
+
+```
+POST /projects/:id/environments/:environment_id/stop
+```
+
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
+| `id` | integer | yes | The ID of the project |
+| `environment_id` | integer | yes | The ID of the environment |
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environments/1/stop"
 ```
 
 Example response:

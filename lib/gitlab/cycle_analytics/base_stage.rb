@@ -13,7 +13,7 @@ module Gitlab
       end
 
       def as_json
-        AnalyticsStageSerializer.new.represent(self).as_json
+        AnalyticsStageSerializer.new.represent(self)
       end
 
       def title

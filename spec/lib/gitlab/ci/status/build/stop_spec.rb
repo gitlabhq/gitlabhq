@@ -8,20 +8,8 @@ describe Gitlab::Ci::Status::Build::Stop do
     described_class.new(status)
   end
 
-  describe '#text' do
-    it { expect(subject.text).to eq 'manual' }
-  end
-
   describe '#label' do
     it { expect(subject.label).to eq 'manual stop action' }
-  end
-
-  describe '#icon' do
-    it { expect(subject.icon).to eq 'icon_status_manual' }
-  end
-
-  describe '#group' do
-    it { expect(subject.group).to eq 'manual' }
   end
 
   describe 'action details' do
@@ -46,7 +34,7 @@ describe Gitlab::Ci::Status::Build::Stop do
     end
 
     describe '#action_icon' do
-      it { expect(subject.action_icon).to eq 'stop' }
+      it { expect(subject.action_icon).to eq 'icon_action_stop' }
     end
 
     describe '#action_title' do

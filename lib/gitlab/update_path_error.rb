@@ -1,3 +1,3 @@
 module Gitlab
-  class UpdatePathError < StandardError; end
+  UpdatePathError = Class.new(StandardError)
 end

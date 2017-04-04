@@ -5,6 +5,8 @@
 Get a list of repository files and directories in a project. This endpoint can
 be accessed without authentication if the repository is publicly accessible.
 
+This command provides essentially the same functionality as the `git ls-tree` command. For more information, see the section _Tree Objects_ in the [Git internals documentation](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects/#_tree_objects).
+
 ```
 GET /projects/:id/repository/tree
 ```
@@ -13,7 +15,7 @@ Parameters:
 
 - `id` (required) - The ID of a project
 - `path` (optional) - The path inside repository. Used to get contend of subdirectories
-- `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
+- `ref` (optional) - The name of a repository branch or tag or if not given the default branch
 - `recursive` (optional) - Boolean value used to get a recursive tree (false by default)
 
 ```json
@@ -70,10 +72,11 @@ Parameters:
 ]
 ```
 
-## Raw file content
+## Get a blob from repository
 
-Get the raw file contents for a file by commit SHA and path. This endpoint can
-be accessed without authentication if the repository is publicly accessible.
+Allows you to receive information about blob in repository like size and
+content. Note that blob content is Base64 encoded. This endpoint can be accessed
+without authentication if the repository is publicly accessible.
 
 ```
 GET /projects/:id/repository/blobs/:sha
@@ -83,7 +86,6 @@ Parameters:
 
 - `id` (required) - The ID of a project
 - `sha` (required) - The commit or branch name
-- `filepath` (required) - The path the file
 
 ## Raw blob content
 
@@ -91,7 +93,7 @@ Get the raw file contents for a blob by blob SHA. This endpoint can be accessed
 without authentication if the repository is publicly accessible.
 
 ```
-GET /projects/:id/repository/raw_blobs/:sha
+GET /projects/:id/repository/blobs/:sha/raw
 ```
 
 Parameters:

@@ -4,8 +4,8 @@ describe 'projects/merge_requests/show.html.haml' do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
-  let(:fork_project) { create(:project, forked_from_project: project) }
+  let(:project) { create(:project, :repository) }
+  let(:fork_project) { create(:project, :repository, forked_from_project: project) }
   let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
   let(:note) { create(:note_on_merge_request, project: project, noteable: closed_merge_request) }
 

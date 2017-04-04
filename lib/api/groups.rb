@@ -7,7 +7,7 @@ module API
     helpers do
       params :optional_params do
         optional :description, type: String, desc: 'The description of the group'
-        optional :visibility_level, type: Integer, desc: 'The visibility level of the group'
+        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the group'
         optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
       end
@@ -36,12 +36,15 @@ module API
         optional :skip_groups, type: Array[Integer], desc: 'Array of group ids to exclude from list'
         optional :all_available, type: Boolean, desc: 'Show all group that you have access to'
         optional :search, type: String, desc: 'Search for a specific group'
+        optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
         optional :order_by, type: String, values: %w[name path], default: 'name', desc: 'Order by name or path'
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
         use :pagination
       end
       get do
-        groups = if current_user.admin
+        groups = if params[:owned]
+                   current_user.owned_groups
+                 elsif current_user.admin
                    Group.all
                  elsif params[:all_available]
                    GroupsFinder.new.execute(current_user)
@@ -56,23 +59,13 @@ module API
         present_groups groups, statistics: params[:statistics] && current_user.is_admin?
       end
 
-      desc 'Get list of owned groups for authenticated user' do
-        success Entities::Group
-      end
-      params do
-        use :pagination
-        use :statistics_params
-      end
-      get '/owned' do
-        present_groups current_user.owned_groups, statistics: params[:statistics]
-      end
-
       desc 'Create a group. Available only for users who can create groups.' do
         success Entities::Group
       end
       params do
         requires :name, type: String, desc: 'The name of the group'
         requires :path, type: String, desc: 'The path of the group'
+        optional :parent_id, type: Integer, desc: 'The parent group id for creating nested group'
         use :optional_params
       end
       post do
@@ -91,7 +84,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a group'
     end
-    resource :groups do
+    resource :groups, requirements: { id: %r{[^/]+} } do
       desc 'Update a group. Available only for users who can administrate groups.' do
         success Entities::Group
       end
@@ -99,7 +92,7 @@ module API
         optional :name, type: String, desc: 'The name of the group'
         optional :path, type: String, desc: 'The path of the group'
         use :optional_params
-        at_least_one_of :name, :path, :description, :visibility_level,
+        at_least_one_of :name, :path, :description, :visibility,
                         :lfs_enabled, :request_access_enabled
       end
       put ':id' do
@@ -125,7 +118,7 @@ module API
       delete ":id" do
         group = find_group!(params[:id])
         authorize! :admin_group, group
-        DestroyGroupService.new(group, current_user).execute
+        ::Groups::DestroyService.new(group, current_user).execute
       end
 
       desc 'Get a list of projects in this group.' do
@@ -133,7 +126,7 @@ module API
       end
       params do
         optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
-        optional :visibility, type: String, values: %w[public internal private],
+        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
                               desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
         optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at],
@@ -142,6 +135,9 @@ module API
                         desc: 'Return projects sorted in ascending and descending order'
         optional :simple, type: Boolean, default: false,
                           desc: 'Return only the ID, URL, name, and path of each project'
+        optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
+        optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
+
         use :pagination
       end
       get ":id/projects" do
@@ -158,7 +154,7 @@ module API
       params do
         requires :project_id, type: String, desc: 'The ID or path of the project'
       end
-      post ":id/projects/:project_id" do
+      post ":id/projects/:project_id", requirements: { project_id: /.+/ } do
         authenticated_as_admin!
         group = find_group!(params[:id])
         project = find_project!(params[:project_id])

@@ -4,7 +4,7 @@
 // When called on a form with input fields with the `required` attribute, the
 // form's submit button will be disabled until all required fields have values.
 //
-/*= require extensions/jquery */
+import '../commons/bootstrap';
 
 //
 // ### Example Markup
@@ -59,4 +59,4 @@
       return hideOrShowHelpBlock($form);
     });
   });
-}).call(this);
+}).call(window);

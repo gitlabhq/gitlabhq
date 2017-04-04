@@ -38,6 +38,38 @@
   }
 }
 
+.pipeline-info {
+  .status-icon-container {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 3px;
+
+    svg {
+      display: block;
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  .mr-widget-pipeline-graph {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 -6px 0 0;
+
+    .dropdown-menu {
+      margin-top: 11px;
+    }
+  }
+}
+
+.branch-info .commit-icon {
+  margin-right: 3px;
+
+  svg {
+    top: 3px;
+  }
+}
+
 /*
  * Commit message textarea for web editor and
  * custom merge request message
@@ -78,6 +110,7 @@
   padding: 5px 10px;
   background-color: $gray-light;
   border-bottom: 1px solid $gray-darker;
+  border-top: 1px solid $gray-darker;
   font-size: 14px;
 
   &:first-child {
@@ -109,7 +142,9 @@
   border: 1px solid $border-gray-dark;
   border-radius: $border-radius-default;
   margin-left: 5px;
-  line-height: 1;
+  font-size: $gl-font-size;
+  line-height: $gl-font-size;
+  outline: none;
 
   &:hover {
     background-color: darken($gray-light, 10%);
@@ -117,10 +152,37 @@
   }
 }
 
+.commit.flex-list {
+  display: flex;
+}
+
+.avatar-cell {
+  width: 46px;
+  padding-left: 10px;
+
+  img {
+    margin-right: 0;
+  }
+}
+
+.commit-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-grow: 1;
+  padding-left: 10px;
+
+  .merge-request-branches & {
+    flex-direction: column;
+  }
+}
+
+.commit-content {
+  padding-right: 10px;
+}
+
 .commit-actions {
   @media (min-width: $screen-sm-min) {
-    width: 300px;
-    text-align: right;
     font-size: 0;
   }
 
@@ -159,7 +221,6 @@
 
   .commit-row-description {
     font-size: 14px;
-    border-left: 1px solid $white-normal;
     padding: 10px 15px;
     margin: 10px 0;
     background: $gray-light;

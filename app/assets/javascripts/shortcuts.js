@@ -1,6 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, prefer-arrow-callback, consistent-return, object-shorthand, no-unused-vars, one-var, one-var-declaration-per-line, no-else-return, comma-dangle, max-len */
 /* global Mousetrap */
-/* global Turbolinks */
 /* global findFileURL */
 
 (function() {
@@ -23,7 +22,7 @@
       Mousetrap.bind(['ctrl+shift+p', 'command+shift+p'], this.toggleMarkdownPreview);
       if (typeof findFileURL !== "undefined" && findFileURL !== null) {
         Mousetrap.bind('t', function() {
-          return Turbolinks.visit(findFileURL);
+          return gl.utils.visitUrl(findFileURL);
         });
       }
     }
@@ -34,6 +33,10 @@
     };
 
     Shortcuts.prototype.toggleMarkdownPreview = function(e) {
+      // Check if short-cut was triggered while in Write Mode
+      if ($(e.target).hasClass('js-note-text')) {
+        $('.js-md-preview-button').focus();
+      }
       return $(document).triggerHandler('markdown-preview:toggle', [e]);
     };
 
@@ -98,4 +101,4 @@
       }
     };
   })();
-}).call(this);
+}).call(window);

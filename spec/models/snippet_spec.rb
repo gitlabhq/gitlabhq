@@ -42,7 +42,7 @@ describe Snippet, models: true do
       end
 
       it 'supports a cross-project reference' do
-        another_project = build(:project, name: 'another-project', namespace: project.namespace)
+        another_project = build(:empty_project, name: 'another-project', namespace: project.namespace)
         expect(snippet.to_reference(another_project)).to eq "sample-project$1"
       end
     end
@@ -55,7 +55,7 @@ describe Snippet, models: true do
       end
 
       it 'still returns shortest reference when project arg present' do
-        another_project = build(:project, name: 'another-project')
+        another_project = build(:empty_project, name: 'another-project')
         expect(snippet.to_reference(another_project)).to eq "$1"
       end
     end
@@ -173,7 +173,7 @@ describe Snippet, models: true do
   end
 
   describe '#participants' do
-    let(:project) { create(:project, :public) }
+    let(:project) { create(:empty_project, :public) }
     let(:snippet) { create(:snippet, content: 'foo', project: project) }
 
     let!(:note1) do
@@ -196,6 +196,49 @@ describe Snippet, models: true do
 
     it 'includes the note authors' do
       expect(snippet.participants).to include(note1.author, note2.author)
+    end
+  end
+
+  describe '#check_for_spam' do
+    let(:snippet) { create :snippet, visibility_level: visibility_level }
+
+    subject do
+      snippet.assign_attributes(title: title)
+      snippet.check_for_spam?
+    end
+
+    context 'when public and spammable attributes changed' do
+      let(:visibility_level) { Snippet::PUBLIC }
+      let(:title) { 'woo' }
+
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when private' do
+      let(:visibility_level) { Snippet::PRIVATE }
+      let(:title) { snippet.title }
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+
+      it 'returns true when switching to public' do
+        snippet.save!
+        snippet.visibility_level = Snippet::PUBLIC
+
+        expect(snippet.check_for_spam?).to be_truthy
+      end
+    end
+
+    context 'when spammable attributes have not changed' do
+      let(:visibility_level) { Snippet::PUBLIC }
+      let(:title) { snippet.title }
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
     end
   end
 end

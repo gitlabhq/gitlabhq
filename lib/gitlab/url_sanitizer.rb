@@ -1,7 +1,7 @@
 module Gitlab
   class UrlSanitizer
     def self.sanitize(content)
-      regexp = URI::Parser.new.make_regexp(['http', 'https', 'ssh', 'git'])
+      regexp = URI::Parser.new.make_regexp(%w(http https ssh git))
 
       content.gsub(regexp) { |url| new(url).masked_url }
     rescue Addressable::URI::InvalidURIError
@@ -9,11 +9,19 @@ module Gitlab
     end
 
     def self.valid?(url)
+      return false unless url
+
       Addressable::URI.parse(url.strip)
 
       true
     rescue Addressable::URI::InvalidURIError
       false
+    end
+
+    def self.http_credentials_for_user(user)
+      return {} unless user.respond_to?(:username)
+
+      { user: user.username }
     end
 
     def initialize(url, credentials: nil)

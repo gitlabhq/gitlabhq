@@ -2,7 +2,7 @@ class Admin::GroupsController < Admin::ApplicationController
   before_action :group, only: [:edit, :update, :destroy, :project_update, :members_update]
 
   def index
-    @groups = Group.with_statistics
+    @groups = Group.with_statistics.with_route
     @groups = @groups.sort(@sort = params[:sort])
     @groups = @groups.search(params[:name]) if params[:name].present?
     @groups = @groups.page(params[:page])
@@ -49,7 +49,7 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def destroy
-    DestroyGroupService.new(@group, current_user).async_execute
+    Groups::DestroyService.new(@group, current_user).async_execute
 
     redirect_to admin_groups_path, alert: "Group '#{@group.name}' was scheduled for deletion."
   end

@@ -46,6 +46,10 @@ class Blob < SimpleDelegator
     text? && language && language.name == 'SVG'
   end
 
+  def ipython_notebook?
+    text? && language&.name == 'Jupyter Notebook'
+  end
+
   def size_within_svg_limits?
     size <= MAXIMUM_SVG_SIZE
   end
@@ -54,11 +58,17 @@ class Blob < SimpleDelegator
     UploaderHelper::VIDEO_EXT.include?(extname.downcase.delete('.'))
   end
 
-  def to_partial_path
+  def to_partial_path(project)
     if lfs_pointer?
-      'download'
+      if project.lfs_enabled?
+        'download'
+      else
+        'text'
+      end
     elsif image? || svg?
       'image'
+    elsif ipython_notebook?
+      'notebook'
     elsif text?
       'text'
     else

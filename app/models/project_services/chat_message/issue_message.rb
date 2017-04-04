@@ -51,15 +51,16 @@ module ChatMessage
         title: issue_title,
         title_link: issue_url,
         text: format(description),
-        color: "#C95823" }]
+        color: "#C95823"
+      }]
     end
 
     def project_link
-      "[#{project_name}](#{project_url})"
+      link(project_name, project_url)
     end
 
     def issue_link
-      "[#{issue_title}](#{issue_url})"
+      link(issue_title, issue_url)
     end
 
     def issue_title

@@ -34,7 +34,7 @@ class Projects::MattermostsController < Projects::ApplicationController
   end
 
   def teams
-    @teams ||= @service.list_teams(current_user)
+    @teams, @teams_error_message = @service.list_teams(current_user)
   end
 
   def service

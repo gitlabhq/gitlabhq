@@ -4,7 +4,7 @@
 //
 // Handles single- and multi-line selection and highlight for blob views.
 //
-/*= require jquery.scrollTo */
+require('vendor/jquery.scrollTo');
 
 //
 // ### Example Markup
@@ -67,16 +67,7 @@
     }
 
     LineHighlighter.prototype.bindEvents = function() {
-      $('#blob-content-holder').on('mousedown', 'a[data-line-number]', this.clickHandler);
-      // While it may seem odd to bind to the mousedown event and then throw away
-      // the click event, there is a method to our madness.
-      //
-      // If not done this way, the line number anchor will sometimes keep its
-      // active state even when the event is cancelled, resulting in an ugly border
-      // around the link and/or a persisted underline text decoration.
-      return $('#blob-content-holder').on('click', 'a[data-line-number]', function(event) {
-        return event.preventDefault();
-      });
+      $('#blob-content-holder').on('click', 'a[data-line-number]', this.clickHandler);
     };
 
     LineHighlighter.prototype.clickHandler = function(event) {
@@ -170,7 +161,6 @@
     // This method is stubbed in tests.
     LineHighlighter.prototype.__setLocationHash__ = function(value) {
       return history.pushState({
-        turbolinks: false,
         url: value
       // We're using pushState instead of assigning location.hash directly to
       // prevent the page from scrolling on the hashchange event
@@ -179,4 +169,4 @@
 
     return LineHighlighter;
   })();
-}).call(this);
+}).call(window);

@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Ci::Build, :models do
-  let(:project) { create(:project) }
+  let(:user) { create(:user) }
+  let(:project) { create(:project, :repository) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
   let(:test_trace) { 'This is a test' }
 
@@ -18,6 +19,30 @@ describe Ci::Build, :models do
   it { is_expected.to have_many(:deployments) }
   it { is_expected.to validate_presence_of :ref }
   it { is_expected.to respond_to :trace_html }
+
+  describe '#actionize' do
+    context 'when build is a created' do
+      before do
+        build.update_column(:status, :created)
+      end
+
+      it 'makes build a manual action' do
+        expect(build.actionize).to be true
+        expect(build.reload).to be_manual
+      end
+    end
+
+    context 'when build is not created' do
+      before do
+        build.update_column(:status, :pending)
+      end
+
+      it 'does not change build status' do
+        expect(build.actionize).to be false
+        expect(build.reload).to be_pending
+      end
+    end
+  end
 
   describe '#any_runners_online?' do
     subject { build.any_runners_online? }
@@ -161,8 +186,14 @@ describe Ci::Build, :models do
       is_expected.to be_nil
     end
 
-    it 'when resseting value' do
+    it 'when resetting value' do
       build.artifacts_expire_in = nil
+
+      is_expected.to be_nil
+    end
+
+    it 'when setting to 0' do
+      build.artifacts_expire_in = '0'
 
       is_expected.to be_nil
     end
@@ -171,20 +202,6 @@ describe Ci::Build, :models do
   describe '#commit' do
     it 'returns commit pipeline has been created for' do
       expect(build.commit).to eq project.commit
-    end
-  end
-
-  describe '#create_from' do
-    before do
-      build.status = 'success'
-      build.save
-    end
-    let(:create_from_build) { Ci::Build.create_from build }
-
-    it 'exists a pending task' do
-      expect(Ci::Build.pending.count(:all)).to eq 0
-      create_from_build
-      expect(Ci::Build.pending.count(:all)).to be > 0
     end
   end
 
@@ -207,17 +224,60 @@ describe Ci::Build, :models do
     end
 
     it 'expects to have retried builds instead the original ones' do
-      retried_rspec = Ci::Build.retry(rspec_test)
-      expect(staging.depends_on_builds.map(&:id)).to contain_exactly(build.id, retried_rspec.id, rubocop_test.id)
+      project.add_developer(user)
+
+      retried_rspec = Ci::Build.retry(rspec_test, user)
+
+      expect(staging.depends_on_builds.map(&:id))
+        .to contain_exactly(build.id, retried_rspec.id, rubocop_test.id)
     end
   end
 
   describe '#detailed_status' do
-    let(:user) { create(:user) }
-
     it 'returns a detailed status' do
       expect(build.detailed_status(user))
         .to be_a Gitlab::Ci::Status::Build::Cancelable
+    end
+  end
+
+  describe '#coverage_regex' do
+    subject { build.coverage_regex }
+
+    context 'when project has build_coverage_regex set' do
+      let(:project_regex) { '\(\d+\.\d+\) covered' }
+
+      before do
+        project.build_coverage_regex = project_regex
+      end
+
+      context 'and coverage_regex attribute is not set' do
+        it { is_expected.to eq(project_regex) }
+      end
+
+      context 'but coverage_regex attribute is also set' do
+        let(:build_regex) { 'Code coverage: \d+\.\d+' }
+
+        before do
+          build.coverage_regex = build_regex
+        end
+
+        it { is_expected.to eq(build_regex) }
+      end
+    end
+
+    context 'when neither project nor build has coverage regex set' do
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#update_coverage' do
+    context "regarding coverage_regex's value," do
+      it "saves the correct extracted coverage value" do
+        build.coverage_regex = '\(\d+.\d+\%\) covered'
+        allow(build).to receive(:trace) { 'Coverage 1033 / 1051 LOC (98.29%) covered' }
+        expect(build).to receive(:update_attributes).with(coverage: 98.29) { true }
+        expect(build.update_coverage).to be true
+      end
     end
   end
 
@@ -285,11 +345,11 @@ describe Ci::Build, :models do
     describe '#expanded_environment_name' do
       subject { build.expanded_environment_name }
 
-      context 'when environment uses $CI_BUILD_REF_NAME' do
+      context 'when environment uses $CI_COMMIT_REF_NAME' do
         let(:build) do
           create(:ci_build,
                  ref: 'master',
-                 environment: 'review/$CI_BUILD_REF_NAME')
+                 environment: 'review/$CI_COMMIT_REF_NAME')
         end
 
         it { is_expected.to eq('review/master') }
@@ -443,11 +503,11 @@ describe Ci::Build, :models do
         let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
         subject { build.erased? }
 
-        context 'build has not been erased' do
+        context 'job has not been erased' do
           it { is_expected.to be_falsey }
         end
 
-        context 'build has been erased' do
+        context 'job has been erased' do
           before do
             build.erase
           end
@@ -551,12 +611,20 @@ describe Ci::Build, :models do
         it { is_expected.to be_falsey }
       end
 
-      context 'and build.status is failed' do
+      context 'and build status is failed' do
         before do
           build.status = 'failed'
         end
 
         it { is_expected.to be_truthy }
+      end
+
+      context 'when build is a manual action' do
+        before do
+          build.status = 'manual'
+        end
+
+        it { is_expected.to be_falsey }
       end
     end
   end
@@ -646,12 +714,12 @@ describe Ci::Build, :models do
       end
     end
 
-    describe '#manual?' do
+    describe '#action?' do
       before do
         build.update(when: value)
       end
 
-      subject { build.manual? }
+      subject { build.action? }
 
       context 'when is set to manual' do
         let(:value) { 'manual' }
@@ -667,14 +735,50 @@ describe Ci::Build, :models do
     end
   end
 
+  describe '#has_commands?' do
+    context 'when build has commands' do
+      let(:build) do
+        create(:ci_build, commands: 'rspec')
+      end
+
+      it 'has commands' do
+        expect(build).to have_commands
+      end
+    end
+
+    context 'when does not have commands' do
+      context 'when commands are an empty string' do
+        let(:build) do
+          create(:ci_build, commands: '')
+        end
+
+        it 'has no commands' do
+          expect(build).not_to have_commands
+        end
+      end
+
+      context 'when commands are not set at all' do
+        let(:build) do
+          create(:ci_build, commands: nil)
+        end
+
+        it 'has no commands' do
+          expect(build).not_to have_commands
+        end
+      end
+    end
+  end
+
   describe '#has_tags?' do
     context 'when build has tags' do
       subject { create(:ci_build, tag_list: ['tag']) }
+
       it { is_expected.to have_tags }
     end
 
     context 'when build does not have tags' do
       subject { create(:ci_build, tag_list: []) }
+
       it { is_expected.not_to have_tags }
     end
   end
@@ -691,8 +795,8 @@ describe Ci::Build, :models do
 
   describe '#merge_request' do
     def create_mr(build, pipeline, factory: :merge_request, created_at: Time.now)
-      create(factory, source_project_id: pipeline.gl_project_id,
-                      target_project_id: pipeline.gl_project_id,
+      create(factory, source_project: pipeline.project,
+                      target_project: pipeline.project,
                       source_branch: build.ref,
                       created_at: created_at)
     end
@@ -772,12 +876,16 @@ describe Ci::Build, :models do
 
     subject { build.other_actions }
 
+    before do
+      project.add_developer(user)
+    end
+
     it 'returns other actions' do
       is_expected.to contain_exactly(other_build)
     end
 
     context 'when build is retried' do
-      let!(:new_build) { Ci::Build.retry(build) }
+      let!(:new_build) { Ci::Build.retry(build, user) }
 
       it 'does not return any of them' do
         is_expected.not_to include(build, new_build)
@@ -785,7 +893,7 @@ describe Ci::Build, :models do
     end
 
     context 'when other build is retried' do
-      let!(:retried_build) { Ci::Build.retry(other_build) }
+      let!(:retried_build) { Ci::Build.retry(other_build, user) }
 
       it 'returns a retried build' do
         is_expected.to contain_exactly(retried_build)
@@ -807,7 +915,7 @@ describe Ci::Build, :models do
     end
 
     context 'referenced with a variable' do
-      let(:build) { create(:ci_build, pipeline: pipeline, environment: "foo-$CI_BUILD_REF_NAME") }
+      let(:build) { create(:ci_build, pipeline: pipeline, environment: "foo-$CI_COMMIT_REF_NAME") }
 
       it { is_expected.to eq(@environment) }
     end
@@ -816,21 +924,29 @@ describe Ci::Build, :models do
   describe '#play' do
     let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
 
-    subject { build.play }
-
-    it 'enqueues a build' do
-      is_expected.to be_pending
-      is_expected.to eq(build)
+    before do
+      project.add_developer(user)
     end
 
-    context 'for successful build' do
+    context 'when build is manual' do
+      it 'enqueues a build' do
+        new_build = build.play(user)
+
+        expect(new_build).to be_pending
+        expect(new_build).to eq(build)
+      end
+    end
+
+    context 'when build is passed' do
       before do
         build.update(status: 'success')
       end
 
       it 'creates a new build' do
-        is_expected.to be_pending
-        is_expected.not_to eq(build)
+        new_build = build.play(user)
+
+        expect(new_build).to be_pending
+        expect(new_build).not_to eq(build)
       end
     end
   end
@@ -1170,23 +1286,25 @@ describe Ci::Build, :models do
       [
         { key: 'CI', value: 'true', public: true },
         { key: 'GITLAB_CI', value: 'true', public: true },
-        { key: 'CI_BUILD_ID', value: build.id.to_s, public: true },
-        { key: 'CI_BUILD_TOKEN', value: build.token, public: false },
-        { key: 'CI_BUILD_REF', value: build.sha, public: true },
-        { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true },
-        { key: 'CI_BUILD_REF_NAME', value: 'master', public: true },
-        { key: 'CI_BUILD_REF_SLUG', value: 'master', public: true },
-        { key: 'CI_BUILD_NAME', value: 'test', public: true },
-        { key: 'CI_BUILD_STAGE', value: 'test', public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
         { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
         { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
+        { key: 'CI_JOB_ID', value: build.id.to_s, public: true },
+        { key: 'CI_JOB_NAME', value: 'test', public: true },
+        { key: 'CI_JOB_STAGE', value: 'test', public: true },
+        { key: 'CI_JOB_TOKEN', value: build.token, public: false },
+        { key: 'CI_COMMIT_SHA', value: build.sha, public: true },
+        { key: 'CI_COMMIT_REF_NAME', value: build.ref, public: true },
+        { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true },
         { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true },
         { key: 'CI_PROJECT_NAME', value: project.path, public: true },
-        { key: 'CI_PROJECT_PATH', value: project.path_with_namespace, public: true },
-        { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.path, public: true },
+        { key: 'CI_PROJECT_PATH', value: project.full_path, public: true },
+        { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
-        { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true }
+        { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
+        { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
+        { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
+        { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false },
       ]
     end
 
@@ -1201,16 +1319,13 @@ describe Ci::Build, :models do
         build.yaml_variables = []
       end
 
-      it { is_expected.to eq(predefined_variables) }
+      it { is_expected.to include(*predefined_variables) }
     end
 
     context 'when build has user' do
-      let(:user) { create(:user, username: 'starter') }
       let(:user_variables) do
-        [
-          { key: 'GITLAB_USER_ID',    value: user.id.to_s, public: true },
-          { key: 'GITLAB_USER_EMAIL', value: user.email,   public: true }
-        ]
+        [{ key: 'GITLAB_USER_ID',    value: user.id.to_s, public: true },
+         { key: 'GITLAB_USER_EMAIL', value: user.email,   public: true }]
       end
 
       before do
@@ -1242,7 +1357,7 @@ describe Ci::Build, :models do
       end
 
       let(:manual_variable) do
-        { key: 'CI_BUILD_MANUAL', value: 'true', public: true }
+        { key: 'CI_JOB_MANUAL', value: 'true', public: true }
       end
 
       it { is_expected.to include(manual_variable) }
@@ -1250,7 +1365,7 @@ describe Ci::Build, :models do
 
     context 'when build is for tag' do
       let(:tag_variable) do
-        { key: 'CI_BUILD_TAG', value: 'master', public: true }
+        { key: 'CI_COMMIT_TAG', value: 'master', public: true }
       end
 
       before do
@@ -1279,7 +1394,7 @@ describe Ci::Build, :models do
         { key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1', public: false }
       end
       let(:predefined_trigger_variable) do
-        { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true }
+        { key: 'CI_PIPELINE_TRIGGERED', value: 'true', public: true }
       end
 
       before do
@@ -1303,7 +1418,7 @@ describe Ci::Build, :models do
         context 'when config is not found' do
           let(:config) { nil }
 
-          it { is_expected.to eq(predefined_variables) }
+          it { is_expected.to include(*predefined_variables) }
         end
 
         context 'when config does not have a questioned job' do
@@ -1315,7 +1430,7 @@ describe Ci::Build, :models do
             })
           end
 
-          it { is_expected.to eq(predefined_variables) }
+          it { is_expected.to include(*predefined_variables) }
         end
 
         context 'when config has variables' do
@@ -1333,7 +1448,8 @@ describe Ci::Build, :models do
             [{ key: 'KEY', value: 'value', public: true }]
           end
 
-          it { is_expected.to eq(predefined_variables + variables) }
+          it { is_expected.to include(*predefined_variables) }
+          it { is_expected.to include(*variables) }
         end
       end
     end
@@ -1367,7 +1483,7 @@ describe Ci::Build, :models do
     end
 
     context 'when runner is assigned to build' do
-      let(:runner) { create(:ci_runner, description: 'description', tag_list: ['docker', 'linux']) }
+      let(:runner) { create(:ci_runner, description: 'description', tag_list: %w(docker linux)) }
 
       before do
         build.update(runner: runner)

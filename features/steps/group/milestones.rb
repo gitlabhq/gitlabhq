@@ -5,9 +5,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
   include SharedUser
 
   step 'I click on group milestones' do
-    page.within('.layout-nav') do
-      click_link 'Milestones'
-    end
+    visit group_milestones_path('owned')
   end
 
   step 'I should see group milestones index page has no milestones' do
@@ -38,7 +36,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
 
   step 'I should see group milestone with all issues and MRs assigned to that milestone' do
     expect(page).to have_content('Milestone GL-113')
-    expect(page).to have_content('3 issues: 3 open and 0 closed')
+    expect(page).to have_content('Issues 3 Open: 3 Closed: 0')
     issue = Milestone.find_by(name: 'GL-113').issues.first
     expect(page).to have_link(issue.title, href: namespace_project_issue_path(issue.project.namespace, issue.project, issue))
   end

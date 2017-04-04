@@ -1,5 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, quotes, one-var, one-var-declaration-per-line, operator-assignment, no-else-return, prefer-template, prefer-arrow-callback, no-empty, max-len, consistent-return, no-unused-vars, no-return-assign, max-len */
 
+require('vendor/latinise');
+
 (function() {
   (function(w) {
     var base;
@@ -11,6 +13,9 @@
     }
     gl.text.addDelimiter = function(text) {
       return text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : text;
+    };
+    gl.text.highCountTrim = function(count) {
+      return count > 99 ? '99+' : count;
     };
     gl.text.randomString = function() {
       return Math.random().toString(36).substring(7);
@@ -60,9 +65,10 @@
       }
     };
     gl.text.insertText = function(textArea, text, tag, blockTag, selected, wrap) {
-      var insertText, inserted, selectedSplit, startChar, removedLastNewLine, removedFirstNewLine;
+      var insertText, inserted, selectedSplit, startChar, removedLastNewLine, removedFirstNewLine, currentLineEmpty, lastNewLine;
       removedLastNewLine = false;
       removedFirstNewLine = false;
+      currentLineEmpty = false;
 
       // Remove the first newline
       if (selected.indexOf('\n') === 0) {
@@ -77,7 +83,17 @@
       }
 
       selectedSplit = selected.split('\n');
-      startChar = !wrap && textArea.selectionStart > 0 ? '\n' : '';
+
+      if (!wrap) {
+        lastNewLine = textArea.value.substr(0, textArea.selectionStart).lastIndexOf('\n');
+
+        // Check whether the current line is empty or consists only of spaces(=handle as empty)
+        if (/^\s*$/.test(textArea.value.substring(lastNewLine, textArea.selectionStart))) {
+          currentLineEmpty = true;
+        }
+      }
+
+      startChar = !wrap && !currentLineEmpty && textArea.selectionStart > 0 ? '\n' : '';
 
       if (selectedSplit.length > 1 && (!wrap || (blockTag != null))) {
         if (blockTag != null) {
@@ -137,9 +153,8 @@
       }
     };
     gl.text.updateText = function(textArea, tag, blockTag, wrap) {
-      var $textArea, oldVal, selected, text;
+      var $textArea, selected, text;
       $textArea = $(textArea);
-      oldVal = $textArea.val();
       textArea = $textArea.get(0);
       text = $textArea.val();
       selected = this.selectedText(text, textArea);
@@ -161,8 +176,17 @@
     gl.text.humanize = function(string) {
       return string.charAt(0).toUpperCase() + string.replace(/_/g, ' ').slice(1);
     };
-    return gl.text.truncate = function(string, maxLength) {
+    gl.text.pluralize = function(str, count) {
+      return str + (count > 1 || count === 0 ? 's' : '');
+    };
+    gl.text.truncate = function(string, maxLength) {
       return string.substr(0, (maxLength - 3)) + '...';
     };
+    gl.text.dasherize = function(str) {
+      return str.replace(/[_\s]+/g, '-');
+    };
+    gl.text.slugify = function(str) {
+      return str.trim().toLowerCase().latinise();
+    };
   })(window);
-}).call(this);
+}).call(window);

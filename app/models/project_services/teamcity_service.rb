@@ -43,12 +43,8 @@ class TeamcityService < CiService
     'requests build, that setting is in the vsc root advanced settings.'
   end
 
-  def to_param
+  def self.to_param
     'teamcity'
-  end
-
-  def supported_events
-    %w(push)
   end
 
   def fields

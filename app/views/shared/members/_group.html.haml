@@ -6,7 +6,7 @@
   %span.list-item-name
     = image_tag group_icon(group), class: "avatar s40", alt: ''
     %strong
-      = link_to group.name, group_path(group)
+      = link_to group.full_name, group_path(group)
     .cgray
       Joined #{time_ago_with_tooltip(group.created_at)}
       - if group_link.expires?

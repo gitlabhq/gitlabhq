@@ -11,6 +11,14 @@ module Gitlab
         sha.present? && ref.present?
       end
 
+      def user
+        raw_data.user&.login || 'unknown'
+      end
+
+      def short_sha
+        Commit.truncate_sha(sha)
+      end
+
       private
 
       def branch_exists?
@@ -18,7 +26,7 @@ module Gitlab
       end
 
       def commit_exists?
-        project.repository.commit(sha).present?
+        project.repository.branch_names_contains(sha).include?(ref)
       end
 
       def short_id

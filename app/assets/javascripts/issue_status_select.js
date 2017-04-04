@@ -31,4 +31,4 @@
 
     return IssueStatusSelect;
   })();
-}).call(this);
+}).call(window);

@@ -1,8 +1,7 @@
 .page-content-header
   .header-main-content
-    %strong
+    %strong Commit #{@commit.short_id}
     = clipboard_button(clipboard_text: @commit.id, title: "Copy commit SHA to clipboard")
-    = @commit.short_id
     %span.hidden-xs authored
     #{time_ago_with_tooltip(@commit.authored_date)}
     %span by
@@ -35,8 +34,9 @@
             = revert_commit_link(@commit, namespace_project_commit_path(@project.namespace, @project, @commit.id), has_tooltip: false)
         %li.clearfix
           = cherry_pick_commit_link(@commit, namespace_project_commit_path(@project.namespace, @project, @commit.id), has_tooltip: false)
-        %li.clearfix
-          = link_to "Tag", new_namespace_project_tag_path(@project.namespace, @project, ref: @commit)
+        - if can_collaborate_with_project?
+          %li.clearfix
+            = link_to "Tag", new_namespace_project_tag_path(@project.namespace, @project, ref: @commit)
         %li.divider
         %li.dropdown-header
           Download
@@ -63,14 +63,15 @@
 
   - if @commit.status
     .well-segment.pipeline-info
-      %div{ class: "icon-container ci-status-icon-#{@commit.status}" }
-        = ci_icon_for_status(@commit.status)
+      .status-icon-container{ class: "ci-status-icon-#{@commit.status}" }
+        = link_to namespace_project_pipeline_path(@project.namespace, @project, @commit.latest_pipeline.id) do
+          = ci_icon_for_status(@commit.status)
       Pipeline
-      = link_to "##{@commit.pipelines.last.id}", pipelines_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "monospace"
-      for
-      = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
-      %span.ci-status-label
-        = ci_label_for_status(@commit.status)
+      = link_to "##{@commit.latest_pipeline.id}", namespace_project_pipeline_path(@project.namespace, @project, @commit.latest_pipeline.id), class: "monospace"
+      = ci_label_for_status(@commit.status)
+      - if @commit.latest_pipeline.stages.any?
+        .mr-widget-pipeline-graph
+          = render 'shared/mini_pipeline_graph', pipeline: @commit.latest_pipeline, klass: 'js-commit-pipeline-graph'
       in
       = time_interval_in_words @commit.pipelines.total_duration
 

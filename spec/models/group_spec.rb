@@ -13,6 +13,8 @@ describe Group, models: true do
     it { is_expected.to have_many(:shared_projects).through(:project_group_links) }
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
     it { is_expected.to have_many(:labels).class_name('GroupLabel') }
+    it { is_expected.to have_many(:uploads).dependent(:destroy) }
+    it { is_expected.to have_one(:chat_team) }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -81,13 +83,19 @@ describe Group, models: true do
     describe 'public_only' do
       subject { described_class.public_only.to_a }
 
-      it{ is_expected.to eq([group]) }
+      it { is_expected.to eq([group]) }
     end
 
     describe 'public_and_internal_only' do
       subject { described_class.public_and_internal_only.to_a }
 
-      it{ is_expected.to match_array([group, internal_group]) }
+      it { is_expected.to match_array([group, internal_group]) }
+    end
+
+    describe 'non_public_only' do
+      subject { described_class.non_public_only.to_a }
+
+      it { is_expected.to match_array([private_group, internal_group]) }
     end
   end
 
@@ -269,6 +277,12 @@ describe Group, models: true do
     it 'returns the canonical URL' do
       expect(group.web_url).to include("groups/#{group.name}")
     end
+
+    context 'nested group' do
+      let(:nested_group) { create(:group, :nested) }
+
+      it { expect(nested_group.web_url).to include("groups/#{nested_group.full_path}") }
+    end
   end
 
   describe 'nested group' do
@@ -286,6 +300,19 @@ describe Group, models: true do
     it 'returns parents members' do
       expect(group.members_with_parents).to include(developer)
       expect(group.members_with_parents).to include(master)
+    end
+  end
+
+  describe '#user_ids_for_project_authorizations' do
+    it 'returns the user IDs for which to refresh authorizations' do
+      master = create(:user)
+      developer = create(:user)
+
+      group.add_user(master, GroupMember::MASTER)
+      group.add_user(developer, GroupMember::DEVELOPER)
+
+      expect(group.user_ids_for_project_authorizations).
+        to include(master.id, developer.id)
     end
   end
 end

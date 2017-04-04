@@ -1,0 +1,16 @@
+#!/bin/sh
+# Usage: with_env ENV_FILE COMMAND [ARGS...]
+#
+# This script lets you modify the environment of an executable before
+# launching it. It uses an 'env file' which must contain lines like
+# 'MY_VARIABLE="my value"'.
+#
+env_file=$1
+shift
+
+# Use set -a to export all variables defined in env_file.
+set -a
+. "${env_file}"
+set +a
+
+exec "$@"

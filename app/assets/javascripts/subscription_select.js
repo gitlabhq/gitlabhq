@@ -31,4 +31,4 @@
 
     return SubscriptionSelect;
   })();
-}).call(this);
+}).call(window);

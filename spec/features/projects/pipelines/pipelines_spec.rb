@@ -26,15 +26,63 @@ describe 'Pipelines', :feature, :js do
         )
       end
 
-      [:all, :running, :branches].each do |scope|
-        context "when displaying #{scope}" do
-          before do
-            visit_project_pipelines(scope: scope)
-          end
+      context 'scope' do
+        before do
+          create(:ci_empty_pipeline, status: 'pending', project: project, sha: project.commit.id, ref: 'master')
+          create(:ci_empty_pipeline, status: 'running', project: project, sha: project.commit.id, ref: 'master')
+          create(:ci_empty_pipeline, status: 'created', project: project, sha: project.commit.id, ref: 'master')
+          create(:ci_empty_pipeline, status: 'success', project: project, sha: project.commit.id, ref: 'master')
+        end
 
-          it 'contains pipeline commit short SHA' do
-            expect(page).to have_content(pipeline.short_sha)
+        [:all, :running, :pending, :finished, :branches].each do |scope|
+          context "when displaying #{scope}" do
+            before do
+              visit_project_pipelines(scope: scope)
+            end
+
+            it 'contains pipeline commit short SHA' do
+              expect(page).to have_content(pipeline.short_sha)
+            end
+
+            it 'contains branch name' do
+              expect(page).to have_content(pipeline.ref)
+            end
           end
+        end
+      end
+
+      context 'header tabs' do
+        before do
+          visit namespace_project_pipelines_path(project.namespace, project)
+          wait_for_vue_resource
+        end
+
+        it 'shows a tab for All pipelines and count' do
+          expect(page.find('.js-pipelines-tab-all a').text).to include('All')
+          expect(page.find('.js-pipelines-tab-all .badge').text).to include('1')
+        end
+
+        it 'shows a tab for Pending pipelines and count' do
+          expect(page.find('.js-pipelines-tab-pending a').text).to include('Pending')
+          expect(page.find('.js-pipelines-tab-pending .badge').text).to include('0')
+        end
+
+        it 'shows a tab for Running pipelines and count' do
+          expect(page.find('.js-pipelines-tab-running a').text).to include('Running')
+          expect(page.find('.js-pipelines-tab-running .badge').text).to include('1')
+        end
+
+        it 'shows a tab for Finished pipelines and count' do
+          expect(page.find('.js-pipelines-tab-finished a').text).to include('Finished')
+          expect(page.find('.js-pipelines-tab-finished .badge').text).to include('0')
+        end
+
+        it 'shows a tab for Branches' do
+          expect(page.find('.js-pipelines-tab-branches a').text).to include('Branches')
+        end
+
+        it 'shows a tab for Tags' do
+          expect(page.find('.js-pipelines-tab-tags a').text).to include('Tags')
         end
       end
 
@@ -51,15 +99,18 @@ describe 'Pipelines', :feature, :js do
         end
 
         it 'indicates that pipeline can be canceled' do
-          expect(page).to have_link('Cancel')
+          expect(page).to have_selector('.js-pipelines-cancel-button')
           expect(page).to have_selector('.ci-running')
         end
 
         context 'when canceling' do
-          before { click_link('Cancel') }
+          before do
+            find('.js-pipelines-cancel-button').click
+            wait_for_vue_resource
+          end
 
           it 'indicated that pipelines was canceled' do
-            expect(page).not_to have_link('Cancel')
+            expect(page).not_to have_selector('.js-pipelines-cancel-button')
             expect(page).to have_selector('.ci-canceled')
           end
         end
@@ -78,15 +129,18 @@ describe 'Pipelines', :feature, :js do
         end
 
         it 'indicates that pipeline can be retried' do
-          expect(page).to have_link('Retry')
+          expect(page).to have_selector('.js-pipelines-retry-button')
           expect(page).to have_selector('.ci-failed')
         end
 
         context 'when retrying' do
-          before { click_link('Retry') }
+          before do
+            find('.js-pipelines-retry-button').click
+            wait_for_vue_resource
+          end
 
           it 'shows running pipeline that is not retryable' do
-            expect(page).not_to have_link('Retry')
+            expect(page).not_to have_selector('.js-pipelines-retry-button')
             expect(page).to have_selector('.ci-running')
           end
         end
@@ -128,17 +182,17 @@ describe 'Pipelines', :feature, :js do
         it 'has link to the manual action' do
           find('.js-pipeline-dropdown-manual-actions').click
 
-          expect(page).to have_link('manual build')
+          expect(page).to have_button('manual build')
         end
 
         context 'when manual action was played' do
           before do
             find('.js-pipeline-dropdown-manual-actions').click
-            click_link('manual build')
+            click_button('manual build')
           end
 
           it 'enqueues manual action job' do
-            expect(manual.reload).to be_pending
+            expect(page).to have_selector('.js-pipeline-dropdown-manual-actions:disabled')
           end
         end
       end
@@ -155,7 +209,7 @@ describe 'Pipelines', :feature, :js do
           before { visit_project_pipelines }
 
           it 'is cancelable' do
-            expect(page).to have_link('Cancel')
+            expect(page).to have_selector('.js-pipelines-cancel-button')
           end
 
           it 'has pipeline running' do
@@ -163,10 +217,10 @@ describe 'Pipelines', :feature, :js do
           end
 
           context 'when canceling' do
-            before { click_link('Cancel') }
+            before { find('.js-pipelines-cancel-button').trigger('click') }
 
             it 'indicates that pipeline was canceled' do
-              expect(page).not_to have_link('Cancel')
+              expect(page).not_to have_selector('.js-pipelines-cancel-button')
               expect(page).to have_selector('.ci-canceled')
             end
           end
@@ -185,7 +239,7 @@ describe 'Pipelines', :feature, :js do
           end
 
           it 'is not retryable' do
-            expect(page).not_to have_link('Retry')
+            expect(page).not_to have_selector('.js-pipelines-retry-button')
           end
 
           it 'has failed pipeline' do
@@ -213,6 +267,14 @@ describe 'Pipelines', :feature, :js do
             find('.js-pipeline-dropdown-download').click
 
             expect(page).to have_link(with_artifacts.name)
+          end
+
+          it 'has download attribute on download links' do
+            find('.js-pipeline-dropdown-download').click
+            expect(page).to have_selector('a', text: 'Download')
+            page.all('.build-artifacts a', text: 'Download').each do |link|
+              expect(link[:download]).to eq ''
+            end
           end
         end
 
@@ -272,6 +334,39 @@ describe 'Pipelines', :feature, :js do
             expect(build.reload).to be_canceled
           end
         end
+
+        context 'dropdown jobs list' do
+          it 'should keep the dropdown open when the user ctr/cmd + clicks in the job name' do
+            find('.js-builds-dropdown-button').trigger('click')
+
+            execute_script('var e = $.Event("keydown", { keyCode: 64 }); $("body").trigger(e);')
+
+            find('.mini-pipeline-graph-dropdown-item').trigger('click')
+
+            expect(page).to have_selector('.js-ci-action-icon')
+          end
+        end
+      end
+
+      context 'with pagination' do
+        before do
+          allow(Ci::Pipeline).to receive(:default_per_page).and_return(1)
+          create(:ci_empty_pipeline,  project: project)
+        end
+
+        it 'should render pagination' do
+          visit namespace_project_pipelines_path(project.namespace, project)
+          wait_for_vue_resource
+
+          expect(page).to have_selector('.gl-pagination')
+        end
+
+        it 'should render second page of pipelines' do
+          visit namespace_project_pipelines_path(project.namespace, project, page: '2')
+          wait_for_vue_resource
+
+          expect(page).to have_selector('.gl-pagination .page', count: 2)
+        end
       end
     end
 
@@ -282,8 +377,14 @@ describe 'Pipelines', :feature, :js do
         visit new_namespace_project_pipeline_path(project.namespace, project)
       end
 
-      context 'for valid commit' do
-        before { fill_in('pipeline[ref]', with: 'master') }
+      context 'for valid commit', js: true do
+        before do
+          click_button project.default_branch
+
+          page.within '.dropdown-menu' do
+            click_link 'master'
+          end
+        end
 
         context 'with gitlab-ci.yml' do
           before { stub_ci_pipeline_to_return_yaml_file }
@@ -300,15 +401,6 @@ describe 'Pipelines', :feature, :js do
           it { expect(page).to have_content('Missing .gitlab-ci.yml file') }
         end
       end
-
-      context 'for invalid commit' do
-        before do
-          fill_in('pipeline[ref]', with: 'invalid-reference')
-          click_on 'Create pipeline'
-        end
-
-        it { expect(page).to have_content('Reference not found') }
-      end
     end
 
     describe 'Create pipelines' do
@@ -320,18 +412,22 @@ describe 'Pipelines', :feature, :js do
 
       describe 'new pipeline page' do
         it 'has field to add a new pipeline' do
-          expect(page).to have_field('pipeline[ref]')
+          expect(page).to have_selector('.js-branch-select')
+          expect(find('.js-branch-select')).to have_content project.default_branch
           expect(page).to have_content('Create for')
         end
       end
 
       describe 'find pipelines' do
         it 'shows filtered pipelines', js: true do
-          fill_in('pipeline[ref]', with: 'fix')
-          find('input#ref').native.send_keys(:keydown)
+          click_button project.default_branch
 
-          within('.ui-autocomplete') do
-            expect(page).to have_selector('li', text: 'fix')
+          page.within '.dropdown-menu' do
+            find('.dropdown-input-field').native.send_keys('fix')
+
+            page.within '.dropdown-content' do
+              expect(page).to have_content('fix')
+            end
           end
         end
       end
@@ -346,7 +442,7 @@ describe 'Pipelines', :feature, :js do
     context 'when project is public' do
       let(:project) { create(:project, :public) }
 
-      it { expect(page).to have_content 'No pipelines to show' }
+      it { expect(page).to have_content 'Build with confidence' }
       it { expect(page).to have_http_status(:success) }
     end
 

@@ -37,7 +37,7 @@ describe 'Edit Project Settings', feature: true do
     it 'shows errors for invalid project path/name' do
       visit edit_namespace_project_path(project.namespace, project)
 
-      fill_in 'Project name', with: 'foo&bar'
+      fill_in 'project_name', with: 'foo&bar'
       fill_in 'Path', with: 'foo&bar'
 
       click_button 'Rename project'
@@ -53,7 +53,7 @@ describe 'Edit Project Settings', feature: true do
     it 'shows error for invalid project name' do
       visit edit_namespace_project_path(project.namespace, project)
 
-      fill_in 'Project name', with: '🚀 foo bar ☁️'
+      fill_in 'project_name', with: '🚀 foo bar ☁️'
 
       click_button 'Rename project'
 

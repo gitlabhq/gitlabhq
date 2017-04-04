@@ -66,6 +66,13 @@
         return results;
       })()).join('&');
     };
+    w.gl.utils.removeParams = (params) => {
+      const url = new URL(window.location.href);
+      params.forEach((param) => {
+        url.search = w.gl.utils.removeParamQueryString(url.search, param);
+      });
+      return url.href;
+    };
     w.gl.utils.getLocationHash = function(url) {
       var hashIndex;
       if (typeof url === 'undefined') {
@@ -76,5 +83,11 @@
       hashIndex = url.indexOf('#');
       return hashIndex === -1 ? null : url.substring(hashIndex + 1);
     };
+
+    w.gl.utils.refreshCurrentPage = () => gl.utils.visitUrl(document.location.href);
+
+    w.gl.utils.visitUrl = (url) => {
+      document.location.href = url;
+    };
   })(window);
-}).call(this);
+}).call(window);

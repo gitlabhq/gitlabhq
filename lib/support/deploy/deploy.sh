@@ -31,8 +31,8 @@ echo 'Deploy: Bundle and migrate'
 sudo -u git -H bundle --without aws development test mysql --deployment
 
 sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
-sudo -u git -H bundle exec rake assets:clean RAILS_ENV=production
-sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:assets:clean RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production
 sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 
 # return stashed changes (if necessary)

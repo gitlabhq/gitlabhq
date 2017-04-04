@@ -5,4 +5,4 @@
 3. Pro git book [http://git-scm.com/book](http://git-scm.com/book)
 4. Platzi Course [https://courses.platzi.com/courses/git-gitlab/](https://courses.platzi.com/courses/git-gitlab/)
 5. Code School tutorial [http://try.github.io/](http://try.github.io/)
-6. Contact Us - [subscribers@gitlab.com](subscribers@gitlab.com)
+6. Contact Us at `subscribers@gitlab.com`

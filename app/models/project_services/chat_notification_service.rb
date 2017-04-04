@@ -6,7 +6,7 @@ class ChatNotificationService < Service
   default_value_for :category, 'chat'
 
   prop_accessor :webhook, :username, :channel
-  boolean_accessor :notify_only_broken_builds, :notify_only_broken_pipelines
+  boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
 
   validates :webhook, presence: true, url: true, if: :activated?
 
@@ -16,8 +16,8 @@ class ChatNotificationService < Service
 
     if properties.nil?
       self.properties = {}
-      self.notify_only_broken_builds = true
       self.notify_only_broken_pipelines = true
+      self.notify_only_default_branch = true
     end
   end
 
@@ -25,9 +25,22 @@ class ChatNotificationService < Service
     valid?
   end
 
-  def supported_events
+  def self.supported_events
     %w[push issue confidential_issue merge_request note tag_push
-       build pipeline wiki_page]
+       pipeline wiki_page]
+  end
+
+  def fields
+    default_fields + build_event_channels
+  end
+
+  def default_fields
+    [
+      { type: 'text', name: 'webhook', placeholder: "e.g. #{webhook_placeholder}" },
+      { type: 'text', name: 'username', placeholder: 'e.g. GitLab' },
+      { type: 'checkbox', name: 'notify_only_broken_pipelines' },
+      { type: 'checkbox', name: 'notify_only_default_branch' },
+    ]
   end
 
   def execute(data)
@@ -82,19 +95,17 @@ class ChatNotificationService < Service
   def get_message(object_kind, data)
     case object_kind
     when "push", "tag_push"
-      PushMessage.new(data)
+      ChatMessage::PushMessage.new(data)
     when "issue"
-      IssueMessage.new(data) unless is_update?(data)
+      ChatMessage::IssueMessage.new(data) unless is_update?(data)
     when "merge_request"
-      MergeMessage.new(data) unless is_update?(data)
+      ChatMessage::MergeMessage.new(data) unless is_update?(data)
     when "note"
-      NoteMessage.new(data)
-    when "build"
-      BuildMessage.new(data) if should_build_be_notified?(data)
+      ChatMessage::NoteMessage.new(data)
     when "pipeline"
-      PipelineMessage.new(data) if should_pipeline_be_notified?(data)
+      ChatMessage::PipelineMessage.new(data) if should_pipeline_be_notified?(data)
     when "wiki_page"
-      WikiPageMessage.new(data)
+      ChatMessage::WikiPageMessage.new(data)
     end
   end
 
@@ -125,18 +136,18 @@ class ChatNotificationService < Service
     data[:object_attributes][:action] == 'update'
   end
 
-  def should_build_be_notified?(data)
-    case data[:commit][:status]
-    when 'success'
-      !notify_only_broken_builds?
-    when 'failed'
-      true
-    else
-      false
-    end
+  def should_pipeline_be_notified?(data)
+    notify_for_ref?(data) && notify_for_pipeline?(data)
   end
 
-  def should_pipeline_be_notified?(data)
+  def notify_for_ref?(data)
+    return true if data[:object_attributes][:tag]
+    return true unless notify_only_default_branch
+
+    data[:object_attributes][:ref] == project.default_branch
+  end
+
+  def notify_for_pipeline?(data)
     case data[:object_attributes][:status]
     when 'success'
       !notify_only_broken_pipelines?

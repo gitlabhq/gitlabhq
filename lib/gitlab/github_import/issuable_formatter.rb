@@ -1,13 +1,13 @@
 module Gitlab
   module GithubImport
     class IssuableFormatter < BaseFormatter
+      attr_writer :assignee_id, :author_id
+
       def project_association
         raise NotImplementedError
       end
 
-      def number
-        raw_data.number
-      end
+      delegate :number, to: :raw_data
 
       def find_condition
         { iid: number }
@@ -23,18 +23,24 @@ module Gitlab
         raw_data.assignee.present?
       end
 
-      def assignee_id
-        if assigned?
-          gitlab_user_id(raw_data.assignee.id)
-        end
-      end
-
       def author
-        raw_data.user.login
+        @author ||= UserFormatter.new(client, raw_data.user)
       end
 
       def author_id
-        gitlab_author_id || project.creator_id
+        @author_id ||= author.gitlab_id || project.creator_id
+      end
+
+      def assignee
+        if assigned?
+          @assignee ||= UserFormatter.new(client, raw_data.assignee)
+        end
+      end
+
+      def assignee_id
+        return @assignee_id if defined?(@assignee_id)
+
+        @assignee_id = assignee.try(:gitlab_id)
       end
 
       def body
@@ -42,10 +48,10 @@ module Gitlab
       end
 
       def description
-        if gitlab_author_id
+        if author.gitlab_id
           body
         else
-          formatter.author_line(author) + body
+          formatter.author_line(author.login) + body
         end
       end
 

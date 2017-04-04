@@ -15,10 +15,10 @@ This will allow us to test PHP projects against different versions of PHP.
 However, not everything is plug 'n' play, you still need to configure some
 things manually.
 
-As with every build, you need to create a valid `.gitlab-ci.yml` describing the
+As with every job, you need to create a valid `.gitlab-ci.yml` describing the
 build environment.
 
-Let's first specify the PHP image that will be used for the build process
+Let's first specify the PHP image that will be used for the job process
 (you can read more about what an image means in the Runner's lingo reading
 about [Using Docker images](../docker/using_docker_images.md#what-is-image)).
 
@@ -58,8 +58,8 @@ docker-php-ext-install pdo_mysql
 ```
 
 You might wonder what `docker-php-ext-install` is. In short, it is a script
-provided by the official php docker image that you can use to easilly install
-extensions. For more information read the the documentation at
+provided by the official php docker image that you can use to easily install
+extensions. For more information read the documentation at
 <https://hub.docker.com/r/_/php/>.
 
 Now that we created the script that contains all prerequisites for our build
@@ -142,7 +142,7 @@ Of course, `my_php.ini` must be present in the root directory of your repository
 
 ## Test PHP projects using the Shell executor
 
-The shell executor runs your builds in a terminal session on your server.
+The shell executor runs your job in a terminal session on your server.
 Thus, in order to test your projects you first need to make sure that all
 dependencies are installed.
 
@@ -235,7 +235,11 @@ cache:
 
 before_script:
 # Install composer dependencies
-- curl --silent --show-error https://getcomposer.org/installer | php
+- wget https://composer.github.io/installer.sig -O - -q | tr -d '\n' > installer.sig
+- php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+- php -r "if (hash_file('SHA384', 'composer-setup.php') === file_get_contents('installer.sig')) { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+- php composer-setup.php
+- php -r "unlink('composer-setup.php'); unlink('installer.sig');"
 - php composer.phar install
 
 ...
@@ -276,7 +280,7 @@ that runs on [GitLab.com](https://gitlab.com) using our publicly available
 [shared runners](../runners/README.md).
 
 Want to hack on it? Simply fork it, commit and push  your changes. Within a few
-moments the changes will be picked by a public runner and the build will begin.
+moments the changes will be picked by a public runner and the job will begin.
 
 [php-hub]: https://hub.docker.com/r/_/php/
 [phpenv]: https://github.com/phpenv/phpenv

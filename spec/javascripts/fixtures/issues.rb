@@ -41,7 +41,7 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
   def render_issue(fixture_file_name, issue)
     get :show,
       namespace_id: project.namespace.to_param,
-      project_id: project.to_param,
+      project_id: project,
       id: issue.to_param
 
     expect(response).to be_success

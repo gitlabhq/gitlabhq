@@ -100,8 +100,7 @@
 
 @media (max-width: $screen-sm-max) {
   .issues-filters {
-    .milestone-filter,
-    .labels-filter {
+    .milestone-filter {
       display: none;
     }
   }

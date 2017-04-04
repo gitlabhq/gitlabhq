@@ -26,7 +26,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
   describe "#execute" do
     let(:user)    { create(:user) }
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:username) { 'slack_username' }
     let(:channel)  { 'slack_channel' }
 
@@ -196,7 +196,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
   describe "Note events" do
     let(:user) { create(:user) }
-    let(:project) { create(:project, creator_id: user.id) }
+    let(:project) { create(:project, :repository, creator: user) }
 
     before do
       allow(chat_service).to receive_messages(
@@ -269,7 +269,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
   describe 'Pipeline events' do
     let(:user) { create(:user) }
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     let(:pipeline) do
       create(:ci_pipeline,
@@ -322,6 +322,25 @@ RSpec.shared_examples 'slack or mattermost notifications' do
         end
 
         it_behaves_like 'call Slack/Mattermost API'
+      end
+    end
+
+    context 'only notify for the default branch' do
+      context 'when enabled' do
+        let(:pipeline) do
+          create(:ci_pipeline, project: project, status: 'failed', ref: 'not-the-default-branch')
+        end
+
+        before do
+          chat_service.notify_only_default_branch = true
+        end
+
+        it 'does not call the Slack/Mattermost API for pipeline events' do
+          data = Gitlab::DataBuilder::Pipeline.build(pipeline)
+          result = chat_service.execute(data)
+
+          expect(result).to be_falsy
+        end
       end
     end
   end

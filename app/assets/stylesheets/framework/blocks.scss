@@ -82,7 +82,12 @@
   }
 
   .block-controls {
-    float: right;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: flex-end;
+    justify-content: flex-end;
+    -webkit-flex: 1;
+    flex: 1;
 
     .control {
       float: left;
@@ -224,7 +229,7 @@
   .controls {
     float: right;
     margin-top: 8px;
-    padding-bottom: 7px;
+    padding-bottom: 8px;
     border-bottom: 1px solid $border-color;
   }
 }
@@ -273,6 +278,10 @@
     display: inline-block;
   }
 
+  .btn {
+    margin: $btn-side-margin $btn-side-margin 0 0;
+  }
+
   @media(max-width: $screen-xs-max) {
     margin-top: 50px;
     text-align: center;
@@ -281,4 +290,15 @@
       width: 100%;
     }
   }
+
+  @media(min-width: $screen-xs-max) {
+    &.labels .text-content {
+      margin-top: 70px;
+    }
+  }
+}
+
+.flex-container-block {
+  display: -webkit-flex;
+  display: flex;
 }

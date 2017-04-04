@@ -51,7 +51,7 @@ describe IssuablesHelper do
           utf8: '✓',
           author_id: '11',
           assignee_id: '18',
-          label_name: ['bug', 'discussion', 'documentation'],
+          label_name: %w(bug discussion documentation),
           milestone_title: 'v4.0',
           sort: 'due_date_asc',
           namespace_id: 'gitlab-org',
@@ -111,6 +111,46 @@ describe IssuablesHelper do
 
         expect(helper.issuables_state_counter_text(:issues, :opened)).
           to eq('<span>Open</span> <span class="badge">42</span>')
+      end
+    end
+  end
+
+  describe '#issuable_reference' do
+    context 'when show_full_reference truthy' do
+      it 'display issuable full reference' do
+        assign(:show_full_reference, true)
+        issue = build_stubbed(:issue)
+
+        expect(helper.issuable_reference(issue)).to eql(issue.to_reference(full: true))
+      end
+    end
+
+    context 'when show_full_reference falsey' do
+      context 'when @group present' do
+        it 'display issuable reference to @group' do
+          project = build_stubbed(:project)
+
+          assign(:show_full_reference, nil)
+          assign(:group, project.namespace)
+
+          issue = build_stubbed(:issue)
+
+          expect(helper.issuable_reference(issue)).to eql(issue.to_reference(project.namespace))
+        end
+      end
+
+      context 'when @project present' do
+        it 'display issuable reference to @project' do
+          project = build_stubbed(:project)
+
+          assign(:show_full_reference, nil)
+          assign(:group, nil)
+          assign(:project, project)
+
+          issue = build_stubbed(:issue)
+
+          expect(helper.issuable_reference(issue)).to eql(issue.to_reference(project))
+        end
       end
     end
   end

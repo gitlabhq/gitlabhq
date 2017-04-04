@@ -1,3 +1,7 @@
+- if @teams_error_message
+  = content_for :flash_message do
+    .alert.alert-danger= @teams_error_message
+
 %p
   You aren’t a member of any team on the Mattermost instance at
   %strong= Gitlab.config.mattermost.host

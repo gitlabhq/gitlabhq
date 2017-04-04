@@ -5,6 +5,6 @@ module ReactiveService
     include ReactiveCaching
 
     # Default cache key: class name + project_id
-    self.reactive_cache_key = ->(service) { [ service.class.model_name.singular, service.project_id ] }
+    self.reactive_cache_key = ->(service) { [service.class.model_name.singular, service.project_id] }
   end
 end

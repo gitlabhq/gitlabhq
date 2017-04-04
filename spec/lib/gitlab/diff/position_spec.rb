@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::Diff::Position, lib: true do
   include RepoHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   describe "position for an added file" do
     let(:commit) { project.commit("2ea1f3dec713d940208fb5ce4a38765ecb5d3f73") }

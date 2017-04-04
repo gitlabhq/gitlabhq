@@ -4,7 +4,7 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
   include Select2Helper
 
   let(:file) { File.join(Rails.root, 'spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
-  let(:export_path) { "#{Dir::tmpdir}/import_file_spec" }
+  let(:export_path) { "#{Dir.tmpdir}/import_file_spec" }
 
   background do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)

@@ -26,7 +26,7 @@ describe "Admin::Hooks", feature: true do
   end
 
   describe "New Hook" do
-    let(:url) { FFaker::Internet.uri('http') }
+    let(:url) { generate(:url) }
 
     it 'adds new hook' do
       visit admin_hooks_path

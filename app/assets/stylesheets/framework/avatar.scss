@@ -28,6 +28,8 @@
 
 .avatar {
   @extend .avatar-circle;
+  @include transition-property(none);
+
   width: 40px;
   height: 40px;
   padding: 0;
@@ -37,6 +39,8 @@
     display: inline-block;
     margin-left: 4px;
     margin-bottom: 2px;
+    flex-shrink: 0;
+    -webkit-flex-shrink: 0;
 
     &.s16 { margin-right: 4px; }
     &.s24 { margin-right: 4px; }

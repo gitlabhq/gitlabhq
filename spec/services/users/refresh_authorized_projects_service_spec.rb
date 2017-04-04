@@ -131,6 +131,80 @@ describe Users::RefreshAuthorizedProjectsService do
     it 'sets the values to the access levels' do
       expect(hash.values).to eq([Gitlab::Access::MASTER])
     end
+
+    context 'personal projects' do
+      it 'includes the project with the right access level' do
+        expect(hash[project.id]).to eq(Gitlab::Access::MASTER)
+      end
+    end
+
+    context 'projects the user is a member of' do
+      let!(:other_project) { create(:empty_project) }
+
+      before do
+        other_project.team.add_reporter(user)
+      end
+
+      it 'includes the project with the right access level' do
+        expect(hash[other_project.id]).to eq(Gitlab::Access::REPORTER)
+      end
+    end
+
+    context 'projects of groups the user is a member of' do
+      let(:group) { create(:group) }
+      let!(:other_project) { create(:empty_project, group: group) }
+
+      before do
+        group.add_owner(user)
+      end
+
+      it 'includes the project with the right access level' do
+        expect(hash[other_project.id]).to eq(Gitlab::Access::OWNER)
+      end
+    end
+
+    context 'projects of subgroups of groups the user is a member of' do
+      let(:group) { create(:group) }
+      let(:nested_group) { create(:group, parent: group) }
+      let!(:other_project) { create(:empty_project, group: nested_group) }
+
+      before do
+        group.add_master(user)
+      end
+
+      it 'includes the project with the right access level' do
+        expect(hash[other_project.id]).to eq(Gitlab::Access::MASTER)
+      end
+    end
+
+    context 'projects shared with groups the user is a member of' do
+      let(:group) { create(:group) }
+      let(:other_project) { create(:empty_project) }
+      let!(:project_group_link) { create(:project_group_link, project: other_project, group: group, group_access: Gitlab::Access::GUEST) }
+
+      before do
+        group.add_master(user)
+      end
+
+      it 'includes the project with the right access level' do
+        expect(hash[other_project.id]).to eq(Gitlab::Access::GUEST)
+      end
+    end
+
+    context 'projects shared with subgroups of groups the user is a member of' do
+      let(:group) { create(:group) }
+      let(:nested_group) { create(:group, parent: group) }
+      let(:other_project) { create(:empty_project) }
+      let!(:project_group_link) { create(:project_group_link, project: other_project, group: nested_group, group_access: Gitlab::Access::DEVELOPER) }
+
+      before do
+        group.add_master(user)
+      end
+
+      it 'includes the project with the right access level' do
+        expect(hash[other_project.id]).to eq(Gitlab::Access::DEVELOPER)
+      end
+    end
   end
 
   describe '#current_authorizations_per_project' do

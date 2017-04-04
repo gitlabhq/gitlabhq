@@ -13,10 +13,12 @@ Database Service (RDS) that runs PostgreSQL.
 
 If you use a cloud-managed service, or provide your own PostgreSQL:
 
+1. Setup PostgreSQL according to the
+   [database requirements document](../../install/requirements.md#database).
 1. Set up a `gitlab` username with a password of your choice. The `gitlab` user
    needs privileges to create the `gitlabhq_production` database.
 1. Configure the GitLab application servers with the appropriate details.
-   This step is covered in [Configuring GitLab for HA](gitlab.md)
+   This step is covered in [Configuring GitLab for HA](gitlab.md).
 
 ## Configure using Omnibus
 
@@ -105,6 +107,8 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
 1. Exit the database prompt by typing `\q` and Enter.
 1. Exit the `gitlab-psql` user by running `exit` twice.
 1. Run `sudo gitlab-ctl reconfigure` a final time.
+1. Configure the GitLab application servers with the appropriate details.
+   This step is covered in [Configuring GitLab for HA](gitlab.md).
 
 ---
 

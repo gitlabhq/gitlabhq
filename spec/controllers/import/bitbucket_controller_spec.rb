@@ -52,7 +52,7 @@ describe Import::BitbucketController do
     end
 
     it "assigns variables" do
-      @project = create(:project, import_type: 'bitbucket', creator_id: user.id)
+      @project = create(:empty_project, import_type: 'bitbucket', creator_id: user.id)
       allow_any_instance_of(Bitbucket::Client).to receive(:repos).and_return([@repo])
 
       get :status
@@ -63,7 +63,7 @@ describe Import::BitbucketController do
     end
 
     it "does not show already added project" do
-      @project = create(:project, import_type: 'bitbucket', creator_id: user.id, import_source: 'asd/vim')
+      @project = create(:empty_project, import_type: 'bitbucket', creator_id: user.id, import_source: 'asd/vim')
       allow_any_instance_of(Bitbucket::Client).to receive(:repos).and_return([@repo])
 
       get :status
@@ -108,6 +108,17 @@ describe Import::BitbucketController do
           expect(Gitlab::BitbucketImport::ProjectCreator).
             to receive(:new).with(bitbucket_repo, bitbucket_repo.name, user.namespace, user, access_params).
             and_return(double(execute: true))
+
+          post :create, format: :js
+        end
+      end
+
+      context 'when the Bitbucket user is unauthorized' do
+        render_views
+
+        it 'returns unauthorized' do
+          allow(controller).to receive(:current_user).and_return(user)
+          allow(user).to receive(:can?).and_return(false)
 
           post :create, format: :js
         end

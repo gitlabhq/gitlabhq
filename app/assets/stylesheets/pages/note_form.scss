@@ -148,6 +148,18 @@
 .error-alert > .alert {
   margin-top: 5px;
   margin-bottom: 5px;
+
+  &.alert-dismissable {
+    .close {
+      color: $white-light;
+      opacity: 0.85;
+      font-weight: normal;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
 }
 
 .discussion-body,
@@ -178,8 +190,25 @@
       padding-right: 5px;
     }
 
-    &:last-child {
-      padding-left: 5px;
+  }
+
+  .discussion-actions {
+    display: table;
+
+    .new-issue-for-discussion path {
+      fill: $gray-darkest;
+    }
+
+    .btn-group {
+      display: table-cell;
+
+      &:first-child {
+        padding-right: 0;
+      }
+
+      &:first-child:not(:last-child) > div {
+        border-right: 0;
+      }
     }
   }
 

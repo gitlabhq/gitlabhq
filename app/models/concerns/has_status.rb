@@ -1,22 +1,22 @@
 module HasStatus
   extend ActiveSupport::Concern
 
-  AVAILABLE_STATUSES = %w[created pending running success failed canceled skipped]
-  STARTED_STATUSES = %w[running success failed skipped]
-  ACTIVE_STATUSES = %w[pending running]
-  COMPLETED_STATUSES = %w[success failed canceled skipped]
-  ORDERED_STATUSES = %w[failed pending running canceled success skipped]
+  DEFAULT_STATUS = 'created'.freeze
+  BLOCKED_STATUS = 'manual'.freeze
+  AVAILABLE_STATUSES = %w[created pending running success failed canceled skipped manual].freeze
+  STARTED_STATUSES = %w[running success failed skipped manual].freeze
+  ACTIVE_STATUSES = %w[pending running].freeze
+  COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
+  ORDERED_STATUSES = %w[failed pending running manual canceled success skipped created].freeze
 
   class_methods do
     def status_sql
-      scope = if respond_to?(:exclude_ignored)
-                exclude_ignored
-              else
-                all
-              end
+      scope = respond_to?(:exclude_ignored) ? exclude_ignored : all
+
       builds = scope.select('count(*)').to_sql
       created = scope.created.select('count(*)').to_sql
       success = scope.success.select('count(*)').to_sql
+      manual = scope.manual.select('count(*)').to_sql
       pending = scope.pending.select('count(*)').to_sql
       running = scope.running.select('count(*)').to_sql
       skipped = scope.skipped.select('count(*)').to_sql
@@ -29,7 +29,9 @@ module HasStatus
         WHEN (#{builds})=(#{success})+(#{skipped}) THEN 'success'
         WHEN (#{builds})=(#{success})+(#{skipped})+(#{canceled}) THEN 'canceled'
         WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN 'pending'
-        WHEN (#{running})+(#{pending})+(#{created})>0 THEN 'running'
+        WHEN (#{running})+(#{pending})>0 THEN 'running'
+        WHEN (#{manual})>0 THEN 'manual'
+        WHEN (#{created})>0 THEN 'running'
         ELSE 'failed'
       END)"
     end
@@ -62,6 +64,7 @@ module HasStatus
       state :success, value: 'success'
       state :canceled, value: 'canceled'
       state :skipped, value: 'skipped'
+      state :manual, value: 'manual'
     end
 
     scope :created, -> { where(status: 'created') }
@@ -72,12 +75,13 @@ module HasStatus
     scope :failed, -> { where(status: 'failed')  }
     scope :canceled, -> { where(status: 'canceled')  }
     scope :skipped, -> { where(status: 'skipped')  }
+    scope :manual, -> { where(status: 'manual')  }
     scope :running_or_pending, -> { where(status: [:running, :pending]) }
     scope :finished, -> { where(status: [:success, :failed, :canceled]) }
     scope :failed_or_canceled, -> { where(status: [:failed, :canceled]) }
 
     scope :cancelable, -> do
-      where(status: [:running, :pending, :created])
+      where(status: [:running, :pending, :created, :manual])
     end
   end
 
@@ -91,6 +95,10 @@ module HasStatus
 
   def complete?
     COMPLETED_STATUSES.include?(status)
+  end
+
+  def blocked?
+    BLOCKED_STATUS == status
   end
 
   private

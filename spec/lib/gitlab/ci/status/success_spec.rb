@@ -6,7 +6,7 @@ describe Gitlab::Ci::Status::Success do
   end
 
   describe '#text' do
-    it { expect(subject.label).to eq 'passed' }
+    it { expect(subject.text).to eq 'passed' }
   end
 
   describe '#label' do
@@ -15,6 +15,10 @@ describe Gitlab::Ci::Status::Success do
 
   describe '#icon' do
     it { expect(subject.icon).to eq 'icon_status_success' }
+  end
+
+  describe '#favicon' do
+    it { expect(subject.favicon).to eq 'favicon_status_success' }
   end
 
   describe '#group' do

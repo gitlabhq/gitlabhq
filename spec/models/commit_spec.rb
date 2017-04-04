@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Commit, models: true do
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:commit)  { project.commit }
 
   describe 'modules' do
@@ -34,7 +34,7 @@ describe Commit, models: true do
   end
 
   describe '#to_reference' do
-    let(:project) { create(:project, path: 'sample-project') }
+    let(:project) { create(:project, :repository, path: 'sample-project') }
     let(:commit)  { project.commit }
 
     it 'returns a String reference to the object' do
@@ -42,13 +42,13 @@ describe Commit, models: true do
     end
 
     it 'supports a cross-project reference' do
-      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      another_project = build(:project, :repository, name: 'another-project', namespace: project.namespace)
       expect(commit.to_reference(another_project)).to eq "sample-project@#{commit.id}"
     end
   end
 
   describe '#reference_link_text' do
-    let(:project) { create(:project, path: 'sample-project') }
+    let(:project) { create(:project, :repository, path: 'sample-project') }
     let(:commit)  { project.commit }
 
     it 'returns a String reference to the object' do
@@ -56,7 +56,7 @@ describe Commit, models: true do
     end
 
     it 'supports a cross-project reference' do
-      another_project = build(:project, name: 'another-project', namespace: project.namespace)
+      another_project = build(:project, :repository, name: 'another-project', namespace: project.namespace)
       expect(commit.reference_link_text(another_project)).to eq "sample-project@#{commit.short_id}"
     end
   end
@@ -131,7 +131,7 @@ eos
 
   describe '#closes_issues' do
     let(:issue) { create :issue, project: project }
-    let(:other_project) { create :project, :public }
+    let(:other_project) { create(:empty_project, :public) }
     let(:other_issue) { create :issue, project: other_project }
     let(:commiter) { create :user }
 
@@ -154,7 +154,7 @@ eos
   end
 
   it_behaves_like 'a mentionable' do
-    subject { create(:project).commit }
+    subject { create(:project, :repository).commit }
 
     let(:author) { create(:user, email: subject.author_email) }
     let(:backref_text) { "commit #{subject.id}" }
@@ -209,6 +209,25 @@ eos
       end
 
       it { expect(commit.reverts_commit?(another_commit, user)).to be_truthy }
+    end
+  end
+
+  describe '#latest_pipeline' do
+    let!(:first_pipeline) do
+      create(:ci_empty_pipeline,
+        project: project,
+        sha: commit.sha,
+        status: 'success')
+    end
+    let!(:second_pipeline) do
+      create(:ci_empty_pipeline,
+        project: project,
+        sha: commit.sha,
+        status: 'success')
+    end
+
+    it 'returns latest pipeline' do
+      expect(commit.latest_pipeline).to eq second_pipeline
     end
   end
 
@@ -349,6 +368,52 @@ eos
       commit.message = "Wipout #{commit.message}"
 
       expect(commit).not_to be_work_in_progress
+    end
+  end
+
+  describe '.valid_hash?' do
+    it 'checks hash contents' do
+      expect(described_class.valid_hash?('abcdef01239ABCDEF')).to be true
+      expect(described_class.valid_hash?("abcdef01239ABCD\nEF")).to be false
+      expect(described_class.valid_hash?(' abcdef01239ABCDEF ')).to be false
+      expect(described_class.valid_hash?('Gabcdef01239ABCDEF')).to be false
+      expect(described_class.valid_hash?('gabcdef01239ABCDEF')).to be false
+      expect(described_class.valid_hash?('-abcdef01239ABCDEF')).to be false
+    end
+
+    it 'checks hash length' do
+      expect(described_class.valid_hash?('a' * 6)).to be false
+      expect(described_class.valid_hash?('a' * 7)).to be true
+      expect(described_class.valid_hash?('a' * 40)).to be true
+      expect(described_class.valid_hash?('a' * 41)).to be false
+    end
+  end
+
+  describe '#raw_diffs' do
+    context 'Gitaly commit_raw_diffs feature enabled' do
+      before do
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:commit_raw_diffs).and_return(true)
+      end
+
+      context 'when a truthy deltas_only is not passed to args' do
+        it 'fetches diffs from Gitaly server' do
+          expect(Gitlab::GitalyClient::Commit).to receive(:diff_from_parent).
+            with(commit)
+
+          commit.raw_diffs
+        end
+      end
+
+      context 'when a truthy deltas_only is passed to args' do
+        it 'fetches diffs using Rugged' do
+          opts = { deltas_only: true }
+
+          expect(Gitlab::GitalyClient::Commit).not_to receive(:diff_from_parent)
+          expect(commit.raw).to receive(:diffs).with(opts)
+
+          commit.raw_diffs(opts)
+        end
+      end
     end
   end
 end

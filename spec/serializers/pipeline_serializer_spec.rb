@@ -7,11 +7,7 @@ describe PipelineSerializer do
     described_class.new(user: user)
   end
 
-  let(:entity) do
-    serializer.represent(resource)
-  end
-
-  subject { entity.as_json }
+  subject { serializer.represent(resource) }
 
   describe '#represent' do
     context 'when used without pagination' do
@@ -56,14 +52,14 @@ describe PipelineSerializer do
         expect(serializer).to be_paginated
       end
 
-      context 'when resource does is not paginatable' do
+      context 'when resource is not paginatable' do
         context 'when a single pipeline object is being serialized' do
           let(:resource) { create(:ci_empty_pipeline) }
           let(:pagination) { { page: 1, per_page: 1 } }
 
           it 'raises error' do
-            expect { subject }
-              .to raise_error(PipelineSerializer::InvalidResourceError)
+            expect { subject }.to raise_error(
+              Gitlab::Serializer::Pagination::InvalidResourceError)
           end
         end
       end
@@ -95,6 +91,22 @@ describe PipelineSerializer do
             subject
           end
         end
+      end
+    end
+  end
+
+  describe '#represent_status' do
+    context 'when represents only status' do
+      let(:resource) { create(:ci_pipeline) }
+      let(:status) { resource.detailed_status(double('user')) }
+
+      subject { serializer.represent_status(resource) }
+
+      it 'serializes only status' do
+        expect(subject[:text]).to eq(status.text)
+        expect(subject[:label]).to eq(status.label)
+        expect(subject[:icon]).to eq(status.icon)
+        expect(subject[:favicon]).to eq(status.favicon)
       end
     end
   end

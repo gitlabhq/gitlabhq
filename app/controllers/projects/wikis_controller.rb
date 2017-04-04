@@ -1,5 +1,3 @@
-require 'project_wiki'
-
 class Projects::WikisController < Projects::ApplicationController
   before_action :authorize_read_wiki!
   before_action :authorize_create_wiki!, only: [:edit, :create, :history]
@@ -8,6 +6,7 @@ class Projects::WikisController < Projects::ApplicationController
 
   def pages
     @wiki_pages = Kaminari.paginate_array(@project_wiki.pages).page(params[:page])
+    @wiki_entries = WikiPage.group_by_directory(@wiki_pages)
   end
 
   def show
@@ -46,8 +45,9 @@ class Projects::WikisController < Projects::ApplicationController
     return render('empty') unless can?(current_user, :create_wiki, @project)
 
     @page = @project_wiki.find_page(params[:id])
+    @page = WikiPages::UpdateService.new(@project, current_user, wiki_params).execute(@page)
 
-    if @page = WikiPages::UpdateService.new(@project, current_user, wiki_params).execute(@page)
+    if @page.valid?
       redirect_to(
         namespace_project_wiki_path(@project.namespace, @project, @page),
         notice: 'Wiki was successfully updated.'
@@ -83,7 +83,7 @@ class Projects::WikisController < Projects::ApplicationController
 
   def destroy
     @page = @project_wiki.find_page(params[:id])
-    @page.delete if @page
+    WikiPages::DestroyService.new(@project, current_user).execute(@page)
 
     redirect_to(
       namespace_project_wiki_path(@project.namespace, @project, :home),
@@ -116,7 +116,7 @@ class Projects::WikisController < Projects::ApplicationController
     # Call #wiki to make sure the Wiki Repo is initialized
     @project_wiki.wiki
 
-    @sidebar_wiki_pages = @project_wiki.pages.first(15)
+    @sidebar_wiki_entries = WikiPage.group_by_directory(@project_wiki.pages.first(15))
   rescue ProjectWiki::CouldNotCreateWikiError
     flash[:notice] = "Could not create Wiki Repository at this time. Please try again later."
     redirect_to project_path(@project)
@@ -124,6 +124,6 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def wiki_params
-    params[:wiki].slice(:title, :content, :format, :message)
+    params.require(:wiki).permit(:title, :content, :format, :message)
   end
 end

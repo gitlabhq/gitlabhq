@@ -4,16 +4,15 @@ describe Gitlab::Template::IssueTemplate do
   subject { described_class }
 
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
-  let(:file_path_1) { '.gitlab/issue_templates/bug.md' }
-  let(:file_path_2) { '.gitlab/issue_templates/template_test.md' }
-  let(:file_path_3) { '.gitlab/issue_templates/feature_proposal.md' }
 
-  before do
-    project.add_user(user, Gitlab::Access::MASTER)
-    project.repository.commit_file(user, file_path_1, "something valid", "test 3", "master", false)
-    project.repository.commit_file(user, file_path_2, "template_test", "test 1", "master", false)
-    project.repository.commit_file(user, file_path_3, "feature_proposal", "test 2", "master", false)
+  let(:project) do
+    create(:project,
+      :repository,
+      create_template: {
+        user: user,
+        access: Gitlab::Access::MASTER,
+        path: 'issue_templates'
+      })
   end
 
   describe '.all' do

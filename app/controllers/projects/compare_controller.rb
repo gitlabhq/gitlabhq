@@ -46,7 +46,8 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def define_diff_vars
-    @compare = CompareService.new.execute(@project, @head_ref, @project, @start_ref)
+    @compare = CompareService.new(@project, @head_ref)
+      .execute(@project, @start_ref)
 
     if @compare
       @commits = @compare.commits
@@ -55,6 +56,9 @@ class Projects::CompareController < Projects::ApplicationController
       @base_commit = @compare.base_commit
 
       @diffs = @compare.diffs(diff_options)
+
+      environment_params = @repository.branch_exists?(@head_ref) ? { ref: @head_ref } : { commit: @commit }
+      @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
 
       @diff_notes_disabled = true
       @grouped_diff_discussions = {}

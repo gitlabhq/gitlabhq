@@ -3,6 +3,9 @@
 - page_description @milestone.description
 = render "projects/issues/head"
 
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('simulate_drag') if Rails.env.test?
+
 %div{ class: container_class }
   .detail-page-header.milestone-page-header
     .status-box{ class: status_box_class(@milestone) }
@@ -16,10 +19,9 @@
         Open
     .header-text-content
       %span.identifier
-        Milestone ##{@milestone.iid}
+        %strong
+          Milestone #{@milestone.to_reference}
       - if @milestone.due_date || @milestone.start_date
-        %span.creator
-          &middot;
         = milestone_date_range(@milestone)
     .milestone-buttons
       - if can?(current_user, :admin_milestone, @project)
@@ -34,6 +36,9 @@
         = link_to namespace_project_milestone_path(@project.namespace, @project, @milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-grouped btn-danger" do
           Delete
 
+      %a.btn.btn-default.btn-grouped.pull-right.visible-xs-block.js-sidebar-toggle{ href: "#" }
+        = icon('angle-double-left')
+
   .detail-page-description.milestone-detail{ class: ('hide-bottom-border' unless @milestone.description.present? ) }
     %h2.title
       = markdown_field(@milestone, :title)
@@ -44,12 +49,12 @@
             = preserve do
               = markdown_field(@milestone, :description)
 
-  - if @milestone.total_items_count(current_user).zero?
+  - if can?(current_user, :read_issue, @project) && @milestone.total_items_count(current_user).zero?
     .alert.alert-success.prepend-top-default
       %span Assign some issues to this milestone.
   - elsif @milestone.complete?(current_user) && @milestone.active?
     .alert.alert-success.prepend-top-default
       %span All issues for this milestone are closed. You may close this milestone now.
 
-  = render 'shared/milestones/summary', milestone: @milestone, project: @project
   = render 'shared/milestones/tabs', milestone: @milestone
+  = render 'shared/milestones/sidebar', milestone: @milestone, project: @project, affix_offset: 153

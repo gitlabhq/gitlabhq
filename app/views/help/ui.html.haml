@@ -410,7 +410,7 @@
     :javascript
       $('#js-project-dropdown').glDropdown({
         data: function (term, callback) {
-          Api.projects(term, "last_activity_at", function (data) {
+          Api.projects(term, { order_by: 'last_activity_at' }, function (data) {
             callback(data);
           });
         },
@@ -528,7 +528,7 @@
   - blob = Snippet.new(content: "Wow\nSuch\nFile")
   .example
     .file-holder
-      .file-title
+      .js-file-title.file-title
         Awesome file
         .file-actions
           .btn-group

@@ -14,6 +14,8 @@ class UploadsController < ApplicationController
     end
 
     disposition = uploader.image? ? 'inline' : 'attachment'
+
+    expires_in 0.seconds, must_revalidate: true, private: true
     send_file uploader.file.path, disposition: disposition
   end
 

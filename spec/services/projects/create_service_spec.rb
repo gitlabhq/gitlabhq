@@ -50,7 +50,7 @@ describe Projects::CreateService, '#execute', services: true do
 
   context 'error handling' do
     it 'handles invalid options' do
-      opts.merge!({ default_branch: 'master' } )
+      opts[:default_branch] = 'master'
       expect(create_project(user, opts)).to eq(nil)
     end
   end
@@ -67,7 +67,7 @@ describe Projects::CreateService, '#execute', services: true do
 
     context 'wiki_enabled false does not create wiki repository directory' do
       it do
-        opts.merge!(wiki_enabled: false)
+        opts[:wiki_enabled] = false
         project = create_project(user, opts)
         path = ProjectWiki.new(project, user).send(:path_to_repo)
 
@@ -90,10 +90,6 @@ describe Projects::CreateService, '#execute', services: true do
     end
 
     context 'global builds_enabled true does enable CI by default' do
-      before do
-        project.project_feature.update_attribute(:builds_access_level, ProjectFeature::ENABLED)
-      end
-
       it { is_expected.to be_truthy }
     end
   end

@@ -57,7 +57,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   def render_ok
     set_workhorse_internal_api_content_type
-    render json: Gitlab::Workhorse.git_http_ok(repository, user)
+    render json: Gitlab::Workhorse.git_http_ok(repository, user, action_name)
   end
 
   def render_http_not_allowed
@@ -84,7 +84,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def access
-    @access ||= Gitlab::GitAccess.new(user, project, 'http', authentication_abilities: authentication_abilities)
+    @access ||= access_klass.new(user, project, 'http', authentication_abilities: authentication_abilities)
   end
 
   def access_check
@@ -101,5 +101,9 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     return false unless Gitlab.config.gitlab_shell.receive_pack
 
     access_check.allowed?
+  end
+
+  def access_klass
+    @access_klass ||= wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
   end
 end

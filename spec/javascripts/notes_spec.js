@@ -1,10 +1,10 @@
 /* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
 /* global Notes */
 
-/*= require notes */
-/*= require autosize */
-/*= require gl_form */
-/*= require lib/utils/text_utility */
+require('~/notes');
+require('vendor/autosize');
+require('~/gl_form');
+require('~/lib/utils/text_utility');
 
 (function() {
   window.gon || (window.gon = {});
@@ -35,15 +35,13 @@
         expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
       });
 
-      it('submits the form on tasklist:changed', function() {
-        var submitted = false;
-        $('form').on('submit', function(e) {
-          submitted = true;
-          e.preventDefault();
+      it('submits an ajax request on tasklist:changed', function() {
+        spyOn(jQuery, 'ajax').and.callFake(function(req) {
+          expect(req.type).toBe('PATCH');
+          expect(req.url).toBe('http://test.host/frontend-fixtures/issues-project/notes/1');
+          return expect(req.data.note).not.toBe(null);
         });
-
         $('.js-task-list-field').trigger('tasklist:changed');
-        expect(submitted).toBe(true);
       });
     });
 
@@ -75,4 +73,4 @@
       });
     });
   });
-}).call(this);
+}).call(window);

@@ -28,7 +28,7 @@ to enable this if not already.
 When issues/pull requests are being imported, the Bitbucket importer tries to find
 the Bitbucket author/assignee in GitLab's database using the Bitbucket ID. For this
 to work, the Bitbucket author/assignee should have signed in beforehand in GitLab
-and [**associated their Bitbucket account**][social sign-in]. If the user is not
+and **associated their Bitbucket account**. If the user is not
 found in GitLab's database, the project creator (most of the times the current
 user that started the import process) is set as the author, but a reference on
 the issue about the original Bitbucket author is kept.

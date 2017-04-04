@@ -27,10 +27,11 @@ contains some settings that are common for all providers.
 - [Twitter](twitter.md)
 - [Shibboleth](shibboleth.md)
 - [SAML](saml.md)
-- [Crowd](crowd.md)
+- [Crowd](../administration/auth/crowd.md)
 - [Azure](azure.md)
 - [Auth0](auth0.md)
 - [Authentiq](../administration/auth/authentiq.md)
+- [OAuth2Generic](oauth2_generic.md)
 
 ## Initial OmniAuth Configuration
 

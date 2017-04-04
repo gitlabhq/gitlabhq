@@ -22,13 +22,12 @@ Rails.application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
+  use_doorkeeper_openid_connect
+
   # Autocomplete
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
   get '/autocomplete/projects' => 'autocomplete#projects'
-
-  # Emojis
-  resources :emojis, only: :index
 
   # Search
   get 'search' => 'search#show'

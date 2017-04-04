@@ -23,7 +23,7 @@ module Gitlab
       private
 
       def serialize(event)
-        AnalyticsBuildSerializer.new.represent(event['build']).as_json
+        AnalyticsBuildSerializer.new.represent(event['build'])
       end
     end
   end

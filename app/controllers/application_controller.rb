@@ -12,7 +12,6 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user_from_private_token!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!
-  before_action :reject_blocked!
   before_action :check_password_expiration
   before_action :check_2fa_requirement
   before_action :ldap_security_check
@@ -41,6 +40,10 @@ class ApplicationController < ActionController::Base
     render_403
   end
 
+  rescue_from Gitlab::Auth::TooManyIps do |e|
+    head :forbidden, retry_after: Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window
+  end
+
   def redirect_back_or_default(default: root_path, options: {})
     redirect_to request.referer.present? ? :back : default, options
   end
@@ -61,10 +64,13 @@ class ApplicationController < ActionController::Base
 
   # This filter handles both private tokens and personal access tokens
   def authenticate_user_from_private_token!
-    token_string = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
-    user = User.find_by_authentication_token(token_string) || User.find_by_personal_access_token(token_string)
+    token = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
 
-    if user
+    return unless token.present?
+
+    user = User.find_by_authentication_token(token) || User.find_by_personal_access_token(token)
+
+    if user && can?(user, :log_in)
       # Notice we are passing store false, so the user is not
       # actually stored in the session and a token is needed
       # for every request. If you want the token to work as a
@@ -73,43 +79,21 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def authenticate_user!(*args)
-    if redirect_to_home_page_url?
-      redirect_to current_application_settings.home_page_url and return
-    end
-
-    super(*args)
-  end
-
   def log_exception(exception)
     application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
     application_trace.map!{ |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
   end
 
-  def reject_blocked!
-    if current_user && current_user.blocked?
-      sign_out current_user
-      flash[:alert] = "Your account is blocked. Retry when an admin has unblocked it."
-      redirect_to new_user_session_path
-    end
-  end
-
   def after_sign_in_path_for(resource)
-    if resource.is_a?(User) && resource.respond_to?(:blocked?) && resource.blocked?
-      sign_out resource
-      flash[:alert] = "Your account is blocked. Retry when an admin has unblocked it."
-      new_user_session_path
-    else
-      stored_location_for(:redirect) || stored_location_for(resource) || root_path
-    end
+    stored_location_for(:redirect) || stored_location_for(resource) || root_path
   end
 
   def after_sign_out_path_for(resource)
     current_application_settings.after_sign_out_path.presence || new_user_session_path
   end
 
-  def can?(object, action, subject)
+  def can?(object, action, subject = :global)
     Ability.allowed?(object, action, subject)
   end
 
@@ -145,10 +129,6 @@ class ApplicationController < ActionController::Base
     headers['X-XSS-Protection'] = '1; mode=block'
     headers['X-UA-Compatible'] = 'IE=edge'
     headers['X-Content-Type-Options'] = 'nosniff'
-    # Enabling HSTS for non-standard ports would send clients to the wrong port
-    if Gitlab.config.gitlab.https and Gitlab.config.gitlab.port == 443
-      headers['Strict-Transport-Security'] = 'max-age=31536000'
-    end
   end
 
   def validate_user_service_ticket!
@@ -167,7 +147,7 @@ class ApplicationController < ActionController::Base
 
   def check_password_expiration
     if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && !current_user.ldap_user?
-      redirect_to new_profile_password_path and return
+      return redirect_to new_profile_password_path
     end
   end
 
@@ -196,7 +176,7 @@ class ApplicationController < ActionController::Base
   end
 
   def gitlab_ldap_access(&block)
-    Gitlab::LDAP::Access.open { |access| block.call(access) }
+    Gitlab::LDAP::Access.open { |access| yield(access) }
   end
 
   # JSON for infinite scroll via Pager object
@@ -233,7 +213,7 @@ class ApplicationController < ActionController::Base
 
   def require_email
     if current_user && current_user.temp_oauth_email? && session[:impersonator_id].nil?
-      redirect_to profile_path, notice: 'Please complete your profile with email address' and return
+      return redirect_to profile_path, notice: 'Please complete your profile with email address'
     end
   end
 
@@ -300,19 +280,6 @@ class ApplicationController < ActionController::Base
 
   def skip_two_factor?
     session[:skip_tfa] && session[:skip_tfa] > Time.current
-  end
-
-  def redirect_to_home_page_url?
-    # If user is not signed-in and tries to access root_path - redirect him to landing page
-    # Don't redirect to the default URL to prevent endless redirections
-    return false unless current_application_settings.home_page_url.present?
-
-    home_page_url = current_application_settings.home_page_url.chomp('/')
-    root_urls = [Gitlab.config.gitlab['url'].chomp('/'), root_url.chomp('/')]
-
-    return false if root_urls.include?(home_page_url)
-
-    current_user.nil? && root_path == request.path
   end
 
   # U2F (universal 2nd factor) devices need a unique identifier for the application

@@ -25,7 +25,7 @@ describe IrkerService, models: true do
   describe 'Execute' do
     let(:irker) { IrkerService.new }
     let(:user) { create(:user) }
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:sample_data) do
       Gitlab::DataBuilder::Push.build_sample(project, user)
     end
@@ -59,8 +59,8 @@ describe IrkerService, models: true do
 
       conn = @irker_server.accept
       conn.readlines.each do |line|
-        msg = JSON.load(line.chomp("\n"))
-        expect(msg.keys).to match_array(['to', 'privmsg'])
+        msg = JSON.parse(line.chomp("\n"))
+        expect(msg.keys).to match_array(%w(to privmsg))
         expect(msg['to']).to match_array(["irc://chat.freenode.net/#commits",
                                           "irc://test.net/#test"])
       end

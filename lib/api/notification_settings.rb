@@ -48,13 +48,13 @@ module API
     end
 
     %w[group project].each do |source_type|
-      resource source_type.pluralize do
+      params do
+        requires :id, type: String, desc: "The #{source_type} ID"
+      end
+      resource source_type.pluralize, requirements: { id: %r{[^/]+} } do
         desc "Get #{source_type} level notification level settings, defaults to Global" do
           detail 'This feature was introduced in GitLab 8.12'
           success Entities::NotificationSetting
-        end
-        params do
-          requires :id, type: String, desc: 'The group ID or project ID or project NAMESPACE/PROJECT_NAME'
         end
         get ":id/notification_settings" do
           source = find_source(source_type, params[:id])
@@ -69,7 +69,6 @@ module API
           success Entities::NotificationSetting
         end
         params do
-          requires :id, type: String, desc: 'The group ID or project ID or project NAMESPACE/PROJECT_NAME'
           optional :level, type: String, desc: "The #{source_type} notification level"
           NotificationSetting::EMAIL_EVENTS.each do |event|
             optional event, type: Boolean, desc: 'Enable/disable this notification'

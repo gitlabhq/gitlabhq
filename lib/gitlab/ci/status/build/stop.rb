@@ -5,20 +5,8 @@ module Gitlab
         class Stop < SimpleDelegator
           include Status::Extended
 
-          def text
-            'manual'
-          end
-
           def label
             'manual stop action'
-          end
-
-          def icon
-            'icon_status_manual'
-          end
-
-          def group
-            'manual'
           end
 
           def has_action?
@@ -26,7 +14,7 @@ module Gitlab
           end
 
           def action_icon
-            'stop'
+            'icon_action_stop'
           end
 
           def action_title

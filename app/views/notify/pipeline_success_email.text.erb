@@ -18,7 +18,3 @@ Commit Author: <%= commit.author_name %>
 <% build_count = @pipeline.statuses.latest.size -%>
 <% stage_count = @pipeline.stages_count -%>
 Pipeline #<%= @pipeline.id %> ( <%= pipeline_url(@pipeline) %> ) successfully completed <%= build_count %> <%= 'build'.pluralize(build_count) %> in <%= stage_count %> <%= 'stage'.pluralize(stage_count) %>.
-
-You're receiving this email because of your account on <%= Gitlab.config.gitlab.host %>.
-Manage all notifications: <%= profile_notifications_url %>
-Help: <%= help_url %>

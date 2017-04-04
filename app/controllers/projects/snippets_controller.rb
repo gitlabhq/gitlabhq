@@ -1,8 +1,10 @@
 class Projects::SnippetsController < Projects::ApplicationController
   include ToggleAwardEmoji
+  include SpammableActions
+  include SnippetsActions
 
   before_action :module_enabled
-  before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :toggle_award_emoji]
+  before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :toggle_award_emoji, :mark_as_spam]
 
   # Allow read any snippet
   before_action :authorize_read_project_snippet!, except: [:new, :create, :index]
@@ -36,27 +38,19 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def create
-    @snippet = CreateSnippetService.new(@project, current_user,
-                                        snippet_params).execute
+    create_params = snippet_params.merge(spammable_params)
 
-    if @snippet.valid?
-      respond_with(@snippet,
-                   location: namespace_project_snippet_path(@project.namespace,
-                                                            @project, @snippet))
-    else
-      render :new
-    end
-  end
+    @snippet = CreateSnippetService.new(@project, current_user, create_params).execute
 
-  def edit
+    recaptcha_check_with_fallback { render :new }
   end
 
   def update
-    UpdateSnippetService.new(project, current_user, @snippet,
-                             snippet_params).execute
-    respond_with(@snippet,
-                 location: namespace_project_snippet_path(@project.namespace,
-                                                          @project, @snippet))
+    update_params = snippet_params.merge(spammable_params)
+
+    UpdateSnippetService.new(project, current_user, @snippet, update_params).execute
+
+    recaptcha_check_with_fallback { render :edit }
   end
 
   def show
@@ -73,21 +67,13 @@ class Projects::SnippetsController < Projects::ApplicationController
     redirect_to namespace_project_snippets_path(@project.namespace, @project)
   end
 
-  def raw
-    send_data(
-      @snippet.content,
-      type: 'text/plain; charset=utf-8',
-      disposition: 'inline',
-      filename: @snippet.sanitized_file_name
-    )
-  end
-
   protected
 
   def snippet
     @snippet ||= @project.snippets.find(params[:id])
   end
   alias_method :awardable, :snippet
+  alias_method :spammable, :snippet
 
   def authorize_read_project_snippet!
     return render_404 unless can?(current_user, :read_project_snippet, @snippet)

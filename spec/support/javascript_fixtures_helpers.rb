@@ -5,7 +5,7 @@ require 'gitlab/popen'
 module JavaScriptFixturesHelpers
   include Gitlab::Popen
 
-  FIXTURE_PATH = 'spec/javascripts/fixtures'
+  FIXTURE_PATH = 'spec/javascripts/fixtures'.freeze
 
   # Public: Removes all fixture files from given directory
   #

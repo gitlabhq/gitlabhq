@@ -14,7 +14,7 @@ do.
 |:---------------------------|:-------------|
 | `/close`                   | Close the issue or merge request |
 | `/reopen`                  | Reopen the issue or merge request |
-| `/merge`                   | Merge (when build succeeds) |
+| `/merge`                   | Merge (when pipeline succeeds) |
 | `/title <New title>`       | Change title |
 | `/assign @username`        | Assign |
 | `/unassign`                | Remove assignee |
@@ -32,5 +32,7 @@ do.
 | `/wip`                     | Toggle the Work In Progress status |
 | <code>/estimate &lt;1w 3d 2h 14m&gt;</code> | Set time estimate |
 | `/remove_estimate`       | Remove estimated time |
-| <code>/spend &lt;1h 30m &#124; -1h 5m&gt;</code> | Add or substract spent time |
+| <code>/spend &lt;1h 30m &#124; -1h 5m&gt;</code> | Add or subtract spent time |
 | `/remove_time_spent`       | Remove time spent |
+| `/target_branch <Branch Name>` | Set target branch for current merge request |
+| `/award :emoji:`  | Toggle award for :emoji: |

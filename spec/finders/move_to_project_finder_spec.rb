@@ -36,7 +36,7 @@ describe MoveToProjectFinder do
 
       it 'does not return archived projects' do
         reporter_project.team << [user, :reporter]
-        reporter_project.update_attributes(archived: true)
+        reporter_project.archive!
         other_reporter_project = create(:empty_project)
         other_reporter_project.team << [user, :reporter]
 

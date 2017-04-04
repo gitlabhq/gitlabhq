@@ -35,12 +35,8 @@
     margin-bottom: 10px;
   }
 
-  .project-path {
-    padding-right: 0;
-
-    .form-control {
-      border-radius: $border-radius-base;
-    }
+  .project-path .form-control {
+    border-radius: $border-radius-base;
   }
 
   .input-group > div {
@@ -106,6 +102,7 @@
     font-size: 24px;
     font-weight: 400;
     line-height: 1;
+    word-wrap: break-word;
 
     .fa {
       margin-left: 2px;
@@ -198,7 +195,7 @@
     margin: 15px 5px 0 0;
 
     input {
-      height: 27px;
+      height: 28px;
     }
   }
 
@@ -268,6 +265,13 @@
         background: $white-light;
       }
     }
+  }
+}
+
+.project-repo-buttons {
+  .project-action-button .dropdown-menu {
+    max-height: 250px;
+    overflow-y: auto;
   }
 }
 
@@ -473,28 +477,14 @@ a.deploy-project-label {
   }
 }
 
-.page-sidebar-pinned {
-  .project-stats .nav > li.right {
-    @media (min-width: $screen-lg-min) {
-      float: none;
-    }
-  }
-
-  .download-button {
-    @media (min-width: $screen-lg-min) {
-      margin-left: 0;
-    }
-  }
-}
-
 .project-stats {
   font-size: 0;
   text-align: center;
-  border-bottom: 1px solid $border-color;
 
   .nav {
     padding-top: 12px;
     padding-bottom: 12px;
+    border-bottom: 1px solid $border-color;
   }
 
   .nav > li {
@@ -523,7 +513,7 @@ a.deploy-project-label {
 
     &:hover,
     &:focus {
-      color: darken($notes-light-color, 15%);
+      color: $gl-text-color;
     }
   }
 
@@ -578,68 +568,71 @@ pre.light-well {
 /*
  * Projects list rendered on dashboard and user page
  */
-
 .projects-list {
   @include basic-list;
+  display: flex;
+  flex-direction: column;
 
-  .project-row {
-    border-color: $white-normal;
+  // Disable Flexbox for admin page
+  &.admin-projects {
+    display: block;
 
-    .project-full-name {
-      @include str-truncated;
-
-      @media (max-width: $screen-xs-max) {
-        max-width: 50%;
-      }
-    }
-
-    .controls {
-      line-height: $list-text-height;
-
-      .badge {
-        @media (max-width: $screen-xs-max) {
-          display: none;
-        }
-      }
-
-      a:hover {
-        text-decoration: none;
-      }
-
-      > span {
-        margin-left: 10px;
-      }
-
-      svg {
-        position: relative;
-        top: 2px;
-      }
-    }
-
-    .description p {
-      @media (max-width: $screen-xs-max) {
-        max-width: 50%;
-      }
+    .project-row {
+      display: block;
     }
   }
 
-  .bottom {
-    padding-top: $gl-padding;
-    padding-bottom: 0;
+  .project-row {
+    display: flex;
+    align-items: center;
+    @include basic-list-stats;
+  }
+
+  h3 {
+    font-size: $gl-font-size;
+  }
+
+  a {
+    color: $gl-text-color;
+  }
+
+  .avatar-container,
+  .controls {
+    flex: 0 0 auto;
+  }
+
+  .avatar-container {
+    align-self: flex-start;
+  }
+
+  .project-details {
+    min-width: 0;
+
+    p,
+    .commit-row-message {
+      @include str-truncated(100%);
+      margin-bottom: 0;
+    }
+  }
+
+  .controls {
+    margin-left: auto;
+  }
+
+  .ci-status-link {
+    display: inline-block;
+    line-height: 17px;
+    vertical-align: middle;
+
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 
 .panel .projects-list li {
   padding: 10px 15px;
   margin: 0;
-}
-
-.activity-filter-block {
-  .controls {
-    padding-bottom: 7px;
-    margin-top: 8px;
-    border-bottom: 1px solid $border-color;
-  }
 }
 
 .commits-search-form {
@@ -649,28 +642,13 @@ pre.light-well {
 }
 
 .project-last-commit {
+  background-color: $gray-light;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-base;
+  padding: 12px;
+
   @media (min-width: $screen-sm-min) {
     margin-top: $gl-padding;
-  }
-
-  &.container-fluid {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    background-color: $gray-light;
-    border: 1px solid $border-color;
-    border-right-width: 0;
-    border-left-width: 0;
-
-    @media (min-width: $screen-sm-min) {
-      border-right-width: 1px;
-      border-left-width: 1px;
-    }
-  }
-
-  &.container-limited {
-    @media (min-width: 1281px) {
-      border-radius: $border-radius-base;
-    }
   }
 
   .ci-status {
@@ -764,7 +742,18 @@ pre.light-well {
   }
 }
 
+.create-new-protected-branch-button {
+  @include dropdown-link;
+
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  text-align: left;
+}
+
 .protected-branches-list {
+  margin-bottom: 30px;
+
   a {
     color: $gl-text-color;
 
@@ -812,7 +801,8 @@ pre.light-well {
 }
 
 .project-refs-form .dropdown-menu,
-.dropdown-menu-projects {
+.dropdown-menu-projects,
+.dropdown-menu-branches {
   width: 300px;
 
   @media (min-width: $screen-sm-min) {
@@ -929,8 +919,32 @@ pre.light-well {
 .variables-table {
   table-layout: fixed;
 
+  &.table-responsive {
+    border: none;
+  }
+
   .variable-key {
-    width: 30%;
+    width: 300px;
+    max-width: 300px;
+    overflow: hidden;
+    word-wrap: break-word;
+
+    // override bootstrap
+    white-space: normal!important;
+
+    @media (max-width: $screen-sm-max) {
+      width: 150px;
+      max-width: 150px;
+    }
+  }
+
+  .variable-value {
+    @media(max-width: $screen-xs-max) {
+      width: 150px;
+      max-width: 150px;
+      overflow: hidden;
+      word-wrap: break-word;
+    }
   }
 }
 

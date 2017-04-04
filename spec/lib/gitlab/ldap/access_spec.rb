@@ -14,7 +14,7 @@ describe Gitlab::LDAP::Access, lib: true do
 
       it { is_expected.to be_falsey }
 
-      it 'should block user in GitLab' do
+      it 'blocks user in GitLab' do
         expect(access).to receive(:block_user).with(user, 'does not exist anymore')
 
         access.allowed?

@@ -52,7 +52,7 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
 
   let(:project) do
     create(
-      :project,
+      :empty_project,
       import_source: project_identifier,
       import_data: ProjectImportData.new(credentials: data)
     )
@@ -87,10 +87,10 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
                   body: issues_statuses_sample_data.to_json)
 
       stub_request(:get, "https://api.bitbucket.org/2.0/repositories/namespace/repo?pagelen=50&sort=created_on").
-         with(headers: { 'Accept' => '*/*', 'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization' => 'Bearer', 'User-Agent' => 'Faraday v0.9.2' }).
-         to_return(status: 200,
-                   body: "",
-                   headers: {})
+        with(headers: { 'Accept' => '*/*', 'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization' => 'Bearer', 'User-Agent' => 'Faraday v0.9.2' }).
+        to_return(status: 200,
+                  body: "",
+                  headers: {})
 
       sample_issues_statuses.each_with_index do |issue, index|
         stub_request(

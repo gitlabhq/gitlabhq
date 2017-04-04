@@ -16,6 +16,11 @@ module Banzai
       processor.process(html_documents)
     end
 
+    def reset_memoized_values
+      @html_documents     = nil
+      @texts_and_contexts = []
+    end
+
     private
 
     def html_documents

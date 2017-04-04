@@ -84,7 +84,7 @@ Omit punctuation after phrases and labels to create a cleaner and more readable 
 | Comma | **,** | | | | | Place inside quotation marks.<br><br>Use a [serial comma][serial comma] in lists of three or more terms. |
 | Exclamation point | **!** | | | | | Avoid exclamation points as they tend to come across as shouting. Some exceptions include greetings or congratulatory messages. |
 | Colon | **:** | `&#58;` | `\u003A` | | | Omit from labels, for example, in the labels for fields in a form. |
-| Apostrophe | **’** | `&rsquo;` | `\u2019` | <kbd>⌥ Option</kbd>+<kbd>⇧ Shift</kbd>+<kbd>]</kbd> | <kbd>Alt</kbd>+<kbd>0 1 4 6</kbd> | Use for contractions (I’m, you’re, ’89) and to show possession.<br><br>To show possession, add an *’s* to all single nouns and names, even if they already end in an *s*: “Your issues’s status was changed.” For singular proper names ending in *s*, use only an apostrophe: “James’ commits.” For plurals of a single letter, add an *’s*: “Dot your i’s and cross your t’s.”<br><br>Omit for decades or acronyms: “the 1990s”, “MRs.” |
+| Apostrophe | **’** | `&rsquo;` | `\u2019` | <kbd>⌥ Option</kbd>+<kbd>⇧ Shift</kbd>+<kbd>]</kbd> | <kbd>Alt</kbd>+<kbd>0 1 4 6</kbd> | Use for contractions (I’m, you’re, ’89) and to show possession.<br><br>To show possession, add an *’s* to all singular common nouns and names, even if they already end in an *s*: “Look into this worker process’s log.” For singular proper names ending in *s*, use only an apostrophe: “James’ commits.” For plurals of a single letter, add an *’s*: “Dot your i’s and cross your t’s.”<br><br>Omit for decades or acronyms: “the 1990s”, “MRs.” |
 | Quotation marks | **“**<br><br>**”**<br><br>**‘**<br><br>**’** | `&ldquo;`<br><br>`&rdquo;`<br><br>`&lsquo;`<br><br>`&rsquo;` | `\u201C`<br><br>`\u201D`<br><br>`\u2018`<br><br>`\u2019` | <kbd>⌥ Option</kbd>+<kbd>[</kbd><br><br><kbd>⌥ Option</kbd>+<kbd>⇧ Shift</kbd>+<kbd>[</kbd><br><br><kbd>⌥ Option</kbd>+<kbd>]</kbd><br><br><kbd>⌥ Option</kbd>+<kbd>⇧ Shift</kbd>+<kbd>]</kbd> | <kbd>Alt</kbd>+<kbd>0 1 4 7</kbd><br><br><kbd>Alt</kbd>+<kbd>0 1 4 8</kbd><br><br><kbd>Alt</kbd>+<kbd>0 1 4 5</kbd><br><br><kbd>Alt</kbd>+<kbd>0 1 4 6</kbd> | Use proper quotation marks (also known as smart quotes, curly quotes, or typographer’s quotes) for quotes. Single quotation marks are used for quotes inside of quotes.<br><br>The right single quotation mark symbol is also used for apostrophes.<br><br>Don’t use primes, straight quotes, or free-standing accents for quotation marks. |
 | Primes | **′**<br><br>**″** | `&prime;`<br><br>`&Prime;` | `\u2032`<br><br>`\u2033` | | <kbd>Alt</kbd>+<kbd>8 2 4 2</kbd><br><br><kbd>Alt</kbd>+<kbd>8 2 4 3</kbd> | Use prime (′) only in abbreviations for feet, arcminutes, and minutes: 3° 15′<br><br>Use double-prime (″) only in abbreviations for inches, arcseconds, and seconds: 3° 15′ 35″<br><br>Don’t use quotation marks, straight quotes, or free-standing accents for primes. |
 | Straight quotes and accents | **"**<br><br>**'**<br><br>**`**<br><br>**´** | `&quot;`<br><br>`&#39;`<br><br>`&#96;`<br><br>`&acute;` | `\u0022`<br><br>`\u0027`<br><br>`\u0060`<br><br>`\u00B4` | | | Don’t use straight quotes or free-standing accents for primes or quotation marks.<br><br>Proper typography never uses straight quotes. They are left over from the age of typewriters and their only modern use is for code. |
@@ -100,52 +100,44 @@ When using the <kbd>Alt</kbd> keystrokes in Windows, use the numeric keypad, not
 ---
 
 ## Terminology
-Only use the terms in the tables below.
+Only use the terms below.
+
+When using verbs or adjectives:
+* If the context clearly refers to the object, use them alone. Example: `Edit` or `Closed`
+* If the context isn’t clear enough, use them with the object. Example: `Edit issue` or `Closed issues`
+
+### Projects and Groups
+
+| Term | Use | :no_entry_sign: Don't |
+| ---- | --- | ----- |
+| Members | When discussing the people who are a part of a project or a group. | Don't use `users`. |
 
 ### Issues
 
 #### Adjectives (states)
 
-| Term |
-| ---- |
-| Open |
-| Closed |
-| Deleted |
-
->**Example:**
-Use `5 open issues` and don’t use `5 pending issues`.
+| Term | :no_entry_sign: Don’t |
+| ---- | --- |
+| Open | Don’t use `Pending` or `Created` |
+| Closed | Don’t use `Archived` |
+| Deleted | Don’t use `Removed` or `Trashed` |
 
 #### Verbs (actions)
 
-| Term | Use | Don’t |
+| Term | Use | :no_entry_sign: Don’t |
 | ---- | --- | --- |
-| Add | Add an issue | Don’t use `create` or `new` |
-| View | View an open or closed issue ||
-| Edit | Edit an open or closed issue | Don’t use `update` |
-| Close | Close an open issue ||
-| Re-open | Re-open a closed issue | There should never be a need to use `open` as a verb |
-| Delete | Delete an open or closed issue ||
-
-#### Add issue
-
-When viewing a list of issues, there is a button that is labeled `Add`. Given the context in the example, it is clearly referring to issues. If the context were not clear enough, the label could be `Add issue`. Clicking the button will bring you to the `Add issue` form. Other add flows should be similar.
-
-![Add issue button](img/copy-form-addissuebutton.png)
-
-The form should be titled `Add issue`. The submit button should be labeled `Submit`. Don’t use `Add`, `Create`, `New`, or `Save changes`. The cancel button should be labeled `Cancel`. Don’t use `Back`.
-
-![Add issue form](img/copy-form-addissueform.png)
-
-#### Edit issue
-
-When in context of an issue, the affordance to edit it is labeled `Edit`. If the context is not clear enough, `Edit issue` could be considered. Other edit flows should be similar.
-
-![Edit issue button](img/copy-form-editissuebutton.png)
-
-The form should be titled `Edit issue`. The submit button should be labeled `Save`. Don’t use `Edit`, `Update`, `Submit`, or `Save changes`. The cancel button should be labeled `Cancel`. Don’t use `Back`.
-
-![Edit issue form](img/copy-form-editissueform.png)
-
+| New | Although it’s not a verb, `New` is a common standard and used for entering the creation mode of a non-existent issue | Don’t use `Create`, `Open`, or `Add` |
+| Create | Only to indicate when or who created an issue ||
+| Add | Associate an existing issue with an item or a list of items | Don’t use `New` or `Create` |
+| View | Open the detail page of an issue | Don’t use `Open` or `See` |
+| Edit | Enter the editing mode of an issue | Don’t use `Change`, `Modify` or `Update` |
+| Submit | Finalize the *creation* process of an issue | Don’t use `Add`, `Create`, `New`, `Open`, `Save` or `Save changes` |
+| Save | Finalize the *editing* process of an issue | Don’t use `Edit`, `Modify`, `Update`, `Submit`, or `Save changes` |
+| Cancel | Cancel the *creation* or *editing* process of an issue | Don’t use `Back`, `Close`, or `Discard` |
+| Close | Close an open issue | Don’t use `Archive` |
+| Re-open | Re-open a closed issue | Don’t use `Open` |
+| Delete | Permanently remove an issue from the system | Don’t use `Remove` |
+| Remove | Remove the association an issue with an item or a list of items | Don’t use `Delete` |
 
 ### Merge requests
 
@@ -158,7 +150,7 @@ The form should be titled `Edit issue`. The submit button should be labeled `Sav
 
 #### Verbs (actions)
 
-| Term | Use | Don’t |
+| Term | Use | :no_entry_sign: Don’t |
 | ---- | --- | --- |
 | Add | Add a merge request | Do not use `create` or `new` |
 | View | View an open or merged merge request ||
@@ -174,6 +166,15 @@ A **comment** is a written piece of text that users of GitLab can create. Commen
 
 #### Discussion
 A **discussion** is a group of 1 or more comments. A discussion can include subdiscussions. Some discussions have the special capability of being able to be **resolved**. Both the comments in the discussion and the discussion itself can be resolved.
+
+## Confirmation dialogs
+
+- Destruction buttons should be clear and always say what they are destroying.
+  E.g., `Delete page` instead of just `Delete`.
+- If the copy describes another action the user can take instead of the
+  destructive one, provide a way for them to do that as a secondary button.
+- Avoid the word `cancel` or `canceled` in the descriptive copy. It can be
+  confusing when you then see the `Cancel` button.
 
 ---
 

@@ -5,8 +5,6 @@
 #
 module Gitlab
   module ImportSources
-    extend CurrentSettings
-
     ImportSource = Struct.new(:name, :title, :importer)
 
     ImportTable = [

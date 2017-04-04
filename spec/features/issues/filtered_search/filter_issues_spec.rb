@@ -1,35 +1,22 @@
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'Filter issues', js: true, feature: true do
+  include FilteredSearchHelpers
   include WaitForAjax
 
   let!(:group) { create(:group) }
   let!(:project) { create(:project, group: group) }
-  let!(:user) { create(:user) }
-  let!(:user2) { create(:user) }
-  let!(:milestone) { create(:milestone, project: project) }
+  let!(:user) { create(:user, username: 'joe') }
+  let!(:user2) { create(:user, username: 'jane') }
   let!(:label) { create(:label, project: project) }
   let!(:wontfix) { create(:label, project: project, title: "Won't fix") }
 
   let!(:bug_label) { create(:label, project: project, title: 'bug') }
   let!(:caps_sensitive_label) { create(:label, project: project, title: 'CAPS_sensitive') }
-  let!(:milestone) { create(:milestone, title: "8", project: project) }
+  let!(:milestone) { create(:milestone, title: "8", project: project, start_date: 2.days.ago) }
   let!(:multiple_words_label) { create(:label, project: project, title: "Two words") }
 
   let!(:closed_issue) { create(:issue, title: 'bug that is closed', project: project, state: :closed) }
-  let(:filtered_search) { find('.filtered-search') }
-
-  def input_filtered_search(search_term, submit: true)
-    filtered_search.set(search_term)
-
-    if submit
-      filtered_search.send_keys(:enter)
-    end
-  end
-
-  def expect_filtered_search_input(input)
-    expect(find('.filtered-search').value).to eq(input)
-  end
 
   def expect_no_issues_list
     page.within '.issues-list' do
@@ -83,7 +70,7 @@ describe 'Filter issues', js: true, feature: true do
     issue_with_caps_label.labels << caps_sensitive_label
 
     issue_with_everything = create(:issue,
-      title: "Bug report with everything you thought was possible",
+      title: "Bug report foo was possible",
       project: project,
       milestone: milestone,
       author: user,
@@ -109,160 +96,188 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched author' do
         input_filtered_search("author:@#{user.username}")
 
+        expect_tokens([{ name: 'author', value: user.username }])
         expect_issues_list_count(5)
+        expect_filtered_search_input_empty
       end
 
       it 'filters issues by invalid author' do
-        pending('to be tested, issue #26546')
-        expect(true).to be(false)
+        skip('to be tested, issue #26546')
       end
 
       it 'filters issues by multiple authors' do
-        pending('to be tested, issue #26546')
-        expect(true).to be(false)
+        skip('to be tested, issue #26546')
       end
     end
 
     context 'author with other filters' do
-      it 'filters issues by searched author and text' do
-        search = "author:@#{user.username} issue"
-        input_filtered_search(search)
+      let(:search_term) { 'issue' }
 
+      it 'filters issues by searched author and text' do
+        input_filtered_search("author:@#{user.username} #{search_term}")
+
+        expect_tokens([{ name: 'author', value: user.username }])
         expect_issues_list_count(3)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
 
       it 'filters issues by searched author, assignee and text' do
-        search = "author:@#{user.username} assignee:@#{user.username} issue"
-        input_filtered_search(search)
+        input_filtered_search("author:@#{user.username} assignee:@#{user.username} #{search_term}")
 
+        expect_tokens([
+          { name: 'author', value: user.username },
+          { name: 'assignee', value: user.username }
+        ])
         expect_issues_list_count(3)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
 
       it 'filters issues by searched author, assignee, label, and text' do
-        search = "author:@#{user.username} assignee:@#{user.username} label:~#{caps_sensitive_label.title} issue"
-        input_filtered_search(search)
+        input_filtered_search("author:@#{user.username} assignee:@#{user.username} label:~#{caps_sensitive_label.title} #{search_term}")
 
+        expect_tokens([
+          { name: 'author', value: user.username },
+          { name: 'assignee', value: user.username },
+          { name: 'label', value: caps_sensitive_label.title }
+        ])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
 
       it 'filters issues by searched author, assignee, label, milestone and text' do
-        search = "author:@#{user.username} assignee:@#{user.username} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} issue"
-        input_filtered_search(search)
+        input_filtered_search("author:@#{user.username} assignee:@#{user.username} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} #{search_term}")
 
+        expect_tokens([
+          { name: 'author', value: user.username },
+          { name: 'assignee', value: user.username },
+          { name: 'label', value: caps_sensitive_label.title },
+          { name: 'milestone', value: milestone.title }
+        ])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
     end
 
     it 'sorting' do
-      pending('to be tested, issue #26546')
-      expect(true).to be(false)
+      skip('to be tested, issue #26546')
     end
   end
 
   describe 'filter issues by assignee' do
     context 'only assignee' do
       it 'filters issues by searched assignee' do
-        search = "assignee:@#{user.username}"
-        input_filtered_search(search)
+        input_filtered_search("assignee:@#{user.username}")
 
+        expect_tokens([{ name: 'assignee', value: user.username }])
         expect_issues_list_count(5)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input_empty
       end
 
       it 'filters issues by no assignee' do
-        search = "assignee:none"
-        input_filtered_search(search)
+        input_filtered_search('assignee:none')
 
+        expect_tokens([{ name: 'assignee', value: 'none' }])
         expect_issues_list_count(8, 1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input_empty
       end
 
       it 'filters issues by invalid assignee' do
-        pending('to be tested, issue #26546')
-        expect(true).to be(false)
+        skip('to be tested, issue #26546')
       end
 
       it 'filters issues by multiple assignees' do
-        pending('to be tested, issue #26546')
-        expect(true).to be(false)
+        skip('to be tested, issue #26546')
       end
     end
 
     context 'assignee with other filters' do
-      it 'filters issues by searched assignee and text' do
-        search = "assignee:@#{user.username} searchTerm"
-        input_filtered_search(search)
+      let(:search_term) { 'searchTerm' }
 
+      it 'filters issues by searched assignee and text' do
+        input_filtered_search("assignee:@#{user.username} #{search_term}")
+
+        expect_tokens([{ name: 'assignee', value: user.username }])
         expect_issues_list_count(2)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
 
       it 'filters issues by searched assignee, author and text' do
-        search = "assignee:@#{user.username} author:@#{user.username} searchTerm"
-        input_filtered_search(search)
+        input_filtered_search("assignee:@#{user.username} author:@#{user.username} #{search_term}")
 
+        expect_tokens([
+          { name: 'assignee', value: user.username },
+          { name: 'author', value: user.username }
+        ])
         expect_issues_list_count(2)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
 
       it 'filters issues by searched assignee, author, label, text' do
-        search = "assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} searchTerm"
-        input_filtered_search(search)
+        input_filtered_search("assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} #{search_term}")
 
+        expect_tokens([
+          { name: 'assignee', value: user.username },
+          { name: 'author', value: user.username },
+          { name: 'label', value: caps_sensitive_label.title }
+        ])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
 
       it 'filters issues by searched assignee, author, label, milestone and text' do
-        search = "assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} searchTerm"
-        input_filtered_search(search)
+        input_filtered_search("assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} #{search_term}")
 
+        expect_tokens([
+          { name: 'assignee', value: user.username },
+          { name: 'author', value: user.username },
+          { name: 'label', value: caps_sensitive_label.title },
+          { name: 'milestone', value: milestone.title }
+        ])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
     end
 
     context 'sorting' do
       it 'sorts' do
-        pending('to be tested, issue #26546')
-        expect(true).to be(false)
+        skip('to be tested, issue #26546')
       end
     end
   end
 
   describe 'filter issues by label' do
+    let(:search_term) { 'bug' }
+
     context 'only label' do
       it 'filters issues by searched label' do
-        search = "label:~#{bug_label.title}"
-        input_filtered_search(search)
+        input_filtered_search("label:~#{bug_label.title}")
 
+        expect_tokens([{ name: 'label', value: bug_label.title }])
         expect_issues_list_count(2)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input_empty
       end
 
       it 'filters issues by no label' do
-        search = "label:none"
-        input_filtered_search(search)
+        input_filtered_search('label:none')
 
+        expect_tokens([{ name: 'label', value: 'none' }])
         expect_issues_list_count(9, 1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input_empty
       end
 
       it 'filters issues by invalid label' do
-        pending('to be tested, issue #26546')
-        expect(true).to be(false)
+        skip('to be tested, issue #26546')
       end
 
       it 'filters issues by multiple labels' do
-        search = "label:~#{bug_label.title} label:~#{caps_sensitive_label.title}"
-        input_filtered_search(search)
+        input_filtered_search("label:~#{bug_label.title} label:~#{caps_sensitive_label.title}")
 
+        expect_tokens([
+          { name: 'label', value: bug_label.title },
+          { name: 'label', value: caps_sensitive_label.title }
+        ])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input_empty
       end
 
       it 'filters issues by label containing special characters' do
@@ -270,21 +285,20 @@ describe 'Filter issues', js: true, feature: true do
         special_issue = create(:issue, title: "Issue with special character label", project: project)
         special_issue.labels << special_label
 
-        search = "label:~#{special_label.title}"
-        input_filtered_search(search)
-
+        input_filtered_search("label:~#{special_label.title}")
+        expect_tokens([{ name: 'label', value: special_label.title }])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input_empty
       end
 
       it 'does not show issues' do
-        new_label = create(:label, project: project, title: "new_label")
+        new_label = create(:label, project: project, title: 'new_label')
 
-        search = "label:~#{new_label.title}"
-        input_filtered_search(search)
+        input_filtered_search("label:~#{new_label.title}")
 
+        expect_tokens([{ name: 'label', value: new_label.title }])
         expect_no_issues_list()
-        expect_filtered_search_input(search)
+        expect_filtered_search_input_empty
       end
     end
 
@@ -294,29 +308,29 @@ describe 'Filter issues', js: true, feature: true do
         special_multiple_issue = create(:issue, title: "Issue with special character multiple words label", project: project)
         special_multiple_issue.labels << special_multiple_label
 
-        search = "label:~'#{special_multiple_label.title}'"
-        input_filtered_search(search)
-
-        expect_issues_list_count(1)
+        input_filtered_search("label:~'#{special_multiple_label.title}'")
 
         # filtered search defaults quotations to double quotes
-        expect_filtered_search_input("label:~\"#{special_multiple_label.title}\"")
+        expect_tokens([{ name: 'label', value: "\"#{special_multiple_label.title}\"" }])
+        expect_issues_list_count(1)
+
+        expect_filtered_search_input_empty
       end
 
       it 'single quotes' do
-        search = "label:~'#{multiple_words_label.title}'"
-        input_filtered_search(search)
+        input_filtered_search("label:~'#{multiple_words_label.title}'")
 
+        expect_tokens([{ name: 'label', value: "\"#{multiple_words_label.title}\"" }])
         expect_issues_list_count(1)
-        expect_filtered_search_input("label:~\"#{multiple_words_label.title}\"")
+        expect_filtered_search_input_empty
       end
 
       it 'double quotes' do
-        search = "label:~\"#{multiple_words_label.title}\""
-        input_filtered_search(search)
+        input_filtered_search("label:~\"#{multiple_words_label.title}\"")
 
+        expect_tokens([{ name: 'label', value: "\"#{multiple_words_label.title}\"" }])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input_empty
       end
 
       it 'single quotes containing double quotes' do
@@ -324,11 +338,11 @@ describe 'Filter issues', js: true, feature: true do
         double_quotes_label_issue = create(:issue, title: "Issue with double quotes label", project: project)
         double_quotes_label_issue.labels << double_quotes_label
 
-        search = "label:~'#{double_quotes_label.title}'"
-        input_filtered_search(search)
+        input_filtered_search("label:~'#{double_quotes_label.title}'")
 
+        expect_tokens([{ name: 'label', value: "'#{double_quotes_label.title}'" }])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input_empty
       end
 
       it 'double quotes containing single quotes' do
@@ -336,86 +350,115 @@ describe 'Filter issues', js: true, feature: true do
         single_quotes_label_issue = create(:issue, title: "Issue with single quotes label", project: project)
         single_quotes_label_issue.labels << single_quotes_label
 
-        search = "label:~\"#{single_quotes_label.title}\""
-        input_filtered_search(search)
+        input_filtered_search("label:~\"#{single_quotes_label.title}\"")
 
+        expect_tokens([{ name: 'label', value: "\"#{single_quotes_label.title}\"" }])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input_empty
       end
     end
 
     context 'label with other filters' do
       it 'filters issues by searched label and text' do
-        search = "label:~#{caps_sensitive_label.title} bug"
-        input_filtered_search(search)
+        input_filtered_search("label:~#{caps_sensitive_label.title} #{search_term}")
 
+        expect_tokens([{ name: 'label', value: caps_sensitive_label.title }])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
 
       it 'filters issues by searched label, author and text' do
-        search = "label:~#{caps_sensitive_label.title} author:@#{user.username} bug"
-        input_filtered_search(search)
+        input_filtered_search("label:~#{caps_sensitive_label.title} author:@#{user.username} #{search_term}")
 
+        expect_tokens([
+          { name: 'label', value: caps_sensitive_label.title },
+          { name: 'author', value: user.username }
+        ])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
 
       it 'filters issues by searched label, author, assignee and text' do
-        search = "label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} bug"
-        input_filtered_search(search)
+        input_filtered_search("label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} #{search_term}")
 
+        expect_tokens([
+          { name: 'label', value: caps_sensitive_label.title },
+          { name: 'author', value: user.username },
+          { name: 'assignee', value: user.username }
+        ])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
 
       it 'filters issues by searched label, author, assignee, milestone and text' do
-        search = "label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} milestone:%#{milestone.title} bug"
-        input_filtered_search(search)
+        input_filtered_search("label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} milestone:%#{milestone.title} #{search_term}")
 
+        expect_tokens([
+          { name: 'label', value: caps_sensitive_label.title },
+          { name: 'author', value: user.username },
+          { name: 'assignee', value: user.username },
+          { name: 'milestone', value: milestone.title }
+        ])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
     end
 
     context 'multiple labels with other filters' do
       it 'filters issues by searched label, label2, and text' do
-        search = "label:~#{bug_label.title} label:~#{caps_sensitive_label.title} bug"
-        input_filtered_search(search)
+        input_filtered_search("label:~#{bug_label.title} label:~#{caps_sensitive_label.title} #{search_term}")
 
+        expect_tokens([
+          { name: 'label', value: bug_label.title },
+          { name: 'label', value: caps_sensitive_label.title }
+        ])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
 
       it 'filters issues by searched label, label2, author and text' do
-        search = "label:~#{bug_label.title} label:~#{caps_sensitive_label.title} author:@#{user.username} bug"
-        input_filtered_search(search)
+        input_filtered_search("label:~#{bug_label.title} label:~#{caps_sensitive_label.title} author:@#{user.username} #{search_term}")
 
+        expect_tokens([
+          { name: 'label', value: bug_label.title },
+          { name: 'label', value: caps_sensitive_label.title },
+          { name: 'author', value: user.username }
+        ])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
 
       it 'filters issues by searched label, label2, author, assignee and text' do
-        search = "label:~#{bug_label.title} label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} bug"
-        input_filtered_search(search)
+        input_filtered_search("label:~#{bug_label.title} label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} #{search_term}")
 
+        expect_tokens([
+          { name: 'label', value: bug_label.title },
+          { name: 'label', value: caps_sensitive_label.title },
+          { name: 'author', value: user.username },
+          { name: 'assignee', value: user.username }
+        ])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
 
       it 'filters issues by searched label, label2, author, assignee, milestone and text' do
-        search = "label:~#{bug_label.title} label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} milestone:%#{milestone.title} bug"
-        input_filtered_search(search)
+        input_filtered_search("label:~#{bug_label.title} label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} milestone:%#{milestone.title} #{search_term}")
 
+        expect_tokens([
+          { name: 'label', value: bug_label.title },
+          { name: 'label', value: caps_sensitive_label.title },
+          { name: 'author', value: user.username },
+          { name: 'assignee', value: user.username },
+          { name: 'milestone', value: milestone.title }
+        ])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
     end
 
     context 'issue label clicked' do
       before do
         find('.issues-list .issue .issue-info a .label', text: multiple_words_label.title).click
-        sleep 1
       end
 
       it 'filters' do
@@ -423,14 +466,14 @@ describe 'Filter issues', js: true, feature: true do
       end
 
       it 'displays in search bar' do
-        expect(find('.filtered-search').value).to eq("label:~\"#{multiple_words_label.title}\"")
+        expect_tokens([{ name: 'label', value: "\"#{multiple_words_label.title}\"" }])
+        expect_filtered_search_input_empty
       end
     end
 
     context 'sorting' do
       it 'sorts' do
-        pending('to be tested, issue #26546')
-        expect(true).to be(false)
+        skip('to be tested, issue #26546')
       end
     end
   end
@@ -440,130 +483,117 @@ describe 'Filter issues', js: true, feature: true do
       it 'filters issues by searched milestone' do
         input_filtered_search("milestone:%#{milestone.title}")
 
+        expect_tokens([{ name: 'milestone', value: milestone.title }])
         expect_issues_list_count(5)
+        expect_filtered_search_input_empty
       end
 
       it 'filters issues by no milestone' do
         input_filtered_search("milestone:none")
 
+        expect_tokens([{ name: 'milestone', value: 'none' }])
         expect_issues_list_count(7, 1)
+        expect_filtered_search_input_empty
       end
 
       it 'filters issues by upcoming milestones' do
         input_filtered_search("milestone:upcoming")
 
+        expect_tokens([{ name: 'milestone', value: 'upcoming' }])
         expect_issues_list_count(1)
+        expect_filtered_search_input_empty
+      end
+
+      it 'filters issues by started milestones' do
+        input_filtered_search("milestone:started")
+
+        expect_tokens([{ name: 'milestone', value: 'started' }])
+        expect_issues_list_count(5)
+        expect_filtered_search_input_empty
       end
 
       it 'filters issues by invalid milestones' do
-        pending('to be tested, issue #26546')
-        expect(true).to be(false)
+        skip('to be tested, issue #26546')
       end
 
       it 'filters issues by multiple milestones' do
-        pending('to be tested, issue #26546')
-        expect(true).to be(false)
+        skip('to be tested, issue #26546')
       end
 
       it 'filters issues by milestone containing special characters' do
         special_milestone = create(:milestone, title: '!@\#{$%^&*()}', project: project)
         create(:issue, title: "Issue with special character milestone", project: project, milestone: special_milestone)
 
-        search = "milestone:%#{special_milestone.title}"
-        input_filtered_search(search)
+        input_filtered_search("milestone:%#{special_milestone.title}")
 
+        expect_tokens([{ name: 'milestone', value: special_milestone.title }])
         expect_issues_list_count(1)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input_empty
       end
 
       it 'does not show issues' do
         new_milestone = create(:milestone, title: "new", project: project)
 
-        search = "milestone:%#{new_milestone.title}"
-        input_filtered_search(search)
+        input_filtered_search("milestone:%#{new_milestone.title}")
 
+        expect_tokens([{ name: 'milestone', value: new_milestone.title }])
         expect_no_issues_list()
-        expect_filtered_search_input(search)
+        expect_filtered_search_input_empty
       end
     end
 
     context 'milestone with other filters' do
-      it 'filters issues by searched milestone and text' do
-        search = "milestone:%#{milestone.title} bug"
-        input_filtered_search(search)
+      let(:search_term) { 'bug' }
 
+      it 'filters issues by searched milestone and text' do
+        input_filtered_search("milestone:%#{milestone.title} #{search_term}")
+
+        expect_tokens([{ name: 'milestone', value: milestone.title }])
         expect_issues_list_count(2)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
 
       it 'filters issues by searched milestone, author and text' do
-        search = "milestone:%#{milestone.title} author:@#{user.username} bug"
-        input_filtered_search(search)
+        input_filtered_search("milestone:%#{milestone.title} author:@#{user.username} #{search_term}")
 
+        expect_tokens([
+          { name: 'milestone', value: milestone.title },
+          { name: 'author', value: user.username }
+        ])
         expect_issues_list_count(2)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
 
       it 'filters issues by searched milestone, author, assignee and text' do
-        search = "milestone:%#{milestone.title} author:@#{user.username} assignee:@#{user.username} bug"
-        input_filtered_search(search)
+        input_filtered_search("milestone:%#{milestone.title} author:@#{user.username} assignee:@#{user.username} #{search_term}")
 
+        expect_tokens([
+          { name: 'milestone', value: milestone.title },
+          { name: 'author', value: user.username },
+          { name: 'assignee', value: user.username }
+        ])
         expect_issues_list_count(2)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
 
       it 'filters issues by searched milestone, author, assignee, label and text' do
-        search = "milestone:%#{milestone.title} author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} bug"
-        input_filtered_search(search)
+        input_filtered_search("milestone:%#{milestone.title} author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} #{search_term}")
 
+        expect_tokens([
+          { name: 'milestone', value: milestone.title },
+          { name: 'author', value: user.username },
+          { name: 'assignee', value: user.username },
+          { name: 'label', value: bug_label.title }
+        ])
         expect_issues_list_count(2)
-        expect_filtered_search_input(search)
+        expect_filtered_search_input(search_term)
       end
     end
 
     context 'sorting' do
       it 'sorts' do
-        pending('to be tested, issue #26546')
-        expect(true).to be(false)
+        skip('to be tested, issue #26546')
       end
-    end
-  end
-
-  describe 'overwrites selected filter' do
-    it 'changes author' do
-      input_filtered_search("author:@#{user.username}", submit: false)
-
-      select_search_at_index(3)
-
-      page.within '#js-dropdown-author' do
-        click_button user2.username
-      end
-
-      expect(filtered_search.value).to eq("author:@#{user2.username}")
-    end
-
-    it 'changes label' do
-      input_filtered_search("author:@#{user.username} label:~#{bug_label.title}", submit: false)
-
-      select_search_at_index(27)
-
-      page.within '#js-dropdown-label' do
-        click_button label.name
-      end
-
-      expect(filtered_search.value).to eq("author:@#{user.username} label:~#{label.name}")
-    end
-
-    it 'changes label correctly space is in previous label' do
-      input_filtered_search("label:~\"#{multiple_words_label.title}\"", submit: false)
-
-      select_search_at_index(0)
-
-      page.within '#js-dropdown-label' do
-        click_button label.name
-      end
-
-      expect(filtered_search.value).to eq("label:~#{label.name}")
     end
   end
 
@@ -628,80 +658,81 @@ describe 'Filter issues', js: true, feature: true do
 
     context 'searched text with other filters' do
       it 'filters issues by searched text and author' do
+        # After searching, all search terms are placed at the end
         input_filtered_search("bug author:@#{user.username}")
 
         expect_issues_list_count(2)
-        expect_filtered_search_input("author:@#{user.username} bug")
+        expect_filtered_search_input('bug')
       end
 
       it 'filters issues by searched text, author and more text' do
         input_filtered_search("bug author:@#{user.username} report")
 
         expect_issues_list_count(1)
-        expect_filtered_search_input("author:@#{user.username} bug report")
+        expect_filtered_search_input('bug report')
       end
 
       it 'filters issues by searched text, author and assignee' do
         input_filtered_search("bug author:@#{user.username} assignee:@#{user.username}")
 
         expect_issues_list_count(2)
-        expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} bug")
+        expect_filtered_search_input('bug')
       end
 
       it 'filters issues by searched text, author, more text and assignee' do
         input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username}")
 
         expect_issues_list_count(1)
-        expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} bug report")
+        expect_filtered_search_input('bug report')
       end
 
       it 'filters issues by searched text, author, more text, assignee and even more text' do
-        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with")
+        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} foo")
 
         expect_issues_list_count(1)
-        expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} bug report with")
+        expect_filtered_search_input('bug report foo')
       end
 
       it 'filters issues by searched text, author, assignee and label' do
         input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title}")
 
         expect_issues_list_count(2)
-        expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} bug")
+        expect_filtered_search_input('bug')
       end
 
       it 'filters issues by searched text, author, text, assignee, text, label and text' do
-        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with label:~#{bug_label.title} everything")
+        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} report label:~#{bug_label.title} foo")
 
         expect_issues_list_count(1)
-        expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} bug report with everything")
+        expect_filtered_search_input('bug report foo')
       end
 
       it 'filters issues by searched text, author, assignee, label and milestone' do
         input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} milestone:%#{milestone.title}")
 
         expect_issues_list_count(2)
-        expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} milestone:%#{milestone.title} bug")
+        expect_filtered_search_input('bug')
       end
 
       it 'filters issues by searched text, author, text, assignee, text, label, text, milestone and text' do
-        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with label:~#{bug_label.title} everything milestone:%#{milestone.title} you")
+        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} report label:~#{bug_label.title} milestone:%#{milestone.title} foo")
 
         expect_issues_list_count(1)
-        expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} milestone:%#{milestone.title} bug report with everything you")
+        expect_filtered_search_input('bug report foo')
       end
 
       it 'filters issues by searched text, author, assignee, multiple labels and milestone' do
         input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title}")
 
         expect_issues_list_count(1)
-        expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} bug")
+        expect_filtered_search_input('bug')
       end
 
       it 'filters issues by searched text, author, text, assignee, text, label1, text, label2, text, milestone and text' do
-        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} with label:~#{bug_label.title} everything label:~#{caps_sensitive_label.title} you milestone:%#{milestone.title} thought")
+        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} report label:~#{bug_label.title} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} foo")
 
         expect_issues_list_count(1)
-        expect_filtered_search_input("author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} bug report with everything you thought")
+        expect_filtered_search_input('bug report foo')
       end
     end
 
@@ -740,8 +771,8 @@ describe 'Filter issues', js: true, feature: true do
     before do
       input_filtered_search('bug')
 
-      # Wait for search results to load
-      sleep 2
+      # This ensures that the search is performed
+      expect_issues_list_count(4, 1)
     end
 
     it 'open state' do
@@ -773,7 +804,7 @@ describe 'Filter issues', js: true, feature: true do
   describe 'RSS feeds' do
     it 'updates atom feed link for project issues' do
       visit namespace_project_issues_path(project.namespace, project, milestone_title: milestone.title, assignee_id: user.id)
-      link = find('.nav-controls a', text: 'Subscribe')
+      link = find_link('Subscribe')
       params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
@@ -799,6 +830,28 @@ describe 'Filter issues', js: true, feature: true do
       expect(auto_discovery_params).to include('private_token' => [user.private_token])
       expect(auto_discovery_params).to include('milestone_title' => [milestone.title])
       expect(auto_discovery_params).to include('assignee_id' => [user.id.to_s])
+    end
+  end
+
+  context 'URL has a trailing slash' do
+    before do
+      visit "#{namespace_project_issues_path(project.namespace, project)}/"
+    end
+
+    it 'milestone dropdown loads milestones' do
+      input_filtered_search("milestone:", submit: false)
+
+      within('#js-dropdown-milestone') do
+        expect(page).to have_selector('.filter-dropdown .filter-dropdown-item', count: 2)
+      end
+    end
+
+    it 'label dropdown load labels' do
+      input_filtered_search("label:", submit: false)
+
+      within('#js-dropdown-label') do
+        expect(page).to have_selector('.filter-dropdown .filter-dropdown-item', count: 5)
+      end
     end
   end
 end

@@ -1,8 +1,8 @@
 .js-toggle-container
   .commit-stat-summary
     Showing
-    = link_to '#', class: 'js-toggle-button' do
-      %strong #{pluralize(diff_files.size, "changed file")}
+    %button.diff-stats-summary-toggler.js-toggle-button{ type: "button" }
+      %strong= pluralize(diff_files.size, "changed file")
     with
     %strong.cgreen #{diff_files.sum(&:added_lines)} additions
     and

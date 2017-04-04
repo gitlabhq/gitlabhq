@@ -2,12 +2,17 @@ require './spec/simplecov_env'
 SimpleCovEnv.start!
 
 ENV["RAILS_ENV"] ||= 'test'
+ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
 
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'shoulda/matchers'
-require 'sidekiq/testing/inline'
 require 'rspec/retry'
+
+if (ENV['RSPEC_PROFILING_POSTGRES_URL'] || ENV['RSPEC_PROFILING']) &&
+    (!ENV.has_key?('CI') || ENV['CI_COMMIT_REF_NAME'] == 'master')
+  require 'rspec_profiling/rspec'
+end
 
 if ENV['CI'] && !ENV['NO_KNAPSACK']
   require 'knapsack'
@@ -31,6 +36,8 @@ RSpec.configure do |config|
   config.include Warden::Test::Helpers, type: :request
   config.include LoginHelpers, type: :feature
   config.include SearchHelpers, type: :feature
+  config.include WaitForRequests, :js
+  config.include WaitForAjax, :js
   config.include StubConfiguration
   config.include EmailHelpers, type: :mailer
   config.include TestEnv
@@ -38,12 +45,25 @@ RSpec.configure do |config|
   config.include ActiveSupport::Testing::TimeHelpers
   config.include StubGitlabCalls
   config.include StubGitlabData
+  config.include ApiHelpers, :api
 
   config.infer_spec_type_from_file_location!
+
+  config.define_derived_metadata(file_path: %r{/spec/requests/(ci/)?api/}) do |metadata|
+    metadata[:api] = true
+  end
+
   config.raise_errors_for_deprecations!
 
   config.before(:suite) do
     TestEnv.init
+  end
+
+  if ENV['CI']
+    # Retry only on feature specs that use JS
+    config.around :each, :js do |ex|
+      ex.run_with_retry retry: 3
+    end
   end
 
   config.around(:each, :caching) do |example|

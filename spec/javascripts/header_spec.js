@@ -1,12 +1,12 @@
 /* eslint-disable space-before-function-paren, no-var */
-/*= require header */
-/*= require lib/utils/text_utility */
-/*= require jquery */
+
+require('~/header');
+require('~/lib/utils/text_utility');
 
 (function() {
   describe('Header', function() {
-    var todosPendingCount = '.todos-pending-count';
-    var fixtureTemplate = 'static/header.html.raw';
+    var todosPendingCount = '.todos-count';
+    var fixtureTemplate = 'issues/open-issue.html.raw';
 
     function isTodosCountHidden() {
       return $(todosPendingCount).hasClass('hidden');
@@ -21,33 +21,33 @@
       loadFixtures(fixtureTemplate);
     });
 
-    it('should update todos-pending-count after receiving the todo:toggle event', function() {
+    it('should update todos-count after receiving the todo:toggle event', function() {
       triggerToggle(5);
       expect($(todosPendingCount).text()).toEqual('5');
     });
 
-    it('should hide todos-pending-count when it is 0', function() {
+    it('should hide todos-count when it is 0', function() {
       triggerToggle(0);
       expect(isTodosCountHidden()).toEqual(true);
     });
 
-    it('should show todos-pending-count when it is more than 0', function() {
+    it('should show todos-count when it is more than 0', function() {
       triggerToggle(10);
       expect(isTodosCountHidden()).toEqual(false);
     });
 
-    describe('when todos-pending-count is 1000', function() {
+    describe('when todos-count is 1000', function() {
       beforeEach(function() {
         triggerToggle(1000);
       });
 
-      it('should show todos-pending-count', function() {
+      it('should show todos-count', function() {
         expect(isTodosCountHidden()).toEqual(false);
       });
 
-      it('should add delimiter to todos-pending-count', function() {
-        expect($(todosPendingCount).text()).toEqual('1,000');
+      it('should show 99+ for todos-count', function() {
+        expect($(todosPendingCount).text()).toEqual('99+');
       });
     });
   });
-}).call(this);
+}).call(window);

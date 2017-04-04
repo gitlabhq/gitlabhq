@@ -6,7 +6,7 @@
 // "Meta+Enter" (Mac) or "Ctrl+Enter" (Linux/Windows) key combination, the form
 // is submitted.
 //
-/*= require extensions/jquery */
+import '../commons/bootstrap';
 
 //
 // ### Example Markup
@@ -74,4 +74,4 @@
       return $this.tooltip('hide');
     });
   });
-}).call(this);
+}).call(window);

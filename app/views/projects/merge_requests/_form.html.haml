@@ -1,8 +1,2 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: 'merge-request-form form-horizontal common-note-form js-requires-input js-quick-submit' } do |f|
   = render 'shared/issuable/form', f: f, issuable: @merge_request
-
-:javascript
-  $('.assign-to-me-link').on('click', function(e){
-    $('#merge_request_assignee_id').val("#{current_user.id}").trigger("change");
-    e.preventDefault();
-  });

@@ -22,8 +22,10 @@ module Gitlab
         having(action: [Event::CREATED, Event::CLOSED], target_type: "Issue")
       mr_events = event_counts(date_from, :merge_requests).
         having(action: [Event::MERGED, Event::CREATED, Event::CLOSED], target_type: "MergeRequest")
+      note_events = event_counts(date_from, :merge_requests).
+        having(action: [Event::COMMENTED], target_type: "Note")
 
-      union = Gitlab::SQL::Union.new([repo_events, issue_events, mr_events])
+      union = Gitlab::SQL::Union.new([repo_events, issue_events, mr_events, note_events])
       events = Event.find_by_sql(union.to_sql).map(&:attributes)
 
       @activity_events = events.each_with_object(Hash.new {|h, k| h[k] = 0 }) do |event, activities|
@@ -38,7 +40,7 @@ module Gitlab
 
       # Use visible_to_user? instead of the complicated logic in activity_dates
       # because we're only viewing the events for a single day.
-      events.select {|event| event.visible_to_user?(current_user) }
+      events.select { |event| event.visible_to_user?(current_user) }
     end
 
     def starting_year

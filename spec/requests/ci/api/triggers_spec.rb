@@ -5,9 +5,9 @@ describe Ci::API::Triggers do
 
   describe 'POST /projects/:project_id/refs/:ref/trigger' do
     let!(:trigger_token) { 'secure token' }
-    let!(:project) { FactoryGirl.create(:project, ci_id: 10) }
-    let!(:project2) { FactoryGirl.create(:empty_project, ci_id: 11) }
-    let!(:trigger) { FactoryGirl.create(:ci_trigger, project: project, token: trigger_token) }
+    let!(:project) { create(:project, :repository, ci_id: 10) }
+    let!(:project2) { create(:empty_project, ci_id: 11) }
+    let!(:trigger) { create(:ci_trigger, project: project, token: trigger_token) }
     let(:options) do
       {
         token: trigger_token
@@ -60,7 +60,8 @@ describe Ci::API::Triggers do
         it 'validates variables to be a hash' do
           post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options.merge(variables: 'value')
           expect(response).to have_http_status(400)
-          expect(json_response['message']).to eq('variables needs to be a hash')
+
+          expect(json_response['error']).to eq('variables is invalid')
         end
 
         it 'validates variables needs to be a map of key-valued strings' do

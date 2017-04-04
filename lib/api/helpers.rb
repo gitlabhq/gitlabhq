@@ -3,7 +3,7 @@ module API
     include Gitlab::Utils
     include Helpers::Pagination
 
-    SUDO_HEADER = "HTTP_SUDO"
+    SUDO_HEADER = "HTTP_SUDO".freeze
     SUDO_PARAM = :sudo
 
     def declared_params(options = {})
@@ -45,7 +45,7 @@ module API
       if id =~ /^\d+$/
         Project.find_by(id: id)
       else
-        Project.find_with_namespace(id)
+        Project.find_by_full_path(id)
       end
     end
 
@@ -82,16 +82,27 @@ module API
       label || not_found!('Label')
     end
 
-    def find_project_issue(id)
-      IssuesFinder.new(current_user, project_id: user_project.id).find(id)
+    def find_project_issue(iid)
+      IssuesFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
 
-    def find_project_merge_request(id)
-      MergeRequestsFinder.new(current_user, project_id: user_project.id).find(id)
+    def find_project_merge_request(iid)
+      MergeRequestsFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
+    end
+
+    def find_project_snippet(id)
+      finder_params = { filter: :by_project, project: user_project }
+      SnippetsFinder.new.execute(current_user, finder_params).find(id)
+    end
+
+    def find_merge_request_with_access(iid, access_level = :read_merge_request)
+      merge_request = user_project.merge_requests.find_by!(iid: iid)
+      authorize! access_level, merge_request
+      merge_request
     end
 
     def authenticate!
-      unauthorized! unless current_user
+      unauthorized! unless current_user && can?(current_user, :access_api)
     end
 
     def authenticate_non_get!
@@ -110,7 +121,7 @@ module API
       forbidden! unless current_user.is_admin?
     end
 
-    def authorize!(action, subject = nil)
+    def authorize!(action, subject = :global)
       forbidden! unless can?(current_user, action, subject)
     end
 
@@ -128,7 +139,7 @@ module API
       end
     end
 
-    def can?(object, action, subject)
+    def can?(object, action, subject = :global)
       Ability.allowed?(object, action, subject)
     end
 
@@ -147,31 +158,19 @@ module API
       params_hash = custom_params || params
       attrs = {}
       keys.each do |key|
-        if params_hash[key].present? or (params_hash.has_key?(key) and params_hash[key] == false)
+        if params_hash[key].present? || (params_hash.has_key?(key) && params_hash[key] == false)
           attrs[key] = params_hash[key]
         end
       end
       ActionController::Parameters.new(attrs).permit!
     end
 
-    # Checks the occurrences of datetime attributes, each attribute if present in the params hash must be in ISO 8601
-    # format (YYYY-MM-DDTHH:MM:SSZ) or a Bad Request error is invoked.
-    #
-    # Parameters:
-    #   keys (required) - An array consisting of elements that must be parseable as dates from the params hash
-    def datetime_attributes!(*keys)
-      keys.each do |key|
-        begin
-          params[key] = Time.xmlschema(params[key]) if params[key].present?
-        rescue ArgumentError
-          message = "\"" + key.to_s + "\" must be a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ"
-          render_api_error!(message, 400)
-        end
-      end
-    end
-
     def filter_by_iid(items, iid)
       items.where(iid: iid)
+    end
+
+    def filter_by_search(items, text)
+      items.search(text)
     end
 
     # error helpers
@@ -219,10 +218,18 @@ module API
       render_api_error!('204 No Content', 204)
     end
 
+    def accepted!
+      render_api_error!('202 Accepted', 202)
+    end
+
     def render_validation_error!(model)
       if model.errors.any?
         render_api_error!(model.errors.messages || '400 Bad Request', 400)
       end
+    end
+
+    def render_spam_error!
+      render_api_error!({ error: 'Spam detected' }, 400)
     end
 
     def render_api_error!(message, status)
@@ -250,6 +257,18 @@ module API
     # project helpers
 
     def filter_projects(projects)
+      if params[:membership]
+        projects = projects.merge(current_user.authorized_projects)
+      end
+
+      if params[:owned]
+        projects = projects.merge(current_user.owned_projects)
+      end
+
+      if params[:starred]
+        projects = projects.merge(current_user.starred_projects)
+      end
+
       if params[:search].present?
         projects = projects.search(params[:search])
       end
@@ -298,7 +317,7 @@ module API
         header['X-Sendfile'] = path
         body
       else
-        path
+        file path
       end
     end
 
@@ -322,16 +341,17 @@ module API
 
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
+      Gitlab::Auth::UniqueIpsLimiter.limit_user! do
+        @initial_current_user ||= find_user_by_private_token(scopes: @scopes)
+        @initial_current_user ||= doorkeeper_guard(scopes: @scopes)
+        @initial_current_user ||= find_user_from_warden
 
-      @initial_current_user ||= find_user_by_private_token(scopes: @scopes)
-      @initial_current_user ||= doorkeeper_guard(scopes: @scopes)
-      @initial_current_user ||= find_user_from_warden
+        unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
+          @initial_current_user = nil
+        end
 
-      unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
-        @initial_current_user = nil
+        @initial_current_user
       end
-
-      @initial_current_user
     end
 
     def sudo!
@@ -372,14 +392,6 @@ module API
 
     def send_git_archive(repository, ref:, format:)
       header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
-    end
-
-    def issue_entity(project)
-      if project.has_external_issue_tracker?
-        Entities::ExternalIssue
-      else
-        Entities::Issue
-      end
     end
 
     # The Grape Error Middleware only has access to env but no params. We workaround this by

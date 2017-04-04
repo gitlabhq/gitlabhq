@@ -1,8 +1,18 @@
 module NamespacesHelper
+  def namespace_id_from(params)
+    params.dig(:project, :namespace_id) || params[:namespace_id]
+  end
+
   def namespaces_options(selected = :current_user, display_path: false, extra_group: nil)
     groups = current_user.owned_groups + current_user.masters_groups
 
-    groups << extra_group if extra_group && !Group.exists?(name: extra_group.name)
+    unless extra_group.nil? || extra_group.is_a?(Group)
+      extra_group = Group.find(extra_group) if Namespace.find(extra_group).kind == 'group'
+    end
+
+    if extra_group && extra_group.is_a?(Group) && (!Group.exists?(name: extra_group.name) || Ability.allowed?(current_user, :read_group, extra_group))
+      groups |= [extra_group]
+    end
 
     users = [current_user.namespace]
 
@@ -10,7 +20,7 @@ module NamespacesHelper
     data_attr_users = { 'data-options-parent' => 'users' }
 
     group_opts = [
-      "Groups", groups.sort_by(&:human_name).map { |g| [display_path ? g.path : g.human_name, g.id, data_attr_group] }
+      "Groups", groups.sort_by(&:human_name).map { |g| [display_path ? g.full_path : g.human_name, g.id, data_attr_group] }
     ]
 
     users_opts = [
@@ -29,7 +39,7 @@ module NamespacesHelper
   end
 
   def namespace_icon(namespace, size = 40)
-    if namespace.kind_of?(Group)
+    if namespace.is_a?(Group)
       group_icon(namespace)
     else
       avatar_icon(namespace.owner.email, size)

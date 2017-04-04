@@ -52,6 +52,18 @@
   }
 }
 
+@mixin basic-list-stats {
+  .stats {
+    float: right;
+    line-height: $list-text-height;
+    color: $gl-text-color;
+
+    span {
+      margin-right: 15px;
+    }
+  }
+}
+
 @mixin bulleted-list {
   > ul {
     list-style-type: disc;
@@ -74,6 +86,13 @@
 @mixin webkit-prefix($property, $value) {
   #{'-webkit-' + $property}: $value;
   #{$property}: $value;
+}
+
+/* http://phrappe.com/css/conditional-css-for-webkit-based-browsers/ */
+@mixin on-webkit-only {
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
+    @content;
+  }
 }
 
 @mixin keyframes($animation-name) {

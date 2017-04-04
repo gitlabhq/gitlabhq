@@ -4,7 +4,7 @@ module Gitlab
       MARKDOWN_SYMBOLS = {
         addition: "+",
         deletion: "-"
-      }
+      }.freeze
 
       attr_accessor :raw_line, :rich_line
 

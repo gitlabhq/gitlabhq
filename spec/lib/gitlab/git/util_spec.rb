@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Git::Util do
-  describe :count_lines do
+  describe '#count_lines' do
     [
       ["", 0],
       ["foo", 1],

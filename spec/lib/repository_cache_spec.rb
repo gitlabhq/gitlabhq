@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe RepositoryCache, lib: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:backend) { double('backend').as_null_object }
   let(:cache) { RepositoryCache.new('example', project.id, backend) }
 

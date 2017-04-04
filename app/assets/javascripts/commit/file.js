@@ -11,4 +11,4 @@
 
     return CommitFile;
   })();
-}).call(this);
+}).call(window);

@@ -33,7 +33,12 @@ module Banzai
       # Returns a String replaced with the return of the block.
       def self.references_in(text, pattern = object_class.reference_pattern)
         text.gsub(pattern) do |match|
-          yield match, $~[object_sym].to_i, $~[:project], $~[:namespace], $~
+          symbol = $~[object_sym]
+          if object_class.reference_valid?(symbol)
+            yield match, symbol.to_i, $~[:project], $~[:namespace], $~
+          else
+            match
+          end
         end
       end
 
@@ -153,13 +158,14 @@ module Banzai
             title = object_link_title(object)
             klass = reference_class(object_sym)
 
-            data = data_attributes_for(link_content || match, project, object)
+            data = data_attributes_for(link_content || match, project, object, link: !!link_content)
 
-            if matches.names.include?("url") && matches[:url]
-              url = matches[:url]
-            else
-              url = url_for_object_cached(object, project)
-            end
+            url =
+              if matches.names.include?("url") && matches[:url]
+                matches[:url]
+              else
+                url_for_object_cached(object, project)
+              end
 
             content = link_content || object_link_text(object, matches)
 
@@ -172,9 +178,10 @@ module Banzai
         end
       end
 
-      def data_attributes_for(text, project, object)
+      def data_attributes_for(text, project, object, link: false)
         data_attribute(
           original:     text,
+          link:         link,
           project:      project.id,
           object_sym => object.id
         )
@@ -232,18 +239,13 @@ module Banzai
       # path.
       def projects_per_reference
         @projects_per_reference ||= begin
-          hash = {}
           refs = Set.new
 
           references_per_project.each do |project_ref, _|
             refs << project_ref
           end
 
-          find_projects_for_paths(refs.to_a).each do |project|
-            hash[project.path_with_namespace] = project
-          end
-
-          hash
+          find_projects_for_paths(refs.to_a).index_by(&:full_path)
         end
       end
 
@@ -284,7 +286,7 @@ module Banzai
       end
 
       def current_project_namespace_path
-        @current_project_namespace_path ||= project.namespace.path
+        @current_project_namespace_path ||= project.namespace.full_path
       end
 
       private

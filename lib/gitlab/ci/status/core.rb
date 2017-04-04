@@ -18,6 +18,10 @@ module Gitlab
           raise NotImplementedError
         end
 
+        def favicon
+          raise NotImplementedError
+        end
+
         def label
           raise NotImplementedError
         end
@@ -40,9 +44,6 @@ module Gitlab
 
         def action_icon
           raise NotImplementedError
-        end
-
-        def action_class
         end
 
         def action_path

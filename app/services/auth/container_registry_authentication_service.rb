@@ -2,7 +2,7 @@ module Auth
   class ContainerRegistryAuthenticationService < BaseService
     include Gitlab::CurrentSettings
 
-    AUDIENCE = 'container_registry'
+    AUDIENCE = 'container_registry'.freeze
 
     def execute(authentication_abilities:)
       @authentication_abilities = authentication_abilities
@@ -61,7 +61,7 @@ module Auth
     end
 
     def process_repository_access(type, name, actions)
-      requested_project = Project.find_with_namespace(name)
+      requested_project = Project.find_by_full_path(name)
       return unless requested_project
 
       actions = actions.select do |action|

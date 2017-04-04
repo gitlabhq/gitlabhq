@@ -1,6 +1,8 @@
 module Gitlab
   module View
     module Presenter
+      CannotOverrideMethodError = Class.new(StandardError)
+
       module Base
         extend ActiveSupport::Concern
 

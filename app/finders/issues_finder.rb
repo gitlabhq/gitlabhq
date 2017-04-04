@@ -26,10 +26,6 @@ class IssuesFinder < IssuableFinder
     IssuesFinder.not_restricted_by_confidentiality(current_user)
   end
 
-  def iid_pattern
-    @iid_pattern ||= %r{\A#{Regexp.escape(Issue.reference_prefix)}(?<iid>\d+)\z}
-  end
-
   def self.not_restricted_by_confidentiality(user)
     return Issue.where('issues.confidential IS NULL OR issues.confidential IS FALSE') if user.blank?
 
@@ -44,5 +40,9 @@ class IssuesFinder < IssuableFinder
           OR issues.project_id IN(:project_ids)))',
       user_id: user.id,
       project_ids: user.authorized_projects(Gitlab::Access::REPORTER).select(:id))
+  end
+
+  def item_project_ids(items)
+    items&.reorder(nil)&.select(:project_id)
   end
 end

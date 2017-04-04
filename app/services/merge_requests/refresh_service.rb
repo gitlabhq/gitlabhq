@@ -11,7 +11,7 @@ module MergeRequests
       # empty diff during a manual merge
       close_merge_requests
       reload_merge_requests
-      reset_merge_when_build_succeeds
+      reset_merge_when_pipeline_succeeds
       mark_pending_todos_done
       cache_merge_requests_closing_issues
 
@@ -42,7 +42,7 @@ module MergeRequests
         commit_ids.include?(merge_request.diff_head_sha)
       end
 
-      merge_requests.uniq.select(&:source_project).each do |merge_request|
+      filter_merge_requests(merge_requests).each do |merge_request|
         MergeRequests::PostMergeService.
           new(merge_request.target_project, @current_user).
           execute(merge_request)
@@ -58,10 +58,13 @@ module MergeRequests
     def reload_merge_requests
       merge_requests = @project.merge_requests.opened.
         by_source_or_target_branch(@branch_name).to_a
-      merge_requests += fork_merge_requests
-      merge_requests = filter_merge_requests(merge_requests)
 
-      merge_requests.each do |merge_request|
+      # Fork merge requests
+      merge_requests += MergeRequest.opened
+        .where(source_branch: @branch_name, source_project: @project)
+        .where.not(target_project: @project).to_a
+
+      filter_merge_requests(merge_requests).each do |merge_request|
         if merge_request.source_branch == @branch_name || force_push?
           merge_request.reload_diff
         else
@@ -75,8 +78,8 @@ module MergeRequests
       end
     end
 
-    def reset_merge_when_build_succeeds
-      merge_requests_for_source_branch.each(&:reset_merge_when_build_succeeds)
+    def reset_merge_when_pipeline_succeeds
+      merge_requests_for_source_branch.each(&:reset_merge_when_pipeline_succeeds)
     end
 
     def mark_pending_todos_done
@@ -141,7 +144,11 @@ module MergeRequests
       return unless @commits.present?
 
       merge_requests_for_source_branch.each do |merge_request|
-        wip_commit = @commits.detect(&:work_in_progress?)
+        commit_shas = merge_request.commits_sha
+
+        wip_commit = @commits.detect do |commit|
+          commit.work_in_progress? && commit_shas.include?(commit.sha)
+        end
 
         if wip_commit && !merge_request.work_in_progress?
           merge_request.update(title: merge_request.wip_title)
@@ -175,16 +182,7 @@ module MergeRequests
     end
 
     def merge_requests_for_source_branch
-      @source_merge_requests ||= begin
-        merge_requests = @project.origin_merge_requests.opened.where(source_branch: @branch_name).to_a
-        merge_requests += fork_merge_requests
-        filter_merge_requests(merge_requests)
-      end
-    end
-
-    def fork_merge_requests
-      @fork_merge_requests ||= @project.fork_merge_requests.opened.
-        where(source_branch: @branch_name).to_a
+      @source_merge_requests ||= merge_requests_for(@branch_name)
     end
 
     def branch_added?

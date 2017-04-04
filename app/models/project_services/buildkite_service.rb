@@ -3,7 +3,7 @@ require "addressable/uri"
 class BuildkiteService < CiService
   include ReactiveService
 
-  ENDPOINT = "https://buildkite.com"
+  ENDPOINT = "https://buildkite.com".freeze
 
   prop_accessor :project_url, :token
   boolean_accessor :enable_ssl_verification
@@ -22,10 +22,6 @@ class BuildkiteService < CiService
     hook.url = webhook_url
     hook.enable_ssl_verification = !!enable_ssl_verification
     hook.save
-  end
-
-  def supported_events
-    %w(push)
   end
 
   def execute(data)
@@ -54,7 +50,7 @@ class BuildkiteService < CiService
     'Continuous integration and deployments'
   end
 
-  def to_param
+  def self.to_param
     'buildkite'
   end
 

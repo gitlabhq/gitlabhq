@@ -1,11 +1,12 @@
 module Gitlab
   module GithubImport
     class BaseFormatter
-      attr_reader :formatter, :project, :raw_data
+      attr_reader :client, :formatter, :project, :raw_data
 
-      def initialize(project, raw_data)
+      def initialize(project, raw_data, client = nil)
         @project = project
         @raw_data = raw_data
+        @client = client
         @formatter = Gitlab::ImportFormatter.new
       end
 
@@ -17,19 +18,6 @@ module Gitlab
 
       def url
         raw_data.url || ''
-      end
-
-      private
-
-      def gitlab_user_id(github_id)
-        User.joins(:identities).
-          find_by("identities.extern_uid = ? AND identities.provider = 'github'", github_id.to_s).
-          try(:id)
-      end
-
-      def gitlab_author_id
-        return @gitlab_author_id if defined?(@gitlab_author_id)
-        @gitlab_author_id = gitlab_user_id(raw_data.user.id)
       end
     end
   end

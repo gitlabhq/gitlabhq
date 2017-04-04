@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::GitAccessWiki, lib: true do
   let(:access) { Gitlab::GitAccessWiki.new(user, project, 'web', authentication_abilities: authentication_abilities) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:authentication_abilities) do
     [
@@ -36,8 +36,6 @@ describe Gitlab::GitAccessWiki, lib: true do
 
     context 'when wiki feature is enabled' do
       it 'give access to download wiki code' do
-        project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::ENABLED)
-
         expect(subject.allowed?).to be_truthy
       end
     end

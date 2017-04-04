@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-describe 'Dropdown assignee', js: true, feature: true do
+describe 'Dropdown assignee', :feature, :js do
+  include FilteredSearchHelpers
   include WaitForAjax
 
   let!(:project) { create(:empty_project) }
@@ -9,17 +10,10 @@ describe 'Dropdown assignee', js: true, feature: true do
   let!(:user_jacob) { create(:user, name: 'Jacob', username: 'otter32') }
   let(:filtered_search) { find('.filtered-search') }
   let(:js_dropdown_assignee) { '#js-dropdown-assignee' }
-
-  def send_keys_to_filtered_search(input)
-    input.split("").each do |i|
-      filtered_search.send_keys(i)
-      sleep 5
-      wait_for_ajax
-    end
-  end
+  let(:filter_dropdown) { find("#{js_dropdown_assignee} .filter-dropdown") }
 
   def dropdown_assignee_size
-    page.all('#js-dropdown-assignee .filter-dropdown .filter-dropdown-item').size
+    filter_dropdown.all('.filter-dropdown-item').size
   end
 
   def click_assignee(text)
@@ -43,14 +37,6 @@ describe 'Dropdown assignee', js: true, feature: true do
       expect(page).to have_css(js_dropdown_assignee, visible: true)
     end
 
-    it 'shows assigned to me link' do
-      filtered_search.set('assignee:')
-
-      page.within js_dropdown_assignee do
-        expect(page).to have_content('Assigned to me')
-      end
-    end
-
     it 'closes when the search bar is unfocused' do
       find('body').click()
 
@@ -64,63 +50,80 @@ describe 'Dropdown assignee', js: true, feature: true do
     end
 
     it 'should hide loading indicator when loaded' do
-      send_keys_to_filtered_search('assignee:')
+      filtered_search.set('assignee:')
 
-      expect(page).not_to have_css('#js-dropdown-assignee .filter-dropdown-loading')
+      expect(find(js_dropdown_assignee)).to have_css('.filter-dropdown-loading')
+      expect(find(js_dropdown_assignee)).not_to have_css('.filter-dropdown-loading')
     end
 
     it 'should load all the assignees when opened' do
-      send_keys_to_filtered_search('assignee:')
+      filtered_search.set('assignee:')
 
       expect(dropdown_assignee_size).to eq(3)
     end
 
     it 'shows current user at top of dropdown' do
-      send_keys_to_filtered_search('assignee:')
+      filtered_search.set('assignee:')
 
-      expect(first('#js-dropdown-assignee .filter-dropdown li')).to have_content(user.name)
+      expect(filter_dropdown.first('.filter-dropdown-item')).to have_content(user.name)
     end
   end
 
   describe 'filtering' do
     before do
-      send_keys_to_filtered_search('assignee:')
+      filtered_search.set('assignee:')
+
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_john.name)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user.name)
     end
 
     it 'filters by name' do
-      send_keys_to_filtered_search('j')
+      filtered_search.send_keys('j')
 
-      expect(dropdown_assignee_size).to eq(2)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_john.name)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_no_content(user.name)
     end
 
     it 'filters by case insensitive name' do
-      send_keys_to_filtered_search('J')
+      filtered_search.send_keys('J')
 
-      expect(dropdown_assignee_size).to eq(2)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_john.name)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_no_content(user.name)
     end
 
     it 'filters by username with symbol' do
-      send_keys_to_filtered_search('@ot')
+      filtered_search.send_keys('@ot')
 
-      expect(dropdown_assignee_size).to eq(2)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user.name)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_no_content(user_john.name)
     end
 
     it 'filters by case insensitive username with symbol' do
-      send_keys_to_filtered_search('@OT')
+      filtered_search.send_keys('@OT')
 
-      expect(dropdown_assignee_size).to eq(2)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user.name)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_no_content(user_john.name)
     end
 
     it 'filters by username without symbol' do
-      send_keys_to_filtered_search('ot')
+      filtered_search.send_keys('ot')
 
-      expect(dropdown_assignee_size).to eq(2)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user.name)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_no_content(user_john.name)
     end
 
     it 'filters by case insensitive username without symbol' do
-      send_keys_to_filtered_search('OT')
+      filtered_search.send_keys('OT')
 
-      expect(dropdown_assignee_size).to eq(2)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user.name)
+      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_no_content(user_john.name)
     end
   end
 
@@ -129,34 +132,29 @@ describe 'Dropdown assignee', js: true, feature: true do
       filtered_search.set('assignee:')
     end
 
-    it 'filters by current user' do
-      page.within js_dropdown_assignee do
-        click_button 'Assigned to me'
-      end
-
-      expect(filtered_search.value).to eq("assignee:#{user.to_reference}")
-    end
-
     it 'fills in the assignee username when the assignee has not been filtered' do
       click_assignee(user_jacob.name)
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect(filtered_search.value).to eq("assignee:@#{user_jacob.username}")
+      expect_tokens([{ name: 'assignee', value: "@#{user_jacob.username}" }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in the assignee username when the assignee has been filtered' do
-      send_keys_to_filtered_search('roo')
+      filtered_search.send_keys('roo')
       click_assignee(user.name)
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect(filtered_search.value).to eq("assignee:@#{user.username}")
+      expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+      expect_filtered_search_input_empty
     end
 
     it 'selects `no assignee`' do
       find('#js-dropdown-assignee .filter-dropdown-item', text: 'No Assignee').click
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect(filtered_search.value).to eq("assignee:none")
+      expect_tokens([{ name: 'assignee', value: 'none' }])
+      expect_filtered_search_input_empty
     end
   end
 
@@ -183,6 +181,24 @@ describe 'Dropdown assignee', js: true, feature: true do
       filtered_search.set('milestone:%v1.0 assignee:')
 
       expect(page).to have_css(js_dropdown_assignee, visible: true)
+    end
+  end
+
+  describe 'caching requests' do
+    it 'caches requests after the first load' do
+      filtered_search.set('assignee')
+      filtered_search.send_keys(':')
+      initial_size = dropdown_assignee_size
+
+      expect(initial_size).to be > 0
+
+      new_user = create(:user)
+      project.team << [new_user, :master]
+      find('.filtered-search-input-container .clear-search').click
+      filtered_search.set('assignee')
+      filtered_search.send_keys(':')
+
+      expect(dropdown_assignee_size).to eq(initial_size)
     end
   end
 end

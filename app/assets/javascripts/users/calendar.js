@@ -1,6 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, camelcase, vars-on-top, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, max-len */
-/* global d3 */
-/* global dateFormat */
+
+import d3 from 'd3';
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
@@ -33,7 +33,7 @@
         date.setDate(date.getDate() + i);
 
         var day = date.getDay();
-        var count = timestamps[dateFormat(date, 'yyyy-mm-dd')];
+        var count = timestamps[date.format('yyyy-mm-dd')];
 
         // Create a new group array if this is the first day of the week
         // or if is first object
@@ -122,7 +122,7 @@
           if (stamp.count > 0) {
             contribText = stamp.count + " contribution" + (stamp.count > 1 ? 's' : '');
           }
-          dateText = dateFormat(date, 'mmm d, yyyy');
+          dateText = date.format('mmm d, yyyy');
           return contribText + "<br />" + (gl.utils.getDayName(date)) + " " + dateText;
         };
       })(this)).attr('class', 'user-contrib-cell js-tooltip').attr('fill', (function(_this) {
@@ -158,7 +158,7 @@
     };
 
     Calendar.prototype.renderMonths = function() {
-      return this.svg.append('g').selectAll('text').data(this.months).enter().append('text').attr('x', function(date) {
+      return this.svg.append('g').attr('direction', 'ltr').selectAll('text').data(this.months).enter().append('text').attr('x', function(date) {
         return date.x;
       }).attr('y', 10).attr('class', 'user-contrib-text').text((function(_this) {
         return function(date) {
@@ -222,4 +222,4 @@
 
     return Calendar;
   })();
-}).call(this);
+}).call(window);

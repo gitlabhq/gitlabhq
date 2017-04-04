@@ -168,4 +168,4 @@
 
     return ProjectFindFile;
   })();
-}).call(this);
+}).call(window);

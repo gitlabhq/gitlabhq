@@ -108,6 +108,7 @@ module Gitlab
 
         Arel.sql(%Q{EXTRACT(EPOCH FROM (#{diff.to_sql}))})
       end
+
       # Need to cast '0' to an INTERVAL before we can check if the interval is positive
       def zero_interval
         Arel::Nodes::NamedFunction.new("CAST", [Arel.sql("'0' AS INTERVAL")])

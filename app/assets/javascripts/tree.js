@@ -1,5 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, quotes, consistent-return, no-var, one-var, one-var-declaration-per-line, no-else-return, prefer-arrow-callback, max-len */
-/* global Turbolinks */
+
 (function() {
   this.TreeView = (function() {
     function TreeView() {
@@ -15,7 +15,7 @@
             e.preventDefault();
             return window.open(path, '_blank');
           } else {
-            return Turbolinks.visit(path);
+            return gl.utils.visitUrl(path);
           }
         }
       });
@@ -57,7 +57,7 @@
         } else if (e.which === 13) {
           path = $('.tree-item.selected .tree-item-file-name a').attr('href');
           if (path) {
-            return Turbolinks.visit(path);
+            return gl.utils.visitUrl(path);
           }
         }
       });
@@ -65,4 +65,4 @@
 
     return TreeView;
   })();
-}).call(this);
+}).call(window);

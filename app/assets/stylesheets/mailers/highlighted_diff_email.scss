@@ -138,6 +138,13 @@ pre {
   margin: 0;
 }
 
+blockquote {
+  color: $gl-grayish-blue;
+  padding: 0 0 0 15px;
+  margin: 0;
+  border-left: 3px solid $white-dark;
+}
+
 span.highlight_word {
   background-color: $highlighted-highlight-word !important;
 }

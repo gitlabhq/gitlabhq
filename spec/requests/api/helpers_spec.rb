@@ -436,7 +436,7 @@ describe API::Helpers, api: true do
 
     context 'current_user is present' do
       before do
-        expect_any_instance_of(self.class).to receive(:current_user).and_return(true)
+        expect_any_instance_of(self.class).to receive(:current_user).at_least(:once).and_return(User.new)
       end
 
       it 'does not raise an error' do

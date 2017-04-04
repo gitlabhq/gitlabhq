@@ -107,26 +107,6 @@ module API
           desc: 'Enable SSL verification for communication'
         }
       ],
-      'builds-email' => [
-        {
-          required: true,
-          name: :recipients,
-          type: String,
-          desc: 'Comma-separated list of recipient email addresses'
-        },
-        {
-          required: false,
-          name: :add_pusher,
-          type: Boolean,
-          desc: 'Add pusher to recipients list'
-        },
-        {
-          required: false,
-          name: :notify_only_broken_builds,
-          type: Boolean,
-          desc: 'Notify only broken builds'
-        }
-      ],
       'campfire' => [
         {
           required: true,
@@ -145,7 +125,7 @@ module API
           name: :room,
           type: String,
           desc: 'Campfire room'
-        },
+        }
       ],
       'custom-issue-tracker' => [
         {
@@ -403,9 +383,9 @@ module API
         },
         {
           required: false,
-          name: :notify_only_broken_builds,
+          name: :notify_only_broken_pipelines,
           type: Boolean,
-          desc: 'Notify only broken builds'
+          desc: 'Notify only broken pipelines'
         }
       ],
       'pivotaltracker' => [
@@ -420,6 +400,14 @@ module API
           name: :restrict_to_branch,
           type: String,
           desc: 'Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.'
+        }
+      ],
+      'prometheus' => [
+        {
+          required: true,
+          name: :api_url,
+          type: String,
+          desc: 'Prometheus API Base URL, like http://prometheus.example.com/'
         }
       ],
       'pushover' => [
@@ -534,7 +522,49 @@ module API
           desc: 'The password of the user'
         }
       ]
-    }.freeze
+    }
+
+    service_classes = [
+      AsanaService,
+      AssemblaService,
+      BambooService,
+      BugzillaService,
+      BuildkiteService,
+      CampfireService,
+      CustomIssueTrackerService,
+      DroneCiService,
+      EmailsOnPushService,
+      ExternalWikiService,
+      FlowdockService,
+      GemnasiumService,
+      HipchatService,
+      IrkerService,
+      JiraService,
+      KubernetesService,
+      MattermostSlashCommandsService,
+      SlackSlashCommandsService,
+      PipelinesEmailService,
+      PivotaltrackerService,
+      PrometheusService,
+      PushoverService,
+      RedmineService,
+      SlackService,
+      MattermostService,
+      TeamcityService,
+    ]
+
+    if Rails.env.development?
+      services['mock-ci'] = [
+        {
+          required: true,
+          name: :mock_service_url,
+          type: String,
+          desc: 'URL to the mock service'
+        }
+      ]
+
+      service_classes << MockCiService
+    end
 
     trigger_services = {
       'mattermost-slash-commands' => [
@@ -553,7 +583,10 @@ module API
       ]
     }.freeze
 
-    resource :projects do
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
+    resource :projects, requirements: { id: %r{[^/]+} } do
       before { authenticate! }
       before { authorize_admin_project }
 
@@ -568,6 +601,19 @@ module API
       services.each do |service_slug, settings|
         desc "Set #{service_slug} service for project"
         params do
+          service_classes.each do |service|
+            event_names = service.try(:event_names) || next
+            event_names.each do |event_name|
+              services[service.to_param.tr("_", "-")] << {
+                required: false,
+                name: event_name.to_sym,
+                type: String,
+                desc: ServicesHelper.service_event_description(event_name)
+              }
+            end
+          end
+          services.freeze
+
           settings.each do |setting|
             if setting[:required]
               requires setting[:name], type: setting[:type], desc: setting[:desc]
@@ -581,7 +627,7 @@ module API
           service_params = declared_params(include_missing: false).merge(active: true)
 
           if service.update_attributes(service_params)
-            true
+            present service, with: Entities::ProjectService, include_passwords: current_user.is_admin?
           else
             render_api_error!('400 Bad Request', 400)
           end
@@ -599,9 +645,7 @@ module API
           hash.merge!(key => nil)
         end
 
-        if service.update_attributes(attrs.merge(active: false))
-          true
-        else
+        unless service.update_attributes(attrs.merge(active: false))
           render_api_error!('400 Bad Request', 400)
         end
       end
@@ -619,10 +663,18 @@ module API
     end
 
     trigger_services.each do |service_slug, settings|
+      helpers do
+        def chat_command_service(project, service_slug, params)
+          project.services.active.where(template: false).find do |service|
+            service.try(:token) == params[:token] && service.to_param == service_slug.underscore
+          end
+        end
+      end
+
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         desc "Trigger a slash command for #{service_slug}" do
           detail 'Added in GitLab 8.13'
         end
@@ -637,9 +689,8 @@ module API
           # This is not accurate, but done to prevent leakage of the project names
           not_found!('Service') unless project
 
-          service = project.find_or_initialize_service(service_slug.underscore)
-
-          result = service.try(:active?) && service.try(:trigger, params)
+          service = chat_command_service(project, service_slug, params)
+          result = service.try(:trigger, params)
 
           if result
             status result[:status] || 200

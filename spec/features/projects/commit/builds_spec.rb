@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'project commit pipelines' do
+feature 'project commit pipelines', js: true do
   given(:project) { create(:project) }
 
   background do

@@ -1,5 +1,4 @@
 # Gitlab::Git::Repository is a wrapper around native Rugged::Repository object
-require 'forwardable'
 require 'tempfile'
 require 'forwardable'
 require "rubygems/package"
@@ -7,14 +6,13 @@ require "rubygems/package"
 module Gitlab
   module Git
     class Repository
-      extend Forwardable
       include Gitlab::Git::Popen
 
       SEARCH_CONTEXT_LINES = 3
 
-      class NoRepository < StandardError; end
-      class InvalidBlobName < StandardError; end
-      class InvalidRef < StandardError; end
+      NoRepository = Class.new(StandardError)
+      InvalidBlobName = Class.new(StandardError)
+      InvalidRef = Class.new(StandardError)
 
       # Full path to repo
       attr_reader :path
@@ -32,6 +30,10 @@ module Gitlab
         @name = path.split("/").last
         @attributes = Gitlab::Git::Attributes.new(path)
       end
+
+      delegate  :empty?,
+                :bare?,
+                to: :rugged
 
       # Default branch in the repository
       def root_ref
@@ -162,14 +164,6 @@ module Gitlab
         !empty?
       end
 
-      def empty?
-        rugged.empty?
-      end
-
-      def bare?
-        rugged.bare?
-      end
-
       def repo_exists?
         !!rugged
       end
@@ -205,13 +199,17 @@ module Gitlab
         nil
       end
 
+      def archive_prefix(ref, sha)
+        project_name = self.name.chomp('.git')
+        "#{project_name}-#{ref.tr('/', '-')}-#{sha}"
+      end
+
       def archive_metadata(ref, storage_path, format = "tar.gz")
         ref ||= root_ref
         commit = Gitlab::Git::Commit.find(self, ref)
         return {} if commit.nil?
 
-        project_name = self.name.chomp('.git')
-        prefix = "#{project_name}-#{ref}-#{commit.id}"
+        prefix = archive_prefix(ref, commit.id)
 
         {
           'RepoPath' => path,
@@ -322,7 +320,7 @@ module Gitlab
       def log_by_walk(sha, options)
         walk_options = {
           show: sha,
-          sort: Rugged::SORT_DATE,
+          sort: Rugged::SORT_NONE,
           limit: options[:limit],
           offset: options[:offset]
         }
@@ -330,24 +328,47 @@ module Gitlab
       end
 
       def log_by_shell(sha, options)
-        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path} log)
-        cmd += %W(-n #{options[:limit].to_i})
-        cmd += %w(--format=%H)
-        cmd += %W(--skip=#{options[:offset].to_i})
-        cmd += %w(--follow) if options[:follow]
-        cmd += %w(--no-merges) if options[:skip_merges]
-        cmd += %W(--after=#{options[:after].iso8601}) if options[:after]
-        cmd += %W(--before=#{options[:before].iso8601}) if options[:before]
-        cmd += [sha]
-        cmd += %W(-- #{options[:path]}) if options[:path].present?
+        limit = options[:limit].to_i
+        offset = options[:offset].to_i
+        use_follow_flag = options[:follow] && options[:path].present?
 
-        raw_output = IO.popen(cmd) {|io| io.read }
+        # We will perform the offset in Ruby because --follow doesn't play well with --skip.
+        # See: https://gitlab.com/gitlab-org/gitlab-ce/issues/3574#note_3040520
+        offset_in_ruby = use_follow_flag && options[:offset].present?
+        limit += offset if offset_in_ruby
 
-        log = raw_output.lines.map do |c|
-          Rugged::Commit.new(rugged, c.strip)
+        cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} log]
+        cmd << "--max-count=#{limit}"
+        cmd << '--format=%H'
+        cmd << "--skip=#{offset}" unless offset_in_ruby
+        cmd << '--follow' if use_follow_flag
+        cmd << '--no-merges' if options[:skip_merges]
+        cmd << "--after=#{options[:after].iso8601}" if options[:after]
+        cmd << "--before=#{options[:before].iso8601}" if options[:before]
+        cmd << sha
+
+        # :path can be a string or an array of strings
+        if options[:path].present?
+          cmd << '--'
+          cmd += Array(options[:path])
         end
 
-        log.is_a?(Array) ? log : []
+        raw_output = IO.popen(cmd) { |io| io.read }
+        lines = offset_in_ruby ? raw_output.lines.drop(offset) : raw_output.lines
+
+        lines.map! { |c| Rugged::Commit.new(rugged, c.strip) }
+      end
+
+      def count_commits(options)
+        cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} rev-list]
+        cmd << "--after=#{options[:after].iso8601}" if options[:after]
+        cmd << "--before=#{options[:before].iso8601}" if options[:before]
+        cmd += %W[--count #{options[:ref]}]
+        cmd += %W[-- #{options[:path]}] if options[:path].present?
+
+        raw_output = IO.popen(cmd) { |io| io.read }
+
+        raw_output.to_i
       end
 
       def sha_from_ref(ref)
@@ -366,7 +387,7 @@ module Gitlab
       # a detailed list of valid arguments.
       def commits_between(from, to)
         walker = Rugged::Walker.new(rugged)
-        walker.sorting(Rugged::SORT_DATE | Rugged::SORT_REVERSE)
+        walker.sorting(Rugged::SORT_NONE | Rugged::SORT_REVERSE)
 
         sha_from = sha_from_ref(from)
         sha_to = sha_from_ref(to)
@@ -388,6 +409,11 @@ module Gitlab
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
       def merge_base_commit(from, to)
         rugged.merge_base(from, to)
+      end
+
+      # Returns true is +from+ is direct ancestor to +to+, otherwise false
+      def is_ancestor?(from, to)
+        Gitlab::GitalyClient::Commit.is_ancestor(self, from, to)
       end
 
       # Return an array of Diff objects that represent the diff
@@ -444,7 +470,7 @@ module Gitlab
         if actual_options[:order] == :topo
           walker.sorting(Rugged::SORT_TOPO)
         else
-          walker.sorting(Rugged::SORT_DATE)
+          walker.sorting(Rugged::SORT_NONE)
         end
 
         commits = []
@@ -565,9 +591,7 @@ module Gitlab
       #    will trigger a +:mixed+ reset and the working directory will be
       #    replaced with the content of the index. (Untracked and ignored files
       #    will be left alone)
-      def reset(ref, reset_type)
-        rugged.reset(ref, reset_type)
-      end
+      delegate :reset, to: :rugged
 
       # Mimic the `git clean` command and recursively delete untracked files.
       # Valid keys that can be passed in the +options+ hash are:
@@ -814,23 +838,6 @@ module Gitlab
         Rugged::Commit.create(rugged, actual_options)
       end
 
-      def commits_since(from_date)
-        walker = Rugged::Walker.new(rugged)
-        walker.sorting(Rugged::SORT_DATE | Rugged::SORT_REVERSE)
-
-        rugged.references.each("refs/heads/*") do |ref|
-          walker.push(ref.target_id)
-        end
-
-        commits = []
-        walker.each do |commit|
-          break if commit.author[:time].to_date < from_date
-          commits.push(commit)
-        end
-
-        commits
-      end
-
       AUTOCRLF_VALUES = {
         "true" => true,
         "false" => false,
@@ -843,57 +850,6 @@ module Gitlab
 
       def autocrlf=(value)
         rugged.config['core.autocrlf'] = AUTOCRLF_VALUES.invert[value]
-      end
-
-      # Create a new directory with a .gitkeep file. Creates
-      # all required nested directories (i.e. mkdir -p behavior)
-      #
-      # options should contain next structure:
-      #   author: {
-      #     email: 'user@example.com',
-      #     name: 'Test User',
-      #     time: Time.now
-      #   },
-      #   committer: {
-      #     email: 'user@example.com',
-      #     name: 'Test User',
-      #     time: Time.now
-      #   },
-      #   commit: {
-      #     message: 'Wow such commit',
-      #     branch: 'master',
-      #     update_ref: false
-      #   }
-      def mkdir(path, options = {})
-        # Check if this directory exists; if it does, then don't bother
-        # adding .gitkeep file.
-        ref = options[:commit][:branch]
-        path = Gitlab::Git::PathHelper.normalize_path(path).to_s
-        rugged_ref = rugged.ref(ref)
-
-        raise InvalidRef.new("Invalid ref") if rugged_ref.nil?
-
-        target_commit = rugged_ref.target
-
-        raise InvalidRef.new("Invalid target commit") if target_commit.nil?
-
-        entry = tree_entry(target_commit, path)
-
-        if entry
-          if entry[:type] == :blob
-            raise InvalidBlobName.new("Directory already exists as a file")
-          else
-            raise InvalidBlobName.new("Directory already exists")
-          end
-        end
-
-        options[:file] = {
-          content: '',
-          path: "#{path}/.gitkeep",
-          update: true
-        }
-
-        Gitlab::Git::Blob.commit(self, options)
       end
 
       # Returns result like "git ls-files" , recursive and full file path

@@ -93,9 +93,7 @@ module Users
     end
 
     def current_authorizations_per_project
-      current_authorizations.each_with_object({}) do |row, hash|
-        hash[row.project_id] = row
-      end
+      current_authorizations.index_by(&:project_id)
     end
 
     def current_authorizations
@@ -115,10 +113,23 @@ module Users
     # Returns a union query of projects that the user is authorized to access
     def project_authorizations_union
       relations = [
+        # Personal projects
         user.personal_projects.select("#{user.id} AS user_id, projects.id AS project_id, #{Gitlab::Access::MASTER} AS access_level"),
-        user.groups_projects.select_for_project_authorization,
+
+        # Projects the user is a member of
         user.projects.select_for_project_authorization,
-        user.groups.joins(:shared_projects).select_for_project_authorization
+
+        # Projects of groups the user is a member of
+        user.groups_projects.select_for_project_authorization,
+
+        # Projects of subgroups of groups the user is a member of
+        user.nested_groups_projects.select_for_project_authorization,
+
+        # Projects shared with groups the user is a member of
+        user.groups.joins(:shared_projects).select_for_project_authorization,
+
+        # Projects shared with subgroups of groups the user is a member of
+        user.nested_groups.joins(:shared_projects).select_for_project_authorization
       ]
 
       Gitlab::SQL::Union.new(relations)

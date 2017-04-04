@@ -8,6 +8,10 @@ module Gitlab
           @subject = subject
 
           attributes.each do |key, value|
+            if subject.respond_to?(key)
+              raise CannotOverrideMethodError.new("#{subject} already respond to #{key}!")
+            end
+
             define_singleton_method(key) { value }
           end
 

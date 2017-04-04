@@ -116,6 +116,22 @@
 }
 
 .manage-labels-list {
+  > li:not(.empty-message) {
+    background-color: $white-light;
+    cursor: move;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+
+    &:active {
+      cursor: -webkit-grabbing;
+      cursor: -moz-grabbing;
+    }
+
+    &.sortable-ghost {
+      opacity: 0.3;
+    }
+  }
+
   .btn-action {
     color: $gl-text-color;
 
@@ -258,4 +274,9 @@
       display: block;
     }
   }
+}
+
+.label-link {
+  display: inline-block;
+  vertical-align: text-top;
 }

@@ -142,6 +142,87 @@ describe Ci::Stage, models: true do
     end
   end
 
+  describe '#success?' do
+    context 'when stage is successful' do
+      before do
+        create_job(:ci_build, status: :success)
+        create_job(:generic_commit_status, status: :success)
+      end
+
+      it 'is successful' do
+        expect(stage).to be_success
+      end
+    end
+
+    context 'when stage is not successful' do
+      before do
+        create_job(:ci_build, status: :failed)
+        create_job(:generic_commit_status, status: :success)
+      end
+
+      it 'is not successful' do
+        expect(stage).not_to be_success
+      end
+    end
+  end
+
+  describe '#has_warnings?' do
+    context 'when stage has warnings' do
+      context 'when using memoized warnings flag' do
+        context 'when there are warnings' do
+          let(:stage) { build(:ci_stage, warnings: 2) }
+
+          it 'returns true using memoized value' do
+            expect(stage).not_to receive(:statuses)
+            expect(stage).to have_warnings
+          end
+        end
+
+        context 'when there are no warnings' do
+          let(:stage) { build(:ci_stage, warnings: 0) }
+
+          it 'returns false using memoized value' do
+            expect(stage).not_to receive(:statuses)
+            expect(stage).not_to have_warnings
+          end
+        end
+
+        context 'when number of warnings is not a valid value' do
+          let(:stage) { build(:ci_stage, warnings: true) }
+
+          it 'calculates statuses using database queries' do
+            expect(stage).to receive(:statuses).and_call_original
+            expect(stage).not_to have_warnings
+          end
+        end
+      end
+
+      context 'when calculating warnings from statuses' do
+        before do
+          create(:ci_build, :failed, :allowed_to_fail,
+                 stage: stage_name, pipeline: pipeline)
+        end
+
+        it 'has warnings calculated from statuses' do
+          expect(stage).to receive(:statuses).and_call_original
+          expect(stage).to have_warnings
+        end
+      end
+    end
+
+    context 'when stage does not have warnings' do
+      before do
+        create(:ci_build, :success, stage: stage_name,
+                                    pipeline: pipeline)
+      end
+
+      it 'does not have warnings calculated from statuses' do
+        expect(stage).to receive(:statuses).and_call_original
+        expect(stage).not_to have_warnings
+      end
+    end
+  end
+
   def create_job(type, status: 'success', stage: stage_name)
     create(type, pipeline: pipeline, stage: stage, status: status)
   end

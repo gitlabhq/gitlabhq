@@ -15,6 +15,8 @@ module CiStatusHelper
       'passed'
     when 'success_with_warnings'
       'passed with warnings'
+    when 'manual'
+      'waiting for manual action'
     else
       status
     end
@@ -48,11 +50,31 @@ module CiStatusHelper
         'icon_status_created'
       when 'skipped'
         'icon_status_skipped'
+      when 'manual'
+        'icon_status_manual'
       else
         'icon_status_canceled'
       end
 
     custom_icon(icon_name)
+  end
+
+  def pipeline_status_cache_key(pipeline_status)
+    "pipeline-status/#{pipeline_status.sha}-#{pipeline_status.status}"
+  end
+
+  def render_project_pipeline_status(pipeline_status, tooltip_placement: 'auto left')
+    project = pipeline_status.project
+    path = pipelines_namespace_project_commit_path(
+      project.namespace,
+      project,
+      pipeline_status.sha)
+
+    render_status_with_link(
+      'commit',
+      pipeline_status.status,
+      path,
+      tooltip_placement: tooltip_placement)
   end
 
   def render_commit_status(commit, ref: nil, tooltip_placement: 'auto left')

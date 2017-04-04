@@ -1,1 +1,3 @@
-= render "projects/commit/pipelines_list", pipelines: @pipelines, link_to_commit: true
+- endpoint_path = local_assigns[:endpoint] || pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request, format: :json)
+
+= render 'projects/commit/pipelines_list', endpoint: endpoint_path

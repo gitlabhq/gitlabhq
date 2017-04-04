@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe 'Search bar', js: true, feature: true do
+  include FilteredSearchHelpers
   include WaitForAjax
 
   let!(:project) { create(:empty_project) }
@@ -18,6 +19,23 @@ describe 'Search bar', js: true, feature: true do
   def get_left_style(style)
     left_style = /left:\s\d*[.]\d*px/.match(style)
     left_style.to_s.gsub('left: ', '').to_f
+  end
+
+  describe 'keyboard navigation' do
+    it 'makes item active' do
+      filtered_search.native.send_keys(:down)
+
+      page.within '#js-dropdown-hint' do
+        expect(page).to have_selector('.dropdown-active')
+      end
+    end
+
+    it 'selects item' do
+      filtered_search.native.send_keys(:down, :down, :enter)
+
+      expect_tokens([{ name: 'author' }])
+      expect_filtered_search_input_empty
+    end
   end
 
   describe 'clear search button' do

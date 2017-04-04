@@ -6,20 +6,8 @@ describe Gitlab::Ci::Status::Build::Play do
 
   subject { described_class.new(status) }
 
-  describe '#text' do
-    it { expect(subject.text).to eq 'manual' }
-  end
-
   describe '#label' do
     it { expect(subject.label).to eq 'manual play action' }
-  end
-
-  describe '#icon' do
-    it { expect(subject.icon).to eq 'icon_status_manual' }
-  end
-
-  describe '#group' do
-    it { expect(subject.group).to eq 'manual' }
   end
 
   describe 'action details' do
@@ -44,7 +32,7 @@ describe Gitlab::Ci::Status::Build::Play do
     end
 
     describe '#action_icon' do
-      it { expect(subject.action_icon).to eq 'play' }
+      it { expect(subject.action_icon).to eq 'icon_action_play' }
     end
 
     describe '#action_title' do

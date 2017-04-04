@@ -71,6 +71,27 @@
   transition: $unfoldedTransitions;
 }
 
+@mixin disableAllAnimation {
+  /*CSS transitions*/
+  -o-transition-property: none !important;
+  -moz-transition-property: none !important;
+  -ms-transition-property: none !important;
+  -webkit-transition-property: none !important;
+  transition-property: none !important;
+  /*CSS transforms*/
+  -o-transform: none !important;
+  -moz-transform: none !important;
+  -ms-transform: none !important;
+  -webkit-transform: none !important;
+  transform: none !important;
+  /*CSS animations*/
+  -webkit-animation: none !important;
+  -moz-animation: none !important;
+  -o-animation: none !important;
+  -ms-animation: none !important;
+  animation: none !important;
+}
+
 @function unfoldTransition ($transition) {
   // Default values
   $property: all;
@@ -95,7 +116,7 @@
 }
 
 .btn,
-.side-nav-toggle {
+.global-dropdown-toggle {
   @include transition(background-color, border-color, color, box-shadow);
 }
 
@@ -107,8 +128,7 @@
 
 .note-action-button .link-highlight,
 .toolbar-btn,
-.dropdown-toggle-caret,
-.fa:not(.fa-bell) {
+.dropdown-toggle-caret {
   @include transition(color);
 }
 
@@ -116,11 +136,12 @@ a {
   @include transition(background-color, color, border);
 }
 
-.tree-table td,
-.well-list > li {
-  @include transition(background-color, border-color);
-}
-
 .stage-nav-item {
   @include transition(background-color, box-shadow);
+}
+
+.dropdown-menu a,
+.dropdown-menu button,
+.dropdown-menu-nav a {
+  transition: none;
 }

@@ -1,10 +1,9 @@
 /* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-use-before-define, comma-dangle, max-len */
-/* global Issue */
+import Issue from '~/issue';
 
-/*= require lib/utils/text_utility */
-/*= require issue */
+require('~/lib/utils/text_utility');
 
-(function() {
+describe('Issue', function() {
   var INVALID_URL = 'http://goesnowhere.nothing/whereami';
   var $boxClosed, $boxOpen, $btnClose, $btnReopen;
 
@@ -59,28 +58,26 @@
     expect($btnReopen).toHaveText('Reopen issue');
   }
 
-  describe('Issue', function() {
-    describe('task lists', function() {
-      beforeEach(function() {
-        loadFixtures('issues/issue-with-task-list.html.raw');
-        this.issue = new Issue();
+  describe('task lists', function() {
+    beforeEach(function() {
+      loadFixtures('issues/issue-with-task-list.html.raw');
+      this.issue = new Issue();
+    });
+
+    it('modifies the Markdown field', function() {
+      spyOn(jQuery, 'ajax').and.stub();
+      $('input[type=checkbox]').attr('checked', true).trigger('change');
+      expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
+    });
+
+    it('submits an ajax request on tasklist:changed', function() {
+      spyOn(jQuery, 'ajax').and.callFake(function(req) {
+        expect(req.type).toBe('PATCH');
+        expect(req.url).toBe(gl.TEST_HOST + '/frontend-fixtures/issues-project/issues/1.json'); // eslint-disable-line prefer-template
+        expect(req.data.issue.description).not.toBe(null);
       });
 
-      it('modifies the Markdown field', function() {
-        spyOn(jQuery, 'ajax').and.stub();
-        $('input[type=checkbox]').attr('checked', true).trigger('change');
-        expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
-      });
-
-      it('submits an ajax request on tasklist:changed', function() {
-        spyOn(jQuery, 'ajax').and.callFake(function(req) {
-          expect(req.type).toBe('PATCH');
-          expect(req.url).toBe(gl.TEST_HOST + '/frontend-fixtures/issues-project/issues/1.json'); // eslint-disable-line prefer-template
-          expect(req.data.issue.description).not.toBe(null);
-        });
-
-        $('.js-task-list-field').trigger('tasklist:changed');
-      });
+      $('.js-task-list-field').trigger('tasklist:changed');
     });
   });
 
@@ -105,6 +102,7 @@
 
       expectIssueState(false);
       expect($btnClose).toHaveProp('disabled', false);
+      expect($('.issue_counter')).toHaveText(0);
     });
 
     it('fails to close an issue with success:false', function() {
@@ -121,6 +119,7 @@
       expectIssueState(true);
       expect($btnClose).toHaveProp('disabled', false);
       expectErrorMessage();
+      expect($('.issue_counter')).toHaveText(1);
     });
 
     it('fails to closes an issue with HTTP error', function() {
@@ -135,6 +134,22 @@
       expectIssueState(true);
       expect($btnClose).toHaveProp('disabled', true);
       expectErrorMessage();
+      expect($('.issue_counter')).toHaveText(1);
+    });
+
+    it('updates counter', () => {
+      spyOn(jQuery, 'ajax').and.callFake(function(req) {
+        expectPendingRequest(req, $btnClose);
+        req.success({
+          id: 34
+        });
+      });
+
+      expect($('.issue_counter')).toHaveText(1);
+      $('.issue_counter').text('1,001');
+      expect($('.issue_counter').text()).toEqual('1,001');
+      $btnClose.trigger('click');
+      expect($('.issue_counter').text()).toEqual('1,000');
     });
   });
 
@@ -159,6 +174,7 @@
 
       expectIssueState(true);
       expect($btnReopen).toHaveProp('disabled', false);
+      expect($('.issue_counter')).toHaveText(1);
     });
   });
-}).call(this);
+});

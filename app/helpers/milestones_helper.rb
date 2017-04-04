@@ -19,8 +19,8 @@ module MilestonesHelper
     end
   end
 
-  def milestones_browse_issuables_path(milestone, type:)
-    opts = { milestone_title: milestone.title }
+  def milestones_browse_issuables_path(milestone, state: nil, type:)
+    opts = { milestone_title: milestone.title, state: state }
 
     if @project
       polymorphic_path([@project.namespace.becomes(Namespace), @project, type], opts)
@@ -82,22 +82,25 @@ module MilestonesHelper
   def milestone_remaining_days(milestone)
     if milestone.expired?
       content_tag(:strong, 'Past due')
-    elsif milestone.due_date
-      days    = milestone.remaining_days
-      content = content_tag(:strong, days)
-      content << " #{'day'.pluralize(days)} remaining"
     elsif milestone.upcoming?
       content_tag(:strong, 'Upcoming')
+    elsif milestone.due_date
+      time_ago = time_ago_in_words(milestone.due_date)
+      content = time_ago.gsub(/\d+/) { |match| "<strong>#{match}</strong>" }
+      content.slice!("about ")
+      content << " remaining"
+      content.html_safe
     elsif milestone.start_date && milestone.start_date.past?
       days    = milestone.elapsed_days
       content = content_tag(:strong, days)
       content << " #{'day'.pluralize(days)} elapsed"
+      content.html_safe
     end
   end
 
   def milestone_date_range(milestone)
     if milestone.start_date && milestone.due_date
-      "#{milestone.start_date.to_s(:medium)} - #{milestone.due_date.to_s(:medium)}"
+      "#{milestone.start_date.to_s(:medium)}–#{milestone.due_date.to_s(:medium)}"
     elsif milestone.due_date
       if milestone.due_date.past?
         "expired on #{milestone.due_date.to_s(:medium)}"
