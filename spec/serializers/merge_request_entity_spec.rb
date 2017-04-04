@@ -1,11 +1,15 @@
 require 'spec_helper'
 
-describe MergeRequestSerializer do
+describe MergeRequestEntity do
   let(:project)  { create :empty_project }
   let(:resource) { create(:merge_request, source_project: project, target_project: project) }
   let(:user)     { create(:user) }
 
-  subject { described_class.new(current_user: user).represent(resource) }
+  let(:request) { double('request', current_user: user) }
+
+  subject do
+    described_class.new(resource, request: request).as_json
+  end
 
   it 'includes author' do
     req = double('request')
@@ -14,7 +18,7 @@ describe MergeRequestSerializer do
       .represent(resource.author, request: req)
       .as_json
 
-    expect(subject[:author]).to eql(author_payload)
+    expect(subject[:author]).to eq(author_payload)
   end
 
   it 'includes pipeline' do
@@ -26,7 +30,7 @@ describe MergeRequestSerializer do
       .represent(pipeline, request: req)
       .as_json
 
-    expect(subject[:pipeline]).to eql(pipeline_payload)
+    expect(subject[:pipeline]).to eq(pipeline_payload)
   end
 
   it 'has important MergeRequest attributes' do
@@ -37,42 +41,42 @@ describe MergeRequestSerializer do
 
   it 'has merge_path' do
     expect(subject[:merge_path])
-      .to eql("/#{resource.project.full_path}/merge_requests/#{resource.iid}/merge")
+      .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}/merge")
   end
 
   it 'has remove_wip_path' do
     expect(subject[:remove_wip_path])
-      .to eql("/#{resource.project.full_path}/merge_requests/#{resource.iid}/remove_wip")
+      .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}/remove_wip")
   end
 
   it 'has conflict_resolution_ui_path' do
     expect(subject[:conflict_resolution_ui_path])
-      .to eql("/#{resource.project.full_path}/merge_requests/#{resource.iid}/conflicts")
+      .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}/conflicts")
   end
 
   it 'has email_patches_path' do
     expect(subject[:email_patches_path])
-      .to eql("/#{resource.project.full_path}/merge_requests/#{resource.iid}.patch")
+      .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}.patch")
   end
 
   it 'has plain_diff_path' do
     expect(subject[:plain_diff_path])
-      .to eql("/#{resource.project.full_path}/merge_requests/#{resource.iid}.diff")
+      .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}.diff")
   end
 
   it 'has target_branch_path' do
     expect(subject[:target_branch_path])
-      .to eql("/#{resource.target_project.full_path}/branches/#{resource.target_branch}")
+      .to eq("/#{resource.target_project.full_path}/branches/#{resource.target_branch}")
   end
 
   it 'has source_branch_path' do
     expect(subject[:source_branch_path])
-      .to eql("/#{resource.source_project.full_path}/branches/#{resource.source_branch}")
+      .to eq("/#{resource.source_project.full_path}/branches/#{resource.source_branch}")
   end
 
   it 'has merge_commit_message_with_description' do
     expect(subject[:merge_commit_message_with_description])
-      .to eql(resource.merge_commit_message(include_description: true))
+      .to eq(resource.merge_commit_message(include_description: true))
   end
 
   describe 'diff_head_commit_short_id' do
@@ -88,7 +92,7 @@ describe MergeRequestSerializer do
       let(:project) { create :project }
 
       it 'returns diff head commit short id' do
-        expect(subject[:diff_head_commit_short_id]).to eql(resource.diff_head_commit.short_id)
+        expect(subject[:diff_head_commit_short_id]).to eq(resource.diff_head_commit.short_id)
       end
     end
   end
@@ -112,7 +116,7 @@ describe MergeRequestSerializer do
           .with(resource.diff_head_sha, resource.source_branch)
           .and_return(ci_status)
 
-        expect(subject[:ci_status]).to eql(ci_status)
+        expect(subject[:ci_status]).to eq(ci_status)
       end
     end
 
@@ -130,7 +134,7 @@ describe MergeRequestSerializer do
         end
 
         it 'returns "success_with_warnings"' do
-          expect(subject[:ci_status]).to eql('success_with_warnings')
+          expect(subject[:ci_status]).to eq('success_with_warnings')
         end
       end
 
@@ -141,7 +145,7 @@ describe MergeRequestSerializer do
         end
 
         it 'returns pipeline status' do
-          expect(subject[:ci_status]).to eql('pending')
+          expect(subject[:ci_status]).to eq('pending')
         end
       end
 
@@ -153,7 +157,7 @@ describe MergeRequestSerializer do
         end
 
         it 'returns "preparing"' do
-          expect(subject[:ci_status]).to eql('preparing')
+          expect(subject[:ci_status]).to eq('preparing')
         end
       end
     end
@@ -166,7 +170,7 @@ describe MergeRequestSerializer do
       .represent(event)
       .as_json
 
-    expect(subject[:merge_event]).to eql(event_payload)
+    expect(subject[:merge_event]).to eq(event_payload)
   end
 
   it 'includes closed_event' do
@@ -176,7 +180,7 @@ describe MergeRequestSerializer do
       .represent(event)
       .as_json
 
-    expect(subject[:closed_event]).to eql(event_payload)
+    expect(subject[:closed_event]).to eq(event_payload)
   end
 
   describe 'diverged_commits_count' do
@@ -185,7 +189,7 @@ describe MergeRequestSerializer do
         allow(resource).to receive_messages(open?: true, diverged_from_target_branch?: true,
                                             diverged_commits_count: 10)
 
-        expect(subject[:diverged_commits_count]).to eql(10)
+        expect(subject[:diverged_commits_count]).to eq(10)
       end
     end
 
@@ -212,13 +216,13 @@ describe MergeRequestSerializer do
         it 'returns true' do
           resource.project.team << [user, :developer]
 
-          expect(subject[:current_user][:can_update_merge_request]).to eql(true)
+          expect(subject[:current_user][:can_update_merge_request]).to eq(true)
         end
       end
 
       context 'user cannot update issue' do
         it 'returns false' do
-          expect(subject[:current_user][:can_update_merge_request]).to eql(false)
+          expect(subject[:current_user][:can_update_merge_request]).to eq(false)
         end
       end
     end
