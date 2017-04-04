@@ -7,7 +7,7 @@
   = page_specific_javascript_bundle_tag('common_d3')
   = page_specific_javascript_bundle_tag('burndown_chart')
 
-- if burndown&.valid?
+- if can_generate_chart
   .burndown-header
     %h3
       Burndown chart
