@@ -6,7 +6,7 @@ export default {
     return {
       timer: 10,
       isRefreshing: false,
-    }
+    };
   },
   mounted() {
     setInterval(() => {
