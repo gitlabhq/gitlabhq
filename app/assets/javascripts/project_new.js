@@ -38,6 +38,7 @@
       $('#require_approvals').on('change', function() {
         const enabled = $(this).prop('checked');
         const val = enabled ? 1 : 0;
+        $('#project_approvals_before_merge').val(val);
         $('#project_approvals_before_merge').prop('min', val);
         $('.nested-settings').toggleClass('hidden', !enabled);
       });
