@@ -8,8 +8,8 @@ describe Geo::FileUploadService, services: true do
       let(:user) { create(:user, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
       let(:upload) { Upload.find_by(model: user, uploader: 'AvatarUploader') }
       let(:params) { { id: upload.id, type: 'avatar' } }
-      let(:avatar_transfer) { Gitlab::Geo::AvatarTransfer.new(upload) }
-      let(:transfer_request) { Gitlab::Geo::TransferRequest.new(avatar_transfer.request_data) }
+      let(:file_transfer) { Gitlab::Geo::FileTransfer.new(:avatar, upload) }
+      let(:transfer_request) { Gitlab::Geo::TransferRequest.new(file_transfer.request_data) }
       let(:req_header) { transfer_request.headers['Authorization'] }
 
       it 'sends avatar file' do
@@ -32,8 +32,8 @@ describe Geo::FileUploadService, services: true do
       let(:group) { create(:group, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
       let(:upload) { Upload.find_by(model: group, uploader: 'AvatarUploader') }
       let(:params) { { id: upload.id, type: 'avatar' } }
-      let(:avatar_transfer) { Gitlab::Geo::AvatarTransfer.new(upload) }
-      let(:transfer_request) { Gitlab::Geo::TransferRequest.new(avatar_transfer.request_data) }
+      let(:file_transfer) { Gitlab::Geo::FileTransfer.new(:avatar, upload) }
+      let(:transfer_request) { Gitlab::Geo::TransferRequest.new(file_transfer.request_data) }
       let(:req_header) { transfer_request.headers['Authorization'] }
 
       it 'sends avatar file' do
@@ -56,8 +56,8 @@ describe Geo::FileUploadService, services: true do
       let(:project) { create(:empty_project, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
       let(:upload) { Upload.find_by(model: project, uploader: 'AvatarUploader') }
       let(:params) { { id: upload.id, type: 'avatar' } }
-      let(:avatar_transfer) { Gitlab::Geo::AvatarTransfer.new(upload) }
-      let(:transfer_request) { Gitlab::Geo::TransferRequest.new(avatar_transfer.request_data) }
+      let(:file_transfer) { Gitlab::Geo::FileTransfer.new(:avatar, upload) }
+      let(:transfer_request) { Gitlab::Geo::TransferRequest.new(file_transfer.request_data) }
       let(:req_header) { transfer_request.headers['Authorization'] }
 
       it 'sends avatar file' do

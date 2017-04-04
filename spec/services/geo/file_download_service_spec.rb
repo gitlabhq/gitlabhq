@@ -18,7 +18,7 @@ describe Geo::FileDownloadService, services: true do
       it 'downloads an user avatar' do
         allow_any_instance_of(Gitlab::ExclusiveLease)
           .to receive(:try_obtain).and_return(true)
-        allow_any_instance_of(Gitlab::Geo::AvatarTransfer)
+        allow_any_instance_of(Gitlab::Geo::FileTransfer)
           .to receive(:download_from_primary).and_return(100)
 
         expect{ subject.execute }.to change { Geo::FileRegistry.count }.by(1)
@@ -34,7 +34,7 @@ describe Geo::FileDownloadService, services: true do
       it 'downloads a group avatar' do
         allow_any_instance_of(Gitlab::ExclusiveLease)
           .to receive(:try_obtain).and_return(true)
-        allow_any_instance_of(Gitlab::Geo::AvatarTransfer)
+        allow_any_instance_of(Gitlab::Geo::FileTransfer)
           .to receive(:download_from_primary).and_return(100)
 
         expect{ subject.execute }.to change { Geo::FileRegistry.count }.by(1)
@@ -50,7 +50,7 @@ describe Geo::FileDownloadService, services: true do
       it 'downloads a project avatar' do
         allow_any_instance_of(Gitlab::ExclusiveLease)
           .to receive(:try_obtain).and_return(true)
-        allow_any_instance_of(Gitlab::Geo::AvatarTransfer)
+        allow_any_instance_of(Gitlab::Geo::FileTransfer)
           .to receive(:download_from_primary).and_return(100)
 
         expect{ subject.execute }.to change { Geo::FileRegistry.count }.by(1)

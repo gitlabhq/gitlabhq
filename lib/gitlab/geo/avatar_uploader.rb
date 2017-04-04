@@ -2,7 +2,7 @@ module Gitlab
   module Geo
     class AvatarUploader < FileUploader
       def execute
-        upload = Upload.find(object_db_id)
+        upload = Upload.find_by_id(object_db_id)
 
         return error unless upload.present?
         return error unless valid?(upload)

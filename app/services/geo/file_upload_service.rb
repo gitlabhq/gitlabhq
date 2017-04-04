@@ -18,7 +18,7 @@ module Geo
       begin
         uploader_class.new(object_db_id, data).execute
       rescue NameError
-        log("unknown file type: #{object_type}")
+        log("Unknown file type: #{object_type}")
         {}
       end
     end

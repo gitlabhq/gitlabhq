@@ -7,7 +7,7 @@ describe Gitlab::Geo::AvatarDownloader do
 
   context '#download_from_primary' do
     it 'downlods the avatar' do
-      allow_any_instance_of(Gitlab::Geo::AvatarTransfer)
+      allow_any_instance_of(Gitlab::Geo::FileTransfer)
         .to receive(:download_from_primary).and_return(100)
 
       downloader = described_class.new(upload.id)

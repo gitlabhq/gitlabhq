@@ -12,6 +12,8 @@ module Gitlab
         raise NotImplementedError
       end
 
+      private
+
       def success(file)
         { code: :ok, message: 'Success', file: file }
       end

@@ -125,7 +125,7 @@ describe API::Geo, api: true do
     let!(:secondary_node) { create(:geo_node) }
     let(:user) { create(:user, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
     let(:upload) { Upload.find_by(model: user, uploader: 'AvatarUploader') }
-    let(:transfer) { Gitlab::Geo::AvatarTransfer.new(upload) }
+    let(:transfer) { Gitlab::Geo::FileTransfer.new(upload) }
     let(:req_header) { Gitlab::Geo::TransferRequest.new(transfer.request_data).headers }
 
     before do

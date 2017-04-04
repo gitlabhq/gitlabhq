@@ -1,8 +1,8 @@
 module Gitlab
   module Geo
-    class AvatarTransfer < Transfer
-      def initialize(upload)
-        @file_type = :avatar
+    class FileTransfer < Transfer
+      def initialize(file_type, upload)
+        @file_type = file_type
         @file_id = upload.id
         @filename = upload.path
         @request_data = build_request_data(upload)

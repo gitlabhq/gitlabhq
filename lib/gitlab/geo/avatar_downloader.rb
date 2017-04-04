@@ -5,7 +5,7 @@ module Gitlab
         upload = Upload.find_by_id(object_db_id)
         return unless upload.present?
 
-        transfer = ::Gitlab::Geo::AvatarTransfer.new(upload)
+        transfer = ::Gitlab::Geo::FileTransfer.new(:avatar, upload)
         transfer.download_from_primary
       end
     end
