@@ -20,6 +20,9 @@ export default {
     svg() {
       return statusClassToSvgMap.icon_status_failed;
     },
+    stage() {
+      return this.mr.pipeline.details.stages.length > 1 ? 'stages' : 'stage';
+    },
   },
   template: `
     <div class="mr-widget-heading">
@@ -40,6 +43,7 @@ export default {
               :href="mr.pipeline.path"
               class="pipeline-id">#{{mr.pipeline.id}}</a>
             {{mr.pipeline.details.status.label}}
+            with {{stage}}
           </span>
           <div class="mr-widget-pipeline-graph">
             <div class="stage-cell">
@@ -65,4 +69,3 @@ export default {
     </div>
   `,
 };
-
