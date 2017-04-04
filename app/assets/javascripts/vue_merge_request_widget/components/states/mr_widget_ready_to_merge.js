@@ -1,3 +1,6 @@
+import successSvg from 'icons/_icon_status_success.svg';
+import warningSvg from 'icons/_icon_status_warning.svg';
+
 import simplePoll from '~/lib/utils/simple_poll';
 import eventHub from '../../event_hub';
 
@@ -59,6 +62,12 @@ export default {
     isMergeButtonDisabled() {
       const { commitMessage } = this;
       return !commitMessage.length || !this.isMergeAllowed() || this.isWorking;
+    },
+    checkmarkSvg() {
+      return successSvg;
+    },
+    exclamationSvg() {
+      return warningSvg;
     },
   },
   methods: {
@@ -178,14 +187,16 @@ export default {
             <a
               @click.prevent="handleMergeButtonClick(true)"
               class="merge_when_pipeline_succeeds" href="#">
-              <i class="fa fa-check fa-fw" aria-hidden="true"></i> Merge when pipeline succeeds
+              <span class="merge-opt-icon" v-html="checkmarkSvg" aria-hidden="true"></span>
+              <span class="merge-opt-title">Merge when pipeline succeeds</span>
             </a>
           </li>
           <li>
             <a
               @click.prevent="handleMergeButtonClick(false, true)"
               class="accept-merge-request" href="#">
-              <i class="fa fa-exclamation fa-fw" aria-hidden="true"></i> Merge immediately
+              <span class="merge-opt-icon" v-html="exclamationSvg" aria-hidden="true"></span>
+              <span class="merge-opt-title">Merge immediately</span>
             </a>
           </li>
         </ul>
@@ -195,7 +206,7 @@ export default {
           <input
             v-model="removeSourceBranch"
             :disabled="isMergeButtonDisabled"
-            type="checkbox"  /> Remove source branch
+            type="checkbox"/> Remove source branch
         </label>
         <a
           @click.prevent="toggleCommitMessageEditor"
