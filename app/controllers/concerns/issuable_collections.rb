@@ -40,7 +40,7 @@ module IssuableCollections
   end
 
   def issues_collection
-    issues_finder.execute.preload(:project, :author, :labels, :milestone, project: :namespace)
+    issues_finder.execute.preload(:project, :author, :labels, :milestone, :assignees, project: :namespace)
   end
 
   def merge_requests_collection
