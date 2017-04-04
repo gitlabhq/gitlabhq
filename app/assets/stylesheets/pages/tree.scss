@@ -131,6 +131,10 @@
   }
 }
 
+.limit-container-width .tree-table th .last-commit {
+  max-width: 367px;
+}
+
 .tree-ref-holder {
   float: left;
   margin-right: 15px;
