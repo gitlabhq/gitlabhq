@@ -22,7 +22,7 @@ feature 'New blob creation', feature: true, js: true do
   end
 
   def commit_file
-    click_button 'Commit Changes'
+    click_button 'Commit changes'
   end
 
   context 'with default target branch' do

@@ -30,7 +30,7 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
       check "api"
       check "read_user"
 
-      expect { click_on "Create Impersonation Token" }.to change { PersonalAccessTokensFinder.new(impersonation: true).execute.count }
+      expect { click_on "Create impersonation token" }.to change { PersonalAccessTokensFinder.new(impersonation: true).execute.count }
       expect(active_impersonation_tokens).to have_text(name)
       expect(active_impersonation_tokens).to have_text('In')
       expect(active_impersonation_tokens).to have_text('api')

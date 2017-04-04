@@ -7,17 +7,17 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
 
   def manage_two_factor_authentication
     click_on 'Manage two-factor authentication'
-    expect(page).to have_content("Setup New U2F Device")
+    expect(page).to have_content("Setup new U2F device")
     wait_for_ajax
   end
 
   def register_u2f_device(u2f_device = nil, name: 'My device')
     u2f_device ||= FakeU2fDevice.new(page, name)
     u2f_device.respond_to_u2f_registration
-    click_on 'Setup New U2F Device'
+    click_on 'Setup new U2F device'
     expect(page).to have_content('Your device was successfully set up')
     fill_in "Pick a name", with: name
-    click_on 'Register U2F Device'
+    click_on 'Register U2F device'
     u2f_device
   end
 
