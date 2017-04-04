@@ -3,49 +3,41 @@ module ChatMessage
     attr_reader :after
     attr_reader :before
     attr_reader :commits
-    attr_reader :project_name
-    attr_reader :project_url
     attr_reader :ref
     attr_reader :ref_type
-    attr_reader :user_name
-    attr_reader :user_avatar
 
     def initialize(params)
-      super(params)
+      super
 
       @after = params[:after]
       @before = params[:before]
       @commits = params.fetch(:commits, [])
-      @project_name = params[:project_name]
-      @project_url = params[:project_url]
       @ref_type = Gitlab::Git.tag_ref?(params[:ref]) ? 'tag' : 'branch'
       @ref = Gitlab::Git.ref_name(params[:ref])
-      @user_name = params[:user_name]
-      @user_avatar = params[:user_avatar]
-    end
-
-    def activity
-      action =
-        if new_branch?
-          "created"
-        elsif removed_branch?
-          "removed"
-        else
-          "pushed to"
-        end
-
-      MicrosoftTeams::Activity.new(
-        "#{user_name} #{action} #{ref_type}",
-        "to: #{project_link}",
-        compare_link,
-        user_avatar
-      ).to_json
     end
 
     def attachments
       return [] if new_branch? || removed_branch?
+      return commit_messages if markdown
 
-      markdown_format ? commit_messages : commit_message_attachments
+      commit_message_attachments
+    end
+
+    def activity
+      action = if new_branch?
+                 "created"
+               elsif removed_branch?
+                 "removed"
+               else
+                 "pushed to"
+               end
+
+      {
+        title: "#{user_name} #{action} #{ref_type}",
+        subtitle: "in #{project_link}",
+        text: compare_link,
+        image: user_avatar
+      }
     end
 
     private

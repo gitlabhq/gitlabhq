@@ -2,14 +2,24 @@ require 'slack-notifier'
 
 module ChatMessage
   class BaseMessage
-    attr_reader :markdown_format
+    attr_reader :markdown
+    attr_reader :user_name
+    attr_reader :user_avatar
+    attr_reader :project_name
+    attr_reader :project_url
 
     def initialize(params)
-      @markdown_format = params[:markdown_format] || false
+      @markdown = params[:markdown] || false
+      @project_name = params.dig(:project, :path_with_namespace) || params[:project_name]
+      @project_url = params.dig(:project, :web_url) || params[:project_url]
+      @user_name = params.dig(:user, :username) || params[:user_name]
+      @user_avatar = params.dig(:user, :avatar_url) || params[:user_avatar]
     end
 
     def pretext
-      markdown_format ? message : format(message)
+      return message if markdown
+
+      format(message)
     end
 
     def fallback

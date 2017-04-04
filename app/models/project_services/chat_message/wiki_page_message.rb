@@ -1,20 +1,12 @@
 module ChatMessage
   class WikiPageMessage < BaseMessage
-    attr_reader :user_name
     attr_reader :title
-    attr_reader :project_name
-    attr_reader :project_url
     attr_reader :wiki_page_url
     attr_reader :action
     attr_reader :description
 
     def initialize(params)
-      super(params)
-
-      @user_name = params[:user][:username]
-      @user_avatar = params[:user][:avatar_url]
-      @project_name = params[:project_name]
-      @project_url = params[:project_url]
+      super
 
       obj_attr = params[:object_attributes]
       obj_attr = HashWithIndifferentAccess.new(obj_attr)
@@ -31,17 +23,19 @@ module ChatMessage
         end
     end
 
-    def activity
-      MicrosoftTeams::Activity.new(
-        "#{user_name} #{action} #{wiki_page_link}",
-        "in: #{project_link}",
-        title,
-        user_avatar
-      ).to_json
+    def attachments
+      return description if markdown
+
+      description_message
     end
 
-    def attachments
-      markdown_format ? @description : description_message
+    def activity
+      {
+        title: "#{user_name} #{action} #{wiki_page_link}",
+        subtitle: "in #{project_link}",
+        text: title,
+        image: user_avatar
+      }
     end
 
     private

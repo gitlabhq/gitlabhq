@@ -3,27 +3,20 @@ module ChatMessage
     attr_reader :ref_type
     attr_reader :ref
     attr_reader :status
-    attr_reader :project_name
-    attr_reader :project_url
-    attr_reader :user_name
     attr_reader :duration
     attr_reader :pipeline_id
-    attr_reader :user_avatar
 
     def initialize(data)
+      super
+
+      @user_name = data.dig(:user, :name) || 'API'
+
       pipeline_attributes = data[:object_attributes]
       @ref_type = pipeline_attributes[:tag] ? 'tag' : 'branch'
       @ref = pipeline_attributes[:ref]
       @status = pipeline_attributes[:status]
       @duration = pipeline_attributes[:duration]
       @pipeline_id = pipeline_attributes[:id]
-
-      super(data)
-
-      @project_name = data[:project][:path_with_namespace]
-      @project_url = data[:project][:web_url]
-      @user_name = (data[:user] && data[:user][:name]) || 'API'
-      @user_avatar = data[:user][:avatar_url] || ''
     end
 
     def pretext
@@ -34,17 +27,19 @@ module ChatMessage
       format(message)
     end
 
-    def activity
-      MicrosoftTeams::Activity.new(
-        "Pipeline #{pipeline_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status}",
-        "to: #{project_link}",
-        "in #{duration} #{time_measure}",
-        user_avatar
-      ).to_json
+    def attachments
+      return message if markdown
+
+      [{ text: format(message), color: attachment_color }]
     end
 
-    def attachments
-      markdown_format ? message : [{ text: format(message), color: attachment_color }]
+    def activity
+      {
+        title: "Pipeline #{pipeline_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status}",
+        subtitle: "in #{project_link}",
+        text: "in #{duration} #{time_measure}",
+        image: user_avatar || ''
+      }
     end
 
     private

@@ -4,14 +4,13 @@ class MicrosoftTeamsService < ChatNotificationService
   end
 
   def description
-    'Receive event notifications in Microsoft Team'
+    'Receive event notifications in Microsoft Teams'
   end
 
   def self.to_param
     'microsoft_teams'
   end
 
-  #TODO: Setup the description accordingly
   def help
     'This service sends notifications about projects events to Microsoft Teams channels.<br />
     To set up this service:
@@ -22,15 +21,14 @@ class MicrosoftTeamsService < ChatNotificationService
     </ol>'
   end
 
-  def default_channel_placeholder
-    "Channel name (e.g. general)"
-  end
-
   def webhook_placeholder
     'https://outlook.office.com/webhook/…'
   end
 
   def event_field(event)
+  end
+
+  def default_channel_placeholder
   end
 
   def default_fields
@@ -41,27 +39,18 @@ class MicrosoftTeamsService < ChatNotificationService
     ]
   end
 
-  def execute(data)
-    return unless supported_events.include?(data[:object_kind])
-    return unless webhook.present?
+  private
 
-    object_kind = data[:object_kind]
-
-    data = data.merge(
-      project_url: project_url,
-      project_name: project_name,
-      markdown_format: true
-    )
-
-    message = get_message(object_kind, data)
-
-    return false unless message
-
-    MicrosoftTeams::Notifier.new(webhook).ping({
+  def notify(message, opts)
+    MicrosoftTeams::Notifier.new(webhook).ping(
       title: message.project_name,
       pretext: message.pretext,
       activity: message.activity,
       attachments: message.attachments
-    })
+    )
+  end
+
+  def custom_data(data)
+    super(data).merge(markdown: true)
   end
 end
