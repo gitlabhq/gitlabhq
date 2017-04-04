@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::V3::Members, api: true  do
   include ApiHelpers
 
-  let(:master) { create(:user) }
+  let(:master) { create(:user, username: 'master_user') }
   let(:developer) { create(:user) }
   let(:access_requester) { create(:user) }
   let(:stranger) { create(:user) }
