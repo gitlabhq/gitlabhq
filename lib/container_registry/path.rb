@@ -18,19 +18,19 @@ module ContainerRegistry
 
     def valid?
       @path =~ Gitlab::Regex.container_repository_name_regex &&
-        nodes.size > 1 &&
-        nodes.size < Namespace::NUMBER_OF_ANCESTORS_ALLOWED
-    end
-
-    def nodes
-      @nodes ||= @path.to_s.split('/')
+        components.size > 1 &&
+        components.size < Namespace::NUMBER_OF_ANCESTORS_ALLOWED
     end
 
     def components
+      @components ||= @path.to_s.split('/')
+    end
+
+    def nodes
       raise InvalidRegistryPathError unless valid?
 
-      @components ||= nodes.size.downto(2).map do |length|
-        nodes.take(length).join('/')
+      @nodes ||= components.size.downto(2).map do |length|
+        components.take(length).join('/')
       end
     end
 
@@ -50,7 +50,7 @@ module ContainerRegistry
     end
 
     def repository_project
-      @project ||= Project.where_full_path_in(components.first(3)).first
+      @project ||= Project.where_full_path_in(nodes.first(3)).first
     end
 
     def repository_name

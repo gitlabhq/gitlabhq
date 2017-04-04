@@ -3,22 +3,22 @@ require 'spec_helper'
 describe ContainerRegistry::Path do
   subject { described_class.new(path) }
 
-  describe '#nodes' do
+  describe '#components' do
     let(:path) { 'path/to/some/project' }
 
-    it 'splits elements by a forward slash' do
-      expect(subject.nodes).to eq %w[path to some project]
+    it 'splits components by a forward slash' do
+      expect(subject.components).to eq %w[path to some project]
     end
   end
 
-  describe '#components' do
+  describe '#nodes' do
     context 'when repository path is valid' do
       let(:path) { 'path/to/some/project' }
 
-      it 'return all project-like components in reverse order' do
-        expect(subject.components).to eq %w[path/to/some/project
-                                            path/to/some
-                                            path/to]
+      it 'return all project path like node in reverse order' do
+        expect(subject.nodes).to eq %w[path/to/some/project
+                                       path/to/some
+                                       path/to]
       end
     end
 
@@ -26,7 +26,7 @@ describe ContainerRegistry::Path do
       let(:path) { '' }
 
       it 'rasises en error' do
-        expect { subject.components }
+        expect { subject.nodes }
           .to raise_error described_class::InvalidRegistryPathError
       end
     end
