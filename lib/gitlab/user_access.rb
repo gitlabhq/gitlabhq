@@ -28,14 +28,11 @@ module Gitlab
       true
     end
 
-    #TODO: Test this
-    #TODO move most to ProtectedTag::AccessChecker. Or maybe UserAccess::Protections::Tag
-    #TODO: then consider removing method, if it turns out can_access_git? and can?(:push_code are checked in change_access
-    def can_push_tag?(ref)
+    def can_create_tag?(ref)
       return false unless can_access_git?
 
       if ProtectedTag.protected?(project, ref)
-        project.protected_tags.matching_refs_accesible_to(ref, user)
+        project.protected_tags.protected_ref_accessible_to?(ref, user)
       else
         user.can?(:push_code, project)
       end
@@ -47,7 +44,7 @@ module Gitlab
       if ProtectedBranch.protected?(project, ref)
         return true if project.empty_repo? && project.user_can_push_to_empty_repo?(user)
 
-        has_access = project.protected_branches.matching_refs_accesible_to(ref, user, action: :push)
+        has_access = project.protected_branches.protected_ref_accessible_to?(ref, user, action: :push)
 
         has_access || !project.repository.branch_exists?(ref) && can_merge_to_branch?(ref)
       else
@@ -59,7 +56,7 @@ module Gitlab
       return false unless can_access_git?
 
       if ProtectedBranch.protected?(project, ref)
-        project.protected_branches.matching_refs_accesible_to(ref, user, action: :merge)
+        project.protected_branches.protected_ref_accessible_to?(ref, user, action: :merge)
       else
         user.can?(:push_code, project)
       end
