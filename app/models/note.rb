@@ -9,6 +9,9 @@ class Note < ActiveRecord::Base
   include CacheMarkdownField
   include AfterCommitQueue
   include ResolvableNote
+  include IgnorableColumn
+
+  ignore_column :original_discussion_id
 
   cache_markdown_field :note, pipeline: :note
 
