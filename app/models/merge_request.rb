@@ -4,7 +4,6 @@ class MergeRequest < ActiveRecord::Base
   include Referable
   include Sortable
   include Elastic::MergeRequestsSearch
-  include Importable
   include Approvable
 
   belongs_to :target_project, class_name: "Project"

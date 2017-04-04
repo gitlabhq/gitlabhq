@@ -61,7 +61,8 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
-          updated_at: updated_at
+          updated_at: updated_at,
+          imported: true
         }
 
         expect(pull_request.attributes).to eq(expected)
@@ -87,7 +88,8 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
-          updated_at: updated_at
+          updated_at: updated_at,
+          imported: true
         }
 
         expect(pull_request.attributes).to eq(expected)
@@ -114,7 +116,8 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
-          updated_at: updated_at
+          updated_at: updated_at,
+          imported: true
         }
 
         expect(pull_request.attributes).to eq(expected)

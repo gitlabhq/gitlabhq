@@ -1306,14 +1306,6 @@ describe Repository, models: true do
     end
   end
 
-  describe '#before_import' do
-    it 'flushes the repository caches' do
-      expect(repository).to receive(:expire_content_cache)
-
-      repository.before_import
-    end
-  end
-
   describe '#after_import' do
     it 'flushes and builds the cache' do
       expect(repository).to receive(:expire_content_cache)
