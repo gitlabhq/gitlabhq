@@ -102,6 +102,8 @@ class SentNotification < ActiveRecord::Base
     if self.in_reply_to_discussion_id.present?
       attrs[:in_reply_to_discussion_id] = self.in_reply_to_discussion_id
     else
+      # Remove in GitLab 10.0, when we will not support replying to SentNotifications
+      # that don't have `in_reply_to_discussion_id` anymore.
       attrs.merge!(
         type: self.note_type,
 

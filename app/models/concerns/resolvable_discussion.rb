@@ -2,6 +2,15 @@ module ResolvableDiscussion
   extend ActiveSupport::Concern
 
   included do
+    # A number of properties of this `Discussion`, like `first_note` and `resolvable?`, are memoized.
+    # When this discussion is resolved or unresolved, the values of these properties potentially change.
+    # To make sure all memoized values are reset when this happens, `update` resets all instance variables with names in
+    # `memoized_variables`. If you add a memoized method in `ResolvableDiscussion` or any `Discussion` subclass,
+    # please make sure the instance variable name is added to `memoized_values`, like below.
+    cattr_accessor :memoized_values, instance_accessor: false do
+      []
+    end
+
     memoized_values.push(
       :resolvable,
       :resolved,
@@ -77,5 +86,21 @@ module ResolvableDiscussion
     return unless resolvable?
 
     update { |notes| notes.unresolve! }
+  end
+
+  private
+
+  def update
+    # Do not select `Note.resolvable`, so that system notes remain in the collection
+    notes_relation = Note.where(id: notes.map(&:id))
+
+    yield(notes_relation)
+
+    # Set the notes array to the updated notes
+    @notes = notes_relation.fresh.to_a
+
+    self.class.memoized_values.each do |var|
+      instance_variable_set(:"@#{var}", nil)
+    end
   end
 end

@@ -1,5 +1,5 @@
 module Notes
-  class BuildService < BaseService
+  class BuildService < ::BaseService
     def execute
       in_reply_to_discussion_id = params.delete(:in_reply_to_discussion_id)
       new_discussion = params.delete(:new_discussion)

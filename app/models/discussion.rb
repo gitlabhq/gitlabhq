@@ -1,8 +1,5 @@
+# A non-diff discussion on an issue, merge request, commit, or snippet, consisting of `DiscussionNote` notes.
 class Discussion
-  cattr_accessor :memoized_values, instance_accessor: false do
-    []
-  end
-
   include ResolvableDiscussion
 
   attr_reader :notes, :noteable
@@ -25,23 +22,34 @@ class Discussion
     notes.group_by { |n| n.discussion_id(noteable) }.values.map { |notes| build(notes, noteable) }
   end
 
+  # Returns an alphanumeric discussion ID based on `build_discussion_id`
   def self.discussion_id(note)
     Digest::SHA1.hexdigest(build_discussion_id(note).join("-"))
   end
 
-  # Optionally override the discussion ID at runtime depending on circumstances
-  def self.override_discussion_id(note)
-    nil
+  # Returns an array of discussion ID components
+  def self.build_discussion_id(note)
+    [*base_discussion_id(note), SecureRandom.hex]
   end
 
-  def self.build_discussion_id_base(note)
+  def self.base_discussion_id(note)
     noteable_id = note.noteable_id || note.commit_id
     [:discussion, note.noteable_type.try(:underscore), noteable_id]
   end
 
-  # Returns an array of discussion ID components
-  def self.build_discussion_id(note)
-    [*build_discussion_id_base(note), SecureRandom.hex]
+  # To turn a list of notes into a list of discussions, they are grouped by discussion ID.
+  # When notes on a commit are displayed in context of a merge request that contains that commit,
+  # these notes are to be displayed as if they were part of one discussion, even though they were actually
+  # individual notes on the commit with different discussion IDs, so that it's clear that these are not
+  # notes on the merge request itself.
+  # To get these out-of-context notes to end up in the same discussion, we need to get them to return the same
+  # `discussion_id` when this grouping happens. To enable this, `Note#discussion_id` calls out
+  # to the `override_discussion_id` method on the appropriate `Discussion` subclass, as determined by
+  # the `discussion_class` method on `Note` or a subclass of `Note`.
+  # If no override is necessary, return `nil`.
+  # For the case described above, see `OutOfContextDiscussion.override_discussion_id`.
+  def self.override_discussion_id(note)
+    nil
   end
 
   def initialize(notes, noteable = nil)
@@ -96,21 +104,5 @@ class Discussion
 
   def reply_attributes
     first_note.slice(:type, :noteable_type, :noteable_id, :commit_id, :discussion_id)
-  end
-
-  private
-
-  def update
-    # Do not select `Note.resolvable`, so that system notes remain in the collection
-    notes_relation = Note.where(id: notes.map(&:id))
-
-    yield(notes_relation)
-
-    # Set the notes array to the updated notes
-    @notes = notes_relation.fresh.to_a
-
-    self.class.memoized_values.each do |var|
-      instance_variable_set(:"@#{var}", nil)
-    end
   end
 end

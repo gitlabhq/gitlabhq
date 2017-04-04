@@ -647,14 +647,14 @@ describe Notify do
       shared_examples 'a discussion note email' do |model|
         it_behaves_like 'it should have Gmail Actions links'
 
-        it 'is sent as the author' do
+        it 'is sent to the given recipient as the author' do
           sender = subject.header[:from].addrs[0]
-          expect(sender.display_name).to eq(note_author.name)
-          expect(sender.address).to eq(gitlab_sender)
-        end
 
-        it 'is sent to the given recipient' do
-          is_expected.to deliver_to recipient.notification_email
+          aggregate_failures do
+            expect(sender.display_name).to eq(note_author.name)
+            expect(sender.address).to eq(gitlab_sender)
+            expect(subject).to deliver_to(recipient.notification_email)
+          end
         end
 
         it 'contains the message from the note' do

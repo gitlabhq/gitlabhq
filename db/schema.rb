@@ -736,7 +736,6 @@ ActiveRecord::Schema.define(version: 20170402231018) do
   add_index "notes", ["note"], name: "index_notes_on_note_trigram", using: :gin, opclasses: {"note"=>"gin_trgm_ops"}
   add_index "notes", ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type", using: :btree
   add_index "notes", ["noteable_type"], name: "index_notes_on_noteable_type", using: :btree
-  add_index "notes", ["original_discussion_id"], name: "index_notes_on_original_discussion_id", using: :btree
   add_index "notes", ["project_id", "noteable_type"], name: "index_notes_on_project_id_and_noteable_type", using: :btree
   add_index "notes", ["updated_at"], name: "index_notes_on_updated_at", using: :btree
 

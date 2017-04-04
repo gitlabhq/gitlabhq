@@ -8,7 +8,7 @@ module ResolvableNote
 
     validates :resolved_by, presence: true, if: :resolved?
 
-    # Keep this scope in sync with the logic in `#potentially_resolvable?` in `Discussion` subclasses that are resolvable.
+    # Keep this scope in sync with the logic in `#potentially_resolvable?` in subclasses of `Discussion` that are resolvable.
     # `RESOLVABLE_TYPES` should include names of all subclasses that are resolvable (where the method can return true), and
     # the scope should also match the criteria `ResolvableDiscussion#potentially_resolvable?` puts on resolvability.
     scope :potentially_resolvable, -> { where(type: RESOLVABLE_TYPES).where(noteable_type: 'MergeRequest') }

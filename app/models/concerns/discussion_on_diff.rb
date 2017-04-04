@@ -1,3 +1,4 @@
+# Contains functionality shared between `DiffDiscussion` and `LegacyDiffDiscussion`.
 module DiscussionOnDiff
   extend ActiveSupport::Concern
 

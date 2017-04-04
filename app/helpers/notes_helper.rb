@@ -51,7 +51,6 @@ module NotesHelper
     return unless current_user
 
     data = { discussion_id: discussion.id, line_type: line_type }
-    data[:line_code] = discussion.line_code if discussion.respond_to?(:line_code)
 
     button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
                            data: data, title: 'Add a reply'

@@ -250,7 +250,7 @@ describe Note, models: true do
     let!(:note2) { create(:discussion_note_on_merge_request, in_reply_to: note) }
     let(:merge_request) { note.noteable }
 
-    it 'returns a discussion with multiple note' do
+    it 'returns a discussion with multiple notes' do
       discussion = merge_request.notes.find_discussion(note.discussion_id)
 
       expect(discussion).not_to be_nil
@@ -379,57 +379,57 @@ describe Note, models: true do
 
   describe '#can_be_discussion_note?' do
     context 'for a note on a merge request' do
-      let(:note) { build(:note_on_merge_request) }
-
       it 'returns true' do
+        note = build(:note_on_merge_request)
+
         expect(note.can_be_discussion_note?).to be_truthy
       end
     end
 
     context 'for a note on an issue' do
-      let(:note) { build(:note_on_issue) }
-
       it 'returns true' do
+        note = build(:note_on_issue)
+
         expect(note.can_be_discussion_note?).to be_truthy
       end
     end
 
     context 'for a note on a commit' do
-      let(:note) { build(:note_on_commit) }
-
       it 'returns true' do
+        note = build(:note_on_commit)
+
         expect(note.can_be_discussion_note?).to be_truthy
       end
     end
 
     context 'for a note on a snippet' do
-      let(:note) { build(:note_on_project_snippet) }
-
       it 'returns true' do
+        note = build(:note_on_project_snippet)
+
         expect(note.can_be_discussion_note?).to be_truthy
       end
     end
 
     context 'for a diff note on merge request' do
-      let(:note) { build(:diff_note_on_merge_request) }
-
       it 'returns false' do
+        note = build(:diff_note_on_merge_request)
+
         expect(note.can_be_discussion_note?).to be_falsey
       end
     end
 
     context 'for a diff note on commit' do
-      let(:note) { build(:diff_note_on_commit) }
-
       it 'returns false' do
+        note = build(:diff_note_on_commit)
+
         expect(note.can_be_discussion_note?).to be_falsey
       end
     end
 
     context 'for a discussion note' do
-      let(:note) { build(:discussion_note_on_merge_request) }
-
       it 'returns false' do
+        note = build(:discussion_note_on_merge_request)
+
         expect(note.can_be_discussion_note?).to be_falsey
       end
     end

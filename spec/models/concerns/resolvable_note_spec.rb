@@ -1,15 +1,17 @@
 require 'spec_helper'
 
 describe Note, ResolvableNote, models: true do
-  subject { create(:discussion_note_on_merge_request) }
+  let(:project) { create(:project) }
+  let(:merge_request) { create(:merge_request, source_project: project) }
+  subject { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
 
   context 'resolvability scopes' do
-    let!(:note1) { create(:note) }
-    let!(:note2) { create(:diff_note_on_commit) }
-    let!(:note3) { create(:diff_note_on_merge_request, :resolved) }
-    let!(:note4) { create(:discussion_note_on_merge_request) }
-    let!(:note5) { create(:discussion_note_on_issue) }
-    let!(:note6) { create(:discussion_note_on_merge_request, :system) }
+    let!(:note1) { create(:note, project: project) }
+    let!(:note2) { create(:diff_note_on_commit, project: project) }
+    let!(:note3) { create(:diff_note_on_merge_request, :resolved, noteable: merge_request, project: project) }
+    let!(:note4) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
+    let!(:note5) { create(:discussion_note_on_issue, project: project) }
+    let!(:note6) { create(:discussion_note_on_merge_request, :system, noteable: merge_request, project: project) }
 
     describe '.potentially_resolvable' do
       it 'includes diff and discussion notes on merge requests' do
@@ -38,9 +40,9 @@ describe Note, ResolvableNote, models: true do
 
   describe ".resolve!" do
     let(:current_user) { create(:user) }
-    let!(:commit_note) { create(:diff_note_on_commit) }
-    let!(:resolved_note) { create(:discussion_note_on_merge_request, :resolved) }
-    let!(:unresolved_note) { create(:discussion_note_on_merge_request) }
+    let!(:commit_note) { create(:diff_note_on_commit, project: project) }
+    let!(:resolved_note) { create(:discussion_note_on_merge_request, :resolved, noteable: merge_request, project: project) }
+    let!(:unresolved_note) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
 
     before do
       described_class.resolve!(current_user)
@@ -59,7 +61,7 @@ describe Note, ResolvableNote, models: true do
   end
 
   describe ".unresolve!" do
-    let!(:resolved_note) { create(:discussion_note_on_merge_request, :resolved) }
+    let!(:resolved_note) { create(:discussion_note_on_merge_request, :resolved, noteable: merge_request, project: project) }
 
     before do
       described_class.unresolve!

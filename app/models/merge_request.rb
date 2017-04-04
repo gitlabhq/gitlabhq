@@ -478,30 +478,6 @@ class MergeRequest < ActiveRecord::Base
 
   alias_method :discussion_notes, :related_notes
 
-  def resolvable_discussions
-    @resolvable_discussions ||= notes.resolvable.discussions
-  end
-
-  def discussions_resolvable?
-    resolvable_discussions.any?(&:resolvable?)
-  end
-
-  def discussions_resolved?
-    discussions_resolvable? && resolvable_discussions.none?(&:to_be_resolved?)
-  end
-
-  def discussions_to_be_resolved?
-    discussions_resolvable? && !discussions_resolved?
-  end
-
-  def discussions_to_be_resolved
-    @discussions_to_be_resolved ||= resolvable_discussions.select(&:to_be_resolved?)
-  end
-
-  def discussions_can_be_resolved_by?(user)
-    discussions_to_be_resolved.all? { |discussion| discussion.can_resolve?(user) }
-  end
-
   def mergeable_discussions_state?
     return true unless project.only_allow_merge_if_all_discussions_are_resolved?
 

@@ -25,17 +25,11 @@ FactoryGirl.define do
       end
     end
 
-    factory :discussion_note_on_issue, traits: [:on_issue], class: DiscussionNote do
-      association :project, :repository
-    end
+    factory :discussion_note_on_issue, traits: [:on_issue], class: DiscussionNote
 
-    factory :discussion_note_on_commit, traits: [:on_commit], class: DiscussionNote do
-      association :project, :repository
-    end
+    factory :discussion_note_on_commit, traits: [:on_commit], class: DiscussionNote
 
-    factory :legacy_diff_note_on_commit, traits: [:on_commit, :legacy_diff_note], class: LegacyDiffNote do
-      association :project, :repository
-    end
+    factory :legacy_diff_note_on_commit, traits: [:on_commit, :legacy_diff_note], class: LegacyDiffNote
 
     factory :legacy_diff_note_on_merge_request, traits: [:on_merge_request, :legacy_diff_note], class: LegacyDiffNote do
       association :project, :repository

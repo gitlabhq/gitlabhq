@@ -1,4 +1,6 @@
-# A note on merge request or commit diffs, using the legacy implementation
+# A note on merge request or commit diffs, using the legacy implementation.
+# All new diff notes are of the type `DiffNote`, but any diff notes created
+# before the introduction of the new implementation still use `LegacyDiffNote`.
 class LegacyDiffNote < Note
   include NoteOnDiff
 

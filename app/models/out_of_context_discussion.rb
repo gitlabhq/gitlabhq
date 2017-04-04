@@ -1,13 +1,18 @@
-# A discussion to wrap a number of `Note` notes on the root of a commit when they
-# are displayed in context of a merge request as if they were part of a discussion.
+# When notes on a commit are displayed in the context of a merge request that contains that commit,
+# they are displayed as if they were a discussion.
+# This represents one of those discussions, consisting of `Note` notes.
 class OutOfContextDiscussion < Discussion
-  # To make sure all out-of-context notes are displayed in one discussion,
-  # we override the discussion ID to be a newly generated but consistent ID.
-  def self.override_discussion_id(note)
-    Digest::SHA1.hexdigest(build_discussion_id_base(note).join("-"))
+  # Returns an array of discussion ID components
+  def self.build_discussion_id(note)
+    base_discussion_id(note)
   end
 
-  # Keep this method in sync with the `potentially_resolvable` scope on `ResolvableNote`
+  # To make sure all out-of-context notes end up grouped as one discussion,
+  # we override the discussion ID to be a newly generated but consistent ID.
+  def self.override_discussion_id(note)
+    discussion_id(note)
+  end
+
   def potentially_resolvable?
     false
   end

@@ -1,5 +1,5 @@
 module Notes
-  class CreateService < BaseService
+  class CreateService < ::BaseService
     def execute
       merge_request_diff_head_sha = params.delete(:merge_request_diff_head_sha)
 

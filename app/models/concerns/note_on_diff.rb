@@ -1,3 +1,4 @@
+# Contains functionality shared between `DiffNote` and `LegacyDiffNote`.
 module NoteOnDiff
   extend ActiveSupport::Concern
 

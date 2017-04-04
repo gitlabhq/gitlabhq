@@ -5,8 +5,9 @@ describe Discussion, ResolvableDiscussion, models: true do
 
   let(:first_note) { create(:discussion_note_on_merge_request) }
   let(:merge_request) { first_note.noteable }
-  let(:second_note) { create(:discussion_note_on_merge_request, in_reply_to: first_note) }
-  let(:third_note) { create(:discussion_note_on_merge_request) }
+  let(:project) { first_note.project }
+  let(:second_note) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project, in_reply_to: first_note) }
+  let(:third_note) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
 
   describe "#resolvable?" do
     context "when potentially resolvable" do

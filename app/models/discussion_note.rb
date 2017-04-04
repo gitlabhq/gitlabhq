@@ -5,6 +5,6 @@ class DiscussionNote < Note
   validates :noteable_type, inclusion: { in: NOTEABLE_TYPES }
 
   def discussion_class(*)
-    SimpleDiscussion
+    Discussion
   end
 end
