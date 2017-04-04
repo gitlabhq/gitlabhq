@@ -11,20 +11,20 @@
     }
 
     buildDropdowns() {
-      const $allowedToPushDropdown = this.$wrap.find('.js-allowed-to-push');
+      const $allowedToCreateDropdown = this.$wrap.find('.js-allowed-to-create');
 
       // Cache callback
       this.onSelectCallback = this.onSelect.bind(this);
 
-      // Allowed to Push dropdown
+      // Allowed to Create dropdown
       new gl.ProtectedTagAccessDropdown({
-        $dropdown: $allowedToPushDropdown,
-        data: gon.push_access_levels,
+        $dropdown: $allowedToCreateDropdown,
+        data: gon.create_access_levels,
         onSelect: this.onSelectCallback
       });
 
       // Select default
-      $allowedToPushDropdown.data('glDropdown').selectRowAtIndex(0);
+      $allowedToCreateDropdown.data('glDropdown').selectRowAtIndex(0);
 
       // Protected tag dropdown
       new ProtectedTagDropdown({
@@ -37,9 +37,9 @@
     onSelect() {
       // Enable submit button
       const $tagInput = this.$wrap.find('input[name="protected_tag[name]"]');
-      const $allowedToPushInput = this.$wrap.find('input[name="protected_tag[push_access_levels_attributes][0][access_level]"]');
+      const $allowedToCreateInput = this.$wrap.find('input[name="protected_tag[create_access_levels_attributes][0][access_level]"]');
 
-      this.$form.find('input[type="submit"]').attr('disabled', !($tagInput.val() && $allowedToPushInput.length));
+      this.$form.find('input[type="submit"]').attr('disabled', !($tagInput.val() && $allowedToCreateInput.length));
     }
   };
 })(window);

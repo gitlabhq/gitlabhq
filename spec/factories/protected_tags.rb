@@ -4,18 +4,18 @@ FactoryGirl.define do
     project
 
     after(:build) do |protected_tag|
-      protected_tag.push_access_levels.new(access_level: Gitlab::Access::MASTER)
+      protected_tag.create_access_levels.new(access_level: Gitlab::Access::MASTER)
     end
 
-    trait :developers_can_push do
+    trait :developers_can_create do
       after(:create) do |protected_tag|
-        protected_tag.push_access_levels.first.update!(access_level: Gitlab::Access::DEVELOPER)
+        protected_tag.create_access_levels.first.update!(access_level: Gitlab::Access::DEVELOPER)
       end
     end
 
-    trait :no_one_can_push do
+    trait :no_one_can_create do
       after(:create) do |protected_tag|
-        protected_tag.push_access_levels.first.update!(access_level: Gitlab::Access::NO_ACCESS)
+        protected_tag.create_access_levels.first.update!(access_level: Gitlab::Access::NO_ACCESS)
       end
     end
   end

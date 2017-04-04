@@ -1124,7 +1124,7 @@ ActiveRecord::Schema.define(version: 20170402231018) do
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
 
-  create_table "protected_tag_push_access_levels", force: :cascade do |t|
+  create_table "protected_tag_create_access_levels", force: :cascade do |t|
     t.integer "protected_tag_id", null: false
     t.integer "access_level", default: 40
     t.integer "user_id"
@@ -1133,8 +1133,8 @@ ActiveRecord::Schema.define(version: 20170402231018) do
     t.datetime "updated_at", null: false
   end
 
-  add_index "protected_tag_push_access_levels", ["protected_tag_id"], name: "index_protected_tag_push_access", using: :btree
-  add_index "protected_tag_push_access_levels", ["user_id"], name: "index_protected_tag_push_access_levels_on_user_id", using: :btree
+  add_index "protected_tag_create_access_levels", ["protected_tag_id"], name: "index_protected_tag_create_access", using: :btree
+  add_index "protected_tag_create_access_levels", ["user_id"], name: "index_protected_tag_create_access_levels_on_user_id", using: :btree
 
   create_table "protected_tags", force: :cascade do |t|
     t.integer "project_id", null: false
@@ -1546,9 +1546,9 @@ ActiveRecord::Schema.define(version: 20170402231018) do
   add_foreign_key "protected_branch_push_access_levels", "namespaces", column: "group_id"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "users"
-  add_foreign_key "protected_tag_push_access_levels", "namespaces", column: "group_id"
-  add_foreign_key "protected_tag_push_access_levels", "protected_tags"
-  add_foreign_key "protected_tag_push_access_levels", "users"
+  add_foreign_key "protected_tag_create_access_levels", "namespaces", column: "group_id"
+  add_foreign_key "protected_tag_create_access_levels", "protected_tags"
+  add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "remote_mirrors", "projects"
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade

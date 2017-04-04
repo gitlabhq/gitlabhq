@@ -86,7 +86,7 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
           end
 
           context 'when user has access' do
-            let!(:protected_tag) { create(:protected_tag, :developers_can_push, project: project, name: 'v*') }
+            let!(:protected_tag) { create(:protected_tag, :developers_can_create, project: project, name: 'v*') }
 
             it 'allows tag creation' do
               expect(subject.status).to be(true)
