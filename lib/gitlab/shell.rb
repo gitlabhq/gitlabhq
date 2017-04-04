@@ -236,7 +236,10 @@ module Gitlab
     #   add_namespace("/path/to/storage", "gitlab")
     #
     def add_namespace(storage, name)
-      FileUtils.mkdir_p(full_path(storage, name), mode: 0770) unless exists?(storage, name)
+      path = full_path(storage, name)
+      FileUtils.mkdir_p(path, mode: 0770) unless exists?(storage, name)
+    rescue Errno::EEXIST => e
+      Rails.logger.warn("Directory exists as a file: #{e} at: #{path}")
     end
 
     # Remove directory from repositories storage

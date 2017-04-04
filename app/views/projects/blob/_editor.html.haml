@@ -1,29 +1,23 @@
+- action = current_action?(:edit) || current_action?(:update) ? 'edit' : 'create'
+
 .file-holder.file.append-bottom-default
-  .js-file-title.file-title.clearfix
+  .js-file-title.file-title.clearfix{ data: { current_action: action } }
     .editor-ref
       = icon('code-fork')
       = ref
     %span.editor-file-name
       - if current_action?(:edit) || current_action?(:update)
         = text_field_tag 'file_path', (params[:file_path] || @path),
-                                      class: 'form-control new-file-path'
+                                      class: 'form-control new-file-path js-file-path-name-input'
 
     - if current_action?(:new) || current_action?(:create)
       %span.editor-file-name
         \/
       = text_field_tag 'file_name', params[:file_name], placeholder: "File name",
-        required: true, class: 'form-control new-file-name'
+        required: true, class: 'form-control new-file-name js-file-path-name-input'
 
     .pull-right.file-buttons
-      .license-selector.js-license-selector-wrap.hidden
-        = dropdown_tag("Choose a License template", options: { toggle_class: 'btn js-license-selector', title: "Choose a license", filter: true, placeholder: "Filter", data: { data: licenses_for_select, project: @project.name, fullname: @project.namespace.human_name } } )
-      .gitignore-selector.js-gitignore-selector-wrap.hidden
-        = dropdown_tag("Choose a .gitignore template", options: { toggle_class: 'btn js-gitignore-selector', title: "Choose a template", filter: true, placeholder: "Filter", data: { data: gitignore_names } } )
-      .gitlab-ci-yml-selector.js-gitlab-ci-yml-selector-wrap.hidden
-        = dropdown_tag("Choose a GitLab CI Yaml template", options: { toggle_class: 'btn js-gitlab-ci-yml-selector', title: "Choose a template", filter: true, placeholder: "Filter", data: { data: gitlab_ci_ymls } } )
-      .dockerfile-selector.js-dockerfile-selector-wrap.hidden
-        = dropdown_tag("Choose a Dockerfile template", options: { toggle_class: 'btn js-dockerfile-selector', title: "Choose a template", filter: true, placeholder: "Filter", data: { data: dockerfile_names } } )
-      = button_tag class: 'soft-wrap-toggle btn', type: 'button' do
+      = button_tag class: 'soft-wrap-toggle btn', type: 'button', tabindex: '-1' do
         %span.no-wrap
           = custom_icon('icon_no_wrap')
           No wrap
@@ -31,7 +25,7 @@
           = custom_icon('icon_soft_wrap')
           Soft wrap
       .encoding-selector
-        = select_tag :encoding, options_for_select([ "base64", "text" ], "text"), class: 'select2'
+        = select_tag :encoding, options_for_select([ "base64", "text" ], "text"), class: 'select2', tabindex: '-1'
 
   .file-editor.code
     %pre.js-edit-mode-pane#editor= params[:content] || local_assigns[:blob_data]
