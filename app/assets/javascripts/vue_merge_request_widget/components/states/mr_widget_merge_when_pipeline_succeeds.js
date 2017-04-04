@@ -42,7 +42,13 @@ export default {
       };
 
       this.isRemovingSourceBranch = true;
-      this.service.mergeResource.save(options); // TODO: Response and error handling, widget update
+      this.service.mergeResource.save(options) // TODO: Error handling
+        .then(res => res.json())
+        .then((res) => {
+          if (res.status === 'merge_when_pipeline_succeeds') {
+            eventHub.$emit('MRWidgetUpdateRequested');
+          }
+        });
     },
   },
   template: `
