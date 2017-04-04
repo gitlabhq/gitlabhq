@@ -1157,11 +1157,12 @@ describe Project, models: true do
       # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
       # call. This makes testing a bit easier.
       allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
-
       allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
     end
 
     it 'renames a repository' do
+      stub_container_registry_config(enabled: false)
+
       expect(gitlab_shell).to receive(:mv_repository).
         ordered.
         with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}").
