@@ -17,6 +17,8 @@ module Geo
 
       response =
         case params[:type]
+        when 'avatar'
+          handle_avatar_geo_request(params[:id], data)
         when 'lfs'
           handle_lfs_geo_request(params[:id], data)
         else
@@ -24,6 +26,27 @@ module Geo
         end
 
       response
+    end
+
+    def handle_avatar_geo_request(id, message)
+      status = { code: :not_found, message: 'Avatar file not found' }
+      upload = Upload.find(id)
+
+      return status unless upload.present?
+
+      if message[:id] != upload.model_id || message[:type] != upload.model_type || message[:checksum] != upload.checksum
+        return status
+      end
+
+      unless upload.model.avatar&.exists?
+        status[:message] = "#{upload.model_type} does not have a avatar"
+        return status
+      end
+
+      status[:code] = :ok
+      status[:message] = 'Success'
+      status[:file] = upload.model.avatar
+      status
     end
 
     def handle_lfs_geo_request(id, message)
