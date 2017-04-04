@@ -14,11 +14,12 @@ module EE
 
       issue = note.noteable
       reply_to = issue.service_desk_reply_to
+      support_bot = ::User.support_bot
 
       return unless issue.service_desk_reply_to.present?
       return unless issue.project.service_desk_enabled?
-      return if note.author == User.support_bot
-      return unless issue.subscribed?(::User.support_bot, issue.project)
+      return if note.author == support_bot
+      return unless issue.subscribed?(support_bot, issue.project)
 
       Notify.service_desk_new_note_email(issue.id, note.id)
     end

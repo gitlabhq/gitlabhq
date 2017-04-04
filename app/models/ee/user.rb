@@ -21,8 +21,8 @@ module EE
       def support_bot
         email_pattern = "support%s@#{Settings.gitlab.host}"
 
-        unique_internal(where(support_bot: true), 'support-bot', email) do |u|
-          u.bio = 'The GitLab support bot'
+        unique_internal(where(support_bot: true), 'support-bot', email_pattern) do |u|
+          u.bio = 'The GitLab support bot used for Service Desk'
           u.name = 'GitLab Support Bot'
         end
       end
@@ -52,6 +52,5 @@ module EE
     def admin_or_auditor?
       admin? || auditor?
     end
-
   end
 end

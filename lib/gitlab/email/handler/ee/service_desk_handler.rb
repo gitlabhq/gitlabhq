@@ -30,10 +30,10 @@ module Gitlab
           def project
             return @project if instance_variable_defined?(:@project)
 
-            @project = Project.where(
+            @project = Project.find_by(
               service_desk_enabled: true,
               service_desk_mail_key: service_desk_key
-            ).first
+            )
           end
 
           def create_issue!
@@ -43,7 +43,7 @@ module Gitlab
             @issue = Issues::CreateService.new(
               project,
               User.support_bot,
-              title: issue_title
+              title: issue_title,
               description: message,
               confidential: true,
               service_desk_reply_to: from_address,

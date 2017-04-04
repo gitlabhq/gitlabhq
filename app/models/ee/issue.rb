@@ -2,9 +2,7 @@ module EE
   module Issue
     # override
     def check_for_spam?
-      return true if author.support_bot?
-
-      super
+      author.support_bot? || super
     end
 
     # override
@@ -27,9 +25,7 @@ module EE
       # is not as bad as it seems, though, since it isn't
       # permitted to :receive_notifications, and doesn't
       # actually show up in the participants list.
-      return true if user == ::User.support_bot
-
-      super
+      ::User.support_bot || super
     end
   end
 end
