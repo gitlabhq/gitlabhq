@@ -296,8 +296,6 @@ docs:check:apilint:
   image: "phusion/baseimage"
   stage: test
   <<: *dedicated-runner
-  variables:
-    GIT_DEPTH: "3"
   cache: {}
   dependencies: []
   before_script: []
@@ -308,8 +306,6 @@ docs:check:links:
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
   stage: test
   <<: *dedicated-runner
-  variables:
-    GIT_DEPTH: "3"
   cache: {}
   dependencies: []
   before_script: []
