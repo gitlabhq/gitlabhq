@@ -19,5 +19,19 @@ namespace :gitlab do
         run_command!([command])
       end
     end
+
+    desc "GitLab | Print storage configuration in TOML format"
+    task storage_config: :environment do
+      require 'toml'
+
+      puts "# Gitaly storage configuration generated from #{Gitlab.config.source} on #{Time.current.to_s(:long)}"
+      puts "# This is in TOML format suitable for use in Gitaly's config.toml file."
+
+      config = Gitlab.config.repositories.storages.map do |key, val|
+        { name: key, path: val['path'] }
+      end
+
+      puts TOML.dump(storage: config)
+    end
   end
 end
