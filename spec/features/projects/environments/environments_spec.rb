@@ -115,21 +115,6 @@ feature 'Environments page', :feature, :js do
             .not_to change { Ci::Pipeline.count }
         end
 
-        scenario 'when action is non playable', js: true do
-          given(:action) do
-            create(:ci_build, :manual, :non_playable,
-              pipeline: pipeline,
-              name: 'close_app')
-          end
-
-          it 'has disabled button to the manual action' do
-            find('.js-dropdown-play-icon-container').click
-
-            expect(page).to have_button('close_app', disabled: true)
-          end
-
-        end
-
         scenario 'does show build name and id' do
           expect(page).to have_link("#{build.name} ##{build.id}")
         end

@@ -38,6 +38,14 @@ export default {
         new Flash('An error occured while making the request.');
       });
     },
+
+    isActionDisabled(action) {
+      if (action.playable === undefined) {
+        return false;
+      }
+
+      return !action.playable;
+    },
   },
 
   template: `
@@ -51,8 +59,13 @@ export default {
         aria-label="Manual job"
         :disabled="isLoading">
         ${playIconSvg}
-        <i class="fa fa-caret-down" aria-hidden="true"></i>
-        <i v-if="isLoading" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+        <i
+          class="fa fa-caret-down"
+          aria-hidden="true" />
+        <i
+          v-if="isLoading"
+          class="fa fa-spinner fa-spin"
+          aria-hidden="true" />
       </button>
 
       <ul class="dropdown-menu dropdown-menu-align-right">
@@ -60,9 +73,9 @@ export default {
           <button
             type="button"
             class="js-pipeline-action-link no-btn btn"
-            :class="{ 'disabled': !action.playable }"
             @click="onClickAction(action.path)"
-            :disabled="!action.playable">
+            :class="{ 'disabled': isActionDisabled(action) }"
+            :disabled="isActionDisabled(action)">
             ${playIconSvg}
             <span>{{action.name}}</span>
           </button>

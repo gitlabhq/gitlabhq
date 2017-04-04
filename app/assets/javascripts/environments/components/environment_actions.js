@@ -45,6 +45,14 @@ export default {
         new Flash('An error occured while making the request.');
       });
     },
+
+    isActionDisabled(action) {
+      if (action.playable === undefined) {
+        return false;
+      }
+
+      return !action.playable;
+    },
   },
 
   template: `
@@ -59,18 +67,23 @@ export default {
         :disabled="isLoading">
         <span>
           <span v-html="playIconSvg"></span>
-          <i class="fa fa-caret-down" aria-hidden="true"></i>
-          <i v-if="isLoading" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+          <i
+            class="fa fa-caret-down"
+            aria-hidden="true"/>
+          <i
+            v-if="isLoading"
+            class="fa fa-spinner fa-spin"
+            aria-hidden="true"/>
         </span>
 
       <ul class="dropdown-menu dropdown-menu-align-right">
         <li v-for="action in actions">
           <button
             type="button"
-            @click="onClickAction(action.play_path)"
             class="js-manual-action-link no-btn btn"
-            :class="{ 'disabled': !action.playable }"
-            :disabled="!action.playable">
+            @click="onClickAction(action.play_path)"
+            :class="{ 'disabled': isActionDisabled(action) }"
+            :disabled="isActionDisabled(action)">
             ${playIconSvg}
             <span>
               {{action.name}}

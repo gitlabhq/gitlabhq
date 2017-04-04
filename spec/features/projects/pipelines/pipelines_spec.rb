@@ -197,24 +197,6 @@ describe 'Pipelines', :feature, :js do
         end
       end
 
-      context 'with non playable manual action' do
-        let!(:manual) do
-          create(:ci_build, :manual, :non_playable,
-            pipeline: pipeline,
-            name: 'manual build',
-            stage: 'test',
-            commands: 'test')
-        end
-
-        before { visit_project_pipelines }
-
-        it 'has disabled button to the manual action' do
-          find('.js-pipeline-dropdown-manual-actions').click
-
-          expect(page).to have_button('manual build', disabled: true)
-        end
-      end
-
       context 'for generic statuses' do
         context 'when running' do
           let!(:running) do
