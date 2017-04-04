@@ -1,19 +1,27 @@
 module ActiveRecord
   class QueryRecorder
-    attr_reader :log
+    attr_reader :log, :cached
 
     def initialize(&block)
       @log = []
+      @cached = []
       ActiveSupport::Notifications.subscribed(method(:callback), 'sql.active_record', &block)
     end
 
     def callback(name, start, finish, message_id, values)
-      return if %w(CACHE SCHEMA).include?(values[:name])
-      @log << values[:sql]
+      if values[:name]&.include?("CACHE")
+        @cached << values[:sql]
+      elsif !values[:name]&.include?("SCHEMA")
+        @log << values[:sql]
+      end
     end
 
     def count
       @log.count
+    end
+
+    def cached_count
+      @cached.count
     end
 
     def log_message
