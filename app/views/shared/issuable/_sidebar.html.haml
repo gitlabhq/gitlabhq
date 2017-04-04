@@ -217,7 +217,7 @@
       - issuable.assignees.each do |assignee|
         :javascript
           document.addEventListener('DOMContentLoaded', () => {
-            gl.sidebarAssigneesOptions.assignees.addUser({
+            gl.sidebarAssigneesOptions.store.addUser({
               id: parseInt("#{assignee.id}", 10),
               name: "#{assignee.name}",
               username: "#{assignee.username}",

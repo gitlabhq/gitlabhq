@@ -52,14 +52,12 @@ export default class SidebarAssigneesStore {
 
         this.users = [];
 
-        assignees.forEach(function(a) {
-          this.addUser({
-            id: a.id,
-            name: a.name,
-            username: a.username,
-            avatarUrl: a.avatar_url,
-          }, true)
-        }.bind(this));
+        assignees.forEach(a => this.addUser({
+          id: a.id,
+          name: a.name,
+          username: a.username,
+          avatarUrl: a.avatar_url,
+        }, true));
 
         this.saved = true;
         this.loading = false;

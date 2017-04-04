@@ -1,14 +1,14 @@
 export default {
   name: 'NoAssignee',
   props: {
-    assignees: {
+    store: {
       type: Object,
-      required: true
+      required: true,
     },
   },
   methods: {
     assignSelf() {
-      this.assignees.addCurrentUser();
+      this.store.addCurrentUser();
     },
   },
   template: `

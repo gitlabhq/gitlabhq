@@ -25,15 +25,15 @@ const sidebarAssigneesOptions = () => ({
     const currentUserId = parseInt(element.dataset.userId, 10);
 
     const service = new SidebarAssigneesService(path, field);
-    const assignees = new SidebarAssigneesStore(currentUserId, service, rootPath, editable);
+    const store = new SidebarAssigneesStore(currentUserId, service, rootPath, editable);
 
     return {
-      assignees,
+      store,
     };
   },
   computed: {
     numberOfAssignees() {
-      return this.assignees.users.length;
+      return this.store.users.length;
     },
     componentName() {
       switch (this.numberOfAssignees) {
@@ -46,7 +46,7 @@ const sidebarAssigneesOptions = () => ({
       }
     },
     hideComponent() {
-      return !this.assignees.saved;
+      return !this.store.saved;
     },
   },
   components: {
@@ -59,15 +59,15 @@ const sidebarAssigneesOptions = () => ({
   template: `
     <div>
       <assignee-title
-        :numberOfAssignees="assignees.users.length"
-        :loading="assignees.loading"
-        :editable="assignees.editable"
+        :numberOfAssignees="store.users.length"
+        :loading="store.loading"
+        :editable="store.editable"
       />
-      <collapsed-assignees :users="assignees.users"/>
-      <component v-if="assignees.saved"
+      <collapsed-assignees :users="store.users"/>
+      <component v-if="store.saved"
         class="value"
         :is="componentName"
-        :assignees="assignees"
+        :store="store"
       />
     </div>
   `,

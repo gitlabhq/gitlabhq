@@ -2,15 +2,20 @@ import CollapsedAvatar from './avatar';
 
 export default {
   name: 'CollapsedAssignees',
-  data() {
-    return {
-      defaultMaxCounter: 99,
-    };
-  },
   props: {
     users: {
       type: Array,
-      required: true
+      required: true,
+    },
+    defaultRenderCount: {
+      type: Number,
+      required: false,
+      default: 5,
+    },
+    defaultMaxCounter: {
+      type: Number,
+      required: false,
+      default: 99,
     },
   },
   computed: {
@@ -22,7 +27,7 @@ export default {
       renderUsers.forEach(u => names.push(u.name));
 
       if (this.users.length > maxRender) {
-        names.push(`+${this.users.length - maxRender} more`);
+        names.push(`+ ${this.users.length - maxRender} more`);
       }
 
       return names.join(', ');
@@ -45,7 +50,7 @@ export default {
     moreThanOneAssignees() {
       return this.users.length > 1;
     },
-    morethanTwoAssignees() {
+    moreThanTwoAssignees() {
       return this.users.length > 2;
     },
   },
@@ -63,9 +68,16 @@ export default {
           data-placement="left"
           data-toggle="tooltip"
           :data-original-title="title" >
-        <collapsed-avatar :user="users[0]" />
-        <collapsed-avatar :user="users[1]" v-if="hasTwoAssignees" />
-        <button class="btn-link" type="button" v-if="morethanTwoAssignees">
+        <collapsed-avatar
+          :name="users[0].name"
+          :avatarUrl="users[0].avatarUrl"
+        />
+        <collapsed-avatar
+          v-if="hasTwoAssignees"
+          :name="users[1].name"
+          :avatarUrl="users[1].avatarUrl"
+        />
+        <button class="btn-link" type="button" v-if="moreThanTwoAssignees">
           <span class="avatar-counter sidebar-avatar-counter">{{counter}}</span>
         </button>
       </div>

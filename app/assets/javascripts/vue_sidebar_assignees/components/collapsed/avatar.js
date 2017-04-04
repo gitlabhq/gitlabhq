@@ -1,14 +1,18 @@
 export default {
   name: 'CollapsedAvatar',
   props: {
-    user: {
-      type: Object,
-      required: true
+    name: {
+      type: String,
+      required: true,
+    },
+    avatarUrl: {
+      type: String,
+      required: true,
     },
   },
   computed: {
     alt() {
-      return `${this.user.name}'s avatar`;
+      return `${this.name}'s avatar`;
     },
   },
   template: `
@@ -16,8 +20,8 @@ export default {
       <img width="24"
         class="avatar avatar-inline s24"
         :alt="alt"
-        :src="user.avatarUrl" >
-      <span class="author">{{user.name}}</span>
+        :src="avatarUrl" >
+      <span class="author">{{name}}</span>
     </button>
   `,
 };

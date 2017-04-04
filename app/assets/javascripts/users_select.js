@@ -250,7 +250,7 @@ import Vue from 'vue';
             defaultLabel: defaultLabel,
             hidden: function(e) {
               if ($dropdown.hasClass('js-multiselect')) {
-                gl.sidebarAssigneesOptions.assignees.saveUsers();
+                gl.sidebarAssigneesOptions.store.saveUsers();
               }
 
               $selectbox.hide();
@@ -274,12 +274,12 @@ import Vue from 'vue';
                   // Unassigned selected
                   previouslySelected.each((index, element) => {
                     const id = parseInt(element.value, 10);
-                    gl.sidebarAssigneesOptions.assignees.removeUser(id);
+                    gl.sidebarAssigneesOptions.store.removeUser(id);
                     element.remove();
                   });
                 } else if (isActive) {
                   // user selected
-                  gl.sidebarAssigneesOptions.assignees.addUser({
+                  gl.sidebarAssigneesOptions.store.addUser({
                     id: user.id,
                     name: user.name,
                     username: user.username,
@@ -292,7 +292,7 @@ import Vue from 'vue';
 
                   if (unassignedSelected) {
                     unassignedSelected.remove();
-                    gl.sidebarAssigneesOptions.assignees.removeUser(unassignedSelected);
+                    gl.sidebarAssigneesOptions.store.removeUser(unassignedSelected);
                   }
                 } else {
                   if (previouslySelected.length === 0) {
@@ -301,7 +301,7 @@ import Vue from 'vue';
                   }
 
                   // User unselected
-                  gl.sidebarAssigneesOptions.assignees.removeUser(user.id);
+                  gl.sidebarAssigneesOptions.store.removeUser(user.id);
                 }
               }
 

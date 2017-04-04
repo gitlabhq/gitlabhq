@@ -6,20 +6,17 @@ export default {
     };
   },
   props: {
-    assignees: {
+    store: {
       type: Object,
-      required: true
+      required: true,
     },
   },
   computed: {
-    rootPath() {
-      return this.assignees.rootPath;
-    },
     renderShowMoreSection() {
-      return this.assignees.users.length > this.assignees.defaultRenderCount;
+      return this.store.users.length > this.store.defaultRenderCount;
     },
     numberOfHiddenAssignees() {
-      return this.assignees.users.length - this.assignees.defaultRenderCount;
+      return this.store.users.length - this.store.defaultRenderCount;
     },
     isHiddenAssignees() {
       return this.numberOfHiddenAssignees > 0;
@@ -30,10 +27,10 @@ export default {
       this.showLess = !this.showLess;
     },
     renderAssignee(index) {
-      return !this.showLess || (index < this.assignees.defaultRenderCount && this.showLess);
+      return !this.showLess || (index < this.store.defaultRenderCount && this.showLess);
     },
     assigneeUrl(username) {
-      return `${this.rootPath}${username}`;
+      return `${this.store.rootPath}${username}`;
     },
     assigneeAlt(name) {
       return `${name}'s avatar`;
@@ -43,7 +40,7 @@ export default {
     <div class="hide-collapsed">
       <div class="hide-collapsed">
         <div class="user-list">
-          <div class="user-item" v-for="(user, index) in assignees.users"
+          <div class="user-item" v-for="(user, index) in store.users"
               v-if="renderAssignee(index)" >
             <a class="user-link has-tooltip"
               data-placement="bottom"
