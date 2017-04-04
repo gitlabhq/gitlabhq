@@ -1,29 +1,21 @@
-- expanded = false
 .container-image.js-toggle-container
   .container-image-head
     = link_to "#", class: "js-toggle-button" do
-      - if expanded
-        = icon("chevron-up")
-      - else
-        = icon("chevron-down")
-
+      = icon("chevron-down")
       = escape_once(image.path)
+
     = clipboard_button(clipboard_text: "docker pull #{image.path}")
+
     .controls.hidden-xs.pull-right
       = link_to namespace_project_container_registry_path(@project.namespace, @project, image),
                 class: 'btn btn-remove has-tooltip',
                 title: 'Remove repository',
                 data: { confirm: 'Are you sure?' },
                 method: :delete do
-        = icon("trash cred")
+        = icon('trash cred')
 
-
-  .container-image-tags.js-toggle-content{ class: ("hide" unless expanded) }
-    - if image.tags.blank?
-      %li
-        .nothing-here-block No tags in Container Registry for this container image.
-
-    - else
+  .container-image-tags.js-toggle-content{ class: 'hide' }
+    - if image.has_tags?
       .table-holder
         %table.table.tags
           %thead
@@ -34,5 +26,8 @@
               %th Created
               - if can?(current_user, :update_container_image, @project)
                 %th
-
           = render partial: 'tag', collection: image.tags
+    - else
+      %li
+        .nothing-here-block No tags in Container Registry for this container image.
+
