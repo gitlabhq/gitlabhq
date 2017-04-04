@@ -16,3 +16,5 @@
         = link_to "Explore", explore_root_path
         = link_to "Help", help_path
         = link_to "About GitLab", "https://about.gitlab.com/"
+
+    = javascript_include_tag(*webpack_asset_paths("raven")) if sentry_enabled?

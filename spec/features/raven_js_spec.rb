@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-feature 'RavenJS', feature: true, js: true do
-  let(:raven_path) { '/raven.js' }
+feature 'RavenJS', :feature, :js do
+  let(:raven_path) { '/raven.bundle.js' }
 
   it 'should not load raven if sentry is disabled' do
     visit new_user_session_path
@@ -10,8 +10,8 @@ feature 'RavenJS', feature: true, js: true do
   end
 
   it 'should load raven if sentry is enabled' do
-    allow_any_instance_of(ApplicationController).to receive_messages(sentry_dsn_public: 'https://mock:sentry@dsn/path',
-                                                                     sentry_enabled?: true)
+    allow_any_instance_of(SentryHelper).to receive_messages(sentry_dsn_public: 'https://key@domain.com/id',
+                                                            sentry_enabled?: true)
 
     visit new_user_session_path
 

@@ -45,6 +45,7 @@ var config = {
     u2f:                  ['vendor/u2f'],
     users:                './users/users_bundle.js',
     vue_pipelines:        './vue_pipelines_index/index.js',
+    raven:                './raven/index.js',
   },
 
   output: {

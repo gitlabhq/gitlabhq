@@ -30,6 +30,7 @@
     "mousetrap": "^1.4.6",
     "pikaday": "^1.5.1",
     "raphael": "^2.2.7",
+    "raven-js": "^3.14.0",
     "raw-loader": "^0.5.1",
     "select2": "3.5.2-browserify",
     "stats-webpack-plugin": "^0.4.3",

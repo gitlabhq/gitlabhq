@@ -9,3 +9,5 @@
 
     = yield :scripts_body
     = render "layouts/init_auto_complete" if @gfm_form
+
+    = javascript_include_tag(*webpack_asset_paths("raven")) if sentry_enabled?

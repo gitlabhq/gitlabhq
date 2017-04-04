@@ -13,7 +13,6 @@ module Gitlab
       gon.katex_css_url          = ActionController::Base.helpers.asset_path('katex.css')
       gon.katex_js_url           = ActionController::Base.helpers.asset_path('katex.js')
       gon.sentry_dsn             = sentry_dsn_public if sentry_enabled?
-      gon.raven_asset_url        = ActionController::Base.helpers.asset_path('raven.js') if sentry_enabled?
       gon.gitlab_url             = Gitlab.config.gitlab.url
       gon.is_production          = Rails.env.production?
 
