@@ -120,7 +120,6 @@ describe Environment, models: true do
 
         environment.first_deployment_for(commit)
       end
-
     end
   end
 
