@@ -25,6 +25,7 @@ export default Vue.component('environment-component', {
       state: store.state,
       visibility: 'available',
       isLoading: false,
+      isLoadingFolderContent: false,
       cssContainerClass: environmentsData.cssClass,
       endpoint: environmentsData.environmentsDataEndpoint,
       canCreateDeployment: environmentsData.canCreateDeployment,
@@ -79,10 +80,12 @@ export default Vue.component('environment-component', {
     this.fetchEnvironments();
 
     eventHub.$on('refreshEnvironments', this.fetchEnvironments);
+    eventHub.$on('toggleFolder', this.toggleFolder);
   },
 
   beforeDestroyed() {
     eventHub.$off('refreshEnvironments');
+    eventHub.$off('toggleFolder');
   },
 
   methods: {
@@ -95,6 +98,14 @@ export default Vue.component('environment-component', {
      */
     toggleDeployBoard(model) {
       return this.store.toggleDeployBoard(model.id);
+    },
+
+    toggleFolder(folder, folderUrl) {
+      this.store.toggleFolder(folder);
+
+      if (!folder.isOpen) {
+        this.fetchChildEnvironments(folder, folderUrl);
+      }
     },
 
     /**
@@ -132,6 +143,21 @@ export default Vue.component('environment-component', {
         })
         .catch(() => {
           this.isLoading = false;
+          new Flash('An error occurred while fetching the environments.');
+        });
+    },
+
+    fetchChildEnvironments(folder, folderUrl) {
+      this.isLoadingFolderContent = true;
+
+      this.service.getFolderContent(folderUrl)
+        .then(resp => resp.json())
+        .then((response) => {
+          this.store.setfolderContent(folder, response.environments);
+          this.isLoadingFolderContent = false;
+        })
+        .catch(() => {
+          this.isLoadingFolderContent = false;
           new Flash('An error occurred while fetching the environments.');
         });
     },
@@ -199,7 +225,8 @@ export default Vue.component('environment-component', {
             :can-read-environment="canReadEnvironmentParsed"
             :toggleDeployBoard="toggleDeployBoard"
             :store="store"
-            :service="service"/>
+            :service="service"
+            :is-loading-folder-content="isLoadingFolderContent" />
         </div>
 
         <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
