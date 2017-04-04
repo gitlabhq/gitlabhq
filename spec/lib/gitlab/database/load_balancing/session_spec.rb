@@ -32,5 +32,23 @@ describe Gitlab::Database::LoadBalancing::Session do
     it 'returns false when a secondary should be used' do
       expect(described_class.new.use_primary?).to eq(false)
     end
+
+    it 'returns true when a write was performed' do
+      instance = described_class.new
+
+      instance.write!
+
+      expect(instance.use_primary?).to eq(true)
+    end
+  end
+
+  describe '#performed_write?' do
+    it 'returns true if a write was performed' do
+      instance = described_class.new
+
+      instance.write!
+
+      expect(instance.performed_write?).to eq(true)
+    end
   end
 end

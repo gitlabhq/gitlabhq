@@ -1,5 +1,7 @@
 module API
   module Helpers
+    prepend EE::API::Helpers
+
     include Gitlab::Utils
     include Helpers::Pagination
 

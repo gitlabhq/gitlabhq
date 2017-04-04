@@ -1,6 +1,8 @@
 module Ci
   module API
     module Helpers
+      prepend EE::Ci::API::Helpers
+
       BUILD_TOKEN_HEADER = "HTTP_BUILD_TOKEN".freeze
       BUILD_TOKEN_PARAM = :token
       UPDATE_RUNNER_EVERY = 10 * 60
