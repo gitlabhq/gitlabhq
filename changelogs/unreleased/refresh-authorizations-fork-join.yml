@@ -1,4 +1,0 @@
----
-title: Fix race conditions for AuthorizedProjectsWorker
-merge_request:
-author:

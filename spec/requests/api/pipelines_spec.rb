@@ -15,18 +15,16 @@ describe API::Pipelines, api: true do
   before { project.team << [user, :master] }
 
   describe 'GET /projects/:id/pipelines ' do
-    it_behaves_like 'a paginated resources' do
-      let(:request) { get api("/projects/#{project.id}/pipelines", user) }
-    end
-
     context 'authorized user' do
       it 'returns project pipelines' do
         get api("/projects/#{project.id}/pipelines", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['sha']).to match /\A\h{40}\z/
         expect(json_response.first['id']).to eq pipeline.id
+        expect(json_response.first.keys).to contain_exactly(*%w[id sha ref status])
       end
     end
 

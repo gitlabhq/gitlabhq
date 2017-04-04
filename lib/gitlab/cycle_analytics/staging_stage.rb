@@ -14,6 +14,10 @@ module Gitlab
         :staging
       end
 
+      def legend
+        "Relative Deployed Builds"
+      end
+
       def description
         "From merge request merge until deploy to production"
       end

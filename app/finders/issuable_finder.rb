@@ -16,9 +16,10 @@
 #     label_name: string
 #     sort: string
 #     non_archived: boolean
+#     iids: integer[]
 #
 class IssuableFinder
-  NONE = '0'
+  NONE = '0'.freeze
 
   attr_accessor :current_user, :params
 
@@ -32,14 +33,17 @@ class IssuableFinder
     items = by_scope(items)
     items = by_state(items)
     items = by_group(items)
-    items = by_project(items)
     items = by_search(items)
-    items = by_milestone(items)
     items = by_assignee(items)
     items = by_author(items)
-    items = by_label(items)
     items = by_due_date(items)
     items = by_non_archived(items)
+    items = by_iids(items)
+    items = by_milestone(items)
+    items = by_label(items)
+
+    # Filtering by project HAS TO be the last because we use the project IDs yielded by the issuable query thus far
+    items = by_project(items)
     sort(items)
   end
 
@@ -105,8 +109,7 @@ class IssuableFinder
     @project = project
   end
 
-  def projects
-    return @projects if defined?(@projects)
+  def projects(items = nil)
     return @projects = project if project?
 
     projects =
@@ -115,7 +118,7 @@ class IssuableFinder
       elsif group
         GroupProjectsFinder.new(group).execute(current_user)
       else
-        ProjectsFinder.new.execute(current_user)
+        projects_finder.execute(current_user, item_project_ids(items))
       end
 
     @projects = projects.with_feature_available_for_user(klass, current_user).reorder(nil)
@@ -255,9 +258,9 @@ class IssuableFinder
   def by_project(items)
     items =
       if project?
-        items.of_projects(projects).references_project
-      elsif projects
-        items.merge(projects.reorder(nil)).join_project
+        items.of_projects(projects(items)).references_project
+      elsif projects(items)
+        items.merge(projects(items).reorder(nil)).join_project
       else
         items.none
       end
@@ -266,16 +269,11 @@ class IssuableFinder
   end
 
   def by_search(items)
-    if search
-      items =
-        if search =~ iid_pattern
-          items.where(iid: $~[:iid])
-        else
-          items.full_search(search)
-        end
-    end
+    search ? items.full_search(search) : items
+  end
 
-    items
+  def by_iids(items)
+    params[:iids].present? ? items.where(iid: params[:iids]) : items
   end
 
   def sort(items)
@@ -312,18 +310,25 @@ class IssuableFinder
     params[:milestone_title] == Milestone::Upcoming.name
   end
 
+  def filter_by_started_milestone?
+    params[:milestone_title] == Milestone::Started.name
+  end
+
   def by_milestone(items)
     if milestones?
       if filter_by_no_milestone?
         items = items.left_joins_milestones.where(milestone_id: [-1, nil])
       elsif filter_by_upcoming_milestone?
-        upcoming_ids = Milestone.upcoming_ids_by_projects(projects)
+        upcoming_ids = Milestone.upcoming_ids_by_projects(projects(items))
         items = items.left_joins_milestones.where(milestone_id: upcoming_ids)
+      elsif filter_by_started_milestone?
+        items = items.left_joins_milestones.where('milestones.start_date <= NOW()')
       else
         items = items.with_milestone(params[:milestone_title])
+        items_projects = projects(items)
 
-        if projects
-          items = items.where(milestones: { project_id: projects })
+        if items_projects
+          items = items.where(milestones: { project_id: items_projects })
         end
       end
     end
@@ -337,9 +342,10 @@ class IssuableFinder
         items = items.without_label
       else
         items = items.with_label(label_names, params[:sort])
+        items_projects = projects(items)
 
-        if projects
-          label_ids = LabelsFinder.new(current_user, project_ids: projects).execute(skip_authorization: true).select(:id)
+        if items_projects
+          label_ids = LabelsFinder.new(current_user, project_ids: items_projects).execute(skip_authorization: true).select(:id)
           items = items.where(labels: { id: label_ids })
         end
       end
@@ -398,5 +404,9 @@ class IssuableFinder
 
   def current_user_related?
     params[:scope] == 'created-by-me' || params[:scope] == 'authored' || params[:scope] == 'assigned-to-me'
+  end
+
+  def projects_finder
+    @projects_finder ||= ProjectsFinder.new
   end
 end

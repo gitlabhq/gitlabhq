@@ -101,4 +101,4 @@
 
     return ProjectNew;
   })();
-}).call(this);
+}).call(window);

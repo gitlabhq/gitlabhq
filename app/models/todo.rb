@@ -1,12 +1,13 @@
 class Todo < ActiveRecord::Base
   include Sortable
 
-  ASSIGNED          = 1
-  MENTIONED         = 2
-  BUILD_FAILED      = 3
-  MARKED            = 4
-  APPROVAL_REQUIRED = 5 # This is an EE-only feature
-  UNMERGEABLE       = 6
+  ASSIGNED           = 1
+  MENTIONED          = 2
+  BUILD_FAILED       = 3
+  MARKED             = 4
+  APPROVAL_REQUIRED  = 5 # This is an EE-only feature
+  UNMERGEABLE        = 6
+  DIRECTLY_ADDRESSED = 7
 
   ACTION_NAMES = {
     ASSIGNED => :assigned,
@@ -14,8 +15,9 @@ class Todo < ActiveRecord::Base
     BUILD_FAILED => :build_failed,
     MARKED => :marked,
     APPROVAL_REQUIRED => :approval_required,
-    UNMERGEABLE => :unmergeable
-  }
+    UNMERGEABLE => :unmergeable,
+    DIRECTLY_ADDRESSED => :directly_addressed
+  }.freeze
 
   belongs_to :author, class_name: "User"
   belongs_to :note
@@ -46,8 +48,14 @@ class Todo < ActiveRecord::Base
   after_save :keep_around_commit
 
   class << self
+    # Priority sorting isn't displayed in the dropdown, because we don't show
+    # milestones, but still show something if the user has a URL with that
+    # selected.
     def sort(method)
-      method == "priority" ? order_by_labels_priority : order_by(method)
+      case method.to_s
+      when 'priority', 'label_priority' then order_by_labels_priority
+      else order_by(method)
+      end
     end
 
     # Order by priority depending on which issue/merge request the Todo belongs to

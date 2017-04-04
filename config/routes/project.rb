@@ -13,7 +13,6 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :autocomplete_sources, only: [] do
         collection do
-          get 'emojis'
           get 'members'
           get 'issues'
           get 'merge_requests'
@@ -39,6 +38,10 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      resource :pages, only: [:show, :destroy] do
+        resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains', constraints: { id: /[^\/]+/ }
+      end
+
       resources :compare, only: [:index, :create] do
         collection do
           get :diff_for_path
@@ -54,6 +57,7 @@ constraints(ProjectUrlConstrainer.new) do
 
         resources :graphs, only: [:show], constraints: { id: Gitlab::Regex.git_reference_regex } do
           member do
+            get :charts
             get :commits
             get :ci
             get :languages
@@ -64,6 +68,7 @@ constraints(ProjectUrlConstrainer.new) do
       resources :snippets, concerns: :awardable, constraints: { id: /\d+/ } do
         member do
           get 'raw'
+          post :mark_as_spam
         end
       end
 
@@ -95,8 +100,9 @@ constraints(ProjectUrlConstrainer.new) do
           get :merge_check
           post :merge
           get :merge_widget_refresh
-          post :cancel_merge_when_build_succeeds
+          post :cancel_merge_when_pipeline_succeeds
           get :ci_status
+          get :pipeline_status
           get :ci_environments_status
           post :toggle_subscription
           post :remove_wip
@@ -130,11 +136,16 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :protected_branches, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
       resources :variables, only: [:index, :show, :update, :create, :destroy]
-      resources :triggers, only: [:index, :create, :destroy]
+      resources :triggers, only: [:index, :create, :edit, :update, :destroy] do
+        member do
+          post :take_ownership
+        end
+      end
 
       resources :pipelines, only: [:index, :new, :create, :show] do
         collection do
           resource :pipelines_settings, path: 'settings', only: [:show, :update]
+          get :charts
         end
 
         member do
@@ -142,6 +153,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :cancel
           post :retry
           get :builds
+          get :status
         end
       end
 
@@ -149,7 +161,12 @@ constraints(ProjectUrlConstrainer.new) do
         member do
           post :stop
           get :terminal
+          get :metrics
           get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
+        end
+
+        collection do
+          get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
         end
       end
 
@@ -220,6 +237,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
 
         member do
+          post :promote
           post :toggle_subscription
           delete :remove_priority
         end
@@ -255,7 +273,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :group_links, only: [:index, :create, :update, :destroy], constraints: { id: /\d+/ }
 
-      resources :notes, only: [:index, :create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do
+      resources :notes, only: [:create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do
         member do
           delete :delete_attachment
           post :resolve
@@ -263,9 +281,11 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      get 'noteable/:target_type/:target_id/notes' => 'notes#index', as: 'noteable_notes'
+
       resources :boards, only: [:index, :show] do
         scope module: :boards do
-          resources :issues, only: [:update]
+          resources :issues, only: [:index, :update]
 
           resources :lists, only: [:index, :create, :update, :destroy] do
             collection do
@@ -309,7 +329,9 @@ constraints(ProjectUrlConstrainer.new) do
       end
       namespace :settings do
         resource :members, only: [:show]
+        resource :ci_cd, only: [:show], controller: 'ci_cd'
         resource :integrations, only: [:show]
+        resource :repository, only: [:show], controller: :repository
       end
 
       # Since both wiki and repository routing contains wildcard characters

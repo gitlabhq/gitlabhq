@@ -94,8 +94,6 @@ describe Gitlab::GitAccess, lib: true do
 
         context 'when repository is enabled' do
           it 'give access to download code' do
-            public_project.project_feature.update_attribute(:repository_access_level, ProjectFeature::ENABLED)
-
             expect(subject.allowed?).to be_truthy
           end
         end
@@ -185,7 +183,7 @@ describe Gitlab::GitAccess, lib: true do
 
   describe '#check_push_access!' do
     before { merge_into_protected_branch }
-    let(:unprotected_branch) { FFaker::Internet.user_name }
+    let(:unprotected_branch) { 'unprotected_branch' }
 
     let(:changes) do
       { push_new_branch: "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/heads/wow",
@@ -201,7 +199,9 @@ describe Gitlab::GitAccess, lib: true do
 
     def stub_git_hooks
       # Running the `pre-receive` hook is expensive, and not necessary for this test.
-      allow_any_instance_of(GitHooksService).to receive(:execute).and_yield
+      allow_any_instance_of(GitHooksService).to receive(:execute) do |service, &block|
+        block.call(service)
+      end
     end
 
     def merge_into_protected_branch
@@ -209,7 +209,12 @@ describe Gitlab::GitAccess, lib: true do
         stub_git_hooks
         project.repository.add_branch(user, unprotected_branch, 'feature')
         target_branch = project.repository.lookup('feature')
-        source_branch = project.repository.commit_file(user, FFaker::InternetSE.login_user_name, FFaker::HipsterIpsum.paragraph, FFaker::HipsterIpsum.sentence, unprotected_branch, false)
+        source_branch = project.repository.create_file(
+          user,
+          'John Doe',
+          'This is the file content',
+          message: 'This is a good commit message',
+          branch_name: unprotected_branch)
         rugged = project.repository.rugged
         author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
 
@@ -228,11 +233,18 @@ describe Gitlab::GitAccess, lib: true do
             else
               project.team << [user, role]
             end
+          end
 
-            permissions_matrix[role].each do |action, allowed|
-              context action do
-                subject { access.send(:check_push_access!, changes[action]) }
-                it { expect(subject.allowed?).to allowed ? be_truthy : be_falsey }
+          permissions_matrix[role].each do |action, allowed|
+            context action do
+              subject { access.send(:check_push_access!, changes[action]) }
+
+              it do
+                if allowed
+                  expect { subject }.not_to raise_error
+                else
+                  expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError)
+                end
               end
             end
           end
@@ -297,7 +309,7 @@ describe Gitlab::GitAccess, lib: true do
       }
     }
 
-    [['feature', 'exact'], ['feat*', 'wildcard']].each do |protected_branch_name, protected_branch_type|
+    [%w(feature exact), ['feat*', 'wildcard']].each do |protected_branch_name, protected_branch_type|
       context do
         before { create(:protected_branch, name: protected_branch_name, project: project) }
 

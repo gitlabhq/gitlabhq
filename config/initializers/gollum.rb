@@ -1,5 +1,5 @@
 module Gollum
-  GIT_ADAPTER = "rugged"
+  GIT_ADAPTER = "rugged".freeze
 end
 require "gollum-lib"
 

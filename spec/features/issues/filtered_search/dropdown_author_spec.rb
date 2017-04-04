@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe 'Dropdown author', js: true, feature: true do
+  include FilteredSearchHelpers
   include WaitForAjax
 
   let!(:project) { create(:empty_project) }
@@ -13,9 +14,10 @@ describe 'Dropdown author', js: true, feature: true do
   def send_keys_to_filtered_search(input)
     input.split("").each do |i|
       filtered_search.send_keys(i)
-      sleep 5
-      wait_for_ajax
     end
+
+    sleep 0.5
+    wait_for_ajax
   end
 
   def dropdown_author_size
@@ -121,14 +123,16 @@ describe 'Dropdown author', js: true, feature: true do
       click_author(user_jacob.name)
 
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect(filtered_search.value).to eq("author:@#{user_jacob.username} ")
+      expect_tokens([{ name: 'author', value: "@#{user_jacob.username}" }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in the author username when the author has been filtered' do
       click_author(user.name)
 
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect(filtered_search.value).to eq("author:@#{user.username} ")
+      expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+      expect_filtered_search_input_empty
     end
   end
 

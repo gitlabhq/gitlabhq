@@ -11,13 +11,13 @@
 
 - if @runner.shared?
   .bs-callout.bs-callout-success
-    %h4 This Runner will process builds from ALL UNASSIGNED projects
+    %h4 This Runner will process jobs from ALL UNASSIGNED projects
     %p
       If you want Runners to build only specific projects, enable them in the table below.
       Keep in mind that this is a one way transition.
 - else
   .bs-callout.bs-callout-info
-    %h4 This Runner will process builds only from ASSIGNED projects
+    %h4 This Runner will process jobs only from ASSIGNED projects
     %p You can't make this a shared Runner.
 %hr
 
@@ -70,11 +70,11 @@
     = paginate @projects, theme: "gitlab"
 
   .col-md-6
-    %h4 Recent builds served by this Runner
+    %h4 Recent jobs served by this Runner
     %table.table.ci-table.runner-builds
       %thead
         %tr
-          %th Build
+          %th Job
           %th Status
           %th Project
           %th Commit

@@ -47,7 +47,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe :branch_names do
+  describe '#branch_names' do
     subject { repository.branch_names }
 
     it 'has SeedRepo::Repo::BRANCHES.size elements' do
@@ -57,7 +57,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.not_to include("branch-from-space") }
   end
 
-  describe :tag_names do
+  describe '#tag_names' do
     subject { repository.tag_names }
 
     it { is_expected.to be_kind_of Array }
@@ -78,49 +78,69 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { expect(metadata['ArchivePath']).to end_with extenstion }
   end
 
-  describe :archive do
+  describe '#archive_prefix' do
+    let(:project_name) { 'project-name'}
+
+    before do
+      expect(repository).to receive(:name).once.and_return(project_name)
+    end
+
+    it 'returns parameterised string for a ref containing slashes' do
+      prefix = repository.archive_prefix('test/branch', 'SHA')
+
+      expect(prefix).to eq("#{project_name}-test-branch-SHA")
+    end
+
+    it 'returns correct string for a ref containing dots' do
+      prefix = repository.archive_prefix('test.branch', 'SHA')
+
+      expect(prefix).to eq("#{project_name}-test.branch-SHA")
+    end
+  end
+
+  describe '#archive' do
     let(:metadata) { repository.archive_metadata('master', '/tmp') }
 
     it_should_behave_like 'archive check', '.tar.gz'
   end
 
-  describe :archive_zip do
+  describe '#archive_zip' do
     let(:metadata) { repository.archive_metadata('master', '/tmp', 'zip') }
 
     it_should_behave_like 'archive check', '.zip'
   end
 
-  describe :archive_bz2 do
+  describe '#archive_bz2' do
     let(:metadata) { repository.archive_metadata('master', '/tmp', 'tbz2') }
 
     it_should_behave_like 'archive check', '.tar.bz2'
   end
 
-  describe :archive_fallback do
+  describe '#archive_fallback' do
     let(:metadata) { repository.archive_metadata('master', '/tmp', 'madeup') }
 
     it_should_behave_like 'archive check', '.tar.gz'
   end
 
-  describe :size do
+  describe '#size' do
     subject { repository.size }
 
     it { is_expected.to be < 2 }
   end
 
-  describe :has_commits? do
+  describe '#has_commits?' do
     it { expect(repository.has_commits?).to be_truthy }
   end
 
-  describe :empty? do
+  describe '#empty?' do
     it { expect(repository.empty?).to be_falsey }
   end
 
-  describe :bare? do
+  describe '#bare?' do
     it { expect(repository.bare?).to be_truthy }
   end
 
-  describe :heads do
+  describe '#heads' do
     let(:heads) { repository.heads }
     subject { heads }
 
@@ -147,7 +167,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe :ref_names do
+  describe '#ref_names' do
     let(:ref_names) { repository.ref_names }
     subject { ref_names }
 
@@ -164,7 +184,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe :search_files do
+  describe '#search_files' do
     let(:results) { repository.search_files('rails', 'master') }
     subject { results }
 
@@ -200,7 +220,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  context :submodules do
+  context '#submodules' do
     let(:repository) { Gitlab::Git::Repository.new(TEST_REPO_PATH) }
 
     context 'where repo has submodules' do
@@ -264,7 +284,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe :commit_count do
+  describe '#commit_count' do
     it { expect(repository.commit_count("master")).to eq(25) }
     it { expect(repository.commit_count("feature")).to eq(9) }
   end
@@ -493,7 +513,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   describe "#remote_add" do
     before(:all) do
       @repo = Gitlab::Git::Repository.new(TEST_MUTABLE_REPO_PATH)
-      @repo.remote_add("new_remote", SeedHelper::GITLAB_URL)
+      @repo.remote_add("new_remote", SeedHelper::GITLAB_GIT_TEST_REPO_URL)
     end
 
     it "should add the remote" do
@@ -529,7 +549,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     commit_with_new_name = nil
     rename_commit = nil
 
-    before(:all) do
+    before(:context) do
       # Add new commits so that there's a renamed file in the commit history
       repo = Gitlab::Git::Repository.new(TEST_REPO_PATH).rugged
 
@@ -538,49 +558,119 @@ describe Gitlab::Git::Repository, seed_helper: true do
       commit_with_new_name = new_commit_edit_new_file(repo)
     end
 
+    after(:context) do
+      # Erase our commits so other tests get the original repo
+      repo = Gitlab::Git::Repository.new(TEST_REPO_PATH).rugged
+      repo.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
+    end
+
     context "where 'follow' == true" do
-      options = { ref: "master", follow: true }
+      let(:options) { { ref: "master", follow: true } }
 
       context "and 'path' is a directory" do
-        let(:log_commits) do
-          repository.log(options.merge(path: "encoding"))
-        end
+        it "does not follow renames" do
+          log_commits = repository.log(options.merge(path: "encoding"))
 
-        it "should not follow renames" do
-          expect(log_commits).to include(commit_with_new_name)
-          expect(log_commits).to include(rename_commit)
-          expect(log_commits).not_to include(commit_with_old_name)
+          aggregate_failures do
+            expect(log_commits).to include(commit_with_new_name)
+            expect(log_commits).to include(rename_commit)
+            expect(log_commits).not_to include(commit_with_old_name)
+          end
         end
       end
 
       context "and 'path' is a file that matches the new filename" do
-        let(:log_commits) do
-          repository.log(options.merge(path: "encoding/CHANGELOG"))
+        context 'without offset' do
+          it "follows renames" do
+            log_commits = repository.log(options.merge(path: "encoding/CHANGELOG"))
+
+            aggregate_failures do
+              expect(log_commits).to include(commit_with_new_name)
+              expect(log_commits).to include(rename_commit)
+              expect(log_commits).to include(commit_with_old_name)
+            end
+          end
         end
 
-        it "should follow renames" do
-          expect(log_commits).to include(commit_with_new_name)
-          expect(log_commits).to include(rename_commit)
-          expect(log_commits).to include(commit_with_old_name)
+        context 'with offset=1' do
+          it "follows renames and skip the latest commit" do
+            log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 1))
+
+            aggregate_failures do
+              expect(log_commits).not_to include(commit_with_new_name)
+              expect(log_commits).to include(rename_commit)
+              expect(log_commits).to include(commit_with_old_name)
+            end
+          end
+        end
+
+        context 'with offset=1', 'and limit=1' do
+          it "follows renames, skip the latest commit and return only one commit" do
+            log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 1, limit: 1))
+
+            expect(log_commits).to contain_exactly(rename_commit)
+          end
+        end
+
+        context 'with offset=1', 'and limit=2' do
+          it "follows renames, skip the latest commit and return only two commits" do
+            log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 1, limit: 2))
+
+            aggregate_failures do
+              expect(log_commits).to contain_exactly(rename_commit, commit_with_old_name)
+            end
+          end
+        end
+
+        context 'with offset=2' do
+          it "follows renames and skip the latest commit" do
+            log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 2))
+
+            aggregate_failures do
+              expect(log_commits).not_to include(commit_with_new_name)
+              expect(log_commits).not_to include(rename_commit)
+              expect(log_commits).to include(commit_with_old_name)
+            end
+          end
+        end
+
+        context 'with offset=2', 'and limit=1' do
+          it "follows renames, skip the two latest commit and return only one commit" do
+            log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 2, limit: 1))
+
+            expect(log_commits).to contain_exactly(commit_with_old_name)
+          end
+        end
+
+        context 'with offset=2', 'and limit=2' do
+          it "follows renames, skip the two latest commit and return only one commit" do
+            log_commits = repository.log(options.merge(path: "encoding/CHANGELOG", offset: 2, limit: 2))
+
+            aggregate_failures do
+              expect(log_commits).not_to include(commit_with_new_name)
+              expect(log_commits).not_to include(rename_commit)
+              expect(log_commits).to include(commit_with_old_name)
+            end
+          end
         end
       end
 
       context "and 'path' is a file that matches the old filename" do
-        let(:log_commits) do
-          repository.log(options.merge(path: "CHANGELOG"))
-        end
+        it "does not follow renames" do
+          log_commits = repository.log(options.merge(path: "CHANGELOG"))
 
-        it "should not follow renames" do
-          expect(log_commits).to include(commit_with_old_name)
-          expect(log_commits).to include(rename_commit)
-          expect(log_commits).not_to include(commit_with_new_name)
+          aggregate_failures do
+            expect(log_commits).not_to include(commit_with_new_name)
+            expect(log_commits).to include(rename_commit)
+            expect(log_commits).to include(commit_with_old_name)
+          end
         end
       end
 
       context "unknown ref" do
-        let(:log_commits) { repository.log(options.merge(ref: 'unknown')) }
+        it "returns an empty array" do
+          log_commits = repository.log(options.merge(ref: 'unknown'))
 
-        it "should return empty" do
           expect(log_commits).to eq([])
         end
       end
@@ -681,8 +771,8 @@ describe Gitlab::Git::Repository, seed_helper: true do
         commits = repository.log(options)
 
         expect(commits.size).to be > 0
-        satisfy do
-          commits.all? { |commit| commit.created_at >= options[:after] }
+        expect(commits).to satisfy do |commits|
+          commits.all? { |commit| commit.time >= options[:after] }
         end
       end
     end
@@ -694,16 +784,29 @@ describe Gitlab::Git::Repository, seed_helper: true do
         commits = repository.log(options)
 
         expect(commits.size).to be > 0
-        satisfy do
-          commits.all? { |commit| commit.created_at <= options[:before] }
+        expect(commits).to satisfy do |commits|
+          commits.all? { |commit| commit.time <= options[:before] }
         end
       end
     end
 
-    after(:all) do
-      # Erase our commits so other tests get the original repo
-      repo = Gitlab::Git::Repository.new(TEST_REPO_PATH).rugged
-      repo.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
+    context 'when multiple paths are provided' do
+      let(:options) { { ref: 'master', path: ['PROCESS.md', 'README.md'] } }
+
+      def commit_files(commit)
+        commit.diff(commit.parent_ids.first).deltas.flat_map do |delta|
+          [delta.old_file[:path], delta.new_file[:path]].uniq.compact
+        end
+      end
+
+      it 'only returns commits matching at least one path' do
+        commits = repository.log(options)
+
+        expect(commits.size).to be > 0
+        expect(commits).to satisfy do |commits|
+          commits.none? { |commit| (commit_files(commit) & options[:path]).empty? }
+        end
+      end
     end
   end
 
@@ -744,6 +847,32 @@ describe Gitlab::Git::Repository, seed_helper: true do
     subject { repository.count_commits_between('feature', 'master') }
 
     it { is_expected.to eq(17) }
+  end
+
+  describe '#count_commits' do
+    context 'with after timestamp' do
+      it 'returns the number of commits after timestamp' do
+        options = { ref: 'master', limit: nil, after: Time.iso8601('2013-03-03T20:15:01+00:00') }
+
+        expect(repository.count_commits(options)).to eq(25)
+      end
+    end
+
+    context 'with before timestamp' do
+      it 'returns the number of commits after timestamp' do
+        options = { ref: 'feature', limit: nil, before: Time.iso8601('2015-03-03T20:15:01+00:00') }
+
+        expect(repository.count_commits(options)).to eq(9)
+      end
+    end
+
+    context 'with path' do
+      it 'returns the number of commits with path ' do
+        options = { ref: 'master', limit: nil, path: "encoding" }
+
+        expect(repository.count_commits(options)).to eq(2)
+      end
+    end
   end
 
   describe "branch_names_contains" do
@@ -841,81 +970,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     it 'returns the number of branches' do
       expect(repository.branch_count).to eq(1)
-    end
-  end
-
-  describe '#mkdir' do
-    let(:commit_options) do
-      {
-        author: {
-          email: 'user@example.com',
-          name: 'Test User',
-          time: Time.now
-        },
-        committer: {
-          email: 'user@example.com',
-          name: 'Test User',
-          time: Time.now
-        },
-        commit: {
-          message: 'Test message',
-          branch: 'refs/heads/fix',
-        }
-      }
-    end
-
-    def generate_diff_for_path(path)
-      "diff --git a/#{path}/.gitkeep b/#{path}/.gitkeep
-new file mode 100644
-index 0000000..e69de29
---- /dev/null
-+++ b/#{path}/.gitkeep\n"
-    end
-
-    shared_examples 'mkdir diff check' do |path, expected_path|
-      it 'creates a directory' do
-        result = repository.mkdir(path, commit_options)
-        expect(result).not_to eq(nil)
-
-        # Verify another mkdir doesn't create a directory that already exists
-        expect{ repository.mkdir(path, commit_options) }.to raise_error('Directory already exists')
-      end
-    end
-
-    describe 'creates a directory in root directory' do
-      it_should_behave_like 'mkdir diff check', 'new_dir', 'new_dir'
-    end
-
-    describe 'creates a directory in subdirectory' do
-      it_should_behave_like 'mkdir diff check', 'files/ruby/test', 'files/ruby/test'
-    end
-
-    describe 'creates a directory in subdirectory with a slash' do
-      it_should_behave_like 'mkdir diff check', '/files/ruby/test2', 'files/ruby/test2'
-    end
-
-    describe 'creates a directory in subdirectory with multiple slashes' do
-      it_should_behave_like 'mkdir diff check', '//files/ruby/test3', 'files/ruby/test3'
-    end
-
-    describe 'handles relative paths' do
-      it_should_behave_like 'mkdir diff check', 'files/ruby/../test_relative', 'files/test_relative'
-    end
-
-    describe 'creates nested directories' do
-      it_should_behave_like 'mkdir diff check', 'files/missing/test', 'files/missing/test'
-    end
-
-    it 'does not attempt to create a directory with invalid relative path' do
-      expect{ repository.mkdir('../files/missing/test', commit_options) }.to raise_error('Invalid path')
-    end
-
-    it 'does not attempt to overwrite a file' do
-      expect{ repository.mkdir('README.md', commit_options) }.to raise_error('Directory already exists as a file')
-    end
-
-    it 'does not attempt to overwrite a directory' do
-      expect{ repository.mkdir('files', commit_options) }.to raise_error('Directory already exists')
     end
   end
 

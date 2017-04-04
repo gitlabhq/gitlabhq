@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Create New Merge Request', feature: true, js: true do
+  include WaitForVueResource
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
 
@@ -8,6 +10,33 @@ feature 'Create New Merge Request', feature: true, js: true do
     project.team << [user, :master]
 
     login_as user
+  end
+
+  it 'selects the source branch sha when a tag with the same name exists' do
+    visit namespace_project_merge_requests_path(project.namespace, project)
+
+    click_link 'New Merge Request'
+    expect(page).to have_content('Source branch')
+    expect(page).to have_content('Target branch')
+
+    first('.js-source-branch').click
+    first('.dropdown-source-branch .dropdown-content a', text: 'v1.1.0').click
+
+    expect(page).to have_content "b83d6e3"
+  end
+
+  it 'selects the target branch sha when a tag with the same name exists' do
+    visit namespace_project_merge_requests_path(project.namespace, project)
+    
+    click_link 'New Merge Request'
+
+    expect(page).to have_content('Source branch')
+    expect(page).to have_content('Target branch')
+
+    first('.js-target-branch').click
+    first('.dropdown-target-branch .dropdown-content a', text: 'v1.1.0').click
+
+    expect(page).to have_content "b83d6e3"
   end
 
   it 'generates a diff for an orphaned branch' do
@@ -42,6 +71,12 @@ feature 'Create New Merge Request', feature: true, js: true do
 
       expect(page).not_to have_content private_project.path_with_namespace
     end
+  end
+
+  it 'populates source branch button' do
+    visit new_namespace_project_merge_request_path(project.namespace, project, change_branches: true, merge_request: { target_branch: 'master', source_branch: 'fix' })
+
+    expect(find('.js-source-branch')).to have_content('fix')
   end
 
   it 'allows to change the diff view' do
@@ -83,5 +118,26 @@ feature 'Create New Merge Request', feature: true, js: true do
     visit new_namespace_project_merge_request_path(project.namespace, project)
     expect(page).not_to have_selector('#error_explanation')
     expect(page).not_to have_content('The form contains the following error')
+  end
+
+  context 'when a new merge request has a pipeline' do
+    let!(:pipeline) do
+      create(:ci_pipeline, sha: project.commit('fix').id,
+                           ref: 'fix',
+                           project: project)
+    end
+
+    it 'shows pipelines for a new merge request' do
+      visit new_namespace_project_merge_request_path(
+        project.namespace, project,
+        merge_request: { target_branch: 'master', source_branch: 'fix' })
+
+      page.within('.merge-request') do
+        click_link 'Pipelines'
+        wait_for_vue_resource
+
+        expect(page).to have_content "##{pipeline.id}"
+      end
+    end
   end
 end

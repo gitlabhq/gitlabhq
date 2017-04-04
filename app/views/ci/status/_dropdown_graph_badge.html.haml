@@ -16,4 +16,4 @@
 
 - if status.has_action?
   = link_to status.action_path, class: 'ci-action-icon-wrapper js-ci-action-icon', method: status.action_method, data: { toggle: 'tooltip', title: status.action_title }  do
-    = icon(status.action_icon, class: status.action_class)
+    = custom_icon(status.action_icon)

@@ -60,9 +60,9 @@ class JiraService < IssueTrackerService
   end
 
   def help
-    'You need to configure JIRA before enabling this service. For more details
+    "You need to configure JIRA before enabling this service. For more details
     read the
-    [JIRA service documentation](https://docs.gitlab.com/ce/project_services/jira.html).'
+    [JIRA service documentation](#{help_page_url('user/project/integrations/jira')})."
   end
 
   def title
@@ -250,20 +250,10 @@ class JiraService < IssueTrackerService
     end
   end
 
-  # Build remote link on JIRA properties
-  # Icons here must be available on WEB so JIRA can read the URL
-  # We are using a open word graphics icon which have LGPL license
   def build_remote_link_props(url:, title:, resolved: false)
     status = {
       resolved: resolved
     }
-
-    if resolved
-      status[:icon] = {
-        title: 'Closed',
-        url16x16: 'http://www.openwebgraphics.com/resources/data/1768/16x16_apply.png'
-      }
-    end
 
     {
       GlobalID: 'GitLab',

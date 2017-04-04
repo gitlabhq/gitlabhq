@@ -12,7 +12,7 @@ class CreateEnvironmentNameUniqueIndex < ActiveRecord::Migration
   end
 
   def down
-    remove_index :environments, [:project_id, :name], unique: true
-    add_concurrent_index :environments, [:project_id, :name]
+    remove_index :environments, [:project_id, :name]
+    add_concurrent_index :environments, [:project_id, :name], unique: true
   end
 end

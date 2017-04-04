@@ -9,20 +9,23 @@ module Ci
     belongs_to :erased_by, class_name: 'User'
 
     has_many :deployments, as: :deployable
+    has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
 
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment
       @persisted_environment ||= Environment.find_by(
         name: expanded_environment_name,
-        project_id: gl_project_id
+        project: project
       )
     end
 
     serialize :options
-    serialize :yaml_variables, Gitlab::Serialize::Ci::Variables
+    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables
+
+    delegate :name, to: :project, prefix: true
 
     validates :coverage, numericality: true, allow_blank: true
-    validates_presence_of :ref
+    validates :ref, presence: true
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
@@ -41,7 +44,7 @@ module Ci
 
     before_save :update_artifacts_size, if: :artifacts_file_changed?
     before_save :ensure_token
-    before_destroy { project }
+    before_destroy { unscoped_project }
 
     after_create :execute_hooks
     after_save :update_project_statistics, if: :artifacts_size_changed?
@@ -52,46 +55,18 @@ module Ci
         pending.unstarted.order('created_at ASC').first
       end
 
-      def create_from(build)
-        new_build = build.dup
-        new_build.status = 'pending'
-        new_build.runner_id = nil
-        new_build.trigger_request_id = nil
-        new_build.token = nil
-        new_build.save
-      end
-
-      def retry(build, user = nil)
-        new_build = Ci::Build.create(
-          ref: build.ref,
-          tag: build.tag,
-          options: build.options,
-          commands: build.commands,
-          tag_list: build.tag_list,
-          project: build.project,
-          pipeline: build.pipeline,
-          name: build.name,
-          allow_failure: build.allow_failure,
-          stage: build.stage,
-          stage_idx: build.stage_idx,
-          trigger_request: build.trigger_request,
-          yaml_variables: build.yaml_variables,
-          when: build.when,
-          user: user,
-          environment: build.environment,
-          status_event: 'enqueue'
-        )
-
-        MergeRequests::AddTodoWhenBuildFailsService
-          .new(build.project, nil)
-          .close(new_build)
-
-        build.pipeline.mark_as_processable_after_stage(build.stage_idx)
-        new_build
+      def retry(build, current_user)
+        Ci::RetryBuildService
+          .new(build.project, current_user)
+          .execute(build)
       end
     end
 
     state_machine :status do
+      event :actionize do
+        transition created: :manual
+      end
+
       after_transition any => [:pending] do |build|
         build.run_after_commit do
           BuildQueueWorker.perform_async(id)
@@ -123,19 +98,24 @@ module Ci
         .fabricate!
     end
 
-    def manual?
-      self.when == 'manual'
-    end
-
     def other_actions
       pipeline.manual_actions.where.not(name: name)
     end
 
     def playable?
-      project.builds_enabled? && commands.present? && manual? && skipped?
+      project.builds_enabled? && has_commands? &&
+        action? && manual?
     end
 
-    def play(current_user = nil)
+    def action?
+      self.when == 'manual'
+    end
+
+    def has_commands?
+      commands.present?
+    end
+
+    def play(current_user)
       # Try to queue a current build
       if self.enqueue
         self.update(user: current_user)
@@ -151,7 +131,7 @@ module Ci
     end
 
     def retryable?
-      project.builds_enabled? && commands.present? &&
+      project.builds_enabled? && has_commands? &&
         (success? || failed? || canceled?)
     end
 
@@ -181,10 +161,6 @@ module Ci
 
     def outdated_deployment?
       success? && !last_deployment.try(:last?)
-    end
-
-    def last_deployment
-      deployments.last
     end
 
     def depends_on_builds
@@ -247,20 +223,13 @@ module Ci
 
     def merge_request
       merge_requests = MergeRequest.includes(:merge_request_diff)
-                                   .where(source_branch: ref, source_project_id: pipeline.gl_project_id)
+                                   .where(source_branch: ref,
+                                          source_project: pipeline.project)
                                    .reorder(iid: :asc)
 
       merge_requests.find do |merge_request|
         merge_request.commits_sha.include?(pipeline.sha)
       end
-    end
-
-    def project_id
-      pipeline.project_id
-    end
-
-    def project_name
-      project.name
     end
 
     def repo_url
@@ -275,29 +244,23 @@ module Ci
     end
 
     def update_coverage
-      return unless project
-      coverage_regex = project.build_coverage_regex
-      return unless coverage_regex
       coverage = extract_coverage(trace, coverage_regex)
-
-      if coverage.is_a? Numeric
-        update_attributes(coverage: coverage)
-      end
+      update_attributes(coverage: coverage) if coverage.present?
     end
 
     def extract_coverage(text, regex)
-      begin
-        matches = text.scan(Regexp.new(regex)).last
-        matches = matches.last if matches.kind_of?(Array)
-        coverage = matches.gsub(/\d+(\.\d+)?/).first
+      return unless regex
 
-        if coverage.present?
-          coverage.to_f
-        end
-      rescue
-        # if bad regex or something goes wrong we dont want to interrupt transition
-        # so we just silentrly ignore error for now
+      matches = text.scan(Regexp.new(regex)).last
+      matches = matches.last if matches.is_a?(Array)
+      coverage = matches.gsub(/\d+(\.\d+)?/).first
+
+      if coverage.present?
+        coverage.to_f
       end
+    rescue
+      # if bad regex or something goes wrong we dont want to interrupt transition
+      # so we just silentrly ignore error for now
     end
 
     def has_trace_file?
@@ -422,16 +385,23 @@ module Ci
     # This method returns old path to artifacts only if it already exists.
     #
     def artifacts_path
+      # We need the project even if it's soft deleted, because whenever
+      # we're really deleting the project, we'll also delete the builds,
+      # and in order to delete the builds, we need to know where to find
+      # the artifacts, which is depending on the data of the project.
+      # We need to retain the project in this case.
+      the_project = project || unscoped_project
+
       old = File.join(created_at.utc.strftime('%Y_%m'),
-                      project.ci_id.to_s,
+                      the_project.ci_id.to_s,
                       id.to_s)
 
       old_store = File.join(ArtifactUploader.artifacts_path, old)
-      return old if project.ci_id && File.directory?(old_store)
+      return old if the_project.ci_id && File.directory?(old_store)
 
       File.join(
         created_at.utc.strftime('%Y_%m'),
-        project.id.to_s,
+        the_project.id.to_s,
         id.to_s
       )
     end
@@ -457,6 +427,7 @@ module Ci
       build_data = Gitlab::DataBuilder::Build.build(self)
       project.execute_hooks(build_data.dup, :build_hooks)
       project.execute_services(build_data.dup, :build_hooks)
+      PagesService.new(build_data).execute
       project.running_or_pending_build_count(force: true)
     end
 
@@ -510,7 +481,7 @@ module Ci
     def artifacts_expire_in=(value)
       self.artifacts_expire_at =
         if value
-          Time.now + ChronicDuration.parse(value)
+          ChronicDuration.parse(value)&.seconds&.from_now
         end
     end
 
@@ -520,6 +491,10 @@ module Ci
 
     def keep_artifacts!
       self.update(artifacts_expire_at: nil)
+    end
+
+    def coverage_regex
+      super || project.try(:build_coverage_regex)
     end
 
     def when
@@ -539,8 +514,39 @@ module Ci
       ]
     end
 
+    def steps
+      [Gitlab::Ci::Build::Step.from_commands(self),
+       Gitlab::Ci::Build::Step.from_after_script(self)].compact
+    end
+
+    def image
+      Gitlab::Ci::Build::Image.from_image(self)
+    end
+
+    def services
+      Gitlab::Ci::Build::Image.from_services(self)
+    end
+
+    def artifacts
+      [options[:artifacts]]
+    end
+
+    def cache
+      [options[:cache]]
+    end
+
     def credentials
       Gitlab::Ci::Build::Credentials::Factory.new(self).create!
+    end
+
+    def dependencies
+      depended_jobs = depends_on_builds
+
+      return depended_jobs unless options[:dependencies].present?
+
+      depended_jobs.select do |job|
+        options[:dependencies].include?(job.name)
+      end
     end
 
     private
@@ -561,10 +567,39 @@ module Ci
       self.update(erased_by: user, erased_at: Time.now, artifacts_expire_at: nil)
     end
 
+    def unscoped_project
+      @unscoped_project ||= Project.unscoped.find_by(id: project_id)
+    end
+
+    CI_REGISTRY_USER = 'gitlab-ci-token'.freeze
+
     def predefined_variables
       variables = [
         { key: 'CI', value: 'true', public: true },
         { key: 'GITLAB_CI', value: 'true', public: true },
+        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
+        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
+        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
+        { key: 'CI_JOB_ID', value: id.to_s, public: true },
+        { key: 'CI_JOB_NAME', value: name, public: true },
+        { key: 'CI_JOB_STAGE', value: stage, public: true },
+        { key: 'CI_JOB_TOKEN', value: token, public: false },
+        { key: 'CI_COMMIT_SHA', value: sha, public: true },
+        { key: 'CI_COMMIT_REF_NAME', value: ref, public: true },
+        { key: 'CI_COMMIT_REF_SLUG', value: ref_slug, public: true },
+        { key: 'CI_REGISTRY_USER', value: CI_REGISTRY_USER, public: true },
+        { key: 'CI_REGISTRY_PASSWORD', value: token, public: false },
+        { key: 'CI_REPOSITORY_URL', value: repo_url, public: false }
+      ]
+
+      variables << { key: "CI_COMMIT_TAG", value: ref, public: true } if tag?
+      variables << { key: "CI_PIPELINE_TRIGGERED", value: 'true', public: true } if trigger_request
+      variables << { key: "CI_JOB_MANUAL", value: 'true', public: true } if action?
+      variables.concat(legacy_variables)
+    end
+
+    def legacy_variables
+      variables = [
         { key: 'CI_BUILD_ID', value: id.to_s, public: true },
         { key: 'CI_BUILD_TOKEN', value: token, public: false },
         { key: 'CI_BUILD_REF', value: sha, public: true },
@@ -572,14 +607,12 @@ module Ci
         { key: 'CI_BUILD_REF_NAME', value: ref, public: true },
         { key: 'CI_BUILD_REF_SLUG', value: ref_slug, public: true },
         { key: 'CI_BUILD_NAME', value: name, public: true },
-        { key: 'CI_BUILD_STAGE', value: stage, public: true },
-        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
-        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
-        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true }
+        { key: 'CI_BUILD_STAGE', value: stage, public: true }
       ]
-      variables << { key: 'CI_BUILD_TAG', value: ref, public: true } if tag?
-      variables << { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true } if trigger_request
-      variables << { key: 'CI_BUILD_MANUAL', value: 'true', public: true } if manual?
+
+      variables << { key: "CI_BUILD_TAG", value: ref, public: true } if tag?
+      variables << { key: "CI_BUILD_TRIGGERED", value: 'true', public: true } if trigger_request
+      variables << { key: "CI_BUILD_MANUAL", value: 'true', public: true } if action?
       variables
     end
 
@@ -599,6 +632,8 @@ module Ci
     end
 
     def update_project_statistics
+      return unless project
+
       ProjectCacheWorker.perform_async(project_id, [], [:build_artifacts_size])
     end
   end

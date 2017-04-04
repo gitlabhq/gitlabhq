@@ -8,10 +8,9 @@ module Ci
       return unless has_ref?
 
       environments.each do |environment|
-        next unless environment.stoppable?
         next unless can?(current_user, :create_deployment, project)
 
-        environment.stop!(current_user)
+        environment.stop_with_action!(current_user)
       end
     end
 
@@ -22,8 +21,8 @@ module Ci
     end
 
     def environments
-      @environments ||= project
-        .environments_recently_updated_on_branch(@ref)
+      @environments ||=
+        EnvironmentsFinder.new(project, current_user, ref: @ref, recently_updated: true).execute
     end
   end
 end

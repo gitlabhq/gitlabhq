@@ -1,0 +1,5 @@
+---
+title: Expose CI/CD status API endpoints with Gitlab::Ci::Status facility on pipeline,
+  job and merge request for favicon
+merge_request: 9561
+author: dosuken123

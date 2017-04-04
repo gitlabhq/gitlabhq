@@ -29,7 +29,7 @@
           if (selected.id == null) {
             return selected.text;
           } else {
-            return selected.kind + ": " + selected.path;
+            return selected.kind + ": " + selected.full_path;
           }
         },
         data: function(term, dataCallback) {
@@ -50,7 +50,7 @@
           if (namespace.id == null) {
             return namespace.text;
           } else {
-            return namespace.kind + ": " + namespace.path;
+            return namespace.kind + ": " + namespace.full_path;
           }
         },
         renderRow: this.renderRow,
@@ -83,4 +83,4 @@
 
     return NamespaceSelects;
   })();
-}).call(this);
+}).call(window);

@@ -13,6 +13,7 @@ describe Issues::UpdateService, services: true do
 
   let(:issue) do
     create(:issue, title: 'Old title',
+                   description: "for #{user2.to_reference}",
                    assignee_id: user3.id,
                    project: project)
   end
@@ -56,6 +57,22 @@ describe Issues::UpdateService, services: true do
         expect(issue).to be_closed
         expect(issue.labels).to match_array [label]
         expect(issue.due_date).to eq Date.tomorrow
+      end
+
+      it 'sorts issues as specified by parameters' do
+        issue1 = create(:issue, project: project, assignee_id: user3.id)
+        issue2 = create(:issue, project: project, assignee_id: user3.id)
+
+        [issue, issue1, issue2].each do |issue|
+          issue.move_to_end
+          issue.save
+        end
+
+        opts[:move_between_iids] = [issue1.iid, issue2.iid]
+
+        update_issue(opts)
+
+        expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
       end
 
       context 'when current user cannot admin issues in the project' do
@@ -166,15 +183,23 @@ describe Issues::UpdateService, services: true do
         it 'marks pending todos as done' do
           expect(todo.reload.done?).to eq true
         end
+
+        it 'does not create any new todos' do
+          expect(Todo.count).to eq(1)
+        end
       end
 
       context 'when the description change' do
         before do
-          update_issue(description: 'Also please fix')
+          update_issue(description: "Also please fix #{user2.to_reference} #{user3.to_reference}")
         end
 
         it 'marks todos as done' do
           expect(todo.reload.done?).to eq true
+        end
+
+        it 'creates only 1 new todo' do
+          expect(Todo.count).to eq(2)
         end
       end
 

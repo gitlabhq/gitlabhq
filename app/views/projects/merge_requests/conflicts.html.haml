@@ -1,7 +1,7 @@
 - page_title "Merge Conflicts", "#{@merge_request.title} (#{@merge_request.to_reference}", "Merge Requests"
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('lib/vue_resource.js')
-  = page_specific_javascript_tag('merge_conflicts/merge_conflicts_bundle.js')
+  = page_specific_javascript_bundle_tag('common_vue')
+  = page_specific_javascript_bundle_tag('merge_conflicts')
   = page_specific_javascript_tag('lib/ace.js')
 = render "projects/merge_requests/show/mr_title"
 
@@ -23,7 +23,7 @@
   .files-wrapper{ "v-if" => "!isLoading && !hasError" }
     .files
       .diff-file.file-holder.conflict{ "v-for" => "file in conflictsData.files" }
-        .file-title
+        .js-file-title.file-title
           %i.fa.fa-fw{ ":class" => "file.iconClass" }
           %strong {{file.filePath}}
           = render partial: 'projects/merge_requests/conflicts/file_actions'

@@ -11,7 +11,7 @@ class Label < ActiveRecord::Base
 
   cache_markdown_field :description, pipeline: :single_line
 
-  DEFAULT_COLOR = '#428BCA'
+  DEFAULT_COLOR = '#428BCA'.freeze
 
   default_value_for :color, DEFAULT_COLOR
 
@@ -167,6 +167,10 @@ class Label < ActiveRecord::Base
     super(options).tap do |json|
       json[:priority] = priority(options[:project]) if options.has_key?(:project)
     end
+  end
+
+  def hook_attrs
+    attributes
   end
 
   private

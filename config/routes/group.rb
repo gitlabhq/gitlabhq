@@ -25,5 +25,6 @@ scope(path: 'groups/*id',
   get :merge_requests, as: :merge_requests_group
   get :projects, as: :projects_group
   get :activity, as: :activity_group
+  get :subgroups, as: :subgroups_group
   get '/', action: :show, as: :group_canonical
 end

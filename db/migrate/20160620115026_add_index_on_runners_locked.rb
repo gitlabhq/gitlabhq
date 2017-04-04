@@ -4,9 +4,15 @@
 class AddIndexOnRunnersLocked < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
+  DOWNTIME = false
+
   disable_ddl_transaction!
 
-  def change
+  def up
     add_concurrent_index :ci_runners, :locked
+  end
+
+  def down
+    remove_index :ci_runners, :locked if index_exists? :ci_runners, :locked
   end
 end

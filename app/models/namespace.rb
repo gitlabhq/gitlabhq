@@ -7,6 +7,11 @@ class Namespace < ActiveRecord::Base
   include Gitlab::CurrentSettings
   include Routable
 
+  # Prevent users from creating unreasonably deep level of nesting.
+  # The number 20 was taken based on maximum nesting level of
+  # Android repo (15) + some extra backup.
+  NUMBER_OF_ANCESTORS_ALLOWED = 20
+
   cache_markdown_field :description, pipeline: :description
 
   has_many :projects, dependent: :destroy
@@ -15,6 +20,7 @@ class Namespace < ActiveRecord::Base
 
   belongs_to :parent, class_name: "Namespace"
   has_many :children, class_name: "Namespace", foreign_key: :parent_id
+  has_one :chat_team, dependent: :destroy
 
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
@@ -29,13 +35,15 @@ class Namespace < ActiveRecord::Base
     length: { maximum: 255 },
     namespace: true
 
+  validate :nesting_level_allowed
+
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
   after_update :move_dir, if: :path_changed?
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
   # Save the storage paths before the projects are destroyed to use them on after destroy
-  before_destroy(prepend: true) { @old_repository_storage_paths = repository_storage_paths }
+  before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
 
   scope :root, -> { where('type IS NULL') }
@@ -91,14 +99,8 @@ class Namespace < ActiveRecord::Base
       # Work around that by setting their username to "blank", followed by a counter.
       path = "blank" if path.blank?
 
-      counter = 0
-      base = path
-      while Namespace.find_by_path_or_name(path)
-        counter += 1
-        path = "#{base}#{counter}"
-      end
-
-      path
+      uniquify = Uniquify.new
+      uniquify.string(path) { |s| Namespace.find_by_path_or_name(s) }
     end
   end
 
@@ -118,10 +120,10 @@ class Namespace < ActiveRecord::Base
     # Move the namespace directory in all storages paths used by member projects
     repository_storage_paths.each do |repository_storage_path|
       # Ensure old directory exists before moving it
-      gitlab_shell.add_namespace(repository_storage_path, path_was)
+      gitlab_shell.add_namespace(repository_storage_path, full_path_was)
 
-      unless gitlab_shell.mv_namespace(repository_storage_path, path_was, path)
-        Rails.logger.error "Exception moving path #{repository_storage_path} from #{path_was} to #{path}"
+      unless gitlab_shell.mv_namespace(repository_storage_path, full_path_was, full_path)
+        Rails.logger.error "Exception moving path #{repository_storage_path} from #{full_path_was} to #{full_path}"
 
         # if we cannot move namespace directory we should rollback
         # db changes in order to prevent out of sync between db and fs
@@ -129,7 +131,8 @@ class Namespace < ActiveRecord::Base
       end
     end
 
-    Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
+    Gitlab::UploadsTransfer.new.rename_namespace(full_path_was, full_path)
+    Gitlab::PagesTransfer.new.rename_namespace(full_path_was, full_path)
 
     remove_exports!
 
@@ -152,7 +155,7 @@ class Namespace < ActiveRecord::Base
 
   def send_update_instructions
     projects.each do |project|
-      project.send_move_instructions("#{path_was}/#{project.path}")
+      project.send_move_instructions("#{full_path_was}/#{project.path}")
     end
   end
 
@@ -169,31 +172,14 @@ class Namespace < ActiveRecord::Base
     Gitlab.config.lfs.enabled
   end
 
-  def full_path
-    if parent
-      parent.full_path + '/' + path
-    else
-      path
-    end
-  end
-
   def shared_runners_enabled?
     projects.with_shared_runners.any?
-  end
-
-  def full_name
-    @full_name ||=
-      if parent
-        parent.full_name + ' / ' + name
-      else
-        name
-      end
   end
 
   # Scopes the model on ancestors of the record
   def ancestors
     if parent_id
-      path = route.path
+      path = route ? route.path : full_path
       paths = []
 
       until path.blank?
@@ -209,7 +195,23 @@ class Namespace < ActiveRecord::Base
 
   # Scopes the model on direct and indirect children of the record
   def descendants
-    self.class.joins(:route).where('routes.path LIKE ?', "#{route.path}/%").reorder('routes.path ASC')
+    self.class.joins(:route).merge(Route.inside_path(route.path)).reorder('routes.path ASC')
+  end
+
+  def user_ids_for_project_authorizations
+    [owner_id]
+  end
+
+  def parent_changed?
+    parent_id_changed?
+  end
+
+  def prepare_for_destroy
+    old_repository_storage_paths
+  end
+
+  def old_repository_storage_paths
+    @old_repository_storage_paths ||= repository_storage_paths
   end
 
   private
@@ -225,13 +227,13 @@ class Namespace < ActiveRecord::Base
 
   def rm_dir
     # Remove the namespace directory in all storages paths used by member projects
-    @old_repository_storage_paths.each do |repository_storage_path|
+    old_repository_storage_paths.each do |repository_storage_path|
       # Move namespace directory into trash.
       # We will remove it later async
-      new_path = "#{path}+#{id}+deleted"
+      new_path = "#{full_path}+#{id}+deleted"
 
-      if gitlab_shell.mv_namespace(repository_storage_path, path, new_path)
-        message = "Namespace directory \"#{path}\" moved to \"#{new_path}\""
+      if gitlab_shell.mv_namespace(repository_storage_path, full_path, new_path)
+        message = "Namespace directory \"#{full_path}\" moved to \"#{new_path}\""
         Gitlab::AppLogger.info message
 
         # Remove namespace directroy async with delay so
@@ -250,10 +252,6 @@ class Namespace < ActiveRecord::Base
       find_each(&:refresh_members_authorized_projects)
   end
 
-  def full_path_changed?
-    path_changed? || parent_id_changed?
-  end
-
   def remove_exports!
     Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
   end
@@ -267,6 +265,12 @@ class Namespace < ActiveRecord::Base
       parent.full_path + '/' + path_was
     else
       path_was
+    end
+  end
+
+  def nesting_level_allowed
+    if ancestors.count > Group::NUMBER_OF_ANCESTORS_ALLOWED
+      errors.add(:parent_id, "has too deep level of nesting")
     end
   end
 end

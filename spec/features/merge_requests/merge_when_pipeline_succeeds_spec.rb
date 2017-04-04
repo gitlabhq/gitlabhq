@@ -75,7 +75,7 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
       context 'when it was enabled and then canceled' do
         let(:merge_request) do
           create(:merge_request_with_diffs,
-                 :merge_when_build_succeeds,
+                 :merge_when_pipeline_succeeds,
                    source_project: project,
                    title: 'Bug NS-04',
                    author: user,
@@ -97,7 +97,7 @@ feature 'Merge When Pipeline Succeeds', :feature, :js do
                                                   author: user,
                                                   merge_user: user,
                                                   title: 'MepMep',
-                                                  merge_when_build_succeeds: true)
+                                                  merge_when_pipeline_succeeds: true)
     end
 
     let!(:build) do

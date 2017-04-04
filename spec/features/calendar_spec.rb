@@ -1,9 +1,11 @@
 require 'spec_helper'
 
-feature 'Contributions Calendar', js: true, feature: true do
+feature 'Contributions Calendar', :feature, :js do
   include WaitForAjax
 
+  let(:user) { create(:user) }
   let(:contributed_project) { create(:project, :public) }
+  let(:issue_note) { create(:note, project: contributed_project) }
 
   # Ex/ Sunday Jan 1, 2016
   date_format = '%A %b %-d, %Y'
@@ -12,31 +14,31 @@ feature 'Contributions Calendar', js: true, feature: true do
   issue_params = { title: issue_title }
 
   def get_cell_color_selector(contributions)
-    contribution_cell = '.user-contrib-cell'
-    activity_colors = Array['#ededed', '#acd5f2', '#7fa8c9', '#527ba0', '#254e77']
-    activity_colors_index = 0
+    activity_colors = %w[#ededed #acd5f2 #7fa8c9 #527ba0 #254e77]
+    # We currently don't actually test the cases with contributions >= 20
+    activity_colors_index =
+      if contributions > 0 && contributions < 10
+        1
+      elsif contributions >= 10 && contributions < 20
+        2
+      elsif contributions >= 20 && contributions < 30
+        3
+      elsif contributions >= 30
+        4
+      else
+        0
+      end
 
-    if contributions > 0 && contributions < 10
-      activity_colors_index = 1
-    elsif contributions >= 10 && contributions < 20
-      activity_colors_index = 2
-    elsif contributions >= 20 && contributions < 30
-      activity_colors_index = 3
-    elsif contributions >= 30
-      activity_colors_index = 4
-    end
-
-    "#{contribution_cell}[fill='#{activity_colors[activity_colors_index]}']"
+    ".user-contrib-cell[fill='#{activity_colors[activity_colors_index]}']"
   end
 
   def get_cell_date_selector(contributions, date)
-    contribution_text = 'No contributions'
-
-    if contributions === 1
-      contribution_text = '1 contribution'
-    elsif contributions > 1
-      contribution_text = "#{contributions} contributions"
-    end
+    contribution_text =
+      if contributions.zero?
+        'No contributions'
+      else
+        "#{contributions} #{'contribution'.pluralize(contributions)}"
+      end
 
     "#{get_cell_color_selector(contributions)}[data-original-title='#{contribution_text}<br />#{date}']"
   end
@@ -45,129 +47,155 @@ feature 'Contributions Calendar', js: true, feature: true do
     push_params = {
       project: contributed_project,
       action: Event::PUSHED,
-      author_id: @user.id,
+      author_id: user.id,
       data: { commit_count: 3 }
     }
 
     Event.create(push_params)
   end
 
-  def get_first_cell_content
+  def note_comment_contribution
+    note_comment_params = {
+      project: contributed_project,
+      action: Event::COMMENTED,
+      target: issue_note,
+      author_id: user.id
+    }
+
+    Event.create(note_comment_params)
+  end
+
+  def selected_day_activities
     find('.user-calendar-activities').text
   end
 
   before do
-    login_as :user
-    visit @user.username
-    wait_for_ajax
+    login_as user
   end
 
-  it 'displays calendar', js: true do
-    expect(page).to have_css('.js-contrib-calendar')
-  end
-
-  describe 'select calendar day', js: true do
-    let(:cells) { page.all('.user-contrib-cell') }
-    let(:first_cell_content_before) { get_first_cell_content }
-
+  describe 'calendar day selection' do
     before do
-      cells[0].click
+      visit user.username
       wait_for_ajax
-      first_cell_content_before
     end
 
-    it 'displays calendar day activities', js: true do
-      expect(get_first_cell_content).not_to eq('')
+    it 'displays calendar' do
+      expect(page).to have_css('.js-contrib-calendar')
     end
 
-    describe 'select another calendar day', js: true do
-      before do
-        cells[1].click
-        wait_for_ajax
-      end
+    describe 'select calendar day' do
+      let(:cells) { page.all('.user-contrib-cell') }
 
-      it 'displays different calendar day activities', js: true do
-        expect(get_first_cell_content).not_to eq(first_cell_content_before)
-      end
-    end
-
-    describe 'deselect calendar day', js: true do
       before do
         cells[0].click
         wait_for_ajax
+        @first_day_activities = selected_day_activities
       end
 
-      it 'hides calendar day activities', js: true do
-        expect(get_first_cell_content).to eq('')
+      it 'displays calendar day activities' do
+        expect(selected_day_activities).not_to be_empty
+      end
+
+      describe 'select another calendar day' do
+        before do
+          cells[1].click
+          wait_for_ajax
+        end
+
+        it 'displays different calendar day activities' do
+          expect(selected_day_activities).not_to eq(@first_day_activities)
+        end
+      end
+
+      describe 'deselect calendar day' do
+        before do
+          cells[0].click
+          wait_for_ajax
+        end
+
+        it 'hides calendar day activities' do
+          expect(selected_day_activities).to be_empty
+        end
       end
     end
   end
 
-  describe '1 calendar activity' do
-    before do
-      Issues::CreateService.new(contributed_project, @user, issue_params).execute
-      visit @user.username
-      wait_for_ajax
+  describe 'calendar daily activities' do
+    shared_context 'visit user page' do
+      before do
+        visit user.username
+        wait_for_ajax
+      end
     end
 
-    it 'displays calendar activity log', js: true do
-      expect(find('.content_list .event-note')).to have_content issue_title
-    end
+    shared_examples 'a day with activity' do |contribution_count:|
+      include_context 'visit user page'
 
-    it 'displays calendar activity square color for 1 contribution', js: true do
-      expect(page).to have_selector(get_cell_color_selector(1), count: 1)
-    end
-
-    it 'displays calendar activity square on the correct date', js: true do
-      today = Date.today.strftime(date_format)
-      expect(page).to have_selector(get_cell_date_selector(1, today), count: 1)
-    end
-  end
-
-  describe '10 calendar activities' do
-    before do
-      (0..9).each do |i|
-        push_code_contribution()
+      it 'displays calendar activity square color for 1 contribution' do
+        expect(page).to have_selector(get_cell_color_selector(contribution_count), count: 1)
       end
 
-      visit @user.username
-      wait_for_ajax
+      it 'displays calendar activity square on the correct date' do
+        today = Date.today.strftime(date_format)
+        expect(page).to have_selector(get_cell_date_selector(contribution_count, today), count: 1)
+      end
     end
 
-    it 'displays calendar activity square color for 10 contributions', js: true do
-      expect(page).to have_selector(get_cell_color_selector(10), count: 1)
+    describe '1 issue creation calendar activity' do
+      before do
+        Issues::CreateService.new(contributed_project, user, issue_params).execute
+      end
+
+      it_behaves_like 'a day with activity', contribution_count: 1
+
+      describe 'issue title is shown on activity page' do
+        include_context 'visit user page'
+
+        it 'displays calendar activity log' do
+          expect(find('.content_list .event-note')).to have_content issue_title
+        end
+      end
     end
 
-    it 'displays calendar activity square on the correct date', js: true do
-      today = Date.today.strftime(date_format)
-      expect(page).to have_selector(get_cell_date_selector(10, today), count: 1)
-    end
-  end
+    describe '1 comment calendar activity' do
+      before do
+        note_comment_contribution
+      end
 
-  describe 'calendar activity on two days' do
-    before do
-      push_code_contribution()
-
-      Timecop.freeze(Date.yesterday)
-      Issues::CreateService.new(contributed_project, @user, issue_params).execute
-      Timecop.return
-
-      visit @user.username
-      wait_for_ajax
+      it_behaves_like 'a day with activity', contribution_count: 1
     end
 
-    it 'displays calendar activity squares for both days', js: true do
-      expect(page).to have_selector(get_cell_color_selector(1), count: 2)
+    describe '10 calendar activities' do
+      before do
+        10.times { push_code_contribution }
+      end
+
+      it_behaves_like 'a day with activity', contribution_count: 10
     end
 
-    it 'displays calendar activity square for yesterday', js: true do
-      yesterday = Date.yesterday.strftime(date_format)
-      expect(page).to have_selector(get_cell_date_selector(1, yesterday), count: 1)
-    end
+    describe 'calendar activity on two days' do
+      before do
+        push_code_contribution
 
-    it 'displays calendar activity square for today', js: true do
-      today = Date.today.strftime(date_format)
-      expect(page).to have_selector(get_cell_date_selector(1, today), count: 1)
+        Timecop.freeze(Date.yesterday) do
+          Issues::CreateService.new(contributed_project, user, issue_params).execute
+        end
+      end
+      include_context 'visit user page'
+
+      it 'displays calendar activity squares for both days' do
+        expect(page).to have_selector(get_cell_color_selector(1), count: 2)
+      end
+
+      it 'displays calendar activity square for yesterday' do
+        yesterday = Date.yesterday.strftime(date_format)
+        expect(page).to have_selector(get_cell_date_selector(1, yesterday), count: 1)
+      end
+
+      it 'displays calendar activity square for today' do
+        today = Date.today.strftime(date_format)
+        expect(page).to have_selector(get_cell_date_selector(1, today), count: 1)
+      end
     end
   end
 end

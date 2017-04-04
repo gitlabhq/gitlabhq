@@ -2,7 +2,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
   include OauthApplications
 
   before_action :set_application, only: [:show, :edit, :update, :destroy]
-  before_action :load_scopes, only: [:new, :edit]
+  before_action :load_scopes, only: [:new, :create, :edit, :update]
 
   def index
     @applications = Doorkeeper::Application.where("owner_id IS NULL")

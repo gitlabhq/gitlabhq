@@ -7,7 +7,14 @@ class EnvironmentEntity < Grape::Entity
   expose :external_url
   expose :environment_type
   expose :last_deployment, using: DeploymentEntity
-  expose :stoppable?
+  expose :stop_action?
+
+  expose :metrics_path, if: -> (environment, _) { environment.has_metrics? } do |environment|
+    metrics_namespace_project_environment_path(
+      environment.project.namespace,
+      environment.project,
+      environment)
+  end
 
   expose :environment_path do |environment|
     namespace_project_environment_path(

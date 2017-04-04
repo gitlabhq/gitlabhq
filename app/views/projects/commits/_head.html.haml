@@ -11,14 +11,6 @@
           = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
             Commits
 
-        = nav_link(controller: %w(network)) do
-          = link_to namespace_project_network_path(@project.namespace, @project, current_ref) do
-            Network
-
-        = nav_link(controller: :compare) do
-          = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: current_ref) do
-            Compare
-
         = nav_link(html_options: {class: branches_tab_class}) do
           = link_to namespace_project_branches_path(@project.namespace, @project) do
             Branches
@@ -26,3 +18,19 @@
         = nav_link(controller: [:tags, :releases]) do
           = link_to namespace_project_tags_path(@project.namespace, @project) do
             Tags
+
+        = nav_link(path: 'graphs#show') do
+          = link_to namespace_project_graph_path(@project.namespace, @project, current_ref) do
+            Contributors
+
+        = nav_link(controller: %w(network)) do
+          = link_to namespace_project_network_path(@project.namespace, @project, current_ref) do
+            Graph
+
+        = nav_link(controller: :compare) do
+          = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: current_ref) do
+            Compare
+
+        = nav_link(path: 'graphs#charts') do
+          = link_to charts_namespace_project_graph_path(@project.namespace, @project, current_ref) do
+            Charts

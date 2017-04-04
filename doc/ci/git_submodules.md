@@ -1,14 +1,14 @@
 # Using Git submodules with GitLab CI
 
 > **Notes:**
-- GitLab 8.12 introduced a new [CI build permissions model][newperms] and you
+- GitLab 8.12 introduced a new [CI job permissions model][newperms] and you
   are encouraged to upgrade your GitLab instance if you haven't done already.
   If you are **not** using GitLab 8.12 or higher, you would need to work your way
   around submodules in order to access the sources of e.g., `gitlab.com/group/project`
   with the use of [SSH keys](ssh_keys/README.md).
-- With GitLab 8.12 onward, your permissions are used to evaluate what a CI build
+- With GitLab 8.12 onward, your permissions are used to evaluate what a CI job
   can access. More information about how this system works can be found in the
-  [Build permissions model](../user/permissions.md#builds-permissions).
+  [Jobs permissions model](../user/permissions.md#jobs-permissions).
 - The HTTP(S) Git protocol [must be enabled][gitpro] in your GitLab instance.
 
 ## Configuring the `.gitmodules` file
@@ -27,7 +27,7 @@ Let's consider the following example:
 If you are using GitLab 8.12+ and your submodule is on the same GitLab server,
 you must update your `.gitmodules` file to use **relative URLs**.
 Since Git allows the usage of relative URLs for your `.gitmodules` configuration,
-this easily allows you to use HTTP(S) for cloning all your CI builds and SSH
+this easily allows you to use HTTP(S) for cloning all your CI jobs and SSH
 for all your local checkouts. The `.gitmodules` would look like:
 
 ```ini
@@ -38,7 +38,7 @@ for all your local checkouts. The `.gitmodules` would look like:
 
 The above configuration will instruct Git to automatically deduce the URL that
 should be used when cloning sources. Whether you use HTTP(S) or SSH, Git will use
-that same channel and it will allow to make all your CI builds use HTTP(S)
+that same channel and it will allow to make all your CI jobs use HTTP(S)
 (because GitLab CI only uses HTTP(S) for cloning your sources), and all your local
 clones will continue using SSH.
 
@@ -57,13 +57,13 @@ Once `.gitmodules` is correctly configured, you can move on to
 ## Using Git submodules in your CI jobs
 
 There are a few steps you need to take in order to make submodules work
-correctly with your CI builds:
+correctly with your CI jobs:
 
 1. First, make sure you have used [relative URLs](#configuring-the-gitmodules-file)
    for the submodules located in the same GitLab server.
 1. Next, if you are using `gitlab-ci-multi-runner` v1.10+, you can set the
    `GIT_SUBMODULE_STRATEGY` variable to either `normal` or `recursive` to tell
-   the runner to fetch your submodules before the build:
+   the runner to fetch your submodules before the job:
     ```yaml
     variables:
       GIT_SUBMODULE_STRATEGY: recursive
@@ -87,9 +87,9 @@ The rationale to set the `sync` and `update` in `before_script` is because of
 the way Git submodules work. On a fresh Runner workspace, Git will set the
 submodule URL including the token in `.git/config`
 (or `.git/modules/<submodule>/config`) based on `.gitmodules` and the current
-remote URL. On subsequent builds on the same Runner, `.git/config` is cached
+remote URL. On subsequent jobs on the same Runner, `.git/config` is cached
 and already contains a full URL for the submodule, corresponding to the previous
-build, and to **a token from a previous build**. `sync` allows to force updating
+job, and to **a token from a previous job**. `sync` allows to force updating
 the full URL.
 
 [gitpro]: ../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols

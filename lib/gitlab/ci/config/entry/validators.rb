@@ -54,6 +54,51 @@ module Gitlab
             end
           end
 
+          class RegexpValidator < ActiveModel::EachValidator
+            include LegacyValidationHelpers
+
+            def validate_each(record, attribute, value)
+              unless validate_regexp(value)
+                record.errors.add(attribute, 'must be a regular expression')
+              end
+            end
+
+            private
+
+            def look_like_regexp?(value)
+              value.is_a?(String) && value.start_with?('/') &&
+                value.end_with?('/')
+            end
+
+            def validate_regexp(value)
+              look_like_regexp?(value) &&
+                Regexp.new(value.to_s[1...-1]) &&
+                true
+            rescue RegexpError
+              false
+            end
+          end
+
+          class ArrayOfStringsOrRegexpsValidator < RegexpValidator
+            def validate_each(record, attribute, value)
+              unless validate_array_of_strings_or_regexps(value)
+                record.errors.add(attribute, 'should be an array of strings or regexps')
+              end
+            end
+
+            private
+
+            def validate_array_of_strings_or_regexps(values)
+              values.is_a?(Array) && values.all?(&method(:validate_string_or_regexp))
+            end
+
+            def validate_string_or_regexp(value)
+              return false unless value.is_a?(String)
+              return validate_regexp(value) if look_like_regexp?(value)
+              true
+            end
+          end
+
           class TypeValidator < ActiveModel::EachValidator
             def validate_each(record, attribute, value)
               type = options[:with]

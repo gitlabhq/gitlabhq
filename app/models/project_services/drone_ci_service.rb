@@ -12,7 +12,7 @@ class DroneCiService < CiService
   def compose_service_hook
     hook = service_hook || build_service_hook
     # If using a service template, project may not be available
-    hook.url = [drone_url, "/api/hook", "?owner=#{project.namespace.path}", "&name=#{project.path}", "&access_token=#{token}"].join if project
+    hook.url = [drone_url, "/api/hook", "?owner=#{project.namespace.full_path}", "&name=#{project.path}", "&access_token=#{token}"].join if project
     hook.enable_ssl_verification = !!enable_ssl_verification
     hook.save
   end
@@ -38,8 +38,8 @@ class DroneCiService < CiService
 
   def commit_status_path(sha, ref)
     url = [drone_url,
-           "gitlab/#{project.namespace.path}/#{project.path}/commits/#{sha}",
-           "?branch=#{URI::encode(ref.to_s)}&access_token=#{token}"]
+           "gitlab/#{project.full_path}/commits/#{sha}",
+           "?branch=#{URI.encode(ref.to_s)}&access_token=#{token}"]
 
     URI.join(*url).to_s
   end
@@ -52,7 +52,7 @@ class DroneCiService < CiService
     response = HTTParty.get(commit_status_path(sha, ref), verify: enable_ssl_verification)
 
     status =
-      if response.code == 200 and response['status']
+      if response.code == 200 && response['status']
         case response['status']
         when 'killed'
           :canceled
@@ -73,8 +73,8 @@ class DroneCiService < CiService
 
   def build_page(sha, ref)
     url = [drone_url,
-           "gitlab/#{project.namespace.path}/#{project.path}/redirect/commits/#{sha}",
-           "?branch=#{URI::encode(ref.to_s)}"]
+           "gitlab/#{project.full_path}/redirect/commits/#{sha}",
+           "?branch=#{URI.encode(ref.to_s)}"]
 
     URI.join(*url).to_s
   end
@@ -114,7 +114,7 @@ class DroneCiService < CiService
   end
 
   def merge_request_valid?(data)
-    ['opened', 'reopened'].include?(data[:object_attributes][:state]) &&
+    %w(opened reopened).include?(data[:object_attributes][:state]) &&
       data[:object_attributes][:merge_status] == 'unchecked'
   end
 end

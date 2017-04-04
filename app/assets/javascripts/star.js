@@ -27,4 +27,4 @@
 
     return Star;
   })();
-}).call(this);
+}).call(window);

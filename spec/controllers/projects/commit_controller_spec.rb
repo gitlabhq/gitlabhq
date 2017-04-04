@@ -4,7 +4,6 @@ describe Projects::CommitController do
   let(:project)  { create(:project, :repository) }
   let(:user)     { create(:user) }
   let(:commit)   { project.commit("master") }
-  let(:pipeline) { create(:ci_pipeline, project: project, commit: commit) }
   let(:master_pickable_sha) { '7d3b0f7cff5f37573aea97cebfd5692ea1689924' }
   let(:master_pickable_commit)  { project.commit(master_pickable_sha) }
 
@@ -18,8 +17,8 @@ describe Projects::CommitController do
 
     def go(extra_params = {})
       params = {
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param
+        namespace_id: project.namespace,
+        project_id: project
       }
 
       get :show, params.merge(extra_params)
@@ -126,8 +125,8 @@ describe Projects::CommitController do
 
       it 'renders it' do
         get(:show,
-            namespace_id: fork_project.namespace.to_param,
-            project_id: fork_project.to_param,
+            namespace_id: fork_project.namespace,
+            project_id: fork_project,
             id: commit.id)
 
         expect(response).to be_success
@@ -140,8 +139,8 @@ describe Projects::CommitController do
       commit = project.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
 
       get(:branches,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          namespace_id: project.namespace,
+          project_id: project,
           id: commit.id)
 
       expect(assigns(:branches)).to include("master", "feature_conflict")
@@ -153,8 +152,8 @@ describe Projects::CommitController do
     context 'when target branch is not provided' do
       it 'renders the 404 page' do
         post(:revert,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
+            namespace_id: project.namespace,
+            project_id: project,
             id: commit.id)
 
         expect(response).not_to be_success
@@ -165,9 +164,9 @@ describe Projects::CommitController do
     context 'when the revert was successful' do
       it 'redirects to the commits page' do
         post(:revert,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            target_branch: 'master',
+            namespace_id: project.namespace,
+            project_id: project,
+            start_branch: 'master',
             id: commit.id)
 
         expect(response).to redirect_to namespace_project_commits_path(project.namespace, project, 'master')
@@ -178,18 +177,18 @@ describe Projects::CommitController do
     context 'when the revert failed' do
       before do
         post(:revert,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            target_branch: 'master',
+            namespace_id: project.namespace,
+            project_id: project,
+            start_branch: 'master',
             id: commit.id)
       end
 
       it 'redirects to the commit page' do
         # Reverting a commit that has been already reverted.
         post(:revert,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            target_branch: 'master',
+            namespace_id: project.namespace,
+            project_id: project,
+            start_branch: 'master',
             id: commit.id)
 
         expect(response).to redirect_to namespace_project_commit_path(project.namespace, project, commit.id)
@@ -202,8 +201,8 @@ describe Projects::CommitController do
     context 'when target branch is not provided' do
       it 'renders the 404 page' do
         post(:cherry_pick,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
+            namespace_id: project.namespace,
+            project_id: project,
             id: master_pickable_commit.id)
 
         expect(response).not_to be_success
@@ -214,9 +213,9 @@ describe Projects::CommitController do
     context 'when the cherry-pick was successful' do
       it 'redirects to the commits page' do
         post(:cherry_pick,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            target_branch: 'master',
+            namespace_id: project.namespace,
+            project_id: project,
+            start_branch: 'master',
             id: master_pickable_commit.id)
 
         expect(response).to redirect_to namespace_project_commits_path(project.namespace, project, 'master')
@@ -227,18 +226,18 @@ describe Projects::CommitController do
     context 'when the cherry_pick failed' do
       before do
         post(:cherry_pick,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            target_branch: 'master',
+            namespace_id: project.namespace,
+            project_id: project,
+            start_branch: 'master',
             id: master_pickable_commit.id)
       end
 
       it 'redirects to the commit page' do
         # Cherry-picking a commit that has been already cherry-picked.
         post(:cherry_pick,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            target_branch: 'master',
+            namespace_id: project.namespace,
+            project_id: project,
+            start_branch: 'master',
             id: master_pickable_commit.id)
 
         expect(response).to redirect_to namespace_project_commit_path(project.namespace, project, master_pickable_commit.id)
@@ -250,8 +249,8 @@ describe Projects::CommitController do
   describe 'GET diff_for_path' do
     def diff_for_path(extra_params = {})
       params = {
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param
+        namespace_id: project.namespace,
+        project_id: project
       }
 
       get :diff_for_path, params.merge(extra_params)
@@ -314,19 +313,34 @@ describe Projects::CommitController do
   describe 'GET pipelines' do
     def get_pipelines(extra_params = {})
       params = {
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param
+        namespace_id: project.namespace,
+        project_id: project
       }
 
       get :pipelines, params.merge(extra_params)
     end
 
     context 'when the commit exists' do
-      context 'when the commit has one or more pipelines' do
-        it 'shows pipelines' do
-          get_pipelines(id: commit.id)
+      context 'when the commit has pipelines' do
+        before do
+          create(:ci_pipeline, project: project, sha: commit.id)
+        end
 
-          expect(response).to be_ok
+        context 'when rendering a HTML format' do
+          it 'shows pipelines' do
+            get_pipelines(id: commit.id)
+
+            expect(response).to be_ok
+          end
+        end
+
+        context 'when rendering a JSON format' do
+          it 'responds with serialized pipelines' do
+            get_pipelines(id: commit.id, format: :json)
+
+            expect(response).to be_ok
+            expect(JSON.parse(response.body)).not_to be_empty
+          end
         end
       end
     end

@@ -1,20 +1,36 @@
 require 'spec_helper'
 
 describe 'mail_room.yml' do
-  let(:config_path)   { 'config/mail_room.yml' }
-  let(:configuration) { YAML.load(ERB.new(File.read(config_path)).result) }
-  before(:each) { clear_raw_config }
-  after(:each) { clear_raw_config }
+  include StubENV
+
+  let(:mailroom_config_path) { 'config/mail_room.yml' }
+  let(:gitlab_config_path) { 'config/mail_room.yml' }
+  let(:redis_config_path) { 'config/resque.yml' }
+
+  let(:configuration) do
+    vars = {
+      'MAIL_ROOM_GITLAB_CONFIG_FILE' => absolute_path(gitlab_config_path),
+      'GITLAB_REDIS_CONFIG_FILE' => absolute_path(redis_config_path)
+    }
+    cmd = "puts ERB.new(File.read(#{absolute_path(mailroom_config_path).inspect})).result"
+
+    output, status = Gitlab::Popen.popen(%W(ruby -rerb -e #{cmd}), absolute_path('config'), vars)
+    raise "Error interpreting #{mailroom_config_path}: #{output}" unless status.zero?
+
+    YAML.load(output)
+  end
+
+  before(:each) do
+    stub_env('GITLAB_REDIS_CONFIG_FILE', absolute_path(redis_config_path))
+    clear_redis_raw_config
+  end
+
+  after(:each) do
+    clear_redis_raw_config
+  end
 
   context 'when incoming email is disabled' do
-    before do
-      ENV['MAIL_ROOM_GITLAB_CONFIG_FILE'] = Rails.root.join('spec/fixtures/mail_room_disabled.yml').to_s
-      Gitlab::MailRoom.reset_config!
-    end
-
-    after do
-      ENV['MAIL_ROOM_GITLAB_CONFIG_FILE'] = nil
-    end
+    let(:gitlab_config_path) { 'spec/fixtures/config/mail_room_disabled.yml' }
 
     it 'contains no configuration' do
       expect(configuration[:mailboxes]).to be_nil
@@ -22,21 +38,12 @@ describe 'mail_room.yml' do
   end
 
   context 'when incoming email is enabled' do
-    let(:redis_config) { Rails.root.join('spec/fixtures/config/redis_new_format_host.yml') }
+    let(:gitlab_config_path) { 'spec/fixtures/config/mail_room_enabled.yml' }
+    let(:redis_config_path) { 'spec/fixtures/config/redis_new_format_host.yml' }
+
     let(:gitlab_redis) { Gitlab::Redis.new(Rails.env) }
 
-    before do
-      ENV['MAIL_ROOM_GITLAB_CONFIG_FILE'] = Rails.root.join('spec/fixtures/mail_room_enabled.yml').to_s
-      Gitlab::MailRoom.reset_config!
-    end
-
-    after do
-      ENV['MAIL_ROOM_GITLAB_CONFIG_FILE'] = nil
-    end
-
     it 'contains the intended configuration' do
-      stub_const('Gitlab::Redis::CONFIG_FILE', redis_config)
-
       expect(configuration[:mailboxes].length).to eq(1)
       mailbox = configuration[:mailboxes].first
 
@@ -66,9 +73,13 @@ describe 'mail_room.yml' do
     end
   end
 
-  def clear_raw_config
+  def clear_redis_raw_config
     Gitlab::Redis.remove_instance_variable(:@_raw_config)
   rescue NameError
     # raised if @_raw_config was not set; ignore
+  end
+
+  def absolute_path(path)
+    Rails.root.join(path).to_s
   end
 end

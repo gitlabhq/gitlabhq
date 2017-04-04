@@ -13,6 +13,8 @@ describe Group, models: true do
     it { is_expected.to have_many(:shared_projects).through(:project_group_links) }
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
     it { is_expected.to have_many(:labels).class_name('GroupLabel') }
+    it { is_expected.to have_many(:uploads).dependent(:destroy) }
+    it { is_expected.to have_one(:chat_team) }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -298,6 +300,19 @@ describe Group, models: true do
     it 'returns parents members' do
       expect(group.members_with_parents).to include(developer)
       expect(group.members_with_parents).to include(master)
+    end
+  end
+
+  describe '#user_ids_for_project_authorizations' do
+    it 'returns the user IDs for which to refresh authorizations' do
+      master = create(:user)
+      developer = create(:user)
+
+      group.add_user(master, GroupMember::MASTER)
+      group.add_user(developer, GroupMember::DEVELOPER)
+
+      expect(group.user_ids_for_project_authorizations).
+        to include(master.id, developer.id)
     end
   end
 end

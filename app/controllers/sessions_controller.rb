@@ -15,11 +15,12 @@ class SessionsController < Devise::SessionsController
 
   def new
     set_minimum_password_length
-    if Gitlab.config.ldap.enabled
-      @ldap_servers = Gitlab::LDAP::Config.servers
-    else
-      @ldap_servers = []
-    end
+    @ldap_servers =
+      if Gitlab.config.ldap.enabled
+        Gitlab::LDAP::Config.servers
+      else
+        []
+      end
 
     super
   end
@@ -78,7 +79,7 @@ class SessionsController < Devise::SessionsController
       if request.referer.present? && (params['redirect_to_referer'] == 'yes')
         referer_uri = URI(request.referer)
         if referer_uri.host == Gitlab.config.gitlab.host
-          referer_uri.path
+          referer_uri.request_uri
         else
           request.fullpath
         end

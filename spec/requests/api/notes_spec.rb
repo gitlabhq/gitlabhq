@@ -32,15 +32,12 @@ describe API::Notes, api: true  do
   before { project.team << [user, :reporter] }
 
   describe "GET /projects/:id/noteable/:noteable_id/notes" do
-    it_behaves_like 'a paginated resources' do
-      let(:request) { get api("/projects/#{project.id}/issues/#{issue.id}/notes", user) }
-    end
-
     context "when noteable is an Issue" do
       it "returns an array of issue notes" do
-        get api("/projects/#{project.id}/issues/#{issue.id}/notes", user)
+        get api("/projects/#{project.id}/issues/#{issue.iid}/notes", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['body']).to eq(issue_note.note)
       end
@@ -53,9 +50,10 @@ describe API::Notes, api: true  do
 
       context "and current user cannot view the notes" do
         it "returns an empty array" do
-          get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes", user)
+          get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes", user)
 
           expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response).to be_empty
         end
@@ -64,7 +62,7 @@ describe API::Notes, api: true  do
           before { ext_issue.update_attributes(confidential: true) }
 
           it "returns 404" do
-            get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes", user)
+            get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes", user)
 
             expect(response).to have_http_status(404)
           end
@@ -72,9 +70,10 @@ describe API::Notes, api: true  do
 
         context "and current user can view the note" do
           it "returns an empty array" do
-            get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes", private_user)
+            get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes", private_user)
 
             expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(json_response.first['body']).to eq(cross_reference_note.note)
           end
@@ -87,6 +86,7 @@ describe API::Notes, api: true  do
         get api("/projects/#{project.id}/snippets/#{snippet.id}/notes", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['body']).to eq(snippet_note.note)
       end
@@ -106,9 +106,10 @@ describe API::Notes, api: true  do
 
     context "when noteable is a Merge Request" do
       it "returns an array of merge_requests notes" do
-        get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/notes", user)
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['body']).to eq(merge_request_note.note)
       end
@@ -130,21 +131,21 @@ describe API::Notes, api: true  do
   describe "GET /projects/:id/noteable/:noteable_id/notes/:note_id" do
     context "when noteable is an Issue" do
       it "returns an issue note by id" do
-        get api("/projects/#{project.id}/issues/#{issue.id}/notes/#{issue_note.id}", user)
+        get api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{issue_note.id}", user)
 
         expect(response).to have_http_status(200)
         expect(json_response['body']).to eq(issue_note.note)
       end
 
       it "returns a 404 error if issue note not found" do
-        get api("/projects/#{project.id}/issues/#{issue.id}/notes/12345", user)
+        get api("/projects/#{project.id}/issues/#{issue.iid}/notes/12345", user)
 
         expect(response).to have_http_status(404)
       end
 
       context "and current user cannot view the note" do
         it "returns a 404 error" do
-          get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes/#{cross_reference_note.id}", user)
+          get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes/#{cross_reference_note.id}", user)
 
           expect(response).to have_http_status(404)
         end
@@ -153,7 +154,7 @@ describe API::Notes, api: true  do
           before { issue.update_attributes(confidential: true) }
 
           it "returns 404" do
-            get api("/projects/#{project.id}/issues/#{issue.id}/notes/#{issue_note.id}", private_user)
+            get api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{issue_note.id}", private_user)
 
             expect(response).to have_http_status(404)
           end
@@ -161,7 +162,7 @@ describe API::Notes, api: true  do
 
         context "and current user can view the note" do
           it "returns an issue note by id" do
-            get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes/#{cross_reference_note.id}", private_user)
+            get api("/projects/#{ext_proj.id}/issues/#{ext_issue.iid}/notes/#{cross_reference_note.id}", private_user)
 
             expect(response).to have_http_status(200)
             expect(json_response['body']).to eq(cross_reference_note.note)
@@ -189,7 +190,7 @@ describe API::Notes, api: true  do
   describe "POST /projects/:id/noteable/:noteable_id/notes" do
     context "when noteable is an Issue" do
       it "creates a new issue note" do
-        post api("/projects/#{project.id}/issues/#{issue.id}/notes", user), body: 'hi!'
+        post api("/projects/#{project.id}/issues/#{issue.iid}/notes", user), body: 'hi!'
 
         expect(response).to have_http_status(201)
         expect(json_response['body']).to eq('hi!')
@@ -197,13 +198,13 @@ describe API::Notes, api: true  do
       end
 
       it "returns a 400 bad request error if body not given" do
-        post api("/projects/#{project.id}/issues/#{issue.id}/notes", user)
+        post api("/projects/#{project.id}/issues/#{issue.iid}/notes", user)
 
         expect(response).to have_http_status(400)
       end
 
       it "returns a 401 unauthorized error if user not authenticated" do
-        post api("/projects/#{project.id}/issues/#{issue.id}/notes"), body: 'hi!'
+        post api("/projects/#{project.id}/issues/#{issue.iid}/notes"), body: 'hi!'
 
         expect(response).to have_http_status(401)
       end
@@ -211,7 +212,7 @@ describe API::Notes, api: true  do
       context 'when an admin or owner makes the request' do
         it 'accepts the creation date to be set' do
           creation_time = 2.weeks.ago
-          post api("/projects/#{project.id}/issues/#{issue.id}/notes", user),
+          post api("/projects/#{project.id}/issues/#{issue.iid}/notes", user),
             body: 'hi!', created_at: creation_time
 
           expect(response).to have_http_status(201)
@@ -224,17 +225,17 @@ describe API::Notes, api: true  do
       context 'when the user is posting an award emoji on an issue created by someone else' do
         let(:issue2) { create(:issue, project: project) }
 
-        it 'returns an award emoji' do
-          post api("/projects/#{project.id}/issues/#{issue2.id}/notes", user), body: ':+1:'
+        it 'creates a new issue note' do
+          post api("/projects/#{project.id}/issues/#{issue2.iid}/notes", user), body: ':+1:'
 
           expect(response).to have_http_status(201)
-          expect(json_response['awardable_id']).to eq issue2.id
+          expect(json_response['body']).to eq(':+1:')
         end
       end
 
       context 'when the user is posting an award emoji on his/her own issue' do
         it 'creates a new issue note' do
-          post api("/projects/#{project.id}/issues/#{issue.id}/notes", user), body: ':+1:'
+          post api("/projects/#{project.id}/issues/#{issue.iid}/notes", user), body: ':+1:'
 
           expect(response).to have_http_status(201)
           expect(json_response['body']).to eq(':+1:')
@@ -269,7 +270,7 @@ describe API::Notes, api: true  do
         project = create(:empty_project, :private) { |p| p.add_guest(user) }
         issue = create(:issue, :confidential, project: project)
 
-        post api("/projects/#{project.id}/issues/#{issue.id}/notes", user),
+        post api("/projects/#{project.id}/issues/#{issue.iid}/notes", user),
           body: 'Foo'
 
         expect(response).to have_http_status(404)
@@ -284,7 +285,7 @@ describe API::Notes, api: true  do
       # from a different project, see #15577
       #
       before do
-        post api("/projects/#{project.id}/issues/#{private_issue.id}/notes", user),
+        post api("/projects/#{private_issue.project.id}/issues/#{private_issue.iid}/notes", user),
              body: 'Hi!'
       end
 
@@ -302,14 +303,14 @@ describe API::Notes, api: true  do
     it "creates an activity event when an issue note is created" do
       expect(Event).to receive(:create)
 
-      post api("/projects/#{project.id}/issues/#{issue.id}/notes", user), body: 'hi!'
+      post api("/projects/#{project.id}/issues/#{issue.iid}/notes", user), body: 'hi!'
     end
   end
 
   describe 'PUT /projects/:id/noteable/:noteable_id/notes/:note_id' do
     context 'when noteable is an Issue' do
       it 'returns modified note' do
-        put api("/projects/#{project.id}/issues/#{issue.id}/"\
+        put api("/projects/#{project.id}/issues/#{issue.iid}/"\
                   "notes/#{issue_note.id}", user), body: 'Hello!'
 
         expect(response).to have_http_status(200)
@@ -317,14 +318,14 @@ describe API::Notes, api: true  do
       end
 
       it 'returns a 404 error when note id not found' do
-        put api("/projects/#{project.id}/issues/#{issue.id}/notes/12345", user),
+        put api("/projects/#{project.id}/issues/#{issue.iid}/notes/12345", user),
                 body: 'Hello!'
 
         expect(response).to have_http_status(404)
       end
 
       it 'returns a 400 bad request error if body not given' do
-        put api("/projects/#{project.id}/issues/#{issue.id}/"\
+        put api("/projects/#{project.id}/issues/#{issue.iid}/"\
                   "notes/#{issue_note.id}", user)
 
         expect(response).to have_http_status(400)
@@ -350,7 +351,7 @@ describe API::Notes, api: true  do
 
     context 'when noteable is a Merge Request' do
       it 'returns modified note' do
-        put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/"\
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/"\
                   "notes/#{merge_request_note.id}", user), body: 'Hello!'
 
         expect(response).to have_http_status(200)
@@ -358,7 +359,7 @@ describe API::Notes, api: true  do
       end
 
       it 'returns a 404 error when note id not found' do
-        put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/"\
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/"\
                   "notes/12345", user), body: "Hello!"
 
         expect(response).to have_http_status(404)
@@ -369,18 +370,18 @@ describe API::Notes, api: true  do
   describe 'DELETE /projects/:id/noteable/:noteable_id/notes/:note_id' do
     context 'when noteable is an Issue' do
       it 'deletes a note' do
-        delete api("/projects/#{project.id}/issues/#{issue.id}/"\
+        delete api("/projects/#{project.id}/issues/#{issue.iid}/"\
                    "notes/#{issue_note.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
         # Check if note is really deleted
-        delete api("/projects/#{project.id}/issues/#{issue.id}/"\
+        delete api("/projects/#{project.id}/issues/#{issue.iid}/"\
                    "notes/#{issue_note.id}", user)
         expect(response).to have_http_status(404)
       end
 
       it 'returns a 404 error when note id not found' do
-        delete api("/projects/#{project.id}/issues/#{issue.id}/notes/12345", user)
+        delete api("/projects/#{project.id}/issues/#{issue.iid}/notes/12345", user)
 
         expect(response).to have_http_status(404)
       end
@@ -391,7 +392,7 @@ describe API::Notes, api: true  do
         delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                    "notes/#{snippet_note.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
         # Check if note is really deleted
         delete api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                    "notes/#{snippet_note.id}", user)
@@ -409,18 +410,18 @@ describe API::Notes, api: true  do
     context 'when noteable is a Merge Request' do
       it 'deletes a note' do
         delete api("/projects/#{project.id}/merge_requests/"\
-                   "#{merge_request.id}/notes/#{merge_request_note.id}", user)
+                   "#{merge_request.iid}/notes/#{merge_request_note.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(204)
         # Check if note is really deleted
         delete api("/projects/#{project.id}/merge_requests/"\
-                   "#{merge_request.id}/notes/#{merge_request_note.id}", user)
+                   "#{merge_request.iid}/notes/#{merge_request_note.id}", user)
         expect(response).to have_http_status(404)
       end
 
       it 'returns a 404 error when note id not found' do
         delete api("/projects/#{project.id}/merge_requests/"\
-                   "#{merge_request.id}/notes/12345", user)
+                   "#{merge_request.iid}/notes/12345", user)
 
         expect(response).to have_http_status(404)
       end

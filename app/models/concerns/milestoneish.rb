@@ -73,7 +73,7 @@ module Milestoneish
   def memoize_per_user(user, method_name)
     @memoized ||= {}
     @memoized[method_name] ||= {}
-    @memoized[method_name][user.try!(:id)] ||= yield
+    @memoized[method_name][user&.id] ||= yield
   end
 
   # override in a class that includes this module to get a faster query

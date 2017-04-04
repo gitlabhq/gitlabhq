@@ -5,6 +5,7 @@ class Dashboard::MilestonesController < Dashboard::ApplicationController
   def index
     respond_to do |format|
       format.html do
+        @milestone_states = GlobalMilestone.states_count(@projects)
         @milestones = Kaminari.paginate_array(milestones).page(params[:page])
       end
       format.json do

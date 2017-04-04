@@ -1,7 +1,6 @@
 # Introduction to environments and deployments
 
->**Note:**
-Introduced in GitLab 8.9.
+> Introduced in GitLab 8.9.
 
 During the development of software, there can be many stages until it's ready
 for public consumption. You sure want to first test your code and then deploy it
@@ -76,7 +75,7 @@ We have defined 3 [stages](yaml/README.md#stages):
 - deploy
 
 The jobs assigned to these stages will run in this order. If a job fails, then
-the builds that are assigned to the next stage won't run, rendering the pipeline
+the jobs that are assigned to the next stage won't run, rendering the pipeline
 as failed. In our case, the `test` job will run first, then the `build` and
 lastly the `deploy_staging`. With this, we ensure that first the tests pass,
 then our app is able to be built successfully, and lastly we deploy to the
@@ -120,7 +119,7 @@ There's a bunch of information there, specifically you can see:
 
 - The environment's name with a link to its deployments
 - The last deployment ID number and who performed it
-- The build ID of the last deployment with its respective job name
+- The job ID of the last deployment with its respective job name
 - The commit information of the last deployment such as who committed, to what
   branch and the Git SHA of the commit
 - The exact time the last deployment was performed
@@ -220,9 +219,9 @@ deploy_prod:
 
 The `when: manual` action exposes a play button in GitLab's UI and the
 `deploy_prod` job will only be triggered if and when we click that play button.
-You can find it in the pipeline, build, environment, and deployment views.
+You can find it in the pipeline, job, environment, and deployment views.
 
-| Pipelines | Single pipeline | Environments | Deployments | Builds |
+| Pipelines | Single pipeline | Environments | Deployments | jobs |
 | --------- | ----------------| ------------ | ----------- | -------|
 | ![Pipelines manual action](img/environments_manual_action_pipelines.png) | ![Pipelines manual action](img/environments_manual_action_single_pipeline.png) | ![Environments manual action](img/environments_manual_action_environments.png) | ![Deployments manual action](img/environments_manual_action_deployments.png) | ![Builds manual action](img/environments_manual_action_builds.png) |
 
@@ -242,7 +241,7 @@ Web terminals were added in GitLab 8.15 and are only available to project
 masters and owners.
 
 If you deploy to your environments with the help of a deployment service (e.g.,
-the [Kubernetes](../project_services/kubernetes.md) service), GitLab can open
+the [Kubernetes service][kubernetes-service], GitLab can open
 a terminal session to your environment! This is a very powerful feature that
 allows you to debug issues without leaving the comfort of your web browser. To
 enable it, just follow the instructions given in the service documentation.
@@ -264,7 +263,7 @@ This works just like any other terminal - you'll be in the container created
 by your deployment, so you can run shell commands and get responses in real
 time, check the logs, try out configuration or code tweaks, etc. You can open
 multiple terminals to the same environment - they each get their own shell
-session -  and even a multiplexer like `screen` or `tmux`!  
+session -  and even a multiplexer like `screen` or `tmux`!
 
 >**Note:**
 Container-based deployments often lack basic tools (like an editor), and may
@@ -296,7 +295,7 @@ deploy_review:
   script:
     - echo "Deploy a review app"
   environment:
-    name: review/$CI_BUILD_REF_NAME
+    name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
   only:
     - branches
@@ -307,22 +306,22 @@ deploy_review:
 Let's break it down in pieces. The job's name is `deploy_review` and it runs
 on the `deploy` stage. The `script` at this point is fictional, you'd have to
 use your own based on your deployment. Then, we set the `environment` with the
-`environment:name` being `review/$CI_BUILD_REF_NAME`. Now that's an interesting
+`environment:name` being `review/$CI_COMMIT_REF_NAME`. Now that's an interesting
 one. Since the [environment name][env-name] can contain slashes (`/`), we can
 use this pattern to distinguish between dynamic environments and the regular
 ones.
 
-So, the first part is `review`, followed by a `/` and then `$CI_BUILD_REF_NAME`
-which takes the value of the branch name. Since `$CI_BUILD_REF_NAME` itself may
+So, the first part is `review`, followed by a `/` and then `$CI_COMMIT_REF_NAME`
+which takes the value of the branch name. Since `$CI_COMMIT_REF_NAME` itself may
 also contain `/`, or other characters that would be invalid in a domain name or
 URL, we use `$CI_ENVIRONMENT_SLUG` in the `environment:url` so that the
 environment can get a specific and distinct URL for each branch. In this case,
-given a `$CI_BUILD_REF_NAME` of `100-Do-The-Thing`, the URL will be something
+given a `$CI_COMMIT_REF_NAME` of `100-Do-The-Thing`, the URL will be something
 like `https://100-do-the-4f99a2.example.com`. Again, the way you set up
 the web server to serve these requests is based on your setup.
 
-You could also use `$CI_BUILD_REF_SLUG` in `environment:url`, e.g.:
-`https://$CI_BUILD_REF_SLUG.example.com`. We use `$CI_ENVIRONMENT_SLUG`
+You could also use `$CI_COMMIT_REF_SLUG` in `environment:url`, e.g.:
+`https://$CI_COMMIT_REF_SLUG.example.com`. We use `$CI_ENVIRONMENT_SLUG`
 here because it is guaranteed to be unique, but if you're using a workflow like
 [GitLab Flow][gitlab-flow], collisions are very unlikely, and you may prefer
 environment names to be more closely based on the branch name - the example
@@ -357,7 +356,7 @@ deploy_review:
   script:
     - echo "Deploy a review app"
   environment:
-    name: review/$CI_BUILD_REF_NAME
+    name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
   only:
     - branches
@@ -388,16 +387,16 @@ deploy_prod:
 
 A more realistic example would include copying files to a location where a
 webserver (NGINX) could then read and serve. The example below will copy the
-`public` directory to `/srv/nginx/$CI_BUILD_REF_SLUG/public`:
+`public` directory to `/srv/nginx/$CI_COMMIT_REF_SLUG/public`:
 
 ```yaml
 review_app:
   stage: deploy
   script:
-    - rsync -av --delete public /srv/nginx/$CI_BUILD_REF_SLUG
+    - rsync -av --delete public /srv/nginx/$CI_COMMIT_REF_SLUG
   environment:
-    name: review/$CI_BUILD_REF_NAME
-    url: https://$CI_BUILD_REF_SLUG.example.com
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://$CI_COMMIT_REF_SLUG.example.com
 ```
 
 It is assumed that the user has already setup NGINX and GitLab Runner in the
@@ -420,7 +419,7 @@ Behind the scenes:
 - GitLab Runner picks up the changes and starts running the jobs
 - The jobs run sequentially as defined in `stages`
   - First, the tests pass
-  - Then, the build begins and successfully also passes
+  - Then, the job begins and successfully also passes
   - Lastly, the app is deployed to an environment with a name specific to the
     branch
 
@@ -442,6 +441,57 @@ If a merge request is eventually merged to the default branch (in our case
 and/or `production`) you can see this information in the merge request itself.
 
 ![Environment URLs in merge request](img/environments_link_url_mr.png)
+
+### Go directly from source files to public pages on the environment
+
+> Introduced in GitLab 8.17.
+
+To go one step further, we can specify a Route Map to get GitLab to show us "View on [environment URL]" buttons to go directly from a file to that file's representation on the deployed website. It will be exposed in a few places:
+
+| In the diff for a merge request, comparison or commit | In the file view |
+| ------ | ------ |
+| !["View on env" button in merge request diff](img/view_on_env_mr.png) | !["View on env" button in file view](img/view_on_env_blob.png) |
+
+To get this to work, you need to tell GitLab how the paths of files in your repository map to paths of pages on your website, using a Route Map.
+
+A Route Map is a file inside the repository at `.gitlab/route-map.yml`, which contains a YAML array that maps `source` paths (in the repository) to `public` paths (on the website).
+
+This is an example of a route map for [Middleman](https://middlemanapp.com) static websites like [http://about.gitlab.com](https://gitlab.com/gitlab-com/www-gitlab-com):
+
+```yaml
+# Team data
+- source: 'data/team.yml' # data/team.yml
+  public: 'team/' # team/
+
+# Blogposts
+- source: /source\/posts\/([0-9]{4})-([0-9]{2})-([0-9]{2})-(.+?)\..*/ # source/posts/2017-01-30-around-the-world-in-6-releases.html.md.erb
+  public: '\1/\2/\3/\4/' # 2017/01/30/around-the-world-in-6-releases/
+
+# HTML files
+- source: /source\/(.+?\.html).*/ # source/index.html.haml
+  public: '\1' # index.html
+
+# Other files
+- source: /source\/(.*)/ # source/images/blogimages/around-the-world-in-6-releases-cover.png
+  public: '\1' # images/blogimages/around-the-world-in-6-releases-cover.png
+```
+
+Mappings are defined as entries in the root YAML array, and are identified by a `-` prefix. Within an entry, we have a hash map with two keys:
+
+- `source`
+    - a string, starting and ending with `'`, for an exact match
+    - a regular expression, starting and ending with `/`, for a pattern match
+      - The regular expression needs to match the entire source path - `^` and `$` anchors are implied.
+      - Can include capture groups denoted by `()` that can be referred to in the `public` path.
+      - Slashes (`/`) can, but don't have to, be escaped as `\/`.
+      - Literal periods (`.`) should be escaped as `\.`.
+- `public`
+    - a string, starting and ending with `'`.
+      - Can include `\N` expressions to refer to capture groups in the `source` regular expression in order of their occurence, starting with `\1`.
+
+The public path for a source path is determined by finding the first `source` expression that matches it, and returning the corresponding `public` path, replacing the `\N` expressions with the values of the `()` capture groups if appropriate.
+
+In the example above, the fact that mappings are evaluated in order of their definition is used to ensure that `source/index.html.haml` will match `/source\/(.+?\.html).*/` instead of `/source\/(.*)/`, and will result in a public path of `index.html`, instead of `index.html.haml`.
 
 ---
 
@@ -476,7 +526,7 @@ deploy_review:
   script:
     - echo "Deploy a review app"
   environment:
-    name: review/$CI_BUILD_REF_NAME
+    name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
     on_stop: stop_review
   only:
@@ -485,13 +535,14 @@ deploy_review:
     - master
 
 stop_review:
+  stage: deploy
   variables:
     GIT_STRATEGY: none
   script:
     - echo "Remove review app"
   when: manual
   environment:
-    name: review/$CI_BUILD_REF_NAME
+    name: review/$CI_COMMIT_REF_NAME
     action: stop
 ```
 
@@ -505,7 +556,9 @@ when their associated branch is deleted.
 
 When you have an environment that has a stop action defined (typically when
 the environment describes a review app), GitLab will automatically trigger a
-stop action when the associated branch is deleted.
+stop action when the associated branch is deleted. The `stop_review` job must
+be in the same `stage` as the `deploy_review` one in order for the environment
+to automatically stop.
 
 You can read more in the [`.gitlab-ci.yml` reference][onstop].
 
@@ -515,13 +568,13 @@ You can read more in the [`.gitlab-ci.yml` reference][onstop].
 
 As we've seen in the [dynamic environments](#dynamic-environments), you can
 prepend their name with a word, then followed by a `/` and finally the branch
-name which is automatically defined by the `CI_BUILD_REF_NAME` variable.
+name which is automatically defined by the `CI_COMMIT_REF_NAME` variable.
 
 In short, environments that are named like `type/foo` are presented under a
 group named `type`.
 
-In our minimal example, we name the environments `review/$CI_BUILD_REF_NAME`
-where `$CI_BUILD_REF_NAME` is the branch name:
+In our minimal example, we name the environments `review/$CI_COMMIT_REF_NAME`
+where `$CI_COMMIT_REF_NAME` is the branch name:
 
 ```yaml
 deploy_review:
@@ -529,7 +582,7 @@ deploy_review:
   script:
     - echo "Deploy a review app"
   environment:
-    name: review/$CI_BUILD_REF_NAME
+    name: review/$CI_COMMIT_REF_NAME
 ```
 
 In that case, if you visit the Environments page, and provided the branches
@@ -566,7 +619,7 @@ Below are some links you may find interesting:
 [Pipelines]: pipelines.md
 [jobs]: yaml/README.md#jobs
 [yaml]: yaml/README.md
-[kubernetes-service]: ../project_services/kubernetes.md]
+[kubernetes-service]: ../user/project/integrations/kubernetes.md
 [environments]: #environments
 [deployments]: #deployments
 [permissions]: ../user/permissions.md

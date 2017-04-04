@@ -4,7 +4,7 @@ require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20161124141322_migrate_process_commit_worker_jobs.rb')
 
 describe MigrateProcessCommitWorkerJobs do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:commit) { project.commit.raw.raw_commit }
 
@@ -62,7 +62,7 @@ describe MigrateProcessCommitWorkerJobs do
     end
 
     def pop_job
-      JSON.load(Sidekiq.redis { |r| r.lpop('queue:process_commit') })
+      JSON.parse(Sidekiq.redis { |r| r.lpop('queue:process_commit') })
     end
 
     before do
@@ -198,7 +198,7 @@ describe MigrateProcessCommitWorkerJobs do
       let(:job) do
         migration.down
 
-        JSON.load(Sidekiq.redis { |r| r.lpop('queue:process_commit') })
+        JSON.parse(Sidekiq.redis { |r| r.lpop('queue:process_commit') })
       end
 
       it 'includes the project ID' do

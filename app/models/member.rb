@@ -10,6 +10,8 @@ class Member < ActiveRecord::Base
   belongs_to :user
   belongs_to :source, polymorphic: true
 
+  delegate :name, :username, :email, to: :user, prefix: true
+
   validates :user, presence: true, unless: :invite?
   validates :source, presence: true
   validates :user_id, uniqueness: { scope: [:source_type, :source_id],
@@ -47,6 +49,7 @@ class Member < ActiveRecord::Base
   scope :invite, -> { where.not(invite_token: nil) }
   scope :non_invite, -> { where(invite_token: nil) }
   scope :request, -> { where.not(requested_at: nil) }
+  scope :non_request, -> { where(requested_at: nil) }
 
   scope :has_access, -> { active.where('access_level > 0') }
 
@@ -71,8 +74,6 @@ class Member < ActiveRecord::Base
   after_update :post_update_hook, unless: [:pending?, :importing?]
   after_destroy :post_destroy_hook, unless: :pending?
   after_commit :refresh_member_authorized_projects
-
-  delegate :name, :username, :email, to: :user, prefix: true
 
   default_value_for :notification_level, NotificationSetting.levels[:global]
 

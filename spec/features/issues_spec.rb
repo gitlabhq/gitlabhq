@@ -1,17 +1,25 @@
 require 'spec_helper'
 
 describe 'Issues', feature: true do
+  include DropzoneHelper
   include IssueHelpers
   include SortingHelper
   include WaitForAjax
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :public) }
 
   before do
     login_as :user
     user2 = create(:user)
 
     project.team << [[@user, user2], :developer]
+
+    project.repository.create_file(
+      @user,
+      '.gitlab/issue_templates/bug.md',
+      'this is a test "bug" template',
+      message: 'added issue template',
+      branch_name: 'master')
   end
 
   describe 'Edit issue' do
@@ -78,8 +86,8 @@ describe 'Issues', feature: true do
         fill_in 'issue_description', with: 'bug description'
         find('#issuable-due-date').click
 
-        page.within '.ui-datepicker' do
-          click_link date.day
+        page.within '.pika-single' do
+          click_button date.day
         end
 
         expect(find('#issuable-due-date').value).to eq date.to_s
@@ -110,8 +118,8 @@ describe 'Issues', feature: true do
         fill_in 'issue_description', with: 'bug description'
         find('#issuable-due-date').click
 
-        page.within '.ui-datepicker' do
-          click_link date.day
+        page.within '.pika-single' do
+          click_button date.day
         end
 
         expect(find('#issuable-due-date').value).to eq date.to_s
@@ -150,7 +158,7 @@ describe 'Issues', feature: true do
 
   describe 'Filter issue' do
     before do
-      ['foobar', 'barbaz', 'gitlab'].each do |title|
+      %w(foobar barbaz gitlab).each do |title|
         create(:issue,
                author: @user,
                assignee: @user,
@@ -382,7 +390,9 @@ describe 'Issues', feature: true do
     it 'changes incoming email address token', js: true do
       find('.issue-email-modal-btn').click
       previous_token = find('input#issue_email').value
-      find('.incoming-email-token-reset').click
+      find('.incoming-email-token-reset').trigger('click')
+
+      wait_for_ajax
 
       expect(page).to have_no_field('issue_email', with: previous_token)
       new_token = project1.new_issue_address(@user.reload)
@@ -562,18 +572,49 @@ describe 'Issues', feature: true do
   end
 
   describe 'new issue' do
+    context 'by unauthenticated user' do
+      before do
+        logout
+      end
+
+      it 'redirects to signin then back to new issue after signin' do
+        visit namespace_project_issues_path(project.namespace, project)
+
+        click_link 'New issue'
+
+        expect(current_path).to eq new_user_session_path
+
+        login_as :user
+
+        expect(current_path).to eq new_namespace_project_issue_path(project.namespace, project)
+      end
+    end
+
     context 'dropzone upload file', js: true do
       before do
         visit new_namespace_project_issue_path(project.namespace, project)
       end
 
       it 'uploads file when dragging into textarea' do
-        drop_in_dropzone test_image_file
-
-        # Wait for the file to upload
-        sleep 1
+        dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
 
         expect(page.find_field("issue_description").value).to have_content 'banana_sample'
+      end
+
+      it 'adds double newline to end of attachment markdown' do
+        dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
+
+        expect(page.find_field("issue_description").value).to match /\n\n$/
+      end
+    end
+
+    context 'form filled by URL parameters' do
+      before do
+        visit new_namespace_project_issue_path(project.namespace, project, issuable_template: 'bug')
+      end
+
+      it 'fills in template' do
+        expect(find('.js-issuable-selector .dropdown-toggle-text')).to have_content('bug')
       end
     end
   end
@@ -624,8 +665,8 @@ describe 'Issues', feature: true do
         page.within '.due_date' do
           click_link 'Edit'
 
-          page.within '.ui-datepicker-calendar' do
-            click_link date.day
+          page.within '.pika-single' do
+            click_button date.day
           end
 
           wait_for_ajax
@@ -635,11 +676,13 @@ describe 'Issues', feature: true do
       end
 
       it 'removes due date from issue' do
+        date = Date.today.at_beginning_of_month + 2.days
+
         page.within '.due_date' do
           click_link 'Edit'
 
-          page.within '.ui-datepicker-calendar' do
-            first('.ui-state-default').click
+          page.within '.pika-single' do
+            click_button date.day
           end
 
           wait_for_ajax
@@ -651,26 +694,5 @@ describe 'Issues', feature: true do
         end
       end
     end
-  end
-
-  def drop_in_dropzone(file_path)
-    # Generate a fake input selector
-    page.execute_script <<-JS
-      var fakeFileInput = window.$('<input/>').attr(
-        {id: 'fakeFileInput', type: 'file'}
-      ).appendTo('body');
-    JS
-    # Attach the file to the fake input selector with Capybara
-    attach_file("fakeFileInput", file_path)
-    # Add the file to a fileList array and trigger the fake drop event
-    page.execute_script <<-JS
-      var fileList = [$('#fakeFileInput')[0].files[0]];
-      var e = jQuery.Event('drop', { dataTransfer : { files : fileList } });
-      $('.div-dropzone')[0].dropzone.listeners[0].events.drop(e);
-    JS
-  end
-
-  def test_image_file
-    File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
   end
 end

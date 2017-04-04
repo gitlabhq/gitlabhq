@@ -397,15 +397,52 @@ describe API::Internal, api: true  do
 
     before do
       project.team << [user, :developer]
-      get api("/internal/merge_request_urls?project=#{repo_name}&changes=#{changes}"), secret_token: secret_token
     end
 
     it 'returns link to create new merge request' do
+      get api("/internal/merge_request_urls?project=#{repo_name}&changes=#{changes}"), secret_token: secret_token
+
       expect(json_response).to match [{
         "branch_name" => "new_branch",
         "url" => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
         "new_merge_request" => true
       }]
+    end
+
+    it 'returns empty array if printing_merge_request_link_enabled is false' do
+      project.update!(printing_merge_request_link_enabled: false)
+
+      get api("/internal/merge_request_urls?project=#{repo_name}&changes=#{changes}"), secret_token: secret_token
+
+      expect(json_response).to eq([])
+    end
+  end
+
+  describe 'POST /notify_post_receive' do
+    let(:valid_params) do
+      { repo_path: project.repository.path, secret_token: secret_token }
+    end
+
+    before do
+      allow(Gitlab.config.gitaly).to receive(:enabled).and_return(true)
+    end
+
+    it "calls the Gitaly client if it's enabled" do
+      expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+        to receive(:post_receive)
+
+      post api("/internal/notify_post_receive"), valid_params
+
+      expect(response).to have_http_status(200)
+    end
+
+    it "returns 500 if the gitaly call fails" do
+      expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+        to receive(:post_receive).and_raise(GRPC::Unavailable)
+
+      post api("/internal/notify_post_receive"), valid_params
+
+      expect(response).to have_http_status(500)
     end
   end
 

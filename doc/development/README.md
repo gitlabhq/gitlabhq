@@ -12,10 +12,12 @@
   contributing to the API.
 - [Documentation styleguide](doc_styleguide.md) Use this styleguide if you are
   contributing to documentation.
+- [Writing documentation](writing_documentation.md)
+  - [Distinction between general documentation and technical articles](writing_documentation.md#distinction-between-general-documentation-and-technical-articles)
 - [SQL Migration Style Guide](migration_style_guide.md) for creating safe SQL migrations
 - [Testing standards and style guidelines](testing.md)
 - [UX guide](ux_guide/index.md) for building GitLab with existing CSS styles and elements
-- [Frontend guidelines](frontend.md)
+- [Frontend guidelines](fe_guide/index.md)
 - [SQL guidelines](sql.md) for working with SQL queries
 - [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
 - [`Gemfile` guidelines](gemfile.md)

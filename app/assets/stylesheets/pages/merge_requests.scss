@@ -3,7 +3,6 @@
  *
  */
 .mr-state-widget {
-  background: $gray-light;
   color: $gl-text-color;
   border: 1px solid $border-color;
   border-radius: 2px;
@@ -25,11 +24,7 @@
         color: inherit;
       }
 
-      .btn-success.dropdown-toggle:disabled {
-        background-color: $gl-success;
-      }
-
-      .accept_merge_request {
+      .accept-merge-request {
         &.ci-pending,
         &.ci-running {
           @include btn-blue;
@@ -40,6 +35,12 @@
         &.ci-canceled,
         &.ci-error {
           @include btn-red;
+        }
+      }
+
+      .dropdown-toggle {
+        .fa {
+          color: inherit;
         }
       }
     }
@@ -56,14 +57,33 @@
       &.right {
         float: right;
         padding-right: 0;
+      }
 
-        a {
-          color: $gl-text-color;
+      .modify-merge-commit-link {
+        padding: 0;
+
+        background-color: transparent;
+        border: 0;
+
+        color: $gl-text-color;
+
+        &:hover,
+        &:focus {
+          text-decoration: underline;
         }
       }
 
-      .remove_source_checkbox {
+      .merge-param-checkbox {
         margin: 0;
+      }
+
+      a .fa-question-circle {
+        color: $gl-text-color-secondary;
+
+        &:hover,
+        &:focus {
+          color: $link-hover-color;
+        }
       }
     }
   }
@@ -71,26 +91,77 @@
   .ci_widget {
     border-bottom: 1px solid $well-inner-border;
     color: $gl-text-color;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+
+    i,
+    svg {
+      margin-right: 8px;
+    }
 
     svg {
-      margin-right: 4px;
       position: relative;
       top: 1px;
       overflow: visible;
     }
 
-    &.ci-success_with_warnings {
+    & > span {
+      padding-right: 4px;
+    }
 
-      i {
-        color: $gl-warning;
-      }
+    @media (max-width: $screen-xs-max) {
+      flex-wrap: wrap;
+    }
+
+    .ci-status-icon > .icon-link > svg {
+      width: 22px;
+      height: 22px;
     }
   }
 
   .mr-widget-body,
   .ci_widget,
   .mr-widget-footer {
-    padding: $gl-padding;
+    padding: 16px;
+  }
+
+  .mr-widget-pipeline-graph {
+    flex-shrink: 0;
+
+    .dropdown-menu {
+      margin-top: 11px;
+    }
+
+    .ci-action-icon-wrapper {
+      line-height: 16px;
+    }
+
+    @media (min-width: $screen-sm-min) {
+      .stage-cell {
+        padding: 0 4px;
+      }
+    }
+
+    @media (max-width: $screen-xs-max) {
+      order: 1;
+      margin-top: $gl-padding-top;
+      border-radius: 3px;
+      background-color: $white-light;
+      border: 1px solid $gray-darker;
+      width: 100%;
+      text-align: center;
+
+      .dropdown-menu {
+        margin-left: -97.5px;
+      }
+
+      .arrow-up::before,
+      .arrow-up::after, {
+        margin-left: 97.5px;
+      }
+    }
   }
 
   .normal {
@@ -111,10 +182,6 @@
       &.has-conflicts .fa-exclamation-triangle {
         color: $gl-warning;
       }
-    }
-
-    p:last-child {
-      margin-bottom: 0;
     }
 
     .btn-grouped {
@@ -179,8 +246,7 @@
 
   .commit {
     margin: 0;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding: 10px 0;
     list-style: none;
 
     &:hover {
@@ -214,8 +280,15 @@
 
 .mr-list {
   .merge-request {
-    padding: 10px 15px;
+    padding: 10px  0 10px 15px;
     position: relative;
+    display: -webkit-flex;
+    display: flex;
+
+    .issue-info-container {
+      -webkit-flex: 1;
+      flex: 1;
+    }
 
     .merge-request-title {
       margin-bottom: 2px;
@@ -272,8 +345,61 @@
   }
 }
 
+.remove-message-pipes {
+  ul {
+    margin: 10px 0 0 12px;
+    padding: 0;
+    list-style: none;
+    border-left: 2px solid $border-color;
+    display: inline-block;
+  }
+
+  li {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    display: block;
+
+    span {
+      margin-left: 15px;
+      max-height: 20px;
+    }
+  }
+
+  li::before {
+    content: '';
+    position: absolute;
+    border-top: 2px solid $border-color;
+    height: 1px;
+    top: 8px;
+    width: 8px;
+  }
+
+  li:last-child {
+    &::before {
+      top: 18px;
+    }
+
+    span {
+      display: block;
+      position: relative;
+      top: 5px;
+      margin-top: 5px;
+    }
+  }
+}
+
 .mr-source-target {
+  background-color: $gray-light;
   line-height: 31px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: $border-color;
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+  border-bottom: none;
+  padding: 16px;
+  margin-bottom: -1px;
 }
 
 .panel-new-merge-request {
@@ -288,7 +414,7 @@
   }
 
   .panel-footer {
-    padding: 5px 10px;
+    padding: 0;
 
     .btn {
       min-width: auto;
@@ -358,6 +484,11 @@
   }
 }
 
+.assign-to-me-link {
+  padding-left: 12px;
+  white-space: nowrap;
+}
+
 .table-holder {
   .ci-table {
 
@@ -369,6 +500,8 @@
 }
 
 .merged-buttons {
+  margin-top: 20px;
+
   .btn {
     float: left;
 
@@ -412,7 +545,7 @@
   }
 
   .fa-info-circle {
-    color: $orange-normal;
+    color: $orange-500;
     padding-right: 5px;
   }
 }
@@ -421,7 +554,7 @@
   background-color: $white-light;
 
   &.affix {
-    top: 100px;
+    top: 0;
     left: 0;
     z-index: 10;
     transition: right .15s;

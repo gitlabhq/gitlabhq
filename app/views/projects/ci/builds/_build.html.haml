@@ -32,10 +32,10 @@
       = link_to build.short_sha, namespace_project_commit_path(build.project.namespace, build.project, build.sha), class: "commit-id monospace"
 
     - if build.stuck?
-      = icon('warning', class: 'text-warning has-tooltip', title: 'Build is stuck. Check runners.')
+      = icon('warning', class: 'text-warning has-tooltip', title: 'Job is stuck. Check runners.')
 
     - if retried
-      = icon('refresh', class: 'text-warning has-tooltip', title: 'Build was retried')
+      = icon('refresh', class: 'text-warning has-tooltip', title: 'Job was retried')
 
     .label-container
       - if build.tags.any?
@@ -46,7 +46,7 @@
         %span.label.label-info triggered
       - if build.try(:allow_failure)
         %span.label.label-danger allowed to fail
-      - if build.manual?
+      - if build.action?
         %span.label.label-info manual
 
   - if pipeline_link
@@ -94,7 +94,7 @@
   %td
     .pull-right
       - if can?(current_user, :read_build, build) && build.artifacts?
-        = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), title: 'Download artifacts', class: 'btn btn-build' do
+        = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), rel: 'nofollow', download: '', title: 'Download artifacts', class: 'btn btn-build' do
           = icon('download')
       - if can?(current_user, :update_build, build)
         - if build.active?

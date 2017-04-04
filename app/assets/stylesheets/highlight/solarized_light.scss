@@ -18,6 +18,9 @@ $solarized-light-line-color-new: #a1a080;
 $solarized-light-line-color-old: #ad9186;
 $solarized-light-highlight: #eee8d5;
 $solarized-light-hll-bg: #ddd8c5;
+$solarized-light-over-bg: #ded7fc;
+$solarized-light-expanded-border: #d2cdbd;
+$solarized-light-expanded-bg: #ece6d4;
 $solarized-light-c: #93a1a1;
 $solarized-light-err: #586e75;
 $solarized-light-g: #586e75;
@@ -150,8 +153,36 @@ $solarized-light-il: #2aa198;
       }
     }
 
+    .diff-line-num {
+      &.is-over,
+      &.hll:not(.empty-cell).is-over {
+        background-color: $solarized-light-over-bg;
+        border-color: darken($solarized-light-over-bg, 5%);
+
+        a {
+          color: darken($solarized-light-over-bg, 15%);
+        }
+      }
+    }
+
     .line_content.match {
       @include matchLine;
+    }
+
+    &:not(.diff-expanded) + .diff-expanded,
+    &.diff-expanded + .line_holder:not(.diff-expanded) {
+      > .diff-line-num,
+      > .line_content {
+        border-top: 1px solid $solarized-light-expanded-border;
+      }
+    }
+
+    &.diff-expanded {
+      > .diff-line-num,
+      > .line_content {
+        background: $solarized-light-expanded-bg;
+        border-color: $solarized-light-expanded-bg;
+      }
     }
   }
 

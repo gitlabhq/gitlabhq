@@ -382,7 +382,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I modify merge commit message' do
-    find('.modify-merge-commit-link').click
+    click_button "Modify commit message"
     fill_in 'commit_message', with: 'wow such merge'
   end
 
@@ -501,6 +501,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I fill in merge request search with "Fe"' do
     fill_in 'issuable_search', with: "Fe"
+    page.within '.merge-requests-holder' do
+      find('.merge-request')
+    end
   end
 
   step 'I click the "Target branch" dropdown' do

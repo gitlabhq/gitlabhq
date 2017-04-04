@@ -8,7 +8,11 @@ class AddIndexToNoteDiscussionId < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def change
+  def up
     add_concurrent_index :notes, :discussion_id
+  end
+
+  def down
+    remove_index :notes, :discussion_id if index_exists? :notes, :discussion_id
   end
 end

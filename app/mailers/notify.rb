@@ -6,7 +6,6 @@ class Notify < BaseMailer
   include Emails::Notes
   include Emails::Projects
   include Emails::Profile
-  include Emails::Builds
   include Emails::Pipelines
   include Emails::Members
 
@@ -151,7 +150,7 @@ class Notify < BaseMailer
     headers['In-Reply-To'] = message_id(model)
     headers['References'] = message_id(model)
 
-    headers[:subject].prepend('Re: ') if headers[:subject]
+    headers[:subject]&.prepend('Re: ')
 
     mail_thread(model, headers)
   end

@@ -28,6 +28,8 @@
 
 .avatar {
   @extend .avatar-circle;
+  @include transition-property(none);
+
   width: 40px;
   height: 40px;
   padding: 0;

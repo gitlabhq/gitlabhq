@@ -83,6 +83,14 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
       expect(doc.css('a').length).to eq 1
     end
 
+    it 'links to a User with different case-sensitivity' do
+      user = create(:user, username: 'RescueRanger')
+
+      doc = reference_filter("Hey #{user.to_reference.upcase}")
+      expect(doc.css('a').length).to eq 1
+      expect(doc.css('a').text).to eq(user.to_reference)
+    end
+
     it 'includes a data-user attribute' do
       doc = reference_filter("Hey #{reference}")
       link = doc.css('a').first
@@ -109,6 +117,25 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
 
       expect(link).to have_attribute('data-group')
       expect(link.attr('data-group')).to eq group.id.to_s
+    end
+  end
+
+  context 'mentioning a nested group' do
+    it_behaves_like 'a reference containing an element node'
+
+    let(:group)     { create(:group, :nested) }
+    let(:reference) { group.to_reference }
+
+    it 'links to the nested group' do
+      doc = reference_filter("Hey #{reference}")
+
+      expect(doc.css('a').first.attr('href')).to eq urls.group_url(group)
+    end
+
+    it 'has the full group name as a title' do
+      doc = reference_filter("Hey #{reference}")
+
+      expect(doc.css('a').first.attr('title')).to eq group.full_name
     end
   end
 

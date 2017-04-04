@@ -12,7 +12,7 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
     end
 
     def repository_storage_path
-      Gitlab.config.repositories.storages[repository_storage]
+      Gitlab.config.repositories.storages[repository_storage]['path']
     end
 
     def repository_path
@@ -34,7 +34,7 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
       new_jobs = []
 
       while job = redis.lpop('queue:process_commit')
-        payload = JSON.load(job)
+        payload = JSON.parse(job)
         project = Project.find_including_path(payload['args'][0])
 
         next unless project
@@ -75,7 +75,7 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
       new_jobs = []
 
       while job = redis.lpop('queue:process_commit')
-        payload = JSON.load(job)
+        payload = JSON.parse(job)
 
         payload['args'][2] = payload['args'][2]['id']
 

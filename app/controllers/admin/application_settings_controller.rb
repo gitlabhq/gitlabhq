@@ -45,15 +45,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def application_setting_params
-    restricted_levels = params[:application_setting][:restricted_visibility_levels]
-    if restricted_levels.nil?
-      params[:application_setting][:restricted_visibility_levels] = []
-    else
-      restricted_levels.map! do |level|
-        level.to_i
-      end
-    end
-
     import_sources = params[:application_setting][:import_sources]
     if import_sources.nil?
       params[:application_setting][:import_sources] = []
@@ -83,6 +74,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :akismet_api_key,
       :akismet_enabled,
       :container_registry_token_expire_delay,
+      :default_artifacts_expire_in,
       :default_branch_protection,
       :default_group_visibility,
       :default_project_visibility,
@@ -109,6 +101,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :plantuml_url,
       :max_artifacts_size,
       :max_attachment_size,
+      :max_pages_size,
       :metrics_enabled,
       :metrics_host,
       :metrics_method_call_threshold,
@@ -136,7 +129,12 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :two_factor_grace_period,
       :user_default_external,
       :user_oauth_applications,
+      :unique_ips_limit_per_user,
+      :unique_ips_limit_time_window,
+      :unique_ips_limit_enabled,
       :version_check_enabled,
+      :terminal_max_session_time,
+      :polling_interval_multiplier,
 
       disabled_oauth_sign_in_sources: [],
       import_sources: [],

@@ -1,5 +1,5 @@
+= render 'layouts/nav/admin_settings'
 .scrolling-tabs-container{ class: nav_control_class }
-  = render 'layouts/nav/admin_settings'
   .fade-left
     = icon('angle-left')
   .fade-right
@@ -33,7 +33,7 @@
           Abuse Reports
           %span.badge.count= number_with_delimiter(AbuseReport.count(:all))
 
-    - if askimet_enabled?
+    - if akismet_enabled?
       = nav_link(controller: :spam_logs) do
         = link_to admin_spam_logs_path, title: "Spam Logs" do
           %span

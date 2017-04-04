@@ -9,7 +9,7 @@ describe IssuesFinder do
   let(:label) { create(:label, project: project2) }
   let(:issue1) { create(:issue, author: user, assignee: user, project: project1, milestone: milestone, title: 'gitlab') }
   let(:issue2) { create(:issue, author: user, assignee: user, project: project2, description: 'gitlab') }
-  let(:issue3) { create(:issue, author: user2, assignee: user2, project: project2) }
+  let(:issue3) { create(:issue, author: user2, assignee: user2, project: project2, title: 'tanuki', description: 'tanuki') }
 
   describe '#execute' do
     let(:closed_issue) { create(:issue, author: user2, assignee: user2, project: project2, state: 'closed') }
@@ -101,6 +101,41 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by started milestone' do
+        let(:params) { { milestone_title: Milestone::Started.name } }
+
+        let(:project_no_started_milestones) { create(:empty_project, :public) }
+        let(:project_started_1_and_2) { create(:empty_project, :public) }
+        let(:project_started_8) { create(:empty_project, :public) }
+
+        let(:yesterday) { Date.today - 1.day }
+        let(:tomorrow) { Date.today + 1.day }
+        let(:two_days_ago) { Date.today - 2.days }
+
+        let(:milestones) do
+          [
+            create(:milestone, project: project_no_started_milestones, start_date: tomorrow),
+            create(:milestone, project: project_started_1_and_2, title: '1.0', start_date: two_days_ago),
+            create(:milestone, project: project_started_1_and_2, title: '2.0', start_date: yesterday),
+            create(:milestone, project: project_started_1_and_2, title: '3.0', start_date: tomorrow),
+            create(:milestone, project: project_started_8, title: '7.0'),
+            create(:milestone, project: project_started_8, title: '8.0', start_date: yesterday),
+            create(:milestone, project: project_started_8, title: '9.0', start_date: tomorrow)
+          ]
+        end
+
+        before do
+          milestones.each do |milestone|
+            create(:issue, project: milestone.project, milestone: milestone, author: user, assignee: user)
+          end
+        end
+
+        it 'returns issues in the started milestones for each project' do
+          expect(issues.map { |issue| issue.milestone.title }).to contain_exactly('1.0', '2.0', '8.0')
+          expect(issues.map { |issue| issue.milestone.start_date }).to contain_exactly(two_days_ago, yesterday, yesterday)
+        end
+      end
+
       context 'filtering by label' do
         let(:params) { { label_name: label.title } }
 
@@ -136,10 +171,10 @@ describe IssuesFinder do
         end
       end
 
-      context 'filtering by issue iid' do
-        let(:params) { { search: issue3.to_reference } }
+      context 'filtering by issues iids' do
+        let(:params) { { iids: issue3.iid } }
 
-        it 'returns issue with iid match' do
+        it 'returns issues with iids match' do
           expect(issues).to contain_exactly(issue3)
         end
       end
@@ -224,7 +259,7 @@ describe IssuesFinder do
       let(:scope) { nil }
 
       it "doesn't return team-only issues to non team members" do
-        project = create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE)
+        project = create(:empty_project, :public, :issues_private)
         issue = create(:issue, project: project)
 
         expect(issues).not_to include(issue)

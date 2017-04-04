@@ -44,8 +44,15 @@ module Mentionable
   end
 
   def all_references(current_user = nil, extractor: nil)
-    extractor ||= Gitlab::ReferenceExtractor.
-      new(project, current_user)
+    # Use custom extractor if it's passed in the function parameters.
+    if extractor
+      @extractor = extractor
+    else
+      @extractor ||= Gitlab::ReferenceExtractor.
+        new(project, current_user)
+
+      @extractor.reset_memoized_values
+    end
 
     self.class.mentionable_attrs.each do |attr, options|
       text    = __send__(attr)
@@ -55,14 +62,18 @@ module Mentionable
         skip_project_check: skip_project_check?
       )
 
-      extractor.analyze(text, options)
+      @extractor.analyze(text, options)
     end
 
-    extractor
+    @extractor
   end
 
   def mentioned_users(current_user = nil)
     all_references(current_user).users
+  end
+
+  def directly_addressed_users(current_user = nil)
+    all_references(current_user).directly_addressed_users
   end
 
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.

@@ -24,4 +24,4 @@
       }
     }
   };
-}).call(this);
+}).call(window);

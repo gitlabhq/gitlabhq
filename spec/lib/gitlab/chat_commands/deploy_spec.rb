@@ -15,8 +15,9 @@ describe Gitlab::ChatCommands::Deploy, service: true do
     end
 
     context 'if no environment is defined' do
-      it 'returns nil' do
-        expect(subject).to be_nil
+      it 'does not execute an action' do
+        expect(subject[:response_type]).to be(:ephemeral)
+        expect(subject[:text]).to eq("No action found to be executed")
       end
     end
 
@@ -26,8 +27,9 @@ describe Gitlab::ChatCommands::Deploy, service: true do
       let!(:deployment) { create(:deployment, environment: staging, deployable: build) }
 
       context 'without actions' do
-        it 'returns nil' do
-          expect(subject).to be_nil
+        it 'does not execute an action' do
+          expect(subject[:response_type]).to be(:ephemeral)
+          expect(subject[:text]).to eq("No action found to be executed")
         end
       end
 
@@ -37,8 +39,8 @@ describe Gitlab::ChatCommands::Deploy, service: true do
         end
 
         it 'returns success result' do
-          expect(subject.type).to eq(:success)
-          expect(subject.message).to include('Deployment from staging to production started')
+          expect(subject[:response_type]).to be(:in_channel)
+          expect(subject[:text]).to start_with('Deployment started from staging to production')
         end
 
         context 'when duplicate action exists' do
@@ -47,8 +49,8 @@ describe Gitlab::ChatCommands::Deploy, service: true do
           end
 
           it 'returns error' do
-            expect(subject.type).to eq(:error)
-            expect(subject.message).to include('Too many actions defined')
+            expect(subject[:response_type]).to be(:ephemeral)
+            expect(subject[:text]).to eq('Too many actions defined')
           end
         end
 
@@ -59,9 +61,9 @@ describe Gitlab::ChatCommands::Deploy, service: true do
                    name: 'teardown', environment: 'production')
           end
 
-          it 'returns success result' do
-            expect(subject.type).to eq(:success)
-            expect(subject.message).to include('Deployment from staging to production started')
+          it 'returns the success message' do
+            expect(subject[:response_type]).to be(:in_channel)
+            expect(subject[:text]).to start_with('Deployment started from staging to production')
           end
         end
       end

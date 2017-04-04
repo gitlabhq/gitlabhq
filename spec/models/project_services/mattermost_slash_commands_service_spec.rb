@@ -36,7 +36,8 @@ describe MattermostSlashCommandsService, :models do
               description: "Perform common operations on: #{project.name_with_namespace}",
               display_name: "GitLab / #{project.name_with_namespace}",
               method: 'P',
-              username: 'GitLab' }.to_json).
+              username: 'GitLab'
+            }.to_json).
             to_return(
               status: 200,
               headers: { 'Content-Type' => 'application/json' },
@@ -91,7 +92,7 @@ describe MattermostSlashCommandsService, :models do
             to_return(
               status: 200,
               headers: { 'Content-Type' => 'application/json' },
-              body: ['list'].to_json
+              body: { 'list' => true }.to_json
             )
         end
 
@@ -113,10 +114,7 @@ describe MattermostSlashCommandsService, :models do
         end
 
         it 'shows error messages' do
-          teams, message = subject
-
-          expect(teams).to be_empty
-          expect(message).to eq('Failed to get team list.')
+          expect(subject).to eq([[], "Failed to get team list."])
         end
       end
     end

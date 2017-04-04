@@ -9,16 +9,15 @@
   }
 }
 
-.group-row {
-  .stats {
-    float: right;
-    line-height: $list-text-height;
-    color: $gl-text-color;
+.group-root-path {
+  max-width: 40vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: nowrap;
+}
 
-    span {
-      margin-right: 15px;
-    }
-  }
+.group-row {
+  @include basic-list-stats;
 }
 
 .ldap-group-links {
@@ -72,4 +71,20 @@
       text-align: center;
     }
   }
+}
+
+.mattermost-icon svg {
+  width: 16px;
+  height: 16px;
+  vertical-align: text-bottom;
+}
+
+.mattermost-team-name {
+  color: $gl-text-color-secondary;
+}
+
+.mattermost-info {
+  display: block;
+  color: $gl-text-color-secondary;
+  margin-top: 10px;
 }

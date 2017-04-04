@@ -14,6 +14,10 @@ module Gitlab
         :issue
       end
 
+      def legend
+        "Related Issues"
+      end
+
       def description
         "Time before an issue gets scheduled"
       end

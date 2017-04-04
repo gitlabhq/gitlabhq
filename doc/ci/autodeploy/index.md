@@ -1,6 +1,6 @@
 # Auto deploy
 
-> [Introduced][mr-8135] in GitLab 8.15.
+> [Introduced][mr-8135] in GitLab 8.15. Currently requires a [Public project][project-settings].
 
 Auto deploy is an easy way to configure GitLab CI for the deployment of your
 application. GitLab Community maintains a list of `.gitlab-ci.yml`
@@ -33,8 +33,9 @@ enable [Kubernetes service][kubernetes-service].
 created automatically for you.
 
 [mr-8135]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8135
-[project-services]: ../../project_services/project_services.md
+[project-settings]: https://docs.gitlab.com/ce/public_access/public_access.html
+[project-services]: ../../user/project/integrations/project_services.md
 [auto-deploy-templates]: https://gitlab.com/gitlab-org/gitlab-ci-yml/tree/master/autodeploy
-[kubernetes-service]: ../../project_services/kubernetes.md
+[kubernetes-service]: ../../user/project/integrations/kubernetes.md
 [docker-in-docker]: ../docker/using_docker_build.md#use-docker-in-docker-executor
 [review-app]: ../review_apps/index.md

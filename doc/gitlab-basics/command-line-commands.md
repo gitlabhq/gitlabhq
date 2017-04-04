@@ -25,6 +25,8 @@ git clone PASTE HTTPS OR SSH HERE
 
 A clone of the project will be created in your computer.
 
+>**Note:** If you clone your project via an URL that contains special characters, make sure that they are URL-encoded.
+
 ### Go into a project, directory or file to work in it
 
 ```

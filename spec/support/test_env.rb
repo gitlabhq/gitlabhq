@@ -36,8 +36,10 @@ module TestEnv
     'conflict-non-utf8'                  => 'd0a293c',
     'conflict-too-large'                 => '39fa04f',
     'deleted-image-test'                 => '6c17798',
-    'wip'                                => 'b9238ee'
-  }
+    'wip'                                => 'b9238ee',
+    'csv'                                => '3dd0896',
+    'v1.1.0'                             => 'b83d6e3'
+  }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
   # need to keep all the branches in sync.
@@ -47,7 +49,7 @@ module TestEnv
     'master'                     => '5937ac0',
     'remove-submodule'           => '2a33e0c',
     'conflict-resolvable-fork'   => '404fa3f'
-  }
+  }.freeze
 
   # Test environment
   #
@@ -58,9 +60,6 @@ module TestEnv
     disable_mailer if opts[:mailer] == false
 
     clean_test_path
-
-    FileUtils.mkdir_p(repos_path)
-    FileUtils.mkdir_p(backup_path)
 
     # Setup GitLab shell for test instance
     setup_gitlab_shell
@@ -93,10 +92,14 @@ module TestEnv
     tmp_test_path = Rails.root.join('tmp', 'tests', '**')
 
     Dir[tmp_test_path].each do |entry|
-      unless File.basename(entry) =~ /\Agitlab-(shell|test|test-fork)\z/
+      unless File.basename(entry) =~ /\Agitlab-(shell|test|test_bare|test-fork|test-fork_bare)\z/
         FileUtils.rm_rf(entry)
       end
     end
+
+    FileUtils.mkdir_p(repos_path)
+    FileUtils.mkdir_p(backup_path)
+    FileUtils.mkdir_p(pages_path)
   end
 
   def setup_gitlab_shell
@@ -128,13 +131,15 @@ module TestEnv
 
     set_repo_refs(repo_path, branch_sha)
 
-    # We must copy bare repositories because we will push to them.
-    system(git_env, *%W(#{Gitlab.config.git.bin_path} clone -q --bare #{repo_path} #{repo_path_bare}))
+    unless File.directory?(repo_path_bare)
+      # We must copy bare repositories because we will push to them.
+      system(git_env, *%W(#{Gitlab.config.git.bin_path} clone -q --bare #{repo_path} #{repo_path_bare}))
+    end
   end
 
   def copy_repo(project)
     base_repo_path = File.expand_path(factory_repo_path_bare)
-    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.namespace.path}/#{project.path}.git")
+    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.full_path}.git")
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
@@ -142,16 +147,20 @@ module TestEnv
   end
 
   def repos_path
-    Gitlab.config.repositories.storages.default
+    Gitlab.config.repositories.storages.default['path']
   end
 
   def backup_path
     Gitlab.config.backup.path
   end
 
+  def pages_path
+    Gitlab.config.pages.path
+  end
+
   def copy_forked_repo_with_submodules(project)
     base_repo_path = File.expand_path(forked_repo_path_bare)
-    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.namespace.path}/#{project.path}.git")
+    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.full_path}.git")
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
@@ -162,16 +171,11 @@ module TestEnv
   #
   # Otherwise they'd be created by the first test, often timing out and
   # causing a transient test failure
-  def warm_asset_cache
-    return if warm_asset_cache?
+  def eager_load_driver_server
     return unless defined?(Capybara)
 
-    Capybara.current_session.driver.visit '/'
-  end
-
-  def warm_asset_cache?
-    cache = Rails.root.join(*%w(tmp cache assets test))
-    Dir.exist?(cache) && Dir.entries(cache).length > 2
+    puts "Starting the Capybara driver server..."
+    Capybara.current_session.visit '/'
   end
 
   private

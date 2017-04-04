@@ -1,5 +1,4 @@
 require 'ruby-prof'
-require_dependency 'gitlab/request_profiler'
 
 module Gitlab
   module RequestProfiler
@@ -20,7 +19,7 @@ module Gitlab
         header_token = env['HTTP_X_PROFILE_TOKEN']
         return unless header_token.present?
 
-        profile_token = RequestProfiler.profile_token
+        profile_token = Gitlab::RequestProfiler.profile_token
         return unless profile_token.present?
 
         header_token == profile_token

@@ -78,4 +78,4 @@
       new window.ImporterStatus(jobsImportPath, importPath);
     }
   });
-}).call(this);
+}).call(window);

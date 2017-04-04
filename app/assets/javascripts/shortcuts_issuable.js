@@ -1,11 +1,10 @@
 /* eslint-disable func-names, space-before-function-paren, max-len, no-var, one-var, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, one-var-declaration-per-line, quotes, prefer-arrow-callback, consistent-return, prefer-template, no-mixed-operators */
 /* global Mousetrap */
-/* global Turbolinks */
 /* global ShortcutsNavigation */
 /* global sidebar */
 
-/*= require mousetrap */
-/*= require shortcuts_navigation */
+require('mousetrap');
+require('./shortcuts_navigation');
 
 (function() {
   var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -39,17 +38,20 @@
     }
 
     ShortcutsIssuable.prototype.replyWithSelectedText = function() {
-      var quote, replyField, documentFragment, selected, separator;
+      var quote, documentFragment, selected, separator;
+      var replyField = $('.js-main-target-form #note_note');
 
       documentFragment = window.gl.utils.getSelectedFragment();
-      if (!documentFragment) return;
+      if (!documentFragment) {
+        replyField.focus();
+        return;
+      }
 
       // If the documentFragment contains more than just Markdown, don't copy as GFM.
       if (documentFragment.querySelector('.md, .wiki')) return;
 
       selected = window.gl.CopyAsGFM.nodeToGFM(documentFragment);
 
-      replyField = $('.js-main-target-form #note_note');
       if (selected.trim() === "") {
         return;
       }
@@ -77,7 +79,7 @@
     ShortcutsIssuable.prototype.editIssue = function() {
       var $editBtn;
       $editBtn = $('.issuable-edit');
-      return Turbolinks.visit($editBtn.attr('href'));
+      return gl.utils.visitUrl($editBtn.attr('href'));
     };
 
     ShortcutsIssuable.prototype.openSidebarDropdown = function(name) {
@@ -87,4 +89,4 @@
 
     return ShortcutsIssuable;
   })(ShortcutsNavigation);
-}).call(this);
+}).call(window);

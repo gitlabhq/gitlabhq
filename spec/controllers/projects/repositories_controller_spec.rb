@@ -6,7 +6,7 @@ describe Projects::RepositoriesController do
   describe "GET archive" do
     context 'as a guest' do
       it 'responds with redirect in correct format' do
-        get :archive, namespace_id: project.namespace.path, project_id: project.path, format: "zip"
+        get :archive, namespace_id: project.namespace, project_id: project, format: "zip"
 
         expect(response.header["Content-Type"]).to start_with('text/html')
         expect(response).to be_redirect
@@ -22,7 +22,7 @@ describe Projects::RepositoriesController do
       end
 
       it "uses Gitlab::Workhorse" do
-        get :archive, namespace_id: project.namespace.path, project_id: project.path, ref: "master", format: "zip"
+        get :archive, namespace_id: project.namespace, project_id: project, ref: "master", format: "zip"
 
         expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-archive:")
       end
@@ -33,7 +33,7 @@ describe Projects::RepositoriesController do
         end
 
         it "renders Not Found" do
-          get :archive, namespace_id: project.namespace.path, project_id: project.path, ref: "master", format: "zip"
+          get :archive, namespace_id: project.namespace, project_id: project, ref: "master", format: "zip"
 
           expect(response).to have_http_status(404)
         end

@@ -39,6 +39,7 @@ The GitLab installation consists of setting up the following components:
 1. Packages / Dependencies
 1. Ruby
 1. Go
+1. Node
 1. System Users
 1. Database
 1. Redis
@@ -63,7 +64,7 @@ up-to-date and install it.
 
 Install the required packages (needed to compile Ruby and native extensions to Ruby gems):
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake nodejs
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake
 
 If you want to use Kerberos for user authentication, then install libkrb5-dev:
 
@@ -108,7 +109,8 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 ## 2. Ruby
 
-**Note:** The current supported Ruby versions are 2.1.x and 2.3.x. 2.3.x is preferred, and support for 2.1.x will be dropped in the future.
+**Note:** The current supported Ruby version is 2.3.x. GitLab 9.0 dropped support
+for Ruby 2.1.x.
 
 The use of Ruby version managers such as [RVM], [rbenv] or [chruby] with GitLab
 in production, frequently leads to hard to diagnose problems. For example,
@@ -124,7 +126,7 @@ Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
     curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.3.tar.gz
-    echo '1014ee699071aa2ddd501907d18cbe15399c997d ruby-2.3.3.tar.gz' | shasum -c - && tar xzf ruby-2.3.3.tar.gz
+    echo '1014ee699071aa2ddd501907d18cbe15399c997d  ruby-2.3.3.tar.gz' | shasum -c - && tar xzf ruby-2.3.3.tar.gz
     cd ruby-2.3.3
     ./configure --disable-install-rdoc
     make
@@ -151,13 +153,29 @@ page](https://golang.org/dl).
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
     rm go1.5.3.linux-amd64.tar.gz
 
-## 4. System Users
+## 4. Node
+
+Since GitLab 8.17, GitLab requires the use of node >= v4.3.0 to compile
+javascript assets, and yarn >= v0.17.0 to manage javascript dependencies.
+In many distros the versions provided by the official package  repositories
+are out of date, so we'll need to install through the following commands:
+
+    # install node v7.x
+    curl --location https://deb.nodesource.com/setup_7.x | bash -
+    sudo apt-get install -y nodejs
+
+    # install yarn
+    curl --location https://yarnpkg.com/install.sh | bash -
+
+Visit the official websites for [node](https://nodejs.org/en/download/package-manager/) and [yarn](https://yarnpkg.com/en/docs/install/) if you have any trouble with these steps.
+
+## 5. System Users
 
 Create a `git` user for GitLab:
 
     sudo adduser --disabled-login --gecos 'GitLab' git
 
-## 5. Database
+## 6. Database
 
 We recommend using a PostgreSQL database. For MySQL check the
 [MySQL setup guide](database_mysql.md).
@@ -218,7 +236,7 @@ We recommend using a PostgreSQL database. For MySQL check the
     gitlabhq_production> \q
     ```
 
-## 6. Redis
+## 7. Redis
 
 GitLab requires at least Redis 2.8.
 
@@ -263,7 +281,7 @@ sudo service redis-server restart
 sudo usermod -aG redis git
 ```
 
-## 7. GitLab
+## 8. GitLab
 
     # We'll install GitLab into home directory of the user "git"
     cd /home/git
@@ -271,9 +289,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-16-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 9-0-stable gitlab
 
-**Note:** You can change `8-16-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `9-0-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -307,11 +325,14 @@ sudo usermod -aG redis git
     # now that files in public/uploads are served by gitlab-workhorse
     sudo chmod 0700 public/uploads
 
-    # Change the permissions of the directory where CI build traces are stored
+    # Change the permissions of the directory where CI job traces are stored
     sudo chmod -R u+rwX builds/
 
     # Change the permissions of the directory where CI artifacts are stored
     sudo chmod -R u+rwX shared/artifacts/
+
+    # Change the permissions of the directory where GitLab Pages are stored
+    sudo chmod -R ug+rwX shared/pages/
 
     # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
@@ -436,6 +457,36 @@ Make GitLab start on boot:
 
     sudo update-rc.d gitlab defaults 21
 
+### Install Gitaly
+
+As of GitLab 9.0 Gitaly is an **optional** component. Its
+configuration is expected to change in GitLab 9.1. It is OK to wait
+with setting up Gitaly until you upgrade to GitLab 9.1 or later.
+
+    # Fetch Gitaly source with Git and compile with Go
+    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
+
+    # Restrict Gitaly socket access
+    sudo chmod 0700 /home/git/gitlab/tmp/sockets/private
+    sudo chown git /home/git/gitlab/tmp/sockets/private
+
+    # Configure Gitaly
+    echo 'GITALY_SOCKET_PATH=/home/git/gitlab/tmp/sockets/private/gitaly.socket' | \
+      sudo -u git tee -a /home/git/gitaly/env
+
+    # Enable Gitaly in the init script
+    echo 'gitaly_enabled=true' | sudo tee -a /etc/default/gitlab
+
+Next, edit `/home/git/gitlab/config/gitlab.yml` and make sure `enabled: true` in
+the `gitaly:` section is uncommented.
+
+    # <- gitlab.yml indentation starts here
+      gitaly:
+        enabled: true
+
+For more information about configuring Gitaly see
+[doc/administration/gitaly](../administration/gitaly).
+
 ### Setup Logrotate
 
     sudo cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
@@ -448,7 +499,8 @@ Check if GitLab and its environment are configured correctly:
 
 ### Compile Assets
 
-    sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production
+    sudo -u git -H yarn install --production --pure-lockfile
+    sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
 
 ### Start Your GitLab Instance
 
@@ -456,7 +508,7 @@ Check if GitLab and its environment are configured correctly:
     # or
     sudo /etc/init.d/gitlab restart
 
-## 8. Nginx
+## 9. Nginx
 
 **Note:** Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the [GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/).
 
@@ -483,6 +535,10 @@ Make sure to edit the config file to match your setup. Also, ensure that you mat
     # either remove the default_server from the listen line
     # or else sudo rm -f /etc/nginx/sites-enabled/default
     sudo editor /etc/nginx/sites-available/gitlab
+
+If you intend to enable GitLab pages, there is a separate Nginx config you need
+to use. Read all about the needed configuration at the
+[GitLab Pages administration guide](../administration/pages/index.md).
 
 **Note:** If you want to use HTTPS, replace the `gitlab` Nginx config with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
 
@@ -632,6 +688,12 @@ this is likely due to an outdated Nginx or Apache configuration, or a missing or
 misconfigured gitlab-workhorse instance. Double-check that you've
 [installed Go](#3-go), [installed gitlab-workhorse](#install-gitlab-workhorse),
 and correctly [configured Nginx](#site-configuration).
+
+### google-protobuf "LoadError: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.14' not found"
+
+This can happen on some platforms for some versions of the
+google-protobuf gem. The workaround is to [install a source-only
+version of this gem](google-protobuf.md).
 
 [RVM]: https://rvm.io/ "RVM Homepage"
 [rbenv]: https://github.com/sstephenson/rbenv "rbenv on GitHub"

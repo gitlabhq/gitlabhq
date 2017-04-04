@@ -1,25 +1,26 @@
 namespace :gitlab do
   namespace :assets do
     desc 'GitLab | Assets | Compile all frontend assets'
-    task :compile do
-      Rake::Task['assets:precompile'].invoke
-      Rake::Task['gitlab:assets:fix_urls'].invoke
-    end
+    task compile: [
+      'yarn:check',
+      'rake:assets:precompile',
+      'webpack:compile',
+      'fix_urls'
+    ]
 
     desc 'GitLab | Assets | Clean up old compiled frontend assets'
-    task :clean do
-      Rake::Task['assets:clean'].invoke
-    end
+    task clean: ['rake:assets:clean']
 
     desc 'GitLab | Assets | Remove all compiled frontend assets'
-    task :purge do
-      Rake::Task['assets:clobber'].invoke
-    end
+    task purge: ['rake:assets:clobber']
+
+    desc 'GitLab | Assets | Uninstall frontend dependencies'
+    task purge_modules: ['yarn:clobber']
 
     desc 'GitLab | Assets | Fix all absolute url references in CSS'
     task :fix_urls do
       css_files = Dir['public/assets/*.css']
-      css_files.each do | file |
+      css_files.each do |file|
         # replace url(/assets/*) with url(./*)
         puts "Fixing #{file}"
         system "sed", "-i", "-e", 's/url(\([\"\']\?\)\/assets\//url(\1.\//g', file

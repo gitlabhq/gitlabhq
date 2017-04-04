@@ -6,7 +6,7 @@ module API
   module APIGuard
     extend ActiveSupport::Concern
 
-    PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN"
+    PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN".freeze
     PRIVATE_TOKEN_PARAM = :private_token
 
     included do |base|
@@ -114,14 +114,14 @@ module API
       private
 
       def install_error_responders(base)
-        error_classes = [ MissingTokenError, TokenNotFoundError,
-                          ExpiredError, RevokedError, InsufficientScopeError]
+        error_classes = [MissingTokenError, TokenNotFoundError,
+                         ExpiredError, RevokedError, InsufficientScopeError]
 
         base.send :rescue_from, *error_classes, oauth2_bearer_token_error_handler
       end
 
       def oauth2_bearer_token_error_handler
-        Proc.new do |e|
+        proc do |e|
           response =
             case e
             when MissingTokenError
@@ -160,13 +160,10 @@ module API
     # Exceptions
     #
 
-    class MissingTokenError < StandardError; end
-
-    class TokenNotFoundError < StandardError; end
-
-    class ExpiredError < StandardError; end
-
-    class RevokedError < StandardError; end
+    MissingTokenError = Class.new(StandardError)
+    TokenNotFoundError = Class.new(StandardError)
+    ExpiredError = Class.new(StandardError)
+    RevokedError = Class.new(StandardError)
 
     class InsufficientScopeError < StandardError
       attr_reader :scopes

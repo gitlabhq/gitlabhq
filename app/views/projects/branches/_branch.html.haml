@@ -27,11 +27,11 @@
         = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: branch.name), class: "btn btn-default #{'prepend-left-10' unless merge_project}", method: :post, title: "Compare" do
           Compare
 
-      = render 'projects/buttons/download', project: @project, ref: branch.name
+      = render 'projects/buttons/download', project: @project, ref: branch.name, pipeline: @refs_pipelines[branch.name]
 
       - if can?(current_user, :push_code, @project)
         = link_to namespace_project_branch_path(@project.namespace, @project, branch.name),
-          class: "btn btn-remove remove-row #{can_remove_branch?(@project, branch.name) ? '' : 'disabled'}",
+          class: "btn btn-remove remove-row js-ajax-loading-spinner #{can_remove_branch?(@project, branch.name) ? '' : 'disabled'}",
           method: :delete,
           data: { confirm: "Deleting the '#{branch.name}' branch cannot be undone. Are you sure?" },
           remote: true,

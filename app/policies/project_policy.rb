@@ -110,6 +110,9 @@ class ProjectPolicy < BasePolicy
     can! :admin_pipeline
     can! :admin_environment
     can! :admin_deployment
+    can! :admin_pages
+    can! :read_pages
+    can! :update_pages
   end
 
   def public_access!
@@ -136,6 +139,7 @@ class ProjectPolicy < BasePolicy
     can! :remove_fork_project
     can! :destroy_merge_request
     can! :destroy_issue
+    can! :remove_pages
   end
 
   def team_member_owner_access!
@@ -214,25 +218,7 @@ class ProjectPolicy < BasePolicy
   def anonymous_rules
     return unless project.public?
 
-    can! :read_project
-    can! :read_board
-    can! :read_list
-    can! :read_wiki
-    can! :read_label
-    can! :read_milestone
-    can! :read_project_snippet
-    can! :read_project_member
-    can! :read_merge_request
-    can! :read_note
-    can! :read_pipeline
-    can! :read_commit_status
-    can! :read_container_image
-    can! :download_code
-    can! :download_wiki_code
-    can! :read_cycle_analytics
-
-    # NOTE: may be overridden by IssuePolicy
-    can! :read_issue
+    base_readonly_access!
 
     # Allow to read builds by anonymous user if guests are allowed
     can! :read_build if project.public_builds?
@@ -264,5 +250,32 @@ class ProjectPolicy < BasePolicy
       :"update_#{name}",
       :"admin_#{name}"
     ]
+  end
+
+  private
+
+  # A base set of abilities for read-only users, which
+  # is then augmented as necessary for anonymous and other
+  # read-only users.
+  def base_readonly_access!
+    can! :read_project
+    can! :read_board
+    can! :read_list
+    can! :read_wiki
+    can! :read_label
+    can! :read_milestone
+    can! :read_project_snippet
+    can! :read_project_member
+    can! :read_merge_request
+    can! :read_note
+    can! :read_pipeline
+    can! :read_commit_status
+    can! :read_container_image
+    can! :download_code
+    can! :download_wiki_code
+    can! :read_cycle_analytics
+
+    # NOTE: may be overridden by IssuePolicy
+    can! :read_issue
   end
 end

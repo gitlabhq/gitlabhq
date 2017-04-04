@@ -35,15 +35,16 @@ RSpec.describe 'admin issues labels' do
     it 'deletes all labels', js: true do
       page.within '.labels' do
         page.all('.btn-remove').each do |remove|
-          wait_for_ajax
           remove.click
+          wait_for_ajax
         end
       end
 
-      page.within '.manage-labels-list' do
-        expect(page).not_to have_content('bug')
-        expect(page).not_to have_content('feature_label')
-      end
+      wait_for_ajax
+
+      expect(page).to have_content("There are no labels yet")
+      expect(page).not_to have_content('bug')
+      expect(page).not_to have_content('feature_label')
     end
   end
 

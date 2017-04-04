@@ -12,10 +12,18 @@
     "localStorage": false
   },
   "plugins": [
-    "filenames"
+    "filenames",
+    "import"
   ],
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "./config/webpack.config.js"
+      }
+    }
+  },
   "rules": {
-    "filenames/match-regex": [2, "^[a-z0-9_]+(.js)?$"],
+    "filenames/match-regex": [2, "^[a-z0-9_]+$"],
     "no-multiple-empty-lines": ["error", { "max": 1 }]
   }
 }

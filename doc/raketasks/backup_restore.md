@@ -38,23 +38,6 @@ If you are running GitLab within a Docker container, you can run the backup from
 docker exec -t <container name> gitlab-rake gitlab:backup:create
 ```
 
-You can specify that portions of the application data be skipped using the
-environment variable `SKIP`. You can skip:
-
-- `db` (database)
-- `uploads` (attachments)
-- `repositories` (Git repositories data)
-- `builds` (CI build output logs)
-- `artifacts` (CI build artifacts)
-- `lfs` (LFS objects)
-- `registry` (Container Registry images)
-
-Separate multiple data types to skip using a comma. For example:
-
-```
-sudo gitlab-rake gitlab:backup:create SKIP=db,uploads
-```
-
 Example output:
 
 ```
@@ -82,6 +65,52 @@ Dumping repositories:
 Creating backup archive: $TIMESTAMP_gitlab_backup.tar [DONE]
 Deleting tmp directories...[DONE]
 Deleting old backups... [SKIPPING]
+```
+
+## Backup Strategy Option
+
+> **Note:** Introduced as an option in 8.17
+
+The default backup strategy is to essentially stream data from the respective
+data locations to the backup using the Linux command `tar` and `gzip`. This works
+fine in most cases, but can cause problems when data is rapidly changing.
+
+When data changes while `tar` is reading it, the error `file changed as we read
+it` may occur, and will cause the backup process to fail. To combat this, 8.17
+introduces a new backup strategy called `copy`. The strategy copies data files
+to a temporary location before calling `tar` and `gzip`, avoiding the error.
+
+A side-effect is that the backup process with take up to an additional 1X disk
+space. The process does its best to clean up the temporary files at each stage
+so the problem doesn't compound, but it could be a considerable change for large
+installations. This is why the `copy` strategy is not the default in 8.17.
+
+To use the `copy` strategy instead of the default streaming strategy, specify
+`STRATEGY=copy` in the Rake task command. For example,
+`sudo gitlab-rake gitlab:backup:create STRATEGY=copy`.
+
+## Exclude specific directories from the backup
+
+You can choose what should be backed up by adding the environment variable `SKIP`.
+The available options are:
+
+- `db` (database)
+- `uploads` (attachments)
+- `repositories` (Git repositories data)
+- `builds` (CI job output logs)
+- `artifacts` (CI job artifacts)
+- `lfs` (LFS objects)
+- `registry` (Container Registry images)
+- `pages` (Pages content)
+
+Use a comma to specify several options at the same time:
+
+```
+# use this command if you've installed GitLab with the Omnibus package
+sudo gitlab-rake gitlab:backup:create SKIP=db,uploads
+
+# if you've installed GitLab from source
+sudo -u git -H bundle exec rake gitlab:backup:create SKIP=db,uploads RAILS_ENV=production
 ```
 
 ## Upload backups to remote (cloud) storage
@@ -130,6 +159,8 @@ For installations from source:
       remote_directory: 'my.s3.bucket'
       # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
       # encryption: 'AES256'
+      # Specifies Amazon S3 storage class to use for backups, this is optional
+      # storage_class: 'STANDARD'
 ```
 
 If you are uploading your backups to S3 you will probably want to create a new
@@ -371,7 +402,7 @@ sudo gitlab-rake gitlab:check SANITIZE=true
 
 If there is a GitLab version mismatch between your backup tar file and the installed
 version of GitLab, the restore command will abort with an error. Install the
-[correct GitLab version](https://www.gitlab.com/downloads/archives/) and try again.
+[correct GitLab version](https://about.gitlab.com/downloads/archives/) and try again.
 
 ## Configure cron to make daily backups
 

@@ -18,13 +18,15 @@
     "sandbox": false,
     "setFixtures": false,
     "setStyleFixtures": false,
-    "spyOnEvent": false
+    "spyOnEvent": false,
+    "ClassSpecHelper": false
   },
   "plugins": ["jasmine"],
   "rules": {
-    "prefer-arrow-callback": 0,
     "func-names": 0,
     "jasmine/no-suite-dupes": [1, "branch"],
-    "jasmine/no-spec-dupes": [1, "branch"]
+    "jasmine/no-spec-dupes": [1, "branch"],
+    "no-console": 0,
+    "prefer-arrow-callback": 0
   }
 }

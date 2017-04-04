@@ -75,14 +75,14 @@
           .provider-btn-image
             = provider_image_tag(provider)
           - if auth_active?(provider)
-            - if provider.to_s == 'saml'
-              %a.provider-btn
-                Active
-            - else
+            - if unlink_allowed?(provider)
               = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'provider-btn' do
                 Disconnect
+            - else
+              %a.provider-btn
+                Active
           - else
-            = link_to omniauth_authorize_path(:user, provider), method: :post, class: 'provider-btn not-active', "data-no-turbolink" => "true" do
+            = link_to omniauth_authorize_path(:user, provider), method: :post, class: 'provider-btn not-active' do
               Connect
   %hr
 - if current_user.can_change_username?
@@ -93,7 +93,7 @@
       %p
         Changing your username will change path to all personal projects!
     .col-lg-9
-      = form_for @user, url: update_username_profile_path, method: :put, remote: true, html: {class: "update-username"} do |f|
+      = form_for @user, url: update_username_profile_path, method: :put, html: {class: "update-username"} do |f|
         .form-group
           = f.label :username, "Path", class: "label-light"
           .input-group
@@ -115,7 +115,7 @@
       %h4.prepend-top-0.danger-title
         Remove account
     .col-lg-9
-      - if @user.can_be_removed?
+      - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
         %p
           Deleting an account has the following effects:
         %ul
@@ -131,4 +131,7 @@
             %strong= @user.solo_owned_groups.map(&:name).join(', ')
           %p
             You must transfer ownership or delete these groups before you can delete your account.
+        - else
+          %p
+            You don't have access to delete this user.
 .append-bottom-default

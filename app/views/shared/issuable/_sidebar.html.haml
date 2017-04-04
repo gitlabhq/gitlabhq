@@ -1,34 +1,33 @@
 - todo = issuable_todo(issuable)
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('issuable/issuable_bundle.js')
-%aside.right-sidebar{ class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
+  = page_specific_javascript_bundle_tag('common_vue')
+  = page_specific_javascript_bundle_tag('issuable')
+
+%aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => "102", "spy" => "affix" }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar
     - can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
     .block.issuable-sidebar-header
       - if current_user
         %span.issuable-header-text.hide-collapsed.pull-left
           Todo
-      %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", aria: { label: "Toggle sidebar" } }
+      %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => "Toggle sidebar" }
         = sidebar_gutter_toggle_icon
       - if current_user
-        %button.btn.btn-default.issuable-header-btn.pull-right.js-issuable-todo{ type: "button", aria: { label: (todo.nil? ? "Add todo" : "Mark done") }, data: { todo_text: "Add todo", mark_text: "Mark done", issuable_id: issuable.id, issuable_type: issuable.class.name.underscore, url: namespace_project_todos_path(@project.namespace, @project), delete_path: (dashboard_todo_path(todo) if todo) } }
-          %span.js-issuable-todo-text
-            - if todo
-              Mark done
-            - else
-              Add todo
-          = icon('spin spinner', class: 'hidden js-issuable-todo-loading')
+        = render "shared/issuable/sidebar_todo", todo: todo, issuable: issuable
 
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
+      - if current_user
+        .block.todo.hide-expanded
+          = render "shared/issuable/sidebar_todo", todo: todo, issuable: issuable, is_collapsed: true
       .block.assignee
         .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee.name if issuable.assignee) }
           - if issuable.assignee
             = link_to_member(@project, issuable.assignee, size: 24)
           - else
-            = icon('user')
+            = icon('user', 'aria-hidden': 'true')
         .title.hide-collapsed
           Assignee
-          = icon('spinner spin', class: 'block-loading')
+          = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
           - if can_edit_issuable
             = link_to 'Edit', '#', class: 'edit-link pull-right'
         .value.hide-collapsed
@@ -36,7 +35,7 @@
             = link_to_member(@project, issuable.assignee, size: 32, extra_class: 'bold') do
               - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
                 %span.pull-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: 'Not allowed to merge' }
-                  = icon('exclamation-triangle')
+                  = icon('exclamation-triangle', 'aria-hidden': 'true')
               %span.username
                 = issuable.assignee.to_reference
           - else
@@ -53,7 +52,7 @@
 
       .block.milestone
         .sidebar-collapsed-icon
-          = icon('clock-o')
+          = icon('clock-o', 'aria-hidden': 'true')
           %span
             - if issuable.milestone
               %span.has-tooltip{ title: milestone_remaining_days(issuable.milestone), data: { container: 'body', html: 1, placement: 'left' } }
@@ -62,7 +61,7 @@
               None
         .title.hide-collapsed
           Milestone
-          = icon('spinner spin', class: 'block-loading')
+          = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
           - if can_edit_issuable
             = link_to 'Edit', '#', class: 'edit-link pull-right'
         .value.hide-collapsed
@@ -76,20 +75,20 @@
           = dropdown_tag('Milestone', options: { title: 'Assign milestone', toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search milestones', data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable), use_id: true }})
       - if issuable.has_attribute?(:time_estimate)
         #issuable-time-tracker.block
-          %issuable-time-tracker{ ':time_estimate' => 'issuable.time_estimate', ':time_spent' => 'issuable.total_time_spent', ':human_time_estimate' => 'issuable.human_time_estimate', ':human_time_spent' => 'issuable.human_total_time_spent', 'stopwatch-svg' => custom_icon('icon_stopwatch'), 'docs-url' => help_page_path('workflow/time_tracking.md') }
+          %issuable-time-tracker{ ':time_estimate' => 'issuable.time_estimate', ':time_spent' => 'issuable.total_time_spent', ':human_time_estimate' => 'issuable.human_time_estimate', ':human_time_spent' => 'issuable.human_total_time_spent', 'docs-url' => help_page_path('workflow/time_tracking.md') }
             // Fallback while content is loading
             .title.hide-collapsed
               Time tracking
-              = icon('spinner spin')
+              = icon('spinner spin', 'aria-hidden': 'true')
       - if issuable.has_attribute?(:due_date)
         .block.due_date
           .sidebar-collapsed-icon
-            = icon('calendar')
+            = icon('calendar', 'aria-hidden': 'true')
             %span.js-due-date-sidebar-value
               = issuable.due_date.try(:to_s, :medium) || 'None'
           .title.hide-collapsed
             Due date
-            = icon('spinner spin', class: 'block-loading')
+            = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
               = link_to 'Edit', '#', class: 'edit-link pull-right'
           .value.hide-collapsed
@@ -109,7 +108,7 @@
               .dropdown
                 %button.dropdown-menu-toggle.js-due-date-select{ type: 'button', data: { toggle: 'dropdown', field_name: "#{issuable.to_ability_name}[due_date]", ability_name: issuable.to_ability_name, issue_update: issuable_json_path(issuable) } }
                   %span.dropdown-toggle-text Due date
-                  = icon('chevron-down')
+                  = icon('chevron-down', 'aria-hidden': 'true')
                 .dropdown-menu.dropdown-menu-due-date
                   = dropdown_title('Due date')
                   = dropdown_content do
@@ -119,18 +118,18 @@
         - selected_labels = issuable.labels
         .block.labels
           .sidebar-collapsed-icon.js-sidebar-labels-tooltip{ title: issuable_labels_tooltip(issuable.labels_array), data: { placement: "left", container: "body" } }
-            = icon('tags')
+            = icon('tags', 'aria-hidden': 'true')
             %span
               = selected_labels.size
           .title.hide-collapsed
             Labels
-            = icon('spinner spin', class: 'block-loading')
+            = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
             - if can_edit_issuable
               = link_to 'Edit', '#', class: 'edit-link pull-right'
           .value.issuable-show-labels.hide-collapsed{ class: ("has-labels" if selected_labels.any?) }
             - if selected_labels.any?
               - selected_labels.each do |label|
-                = link_to_label(label, type: issuable.to_ability_name)
+                = link_to_label(label, subject: issuable.project, type: issuable.to_ability_name)
             - else
               %span.no-value None
           .selectbox.hide-collapsed
@@ -140,7 +139,7 @@
               %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{ type: "button", data: {toggle: "dropdown", default_label: "Labels", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path), issue_update: issuable_json_path(issuable), labels: (namespace_project_labels_path(@project.namespace, @project, :json) if @project) } }
                 %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?) }
                   = multi_label_name(selected_labels, "Labels")
-                = icon('chevron-down')
+                = icon('chevron-down', 'aria-hidden': 'true')
               .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
                 = render partial: "shared/issuable/label_page_default"
                 - if can? current_user, :admin_label, @project and @project
@@ -151,7 +150,7 @@
         - subscribed = issuable.subscribed?(current_user, @project)
         .block.light.subscription{ data: { url: toggle_subscription_path(issuable) } }
           .sidebar-collapsed-icon
-            = icon('rss')
+            = icon('rss', 'aria-hidden': 'true')
           %span.issuable-header-text.hide-collapsed.pull-left
             Notifications
           - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
@@ -172,7 +171,7 @@
     :javascript
       gl.IssuableResource = new gl.SubbableResource('#{issuable_json_path(issuable)}');
       new gl.IssuableTimeTracking("#{escape_javascript(serialize_issuable(issuable))}");
-      new MilestoneSelect('{"namespace":"#{@project.namespace.path}","path":"#{@project.path}"}');
+      new MilestoneSelect('{"full_path":"#{@project.full_path}"}');
       new LabelsSelect();
       new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');
       gl.Subscription.bindAll('.subscription');

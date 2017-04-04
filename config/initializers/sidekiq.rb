@@ -19,6 +19,12 @@ Sidekiq.configure_server do |config|
     chain.add Gitlab::SidekiqStatus::ClientMiddleware
   end
 
+  config.on :startup do
+    # Clear any connections that might have been obtained before starting
+    # Sidekiq (e.g. in an initializer).
+    ActiveRecord::Base.clear_all_connections!
+  end
+
   # Sidekiq-cron: load recurring jobs from gitlab.yml
   # UGLY Hack to get nested hash from settingslogic
   cron_jobs = JSON.parse(Gitlab.config.cron_jobs.to_json)
@@ -36,11 +42,9 @@ Sidekiq.configure_server do |config|
 
   Gitlab::SidekiqThrottler.execute!
 
-  # Database pool should be at least `sidekiq_concurrency` + 2
-  # For more info, see: https://github.com/mperham/sidekiq/blob/master/4.0-Upgrade.md
-  config = ActiveRecord::Base.configurations[Rails.env] ||
+  config = Gitlab::Database.config ||
     Rails.application.config.database_configuration[Rails.env]
-  config['pool'] = Sidekiq.options[:concurrency] + 2
+  config['pool'] = Sidekiq.options[:concurrency]
   ActiveRecord::Base.establish_connection(config)
   Rails.logger.debug("Connection Pool size for Sidekiq Server is now: #{ActiveRecord::Base.connection.pool.instance_variable_get('@size')}")
 

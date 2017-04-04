@@ -20,10 +20,9 @@ describe API::Tags, api: true  do
         get api("/projects/#{project.id}/repository/tags", current_user)
 
         expect(response).to have_http_status(200)
-
-        first_tag = json_response.first
-
-        expect(first_tag['name']).to eq(tag_name)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(tag_name)
       end
     end
 
@@ -43,7 +42,9 @@ describe API::Tags, api: true  do
     context 'without releases' do
       it "returns an array of project tags" do
         get api("/projects/#{project.id}/repository/tags", user)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(tag_name)
       end
@@ -59,6 +60,7 @@ describe API::Tags, api: true  do
         get api("/projects/#{project.id}/repository/tags", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(tag_name)
         expect(json_response.first['message']).to eq('Version 1.1.0')
@@ -135,8 +137,8 @@ describe API::Tags, api: true  do
       context 'delete tag' do
         it 'deletes an existing tag' do
           delete api("/projects/#{project.id}/repository/tags/#{tag_name}", user)
-          expect(response).to have_http_status(200)
-          expect(json_response['tag_name']).to eq(tag_name)
+
+          expect(response).to have_http_status(204)
         end
 
         it 'raises 404 if the tag does not exist' do

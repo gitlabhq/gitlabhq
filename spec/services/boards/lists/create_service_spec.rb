@@ -21,7 +21,7 @@ describe Boards::Lists::CreateService, services: true do
       end
     end
 
-    context 'when board lists has backlog, and done lists' do
+    context 'when board lists has the done list' do
       it 'creates a new list at beginning of the list' do
         list = service.execute(board)
 
@@ -40,7 +40,7 @@ describe Boards::Lists::CreateService, services: true do
       end
     end
 
-    context 'when board lists has backlog, label and done lists' do
+    context 'when board lists has label and done lists' do
       it 'creates a new list at end of the label lists' do
         list1 = create(:list, board: board, position: 0)
 

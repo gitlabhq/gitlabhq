@@ -25,9 +25,9 @@ class Service < ActiveRecord::Base
   belongs_to :project, inverse_of: :services
   has_one :service_hook
 
-  validates :project_id, presence: true, unless: Proc.new { |service| service.template? }
+  validates :project_id, presence: true, unless: proc { |service| service.template? }
 
-  scope :visible, -> { where.not(type: ['GitlabIssueTrackerService', 'GitlabCiService']) }
+  scope :visible, -> { where.not(type: 'GitlabIssueTrackerService') }
   scope :issue_trackers, -> { where(category: 'issue_tracker') }
   scope :external_wikis, -> { where(type: 'ExternalWikiService').active }
   scope :active, -> { where(active: true) }
@@ -210,12 +210,11 @@ class Service < ActiveRecord::Base
   end
 
   def self.available_services_names
-    %w[
+    service_names = %w[
       asana
       assembla
       bamboo
       buildkite
-      builds_email
       bugzilla
       campfire
       custom_issue_tracker
@@ -232,12 +231,16 @@ class Service < ActiveRecord::Base
       mattermost
       pipelines_email
       pivotaltracker
+      prometheus
       pushover
       redmine
       slack_slash_commands
       slack
       teamcity
     ]
+    service_names << 'mock_ci' if Rails.env.development?
+
+    service_names.sort_by(&:downcase)
   end
 
   def self.build_from_template(project_id, template)

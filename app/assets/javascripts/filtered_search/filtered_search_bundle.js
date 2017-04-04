@@ -1,7 +1,10 @@
- // This is a manifest file that'll be compiled into including all the files listed below.
- // Add new JavaScript code in separate files in this directory and they'll automatically
- // be included in the compiled file accessible from http://example.com/assets/application.js
- // It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
- // the compiled file.
- //
- /*= require_tree . */
+require('./dropdown_hint');
+require('./dropdown_non_user');
+require('./dropdown_user');
+require('./dropdown_utils');
+require('./filtered_search_dropdown_manager');
+require('./filtered_search_dropdown');
+require('./filtered_search_manager');
+require('./filtered_search_token_keys');
+require('./filtered_search_tokenizer');
+require('./filtered_search_visual_tokens');

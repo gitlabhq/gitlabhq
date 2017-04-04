@@ -43,7 +43,7 @@
   white-space: nowrap;
 
   &[disabled] {
-    background-color: $input-bg-disabled;
+    opacity: .65;
     cursor: not-allowed;
   }
 
@@ -96,7 +96,7 @@
 
 .dropdown-menu-toggle {
   @extend .dropdown-toggle;
-  padding-right: 20px;
+  padding-right: 25px;
   position: relative;
   width: 163px;
   text-overflow: ellipsis;
@@ -107,14 +107,55 @@
 
     &.fa-spinner {
       font-size: 16px;
-      margin-top: -8px;
+      margin-top: -3px;
     }
   }
 
-  .fa-chevron-down {
+  .fa-chevron-down,
+  .fa-spinner {
     position: absolute;
     top: 11px;
     right: 8px;
+  }
+}
+
+@mixin dropdown-link {
+  display: block;
+  position: relative;
+  padding: 5px 8px;
+  color: $gl-text-color;
+  line-height: initial;
+  text-overflow: ellipsis;
+  border-radius: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+
+  &:hover,
+  &:focus,
+  &.is-focused {
+    background-color: $dropdown-link-hover-bg;
+    text-decoration: none;
+
+    .badge {
+      background-color: darken($dropdown-link-hover-bg, 5%);
+    }
+  }
+
+  &.dropdown-menu-empty-link {
+    &.is-focused {
+      background-color: $dropdown-empty-row-bg;
+    }
+  }
+
+  &.dropdown-menu-user-link {
+    line-height: 16px;
+  }
+
+  .icon-play {
+    fill: $gl-text-color-secondary;
+    margin-right: 6px;
+    height: 12px;
+    width: 11px;
   }
 }
 
@@ -125,7 +166,6 @@
   top: 100%;
   left: 0;
   z-index: 9;
-  max-width: 280px;
   min-width: 240px;
   margin-top: 2px;
   margin-bottom: 0;
@@ -136,6 +176,10 @@
   border: 1px solid $dropdown-border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
+
+  .filtered-search-input-container & {
+    max-width: 280px;
+  }
 
   &.is-loading {
     .dropdown-content {
@@ -155,12 +199,12 @@
   li {
     text-align: left;
     list-style: none;
-    padding: 0 8px;
+    padding: 0 10px;
   }
 
   .divider {
     height: 1px;
-    margin: 8px;
+    margin: 6px 10px;
     padding: 0;
     background-color: $dropdown-divider-color;
   }
@@ -174,46 +218,16 @@
   }
 
   a {
-    display: block;
-    position: relative;
-    padding: 5px 8px;
-    color: $dropdown-link-color;
-    line-height: initial;
-    text-overflow: ellipsis;
-    border-radius: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-
-    &:hover,
-    &:focus,
-    &.is-focused {
-      background-color: $dropdown-link-hover-bg;
-      text-decoration: none;
-    }
-
-    &.dropdown-menu-empty-link {
-      &.is-focused {
-        background-color: $dropdown-empty-row-bg;
-      }
-    }
-
-    &.dropdown-menu-user-link {
-      line-height: 16px;
-    }
-
-    .icon-play {
-      fill: $gl-text-color-secondary;
-      margin-right: 6px;
-      height: 12px;
-      width: 11px;
-    }
+    @include dropdown-link;
   }
 
   .dropdown-header {
-    color: $gl-text-color-secondary;
+    color: $gl-text-color;
     font-size: 13px;
+    font-weight: 600;
     line-height: 22px;
-    padding: 0 10px;
+    text-transform: capitalize;
+    padding: 0 16px;
   }
 
   .separator + .dropdown-header {
@@ -225,6 +239,17 @@
     padding: 5px 8px;
     color: $gl-text-color-secondary;
   }
+
+  .badge {
+    position: absolute;
+    right: 8px;
+    top: 5px;
+  }
+}
+
+.dropdown-menu-drop-up {
+  top: auto;
+  bottom: 100%;
 }
 
 .dropdown-menu-large {
@@ -305,14 +330,17 @@
 
 .dropdown-menu-selectable {
   a {
-    padding-left: 25px;
+    padding-left: 26px;
 
     &.is-indeterminate,
     &.is-active {
+      font-weight: 600;
+      color: $gl-text-color;
+
       &::before {
         position: absolute;
-        left: 5px;
-        top: 8px;
+        left: 6px;
+        top: 6px;
         font: normal normal normal 14px/1 FontAwesome;
         font-size: inherit;
         text-rendering: auto;
@@ -334,7 +362,7 @@
 
 .dropdown-title {
   position: relative;
-  padding: 0 25px 10px;
+  padding: 2px 25px 10px;
   margin: 0 10px 10px;
   font-weight: 600;
   line-height: 1;
@@ -364,7 +392,7 @@
   right: 5px;
   width: 20px;
   height: 20px;
-  top: -3px;
+  top: -1px;
 }
 
 .dropdown-menu-back {
@@ -497,119 +525,16 @@
     max-height: 230px;
   }
 
-  .ui-widget {
-    table {
-      margin: 0;
-    }
-
-    &.ui-datepicker-inline {
-      padding: 0 10px;
-      border: 0;
-      width: 100%;
-    }
-
-    .ui-datepicker-header {
-      padding: 0 8px 10px;
-      border: 0;
-
-      .ui-icon {
-        background: none;
-        font-size: 20px;
-        text-indent: 0;
-
-        &::before {
-          display: block;
-          position: relative;
-          top: -2px;
-          color: $dropdown-title-btn-color;
-          font: normal normal normal 14px/1 FontAwesome;
-          font-size: inherit;
-          text-rendering: auto;
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-        }
-      }
-    }
-
-    .ui-datepicker-calendar {
-      .ui-state-hover,
-      .ui-state-active {
-        color: $white-light;
-        border: 0;
-      }
-    }
-
-    .ui-datepicker-prev,
-    .ui-datepicker-next {
-      top: 0;
-      height: 15px;
-      cursor: pointer;
-
-      &:hover {
-        background-color: transparent;
-        border: 0;
-
-        .ui-icon::before {
-          color: $md-link-color;
-        }
-      }
-    }
-
-    .ui-datepicker-prev {
-      left: 0;
-
-      .ui-icon::before {
-        content: '\f104';
-        text-align: left;
-      }
-    }
-
-    .ui-datepicker-next {
-      right: 0;
-
-      .ui-icon::before {
-        content: '\f105';
-        text-align: right;
-      }
-    }
-
-    td {
-      padding: 0;
-      border: 1px solid $calendar-border-color;
-
-      &:first-child {
-        border-left: 0;
-      }
-
-      &:last-child {
-        border-right: 0;
-      }
-
-      a {
-        line-height: 17px;
-        border: 0;
-        border-radius: 0;
-      }
-    }
-
-    .ui-datepicker-title {
-      color: $gl-text-color;
-      font-size: 14px;
-      line-height: 1;
-      font-weight: normal;
-    }
+  .pika-single {
+    position: relative!important;
+    top: 0!important;
+    border: 0;
+    box-shadow: none;
   }
 
-  th {
-    padding: 2px 0;
-    color: $note-disabled-comment-color;
-    font-weight: normal;
-    text-transform: lowercase;
-    border-top: 1px solid $calendar-border-color;
-  }
-
-  .ui-datepicker-unselectable {
-    background-color: $gray-light;
+  .pika-lendar {
+    margin-top: -5px;
+    margin-bottom: 0;
   }
 }
 

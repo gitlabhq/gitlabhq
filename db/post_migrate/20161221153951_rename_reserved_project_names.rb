@@ -37,7 +37,7 @@ class RenameReservedProjectNames < ActiveRecord::Migration
                    unsubscribes
                    update
                    users
-                   wikis)
+                   wikis).freeze
 
   def up
     queues = Array.new(THREAD_COUNT) { Queue.new }

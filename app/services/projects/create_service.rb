@@ -12,7 +12,7 @@ module Projects
       @project = Project.new(params)
 
       # Make sure that the user is allowed to use the specified visibility level
-      unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
+      unless Gitlab::VisibilityLevel.allowed_for?(current_user, @project.visibility_level)
         deny_visibility_level(@project)
         return @project
       end
@@ -97,7 +97,7 @@ module Projects
         @project.team << [current_user, :master, current_user]
       end
 
-      @project.group.refresh_members_authorized_projects if @project.group
+      @project.group&.refresh_members_authorized_projects
     end
 
     def skip_wiki?

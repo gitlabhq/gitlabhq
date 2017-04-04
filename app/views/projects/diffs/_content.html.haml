@@ -15,10 +15,13 @@
         %a.click-to-expand
           Click to expand it.
     - elsif diff_file.diff_lines.length > 0
+      - total_lines = 0
+      - if blob.lines.any?
+        - total_lines = blob.lines.last.chomp == '' ? blob.lines.size - 1 : blob.lines.size
       - if diff_view == :parallel
-        = render "projects/diffs/parallel_view", diff_file: diff_file, project: project, blob: blob
+        = render "projects/diffs/parallel_view", diff_file: diff_file, total_lines: total_lines
       - else
-        = render "projects/diffs/text_file", diff_file: diff_file
+        = render "projects/diffs/text_file", diff_file: diff_file, total_lines: total_lines
     - else
       - if diff_file.mode_changed?
         .nothing-here-block File mode changed

@@ -6,7 +6,7 @@ describe Gitlab::Ci::Status::Canceled do
   end
 
   describe '#text' do
-    it { expect(subject.label).to eq 'canceled' }
+    it { expect(subject.text).to eq 'canceled' }
   end
 
   describe '#label' do
@@ -15,6 +15,10 @@ describe Gitlab::Ci::Status::Canceled do
 
   describe '#icon' do
     it { expect(subject.icon).to eq 'icon_status_canceled' }
+  end
+
+  describe '#favicon' do
+    it { expect(subject.favicon).to eq 'favicon_status_canceled' }
   end
 
   describe '#group' do

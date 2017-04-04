@@ -32,6 +32,10 @@ module Gitlab
         @user.id
       end
 
+      def include?(old_author_id)
+        map.keys.include?(old_author_id) && map[old_author_id] != default_user_id
+      end
+
       private
 
       def missing_keys_tracking_hash
@@ -41,6 +45,8 @@ module Gitlab
       end
 
       def ensure_default_member!
+        @project.project_members.destroy_all
+
         ProjectMember.create!(user: @user, access_level: ProjectMember::MASTER, source_id: @project.id, importing: true)
       end
 

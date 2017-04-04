@@ -1,12 +1,13 @@
 require 'spec_helper'
 
 describe SystemHooksService, services: true do
-  let(:user)          { create :user }
-  let(:project)       { create :project }
-  let(:project_member) { create :project_member }
-  let(:key)           { create(:key, user: user) }
-  let(:group)         { create(:group) }
-  let(:group_member)  { create(:group_member) }
+  let(:user)           { create(:user) }
+  let(:project)        { create(:empty_project) }
+  let(:project_member) { create(:project_member) }
+  let(:key)            { create(:key, user: user) }
+  let(:deploy_key)     { create(:key) }
+  let(:group)          { create(:group) }
+  let(:group_member)   { create(:group_member) }
 
   context 'event data' do
     it { expect(event_data(user, :create)).to include(:event_name, :name, :created_at, :updated_at, :email, :user_id, :username) }
@@ -18,6 +19,8 @@ describe SystemHooksService, services: true do
     it { expect(event_data(project_member, :destroy)).to include(:event_name, :created_at, :updated_at, :project_name, :project_path, :project_path_with_namespace, :project_id, :user_name, :user_username, :user_email, :user_id, :access_level, :project_visibility) }
     it { expect(event_data(key, :create)).to include(:username, :key, :id) }
     it { expect(event_data(key, :destroy)).to include(:username, :key, :id) }
+    it { expect(event_data(deploy_key, :create)).to include(:key, :id) }
+    it { expect(event_data(deploy_key, :destroy)).to include(:key, :id) }
 
     it do
       project.old_path_with_namespace = 'renamed_from_path'

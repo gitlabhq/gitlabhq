@@ -149,35 +149,46 @@ describe MergeRequests::MergeService, services: true do
     context "error handling" do
       let(:service) { MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message') }
 
-      it 'saves error if there is an exception' do
+      before do
+        allow(Rails.logger).to receive(:error)
+      end
+
+      it 'logs and saves error if there is an exception' do
+        error_message = 'error message'
+
         allow(service).to receive(:repository).and_raise("error message")
-
         allow(service).to receive(:execute_hooks)
 
         service.execute(merge_request)
 
-        expect(merge_request.merge_error).to eq("Something went wrong during merge: error message")
+        expect(merge_request.merge_error).to include(error_message)
+        expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
       end
 
-      it 'saves error if there is an PreReceiveError exception' do
-        allow(service).to receive(:repository).and_raise(GitHooksService::PreReceiveError, "error")
+      it 'logs and saves error if there is an PreReceiveError exception' do
+        error_message = 'error message'
 
+        allow(service).to receive(:repository).and_raise(GitHooksService::PreReceiveError, error_message)
         allow(service).to receive(:execute_hooks)
 
         service.execute(merge_request)
 
-        expect(merge_request.merge_error).to eq("error")
+        expect(merge_request.merge_error).to include(error_message)
+        expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
       end
 
-      it 'aborts if there is a merge conflict' do
+      it 'logs and saves error if there is a merge conflict' do
+        error_message = 'Conflicts detected during merge'
+
         allow_any_instance_of(Repository).to receive(:merge).and_return(false)
         allow(service).to receive(:execute_hooks)
 
         service.execute(merge_request)
 
-        expect(merge_request.open?).to be_truthy
+        expect(merge_request).to be_open
         expect(merge_request.merge_commit_sha).to be_nil
-        expect(merge_request.merge_error).to eq("Conflicts detected during merge")
+        expect(merge_request.merge_error).to include(error_message)
+        expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
       end
     end
   end

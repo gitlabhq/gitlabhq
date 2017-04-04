@@ -198,4 +198,47 @@ describe Snippet, models: true do
       expect(snippet.participants).to include(note1.author, note2.author)
     end
   end
+
+  describe '#check_for_spam' do
+    let(:snippet) { create :snippet, visibility_level: visibility_level }
+
+    subject do
+      snippet.assign_attributes(title: title)
+      snippet.check_for_spam?
+    end
+
+    context 'when public and spammable attributes changed' do
+      let(:visibility_level) { Snippet::PUBLIC }
+      let(:title) { 'woo' }
+
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when private' do
+      let(:visibility_level) { Snippet::PRIVATE }
+      let(:title) { snippet.title }
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+
+      it 'returns true when switching to public' do
+        snippet.save!
+        snippet.visibility_level = Snippet::PUBLIC
+
+        expect(snippet.check_for_spam?).to be_truthy
+      end
+    end
+
+    context 'when spammable attributes have not changed' do
+      let(:visibility_level) { Snippet::PUBLIC }
+      let(:title) { snippet.title }
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+  end
 end

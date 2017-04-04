@@ -21,9 +21,9 @@ module API
     end
     params do
       optional :default_branch_protection, type: Integer, values: [0, 1, 2], desc: 'Determine if developers can push to master'
-      optional :default_project_visibility, type: Integer, values: Gitlab::VisibilityLevel.values, desc: 'The default project visibility'
-      optional :default_snippet_visibility, type: Integer, values: Gitlab::VisibilityLevel.values, desc: 'The default snippet visibility'
-      optional :default_group_visibility, type: Integer, values: Gitlab::VisibilityLevel.values, desc: 'The default group visibility'
+      optional :default_project_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default project visibility'
+      optional :default_snippet_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default snippet visibility'
+      optional :default_group_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default group visibility'
       optional :restricted_visibility_levels, type: Array[String], desc: 'Selected levels cannot be used by non-admin users for projects or snippets. If the public level is restricted, user profiles are only visible to logged in users.'
       optional :import_sources, type: Array[String], values: %w[github bitbucket gitlab google_code fogbugz git gitlab_project],
                                 desc: 'Enabled sources for code import during project creation. OmniAuth must be configured for GitHub, Bitbucket, and GitLab.com'
@@ -56,7 +56,9 @@ module API
       given shared_runners_enabled: ->(val) { val } do
         requires :shared_runners_text, type: String, desc: 'Shared runners text '
       end
-      optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size each build's artifacts can have"
+      optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size for each job's artifacts"
+      optional :default_artifacts_expire_in, type: String, desc: "Set the default expiration time for each job's artifacts"
+      optional :max_pages_size, type: Integer, desc: 'Maximum size of pages in MB'
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
       optional :metrics_enabled, type: Boolean, desc: 'Enable the InfluxDB metrics'
       given metrics_enabled: ->(val) { val } do
@@ -107,6 +109,8 @@ module API
         requires :housekeeping_full_repack_period, type: Integer, desc: "Number of Git pushes after which a full 'git repack' is run."
         requires :housekeeping_gc_period, type: Integer, desc: "Number of Git pushes after which 'git gc' is run."
       end
+      optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
+      optional :polling_interval_multiplier, type: BigDecimal, desc: 'Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling.'
       at_least_one_of :default_branch_protection, :default_project_visibility, :default_snippet_visibility,
                       :default_group_visibility, :restricted_visibility_levels, :import_sources,
                       :enabled_git_access_protocol, :gravatar_enabled, :default_projects_limit,
@@ -115,15 +119,19 @@ module API
                       :send_user_confirmation_email, :domain_whitelist, :domain_blacklist_enabled,
                       :after_sign_up_text, :signin_enabled, :require_two_factor_authentication,
                       :home_page_url, :after_sign_out_path, :sign_in_text, :help_page_text,
-                      :shared_runners_enabled, :max_artifacts_size, :container_registry_token_expire_delay,
+                      :shared_runners_enabled, :max_artifacts_size,
+                      :default_artifacts_expire_in, :max_pages_size,
+                      :container_registry_token_expire_delay,
                       :metrics_enabled, :sidekiq_throttling_enabled, :recaptcha_enabled,
                       :akismet_enabled, :admin_notification_email, :sentry_enabled,
                       :repository_storage, :repository_checks_enabled, :koding_enabled, :plantuml_enabled,
                       :version_check_enabled, :email_author_in_body, :html_emails_enabled,
-                      :housekeeping_enabled
+                      :housekeeping_enabled, :terminal_max_session_time, :polling_interval_multiplier
     end
     put "application/settings" do
-      if current_settings.update_attributes(declared_params(include_missing: false))
+      attrs = declared_params(include_missing: false)
+
+      if current_settings.update_attributes(attrs)
         present current_settings, with: Entities::ApplicationSetting
       else
         render_validation_error!(current_settings)

@@ -1,1 +1,1 @@
-This document was moved to [profile](../profile/index.md#security).
+This document was moved to [profile](../profile/account/index.md).

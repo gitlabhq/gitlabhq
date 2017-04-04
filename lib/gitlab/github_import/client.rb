@@ -10,6 +10,7 @@ module Gitlab
         @access_token = access_token
         @host = host.to_s.sub(%r{/+\z}, '')
         @api_version = api_version
+        @users = {}
 
         if access_token
           ::Octokit.auto_paginate = false
@@ -62,6 +63,13 @@ module Gitlab
 
       def respond_to?(method)
         api.respond_to?(method) || super
+      end
+
+      def user(login)
+        return nil unless login.present?
+        return @users[login] if @users.key?(login)
+
+        @users[login] = api.user(login)
       end
 
       private

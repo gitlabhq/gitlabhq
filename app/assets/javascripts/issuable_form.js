@@ -3,6 +3,8 @@
 /* global UsersSelect */
 /* global ZenMode */
 /* global Autosave */
+/* global dateFormat */
+/* global Pikaday */
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
@@ -13,7 +15,7 @@
     IssuableForm.prototype.wipRegex = /^\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i;
 
     function IssuableForm(form) {
-      var $issuableDueDate;
+      var $issuableDueDate, calendar;
       this.form = form;
       this.toggleWip = bind(this.toggleWip, this);
       this.renderWipExplanation = bind(this.renderWipExplanation, this);
@@ -35,12 +37,15 @@
       this.initMoveDropdown();
       $issuableDueDate = $('#issuable-due-date');
       if ($issuableDueDate.length) {
-        $('.datepicker').datepicker({
-          dateFormat: 'yy-mm-dd',
-          onSelect: function(dateText, inst) {
-            return $issuableDueDate.val(dateText);
+        calendar = new Pikaday({
+          field: $issuableDueDate.get(0),
+          theme: 'gitlab-theme',
+          format: 'yyyy-mm-dd',
+          onSelect: function(dateText) {
+            $issuableDueDate.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
           }
-        }).datepicker('setDate', $.datepicker.parseDate('yy-mm-dd', $issuableDueDate.val()));
+        });
+        calendar.setDate(new Date($issuableDueDate.val()));
       }
     }
 
@@ -151,4 +156,4 @@
 
     return IssuableForm;
   })();
-}).call(this);
+}).call(window);

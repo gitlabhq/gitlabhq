@@ -189,11 +189,10 @@
 }
 
 .right-sidebar {
-  position: fixed;
+  position: absolute;
   top: $header-height;
   bottom: 0;
   right: 0;
-  z-index: 10;
   transition: width .3s;
   background: $gray-light;
   padding: 10px 20px;
@@ -244,6 +243,10 @@
       font-size: 13px;
       font-weight: normal;
     }
+
+    .hide-expanded {
+      display: none;
+    }
   }
 
   &.right-sidebar-collapsed {
@@ -254,11 +257,11 @@
       display: block;
     }
 
-    width: $sidebar_collapsed_width;
+    width: $gutter_collapsed_width;
     padding-top: 0;
 
     .block {
-      width: $sidebar_collapsed_width - 2px;
+      width: $gutter_collapsed_width - 2px;
       margin-left: -19px;
       padding: 15px 0 0;
       border-bottom: none;
@@ -283,16 +286,21 @@
       display: block;
       width: 100%;
       text-align: center;
-      padding-bottom: 10px;
+      margin-bottom: 10px;
       color: $issuable-sidebar-color;
 
-      &:hover {
+      &:hover,
+      &:hover .todo-undone {
         color: $gl-text-color;
       }
 
       span {
         display: block;
         margin-top: 0;
+      }
+
+      .todo-undone {
+        color: $gl-link-color;
       }
 
       .author {
@@ -461,8 +469,19 @@
 
 .issuable-list {
   li {
+
+    .issue-box {
+      display: -webkit-flex;
+      display: flex;
+    }
+
+    .issue-info-container {
+      -webkit-flex: 1;
+      flex: 1;
+      padding-right: $gl-padding;
+    }
+
     .issue-check {
-      float: left;
       padding-right: $gl-padding;
       margin-bottom: 10px;
       min-width: 15px;
@@ -488,7 +507,7 @@
     svg {
       width: 16px;
       height: 16px;
-      fill: $sidebar-collapsed-icon-color;
+      fill: $issuable-sidebar-color;
     }
 
     &:hover svg {
@@ -510,12 +529,12 @@
 
     &.over_estimate {
       .meter-fill {
-        background: $red-light;
+        background: $red-500;
       }
 
       .time-remaining,
       .compare-value.spent {
-        color: $red-light;
+        color: $red-500;
       }
     }
   }
@@ -570,5 +589,23 @@
   .help-state-toggle-enter,
   .help-state-toggle-leave-active {
     opacity: 0;
+  }
+}
+
+.issuable-todo-btn {
+  .fa-spinner {
+    display: none;
+  }
+
+  &.is-loading {
+    .fa-spinner {
+      display: inline-block;
+    }
+
+    &.sidebar-collapsed-icon {
+      .issuable-todo-inner {
+        display: none;
+      }
+    }
   }
 }

@@ -1,13 +1,10 @@
 /* eslint-disable space-before-function-paren, max-len, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, comma-dangle, object-shorthand, prefer-template, quotes, new-parens, vars-on-top, new-cap, max-len */
 
-/*= require gl_dropdown */
-/*= require search_autocomplete */
-/*= require jquery */
-/*= require lib/utils/common_utils */
-/*= require lib/utils/type_utility */
-/*= require fuzzaldrin-plus */
-/*= require turbolinks */
-/*= require jquery.turbolinks */
+require('~/gl_dropdown');
+require('~/search_autocomplete');
+require('~/lib/utils/common_utils');
+require('~/lib/utils/type_utility');
+require('vendor/fuzzaldrin-plus');
 
 (function() {
   var addBodyAttributes, assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;
@@ -16,11 +13,6 @@
   widget = null;
 
   userId = 1;
-
-  window.gon || (window.gon = {});
-
-  window.gon.current_user_id = userId;
-  window.gon.current_username = userName;
 
   dashboardIssuesPath = '/dashboard/issues';
 
@@ -97,8 +89,8 @@
     var a1, a2, a3, a4, issuesAssignedToMeLink, issuesIHaveCreatedLink, mrsAssignedToMeLink, mrsIHaveCreatedLink;
     issuesAssignedToMeLink = issuesPath + "/?assignee_username=" + userName;
     issuesIHaveCreatedLink = issuesPath + "/?author_username=" + userName;
-    mrsAssignedToMeLink = mrsPath + "/?assignee_id=" + userId;
-    mrsIHaveCreatedLink = mrsPath + "/?author_id=" + userId;
+    mrsAssignedToMeLink = mrsPath + "/?assignee_username=" + userName;
+    mrsIHaveCreatedLink = mrsPath + "/?author_username=" + userName;
     a1 = "a[href='" + issuesAssignedToMeLink + "']";
     a2 = "a[href='" + issuesIHaveCreatedLink + "']";
     a3 = "a[href='" + mrsAssignedToMeLink + "']";
@@ -117,13 +109,25 @@
     preloadFixtures('static/search_autocomplete.html.raw');
     beforeEach(function() {
       loadFixtures('static/search_autocomplete.html.raw');
+      widget = new gl.SearchAutocomplete;
+      // Prevent turbolinks from triggering within gl_dropdown
+      spyOn(window.gl.utils, 'visitUrl').and.returnValue(true);
+
+      window.gon = {};
+      window.gon.current_user_id = userId;
+      window.gon.current_username = userName;
+
       return widget = new gl.SearchAutocomplete;
+    });
+
+    afterEach(function() {
+      window.gon = {};
     });
     it('should show Dashboard specific dropdown menu', function() {
       var list;
       addBodyAttributes();
       mockDashboardOptions();
-      widget.searchInput.focus();
+      widget.searchInput.triggerHandler('focus');
       list = widget.wrap.find('.dropdown-menu').find('ul');
       return assertLinks(list, dashboardIssuesPath, dashboardMRsPath);
     });
@@ -131,7 +135,7 @@
       var list;
       addBodyAttributes('group');
       mockGroupOptions();
-      widget.searchInput.focus();
+      widget.searchInput.triggerHandler('focus');
       list = widget.wrap.find('.dropdown-menu').find('ul');
       return assertLinks(list, groupIssuesPath, groupMRsPath);
     });
@@ -139,7 +143,7 @@
       var list;
       addBodyAttributes('project');
       mockProjectOptions();
-      widget.searchInput.focus();
+      widget.searchInput.triggerHandler('focus');
       list = widget.wrap.find('.dropdown-menu').find('ul');
       return assertLinks(list, projectIssuesPath, projectMRsPath);
     });
@@ -148,7 +152,7 @@
       addBodyAttributes('project');
       mockProjectOptions();
       widget.searchInput.val('help');
-      widget.searchInput.focus();
+      widget.searchInput.triggerHandler('focus');
       list = widget.wrap.find('.dropdown-menu').find('ul');
       link = "a[href='" + projectIssuesPath + "/?assignee_id=" + userId + "']";
       return expect(list.find(link).length).toBe(0);
@@ -159,7 +163,7 @@
       addBodyAttributes();
       mockDashboardOptions(true);
       var submitSpy = spyOnEvent('form', 'submit');
-      widget.searchInput.focus();
+      widget.searchInput.triggerHandler('focus');
       widget.wrap.trigger($.Event('keydown', { which: DOWN }));
       var enterKeyEvent = $.Event('keydown', { which: ENTER });
       widget.searchInput.trigger(enterKeyEvent);
@@ -171,4 +175,4 @@
       expect(enterKeyEvent.isDefaultPrevented()).toBe(true);
     });
   });
-}).call(this);
+}).call(window);

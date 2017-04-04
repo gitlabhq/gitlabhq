@@ -1,39 +1,43 @@
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'Dropdown label', js: true, feature: true do
-  include WaitForAjax
+  include FilteredSearchHelpers
 
-  let!(:project) { create(:empty_project) }
-  let!(:user) { create(:user) }
-  let!(:bug_label) { create(:label, project: project, title: 'bug') }
-  let!(:uppercase_label) { create(:label, project: project, title: 'BUG') }
-  let!(:two_words_label) { create(:label, project: project, title: 'High Priority') }
-  let!(:wont_fix_label) { create(:label, project: project, title: 'Won"t Fix') }
-  let!(:wont_fix_single_label) { create(:label, project: project, title: 'Won\'t Fix') }
-  let!(:special_label) { create(:label, project: project, title: '!@#$%^+&*()')}
-  let!(:long_label) { create(:label, project: project, title: 'this is a very long title this is a very long title this is a very long title this is a very long title this is a very long title')}
+  let(:project) { create(:empty_project) }
+  let(:user) { create(:user) }
   let(:filtered_search) { find('.filtered-search') }
   let(:js_dropdown_label) { '#js-dropdown-label' }
+  let(:filter_dropdown) { find("#{js_dropdown_label} .filter-dropdown") }
 
-  def send_keys_to_filtered_search(input)
-    input.split("").each do |i|
-      filtered_search.send_keys(i)
-      sleep 3
-      wait_for_ajax
-      sleep 3
-    end
+  shared_context 'with labels' do
+    let!(:bug_label) { create(:label, project: project, title: 'bug-label') }
+    let!(:uppercase_label) { create(:label, project: project, title: 'BUG-LABEL') }
+    let!(:two_words_label) { create(:label, project: project, title: 'High Priority') }
+    let!(:wont_fix_label) { create(:label, project: project, title: 'Won"t Fix') }
+    let!(:wont_fix_single_label) { create(:label, project: project, title: 'Won\'t Fix') }
+    let!(:special_label) { create(:label, project: project, title: '!@#$%^+&*()') }
+    let!(:long_label) { create(:label, project: project, title: 'this is a very long title this is a very long title this is a very long title this is a very long title this is a very long title') }
   end
 
-  def dropdown_label_size
-    page.all('#js-dropdown-label .filter-dropdown .filter-dropdown-item').size
+  def search_for_label(label)
+    init_label_search
+    filtered_search.send_keys(label)
   end
 
   def click_label(text)
-    find('#js-dropdown-label .filter-dropdown .filter-dropdown-item', text: text).click
+    filter_dropdown.find('.filter-dropdown-item', text: text).click
+  end
+
+  def dropdown_label_size
+    filter_dropdown.all('.filter-dropdown-item').size
+  end
+
+  def clear_search_field
+    find('.filtered-search-input-container .clear-search').click
   end
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     login_as(user)
     create(:issue, project: project)
 
@@ -42,11 +46,13 @@ describe 'Dropdown label', js: true, feature: true do
 
   describe 'keyboard navigation' do
     it 'selects label' do
-      send_keys_to_filtered_search('label:')
+      bug_label = create(:label, project: project, title: 'bug-label')
+      init_label_search
 
       filtered_search.native.send_keys(:down, :down, :enter)
 
-      expect(filtered_search.value).to eq("label:~#{special_label.name} ")
+      expect_tokens([{ name: 'label', value: "~#{bug_label.title}" }])
+      expect_filtered_search_input_empty
     end
   end
 
@@ -54,216 +60,233 @@ describe 'Dropdown label', js: true, feature: true do
     it 'opens when the search bar has label:' do
       filtered_search.set('label:')
 
-      expect(page).to have_css(js_dropdown_label, visible: true)
+      expect(page).to have_css(js_dropdown_label)
     end
 
     it 'closes when the search bar is unfocused' do
-      find('body').click()
+      find('body').click
 
-      expect(page).to have_css(js_dropdown_label, visible: false)
+      expect(page).not_to have_css(js_dropdown_label)
     end
 
-    it 'should show loading indicator when opened' do
+    it 'shows loading indicator when opened and hides it when loaded' do
       filtered_search.set('label:')
 
-      expect(page).to have_css('#js-dropdown-label .filter-dropdown-loading', visible: true)
+      expect(find(js_dropdown_label)).to have_css('.filter-dropdown-loading')
+      expect(find(js_dropdown_label)).not_to have_css('.filter-dropdown-loading')
     end
 
-    it 'should hide loading indicator when loaded' do
-      send_keys_to_filtered_search('label:')
+    it 'loads all the labels when opened' do
+      bug_label = create(:label, project: project, title: 'bug-label')
+      filtered_search.set('label:')
 
-      expect(page).not_to have_css('#js-dropdown-label .filter-dropdown-loading')
-    end
-
-    it 'should load all the labels when opened' do
-      send_keys_to_filtered_search('label:')
-
-      expect(dropdown_label_size).to be > 0
+      expect(filter_dropdown).to have_content(bug_label.title)
+      expect(dropdown_label_size).to eq(1)
     end
   end
 
   describe 'filtering' do
+    include_context 'with labels'
+
     before do
-      filtered_search.set('label')
+      init_label_search
     end
 
-    it 'filters by name' do
-      send_keys_to_filtered_search(':b')
+    it 'filters by case-insensitive name with or without symbol' do
+      filtered_search.send_keys('b')
 
+      expect(filter_dropdown.find('.filter-dropdown-item', text: bug_label.title)).to be_visible
+      expect(filter_dropdown.find('.filter-dropdown-item', text: uppercase_label.title)).to be_visible
+      expect(dropdown_label_size).to eq(2)
+
+      clear_search_field
+      init_label_search
+
+      filtered_search.send_keys('~bu')
+
+      expect(filter_dropdown.find('.filter-dropdown-item', text: bug_label.title)).to be_visible
+      expect(filter_dropdown.find('.filter-dropdown-item', text: uppercase_label.title)).to be_visible
       expect(dropdown_label_size).to eq(2)
     end
 
-    it 'filters by case insensitive name' do
-      send_keys_to_filtered_search(':B')
+    it 'filters by multiple words with or without symbol' do
+      filtered_search.send_keys('Hig')
 
-      expect(dropdown_label_size).to eq(2)
-    end
+      expect(filter_dropdown.find('.filter-dropdown-item', text: two_words_label.title)).to be_visible
+      expect(dropdown_label_size).to eq(1)
 
-    it 'filters by name with symbol' do
-      send_keys_to_filtered_search(':~bu')
+      clear_search_field
+      init_label_search
 
-      expect(dropdown_label_size).to eq(2)
-    end
+      filtered_search.send_keys('~Hig')
 
-    it 'filters by case insensitive name with symbol' do
-      send_keys_to_filtered_search(':~BU')
-
-      expect(dropdown_label_size).to eq(2)
-    end
-
-    it 'filters by multiple words' do
-      send_keys_to_filtered_search(':Hig')
-
+      expect(filter_dropdown.find('.filter-dropdown-item', text: two_words_label.title)).to be_visible
       expect(dropdown_label_size).to eq(1)
     end
 
-    it 'filters by multiple words with symbol' do
-      send_keys_to_filtered_search(':~Hig')
+    it 'filters by multiple words containing single quotes with or without symbol' do
+      filtered_search.send_keys('won\'t')
 
+      expect(filter_dropdown.find('.filter-dropdown-item', text: wont_fix_single_label.title)).to be_visible
+      expect(dropdown_label_size).to eq(1)
+
+      clear_search_field
+      init_label_search
+
+      filtered_search.send_keys('~won\'t')
+
+      expect(filter_dropdown.find('.filter-dropdown-item', text: wont_fix_single_label.title)).to be_visible
       expect(dropdown_label_size).to eq(1)
     end
 
-    it 'filters by multiple words containing single quotes' do
-      send_keys_to_filtered_search(':won\'t')
+    it 'filters by multiple words containing double quotes with or without symbol' do
+      filtered_search.send_keys('won"t')
 
+      expect(filter_dropdown.find('.filter-dropdown-item', text: wont_fix_label.title)).to be_visible
+      expect(dropdown_label_size).to eq(1)
+
+      clear_search_field
+      init_label_search
+
+      filtered_search.send_keys('~won"t')
+
+      expect(filter_dropdown.find('.filter-dropdown-item', text: wont_fix_label.title)).to be_visible
       expect(dropdown_label_size).to eq(1)
     end
 
-    it 'filters by multiple words containing single quotes with symbol' do
-      send_keys_to_filtered_search(':~won\'t')
+    it 'filters by special characters with or without symbol' do
+      filtered_search.send_keys('^+')
 
+      expect(filter_dropdown.find('.filter-dropdown-item', text: special_label.title)).to be_visible
       expect(dropdown_label_size).to eq(1)
-    end
 
-    it 'filters by multiple words containing double quotes' do
-      send_keys_to_filtered_search(':won"t')
+      clear_search_field
+      init_label_search
 
-      expect(dropdown_label_size).to eq(1)
-    end
+      filtered_search.send_keys('~^+')
 
-    it 'filters by multiple words containing double quotes with symbol' do
-      send_keys_to_filtered_search(':~won"t')
-
-      expect(dropdown_label_size).to eq(1)
-    end
-
-    it 'filters by special characters' do
-      send_keys_to_filtered_search(':^+')
-
-      expect(dropdown_label_size).to eq(1)
-    end
-
-    it 'filters by special characters with symbol' do
-      send_keys_to_filtered_search(':~^+')
-
+      expect(filter_dropdown.find('.filter-dropdown-item', text: special_label.title)).to be_visible
       expect(dropdown_label_size).to eq(1)
     end
   end
 
   describe 'selecting from dropdown' do
+    include_context 'with labels'
+
     before do
-      filtered_search.set('label:')
+      init_label_search
     end
 
     it 'fills in the label name when the label has not been filled' do
       click_label(bug_label.title)
 
-      expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~#{bug_label.title} ")
+      expect(page).not_to have_css(js_dropdown_label)
+      expect_tokens([{ name: 'label', value: "~#{bug_label.title}" }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in the label name when the label is partially filled' do
-      send_keys_to_filtered_search('bu')
+      filtered_search.send_keys('bu')
       click_label(bug_label.title)
 
-      expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~#{bug_label.title} ")
+      expect(page).not_to have_css(js_dropdown_label)
+      expect_tokens([{ name: 'label', value: "~#{bug_label.title}" }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in the label name that contains multiple words' do
       click_label(two_words_label.title)
 
-      expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~\"#{two_words_label.title}\" ")
+      expect(page).not_to have_css(js_dropdown_label)
+      expect_tokens([{ name: 'label', value: "\"#{two_words_label.title}\"" }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in the label name that contains multiple words and is very long' do
       click_label(long_label.title)
 
-      expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~\"#{long_label.title}\" ")
+      expect(page).not_to have_css(js_dropdown_label)
+      expect_tokens([{ name: 'label', value: "\"#{long_label.title}\"" }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in the label name that contains double quotes' do
       click_label(wont_fix_label.title)
 
-      expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~'#{wont_fix_label.title}' ")
+      expect(page).not_to have_css(js_dropdown_label)
+      expect_tokens([{ name: 'label', value: "~'#{wont_fix_label.title}'" }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in the label name with the correct capitalization' do
       click_label(uppercase_label.title)
 
-      expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~#{uppercase_label.title} ")
+      expect(page).not_to have_css(js_dropdown_label)
+      expect_tokens([{ name: 'label', value: "~#{uppercase_label.title}" }])
+      expect_filtered_search_input_empty
     end
 
     it 'fills in the label name with special characters' do
       click_label(special_label.title)
 
-      expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:~#{special_label.title} ")
+      expect(page).not_to have_css(js_dropdown_label)
+      expect_tokens([{ name: 'label', value: "~#{special_label.title}" }])
+      expect_filtered_search_input_empty
     end
 
     it 'selects `no label`' do
-      find('#js-dropdown-label .filter-dropdown-item', text: 'No Label').click
+      find("#{js_dropdown_label} .filter-dropdown-item", text: 'No Label').click
 
-      expect(page).to have_css(js_dropdown_label, visible: false)
-      expect(filtered_search.value).to eq("label:none ")
+      expect(page).not_to have_css(js_dropdown_label)
+      expect_tokens([{ name: 'label', value: 'none' }])
+      expect_filtered_search_input_empty
     end
   end
 
   describe 'input has existing content' do
     it 'opens label dropdown with existing search term' do
       filtered_search.set('searchTerm label:')
-      expect(page).to have_css(js_dropdown_label, visible: true)
+
+      expect(page).to have_css(js_dropdown_label)
     end
 
     it 'opens label dropdown with existing author' do
       filtered_search.set('author:@person label:')
-      expect(page).to have_css(js_dropdown_label, visible: true)
+
+      expect(page).to have_css(js_dropdown_label)
     end
 
     it 'opens label dropdown with existing assignee' do
       filtered_search.set('assignee:@person label:')
-      expect(page).to have_css(js_dropdown_label, visible: true)
+
+      expect(page).to have_css(js_dropdown_label)
     end
 
     it 'opens label dropdown with existing label' do
       filtered_search.set('label:~urgent label:')
-      expect(page).to have_css(js_dropdown_label, visible: true)
+
+      expect(page).to have_css(js_dropdown_label)
     end
 
     it 'opens label dropdown with existing milestone' do
       filtered_search.set('milestone:%v2.0 label:')
-      expect(page).to have_css(js_dropdown_label, visible: true)
+
+      expect(page).to have_css(js_dropdown_label)
     end
   end
 
   describe 'caching requests' do
     it 'caches requests after the first load' do
-      filtered_search.set('label')
-      send_keys_to_filtered_search(':')
-      initial_size = dropdown_label_size
+      create(:label, project: project, title: 'bug-label')
+      init_label_search
 
-      expect(initial_size).to be > 0
+      expect(dropdown_label_size).to eq(1)
 
       create(:label, project: project)
-      find('.filtered-search-input-container .clear-search').click
-      filtered_search.set('label')
-      send_keys_to_filtered_search(':')
+      clear_search_field
+      init_label_search
 
-      expect(dropdown_label_size).to eq(initial_size)
+      expect(dropdown_label_size).to eq(1)
     end
   end
 end

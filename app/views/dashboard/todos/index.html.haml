@@ -4,15 +4,13 @@
 - if current_user.todos.any?
   .top-area
     %ul.nav-links
-      - todo_pending_active = ('active' if params[:state].blank? || params[:state] == 'pending')
-      %li{ class: "todos-pending #{todo_pending_active}" }>
+      %li.todos-pending{ class: active_when(params[:state].blank? || params[:state] == 'pending') }>
         = link_to todos_filter_path(state: 'pending') do
           %span
             To do
           %span.badge
             = number_with_delimiter(todos_pending_count)
-      - todo_done_active = ('active' if params[:state] == 'done')
-      %li{ class: "todos-done #{todo_done_active}" }>
+      %li.todos-done{ class: active_when(params[:state] == 'done') }>
         = link_to todos_filter_path(state: 'done') do
           %span
             Done
@@ -21,9 +19,13 @@
 
     .nav-controls
       - if @todos.any?(&:pending?)
-        = link_to destroy_all_dashboard_todos_path(todos_filter_params), class: 'btn btn-loading js-todos-mark-all', method: :delete do
-          Mark all as done
-          = icon('spinner spin')
+        .append-right-default
+          = link_to destroy_all_dashboard_todos_path(todos_filter_params), class: 'btn btn-loading js-todos-mark-all', method: :delete, data: { href: destroy_all_dashboard_todos_path(todos_filter_params) } do
+            Mark all as done
+            = icon('spinner spin')
+          = link_to bulk_restore_dashboard_todos_path, class: 'btn btn-loading js-todos-undo-all hidden', method: :patch , data: { href: bulk_restore_dashboard_todos_path(todos_filter_params) } do
+            Undo mark all as done
+            = icon('spinner spin')
 
   .todos-filters
     .row-content-block.second-block
@@ -48,36 +50,39 @@
             = hidden_field_tag(:action_id, params[:action_id])
           = dropdown_tag(todo_actions_dropdown_label(params[:action_id], 'Action'), options: { toggle_class: 'js-action-search js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-action js-filter-submit',
             data: { data: todo_actions_options, default_label: 'Action' } })
-        .pull-right
-          .dropdown.inline.prepend-left-10
-            %button.dropdown-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
+        .filter-item.sort-filter
+          .dropdown
+            %button.dropdown-menu-toggle.dropdown-menu-toggle-sort{ type: 'button', 'data-toggle' => 'dropdown' }
               %span.light
               - if @sort.present?
                 = sort_options_hash[@sort]
               - else
                 = sort_title_recently_created
               = icon('chevron-down')
-            %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-sort
+            %ul.dropdown-menu.dropdown-menu-sort
               %li
-                = link_to todos_filter_path(sort: sort_value_priority) do
-                  = sort_title_priority
+                = link_to todos_filter_path(sort: sort_value_label_priority) do
+                  = sort_title_label_priority
                 = link_to todos_filter_path(sort: sort_value_recently_created) do
                   = sort_title_recently_created
                 = link_to todos_filter_path(sort: sort_value_oldest_created) do
                   = sort_title_oldest_created
 
-
 .js-todos-all
   - if @todos.any?
-    .js-todos-options{ data: {per_page: @todos.limit_value, current_page: @todos.current_page, total_pages: @todos.total_pages} }
-      .panel.panel-default.panel-small.panel-without-border
-        %ul.content-list.todos-list
-          = render @todos
-    = paginate @todos, theme: "gitlab"
-
+    .js-todos-list-container
+      .js-todos-options{ data: { per_page: @todos.limit_value, current_page: @todos.current_page, total_pages: @todos.total_pages } }
+        .panel.panel-default.panel-without-border.panel-without-margin
+          %ul.content-list.todos-list
+            = render @todos
+      = paginate @todos, theme: "gitlab"
+    .js-nothing-here-container.todos-all-done.hidden
+      = render "shared/empty_states/icons/todos_all_done.svg"
+      %h4.text-center
+        You're all done!
   - elsif current_user.todos.any?
     .todos-all-done
-      = render "shared/empty_states/todos_all_done.svg"
+      = render "shared/empty_states/icons/todos_all_done.svg"
       - if todos_filter_empty?
         %h4.text-center
           = Gitlab.config.gitlab.no_todos_messages.sample
@@ -94,7 +99,7 @@
   - else
     .todos-empty
       .todos-empty-hero
-        = render "shared/empty_states/todos_empty.svg"
+        = render "shared/empty_states/icons/todos_empty.svg"
       .todos-empty-content
         %h4
           Todos let you see what you should do next.

@@ -1,29 +1,51 @@
 require 'base64'
 require 'json'
 require 'securerandom'
+require 'uri'
 
 module Gitlab
   class Workhorse
-    SEND_DATA_HEADER = 'Gitlab-Workhorse-Send-Data'
-    VERSION_FILE = 'GITLAB_WORKHORSE_VERSION'
-    INTERNAL_API_CONTENT_TYPE = 'application/vnd.gitlab-workhorse+json'
-    INTERNAL_API_REQUEST_HEADER = 'Gitlab-Workhorse-Api-Request'
+    SEND_DATA_HEADER = 'Gitlab-Workhorse-Send-Data'.freeze
+    VERSION_FILE = 'GITLAB_WORKHORSE_VERSION'.freeze
+    INTERNAL_API_CONTENT_TYPE = 'application/vnd.gitlab-workhorse+json'.freeze
+    INTERNAL_API_REQUEST_HEADER = 'Gitlab-Workhorse-Api-Request'.freeze
+    NOTIFICATION_CHANNEL = 'workhorse:notifications'.freeze
 
     # Supposedly the effective key size for HMAC-SHA256 is 256 bits, i.e. 32
     # bytes https://tools.ietf.org/html/rfc4868#section-2.6
     SECRET_LENGTH = 32
 
     class << self
-      def git_http_ok(repository, user)
+      def git_http_ok(repository, user, action)
+        repo_path = repository.path_to_repo
         params = {
           GL_ID: Gitlab::GlId.gl_id(user),
-          RepoPath: repository.path_to_repo,
+          RepoPath: repo_path,
         }
 
-        params.merge!(
-          GitalySocketPath: Gitlab.config.gitaly.socket_path,
-          GitalyResourcePath: "/projects/#{repository.project.id}/git-http/info-refs",
-        ) if Gitlab.config.gitaly.socket_path.present?
+        if Gitlab.config.gitaly.enabled
+          storage = repository.project.repository_storage
+          address = Gitlab::GitalyClient.get_address(storage)
+          # TODO: use GitalyClient code to assemble the Repository message
+          params[:Repository] = Gitaly::Repository.new(
+            path: repo_path,
+            storage_name: storage,
+            relative_path: Gitlab::RepoPath.strip_storage_path(repo_path),
+          ).to_h
+
+          feature_enabled = case action.to_s
+                            when 'git_receive_pack'
+                              Gitlab::GitalyClient.feature_enabled?(:post_receive_pack)
+                            when 'git_upload_pack'
+                              Gitlab::GitalyClient.feature_enabled?(:post_upload_pack)
+                            when 'info_refs'
+                              true
+                            else
+                              raise "Unsupported action: #{action}"
+                            end
+
+          params[:GitalySocketPath] = URI(address).path if feature_enabled
+        end
 
         params
       end
@@ -107,7 +129,8 @@ module Gitlab
           'Terminal' => {
             'Subprotocols' => terminal[:subprotocols],
             'Url' => terminal[:url],
-            'Header' => terminal[:headers]
+            'Header' => terminal[:headers],
+            'MaxSessionTime' => terminal[:max_session_time],
           }
         }
         details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.has_key?(:ca_pem)
@@ -151,6 +174,18 @@ module Gitlab
 
       def secret_path
         Rails.root.join('.gitlab_workhorse_secret')
+      end
+
+      def set_key_and_notify(key, value, expire: nil, overwrite: true)
+        Gitlab::Redis.with do |redis|
+          result = redis.set(key, value, ex: expire, nx: !overwrite)
+          if result
+            redis.publish(NOTIFICATION_CHANNEL, "#{key}=#{value}")
+            value
+          else
+            redis.get(key)
+          end
+        end
       end
 
       protected

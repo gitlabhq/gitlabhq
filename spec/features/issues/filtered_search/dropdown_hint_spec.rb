@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe 'Dropdown hint', js: true, feature: true do
+  include FilteredSearchHelpers
   include WaitForAjax
 
   let!(:project) { create(:empty_project) }
@@ -42,10 +43,10 @@ describe 'Dropdown hint', js: true, feature: true do
   end
 
   describe 'filtering' do
-    it 'does not filter `Keep typing and press Enter`' do
+    it 'does not filter `Press Enter or click to search`' do
       filtered_search.set('randomtext')
 
-      expect(page).to have_css(js_dropdown_hint, text: 'Keep typing and press Enter', visible: false)
+      expect(page).to have_css(js_dropdown_hint, text: 'Press Enter or click to search', visible: false)
       expect(dropdown_hint_size).to eq(0)
     end
 
@@ -66,7 +67,8 @@ describe 'Dropdown hint', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-author', visible: true)
-      expect(filtered_search.value).to eq('author:')
+      expect_tokens([{ name: 'author' }])
+      expect_filtered_search_input_empty
     end
 
     it 'opens the assignee dropdown when you click on assignee' do
@@ -74,7 +76,8 @@ describe 'Dropdown hint', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-assignee', visible: true)
-      expect(filtered_search.value).to eq('assignee:')
+      expect_tokens([{ name: 'assignee' }])
+      expect_filtered_search_input_empty
     end
 
     it 'opens the milestone dropdown when you click on milestone' do
@@ -82,7 +85,8 @@ describe 'Dropdown hint', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-milestone', visible: true)
-      expect(filtered_search.value).to eq('milestone:')
+      expect_tokens([{ name: 'milestone' }])
+      expect_filtered_search_input_empty
     end
 
     it 'opens the label dropdown when you click on label' do
@@ -90,7 +94,8 @@ describe 'Dropdown hint', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-label', visible: true)
-      expect(filtered_search.value).to eq('label:')
+      expect_tokens([{ name: 'label' }])
+      expect_filtered_search_input_empty
     end
   end
 
@@ -101,7 +106,8 @@ describe 'Dropdown hint', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-author', visible: true)
-      expect(filtered_search.value).to eq('author:')
+      expect_tokens([{ name: 'author' }])
+      expect_filtered_search_input_empty
     end
 
     it 'opens the assignee dropdown when you click on assignee' do
@@ -110,7 +116,8 @@ describe 'Dropdown hint', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-assignee', visible: true)
-      expect(filtered_search.value).to eq('assignee:')
+      expect_tokens([{ name: 'assignee' }])
+      expect_filtered_search_input_empty
     end
 
     it 'opens the milestone dropdown when you click on milestone' do
@@ -119,7 +126,8 @@ describe 'Dropdown hint', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-milestone', visible: true)
-      expect(filtered_search.value).to eq('milestone:')
+      expect_tokens([{ name: 'milestone' }])
+      expect_filtered_search_input_empty
     end
 
     it 'opens the label dropdown when you click on label' do
@@ -128,7 +136,46 @@ describe 'Dropdown hint', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_hint, visible: false)
       expect(page).to have_css('#js-dropdown-label', visible: true)
-      expect(filtered_search.value).to eq('label:')
+      expect_tokens([{ name: 'label' }])
+      expect_filtered_search_input_empty
+    end
+  end
+
+  describe 'reselecting from dropdown' do
+    it 'reuses existing author text' do
+      filtered_search.send_keys('author:')
+      filtered_search.send_keys(:backspace)
+      click_hint('author')
+
+      expect_tokens([{ name: 'author' }])
+      expect_filtered_search_input_empty
+    end
+
+    it 'reuses existing assignee text' do
+      filtered_search.send_keys('assignee:')
+      filtered_search.send_keys(:backspace)
+      click_hint('assignee')
+
+      expect_tokens([{ name: 'assignee' }])
+      expect_filtered_search_input_empty
+    end
+
+    it 'reuses existing milestone text' do
+      filtered_search.send_keys('milestone:')
+      filtered_search.send_keys(:backspace)
+      click_hint('milestone')
+
+      expect_tokens([{ name: 'milestone' }])
+      expect_filtered_search_input_empty
+    end
+
+    it 'reuses existing label text' do
+      filtered_search.send_keys('label:')
+      filtered_search.send_keys(:backspace)
+      click_hint('label')
+
+      expect_tokens([{ name: 'label' }])
+      expect_filtered_search_input_empty
     end
   end
 end

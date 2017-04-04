@@ -253,6 +253,8 @@ li.note {
   .progress {
     margin-bottom: 0;
     margin-top: 4px;
+    box-shadow: none;
+    background-color: $border-gray-light;
   }
 }
 
@@ -425,5 +427,11 @@ table {
 
   &-100 {
     @include str-truncated(100%);
+  }
+}
+
+.tooltip {
+  .tooltip-inner {
+    word-wrap: break-word;
   }
 }

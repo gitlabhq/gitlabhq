@@ -15,12 +15,14 @@ Issue:
 - updated_by_id
 - confidential
 - deleted_at
+- closed_at
 - due_date
 - moved_to_id
 - lock_version
 - milestone_id
 - weight
 - time_estimate
+- relative_position
 Event:
 - id
 - target_type
@@ -142,7 +144,7 @@ MergeRequest:
 - updated_by_id
 - merge_error
 - merge_params
-- merge_when_build_succeeds
+- merge_when_pipeline_succeeds
 - merge_user_id
 - merge_commit_sha
 - deleted_at
@@ -175,7 +177,6 @@ Ci::Pipeline:
 - tag
 - yaml_errors
 - committed_at
-- gl_project_id
 - status
 - started_at
 - finished_at
@@ -210,7 +211,6 @@ CommitStatus:
 - target_url
 - description
 - artifacts_file
-- gl_project_id
 - artifacts_metadata
 - erased_by_id
 - erased_at
@@ -222,6 +222,7 @@ CommitStatus:
 - queued_at
 - token
 - lock_version
+- coverage_regex
 Ci::Variable:
 - id
 - project_id
@@ -230,7 +231,6 @@ Ci::Variable:
 - encrypted_value
 - encrypted_value_salt
 - encrypted_value_iv
-- gl_project_id
 Ci::Trigger:
 - id
 - token
@@ -238,7 +238,8 @@ Ci::Trigger:
 - deleted_at
 - created_at
 - updated_at
-- gl_project_id
+- owner_id
+- description
 DeployKey:
 - id
 - user_id
@@ -349,8 +350,8 @@ LabelPriority:
 Timelog:
 - id
 - time_spent
-- trackable_id
-- trackable_type
+- merge_request_id
+- issue_id
 - user_id
 - created_at
 - updated_at

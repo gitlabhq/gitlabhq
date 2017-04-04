@@ -124,9 +124,9 @@ module Gitlab
 
       def name_proc
         if allow_username_or_email_login
-          Proc.new { |name| name.gsub(/@.*\z/, '') }
+          proc { |name| name.gsub(/@.*\z/, '') }
         else
-          Proc.new { |name| name }
+          proc { |name| name }
         end
       end
 

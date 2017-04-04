@@ -76,5 +76,9 @@ module AuthHelper
       (current_user.otp_grace_period_started_at + current_application_settings.two_factor_grace_period.hours) < Time.current
   end
 
+  def unlink_allowed?(provider)
+    %w(saml cas3).exclude?(provider.to_s)
+  end
+
   extend self
 end

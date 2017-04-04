@@ -163,7 +163,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     end
 
     it "doesn't list issue notes when access is restricted" do
-      project = create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE)
+      project = create(:empty_project, :public, :issues_private)
       note = create(:note_on_issue, project: project)
 
       results = described_class.new(user, project, note.note)
@@ -172,7 +172,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     end
 
     it "doesn't list merge_request notes when access is restricted" do
-      project = create(:empty_project, :public, merge_requests_access_level: ProjectFeature::PRIVATE)
+      project = create(:empty_project, :public, :merge_requests_private)
       note = create(:note_on_merge_request, project: project)
 
       results = described_class.new(user, project, note.note)

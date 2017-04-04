@@ -9,11 +9,12 @@ class Groups::GroupMembersController < Groups::ApplicationController
     @sort = params[:sort].presence || sort_value_name
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
 
-    @members = @group.group_members
+    @members = GroupMembersFinder.new(@group).execute
     @members = @members.non_invite unless can?(current_user, :admin_group, @group)
     @members = @members.search(params[:search]) if params[:search].present?
     @members = @members.sort(@sort)
     @members = @members.page(params[:page]).per(50)
+    @members.includes(:user)
 
     @requesters = AccessRequestsFinder.new(@group).execute(current_user)
 

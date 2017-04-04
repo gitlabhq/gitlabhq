@@ -34,7 +34,7 @@ module Gitlab
         end
 
         def project
-          @project ||= Project.find_with_namespace(project_path)
+          @project ||= Project.find_by_full_path(project_path)
         end
 
         private

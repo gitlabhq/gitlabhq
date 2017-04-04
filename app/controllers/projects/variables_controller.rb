@@ -4,7 +4,7 @@ class Projects::VariablesController < Projects::ApplicationController
   layout 'project_settings'
 
   def index
-    @variable = Ci::Variable.new
+    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
   end
 
   def show
@@ -25,9 +25,10 @@ class Projects::VariablesController < Projects::ApplicationController
     @variable = Ci::Variable.new(project_params)
 
     if @variable.valid? && @project.variables << @variable
-      redirect_to namespace_project_variables_path(project.namespace, project), notice: 'Variables were successfully updated.'
+      flash[:notice] = 'Variables were successfully updated.'
+      redirect_to namespace_project_settings_ci_cd_path(project.namespace, project)
     else
-      render action: "index"
+      render "show"
     end
   end
 
@@ -35,7 +36,7 @@ class Projects::VariablesController < Projects::ApplicationController
     @key = @project.variables.find(params[:id])
     @key.destroy
 
-    redirect_to namespace_project_variables_path(project.namespace, project), notice: 'Variable was successfully removed.'
+    redirect_to namespace_project_settings_ci_cd_path(project.namespace, project), notice: 'Variable was successfully removed.'
   end
 
   private

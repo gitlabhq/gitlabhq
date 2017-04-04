@@ -5,18 +5,14 @@ class Projects::RunnersController < Projects::ApplicationController
   layout 'project_settings'
 
   def index
-    @project_runners = project.runners.ordered
-    @assignable_runners = current_user.ci_authorized_runners.
-      assignable_for(project).ordered.page(params[:page]).per(20)
-    @shared_runners = Ci::Runner.shared.active
-    @shared_runners_count = @shared_runners.count(:all)
+    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
   end
 
   def edit
   end
 
   def update
-    if @runner.update_attributes(runner_params)
+    if Ci::UpdateRunnerService.new(@runner).update(runner_params)
       redirect_to runner_path(@runner), notice: 'Runner was successfully updated.'
     else
       render 'edit'
@@ -32,7 +28,7 @@ class Projects::RunnersController < Projects::ApplicationController
   end
 
   def resume
-    if @runner.update_attributes(active: true)
+    if Ci::UpdateRunnerService.new(@runner).update(active: true)
       redirect_to runner_path(@runner), notice: 'Runner was successfully updated.'
     else
       redirect_to runner_path(@runner), alert: 'Runner was not updated.'
@@ -40,7 +36,7 @@ class Projects::RunnersController < Projects::ApplicationController
   end
 
   def pause
-    if @runner.update_attributes(active: false)
+    if Ci::UpdateRunnerService.new(@runner).update(active: false)
       redirect_to runner_path(@runner), notice: 'Runner was successfully updated.'
     else
       redirect_to runner_path(@runner), alert: 'Runner was not updated.'
@@ -53,7 +49,7 @@ class Projects::RunnersController < Projects::ApplicationController
   def toggle_shared_runners
     project.toggle!(:shared_runners_enabled)
 
-    redirect_to namespace_project_runners_path(project.namespace, project)
+    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
   end
 
   protected

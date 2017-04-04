@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CommitStatus, models: true do
+describe CommitStatus, :models do
   let(:project) { create(:project, :repository) }
 
   let(:pipeline) do
@@ -127,7 +127,7 @@ describe CommitStatus, models: true do
   end
 
   describe '.latest' do
-    subject { CommitStatus.latest.order(:id) }
+    subject { described_class.latest.order(:id) }
 
     let(:statuses) do
       [create_status(name: 'aa', ref: 'bb', status: 'running'),
@@ -143,7 +143,7 @@ describe CommitStatus, models: true do
   end
 
   describe '.running_or_pending' do
-    subject { CommitStatus.running_or_pending.order(:id) }
+    subject { described_class.running_or_pending.order(:id) }
 
     let(:statuses) do
       [create_status(name: 'aa', ref: 'bb', status: 'running'),
@@ -158,8 +158,22 @@ describe CommitStatus, models: true do
     end
   end
 
+  describe '.after_stage' do
+    subject { described_class.after_stage(0) }
+
+    let(:statuses) do
+      [create_status(name: 'aa', stage_idx: 0),
+       create_status(name: 'cc', stage_idx: 1),
+       create_status(name: 'aa', stage_idx: 2)]
+    end
+
+    it 'returns statuses from second and third stage' do
+      is_expected.to eq(statuses.values_at(1, 2))
+    end
+  end
+
   describe '.exclude_ignored' do
-    subject { CommitStatus.exclude_ignored.order(:id) }
+    subject { described_class.exclude_ignored.order(:id) }
 
     let(:statuses) do
       [create_status(when: 'manual', status: 'skipped'),
@@ -171,11 +185,32 @@ describe CommitStatus, models: true do
        create_status(allow_failure: true, status: 'success'),
        create_status(allow_failure: true, status: 'failed'),
        create_status(allow_failure: false, status: 'success'),
-       create_status(allow_failure: false, status: 'failed')]
+       create_status(allow_failure: false, status: 'failed'),
+       create_status(allow_failure: true, status: 'manual'),
+       create_status(allow_failure: false, status: 'manual')]
     end
 
     it 'returns statuses without what we want to ignore' do
-      is_expected.to eq(statuses.values_at(0, 1, 2, 3, 4, 5, 6, 8, 9))
+      is_expected.to eq(statuses.values_at(0, 1, 2, 3, 4, 5, 6, 8, 9, 11))
+    end
+  end
+
+  describe '.failed_but_allowed' do
+    subject { described_class.failed_but_allowed.order(:id) }
+
+    let(:statuses) do
+      [create_status(allow_failure: true, status: 'success'),
+       create_status(allow_failure: true, status: 'failed'),
+       create_status(allow_failure: false, status: 'success'),
+       create_status(allow_failure: false, status: 'failed'),
+       create_status(allow_failure: true, status: 'canceled'),
+       create_status(allow_failure: false, status: 'canceled'),
+       create_status(allow_failure: true, status: 'manual'),
+       create_status(allow_failure: false, status: 'manual')]
+    end
+
+    it 'returns statuses without what we want to ignore' do
+      is_expected.to eq(statuses.values_at(1, 4))
     end
   end
 
@@ -259,6 +294,42 @@ describe CommitStatus, models: true do
       it "'#{name}' sorts as '#{sortable_name}'" do
         commit_status.name = name
         expect(commit_status.sortable_name).to eq(sortable_name)
+      end
+    end
+  end
+
+  describe '#locking_enabled?' do
+    before do
+      commit_status.lock_version = 100
+    end
+
+    subject { commit_status.locking_enabled? }
+
+    context "when changing status" do
+      before do
+        commit_status.status = "running"
+      end
+
+      it "lock" do
+        is_expected.to be true
+      end
+
+      it "raise exception when trying to update" do
+        expect{ commit_status.save }.to raise_error(ActiveRecord::StaleObjectError)
+      end
+    end
+
+    context "when changing description" do
+      before do
+        commit_status.description = "test"
+      end
+
+      it "do not lock" do
+        is_expected.to be false
+      end
+
+      it "save correctly" do
+        expect(commit_status.save).to be true
       end
     end
   end

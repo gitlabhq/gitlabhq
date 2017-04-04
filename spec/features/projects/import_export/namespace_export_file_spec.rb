@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature 'Import/Export - Namespace export file cleanup', feature: true, js: true do
-  let(:export_path) { "#{Dir::tmpdir}/import_file_spec" }
+  let(:export_path) { "#{Dir.tmpdir}/import_file_spec" }
   let(:config_hash) { YAML.load_file(Gitlab::ImportExport.config_file).deep_stringify_keys }
 
   let(:project) { create(:empty_project) }

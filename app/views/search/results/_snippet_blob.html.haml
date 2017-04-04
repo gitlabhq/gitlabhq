@@ -7,46 +7,39 @@
     = snippet.title
     by
     = link_to user_snippets_path(snippet.author) do
-      = image_tag avatar_icon(snippet.author_email), class: "avatar avatar-inline s16", alt: ''
+      = image_tag avatar_icon(snippet.author), class: "avatar avatar-inline s16", alt: ''
       = snippet.author_name
     %span.light= time_ago_with_tooltip(snippet.created_at)
   %h4.snippet-title
   - snippet_path = reliable_snippet_path(snippet)
-  = link_to snippet_path do
-    .file-holder
-      .file-title
+  .file-holder
+    .js-file-title.file-title
+      = link_to snippet_path do
         %i.fa.fa-file
         %strong= snippet.file_name
-      - if markup?(snippet.file_name)
-        .file-content.wiki
+    - if markup?(snippet.file_name)
+      .file-content.wiki
+        - snippet_chunks.each do |chunk|
+          - unless chunk[:data].empty?
+            = render_markup(snippet.file_name, chunk[:data])
+          - else
+            .file-content.code
+              .nothing-here-block Empty file
+    - else
+      .file-content.code.js-syntax-highlight
+        .line-numbers
           - snippet_chunks.each do |chunk|
             - unless chunk[:data].empty?
-              = render_markup(snippet.file_name, chunk[:data])
+              - Gitlab::Git::Util.count_lines(chunk[:data]).times do |index|
+                - offset = defined?(chunk[:start_line]) ? chunk[:start_line] : 1
+                - i = index + offset
+                = link_to snippet_path+"#L#{i}", id: "L#{i}", rel: "#L#{i}", class: "diff-line-num" do
+                  %i.fa.fa-link
+                  = i
+        .blob-content
+          - snippet_chunks.each do |chunk|
+            - unless chunk[:data].empty?
+              = highlight(snippet.file_name, chunk[:data], repository: nil, plain: snippet.no_highlighting?)
             - else
               .file-content.code
                 .nothing-here-block Empty file
-      - else
-        .file-content.code.js-syntax-highlight
-          .line-numbers
-            - snippet_chunks.each do |chunk|
-              - unless chunk[:data].empty?
-                - Gitlab::Git::Util.count_lines(chunk[:data]).times do |index|
-                  - offset = defined?(chunk[:start_line]) ? chunk[:start_line] : 1
-                  - i = index + offset
-                  = link_to snippet_path+"#L#{i}", id: "L#{i}", rel: "#L#{i}", class: "diff-line-num" do
-                    %i.fa.fa-link
-                    = i
-                - unless snippet == snippet_chunks.last
-                  %a.diff-line-num
-                    = "."
-          %pre.code
-            %code
-              - snippet_chunks.each do |chunk|
-                - unless chunk[:data].empty?
-                  = chunk[:data]
-                  - unless chunk == snippet_chunks.last
-                    %a
-                      = "..."
-                - else
-                  .file-content.code
-                    .nothing-here-block Empty file

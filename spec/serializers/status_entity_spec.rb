@@ -16,7 +16,7 @@ describe StatusEntity do
     subject { entity.as_json }
 
     it 'contains status details' do
-      expect(subject).to include :text, :icon, :label, :group
+      expect(subject).to include :text, :icon, :favicon, :label, :group
       expect(subject).to include :has_details, :details_path
     end
   end

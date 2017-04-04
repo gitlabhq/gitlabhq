@@ -9,7 +9,7 @@ describe Gitlab::Kubernetes do
     let(:pod_name) { 'pod1' }
     let(:container_name) { 'container1' }
 
-    subject(:result) { URI::parse(container_exec_url(api_url, namespace, pod_name, container_name)) }
+    subject(:result) { URI.parse(container_exec_url(api_url, namespace, pod_name, container_name)) }
 
     it { expect(result.scheme).to eq('wss') }
     it { expect(result.host).to eq('example.com') }

@@ -9,7 +9,7 @@ class GroupMilestone < GlobalMilestone
 
   def self.build(group, projects, title)
     super(projects, title).tap do |milestone|
-      milestone.group = group if milestone
+      milestone&.group = group
     end
   end
 

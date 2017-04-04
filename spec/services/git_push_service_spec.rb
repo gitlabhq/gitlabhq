@@ -3,8 +3,8 @@ require 'spec_helper'
 describe GitPushService, services: true do
   include RepoHelpers
 
-  let(:user)          { create :user }
-  let(:project)       { create :project }
+  let(:user)    { create(:user) }
+  let(:project) { create(:project, :repository) }
 
   before do
     project.team << [user, :master]
@@ -148,6 +148,13 @@ describe GitPushService, services: true do
         expect(UpdateMergeRequestsWorker).to receive(:perform_async).
                                                 with(project.id, user.id, @blankrev, 'newrev', 'refs/heads/master')
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
+      end
+    end
+    
+    context "Sends System Push data" do
+      it "when pushing on a branch" do
+        expect(SystemHookPushWorker).to receive(:perform_async).with(@push_data, :push_hooks)
+        execute_service(project, user, @oldrev, @newrev, @ref )
       end
     end
   end

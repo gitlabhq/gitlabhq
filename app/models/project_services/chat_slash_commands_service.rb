@@ -23,7 +23,7 @@ class ChatSlashCommandsService < Service
 
   def fields
     [
-      { type: 'text', name: 'token', placeholder: '' }
+      { type: 'text', name: 'token', placeholder: 'XXxxXXxxXXxxXXxxXXxxXXxx' }
     ]
   end
 
@@ -31,13 +31,13 @@ class ChatSlashCommandsService < Service
     return unless valid_token?(params[:token])
 
     user = find_chat_user(params)
-    unless user
-      url = authorize_chat_name_url(params)
-      return presenter.authorize_chat_name(url)
-    end
 
-    Gitlab::ChatCommands::Command.new(project, user,
-      params).execute
+    if user
+      Gitlab::ChatCommands::Command.new(project, user, params).execute
+    else
+      url = authorize_chat_name_url(params)
+      Gitlab::ChatCommands::Presenters::Access.new(url).authorize
+    end
   end
 
   private
@@ -48,9 +48,5 @@ class ChatSlashCommandsService < Service
 
   def authorize_chat_name_url(params)
     ChatNames::AuthorizeUserService.new(self, params).execute
-  end
-
-  def presenter
-    Gitlab::ChatCommands::Presenter.new
   end
 end

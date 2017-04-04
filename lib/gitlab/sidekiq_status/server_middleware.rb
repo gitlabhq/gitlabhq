@@ -4,7 +4,7 @@ module Gitlab
       def call(worker, job, queue)
         ret = yield
 
-        SidekiqStatus.unset(job['jid'])
+        Gitlab::SidekiqStatus.unset(job['jid'])
 
         ret
       end

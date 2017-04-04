@@ -7,6 +7,12 @@ module SharedProject
     @project.team << [@user, :master]
   end
 
+  step "I own a project in some group namespace" do
+    @group = create(:group, name: 'some group')
+    @project = create(:project, namespace: @group)
+    @project.team << [@user, :master]
+  end
+
   step "project exists in some group namespace" do
     @group = create(:group, name: 'some group')
     @project = create(:project, :repository, namespace: @group, public_builds: false)
@@ -160,11 +166,15 @@ module SharedProject
   end
 
   step 'I should see project "Internal"' do
-    expect(page).to have_content "Internal"
+    page.within '.js-projects-list-holder' do
+      expect(page).to have_content "Internal"
+    end
   end
 
   step 'I should not see project "Internal"' do
-    expect(page).not_to have_content "Internal"
+    page.within '.js-projects-list-holder' do
+      expect(page).not_to have_content "Internal"
+    end
   end
 
   step 'public project "Community"' do

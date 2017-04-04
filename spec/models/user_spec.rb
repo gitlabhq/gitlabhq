@@ -19,21 +19,24 @@ describe User, models: true do
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
     it { is_expected.to have_many(:groups) }
     it { is_expected.to have_many(:keys).dependent(:destroy) }
+    it { is_expected.to have_many(:deploy_keys).dependent(:destroy) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
     it { is_expected.to have_many(:recent_events).class_name('Event') }
-    it { is_expected.to have_many(:issues).dependent(:destroy) }
+    it { is_expected.to have_many(:issues).dependent(:restrict_with_exception) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
-    it { is_expected.to have_many(:assigned_issues).dependent(:destroy) }
+    it { is_expected.to have_many(:assigned_issues).dependent(:nullify) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
-    it { is_expected.to have_many(:assigned_merge_requests).dependent(:destroy) }
+    it { is_expected.to have_many(:assigned_merge_requests).dependent(:nullify) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
     it { is_expected.to have_one(:abuse_report) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
+    it { is_expected.to have_many(:triggers).dependent(:destroy) }
     it { is_expected.to have_many(:builds).dependent(:nullify) }
     it { is_expected.to have_many(:pipelines).dependent(:nullify) }
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }
+    it { is_expected.to have_many(:uploads).dependent(:destroy) }
 
     describe '#group_members' do
       it 'does not include group memberships for which user is a requester' do
@@ -78,6 +81,7 @@ describe User, models: true do
     it { is_expected.to validate_numericality_of(:projects_limit) }
     it { is_expected.to allow_value(0).for(:projects_limit) }
     it { is_expected.not_to allow_value(-1).for(:projects_limit) }
+    it { is_expected.not_to allow_value(Gitlab::Database::MAX_INT_VALUE + 1).for(:projects_limit) }
 
     it { is_expected.to validate_length_of(:bio).is_at_most(255) }
 
@@ -141,6 +145,11 @@ describe User, models: true do
           user = build(:user, email: "example@test.com")
           expect(user).to be_invalid
         end
+
+        it 'accepts example@test.com when added by another user' do
+          user = build(:user, email: "example@test.com", created_by_id: 1)
+          expect(user).to be_valid
+        end
       end
 
       context 'domain blacklist' do
@@ -158,6 +167,11 @@ describe User, models: true do
           it 'rejects info@example.com' do
             user = build(:user, email: 'info@example.com')
             expect(user).not_to be_valid
+          end
+
+          it 'accepts info@example.com when added by another user' do
+            user = build(:user, email: 'info@example.com', created_by_id: 1)
+            expect(user).to be_valid
           end
         end
 
@@ -293,6 +307,34 @@ describe User, models: true do
     end
   end
 
+  shared_context 'user keys' do
+    let(:user) { create(:user) }
+    let!(:key) { create(:key, user: user) }
+    let!(:deploy_key) { create(:deploy_key, user: user) }
+  end
+
+  describe '#keys' do
+    include_context 'user keys'
+
+    context 'with key and deploy key stored' do
+      it 'returns stored key, but not deploy_key' do
+        expect(user.keys).to include key
+        expect(user.keys).not_to include deploy_key
+      end
+    end
+  end
+
+  describe '#deploy_keys' do
+    include_context 'user keys'
+
+    context 'with key and deploy key stored' do
+      it 'returns stored deploy key, but not normal key' do
+        expect(user.deploy_keys).to include deploy_key
+        expect(user.deploy_keys).not_to include key
+      end
+    end
+  end
+
   describe '#confirm' do
     before do
       allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true)
@@ -319,21 +361,9 @@ describe User, models: true do
   end
 
   describe '#generate_password' do
-    it "executes callback when force_random_password specified" do
-      user = build(:user, force_random_password: true)
-      expect(user).to receive(:generate_password)
-      user.save
-    end
-
     it "does not generate password by default" do
       user = create(:user, password: 'abcdefghe')
       expect(user.password).to eq('abcdefghe')
-    end
-
-    it "generates password when forcing random password" do
-      allow(Devise).to receive(:friendly_token).and_return('123456789')
-      user = create(:user, password: 'abcdefg', force_random_password: true)
-      expect(user.password).to eq('12345678')
     end
   end
 
@@ -543,18 +573,16 @@ describe User, models: true do
       it "applies defaults to user" do
         expect(user.projects_limit).to eq(Gitlab.config.gitlab.default_projects_limit)
         expect(user.can_create_group).to eq(Gitlab.config.gitlab.default_can_create_group)
-        expect(user.theme_id).to eq(Gitlab.config.gitlab.default_theme)
         expect(user.external).to be_falsey
       end
     end
 
     describe 'with default overrides' do
-      let(:user) { User.new(projects_limit: 123, can_create_group: false, can_create_team: true, theme_id: 1) }
+      let(:user) { User.new(projects_limit: 123, can_create_group: false, can_create_team: true) }
 
       it "applies defaults to user" do
         expect(user.projects_limit).to eq(123)
         expect(user.can_create_group).to be_falsey
-        expect(user.theme_id).to eq(1)
       end
     end
 
@@ -656,12 +684,13 @@ describe User, models: true do
   end
 
   describe '.search_with_secondary_emails' do
-    def search_with_secondary_emails(query)
-      described_class.search_with_secondary_emails(query)
-    end
+    delegate :search_with_secondary_emails, to: :described_class
 
-    let!(:user) { create(:user) }
-    let!(:email) { create(:email) }
+    let!(:user) { create(:user, name: 'John Doe', username: 'john.doe', email: 'john.doe@example.com' ) }
+    let!(:another_user) { create(:user, name: 'Albert Smith', username: 'albert.smith', email: 'albert.smith@example.com' ) }
+    let!(:email) do
+      create(:email, user: another_user, email: 'alias@example.com')
+    end
 
     it 'returns users with a matching name' do
       expect(search_with_secondary_emails(user.name)).to eq([user])
@@ -1013,8 +1042,8 @@ describe User, models: true do
     let!(:project2) { create(:empty_project, forked_from_project: project3) }
     let!(:project3) { create(:empty_project) }
     let!(:merge_request) { create(:merge_request, source_project: project2, target_project: project3, author: subject) }
-    let!(:push_event) { create(:event, action: Event::PUSHED, project: project1, target: project1, author: subject) }
-    let!(:merge_event) { create(:event, action: Event::CREATED, project: project3, target: merge_request, author: subject) }
+    let!(:push_event) { create(:event, :pushed, project: project1, target: project1, author: subject) }
+    let!(:merge_event) { create(:event, :created, project: project3, target: merge_request, author: subject) }
 
     before do
       project1.team << [subject, :master]
@@ -1058,7 +1087,7 @@ describe User, models: true do
     let!(:push_data) do
       Gitlab::DataBuilder::Push.build_sample(project2, subject)
     end
-    let!(:push_event) { create(:event, action: Event::PUSHED, project: project2, target: project1, author: subject, data: push_data) }
+    let!(:push_event) { create(:event, :pushed, project: project2, target: project1, author: subject, data: push_data) }
 
     before do
       project1.team << [subject, :master]
@@ -1086,7 +1115,7 @@ describe User, models: true do
       expect(subject.recent_push(project2)).to eq(push_event)
 
       push_data1 = Gitlab::DataBuilder::Push.build_sample(project1, subject)
-      push_event1 = create(:event, action: Event::PUSHED, project: project1, target: project1, author: subject, data: push_data1)
+      push_event1 = create(:event, :pushed, project: project1, target: project1, author: subject, data: push_data1)
 
       expect(subject.recent_push([project1, project2])).to eq(push_event1) # Newest
     end
@@ -1232,7 +1261,7 @@ describe User, models: true do
     end
 
     it 'does not include projects for which issues are disabled' do
-      project = create(:empty_project, issues_access_level: ProjectFeature::DISABLED)
+      project = create(:empty_project, :issues_disabled)
 
       expect(user.projects_where_can_admin_issues.to_a).to be_empty
       expect(user.can?(:admin_issue, project)).to eq(false)
@@ -1378,7 +1407,7 @@ describe User, models: true do
     it { expect(user.nested_groups).to eq([nested_group]) }
   end
 
-  describe '#nested_projects' do
+  describe '#nested_groups_projects' do
     let!(:user) { create(:user) }
     let!(:group) { create(:group) }
     let!(:nested_group) { create(:group, parent: group) }
@@ -1393,7 +1422,7 @@ describe User, models: true do
       other_project.add_developer(create(:user))
     end
 
-    it { expect(user.nested_projects).to eq([nested_project]) }
+    it { expect(user.nested_groups_projects).to eq([nested_project]) }
   end
 
   describe '#refresh_authorized_projects', redis: true do
@@ -1420,6 +1449,76 @@ describe User, models: true do
     it 'stores the correct access levels' do
       expect(user.project_authorizations.where(access_level: Gitlab::Access::GUEST).exists?).to eq(true)
       expect(user.project_authorizations.where(access_level: Gitlab::Access::REPORTER).exists?).to eq(true)
+    end
+  end
+
+  describe '#access_level=' do
+    let(:user) { build(:user) }
+
+    it 'does nothing for an invalid access level' do
+      user.access_level = :invalid_access_level
+
+      expect(user.access_level).to eq(:regular)
+      expect(user.admin).to be false
+    end
+
+    it "assigns the 'admin' access level" do
+      user.access_level = :admin
+
+      expect(user.access_level).to eq(:admin)
+      expect(user.admin).to be true
+    end
+
+    it "doesn't clear existing access levels when an invalid access level is passed in" do
+      user.access_level = :admin
+      user.access_level = :invalid_access_level
+
+      expect(user.access_level).to eq(:admin)
+      expect(user.admin).to be true
+    end
+
+    it "accepts string values in addition to symbols" do
+      user.access_level = 'admin'
+
+      expect(user.access_level).to eq(:admin)
+      expect(user.admin).to be true
+    end
+  end
+
+  describe '.ghost' do
+    it "creates a ghost user if one isn't already present" do
+      ghost = User.ghost
+
+      expect(ghost).to be_ghost
+      expect(ghost).to be_persisted
+    end
+
+    it "does not create a second ghost user if one is already present" do
+      expect do
+        User.ghost
+        User.ghost
+      end.to change { User.count }.by(1)
+      expect(User.ghost).to eq(User.ghost)
+    end
+
+    context "when a regular user exists with the username 'ghost'" do
+      it "creates a ghost user with a non-conflicting username" do
+        create(:user, username: 'ghost')
+        ghost = User.ghost
+
+        expect(ghost).to be_persisted
+        expect(ghost.username).to eq('ghost1')
+      end
+    end
+
+    context "when a regular user exists with the email 'ghost@example.com'" do
+      it "creates a ghost user with a non-conflicting email" do
+        create(:user, email: 'ghost@example.com')
+        ghost = User.ghost
+
+        expect(ghost).to be_persisted
+        expect(ghost.email).to eq('ghost1@example.com')
+      end
     end
   end
 end

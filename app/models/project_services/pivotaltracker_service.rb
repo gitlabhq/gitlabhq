@@ -1,7 +1,7 @@
 class PivotaltrackerService < Service
   include HTTParty
 
-  API_ENDPOINT = 'https://www.pivotaltracker.com/services/v5/source_commits'
+  API_ENDPOINT = 'https://www.pivotaltracker.com/services/v5/source_commits'.freeze
 
   prop_accessor :token, :restrict_to_branch
   validates :token, presence: true, if: :activated?

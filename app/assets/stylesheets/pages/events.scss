@@ -41,7 +41,6 @@
       word-wrap: break-word;
 
       .md {
-        color: $gl-grayish-blue;
         font-size: $gl-font-size;
 
         .label {
@@ -156,7 +155,7 @@
 
 @media (max-width: $screen-xs-max) {
   .event-item {
-    padding-left: $gl-padding;
+    padding-left: 0;
 
     .event-title {
       white-space: normal;
@@ -170,8 +169,7 @@
 
     .event-body {
       margin: 0;
-      border-left: 2px solid $events-body-border;
-      padding-left: 10px;
+      padding-left: 0;
     }
 
     .event-item-timestamp {

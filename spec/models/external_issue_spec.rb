@@ -42,4 +42,12 @@ describe ExternalIssue, models: true do
       expect(issue.project_id).to eq(project.id)
     end
   end
+
+  describe '#hash' do
+    it 'returns the hash of its [class, to_s] pair' do
+      issue_2 = described_class.new(issue.to_s, project)
+
+      expect(issue.hash).to eq(issue_2.hash)
+    end
+  end
 end

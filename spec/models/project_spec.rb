@@ -29,8 +29,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:campfire_service).dependent(:destroy) }
     it { is_expected.to have_one(:drone_ci_service).dependent(:destroy) }
     it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
-    it { is_expected.to have_one(:builds_email_service).dependent(:destroy) }
-    it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
+    it { is_expected.to have_one(:pipelines_email_service).dependent(:destroy) }
     it { is_expected.to have_one(:irker_service).dependent(:destroy) }
     it { is_expected.to have_one(:pivotaltracker_service).dependent(:destroy) }
     it { is_expected.to have_one(:hipchat_service).dependent(:destroy) }
@@ -60,6 +59,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:runners) }
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
+    it { is_expected.to have_many(:pages_domains) }
     it { is_expected.to have_many(:labels).class_name('ProjectLabel').dependent(:destroy) }
     it { is_expected.to have_many(:users_star_projects).dependent(:destroy) }
     it { is_expected.to have_many(:environments).dependent(:destroy) }
@@ -70,6 +70,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
+    it { is_expected.to have_many(:uploads).dependent(:destroy) }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -177,7 +178,7 @@ describe Project, models: true do
       let(:project2) { build(:empty_project, repository_storage: 'missing') }
 
       before do
-        storages = { 'custom' => 'tmp/tests/custom_repositories' }
+        storages = { 'custom' => { 'path' => 'tmp/tests/custom_repositories' } }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
       end
 
@@ -215,6 +216,20 @@ describe Project, models: true do
       project2 = build(:empty_project, import_url: 'test://')
 
       expect(project2.import_data).to be_nil
+    end
+
+    it "does not allow blocked import_url localhost" do
+      project2 = build(:empty_project, import_url: 'http://localhost:9000/t.git')
+
+      expect(project2).to be_invalid
+      expect(project2.errors[:import_url]).to include('imports are not allowed from that URL')
+    end
+
+    it "does not allow blocked import_url port" do
+      project2 = build(:empty_project, import_url: 'http://github.com:25/t.git')
+
+      expect(project2).to be_invalid
+      expect(project2.errors[:import_url]).to include('imports are not allowed from that URL')
     end
 
     describe 'project pending deletion' do
@@ -272,13 +287,6 @@ describe Project, models: true do
     it { is_expected.to delegate_method(:add_reporter).to(:team) }
     it { is_expected.to delegate_method(:add_developer).to(:team) }
     it { is_expected.to delegate_method(:add_master).to(:team) }
-  end
-
-  describe '#name_with_namespace' do
-    let(:project) { build_stubbed(:empty_project) }
-
-    it { expect(project.name_with_namespace).to eq "#{project.namespace.human_name} / #{project.name}" }
-    it { expect(project.human_name).to eq project.name_with_namespace }
   end
 
   describe '#to_reference' do
@@ -386,7 +394,7 @@ describe Project, models: true do
 
     before do
       FileUtils.mkdir('tmp/tests/custom_repositories')
-      storages = { 'custom' => 'tmp/tests/custom_repositories' }
+      storages = { 'custom' => { 'path' => 'tmp/tests/custom_repositories' } }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
     end
 
@@ -408,7 +416,7 @@ describe Project, models: true do
     let(:project) { create(:empty_project, path: "somewhere") }
 
     it 'returns the full web URL for this repo' do
-      expect(project.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.namespace.path}/somewhere")
+      expect(project.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.namespace.full_path}/somewhere")
     end
   end
 
@@ -632,7 +640,7 @@ describe Project, models: true do
   end
 
   describe '#has_wiki?' do
-    let(:no_wiki_project)       { create(:empty_project, wiki_access_level: ProjectFeature::DISABLED, has_external_wiki: false) }
+    let(:no_wiki_project)       { create(:empty_project, :wiki_disabled, has_external_wiki: false) }
     let(:wiki_enabled_project)  { create(:empty_project) }
     let(:external_wiki_project) { create(:empty_project, has_external_wiki: true) }
 
@@ -809,7 +817,7 @@ describe Project, models: true do
       end
 
       let(:avatar_path) do
-        "/#{project.namespace.name}/#{project.path}/avatar"
+        "/#{project.full_path}/avatar"
       end
 
       it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
@@ -952,8 +960,8 @@ describe Project, models: true do
 
     before do
       storages = {
-        'default' => 'tmp/tests/repositories',
-        'picked'  => 'tmp/tests/repositories',
+        'default' => { 'path' => 'tmp/tests/repositories' },
+        'picked'  => { 'path' => 'tmp/tests/repositories' },
       }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
     end
@@ -1067,6 +1075,22 @@ describe Project, models: true do
     end
   end
 
+  describe '#pages_deployed?' do
+    let(:project) { create :empty_project }
+
+    subject { project.pages_deployed? }
+
+    context 'if public folder does exist' do
+      before { allow(Dir).to receive(:exist?).with(project.public_pages_path).and_return(true) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "if public folder doesn't exist" do
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '.search' do
     let(:project) { create(:empty_project, description: 'kitten mittens') }
 
@@ -1138,16 +1162,14 @@ describe Project, models: true do
     end
 
     it 'renames a repository' do
-      ns = project.namespace_dir
-
       expect(gitlab_shell).to receive(:mv_repository).
         ordered.
-        with(project.repository_storage_path, "#{ns}/foo", "#{ns}/#{project.path}").
+        with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}").
         and_return(true)
 
       expect(gitlab_shell).to receive(:mv_repository).
         ordered.
-        with(project.repository_storage_path, "#{ns}/foo.wiki", "#{ns}/#{project.path}.wiki").
+        with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki").
         and_return(true)
 
       expect_any_instance_of(SystemHooksService).
@@ -1156,7 +1178,7 @@ describe Project, models: true do
 
       expect_any_instance_of(Gitlab::UploadsTransfer).
         to receive(:rename_project).
-        with('foo', project.path, ns)
+        with('foo', project.path, project.namespace.full_path)
 
       expect(project).to receive(:expire_caches_before_rename)
 
@@ -1528,7 +1550,7 @@ describe Project, models: true do
       it 'schedules a RepositoryForkWorker job' do
         expect(RepositoryForkWorker).to receive(:perform_async).
           with(project.id, forked_from_project.repository_storage_path,
-              forked_from_project.path_with_namespace, project.namespace.path)
+              forked_from_project.path_with_namespace, project.namespace.full_path)
 
         project.add_import_job
       end
@@ -1699,100 +1721,6 @@ describe Project, models: true do
     end
   end
 
-  describe '#environments_for' do
-    let(:project) { create(:project, :repository) }
-    let(:environment) { create(:environment, project: project) }
-
-    context 'tagged deployment' do
-      before do
-        create(:deployment, environment: environment, ref: '1.0', tag: true, sha: project.commit.id)
-      end
-
-      it 'returns environment when with_tags is set' do
-        expect(project.environments_for('master', commit: project.commit, with_tags: true))
-          .to contain_exactly(environment)
-      end
-
-      it 'does not return environment when no with_tags is set' do
-        expect(project.environments_for('master', commit: project.commit))
-          .to be_empty
-      end
-
-      it 'does not return environment when commit is not part of deployment' do
-        expect(project.environments_for('master', commit: project.commit('feature')))
-          .to be_empty
-      end
-    end
-
-    context 'branch deployment' do
-      before do
-        create(:deployment, environment: environment, ref: 'master', sha: project.commit.id)
-      end
-
-      it 'returns environment when ref is set' do
-        expect(project.environments_for('master', commit: project.commit))
-          .to contain_exactly(environment)
-      end
-
-      it 'does not environment when ref is different' do
-        expect(project.environments_for('feature', commit: project.commit))
-          .to be_empty
-      end
-
-      it 'does not return environment when commit is not part of deployment' do
-        expect(project.environments_for('master', commit: project.commit('feature')))
-          .to be_empty
-      end
-
-      it 'returns environment when commit constraint is not set' do
-        expect(project.environments_for('master'))
-          .to contain_exactly(environment)
-      end
-    end
-  end
-
-  describe '#environments_recently_updated_on_branch' do
-    let(:project) { create(:project, :repository) }
-    let(:environment) { create(:environment, project: project) }
-
-    context 'when last deployment to environment is the most recent one' do
-      before do
-        create(:deployment, environment: environment, ref: 'feature')
-      end
-
-      it 'finds recently updated environment' do
-        expect(project.environments_recently_updated_on_branch('feature'))
-          .to contain_exactly(environment)
-      end
-    end
-
-    context 'when last deployment to environment is not the most recent' do
-      before do
-        create(:deployment, environment: environment, ref: 'feature')
-        create(:deployment, environment: environment, ref: 'master')
-      end
-
-      it 'does not find environment' do
-        expect(project.environments_recently_updated_on_branch('feature'))
-          .to be_empty
-      end
-    end
-
-    context 'when there are two environments that deploy to the same branch' do
-      let(:second_environment) { create(:environment, project: project) }
-
-      before do
-        create(:deployment, environment: environment, ref: 'feature')
-        create(:deployment, environment: second_environment, ref: 'feature')
-      end
-
-      it 'finds both environments' do
-        expect(project.environments_recently_updated_on_branch('feature'))
-          .to contain_exactly(environment, second_environment)
-      end
-    end
-  end
-
   describe '#deployment_variables' do
     context 'when project has no deployment service' do
       let(:project) { create(:empty_project) }
@@ -1834,14 +1762,183 @@ describe Project, models: true do
   end
 
   describe 'inside_path' do
-    let!(:project1) { create(:empty_project) }
+    let!(:project1) { create(:empty_project, namespace: create(:namespace, path: 'name_pace')) }
     let!(:project2) { create(:empty_project) }
-    let!(:path) { project1.namespace.path }
+    let!(:project3) { create(:empty_project, namespace: create(:namespace, path: 'namespace')) }
+    let!(:path) { project1.namespace.full_path }
 
-    it { expect(Project.inside_path(path)).to eq([project1]) }
+    it 'returns correct project' do
+      expect(Project.inside_path(path)).to eq([project1])
+    end
+  end
+
+  describe '#route_map_for' do
+    let(:project) { create(:project) }
+    let(:route_map) do
+      <<-MAP.strip_heredoc
+      - source: /source/(.*)/
+        public: '\\1'
+      MAP
+    end
+
+    before do
+      project.repository.create_file(User.last, '.gitlab/route-map.yml', route_map, message: 'Add .gitlab/route-map.yml', branch_name: 'master')
+    end
+
+    context 'when there is a .gitlab/route-map.yml at the commit' do
+      context 'when the route map is valid' do
+        it 'returns a route map' do
+          map = project.route_map_for(project.commit.sha)
+          expect(map).to be_a_kind_of(Gitlab::RouteMap)
+        end
+      end
+
+      context 'when the route map is invalid' do
+        let(:route_map) { 'INVALID' }
+
+        it 'returns nil' do
+          expect(project.route_map_for(project.commit.sha)).to be_nil
+        end
+      end
+    end
+
+    context 'when there is no .gitlab/route-map.yml at the commit' do
+      it 'returns nil' do
+        expect(project.route_map_for(project.commit.parent.sha)).to be_nil
+      end
+    end
+  end
+
+  describe '#public_path_for_source_path' do
+    let(:project) { create(:project) }
+    let(:route_map) do
+      Gitlab::RouteMap.new(<<-MAP.strip_heredoc)
+        - source: /source/(.*)/
+          public: '\\1'
+      MAP
+    end
+    let(:sha) { project.commit.id }
+
+    context 'when there is a route map' do
+      before do
+        allow(project).to receive(:route_map_for).with(sha).and_return(route_map)
+      end
+
+      context 'when the source path is mapped' do
+        it 'returns the public path' do
+          expect(project.public_path_for_source_path('source/file.html', sha)).to eq('file.html')
+        end
+      end
+
+      context 'when the source path is not mapped' do
+        it 'returns nil' do
+          expect(project.public_path_for_source_path('file.html', sha)).to be_nil
+        end
+      end
+    end
+
+    context 'when there is no route map' do
+      before do
+        allow(project).to receive(:route_map_for).with(sha).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(project.public_path_for_source_path('source/file.html', sha)).to be_nil
+      end
+    end
+  end
+
+  describe '#parent' do
+    let(:project) { create(:empty_project) }
+
+    it { expect(project.parent).to eq(project.namespace) }
+  end
+
+  describe '#parent_changed?' do
+    let(:project) { create(:empty_project) }
+
+    before { project.namespace_id = 7 }
+
+    it { expect(project.parent_changed?).to be_truthy }
   end
 
   def enable_lfs
     allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+  end
+
+  describe '#pages_url' do
+    let(:group) { create :group, name: 'Group' }
+    let(:nested_group) { create :group, parent: group }
+    let(:domain) { 'Example.com' }
+
+    subject { project.pages_url }
+
+    before do
+      allow(Settings.pages).to receive(:host).and_return(domain)
+      allow(Gitlab.config.pages).to receive(:url).and_return('http://example.com')
+    end
+
+    context 'top-level group' do
+      let(:project) { create :empty_project, namespace: group, name: project_name }
+
+      context 'group page' do
+        let(:project_name) { 'group.example.com' }
+
+        it { is_expected.to eq("http://group.example.com") }
+      end
+
+      context 'project page' do
+        let(:project_name) { 'Project' }
+
+        it { is_expected.to eq("http://group.example.com/project") }
+      end
+    end
+
+    context 'nested group' do
+      let(:project) { create :empty_project, namespace: nested_group, name: project_name }
+      let(:expected_url) { "http://group.example.com/#{nested_group.path}/#{project.path}" }
+
+      context 'group page' do
+        let(:project_name) { 'group.example.com' }
+
+        it { is_expected.to eq(expected_url) }
+      end
+
+      context 'project page' do
+        let(:project_name) { 'Project' }
+
+        it { is_expected.to eq(expected_url) }
+      end
+    end
+  end
+
+  describe '#http_url_to_repo' do
+    let(:project) { create :empty_project }
+
+    context 'when no user is given' do
+      it 'returns the url to the repo without a username' do
+        expect(project.http_url_to_repo).to eq("#{project.web_url}.git")
+        expect(project.http_url_to_repo).not_to include('@')
+      end
+    end
+
+    context 'when user is given' do
+      it 'returns the url to the repo with the username' do
+        user = build_stubbed(:user)
+
+        expect(project.http_url_to_repo(user)).to start_with("http://#{user.username}@")
+      end
+    end
+  end
+
+  describe '#pipeline_status' do
+    let(:project) { create(:project) }
+    it 'builds a pipeline status' do
+      expect(project.pipeline_status).to be_a(Ci::PipelineStatus)
+    end
+
+    it 'hase a loaded pipeline status' do
+      expect(project.pipeline_status).to be_loaded
+    end
   end
 end

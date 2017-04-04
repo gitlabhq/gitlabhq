@@ -4,10 +4,17 @@
 
 (function() {
   this.LabelsSelect = (function() {
-    function LabelsSelect() {
-      var _this;
+    function LabelsSelect(els) {
+      var _this, $els;
       _this = this;
-      $('.js-label-select').each(function(i, dropdown) {
+
+      $els = $(els);
+
+      if (!els) {
+        $els = $('.js-label-select');
+      }
+
+      $els.each(function(i, dropdown) {
         var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, namespacePath, projectPath, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip, initialSelected, $toggleText, fieldName, useId, propertyName, showMenuAbove, $container, $dropdownContainer;
         $dropdown = $(dropdown);
         $dropdownContainer = $dropdown.closest('.labels-filter');
@@ -69,7 +76,7 @@
           if (!selected.length) {
             data[abilityName].label_ids = [''];
           }
-          $loading.fadeIn();
+          $loading.removeClass('hidden').fadeIn();
           $dropdown.trigger('loading.gl.dropdown');
           return $.ajax({
             type: 'PUT',
@@ -324,7 +331,7 @@
           multiSelect: $dropdown.hasClass('js-multiselect'),
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
           clicked: function(label, $el, e, isMarking) {
-            var isIssueIndex, isMRIndex, page;
+            var isIssueIndex, isMRIndex, page, boardsModel;
 
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
@@ -346,22 +353,17 @@
               return;
             }
 
-            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar')) {
+            if ($dropdown.closest('.add-issues-modal').length) {
+              boardsModel = gl.issueBoards.ModalStore.store.filter;
+            }
+
+            if (boardsModel) {
               if (label.isAny) {
-                gl.issueBoards.BoardsStore.state.filters['label_name'] = [];
-              }
-              else if ($el.hasClass('is-active')) {
-                gl.issueBoards.BoardsStore.state.filters['label_name'].push(label.title);
-              }
-              else {
-                var filters = gl.issueBoards.BoardsStore.state.filters['label_name'];
-                filters = filters.filter(function (filteredLabel) {
-                  return filteredLabel !== label.title;
-                });
-                gl.issueBoards.BoardsStore.state.filters['label_name'] = filters;
+                boardsModel['label_name'] = [];
+              } else if ($el.hasClass('is-active')) {
+                boardsModel['label_name'].push(label.title);
               }
 
-              gl.issueBoards.BoardsStore.updateFiltersUrl();
               e.preventDefault();
               return;
             }
@@ -488,4 +490,4 @@
 
     return LabelsSelect;
   })();
-}).call(this);
+}).call(window);

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Only allow merge requests to be merged if the build succeeds', feature: true do
+feature 'Only allow merge requests to be merged if the pipeline succeeds', feature: true do
   let(:merge_request) { create(:merge_request_with_diffs) }
   let(:project)       { merge_request.target_project }
 
@@ -27,9 +27,9 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
       status: status)
     end
 
-    context 'when merge requests can only be merged if the build succeeds' do
+    context 'when merge requests can only be merged if the pipeline succeeds' do
       before do
-        project.update_attribute(:only_allow_merge_if_build_succeeds, true)
+        project.update_attribute(:only_allow_merge_if_pipeline_succeeds, true)
       end
 
       context 'when CI is running' do
@@ -50,7 +50,7 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
           visit_merge_request(merge_request)
 
           expect(page).not_to have_button 'Accept Merge Request'
-          expect(page).to have_content('Please retry the build or push a new commit to fix the failure.')
+          expect(page).to have_content('Please retry the job or push a new commit to fix the failure.')
         end
       end
 
@@ -61,7 +61,7 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
           visit_merge_request(merge_request)
 
           expect(page).not_to have_button 'Accept Merge Request'
-          expect(page).to have_content('Please retry the build or push a new commit to fix the failure.')
+          expect(page).to have_content('Please retry the job or push a new commit to fix the failure.')
         end
       end
 
@@ -88,7 +88,7 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
 
     context 'when merge requests can be merged when the build failed' do
       before do
-        project.update_attribute(:only_allow_merge_if_build_succeeds, false)
+        project.update_attribute(:only_allow_merge_if_pipeline_succeeds, false)
       end
 
       context 'when CI is running' do

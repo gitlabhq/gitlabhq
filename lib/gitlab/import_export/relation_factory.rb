@@ -15,7 +15,7 @@ module Gitlab
 
       USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id created_by_id merge_user_id resolved_by_id].freeze
 
-      PROJECT_REFERENCES = %w[project_id source_project_id gl_project_id target_project_id].freeze
+      PROJECT_REFERENCES = %w[project_id source_project_id target_project_id].freeze
 
       BUILD_MODELS = %w[Ci::Build commit_status].freeze
 
@@ -89,7 +89,7 @@ module Gitlab
       end
 
       def has_author?(old_author_id)
-        admin_user? && @members_mapper.map.keys.include?(old_author_id)
+        admin_user? && @members_mapper.include?(old_author_id)
       end
 
       def missing_author_note(updated_at, author_name)
@@ -98,12 +98,11 @@ module Gitlab
       end
 
       def generate_imported_object
-        if BUILD_MODELS.include?(@relation_name) # call #trace= method after assigning the other attributes
-          trace = @relation_hash.delete('trace')
+        if BUILD_MODELS.include?(@relation_name)
+          @relation_hash.delete('trace') # old export files have trace
           @relation_hash.delete('token')
 
           imported_object do |object|
-            object.trace = trace
             object.commit_id = nil
           end
         else
@@ -121,7 +120,6 @@ module Gitlab
 
         # project_id may not be part of the export, but we always need to populate it if required.
         @relation_hash['project_id'] = project_id
-        @relation_hash['gl_project_id'] = project_id if @relation_hash['gl_project_id']
         @relation_hash['target_project_id'] = project_id if @relation_hash['target_project_id']
       end
 

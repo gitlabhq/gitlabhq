@@ -2,6 +2,7 @@ require 'spec_helper'
 
 feature 'Prioritize labels', feature: true do
   include WaitForAjax
+  include DragTo
 
   let(:user)     { create(:user) }
   let(:group)    { create(:group) }
@@ -20,7 +21,7 @@ feature 'Prioritize labels', feature: true do
     scenario 'user can prioritize a group label', js: true do
       visit namespace_project_labels_path(project.namespace, project)
 
-      expect(page).to have_content('No prioritized labels yet')
+      expect(page).to have_content('Star labels to start sorting by priority')
 
       page.within('.other-labels') do
         all('.js-toggle-priority')[1].click
@@ -29,7 +30,7 @@ feature 'Prioritize labels', feature: true do
       end
 
       page.within('.prioritized-labels') do
-        expect(page).not_to have_content('No prioritized labels yet')
+        expect(page).not_to have_content('Star labels to start sorting by priority')
         expect(page).to have_content('feature')
       end
     end
@@ -55,7 +56,7 @@ feature 'Prioritize labels', feature: true do
     scenario 'user can prioritize a project label', js: true do
       visit namespace_project_labels_path(project.namespace, project)
 
-      expect(page).to have_content('No prioritized labels yet')
+      expect(page).to have_content('Star labels to start sorting by priority')
 
       page.within('.other-labels') do
         first('.js-toggle-priority').click
@@ -64,7 +65,7 @@ feature 'Prioritize labels', feature: true do
       end
 
       page.within('.prioritized-labels') do
-        expect(page).not_to have_content('No prioritized labels yet')
+        expect(page).not_to have_content('Star labels to start sorting by priority')
         expect(page).to have_content('bug')
       end
     end
@@ -99,7 +100,7 @@ feature 'Prioritize labels', feature: true do
       expect(page).to have_content 'wontfix'
 
       # Sort labels
-      find("#project_label_#{bug.id}").drag_to find("#group_label_#{feature.id}")
+      drag_to(selector: '.js-prioritized-labels', from_index: 1, to_index: 2)
 
       page.within('.prioritized-labels') do
         expect(first('li')).to have_content('feature')

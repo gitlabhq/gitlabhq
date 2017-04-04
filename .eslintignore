@@ -1,7 +1,9 @@
+/builds/
 /coverage/
 /coverage-javascript/
 /node_modules/
 /public/
 /tmp/
 /vendor/
-/builds/
+karma.config.js
+webpack.config.js

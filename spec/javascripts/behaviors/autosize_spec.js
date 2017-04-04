@@ -1,6 +1,6 @@
 /* eslint-disable space-before-function-paren, no-var, comma-dangle, no-return-assign, max-len */
 
-/*= require behaviors/autosize */
+require('~/behaviors/autosize');
 
 (function() {
   describe('Autosize behavior', function() {
@@ -15,7 +15,7 @@
       });
     });
     return load = function() {
-      return $(document).trigger('page:load');
+      return $(document).trigger('load');
     };
   });
-}).call(this);
+}).call(window);

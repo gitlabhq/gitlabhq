@@ -23,4 +23,4 @@
       return e.preventDefault();
     });
   });
-}).call(this);
+}).call(window);

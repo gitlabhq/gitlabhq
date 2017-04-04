@@ -23,9 +23,7 @@ describe 'CycleAnalytics#review', feature: true do
 
   context "when a regular merge request (that doesn't close the issue) is created and merged" do
     it "returns nil" do
-      5.times do
-        MergeRequests::MergeService.new(project, user).execute(create(:merge_request))
-      end
+      MergeRequests::MergeService.new(project, user).execute(create(:merge_request))
 
       expect(subject[:review].median).to be_nil
     end

@@ -76,11 +76,12 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     return @project if defined?(@project)
 
     project_id, _ = project_id_with_suffix
-    if project_id.blank?
-      @project = nil
-    else
-      @project = Project.find_with_namespace("#{params[:namespace_id]}/#{project_id}")
-    end
+    @project =
+      if project_id.blank?
+        nil
+      else
+        Project.find_by_full_path("#{params[:namespace_id]}/#{project_id}")
+      end
   end
 
   # This method returns two values so that we can parse

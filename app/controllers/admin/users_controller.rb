@@ -29,11 +29,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def impersonate
-    if user.blocked?
-      flash[:alert] = "You cannot impersonate a blocked user"
-
-      redirect_to admin_user_path(user)
-    else
+    if can?(user, :log_in)
       session[:impersonator_id] = current_user.id
 
       warden.set_user(user, scope: :user)
@@ -43,6 +39,17 @@ class Admin::UsersController < Admin::ApplicationController
       flash[:alert] = "You are now impersonating #{user.username}"
 
       redirect_to root_path
+    else
+      flash[:alert] =
+        if user.blocked?
+          "You cannot impersonate a blocked user"
+        elsif user.internal?
+          "You cannot impersonate an internal user"
+        else
+          "You cannot impersonate a user who cannot log in"
+        end
+
+      redirect_to admin_user_path(user)
     end
   end
 
@@ -88,18 +95,14 @@ class Admin::UsersController < Admin::ApplicationController
 
   def create
     opts = {
-      force_random_password: true,
-      password_expires_at: nil
+      reset_password: true,
+      skip_confirmation: true
     }
 
-    @user = User.new(user_params.merge(opts))
-    @user.created_by_id = current_user.id
-    @user.generate_password
-    @user.generate_reset_token
-    @user.skip_confirmation!
+    @user = Users::CreateService.new(current_user, user_params.merge(opts)).execute
 
     respond_to do |format|
-      if @user.save
+      if @user.persisted?
         format.html { redirect_to [:admin, @user], notice: 'User was successfully created.' }
         format.json { render json: @user, status: :created, location: @user }
       else
@@ -175,7 +178,7 @@ class Admin::UsersController < Admin::ApplicationController
 
   def user_params_ce
     [
-      :admin,
+      :access_level,
       :avatar,
       :bio,
       :can_create_group,
@@ -194,7 +197,6 @@ class Admin::UsersController < Admin::ApplicationController
       :provider,
       :remember_me,
       :skype,
-      :theme_id,
       :twitter,
       :username,
       :website_url
