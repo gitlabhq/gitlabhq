@@ -45,7 +45,7 @@ class Burndown
   private
 
   def sum_issues_weight(issues)
-    issues.map(&:weight).sum
+    issues.map(&:weight).compact.sum
   end
 
   def closed_and_reopened_issues_by(date)
