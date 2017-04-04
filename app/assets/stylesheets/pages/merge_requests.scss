@@ -88,7 +88,7 @@
     display: flex;
     -webkit-align-items: center;
     align-items: center;
-    padding: $gl-padding-top $gl-padding 0 $gl-padding;
+    padding: $gl-padding-top $gl-padding 0;
 
     i,
     svg {
@@ -159,6 +159,7 @@
 
   .normal {
     color: $gl-text-color;
+    font-size: 16px;
   }
 
   .capitalize {
@@ -178,6 +179,13 @@
     margin: 0 0 $gl-padding 26px;
   }
 
+  .mr-widget-heading,
+  .mr-widget-body {
+    .btn-default.btn-xs {
+      margin-left: 5px;
+    }
+  }
+
   .mr-widget-body {
     h4 {
       font-weight: 600;
@@ -187,6 +195,10 @@
 
       &.has-conflicts .fa-exclamation-triangle {
         color: $gl-warning;
+      }
+
+      time {
+        font-weight: normal;
       }
     }
 
@@ -204,8 +216,15 @@
     }
 
     .bold {
+      margin-left: 5px;
       font-weight: bold;
-      color: #5c5c5c;
+      color: $gl-gray-light;
+    }
+
+    .state-label {
+      font-size: 16px;
+      font-weight: bold;
+      padding-right: 10px;
     }
 
     .danger {
@@ -214,6 +233,27 @@
 
     .mr-widget-help {
       margin: $gl-padding 0;
+    }
+
+    .dropdown-menu {
+      li a {
+        padding: 5px;
+      }
+
+      .merge-opt-icon,
+      .merge-opt-title {
+        display: inline-block;
+        float: left;
+      }
+
+      .merge-opt-icon svg {
+        height: 15px;
+        width: 15px;
+      }
+
+      .merge-opt-title {
+        margin-left: 8px;
+      }
     }
 
     .dropdown-toggle {
@@ -259,6 +299,11 @@
         padding: 0;
       }
     }
+
+    &.mr-state-locked .mr-info-list {
+      margin-top: 10px;
+      margin-left: 12px;
+    }
   }
 
   .mr-widget-footer {
@@ -302,6 +347,24 @@
   font-size: 90%;
   margin: 0 3px;
   word-break: break-all;
+
+  &.label-truncated {
+    position: relative;
+    display: inline-block;
+    width: 250px;
+    margin-bottom: -3px;
+    white-space: nowrap;
+    text-overflow: clip;
+    line-height: 14px;
+
+    &::after {
+      position: absolute;
+      content: '...';
+      right: 0;
+      font-family: $regular_font;
+      background-color: $gray-light;
+    }
+  }
 }
 
 .commits-empty {
@@ -399,11 +462,12 @@
       height: 1px;
       top: 8px;
       width: 8px;
-      left: 0px;
+      left: 0;
     }
 
     &:last-child {
       margin-bottom: 0;
+
       &::before {
         top: 14px;
       }
@@ -426,6 +490,10 @@
   padding: 0 $gl-padding;
   margin-bottom: 6px;
   line-height: 44px;
+
+  .dropdown-toggle .fa {
+    color: $gl-text-color;
+  }
 }
 
 .panel-new-merge-request {
