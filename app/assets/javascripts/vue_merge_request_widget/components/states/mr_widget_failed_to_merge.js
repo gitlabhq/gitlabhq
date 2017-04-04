@@ -10,10 +10,7 @@ export default {
   },
   mounted() {
     setInterval(() => {
-      this.timer = this.timer - 1;
-      if (this.timer === 0) {
-        this.refresh();
-      }
+      this.updateTimer();
     }, 1000);
   },
   computed: {
@@ -26,18 +23,29 @@ export default {
       this.isRefreshing = true;
       eventHub.$emit('MRWidgetUpdateRequested');
     },
+    updateTimer() {
+      this.timer = this.timer - 1;
+
+      if (this.timer === 0) {
+        this.refresh();
+      }
+    },
   },
   template: `
     <div class="mr-widget-body">
       <button class="btn btn-success btn-small" disabled="true" type="button">Merge</button>
-      <span class="bold danger" v-if="!isRefreshing">
+      <span
+        v-if="!isRefreshing"
+        class="bold danger">
         Merge failed. Refreshing in {{timerText}} to show the updated status...
         <button
           @click="refresh"
-          class="btn btn-default btn-xs"
+          class="btn btn-default btn-xs js-refresh-button"
         >Refresh now</button>
       </span>
-      <span class="bold" v-if="isRefreshing">Refreshing now...</span>
+      <span
+        v-if="isRefreshing"
+        class="bold js-refresh-label">Refreshing now...</span>
     </div>
   `,
 };
