@@ -20,7 +20,7 @@
         docker push #{escape_once(@project.container_registry_url)}/image
 
   - if @images.blank?
-    .nothing-here-block No container images in Container Registry for this project.
+    .nothing-here-block No container image repositories in Container Registry for this project.
 
   - else
     = render partial: 'image', collection: @images
