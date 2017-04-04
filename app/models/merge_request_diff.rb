@@ -177,6 +177,16 @@ class MergeRequestDiff < ActiveRecord::Base
     st_commits.count
   end
 
+  def utf8_st_diffs
+    return [] if st_diffs.blank?
+
+    st_diffs.map do |diff|
+      diff.each do |k, v|
+        diff[k] = encode_utf8(v) if v.respond_to?(:encoding)
+      end
+    end
+  end
+
   private
 
   # Old GitLab implementations may have generated diffs as ["--broken-diff"].
@@ -268,14 +278,6 @@ class MergeRequestDiff < ActiveRecord::Base
     return unless head_commit_sha && start_commit_sha
 
     project.merge_base_commit(head_commit_sha, start_commit_sha).try(:sha)
-  end
-
-  def utf8_st_diffs
-    st_diffs.map do |diff|
-      diff.each do |k, v|
-        diff[k] = encode_utf8(v) if v.respond_to?(:encoding)
-      end
-    end
   end
 
   #
