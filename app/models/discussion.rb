@@ -37,15 +37,17 @@ class Discussion
     [:discussion, note.noteable_type.try(:underscore), noteable_id]
   end
 
-  # To turn a list of notes into a list of discussions, they are grouped by discussion ID.
   # When notes on a commit are displayed in context of a merge request that contains that commit,
   # these notes are to be displayed as if they were part of one discussion, even though they were actually
   # individual notes on the commit with different discussion IDs, so that it's clear that these are not
   # notes on the merge request itself.
-  # To get these out-of-context notes to end up in the same discussion, we need to get them to return the same
+  #
+  # To turn a list of notes into a list of discussions, they are grouped by discussion ID, so to
+  # get these out-of-context notes to end up in the same discussion, we need to get them to return the same
   # `discussion_id` when this grouping happens. To enable this, `Note#discussion_id` calls out
   # to the `override_discussion_id` method on the appropriate `Discussion` subclass, as determined by
   # the `discussion_class` method on `Note` or a subclass of `Note`.
+  #
   # If no override is necessary, return `nil`.
   # For the case described above, see `OutOfContextDiscussion.override_discussion_id`.
   def self.override_discussion_id(note)

@@ -1,5 +1,6 @@
-# When notes on a commit are displayed in the context of a merge request that contains that commit,
-# they are displayed as if they were a discussion.
+# When notes on a commit are displayed in the context of a merge request that
+# contains that commit, they are displayed as if they were a discussion.
+#
 # This represents one of those discussions, consisting of `Note` notes.
 class OutOfContextDiscussion < Discussion
   # Returns an array of discussion ID components
