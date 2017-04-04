@@ -64,30 +64,12 @@ class NotifyPreview < ActionMailer::Preview
     @project ||= Project.find_by_full_path('gitlab-org/gitlab-test')
   end
 
-  def issue
-    @issue ||= project.issues.last
-  end
-
   def merge_request
     @merge_request ||= project.merge_requests.find_by(source_branch: 'master', target_branch: 'feature')
   end
 
-  def commit
-    @commit ||= project.commit('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
-  end
-
   def user
     @user ||= User.last
-  end
-
-  def note_body
-    <<-MD.strip_heredoc
-      Hello :smiley:
-
-      We expect a blank line between:
-      - The heading ("Adminstrator started...")
-      - The diff
-    MD
   end
 
   def create_note(params)
