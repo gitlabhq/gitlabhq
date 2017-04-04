@@ -56,9 +56,9 @@ class MergeRequestEntity < IssuableEntity
       closes_issues = merge_request.closes_issues(current_user)
 
       markdown issues_sentence(merge_request.project, closes_issues),
-        pipeline: :gfm,
-        author: merge_request.author,
-        project: merge_request.project
+               pipeline: :gfm,
+               author: merge_request.author,
+               project: merge_request.project
     end
 
     expose :mentioned_but_not_closing do |merge_request|
@@ -191,9 +191,9 @@ class MergeRequestEntity < IssuableEntity
   end
 
   expose :diverged_commits_count do |merge_request|
-    merge_request.open? &&
-      merge_request.diverged_from_target_branch? ?
-        merge_request.diverged_commits_count : 0
+    return 0 unless merge_request.open? && merge_request.diverged_from_target_branch?
+
+    merge_request.diverged_commits_count
   end
 
   expose :email_patches_path do |merge_request|

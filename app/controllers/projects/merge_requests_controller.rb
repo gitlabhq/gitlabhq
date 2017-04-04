@@ -10,7 +10,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :conflict_for_path, :pipelines, :merge, :merge_check,
-    :ci_status, :pipeline_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues, :after_merge_actions]
+    :ci_status, :pipeline_status, :ci_environments_status, :toggle_subscription, :cancel_merge_when_pipeline_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues, :commit_change_content
+  ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :conflict_for_path, :builds, :pipelines]
   before_action :define_widget_vars, only: [:merge, :cancel_merge_when_pipeline_succeeds, :merge_check]
@@ -331,7 +332,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       format.html do
         redirect_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
           notice: "The merge request can now be merged."
-
       end
     end
   end
@@ -352,8 +352,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def commit_change_content
-    render partial: 'projects/merge_requests/widget/commit_change_content',
-      layout: false
+    render partial: 'projects/merge_requests/widget/commit_change_content', layout: false
   end
 
   def cancel_merge_when_pipeline_succeeds
