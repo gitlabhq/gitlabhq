@@ -536,10 +536,18 @@ class Projects::MergeRequestsController < Projects::ApplicationController
               stop_namespace_project_environment_path(project.namespace, project, environment)
             end
 
+          metrics_url =
+            if environment.has_metrics? && can?(current_user, :read_environment, environment)
+              metrics_namespace_project_environment_path(environment.project.namespace,
+                                                         environment.project,
+                                                         environment)
+            end
+
           {
             id: environment.id,
             name: environment.name,
             url: namespace_project_environment_path(project.namespace, project, environment),
+            metrics_url: metrics_url,
             stop_url: stop_url,
             external_url: environment.external_url,
             external_url_formatted: environment.formatted_external_url,
