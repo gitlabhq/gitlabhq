@@ -45,12 +45,14 @@ feature 'Global elastic search', feature: true do
     it "finds files" do
       visit dashboard_projects_path
 
-      fill_in "search", with: "def"
+      fill_in "search", with: "application.js"
       click_button "Go"
 
       select_filter("Code")
 
       expect(page).to have_selector('.file-content .code')
+
+      expect(page).to have_selector("span.line[lang='javascript']")
     end
   end
 
