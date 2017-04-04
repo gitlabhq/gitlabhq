@@ -14,7 +14,7 @@
                 method: :delete do
         = icon('trash cred')
 
-  .container-image-tags.js-toggle-content{ class: 'hide' }
+  .container-image-tags.js-toggle-content.hide
     - if image.has_tags?
       .table-holder
         %table.table.tags
