@@ -30,6 +30,7 @@ feature 'Environments page', :feature, :js do
       describe 'in available tab page' do
         it 'should show one environment' do
           visit namespace_project_environments_path(project.namespace, project, scope: 'available')
+          expect(page).to have_css('.environments-container')
           expect(page.all('tbody > tr').length).to eq(1)
         end
       end
@@ -37,6 +38,7 @@ feature 'Environments page', :feature, :js do
       describe 'in stopped tab page' do
         it 'should show no environments' do
           visit namespace_project_environments_path(project.namespace, project, scope: 'stopped')
+          expect(page).to have_css('.environments-container')
           expect(page).to have_content('You don\'t have any environments right now')
         end
       end
@@ -48,6 +50,7 @@ feature 'Environments page', :feature, :js do
       describe 'in available tab page' do
         it 'should show no environments' do
           visit namespace_project_environments_path(project.namespace, project, scope: 'available')
+          expect(page).to have_css('.environments-container')
           expect(page).to have_content('You don\'t have any environments right now')
         end
       end
@@ -55,6 +58,7 @@ feature 'Environments page', :feature, :js do
       describe 'in stopped tab page' do
         it 'should show one environment' do
           visit namespace_project_environments_path(project.namespace, project, scope: 'stopped')
+          expect(page).to have_css('.environments-container')
           expect(page.all('tbody > tr').length).to eq(1)
         end
       end
