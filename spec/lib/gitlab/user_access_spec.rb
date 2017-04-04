@@ -164,7 +164,6 @@ describe Gitlab::UserAccess, lib: true do
       end
     end
 
-
     describe 'push to protected tag' do
       let(:tag) { create(:protected_tag, project: project, name: "test") }
       let(:not_existing_tag) { create :protected_tag, project: project }
