@@ -10,15 +10,15 @@ module Gitlab
       end
 
       def labels
-        metadata['labels']
+        metadata.fetch('labels', {})
       end
 
       def track
-        labels.fetch('track', 'stable')
+        labels.fetch('track') || 'stable'
       end
 
       def stable?
-        track.nil? || track == 'stable'
+        track == 'stable'
       end
 
       def outdated?
