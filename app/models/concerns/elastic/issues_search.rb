@@ -17,7 +17,14 @@ module Elastic
         indexes :state,       type: :text
         indexes :project_id,  type: :integer
         indexes :author_id,   type: :integer
+
+        # The field assignee_id does not exist in issues table anymore.
+        # Nevertheless we'll keep this field as is because we don't want users to rebuild index
+        # + the ES treats arrays transparently so
+        # to any integer field you can write any array of integers and you don't have to change mapping.
+        # More over you can query those items just like a single integer value.
         indexes :assignee_id, type: :integer
+
         indexes :confidential, type: :boolean
       end
 
@@ -26,9 +33,11 @@ module Elastic
 
         # We don't use as_json(only: ...) because it calls all virtual and serialized attributtes
         # https://gitlab.com/gitlab-org/gitlab-ee/issues/349
-        [:id, :iid, :title, :description, :created_at, :updated_at, :state, :project_id, :author_id, :assignee_id, :confidential].each do |attr|
+        [:id, :iid, :title, :description, :created_at, :updated_at, :state, :project_id, :author_id, :confidential].each do |attr|
           data[attr.to_s] = safely_read_attribute_for_elasticsearch(attr)
         end
+
+        data['assignee_id'] = safely_read_attribute_for_elasticsearch(:assignee_ids)
 
         data
       end
