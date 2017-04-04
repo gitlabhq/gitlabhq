@@ -118,7 +118,6 @@ ActiveRecord::Schema.define(version: 20170329124448) do
     t.integer "shared_runners_minutes", default: 0, null: false
     t.integer "repository_size_limit", limit: 8, default: 0
     t.integer "terminal_max_session_time", default: 0, null: false
-    t.decimal "polling_interval_multiplier", default: 1.0, null: false
     t.integer "unique_ips_limit_per_user"
     t.integer "unique_ips_limit_time_window"
     t.boolean "unique_ips_limit_enabled", default: false, null: false
@@ -131,6 +130,7 @@ ActiveRecord::Schema.define(version: 20170329124448) do
     t.string "elasticsearch_aws_secret_access_key"
     t.integer "geo_status_timeout", default: 10
     t.string "uuid"
+    t.decimal "polling_interval_multiplier", default: 1.0, null: false
   end
 
   create_table "approvals", force: :cascade do |t|

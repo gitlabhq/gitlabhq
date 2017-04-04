@@ -46,6 +46,10 @@ require('~/lib/utils/common_utils');
         spyOn(window.document, 'getElementById').and.callThrough();
       });
 
+      afterEach(() => {
+        window.history.pushState({}, null, '');
+      });
+
       function expectGetElementIdToHaveBeenCalledWith(elementId) {
         expect(window.document.getElementById).toHaveBeenCalledWith(elementId);
       }
@@ -75,9 +79,54 @@ require('~/lib/utils/common_utils');
       });
     });
 
+    describe('gl.utils.setParamInURL', () => {
+      afterEach(() => {
+        window.history.pushState({}, null, '');
+      });
+
+      it('should return the parameter', () => {
+        window.history.replaceState({}, null, '');
+
+        expect(gl.utils.setParamInURL('page', 156)).toBe('?page=156');
+        expect(gl.utils.setParamInURL('page', '156')).toBe('?page=156');
+      });
+
+      it('should update the existing parameter when its a number', () => {
+        window.history.pushState({}, null, '?page=15');
+
+        expect(gl.utils.setParamInURL('page', 16)).toBe('?page=16');
+        expect(gl.utils.setParamInURL('page', '16')).toBe('?page=16');
+        expect(gl.utils.setParamInURL('page', true)).toBe('?page=true');
+      });
+
+      it('should update the existing parameter when its a string', () => {
+        window.history.pushState({}, null, '?scope=all');
+
+        expect(gl.utils.setParamInURL('scope', 'finished')).toBe('?scope=finished');
+      });
+
+      it('should update the existing parameter when more than one parameter exists', () => {
+        window.history.pushState({}, null, '?scope=all&page=15');
+
+        expect(gl.utils.setParamInURL('scope', 'finished')).toBe('?scope=finished&page=15');
+      });
+
+      it('should add a new parameter to the end of the existing ones', () => {
+        window.history.pushState({}, null, '?scope=all');
+
+        expect(gl.utils.setParamInURL('page', 16)).toBe('?scope=all&page=16');
+        expect(gl.utils.setParamInURL('page', '16')).toBe('?scope=all&page=16');
+        expect(gl.utils.setParamInURL('page', true)).toBe('?scope=all&page=true');
+      });
+    });
+
     describe('gl.utils.getParameterByName', () => {
       beforeEach(() => {
         window.history.pushState({}, null, '?scope=all&p=2');
+      });
+
+      afterEach(() => {
+        window.history.replaceState({}, null, null);
       });
 
       it('should return valid parameter', () => {

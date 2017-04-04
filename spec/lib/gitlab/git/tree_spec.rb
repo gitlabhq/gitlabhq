@@ -19,6 +19,7 @@ describe Gitlab::Git::Tree, seed_helper: true do
       it { expect(dir.commit_id).to eq(SeedRepo::Commit::ID) }
       it { expect(dir.name).to eq('encoding') }
       it { expect(dir.path).to eq('encoding') }
+      it { expect(dir.mode).to eq('40000') }
 
       context :subdir do
         let(:subdir) { Gitlab::Git::Tree.where(repository, SeedRepo::Commit::ID, 'files').first }

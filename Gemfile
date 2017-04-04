@@ -363,4 +363,4 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.3.0'
+gem 'gitaly', '~> 0.5.0'

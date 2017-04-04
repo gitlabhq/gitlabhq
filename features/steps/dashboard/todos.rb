@@ -3,6 +3,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   include SharedPaths
   include SharedProject
   include SharedUser
+  include WaitForAjax
 
   step '"John Doe" is a developer of project "Shop"' do
     project.team << [john_doe, :developer]
@@ -138,6 +139,8 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
 
   step 'I should be directed to the corresponding page' do
     page.should have_css('.identifier', text: 'Merge Request !1')
+    # Merge request page loads and issues a number of Ajax requests
+    wait_for_ajax
   end
 
   def should_see_todo(position, title, body, state: :pending)
