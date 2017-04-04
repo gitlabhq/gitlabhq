@@ -2,17 +2,18 @@
 /* eslint-disable no-param-reassign */
 
 window.Vue = require('vue');
+
 require('../vue_shared/components/table_pagination');
 require('./store');
-require('../vue_shared/components/pipelines_table');
 const CommitPipelinesStoreWithTimeAgo = require('../commit/pipelines/pipelines_store');
+const PipelinesTableComponent = require('../vue_shared/components/pipelines_table');
 
 ((gl) => {
   gl.VuePipelines = Vue.extend({
 
     components: {
       'gl-pagination': gl.VueGlPagination,
-      'pipelines-table-component': gl.pipelines.PipelinesTableComponent,
+      'pipelines-table-component': PipelinesTableComponent,
     },
 
     data() {

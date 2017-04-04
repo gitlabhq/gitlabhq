@@ -3,9 +3,12 @@
 /* global Cookies */
 /* global Flash */
 
-require('./breakpoints');
-window.Cookies = require('js-cookie');
-require('./flash');
+import Cookies from 'js-cookie';
+
+import './breakpoints';
+import './flash';
+
+const PipelinesTable = require('./commit/pipelines/pipelines_table');
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -97,6 +100,13 @@ require('./flash');
         .off('click', this.clickTab);
     }
 
+    destroy() {
+      this.unbindEvents();
+      if (this.commitPipelinesTable) {
+        this.commitPipelinesTable.$destroy();
+      }
+    }
+
     showTab(e) {
       e.preventDefault();
       this.activateTab($(e.target).data('action'));
@@ -131,12 +141,8 @@ require('./flash');
           offset: 0,
         });
       } else if (action === 'pipelines') {
-        if (this.pipelinesLoaded) {
-          return;
-        }
-        const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
-        gl.commits.pipelines.PipelinesTableBundle.$mount(pipelineTableViewEl);
-        this.pipelinesLoaded = true;
+        this.resetViewContainer();
+        this.loadPipelines();
       } else {
         this.expandView();
         this.resetViewContainer();
@@ -223,6 +229,18 @@ require('./flash');
           this.scrollToElement('#commits');
         },
       });
+    }
+
+    loadPipelines() {
+      if (this.pipelinesLoaded) {
+        return;
+      }
+      const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
+      // Could already be mounted from the `pipelines_bundle`
+      if (pipelineTableViewEl) {
+        this.commitPipelinesTable = new PipelinesTable().$mount(pipelineTableViewEl);
+      }
+      this.pipelinesLoaded = true;
     }
 
     loadDiff(source) {
