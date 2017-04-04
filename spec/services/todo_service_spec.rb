@@ -240,20 +240,20 @@ describe TodoService, services: true do
 
     describe '#reassigned_issue' do
       it 'creates a pending todo for new assignee' do
-        unassigned_issue.update_attribute(:assignee, john_doe)
+        unassigned_issue.assignees << john_doe
         service.reassigned_issue(unassigned_issue, author)
 
         should_create_todo(user: john_doe, target: unassigned_issue, action: Todo::ASSIGNED)
       end
 
       it 'does not create a todo if unassigned' do
-        issue.update_attribute(:assignee, nil)
+        issue.assignees.destroy_all
 
         should_not_create_any_todo { service.reassigned_issue(issue, author) }
       end
 
       it 'creates a todo if new assignee is the current user' do
-        unassigned_issue.update_attribute(:assignee, john_doe)
+        unassigned_issue.assignees << john_doe
         service.reassigned_issue(unassigned_issue, john_doe)
 
         should_create_todo(user: john_doe, target: unassigned_issue, author: john_doe, action: Todo::ASSIGNED)
