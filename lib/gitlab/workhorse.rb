@@ -44,7 +44,12 @@ module Gitlab
                               raise "Unsupported action: #{action}"
                             end
 
-          params[:GitalySocketPath] = URI(address).path if feature_enabled
+          if feature_enabled
+            params[:GitalyAddress] = address
+            # TODO deprecate GitalySocketPath once GITLAB_WORKHORSE_VERSION points
+            # to a version that supports GitalyAddress.
+            params[:GitalySocketPath] = URI(address).path
+          end
         end
 
         params
