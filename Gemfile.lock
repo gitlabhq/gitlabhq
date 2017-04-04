@@ -823,8 +823,8 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
-    webpack-rails (0.9.9)
-      rails (>= 3.2.0)
+    webpack-rails (0.9.10)
+      railties (>= 3.2.0)
     websocket-driver (0.6.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
@@ -1026,7 +1026,7 @@ DEPENDENCIES
   virtus (~> 1.0.1)
   vmstat (~> 2.3.0)
   webmock (~> 1.24.0)
-  webpack-rails (~> 0.9.9)
+  webpack-rails (~> 0.9.10)
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
