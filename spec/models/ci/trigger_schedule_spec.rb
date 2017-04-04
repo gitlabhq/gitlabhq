@@ -6,7 +6,7 @@ describe Ci::TriggerSchedule, models: true do
   it { is_expected.to respond_to :ref }
 
   describe '#schedule_next_run!' do
-    let(:trigger_schedule) { create(:ci_trigger_schedule, :nightly, next_run_at: nil) }
+    let(:trigger_schedule) { create(:ci_trigger_schedule, :nightly) }
 
     before do
       trigger_schedule.schedule_next_run!
