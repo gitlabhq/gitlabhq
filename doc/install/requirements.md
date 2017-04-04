@@ -129,6 +129,9 @@ If you want to run the database separately, expect a size of about 1 MB per user
 
 ### PostgreSQL Requirements
 
+As of GitLab 9.0, PostgreSQL 9.6 is recommended. Lower versions of PostgreSQL
+may work but primary testing and developement takes place using PostgreSQL 9.6.
+
 Users using PostgreSQL must ensure the `pg_trgm` extension is loaded into every
 GitLab database. This extension can be enabled (using a PostgreSQL super user)
 by running the following query for every database:
