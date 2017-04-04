@@ -6,12 +6,12 @@ describe Gitlab::Ci::CronParser do
   end
 
   describe '#next_time_from' do
-    subject { described_class.new(cron, cron_time_zone).next_time_from(Time.now) }
+    subject { described_class.new(cron, cron_timezone).next_time_from(Time.now) }
 
-    context 'when cron and cron_time_zone are valid' do
+    context 'when cron and cron_timezone are valid' do
       context 'when specific time' do
         let(:cron) { '3 4 5 6 *' }
-        let(:cron_time_zone) { 'UTC' }
+        let(:cron_timezone) { 'UTC' }
 
         it_behaves_like "returns time in the future"
 
@@ -25,7 +25,7 @@ describe Gitlab::Ci::CronParser do
 
       context 'when specific day of week' do
         let(:cron) { '* * * * 0' }
-        let(:cron_time_zone) { 'UTC' }
+        let(:cron_timezone) { 'UTC' }
 
         it_behaves_like "returns time in the future"
 
@@ -36,7 +36,7 @@ describe Gitlab::Ci::CronParser do
 
       context 'when slash used' do
         let(:cron) { '*/10 */6 */10 */10 *' }
-        let(:cron_time_zone) { 'UTC' }
+        let(:cron_timezone) { 'UTC' }
 
         it_behaves_like "returns time in the future"
 
@@ -50,7 +50,7 @@ describe Gitlab::Ci::CronParser do
 
       context 'when range used' do
         let(:cron) { '0,20,40 * 1-5 * *' }
-        let(:cron_time_zone) { 'UTC' }
+        let(:cron_timezone) { 'UTC' }
 
         it_behaves_like "returns time in the future"
 
@@ -60,9 +60,9 @@ describe Gitlab::Ci::CronParser do
         end
       end
 
-      context 'when cron_time_zone is US/Pacific' do
+      context 'when cron_timezone is US/Pacific' do
         let(:cron) { '0 0 * * *' }
-        let(:cron_time_zone) { 'US/Pacific' }
+        let(:cron_timezone) { 'US/Pacific' }
 
         it_behaves_like "returns time in the future"
 
@@ -72,9 +72,9 @@ describe Gitlab::Ci::CronParser do
       end
     end
 
-    context 'when cron and cron_time_zone are invalid' do
+    context 'when cron and cron_timezone are invalid' do
       let(:cron) { 'invalid_cron' }
-      let(:cron_time_zone) { 'invalid_cron_time_zone' }
+      let(:cron_timezone) { 'invalid_cron_timezone' }
 
       it 'returns nil' do
         is_expected.to be_nil
@@ -98,17 +98,17 @@ describe Gitlab::Ci::CronParser do
     end
   end
 
-  describe '#cron_time_zone_valid?' do
-    subject { described_class.new(Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_CRON, cron_time_zone).cron_time_zone_valid? }
+  describe '#cron_timezone_valid?' do
+    subject { described_class.new(Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_CRON, cron_timezone).cron_timezone_valid? }
 
     context 'when cron is valid' do
-      let(:cron_time_zone) { 'Europe/Istanbul' }
+      let(:cron_timezone) { 'Europe/Istanbul' }
 
       it { is_expected.to eq(true) }
     end
 
     context 'when cron is invalid' do
-      let(:cron_time_zone) { 'Invalid-zone' }
+      let(:cron_timezone) { 'Invalid-zone' }
 
       it { is_expected.to eq(false) }
     end

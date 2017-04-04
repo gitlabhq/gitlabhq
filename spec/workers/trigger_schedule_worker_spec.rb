@@ -23,7 +23,7 @@ describe TriggerScheduleWorker do
     end
 
     it 'updates next_run_at' do
-      next_time = Gitlab::Ci::CronParser.new(trigger_schedule.cron, trigger_schedule.cron_time_zone).next_time_from(Time.now)
+      next_time = Gitlab::Ci::CronParser.new(trigger_schedule.cron, trigger_schedule.cron_timezone).next_time_from(Time.now)
       expect(Ci::TriggerSchedule.last.next_run_at).to eq(next_time)
     end
   end

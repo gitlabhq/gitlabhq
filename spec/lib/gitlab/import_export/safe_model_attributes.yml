@@ -249,7 +249,7 @@ Ci::TriggerSchedule:
 - created_at
 - updated_at
 - cron
-- cron_time_zone
+- cron_timezone
 - next_run_at
 DeployKey:
 - id

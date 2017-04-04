@@ -307,7 +307,7 @@ ActiveRecord::Schema.define(version: 20170405080720) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "cron"
-    t.string "cron_time_zone"
+    t.string "cron_timezone"
     t.datetime "next_run_at"
   end
 
