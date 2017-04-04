@@ -1995,7 +1995,6 @@ describe Repository, models: true do
     end
   end
 
-<<<<<<< HEAD
   describe '#after_sync' do
     it 'expires repository cache' do
       expect(repository).to receive(:expire_all_method_caches)
@@ -2010,7 +2009,7 @@ describe Repository, models: true do
     rugged = repository.rugged
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
-=======
+
   describe '#is_ancestor?' do
     context 'Gitaly is_ancestor feature enabled' do
       it 'asks Gitaly server if it\'s an ancestor' do
@@ -2023,5 +2022,4 @@ describe Repository, models: true do
       end
     end
   end
->>>>>>> ce-com/master
 end
