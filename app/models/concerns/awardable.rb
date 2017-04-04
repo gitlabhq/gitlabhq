@@ -101,6 +101,6 @@ module Awardable
   private
 
   def normalize_name(name)
-    Gitlab::AwardEmoji.normalize_emoji_name(name)
+    Gitlab::Emoji.normalize_emoji_name(name)
   end
 end

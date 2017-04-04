@@ -1,0 +1,4 @@
+---
+title: Remove unnecessary ORDER BY clause from `forked_to_project_id` subquery
+merge_request:
+author: mhasbini

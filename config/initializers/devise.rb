@@ -24,7 +24,7 @@ Devise.setup do |config|
   # session. If you need permissions, you should implement that in a before filter.
   # You can also supply a hash where the value is a boolean determining whether
   # or not authentication should be aborted when the value is not present.
-  config.authentication_keys = [ :login ]
+  config.authentication_keys = [:login]
 
   # Configure parameters from the request object used for authentication. Each entry
   # given should be a request method and it will automatically be passed to the
@@ -36,12 +36,12 @@ Devise.setup do |config|
   # Configure which authentication keys should be case-insensitive.
   # These keys will be downcased upon creating or modifying a user and when used
   # to authenticate or find a user. Default is :email.
-  config.case_insensitive_keys = [ :email ]
+  config.case_insensitive_keys = [:email]
 
   # Configure which authentication keys should have whitespace stripped.
   # These keys will have whitespace before and after removed upon creating or
   # modifying a user and when used to authenticate or find a user. Default is :email.
-  config.strip_whitespace_keys = [ :email ]
+  config.strip_whitespace_keys = [:email]
 
   # Tell if authentication through request.params is enabled. True by default.
   # config.params_authenticatable = true
@@ -124,7 +124,7 @@ Devise.setup do |config|
   config.lock_strategy = :failed_attempts
 
   # Defines which key will be used when locking and unlocking an account
-  config.unlock_keys = [ :email ]
+  config.unlock_keys = [:email]
 
   # Defines which strategy will be used to unlock an account.
   # :email = Sends an unlock link to the user email
@@ -238,6 +238,17 @@ Devise.setup do |config|
           raise "Service Ticket not found." unless Gitlab::OAuth::Session.valid?(:cas3, ticket)
           Gitlab::OAuth::Session.destroy(:cas3, ticket)
           true
+        end
+      end
+      if provider['name'] == 'authentiq'
+        provider['args'][:remote_sign_out_handler] = lambda do |request|
+          authentiq_session = request.params['sid']
+          if Gitlab::OAuth::Session.valid?(:authentiq, authentiq_session)
+            Gitlab::OAuth::Session.destroy(:authentiq, authentiq_session)
+            true
+          else
+            false
+          end
         end
       end
 

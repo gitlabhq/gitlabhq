@@ -176,20 +176,14 @@ describe 'Projects > Issuables > Default sort order', feature: true do
   end
 
   def selected_sort_order
-    find('.pull-right .dropdown button').text.downcase
+    find('.filter-dropdown-container .dropdown button').text.downcase
   end
 
   def visit_merge_requests_with_state(project, state)
-    visit_merge_requests project
-    visit_issuables_with_state state
+    visit_merge_requests project, state: state
   end
 
   def visit_issues_with_state(project, state)
-    visit_issues project
-    visit_issuables_with_state state
-  end
-
-  def visit_issuables_with_state(state)
-    within('.issues-state-filters') { find("span", text: state.titleize).click }
+    visit_issues project, state: state
   end
 end

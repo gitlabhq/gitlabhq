@@ -86,6 +86,16 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
       expect(filter(act).to_html).to eq exp
     end
 
+    it 'allows `summary` elements' do
+      exp = act = '<summary>summary line</summary>'
+      expect(filter(act).to_html).to eq exp
+    end
+
+    it 'allows `details` elements' do
+      exp = act = '<details>long text goes here</details>'
+      expect(filter(act).to_html).to eq exp
+    end
+
     it 'removes `rel` attribute from `a` elements' do
       act = %q{<a href="#" rel="nofollow">Link</a>}
       exp = %q{<a href="#">Link</a>}

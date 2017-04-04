@@ -8,7 +8,7 @@ class MigrateRepoSize < ActiveRecord::Migration
     project_data.each do |project|
       id = project['id']
       namespace_path = project['namespace_path'] || ''
-      repos_path = Gitlab.config.gitlab_shell['repos_path'] || Gitlab.config.repositories.storages.default
+      repos_path = Gitlab.config.gitlab_shell['repos_path'] || Gitlab.config.repositories.storages.default['path']
       path = File.join(repos_path, namespace_path, project['project_path'] + '.git')
 
       begin

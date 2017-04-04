@@ -18,6 +18,10 @@ class Spinach::Features::ProjectGraph < Spinach::FeatureSteps
     visit languages_namespace_project_graph_path(project.namespace, project, "master")
   end
 
+  step 'I visit project "Shop" chart page' do
+    visit charts_namespace_project_graph_path(project.namespace, project, "master")
+  end
+
   step 'page should have languages graphs' do
     expect(page).to have_content /Ruby 66.* %/
     expect(page).to have_content /JavaScript 22.* %/
@@ -34,9 +38,9 @@ class Spinach::Features::ProjectGraph < Spinach::FeatureSteps
 
   step 'page should have CI graphs' do
     expect(page).to have_content 'Overall'
-    expect(page).to have_content 'Builds for last week'
-    expect(page).to have_content 'Builds for last month'
-    expect(page).to have_content 'Builds for last year'
+    expect(page).to have_content 'Jobs for last week'
+    expect(page).to have_content 'Jobs for last month'
+    expect(page).to have_content 'Jobs for last year'
     expect(page).to have_content 'Commit duration in minutes for last 30 commits'
   end
 

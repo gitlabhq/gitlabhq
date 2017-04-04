@@ -9,7 +9,7 @@ class Groups::ApplicationController < ApplicationController
   def group
     unless @group
       id = params[:group_id] || params[:id]
-      @group = Group.find_by(path: id)
+      @group = Group.find_by_full_path(id)
 
       unless @group && can?(current_user, :read_group, @group)
         @group = nil

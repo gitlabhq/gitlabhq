@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe Gitlab::GithubImport::IssueFormatter, lib: true do
-  let!(:project) { create(:project, namespace: create(:namespace, path: 'octocat')) }
-  let(:octocat) { double(id: 123456, login: 'octocat') }
+  let(:client) { double }
+  let!(:project) { create(:empty_project, namespace: create(:namespace, path: 'octocat')) }
+  let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
 
@@ -23,9 +24,13 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
     }
   end
 
-  subject(:issue) { described_class.new(project, raw_data)}
+  subject(:issue) { described_class.new(project, raw_data, client) }
 
-  describe '#attributes' do
+  before do
+    allow(client).to receive(:user).and_return(octocat)
+  end
+
+  shared_examples 'Gitlab::GithubImport::IssueFormatter#attributes' do
     context 'when issue is open' do
       let(:raw_data) { double(base_data.merge(state: 'open')) }
 
@@ -75,15 +80,21 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
         expect(issue.attributes.fetch(:assignee_id)).to be_nil
       end
 
-      it 'returns GitLab user id as assignee_id when is a GitLab user' do
+      it 'returns GitLab user id associated with GitHub id as assignee_id' do
         gl_user = create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
+
+        expect(issue.attributes.fetch(:assignee_id)).to eq gl_user.id
+      end
+
+      it 'returns GitLab user id associated with GitHub email as assignee_id' do
+        gl_user = create(:user, email: octocat.email)
 
         expect(issue.attributes.fetch(:assignee_id)).to eq gl_user.id
       end
     end
 
     context 'when it has a milestone' do
-      let(:milestone) { double(number: 45) }
+      let(:milestone) { double(id: 42, number: 42) }
       let(:raw_data) { double(base_data.merge(milestone: milestone)) }
 
       it 'returns nil when milestone does not exist' do
@@ -91,7 +102,7 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
       end
 
       it 'returns milestone when it exists' do
-        milestone = create(:milestone, project: project, iid: 45)
+        milestone = create(:milestone, project: project, iid: 42)
 
         expect(issue.attributes.fetch(:milestone)).to eq milestone
       end
@@ -100,12 +111,18 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
     context 'when author is a GitLab user' do
       let(:raw_data) { double(base_data.merge(user: octocat)) }
 
-      it 'returns project#creator_id as author_id when is not a GitLab user' do
+      it 'returns project creator_id as author_id when is not a GitLab user' do
         expect(issue.attributes.fetch(:author_id)).to eq project.creator_id
       end
 
-      it 'returns GitLab user id as author_id when is a GitLab user' do
+      it 'returns GitLab user id associated with GitHub id as author_id' do
         gl_user = create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
+
+        expect(issue.attributes.fetch(:author_id)).to eq gl_user.id
+      end
+
+      it 'returns GitLab user id associated with GitHub email as author_id' do
+        gl_user = create(:user, email: octocat.email)
 
         expect(issue.attributes.fetch(:author_id)).to eq gl_user.id
       end
@@ -116,6 +133,28 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
         expect(issue.attributes.fetch(:description)).to eq("I'm having a problem with this.")
       end
     end
+  end
+
+  shared_examples 'Gitlab::GithubImport::IssueFormatter#number' do
+    let(:raw_data) { double(base_data.merge(number: 1347)) }
+
+    it 'returns issue number' do
+      expect(issue.number).to eq 1347
+    end
+  end
+
+  context 'when importing a GitHub project' do
+    it_behaves_like 'Gitlab::GithubImport::IssueFormatter#attributes'
+    it_behaves_like 'Gitlab::GithubImport::IssueFormatter#number'
+  end
+
+  context 'when importing a Gitea project' do
+    before do
+      project.update(import_type: 'gitea')
+    end
+
+    it_behaves_like 'Gitlab::GithubImport::IssueFormatter#attributes'
+    it_behaves_like 'Gitlab::GithubImport::IssueFormatter#number'
   end
 
   describe '#has_comments?' do
@@ -133,14 +172,6 @@ describe Gitlab::GithubImport::IssueFormatter, lib: true do
       it 'returns false' do
         expect(issue.has_comments?).to eq false
       end
-    end
-  end
-
-  describe '#number' do
-    let(:raw_data) { double(base_data.merge(number: 1347)) }
-
-    it 'returns pull request number' do
-      expect(issue.number).to eq 1347
     end
   end
 

@@ -18,23 +18,7 @@ describe Projects::Boards::IssuesController do
   end
 
   describe 'GET index' do
-    context 'with valid list id' do
-      it 'returns issues that have the list label applied' do
-        johndoe = create(:user, avatar: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png')))
-        issue = create(:labeled_issue, project: project, labels: [planning])
-        create(:labeled_issue, project: project, labels: [planning])
-        create(:labeled_issue, project: project, labels: [development], due_date: Date.tomorrow)
-        create(:labeled_issue, project: project, labels: [development], assignee: johndoe)
-        issue.subscribe(johndoe, project)
-
-        list_issues user: user, board: board, list: list2
-
-        parsed_response = JSON.parse(response.body)
-
-        expect(response).to match_response_schema('issues')
-        expect(parsed_response.length).to eq 2
-      end
-    end
+    let(:johndoe) { create(:user, avatar: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png'))) }
 
     context 'with invalid board id' do
       it 'returns a not found 404 response' do
@@ -44,11 +28,48 @@ describe Projects::Boards::IssuesController do
       end
     end
 
-    context 'with invalid list id' do
-      it 'returns a not found 404 response' do
-        list_issues user: user, board: board, list: 999
+    context 'when list id is present' do
+      context 'with valid list id' do
+        it 'returns issues that have the list label applied' do
+          issue = create(:labeled_issue, project: project, labels: [planning])
+          create(:labeled_issue, project: project, labels: [planning])
+          create(:labeled_issue, project: project, labels: [development], due_date: Date.tomorrow)
+          create(:labeled_issue, project: project, labels: [development], assignee: johndoe)
+          issue.subscribe(johndoe, project)
 
-        expect(response).to have_http_status(404)
+          list_issues user: user, board: board, list: list2
+
+          parsed_response = JSON.parse(response.body)
+
+          expect(response).to match_response_schema('issues')
+          expect(parsed_response.length).to eq 2
+          expect(development.issues.map(&:relative_position)).not_to include(nil)
+        end
+      end
+
+      context 'with invalid list id' do
+        it 'returns a not found 404 response' do
+          list_issues user: user, board: board, list: 999
+
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
+
+    context 'when list id is missing' do
+      it 'returns opened issues without board labels applied' do
+        bug = create(:label, project: project, name: 'Bug')
+        create(:issue, project: project)
+        create(:labeled_issue, project: project, labels: [planning])
+        create(:labeled_issue, project: project, labels: [development])
+        create(:labeled_issue, project: project, labels: [bug])
+
+        list_issues user: user, board: board
+
+        parsed_response = JSON.parse(response.body)
+
+        expect(response).to match_response_schema('issues')
+        expect(parsed_response.length).to eq 2
       end
     end
 
@@ -65,13 +86,17 @@ describe Projects::Boards::IssuesController do
       end
     end
 
-    def list_issues(user:, board:, list:)
+    def list_issues(user:, board:, list: nil)
       sign_in(user)
 
-      get :index, namespace_id: project.namespace.to_param,
-                  project_id: project.to_param,
-                  board_id: board.to_param,
-                  list_id: list.to_param
+      params = {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        board_id: board.to_param,
+        list_id: list.try(:to_param)
+      }
+
+      get :index, params.compact
     end
   end
 
@@ -122,7 +147,7 @@ describe Projects::Boards::IssuesController do
       sign_in(user)
 
       post :create, namespace_id: project.namespace.to_param,
-                    project_id: project.to_param,
+                    project_id: project,
                     board_id: board.to_param,
                     list_id: list.to_param,
                     issue: { title: title },
@@ -185,7 +210,7 @@ describe Projects::Boards::IssuesController do
       sign_in(user)
 
       patch :update, namespace_id: project.namespace.to_param,
-                     project_id: project.to_param,
+                     project_id: project,
                      board_id: board.to_param,
                      id: issue.to_param,
                      from_list_id: from_list_id,

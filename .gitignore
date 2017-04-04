@@ -51,3 +51,4 @@ eslint-report.html
 /builds/*
 /shared/*
 /.gitlab_workhorse_secret
+/webpack-report/

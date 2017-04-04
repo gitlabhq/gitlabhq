@@ -4,7 +4,7 @@ module Members
 
     attr_accessor :source
 
-    ALLOWED_SCOPES = %i[members requesters all]
+    ALLOWED_SCOPES = %i[members requesters all].freeze
 
     def initialize(source, current_user, params = {})
       @source = source

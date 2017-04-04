@@ -98,13 +98,14 @@
   }
 
   .label {
-    padding: 9px;
+    padding: 8px 9px 9px;
     font-size: 14px;
   }
 }
 
 .color-label {
-  padding: 3px 4px;
+  padding: 3px 7px;
+  border-radius: $label-border-radius;
 }
 
 .dropdown-labels-error {
@@ -115,8 +116,24 @@
 }
 
 .manage-labels-list {
+  > li:not(.empty-message) {
+    background-color: $white-light;
+    cursor: move;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+
+    &:active {
+      cursor: -webkit-grabbing;
+      cursor: -moz-grabbing;
+    }
+
+    &.sortable-ghost {
+      opacity: 0.3;
+    }
+  }
+
   .btn-action {
-    color: $gl-dark-link-color;
+    color: $gl-text-color;
 
     .fa {
       font-size: 18px;
@@ -198,8 +215,14 @@
   }
 
   .label-remove {
-    border-left: 1px solid rgba(0, 0, 0, .1);
+    border-left: 1px solid $label-remove-border;
     z-index: 3;
+    border-radius: $label-border-radius;
+    padding: 6px 10px 6px 9px;
+
+    &:hover {
+      box-shadow: inset 0 0 0 80px $label-remove-border;
+    }
   }
 
   .btn {
@@ -251,4 +274,9 @@
       display: block;
     }
   }
+}
+
+.label-link {
+  display: inline-block;
+  vertical-align: text-top;
 }

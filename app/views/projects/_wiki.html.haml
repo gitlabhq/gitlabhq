@@ -7,7 +7,7 @@
 - else
   - can_create_wiki = can?(current_user, :create_wiki, @project)
   .project-home-empty{ class: [('row-content-block' if can_create_wiki), ('content-block' unless can_create_wiki)] }
-    %div.text-center{ class: container_class }
+    .text-center{ class: container_class }
       %h4
         This project does not have a wiki homepage yet
       - if can_create_wiki

@@ -110,6 +110,28 @@ module GitlabMarkdownHelper
     end
   end
 
+  # Returns the text necessary to reference `entity` across projects
+  #
+  # project - Project to reference
+  # entity  - Object that responds to `to_reference`
+  #
+  # Examples:
+  #
+  #   cross_project_reference(project, project.issues.first)
+  #   # => 'namespace1/project1#123'
+  #
+  #   cross_project_reference(project, project.merge_requests.first)
+  #   # => 'namespace1/project1!345'
+  #
+  # Returns a String
+  def cross_project_reference(project, entity)
+    if entity.respond_to?(:to_reference)
+      entity.to_reference(project, full: true)
+    else
+      ''
+    end
+  end
+
   private
 
   # Return +text+, truncated to +max_chars+ characters, excluding any HTML
@@ -150,33 +172,13 @@ module GitlabMarkdownHelper
   # text hasn't already been truncated, then append "..." to the node contents
   # and return true.  Otherwise return false.
   def truncate_if_block(node, truncated)
-    if node.element? && node.description.block? && !truncated
+    return true if truncated
+
+    if node.element? && (node.description&.block? || node.matches?('pre > code > .line'))
       node.inner_html = "#{node.inner_html}..." if node.next_sibling
       true
     else
       truncated
-    end
-  end
-
-  # Returns the text necessary to reference `entity` across projects
-  #
-  # project - Project to reference
-  # entity  - Object that responds to `to_reference`
-  #
-  # Examples:
-  #
-  #   cross_project_reference(project, project.issues.first)
-  #   # => 'namespace1/project1#123'
-  #
-  #   cross_project_reference(project, project.merge_requests.first)
-  #   # => 'namespace1/project1!345'
-  #
-  # Returns a String
-  def cross_project_reference(project, entity)
-    if entity.respond_to?(:to_reference)
-      "#{project.to_reference}#{entity.to_reference}"
-    else
-      ''
     end
   end
 

@@ -187,6 +187,14 @@
         .help-block Markdown enabled
 
   %fieldset
+    %legend Pages
+    .form-group
+      = f.label :max_pages_size, 'Maximum size of pages (MB)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :max_pages_size, class: 'form-control'
+        .help-block 0 for unlimited
+
+  %fieldset
     %legend Continuous Integration
     .form-group
       .col-sm-offset-2.col-sm-10
@@ -204,8 +212,16 @@
       .col-sm-10
         = f.number_field :max_artifacts_size, class: 'form-control'
         .help-block
-          Set the maximum file size each build's artifacts can have
-          = link_to "(?)", help_page_path("user/admin_area/settings/continuous_integration", anchor: "maximum-artifacts-size")
+          Set the maximum file size for each job's artifacts
+          = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size')
+    .form-group
+      = f.label :default_artifacts_expire_in, 'Default artifacts expiration', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :default_artifacts_expire_in, class: 'form-control'
+        .help-block
+          Set the default expiration time for each job's artifacts.
+          0 for unlimited.
+          = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'default-artifacts-expiration')
 
   - if Gitlab.config.registry.enabled
     %fieldset
@@ -321,7 +337,7 @@
         = f.text_field :recaptcha_site_key, class: 'form-control'
         .help-block
           Generate site and private keys at
-          %a{ href: 'http://www.google.com/recaptcha', target: 'blank'} http://www.google.com/recaptcha
+          %a{ href: 'http://www.google.com/recaptcha', target: 'blank' } http://www.google.com/recaptcha
 
     .form-group
       = f.label :recaptcha_private_key, 'reCAPTCHA Private Key', class: 'control-label col-sm-2'
@@ -342,7 +358,30 @@
         = f.text_field :akismet_api_key, class: 'form-control'
         .help-block
           Generate API key at
-          %a{ href: 'http://www.akismet.com', target: 'blank'} http://www.akismet.com
+          %a{ href: 'http://www.akismet.com', target: 'blank' } http://www.akismet.com
+
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :unique_ips_limit_enabled do
+            = f.check_box :unique_ips_limit_enabled
+            Limit sign in from multiple ips
+          %span.help-block#unique_ip_help_block
+            Helps prevent malicious users hide their activity
+
+    .form-group
+      = f.label :unique_ips_limit_per_user, 'IPs per user', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :unique_ips_limit_per_user, class: 'form-control'
+        .help-block
+          Maximum number of unique IPs per user
+
+    .form-group
+      = f.label :unique_ips_limit_time_window, 'IP expiration time', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :unique_ips_limit_time_window, class: 'form-control'
+        .help-block
+          How many seconds an IP will be counted towards the limit
 
   %fieldset
     %legend Abuse reports
@@ -365,7 +404,7 @@
             Enable Sentry
           .help-block
             Sentry is an error reporting and logging tool which is currently not shipped with GitLab, get it here:
-            %a{ href: 'https://getsentry.com', target: '_blank' } https://getsentry.com
+            %a{ href: 'https://getsentry.com', target: '_blank', rel: 'noopener noreferrer' } https://getsentry.com
 
     .form-group
       = f.label :sentry_dsn, 'Sentry DSN', class: 'control-label col-sm-2'
@@ -421,6 +460,23 @@
             = link_to "Koding administration documentation", help_page_path("administration/integration/koding")
 
   %fieldset
+    %legend PlantUML
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :plantuml_enabled do
+            = f.check_box :plantuml_enabled
+            Enable PlantUML
+    .form-group
+      = f.label :plantuml_url, 'PlantUML URL', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :plantuml_url, class: 'form-control', placeholder: 'http://gitlab.your-plantuml-instance.com:8080'
+        .help-block
+          Allow rendering of
+          = link_to "PlantUML", "http://plantuml.com"
+          diagrams in Asciidoc documents using an external PlantUML service.
+
+  %fieldset
     %legend Usage statistics
     .form-group
       .col-sm-offset-2.col-sm-10
@@ -443,7 +499,16 @@
             Some email servers do not support overriding the email sender name.
             Enable this option to include the name of the author of the issue,
             merge request or comment in the email body instead.
-
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :html_emails_enabled do
+            = f.check_box :html_emails_enabled
+            Enable HTML emails
+          .help-block
+            By default GitLab sends emails in HTML and plain text formats so mail
+            clients can choose what format to use. Disable this option if you only
+            want to send emails in plain text format.
   %fieldset
     %legend Automatic Git repository housekeeping
     .form-group
@@ -482,6 +547,30 @@
         = f.number_field :housekeeping_gc_period, class: 'form-control'
         .help-block
           Number of Git pushes after which 'git gc' is run.
+
+  %fieldset
+    %legend Web terminal
+    .form-group
+      = f.label :terminal_max_session_time, 'Max session time', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :terminal_max_session_time, class: 'form-control'
+        .help-block
+          Maximum time for web terminal websocket connection (in seconds).
+          0 for unlimited.
+
+  %fieldset
+    %legend Real-time features
+    .form-group
+      = f.label :polling_interval_multiplier, 'Polling interval multiplier', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :polling_interval_multiplier, class: 'form-control'
+        .help-block
+          Change this value to influence how frequently the GitLab UI polls for updates.
+          If you set the value to 2 all polling intervals are multiplied
+          by 2, which means that polling happens half as frequently.
+          The multiplier can also have a decimal value.
+          The default value (1) is a reasonable choice for the majority of GitLab
+          installations. Set to 0 to completely disable polling.
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

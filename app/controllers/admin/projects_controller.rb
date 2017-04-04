@@ -3,7 +3,7 @@ class Admin::ProjectsController < Admin::ApplicationController
   before_action :group, only: [:show, :transfer]
 
   def index
-    @projects = Project.all
+    @projects = Project.with_statistics
     @projects = @projects.in_namespace(params[:namespace_id]) if params[:namespace_id].present?
     @projects = @projects.where(visibility_level: params[:visibility_level]) if params[:visibility_level].present?
     @projects = @projects.with_push if params[:with_push].present?
@@ -14,6 +14,15 @@ class Admin::ProjectsController < Admin::ApplicationController
     @projects = @projects.search(params[:name]) if params[:name].present?
     @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.includes(:namespace).order("namespaces.path, projects.name ASC").page(params[:page])
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {
+          html: view_to_html_string("admin/projects/_projects", locals: { projects: @projects })
+        }
+      end
+    end
   end
 
   def show
@@ -45,7 +54,7 @@ class Admin::ProjectsController < Admin::ApplicationController
   protected
 
   def project
-    @project = Project.find_with_namespace(
+    @project = Project.find_by_full_path(
       [params[:namespace_id], '/', params[:id]].join('')
     )
     @project || render_404

@@ -1,9 +1,11 @@
 require 'spec_helper'
 
 describe Gitlab::ReferenceExtractor, lib: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
 
-  before { project.team << [project.creator, :developer] }
+  before do
+    project.team << [project.creator, :developer]
+  end
 
   subject { Gitlab::ReferenceExtractor.new(project, project.creator) }
 
@@ -40,7 +42,77 @@ describe Gitlab::ReferenceExtractor, lib: true do
 
       > @offteam
     })
+
     expect(subject.users).to match_array([])
+  end
+
+  describe 'directly addressed users' do
+    before do
+      @u_foo  = create(:user, username: 'foo')
+      @u_foo2 = create(:user, username: 'foo2')
+      @u_foo3 = create(:user, username: 'foo3')
+      @u_foo4 = create(:user, username: 'foo4')
+      @u_foo5 = create(:user, username: 'foo5')
+
+      @u_bar  = create(:user, username: 'bar')
+      @u_bar2 = create(:user, username: 'bar2')
+      @u_bar3 = create(:user, username: 'bar3')
+      @u_bar4 = create(:user, username: 'bar4')
+
+      @u_tom  = create(:user, username: 'tom')
+      @u_tom2 = create(:user, username: 'tom2')
+    end
+
+    context 'when a user is directly addressed' do
+      it 'accesses the user object which is mentioned in the beginning of the line' do
+        subject.analyze('@foo What do you think? cc: @bar, @tom')
+
+        expect(subject.directly_addressed_users).to match_array([@u_foo])
+      end
+
+      it "doesn't access the user object if it's not mentioned in the beginning of the line" do
+        subject.analyze('What do you think? cc: @bar')
+
+        expect(subject.directly_addressed_users).to be_empty
+      end
+    end
+
+    context 'when multiple users are addressed' do
+      it 'accesses the user objects which are mentioned in the beginning of the line' do
+        subject.analyze('@foo @bar What do you think? cc: @tom')
+
+        expect(subject.directly_addressed_users).to match_array([@u_foo, @u_bar])
+      end
+
+      it "doesn't access the user objects if they are not mentioned in the beginning of the line" do
+        subject.analyze('What do you think? cc: @foo @bar @tom')
+
+        expect(subject.directly_addressed_users).to be_empty
+      end
+    end
+
+    context 'when multiple users are addressed in different paragraphs' do
+      it 'accesses user objects which are mentioned in the beginning of each paragraph' do
+        subject.analyze <<-NOTE.strip_heredoc
+          @foo What do you think? cc: @tom
+
+          - @bar can you please have a look?
+
+          >>>
+          @foo2 what do you think? cc: @bar2
+          >>>
+
+          @foo3 @foo4 thank you!
+
+          > @foo5 well done!
+
+          1. @bar3 Can you please check? cc: @tom2
+          2. @bar4 What do you this of this MR?
+        NOTE
+
+        expect(subject.directly_addressed_users).to match_array([@u_foo, @u_foo3, @u_foo4])
+      end
+    end
   end
 
   it 'accesses valid issue objects' do
@@ -48,6 +120,7 @@ describe Gitlab::ReferenceExtractor, lib: true do
     @i1 = create(:issue, project: project)
 
     subject.analyze("#{@i0.to_reference}, #{@i1.to_reference}, and #{Issue.reference_prefix}999.")
+
     expect(subject.issues).to match_array([@i0, @i1])
   end
 
@@ -56,6 +129,7 @@ describe Gitlab::ReferenceExtractor, lib: true do
     @m1 = create(:merge_request, source_project: project, target_project: project, source_branch: 'feature_conflict')
 
     subject.analyze("!999, !#{@m1.iid}, and !#{@m0.iid}.")
+
     expect(subject.merge_requests).to match_array([@m1, @m0])
   end
 
@@ -65,6 +139,7 @@ describe Gitlab::ReferenceExtractor, lib: true do
     @l2 = create(:label)
 
     subject.analyze("~#{@l0.id}, ~999, ~#{@l2.id}, ~#{@l1.id}")
+
     expect(subject.labels).to match_array([@l0, @l1])
   end
 
@@ -74,26 +149,32 @@ describe Gitlab::ReferenceExtractor, lib: true do
     @s2 = create(:project_snippet)
 
     subject.analyze("$#{@s0.id}, $999, $#{@s2.id}, $#{@s1.id}")
+
     expect(subject.snippets).to match_array([@s0, @s1])
   end
 
   it 'accesses valid commits' do
+    project = create(:project, :repository) { |p| p.add_developer(p.creator) }
     commit = project.commit('master')
 
-    subject.analyze("this references commits #{commit.sha[0..6]} and 012345")
-    extracted = subject.commits
+    extractor = described_class.new(project, project.creator)
+    extractor.analyze("this references commits #{commit.sha[0..6]} and 012345")
+    extracted = extractor.commits
+
     expect(extracted.size).to eq(1)
     expect(extracted[0].sha).to eq(commit.sha)
     expect(extracted[0].message).to eq(commit.message)
   end
 
   it 'accesses valid commit ranges' do
+    project = create(:project, :repository) { |p| p.add_developer(p.creator) }
     commit = project.commit('master')
     earlier_commit = project.commit('master~2')
 
-    subject.analyze("this references commits #{earlier_commit.sha[0..6]}...#{commit.sha[0..6]}")
+    extractor = described_class.new(project, project.creator)
+    extractor.analyze("this references commits #{earlier_commit.sha[0..6]}...#{commit.sha[0..6]}")
+    extracted = extractor.commit_ranges
 
-    extracted = subject.commit_ranges
     expect(extracted.size).to eq(1)
     expect(extracted.first).to be_kind_of(CommitRange)
     expect(extracted.first.commit_from).to eq earlier_commit
@@ -102,7 +183,6 @@ describe Gitlab::ReferenceExtractor, lib: true do
 
   context 'with an external issue tracker' do
     let(:project) { create(:jira_project) }
-    subject { described_class.new(project, project.creator) }
 
     it 'returns JIRA issues for a JIRA-integrated project' do
       subject.analyze('JIRA-123 and FOOBAR-4567')
@@ -112,7 +192,7 @@ describe Gitlab::ReferenceExtractor, lib: true do
   end
 
   context 'with a project with an underscore' do
-    let(:other_project) { create(:project, path: 'test_project') }
+    let(:other_project) { create(:empty_project, path: 'test_project') }
     let(:issue) { create(:issue, project: other_project) }
 
     before do
@@ -121,6 +201,7 @@ describe Gitlab::ReferenceExtractor, lib: true do
 
     it 'handles project issue references' do
       subject.analyze("this refers issue #{issue.to_reference(project)}")
+
       extracted = subject.issues
       expect(extracted.size).to eq(1)
       expect(extracted).to match_array([issue])

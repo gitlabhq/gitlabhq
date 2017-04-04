@@ -16,10 +16,10 @@ module ButtonHelper
   # See http://clipboardjs.com/#usage
   def clipboard_button(data = {})
     css_class = data[:class] || 'btn-clipboard btn-transparent'
-    title = data[:title] || 'Copy to Clipboard'
+    title = data[:title] || 'Copy to clipboard'
     data = { toggle: 'tooltip', placement: 'bottom', container: 'body' }.merge(data)
     content_tag :button,
-      icon('clipboard'),
+      icon('clipboard', 'aria-hidden': 'true'),
       class: "btn #{css_class}",
       data: data,
       type: :button,
@@ -34,7 +34,7 @@ module ButtonHelper
 
     content_tag (append_link ? :a : :span), protocol,
       class: klass,
-      href: (project.http_url_to_repo if append_link),
+      href: (project.http_url_to_repo(current_user) if append_link),
       data: {
         html: true,
         placement: placement,

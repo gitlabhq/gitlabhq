@@ -1,5 +1,5 @@
 = content_for :head do
-  = stylesheet_link_tag 'mailers/repository_push_email'
+  = stylesheet_link_tag 'mailers/highlighted_diff_email'
 
 %h3
   #{@message.author_name} #{@message.action_name} #{@message.ref_type} #{@message.ref_name}
@@ -17,7 +17,7 @@
   %ul
     - @message.commits.each do |commit|
       %li
-        %strong #{link_to(commit.short_id, namespace_project_commit_url(@message.project_namespace, @message.project, commit))}
+        %strong= link_to(commit.short_id, namespace_project_commit_url(@message.project_namespace, @message.project, commit))
         %div
           %span by #{commit.author_name}
           %i at #{commit.committed_date.to_s(:iso8601)}
@@ -29,7 +29,7 @@
   %ul
     - @message.diffs.each do |diff|
       %li.file-stats
-        %a{href: "#{@message.target_url if @message.disable_diffs?}##{hexdigest(diff.file_path)}" }
+        %a{ href: "#{@message.target_url if @message.disable_diffs?}##{hexdigest(diff.file_path)}" }
           - if diff.deleted_file
             %span.deleted-file
               &minus;
@@ -54,8 +54,8 @@
       %h4 Changes:
       - diff_files.each do |diff_file|
         - file_hash = hexdigest(diff_file.file_path)
-        %li{id: file_hash}
-          %a{href: @message.target_url + "##{file_hash}"}<
+        %li{ id: file_hash }
+          %a{ href: @message.target_url + "##{file_hash}" }<
             - if diff_file.deleted_file
               %strong<
                 = diff_file.old_path

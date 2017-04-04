@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe Gitlab::OptimisticLocking, lib: true do
-  describe '#retry_lock' do
-    let!(:pipeline) { create(:ci_pipeline) }
-    let!(:pipeline2) { Ci::Pipeline.find(pipeline.id) }
+  let!(:pipeline) { create(:ci_pipeline) }
+  let!(:pipeline2) { Ci::Pipeline.find(pipeline.id) }
 
+  describe '#retry_lock' do
     it 'does not reload object if state changes' do
       expect(pipeline).not_to receive(:reload)
       expect(pipeline).to receive(:succeed).and_call_original
@@ -34,6 +34,19 @@ describe Gitlab::OptimisticLocking, lib: true do
           subject.drop
         end
       end.to raise_error(ActiveRecord::StaleObjectError)
+    end
+  end
+
+  describe '#retry_optimistic_lock' do
+    context 'when locking module is mixed in' do
+      let(:unlockable) do
+        Class.new.include(described_class).new
+      end
+
+      it 'is an alias for retry_lock' do
+        expect(unlockable.method(:retry_optimistic_lock))
+          .to eq unlockable.method(:retry_lock)
+      end
     end
   end
 end

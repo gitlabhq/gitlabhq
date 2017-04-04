@@ -6,7 +6,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   include RepoHelpers
 
   step "I don't have write access" do
-    @project = create(:project, name: "Other Project", path: "other-project")
+    @project = create(:project, :repository, name: "Other Project", path: "other-project")
     @project.team << [@user, :reporter]
     visit namespace_project_tree_path(@project.namespace, @project, root_ref)
   end
@@ -48,7 +48,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click link "Raw"' do
-    click_link 'Raw'
+    click_link 'Open raw'
   end
 
   step 'I should see raw file content' do
@@ -82,7 +82,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I fill the new branch name' do
-    fill_in :target_branch, with: 'new_branch_name', visible: true
+    first('button.js-target-branch', visible: true).click
+    first('.create-new-branch', visible: true).click
+    first('#new_branch_name', visible: true).set('new_branch_name')
+    first('.js-new-branch-btn', visible: true).click
   end
 
   step 'I fill the new file name with an illegal name' do
@@ -334,6 +337,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on "files/lfs/lfs_object.iso" file in repo' do
+    allow_any_instance_of(Project).to receive(:lfs_enabled?).and_return(true)
     visit namespace_project_tree_path(@project.namespace, @project, "lfs")
     click_link 'files'
     click_link "lfs"
@@ -352,7 +356,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I should see buttons for allowed commands' do
     page.within '.content' do
-      expect(page).to have_content 'Raw'
+      expect(page).to have_link 'Open raw'
       expect(page).to have_content 'History'
       expect(page).to have_content 'Permalink'
       expect(page).not_to have_content 'Edit'

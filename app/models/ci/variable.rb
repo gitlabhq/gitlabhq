@@ -2,12 +2,12 @@ module Ci
   class Variable < ActiveRecord::Base
     extend Ci::Model
 
-    belongs_to :project, foreign_key: :gl_project_id
+    belongs_to :project
 
-    validates_uniqueness_of :key, scope: :gl_project_id
     validates :key,
       presence: true,
-      length: { within: 0..255 },
+      uniqueness: { scope: :project_id },
+      length: { maximum: 255 },
       format: { with: /\A[a-zA-Z0-9_]+\z/,
                 message: "can contain only letters, digits and '_'." }
 

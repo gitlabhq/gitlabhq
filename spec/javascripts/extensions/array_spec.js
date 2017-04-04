@@ -1,6 +1,6 @@
-/* eslint-disable space-before-function-paren, no-var, padded-blocks */
+/* eslint-disable space-before-function-paren, no-var */
 
-/*= require extensions/array */
+require('~/extensions/array');
 
 (function() {
   describe('Array extensions', function() {
@@ -11,7 +11,7 @@
         return expect(arr.first()).toBe(0);
       });
     });
-    return describe('last', function() {
+    describe('last', function() {
       return it('returns the last item', function() {
         var arr;
         arr = [0, 1, 2, 3, 4, 5];
@@ -19,5 +19,4 @@
       });
     });
   });
-
-}).call(this);
+}).call(window);

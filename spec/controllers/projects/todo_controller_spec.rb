@@ -4,7 +4,7 @@ describe Projects::TodosController do
   include ApiHelpers
 
   let(:user)          { create(:user) }
-  let(:project)       { create(:project) }
+  let(:project)       { create(:empty_project) }
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
@@ -12,8 +12,8 @@ describe Projects::TodosController do
     describe 'POST create' do
       def go
         post :create,
-          namespace_id: project.namespace.path,
-          project_id: project.path,
+          namespace_id: project.namespace,
+          project_id: project,
           issuable_id: issue.id,
           issuable_type: 'issue',
           format: 'html'
@@ -42,7 +42,7 @@ describe Projects::TodosController do
         end
       end
 
-      context 'when not authorized' do
+      context 'when not authorized for project' do
         it 'does not create todo for issue that user has no access to' do
           sign_in(user)
           expect do
@@ -60,6 +60,19 @@ describe Projects::TodosController do
           expect(response).to have_http_status(302)
         end
       end
+
+      context 'when not authorized for issue' do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
+          sign_in(user)
+        end
+
+        it "doesn't create todo" do
+          expect{ go }.not_to change { user.todos.count }
+          expect(response).to have_http_status(404)
+        end
+      end
     end
   end
 
@@ -67,8 +80,8 @@ describe Projects::TodosController do
     describe 'POST create' do
       def go
         post :create,
-          namespace_id: project.namespace.path,
-          project_id: project.path,
+          namespace_id: project.namespace,
+          project_id: project,
           issuable_id: merge_request.id,
           issuable_type: 'merge_request',
           format: 'html'
@@ -97,7 +110,7 @@ describe Projects::TodosController do
         end
       end
 
-      context 'when not authorized' do
+      context 'when not authorized for project' do
         it 'does not create todo for merge request user has no access to' do
           sign_in(user)
           expect do
@@ -113,6 +126,19 @@ describe Projects::TodosController do
           end.to change { user.todos.count }.by(0)
 
           expect(response).to have_http_status(302)
+        end
+      end
+
+      context 'when not authorized for merge_request' do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
+          sign_in(user)
+        end
+
+        it "doesn't create todo" do
+          expect{ go }.not_to change { user.todos.count }
+          expect(response).to have_http_status(404)
         end
       end
     end

@@ -48,10 +48,10 @@ describe "Dashboard Issues filtering", feature: true, js: true do
     it 'updates atom feed link' do
       visit_issues(milestone_title: '', assignee_id: user.id)
 
-      link = find('.nav-controls a', text: 'Subscribe')
-      params = CGI::parse(URI.parse(link[:href]).query)
+      link = find('.nav-controls a[title="Subscribe"]')
+      params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
-      auto_discovery_params = CGI::parse(URI.parse(auto_discovery_link[:href]).query)
+      auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
 
       expect(params).to include('private_token' => [user.private_token])
       expect(params).to include('milestone_title' => [''])

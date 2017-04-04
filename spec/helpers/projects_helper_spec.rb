@@ -10,7 +10,7 @@ describe ProjectsHelper do
   end
 
   describe "can_change_visibility_level?" do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:user) { create(:project_member, :reporter, user: create(:user), project: project).user }
     let(:fork_project) { Projects::ForkService.new(project, user).execute }
 
@@ -63,6 +63,46 @@ describe ProjectsHelper do
     end
   end
 
+  describe "#project_list_cache_key" do
+    let(:project) { create(:project) }
+
+    it "includes the namespace" do
+      expect(helper.project_list_cache_key(project)).to include(project.namespace.cache_key)
+    end
+
+    it "includes the project" do
+      expect(helper.project_list_cache_key(project)).to include(project.cache_key)
+    end
+
+    it "includes the controller name" do
+      expect(helper.controller).to receive(:controller_name).and_return("testcontroller")
+
+      expect(helper.project_list_cache_key(project)).to include("testcontroller")
+    end
+
+    it "includes the controller action" do
+      expect(helper.controller).to receive(:action_name).and_return("testaction")
+
+      expect(helper.project_list_cache_key(project)).to include("testaction")
+    end
+
+    it "includes the application settings" do
+      settings = Gitlab::CurrentSettings.current_application_settings
+
+      expect(helper.project_list_cache_key(project)).to include(settings.cache_key)
+    end
+
+    it "includes a version" do
+      expect(helper.project_list_cache_key(project)).to include("v2.3")
+    end
+
+    it "includes the pipeline status when there is a status" do
+      create(:ci_pipeline, :success, project: project, sha: project.commit.sha)
+
+      expect(helper.project_list_cache_key(project)).to include("pipeline-status/#{project.commit.sha}-success")
+    end
+  end
+
   describe 'link_to_member' do
     let(:group)   { create(:group) }
     let(:project) { create(:empty_project, group: group) }
@@ -97,7 +137,7 @@ describe ProjectsHelper do
   end
 
   describe '#license_short_name' do
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
 
     context 'when project.repository has a license_key' do
       it 'returns the nickname of the license if present' do
@@ -203,7 +243,6 @@ describe ProjectsHelper do
 
     context "when project moves from public to private" do
       before do
-        project.project_feature.update_attributes(issues_access_level: ProjectFeature::ENABLED)
         project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
       end
 

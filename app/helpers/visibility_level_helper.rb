@@ -89,17 +89,9 @@ module VisibilityLevelHelper
     current_application_settings.restricted_visibility_levels || []
   end
 
-  def default_project_visibility
-    current_application_settings.default_project_visibility
-  end
-
-  def default_snippet_visibility
-    current_application_settings.default_snippet_visibility
-  end
-
-  def default_group_visibility
-    current_application_settings.default_group_visibility
-  end
+  delegate  :default_project_visibility,
+            :default_group_visibility,
+            to: :current_application_settings
 
   def skip_level?(form_model, level)
     form_model.is_a?(Project) && !form_model.visibility_level_allowed?(level)

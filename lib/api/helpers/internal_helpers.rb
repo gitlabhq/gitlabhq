@@ -9,11 +9,11 @@ module API
       # In addition, they may have a '.git' extension and multiple namespaces
       #
       # Transform all these cases to 'namespace/project'
-      def clean_project_path(project_path, storage_paths = Repository.storages.values)
+      def clean_project_path(project_path, storages = Gitlab.config.repositories.storages.values)
         project_path = project_path.sub(/\.git\z/, '')
 
-        storage_paths.each do |storage_path|
-          storage_path = File.expand_path(storage_path)
+        storages.each do |storage|
+          storage_path = File.expand_path(storage['path'])
 
           if project_path.start_with?(storage_path)
             project_path = project_path.sub(storage_path, '')
@@ -30,7 +30,7 @@ module API
 
       def wiki?
         @wiki ||= project_path.end_with?('.wiki') &&
-          !Project.find_with_namespace(project_path)
+          !Project.find_by_full_path(project_path)
       end
 
       def project
@@ -41,7 +41,7 @@ module API
           # the wiki repository as well.
           project_path.chomp!('.wiki') if wiki?
 
-          Project.find_with_namespace(project_path)
+          Project.find_by_full_path(project_path)
         end
       end
 
@@ -51,6 +51,14 @@ module API
           :download_code,
           :push_code
         ]
+      end
+
+      def parse_allowed_environment_variables
+        return if params[:env].blank?
+
+        JSON.parse(params[:env])
+
+      rescue JSON::ParserError
       end
     end
   end

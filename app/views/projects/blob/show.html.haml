@@ -5,7 +5,7 @@
 %div{ class: container_class }
   = render 'projects/last_push'
 
-  %div#tree-holder.tree-holder
+  #tree-holder.tree-holder
     = render 'blob', blob: @blob
 
   - if can_edit_blob?(@blob)

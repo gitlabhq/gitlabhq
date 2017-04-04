@@ -1,8 +1,8 @@
-#modal-shortcuts.modal{tabindex: -1}
+#modal-shortcuts.modal{ tabindex: -1 }
   .modal-dialog
     .modal-content
       .modal-header
-        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h4
           Keyboard Shortcuts
           %small
@@ -79,10 +79,18 @@
                   %td.shortcut
                     .key esc
                   %td Go back
+              %tbody
+                %tr
+                  %th
+                  %th Project File
+                %tr
+                  %td.shortcut
+                    .key y
+                  %td Go to file permalink
 
           .col-lg-4
             %table.shortcut-mappings
-              %tbody{ class: 'hidden-shortcut project', style: 'display:none' }
+              %tbody.hidden-shortcut.project{ style: 'display:none' }
                 %tr
                   %th
                   %th Global Dashboard
@@ -110,6 +118,12 @@
                     .key m
                   %td
                     Go to merge requests
+                %tr
+                  %td.shortcut
+                    .key g
+                    .key t
+                  %td
+                    Go to todos
               %tbody
                 %tr
                   %th
@@ -143,7 +157,7 @@
                     .key g
                     .key b
                   %td
-                    Go to builds
+                    Go to jobs
                 %tr
                   %td.shortcut
                     .key g
@@ -155,7 +169,7 @@
                     .key g
                     .key g
                   %td
-                    Go to graphs
+                    Go to repository charts
                 %tr
                   %td.shortcut
                     .key g
@@ -190,7 +204,7 @@
                   %td New issue
           .col-lg-4
             %table.shortcut-mappings
-              %tbody{ class: 'hidden-shortcut network', style: 'display:none' }
+              %tbody.hidden-shortcut.network{ style: 'display:none' }
                 %tr
                   %th
                   %th Network Graph
@@ -240,7 +254,7 @@
                     .key
                       shift j
                   %td Scroll to bottom
-              %tbody{ class: 'hidden-shortcut issues', style: 'display:none' }
+              %tbody.hidden-shortcut.issues{ style: 'display:none' }
                 %tr
                   %th
                   %th Issues
@@ -264,7 +278,7 @@
                   %td.shortcut
                     .key l
                   %td Change Label
-              %tbody{ class: 'hidden-shortcut merge_requests', style: 'display:none' }
+              %tbody.hidden-shortcut.merge_requests{ style: 'display:none' }
                 %tr
                   %th
                   %th Merge Requests

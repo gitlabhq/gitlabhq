@@ -1,7 +1,38 @@
+@keyframes fade-out-status {
+  0%, 50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes blinking-dots {
+  0% {
+    background-color: rgba($white-light, 1);
+    box-shadow: 12px 0 0 0 rgba($white-light,0.2),
+                24px 0 0 0 rgba($white-light,0.2);
+  }
+
+  25% {
+    background-color: rgba($white-light, 0.4);
+    box-shadow: 12px 0 0 0 rgba($white-light,2),
+                24px 0 0 0 rgba($white-light,0.2);
+  }
+
+  75% {
+    background-color: rgba($white-light, 0.4);
+    box-shadow: 12px 0 0 0 rgba($white-light,0.2),
+                24px 0 0 0 rgba($white-light,1);
+  }
+
+  100% {
+    background-color: rgba($white-light, 1);
+    box-shadow: 12px 0 0 0 rgba($white-light,0.2),
+                24px 0 0 0 rgba($white-light,0.2);
+  }
+}
+
 .build-page {
   pre.trace {
-    background: #111;
-    color: #fff;
+    background: $builds-trace-bg;
+    color: $white-light;
     font-family: $monospace_font;
     white-space: pre-wrap;
     overflow: auto;
@@ -14,35 +45,8 @@
     }
   }
 
-  .scroll-controls {
-    .scroll-step {
-      width: 31px;
-      margin: 0 0 0 auto;
-    }
-
-    &.affix-bottom {
-      position: absolute;
-      right: 25px;
-    }
-
-    &.affix {
-      right: 25px;
-      bottom: 15px;
-      z-index: 1;
-    }
-
-    &.sidebar-expanded {
-      right: #{$gutter_width + ($gl-padding * 2)};
-    }
-
-    a {
-      display: block;
-      margin-bottom: 10px;
-    }
-  }
-
   .environment-information {
-    background-color: $background-color;
+    background-color: $gray-light;
     border: 1px solid $border-color;
     padding: 12px $gl-padding;
     border-radius: $border-radius-default;
@@ -55,6 +59,87 @@
   }
 }
 
+.scroll-controls {
+  height: 100%;
+
+  .scroll-step {
+    width: 31px;
+    margin: 0 0 0 auto;
+  }
+
+  .scroll-link,
+  .autoscroll-container {
+    right: 25px;
+    z-index: 1;
+  }
+
+  .scroll-link {
+    position: fixed;
+    display: block;
+    margin-bottom: 10px;
+
+    &.scroll-top .gitlab-icon-scroll-up-hover,
+    &.scroll-top:hover .gitlab-icon-scroll-up,
+    &.scroll-bottom .gitlab-icon-scroll-down-hover,
+    &.scroll-bottom:hover .gitlab-icon-scroll-down {
+      display: none;
+    }
+
+    &.scroll-top:hover .gitlab-icon-scroll-up-hover,
+    &.scroll-bottom:hover .gitlab-icon-scroll-down-hover {
+      display: inline-block;
+    }
+
+    &.scroll-top {
+      top: 10px;
+    }
+
+    &.scroll-bottom {
+      bottom: -2px;
+    }
+  }
+
+  .autoscroll-container {
+    position: absolute;
+  }
+
+  &.sidebar-expanded {
+
+    .scroll-link,
+    .autoscroll-container {
+      right: ($gutter_width + ($gl-padding * 2));
+    }
+  }
+}
+
+.status-message {
+  display: inline-block;
+  color: $white-light;
+
+  .status-icon {
+    display: inline-block;
+    width: 16px;
+    height: 33px;
+  }
+
+  .status-text {
+    float: left;
+    opacity: 0;
+    margin-right: 10px;
+    font-weight: normal;
+    line-height: 1.8;
+    transition: opacity 1s ease-out;
+
+    &.animate {
+      animation: fade-out-status 2s ease;
+    }
+  }
+
+  &:hover .status-text {
+    opacity: 1;
+  }
+}
+
 .build-header {
   position: relative;
   padding: 0;
@@ -64,6 +149,7 @@
 
   @media (max-width: $screen-sm-max) {
     padding-right: 40px;
+    margin-top: 6px;
 
     .btn-inverted {
       display: none;
@@ -74,7 +160,7 @@
     flex: 1;
 
     a {
-      color: $gl-gray;
+      color: $gl-text-color;
 
       &:hover {
         color: $gl-link-color;
@@ -95,8 +181,8 @@
 }
 
 .build-trace {
-  background: $ci-output-bg;
-  color: $ci-text-color;
+  background: $black;
+  color: $gray-darkest;
   white-space: pre;
   overflow-x: auto;
   font-size: 12px;
@@ -107,6 +193,15 @@
 
   .bash {
     display: block;
+  }
+
+  .build-loader-animation {
+    position: relative;
+    width: 6px;
+    height: 6px;
+    margin: auto auto 12px 2px;
+    border-radius: 50%;
+    animation: blinking-dots 1s linear infinite;
   }
 }
 
@@ -247,6 +342,12 @@
   }
 }
 
+.build-sidebar {
+  .container-fluid.container-limited {
+    max-width: 100%;
+  }
+}
+
 .build-detail-row {
   margin-bottom: 5px;
 
@@ -256,7 +357,7 @@
 }
 
 .build-light-text {
-  color: $gl-placeholder-color;
+  color: $gl-text-color-secondary;
 }
 
 .build-gutter-toggle {
@@ -264,10 +365,4 @@
   top: 50%;
   right: 0;
   margin-top: -17px;
-}
-
-@media (min-width: $screen-md-min) {
-  .sub-nav.build {
-    width: calc(100% + #{$gutter_width});
-  }
 }

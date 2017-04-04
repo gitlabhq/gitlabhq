@@ -6,6 +6,9 @@
       = deploy_key.title
     .description
       = deploy_key.fingerprint
+    - if deploy_key.can_push?
+      .write-access-allowed
+        Write access allowed
   .deploy-key-content.prepend-left-default.deploy-key-projects
     - deploy_key.projects.each do |project|
       - if can?(current_user, :read_project, project)
@@ -15,7 +18,7 @@
     %span.key-created-at
       created #{time_ago_with_tooltip(deploy_key.created_at)}
     .visible-xs-block.visible-sm-block
-    - if @available_keys.include?(deploy_key)
+    - if @deploy_keys.key_available?(deploy_key)
       = link_to enable_namespace_project_deploy_key_path(@project.namespace, @project, deploy_key), class: "btn btn-sm prepend-left-10", method: :put do
         Enable
     - else

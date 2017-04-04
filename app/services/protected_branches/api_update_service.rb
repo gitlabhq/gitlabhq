@@ -15,16 +15,16 @@ module ProtectedBranches
 
         case @developers_can_push
         when true
-          params.merge!(push_access_levels_attributes: [{ access_level: Gitlab::Access::DEVELOPER }])
+          params[:push_access_levels_attributes] = [{ access_level: Gitlab::Access::DEVELOPER }]
         when false
-          params.merge!(push_access_levels_attributes: [{ access_level: Gitlab::Access::MASTER }])
+          params[:push_access_levels_attributes] = [{ access_level: Gitlab::Access::MASTER }]
         end
 
         case @developers_can_merge
         when true
-          params.merge!(merge_access_levels_attributes: [{ access_level: Gitlab::Access::DEVELOPER }])
+          params[:merge_access_levels_attributes] = [{ access_level: Gitlab::Access::DEVELOPER }]
         when false
-          params.merge!(merge_access_levels_attributes: [{ access_level: Gitlab::Access::MASTER }])
+          params[:merge_access_levels_attributes] = [{ access_level: Gitlab::Access::MASTER }]
         end
 
         service = ProtectedBranches::UpdateService.new(@project, @current_user, @params)

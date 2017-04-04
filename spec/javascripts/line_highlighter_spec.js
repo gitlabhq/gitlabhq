@@ -1,25 +1,22 @@
-/* eslint-disable space-before-function-paren, no-var, no-param-reassign, quotes, prefer-template, no-else-return, new-cap, dot-notation, no-undef, no-return-assign, comma-dangle, no-new, one-var, one-var-declaration-per-line, no-plusplus, jasmine/no-spec-dupes, no-underscore-dangle, padded-blocks, max-len */
+/* eslint-disable space-before-function-paren, no-var, no-param-reassign, quotes, prefer-template, no-else-return, new-cap, dot-notation, no-return-assign, comma-dangle, no-new, one-var, one-var-declaration-per-line, jasmine/no-spec-dupes, no-underscore-dangle, max-len */
+/* global LineHighlighter */
 
-/*= require line_highlighter */
+require('~/line_highlighter');
 
 (function() {
   describe('LineHighlighter', function() {
     var clickLine;
-    fixture.preload('line_highlighter.html');
-    clickLine = function(number, eventData) {
-      var e;
-      if (eventData == null) {
-        eventData = {};
-      }
+    preloadFixtures('static/line_highlighter.html.raw');
+    clickLine = function(number, eventData = {}) {
       if ($.isEmptyObject(eventData)) {
-        return $("#L" + number).mousedown().click();
+        return $("#L" + number).click();
       } else {
-        e = $.Event('mousedown', eventData);
-        return $("#L" + number).trigger(e).click();
+        const e = $.Event('click', eventData);
+        return $("#L" + number).trigger(e);
       }
     };
     beforeEach(function() {
-      fixture.load('line_highlighter.html');
+      loadFixtures('static/line_highlighter.html.raw');
       this["class"] = new LineHighlighter();
       this.css = this["class"].highlightClass;
       return this.spies = {
@@ -32,11 +29,11 @@
         return expect($('#LC13')).toHaveClass(this.css);
       });
       it('highlights a range of lines given in the URL hash', function() {
-        var i, line, results;
+        var line, results;
         new LineHighlighter('#L5-25');
         expect($("." + this.css).length).toBe(21);
         results = [];
-        for (line = i = 5; i <= 25; line = ++i) {
+        for (line = 5; line <= 25; line += 1) {
           results.push(expect($("#LC" + line)).toHaveClass(this.css));
         }
         return results;
@@ -62,12 +59,6 @@
       });
     });
     describe('#clickHandler', function() {
-      it('discards the mousedown event', function() {
-        var spy;
-        spy = spyOnEvent('a[data-line-number]', 'mousedown');
-        clickLine(13);
-        return expect(spy).toHaveBeenPrevented();
-      });
       it('handles clicking on a child icon element', function() {
         var spy;
         spy = spyOn(this["class"], 'setHash').and.callThrough();
@@ -123,27 +114,27 @@
         });
         describe('with existing single-line highlight', function() {
           it('uses existing line as last line when target is lesser', function() {
-            var i, line, results;
+            var line, results;
             clickLine(20);
             clickLine(15, {
               shiftKey: true
             });
             expect($("." + this.css).length).toBe(6);
             results = [];
-            for (line = i = 15; i <= 20; line = ++i) {
+            for (line = 15; line <= 20; line += 1) {
               results.push(expect($("#LC" + line)).toHaveClass(this.css));
             }
             return results;
           });
           return it('uses existing line as first line when target is greater', function() {
-            var i, line, results;
+            var line, results;
             clickLine(5);
             clickLine(10, {
               shiftKey: true
             });
             expect($("." + this.css).length).toBe(6);
             results = [];
-            for (line = i = 5; i <= 10; line = ++i) {
+            for (line = 5; line <= 10; line += 1) {
               results.push(expect($("#LC" + line)).toHaveClass(this.css));
             }
             return results;
@@ -159,25 +150,25 @@
             });
           });
           it('uses target as first line when it is less than existing first line', function() {
-            var i, line, results;
+            var line, results;
             clickLine(5, {
               shiftKey: true
             });
             expect($("." + this.css).length).toBe(6);
             results = [];
-            for (line = i = 5; i <= 10; line = ++i) {
+            for (line = 5; line <= 10; line += 1) {
               results.push(expect($("#LC" + line)).toHaveClass(this.css));
             }
             return results;
           });
           return it('uses target as last line when it is greater than existing first line', function() {
-            var i, line, results;
+            var line, results;
             clickLine(15, {
               shiftKey: true
             });
             expect($("." + this.css).length).toBe(6);
             results = [];
-            for (line = i = 10; i <= 15; line = ++i) {
+            for (line = 10; line <= 15; line += 1) {
               results.push(expect($("#LC" + line)).toHaveClass(this.css));
             }
             return results;
@@ -226,5 +217,4 @@
       });
     });
   });
-
-}).call(this);
+}).call(window);

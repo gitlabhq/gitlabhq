@@ -1,10 +1,18 @@
 require 'spec_helper'
 
 describe Gitlab::Redis do
-  let(:redis_config) { Rails.root.join('config', 'resque.yml').to_s }
+  include StubENV
 
-  before(:each) { clear_raw_config }
-  after(:each) { clear_raw_config }
+  let(:config) { 'config/resque.yml' }
+
+  before(:each) do
+    stub_env('GITLAB_REDIS_CONFIG_FILE', Rails.root.join(config).to_s)
+    clear_raw_config
+  end
+
+  after(:each) do
+    clear_raw_config
+  end
 
   describe '.params' do
     subject { described_class.params }
@@ -18,22 +26,22 @@ describe Gitlab::Redis do
     end
 
     context 'when url contains unix socket reference' do
-      let(:config_old) { Rails.root.join('spec/fixtures/config/redis_old_format_socket.yml').to_s }
-      let(:config_new) { Rails.root.join('spec/fixtures/config/redis_new_format_socket.yml').to_s }
+      let(:config_old) { 'spec/fixtures/config/redis_old_format_socket.yml' }
+      let(:config_new) { 'spec/fixtures/config/redis_new_format_socket.yml' }
 
       context 'with old format' do
-        it 'returns path key instead' do
-          stub_const("#{described_class}::CONFIG_FILE", config_old)
+        let(:config) { config_old }
 
+        it 'returns path key instead' do
           is_expected.to include(path: '/path/to/old/redis.sock')
           is_expected.not_to have_key(:url)
         end
       end
 
       context 'with new format' do
-        it 'returns path key instead' do
-          stub_const("#{described_class}::CONFIG_FILE", config_new)
+        let(:config) { config_new }
 
+        it 'returns path key instead' do
           is_expected.to include(path: '/path/to/redis.sock')
           is_expected.not_to have_key(:url)
         end
@@ -41,22 +49,22 @@ describe Gitlab::Redis do
     end
 
     context 'when url is host based' do
-      let(:config_old) { Rails.root.join('spec/fixtures/config/redis_old_format_host.yml') }
-      let(:config_new) { Rails.root.join('spec/fixtures/config/redis_new_format_host.yml') }
+      let(:config_old) { 'spec/fixtures/config/redis_old_format_host.yml' }
+      let(:config_new) { 'spec/fixtures/config/redis_new_format_host.yml' }
 
       context 'with old format' do
-        it 'returns hash with host, port, db, and password' do
-          stub_const("#{described_class}::CONFIG_FILE", config_old)
+        let(:config) { config_old }
 
+        it 'returns hash with host, port, db, and password' do
           is_expected.to include(host: 'localhost', password: 'mypassword', port: 6379, db: 99)
           is_expected.not_to have_key(:url)
         end
       end
 
       context 'with new format' do
-        it 'returns hash with host, port, db, and password' do
-          stub_const("#{described_class}::CONFIG_FILE", config_new)
+        let(:config) { config_new }
 
+        it 'returns hash with host, port, db, and password' do
           is_expected.to include(host: 'localhost', password: 'mynewpassword', port: 6379, db: 99)
           is_expected.not_to have_key(:url)
         end
@@ -72,18 +80,29 @@ describe Gitlab::Redis do
 
       expect(url2).not_to end_with('foobar')
     end
+
+    context 'when yml file with env variable' do
+      let(:config) { 'spec/fixtures/config/redis_config_with_env.yml' }
+
+      before  do
+        stub_env('TEST_GITLAB_REDIS_URL', 'redis://redishost:6379')
+      end
+
+      it 'reads redis url from env variable' do
+        expect(described_class.url).to eq 'redis://redishost:6379'
+      end
+    end
   end
 
   describe '._raw_config' do
     subject { described_class._raw_config }
+    let(:config) { '/var/empty/doesnotexist' }
 
     it 'should be frozen' do
       expect(subject).to be_frozen
     end
 
     it 'returns false when the file does not exist' do
-      stub_const("#{described_class}::CONFIG_FILE", '/var/empty/doesnotexist')
-
       expect(subject).to eq(false)
     end
   end
@@ -120,22 +139,18 @@ describe Gitlab::Redis do
     subject { described_class.new(Rails.env).sentinels }
 
     context 'when sentinels are defined' do
-      let(:config) { Rails.root.join('spec/fixtures/config/redis_new_format_host.yml') }
+      let(:config) { 'spec/fixtures/config/redis_new_format_host.yml' }
 
       it 'returns an array of hashes with host and port keys' do
-        stub_const("#{described_class}::CONFIG_FILE", config)
-
         is_expected.to include(host: 'localhost', port: 26380)
         is_expected.to include(host: 'slave2', port: 26381)
       end
     end
 
     context 'when sentinels are not defined' do
-      let(:config) { Rails.root.join('spec/fixtures/config/redis_old_format_host.yml') }
+      let(:config) { 'spec/fixtures/config/redis_old_format_host.yml' }
 
       it 'returns nil' do
-        stub_const("#{described_class}::CONFIG_FILE", config)
-
         is_expected.to be_nil
       end
     end
@@ -145,21 +160,17 @@ describe Gitlab::Redis do
     subject { described_class.new(Rails.env).sentinels? }
 
     context 'when sentinels are defined' do
-      let(:config) { Rails.root.join('spec/fixtures/config/redis_new_format_host.yml') }
+      let(:config) { 'spec/fixtures/config/redis_new_format_host.yml' }
 
       it 'returns true' do
-        stub_const("#{described_class}::CONFIG_FILE", config)
-
         is_expected.to be_truthy
       end
     end
 
     context 'when sentinels are not defined' do
-      let(:config) { Rails.root.join('spec/fixtures/config/redis_old_format_host.yml') }
+      let(:config) { 'spec/fixtures/config/redis_old_format_host.yml' }
 
       it 'returns false' do
-        stub_const("#{described_class}::CONFIG_FILE", config)
-
         is_expected.to be_falsey
       end
     end

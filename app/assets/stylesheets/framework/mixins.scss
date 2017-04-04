@@ -24,7 +24,7 @@
     @include clearfix;
 
     padding: 10px 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid $list-border-light;
     display: block;
     margin: 0;
 
@@ -46,8 +46,20 @@
 
     &.light {
       a {
-        color: $gl-gray;
+        color: $gl-text-color;
       }
+    }
+  }
+}
+
+@mixin basic-list-stats {
+  .stats {
+    float: right;
+    line-height: $list-text-height;
+    color: $gl-text-color;
+
+    span {
+      margin-right: 15px;
     }
   }
 }
@@ -67,13 +79,20 @@
 }
 
 @mixin dark-diff-match-line {
-  color: rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.1);
+  color: $dark-diff-match-bg;
+  background: $dark-diff-match-color;
 }
 
 @mixin webkit-prefix($property, $value) {
   #{'-webkit-' + $property}: $value;
   #{$property}: $value;
+}
+
+/* http://phrappe.com/css/conditional-css-for-webkit-based-browsers/ */
+@mixin on-webkit-only {
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
+    @content;
+  }
 }
 
 @mixin keyframes($animation-name) {

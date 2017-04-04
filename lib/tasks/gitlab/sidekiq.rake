@@ -1,13 +1,13 @@
 namespace :gitlab do
   namespace :sidekiq do
-    QUEUE = 'queue:post_receive'
+    QUEUE = 'queue:post_receive'.freeze
 
     desc 'Drop all Sidekiq PostReceive jobs for a given project'
-    task :drop_post_receive , [:project] => :environment do |t, args|
+    task :drop_post_receive, [:project] => :environment do |t, args|
       unless args.project.present?
         abort "Please specify the project you want to drop PostReceive jobs for:\n  rake gitlab:sidekiq:drop_post_receive[group/project]"
       end
-      project_path = Project.find_with_namespace(args.project).repository.path_to_repo
+      project_path = Project.find_by_full_path(args.project).repository.path_to_repo
 
       Sidekiq.redis do |redis|
         unless redis.exists(QUEUE)
@@ -21,7 +21,7 @@ namespace :gitlab do
         # new jobs already. We will repopulate it with the old jobs, skipping the
         # ones we want to drop.
         dropped = 0
-        while (job = redis.lpop(temp_queue)) do
+        while (job = redis.lpop(temp_queue))
           if repo_path(job) == project_path
             dropped += 1
           else

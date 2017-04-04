@@ -13,7 +13,7 @@ class AnalyticsBuildEntity < Grape::Entity
   end
 
   expose :duration, as: :total_time do |build|
-    distance_of_time_as_hash(build.duration.to_f)
+    build.duration ? distance_of_time_as_hash(build.duration.to_f) : {}
   end
 
   expose :branch do

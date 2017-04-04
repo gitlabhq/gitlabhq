@@ -10,7 +10,7 @@ describe Gitlab::GoogleCodeImport::Importer, lib: true do
       'user_map' => { 'thilo...' => "@#{mapped_user.username}" }
     }
   end
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
 
   subject { described_class.new(project) }
 

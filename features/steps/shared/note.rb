@@ -2,6 +2,10 @@ module SharedNote
   include Spinach::DSL
   include WaitForAjax
 
+  after do
+    wait_for_ajax if javascript_test?
+  end
+
   step 'I delete a comment' do
     page.within('.main-notes-list') do
       find('.note').hover
@@ -91,7 +95,7 @@ module SharedNote
   step 'The comment preview tab should be display rendered Markdown' do
     page.within(".js-main-target-form") do
       find('.js-md-preview-button').click
-      expect(find('.js-md-preview')).to have_css('img.emoji', visible: true)
+      expect(find('.js-md-preview')).to have_css('gl-emoji', visible: true)
     end
   end
 

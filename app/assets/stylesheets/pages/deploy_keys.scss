@@ -1,0 +1,13 @@
+.deploy-keys-list {
+  width: 100%;
+  overflow: auto;
+
+  table {
+    border: 1px solid $table-border-color;
+  }
+}
+
+.deploy-keys-title {
+  padding-bottom: 2px;
+  line-height: 2;
+}

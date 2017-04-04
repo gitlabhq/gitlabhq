@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::TreeController do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
 
   before do
@@ -18,7 +18,7 @@ describe Projects::TreeController do
     before do
       get(:show,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           id: id)
     end
 
@@ -74,7 +74,7 @@ describe Projects::TreeController do
     before do
       get(:show,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
+          project_id: project,
           id: id)
     end
 
@@ -94,7 +94,7 @@ describe Projects::TreeController do
     before do
       post(:create_dir,
            namespace_id: project.namespace.to_param,
-           project_id: project.to_param,
+           project_id: project,
            id: 'master',
            dir_name: path,
            target_branch: target_branch,

@@ -13,7 +13,7 @@ describe Mentionable do
   end
 
   describe 'references' do
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
     let(:mentionable) { Example.new }
 
     it 'excludes JIRA references' do
@@ -30,12 +30,20 @@ describe Issue, "Mentionable" do
   describe '#mentioned_users' do
     let!(:user) { create(:user, username: 'stranger') }
     let!(:user2) { create(:user, username: 'john') }
-    let!(:issue) { create(:issue, description: "#{user.to_reference} mentioned") }
+    let!(:user3) { create(:user, username: 'jim') }
+    let(:issue) { create(:issue, description: "#{user.to_reference} mentioned") }
 
     subject { issue.mentioned_users }
 
-    it { is_expected.to include(user) }
-    it { is_expected.not_to include(user2) }
+    it { expect(subject).to contain_exactly(user) }
+
+    context 'when a note on personal snippet' do
+      let!(:note) { create(:note_on_personal_snippet, note: "#{user.to_reference} mentioned #{user3.to_reference}") }
+
+      subject { note.mentioned_users }
+
+      it { expect(subject).to contain_exactly(user, user3) }
+    end
   end
 
   describe '#referenced_mentionables' do
@@ -75,13 +83,13 @@ describe Issue, "Mentionable" do
   end
 
   describe '#create_cross_references!' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:author)  { build(:user) }
     let(:commit)  { project.commit }
     let(:commit2) { project.commit }
 
     let!(:issue) do
-      create(:issue, project: project, description: commit.to_reference)
+      create(:issue, project: project, description: "See #{commit.to_reference}")
     end
 
     it 'correctly removes already-mentioned Commits' do
@@ -92,7 +100,7 @@ describe Issue, "Mentionable" do
   end
 
   describe '#create_new_cross_references!' do
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
     let(:author)  { create(:author) }
     let(:issues)  { create_list(:issue, 2, project: project, author: author) }
 
@@ -137,6 +145,16 @@ describe Issue, "Mentionable" do
 
         issue.update_attributes(description: issues[1].to_reference)
         issue.create_new_cross_references!
+      end
+
+      it 'notifies new references from project snippet note' do
+        snippet = create(:snippet, project: project)
+        note = create(:note, note: issues[0].to_reference, noteable: snippet, project: project, author: author)
+
+        expect(SystemNoteService).to receive(:cross_reference).with(issues[1], any_args)
+
+        note.update_attributes(note: issues[1].to_reference)
+        note.create_new_cross_references!
       end
     end
 

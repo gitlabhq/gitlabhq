@@ -1,6 +1,6 @@
 require 'sidekiq/web'
 require 'sidekiq/cron/web'
-require 'api/api'
+require 'constraints/group_url_constrainer'
 
 Rails.application.routes.draw do
   concern :access_requestable do
@@ -22,13 +22,12 @@ Rails.application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
+  use_doorkeeper_openid_connect
+
   # Autocomplete
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
   get '/autocomplete/projects' => 'autocomplete#projects'
-
-  # Emojis
-  resources :emojis, only: :index
 
   # Search
   get 'search' => 'search#show'
@@ -78,10 +77,21 @@ Rails.application.routes.draw do
   draw :user
   draw :project
 
-  # Get all keys of user
-  get ':username.keys' => 'profiles/keys#get_keys', constraints: { username: /.*/ }
-
   root to: "root#index"
 
-  get '*unmatched_route', to: 'application#not_found'
+  # Since group show page is wildcard routing
+  # we want all other routing to be checked before matching this one
+  constraints(GroupUrlConstrainer.new) do
+    scope(path: '*id',
+          as: :group,
+          constraints: { id: Gitlab::Regex.namespace_route_regex, format: /(html|json|atom)/ },
+          controller: :groups) do
+      get '/', action: :show
+      patch '/', action: :update
+      put '/', action: :update
+      delete '/', action: :destroy
+    end
+  end
+
+  get '*unmatched_route', to: 'application#route_not_found'
 end

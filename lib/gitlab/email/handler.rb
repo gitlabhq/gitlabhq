@@ -1,10 +1,11 @@
 require 'gitlab/email/handler/create_note_handler'
 require 'gitlab/email/handler/create_issue_handler'
+require 'gitlab/email/handler/unsubscribe_handler'
 
 module Gitlab
   module Email
     module Handler
-      HANDLERS = [CreateNoteHandler, CreateIssueHandler]
+      HANDLERS = [UnsubscribeHandler, CreateNoteHandler, CreateIssueHandler].freeze
 
       def self.for(mail, mail_key)
         HANDLERS.find do |klass|

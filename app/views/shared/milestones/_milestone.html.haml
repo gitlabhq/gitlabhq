@@ -1,7 +1,7 @@
 - dashboard = local_assigns[:dashboard]
 - custom_dom_id = dom_id(@project ? milestone : milestone.milestones.first)
 
-%li{class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: custom_dom_id }
+%li{ class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: custom_dom_id }
   .row
     .col-sm-6
       %strong= link_to_gfm truncate(milestone.title, length: 100), milestone_path
@@ -9,7 +9,7 @@
       .pull-right.light #{milestone.percent_complete(current_user)}% complete
   .row
     .col-sm-6
-      = link_to pluralize(milestone.issues_visible_to_user(current_user).size, 'Issue'), issues_path
+      = link_to pluralize(milestone.total_issues_count(current_user), 'Issue'), issues_path
       &middot;
       = link_to pluralize(milestone.merge_requests.size, 'Merge Request'), merge_requests_path
     .col-sm-6= milestone_progress_bar(milestone)

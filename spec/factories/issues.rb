@@ -1,12 +1,8 @@
 FactoryGirl.define do
-  sequence :issue_created_at do |n|
-    4.hours.ago + ( 2 * n ).seconds
-  end
-
   factory :issue do
-    title
+    title { generate(:title) }
     author
-    project
+    project factory: :empty_project
 
     trait :confidential do
       confidential true

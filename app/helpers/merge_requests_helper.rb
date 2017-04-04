@@ -19,6 +19,14 @@ module MergeRequestsHelper
     }
   end
 
+  def mr_widget_refresh_url(mr)
+    if mr && mr.target_project
+      merge_widget_refresh_namespace_project_merge_request_url(mr.target_project.namespace, mr.target_project, mr)
+    else
+      ''
+    end
+  end
+
   def mr_css_classes(mr)
     classes = "merge-request"
     classes << " closed" if mr.closed?
@@ -56,17 +64,21 @@ module MergeRequestsHelper
   end
 
   def mr_closes_issues
-    @mr_closes_issues ||= @merge_request.closes_issues
+    @mr_closes_issues ||= @merge_request.closes_issues(current_user)
+  end
+
+  def mr_issues_mentioned_but_not_closing
+    @mr_issues_mentioned_but_not_closing ||= @merge_request.issues_mentioned_but_not_closing(current_user)
   end
 
   def mr_change_branches_path(merge_request)
     new_namespace_project_merge_request_path(
       @project.namespace, @project,
       merge_request: {
-        source_project_id: @merge_request.source_project_id,
-        target_project_id: @merge_request.target_project_id,
-        source_branch: @merge_request.source_branch,
-        target_branch: @merge_request.target_branch,
+        source_project_id: merge_request.source_project_id,
+        target_project_id: merge_request.target_project_id,
+        source_branch: merge_request.source_branch,
+        target_branch: merge_request.target_branch,
       },
       change_branches: true
     )
@@ -130,5 +142,17 @@ module MergeRequestsHelper
 
   def different_base?(version1, version2)
     version1 && version2 && version1.base_commit_sha != version2.base_commit_sha
+  end
+
+  def merge_params(merge_request)
+    {
+      merge_when_pipeline_succeeds: true,
+      should_remove_source_branch: true,
+      sha: merge_request.diff_head_sha
+    }.merge(merge_params_ee(merge_request))
+  end
+
+  def merge_params_ee(merge_request)
+    {}
   end
 end

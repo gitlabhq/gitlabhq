@@ -1,21 +1,13 @@
 require 'spec_helper'
 
 describe AnalyticsBuildSerializer do
-  let(:serializer) do
-    described_class
-      .new.represent(resource)
-  end
-
-  let(:json) { serializer.as_json }
   let(:resource) { create(:ci_build) }
 
-  context 'when there is a single object provided' do
-    it 'it generates payload for single object' do
-      expect(json).to be_an_instance_of Hash
-    end
+  subject { described_class.new.represent(resource) }
 
+  context 'when there is a single object provided' do
     it 'contains important elements of analyticsBuild' do
-      expect(json)
+      expect(subject)
         .to include(:name, :branch, :short_sha, :date, :total_time, :url, :author)
     end
   end

@@ -4,10 +4,13 @@ module Gitlab
       GITHUB_SAFE_REMAINING_REQUESTS = 100
       GITHUB_SAFE_SLEEP_TIME = 500
 
-      attr_reader :access_token
+      attr_reader :access_token, :host, :api_version
 
-      def initialize(access_token)
+      def initialize(access_token, host: nil, api_version: 'v3')
         @access_token = access_token
+        @host = host.to_s.sub(%r{/+\z}, '')
+        @api_version = api_version
+        @users = {}
 
         if access_token
           ::Octokit.auto_paginate = false
@@ -17,7 +20,7 @@ module Gitlab
       def api
         @api ||= ::Octokit::Client.new(
           access_token: access_token,
-          api_endpoint: github_options[:site],
+          api_endpoint: api_endpoint,
           # If there is no config, we're connecting to github.com and we
           # should verify ssl.
           connection_options: {
@@ -62,7 +65,22 @@ module Gitlab
         api.respond_to?(method) || super
       end
 
+      def user(login)
+        return nil unless login.present?
+        return @users[login] if @users.key?(login)
+
+        @users[login] = api.user(login)
+      end
+
       private
+
+      def api_endpoint
+        if host.present? && api_version.present?
+          "#{host}/api/#{api_version}"
+        else
+          github_options[:site]
+        end
+      end
 
       def config
         Gitlab.config.omniauth.providers.find { |provider| provider.name == "github" }

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::Diff::File, lib: true do
   include RepoHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:commit) { project.commit(sample_commit.id) }
   let(:diff) { commit.raw_diffs.first }
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: commit.diff_refs, repository: project.repository) }

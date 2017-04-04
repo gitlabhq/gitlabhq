@@ -17,7 +17,7 @@ describe Deployment, models: true do
   it { is_expected.to validate_presence_of(:sha) }
 
   describe '#includes_commit?' do
-    let(:project)     { create(:project) }
+    let(:project)     { create(:project, :repository) }
     let(:environment) { create(:environment, project: project) }
     let(:deployment) do
       create(:deployment, environment: environment, sha: project.commit.id)
@@ -77,8 +77,8 @@ describe Deployment, models: true do
     end
   end
 
-  describe '#stoppable?' do
-    subject { deployment.stoppable? }
+  describe '#stop_action?' do
+    subject { deployment.stop_action? }
 
     context 'when no other actions' do
       let(:deployment) { build(:deployment) }

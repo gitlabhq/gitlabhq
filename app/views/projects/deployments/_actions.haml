@@ -1,9 +1,9 @@
 - if can?(current_user, :create_deployment, deployment)
   - actions = deployment.manual_actions
   - if actions.present?
-    .inline
+    .btn-group
       .dropdown
-        %a.dropdown-new.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
+        %button.dropdown.dropdown-new.btn.btn-default{ type: 'button', 'data-toggle' => 'dropdown' }
           = custom_icon('icon_play')
           = icon('caret-down')
         %ul.dropdown-menu.dropdown-menu-align-right
@@ -12,4 +12,3 @@
               = link_to [:play, @project.namespace.becomes(Namespace), @project, action], method: :post, rel: 'nofollow' do
                 = custom_icon('icon_play')
                 %span= action.name.humanize
-

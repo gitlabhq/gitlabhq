@@ -22,4 +22,18 @@ feature 'Diffs URL', js: true, feature: true do
       expect(page).to have_css('.diffs.tab-pane.active')
     end
   end
+
+  context 'when merge request has overflow' do
+    it 'displays warning' do
+      allow_any_instance_of(MergeRequestDiff).to receive(:overflow?).and_return(true)
+      allow(Commit).to receive(:max_diff_options).and_return(max_files: 20, max_lines: 20)
+
+      visit diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+
+      page.within('.alert') do
+        expect(page).to have_text("Too many changes to show. Plain diff Email patch To preserve
+          performance only 3 of 3+ files are displayed.")
+      end
+    end
+  end
 end

@@ -20,15 +20,19 @@
 
     .fa {
       color: $cycle-analytics-light-gray;
+
+      &:hover {
+        color: $gl-text-color;
+      }
     }
 
     .stage-header {
-      width: 28%;
+      width: 26%;
       padding-left: $gl-padding;
     }
 
     .median-header {
-      width: 12%;
+      width: 14%;
     }
 
     .event-header {
@@ -53,7 +57,7 @@
       border-bottom: none;
       position: relative;
 
-      @media (max-width: $screen-sm-min) {
+      @media (max-width: $screen-xs-max) {
         padding: 6px 0 24px;
       }
     }
@@ -61,7 +65,7 @@
     .column {
       text-align: center;
 
-      @media (max-width: $screen-sm-min) {
+      @media (max-width: $screen-xs-max) {
         padding: 15px 0;
       }
 
@@ -78,7 +82,7 @@
       }
 
       &:last-child {
-        @media (max-width: $screen-sm-min) {
+        @media (max-width: $screen-xs-max) {
           text-align: center;
         }
       }
@@ -109,16 +113,16 @@
 
         &.title {
           line-height: 19px;
-          font-size: 15px;
+          font-size: 14px;
           font-weight: 600;
-          color: $gl-title-color;
+          color: $gl-text-color;
         }
 
         &.text {
           color: $layout-link-gray;
 
           &.value-col {
-            color: $gl-title-color;
+            color: $gl-text-color;
           }
         }
       }
@@ -143,7 +147,7 @@
       position: absolute;
       right: $cycle-analytics-box-padding;
       cursor: pointer;
-      color: #b2b2b2;
+      color: $cycle-analytics-dismiss-icon-color;
     }
 
     .svg-container {
@@ -156,7 +160,7 @@
     }
 
     .inner-content {
-      @media (max-width: $screen-sm-min) {
+      @media (max-width: $screen-xs-max) {
         padding: 0 28px;
         text-align: center;
       }
@@ -215,7 +219,6 @@
       border-bottom: 1px solid transparent;
       border-right: 1px solid $border-color;
       background-color: $gray-light;
-      cursor: default;
 
       &.active {
         background-color: transparent;
@@ -232,6 +235,7 @@
       &:hover:not(.active) {
         background-color: $gray-lightest;
         box-shadow: inset 2px 0 0 0 $border-color;
+        cursor: pointer;
       }
 
       &:first-child {
@@ -246,11 +250,11 @@
         float: left;
 
         &.stage-name {
-          width: 70%;
+          width: 65%;
         }
 
         &.stage-median {
-          width: 30%;
+          width: 35%;
         }
       }
 
@@ -260,7 +264,7 @@
 
       .stage-empty,
       .not-available {
-        color: $gl-text-color-light;
+        color: $gl-text-color-secondary;
       }
     }
   }
@@ -280,7 +284,11 @@
 
     .events-description {
       line-height: 65px;
-      padding-left: $gl-padding;
+      padding: 0 $gl-padding;
+    }
+
+    .events-info {
+      color: $gl-text-color-secondary;
     }
   }
 
@@ -327,7 +335,7 @@
         @include text-overflow();
 
         a {
-          color: $gl-dark-link-color;
+          color: $gl-text-color;
         }
       }
     }
@@ -355,19 +363,17 @@
     .issue-link,
     .commit-author-link,
     .issue-author-link {
-      color: $gl-dark-link-color;
+      color: $gl-text-color;
     }
 
     // Custom CSS for components
     .item-conmmit-component {
       .commit-icon {
-        position: relative;
-        top: 3px;
-        left: 1px;
-        display: inline-block;
-
         svg {
-          float: left;
+          display: inline-block;
+          width: 20px;
+          height: 20px;
+          vertical-align: bottom;
         }
       }
     }
@@ -396,11 +402,11 @@
       }
 
       .item-build-name {
-        color: $gl-title-color;
+        color: $gl-text-color;
       }
 
       .pipeline-id {
-        color: $gl-title-color;
+        color: $gl-text-color;
         padding: 0 3px 0 0;
       }
 
@@ -423,7 +429,7 @@
       }
 
       .fa {
-        color: $gl-text-color-light;
+        color: $gl-text-color-secondary;
         font-size: $code_font_size;
       }
     }
@@ -435,7 +441,7 @@
     width: 75%;
     margin: 0 auto;
     padding-top: 130px;
-    color: $gl-text-color-light;
+    color: $gl-text-color-secondary;
 
     h4 {
       color: $gl-text-color;

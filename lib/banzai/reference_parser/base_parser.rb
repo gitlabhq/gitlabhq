@@ -33,7 +33,7 @@ module Banzai
     # they have access to.
     class BaseParser
       class << self
-        attr_accessor :reference_type
+        attr_accessor :reference_type, :reference_options
       end
 
       # Returns the attribute name containing the value for every object to be
@@ -134,9 +134,7 @@ module Banzai
         ids = unique_attribute_values(nodes, attribute)
         rows = collection_objects_for_ids(collection, ids)
 
-        rows.each_with_object({}) do |row, hash|
-          hash[row.id] = row
-        end
+        rows.index_by(&:id)
       end
 
       # Returns an Array containing all unique values of an attribute of the
@@ -182,9 +180,10 @@ module Banzai
       # the references.
       def process(documents)
         type = self.class.reference_type
+        reference_options = self.class.reference_options
 
         nodes = documents.flat_map do |document|
-          Querying.css(document, "a[data-reference-type='#{type}'].gfm").to_a
+          Querying.css(document, "a[data-reference-type='#{type}'].gfm", reference_options).to_a
         end
 
         gather_references(nodes)
@@ -209,7 +208,7 @@ module Banzai
           grouped_objects_for_nodes(nodes, Project, 'data-project')
       end
 
-      def can?(user, permission, subject)
+      def can?(user, permission, subject = :global)
         Ability.allowed?(user, permission, subject)
       end
 

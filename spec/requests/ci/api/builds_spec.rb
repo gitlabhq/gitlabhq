@@ -1,10 +1,11 @@
 require 'spec_helper'
 
-describe Ci::API::API do
+describe Ci::API::Builds do
   include ApiHelpers
 
-  let(:runner) { FactoryGirl.create(:ci_runner, tag_list: ["mysql", "ruby"]) }
-  let(:project) { FactoryGirl.create(:empty_project) }
+  let(:runner) { FactoryGirl.create(:ci_runner, tag_list: %w(mysql ruby)) }
+  let(:project) { FactoryGirl.create(:empty_project, shared_runners_enabled: false) }
+  let(:last_update) { nil }
 
   describe "Builds API for runners" do
     let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
@@ -16,6 +17,8 @@ describe Ci::API::API do
     describe "POST /builds/register" do
       let!(:build) { create(:ci_build, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
       let(:user_agent) { 'gitlab-ci-multi-runner 1.5.2 (1-5-stable; go1.6.3; linux/amd64)' }
+      let!(:last_update) { }
+      let!(:new_update) { }
 
       before do
         stub_container_registry_config(enabled: false)
@@ -24,7 +27,31 @@ describe Ci::API::API do
       shared_examples 'no builds available' do
         context 'when runner sends version in User-Agent' do
           context 'for stable version' do
-            it { expect(response).to have_http_status(204) }
+            it 'gives 204 and set X-GitLab-Last-Update' do
+              expect(response).to have_http_status(204)
+              expect(response.header).to have_key('X-GitLab-Last-Update')
+            end
+          end
+
+          context 'when last_update is up-to-date' do
+            let(:last_update) { runner.ensure_runner_queue_value }
+
+            it 'gives 204 and set the same X-GitLab-Last-Update' do
+              expect(response).to have_http_status(204)
+              expect(response.header['X-GitLab-Last-Update'])
+                .to eq(last_update)
+            end
+          end
+
+          context 'when last_update is outdated' do
+            let(:last_update) { runner.ensure_runner_queue_value }
+            let(:new_update) { runner.tick_runner_queue }
+
+            it 'gives 204 and set a new X-GitLab-Last-Update' do
+              expect(response).to have_http_status(204)
+              expect(response.header['X-GitLab-Last-Update'])
+                .to eq(new_update)
+            end
           end
 
           context 'for beta version' do
@@ -37,6 +64,11 @@ describe Ci::API::API do
           let(:user_agent) { 'Go-http-client/1.1' }
           it { expect(response).to have_http_status(404) }
         end
+
+        context "when runner doesn't have a User-Agent" do
+          let(:user_agent) { nil }
+          it { expect(response).to have_http_status(404) }
+        end
       end
 
       context 'when there is a pending build' do
@@ -44,18 +76,33 @@ describe Ci::API::API do
           register_builds info: { platform: :darwin }
 
           expect(response).to have_http_status(201)
+          expect(response.headers).not_to have_key('X-GitLab-Last-Update')
           expect(json_response['sha']).to eq(build.sha)
           expect(runner.reload.platform).to eq("darwin")
           expect(json_response["options"]).to eq({ "image" => "ruby:2.1", "services" => ["postgres"] })
           expect(json_response["variables"]).to include(
-            { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
-            { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
+            { "key" => "CI_JOB_NAME", "value" => "spinach", "public" => true },
+            { "key" => "CI_JOB_STAGE", "value" => "test", "public" => true },
             { "key" => "DB_NAME", "value" => "postgres", "public" => true }
           )
         end
 
         it 'updates runner info' do
           expect { register_builds }.to change { runner.reload.contacted_at }
+        end
+
+        context 'when concurrently updating build' do
+          before do
+            expect_any_instance_of(Ci::Build).to receive(:run!).
+              and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
+          end
+
+          it 'returns a conflict' do
+            register_builds info: { platform: :darwin }
+
+            expect(response).to have_http_status(409)
+            expect(response.headers).not_to have_key('X-GitLab-Last-Update')
+          end
         end
 
         context 'registry credentials' do
@@ -114,10 +161,10 @@ describe Ci::API::API do
       end
 
       context 'for shared runner' do
-        let(:shared_runner) { create(:ci_runner, token: "SharedRunner") }
+        let!(:runner) { create(:ci_runner, :shared, token: "SharedRunner") }
 
         before do
-          register_builds shared_runner.token
+          register_builds(runner.token)
         end
 
         it_behaves_like 'no builds available'
@@ -135,9 +182,9 @@ describe Ci::API::API do
 
           expect(response).to have_http_status(201)
           expect(json_response["variables"]).to include(
-            { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
-            { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
-            { "key" => "CI_BUILD_TRIGGERED", "value" => "true", "public" => true },
+            { "key" => "CI_JOB_NAME", "value" => "spinach", "public" => true },
+            { "key" => "CI_JOB_STAGE", "value" => "test", "public" => true },
+            { "key" => "CI_PIPELINE_TRIGGERED", "value" => "true", "public" => true },
             { "key" => "DB_NAME", "value" => "postgres", "public" => true },
             { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false },
             { "key" => "TRIGGER_KEY_1", "value" => "TRIGGER_VALUE_1", "public" => false },
@@ -219,7 +266,9 @@ describe Ci::API::API do
       end
 
       def register_builds(token = runner.token, **params)
-        post ci_api("/builds/register"), params.merge(token: token), { 'User-Agent' => user_agent }
+        new_params = params.merge(token: token, last_update: last_update)
+
+        post ci_api("/builds/register"), new_params, { 'User-Agent' => user_agent }
       end
     end
 
@@ -239,7 +288,7 @@ describe Ci::API::API do
         expect(build.reload.trace).to eq 'BUILD TRACE'
       end
 
-      context 'build has been erased' do
+      context 'job has been erased' do
         let(:build) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
 
         it 'responds with forbidden' do
@@ -249,7 +298,11 @@ describe Ci::API::API do
     end
 
     describe 'PATCH /builds/:id/trace.txt' do
-      let(:build) { create(:ci_build, :pending, :trace, runner_id: runner.id) }
+      let(:build) do
+        attributes = { runner_id: runner.id, pipeline: pipeline }
+        create(:ci_build, :running, :trace, attributes)
+      end
+
       let(:headers) { { Ci::API::Helpers::BUILD_TOKEN_HEADER => build.token, 'Content-Type' => 'text/plain' } }
       let(:headers_with_range) { headers.merge({ 'Content-Range' => '11-20' }) }
       let(:update_interval) { 10.seconds.to_i }
@@ -276,7 +329,6 @@ describe Ci::API::API do
       end
 
       before do
-        build.run!
         initial_patch_the_trace
       end
 
@@ -327,6 +379,19 @@ describe Ci::API::API do
 
               expect(build.reload.trace).to eq 'BUILD TRACE appended'
             end
+          end
+        end
+
+        context 'when project for the build has been deleted' do
+          let(:build) do
+            attributes = { runner_id: runner.id, pipeline: pipeline }
+            create(:ci_build, :running, :trace, attributes) do |build|
+              build.project.update(pending_delete: true)
+            end
+          end
+
+          it 'responds with forbidden' do
+            expect(response.status).to eq(403)
           end
         end
       end
@@ -393,7 +458,7 @@ describe Ci::API::API do
       before { build.run! }
 
       describe "POST /builds/:id/artifacts/authorize" do
-        context "should authorize posting artifact to running build" do
+        context "authorizes posting artifact to running build" do
           it "using token as parameter" do
             post authorize_url, { token: build.token }, headers
 
@@ -427,7 +492,7 @@ describe Ci::API::API do
           end
         end
 
-        context "should fail to post too large artifact" do
+        context "fails to post too large artifact" do
           it "using token as parameter" do
             stub_application_setting(max_artifacts_size: 0)
 
@@ -565,6 +630,7 @@ describe Ci::API::API do
 
           context 'with an expire date' do
             let!(:artifacts) { file_upload }
+            let(:default_artifacts_expire_in) {}
 
             let(:post_data) do
               { 'file.path' => artifacts.path,
@@ -573,6 +639,9 @@ describe Ci::API::API do
             end
 
             before do
+              stub_application_setting(
+                default_artifacts_expire_in: default_artifacts_expire_in)
+
               post(post_url, post_data, headers_with_token)
             end
 
@@ -583,7 +652,8 @@ describe Ci::API::API do
                 build.reload
                 expect(response).to have_http_status(201)
                 expect(json_response['artifacts_expire_at']).not_to be_empty
-                expect(build.artifacts_expire_at).to be_within(5.minutes).of(Time.now + 7.days)
+                expect(build.artifacts_expire_at).
+                  to be_within(5.minutes).of(7.days.from_now)
               end
             end
 
@@ -595,6 +665,32 @@ describe Ci::API::API do
                 expect(response).to have_http_status(201)
                 expect(json_response['artifacts_expire_at']).to be_nil
                 expect(build.artifacts_expire_at).to be_nil
+              end
+
+              context 'with application default' do
+                context 'default to 5 days' do
+                  let(:default_artifacts_expire_in) { '5 days' }
+
+                  it 'sets to application default' do
+                    build.reload
+                    expect(response).to have_http_status(201)
+                    expect(json_response['artifacts_expire_at'])
+                      .not_to be_empty
+                    expect(build.artifacts_expire_at)
+                      .to be_within(5.minutes).of(5.days.from_now)
+                  end
+                end
+
+                context 'default to 0' do
+                  let(:default_artifacts_expire_in) { '0' }
+
+                  it 'does not set expire_in' do
+                    build.reload
+                    expect(response).to have_http_status(201)
+                    expect(json_response['artifacts_expire_at']).to be_nil
+                    expect(build.artifacts_expire_at).to be_nil
+                  end
+                end
               end
             end
           end

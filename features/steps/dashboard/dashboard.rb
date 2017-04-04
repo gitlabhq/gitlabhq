@@ -35,7 +35,7 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
 
   step 'I have group with projects' do
     @group   = create(:group)
-    @project = create(:project, namespace: @group)
+    @project = create(:empty_project, namespace: @group)
     @event   = create(:closed_issue_event, project: @project)
 
     @project.team << [current_user, :master]
@@ -54,8 +54,8 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
   end
 
   step 'group has a projects that does not belongs to me' do
-    @forbidden_project1 = create(:project, group: @group)
-    @forbidden_project2 = create(:project, group: @group)
+    @forbidden_project1 = create(:empty_project, group: @group)
+    @forbidden_project2 = create(:empty_project, group: @group)
   end
 
   step 'I should see 1 project at group list' do

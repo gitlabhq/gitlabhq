@@ -2,9 +2,10 @@ require 'spec_helper'
 
 describe EmailsOnPushWorker do
   include RepoHelpers
+  include EmailHelpers
   include EmailSpec::Matchers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
   let(:recipients) { user.email }

@@ -1,5 +1,7 @@
 # rubocop:disable all
 class CreateMergeRequestDiffs < ActiveRecord::Migration
+  DOWNTIME = false
+
   def up
     create_table :merge_request_diffs do |t|
       t.string :state, null: false, default: 'collected'
@@ -7,7 +9,7 @@ class CreateMergeRequestDiffs < ActiveRecord::Migration
       t.text :st_diffs, null: true
       t.integer :merge_request_id, null: false
 
-      t.timestamps
+      t.timestamps null: true
     end
 
     if ActiveRecord::Base.configurations[Rails.env]['adapter'] =~ /^mysql/

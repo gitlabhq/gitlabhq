@@ -3,37 +3,38 @@
 - hide_class = ''
 = render "projects/issues/head"
 
-%div{ class: container_class }
-  .top-area.adjust
-    .nav-text
-      Labels can be applied to issues and merge requests. Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('simulate_drag') if Rails.env.test?
 
-    .nav-controls
+- if @labels.exists? || @prioritized_labels.exists?
+  %div{ class: container_class }
+    .top-area.adjust
+      .nav-text
+        Labels can be applied to issues and merge requests. Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.
+
+      .nav-controls
+        - if can?(current_user, :admin_label, @project)
+          = link_to new_namespace_project_label_path(@project.namespace, @project), class: "btn btn-new" do
+            New label
+
+    .labels
       - if can?(current_user, :admin_label, @project)
-        = link_to new_namespace_project_label_path(@project.namespace, @project), class: "btn btn-new" do
-          New label
+        -# Only show it in the first page
+        - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
+        .prioritized-labels{ class: ('hide' if hide) }
+          %h5 Prioritized Labels
+          %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_namespace_project_labels_path(@project.namespace, @project) }
+            #js-priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty?}" }
+              = render 'shared/empty_states/priority_labels'
+            - if @prioritized_labels.present?
+              = render partial: 'shared/label', subject: @project, collection: @prioritized_labels, as: :label
 
-  .labels
-    - if can?(current_user, :admin_label, @project)
-      -# Only show it in the first page
-      - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
-      .prioritized-labels{ class: ('hide' if hide) }
-        %h5 Prioritized Labels
-        %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_namespace_project_labels_path(@project.namespace, @project) }
-          %p.empty-message{ class: ('hidden' unless @prioritized_labels.empty?) } No prioritized labels yet
-          - if @prioritized_labels.present?
-            = render partial: 'shared/label', subject: @project, collection: @prioritized_labels, as: :label
-
-    .other-labels
-      - if can?(current_user, :admin_label, @project)
-        %h5{ class: ('hide' if hide) } Other Labels
-      %ul.content-list.manage-labels-list.js-other-labels
-        - if @labels.present?
-          = render partial: 'shared/label', subject: @project, collection: @labels, as: :label
-        = paginate @labels, theme: 'gitlab'
-      - if @labels.blank?
-        .nothing-here-block
+      - if @labels.present?
+        .other-labels
           - if can?(current_user, :admin_label, @project)
-            Create a label or #{link_to 'generate a default set of labels', generate_namespace_project_labels_path(@project.namespace, @project), method: :post}.
-          - else
-            No labels created
+            %h5{ class: ('hide' if hide) } Other Labels
+          %ul.content-list.manage-labels-list.js-other-labels
+            = render partial: 'shared/label', subject: @project, collection: @labels, as: :label
+            = paginate @labels, theme: 'gitlab'
+- else
+  = render 'shared/empty_states/labels'

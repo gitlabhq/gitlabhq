@@ -3,13 +3,7 @@
 = render 'shared/snippets/header'
 
 %article.file-holder.snippet-file-content
-  .file-title
-    = blob_icon 0, @snippet.file_name
-    = @snippet.file_name
-    .file-actions
-      = clipboard_button(clipboard_target: ".blob-content[data-blob-id='#{@snippet.id}']")
-      = link_to 'Raw', raw_snippet_path(@snippet), class: "btn btn-sm", target: "_blank"
-      = link_to 'Download', download_snippet_path(@snippet), class: "btn btn-sm"
-  = render 'shared/snippets/blob'
+  = render 'shared/snippets/blob', raw_path: raw_snippet_path(@snippet), download_path: download_snippet_path(@snippet)
 
-= render 'award_emoji/awards_block', awardable: @snippet, inline: true
+.row-content-block.top-block.content-component-block
+  = render 'award_emoji/awards_block', awardable: @snippet, inline: true

@@ -13,7 +13,8 @@ three strategies for this feature:
 
 ### Email sub-addressing
 
-**If your provider or server supports email sub-addressing, we recommend using it.**
+**If your provider or server supports email sub-addressing, we recommend using it.
+Some features (e.g. create new issue via email) only work with sub-addressing.**
 
 [Sub-addressing](https://en.wikipedia.org/wiki/Email_address#Sub-addressing) is
 a feature where any email to `user+some_arbitrary_tag@example.com` will end up
@@ -69,10 +70,12 @@ please consult [RFC 5322](https://tools.ietf.org/html/rfc5322#section-3.6.4).
 
 If you want to use Gmail / Google Apps with Reply by email, make sure you have
 [IMAP access enabled](https://support.google.com/mail/troubleshooter/1668960?hl=en#ts=1665018)
-and [allowed less secure apps to access the account](https://support.google.com/accounts/answer/6010255).
+and [allowed less secure apps to access the account](https://support.google.com/accounts/answer/6010255)
+or [turn-on 2-step validation](https://support.google.com/accounts/answer/185839)
+and use [an application password](https://support.google.com/mail/answer/185833).
 
-To set up a basic Postfix mail server with IMAP access on Ubuntu, follow
-[these instructions](./postfix.md).
+To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
+[Postfix setup documentation](reply_by_email_postfix_setup.md).
 
 ### Omnibus package installations
 
@@ -138,12 +141,32 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow
     # The IDLE command timeout.
     gitlab_rails['incoming_email_idle_timeout'] = 60
     ```
+    
+    ```ruby
+    # Configuration for Microsoft Exchange mail server w/ IMAP enabled, assumes mailbox incoming@exchange.example.com
+    gitlab_rails['incoming_email_enabled'] = true
 
-1. Reconfigure GitLab and restart mailroom for the changes to take effect:
+    # The email address replies are sent to - Exchange does not support sub-addressing so %{key} is not used here
+    gitlab_rails['incoming_email_address'] = "incoming@exchange.example.com"
+
+    # Email account username
+    # Typically this is the userPrincipalName (UPN)
+    gitlab_rails['incoming_email_email'] = "incoming@ad-domain.example.com"
+    # Email account password
+    gitlab_rails['incoming_email_password'] = "[REDACTED]"
+
+    # IMAP server host
+    gitlab_rails['incoming_email_host'] = "exchange.example.com"
+    # IMAP server port
+    gitlab_rails['incoming_email_port'] = 993
+    # Whether the IMAP server uses SSL
+    gitlab_rails['incoming_email_ssl'] = true
+    ```
+
+1. Reconfigure GitLab for the changes to take effect:
 
     ```sh
     sudo gitlab-ctl reconfigure
-    sudo gitlab-ctl restart mailroom
     ```
 
 1. Verify that everything is configured correctly:
@@ -218,6 +241,35 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow
 
       # IMAP server host
       host: "imap.gmail.com"
+      # IMAP server port
+      port: 993
+      # Whether the IMAP server uses SSL
+      ssl: true
+      # Whether the IMAP server uses StartTLS
+      start_tls: false
+
+      # The mailbox where incoming mail will end up. Usually "inbox".
+      mailbox: "inbox"
+      # The IDLE command timeout.
+      idle_timeout: 60
+    ```
+    
+    ```yaml
+    # Configuration for Microsoft Exchange mail server w/ IMAP enabled, assumes mailbox incoming@exchange.example.com
+    incoming_email:
+      enabled: true
+
+      # The email address replies are sent to - Exchange does not support sub-addressing so %{key} is not used here
+      address: "incoming@exchange.example.com"
+
+      # Email account username
+      # Typically this is the userPrincipalName (UPN)
+      user: "incoming@ad-domain.example.com"
+      # Email account password
+      password: "[REDACTED]"
+
+      # IMAP server host
+      host: "exchange.example.com"
       # IMAP server port
       port: 993
       # Whether the IMAP server uses SSL

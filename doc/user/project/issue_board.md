@@ -1,6 +1,8 @@
 # Issue board
 
-> [Introduced][ce-5554] in GitLab 8.11.
+>**Notes:**
+- [Introduced][ce-5554] in GitLab 8.11.
+- The Backlog column was replaced by the **Add issues** button in GitLab 8.17.
 
 The GitLab Issue Board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
@@ -26,15 +28,13 @@ Below is a table of the definitions used for GitLab's Issue Board.
 | --------------  | ------------- |
 | **Issue Board** | It represents a different view for your issues. It can have multiple lists with each list consisting of issues represented by cards. |
 | **List**        | Each label that exists in the issue tracker can have its own dedicated list. Every list is named after the label it is based on and is represented by a column which contains all the issues associated with that label. You can think of a list like the results you get when you filter the issues by a label in your issue tracker. |
-| **Card**        | Every card represents an issue and it is shown under the list for which it has a label. The information you can see on a card consists of the issue number, the issue title, the assignee and the labels associated with it. You can drag cards around from one list to another. Issues inside lists are [ordered by priority](labels.md#prioritize-labels). |
+| **Card**        | Every card represents an issue and it is shown under the list for which it has a label. The information you can see on a card consists of the issue number, the issue title, the assignee and the labels associated with it. You can drag cards around from one list to another. You can re-order cards within a list. |
 
-There are three types of lists, the ones you create based on your labels, and
-two default:
+There are two types of lists, the ones you create based on your labels, and
+one default:
 
-- **Backlog** (default): shows all issues that do not fall in one of the other lists. Always appears on the very left.
-- **Done** (default): shows all closed issues. Always appears on the very right.
-Label list: a list based on a label. It shows all issues with that label.
 - Label list: a list based on a label. It shows all opened issues with that label.
+- **Done** (default): shows all closed issues. Always appears on the very right.
 
 ![GitLab Issue Board](img/issue_board.png)
 
@@ -45,6 +45,7 @@ In short, here's a list of actions you can take in an Issue Board:
 - [Create a new list](#creating-a-new-list).
 - [Delete an existing list](#deleting-a-list).
 - Drag issues between lists.
+- Re-order issues in lists.
 - Drag and reorder the lists themselves.
 - Change issue labels on-the-fly while dragging issues between lists.
 - Close an issue if you drag it to the **Done** list.
@@ -55,10 +56,10 @@ In short, here's a list of actions you can take in an Issue Board:
 If you are not able to perform one or more of the things above, make sure you
 have the right [permissions](#permissions).
 
-## First time using the Issue Board
+## First time using the issue board
 
-The first time you navigate to your Issue Board, you will be presented with the
-two default lists (**Backlog** and **Done**) and a welcoming message that gives
+The first time you navigate to your Issue Board, you will be presented with
+a default list (**Done**) and a welcoming message that gives
 you two options. You can either create a predefined set of labels and create
 their corresponding lists to the Issue Board or opt-out and use your own lists.
 
@@ -72,7 +73,7 @@ the list will be created and filled with the issues that have that label.
 
 ## Creating a new list
 
-Create a new list by clicking on the **Create new list** button at the upper
+Create a new list by clicking on the **Add list** button at the upper
 right corner of the Issue Board.
 
 ![Issue Board welcome message](img/issue_board_add_list.png)
@@ -93,23 +94,33 @@ in the list's heading. A confirmation dialog will appear for you to confirm.
 Deleting a list doesn't have any effect in issues and labels, it's just the
 list view that is removed. You can always add it back later if you need.
 
-## Searching issues in the Backlog list
+## Adding issues to a list
 
-The very first time you start using the Issue Board, it is very likely your
-issue tracker is already populated with labels and issues. In that case,
-**Backlog** will have all the issues that don't belong to another list, and
-**Done** will have all the closed ones.
+You can add issues to a list by clicking the **Add issues** button that is
+present in the upper right corner of the issue board. This will open up a modal
+window where you can see all the issues that do not belong to any list.
 
-For performance and visibility reasons, each list shows the first 20 issues
-by default. If you have more than 20, you have to start scrolling down for the
-next 20 issues to appear. This can be cumbersome if your issue tracker hosts
-hundreds of issues, and for that reason it is easier to search for issues to
-move from **Backlog** to another list.
+Select one or more issues by clicking on the cards and then click **Add issues**
+to add them to the selected list. You can limit the issues you want to add to
+the list by filtering by author, assignee, milestone and label.
 
-Start typing in the search bar under the **Backlog** list and the relevant
-issues will appear.
+![Bulk adding issues to lists](img/issue_boards_add_issues_modal.png)
 
-![Issue Board search Backlog](img/issue_board_search_backlog.png)
+## Removing an issue from a list
+
+Removing an issue from a list can be done by clicking on the issue card and then
+clicking the **Remove from board** button in the sidebar. Under the hood, the
+respective label is removed, and as such it's also removed from the list and the
+board itself.
+
+![Remove issue from list](img/issue_boards_remove_issue.png)
+
+## Re-ordering an issue in a list
+
+> Introduced in GitLab 9.0.
+
+Issues can be re-ordered inside of lists. This is as simple as dragging and dropping
+an issue into the order you want.
 
 ## Filtering issues
 
@@ -142,8 +153,8 @@ A typical workflow of using the Issue Board would be:
    and gets automatically closed.
 
 For instance you can create a list based on the label of 'Frontend' and one for
-'Backend'. A designer can start working on an issue by dragging it from
-**Backlog** to 'Frontend'. That way, everyone knows that this issue is now being
+'Backend'. A designer can start working on an issue by adding it to the
+'Frontend' list. That way, everyone knows that this issue is now being
 worked on by the designers. Then, once they're done, all they have to do is
 drag it over to the next list, 'Backend', where a backend developer can
 eventually pick it up. Once they’re done, they move it to **Done**, to close the
@@ -173,7 +184,6 @@ A few things to remember:
 - Clicking on the issue title inside a card will take you to that issue.
 - Clicking on a label inside a card will quickly filter the entire Issue Board
   and show only the issues from all lists that have that label.
-- Issues inside lists are [ordered by priority][label-priority].
 - For performance and visibility reasons, each list shows the first 20 issues
   by default. If you have more than 20 issues start scrolling down and the next
   20 will appear.

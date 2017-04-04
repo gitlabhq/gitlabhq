@@ -1,15 +1,21 @@
 require 'spec_helper'
 
 describe Key, models: true do
+  include EmailHelpers
+
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
   end
 
   describe "Validation" do
     it { is_expected.to validate_presence_of(:title) }
+    it { is_expected.to validate_length_of(:title).is_at_most(255) }
+
     it { is_expected.to validate_presence_of(:key) }
-    it { is_expected.to validate_length_of(:title).is_within(0..255) }
-    it { is_expected.to validate_length_of(:key).is_within(0..5000) }
+    it { is_expected.to validate_length_of(:key).is_at_most(5000) }
+    it { is_expected.to allow_value('ssh-foo').for(:key) }
+    it { is_expected.to allow_value('ecdsa-foo').for(:key) }
+    it { is_expected.not_to allow_value('foo-bar').for(:key) }
   end
 
   describe "Methods" do
@@ -20,6 +26,34 @@ describe Key, models: true do
     describe "#publishable_keys" do
       it 'replaces SSH key comment with simple identifier of username + hostname' do
         expect(build(:key, user: user).publishable_key).to include("#{user.name} (#{Gitlab.config.gitlab.host})")
+      end
+    end
+
+    describe "#update_last_used_at" do
+      let(:key) { create(:key) }
+
+      context 'when key was not updated during the last day' do
+        before do
+          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).
+            and_return('000000')
+        end
+
+        it 'enqueues a UseKeyWorker job' do
+          expect(UseKeyWorker).to receive(:perform_async).with(key.id)
+          key.update_last_used_at
+        end
+      end
+
+      context 'when key was updated during the last day' do
+        before do
+          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).
+            and_return(false)
+        end
+
+        it 'does not enqueue a UseKeyWorker job' do
+          expect(UseKeyWorker).not_to receive(:perform_async)
+          key.update_last_used_at
+        end
       end
     end
   end
@@ -90,6 +124,18 @@ describe Key, models: true do
 
     it 'strips white spaces' do
       expect(described_class.new(key: " #{valid_key} ").key).to eq(valid_key)
+    end
+  end
+
+  describe 'notification' do
+    let(:user) { create(:user) }
+
+    it 'sends a notification' do
+      perform_enqueued_jobs do
+        create(:key, user: user)
+      end
+
+      should_email(user)
     end
   end
 end

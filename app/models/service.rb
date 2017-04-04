@@ -25,9 +25,9 @@ class Service < ActiveRecord::Base
   belongs_to :project, inverse_of: :services
   has_one :service_hook
 
-  validates :project_id, presence: true, unless: Proc.new { |service| service.template? }
+  validates :project_id, presence: true, unless: proc { |service| service.template? }
 
-  scope :visible, -> { where.not(type: ['GitlabIssueTrackerService', 'GitlabCiService']) }
+  scope :visible, -> { where.not(type: 'GitlabIssueTrackerService') }
   scope :issue_trackers, -> { where(category: 'issue_tracker') }
   scope :external_wikis, -> { where(type: 'ExternalWikiService').active }
   scope :active, -> { where(active: true) }
@@ -76,6 +76,11 @@ class Service < ActiveRecord::Base
 
   def to_param
     # implement inside child
+    self.class.to_param
+  end
+
+  def self.to_param
+    raise NotImplementedError
   end
 
   def fields
@@ -92,7 +97,11 @@ class Service < ActiveRecord::Base
   end
 
   def event_names
-    supported_events.map { |event| "#{event}_events" }
+    self.class.event_names
+  end
+
+  def self.event_names
+    self.supported_events.map { |event| "#{event}_events" }
   end
 
   def event_field(event)
@@ -104,6 +113,10 @@ class Service < ActiveRecord::Base
   end
 
   def supported_events
+    self.class.supported_events
+  end
+
+  def self.supported_events
     %w(push tag_push issue confidential_issue merge_request wiki_page)
   end
 
@@ -197,12 +210,11 @@ class Service < ActiveRecord::Base
   end
 
   def self.available_services_names
-    %w[
+    service_names = %w[
       asana
       assembla
       bamboo
       buildkite
-      builds_email
       bugzilla
       campfire
       custom_issue_tracker
@@ -214,14 +226,21 @@ class Service < ActiveRecord::Base
       hipchat
       irker
       jira
+      kubernetes
       mattermost_slash_commands
+      mattermost
       pipelines_email
       pivotaltracker
+      prometheus
       pushover
       redmine
+      slack_slash_commands
       slack
       teamcity
     ]
+    service_names << 'mock_ci' if Rails.env.development?
+
+    service_names.sort_by(&:downcase)
   end
 
   def self.build_from_template(project_id, template)

@@ -19,10 +19,10 @@
     = hidden_field_tag data_options[:field_name], use_id ? label.try(:id) : label.try(:title), id: nil
 
 .dropdown
-  %button.dropdown-menu-toggle.js-label-select.js-multiselect{class: classes.join(' '), type: "button", data: dropdown_data}
+  %button.dropdown-menu-toggle.js-label-select.js-multiselect{ class: classes.join(' '), type: "button", data: dropdown_data }
     %span.dropdown-toggle-text{ class: ("is-default" if selected.nil? || selected.empty?) }
       = multi_label_name(selected, "Labels")
-    = icon('caret-down')
+    = icon('chevron-down')
   .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
     = render partial: "shared/issuable/label_page_default", locals: { title: dropdown_title, show_footer: show_footer, show_create: show_create }
     - if show_create && project && can?(current_user, :admin_label, project)

@@ -12,11 +12,11 @@ GET /projects/:id/repository/commits
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID of a project or NAMESPACE/PROJECT_NAME owned by the authenticated user
 | `ref_name` | string | no | The name of a repository branch or tag or if not given the default branch |
-| `since` | string | no | Only commits after or in this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
-| `until` | string | no | Only commits before or in this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
+| `since` | string | no | Only commits after or on this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
+| `until` | string | no | Only commits before or on this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits"
 ```
 
 Example response:
@@ -29,9 +29,15 @@ Example response:
     "title": "Replace sanitize with escape once",
     "author_name": "Dmitriy Zaporozhets",
     "author_email": "dzaporozhets@sphereconsultinginc.com",
+    "authored_date": "2012-09-20T11:50:22+03:00",
+    "committer_name": "Administrator",
+    "committer_email": "admin@example.com",
+    "committed_date": "2012-09-20T11:50:22+03:00",
     "created_at": "2012-09-20T11:50:22+03:00",
     "message": "Replace sanitize with escape once",
-    "allow_failure": false
+    "parent_ids": [
+      "6104942438c14ec7bd21c6cd5bd995272b3faff6"
+    ]
   },
   {
     "id": "6104942438c14ec7bd21c6cd5bd995272b3faff6",
@@ -39,9 +45,13 @@ Example response:
     "title": "Sanitize for network graph",
     "author_name": "randx",
     "author_email": "dmitriy.zaporozhets@gmail.com",
+    "committer_name": "Dmitriy",
+    "committer_email": "dmitriy.zaporozhets@gmail.com",
     "created_at": "2012-09-20T09:06:12+03:00",
     "message": "Sanitize for network graph",
-    "allow_failure": false
+    "parent_ids": [
+      "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
+    ]
   }
 ]
 ```
@@ -59,7 +69,7 @@ POST /projects/:id/repository/commits
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID of a project or NAMESPACE/PROJECT_NAME |
-| `branch_name` | string | yes | The name of a branch |
+| `branch` | string | yes | The name of a branch |
 | `commit_message` | string | yes | Commit message |
 | `actions[]` | array | yes | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
 | `author_email` | string | no | Specify the commit author's email address |
@@ -77,7 +87,7 @@ POST /projects/:id/repository/commits
 ```bash
 PAYLOAD=$(cat << 'JSON'
 {
-  "branch_name": "master",
+  "branch": "master",
   "commit_message": "some commit message",
   "actions": [
     {
@@ -104,7 +114,7 @@ PAYLOAD=$(cat << 'JSON'
 }
 JSON
 )
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data "$PAYLOAD" https://gitlab.example.com/api/v3/projects/1/repository/commits
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data "$PAYLOAD" https://gitlab.example.com/api/v4/projects/1/repository/commits
 ```
 
 Example response:
@@ -115,6 +125,8 @@ Example response:
   "title": "some commit message",
   "author_name": "Dmitriy Zaporozhets",
   "author_email": "dzaporozhets@sphereconsultinginc.com",
+  "committer_name": "Dmitriy Zaporozhets",
+  "committer_email": "dzaporozhets@sphereconsultinginc.com",
   "created_at": "2016-09-20T09:26:24.000-07:00",
   "message": "some commit message",
   "parent_ids": [
@@ -147,7 +159,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master
 ```
 
 Example response:
@@ -159,6 +171,8 @@ Example response:
   "title": "Sanitize for network graph",
   "author_name": "randx",
   "author_email": "dmitriy.zaporozhets@gmail.com",
+  "committer_name": "Dmitriy",
+  "committer_email": "dmitriy.zaporozhets@gmail.com",
   "created_at": "2012-09-20T09:06:12+03:00",
   "message": "Sanitize for network graph",
   "committed_date": "2012-09-20T09:06:12+03:00",
@@ -172,6 +186,50 @@ Example response:
     "total": 25
   },
   "status": "running"
+}
+```
+
+## Cherry pick a commit
+
+> [Introduced][ce-8047] in GitLab 8.15.
+
+Cherry picks a commit to a given branch.
+
+```
+POST /projects/:id/repository/commits/:sha/cherry_pick
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID of a project or NAMESPACE/PROJECT_NAME owned by the authenticated user
+| `sha` | string | yes | The commit hash  |
+| `branch` | string | yes | The name of the branch  |
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "branch=master" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/cherry_pick"
+```
+
+Example response:
+
+```json
+{
+  "id": "8b090c1b79a14f2bd9e8a738f717824ff53aebad",
+  "short_id": "8b090c1b",
+  "title": "Feature added",
+  "author_name": "Dmitriy Zaporozhets",
+  "author_email": "dmitriy.zaporozhets@gmail.com",
+  "authored_date": "2016-12-12T20:10:39.000+01:00",
+  "created_at": "2016-12-12T20:10:39.000+01:00",
+  "committer_name": "Administrator",
+  "committer_email": "admin@example.com",
+  "committed_date": "2016-12-12T20:10:39.000+01:00",
+  "title": "Feature added",
+  "message": "Feature added\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
+  "parent_ids": [
+    "a738f717824ff53aebad8b090c1b79a14f2bd9e8"
+  ]
 }
 ```
 
@@ -191,7 +249,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master/diff"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/diff"
 ```
 
 Example response:
@@ -199,7 +257,7 @@ Example response:
 ```json
 [
   {
-    "diff": "--- a/doc/update/5.4-to-6.0.md\n+++ b/doc/update/5.4-to-6.0.md\n@@ -71,6 +71,8 @@\n sudo -u git -H bundle exec rake migrate_keys RAILS_ENV=production\n sudo -u git -H bundle exec rake migrate_inline_notes RAILS_ENV=production\n \n+sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production\n+\n ```\n \n ### 6. Update config files",
+    "diff": "--- a/doc/update/5.4-to-6.0.md\n+++ b/doc/update/5.4-to-6.0.md\n@@ -71,6 +71,8 @@\n sudo -u git -H bundle exec rake migrate_keys RAILS_ENV=production\n sudo -u git -H bundle exec rake migrate_inline_notes RAILS_ENV=production\n \n+sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production\n+\n ```\n \n ### 6. Update config files",
     "new_path": "doc/update/5.4-to-6.0.md",
     "old_path": "doc/update/5.4-to-6.0.md",
     "a_mode": null,
@@ -227,7 +285,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master/comments"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/comments"
 ```
 
 Example response:
@@ -280,7 +338,7 @@ POST /projects/:id/repository/commits/:sha/comments
 | `line_type` | string  | no  | The line type. Takes `new` or `old` as arguments |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "note=Nice picture man\!" --form "path=dudeism.md" --form "line=11" --form "line_type=new" https://gitlab.example.com/api/v3/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/comments
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "note=Nice picture man\!" --form "path=dudeism.md" --form "line=11" --form "line_type=new" https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/comments
 ```
 
 Example response:
@@ -325,7 +383,7 @@ GET /projects/:id/repository/commits/:sha/statuses
 | `all`     | boolean | no  | Return all statuses, not only the latest ones
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/statuses
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/statuses
 ```
 
 Example response:
@@ -398,9 +456,10 @@ POST /projects/:id/statuses/:sha
 | `name` or `context` | string  | no | The label to differentiate this status from the status of other systems. Default value is `default`
 | `target_url` |  string  | no  | The target URL to associate with this status
 | `description` | string  | no  | The short description of the status
+| `coverage` | float  | no    | The total code coverage
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
 ```
 
 Example response:
@@ -418,6 +477,7 @@ Example response:
    "name" : "default",
    "sha" : "18f3e63d05582537db6d183d9d557be09e1f90c8",
    "status" : "success",
+   "coverage": 100.0,
    "description" : null,
    "id" : 93,
    "target_url" : null,
@@ -430,3 +490,4 @@ Example response:
 ```
 
 [ce-6096]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6096 "Multi-file commit"
+[ce-8047]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8047

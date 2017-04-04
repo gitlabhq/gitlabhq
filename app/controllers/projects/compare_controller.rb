@@ -25,8 +25,17 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def create
-    redirect_to namespace_project_compare_path(@project.namespace, @project,
+    if params[:from].blank? || params[:to].blank?
+      flash[:alert] = "You must select from and to branches"
+      from_to_vars = {
+        from: params[:from].presence,
+        to: params[:to].presence
+      }
+      redirect_to namespace_project_compare_index_path(@project.namespace, @project, from_to_vars)
+    else
+      redirect_to namespace_project_compare_path(@project.namespace, @project,
                                                params[:from], params[:to])
+    end
   end
 
   private
@@ -37,7 +46,8 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def define_diff_vars
-    @compare = CompareService.new.execute(@project, @head_ref, @project, @start_ref)
+    @compare = CompareService.new(@project, @head_ref)
+      .execute(@project, @start_ref)
 
     if @compare
       @commits = @compare.commits
@@ -47,13 +57,16 @@ class Projects::CompareController < Projects::ApplicationController
 
       @diffs = @compare.diffs(diff_options)
 
+      environment_params = @repository.branch_exists?(@head_ref) ? { ref: @head_ref } : { commit: @commit }
+      @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
+
       @diff_notes_disabled = true
       @grouped_diff_discussions = {}
     end
   end
 
   def merge_request
-    @merge_request ||= @project.merge_requests.opened.
+    @merge_request ||= MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened.
       find_by(source_project: @project, source_branch: @head_ref, target_branch: @start_ref)
   end
 end

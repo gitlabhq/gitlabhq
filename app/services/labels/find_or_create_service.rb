@@ -3,7 +3,7 @@ module Labels
     def initialize(current_user, project, params = {})
       @current_user = current_user
       @project = project
-      @params = params.dup
+      @params = params.dup.with_indifferent_access
     end
 
     def execute(skip_authorization: false)
@@ -22,9 +22,14 @@ module Labels
       ).execute(skip_authorization: skip_authorization)
     end
 
+    # Only creates the label if current_user can do so, if the label does not exist
+    # and the user can not create the label, nil is returned
     def find_or_create_label
       new_label = available_labels.find_by(title: title)
-      new_label ||= project.labels.create(params)
+
+      if new_label.nil? && (skip_authorization || Ability.allowed?(current_user, :admin_label, project))
+        new_label = Labels::CreateService.new(params).execute(project: project)
+      end
 
       new_label
     end

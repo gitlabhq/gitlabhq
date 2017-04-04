@@ -8,5 +8,15 @@ FactoryGirl.define do
     initialize_with do
       new(git_commit, project)
     end
+
+    after(:build) do |commit|
+      allow(commit).to receive(:author).and_return build(:author)
+    end
+
+    trait :without_author do
+      after(:build) do |commit|
+        allow(commit).to receive(:author).and_return nil
+      end
+    end
   end
 end

@@ -1,14 +1,26 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, comma-dangle, no-else-return, no-self-compare, consistent-return, no-undef, no-param-reassign, no-shadow, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, comma-dangle, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
+/* global Issuable */
+/* global ListMilestone */
+
+import Vue from 'vue';
+
 (function() {
   this.MilestoneSelect = (function() {
-    function MilestoneSelect(currentProject) {
-      var _this;
+    function MilestoneSelect(currentProject, els) {
+      var _this, $els;
       if (currentProject != null) {
         _this = this;
         this.currentProject = JSON.parse(currentProject);
       }
-      $('.js-milestone-select').each(function(i, dropdown) {
-        var $block, $dropdown, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, collapsedSidebarLabelTemplate, defaultLabel, issuableId, issueUpdateURL, milestoneLinkNoneTemplate, milestoneLinkTemplate, milestonesUrl, projectId, selectedMilestone, showAny, showNo, showUpcoming, useId, showMenuAbove;
+
+      $els = $(els);
+
+      if (!els) {
+        $els = $('.js-milestone-select');
+      }
+
+      $els.each(function(i, dropdown) {
+        var $block, $dropdown, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, collapsedSidebarLabelTemplate, defaultLabel, issuableId, issueUpdateURL, milestoneLinkNoneTemplate, milestoneLinkTemplate, milestonesUrl, projectId, selectedMilestone, showAny, showNo, showUpcoming, showStarted, useId, showMenuAbove;
         $dropdown = $(dropdown);
         projectId = $dropdown.data('project-id');
         milestonesUrl = $dropdown.data('milestones');
@@ -18,6 +30,7 @@
         showAny = $dropdown.data('show-any');
         showMenuAbove = $dropdown.data('showMenuAbove');
         showUpcoming = $dropdown.data('show-upcoming');
+        showStarted = $dropdown.data('show-started');
         useId = $dropdown.data('use-id');
         defaultLabel = $dropdown.data('default-label');
         issuableId = $dropdown.data('issuable-id');
@@ -28,7 +41,7 @@
         $value = $block.find('.value');
         $loading = $block.find('.block-loading').fadeOut();
         if (issueUpdateURL) {
-          milestoneLinkTemplate = _.template('<a href="/<%- namespace %>/<%- path %>/milestones/<%- iid %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>');
+          milestoneLinkTemplate = _.template('<a href="/<%- full_path %>/milestones/<%- iid %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>');
           milestoneLinkNoneTemplate = '<span class="no-value">None</span>';
           collapsedSidebarLabelTemplate = _.template('<span class="has-tooltip" data-container="body" title="<%- remaining %>" data-placement="left"> <%- title %> </span>');
         }
@@ -58,6 +71,13 @@
                   id: -2,
                   name: '#upcoming',
                   title: 'Upcoming'
+                });
+              }
+              if (showStarted) {
+                extraOptions.push({
+                  id: -3,
+                  name: '#started',
+                  title: 'Started'
                 });
               }
               if (extraOptions.length) {
@@ -104,7 +124,7 @@
           },
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
           clicked: function(selected, $el, e) {
-            var data, isIssueIndex, isMRIndex, page;
+            var data, isIssueIndex, isMRIndex, page, boardsStore;
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = (page === page && page === 'projects:merge_requests:index');
@@ -112,9 +132,13 @@
               e.preventDefault();
               return;
             }
-            if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar')) {
-              gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = selected.name;
-              gl.issueBoards.BoardsStore.updateFiltersUrl();
+
+            if ($dropdown.closest('.add-issues-modal').length) {
+              boardsStore = gl.issueBoards.ModalStore.store.filter;
+            }
+
+            if (boardsStore) {
+              boardsStore[$dropdown.data('field-name')] = selected.name;
               e.preventDefault();
             } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
               if (selected.name != null) {
@@ -136,7 +160,7 @@
               }
 
               $dropdown.trigger('loading.gl.dropdown');
-              $loading.fadeIn();
+              $loading.removeClass('hidden').fadeIn();
 
               gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
                 .then(function () {
@@ -148,7 +172,7 @@
               data = {};
               data[abilityName] = {};
               data[abilityName].milestone_id = selected != null ? selected : null;
-              $loading.fadeIn();
+              $loading.removeClass('hidden').fadeIn();
               $dropdown.trigger('loading.gl.dropdown');
               return $.ajax({
                 type: 'PUT',
@@ -160,8 +184,7 @@
                 $selectbox.hide();
                 $value.css('display', '');
                 if (data.milestone != null) {
-                  data.milestone.namespace = _this.currentProject.namespace;
-                  data.milestone.path = _this.currentProject.path;
+                  data.milestone.full_path = _this.currentProject.full_path;
                   data.milestone.remaining = gl.utils.timeFor(data.milestone.due_date);
                   $value.html(milestoneLinkTemplate(data.milestone));
                   return $sidebarCollapsedValue.find('span').html(collapsedSidebarLabelTemplate(data.milestone));
@@ -177,7 +200,5 @@
     }
 
     return MilestoneSelect;
-
   })();
-
-}).call(this);
+}).call(window);

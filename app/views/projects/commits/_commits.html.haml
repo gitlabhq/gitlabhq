@@ -2,9 +2,9 @@
 - commits, hidden = limited_commits(@commits)
 
 - commits.chunk { |c| c.committed_date.in_time_zone.to_date }.each do |day, commits|
-  %li.commit-header= "#{day.strftime('%d %b, %Y')} #{pluralize(commits.count, 'commit')}"
+  %li.commit-header #{day.strftime('%d %b, %Y')} #{pluralize(commits.count, 'commit')}
   %li.commits-row
-    %ul.list-unstyled.commit-list
+    %ul.content-list.commit-list
       = render commits, project: project, ref: ref
 
 - if hidden > 0

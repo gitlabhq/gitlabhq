@@ -7,7 +7,7 @@ class GitlabIssueTrackerService < IssueTrackerService
 
   default_value_for :default, true
 
-  def to_param
+  def self.to_param
     'gitlab'
   end
 

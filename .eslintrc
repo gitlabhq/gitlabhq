@@ -1,20 +1,29 @@
 {
   "env": {
+    "jquery": true,
     "browser": true,
     "es6": true
   },
-  "extends": "airbnb",
+  "extends": "airbnb-base",
   "globals": {
-    "$": false,
     "_": false,
     "gl": false,
     "gon": false,
-    "jQuery": false
+    "localStorage": false
   },
   "plugins": [
-    "filenames"
+    "filenames",
+    "import"
   ],
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "./config/webpack.config.js"
+      }
+    }
+  },
   "rules": {
-    "filenames/match-regex": [2, "^[a-z0-9_]+(.js)?$"]
+    "filenames/match-regex": [2, "^[a-z0-9_]+$"],
+    "no-multiple-empty-lines": ["error", { "max": 1 }]
   }
 }

@@ -3,6 +3,7 @@ require 'tempfile'
 
 feature 'Builds', :feature do
   let(:user) { create(:user) }
+  let(:user_access_level) { :developer }
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
@@ -14,7 +15,7 @@ feature 'Builds', :feature do
   end
 
   before do
-    project.team << [user, :developer]
+    project.team << [user, user_access_level]
     login_as(user)
   end
 
@@ -26,7 +27,7 @@ feature 'Builds', :feature do
         visit namespace_project_builds_path(project.namespace, project, scope: :pending)
       end
 
-      it "shows Pending tab builds" do
+      it "shows Pending tab jobs" do
         expect(page).to have_link 'Cancel running'
         expect(page).to have_selector('.nav-links li.active', text: 'Pending')
         expect(page).to have_content build.short_sha
@@ -41,7 +42,7 @@ feature 'Builds', :feature do
         visit namespace_project_builds_path(project.namespace, project, scope: :running)
       end
 
-      it "shows Running tab builds" do
+      it "shows Running tab jobs" do
         expect(page).to have_selector('.nav-links li.active', text: 'Running')
         expect(page).to have_link 'Cancel running'
         expect(page).to have_content build.short_sha
@@ -56,20 +57,20 @@ feature 'Builds', :feature do
         visit namespace_project_builds_path(project.namespace, project, scope: :finished)
       end
 
-      it "shows Finished tab builds" do
+      it "shows Finished tab jobs" do
         expect(page).to have_selector('.nav-links li.active', text: 'Finished')
-        expect(page).to have_content 'No builds to show'
+        expect(page).to have_content 'No jobs to show'
         expect(page).to have_link 'Cancel running'
       end
     end
 
-    context "All builds" do
+    context "All jobs" do
       before do
         project.builds.running_or_pending.each(&:success)
         visit namespace_project_builds_path(project.namespace, project)
       end
 
-      it "shows All tab builds" do
+      it "shows All tab jobs" do
         expect(page).to have_selector('.nav-links li.active', text: 'All')
         expect(page).to have_content build.short_sha
         expect(page).to have_content build.ref
@@ -97,7 +98,7 @@ feature 'Builds', :feature do
   end
 
   describe "GET /:project/builds/:id" do
-    context "Build from project" do
+    context "Job from project" do
       before do
         visit namespace_project_build_path(project.namespace, project, build)
       end
@@ -108,9 +109,13 @@ feature 'Builds', :feature do
         expect(page).to have_content pipeline.git_commit_message
         expect(page).to have_content pipeline.git_author_name
       end
+
+      it 'shows active build' do
+        expect(page).to have_selector('.build-job.active')
+      end
     end
 
-    context "Build from other project" do
+    context "Job from other project" do
       before do
         visit namespace_project_build_path(project.namespace, project, build2)
       end
@@ -131,7 +136,9 @@ feature 'Builds', :feature do
 
     context 'Artifacts expire date' do
       before do
-        build.update_attributes(artifacts_file: artifacts_file, artifacts_expire_at: expire_at)
+        build.update_attributes(artifacts_file: artifacts_file,
+                                artifacts_expire_at: expire_at)
+
         visit namespace_project_build_path(project.namespace, project, build)
       end
 
@@ -146,12 +153,23 @@ feature 'Builds', :feature do
       context 'when expire date is defined' do
         let(:expire_at) { Time.now + 7.days }
 
-        it 'keeps artifacts when Keep button is clicked' do
-          expect(page).to have_content 'The artifacts will be removed'
-          click_link 'Keep'
+        context 'when user has ability to update job' do
+          it 'keeps artifacts when keep button is clicked' do
+            expect(page).to have_content 'The artifacts will be removed'
 
-          expect(page).not_to have_link 'Keep'
-          expect(page).not_to have_content 'The artifacts will be removed'
+            click_link 'Keep'
+
+            expect(page).to have_no_link 'Keep'
+            expect(page).to have_no_content 'The artifacts will be removed'
+          end
+        end
+
+        context 'when user does not have ability to update job' do
+          let(:user_access_level) { :guest }
+
+          it 'does not have keep button' do
+            expect(page).to have_no_link 'Keep'
+          end
         end
       end
 
@@ -183,8 +201,8 @@ feature 'Builds', :feature do
         visit namespace_project_build_path(project.namespace, project, build)
       end
 
-      context 'when build has an initial trace' do
-        it 'loads build trace' do
+      context 'when job has an initial trace' do
+        it 'loads job trace' do
           expect(page).to have_content 'BUILD TRACE'
 
           build.append_trace(' and more trace', 11)
@@ -227,10 +245,47 @@ feature 'Builds', :feature do
         expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
       end
     end
+
+    context 'when job starts environment' do
+      let(:environment) { create(:environment, project: project) }
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+
+      context 'job is successfull and has deployment' do
+        let(:deployment) { create(:deployment) }
+        let(:build) { create(:ci_build, :success, environment: environment.name, deployments: [deployment], pipeline: pipeline) }
+
+        it 'shows a link for the job' do
+          visit namespace_project_build_path(project.namespace, project, build)
+
+          expect(page).to have_link environment.name
+        end
+      end
+
+      context 'job is complete and not successfull' do
+        let(:build) { create(:ci_build, :failed, environment: environment.name, pipeline: pipeline) }
+
+        it 'shows a link for the job' do
+          visit namespace_project_build_path(project.namespace, project, build)
+
+          expect(page).to have_link environment.name
+        end
+      end
+
+      context 'job creates a new deployment' do
+        let!(:deployment) { create(:deployment, environment: environment, sha: project.commit.id) }
+        let(:build) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
+
+        it 'shows a link to latest deployment' do
+          visit namespace_project_build_path(project.namespace, project, build)
+
+          expect(page).to have_link('latest deployment')
+        end
+      end
+    end
   end
 
   describe "POST /:project/builds/:id/cancel" do
-    context "Build from project" do
+    context "Job from project" do
       before do
         build.run!
         visit namespace_project_build_path(project.namespace, project, build)
@@ -244,7 +299,7 @@ feature 'Builds', :feature do
       end
     end
 
-    context "Build from other project" do
+    context "Job from other project" do
       before do
         build.run!
         visit namespace_project_build_path(project.namespace, project, build)
@@ -256,13 +311,13 @@ feature 'Builds', :feature do
   end
 
   describe "POST /:project/builds/:id/retry" do
-    context "Build from project" do
+    context "Job from project" do
       before do
         build.run!
         visit namespace_project_build_path(project.namespace, project, build)
         click_link 'Cancel'
         page.within('.build-header') do
-          click_link 'Retry build'
+          click_link 'Retry job'
         end
       end
 

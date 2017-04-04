@@ -1,5 +1,7 @@
+require './spec/support/sidekiq'
+
 Gitlab::Seeder.quiet do
-  emoji = Gitlab::AwardEmoji.emojis.keys
+  emoji = Gitlab::Emoji.emojis.keys
 
   Issue.order(Gitlab::Database.random).limit(Issue.count / 2).each do |issue|
     project = issue.project

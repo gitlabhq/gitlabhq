@@ -521,6 +521,15 @@ describe Discussion, model: true do
     end
   end
 
+  describe "#first_note_to_resolve" do
+    it "returns the first not that still needs to be resolved" do
+      allow(first_note).to receive(:to_be_resolved?).and_return(false)
+      allow(second_note).to receive(:to_be_resolved?).and_return(true)
+
+      expect(subject.first_note_to_resolve).to eq(second_note)
+    end
+  end
+
   describe "#collapsed?" do
     context "when a diff discussion" do
       before do
@@ -587,6 +596,25 @@ describe Discussion, model: true do
 
       it "returns false" do
         expect(subject.collapsed?).to be false
+      end
+    end
+  end
+
+  describe "#truncated_diff_lines" do
+    let(:truncated_lines) { subject.truncated_diff_lines }
+
+    context "when diff is greater than allowed number of truncated diff lines " do
+      it "returns fewer lines"  do
+        expect(subject.diff_lines.count).to be > described_class::NUMBER_OF_TRUNCATED_DIFF_LINES
+
+        expect(truncated_lines.count).to be <= described_class::NUMBER_OF_TRUNCATED_DIFF_LINES
+      end
+    end
+
+    context "when some diff lines are meta" do
+      it "returns no meta lines"  do
+        expect(subject.diff_lines).to include(be_meta)
+        expect(truncated_lines).not_to include(be_meta)
       end
     end
   end

@@ -5,23 +5,22 @@ module Ci
     include Importable
     include AfterCommitQueue
 
-    self.table_name = 'ci_commits'
-
-    belongs_to :project, foreign_key: :gl_project_id
+    belongs_to :project
     belongs_to :user
 
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
 
-    validates_presence_of :sha, unless: :importing?
-    validates_presence_of :ref, unless: :importing?
-    validates_presence_of :status, unless: :importing?
+    delegate :id, to: :project, prefix: true
+
+    validates :sha, presence: { unless: :importing? }
+    validates :ref, presence: { unless: :importing? }
+    validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
 
     after_create :keep_around_commits, unless: :importing?
-
-    delegate :stages, to: :statuses
+    after_create :refresh_build_status_cache
 
     state_machine :status, initial: :created do
       event :enqueue do
@@ -47,6 +46,10 @@ module Ci
 
       event :cancel do
         transition any - [:canceled] => :canceled
+      end
+
+      event :block do
+        transition any - [:manual] => :manual
       end
 
       # IMPORTANT
@@ -90,34 +93,75 @@ module Ci
     end
 
     # ref can't be HEAD or SHA, can only be branch/tag name
+    scope :latest, ->(ref = nil) do
+      max_id = unscope(:select)
+        .select("max(#{quoted_table_name}.id)")
+        .group(:ref, :sha)
+
+      if ref
+        where(ref: ref, id: max_id.where(ref: ref))
+      else
+        where(id: max_id)
+      end
+    end
+
+    def self.latest_status(ref = nil)
+      latest(ref).status
+    end
+
     def self.latest_successful_for(ref)
-      where(ref: ref).order(id: :desc).success.first
+      success.latest(ref).order(id: :desc).first
+    end
+
+    def self.latest_successful_for_refs(refs)
+      success.latest(refs).order(id: :desc).each_with_object({}) do |pipeline, hash|
+        hash[pipeline.ref] ||= pipeline
+      end
     end
 
     def self.truncate_sha(sha)
       sha[0...8]
     end
 
-    def self.stages
-      # We use pluck here due to problems with MySQL which doesn't allow LIMIT/OFFSET in queries
-      CommitStatus.where(pipeline: pluck(:id)).stages
-    end
-
     def self.total_duration
       where.not(duration: nil).sum(:duration)
     end
 
-    def stages_with_latest_statuses
-      statuses.latest.includes(project: :namespace).order(:stage_idx).group_by(&:stage)
+    def stage(name)
+      stage = Ci::Stage.new(self, name: name)
+      stage unless stage.statuses_count.zero?
     end
 
-    def project_id
-      project.id
+    def stages_count
+      statuses.select(:stage).distinct.count
     end
 
-    # For now the only user who participates is the user who triggered
-    def participants(_current_user = nil)
-      Array(user)
+    def stages_name
+      statuses.order(:stage_idx).distinct.
+        pluck(:stage, :stage_idx).map(&:first)
+    end
+
+    def stages
+      # TODO, this needs refactoring, see gitlab-ce#26481.
+
+      stages_query = statuses
+        .group('stage').select(:stage).order('max(stage_idx)')
+
+      status_sql = statuses.latest.where('stage=sg.stage').status_sql
+
+      warnings_sql = statuses.latest.select('COUNT(*)')
+        .where('stage=sg.stage').failed_but_allowed.to_sql
+
+      stages_with_statuses = CommitStatus.from(stages_query, :sg)
+        .pluck('sg.stage', status_sql, "(#{warnings_sql})")
+
+      stages_with_statuses.map do |stage|
+        Ci::Stage.new(self, Hash[%i[name status warnings].zip(stage)])
+      end
+    end
+
+    def artifacts
+      builds.latest.with_artifacts_not_expired.includes(project: [:namespace])
     end
 
     def valid_commit_sha
@@ -157,31 +201,35 @@ module Ci
     end
 
     def manual_actions
-      builds.latest.manual_actions
+      builds.latest.manual_actions.includes(project: [:namespace])
+    end
+
+    def stuck?
+      builds.pending.includes(:project).any?(&:stuck?)
     end
 
     def retryable?
-      builds.latest.any? do |build|
-        (build.failed? || build.canceled?) && build.retryable?
-      end
+      builds.latest.failed_or_canceled.any?(&:retryable?)
     end
 
     def cancelable?
-      builds.running_or_pending.any?
+      statuses.cancelable.any?
     end
 
     def cancel_running
-      builds.running_or_pending.each(&:cancel)
+      Gitlab::OptimisticLocking.retry_lock(
+        statuses.cancelable) do |cancelable|
+          cancelable.find_each(&:cancel)
+        end
     end
 
-    def retry_failed(user)
-      builds.latest.failed.select(&:retryable?).each do |build|
-        Ci::Build.retry(build, user)
-      end
+    def retry_failed(current_user)
+      Ci::RetryPipelineService.new(project, current_user)
+        .execute(self)
     end
 
     def mark_as_processable_after_stage(stage_idx)
-      builds.skipped.where('stage_idx > ?', stage_idx).find_each(&:process)
+      builds.skipped.after_stage(stage_idx).find_each(&:process)
     end
 
     def latest?
@@ -236,13 +284,11 @@ module Ci
     def ci_yaml_file
       return @ci_yaml_file if defined?(@ci_yaml_file)
 
-      @ci_yaml_file ||= begin
-        blob = project.repository.blob_at(sha, '.gitlab-ci.yml')
-        blob.load_all_data!(project.repository)
-        blob.data
-      rescue
-        nil
-      end
+      @ci_yaml_file = project.repository.gitlab_ci_yml_for(sha) rescue nil
+    end
+
+    def has_yaml_errors?
+      yaml_errors.present?
     end
 
     def environments
@@ -279,8 +325,10 @@ module Ci
         when 'failed' then drop
         when 'canceled' then cancel
         when 'skipped' then skip
+        when 'manual' then block
         end
       end
+      refresh_build_status_cache
     end
 
     def predefined_variables
@@ -313,7 +361,17 @@ module Ci
     def merge_requests
       @merge_requests ||= project.merge_requests
         .where(source_branch: self.ref)
-        .select { |merge_request| merge_request.pipeline.try(:id) == self.id }
+        .select { |merge_request| merge_request.head_pipeline.try(:id) == self.id }
+    end
+
+    def detailed_status(current_user)
+      Gitlab::Ci::Status::Pipeline::Factory
+        .new(self, current_user)
+        .fabricate!
+    end
+
+    def refresh_build_status_cache
+      Ci::PipelineStatus.new(project, sha: sha, status: status).store_in_cache_if_needed
     end
 
     private

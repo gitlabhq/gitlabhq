@@ -2,15 +2,15 @@ require 'spec_helper'
 
 describe Projects::ForksController do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:forked_project) { Projects::ForkService.new(project, user).execute }
   let(:group) { create(:group, owner: forked_project.creator) }
 
   describe 'GET index' do
     def get_forks
       get :index,
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param
+        namespace_id: project.namespace,
+        project_id: project
     end
 
     context 'when fork is public' do
@@ -71,8 +71,8 @@ describe Projects::ForksController do
   describe 'GET new' do
     def get_new
       get :new,
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param
+        namespace_id: project.namespace,
+        project_id: project
     end
 
     context 'when user is signed in' do
@@ -99,8 +99,8 @@ describe Projects::ForksController do
   describe 'POST create' do
     def post_create
       post :create,
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param,
+        namespace_id: project.namespace,
+        project_id: project,
         namespace_key: user.namespace.id
     end
 

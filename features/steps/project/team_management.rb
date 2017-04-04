@@ -65,7 +65,11 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     user = User.find_by(name: 'Dmitriy')
     project_member = project.project_members.find_by(user_id: user.id)
     page.within "#project_member_#{project_member.id}" do
-      select "Reporter", from: "member_access_level_#{project_member.id}"
+      click_button project_member.human_access
+
+      page.within '.dropdown-menu' do
+        click_link 'Reporter'
+      end
     end
   end
 
@@ -109,8 +113,10 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     project.team << [user, :reporter]
   end
 
-  step 'I click link "Import team from another project"' do
-    click_link "Import"
+  step 'I click link "Import team from another project"' do    
+    page.within '.users-project-form' do
+      click_link "Import"
+    end
   end
 
   When 'I submit "Website" project for import team' do
@@ -131,7 +137,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   step 'I share project with group "OpenSource"' do
     project = Project.find_by(name: 'Shop')
     os_group = create(:group, name: 'OpenSource')
-    create(:project, group: os_group)
+    create(:empty_project, group: os_group)
     @os_user1 = create(:user)
     @os_user2 = create(:user)
     os_group.add_owner(@os_user1)
@@ -144,7 +150,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   step 'I should see "Opensource" group user listing' do
     page.within '.project-members-groups' do
       expect(page).to have_content('OpenSource')
-      expect(find('select').value).to eq('40')
+      expect(first('.group_member')).to have_content('Master')
     end
   end
 end

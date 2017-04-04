@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Commit, models: true do
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:commit)  { project.commit }
 
   describe 'modules' do
@@ -34,24 +34,30 @@ describe Commit, models: true do
   end
 
   describe '#to_reference' do
+    let(:project) { create(:project, :repository, path: 'sample-project') }
+    let(:commit)  { project.commit }
+
     it 'returns a String reference to the object' do
       expect(commit.to_reference).to eq commit.id
     end
 
     it 'supports a cross-project reference' do
-      cross = double('project')
-      expect(commit.to_reference(cross)).to eq "#{project.to_reference}@#{commit.id}"
+      another_project = build(:project, :repository, name: 'another-project', namespace: project.namespace)
+      expect(commit.to_reference(another_project)).to eq "sample-project@#{commit.id}"
     end
   end
 
   describe '#reference_link_text' do
+    let(:project) { create(:project, :repository, path: 'sample-project') }
+    let(:commit)  { project.commit }
+
     it 'returns a String reference to the object' do
       expect(commit.reference_link_text).to eq commit.short_id
     end
 
     it 'supports a cross-project reference' do
-      cross = double('project')
-      expect(commit.reference_link_text(cross)).to eq "#{project.to_reference}@#{commit.short_id}"
+      another_project = build(:project, :repository, name: 'another-project', namespace: project.namespace)
+      expect(commit.reference_link_text(another_project)).to eq "sample-project@#{commit.short_id}"
     end
   end
 
@@ -125,7 +131,7 @@ eos
 
   describe '#closes_issues' do
     let(:issue) { create :issue, project: project }
-    let(:other_project) { create :project, :public }
+    let(:other_project) { create(:empty_project, :public) }
     let(:other_issue) { create :issue, project: other_project }
     let(:commiter) { create :user }
 
@@ -148,7 +154,7 @@ eos
   end
 
   it_behaves_like 'a mentionable' do
-    subject { create(:project).commit }
+    subject { create(:project, :repository).commit }
 
     let(:author) { create(:user, email: subject.author_email) }
     let(:backref_text) { "commit #{subject.id}" }
@@ -173,25 +179,26 @@ eos
 
   describe '#reverts_commit?' do
     let(:another_commit) { double(:commit, revert_description: "This reverts commit #{commit.sha}") }
+    let(:user) { commit.author }
 
-    it { expect(commit.reverts_commit?(another_commit)).to be_falsy }
+    it { expect(commit.reverts_commit?(another_commit, user)).to be_falsy }
 
     context 'commit has no description' do
       before { allow(commit).to receive(:description?).and_return(false) }
 
-      it { expect(commit.reverts_commit?(another_commit)).to be_falsy }
+      it { expect(commit.reverts_commit?(another_commit, user)).to be_falsy }
     end
 
     context "another_commit's description does not revert commit" do
       before { allow(commit).to receive(:description).and_return("Foo Bar") }
 
-      it { expect(commit.reverts_commit?(another_commit)).to be_falsy }
+      it { expect(commit.reverts_commit?(another_commit, user)).to be_falsy }
     end
 
     context "another_commit's description reverts commit" do
       before { allow(commit).to receive(:description).and_return("Foo #{another_commit.revert_description} Bar") }
 
-      it { expect(commit.reverts_commit?(another_commit)).to be_truthy }
+      it { expect(commit.reverts_commit?(another_commit, user)).to be_truthy }
     end
 
     context "another_commit's description reverts merged merge request" do
@@ -201,28 +208,43 @@ eos
         allow(commit).to receive(:description).and_return("Foo #{another_commit.revert_description} Bar")
       end
 
-      it { expect(commit.reverts_commit?(another_commit)).to be_truthy }
+      it { expect(commit.reverts_commit?(another_commit, user)).to be_truthy }
+    end
+  end
+
+  describe '#latest_pipeline' do
+    let!(:first_pipeline) do
+      create(:ci_empty_pipeline,
+        project: project,
+        sha: commit.sha,
+        status: 'success')
+    end
+    let!(:second_pipeline) do
+      create(:ci_empty_pipeline,
+        project: project,
+        sha: commit.sha,
+        status: 'success')
+    end
+
+    it 'returns latest pipeline' do
+      expect(commit.latest_pipeline).to eq second_pipeline
     end
   end
 
   describe '#status' do
-    context 'without arguments for compound status' do
-      shared_examples 'giving the status from pipeline' do
-        it do
-          expect(commit.status).to eq(Ci::Pipeline.status)
+    context 'without ref argument' do
+      before do
+        %w[success failed created pending].each do |status|
+          create(:ci_empty_pipeline,
+                 project: project,
+                 sha: commit.sha,
+                 status: status)
         end
       end
 
-      context 'with pipelines' do
-        let!(:pipeline) do
-          create(:ci_empty_pipeline, project: project, sha: commit.sha)
-        end
-
-        it_behaves_like 'giving the status from pipeline'
-      end
-
-      context 'without pipelines' do
-        it_behaves_like 'giving the status from pipeline'
+      it 'gives compound status from latest pipelines' do
+        expect(commit.status).to eq(Ci::Pipeline.latest_status)
+        expect(commit.status).to eq('pending')
       end
     end
 
@@ -248,8 +270,9 @@ eos
         expect(commit.status('fix')).to eq(pipeline_from_fix.status)
       end
 
-      it 'gives compound status if ref is nil' do
-        expect(commit.status(nil)).to eq(commit.status)
+      it 'gives compound status from latest pipelines if ref is nil' do
+        expect(commit.status(nil)).to eq(Ci::Pipeline.latest_status)
+        expect(commit.status(nil)).to eq('failed')
       end
     end
   end
@@ -300,6 +323,97 @@ eos
 
     it "returns nil if the path doesn't exists" do
       expect(commit.uri_type('this/path/doesnt/exist')).to be_nil
+    end
+  end
+
+  describe '.from_hash' do
+    let(:new_commit) { described_class.from_hash(commit.to_hash, project) }
+
+    it 'returns a Commit' do
+      expect(new_commit).to be_an_instance_of(described_class)
+    end
+
+    it 'wraps a Gitlab::Git::Commit' do
+      expect(new_commit.raw).to be_an_instance_of(Gitlab::Git::Commit)
+    end
+
+    it 'stores the correct commit fields' do
+      expect(new_commit.id).to eq(commit.id)
+      expect(new_commit.message).to eq(commit.message)
+    end
+  end
+
+  describe '#work_in_progress?' do
+    ['squash! ', 'fixup! ', 'wip: ', 'WIP: ', '[WIP] '].each do |wip_prefix|
+      it "detects the '#{wip_prefix}' prefix" do
+        commit.message = "#{wip_prefix}#{commit.message}"
+
+        expect(commit).to be_work_in_progress
+      end
+    end
+
+    it "detects WIP for a commit just saying 'wip'" do
+      commit.message = "wip"
+
+      expect(commit).to be_work_in_progress
+    end
+
+    it "doesn't detect WIP for a commit that begins with 'FIXUP! '" do
+      commit.message = "FIXUP! #{commit.message}"
+
+      expect(commit).not_to be_work_in_progress
+    end
+
+    it "doesn't detect WIP for words starting with WIP" do
+      commit.message = "Wipout #{commit.message}"
+
+      expect(commit).not_to be_work_in_progress
+    end
+  end
+
+  describe '.valid_hash?' do
+    it 'checks hash contents' do
+      expect(described_class.valid_hash?('abcdef01239ABCDEF')).to be true
+      expect(described_class.valid_hash?("abcdef01239ABCD\nEF")).to be false
+      expect(described_class.valid_hash?(' abcdef01239ABCDEF ')).to be false
+      expect(described_class.valid_hash?('Gabcdef01239ABCDEF')).to be false
+      expect(described_class.valid_hash?('gabcdef01239ABCDEF')).to be false
+      expect(described_class.valid_hash?('-abcdef01239ABCDEF')).to be false
+    end
+
+    it 'checks hash length' do
+      expect(described_class.valid_hash?('a' * 6)).to be false
+      expect(described_class.valid_hash?('a' * 7)).to be true
+      expect(described_class.valid_hash?('a' * 40)).to be true
+      expect(described_class.valid_hash?('a' * 41)).to be false
+    end
+  end
+
+  describe '#raw_diffs' do
+    context 'Gitaly commit_raw_diffs feature enabled' do
+      before do
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:commit_raw_diffs).and_return(true)
+      end
+
+      context 'when a truthy deltas_only is not passed to args' do
+        it 'fetches diffs from Gitaly server' do
+          expect(Gitlab::GitalyClient::Commit).to receive(:diff_from_parent).
+            with(commit)
+
+          commit.raw_diffs
+        end
+      end
+
+      context 'when a truthy deltas_only is passed to args' do
+        it 'fetches diffs using Rugged' do
+          opts = { deltas_only: true }
+
+          expect(Gitlab::GitalyClient::Commit).not_to receive(:diff_from_parent)
+          expect(commit.raw).to receive(:diffs).with(opts)
+
+          commit.raw_diffs(opts)
+        end
+      end
     end
   end
 end

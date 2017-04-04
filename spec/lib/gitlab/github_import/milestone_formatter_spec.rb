@@ -6,7 +6,6 @@ describe Gitlab::GithubImport::MilestoneFormatter, lib: true do
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
   let(:base_data) do
     {
-      number: 1347,
       state: 'open',
       title: '1.0',
       description: 'Version 1.0',
@@ -16,12 +15,15 @@ describe Gitlab::GithubImport::MilestoneFormatter, lib: true do
       closed_at: nil
     }
   end
+  let(:iid_attr) { :number }
 
-  subject(:formatter) { described_class.new(project, raw_data)}
+  subject(:formatter) { described_class.new(project, raw_data) }
 
-  describe '#attributes' do
+  shared_examples 'Gitlab::GithubImport::MilestoneFormatter#attributes' do
+    let(:data) { base_data.merge(iid_attr => 1347) }
+
     context 'when milestone is open' do
-      let(:raw_data) { double(base_data.merge(state: 'open')) }
+      let(:raw_data) { double(data.merge(state: 'open')) }
 
       it 'returns formatted attributes' do
         expected = {
@@ -40,7 +42,7 @@ describe Gitlab::GithubImport::MilestoneFormatter, lib: true do
     end
 
     context 'when milestone is closed' do
-      let(:raw_data) { double(base_data.merge(state: 'closed')) }
+      let(:raw_data) { double(data.merge(state: 'closed')) }
 
       it 'returns formatted attributes' do
         expected = {
@@ -60,7 +62,7 @@ describe Gitlab::GithubImport::MilestoneFormatter, lib: true do
 
     context 'when milestone has a due date' do
       let(:due_date) { DateTime.strptime('2011-01-28T19:01:12Z') }
-      let(:raw_data) { double(base_data.merge(due_on: due_date)) }
+      let(:raw_data) { double(data.merge(due_on: due_date)) }
 
       it 'returns formatted attributes' do
         expected = {
@@ -77,5 +79,18 @@ describe Gitlab::GithubImport::MilestoneFormatter, lib: true do
         expect(formatter.attributes).to eq(expected)
       end
     end
+  end
+
+  context 'when importing a GitHub project' do
+    it_behaves_like 'Gitlab::GithubImport::MilestoneFormatter#attributes'
+  end
+
+  context 'when importing a Gitea project' do
+    let(:iid_attr) { :id }
+    before do
+      project.update(import_type: 'gitea')
+    end
+
+    it_behaves_like 'Gitlab::GithubImport::MilestoneFormatter#attributes'
   end
 end

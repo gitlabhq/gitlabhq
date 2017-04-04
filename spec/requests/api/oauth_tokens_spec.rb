@@ -29,5 +29,27 @@ describe API::API, api: true  do
         expect(json_response['access_token']).not_to be_nil
       end
     end
+
+    context "when user is blocked" do
+      it "does not create an access token" do
+        user = create(:user)
+        user.block
+
+        request_oauth_token(user)
+
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context "when user is ldap_blocked" do
+      it "does not create an access token" do
+        user = create(:user)
+        user.ldap_block
+
+        request_oauth_token(user)
+
+        expect(response).to have_http_status(401)
+      end
+    end
   end
 end

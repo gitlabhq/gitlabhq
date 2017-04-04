@@ -103,7 +103,7 @@ module Gitlab
               (?<cmd>#{Regexp.union(names)})
               (?:
                 [ ]
-                (?<arg>[^\/\n]*)
+                (?<arg>[^\n]*)
               )?
               (?:\n|$)
             )

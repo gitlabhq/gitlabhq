@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe TagsFinder do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
 
   describe '#execute' do

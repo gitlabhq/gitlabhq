@@ -1,10 +1,8 @@
 - label_css_id = dom_id(label)
-- open_issues_count = label.open_issues_count(current_user)
-- open_merge_requests_count = label.open_merge_requests_count(current_user)
 - status = label_subscription_status(label, @project).inquiry if current_user
 - subject = local_assigns[:subject]
 
-%li{id: label_css_id, data: { id: label.id } }
+%li{ id: label_css_id, data: { id: label.id } }
   = render "shared/label_row", label: label
 
   .visible-xs.visible-sm-inline-block.visible-md-inline-block.dropdown
@@ -15,10 +13,10 @@
       %ul
         %li
           = link_to_label(label, subject: subject, type: :merge_request) do
-            = pluralize open_merge_requests_count, 'merge request'
+            view merge requests
         %li
           = link_to_label(label, subject: subject) do
-            = pluralize open_issues_count, 'open issue'
+            view open issues
         - if current_user && defined?(@project)
           %li.label-subscription
             - if label.is_a?(ProjectLabel)
@@ -36,27 +34,27 @@
           %li
             = link_to 'Edit', edit_label_path(label)
           %li
-            = link_to 'Delete', destroy_label_path(label), title: 'Delete', method: :delete, remote: true, data: {confirm: 'Remove this label? Are you sure?'}
+            = link_to 'Delete', destroy_label_path(label), title: 'Delete', method: :delete, data: {confirm: 'Remove this label? Are you sure?'}
 
   .pull-right.hidden-xs.hidden-sm.hidden-md
     = link_to_label(label, subject: subject, type: :merge_request, css_class: 'btn btn-transparent btn-action') do
-      = pluralize open_merge_requests_count, 'merge request'
+      view merge requests
     = link_to_label(label, subject: subject, css_class: 'btn btn-transparent btn-action') do
-      = pluralize open_issues_count, 'open issue'
+      view open issues
 
     - if current_user && defined?(@project)
       .label-subscription.inline
         - if label.is_a?(ProjectLabel)
-          %button.js-subscribe-button.label-subscribe-button.btn.btn-default.btn-action{ type: 'button', title: label_subscription_toggle_button_text(label, @project), data: { toggle: 'tooltip', status: status, url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
+          %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ type: 'button', data: { status: status, url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label) } }
             %span= label_subscription_toggle_button_text(label, @project)
             = icon('spinner spin', class: 'label-subscribe-button-loading')
         - else
-          %button.js-unsubscribe-button.label-subscribe-button.btn.btn-default.btn-action{ type: 'button', class: ('hidden' if status.unsubscribed?), title: 'Unsubscribe', data: { toggle: 'tooltip', url: group_label_unsubscribe_path(label, @project) } }
+          %button.js-unsubscribe-button.label-subscribe-button.btn.btn-default{ type: 'button', class: ('hidden' if status.unsubscribed?), data: { url: group_label_unsubscribe_path(label, @project) } }
             %span Unsubscribe
             = icon('spinner spin', class: 'label-subscribe-button-loading')
 
           .dropdown.dropdown-group-label{ class: ('hidden' unless status.unsubscribed?) }
-            %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
+            %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
               %span Subscribe
               = icon('chevron-down')
             %ul.dropdown-menu
@@ -66,11 +64,15 @@
                 %a.js-subscribe-button{ data: { url: toggle_subscription_group_label_path(label.group, label) } }
                   Group level
 
+    - if label.is_a?(ProjectLabel) && label.project.group && can?(current_user, :admin_group, label.project.group)
+      = link_to promote_namespace_project_label_path(label.project.namespace, label.project, label), title: "Promote to Group Label", class: 'btn btn-transparent btn-action', data: {confirm: "Promoting this label will make this label available to all projects inside this group. Existing project labels with the same name will be merged. Are you sure?", toggle: "tooltip"}, method: :post do
+        %span.sr-only Promote to Group
+        = icon('level-up')
     - if can?(current_user, :admin_label, label)
       = link_to edit_label_path(label), title: "Edit", class: 'btn btn-transparent btn-action', data: {toggle: "tooltip"} do
         %span.sr-only Edit
         = icon('pencil-square-o')
-      = link_to destroy_label_path(label), title: "Delete", class: 'btn btn-transparent btn-action remove-row', method: :delete, remote: true, data: {confirm: label_deletion_confirm_text(label), toggle: "tooltip"} do
+      = link_to destroy_label_path(label), title: "Delete", class: 'btn btn-transparent btn-action remove-row', method: :delete, data: {confirm: label_deletion_confirm_text(label), toggle: "tooltip"} do
         %span.sr-only Delete
         = icon('trash-o')
 

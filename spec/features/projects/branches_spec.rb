@@ -17,6 +17,14 @@ describe 'Branches', feature: true do
         repository.branches { |branch| expect(page).to have_content("#{branch.name}") }
         expect(page).to have_content("Protected branches can be managed in project settings")
       end
+
+      it 'avoids a N+1 query in branches index' do
+        control_count = ActiveRecord::QueryRecorder.new { visit namespace_project_branches_path(project.namespace, project) }.count
+
+        %w(one two three four five).each { |ref| repository.add_branch(@user, ref, 'master') }
+
+        expect { visit namespace_project_branches_path(project.namespace, project) }.not_to exceed_query_limit(control_count)
+      end
     end
 
     describe 'Find branches' do

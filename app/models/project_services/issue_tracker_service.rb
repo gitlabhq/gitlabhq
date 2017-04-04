@@ -1,4 +1,6 @@
 class IssueTrackerService < Service
+  validate :one_issue_tracker, if: :activated?, on: :manual_change
+
   default_value_for :category, 'issue_tracker'
 
   # Pattern used to extract links from comments
@@ -57,7 +59,7 @@ class IssueTrackerService < Service
     end
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 
@@ -85,11 +87,20 @@ class IssueTrackerService < Service
 
   def enabled_in_gitlab_config
     Gitlab.config.issues_tracker &&
-    Gitlab.config.issues_tracker.values.any? &&
-    issues_tracker
+      Gitlab.config.issues_tracker.values.any? &&
+      issues_tracker
   end
 
   def issues_tracker
     Gitlab.config.issues_tracker[to_param]
+  end
+
+  def one_issue_tracker
+    return if template?
+    return if project.blank?
+
+    if project.services.external_issue_trackers.where.not(id: id).any?
+      errors.add(:base, 'Another issue tracker is already in use. Only one issue tracker service can be active at a time')
+    end
   end
 end

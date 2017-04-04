@@ -1,7 +1,7 @@
 .ci-body {
   .project-title {
     margin: 0;
-    color: #444;
+    color: $common-gray-dark;
     font-size: 20px;
     line-height: 1.5;
   }
@@ -18,7 +18,7 @@
     }
 
     td {
-      color: $gl-gray;
+      color: $gl-text-color;
       vertical-align: middle !important;
 
       a {
