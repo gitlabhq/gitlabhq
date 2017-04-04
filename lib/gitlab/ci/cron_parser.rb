@@ -25,11 +25,9 @@ module Gitlab
       private
 
       def try_parse_cron(cron, cron_time_zone)
-        begin
-          Rufus::Scheduler.parse("#{cron} #{cron_time_zone}")
-        rescue
-          nil
-        end
+        Rufus::Scheduler.parse("#{cron} #{cron_time_zone}")
+      rescue
+        # noop
       end
     end
   end
