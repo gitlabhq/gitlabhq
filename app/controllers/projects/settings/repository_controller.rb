@@ -23,17 +23,16 @@ module Projects
         #TODO: consider protected tags
         #TODO: Refactor ProtectedBranch::PushAccessLevel so it doesn't mention branches
         {
-          push_access_levels: {
-            roles: ProtectedBranch::PushAccessLevel.human_access_levels.map do |id, text|
-              { id: id, text: text, before_divider: true }
-            end
-          },
-          merge_access_levels: {
-            roles: ProtectedBranch::MergeAccessLevel.human_access_levels.map do |id, text|
-              { id: id, text: text, before_divider: true }
-            end
-          }
+          push_access_levels: levels_for_dropdown(ProtectedBranch::PushAccessLevel),
+          merge_access_levels: levels_for_dropdown(ProtectedBranch::MergeAccessLevel)
         }
+      end
+
+      def levels_for_dropdown(access_level_type)
+        roles = access_level_type.human_access_levels.map do |id, text|
+          { id: id, text: text, before_divider: true }
+        end
+        { roles: roles }
       end
 
       def protectable_tags_for_dropdown
