@@ -240,6 +240,9 @@
   border-width: 1px;
   border-style: solid;
   margin: 1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &-finished {
     background-color: $green-100;
@@ -269,6 +272,17 @@
   &-waiting {
     background-color: $white-light;
     border-color: $border-color;
+  }
+
+  &.deploy-board-instance-canary {
+    &::after {
+      width: 7px;
+      height: 7px;
+      border: 1px solid $white-light;
+      background-color: $orange-300;
+      border-radius: 50px;
+      content: "";
+    }
   }
 }
 
