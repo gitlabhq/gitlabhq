@@ -26,21 +26,21 @@ export default {
     },
 
     shouldShowRevertForCurrentMR() {
-      return (this.mr.canBeReverted && this.mr.userCanCollaborateWithProject);
+      return this.mr.canBeReverted && this.mr.userCanCollaborateWithProject;
     },
 
-    // TODO: @fatih, we need to handle this case without UJS post in the future
+    // TODO: Remove UJS
     shouldShowRevertForForkMR() {
-      return (this.mr.canBeReverted && this.mr.userCanForkProject);
+      return this.mr.canBeReverted && this.mr.userCanForkProject;
     },
 
     shouldShowCherryPickForCurrentMR() {
-      return (this.mr.canBeCherryPicked && this.mr.userCanCollaborateWithProject);
+      return this.mr.canBeCherryPicked && this.mr.userCanCollaborateWithProject;
     },
 
-    // TODO: @fatih, we need to handle this case without UJS post in the future
+    // TODO: Remove UJS
     shouldShowCherryPickForForkMR() {
-      return (this.mr.canBeCherryPicked && this.mr.userCanForkProject);
+      return this.mr.canBeCherryPicked && this.mr.userCanForkProject;
     },
   },
   methods: {
@@ -114,7 +114,6 @@ export default {
           data-method='post'
           :href="mr.cherryPickInForkPath"
           data-original-title="Cherry-pick this merge request in a new merge request">Cherry-pick</a>
-
       </div>
     </div>
   `,

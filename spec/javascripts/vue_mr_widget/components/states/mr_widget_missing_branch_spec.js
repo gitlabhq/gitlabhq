@@ -4,7 +4,7 @@ import missingBranchComponent from '~/vue_merge_request_widget/components/states
 const createComponent = () => {
   const Component = Vue.extend(missingBranchComponent);
   const mr = {
-    sourceBranchRemoved: true
+    sourceBranchRemoved: true,
   };
 
   return new Component({

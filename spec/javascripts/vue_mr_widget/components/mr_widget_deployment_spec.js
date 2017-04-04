@@ -20,7 +20,7 @@ const createComponent = () => {
     deployments: deploymentMockData,
   };
   const service = {
-    stopEnvironment() {}
+    stopEnvironment() {},
   };
 
   return new Component({
@@ -52,7 +52,7 @@ describe('MRWidgetDeployment', () => {
   });
 
   describe('methods', () => {
-    const vm = createComponent();
+    let vm = createComponent();
     const deployment = deploymentMockData[0];
 
     describe('formatDate', () => {
@@ -109,7 +109,7 @@ describe('MRWidgetDeployment', () => {
                 redirect_url: url,
               };
             },
-          })
+          });
         }));
 
         vm.stopEnvironment(deploymentMockData);
@@ -117,7 +117,7 @@ describe('MRWidgetDeployment', () => {
       };
 
       it('should show a confirm dialog and call service.stopEnvironment when confirmed', (done) => {
-        const vm = mockStopEnvironment(true);
+        vm = mockStopEnvironment(true);
         spyOn(gl.utils, 'visitUrl').and.returnValue(true);
 
         expect(window.confirm).toHaveBeenCalled();
@@ -129,7 +129,7 @@ describe('MRWidgetDeployment', () => {
       });
 
       it('should show a confirm dialog but should not work if the dialog is rejected', () => {
-        const vm = mockStopEnvironment(false);
+        vm = mockStopEnvironment(false);
 
         expect(window.confirm).toHaveBeenCalled();
         expect(vm.service.stopEnvironment).not.toHaveBeenCalled();

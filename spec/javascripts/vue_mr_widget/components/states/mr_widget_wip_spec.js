@@ -9,7 +9,7 @@ const createComponent = () => {
     canUpdateMergeRequest: true,
   };
   const service = {
-    removeWIP() {}
+    removeWIP() {},
   };
   return new Component({
     el: document.createElement('div'),
@@ -33,7 +33,7 @@ describe('MRWidgetWIP', () => {
   describe('methods', () => {
     const mrObj = {
       is_new_mr_data: true,
-    }
+    };
 
     describe('removeWIP', () => {
       it('should make a request to service and handle response', (done) => {
@@ -46,7 +46,7 @@ describe('MRWidgetWIP', () => {
             json() {
               return mrObj;
             },
-          })
+          });
         }));
 
         vm.removeWIP();

@@ -5,7 +5,7 @@ import eventHub from '~/vue_merge_request_widget/event_hub';
 const createComponent = () => {
   const Component = Vue.extend(failedToMergeComponent);
   return new Component({
-    el: document.createElement('div')
+    el: document.createElement('div'),
   });
 };
 
@@ -52,7 +52,7 @@ describe('MRWidgetFailedToMerge', () => {
 
         expect(vm.timer).toEqual(10);
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 10; i++) { // eslint-disable-line
           expect(vm.timer).toEqual(10 - i);
           vm.updateTimer();
         }
