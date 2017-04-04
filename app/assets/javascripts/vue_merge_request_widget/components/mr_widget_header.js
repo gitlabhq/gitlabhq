@@ -13,13 +13,19 @@ export default {
       return gl.text.pluralize('commit', this.mr.divergedCommitsCount);
     },
   },
+  methods: {
+    isLongBranchTitle(branchTitle) {
+      return branchTitle.length > 32;
+    },
+  },
   template: `
     <div class="mr-source-target">
       <div class="pull-right" v-if="mr.isOpen">
         <a href="#modal_merge_info" data-toggle="modal" class="btn inline btn-grouped btn-sm">Check out branch</a>
         <span class="dropdown inline prepend-left-5">
-          <a class="btn btn-sm dropdown-toggle" data-toggle="dropdown">
-            Download as <i class="fa fa-caret-down" aria-hidden="true"></i>
+          <a class="btn btn-sm dropdown-toggle" data-toggle="dropdown" aria-label="Download as">
+            <i class="fa fa-download" aria-hidden="true"></i>
+            <i class="fa fa-caret-down" aria-hidden="true"></i>
           </a>
           <ul class="dropdown-menu dropdown-menu-align-right">
             <li>
@@ -32,11 +38,23 @@ export default {
         </span>
       </div>
       <div class="normal">
-        <span>Request to merge</span>
-        <span class="label-branch">{{mr.sourceBranch}}</span>
-        <span>into</span>
-        <span class="label-branch">
-          <a href="#">{{mr.targetBranch}}</a>
+        <b>Request to merge</b>
+        <span class="label-branch"
+              data-placement="bottom"
+              v-bind:class="{ 'label-truncated has-tooltip': isLongBranchTitle(mr.sourceBranch) }"
+              :title="isLongBranchTitle(mr.sourceBranch) ? mr.sourceBranch : null">
+          <a :href="mr.sourceBranchPath">{{mr.sourceBranch}}</a>
+        </span>
+        <button class="btn btn-transparent btn-clipboard has-tooltip"
+                data-title="Copy branch name to clipboard"
+                :data-clipboard-text="mr.sourceBranch">
+          <i aria-hidden="true" class="fa fa-clipboard"></i>
+        </button>
+        <b>into</b>
+        <span class="label-branch"
+              v-bind:class="{ 'label-truncated has-tooltip': isLongBranchTitle(mr.targetBranch) }"
+              :title="isLongBranchTitle(mr.targetBranch) ? mr.targetBranch : null">
+          <a :href="mr.targetBranchPath">{{mr.targetBranch}}</a>
         </span>
         <span
           v-if="shouldShowCommitsBehindText"
