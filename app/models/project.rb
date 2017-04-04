@@ -1387,10 +1387,6 @@ class Project < ActiveRecord::Base
   def has_root_container_repository_tags?
     return false unless Gitlab.config.registry.enabled
 
-    ContainerRegistry::Path.new(self.full_path).tap do |path|
-      ContainerRepository.build_from_path(path).tap do |repository|
-        return repository.has_tags?
-      end
-    end
+    ContainerRepository.build_root_repository(self).has_tags?
   end
 end
