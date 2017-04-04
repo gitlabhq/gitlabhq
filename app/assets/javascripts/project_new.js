@@ -7,8 +7,12 @@
   this.ProjectNew = (function() {
     function ProjectNew() {
       this.toggleSettings = bind(this.toggleSettings, this);
+      this.addApprover = this.addApprover.bind(this);
+      this.removeApprover = this.removeApprover.bind(this);
+
       this.$selects = $('.project-feature select');
       this.$repoSelects = this.$selects.filter('.js-repo-select');
+      this.$enableApprovers = $('.js-require-approvals-toggle');
 
       $('.project-edit-container').on('ajax:before', (function(_this) {
         return function() {
@@ -20,14 +24,24 @@
       this.initVisibilitySelect();
 
       this.toggleSettings();
-      this.toggleSettingsOnclick();
+      this.addEvents();
       this.toggleRepoVisibility();
-
-      $('.js-approvers').on('click', this.addApprover.bind(this));
-      $(document).on('click', '.js-approver-remove', this.removeApprover.bind(this));
 
       this.initApproverSelect();
     }
+
+    ProjectNew.prototype.addEvents = function() {
+      this.$selects.on('change', this.toggleSettings);
+      $('.js-approvers').on('click', this.addApprover);
+      $(document).on('click', '.js-approver-remove', this.removeApprover);
+
+      $('#require_approvals').on('change', function() {
+        const enabled = $(this).prop('checked');
+        const val = enabled ? 1 : 0;
+        $('#project_approvals_before_merge').prop('min', val);
+        $('.nested-settings').toggleClass('hidden', !enabled);
+      });
+    };
 
     ProjectNew.prototype.initApproverSelect = function() {
       $('.js-select-user-and-group').select2({
@@ -188,6 +202,11 @@
       visibilitySelect.init();
     };
 
+    ProjectNew.prototype.toggleApproverSettingsVisibility = function(evt) {
+      const enabled = evt.value;
+      $('.nested-settings').toggleClass('hidden', enabled);
+    };
+
     ProjectNew.prototype.toggleSettings = function() {
       var self = this;
 
@@ -198,10 +217,6 @@
           .replace('access-level', 'feature');
         self._showOrHide($select, '.' + className);
       });
-    };
-
-    ProjectNew.prototype.toggleSettingsOnclick = function() {
-      this.$selects.on('change', this.toggleSettings);
     };
 
     ProjectNew.prototype._showOrHide = function(checkElement, container) {

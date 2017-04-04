@@ -46,12 +46,12 @@
 .form-group.reset-approvals-on-push
   .checkbox
     = label_tag :require_approvals do
-      = check_box_tag :require_approvals, nil, project.approvals_before_merge > 0
+      = check_box_tag :require_approvals, nil, project.approvals_before_merge > 0, class: 'js-require-approvals-toggle'
       %strong Activate merge request approvals
       = link_to icon('question-circle'), help_page_path("user/project/merge_requests/merge_request_approvals"), target: '_blank'
       .descr Merge request approvals allow you to set the number of necessary approvals and predefine a list of approvers that you will need to approve every merge request in a project.
 
-.nested-settings
+.nested-settings{ class: project.approvals_before_merge > 0 ? '' : 'hidden' }
   .form-group
     = form.label :approver_ids, class: 'label-light' do
       Approvers
