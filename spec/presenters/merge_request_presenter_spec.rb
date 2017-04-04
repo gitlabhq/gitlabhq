@@ -18,7 +18,6 @@ describe MergeRequestPresenter do
 
         allow(resource).to receive(:head_pipeline).and_return(nil)
 
-
         expect(ci_service).to receive(:commit_status)
           .with(resource.diff_head_sha, resource.source_branch)
           .and_return(ci_status)

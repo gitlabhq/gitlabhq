@@ -15,4 +15,3 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 end
-
