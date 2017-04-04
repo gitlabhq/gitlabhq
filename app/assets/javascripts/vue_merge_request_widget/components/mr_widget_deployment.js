@@ -1,11 +1,15 @@
 import '~/lib/utils/datetime_utility';
 import { statusClassToSvgMap } from '../../vue_shared/pipeline_svg_icons';
+import MemoryUsage from './mr_widget_memory_usage';
 
 export default {
   name: 'MRWidgetDeployment',
   props: {
     mr: { type: Object, required: true },
     service: { type: Object, required: true },
+  },
+  components: {
+    'mr-widget-memory-usage': MemoryUsage,
   },
   computed: {
     svg() {
@@ -78,7 +82,7 @@ export default {
           </button>
         </span>
       </div>
+      <mr-widget-memory-usage :mr="mr" :memoryFrom=114 :memoryTo=127 />
     </div>
   `,
 };
-
