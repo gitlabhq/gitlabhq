@@ -32,7 +32,7 @@ module Gitlab
       return false unless can_access_git?
 
       if ProtectedTag.protected?(project, ref)
-        project.protected_tags.protected_ref_accessible_to?(ref, user)
+        project.protected_tags.protected_ref_accessible_to?(ref, user, action: :create)
       else
         user.can?(:push_code, project)
       end
