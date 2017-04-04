@@ -19,20 +19,26 @@ const createComponent = () => {
   const mr = {
     deployments: deploymentMockData,
   };
+  const service = {
+    stopEnvironment() {}
+  };
 
   return new Component({
     el: document.createElement('div'),
-    propsData: { mr },
+    propsData: { mr, service },
   });
 };
 
 describe('MRWidgetDeployment', () => {
   describe('props', () => {
     it('should have props', () => {
-      const { mr } = deploymentComponent.props;
+      const { mr, service } = deploymentComponent.props;
 
       expect(mr.type instanceof Object).toBeTruthy();
       expect(mr.required).toBeTruthy();
+
+      expect(service.type instanceof Object).toBeTruthy();
+      expect(service.required).toBeTruthy();
     });
   });
 
@@ -89,6 +95,44 @@ describe('MRWidgetDeployment', () => {
         expect(vm.hasDeploymentMeta()).toBeFalsy();
         expect(vm.hasDeploymentMeta({ url: 'Diplo' })).toBeFalsy();
         expect(vm.hasDeploymentMeta({ name: 'Diplo' })).toBeFalsy();
+      });
+    });
+
+    describe('stopEnvironment', () => {
+      const url = '/foo/bar';
+      const mockStopEnvironment = (flag) => {
+        spyOn(window, 'confirm').and.returnValue(flag);
+        spyOn(vm.service, 'stopEnvironment').and.returnValue(new Promise((resolve) => {
+          resolve({
+            json() {
+              return {
+                redirect_url: url,
+              };
+            },
+          })
+        }));
+
+        vm.stopEnvironment(deploymentMockData);
+        return vm;
+      };
+
+      it('should show a confirm dialog and call service.stopEnvironment when confirmed', (done) => {
+        const vm = mockStopEnvironment(true);
+        spyOn(gl.utils, 'visitUrl').and.returnValue(true);
+
+        expect(window.confirm).toHaveBeenCalled();
+        expect(vm.service.stopEnvironment).toHaveBeenCalledWith(deploymentMockData.stop_url);
+        setTimeout(() => {
+          expect(gl.utils.visitUrl).toHaveBeenCalledWith(url);
+          done();
+        }, 333);
+      });
+
+      it('should show a confirm dialog but should not work if the dialog is rejected', () => {
+        const vm = mockStopEnvironment(false);
+
+        expect(window.confirm).toHaveBeenCalled();
+        expect(vm.service.stopEnvironment).not.toHaveBeenCalled();
       });
     });
   });

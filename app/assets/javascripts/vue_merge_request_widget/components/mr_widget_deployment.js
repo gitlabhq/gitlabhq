@@ -34,7 +34,7 @@ export default {
           .then(res => res.json())
           .then((res) => {
             if (res.redirect_url) {
-              document.location.href = res.redirect_url;
+              gl.utils.visitUrl(res.redirect_url);
             }
           });
       }
