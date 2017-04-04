@@ -23,7 +23,7 @@ $(() => {
     const chart = new BurndownChart({ container, startDate, dueDate });
 
     let currentView = 'count';
-    chart.setData(openIssuesCount, { label: 'Open Issues', animate: true });
+    chart.setData(openIssuesCount, { label: 'Open issues', animate: true });
 
     $('.burndown-header').on('click', '.btn', function switchData() {
       const $this = $(this);
@@ -33,10 +33,10 @@ $(() => {
         $this.addClass('active').siblings().removeClass('active');
         switch (show) {
           case 'count':
-            chart.setData(openIssuesCount, { label: 'Open Issues', animate: true });
+            chart.setData(openIssuesCount, { label: 'Open issues', animate: true });
             break;
           case 'weight':
-            chart.setData(openIssuesWeight, { label: 'Open Issue Weight', animate: true });
+            chart.setData(openIssuesWeight, { label: 'Open issue weight', animate: true });
             break;
           default:
             break;

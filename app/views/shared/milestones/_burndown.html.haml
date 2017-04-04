@@ -10,12 +10,12 @@
 - if burndown&.valid?
   .burndown-header
     %h3
-      Burndown Chart
+      Burndown chart
       .btn-group
         %button.btn.btn-xs.active{ data: { show: 'count' } }
           Issues
         %button.btn.btn-xs{ data: { show: 'weight' } }
-          Issue Weight
+          Issue weight
   .burndown-chart{ data: { start_date: milestone.start_date.strftime("%Y-%m-%d"), due_date: milestone.due_date.strftime("%Y-%m-%d"), chart_data: burndown.chart_data.to_json } }
 
 - elsif can?(current_user, :admin_milestone, @project) && cookies['hide_burndown_message'].nil?
@@ -26,7 +26,7 @@
         = custom_icon('icon_burndown_chart_splash')
       .col-sm-8.col-xs-12.inner-content
         %h4
-          Burndown Chart
+          Burndown chart
         %p
           View your milestone's progress as a burndown chart.  Add both a start and a due date to
           this milestone and the chart will appear here, always up-to-date.
