@@ -2,7 +2,6 @@ module Ci
   class TriggerSchedule < ActiveRecord::Base
     extend Ci::Model
     include Importable
-    include Presentable
 
     acts_as_paranoid
 
