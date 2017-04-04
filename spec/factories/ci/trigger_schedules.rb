@@ -14,17 +14,17 @@ FactoryGirl.define do
       end
     end
 
-    trait :cron_nightly_build do
+    trait :nightly do
       cron '0 1 * * *'
       cron_time_zone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
     end
 
-    trait :cron_weekly_build do
+    trait :weekly do
       cron '0 1 * * 6'
       cron_time_zone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
     end
 
-    trait :cron_monthly_build do
+    trait :monthly do
       cron '0 1 22 * *'
       cron_time_zone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
     end

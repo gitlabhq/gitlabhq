@@ -8,7 +8,7 @@ describe TriggerScheduleWorker do
   end
 
   context 'when there is a scheduled trigger within next_run_at' do
-    let!(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build, :force_triggable) }
+    let!(:trigger_schedule) { create(:ci_trigger_schedule, :nightly, :force_triggable) }
 
     before do
       worker.perform
@@ -29,7 +29,7 @@ describe TriggerScheduleWorker do
   end
 
   context 'when there are no scheduled triggers within next_run_at' do
-    let!(:trigger_schedule) { create(:ci_trigger_schedule, :cron_nightly_build) }
+    let!(:trigger_schedule) { create(:ci_trigger_schedule, :nightly) }
 
     before do
       worker.perform
