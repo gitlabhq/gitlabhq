@@ -16,7 +16,7 @@
           Issues
         %button.btn.btn-xs{ data: { show: 'weight' } }
           Issue weight
-  .burndown-chart{ data: { start_date: milestone.start_date.strftime("%Y-%m-%d"), due_date: milestone.due_date.strftime("%Y-%m-%d"), chart_data: burndown.chart_data.to_json } }
+  .burndown-chart{ data: { start_date: burndown.start_date.strftime("%Y-%m-%d"), due_date: burndown.end_date.strftime("%Y-%m-%d"), chart_data: burndown.to_json } }
 
 - elsif can?(current_user, :admin_milestone, @project) && cookies['hide_burndown_message'].nil?
   .burndown-hint.content-block.container-fluid

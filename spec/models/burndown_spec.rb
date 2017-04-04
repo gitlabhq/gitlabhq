@@ -27,7 +27,7 @@ describe Burndown, models: true do
     Timecop.return
   end
 
-  subject { described_class.new(milestone).chart_data }
+  subject { described_class.new(milestone).to_json }
 
   it "generates an array with date, issue count and weight" do
     expect(subject).to eq([
@@ -36,25 +36,25 @@ describe Burndown, models: true do
       ["2017-03-03", 28, 56],
       ["2017-03-04", 32, 64],
       ["2017-03-05", 21, 42]
-    ])
+    ].to_json)
   end
 
   it "returns empty array if milestone start date is nil" do
     milestone.update(start_date: nil)
 
-    expect(subject).to eq([])
+    expect(subject).to eq([].to_json)
   end
 
   it "returns empty array if milestone due date is nil" do
     milestone.update(due_date: nil)
 
-    expect(subject).to eq([])
+    expect(subject).to eq([].to_json)
   end
 
   it "it counts until today if milestone due date > Date.today" do
     Timecop.travel(milestone.due_date - 1.day)
 
-    expect(subject.last[0]).to eq(Time.now.strftime("%Y-%m-%d"))
+    expect(JSON.parse(subject).last[0]).to eq(Time.now.strftime("%Y-%m-%d"))
   end
 
   # Creates, closes and reopens issues only for odd days numbers
