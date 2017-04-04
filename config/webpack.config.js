@@ -52,7 +52,7 @@ var config = {
     filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js'
   },
 
-  devtool: 'inline-source-map',
+  devtool: 'cheap-module-source-map',
 
   module: {
     rules: [
@@ -163,6 +163,7 @@ if (IS_PRODUCTION) {
 }
 
 if (IS_DEV_SERVER) {
+  config.devtool = 'cheap-module-eval-source-map';
   config.devServer = {
     port: DEV_SERVER_PORT,
     headers: { 'Access-Control-Allow-Origin': '*' },
