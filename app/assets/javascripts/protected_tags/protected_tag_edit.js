@@ -7,27 +7,27 @@
   gl.ProtectedTagEdit = class {
     constructor(options) {
       this.$wrap = options.$wrap;
-      this.$allowedToPushDropdown = this.$wrap.find('.js-allowed-to-push');
+      this.$allowedToCreateDropdown = this.$wrap.find('.js-allowed-to-create');
 
       this.buildDropdowns();
     }
 
     buildDropdowns() {
-      // Allowed to push dropdown
+      // Allowed to create dropdown
       new gl.ProtectedTagAccessDropdown({
-        $dropdown: this.$allowedToPushDropdown,
-        data: gon.push_access_levels,
+        $dropdown: this.$allowedToCreateDropdown,
+        data: gon.create_access_levels,
         onSelect: this.onSelect.bind(this)
       });
     }
 
     onSelect() {
-      const $allowedToPushInput = this.$wrap.find(`input[name="${this.$allowedToPushDropdown.data('fieldName')}"]`);
+      const $allowedToCreateInput = this.$wrap.find(`input[name="${this.$allowedToCreateDropdown.data('fieldName')}"]`);
 
       // Do not update if one dropdown has not selected any option
-      if (!$allowedToPushInput.length) return;
+      if (!$allowedToCreateInput.length) return;
 
-      this.$allowedToPushDropdown.disable();
+      this.$allowedToCreateDropdown.disable();
 
       $.ajax({
         type: 'POST',
@@ -36,9 +36,9 @@
         data: {
           _method: 'PATCH',
           protected_tag: {
-            push_access_levels_attributes: [{
-              id: this.$allowedToPushDropdown.data('access-level-id'),
-              access_level: $allowedToPushInput.val()
+            create_access_levels_attributes: [{
+              id: this.$allowedToCreateDropdown.data('access-level-id'),
+              access_level: $allowedToCreateInput.val()
             }]
           }
         },
@@ -47,7 +47,7 @@
           new Flash('Failed to update tag!');
         }
       }).always(() => {
-        this.$allowedToPushDropdown.enable();
+        this.$allowedToCreateDropdown.enable();
       });
     }
   };

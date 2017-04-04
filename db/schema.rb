@@ -963,7 +963,7 @@ ActiveRecord::Schema.define(version: 20170315194013) do
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
 
-  create_table "protected_tag_push_access_levels", force: :cascade do |t|
+  create_table "protected_tag_create_access_levels", force: :cascade do |t|
     t.integer "protected_tag_id", null: false
     t.integer "access_level", default: 40
     t.integer "user_id"
@@ -972,8 +972,8 @@ ActiveRecord::Schema.define(version: 20170315194013) do
     t.datetime "updated_at", null: false
   end
 
-  add_index "protected_tag_push_access_levels", ["protected_tag_id"], name: "index_protected_tag_push_access", using: :btree
-  add_index "protected_tag_push_access_levels", ["user_id"], name: "index_protected_tag_push_access_levels_on_user_id", using: :btree
+  add_index "protected_tag_create_access_levels", ["protected_tag_id"], name: "index_protected_tag_create_access", using: :btree
+  add_index "protected_tag_create_access_levels", ["user_id"], name: "index_protected_tag_create_access_levels_on_user_id", using: :btree
 
   create_table "protected_tags", force: :cascade do |t|
     t.integer "project_id", null: false
@@ -1326,9 +1326,9 @@ ActiveRecord::Schema.define(version: 20170315194013) do
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
-  add_foreign_key "protected_tag_push_access_levels", "namespaces", column: "group_id"
-  add_foreign_key "protected_tag_push_access_levels", "protected_tags"
-  add_foreign_key "protected_tag_push_access_levels", "users"
+  add_foreign_key "protected_tag_create_access_levels", "namespaces", column: "group_id"
+  add_foreign_key "protected_tag_create_access_levels", "protected_tags"
+  add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade

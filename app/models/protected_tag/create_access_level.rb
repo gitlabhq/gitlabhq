@@ -1,4 +1,4 @@
-class ProtectedTag::PushAccessLevel < ActiveRecord::Base
+class ProtectedTag::CreateAccessLevel < ActiveRecord::Base
   include ProtectedTagAccess
 
   validates :access_level, presence: true, inclusion: { in: [Gitlab::Access::MASTER,

@@ -9,7 +9,7 @@ module Gitlab
                     hooks: 'ProjectHook',
                     merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
                     push_access_levels: 'ProtectedBranch::PushAccessLevel',
-                    #TODO: How to add?- push_access_levels: 'ProtectedTag::PushAccessLevel',
+                    create_access_levels: 'ProtectedTag::CreateAccessLevel',
                     labels: :project_labels,
                     priorities: :label_priorities,
                     label: :project_label }.freeze

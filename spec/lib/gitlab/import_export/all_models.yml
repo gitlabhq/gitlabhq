@@ -113,11 +113,12 @@ protected_branches:
 - push_access_levels
 protected_tags:
 - project
-- push_access_levels
+- create_access_levels
 merge_access_levels:
 - protected_branch
 push_access_levels:
 - protected_branch
+create_access_levels:
 - protected_tag
 project:
 - taggings

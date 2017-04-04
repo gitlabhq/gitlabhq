@@ -189,7 +189,7 @@ describe Gitlab::UserAccess, lib: true do
 
     describe 'push to protected tag if allowed for developers' do
       before do
-        @tag = create(:protected_tag, :developers_can_push, project: project)
+        @tag = create(:protected_tag, :developers_can_create, project: project)
       end
 
       it 'returns true if user is a master' do
