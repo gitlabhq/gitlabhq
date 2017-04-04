@@ -69,7 +69,7 @@ export default {
             type="button"
             @click="onClickAction(action.play_path)"
             class="js-manual-action-link no-btn btn"
-            :class="{ 'disabled': !actions.playable }"
+            :class="{ 'disabled': !action.playable }"
             :disabled="!action.playable">
             ${playIconSvg}
             <span>
