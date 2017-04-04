@@ -197,7 +197,7 @@
 
 .card {
   position: relative;
-  padding: 11px 10px 11px $gl-padding;
+  padding: 10px 10px 11px $gl-padding;
   background: $white-light;
   border-radius: $border-radius-default;
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
@@ -224,7 +224,7 @@
 }
 
 .card-title {
-  margin: 0;
+  margin: 2px 0 0 0;
   font-size: 1em;
   width: calc(100% - 35px);
 
@@ -237,6 +237,7 @@
 
 .card-header {
   display: flex;
+  min-height: 20px;
 
   .card-assignee {
     margin-left: auto;
@@ -250,7 +251,7 @@
 }
 
 .card-footer {
-  margin: 5px 0;
+  margin: 0 0 5px 0;
 
   .label {
     margin-top: 5px;
