@@ -116,6 +116,9 @@ protected_branches:
 - project
 - merge_access_levels
 - push_access_levels
+protected_tags:
+- project
+- push_access_levels
 merge_access_levels:
 - user
 - protected_branch
@@ -123,6 +126,7 @@ merge_access_levels:
 push_access_levels:
 - user
 - protected_branch
+- protected_tag
 - group
 project:
 - taggings
@@ -178,6 +182,7 @@ project:
 - snippets
 - hooks
 - protected_branches
+- protected_tags
 - project_members
 - users
 - requesters
