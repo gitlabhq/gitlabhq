@@ -19,17 +19,6 @@ describe('MRWidgetFailedToMerge', () => {
     });
   });
 
-  // fdescribe('mounted', () => {
-  //   it('should start an interval to update the timer', () => {
-  //     const vm = createComponent();
-
-  //     jasmine.clock().install();
-  //     jasmine.clock().tick(5000);
-  //     expect(vm.timer).toEqual(9);
-  //     jasmine.clock().uninstall();
-  //   });
-  // });
-
   describe('computed', () => {
     describe('timerText', () => {
       it('should return correct timer text', () => {
