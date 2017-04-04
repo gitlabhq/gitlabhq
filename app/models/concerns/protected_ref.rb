@@ -14,6 +14,12 @@ module ProtectedRef
       end
     end
 
+    def self.developers_can?(action, ref)
+      access_levels_for_ref(ref, action: action).any? do |access_level|
+        access_level.access_level == Gitlab::Access::DEVELOPER
+      end
+    end
+
     def self.access_levels_for_ref(ref, action: :push)
       self.matching(ref).map(&:"#{action}_access_levels").flatten
     end

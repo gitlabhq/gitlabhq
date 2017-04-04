@@ -214,15 +214,11 @@ module API
       end
 
       expose :developers_can_push do |repo_branch, options|
-        project = options[:project]
-        access_levels = project.protected_branches.access_levels_for_ref(repo_branch.name, :push)
-        access_levels.any? { |access_level| access_level.access_level == Gitlab::Access::DEVELOPER }
+        options[:project].protected_branches.developers_can?(:push, repo_branch.name)
       end
 
       expose :developers_can_merge do |repo_branch, options|
-        project = options[:project]
-        access_levels = project.protected_branches.access_levels_for_ref(repo_branch.name, :merge)
-        access_levels.any? { |access_level| access_level.access_level == Gitlab::Access::DEVELOPER }
+        options[:project].protected_branches.developers_can?(:merge, repo_branch.name)
       end
     end
 
