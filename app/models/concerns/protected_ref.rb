@@ -8,7 +8,7 @@ module ProtectedRef
 
     delegate :matching, :matches?, :wildcard?, to: :ref_matcher
 
-    def self.matching_refs_accesible_to(ref, user, action: :push)
+    def self.protected_ref_accessible_to?(ref, user, action: :push)
       access_levels_for_ref(ref, action: action).any? do |access_level|
         access_level.check_access(user)
       end

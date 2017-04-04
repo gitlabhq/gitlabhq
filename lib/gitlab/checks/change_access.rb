@@ -79,7 +79,7 @@ module Gitlab
           return "Protected tags cannot be deleted."
         end
 
-        unless user_access.can_push_tag?(@tag_name)
+        unless user_access.can_create_tag?(@tag_name)
           return "You are not allowed to create this tag as it is protected."
         end
       end
