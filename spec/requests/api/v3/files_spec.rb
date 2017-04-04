@@ -26,8 +26,8 @@ describe API::V3::Files, api: true  do
       ref: 'master'
     }
   end
-  let(:author_email) { FFaker::Internet.email }
-  let(:author_name) { FFaker::Name.name.chomp("\.") }
+  let(:author_email) { 'user@example.org' }
+  let(:author_name) { 'John Doe' }
 
   before { project.team << [user, :developer] }
 

@@ -204,7 +204,7 @@ module API
       expose :id, :name, :type, :path
 
       expose :mode do |obj, options|
-        filemode = obj.mode.to_s(8)
+        filemode = obj.mode
         filemode = "0" + filemode if filemode.length < 6
         filemode
       end
@@ -581,6 +581,7 @@ module API
       expose :plantuml_enabled
       expose :plantuml_url
       expose :terminal_max_session_time
+      expose :polling_interval_multiplier
     end
 
     class Release < Grape::Entity

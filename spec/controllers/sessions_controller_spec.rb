@@ -211,4 +211,20 @@ describe SessionsController do
       end
     end
   end
+
+  describe '#new' do
+    before do
+      @request.env['devise.mapping'] = Devise.mappings[:user]
+    end
+
+    it 'redirects correctly for referer on same host with params' do
+      search_path = '/search?search=seed_project'
+      allow(controller.request).to receive(:referer).
+        and_return('http://%{host}%{path}' % { host: Gitlab.config.gitlab.host, path: search_path })
+
+      get(:new, redirect_to_referer: :yes)
+
+      expect(controller.stored_location_for(:redirect)).to eq(search_path)
+    end
+  end
 end

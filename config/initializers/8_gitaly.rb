@@ -9,7 +9,7 @@ if Gitlab.config.gitaly.enabled || Rails.env.test?
       raise "storage #{name.inspect} is missing a gitaly_address"
     end
 
-    unless URI(address).scheme == 'unix'
+    unless URI(address).scheme.in?(%w(tcp unix))
       raise "Unsupported Gitaly address: #{address.inspect}"
     end
 

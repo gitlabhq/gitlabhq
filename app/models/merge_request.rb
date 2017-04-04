@@ -3,7 +3,6 @@ class MergeRequest < ActiveRecord::Base
   include Issuable
   include Referable
   include Sortable
-  include Importable
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"

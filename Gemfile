@@ -260,7 +260,6 @@ group :development do
   gem 'brakeman', '~> 3.6.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
-  gem 'bullet', '~> 5.5.0', require: false
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
 
   # Better errors handler
@@ -272,6 +271,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'bullet', '~> 5.5.0', require: !!ENV['ENABLE_BULLET']
   gem 'pry-byebug', '~> 3.4.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
 
@@ -352,4 +352,4 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.3.0'
+gem 'gitaly', '~> 0.5.0'

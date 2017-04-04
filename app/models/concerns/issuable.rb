@@ -14,6 +14,7 @@ module Issuable
   include Awardable
   include Taskable
   include TimeTrackable
+  include Importable
 
   # This object is used to gather issuable meta data for displaying
   # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
@@ -99,7 +100,7 @@ module Issuable
     acts_as_paranoid
 
     after_save :update_assignee_cache_counts, if: :assignee_id_changed?
-    after_save :record_metrics
+    after_save :record_metrics, unless: :imported?
 
     def update_assignee_cache_counts
       # make sure we flush the cache for both the old *and* new assignees(if they exist)

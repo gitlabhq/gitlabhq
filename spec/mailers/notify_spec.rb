@@ -37,7 +37,7 @@ describe Notify do
 
       context 'for issues' do
         let(:issue) { create(:issue, author: current_user, assignee: assignee, project: project) }
-        let(:issue_with_description) { create(:issue, author: current_user, assignee: assignee, project: project, description: FFaker::Lorem.sentence) }
+        let(:issue_with_description) { create(:issue, author: current_user, assignee: assignee, project: project, description: 'My awesome description') }
 
         describe 'that are new' do
           subject { Notify.new_issue_email(issue.assignee_id, issue.id) }
@@ -187,7 +187,7 @@ describe Notify do
         let(:project) { create(:project, :repository) }
         let(:merge_author) { create(:user) }
         let(:merge_request) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project) }
-        let(:merge_request_with_description) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project, description: FFaker::Lorem.sentence) }
+        let(:merge_request_with_description) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project, description: 'My awesome description') }
 
         describe 'that are new' do
           subject { Notify.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
