@@ -12,7 +12,7 @@ module Ci
 
     validates :trigger, presence: { unless: :importing? }
     validates :cron, cron: true, presence: { unless: :importing? }
-    validates :cron_time_zone, presence: { unless: :importing? }
+    validates :cron_time_zone, cron_time_zone: true, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
 
     after_create :schedule_next_run!

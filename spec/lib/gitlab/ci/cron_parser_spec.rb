@@ -82,23 +82,35 @@ describe Gitlab::Ci::CronParser do
     end
   end
 
-  describe '#validation' do
-    it 'returns results' do
-      is_valid_cron, is_valid_cron_time_zone = described_class.new('* * * * *', 'Europe/Istanbul').validation
-      expect(is_valid_cron).to eq(true)
-      expect(is_valid_cron_time_zone).to eq(true)
+  describe '#cron_valid?' do
+    subject { described_class.new(cron, Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE).cron_valid? }
+
+    context 'when cron is valid' do
+      let(:cron) { '* * * * *' }
+
+      it { is_expected.to eq(true) }
     end
 
-    it 'returns results' do
-      is_valid_cron, is_valid_cron_time_zone = described_class.new('*********', 'Europe/Istanbul').validation
-      expect(is_valid_cron).to eq(false)
-      expect(is_valid_cron_time_zone).to eq(true)
+    context 'when cron is invalid' do
+      let(:cron) { '*********' }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#cron_time_zone_valid?' do
+    subject { described_class.new(Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_CRON, cron_time_zone).cron_time_zone_valid? }
+
+    context 'when cron is valid' do
+      let(:cron_time_zone) { 'Europe/Istanbul' }
+
+      it { is_expected.to eq(true) }
     end
 
-    it 'returns results' do
-      is_valid_cron, is_valid_cron_time_zone = described_class.new('* * * * *', 'Invalid-zone').validation
-      expect(is_valid_cron).to eq(true)
-      expect(is_valid_cron_time_zone).to eq(false)
+    context 'when cron is invalid' do
+      let(:cron_time_zone) { 'Invalid-zone' }
+
+      it { is_expected.to eq(false) }
     end
   end
 end

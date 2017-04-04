@@ -14,10 +14,12 @@ module Gitlab
         cron_line.next_time(time).in_time_zone(Time.zone) if cron_line.present?
       end
 
-      def validation
-        is_valid_cron = try_parse_cron(@cron, VALID_SYNTAX_SAMPLE_TIME_ZONE).present?
-        is_valid_cron_time_zone = try_parse_cron(VALID_SYNTAX_SAMPLE_CRON, @cron_time_zone).present?
-        return is_valid_cron, is_valid_cron_time_zone
+      def cron_valid?
+        try_parse_cron(@cron, VALID_SYNTAX_SAMPLE_TIME_ZONE).present?
+      end
+
+      def cron_time_zone_valid?
+        try_parse_cron(VALID_SYNTAX_SAMPLE_CRON, @cron_time_zone).present?
       end
 
       private
