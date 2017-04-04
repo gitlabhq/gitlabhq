@@ -1,6 +1,7 @@
 class Admin::AbuseReportsController < Admin::ApplicationController
   def index
     @abuse_reports = AbuseReport.order(id: :desc).page(params[:page])
+    @abuse_reports.includes(:reporter, :user)
   end
 
   def destroy

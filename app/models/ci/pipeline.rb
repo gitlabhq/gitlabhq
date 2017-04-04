@@ -164,11 +164,6 @@ module Ci
       builds.latest.with_artifacts_not_expired.includes(project: [:namespace])
     end
 
-    # For now the only user who participates is the user who triggered
-    def participants(_current_user = nil)
-      Array(user)
-    end
-
     def valid_commit_sha
       if self.sha == Gitlab::Git::BLANK_SHA
         self.errors.add(:sha, " cant be 00000000 (branch removal)")
@@ -210,7 +205,7 @@ module Ci
     end
 
     def stuck?
-      builds.pending.any?(&:stuck?)
+      builds.pending.includes(:project).any?(&:stuck?)
     end
 
     def retryable?

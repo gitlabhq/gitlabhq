@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :merge_request do
-    title
+    title { generate(:title) }
     author
     association :source_project, :repository, factory: :project
     target_project { source_project }

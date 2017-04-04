@@ -60,6 +60,10 @@ describe User, models: true do
     end
   end
 
+  describe 'nested attributes' do
+    it { is_expected.to respond_to(:namespace_attributes=) }
+  end
+
   describe 'validations' do
     describe 'username' do
       it 'validates presence' do

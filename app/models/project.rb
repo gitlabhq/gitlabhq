@@ -655,6 +655,10 @@ class Project < ActiveRecord::Base
     import_type == 'gitea'
   end
 
+  def github_import?
+    import_type == 'github'
+  end
+
   def check_limit
     unless creator.can_create_project? || namespace.kind == 'group'
       projects_limit = creator.projects_limit

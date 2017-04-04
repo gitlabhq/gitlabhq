@@ -23,7 +23,7 @@ describe 'CycleAnalytics#production', feature: true do
           # Make other changes on master
           sha = context.project.repository.create_file(
             context.user,
-            context.random_git_name,
+            context.generate(:branch),
             'content',
             message: 'commit message',
             branch_name: 'master')

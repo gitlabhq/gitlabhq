@@ -411,6 +411,11 @@ module Gitlab
         rugged.merge_base(from, to)
       end
 
+      # Returns true is +from+ is direct ancestor to +to+, otherwise false
+      def is_ancestor?(from, to)
+        Gitlab::GitalyClient::Commit.is_ancestor(self, from, to)
+      end
+
       # Return an array of Diff objects that represent the diff
       # between +from+ and +to+.  See Diff::filter_diff_options for the allowed
       # diff options.  The +options+ hash can also include :break_rewrites to

@@ -13,6 +13,7 @@ import RollbackComponent from './environment_rollback';
 import TerminalButtonComponent from './environment_terminal_button';
 import MonitoringButtonComponent from './environment_monitoring';
 import CommitComponent from '../../vue_shared/components/commit';
+import eventHub from '../event_hub';
 
 const timeagoInstance = new Timeago();
 
@@ -434,8 +435,14 @@ export default {
     return true;
   },
 
+  methods: {
+    onClickFolder() {
+      eventHub.$emit('toggleFolder', this.model, this.folderUrl);
+    },
+  },
+
   template: `
-    <tr>
+    <tr :class="{ 'js-child-row': model.isChildren }">
       <td>
         <span class="deploy-board-icon"
           v-if="model.hasDeployBoard"
@@ -443,22 +450,38 @@ export default {
 
           <i v-show="!model.isDeployBoardVisible"
             class="fa fa-caret-right"
-            aria-hidden="true">
-          </i>
+            aria-hidden="true" />
+
 
           <i v-show="model.isDeployBoardVisible"
             class="fa fa-caret-down"
-            aria-hidden="true">
-          </i>
+            aria-hidden="true" />
+
         </span>
 
         <a v-if="!model.isFolder"
           class="environment-name"
+          :class="{ 'prepend-left-default': model.isChildren }"
           :href="environmentPath">
           {{model.name}}
         </a>
 
-        <a v-else class="folder-name" :href="folderUrl">
+        <span v-if="model.isFolder"
+          class="folder-name"
+          @click="onClickFolder"
+          role="button">
+
+          <span class="folder-icon">
+            <i
+              v-show="model.isOpen"
+              class="fa fa-caret-down"
+              aria-hidden="true" />
+            <i
+              v-show="!model.isOpen"
+              class="fa fa-caret-right"
+              aria-hidden="true"/>
+          </span>
+
           <span class="folder-icon">
             <i class="fa fa-folder" aria-hidden="true"></i>
           </span>
@@ -470,7 +493,7 @@ export default {
           <span class="badge">
             {{model.size}}
           </span>
-        </a>
+        </span>
       </td>
 
       <td class="deployment-column">

@@ -226,12 +226,8 @@ Style/PredicateName:
 Style/PreferredHashMethods:
   Enabled: false
 
-# Offense count: 9
-# Cop supports --auto-correct.
-Style/Proc:
-  Enabled: false
 
-# Offense count: 64
+# Offense count: 62
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: compact, exploded

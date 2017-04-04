@@ -60,16 +60,25 @@ class NotificationSetting < ActiveRecord::Base
   def set_events
     return if custom?
 
-    EMAIL_EVENTS.each do |event|
-      events[event] = false
-    end
+    self.events = {}
   end
 
   # Validates store accessors values as boolean
   # It is a text field so it does not cast correct boolean values in JSON
   def events_to_boolean
     EMAIL_EVENTS.each do |event|
-      events[event] = ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(events[event])
+      bool = ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(public_send(event))
+
+      events[event] = bool
     end
+  end
+
+  # Allow people to receive failed pipeline notifications if they already have
+  # custom notifications enabled, as these are more like mentions than the other
+  # custom settings.
+  def failed_pipeline
+    bool = super
+
+    bool.nil? || bool
   end
 end

@@ -1090,7 +1090,7 @@ namespace :gitlab do
   end
 
   def check_gitlab_geo_node(node)
-    display_error = Proc.new do |e|
+    display_error = proc do |e|
       puts 'no'.color(:red)
       puts '  Reason:'.color(:blue)
       puts "  #{e.message}"

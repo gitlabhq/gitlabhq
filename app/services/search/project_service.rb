@@ -21,5 +21,9 @@ module Search
                                          params[:repository_ref])
       end
     end
+
+    def scope
+      @scope ||= %w[notes issues merge_requests milestones wiki_blobs commits].delete(params[:scope]) { 'blobs' }
+    end
   end
 end

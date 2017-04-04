@@ -40,7 +40,7 @@ feature 'project owner creates a license file', feature: true, js: true do
   scenario 'project master creates a license file from the "Add license" link' do
     click_link 'Add License'
 
-    expect(page).to have_content('New File')
+    expect(page).to have_content('New file')
     expect(current_path).to eq(
       namespace_project_new_blob_path(project.namespace, project, 'master'))
     expect(find('#file_name').value).to eq('LICENSE')
@@ -63,7 +63,7 @@ feature 'project owner creates a license file', feature: true, js: true do
 
   def select_template(template)
     page.within('.js-license-selector-wrap') do
-      click_button 'Choose a License template'
+      click_button 'Apply a License template'
       click_link template
       wait_for_ajax
     end

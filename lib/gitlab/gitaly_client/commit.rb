@@ -21,6 +21,20 @@ module Gitlab
 
           Gitlab::Git::DiffCollection.new(stub.commit_diff(request), options)
         end
+
+        def is_ancestor(repository, ancestor_id, child_id)
+          project = Project.find_by_path(repository.path)
+          channel = GitalyClient.get_channel(project.repository_storage)
+          stub = Gitaly::Commit::Stub.new(nil, nil, channel_override: channel)
+          repo = Gitaly::Repository.new(path: repository.path_to_repo)
+          request = Gitaly::CommitIsAncestorRequest.new(
+            repository: repo,
+            ancestor_id: ancestor_id,
+            child_id: child_id
+          )
+
+          stub.commit_is_ancestor(request).value
+        end
       end
     end
   end
