@@ -23,25 +23,25 @@ class Spinach::Features::ProjectHooks < Spinach::FeatureSteps
   end
 
   step 'I submit new hook' do
-    @url = FFaker::Internet.uri("http")
+    @url = 'http://example.org/1'
     fill_in "hook_url", with: @url
     expect { click_button "Add Webhook" }.to change(ProjectHook, :count).by(1)
   end
 
   step 'I submit new hook with SSL verification enabled' do
-    @url = FFaker::Internet.uri("http")
+    @url = 'http://example.org/2'
     fill_in "hook_url", with: @url
     check "hook_enable_ssl_verification"
     expect { click_button "Add Webhook" }.to change(ProjectHook, :count).by(1)
   end
 
   step 'I should see newly created hook' do
-    expect(current_path).to eq namespace_project_hooks_path(current_project.namespace, current_project)
+    expect(current_path).to eq namespace_project_settings_integrations_path(current_project.namespace, current_project)
     expect(page).to have_content(@url)
   end
 
   step 'I should see newly created hook with SSL verification enabled' do
-    expect(current_path).to eq namespace_project_hooks_path(current_project.namespace, current_project)
+    expect(current_path).to eq namespace_project_settings_integrations_path(current_project.namespace, current_project)
     expect(page).to have_content(@url)
     expect(page).to have_content("SSL Verification: enabled")
   end
@@ -57,7 +57,7 @@ class Spinach::Features::ProjectHooks < Spinach::FeatureSteps
   end
 
   step 'hook should be triggered' do
-    expect(current_path).to eq namespace_project_hooks_path(current_project.namespace, current_project)
+    expect(current_path).to eq namespace_project_settings_integrations_path(current_project.namespace, current_project)
     expect(page).to have_selector '.flash-notice',
                               text: 'Hook executed successfully: HTTP 200'
   end

@@ -1,7 +1,7 @@
 module BuildsHelper
   def sidebar_build_class(build, current_build)
     build_class = ''
-    build_class += ' active' if build == current_build
+    build_class += ' active' if build.id === current_build.id
     build_class += ' retried' if build.retried?
     build_class
   end
@@ -12,7 +12,14 @@ module BuildsHelper
       build_url: namespace_project_build_url(@project.namespace, @project, @build, :json),
       build_status: @build.status,
       build_stage: @build.stage,
-      state1: @build.trace_with_state[:state]
+      log_state: ''
+    }
+  end
+
+  def build_failed_issue_options
+    {
+      title: "Build Failed ##{@build.id}",
+      description: namespace_project_build_url(@project.namespace, @project, @build)
     }
   end
 end

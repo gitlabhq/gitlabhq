@@ -26,11 +26,68 @@ module Gitlab
         add_index(table_name, column_name, options)
       end
 
+      # Adds a foreign key with only minimal locking on the tables involved.
+      #
+      # This method only requires minimal locking when using PostgreSQL. When
+      # using MySQL this method will use Rails' default `add_foreign_key`.
+      #
+      # source - The source table containing the foreign key.
+      # target - The target table the key points to.
+      # column - The name of the column to create the foreign key on.
+      # on_delete - The action to perform when associated data is removed,
+      #             defaults to "CASCADE".
+      def add_concurrent_foreign_key(source, target, column:, on_delete: :cascade)
+        # Transactions would result in ALTER TABLE locks being held for the
+        # duration of the transaction, defeating the purpose of this method.
+        if transaction_open?
+          raise 'add_concurrent_foreign_key can not be run inside a transaction'
+        end
+
+        # While MySQL does allow disabling of foreign keys it has no equivalent
+        # of PostgreSQL's "VALIDATE CONSTRAINT". As a result we'll just fall
+        # back to the normal foreign key procedure.
+        if Database.mysql?
+          return add_foreign_key(source, target,
+                                 column: column,
+                                 on_delete: on_delete)
+        end
+
+        disable_statement_timeout
+
+        key_name = concurrent_foreign_key_name(source, column)
+
+        # Using NOT VALID allows us to create a key without immediately
+        # validating it. This means we keep the ALTER TABLE lock only for a
+        # short period of time. The key _is_ enforced for any newly created
+        # data.
+        execute <<-EOF.strip_heredoc
+        ALTER TABLE #{source}
+        ADD CONSTRAINT #{key_name}
+        FOREIGN KEY (#{column})
+        REFERENCES #{target} (id)
+        ON DELETE #{on_delete} NOT VALID;
+        EOF
+
+        # Validate the existing constraint. This can potentially take a very
+        # long time to complete, but fortunately does not lock the source table
+        # while running.
+        execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{key_name};")
+      end
+
+      # Returns the name for a concurrent foreign key.
+      #
+      # PostgreSQL constraint names have a limit of 63 bytes. The logic used
+      # here is based on Rails' foreign_key_name() method, which unfortunately
+      # is private so we can't rely on it directly.
+      def concurrent_foreign_key_name(table, column)
+        "fk_#{Digest::SHA256.hexdigest("#{table}_#{column}_fk").first(10)}"
+      end
+
       # Long-running migrations may take more than the timeout allowed by
       # the database. Disable the session's statement timeout to ensure
       # migrations don't get killed prematurely. (PostgreSQL only)
       def disable_statement_timeout
-        ActiveRecord::Base.connection.execute('SET statement_timeout TO 0') if Database.postgresql?
+        execute('SET statement_timeout TO 0') if Database.postgresql?
       end
 
       # Updates the value of a column in batches.

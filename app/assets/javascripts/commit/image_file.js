@@ -1,6 +1,6 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-use-before-define, prefer-arrow-callback, no-else-return, consistent-return, prefer-template, quotes, one-var, one-var-declaration-per-line, no-unused-vars, no-return-assign, comma-dangle, quote-props, no-unused-expressions, no-sequences, object-shorthand, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-use-before-define, prefer-arrow-callback, no-else-return, consistent-return, prefer-template, quotes, one-var, one-var-declaration-per-line, no-unused-vars, no-return-assign, comma-dangle, quote-props, no-unused-expressions, no-sequences, object-shorthand, max-len */
 (function() {
-  this.ImageFile = (function() {
+  gl.ImageFile = (function() {
     var prepareFrames;
 
     // Width where images must fits in, for 2-up this gets divided by 2
@@ -52,6 +52,30 @@
       return this.views[viewMode].call(this);
     };
 
+    ImageFile.prototype.initDraggable = function($el, padding, callback) {
+      var dragging = false;
+      var $body = $('body');
+      var $offsetEl = $el.parent();
+
+      $el.off('mousedown').on('mousedown', function() {
+        dragging = true;
+        $body.css('user-select', 'none');
+      });
+
+      $body.off('mouseup').off('mousemove').on('mouseup', function() {
+        dragging = false;
+        $body.css('user-select', '');
+      })
+      .on('mousemove', function(e) {
+        var left;
+        if (!dragging) return;
+
+        left = e.pageX - ($offsetEl.offset().left + padding);
+
+        callback(e, left);
+      });
+    };
+
     prepareFrames = function(view) {
       var maxHeight, maxWidth;
       maxWidth = 0;
@@ -96,26 +120,30 @@
         maxHeight = 0;
         return $('.swipe.view', this.file).each((function(_this) {
           return function(index, view) {
-            var ref;
+            var $swipeWrap, $swipeBar, $swipeFrame, wrapPadding, ref;
             ref = prepareFrames(view), maxWidth = ref[0], maxHeight = ref[1];
-            $('.swipe-frame', view).css({
+            $swipeFrame = $('.swipe-frame', view);
+            $swipeWrap = $('.swipe-wrap', view);
+            $swipeBar = $('.swipe-bar', view);
+
+            $swipeFrame.css({
               width: maxWidth + 16,
               height: maxHeight + 28
             });
-            $('.swipe-wrap', view).css({
+            $swipeWrap.css({
               width: maxWidth + 1,
               height: maxHeight + 2
             });
-            return $('.swipe-bar', view).css({
+            $swipeBar.css({
               left: 0
-            }).draggable({
-              axis: 'x',
-              containment: 'parent',
-              drag: function(event) {
-                return $('.swipe-wrap', view).width((maxWidth + 1) - $(this).position().left);
-              },
-              stop: function(event) {
-                return $('.swipe-wrap', view).width((maxWidth + 1) - $(this).position().left);
+            });
+
+            wrapPadding = parseInt($swipeWrap.css('right').replace('px', ''), 10);
+
+            _this.initDraggable($swipeBar, wrapPadding, function(e, left) {
+              if (left > 0 && left < $swipeFrame.width() - (wrapPadding * 2)) {
+                $swipeWrap.width((maxWidth + 1) - left);
+                $swipeBar.css('left', left);
               }
             });
           };
@@ -128,9 +156,14 @@
         dragTrackWidth = $('.drag-track', this.file).width() - $('.dragger', this.file).width();
         return $('.onion-skin.view', this.file).each((function(_this) {
           return function(index, view) {
-            var ref;
+            var $frame, $track, $dragger, $frameAdded, framePadding, ref, dragging = false;
             ref = prepareFrames(view), maxWidth = ref[0], maxHeight = ref[1];
-            $('.onion-skin-frame', view).css({
+            $frame = $('.onion-skin-frame', view);
+            $frameAdded = $('.frame.added', view);
+            $track = $('.drag-track', view);
+            $dragger = $('.dragger', $track);
+
+            $frame.css({
               width: maxWidth + 16,
               height: maxHeight + 28
             });
@@ -138,16 +171,18 @@
               width: maxWidth + 1,
               height: maxHeight + 2
             });
-            return $('.dragger', view).css({
+            $dragger.css({
               left: dragTrackWidth
-            }).draggable({
-              axis: 'x',
-              containment: 'parent',
-              drag: function(event) {
-                return $('.frame.added', view).css('opacity', $(this).position().left / dragTrackWidth);
-              },
-              stop: function(event) {
-                return $('.frame.added', view).css('opacity', $(this).position().left / dragTrackWidth);
+            });
+
+            framePadding = parseInt($frameAdded.css('right').replace('px', ''), 10);
+
+            _this.initDraggable($dragger, framePadding, function(e, left) {
+              var opacity = left / dragTrackWidth;
+
+              if (opacity >= 0 && opacity <= 1) {
+                $dragger.css('left', left);
+                $frameAdded.css('opacity', opacity);
               }
             });
           };
@@ -172,7 +207,5 @@
     };
 
     return ImageFile;
-
   })();
-
-}).call(this);
+}).call(window);

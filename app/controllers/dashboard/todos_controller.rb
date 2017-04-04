@@ -1,9 +1,14 @@
 class Dashboard::TodosController < Dashboard::ApplicationController
+  include ActionView::Helpers::NumberHelper
+
   before_action :find_todos, only: [:index, :destroy_all]
 
   def index
     @sort = params[:sort]
     @todos = @todos.page(params[:page])
+    if @todos.out_of_range? && @todos.total_pages != 0
+      redirect_to url_for(params.merge(page: @todos.total_pages))
+    end
   end
 
   def destroy
@@ -17,13 +22,30 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   end
 
   def destroy_all
-    TodoService.new.mark_todos_as_done(@todos, current_user)
+    updated_ids = TodoService.new.mark_todos_as_done(@todos, current_user)
 
     respond_to do |format|
       format.html { redirect_to dashboard_todos_path, notice: 'All todos were marked as done.' }
       format.js { head :ok }
-      format.json { render json: todos_counts }
+      format.json { render json: todos_counts.merge(updated_ids: updated_ids) }
     end
+  end
+
+  def restore
+    TodoService.new.mark_todos_as_pending_by_ids([params[:id]], current_user)
+
+    render json: todos_counts
+  end
+
+  def bulk_restore
+    TodoService.new.mark_todos_as_pending_by_ids(params[:ids], current_user)
+
+    render json: todos_counts
+  end
+
+  # Used in TodosHelper also
+  def self.todos_count_format(count)
+    count >= 100 ? '99+' : count
   end
 
   private
@@ -34,8 +56,8 @@ class Dashboard::TodosController < Dashboard::ApplicationController
 
   def todos_counts
     {
-      count: current_user.todos_pending_count,
-      done_count: current_user.todos_done_count
+      count: number_with_delimiter(current_user.todos_pending_count),
+      done_count: number_with_delimiter(current_user.todos_done_count)
     }
   end
 end

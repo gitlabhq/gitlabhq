@@ -74,7 +74,8 @@ To enable the Google OAuth2 OmniAuth provider you must register your application
 
 1.  Save the configuration file.
 
-1.  Restart GitLab for the changes to take effect.
+1.  [Reconfigure][] or [restart GitLab][] for the changes to take effect if you
+    installed GitLab via Omnibus or from source respectively.
 
 On the sign in page there should now be a Google icon below the regular sign in form. Click the icon to begin the authentication process. Google will ask the user to sign in and authorize the GitLab application. If everything goes well the user will be returned to GitLab and will be signed in.
 
@@ -87,3 +88,6 @@ At this point, when users first try to authenticate to your GitLab installation 
 1. Select 'Consent screen' in the left menu. (See steps 1, 4 and 5 above for instructions on how to get here if you closed your window).
 1. Scroll down until you find "Product Name". Change the product name to something more descriptive.
 1. Add any additional information as you wish - homepage, logo, privacy policy, etc. None of this is required, but it may help your users.
+
+[reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source

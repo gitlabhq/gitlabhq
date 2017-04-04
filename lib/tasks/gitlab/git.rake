@@ -1,9 +1,8 @@
 namespace :gitlab do
   namespace :git do
-
     desc "GitLab | Git | Repack"
     task repack: :environment do
-      failures = perform_git_cmd(%W(git repack -a --quiet), "Repacking repo")
+      failures = perform_git_cmd(%W(#{Gitlab.config.git.bin_path} repack -a --quiet), "Repacking repo")
       if failures.empty?
         puts "Done".color(:green)
       else
@@ -13,17 +12,17 @@ namespace :gitlab do
 
     desc "GitLab | Git | Run garbage collection on all repos"
     task gc: :environment do
-      failures = perform_git_cmd(%W(git gc --auto --quiet), "Garbage Collecting")
+      failures = perform_git_cmd(%W(#{Gitlab.config.git.bin_path} gc --auto --quiet), "Garbage Collecting")
       if failures.empty?
         puts "Done".color(:green)
       else
         output_failures(failures)
       end
     end
-    
+
     desc "GitLab | Git | Prune all repos"
     task prune: :environment do
-      failures = perform_git_cmd(%W(git prune), "Git Prune")
+      failures = perform_git_cmd(%W(#{Gitlab.config.git.bin_path} prune), "Git Prune")
       if failures.empty?
         puts "Done".color(:green)
       else
@@ -50,6 +49,5 @@ namespace :gitlab do
       puts "The following repositories reported errors:".color(:red)
       failures.each { |f| puts "- #{f}" }
     end
-
   end
 end

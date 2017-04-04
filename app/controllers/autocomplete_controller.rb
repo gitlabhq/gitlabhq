@@ -11,22 +11,20 @@ class AutocompleteController < ApplicationController
     @users = @users.reorder(:name)
     @users = @users.page(params[:page])
 
-    if params[:todo_filter].present?
+    if params[:todo_filter].present? && current_user
       @users = @users.todo_authors(current_user.id, params[:todo_state_filter])
     end
 
     if params[:search].blank?
       # Include current user if available to filter by "Me"
       if params[:current_user].present? && current_user
-        @users = [*@users, current_user]
+        @users = [current_user, *@users].uniq
       end
 
       if params[:author_id].present?
         author = User.find_by_id(params[:author_id])
-        @users = [author, *@users] if author
+        @users = [author, *@users].uniq if author
       end
-
-      @users.uniq!
     end
 
     render json: @users, only: [:name, :username, :id], methods: [:avatar_url]

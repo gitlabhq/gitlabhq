@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe IssuesHelper do
-  let(:project) { create :project }
+  let(:project) { create(:empty_project) }
   let(:issue) { create :issue, project: project }
   let(:ext_project) { create :redmine_project }
 
@@ -55,8 +55,8 @@ describe IssuesHelper do
   describe "merge_requests_sentence" do
     subject { merge_requests_sentence(merge_requests)}
     let(:merge_requests) do
-      [ build(:merge_request, iid: 1), build(:merge_request, iid: 2),
-        build(:merge_request, iid: 3)]
+      [build(:merge_request, iid: 1), build(:merge_request, iid: 2),
+       build(:merge_request, iid: 3)]
     end
 
     it { is_expected.to eq("!1, !2, or !3") }
@@ -98,22 +98,22 @@ describe IssuesHelper do
     end
   end
 
-  describe '#award_active_class' do
+  describe '#award_state_class' do
     let!(:upvote) { create(:award_emoji) }
 
-    it "returns empty string for unauthenticated user" do
-      expect(award_active_class(AwardEmoji.all, nil)).to eq("")
+    it "returns disabled string for unauthenticated user" do
+      expect(award_state_class(AwardEmoji.all, nil)).to eq("disabled")
     end
 
     it "returns active string for author" do
-      expect(award_active_class(AwardEmoji.all, upvote.user)).to eq("active")
+      expect(award_state_class(AwardEmoji.all, upvote.user)).to eq("active")
     end
   end
 
   describe "awards_sort" do
     it "sorts a hash so thumbsup and thumbsdown are always on top" do
       data = { "thumbsdown" => "some value", "lifter" => "some value", "thumbsup" => "some value" }
-      expect(awards_sort(data).keys).to eq(["thumbsup", "thumbsdown", "lifter"])
+      expect(awards_sort(data).keys).to eq(%w(thumbsup thumbsdown lifter))
     end
   end
 
@@ -129,6 +129,38 @@ describe IssuesHelper do
       expect(options).to have_selector('option[selected]', text: closed_milestone.title)
       expect(options).to have_selector('option', text: milestone1.title)
       expect(options).to have_selector('option', text: milestone2.title)
+    end
+  end
+
+  describe "#link_to_discussions_to_resolve" do
+    describe "passing only a merge request" do
+      let(:merge_request) { create(:merge_request) }
+
+      it "links just the merge request" do
+        expected_path = namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
+
+        expect(link_to_discussions_to_resolve(merge_request, nil)).to include(expected_path)
+      end
+
+      it "containst the reference to the merge request" do
+        expect(link_to_discussions_to_resolve(merge_request, nil)).to include(merge_request.to_reference)
+      end
+    end
+
+    describe "when passing a discussion" do
+      let(:diff_note) {  create(:diff_note_on_merge_request) }
+      let(:merge_request) { diff_note.noteable }
+      let(:discussion) { Discussion.new([diff_note]) }
+
+      it "links to the merge request with first note if a single discussion was passed" do
+        expected_path = Gitlab::UrlBuilder.build(diff_note)
+
+        expect(link_to_discussions_to_resolve(merge_request, discussion)).to include(expected_path)
+      end
+
+      it "contains both the reference to the merge request and a mention of the discussion" do
+        expect(link_to_discussions_to_resolve(merge_request, discussion)).to include("#{merge_request.to_reference} (discussion #{diff_note.id})")
+      end
     end
   end
 end

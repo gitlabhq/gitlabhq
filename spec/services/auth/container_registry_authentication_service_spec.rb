@@ -72,7 +72,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
   shared_examples 'a pullable and pushable' do
     it_behaves_like 'a accessible' do
-      let(:actions) { ['pull', 'push'] }
+      let(:actions) { %w(pull push) }
     end
   end
 

@@ -14,7 +14,7 @@ module Banzai
     def project_from_ref(ref)
       return context[:project] unless ref
 
-      Project.find_with_namespace(ref)
+      Project.find_by_full_path(ref)
     end
   end
 end

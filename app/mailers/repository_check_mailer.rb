@@ -1,10 +1,11 @@
 class RepositoryCheckMailer < BaseMailer
   def notify(failed_count)
-    if failed_count == 1
-      @message = "One project failed its last repository check"
-    else
-      @message = "#{failed_count} projects failed their last repository check"
-    end
+    @message =
+      if failed_count == 1
+        "One project failed its last repository check"
+      else
+        "#{failed_count} projects failed their last repository check"
+      end
 
     mail(
       to: User.admins.pluck(:email),

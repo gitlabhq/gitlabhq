@@ -1,7 +1,7 @@
 - commits, hidden = limited_commits(@commits)
 - commits = Commit.decorate(commits, @project)
 
-%div.panel.panel-default
+.panel.panel-default
   .panel-heading
     Commits (#{@commits.count})
   - if hidden > 0

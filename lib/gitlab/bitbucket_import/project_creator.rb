@@ -1,10 +1,11 @@
 module Gitlab
   module BitbucketImport
     class ProjectCreator
-      attr_reader :repo, :namespace, :current_user, :session_data
+      attr_reader :repo, :name, :namespace, :current_user, :session_data
 
-      def initialize(repo, namespace, current_user, session_data)
+      def initialize(repo, name, namespace, current_user, session_data)
         @repo = repo
+        @name = name
         @namespace = namespace
         @current_user = current_user
         @session_data = session_data
@@ -13,16 +14,23 @@ module Gitlab
       def execute
         ::Projects::CreateService.new(
           current_user,
-          name: repo["name"],
-          path: repo["slug"],
-          description: repo["description"],
+          name: name,
+          path: name,
+          description: repo.description,
           namespace_id: namespace.id,
-          visibility_level: repo["is_private"] ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::VisibilityLevel::PUBLIC,
-          import_type: "bitbucket",
-          import_source: "#{repo["owner"]}/#{repo["slug"]}",
-          import_url: "ssh://git@bitbucket.org/#{repo["owner"]}/#{repo["slug"]}.git",
-          import_data: { credentials: { bb_session: session_data } }
+          visibility_level: repo.visibility_level,
+          import_type: 'bitbucket',
+          import_source: repo.full_name,
+          import_url: repo.clone_url(session_data[:token]),
+          import_data: { credentials: session_data },
+          skip_wiki: skip_wiki
         ).execute
+      end
+
+      private
+
+      def skip_wiki
+        repo.has_wiki?
       end
     end
   end

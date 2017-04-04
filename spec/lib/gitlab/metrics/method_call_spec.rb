@@ -23,7 +23,7 @@ describe Gitlab::Metrics::MethodCall do
 
       expect(metric.values[:duration]).to be_a_kind_of(Numeric)
       expect(metric.values[:cpu_duration]).to be_a_kind_of(Numeric)
-      expect(metric.values[:call_count]).to an_instance_of(Fixnum)
+      expect(metric.values[:call_count]).to be_an(Integer)
 
       expect(metric.tags).to eq({ method: 'Foo#bar' })
     end

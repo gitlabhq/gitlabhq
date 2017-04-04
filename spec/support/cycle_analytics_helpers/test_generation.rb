@@ -2,7 +2,6 @@
 
 # Note: The ABC size is large here because we have a method generating test cases with
 #       multiple nested contexts. This shouldn't count as a violation.
-
 module CycleAnalyticsHelpers
   module TestGeneration
     # Generate the most common set of specs that all cycle analytics phases need to have.
@@ -51,11 +50,11 @@ module CycleAnalyticsHelpers
               end
 
               median_time_difference = time_differences.sort[2]
-              expect(subject.send(phase)).to be_within(5).of(median_time_difference)
+              expect(subject[phase].median).to be_within(5).of(median_time_difference)
             end
 
             context "when the data belongs to another project" do
-              let(:other_project) { create(:project) }
+              let(:other_project) { create(:project, :repository) }
 
               it "returns nil" do
                 # Use a stub to "trick" the data/condition functions
@@ -64,26 +63,24 @@ module CycleAnalyticsHelpers
                 # test case.
                 allow(self).to receive(:project) { other_project }
 
-                5.times do
-                  data = data_fn[self]
-                  start_time = Time.now
-                  end_time = rand(1..10).days.from_now
+                data = data_fn[self]
+                start_time = Time.now
+                end_time = rand(1..10).days.from_now
 
-                  start_time_conditions.each do |condition_name, condition_fn|
-                    Timecop.freeze(start_time) { condition_fn[self, data] }
-                  end
-
-                  end_time_conditions.each do |condition_name, condition_fn|
-                    Timecop.freeze(end_time) { condition_fn[self, data] }
-                  end
-
-                  Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
+                start_time_conditions.each do |condition_name, condition_fn|
+                  Timecop.freeze(start_time) { condition_fn[self, data] }
                 end
+
+                end_time_conditions.each do |condition_name, condition_fn|
+                  Timecop.freeze(end_time) { condition_fn[self, data] }
+                end
+
+                Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
 
                 # Turn off the stub before checking assertions
                 allow(self).to receive(:project).and_call_original
 
-                expect(subject.send(phase)).to be_nil
+                expect(subject[phase].median).to be_nil
               end
             end
 
@@ -106,7 +103,7 @@ module CycleAnalyticsHelpers
 
                 Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
 
-                expect(subject.send(phase)).to be_nil
+                expect(subject[phase].median).to be_nil
               end
             end
           end
@@ -115,18 +112,16 @@ module CycleAnalyticsHelpers
         context "start condition NOT PRESENT: #{start_time_conditions.map(&:first).to_sentence}" do
           context "end condition: #{end_time_conditions.map(&:first).to_sentence}" do
             it "returns nil" do
-              5.times do
-                data = data_fn[self]
-                end_time = rand(1..10).days.from_now
+              data = data_fn[self]
+              end_time = rand(1..10).days.from_now
 
-                end_time_conditions.each_with_index do |(condition_name, condition_fn), index|
-                  Timecop.freeze(end_time + index.days) { condition_fn[self, data] }
-                end
-
-                Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
+              end_time_conditions.each_with_index do |(condition_name, condition_fn), index|
+                Timecop.freeze(end_time + index.days) { condition_fn[self, data] }
               end
 
-              expect(subject.send(phase)).to be_nil
+              Timecop.freeze(end_time + 1.day) { post_fn[self, data] } if post_fn
+
+              expect(subject[phase].median).to be_nil
             end
           end
         end
@@ -134,18 +129,16 @@ module CycleAnalyticsHelpers
         context "start condition: #{start_time_conditions.map(&:first).to_sentence}" do
           context "end condition NOT PRESENT: #{end_time_conditions.map(&:first).to_sentence}" do
             it "returns nil" do
-              5.times do
-                data = data_fn[self]
-                start_time = Time.now
+              data = data_fn[self]
+              start_time = Time.now
 
-                start_time_conditions.each do |condition_name, condition_fn|
-                  Timecop.freeze(start_time) { condition_fn[self, data] }
-                end
-
-                post_fn[self, data] if post_fn
+              start_time_conditions.each do |condition_name, condition_fn|
+                Timecop.freeze(start_time) { condition_fn[self, data] }
               end
 
-              expect(subject.send(phase)).to be_nil
+              post_fn[self, data] if post_fn
+
+              expect(subject[phase].median).to be_nil
             end
           end
         end
@@ -153,7 +146,7 @@ module CycleAnalyticsHelpers
 
       context "when none of the start / end conditions are matched" do
         it "returns nil" do
-          expect(subject.send(phase)).to be_nil
+          expect(subject[phase].median).to be_nil
         end
       end
     end

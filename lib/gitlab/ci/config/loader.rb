@@ -2,7 +2,7 @@ module Gitlab
   module Ci
     class Config
       class Loader
-        class FormatError < StandardError; end
+        FormatError = Class.new(StandardError)
 
         def initialize(config)
           @config = YAML.safe_load(config, [Symbol], [], true)

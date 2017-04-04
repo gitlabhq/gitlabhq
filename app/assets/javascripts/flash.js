@@ -1,44 +1,41 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, no-param-reassign, quotes, quote-props, prefer-template, comma-dangle, padded-blocks, max-len */
-(function() {
-  this.Flash = (function() {
-    var hideFlash;
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, no-param-reassign, quotes, quote-props, prefer-template, comma-dangle, max-len */
 
-    hideFlash = function() {
-      return $(this).fadeOut();
-    };
+window.Flash = (function() {
+  var hideFlash;
 
-    function Flash(message, type, parent) {
-      var flash, textDiv;
-      if (type == null) {
-        type = 'alert';
-      }
-      if (parent == null) {
-        parent = null;
-      }
-      if (parent) {
-        this.flashContainer = parent.find('.flash-container');
-      } else {
-        this.flashContainer = $('.flash-container-page');
-      }
-      this.flashContainer.html('');
-      flash = $('<div/>', {
-        "class": "flash-" + type
-      });
-      flash.on('click', hideFlash);
-      textDiv = $('<div/>', {
-        "class": 'flash-text',
-        text: message
-      });
-      textDiv.appendTo(flash);
-      if (this.flashContainer.parent().hasClass('content-wrapper')) {
-        textDiv.addClass('container-fluid container-limited');
-      }
-      flash.appendTo(this.flashContainer);
-      this.flashContainer.show();
+  hideFlash = function() {
+    return $(this).fadeOut();
+  };
+
+  function Flash(message, type, parent) {
+    var flash, textDiv;
+    if (type == null) {
+      type = 'alert';
     }
+    if (parent == null) {
+      parent = null;
+    }
+    if (parent) {
+      this.flashContainer = parent.find('.flash-container');
+    } else {
+      this.flashContainer = $('.flash-container-page');
+    }
+    this.flashContainer.html('');
+    flash = $('<div/>', {
+      "class": "flash-" + type
+    });
+    flash.on('click', hideFlash);
+    textDiv = $('<div/>', {
+      "class": 'flash-text',
+      text: message
+    });
+    textDiv.appendTo(flash);
+    if (this.flashContainer.parent().hasClass('content-wrapper')) {
+      textDiv.addClass('container-fluid container-limited');
+    }
+    flash.appendTo(this.flashContainer);
+    this.flashContainer.show();
+  }
 
-    return Flash;
-
-  })();
-
-}).call(this);
+  return Flash;
+})();

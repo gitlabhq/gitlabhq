@@ -15,11 +15,11 @@ For the installations options please see [the installation page on the GitLab we
 
 ### Unsupported Unix distributions
 
-- OS X
 - Arch Linux
 - Fedora
-- Gentoo
 - FreeBSD
+- Gentoo
+- macOS
 
 On the above unsupported distributions is still possible to install GitLab yourself.
 Please see the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/installation/) for more information.
@@ -108,7 +108,7 @@ use the CI features.
 
 ## Unicorn Workers
 
-It's possible to increase the amount of unicorn workers and this will usually help for to reduce the response time of the applications and increase the ability to handle parallel requests.
+It's possible to increase the amount of unicorn workers and this will usually help to reduce the response time of the applications and increase the ability to handle parallel requests.
 
 For most instances we recommend using: CPU cores + 1 = unicorn workers.
 So for a machine with 2 cores, 3 unicorn workers is ideal.
@@ -120,7 +120,12 @@ To change the Unicorn workers when you have the Omnibus package please see [the 
 
 ## Database
 
-If you want to run the database separately expect a size of about 1 MB per user.
+We currently support the following databases:
+
+- PostgreSQL (recommended)
+- MySQL/MariaDB
+
+If you want to run the database separately, expect a size of about 1 MB per user.
 
 ### PostgreSQL Requirements
 
@@ -128,7 +133,9 @@ Users using PostgreSQL must ensure the `pg_trgm` extension is loaded into every
 GitLab database. This extension can be enabled (using a PostgreSQL super user)
 by running the following query for every database:
 
-    CREATE EXTENSION pg_trgm;
+```
+CREATE EXTENSION pg_trgm;
+```
 
 On some systems you may need to install an additional package (e.g.
 `postgresql-contrib`) for this extension to become available.
@@ -141,8 +148,18 @@ Sidekiq processes the background jobs with a multithreaded process.
 This process starts with the entire Rails stack (200MB+) but it can grow over time due to memory leaks.
 On a very active server (10,000 active users) the Sidekiq process can use 1GB+ of memory.
 
+## Prometheus and its exporters
+
+As of Omnibus GitLab 9.0, [Prometheus](https://prometheus.io) and its related
+exporters are enabled by default, to enable easy and in depth monitoring of
+GitLab. Approximately 200MB of memory will be consumed by these processes, with
+default settings.
+
+If you would like to disable Prometheus and it's exporters or read more information
+about it, check the [Prometheus documentation](../administration/monitoring/prometheus/index.md).
+
 ## Supported web browsers
 
-We support the current and the previous major release of Firefox, Safari and Microsoft browsers (Microsoft Edge and Internet Explorer 11).
+We support the current and the previous major release of Firefox, Chrome/Chromium, Safari and Microsoft browsers (Microsoft Edge and Internet Explorer 11).
 
 Each time a new browser version is released, we begin supporting that version and stop supporting the third most recent version.

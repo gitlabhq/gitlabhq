@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 describe "Admin Runners" do
+  include StubENV
+
   before do
+    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
     login_as :admin
   end
 
@@ -15,7 +18,7 @@ describe "Admin Runners" do
 
     it 'has all necessary texts' do
       expect(page).to have_text "To register a new Runner"
-      expect(page).to have_text "Runners with last contact less than a minute ago: 1"
+      expect(page).to have_text "Runners with last contact more than a minute ago: 1"
     end
 
     describe 'search' do

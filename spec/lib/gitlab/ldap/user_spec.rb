@@ -57,7 +57,7 @@ describe Gitlab::LDAP::User, lib: true do
     end
   end
 
-  describe :find_or_create do
+  describe 'find or create' do
     it "finds the user if already existing" do
       create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
 
@@ -95,10 +95,10 @@ describe Gitlab::LDAP::User, lib: true do
 
     it 'maintains an identity per provider' do
       existing_user = create(:omniauth_user, email: 'john@example.com', provider: 'twitter')
-      expect(existing_user.identities.count).to eql(1)
+      expect(existing_user.identities.count).to be(1)
 
       ldap_user.save
-      expect(ldap_user.gl_user.identities.count).to eql(2)
+      expect(ldap_user.gl_user.identities.count).to be(2)
 
       # Expect that find_by provider only returns a single instance of an identity and not an Enumerable
       expect(ldap_user.gl_user.identities.find_by(provider: 'twitter')).to be_instance_of Identity

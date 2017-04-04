@@ -5,29 +5,28 @@ trackers and external authentication.
 
 See the documentation below for details on how to configure these services.
 
-- [Jira](../project_services/jira.md) Integrate with the JIRA issue tracker
+- [JIRA](../user/project/integrations/jira.md) Integrate with the JIRA issue tracker
 - [External issue tracker](external-issue-tracker.md) Redmine, JIRA, etc.
 - [LDAP](ldap.md) Set up sign in via LDAP
-- [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab.com, Google, Bitbucket, Facebook, Shibboleth, SAML, Crowd and Azure
+- [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab.com, Google, Bitbucket, Facebook, Shibboleth, SAML, Crowd, Azure and Authentiq ID
 - [SAML](saml.md) Configure GitLab as a SAML 2.0 Service Provider
 - [CAS](cas.md) Configure GitLab to sign in using CAS
 - [OAuth2 provider](oauth_provider.md) OAuth2 application creation
+- [OpenID Connect](openid_connect_provider.md) Use GitLab as an identity provider
 - [Gmail actions buttons](gmail_action_buttons_for_gitlab.md) Adds GitLab actions to messages
 - [reCAPTCHA](recaptcha.md) Configure GitLab to use Google reCAPTCHA for new users
 - [Akismet](akismet.md) Configure Akismet to stop spam
 - [Koding](../administration/integration/koding.md) Configure Koding to use IDE integration
+- [PlantUML](../administration/integration/plantuml.md) Configure PlantUML to use diagrams in AsciiDoc documents.
 
-GitLab Enterprise Edition contains [advanced Jenkins support][jenkins].
-
-[jenkins]: http://docs.gitlab.com/ee/integration/jenkins.html
-
+> GitLab Enterprise Edition contains [advanced Jenkins support][jenkins].
 
 ## Project services
 
 Integration with services such as Campfire, Flowdock, Gemnasium, HipChat,
 Pivotal Tracker, and Slack are available in the form of a [Project Service][].
 
-[Project Service]: ../project_services/project_services.md
+[Project Service]: ../user/project/integrations/project_services.md
 
 ## SSL certificate errors
 
@@ -63,3 +62,5 @@ After that restart GitLab with:
 ```bash
 sudo gitlab-ctl restart
 ```
+
+[jenkins]: http://docs.gitlab.com/ee/integration/jenkins.html

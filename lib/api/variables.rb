@@ -1,6 +1,7 @@
 module API
-  # Projects variables API
   class Variables < Grape::API
+    include PaginationParams
+
     before { authenticate! }
     before { authorize! :admin_build, user_project }
 
@@ -8,13 +9,12 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
     end
 
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'Get project variables' do
         success Entities::Variable
       end
       params do
-        optional :page, type: Integer, desc: 'The page number for pagination'
-        optional :per_page, type: Integer, desc: 'The value of items per page to show'
+        use :pagination
       end
       get ':id/variables' do
         variables = user_project.variables
@@ -29,7 +29,7 @@ module API
       end
       get ':id/variables/:key' do
         key = params[:key]
-        variable = user_project.variables.find_by(key: key.to_s)
+        variable = user_project.variables.find_by(key: key)
 
         return not_found!('Variable') unless variable
 
@@ -80,10 +80,9 @@ module API
       end
       delete ':id/variables/:key' do
         variable = user_project.variables.find_by(key: params[:key])
+        not_found!('Variable') unless variable
 
-        return not_found!('Variable') unless variable
-
-        present variable.destroy, with: Entities::Variable
+        variable.destroy
       end
     end
   end

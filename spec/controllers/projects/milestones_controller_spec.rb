@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::MilestonesController do
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:user)    { create(:user) }
   let(:milestone) { create(:milestone, project: project) }
   let(:issue) { create(:issue, project: project, milestone: milestone) }
@@ -31,7 +31,7 @@ describe Projects::MilestonesController do
 
       # Check system note left for milestone removal
       last_note = project.issues.find(issue.id).notes[-1].note
-      expect(last_note).to eq('Milestone removed')
+      expect(last_note).to eq('removed milestone')
     end
   end
 end

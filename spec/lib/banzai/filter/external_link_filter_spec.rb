@@ -80,4 +80,18 @@ describe Banzai::Filter::ExternalLinkFilter, lib: true do
       expect(filter(act).to_html).to eq(exp)
     end
   end
+
+  context 'for protocol-relative links' do
+    let(:doc) { filter %q(<p><a href="//google.com/">Google</a></p>) }
+
+    it 'adds rel="nofollow" to external links' do
+      expect(doc.at_css('a')).to have_attribute('rel')
+      expect(doc.at_css('a')['rel']).to include 'nofollow'
+    end
+
+    it 'adds rel="noreferrer" to external links' do
+      expect(doc.at_css('a')).to have_attribute('rel')
+      expect(doc.at_css('a')['rel']).to include 'noreferrer'
+    end
+  end
 end

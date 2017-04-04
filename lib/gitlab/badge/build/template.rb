@@ -15,7 +15,7 @@ module Gitlab
           canceled: '#9f9f9f',
           skipped: '#9f9f9f',
           unknown: '#9f9f9f'
-        }
+        }.freeze
 
         def initialize(badge)
           @entity = badge.entity

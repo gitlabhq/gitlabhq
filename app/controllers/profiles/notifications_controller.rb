@@ -17,6 +17,6 @@ class Profiles::NotificationsController < Profiles::ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:notification_email)
+    params.require(:user).permit(:notification_email, :notified_of_own_activity)
   end
 end

@@ -11,7 +11,7 @@ module Gitlab
           mem   = 0
           match = File.read('/proc/self/status').match(/VmRSS:\s+(\d+)/)
 
-          if match and match[1]
+          if match && match[1]
             mem = match[1].to_f * 1024
           end
 

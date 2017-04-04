@@ -7,6 +7,7 @@ class Issue < ActiveRecord::Base
   include Sortable
   include Spammable
   include FasterCacheKeys
+  include RelativePositioning
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -14,8 +15,6 @@ class Issue < ActiveRecord::Base
   Overdue       = DueDateStruct.new('Overdue', 'overdue').freeze
   DueThisWeek   = DueDateStruct.new('Due This Week', 'week').freeze
   DueThisMonth  = DueDateStruct.new('Due This Month', 'month').freeze
-
-  ActsAsTaggableOn.strict_case_match = true
 
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
@@ -39,6 +38,8 @@ class Issue < ActiveRecord::Base
 
   scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
 
+  scope :include_associations, -> { includes(:assignee, :labels, project: :namespace) }
+
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
 
@@ -54,65 +55,24 @@ class Issue < ActiveRecord::Base
     state :opened
     state :reopened
     state :closed
+
+    before_transition any => :closed do |issue|
+      issue.closed_at = Time.zone.now
+    end
+
+    before_transition closed: any do |issue|
+      issue.closed_at = nil
+    end
   end
 
   def hook_attrs
-    attributes
-  end
+    attrs = {
+      total_time_spent: total_time_spent,
+      human_total_time_spent: human_total_time_spent,
+      human_time_estimate: human_time_estimate
+    }
 
-  class << self
-    private
-
-    # Returns the project that the current scope belongs to if any, nil otherwise.
-    #
-    # Examples:
-    # - my_project.issues.without_due_date.owner_project => my_project
-    # - Issue.all.owner_project => nil
-    def owner_project
-      # No owner if we're not being called from an association
-      return unless all.respond_to?(:proxy_association)
-
-      owner = all.proxy_association.owner
-
-      # Check if the association is or belongs to a project
-      if owner.is_a?(Project)
-        owner
-      else
-        begin
-          owner.association(:project).target
-        rescue ActiveRecord::AssociationNotFoundError
-          nil
-        end
-      end
-    end
-  end
-
-  def self.visible_to_user(user)
-    return where('issues.confidential IS NULL OR issues.confidential IS FALSE') if user.blank?
-    return all if user.admin?
-
-    # Check if we are scoped to a specific project's issues
-    if owner_project
-      if owner_project.authorized_for_user?(user, Gitlab::Access::REPORTER)
-        # If the project is authorized for the user, they can see all issues in the project
-        return all
-      else
-        # else only non confidential and authored/assigned to them
-        return where('issues.confidential IS NULL OR issues.confidential IS FALSE
-          OR issues.author_id = :user_id OR issues.assignee_id = :user_id',
-          user_id: user.id)
-      end
-    end
-
-    where('
-      issues.confidential IS NULL
-      OR issues.confidential IS FALSE
-      OR (issues.confidential = TRUE
-        AND (issues.author_id = :user_id
-          OR issues.assignee_id = :user_id
-          OR issues.project_id IN(:project_ids)))',
-      user_id: user.id,
-      project_ids: user.authorized_projects(Gitlab::Access::REPORTER).select(:id))
+    attributes.merge!(attrs)
   end
 
   def self.reference_prefix
@@ -150,14 +110,18 @@ class Issue < ActiveRecord::Base
     end
   end
 
-  def to_reference(from_project = nil)
+  def self.order_by_position_and_priority
+    order_labels_priority.
+      reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
+              Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
+              "id DESC")
+  end
+
+  # `from` argument can be a Namespace or Project.
+  def to_reference(from = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"
 
-    if cross_project_reference?(from_project)
-      reference = project.to_reference + reference
-    end
-
-    reference
+    "#{project.to_reference(from, full: full)}#{reference}"
   end
 
   def referenced_merge_requests(current_user = nil)
@@ -180,18 +144,6 @@ class Issue < ActiveRecord::Base
     branches_with_merge_request = self.referenced_merge_requests(current_user).map(&:source_branch)
 
     branches_with_iid - branches_with_merge_request
-  end
-
-  # Reset issue events cache
-  #
-  # Since we do cache @event we need to reset cache in special cases:
-  # * when an issue is updated
-  # Events cache stored like  events/23-20130109142513.
-  # The cache key includes updated_at timestamp.
-  # Thus it will automatically generate a new fragment
-  # when the event is updated because the key changes.
-  def reset_events_cache
-    Event.reset_event_cache_for(self)
   end
 
   # To allow polymorphism with MergeRequest.
@@ -259,9 +211,8 @@ class Issue < ActiveRecord::Base
     due_date.try(:past?) || false
   end
 
-  # Only issues on public projects should be checked for spam
   def check_for_spam?
-    project.public?
+    project.public? && (title_changed? || description_changed?)
   end
 
   def as_json(options = {})

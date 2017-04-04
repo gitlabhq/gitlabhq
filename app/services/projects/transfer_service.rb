@@ -9,7 +9,7 @@
 module Projects
   class TransferService < BaseService
     include Gitlab::ShellAdapter
-    class TransferError < StandardError; end
+    TransferError = Class.new(StandardError)
 
     def execute(new_namespace)
       if allowed_transfer?(current_user, project, new_namespace)
@@ -25,11 +25,12 @@ module Projects
     end
 
     def transfer(project, new_namespace)
+      old_namespace = project.namespace
+
       Project.transaction do
         old_path = project.path_with_namespace
-        old_namespace = project.namespace
         old_group = project.group
-        new_path = File.join(new_namespace.try(:path) || '', project.path)
+        new_path = File.join(new_namespace.try(:full_path) || '', project.path)
 
         if Project.where(path: project.path, namespace_id: new_namespace.try(:id)).present?
           raise TransferError.new("Project with same path in target namespace already exists")
@@ -61,17 +62,20 @@ module Projects
         # Move missing group labels to project
         Labels::TransferService.new(current_user, old_group, project).execute
 
-        # clear project cached events
-        project.reset_events_cache
-
         # Move uploads
-        Gitlab::UploadsTransfer.new.move_project(project.path, old_namespace.path, new_namespace.path)
+        Gitlab::UploadsTransfer.new.move_project(project.path, old_namespace.full_path, new_namespace.full_path)
+
+        # Move pages
+        Gitlab::PagesTransfer.new.move_project(project.path, old_namespace.full_path, new_namespace.full_path)
 
         project.old_path_with_namespace = old_path
 
         SystemHooksService.new.execute_hooks_for(project, :transfer)
-        true
       end
+
+      refresh_permissions(old_namespace, new_namespace)
+
+      true
     end
 
     def allowed_transfer?(current_user, project, namespace)
@@ -79,6 +83,15 @@ module Projects
         can?(current_user, :change_namespace, project) &&
         namespace.id != project.namespace_id &&
         current_user.can?(:create_projects, namespace)
+    end
+
+    def refresh_permissions(old_namespace, new_namespace)
+      # This ensures we only schedule 1 job for every user that has access to
+      # the namespaces.
+      user_ids = old_namespace.user_ids_for_project_authorizations |
+        new_namespace.user_ids_for_project_authorizations
+
+      UserProjectAccessChangedService.new(user_ids).execute
     end
   end
 end

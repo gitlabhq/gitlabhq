@@ -1,4 +1,6 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-undef, no-else-return, quotes, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-else-return, quotes, max-len */
+/* global Api */
+
 (function() {
   this.ProjectSelect = (function() {
     function ProjectSelect() {
@@ -13,6 +15,7 @@
           },
           data: function(term, callback) {
             var finalCallback, projectsCallback;
+            var orderBy = $dropdown.data('order-by');
             finalCallback = function(projects) {
               return callback(projects);
             };
@@ -32,7 +35,7 @@
             if (this.groupId) {
               return Api.groupProjects(this.groupId, term, projectsCallback);
             } else {
-              return Api.projects(term, this.orderBy, projectsCallback);
+              return Api.projects(term, { order_by: orderBy }, projectsCallback);
             }
           },
           url: function(project) {
@@ -81,7 +84,7 @@
               if (_this.groupId) {
                 return Api.groupProjects(_this.groupId, query.term, projectsCallback);
               } else {
-                return Api.projects(query.term, _this.orderBy, projectsCallback);
+                return Api.projects(query.term, { order_by: _this.orderBy }, projectsCallback);
               }
             };
           })(this),
@@ -97,7 +100,5 @@
     }
 
     return ProjectSelect;
-
   })();
-
-}).call(this);
+}).call(window);

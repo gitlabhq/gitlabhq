@@ -1,13 +1,13 @@
 require 'spec_helper'
 require 'mime/types'
 
-describe API::API, api: true  do
+describe API::Tags, api: true  do
   include ApiHelpers
   include RepoHelpers
 
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let!(:project) { create(:project, creator_id: user.id) }
+  let!(:project) { create(:project, :repository, creator: user) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:guest) { create(:project_member, :guest, user: user2, project: project) }
 
@@ -15,10 +15,36 @@ describe API::API, api: true  do
     let(:tag_name) { project.repository.tag_names.sort.reverse.first }
     let(:description) { 'Awesome release!' }
 
+    shared_examples_for 'repository tags' do
+      it 'returns the repository tags' do
+        get api("/projects/#{project.id}/repository/tags", current_user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(tag_name)
+      end
+    end
+
+    context 'when unauthenticated' do
+      it_behaves_like 'repository tags' do
+        let(:project) { create(:project, :public, :repository) }
+        let(:current_user) { nil }
+      end
+    end
+
+    context 'when authenticated' do
+      it_behaves_like 'repository tags' do
+        let(:current_user) { user }
+      end
+    end
+
     context 'without releases' do
       it "returns an array of project tags" do
         get api("/projects/#{project.id}/repository/tags", user)
+
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(tag_name)
       end
@@ -34,6 +60,7 @@ describe API::API, api: true  do
         get api("/projects/#{project.id}/repository/tags", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(tag_name)
         expect(json_response.first['message']).to eq('Version 1.1.0')
@@ -45,17 +72,33 @@ describe API::API, api: true  do
   describe 'GET /projects/:id/repository/tags/:tag_name' do
     let(:tag_name) { project.repository.tag_names.sort.reverse.first }
 
-    it 'returns a specific tag' do
-      get api("/projects/#{project.id}/repository/tags/#{tag_name}", user)
+    shared_examples_for 'repository tag' do
+      it 'returns the repository tag' do
+        get api("/projects/#{project.id}/repository/tags/#{tag_name}", current_user)
 
-      expect(response).to have_http_status(200)
-      expect(json_response['name']).to eq(tag_name)
+        expect(response).to have_http_status(200)
+
+        expect(json_response['name']).to eq(tag_name)
+      end
+
+      it 'returns 404 for an invalid tag name' do
+        get api("/projects/#{project.id}/repository/tags/foobar", current_user)
+
+        expect(response).to have_http_status(404)
+      end
     end
 
-    it 'returns 404 for an invalid tag name' do
-      get api("/projects/#{project.id}/repository/tags/foobar", user)
+    context 'when unauthenticated' do
+      it_behaves_like 'repository tag' do
+        let(:project) { create(:project, :public, :repository) }
+        let(:current_user) { nil }
+      end
+    end
 
-      expect(response).to have_http_status(404)
+    context 'when authenticated' do
+      it_behaves_like 'repository tag' do
+        let(:current_user) { user }
+      end
     end
   end
 
@@ -94,8 +137,8 @@ describe API::API, api: true  do
       context 'delete tag' do
         it 'deletes an existing tag' do
           delete api("/projects/#{project.id}/repository/tags/#{tag_name}", user)
-          expect(response).to have_http_status(200)
-          expect(json_response['tag_name']).to eq(tag_name)
+
+          expect(response).to have_http_status(204)
         end
 
         it 'raises 404 if the tag does not exist' do

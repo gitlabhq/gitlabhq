@@ -1,5 +1,8 @@
 class DroneCiService < CiService
-  prop_accessor :drone_url, :token, :enable_ssl_verification
+  include ReactiveService
+
+  prop_accessor :drone_url, :token
+  boolean_accessor :enable_ssl_verification
 
   validates :drone_url, presence: true, url: true, if: :activated?
   validates :token, presence: true, if: :activated?
@@ -9,7 +12,7 @@ class DroneCiService < CiService
   def compose_service_hook
     hook = service_hook || build_service_hook
     # If using a service template, project may not be available
-    hook.url = [drone_url, "/api/hook", "?owner=#{project.namespace.path}", "&name=#{project.path}", "&access_token=#{token}"].join if project
+    hook.url = [drone_url, "/api/hook", "?owner=#{project.namespace.full_path}", "&name=#{project.path}", "&access_token=#{token}"].join if project
     hook.enable_ssl_verification = !!enable_ssl_verification
     hook.save
   end
@@ -29,87 +32,51 @@ class DroneCiService < CiService
     true
   end
 
-  def supported_events
+  def self.supported_events
     %w(push merge_request tag_push)
-  end
-
-  def merge_request_status_path(iid, sha = nil, ref = nil)
-    url = [drone_url,
-           "gitlab/#{project.namespace.path}/#{project.path}/pulls/#{iid}",
-           "?access_token=#{token}"]
-
-    URI.join(*url).to_s
   end
 
   def commit_status_path(sha, ref)
     url = [drone_url,
-           "gitlab/#{project.namespace.path}/#{project.path}/commits/#{sha}",
-           "?branch=#{URI::encode(ref.to_s)}&access_token=#{token}"]
+           "gitlab/#{project.full_path}/commits/#{sha}",
+           "?branch=#{URI.encode(ref.to_s)}&access_token=#{token}"]
 
     URI.join(*url).to_s
-  end
-
-  def merge_request_status(iid, sha, ref)
-    response = HTTParty.get(merge_request_status_path(iid), verify: enable_ssl_verification)
-
-    if response.code == 200 and response['status']
-      case response['status']
-      when 'killed'
-        :canceled
-      when 'failure', 'error'
-        # Because drone return error if some test env failed
-        :failed
-      else
-        response["status"]
-      end
-    else
-      :error
-    end
-  rescue Errno::ECONNREFUSED
-    :error
   end
 
   def commit_status(sha, ref)
+    with_reactive_cache(sha, ref) {|cached| cached[:commit_status] }
+  end
+
+  def calculate_reactive_cache(sha, ref)
     response = HTTParty.get(commit_status_path(sha, ref), verify: enable_ssl_verification)
 
-    if response.code == 200 and response['status']
-      case response['status']
-      when 'killed'
-        :canceled
-      when 'failure', 'error'
-        # Because drone return error if some test env failed
-        :failed
+    status =
+      if response.code == 200 && response['status']
+        case response['status']
+        when 'killed'
+          :canceled
+        when 'failure', 'error'
+          # Because drone return error if some test env failed
+          :failed
+        else
+          response["status"]
+        end
       else
-        response["status"]
+        :error
       end
-    else
-      :error
-    end
+
+    { commit_status: status }
   rescue Errno::ECONNREFUSED
-    :error
-  end
-
-  def merge_request_page(iid, sha, ref)
-    url = [drone_url,
-           "gitlab/#{project.namespace.path}/#{project.path}/redirect/pulls/#{iid}"]
-
-    URI.join(*url).to_s
-  end
-
-  def commit_page(sha, ref)
-    url = [drone_url,
-           "gitlab/#{project.namespace.path}/#{project.path}/redirect/commits/#{sha}",
-           "?branch=#{URI::encode(ref.to_s)}"]
-
-    URI.join(*url).to_s
-  end
-
-  def commit_coverage(sha, ref)
-    nil
+    { commit_status: :error }
   end
 
   def build_page(sha, ref)
-    commit_page(sha, ref)
+    url = [drone_url,
+           "gitlab/#{project.full_path}/redirect/commits/#{sha}",
+           "?branch=#{URI.encode(ref.to_s)}"]
+
+    URI.join(*url).to_s
   end
 
   def title
@@ -120,7 +87,7 @@ class DroneCiService < CiService
     'Drone is a Continuous Integration platform built on Docker, written in Go'
   end
 
-  def to_param
+  def self.to_param
     'drone_ci'
   end
 
@@ -147,7 +114,7 @@ class DroneCiService < CiService
   end
 
   def merge_request_valid?(data)
-    ['opened', 'reopened'].include?(data[:object_attributes][:state]) &&
+    %w(opened reopened).include?(data[:object_attributes][:state]) &&
       data[:object_attributes][:merge_status] == 'unchecked'
   end
 end

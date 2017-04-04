@@ -6,7 +6,11 @@ class AddProjectImportDataProjectIndex < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def change
+  def up
     add_concurrent_index :project_import_data, :project_id
+  end
+
+  def down
+    remove_index :project_import_data, :project_id if index_exists? :project_import_data, :project_id
   end
 end

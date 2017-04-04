@@ -1,5 +1,7 @@
 module API
   class Runners < Grape::API
+    include PaginationParams
+
     before { authenticate! }
 
     resource :runners do
@@ -9,9 +11,10 @@ module API
       params do
         optional :scope, type: String, values: %w[active paused online],
                          desc: 'The scope of specific runners to show'
+        use :pagination
       end
       get do
-        runners = filter_runners(current_user.ci_authorized_runners, params[:scope], without: ['specific', 'shared'])
+        runners = filter_runners(current_user.ci_authorized_runners, params[:scope], without: %w(specific shared))
         present paginate(runners), with: Entities::Runner
       end
 
@@ -21,6 +24,7 @@ module API
       params do
         optional :scope, type: String, values: %w[active paused online specific shared],
                          desc: 'The scope of specific runners to show'
+        use :pagination
       end
       get 'all' do
         authenticated_as_admin!
@@ -56,8 +60,9 @@ module API
       put ':id' do
         runner = get_runner(params.delete(:id))
         authenticate_update_runner!(runner)
+        update_service = Ci::UpdateRunnerService.new(runner)
 
-        if runner.update(declared_params(include_missing: false))
+        if update_service.update(declared_params(include_missing: false))
           present runner, with: Entities::RunnerDetails, current_user: current_user
         else
           render_validation_error!(runner)
@@ -73,16 +78,15 @@ module API
       delete ':id' do
         runner = get_runner(params[:id])
         authenticate_delete_runner!(runner)
-        runner.destroy!
 
-        present runner, with: Entities::Runner
+        runner.destroy!
       end
     end
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       before { authorize_admin_project }
 
       desc 'Get runners available for project' do
@@ -91,6 +95,7 @@ module API
       params do
         optional :scope, type: String, values: %w[active paused online specific shared],
                          desc: 'The scope of specific runners to show'
+        use :pagination
       end
       get ':id/runners' do
         runners = filter_runners(Ci::Runner.owned_or_shared(user_project.id), params[:scope])
@@ -130,8 +135,6 @@ module API
         forbidden!("Only one project associated with the runner. Please remove the runner instead") if runner.projects.count == 1
 
         runner_project.destroy
-
-        present runner, with: Entities::Runner
       end
     end
 

@@ -5,6 +5,7 @@
 .chef
 .directory
 /.envrc
+eslint-report.html
 /.gitlab_shell_secret
 .idea
 /.rbenv-version
@@ -50,3 +51,4 @@
 /builds/*
 /shared/*
 /.gitlab_workhorse_secret
+/webpack-report/

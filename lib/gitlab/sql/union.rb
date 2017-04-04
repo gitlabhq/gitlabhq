@@ -22,9 +22,7 @@ module Gitlab
         # By using "unprepared_statements" we remove the usage of placeholders
         # (thus fixing this problem), at a slight performance cost.
         fragments = ActiveRecord::Base.connection.unprepared_statement do
-          @relations.map do |rel|
-            rel.reorder(nil).to_sql
-          end
+          @relations.map { |rel| rel.reorder(nil).to_sql }.reject(&:blank?)
         end
 
         fragments.join("\nUNION\n")

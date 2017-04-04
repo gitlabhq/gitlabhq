@@ -1,17 +1,17 @@
 .page-content-header
   .header-main-content
-    = link_to namespace_project_pipeline_path(@project.namespace, @project, @pipeline), class: "ci-status ci-#{@pipeline.status}" do
-      = ci_icon_for_status(@pipeline.status)
-      = ci_label_for_status(@pipeline.status)
-    %strong Pipeline ##{@commit.pipelines.last.id}
-    triggered #{time_ago_with_tooltip(@commit.authored_date)} by
-    = author_avatar(@commit, size: 24)
-    = commit_author_link(@commit)
+    = render 'ci/status/badge', status: @pipeline.detailed_status(current_user)
+    %strong Pipeline ##{@pipeline.id}
+    triggered #{time_ago_with_tooltip(@pipeline.created_at)}
+    - if @pipeline.user
+      by
+      = user_avatar(user: @pipeline.user, size: 24)
+      = user_link(@pipeline.user)
   .header-action-buttons
     - if can?(current_user, :update_pipeline, @pipeline.project)
-      - if @pipeline.builds.latest.failed.any?(&:retryable?)
-        = link_to "Retry failed", retry_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), class: 'btn btn-inverted-secondary', method: :post
-      - if @pipeline.builds.running_or_pending.any?
+      - if @pipeline.retryable?
+        = link_to "Retry", retry_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), class: 'js-retry-button btn btn-inverted-secondary', method: :post
+      - if @pipeline.cancelable?
         = link_to "Cancel running", cancel_namespace_project_pipeline_path(@pipeline.project.namespace, @pipeline.project, @pipeline.id), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
 
 - if @commit
@@ -26,8 +26,8 @@
   - if @commit.status
     .well-segment.pipeline-info
       .icon-container
-        = ci_icon_for_status(@commit.status)
-      = pluralize @pipeline.statuses.count(:id), "build"
+        = icon('clock-o')
+      = pluralize @pipeline.statuses.count(:id), "job"
       - if @pipeline.ref
         from
         = link_to @pipeline.ref, namespace_project_commits_path(@project.namespace, @project, @pipeline.ref), class: "monospace"

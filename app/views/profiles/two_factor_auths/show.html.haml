@@ -4,7 +4,7 @@
 
 - if inject_u2f_api?
   - content_for :page_specific_javascripts do
-    = page_specific_javascript_tag('u2f.js')
+    = page_specific_javascript_bundle_tag('u2f')
 
 .row.prepend-top-default
   .col-lg-3
@@ -30,7 +30,7 @@
               To add the entry manually, provide the following details to the application on your phone.
             %p.prepend-top-0.append-bottom-0
               Account:
-              = current_user.email
+              = @account_string
             %p.prepend-top-0.append-bottom-0
               Key:
               = current_user.otp_secret.scan(/.{4}/).join(' ')
@@ -96,4 +96,3 @@
   :javascript
     var button = "<a class='btn btn-xs btn-warning pull-right' data-method='patch' href='#{skip_profile_two_factor_auth_path}'>Configure it later</a>";
     $(".flash-alert").append(button);
-

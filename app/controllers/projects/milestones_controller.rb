@@ -13,14 +13,17 @@ class Projects::MilestonesController < Projects::ApplicationController
   def index
     @milestones =
       case params[:state]
-      when 'all' then @project.milestones.reorder(due_date: :desc, title: :asc)
-      when 'closed' then @project.milestones.closed.reorder(due_date: :desc, title: :asc)
-      else @project.milestones.active.reorder(due_date: :asc, title: :asc)
+      when 'all' then @project.milestones
+      when 'closed' then @project.milestones.closed
+      else @project.milestones.active
       end
 
-    @milestones = @milestones.includes(:project)
+    @sort = params[:sort] || 'due_date_asc'
+    @milestones = @milestones.sort(@sort)
+
     respond_to do |format|
       format.html do
+        @milestones = @milestones.includes(:project)
         @milestones = @milestones.page(params[:page])
       end
       format.json do
@@ -112,6 +115,6 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def milestone_params
-    params.require(:milestone).permit(:title, :description, :due_date, :state_event)
+    params.require(:milestone).permit(:title, :description, :start_date, :due_date, :state_event)
   end
 end

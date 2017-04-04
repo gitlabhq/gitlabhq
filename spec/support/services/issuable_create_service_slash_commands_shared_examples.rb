@@ -2,14 +2,16 @@
 # It can take a `default_params`.
 
 shared_examples 'new issuable record that supports slash commands' do
-  let!(:project) { create(:project) }
+  let!(:project) { create(:project, :repository) }
   let(:user) { create(:user).tap { |u| project.team << [u, :master] } }
   let(:assignee) { create(:user) }
   let!(:milestone) { create(:milestone, project: project) }
   let!(:labels) { create_list(:label, 3, project: project) }
-  let(:base_params) { { title: FFaker::Lorem.sentence(3) } }
+  let(:base_params) { { title: 'My issuable title' } }
   let(:params) { base_params.merge(defined?(default_params) ? default_params : {}).merge(example_params) }
   let(:issuable) { described_class.new(project, user, params).execute }
+
+  before { project.team << [assignee, :master] }
 
   context 'with labels in command only' do
     let(:example_params) do
@@ -55,8 +57,8 @@ shared_examples 'new issuable record that supports slash commands' do
   context 'with assignee and milestone in params and command' do
     let(:example_params) do
       {
-        assignee: build_stubbed(:user),
-        milestone_id: double(:milestone),
+        assignee: create(:user),
+        milestone_id: 1,
         description: %(/assign @#{assignee.username}\n/milestone %"#{milestone.name}")
       }
     end

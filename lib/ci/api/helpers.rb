@@ -1,7 +1,7 @@
 module Ci
   module API
     module Helpers
-      BUILD_TOKEN_HEADER = "HTTP_BUILD_TOKEN"
+      BUILD_TOKEN_HEADER = "HTTP_BUILD_TOKEN".freeze
       BUILD_TOKEN_PARAM = :token
       UPDATE_RUNNER_EVERY = 10 * 60
 
@@ -13,8 +13,19 @@ module Ci
         forbidden! unless current_runner
       end
 
-      def authenticate_build_token!(build)
-        forbidden! unless build_token_valid?(build)
+      def authenticate_build!(build)
+        validate_build!(build) do
+          forbidden! unless build_token_valid?(build)
+        end
+      end
+
+      def validate_build!(build)
+        not_found! unless build
+
+        yield if block_given?
+
+        forbidden!('Project has been deleted!') unless build.project
+        forbidden!('Build has been erased!') if build.erased?
       end
 
       def runner_registration_token_valid?
@@ -49,7 +60,7 @@ module Ci
       end
 
       def build_not_found!
-        if headers['User-Agent'].match(/gitlab-ci-multi-runner \d+\.\d+\.\d+(~beta\.\d+\.g[0-9a-f]+)? /)
+        if headers['User-Agent'].to_s =~ /gitlab-ci-multi-runner \d+\.\d+\.\d+(~beta\.\d+\.g[0-9a-f]+)? /
           no_content!
         else
           not_found!
@@ -62,7 +73,7 @@ module Ci
 
       def get_runner_version_from_params
         return unless params["info"].present?
-        attributes_for_keys(["name", "version", "revision", "platform", "architecture"], params["info"])
+        attributes_for_keys(%w(name version revision platform architecture), params["info"])
       end
 
       def max_artifacts_size

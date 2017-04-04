@@ -79,11 +79,11 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
     end
   end
 
-  context 'cross-project reference' do
-    let(:namespace) { create(:namespace, name: 'cross-reference') }
+  context 'cross-project / cross-namespace complete reference' do
+    let(:namespace) { create(:namespace) }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
-    let(:snippet)   { create(:project_snippet, project: project2) }
-    let(:reference) { snippet.to_reference(project) }
+    let!(:snippet)  { create(:project_snippet, project: project2) }
+    let(:reference) { "#{project2.path_with_namespace}$#{snippet.id}" }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
@@ -92,9 +92,82 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
         to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
     end
 
-    it 'links with adjacent text' do
+    it 'link has valid text' do
       doc = reference_filter("See (#{reference}.)")
-      expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
+
+      expect(doc.css('a').first.text).to eql(reference)
+    end
+
+    it 'has valid text' do
+      doc = reference_filter("See (#{reference}.)")
+
+      expect(doc.text).to eql("See (#{reference}.)")
+    end
+
+    it 'ignores invalid snippet IDs on the referenced project' do
+      exp = act = "See #{invalidate_reference(reference)}"
+
+      expect(reference_filter(act).to_html).to eq exp
+    end
+  end
+
+  context 'cross-project / same-namespace complete reference' do
+    let(:namespace) { create(:namespace) }
+    let(:project)   { create(:empty_project, :public, namespace: namespace) }
+    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let!(:snippet)  { create(:project_snippet, project: project2) }
+    let(:reference) { "#{project2.path_with_namespace}$#{snippet.id}" }
+
+    it 'links to a valid reference' do
+      doc = reference_filter("See #{reference}")
+
+      expect(doc.css('a').first.attr('href')).
+        to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
+    end
+
+    it 'link has valid text' do
+      doc = reference_filter("See (#{project2.path}$#{snippet.id}.)")
+
+      expect(doc.css('a').first.text).to eql("#{project2.path}$#{snippet.id}")
+    end
+
+    it 'has valid text' do
+      doc = reference_filter("See (#{project2.path}$#{snippet.id}.)")
+
+      expect(doc.text).to eql("See (#{project2.path}$#{snippet.id}.)")
+    end
+
+    it 'ignores invalid snippet IDs on the referenced project' do
+      exp = act = "See #{invalidate_reference(reference)}"
+
+      expect(reference_filter(act).to_html).to eq exp
+    end
+  end
+
+  context 'cross-project shorthand reference' do
+    let(:namespace) { create(:namespace) }
+    let(:project)   { create(:empty_project, :public, namespace: namespace) }
+    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let!(:snippet)  { create(:project_snippet, project: project2) }
+    let(:reference) { "#{project2.path}$#{snippet.id}" }
+
+    it 'links to a valid reference' do
+      doc = reference_filter("See #{reference}")
+
+      expect(doc.css('a').first.attr('href')).
+        to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
+    end
+
+    it 'link has valid text' do
+      doc = reference_filter("See (#{project2.path}$#{snippet.id}.)")
+
+      expect(doc.css('a').first.text).to eql("#{project2.path}$#{snippet.id}")
+    end
+
+    it 'has valid text' do
+      doc = reference_filter("See (#{project2.path}$#{snippet.id}.)")
+
+      expect(doc.text).to eql("See (#{project2.path}$#{snippet.id}.)")
     end
 
     it 'ignores invalid snippet IDs on the referenced project' do

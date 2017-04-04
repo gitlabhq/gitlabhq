@@ -13,7 +13,7 @@ GET /broadcast_messages
 ```
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/broadcast_messages
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/broadcast_messages
 ```
 
 Example response:
@@ -43,7 +43,7 @@ GET /broadcast_messages/:id
 | `id`        | integer  | yes      | Broadcast message ID      |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/broadcast_messages/1
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/broadcast_messages/1
 ```
 
 Example response:
@@ -62,10 +62,6 @@ Example response:
 
 ## Create a broadcast message
 
-Responds with `400 Bad request` when the `message` parameter is missing or the
-`color` or `font` values are invalid, and `201 Created` when the broadcast
-message was successfully created.
-
 ```
 POST /broadcast_messages
 ```
@@ -79,7 +75,7 @@ POST /broadcast_messages
 | `font`      | string   | no       | Foreground color hex code                            |
 
 ```bash
-curl --data "message=Deploy in progress&color=#cecece" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/broadcast_messages
+curl --data "message=Deploy in progress&color=#cecece" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/broadcast_messages
 ```
 
 Example response:
@@ -112,7 +108,7 @@ PUT /broadcast_messages/:id
 | `font`      | string   | no       | Foreground color hex code |
 
 ```bash
-curl --request PUT --data "message=Update message&color=#000" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/broadcast_messages/1
+curl --request PUT --data "message=Update message&color=#000" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/broadcast_messages/1
 ```
 
 Example response:
@@ -140,19 +136,5 @@ DELETE /broadcast_messages/:id
 | `id`        | integer  | yes      | Broadcast message ID      |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/broadcast_messages/1
-```
-
-Example response:
-
-```json
-{
-    "message":"Update message",
-    "starts_at":"2016-08-26T00:41:35.060Z",
-    "ends_at":"2016-08-26T01:41:35.060Z",
-    "color":"#000",
-    "font":"#FFFFFF",
-    "id":1,
-    "active": true
-}
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/broadcast_messages/1
 ```

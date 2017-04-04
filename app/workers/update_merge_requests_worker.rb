@@ -10,8 +10,5 @@ class UpdateMergeRequestsWorker
     return unless user
 
     MergeRequests::RefreshService.new(project, user).execute(oldrev, newrev, ref)
-
-    push_data = Gitlab::DataBuilder::Push.build(project, user, oldrev, newrev, ref, [])
-    SystemHooksService.new.execute_hooks(push_data, :push_hooks)
   end
 end

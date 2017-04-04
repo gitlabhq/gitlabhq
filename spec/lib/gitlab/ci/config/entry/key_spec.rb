@@ -21,7 +21,7 @@ describe Gitlab::Ci::Config::Entry::Key do
     end
 
     context 'when entry value is not correct' do
-      let(:config) { [ 'incorrect' ] }
+      let(:config) { ['incorrect'] }
 
       describe '#errors' do
         it 'saves errors' do
@@ -29,6 +29,12 @@ describe Gitlab::Ci::Config::Entry::Key do
             .to include 'key config should be a string or symbol'
         end
       end
+    end
+  end
+
+  describe '.default' do
+    it 'returns default key' do
+      expect(described_class.default).to eq 'default'
     end
   end
 end

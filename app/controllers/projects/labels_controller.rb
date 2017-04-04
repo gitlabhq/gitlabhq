@@ -2,12 +2,13 @@ class Projects::LabelsController < Projects::ApplicationController
   include ToggleSubscriptionAction
 
   before_action :module_enabled
-  before_action :label, only: [:edit, :update, :destroy]
+  before_action :label, only: [:edit, :update, :destroy, :promote]
   before_action :find_labels, only: [:index, :set_priorities, :remove_priority, :toggle_subscription]
   before_action :authorize_read_label!
   before_action :authorize_admin_labels!, only: [:new, :create, :edit, :update,
                                                  :generate, :destroy, :remove_priority,
                                                  :set_priorities]
+  before_action :authorize_admin_group!, only: [:promote]
 
   respond_to :js, :html
 
@@ -28,7 +29,7 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def create
-    @label = @project.labels.create(label_params)
+    @label = Labels::CreateService.new(label_params).execute(project: @project)
 
     if @label.valid?
       respond_to do |format|
@@ -47,7 +48,9 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def update
-    if @label.update_attributes(label_params)
+    @label = Labels::UpdateService.new(label_params).execute(@label)
+
+    if @label.valid?
       redirect_to namespace_project_labels_path(@project.namespace, @project)
     else
       render :edit
@@ -71,13 +74,7 @@ class Projects::LabelsController < Projects::ApplicationController
     @label.destroy
     @labels = find_labels
 
-    respond_to do |format|
-      format.html do
-        redirect_to(namespace_project_labels_path(@project.namespace, @project),
-                    notice: 'Label was removed')
-      end
-      format.js
-    end
+    redirect_to(namespace_project_labels_path(@project.namespace, @project), notice: 'Label was removed')
   end
 
   def remove_priority
@@ -108,6 +105,32 @@ class Projects::LabelsController < Projects::ApplicationController
     end
   end
 
+  def promote
+    promote_service = Labels::PromoteService.new(@project, @current_user)
+
+    begin
+      return render_404 unless promote_service.execute(@label)
+      respond_to do |format|
+        format.html do
+          redirect_to(namespace_project_labels_path(@project.namespace, @project),
+                      notice: 'Label was promoted to a Group Label')
+        end
+        format.js
+      end
+    rescue ActiveRecord::RecordInvalid => e
+      Gitlab::AppLogger.error "Failed to promote label \"#{@label.title}\" to group label"
+      Gitlab::AppLogger.error e
+
+      respond_to do |format|
+        format.html do
+          redirect_to(namespace_project_labels_path(@project.namespace, @project),
+                      notice: 'Failed to promote label due to internal error. Please contact administrators.')
+        end
+        format.js
+      end
+    end
+  end
+
   protected
 
   def module_enabled
@@ -134,5 +157,9 @@ class Projects::LabelsController < Projects::ApplicationController
 
   def authorize_admin_labels!
     return render_404 unless can?(current_user, :admin_label, @project)
+  end
+
+  def authorize_admin_group!
+    return render_404 unless can?(current_user, :admin_group, @project.group)
   end
 end

@@ -3,6 +3,9 @@ class GitPushService < BaseService
   include Gitlab::CurrentSettings
   include Gitlab::Access
 
+  # The N most recent commits to process in a single push payload.
+  PROCESS_COMMIT_LIMIT = 100
+
   # This method will be called after each git update
   # and only if the provided user and project are present in GitLab.
   #
@@ -74,7 +77,17 @@ class GitPushService < BaseService
       types = []
     end
 
-    ProjectCacheWorker.perform_async(@project.id, types)
+    ProjectCacheWorker.perform_async(@project.id, types, [:commit_count, :repository_size])
+  end
+
+  # Schedules processing of commit messages.
+  def process_commit_messages
+    default = is_default_branch?
+
+    push_commits.last(PROCESS_COMMIT_LIMIT).each do |commit|
+      ProcessCommitWorker.
+        perform_async(project.id, current_user.id, commit.to_hash, default)
+    end
   end
 
   protected
@@ -85,6 +98,8 @@ class GitPushService < BaseService
     #
     UpdateMergeRequestsWorker
       .perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
+
+    SystemHookPushWorker.perform_async(build_push_data.dup, :push_hooks)
 
     EventCreateService.new.push(@project, current_user, build_push_data)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
@@ -125,17 +140,6 @@ class GitPushService < BaseService
       }
 
       ProtectedBranches::CreateService.new(@project, current_user, params).execute
-    end
-  end
-
-  # Extract any GFM references from the pushed commit messages. If the configured issue-closing regex is matched,
-  # close the referenced Issue. Create cross-reference Notes corresponding to any other referenced Mentionables.
-  def process_commit_messages
-    default = is_default_branch?
-
-    @push_commits.each do |commit|
-      ProcessCommitWorker.
-        perform_async(project.id, current_user.id, commit.id, default)
     end
   end
 

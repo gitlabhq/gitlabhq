@@ -11,6 +11,6 @@ class GroupDestroyWorker
 
     user = User.find(user_id)
 
-    DestroyGroupService.new(group, user).execute
+    Groups::DestroyService.new(group, user).execute
   end
 end

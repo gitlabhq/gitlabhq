@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::Highlight, lib: true do
   include RepoHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:commit) { project.commit(sample_commit.id) }
 
@@ -12,10 +12,10 @@ describe Gitlab::Highlight, lib: true do
       Gitlab::Highlight.highlight_lines(project.repository, commit.id, 'files/ruby/popen.rb')
     end
 
-    it 'should properly highlight all the lines' do
-      expect(lines[4]).to eq(%Q{<span id="LC5" class="line">  <span class="kp">extend</span> <span class="nb">self</span></span>\n})
-      expect(lines[21]).to eq(%Q{<span id="LC22" class="line">    <span class="k">unless</span> <span class="no">File</span><span class="p">.</span><span class="nf">directory?</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></span>\n})
-      expect(lines[26]).to eq(%Q{<span id="LC27" class="line">    <span class="vi">@cmd_status</span> <span class="o">=</span> <span class="mi">0</span></span>\n})
+    it 'highlights all the lines properly' do
+      expect(lines[4]).to eq(%Q{<span id="LC5" class="line" lang="ruby">  <span class="kp">extend</span> <span class="nb">self</span></span>\n})
+      expect(lines[21]).to eq(%Q{<span id="LC22" class="line" lang="ruby">    <span class="k">unless</span> <span class="no">File</span><span class="p">.</span><span class="nf">directory?</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></span>\n})
+      expect(lines[26]).to eq(%Q{<span id="LC27" class="line" lang="ruby">    <span class="vi">@cmd_status</span> <span class="o">=</span> <span class="mi">0</span></span>\n})
     end
 
     describe 'with CRLF' do
@@ -26,7 +26,7 @@ describe Gitlab::Highlight, lib: true do
       end
 
       it 'strips extra LFs' do
-        expect(lines[0]).to eq("<span id=\"LC1\" class=\"line\">test  </span>")
+        expect(lines[0]).to eq("<span id=\"LC1\" class=\"line\" lang=\"plaintext\">test  </span>")
       end
     end
   end

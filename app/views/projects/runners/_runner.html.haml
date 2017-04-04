@@ -1,4 +1,4 @@
-%li.runner{id: dom_id(runner)}
+%li.runner{ id: dom_id(runner) }
   %h4
     = runner_status_icon(runner)
     %span.monospace
@@ -31,6 +31,6 @@
       = runner.description
   - if runner.tag_list.present?
     %p
-      - runner.tag_list.each do |tag|
+      - runner.tag_list.sort.each do |tag|
         %span.label.label-primary
           = tag

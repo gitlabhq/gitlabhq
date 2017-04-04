@@ -1,11 +1,13 @@
 require 'spec_helper'
 
 describe PipelinesEmailService do
+  include EmailHelpers
+
   let(:pipeline) do
     create(:ci_pipeline, project: project, sha: project.commit('master').sha)
   end
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:recipient) { 'test@gitlab.com' }
 
   let(:data) do

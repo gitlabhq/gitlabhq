@@ -2,7 +2,8 @@ require 'uri'
 
 class IrkerService < Service
   prop_accessor :server_host, :server_port, :default_irc_uri
-  prop_accessor :colorize_messages, :recipients, :channels
+  prop_accessor :recipients, :channels
+  boolean_accessor :colorize_messages
   validates :recipients, presence: true, if: :activated?
 
   before_validation :get_channels
@@ -16,11 +17,11 @@ class IrkerService < Service
     'gateway.'
   end
 
-  def to_param
+  def self.to_param
     'irker'
   end
 
-  def supported_events
+  def self.supported_events
     %w(push)
   end
 
@@ -32,7 +33,8 @@ class IrkerService < Service
   end
 
   def settings
-    { server_host: server_host.present? ? server_host : 'localhost',
+    {
+      server_host: server_host.present? ? server_host : 'localhost',
       server_port: server_port.present? ? server_port : 6659
     }
   end
@@ -95,7 +97,7 @@ class IrkerService < Service
     rescue URI::InvalidURIError
     end
 
-    unless uri.present? and default_irc_uri.nil?
+    unless uri.present? && default_irc_uri.nil?
       begin
         new_recipient = URI.join(default_irc_uri, '/', recipient).to_s
         uri = consider_uri(URI.parse(new_recipient))

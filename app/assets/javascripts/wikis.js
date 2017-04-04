@@ -1,38 +1,69 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, space-before-blocks, prefer-rest-params, wrap-iife, consistent-return, one-var, one-var-declaration-per-line, no-undef, prefer-template, padded-blocks, max-len */
+/* eslint-disable no-param-reassign */
+/* global Breakpoints */
 
-/*= require latinise */
+require('./breakpoints');
+require('vendor/jquery.nicescroll');
 
-(function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+((global) => {
+  class Wikis {
+    constructor() {
+      this.bp = Breakpoints.get();
+      this.sidebarEl = document.querySelector('.js-wiki-sidebar');
+      this.sidebarExpanded = false;
+      $(this.sidebarEl).niceScroll();
 
-  this.Wikis = (function() {
-    function Wikis() {
-      this.slugify = bind(this.slugify, this);
-      $('.new-wiki-page').on('submit', (function(_this) {
-        return function(e) {
-          var field, path, slug;
-          $('[data-error~=slug]').addClass('hidden');
-          field = $('#new_wiki_path');
-          slug = _this.slugify(field.val());
-          if (slug.length > 0) {
-            path = field.attr('data-wikis-path');
-            location.href = path + '/' + slug;
-            return e.preventDefault();
-          }
-        };
-      })(this));
+      const sidebarToggles = document.querySelectorAll('.js-sidebar-wiki-toggle');
+      for (let i = 0; i < sidebarToggles.length; i += 1) {
+        sidebarToggles[i].addEventListener('click', e => this.handleToggleSidebar(e));
+      }
+
+      this.newWikiForm = document.querySelector('form.new-wiki-page');
+      if (this.newWikiForm) {
+        this.newWikiForm.addEventListener('submit', e => this.handleNewWikiSubmit(e));
+      }
+
+      window.addEventListener('resize', () => this.renderSidebar());
+      this.renderSidebar();
     }
 
-    Wikis.prototype.dasherize = function(value) {
-      return value.replace(/[_\s]+/g, '-');
-    };
+    handleNewWikiSubmit(e) {
+      if (!this.newWikiForm) return;
 
-    Wikis.prototype.slugify = function(value) {
-      return this.dasherize(value.trim().toLowerCase().latinise());
-    };
+      const slugInput = this.newWikiForm.querySelector('#new_wiki_path');
+      const slug = gl.text.slugify(slugInput.value);
 
-    return Wikis;
+      if (slug.length > 0) {
+        const wikisPath = slugInput.getAttribute('data-wikis-path');
+        window.location.href = `${wikisPath}/${slug}`;
+        e.preventDefault();
+      }
+    }
 
-  })();
+    handleToggleSidebar(e) {
+      e.preventDefault();
+      this.sidebarExpanded = !this.sidebarExpanded;
+      this.renderSidebar();
+    }
 
-}).call(this);
+    sidebarCanCollapse() {
+      const bootstrapBreakpoint = this.bp.getBreakpointSize();
+      return bootstrapBreakpoint === 'xs' || bootstrapBreakpoint === 'sm';
+    }
+
+    renderSidebar() {
+      if (!this.sidebarEl) return;
+      const { classList } = this.sidebarEl;
+      if (this.sidebarExpanded || !this.sidebarCanCollapse()) {
+        if (!classList.contains('right-sidebar-expanded')) {
+          classList.remove('right-sidebar-collapsed');
+          classList.add('right-sidebar-expanded');
+        }
+      } else if (classList.contains('right-sidebar-expanded')) {
+        classList.add('right-sidebar-collapsed');
+        classList.remove('right-sidebar-expanded');
+      }
+    }
+  }
+
+  global.Wikis = Wikis;
+})(window.gl || (window.gl = {}));

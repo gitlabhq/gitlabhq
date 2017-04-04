@@ -18,13 +18,13 @@ class Projects::ApplicationController < ApplicationController
       # to
       #   localhost/group/project
       #
-      if id =~ /\.git\Z/
+      if params[:format] == 'git'
         redirect_to request.original_url.gsub(/\.git\/?\Z/, '')
         return
       end
 
       project_path = "#{namespace}/#{id}"
-      @project = Project.find_with_namespace(project_path)
+      @project = Project.find_by_full_path(project_path)
 
       if can?(current_user, :read_project, @project) && !@project.pending_delete?
         if @project.path_with_namespace != project_path
@@ -83,11 +83,15 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def apply_diff_view_cookie!
-    @show_changes_tab = params[:view].present?
     cookies.permanent[:diff_view] = params.delete(:view) if params[:view].present?
   end
 
   def builds_enabled
     return render_404 unless @project.feature_available?(:builds, current_user)
+  end
+
+  def update_ref
+    branch_exists = @repository.find_branch(@target_branch)
+    @ref = @target_branch if branch_exists
   end
 end

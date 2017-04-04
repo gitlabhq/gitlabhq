@@ -1,8 +1,8 @@
 module Gitlab
   module GithubImport
-    class PullRequestFormatter < BaseFormatter
-      delegate :exists?, :project, :ref, :repo, :sha, to: :source_branch, prefix: true
-      delegate :exists?, :project, :ref, :repo, :sha, to: :target_branch, prefix: true
+    class PullRequestFormatter < IssuableFormatter
+      delegate :user, :project, :ref, :repo, :sha, to: :source_branch, prefix: true
+      delegate :user, :exists?, :project, :ref, :repo, :sha, :short_sha, to: :target_branch, prefix: true
 
       def attributes
         {
@@ -20,20 +20,13 @@ module Gitlab
           author_id: author_id,
           assignee_id: assignee_id,
           created_at: raw_data.created_at,
-          updated_at: raw_data.updated_at
+          updated_at: raw_data.updated_at,
+          imported: true
         }
       end
 
       def project_association
         :merge_requests
-      end
-
-      def find_condition
-        { iid: number }
-      end
-
-      def number
-        raw_data.number
       end
 
       def valid?
@@ -45,9 +38,20 @@ module Gitlab
       end
 
       def source_branch_name
-        @source_branch_name ||= begin
-          source_branch_exists? ? source_branch_ref : "pull/#{number}/#{source_branch_ref}"
-        end
+        @source_branch_name ||=
+          if cross_project? || !source_branch_exists?
+            source_branch_name_prefixed
+          else
+            source_branch_ref
+          end
+      end
+
+      def source_branch_name_prefixed
+        "gh-#{target_branch_short_sha}/#{number}/#{source_branch_user}/#{source_branch_ref}"
+      end
+
+      def source_branch_exists?
+        !cross_project? && source_branch.exists?
       end
 
       def target_branch
@@ -55,61 +59,31 @@ module Gitlab
       end
 
       def target_branch_name
-        @target_branch_name ||= begin
-          target_branch_exists? ? target_branch_ref : "pull/#{number}/#{target_branch_ref}"
-        end
+        @target_branch_name ||= target_branch_exists? ? target_branch_ref : target_branch_name_prefixed
       end
 
-      def url
-        raw_data.url
+      def target_branch_name_prefixed
+        "gl-#{target_branch_short_sha}/#{number}/#{target_branch_user}/#{target_branch_ref}"
+      end
+
+      def cross_project?
+        return true if source_branch_repo.nil?
+
+        source_branch_repo.id != target_branch_repo.id
+      end
+
+      def opened?
+        state == 'opened'
       end
 
       private
 
-      def assigned?
-        raw_data.assignee.present?
-      end
-
-      def assignee_id
-        if assigned?
-          gitlab_user_id(raw_data.assignee.id)
-        end
-      end
-
-      def author
-        raw_data.user.login
-      end
-
-      def author_id
-        gitlab_author_id || project.creator_id
-      end
-
-      def body
-        raw_data.body || ""
-      end
-
-      def description
-        if gitlab_author_id
-          body
-        else
-          formatter.author_line(author) + body
-        end
-      end
-
-      def milestone
-        if raw_data.milestone.present?
-          project.milestones.find_by(iid: raw_data.milestone.number)
-        end
-      end
-
       def state
-        @state ||= if raw_data.state == 'closed' && raw_data.merged_at.present?
-                     'merged'
-                   elsif raw_data.state == 'closed'
-                     'closed'
-                   else
-                     'opened'
-                   end
+        if raw_data.state == 'closed' && raw_data.merged_at.present?
+          'merged'
+        else
+          super
+        end
       end
     end
   end

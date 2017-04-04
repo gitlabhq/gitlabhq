@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::StopEnvironmentsService, services: true do
-  let(:project) { create(:project, :private) }
+  let(:project) { create(:project, :private, :repository) }
   let(:user) { create(:user) }
 
   let(:service) { described_class.new(project, user) }
@@ -42,10 +42,10 @@ describe Ci::StopEnvironmentsService, services: true do
           end
         end
 
-        context 'when environment is not stoppable' do
+        context 'when environment is not stopped' do
           before do
             allow_any_instance_of(Environment)
-              .to receive(:stoppable?).and_return(false)
+              .to receive(:state).and_return(:stopped)
           end
 
           it 'does not stop environment' do

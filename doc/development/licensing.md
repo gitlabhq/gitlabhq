@@ -64,6 +64,10 @@ Libraries with the following licenses are unacceptable for use:
 - [GNU AGPLv3][AGPLv3]: AGPL-licensed libraries cannot be linked to from non-GPL projects.
 - [Open Software License (OSL)][OSL]: is a copyleft license. In addition, the FSF [recommend against its use][OSL-GNU].
 
+## Requesting Approval for Licenses
+
+Libraries that are not listed in the [Acceptable Licenses][Acceptable-Licenses] or [Unacceptable Licenses][Unacceptable-Licenses] list can be submitted to the legal team for review. Please create an issue in the [Organization Repository][Org-Repo] and cc `@gl-legal`. After a decision has been made, the original requestor is responsible for updating this document.
+
 ## Notes
 
 Decisions regarding the GNU GPL licenses are based on information provided by [The GNU Project][GNU-GPL-FAQ], as well as [the Open Source Initiative][OSI-GPL], which both state that linking GPL libraries makes the program itself GPL.
@@ -96,3 +100,6 @@ Gems which are included only in the "development" or "test" groups by Bundler ar
 [OSI-GPL]: https://opensource.org/faq#linking-proprietary-code
 [OSL]: https://opensource.org/licenses/OSL-3.0
 [OSL-GNU]: https://www.gnu.org/licenses/license-list.en.html#OSL
+[Org-Repo]: https://gitlab.com/gitlab-com/organization
+[Acceptable-Licenses]: #acceptable-licenses
+[Unacceptable-Licenses]: #unacceptable-licenses

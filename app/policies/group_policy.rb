@@ -4,7 +4,7 @@ class GroupPolicy < BasePolicy
     return unless @user
 
     globally_viewable = @subject.public? || (@subject.internal? && !@user.external?)
-    member = @subject.users.include?(@user)
+    member = @subject.users_with_parents.include?(@user)
     owner = @user.admin? || @subject.has_owner?(@user)
     master = owner || @subject.has_master?(@user)
 

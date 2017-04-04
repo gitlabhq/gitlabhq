@@ -86,6 +86,10 @@ describe Gitlab::ImportExport::Reader, lib: true  do
       expect(described_class.new(shared: shared).project_tree).to match(include: [{ issues: { methods: [:name] } }])
     end
 
+    it 'generates the correct hash for group members' do
+      expect(described_class.new(shared: shared).group_members_tree).to match({ include: { user: { only: [:email] } } })
+    end
+
     def setup_yaml(hash)
       allow(YAML).to receive(:load_file).with(test_config).and_return(hash)
     end

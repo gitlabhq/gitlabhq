@@ -1,0 +1,4 @@
+---
+title: Fix GitHub Importer for PRs of deleted forked repositories
+merge_request: 9992
+author:

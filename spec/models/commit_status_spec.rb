@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe CommitStatus, models: true do
-  let(:project) { create(:project) }
+describe CommitStatus, :models do
+  let(:project) { create(:project, :repository) }
 
   let(:pipeline) do
     create(:ci_pipeline, project: project, sha: project.commit.id)
@@ -127,7 +127,7 @@ describe CommitStatus, models: true do
   end
 
   describe '.latest' do
-    subject { CommitStatus.latest.order(:id) }
+    subject { described_class.latest.order(:id) }
 
     let(:statuses) do
       [create_status(name: 'aa', ref: 'bb', status: 'running'),
@@ -143,7 +143,7 @@ describe CommitStatus, models: true do
   end
 
   describe '.running_or_pending' do
-    subject { CommitStatus.running_or_pending.order(:id) }
+    subject { described_class.running_or_pending.order(:id) }
 
     let(:statuses) do
       [create_status(name: 'aa', ref: 'bb', status: 'running'),
@@ -158,8 +158,22 @@ describe CommitStatus, models: true do
     end
   end
 
+  describe '.after_stage' do
+    subject { described_class.after_stage(0) }
+
+    let(:statuses) do
+      [create_status(name: 'aa', stage_idx: 0),
+       create_status(name: 'cc', stage_idx: 1),
+       create_status(name: 'aa', stage_idx: 2)]
+    end
+
+    it 'returns statuses from second and third stage' do
+      is_expected.to eq(statuses.values_at(1, 2))
+    end
+  end
+
   describe '.exclude_ignored' do
-    subject { CommitStatus.exclude_ignored.order(:id) }
+    subject { described_class.exclude_ignored.order(:id) }
 
     let(:statuses) do
       [create_status(when: 'manual', status: 'skipped'),
@@ -171,11 +185,32 @@ describe CommitStatus, models: true do
        create_status(allow_failure: true, status: 'success'),
        create_status(allow_failure: true, status: 'failed'),
        create_status(allow_failure: false, status: 'success'),
-       create_status(allow_failure: false, status: 'failed')]
+       create_status(allow_failure: false, status: 'failed'),
+       create_status(allow_failure: true, status: 'manual'),
+       create_status(allow_failure: false, status: 'manual')]
     end
 
     it 'returns statuses without what we want to ignore' do
-      is_expected.to eq(statuses.values_at(1, 2, 4, 5, 6, 8, 9))
+      is_expected.to eq(statuses.values_at(0, 1, 2, 3, 4, 5, 6, 8, 9, 11))
+    end
+  end
+
+  describe '.failed_but_allowed' do
+    subject { described_class.failed_but_allowed.order(:id) }
+
+    let(:statuses) do
+      [create_status(allow_failure: true, status: 'success'),
+       create_status(allow_failure: true, status: 'failed'),
+       create_status(allow_failure: false, status: 'success'),
+       create_status(allow_failure: false, status: 'failed'),
+       create_status(allow_failure: true, status: 'canceled'),
+       create_status(allow_failure: false, status: 'canceled'),
+       create_status(allow_failure: true, status: 'manual'),
+       create_status(allow_failure: false, status: 'manual')]
+    end
+
+    it 'returns statuses without what we want to ignore' do
+      is_expected.to eq(statuses.values_at(1, 4))
     end
   end
 
@@ -196,49 +231,6 @@ describe CommitStatus, models: true do
 
       it 'returns the set value' do
         is_expected.to eq(value)
-      end
-    end
-  end
-
-  describe '#stages' do
-    before do
-      create :commit_status, pipeline: pipeline, stage: 'build', name: 'linux', stage_idx: 0, status: 'success'
-      create :commit_status, pipeline: pipeline, stage: 'build', name: 'mac', stage_idx: 0, status: 'failed'
-      create :commit_status, pipeline: pipeline, stage: 'deploy', name: 'staging', stage_idx: 2, status: 'running'
-      create :commit_status, pipeline: pipeline, stage: 'test', name: 'rspec', stage_idx: 1, status: 'success'
-    end
-
-    context 'stages list' do
-      subject { CommitStatus.where(pipeline: pipeline).stages }
-
-      it 'returns ordered list of stages' do
-        is_expected.to eq(%w[build test deploy])
-      end
-    end
-
-    context 'stages with statuses' do
-      subject { CommitStatus.where(pipeline: pipeline).latest.stages_status }
-
-      it 'returns list of stages with statuses' do
-        is_expected.to eq({
-          'build' => 'failed',
-          'test' => 'success',
-          'deploy' => 'running'
-        })
-      end
-
-      context 'when build is retried' do
-        before do
-          create :commit_status, pipeline: pipeline, stage: 'build', name: 'mac', stage_idx: 0, status: 'success'
-        end
-
-        it 'ignores a previous state' do
-          is_expected.to eq({
-            'build' => 'success',
-            'test' => 'success',
-            'deploy' => 'running'
-          })
-        end
       end
     end
   end
@@ -274,6 +266,70 @@ describe CommitStatus, models: true do
         commit_status.name = name
 
         is_expected.to eq(group_name)
+      end
+    end
+  end
+
+  describe '#detailed_status' do
+    let(:user) { create(:user) }
+
+    it 'returns a detailed status' do
+      expect(commit_status.detailed_status(user))
+        .to be_a Gitlab::Ci::Status::Success
+    end
+  end
+
+  describe '#sortable_name' do
+    tests = {
+      'karma' => ['karma'],
+      'karma 0 20' => ['karma ', 0, ' ', 20],
+      'karma 10 20' => ['karma ', 10, ' ', 20],
+      'karma 50:100' => ['karma ', 50, ':', 100],
+      'karma 1.10' => ['karma ', 1, '.', 10],
+      'karma 1.5.1' => ['karma ', 1, '.', 5, '.', 1],
+      'karma 1 a' => ['karma ', 1, ' a']
+    }
+
+    tests.each do |name, sortable_name|
+      it "'#{name}' sorts as '#{sortable_name}'" do
+        commit_status.name = name
+        expect(commit_status.sortable_name).to eq(sortable_name)
+      end
+    end
+  end
+
+  describe '#locking_enabled?' do
+    before do
+      commit_status.lock_version = 100
+    end
+
+    subject { commit_status.locking_enabled? }
+
+    context "when changing status" do
+      before do
+        commit_status.status = "running"
+      end
+
+      it "lock" do
+        is_expected.to be true
+      end
+
+      it "raise exception when trying to update" do
+        expect{ commit_status.save }.to raise_error(ActiveRecord::StaleObjectError)
+      end
+    end
+
+    context "when changing description" do
+      before do
+        commit_status.description = "test"
+      end
+
+      it "do not lock" do
+        is_expected.to be false
+      end
+
+      it "save correctly" do
+        expect(commit_status.save).to be true
       end
     end
   end

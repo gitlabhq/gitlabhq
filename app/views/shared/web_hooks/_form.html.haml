@@ -1,12 +1,9 @@
-- page_title "Webhooks"
-- context_title = @project ? 'project' : 'group'
-
 .row.prepend-top-default
   .col-lg-3
     %h4.prepend-top-0
       = page_title
     %p
-      #{link_to "Webhooks", help_page_path("web_hooks/web_hooks")} can be
+      #{link_to "Webhooks", help_page_path("user/project/integrations/webhooks")} can be
       used for binding events when something is happening within the project.
   .col-lg-9.append-bottom-default
     = form_for hook, as: :hook, url: polymorphic_path(url_components + [:hooks]) do |f|
@@ -69,9 +66,9 @@
             = f.check_box :build_events, class: 'pull-left'
             .prepend-left-20
               = f.label :build_events, class: 'list-label' do
-                %strong Build events
+                %strong Jobs events
               %p.light
-                This URL will be triggered when the build status changes
+                This URL will be triggered when the job status changes
           %li
             = f.check_box :pipeline_events, class: 'pull-left'
             .prepend-left-20

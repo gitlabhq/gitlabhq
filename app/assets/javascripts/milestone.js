@@ -1,4 +1,7 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-use-before-define, camelcase, quotes, object-shorthand, no-shadow, no-unused-vars, no-undef, comma-dangle, no-var, prefer-template, no-underscore-dangle, consistent-return, one-var, one-var-declaration-per-line, default-case, prefer-arrow-callback, padded-blocks, max-len */
+/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-use-before-define, camelcase, quotes, object-shorthand, no-shadow, no-unused-vars, comma-dangle, no-var, prefer-template, no-underscore-dangle, consistent-return, one-var, one-var-declaration-per-line, default-case, prefer-arrow-callback, max-len */
+/* global Flash */
+/* global Sortable */
+
 (function() {
   this.Milestone = (function() {
     Milestone.updateIssue = function(li, issue_url, data) {
@@ -6,11 +9,9 @@
         type: "PUT",
         url: issue_url,
         data: data,
-        success: (function(_this) {
-          return function(_data) {
-            return _this.successCallback(_data, li);
-          };
-        })(this),
+        success: function(_data) {
+          return Milestone.successCallback(_data, li);
+        },
         error: function(data) {
           return new Flash("Issue update failed", 'alert');
         },
@@ -25,11 +26,9 @@
         type: "PUT",
         url: sort_issues_url,
         data: data,
-        success: (function(_this) {
-          return function(_data) {
-            return _this.successCallback(_data);
-          };
-        })(this),
+        success: function(_data) {
+          return Milestone.successCallback(_data);
+        },
         error: function() {
           return new Flash("Issues update failed", 'alert');
         },
@@ -44,11 +43,9 @@
         type: "PUT",
         url: sort_mr_url,
         data: data,
-        success: (function(_this) {
-          return function(_data) {
-            return _this.successCallback(_data);
-          };
-        })(this),
+        success: function(_data) {
+          return Milestone.successCallback(_data);
+        },
         error: function(data) {
           return new Flash("Issue update failed", 'alert');
         },
@@ -61,11 +58,9 @@
         type: "PUT",
         url: merge_request_url,
         data: data,
-        success: (function(_this) {
-          return function(_data) {
-            return _this.successCallback(_data, li);
-          };
-        })(this),
+        success: function(_data) {
+          return Milestone.successCallback(_data, li);
+        },
         error: function(data) {
           return new Flash("Issue update failed", 'alert');
         },
@@ -79,65 +74,29 @@
         img_tag = $('<img/>');
         img_tag.attr('src', data.assignee.avatar_url);
         img_tag.addClass('avatar s16');
-        $(element).find('.assignee-icon').html(img_tag);
+        $(element).find('.assignee-icon img').replaceWith(img_tag);
       } else {
-        $(element).find('.assignee-icon').html('');
+        $(element).find('.assignee-icon').empty();
       }
-      return $(element).effect('highlight');
     };
 
     function Milestone() {
       var oldMouseStart;
-      oldMouseStart = $.ui.sortable.prototype._mouseStart;
-      $.ui.sortable.prototype._mouseStart = function(event, overrideHandle, noActivation) {
-        this._trigger("beforeStart", event, this._uiHash());
-        return oldMouseStart.apply(this, [event, overrideHandle, noActivation]);
-      };
       this.bindIssuesSorting();
       this.bindMergeRequestSorting();
       this.bindTabsSwitching();
     }
 
     Milestone.prototype.bindIssuesSorting = function() {
-      return $("#issues-list-unassigned, #issues-list-ongoing, #issues-list-closed").sortable({
-        connectWith: ".issues-sortable-list",
-        dropOnEmpty: true,
-        items: "li:not(.ui-sort-disabled)",
-        beforeStart: function(event, ui) {
-          return $(".issues-sortable-list").css("min-height", ui.item.outerHeight());
-        },
-        stop: function(event, ui) {
-          return $(".issues-sortable-list").css("min-height", "0px");
-        },
-        update: function(event, ui) {
-          var data;
-          // Prevents sorting from container which element has been removed.
-          if ($(this).find(ui.item).length > 0) {
-            data = $(this).sortable("serialize");
-            return Milestone.sortIssues(data);
-          }
-        },
-        receive: function(event, ui) {
-          var data, issue_id, issue_url, new_state;
-          new_state = $(this).data('state');
-          issue_id = ui.item.data('iid');
-          issue_url = ui.item.data('url');
-          data = (function() {
-            switch (new_state) {
-              case 'ongoing':
-                return "issue[assignee_id]=" + gon.current_user_id;
-              case 'unassigned':
-                return "issue[assignee_id]=";
-              case 'closed':
-                return "issue[state_event]=close";
-            }
-          })();
-          if ($(ui.sender).data('state') === "closed") {
-            data += "&issue[state_event]=reopen";
-          }
-          return Milestone.updateIssue(ui.item, issue_url, data);
-        }
-      }).disableSelection();
+      $('#issues-list-unassigned, #issues-list-ongoing, #issues-list-closed').each(function (i, el) {
+        this.createSortable(el, {
+          group: 'issue-list',
+          listEls: $('.issues-sortable-list'),
+          fieldName: 'issue',
+          sortCallback: Milestone.sortIssues,
+          updateCallback: Milestone.updateIssue,
+        });
+      }.bind(this));
     };
 
     Milestone.prototype.bindTabsSwitching = function() {
@@ -152,46 +111,64 @@
     };
 
     Milestone.prototype.bindMergeRequestSorting = function() {
-      return $("#merge_requests-list-unassigned, #merge_requests-list-ongoing, #merge_requests-list-closed").sortable({
-        connectWith: ".merge_requests-sortable-list",
-        dropOnEmpty: true,
-        items: "li:not(.ui-sort-disabled)",
-        beforeStart: function(event, ui) {
-          return $(".merge_requests-sortable-list").css("min-height", ui.item.outerHeight());
+      $("#merge_requests-list-unassigned, #merge_requests-list-ongoing, #merge_requests-list-closed").each(function (i, el) {
+        this.createSortable(el, {
+          group: 'merge-request-list',
+          listEls: $(".merge_requests-sortable-list:not(#merge_requests-list-merged)"),
+          fieldName: 'merge_request',
+          sortCallback: Milestone.sortMergeRequests,
+          updateCallback: Milestone.updateMergeRequest,
+        });
+      }.bind(this));
+    };
+
+    Milestone.prototype.createSortable = function(el, opts) {
+      return Sortable.create(el, {
+        group: opts.group,
+        filter: '.is-disabled',
+        forceFallback: true,
+        onStart: function(e) {
+          opts.listEls.css('min-height', e.item.offsetHeight);
         },
-        stop: function(event, ui) {
-          return $(".merge_requests-sortable-list").css("min-height", "0px");
+        onEnd: function () {
+          opts.listEls.css("min-height", "0px");
         },
-        update: function(event, ui) {
-          var data;
-          data = $(this).sortable("serialize");
-          return Milestone.sortMergeRequests(data);
+        onUpdate: function(e) {
+          var ids = this.toArray(),
+            data;
+
+          if (ids.length) {
+            data = ids.map(function(id) {
+              return 'sortable_' + opts.fieldName + '[]=' + id;
+            }).join('&');
+
+            opts.sortCallback(data);
+          }
         },
-        receive: function(event, ui) {
-          var data, merge_request_id, merge_request_url, new_state;
-          new_state = $(this).data('state');
-          merge_request_id = ui.item.data('iid');
-          merge_request_url = ui.item.data('url');
+        onAdd: function (e) {
+          var data, issuableId, issuableUrl, newState;
+          newState = e.to.dataset.state;
+          issuableUrl = e.item.dataset.url;
           data = (function() {
-            switch (new_state) {
+            switch (newState) {
               case 'ongoing':
-                return "merge_request[assignee_id]=" + gon.current_user_id;
+                return opts.fieldName + '[assignee_id]=' + gon.current_user_id;
               case 'unassigned':
-                return "merge_request[assignee_id]=";
+                return opts.fieldName + '[assignee_id]=';
               case 'closed':
-                return "merge_request[state_event]=close";
+                return opts.fieldName + '[state_event]=close';
             }
           })();
-          if ($(ui.sender).data('state') === "closed") {
-            data += "&merge_request[state_event]=reopen";
+          if (e.from.dataset.state === 'closed') {
+            data += '&' + opts.fieldName + '[state_event]=reopen';
           }
-          return Milestone.updateMergeRequest(ui.item, merge_request_url, data);
+
+          opts.updateCallback(e.item, issuableUrl, data);
+          this.options.onUpdate.call(this, e);
         }
-      }).disableSelection();
+      });
     };
 
     return Milestone;
-
   })();
-
-}).call(this);
+}).call(window);

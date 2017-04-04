@@ -3,7 +3,8 @@ module Gitlab
     class Command < BaseCommand
       COMMANDS = [
         Gitlab::ChatCommands::IssueShow,
-        Gitlab::ChatCommands::IssueCreate,
+        Gitlab::ChatCommands::IssueNew,
+        Gitlab::ChatCommands::IssueSearch,
         Gitlab::ChatCommands::Deploy,
       ].freeze
 
@@ -12,50 +13,31 @@ module Gitlab
 
         if command
           if command.allowed?(project, current_user)
-            present command.new(project, current_user, params).execute(match)
+            command.new(project, current_user, params).execute(match)
           else
-            access_denied
+            Gitlab::ChatCommands::Presenters::Access.new.access_denied
           end
         else
-          help(help_messages)
+          Gitlab::ChatCommands::Help.new(project, current_user, params).execute(available_commands, params[:text])
         end
       end
 
-      private
-
       def match_command
         match = nil
-        service = available_commands.find do |klass|
-          match = klass.match(command)
-        end
+        service =
+          available_commands.find do |klass|
+            match = klass.match(params[:text])
+          end
 
         [service, match]
       end
 
-      def help_messages
-        available_commands.map(&:help_message)
-      end
+      private
 
       def available_commands
         COMMANDS.select do |klass|
           klass.available?(project)
         end
-      end
-
-      def command
-        params[:text]
-      end
-
-      def help(messages)
-        Mattermost::Presenter.help(messages, params[:command])
-      end
-
-      def access_denied
-        Mattermost::Presenter.access_denied
-      end
-
-      def present(resource)
-        Mattermost::Presenter.present(resource)
       end
     end
   end

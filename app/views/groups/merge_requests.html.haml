@@ -2,17 +2,17 @@
 
 .top-area
   = render 'shared/issuable/nav', type: :merge_requests
-  .nav-controls
-    = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New Merge Request"
+  - if current_user
+    .nav-controls
+      = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New Merge Request"
 
 = render 'shared/issuable/filter', type: :merge_requests
 
 .row-content-block.second-block
   Only merge requests from
-  %strong #{@group.name}
+  %strong= @group.name
   group are listed here.
   - if current_user
     To see all merge requests you should visit #{link_to 'dashboard', merge_requests_dashboard_path} page.
 
-.prepend-top-default
-  = render 'shared/merge_requests'
+= render 'shared/merge_requests'

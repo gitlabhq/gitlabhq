@@ -1,9 +1,11 @@
 require 'spec_helper'
 
 feature "Admin Health Check", feature: true do
+  include StubENV
   include WaitForAjax
 
   before do
+    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
     login_as :admin
   end
 
@@ -12,11 +14,12 @@ feature "Admin Health Check", feature: true do
       visit admin_health_check_path
     end
 
-    it { page.has_text? 'Health Check' }
-    it { page.has_text? 'Health information can be retrieved' }
-
     it 'has a health check access token' do
+      page.has_text? 'Health Check'
+      page.has_text? 'Health information can be retrieved'
+
       token = current_application_settings.health_check_access_token
+
       expect(page).to have_content("Access token is #{token}")
       expect(page).to have_selector('#health-check-token', text: token)
     end

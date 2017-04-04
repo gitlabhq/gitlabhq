@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::Checks::ChangeAccess, lib: true do
   describe '#exec' do
     let(:user) { create(:user) }
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:user_access) { Gitlab::UserAccess.new(user, project: project) }
     let(:changes) do
       {
@@ -12,8 +12,16 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
         ref: 'refs/heads/master'
       }
     end
+    let(:protocol) { 'ssh' }
 
-    subject { described_class.new(changes, project: project, user_access: user_access).exec }
+    subject do
+      described_class.new(
+        changes,
+        project: project,
+        user_access: user_access,
+        protocol: protocol
+      ).exec
+    end
 
     before { allow(user_access).to receive(:can_do_action?).with(:push_code).and_return(true) }
 
@@ -56,7 +64,6 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
 
       it 'returns an error if the user is not allowed to do forced pushes to protected branches' do
         expect(Gitlab::Checks::ForcePush).to receive(:force_push?).and_return(true)
-        expect(user_access).to receive(:can_do_action?).with(:force_push_code_to_protected_branches).and_return(false)
 
         expect(subject.status).to be(false)
         expect(subject.message).to eq('You are not allowed to force push code to a protected branch on this project.')
@@ -88,8 +95,6 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
         end
 
         it 'returns an error if the user is not allowed to delete protected branches' do
-          expect(user_access).to receive(:can_do_action?).with(:remove_protected_branches).and_return(false)
-
           expect(subject.status).to be(false)
           expect(subject.message).to eq('You are not allowed to delete protected branches from this project.')
         end

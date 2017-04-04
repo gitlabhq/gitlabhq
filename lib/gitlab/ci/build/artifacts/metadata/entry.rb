@@ -27,6 +27,8 @@ module Gitlab
           end
         end
 
+        delegate :empty?, to: :children
+
         def directory?
           blank_node? || @path.end_with?('/')
         end
@@ -89,10 +91,6 @@ module Gitlab
 
         def exists?
           blank_node? || @entries.include?(@path)
-        end
-
-        def empty?
-          children.empty?
         end
 
         def total_size

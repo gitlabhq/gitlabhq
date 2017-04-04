@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe MergeRequests::GetUrlsService do
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:service) { MergeRequests::GetUrlsService.new(project) }
   let(:source_branch) { "my_branch" }
   let(:new_merge_request_url) { "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=#{source_branch}" }
@@ -128,6 +128,16 @@ describe MergeRequests::GetUrlsService do
           url: show_merge_request_url,
           new_merge_request: false
         }])
+      end
+    end
+
+    context 'when printing_merge_request_link_enabled is false' do
+      it 'returns empty array' do
+        project.update!(printing_merge_request_link_enabled: false)
+
+        result = service.execute(existing_branch_changes)
+
+        expect(result).to eq([])
       end
     end
   end

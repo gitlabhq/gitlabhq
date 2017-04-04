@@ -67,7 +67,7 @@ describe Projects::LabelsController do
     end
 
     def list_labels
-      get :index, namespace_id: project.namespace.to_param, project_id: project.to_param
+      get :index, namespace_id: project.namespace.to_param, project_id: project
     end
   end
 
@@ -76,7 +76,7 @@ describe Projects::LabelsController do
       let(:personal_project) { create(:empty_project, namespace: user.namespace) }
 
       it 'creates labels' do
-        post :generate, namespace_id: personal_project.namespace.to_param, project_id: personal_project.to_param
+        post :generate, namespace_id: personal_project.namespace.to_param, project_id: personal_project
 
         expect(response).to have_http_status(302)
       end
@@ -84,7 +84,7 @@ describe Projects::LabelsController do
 
     context 'project belonging to a group' do
       it 'creates labels' do
-        post :generate, namespace_id: project.namespace.to_param, project_id: project.to_param
+        post :generate, namespace_id: project.namespace.to_param, project_id: project
 
         expect(response).to have_http_status(302)
       end
@@ -109,7 +109,52 @@ describe Projects::LabelsController do
     end
 
     def toggle_subscription(label)
-      post :toggle_subscription, namespace_id: project.namespace.to_param, project_id: project.to_param, id: label.to_param
+      post :toggle_subscription, namespace_id: project.namespace.to_param, project_id: project, id: label.to_param
+    end
+  end
+
+  describe 'POST #promote' do
+    let!(:promoted_label_name) { "Promoted Label" }
+    let!(:label_1) { create(:label, title: promoted_label_name, project: project) }
+
+    context 'not group owner' do
+      it 'denies access' do
+        post :promote, namespace_id: project.namespace.to_param, project_id: project, id: label_1.to_param
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'group owner' do
+      before do
+        GroupMember.add_users_to_group(group, [user], :owner)
+      end
+
+      it 'gives access' do
+        post :promote, namespace_id: project.namespace.to_param, project_id: project, id: label_1.to_param
+
+        expect(response).to redirect_to(namespace_project_labels_path)
+      end
+
+      it 'promotes the label' do
+        post :promote, namespace_id: project.namespace.to_param, project_id: project, id: label_1.to_param
+
+        expect(Label.where(id: label_1.id)).to be_empty
+        expect(GroupLabel.find_by(title: promoted_label_name)).not_to be_nil
+      end
+
+      context 'service raising InvalidRecord' do
+        before do
+          expect_any_instance_of(Labels::PromoteService).to receive(:execute) do |label|
+            raise ActiveRecord::RecordInvalid.new(label_1)
+          end
+        end
+
+        it 'returns to label list' do
+          post :promote, namespace_id: project.namespace.to_param, project_id: project, id: label_1.to_param
+          expect(response).to redirect_to(namespace_project_labels_path)
+        end
+      end
     end
   end
 end

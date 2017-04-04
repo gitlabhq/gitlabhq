@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::ArtifactsController do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   let(:pipeline) do
     create(:ci_pipeline,
