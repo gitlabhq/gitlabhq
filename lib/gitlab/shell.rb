@@ -88,7 +88,6 @@ module Gitlab
       true
     end
 
-<<<<<<< HEAD
     def list_remote_tags(storage, name, remote)
       output, status = Popen.popen([gitlab_shell_projects_path, 'list-remote-tags', storage, "#{name}.git", remote])
       tags_with_targets = []
@@ -117,8 +116,6 @@ module Gitlab
       Hash[*tags_with_targets]
     end
 
-=======
->>>>>>> ce/master
     # Fetch remote for repository
     #
     # name - project path with namespace

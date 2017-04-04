@@ -188,10 +188,7 @@ describe Notify do
         let(:merge_author) { create(:user) }
         let(:merge_request) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project) }
         let(:merge_request_with_description) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project, description: 'My awesome description') }
-<<<<<<< HEAD
         let(:merge_request_with_approver) { create(:merge_request_with_approver, author: current_user, assignee: assignee, source_project: project, target_project: project) }
-=======
->>>>>>> ce/master
 
         describe 'that are new' do
           subject { Notify.new_merge_request_email(merge_request.assignee_id, merge_request.id) }

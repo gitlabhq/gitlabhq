@@ -4,17 +4,10 @@ module Db
       class AbuseReport
         def self.seed
           Gitlab::Seeder.quiet do
-<<<<<<< HEAD
-            (::AbuseReport.default_per_page + 3).times do
-              reported_user =
-                ::User.create!(
-                  username: FFaker::Internet.user_name,
-=======
             (::AbuseReport.default_per_page + 3).times do |i|
               reported_user =
                 ::User.create!(
                   username: "reported_user_#{i}",
->>>>>>> ce/master
                   name: FFaker::Name.name,
                   email: FFaker::Internet.email,
                   confirmed_at: DateTime.now,

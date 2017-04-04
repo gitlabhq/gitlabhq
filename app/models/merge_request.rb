@@ -3,11 +3,8 @@ class MergeRequest < ActiveRecord::Base
   include Issuable
   include Referable
   include Sortable
-<<<<<<< HEAD
   include Elastic::MergeRequestsSearch
   include Approvable
-=======
->>>>>>> ce/master
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
