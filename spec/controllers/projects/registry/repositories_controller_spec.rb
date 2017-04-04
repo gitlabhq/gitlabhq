@@ -6,6 +6,7 @@ describe Projects::Registry::RepositoriesController do
 
   before do
     sign_in(user)
+    stub_container_registry_config(enabled: true)
   end
 
   context 'when user has access to registry' do
