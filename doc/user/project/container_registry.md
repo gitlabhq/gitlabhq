@@ -10,7 +10,7 @@
 - Starting from GitLab 8.12, if you have 2FA enabled in your account, you need
   to pass a personal access token instead of your password in order to login to
   GitLab's Container Registry.
-- Multiple level image names support was added in GitLab 8.15
+- Multiple level image names support was added in GitLab 9.1
 
 With the Docker Container Registry integrated into GitLab, every project can
 have its own space to store its Docker images.
@@ -63,6 +63,16 @@ Your image will be named after the following scheme:
 
 ```
 <registry URL>/<namespace>/<project>/<image>
+```
+
+GitLab supports up to three levels of image repository names.
+
+Following image repository names are valid:
+
+```
+registry.example.com/<namespace>/<project>
+registry.example.com/<namespace>/<project>/image
+registry.example.com/<namespace>/<project>/image/type
 ```
 
 ## Use images from GitLab Container Registry
