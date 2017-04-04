@@ -205,7 +205,8 @@ class Admin::UsersController < Admin::ApplicationController
 
   def user_params_ee
     [
-      :note
+      :note,
+      namespace_attributes: [:id, :shared_runners_minutes_limit]
     ]
   end
 end
