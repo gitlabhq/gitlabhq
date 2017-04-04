@@ -1,9 +1,10 @@
 class Burndown
-  attr_accessor :start_date, :end_date, :issues_count, :issues_weight
+  attr_accessor :start_date, :due_date, :end_date, :issues_count, :issues_weight
 
   def initialize(milestone)
     @milestone = milestone
     @start_date = @milestone.start_date
+    @due_date = @milestone.due_date
     @end_date = @milestone.due_date
     @end_date = Date.today if @end_date.present? && @end_date > Date.today
 
@@ -38,7 +39,7 @@ class Burndown
   end
 
   def valid?
-    start_date && end_date
+    start_date && due_date
   end
 
   private
