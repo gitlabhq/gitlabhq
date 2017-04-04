@@ -1,6 +1,7 @@
 module Ci
   class TriggerSchedule < ActiveRecord::Base
     extend Ci::Model
+    include Importable
 
     acts_as_paranoid
 
@@ -9,10 +10,10 @@ module Ci
 
     delegate :ref, to: :trigger
 
-    validates :trigger, presence: true
-    validates :cron, cron: true, presence: true
-    validates :cron_time_zone, presence: true
-    validates :ref, ref: true, presence: true
+    validates :trigger, presence: { unless: :importing? }
+    validates :cron, cron: true, presence: { unless: :importing? }
+    validates :cron_time_zone, presence: { unless: :importing? }
+    validates :ref, presence: { unless: :importing? }
     # validate :check_cron_frequency
 
     after_create :schedule_next_run!
