@@ -29,15 +29,20 @@ module Projects
 
       Project.transaction do
         project.team.truncate
-        project.destroy!
+
+        unless remove_legacy_registry_tags
+          raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
+        end
 
         unless remove_repository(repo_path)
-          raise_error('Failed to remove project repository. Please try again or contact administrator')
+          raise_error('Failed to remove project repository. Please try again or contact administrator.')
         end
 
         unless remove_repository(wiki_path)
-          raise_error('Failed to remove wiki repository. Please try again or contact administrator')
+          raise_error('Failed to remove wiki repository. Please try again or contact administrator.')
         end
+
+        project.destroy!
       end
 
       log_info("Project \"#{project.path_with_namespace}\" was removed")
@@ -61,6 +66,18 @@ module Projects
         GitlabShellWorker.perform_in(5.minutes, :remove_repository, project.repository_storage_path, new_path)
       else
         false
+      end
+    end
+
+    ##
+    # This method makes sure that we correctly remove registry tags
+    # for legacy image repository (when repository path equals project path).
+    #
+    def remove_legacy_registry_tags
+      return true unless Gitlab.config.registry.enabled
+
+      ContainerRepository.build_root_repository(project).tap do |repository|
+        return repository.delete_tags! if repository.has_tags?
       end
     end
 

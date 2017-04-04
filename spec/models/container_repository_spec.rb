@@ -195,4 +195,22 @@ describe ContainerRepository do
       end
     end
   end
+
+  describe '.build_root_repository' do
+    let(:repository) do
+      described_class.build_root_repository(project)
+    end
+
+    it 'fabricates a root repository object' do
+      expect(repository).to be_root_repository
+    end
+
+    it 'assignes it to the correct project' do
+      expect(repository.project).to eq project
+    end
+
+    it 'does not persist it' do
+      expect(repository).not_to be_persisted
+    end
+  end
 end

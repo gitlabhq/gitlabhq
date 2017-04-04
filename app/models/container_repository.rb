@@ -70,4 +70,8 @@ class ContainerRepository < ActiveRecord::Base
   def self.create_from_path!(path)
     build_from_path(path).tap(&:save!)
   end
+
+  def self.build_root_repository(project)
+    self.new(project: project, name: '')
+  end
 end
