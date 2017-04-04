@@ -122,6 +122,32 @@ describe Users::CreateService, services: true do
         end
       end
 
+      context 'when password_automatically_set parameter is true' do
+        let(:params) do
+          {
+            name: 'John Doe',
+            username: 'jduser',
+            email: 'jd@example.com',
+            password: 'mydummypass',
+            password_automatically_set: true
+          }
+        end
+
+        it 'persists the given attributes' do
+          user = service.execute
+          user.reload
+
+          expect(user).to have_attributes(
+            name: params[:name],
+            username: params[:username],
+            email: params[:email],
+            password: params[:password],
+            created_by_id: admin_user.id,
+            password_automatically_set: params[:password_automatically_set]
+          )
+        end
+      end
+
       context 'when skip_confirmation parameter is true' do
         let(:params) do
           { name: 'John Doe', username: 'jduser', email: 'jd@example.com', password: 'mydummypass', skip_confirmation: true }
