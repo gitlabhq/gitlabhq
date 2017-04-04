@@ -1,7 +1,7 @@
 import MemoryGraph from '../../vue_shared/components/memory_graph';
 
 export default {
-  name: 'MRWidgetMemoryUsage',
+  name: 'MemoryUsage',
   props: {
     memoryFrom: { type: Number, required: true },
     memoryTo: { type: Number, required: true },
