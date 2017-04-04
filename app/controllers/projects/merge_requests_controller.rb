@@ -486,28 +486,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
-  # TODO: @oswaldo - remove it when deleting old widget parts
   def ci_status
     pipeline = @merge_request.head_pipeline
     @pipelines = @merge_request.all_pipelines
 
-    if pipeline
-      status = pipeline.status
-      coverage = pipeline.try(:coverage)
-
-      status = "success_with_warnings" if pipeline.success? && pipeline.has_warnings?
-
-      status ||= "preparing"
-    else
-      ci_service = @merge_request.source_project.try(:ci_service)
-      status = ci_service.commit_status(merge_request.diff_head_sha, merge_request.source_branch) if ci_service
-    end
-
     response = {
       title: merge_request.title,
       sha: (merge_request.diff_head_commit.short_id if merge_request.diff_head_sha),
-      status: status,
-      coverage: coverage,
+      status: MergeRequestPresenter.new(merge_request).ci_status,
+      coverage: pipeline.try(:coverage),
       has_ci: @merge_request.has_ci?,
       pipeline: pipeline.try(:id),
       stages: PipelineSerializer
