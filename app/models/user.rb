@@ -169,6 +169,8 @@ class User < ActiveRecord::Base
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
 
+  accepts_nested_attributes_for :namespace
+
   state_machine :state, initial: :active do
     event :block do
       transition active: :blocked
