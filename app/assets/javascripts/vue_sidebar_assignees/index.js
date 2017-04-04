@@ -25,7 +25,12 @@ const sidebarAssigneesOptions = () => ({
     const currentUserId = parseInt(element.dataset.userId, 10);
 
     const service = new SidebarAssigneesService(path, field);
-    const store = new SidebarAssigneesStore(currentUserId, service, rootPath, editable);
+    const store = new SidebarAssigneesStore({
+      currentUserId,
+      service,
+      rootPath,
+      editable,
+    });
 
     return {
       store,

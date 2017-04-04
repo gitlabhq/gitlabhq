@@ -2,7 +2,9 @@
 import '~/flash';
 
 export default class SidebarAssigneesStore {
-  constructor(currentUserId, service, rootPath, editable) {
+  constructor(store) {
+    const { currentUserId, service, rootPath, editable } = store;
+
     this.currentUserId = currentUserId;
     this.service = service;
     this.rootPath = rootPath;
@@ -42,7 +44,7 @@ export default class SidebarAssigneesStore {
   saveUsers() {
     const ids = this.users.map(u => u.id);
     // If there are no ids, that means we have to unassign (which is id = 0)
-    const payload = ids.length > 0 ? ids : 0;
+    const payload = ids.length > 0 ? ids : [0];
 
     this.loading = true;
     this.service.update(payload)
