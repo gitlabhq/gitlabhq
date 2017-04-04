@@ -7,13 +7,13 @@ describe Ci::TriggerSchedule, models: true do
 
   describe '#schedule_next_run!' do
     let(:trigger_schedule) { create(:ci_trigger_schedule, :nightly) }
+    let(:next_time) { Gitlab::Ci::CronParser.new(trigger_schedule.cron, trigger_schedule.cron_timezone).next_time_from(Time.now) }
 
     before do
       trigger_schedule.schedule_next_run!
     end
 
     it 'updates next_run_at' do
-      next_time = Gitlab::Ci::CronParser.new(trigger_schedule.cron, trigger_schedule.cron_timezone).next_time_from(Time.now)
       expect(Ci::TriggerSchedule.last.next_run_at).to eq(next_time)
     end
   end
