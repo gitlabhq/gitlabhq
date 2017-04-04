@@ -11,11 +11,7 @@ module Gitlab
 
       def next_time_from(time)
         cron_line = try_parse_cron(@cron, @cron_time_zone)
-        if cron_line.present?
-          cron_line.next_time(time).in_time_zone(Time.zone)
-        else
-          nil
-        end
+        cron_line.next_time(time).in_time_zone(Time.zone) if cron_line.present?
       end
 
       def validation
