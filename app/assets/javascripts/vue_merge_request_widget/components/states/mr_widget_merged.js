@@ -70,9 +70,9 @@ export default {
         <div class="legend"></div>
         <p>
           The changes were merged into
-          <a :href="mr.targetBranchPath" class="label-branch">
-            {{mr.targetBranch}}
-          </a>
+          <span class="label-branch">
+            <a :href="mr.targetBranchPath">{{mr.targetBranch}}</a>
+          </span>
         </p>
         <p v-if="mr.sourceBranchRemoved">The source branch has been removed.</p>
         <p v-if="shouldShowRemoveSourceBranch">
