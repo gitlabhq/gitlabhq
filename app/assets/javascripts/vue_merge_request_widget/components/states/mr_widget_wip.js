@@ -1,4 +1,5 @@
 /* global Flash */
+import eventHub from '../../event_hub';
 
 export default {
   name: 'MRWidgetWIP',
@@ -12,8 +13,7 @@ export default {
       this.service.removeWIP()
         .then(res => res.json())
         .then((res) => {
-          // TODO: Update store better
-          this.mr.setData(res);
+          eventHub.$emit('UpdateWidgetData', res);
           new Flash('The merge request can now be merged.', 'notice'); // eslint-disable-line
           $('.merge-request .detail-page-description .title').text(this.mr.title);
         });

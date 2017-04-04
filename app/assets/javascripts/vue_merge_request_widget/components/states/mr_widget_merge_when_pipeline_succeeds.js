@@ -1,4 +1,5 @@
 import MRWidgetAuthor from '../../components/mr_widget_author';
+import eventHub from '../../event_hub';
 
 export default {
   name: 'MRWidgetMergeWhenPipelineSucceeds',
@@ -30,7 +31,7 @@ export default {
       this.service.cancelAutomaticMerge()
         .then(res => res.json())
         .then((res) => {
-          this.mr.setData(res); // TODO: Should find a better way to update store.
+          eventHub.$emit('UpdateWidgetData', res);
         });
     },
     removeSourceBranch() {

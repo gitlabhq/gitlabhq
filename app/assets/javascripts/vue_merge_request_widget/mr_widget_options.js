@@ -120,6 +120,10 @@ export default {
     eventHub.$on('FailedToMerge', () => {
       this.mr.state = 'failedToMerge';
     });
+
+    eventHub.$on('UpdateWidgetData', (data) => {
+      this.mr.setData(data);
+    });
   },
   mounted() {
     this.checkStatus();
