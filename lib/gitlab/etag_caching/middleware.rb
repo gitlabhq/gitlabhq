@@ -10,6 +10,10 @@ module Gitlab
         {
           regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/issues/\d+/rendered_title\z),
           name: 'issue_title'
+        },
+        {
+          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/pipelines\.json\z),
+          name: 'project_pipelines'
         }
       ].freeze
 

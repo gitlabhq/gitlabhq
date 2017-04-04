@@ -335,6 +335,14 @@ describe Ci::Pipeline, models: true do
       end
     end
 
+    describe 'pipeline ETag caching' do
+      it 'executes ExpirePipelinesCacheService' do
+        expect_any_instance_of(Ci::ExpirePipelineCacheService).to receive(:execute).with(pipeline)
+
+        pipeline.cancel
+      end
+    end
+
     def create_build(name, queued_at = current, started_from = 0)
       create(:ci_build,
              name: name,
