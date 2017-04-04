@@ -300,6 +300,12 @@ ProtectedBranch:
 - name
 - created_at
 - updated_at
+ProtectedTag:
+- id
+- project_id
+- name
+- created_at
+- updated_at
 Project:
 - description
 - issues_enabled
@@ -333,6 +339,14 @@ ProtectedBranch::PushAccessLevel:
 - access_level
 - created_at
 - updated_at
+ProtectedTag::CreateAccessLevel:
+- id
+- protected_tag_id
+- access_level
+- created_at
+- updated_at
+- user_id
+- group_id
 AwardEmoji:
 - id
 - user_id

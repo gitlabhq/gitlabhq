@@ -64,6 +64,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         expect(ProtectedBranch.first.push_access_levels).not_to be_empty
       end
 
+      it 'contains the create access levels on a protected tag' do
+        expect(ProtectedTag.first.create_access_levels).not_to be_empty
+      end
+
       context 'event at forth level of the tree' do
         let(:event) { Event.where(title: 'test levels').first }
 
