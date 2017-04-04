@@ -23,7 +23,7 @@ var Api = {
       return callback(group);
     });
   },
-  users: function(search, options, callback) {
+  users: function(search, options, callback = $.noop) {
     var url = Api.buildUrl("/autocomplete/users.json");
     return $.ajax({
       url,
@@ -35,7 +35,7 @@ var Api = {
     }).done(callback);
   },
   // Return groups list. Filtered by query
-  groups: function(query, options, callback) {
+  groups: function(query, options, callback = $.noop) {
     var url = Api.buildUrl(Api.groupsPath);
     return $.ajax({
       url: url,

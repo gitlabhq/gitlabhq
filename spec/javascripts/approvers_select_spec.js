@@ -1,15 +1,13 @@
-/* global ProjectNew */
+import ApproversSelect from '~/approvers_select';
 
-require('~/project_new');
-
-describe('Project settings', function () {
+describe('ApproversSelect', function () {
   const projectSettingsTemplate = 'projects/edit.html.raw';
   preloadFixtures(projectSettingsTemplate);
 
   beforeEach(() => {
     loadFixtures(projectSettingsTemplate);
     this.$requireApprovalsToggle = $('.js-require-approvals-toggle');
-    this.project = new ProjectNew();
+    this.project = new ApproversSelect();
   });
 
   it('shows approver settings if enabled', () => {
@@ -36,5 +34,11 @@ describe('Project settings', function () {
   it('sets required approvers to 1 if approvers enabled', () => {
     this.$requireApprovalsToggle.click();
     expect($('[name="project[approvals_before_merge]"]').val()).toBe('1');
+  });
+
+  it('sets minimum for approvers field if enabled', () => {
+    expect($('[name="project[approvals_before_merge]"]').attr('min')).toBe('0');
+    this.$requireApprovalsToggle.click();
+    expect($('[name="project[approvals_before_merge]"]').attr('min')).toBe('1');
   });
 });
