@@ -11,12 +11,12 @@ GET /projects/:id/pipelines
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `scope`   | string  | no       | The scope of pipelines, one of: `running`, `pending`, `finished`, `branches`, `tags`; |
-| `status`  | string  | no       | The status of pipelines, one of: `running`, `pending`, `success`, `failed`, `canceled`, `skipped`; |
+| `scope`   | string  | no       | The scope of pipelines, one of: `running`, `pending`, `finished`, `branches`, `tags` |
+| `status`  | string  | no       | The status of pipelines, one of: `running`, `pending`, `success`, `failed`, `canceled`, `skipped` |
 | `ref`     | string  | no       | The ref of pipelines |
 | `yaml_errors`| boolean  | no       | Returns pipelines which have an error of gitlab-ci.yml |
-| `name`| string  | no       | The name of user who triggered pipelines |
-| `username`| string  | no       | The username of user who triggered pipelines |
+| `name`| string  | no       | The name of the user who triggered pipelines |
+| `username`| string  | no       | The username of the user who triggered pipelines |
 | `order_by`| string  | no       | Return requests ordered by `id`, `status`, `ref`, or `user_id`. Default is `id`. Can be combined with `sort`. If you omit `sort`, its default value is used (`desc`) |
 | `sort`    | string  | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`. Can be combined with `order_by`. If you omit `order_by`, its default value is used (`id`) |
 
