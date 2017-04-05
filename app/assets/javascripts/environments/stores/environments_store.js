@@ -121,6 +121,7 @@ export default class EnvironmentsStore {
   }
 
   /**
+<<<<<<< HEAD
    * Toggles deploy board visibility for the provided environment ID.
    *
    * @param  {Object} environment
@@ -163,6 +164,8 @@ export default class EnvironmentsStore {
   }
 
   /*
+=======
+>>>>>>> ce/master
     * Toggles folder open property for the given folder.
     *
     * @param  {Object} folder
@@ -223,4 +226,8 @@ export default class EnvironmentsStore {
 
     return updatedEnvironments;
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> ce/master
 }

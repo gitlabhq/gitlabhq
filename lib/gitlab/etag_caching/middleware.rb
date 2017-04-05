@@ -1,7 +1,7 @@
 module Gitlab
   module EtagCaching
     class Middleware
-      RESERVED_WORDS = ProjectPathValidator::RESERVED.map { |word| "/#{word}/" }.join('|')
+      RESERVED_WORDS = NamespaceValidator::WILDCARD_ROUTES.map { |word| "/#{word}/" }.join('|')
       ROUTE_REGEXP = Regexp.union(
         %r(^(?!.*(#{RESERVED_WORDS})).*/noteable/issue/\d+/notes\z)
       )

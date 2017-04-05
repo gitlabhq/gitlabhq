@@ -61,6 +61,18 @@ export default {
     folderUrl(model) {
       return `${window.location.pathname}/folders/${model.folderName}`;
     },
+
+    isLoadingFolderContent: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+
+  methods: {
+    folderUrl(model) {
+      return `${window.location.pathname}/folders/${model.folderName}`;
+    },
   },
 
   template: `
@@ -86,6 +98,7 @@ export default {
             :toggleDeployBoard="toggleDeployBoard"
             :service="service"></tr>
 
+<<<<<<< HEAD
           <tr v-if="model.hasDeployBoard && model.isDeployBoardVisible" class="js-deploy-board-row">
             <td colspan="6" class="deploy-board-container">
               <deploy-board
@@ -98,6 +111,8 @@ export default {
             </td>
           </tr>
 
+=======
+>>>>>>> ce/master
           <template v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0">
             <tr v-if="isLoadingFolderContent">
               <td colspan="6" class="text-center">

@@ -46,7 +46,7 @@
 }
 
 .issue-boards-page {
-  .page-with-sidebar {
+  .content-wrapper {
     padding-bottom: 0;
   }
 
@@ -101,8 +101,13 @@
 
   @media (min-width: $screen-sm-min) {
     height: 475px; // Needed for PhantomJS
+<<<<<<< HEAD
     height: calc(100vh - 220px);
     min-height: 409px;
+=======
+    height: calc(100vh - 222px);
+    min-height: 475px;
+>>>>>>> ce/master
     transition: width .2s;
 
     &.is-compact {

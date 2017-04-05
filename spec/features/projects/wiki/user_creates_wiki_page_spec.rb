@@ -15,6 +15,10 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
     let(:project) { create(:project, namespace: user.namespace) }
 
     context 'when wiki is empty' do
+      scenario 'commit message field has value "Create home"' do
+        expect(page).to have_field('wiki[message]', with: 'Create home')
+      end
+
       scenario 'directly from the wiki home page' do
         fill_in :wiki_content, with: 'My awesome wiki!'
         click_button 'Create page'
@@ -37,6 +41,9 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
           fill_in :new_wiki_path, with: 'foo'
           click_button 'Create Page'
 
+          # Commit message field should have correct value.
+          expect(page).to have_field('wiki[message]', with: 'Create foo')
+
           fill_in :wiki_content, with: 'My awesome wiki!'
           click_button 'Create page'
 
@@ -51,6 +58,9 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
           fill_in :new_wiki_path, with: 'Spaces in the name'
           click_button 'Create Page'
 
+          # Commit message field should have correct value.
+          expect(page).to have_field('wiki[message]', with: 'Create spaces in the name')
+
           fill_in :wiki_content, with: 'My awesome wiki!'
           click_button 'Create page'
 
@@ -64,6 +74,9 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
 
           fill_in :new_wiki_path, with: 'hyphens-in-the-name'
           click_button 'Create Page'
+
+          # Commit message field should have correct value.
+          expect(page).to have_field('wiki[message]', with: 'Create hyphens in the name')
 
           fill_in :wiki_content, with: 'My awesome wiki!'
           click_button 'Create page'
@@ -80,6 +93,10 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
     let(:project) { create(:project, namespace: create(:group, :public)) }
 
     context 'when wiki is empty' do
+      scenario 'commit message field has value "Create home"' do
+        expect(page).to have_field('wiki[message]', with: 'Create home')
+      end
+
       scenario 'directly from the wiki home page' do
         fill_in :wiki_content, with: 'My awesome wiki!'
         click_button 'Create page'
@@ -100,6 +117,9 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
 
         fill_in :new_wiki_path, with: 'foo'
         click_button 'Create Page'
+
+        # Commit message field should have correct value.
+        expect(page).to have_field('wiki[message]', with: 'Create foo')
 
         fill_in :wiki_content, with: 'My awesome wiki!'
         click_button 'Create page'
