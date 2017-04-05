@@ -7,7 +7,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     @sort = params[:sort]
     @todos = @todos.page(params[:page])
     if @todos.out_of_range? && @todos.total_pages != 0
-      redirect_to url_for(params.merge(page: @todos.total_pages))
+      redirect_to url_for(params.merge(page: @todos.total_pages, only_path: true))
     end
   end
 
