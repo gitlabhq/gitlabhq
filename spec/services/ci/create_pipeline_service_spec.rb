@@ -21,6 +21,12 @@ describe Ci::CreatePipelineService, services: true do
     context 'valid params' do
       let(:pipeline) { execute_service }
 
+      let(:pipeline_on_previous_commit) do
+        execute_service(
+          after: previous_commit_sha_from_ref('master')
+        )
+      end
+
       it { expect(pipeline).to be_kind_of(Ci::Pipeline) }
       it { expect(pipeline).to be_valid }
       it { expect(pipeline).to eq(project.pipelines.last) }
@@ -29,18 +35,8 @@ describe Ci::CreatePipelineService, services: true do
       it { expect(pipeline.builds.first).to be_kind_of(Ci::Build) }
 
       context 'auto-cancel enabled' do
-        let(:pipeline_on_previous_commit) do
-          execute_service(
-            after: previous_commit_sha_from_ref('master')
-          )
-        end
-
         before do
           project.update(auto_cancel_pending_pipelines: 'enabled')
-        end
-
-        def previous_commit_sha_from_ref(ref)
-          project.commit(ref).parent.sha
         end
 
         it 'does not cancel HEAD pipeline' do
@@ -80,6 +76,24 @@ describe Ci::CreatePipelineService, services: true do
 
           expect(pending_pipeline.reload).to have_attributes(status: 'pending', auto_canceled_by_id: nil)
         end
+      end
+
+      context 'auto-cancel disabled' do
+        before do
+          project.update(auto_cancel_pending_pipelines: 'disabled')
+        end
+
+        it 'does not auto cancel pending non-HEAD pipelines' do
+          pipeline_on_previous_commit
+          pipeline
+
+          expect(pipeline_on_previous_commit.reload)
+            .to have_attributes(status: 'pending', auto_canceled_by_id: nil)
+        end
+      end
+
+      def previous_commit_sha_from_ref(ref)
+        project.commit(ref).parent.sha
       end
     end
 
