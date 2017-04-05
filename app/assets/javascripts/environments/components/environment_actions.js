@@ -61,6 +61,7 @@ export default {
           <i class="fa fa-caret-down" aria-hidden="true"></i>
           <i v-if="isLoading" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
         </span>
+      </button>
 
       <ul class="dropdown-menu dropdown-menu-align-right">
         <li v-for="action in actions">
@@ -74,7 +75,6 @@ export default {
           </button>
         </li>
       </ul>
-    </button>
   </div>
   `,
 };
