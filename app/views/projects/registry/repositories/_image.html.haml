@@ -1,7 +1,7 @@
 .container-image.js-toggle-container
   .container-image-head
     = link_to "#", class: "js-toggle-button" do
-      = icon("chevron-down")
+      = icon('chevron-down', 'aria-hidden': 'true')
       = escape_once(image.path)
 
     = clipboard_button(clipboard_text: "docker pull #{image.path}")
@@ -12,7 +12,7 @@
                 title: 'Remove repository',
                 data: { confirm: 'Are you sure?' },
                 method: :delete do
-        = icon('trash cred')
+        = icon('trash cred', 'aria-hidden': 'true')
 
   .container-image-tags.js-toggle-content.hide
     - if image.has_tags?
@@ -28,6 +28,5 @@
                 %th
           = render partial: 'tag', collection: image.tags
     - else
-      %li
-        .nothing-here-block No tags in Container Registry for this container image.
+      .nothing-here-block No tags in Container Registry for this container image.
 
