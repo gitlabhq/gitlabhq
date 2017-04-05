@@ -25,7 +25,7 @@ $(() => {
     let currentView = 'count';
     chart.setData(openIssuesCount, { label: 'Open issues', animate: true });
 
-    $('.burndown-header').on('click', '.btn', function switchData() {
+    $('.js-burndown-data-selector').on('click', 'button', function switchData() {
       const $this = $(this);
       const show = $this.data('show');
       if (currentView !== show) {
