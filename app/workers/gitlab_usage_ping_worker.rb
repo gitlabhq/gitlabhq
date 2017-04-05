@@ -15,7 +15,7 @@ class GitlabUsagePingWorker
 
     begin
       HTTParty.post(url,
-                    body: data.to_json,
+                    body: Gitlab::UsageData.to_json,
                     headers: { 'Content-type' => 'application/json' }
                    )
     rescue HTTParty::Error => e
@@ -25,13 +25,6 @@ class GitlabUsagePingWorker
 
   def try_obtain_lease
     Gitlab::ExclusiveLease.new('gitlab_usage_ping_worker:ping', timeout: LEASE_TIMEOUT).try_obtain
-  end
-
-  def data
-    usage_data = { version: Gitlab::VERSION,
-                   active_user_count: User.active.acount }
-
-    usage_data
   end
 
   def url

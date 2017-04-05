@@ -3,13 +3,6 @@ require 'spec_helper'
 describe GitlabUsagePingWorker do
   subject { GitlabUsagePingWorker.new }
 
-  it "gathers license data" do
-    data = subject.data
-
-    expect(data[:version]).to eq(Gitlab::VERSION)
-    expect(data[:active_user_count]).to eq(User.active.count)
-  end
-
   it "sends POST request" do
     stub_application_setting(usage_ping_enabled: true)
 

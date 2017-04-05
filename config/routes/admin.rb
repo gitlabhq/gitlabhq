@@ -91,6 +91,7 @@ namespace :admin do
 
   resource :application_settings, only: [:show, :update] do
     resources :services, only: [:index, :edit, :update]
+    get :usage_data
     put :reset_runners_token
     put :reset_health_check_token
     put :clear_repository_check_states
