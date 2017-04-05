@@ -20,8 +20,16 @@ describe('MRWidgetHeader', () => {
   });
 
   describe('computed', () => {
+    let vm;
+    beforeEach(() => {
+      vm = createComponent({
+        divergedCommitsCount: 12,
+        sourceBranch: 'mr-widget-refactor',
+        targetBranch: 'master',
+      });
+    });
+
     it('shouldShowCommitsBehindText', () => {
-      const vm = createComponent({ divergedCommitsCount: 12 });
       expect(vm.shouldShowCommitsBehindText).toBeTruthy();
 
       vm.mr.divergedCommitsCount = 0;
@@ -29,7 +37,6 @@ describe('MRWidgetHeader', () => {
     });
 
     it('commitsText', () => {
-      const vm = createComponent({ divergedCommitsCount: 12 });
       expect(vm.commitsText).toEqual('commits');
 
       vm.mr.divergedCommitsCount = 1;
