@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.0.3 (2017-04-05)
+
+- Allow to edit pipelines quota for user.
+- Fixed label resetting when sorting by weight. (James Clark)
+- Fixed issue boards milestone toggle text not updating when filtering.
+- Fixed mirror user dropdown not displaying.
+
 ## 9.0.2 (2017-03-29)
 
 - No changes.
