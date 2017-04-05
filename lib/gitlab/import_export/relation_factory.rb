@@ -29,11 +29,12 @@ module Gitlab
         new(*args).create
       end
 
-      def initialize(relation_sym:, relation_hash:, members_mapper:, user:, project_id:)
+      def initialize(relation_sym:, relation_hash:, members_mapper:, user:, project:)
         @relation_name = OVERRIDES[relation_sym] || relation_sym
-        @relation_hash = relation_hash.except('noteable_id').merge('project_id' => project_id)
+        @relation_hash = relation_hash.except('noteable_id').merge('project_id' => project.id)
         @members_mapper = members_mapper
         @user = user
+        @project = project
         @imported_object_retries = 0
       end
 
@@ -66,7 +67,7 @@ module Gitlab
         remove_encrypted_attributes!
 
         @relation_hash['data'].deep_symbolize_keys! if @relation_name == :events && @relation_hash['data']
-        set_st_diffs if @relation_name == :merge_request_diff
+        set_st_diff_commits if @relation_name == :merge_request_diff
       end
 
       def update_user_references
@@ -105,6 +106,8 @@ module Gitlab
           imported_object do |object|
             object.commit_id = nil
           end
+        elsif @relation_name == :merge_requests
+          MergeRequestParser.new(@project, @relation_hash.delete('diff_head_sha'), imported_object, @relation_hash).parse!
         else
           imported_object
         end
@@ -115,7 +118,7 @@ module Gitlab
 
         # If source and target are the same, populate them with the new project ID.
         if @relation_hash['source_project_id']
-          @relation_hash['source_project_id'] = same_source_and_target? ? project_id : -1
+          @relation_hash['source_project_id'] = same_source_and_target? ? project_id : MergeRequestParser::FORKED_PROJECT_ID
         end
 
         # project_id may not be part of the export, but we always need to populate it if required.
@@ -166,6 +169,7 @@ module Gitlab
       def imported_object
         yield(existing_or_new_object) if block_given?
         existing_or_new_object.importing = true if existing_or_new_object.respond_to?(:importing)
+
         existing_or_new_object
       rescue ActiveRecord::RecordNotUnique
         # as the operation is not atomic, retry in the unlikely scenario an INSERT is
@@ -188,8 +192,11 @@ module Gitlab
                                                                                relation_class: relation_class)
       end
 
-      def set_st_diffs
+      def set_st_diff_commits
         @relation_hash['st_diffs'] = @relation_hash.delete('utf8_st_diffs')
+
+        HashUtil.deep_symbolize_array!(@relation_hash['st_diffs'])
+        HashUtil.deep_symbolize_array_with_date!(@relation_hash['st_commits'])
       end
 
       def existing_or_new_object

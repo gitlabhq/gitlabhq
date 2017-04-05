@@ -1,5 +1,0 @@
----
-title: Fix race condition where a namespace would be deleted before a project was
-  deleted
-merge_request:
-author:
