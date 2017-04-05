@@ -1,12 +1,12 @@
 .row.prepend-top-default
-  .col-lg-3.profile-settings-sidebar
+  .col-xs-12.col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
       New Group
     %p
       A group is a collection of several projects.
       Groups can be private, public or limited to any logged in users.
       You can move existing projects to a group.
-  .col-lg-9
+  .col-xs-12.col-lg-9
     = form_for [:admin, @group], html: { class: "form-horizontal" } do |f|
       = form_errors(@group)
       = render 'shared/group_form', f: f
@@ -18,7 +18,7 @@
       .form-group.col-xs-12.project-visibility-level-holder
         = f.label :visibility_level, class: 'label-light' do
           Visibility Level
-          = link_to icon('question-circle'), help_page_path("public_access/public_access")
+          = link_to icon('question-circle'), help_page_path("public_access/public_access"), 'aria-hidden' => 'true'
         = render('shared/visibility_radios', model_method: :visibility_level, form: f, can_change_visibility_level: can_change_group_visibility_level?(@group), selected_level: visibility_level, form_model: @group)
 
       .form-group.col-xs-12
