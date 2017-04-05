@@ -126,7 +126,7 @@ module Gitlab
         push_rule = project.push_rule
 
         # Prevent tag removal
-        if Gitlab::Git.tag_name(@ref)
+        if @tag_name
           if tag_deletion_denied_by_push_rule?(push_rule)
             return 'You cannot delete a tag'
           end
@@ -134,7 +134,7 @@ module Gitlab
           commit_validation = push_rule.try(:commit_validation?)
 
           # if newrev is blank, the branch was deleted
-          return if Gitlab::Git.blank_ref?(@newrev) || !(commit_validation || validate_path_locks?)
+          return if deletion? || !(commit_validation || validate_path_locks?)
 
           commits.each do |commit|
             if commit_validation
@@ -154,8 +154,8 @@ module Gitlab
       def tag_deletion_denied_by_push_rule?(push_rule)
         push_rule.try(:deny_delete_tag) &&
           protocol != 'web' &&
-          Gitlab::Git.blank_ref?(@newrev) &&
-          protected_tag?(Gitlab::Git.tag_name(@ref))
+          deletion? &&
+          tag_exists?
       end
 
       # If commit does not pass push rule validation the whole push should be rejected.

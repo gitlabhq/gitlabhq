@@ -38,11 +38,9 @@ RSpec.shared_examples "protected branches > access control > EE" do
 
       click_on "Protect"
 
-      within(".js-protected-branch-edit-form") do
-        set_allowed_to(git_operation, users.map(&:name))
-        set_allowed_to(git_operation, groups.map(&:name))
-        set_allowed_to(git_operation, roles.values)
-      end
+      set_allowed_to(git_operation, users.map(&:name), form: ".js-protected-branch-edit-form")
+      set_allowed_to(git_operation, groups.map(&:name), form: ".js-protected-branch-edit-form")
+      set_allowed_to(git_operation, roles.values, form: ".js-protected-branch-edit-form")
 
       wait_for_ajax
 

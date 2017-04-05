@@ -144,16 +144,12 @@ describe Gitlab::Checks::ChangeAccess, lib: true do
       end
 
       context 'tag deletion' do
-        let(:changes) do
-          {
-            oldrev: 'be93687618e4b132087f430a4d8fc3a609c9b77c',
-            newrev: '0000000000000000000000000000000000000000',
-            ref: 'refs/tags/v1.0.0'
-          }
-        end
         let(:push_rule) { create(:push_rule, deny_delete_tag: true) }
+        let(:oldrev) { 'be93687618e4b132087f430a4d8fc3a609c9b77c' }
+        let(:newrev) { '0000000000000000000000000000000000000000' }
+        let(:ref) { 'refs/tags/v1.0.0' }
 
-        before { allow(user_access).to receive(:can_do_action?).with(:admin_project).and_return(true) }
+        before { project.add_master(user) }
 
         it 'returns an error if the rule denies tag deletion' do
           expect(subject.status).to be(false)

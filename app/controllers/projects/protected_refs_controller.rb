@@ -28,7 +28,7 @@ class Projects::ProtectedRefsController < Projects::ApplicationController
 
     if protected_ref.valid?
       respond_to do |format|
-        format.json { render json: protected_ref, status: :ok, include: [:merge_access_levels, :push_access_levels] }
+        format.json { render json: protected_ref, status: :ok, include: access_levels }
       end
     else
       respond_to do |format|
