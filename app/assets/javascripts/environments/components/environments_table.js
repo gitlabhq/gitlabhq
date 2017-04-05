@@ -69,12 +69,6 @@ export default {
     },
   },
 
-  methods: {
-    folderUrl(model) {
-      return `${window.location.pathname}/folders/${model.folderName}`;
-    },
-  },
-
   template: `
     <table class="table ci-table">
       <thead>
