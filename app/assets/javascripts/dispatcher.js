@@ -366,7 +366,7 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new Admin();
           switch (path[1]) {
             case 'application_settings':
-            case 'user_cohorts':
+            case 'cohorts':
               new gl.ApplicationSettings();
               break;
             case 'groups':

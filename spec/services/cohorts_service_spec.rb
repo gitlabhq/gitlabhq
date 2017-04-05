@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UserCohortsService do
+describe CohortsService do
   describe '#execute' do
     def month_start(months_ago)
       months_ago.months.ago.beginning_of_month.to_date
