@@ -67,7 +67,7 @@ describe PipelinesFinder do
 
         before do
           exception_status = HasStatus::AVAILABLE_STATUSES - [target]
-          create(:ci_pipeline, project: project, status: exception_status.sample)
+          create(:ci_pipeline, project: project, status: exception_status.first)
         end
 
         it 'returns matched pipelines' do
