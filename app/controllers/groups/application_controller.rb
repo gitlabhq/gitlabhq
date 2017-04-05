@@ -10,6 +10,7 @@ class Groups::ApplicationController < ApplicationController
     unless @group
       id = params[:group_id] || params[:id]
       @group = Group.find_by_full_path(id)
+      @group_merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id).execute
 
       unless @group && can?(current_user, :read_group, @group)
         @group = nil
