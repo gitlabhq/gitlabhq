@@ -452,7 +452,7 @@ require('./task_list');
       form.addClass("js-main-target-form");
       form.find("#note_line_code").remove();
       form.find("#note_position").remove();
-      form.find("#note_type").remove();
+      form.find("#note_type").val('');
       form.find("#in_reply_to_discussion_id").remove();
       form.find('.js-comment-resolve-button').closest('comment-and-resolve-btn').remove();
       return this.parentTimeline = form.parents('.timeline');
