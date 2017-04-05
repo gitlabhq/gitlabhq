@@ -133,7 +133,7 @@ namespace :admin do
     end
   end
 
-  resources :user_cohorts, only: :index
+  resources :cohorts, only: :index
 
   resources :builds, only: :index do
     collection do

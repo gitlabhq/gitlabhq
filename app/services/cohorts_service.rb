@@ -1,4 +1,4 @@
-class UserCohortsService
+class CohortsService
   MONTHS_INCLUDED = 12
 
   # Get a hash that looks like:
