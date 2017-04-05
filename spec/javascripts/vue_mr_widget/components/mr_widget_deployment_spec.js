@@ -100,25 +100,25 @@ describe('MRWidgetDeployment', () => {
 
     describe('stopEnvironment', () => {
       const url = '/foo/bar';
-      const mockStopEnvironment = (flag) => {
-        spyOn(window, 'confirm').and.returnValue(flag);
-        spyOn(vm.service, 'stopEnvironment').and.returnValue(new Promise((resolve) => {
-          resolve({
-            json() {
-              return {
-                redirect_url: url,
-              };
-            },
-          });
-        }));
-
+      const returnPromise = () => new Promise((resolve) => {
+        resolve({
+          json() {
+            return {
+              redirect_url: url,
+            };
+          },
+        });
+      });
+      const mockStopEnvironment = () => {
         vm.stopEnvironment(deploymentMockData);
         return vm;
       };
 
       it('should show a confirm dialog and call service.stopEnvironment when confirmed', (done) => {
-        vm = mockStopEnvironment(true);
+        spyOn(window, 'confirm').and.returnValue(true);
+        spyOn(vm.service, 'stopEnvironment').and.returnValue(returnPromise(true));
         spyOn(gl.utils, 'visitUrl').and.returnValue(true);
+        vm = mockStopEnvironment();
 
         expect(window.confirm).toHaveBeenCalled();
         expect(vm.service.stopEnvironment).toHaveBeenCalledWith(deploymentMockData.stop_url);
@@ -129,7 +129,9 @@ describe('MRWidgetDeployment', () => {
       });
 
       it('should show a confirm dialog but should not work if the dialog is rejected', () => {
-        vm = mockStopEnvironment(false);
+        spyOn(window, 'confirm').and.returnValue(false);
+        spyOn(vm.service, 'stopEnvironment').and.returnValue(returnPromise(false));
+        vm = mockStopEnvironment();
 
         expect(window.confirm).toHaveBeenCalled();
         expect(vm.service.stopEnvironment).not.toHaveBeenCalled();
