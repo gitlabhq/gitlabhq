@@ -18,6 +18,7 @@ describe ProtectableDropdown, models: true do
       create(:protected_branch, name: 'feat*', project: project)
 
       subject = described_class.new(project.reload, :branches)
+
       expect(subject.protectable_ref_names).to include('feature')
     end
   end

@@ -70,14 +70,8 @@ module Gitlab
 
       def protected_tag_checks
         return unless tag_protected?
-
-        if update?
-          return "Protected tags cannot be updated."
-        end
-
-        if deletion?
-          return "Protected tags cannot be deleted."
-        end
+        return "Protected tags cannot be updated." if update?
+        return "Protected tags cannot be deleted." if deletion?
 
         unless user_access.can_create_tag?(@tag_name)
           return "You are not allowed to create this tag as it is protected."

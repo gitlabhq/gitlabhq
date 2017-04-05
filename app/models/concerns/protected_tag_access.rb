@@ -5,6 +5,7 @@ module ProtectedTagAccess
     include ProtectedRefAccess
 
     belongs_to :protected_tag
+
     delegate :project, to: :protected_tag
   end
 end

@@ -6,8 +6,7 @@ class ProtectableDropdown
 
   # Tags/branches which are yet to be individually protected
   def protectable_ref_names
-    non_wildcard_protections = protections.reject(&:wildcard?)
-    refs.map(&:name) - non_wildcard_protections.map(&:name)
+    @protectable_ref_names ||= ref_names - non_wildcard_protected_ref_names
   end
 
   def hash
@@ -20,7 +19,15 @@ class ProtectableDropdown
     @project.repository.public_send(@ref_type)
   end
 
+  def ref_names
+    refs.map(&:name)
+  end
+
   def protections
     @project.public_send("protected_#{@ref_type}")
+  end
+
+  def non_wildcard_protected_ref_names
+    protections.reject(&:wildcard?).map(&:name)
   end
 end

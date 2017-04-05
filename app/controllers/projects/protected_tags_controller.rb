@@ -1,32 +1,20 @@
 class Projects::ProtectedTagsController < Projects::ProtectedRefsController
   protected
 
-  def protected_ref
-    @protected_tag
-  end
-
-  def protected_ref=(val)
-    @protected_tag = val
-  end
-
-  def matching_refs=(val)
-    @matching_tags = val
-  end
-
   def project_refs
     @project.repository.tags
   end
 
-  def create_service
+  def create_service_class
     ::ProtectedTags::CreateService
   end
 
-  def update_service
+  def update_service_class
     ::ProtectedTags::UpdateService
   end
 
   def load_protected_ref
-    self.protected_ref = @project.protected_tags.find(params[:id])
+    @protected_ref = @project.protected_tags.find(params[:id])
   end
 
   def protected_ref_params

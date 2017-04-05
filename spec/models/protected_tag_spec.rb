@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe ProtectedTag, models: true do
-  subject { build_stubbed(:protected_branch) }
-
   describe 'Associations' do
     it { is_expected.to belong_to(:project) }
   end
