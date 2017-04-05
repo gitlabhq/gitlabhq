@@ -88,7 +88,7 @@ describe API::Pipelines do
         end
 
         context 'when scope is invalid' do
-          it 'returns 400' do
+          it 'returns bad_request' do
             get api("/projects/#{project.id}/pipelines", user), scope: 'invalid-scope'
 
             expect(response).to have_http_status(:bad_request)
@@ -115,7 +115,7 @@ describe API::Pipelines do
         end
 
         context 'when status is invalid' do
-          it 'returns :bad_request' do
+          it 'returns bad_request' do
             get api("/projects/#{project.id}/pipelines", user), status: 'invalid-status'
 
             expect(response).to have_http_status(:bad_request)
@@ -222,7 +222,7 @@ describe API::Pipelines do
           end
 
           context 'when yaml_errors is invalid' do
-            it 'returns :bad_request' do
+            it 'returns bad_request' do
               get api("/projects/#{project.id}/pipelines", user), yaml_errors: 'invalid-yaml_errors'
 
               expect(response).to have_http_status(:bad_request)
@@ -246,7 +246,7 @@ describe API::Pipelines do
             end
 
             context 'when sort is invalid' do
-              it 'sorts as user_id: :desc' do
+              it 'returns bad_request' do
                 get api("/projects/#{project.id}/pipelines", user), order_by: 'user_id', sort: 'invalid_sort'
 
                 expect(response).to have_http_status(:bad_request)
@@ -255,7 +255,7 @@ describe API::Pipelines do
           end
 
           context 'when order_by is invalid' do
-            it 'returns :bad_request' do
+            it 'returns bad_request' do
               get api("/projects/#{project.id}/pipelines", user), order_by: 'lock_version', sort: 'asc'
 
               expect(response).to have_http_status(:bad_request)
