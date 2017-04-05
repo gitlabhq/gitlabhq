@@ -1,7 +1,7 @@
 module Gitlab
   module Checks
     class ForcePush
-      def self.force_push?(project, oldrev, newrev, env: {})
+      def self.force_push?(project, oldrev, newrev)
         return false if project.empty_repo?
 
         # Created or deleted branch
