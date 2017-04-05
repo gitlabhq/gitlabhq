@@ -94,7 +94,7 @@ class GeoFileDownloadDispatchWorker
           .order(created_at: :desc)
           .limit(limit)
           .pluck(:id, :uploader)
-          .map { |id, uploader| [id, uploader.gsub('Uploader', '').downcase] }
+          .map { |id, uploader| [id, uploader.sub(/Uploader\z/, '').downcase] }
   end
 
   def find_lfs_object_ids(limit)
