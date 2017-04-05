@@ -279,14 +279,9 @@ describe('Environment', () => {
           setTimeout(() => {
             expect(component.$el.querySelectorAll('.js-child-row').length).toEqual(1);
             expect(component.$el.querySelector('td.text-center > a.btn').textContent).toContain('Show all');
-<<<<<<< HEAD
-            done();
-            Vue.http.interceptors = _.without(Vue.http.interceptors, folderInterceptor);
-=======
 
             Vue.http.interceptors = _.without(Vue.http.interceptors, folderInterceptor);
             done();
->>>>>>> ce/master
           });
         });
       });

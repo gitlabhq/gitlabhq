@@ -89,7 +89,6 @@ export default Vue.component('environment-component', {
   },
 
   methods: {
-<<<<<<< HEAD
 
     /**
      * Toggles the visibility of the deploy boards of the clicked environment.
@@ -101,8 +100,6 @@ export default Vue.component('environment-component', {
       return this.store.toggleDeployBoard(model.id);
     },
 
-=======
->>>>>>> ce/master
     toggleFolder(folder, folderUrl) {
       this.store.toggleFolder(folder);
 
@@ -226,11 +223,8 @@ export default Vue.component('environment-component', {
             :environments="state.environments"
             :can-create-deployment="canCreateDeploymentParsed"
             :can-read-environment="canReadEnvironmentParsed"
-<<<<<<< HEAD
             :toggleDeployBoard="toggleDeployBoard"
             :store="store"
-=======
->>>>>>> ce/master
             :service="service"
             :is-loading-folder-content="isLoadingFolderContent" />
         </div>

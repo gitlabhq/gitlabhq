@@ -465,12 +465,8 @@ export default {
           :href="environmentPath">
           {{model.name}}
         </a>
-<<<<<<< HEAD
 
         <span v-if="model.isFolder"
-=======
-        <span v-else
->>>>>>> ce/master
           class="folder-name"
           @click="onClickFolder"
           role="button">

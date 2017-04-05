@@ -14,7 +14,6 @@ describe('Store', () => {
     expect(store.state.availableCounter).toEqual(0);
     expect(store.state.paginationInformation).toEqual({});
   });
-<<<<<<< HEAD
 
   it('should store environments', () => {
     const expectedResult = {
@@ -39,13 +38,6 @@ describe('Store', () => {
     store.storeEnvironments(serverData);
     expect(store.state.environments.length).toEqual(serverData.length);
     expect(store.state.environments[0]).toEqual(expectedResult);
-=======
-
-  it('should store environments', () => {
-    store.storeEnvironments(serverData);
-    expect(store.state.environments.length).toEqual(serverData.length);
-    expect(store.state.environments[0]).toEqual(environmentsList[0]);
->>>>>>> ce/master
   });
 
   it('should store available count', () => {
@@ -64,7 +56,6 @@ describe('Store', () => {
       expect(store.state.environments.length).toEqual(serverData.length);
     });
 
-<<<<<<< HEAD
     it('should store a non folder environment with deploy board if rollout_status_path key is provided', () => {
       const environment = {
         name: 'foo',
@@ -79,8 +70,6 @@ describe('Store', () => {
       expect(store.state.environments[0].deployBoardData).toEqual({});
     });
 
-=======
->>>>>>> ce/master
     it('should add folder keys when environment is a folder', () => {
       const environment = {
         name: 'bar',
@@ -111,11 +100,7 @@ describe('Store', () => {
 
     it('should store latest.name when the environment is not a folder', () => {
       store.storeEnvironments(serverData);
-<<<<<<< HEAD
       expect(store.state.environments[2].name).toEqual(serverData[2].latest.name);
-=======
-      expect(store.state.environments[0].name).toEqual(serverData[0].latest.name);
->>>>>>> ce/master
     });
 
     it('should store root level name when environment is a folder', () => {
@@ -171,7 +156,6 @@ describe('Store', () => {
       expect(store.state.paginationInformation).toEqual(expectedResult);
     });
   });
-<<<<<<< HEAD
 
   describe('deploy boards', () => {
     beforeEach(() => {
@@ -194,6 +178,4 @@ describe('Store', () => {
       expect(store.state.environments[0].deployBoardData).toEqual(deployBoardMockData);
     });
   });
-=======
->>>>>>> ce/master
 });

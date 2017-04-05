@@ -98,7 +98,6 @@ export default {
             :toggleDeployBoard="toggleDeployBoard"
             :service="service"></tr>
 
-<<<<<<< HEAD
           <tr v-if="model.hasDeployBoard && model.isDeployBoardVisible" class="js-deploy-board-row">
             <td colspan="6" class="deploy-board-container">
               <deploy-board
@@ -111,8 +110,6 @@ export default {
             </td>
           </tr>
 
-=======
->>>>>>> ce/master
           <template v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0">
             <tr v-if="isLoadingFolderContent">
               <td colspan="6" class="text-center">
