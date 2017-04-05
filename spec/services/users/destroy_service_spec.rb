@@ -144,16 +144,22 @@ describe Users::DestroyService, services: true do
 
     context 'migrating associated records to the ghost user' do
       context 'issues'  do
-        include_examples "migrating a deleted user's associated records to the ghost user", Issue do
+        include_examples "migrating a deleted user's associated records to the ghost user", Issue, {} do
           let(:created_record) { create(:issue, project: project, author: user) }
           let(:assigned_record) { create(:issue, project: project, assignee: user) }
         end
       end
 
       context 'merge requests' do
-        include_examples "migrating a deleted user's associated records to the ghost user", MergeRequest do
+        include_examples "migrating a deleted user's associated records to the ghost user", MergeRequest, {} do
           let(:created_record) { create(:merge_request, source_project: project, author: user, target_branch: "first") }
           let(:assigned_record) { create(:merge_request, source_project: project, assignee: user, target_branch: 'second') }
+        end
+      end
+
+      context 'notes' do
+        include_examples "migrating a deleted user's associated records to the ghost user", Note, { skip_assignee_specs: true } do
+          let(:created_record) { create(:note, project: project, author: user) }
         end
       end
     end

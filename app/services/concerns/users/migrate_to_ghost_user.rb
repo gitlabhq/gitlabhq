@@ -21,6 +21,7 @@ module Users::MigrateToGhostUser
 
       move_issues_to_ghost_user(user)
       move_merge_requests_to_ghost_user(user)
+      move_notes_to_ghost_user(user)
     end
 
     user.reload
@@ -34,5 +35,9 @@ module Users::MigrateToGhostUser
 
   def move_merge_requests_to_ghost_user(user)
     user.merge_requests.update_all(author_id: ghost_user.id)
+  end
+
+  def move_notes_to_ghost_user(user)
+    user.notes.update_all(author_id: ghost_user.id)
   end
 end
