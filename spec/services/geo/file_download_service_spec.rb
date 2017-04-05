@@ -57,6 +57,42 @@ describe Geo::FileDownloadService, services: true do
       end
     end
 
+    context 'with an attachment' do
+      let(:note) { create(:note, :with_attachment) }
+      let(:upload) { Upload.find_by(model: note, uploader: 'AttachmentUploader') }
+
+      subject { described_class.new(:attachment, upload.id) }
+
+      it 'downloads the attachment' do
+        allow_any_instance_of(Gitlab::ExclusiveLease)
+          .to receive(:try_obtain).and_return(true)
+        allow_any_instance_of(Gitlab::Geo::FileTransfer)
+          .to receive(:download_from_primary).and_return(100)
+
+        expect{ subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+      end
+    end
+
+    context 'with file upload' do
+      let(:project) { create(:empty_project) }
+      let(:upload) { Upload.find_by(model: project, uploader: 'FileUploader') }
+
+      subject { described_class.new(:file, upload.id) }
+
+      before do
+        FileUploader.new(project).store!(fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
+      end
+
+      it 'downloads the file' do
+        allow_any_instance_of(Gitlab::ExclusiveLease)
+          .to receive(:try_obtain).and_return(true)
+        allow_any_instance_of(Gitlab::Geo::FileTransfer)
+          .to receive(:download_from_primary).and_return(100)
+
+        expect{ subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+      end
+    end
+
     context 'LFS object' do
       let(:lfs_object) { create(:lfs_object) }
 
@@ -73,8 +109,8 @@ describe Geo::FileDownloadService, services: true do
     end
 
     context 'bad object type' do
-      it 'does not track transfer' do
-        expect{ described_class.new(:bad, 1).execute }.not_to change(Geo::FileRegistry, :count)
+      it 'raises an error' do
+        expect{ described_class.new(:bad, 1).execute }.to raise_error(NameError)
       end
     end
   end
