@@ -54,7 +54,7 @@ class Burndown
     closed   = issues_with_closed_at.select { |issue| issue.closed_at.to_date == current_date }
     reopened = closed.select { |issue| issue.state == 'reopened' }
 
-    return closed, reopened
+    [closed, reopened]
   end
 
   def issues_with_closed_at
