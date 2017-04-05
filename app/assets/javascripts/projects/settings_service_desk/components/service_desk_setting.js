@@ -42,22 +42,24 @@ export default {
   },
 
   template: `
-    <div class="checkbox">
-      <label for="project_service_desk_enabled">
-        <input
-          type="checkbox"
-          value="1"
-          name="project[service_desk_enabled]"
-          id="project_service_desk_enabled"
-          :checked="isActivated"
-          @change="onCheckboxToggle($event)">
-        <span class="descr">
-          Activate service desk
-        </span>
-      </label>
+    <div>
+      <div class="checkbox">
+        <label for="project_service_desk_enabled">
+          <input
+            type="checkbox"
+            value="1"
+            name="project[service_desk_enabled]"
+            id="project_service_desk_enabled"
+            :checked="isActivated"
+            @change="onCheckboxToggle($event)">
+          <span class="descr">
+            Activate service desk
+          </span>
+        </label>
+      </div>
       <template v-if="isActivated">
         <div
-          class="panel panel-default">
+          class="panel-slim panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">
               Forward external support email address to:
