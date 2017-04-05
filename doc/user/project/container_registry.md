@@ -67,12 +67,12 @@ Your image will be named after the following scheme:
 
 GitLab supports up to three levels of image repository names.
 
-Following image repository names are valid:
+Following examples of image tags are valid:
 
 ```
-registry.example.com/<namespace>/<project>
-registry.example.com/<namespace>/<project>/image
-registry.example.com/<namespace>/<project>/image/type
+registry.example.com/group/project:some-tag
+registry.example.com/group/project/image:latest
+registry.example.com/group/project/my/image:rc1
 ```
 
 ## Use images from GitLab Container Registry
