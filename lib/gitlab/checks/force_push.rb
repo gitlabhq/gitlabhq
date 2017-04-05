@@ -8,13 +8,9 @@ module Gitlab
         if Gitlab::Git.blank_ref?(oldrev) || Gitlab::Git.blank_ref?(newrev)
           false
         else
-          missed_ref, exit_status = Gitlab::Git::RevList.new(oldrev, newrev, project: project, env: env).execute
-
-          if exit_status == 0
-            missed_ref.present?
-          else
-            raise "Got a non-zero exit code while calling out to `git rev-list` in the force-push check."
-          end
+          Gitlab::Git::RevList.new(
+            path_to_repo: project.repository.path_to_repo,
+            oldrev: oldrev, newrev: newrev).missed_ref.present?
         end
       end
     end
