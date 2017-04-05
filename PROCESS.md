@@ -64,6 +64,29 @@ Merge requests may still be merged into master during this period,
 but they will go into the _next_ release, unless they are manually cherry-picked into the stable branch.
 By freezing the stable branches 2 weeks prior to a release, we reduce the risk of a last minute merge request potentially breaking things.
 
+### Between the 1st and the 7th
+
+These types of merge requests need special consideration:
+
+* **Large features**: a large feature is one that is highlighted in the kick-off
+  and the release blogpost; typically this will have its own channel in Slack
+  and a dedicated team with front-end, back-end, and UX.
+* **Small features**: any other feature request.
+
+**Large features** must be with a maintainer **by the 1st**. It's OK if they
+aren't completely done, but this allows the maintainer enough time to make the
+decision about whether this can make it in before the freeze. If the maintainer
+doesn't think it will make it, they should inform the developers working on it
+and the Product Manager responsible for the feature.
+
+**Small features** must be with a reviewer (not necessarily maintainer) **by the
+3rd**.
+
+Most merge requests from the community do not have a specific release
+target. However, if one does and falls into either of the above categories, it's
+the reviewer's responsibility to manage the above communication and assignment
+on behalf of the community member.
+
 ### On the 7th
 
 Merge requests should still be complete, following the
