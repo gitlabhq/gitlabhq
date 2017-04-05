@@ -14,7 +14,7 @@ module Gitlab
       end
 
       def track
-        labels.fetch('track') || 'stable'
+        labels.fetch('track', nil) || 'stable'
       end
 
       def stable?

@@ -93,7 +93,7 @@ module KubernetesHelpers
         "labels" => {
           "app" => app,
           "track" => track
-        },
+        }.compact,
       },
       "spec" => { "replicas" => 3 },
       "status" => {

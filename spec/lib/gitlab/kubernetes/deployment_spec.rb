@@ -107,7 +107,7 @@ describe Gitlab::Kubernetes::Deployment do
 
     context 'with track label' do
       let(:labels) { { 'track' => track } }
-      let(:params) { combine(named('foo'), generation(1, 0), instances(1, 1, 1, labels)) }
+      let(:params) { combine(named('foo', labels), generation(1, 0), instances(1, 1, 1, labels)) }
 
       context 'when marked as stable' do
         let(:track) { 'stable' }
@@ -148,7 +148,6 @@ describe Gitlab::Kubernetes::Deployment do
 
   def instances(replicas = 4, available = 1, updated = 2, labels = {})
     combine(
-      named('foo', labels),
       make('spec', 'replicas' => replicas),
       make('status', 'availableReplicas' => available, 'updatedReplicas' => updated),
     )
