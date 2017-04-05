@@ -5,7 +5,7 @@ module Gitlab
         lfs_object = LfsObject.find_by(id: object_db_id)
 
         return error unless lfs_object.present?
-        return error if message[:sha256] != lfs_object.oid
+        return error if message[:checksum] != lfs_object.oid
 
         unless lfs_object.file.present? && lfs_object.file.exists?
           return error('LFS object does not have a file')
