@@ -228,6 +228,10 @@ class Note < ActiveRecord::Base
     DiscussionNote::NOTEABLE_TYPES.include?(self.noteable_type) && !part_of_discussion?
   end
 
+  def can_be_resolvable?
+    DiscussionNote::RESOLVABLE_TYPES.include?(self.noteable_type)
+  end
+
   def discussion_class(noteable = nil)
     # When commit notes are rendered on an MR's Discussion page, they are
     # displayed in one discussion instead of individually.

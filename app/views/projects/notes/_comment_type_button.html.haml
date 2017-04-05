@@ -1,3 +1,4 @@
+- noteable_type = @note.noteable_type
 .btn-group.append-right-10.comment-type-dropdown.js-comment-type-dropdown
   %button.btn.btn-nr.btn-create.comment-btn.js-comment-button.js-comment-submit-button
     Comment
@@ -9,10 +10,10 @@
         = icon('check')
         .description
           %strong Comment
-          %p= "Add a general comment to this #{@note.noteable_type.titleize.downcase}."
+          %p= "Add a general comment to this #{noteable_type.titleize.downcase}."
       %li.divider
       %li#discussion{ data: { value: 'DiscussionNote', 'button-text' => 'Start discussion', 'secondary-button-text' => 'Start discussion & close merge request' } }
         = icon('check')
         .description
           %strong Start discussion
-          %p Discuss a specific suggestion or question that needs to be resolved.
+          %p= "Discuss a specific suggestion or question#{@note.can_be_resolvable? ? ' that needs to be resolved' : ''}."
