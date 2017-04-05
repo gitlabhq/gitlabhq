@@ -74,7 +74,7 @@ namespace :geo do
   end
 
   desc 'Make this node the Geo primary'
-  task :add_primary_node, [:ssh_key_filename] => :environment do |_, args|
+  task :set_primary_node, [:ssh_key_filename] => :environment do |_, args|
     filename = args[:ssh_key_filename]
     abort 'GitLab Geo is not supported with this license. Please contact sales@gitlab.com.' unless Gitlab::Geo.license_allows?
     abort 'You must specify a filename of an SSH public key' unless filename.present?
@@ -84,7 +84,7 @@ namespace :geo do
 
     abort "Invalid SSH public key in #{filename}, aborting" unless public_key
 
-    add_primary_geo_node(public_key)
+    set_primary_geo_node(public_key)
   end
 
   def load_ssh_public_key(filename)
@@ -94,7 +94,7 @@ namespace :geo do
     nil
   end
 
-  def add_primary_geo_node(public_key)
+  def set_primary_geo_node(public_key)
     params = { host: Gitlab.config.gitlab.host,
                port: Gitlab.config.gitlab.port,
                relative_url_root: Gitlab.config.gitlab.relative_url_root,

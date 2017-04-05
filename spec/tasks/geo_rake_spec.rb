@@ -5,7 +5,7 @@ describe 'geo rake tasks' do
     Rake.application.rake_require 'tasks/geo'
   end
 
-  describe 'add_primary_node task' do
+  describe 'set_primary_node task' do
     let(:ssh_key) { 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDUkxk8m9rVYZ1q4/5xpg3TwTM9QFw3TinPFkyWsiACFKjor3byV6g3vHWTuIS70E7wk2JTXGL0wdrfUG6iQDJuP0BYNxjkluB14nIAfPuXN7V73QY/cqvHogw5o6pPRFD+Szke6FzouNQ70Z/qrM1k7me3e9DMuscMMrMTOR2HLKppNQyP4Jp0WJOyncdWB2NxKXTezy/ZnHv+BdhC0q0JW3huIx9qkBCHio7x8BdyJLMF9KxNYIuCkbP3exs5wgb+qGrjSri6LfAVq8dJ2VYibWxdsUG6iITJF+G4qbcyQjgiMLbxCfNd9bjwmkxSGvFn2EPsAFKzxyAvYFWb/y91 test@host' }
 
     before do
@@ -21,7 +21,7 @@ describe 'geo rake tasks' do
 
         expect(GeoNode.count).to eq(0)
 
-        run_rake_task('geo:add_primary_node', path)
+        run_rake_task('geo:set_primary_node', path)
 
         expect(GeoNode.count).to eq(1)
         node = GeoNode.first
