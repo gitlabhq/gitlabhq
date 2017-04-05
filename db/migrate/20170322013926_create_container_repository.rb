@@ -5,8 +5,13 @@ class CreateContainerRepository < ActiveRecord::Migration
 
   def change
     create_table :container_repositories do |t|
-      t.integer :project_id
-      t.string :name
+      t.references :project, foreign_key: true, null: false
+      t.string :name, null: false
+
+      t.timestamps null: false
     end
+
+    add_index :container_repositories, :project_id
+    add_index :container_repositories, [:project_id, :name], unique: true
   end
 end
