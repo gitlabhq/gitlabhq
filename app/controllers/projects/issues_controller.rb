@@ -26,7 +26,7 @@ class Projects::IssuesController < Projects::ApplicationController
     @issues = issues_collection
     @issues = @issues.page(params[:page])
     if @issues.out_of_range? && @issues.total_pages != 0
-      return redirect_to url_for(params.merge(page: @issues.total_pages))
+      return redirect_to url_for(params.merge(page: @issues.total_pages, only_path: true))
     end
 
     if params[:label_name].present?

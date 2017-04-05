@@ -39,7 +39,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_requests = merge_requests_collection
     @merge_requests = @merge_requests.page(params[:page])
     if @merge_requests.out_of_range? && @merge_requests.total_pages != 0
-      return redirect_to url_for(params.merge(page: @merge_requests.total_pages))
+      return redirect_to url_for(params.merge(page: @merge_requests.total_pages, only_path: true))
     end
 
     if params[:label_name].present?
