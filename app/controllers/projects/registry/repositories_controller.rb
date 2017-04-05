@@ -21,7 +21,7 @@ module Projects
       private
 
       def image
-        @image ||= project.container_repositories.find_by(id: params[:id])
+        @image ||= project.container_repositories.find(params[:id])
       end
 
       ##
