@@ -78,11 +78,11 @@ class GeoFileDownloadDispatchWorker
     return unless downloads_remain?
 
     num_to_schedule.times do
-      object_id, object_type = @pending_downloads.shift
-      job_id = GeoFileDownloadWorker.perform_async(object_type, object_id)
+      object_db_id, object_type = @pending_downloads.shift
+      job_id = GeoFileDownloadWorker.perform_async(object_type, object_db_id)
 
       if job_id
-        @scheduled_jobs << { id: object_id, type: object_type, job_id: job_id }
+        @scheduled_jobs << { id: object_db_id, type: object_type, job_id: job_id }
       end
     end
   end
