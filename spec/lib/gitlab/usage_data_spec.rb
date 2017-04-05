@@ -12,9 +12,10 @@ describe Gitlab::UsageData do
       expect(subject.keys).to match_array(%i(
         active_user_count
         counts
-        version
         recorded_at
         mattermost_enabled
+        version
+        uuid
       ))
     end
 
@@ -57,6 +58,7 @@ describe Gitlab::UsageData do
     subject { Gitlab::UsageData.license_usage_data }
 
     it "gathers license data" do
+      expect(subject[:uuid]).to eq(current_application_settings.uuid)
       expect(subject[:version]).to eq(Gitlab::VERSION)
       expect(subject[:active_user_count]).to eq(User.active.count)
       expect(subject[:recorded_at]).to be_a(Time)
