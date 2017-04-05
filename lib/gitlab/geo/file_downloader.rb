@@ -1,9 +1,10 @@
 module Gitlab
   module Geo
     class FileDownloader
-      attr_reader :object_db_id
+      attr_reader :object_type, :object_db_id
 
-      def initialize(object_db_id)
+      def initialize(object_type, object_db_id)
+        @object_type = object_type
         @object_db_id = object_db_id
       end
 
@@ -15,7 +16,7 @@ module Gitlab
         upload = Upload.find_by_id(object_db_id)
         return unless upload.present?
 
-        transfer = ::Gitlab::Geo::FileTransfer.new(:avatar, upload)
+        transfer = ::Gitlab::Geo::FileTransfer.new(object_type.to_sym, upload)
         transfer.download_from_primary
       end
     end

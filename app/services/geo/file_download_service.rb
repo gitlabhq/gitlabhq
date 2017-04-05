@@ -21,9 +21,9 @@ module Geo
 
     def downloader
       klass = "Gitlab::Geo::#{object_type.to_s.camelize}Downloader".constantize
-      klass.new(object_db_id)
+      klass.new(object_type, object_db_id)
     rescue NameError
-      Gitlab::Geo::FileDownloader.new(object_db_id)
+      Gitlab::Geo::FileDownloader.new(object_type, object_db_id)
     end
 
     def try_obtain_lease
