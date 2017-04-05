@@ -162,6 +162,13 @@ describe Users::DestroyService, services: true do
           let(:created_record) { create(:note, project: project, author: user) }
         end
       end
+
+      context 'abuse reports' do
+        include_examples "migrating a deleted user's associated records to the ghost user", AbuseReport, { skip_assignee_specs: true } do
+          let(:created_record) { create(:abuse_report, reporter: user, user: create(:user)) }
+          let(:author_method) { :reporter }
+        end
+      end
     end
   end
 end
