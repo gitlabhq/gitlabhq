@@ -22,26 +22,26 @@ importance of the update.
 If enabled, the version status will also be shown in the help page (`/help`)
 for all signed in users.
 
-## Usage data
+## Usage ping
 
 > [Introduced][ee-557] in GitLab Enterprise Edition 8.10. More statistics
-[were added][ee-735] in GitLab Enterprise Edition 8.12.
+[were added][ee-735] in GitLab Enterprise Edition 8.12. [Moved to CE][ce-23361]
+in GitLab 9.1.
 
-GitLab Inc. can collect non-sensitive information about how Enterprise Edition
-customers use their GitLab instance upon the activation of a ping feature
+GitLab Inc. can collect non-sensitive information about how GitLab users
+use their GitLab instance upon the activation of a ping feature
 located in the admin panel (`/admin/application_settings`).
 
-You can see the **exact** JSON payload that your instance sends to GitLab Inc.
+You can see the **exact** JSON payload that your instance sends to GitLab
 in the "Usage statistics" section of the admin panel.
 
-Nothing qualitative is collected. Only quantitative. Meaning, no project name,
+Nothing qualitative is collected. Only quantitative. That means no project name,
 author name, nature of comments, name of labels, etc.
 
-This is done mainly for the following reasons:
+The usage ping is sent for the following reasons:
 
-- to have a better understanding on how our users use our product
-- to provide more tools for the customer success team to help customers onboard
-  better.
+- to have a better understanding on how our users use our product,
+- to be more data driven when creating or changing features.
 
 The total number of the following is sent back to GitLab Inc.:
 
@@ -79,6 +79,16 @@ The total number of the following is sent back to GitLab Inc.:
 Also, we track if you've installed Mattermost with GitLab.
 For example: `"mattermost_enabled":true"`.
 
+More data will be added over time. The goal of this ping is to be as light as
+possible, so it won't have any performance impact on your installation when
+calculation is made.
+
+### Deactivate the usage ping
+
+By default, usage ping is opt-out. If you want to deactivate this feature, go to
+the Settings page of your administration panel and uncheck the Usage ping
+checkbox.
+
 ## Privacy policy
 
 GitLab Inc. does **not** collect any sensitive information, like project names
@@ -89,3 +99,4 @@ Read more in about the [Privacy policy](https://about.gitlab.com/privacy).
 
 [ee-557]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/557
 [ee-735]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/735
+[ce-23361]: https://gitlab.com/gitlab-org/gitlab-ce/issues/23361
