@@ -131,7 +131,7 @@
           %h5.prepend-top-0
             Service Desk
             = link_to icon('question-circle'), help_page_path("TODO")
-          .js-service-desk-setting-wrapper{ data: { enabled: @project.service_desk_enabled, incomingAddress: "TODO" } }
+          .js-service-desk-setting-wrapper{ data: { endpoint: namespace_project_path(@project.namespace, @project), enabled: @project.service_desk_enabled?, incomingAddress: (@project.service_desk_address if @project.service_desk_enabled? ) } }
 
         %hr
         %fieldset.features.append-bottom-default

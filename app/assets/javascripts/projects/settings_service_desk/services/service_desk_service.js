@@ -6,12 +6,12 @@ import '../../../vue_shared/vue_resource_interceptor';
 Vue.use(vueResource);
 
 class ServiceDeskService {
-  constructor(endpointRoot) {
-    this.project = Vue.resource(`${endpointRoot}/fetch-incoming-service-desk-email`);
+  constructor(endpoint) {
+    this.serviceDeskEnabledResource = Vue.resource(`${endpoint}/service_desk_address`);
   }
 
   fetchIncomingEmail() {
-    return this.project.get()
+    return this.serviceDeskEnabledResource.get()
       .then(res => res.data.incomingEmail);
   }
 }

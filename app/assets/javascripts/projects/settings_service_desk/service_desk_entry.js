@@ -8,9 +8,10 @@ import eventHub from './event_hub';
 class ServiceDeskEntry {
   constructor(wrapperElement) {
     this.wrapperElement = wrapperElement;
+    const endpoint = this.wrapperElement.dataset.endpoint;
 
     this.store = new ServiceDeskStore();
-    this.service = new ServiceDeskService('http://apilab.gitlap.com/some-project');
+    this.service = new ServiceDeskService(endpoint);
   }
 
   init() {
