@@ -49,23 +49,7 @@ shared_examples 'new issuable record that supports slash commands' do
 
     it 'assigns and sets milestone to issuable' do
       expect(issuable).to be_persisted
-      expect(issuable.assignee).to eq(assignee)
-      expect(issuable.milestone).to eq(milestone)
-    end
-  end
-
-  context 'with assignee and milestone in params and command' do
-    let(:example_params) do
-      {
-        assignee: create(:user),
-        milestone_id: 1,
-        description: %(/assign @#{assignee.username}\n/milestone %"#{milestone.name}")
-      }
-    end
-
-    it 'assigns and sets milestone to issuable from command' do
-      expect(issuable).to be_persisted
-      expect(issuable.assignee).to eq(assignee)
+      expect(issuable.assignees).to eq([assignee])
       expect(issuable.milestone).to eq(milestone)
     end
   end

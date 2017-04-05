@@ -6,10 +6,10 @@ describe Issues::CreateService, services: true do
 
   describe '#execute' do
     let(:issue) { described_class.new(project, user, opts).execute }
+    let(:assignee) { create(:user) }
+    let(:milestone) { create(:milestone, project: project) }
 
     context 'when params are valid' do
-      let(:assignee) { create(:user) }
-      let(:milestone) { create(:milestone, project: project) }
       let(:labels) { create_pair(:label, project: project) }
 
       before do
@@ -137,9 +137,82 @@ describe Issues::CreateService, services: true do
       end
     end
 
-    it_behaves_like 'issuable create service'
+    context 'issue create service' do
+      context 'assignees' do
+        before { project.team << [user, :master] }
+
+        it 'removes assignee when user id is invalid' do
+          opts = { title: 'Title', description: 'Description', assignee_ids: [-1] }
+
+          issue = described_class.new(project, user, opts).execute
+
+          expect(issue.assignees).to be_empty
+        end
+
+        it 'removes assignee when user id is 0' do
+          opts = { title: 'Title', description: 'Description',  assignee_ids: [0] }
+
+          issue = described_class.new(project, user, opts).execute
+
+          expect(issue.assignees).to be_empty
+        end
+
+        it 'saves assignee when user id is valid' do
+          project.team << [assignee, :master]
+          opts = { title: 'Title', description: 'Description', assignee_ids: [assignee.id] }
+
+          issue = described_class.new(project, user, opts).execute
+
+          expect(issue.assignees).to eq([assignee])
+        end
+
+        context "when issuable feature is private" do
+          before do
+            project.project_feature.update(issues_access_level: ProjectFeature::PRIVATE,
+                                           merge_requests_access_level: ProjectFeature::PRIVATE)
+          end
+
+          levels = [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC]
+
+          levels.each do |level|
+            it "removes not authorized assignee when project is #{Gitlab::VisibilityLevel.level_name(level)}" do
+              project.update(visibility_level: level)
+              opts = { title: 'Title', description: 'Description', assignee_ids: [assignee.id] }
+
+              issue = described_class.new(project, user, opts).execute
+
+              expect(issue.assignees).to be_empty
+            end
+          end
+        end
+      end
+    end
 
     it_behaves_like 'new issuable record that supports slash commands'
+
+    context 'Slash commands' do
+      context 'with assignee and milestone in params and command' do
+        let(:opts) do
+          {
+            assignee_ids: [create(:user).id],
+            milestone_id: 1,
+            title: 'Title',
+            description: %(/assign @#{assignee.username}\n/milestone %"#{milestone.name}")
+          }
+        end
+
+        before do
+          project.team << [user, :master]
+          project.team << [assignee, :master]
+        end
+
+        it 'assigns and sets milestone to issuable from command' do
+          expect(issue).to be_persisted
+          expect(issue.assignees).to eq([assignee])
+          expect(issue.milestone).to eq(milestone)
+        end
+      end
+    end
 
     context 'resolving discussions' do
       let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
