@@ -122,6 +122,13 @@ module IssuablesHelper
       author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "hidden-xs", tooltip: true)
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "hidden-sm hidden-md hidden-lg")
     end
+    if issuable.respond_to?(:service_desk_reply_to) && !issuable.service_desk_reply_to.nil?
+      output << content_tag(:span) do
+        concat '('
+        concat link_to("#{issuable.service_desk_reply_to}", "mailto:#{issuable.service_desk_reply_to}", class: 'hidden-xs')
+        concat ')'
+      end
+    end
 
     if issuable.tasks?
       output << "&ensp;".html_safe
