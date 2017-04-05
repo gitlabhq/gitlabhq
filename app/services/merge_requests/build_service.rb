@@ -6,7 +6,7 @@ module MergeRequests
       # Set MR attributes
       merge_request.can_be_created = true
       merge_request.compare_commits = []
-      merge_request.source_project = find_source_project
+      merge_request.source_project = find_source_project(merge_request)
 
       merge_request.target_project = nil unless can?(current_user, :read_project, merge_request.target_project)
 
@@ -31,7 +31,8 @@ module MergeRequests
 
     private
 
-    def find_source_project
+    def find_source_project(merge_request)
+      source_project = merge_request.source_project
       return source_project if source_project.present? && can?(current_user, :read_project, source_project)
 
       project
