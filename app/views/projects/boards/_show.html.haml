@@ -6,10 +6,8 @@
   = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('filtered_search')
   = page_specific_javascript_bundle_tag('boards')
-  = page_specific_javascript_bundle_tag('simulate_drag') if Rails.env.test?
 
   %script#js-board-template{ type: "text/x-template" }= render "projects/boards/components/board"
-  %script#js-board-list-template{ type: "text/x-template" }= render "projects/boards/components/board_list"
   %script#js-board-modal-filter{ type: "text/x-template" }= render "shared/issuable/search_bar", type: :boards_modal
 
 = render "projects/issues/head"

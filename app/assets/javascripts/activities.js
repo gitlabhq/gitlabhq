@@ -15,9 +15,9 @@ class Activities {
   }
 
   pagerCallback(data) {
-      if (data.count === 0 && this.emptyState) this.emptyState.classList.remove('hidden');
-      this.updateTooltips();
-    }
+    if (data.count === 0 && this.emptyState) this.emptyState.classList.remove('hidden');
+    this.updateTooltips();
+  }
 
   updateTooltips() {
     gl.utils.localTimeAgo($('.js-timeago', '.content_list'));

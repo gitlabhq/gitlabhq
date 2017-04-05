@@ -238,6 +238,8 @@
           %ul
             %li Be careful. Renaming a project's repository can have unintended side effects.
             %li You will need to update your local repositories to point to the new location.
+            - if @project.deployment_services.any?
+              %li Your deployment services will be broken, you will need to manually fix the services after renaming.
         = f.submit 'Rename project', class: "btn btn-warning"
   - if can?(current_user, :change_namespace, @project)
     %hr
