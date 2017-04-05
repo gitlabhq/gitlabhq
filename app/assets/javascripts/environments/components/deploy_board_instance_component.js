@@ -44,7 +44,7 @@ export default {
       let cssClassName = `deploy-board-instance-${this.status}`;
 
       if (!this.stable) {
-        cssClassName = `deploy-board-instance-${this.status} deploy-board-instance-canary`;
+        cssClassName = `${cssClassName} deploy-board-instance-canary`;
       }
 
       return cssClassName;
