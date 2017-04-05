@@ -29,6 +29,7 @@ module Projects
 
       Project.transaction do
         project.team.truncate
+        project.destroy!
 
         unless remove_legacy_registry_tags
           raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
@@ -41,8 +42,6 @@ module Projects
         unless remove_repository(wiki_path)
           raise_error('Failed to remove wiki repository. Please try again or contact administrator.')
         end
-
-        project.destroy!
       end
 
       log_info("Project \"#{project.path_with_namespace}\" was removed")
