@@ -38,6 +38,7 @@ var config = {
     network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
     sketch_viewer:        './blob/sketch_viewer.js',
+    pdf_viewer:           './blob/pdf_viewer.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
@@ -65,7 +66,11 @@ var config = {
       {
         test: /\.svg$/,
         use: 'raw-loader'
-      }
+      }, {
+        test: /\.(worker.js|pdf)$/,
+        exclude: /node_modules/,
+        loader: 'file-loader',
+      },
     ]
   },
 
@@ -107,6 +112,7 @@ var config = {
         'issuable',
         'merge_conflicts',
         'notebook_viewer',
+        'pdf_viewer',
         'vue_pipelines',
       ],
       minChunks: function(module, count) {
