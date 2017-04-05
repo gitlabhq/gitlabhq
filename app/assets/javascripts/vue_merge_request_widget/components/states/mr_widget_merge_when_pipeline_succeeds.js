@@ -61,7 +61,8 @@ export default {
           v-if="mr.canCancelAutomaticMerge"
           @click="cancelAutomaticMerge"
           :disabled="isCancellingAutoMerge"
-          type="button" class="btn btn-xs btn-default">
+          type="button"
+          class="btn btn-xs btn-default js-cancel-auto-merge">
           <i
             v-if="isCancellingAutoMerge"
             class="fa fa-spinner fa-spin" aria-hidden="true"></i>
@@ -70,7 +71,9 @@ export default {
       <section class="mr-info-list mr-links">
         <div class="legend"></div>
         <p>The changes will be merged into
-          <a :href="mr.targetBranchPath" class="label-branch">
+          <a
+            :href="mr.targetBranchPath"
+            class="label-branch">
             {{mr.targetBranch}}
           </a>
         </p>
@@ -80,10 +83,13 @@ export default {
           <button
             v-if="canRemoveSourceBranch"
             @click="removeSourceBranch"
-            type="button" class="btn btn-xs btn-default">
+            :disabled="isRemovingSourceBranch"
+            type="button"
+            class="btn btn-xs btn-default js-remove-source-branch">
             <i
             v-if="isRemovingSourceBranch"
-            class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+            class="fa fa-spinner fa-spin"
+            aria-hidden="true"></i>
             Remove source branch</button>
         </p>
       </section>
