@@ -127,11 +127,47 @@ describe API::Geo, api: true do
     end
   end
 
+  describe 'GET /geo/transfers/attachment/1' do
+    let!(:secondary_node) { create(:geo_node) }
+    let(:note) { create(:note, :with_attachment) }
+    let(:upload) { Upload.find_by(model: note, uploader: 'AttachmentUploader') }
+    let(:transfer) { Gitlab::Geo::FileTransfer.new(:attachment, upload) }
+    let(:req_header) { Gitlab::Geo::TransferRequest.new(transfer.request_data).headers }
+
+    before do
+      allow_any_instance_of(Gitlab::Geo::TransferRequest).to receive(:requesting_node).and_return(secondary_node)
+    end
+
+    it 'responds with 401 with invalid auth header' do
+      get api("/geo/transfers/attachment/#{upload.id}"), nil, Authorization: 'Test'
+
+      expect(response).to have_http_status(401)
+    end
+
+    context 'attachment file exists' do
+      it 'responds with 200 with X-Sendfile' do
+        get api("/geo/transfers/attachment/#{upload.id}"), nil, req_header
+
+        expect(response).to have_http_status(200)
+        expect(response.headers['Content-Type']).to eq('application/octet-stream')
+        expect(response.headers['X-Sendfile']).to eq(note.attachment.path)
+      end
+    end
+
+    context 'attachment does not exist' do
+      it 'responds with 404' do
+        get api("/geo/transfers/attachment/100000"), nil, req_header
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
   describe 'GET /geo/transfers/avatar/1' do
     let!(:secondary_node) { create(:geo_node) }
     let(:user) { create(:user, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
     let(:upload) { Upload.find_by(model: user, uploader: 'AvatarUploader') }
-    let(:transfer) { Gitlab::Geo::FileTransfer.new(upload) }
+    let(:transfer) { Gitlab::Geo::FileTransfer.new(:avatar, upload) }
     let(:req_header) { Gitlab::Geo::TransferRequest.new(transfer.request_data).headers }
 
     before do
@@ -157,6 +193,43 @@ describe API::Geo, api: true do
     context 'avatar does not exist' do
       it 'responds with 404' do
         get api("/geo/transfers/avatar/100000"), nil, req_header
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
+  describe 'GET /geo/transfers/file/1' do
+    let!(:secondary_node) { create(:geo_node) }
+    let(:project) { create(:empty_project) }
+    let(:upload) { Upload.find_by(model: project, uploader: 'FileUploader') }
+    let(:transfer) { Gitlab::Geo::FileTransfer.new(:file, upload) }
+    let(:req_header) { Gitlab::Geo::TransferRequest.new(transfer.request_data).headers }
+
+    before do
+      allow_any_instance_of(Gitlab::Geo::TransferRequest).to receive(:requesting_node).and_return(secondary_node)
+      FileUploader.new(project).store!(fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
+    end
+
+    it 'responds with 401 with invalid auth header' do
+      get api("/geo/transfers/file/#{upload.id}"), nil, Authorization: 'Test'
+
+      expect(response).to have_http_status(401)
+    end
+
+    context 'file file exists' do
+      it 'responds with 200 with X-Sendfile' do
+        get api("/geo/transfers/file/#{upload.id}"), nil, req_header
+
+        expect(response).to have_http_status(200)
+        expect(response.headers['Content-Type']).to eq('application/octet-stream')
+        expect(response.headers['X-Sendfile']).to end_with('dk.png')
+      end
+    end
+
+    context 'file does not exist' do
+      it 'responds with 404' do
+        get api("/geo/transfers/file/100000"), nil, req_header
 
         expect(response).to have_http_status(404)
       end
