@@ -205,6 +205,20 @@ describe Namespace, models: true do
           expect(File.directory?(expected_pages_path)).to be(true)
         end
       end
+
+      context 'renaming parent' do
+        it 'correctly moves the repository, uploads and pages' do
+          expected_repository_path = File.join(TestEnv.repos_path, 'renamed', 'child', 'the-project.git')
+          expected_upload_path = File.join(uploads_dir, 'renamed', 'child', 'the-project')
+          expected_pages_path = File.join(pages_dir, 'renamed', 'child', 'the-project')
+
+          parent.update_attributes!(path: 'renamed')
+
+          expect(File.directory?(expected_repository_path)).to be(true)
+          expect(File.directory?(expected_upload_path)).to be(true)
+          expect(File.directory?(expected_pages_path)).to be(true)
+        end
+      end
     end
   end
 
