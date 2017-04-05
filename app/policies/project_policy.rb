@@ -73,6 +73,10 @@ class ProjectPolicy < BasePolicy
     can! :read_environment
     can! :read_deployment
     can! :read_merge_request
+
+    if License.current&.add_on?('GitLab_DeployBoard')
+      can! :read_deploy_board
+    end
   end
 
   # Permissions given when an user is team member of a project

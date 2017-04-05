@@ -1,6 +1,7 @@
 class Projects::EnvironmentsController < Projects::ApplicationController
   layout 'project'
   before_action :authorize_read_environment!
+  before_action :authorize_read_deploy_board!, only: :status
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_create_deployment!, only: [:stop]
   before_action :authorize_update_environment!, only: [:edit, :update]
