@@ -15,7 +15,7 @@ describe Geo::FileDownloadService, services: true do
 
       subject { described_class.new(:avatar, upload.id) }
 
-      it 'downloads an user avatar' do
+      it 'downloads a user avatar' do
         allow_any_instance_of(Gitlab::ExclusiveLease)
           .to receive(:try_obtain).and_return(true)
         allow_any_instance_of(Gitlab::Geo::FileTransfer)
