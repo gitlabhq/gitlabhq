@@ -31,6 +31,20 @@ describe GeoNodeStatus, model: true do
     end
   end
 
+  describe '#attachments_synced_count' do
+    it 'does not count synced files that were replaced' do
+      user = create(:user, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
+      upload = Upload.find_by(model: user, uploader: 'AvatarUploader')
+      Geo::FileRegistry.create(file_type: :avatar, file_id: upload.id)
+
+      user.update(avatar: fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg'))
+      upload = Upload.find_by(model: user, uploader: 'AvatarUploader')
+      Geo::FileRegistry.create(file_type: :avatar, file_id: upload.id)
+
+      expect(subject.attachments_synced_count).to eq(1)
+    end
+  end
+
   describe '#attachments_synced_in_percentage' do
     it 'returns 0 when no objects are available' do
       subject.attachments_count = 0

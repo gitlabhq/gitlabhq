@@ -69,7 +69,12 @@ class GeoNodeStatus
   end
 
   def attachments_synced_count
-    @attachments_synced_count ||= Geo::FileRegistry.where(file_type: [:attachment, :avatar, :file]).count
+    @attachments_synced_count ||= begin
+      upload_ids = Upload.pluck(:id)
+      synced_ids = Geo::FileRegistry.where(file_type: [:attachment, :avatar, :file]).pluck(:file_id)
+
+      (synced_ids & upload_ids).length
+    end
   end
 
   def attachments_synced_count=(value)
