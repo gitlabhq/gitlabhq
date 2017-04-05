@@ -61,12 +61,6 @@ export default {
     folderUrl(model) {
       return `${window.location.pathname}/folders/${model.folderName}`;
     },
-
-    isLoadingFolderContent: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
 
   template: `
