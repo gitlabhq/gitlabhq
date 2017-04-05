@@ -219,6 +219,10 @@ module Ci
       statuses.cancelable.any?
     end
 
+    def auto_canceled?
+      canceled? && auto_canceled_by_id?
+    end
+
     def cancel_running
       Gitlab::OptimisticLocking.retry_lock(
         statuses.cancelable) do |cancelable|
