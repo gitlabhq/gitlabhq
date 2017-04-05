@@ -40,20 +40,20 @@ export default {
       <div class="normal">
         <b>Request to merge</b>
         <span class="label-branch"
-              data-placement="bottom"
-              v-bind:class="{ 'label-truncated has-tooltip': isLongBranchTitle(mr.sourceBranch) }"
-              :title="isLongBranchTitle(mr.sourceBranch) ? mr.sourceBranch : null">
+          data-placement="bottom"
+          :class="{'label-truncated has-tooltip': isLongBranchTitle(mr.sourceBranch)}"
+          :title="isLongBranchTitle(mr.sourceBranch) ? mr.sourceBranch : null">
           <a :href="mr.sourceBranchPath">{{mr.sourceBranch}}</a>
         </span>
         <button class="btn btn-transparent btn-clipboard has-tooltip"
-                data-title="Copy branch name to clipboard"
-                :data-clipboard-text="mr.sourceBranch">
+          data-title="Copy branch name to clipboard"
+          :data-clipboard-text="mr.sourceBranch">
           <i aria-hidden="true" class="fa fa-clipboard"></i>
         </button>
         <b>into</b>
         <span class="label-branch"
-              v-bind:class="{ 'label-truncated has-tooltip': isLongBranchTitle(mr.targetBranch) }"
-              :title="isLongBranchTitle(mr.targetBranch) ? mr.targetBranch : null">
+          :class="{'label-truncated has-tooltip': isLongBranchTitle(mr.targetBranch)}"
+          :title="isLongBranchTitle(mr.targetBranch) ? mr.targetBranch : null">
           <a :href="mr.targetBranchPath">{{mr.targetBranch}}</a>
         </span>
         <span

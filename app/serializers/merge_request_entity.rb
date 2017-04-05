@@ -191,9 +191,9 @@ class MergeRequestEntity < IssuableEntity
   end
 
   expose :diverged_commits_count do |merge_request|
-    return 0 unless merge_request.open? && merge_request.diverged_from_target_branch?
-
-    merge_request.diverged_commits_count
+    merge_request.open? &&
+      merge_request.diverged_from_target_branch? ?
+      merge_request.diverged_commits_count : 0
   end
 
   expose :email_patches_path do |merge_request|

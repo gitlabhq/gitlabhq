@@ -1,6 +1,5 @@
 import successSvg from 'icons/_icon_status_success.svg';
 import warningSvg from 'icons/_icon_status_warning.svg';
-
 import simplePoll from '~/lib/utils/simple_poll';
 import eventHub from '../../event_hub';
 
@@ -20,6 +19,8 @@ export default {
       isWorking: false,
       isMergingImmediately: false,
       commitMessage: this.mr.commitMessage,
+      successSvg,
+      warningSvg,
     };
   },
   computed: {
@@ -62,12 +63,6 @@ export default {
     isMergeButtonDisabled() {
       const { commitMessage } = this;
       return !commitMessage.length || !this.isMergeAllowed() || this.isWorking;
-    },
-    checkmarkSvg() {
-      return successSvg;
-    },
-    exclamationSvg() {
-      return warningSvg;
     },
   },
   methods: {
@@ -176,18 +171,24 @@ export default {
         <button
           v-if="shouldShowMergeOptionsDropdown"
           :disabled="isMergeButtonDisabled"
-          type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+          type="button"
+          class="btn btn-info dropdown-toggle"
+          data-toggle="dropdown">
           <i class="fa fa-caret-down" aria-hidden="true"></i>
           <span class="sr-only">Select Merge Moment</span>
         </button>
         <ul
           v-if="shouldShowMergeOptionsDropdown"
-          class="dropdown-menu dropdown-menu-right" role="menu">
+          class="dropdown-menu dropdown-menu-right"
+          role="menu">
           <li>
             <a
               @click.prevent="handleMergeButtonClick(true)"
               class="merge_when_pipeline_succeeds" href="#">
-              <span class="merge-opt-icon" v-html="checkmarkSvg" aria-hidden="true"></span>
+              <span
+                v-html="successSvg"
+                class="merge-opt-icon"
+                aria-hidden="true"></span>
               <span class="merge-opt-title">Merge when pipeline succeeds</span>
             </a>
           </li>
@@ -195,7 +196,10 @@ export default {
             <a
               @click.prevent="handleMergeButtonClick(false, true)"
               class="accept-merge-request" href="#">
-              <span class="merge-opt-icon" v-html="exclamationSvg" aria-hidden="true"></span>
+              <span
+                v-html="warningSvg"
+                class="merge-opt-icon"
+                aria-hidden="true"></span>
               <span class="merge-opt-title">Merge immediately</span>
             </a>
           </li>
