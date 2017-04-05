@@ -12,13 +12,6 @@ describe('SingleAssignee', () => {
   const createComponent = props =>
     VueSpecHelper.createComponent(Vue, singleAssigneeComponent, props);
 
-  describe('props', () => {
-    it('should have mockStore prop', () => {
-      const { store } = singleAssigneeComponent.props;
-      expect(store.type).toBe(Object);
-    });
-  });
-
   describe('computed', () => {
     describe('user', () => {
       it('should return first user', () => {

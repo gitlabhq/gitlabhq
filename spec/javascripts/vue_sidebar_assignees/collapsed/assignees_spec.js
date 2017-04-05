@@ -13,23 +13,6 @@ describe('CollapsedAssignees', () => {
   const createAvatarComponent = props =>
     VueSpecHelper.createComponent(Vue, avatarComponent, props);
 
-  describe('props', () => {
-    it('should have users prop', () => {
-      const { users } = assigneesComponent.props;
-      expect(users.type).toBe(Array);
-    });
-
-    it('should have defaultRenderCount prop', () => {
-      const { defaultRenderCount } = assigneesComponent.props;
-      expect(defaultRenderCount.type).toBe(Number);
-    });
-
-    it('should have defaultMaxCounter prop', () => {
-      const { defaultMaxCounter } = assigneesComponent.props;
-      expect(defaultMaxCounter.type).toBe(Number);
-    });
-  });
-
   describe('computed', () => {
     describe('title', () => {
       it('returns one name when there is one assignee', () => {

@@ -6,23 +6,6 @@ describe('AssigneeTitle', () => {
   const createComponent = props =>
     VueSpecHelper.createComponent(Vue, assigneeTitleComponent, props);
 
-  describe('props', () => {
-    it('should have loading prop', () => {
-      const { loading } = assigneeTitleComponent.props;
-      expect(loading.type).toBe(Boolean);
-    });
-
-    it('should have numberOfAssignees prop', () => {
-      const { numberOfAssignees } = assigneeTitleComponent.props;
-      expect(numberOfAssignees.type).toBe(Number);
-    });
-
-    it('should have editable prop', () => {
-      const { editable } = assigneeTitleComponent.props;
-      expect(editable.type).toBe(Boolean);
-    });
-  });
-
   describe('computed', () => {
     describe('assigneeTitle', () => {
       it('returns "Assignee" when there is only one assignee', () => {

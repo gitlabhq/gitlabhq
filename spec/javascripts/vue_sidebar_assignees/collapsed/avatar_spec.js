@@ -7,18 +7,6 @@ describe('CollapsedAvatar', () => {
   const createComponent = props =>
     VueSpecHelper.createComponent(Vue, avatarComponent, props);
 
-  describe('props', () => {
-    it('should have name prop', () => {
-      const { name } = avatarComponent.props;
-      expect(name.type).toBe(String);
-    });
-
-    it('should have avatarUrl prop', () => {
-      const { avatarUrl } = avatarComponent.props;
-      expect(avatarUrl.type).toBe(String);
-    });
-  });
-
   describe('computed', () => {
     describe('alt', () => {
       it('returns avatar alt text', () => {

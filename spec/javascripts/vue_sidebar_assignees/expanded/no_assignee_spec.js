@@ -10,13 +10,6 @@ describe('NoAssignee', () => {
   const createComponent = props =>
     VueSpecHelper.createComponent(Vue, noAssigneeComponent, props);
 
-  describe('props', () => {
-    it('should have store prop', () => {
-      const { store } = noAssigneeComponent.props;
-      expect(store.type).toBe(Object);
-    });
-  });
-
   describe('methods', () => {
     describe('assignSelf', () => {
       it('should call addCurrentUser in store', () => {

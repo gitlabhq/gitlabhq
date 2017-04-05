@@ -13,13 +13,6 @@ describe('MultipleAssignees', () => {
   const createComponent = props =>
     VueSpecHelper.createComponent(Vue, multipleAssigneesComponent, props);
 
-  describe('props', () => {
-    it('should have store prop', () => {
-      const { store } = multipleAssigneesComponent.props;
-      expect(store.type).toBe(Object);
-    });
-  });
-
   describe('computed', () => {
     describe('renderShowMoreSection', () => {
       it('should return true when users.length is greater than defaultRenderCount', () => {
