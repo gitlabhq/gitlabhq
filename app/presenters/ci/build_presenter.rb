@@ -11,5 +11,11 @@ module Ci
     def erased_by_name
       erased_by.name if erased_by_user?
     end
+
+    def status_title
+      if canceled? && pipeline.auto_canceled?
+        "Job is redundant and is auto-canceled by Pipeline ##{pipeline.auto_canceled_by_id}"
+      end
+    end
   end
 end
