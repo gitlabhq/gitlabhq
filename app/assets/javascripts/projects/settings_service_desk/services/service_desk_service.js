@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import Vue from 'vue';
 import vueResource from 'vue-resource';
 import '../../../vue_shared/vue_resource_interceptor';

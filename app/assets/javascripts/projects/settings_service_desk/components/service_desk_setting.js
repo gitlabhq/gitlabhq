@@ -44,12 +44,10 @@ export default {
   template: `
     <div>
       <div class="checkbox">
-        <label for="project_service_desk_enabled">
+        <label for="service-desk-enabled-checkbox">
           <input
             type="checkbox"
-            value="1"
-            name="project[service_desk_enabled]"
-            id="project_service_desk_enabled"
+            id="service-desk-enabled-checkbox"
             :checked="isActivated"
             @change="onCheckboxToggle($event)">
           <span class="descr">
@@ -67,7 +65,7 @@ export default {
           </div>
           <div class="panel-body">
             <template v-if="fetchError">
-              <i class="fa fa-exclamation-circle" />
+              <i class="fa fa-exclamation-circle" aria-hidden="true" />
               An error occurred while fetching the incoming email
             </template>
             <template v-else-if="incomingEmail">
@@ -78,11 +76,14 @@ export default {
                 class="btn btn-clipboard btn-transparent"
                 title="Copy incoming email address to clipboard"
                 @click="copyIncomingEmail($event)">
-                <i class="fa fa-clipboard" />
+                <i class="fa fa-clipboard" aria-hidden="true" />
               </button>
             </template>
             <template v-else>
-              <i class="fa fa-spinner fa-spin" />
+              <i class="fa fa-spinner fa-spin" aria-hidden="true" />
+              <span class="sr-only">
+                Fetching incoming email
+              </span>
             </template>
           </div>
         </div>
