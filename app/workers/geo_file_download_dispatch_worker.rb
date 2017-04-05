@@ -63,9 +63,17 @@ class GeoFileDownloadDispatchWorker
 
   def load_pending_downloads
     lfs_object_ids = find_lfs_object_ids(DB_RETRIEVE_BATCH)
-    objects_ids    = find_object_ids(DB_RETRIEVE_BATCH - lfs_object_ids.size)
+    objects_ids    = find_object_ids(DB_RETRIEVE_BATCH)
 
-    @pending_downloads = lfs_object_ids + objects_ids
+    @pending_downloads = interleave(lfs_object_ids, objects_ids)
+  end
+
+  def interleave(first, second)
+    if first.length >= second.length
+      first.zip(second)
+    else
+      second.zip(first).map(&:reverse)
+    end.flatten(1).compact.take(DB_RETRIEVE_BATCH)
   end
 
   def downloads_remain?
