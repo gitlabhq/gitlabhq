@@ -41,6 +41,7 @@ export default {
         <button
           @click="refresh"
           class="btn btn-default btn-xs js-refresh-button"
+          type="button"
         >Refresh now</button>
       </span>
       <span
