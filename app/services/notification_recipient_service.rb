@@ -8,7 +8,6 @@ class NotificationRecipientService
     @project = project
   end
 
-  # TODO: refactor this: previous_assignee argument can be a user object or an array which is not really nice
   def build_recipients(target, current_user, action: nil, previous_assignee: nil, skip_current_user: true)
     custom_action = build_custom_key(action, target)
 
@@ -29,7 +28,8 @@ class NotificationRecipientService
       recipients << previous_assignee if previous_assignee
       recipients << target.assignee
     when :reassign_issue
-      recipients.concat(previous_assignee) if previous_assignee.any?
+      previous_assignees = Array(previous_assignee)
+      recipients.concat(previous_assignees) if previous_assignees.any?
       recipients.concat(target.assignees)
     end
 
