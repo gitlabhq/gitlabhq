@@ -2,7 +2,7 @@ module Gitlab
   module Geo
     class LfsUploader < FileUploader
       def execute
-        lfs_object = LfsObject.find(object_db_id)
+        lfs_object = LfsObject.find_by(id: object_db_id)
 
         return error unless lfs_object.present?
         return error if message[:sha256] != lfs_object.oid

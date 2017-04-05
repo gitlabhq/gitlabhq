@@ -13,7 +13,7 @@ module Gitlab
       # Subclasses should return the number of bytes downloaded,
       # or nil or -1 if a failure occurred.
       def execute
-        upload = Upload.find_by_id(object_db_id)
+        upload = Upload.find_by(id: object_db_id)
         return unless upload.present?
 
         transfer = ::Gitlab::Geo::FileTransfer.new(object_type.to_sym, upload)

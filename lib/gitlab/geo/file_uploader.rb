@@ -9,7 +9,7 @@ module Gitlab
       end
 
       def execute
-        recorded_file = Upload.find_by_id(object_db_id)
+        recorded_file = Upload.find_by(id: object_db_id)
 
         return error unless recorded_file&.exist?
         return error unless valid?(recorded_file)
