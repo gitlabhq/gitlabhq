@@ -5,7 +5,16 @@
 # Values are checked for formatting and exclusion from a list of reserved path
 # names.
 class NamespaceValidator < ActiveModel::EachValidator
-  RESERVED = %w[
+  # All routes that appear on the top level must be listed here.
+  # This will make sure that groups cannot be created with these names
+  # as these routes would be masked by the paths already in place.
+  #
+  # Example:
+  #   /api/api-project
+  #
+  #  the path `api` shouldn't be allowed because it would be masked by `api/*`
+  #
+  TOP_LEVEL_ROUTES = Set.new(%w[
     .well-known
     admin
     all
@@ -49,35 +58,56 @@ class NamespaceValidator < ActiveModel::EachValidator
     jwt
     oauth
     sent_notifications
-  ].freeze
+  ]).freeze
 
-  WILDCARD_ROUTES = %w[tree commits wikis new edit create update logs_tree
-                       preview blob blame raw files create_dir find_file
-                       artifacts graphs refs badges info git-upload-pack
-                       git-receive-pack gitlab-lfs autocomplete_sources
-                       templates avatar commit pages compare network snippets
-                       services mattermost deploy_keys forks import merge_requests
-                       branches merged_branches tags protected_branches variables
-                       triggers pipelines environments cycle_analytics builds
-                       hooks container_registry milestones labels issues
-                       project_members group_links notes noteable boards todos
-                       uploads runners runner_projects settings repository
-                       transfer remove_fork archive unarchive housekeeping
-                       toggle_star preview_markdown export remove_export
-                       generate_new_export download_export activity
-                       new_issue_address registry].freeze
+  # All project routes with wildcard argument must be listed here.
+  # Otherwise it can lead to routing issues when route considered as project name.
+  #
+  # Example:
+  #  /group/project/tree/deploy_keys
+  #
+  #  without tree as reserved name routing can match 'group/project' as group name,
+  #  'tree' as project name and 'deploy_keys' as route.
+  #
+  WILDCARD_ROUTES = Set.new(%w[tree commits wikis new edit create update logs_tree
+                               preview blob blame raw files create_dir find_file
+                               artifacts graphs refs badges info git-upload-pack
+                               git-receive-pack gitlab-lfs autocomplete_sources
+                               templates avatar commit pages compare network snippets
+                               services mattermost deploy_keys forks import merge_requests
+                               branches merged_branches tags protected_branches variables
+                               triggers pipelines environments cycle_analytics builds
+                               hooks container_registry milestones labels issues
+                               project_members group_links notes noteable boards todos
+                               uploads runners runner_projects settings repository
+                               transfer remove_fork archive unarchive housekeeping
+                               toggle_star preview_markdown export remove_export
+                               generate_new_export download_export activity
+                               new_issue_address registry])
 
-  STRICT_RESERVED = (RESERVED + WILDCARD_ROUTES).freeze
+  STRICT_RESERVED = (TOP_LEVEL_ROUTES | WILDCARD_ROUTES)
 
-  def self.valid?(value)
-    !reserved?(value) && follow_format?(value)
+  def self.valid_full_path?(full_path)
+    pieces = full_path.split('/')
+    first_part = pieces.first
+    pieces.all? do |namespace|
+      type = first_part == namespace ? :top_level : :wildcard
+      valid?(namespace, type: type)
+    end
   end
 
-  def self.reserved?(value, strict: false)
-    if strict
-      STRICT_RESERVED.include?(value)
+  def self.valid?(value, type: :strict)
+    !reserved?(value, type: type) && follow_format?(value)
+  end
+
+  def self.reserved?(value, type: :strict)
+    case type
+    when :wildcard
+      WILDCARD_ROUTES.include?(value)
+    when :top_level
+      TOP_LEVEL_ROUTES.include?(value)
     else
-      RESERVED.include?(value)
+      STRICT_RESERVED.include?(value)
     end
   end
 
@@ -92,10 +122,19 @@ class NamespaceValidator < ActiveModel::EachValidator
       record.errors.add(attribute, Gitlab::Regex.namespace_regex_message)
     end
 
-    strict = record.is_a?(Group) && record.parent_id
-
-    if reserved?(value, strict: strict)
+    if reserved?(value, type: validation_type(record))
       record.errors.add(attribute, "#{value} is a reserved name")
+    end
+  end
+
+  def validation_type(record)
+    case record
+    when Group
+      record.parent_id ? :wildcard : :top_level
+    when Project
+      :wildcard
+    else
+      :strict
     end
   end
 end
