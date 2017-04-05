@@ -30,11 +30,7 @@ module Gitlab
       end
 
       def matches_checksum?(recorded_file)
-        message[:checksum] == calculate_checksum(recorded_file.absolute_path)
-      end
-
-      def calculate_checksum(absolute_path)
-        Digest::SHA256.file(absolute_path).hexdigest
+        message[:checksum] == Upload.hexdigest(recorded_file.absolute_path)
       end
 
       def success(file)
