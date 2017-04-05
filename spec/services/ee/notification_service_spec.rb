@@ -4,7 +4,7 @@ describe EE::NotificationService do
   let(:subject) { NotificationService.new }
 
   def should_email!
-    expect(Notify).to receive(:service_desk_new_note_email).with(issue.id, instance_of(Fixnum))
+    expect(Notify).to receive(:service_desk_new_note_email).with(issue.id, instance_of(Integer))
   end
 
   def should_not_email!

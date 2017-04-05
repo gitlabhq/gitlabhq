@@ -10,11 +10,10 @@ module Gitlab
           end
 
           def execute
-            raise EmailUnparsableError if from_address.blank?
             raise ProjectNotFound if project.nil?
 
             create_issue!
-            send_thank_you_email!
+            send_thank_you_email! if from_address
           end
 
           private
@@ -61,7 +60,9 @@ module Gitlab
           end
 
           def issue_title
-            "Service Desk (from `#{from_address}`): #{mail.subject}"
+            from = "(from #{from_address})" if from_address
+
+            "Service Desk #{from}: #{mail.subject}"
           end
         end
       end

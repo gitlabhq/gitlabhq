@@ -1,5 +1,11 @@
 module EE
   module ProjectPolicy
+    def rules
+      super
+
+      guest_access! if user.support_bot?
+    end
+
     def disabled_features!
       raise NotImplementedError unless defined?(super)
 

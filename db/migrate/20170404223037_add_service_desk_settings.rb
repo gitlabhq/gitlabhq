@@ -23,7 +23,7 @@ class AddServiceDeskSettings < ActiveRecord::Migration
   # comments:
   disable_ddl_transaction!
 
-  def change
+  def up
     add_column :users, :support_bot, :boolean
 
     add_column :projects, :service_desk_enabled, :boolean
@@ -33,5 +33,14 @@ class AddServiceDeskSettings < ActiveRecord::Migration
 
     add_concurrent_index :users, :support_bot
     add_concurrent_index :projects, :service_desk_mail_key, unique: true
+  end
+
+  def down
+    remove_column :users, :support_bot
+
+    remove_column :projects, :service_desk_enabled
+    remove_column :projects, :service_desk_mail_key
+
+    remove_column :issues, :service_desk_reply_to
   end
 end

@@ -44,6 +44,7 @@ module EE
     end
 
     private
+
     def auto_refresh_service_desk_key
       if service_desk_mail_key.blank? || service_desk_enabled_changed?
         refresh_service_desk_key!
