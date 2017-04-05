@@ -69,12 +69,8 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
 
       select2(namespace.id, from: '#project_namespace_id')
 
-      # click on disabled element
-      find(:link, 'GitLab export').trigger('click')
-
-      page.within('.flash-container') do
-        expect(page).to have_content('Please enter path and name')
-      end
+      # Check for tooltip disabled import button
+      expect(find('.import_gitlab_project')['title']).to eq('Please enter a valid project name.')
     end
   end
 

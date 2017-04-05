@@ -53,6 +53,8 @@ class ProcessCommitWorker
   def update_issue_metrics(commit, author)
     mentioned_issues = commit.all_references(author).issues
 
+    return if mentioned_issues.empty?
+
     Issue::Metrics.where(issue_id: mentioned_issues.map(&:id), first_mentioned_in_commit_at: nil).
       update_all(first_mentioned_in_commit_at: commit.committed_date)
   end

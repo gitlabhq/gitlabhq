@@ -1,5 +1,26 @@
 module Gitlab
   class SearchResults
+    class FoundBlob
+      attr_reader :id, :filename, :basename, :ref, :startline, :data
+
+      def initialize(opts = {})
+        @id = opts.fetch(:id, nil)
+        @filename = opts.fetch(:filename, nil)
+        @basename = opts.fetch(:basename, nil)
+        @ref = opts.fetch(:ref, nil)
+        @startline = opts.fetch(:startline, nil)
+        @data = opts.fetch(:data, nil)
+      end
+
+      def path
+        filename
+      end
+
+      def no_highlighting?
+        false
+      end
+    end
+
     attr_reader :current_user, :query
 
     # Limit search results by passed projects

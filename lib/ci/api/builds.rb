@@ -86,8 +86,7 @@ module Ci
         # Example Request:
         #   PATCH /builds/:id/trace.txt
         patch ":id/trace.txt" do
-          build = Ci::Build.find_by_id(params[:id])
-          authenticate_build!(build)
+          build = authenticate_build!
 
           error!('400 Missing header Content-Range', 400) unless request.headers.has_key?('Content-Range')
           content_range = request.headers['Content-Range']
@@ -117,8 +116,7 @@ module Ci
           require_gitlab_workhorse!
           Gitlab::Workhorse.verify_api_request!(headers)
           not_allowed! unless Gitlab.config.artifacts.enabled
-          build = Ci::Build.find_by_id(params[:id])
-          authenticate_build!(build)
+          build = authenticate_build!
           forbidden!('build is not running') unless build.running?
 
           if params[:filesize]
@@ -154,8 +152,7 @@ module Ci
         post ":id/artifacts" do
           require_gitlab_workhorse!
           not_allowed! unless Gitlab.config.artifacts.enabled
-          build = Ci::Build.find_by_id(params[:id])
-          authenticate_build!(build)
+          build = authenticate_build!
           forbidden!('Build is not running!') unless build.running?
 
           artifacts_upload_path = ArtifactUploader.artifacts_upload_path
@@ -189,8 +186,7 @@ module Ci
         # Example Request:
         #   GET /builds/:id/artifacts
         get ":id/artifacts" do
-          build = Ci::Build.find_by_id(params[:id])
-          authenticate_build!(build)
+          build = authenticate_build!
           artifacts_file = build.artifacts_file
 
           unless artifacts_file.file_storage?
@@ -214,8 +210,7 @@ module Ci
         # Example Request:
         #   DELETE /builds/:id/artifacts
         delete ":id/artifacts" do
-          build = Ci::Build.find_by_id(params[:id])
-          authenticate_build!(build)
+          build = authenticate_build!
 
           status(200)
           build.erase_artifacts!
