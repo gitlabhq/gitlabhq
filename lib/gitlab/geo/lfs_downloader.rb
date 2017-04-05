@@ -3,7 +3,6 @@ module Gitlab
     class LfsDownloader < FileDownloader
       def execute
         lfs_object = LfsObject.find_by_id(object_db_id)
-
         return unless lfs_object.present?
 
         transfer = ::Gitlab::Geo::LfsTransfer.new(lfs_object)

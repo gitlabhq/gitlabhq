@@ -20,13 +20,10 @@ module Geo
     private
 
     def downloader
-      begin
-        klass = Gitlab::Geo.const_get("#{object_type.capitalize}Downloader")
-        klass.new(object_db_id)
-      rescue NameError
-        log("unknown file type: #{object_type}")
-        raise
-      end
+      klass = "Gitlab::Geo::#{object_type.to_s.camelize}Downloader".constantize
+      klass.new(object_db_id)
+    rescue NameError
+      Gitlab::Geo::FileDownloader.new(object_db_id)
     end
 
     def try_obtain_lease
@@ -41,14 +38,12 @@ module Geo
       end
     end
 
-    def log(message)
-      Rails.logger.info "#{self.class.name}: #{message}"
-    end
-
     def update_registry(bytes_downloaded)
       transfer = Geo::FileRegistry.find_or_initialize_by(
         file_type: object_type,
-        file_id: object_db_id)
+        file_id: object_db_id
+      )
+
       transfer.bytes = bytes_downloaded
       transfer.save
     end

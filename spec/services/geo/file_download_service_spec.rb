@@ -72,8 +72,10 @@ describe Geo::FileDownloadService, services: true do
       end
     end
 
-    it 'raises an error with bad object type' do
-      expect{ described_class.new(:bad, 1).execute }.to raise_error(NameError)
+    context 'bad object type' do
+      it 'does not track transfer' do
+        expect{ described_class.new(:bad, 1).execute }.not_to change(Geo::FileRegistry, :count)
+      end
     end
   end
 end

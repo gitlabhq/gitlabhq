@@ -12,7 +12,11 @@ module Gitlab
       # Subclasses should return the number of bytes downloaded,
       # or nil or -1 if a failure occurred.
       def execute
-        raise NotImplementedError
+        upload = Upload.find_by_id(object_db_id)
+        return unless upload.present?
+
+        transfer = ::Gitlab::Geo::FileTransfer.new(:avatar, upload)
+        transfer.download_from_primary
       end
     end
   end
