@@ -100,7 +100,7 @@ describe Environment, models: true do
     let(:head_commit)   { project.commit }
     let(:commit)        { project.commit.parent }
 
-    context 'Gitaly find_ref_name feature disables' do
+    context 'Gitaly find_ref_name feature disabled' do
       it 'returns deployment id for the environment' do
         expect(environment.first_deployment_for(commit)).to eq deployment1
       end
@@ -115,7 +115,7 @@ describe Environment, models: true do
         allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:find_ref_name).and_return(true)
       end
 
-      it 'checks that GitalyClient is called' do
+      it 'calls GitalyClient' do
         expect(Gitlab::GitalyClient::Ref).to receive(:find_ref_name).with(project.repository.raw_repository, commit.id, environment.ref_path)
 
         environment.first_deployment_for(commit)
