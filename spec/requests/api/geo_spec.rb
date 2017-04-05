@@ -17,12 +17,14 @@ describe API::Geo, api: true do
   describe 'POST /geo/receive_events authentication' do
     it 'denies access if token is not present' do
       post api('/geo/receive_events')
-      expect(response.status).to eq 401
+
+      expect(response).to have_http_status(401)
     end
 
     it 'denies access if token is invalid' do
       post api('/geo/receive_events'), nil, { 'X-Gitlab-Token' => 'nothing' }
-      expect(response.status).to eq 401
+
+      expect(response).to have_http_status(401)
     end
   end
 
@@ -73,12 +75,14 @@ describe API::Geo, api: true do
 
     it 'enqueues on disk key creation if admin and correct params' do
       post api('/geo/receive_events'), key_create_payload, geo_token_header
-      expect(response.status).to eq 201
+
+      expect(response).to have_http_status(201)
     end
 
     it 'enqueues on disk key removal if admin and correct params' do
       post api('/geo/receive_events'), key_destroy_payload, geo_token_header
-      expect(response.status).to eq 201
+
+      expect(response).to have_http_status(201)
     end
   end
 
@@ -98,7 +102,8 @@ describe API::Geo, api: true do
 
     it 'starts refresh process if admin and correct params' do
       post api('/geo/receive_events'), push_payload, geo_token_header
-      expect(response.status).to eq 201
+
+      expect(response).to have_http_status(201)
     end
   end
 
@@ -117,7 +122,8 @@ describe API::Geo, api: true do
 
     it 'starts refresh process if admin and correct params' do
       post api('/geo/receive_events'), tag_push_payload, geo_token_header
-      expect(response.status).to eq 201
+
+      expect(response).to have_http_status(201)
     end
   end
 
@@ -135,14 +141,14 @@ describe API::Geo, api: true do
     it 'responds with 401 with invalid auth header' do
       get api("/geo/transfers/avatar/#{upload.id}"), nil, Authorization: 'Test'
 
-      expect(response.status).to eq 401
+      expect(response).to have_http_status(401)
     end
 
     context 'avatar file exists' do
       it 'responds with 200 with X-Sendfile' do
         get api("/geo/transfers/avatar/#{upload.id}"), nil, req_header
 
-        expect(response.status).to eq 200
+        expect(response).to have_http_status(200)
         expect(response.headers['Content-Type']).to eq('application/octet-stream')
         expect(response.headers['X-Sendfile']).to eq(user.avatar.path)
       end
@@ -152,7 +158,7 @@ describe API::Geo, api: true do
       it 'responds with 404' do
         get api("/geo/transfers/avatar/100000"), nil, req_header
 
-        expect(response.status).to eq 404
+        expect(response).to have_http_status(404)
       end
     end
   end
@@ -172,14 +178,14 @@ describe API::Geo, api: true do
     it 'responds with 401 with invalid auth header' do
       get api("/geo/transfers/lfs/#{lfs_object.id}"), nil, Authorization: 'Test'
 
-      expect(response.status).to eq 401
+      expect(response).to have_http_status(401)
     end
 
     context 'LFS file exists' do
       it 'responds with 200 with X-Sendfile' do
         get api("/geo/transfers/lfs/#{lfs_object.id}"), nil, req_header
 
-        expect(response.status).to eq 200
+        expect(response).to have_http_status(200)
         expect(response.headers['Content-Type']).to eq('application/octet-stream')
         expect(response.headers['X-Sendfile']).to eq(lfs_object.file.path)
       end
@@ -189,7 +195,7 @@ describe API::Geo, api: true do
       it 'responds with 404' do
         get api("/geo/transfers/lfs/100000"), nil, req_header
 
-        expect(response.status).to eq 404
+        expect(response).to have_http_status(404)
       end
     end
   end
@@ -201,7 +207,7 @@ describe API::Geo, api: true do
     it 'responds with 401 with invalid auth header' do
       get api('/geo/status'), nil, Authorization: 'Test'
 
-      expect(response.status).to eq 401
+      expect(response).to have_http_status(401)
     end
 
     context 'when requesting secondary node with valid auth header' do
@@ -213,7 +219,7 @@ describe API::Geo, api: true do
       it 'responds with 200' do
         get api('/geo/status'), nil, request.headers
 
-        expect(response.status).to eq 200
+        expect(response).to have_http_status(200)
         expect(response.headers['Content-Type']).to eq('application/json')
       end
 
