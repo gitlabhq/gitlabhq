@@ -53,12 +53,12 @@ module API
         ]
       end
 
-      def parse_allowed_environment_variables
-        return if params[:env].blank?
+      def parse_env
+        return {} if params[:env].blank?
 
         JSON.parse(params[:env])
-
       rescue JSON::ParserError
+        {}
       end
     end
   end
