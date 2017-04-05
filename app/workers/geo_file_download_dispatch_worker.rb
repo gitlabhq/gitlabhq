@@ -108,8 +108,8 @@ class GeoFileDownloadDispatchWorker
   end
 
   def find_downloaded_ids(file_types)
-    downloaded_lfs_ids = Geo::FileRegistry.where(file_type: file_types).pluck(:file_id)
-    downloaded_lfs_ids = (downloaded_lfs_ids + scheduled_ids(file_types)).uniq
+    downloaded_ids = Geo::FileRegistry.where(file_type: file_types).pluck(:file_id)
+    (downloaded_ids + scheduled_ids(file_types)).uniq
   end
 
   def update_jobs_in_progress
