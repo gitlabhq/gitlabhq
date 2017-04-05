@@ -67,7 +67,7 @@ describe Gitlab::Ci::CronParser do
         it_behaves_like "returns time in the future"
 
         it 'converts time in server time zone' do
-          expect(subject.hour).to eq(7)
+          expect(subject.hour).to eq((Time.zone.now.in_time_zone(cron_timezone).utc_offset / 60 / 60).abs)
         end
       end
     end
