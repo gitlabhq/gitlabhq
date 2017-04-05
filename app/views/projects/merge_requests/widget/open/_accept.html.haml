@@ -37,7 +37,7 @@
             = check_box_tag :should_remove_source_branch
             Remove source branch
       .accept-control
-        = link_to "#", class: "modify-merge-commit-link js-toggle-button" do
+        %button.modify-merge-commit-link.js-toggle-button{ type: "button" }
           = icon('edit')
           Modify commit message
     .js-toggle-content.hide.prepend-top-default

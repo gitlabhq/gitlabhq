@@ -2,7 +2,6 @@ require 'spec_helper'
 
 feature "Admin Health Check", feature: true do
   include StubENV
-  include WaitForAjax
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
@@ -24,11 +23,12 @@ feature "Admin Health Check", feature: true do
       expect(page).to have_selector('#health-check-token', text: token)
     end
 
-    describe 'reload access token', js: true do
+    describe 'reload access token' do
       it 'changes the access token' do
         orig_token = current_application_settings.health_check_access_token
         click_button 'Reset health check access token'
-        wait_for_ajax
+
+        expect(page).to have_content('New health check access token has been generated!')
         expect(find('#health-check-token').text).not_to eq orig_token
       end
     end

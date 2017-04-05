@@ -181,6 +181,9 @@ import './visibility_select';
 import './wikis';
 import './zen_mode';
 
+// eslint-disable-next-line global-require
+if (process.env.NODE_ENV !== 'production') require('./test_utils/');
+
 document.addEventListener('beforeunload', function () {
   // Unbind scroll events
   $(document).off('scroll');
@@ -364,4 +367,6 @@ $(function () {
   new Aside();
 
   gl.utils.initTimeagoTimeout();
+
+  $(document).trigger('init.scrolling-tabs');
 });

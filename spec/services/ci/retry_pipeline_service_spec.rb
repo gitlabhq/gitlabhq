@@ -9,6 +9,19 @@ describe Ci::RetryPipelineService, '#execute', :services do
   context 'when user has ability to modify pipeline' do
     let(:user) { create(:admin) }
 
+    context 'when there are already retried jobs present' do
+      before do
+        create_build('rspec', :canceled, 0)
+        create_build('rspec', :failed, 0)
+      end
+
+      it 'does not retry jobs that has already been retried' do
+        expect(statuses.first).to be_retried
+        expect { service.execute(pipeline) }
+          .to change { CommitStatus.count }.by(1)
+      end
+    end
+
     context 'when there are failed builds in the last stage' do
       before do
         create_build('rspec 1', :success, 0)

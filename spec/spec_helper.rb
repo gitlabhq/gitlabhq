@@ -9,7 +9,8 @@ require 'rspec/rails'
 require 'shoulda/matchers'
 require 'rspec/retry'
 
-if ENV['RSPEC_PROFILING_POSTGRES_URL'] || ENV['RSPEC_PROFILING']
+if (ENV['RSPEC_PROFILING_POSTGRES_URL'] || ENV['RSPEC_PROFILING']) &&
+    (!ENV.has_key?('CI') || ENV['CI_COMMIT_REF_NAME'] == 'master')
   require 'rspec_profiling/rspec'
 end
 

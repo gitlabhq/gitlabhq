@@ -92,6 +92,20 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
 
         manager.search();
       });
+
+      it('removes duplicated tokens', (done) => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+        `);
+
+        spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
+          expect(url).toEqual(`${defaultParams}&label_name[]=bug`);
+          done();
+        });
+
+        manager.search();
+      });
     });
 
     describe('handleInputPlaceholder', () => {

@@ -33,12 +33,11 @@ export default Vue.component('pipelines-table', {
    * @return {Object}
    */
   data() {
-    const pipelinesTableData = document.querySelector('#commit-pipeline-table-view').dataset;
     const store = new PipelineStore();
 
     return {
-      endpoint: pipelinesTableData.endpoint,
-      helpPagePath: pipelinesTableData.helpPagePath,
+      endpoint: null,
+      helpPagePath: null,
       store,
       state: store.state,
       isLoading: false,
@@ -65,6 +64,8 @@ export default Vue.component('pipelines-table', {
    *
    */
   beforeMount() {
+    this.endpoint = this.$el.dataset.endpoint;
+    this.helpPagePath = this.$el.dataset.helpPagePath;
     this.service = new PipelinesService(this.endpoint);
 
     this.fetchPipelines();

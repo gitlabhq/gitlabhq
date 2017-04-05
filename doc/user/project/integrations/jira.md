@@ -157,6 +157,11 @@ the same goal:
 
 where `PROJECT-1` is the issue ID of the JIRA project.
 
+>**Note:**
+- Only commits and merges into the project's default branch (usually **master**) will
+  close an issue in Jira. You can change your projects default branch under
+  [project settings](img/jira_project_settings.png).
+
 ### JIRA issue closing example
 
 Let's consider the following example:

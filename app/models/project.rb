@@ -114,6 +114,8 @@ class Project < ActiveRecord::Base
   has_one :kubernetes_service, dependent: :destroy, inverse_of: :project
   has_one :prometheus_service, dependent: :destroy, inverse_of: :project
   has_one :mock_ci_service, dependent: :destroy
+  has_one :mock_deployment_service, dependent: :destroy
+  has_one :mock_monitoring_service, dependent: :destroy
 
   has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one  :forked_from_project,  through:   :forked_project_link
@@ -549,6 +551,10 @@ class Project < ActiveRecord::Base
 
   def gitea_import?
     import_type == 'gitea'
+  end
+
+  def github_import?
+    import_type == 'github'
   end
 
   def check_limit

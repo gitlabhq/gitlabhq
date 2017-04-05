@@ -2,6 +2,41 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.0.3 (2017-04-05)
+
+- Fix name colision when importing GitHub pull requests from forked repositories. !9719
+- Fix GitHub Importer for PRs of deleted forked repositories. !9992
+- Fix environment folder route when special chars present in environment name. !10250
+- Improve Markdown rendering when a lot of merge requests are referenced. !10252
+- Allow users to import GitHub projects to subgroups.
+- Backport API changes needed to fix sticking in EE.
+- Remove unnecessary ORDER BY clause from `forked_to_project_id` subquery. (mhasbini)
+- Make CI build to use optimistic locking only on status change.
+- Fix race condition where a namespace would be deleted before a project was deleted.
+- Fix linking to new issue with selected template via url parameter.
+- Remove unnecessary ORDER BY clause when updating todos. (mhasbini)
+- API: Make the /notes endpoint work with noteable iid instead of id.
+- Fixes method not replacing URL parameters correctly and breaking pipelines pagination.
+- Move issue, mr, todos next to profile dropdown in top nav.
+
+## 9.0.2 (2017-03-29)
+
+- Correctly update paths when changing a child group.
+- Fixed private group name disclosure via new/update forms.
+
+## 9.0.1 (2017-03-28)
+
+- Resolve "404 when requesting build trace". !9759 (dosuken123)
+- Simplify search queries for projects and merge requests. !10053 (mhasbini)
+- Fix after_script processing for Runners APIv4. !10185
+- Fix escaped html appearing in milestone page. !10224
+- Fix bug that caused jobs that already had been retried to be retried again when retrying a pipeline. !10249
+- Allow filtering by all started milestones.
+- Allow sorting by due date and priority.
+- Fixed branches pagination not displaying.
+- Fixed filtered search not working in IE.
+- Optimize labels finder query when searching for a project with a group. (mhasbini)
+
 ## 9.0.0 (2017-03-22)
 
 - Fix inconsistent naming for services that delete things. !5803 (dixpac)

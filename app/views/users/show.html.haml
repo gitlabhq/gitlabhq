@@ -79,26 +79,29 @@
         %p.profile-user-bio
           = @user.bio
 
-    %ul.nav-links.center.user-profile-nav
-      %li.js-activity-tab
-        = link_to user_path, data: {target: 'div#activity', action: 'activity', toggle: 'tab'} do
-          Activity
-      %li.js-groups-tab
-        = link_to user_groups_path, data: {target: 'div#groups', action: 'groups', toggle: 'tab'} do
-          Groups
-      %li.js-contributed-tab
-        = link_to user_contributed_projects_path, data: {target: 'div#contributed', action: 'contributed', toggle: 'tab'} do
-          Contributed projects
-      %li.js-projects-tab
-        = link_to user_projects_path, data: {target: 'div#projects', action: 'projects', toggle: 'tab'} do
-          Personal projects
-      %li.js-snippets-tab
-        = link_to user_snippets_path, data: {target: 'div#snippets', action: 'snippets', toggle: 'tab'} do
-          Snippets
+    .scrolling-tabs-container
+      .fade-left= icon('angle-left')
+      .fade-right= icon('angle-right')
+      %ul.nav-links.center.user-profile-nav.scrolling-tabs
+        %li.js-activity-tab
+          = link_to user_path, data: {target: 'div#activity', action: 'activity', toggle: 'tab'} do
+            Activity
+        %li.js-groups-tab
+          = link_to user_groups_path, data: {target: 'div#groups', action: 'groups', toggle: 'tab'} do
+            Groups
+        %li.js-contributed-tab
+          = link_to user_contributed_projects_path, data: {target: 'div#contributed', action: 'contributed', toggle: 'tab'} do
+            Contributed projects
+        %li.js-projects-tab
+          = link_to user_projects_path, data: {target: 'div#projects', action: 'projects', toggle: 'tab'} do
+            Personal projects
+        %li.js-snippets-tab
+          = link_to user_snippets_path, data: {target: 'div#snippets', action: 'snippets', toggle: 'tab'} do
+            Snippets
 
   %div{ class: container_class }
-    - if @user == current_user
-      .user-callout{ 'callout-svg' => custom_icon('icon_customization') }
+    - if @user == current_user && !show_user_callout?
+      = render 'shared/user_callout'
     .tab-content
       #activity.tab-pane
         .row-content-block.calender-block.white.second-block.hidden-xs

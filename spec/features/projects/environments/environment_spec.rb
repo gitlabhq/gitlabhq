@@ -166,6 +166,25 @@ feature 'Environment', :feature do
     end
   end
 
+  feature 'environment folders', :js do
+    context 'when folder name contains special charaters' do
+      before do
+        create(:environment, project: project,
+                             name: 'staging-1.0/review',
+                             state: :available)
+
+        visit folder_namespace_project_environments_path(project.namespace,
+                                                         project,
+                                                         id: 'staging-1.0')
+      end
+
+      it 'renders a correct environment folder' do
+        expect(page).to have_http_status(:ok)
+        expect(page).to have_content('Environments / staging-1.0')
+      end
+    end
+  end
+
   feature 'auto-close environment when branch is deleted' do
     given(:project) { create(:project) }
 

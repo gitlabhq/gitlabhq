@@ -46,16 +46,16 @@ describe 'issuable list', feature: true do
   end
 
   def create_issuables(issuable_type)
-    3.times do
+    3.times do |n|
       issuable =
         if issuable_type == :issue
           create(:issue, project: project, author: user)
         else
-          create(:merge_request, title: FFaker::Lorem.sentence, source_project: project, source_branch: FFaker::Name.name)
+          create(:merge_request, source_project: project, source_branch: generate(:branch))
         end
 
       2.times do
-        create(:note_on_issue, noteable: issuable, project: project, note: 'Test note')
+        create(:note_on_issue, noteable: issuable, project: project)
       end
 
       create(:award_emoji, :downvote, awardable: issuable)
@@ -65,9 +65,8 @@ describe 'issuable list', feature: true do
     if issuable_type == :issue
       issue = Issue.reorder(:iid).first
       merge_request = create(:merge_request,
-                              title: FFaker::Lorem.sentence,
                               source_project: project,
-                              source_branch: FFaker::Name.name)
+                              source_branch: generate(:branch))
 
       MergeRequestsClosingIssues.create!(issue: issue, merge_request: merge_request)
     end

@@ -120,10 +120,10 @@ class Namespace < ActiveRecord::Base
     # Move the namespace directory in all storages paths used by member projects
     repository_storage_paths.each do |repository_storage_path|
       # Ensure old directory exists before moving it
-      gitlab_shell.add_namespace(repository_storage_path, path_was)
+      gitlab_shell.add_namespace(repository_storage_path, full_path_was)
 
-      unless gitlab_shell.mv_namespace(repository_storage_path, path_was, path)
-        Rails.logger.error "Exception moving path #{repository_storage_path} from #{path_was} to #{path}"
+      unless gitlab_shell.mv_namespace(repository_storage_path, full_path_was, full_path)
+        Rails.logger.error "Exception moving path #{repository_storage_path} from #{full_path_was} to #{full_path}"
 
         # if we cannot move namespace directory we should rollback
         # db changes in order to prevent out of sync between db and fs
@@ -131,8 +131,8 @@ class Namespace < ActiveRecord::Base
       end
     end
 
-    Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
-    Gitlab::PagesTransfer.new.rename_namespace(path_was, path)
+    Gitlab::UploadsTransfer.new.rename_namespace(full_path_was, full_path)
+    Gitlab::PagesTransfer.new.rename_namespace(full_path_was, full_path)
 
     remove_exports!
 
@@ -155,7 +155,7 @@ class Namespace < ActiveRecord::Base
 
   def send_update_instructions
     projects.each do |project|
-      project.send_move_instructions("#{path_was}/#{project.path}")
+      project.send_move_instructions("#{full_path_was}/#{project.path}")
     end
   end
 
@@ -230,10 +230,10 @@ class Namespace < ActiveRecord::Base
     old_repository_storage_paths.each do |repository_storage_path|
       # Move namespace directory into trash.
       # We will remove it later async
-      new_path = "#{path}+#{id}+deleted"
+      new_path = "#{full_path}+#{id}+deleted"
 
-      if gitlab_shell.mv_namespace(repository_storage_path, path, new_path)
-        message = "Namespace directory \"#{path}\" moved to \"#{new_path}\""
+      if gitlab_shell.mv_namespace(repository_storage_path, full_path, new_path)
+        message = "Namespace directory \"#{full_path}\" moved to \"#{new_path}\""
         Gitlab::AppLogger.info message
 
         # Remove namespace directroy async with delay so

@@ -5,23 +5,37 @@ import httpStatusCodes from './http_status';
  * Service for vue resouce and method need to be provided as props
  *
  * @example
- * new poll({
+ * new Poll({
  *   resource: resource,
  *   method: 'name',
- *   data: {page: 1, scope: 'all'},
+ *   data: {page: 1, scope: 'all'}, // optional
  *   successCallback: () => {},
  *   errorCallback: () => {},
+ *   notificationCallback: () => {}, // optional
  * }).makeRequest();
  *
- * this.service = new BoardsService(endpoint);
- * new poll({
- *   resource: this.service,
- *   method: 'get',
- *   data: {page: 1, scope: 'all'},
- *   successCallback: () => {},
- *   errorCallback: () => {},
- * }).makeRequest();
+ * Usage in pipelines table with visibility lib:
  *
+ * const poll = new Poll({
+ *  resource: this.service,
+ *  method: 'getPipelines',
+ *  data: { page: pageNumber, scope },
+ *  successCallback: this.successCallback,
+ *  errorCallback: this.errorCallback,
+ *  notificationCallback: this.updateLoading,
+ * });
+ *
+ * if (!Visibility.hidden()) {
+ *  poll.makeRequest();
+ *  }
+ *
+ * Visibility.change(() => {
+ *  if (!Visibility.hidden()) {
+ *   poll.restart();
+ *  } else {
+ *   poll.stop();
+ *  }
+* });
  *
  * 1. Checks for response and headers before start polling
  * 2. Interval is provided by `Poll-Interval` header.
@@ -34,6 +48,8 @@ export default class Poll {
   constructor(options = {}) {
     this.options = options;
     this.options.data = options.data || {};
+    this.options.notificationCallback = options.notificationCallback ||
+      function notificationCallback() {};
 
     this.intervalHeader = 'POLL-INTERVAL';
     this.timeoutID = null;
@@ -42,7 +58,7 @@ export default class Poll {
 
   checkConditions(response) {
     const headers = gl.utils.normalizeHeaders(response.headers);
-    const pollInterval = headers[this.intervalHeader];
+    const pollInterval = parseInt(headers[this.intervalHeader], 10);
 
     if (pollInterval > 0 && response.status === httpStatusCodes.OK && this.canPoll) {
       this.timeoutID = setTimeout(() => {
@@ -54,11 +70,14 @@ export default class Poll {
   }
 
   makeRequest() {
-    const { resource, method, data, errorCallback } = this.options;
+    const { resource, method, data, errorCallback, notificationCallback } = this.options;
+
+    // It's called everytime a new request is made. Useful to update the status.
+    notificationCallback(true);
 
     return resource[method](data)
-    .then(response => this.checkConditions(response))
-    .catch(error => errorCallback(error));
+      .then(response => this.checkConditions(response))
+      .catch(error => errorCallback(error));
   }
 
   /**
@@ -69,5 +88,13 @@ export default class Poll {
   stop() {
     this.canPoll = false;
     clearTimeout(this.timeoutID);
+  }
+
+  /**
+   * Restarts polling after it has been stoped
+   */
+  restart() {
+    this.canPoll = true;
+    this.makeRequest();
   }
 }

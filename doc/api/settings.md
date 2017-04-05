@@ -48,7 +48,8 @@ Example response:
    "koding_url": null,
    "plantuml_enabled": false,
    "plantuml_url": null,
-   "terminal_max_session_time": 0
+   "terminal_max_session_time": 0,
+   "polling_interval_multiplier": 1.0
 }
 ```
 
@@ -88,6 +89,7 @@ PUT /application/settings
 | `plantuml_enabled` | boolean | no | Enable PlantUML integration. Default is `false`. |
 | `plantuml_url` | string | yes (if `plantuml_enabled` is `true`) |  The PlantUML instance URL for integration. |
 | `terminal_max_session_time` | integer | no | Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time. |
+| `polling_interval_multiplier` | decimal | no | Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling. |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal
@@ -124,6 +126,7 @@ Example response:
   "koding_url": null,
   "plantuml_enabled": false,
   "plantuml_url": null,
-  "terminal_max_session_time": 0
+  "terminal_max_session_time": 0,
+  "polling_interval_multiplier": 1.0
 }
 ```

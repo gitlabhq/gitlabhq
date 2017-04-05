@@ -5,7 +5,7 @@ describe Users::DestroyService, services: true do
     let!(:user)      { create(:user) }
     let!(:admin)     { create(:admin) }
     let!(:namespace) { create(:namespace, owner: user) }
-    let!(:project)   { create(:project, namespace: namespace) }
+    let!(:project)   { create(:empty_project, namespace: namespace) }
     let(:service)    { described_class.new(admin) }
 
     context 'no options are given' do
@@ -17,15 +17,30 @@ describe Users::DestroyService, services: true do
         expect { Namespace.with_deleted.find(user.namespace.id) }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it 'will delete the project in the near future' do
-        expect_any_instance_of(Projects::DestroyService).to receive(:async_execute).once
+      it 'will delete the project' do
+        expect_any_instance_of(Projects::DestroyService).to receive(:execute).once
 
         service.execute(user)
       end
     end
 
+    context 'projects in pending_delete' do
+      before do
+        project.pending_delete = true
+        project.save
+      end
+
+      it 'destroys a project in pending_delete' do
+        expect_any_instance_of(Projects::DestroyService).to receive(:execute).once
+
+        service.execute(user)
+
+        expect { Project.find(project.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
     context "a deleted user's issues" do
-      let(:project) { create :project }
+      let(:project) { create(:project) }
 
       before do
         project.add_developer(user)

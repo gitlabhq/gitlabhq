@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::StopEnvironmentsService, services: true do
-  let(:project) { create(:project, :private) }
+  let(:project) { create(:project, :private, :repository) }
   let(:user) { create(:user) }
 
   let(:service) { described_class.new(project, user) }

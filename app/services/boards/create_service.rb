@@ -12,7 +12,7 @@ module Boards
 
     def create_board!
       board = project.boards.create
-      board.lists.create(list_type: :done)
+      board.lists.create(list_type: :closed)
 
       board
     end

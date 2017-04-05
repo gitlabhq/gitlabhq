@@ -14,12 +14,22 @@ export default {
   },
 
   data() {
-    return { terminalIconSvg };
+    return {
+      terminalIconSvg,
+    };
+  },
+
+  computed: {
+    title() {
+      return 'Terminal';
+    },
   },
 
   template: `
-    <a class="btn terminal-button"
-      title="Open web terminal"
+    <a class="btn terminal-button has-tooltip"
+      data-container="body"
+      :title="title"
+      :aria-label="title"
       :href="terminalPath">
       ${terminalIconSvg}
     </a>

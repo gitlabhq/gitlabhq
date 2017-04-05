@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170317203554) do
+ActiveRecord::Schema.define(version: 20170402231018) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -115,6 +115,7 @@ ActiveRecord::Schema.define(version: 20170317203554) do
     t.integer "unique_ips_limit_per_user"
     t.integer "unique_ips_limit_time_window"
     t.boolean "unique_ips_limit_enabled", default: false, null: false
+    t.decimal "polling_interval_multiplier", default: 1.0, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -1075,6 +1076,14 @@ ActiveRecord::Schema.define(version: 20170317203554) do
 
   add_index "subscriptions", ["subscribable_id", "subscribable_type", "user_id", "project_id"], name: "index_subscriptions_on_subscribable_and_user_id_and_project_id", unique: true, using: :btree
 
+  create_table "system_note_metadata", force: :cascade do |t|
+    t.integer "note_id", null: false
+    t.integer "commit_count"
+    t.string "action"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "taggings", force: :cascade do |t|
     t.integer "tag_id"
     t.integer "taggable_id"
@@ -1236,13 +1245,13 @@ ActiveRecord::Schema.define(version: 20170317203554) do
     t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "ghost"
+    t.boolean "notified_of_own_activity"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["created_at"], name: "index_users_on_created_at", using: :btree
-  add_index "users", ["current_sign_in_at"], name: "index_users_on_current_sign_in_at", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email_trigram", using: :gin, opclasses: {"email"=>"gin_trgm_ops"}
   add_index "users", ["ghost"], name: "index_users_on_ghost", using: :btree
@@ -1307,6 +1316,7 @@ ActiveRecord::Schema.define(version: 20170317203554) do
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
+  add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade

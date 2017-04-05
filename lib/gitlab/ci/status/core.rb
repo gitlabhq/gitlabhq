@@ -18,6 +18,10 @@ module Gitlab
           raise NotImplementedError
         end
 
+        def favicon
+          raise NotImplementedError
+        end
+
         def label
           raise NotImplementedError
         end

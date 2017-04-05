@@ -263,4 +263,18 @@ describe API::V3::Users, api: true  do
       expect(json_response['message']).to eq('404 User Not Found')
     end
   end
+
+  describe 'POST /users' do
+    it 'creates confirmed user when confirm parameter is false' do
+      optional_attributes = { confirm: false }
+      attributes = attributes_for(:user).merge(optional_attributes)
+
+      post v3_api('/users', admin), attributes
+
+      user_id = json_response['id']
+      new_user = User.find(user_id)
+
+      expect(new_user).to be_confirmed
+    end
+  end
 end

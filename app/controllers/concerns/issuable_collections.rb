@@ -15,6 +15,9 @@ module IssuableCollections
     # a new order into the collection.
     # We cannot use reorder to not mess up the paginated collection.
     issuable_ids = issuable_collection.map(&:id)
+
+    return {} if issuable_ids.empty?
+
     issuable_note_count = Note.count_for_collection(issuable_ids, @collection_type)
     issuable_votes_count = AwardEmoji.votes_for_collection(issuable_ids, @collection_type)
     issuable_merge_requests_count =

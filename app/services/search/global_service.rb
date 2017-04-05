@@ -16,5 +16,13 @@ module Search
 
       Gitlab::SearchResults.new(current_user, projects, params[:search])
     end
+
+    def scope
+      @scope ||= begin
+        allowed_scopes = %w[issues merge_requests milestones]
+
+        allowed_scopes.delete(params[:scope]) { 'projects' }
+      end
+    end
   end
 end

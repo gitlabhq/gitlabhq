@@ -1,10 +1,16 @@
 require 'spec_helper'
 
 describe BuildEntity do
+  let(:user) { create(:user) }
   let(:build) { create(:ci_build) }
+  let(:request) { double('request') }
+
+  before do
+    allow(request).to receive(:user).and_return(user)
+  end
 
   let(:entity) do
-    described_class.new(build, request: double)
+    described_class.new(build, request: request)
   end
 
   subject { entity.as_json }
@@ -20,6 +26,11 @@ describe BuildEntity do
 
   it 'contains timestamps' do
     expect(subject).to include(:created_at, :updated_at)
+  end
+
+  it 'contains details' do
+    expect(subject).to include :status
+    expect(subject[:status]).to include :icon, :favicon, :text, :label
   end
 
   context 'when build is a regular job' do

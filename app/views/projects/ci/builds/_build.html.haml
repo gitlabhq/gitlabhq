@@ -94,7 +94,7 @@
   %td
     .pull-right
       - if can?(current_user, :read_build, build) && build.artifacts?
-        = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), title: 'Download artifacts', class: 'btn btn-build' do
+        = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), rel: 'nofollow', download: '', title: 'Download artifacts', class: 'btn btn-build' do
           = icon('download')
       - if can?(current_user, :update_build, build)
         - if build.active?

@@ -617,7 +617,7 @@ namespace :gitlab do
     end
 
     def sidekiq_process_count
-      ps_ux, _ = Gitlab::Popen.popen(%w(ps ux))
+      ps_ux, _ = Gitlab::Popen.popen(%w(ps uxww))
       ps_ux.scan(/sidekiq \d+\.\d+\.\d+/).count
     end
   end
@@ -751,7 +751,7 @@ namespace :gitlab do
     end
 
     def mail_room_running?
-      ps_ux, _ = Gitlab::Popen.popen(%w(ps ux))
+      ps_ux, _ = Gitlab::Popen.popen(%w(ps uxww))
       ps_ux.include?("mail_room")
     end
   end

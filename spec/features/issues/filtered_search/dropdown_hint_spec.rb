@@ -39,12 +39,12 @@ describe 'Dropdown hint', :js, :feature do
   end
 
   describe 'filtering' do
-    it 'does not filter `Keep typing and press Enter`' do
+    it 'does not filter `Press Enter or click to search`' do
       filtered_search.set('randomtext')
 
       hint_dropdown = find(js_dropdown_hint)
 
-      expect(hint_dropdown).to have_content('Keep typing and press Enter')
+      expect(hint_dropdown).to have_content('Press Enter or click to search')
       expect(hint_dropdown).to have_selector('.filter-dropdown .filter-dropdown-item', count: 0)
     end
 
