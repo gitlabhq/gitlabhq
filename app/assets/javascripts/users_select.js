@@ -372,7 +372,7 @@ import Vue from 'vue';
                 `<li><a href='#' class='${selected === true ? 'is-active' : ''}'>${user.name}</a></li>`;
               } else {
                 if (avatar) {
-                  img = "<img src='" + avatar + "' class='avatar avatar-inline' width='30' />";
+                  img = "<img src='" + avatar + "' class='avatar avatar-inline' width='32' />";
                 }
               }
 

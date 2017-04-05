@@ -289,8 +289,8 @@
 .dropdown-menu-user {
   .avatar {
     float: left;
-    width: 30px;
-    height: 30px;
+    width: 2 * $gl-padding;
+    height: 2 * $gl-padding;
     margin: 0 10px 0 0;
   }
 }
