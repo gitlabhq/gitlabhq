@@ -5,6 +5,7 @@
 /* global mrRefreshWidgetUrl */
 
 import Cookies from 'js-cookie';
+import CommentTypeToggle from './comment_type_toggle';
 
 require('./autosave');
 window.autosize = require('vendor/autosize');
@@ -135,6 +136,18 @@ require('./task_list');
       $(document).off("keydown", ".js-note-text");
       $(document).off('click', '.js-comment-resolve-button');
       $(document).off("click", '.system-note-commit-list-toggler');
+    };
+
+    Notes.prototype.initCommentTypeToggle = function (form) {
+      this.commentTypeToggle = new CommentTypeToggle(
+        form[0].querySelector('.js-comment-type-dropdown .dropdown-toggle'),
+        form[0].querySelector('.js-comment-type-dropdown .dropdown-menu'),
+        document.getElementById('note_type'),
+        form[0].querySelector('.js-comment-type-dropdown .js-comment-submit-button'),
+        document.querySelector('.js-note-target-close'),
+      );
+
+      this.commentTypeToggle.initDroplab();
     };
 
     Notes.prototype.keydownNoteText = function(e) {
@@ -455,7 +468,9 @@ require('./task_list');
       form.find("#note_type").val('');
       form.find("#in_reply_to_discussion_id").remove();
       form.find('.js-comment-resolve-button').closest('comment-and-resolve-btn').remove();
-      return this.parentTimeline = form.parents('.timeline');
+      this.parentTimeline = form.parents('.timeline');
+
+      this.initCommentTypeToggle(form);
     };
 
     /*
