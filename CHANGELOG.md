@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.0.3 (2017-04-05)
+
+- Fix name colision when importing GitHub pull requests from forked repositories. !9719
+- Fix GitHub Importer for PRs of deleted forked repositories. !9992
+- Fix environment folder route when special chars present in environment name. !10250
+- Improve Markdown rendering when a lot of merge requests are referenced. !10252
+- Allow users to import GitHub projects to subgroups.
+- Backport API changes needed to fix sticking in EE.
+- Remove unnecessary ORDER BY clause from `forked_to_project_id` subquery. (mhasbini)
+- Make CI build to use optimistic locking only on status change.
+- Fix race condition where a namespace would be deleted before a project was deleted.
+- Fix linking to new issue with selected template via url parameter.
+- Remove unnecessary ORDER BY clause when updating todos. (mhasbini)
+- API: Make the /notes endpoint work with noteable iid instead of id.
+- Fixes method not replacing URL parameters correctly and breaking pipelines pagination.
+- Move issue, mr, todos next to profile dropdown in top nav.
+
 ## 9.0.2 (2017-03-29)
 
 - Correctly update paths when changing a child group.
