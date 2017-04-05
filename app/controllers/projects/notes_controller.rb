@@ -28,8 +28,7 @@ class Projects::NotesController < Projects::ApplicationController
   def create
     create_params = note_params.merge(
       merge_request_diff_head_sha: params[:merge_request_diff_head_sha],
-      in_reply_to_discussion_id: params[:in_reply_to_discussion_id],
-      new_discussion: params[:new_discussion],
+      in_reply_to_discussion_id: params[:in_reply_to_discussion_id]
     )
     @note = Notes::CreateService.new(project, current_user, create_params).execute
 
