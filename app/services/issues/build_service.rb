@@ -7,6 +7,10 @@ module Issues
       @issue = project.issues.new(issue_params)
     end
 
+    def issue_params_from_template
+      { description: project.issues_template }
+    end
+
     def issue_params_with_info_from_discussions
       return {} unless merge_request_to_resolve_discussions_of
 
@@ -49,8 +53,13 @@ module Issues
       [discussion_info, quote].join("\n\n")
     end
 
+    # Issue params can be built from 3 types of passed params,
+    # They take precedence over eachother like this
+    # passed params > discussion params > template params
     def issue_params
-      @issue_params ||= issue_params_with_info_from_discussions.merge(whitelisted_issue_params)
+      @issue_params ||= issue_params_from_template.
+                          merge(issue_params_with_info_from_discussions).
+                          merge(whitelisted_issue_params)
     end
 
     def whitelisted_issue_params
