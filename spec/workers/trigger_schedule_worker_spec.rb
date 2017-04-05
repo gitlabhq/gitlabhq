@@ -9,6 +9,7 @@ describe TriggerScheduleWorker do
 
   context 'when there is a scheduled trigger within next_run_at' do
     let!(:trigger_schedule) { create(:ci_trigger_schedule, :nightly, :force_triggable) }
+    let(:next_time) { Gitlab::Ci::CronParser.new(trigger_schedule.cron, trigger_schedule.cron_timezone).next_time_from(Time.now) }
 
     before do
       worker.perform
@@ -23,7 +24,6 @@ describe TriggerScheduleWorker do
     end
 
     it 'updates next_run_at' do
-      next_time = Gitlab::Ci::CronParser.new(trigger_schedule.cron, trigger_schedule.cron_timezone).next_time_from(Time.now)
       expect(Ci::TriggerSchedule.last.next_run_at).to eq(next_time)
     end
   end
@@ -35,12 +35,12 @@ describe TriggerScheduleWorker do
       worker.perform
     end
 
-    it 'do not create a new pipeline' do
+    it 'does not create a new pipeline' do
       expect(Ci::Pipeline.count).to eq(0)
     end
 
-    it 'do not reschedule next_run_at' do
-      expect(Ci::TriggerSchedule.last.next_run_at).to eq(trigger_schedule.next_run_at)
+    it 'does not update next_run_at' do
+      expect(trigger_schedule.next_run_at).to eq(Ci::TriggerSchedule.last.next_run_at)
     end
   end
 end
