@@ -67,7 +67,7 @@ class UserCohortsService
     @counts_by_month ||=
       begin
         created_at_month = column_to_date('created_at')
-        current_sign_in_at_month = column_to_date('current_sign_in_at_month')
+        current_sign_in_at_month = column_to_date('current_sign_in_at')
 
         User
           .where('created_at > ?', MONTHS_INCLUDED.months.ago.end_of_month)
