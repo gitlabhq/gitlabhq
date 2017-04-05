@@ -18,7 +18,7 @@ describe Geo::FileUploadService, services: true do
         response = service.execute
 
         expect(response[:code]).to eq(:ok)
-        expect(response[:file].file.path).to eq(user.avatar.path)
+        expect(response[:file].path).to eq(user.avatar.path)
       end
 
       it 'returns nil if no authorization' do
@@ -42,7 +42,7 @@ describe Geo::FileUploadService, services: true do
         response = service.execute
 
         expect(response[:code]).to eq(:ok)
-        expect(response[:file].file.path).to eq(group.avatar.path)
+        expect(response[:file].path).to eq(group.avatar.path)
       end
 
       it 'returns nil if no authorization' do
@@ -66,7 +66,7 @@ describe Geo::FileUploadService, services: true do
         response = service.execute
 
         expect(response[:code]).to eq(:ok)
-        expect(response[:file].file.path).to eq(project.avatar.path)
+        expect(response[:file].path).to eq(project.avatar.path)
       end
 
       it 'returns nil if no authorization' do
@@ -89,7 +89,7 @@ describe Geo::FileUploadService, services: true do
         response = service.execute
 
         expect(response[:code]).to eq(:ok)
-        expect(response[:file].file.path).to eq(lfs_object.file.path)
+        expect(response[:file].path).to eq(lfs_object.file.path)
       end
 
       it 'returns nil if no authorization' do

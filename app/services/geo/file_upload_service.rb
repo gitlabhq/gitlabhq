@@ -15,22 +15,15 @@ module Geo
       data = ::Gitlab::Geo::JwtRequestDecoder.new(auth_header).decode
       return unless data.present?
 
-      begin
-        uploader_class.new(object_db_id, data).execute
-      rescue NameError
-        log("Unknown file type: #{object_type}")
-        {}
-      end
+      uploader_class.new(object_db_id, data).execute
     end
 
     private
 
     def uploader_class
-      "Gitlab::Geo::#{object_type.camelize}Uploader".constantize
-    end
-
-    def log(message)
-      Rails.logger.info "#{self.class.name}: #{message}"
+      "Gitlab::Geo::#{object_type.to_s.camelize}Uploader".constantize
+    rescue NameError
+      Gitlab::Geo::FileUploader
     end
   end
 end
