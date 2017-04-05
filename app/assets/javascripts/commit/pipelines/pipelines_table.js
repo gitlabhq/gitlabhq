@@ -22,6 +22,7 @@ import Poll from '../../lib/utils/poll';
  */
 
 export default Vue.component('pipelines-table', {
+
   components: {
     'pipelines-table-component': PipelinesTableComponent,
     'error-state': ErrorState,
@@ -67,11 +68,13 @@ export default Vue.component('pipelines-table', {
    *
    */
   beforeMount() {
-    this.endpoint = this.$el.dataset.endpoint;
-    this.helpPagePath = this.$el.dataset.helpPagePath;
+    const element = document.querySelector('#commit-pipeline-table-view');
+
+    this.endpoint = element.dataset.endpoint;
+    this.helpPagePath = element.dataset.helpPagePath;
     this.service = new PipelinesService(this.endpoint);
 
-    const poll = new Poll({
+    this.poll = new Poll({
       resource: this.service,
       method: 'getPipelines',
       successCallback: this.successCallback,
@@ -81,14 +84,14 @@ export default Vue.component('pipelines-table', {
 
     if (!Visibility.hidden()) {
       this.isLoading = true;
-      poll.makeRequest();
+      this.poll.makeRequest();
     }
 
     Visibility.change(() => {
       if (!Visibility.hidden()) {
-        poll.restart();
+        this.poll.restart();
       } else {
-        poll.stop();
+        this.poll.stop();
       }
     });
 
@@ -106,6 +109,10 @@ export default Vue.component('pipelines-table', {
 
   beforeDestroyed() {
     eventHub.$off('refreshPipelines');
+  },
+
+  destroyed() {
+    this.poll.stop();
   },
 
   methods: {
