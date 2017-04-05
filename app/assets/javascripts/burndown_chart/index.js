@@ -11,12 +11,12 @@ $(() => {
 
   // generate burndown chart (if data available)
   const container = '.burndown-chart';
-  const chartElm = $(container);
+  const $chartElm = $(container);
 
-  if (chartElm.length) {
-    const startDate = chartElm.data('startDate');
-    const dueDate = chartElm.data('dueDate');
-    const chartData = chartElm.data('chartData');
+  if ($chartElm.length) {
+    const startDate = $chartElm.data('startDate');
+    const dueDate = $chartElm.data('dueDate');
+    const chartData = $chartElm.data('chartData');
     const openIssuesCount = chartData.map(d => [d[0], d[1]]);
     const openIssuesWeight = chartData.map(d => [d[0], d[2]]);
 
