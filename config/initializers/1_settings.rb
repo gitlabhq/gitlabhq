@@ -110,6 +110,14 @@ class Settings < Settingslogic
 
       URI.parse(url_without_path).host
     end
+
+    # Random cron time every Sunday to load balance usage pings
+    def cron_random_weekly_time
+      hour = rand(24)
+      minute = rand(60)
+
+      "#{minute} #{hour} * * 0"
+    end
   end
 end
 
@@ -355,6 +363,9 @@ Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['job_class'] = 'Rem
 Settings.cron_jobs['stuck_import_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_import_jobs_worker']['cron'] ||= '15 * * * *'
 Settings.cron_jobs['stuck_import_jobs_worker']['job_class'] = 'StuckImportJobsWorker'
+Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.send(:cron_random_weekly_time)
+Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
 
 #
 # GitLab Shell

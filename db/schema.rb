@@ -116,6 +116,7 @@ ActiveRecord::Schema.define(version: 20170408033905) do
     t.integer "unique_ips_limit_time_window"
     t.boolean "unique_ips_limit_enabled", default: false, null: false
     t.decimal "polling_interval_multiplier", default: 1.0, null: false
+    t.boolean "usage_ping_enabled", default: true, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
