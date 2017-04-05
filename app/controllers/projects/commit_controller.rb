@@ -35,6 +35,8 @@ class Projects::CommitController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
+        Gitlab::PollingInterval.set_header(response, interval: 10_000)
+
         render json: PipelineSerializer
           .new(project: @project, user: @current_user)
           .represent(@pipelines)

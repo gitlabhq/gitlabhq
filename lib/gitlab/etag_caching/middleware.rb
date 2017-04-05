@@ -14,6 +14,18 @@ module Gitlab
         {
           regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/pipelines\.json\z),
           name: 'project_pipelines'
+        },
+        {
+          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/commit/\s+/pipelines\.json\z),
+          name: 'commit_pipelines'
+        },
+        {
+          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/merge_requests/new\.json\z),
+          name: 'new_merge_request_pipelines'
+        },
+        {
+          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/merge_requests/\d+/pipelines\.json\z),
+          name: 'merge_request_pipelines'
         }
       ].freeze
 

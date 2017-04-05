@@ -8,9 +8,11 @@ describe Ci::ExpirePipelineCacheService, services: true do
 
   describe '#execute' do
     it 'invalidate Etag caching for project pipelines path' do
-      path = "/#{project.full_path}/pipelines.json"
+      pipelines_path = "/#{project.full_path}/pipelines.json"
+      new_mr_pipelines_path = "/#{project.full_path}/merge_requests/new.json"
 
-      expect_any_instance_of(Gitlab::EtagCaching::Store).to receive(:touch).with(path)
+      expect_any_instance_of(Gitlab::EtagCaching::Store).to receive(:touch).with(pipelines_path)
+      expect_any_instance_of(Gitlab::EtagCaching::Store).to receive(:touch).with(new_mr_pipelines_path)
 
       subject.execute(pipeline)
     end
