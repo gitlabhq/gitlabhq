@@ -12,7 +12,7 @@ export default {
     'mr-widget-author': MRWidgetAuthor,
   },
   template: `
-    <h4>
+    <h4 class="js-mr-widget-author">
       {{actionText}}
       <mr-widget-author :author="author" />
       <time :title='dateTitle' data-toggle="tooltip" data-placement="top" data-container="body">

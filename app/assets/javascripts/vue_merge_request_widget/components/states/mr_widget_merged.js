@@ -17,27 +17,25 @@ export default {
   },
   computed: {
     shouldShowRemoveSourceBranch() {
-      const { isRemovingSourceBranch, canRemoveSourceBranch } = this.mr;
+      const { sourceBranchRemoved, isRemovingSourceBranch, canRemoveSourceBranch } = this.mr;
 
-      return canRemoveSourceBranch && !this.isMakingRequest && !isRemovingSourceBranch;
+      return !sourceBranchRemoved && canRemoveSourceBranch &&
+        !this.isMakingRequest && !isRemovingSourceBranch;
     },
     shouldShowSourceBranchRemoving() {
-      return this.isMakingRequest || this.mr.isRemovingSourceBranch;
+      const { sourceBranchRemoved, isRemovingSourceBranch } = this.mr;
+      return !sourceBranchRemoved && (isRemovingSourceBranch || this.isMakingRequest);
     },
-
     shouldShowRevertForCurrentMR() {
       return this.mr.canBeReverted && this.mr.userCanCollaborateWithProject;
     },
-
     // TODO: Remove UJS
     shouldShowRevertForForkMR() {
       return this.mr.canBeReverted && this.mr.userCanForkProject;
     },
-
     shouldShowCherryPickForCurrentMR() {
       return this.mr.canBeCherryPicked && this.mr.userCanCollaborateWithProject;
     },
-
     // TODO: Remove UJS
     shouldShowCherryPickForForkMR() {
       return this.mr.canBeCherryPicked && this.mr.userCanForkProject;

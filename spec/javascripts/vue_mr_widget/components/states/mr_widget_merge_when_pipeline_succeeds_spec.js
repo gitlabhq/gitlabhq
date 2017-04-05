@@ -116,6 +116,7 @@ describe('MRWidgetMissingBranch', () => {
 
         vm.cancelAutomaticMerge();
         setTimeout(() => {
+          expect(vm.isCancellingAutoMerge).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('UpdateWidgetData', mrObj);
           done();
         }, 333);
