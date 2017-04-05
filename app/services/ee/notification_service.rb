@@ -1,4 +1,4 @@
-require 'gitlab/ee/service_desk'
+require 'ee/gitlab/service_desk'
 
 module EE
   module NotificationService
@@ -9,7 +9,7 @@ module EE
     end
 
     def send_service_desk_notification(note)
-      return unless ::Gitlab::EE::ServiceDesk.enabled?
+      return unless EE::Gitlab::ServiceDesk.enabled?
       return unless note.noteable_type == 'Issue'
 
       issue = note.noteable

@@ -6,7 +6,7 @@ module Gitlab
           include ReplyProcessing
 
           def can_handle?
-            Gitlab::EE::ServiceDesk.enabled? && service_desk_key.present?
+            ::EE::Gitlab::ServiceDesk.enabled? && service_desk_key.present?
           end
 
           def execute

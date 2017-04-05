@@ -17,13 +17,16 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
       project.update(service_desk_mail_key: 'somemailkey')
 
       allow(Notify).to receive(:service_desk_thank_you_email)
-        .with(instance_of(Integer)).and_return(double(deliver_later!: true))
+        .with(instance_of(Fixnum)).and_return(double(deliver_later!: true))
+
+      allow_any_instance_of(License).to receive(:add_on?).and_call_original
+      allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk') { true }
     end
 
-    it 'receives the email and creates issue' do
+    it 'sends thank you the email and creates issue' do
       setup_attachment
 
-      expect(Notify).to receive(:service_desk_thank_you_email).with(instance_of(Integer))
+      expect(Notify).to receive(:service_desk_thank_you_email).with(instance_of(Fixnum))
 
       expect { receiver.execute }.to change { Issue.count }.by(1)
 
@@ -42,10 +45,23 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
           .and_return(nil)
       end
 
-      it "creates issue and does not send thank you email" do
+      it "does not send thank you email but create an issue" do
         expect(Notify).not_to receive(:service_desk_thank_you_email)
 
         expect { receiver.execute }.to change { Issue.count }.by(1)
+      end
+    end
+
+    context 'when license does not support service desk' do
+      before do
+        allow_any_instance_of(License).to receive(:add_on?).and_call_original
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk') { false }
+      end
+
+      it 'does not create an issue or send email' do
+         expect(Notify).not_to receive(:service_desk_thank_you_email)
+
+        expect { receiver.execute rescue nil }.not_to change { Issue.count }
       end
     end
   end
