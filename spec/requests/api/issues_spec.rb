@@ -788,7 +788,7 @@ describe API::Issues, api: true  do
       expect(json_response['updated_at']).to be_present
       expect(json_response['labels']).to eq(issue.label_names)
       expect(json_response['milestone']).to be_a Hash
-      expect(json_response['assignee']).to be_a Hash
+      expect(json_response['assignees']).to be_a Array
       expect(json_response['author']).to be_a Hash
       expect(json_response['confidential']).to be_falsy
       expect(json_response['weight']).to be_nil
