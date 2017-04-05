@@ -50,10 +50,6 @@ class IssuableBaseService < BaseService
     SystemNoteService.mark_duplicate_issue(issuable, issuable.project, current_user, original_issue)
   end
 
-  def create_cross_reference_note(noteable, mentioner)
-    SystemNoteService.cross_reference(noteable, mentioner, current_user)
-  end
-
   def filter_params(issuable)
     ability_name = :"admin_#{issuable.to_ability_name}"
 
@@ -303,14 +299,18 @@ class IssuableBaseService < BaseService
 
   def change_issue_duplicate(issuable)
     original_issue_id = params.delete(:original_issue_id)
-    return if original_issue_id.nil?
+    return unless original_issue_id
 
-    original_issue = IssuesFinder.new(current_user).find(original_issue_id)
-    if original_issue.present?
-      create_issue_duplicate_note(issuable, original_issue)
-      close_service.new(project, current_user, {}).execute(issuable)
-      create_cross_reference_note(original_issue, issuable)
+    begin
+      original_issue = IssuesFinder.new(current_user).find(original_issue_id)
+    rescue ActiveRecord::RecordNotFound
+      return
     end
+
+    note = create_issue_duplicate_note(issuable, original_issue)
+    note.create_cross_references!
+    close_service.new(project, current_user, {}).execute(issuable)
+    original_issue.create_award_emoji(AwardEmoji::UPVOTE_NAME, issuable.author)
   end
 
   def toggle_award(issuable)

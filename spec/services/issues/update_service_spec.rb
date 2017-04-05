@@ -492,57 +492,43 @@ describe Issues::UpdateService, services: true do
     end
 
     context 'duplicate issue' do
-      let(:issues_finder) { spy(:issues_finder) }
-      let(:close_service) { spy(:close_service) }
-
-      before do
-        allow(IssuesFinder).to receive(:new).and_return(issues_finder)
-        allow(Issues::CloseService).to receive(:new).and_return(close_service)
-        allow(SystemNoteService).to receive(:cross_reference)
-        allow(SystemNoteService).to receive(:mark_duplicate_issue)
-      end
+      let(:original_issue) { create(:issue, project: project) }
 
       context 'invalid original_issue_id' do
-        let(:original_issue_id) { double }
-        before { update_issue({ original_issue_id: original_issue_id }) }
-
-        it 'finds the root issue' do
-          expect(issues_finder).to have_received(:find).with(original_issue_id)
+        before do
+          update_issue(original_issue_id: 123456789)
         end
 
         it 'does not close the issue' do
-          expect(close_service).not_to have_received(:execute)
+          expect(issue.reload).not_to be_closed
         end
 
-        it 'does not create system notes' do
-          expect(SystemNoteService).not_to have_received(:cross_reference)
-          expect(SystemNoteService).not_to have_received(:mark_duplicate_issue)
+        it 'does not create a system note' do
+          note = find_note("marked this issue as a duplicate of #{original_issue.to_reference}")
+          expect(note).to be_nil
+        end
+
+        it 'does not upvote the issue on behalf of the author' do
+          expect(original_issue).not_to be_awarded_emoji(AwardEmoji::UPVOTE_NAME, issue.author)
         end
       end
 
       context 'valid original_issue_id' do
-        let(:original_issue) { create(:issue, project: project) }
-        let(:original_issue_id) { double }
-
         before do
-          allow(issues_finder).to receive(:find).and_return(original_issue)
-          update_issue({ original_issue_id: original_issue_id })
-        end
-
-        it 'finds the root issue' do
-          expect(issues_finder).to have_received(:find).with(original_issue_id)
+          update_issue(original_issue_id: original_issue.id)
         end
 
         it 'closes the issue' do
-          expect(close_service).to have_received(:execute).with(issue)
+          expect(issue.reload).to be_closed
         end
 
         it 'creates a system note that this issue is a duplicate' do
-          expect(SystemNoteService).to have_received(:mark_duplicate_issue).with(issue, project, user, original_issue)
+          note = find_note("marked this issue as a duplicate of #{original_issue.to_reference}")
+          expect(note).not_to be_nil
         end
 
-        it 'creates a cross reference system note in the other issue' do
-          expect(SystemNoteService).to have_received(:cross_reference).with(original_issue, issue, user)
+        it 'upvotes the issue on behalf of the author' do
+          expect(original_issue).to be_awarded_emoji(AwardEmoji::UPVOTE_NAME, issue.author)
         end
       end
     end

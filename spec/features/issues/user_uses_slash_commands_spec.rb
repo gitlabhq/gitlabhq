@@ -147,9 +147,7 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
           expect(page).to have_content 'Commands applied'
           expect(page).to have_content "marked this issue as a duplicate of #{original_issue.to_reference}"
 
-          issue.reload
-
-          expect(issue.closed?).to be_truthy
+          expect(issue.reload).to be_closed
         end
       end
 
@@ -169,9 +167,7 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
           expect(page).not_to have_content 'Commands applied'
           expect(page).not_to have_content "marked this issue as a duplicate of #{original_issue.to_reference}"
 
-          issue.reload
-
-          expect(issue.closed?).to be_falsey
+          expect(issue.reload).to be_open
         end
       end
     end

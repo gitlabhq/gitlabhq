@@ -552,11 +552,11 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, project, author, body, action: 'moved'))
   end
 
-  # Called when a Notable has been marked as a duplicate of another Issue
+  # Called when a Noteable has been marked as a duplicate of another Issue
   #
-  # noteable   - Noteable object
-  # project    - Project owning noteable
-  # author     - User performing the change
+  # noteable       - Noteable object
+  # project        - Project owning noteable
+  # author         - User performing the change
   # original_issue - Issue that this is a duplicate of
   #
   # Example Note text:

@@ -262,8 +262,6 @@ describe QuickActions::InterpretService, services: true do
     end
 
     shared_examples 'duplicate command' do
-      let(:issue_duplicate) { create(:issue, project: project) }
-
       it 'fetches issue and populates original_issue_id if content contains /duplicate issue_reference' do
         issue_duplicate # populate the issue
         _, updates = service.execute(content, issuable)
@@ -655,24 +653,44 @@ describe QuickActions::InterpretService, services: true do
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'duplicate command' do
-      let(:content) { "/duplicate #{issue_duplicate.to_reference}" }
-      let(:issuable) { issue }
-    end
+    context '/duplicate command' do
+      it_behaves_like 'duplicate command' do
+        let(:issue_duplicate) { create(:issue, project: project) }
+        let(:content) { "/duplicate #{issue_duplicate.to_reference}" }
+        let(:issuable) { issue }
+      end
 
-    it_behaves_like 'empty command' do
-      let(:content) { '/duplicate #{issue.to_reference}' }
-      let(:issuable) { issue }
-    end
+      it_behaves_like 'empty command' do
+        let(:content) { "/duplicate #{issue.to_reference}" }
+        let(:issuable) { issue }
+      end
 
-    it_behaves_like 'empty command' do
-      let(:content) { '/duplicate' }
-      let(:issuable) { issue }
-    end
+      it_behaves_like 'empty command' do
+        let(:content) { '/duplicate' }
+        let(:issuable) { issue }
+      end
 
-    it_behaves_like 'empty command' do
-      let(:content) { '/duplicate imaginary#1234' }
-      let(:issuable) { issue }
+      context 'cross project references' do
+        it_behaves_like 'duplicate command' do
+          let(:other_project) { create(:empty_project, :public) }
+          let(:issue_duplicate) { create(:issue, project: other_project) }
+          let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:content) { '/duplicate imaginary#1234' }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:other_project) { create(:empty_project, :private) }
+          let(:issue_duplicate) { create(:issue, project: other_project) }
+
+          let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
+      end
     end
 
     context 'when current_user cannot :admin_issue' do
