@@ -1,7 +1,6 @@
 class CreateProtectedTags < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
-  # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
   GITLAB_ACCESS_MASTER = 40

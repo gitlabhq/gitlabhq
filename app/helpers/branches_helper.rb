@@ -30,6 +30,10 @@ module BranchesHelper
     options_for_select(@project.repository.branch_names, @project.default_branch)
   end
 
+  def protected_branch?(project, branch)
+    ProtectedBranch.protected?(project, branch.name)
+  end
+
   def access_levels_data(access_levels)
     access_levels.map do |level|
       if level.type == :user
