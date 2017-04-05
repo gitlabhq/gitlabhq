@@ -292,7 +292,7 @@ describe 'Git HTTP requests', lib: true do
 
         it 'responds with status 403' do
           msg = 'No GitLab Enterprise Edition license has been provided yet. Pushing code and creation of issues and merge requests has been disabled. Ask an admin to upload a license to activate this functionality.'
-          allow(License).to receive(:current).and_return(false)
+          allow(License).to receive(:current).and_return(nil)
 
           upload(path, env) do |response|
             expect(response).to have_http_status(403)
