@@ -28,7 +28,7 @@ class ContainerRepository < ActiveRecord::Base
   end
 
   def manifest
-    @manifest ||= client.repository_tags(self.path)
+    @manifest ||= client.repository_tags(path)
   end
 
   def tags
@@ -45,7 +45,7 @@ class ContainerRepository < ActiveRecord::Base
   end
 
   def has_tags?
-    tags.to_a.any?
+    tags.any?
   end
 
   def root_repository?

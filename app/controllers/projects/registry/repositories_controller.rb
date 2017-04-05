@@ -34,7 +34,7 @@ module Projects
           break if path.has_repository?
 
           ContainerRepository.build_from_path(path).tap do |repository|
-            repository.save if repository.has_tags?
+            repository.save! if repository.has_tags?
           end
         end
       end
