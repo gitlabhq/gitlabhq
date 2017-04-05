@@ -73,12 +73,6 @@ describe EventsHelper do
         helper.event_note(input, { project: project })
       end
 
-      it 'preserves style attribute for a label that can be accessed by current_user' do
-        project = create(:empty_project, :public)
-
-        expect(format_event_note(project)).to match(/span class=.*style=.*/)
-      end
-
       it 'does not style a label that can not be accessed by current_user' do
         project = create(:empty_project, :private)
 
