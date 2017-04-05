@@ -1,5 +1,7 @@
 module Users
   class DestroyService
+    include MigrateToGhostUser
+
     attr_accessor :current_user
 
     def initialize(current_user)
@@ -26,7 +28,7 @@ module Users
         ::Projects::DestroyService.new(project, current_user, skip_repo: true).execute
       end
 
-      move_issues_to_ghost_user(user)
+      move_associated_records_to_ghost_user(user)
 
       # Destroy the namespace after destroying the user since certain methods may depend on the namespace existing
       namespace = user.namespace
@@ -34,23 +36,6 @@ module Users
       namespace.really_destroy!
 
       user_data
-    end
-
-    private
-
-    def move_issues_to_ghost_user(user)
-      # Block the user before moving issues to prevent a data race.
-      # If the user creates an issue after `move_issues_to_ghost_user`
-      # runs and before the user is destroyed, the destroy will fail with
-      # an exception. We block the user so that issues can't be created
-      # after `move_issues_to_ghost_user` runs and before the destroy happens.
-      user.block
-
-      ghost_user = User.ghost
-
-      user.issues.update_all(author_id: ghost_user.id)
-
-      user.reload
     end
   end
 end

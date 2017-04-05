@@ -141,5 +141,21 @@ describe Users::DestroyService, services: true do
         expect(User.exists?(user.id)).to be(false)
       end
     end
+
+    context 'migrating associated records to the ghost user' do
+      context 'issues'  do
+        include_examples "migrating a deleted user's associated records to the ghost user", Issue do
+          let(:created_record) { create(:issue, project: project, author: user) }
+          let(:assigned_record) { create(:issue, project: project, assignee: user) }
+        end
+      end
+
+      context 'merge requests' do
+        include_examples "migrating a deleted user's associated records to the ghost user", MergeRequest do
+          let(:created_record) { create(:merge_request, source_project: project, author: user, target_branch: "first") }
+          let(:assigned_record) { create(:merge_request, source_project: project, assignee: user, target_branch: 'second') }
+        end
+      end
+    end
   end
 end
