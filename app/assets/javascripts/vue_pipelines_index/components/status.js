@@ -36,7 +36,7 @@ export default {
 
   computed: {
     cssClasses() {
-      return `ci-status ci-${this.pipeline.details.status.group} has-tooltip`;
+      return `ci-status ci-${this.pipeline.details.status.group}`;
     },
 
     detailsPath() {
@@ -47,17 +47,12 @@ export default {
     content() {
       return `${this.svg} ${this.pipeline.details.status.text}`;
     },
-
-    tooltipTitle() {
-      return this.pipeline.details.status_tooltip;
-    },
   },
   template: `
     <td class="commit-link">
       <a
         :class="cssClasses"
         :href="detailsPath"
-        :title="tooltipTitle"
         v-html="content">
       </a>
     </td>

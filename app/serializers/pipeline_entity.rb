@@ -13,7 +13,6 @@ class PipelineEntity < Grape::Entity
 
   expose :details do
     expose :detailed_status, as: :status, with: StatusEntity
-    expose :status_tooltip
     expose :duration
     expose :finished_at
     expose :stages, using: StageEntity
@@ -81,9 +80,5 @@ class PipelineEntity < Grape::Entity
 
   def detailed_status
     pipeline.detailed_status(request.user)
-  end
-
-  def status_tooltip
-    pipeline.present(current_user: request.user).status_title
   end
 end
