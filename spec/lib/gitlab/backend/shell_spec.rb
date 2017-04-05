@@ -69,6 +69,15 @@ describe Gitlab::Shell, lib: true do
         expect(io).to have_received(:puts).with("key-42\tssh-rsa foo")
       end
 
+      it 'handles multiple spaces in the key' do
+        io = spy(:io)
+        adder = described_class.new(io)
+
+        adder.add_key('key-42', "ssh-rsa  foo")
+
+        expect(io).to have_received(:puts).with("key-42\tssh-rsa foo")
+      end
+
       it 'raises an exception if the key contains a tab' do
         expect do
           described_class.new(StringIO.new).add_key('key-42', "ssh-rsa\tfoobar")
