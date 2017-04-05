@@ -31,7 +31,7 @@
     .btn-group.append-right-10.comment-type-dropdown.js-comment-type-dropdown
       = f.submit 'Comment', class: "btn btn-nr btn-create comment-btn js-comment-button js-comment-submit-button"
       - if @note.can_be_discussion_note?
-        = button_tag type: 'button', class: 'btn btn-nr dropdown-toggle comment-btn js-comment-button js-note-new-discussion', data: { 'dropdown-trigger' => '#resolvable-comment-menu' } do
+        = button_tag type: 'button', class: 'btn btn-nr dropdown-toggle comment-btn js-note-new-discussion', data: { 'dropdown-trigger' => '#resolvable-comment-menu' } do
           = icon('caret-down')
         %ul#resolvable-comment-menu.dropdown-menu{ data: { dropdown: true } }
           %li#comment{ data: { value: '', 'button-text' => 'Comment', 'secondary-button-text' => 'Comment & close merge request' }, class: 'droplab-item-selected' }
