@@ -803,7 +803,8 @@ a.allowed-to-push {
 
 .protected-tags-list {
   .dropdown-menu-toggle {
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
   }
 }
 

@@ -3,7 +3,7 @@ import ProtectedTagDropdown from './protected_tag_dropdown';
 
 export default class ProtectedTagCreate {
   constructor() {
-    this.$form = $('.new_protected_tag');
+    this.$form = $('.js-new-protected-tag');
     this.buildDropdowns();
   }
 
@@ -34,7 +34,7 @@ export default class ProtectedTagCreate {
   onSelect() {
     // Enable submit button
     const $tagInput = this.$form.find('input[name="protected_tag[name]"]');
-    const $allowedToCreateInput = this.$form.find('input[name="protected_tag[create_access_levels_attributes][0][access_level]"]');
+    const $allowedToCreateInput = this.$form.find('#create_access_levels_attributes');
 
     this.$form.find('input[type="submit"]').attr('disabled', !($tagInput.val() && $allowedToCreateInput.length));
   }
