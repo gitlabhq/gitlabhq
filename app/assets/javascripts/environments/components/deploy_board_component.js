@@ -81,7 +81,7 @@ export default {
       // let's wait 1s and make the request again
       setTimeout(() => {
         this.getDeployBoard();
-      }, 1000);
+      }, 3000);
     }
   },
 
