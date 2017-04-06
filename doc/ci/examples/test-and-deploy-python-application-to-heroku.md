@@ -55,11 +55,11 @@ You can do this through the [Dashboard](https://dashboard.heroku.com/).
 ### Create runner
 First install [Docker Engine](https://docs.docker.com/installation/).
 To build this project you also need to have [GitLab Runner](https://about.gitlab.com/gitlab-ci/#gitlab-runner). 
-You can use public runners available on `gitlab.com/ci`, but you can register your own:
+You can use public runners available on `gitlab.com`, but you can register your own:
 ```
 gitlab-ci-multi-runner register \
   --non-interactive \
-  --url "https://gitlab.com/ci/" \
+  --url "https://gitlab.com/" \
   --registration-token "PROJECT_REGISTRATION_TOKEN" \
   --description "python-3.5" \
   --executor "docker" \
