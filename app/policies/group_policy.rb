@@ -14,12 +14,8 @@ class GroupPolicy < BasePolicy
     can_read ||= globally_viewable
     can_read ||= member
     can_read ||= @user.admin?
-<<<<<<< HEAD
     can_read ||= @user.auditor?
-    can_read ||= GroupProjectsFinder.new(@subject).execute(@user).any?
-=======
     can_read ||= GroupProjectsFinder.new(group: @subject, current_user: @user).execute.any?
->>>>>>> ce/master
     can! :read_group if can_read
 
     # Only group masters and group owners can create new projects

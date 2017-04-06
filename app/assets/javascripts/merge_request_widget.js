@@ -44,11 +44,8 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
       //   pipeline_status_url  - String, URL to use to get CI status for Favicon
       //
       this.opts = opts;
-<<<<<<< HEAD
-=======
       this.opts.pipeline_status_url = `${this.opts.pipeline_status_url}.json`;
       this.$widgetBody = $('.mr-widget-body');
->>>>>>> ce/master
       $('#modal_merge_info').modal({
         show: false
       });
