@@ -968,6 +968,14 @@ module Gitlab
         @attributes.attributes(path)
       end
 
+      def gitaly_repository
+        Gitlab::GitalyClient::Util.repository(@repository_storage, @relative_path)
+      end
+
+      def gitaly_channel
+        Gitlab::GitalyClient::Util.channel(@repository_storage)
+      end
+
       private
 
       # Get the content of a blob for a given commit.  If the blob is a commit

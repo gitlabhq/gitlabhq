@@ -4,7 +4,8 @@ module Gitlab
       attr_accessor :stub
 
       def initialize(repository_storage, relative_path)
-        @channel, @repository = Util.process_path(repository_storage, relative_path)
+        @channel = Util.channel(repository_storage)
+        @repository = Util.repository(repository_storage, relative_path)
         @stub = Gitaly::Notifications::Stub.new(nil, nil, channel_override: @channel)
       end
 
