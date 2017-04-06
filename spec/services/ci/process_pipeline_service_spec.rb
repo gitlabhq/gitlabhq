@@ -462,7 +462,10 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     builds.find_by(name: name).play(user)
   end
 
-  delegate :manual_actions, to: :pipeline
+  def manual_actions
+    pipeline.reload
+    pipeline.manual_actions
+  end
 
   def create_build(name, **opts)
     create(:ci_build, :created, pipeline: pipeline, name: name, **opts)
