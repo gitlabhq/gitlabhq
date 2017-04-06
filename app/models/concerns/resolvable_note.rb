@@ -1,6 +1,7 @@
 module ResolvableNote
   extend ActiveSupport::Concern
 
+  # Names of all subclasses of `Note` that can be resolvable.
   RESOLVABLE_TYPES = %w(DiffNote DiscussionNote).freeze
 
   included do
@@ -8,10 +9,8 @@ module ResolvableNote
 
     validates :resolved_by, presence: true, if: :resolved?
 
-    # Keep this scope in sync with the logic in `#potentially_resolvable?` in subclasses of `Discussion` that are resolvable.
-    # `RESOLVABLE_TYPES` should include names of all subclasses that are resolvable (where the method can return true), and
-    # the scope should also match the criteria `ResolvableDiscussion#potentially_resolvable?` puts on resolvability.
-    scope :potentially_resolvable, -> { where(type: RESOLVABLE_TYPES).where(noteable_type: 'MergeRequest') }
+    # Keep this scope in sync with `#potentially_resolvable?`
+    scope :potentially_resolvable, -> { where(type: RESOLVABLE_TYPES).where(noteable_type: Noteable::RESOLVABLE_TYPES) }
     # Keep this scope in sync with `#resolvable?`
     scope :resolvable, -> { potentially_resolvable.user }
 
@@ -31,7 +30,10 @@ module ResolvableNote
     end
   end
 
-  delegate :potentially_resolvable?, to: :to_discussion
+  # Keep this method in sync with the `potentially_resolvable` scope
+  def potentially_resolvable?
+    RESOLVABLE_TYPES.include?(self.class.name) && noteable.supports_resolvable_notes?
+  end
 
   # Keep this method in sync with the `resolvable` scope
   def resolvable?

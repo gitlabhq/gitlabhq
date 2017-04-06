@@ -1,6 +1,12 @@
 # A discussion on merge request or commit diffs consisting of `DiffNote` notes.
+#
+# A discussion of this type can be resolvable.
 class DiffDiscussion < Discussion
   include DiscussionOnDiff
+
+  def self.note_class
+    DiffNote
+  end
 
   delegate  :position,
             :original_position,

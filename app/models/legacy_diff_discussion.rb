@@ -1,6 +1,9 @@
 # A discussion on merge request or commit diffs consisting of `LegacyDiffNote` notes.
+#
 # All new diff discussions are of the type `DiffDiscussion`, but any diff discussions created
 # before the introduction of the new implementation still use `LegacyDiffDiscussion`.
+#
+# A discussion of this type is never resolvable.
 class LegacyDiffDiscussion < Discussion
   include DiscussionOnDiff
 
@@ -8,8 +11,8 @@ class LegacyDiffDiscussion < Discussion
     true
   end
 
-  def potentially_resolvable?
-    false
+  def self.note_class
+    LegacyDiffNote
   end
 
   def collapsed?

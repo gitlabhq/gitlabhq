@@ -1,4 +1,6 @@
 # A non-diff discussion on an issue, merge request, commit, or snippet, consisting of `DiscussionNote` notes.
+#
+# A discussion of this type can be resolvable.
 class Discussion
   include ResolvableDiscussion
 
@@ -52,6 +54,10 @@ class Discussion
   # For the case described above, see `OutOfContextDiscussion.override_discussion_id`.
   def self.override_discussion_id(note)
     nil
+  end
+
+  def self.note_class
+    DiscussionNote
   end
 
   def initialize(notes, noteable = nil)

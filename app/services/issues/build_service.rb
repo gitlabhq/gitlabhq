@@ -36,12 +36,14 @@ module Issues
 
     def item_for_discussion(discussion)
       first_note_to_resolve = discussion.first_note_to_resolve || discussion.first_note
-      other_note_count = discussion.notes.size - 1
-      note_url = Gitlab::UrlBuilder.build(first_note_to_resolve)
 
       is_very_first_note = first_note_to_resolve == discussion.first_note
       action = is_very_first_note ? "started" : "commented on"
-      
+
+      note_url = Gitlab::UrlBuilder.build(first_note_to_resolve)
+
+      other_note_count = discussion.notes.size - 1
+
       discussion_info = "- [ ] #{first_note_to_resolve.author.to_reference} #{action} a [discussion](#{note_url}): "
       discussion_info << " (+#{other_note_count} #{'comment'.pluralize(other_note_count)})" if other_note_count > 0
 

@@ -2,6 +2,8 @@
 # contains that commit, they are displayed as if they were a discussion.
 #
 # This represents one of those discussions, consisting of `Note` notes.
+#
+# A discussion of this type is never resolvable.
 class OutOfContextDiscussion < Discussion
   # Returns an array of discussion ID components
   def self.build_discussion_id(note)
@@ -13,8 +15,8 @@ class OutOfContextDiscussion < Discussion
   def self.override_discussion_id(note)
     discussion_id(note)
   end
-
-  def potentially_resolvable?
-    false
+  
+  def self.note_class
+    Note
   end
 end
