@@ -21,20 +21,20 @@ feature 'Project member activity', feature: true, js: true do
   context 'when a user joins the project' do
     before { visit_activities_and_wait_with_event(Event::JOINED) }
 
-    it { is_expected.to eq("#{user.name} joined project") }
+    it { is_expected.to eq("joined project") }
   end
 
   context 'when a user leaves the project' do
     before { visit_activities_and_wait_with_event(Event::LEFT) }
 
-    it { is_expected.to eq("#{user.name} left project") }
+    it { is_expected.to eq("left project") }
   end
 
   context 'when a users membership expires for the project' do
     before { visit_activities_and_wait_with_event(Event::EXPIRED) }
 
     it "presents the correct message" do
-      message = "#{user.name} removed due to membership expiration from project"
+      message = "removed due to membership expiration from project"
       is_expected.to eq(message)
     end
   end

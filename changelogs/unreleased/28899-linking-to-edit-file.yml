@@ -1,0 +1,5 @@
+---
+title: Linking to blob edit page handles anonymous users and users without enough permissions
+  to edit directly
+merge_request:
+author:

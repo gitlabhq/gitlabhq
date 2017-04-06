@@ -1,6 +1,6 @@
 - environment = local_assigns.fetch(:environment)
 
-- return unless environment.has_metrics? && can?(current_user, :read_environment, environment)
+- return unless can?(current_user, :read_environment, environment)
 
 = link_to environment_metrics_path(environment), title: 'See metrics', class: 'btn metrics-button' do
   = icon('area-chart')

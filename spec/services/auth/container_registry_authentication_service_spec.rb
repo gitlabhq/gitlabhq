@@ -6,14 +6,15 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   let(:current_params) { {} }
   let(:rsa_key) { OpenSSL::PKey::RSA.generate(512) }
   let(:payload) { JWT.decode(subject[:token], rsa_key).first }
+
   let(:authentication_abilities) do
-    [
-      :read_container_image,
-      :create_container_image
-    ]
+    [:read_container_image, :create_container_image]
   end
 
-  subject { described_class.new(current_project, current_user, current_params).execute(authentication_abilities: authentication_abilities) }
+  subject do
+    described_class.new(current_project, current_user, current_params)
+      .execute(authentication_abilities: authentication_abilities)
+  end
 
   before do
     allow(Gitlab.config.registry).to receive_messages(enabled: true, issuer: 'rspec', key: nil)
@@ -40,13 +41,11 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
     end
   end
 
-  shared_examples 'a accessible' do
+  shared_examples 'an accessible' do
     let(:access) do
-      [{
-         'type' => 'repository',
+      [{ 'type' => 'repository',
          'name' => project.path_with_namespace,
-         'actions' => actions,
-       }]
+         'actions' => actions }]
     end
 
     it_behaves_like 'a valid token'
@@ -59,19 +58,19 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   end
 
   shared_examples 'a pullable' do
-    it_behaves_like 'a accessible' do
+    it_behaves_like 'an accessible' do
       let(:actions) { ['pull'] }
     end
   end
 
   shared_examples 'a pushable' do
-    it_behaves_like 'a accessible' do
+    it_behaves_like 'an accessible' do
       let(:actions) { ['push'] }
     end
   end
 
   shared_examples 'a pullable and pushable' do
-    it_behaves_like 'a accessible' do
+    it_behaves_like 'an accessible' do
       let(:actions) { %w(pull push) }
     end
   end
@@ -81,15 +80,30 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
     it { is_expected.not_to include(:token) }
   end
 
+  shared_examples 'container repository factory' do
+    it 'creates a new container repository resource' do
+      expect { subject }
+        .to change { project.container_repositories.count }.by(1)
+    end
+  end
+
+  shared_examples 'not a container repository factory' do
+    it 'does not create a new container repository resource' do
+      expect { subject }.not_to change { ContainerRepository.count }
+    end
+  end
+
   describe '#full_access_token' do
     let(:project) { create(:empty_project) }
     let(:token) { described_class.full_access_token(project.path_with_namespace) }
 
     subject { { token: token } }
 
-    it_behaves_like 'a accessible' do
+    it_behaves_like 'an accessible' do
       let(:actions) { ['*'] }
     end
+
+    it_behaves_like 'not a container repository factory'
   end
 
   context 'user authorization' do
@@ -110,16 +124,20 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         end
 
         it_behaves_like 'a pushable'
+        it_behaves_like 'container repository factory'
       end
 
       context 'allow reporter to pull images' do
         before { project.team << [current_user, :reporter] }
 
-        let(:current_params) do
-          { scope: "repository:#{project.path_with_namespace}:pull" }
-        end
+        context 'when pulling from root level repository' do
+          let(:current_params) do
+            { scope: "repository:#{project.path_with_namespace}:pull" }
+          end
 
-        it_behaves_like 'a pullable'
+          it_behaves_like 'a pullable'
+          it_behaves_like 'not a container repository factory'
+        end
       end
 
       context 'return a least of privileges' do
@@ -130,6 +148,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         end
 
         it_behaves_like 'a pullable'
+        it_behaves_like 'not a container repository factory'
       end
 
       context 'disallow guest to pull or push images' do
@@ -140,6 +159,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         end
 
         it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
       end
     end
 
@@ -152,6 +172,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         end
 
         it_behaves_like 'a pullable'
+        it_behaves_like 'not a container repository factory'
       end
 
       context 'disallow anyone to push images' do
@@ -160,6 +181,16 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         end
 
         it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
+      end
+
+      context 'when repository name is invalid' do
+        let(:current_params) do
+          { scope: 'repository:invalid:push' }
+        end
+
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
       end
     end
 
@@ -173,6 +204,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
           end
 
           it_behaves_like 'a pullable'
+          it_behaves_like 'not a container repository factory'
         end
 
         context 'disallow anyone to push images' do
@@ -181,6 +213,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
           end
 
           it_behaves_like 'an inaccessible'
+          it_behaves_like 'not a container repository factory'
         end
       end
 
@@ -191,6 +224,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         end
 
         it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
       end
     end
   end
@@ -198,11 +232,9 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   context 'build authorized as user' do
     let(:current_project) { create(:empty_project) }
     let(:current_user) { create(:user) }
+
     let(:authentication_abilities) do
-      [
-        :build_read_container_image,
-        :build_create_container_image
-      ]
+      [:build_read_container_image, :build_create_container_image]
     end
 
     before do
@@ -219,6 +251,10 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
       it_behaves_like 'a pullable and pushable' do
         let(:project) { current_project }
       end
+
+      it_behaves_like 'container repository factory' do
+        let(:project) { current_project }
+      end
     end
 
     context 'for other projects' do
@@ -231,11 +267,13 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
           let(:project) { create(:empty_project, :public) }
 
           it_behaves_like 'a pullable'
+          it_behaves_like 'not a container repository factory'
         end
 
         shared_examples 'pullable for being team member' do
           context 'when you are not member' do
             it_behaves_like 'an inaccessible'
+            it_behaves_like 'not a container repository factory'
           end
 
           context 'when you are member' do
@@ -244,12 +282,14 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
             end
 
             it_behaves_like 'a pullable'
+            it_behaves_like 'not a container repository factory'
           end
 
           context 'when you are owner' do
             let(:project) { create(:empty_project, namespace: current_user.namespace) }
 
             it_behaves_like 'a pullable'
+            it_behaves_like 'not a container repository factory'
           end
         end
 
@@ -263,6 +303,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
             context 'when you are not member' do
               it_behaves_like 'an inaccessible'
+              it_behaves_like 'not a container repository factory'
             end
 
             context 'when you are member' do
@@ -271,12 +312,14 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
               end
 
               it_behaves_like 'a pullable'
+              it_behaves_like 'not a container repository factory'
             end
 
             context 'when you are owner' do
               let(:project) { create(:empty_project, namespace: current_user.namespace) }
 
               it_behaves_like 'a pullable'
+              it_behaves_like 'not a container repository factory'
             end
           end
         end
@@ -296,12 +339,14 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
             end
 
             it_behaves_like 'an inaccessible'
+            it_behaves_like 'not a container repository factory'
           end
 
           context 'when you are owner' do
             let(:project) { create(:empty_project, :public, namespace: current_user.namespace) }
 
             it_behaves_like 'an inaccessible'
+            it_behaves_like 'not a container repository factory'
           end
         end
       end
@@ -318,6 +363,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         end
 
         it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
       end
     end
   end
@@ -325,6 +371,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   context 'unauthorized' do
     context 'disallow to use scope-less authentication' do
       it_behaves_like 'a forbidden'
+      it_behaves_like 'not a container repository factory'
     end
 
     context 'for invalid scope' do
@@ -333,6 +380,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
       end
 
       it_behaves_like 'a forbidden'
+      it_behaves_like 'not a container repository factory'
     end
 
     context 'for private project' do
@@ -354,6 +402,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         end
 
         it_behaves_like 'a pullable'
+        it_behaves_like 'not a container repository factory'
       end
 
       context 'when pushing' do
@@ -362,6 +411,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         end
 
         it_behaves_like 'a forbidden'
+        it_behaves_like 'not a container repository factory'
       end
     end
   end
