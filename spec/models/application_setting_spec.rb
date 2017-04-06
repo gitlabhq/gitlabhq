@@ -299,6 +299,12 @@ describe ApplicationSetting, models: true do
 
       expect(setting.elasticsearch_url).to eq(%w[http://example.com https://invalid.invalid:9200])
     end
+
+    it 'strips trailing slashes from URLs' do
+      setting.elasticsearch_url = 'http://example.com/, https://example.com:9200/, https://example.com:9200/prefix//'
+
+      expect(setting.elasticsearch_url).to eq(%w[http://example.com https://example.com:9200 https://example.com:9200/prefix])
+    end
   end
 
   describe '#elasticsearch_config' do

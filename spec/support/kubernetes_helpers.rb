@@ -85,12 +85,15 @@ module KubernetesHelpers
     }
   end
 
-  def kube_deployment(name: "kube-deployment", app: "valid-deployment-label")
+  def kube_deployment(name: "kube-deployment", app: "valid-deployment-label", track: nil)
     {
       "metadata" => {
         "name" => name,
         "generation" => 4,
-        "labels" => { "app" => app },
+        "labels" => {
+          "app" => app,
+          "track" => track
+        }.compact,
       },
       "spec" => { "replicas" => 3 },
       "status" => {

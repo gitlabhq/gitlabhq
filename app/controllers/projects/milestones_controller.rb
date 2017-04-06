@@ -42,6 +42,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def show
+    @burndown = Burndown.new(@milestone)
   end
 
   def create

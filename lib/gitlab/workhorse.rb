@@ -35,7 +35,8 @@ module Gitlab
 
           feature_enabled = case action.to_s
                             when 'git_receive_pack'
-                              Gitlab::GitalyClient.feature_enabled?(:post_receive_pack)
+                              # Disabled for now, see https://gitlab.com/gitlab-org/gitaly/issues/172
+                              false
                             when 'git_upload_pack'
                               Gitlab::GitalyClient.feature_enabled?(:post_upload_pack)
                             when 'info_refs'
@@ -44,7 +45,12 @@ module Gitlab
                               raise "Unsupported action: #{action}"
                             end
 
-          params[:GitalySocketPath] = URI(address).path if feature_enabled
+          if feature_enabled
+            params[:GitalyAddress] = address
+            # TODO deprecate GitalySocketPath once GITLAB_WORKHORSE_VERSION points
+            # to a version that supports GitalyAddress.
+            params[:GitalySocketPath] = URI(address).path
+          end
         end
 
         params

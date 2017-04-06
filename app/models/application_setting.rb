@@ -301,6 +301,12 @@ class ApplicationSetting < ActiveRecord::Base
     read_attribute(:elasticsearch_url).split(',').map(&:strip)
   end
 
+  def elasticsearch_url=(values)
+    cleaned = values.split(',').map {|url| url.strip.gsub(%r{/*\z}, '') }
+
+    write_attribute(:elasticsearch_url, cleaned.join(','))
+  end
+
   def elasticsearch_config
     {
       url:                   elasticsearch_url,

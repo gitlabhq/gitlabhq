@@ -77,11 +77,6 @@ class Projects::IssuesController < Projects::ApplicationController
     @merge_request_to_resolve_discussions_of = service.merge_request_to_resolve_discussions_of
     @discussion_to_resolve = service.discussions_to_resolve.first if params[:discussion_to_resolve]
 
-    # Set Issue description based on project template
-    if @project.issues_template.present?
-      @issue.description = @project.issues_template
-    end
-
     respond_with(@issue)
   end
 

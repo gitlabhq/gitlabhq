@@ -256,14 +256,14 @@ describe Gitlab::Mirror do
       expect(Gitlab::Mirror.at_beginning_of_day?).to be true
     end
 
-    it 'returns false if at beginning of hour' do
-      Timecop.freeze(DateTime.now.beginning_of_hour)
+    it 'returns true during the first 14 minutes of the day' do
+      Timecop.freeze(DateTime.now.beginning_of_day + 14.minutes)
 
-      expect(Gitlab::Mirror.at_beginning_of_day?).to be false
+      expect(Gitlab::Mirror.at_beginning_of_day?).to be true
     end
 
-    it 'returns false in every 15 minute mark' do
-      Timecop.freeze(DateTime.now.beginning_of_hour + 15.minutes)
+    it 'returns false if some time after the day started' do
+      Timecop.freeze(DateTime.now.midday)
 
       expect(Gitlab::Mirror.at_beginning_of_day?).to be false
     end

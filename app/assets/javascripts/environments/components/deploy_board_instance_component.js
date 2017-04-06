@@ -7,6 +7,9 @@
  * see more information about this in
  * https://gitlab.com/gitlab-org/gitlab-ee/uploads/5fff049fd88336d9ee0c6ef77b1ba7e3/monitoring__deployboard--key.png
  *
+ * An instance can represent a normal deploy or a canary deploy. In the latter we need to provide
+ * this information in the tooltip and the colors.
+ * Mockup is https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1551#note_26595150
  */
 
 export default {
@@ -28,11 +31,23 @@ export default {
       required: false,
       default: '',
     },
+
+    stable: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
 
   computed: {
     cssClass() {
-      return `deploy-board-instance-${this.status}`;
+      let cssClassName = `deploy-board-instance-${this.status}`;
+
+      if (!this.stable) {
+        cssClassName = `${cssClassName} deploy-board-instance-canary`;
+      }
+
+      return cssClassName;
     },
   },
 

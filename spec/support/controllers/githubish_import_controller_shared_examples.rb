@@ -180,7 +180,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
         it "takes the new namespace" do
           expect(Gitlab::GithubImport::ProjectCreator).
             to receive(:new).with(provider_repo, provider_repo.name, an_instance_of(Group), user, access_params, type: provider).
-            and_return(double(execute: true))
+              and_return(double(execute: true))
 
           post :create, target_namespace: provider_repo.name, format: :js
         end
@@ -201,7 +201,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
         it "takes the current user's namespace" do
           expect(Gitlab::GithubImport::ProjectCreator).
             to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider).
-            and_return(double(execute: true))
+              and_return(double(execute: true))
 
           post :create, format: :js
         end
@@ -229,7 +229,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       end
     end
 
-    context 'user has chosen a nested namespace and name for the project' do
+    context 'user has chosen an existing nested namespace and name for the project' do
       let(:parent_namespace) { create(:namespace, name: 'foo', owner: user) }
       let(:nested_namespace) { create(:namespace, name: 'bar', parent: parent_namespace, owner: user) }
       let(:test_name) { 'test_name' }
@@ -240,6 +240,59 @@ shared_examples 'a GitHub-ish import controller: POST create' do
             and_return(double(execute: true))
 
         post :create, { target_namespace: nested_namespace.full_path, new_name: test_name, format: :js }
+      end
+    end
+
+    context 'user has chosen a non-existent nested namespaces and name for the project' do
+      let(:test_name) { 'test_name' }
+
+      it 'takes the selected namespace and name' do
+        expect(Gitlab::GithubImport::ProjectCreator).
+          to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider).
+            and_return(double(execute: true))
+
+        post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :js }
+      end
+
+      it 'creates the namespaces' do
+        allow(Gitlab::GithubImport::ProjectCreator).
+          to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider).
+            and_return(double(execute: true))
+
+        expect { post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :js } }
+          .to change { Namespace.count }.by(2)
+      end
+
+      it 'new namespace has the right parent' do
+        allow(Gitlab::GithubImport::ProjectCreator).
+          to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider).
+            and_return(double(execute: true))
+
+        post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :js }
+
+        expect(Namespace.find_by_path_or_name('bar').parent.path).to eq('foo')
+      end
+    end
+
+    context 'user has chosen existent and non-existent nested namespaces and name for the project' do
+      let(:test_name) { 'test_name' }
+      let!(:parent_namespace) { create(:namespace, name: 'foo', owner: user) }
+
+      it 'takes the selected namespace and name' do
+        expect(Gitlab::GithubImport::ProjectCreator).
+          to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider).
+            and_return(double(execute: true))
+
+        post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :js }
+      end
+
+      it 'creates the namespaces' do
+        allow(Gitlab::GithubImport::ProjectCreator).
+          to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider).
+            and_return(double(execute: true))
+
+        expect { post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :js } }
+          .to change { Namespace.count }.by(2)
       end
     end
   end

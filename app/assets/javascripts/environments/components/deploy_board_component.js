@@ -163,7 +163,8 @@ export default {
             <template v-for="instance in deployBoardData.instances">
               <instance-component
                 :status="instance.status"
-                :tooltipText="instance.tooltip"/>
+                :tooltip-text="instance.tooltip"
+                :stable="instance.stable" />
             </template>
           </div>
         </section>
