@@ -25,6 +25,10 @@ class CommentTypeToggle {
       inputSetterConfig.push({
         input: this.secondaryButton,
         valueAttribute: 'data-secondary-button-text',
+      }, {
+        input: this.secondaryButton,
+        valueAttribute: 'data-secondary-button-text',
+        inputAttribute: 'data-alternative-text',
       });
     }
 

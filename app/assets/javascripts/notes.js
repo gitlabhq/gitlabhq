@@ -149,9 +149,9 @@ require('./task_list');
       this.commentTypeToggle = new CommentTypeToggle(
         form.querySelector('.js-comment-type-dropdown .dropdown-toggle'),
         form.querySelector('.js-comment-type-dropdown .dropdown-menu'),
-        document.querySelector('.timeline-content-form #note_type'),
+        document.querySelector('.js-main-target-form #note_type'),
         form.querySelector('.js-comment-type-dropdown .js-comment-submit-button'),
-        document.querySelector('.js-note-target-close'),
+        document.querySelector('.js-main-target-form .js-note-target-close'),
       );
 
       this.commentTypeToggle.initDroplab();
@@ -949,7 +949,7 @@ require('./task_list');
       discardbtn = form.find('.js-note-discard');
       if (textarea.val().trim().length > 0) {
         reopentext = reopenbtn.data('alternative-text');
-        closetext = closebtn.data('alternative-text');
+        closetext = closebtn.attr('data-alternative-text');
         if (reopenbtn.text() !== reopentext) {
           reopenbtn.text(reopentext);
         }
