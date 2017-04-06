@@ -26,6 +26,30 @@ module Gitlab
         add_index(table_name, column_name, options)
       end
 
+      # Removes an existed index, concurrently when supported
+      #
+      # On PostgreSQL this method removes an index concurrently.
+      #
+      # Example:
+      #
+      #     remove_concurrent_index :users, :some_column
+      #
+      # See Rails' `remove_index` for more info on the available arguments.
+      def remove_concurrent_index(table_name, column_name, options = {})
+        if transaction_open?
+          raise 'remove_concurrent_index can not be run inside a transaction, ' \
+            'you can disable transactions by calling disable_ddl_transaction! ' \
+            'in the body of your migration class'
+        end
+
+        if Database.postgresql?
+          options = options.merge({ algorithm: :concurrently })
+          disable_statement_timeout
+        end
+
+        remove_index(table_name, options.merge({ column: column_name }))
+      end
+
       # Adds a foreign key with only minimal locking on the tables involved.
       #
       # This method only requires minimal locking when using PostgreSQL. When

@@ -15,7 +15,7 @@ describe Gitlab::PollingInterval, lib: true do
       it 'sets value to -1' do
         polling_interval.set_header(response, interval: 10_000)
 
-        expect(headers['Poll-Interval']).to eq(-1)
+        expect(headers['Poll-Interval']).to eq('-1')
       end
     end
 
@@ -27,7 +27,7 @@ describe Gitlab::PollingInterval, lib: true do
       it 'applies modifier to base interval' do
         polling_interval.set_header(response, interval: 10_000)
 
-        expect(headers['Poll-Interval']).to eq(3333)
+        expect(headers['Poll-Interval']).to eq('3333')
       end
     end
   end

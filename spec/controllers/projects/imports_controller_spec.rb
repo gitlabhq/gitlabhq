@@ -96,11 +96,18 @@ describe Projects::ImportsController do
             }
           end
 
-          it 'redirects to params[:to]' do
+          it 'redirects to internal params[:to]' do
             get :show, namespace_id: project.namespace.to_param, project_id: project, continue: params
 
             expect(flash[:notice]).to eq params[:notice]
             expect(response).to redirect_to params[:to]
+          end
+
+          it 'does not redirect to external params[:to]' do
+            params[:to] = "//google.com"
+
+            get :show, namespace_id: project.namespace.to_param, project_id: project, continue: params
+            expect(response).not_to redirect_to params[:to]
           end
         end
       end
