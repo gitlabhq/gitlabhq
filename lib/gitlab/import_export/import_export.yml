@@ -76,12 +76,6 @@ excluded_attributes:
   statuses:
     - :trace
     - :token
-  pipelines:
-    - :pending_builds
-    - :retryable_builds
-    - :cancelable_statuses
-    - :manual_actions
-    - :artifacts
 
 methods:
   labels:

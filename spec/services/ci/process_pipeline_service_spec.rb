@@ -463,8 +463,7 @@ describe Ci::ProcessPipelineService, '#execute', :services do
   end
 
   def manual_actions
-    pipeline.reload
-    pipeline.manual_actions
+    pipeline.manual_actions(true)
   end
 
   def create_build(name, **opts)
