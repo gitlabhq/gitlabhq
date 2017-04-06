@@ -41,6 +41,7 @@ import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
+import DeployKeysComponent from './deploy_keys/components/deploy_keys';
 import UserCallout from './user_callout';
 
 const ShortcutsBlob = require('./shortcuts_blob');
@@ -320,6 +321,9 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:repository:show':
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
+          new DeployKeysComponent({
+            el: document.querySelector('#vue-deploy-keys'),
+          });
           break;
         case 'projects:ci_cd:show':
           new gl.ProjectVariables();
