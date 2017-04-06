@@ -1,133 +1,81 @@
+import statusCodes from '~/lib/utils/http_status';
 import MemoryGraph from '../../vue_shared/components/memory_graph';
 
 export default {
   name: 'MemoryUsage',
   props: {
-    memoryFrom: { type: Number, required: true },
-    memoryTo: { type: Number, required: true },
+    mr: { type: Object, required: true },
+    service: { type: Object, required: true },
+    metricsUrl: { type: String, required: true },
   },
-  computed: {
-    memoryMetrics() {
-      return [
-        [
-          1490870055.525,
-          '4.90234375',
-        ],
-        [
-          1490870115.525,
-          '4.90234375',
-        ],
-        [
-          1490870175.525,
-          '4.90234375',
-        ],
-        [
-          1490870235.525,
-          '4.658203125',
-        ],
-        [
-          1490870295.525,
-          '4.53125',
-        ],
-        [
-          1490870355.525,
-          '4.53125',
-        ],
-        [
-          1490870415.525,
-          '4.53125',
-        ],
-        [
-          1490870475.525,
-          '4.53125',
-        ],
-        [
-          1490870535.525,
-          '3.853515625',
-        ],
-        [
-          1490870595.525,
-          '4.60546875',
-        ],
-        [
-          1490870655.525,
-          '4.60546875',
-        ],
-        [
-          1490870715.525,
-          '4.60546875',
-        ],
-        [
-          1490870775.525,
-          '4.60546875',
-        ],
-        [
-          1490870835.525,
-          '4.93359375',
-        ],
-        [
-          1490870895.525,
-          '4.93359375',
-        ],
-        [
-          1490870955.525,
-          '4.93359375',
-        ],
-        [
-          1490871015.525,
-          '4.93359375',
-        ],
-        [
-          1490871075.525,
-          '4.93359375',
-        ],
-        [
-          1490871135.525,
-          '4.93359375',
-        ],
-        [
-          1490871195.525,
-          '4.93359375',
-        ],
-        [
-          1490871255.525,
-          '4.93359375',
-        ],
-        [
-          1490871315.525,
-          '4.93359375',
-        ],
-        [
-          1490871375.525,
-          '4.93359375',
-        ],
-        [
-          1490871435.525,
-          '4.93359375',
-        ],
-        [
-          1490871495.525,
-          '4.93359375',
-        ],
-        [
-          1490871555.525,
-          '4.93359375',
-        ],
-        [
-          1490871615.525,
-          '4.93359375',
-        ],
-      ];
-    },
+  data() {
+    return {
+      memoryFrom: 0,
+      memoryTo: 0,
+      memoryMetrics: [],
+      hasMetrics: false,
+      loadingMetrics: true,
+      backOffRequestCounter: 0,
+    };
   },
   components: {
     'mr-memory-graph': MemoryGraph,
   },
+  methods: {
+    computeGraphData(metrics) {
+      this.loadingMetrics = false;
+      const { memory_previous, memory_current, memory_values } = metrics;
+      if (memory_previous.length > 0) {
+        this.memoryFrom = Number(memory_previous[0].value[1]).toFixed(2);
+      }
+
+      if (memory_current.length > 0) {
+        this.memoryTo = Number(memory_current[0].value[1]).toFixed(2);
+      }
+
+      if (memory_values.length > 0) {
+        this.hasMetrics = true;
+        this.memoryMetrics = memory_values[0].values;
+      }
+    },
+  },
+  mounted() {
+    this.$props.loadingMetrics = true;
+    gl.utils.backOff((next, stop) => {
+      this.service.fetchMetrics(this.$props.metricsUrl)
+        .then((res) => {
+          if (res.status === statusCodes.NO_CONTENT) {
+            this.backOffRequestCounter = this.backOffRequestCounter += 1;
+            if (this.backOffRequestCounter < 3) {
+              next();
+            } else {
+              stop(res);
+            }
+          } else {
+            stop(res);
+          }
+        })
+        .catch(stop);
+    })
+    .then((res) => {
+      if (res.status === statusCodes.NO_CONTENT) {
+        return res;
+      }
+
+      return res.json();
+    })
+    .then((res) => {
+      this.computeGraphData(res.metrics);
+    });
+  },
   template: `
-    <section class="mr-info-list mr-memory-usage">
+    <div class="mr-info-list mr-memory-usage">
       <div class="legend"></div>
-      <p class="usage-info">Memory increased from {{memoryFrom}}MB to {{memoryTo}}MB.</p>
-      <mr-memory-graph :height=25 :width=100 :metrics="memoryMetrics"></mr-memory-graph>
-    </section>
+      <p class="usage-info usage-info-loading" v-if="loadingMetrics">
+        <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>Loading deployment statistics.
+      </p>
+      <p class="usage-info" v-if="hasMetrics">Memory increased from {{memoryFrom}} MB to {{memoryTo}} MB.</p>
+      <mr-memory-graph v-if="hasMetrics" :height=25 :width=100 :metrics="memoryMetrics"></mr-memory-graph>
+    </div>
   `,
 };

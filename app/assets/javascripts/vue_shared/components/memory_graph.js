@@ -4,28 +4,20 @@ export default {
     metrics: { type: Array, required: true },
     width: { type: Number, required: true },
     height: { type: Number, required: true },
-    marker: { type: Number, required: true },
   },
   mounted() {
     const renderData = this.$props.metrics.map(v => v[1]);
     const maxMemory = Math.max.apply(null, renderData);
     const minMemory = Math.min.apply(null, renderData);
     const diff = maxMemory - minMemory;
-    let cx;
-    let cy;
+    const cx = 0;
+    const cy = 0;
 
     const svgEl = this.$el.querySelector('svg');
     const pathEl = svgEl.querySelector('path');
     const circleEl = svgEl.querySelector('circle');
     const lineWidth = renderData.length;
-    const linePath = renderData.map((y, x) => {
-      if (this.$props.marker === +y) {
-        cx = x;
-        cy = `${maxMemory - y}`;
-      }
-
-      return `${x} ${maxMemory - y}`;
-    });
+    const linePath = renderData.map((y, x) => `${x} ${maxMemory - y}`);
     pathEl.setAttribute('d', `M ${linePath}`);
     circleEl.setAttribute('cx', cx);
     circleEl.setAttribute('cy', cy);

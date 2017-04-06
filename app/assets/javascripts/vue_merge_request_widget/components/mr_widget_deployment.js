@@ -82,7 +82,13 @@ export default {
           </button>
         </span>
       </div>
-      <mr-widget-memory-usage :mr="mr" :memoryFrom=114 :memoryTo=127 />
+      <mr-widget-memory-usage
+        v-for="deployment in mr.deployments"
+        :key="deployment.id"
+        :mr="mr"
+        :service="service"
+        :metricsUrl="deployment.metrics_url"
+      />
     </div>
   `,
 };

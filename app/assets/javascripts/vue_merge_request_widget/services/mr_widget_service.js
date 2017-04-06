@@ -48,4 +48,8 @@ export default class MRWidgetService {
   stopEnvironment(url) {
     return Vue.http.post(url);
   }
+
+  fetchMetrics(metricsUrl) {
+    return Vue.http.get(`${metricsUrl}.json`);
+  }
 }

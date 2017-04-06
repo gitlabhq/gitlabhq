@@ -3,14 +3,10 @@
     background: $white-light;
   }
 
-  path,
-  circle {
-    fill: none;
-    stroke-width: 1px;
-  }
-
   path {
+    fill: $blue-500;
     stroke: $blue-500;
+    stroke-width: 2px;
   }
 
   circle {
