@@ -1,25 +1,26 @@
 class ProjectSnippetPolicy < BasePolicy
-  def rules
-    # We have to check both project feature visibility and a snippet visibility and take the stricter one
-    # This will be simplified - check https://gitlab.com/gitlab-org/gitlab-ce/issues/27573
-    return unless @subject.project.feature_available?(:snippets, @user)
-    return unless Ability.allowed?(@user, :read_project, @subject.project)
+  delegate { @subject.project }
+  desc "Snippet is public"
+  condition(:public_snippet, scope: :subject) { @subject.public? }
 
-    can! :read_project_snippet if @subject.public?
-    return unless @user
+  condition(:is_author) { @user && @subject.author == @user }
 
-    if @user && (@subject.author == @user || @user.admin?)
-      can! :read_project_snippet
-      can! :update_project_snippet
-      can! :admin_project_snippet
-    end
+  condition(:internal, scope: :subject) { @subject.internal? }
 
-    if @subject.internal? && !@user.external?
-      can! :read_project_snippet
-    end
+  # We have to check both project feature visibility and a snippet visibility and take the stricter one
+  # This will be simplified - check https://gitlab.com/gitlab-org/gitlab-ce/issues/27573
+  rule { ~can?(:read_project) }.prevent_all
+  rule { snippets_disabled }.prevent_all
 
-    if @subject.project.team.member?(@user)
-      can! :read_project_snippet
-    end
+  rule { internal & ~external_user }.enable :read_project_snippet
+
+  rule { public_snippet }.enable :read_project_snippet
+
+  rule { is_author | admin }.policy do
+    enable :read_project_snippet
+    enable :update_project_snippet
+    enable :admin_project_snippet
   end
+
+  rule { team_member }.enable :read_project_snippet
 end

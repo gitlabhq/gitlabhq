@@ -1,7 +1,7 @@
 module Gitlab
   module Allowable
-    def can?(user, action, subject = :global)
-      Ability.allowed?(user, action, subject)
+    def can?(*args)
+      Ability.allowed?(*args)
     end
   end
 end

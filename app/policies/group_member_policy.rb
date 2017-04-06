@@ -1,25 +1,28 @@
 class GroupMemberPolicy < BasePolicy
-  def rules
-    return unless @user
-
-    target_user = @subject.user
-    group = @subject.group
-
-    return if group.last_owner?(target_user)
-
-    can_manage = Ability.allowed?(@user, :admin_group_member, group)
-
-    if can_manage
-      can! :update_group_member
-      can! :destroy_group_member
-    elsif @user == target_user
-      can! :destroy_group_member
-    end
-
-    additional_rules!
+  def target_user
+    @subject.user
   end
 
-  def additional_rules!
-    # This is meant to be overriden in EE
+  def group
+    @subject.group
+  end
+
+  delegate { group }
+
+  condition(:last_owner) { group.last_owner?(target_user) }
+
+  desc "Membership is users' own"
+  condition(:is_target_user) { target_user == @user }
+
+  rule { anonymous }.prevent_all
+  rule { last_owner }.prevent_all
+
+  rule { can?(:admin_group_member) }.policy do
+    enable :update_group_member
+    enable :destroy_group_member
+  end
+
+  rule { is_target_user }.policy do
+    enable :destroy_group_member
   end
 end
