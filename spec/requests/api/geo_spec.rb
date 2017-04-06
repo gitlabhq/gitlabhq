@@ -293,7 +293,7 @@ describe API::Geo, api: true do
         get api('/geo/status'), nil, request.headers
 
         expect(response).to have_http_status(200)
-        expect(response.headers['Content-Type']).to eq('application/json')
+        expect(response).to match_response_schema('geo_node_status')
       end
 
       it 'responds with a 404 when the tracking database is disabled' do

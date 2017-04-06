@@ -4,13 +4,13 @@
     "id",
     "healthy",
     "health",
+    "attachments_count",
+    "attachments_synced_count",
     "lfs_objects_count",
     "lfs_objects_synced_count",
-    "lfs_objects_synced_in_percentage",
     "repositories_count",
     "repositories_failed_count",
-    "repositories_synced_count",
-    "repositories_synced_in_percentage"
+    "repositories_synced_count"
   ],
   "properties" : {
     "id": { "type": "integer" },
