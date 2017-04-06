@@ -16,6 +16,12 @@ ul.notes {
 
   .timeline-icon {
     float: left;
+
+    svg {
+      width: 20px;
+      height: auto;
+      fill: $gl-text-color-secondary;
+    }
   }
 
   .timeline-content {
