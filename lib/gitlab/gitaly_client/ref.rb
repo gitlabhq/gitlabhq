@@ -24,7 +24,7 @@ module Gitlab
       end
 
       def find_ref_name(commit_id, ref_prefix)
-        request   = Gitaly::FindRefNameRequest.new(
+        request = Gitaly::FindRefNameRequest.new(
           repository: @repository,
           commit_id: commit_id,
           prefix: ref_prefix
