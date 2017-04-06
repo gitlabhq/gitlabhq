@@ -66,14 +66,12 @@ The following guide assumes that:
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
     ```ruby
+    geo_primary_role['enable'] = true
     postgresql['listen_address'] = "1.2.3.4"
     postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','1.2.3.4/32']
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
-    postgresql['sql_replication_user'] = "gitlab_replicator"
-    postgresql['wal_level'] = "hot_standby"
-    postgresql['max_wal_senders'] = 10
-    postgresql['wal_keep_segments'] = 10
-    postgresql['hot_standby'] = "on"
+    # postgresql['max_wal_senders'] = 10
+    # postgresql['wal_keep_segments'] = 10
     ```
 
     Where `1.2.3.4` is the public IP address of the primary server, and `5.6.7.8`
@@ -109,7 +107,8 @@ The following guide assumes that:
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32','11.22.33.44/32']
     ```
 
-    Edit the `wal` values as you see fit.
+    You may also want to edit the `wal_keep_segments` and `max_wal_senders` to
+    match your database replication requirements.
 
 1. Check to make sure your firewall rules are set so that the secondary nodes
    can access port 5432 on the primary node.
@@ -146,11 +145,7 @@ The following guide assumes that:
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
     ```ruby
-    postgresql['wal_level'] = "hot_standby"
-    postgresql['max_wal_senders'] = 10
-    postgresql['wal_keep_segments'] = 10
-    postgresql['hot_standby'] = "on"
-    gitlab_rails['auto_migrate'] = false # prevents migrations to be executed on the secondary server
+    geo_secondary_role['enable'] = true
     ```
 
 1. [Reconfigure GitLab][] for the changes to take effect.
@@ -175,57 +170,15 @@ data before running `pg_basebackup`.
     sudo -i
     ```
 
-1. Save the snippet below in a file, let's say `/tmp/replica.sh`:
-
-    ```bash
-    #!/bin/bash
-
-    PORT="5432"
-    USER="gitlab_replicator"
-    echo ---------------------------------------------------------------
-    echo WARNING: Make sure this scirpt is run from the secondary server
-    echo ---------------------------------------------------------------
-    echo
-    echo Enter the IP of the primary PostgreSQL server
-    read HOST
-    echo Enter the password for $USER@$HOST
-    read -s PASSWORD
-
-    echo Stopping PostgreSQL and all GitLab services
-    gitlab-ctl stop
-
-    echo Backing up postgresql.conf
-    sudo -u gitlab-psql mv /var/opt/gitlab/postgresql/data/postgresql.conf /var/opt/gitlab/postgresql/
-
-    echo Cleaning up old cluster directory
-    sudo -u gitlab-psql rm -rf /var/opt/gitlab/postgresql/data
-    rm -f /tmp/postgresql.trigger
-
-    echo Starting base backup as the replicator user
-    echo Enter the password for $USER@$HOST
-    sudo -u gitlab-psql /opt/gitlab/embedded/bin/pg_basebackup -h $HOST -D /var/opt/gitlab/postgresql/data -U gitlab_replicator -v -x -P
-
-    echo Writing recovery.conf file
-    sudo -u gitlab-psql bash -c "cat > /var/opt/gitlab/postgresql/data/recovery.conf <<- _EOF1_
-      standby_mode = 'on'
-      primary_conninfo = 'host=$HOST port=$PORT user=$USER password=$PASSWORD'
-      trigger_file = '/tmp/postgresql.trigger'
-    _EOF1_
-    "
-
-    echo Restoring postgresql.conf
-    sudo -u gitlab-psql mv /var/opt/gitlab/postgresql/postgresql.conf /var/opt/gitlab/postgresql/data/
-
-    echo Starting PostgreSQL and all GitLab services
-    gitlab-ctl start
-    ```
-
-1. Run it with:
+1. Execute the command below to start a backup/restore and begin the replication:
 
     ```
-    bash /tmp/replica.sh
+    gitlab-ctl replicate-geo-database --host=1.2.3.4
     ```
-
+    
+    Change the `--host=` to the primary node IP or FQDN. You can check other possible
+    params with `--help`. `
+    
     When prompted, enter the password you set up for the `gitlab_replicator`
     user in the first step.
 

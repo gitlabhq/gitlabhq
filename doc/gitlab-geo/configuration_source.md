@@ -127,11 +127,11 @@ sensitive data in the database. Any secondary node must have the
     sudo -i
     ```
 
-1. Find the value of `db_key_base` and copy it:
+1. Execute the command below to display current encryption key and copy it:
 
      ```
      # Installations from source
-     cat /home/git/gitlab/config/secrets.yml | grep db_key_base
+     bundle exec rake geo:db:show_encryption_key
      ```
 
 1. SSH into the **secondary** node and login as root:
