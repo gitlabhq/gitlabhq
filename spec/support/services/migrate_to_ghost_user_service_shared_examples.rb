@@ -1,6 +1,6 @@
 require "spec_helper"
 
-shared_examples "migrating a deleted user's associated records to the ghost user" do |record_class, options|
+shared_examples "migrating a deleted user's associated records to the ghost user" do |record_class|
   record_class_name = record_class.to_s.titleize.downcase
 
   let(:project) { create(:project) }
@@ -13,13 +13,13 @@ shared_examples "migrating a deleted user's associated records to the ghost user
     let!(:record) { created_record }
 
     it "does not delete the #{record_class_name}" do
-      service.execute(user)
+      service.execute
 
       expect(record_class.find_by_id(record.id)).to be_present
     end
 
     it "migrates the #{record_class_name} so that the 'Ghost User' is the #{record_class_name} owner" do
-      service.execute(user)
+      service.execute
 
       migrated_record = record_class.find_by_id(record.id)
 
@@ -31,29 +31,9 @@ shared_examples "migrating a deleted user's associated records to the ghost user
     end
 
     it "blocks the user before migrating #{record_class_name}s to the 'Ghost User'" do
-      service.execute(user)
+      service.execute
 
       expect(user).to be_blocked
-    end
-  end
-
-  unless options[:skip_assignee_specs]
-    context "for a #{record_class_name} the user was assigned to" do
-      let!(:record) { assigned_record }
-
-      before do
-        service.execute(user)
-      end
-
-      it "does not delete #{record_class_name}s the user is assigned to" do
-        expect(record_class.find_by_id(record.id)).to be_present
-      end
-
-      it "migrates the #{record_class_name} so that it is 'Unassigned'" do
-        migrated_record = record_class.find_by_id(record.id)
-
-        expect(migrated_record.assignee).to be_nil
-      end
     end
   end
 end

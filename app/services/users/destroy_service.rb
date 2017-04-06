@@ -1,7 +1,5 @@
 module Users
   class DestroyService
-    include MigrateToGhostUser
-
     attr_accessor :current_user
 
     def initialize(current_user)
@@ -28,7 +26,7 @@ module Users
         ::Projects::DestroyService.new(project, current_user, skip_repo: true).execute
       end
 
-      move_associated_records_to_ghost_user(user)
+      MigrateToGhostUserService.new(user).execute
 
       # Destroy the namespace after destroying the user since certain methods may depend on the namespace existing
       namespace = user.namespace

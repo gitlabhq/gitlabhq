@@ -46,28 +46,6 @@ describe Users::DestroyService, services: true do
         project.add_developer(user)
       end
 
-      context "for an issue the user has created" do
-        let!(:issue) { create(:issue, project: project, author: user) }
-
-        before do
-          service.execute(user)
-        end
-
-        it 'does not delete the issue' do
-          expect(Issue.find_by_id(issue.id)).to be_present
-        end
-
-        it 'migrates the issue so that the "Ghost User" is the issue owner' do
-          migrated_issue = Issue.find_by_id(issue.id)
-
-          expect(migrated_issue.author).to eq(User.ghost)
-        end
-
-        it 'blocks the user before migrating issues to the "Ghost User' do
-          expect(user).to be_blocked
-        end
-      end
-
       context "for an issue the user was assigned to" do
         let!(:issue) { create(:issue, project: project, assignee: user) }
 
@@ -83,6 +61,32 @@ describe Users::DestroyService, services: true do
           migrated_issue = Issue.find_by_id(issue.id)
 
           expect(migrated_issue.assignee).to be_nil
+        end
+      end
+    end
+
+    context "a deleted user's merge_requests" do
+      let(:project) { create(:project) }
+
+      before do
+        project.add_developer(user)
+      end
+
+      context "for an merge request the user was assigned to" do
+        let!(:merge_request) { create(:merge_request, source_project: project, assignee: user) }
+
+        before do
+          service.execute(user)
+        end
+
+        it 'does not delete merge requests the user is assigned to' do
+          expect(MergeRequest.find_by_id(merge_request.id)).to be_present
+        end
+
+        it 'migrates the merge request so that it is "Unassigned"' do
+          migrated_merge_request = MergeRequest.find_by_id(merge_request.id)
+
+          expect(migrated_merge_request.assignee).to be_nil
         end
       end
     end
@@ -142,60 +146,11 @@ describe Users::DestroyService, services: true do
       end
     end
 
-    context 'migrating associated records to the ghost user' do
-      context 'issues'  do
-        include_examples "migrating a deleted user's associated records to the ghost user", Issue, {} do
-          let(:created_record) { create(:issue, project: project, author: user) }
-          let(:assigned_record) { create(:issue, project: project, assignee: user) }
-        end
-      end
+    context "migrating associated records" do
+      it 'delegates to the `MigrateToGhostUser` service to move associated records to the ghost user' do
+        expect_any_instance_of(Users::MigrateToGhostUserService).to receive(:execute).once
 
-      context 'merge requests' do
-        include_examples "migrating a deleted user's associated records to the ghost user", MergeRequest, {} do
-          let(:created_record) { create(:merge_request, source_project: project, author: user, target_branch: "first") }
-          let(:assigned_record) { create(:merge_request, source_project: project, assignee: user, target_branch: 'second') }
-        end
-      end
-
-      context 'notes' do
-        include_examples "migrating a deleted user's associated records to the ghost user", Note, { skip_assignee_specs: true } do
-          let(:created_record) { create(:note, project: project, author: user) }
-        end
-      end
-
-      context 'abuse reports' do
-        include_examples "migrating a deleted user's associated records to the ghost user", AbuseReport, { skip_assignee_specs: true } do
-          let(:created_record) { create(:abuse_report, reporter: user, user: create(:user)) }
-        end
-      end
-
-      context 'award emoji' do
-        include_examples "migrating a deleted user's associated records to the ghost user", AwardEmoji, { skip_assignee_specs: true } do
-          let(:created_record) { create(:award_emoji, user: user) }
-          let(:author_alias) { :user }
-
-          context "when the awardable already has an award emoji of the same name assigned to the ghost user" do
-            let(:awardable) { create(:issue) }
-            let!(:existing_award_emoji) { create(:award_emoji, user: User.ghost, name: "thumbsup", awardable: awardable) }
-            let!(:award_emoji) { create(:award_emoji, user: user, name: "thumbsup", awardable: awardable) }
-
-            it "migrates the award emoji regardless" do
-              service.execute(user)
-
-              migrated_record = AwardEmoji.find_by_id(award_emoji.id)
-
-              expect(migrated_record.user).to eq(User.ghost)
-            end
-
-            it "does not leave the migrated award emoji in an invalid state" do
-              service.execute(user)
-
-              migrated_record = AwardEmoji.find_by_id(award_emoji.id)
-
-              expect(migrated_record).to be_valid
-            end
-          end
-        end
+        service.execute(user)
       end
     end
   end
