@@ -14,7 +14,7 @@ module SystemNoteHelper
       when 'closed'
         'icon_status_closed'
       when 'time_tracking'
-        'icon_timer'
+        'icon_stopwatch'
       when 'assignee'
         'icon_user'
       when 'title'
