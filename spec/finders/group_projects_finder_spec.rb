@@ -94,18 +94,17 @@ describe GroupProjectsFinder do
     let(:current_user) { create(:admin) }
 
     context "only shared" do
-      subject { described_class.new(group, only_shared: true).execute(current_user) }
-      it      { is_expected.to eq([shared_project_3, shared_project_2, shared_project_1]) }
+      let(:options) { { only_shared: true } }
+      it            { is_expected.to eq([shared_project_3, shared_project_2, shared_project_1]) }
     end
 
     context "only owned" do
-      subject { described_class.new(group, only_owned: true).execute(current_user) }
-      it      { is_expected.to eq([private_project, public_project]) }
+      let(:options) { { only_owned: true } }
+      it            { is_expected.to eq([private_project, public_project]) }
     end
 
     context "all" do
-      subject { described_class.new(group).execute(current_user) }
-      it      { is_expected.to eq([shared_project_3, shared_project_2, shared_project_1, private_project, public_project]) }
+      it { is_expected.to eq([shared_project_3, shared_project_2, shared_project_1, private_project, public_project]) }
     end
   end
 
@@ -113,17 +112,17 @@ describe GroupProjectsFinder do
     let(:current_user) { create(:user, :auditor) }
 
     context "only shared" do
-      subject { described_class.new(group, only_shared: true).execute(current_user) }
-      it      { is_expected.to eq([shared_project_3, shared_project_2, shared_project_1]) }
+      let(:options) { { only_shared: true } }
+      it            { is_expected.to eq([shared_project_3, shared_project_2, shared_project_1]) }
     end
 
     context "only owned" do
-      subject { described_class.new(group, only_owned: true).execute(current_user) }
+      let(:options) { { only_owned: true } }
       it      { is_expected.to eq([private_project, public_project]) }
     end
 
     context "all" do
-      subject { described_class.new(group).execute(current_user) }
+      subject { described_class.new(group: group, current_user: current_user).execute }
       it      { is_expected.to eq([shared_project_3, shared_project_2, shared_project_1, private_project, public_project]) }
     end
   end
