@@ -37,10 +37,8 @@ module SystemNoteHelper
         'icon_comment_o'
       when 'moved'
         'icon_arrow-circle-o-right'
-      else
-        'icon_diamond'
       end
 
-    custom_icon(icon_name)
+    custom_icon(icon_name) if icon_name
   end
 end
