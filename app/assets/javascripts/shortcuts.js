@@ -17,15 +17,20 @@ import findAndFollowLink from './shortcuts_dashboard_navigation';
       Mousetrap.bind('s', Shortcuts.focusSearch);
       Mousetrap.bind('f', (e => this.focusFilter(e)));
 
-      const globalDropdownMenu = $('.global-dropdown-menu');
+      const $globalDropdownMenu = $('.global-dropdown-menu');
+      const $globalDropdownToggle = $('.global-dropdown-toggle');
 
       $('.global-dropdown').on('hide.bs.dropdown', () => {
-        globalDropdownMenu.toggleClass('shortcuts');
+        $globalDropdownMenu.removeClass('shortcuts');
       });
 
       Mousetrap.bind('n', () => {
-        globalDropdownMenu.toggleClass('shortcuts');
-        $('.global-dropdown-toggle').trigger('click');
+        $globalDropdownMenu.toggleClass('shortcuts');
+        $globalDropdownToggle.trigger('click');
+
+        if (!$globalDropdownMenu.is(':visible')) {
+          $globalDropdownToggle.blur();
+        }
       });
 
       Mousetrap.bind('shift+t', () => findAndFollowLink('.shortcuts-todos'));
