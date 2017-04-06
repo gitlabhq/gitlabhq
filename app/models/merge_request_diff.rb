@@ -32,7 +32,7 @@ class MergeRequestDiff < ActiveRecord::Base
   after_create :save_git_content, unless: :importing?
 
   def self.find_by_diff_refs(diff_refs)
-    where(start_commit_sha: diff_refs.start_sha, head_commit_sha: diff_refs.head_sha, base_commit_sha: diff_refs.base_sha)
+    find_by(start_commit_sha: diff_refs.start_sha, head_commit_sha: diff_refs.head_sha, base_commit_sha: diff_refs.base_sha)
   end
 
   def self.select_without_diff
