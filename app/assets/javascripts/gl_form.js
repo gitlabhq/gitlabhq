@@ -29,10 +29,7 @@ GLForm.prototype.setupForm = function() {
     this.form.find('.div-dropzone').remove();
     this.form.addClass('gfm-form');
     // remove notify commit author checkbox for non-commit notes
-    gl.utils.disableButtonIfEmptyField(this.form.find('.js-note-text'), this.form.find('.js-comment-button'));
-
-    const newDiscussionToggle = this.form.find('.js-note-new-discussion');
-    if (newDiscussionToggle) gl.utils.disableButtonIfEmptyField(this.form.find('.js-note-text'), newDiscussionToggle);
+    gl.utils.disableButtonIfEmptyField(this.form.find('.js-note-text'), this.form.find('.js-comment-button, .js-note-new-discussion'));
 
     gl.GfmAutoComplete.setup(this.form.find('.js-gfm-input'));
     new DropzoneInput(this.form);

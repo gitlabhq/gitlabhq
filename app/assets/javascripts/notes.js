@@ -111,16 +111,8 @@ require('./task_list');
       $(document).on("visibilitychange", this.visibilityChange);
       // when issue status changes, we need to refresh data
       $(document).on("issuable:change", this.refresh);
-
-      $(document).on('submit', '.js-main-target-form', this.disableDropdown)
-
       // when a key is clicked on the notes
       return $(document).on("keydown", ".js-note-text", this.keydownNoteText);
-    };
-
-    Notes.prototype.disableDropdown = function(e) {
-      const $form = $(e.target);
-      $form.find('.js-note-new-discussion').disable();
     };
 
     Notes.prototype.cleanBinding = function() {
@@ -149,9 +141,9 @@ require('./task_list');
       this.commentTypeToggle = new CommentTypeToggle(
         form.querySelector('.js-comment-type-dropdown .dropdown-toggle'),
         form.querySelector('.js-comment-type-dropdown .dropdown-menu'),
-        document.querySelector('.js-main-target-form #note_type'),
+        form.querySelector('#note_type'),
         form.querySelector('.js-comment-type-dropdown .js-comment-submit-button'),
-        document.querySelector('.js-main-target-form .js-note-target-close'),
+        form.querySelector('.js-note-target-close'),
       );
 
       this.commentTypeToggle.initDroplab();

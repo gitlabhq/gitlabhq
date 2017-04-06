@@ -279,7 +279,7 @@ $(function () {
   // Disable form buttons while a form is submitting
   $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function (e) {
     var buttons;
-    buttons = $('[type="submit"]', this);
+    buttons = $('[type="submit"], .js-disable-on-submit', this);
     switch (e.type) {
       case 'ajax:beforeSend':
       case 'submit':

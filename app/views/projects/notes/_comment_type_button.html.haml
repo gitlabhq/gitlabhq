@@ -3,10 +3,10 @@
 .pull-left.btn-group.append-right-10.comment-type-dropdown.js-comment-type-dropdown
   %input.btn.btn-nr.btn-create.comment-btn.js-comment-button.js-comment-submit-button{ type: 'submit', value: 'Comment' }
   - if @note.can_be_discussion_note?
-    = button_tag type: 'button', class: 'btn btn-nr dropdown-toggle comment-btn js-note-new-discussion', data: { 'dropdown-trigger' => '#resolvable-comment-menu' } do
+    = button_tag type: 'button', class: 'btn btn-nr dropdown-toggle comment-btn js-note-new-discussion js-disable-on-submit', data: { 'dropdown-trigger' => '#resolvable-comment-menu' }, 'aria-label' => 'Open comment type dropdown' do
       = icon('caret-down')
     %ul#resolvable-comment-menu.dropdown-menu{ data: { dropdown: true } }
-      %li#comment{ data: { value: '', 'button-text' => 'Comment', 'secondary-button-text' => 'Comment & close merge request' }, class: 'droplab-item-selected' }
+      %li#comment.droplab-item-selected{ data: { value: '', 'button-text' => 'Comment', 'secondary-button-text' => "Comment & close #{noteable_type.titleize.downcase}" } }
         = icon('check')
         .description
           %strong Comment

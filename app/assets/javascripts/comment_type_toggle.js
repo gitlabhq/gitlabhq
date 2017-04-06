@@ -2,37 +2,37 @@ import DropLab from '@gitlab-org/droplab';
 import InputSetter from '@gitlab-org/droplab/dist/plugins/InputSetter';
 
 class CommentTypeToggle {
-  constructor(trigger, list, input, button, secondaryButton) {
-    this.trigger = trigger;
-    this.list = list;
-    this.input = input;
-    this.button = button;
-    this.secondaryButton = secondaryButton;
+  constructor(dropdownTrigger, dropdownList, noteTypeInput, submitButton, closeButton) {
+    this.dropdownTrigger = dropdownTrigger;
+    this.dropdownList = dropdownList;
+    this.noteTypeInput = noteTypeInput;
+    this.submitButton = submitButton;
+    this.closeButton = closeButton;
   }
 
   initDroplab() {
     this.droplab = new DropLab();
 
     const inputSetterConfig = [{
-      input: this.input,
+      input: this.noteTypeInput,
       valueAttribute: 'data-value',
     },
     {
-      input: this.button,
+      input: this.submitButton,
       valueAttribute: 'data-button-text',
     }];
-    if (this.secondaryButton) {
+    if (this.closeButton) {
       inputSetterConfig.push({
-        input: this.secondaryButton,
+        input: this.closeButton,
         valueAttribute: 'data-secondary-button-text',
       }, {
-        input: this.secondaryButton,
+        input: this.closeButton,
         valueAttribute: 'data-secondary-button-text',
         inputAttribute: 'data-alternative-text',
       });
     }
 
-    this.droplab.init(this.trigger, this.list, [InputSetter], {
+    this.droplab.init(this.dropdownTrigger, this.dropdownList, [InputSetter], {
       InputSetter: inputSetterConfig
     });
   }
