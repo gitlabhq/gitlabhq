@@ -13,8 +13,8 @@ module Ci
     end
 
     def status_title
-      if canceled? && pipeline.auto_canceled?
-        "Job is redundant and is auto-canceled by Pipeline ##{pipeline.auto_canceled_by_id}"
+      if auto_canceled?
+        "Job is redundant and is auto-canceled by Pipeline ##{auto_canceled_by_id}"
       end
     end
   end

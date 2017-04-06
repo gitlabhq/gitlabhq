@@ -101,6 +101,32 @@ describe CommitStatus, :models do
     end
   end
 
+  describe '#auto_canceled?' do
+    subject { commit_status.auto_canceled? }
+
+    context 'when it is canceled' do
+      before do
+        commit_status.cancel
+      end
+
+      context 'when there is auto_canceled_by' do
+        before do
+          commit_status.update(auto_cancel_by: create(:ci_empty_pipeline))
+        end
+
+        it 'is auto canceled' do
+          is_expected.to be_truthy
+        end
+      end
+
+      context 'when there is no auto_canceled_by' do
+        it 'is not auto canceled' do
+          is_expected.to be_falsey
+        end
+      end
+    end
+  end
+
   describe '#duration' do
     subject { commit_status.duration }
 

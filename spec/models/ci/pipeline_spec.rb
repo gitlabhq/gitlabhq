@@ -136,6 +136,43 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '#auto_canceled?' do
+    subject { pipeline.auto_canceled? }
+
+    context 'when it is canceled' do
+      before do
+        pipeline.cancel
+      end
+
+      context 'when there is auto_canceled_by' do
+        before do
+          pipeline.update(auto_canceled_by: create(:ci_empty_pipeline))
+        end
+
+        it 'is auto canceled' do
+          is_expected.to be_truthy
+        end
+      end
+
+      context 'when there is no auto_canceled_by' do
+        it 'is not auto canceled' do
+          is_expected.to be_falsey
+        end
+      end
+
+      context 'when it is retried and canceled manually' do
+        before do
+          pipeline.enqueue
+          pipeline.cancel
+        end
+
+        it 'is not auto canceled' do
+          is_expected.to be_falsey
+        end
+      end
+    end
+  end
+
   describe 'pipeline stages' do
     before do
       create(:commit_status, pipeline: pipeline,

@@ -224,6 +224,7 @@ CommitStatus:
 - token
 - lock_version
 - coverage_regex
+- auto_canceled_by_id
 Ci::Variable:
 - id
 - project_id

@@ -11,6 +11,8 @@ module Ci
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
 
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
+    has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
+
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
@@ -92,6 +94,10 @@ module Ci
         pipeline.run_after_commit do
           PipelineNotificationWorker.perform_async(pipeline.id)
         end
+      end
+
+      after_transition :canceled => any - [:canceled] do |pipeline|
+        pipeline.update(auto_canceled_by: nil)
       end
     end
 
@@ -226,8 +232,19 @@ module Ci
     def cancel_running
       Gitlab::OptimisticLocking.retry_lock(
         statuses.cancelable) do |cancelable|
-          cancelable.find_each(&:cancel)
+          cancelable.find_each do |job|
+            yield(job) if block_given?
+            job.cancel
+          end
         end
+    end
+
+    def auto_cancel_running(pipeline)
+      update(auto_canceled_by: pipeline)
+
+      cancel_running do |job|
+        job.auto_canceled_by = pipeline
+      end
     end
 
     def retry_failed(current_user)

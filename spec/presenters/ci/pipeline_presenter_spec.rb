@@ -46,7 +46,7 @@ describe Ci::PipelinePresenter do
         expect(pipeline).to receive(:auto_canceled?).and_return(false)
       end
 
-      it 'shows that the job is auto-canceled' do
+      it 'does not have a status title' do
         expect(presenter.status_title).to be_nil
       end
     end

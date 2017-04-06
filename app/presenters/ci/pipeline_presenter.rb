@@ -3,7 +3,9 @@ module Ci
     presents :pipeline
 
     def status_title
-      "Pipeline is redundant and is auto-canceled by Pipeline ##{auto_canceled_by_id}" if auto_canceled?
+      if auto_canceled?
+        "Pipeline is redundant and is auto-canceled by Pipeline ##{auto_canceled_by_id}"
+      end
     end
   end
 end
