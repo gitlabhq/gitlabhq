@@ -50,9 +50,10 @@ export default class ProtectedTagDropdown {
     this.$protectedTag.on('click', this.onClickCreateWildcard.bind(this));
   }
 
-  onClickCreateWildcard() {
+  onClickCreateWildcard(e) {
     this.$dropdown.data('glDropdown').remote.execute();
     this.$dropdown.data('glDropdown').selectRowAtIndex();
+    e.preventDefault();
   }
 
   getProtectedTags(term, callback) {

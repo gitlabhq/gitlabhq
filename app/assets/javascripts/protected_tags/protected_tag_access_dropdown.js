@@ -11,8 +11,8 @@ export default class ProtectedTagAccessDropdown {
       selectable: true,
       inputId: this.options.$dropdown.data('input-id'),
       fieldName: this.options.$dropdown.data('field-name'),
-      toggleLabel(item, el) {
-        if (el.is('.is-active')) {
+      toggleLabel(item, $el) {
+        if ($el.is('.is-active')) {
           return item.text;
         }
         return 'Select';
