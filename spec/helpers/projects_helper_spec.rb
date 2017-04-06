@@ -167,6 +167,7 @@ describe ProjectsHelper do
 
     before do
       allow(project).to receive(:repository_storage_path).and_return('/base/repo/path')
+      allow(Settings.shared).to receive(:[]).with('path').and_return('/base/repo/export/path')
     end
 
     it 'removes the repo path' do
@@ -174,6 +175,13 @@ describe ProjectsHelper do
       import_error = "Could not clone #{repo}\n"
 
       expect(sanitize_repo_path(project, import_error)).to eq('Could not clone [REPOS PATH]/namespace/test.git')
+    end
+
+    it 'removes the temporary repo path used for uploads/exports' do
+      repo = '/base/repo/export/path/tmp/project_exports/uploads/test.tar.gz'
+      import_error = "Unable to decompress #{repo}\n"
+
+      expect(sanitize_repo_path(project, import_error)).to eq('Unable to decompress [REPO EXPORT PATH]/uploads/test.tar.gz')
     end
   end
 
