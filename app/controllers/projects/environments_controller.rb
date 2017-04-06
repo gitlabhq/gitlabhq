@@ -132,6 +132,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
     rollout_status = @environment.rollout_status
 
+    Gitlab::PollingInterval.set_header(response, interval: 3000) unless rollout_status.try(:complete?)
+
     if rollout_status.nil?
       render body: nil, status: 204 # no result yet
     else
