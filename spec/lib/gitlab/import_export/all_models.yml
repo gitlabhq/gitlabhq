@@ -104,6 +104,9 @@ triggers:
 - project
 - trigger_requests
 - owner
+- trigger_schedule
+trigger_schedule:
+- trigger
 deploy_keys:
 - user
 - deploy_keys_projects
@@ -121,6 +124,9 @@ merge_access_levels:
 - protected_branch
 push_access_levels:
 - protected_branch
+container_repositories:
+- project
+- name
 project:
 - taggings
 - base_tags
@@ -161,6 +167,8 @@ project:
 - external_wiki_service
 - kubernetes_service
 - mock_ci_service
+- mock_deployment_service
+- mock_monitoring_service
 - forked_project_link
 - forked_from_project
 - forked_project_links
@@ -195,8 +203,10 @@ project:
 - builds
 - runner_projects
 - runners
+- active_runners
 - variables
 - triggers
+- trigger_schedules
 - environments
 - deployments
 - project_feature
@@ -205,6 +215,7 @@ project:
 - project_authorizations
 - route
 - statistics
+- container_repositories
 - uploads
 award_emoji:
 - awardable

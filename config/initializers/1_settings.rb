@@ -315,6 +315,9 @@ Settings['cron_jobs'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_jobs_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['stuck_ci_jobs_worker']['job_class'] = 'StuckCiJobsWorker'
+Settings.cron_jobs['trigger_schedule_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['trigger_schedule_worker']['cron'] ||= '0 */12 * * *'
+Settings.cron_jobs['trigger_schedule_worker']['job_class'] = 'TriggerScheduleWorker'
 Settings.cron_jobs['expire_build_artifacts_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['expire_build_artifacts_worker']['cron'] ||= '50 * * * *'
 Settings.cron_jobs['expire_build_artifacts_worker']['job_class'] = 'ExpireBuildArtifactsWorker'
@@ -349,6 +352,9 @@ Settings.cron_jobs['trending_projects_worker']['job_class'] = 'TrendingProjectsW
 Settings.cron_jobs['remove_unreferenced_lfs_objects_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['cron'] ||= '20 0 * * *'
 Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['job_class'] = 'RemoveUnreferencedLfsObjectsWorker'
+Settings.cron_jobs['stuck_import_jobs_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['stuck_import_jobs_worker']['cron'] ||= '15 * * * *'
+Settings.cron_jobs['stuck_import_jobs_worker']['job_class'] = 'StuckImportJobsWorker'
 
 #
 # GitLab Shell

@@ -17,5 +17,9 @@ describe BuildActionEntity do
     it 'contains path to the action play' do
       expect(subject[:path]).to include "builds/#{build.id}/play"
     end
+
+    it 'contains whether it is playable' do
+      expect(subject[:playable]).to eq build.playable?
+    end
   end
 end

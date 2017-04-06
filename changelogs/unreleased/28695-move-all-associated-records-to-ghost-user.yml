@@ -1,0 +1,4 @@
+---
+title: Deleting a user should not delete associated records
+merge_request: 10467
+author:

@@ -25,9 +25,13 @@ module Gitlab
 
       # 'path' must be the path to a _bare_ git repository, e.g.
       # /path/to/my-repo.git
-      def initialize(path)
-        @path = path
-        @name = path.split("/").last
+      def initialize(repository_storage, relative_path)
+        @repository_storage = repository_storage
+        @relative_path = relative_path
+
+        storage_path = Gitlab.config.repositories.storages[@repository_storage]['path']
+        @path = File.join(storage_path, @relative_path)
+        @name = @relative_path.split("/").last
         @attributes = Gitlab::Git::Attributes.new(path)
       end
 
@@ -37,7 +41,15 @@ module Gitlab
 
       # Default branch in the repository
       def root_ref
-        @root_ref ||= discover_default_branch
+        @root_ref ||= Gitlab::GitalyClient.migrate(:root_ref) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.default_branch_name
+          else
+            discover_default_branch
+          end
+        end
+      rescue GRPC::BadStatus => e
+        raise CommandError.new(e)
       end
 
       # Alias to old method for compatibility
@@ -54,7 +66,15 @@ module Gitlab
       # Returns an Array of branch names
       # sorted by name ASC
       def branch_names
-        branches.map(&:name)
+        Gitlab::GitalyClient.migrate(:branch_names) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.branch_names
+          else
+            branches.map(&:name)
+          end
+        end
+      rescue GRPC::BadStatus => e
+        raise CommandError.new(e)
       end
 
       # Returns an Array of Branches
@@ -107,7 +127,15 @@ module Gitlab
 
       # Returns an Array of tag names
       def tag_names
-        rugged.tags.map { |t| t.name }
+        Gitlab::GitalyClient.migrate(:tag_names) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.tag_names
+          else
+            rugged.tags.map { |t| t.name }
+          end
+        end
+      rescue GRPC::BadStatus => e
+        raise CommandError.new(e)
       end
 
       # Returns an Array of Tags
@@ -422,6 +450,21 @@ module Gitlab
       # split larger rewrites into delete/add pairs.
       def diff(from, to, options = {}, *paths)
         Gitlab::Git::DiffCollection.new(diff_patches(from, to, options, *paths), options)
+      end
+
+      # Returns a RefName for a given SHA
+      def ref_name_for_sha(ref_path, sha)
+        Gitlab::GitalyClient.migrate(:find_ref_name) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.find_ref_name(sha, ref_path)
+          else
+            args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
+
+            # Not found -> ["", 0]
+            # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
+            Gitlab::Popen.popen(args, @path).first.split.last
+          end
+        end
       end
 
       # Returns commits collection
@@ -1201,6 +1244,10 @@ module Gitlab
         diff = rugged.diff(from, to, actual_options)
         diff.find_similar!(break_rewrites: break_rewrites)
         diff.each_patch
+      end
+
+      def gitaly_ref_client
+        @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(@repository_storage, @relative_path)
       end
     end
   end
