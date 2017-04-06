@@ -47,9 +47,9 @@ describe Gitlab::EtagCaching::Middleware do
 
       it 'tracks "etag_caching_key_not_found" event' do
         expect(Gitlab::Metrics).to receive(:add_event)
-          .with(:etag_caching_middleware_used)
+          .with(:etag_caching_middleware_used, endpoint: 'issue_notes')
         expect(Gitlab::Metrics).to receive(:add_event)
-          .with(:etag_caching_key_not_found)
+          .with(:etag_caching_key_not_found, endpoint: 'issue_notes')
 
         middleware.call(build_env(path, if_none_match))
       end
@@ -93,9 +93,9 @@ describe Gitlab::EtagCaching::Middleware do
 
     it 'tracks "etag_caching_cache_hit" event' do
       expect(Gitlab::Metrics).to receive(:add_event)
-        .with(:etag_caching_middleware_used)
+        .with(:etag_caching_middleware_used, endpoint: 'issue_notes')
       expect(Gitlab::Metrics).to receive(:add_event)
-        .with(:etag_caching_cache_hit)
+        .with(:etag_caching_cache_hit, endpoint: 'issue_notes')
 
       middleware.call(build_env(path, if_none_match))
     end
@@ -132,9 +132,9 @@ describe Gitlab::EtagCaching::Middleware do
       mock_app_response
 
       expect(Gitlab::Metrics).to receive(:add_event)
-        .with(:etag_caching_middleware_used)
+        .with(:etag_caching_middleware_used, endpoint: 'issue_notes')
       expect(Gitlab::Metrics).to receive(:add_event)
-        .with(:etag_caching_resource_changed)
+        .with(:etag_caching_resource_changed, endpoint: 'issue_notes')
 
       middleware.call(build_env(path, if_none_match))
     end
@@ -150,9 +150,9 @@ describe Gitlab::EtagCaching::Middleware do
 
     it 'tracks "etag_caching_header_missing" event' do
       expect(Gitlab::Metrics).to receive(:add_event)
-        .with(:etag_caching_middleware_used)
+        .with(:etag_caching_middleware_used, endpoint: 'issue_notes')
       expect(Gitlab::Metrics).to receive(:add_event)
-        .with(:etag_caching_header_missing)
+        .with(:etag_caching_header_missing, endpoint: 'issue_notes')
 
       middleware.call(build_env(path, if_none_match))
     end
