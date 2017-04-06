@@ -36,7 +36,7 @@ Feature: Project Source Browse Files
     And I edit code
     And I fill the new file name
     And I fill the commit message
-    And I click on "Commit Changes"
+    And I click on "Commit changes"
     Then I am redirected to the new file
     And I should see its new content
 
@@ -47,7 +47,7 @@ Feature: Project Source Browse Files
     And I edit code
     And I fill the new file name
     And I fill the commit message
-    And I click on "Commit Changes"
+    And I click on "Commit changes"
     Then I am redirected to the fork's new merge request page
     And I can see the new commit message
 
@@ -57,7 +57,7 @@ Feature: Project Source Browse Files
     And I edit code with new lines at end of file
     And I fill the new file name
     And I fill the commit message
-    And I click on "Commit Changes"
+    And I click on "Commit changes"
     Then I am redirected to the new file
     And I click button "Edit"
     And I should see its content with new lines preserved at end of file
@@ -69,7 +69,7 @@ Feature: Project Source Browse Files
     And I fill the new file name
     And I fill the commit message
     And I fill the new branch name
-    And I click on "Commit Changes"
+    And I click on "Commit changes"
     Then I am redirected to the new merge request page
     When I click on "Changes" tab
     And I should see its new content
@@ -173,7 +173,7 @@ Feature: Project Source Browse Files
     And I click button "Edit"
     And I edit code
     And I fill the commit message
-    And I click on "Commit Changes"
+    And I click on "Commit changes"
     Then I am redirected to the ".gitignore"
     And I should see its new content
 
@@ -186,7 +186,7 @@ Feature: Project Source Browse Files
     And I click button "Fork"
     And I edit code
     And I fill the commit message
-    And I click on "Commit Changes"
+    And I click on "Commit changes"
     Then I am redirected to the fork's new merge request page
     And I can see the new commit message
 
@@ -197,7 +197,7 @@ Feature: Project Source Browse Files
     And I edit code
     And I fill the commit message
     And I fill the new branch name
-    And I click on "Commit Changes"
+    And I click on "Commit changes"
     Then I am redirected to the new merge request page
     Then I click on "Changes" tab
     And I should see its new content

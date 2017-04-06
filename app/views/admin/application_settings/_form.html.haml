@@ -148,7 +148,7 @@
             Sign-in enabled
     - if omniauth_enabled? && button_based_providers.any?
       .form-group
-        = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth Sign-In sources', class: 'control-label col-sm-2'
+        = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth sign-in sources', class: 'control-label col-sm-2'
         .col-sm-10
           .btn-group{ data: { toggle: 'buttons' } }
             - oauth_providers_checkboxes.each do |source|

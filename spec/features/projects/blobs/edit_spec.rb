@@ -22,7 +22,7 @@ feature 'Editing file blob', feature: true, js: true do
       wait_for_ajax
       find('.js-edit-blob').click
       execute_script('ace.edit("editor").setValue("class NextFeature\nend\n")')
-      click_button 'Commit Changes'
+      click_button 'Commit changes'
     end
 
     context 'from MR diff' do
