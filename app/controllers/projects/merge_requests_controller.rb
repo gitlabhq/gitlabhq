@@ -523,10 +523,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
             end
 
           metrics_url =
-            if environment.has_metrics? && can?(current_user, :read_environment, environment)
-              metrics_namespace_project_environment_path(environment.project.namespace,
+            if environment.has_metrics? && can?(current_user, :read_deployment, deployment)
+              metrics_namespace_project_environment_deployment_path(environment.project.namespace,
                                                          environment.project,
-                                                         environment)
+                                                         environment,
+                                                         deployment)
+
             end
 
           {
