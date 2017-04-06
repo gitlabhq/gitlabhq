@@ -1,18 +1,17 @@
-/* eslint-disable arrow-parens, no-param-reassign, no-new, comma-dangle */
+import ProtectedTagEdit from './protected_tag_edit';
 
-(global => {
-  global.gl = global.gl || {};
+export default class ProtectedTagEditList {
+  constructor() {
+    this.$wrap = $('.protected-tags-list');
+    this.protectedTagList = [];
+    this.initEditForm();
+  }
 
-  gl.ProtectedTagEditList = class {
-    constructor() {
-      this.$wrap = $('.protected-tags-list');
-
-      // Build edit forms
-      this.$wrap.find('.js-protected-tag-edit-form').each((i, el) => {
-        new gl.ProtectedTagEdit({
-          $wrap: $(el)
-        });
+  initEditForm() {
+    this.$wrap.find('.js-protected-tag-edit-form').each((i, el) => {
+      this.protectedTagList[i] = new ProtectedTagEdit({
+        $wrap: $(el),
       });
-    }
-  };
-})(window);
+    });
+  }
+}

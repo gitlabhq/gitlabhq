@@ -1,45 +1,41 @@
-/* eslint-disable no-new, arrow-parens, no-param-reassign, comma-dangle, max-len */
-/* global ProtectedTagDropdown */
+import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
+import ProtectedTagDropdown from './protected_tag_dropdown';
 
-(global => {
-  global.gl = global.gl || {};
+export default class ProtectedTagCreate {
+  constructor() {
+    this.$form = $('.new_protected_tag');
+    this.buildDropdowns();
+  }
 
-  gl.ProtectedTagCreate = class {
-    constructor() {
-      this.$wrap = this.$form = $('.new_protected_tag');
-      this.buildDropdowns();
-    }
+  buildDropdowns() {
+    const $allowedToCreateDropdown = this.$form.find('.js-allowed-to-create');
 
-    buildDropdowns() {
-      const $allowedToCreateDropdown = this.$wrap.find('.js-allowed-to-create');
+    // Cache callback
+    this.onSelectCallback = this.onSelect.bind(this);
 
-      // Cache callback
-      this.onSelectCallback = this.onSelect.bind(this);
+    // Allowed to Create dropdown
+    this.protectedTagAccessDropdown = new ProtectedTagAccessDropdown({
+      $dropdown: $allowedToCreateDropdown,
+      data: gon.create_access_levels,
+      onSelect: this.onSelectCallback,
+    });
 
-      // Allowed to Create dropdown
-      new gl.ProtectedTagAccessDropdown({
-        $dropdown: $allowedToCreateDropdown,
-        data: gon.create_access_levels,
-        onSelect: this.onSelectCallback
-      });
+    // Select default
+    $allowedToCreateDropdown.data('glDropdown').selectRowAtIndex(0);
 
-      // Select default
-      $allowedToCreateDropdown.data('glDropdown').selectRowAtIndex(0);
+    // Protected tag dropdown
+    this.protectedTagDropdown = new ProtectedTagDropdown({
+      $dropdown: this.$form.find('.js-protected-tag-select'),
+      onSelect: this.onSelectCallback,
+    });
+  }
 
-      // Protected tag dropdown
-      new ProtectedTagDropdown({
-        $dropdown: this.$wrap.find('.js-protected-tag-select'),
-        onSelect: this.onSelectCallback
-      });
-    }
+  // This will run after clicked callback
+  onSelect() {
+    // Enable submit button
+    const $tagInput = this.$form.find('input[name="protected_tag[name]"]');
+    const $allowedToCreateInput = this.$form.find('input[name="protected_tag[create_access_levels_attributes][0][access_level]"]');
 
-    // This will run after clicked callback
-    onSelect() {
-      // Enable submit button
-      const $tagInput = this.$wrap.find('input[name="protected_tag[name]"]');
-      const $allowedToCreateInput = this.$wrap.find('input[name="protected_tag[create_access_levels_attributes][0][access_level]"]');
-
-      this.$form.find('input[type="submit"]').attr('disabled', !($tagInput.val() && $allowedToCreateInput.length));
-    }
-  };
-})(window);
+    this.$form.find('input[type="submit"]').attr('disabled', !($tagInput.val() && $allowedToCreateInput.length));
+  }
+}
