@@ -12,6 +12,6 @@ class MockMonitoringService < MonitoringService
   end
 
   def metrics(environment)
-    JSON.parse(File.read(Rails.root + 'spec/fixtures/metrics.json'))
+    JSON.parse(Rails.root.join('spec', 'fixtures', 'metrics.json'))
   end
 end

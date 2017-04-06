@@ -1,0 +1,74 @@
+[
+  {
+    "status": "finished",
+    "tooltip": "production (pod 0) Finished",
+    "track": "stable",
+    "stable": true
+  },
+  {
+    "status": "deploying",
+    "tooltip": "production (pod 1) Deploying",
+    "track": "stable",
+    "stable": true
+  },
+  {
+    "status": "failed",
+    "tooltip": "production (pod 2) Failed",
+    "track": "stable",
+    "stable": true
+  },
+  {
+    "status": "ready",
+    "tooltip": "production (pod 3) Ready",
+    "track": "stable",
+    "stable": true
+  },
+  {
+    "status": "preparing",
+    "tooltip": "production (pod 4) Preparing",
+    "track": "stable",
+    "stable": true
+  },
+  {
+    "status": "waiting",
+    "tooltip": "production (pod 5) Waiting",
+    "track": "stable",
+    "stable": true
+  },
+  {
+    "status": "finished",
+    "tooltip": "production-canary (pod 0) Finished",
+    "track": "canary",
+    "stable": false
+  },
+  {
+    "status": "deploying",
+    "tooltip": "production-canary (pod 1) Deploying",
+    "track": "canary",
+    "stable": false
+  },
+  {
+    "status": "failed",
+    "tooltip": "production-canary (pod 2) Failed",
+    "track": "canary",
+    "stable": false
+  },
+  {
+    "status": "ready",
+    "tooltip": "production-canary (pod 3) Ready",
+    "track": "canary",
+    "stable": false
+  },
+  {
+    "status": "preparing",
+    "tooltip": "production-canary (pod 4) Preparing",
+    "track": "canary",
+    "stable": false
+  },
+  {
+    "status": "waiting",
+    "tooltip": "production-canary (pod 5) Waiting",
+    "track": "canary",
+    "stable": false
+  }
+]
