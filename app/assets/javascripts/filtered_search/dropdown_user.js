@@ -1,4 +1,4 @@
-import AjaxFilter from '@gitlab-org/droplab/dist/plugins/AjaxFilter';
+import AjaxFilter from '~/droplab/plugins/ajax_filter';
 
 require('./filtered_search_dropdown');
 
