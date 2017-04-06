@@ -135,16 +135,5 @@ describe('ServiceDeskSetting', () => {
         expect(onCheckboxToggleSpy).toHaveBeenCalledWith(false);
       });
     });
-
-    describe('copyIncomingEmail', () => {
-      beforeEach(() => {
-        vm = createComponent({
-          isEnabled: true,
-          incomingEmail: 'foo@bar.com',
-        });
-      });
-
-      it('copies text to clipboard');
-    });
   });
 });

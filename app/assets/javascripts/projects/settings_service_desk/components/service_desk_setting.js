@@ -1,4 +1,3 @@
-import ClipboardAction from 'clipboard/lib/clipboard-action';
 import eventHub from '../event_hub';
 
 export default {
@@ -25,19 +24,6 @@ export default {
     onCheckboxToggle(e) {
       const isChecked = e.target.checked;
       eventHub.$emit('serviceDeskEnabledCheckboxToggled', isChecked);
-    },
-    copyIncomingEmail(e) {
-      e.preventDefault();
-
-      const clipboardAction = new ClipboardAction({
-        action: 'copy',
-        target: this.$refs['service-desk-incoming-email'],
-        text: this.incomingEmail,
-        trigger: e,
-        emitter: { emit: () => {} },
-      });
-
-      clipboardAction.destroy();
     },
   },
 
@@ -73,9 +59,10 @@ export default {
                 {{ incomingEmail }}
               </span>
               <button
-                class="btn btn-clipboard btn-transparent"
+                class="btn btn-clipboard btn-transparent has-tooltip"
                 title="Copy incoming email address to clipboard"
-                @click="copyIncomingEmail($event)">
+                :data-clipboard-text="incomingEmail"
+                @click.prevent>
                 <i class="fa fa-clipboard" aria-hidden="true" />
               </button>
             </template>
