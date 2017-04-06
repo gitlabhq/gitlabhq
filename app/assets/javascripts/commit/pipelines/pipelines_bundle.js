@@ -26,6 +26,6 @@ $(() => {
 
   if (pipelineTableViewEl && pipelineTableViewEl.dataset.disableInitialization === undefined) {
     gl.commits.pipelines.PipelinesTableBundle = new CommitPipelinesTable().$mount();
-    document.querySelector('#commit-pipeline-table-view').appendChild(this.pipelinesTableBundle.$el);
+    document.querySelector('#commit-pipeline-table-view').appendChild(gl.commits.pipelines.PipelinesTableBundle.$el);
   }
 });
