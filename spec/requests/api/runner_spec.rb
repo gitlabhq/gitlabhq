@@ -592,7 +592,7 @@ describe API::Runner do
           update_job(trace: 'BUILD TRACE UPDATED')
 
           expect(response).to have_http_status(200)
-          expect(job.reload.trace).to eq 'BUILD TRACE UPDATED'
+          expect(job.reload.trace.raw).to eq 'BUILD TRACE UPDATED'
         end
       end
 
@@ -600,7 +600,7 @@ describe API::Runner do
         it 'does not override trace information' do
           update_job
 
-          expect(job.reload.trace).to eq 'BUILD TRACE'
+          expect(job.reload.trace.raw).to eq 'BUILD TRACE'
         end
       end
 
@@ -631,7 +631,7 @@ describe API::Runner do
       context 'when request is valid' do
         it 'gets correct response' do
           expect(response.status).to eq 202
-          expect(job.reload.trace).to eq 'BUILD TRACE appended'
+          expect(job.reload.trace.raw).to eq 'BUILD TRACE appended'
           expect(response.header).to have_key 'Range'
           expect(response.header).to have_key 'Job-Status'
         end
@@ -642,7 +642,7 @@ describe API::Runner do
           it "changes the job's trace" do
             patch_the_trace
 
-            expect(job.reload.trace).to eq 'BUILD TRACE appended appended'
+            expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended'
           end
 
           context 'when Runner makes a force-patch' do
@@ -651,7 +651,7 @@ describe API::Runner do
             it "doesn't change the build.trace" do
               force_patch_the_trace
 
-              expect(job.reload.trace).to eq 'BUILD TRACE appended'
+              expect(job.reload.trace.raw).to eq 'BUILD TRACE appended'
             end
           end
         end
@@ -664,7 +664,7 @@ describe API::Runner do
           it 'changes the job.trace' do
             patch_the_trace
 
-            expect(job.reload.trace).to eq 'BUILD TRACE appended appended'
+            expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended'
           end
 
           context 'when Runner makes a force-patch' do
@@ -673,7 +673,7 @@ describe API::Runner do
             it "doesn't change the job.trace" do
               force_patch_the_trace
 
-              expect(job.reload.trace).to eq 'BUILD TRACE appended'
+              expect(job.reload.trace.raw).to eq 'BUILD TRACE appended'
             end
           end
         end
@@ -698,7 +698,7 @@ describe API::Runner do
 
         it 'gets correct response' do
           expect(response.status).to eq 202
-          expect(job.reload.trace).to eq 'BUILD TRACE appended'
+          expect(job.reload.trace.raw).to eq 'BUILD TRACE appended'
           expect(response.header).to have_key 'Range'
           expect(response.header).to have_key 'Job-Status'
         end
@@ -738,9 +738,11 @@ describe API::Runner do
 
       def patch_the_trace(content = ' appended', request_headers = nil)
         unless request_headers
-          offset = job.trace_length
-          limit = offset + content.length - 1
-          request_headers = headers.merge({ 'Content-Range' => "#{offset}-#{limit}" })
+          job.trace.read do |stream|
+            offset = stream.size
+            limit = offset + content.length - 1
+            request_headers = headers.merge({ 'Content-Range' => "#{offset}-#{limit}" })
+          end
         end
 
         Timecop.travel(job.updated_at + update_interval) do
