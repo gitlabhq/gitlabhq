@@ -53,6 +53,20 @@ describe Blob do
     end
   end
 
+  describe '#pdf?' do
+    it 'is falsey when file extension is not .pdf' do
+      git_blob = double(name: 'git_blob.txt')
+
+      expect(described_class.decorate(git_blob)).not_to be_pdf
+    end
+
+    it 'is truthy when file extension is .pdf' do
+      git_blob = double(name: 'git_blob.pdf')
+
+      expect(described_class.decorate(git_blob)).to be_pdf
+    end
+  end
+
   describe '#ipython_notebook?' do
     it 'is falsey when language is not Jupyter Notebook' do
       git_blob = double(text?: true, language: double(name: 'JSON'))
@@ -64,6 +78,20 @@ describe Blob do
       git_blob = double(text?: true, language: double(name: 'Jupyter Notebook'))
 
       expect(described_class.decorate(git_blob)).to be_ipython_notebook
+    end
+  end
+
+  describe '#sketch?' do
+    it 'is falsey with image extension' do
+      git_blob = Gitlab::Git::Blob.new(name: "design.png")
+
+      expect(described_class.decorate(git_blob)).not_to be_sketch
+    end
+
+    it 'is truthy with sketch extension' do
+      git_blob = Gitlab::Git::Blob.new(name: "design.sketch")
+
+      expect(described_class.decorate(git_blob)).to be_sketch
     end
   end
 
@@ -88,11 +116,13 @@ describe Blob do
 
     def stubbed_blob(overrides = {})
       overrides.reverse_merge!(
+        name: nil,
         image?: false,
         language: nil,
         lfs_pointer?: false,
         svg?: false,
-        text?: false
+        text?: false,
+        binary?: false
       )
 
       described_class.decorate(double).tap do |blob|
@@ -131,9 +161,19 @@ describe Blob do
       expect(blob.to_partial_path(project)).to eq 'download'
     end
 
+    it 'handles PDFs' do
+      blob = stubbed_blob(name: 'blob.pdf', pdf?: true)
+      expect(blob.to_partial_path(project)).to eq 'pdf'
+    end
+
     it 'handles iPython notebooks' do
       blob = stubbed_blob(text?: true, ipython_notebook?: true)
       expect(blob.to_partial_path(project)).to eq 'notebook'
+    end
+
+    it 'handles Sketch files' do
+      blob = stubbed_blob(text?: true, sketch?: true, binary?: true)
+      expect(blob.to_partial_path(project)).to eq 'sketch'
     end
   end
 
