@@ -85,8 +85,8 @@ class Deployment < ActiveRecord::Base
   end
 
   def stop_action
-    return nil unless on_stop.present?
-    return nil unless manual_actions
+    return unless on_stop.present?
+    return unless manual_actions
 
     @stop_action ||= manual_actions.find_by(name: on_stop)
   end

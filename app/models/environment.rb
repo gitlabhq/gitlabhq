@@ -122,6 +122,12 @@ class Environment < ActiveRecord::Base
     available? && stop_action.present?
   end
 
+  def can_trigger_stop_action?(current_user)
+    return false unless stop_action?
+
+    stop_action.can_play?(current_user)
+  end
+
   def stop_with_action!(current_user)
     return unless available?
 
