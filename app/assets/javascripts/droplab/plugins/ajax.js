@@ -1,9 +1,5 @@
 /* eslint-disable */
 
-function droplabAjaxException(message) {
-  this.message = message;
-}
-
 const Ajax = {
   _loadUrlData: function _loadUrlData(url) {
     var self = this;
@@ -58,9 +54,7 @@ const Ajax = {
       this._loadUrlData(config.endpoint)
         .then(function(d) {
           self._loadData(d, config, self);
-        }, config.onError).catch(function(e) {
-          throw new droplabAjaxException(e.message || e);
-        });
+        }, config.onError).catch(config.onError);
     }
   },
   destroy: function() {

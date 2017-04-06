@@ -1,3 +1,5 @@
+/* global Flash */
+
 import Ajax from '~/droplab/plugins/ajax';
 import Filter from '~/droplab/plugins/filter';
 
@@ -13,6 +15,11 @@ require('./filtered_search_dropdown');
           endpoint,
           method: 'setData',
           loadingTemplate: this.loadingTemplate,
+          onError() {
+            /* eslint-disable no-new */
+            new Flash('An error occured fetching the dropdown data.');
+            /* eslint-enable no-new */
+          },
         },
         Filter: {
           filterFunction: gl.DropdownUtils.filterWithSymbol.bind(null, this.symbol, input),

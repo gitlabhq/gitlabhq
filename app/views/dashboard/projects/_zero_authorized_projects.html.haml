@@ -1,4 +1,4 @@
-- publicish_project_count = ProjectsFinder.new.execute(current_user).count
+- publicish_project_count = ProjectsFinder.new(current_user: current_user).execute.count
 .blank-state.blank-state-welcome
   %h2.blank-state-welcome-title
     Welcome to GitLab

@@ -111,6 +111,20 @@ describe Blob do
     end
   end
 
+  describe '#stl?' do
+    it 'is falsey with image extension' do
+      git_blob = Gitlab::Git::Blob.new(name: 'file.png')
+
+      expect(described_class.decorate(git_blob)).not_to be_stl
+    end
+
+    it 'is truthy with STL extension' do
+      git_blob = Gitlab::Git::Blob.new(name: 'file.stl')
+
+      expect(described_class.decorate(git_blob)).to be_stl
+    end
+  end
+
   describe '#to_partial_path' do
     let(:project) { double(lfs_enabled?: true) }
 
@@ -122,7 +136,8 @@ describe Blob do
         lfs_pointer?: false,
         svg?: false,
         text?: false,
-        binary?: false
+        binary?: false,
+        stl?: false
       )
 
       described_class.decorate(double).tap do |blob|
@@ -174,6 +189,11 @@ describe Blob do
     it 'handles Sketch files' do
       blob = stubbed_blob(text?: true, sketch?: true, binary?: true)
       expect(blob.to_partial_path(project)).to eq 'sketch'
+    end
+
+    it 'handles STLs' do
+      blob = stubbed_blob(text?: true, stl?: true)
+      expect(blob.to_partial_path(project)).to eq 'stl'
     end
   end
 
