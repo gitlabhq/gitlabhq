@@ -8,7 +8,7 @@ module Ci
     belongs_to :project
     belongs_to :trigger
 
-    delegate :ref, to: :trigger
+    delegate :ref, to: :trigger, allow_nil: true
 
     validates :trigger, presence: { unless: :importing? }
     validates :cron, cron: true, presence: { unless: :importing? }
@@ -25,6 +25,12 @@ module Ci
       save! # with set_next_run_at
     rescue ActiveRecord::RecordInvalid
       update_attribute(:next_run_at, nil) # update without validation
+    end
+
+    def real_next_run(worker_cron: Settings.cron_jobs['trigger_schedule_worker']['cron'],
+                      worker_time_zone: Time.zone.name)
+      Gitlab::Ci::CronParser.new(worker_cron, worker_time_zone)
+                            .next_time_from(next_run_at)
     end
   end
 end

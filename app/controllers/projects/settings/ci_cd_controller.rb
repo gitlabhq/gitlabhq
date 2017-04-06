@@ -27,6 +27,7 @@ module Projects
       def define_triggers_variables
         @triggers = @project.triggers
         @trigger = Ci::Trigger.new
+        @trigger.build_trigger_schedule
       end
 
       def define_badges_variables

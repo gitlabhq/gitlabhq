@@ -6,6 +6,27 @@
       %label.label-light Token
       %p.form-control-static= @trigger.token
   .form-group
-    = f.label :key, "Description", class: "label-light"
+    = f.label :key, "Description (For extenral trigger and scheduled trigger)", class: "label-light"
     = f.text_field :description, class: "form-control", required: true, title: 'Trigger description is required.', placeholder: "Trigger description"
+  = f.fields_for :trigger_schedule do |schedule_fields|
+    .form-group
+      = schedule_fields.label :cron, "Cron (For scheduled trigger)", class: "label-light"
+      = schedule_fields.text_field :cron, class: "form-control", title: 'Trigger Schedule cron is required.', placeholder: "0 1 * * *"
+    .form-group
+      = schedule_fields.label :cron_timezone, "Cron timezone (For scheduled trigger)", class: "label-light"
+      = schedule_fields.text_field :cron_timezone, class: "form-control", title: 'Trigger Schedule cron_timezone is required.', placeholder: "UTC"
+    .form-group
+      = f.label :ref, "Ref (For scheduled trigger)", class: "label-light"
+      = f.text_field :ref, class: "form-control", title: 'Trigger Schedule Ref is required.', placeholder: "master"
+  - if action_name == 'edit'
+    = f.hidden_field :trigger_schedule_on, :value => @trigger.trigger_schedule.present? ? 1 : 0
+  - else
+    .form-group
+      .checkbox
+        = f.label :trigger_schedule_on do
+          = f.check_box :trigger_schedule_on
+          %strong Register as scheduled trigger
+        .help-block
+          If checked, this trigger will be executed periodically according to `cron`, `cron_timezone` and `ref`
+          = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'visibility-of-pipelines')
   = f.submit btn_text, class: "btn btn-save"
