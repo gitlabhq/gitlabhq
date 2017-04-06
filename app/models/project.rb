@@ -116,6 +116,7 @@ class Project < ActiveRecord::Base
   has_one :mock_ci_service, dependent: :destroy
   has_one :mock_deployment_service, dependent: :destroy
   has_one :mock_monitoring_service, dependent: :destroy
+  has_one :microsoft_teams_service, dependent: :destroy
 
   has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one  :forked_from_project,  through:   :forked_project_link
@@ -159,6 +160,7 @@ class Project < ActiveRecord::Base
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
   has_one :project_feature, dependent: :destroy
   has_one :statistics, class_name: 'ProjectStatistics', dependent: :delete
+  has_many :container_repositories, dependent: :destroy
 
   has_many :commit_statuses, dependent: :destroy
   has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline'
@@ -406,32 +408,15 @@ class Project < ActiveRecord::Base
     @repository ||= Repository.new(path_with_namespace, self)
   end
 
-  def container_registry_path_with_namespace
-    path_with_namespace.downcase
-  end
-
-  def container_registry_repository
-    return unless Gitlab.config.registry.enabled
-
-    @container_registry_repository ||= begin
-      token = Auth::ContainerRegistryAuthenticationService.full_access_token(container_registry_path_with_namespace)
-      url = Gitlab.config.registry.api_url
-      host_port = Gitlab.config.registry.host_port
-      registry = ContainerRegistry::Registry.new(url, token: token, path: host_port)
-      registry.repository(container_registry_path_with_namespace)
-    end
-  end
-
-  def container_registry_repository_url
+  def container_registry_url
     if Gitlab.config.registry.enabled
-      "#{Gitlab.config.registry.host_port}/#{container_registry_path_with_namespace}"
+      "#{Gitlab.config.registry.host_port}/#{path_with_namespace.downcase}"
     end
   end
 
   def has_container_registry_tags?
-    return unless container_registry_repository
-
-    container_registry_repository.tags.any?
+    container_repositories.to_a.any?(&:has_tags?) ||
+      has_root_container_repository_tags?
   end
 
   def commit(ref = 'HEAD')
@@ -922,10 +907,10 @@ class Project < ActiveRecord::Base
     expire_caches_before_rename(old_path_with_namespace)
 
     if has_container_registry_tags?
-      Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry tags are present"
+      Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry tags are present!"
 
-      # we currently doesn't support renaming repository if it contains tags in container registry
-      raise StandardError.new('Project cannot be renamed, because tags are present in its container registry')
+      # we currently doesn't support renaming repository if it contains images in container registry
+      raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
     end
 
     if gitlab_shell.mv_repository(repository_storage_path, old_path_with_namespace, new_path_with_namespace)
@@ -1115,10 +1100,6 @@ class Project < ActiveRecord::Base
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
-  def build_coverage_enabled?
-    build_coverage_regex.present?
-  end
-
   def build_timeout_in_minutes
     build_timeout / 60
   end
@@ -1272,7 +1253,7 @@ class Project < ActiveRecord::Base
     ]
 
     if container_registry_enabled?
-      variables << { key: 'CI_REGISTRY_IMAGE', value: container_registry_repository_url, public: true }
+      variables << { key: 'CI_REGISTRY_IMAGE', value: container_registry_url, public: true }
     end
 
     variables
@@ -1404,5 +1385,16 @@ class Project < ActiveRecord::Base
     return false unless path
 
     Project.unscoped.where(pending_delete: true).find_by_full_path(path_with_namespace)
+  end
+
+  ##
+  # This method is here because of support for legacy container repository
+  # which has exactly the same path like project does, but which might not be
+  # persisted in `container_repositories` table.
+  #
+  def has_root_container_repository_tags?
+    return false unless Gitlab.config.registry.enabled
+
+    ContainerRepository.build_root_repository(self).has_tags?
   end
 end

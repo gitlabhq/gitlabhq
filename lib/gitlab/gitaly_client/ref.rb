@@ -23,6 +23,16 @@ module Gitlab
         consume_refs_response(stub.find_all_tag_names(request), prefix: 'refs/tags/')
       end
 
+      def find_ref_name(commit_id, ref_prefix)
+        request = Gitaly::FindRefNameRequest.new(
+          repository: @repository,
+          commit_id: commit_id,
+          prefix: ref_prefix
+        )
+
+        stub.find_ref_name(request).name
+      end
+
       private
 
       def consume_refs_response(response, prefix:)

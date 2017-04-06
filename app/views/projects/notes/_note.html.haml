@@ -59,7 +59,9 @@
               - if note.emoji_awardable?
                 = link_to '#', title: 'Award Emoji', class: 'note-action-button note-emoji-button js-add-award js-note-emoji', data: { position: 'right' } do
                   = icon('spinner spin')
-                  = icon('smile-o', class: 'link-highlight')
+                  %span{ class: "link-highlight award-control-icon-neutral" }= custom_icon('emoji_slightly_smiling_face')
+                  %span{ class: "link-highlight award-control-icon-positive" }= custom_icon('emoji_smiley')
+                  %span{ class: "link-highlight award-control-icon-super-positive" }= custom_icon('emoji_smile')
 
               - if note_editable
                 = link_to '#', title: 'Edit comment', class: 'note-action-button js-note-edit' do
