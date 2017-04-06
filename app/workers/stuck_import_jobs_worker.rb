@@ -2,12 +2,9 @@ class StuckImportJobsWorker
   include Sidekiq::Worker
   include CronjobQueue
 
-  EXCLUSIVE_LEASE_KEY = 'fail_stuck_imports_worker_lease'.freeze
   IMPORT_EXPIRATION = 15.hours.to_i
 
   def perform
-    return unless try_obtain_lease
-
     stuck_projects.find_in_batches(batch_size: 500) do |group|
       jids = group.map(&:import_jid)
 
@@ -20,8 +17,6 @@ class StuckImportJobsWorker
         fail_batch!(completed_jids, completed_ids)
       end
     end
-
-    remove_lease
   end
 
   private
@@ -38,13 +33,5 @@ class StuckImportJobsWorker
 
   def error_message
     "Import timed out. Import took longer than #{IMPORT_EXPIRATION} seconds"
-  end
-
-  def try_obtain_lease
-    @uuid = Gitlab::ExclusiveLease.new(EXCLUSIVE_LEASE_KEY, timeout: 30.minutes).try_obtain
-  end
-
-  def remove_lease
-    Gitlab::ExclusiveLease.cancel(EXCLUSIVE_LEASE_KEY, @uuid)
   end
 end
