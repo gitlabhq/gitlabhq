@@ -4,7 +4,7 @@
 - [Introduced][ce-23361] in GitLab 9.1.
 
 As a benefit of having the [usage ping active](settings/usage_statistics.md),
-GitLab lets you analyze the user's activities of your GitLab installation.
+GitLab lets you analyze the users' activities of your GitLab installation.
 Under [LINK], when the usage ping is active, GitLab will show the monthly
 cohorts of new users and their activities over time.
 
@@ -14,13 +14,13 @@ user cohorts.
 ![User cohort example](img/cohorts.png)
 
 For the cohort of June 2016, 163 users have been created on this server. One
-month after, in July 2016, 155 users (or 95% of the June cohort) are still
-active. Two months after, 139 users (or 85%) are still active. 9 months after,
+month later, in July 2016, 155 users (or 95% of the June cohort) are still
+active. Two months later, 139 users (or 85%) are still active. 9 months later,
 we can see that only 6% of this cohort are still active.
 
 How do we measure the activity of users? GitLab considers a user active if:
 * the user signs in
-* the user has a git activity (whether push or pull).
+* the user has Git activity (whether push or pull).
 
 ### Setup
 
