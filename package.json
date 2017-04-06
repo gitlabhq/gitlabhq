@@ -43,7 +43,7 @@
     "timeago.js": "^2.0.5",
     "underscore": "^1.8.3",
     "visibilityjs": "^1.2.4",
-    "vue": "^2.2.4",
+    "vue": "^2.2.6",
     "vue-loader": "^11.3.4",
     "vue-resource": "^0.9.3",
     "vue-template-compiler": "^2.2.6",
