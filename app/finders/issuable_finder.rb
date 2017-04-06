@@ -116,9 +116,9 @@ class IssuableFinder
       if current_user && params[:authorized_only].presence && !current_user_related?
         current_user.authorized_projects
       elsif group
-        GroupProjectsFinder.new(group).execute(current_user)
+        GroupProjectsFinder.new(group: group, current_user: current_user).execute
       else
-        projects_finder.execute(current_user, item_project_ids(items))
+        ProjectsFinder.new(current_user: current_user, project_ids_relation: item_project_ids(items)).execute
       end
 
     @projects = projects.with_feature_available_for_user(klass, current_user).reorder(nil)
@@ -404,9 +404,5 @@ class IssuableFinder
 
   def current_user_related?
     params[:scope] == 'created-by-me' || params[:scope] == 'authored' || params[:scope] == 'assigned-to-me'
-  end
-
-  def projects_finder
-    @projects_finder ||= ProjectsFinder.new
   end
 end

@@ -2,26 +2,34 @@ module Gitlab
   module EtagCaching
     class Middleware
       RESERVED_WORDS = NamespaceValidator::WILDCARD_ROUTES.map { |word| "/#{word}/" }.join('|')
-      ROUTE_REGEXP = Regexp.union(
-        %r(^(?!.*(#{RESERVED_WORDS})).*/noteable/issue/\d+/notes\z),
-        %r(^(?!.*(#{RESERVED_WORDS})).*/issues/\d+/rendered_title\z)
-      )
+      ROUTES = [
+        {
+          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/noteable/issue/\d+/notes\z),
+          name: 'issue_notes'
+        },
+        {
+          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/issues/\d+/rendered_title\z),
+          name: 'issue_title'
+        }
+      ].freeze
 
       def initialize(app)
         @app = app
       end
 
       def call(env)
-        return @app.call(env) unless enabled_for_current_route?(env)
-        Gitlab::Metrics.add_event(:etag_caching_middleware_used)
+        route = match_current_route(env)
+        return @app.call(env) unless route
+
+        track_event(:etag_caching_middleware_used, route)
 
         etag, cached_value_present = get_etag(env)
         if_none_match = env['HTTP_IF_NONE_MATCH']
 
         if if_none_match == etag
-          handle_cache_hit(etag)
+          handle_cache_hit(etag, route)
         else
-          track_cache_miss(if_none_match, cached_value_present)
+          track_cache_miss(if_none_match, cached_value_present, route)
 
           status, headers, body = @app.call(env)
           headers['ETag'] = etag
@@ -31,8 +39,8 @@ module Gitlab
 
       private
 
-      def enabled_for_current_route?(env)
-        ROUTE_REGEXP.match(env['PATH_INFO'])
+      def match_current_route(env)
+        ROUTES.find { |route| route[:regexp].match(env['PATH_INFO']) }
       end
 
       def get_etag(env)
@@ -52,22 +60,26 @@ module Gitlab
         %Q{W/"#{value}"}
       end
 
-      def handle_cache_hit(etag)
-        Gitlab::Metrics.add_event(:etag_caching_cache_hit)
+      def handle_cache_hit(etag, route)
+        track_event(:etag_caching_cache_hit, route)
 
         status_code = Gitlab::PollingInterval.polling_enabled? ? 304 : 429
 
         [status_code, { 'ETag' => etag }, ['']]
       end
 
-      def track_cache_miss(if_none_match, cached_value_present)
+      def track_cache_miss(if_none_match, cached_value_present, route)
         if if_none_match.blank?
-          Gitlab::Metrics.add_event(:etag_caching_header_missing)
+          track_event(:etag_caching_header_missing, route)
         elsif !cached_value_present
-          Gitlab::Metrics.add_event(:etag_caching_key_not_found)
+          track_event(:etag_caching_key_not_found, route)
         else
-          Gitlab::Metrics.add_event(:etag_caching_resource_changed)
+          track_event(:etag_caching_resource_changed, route)
         end
+      end
+
+      def track_event(name, route)
+        Gitlab::Metrics.add_event(name, endpoint: route[:name])
       end
     end
   end

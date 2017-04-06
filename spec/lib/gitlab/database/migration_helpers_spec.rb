@@ -58,6 +58,48 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
     end
   end
 
+  describe '#remove_concurrent_index' do
+    context 'outside a transaction' do
+      before do
+        allow(model).to receive(:transaction_open?).and_return(false)
+      end
+
+      context 'using PostgreSQL' do
+        before do
+          allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
+          allow(model).to receive(:disable_statement_timeout)
+        end
+
+        it 'removes the index concurrently' do
+          expect(model).to receive(:remove_index).
+            with(:users, { algorithm: :concurrently, column: :foo })
+
+          model.remove_concurrent_index(:users, :foo)
+        end
+      end
+
+      context 'using MySQL' do
+        it 'removes an index' do
+          expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
+
+          expect(model).to receive(:remove_index).
+            with(:users, { column: :foo })
+
+          model.remove_concurrent_index(:users, :foo)
+        end
+      end
+    end
+
+    context 'inside a transaction' do
+      it 'raises RuntimeError' do
+        expect(model).to receive(:transaction_open?).and_return(true)
+
+        expect { model.remove_concurrent_index(:users, :foo) }.
+          to raise_error(RuntimeError)
+      end
+    end
+  end
+
   describe '#add_concurrent_foreign_key' do
     context 'inside a transaction' do
       it 'raises an error' do
