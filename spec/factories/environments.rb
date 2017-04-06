@@ -18,6 +18,8 @@ FactoryGirl.define do
       # interconnected objects to simulate a review app.
       #
       after(:create) do |environment, evaluator|
+        pipeline = create(:ci_pipeline, project: environment.project)
+
         deployment = create(:deployment,
                             environment: environment,
                             project: environment.project,
@@ -26,7 +28,7 @@ FactoryGirl.define do
 
         teardown_build = create(:ci_build, :manual,
                                 name: "#{deployment.environment.name}:teardown",
-                                pipeline: deployment.deployable.pipeline)
+                                pipeline: pipeline)
 
         deployment.update_column(:on_stop, teardown_build.name)
         environment.update_attribute(:deployments, [deployment])
