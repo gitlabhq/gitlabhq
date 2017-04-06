@@ -107,7 +107,7 @@ module API
         end
         get '/visible' do
           entity = current_user ? ::API::V3::Entities::ProjectWithAccess : ::API::Entities::BasicProjectDetails
-          present_projects ProjectsFinder.new.execute(current_user), with: entity
+          present_projects ProjectsFinder.new(current_user: current_user).execute, with: entity
         end
 
         desc 'Get a projects list for authenticated user' do
