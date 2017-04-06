@@ -116,6 +116,9 @@ merge_access_levels:
 - protected_branch
 push_access_levels:
 - protected_branch
+container_repositories:
+- project
+- name
 project:
 - taggings
 - base_tags
@@ -202,6 +205,7 @@ project:
 - project_authorizations
 - route
 - statistics
+- container_repositories
 - uploads
 award_emoji:
 - awardable
