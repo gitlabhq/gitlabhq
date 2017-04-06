@@ -1,8 +1,8 @@
 .bs-callout.clearfix
   %p
-    User cohorts are shown for the last twelve months. Only users with
-    activity are counted in the cohort total; inactive users are counted
-    separately.
+    User cohorts are shown for the last #{@cohorts[:months_included]}
+    months. Only users with activity are counted in the cohort total; inactive
+    users are counted separately.
     = link_to icon('question-circle'), help_page_path('administration/usage_ping_and_cohorts', anchor: 'cohorts'), title: 'About this feature', target: '_blank'
 
 .table-holder
@@ -12,27 +12,17 @@
         %th Registration month
         %th Inactive users
         %th Cohort total
-        %th Month 0
-        %th Month 1
-        %th Month 2
-        %th Month 3
-        %th Month 4
-        %th Month 5
-        %th Month 6
-        %th Month 7
-        %th Month 8
-        %th Month 9
-        %th Month 10
-        %th Month 11
+        - @cohorts[:months_included].times do |i|
+          %th Month #{i}
     %tbody
-      - @cohorts.each do |registration_month, cohort|
+      - @cohorts[:cohorts].each do |cohort|
         %tr
-          %td= registration_month.strftime('%b %Y')
-          %td= number_with_delimiter(cohort[:inactive])
-          %td= number_with_delimiter(cohort[:total])
-          - cohort[:months].each do |running_total|
+          %td= cohort[:registration_month]
+          %td= cohort[:inactive]
+          %td= cohort[:total]
+          - cohort[:activity_months].each do |activity_month|
             %td
-              - next if cohort[:total].zero?
-              = number_to_percentage(100 * running_total / cohort[:total], precision: 0)
+              - next if cohort[:total] == '0'
+              = activity_month[:percentage]
               %br
-              (#{number_with_delimiter(running_total)})
+              = activity_month[:total]

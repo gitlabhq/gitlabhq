@@ -17,22 +17,83 @@ describe CohortsService do
 
       create(:user) # this user is inactive and belongs to the current month
 
-      expected = {
-        month_start(11) => { months: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], total: 0, inactive: 0 },
-        month_start(10) => { months: [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], total: 2, inactive: 0 },
-        month_start(9) => { months: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], total: 0, inactive: 0 },
-        month_start(8) => { months: [2, 1, 1, 1, 1, 1, 1, 1, 1], total: 2, inactive: 0 },
-        month_start(7) => { months: [0, 0, 0, 0, 0, 0, 0, 0], total: 0, inactive: 0 },
-        month_start(6) => { months: [2, 1, 1, 1, 1, 1, 1], total: 2, inactive: 0 },
-        month_start(5) => { months: [0, 0, 0, 0, 0, 0], total: 0, inactive: 0 },
-        month_start(4) => { months: [2, 1, 1, 1, 1], total: 2, inactive: 0 },
-        month_start(3) => { months: [0, 0, 0, 0], total: 0, inactive: 0 },
-        month_start(2) => { months: [2, 1, 1], total: 2, inactive: 0 },
-        month_start(1) => { months: [0, 0], total: 0, inactive: 0 },
-        month_start(0) => { months: [2], total: 2, inactive: 1 }
-      }
+      expected_cohorts = [
+        {
+          registration_month: month_start(11),
+          activity_months: Array.new(12) { { total: 0, percentage: 0 } },
+          total: 0,
+          inactive: 0
+        },
+        {
+          registration_month: month_start(10),
+          activity_months: [{ total: 2, percentage: 100 }] + Array.new(10) { { total: 1, percentage: 50 } },
+          total: 2,
+          inactive: 0
+        },
+        {
+          registration_month: month_start(9),
+          activity_months: Array.new(10) { { total: 0, percentage: 0 } },
+          total: 0,
+          inactive: 0
+        },
+        {
+          registration_month: month_start(8),
+          activity_months: [{ total: 2, percentage: 100 }] + Array.new(8) { { total: 1, percentage: 50 } },
+          total: 2,
+          inactive: 0
+        },
+        {
+          registration_month: month_start(7),
+          activity_months: Array.new(8) { { total: 0, percentage: 0 } },
+          total: 0,
+          inactive: 0
+        },
+        {
+          registration_month: month_start(6),
+          activity_months: [{ total: 2, percentage: 100 }] + Array.new(6) { { total: 1, percentage: 50 } },
+          total: 2,
+          inactive: 0
+        },
+        {
+          registration_month: month_start(5),
+          activity_months: Array.new(6) { { total: 0, percentage: 0 } },
+          total: 0,
+          inactive: 0
+        },
+        {
+          registration_month: month_start(4),
+          activity_months: [{ total: 2, percentage: 100 }] + Array.new(4) { { total: 1, percentage: 50 } },
+          total: 2,
+          inactive: 0
+        },
+        {
+          registration_month: month_start(3),
+          activity_months: Array.new(4) { { total: 0, percentage: 0 } },
+          total: 0,
+          inactive: 0
+        },
+        {
+          registration_month: month_start(2),
+          activity_months: [{ total: 2, percentage: 100 }] + Array.new(2) { { total: 1, percentage: 50 } },
+          total: 2,
+          inactive: 0
+        },
+        {
+          registration_month: month_start(1),
+          activity_months: Array.new(2) { { total: 0, percentage: 0 } },
+          total: 0,
+          inactive: 0
+        },
+        {
+          registration_month: month_start(0),
+          activity_months: [{ total: 2, percentage: 100 }],
+          total: 2,
+          inactive: 1
+        },
+      ]
 
-      expect(described_class.new.execute).to eq(expected)
+      expect(described_class.new.execute).to eq(months_included: 12,
+                                                cohorts: expected_cohorts)
     end
   end
 end

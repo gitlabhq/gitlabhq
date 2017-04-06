@@ -1,11 +1,19 @@
 class CohortsService
   MONTHS_INCLUDED = 12
 
-  # Get a hash that looks like:
+  def execute
+    {
+      months_included: MONTHS_INCLUDED,
+      cohorts: cohorts
+    }
+  end
+
+  # Get an array of hashes that looks like:
   #
-  #     {
-  #       month => {
-  #         months: [3, 2, 1],
+  #     [
+  #       {
+  #         registration_month: Date.new(2017, 3),
+  #         activity_months: [3, 2, 1],
   #         total: 3
   #         inactive: 0
   #      },
@@ -13,29 +21,26 @@ class CohortsService
   #
   # The `months` array is always from oldest to newest, so it's always
   # non-strictly decreasing from left to right.
-  #
-  def execute
-    cohorts = {}
+  def cohorts
     months = Array.new(MONTHS_INCLUDED) { |i| i.months.ago.beginning_of_month.to_date }
 
-    MONTHS_INCLUDED.times do
-      created_at_month = months.last
-      activity_months = running_totals(months, created_at_month)
+    Array.new(MONTHS_INCLUDED) do
+      registration_month = months.last
+      activity_months = running_totals(months, registration_month)
 
       # Even if no users registered in this month, we always want to have a
       # value to fill in the table.
-      inactive = counts_by_month[[created_at_month, nil]].to_i
-
-      cohorts[created_at_month] = {
-        months: activity_months,
-        total: activity_months.first,
-        inactive: inactive
-      }
+      inactive = counts_by_month[[registration_month, nil]].to_i
 
       months.pop
-    end
 
-    cohorts
+      {
+        registration_month: registration_month,
+        activity_months: activity_months,
+        total: activity_months.first[:total],
+        inactive: inactive
+      }
+    end
   end
 
   private
@@ -44,11 +49,20 @@ class CohortsService
   # count as active in this month, too. Start with the most recent month first,
   # for calculating the running totals, and then reverse for displaying in the
   # table.
-  def running_totals(all_months, created_at_month)
-    all_months
-      .map { |activity_month| counts_by_month[[created_at_month, activity_month]] }
-      .reduce([]) { |result, total| result << result.last.to_i + total.to_i }
-      .reverse
+  #
+  # Each month has a total, and a percentage of the overall total, as keys.
+  def running_totals(all_months, registration_month)
+    month_totals =
+      all_months
+        .map { |activity_month| counts_by_month[[registration_month, activity_month]] }
+        .reduce([]) { |result, total| result << result.last.to_i + total.to_i }
+        .reverse
+
+    overall_total = month_totals.first
+
+    month_totals.map do |total|
+      { total: total, percentage: total.zero? ? 0 : 100 * total / overall_total }
+    end
   end
 
   # Get a hash that looks like:
@@ -60,9 +74,8 @@ class CohortsService
   #     }
   #
   # created_at_month can never be nil, but current_sign_in_at_month can (when a
-  # user has never logged in, just been created). This covers the last twelve
-  # months.
-  #
+  # user has never logged in, just been created). This covers the last
+  # MONTHS_INCLUDED months.
   def counts_by_month
     @counts_by_month ||=
       begin
@@ -80,7 +93,7 @@ class CohortsService
   def column_to_date(column)
     if Gitlab::Database.postgresql?
       "CAST(DATE_TRUNC('month', #{column}) AS date)"
-    elsif Gitlab::Database.mysql?
+    else
       "STR_TO_DATE(DATE_FORMAT(#{column}, '%Y-%m-01'), '%Y-%m-%d')"
     end
   end
