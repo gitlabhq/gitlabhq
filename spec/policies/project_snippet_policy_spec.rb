@@ -119,7 +119,7 @@ describe ProjectSnippetPolicy, models: true do
     context 'snippet author' do
       let(:snippet) { create(:project_snippet, :private, author: regular_user, project: project) }
 
-      subject { described_class(regular_user, snippet) }
+      subject { described_class.new(regular_user, snippet) }
 
       it do
         expect_allowed(:read_project_snippet)

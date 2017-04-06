@@ -155,8 +155,8 @@ describe ProjectPolicy, models: true do
         end
 
         it do
-          is_expected.not_to include(:read_build)
-          is_expected.to include(:read_pipeline)
+          expect_disallowed(:read_build)
+          expect_allowed(:read_pipeline)
         end
       end
     end
