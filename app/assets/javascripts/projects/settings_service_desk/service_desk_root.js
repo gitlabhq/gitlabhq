@@ -5,17 +5,28 @@ import ServiceDeskStore from './stores/service_desk_store';
 import ServiceDeskService from './services/service_desk_service';
 import eventHub from './event_hub';
 
-class ServiceDeskEntry {
+class ServiceDeskRoot {
   constructor(wrapperElement) {
     this.wrapperElement = wrapperElement;
+    const isEnabled = this.wrapperElement.dataset.enabled !== undefined &&
+      this.wrapperElement.dataset.enabled !== 'false';
+    const incomingEmail = this.wrapperElement.dataset.incomingEmail;
     const endpoint = this.wrapperElement.dataset.endpoint;
 
-    this.store = new ServiceDeskStore();
+    this.store = new ServiceDeskStore({
+      isEnabled,
+      incomingEmail,
+    });
     this.service = new ServiceDeskService(endpoint);
   }
 
   init() {
     this.bindEvents();
+
+    if (this.store.state.isEnabled && !this.store.state.incomingEmail) {
+      this.fetchIncomingEmail();
+    }
+
     this.render();
   }
 
@@ -35,7 +46,7 @@ class ServiceDeskEntry {
       data: this.store.state,
       template: `
         <service-desk-setting
-          :isActivated="isActivated"
+          :isEnabled="isEnabled"
           :incomingEmail="incomingEmail"
           :fetchError="fetchError" />
       `,
@@ -45,19 +56,28 @@ class ServiceDeskEntry {
     });
   }
 
+  fetchIncomingEmail() {
+    this.service.fetchIncomingEmail()
+      .then((incomingEmail) => {
+        this.store.setIncomingEmail(incomingEmail);
+      })
+      .catch((err) => {
+        this.store.setFetchError(err);
+      });
+  }
+
   onEnableToggled(isChecked) {
     this.store.setIsActivated(isChecked);
-    if (isChecked) {
-      this.store.setIncomingEmail('');
-      this.store.setFetchError(null);
-      this.service.fetchIncomingEmail()
-        .then((incomingEmail) => {
-          this.store.setIncomingEmail(incomingEmail);
-        })
-        .catch((err) => {
-          this.store.setFetchError(err);
-        });
-    }
+    this.store.setIncomingEmail('');
+    this.store.setFetchError(null);
+
+    this.service.toggleServiceDesk(isChecked)
+      .then((incomingEmail) => {
+        this.store.setIncomingEmail(incomingEmail);
+      })
+      .catch((err) => {
+        this.store.setFetchError(err);
+      });
   }
 
   destroy() {
@@ -68,4 +88,4 @@ class ServiceDeskEntry {
   }
 }
 
-export default ServiceDeskEntry;
+export default ServiceDeskRoot;

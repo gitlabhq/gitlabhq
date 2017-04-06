@@ -9,19 +9,19 @@ describe('ServiceDeskStore', () => {
 
   describe('setIsActivated', () => {
     it('defaults to false', () => {
-      expect(store.state.isActivated).toEqual(false);
+      expect(store.state.isEnabled).toEqual(false);
     });
 
     it('set true', () => {
       store.setIsActivated(true);
 
-      expect(store.state.isActivated).toEqual(true);
+      expect(store.state.isEnabled).toEqual(true);
     });
 
     it('set false', () => {
       store.setIsActivated(false);
 
-      expect(store.state.isActivated).toEqual(false);
+      expect(store.state.isEnabled).toEqual(false);
     });
   });
 

@@ -19,13 +19,13 @@ describe('ServiceDeskSetting', () => {
     }
   });
 
-  describe('when isActivated=true', () => {
+  describe('when isEnabled=true', () => {
     let el;
 
-    describe('only isActivated', () => {
+    describe('only isEnabled', () => {
       beforeEach(() => {
         vm = createComponent({
-          isActivated: true,
+          isEnabled: true,
         });
         el = vm.$el;
       });
@@ -48,7 +48,7 @@ describe('ServiceDeskSetting', () => {
     describe('with incomingEmail', () => {
       beforeEach(() => {
         vm = createComponent({
-          isActivated: true,
+          isEnabled: true,
           incomingEmail: 'foo@bar.com',
         });
         el = vm.$el;
@@ -64,7 +64,7 @@ describe('ServiceDeskSetting', () => {
     describe('with fetchError', () => {
       beforeEach(() => {
         vm = createComponent({
-          isActivated: true,
+          isEnabled: true,
           fetchError: new Error('some-fake-failure'),
         });
         el = vm.$el;
@@ -79,12 +79,12 @@ describe('ServiceDeskSetting', () => {
     });
   });
 
-  describe('when isActivated=false', () => {
+  describe('when isEnabled=false', () => {
     let el;
 
     beforeEach(() => {
       vm = createComponent({
-        isActivated: false,
+        isEnabled: false,
       });
       el = vm.$el;
     });
@@ -107,7 +107,7 @@ describe('ServiceDeskSetting', () => {
         eventHub.$on('serviceDeskEnabledCheckboxToggled', onCheckboxToggleSpy);
 
         vm = createComponent({
-          isActivated: false,
+          isEnabled: false,
         });
       });
 
@@ -139,7 +139,7 @@ describe('ServiceDeskSetting', () => {
     describe('copyIncomingEmail', () => {
       beforeEach(() => {
         vm = createComponent({
-          isActivated: true,
+          isEnabled: true,
           incomingEmail: 'foo@bar.com',
         });
       });

@@ -5,7 +5,7 @@ export default {
   name: 'ServiceDeskSetting',
 
   props: {
-    isActivated: {
+    isEnabled: {
       type: Boolean,
       required: true,
     },
@@ -15,7 +15,7 @@ export default {
       default: '',
     },
     fetchError: {
-      type: Object,
+      type: Error,
       required: false,
       default: null,
     },
@@ -48,14 +48,14 @@ export default {
           <input
             type="checkbox"
             id="service-desk-enabled-checkbox"
-            :checked="isActivated"
+            :checked="isEnabled"
             @change="onCheckboxToggle($event)">
           <span class="descr">
             Activate service desk
           </span>
         </label>
       </div>
-      <template v-if="isActivated">
+      <template v-if="isEnabled">
         <div
           class="panel-slim panel-default">
           <div class="panel-heading">

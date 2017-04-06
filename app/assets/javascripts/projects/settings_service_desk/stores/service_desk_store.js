@@ -1,14 +1,14 @@
 class ServiceDeskStore {
   constructor(initialState = {}) {
     this.state = Object.assign({
-      isActivated: false,
+      isEnabled: false,
       incomingEmail: '',
       fetchError: null,
     }, initialState);
   }
 
   setIsActivated(value) {
-    this.state.isActivated = value;
+    this.state.isEnabled = value;
   }
 
   setIncomingEmail(value) {

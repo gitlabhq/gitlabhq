@@ -8,9 +8,10 @@ describe('ServiceDeskService', () => {
   });
 
   it('fetchIncomingEmail', (done) => {
-    spyOn(service.project, 'get').and.returnValue(Promise.resolve({
+    spyOn(service.serviceDeskResource, 'get').and.returnValue(Promise.resolve({
       data: {
-        incomingEmail: 'foo@bar.com',
+        service_desk_enabled: true,
+        service_desk_address: 'foo@bar.com',
       },
     }));
 
@@ -22,5 +23,43 @@ describe('ServiceDeskService', () => {
       .catch((err) => {
         done.fail(`Failed to fetch incoming email:\n${err}`);
       });
+  });
+
+  describe('toggleServiceDesk', () => {
+    it('enable service desk', (done) => {
+      spyOn(service.serviceDeskResource, 'update').and.returnValue(Promise.resolve({
+        data: {
+          service_desk_enabled: true,
+          service_desk_address: 'foo@bar.com',
+        },
+      }));
+
+      service.toggleServiceDesk(true)
+        .then((incomingEmail) => {
+          expect(incomingEmail).toEqual('foo@bar.com');
+          done();
+        })
+        .catch((err) => {
+          done.fail(`Failed to enable service desk and fetch incoming email:\n${err}`);
+        });
+    });
+
+    it('disable service desk', (done) => {
+      spyOn(service.serviceDeskResource, 'update').and.returnValue(Promise.resolve({
+        data: {
+          service_desk_enabled: false,
+          service_desk_address: null,
+        },
+      }));
+
+      service.toggleServiceDesk(false)
+        .then((incomingEmail) => {
+          expect(incomingEmail).toEqual(null);
+          done();
+        })
+        .catch((err) => {
+          done.fail(`Failed to disable service desk and reset incoming email:\n${err}`);
+        });
+    });
   });
 });
