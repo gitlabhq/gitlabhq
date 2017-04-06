@@ -12,6 +12,34 @@ shared_examples 'discussion comments' do |resource_name|
     expect(page).to have_selector toggle_selector
   end
 
+  it '"Comment" will post a comment' do
+    find("#{form_selector} .note-textarea").send_keys('a')
+
+    find(submit_selector).click
+
+    find('.timeline .timeline-entry', match: :first)
+    new_comment = all('.timeline .timeline-entry').last
+
+    expect(new_comment).to have_content 'a'
+    expect(new_comment).not_to have_selector '.discussion'
+  end
+
+  if resource_name =~ /(issue|merge request)/
+    it "'Comment & close #{resource_name}' will post a comment and close the #{resource_name}" do
+      find("#{form_selector} .note-textarea").send_keys('a')
+
+      find(close_selector).click
+
+      find('.timeline .timeline-entry', match: :first)
+      entries = all('.timeline .timeline-entry')
+      close_note = entries.last
+      new_comment = entries[-2]
+
+      expect(close_note).to have_content 'closed'
+      expect(new_comment).not_to have_selector '.discussion'
+    end
+  end
+
   describe 'when the toggle is clicked' do
     before do
       find("#{form_selector} .note-textarea").send_keys('a')
@@ -48,30 +76,6 @@ shared_examples 'discussion comments' do |resource_name|
       expect(items.last).to have_content 'Start discussion'
       expect(items.last).not_to have_selector '.fa-check'
       expect(items.last['class']).not_to match 'droplab-item-selected'
-    end
-
-    it '"Comment" will post a comment' do
-      find(submit_selector).click
-
-      find('.timeline .timeline-entry', match: :first)
-      new_comment = all('.timeline .timeline-entry').last
-
-      expect(new_comment).to have_content 'a'
-      expect(new_comment).not_to have_selector '.discussion'
-    end
-
-    if resource_name =~ /(issue|merge request)/
-      it "Comment & close' will post a comment and close the #{resource_name}" do
-        find(close_selector).click
-
-        find('.timeline .timeline-entry', match: :first)
-        entries = all('.timeline .timeline-entry')
-        close_note = entries.last
-        new_comment = entries[-2]
-
-        expect(close_note).to have_content 'closed'
-        expect(new_comment).not_to have_selector '.discussion'
-      end
     end
 
     it 'closes the menu when clicking the toggle' do
@@ -121,7 +125,7 @@ shared_examples 'discussion comments' do |resource_name|
       end
 
       if resource_name =~ /(issue|merge request)/
-        it "'Start discussion & close' will post a discussion and close the #{resource_name}" do
+        it "'Start discussion & close #{resource_name}' will post a discussion and close the #{resource_name}" do
           find(close_selector).click
 
           find('.timeline .timeline-entry', match: :first)
@@ -204,6 +208,7 @@ end
 
 describe 'Discussion Comments', :feature, :js do
   include RepoHelpers
+  include WaitForAjax
 
   let(:user) { create(:user) }
   let(:project) { create(:project) }
