@@ -97,7 +97,7 @@ module Ci
       end
 
       after_transition :canceled => any - [:canceled] do |pipeline|
-        pipeline.update(auto_canceled_by: nil)
+        pipeline.auto_canceled_by = nil
       end
     end
 
