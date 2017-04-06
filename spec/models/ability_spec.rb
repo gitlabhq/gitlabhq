@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Ability, lib: true do
   context 'using a nil subject' do
-    it 'is always empty' do
-      expect(Ability.allowed(nil, nil).to_set).to be_empty
+    it 'has no permissions' do
+      expect(Ability.policy_for(nil, nil)).to be_banned
     end
   end
 
@@ -255,12 +255,15 @@ describe Ability, lib: true do
   describe '.project_disabled_features_rules' do
     let(:project) { create(:empty_project, :wiki_disabled) }
 
-    subject { described_class.allowed(project.owner, project) }
+    subject { described_class.policy_for(project.owner, project) }
 
     context 'wiki named abilities' do
       it 'disables wiki abilities if the project has no wiki' do
         expect(project).to receive(:has_external_wiki?).and_return(false)
-        expect(subject).not_to include(:read_wiki, :create_wiki, :update_wiki, :admin_wiki)
+        expect(subject).not_to be_allowed(:read_wiki)
+        expect(subject).not_to be_allowed(:create_wiki)
+        expect(subject).not_to be_allowed(:update_wiki)
+        expect(subject).not_to be_allowed(:admin_wiki)
       end
     end
   end
