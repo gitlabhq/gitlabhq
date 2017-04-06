@@ -328,6 +328,14 @@ entry.
 - Change development tanuki favicon colors to match logo color order.
 - API issues - support filtering by iids.
 
+## 8.17.5 (2017-04-05)
+
+- Don’t show source project name when user does not have access.
+- Remove the class attribute from the whitelist for HTML generated from Markdown.
+- Fix path disclosure in project import/export.
+- Fix for open redirect vulnerability using continue[to] in URL when requesting project import status.
+- Fix for open redirect vulnerabilities in todos, issues, and MR controllers.
+
 ## 8.17.4 (2017-03-19)
 
 - Only show public emails in atom feeds.
