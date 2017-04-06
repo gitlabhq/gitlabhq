@@ -16,6 +16,6 @@ class AddTwoFactorColumnsToNamespaces < ActiveRecord::Migration
     remove_column(:namespaces, :require_two_factor_authentication)
     remove_column(:namespaces, :two_factor_grace_period)
 
-    remove_index(:namespaces, :require_two_factor_authentication) if index_exists?(:namespaces, :require_two_factor_authentication)
+    remove_concurrent_index(:namespaces, :require_two_factor_authentication) if index_exists?(:namespaces, :require_two_factor_authentication)
   end
 end
