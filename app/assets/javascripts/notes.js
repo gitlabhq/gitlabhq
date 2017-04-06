@@ -738,7 +738,7 @@ require('./task_list');
 
     Notes.prototype.replyToDiscussionNote = function(e) {
       var form, replyLink;
-      form =  this.cleanForm(this.formClone.clone());
+      form = this.cleanForm(this.formClone.clone());
       replyLink = $(e.target).closest(".js-discussion-reply-button");
       // insert the form after the button
       replyLink
@@ -1060,7 +1060,7 @@ require('./task_list');
         .remove();
 
       return $form;
-    }
+    };
 
     return Notes;
   })();

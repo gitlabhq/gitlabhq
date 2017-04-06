@@ -1,79 +1,124 @@
 import CommentTypeToggle from '~/comment_type_toggle';
-import DropLab from '@gitlab-org/droplab';
-import InputSetter from '@gitlab-org/droplab/dist/plugins/InputSetter';
+import * as dropLabSrc from '~/droplab/drop_lab';
+import InputSetter from '~/droplab/plugins/input_setter';
 
 describe('CommentTypeToggle', function () {
   describe('class constructor', function () {
     beforeEach(function () {
-      this.trigger = {};
-      this.list = {};
-      this.input = {};
-      this.button = {};
+      this.dropdownTrigger = {};
+      this.dropdownList = {};
+      this.noteTypeInput = {};
+      this.submitButton = {};
+      this.closeButton = {};
 
       this.commentTypeToggle = new CommentTypeToggle(
-        this.trigger,
-        this.list,
-        this.input,
-        this.button,
+        this.dropdownTrigger,
+        this.dropdownList,
+        this.noteTypeInput,
+        this.submitButton,
+        this.closeButton,
       );
     });
 
-    it('should set .trigger', function () {
-      expect(this.commentTypeToggle.trigger).toBe(this.trigger);
+    it('should set .dropdownTrigger', function () {
+      expect(this.commentTypeToggle.dropdownTrigger).toBe(this.dropdownTrigger);
     });
 
-    it('should set .list', function () {
-      expect(this.commentTypeToggle.list).toBe(this.list);
+    it('should set .dropdownList', function () {
+      expect(this.commentTypeToggle.dropdownList).toBe(this.dropdownList);
     });
 
-    it('should set .input', function () {
-      expect(this.commentTypeToggle.input).toBe(this.input);
+    it('should set .noteTypeInput', function () {
+      expect(this.commentTypeToggle.noteTypeInput).toBe(this.noteTypeInput);
     });
 
-    it('should set .button', function () {
-      expect(this.commentTypeToggle.button).toBe(this.button);
+    it('should set .submitButton', function () {
+      expect(this.commentTypeToggle.submitButton).toBe(this.submitButton);
+    });
+
+    it('should set .closeButton', function () {
+      expect(this.commentTypeToggle.closeButton).toBe(this.closeButton);
     });
   });
 
   describe('initDroplab', function () {
     beforeEach(function () {
       this.commentTypeToggle = {
-        trigger: {},
-        list: {},
-        input: {},
-        button: {},
+        dropdownTrigger: {},
+        dropdownList: {},
+        noteTypeInput: {},
+        submitButton: {},
+        closeButton: {},
       };
 
-      this.droplab = jasmine.createSpyObj('droplab', ['addHook']);
+      this.droplab = jasmine.createSpyObj('droplab', ['init']);
 
-      spyOn(window, 'DropLab').and.returnValue(this.droplab);
+      spyOn(dropLabSrc, 'default').and.returnValue(this.droplab);
 
       this.initDroplab = CommentTypeToggle.prototype.initDroplab.call(this.commentTypeToggle);
     });
 
     it('should instantiate a DropLab instance', function () {
-      expect(window.DropLab).toHaveBeenCalled();
+      expect(dropLabSrc.default).toHaveBeenCalled();
     });
 
     it('should set .droplab', function () {
       expect(this.commentTypeToggle.droplab).toBe(this.droplab);
     });
 
-    it('should call DropLab.prototype.addHook', function () {
-      expect(this.droplab.addHook).toHaveBeenCalledWith(
-        this.commentTypeToggle.trigger,
-        this.commentTypeToggle.list,
+    it('should call DropLab.prototype.init', function () {
+      expect(this.droplab.init).toHaveBeenCalledWith(
+        this.commentTypeToggle.dropdownTrigger,
+        this.commentTypeToggle.dropdownList,
         [InputSetter],
         {
           InputSetter: [{
-            input: this.commentTypeToggle.input,
+            input: this.commentTypeToggle.noteTypeInput,
             valueAttribute: 'data-value',
           }, {
-            input: this.commentTypeToggle.button,
+            input: this.commentTypeToggle.submitButton,
             valueAttribute: 'data-button-text',
+          },
+          {
+            input: this.commentTypeToggle.closeButton,
+            valueAttribute: 'data-secondary-button-text',
+          }, {
+            input: this.commentTypeToggle.closeButton,
+            valueAttribute: 'data-secondary-button-text',
+            inputAttribute: 'data-alternative-text',
           }],
         },
       );
+    });
+
+    describe('if no .closeButton is provided', function () {
+      beforeEach(function () {
+        this.commentTypeToggle = {
+          dropdownTrigger: {},
+          dropdownList: {},
+          noteTypeInput: {},
+          submitButton: {},
+        };
+
+        this.initDroplab = CommentTypeToggle.prototype.initDroplab.call(this.commentTypeToggle);
+      });
+
+      it('should not add .closeButton related InputSetter config', function () {
+        expect(this.droplab.init).toHaveBeenCalledWith(
+          this.commentTypeToggle.dropdownTrigger,
+          this.commentTypeToggle.dropdownList,
+          [InputSetter],
+          {
+            InputSetter: [{
+              input: this.commentTypeToggle.noteTypeInput,
+              valueAttribute: 'data-value',
+            }, {
+              input: this.commentTypeToggle.submitButton,
+              valueAttribute: 'data-button-text',
+            }],
+          },
+        );
+      });
     });
   });
 });

@@ -1,5 +1,5 @@
-import DropLab from '@gitlab-org/droplab';
-import InputSetter from '@gitlab-org/droplab/dist/plugins/InputSetter';
+import DropLab from '~/droplab/drop_lab';
+import InputSetter from '~/droplab/plugins/input_setter';
 
 class CommentTypeToggle {
   constructor(dropdownTrigger, dropdownList, noteTypeInput, submitButton, closeButton) {
@@ -33,7 +33,7 @@ class CommentTypeToggle {
     }
 
     this.droplab.init(this.dropdownTrigger, this.dropdownList, [InputSetter], {
-      InputSetter: inputSetterConfig
+      InputSetter: inputSetterConfig,
     });
   }
 }
