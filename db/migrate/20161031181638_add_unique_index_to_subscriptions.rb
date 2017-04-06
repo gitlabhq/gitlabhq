@@ -1,3 +1,4 @@
+# rubocop:disable RemoveIndex
 class AddUniqueIndexToSubscriptions < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

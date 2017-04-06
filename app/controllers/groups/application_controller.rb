@@ -27,7 +27,7 @@ class Groups::ApplicationController < ApplicationController
   end
 
   def group_projects
-    @projects ||= GroupProjectsFinder.new(group).execute(current_user)
+    @projects ||= GroupProjectsFinder.new(group: group, current_user: current_user).execute
   end
 
   def authorize_admin_group!

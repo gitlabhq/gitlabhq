@@ -38,11 +38,13 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
     function MergeRequestWidget(opts) {
       // Initialize MergeRequestWidget behavior
       //
-      //   check_enable           - Boolean, whether to check automerge status
-      //   merge_check_url - String, URL to use to check automerge status
+      //   check_enable         - Boolean, whether to check automerge status
+      //   merge_check_url      - String, URL to use to check automerge status
       //   ci_status_url        - String, URL to use to check CI status
+      //   pipeline_status_url  - String, URL to use to get CI status for Favicon
       //
       this.opts = opts;
+      this.opts.pipeline_status_url = `${this.opts.pipeline_status_url}.json`;
       this.$widgetBody = $('.mr-widget-body');
       $('#modal_merge_info').modal({
         show: false
@@ -159,6 +161,7 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
           _this.status = data.status;
           _this.hasCi = data.has_ci;
           _this.updateMergeButton(_this.status, _this.hasCi);
+          gl.utils.setCiStatusFavicon(_this.opts.pipeline_status_url);
           if (data.environments && data.environments.length) _this.renderEnvironments(data.environments);
           if (data.status !== _this.opts.ci_status ||
               data.sha !== _this.opts.ci_sha ||

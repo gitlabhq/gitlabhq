@@ -108,6 +108,15 @@ describe API::DeployKeys, api: true  do
 
       expect(response).to have_http_status(201)
     end
+
+    it 'accepts can_push parameter' do
+      key_attrs = attributes_for :write_access_key
+
+      post api("/projects/#{project.id}/deploy_keys", admin), key_attrs
+
+      expect(response).to have_http_status(201)
+      expect(json_response['can_push']).to eq(true)
+    end
   end
 
   describe 'DELETE /projects/:id/deploy_keys/:key_id' do

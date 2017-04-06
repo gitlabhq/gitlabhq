@@ -42,10 +42,12 @@ var config = {
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
+    stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
     users:                './users/users_bundle.js',
     vue_pipelines:        './vue_pipelines_index/index.js',
+    issue_show:           './issue_show/index.js',
   },
 
   output: {
