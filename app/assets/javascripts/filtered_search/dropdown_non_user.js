@@ -1,5 +1,5 @@
-import Ajax from '@gitlab-org/droplab/dist/plugins/Ajax';
-import Filter from '@gitlab-org/droplab/dist/plugins/Filter';
+import Ajax from '~/droplab/plugins/ajax';
+import Filter from '~/droplab/plugins/filter';
 
 require('./filtered_search_dropdown');
 

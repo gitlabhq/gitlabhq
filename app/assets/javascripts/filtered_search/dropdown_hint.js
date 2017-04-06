@@ -1,4 +1,4 @@
-import Filter from '@gitlab-org/droplab/dist/plugins/Filter';
+import Filter from '~/droplab/plugins/filter';
 
 require('./filtered_search_dropdown');
 

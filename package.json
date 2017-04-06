@@ -12,7 +12,6 @@
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
-    "@gitlab-org/droplab": "^0.1.0",
     "babel-core": "^6.22.1",
     "babel-loader": "^6.2.10",
     "babel-plugin-transform-define": "^1.2.0",
