@@ -13,10 +13,6 @@ class Diff {
 
     $diffFile.each((index, file) => new gl.ImageFile(file));
 
-    if (this.diffViewType() === 'parallel') {
-      $('.content-wrapper .container-fluid').removeClass('container-limited');
-    }
-
     if (!isBound) {
       $(document)
         .on('click', '.js-unfold', this.handleClickUnfold.bind(this))
