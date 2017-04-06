@@ -22,6 +22,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:protected_branches).dependent(:destroy) }
     it { is_expected.to have_one(:forked_project_link).dependent(:destroy) }
     it { is_expected.to have_one(:slack_service).dependent(:destroy) }
+    it { is_expected.to have_one(:microsoft_teams_service).dependent(:destroy) }
     it { is_expected.to have_one(:mattermost_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }

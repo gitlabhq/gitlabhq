@@ -149,6 +149,7 @@ project:
 - asana_service
 - gemnasium_service
 - slack_service
+- microsoft_teams_service
 - mattermost_service
 - buildkite_service
 - bamboo_service
