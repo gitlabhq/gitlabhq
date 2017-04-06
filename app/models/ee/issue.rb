@@ -25,7 +25,7 @@ module EE
       # is not as bad as it seems, though, since it isn't
       # permitted to :receive_notifications, and doesn't
       # actually show up in the participants list.
-      ::User.support_bot || super
+      user.support_bot? || super
     end
   end
 end
