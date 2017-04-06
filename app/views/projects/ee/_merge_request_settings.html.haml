@@ -64,11 +64,18 @@
     .help-block
       Add an approver or group suggestion for each merge request
 
-    .panel.panel-default.prepend-top-10
+    .panel.panel-default.prepend-top-10.js-current-approvers
       .panel-heading
         Approvers
         %span.badge
-        -# TODO: badge with project.approver_group_ids.count + project.approver_ids.count
+          - ids = []
+          - project.approvers.each do |user|
+            - ids << user.user_id
+          - project.approver_groups.each do |group|
+            - group.users.each do |user|
+              - unless ids.include?(user.id)
+                - ids << user.id
+          = ids.count
       %ul.well-list.approver-list
         .load-wrapper.hidden
           = icon('spinner spin', class: 'approver-list-loader')

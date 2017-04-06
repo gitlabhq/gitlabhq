@@ -1,7 +1,4 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-unused-vars, one-var, no-underscore-dangle, prefer-template, no-else-return, prefer-arrow-callback, max-len */
-/* global Api */
-
-import ApproversSelect from './approvers_select';
 
 (function() {
   this.ProjectNew = (function() {
@@ -22,8 +19,6 @@ import ApproversSelect from './approvers_select';
       this.toggleSettings();
       this.addEvents();
       this.toggleRepoVisibility();
-
-      this.approversSelect = new ApproversSelect();
     }
 
     ProjectNew.prototype.bindEvents = function() {

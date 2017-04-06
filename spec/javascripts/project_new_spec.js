@@ -1,4 +1,4 @@
-import ApproversSelect from '~/approvers_select';
+require('~/project_new');
 
 describe('ApproversSelect', function () {
   const projectSettingsTemplate = 'projects/edit.html.raw';
@@ -7,7 +7,7 @@ describe('ApproversSelect', function () {
   beforeEach(() => {
     loadFixtures(projectSettingsTemplate);
     this.$requireApprovalsToggle = $('.js-require-approvals-toggle');
-    this.project = new ApproversSelect();
+    this.project = new window.ProjectNew();
   });
 
   it('shows approver settings if enabled', () => {
@@ -15,7 +15,7 @@ describe('ApproversSelect', function () {
     expect($('.nested-settings').hasClass('hidden')).toBe(true);
 
     this.$requireApprovalsToggle.click();
-    expect($('.nested-settings').hasClass('hidden')).toBe(false);
+    expect($('.js-current-approvers').hasClass('hidden')).toBe(false);
   });
 
   it('hides approver settings if disabled', () => {

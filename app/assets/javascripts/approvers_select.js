@@ -25,7 +25,22 @@ export default class ApproversSelect {
       },
       formatResult: ApproversSelect.formatResult,
       formatSelection: ApproversSelect.formatSelection,
-      dropdownCssClass: 'ajax-groups-dropdown',
+      dropdownCss() {
+        const $input = $('.js-select-user-and-group .select2-input');
+        const offset = $input.offset();
+        const inputRight = offset.left + $input.outerWidth();
+        const $dropdown = $('.select2-drop-active');
+
+        let left = offset.left;
+        if ($dropdown.outerWidth() > $input.outerWidth()) {
+          left = `${inputRight - $dropdown.width()}px`;
+        }
+        return {
+          left,
+          right: 'auto',
+          width: 'auto',
+        };
+      },
     })
     .on('change', this.handleSelectChange);
   }
@@ -105,10 +120,12 @@ export default class ApproversSelect {
       return `
         <div class="user-result">
           <div class="user-image">
-            <img class="avatar s24" src="${avatar}">
+            <img class="avatar s40" src="${avatar}">
           </div>
-          <div class="user-name">${name}</div>
-          <div class="user-username">@${username}</div>
+          <div class="user-info">
+            <div class="user-name">${name}</div>
+            <div class="user-username">@${username}</div>
+          </div>
         </div>
       `;
     }
@@ -174,6 +191,6 @@ export default class ApproversSelect {
   }
 
   static updateApproverList(html) {
-    $('.approver-list').html($(html).find('.approver-list').html());
+    $('.js-current-approvers').html($(html).find('.js-current-approvers').html());
   }
 }
