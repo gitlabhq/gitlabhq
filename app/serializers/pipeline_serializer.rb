@@ -13,7 +13,7 @@ class PipelineSerializer < BaseSerializer
 
   def represent(resource, opts = {})
     if resource.is_a?(ActiveRecord::Relation)
-      resource = resource.includes([
+      resource = resource.preload([
         :retryable_builds,
         :cancelable_statuses,
         :trigger_requests,
