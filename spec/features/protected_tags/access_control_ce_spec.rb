@@ -5,7 +5,7 @@ RSpec.shared_examples "protected tags > access control > CE" do
 
       set_protected_tag_name('master')
 
-      within('.new_protected_tag') do
+      within('.js-new-protected-tag') do
         allowed_to_create_button = find(".js-allowed-to-create")
 
         unless allowed_to_create_button.text == access_type_name
