@@ -105,7 +105,8 @@ describe PipelineSerializer do
 
       it "verifies number of queries" do
         recorded = ActiveRecord::QueryRecorder.new { subject }
-        expect(recorded.count).to be_within(200).of(10)
+        expect(recorded.count).to be_within(10).of(230)
+        expect(recorded.cached_count).to be_within(5).of(5)
       end
 
       def create_pipeline(status)
