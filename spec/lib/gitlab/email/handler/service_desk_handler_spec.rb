@@ -17,7 +17,7 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
       project.update(service_desk_mail_key: 'somemailkey')
 
       allow(Notify).to receive(:service_desk_thank_you_email)
-        .with(instance_of(Fixnum)).and_return(double(deliver_later!: true))
+        .with(kind_of(Integer)).and_return(double(deliver_later!: true))
 
       allow_any_instance_of(License).to receive(:add_on?).and_call_original
       allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk') { true }
@@ -26,7 +26,7 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
     it 'sends thank you the email and creates issue' do
       setup_attachment
 
-      expect(Notify).to receive(:service_desk_thank_you_email).with(instance_of(Fixnum))
+      expect(Notify).to receive(:service_desk_thank_you_email).with(kind_of(Integer))
 
       expect { receiver.execute }.to change { Issue.count }.by(1)
 
