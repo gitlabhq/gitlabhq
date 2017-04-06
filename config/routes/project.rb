@@ -102,6 +102,7 @@ constraints(ProjectUrlConstrainer.new) do
           get :merge_widget_refresh
           post :cancel_merge_when_pipeline_succeeds
           get :ci_status
+          get :pipeline_status
           get :ci_environments_status
           post :toggle_subscription
           post :remove_wip
@@ -154,6 +155,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :cancel
           post :retry
           get :builds
+          get :status
         end
       end
 
@@ -166,7 +168,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
 
         collection do
-          get :folder, path: 'folders/:id'
+          get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
         end
       end
 
@@ -250,6 +252,7 @@ constraints(ProjectUrlConstrainer.new) do
           get :referenced_merge_requests
           get :related_branches
           get :can_create_branch
+          get :rendered_title
         end
         collection do
           post  :bulk_update

@@ -1,10 +1,10 @@
-/* eslint-disable no-new*/
-/* global Flash */
 import Vue from 'vue';
 import PipelinesTableComponent from '../../vue_shared/components/pipelines_table';
 import PipelinesService from '../../vue_pipelines_index/services/pipelines_service';
 import PipelineStore from '../../vue_pipelines_index/stores/pipelines_store';
 import eventHub from '../../vue_pipelines_index/event_hub';
+import EmptyState from '../../vue_pipelines_index/components/empty_state';
+import ErrorState from '../../vue_pipelines_index/components/error_state';
 import '../../lib/utils/common_utils';
 import '../../vue_shared/vue_resource_interceptor';
 
@@ -22,6 +22,8 @@ import '../../vue_shared/vue_resource_interceptor';
 export default Vue.component('pipelines-table', {
   components: {
     'pipelines-table-component': PipelinesTableComponent,
+    'error-state': ErrorState,
+    'empty-state': EmptyState,
   },
 
   /**
@@ -31,15 +33,26 @@ export default Vue.component('pipelines-table', {
    * @return {Object}
    */
   data() {
-    const pipelinesTableData = document.querySelector('#commit-pipeline-table-view').dataset;
     const store = new PipelineStore();
 
     return {
-      endpoint: pipelinesTableData.endpoint,
+      endpoint: null,
+      helpPagePath: null,
       store,
       state: store.state,
       isLoading: false,
+      hasError: false,
     };
+  },
+
+  computed: {
+    shouldRenderErrorState() {
+      return this.hasError && !this.isLoading;
+    },
+
+    shouldRenderEmptyState() {
+      return !this.state.pipelines.length && !this.isLoading;
+    },
   },
 
   /**
@@ -51,6 +64,8 @@ export default Vue.component('pipelines-table', {
    *
    */
   beforeMount() {
+    this.endpoint = this.$el.dataset.endpoint;
+    this.helpPagePath = this.$el.dataset.helpPagePath;
     this.service = new PipelinesService(this.endpoint);
 
     this.fetchPipelines();
@@ -80,26 +95,25 @@ export default Vue.component('pipelines-table', {
           this.isLoading = false;
         })
         .catch(() => {
+          this.hasError = true;
           this.isLoading = false;
-          new Flash('An error occurred while fetching the pipelines, please reload the page again.');
         });
     },
   },
 
   template: `
-    <div class="pipelines">
+    <div class="content-list pipelines">
       <div class="realtime-loading" v-if="isLoading">
         <i class="fa fa-spinner fa-spin"></i>
       </div>
 
-      <div class="blank-state blank-state-no-icon"
-        v-if="!isLoading && state.pipelines.length === 0">
-        <h2 class="blank-state-title js-blank-state-title">
-          No pipelines to show
-        </h2>
-      </div>
+      <empty-state
+        v-if="shouldRenderEmptyState"
+        :help-page-path="helpPagePath" />
 
-      <div class="table-holder pipelines"
+      <error-state v-if="shouldRenderErrorState" />
+
+      <div class="table-holder"
         v-if="!isLoading && state.pipelines.length > 0">
         <pipelines-table-component
           :pipelines="state.pipelines"

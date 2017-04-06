@@ -1,7 +1,7 @@
-/* eslint-disable */
+/* eslint-disable no-unused-vars, space-before-function-paren, func-call-spacing, no-spaced-func, semi, max-len, quotes, space-infix-ops, padded-blocks */
 
-require('jquery');
-require('vue');
+import Vue from 'vue';
+
 require('~/issuable/time_tracking/components/time_tracker');
 
 function initTimeTrackingComponent(opts) {

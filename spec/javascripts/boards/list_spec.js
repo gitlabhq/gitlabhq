@@ -1,11 +1,12 @@
 /* eslint-disable comma-dangle */
-/* global Vue */
 /* global boardsMockInterceptor */
 /* global BoardService */
 /* global List */
 /* global ListIssue */
 /* global listObj */
 /* global listObjDuplicate */
+
+import Vue from 'vue';
 
 require('~/lib/utils/url_utility');
 require('~/boards/models/issue');
@@ -42,7 +43,7 @@ describe('List model', () => {
     list = new List({
       title: 'test',
       label: {
-        id: 1,
+        id: _.random(10000),
         title: 'test',
         color: 'red'
       }
@@ -50,7 +51,7 @@ describe('List model', () => {
     list.save();
 
     setTimeout(() => {
-      expect(list.id).toBe(1);
+      expect(list.id).toBe(listObj.id);
       expect(list.type).toBe('label');
       expect(list.position).toBe(0);
       done();
@@ -59,7 +60,7 @@ describe('List model', () => {
 
   it('destroys the list', (done) => {
     gl.issueBoards.BoardsStore.addList(listObj);
-    list = gl.issueBoards.BoardsStore.findList('id', 1);
+    list = gl.issueBoards.BoardsStore.findList('id', listObj.id);
     expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(1);
     list.destroy();
 
@@ -91,7 +92,7 @@ describe('List model', () => {
     const listDup = new List(listObjDuplicate);
     const issue = new ListIssue({
       title: 'Testing',
-      iid: 1,
+      iid: _.random(10000),
       confidential: false,
       labels: [list.label, listDup.label]
     });
@@ -101,7 +102,7 @@ describe('List model', () => {
 
     spyOn(gl.boardService, 'moveIssue').and.callThrough();
 
-    listDup.updateIssueLabel(list, issue);
+    listDup.updateIssueLabel(issue, list);
 
     expect(gl.boardService.moveIssue)
       .toHaveBeenCalledWith(issue.id, list.id, listDup.id, undefined, undefined);

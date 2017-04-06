@@ -40,6 +40,8 @@ class Issue < ActiveRecord::Base
 
   scope :include_associations, -> { includes(:assignee, :labels, project: :namespace) }
 
+  after_save :expire_etag_cache
+
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
 
@@ -58,10 +60,6 @@ class Issue < ActiveRecord::Base
 
     before_transition any => :closed do |issue|
       issue.closed_at = Time.zone.now
-    end
-
-    before_transition closed: any do |issue|
-      issue.closed_at = nil
     end
   end
 
@@ -211,9 +209,8 @@ class Issue < ActiveRecord::Base
     due_date.try(:past?) || false
   end
 
-  # Only issues on public projects should be checked for spam
   def check_for_spam?
-    project.public?
+    project.public? && (title_changed? || description_changed?)
   end
 
   def as_json(options = {})
@@ -256,5 +253,14 @@ class Issue < ActiveRecord::Base
   # Returns `true` if this Issue is visible to everybody.
   def publicly_visible?
     project.public? && !confidential?
+  end
+
+  def expire_etag_cache
+    key = Gitlab::Routing.url_helpers.rendered_title_namespace_project_issue_path(
+      project.namespace,
+      project,
+      self
+    )
+    Gitlab::EtagCaching::Store.new.touch(key)
   end
 end

@@ -4,9 +4,9 @@
 
 %div{ class: container_class }
   .top-area.adjust
-    .col-md-9
+    .col-md-7
       %h3.page-title= @environment.name
-    .col-md-3
+    .col-md-5
       .nav-controls
         = render 'projects/environments/metrics_button', environment: @environment
         = render 'projects/environments/terminal_button', environment: @environment

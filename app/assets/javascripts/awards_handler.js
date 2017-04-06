@@ -1,4 +1,4 @@
-/* global Cookies */
+import Cookies from 'js-cookie';
 
 import emojiMap from 'emojis/digests.json';
 import emojiAliases from 'emojis/aliases.json';
@@ -476,10 +476,10 @@ AwardsHandler.prototype.setupSearch = function setupSearch() {
   this.registerEventListener('on', $('input.emoji-search'), 'input', (e) => {
     const term = $(e.target).val().trim();
     // Clean previous search results
-    $('ul.emoji-menu-search, h5.emoji-search').remove();
+    $('ul.emoji-menu-search, h5.emoji-search-title').remove();
     if (term.length > 0) {
       // Generate a search result block
-      const h5 = $('<h5 class="emoji-search" />').text('Search results');
+      const h5 = $('<h5 class="emoji-search-title"/>').text('Search results');
       const foundEmojis = this.searchEmojis(term).show();
       const ul = $('<ul>').addClass('emoji-menu-list emoji-menu-search').append(foundEmojis);
       $('.emoji-menu-content ul, .emoji-menu-content h5').hide();

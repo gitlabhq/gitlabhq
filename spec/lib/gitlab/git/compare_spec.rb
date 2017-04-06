@@ -1,11 +1,11 @@
 require "spec_helper"
 
 describe Gitlab::Git::Compare, seed_helper: true do
-  let(:repository) { Gitlab::Git::Repository.new(TEST_REPO_PATH) }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
   let(:compare) { Gitlab::Git::Compare.new(repository, SeedRepo::BigCommit::ID, SeedRepo::Commit::ID, false) }
   let(:compare_straight) { Gitlab::Git::Compare.new(repository, SeedRepo::BigCommit::ID, SeedRepo::Commit::ID, true) }
 
-  describe :commits do
+  describe '#commits' do
     subject do
       compare.commits.map(&:id)
     end
@@ -42,7 +42,7 @@ describe Gitlab::Git::Compare, seed_helper: true do
     end
   end
 
-  describe :diffs do
+  describe '#diffs' do
     subject do
       compare.diffs.map(&:new_path)
     end
@@ -67,7 +67,7 @@ describe Gitlab::Git::Compare, seed_helper: true do
     end
   end
 
-  describe :same  do
+  describe '#same'  do
     subject do
       compare.same
     end
@@ -81,7 +81,7 @@ describe Gitlab::Git::Compare, seed_helper: true do
     end
   end
 
-  describe :commits_straight do
+  describe '#commits', 'straight compare' do
     subject do
       compare_straight.commits.map(&:id)
     end
@@ -94,7 +94,7 @@ describe Gitlab::Git::Compare, seed_helper: true do
     it { is_expected.not_to include(SeedRepo::BigCommit::PARENT_ID) }
   end
 
-  describe :diffs_straight do
+  describe '#diffs', 'straight compare' do
     subject do
       compare_straight.diffs.map(&:new_path)
     end

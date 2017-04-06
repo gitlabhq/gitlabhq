@@ -25,6 +25,12 @@ export default {
     };
   },
 
+  computed: {
+    title() {
+      return 'Stop';
+    },
+  },
+
   methods: {
     onClick() {
       if (confirm('Are you sure you want to stop this environment?')) {
@@ -45,10 +51,12 @@ export default {
 
   template: `
     <button type="button"
-      class="btn stop-env-link"
+      class="btn stop-env-link has-tooltip"
+      data-container="body"
       @click="onClick"
       :disabled="isLoading"
-      title="Stop Environment">
+      :title="title"
+      :aria-label="title">
       <i class="fa fa-stop stop-env-icon" aria-hidden="true"></i>
       <i v-if="isLoading" class="fa fa-spinner fa-spin" aria-hidden="true"></i>
     </button>

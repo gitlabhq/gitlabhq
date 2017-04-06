@@ -24,7 +24,9 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
 
   step 'I click to emoji in the picker' do
     page.within '.emoji-menu-content' do
-      page.first('.js-emoji-btn').click
+      emoji_button = page.first('.js-emoji-btn')
+      emoji_button.hover
+      emoji_button.click
     end
   end
 
@@ -45,7 +47,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   end
 
   step 'I have new comment with emoji added' do
-    expect(page).to have_selector ".emoji[title=':smile:']"
+    expect(page).to have_selector 'gl-emoji[data-name="smile"]'
   end
 
   step 'I have award added' do

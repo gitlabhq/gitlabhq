@@ -138,8 +138,11 @@ module API
 
         return unless Gitlab::GitalyClient.enabled?
 
+        relative_path = Gitlab::RepoPath.strip_storage_path(params[:repo_path])
+        project = Project.find_by_full_path(relative_path.sub(/\.(git|wiki)\z/, ''))
+
         begin
-          Gitlab::GitalyClient::Notifications.new.post_receive(params[:repo_path])
+          Gitlab::GitalyClient::Notifications.new(project.repository_storage, relative_path).post_receive
         rescue GRPC::Unavailable => e
           render_api_error(e, 500)
         end

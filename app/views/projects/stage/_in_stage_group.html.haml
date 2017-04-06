@@ -1,5 +1,5 @@
 - group_status = CommitStatus.where(id: subject).status
-%button.dropdown-menu-toggle.build-content.has-tooltip{ type: 'button', data: { toggle: 'dropdown',  title: "#{name} - #{group_status}" } }
+%button.dropdown-menu-toggle.build-content.has-tooltip{ type: 'button', data: { toggle: 'dropdown',  title: "#{name} - #{group_status}", container: 'body' } }
   %span{ class: "ci-status-icon ci-status-icon-#{group_status}" }
     = ci_icon_for_status(group_status)
   %span.ci-status-text

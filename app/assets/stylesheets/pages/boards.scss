@@ -46,7 +46,7 @@
 }
 
 .issue-boards-page {
-  .page-with-sidebar {
+  .content-wrapper {
     padding-bottom: 0;
   }
 }
@@ -72,7 +72,7 @@
 
   @media (min-width: $screen-sm-min) {
     height: 475px; // Needed for PhantomJS
-    height: calc(100vh - 220px);
+    height: calc(100vh - 222px);
     min-height: 475px;
     transition: width .2s;
 
@@ -240,8 +240,13 @@
     font-size: (14px / $issue-boards-font-size) * 1em;
   }
 
+  .card-assignee {
+    margin-right: 5px;
+  }
+
   .avatar {
     margin-left: 0;
+    margin-right: 0;
   }
 }
 
@@ -296,7 +301,7 @@
   }
 }
 
-.issue-boards-sidebar {
+.page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar {
   &.right-sidebar {
     top: 0;
     bottom: 0;
@@ -487,9 +492,9 @@
   right: -3px;
   top: -3px;
   width: 17px;
-  background-color: $blue-light;
+  background-color: $blue-500;
   color: $white-light;
-  border: 1px solid $border-blue-light;
+  border: 1px solid $blue-600;
   font-size: 9px;
   line-height: 15px;
   border-radius: 50%;

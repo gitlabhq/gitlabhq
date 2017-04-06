@@ -1,9 +1,12 @@
-/* global Vue */
 /* global List */
+/* global ListUser */
 /* global ListLabel */
 /* global listObj */
 /* global boardsMockInterceptor */
 /* global BoardService */
+
+import Vue from 'vue';
+import '~/boards/models/user';
 
 require('~/boards/models/list');
 require('~/boards/models/label');
@@ -127,6 +130,23 @@ describe('Issue card', () => {
       triggerEvent('mouseup', vm.$el.querySelector('button'));
 
       expect(gl.issueBoards.BoardsStore.detail.issue).toEqual({});
+    });
+
+    it('does not set detail issue if img is clicked', (done) => {
+      vm.issue.assignee = new ListUser({
+        id: 1,
+        name: 'testing 123',
+        username: 'test',
+        avatar: 'test_image',
+      });
+
+      Vue.nextTick(() => {
+        triggerEvent('mouseup', vm.$el.querySelector('img'));
+
+        expect(gl.issueBoards.BoardsStore.detail.issue).toEqual({});
+
+        done();
+      });
     });
 
     it('does not set detail issue if showDetail is false after mouseup', () => {

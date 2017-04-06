@@ -1,6 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len, no-multi-spaces, import/newline-after-import, import/first */
 /* global bp */
-/* global Cookies */
 /* global Flash */
 /* global ConfirmDangerModal */
 /* global Aside */
@@ -24,7 +23,6 @@ import './extensions/array';
 window.jQuery = jQuery;
 window.$ = jQuery;
 window._ = _;
-window.Cookies = Cookies;
 window.Pikaday = Pikaday;
 window.Dropzone = Dropzone;
 window.Sortable = Sortable;
@@ -49,15 +47,6 @@ import { installGlEmojiElement } from './behaviors/gl_emoji';
 installGlEmojiElement();
 
 // blob
-import './blob/blob_ci_yaml';
-import './blob/blob_dockerfile_selector';
-import './blob/blob_dockerfile_selectors';
-import './blob/blob_file_dropzone';
-import './blob/blob_gitignore_selector';
-import './blob/blob_gitignore_selectors';
-import './blob/blob_license_selector';
-import './blob/blob_license_selectors';
-import './blob/template_selector';
 import './blob/create_branch_dropdown';
 import './blob/target_branch_dropdown';
 
@@ -197,6 +186,9 @@ import './version_check_image';
 import './visibility_select';
 import './wikis';
 import './zen_mode';
+
+// eslint-disable-next-line global-require
+if (process.env.NODE_ENV !== 'production') require('./test_utils/');
 
 document.addEventListener('beforeunload', function () {
   // Unbind scroll events
@@ -381,4 +373,6 @@ $(function () {
   new Aside();
 
   gl.utils.initTimeagoTimeout();
+
+  $(document).trigger('init.scrolling-tabs');
 });

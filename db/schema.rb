@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170315194013) do
+ActiveRecord::Schema.define(version: 20170402231018) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 20170315194013) do
     t.boolean "shared_runners_enabled", default: true, null: false
     t.integer "max_artifacts_size", default: 100, null: false
     t.string "runners_registration_token"
+    t.integer "max_pages_size", default: 100, null: false
     t.boolean "require_two_factor_authentication", default: false
     t.integer "two_factor_grace_period", default: 48
     t.boolean "metrics_enabled", default: false
@@ -110,11 +111,11 @@ ActiveRecord::Schema.define(version: 20170315194013) do
     t.string "plantuml_url"
     t.boolean "plantuml_enabled"
     t.integer "terminal_max_session_time", default: 0, null: false
-    t.integer "max_pages_size", default: 100, null: false
     t.string "default_artifacts_expire_in", default: "0", null: false
     t.integer "unique_ips_limit_per_user"
     t.integer "unique_ips_limit_time_window"
     t.boolean "unique_ips_limit_enabled", default: false, null: false
+    t.decimal "polling_interval_multiplier", default: 1.0, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -688,8 +689,8 @@ ActiveRecord::Schema.define(version: 20170315194013) do
     t.integer "visibility_level", default: 20, null: false
     t.boolean "request_access_enabled", default: false, null: false
     t.datetime "deleted_at"
-    t.boolean "lfs_enabled"
     t.text "description_html"
+    t.boolean "lfs_enabled"
     t.integer "parent_id"
   end
 
@@ -1006,6 +1007,7 @@ ActiveRecord::Schema.define(version: 20170315194013) do
   end
 
   add_index "routes", ["path"], name: "index_routes_on_path", unique: true, using: :btree
+  add_index "routes", ["path"], name: "index_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
   add_index "routes", ["source_type", "source_id"], name: "index_routes_on_source_type_and_source_id", unique: true, using: :btree
 
   create_table "sent_notifications", force: :cascade do |t|
@@ -1094,6 +1096,14 @@ ActiveRecord::Schema.define(version: 20170315194013) do
   end
 
   add_index "subscriptions", ["subscribable_id", "subscribable_type", "user_id", "project_id"], name: "index_subscriptions_on_subscribable_and_user_id_and_project_id", unique: true, using: :btree
+
+  create_table "system_note_metadata", force: :cascade do |t|
+    t.integer "note_id", null: false
+    t.integer "commit_count"
+    t.string "action"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "taggings", force: :cascade do |t|
     t.integer "tag_id"
@@ -1252,17 +1262,17 @@ ActiveRecord::Schema.define(version: 20170315194013) do
     t.datetime "otp_grace_period_started_at"
     t.boolean "ldap_email", default: false, null: false
     t.boolean "external", default: false
-    t.string "organization"
     t.string "incoming_email_token"
+    t.string "organization"
     t.boolean "authorized_projects_populated"
     t.boolean "ghost"
+    t.boolean "notified_of_own_activity"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["created_at"], name: "index_users_on_created_at", using: :btree
-  add_index "users", ["current_sign_in_at"], name: "index_users_on_current_sign_in_at", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email_trigram", using: :gin, opclasses: {"email"=>"gin_trgm_ops"}
   add_index "users", ["ghost"], name: "index_users_on_ghost", using: :btree
@@ -1330,6 +1340,7 @@ ActiveRecord::Schema.define(version: 20170315194013) do
   add_foreign_key "protected_tag_create_access_levels", "protected_tags"
   add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
+  add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade

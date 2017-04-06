@@ -46,6 +46,10 @@ require('~/lib/utils/common_utils');
         spyOn(window.document, 'getElementById').and.callThrough();
       });
 
+      afterEach(() => {
+        window.history.pushState({}, null, '');
+      });
+
       function expectGetElementIdToHaveBeenCalledWith(elementId) {
         expect(window.document.getElementById).toHaveBeenCalledWith(elementId);
       }
@@ -75,9 +79,54 @@ require('~/lib/utils/common_utils');
       });
     });
 
+    describe('gl.utils.setParamInURL', () => {
+      afterEach(() => {
+        window.history.pushState({}, null, '');
+      });
+
+      it('should return the parameter', () => {
+        window.history.replaceState({}, null, '');
+
+        expect(gl.utils.setParamInURL('page', 156)).toBe('?page=156');
+        expect(gl.utils.setParamInURL('page', '156')).toBe('?page=156');
+      });
+
+      it('should update the existing parameter when its a number', () => {
+        window.history.pushState({}, null, '?page=15');
+
+        expect(gl.utils.setParamInURL('page', 16)).toBe('?page=16');
+        expect(gl.utils.setParamInURL('page', '16')).toBe('?page=16');
+        expect(gl.utils.setParamInURL('page', true)).toBe('?page=true');
+      });
+
+      it('should update the existing parameter when its a string', () => {
+        window.history.pushState({}, null, '?scope=all');
+
+        expect(gl.utils.setParamInURL('scope', 'finished')).toBe('?scope=finished');
+      });
+
+      it('should update the existing parameter when more than one parameter exists', () => {
+        window.history.pushState({}, null, '?scope=all&page=15');
+
+        expect(gl.utils.setParamInURL('scope', 'finished')).toBe('?scope=finished&page=15');
+      });
+
+      it('should add a new parameter to the end of the existing ones', () => {
+        window.history.pushState({}, null, '?scope=all');
+
+        expect(gl.utils.setParamInURL('page', 16)).toBe('?scope=all&page=16');
+        expect(gl.utils.setParamInURL('page', '16')).toBe('?scope=all&page=16');
+        expect(gl.utils.setParamInURL('page', true)).toBe('?scope=all&page=true');
+      });
+    });
+
     describe('gl.utils.getParameterByName', () => {
       beforeEach(() => {
         window.history.pushState({}, null, '?scope=all&p=2');
+      });
+
+      afterEach(() => {
+        window.history.replaceState({}, null, null);
       });
 
       it('should return valid parameter', () => {
@@ -105,6 +154,37 @@ require('~/lib/utils/common_utils');
 
         expect(normalized[WORKHORSE].workhorse).toBe('ok');
         expect(normalized[NGINX].nginx).toBe('ok');
+      });
+    });
+
+    describe('gl.utils.normalizeCRLFHeaders', () => {
+      beforeEach(function () {
+        this.CLRFHeaders = 'a-header: a-value\nAnother-Header: ANOTHER-VALUE\nLaSt-HeAdEr: last-VALUE';
+
+        spyOn(String.prototype, 'split').and.callThrough();
+        spyOn(gl.utils, 'normalizeHeaders').and.callThrough();
+
+        this.normalizeCRLFHeaders = gl.utils.normalizeCRLFHeaders(this.CLRFHeaders);
+      });
+
+      it('should split by newline', function () {
+        expect(String.prototype.split).toHaveBeenCalledWith('\n');
+      });
+
+      it('should split by colon+space for each header', function () {
+        expect(String.prototype.split.calls.allArgs().filter(args => args[0] === ': ').length).toBe(3);
+      });
+
+      it('should call gl.utils.normalizeHeaders with a parsed headers object', function () {
+        expect(gl.utils.normalizeHeaders).toHaveBeenCalledWith(jasmine.any(Object));
+      });
+
+      it('should return a normalized headers object', function () {
+        expect(this.normalizeCRLFHeaders).toEqual({
+          'A-HEADER': 'a-value',
+          'ANOTHER-HEADER': 'ANOTHER-VALUE',
+          'LAST-HEADER': 'last-VALUE',
+        });
       });
     });
 
@@ -162,6 +242,73 @@ require('~/lib/utils/common_utils');
 
         expect(gl.utils.isMetaClick(e)).toBe(true);
       });
+    });
+
+    describe('gl.utils.backOff', () => {
+      it('solves the promise from the callback', (done) => {
+        const expectedResponseValue = 'Success!';
+        gl.utils.backOff((next, stop) => (
+          new Promise((resolve) => {
+            resolve(expectedResponseValue);
+          }).then((resp) => {
+            stop(resp);
+          })
+        )).then((respBackoff) => {
+          expect(respBackoff).toBe(expectedResponseValue);
+          done();
+        });
+      });
+
+      it('catches the rejected promise from the callback ', (done) => {
+        const errorMessage = 'Mistakes were made!';
+        gl.utils.backOff((next, stop) => {
+          new Promise((resolve, reject) => {
+            reject(new Error(errorMessage));
+          }).then((resp) => {
+            stop(resp);
+          }).catch(err => stop(err));
+        }).catch((errBackoffResp) => {
+          expect(errBackoffResp instanceof Error).toBe(true);
+          expect(errBackoffResp.message).toBe(errorMessage);
+          done();
+        });
+      });
+
+      it('solves the promise correctly after retrying a third time', (done) => {
+        let numberOfCalls = 1;
+        const expectedResponseValue = 'Success!';
+        gl.utils.backOff((next, stop) => (
+          new Promise((resolve) => {
+            resolve(expectedResponseValue);
+          }).then((resp) => {
+            if (numberOfCalls < 3) {
+              numberOfCalls += 1;
+              next();
+            } else {
+              stop(resp);
+            }
+          })
+        )).then((respBackoff) => {
+          expect(respBackoff).toBe(expectedResponseValue);
+          expect(numberOfCalls).toBe(3);
+          done();
+        });
+      }, 10000);
+
+      it('rejects the backOff promise after timing out', (done) => {
+        const expectedResponseValue = 'Success!';
+        gl.utils.backOff(next => (
+          new Promise((resolve) => {
+            resolve(expectedResponseValue);
+          }).then(() => {
+            setTimeout(next(), 5000); // it will time out
+          })
+        ), 3000).catch((errBackoffResp) => {
+          expect(errBackoffResp instanceof Error).toBe(true);
+          expect(errBackoffResp.message).toBe('BACKOFF_TIMEOUT');
+          done();
+        });
+      }, 10000);
     });
   });
 })();

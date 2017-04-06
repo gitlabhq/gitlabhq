@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe Gitlab::Git::Tree, seed_helper: true do
   context :repo do
-    let(:repository) { Gitlab::Git::Repository.new(TEST_REPO_PATH) }
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
     let(:tree) { Gitlab::Git::Tree.where(repository, SeedRepo::Commit::ID) }
 
     it { expect(tree).to be_kind_of Array }
@@ -11,7 +11,7 @@ describe Gitlab::Git::Tree, seed_helper: true do
     it { expect(tree.select(&:file?).size).to eq(10) }
     it { expect(tree.select(&:submodule?).size).to eq(2) }
 
-    describe :dir do
+    describe '#dir?' do
       let(:dir) { tree.select(&:dir?).first }
 
       it { expect(dir).to be_kind_of Gitlab::Git::Tree }
@@ -19,6 +19,7 @@ describe Gitlab::Git::Tree, seed_helper: true do
       it { expect(dir.commit_id).to eq(SeedRepo::Commit::ID) }
       it { expect(dir.name).to eq('encoding') }
       it { expect(dir.path).to eq('encoding') }
+      it { expect(dir.mode).to eq('40000') }
 
       context :subdir do
         let(:subdir) { Gitlab::Git::Tree.where(repository, SeedRepo::Commit::ID, 'files').first }
@@ -41,7 +42,7 @@ describe Gitlab::Git::Tree, seed_helper: true do
       end
     end
 
-    describe :file do
+    describe '#file?' do
       let(:file) { tree.select(&:file?).first }
 
       it { expect(file).to be_kind_of Gitlab::Git::Tree }
@@ -50,21 +51,21 @@ describe Gitlab::Git::Tree, seed_helper: true do
       it { expect(file.name).to eq('.gitignore') }
     end
 
-    describe :readme do
+    describe '#readme?' do
       let(:file) { tree.select(&:readme?).first }
 
       it { expect(file).to be_kind_of Gitlab::Git::Tree }
       it { expect(file.name).to eq('README.md') }
     end
 
-    describe :contributing do
+    describe '#contributing?' do
       let(:file) { tree.select(&:contributing?).first }
 
       it { expect(file).to be_kind_of Gitlab::Git::Tree }
       it { expect(file.name).to eq('CONTRIBUTING.md') }
     end
 
-    describe :submodule do
+    describe '#submodule?' do
       let(:submodule) { tree.select(&:submodule?).first }
 
       it { expect(submodule).to be_kind_of Gitlab::Git::Tree }

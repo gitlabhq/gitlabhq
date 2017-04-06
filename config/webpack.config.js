@@ -18,12 +18,11 @@ var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
     common:               './commons/index.js',
-    common_vue:           ['vue', 'vue-resource'],
+    common_vue:           ['vue', './vue_shared/common_vue.js'],
     common_d3:            ['d3'],
     main:                 './main.js',
-    blob_edit:            './blob_edit/blob_edit_bundle.js',
+    blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
-    simulate_drag:        './test_utils/simulate_drag.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
@@ -37,6 +36,9 @@ var config = {
     merge_request_widget: './merge_request_widget/ci_bundle.js',
     monitoring:           './monitoring/monitoring_bundle.js',
     network:              './network/network_bundle.js',
+    notebook_viewer:      './blob/notebook_viewer.js',
+    sketch_viewer:        './blob/sketch_viewer.js',
+    pdf_viewer:           './blob/pdf_viewer.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
@@ -45,6 +47,7 @@ var config = {
     u2f:                  ['vendor/u2f'],
     users:                './users/users_bundle.js',
     vue_pipelines:        './vue_pipelines_index/index.js',
+    issue_show:           './issue_show/index.js',
   },
 
   output: {
@@ -53,7 +56,7 @@ var config = {
     filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js'
   },
 
-  devtool: 'inline-source-map',
+  devtool: 'cheap-module-source-map',
 
   module: {
     rules: [
@@ -65,7 +68,11 @@ var config = {
       {
         test: /\.svg$/,
         use: 'raw-loader'
-      }
+      }, {
+        test: /\.(worker.js|pdf)$/,
+        exclude: /node_modules/,
+        loader: 'file-loader',
+      },
     ]
   },
 
@@ -106,6 +113,8 @@ var config = {
         'environments_folder',
         'issuable',
         'merge_conflicts',
+        'notebook_viewer',
+        'pdf_viewer',
         'vue_pipelines',
       ],
       minChunks: function(module, count) {
@@ -116,7 +125,11 @@ var config = {
     // create cacheable common library bundle for all d3 chunks
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common_d3',
-      chunks: ['graphs', 'users', 'monitoring'],
+      chunks: [
+        'graphs',
+        'users',
+        'monitoring',
+      ],
     }),
 
     // create cacheable common library bundles
@@ -133,7 +146,7 @@ var config = {
       'empty_states':   path.join(ROOT_PATH, 'app/views/shared/empty_states'),
       'icons':          path.join(ROOT_PATH, 'app/views/shared/icons'),
       'vendor':         path.join(ROOT_PATH, 'vendor/assets/javascripts'),
-      'vue$':           'vue/dist/vue.common.js',
+      'vue$':           'vue/dist/vue.esm.js',
     }
   }
 }
@@ -159,6 +172,7 @@ if (IS_PRODUCTION) {
 }
 
 if (IS_DEV_SERVER) {
+  config.devtool = 'cheap-module-eval-source-map';
   config.devServer = {
     port: DEV_SERVER_PORT,
     headers: { 'Access-Control-Allow-Origin': '*' },

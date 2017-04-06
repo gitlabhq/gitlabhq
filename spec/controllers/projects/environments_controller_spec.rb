@@ -81,6 +81,39 @@ describe Projects::EnvironmentsController do
     end
   end
 
+  describe 'GET folder' do
+    before do
+      create(:environment, project: project,
+                           name: 'staging-1.0/review',
+                           state: :available)
+    end
+
+    context 'when using default format' do
+      it 'responds with HTML' do
+        get :folder, namespace_id: project.namespace,
+                     project_id: project,
+                     id: 'staging-1.0'
+
+        expect(response).to be_ok
+        expect(response).to render_template 'folder'
+      end
+    end
+
+    context 'when using JSON format' do
+      it 'responds with JSON' do
+        get :folder, namespace_id: project.namespace,
+                     project_id: project,
+                     id: 'staging-1.0',
+                     format: :json
+
+        expect(response).to be_ok
+        expect(response).not_to render_template 'folder'
+        expect(json_response['environments'][0])
+          .to include('name' => 'staging-1.0/review')
+      end
+    end
+  end
+
   describe 'GET show' do
     context 'with valid id' do
       it 'responds with a status code 200' do

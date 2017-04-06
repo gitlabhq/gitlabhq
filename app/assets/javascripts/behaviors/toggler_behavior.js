@@ -18,13 +18,13 @@
     // Button does not change visibility. If button has icon - it changes chevron style.
     //
     // %div.js-toggle-container
-    //   %a.js-toggle-button
+    //   %button.js-toggle-button
     //   %div.js-toggle-content
     //
     $('body').on('click', '.js-toggle-button', function(e) {
       toggleContainer($(this).closest('.js-toggle-container'));
 
-      const targetTag = e.target.tagName.toLowerCase();
+      const targetTag = e.currentTarget.tagName.toLowerCase();
       if (targetTag === 'a' || targetTag === 'button') {
         e.preventDefault();
       }

@@ -533,6 +533,10 @@ Style/WhileUntilModifier:
 Style/WordArray:
   Enabled: true
 
+# Use `proc` instead of `Proc.new`.
+Style/Proc:
+  Enabled: true
+
 # Metrics #####################################################################
 
 # A calculated magnitude based on number of assignments,

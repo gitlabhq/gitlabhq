@@ -21,6 +21,7 @@ export default {
         <li v-for="artifact in artifacts">
           <a
             rel="nofollow"
+            download
             :href="artifact.path">
             <i class="fa fa-download" aria-hidden="true"></i>
             <span>Download {{artifact.name}} artifacts</span>

@@ -352,7 +352,7 @@ Example values:
 export CI_JOB_ID="50"
 export CI_COMMIT_SHA="1ecfd275763eff1d6b4844ea3168962458c9f27a"
 export CI_COMMIT_REF_NAME="master"
-export CI_REPOSITORY="https://gitab-ci-token:abcde-1234ABCD5678ef@example.com/gitlab-org/gitlab-ce.git"
+export CI_REPOSITORY_URL="https://gitlab-ci-token:abcde-1234ABCD5678ef@example.com/gitlab-org/gitlab-ce.git"
 export CI_COMMIT_TAG="1.0.0"
 export CI_JOB_NAME="spec:other"
 export CI_JOB_STAGE="test"

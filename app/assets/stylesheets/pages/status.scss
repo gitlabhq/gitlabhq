@@ -21,42 +21,41 @@
 
     &.ci-failed,
     &.ci-failed_with_warnings {
-      color: $gl-danger;
-      border-color: $gl-danger;
+      color: $red-500;
+      border-color: $red-500;
 
       &:not(span):hover {
-        background-color: rgba($gl-danger, .07);
+        background-color: $red-50;
+        color: $red-600;
+        border-color: $red-600;
+
+        svg {
+          fill: $red-600;
+        }
       }
 
       svg {
-        fill: $gl-danger;
+        fill: $red-500;
       }
     }
 
     &.ci-success,
     &.ci-success_with_warnings {
-      color: $gl-success;
-      border-color: $gl-success;
+      color: $green-600;
+      border-color: $green-500;
 
       &:not(span):hover {
-        background-color: rgba($gl-success, .07);
+        background-color: $green-50;
+        color: $green-700;
+        border-color: $green-600;
+
+        svg {
+          fill: $green-600;
+        }
       }
 
       svg {
-        fill: $gl-success;
-      }
-    }
-
-    &.ci-info {
-      color: $gl-info;
-      border-color: $gl-info;
-
-      &:not(span):hover {
-        background-color: rgba($gl-info, .07);
-      }
-
-      svg {
-        fill: $gl-info;
+        fill: $green-500;
       }
     }
 
@@ -75,28 +74,41 @@
     }
 
     &.ci-pending {
-      color: $gl-warning;
-      border-color: $gl-warning;
+      color: $orange-600;
+      border-color: $orange-500;
 
       &:not(span):hover {
-        background-color: rgba($gl-warning, .07);
+        background-color: $orange-50;
+        color: $orange-700;
+        border-color: $orange-600;
+
+        svg {
+          fill: $orange-600;
+        }
       }
 
       svg {
-        fill: $gl-warning;
+        fill: $orange-500;
       }
     }
 
+    &.ci-info,
     &.ci-running {
-      color: $blue-normal;
-      border-color: $blue-normal;
+      color: $blue-500;
+      border-color: $blue-500;
 
       &:not(span):hover {
-        background-color: rgba($blue-normal, .07);
+        background-color: $blue-50;
+        color: $blue-600;
+        border-color: $blue-600;
+
+        svg {
+          fill: $blue-600;
+        }
       }
 
       svg {
-        fill: $blue-normal;
+        fill: $blue-500;
       }
     }
 

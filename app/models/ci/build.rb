@@ -540,6 +540,8 @@ module Ci
     end
 
     def dependencies
+      return [] if empty_dependencies?
+
       depended_jobs = depends_on_builds
 
       return depended_jobs unless options[:dependencies].present?
@@ -547,6 +549,10 @@ module Ci
       depended_jobs.select do |job|
         options[:dependencies].include?(job.name)
       end
+    end
+
+    def empty_dependencies?
+      options[:dependencies]&.empty?
     end
 
     private

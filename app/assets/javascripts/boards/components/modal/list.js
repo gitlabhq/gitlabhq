@@ -1,6 +1,8 @@
-/* global Vue */
 /* global ListIssue */
 /* global bp */
+
+import Vue from 'vue';
+
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 

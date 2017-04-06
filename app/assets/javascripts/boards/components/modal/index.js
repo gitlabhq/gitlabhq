@@ -1,5 +1,6 @@
-/* global Vue */
 /* global ListIssue */
+
+import Vue from 'vue';
 import queryData from '../../utils/query_data';
 
 require('./header');
@@ -64,8 +65,15 @@ require('./empty_state');
       },
       filter: {
         handler() {
-          this.page = 1;
-          this.loadIssues(true);
+          if (this.$el.tagName) {
+            this.page = 1;
+            this.filterLoading = true;
+
+            this.loadIssues(true)
+              .then(() => {
+                this.filterLoading = false;
+              });
+          }
         },
         deep: true,
       },
@@ -139,14 +147,14 @@ require('./empty_state');
             :image="blankStateImage"
             :issue-link-base="issueLinkBase"
             :root-path="rootPath"
-            v-if="!loading && showList"></modal-list>
+            v-if="!loading && showList && !filterLoading"></modal-list>
           <empty-state
             v-if="showEmptyState"
             :image="blankStateImage"
             :new-issue-path="newIssuePath"></empty-state>
           <section
             class="add-issues-list text-center"
-            v-if="loading">
+            v-if="loading || filterLoading">
             <div class="add-issues-list-loading">
               <i class="fa fa-spinner fa-spin"></i>
             </div>

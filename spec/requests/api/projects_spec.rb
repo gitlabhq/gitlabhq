@@ -341,7 +341,6 @@ describe API::Projects, :api  do
     it "assigns attributes to project" do
       project = attributes_for(:project, {
         path: 'camelCasePath',
-        description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
@@ -475,7 +474,6 @@ describe API::Projects, :api  do
 
     it 'assigns attributes to project' do
       project = attributes_for(:project, {
-        description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
@@ -902,7 +900,7 @@ describe API::Projects, :api  do
     end
   end
 
-  describe :fork_admin do
+  describe 'fork management' do
     let(:project_fork_target) { create(:empty_project) }
     let(:project_fork_source) { create(:empty_project, :public) }
 

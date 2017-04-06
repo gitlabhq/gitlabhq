@@ -58,7 +58,7 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
     });
 
     describe('search', () => {
-      const defaultParams = '?scope=all&utf8=✓&state=opened';
+      const defaultParams = '?scope=all&utf8=%E2%9C%93&state=opened';
 
       it('should search with a single word', (done) => {
         input.value = 'searchTerm';
@@ -87,6 +87,20 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
 
         spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
           expect(url).toEqual(`${defaultParams}&search=~!%40%23%24%25%5E%26*()_%2B%7B%7D%3A%3C%3E%2C.%3F%2F`);
+          done();
+        });
+
+        manager.search();
+      });
+
+      it('removes duplicated tokens', (done) => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+        `);
+
+        spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
+          expect(url).toEqual(`${defaultParams}&label_name[]=bug`);
           done();
         });
 

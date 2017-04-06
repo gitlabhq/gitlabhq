@@ -25,7 +25,7 @@ class Service < ActiveRecord::Base
   belongs_to :project, inverse_of: :services
   has_one :service_hook
 
-  validates :project_id, presence: true, unless: Proc.new { |service| service.template? }
+  validates :project_id, presence: true, unless: proc { |service| service.template? }
 
   scope :visible, -> { where.not(type: 'GitlabIssueTrackerService') }
   scope :issue_trackers, -> { where(category: 'issue_tracker') }
@@ -238,7 +238,9 @@ class Service < ActiveRecord::Base
       slack
       teamcity
     ]
-    service_names << 'mock_ci' if Rails.env.development?
+    if Rails.env.development?
+      service_names += %w[mock_ci mock_deployment mock_monitoring]
+    end
 
     service_names.sort_by(&:downcase)
   end

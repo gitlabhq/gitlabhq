@@ -91,3 +91,5 @@ methods:
     - :type
   merge_request_diff:
     - :utf8_st_diffs
+  merge_requests:
+    - :diff_head_sha

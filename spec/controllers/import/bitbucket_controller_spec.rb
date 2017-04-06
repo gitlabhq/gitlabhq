@@ -112,6 +112,17 @@ describe Import::BitbucketController do
           post :create, format: :js
         end
       end
+
+      context 'when the Bitbucket user is unauthorized' do
+        render_views
+
+        it 'returns unauthorized' do
+          allow(controller).to receive(:current_user).and_return(user)
+          allow(user).to receive(:can?).and_return(false)
+
+          post :create, format: :js
+        end
+      end
     end
 
     context "when the repository owner is not the Bitbucket user" do
@@ -187,6 +198,73 @@ describe Import::BitbucketController do
             post :create, format: :js
           end
         end
+      end
+    end
+
+    context 'user has chosen an existing nested namespace and name for the project' do
+      let(:parent_namespace) { create(:namespace, name: 'foo', owner: user) }
+      let(:nested_namespace) { create(:namespace, name: 'bar', parent: parent_namespace, owner: user) }
+      let(:test_name) { 'test_name' }
+
+      it 'takes the selected namespace and name' do
+        expect(Gitlab::BitbucketImport::ProjectCreator).
+          to receive(:new).with(bitbucket_repo, test_name, nested_namespace, user, access_params).
+            and_return(double(execute: true))
+
+        post :create, { target_namespace: nested_namespace.full_path, new_name: test_name, format: :js }
+      end
+    end
+
+    context 'user has chosen a non-existent nested namespaces and name for the project' do
+      let(:test_name) { 'test_name' }
+
+      it 'takes the selected namespace and name' do
+        expect(Gitlab::BitbucketImport::ProjectCreator).
+          to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params).
+            and_return(double(execute: true))
+
+        post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :js }
+      end
+
+      it 'creates the namespaces' do
+        allow(Gitlab::BitbucketImport::ProjectCreator).
+          to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params).
+            and_return(double(execute: true))
+
+        expect { post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :js } }
+          .to change { Namespace.count }.by(2)
+      end
+
+      it 'new namespace has the right parent' do
+        allow(Gitlab::BitbucketImport::ProjectCreator).
+          to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params).
+            and_return(double(execute: true))
+
+        post :create, { target_namespace: 'foo/bar', new_name: test_name, format: :js }
+
+        expect(Namespace.find_by_path_or_name('bar').parent.path).to eq('foo')
+      end
+    end
+
+    context 'user has chosen existent and non-existent nested namespaces and name for the project' do
+      let(:test_name) { 'test_name' }
+      let!(:parent_namespace) { create(:namespace, name: 'foo', owner: user) }
+
+      it 'takes the selected namespace and name' do
+        expect(Gitlab::BitbucketImport::ProjectCreator).
+          to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params).
+            and_return(double(execute: true))
+
+        post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :js }
+      end
+
+      it 'creates the namespaces' do
+        allow(Gitlab::BitbucketImport::ProjectCreator).
+          to receive(:new).with(bitbucket_repo, test_name, kind_of(Namespace), user, access_params).
+            and_return(double(execute: true))
+
+        expect { post :create, { target_namespace: 'foo/foobar/bar', new_name: test_name, format: :js } }
+          .to change { Namespace.count }.by(2)
       end
     end
   end

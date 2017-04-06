@@ -1,10 +1,9 @@
 FactoryGirl.define do
   factory :merge_request do
-    title
+    title { generate(:title) }
     author
     association :source_project, :repository, factory: :project
     target_project { source_project }
-    project { target_project }
 
     # $ git log --pretty=oneline feature..master
     # 5937ac0a7beb003549fc5fd26fc247adbce4a52e Add submodule from gitlab.com

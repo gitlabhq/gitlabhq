@@ -74,9 +74,15 @@ import '~/right_sidebar';
 
       var todoToggleSpy = spyOnEvent(document, 'todo:toggle');
 
-      $('.js-issuable-todo').click();
+      $('.issuable-sidebar-header .js-issuable-todo').click();
 
       expect(todoToggleSpy.calls.count()).toEqual(1);
+    });
+
+    it('should not hide collapsed icons', () => {
+      [].forEach.call(document.querySelectorAll('.sidebar-collapsed-icon'), (el) => {
+        expect(el.querySelector('.fa, svg').classList.contains('hidden')).toBeFalsy();
+      });
     });
   });
 }).call(window);

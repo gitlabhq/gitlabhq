@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Route, models: true do
-  let!(:group) { create(:group, path: 'gitlab', name: 'gitlab') }
+  let!(:group) { create(:group, path: 'git_lab', name: 'git_lab') }
   let!(:route) { group.route }
 
   describe 'relationships' do
@@ -14,10 +14,24 @@ describe Route, models: true do
     it { is_expected.to validate_uniqueness_of(:path) }
   end
 
+  describe '.inside_path' do
+    let!(:nested_group) { create(:group, path: 'test', name: 'test', parent: group) }
+    let!(:deep_nested_group) { create(:group, path: 'foo', name: 'foo', parent: nested_group) }
+    let!(:another_group) { create(:group, path: 'other') }
+    let!(:similar_group) { create(:group, path: 'gitllab') }
+    let!(:another_group_nested) { create(:group, path: 'another', name: 'another', parent: similar_group) }
+
+    it 'returns correct routes' do
+      expect(Route.inside_path('git_lab')).to match_array([nested_group.route, deep_nested_group.route])
+    end
+  end
+
   describe '#rename_descendants' do
     let!(:nested_group) { create(:group, path: 'test', name: 'test', parent: group) }
     let!(:deep_nested_group) { create(:group, path: 'foo', name: 'foo', parent: nested_group) }
     let!(:similar_group) { create(:group, path: 'gitlab-org', name: 'gitlab-org') }
+    let!(:another_group) { create(:group, path: 'gittlab', name: 'gitllab') }
+    let!(:another_group_nested) { create(:group, path: 'git_lab', name: 'git_lab', parent: another_group) }
 
     context 'path update' do
       context 'when route name is set' do
@@ -28,6 +42,8 @@ describe Route, models: true do
           expect(described_class.exists?(path: 'bar/test')).to be_truthy
           expect(described_class.exists?(path: 'bar/test/foo')).to be_truthy
           expect(described_class.exists?(path: 'gitlab-org')).to be_truthy
+          expect(described_class.exists?(path: 'gittlab')).to be_truthy
+          expect(described_class.exists?(path: 'gittlab/git_lab')).to be_truthy
         end
       end
 
@@ -44,7 +60,7 @@ describe Route, models: true do
 
     context 'name update' do
       it "updates children routes with new path" do
-        route.update_attributes(name: 'bar') 
+        route.update_attributes(name: 'bar')
 
         expect(described_class.exists?(name: 'bar')).to be_truthy
         expect(described_class.exists?(name: 'bar / test')).to be_truthy

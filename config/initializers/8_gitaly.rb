@@ -1,2 +1,6 @@
-# Make sure we initialize a Gitaly channel before Sidekiq starts multi-threaded execution.
-Gitlab::GitalyClient.channel unless Rails.env.test?
+require 'uri'
+
+# Make sure we initialize our Gitaly channels before Sidekiq starts multi-threaded execution.
+if Gitlab.config.gitaly.enabled || Rails.env.test?
+  Gitlab::GitalyClient.configure_channels
+end

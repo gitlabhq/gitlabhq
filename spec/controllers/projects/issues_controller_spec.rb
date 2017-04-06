@@ -83,6 +83,17 @@ describe Projects::IssuesController do
         expect(assigns(:issues).current_page).to eq(last_page)
         expect(response).to have_http_status(200)
       end
+
+      it 'does not redirect to external sites when provided a host field' do
+        external_host = "www.example.com"
+        get :index,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          page: (last_page + 1).to_param,
+          host: external_host
+
+        expect(response).to redirect_to(namespace_project_issues_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
+      end
     end
   end
 
@@ -90,6 +101,7 @@ describe Projects::IssuesController do
     it 'redirects to signin if not logged in' do
       get :new, namespace_id: project.namespace, project_id: project
 
+      expect(flash[:notice]).to eq 'Please sign in to create the new issue.'
       expect(response).to redirect_to(new_user_session_path)
     end
 
@@ -241,10 +253,27 @@ describe Projects::IssuesController do
               expect(spam_logs.first.recaptcha_verified).to be_falsey
             end
 
-            it 'renders verify template' do
-              update_spam_issue
+            context 'as HTML' do
+              it 'renders verify template' do
+                update_spam_issue
 
-              expect(response).to render_template(:verify)
+                expect(response).to render_template(:verify)
+              end
+            end
+
+            context 'as JSON' do
+              before do
+                update_issue({ title: 'Spam Title', description: 'Spam lives here' }, format: :json)
+              end
+
+              it 'renders json errors' do
+                expect(json_response)
+                  .to eql("errors" => ["Your issue has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."])
+              end
+
+              it 'returns 422 status' do
+                expect(response).to have_http_status(422)
+              end
             end
           end
 

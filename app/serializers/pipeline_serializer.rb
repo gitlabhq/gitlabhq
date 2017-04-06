@@ -22,4 +22,11 @@ class PipelineSerializer < BaseSerializer
       super(resource, opts)
     end
   end
+
+  def represent_status(resource)
+    return {} unless resource.present?
+
+    data = represent(resource, { only: [{ details: [:status] }] })
+    data.dig(:details, :status) || {}
+  end
 end

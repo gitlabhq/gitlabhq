@@ -15,7 +15,7 @@ describe Boards::Issues::ListService, services: true do
 
     let!(:list1)   { create(:list, board: board, label: development, position: 0) }
     let!(:list2)   { create(:list, board: board, label: testing, position: 1) }
-    let!(:done)    { create(:done_list, board: board) }
+    let!(:closed)  { create(:closed_list, board: board) }
 
     let!(:opened_issue1) { create(:labeled_issue, project: project, labels: [bug]) }
     let!(:opened_issue2) { create(:labeled_issue, project: project, labels: [p2]) }
@@ -30,6 +30,7 @@ describe Boards::Issues::ListService, services: true do
     let!(:closed_issue2) { create(:labeled_issue, :closed, project: project, labels: [p3]) }
     let!(:closed_issue3) { create(:issue, :closed, project: project) }
     let!(:closed_issue4) { create(:labeled_issue, :closed, project: project, labels: [p1]) }
+    let!(:closed_issue5) { create(:labeled_issue, :closed, project: project, labels: [development]) }
 
     before do
       project.team << [user, :developer]
@@ -52,12 +53,12 @@ describe Boards::Issues::ListService, services: true do
         expect(issues).to eq [opened_issue2, reopened_issue1, opened_issue1]
       end
 
-      it 'returns closed issues when listing issues from Done' do
-        params = { board_id: board.id, id: done.id }
+      it 'returns closed issues when listing issues from Closed' do
+        params = { board_id: board.id, id: closed.id }
 
         issues = described_class.new(project, user, params).execute
 
-        expect(issues).to eq [closed_issue4, closed_issue2, closed_issue3, closed_issue1]
+        expect(issues).to eq [closed_issue4, closed_issue2, closed_issue5, closed_issue3, closed_issue1]
       end
 
       it 'returns opened issues that have label list applied when listing issues from a label list' do

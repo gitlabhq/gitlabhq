@@ -2,7 +2,7 @@
 /* global CommentsStore */
 /* global ResolveService */
 
-const Vue = require('vue');
+import Vue from 'vue';
 
 (() => {
   const ResolveDiscussionBtn = Vue.extend({

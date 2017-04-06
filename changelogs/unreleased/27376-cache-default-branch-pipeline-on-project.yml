@@ -1,4 +1,0 @@
----
-title: Speed up project dashboard by caching pipeline status and eager loading routes
-merge_request: 9903
-author:

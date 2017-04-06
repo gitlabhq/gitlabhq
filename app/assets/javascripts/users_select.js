@@ -1,7 +1,8 @@
 /* eslint-disable func-names, space-before-function-paren, one-var, no-var, prefer-rest-params, wrap-iife, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, no-lonely-if, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
-/* global Vue */
 /* global Issuable */
 /* global ListUser */
+
+import Vue from 'vue';
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },

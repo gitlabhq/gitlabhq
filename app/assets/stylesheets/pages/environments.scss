@@ -18,12 +18,15 @@
 .environments-container {
   .table-holder {
     width: 100%;
-    overflow: auto;
+
+    @media (max-width: $screen-sm-max) {
+      overflow: auto;
+    }
   }
 
   .table.ci-table {
     .environments-actions {
-      min-width: 200px;
+      min-width: 300px;
     }
 
     .environments-commit,
@@ -156,6 +159,16 @@
   text {
     fill: $stat-graph-axis-fill;
   }
+
+  .label-axis-text,
+  .text-metric-usage {
+    fill: $black;
+    font-weight: 500;
+  }
+
+  .legend-axis-text {
+    fill: $black;
+  }
 }
 
 .x-axis path,
@@ -218,4 +231,13 @@
 .selected-metric-line {
   stroke: $black;
   stroke-width: 1;
+}
+
+.environments-actions {
+  .external-url,
+  .monitoring-url,
+  .terminal-button,
+  .stop-env-link {
+    width: 38px;
+  }
 }

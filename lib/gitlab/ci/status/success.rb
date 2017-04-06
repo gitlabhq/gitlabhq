@@ -13,6 +13,10 @@ module Gitlab
         def icon
           'icon_status_success'
         end
+
+        def favicon
+          'favicon_status_success'
+        end
       end
     end
   end

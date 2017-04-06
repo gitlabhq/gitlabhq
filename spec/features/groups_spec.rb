@@ -46,7 +46,7 @@ feature 'Group', feature: true do
 
     describe 'Mattermost team creation' do
       before do
-        allow(Settings.mattermost).to receive_messages(enabled: mattermost_enabled)
+        stub_mattermost_setting(enabled: mattermost_enabled)
 
         visit new_group_path
       end
@@ -98,6 +98,16 @@ feature 'Group', feature: true do
       expect(current_path).to eq(group_path('foo/bar'))
       expect(page).to have_content("Group 'bar' was successfully created.")
     end
+  end
+
+  it 'checks permissions to avoid exposing groups by parent_id' do
+    group = create(:group, :private, path: 'secret-group')
+
+    logout
+    login_as(:user)
+    visit new_group_path(parent_id: group.id)
+
+    expect(page).not_to have_content('secret-group')
   end
 
   describe 'group edit' do

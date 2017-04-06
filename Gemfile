@@ -15,7 +15,7 @@ gem 'default_value_for', '~> 3.0.0'
 gem 'mysql2', '~> 0.3.16', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
-gem 'rugged', '~> 0.24.0'
+gem 'rugged', '~> 0.25.1.1'
 
 # Authentication libraries
 gem 'devise', '~> 4.2'
@@ -63,7 +63,7 @@ gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: 'omniauth-ldap'
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
 gem 'gollum-lib', '~> 4.2', require: false
-gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
+gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
@@ -223,7 +223,7 @@ gem 'oj', '~> 2.17.4'
 gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
 
-gem 'webpack-rails', '~> 0.9.9'
+gem 'webpack-rails', '~> 0.9.10'
 gem 'rack-proxy', '~> 0.6.0'
 
 gem 'sass-rails', '~> 5.0.6'
@@ -244,7 +244,7 @@ gem 'net-ssh', '~> 3.0.1'
 gem 'base32', '~> 0.3.0'
 
 # Sentry integration
-gem 'sentry-raven', '~> 2.0.0'
+gem 'sentry-raven', '~> 2.4.0'
 
 gem 'premailer-rails', '~> 1.9.0'
 
@@ -257,15 +257,13 @@ end
 
 group :development do
   gem 'foreman', '~> 0.78.0'
-  gem 'brakeman', '~> 3.4.0', require: false
+  gem 'brakeman', '~> 3.6.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
-  gem 'bullet', '~> 5.2.0', require: false
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
-  gem 'web-console', '~> 2.0'
 
   # Better errors handler
-  gem 'better_errors', '~> 1.0.1'
+  gem 'better_errors', '~> 2.1.0'
   gem 'binding_of_caller', '~> 0.7.2'
 
   # thin instead webrick
@@ -273,6 +271,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'bullet', '~> 5.5.0', require: !!ENV['ENABLE_BULLET']
   gem 'pry-byebug', '~> 3.4.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
 
@@ -297,7 +296,7 @@ group :development, :test do
   gem 'capybara-screenshot', '~> 1.0.0'
   gem 'poltergeist', '~> 1.9.0'
 
-  gem 'spring', '~> 1.7.0'
+  gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
   gem 'spring-commands-spinach', '~> 1.1.0'
 
@@ -305,8 +304,8 @@ group :development, :test do
   gem 'rubocop-rspec', '~> 1.12.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.21.0', require: false
-  gem 'simplecov', '0.12.0', require: false
-  gem 'flay', '~> 2.6.1', require: false
+  gem 'simplecov', '~> 0.14.0', require: false
+  gem 'flay', '~> 2.8.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
@@ -323,10 +322,11 @@ group :test do
   gem 'shoulda-matchers', '~> 2.8.0', require: false
   gem 'email_spec', '~> 1.6.0'
   gem 'json-schema', '~> 2.6.2'
-  gem 'webmock', '~> 1.21.0'
+  gem 'webmock', '~> 1.24.0'
   gem 'test_after_commit', '~> 1.1'
   gem 'sham_rack', '~> 1.3.6'
   gem 'timecop', '~> 0.8.0'
+  gem 'concurrent-ruby', '~> 1.0.5'
 end
 
 gem 'octokit', '~> 4.6.2'
@@ -352,4 +352,4 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.3.0'
+gem 'gitaly', '~> 0.5.0'

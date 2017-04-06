@@ -1,4 +1,5 @@
-/* global Vue */
+import Vue from 'vue';
+
 (() => {
   const ModalStore = gl.issueBoards.ModalStore;
 

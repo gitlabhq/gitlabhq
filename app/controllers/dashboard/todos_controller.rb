@@ -7,7 +7,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     @sort = params[:sort]
     @todos = @todos.page(params[:page])
     if @todos.out_of_range? && @todos.total_pages != 0
-      redirect_to url_for(params.merge(page: @todos.total_pages))
+      redirect_to url_for(params.merge(page: @todos.total_pages, only_path: true))
     end
   end
 
@@ -51,7 +51,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   private
 
   def find_todos
-    @todos ||= TodosFinder.new(current_user, params.merge(include_associations: true)).execute
+    @todos ||= TodosFinder.new(current_user, params).execute
   end
 
   def todos_counts

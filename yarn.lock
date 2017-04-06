@@ -1245,6 +1245,10 @@ core-js@^2.2.0, core-js@^2.4.0, core-js@^2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.4.1.tgz#4de911e667b0eae9124e34254b53aea6fc618d3e"
 
+core-js@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.3.0.tgz#fab83fbb0b2d8dc85fa636c4b9d34c75420c6d65"
+
 core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
@@ -1580,6 +1584,10 @@ es6-map@^0.1.3:
     es6-set "~0.1.3"
     es6-symbol "~3.1.0"
     event-emitter "~0.3.4"
+
+es6-promise@~3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-3.0.2.tgz#010d5858423a5f118979665f46486a95c6ee2bb6"
 
 es6-promise@~4.0.3:
   version "4.0.5"
@@ -1933,6 +1941,12 @@ file-entry-cache@^2.0.0:
   dependencies:
     flat-cache "^1.2.1"
     object-assign "^4.0.1"
+
+file-loader@^0.11.1:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/file-loader/-/file-loader-0.11.1.tgz#6b328ee1234a729e4e47d36375dd6d35c0e1db84"
+  dependencies:
+    loader-utils "^1.0.2"
 
 filename-regex@^2.0.0:
   version "2.0.0"
@@ -2334,6 +2348,10 @@ ieee754@^1.1.4:
 ignore@^3.2.0:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-3.2.2.tgz#1c51e1ef53bab6ddc15db4d9ac4ec139eceb3410"
+
+immediate@~3.0.5:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
 
 imurmurhash@^0.1.4:
   version "0.1.4"
@@ -2764,6 +2782,20 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.3.6"
 
+jszip-utils@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/jszip-utils/-/jszip-utils-0.0.2.tgz#457d5cbca60a1c2e0706e9da2b544e8e7bc50bf8"
+
+jszip@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/jszip/-/jszip-3.1.3.tgz#8a920403b2b1651c0fc126be90192d9080957c37"
+  dependencies:
+    core-js "~2.3.0"
+    es6-promise "~3.0.2"
+    lie "~3.1.0"
+    pako "~1.0.2"
+    readable-stream "~2.0.6"
+
 karma-coverage-istanbul-reporter@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/karma-coverage-istanbul-reporter/-/karma-coverage-istanbul-reporter-0.2.0.tgz#5766263338adeb0026f7e4ac7a89a5f056c5642c"
@@ -2868,6 +2900,12 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+lie@~3.1.0:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/lie/-/lie-3.1.1.tgz#9a436b2cc7746ca59de7a41fa469b3efb76bd87e"
+  dependencies:
+    immediate "~3.0.5"
+
 load-json-file@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/load-json-file/-/load-json-file-1.1.0.tgz#956905708d58b4bab4c2261b04f59f31c99374c0"
@@ -2890,6 +2928,14 @@ loader-utils@^0.2.11, loader-utils@^0.2.16, loader-utils@^0.2.5:
     emojis-list "^2.0.0"
     json5 "^0.5.0"
     object-assign "^4.0.1"
+
+loader-utils@^1.0.2:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-1.1.0.tgz#c98aef488bcceda2ffb5e2de646d6a754429f5cd"
+  dependencies:
+    big.js "^3.1.3"
+    emojis-list "^2.0.0"
+    json5 "^0.5.0"
 
 locate-path@^2.0.0:
   version "2.0.0"
@@ -3349,6 +3395,10 @@ pako@~0.2.0:
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/pako/-/pako-0.2.9.tgz#f3f7522f4ef782348da8161bad9ecfd51bf83a75"
 
+pako@~1.0.2:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.5.tgz#d2205dfe5b9da8af797e7c163db4d1f84e4600bc"
+
 parse-asn1@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/parse-asn1/-/parse-asn1-5.0.0.tgz#35060f6d5015d37628c770f4e091a0b5a278bc23"
@@ -3661,7 +3711,7 @@ readable-stream@~1.0.2:
     isarray "0.0.1"
     string_decoder "~0.10.x"
 
-readable-stream@~2.0.0:
+readable-stream@~2.0.0, readable-stream@~2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.0.6.tgz#8f90341e68a53ccc928788dacfcd11b36eb9b78e"
   dependencies:
@@ -4450,6 +4500,10 @@ verror@1.3.6:
   dependencies:
     extsprintf "1.0.2"
 
+visibilityjs@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/visibilityjs/-/visibilityjs-1.2.4.tgz#bff8663da62c8c10ad4ee5ae6a1ae6fac4259d63"
+
 vm-browserify@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-0.0.4.tgz#5d7ea45bbef9e4a6ff65f95438e0a87c357d5a73"
@@ -4464,9 +4518,9 @@ vue-resource@^0.9.3:
   version "0.9.3"
   resolved "https://registry.yarnpkg.com/vue-resource/-/vue-resource-0.9.3.tgz#ab46e1c44ea219142dcc28ae4043b3b04c80959d"
 
-vue@^2.1.10:
-  version "2.1.10"
-  resolved "https://registry.yarnpkg.com/vue/-/vue-2.1.10.tgz#c9235ca48c7925137be5807832ac4e3ac180427b"
+vue@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.2.4.tgz#d0a3a050a80a12356d7950ae5a7b3131048209cc"
 
 watchpack@^1.2.0:
   version "1.2.1"
