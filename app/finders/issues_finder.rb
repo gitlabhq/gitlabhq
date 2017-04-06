@@ -28,14 +28,14 @@ class IssuesFinder < IssuableFinder
 
   def by_assignee(items)
     if assignee
-      items = items.where("issue_assignees.user_id = ?", assignee.id)
+      items.assigned_to(assignee)
     elsif no_assignee?
-      items = items.where("issue_assignees.user_id is NULL")
+      items.unassigned
     elsif assignee_id? || assignee_username? # assignee not found
-      items = items.none
+      items.none
+    else
+      items
     end
-
-    items
   end
 
   def self.not_restricted_by_confidentiality(user)
