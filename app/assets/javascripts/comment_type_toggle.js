@@ -12,19 +12,24 @@ class CommentTypeToggle {
 
   initDroplab() {
     this.droplab = new DropLab();
-    this.droplab.init(this.trigger, this.list, [InputSetter], {
-      InputSetter: [{
-        input: this.input,
-        valueAttribute: 'data-value',
-      },
-      {
-        input: this.button,
-        valueAttribute: 'data-button-text',
-      },
-      {
+
+    const inputSetterConfig = [{
+      input: this.input,
+      valueAttribute: 'data-value',
+    },
+    {
+      input: this.button,
+      valueAttribute: 'data-button-text',
+    }];
+    if (this.secondaryButton) {
+      inputSetterConfig.push({
         input: this.secondaryButton,
         valueAttribute: 'data-secondary-button-text',
-      }],
+      });
+    }
+
+    this.droplab.init(this.trigger, this.list, [InputSetter], {
+      InputSetter: inputSetterConfig
     });
   }
 }
