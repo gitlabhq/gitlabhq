@@ -17,9 +17,17 @@ describe Gitlab::Ci::Status::Build::Play do
 
     describe '#has_action?' do
       context 'when user is allowed to update build' do
-        before { build.project.team << [user, :developer] }
+        context 'when user can push to branch' do
+          before { build.project.add_master(user) }
 
-        it { is_expected.to have_action }
+          it { is_expected.to have_action }
+        end
+
+        context 'when user can not push to the branch' do
+          before { build.project.add_developer(user) }
+
+          it { is_expected.not_to have_action }
+        end
       end
 
       context 'when user is not allowed to update build' do
