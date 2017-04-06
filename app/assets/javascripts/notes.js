@@ -140,10 +140,10 @@ require('./task_list');
 
     Notes.prototype.initCommentTypeToggle = function (form) {
       this.commentTypeToggle = new CommentTypeToggle(
-        form[0].querySelector('.js-comment-type-dropdown .dropdown-toggle'),
-        form[0].querySelector('.js-comment-type-dropdown .dropdown-menu'),
+        form.querySelector('.js-comment-type-dropdown .dropdown-toggle'),
+        form.querySelector('.js-comment-type-dropdown .dropdown-menu'),
         document.getElementById('note_type'),
-        form[0].querySelector('.js-comment-type-dropdown .js-comment-submit-button'),
+        form.querySelector('.js-comment-type-dropdown .js-comment-submit-button'),
         document.querySelector('.js-note-target-close'),
       );
 
@@ -470,7 +470,9 @@ require('./task_list');
       form.find('.js-comment-resolve-button').closest('comment-and-resolve-btn').remove();
       this.parentTimeline = form.parents('.timeline');
 
-      this.initCommentTypeToggle(form);
+      if (form.length) {
+        this.initCommentTypeToggle(form.get(0));
+      }
     };
 
     /*
