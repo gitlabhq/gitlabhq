@@ -46,6 +46,7 @@ import ProjectsList from './projects_list';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import UserCallout from './user_callout';
+import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
 
 import GeoNodes from './geo_nodes';
 
@@ -338,8 +339,8 @@ const ShortcutsBlob = require('./shortcuts_blob');
           new gl.ProtectedBranchEditList();
           new UsersSelect();
           // Initialize Protected Tag Settings
-          new gl.ProtectedTagCreate();
-          new gl.ProtectedTagEditList();
+          new ProtectedTagCreate();
+          new ProtectedTagEditList();
           break;
         case 'projects:ci_cd:show':
           new gl.ProjectVariables();
