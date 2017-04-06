@@ -117,12 +117,13 @@ describe('InputSetter', function () {
   describe('setInput', function () {
     beforeEach(function () {
       this.selectedItem = { getAttribute: () => {} };
-      this.input = { value: 'oldValue', tagName: 'INPUT' };
+      this.input = { value: 'oldValue', tagName: 'INPUT', hasAttribute: () => {} };
       this.config = { valueAttribute: {}, input: this.input };
       this.inputSetter = { hook: { trigger: {} } };
       this.newValue = 'newValue';
 
       spyOn(this.selectedItem, 'getAttribute').and.returnValue(this.newValue);
+      spyOn(this.input, 'hasAttribute').and.returnValue(false);
 
       InputSetter.setInput.call(this.inputSetter, this.config, this.selectedItem);
     });
@@ -131,14 +132,34 @@ describe('InputSetter', function () {
       expect(this.selectedItem.getAttribute).toHaveBeenCalledWith(this.config.valueAttribute);
     });
 
+    it('should call .hasAttribute', function () {
+      expect(this.input.hasAttribute).toHaveBeenCalledWith(undefined);
+    });
+
     it('should set the value of the input', function () {
       expect(this.input.value).toBe(this.newValue);
-    })
+    });
+
+    describe('if there is no newValue', function () {
+      beforeEach(function () {
+        this.newValue = '';
+        this.inputSetter = { hook: { trigger: {} } };
+        this.config = { valueAttribute: {}, input: this.input };
+        this.input = { value: 'oldValue', tagName: 'INPUT' };
+        this.selectedItem = { getAttribute: () => {} };
+
+        InputSetter.setInput.call(this.inputSetter, this.config, this.selectedItem);
+      });
+
+      it('should not set the value of the input', function () {
+        expect(this.input.value).toBe('oldValue');
+      })
+    });
 
     describe('if no config.input is provided', function () {
       beforeEach(function () {
         this.config = { valueAttribute: {} };
-        this.trigger = { value: 'oldValue', tagName: 'INPUT' };
+        this.trigger = { value: 'oldValue', tagName: 'INPUT', hasAttribute: () => {} };
         this.inputSetter = { hook: { trigger: this.trigger } };
 
         InputSetter.setInput.call(this.inputSetter, this.config, this.selectedItem);
@@ -151,14 +172,62 @@ describe('InputSetter', function () {
 
     describe('if the input tag is not INPUT', function () {
       beforeEach(function () {
-        this.input = { textContent: 'oldValue', tagName: 'SPAN' };
+        this.input = { textContent: 'oldValue', tagName: 'SPAN', hasAttribute: () => {} };
         this.config = { valueAttribute: {}, input: this.input };
 
         InputSetter.setInput.call(this.inputSetter, this.config, this.selectedItem);
       });
 
       it('should set the textContent of the input', function () {
-        expect(this.config.input.textContent).toBe(this.newValue);
+        expect(this.input.textContent).toBe(this.newValue);
+      });
+
+      describe('if there is no new value', function () {
+        beforeEach(function () {
+          this.selectedItem = { getAttribute: () => {} };
+          this.input = { textContent: 'oldValue', tagName: 'INPUT', hasAttribute: () => {} };
+          this.config = { valueAttribute: {}, input: this.input };
+          this.inputSetter = { hook: { trigger: {} } };
+          this.newValue = 'newValue';
+
+          spyOn(this.selectedItem, 'getAttribute').and.returnValue(this.newValue);
+
+          InputSetter.setInput.call(this.inputSetter, this.config, this.selectedItem);
+        });
+
+        it('should not set the value of the input', function () {
+          expect(this.input.textContent).toBe('oldValue');
+        });
+      });
+    });
+
+    describe('if there is an inputAttribute', function () {
+      beforeEach(function () {
+        this.selectedItem = { getAttribute: () => {} };
+        this.input = { id: 'oldValue', hasAttribute: () => {}, setAttribute: () => {} };
+        this.inputSetter = { hook: { trigger: {} } };
+        this.newValue = 'newValue';
+        this.inputAttribute = 'id';
+        this.config = {
+          valueAttribute: {},
+          input: this.input,
+          inputAttribute: this.inputAttribute,
+        };
+
+        spyOn(this.selectedItem, 'getAttribute').and.returnValue(this.newValue);
+        spyOn(this.input, 'hasAttribute').and.returnValue(true);
+        spyOn(this.input, 'setAttribute');
+
+        InputSetter.setInput.call(this.inputSetter, this.config, this.selectedItem);
+      });
+
+      it('should call setAttribute', function () {
+        expect(this.input.setAttribute).toHaveBeenCalledWith(this.inputAttribute, this.newValue);
+      });
+
+      it('should not set the value or textContent of the input', function () {
+        expect(this.input.value).not.toBe('newValue');
+        expect(this.input.textContent).not.toBe('newValue');
       });
     });
   });
