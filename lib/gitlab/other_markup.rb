@@ -15,8 +15,6 @@ module Gitlab
       html = GitHub::Markup.render(file_name, input).
         force_encoding(input.encoding)
 
-      html = Banzai.post_process(html, context)
-
       filter = Banzai::Filter::SanitizationFilter.new(html)
       html = filter.call.to_s
 
