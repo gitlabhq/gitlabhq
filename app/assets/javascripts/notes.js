@@ -739,7 +739,7 @@ require('./task_list');
 
     Notes.prototype.replyToDiscussionNote = function(e) {
       var form, replyLink;
-      form = this.formClone.clone();
+      form =  this.cleanForm(this.formClone.clone());
       replyLink = $(e.target).closest(".js-discussion-reply-button");
       // insert the form after the button
       replyLink
@@ -863,7 +863,7 @@ require('./task_list');
       }
 
       if (addForm) {
-        newForm = this.formClone.clone();
+        newForm = this.cleanForm(this.formClone.clone());
         newForm.appendTo(notesContent);
         // show the form
         return this.setupDiscussionNoteForm($link, newForm);
@@ -1048,6 +1048,20 @@ require('./task_list');
         }
       });
     };
+
+    Notes.prototype.cleanForm = function($form) {
+      // Remove JS classes that are not needed here
+      $form
+        .find('.js-comment-type-dropdown')
+        .removeClass('btn-group');
+
+      // Remove dropdown
+      $form
+        .find('.dropdown-menu')
+        .remove();
+
+      return $form;
+    }
 
     return Notes;
   })();
