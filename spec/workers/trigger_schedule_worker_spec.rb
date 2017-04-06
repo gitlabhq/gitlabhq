@@ -22,7 +22,7 @@ describe TriggerScheduleWorker do
     end
 
     it 'creates a new pipeline' do
-      expect(Ci::Pipeline.last.status).to eq('pending')
+      expect(Ci::Pipeline.last).to be_pending
     end
 
     it 'updates next_run_at' do
