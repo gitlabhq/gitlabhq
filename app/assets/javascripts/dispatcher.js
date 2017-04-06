@@ -41,6 +41,7 @@ import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
+import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
 
 const ShortcutsBlob = require('./shortcuts_blob');
 const UserCallout = require('./user_callout');
@@ -322,8 +323,8 @@ const UserCallout = require('./user_callout');
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
           // Initialize Protected Tag Settings
-          new gl.ProtectedTagCreate();
-          new gl.ProtectedTagEditList();
+          new ProtectedTagCreate();
+          new ProtectedTagEditList();
           break;
         case 'projects:ci_cd:show':
           new gl.ProjectVariables();
