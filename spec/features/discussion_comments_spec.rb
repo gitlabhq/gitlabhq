@@ -24,7 +24,7 @@ shared_examples 'discussion comments' do |resource_name|
     expect(new_comment).not_to have_selector '.discussion'
   end
 
-  if resource_name =~ /(issue|merge request)/
+  if resource_name == 'issue'
     it "'Comment & close #{resource_name}' will post a comment and close the #{resource_name}" do
       find("#{form_selector} .note-textarea").send_keys('a')
 
@@ -92,12 +92,15 @@ shared_examples 'discussion comments' do |resource_name|
 
     describe 'when selecting "Start discussion"' do
       before do
+        screenshot_and_open_image
         find("#{menu_selector} li", match: :first)
+        p first("#{menu_selector} li")['class']
+        p first("#{menu_selector} li").text
         first("#{menu_selector} li").click
       end
 
       it 'updates the note_type input to "DiscussionNote"' do
-        expect(find("#{form_selector} #note_type").value).to be 'DiscussionNote'
+        expect(find("#{form_selector} #note_type", visible: false).value).to be 'DiscussionNote'
       end
 
       it 'updates the submit button text' do
@@ -124,7 +127,7 @@ shared_examples 'discussion comments' do |resource_name|
         expect(new_comment).to have_selector '.discussion'
       end
 
-      if resource_name =~ /(issue|merge request)/
+      if resource_name == 'issue'
         it "'Start discussion & close #{resource_name}' will post a discussion and close the #{resource_name}" do
           find(close_selector).click
 
@@ -208,7 +211,6 @@ end
 
 describe 'Discussion Comments', :feature, :js do
   include RepoHelpers
-  include WaitForAjax
 
   let(:user) { create(:user) }
   let(:project) { create(:project) }
