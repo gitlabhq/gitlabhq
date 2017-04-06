@@ -62,6 +62,7 @@ The total number of the following is sent back to GitLab Inc.:
 - Deploy keys
 - Pages
 - Project Services
+- Projects using the Prometheus service
 - Issue Boards
 - CI Runners
 - Deployments
@@ -75,7 +76,7 @@ The total number of the following is sent back to GitLab Inc.:
 - Remote mirrors
 - Web hooks
 
-Also, we track if you've installed Mattermost with GitLab. 
+Also, we track if you've installed Mattermost with GitLab.
 For example: `"mattermost_enabled":true"`.
 
 ## Privacy policy

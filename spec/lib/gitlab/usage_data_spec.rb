@@ -44,6 +44,7 @@ describe Gitlab::UsageData do
         milestones
         notes
         projects
+        projects_prometheus_active
         pages_domains
         protected_branches
         releases
