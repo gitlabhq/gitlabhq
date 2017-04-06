@@ -54,7 +54,7 @@ module SystemNoteService
   # issue - Issue object
   # project  - Project owning noteable
   # author   - User performing the change
-  # assignees - User being assigned, or nil
+  # assignees - Users being assigned, or nil
   #
   # Example Note text:
   #

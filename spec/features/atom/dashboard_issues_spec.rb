@@ -41,7 +41,7 @@ describe "Dashboard Issues Feed", feature: true  do
 
           expect(entry).to be_present
           expect(entry).to have_selector('author email', text: issue2.author_public_email)
-          expect(entry).to have_selector('assignees email', text: issue2.assignees.first.public_email)
+          expect(entry).to have_selector('assignees email', text: assignee.public_email)
           expect(entry).not_to have_selector('labels')
           expect(entry).not_to have_selector('milestone')
           expect(entry).to have_selector('description', text: issue2.description)
@@ -64,7 +64,7 @@ describe "Dashboard Issues Feed", feature: true  do
 
           expect(entry).to be_present
           expect(entry).to have_selector('author email', text: issue1.author_public_email)
-          expect(entry).to have_selector('assignees email', text: issue1.assignees.first.public_email)
+          expect(entry).to have_selector('assignees email', text: assignee.public_email)
           expect(entry).to have_selector('labels label', text: label1.title)
           expect(entry).to have_selector('milestone', text: milestone1.title)
           expect(entry).not_to have_selector('description')
