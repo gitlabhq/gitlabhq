@@ -3,10 +3,10 @@ module Geo
     attr_reader :object_type, :object_db_id
 
     LEASE_TIMEOUT = 8.hours.freeze
-    DEFAULT_OBJECT_TYPES = [:attachment, :avatar, :file].freeze
+    DEFAULT_OBJECT_TYPES = %w[attachment avatar file].freeze
 
     def initialize(object_type, object_db_id)
-      @object_type = object_type
+      @object_type = object_type.to_s
       @object_db_id = object_db_id
     end
 
@@ -30,13 +30,13 @@ module Geo
 
     def downloader_klass_name
       klass_name =
-        if DEFAULT_OBJECT_TYPES.include?(object_type.to_sym)
-          :file
+        if DEFAULT_OBJECT_TYPES.include?(object_type)
+          'file'
         else
           object_type
         end
 
-      "Gitlab::Geo::#{klass_name.to_s.camelize}Downloader"
+      "Gitlab::Geo::#{klass_name.camelize}Downloader"
     end
 
     def try_obtain_lease
