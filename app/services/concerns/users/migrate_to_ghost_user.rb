@@ -23,6 +23,7 @@ module Users::MigrateToGhostUser
       migrate_merge_requests(user)
       migrate_notes(user)
       migrate_abuse_reports(user)
+      migrate_award_emoji(user)
     end
 
     user.reload
@@ -44,5 +45,9 @@ module Users::MigrateToGhostUser
 
   def migrate_abuse_reports(user)
     AbuseReport.where(reporter_id: user.id).update_all(reporter_id: ghost_user.id)
+  end
+
+  def migrate_award_emoji(user)
+    user.award_emoji.update_all(user_id: ghost_user.id)
   end
 end
