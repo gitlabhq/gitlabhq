@@ -68,6 +68,8 @@ module NotesHelper
       elsif merge_request_diff = discussion.latest_merge_request_diff
         diff_id = merge_request_diff.id
       else
+        # If the discussion is not active, and we cannot find the latest
+        # merge request diff for this discussion, we return no path at all.
         return
       end
 

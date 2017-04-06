@@ -26,11 +26,14 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   scope :viewable, -> { without_state(:empty) }
-  scope :with_diff_refs, ->(diff_refs) { where(start_commit_sha: diff_refs.start_sha, head_commit_sha: diff_refs.head_sha, base_commit_sha: diff_refs.base_sha) }
 
   # All diff information is collected from repository after object is created.
   # It allows you to override variables like head_commit_sha before getting diff.
   after_create :save_git_content, unless: :importing?
+
+  def self.find_by_diff_refs(diff_refs)
+    where(start_commit_sha: diff_refs.start_sha, head_commit_sha: diff_refs.head_sha, base_commit_sha: diff_refs.base_sha)
+  end
 
   def self.select_without_diff
     select(column_names - ['st_diffs'])
