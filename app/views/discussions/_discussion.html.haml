@@ -29,7 +29,7 @@
                 = link_to commit.short_id, url, class: 'monospace'
               - else
                 a deleted commit
-            - else
+            - elsif discussion.diff_discussion?
               = conditional_link_to url.present?, url do
                 - if discussion.active?
                   the diff

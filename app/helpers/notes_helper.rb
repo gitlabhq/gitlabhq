@@ -61,7 +61,7 @@ module NotesHelper
   end
 
   def discussion_diff_path(discussion)
-    if discussion.for_merge_request?
+    if discussion.for_merge_request? && discussion.diff_discussion?
       if discussion.active?
         # Without a diff ID, the link always points to the latest diff version
         diff_id = nil
@@ -75,7 +75,9 @@ module NotesHelper
 
       diffs_namespace_project_merge_request_path(discussion.project.namespace, discussion.project, discussion.noteable, diff_id: diff_id, anchor: discussion.line_code)
     elsif discussion.for_commit?
-      namespace_project_commit_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: discussion.line_code)
+      anchor = discussion.line_code if discussion.diff_discussion?
+      
+      namespace_project_commit_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: anchor)
     end
   end
 end
