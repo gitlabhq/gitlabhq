@@ -1,3 +1,4 @@
+# rubocop:disable RemoveIndex
 class AddIndexOnRequestedAtToMembers < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
