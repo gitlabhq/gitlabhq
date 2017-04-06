@@ -35,7 +35,9 @@ Object.assign(DropDown.prototype, {
   },
 
   clickEvent: function(e) {
-    var selected = utils.closest(e.target, 'LI');
+    if (e.target.tagName === 'UL') return;
+
+    var selected = utils.closest(e.target, 'LI', '');
     if (!selected) return;
 
     this.addSelectedClass(selected);
