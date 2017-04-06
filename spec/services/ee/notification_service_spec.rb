@@ -3,8 +3,16 @@ require 'spec_helper'
 describe EE::NotificationService do
   let(:subject) { NotificationService.new }
 
+  before do
+    allow(Notify).to receive(:service_desk_new_note_email)
+      .with(kind_of(Integer), kind_of(Integer)).and_return(double(deliver_later: true))
+
+    allow_any_instance_of(License).to receive(:add_on?).and_call_original
+    allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk') { true }
+  end
+
   def should_email!
-    expect(Notify).to receive(:service_desk_new_note_email).with(issue.id, instance_of(Integer))
+    expect(Notify).to receive(:service_desk_new_note_email).with(issue.id, kind_of(Integer))
   end
 
   def should_not_email!
@@ -55,7 +63,7 @@ describe EE::NotificationService do
 
     context 'when the license doesn\'t allow service desk' do
       before do
-        expect(Gitlab::EE::ServiceDesk).to receive(:enabled?).and_return(false)
+        expect(EE::Gitlab::ServiceDesk).to receive(:enabled?).and_return(false)
       end
 
       it_should_not_email!

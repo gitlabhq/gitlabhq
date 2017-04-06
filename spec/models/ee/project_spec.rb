@@ -117,6 +117,11 @@ describe Project, models: true do
   end
 
   describe '#regenerate_service_desk_key' do
+    before do
+      allow_any_instance_of(License).to receive(:add_on?).and_call_original
+      allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk') { true }
+    end
+
     subject { create(:project) }
 
     it 'leaves it blank by default' do
