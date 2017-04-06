@@ -5,7 +5,7 @@ import PipelinesService from '../../vue_pipelines_index/services/pipelines_servi
 import PipelineStore from '../../vue_pipelines_index/stores/pipelines_store';
 import eventHub from '../../vue_pipelines_index/event_hub';
 import EmptyState from '../../vue_pipelines_index/components/empty_state.vue';
-import ErrorState from '../../vue_pipelines_index/components/error_state';
+import ErrorState from '../../vue_pipelines_index/components/error_state.vue';
 import '../../lib/utils/common_utils';
 import '../../vue_shared/vue_resource_interceptor';
 import Poll from '../../lib/utils/poll';

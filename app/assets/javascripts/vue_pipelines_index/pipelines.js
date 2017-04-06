@@ -5,7 +5,7 @@ import eventHub from './event_hub';
 import PipelinesTableComponent from '../vue_shared/components/pipelines_table';
 import TablePaginationComponent from '../vue_shared/components/table_pagination';
 import EmptyState from './components/empty_state.vue';
-import ErrorState from './components/error_state';
+import ErrorState from './components/error_state.vue';
 import NavigationTabs from './components/navigation_tabs';
 import NavigationControls from './components/nav_controls';
 import Poll from '../lib/utils/poll';
