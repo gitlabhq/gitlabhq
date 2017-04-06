@@ -7,7 +7,7 @@ describe Gitlab::ChatCommands::Deploy, service: true do
     let(:regex_match) { described_class.match('deploy staging to production') }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     subject do
@@ -23,7 +23,8 @@ describe Gitlab::ChatCommands::Deploy, service: true do
 
     context 'with environment' do
       let!(:staging) { create(:environment, name: 'staging', project: project) }
-      let!(:build) { create(:ci_build, project: project) }
+      let!(:pipeline) { create(:ci_pipeline, project: project) }
+      let!(:build) { create(:ci_build, pipeline: pipeline) }
       let!(:deployment) { create(:deployment, environment: staging, deployable: build) }
 
       context 'without actions' do
@@ -35,7 +36,9 @@ describe Gitlab::ChatCommands::Deploy, service: true do
 
       context 'with action' do
         let!(:manual1) do
-          create(:ci_build, :manual, project: project, pipeline: build.pipeline, name: 'first', environment: 'production')
+          create(:ci_build, :manual, pipeline: pipeline,
+                                     name: 'first',
+                                     environment: 'production')
         end
 
         it 'returns success result' do
@@ -45,7 +48,9 @@ describe Gitlab::ChatCommands::Deploy, service: true do
 
         context 'when duplicate action exists' do
           let!(:manual2) do
-            create(:ci_build, :manual, project: project, pipeline: build.pipeline, name: 'second', environment: 'production')
+            create(:ci_build, :manual, pipeline: pipeline,
+                                       name: 'second',
+                                       environment: 'production')
           end
 
           it 'returns error' do
@@ -57,8 +62,7 @@ describe Gitlab::ChatCommands::Deploy, service: true do
         context 'when teardown action exists' do
           let!(:teardown) do
             create(:ci_build, :manual, :teardown_environment,
-                   project: project, pipeline: build.pipeline,
-                   name: 'teardown', environment: 'production')
+                   pipeline: pipeline, name: 'teardown', environment: 'production')
           end
 
           it 'returns the success message' do

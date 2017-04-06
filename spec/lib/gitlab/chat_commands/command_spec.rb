@@ -40,11 +40,15 @@ describe Gitlab::ChatCommands::Command, service: true do
 
     context 'when trying to do deployment' do
       let(:params) { { text: 'deploy staging to production' } }
-      let!(:build) { create(:ci_build, project: project) }
+      let!(:build) { create(:ci_build, pipeline: pipeline) }
+      let!(:pipeline) { create(:ci_pipeline, project: project) }
       let!(:staging) { create(:environment, name: 'staging', project: project) }
       let!(:deployment) { create(:deployment, environment: staging, deployable: build) }
+
       let!(:manual) do
-        create(:ci_build, :manual, project: project, pipeline: build.pipeline, name: 'first', environment: 'production')
+        create(:ci_build, :manual, pipeline: pipeline,
+                                   name: 'first',
+                                   environment: 'production')
       end
 
       context 'and user can not create deployment' do
@@ -56,7 +60,7 @@ describe Gitlab::ChatCommands::Command, service: true do
 
       context 'and user does have deployment permission' do
         before do
-          project.team << [user, :developer]
+          build.project.add_master(user)
         end
 
         it 'returns action' do
@@ -66,7 +70,9 @@ describe Gitlab::ChatCommands::Command, service: true do
 
         context 'when duplicate action exists' do
           let!(:manual2) do
-            create(:ci_build, :manual, project: project, pipeline: build.pipeline, name: 'second', environment: 'production')
+            create(:ci_build, :manual, pipeline: pipeline,
+                                       name: 'second',
+                                       environment: 'production')
           end
 
           it 'returns error' do
