@@ -1,35 +1,3 @@
-module ActiveRecord
-  class QueryRecorder
-    attr_reader :log
-    attr_reader :start
-    attr_reader :end
-
-    def initialize(&block)
-      @log = []
-      @start = Time.now
-      ActiveSupport::Notifications.subscribed(method(:callback), 'sql.active_record', &block)
-      @end = Time.now
-    end
-
-    def callback(name, start, finish, message_id, values)
-      return if %w(SCHEMA).include?(values[:name])
-      @log << values[:sql]
-    end
-
-    def time
-      @end - @start
-    end
-
-    def count
-      @log.count
-    end
-
-    def log_message
-      @log.join("\n\n")
-    end
-  end
-end
-
 class Projects::PipelinesController < Projects::ApplicationController
   before_action :pipeline, except: [:index, :new, :create, :charts]
   before_action :commit, only: [:show, :builds]
@@ -61,15 +29,18 @@ class Projects::PipelinesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        result = nil
-        queries = ActiveRecord::QueryRecorder.new do
-          result = PipelineSerializer
+        render json: {
+          pipelines: PipelineSerializer
             .new(project: @project, user: @current_user)
             .with_pagination(request, response)
-            .represent(@pipelines)
-        end
-
-        render json: { aa_queries: queries.count, aa_time: queries.time, result: result }
+            .represent(@pipelines),
+          count: {
+            all: @pipelines_count,
+            running: @running_count,
+            pending: @pending_count,
+            finished: @finished_count,
+          }
+        }
       end
     end
   end
