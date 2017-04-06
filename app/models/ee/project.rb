@@ -27,7 +27,7 @@ module EE
     end
 
     def service_desk_address
-      return nil unless service_desk_avaiable?
+      return nil unless service_desk_available?
 
       refresh_service_desk_key! if service_desk_mail_key.blank?
 
@@ -36,14 +36,14 @@ module EE
     end
 
     def refresh_service_desk_key!
-      return unless service_desk_avaiable?
+      return unless service_desk_available?
 
       self.service_desk_mail_key = SentNotification.reply_key
     end
 
     private
 
-    def service_desk_avaiable?
+    def service_desk_available?
       @service_desk_available ||=
         EE::Gitlab::ServiceDesk.enabled? && service_desk_enabled?
     end
