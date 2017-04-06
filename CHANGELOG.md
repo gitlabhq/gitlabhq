@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.0.4 (2017-04-05)
+
+- Don’t show source project name when user does not have access.
+- Remove the class attribute from the whitelist for HTML generated from Markdown.
+- Fix path disclosure in project import/export.
+- Fix for open redirect vulnerability using continue[to] in URL when requesting project import status.
+- Fix for open redirect vulnerabilities in todos, issues, and MR controllers.
+
 ## 9.0.3 (2017-04-05)
 
 - Fix name colision when importing GitHub pull requests from forked repositories. !9719
