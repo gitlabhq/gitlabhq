@@ -99,6 +99,9 @@ triggers:
 - project
 - trigger_requests
 - owner
+- trigger_schedule
+trigger_schedule:
+- trigger
 deploy_keys:
 - user
 - deploy_keys_projects
@@ -121,6 +124,9 @@ push_access_levels:
 - protected_branch
 create_access_levels:
 - protected_tag
+container_repositories:
+- project
+- name
 project:
 - taggings
 - base_tags
@@ -148,6 +154,7 @@ project:
 - asana_service
 - gemnasium_service
 - slack_service
+- microsoft_teams_service
 - mattermost_service
 - buildkite_service
 - bamboo_service
@@ -200,6 +207,7 @@ project:
 - runners
 - variables
 - triggers
+- trigger_schedules
 - environments
 - deployments
 - project_feature
@@ -208,6 +216,7 @@ project:
 - project_authorizations
 - route
 - statistics
+- container_repositories
 - uploads
 award_emoji:
 - awardable

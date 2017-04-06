@@ -4,7 +4,6 @@
 - retried = local_assigns.fetch(:retried, false)
 - pipeline_link = local_assigns.fetch(:pipeline_link, false)
 - stage = local_assigns.fetch(:stage, false)
-- coverage = local_assigns.fetch(:coverage, false)
 - allow_retry = local_assigns.fetch(:allow_retry, false)
 
 %tr.build.commit{ class: ('retried' if retried) }
@@ -88,7 +87,7 @@
         %span= time_ago_with_tooltip(build.finished_at)
 
   %td.coverage
-    - if coverage && build.try(:coverage)
+    - if build.try(:coverage)
       #{build.coverage}%
 
   %td

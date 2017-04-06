@@ -56,11 +56,15 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click button "Edit"' do
-    click_link 'Edit'
+    find('.js-edit-blob').click
   end
 
   step 'I cannot see the edit button' do
     expect(page).not_to have_link 'edit'
+  end
+
+  step 'I click button "Fork"' do
+    click_link 'Fork'
   end
 
   step 'I can edit code' do
@@ -364,6 +368,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
       expect(page).to have_content 'Delete'
       expect(page).to have_content 'Replace'
     end
+  end
+
+  step 'I should see a Fork/Cancel combo' do
+    expect(page).to have_link 'Fork'
+    expect(page).to have_button 'Cancel'
+    expect(page).to have_content 'You don\'t have permission to edit this file. Try forking this project to edit the file.'
   end
 
   step 'I should see a notice about a new fork having been created' do

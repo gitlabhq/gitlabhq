@@ -129,7 +129,9 @@ import FilteredSearchContainer from './container';
         }
       });
 
-      return values.join(' ');
+      return values
+        .map(value => value.trim())
+        .join(' ');
     }
 
     static getSearchInput(filteredSearchInput) {

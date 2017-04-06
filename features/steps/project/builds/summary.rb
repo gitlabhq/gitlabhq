@@ -22,9 +22,9 @@ class Spinach::Features::ProjectBuildsSummary < Spinach::FeatureSteps
   end
 
   step 'recent build has been erased' do
+    expect(@build).not_to have_trace
     expect(@build.artifacts_file.exists?).to be_falsy
     expect(@build.artifacts_metadata.exists?).to be_falsy
-    expect(@build.trace).to be_empty
   end
 
   step 'recent build summary does not have artifacts widget' do

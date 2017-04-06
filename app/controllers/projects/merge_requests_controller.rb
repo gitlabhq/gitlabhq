@@ -452,7 +452,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if pipeline
       status = pipeline.status
-      coverage = pipeline.try(:coverage)
+      coverage = pipeline.coverage
 
       status = "success_with_warnings" if pipeline.success? && pipeline.has_warnings?
 
