@@ -2,10 +2,6 @@ module Gitlab
   module GitalyClient
     module Util
       class << self
-        def self.process_path(repository_storage, relative_path)
-          [channel(repository_storage), repository(repository_storage, relative_path)]
-        end
-
         def repository(repository_storage, relative_path)
           Gitaly::Repository.new(
             path: File.join(Gitlab.config.repositories.storages[repository_storage]['path'], relative_path),
