@@ -166,7 +166,35 @@ describe Users::DestroyService, services: true do
       context 'abuse reports' do
         include_examples "migrating a deleted user's associated records to the ghost user", AbuseReport, { skip_assignee_specs: true } do
           let(:created_record) { create(:abuse_report, reporter: user, user: create(:user)) }
-          let(:author_method) { :reporter }
+        end
+      end
+
+      context 'award emoji' do
+        include_examples "migrating a deleted user's associated records to the ghost user", AwardEmoji, { skip_assignee_specs: true } do
+          let(:created_record) { create(:award_emoji, user: user) }
+          let(:author_alias) { :user }
+
+          context "when the awardable already has an award emoji of the same name assigned to the ghost user" do
+            let(:awardable) { create(:issue) }
+            let!(:existing_award_emoji) { create(:award_emoji, user: User.ghost, name: "thumbsup", awardable: awardable) }
+            let!(:award_emoji) { create(:award_emoji, user: user, name: "thumbsup", awardable: awardable) }
+
+            it "migrates the award emoji regardless" do
+              service.execute(user)
+
+              migrated_record = AwardEmoji.find_by_id(award_emoji.id)
+
+              expect(migrated_record.user).to eq(User.ghost)
+            end
+
+            it "does not leave the migrated award emoji in an invalid state" do
+              service.execute(user)
+
+              migrated_record = AwardEmoji.find_by_id(award_emoji.id)
+
+              expect(migrated_record).to be_valid
+            end
+          end
         end
       end
     end

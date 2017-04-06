@@ -23,7 +23,11 @@ shared_examples "migrating a deleted user's associated records to the ghost user
 
       migrated_record = record_class.find_by_id(record.id)
 
-      expect(migrated_record.author).to eq(User.ghost)
+      if migrated_record.respond_to?(:author)
+        expect(migrated_record.author).to eq(User.ghost)
+      else
+        expect(migrated_record.send(author_alias)).to eq(User.ghost)
+      end
     end
 
     it "blocks the user before migrating #{record_class_name}s to the 'Ghost User'" do
