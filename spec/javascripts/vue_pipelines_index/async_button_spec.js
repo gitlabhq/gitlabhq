@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import asyncButtonComp from '~/vue_pipelines_index/components/async_button';
+import asyncButtonComp from '~/vue_pipelines_index/components/async_button.vue';
 
 describe('Pipelines Async Button', () => {
   let component;
