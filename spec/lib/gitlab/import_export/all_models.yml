@@ -99,6 +99,9 @@ triggers:
 - project
 - trigger_requests
 - owner
+- trigger_schedule
+trigger_schedule:
+- trigger
 deploy_keys:
 - user
 - deploy_keys_projects
@@ -197,6 +200,7 @@ project:
 - runners
 - variables
 - triggers
+- trigger_schedules
 - environments
 - deployments
 - project_feature

@@ -300,6 +300,20 @@ ActiveRecord::Schema.define(version: 20170405080720) do
 
   add_index "ci_trigger_requests", ["commit_id"], name: "index_ci_trigger_requests_on_commit_id", using: :btree
 
+  create_table "ci_trigger_schedules", force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "trigger_id", null: false
+    t.datetime "deleted_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "cron"
+    t.string "cron_timezone"
+    t.datetime "next_run_at"
+  end
+
+  add_index "ci_trigger_schedules", ["next_run_at"], name: "index_ci_trigger_schedules_on_next_run_at", using: :btree
+  add_index "ci_trigger_schedules", ["project_id"], name: "index_ci_trigger_schedules_on_project_id", using: :btree
+
   create_table "ci_triggers", force: :cascade do |t|
     t.string "token"
     t.datetime "deleted_at"
@@ -308,6 +322,7 @@ ActiveRecord::Schema.define(version: 20170405080720) do
     t.integer "project_id"
     t.integer "owner_id"
     t.string "description"
+    t.string "ref"
   end
 
   add_index "ci_triggers", ["project_id"], name: "index_ci_triggers_on_project_id", using: :btree
@@ -1313,6 +1328,7 @@ ActiveRecord::Schema.define(version: 20170405080720) do
 
   add_foreign_key "boards", "projects"
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
+  add_foreign_key "ci_trigger_schedules", "ci_triggers", column: "trigger_id", name: "fk_90a406cc94", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
