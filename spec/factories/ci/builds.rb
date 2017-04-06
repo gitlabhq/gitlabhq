@@ -111,7 +111,7 @@ FactoryGirl.define do
 
     trait :trace do
       after(:create) do |build, evaluator|
-        build.trace = 'BUILD TRACE'
+        build.trace.set('BUILD TRACE')
       end
     end
 
