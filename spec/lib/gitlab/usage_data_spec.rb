@@ -14,6 +14,7 @@ describe Gitlab::UsageData do
         counts
         recorded_at
         mattermost_enabled
+        edition
         version
         uuid
       ))
