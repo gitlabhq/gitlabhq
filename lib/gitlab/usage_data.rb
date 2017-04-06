@@ -67,10 +67,13 @@ module Gitlab
       end
 
       def license_usage_data
-        usage_data = { uuid: current_application_settings.uuid,
-                       version: Gitlab::VERSION,
-                       active_user_count: User.active.count,
-                       mattermost_enabled: Gitlab.config.mattermost.enabled }
+        usage_data = {
+          uuid: current_application_settings.uuid,
+          version: Gitlab::VERSION,
+          active_user_count: User.active.count,
+          recorded_at: Time.now,
+          mattermost_enabled: Gitlab.config.mattermost.enabled
+        }
 
         license = ::License.current
 
@@ -82,7 +85,6 @@ module Gitlab
           usage_data[:license_starts_at] = license.starts_at
           usage_data[:license_expires_at] = license.expires_at
           usage_data[:license_add_ons] = license.add_ons
-          usage_data[:recorded_at] = Time.now
         end
 
         usage_data
