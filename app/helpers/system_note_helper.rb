@@ -33,6 +33,8 @@ module SystemNoteHelper
         'icon_eye'
       when 'milestone'
         'icon_clock_o'
+      when 'discussion'
+        'icon_comment_o'
       when 'moved'
         'icon_arrow-circle-o-right'
       else
