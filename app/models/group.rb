@@ -27,11 +27,14 @@ class Group < Namespace
 
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
+  validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
+
   mount_uploader :avatar, AvatarUploader
   has_many :uploads, as: :model, dependent: :destroy
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
+  after_save :update_two_factor_requirement
 
   class << self
     # Searches for groups matching the given query.
@@ -222,5 +225,13 @@ class Group < Namespace
       display_name: name[0..max_length],
       type: public? ? 'O' : 'I' # Open vs Invite-only
     }
+  end
+
+  protected
+
+  def update_two_factor_requirement
+    return unless require_two_factor_authentication_changed? || two_factor_grace_period_changed?
+
+    users.find_each(&:update_two_factor_requirement)
   end
 end
