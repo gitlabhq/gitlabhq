@@ -8,12 +8,6 @@ FactoryGirl.define do
       trigger_schedule.update!(project: trigger_schedule.trigger.project)
     end
 
-    trait :force_triggable do
-      after(:create) do |trigger_schedule, evaluator|
-        trigger_schedule.update!(next_run_at: trigger_schedule.next_run_at - 1.year)
-      end
-    end
-
     trait :nightly do
       cron '0 1 * * *'
       cron_timezone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE

@@ -15,11 +15,16 @@ module Ci
     validates :cron_timezone, cron_timezone: true, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
 
-    after_create :schedule_next_run!
+    before_save :set_next_run_at
+
+    def set_next_run_at
+      self.next_run_at = Gitlab::Ci::CronParser.new(cron, cron_timezone).next_time_from(Time.now)
+    end
 
     def schedule_next_run!
-      next_time = Gitlab::Ci::CronParser.new(cron, cron_timezone).next_time_from(Time.now)
-      update!(next_run_at: next_time) if next_time.present?
+      save! # with set_next_run_at
+    rescue ActiveRecord::RecordInvalid => invalid
+      update_attribute(:next_run_at, nil) # update without validation
     end
   end
 end
