@@ -218,8 +218,23 @@ describe Gitlab::Ci::Status::Build::Factory do
         expect(status.favicon).to eq 'favicon_status_manual'
         expect(status.label).to eq 'manual play action'
         expect(status).to have_details
-        expect(status).to have_action
         expect(status.action_path).to include 'play'
+      end
+
+      context 'when user has ability to play action' do
+        before do
+          build.project.add_master(user)
+        end
+
+        it 'fabricates status that has action' do
+          expect(status).to have_action
+        end
+      end
+
+      context 'when user does not have ability to play action' do
+        it 'fabricates status that has no action' do
+          expect(status).not_to have_action
+        end
       end
     end
 
