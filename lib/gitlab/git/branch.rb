@@ -1,6 +1,6 @@
 module Gitlab
   module Git
-    class Branch < Ref
+    class Branch < Gitlab::Git::Ref
     end
   end
 end
