@@ -902,22 +902,26 @@ describe Ci::Build, :models do
   end
 
   describe '#persisted_environment' do
-    before do
-      @environment = create(:environment, project: project, name: "foo-#{project.default_branch}")
+    let!(:environment) do
+      create(:environment, project: project, name: "foo-#{project.default_branch}")
     end
 
     subject { build.persisted_environment }
 
-    context 'referenced literally' do
-      let(:build) { create(:ci_build, pipeline: pipeline, environment: "foo-#{project.default_branch}") }
+    context 'when referenced literally' do
+      let(:build) do
+        create(:ci_build, pipeline: pipeline, environment: "foo-#{project.default_branch}")
+      end
 
-      it { is_expected.to eq(@environment) }
+      it { is_expected.to eq(environment) }
     end
 
-    context 'referenced with a variable' do
-      let(:build) { create(:ci_build, pipeline: pipeline, environment: "foo-$CI_COMMIT_REF_NAME") }
+    context 'when  referenced with a variable' do
+      let(:build) do
+        create(:ci_build, pipeline: pipeline, environment: "foo-$CI_COMMIT_REF_NAME")
+      end
 
-      it { is_expected.to eq(@environment) }
+      it { is_expected.to eq(environment) }
     end
   end
 
