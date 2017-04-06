@@ -371,6 +371,16 @@ ActiveRecord::Schema.define(version: 20170403141442) do
 
   add_index "ci_variables", ["project_id"], name: "index_ci_variables_on_project_id", using: :btree
 
+  create_table "container_repositories", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "container_repositories", ["project_id", "name"], name: "index_container_repositories_on_project_id_and_name", unique: true, using: :btree
+  add_index "container_repositories", ["project_id"], name: "index_container_repositories_on_project_id", using: :btree
+
   create_table "deploy_keys_projects", force: :cascade do |t|
     t.integer "deploy_key_id", null: false
     t.integer "project_id", null: false
@@ -1502,6 +1512,7 @@ ActiveRecord::Schema.define(version: 20170403141442) do
   add_foreign_key "boards", "projects"
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
+  add_foreign_key "container_repositories", "projects"
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
