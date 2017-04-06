@@ -1,6 +1,12 @@
 module Emails
   module EE
     module ServiceDesk
+      extend ActiveSupport::Concern
+
+      included do
+        layout 'service_desk', only: [:service_desk_thank_you_email, :service_desk_new_note_email]
+      end
+
       def service_desk_thank_you_email(issue_id)
         setup_service_desk_mail(issue_id)
 
