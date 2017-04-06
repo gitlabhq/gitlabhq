@@ -1,6 +1,4 @@
-/* eslint-disable comma-dangle, no-unused-vars */
-
-class ProtectedTagDropdown {
+export default class ProtectedTagDropdown {
   constructor(options) {
     this.onSelect = options.onSelect;
     this.$dropdown = options.$dropdown;
@@ -21,7 +19,7 @@ class ProtectedTagDropdown {
       filterable: true,
       remote: false,
       search: {
-        fields: ['title']
+        fields: ['title'],
       },
       selectable: true,
       toggleLabel(selected) {
@@ -38,7 +36,7 @@ class ProtectedTagDropdown {
       clicked: (item, $el, e) => {
         e.preventDefault();
         this.onSelect();
-      }
+      },
     });
   }
 
@@ -63,7 +61,7 @@ class ProtectedTagDropdown {
     this.selectedTag = {
       title: tagName,
       id: tagName,
-      text: tagName
+      text: tagName,
     };
 
     if (tagName) {
@@ -75,5 +73,3 @@ class ProtectedTagDropdown {
     this.$dropdownFooter.toggleClass('hidden', !tagName);
   }
 }
-
-window.ProtectedTagDropdown = ProtectedTagDropdown;
