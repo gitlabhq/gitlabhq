@@ -73,4 +73,17 @@ describe Gitlab::SidekiqStatus do
       expect(key).to include('123')
     end
   end
+
+  describe 'completed', :redis do
+    it 'returns the completed job' do
+      expect(described_class.completed_jids(%w(123))).to eq(['123'])
+    end
+
+    it 'returns only the jobs completed' do
+      described_class.set('123')
+      described_class.set('456')
+
+      expect(described_class.completed_jids(%w(123 456 789))).to eq(['789'])
+    end
+  end
 end

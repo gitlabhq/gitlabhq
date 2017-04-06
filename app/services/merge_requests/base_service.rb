@@ -39,7 +39,7 @@ module MergeRequests
     private
 
     # Returns all origin and fork merge requests from `@project` satisfying passed arguments.
-    def merge_requests_for(source_branch, mr_states: [:opened])
+    def merge_requests_for(source_branch, mr_states: [:opened, :reopened])
       MergeRequest
         .with_state(mr_states)
         .where(source_branch: source_branch, source_project_id: @project.id)

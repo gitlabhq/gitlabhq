@@ -72,6 +72,8 @@ module Gitlab
     # job_ids - The Sidekiq job IDs to check.
     #
     # Returns an array of true or false indicating job completion.
+    # true = job is still running
+    # false = job completed
     def self.job_status(job_ids)
       keys = job_ids.map { |jid| key_for(jid) }
 
@@ -79,6 +81,17 @@ module Gitlab
         redis.pipelined do
           keys.each { |key| redis.exists(key) }
         end
+      end
+    end
+
+    # Returns the JIDs that are completed
+    #
+    # job_ids - The Sidekiq job IDs to check.
+    #
+    # Returns an array of completed JIDs
+    def self.completed_jids(job_ids)
+      Sidekiq.redis do |redis|
+        job_ids.reject { |jid| redis.exists(key_for(jid)) }
       end
     end
 
