@@ -86,7 +86,19 @@ describe Gitlab::Elastic::Indexer do
     end
   end
 
-  def expect_popen(*with)
+  context 'experimental indexer present' do
+    before do
+      stub_application_setting(elasticsearch_experimental_indexer: true)
+    end
+
+    it 'uses the experimental indexer' do
+      expect_popen.with(['gitlab-elasticsearch-indexer', anything, anything], anything, anything).and_return(popen_success)
+
+      indexer.run
+    end
+  end
+
+  def expect_popen
     expect(Gitlab::Popen).to receive(:popen)
   end
 

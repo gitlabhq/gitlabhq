@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170402231018) do
+ActiveRecord::Schema.define(version: 20170403141442) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(version: 20170402231018) do
     t.integer "geo_status_timeout", default: 10
     t.string "uuid"
     t.decimal "polling_interval_multiplier", default: 1.0, null: false
+    t.boolean "elasticsearch_experimental_indexer"
   end
 
   create_table "approvals", force: :cascade do |t|
