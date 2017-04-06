@@ -142,7 +142,7 @@ require('./task_list');
       this.commentTypeToggle = new CommentTypeToggle(
         form.querySelector('.js-comment-type-dropdown .dropdown-toggle'),
         form.querySelector('.js-comment-type-dropdown .dropdown-menu'),
-        document.getElementById('note_type'),
+        document.querySelector('.timeline-content-form #note_type'),
         form.querySelector('.js-comment-type-dropdown .js-comment-submit-button'),
         document.querySelector('.js-note-target-close'),
       );
