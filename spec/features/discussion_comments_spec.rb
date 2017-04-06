@@ -27,33 +27,33 @@ shared_examples 'discussion comments' do |resource_name|
       menu = find(menu_selector)
 
       expect(menu).to have_content 'Comment'
-      expect(menu).to have_content 'Add a general comment to this issue.'
+      expect(menu).to have_content "Add a general comment to this #{resource_name}."
     end
 
     it 'has a "Start discussion" item' do
       menu = find(menu_selector)
 
       expect(menu).to have_content 'Start discussion'
-      expect(menu).to have_content 'Discuss a specific suggestion or question.'
+      expect(menu).to have_content 'Discuss a specific suggestion or question that needs to be resolved.'
     end
 
     it 'has the "Comment" item selected by default' do
-      find("#{menu_selector} li")
+      find("#{menu_selector} li", match: :first)
       items = all("#{menu_selector} li")
 
       expect(items.first).to have_content 'Comment'
       expect(items.first).to have_selector '.fa-check'
-      expect(items.first).to have_selector '.droplab-item-selected'
+      expect(items.first['class']).to match 'droplab-item-selected'
 
       expect(items.last).to have_content 'Start discussion'
       expect(items.last).not_to have_selector '.fa-check'
-      expect(items.last).not_to have_selector '.droplab-item-selected'
+      expect(items.last['class']).not_to match 'droplab-item-selected'
     end
 
     it '"Comment" will post a comment' do
       find(submit_selector).click
 
-      find('.timeline .timeline-entry')
+      find('.timeline .timeline-entry', match: :first)
       new_comment = all('.timeline .timeline-entry').last
 
       expect(new_comment).to have_content 'a'
@@ -64,7 +64,7 @@ shared_examples 'discussion comments' do |resource_name|
       it "Comment & close' will post a comment and close the #{resource_name}" do
         find(close_selector).click
 
-        find('.timeline .timeline-entry')
+        find('.timeline .timeline-entry', match: :first)
         entries = all('.timeline .timeline-entry')
         close_note = entries.last
         new_comment = entries[-2]
@@ -88,7 +88,7 @@ shared_examples 'discussion comments' do |resource_name|
 
     describe 'when selecting "Start discussion"' do
       before do
-        find("#{menu_selector} li")
+        find("#{menu_selector} li", match: :first)
         first("#{menu_selector} li").click
       end
 
@@ -113,7 +113,7 @@ shared_examples 'discussion comments' do |resource_name|
       it '"Start discussion" will post a discussion' do
         find(submit_selector).click
 
-        find('.timeline .timeline-entry')
+        find('.timeline .timeline-entry', match: :first)
         new_comment = all('.timeline .timeline-entry').last
 
         expect(new_comment).to have_content 'a'
@@ -124,7 +124,7 @@ shared_examples 'discussion comments' do |resource_name|
         it "'Start discussion & close' will post a discussion and close the #{resource_name}" do
           find(close_selector).click
 
-          find('.timeline .timeline-entry')
+          find('.timeline .timeline-entry', match: :first)
           entries = all('.timeline .timeline-entry')
           close_note = entries.last
           new_discussion = entries[-2]
@@ -140,7 +140,7 @@ shared_examples 'discussion comments' do |resource_name|
         end
 
         it 'should have "Start discussion" selected' do
-          find("#{menu_selector} li")
+          find("#{menu_selector} li", match: :first)
           items = all("#{menu_selector} li")
 
           expect(items.first).to have_content 'Comment'
@@ -154,7 +154,7 @@ shared_examples 'discussion comments' do |resource_name|
 
         describe 'when selecting "Comment"' do
           before do
-            find("#{menu_selector} li")
+            find("#{menu_selector} li", match: :first)
             all("#{menu_selector} li").last.click
           end
 
@@ -179,7 +179,7 @@ shared_examples 'discussion comments' do |resource_name|
           it 'should have "Comment" selected when opening the menu' do
             find(toggle_selector).click
 
-            find("#{menu_selector} li")
+            find("#{menu_selector} li", match: :first)
             items = all("#{menu_selector} li")
 
             expect(items.first).to have_content 'Comment'
@@ -194,6 +194,12 @@ shared_examples 'discussion comments' do |resource_name|
       end
     end
   end
+
+  if resource_name =~ /(issue|merge request)/
+    describe "on a closed #{resource_name}" do
+
+    end
+  end
 end
 
 describe 'Discussion Comments', :feature, :js do
@@ -203,6 +209,8 @@ describe 'Discussion Comments', :feature, :js do
   let(:project) { create(:project) }
 
   before do
+    project.team << [user, :developer]
+
     login_as(user)
   end
 
