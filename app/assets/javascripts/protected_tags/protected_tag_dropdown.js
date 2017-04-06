@@ -1,4 +1,10 @@
 export default class ProtectedTagDropdown {
+  /**
+   * @param {Object} options containing
+   *                         `$dropdown` target element
+   *                          `onSelect` event callback
+   * $dropdown must be an element created using `dropdown_tag()` rails helper
+   */
   constructor(options) {
     this.onSelect = options.onSelect;
     this.$dropdown = options.$dropdown;
@@ -10,7 +16,7 @@ export default class ProtectedTagDropdown {
     this.bindEvents();
 
     // Hide footer
-    this.$dropdownFooter.addClass('hidden');
+    this.toggleFooter(true);
   }
 
   buildDropdown() {
@@ -58,18 +64,22 @@ export default class ProtectedTagDropdown {
   }
 
   toggleCreateNewButton(tagName) {
-    this.selectedTag = {
-      title: tagName,
-      id: tagName,
-      text: tagName,
-    };
-
     if (tagName) {
+      this.selectedTag = {
+        title: tagName,
+        id: tagName,
+        text: tagName,
+      };
+
       this.$dropdownContainer
         .find('.create-new-protected-tag code')
         .text(tagName);
     }
 
-    this.$dropdownFooter.toggleClass('hidden', !tagName);
+    this.toggleFooter(!tagName);
+  }
+
+  toggleFooter(toggleState) {
+    this.$dropdownFooter.toggleClass('hidden', toggleState);
   }
 }
