@@ -64,7 +64,7 @@ describe Ci::BuildPresenter do
         expect(build).to receive(:auto_canceled_by_id).and_return(1)
       end
 
-      it 'shows that the job is auto-canceled' do
+      it 'shows that the build is auto-canceled' do
         status_title = presenter.status_title
 
         expect(status_title).to include('auto-canceled')

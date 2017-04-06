@@ -16,6 +16,7 @@ describe CommitStatus, :models do
   it { is_expected.to belong_to(:pipeline) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:project) }
+  it { is_expected.to belong_to(:auto_canceled_by) }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_inclusion_of(:status).in_array(%w(pending running failed success canceled)) }
