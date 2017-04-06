@@ -1,3 +1,5 @@
+/* global Flash */
+
 import AjaxFilter from '~/droplab/plugins/ajax_filter';
 
 require('./filtered_search_dropdown');
@@ -18,6 +20,11 @@ require('./filtered_search_dropdown');
           },
           searchValueFunction: this.getSearchInput.bind(this),
           loadingTemplate: this.loadingTemplate,
+          onError() {
+            /* eslint-disable no-new */
+            new Flash('An error occured fetching the dropdown data.');
+            /* eslint-enable no-new */
+          },
         },
       };
     }

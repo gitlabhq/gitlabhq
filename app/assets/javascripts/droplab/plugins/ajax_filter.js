@@ -68,7 +68,7 @@ const AjaxFilter = {
       this._loadUrlData(url)
         .then(function(data) {
           self._loadData(data, config, self);
-        }, config.onError);
+        }, config.onError).catch(config.onError);
     }
   },
 
