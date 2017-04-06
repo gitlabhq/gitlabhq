@@ -1,14 +1,6 @@
 module Geo
-  class FileDownloadService
-    attr_reader :object_type, :object_db_id
-
+  class FileDownloadService < FileService
     LEASE_TIMEOUT = 8.hours.freeze
-    DEFAULT_OBJECT_TYPES = %w[attachment avatar file].freeze
-
-    def initialize(object_type, object_db_id)
-      @object_type = object_type.to_s
-      @object_db_id = object_db_id
-    end
 
     def execute
       try_obtain_lease do |lease|
@@ -21,22 +13,11 @@ module Geo
     private
 
     def downloader
-      klass = downloader_klass_name.constantize
+      klass = "Gitlab::Geo::#{service_klass_name}Downloader".constantize
       klass.new(object_type, object_db_id)
     rescue NameError
       log("Unknown file type: #{object_type}")
       raise
-    end
-
-    def downloader_klass_name
-      klass_name =
-        if DEFAULT_OBJECT_TYPES.include?(object_type)
-          'file'
-        else
-          object_type
-        end
-
-      "Gitlab::Geo::#{klass_name.camelize}Downloader"
     end
 
     def try_obtain_lease
@@ -63,10 +44,6 @@ module Geo
 
     def lease_key
       "file_download_service:#{object_type}:#{object_db_id}"
-    end
-
-    def log(message)
-      Rails.logger.info "#{self.class.name}: #{message}"
     end
   end
 end

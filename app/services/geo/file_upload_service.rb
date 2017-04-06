@@ -1,13 +1,11 @@
 module Geo
-  class FileUploadService
-    DEFAULT_OBJECT_TYPES = %w[attachment avatar file].freeze
+  class FileUploadService < FileService
     IAT_LEEWAY = 60.seconds.to_i
 
-    attr_reader :object_type, :object_db_id, :auth_header
+    attr_reader :auth_header
 
     def initialize(params, auth_header)
-      @object_type = params[:type]
-      @object_db_id = params[:id]
+      super(params[:type], params[:id])
       @auth_header = auth_header
     end
 
@@ -22,25 +20,10 @@ module Geo
     private
 
     def uploader_klass
-      uploader_klass_name.constantize
+      "Gitlab::Geo::#{service_klass_name}Uploader".constantize
     rescue NameError
       log("Unknown file type: #{object_type}")
       raise
-    end
-
-    def uploader_klass_name
-      klass_name =
-        if DEFAULT_OBJECT_TYPES.include?(object_type)
-          'file'
-        else
-          object_type
-        end
-
-      "Gitlab::Geo::#{klass_name.camelize}Uploader"
-    end
-
-    def log(message)
-      Rails.logger.info "#{self.class.name}: #{message}"
     end
   end
 end
