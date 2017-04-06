@@ -15,15 +15,13 @@ module Projects
 
       private
 
-      def repository
+      def image
         @image ||= project.container_repositories
           .find(params[:repository_id])
       end
 
       def tag
-        return render_404 unless params[:id].present?
-
-        @tag ||= repository.tag(params[:id])
+        @tag ||= image.tag(params[:id])
       end
     end
   end

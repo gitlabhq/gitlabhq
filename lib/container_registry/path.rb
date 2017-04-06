@@ -1,6 +1,6 @@
 module ContainerRegistry
   ##
-  # Class reponsible for extracting project and repository name from
+  # Class responsible for extracting project and repository name from
   # image repository path provided by a containers registry API response.
   #
   # Example:
@@ -11,6 +11,8 @@ module ContainerRegistry
   #
   class Path
     InvalidRegistryPathError = Class.new(StandardError)
+
+    LEVELS_SUPPORTED = 3
 
     def initialize(path)
       @path = path
@@ -50,7 +52,9 @@ module ContainerRegistry
     end
 
     def repository_project
-      @project ||= Project.where_full_path_in(nodes.first(3)).first
+      @project ||= Project
+        .where_full_path_in(nodes.first(LEVELS_SUPPORTED))
+        .first
     end
 
     def repository_name
