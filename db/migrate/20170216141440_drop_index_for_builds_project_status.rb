@@ -1,3 +1,4 @@
+# rubocop:disable RemoveIndex
 class DropIndexForBuildsProjectStatus < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   DOWNTIME = false

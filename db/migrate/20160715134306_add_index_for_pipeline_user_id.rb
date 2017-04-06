@@ -1,3 +1,4 @@
+# rubocop:disable RemoveIndex
 class AddIndexForPipelineUserId < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
