@@ -13,16 +13,18 @@ class PipelineSerializer < BaseSerializer
 
   def represent(resource, opts = {})
     if resource.is_a?(ActiveRecord::Relation)
-      resource = resource.includes(:pending_builds,
+      project_includes = [ { namespace: :route }, :route ]
+      resource = resource.includes(
         :retryable_builds,
         :cancelable_statuses,
-        :manual_actions,
-        :artifacts,
-        :trigger_requests)
-      resource = resource.includes(pending_builds: :project)
-      resource = resource.includes(project: :namespace)
-      resource = resource.includes(manual_actions: { project: :namespace })
-      resource = resource.includes(artifacts: { project: :namespace })
+        :trigger_requests
+      )
+      resource = resource.includes(
+        project: project_includes,
+        pending_builds: [:project],
+        manual_actions: { project: project_includes },
+        artifacts: { project: project_includes }
+      )
     end
 
     if paginated?
