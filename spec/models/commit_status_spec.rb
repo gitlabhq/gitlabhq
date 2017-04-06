@@ -107,7 +107,7 @@ describe CommitStatus, :models do
 
     context 'when it is canceled' do
       before do
-        commit_status.cancel
+        commit_status.update(status: 'canceled')
       end
 
       context 'when there is auto_canceled_by' do
