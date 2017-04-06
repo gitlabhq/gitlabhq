@@ -23,7 +23,7 @@ module Ci
 
     def schedule_next_run!
       save! # with set_next_run_at
-    rescue ActiveRecord::RecordInvalid => invalid
+    rescue ActiveRecord::RecordInvalid
       update_attribute(:next_run_at, nil) # update without validation
     end
   end
