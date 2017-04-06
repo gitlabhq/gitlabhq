@@ -169,6 +169,12 @@ constraints(ProjectUrlConstrainer.new) do
         collection do
           get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
         end
+
+        resources :deployments, only: [] do
+          member do
+            get :metrics
+          end
+        end
       end
 
       resource :cycle_analytics, only: [:show]

@@ -51,7 +51,11 @@ describe Gitlab::Prometheus, lib: true do
 
   describe '#query' do
     let(:prometheus_query) { prometheus_cpu_query('env-slug') }
-    let(:query_url) { prometheus_query_url(prometheus_query) }
+    let(:query_url) { prometheus_query_with_time_url(prometheus_query, Time.now.utc) }
+
+    around do |example|
+      Timecop.freeze { example.run }
+    end
 
     context 'when request returns vector results' do
       it 'returns data from the API call' do
@@ -91,6 +95,20 @@ describe Gitlab::Prometheus, lib: true do
 
     around do |example|
       Timecop.freeze { example.run }
+    end
+
+    context 'when non utc time is passed' do
+      let(:time_stop) { Time.now.in_time_zone("Warsaw") }
+      let(:time_start) { time_stop - 8.hours }
+
+      let(:query_url) { prometheus_query_range_url(prometheus_query, start: time_start.utc.to_f, stop: time_stop.utc.to_f) }
+
+      it 'passed dates are properly converted to utc' do
+        req_stub = stub_prometheus_request(query_url, body: prometheus_values_body('vector'))
+
+        subject.query_range(prometheus_query, start: time_start, stop: time_stop)
+        expect(req_stub).to have_been_requested
+      end
     end
 
     context 'when a start time is passed' do
