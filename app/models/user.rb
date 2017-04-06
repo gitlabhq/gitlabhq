@@ -963,14 +963,6 @@ class User < ActiveRecord::Base
     self.admin = (new_level == 'admin')
   end
 
-  protected
-
-  # override, from Devise::Validatable
-  def password_required?
-    return false if internal?
-    super
-  end
-
   def update_two_factor_requirement
     periods = expanded_groups_requiring_two_factor_authentication.pluck(:two_factor_grace_period)
 
@@ -978,6 +970,14 @@ class User < ActiveRecord::Base
     self.two_factor_grace_period = periods.min || User.column_defaults['two_factor_grace_period']
 
     save
+  end
+
+  protected
+
+  # override, from Devise::Validatable
+  def password_required?
+    return false if internal?
+    super
   end
 
   private
