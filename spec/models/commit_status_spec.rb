@@ -112,7 +112,7 @@ describe CommitStatus, :models do
 
       context 'when there is auto_canceled_by' do
         before do
-          commit_status.update(auto_cancel_by: create(:ci_empty_pipeline))
+          commit_status.update(auto_canceled_by: create(:ci_empty_pipeline))
         end
 
         it 'is auto canceled' do
