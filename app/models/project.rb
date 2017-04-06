@@ -1093,15 +1093,23 @@ class Project < ActiveRecord::Base
   end
 
   def shared_runners
-    shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
+    @shared_runners ||= shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
+  end
+
+  def active_runners
+    @active_runners ||= runners.active
+  end
+
+  def active_shared_runners
+    @active_shared_runners ||= shared_runners.active
   end
 
   def any_runners?(&block)
-    if runners.active.any?(&block)
+    if active_runners.any?(&block)
       return true
     end
 
-    shared_runners.active.any?(&block)
+    active_shared_runners.any?(&block)
   end
 
   def valid_runners_token?(token)
