@@ -49,7 +49,20 @@ module Gitlab
             todos: Todo.count,
             uploads: Upload.count,
             web_hooks: WebHook.count
-          }
+          }.merge(service_desk_counts)
+        }
+      end
+
+      def service_desk_counts
+        return {} unless ::License.current.add_on?('GitLab_ServiceDesk')
+
+        projects_with_service_desk = Project.where(service_desk_enabled: true)
+
+        {
+          service_desk_enabled_projects: projects_with_service_desk.count,
+          service_desk_issues: Issue.where(project: projects_with_service_desk,
+                                           author: User.support_bot,
+                                           confidential: true).count
         }
       end
 

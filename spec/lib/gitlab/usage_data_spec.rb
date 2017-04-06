@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe Gitlab::UsageData do
-  let!(:project) { create(:project) }
-  let!(:project2) { create(:project) }
+  let!(:project) { create(:empty_project) }
+  let!(:project2) { create(:empty_project) }
   let!(:board) { create(:board, project: project) }
 
   describe '#data' do
-    subject { Gitlab::UsageData.data }
+    subject { described_class.data }
 
     it "gathers usage data" do
       expect(subject.keys).to match_array(%i(
@@ -68,8 +68,8 @@ describe Gitlab::UsageData do
     end
   end
 
-  describe '#license_usage_data' do
-    subject { Gitlab::UsageData.license_usage_data }
+  describe '.license_usage_data' do
+    subject { described_class.license_usage_data }
 
     it "gathers license data" do
       license = ::License.current
@@ -85,6 +85,31 @@ describe Gitlab::UsageData do
       expect(subject[:license_expires_at]).to eq(license.expires_at)
       expect(subject[:license_add_ons]).to eq(license.add_ons)
       expect(subject[:recorded_at]).to be_a(Time)
+    end
+  end
+
+  describe '.service_desk_counts' do
+    subject { described_class.service_desk_counts }
+
+    let!(:project3) { create(:empty_project, service_desk_enabled: true) }
+    let!(:project4) { create(:empty_project, service_desk_enabled: true) }
+
+    context 'when Service Desk is disabled' do
+      it 'returns an empty hash' do
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk').and_return(false)
+
+        expect(subject).to eq({})
+      end
+    end
+
+    context 'when Service Desk is enabled' do
+      it 'gathers Service Desk data' do
+        create_list(:issue, 3, confidential: true, author: User.support_bot, project: [project3, project4].sample)
+        allow_any_instance_of(License).to receive(:add_on?).with('GitLab_ServiceDesk').and_return(true)
+
+        expect(subject).to eq(service_desk_enabled_projects: 2,
+                              service_desk_issues: 3)
+      end
     end
   end
 end
