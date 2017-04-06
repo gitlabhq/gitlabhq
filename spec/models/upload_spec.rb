@@ -102,16 +102,6 @@ describe Upload, type: :model do
     end
   end
 
-  describe '.exist?' do
-    it 'returns true when the file exists' do
-      expect(described_class.exist?(__FILE__)).to eq true
-    end
-
-    it 'returns false when the file does not exist' do
-      expect(described_class.exist?("#{__FILE__}-nope")).to eq false
-    end
-  end
-
   describe '#absolute_path' do
     it 'returns the path directly when already absolute' do
       path = '/path/to/namespace/project/secret/file.jpg'

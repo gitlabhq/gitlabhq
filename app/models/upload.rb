@@ -28,13 +28,9 @@ class Upload < ActiveRecord::Base
   end
 
   def self.hexdigest(absolute_path)
-    return unless exist?(absolute_path)
+    return unless File.exist?(absolute_path)
 
     Digest::SHA256.file(absolute_path).hexdigest
-  end
-
-  def self.exist?(absolute_path)
-    File.exist?(absolute_path)
   end
 
   def absolute_path
@@ -50,7 +46,7 @@ class Upload < ActiveRecord::Base
   end
 
   def exist?
-    self.class.exist?(absolute_path)
+    File.exist?(absolute_path)
   end
 
   private
