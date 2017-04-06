@@ -202,4 +202,4 @@ still an issue I encourage you to open it on the [GitLab.com issue tracker](http
 ["Implement design & UI elements" guidelines]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#implement-design-ui-elements
 [Thoughtbot code review guide]: https://github.com/thoughtbot/guides/tree/master/code-review
 [done]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#definition-of-done
-[limit_ee_conflicts]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/limit_ee_conflicts.md
+[limit_ee_conflicts]: https://docs.gitlab.com/ce/development/limit_ee_conflicts.html
