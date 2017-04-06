@@ -36,7 +36,7 @@
       = icon('warning', class: 'text-warning has-tooltip', title: 'Job is stuck. Check runners.')
 
     - if retried
-      = icon('refresh', class: 'text-warning has-tooltip', title: 'Job was retried')
+      = icon('spinner', class: 'text-warning has-tooltip', title: 'Job was retried')
 
     .label-container
       - if job.tags.any?

@@ -39,7 +39,7 @@
     overflow-y: hidden;
     font-size: 12px;
 
-    .fa-refresh {
+    .fa-spinner {
       font-size: 24px;
       margin-left: 20px;
     }
@@ -219,7 +219,7 @@
   font-size: 12px;
   position: relative;
 
-  .fa-refresh {
+  .fa-spinner {
     font-size: 24px;
   }
 
@@ -366,7 +366,7 @@
         background-color: $row-hover;
       }
 
-      .fa-refresh {
+      .fa-spinner {
         font-size: 13px;
         margin-left: 3px;
       }
