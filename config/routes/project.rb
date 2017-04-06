@@ -155,6 +155,10 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      ## EE-specific
+      get '/service_desk' => 'service_desk#show', as: :service_desk
+      put '/service_desk' => 'service_desk#update', as: :service_desk_refresh
+
       resources :protected_branches, only: [:index, :show, :create, :update, :destroy, :patch], constraints: { id: Gitlab::Regex.git_reference_regex } do
         scope module: :protected_branches do
           resources :merge_access_levels, only: [:destroy]

@@ -59,7 +59,7 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
       end
 
       it 'does not create an issue or send email' do
-         expect(Notify).not_to receive(:service_desk_thank_you_email)
+        expect(Notify).not_to receive(:service_desk_thank_you_email)
 
         expect { receiver.execute rescue nil }.not_to change { Issue.count }
       end
