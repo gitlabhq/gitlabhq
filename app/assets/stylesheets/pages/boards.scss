@@ -226,7 +226,7 @@
 
 .card {
   position: relative;
-  padding: 10px $gl-padding;
+  padding: 11px 10px 11px $gl-padding;
   background: $white-light;
   border-radius: $border-radius-default;
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
@@ -246,6 +246,8 @@
   }
 
   .confidential-icon {
+    position: relative;
+    top: 1px;
     margin-right: 5px;
   }
 }
@@ -253,29 +255,43 @@
 .card-title {
   margin: 0;
   font-size: 1em;
+  line-height: inherit;
 
   a {
-    color: inherit;
+    color: $gl-text-color;
     word-wrap: break-word;
+    margin-right: 2px;
+  }
+}
+
+.card-header {
+  display: flex;
+  min-height: 20px;
+
+  .card-assignee {
+    margin-left: auto;
+    margin-right: 5px;
+    padding-left: 10px;
+    height: 20px;
+  }
+
+  .avatar {
+    margin: 0;
   }
 }
 
 .card-footer {
-  margin-top: 5px;
-  line-height: 25px;
+  margin: 0 0 5px;
 
   .label {
-    margin-right: 5px;
-    font-size: (14px / $issue-boards-font-size) * 1em;
-  }
-
-  .avatar {
-    margin-left: 0;
+    margin-top: 5px;
+    margin-right: 6px;
   }
 }
 
 .card-number {
-  margin-right: 5px;
+  font-size: 12px;
+  color: $gl-text-color-secondary;
 }
 
 .issue-boards-search {
