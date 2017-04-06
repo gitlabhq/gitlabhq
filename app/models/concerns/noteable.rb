@@ -1,4 +1,29 @@
 module Noteable
+  # Names of all implementers of `Noteable` that support resolvable notes.
+  RESOLVABLE_TYPES = %w(MergeRequest).freeze
+
+  def base_class_name
+    self.class.base_class.name
+  end
+
+  # Convert this Noteable class name to a format usable by notifications.
+  #
+  # Examples:
+  #
+  #   noteable.class           # => MergeRequest
+  #   noteable.human_class_name # => "merge request"
+  def human_class_name
+    @human_class_name ||= base_class_name.titleize.downcase
+  end
+
+  def supports_resolvable_notes?
+    RESOLVABLE_TYPES.include?(base_class_name)
+  end
+
+  def supports_discussions?
+    DiscussionNote::NOTEABLE_TYPES.include?(base_class_name)
+  end
+
   def discussion_notes
     notes
   end

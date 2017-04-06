@@ -20,16 +20,13 @@ module ResolvableDiscussion
       :last_note
     )
 
+    delegate :potentially_resolvable?, to: :first_note
+
     delegate  :resolved_at,
               :resolved_by,
 
               to: :last_resolved_note,
               allow_nil: true
-  end
-
-  # Keep this method in sync with the `potentially_resolvable` scope on `ResolvableNote`
-  def potentially_resolvable?
-    for_merge_request?
   end
 
   def resolvable?

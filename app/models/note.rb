@@ -1,3 +1,6 @@
+# A note on the root of an issue, merge request, commit, or snippet.
+#
+# A note of this type is never resolvable.
 class Note < ActiveRecord::Base
   extend ActiveModel::Naming
   include Gitlab::CurrentSettings
@@ -225,11 +228,7 @@ class Note < ActiveRecord::Base
   end
 
   def can_be_discussion_note?
-    DiscussionNote::NOTEABLE_TYPES.include?(self.noteable_type) && !part_of_discussion?
-  end
-
-  def can_be_resolvable?
-    DiscussionNote::RESOLVABLE_TYPES.include?(self.noteable_type)
+    self.noteable.supports_discussions? && !part_of_discussion?
   end
 
   def discussion_class(noteable = nil)
