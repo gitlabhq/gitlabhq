@@ -28,7 +28,6 @@ describe User, models: true do
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:assigned_merge_requests).dependent(:nullify) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
-    it { is_expected.to have_one(:abuse_report) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
@@ -38,6 +37,34 @@ describe User, models: true do
     it { is_expected.to have_many(:pipelines).dependent(:nullify) }
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
+    it { is_expected.to have_many(:reported_abuse_reports).dependent(:destroy).class_name('AbuseReport') }
+
+    describe "#abuse_report" do
+      let(:current_user) { create(:user) }
+      let(:other_user) { create(:user) }
+
+      it { is_expected.to have_one(:abuse_report) }
+
+      it "refers to the abuse report whose user_id is the current user" do
+        abuse_report = create(:abuse_report, reporter: other_user, user: current_user)
+
+        expect(current_user.abuse_report).to eq(abuse_report)
+      end
+
+      it "does not refer to the abuse report whose reporter_id is the current user" do
+        create(:abuse_report, reporter: current_user, user: other_user)
+
+        expect(current_user.abuse_report).to be_nil
+      end
+
+      it "does not update the user_id of an abuse report when the user is updated" do
+        abuse_report = create(:abuse_report, reporter: current_user, user: other_user)
+
+        current_user.block
+
+        expect(abuse_report.reload.user).to eq(other_user)
+      end
+    end
 
     describe '#group_members' do
       it 'does not include group memberships for which user is a requester' do
