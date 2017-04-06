@@ -65,17 +65,18 @@ var config = {
       {
         test: /\.js$/,
         exclude: /(node_modules|vendor\/assets)/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
       },
       {
         test: /\.vue$/,
-        use: 'vue-loader'
+        loader: 'vue-loader',
       },
       {
         test: /\.svg$/,
-        use: 'raw-loader'
-      }, {
-        test: /\.(worker.js|pdf)$/,
+        loader: 'raw-loader',
+      },
+      {
+        test: /\.(worker\.js|pdf)$/,
         exclude: /node_modules/,
         loader: 'file-loader',
       },
