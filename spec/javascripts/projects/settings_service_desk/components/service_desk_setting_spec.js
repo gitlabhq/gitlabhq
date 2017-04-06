@@ -23,25 +23,49 @@ describe('ServiceDeskSetting', () => {
     let el;
 
     describe('only isEnabled', () => {
-      beforeEach(() => {
-        vm = createComponent({
-          isEnabled: true,
+      describe('as project admin', () => {
+        beforeEach(() => {
+          vm = createComponent({
+            isEnabled: true,
+          });
+          el = vm.$el;
         });
-        el = vm.$el;
+
+        it('should see disabled activation checkbox', () => {
+          expect(vm.$refs['enabled-checkbox'].getAttribute('disabled')).toEqual('disabled');
+        });
+
+        it('should see only instance admin can activate/deactivate message', () => {
+          expect(vm.$refs['only-instance-admin-activate-message']).toBeDefined();
+        });
+
+        it('should see main panel with the email info', () => {
+          expect(el.querySelector('.panel')).toBeDefined();
+        });
+
+        it('should see loading spinner', () => {
+          expect(el.querySelector('.fa-spinner')).toBeDefined();
+          expect(el.querySelector('.fa-exclamation-circle')).toBeNull();
+          expect(vm.$refs['service-desk-incoming-email']).toBeUndefined();
+        });
+
+        it('should see warning message', () => {
+          expect(vm.$refs['recommend-protect-email-from-spam-message']).toBeDefined();
+        });
       });
 
-      it('see main panel with the email info', () => {
-        expect(el.querySelector('.panel')).toBeDefined();
-      });
+      describe('as instance admin', () => {
+        beforeEach(() => {
+          vm = createComponent({
+            isEnabled: true,
+            isInstanceAdmin: true,
+          });
+          el = vm.$el;
+        });
 
-      it('see loading spinner', () => {
-        expect(el.querySelector('.fa-spinner')).toBeDefined();
-        expect(el.querySelector('.fa-exclamation-circle')).toBeNull();
-        expect(vm.$refs['service-desk-incoming-email']).toBeUndefined();
-      });
-
-      it('see warning message', () => {
-        expect(el.querySelector('.settings-message')).toBeDefined();
+        it('should see activation checkbox (not disabled)', () => {
+          expect(vm.$refs['enabled-checkbox'].getAttribute('disabled')).toEqual(null);
+        });
       });
     });
 
@@ -54,7 +78,7 @@ describe('ServiceDeskSetting', () => {
         el = vm.$el;
       });
 
-      it('see email', () => {
+      it('should see email', () => {
         expect(vm.$refs['service-desk-incoming-email'].textContent.trim()).toEqual('foo@bar.com');
         expect(el.querySelector('.fa-spinner')).toBeNull();
         expect(el.querySelector('.fa-exclamation-circle')).toBeNull();
@@ -70,7 +94,7 @@ describe('ServiceDeskSetting', () => {
         el = vm.$el;
       });
 
-      it('see error message', () => {
+      it('should see error message', () => {
         expect(el.querySelector('.fa-exclamation-circle')).toBeDefined();
         expect(el.querySelector('.panel-body').textContent.trim()).toEqual('An error occurred while fetching the incoming email');
         expect(el.querySelector('.fa-spinner')).toBeNull();
@@ -94,7 +118,7 @@ describe('ServiceDeskSetting', () => {
     });
 
     it('should not see warning message', () => {
-      expect(el.querySelector('.settings-message')).toBeNull();
+      expect(vm.$refs['recommend-protect-email-from-spam-message']).toBeUndefined();
     });
   });
 

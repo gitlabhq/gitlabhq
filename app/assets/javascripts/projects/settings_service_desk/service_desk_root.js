@@ -12,10 +12,13 @@ class ServiceDeskRoot {
       this.wrapperElement.dataset.enabled !== 'false';
     const incomingEmail = this.wrapperElement.dataset.incomingEmail;
     const endpoint = this.wrapperElement.dataset.endpoint;
+    const isInstanceAdmin = this.wrapperElement.dataset.isInstanceAdmin !== undefined &&
+      this.wrapperElement.dataset.isInstanceAdmin !== 'false';
 
     this.store = new ServiceDeskStore({
       isEnabled,
       incomingEmail,
+      isInstanceAdmin,
     });
     this.service = new ServiceDeskService(endpoint);
   }
@@ -48,7 +51,8 @@ class ServiceDeskRoot {
         <service-desk-setting
           :isEnabled="isEnabled"
           :incomingEmail="incomingEmail"
-          :fetchError="fetchError" />
+          :fetchError="fetchError"
+          :isInstanceAdmin="isInstanceAdmin" />
       `,
       components: {
         'service-desk-setting': ServiceDeskSetting,
