@@ -70,7 +70,7 @@ module Ci
         pipeline.update_duration
       end
 
-      before_transition :canceled => any - [:canceled] do |pipeline|
+      before_transition canceled: any - [:canceled] do |pipeline|
         pipeline.auto_canceled_by = nil
       end
 
