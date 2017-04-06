@@ -18,7 +18,7 @@ module SystemNoteHelper
       when 'assignee'
         'icon_user'
       when 'title'
-        'icon_pencil'
+        'icon_edit'
       when 'task'
         'icon_check_square_o'
       when 'label'
