@@ -39,7 +39,7 @@ var config = {
     network:              './network/network_bundle.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
-    protected_tags:       './protected_tags/protected_tags_bundle.js',
+    protected_tags:       './protected_tags',
     snippet:              './snippet/snippet_bundle.js',
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
