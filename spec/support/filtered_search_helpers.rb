@@ -30,7 +30,7 @@ module FilteredSearchHelpers
   end
 
   def clear_search_field
-    find('.filtered-search-input-container .clear-search').click
+    find('.filtered-search-box .clear-search').click
   end
 
   def reset_filters
@@ -51,7 +51,7 @@ module FilteredSearchHelpers
   # Iterates through each visual token inside
   # .tokens-container to make sure the correct names and values are rendered
   def expect_tokens(tokens)
-    page.find '.filtered-search-input-container .tokens-container' do
+    page.find '.filtered-search-box .tokens-container' do
       page.all(:css, '.tokens-container li').each_with_index do |el, index|
         token_name = tokens[index][:name]
         token_value = tokens[index][:value]
@@ -70,5 +70,19 @@ module FilteredSearchHelpers
 
   def get_filtered_search_placeholder
     find('.filtered-search')['placeholder']
+  end
+
+  def remove_recent_searches
+    execute_script('window.localStorage.removeItem(\'issue-recent-searches\');')
+  end
+
+  def set_recent_searches(input)
+    execute_script("window.localStorage.setItem('issue-recent-searches', '#{input}');")
+  end
+
+  def wait_for_filtered_search(text)
+    Timeout.timeout(Capybara.default_max_wait_time) do
+      loop until find('.filtered-search').value.strip == text
+    end
   end
 end

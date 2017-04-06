@@ -252,7 +252,7 @@ describe 'Dropdown milestone', :feature, :js do
       expect(initial_size).to be > 0
 
       create(:milestone, project: project)
-      find('.filtered-search-input-container .clear-search').click
+      find('.filtered-search-box .clear-search').click
       filtered_search.set('milestone:')
 
       expect(dropdown_milestone_size).to eq(initial_size)

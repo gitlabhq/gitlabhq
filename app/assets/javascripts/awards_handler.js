@@ -263,7 +263,8 @@ AwardsHandler.prototype.addAward = function addAward(
     this.addAwardToEmojiBar(votesBlock, normalizedEmoji, checkMutuality);
     return typeof callback === 'function' ? callback() : undefined;
   });
-  return $('.emoji-menu').removeClass('is-visible');
+  $('.emoji-menu').removeClass('is-visible');
+  $('.js-add-award.is-active').removeClass('is-active');
 };
 
 AwardsHandler.prototype.addAwardToEmojiBar = function addAwardToEmojiBar(

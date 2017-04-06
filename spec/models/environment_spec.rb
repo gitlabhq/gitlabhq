@@ -100,12 +100,26 @@ describe Environment, models: true do
     let(:head_commit)   { project.commit }
     let(:commit)        { project.commit.parent }
 
-    it 'returns deployment id for the environment' do
-      expect(environment.first_deployment_for(commit)).to eq deployment1
+    context 'Gitaly find_ref_name feature disabled' do
+      it 'returns deployment id for the environment' do
+        expect(environment.first_deployment_for(commit)).to eq deployment1
+      end
+
+      it 'return nil when no deployment is found' do
+        expect(environment.first_deployment_for(head_commit)).to eq nil
+      end
     end
 
-    it 'return nil when no deployment is found' do
-      expect(environment.first_deployment_for(head_commit)).to eq nil
+    context 'Gitaly find_ref_name feature enabled' do
+      before do
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:find_ref_name).and_return(true)
+      end
+
+      it 'calls GitalyClient' do
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:find_ref_name)
+
+        environment.first_deployment_for(commit)
+      end
     end
   end
 
