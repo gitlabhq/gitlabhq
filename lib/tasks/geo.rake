@@ -42,6 +42,11 @@ namespace :geo do
         Rake::Task['geo:config:restore'].reenable
       end
     end
+
+    desc 'Display database encryption key'
+    task :show_encryption_key => :environment do
+      puts Rails.application.secrets.db_key_base
+    end
   end
 
   namespace :config do
