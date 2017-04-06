@@ -101,6 +101,13 @@ describe PipelineSerializer do
         Ci::Pipeline::AVAILABLE_STATUSES.each do |status|
           create_pipeline(status)
         end
+
+        RequestStore.begin!
+      end
+
+      after do
+        RequestStore.end!
+        RequestStore.clear!
       end
 
       it "verifies number of queries" do
