@@ -28,6 +28,9 @@ export default {
     timeagoDate() {
       return gl.utils.getTimeago().format(this.createdAt, 'gl_en')
     },
+    timeagoTitle() {
+      return gl.utils.formatDate(new Date(this.createdAt));
+    },
   },
   template: `
     <li>
@@ -58,6 +61,7 @@ export default {
             class="js-created-at-timeago"
             data-toggle="tooltip"
             data-placement="top"
+            :data-original-title="timeagoTitle"
             :datetime="createdAt"
           >
             {{ timeagoDate }}

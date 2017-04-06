@@ -2,11 +2,8 @@ import Vue from 'vue';
 import DeployKeysService from '../services/deploy_keys_service';
 import DeployKey from './deploy_key';
 
-
-//     // TODO: VIF write-access-allowed
 //     // TODO: @deploy_keys.key_available?(deploy_key)
 //     // Enable/remove/disable
-//     // add title for tooltip
 
 export default Vue.component('deploy-keys', {
   data() {
