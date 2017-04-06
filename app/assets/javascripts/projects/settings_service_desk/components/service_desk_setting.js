@@ -37,7 +37,7 @@ export default {
             :checked="isEnabled"
             @change="onCheckboxToggle($event)">
           <span class="descr">
-            Activate service desk
+            Activate Service Desk
           </span>
         </label>
       </div>

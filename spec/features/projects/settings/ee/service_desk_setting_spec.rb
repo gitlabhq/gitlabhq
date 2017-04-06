@@ -15,7 +15,7 @@ describe 'Service Desk Setting', js: true, feature: true do
     visit edit_namespace_project_path(project.namespace, project)
   end
 
-  it 'shows service desk activation checkbox' do
+  it 'shows Service Desk activation checkbox' do
     expect(page).to have_selector("#service-desk-enabled-checkbox")
   end
 
