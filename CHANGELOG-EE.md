@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.0.4 (2017-04-05)
+
+- No changes.
+
 ## 9.0.3 (2017-04-05)
 
 - Allow to edit pipelines quota for user.
