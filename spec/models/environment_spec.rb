@@ -116,7 +116,7 @@ describe Environment, models: true do
       end
 
       it 'calls GitalyClient' do
-        expect(Gitlab::GitalyClient::Ref).to receive(:find_ref_name).with(project.repository.raw_repository, commit.id, environment.ref_path)
+        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:find_ref_name)
 
         environment.first_deployment_for(commit)
       end

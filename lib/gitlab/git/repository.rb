@@ -456,7 +456,7 @@ module Gitlab
       def ref_name_for_sha(ref_path, sha)
         Gitlab::GitalyClient.migrate(:find_ref_name) do |is_enabled|
           if is_enabled
-            Gitlab::GitalyClient::Ref.find_ref_name(self, sha, ref_path)
+            gitaly_ref_client.find_ref_name(sha, ref_path)
           else
             args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
 
