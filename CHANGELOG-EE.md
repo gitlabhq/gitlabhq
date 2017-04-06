@@ -106,6 +106,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Reduce queries needed to check if node is a primary or secondary Geo node.
 - Allow squashing merge requests into a single commit.
 
+## 8.16.9 (2017-04-05)
+
+- No changes.
+
 ## 8.16.8 (2017-03-19)
 
 - No changes.
