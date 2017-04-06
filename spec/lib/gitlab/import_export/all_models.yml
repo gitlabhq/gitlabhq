@@ -89,6 +89,11 @@ pipelines:
 - statuses
 - builds
 - trigger_requests
+- pending_builds
+- retryable_builds
+- cancelable_statuses
+- manual_actions
+- artifacts
 statuses:
 - project
 - pipeline
