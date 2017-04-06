@@ -70,6 +70,10 @@ module Ci
         pipeline.update_duration
       end
 
+      before_transition :canceled => any - [:canceled] do |pipeline|
+        pipeline.auto_canceled_by = nil
+      end
+
       after_transition [:created, :pending] => :running do |pipeline|
         pipeline.run_after_commit { PipelineMetricsWorker.perform_async(id) }
       end
@@ -94,10 +98,6 @@ module Ci
         pipeline.run_after_commit do
           PipelineNotificationWorker.perform_async(pipeline.id)
         end
-      end
-
-      after_transition :canceled => any - [:canceled] do |pipeline|
-        pipeline.auto_canceled_by = nil
       end
     end
 
