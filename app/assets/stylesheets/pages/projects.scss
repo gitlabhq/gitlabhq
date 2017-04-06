@@ -459,20 +459,13 @@ a.deploy-project-label {
     flex-wrap: wrap;
 
     .btn {
-      margin: 0 10px 10px 0;
       padding: 8px;
+      margin-left: 10px;
     }
 
     > div {
+      margin-bottom: 10px;
       padding-left: 0;
-
-      &:last-child {
-        margin-bottom: 0;
-
-        .btn {
-          margin-right: 0;
-        }
-      }
     }
   }
 }
