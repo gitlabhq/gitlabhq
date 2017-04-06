@@ -84,10 +84,10 @@ window.Build = (function() {
     var removeRefreshStatuses = ['success', 'failed', 'canceled', 'skipped'];
 
     return $.ajax({
-      url: this.buildUrl,
+      url: this.pageUrl + "/trace.json",
       dataType: 'json',
       success: function(buildData) {
-        $('.js-build-output').html(buildData.trace_html);
+        $('.js-build-output').html(buildData.html);
         if (window.location.hash === DOWN_BUILD_TRACE) {
           $("html,body").scrollTop(this.$buildTrace.height());
         }

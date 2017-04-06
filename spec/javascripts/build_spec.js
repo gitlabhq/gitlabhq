@@ -72,11 +72,13 @@ describe('Build', () => {
       it('displays the initial build trace', () => {
         expect($.ajax.calls.count()).toBe(1);
         const [{ url, dataType, success, context }] = $.ajax.calls.argsFor(0);
-        expect(url).toBe(`${BUILD_URL}.json`);
+        expect(url).toBe(
+          `${BUILD_URL}/trace.json`,
+        );
         expect(dataType).toBe('json');
         expect(success).toEqual(jasmine.any(Function));
 
-        success.call(context, { trace_html: '<span>Example</span>', status: 'running' });
+        success.call(context, { html: '<span>Example</span>', status: 'running' });
 
         expect($('#build-trace .js-build-output').text()).toMatch(/Example/);
       });
