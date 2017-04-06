@@ -115,7 +115,17 @@ module Ci
       commands.present?
     end
 
+    def can_play?(current_user)
+      ::Gitlab::UserAccess
+        .new(current_user, project: project)
+        .can_push_to_branch?(ref)
+    end
+
     def play(current_user)
+      unless can_play?(current_user)
+        raise Gitlab::Access::AccessDeniedError
+      end
+
       # Try to queue a current build
       if self.enqueue
         self.update(user: current_user)

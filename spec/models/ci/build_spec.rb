@@ -925,6 +925,33 @@ describe Ci::Build, :models do
     end
   end
 
+  describe '#can_play?' do
+    before do
+      project.add_developer(user)
+    end
+
+    let(:build) do
+      create(:ci_build, ref: 'some-ref', pipeline: pipeline)
+    end
+
+    context 'when branch build is running for is protected' do
+      before do
+        create(:protected_branch, :no_one_can_push,
+               name: 'some-ref', project: project)
+      end
+
+      it 'indicates that user can not trigger an action' do
+        expect(build.can_play?(user)).to be_falsey
+      end
+    end
+
+    context 'when branch build is running for is not protected' do
+      it 'indicates that user can trigger an action' do
+        expect(build.can_play?(user)).to be_truthy
+      end
+    end
+  end
+
   describe '#play' do
     let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
 
@@ -932,25 +959,39 @@ describe Ci::Build, :models do
       project.add_developer(user)
     end
 
-    context 'when build is manual' do
-      it 'enqueues a build' do
-        new_build = build.play(user)
+    context 'when user does not have ability to trigger action' do
+      before do
+        create(:protected_branch, :no_one_can_push,
+               name: build.ref, project: project)
+      end
 
-        expect(new_build).to be_pending
-        expect(new_build).to eq(build)
+      it 'raises an error' do
+        expect { build.play(user) }
+          .to raise_error Gitlab::Access::AccessDeniedError
       end
     end
 
-    context 'when build is passed' do
-      before do
-        build.update(status: 'success')
+    context 'when user has ability to trigger manual action' do
+      context 'when build is manual' do
+        it 'enqueues a build' do
+          new_build = build.play(user)
+
+          expect(new_build).to be_pending
+          expect(new_build).to eq(build)
+        end
       end
 
-      it 'creates a new build' do
-        new_build = build.play(user)
+      context 'when build is not manual' do
+        before do
+          build.update(status: 'success')
+        end
 
-        expect(new_build).to be_pending
-        expect(new_build).not_to eq(build)
+        it 'creates a new build' do
+          new_build = build.play(user)
+
+          expect(new_build).to be_pending
+          expect(new_build).not_to eq(build)
+        end
       end
     end
   end
