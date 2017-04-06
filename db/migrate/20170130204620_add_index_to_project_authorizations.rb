@@ -7,7 +7,9 @@ class AddIndexToProjectAuthorizations < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index(:project_authorizations, :project_id)
+    unless index_exists?(:project_authorizations, :project_id)
+      add_concurrent_index(:project_authorizations, :project_id)
+    end
   end
 
   def down
