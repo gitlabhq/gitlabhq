@@ -56,24 +56,26 @@ class Ability
       end
     end
 
-    def allowed?(user, action, subject = :global)
-      allowed(user, subject).include?(action)
+    def allowed?(user, action, subject = :global, opts = {})
+      if subject.is_a?(Hash)
+        opts, subject = subject, :global
+      end
+
+      policy = policy_for(user, subject)
+
+      case opts[:scope]
+      when :user
+        DeclarativePolicy.user_scope { policy.can?(action) }
+      when :subject
+        DeclarativePolicy.subject_scope { policy.can?(action) }
+      else
+        policy.can?(action)
+      end
     end
 
-    def allowed(user, subject = :global)
-      return BasePolicy::RuleSet.none if subject.nil?
-      return uncached_allowed(user, subject) unless RequestStore.active?
-
-      user_key = user ? user.id : 'anonymous'
-      subject_key = subject == :global ? 'global' : "#{subject.class.name}/#{subject.id}"
-      key = "/ability/#{user_key}/#{subject_key}"
-      RequestStore[key] ||= uncached_allowed(user, subject).freeze
-    end
-
-    private
-
-    def uncached_allowed(user, subject)
-      BasePolicy.class_for(subject).abilities(user, subject)
+    def policy_for(user, subject = :global)
+      cache = RequestStore.active? ? RequestStore : {}
+      DeclarativePolicy.policy_for(user, subject, cache: cache)
     end
   end
 end
