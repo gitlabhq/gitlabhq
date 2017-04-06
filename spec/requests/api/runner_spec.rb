@@ -461,6 +461,29 @@ describe API::Runner do
             end
           end
 
+          context 'when dependencies is an empty array' do
+            let!(:job) { create(:ci_build_tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job2) { create(:ci_build_tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
+            let!(:empty_dependencies_job) do
+              create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'empty_dependencies_job',
+                                stage: 'deploy', stage_idx: 1,
+                                options: { dependencies: [] })
+            end
+
+            before do
+              job.success
+              job2.success
+            end
+
+            it 'returns an empty array' do
+              request_job
+
+              expect(response).to have_http_status(201)
+              expect(json_response['id']).to eq(empty_dependencies_job.id)
+              expect(json_response['dependencies'].count).to eq(0)
+            end
+          end
+
           context 'when job has no tags' do
             before { job.update(tags: []) }
 

@@ -82,6 +82,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         expect(MergeRequestDiff.where.not(st_diffs: nil).count).to eq(9)
       end
 
+      it 'has the correct time for merge request st_commits' do
+        st_commits = MergeRequestDiff.where.not(st_commits: nil).first.st_commits
+
+        expect(st_commits.first[:committed_date]).to be_kind_of(Time)
+      end
+
       it 'has labels associated to label links, associated to issues' do
         expect(Label.first.label_links.first.target).not_to be_nil
       end

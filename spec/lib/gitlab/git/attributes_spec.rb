@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Git::Attributes, seed_helper: true do
   let(:path) do
-    File.join(SEED_REPOSITORY_PATH, 'with-git-attributes.git')
+    File.join(SEED_STORAGE_PATH, 'with-git-attributes.git')
   end
 
   subject { described_class.new(path) }
@@ -141,7 +141,7 @@ describe Gitlab::Git::Attributes, seed_helper: true do
     end
 
     it 'does not yield when the attributes file has an unsupported encoding' do
-      path = File.join(SEED_REPOSITORY_PATH, 'with-invalid-git-attributes.git')
+      path = File.join(SEED_STORAGE_PATH, 'with-invalid-git-attributes.git')
       attrs = described_class.new(path)
 
       expect { |b| attrs.each_line(&b) }.not_to yield_control

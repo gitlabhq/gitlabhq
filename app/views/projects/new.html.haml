@@ -78,7 +78,7 @@
                   - if git_import_enabled?
                     %button.btn.js-toggle-button.import_git{ type: "button" }
                       = icon('git', text: 'Repo by URL')
-                .import_gitlab_project
+                .import_gitlab_project.has-tooltip{ data: { container: 'body' } }
                   - if gitlab_project_import_enabled?
                     = link_to new_import_gitlab_project_path, class: 'btn btn_import_gitlab_project project-submit' do
                       = icon('gitlab', text: 'GitLab export')
@@ -109,6 +109,9 @@
     %p Please wait a moment, this page will automatically refresh when ready.
 
 :javascript
+  var importBtnTooltip = "Please enter a valid project name.";
+  var $importBtnWrapper = $('.import_gitlab_project');
+
   $('.how_to_import_link').bind('click', function (e) {
     e.preventDefault();
     var import_modal = $(this).next(".modal").show();
@@ -123,15 +126,8 @@
     $(".btn_import_gitlab_project").attr("href", _href + '?namespace_id=' + $("#project_namespace_id").val() + '&path=' + $("#project_path").val());
   });
 
-  $('.btn_import_gitlab_project').attr('disabled',true)
-  $('.import_gitlab_project').attr('title', 'Project path and name required.');
-
-  $('.import_gitlab_project').click(function( event ) {
-    if($('.btn_import_gitlab_project').attr('disabled')) {
-      event.preventDefault();
-      new Flash("Please enter path and name for the project to be imported to.");
-    }
-  });
+  $('.btn_import_gitlab_project').attr('disabled', $('#project_path').val().trim().length === 0);
+  $importBtnWrapper.attr('title', importBtnTooltip);
 
   $('#new_project').submit(function(){
     var $path = $('#project_path');
@@ -139,13 +135,13 @@
   });
 
   $('#project_path').keyup(function(){
-    if($(this).val().length !=0) {
+    if($(this).val().trim().length !== 0) {
       $('.btn_import_gitlab_project').attr('disabled', false);
-      $('.import_gitlab_project').attr('title','');
-      $(".flash-container").html("")
+      $importBtnWrapper.attr('title','');
+      $importBtnWrapper.removeClass('has-tooltip');
     } else {
       $('.btn_import_gitlab_project').attr('disabled',true);
-      $('.import_gitlab_project').attr('title', 'Project path and name required.');
+      $importBtnWrapper.addClass('has-tooltip');
     }
   });
 

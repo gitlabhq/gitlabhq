@@ -189,7 +189,7 @@ describe Gitlab::Workhorse, lib: true do
     context 'when Gitaly is enabled' do
       let(:gitaly_params) do
         {
-          GitalySocketPath: URI(Gitlab::GitalyClient.get_address('default')).path,
+          GitalyAddress: Gitlab::GitalyClient.get_address('default'),
         }
       end
 
@@ -207,29 +207,31 @@ describe Gitlab::Workhorse, lib: true do
         expect(subject).to include(repo_param)
       end
 
-      {
-        git_receive_pack: :post_receive_pack,
-        git_upload_pack: :post_upload_pack
-      }.each do |action_name, feature_flag|
-        context "when #{action_name} action is passed" do
-          let(:action) { action_name }
+      context "when git_upload_pack action is passed" do
+        let(:action) { 'git_upload_pack' }
+        let(:feature_flag) { :post_upload_pack }
 
-          context 'when action is enabled by feature flag' do
-            it 'includes Gitaly params in the returned value' do
-              allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag).and_return(true)
+        context 'when action is enabled by feature flag' do
+          it 'includes Gitaly params in the returned value' do
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag).and_return(true)
 
-              expect(subject).to include(gitaly_params)
-            end
-          end
-
-          context 'when action is not enabled by feature flag' do
-            it 'does not include Gitaly params in the returned value' do
-              allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag).and_return(false)
-
-              expect(subject).not_to include(gitaly_params)
-            end
+            expect(subject).to include(gitaly_params)
           end
         end
+
+        context 'when action is not enabled by feature flag' do
+          it 'does not include Gitaly params in the returned value' do
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag).and_return(false)
+
+            expect(subject).not_to include(gitaly_params)
+          end
+        end
+      end
+
+      context "when git_receive_pack action is passed" do
+        let(:action) { 'git_receive_pack' }
+
+        it { expect(subject).not_to include(gitaly_params) }
       end
 
       context "when info_refs action is passed" do
