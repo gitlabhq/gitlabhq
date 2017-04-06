@@ -112,8 +112,15 @@ require('./task_list');
       // when issue status changes, we need to refresh data
       $(document).on("issuable:change", this.refresh);
 
+      $(document).on('submit', '.js-main-target-form', this.disableDropdown)
+
       // when a key is clicked on the notes
       return $(document).on("keydown", ".js-note-text", this.keydownNoteText);
+    };
+
+    Notes.prototype.disableDropdown = function(e) {
+      const $form = $(e.target);
+      $form.find('.js-note-new-discussion').disable();
     };
 
     Notes.prototype.cleanBinding = function() {

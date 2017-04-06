@@ -1,8 +1,7 @@
 - noteable_type = @note.noteable_type
 
 .pull-left.btn-group.append-right-10.comment-type-dropdown.js-comment-type-dropdown
-  %button.btn.btn-nr.btn-create.comment-btn.js-comment-button.js-comment-submit-button
-    Comment
+  %input.btn.btn-nr.btn-create.comment-btn.js-comment-button.js-comment-submit-button{ type: 'submit', value: 'Comment' }
   - if @note.can_be_discussion_note?
     = button_tag type: 'button', class: 'btn btn-nr dropdown-toggle comment-btn js-note-new-discussion', data: { 'dropdown-trigger' => '#resolvable-comment-menu' } do
       = icon('caret-down')
