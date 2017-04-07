@@ -51,7 +51,7 @@ function renderCategory(name, emojiList, opts = {}) {
     <h5 class="emoji-menu-title">
       ${name}
     </h5>
-    <ul class="clearfix emoji-menu-list ${opts.menuListClass}">
+    <ul class="clearfix emoji-menu-list ${opts.menuListClass || ''}">
       ${emojiList.map(emojiName => `
         <li class="emoji-menu-list-item">
           <button class="emoji-menu-btn text-center js-emoji-btn" type="button">
