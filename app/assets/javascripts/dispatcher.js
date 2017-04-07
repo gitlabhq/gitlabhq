@@ -49,6 +49,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 
 import GeoNodes from './geo_nodes';
+import ServiceDeskRoot from './projects/settings_service_desk/service_desk_root';
 
 const ShortcutsBlob = require('./shortcuts_blob');
 
@@ -227,6 +228,13 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:commits:show':
         case 'projects:activity':
           shortcut_handler = new ShortcutsNavigation();
+          break;
+        case 'projects:edit':
+          const el = document.querySelector('.js-service-desk-setting-root');
+          if (el) {
+            const serviceDeskRoot = new ServiceDeskRoot(el);
+            serviceDeskRoot.init();
+          }
           break;
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();

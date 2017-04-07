@@ -18,6 +18,7 @@
     "babel-preset-latest": "^6.24.0",
     "babel-preset-stage-2": "^6.22.0",
     "bootstrap-sass": "^3.3.6",
+    "clipboard": "^1.6.1",
     "compression-webpack-plugin": "^0.3.2",
     "core-js": "^2.4.1",
     "d3": "^3.5.11",
