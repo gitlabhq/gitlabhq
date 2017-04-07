@@ -9,10 +9,6 @@ module Gitlab
             relative_path: relative_path,
           )
         end
-
-        def channel(repository_storage)
-          GitalyClient.get_channel(repository_storage)
-        end
       end
     end
   end

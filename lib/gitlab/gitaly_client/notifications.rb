@@ -3,14 +3,14 @@ module Gitlab
     class Notifications
       attr_accessor :stub
 
-      def initialize(repository_storage, relative_path)
-        @channel = Util.channel(repository_storage)
-        @repository = Util.repository(repository_storage, relative_path)
-        @stub = Gitaly::Notifications::Stub.new(nil, nil, channel_override: @channel)
+      # 'repository' is a Gitlab::Git::Repository
+      def initialize(repository)
+        @gitaly_repo = repository.gitaly_repository
+        @stub = Gitaly::Notifications::Stub.new(nil, nil, channel_override: repository.gitaly_channel)
       end
 
       def post_receive
-        request = Gitaly::PostReceiveRequest.new(repository: @repository)
+        request = Gitaly::PostReceiveRequest.new(repository: @gitaly_repo)
         @stub.post_receive(request)
       end
     end

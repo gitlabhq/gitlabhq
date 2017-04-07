@@ -973,7 +973,7 @@ module Gitlab
       end
 
       def gitaly_channel
-        Gitlab::GitalyClient::Util.channel(@repository_storage)
+        Gitlab::GitalyClient.get_channel(@repository_storage)
       end
 
       private
@@ -1255,7 +1255,7 @@ module Gitlab
       end
 
       def gitaly_ref_client
-        @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(@repository_storage, @relative_path)
+        @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(self)
       end
     end
   end
