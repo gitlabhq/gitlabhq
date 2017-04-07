@@ -33,7 +33,7 @@ require('~/filtered_search/dropdown_user');
       });
     });
 
-    describe('config droplabAjaxFilter\'s endpoint', () => {
+    describe('config AjaxFilter\'s endpoint', () => {
       beforeEach(() => {
         spyOn(gl.DropdownUser.prototype, 'bindEvents').and.callFake(() => {});
         spyOn(gl.DropdownUser.prototype, 'getProjectId').and.callFake(() => {});
@@ -45,13 +45,13 @@ require('~/filtered_search/dropdown_user');
         };
         const dropdown = new gl.DropdownUser();
 
-        expect(dropdown.config.droplabAjaxFilter.endpoint).toBe('/autocomplete/users.json');
+        expect(dropdown.config.AjaxFilter.endpoint).toBe('/autocomplete/users.json');
       });
 
       it('should return endpoint when relative_url_root is undefined', () => {
         const dropdown = new gl.DropdownUser();
 
-        expect(dropdown.config.droplabAjaxFilter.endpoint).toBe('/autocomplete/users.json');
+        expect(dropdown.config.AjaxFilter.endpoint).toBe('/autocomplete/users.json');
       });
 
       it('should return endpoint with relative url when available', () => {
@@ -60,7 +60,7 @@ require('~/filtered_search/dropdown_user');
         };
         const dropdown = new gl.DropdownUser();
 
-        expect(dropdown.config.droplabAjaxFilter.endpoint).toBe('/gitlab_directory/autocomplete/users.json');
+        expect(dropdown.config.AjaxFilter.endpoint).toBe('/gitlab_directory/autocomplete/users.json');
       });
 
       afterEach(() => {
