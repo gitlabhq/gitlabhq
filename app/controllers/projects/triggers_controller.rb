@@ -34,7 +34,6 @@ class Projects::TriggersController < Projects::ApplicationController
   end
 
   def edit
-    @trigger.build_trigger_schedule unless @trigger.trigger_schedule.present?
   end
 
   def update

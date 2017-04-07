@@ -30,7 +30,7 @@
       Never
 
   %td
-    - if trigger.trigger_schedule.present?
+    - if trigger.trigger_schedule.persisted?
       = trigger.trigger_schedule.real_next_run
     - else
       N/A (External trigger)

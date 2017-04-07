@@ -39,5 +39,9 @@ module Ci
     def can_access_project?
       self.owner_id.blank? || Ability.allowed?(self.owner, :create_build, project)
     end
+
+    def trigger_schedule
+      super || build_trigger_schedule
+    end
   end
 end
