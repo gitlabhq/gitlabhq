@@ -1,5 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, no-underscore-dangle, one-var, one-var-declaration-per-line, consistent-return, dot-notation, quote-props, comma-dangle, object-shorthand, max-len, prefer-arrow-callback */
 /* global MergeRequestTabs */
+/* global Issuable */
 
 require('vendor/jquery.waitforimages');
 require('./task_list');
@@ -23,9 +24,10 @@ require('./merge_request_tabs');
           return _this.showAllCommits();
         };
       })(this));
+
       this.initTabs();
-      this.initMRBtnListeners();
       this.initCommitMessageListeners();
+
       if ($("a.btn-close").length) {
         this.taskList = new gl.TaskList({
           dataType: 'merge_request',
@@ -35,6 +37,13 @@ require('./merge_request_tabs');
             document.querySelector('#task_status').innerText = result.task_status;
             document.querySelector('#task_status_short').innerText = result.task_status_short;
           }
+        });
+
+        Issuable.initStateChangeButton({
+          type: 'merge request',
+          callback() {
+            gl.utils.visitUrl(location.href);
+          },
         });
       }
     }
@@ -54,36 +63,6 @@ require('./merge_request_tabs');
     MergeRequest.prototype.showAllCommits = function() {
       this.$('.first-commits').remove();
       return this.$('.all-commits').removeClass('hide');
-    };
-
-    MergeRequest.prototype.initMRBtnListeners = function() {
-      var _this;
-      _this = this;
-      return $('a.btn-close, a.btn-reopen').on('click', function(e) {
-        var $this, shouldSubmit;
-        $this = $(this);
-        shouldSubmit = $this.hasClass('btn-comment');
-        if (shouldSubmit && $this.data('submitted')) {
-          return;
-        }
-        if (shouldSubmit) {
-          if ($this.hasClass('btn-comment-and-close') || $this.hasClass('btn-comment-and-reopen')) {
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            return _this.submitNoteForm($this.closest('form'), $this);
-          }
-        }
-      });
-    };
-
-    MergeRequest.prototype.submitNoteForm = function(form, $button) {
-      var noteText;
-      noteText = form.find("textarea.js-note-text").val();
-      if (noteText.trim().length > 0) {
-        form.submit();
-        $button.data('submitted', true);
-        return $button.trigger('click');
-      }
     };
 
     MergeRequest.prototype.initCommitMessageListeners = function() {

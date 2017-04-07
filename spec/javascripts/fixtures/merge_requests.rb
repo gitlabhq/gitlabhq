@@ -26,6 +26,14 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
     sign_in(admin)
   end
 
+  it 'merge_requests/open-merge-request.html.raw' do |example|
+    render_merge_request(example.description, create(:merge_request, source_project: project, target_project: project))
+  end
+
+  it 'merge_requests/closed-merge-request.html.raw' do |example|
+    render_merge_request(example.description, create(:closed_merge_request, source_project: project, target_project: project))
+  end
+
   it 'merge_requests/merge_request_with_task_list.html.raw' do |example|
     create(:ci_build, :pending, pipeline: pipeline)
 

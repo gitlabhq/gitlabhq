@@ -1,5 +1,6 @@
-/* eslint-disable no-param-reassign, func-names, no-var, camelcase, no-unused-vars, object-shorthand, space-before-function-paren, no-return-assign, comma-dangle, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, prefer-arrow-callback, wrap-iife, max-len */
+/* eslint-disable no-param-reassign, func-names, no-var, camelcase, no-unused-vars, object-shorthand, space-before-function-paren, no-return-assign, comma-dangle, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, prefer-arrow-callback, wrap-iife, max-len, no-new */
 /* global Issuable */
+/* global Flash */
 
 ((global) => {
   var issuable_created;
@@ -183,6 +184,60 @@
           }
         });
       });
-    }
+    },
+
+    initStateChangeButton({ type, callback, }) {
+      $('.btn-close, .btn-reopen').on('click', (e) => {
+        const $btn = $(e.target);
+
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        Issuable.submitIssuableNote($btn)
+          .then(() => Issuable.updateIssuableStatus($btn))
+          .then(data => callback(data, $btn))
+          .catch(() => {
+            $btn.enable();
+            new Flash(`Unable to update this ${type} at this time.`);
+          });
+      });
+    },
+
+    submitIssuableNote($btn) {
+      const $form = $btn.closest('form');
+      const $textarea = $form.find("textarea.js-note-text");
+
+      return new Promise((resolve, reject) => {
+        $btn.disable().blur();
+
+        if ($textarea.length && $textarea.val().trim().length > 0) {
+          $form.one('ajax:success', () => {
+            resolve();
+          }).one('ajax:error', reject);
+
+          $form.submit();
+        } else {
+          resolve();
+        }
+      });
+    },
+
+    updateIssuableStatus($btn) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          dataType: 'json',
+          type: 'PUT',
+          url: $btn.attr('href'),
+        })
+        .fail(reject)
+        .done((data) => {
+          if ('id' in data) {
+            resolve(data);
+          } else {
+            reject();
+          }
+        });
+      });
+    },
   };
 })(window);

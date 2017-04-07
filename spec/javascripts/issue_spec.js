@@ -29,7 +29,7 @@ describe('Issue', function() {
   function expectPendingRequest(req, $triggeredButton) {
     expect(req.type).toBe('PUT');
     expect(req.url).toBe($triggeredButton.attr('href'));
-    expect($triggeredButton).toHaveProp('disabled', true);
+    expect($triggeredButton).toHaveClass('disabled');
   }
 
   function expectVisibility($element, shouldBeVisible) {
@@ -90,39 +90,31 @@ describe('Issue', function() {
       expectIssueState(true);
     });
 
-    it('closes an issue', function() {
+    it('closes an issue', (done) => {
       spyOn(jQuery, 'ajax').and.callFake(function(req) {
+        const d = $.Deferred();
+
         expectPendingRequest(req, $btnClose);
-        req.success({
-          id: 34
+        d.resolve({
+          id: 34,
+          state: 'closed',
         });
+
+        return d.promise();
       });
 
       $btnClose.trigger('click');
 
-      expectIssueState(false);
-      expect($btnClose).toHaveProp('disabled', false);
-      expect($('.issue_counter')).toHaveText(0);
-    });
+      setTimeout(() => {
+        expectIssueState(false);
+        expect($btnClose).not.toHaveClass('disabled');
+        expect($('.issue_counter')).toHaveText(0);
 
-    it('fails to close an issue with success:false', function() {
-      spyOn(jQuery, 'ajax').and.callFake(function(req) {
-        expectPendingRequest(req, $btnClose);
-        req.success({
-          saved: false
-        });
+        done();
       });
-
-      $btnClose.attr('href', INVALID_URL);
-      $btnClose.trigger('click');
-
-      expectIssueState(true);
-      expect($btnClose).toHaveProp('disabled', false);
-      expectErrorMessage();
-      expect($('.issue_counter')).toHaveText(1);
     });
 
-    it('fails to closes an issue with HTTP error', function() {
+    it('fails to closes an issue with HTTP error', function(done) {
       spyOn(jQuery, 'ajax').and.callFake(function(req) {
         expectPendingRequest(req, $btnClose);
         req.error();
@@ -131,25 +123,39 @@ describe('Issue', function() {
       $btnClose.attr('href', INVALID_URL);
       $btnClose.trigger('click');
 
-      expectIssueState(true);
-      expect($btnClose).toHaveProp('disabled', true);
-      expectErrorMessage();
-      expect($('.issue_counter')).toHaveText(1);
+      setTimeout(() => {
+        expectIssueState(true);
+        expect($btnClose).not.toHaveClass('disabled');
+        expectErrorMessage();
+        expect($('.issue_counter')).toHaveText(1);
+
+        done();
+      });
     });
 
-    it('updates counter', () => {
+    it('updates counter', (done) => {
       spyOn(jQuery, 'ajax').and.callFake(function(req) {
+        const d = $.Deferred();
+
         expectPendingRequest(req, $btnClose);
-        req.success({
-          id: 34
+        d.resolve({
+          id: 34,
+          state: 'closed',
         });
+
+        return d.promise();
       });
 
       expect($('.issue_counter')).toHaveText(1);
       $('.issue_counter').text('1,001');
       expect($('.issue_counter').text()).toEqual('1,001');
       $btnClose.trigger('click');
-      expect($('.issue_counter').text()).toEqual('1,000');
+
+      setTimeout(() => {
+        expect($('.issue_counter').text()).toEqual('1,000');
+
+        done();
+      });
     });
   });
 
@@ -162,19 +168,28 @@ describe('Issue', function() {
       expectIssueState(false);
     });
 
-    it('reopens an issue', function() {
+    it('reopens an issue', function(done) {
       spyOn(jQuery, 'ajax').and.callFake(function(req) {
+        const d = $.Deferred();
+
         expectPendingRequest(req, $btnReopen);
-        req.success({
-          id: 34
+        d.resolve({
+          id: 34,
+          state: 'reopen',
         });
+
+        return d.promise();
       });
 
       $btnReopen.trigger('click');
 
-      expectIssueState(true);
-      expect($btnReopen).toHaveProp('disabled', false);
-      expect($('.issue_counter')).toHaveText(1);
+      setTimeout(() => {
+        expectIssueState(true);
+        expect($btnReopen).not.toHaveClass('disabled');
+        expect($('.issue_counter')).toHaveText(1);
+
+        done();
+      });
     });
   });
 });
