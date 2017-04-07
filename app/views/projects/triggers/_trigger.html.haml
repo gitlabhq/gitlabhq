@@ -30,10 +30,10 @@
       Never
 
   %td
-    - if trigger.trigger_schedule.persisted?
+    - if trigger.trigger_schedule.present? && trigger.trigger_schedule.active?
       = trigger.trigger_schedule.real_next_run
     - else
-      None (External trigger)
+      None
 
   %td.text-right.trigger-actions
     - take_ownership_confirmation = "By taking ownership you will bind this trigger to your user account. With this the trigger will have access to all your projects as if it was you. Are you sure?"

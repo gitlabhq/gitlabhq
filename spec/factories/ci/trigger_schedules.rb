@@ -4,6 +4,10 @@ FactoryGirl.define do
     cron '0 1 * * *'
     cron_timezone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
 
+    after(:build) do |trigger_schedule, evaluator|
+      trigger_schedule.update!(project: trigger_schedule.trigger.project)
+    end
+
     trait :nightly do
       cron '0 1 * * *'
       cron_timezone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE

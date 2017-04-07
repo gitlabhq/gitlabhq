@@ -6,24 +6,39 @@
       %label.label-light Token
       %p.form-control-static= @trigger.token
   .form-group
-    = f.label :key, "Description (For extenral trigger and scheduled trigger)", class: "label-light"
+    = f.label :key, "Description", class: "label-light"
     = f.text_field :description, class: "form-control", required: true, title: 'Trigger description is required.', placeholder: "Trigger description"
-  = f.fields_for :trigger_schedule do |schedule_fields|
-    .form-group
-      = schedule_fields.label :cron, "Cron (For scheduled trigger)", class: "label-light"
-      = schedule_fields.text_field :cron, class: "form-control", title: 'Trigger Schedule cron is required.', placeholder: "0 1 * * *"
-    .form-group
-      = schedule_fields.label :cron_timezone, "Cron timezone (For scheduled trigger)", class: "label-light"
-      = schedule_fields.text_field :cron_timezone, class: "form-control", title: 'Trigger Schedule cron_timezone is required.', placeholder: "UTC"
-    .form-group
-      = f.label :ref, "Ref (For scheduled trigger)", class: "label-light"
-      = f.text_field :ref, class: "form-control", title: 'Trigger Schedule Ref is required.', placeholder: "master"
-    .form-group
-      .checkbox
-        = schedule_fields.label :_destroy do
-          = schedule_fields.check_box :_destroy, { checked: (@trigger.trigger_schedule.id.present?) }, 0, 1
-          %strong Register as scheduled trigger
-        .help-block
-          If checked, this trigger will be executed periodically according to `cron`, `cron_timezone` and `ref`
-          = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'visibility-of-pipelines')
+    - if @trigger.persisted?
+      %hr
+      = f.fields_for :trigger_schedule do |schedule_fields|
+        = schedule_fields.hidden_field :id
+        .form-group
+          .checkbox
+            = schedule_fields.label :active do
+              = schedule_fields.check_box :active
+              %strong Schedule trigger
+            .help-block
+              If checked, this trigger will be executed periodically according to `cron`, `cron_timezone` and `ref`
+              = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'visibility-of-pipelines')
+        .form-group
+          = schedule_fields.label :cron, "Cron", class: "label-light"
+          = schedule_fields.text_field :cron, class: "form-control", title: 'Trigger Schedule cron is required.', placeholder: "0 1 * * *"
+        .form-group
+          = schedule_fields.label :cron, "Timezone", class: "label-light"
+          = schedule_fields.text_field :cron_timezone, class: "form-control", title: 'Trigger Schedule cron_timezone is required.', placeholder: "UTC"
+        .form-group
+          - schedule_ref = @trigger.trigger_schedule.ref || @project.default_branch
+          = schedule_fields.label :ref, "Branch or tag", class: "label-light"
+          = hidden_field_tag 'trigger[trigger_schedule_attributes][ref]', schedule_ref
+          = dropdown_tag(schedule_ref,
+                         options: { toggle_class: 'js-branch-select wide',
+                                    filter: true, dropdown_class: "dropdown-menu-selectable", placeholder: "Search branches",
+                                    data: { selected: schedule_ref, field_name: 'trigger[trigger_schedule_attributes][ref]' } })
+          .help-block Existing branch name, tag
   = f.submit btn_text, class: "btn btn-save"
+
+
+:javascript
+  var availableRefs = #{@project.repository.ref_names.to_json};
+
+  new NewBranchForm($('.js-new-pipeline-form'), availableRefs)

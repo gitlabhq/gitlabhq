@@ -8,7 +8,7 @@ module Ci
     belongs_to :owner, class_name: "User"
 
     has_many :trigger_requests, dependent: :destroy
-    has_one :trigger_schedule, dependent: :destroy, inverse_of: :trigger
+    has_one :trigger_schedule, dependent: :destroy
 
     validates :token, presence: true, uniqueness: true
 
@@ -41,7 +41,7 @@ module Ci
     end
 
     def trigger_schedule
-      super || build_trigger_schedule
+      super || build_trigger_schedule(project: project)
     end
   end
 end

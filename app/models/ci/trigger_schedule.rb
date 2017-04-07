@@ -6,20 +6,19 @@ module Ci
     acts_as_paranoid
 
     belongs_to :project
-    belongs_to :trigger, inverse_of: :trigger_schedule
-
-    delegate :ref, to: :trigger, allow_nil: true
+    belongs_to :trigger
 
     validates :trigger, presence: { unless: :importing? }
-    validates :cron, cron: true, presence: { unless: :importing? }
-    validates :cron_timezone, cron_timezone: true, presence: { unless: :importing? }
-    validates :ref, presence: { unless: :importing? }
+    validates :cron, unless: :importing_or_inactive?, cron: true, presence: { unless: :importing_or_inactive? }
+    validates :cron_timezone, cron_timezone: true, presence: { unless: :importing_or_inactive? }
+    validates :ref, presence: { unless: :importing_or_inactive? }
 
-    before_create :set_project
     before_save :set_next_run_at
 
-    def set_project
-      self.project = trigger.project
+    scope :active, -> { where(active: true) }
+
+    def importing_or_inactive?
+      importing? || !active?
     end
 
     def set_next_run_at
