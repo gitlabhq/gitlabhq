@@ -44,7 +44,7 @@
     "visibilityjs": "^1.2.4",
     "vue": "^2.2.4",
     "vue-resource": "^0.9.3",
-    "webpack": "^2.2.1",
+    "webpack": "^2.3.3",
     "webpack-bundle-analyzer": "^2.3.0"
   },
   "devDependencies": {
