@@ -9,10 +9,10 @@ module Gitlab
         def diff_from_parent(commit, options = {})
           repository = commit.project.repository
           gitaly_repo = repository.gitaly_repository
-          stub      = Gitaly::Diff::Stub.new(nil, nil, channel_override: repository.gitaly_channel)
-          parent    = commit.parents[0]
+          stub = Gitaly::Diff::Stub.new(nil, nil, channel_override: repository.gitaly_channel)
+          parent = commit.parents[0]
           parent_id = parent ? parent.id : EMPTY_TREE_ID
-          request   = Gitaly::CommitDiffRequest.new(
+          request = Gitaly::CommitDiffRequest.new(
             repository: gitaly_repo,
             left_commit_id: parent_id,
             right_commit_id: commit.id
