@@ -87,16 +87,16 @@ JavaScript enabled:
 ```ruby
 # For one spec
 it 'presents information about abuse report', :js do
-    # assertions...
+  # assertions...
 end
 
 describe "Admin::AbuseReports", :js do
-    it 'presents information about abuse report' do
-        # assertions...
-    end
-    it 'shows buttons for adding to abuse report' do
-        # assertions...
-    end
+  it 'presents information about abuse report' do
+    # assertions...
+  end
+  it 'shows buttons for adding to abuse report' do
+    # assertions...
+  end
 end
 ```
 
@@ -112,13 +112,12 @@ file for the failing spec, add the `@javascript` flag above the Scenario:
 ```
 @javascript
 Scenario: Developer can approve merge request
-    Given I am a "Shop" developer
-    And I visit project "Shop" merge requests page
-    And merge request 'Bug NS-04' must be approved
-    And I click link "Bug NS-04"
-    When I click link "Approve"
-    Then I should see approved merge request "Bug NS-04"
-
+  Given I am a "Shop" developer
+  And I visit project "Shop" merge requests page
+  And merge request 'Bug NS-04' must be approved
+  And I click link "Bug NS-04"
+  When I click link "Approve"
+  Then I should see approved merge request "Bug NS-04"
 ```
 
 [capybara]: http://teamcapybara.github.io/capybara/

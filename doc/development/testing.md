@@ -15,7 +15,10 @@ importance.
 
 Formal definition: https://en.wikipedia.org/wiki/Unit_testing
 
-These kind of tests ensure that a single unit of code (a method) works as expected (given an input, it has a predictable output). These tests should be isolated as much as possible (for instance model methods that don't do anything with the database shouldn't need a DB record).
+These kind of tests ensure that a single unit of code (a method) works as
+expected (given an input, it has a predictable output). These tests should be
+isolated as much as possible (for example, model methods that don't do anything
+with the database shouldn't need a DB record).
 
 | Code path | Tests path | Testing engine | Notes |
 | --------- | ---------- | -------------- | ----- |
@@ -42,6 +45,7 @@ These kind of tests ensure that individual parts of the application work well to
 | Code path | Tests path | Testing engine | Notes |
 | --------- | ---------- | -------------- | ----- |
 | `app/controllers/` | `spec/controllers/` | RSpec | |
+| `app/mailers/` | `spec/mailers/` | RSpec | |
 | `lib/api/` | `spec/requests/api/` | RSpec | |
 | `lib/ci/api/` | `spec/requests/ci/api/` | RSpec | |
 | `app/assets/javascripts/` | `spec/javascripts/` | Karma | More details in the [JavaScript](#javascript) section. |
@@ -49,9 +53,9 @@ These kind of tests ensure that individual parts of the application work well to
 #### About controller tests
 
 In an ideal world, controllers should be thin. However, when this is not the
-case, it's acceptable to write a system test without JavaScript instead of a
-controller test. The reason is that testing a fat controller usually involves a
-lot of stubbing, things like:
+case, it's acceptable to write a system/feature test without JavaScript instead
+of a controller test. The reason is that testing a fat controller usually
+involves a lot of stubbing, things like:
 
 ```ruby
 controller.instance_variable_set(:@user, user)
@@ -90,12 +94,15 @@ possible).
 [Poltergeist]: https://github.com/teamcapybara/capybara#poltergeist
 [RackTest]: https://github.com/teamcapybara/capybara#racktest
 
-#### Good practices
+#### Best practices
 
 - Create only the necessary records in the database
 - Test a happy path and a less happy path but that's it
-- Every other possible paths should be tested with Unit or Integration tests
-- Test what's displayed on the page, not the internal of ActiveRecord models
+- Every other possible path should be tested with Unit or Integration tests
+- Test what's displayed on the page, not the internals of ActiveRecord models.
+  For instance, if you want to verify that a record was created, add
+  expectations that its attributes are displayed on the page, not that
+  `Model.count` increased by one.
 - It's ok to look for DOM elements but don't abuse it since it makes the tests
   more brittle
 
@@ -106,12 +113,12 @@ thorough testing at the System test level.
 It's very easy to add tests, but a lot harder to remove or improve tests, so one
 should take care of not introducing too many (slow and duplicated) specs.
 
-The reason why we should follow these good practices are as follows:
+The reasons why we should follow these best practices are as follows:
 
 - System tests are slow to run since they spin up the entire application stack
   in a headless browser, and even slower when they integrate a JS driver
-- With System tests run with a driver that supports JavaScript, the tests are
-  run in different thread than the application. This means it does not share a
+- When system tests run with a JavaScript driver, the tests are run in a
+  different thread than the application. This means it does not share a
   database connection and your test will have to commit the transactions in
   order for the running application to see the data (and vice-versa). In that
   case we need to truncate the database after each spec instead of simply
@@ -127,7 +134,7 @@ trade-off:
 - Unit tests are usually cheap, and you should consider them like the basement
   of your house: you need them to be confident that your code is behaving
   correctly. However if you run only unit tests without integration / system tests, you might miss the [big] [picture]!
-- Integration tests are bit more expensive but don't abuse them. A feature test
+- Integration tests are a bit more expensive, but don't abuse them. A feature test
   is often better than an integration test that is stubbing a lot of internals.
 - System tests are expensive (compared to unit tests), even more if they require
   a JavaScript driver. Make sure to follow the guidelines in the [Speed](#test-speed)
@@ -255,7 +262,7 @@ it 'is overdue' do
 end
 ```
 
-### System / Features tests
+### System / Feature tests
 
 - Feature specs should be named `ROLE_ACTION_spec.rb`, such as
   `user_changes_password_spec.rb`.
@@ -297,22 +304,28 @@ them.
 
 Our current CI parallelization setup is as follows:
 
-1. The `knapsack` job in the prepare stage that is supposed to ensure we have a `knapsack/rspec_report.json` file:
-  - The `knapsack/rspec_report.json` file is fetched from the cache with the
-  `knapsack` key, if it's not here we initialize the file with `{}`.
+1. The `knapsack` job in the prepare stage that is supposed to ensure we have a
+  `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file:
+  - The `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file is fetched
+    from S3, if it's not here we initialize the file with `{}`.
 1. Each `rspec x y` job are run with `knapsack rspec` and should have an evenly
   distributed share of tests:
-  - It works because the jobs have access to the `knapsack/rspec_report.json`
-  since the "artifacts from all previous stages are passed by default". [^1]
-  - the jobs set their own report path to `KNAPSACK_REPORT_PATH=knapsack/spinach_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json`
+  - It works because the jobs have access to the
+    `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` since the "artifacts
+    from all previous stages are passed by default". [^1]
+  - the jobs set their own report path to
+    `KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json`.
   - if knapsack is doing its job, test files that are run should be listed under
-  `Report specs`, not under `Leftover specs`
-1. The `update-knapsack` job takes all the `knapsack/spinach_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json` files from
-  the `rspec x y` jobs and merge them all together into a single
-  `knapsack/rspec_report.json` that is then cached with the `knapsack` key
+    `Report specs`, not under `Leftover specs`.
+1. The `update-knapsack` job takes all the
+  `knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json`
+  files from the `rspec x y` jobs and merge them all together into a single
+  `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file that is then
+  uploaded to S3.
 
 After that, the next pipeline will use the up-to-date
-`knapsack/rspec_report.json` file.
+`knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file. The same strategy
+is used for Spinach tests as well.
 
 ## Testing Rake Tasks
 
