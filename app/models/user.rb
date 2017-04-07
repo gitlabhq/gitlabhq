@@ -95,7 +95,8 @@ class User < ActiveRecord::Base
   has_many :oauth_applications,       class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
   has_many :approvals,                dependent: :destroy
   has_many :approvers,                dependent: :destroy
-  has_one  :abuse_report,             dependent: :destroy
+  has_one  :abuse_report,             dependent: :destroy, foreign_key: :user_id
+  has_many :reported_abuse_reports,   dependent: :destroy, foreign_key: :reporter_id, class_name: "AbuseReport"
   has_many :spam_logs,                dependent: :destroy
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
   has_many :pipelines,                dependent: :nullify, class_name: 'Ci::Pipeline'
@@ -168,6 +169,8 @@ class User < ActiveRecord::Base
   alias_attribute :private_token, :authentication_token
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
+
+  accepts_nested_attributes_for :namespace
 
   state_machine :state, initial: :active do
     event :block do
@@ -660,8 +663,10 @@ class User < ActiveRecord::Base
   end
 
   def fork_of(project)
-    links = ForkedProjectLink.where(forked_from_project_id: project, forked_to_project_id: personal_projects)
-
+    links = ForkedProjectLink.where(
+      forked_from_project_id: project,
+      forked_to_project_id: personal_projects.unscope(:order)
+    )
     if links.any?
       links.first.forked_to_project
     else
@@ -965,10 +970,6 @@ class User < ActiveRecord::Base
     else
       save(validate: false)
     end
-  end
-
-  def record_activity
-    Gitlab::UserActivities::ActivitySet.record(self)
   end
 
   def access_level

@@ -7,7 +7,7 @@ feature 'Setup Mattermost slash commands', :feature, :js do
   let(:mattermost_enabled) { true }
 
   before do
-    Settings.mattermost['enabled'] = mattermost_enabled
+    stub_mattermost_setting(enabled: mattermost_enabled)
     project.team << [user, :master]
     login_as(user)
     visit edit_namespace_project_service_path(project.namespace, project, service)

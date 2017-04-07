@@ -1,6 +1,7 @@
 module Ci
   class Runner < ActiveRecord::Base
     extend Ci::Model
+    prepend EE::Ci::Runner
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     LAST_CONTACT_TIME = 1.hour.ago

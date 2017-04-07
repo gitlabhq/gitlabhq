@@ -590,7 +590,7 @@ describe 'Issue Boards', feature: true, js: true do
   end
 
   def click_filter_link(link_text)
-    page.within('.filtered-search-input-container') do
+    page.within('.filtered-search-box') do
       expect(page).to have_button(link_text)
 
       click_button(link_text)

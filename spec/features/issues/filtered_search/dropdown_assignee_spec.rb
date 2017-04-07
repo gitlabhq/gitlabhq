@@ -194,7 +194,7 @@ describe 'Dropdown assignee', :feature, :js do
 
       new_user = create(:user)
       project.team << [new_user, :master]
-      find('.filtered-search-input-container .clear-search').click
+      find('.filtered-search-box .clear-search').click
       filtered_search.set('assignee')
       filtered_search.send_keys(':')
 

@@ -95,7 +95,7 @@ module Gitlab
 
         data = content.lines[from..to]
 
-        OpenStruct.new(
+        ::Gitlab::SearchResults::FoundBlob.new(
           filename: filename,
           basename: basename,
           ref: ref,
@@ -165,7 +165,12 @@ module Gitlab
       end
 
       def repository_filter
-        conditions = [{ terms: { id: non_guest_project_ids } }]
+        conditions =
+          if non_guest_project_ids == :any
+            [{ exists: { field: "id" } }]
+          else
+            [{ terms: { id: non_guest_project_ids } }]
+          end
 
         if public_and_internal_projects
           conditions << {
@@ -213,7 +218,11 @@ module Gitlab
       end
 
       def non_guest_project_ids
-        @non_guest_project_ids ||= limit_project_ids - guest_project_ids
+        if limit_project_ids == :any
+          :any
+        else
+          @non_guest_project_ids ||= limit_project_ids - guest_project_ids
+        end
       end
 
       def default_scope

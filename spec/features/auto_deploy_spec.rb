@@ -42,7 +42,7 @@ describe 'Auto deploy' do
 
     it 'includes OpenShift as an available template', js: true do
       click_link 'Set up auto deploy'
-      click_button 'Choose a GitLab CI Yaml template'
+      click_button 'Apply a GitLab CI Yaml template'
 
       within '.gitlab-ci-yml-selector' do
         expect(page).to have_content('OpenShift')
@@ -51,7 +51,7 @@ describe 'Auto deploy' do
 
     it 'creates a merge request using "auto-deploy" branch', js: true do
       click_link 'Set up auto deploy'
-      click_button 'Choose a GitLab CI Yaml template'
+      click_button 'Apply a GitLab CI Yaml template'
       within '.gitlab-ci-yml-selector' do
         click_on 'OpenShift'
       end

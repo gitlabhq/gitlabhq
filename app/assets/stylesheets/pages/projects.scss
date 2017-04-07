@@ -459,20 +459,13 @@ a.deploy-project-label {
     flex-wrap: wrap;
 
     .btn {
-      margin: 0 10px 10px 0;
       padding: 8px;
+      margin-left: 10px;
     }
 
     > div {
+      margin-bottom: 10px;
       padding-left: 0;
-
-      &:last-child {
-        margin-bottom: 0;
-
-        .btn {
-          margin-right: 0;
-        }
-      }
     }
   }
 }
@@ -573,9 +566,19 @@ pre.light-well {
   display: flex;
   flex-direction: column;
 
+  // Disable Flexbox for admin page
+  &.admin-projects {
+    display: block;
+
+    .project-row {
+      display: block;
+    }
+  }
+
   .project-row {
     display: flex;
     align-items: center;
+    @include basic-list-stats;
   }
 
   h3 {
@@ -754,7 +757,8 @@ a.allowed-to-push {
   text-align: left;
 }
 
-.protected-branches-list {
+.protected-branches-list,
+.protected-tags-list {
   margin-bottom: 30px;
 
   a {
@@ -788,6 +792,17 @@ a.allowed-to-push {
 
 .disabled-item {
   @extend .btn.disabled;
+}
+
+.protected-tags-list {
+  .dropdown-menu-toggle {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .flash-container {
+    padding: 0;
+  }
 }
 
 .custom-notifications-form {

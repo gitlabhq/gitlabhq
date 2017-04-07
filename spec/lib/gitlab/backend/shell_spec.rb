@@ -73,14 +73,14 @@ describe Gitlab::Shell, lib: true do
     describe '#fetch_remote' do
       it 'executes the command' do
         expect(Gitlab::Popen).to receive(:popen)
-          .with([projects_path, 'fetch-remote', 'current/storage', 'project/path.git', 'new/storage', '600']).and_return([nil, 0])
+          .with([projects_path, 'fetch-remote', 'current/storage', 'project/path.git', 'new/storage', '800']).and_return([nil, 0])
 
         expect(gitlab_shell.fetch_remote('current/storage', 'project/path', 'new/storage')).to be true
       end
 
       it 'fails to execute the command' do
         expect(Gitlab::Popen).to receive(:popen)
-        .with([projects_path, 'fetch-remote', 'current/storage', 'project/path.git', 'new/storage', '600']).and_return(["error", 1])
+        .with([projects_path, 'fetch-remote', 'current/storage', 'project/path.git', 'new/storage', '800']).and_return(["error", 1])
 
         expect { gitlab_shell.fetch_remote('current/storage', 'project/path', 'new/storage') }.to raise_error(Gitlab::Shell::Error, "error")
       end
@@ -121,6 +121,15 @@ describe Gitlab::Shell, lib: true do
         adder = described_class.new(io)
 
         adder.add_key('key-42', "ssh-rsa foo bar\tbaz")
+
+        expect(io).to have_received(:puts).with("key-42\tssh-rsa foo")
+      end
+
+      it 'handles multiple spaces in the key' do
+        io = spy(:io)
+        adder = described_class.new(io)
+
+        adder.add_key('key-42', "ssh-rsa  foo")
 
         expect(io).to have_received(:puts).with("key-42\tssh-rsa foo")
       end

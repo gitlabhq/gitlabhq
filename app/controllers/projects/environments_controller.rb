@@ -1,6 +1,7 @@
 class Projects::EnvironmentsController < Projects::ApplicationController
   layout 'project'
   before_action :authorize_read_environment!
+  before_action :authorize_read_deploy_board!, only: :status
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_create_deployment!, only: [:stop]
   before_action :authorize_update_environment!, only: [:edit, :update]
@@ -130,6 +131,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
 
     rollout_status = @environment.rollout_status
+
+    Gitlab::PollingInterval.set_header(response, interval: 3000) unless rollout_status.try(:complete?)
 
     if rollout_status.nil?
       render body: nil, status: 204 # no result yet

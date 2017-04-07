@@ -306,6 +306,8 @@ describe API::Milestones, api: true  do
     end
 
     it 'returns project merge_requests for a particular milestone' do
+      # eager-load another_merge_request
+      another_merge_request
       get api("/projects/#{project.id}/milestones/#{milestone.id}/merge_requests", user)
 
       expect(response).to have_http_status(200)

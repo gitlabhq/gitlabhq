@@ -349,6 +349,7 @@ class ProjectsController < Projects::ApplicationController
       mirror_user_id
       repository_size_limit
       reset_approvals_on_push
+      service_desk_enabled
     ]
   end
 

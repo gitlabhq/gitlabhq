@@ -57,8 +57,10 @@ require('./board_new_form');
         return this.boards.length > 1;
       },
       title() {
-        if (this.currentPage === 'edit' || this.currentPage === 'milestone') {
-          return 'Edit board';
+        if (this.currentPage === 'edit') {
+          return 'Edit board name';
+        } else if (this.currentPage === 'milestone') {
+          return 'Edit board milestone';
         } else if (this.currentPage === 'new') {
           return 'Create new board';
         } else if (this.currentPage === 'delete') {

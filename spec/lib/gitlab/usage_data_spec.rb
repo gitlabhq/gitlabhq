@@ -22,6 +22,7 @@ describe Gitlab::UsageData do
         recorded_at
         version
         mattermost_enabled
+        uuid
       ))
     end
 
@@ -53,6 +54,7 @@ describe Gitlab::UsageData do
         milestones
         notes
         projects
+        projects_prometheus_active
         pages_domains
         protected_branches
         releases
@@ -72,6 +74,7 @@ describe Gitlab::UsageData do
     it "gathers license data" do
       license = ::License.current
 
+      expect(subject[:uuid]).to eq(current_application_settings.uuid)
       expect(subject[:license_md5]).to eq(Digest::MD5.hexdigest(license.data))
       expect(subject[:version]).to eq(Gitlab::VERSION)
       expect(subject[:licensee]).to eq(license.licensee)

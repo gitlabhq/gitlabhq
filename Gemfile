@@ -15,7 +15,7 @@ gem 'default_value_for', '~> 3.0.0'
 gem 'mysql2', '~> 0.3.16', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
-gem 'rugged', '~> 0.24.0'
+gem 'rugged', '~> 0.25.1.1'
 
 # Authentication libraries
 gem 'devise', '~> 4.2'
@@ -65,7 +65,7 @@ gem 'net-ldap'
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
 gem 'gollum-lib', '~> 4.2', require: false
-gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
+gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
@@ -233,7 +233,7 @@ gem 'oj', '~> 2.17.4'
 gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
 
-gem 'webpack-rails', '~> 0.9.9'
+gem 'webpack-rails', '~> 0.9.10'
 gem 'rack-proxy', '~> 0.6.0'
 
 gem 'sass-rails', '~> 5.0.6'
@@ -271,7 +271,6 @@ group :development do
   gem 'brakeman', '~> 3.6.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
-  gem 'bullet', '~> 5.5.0', require: false
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
 
   # Better errors handler
@@ -283,6 +282,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'bullet', '~> 5.5.0', require: !!ENV['ENABLE_BULLET']
   gem 'pry-byebug', '~> 3.4.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
 
@@ -363,4 +363,4 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.3.0'
+gem 'gitaly', '~> 0.5.0'

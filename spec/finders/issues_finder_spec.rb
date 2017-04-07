@@ -9,7 +9,7 @@ describe IssuesFinder do
   let(:label) { create(:label, project: project2) }
   let(:issue1) { create(:issue, author: user, assignee: user, project: project1, milestone: milestone, title: 'gitlab') }
   let(:issue2) { create(:issue, author: user, assignee: user, project: project2, description: 'gitlab') }
-  let(:issue3) { create(:issue, author: user2, assignee: user2, project: project2) }
+  let(:issue3) { create(:issue, author: user2, assignee: user2, project: project2, title: 'tanuki', description: 'tanuki') }
 
   describe '#execute' do
     let(:closed_issue) { create(:issue, author: user2, assignee: user2, project: project2, state: 'closed') }

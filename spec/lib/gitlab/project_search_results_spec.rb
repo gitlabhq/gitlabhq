@@ -42,8 +42,10 @@ describe Gitlab::ProjectSearchResults, lib: true do
 
       subject { described_class.parse_search_result(search_result) }
 
-      it "returns a valid OpenStruct object" do
-        is_expected.to be_an OpenStruct
+      it "returns a valid FoundBlob" do
+        is_expected.to be_an Gitlab::SearchResults::FoundBlob
+        expect(subject.id).to be_nil
+        expect(subject.path).to eq('CHANGELOG')
         expect(subject.filename).to eq('CHANGELOG')
         expect(subject.basename).to eq('CHANGELOG')
         expect(subject.ref).to eq('master')
@@ -54,6 +56,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
       context "when filename has extension" do
         let(:search_result) { "master:CONTRIBUTE.md:5:- [Contribute to GitLab](#contribute-to-gitlab)\n" }
 
+        it { expect(subject.path).to eq('CONTRIBUTE.md') }
         it { expect(subject.filename).to eq('CONTRIBUTE.md') }
         it { expect(subject.basename).to eq('CONTRIBUTE') }
       end
@@ -61,6 +64,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
       context "when file under directory" do
         let(:search_result) { "master:a/b/c.md:5:a b c\n" }
 
+        it { expect(subject.path).to eq('a/b/c.md') }
         it { expect(subject.filename).to eq('a/b/c.md') }
         it { expect(subject.basename).to eq('a/b/c') }
       end

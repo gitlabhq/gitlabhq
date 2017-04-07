@@ -275,3 +275,22 @@ span.idiff {
     }
   }
 }
+
+.is-stl-loading {
+  .stl-controls {
+    display: none;
+  }
+}
+
+.file-fork-suggestion {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background-color: $gray-light;
+  border-bottom: 1px solid $border-color;
+  padding: 5px $gl-padding;
+}
+
+.file-fork-suggestion-note {
+  margin-right: 1.5em;
+}

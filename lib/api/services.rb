@@ -610,8 +610,14 @@ module API
           desc: 'URL to the mock service'
         }
       ]
+      services['mock-deployment'] = []
+      services['mock-monitoring'] = []
 
-      service_classes << MockCiService
+      service_classes += [
+        MockCiService,
+        MockDeploymentService,
+        MockMonitoringService,
+      ]
     end
 
     trigger_services = {

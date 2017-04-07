@@ -24,9 +24,8 @@ describe 'Board with milestone', :feature, :js do
     it 'creates board with milestone' do
       create_board_with_milestone
 
-      click_link 'test'
-
       expect(find('.tokens-container')).to have_content(milestone.title)
+      wait_for_vue_resource
       expect(all('.board')[1]).to have_selector('.card', count: 1)
     end
   end

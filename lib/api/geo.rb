@@ -35,8 +35,9 @@ module API
       get 'status' do
         authenticate_by_gitlab_geo_node_token!
         require_node_to_be_secondary!
+        require_node_to_have_tracking_db!
 
-        present GeoNodeStatus.new, with: Entities::GeoNodeStatus
+        present GeoNodeStatus.new(id: Gitlab::Geo.current_node.id), with: Entities::GeoNodeStatus
       end
 
       # Enqueue a batch of IDs of wiki's projects to have their
@@ -104,6 +105,10 @@ module API
 
       def require_node_to_be_secondary!
         forbidden! 'Geo node is not secondary node.' unless Gitlab::Geo.current_node&.secondary?
+      end
+
+      def require_node_to_have_tracking_db!
+        not_found! 'Geo node does not have its tracking database enabled.' unless Gitlab::Geo.configured?
       end
     end
   end

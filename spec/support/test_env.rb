@@ -63,9 +63,6 @@ module TestEnv
 
     clean_test_path
 
-    FileUtils.mkdir_p(repos_path)
-    FileUtils.mkdir_p(backup_path)
-
     # Setup GitLab shell for test instance
     setup_gitlab_shell
 
@@ -97,10 +94,14 @@ module TestEnv
     tmp_test_path = Rails.root.join('tmp', 'tests', '**')
 
     Dir[tmp_test_path].each do |entry|
-      unless File.basename(entry) =~ /\Agitlab-(shell|test|test-fork)\z/
+      unless File.basename(entry) =~ /\Agitlab-(shell|test|test_bare|test-fork|test-fork_bare)\z/
         FileUtils.rm_rf(entry)
       end
     end
+
+    FileUtils.mkdir_p(repos_path)
+    FileUtils.mkdir_p(backup_path)
+    FileUtils.mkdir_p(pages_path)
   end
 
   def setup_gitlab_shell
@@ -132,8 +133,10 @@ module TestEnv
 
     set_repo_refs(repo_path, branch_sha)
 
-    # We must copy bare repositories because we will push to them.
-    system(git_env, *%W(#{Gitlab.config.git.bin_path} clone -q --bare #{repo_path} #{repo_path_bare}))
+    unless File.directory?(repo_path_bare)
+      # We must copy bare repositories because we will push to them.
+      system(git_env, *%W(#{Gitlab.config.git.bin_path} clone -q --bare #{repo_path} #{repo_path_bare}))
+    end
   end
 
   def copy_repo(project)
@@ -153,6 +156,10 @@ module TestEnv
     Gitlab.config.backup.path
   end
 
+  def pages_path
+    Gitlab.config.pages.path
+  end
+
   def copy_forked_repo_with_submodules(project)
     base_repo_path = File.expand_path(forked_repo_path_bare)
     target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.full_path}.git")
@@ -166,16 +173,11 @@ module TestEnv
   #
   # Otherwise they'd be created by the first test, often timing out and
   # causing a transient test failure
-  def warm_asset_cache
-    return if warm_asset_cache?
+  def eager_load_driver_server
     return unless defined?(Capybara)
 
-    Capybara.current_session.driver.visit '/'
-  end
-
-  def warm_asset_cache?
-    cache = Rails.root.join(*%w(tmp cache assets test))
-    Dir.exist?(cache) && Dir.entries(cache).length > 2
+    puts "Starting the Capybara driver server..."
+    Capybara.current_session.visit '/'
   end
 
   private

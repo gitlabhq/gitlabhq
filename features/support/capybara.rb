@@ -1,9 +1,8 @@
-require 'spinach/capybara'
 require 'capybara/poltergeist'
 require 'capybara-screenshot/spinach'
 
 # Give CI some extra time
-timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 30 : 10
+timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 60 : 30
 
 Capybara.javascript_driver = :poltergeist
 Capybara.register_driver :poltergeist do |app|
@@ -25,5 +24,5 @@ Capybara.ignore_hidden_elements = false
 Capybara::Screenshot.prune_strategy = :keep_last_run
 
 Spinach.hooks.before_run do
-  TestEnv.warm_asset_cache unless ENV['CI'] || ENV['CI_SERVER']
+  TestEnv.eager_load_driver_server
 end

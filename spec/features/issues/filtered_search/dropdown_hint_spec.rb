@@ -43,10 +43,10 @@ describe 'Dropdown hint', js: true, feature: true do
   end
 
   describe 'filtering' do
-    it 'does not filter `Keep typing and press Enter`' do
+    it 'does not filter `Press Enter or click to search`' do
       filtered_search.set('randomtext')
 
-      expect(page).to have_css(js_dropdown_hint, text: 'Keep typing and press Enter', visible: false)
+      expect(page).to have_css(js_dropdown_hint, text: 'Press Enter or click to search', visible: false)
       expect(dropdown_hint_size).to eq(0)
     end
 

@@ -144,6 +144,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :polling_interval_multiplier,
+            presence: true,
+            numericality: { greater_than_or_equal_to: 0 }
+
   validates :minimum_mirror_sync_time,
             presence: true,
             inclusion: { in: Gitlab::Mirror::SYNC_TIME_OPTIONS.values }
@@ -252,7 +256,8 @@ class ApplicationSetting < ActiveRecord::Base
       signup_enabled: Settings.gitlab['signup_enabled'],
       terminal_max_session_time: 0,
       two_factor_grace_period: 48,
-      user_default_external: false
+      user_default_external: false,
+      polling_interval_multiplier: 1
     }
   end
 
@@ -262,7 +267,8 @@ class ApplicationSetting < ActiveRecord::Base
       elasticsearch_aws: false,
       elasticsearch_aws_region: ENV['ELASTIC_REGION'] || 'us-east-1',
       usage_ping_enabled: true,
-      minimum_mirror_sync_time: Gitlab::Mirror::FIFTEEN
+      minimum_mirror_sync_time: Gitlab::Mirror::FIFTEEN,
+      repository_size_limit: 0
     }
   end
 
@@ -293,6 +299,12 @@ class ApplicationSetting < ActiveRecord::Base
 
   def elasticsearch_url
     read_attribute(:elasticsearch_url).split(',').map(&:strip)
+  end
+
+  def elasticsearch_url=(values)
+    cleaned = values.split(',').map {|url| url.strip.gsub(%r{/*\z}, '') }
+
+    write_attribute(:elasticsearch_url, cleaned.join(','))
   end
 
   def elasticsearch_config

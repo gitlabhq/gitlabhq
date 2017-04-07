@@ -155,13 +155,18 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      ## EE-specific
+      get '/service_desk' => 'service_desk#show', as: :service_desk
+      put '/service_desk' => 'service_desk#update', as: :service_desk_refresh
+
       resources :protected_branches, only: [:index, :show, :create, :update, :destroy, :patch], constraints: { id: Gitlab::Regex.git_reference_regex } do
+        ## EE-specific
         scope module: :protected_branches do
           resources :merge_access_levels, only: [:destroy]
           resources :push_access_levels, only: [:destroy]
         end
       end
-      ## EE-specific
+      resources :protected_tags, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
 
       resources :variables, only: [:index, :show, :update, :create, :destroy]
       resources :triggers, only: [:index, :create, :edit, :update, :destroy] do
@@ -204,7 +209,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
 
         collection do
-          get :folder, path: 'folders/:id'
+          get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
         end
       end
 
@@ -259,7 +264,15 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :container_registry, only: [:index, :destroy], constraints: { id: Gitlab::Regex.container_registry_reference_regex }
+      resources :container_registry, only: [:index, :destroy],
+                                     controller: 'registry/repositories'
+
+      namespace :registry do
+        resources :repository, only: [] do
+          resources :tags, only: [:destroy],
+                           constraints: { id: Gitlab::Regex.container_registry_reference_regex }
+        end
+      end
 
       resources :milestones, constraints: { id: /\d+/ } do
         member do
@@ -288,6 +301,7 @@ constraints(ProjectUrlConstrainer.new) do
           get :referenced_merge_requests
           get :related_branches
           get :can_create_branch
+          get :rendered_title
         end
         collection do
           post :bulk_update

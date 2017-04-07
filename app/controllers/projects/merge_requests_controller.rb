@@ -42,10 +42,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @collection_type    = "MergeRequest"
     @merge_requests     = merge_requests_collection
     @merge_requests     = @merge_requests.page(params[:page])
+    @merge_requests     = @merge_requests.includes(merge_request_diff: :merge_request)
     @issuable_meta_data = issuable_meta_data(@merge_requests, @collection_type)
 
     if @merge_requests.out_of_range? && @merge_requests.total_pages != 0
-      return redirect_to url_for(params.merge(page: @merge_requests.total_pages))
+      return redirect_to url_for(params.merge(page: @merge_requests.total_pages, only_path: true))
     end
 
     if params[:label_name].present?
@@ -713,7 +714,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def set_suggested_approvers
     if @merge_request.requires_approve?
       @suggested_approvers = Gitlab::AuthorityAnalyzer.new(
-        @merge_request
+        @merge_request,
+        @merge_request.author || current_user
       ).calculate(@merge_request.approvals_required)
     end
   end

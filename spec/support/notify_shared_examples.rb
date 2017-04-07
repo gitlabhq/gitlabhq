@@ -3,7 +3,7 @@ shared_context 'gitlab email notification' do
   let(:gitlab_sender) { Gitlab.config.gitlab.email_from }
   let(:gitlab_sender_reply_to) { Gitlab.config.gitlab.email_reply_to }
   let(:recipient) { create(:user, email: 'recipient@example.com') }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:new_user_address) { 'newguy@example.com' }
 
   before do

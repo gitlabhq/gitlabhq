@@ -1,5 +1,7 @@
 module Gitlab
   class UsageData
+    include Gitlab::CurrentSettings
+
     class << self
       def data(force_refresh: false)
         Rails.cache.fetch('usage_data', force: force_refresh, expires_in: 2.weeks) { uncached_data }
@@ -38,6 +40,7 @@ module Gitlab
             notes: Note.count,
             pages_domains: PagesDomain.count,
             projects: Project.count,
+            projects_prometheus_active: PrometheusService.active.count,
             protected_branches: ProtectedBranch.count,
             releases: Release.count,
             remote_mirrors: RemoteMirror.count,
@@ -51,7 +54,8 @@ module Gitlab
       end
 
       def license_usage_data
-        usage_data = { version: Gitlab::VERSION,
+        usage_data = { uuid: current_application_settings.uuid,
+                       version: Gitlab::VERSION,
                        active_user_count: User.active.count,
                        mattermost_enabled: Gitlab.config.mattermost.enabled }
 

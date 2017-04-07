@@ -48,9 +48,10 @@
         - if @project.merge_requests_ff_only_enabled
           Fast-forward merge without a merge commit
         - else
-          = link_to "#", class: "modify-merge-commit-link js-toggle-button" do
+          %button.modify-merge-commit-link.js-toggle-button{ type: "button" }
             = icon('edit')
             Modify commit message
+
     - unless @project.merge_requests_ff_only_enabled
       .js-toggle-content.hide.prepend-top-default
         = render 'shared/commit_message_container', params: params,

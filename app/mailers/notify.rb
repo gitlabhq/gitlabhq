@@ -11,6 +11,8 @@ class Notify < BaseMailer
   include Emails::Pipelines
   include Emails::Members
 
+  include Emails::EE::ServiceDesk
+
   helper MergeRequestsHelper
   helper DiffHelper
   helper BlobHelper

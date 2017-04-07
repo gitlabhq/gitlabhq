@@ -13,30 +13,32 @@ _This notice should stay as the first item in the CONTRIBUTING.MD file._
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Contributor license agreement](#contributor-license-agreement)
 - [Contribute to GitLab](#contribute-to-gitlab)
 - [Security vulnerability disclosure](#security-vulnerability-disclosure)
 - [Closing policy for issues and merge requests](#closing-policy-for-issues-and-merge-requests)
 - [Helping others](#helping-others)
 - [I want to contribute!](#i-want-to-contribute)
-- [Implement design & UI elements](#implement-design-ui-elements)
+- [Workflow labels](#workflow-labels)
+- [Implement design & UI elements](#implement-design--ui-elements)
 - [Release retrospective and kickoff](#release-retrospective-and-kickoff)
-    - [Retrospective](#retrospective)
-    - [Kickoff](#kickoff)
+  - [Retrospective](#retrospective)
+  - [Kickoff](#kickoff)
 - [Issue tracker](#issue-tracker)
-    - [Feature proposals](#feature-proposals)
-    - [Issue tracker guidelines](#issue-tracker-guidelines)
-    - [Issue weight](#issue-weight)
-    - [Regression issues](#regression-issues)
-    - [Technical debt](#technical-debt)
-    - [Stewardship](#stewardship)
+  - [Feature proposals](#feature-proposals)
+  - [Issue tracker guidelines](#issue-tracker-guidelines)
+  - [Issue weight](#issue-weight)
+  - [Regression issues](#regression-issues)
+  - [Technical debt](#technical-debt)
+  - [Stewardship](#stewardship)
 - [Merge requests](#merge-requests)
-    - [Merge request guidelines](#merge-request-guidelines)
-    - [Contribution acceptance criteria](#contribution-acceptance-criteria)
+  - [Merge request guidelines](#merge-request-guidelines)
+  - [Getting your merge request reviewed, approved, and merged](#getting-your-merge-request-reviewed-approved-and-merged)
+  - [Contribution acceptance criteria](#contribution-acceptance-criteria)
 - [Changes for Stable Releases](#changes-for-stable-releases)
 - [Definition of done](#definition-of-done)
 - [Style guides](#style-guides)
 - [Code of conduct](#code-of-conduct)
+- [Contribution Flow](#contribution-flow)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -314,9 +316,12 @@ request is as follows:
   organized commits by [squashing them][git-squash]
 1. Push the commit(s) to your fork
 1. Submit a merge request (MR) to the `master` branch
-1. Leave the approvals settings as they are:
-  1. Your merge request needs at least 1 approval
-  1. You don't have to select any approvers
+  1. Your merge request needs at least 1 approval but feel free to require more.
+    For instance if you're touching backend and frontend code, it's a good idea
+    to require 2 approvals: 1 from a backend maintainer and 1 from a frontend
+    maintainer
+  1. You don't have to select any approvers, but you can if you really want
+    specific people to approve your merge request
 1. The MR title should describe the change you want to make
 1. The MR description should give a motive for your change and the method you
    used to achieve it.
@@ -376,7 +381,7 @@ There are a few rules to get your merge request accepted:
   1. If your merge request includes only frontend changes [^1], it must be
     **approved by a [frontend maintainer][team]**.
   1. If your merge request includes frontend and backend changes [^1], it must
-    be approved by a frontend **and** a backend maintainer.
+    be **approved by a [frontend and a backend maintainer][team]**.
 1. To lower the amount of merge requests maintainers need to review, you can
   ask or assign any [reviewers][team] for a first review.
   1. If you need some guidance (e.g. it's your first merge request), feel free
@@ -526,6 +531,24 @@ reported by emailing `contact@gitlab.com`.
 This Code of Conduct is adapted from the [Contributor Covenant][contributor-covenant], version 1.1.0,
 available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/).
 
+## Contribution Flow
+
+When contributing to GitLab, your merge request is subject to review by merge request maintainers of a particular specialty.
+
+When you submit code to GitLab, we really want it to get merged, but there will be times when it will not be merged.
+
+When maintainers are reading through a merge request they may request guidance from other maintainers. If merge request maintainers conclude that the code should not be merged, our reasons will be fully disclosed. If it has been decided that the code quality is not up to GitLab’s standards, the merge request maintainer will refer the author to our docs and code style guides, and provide some guidance.
+
+Sometimes style guides will be followed but the code will lack structural integrity, or the maintainer will have reservations about the code’s overall quality. When there is a reservation the maintainer will inform the author and provide some guidance.  The author may then choose to update the merge request. Once the merge request has been updated and reassigned to the maintainer, they will review the code again. Once the code has been resubmitted any number of times, the maintainer may choose to close the merge request with a summary of why it will not be merged, as well as some guidance. If the merge request is closed the maintainer will be open to discussion as to how to improve the code so it can be approved in the future.
+
+GitLab will do its best to review community contributions as quickly as possible. Specially appointed developers review community contributions daily. You may take a look at the [team page](https://about.gitlab.com/team/) for the merge request coach who specializes in the type of code you have written and mention them in the merge request.  For example, if you have written some JavaScript in your code then you should mention the frontend merge request coach. If your code has multiple disciplines you may mention multiple merge request coaches.
+
+GitLab receives a lot of community contributions, so if your code has not been reviewed within 4 days of its initial submission feel free to re-mention the appropriate merge request coach.
+
+When submitting code to GitLab, you may feel that your contribution requires the aid of an external library. If your code includes an external library please provide a link to the library, as well as reasons for including it.
+
+When your code contains more than 500 changes, any major breaking changes, or an external library, `@mention` a maintainer in the merge request. If you are not sure who to mention, the reviewer will add one early in the merge request process.
+
 [core team]: https://about.gitlab.com/core-team/
 [team]: https://about.gitlab.com/team/
 [getting-help]: https://about.gitlab.com/getting-help/
@@ -556,6 +579,5 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
 [polling-etag]: https://docs.gitlab.com/ce/development/polling.html
 
-[^1]: Specs other than JavaScript specs are considered backend code. Haml
-      changes are considered backend code if they include Ruby code other than just
-      pure HTML.
+[^1]: Please note that specs other than JavaScript specs are considered backend
+      code.

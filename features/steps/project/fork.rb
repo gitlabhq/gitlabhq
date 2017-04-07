@@ -42,8 +42,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I click link "New merge request"' do
-    expect(page).to have_content(/new merge request/i)
-    click_link "New Merge Request"
+    page.has_link?('New Merge Request') ? click_link("New Merge Request") : click_link('New merge request')
   end
 
   step 'I should see the new merge request page for my namespace' do

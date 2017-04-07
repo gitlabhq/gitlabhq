@@ -618,7 +618,7 @@ namespace :gitlab do
     end
 
     def sidekiq_process_count
-      ps_ux, _ = Gitlab::Popen.popen(%w(ps ux))
+      ps_ux, _ = Gitlab::Popen.popen(%w(ps uxww))
       ps_ux.scan(/sidekiq \d+\.\d+\.\d+/).count
     end
   end
@@ -752,7 +752,7 @@ namespace :gitlab do
     end
 
     def mail_room_running?
-      ps_ux, _ = Gitlab::Popen.popen(%w(ps ux))
+      ps_ux, _ = Gitlab::Popen.popen(%w(ps uxww))
       ps_ux.include?("mail_room")
     end
   end
@@ -1090,7 +1090,7 @@ namespace :gitlab do
   end
 
   def check_gitlab_geo_node(node)
-    display_error = Proc.new do |e|
+    display_error = proc do |e|
       puts 'no'.color(:red)
       puts '  Reason:'.color(:blue)
       puts "  #{e.message}"

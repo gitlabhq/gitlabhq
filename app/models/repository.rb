@@ -66,13 +66,13 @@ class Repository
   def raw_repository
     return nil unless path_with_namespace
 
-    @raw_repository ||= Gitlab::Git::Repository.new(path_to_repo)
+    @raw_repository ||= initialize_raw_repository
   end
 
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
-      File.join(@project.repository_storage_path, path_with_namespace + ".git")
+      File.join(repository_storage_path, path_with_namespace + ".git")
     )
   end
 
@@ -153,12 +153,7 @@ class Repository
     # may cause the branch to "disappear" erroneously or have the wrong SHA.
     #
     # See: https://github.com/libgit2/libgit2/issues/1534 and https://gitlab.com/gitlab-org/gitlab-ce/issues/15392
-    raw_repo =
-      if fresh_repo
-        Gitlab::Git::Repository.new(path_to_repo)
-      else
-        raw_repository
-      end
+    raw_repo = fresh_repo ? initialize_raw_repository : raw_repository
 
     raw_repo.find_branch(name)
   end
@@ -409,10 +404,6 @@ class Repository
     expire_tags_cache
   end
 
-  def before_import
-    expire_content_cache
-  end
-
   # Runs code after the HEAD of a repository is changed.
   def after_change_head
     expire_method_caches(METHOD_CACHES_FOR_FILE_TYPES.keys)
@@ -516,9 +507,7 @@ class Repository
     end
   end
 
-  def branch_names
-    branches.map(&:name)
-  end
+  delegate :branch_names, to: :raw_repository
   cache_method :branch_names, fallback: []
 
   delegate :tag_names, to: :raw_repository
@@ -1065,7 +1054,13 @@ class Repository
   end
 
   def is_ancestor?(ancestor_id, descendant_id)
-    merge_base(ancestor_id, descendant_id) == ancestor_id
+    Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
+      if is_enabled
+        raw_repository.is_ancestor?(ancestor_id, descendant_id)
+      else
+        merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+      end
+    end
   end
 
   def empty_repo?
@@ -1109,6 +1104,23 @@ class Repository
 
   ensure
     rugged.references.delete(tmp_ref) if tmp_ref
+  end
+
+  def add_remote(name, url)
+    raw_repository.remote_add(name, url)
+  rescue Rugged::ConfigError
+    raw_repository.remote_update(name, url: url)
+  end
+
+  def remove_remote(name)
+    raw_repository.remote_delete(name)
+    true
+  rescue Rugged::ConfigError
+    false
+  end
+
+  def fetch_remote(remote, forced: false, no_tags: false)
+    gitlab_shell.fetch_remote(repository_storage_path, path_with_namespace, remote, forced: forced, no_tags: no_tags)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
@@ -1233,5 +1245,13 @@ class Repository
 
   def repository_event(event, tags = {})
     Gitlab::Metrics.add_event(event, { path: path_with_namespace }.merge(tags))
+  end
+
+  def repository_storage_path
+    @project.repository_storage_path
+  end
+
+  def initialize_raw_repository
+    Gitlab::Git::Repository.new(project.repository_storage, path_with_namespace + '.git')
   end
 end

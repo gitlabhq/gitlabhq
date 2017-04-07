@@ -14,7 +14,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "New Merge Request"' do
-    click_link "New Merge Request"
+    page.has_link?('New Merge Request') ? click_link("New Merge Request") : click_link('New merge request')
   end
 
   step 'I click link "Bug NS-04"' do
@@ -382,7 +382,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I modify merge commit message' do
-    find('.modify-merge-commit-link').click
+    click_button "Modify commit message"
     fill_in 'commit_message', with: 'wow such merge'
   end
 

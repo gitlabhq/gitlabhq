@@ -33,7 +33,7 @@ module Gitlab
               root_id: root_tree.oid,
               name: entry[:name],
               type: entry[:type],
-              mode: entry[:filemode],
+              mode: entry[:filemode].to_s(8),
               path: path ? File.join(path, entry[:name]) : entry[:name],
               commit_id: sha,
             )

@@ -4,7 +4,7 @@ describe Gitlab::Geo::LfsDownloader do
   let(:lfs_object) { create(:lfs_object) }
 
   subject do
-    described_class.new(lfs_object.id)
+    described_class.new(:lfs, lfs_object.id)
   end
 
   context '#download_from_primary' do
@@ -16,7 +16,7 @@ describe Gitlab::Geo::LfsDownloader do
     end
 
     it 'with unknown LFS object' do
-      expect(described_class.new(10000)).not_to receive(:download_from_primary)
+      expect(described_class.new(:lfs, 10000)).not_to receive(:download_from_primary)
 
       expect(subject.execute).to be_nil
     end

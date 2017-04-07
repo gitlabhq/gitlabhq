@@ -121,7 +121,7 @@ module API
       end
 
       def oauth2_bearer_token_error_handler
-        Proc.new do |e|
+        proc do |e|
           response =
             case e
             when MissingTokenError

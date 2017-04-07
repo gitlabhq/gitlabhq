@@ -57,16 +57,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def application_setting_params
-    restricted_levels = params[:application_setting][:restricted_visibility_levels]
-
-    if restricted_levels.nil?
-      params[:application_setting][:restricted_visibility_levels] = []
-    else
-      restricted_levels.map! do |level|
-        level.to_i
-      end
-    end
-
     import_sources = params[:application_setting][:import_sources]
 
     if import_sources.nil?
@@ -157,6 +147,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :unique_ips_limit_enabled,
       :version_check_enabled,
       :terminal_max_session_time,
+      :polling_interval_multiplier,
 
       disabled_oauth_sign_in_sources: [],
       import_sources: [],
@@ -180,7 +171,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :shared_runners_minutes,
       :usage_ping_enabled,
       :minimum_mirror_sync_time,
-      :geo_status_timeout
+      :geo_status_timeout,
+      :elasticsearch_experimental_indexer,
     ]
   end
 end

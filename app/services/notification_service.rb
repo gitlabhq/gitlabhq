@@ -6,6 +6,8 @@
 #   NotificationService.new.new_issue(issue, current_user)
 #
 class NotificationService
+  prepend EE::NotificationService
+
   # Always notify user about ssh key added
   # only if ssh key is not deploy key
   #
@@ -190,6 +192,10 @@ class NotificationService
     # ignore gitlab service messages
     return true if note.cross_reference? && note.system?
 
+    send_new_note_notifications(note)
+  end
+
+  def send_new_note_notifications(note)
     notify_method = "note_#{note.to_ability_name}_email".to_sym
 
     recipients = NotificationRecipientService.new(note.project).build_new_note_recipients(note)
@@ -295,11 +301,11 @@ class NotificationService
 
     return unless mailer.respond_to?(email_template)
 
-    recipients ||= NotificationRecipientService.new(pipeline.project).build_recipients(
+    recipients ||= NotificationRecipientService.new(pipeline.project).build_pipeline_recipients(
       pipeline,
       pipeline.user,
       action: pipeline.status,
-      skip_current_user: false).map(&:notification_email)
+    ).map(&:notification_email)
 
     if recipients.any?
       mailer.public_send(email_template, pipeline, recipients).deliver_later
