@@ -1348,7 +1348,7 @@ describe Ci::Build, :models do
         { key: 'CI_REGISTRY',  value: 'registry.example.com',  public: true }
       end
       let(:ci_registry_image) do
-        { key: 'CI_REGISTRY_IMAGE',  value: project.container_registry_repository_url, public: true }
+        { key: 'CI_REGISTRY_IMAGE',  value: project.container_registry_url, public: true }
       end
 
       context 'and is disabled for project' do

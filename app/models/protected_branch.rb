@@ -1,9 +1,6 @@
 class ProtectedBranch < ActiveRecord::Base
   include Gitlab::ShellAdapter
-
-  belongs_to :project
-  validates :name, presence: true
-  validates :project, presence: true
+  include ProtectedRef
 
   has_many :merge_access_levels, dependent: :destroy
   has_many :push_access_levels, dependent: :destroy
@@ -30,38 +27,6 @@ class ProtectedBranch < ActiveRecord::Base
   # access to the given group.
   scope :push_access_by_group, -> (group) { PushAccessLevel.joins(:protected_branch).where(protected_branch_id: self.ids).merge(PushAccessLevel.by_group(group)) }
 
-  def commit
-    project.commit(self.name)
-  end
-
-  # Returns all protected branches that match the given branch name.
-  # This realizes all records from the scope built up so far, and does
-  # _not_ return a relation.
-  #
-  # This method optionally takes in a list of `protected_branches` to search
-  # through, to avoid calling out to the database.
-  def self.matching(branch_name, protected_branches: nil)
-    (protected_branches || all).select { |protected_branch| protected_branch.matches?(branch_name) }
-  end
-
-  # Returns all branches (among the given list of branches [`Gitlab::Git::Branch`])
-  # that match the current protected branch.
-  def matching(branches)
-    branches.select { |branch| self.matches?(branch.name) }
-  end
-
-  # Checks if the protected branch matches the given branch name.
-  def matches?(branch_name)
-    return false if self.name.blank?
-
-    exact_match?(branch_name) || wildcard_match?(branch_name)
-  end
-
-  # Checks if this protected branch contains a wildcard
-  def wildcard?
-    self.name && self.name.include?('*')
-  end
-
   # Returns a hash were keys are types of push access levels (user, role), and
   # values are the number of access levels of the particular type.
   def push_access_level_frequencies
@@ -80,22 +45,15 @@ class ProtectedBranch < ActiveRecord::Base
     end
   end
 
-  protected
+  # Check if branch name is marked as protected in the system
+  def self.protected?(project, ref_name)
+    return true if project.empty_repo? && default_branch_protected?
 
-  def exact_match?(branch_name)
-    self.name == branch_name
+    self.matching(ref_name, protected_refs: project.protected_branches).present?
   end
 
-  def wildcard_match?(branch_name)
-    wildcard_regex === branch_name
-  end
-
-  def wildcard_regex
-    @wildcard_regex ||= begin
-      name = self.name.gsub('*', 'STAR_DONT_ESCAPE')
-      quoted_name = Regexp.quote(name)
-      regex_string = quoted_name.gsub('STAR_DONT_ESCAPE', '.*?')
-      /\A#{regex_string}\z/
-    end
+  def self.default_branch_protected?
+    current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
+      current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
   end
 end

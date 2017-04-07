@@ -424,6 +424,9 @@ Settings.cron_jobs['trending_projects_worker']['job_class'] = 'TrendingProjectsW
 Settings.cron_jobs['remove_unreferenced_lfs_objects_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['cron'] ||= '20 0 * * *'
 Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['job_class'] = 'RemoveUnreferencedLfsObjectsWorker'
+Settings.cron_jobs['stuck_import_jobs_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['stuck_import_jobs_worker']['cron'] ||= '15 * * * *'
+Settings.cron_jobs['stuck_import_jobs_worker']['job_class'] = 'StuckImportJobsWorker'
 
 Settings.cron_jobs['clear_shared_runners_minutes_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['clear_shared_runners_minutes_worker']['cron'] ||= '0 0 1 * *'

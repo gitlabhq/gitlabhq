@@ -37,7 +37,7 @@ module API
         require_node_to_be_secondary!
         require_node_to_have_tracking_db!
 
-        present GeoNodeStatus.new, with: Entities::GeoNodeStatus
+        present GeoNodeStatus.new(id: Gitlab::Geo.current_node.id), with: Entities::GeoNodeStatus
       end
 
       # Enqueue a batch of IDs of wiki's projects to have their

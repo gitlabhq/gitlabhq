@@ -3,13 +3,14 @@ class AwardEmoji < ActiveRecord::Base
   UPVOTE_NAME   = "thumbsup".freeze
 
   include Participable
+  include GhostUser
 
   belongs_to :awardable, polymorphic: true
   belongs_to :user
 
   validates :awardable, :user, presence: true
   validates :name, presence: true, inclusion: { in: Gitlab::Emoji.emojis_names }
-  validates :name, uniqueness: { scope: [:user, :awardable_type, :awardable_id] }
+  validates :name, uniqueness: { scope: [:user, :awardable_type, :awardable_id] }, unless: :ghost_user?
 
   participant :user
 

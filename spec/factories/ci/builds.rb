@@ -192,5 +192,10 @@ FactoryGirl.define do
     trait :no_options do
       options { {} }
     end
+
+    trait :non_playable do
+      status 'created'
+      self.when 'manual'
+    end
   end
 end

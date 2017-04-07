@@ -12,6 +12,7 @@ class GeoNodeStatus {
     this.$repositoriesSynced = $('.js-repositories-synced', this.$status);
     this.$repositoriesFailed = $('.js-repositories-failed', this.$status);
     this.$lfsObjectsSynced = $('.js-lfs-objects-synced', this.$status);
+    this.$attachmentsSynced = $('.js-attachments-synced', this.$status);
     this.$health = $('.js-health', this.$status);
     this.endpoint = this.$el.data('status-url');
 
@@ -31,6 +32,7 @@ class GeoNodeStatus {
       this.$repositoriesSynced.html(`${status.repositories_synced_count}/${status.repositories_count} (${status.repositories_synced_in_percentage})`);
       this.$repositoriesFailed.html(status.repositories_failed_count);
       this.$lfsObjectsSynced.html(`${status.lfs_objects_synced_count}/${status.lfs_objects_count} (${status.lfs_objects_synced_in_percentage})`);
+      this.$attachmentsSynced.html(`${status.attachments_synced_count}/${status.attachments_count} (${status.attachments_synced_in_percentage})`);
       this.$health.html(status.health);
 
       this.$status.show();

@@ -23,6 +23,7 @@ Issue:
 - weight
 - time_estimate
 - relative_position
+- service_desk_reply_to
 Event:
 - id
 - target_type
@@ -303,6 +304,12 @@ ProtectedBranch:
 - name
 - created_at
 - updated_at
+ProtectedTag:
+- id
+- project_id
+- name
+- created_at
+- updated_at
 Project:
 - description
 - issues_enabled
@@ -335,6 +342,14 @@ ProtectedBranch::MergeAccessLevel:
 ProtectedBranch::PushAccessLevel:
 - id
 - protected_branch_id
+- access_level
+- created_at
+- updated_at
+- user_id
+- group_id
+ProtectedTag::CreateAccessLevel:
+- id
+- protected_tag_id
 - access_level
 - created_at
 - updated_at
