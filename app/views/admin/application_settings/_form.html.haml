@@ -472,6 +472,13 @@
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
+          = f.label :elasticsearch_experimental_indexer do
+            = f.check_box :elasticsearch_experimental_indexer
+            Use experimental repository indexer
+
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
           = f.label :elasticsearch_search do
             = f.check_box :elasticsearch_search
             Search with Elasticsearch enabled

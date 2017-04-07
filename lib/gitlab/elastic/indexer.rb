@@ -6,6 +6,8 @@ module Gitlab
     class Indexer
       include Gitlab::CurrentSettings
 
+      EXPERIMENTAL_INDEXER = 'gitlab-elasticsearch-indexer'.freeze
+
       Error = Class.new(StandardError)
 
       attr_reader :project
@@ -44,7 +46,11 @@ module Gitlab
       end
 
       def path_to_indexer
-        File.join(Rails.root, 'bin/elastic_repo_indexer')
+        if current_application_settings.elasticsearch_experimental_indexer?
+          EXPERIMENTAL_INDEXER
+        else
+          Rails.root.join('bin', 'elastic_repo_indexer').to_s
+        end
       end
 
       def run_indexer!(from_sha, to_sha)

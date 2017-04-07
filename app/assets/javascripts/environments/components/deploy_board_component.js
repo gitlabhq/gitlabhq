@@ -1,4 +1,4 @@
-/* eslint-disable no-new */
+/* eslint-disable no-new, no-undef */
 /* global Flash */
 /**
  * Renders a deploy board.
@@ -67,47 +67,68 @@ export default {
   },
 
   created() {
-    this.isLoading = true;
+    this.getDeployBoard();
+  },
 
-    const maxNumberOfRequests = 3;
+  updated() {
+    // While board is not complete we need to request new data from the server.
+    // Let's make sure we are not making any request at the moment
+    // and that we only make this request if the latest response was not 204.
+    if (!this.isLoading &&
+      !this.hasError &&
+      this.deployBoardData.completion &&
+      this.deployBoardData.completion < 100) {
+      // let's wait 1s and make the request again
+      setTimeout(() => {
+        this.getDeployBoard();
+      }, 3000);
+    }
+  },
 
-    // If the response is 204, we make 3 more requests.
-    gl.utils.backOff((next, stop) => {
-      this.service.getDeployBoard(this.endpoint)
-        .then((resp) => {
-          if (resp.status === statusCodes.NO_CONTENT) {
-            this.backOffRequestCounter = this.backOffRequestCounter += 1;
+  methods: {
+    getDeployBoard() {
+      this.isLoading = true;
 
-            if (this.backOffRequestCounter < maxNumberOfRequests) {
-              next();
+      const maxNumberOfRequests = 3;
+
+      // If the response is 204, we make 3 more requests.
+      gl.utils.backOff((next, stop) => {
+        this.service.getDeployBoard(this.endpoint)
+          .then((resp) => {
+            if (resp.status === statusCodes.NO_CONTENT) {
+              this.backOffRequestCounter = this.backOffRequestCounter += 1;
+
+              if (this.backOffRequestCounter < maxNumberOfRequests) {
+                next();
+              } else {
+                stop(resp);
+              }
             } else {
               stop(resp);
             }
-          } else {
-            stop(resp);
-          }
-        })
-        .catch(stop);
-    })
-    .then((resp) => {
-      if (resp.status === statusCodes.NO_CONTENT) {
-        this.hasError = true;
-        return resp;
-      }
+          })
+          .catch(stop);
+      })
+      .then((resp) => {
+        if (resp.status === statusCodes.NO_CONTENT) {
+          this.hasError = true;
+          return resp;
+        }
 
-      return resp.json();
-    })
-    .then((response) => {
-      this.store.storeDeployBoard(this.environmentID, response);
-      return response;
-    })
-    .then(() => {
-      this.isLoading = false;
-    })
-    .catch(() => {
-      this.isLoading = false;
-      new Flash('An error occurred while fetching the deploy board.', 'alert');
-    });
+        return resp.json();
+      })
+      .then((response) => {
+        this.store.storeDeployBoard(this.environmentID, response);
+        return response;
+      })
+      .then(() => {
+        this.isLoading = false;
+      })
+      .catch(() => {
+        this.isLoading = false;
+        new Flash('An error occurred while fetching the deploy board.', 'alert');
+      });
+    },
   },
 
   computed: {

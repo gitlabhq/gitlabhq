@@ -62,6 +62,7 @@ The total number of the following is sent back to GitLab Inc.:
 - Deploy keys
 - Pages
 - Project Services
+- Projects using the Prometheus service
 - Issue Boards
 - CI Runners
 - Deployments

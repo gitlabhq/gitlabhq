@@ -1,6 +1,6 @@
 module DropdownsHelper
   def dropdown_tag(toggle_text, options: {}, &block)
-    content_tag :div, class: "dropdown" do
+    content_tag :div, class: "dropdown #{options[:wrapper_class] if options.has_key?(:wrapper_class)}" do
       data_attr = { toggle: "dropdown" }
 
       if options.has_key?(:data)
@@ -24,7 +24,7 @@ module DropdownsHelper
           output << dropdown_filter(options[:placeholder])
         end
 
-        output << content_tag(:div, class: "dropdown-content") do
+        output << content_tag(:div, class: "dropdown-content #{options[:content_class] if options.has_key?(:content_class)}") do
           capture(&block) if block && !options.has_key?(:footer_content)
         end
 

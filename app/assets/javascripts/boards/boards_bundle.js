@@ -78,6 +78,7 @@ $(() => {
       }
 
       gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
+      Store.rootPath = this.endpoint;
 
       this.filterManager = new FilteredSearchBoards(Store.filter, true, [(this.milestoneTitle ? 'milestone' : null)]);
 

@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(version: 20170405080720) do
     t.integer "geo_status_timeout", default: 10
     t.string "uuid"
     t.decimal "polling_interval_multiplier", default: 1.0, null: false
+    t.boolean "elasticsearch_experimental_indexer"
   end
 
   create_table "approvals", force: :cascade do |t|
