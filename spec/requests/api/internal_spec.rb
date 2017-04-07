@@ -196,8 +196,6 @@ describe API::Internal, api: true  do
   end
 
   describe "POST /internal/allowed", :redis do
-    include UserActivitiesHelpers
-
     context "access granted" do
       before do
         project.team << [user, :developer]
@@ -215,7 +213,7 @@ describe API::Internal, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
-          expect(user_score).to be_zero
+          expect(user).not_to have_an_activity_record
         end
       end
 
@@ -226,7 +224,7 @@ describe API::Internal, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
-          expect(user_score).not_to be_zero
+          expect(user).to have_an_activity_record
         end
       end
 
@@ -237,7 +235,7 @@ describe API::Internal, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-          expect(user_score).not_to be_zero
+          expect(user).to have_an_activity_record
         end
       end
 
@@ -248,7 +246,7 @@ describe API::Internal, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-          expect(user_score).to be_zero
+          expect(user).not_to have_an_activity_record
         end
 
         context 'project as /namespace/project' do
@@ -284,7 +282,7 @@ describe API::Internal, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(user_score).to be_zero
+          expect(user).not_to have_an_activity_record
         end
       end
 
@@ -294,7 +292,7 @@ describe API::Internal, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(user_score).to be_zero
+          expect(user).not_to have_an_activity_record
         end
       end
     end
@@ -312,7 +310,7 @@ describe API::Internal, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(user_score).to be_zero
+          expect(user).not_to have_an_activity_record
         end
       end
 
@@ -322,7 +320,7 @@ describe API::Internal, api: true  do
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(user_score).to be_zero
+          expect(user).not_to have_an_activity_record
         end
       end
     end
