@@ -101,7 +101,7 @@ describe('CommentTypeToggle', function () {
         this.setConfig = CommentTypeToggle.prototype.setConfig.call(this.commentTypeToggle);
       });
 
-      it('should not add .closeButton or .reopenButton related InputSetter config', function () {
+      it('should not add .closeButton related InputSetter config', function () {
         expect(this.setConfig).toEqual({
           InputSetter: [{
             input: this.commentTypeToggle.noteTypeInput,
@@ -109,6 +109,13 @@ describe('CommentTypeToggle', function () {
           }, {
             input: this.commentTypeToggle.submitButton,
             valueAttribute: 'data-submit-text',
+          }, {
+            input: this.commentTypeToggle.reopenButton,
+            valueAttribute: 'data-reopen-text',
+          }, {
+            input: this.commentTypeToggle.reopenButton,
+            valueAttribute: 'data-reopen-text',
+            inputAttribute: 'data-alternative-text',
           }],
         });
       });
@@ -127,7 +134,7 @@ describe('CommentTypeToggle', function () {
         this.setConfig = CommentTypeToggle.prototype.setConfig.call(this.commentTypeToggle);
       });
 
-      it('should not add .closeButton or .reopenButton related InputSetter config', function () {
+      it('should not add .reopenButton related InputSetter config', function () {
         expect(this.setConfig).toEqual({
           InputSetter: [{
             input: this.commentTypeToggle.noteTypeInput,
@@ -135,6 +142,13 @@ describe('CommentTypeToggle', function () {
           }, {
             input: this.commentTypeToggle.submitButton,
             valueAttribute: 'data-submit-text',
+          }, {
+            input: this.commentTypeToggle.closeButton,
+            valueAttribute: 'data-close-text',
+          }, {
+            input: this.commentTypeToggle.closeButton,
+            valueAttribute: 'data-close-text',
+            inputAttribute: 'data-alternative-text',
           }],
         });
       });

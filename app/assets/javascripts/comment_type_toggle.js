@@ -31,23 +31,27 @@ class CommentTypeToggle {
       }],
     };
 
-    if (!this.closeButton || !this.reopenButton) return config;
+    if (this.closeButton) {
+      config.InputSetter.push({
+        input: this.closeButton,
+        valueAttribute: 'data-close-text',
+      }, {
+        input: this.closeButton,
+        valueAttribute: 'data-close-text',
+        inputAttribute: 'data-alternative-text',
+      });
+    }
 
-    config.InputSetter.push({
-      input: this.closeButton,
-      valueAttribute: 'data-close-text',
-    }, {
-      input: this.closeButton,
-      valueAttribute: 'data-close-text',
-      inputAttribute: 'data-alternative-text',
-    }, {
-      input: this.reopenButton,
-      valueAttribute: 'data-reopen-text',
-    }, {
-      input: this.reopenButton,
-      valueAttribute: 'data-reopen-text',
-      inputAttribute: 'data-alternative-text',
-    });
+    if (this.reopenButton) {
+      config.InputSetter.push({
+        input: this.reopenButton,
+        valueAttribute: 'data-reopen-text',
+      }, {
+        input: this.reopenButton,
+        valueAttribute: 'data-reopen-text',
+        inputAttribute: 'data-alternative-text',
+      });
+    }
 
     return config;
   }
