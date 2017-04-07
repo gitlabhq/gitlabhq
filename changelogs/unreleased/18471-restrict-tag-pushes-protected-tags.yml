@@ -1,4 +1,4 @@
 ---
-title: Protected Tags feature
+title: Tags can be protected, restricting creation of matching tags by user role
 merge_request: 10356
 author:

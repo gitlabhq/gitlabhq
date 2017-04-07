@@ -4,7 +4,7 @@ class ProtectedRefMatcher
   end
 
   # Returns all protected refs that match the given ref name.
-  # This realizes all records from the scope built up so far, and does
+  # This checks all records from the scope built up so far, and does
   # _not_ return a relation.
   #
   # This method optionally takes in a list of `protected_refs` to search
@@ -38,6 +38,8 @@ class ProtectedRefMatcher
   end
 
   def wildcard_match?(ref_name)
+    return false unless wildcard?
+
     wildcard_regex === ref_name
   end
 
