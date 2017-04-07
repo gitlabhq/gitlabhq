@@ -74,9 +74,11 @@ The total number of the following is sent back to GitLab Inc.:
 - Protected branches
 - Releases
 - Remote mirrors
+- Service Desk projects
+- Service Desk issues
 - Web hooks
 
-Also, we track if you've installed Mattermost with GitLab. 
+Also, we track if you've installed Mattermost with GitLab.
 For example: `"mattermost_enabled":true"`.
 
 ## Privacy policy
