@@ -9,72 +9,140 @@ describe Ci::CreatePipelineService, services: true do
   end
 
   describe '#execute' do
-    def execute(params)
+    def execute_service(after: project.commit.id, message: 'Message', ref: 'refs/heads/master')
+      params = { ref: ref,
+                 before: '00000000',
+                 after: after,
+                 commits: [{ message: message }] }
+
       described_class.new(project, user, params).execute
     end
 
     context 'valid params' do
-      let(:pipeline) do
-        execute(ref: 'refs/heads/master',
-                before: '00000000',
-                after: project.commit.id,
-                commits: [{ message: "Message" }])
+      let(:pipeline) { execute_service }
+
+      let(:pipeline_on_previous_commit) do
+        execute_service(
+          after: previous_commit_sha_from_ref('master')
+        )
       end
 
       it { expect(pipeline).to be_kind_of(Ci::Pipeline) }
       it { expect(pipeline).to be_valid }
-      it { expect(pipeline).to be_persisted }
       it { expect(pipeline).to eq(project.pipelines.last) }
       it { expect(pipeline).to have_attributes(user: user) }
+      it { expect(pipeline).to have_attributes(status: 'pending') }
       it { expect(pipeline.builds.first).to be_kind_of(Ci::Build) }
+
+      context 'auto-cancel enabled' do
+        before do
+          project.update(auto_cancel_pending_pipelines: 'enabled')
+        end
+
+        it 'does not cancel HEAD pipeline' do
+          pipeline
+          pipeline_on_previous_commit
+
+          expect(pipeline.reload).to have_attributes(status: 'pending', auto_canceled_by_id: nil)
+        end
+
+        it 'auto cancel pending non-HEAD pipelines' do
+          pipeline_on_previous_commit
+          pipeline
+
+          expect(pipeline_on_previous_commit.reload).to have_attributes(status: 'canceled', auto_canceled_by_id: pipeline.id)
+        end
+
+        it 'does not cancel running outdated pipelines' do
+          pipeline_on_previous_commit.run
+          execute_service
+
+          expect(pipeline_on_previous_commit.reload).to have_attributes(status: 'running', auto_canceled_by_id: nil)
+        end
+
+        it 'cancel created outdated pipelines' do
+          pipeline_on_previous_commit.update(status: 'created')
+          pipeline
+
+          expect(pipeline_on_previous_commit.reload).to have_attributes(status: 'canceled', auto_canceled_by_id: pipeline.id)
+        end
+
+        it 'does not cancel pipelines from the other branches' do
+          pending_pipeline = execute_service(
+            ref: 'refs/heads/feature',
+            after: previous_commit_sha_from_ref('feature')
+          )
+          pipeline
+
+          expect(pending_pipeline.reload).to have_attributes(status: 'pending', auto_canceled_by_id: nil)
+        end
+      end
+
+      context 'auto-cancel disabled' do
+        before do
+          project.update(auto_cancel_pending_pipelines: 'disabled')
+        end
+
+        it 'does not auto cancel pending non-HEAD pipelines' do
+          pipeline_on_previous_commit
+          pipeline
+
+          expect(pipeline_on_previous_commit.reload)
+            .to have_attributes(status: 'pending', auto_canceled_by_id: nil)
+        end
+      end
+
+      def previous_commit_sha_from_ref(ref)
+        project.commit(ref).parent.sha
+      end
     end
 
     context "skip tag if there is no build for it" do
       it "creates commit if there is appropriate job" do
-        result = execute(ref: 'refs/heads/master',
-                         before: '00000000',
-                         after: project.commit.id,
-                         commits: [{ message: "Message" }])
-        expect(result).to be_persisted
+        expect(execute_service).to be_persisted
       end
 
       it "creates commit if there is no appropriate job but deploy job has right ref setting" do
         config = YAML.dump({ deploy: { script: "ls", only: ["master"] } })
         stub_ci_pipeline_yaml_file(config)
-        result = execute(ref: 'refs/heads/master',
-                         before: '00000000',
-                         after: project.commit.id,
-                         commits: [{ message: "Message" }])
 
-        expect(result).to be_persisted
+        expect(execute_service).to be_persisted
       end
     end
 
     it 'skips creating pipeline for refs without .gitlab-ci.yml' do
       stub_ci_pipeline_yaml_file(nil)
-      result = execute(ref: 'refs/heads/master',
-                       before: '00000000',
-                       after: project.commit.id,
-                       commits: [{ message: 'Message' }])
 
-      expect(result).not_to be_persisted
+      expect(execute_service).not_to be_persisted
       expect(Ci::Pipeline.count).to eq(0)
     end
 
-    it 'fails commits if yaml is invalid' do
-      message = 'message'
-      allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { message }
-      stub_ci_pipeline_yaml_file('invalid: file: file')
-      commits = [{ message: message }]
-      pipeline = execute(ref: 'refs/heads/master',
-                         before: '00000000',
-                         after: project.commit.id,
-                         commits: commits)
+    shared_examples 'a failed pipeline' do
+      it 'creates failed pipeline' do
+        stub_ci_pipeline_yaml_file(ci_yaml)
 
-      expect(pipeline).to be_persisted
-      expect(pipeline.builds.any?).to be false
-      expect(pipeline.status).to eq('failed')
-      expect(pipeline.yaml_errors).not_to be_nil
+        pipeline = execute_service(message: message)
+
+        expect(pipeline).to be_persisted
+        expect(pipeline.builds.any?).to be false
+        expect(pipeline.status).to eq('failed')
+        expect(pipeline.yaml_errors).not_to be_nil
+      end
+    end
+
+    context 'when yaml is invalid' do
+      let(:ci_yaml) { 'invalid: file: fiile' }
+      let(:message) { 'Message' }
+
+      it_behaves_like 'a failed pipeline'
+
+      context 'when receive git commit' do
+        before do
+          allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { message }
+        end
+
+        it_behaves_like 'a failed pipeline'
+      end
     end
 
     context 'when commit contains a [ci skip] directive' do
@@ -97,11 +165,7 @@ describe Ci::CreatePipelineService, services: true do
 
       ci_messages.each do |ci_message|
         it "skips builds creation if the commit message is #{ci_message}" do
-          commits = [{ message: ci_message }]
-          pipeline = execute(ref: 'refs/heads/master',
-                             before: '00000000',
-                             after: project.commit.id,
-                             commits: commits)
+          pipeline = execute_service(message: ci_message)
 
           expect(pipeline).to be_persisted
           expect(pipeline.builds.any?).to be false
@@ -109,58 +173,34 @@ describe Ci::CreatePipelineService, services: true do
         end
       end
 
-      it "does not skips builds creation if there is no [ci skip] or [skip ci] tag in commit message" do
-        allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { "some message" }
+      shared_examples 'creating a pipeline' do
+        it 'does not skip pipeline creation' do
+          allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { commit_message }
 
-        commits = [{ message: "some message" }]
-        pipeline = execute(ref: 'refs/heads/master',
-                           before: '00000000',
-                           after: project.commit.id,
-                           commits: commits)
+          pipeline = execute_service(message: commit_message)
 
-        expect(pipeline).to be_persisted
-        expect(pipeline.builds.first.name).to eq("rspec")
+          expect(pipeline).to be_persisted
+          expect(pipeline.builds.first.name).to eq("rspec")
+        end
       end
 
-      it "does not skip builds creation if the commit message is nil" do
-        allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { nil }
+      context 'when commit message does not contain [ci skip] nor [skip ci]' do
+        let(:commit_message) { 'some message' }
 
-        commits = [{ message: nil }]
-        pipeline = execute(ref: 'refs/heads/master',
-                           before: '00000000',
-                           after: project.commit.id,
-                           commits: commits)
-
-        expect(pipeline).to be_persisted
-        expect(pipeline.builds.first.name).to eq("rspec")
+        it_behaves_like 'creating a pipeline'
       end
 
-      it "fails builds creation if there is [ci skip] tag in commit message and yaml is invalid" do
-        stub_ci_pipeline_yaml_file('invalid: file: fiile')
-        commits = [{ message: message }]
-        pipeline = execute(ref: 'refs/heads/master',
-                           before: '00000000',
-                           after: project.commit.id,
-                           commits: commits)
+      context 'when commit message is nil' do
+        let(:commit_message) { nil }
 
-        expect(pipeline).to be_persisted
-        expect(pipeline.builds.any?).to be false
-        expect(pipeline.status).to eq("failed")
-        expect(pipeline.yaml_errors).not_to be_nil
+        it_behaves_like 'creating a pipeline'
       end
-    end
 
-    it "creates commit with failed status if yaml is invalid" do
-      stub_ci_pipeline_yaml_file('invalid: file')
-      commits = [{ message: "some message" }]
-      pipeline = execute(ref: 'refs/heads/master',
-                         before: '00000000',
-                         after: project.commit.id,
-                         commits: commits)
+      context 'when there is [ci skip] tag in commit message and yaml is invalid' do
+        let(:ci_yaml) { 'invalid: file: fiile' }
 
-      expect(pipeline).to be_persisted
-      expect(pipeline.status).to eq("failed")
-      expect(pipeline.builds.any?).to be false
+        it_behaves_like 'a failed pipeline'
+      end
     end
 
     context 'when there are no jobs for this pipeline' do
@@ -170,10 +210,7 @@ describe Ci::CreatePipelineService, services: true do
       end
 
       it 'does not create a new pipeline' do
-        result = execute(ref: 'refs/heads/master',
-                         before: '00000000',
-                         after: project.commit.id,
-                         commits: [{ message: 'some msg' }])
+        result = execute_service
 
         expect(result).not_to be_persisted
         expect(Ci::Build.all).to be_empty
@@ -188,10 +225,7 @@ describe Ci::CreatePipelineService, services: true do
       end
 
       it 'does not create a new pipeline' do
-        result = execute(ref: 'refs/heads/master',
-                         before: '00000000',
-                         after: project.commit.id,
-                         commits: [{ message: 'some msg' }])
+        result = execute_service
 
         expect(result).to be_persisted
         expect(result.manual_actions).not_to be_empty
@@ -205,10 +239,7 @@ describe Ci::CreatePipelineService, services: true do
       end
 
       it 'creates the environment' do
-        result = execute(ref: 'refs/heads/master',
-                         before: '00000000',
-                         after: project.commit.id,
-                         commits: [{ message: 'some msg' }])
+        result = execute_service
 
         expect(result).to be_persisted
         expect(Environment.find_by(name: "review/master")).not_to be_nil

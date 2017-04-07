@@ -29,7 +29,7 @@ describe 'Dropdown label', js: true, feature: true do
   end
 
   def clear_search_field
-    find('.filtered-search-input-container .clear-search').click
+    find('.filtered-search-box .clear-search').click
   end
 
   before do

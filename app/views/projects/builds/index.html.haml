@@ -17,7 +17,7 @@
           = link_to 'Get started with CI/CD Pipelines', help_page_path('ci/quick_start/README'), class: 'btn btn-info'
 
         = link_to ci_lint_path, class: 'btn btn-default' do
-          %span CI Lint
+          %span CI lint
 
   .content-list.builds-content-list
     = render "table", builds: @builds, project: @project

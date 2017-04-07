@@ -214,7 +214,9 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   step 'I add various links to the wiki page' do
     fill_in "wiki[content]", with: "[test](test)\n[GitLab API doc](api)\n[Rake tasks](raketasks)\n"
     fill_in "wiki[message]", with: "Adding links to wiki"
-    click_button "Create page"
+    page.within '.wiki-form' do
+      click_button "Create page"
+    end
   end
 
   step 'Wiki page should have added links' do
@@ -225,7 +227,9 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   step 'I add a header to the wiki page' do
     fill_in "wiki[content]", with: "# Wiki header\n"
     fill_in "wiki[message]", with: "Add header to wiki"
-    click_button "Create page"
+    page.within '.wiki-form' do
+      click_button "Create page"
+    end
   end
 
   step 'Wiki header should have correct id and link' do

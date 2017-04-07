@@ -44,7 +44,7 @@ describe 'Search bar', js: true, feature: true do
       filtered_search.set(search_text)
 
       expect(filtered_search.value).to eq(search_text)
-      find('.filtered-search-input-container .clear-search').click
+      find('.filtered-search-box .clear-search').click
 
       expect(filtered_search.value).to eq('')
     end
@@ -55,7 +55,7 @@ describe 'Search bar', js: true, feature: true do
 
     it 'hides after clicked' do
       filtered_search.set('a')
-      find('.filtered-search-input-container .clear-search').click
+      find('.filtered-search-box .clear-search').click
 
       expect(page).to have_css('.clear-search', visible: false)
     end
@@ -81,7 +81,7 @@ describe 'Search bar', js: true, feature: true do
 
       expect(find('#js-dropdown-hint')).to have_selector('.filter-dropdown .filter-dropdown-item', count: 1)
 
-      find('.filtered-search-input-container .clear-search').click
+      find('.filtered-search-box .clear-search').click
       filtered_search.click
 
       expect(find('#js-dropdown-hint')).to have_selector('.filter-dropdown .filter-dropdown-item', count: original_size)
@@ -98,7 +98,7 @@ describe 'Search bar', js: true, feature: true do
 
       find('#js-dropdown-hint', visible: false)
 
-      find('.filtered-search-input-container .clear-search').click
+      find('.filtered-search-box .clear-search').click
       filtered_search.click
 
       expect(find('#js-dropdown-hint')).to have_selector('.filter-dropdown .filter-dropdown-item', count: 4)

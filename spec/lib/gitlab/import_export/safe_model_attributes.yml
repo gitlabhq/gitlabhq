@@ -183,6 +183,7 @@ Ci::Pipeline:
 - duration
 - user_id
 - lock_version
+- auto_canceled_by_id
 CommitStatus:
 - id
 - project_id
@@ -223,6 +224,7 @@ CommitStatus:
 - token
 - lock_version
 - coverage_regex
+- auto_canceled_by_id
 Ci::Variable:
 - id
 - project_id
@@ -240,6 +242,17 @@ Ci::Trigger:
 - updated_at
 - owner_id
 - description
+- ref
+Ci::TriggerSchedule:
+- id
+- project_id
+- trigger_id
+- deleted_at
+- created_at
+- updated_at
+- cron
+- cron_timezone
+- next_run_at
 DeployKey:
 - id
 - user_id

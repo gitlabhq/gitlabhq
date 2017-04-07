@@ -90,6 +90,7 @@ import './flash';
         .on('click', this.clickTab);
     }
 
+    // Used in tests
     unbindEvents() {
       $(document)
         .off('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
@@ -99,9 +100,11 @@ import './flash';
         .off('click', this.clickTab);
     }
 
-    destroy() {
-      this.unbindEvents();
+    destroyPipelinesView() {
       if (this.commitPipelinesTable) {
+        document.querySelector('#commit-pipeline-table-view')
+          .removeChild(this.commitPipelinesTable.$el);
+
         this.commitPipelinesTable.$destroy();
       }
     }
@@ -128,6 +131,7 @@ import './flash';
         this.loadCommits($target.attr('href'));
         this.expandView();
         this.resetViewContainer();
+        this.destroyPipelinesView();
       } else if (this.isDiffAction(action)) {
         this.loadDiff($target.attr('href'));
         if (Breakpoints.get().getBreakpointSize() !== 'lg') {
@@ -136,12 +140,14 @@ import './flash';
         if (this.diffViewType() === 'parallel') {
           this.expandViewContainer();
         }
+        this.destroyPipelinesView();
       } else if (action === 'pipelines') {
         this.resetViewContainer();
-        this.loadPipelines();
+        this.mountPipelinesView();
       } else {
         this.expandView();
         this.resetViewContainer();
+        this.destroyPipelinesView();
       }
       if (this.setUrl) {
         this.setCurrentAction(action);
@@ -227,16 +233,12 @@ import './flash';
       });
     }
 
-    loadPipelines() {
-      if (this.pipelinesLoaded) {
-        return;
-      }
-      const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
-      // Could already be mounted from the `pipelines_bundle`
-      if (pipelineTableViewEl) {
-        this.commitPipelinesTable = new CommitPipelinesTable().$mount(pipelineTableViewEl);
-      }
-      this.pipelinesLoaded = true;
+    mountPipelinesView() {
+      this.commitPipelinesTable = new CommitPipelinesTable().$mount();
+      // $mount(el) replaces the el with the new rendered component. We need it in order to mount
+      // it everytime this tab is clicked - https://vuejs.org/v2/api/#vm-mount
+      document.querySelector('#commit-pipeline-table-view')
+        .appendChild(this.commitPipelinesTable.$el);
     }
 
     loadDiff(source) {

@@ -1,7 +1,7 @@
 .page-content-header
   .header-main-content
     %strong Commit #{@commit.short_id}
-    = clipboard_button(clipboard_text: @commit.id, title: "Copy commit SHA to clipboard")
+    = clipboard_button(text: @commit.id, title: "Copy commit SHA to clipboard")
     %span.hidden-xs authored
     #{time_ago_with_tooltip(@commit.authored_date)}
     %span by
@@ -20,7 +20,7 @@
         = icon('comment')
         = @notes_count
     = link_to namespace_project_tree_path(@project.namespace, @project, @commit), class: "btn btn-default append-right-10 hidden-xs hidden-sm" do
-      Browse Files
+      Browse files
     .dropdown.inline
       %a.btn.btn-default.dropdown-toggle{ data: { toggle: "dropdown" } }
         %span Options

@@ -57,6 +57,32 @@ describe Ci::BuildPresenter do
     end
   end
 
+  describe '#status_title' do
+    context 'when build is auto-canceled' do
+      before do
+        expect(build).to receive(:auto_canceled?).and_return(true)
+        expect(build).to receive(:auto_canceled_by_id).and_return(1)
+      end
+
+      it 'shows that the build is auto-canceled' do
+        status_title = presenter.status_title
+
+        expect(status_title).to include('auto-canceled')
+        expect(status_title).to include('Pipeline #1')
+      end
+    end
+
+    context 'when build is not auto-canceled' do
+      before do
+        expect(build).to receive(:auto_canceled?).and_return(false)
+      end
+
+      it 'does not have a status title' do
+        expect(presenter.status_title).to be_nil
+      end
+    end
+  end
+
   describe 'quack like a Ci::Build permission-wise' do
     context 'user is not allowed' do
       let(:project) { build_stubbed(:empty_project, public_builds: false) }

@@ -24,7 +24,6 @@
 /* global Search */
 /* global Admin */
 /* global NamespaceSelects */
-/* global ShortcutsDashboardNavigation */
 /* global Project */
 /* global ProjectAvatar */
 /* global CompareAutocomplete */
@@ -43,6 +42,7 @@ import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
+import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 
 const ShortcutsBlob = require('./shortcuts_blob');
@@ -86,6 +86,12 @@ const ShortcutsBlob = require('./shortcuts_blob');
           skipResetBindings: true,
           fileBlobPermalinkUrl,
         });
+
+        new BlobForkSuggestion(
+          document.querySelector('.js-edit-blob-link-fork-toggler'),
+          document.querySelector('.js-cancel-fork-suggestion'),
+          document.querySelector('.js-file-fork-suggestion-section'),
+        );
       }
 
       switch (page) {
@@ -371,7 +377,6 @@ const ShortcutsBlob = require('./shortcuts_blob');
           break;
         case 'dashboard':
         case 'root':
-          shortcut_handler = new ShortcutsDashboardNavigation();
           new UserCallout();
           break;
         case 'groups':
