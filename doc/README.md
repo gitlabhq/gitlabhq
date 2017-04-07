@@ -88,7 +88,7 @@ All technical content published by GitLab lives in the documentation, including:
 - [Repository restrictions](user/admin_area/settings/account_and_limit_settings.md#repository-size-limit) Define size restrictions for your repositories to limit the space they occupy in your storage device. Includes LFS objects.
 - [Auditor users](administration/auditor_users.md) Create auditor users, with read-only access to the entire system.
 - [Database load balancing](administration/database_load_balancing.md) Distribute database queries amongst multiple database servers.
-- [Usage ping and cohorts](administration/usage_ping_and_cohorts.md) Usage ping and cohorts
+- [User cohorts](user/admin_area/user_cohorts.md) View user activity over time.
 
 ## Contributor documentation
 
