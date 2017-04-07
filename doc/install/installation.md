@@ -166,7 +166,7 @@ In many distros the versions provided by the official package  repositories
 are out of date, so we'll need to install through the following commands:
 
     # install node v7.x
-    curl --location https://deb.nodesource.com/setup_7.x | bash -
+    curl --location https://deb.nodesource.com/setup_7.x | sudo bash -
     sudo apt-get install -y nodejs
 
     # install yarn
