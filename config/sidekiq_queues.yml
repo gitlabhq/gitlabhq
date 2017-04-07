@@ -60,6 +60,6 @@
   - [admin_emails, 1]
   - [geo_repository_update, 1]
   - [elastic_batch_project_indexer, 1]
-  - [elastic_indexer_worker, 1]
-  - [elastic_commit_indexer_worker, 1]
+  - [elastic_indexer, 1]
+  - [elastic_commit_indexer, 1]
   - [export_csv, 1]
