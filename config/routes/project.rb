@@ -160,12 +160,13 @@ constraints(ProjectUrlConstrainer.new) do
       put '/service_desk' => 'service_desk#update', as: :service_desk_refresh
 
       resources :protected_branches, only: [:index, :show, :create, :update, :destroy, :patch], constraints: { id: Gitlab::Regex.git_reference_regex } do
+        ## EE-specific
         scope module: :protected_branches do
           resources :merge_access_levels, only: [:destroy]
           resources :push_access_levels, only: [:destroy]
         end
       end
-      ## EE-specific
+      resources :protected_tags, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
 
       resources :variables, only: [:index, :show, :update, :create, :destroy]
       resources :triggers, only: [:index, :create, :edit, :update, :destroy] do
