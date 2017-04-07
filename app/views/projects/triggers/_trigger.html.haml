@@ -30,7 +30,7 @@
       Never
 
   %td
-    - if trigger.trigger_schedule.present? && trigger.trigger_schedule.active?
+    - if trigger.trigger_schedule&.active?
       = trigger.trigger_schedule.real_next_run
     - else
       None
