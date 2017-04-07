@@ -253,6 +253,8 @@ Ci::TriggerSchedule:
 - cron
 - cron_timezone
 - next_run_at
+- ref
+- active
 DeployKey:
 - id
 - user_id
