@@ -128,6 +128,12 @@ You can now proceed to merge the merge request from the UI.
 
 Discussions can be started on issues, commits, snippets and merge requests.
 
-Resolvable discussions can be added to merge request diffs, but they can also be added without a diff.
+Resolvable discussions can be added to merge request diffs, but discussions can also be added without a diff.
 
-To start a resolvable discussion, you can click on the `Comment` button dropdown and select `Start discussion`.
+To start a discussion, you can click on the "Comment" button toggle dropdown, select "Start discussion" and click "Start discussion" when you're ready to post the comment.
+
+![Comment type toggle](img/comment_type_toggle.gif)
+
+This will post a comment with a single thread to allow you to discuss specific comments in greater detail.
+
+![Discussion comment](img/discussion_comment.png)
