@@ -90,6 +90,7 @@ import './flash';
         .on('click', this.clickTab);
     }
 
+    // Used in tests
     unbindEvents() {
       $(document)
         .off('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
@@ -103,6 +104,7 @@ import './flash';
       if (this.commitPipelinesTable) {
         document.querySelector('#commit-pipeline-table-view')
           .removeChild(this.commitPipelinesTable.$el);
+
         this.commitPipelinesTable.$destroy();
       }
     }
