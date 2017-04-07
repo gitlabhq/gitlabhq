@@ -11,7 +11,7 @@ module ProtectedRefAccess
   end
 
   def check_access(user)
-    return true if user.is_admin?
+    return true if user.admin?
 
     project.team.max_member_access(user.id) >= access_level
   end
