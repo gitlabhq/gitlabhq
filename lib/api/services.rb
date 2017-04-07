@@ -488,6 +488,14 @@ module API
           desc: 'The channel name'
         }
       ],
+      'microsoft-teams' => [
+        {
+          required: true,
+          name: :webhook,
+          type: String,
+          desc: 'The Microsoft Teams webhook. e.g. https://outlook.office.com/webhook/…'
+        }
+      ],
       'mattermost' => [
         {
           required: true,
@@ -550,6 +558,7 @@ module API
       RedmineService,
       SlackService,
       MattermostService,
+      MicrosoftTeamsService,
       TeamcityService,
     ]
 
@@ -562,8 +571,14 @@ module API
           desc: 'URL to the mock service'
         }
       ]
+      services['mock-deployment'] = []
+      services['mock-monitoring'] = []
 
-      service_classes << MockCiService
+      service_classes += [
+        MockCiService,
+        MockDeploymentService,
+        MockMonitoringService,
+      ]
     end
 
     trigger_services = {

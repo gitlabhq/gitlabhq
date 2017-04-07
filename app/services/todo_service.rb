@@ -19,8 +19,8 @@ class TodoService
   #
   #  * mark all pending todos related to the issue for the current user as done
   #
-  def update_issue(issue, current_user)
-    update_issuable(issue, current_user)
+  def update_issue(issue, current_user, skip_users = [])
+    update_issuable(issue, current_user, skip_users)
   end
 
   # When close an issue we should:
@@ -60,8 +60,8 @@ class TodoService
   #
   #  * create a todo for each mentioned user on merge request
   #
-  def update_merge_request(merge_request, current_user)
-    update_issuable(merge_request, current_user)
+  def update_merge_request(merge_request, current_user, skip_users = [])
+    update_issuable(merge_request, current_user, skip_users)
   end
 
   # When close a merge request we should:
@@ -123,7 +123,7 @@ class TodoService
     mark_pending_todos_as_done(merge_request, merge_request.author)
     mark_pending_todos_as_done(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
   end
-  
+
   # When a merge request could not be automatically merged due to its unmergeable state we should:
   #
   #  * create a todo for a merge_user
@@ -131,7 +131,7 @@ class TodoService
   def merge_request_became_unmergeable(merge_request)
     create_unmergeable_todo(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
   end
-  
+
   # When create a note we should:
   #
   #  * mark all pending todos related to the noteable for the note author as done
@@ -146,8 +146,8 @@ class TodoService
   #  * mark all pending todos related to the noteable for the current user as done
   #  * create a todo for each new user mentioned on note
   #
-  def update_note(note, current_user)
-    handle_note(note, current_user)
+  def update_note(note, current_user, skip_users = [])
+    handle_note(note, current_user, skip_users)
   end
 
   # When an emoji is awarded we should:
@@ -204,7 +204,7 @@ class TodoService
     # Only update those that are not really on that state
     todos = todos.where.not(state: state)
     todos_ids = todos.pluck(:id)
-    todos.update_all(state: state)
+    todos.unscope(:order).update_all(state: state)
     current_user.update_todos_count_cache
     todos_ids
   end
@@ -223,11 +223,11 @@ class TodoService
     create_mention_todos(issuable.project, issuable, author)
   end
 
-  def update_issuable(issuable, author)
+  def update_issuable(issuable, author, skip_users = [])
     # Skip toggling a task list item in a description
     return if toggling_tasks?(issuable)
 
-    create_mention_todos(issuable.project, issuable, author)
+    create_mention_todos(issuable.project, issuable, author, nil, skip_users)
   end
 
   def destroy_issuable(issuable, user)
@@ -239,7 +239,7 @@ class TodoService
       issuable.tasks? && issuable.updated_tasks.any?
   end
 
-  def handle_note(note, author)
+  def handle_note(note, author, skip_users = [])
     # Skip system notes, and notes on project snippet
     return if note.system? || note.for_snippet?
 
@@ -247,7 +247,7 @@ class TodoService
     target  = note.noteable
 
     mark_pending_todos_as_done(target, author)
-    create_mention_todos(project, target, author, note)
+    create_mention_todos(project, target, author, note, skip_users)
   end
 
   def create_assignment_todo(issuable, author)
@@ -257,14 +257,14 @@ class TodoService
     end
   end
 
-  def create_mention_todos(project, target, author, note = nil)
+  def create_mention_todos(project, target, author, note = nil, skip_users = [])
     # Create Todos for directly addressed users
-    directly_addressed_users = filter_directly_addressed_users(project, note || target, author)
+    directly_addressed_users = filter_directly_addressed_users(project, note || target, author, skip_users)
     attributes = attributes_for_todo(project, target, author, Todo::DIRECTLY_ADDRESSED, note)
     create_todos(directly_addressed_users, attributes)
 
     # Create Todos for mentioned users
-    mentioned_users = filter_mentioned_users(project, note || target, author)
+    mentioned_users = filter_mentioned_users(project, note || target, author, skip_users)
     attributes = attributes_for_todo(project, target, author, Todo::MENTIONED, note)
     create_todos(mentioned_users, attributes)
   end
@@ -307,13 +307,13 @@ class TodoService
     reject_users_without_access(users, project, target).uniq
   end
 
-  def filter_mentioned_users(project, target, author)
-    mentioned_users = target.mentioned_users(author)
+  def filter_mentioned_users(project, target, author, skip_users = [])
+    mentioned_users = target.mentioned_users(author) - skip_users
     filter_todo_users(mentioned_users, project, target)
   end
 
-  def filter_directly_addressed_users(project, target, author)
-    directly_addressed_users = target.directly_addressed_users(author)
+  def filter_directly_addressed_users(project, target, author, skip_users = [])
+    directly_addressed_users = target.directly_addressed_users(author) - skip_users
     filter_todo_users(directly_addressed_users, project, target)
   end
 

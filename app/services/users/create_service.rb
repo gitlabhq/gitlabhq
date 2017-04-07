@@ -62,6 +62,7 @@ module Users
         :email,
         :external,
         :force_random_password,
+        :password_automatically_set,
         :hide_no_password,
         :hide_no_ssh_key,
         :key_id,
@@ -85,6 +86,7 @@ module Users
       [
         :email,
         :email_confirmation,
+        :password_automatically_set,
         :name,
         :password,
         :username
@@ -94,7 +96,7 @@ module Users
     def build_user_params
       if current_user&.is_admin?
         user_params = params.slice(*admin_create_params)
-        user_params[:created_by_id] = current_user.id
+        user_params[:created_by_id] = current_user&.id
 
         if params[:reset_password]
           user_params.merge!(force_random_password: true, password_expires_at: nil)

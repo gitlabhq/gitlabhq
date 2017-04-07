@@ -29,6 +29,7 @@ notes:
 - resolved_by
 - todos
 - events
+- system_note_metadata
 label_links:
 - target
 - label
@@ -88,6 +89,11 @@ pipelines:
 - statuses
 - builds
 - trigger_requests
+- pending_builds
+- retryable_builds
+- cancelable_statuses
+- manual_actions
+- artifacts
 statuses:
 - project
 - pipeline
@@ -98,6 +104,9 @@ triggers:
 - project
 - trigger_requests
 - owner
+- trigger_schedule
+trigger_schedule:
+- trigger
 deploy_keys:
 - user
 - deploy_keys_projects
@@ -115,6 +124,9 @@ merge_access_levels:
 - protected_branch
 push_access_levels:
 - protected_branch
+container_repositories:
+- project
+- name
 project:
 - taggings
 - base_tags
@@ -142,6 +154,7 @@ project:
 - asana_service
 - gemnasium_service
 - slack_service
+- microsoft_teams_service
 - mattermost_service
 - buildkite_service
 - bamboo_service
@@ -155,6 +168,8 @@ project:
 - external_wiki_service
 - kubernetes_service
 - mock_ci_service
+- mock_deployment_service
+- mock_monitoring_service
 - forked_project_link
 - forked_from_project
 - forked_project_links
@@ -189,8 +204,10 @@ project:
 - builds
 - runner_projects
 - runners
+- active_runners
 - variables
 - triggers
+- trigger_schedules
 - environments
 - deployments
 - project_feature
@@ -199,6 +216,7 @@ project:
 - project_authorizations
 - route
 - statistics
+- container_repositories
 - uploads
 award_emoji:
 - awardable

@@ -4,7 +4,6 @@
 - retried = local_assigns.fetch(:retried, false)
 - pipeline_link = local_assigns.fetch(:pipeline_link, false)
 - stage = local_assigns.fetch(:stage, false)
-- coverage = local_assigns.fetch(:coverage, false)
 - allow_retry = local_assigns.fetch(:allow_retry, false)
 
 %tr.build.commit{ class: ('retried' if retried) }
@@ -88,13 +87,13 @@
         %span= time_ago_with_tooltip(build.finished_at)
 
   %td.coverage
-    - if coverage && build.try(:coverage)
+    - if build.try(:coverage)
       #{build.coverage}%
 
   %td
     .pull-right
       - if can?(current_user, :read_build, build) && build.artifacts?
-        = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), title: 'Download artifacts', class: 'btn btn-build' do
+        = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), rel: 'nofollow', download: '', title: 'Download artifacts', class: 'btn btn-build' do
           = icon('download')
       - if can?(current_user, :update_build, build)
         - if build.active?

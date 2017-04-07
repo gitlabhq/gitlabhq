@@ -27,22 +27,39 @@ module StubGitlabCalls
 
   def stub_container_registry_config(registry_settings)
     allow(Gitlab.config.registry).to receive_messages(registry_settings)
-    allow(Auth::ContainerRegistryAuthenticationService).to receive(:full_access_token).and_return('token')
+    allow(Auth::ContainerRegistryAuthenticationService)
+      .to receive(:full_access_token).and_return('token')
   end
 
-  def stub_container_registry_tags(*tags)
-    allow_any_instance_of(ContainerRegistry::Client).to receive(:repository_tags).and_return(
-      { "tags" => tags }
-    )
-    allow_any_instance_of(ContainerRegistry::Client).to receive(:repository_manifest).and_return(
-      JSON.parse(File.read(Rails.root + 'spec/fixtures/container_registry/tag_manifest.json'))
-    )
-    allow_any_instance_of(ContainerRegistry::Client).to receive(:blob).and_return(
-      File.read(Rails.root + 'spec/fixtures/container_registry/config_blob.json')
-    )
+  def stub_container_registry_tags(repository: :any, tags:)
+    repository = any_args if repository == :any
+
+    allow_any_instance_of(ContainerRegistry::Client)
+      .to receive(:repository_tags).with(repository)
+      .and_return({ 'tags' => tags })
+
+    allow_any_instance_of(ContainerRegistry::Client)
+      .to receive(:repository_manifest).with(repository)
+      .and_return(stub_container_registry_tag_manifest)
+
+    allow_any_instance_of(ContainerRegistry::Client)
+      .to receive(:blob).with(repository)
+      .and_return(stub_container_registry_blob)
   end
 
   private
+
+  def stub_container_registry_tag_manifest
+    fixture_path = 'spec/fixtures/container_registry/tag_manifest.json'
+
+    JSON.parse(File.read(Rails.root + fixture_path))
+  end
+
+  def stub_container_registry_blob
+    fixture_path = 'spec/fixtures/container_registry/config_blob.json'
+
+    File.read(Rails.root + fixture_path)
+  end
 
   def gitlab_url
     Gitlab.config.gitlab.url

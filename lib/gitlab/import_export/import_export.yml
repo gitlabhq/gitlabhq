@@ -39,7 +39,8 @@ project_tree:
       - :author
       - :events
     - :statuses
-  - :triggers
+  - triggers:
+    - :trigger_schedule
   - :deploy_keys
   - :services
   - :hooks
@@ -89,3 +90,5 @@ methods:
     - :type
   merge_request_diff:
     - :utf8_st_diffs
+  merge_requests:
+    - :diff_head_sha

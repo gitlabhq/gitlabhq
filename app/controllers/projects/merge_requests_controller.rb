@@ -39,10 +39,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @collection_type    = "MergeRequest"
     @merge_requests     = merge_requests_collection
     @merge_requests     = @merge_requests.page(params[:page])
+    @merge_requests     = @merge_requests.includes(merge_request_diff: :merge_request)
     @issuable_meta_data = issuable_meta_data(@merge_requests, @collection_type)
 
     if @merge_requests.out_of_range? && @merge_requests.total_pages != 0
-      return redirect_to url_for(params.merge(page: @merge_requests.total_pages))
+      return redirect_to url_for(params.merge(page: @merge_requests.total_pages, only_path: true))
     end
 
     if params[:label_name].present?
@@ -232,6 +233,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
 
       format.json do
+        Gitlab::PollingInterval.set_header(response, interval: 10_000)
+
         render json: PipelineSerializer
           .new(project: @project, user: @current_user)
           .represent(@pipelines)
@@ -244,6 +247,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       format.html { define_new_vars }
       format.json do
         define_pipelines_vars
+
+        Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
         render json: {
           pipelines: PipelineSerializer
@@ -451,7 +456,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if pipeline
       status = pipeline.status
-      coverage = pipeline.try(:coverage)
+      coverage = pipeline.coverage
 
       status = "success_with_warnings" if pipeline.success? && pipeline.has_warnings?
 

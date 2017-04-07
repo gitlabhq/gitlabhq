@@ -105,6 +105,10 @@ class CommitStatus < ActiveRecord::Base
     end
   end
 
+  def locking_enabled?
+    status_changed?
+  end
+
   def before_sha
     pipeline.before_sha || Gitlab::Git::BLANK_SHA
   end

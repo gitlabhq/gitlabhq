@@ -16,8 +16,12 @@ export default {
     },
   },
 
+  mounted() {
+    $(document).trigger('init.scrolling-tabs');
+  },
+
   template: `
-    <ul class="nav-links">
+    <ul class="nav-links scrolling-tabs">
       <li
         class="js-pipelines-tab-all"
         :class="{ 'active': scope === 'all'}">

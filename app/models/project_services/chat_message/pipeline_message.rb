@@ -1,19 +1,22 @@
 module ChatMessage
   class PipelineMessage < BaseMessage
-    attr_reader :ref_type, :ref, :status, :project_name, :project_url,
-                :user_name, :duration, :pipeline_id
+    attr_reader :ref_type
+    attr_reader :ref
+    attr_reader :status
+    attr_reader :duration
+    attr_reader :pipeline_id
 
     def initialize(data)
+      super
+
+      @user_name = data.dig(:user, :name) || 'API'
+
       pipeline_attributes = data[:object_attributes]
       @ref_type = pipeline_attributes[:tag] ? 'tag' : 'branch'
       @ref = pipeline_attributes[:ref]
       @status = pipeline_attributes[:status]
       @duration = pipeline_attributes[:duration]
       @pipeline_id = pipeline_attributes[:id]
-
-      @project_name = data[:project][:path_with_namespace]
-      @project_url = data[:project][:web_url]
-      @user_name = (data[:user] && data[:user][:name]) || 'API'
     end
 
     def pretext
@@ -25,17 +28,24 @@ module ChatMessage
     end
 
     def attachments
+      return message if markdown
+
       [{ text: format(message), color: attachment_color }]
+    end
+
+    def activity
+      {
+        title: "Pipeline #{pipeline_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status}",
+        subtitle: "in #{project_link}",
+        text: "in #{duration} #{time_measure}",
+        image: user_avatar || ''
+      }
     end
 
     private
 
     def message
-      "#{project_link}: Pipeline #{pipeline_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status} in #{duration} #{'second'.pluralize(duration)}"
-    end
-
-    def format(string)
-      Slack::Notifier::LinkFormatter.format(string)
+      "#{project_link}: Pipeline #{pipeline_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status} in #{duration} #{time_measure}"
     end
 
     def humanized_status
@@ -73,6 +83,10 @@ module ChatMessage
 
     def pipeline_link
       "[##{pipeline_id}](#{pipeline_url})"
+    end
+
+    def time_measure
+      'second'.pluralize(duration)
     end
   end
 end

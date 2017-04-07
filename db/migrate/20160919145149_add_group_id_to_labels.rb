@@ -1,3 +1,4 @@
+# rubocop:disable RemoveIndex
 class AddGroupIdToLabels < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

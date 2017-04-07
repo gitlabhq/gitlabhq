@@ -37,6 +37,7 @@ class Note < ActiveRecord::Base
 
   has_many :todos, dependent: :destroy
   has_many :events, as: :target, dependent: :destroy
+  has_one :system_note_metadata
 
   delegate :gfm_reference, :local_reference, to: :noteable
   delegate :name, to: :project, prefix: true
@@ -70,7 +71,9 @@ class Note < ActiveRecord::Base
   scope :fresh, ->{ order(created_at: :asc, id: :asc) }
   scope :inc_author_project, ->{ includes(:project, :author) }
   scope :inc_author, ->{ includes(:author) }
-  scope :inc_relations_for_view, ->{ includes(:project, :author, :updated_by, :resolved_by, :award_emoji) }
+  scope :inc_relations_for_view, -> do
+    includes(:project, :author, :updated_by, :resolved_by, :award_emoji, :system_note_metadata)
+  end
 
   scope :diff_notes, ->{ where(type: %w(LegacyDiffNote DiffNote)) }
   scope :non_diff_notes, ->{ where(type: ['Note', nil]) }

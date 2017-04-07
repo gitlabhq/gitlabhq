@@ -7,7 +7,7 @@ feature tests with Capybara for integration testing.
 Feature tests need to be written for all new features. Regression tests ought
 to be written for all bug fixes to prevent them from recurring in the future.
 
-See [the Testing Standards and Style Guidelines](/doc/development/testing.md)
+See [the Testing Standards and Style Guidelines](../testing.md)
 for more information on general testing practices at GitLab.
 
 ## Karma test suite
@@ -48,7 +48,7 @@ remove these directives when you commit your code.
 
 Information on setting up and running RSpec integration tests with
 [Capybara][capybara] can be found in the
-[general testing guide](/doc/development/testing.md).
+[general testing guide](../testing.md).
 
 ## Gotchas
 

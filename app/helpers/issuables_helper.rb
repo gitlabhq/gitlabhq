@@ -251,6 +251,21 @@ module IssuablesHelper
   end
 
   def selected_template(issuable)
-    params[:issuable_template] if issuable_templates(issuable).include?(params[:issuable_template])
+    params[:issuable_template] if issuable_templates(issuable).any?{ |template| template[:name] == params[:issuable_template] }
+  end
+
+  def issuable_todo_button_data(issuable, todo, is_collapsed)
+    {
+      todo_text: "Add todo",
+      mark_text: "Mark done",
+      todo_icon: (is_collapsed ? icon('plus-square') : nil),
+      mark_icon: (is_collapsed ? icon('check-square', class: 'todo-undone') : nil),
+      issuable_id: issuable.id,
+      issuable_type: issuable.class.name.underscore,
+      url: namespace_project_todos_path(@project.namespace, @project),
+      delete_path: (dashboard_todo_path(todo) if todo),
+      placement: (is_collapsed ? 'left' : nil),
+      container: (is_collapsed ? 'body' : nil)
+    }
   end
 end

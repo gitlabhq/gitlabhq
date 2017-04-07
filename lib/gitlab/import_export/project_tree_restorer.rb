@@ -119,7 +119,7 @@ module Gitlab
                                                        relation_hash: parsed_relation_hash(relation_hash),
                                                        members_mapper: members_mapper,
                                                        user: @user,
-                                                       project_id: restored_project.id)
+                                                       project: restored_project)
         end.compact
 
         relation_hash_list.is_a?(Array) ? relation_array : relation_array.first

@@ -293,7 +293,7 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
-        ::Users::DestroyService.new(current_user).execute(user)
+        DeleteUserWorker.perform_async(current_user.id, user.id)
       end
 
       desc 'Block a user. Available only for admins.'
@@ -341,7 +341,7 @@ module API
         not_found!('User') unless user
 
         events = user.events.
-          merge(ProjectsFinder.new.execute(current_user)).
+          merge(ProjectsFinder.new(current_user: current_user).execute).
           references(:project).
           with_associations.
           recent

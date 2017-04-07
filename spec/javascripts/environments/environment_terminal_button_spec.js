@@ -18,7 +18,7 @@ describe('Stop Component', () => {
 
   it('should render a link to open a web terminal with the provided path', () => {
     expect(component.$el.tagName).toEqual('A');
-    expect(component.$el.getAttribute('title')).toEqual('Open web terminal');
+    expect(component.$el.getAttribute('title')).toEqual('Terminal');
     expect(component.$el.getAttribute('href')).toEqual(terminalPath);
   });
 });

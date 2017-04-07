@@ -15,15 +15,15 @@ class Spinach::Features::ProjectMergeRequestsAcceptance < Spinach::FeatureSteps
   end
 
   step 'I click on Accept Merge Request' do
-    click_button('Accept Merge Request')
+    click_button('Accept merge request')
   end
 
   step 'I should see the Remove Source Branch button' do
-    expect(page).to have_link('Remove Source Branch')
+    expect(page).to have_link('Remove source branch')
   end
 
   step 'I should not see the Remove Source Branch button' do
-    expect(page).not_to have_link('Remove Source Branch')
+    expect(page).not_to have_link('Remove source branch')
   end
 
   step 'There is an open Merge Request' do

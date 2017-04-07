@@ -335,6 +335,14 @@ describe Ci::Pipeline, models: true do
       end
     end
 
+    describe 'pipeline ETag caching' do
+      it 'executes ExpirePipelinesCacheService' do
+        expect_any_instance_of(Ci::ExpirePipelineCacheService).to receive(:execute).with(pipeline)
+
+        pipeline.cancel
+      end
+    end
+
     def create_build(name, queued_at = current, started_from = 0)
       create(:ci_build,
              name: name,
@@ -1055,9 +1063,12 @@ describe Ci::Pipeline, models: true do
     end
 
     before do
-      reset_delivered_emails!
-
       project.team << [pipeline.user, Gitlab::Access::DEVELOPER]
+
+      pipeline.user.global_notification_setting.
+        update(level: 'custom', failed_pipeline: true, success_pipeline: true)
+
+      reset_delivered_emails!
 
       perform_enqueued_jobs do
         pipeline.enqueue

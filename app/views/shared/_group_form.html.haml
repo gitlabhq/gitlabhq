@@ -1,4 +1,4 @@
-- parent = Group.find_by(id: params[:parent_id] || @group.parent_id)
+- parent = GroupFinder.new(current_user).execute(id: params[:parent_id] || @group.parent_id)
 - group_path = root_url
 - group_path << parent.full_path + '/' if parent
 - if @group.persisted?

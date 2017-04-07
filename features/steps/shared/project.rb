@@ -97,7 +97,7 @@ module SharedProject
 
   step 'I should see project "Shop" activity feed' do
     project = Project.find_by(name: "Shop")
-    expect(page).to have_content "#{@user.name} pushed new branch fix at #{project.name_with_namespace}"
+    expect(page).to have_content "pushed new branch fix at #{project.name_with_namespace}"
   end
 
   step 'I should see project settings' do
@@ -271,6 +271,10 @@ module SharedProject
 
   step 'public access for builds is disabled' do
     @project.update(public_builds: false)
+  end
+
+  step 'project "Shop" has a "Bugfix MR" merge request open' do
+    create(:merge_request, title: "Bugfix MR", target_project: project, source_project: project, author: project.users.first)
   end
 
   def user_owns_project(user_name:, project_name:, visibility: :private)

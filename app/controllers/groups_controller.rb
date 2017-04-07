@@ -1,7 +1,7 @@
 class GroupsController < Groups::ApplicationController
-  include FilterProjects
   include IssuesAction
   include MergeRequestsAction
+  include ParamsBackwardCompatibility
 
   respond_to :html
 
@@ -105,15 +105,16 @@ class GroupsController < Groups::ApplicationController
   protected
 
   def setup_projects
+    set_non_archived_param
+    params[:sort] ||= 'latest_activity_desc'
+    @sort = params[:sort]
+
     options = {}
     options[:only_owned] = true if params[:shared] == '0'
     options[:only_shared] = true if params[:shared] == '1'
 
-    @projects = GroupProjectsFinder.new(group, options).execute(current_user)
+    @projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user).execute
     @projects = @projects.includes(:namespace)
-    @projects = @projects.sorted_by_activity
-    @projects = filter_projects(@projects)
-    @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.page(params[:page]) if params[:name].blank?
   end
 
@@ -150,7 +151,9 @@ class GroupsController < Groups::ApplicationController
       :visibility_level,
       :parent_id,
       :create_chat_team,
-      :chat_team_name
+      :chat_team_name,
+      :require_two_factor_authentication,
+      :two_factor_grace_period
     ]
   end
 

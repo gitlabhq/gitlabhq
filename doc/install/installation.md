@@ -459,9 +459,9 @@ Make GitLab start on boot:
 
 ### Install Gitaly
 
-As of GitLab 9.0 Gitaly is an **optional** component. Its
-configuration is expected to change in GitLab 9.1. It is OK to wait
-with setting up Gitaly until you upgrade to GitLab 9.1 or later.
+As of GitLab 9.1 Gitaly is an **optional** component. Its
+configuration is still changing regularly. It is OK to wait
+with setting up Gitaly until you upgrade to GitLab 9.2 or later.
 
     # Fetch Gitaly source with Git and compile with Go
     sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
@@ -471,18 +471,20 @@ with setting up Gitaly until you upgrade to GitLab 9.1 or later.
     sudo chown git /home/git/gitlab/tmp/sockets/private
 
     # Configure Gitaly
-    echo 'GITALY_SOCKET_PATH=/home/git/gitlab/tmp/sockets/private/gitaly.socket' | \
-      sudo -u git tee -a /home/git/gitaly/env
-
+    cd /home/git/gitaly
+    sudo -u git cp config.toml.example config.toml
+    # If you are using non-default settings you need to update config.toml
+    sudo -u git -H editor config.toml
+    
     # Enable Gitaly in the init script
     echo 'gitaly_enabled=true' | sudo tee -a /etc/default/gitlab
 
-Next, edit `/home/git/gitlab/config/gitlab.yml` and make sure `socket_path` in
+Next, edit `/home/git/gitlab/config/gitlab.yml` and make sure `enabled: true` in
 the `gitaly:` section is uncommented.
 
     # <- gitlab.yml indentation starts here
       gitaly:
-        socket_path: tmp/sockets/private/gitaly.socket
+        enabled: true
 
 For more information about configuring Gitaly see
 [doc/administration/gitaly](../administration/gitaly).

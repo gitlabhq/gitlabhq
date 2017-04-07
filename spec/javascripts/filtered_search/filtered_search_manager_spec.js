@@ -29,7 +29,7 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
 
     beforeEach(() => {
       setFixtures(`
-        <div class="filtered-search-input-container">
+        <div class="filtered-search-box">
           <form>
             <ul class="tokens-container list-unstyled">
               ${FilteredSearchSpecHelper.createInputHTML(placeholder)}
@@ -87,6 +87,20 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
 
         spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
           expect(url).toEqual(`${defaultParams}&search=~!%40%23%24%25%5E%26*()_%2B%7B%7D%3A%3C%3E%2C.%3F%2F`);
+          done();
+        });
+
+        manager.search();
+      });
+
+      it('removes duplicated tokens', (done) => {
+        tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+          ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
+        `);
+
+        spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
+          expect(url).toEqual(`${defaultParams}&label_name[]=bug`);
           done();
         });
 
@@ -250,12 +264,12 @@ const FilteredSearchSpecHelper = require('../helpers/filtered_search_spec_helper
     describe('toggleInputContainerFocus', () => {
       it('toggles on focus', () => {
         input.focus();
-        expect(document.querySelector('.filtered-search-input-container').classList.contains('focus')).toEqual(true);
+        expect(document.querySelector('.filtered-search-box').classList.contains('focus')).toEqual(true);
       });
 
       it('toggles on blur', () => {
         input.blur();
-        expect(document.querySelector('.filtered-search-input-container').classList.contains('focus')).toEqual(false);
+        expect(document.querySelector('.filtered-search-box').classList.contains('focus')).toEqual(false);
       });
     });
   });

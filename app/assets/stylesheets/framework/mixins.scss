@@ -52,6 +52,18 @@
   }
 }
 
+@mixin basic-list-stats {
+  .stats {
+    float: right;
+    line-height: $list-text-height;
+    color: $gl-text-color;
+
+    span {
+      margin-right: 15px;
+    }
+  }
+}
+
 @mixin bulleted-list {
   > ul {
     list-style-type: disc;

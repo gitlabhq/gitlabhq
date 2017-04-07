@@ -4,7 +4,7 @@ describe PostReceive do
   let(:changes) { "123456 789012 refs/heads/tést\n654321 210987 refs/tags/tag" }
   let(:wrongly_encoded_changes) { changes.encode("ISO-8859-1").force_encoding("UTF-8") }
   let(:base64_changes) { Base64.encode64(wrongly_encoded_changes) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:key) { create(:key, user: project.owner) }
   let(:key_id) { key.shell_id }
 

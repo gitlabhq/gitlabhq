@@ -3,7 +3,7 @@ class SessionsController < Devise::SessionsController
   include Devise::Controllers::Rememberable
   include Recaptcha::ClientHelper
 
-  skip_before_action :check_2fa_requirement, only: [:destroy]
+  skip_before_action :check_two_factor_requirement, only: [:destroy]
 
   prepend_before_action :check_initial_setup, only: [:new]
   prepend_before_action :authenticate_with_two_factor,
@@ -79,7 +79,7 @@ class SessionsController < Devise::SessionsController
       if request.referer.present? && (params['redirect_to_referer'] == 'yes')
         referer_uri = URI(request.referer)
         if referer_uri.host == Gitlab.config.gitlab.host
-          referer_uri.path
+          referer_uri.request_uri
         else
           request.fullpath
         end

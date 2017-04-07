@@ -28,7 +28,7 @@ module MergeRequests
 
       if merge_request.previous_changes.include?('title') ||
           merge_request.previous_changes.include?('description')
-        todo_service.update_merge_request(merge_request, current_user)
+        todo_service.update_merge_request(merge_request, current_user, old_mentioned_users)
       end
 
       if merge_request.previous_changes.include?('target_branch')

@@ -24,21 +24,8 @@ describe Repository, models: true do
     repository.commit(merge_commit_id)
   end
 
-  let(:author_email) { FFaker::Internet.email }
-
-  # I have to remove periods from the end of the name
-  # This happened when the user's name had a suffix (i.e. "Sr.")
-  # This seems to be what git does under the hood. For example, this commit:
-  #
-  # $ git commit --author='Foo Sr. <foo@example.com>' -m 'Where's my trailing period?'
-  #
-  # results in this:
-  #
-  # $ git show --pretty
-  # ...
-  # Author: Foo Sr <foo@example.com>
-  # ...
-  let(:author_name) { FFaker::Name.name.chomp("\.") }
+  let(:author_email) { 'user@example.org' }
+  let(:author_name) { 'John Doe' }
 
   describe '#branch_names_contains' do
     subject { repository.branch_names_contains(sample_commit.id) }
@@ -1293,14 +1280,6 @@ describe Repository, models: true do
     end
   end
 
-  describe '#before_import' do
-    it 'flushes the repository caches' do
-      expect(repository).to receive(:expire_content_cache)
-
-      repository.before_import
-    end
-  end
-
   describe '#after_import' do
     it 'flushes and builds the cache' do
       expect(repository).to receive(:expire_content_cache)
@@ -1848,6 +1827,19 @@ describe Repository, models: true do
     context 'when there is no .gitlab/route-map.yml at the commit' do
       it 'returns nil' do
         expect(repository.route_map_for(repository.commit.parent.sha)).to be_nil
+      end
+    end
+  end
+
+  describe '#is_ancestor?' do
+    context 'Gitaly is_ancestor feature enabled' do
+      it 'asks Gitaly server if it\'s an ancestor' do
+        commit = repository.commit
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(true)
+        expect(Gitlab::GitalyClient::Commit).to receive(:is_ancestor).
+          with(repository.raw_repository, commit.id, commit.id).and_return(true)
+
+        expect(repository.is_ancestor?(commit.id, commit.id)).to be true
       end
     end
   end

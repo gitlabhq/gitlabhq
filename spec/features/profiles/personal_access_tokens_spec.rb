@@ -27,7 +27,7 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
 
   describe "token creation" do
     it "allows creation of a personal access token" do
-      name = FFaker::Product.brand
+      name = 'My PAT'
 
       visit profile_personal_access_tokens_path
       fill_in "Name", with: name
@@ -41,7 +41,7 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
       check "api"
       check "read_user"
 
-      click_on "Create Personal Access Token"
+      click_on "Create personal access token"
       expect(active_personal_access_tokens).to have_text(name)
       expect(active_personal_access_tokens).to have_text('In')
       expect(active_personal_access_tokens).to have_text('api')
@@ -52,9 +52,9 @@ describe 'Profile > Personal Access Tokens', feature: true, js: true do
       it "displays an error message" do
         disallow_personal_access_token_saves!
         visit profile_personal_access_tokens_path
-        fill_in "Name", with: FFaker::Product.brand
+        fill_in "Name", with: 'My PAT'
 
-        expect { click_on "Create Personal Access Token" }.not_to change { PersonalAccessToken.count }
+        expect { click_on "Create personal access token" }.not_to change { PersonalAccessToken.count }
         expect(page).to have_content("Name cannot be nil")
       end
     end

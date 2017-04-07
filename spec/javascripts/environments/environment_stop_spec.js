@@ -24,7 +24,7 @@ describe('Stop Component', () => {
 
   it('should render a button to stop the environment', () => {
     expect(component.$el.tagName).toEqual('BUTTON');
-    expect(component.$el.getAttribute('title')).toEqual('Stop Environment');
+    expect(component.$el.getAttribute('title')).toEqual('Stop');
   });
 
   it('should call the service when an action is clicked', () => {

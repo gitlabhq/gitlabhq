@@ -5,10 +5,6 @@ ENV['RAILS_ENV'] = 'test'
 require './config/environment'
 require 'rspec/expectations'
 
-require_relative 'capybara'
-require_relative 'db_cleaner'
-require_relative 'rerun'
-
 if ENV['CI']
   require 'knapsack'
   Knapsack::Adapters::SpinachAdapter.bind
@@ -33,3 +29,19 @@ Spinach.hooks.before_run do
 
   include FactoryGirl::Syntax::Methods
 end
+
+module StdoutReporterWithScenarioLocation
+  # Override the standard reporter to show filename and line number next to each
+  # scenario for easy, focused re-runs
+  def before_scenario_run(scenario, step_definitions = nil)
+    @max_step_name_length = scenario.steps.map(&:name).map(&:length).max if scenario.steps.any?
+    name = scenario.name
+
+    # This number has no significance, it's just to line things up
+    max_length = @max_step_name_length + 19
+    out.puts "\n  #{'Scenario:'.green} #{name.light_green.ljust(max_length)}" \
+      " # #{scenario.feature.filename}:#{scenario.line}"
+  end
+end
+
+Spinach::Reporter::Stdout.prepend(StdoutReporterWithScenarioLocation)

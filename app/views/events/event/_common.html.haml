@@ -1,5 +1,15 @@
+- if event.target
+  - if event.action_name == "opened"
+    .profile-icon.open-icon
+      = custom_icon("icon_status_open")
+  - elsif event.action_name == "closed"
+    .profile-icon.closed-icon
+      = custom_icon("icon_status_closed")
+  - else
+    .profile-icon.fork-icon
+      = custom_icon("icon_code_fork")
+
 .event-title
-  %span.author_name= link_to_author event
   %span{ class: event.action_name }
   - if event.target
     = event.action_name

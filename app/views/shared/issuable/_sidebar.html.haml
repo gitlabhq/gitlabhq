@@ -13,15 +13,12 @@
       %a.gutter-toggle.pull-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => "Toggle sidebar" }
         = sidebar_gutter_toggle_icon
       - if current_user
-        %button.btn.btn-default.issuable-header-btn.pull-right.js-issuable-todo{ type: "button", "aria-label" => (todo.nil? ? "Add todo" : "Mark done"), data: { todo_text: "Add todo", mark_text: "Mark done", issuable_id: issuable.id, issuable_type: issuable.class.name.underscore, url: namespace_project_todos_path(@project.namespace, @project), delete_path: (dashboard_todo_path(todo) if todo) } }
-          %span.js-issuable-todo-text
-            - if todo
-              Mark done
-            - else
-              Add todo
-          = icon('spin spinner', class: 'hidden js-issuable-todo-loading', 'aria-hidden': 'true')
+        = render "shared/issuable/sidebar_todo", todo: todo, issuable: issuable
 
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
+      - if current_user
+        .block.todo.hide-expanded
+          = render "shared/issuable/sidebar_todo", todo: todo, issuable: issuable, is_collapsed: true
       .block.assignee
         .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (issuable.assignee.name if issuable.assignee) }
           - if issuable.assignee
@@ -121,7 +118,7 @@
         - selected_labels = issuable.labels
         .block.labels
           .sidebar-collapsed-icon.js-sidebar-labels-tooltip{ title: issuable_labels_tooltip(issuable.labels_array), data: { placement: "left", container: "body" } }
-            = icon('tags', class: 'hidden', 'aria-hidden': 'true')
+            = icon('tags', 'aria-hidden': 'true')
             %span
               = selected_labels.size
           .title.hide-collapsed
@@ -163,13 +160,13 @@
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference
         .sidebar-collapsed-icon.dont-change-state
-          = clipboard_button(clipboard_text: project_ref, title: "Copy reference to clipboard", placement: "left")
+          = clipboard_button(text: project_ref, title: "Copy reference to clipboard", placement: "left")
         .cross-project-reference.hide-collapsed
           %span
             Reference:
             %cite{ title: project_ref }
               = project_ref
-          = clipboard_button(clipboard_text: project_ref, title: "Copy reference to clipboard", placement: "left")
+          = clipboard_button(text: project_ref, title: "Copy reference to clipboard", placement: "left")
 
     :javascript
       gl.IssuableResource = new gl.SubbableResource('#{issuable_json_path(issuable)}');
