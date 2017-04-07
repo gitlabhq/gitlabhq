@@ -5,8 +5,8 @@
 
 As a benefit of having the [usage ping active](settings/usage_statistics.md),
 GitLab lets you analyze the users' activities of your GitLab installation.
-Under [LINK], when the usage ping is active, GitLab will show the monthly
-cohorts of new users and their activities over time.
+Under `/admin/cohorts`, when the usage ping is active, GitLab will show the
+monthly cohorts of new users and their activities over time.
 
 How do we read the user cohorts table? Let's take an example with the following
 user cohorts.
@@ -24,7 +24,7 @@ How do we measure the activity of users? GitLab considers a user active if:
 
 ### Setup
 
-1. Activate the usage ping as defined in [LINK]
-2. Go to [LINK] to see the user cohorts of the server
+1. Activate the usage ping as defined [in the documentation](settings/usage_statistics.md)
+2. Go to `/admin/cohorts` to see the user cohorts of the server
 
 [ce-23361]: https://gitlab.com/gitlab-org/gitlab-ce/issues/23361
