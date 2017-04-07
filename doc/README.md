@@ -73,7 +73,7 @@ All technical content published by GitLab lives in the documentation, including:
 - [Sidekiq Troubleshooting](administration/troubleshooting/sidekiq.md) Debug when Sidekiq appears hung and is not processing jobs.
 - [System hooks](system_hooks/system_hooks.md) Notifications when users, projects and keys are changed.
 - [Update](update/README.md) Update guides to upgrade your installation.
-- [Usage ping and cohorts](administration/usage_ping_cohorts.md) Usage ping and cohorts
+- [User cohorts](user/admin_area/user_cohorts.md) View user activity over time.
 - [Web terminals](administration/integration/terminal.md) Provide terminal access to environments from within GitLab.
 - [Welcome message](customization/welcome_message.md) Add a custom welcome message to the sign-in page.
 
