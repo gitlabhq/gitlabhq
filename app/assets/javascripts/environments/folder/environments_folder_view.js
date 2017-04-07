@@ -169,14 +169,11 @@ export default Vue.component('environment-folder-view', {
             :environments="state.environments"
             :can-create-deployment="canCreateDeploymentParsed"
             :can-read-environment="canReadEnvironmentParsed"
-<<<<<<< HEAD
             :play-icon-svg="playIconSvg"
             :terminal-icon-svg="terminalIconSvg"
             :commit-icon-svg="commitIconSvg"
             :toggleDeployBoard="toggleDeployBoard"
             :store="store"
-=======
->>>>>>> ce/master
             :service="service"/>
 
           <table-pagination v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"

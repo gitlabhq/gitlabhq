@@ -148,7 +148,6 @@ constraints(ProjectUrlConstrainer.new) do
         resource :release, only: [:edit, :update]
       end
 
-<<<<<<< HEAD
       ## EE-specific
       resources :path_locks, only: [:index, :destroy] do
         collection do
@@ -167,9 +166,6 @@ constraints(ProjectUrlConstrainer.new) do
           resources :push_access_levels, only: [:destroy]
         end
       end
-=======
-      resources :protected_branches, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
->>>>>>> ce/master
       resources :protected_tags, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
 
       resources :variables, only: [:index, :show, :update, :create, :destroy]

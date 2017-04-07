@@ -987,14 +987,11 @@ class Project < ActiveRecord::Base
     Gitlab::UrlSanitizer.new("#{web_url}.git", credentials: credentials).full_url
   end
 
-<<<<<<< HEAD
   # No need to have a Kerberos Web url. Kerberos URL will be used only to clone
   def kerberos_url_to_repo
     "#{Gitlab.config.build_gitlab_kerberos_url + Gitlab::Application.routes.url_helpers.namespace_project_path(self.namespace, self)}.git"
   end
 
-=======
->>>>>>> ce/master
   def user_can_push_to_empty_repo?(user)
     !ProtectedBranch.default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
   end

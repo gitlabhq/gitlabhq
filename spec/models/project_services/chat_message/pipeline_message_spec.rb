@@ -2,11 +2,6 @@ require 'spec_helper'
 
 describe ChatMessage::PipelineMessage do
   subject { described_class.new(args) }
-<<<<<<< HEAD
-
-  let(:user) { { name: 'hacker' } }
-=======
->>>>>>> ce/master
 
   let(:user) { { name: 'hacker' } }
   let(:args) do

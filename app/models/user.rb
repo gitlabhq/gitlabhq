@@ -90,15 +90,7 @@ class User < ActiveRecord::Base
   has_many :events,                   dependent: :destroy, foreign_key: :author_id
   has_many :subscriptions,            dependent: :destroy
   has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
-<<<<<<< HEAD
-  has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
-  has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
   has_many :oauth_applications,       class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
-  has_many :approvals,                dependent: :destroy
-  has_many :approvers,                dependent: :destroy
-=======
-  has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
->>>>>>> ce/master
   has_one  :abuse_report,             dependent: :destroy, foreign_key: :user_id
   has_many :reported_abuse_reports,   dependent: :destroy, foreign_key: :reporter_id, class_name: "AbuseReport"
   has_many :spam_logs,                dependent: :destroy
@@ -108,6 +100,9 @@ class User < ActiveRecord::Base
   has_many :notification_settings,    dependent: :destroy
   has_many :award_emoji,              dependent: :destroy
   has_many :path_locks,               dependent: :destroy
+
+  has_many :approvals, dependent: :destroy
+  has_many :approvers, dependent: :destroy
 
   # Protected Branch Access
   has_many :protected_branch_merge_access_levels, dependent: :destroy, class_name: ProtectedBranch::MergeAccessLevel

@@ -33,11 +33,8 @@
           tree_join(@commit.sha, @path)), class: 'btn btn-sm js-data-file-blob-permalink-url'
 
     .btn-group{ role: "group" }<
-<<<<<<< HEAD
       - if current_user
         = lock_file_link(html_options: {class: 'btn btn-sm path-lock'})
-=======
->>>>>>> ce/master
       = edit_blob_link if blob_text_viewable?(blob)
       - if current_user
         = replace_blob_link

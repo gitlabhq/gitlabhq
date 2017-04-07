@@ -27,19 +27,11 @@
             .scroll-container
               %ul.tokens-container.list-unstyled
                 %li.input-token
-<<<<<<< HEAD
-                  %input.form-control.filtered-search{ placeholder: 'Search or filter results...', data: { id: "filtered-search-#{type.to_s}", 'project-id' => @project.id, 'username-params' => @users.to_json(only: [:id, :username]), 'base-endpoint' => namespace_project_path(@project.namespace, @project) } }
-              = icon('filter')
-              %button.clear-search.hidden{ type: 'button' }
-                = icon('times')
-            #js-dropdown-hint.filtered-search-input-dropdown-menu.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
-=======
                   %input.form-control.filtered-search{ id: "filtered-search-#{type.to_s}", placeholder: 'Search or filter results...', data: { 'project-id' => @project.id, 'username-params' => @users.to_json(only: [:id, :username]), 'base-endpoint' => namespace_project_path(@project.namespace, @project) } }
               = icon('filter')
               %button.clear-search.hidden{ type: 'button' }
                 = icon('times')
             #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
->>>>>>> ce/master
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { action: 'submit' } }
                   %button.btn.btn-link
@@ -81,7 +73,7 @@
                         {{name}}
                       %span.dropdown-light-content
                         @{{username}}
-<<<<<<< HEAD
+
             - unless board && board.milestone_id
               #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'clock-o', hint: 'milestone', tag: '%milestone' } }
                 %ul{ data: { dropdown: true } }
@@ -99,24 +91,7 @@
                   %li.filter-dropdown-item
                     %button.btn.btn-link.js-data-value
                       {{title}}
-=======
-            #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'clock-o', hint: 'milestone', tag: '%milestone' } }
-              %ul{ data: { dropdown: true } }
-                %li.filter-dropdown-item{ data: { value: 'none' } }
-                  %button.btn.btn-link
-                    No Milestone
-                %li.filter-dropdown-item{ data: { value: 'upcoming' } }
-                  %button.btn.btn-link
-                    Upcoming
-                %li.filter-dropdown-item{ 'data-value' => 'started' }
-                  %button.btn.btn-link
-                    Started
-                %li.divider
-              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-                %li.filter-dropdown-item
-                  %button.btn.btn-link.js-data-value
-                    {{title}}
->>>>>>> ce/master
+
             #js-dropdown-label.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'tag', hint: 'label', tag: '~label', type: 'array' } }
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'none' } }
@@ -129,7 +104,6 @@
                     %span.dropdown-label-box{ style: 'background: {{color}}' }
                     %span.label-title.js-data-value
                       {{title}}
-<<<<<<< HEAD
 
             - if type == :issues || type == :boards
               #js-dropdown-weight.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'balance-scale', hint: 'weight', tag: 'weight' } }
@@ -146,8 +120,6 @@
                     %li.filter-dropdown-item{ 'data-value' => "#{weight}" }
                       %button.btn.btn-link= weight
 
-=======
->>>>>>> ce/master
         .filter-dropdown-container
           - if type == :boards
             - if can?(current_user, :admin_list, @project)

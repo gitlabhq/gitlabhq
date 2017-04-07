@@ -116,7 +116,6 @@ describe Projects::DestroyService, services: true do
                                      tags: ['tag'])
         project.container_repositories << container_repository
       end
-<<<<<<< HEAD
 
       context 'when image repository deletion succeeds' do
         it 'removes tags' do
@@ -132,23 +131,6 @@ describe Projects::DestroyService, services: true do
           expect_any_instance_of(ContainerRepository)
             .to receive(:delete_tags!).and_return(false)
 
-=======
-
-      context 'when image repository deletion succeeds' do
-        it 'removes tags' do
-          expect_any_instance_of(ContainerRepository)
-            .to receive(:delete_tags!).and_return(true)
-
-          destroy_project(project, user)
-        end
-      end
-
-      context 'when image repository deletion fails' do
-        it 'raises an exception' do
-          expect_any_instance_of(ContainerRepository)
-            .to receive(:delete_tags!).and_return(false)
-
->>>>>>> ce/master
           expect{ destroy_project(project, user) }
             .to raise_error(ActiveRecord::RecordNotDestroyed)
         end
@@ -160,7 +142,6 @@ describe Projects::DestroyService, services: true do
         stub_container_registry_tags(repository: project.full_path,
                                      tags: ['tag'])
       end
-<<<<<<< HEAD
 
       context 'when image repository tags deletion succeeds' do
         it 'removes tags' do
@@ -176,23 +157,6 @@ describe Projects::DestroyService, services: true do
           expect_any_instance_of(ContainerRepository)
             .to receive(:delete_tags!).and_return(false)
 
-=======
-
-      context 'when image repository tags deletion succeeds' do
-        it 'removes tags' do
-          expect_any_instance_of(ContainerRepository)
-            .to receive(:delete_tags!).and_return(true)
-
-          destroy_project(project, user)
-        end
-      end
-
-      context 'when image repository tags deletion fails' do
-        it 'raises an exception' do
-          expect_any_instance_of(ContainerRepository)
-            .to receive(:delete_tags!).and_return(false)
-
->>>>>>> ce/master
           expect { destroy_project(project, user) }
             .to raise_error(Projects::DestroyService::DestroyError)
         end

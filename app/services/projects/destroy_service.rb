@@ -34,17 +34,6 @@ module Projects
 
         unless remove_legacy_registry_tags
           raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
-<<<<<<< HEAD
-=======
-        end
-
-        unless remove_repository(repo_path)
-          raise_error('Failed to remove project repository. Please try again or contact administrator.')
-        end
-
-        unless remove_repository(wiki_path)
-          raise_error('Failed to remove wiki repository. Please try again or contact administrator.')
->>>>>>> ce/master
         end
       end
 
@@ -79,11 +68,11 @@ module Projects
 
     def trash_repositories!
       unless remove_repository(repo_path)
-        raise_error('Failed to remove project repository. Please try again or contact administrator')
+        raise_error('Failed to remove project repository. Please try again or contact administrator.')
       end
 
       unless remove_repository(wiki_path)
-        raise_error('Failed to remove wiki repository. Please try again or contact administrator')
+        raise_error('Failed to remove wiki repository. Please try again or contact administrator.')
       end
     end
 
@@ -114,15 +103,12 @@ module Projects
       ContainerRepository.build_root_repository(project).tap do |repository|
         return repository.has_tags? ? repository.delete_tags! : true
       end
-<<<<<<< HEAD
     end
 
     def remove_tracking_entries!
       return unless Gitlab::Geo.secondary?
 
       Geo::ProjectRegistry.where(project_id: project.id).delete_all
-=======
->>>>>>> ce/master
     end
 
     def raise_error(message)
