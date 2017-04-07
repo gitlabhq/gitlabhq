@@ -26,7 +26,7 @@ for all signed in users.
 
 > [Introduced][ee-557] in GitLab Enterprise Edition 8.10. More statistics
 [were added][ee-735] in GitLab Enterprise Edition
-8.12. [Introduced to GitLab Community Edition][ce-23361] in 9.1.
+8.12. [Moved to GitLab Community Edition][ce-23361] in 9.1.
 
 GitLab Inc. can collect non-sensitive information about how GitLab users
 use their GitLab instance upon the activation of a ping feature
