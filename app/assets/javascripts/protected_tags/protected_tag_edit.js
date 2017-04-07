@@ -43,7 +43,7 @@ export default class ProtectedTagEdit {
         },
       },
       error() {
-        new Flash('Failed to update tag!');
+        new Flash('Failed to update tag!', null, $('.js-protected-tags-list'));
       },
     }).always(() => {
       this.$allowedToCreateDropdownButton.enable();
