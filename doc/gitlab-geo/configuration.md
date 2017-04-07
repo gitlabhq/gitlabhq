@@ -250,6 +250,8 @@ Currently, this is what is synced:
 * Git repositories
 * Wikis
 * LFS objects
+* Issue, merge request, and comment attachments
+* User, group, and project avatars
 
 You can monitor the status of the syncing process on a secondary node
 by visiting the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`)
