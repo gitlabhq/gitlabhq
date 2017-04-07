@@ -89,6 +89,9 @@ pipelines:
 - statuses
 - builds
 - trigger_requests
+- auto_canceled_by
+- auto_canceled_pipelines
+- auto_canceled_jobs
 - pending_builds
 - retryable_builds
 - cancelable_statuses
@@ -98,6 +101,7 @@ statuses:
 - project
 - pipeline
 - user
+- auto_canceled_by
 variables:
 - project
 triggers:

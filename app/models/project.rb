@@ -262,6 +262,8 @@ class Project < ActiveRecord::Base
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
 
+  enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
+
   # project features may be "disabled", "internal" or "enabled". If "internal",
   # they are only available to team members. This scope returns projects where
   # the feature is either enabled, or internal with permission for the user.

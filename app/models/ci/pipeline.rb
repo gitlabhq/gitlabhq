@@ -4,9 +4,14 @@ module Ci
     include HasStatus
     include Importable
     include AfterCommitQueue
+    include Presentable
 
     belongs_to :project
     belongs_to :user
+    belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
+
+    has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
+    has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
 
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, foreign_key: :commit_id
@@ -69,6 +74,10 @@ module Ci
       before_transition any => [:success, :failed, :canceled] do |pipeline|
         pipeline.finished_at = Time.now
         pipeline.update_duration
+      end
+
+      before_transition canceled: any - [:canceled] do |pipeline|
+        pipeline.auto_canceled_by = nil
       end
 
       after_transition [:created, :pending] => :running do |pipeline|
@@ -216,9 +225,24 @@ module Ci
       cancelable_statuses.any?
     end
 
+    def auto_canceled?
+      canceled? && auto_canceled_by_id?
+    end
+
     def cancel_running
       Gitlab::OptimisticLocking.retry_lock(cancelable_statuses) do |cancelable|
-        cancelable.find_each(&:cancel)
+        cancelable.find_each do |job|
+          yield(job) if block_given?
+          job.cancel
+        end
+      end
+    end
+
+    def auto_cancel_running(pipeline)
+      update(auto_canceled_by: pipeline)
+
+      cancel_running do |job|
+        job.auto_canceled_by = pipeline
       end
     end
 

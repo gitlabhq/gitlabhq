@@ -16,6 +16,7 @@ describe CommitStatus, :models do
   it { is_expected.to belong_to(:pipeline) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:project) }
+  it { is_expected.to belong_to(:auto_canceled_by) }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_inclusion_of(:status).in_array(%w(pending running failed success canceled)) }
@@ -97,6 +98,32 @@ describe CommitStatus, :models do
         before { commit_status.status = state }
 
         it { is_expected.to be_falsey }
+      end
+    end
+  end
+
+  describe '#auto_canceled?' do
+    subject { commit_status.auto_canceled? }
+
+    context 'when it is canceled' do
+      before do
+        commit_status.update(status: 'canceled')
+      end
+
+      context 'when there is auto_canceled_by' do
+        before do
+          commit_status.update(auto_canceled_by: create(:ci_empty_pipeline))
+        end
+
+        it 'is auto canceled' do
+          is_expected.to be_truthy
+        end
+      end
+
+      context 'when there is no auto_canceled_by' do
+        it 'is not auto canceled' do
+          is_expected.to be_falsey
+        end
       end
     end
   end
