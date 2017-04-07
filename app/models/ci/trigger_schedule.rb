@@ -10,7 +10,7 @@ module Ci
 
     delegate :ref, to: :trigger, allow_nil: true
 
-    validates_presence_of :trigger
+    validates :trigger, presence: { unless: :importing? }
     validates :cron, cron: true, presence: { unless: :importing? }
     validates :cron_timezone, cron_timezone: true, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
