@@ -99,6 +99,10 @@ class License < ActiveRecord::Base
     restricted_attr(:previous_user_count)
   end
 
+  def plan
+    restricted_attr(:plan)
+  end
+
   def current_active_users_count
     @current_active_users_count ||= User.active.count
   end
