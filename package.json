@@ -65,6 +65,6 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.2",
-    "webpack-dev-server": "^2.3.0"
+    "webpack-dev-server": "^2.4.2"
   }
 }
