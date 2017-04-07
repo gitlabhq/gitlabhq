@@ -17,6 +17,12 @@ module Ci
     has_many :builds, foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
 
+    has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :retryable_builds, -> { latest.failed_or_canceled }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :cancelable_statuses, -> { cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus'
+    has_many :manual_actions, -> { latest.manual_actions }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :artifacts, -> { latest.with_artifacts_not_expired }, foreign_key: :commit_id, class_name: 'Ci::Build'
+
     delegate :id, to: :project, prefix: true
 
     validates :sha, presence: { unless: :importing? }
@@ -169,10 +175,6 @@ module Ci
       end
     end
 
-    def artifacts
-      builds.latest.with_artifacts_not_expired.includes(project: [:namespace])
-    end
-
     def valid_commit_sha
       if self.sha == Gitlab::Git::BLANK_SHA
         self.errors.add(:sha, " cant be 00000000 (branch removal)")
@@ -209,20 +211,16 @@ module Ci
       !tag?
     end
 
-    def manual_actions
-      builds.latest.manual_actions.includes(project: [:namespace])
-    end
-
     def stuck?
-      builds.pending.includes(:project).any?(&:stuck?)
+      pending_builds.any?(&:stuck?)
     end
 
     def retryable?
-      builds.latest.failed_or_canceled.any?(&:retryable?)
+      retryable_builds.any?
     end
 
     def cancelable?
-      statuses.cancelable.any?
+      cancelable_statuses.any?
     end
 
     def auto_canceled?

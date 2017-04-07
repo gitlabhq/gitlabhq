@@ -102,7 +102,7 @@ module BlobHelper
     if Gitlab::MarkupHelper.previewable?(filename)
       'Preview'
     else
-      'Preview Changes'
+      'Preview changes'
     end
   end
 
@@ -210,13 +210,13 @@ module BlobHelper
   end
 
   def copy_file_path_button(file_path)
-    clipboard_button(clipboard_text: file_path, class: 'btn-clipboard btn-transparent prepend-left-5', title: 'Copy file path to clipboard')
+    clipboard_button(text: file_path, gfm: "`#{file_path}`", class: 'btn-clipboard btn-transparent prepend-left-5', title: 'Copy file path to clipboard')
   end
 
   def copy_blob_content_button(blob)
     return if markup?(blob.name)
 
-    clipboard_button(clipboard_target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm", title: "Copy content to clipboard")
+    clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm", title: "Copy content to clipboard")
   end
 
   def open_raw_file_button(path)

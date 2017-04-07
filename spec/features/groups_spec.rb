@@ -153,7 +153,7 @@ feature 'Group', feature: true do
     end
 
     it 'removes group' do
-      click_link 'Remove Group'
+      click_link 'Remove group'
 
       expect(page).to have_content "scheduled for deletion"
     end

@@ -92,6 +92,11 @@ pipelines:
 - auto_canceled_by
 - auto_canceled_pipelines
 - auto_canceled_jobs
+- pending_builds
+- retryable_builds
+- cancelable_statuses
+- manual_actions
+- artifacts
 statuses:
 - project
 - pipeline
@@ -153,6 +158,7 @@ project:
 - asana_service
 - gemnasium_service
 - slack_service
+- microsoft_teams_service
 - mattermost_service
 - buildkite_service
 - bamboo_service
@@ -202,6 +208,7 @@ project:
 - builds
 - runner_projects
 - runners
+- active_runners
 - variables
 - triggers
 - trigger_schedules

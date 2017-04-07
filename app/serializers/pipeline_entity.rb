@@ -69,13 +69,13 @@ class PipelineEntity < Grape::Entity
   alias_method :pipeline, :object
 
   def can_retry?
-    pipeline.retryable? &&
-      can?(request.user, :update_pipeline, pipeline)
+    can?(request.user, :update_pipeline, pipeline) &&
+      pipeline.retryable?
   end
 
   def can_cancel?
-    pipeline.cancelable? &&
-      can?(request.user, :update_pipeline, pipeline)
+    can?(request.user, :update_pipeline, pipeline) &&
+      pipeline.cancelable?
   end
 
   def detailed_status

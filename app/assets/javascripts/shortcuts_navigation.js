@@ -1,6 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, max-len, no-var, one-var, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, prefer-arrow-callback, consistent-return, no-return-assign */
 /* global Mousetrap */
 /* global Shortcuts */
+import findAndFollowLink from './shortcuts_dashboard_navigation';
 
 require('./shortcuts');
 
@@ -13,58 +14,22 @@ require('./shortcuts');
 
     function ShortcutsNavigation() {
       ShortcutsNavigation.__super__.constructor.call(this);
-      Mousetrap.bind('g p', function() {
-        return ShortcutsNavigation.findAndFollowLink('.shortcuts-project');
-      });
-      Mousetrap.bind('g e', function() {
-        return ShortcutsNavigation.findAndFollowLink('.shortcuts-project-activity');
-      });
-      Mousetrap.bind('g f', function() {
-        return ShortcutsNavigation.findAndFollowLink('.shortcuts-tree');
-      });
-      Mousetrap.bind('g c', function() {
-        return ShortcutsNavigation.findAndFollowLink('.shortcuts-commits');
-      });
-      Mousetrap.bind('g b', function() {
-        return ShortcutsNavigation.findAndFollowLink('.shortcuts-builds');
-      });
-      Mousetrap.bind('g n', function() {
-        return ShortcutsNavigation.findAndFollowLink('.shortcuts-network');
-      });
-      Mousetrap.bind('g g', function() {
-        return ShortcutsNavigation.findAndFollowLink('.shortcuts-repository-charts');
-      });
-      Mousetrap.bind('g i', function() {
-        return ShortcutsNavigation.findAndFollowLink('.shortcuts-issues');
-      });
-      Mousetrap.bind('g l', function() {
-        ShortcutsNavigation.findAndFollowLink('.shortcuts-issue-boards');
-      });
-      Mousetrap.bind('g m', function() {
-        return ShortcutsNavigation.findAndFollowLink('.shortcuts-merge_requests');
-      });
-      Mousetrap.bind('g t', function() {
-        return ShortcutsNavigation.findAndFollowLink('.shortcuts-todos');
-      });
-      Mousetrap.bind('g w', function() {
-        return ShortcutsNavigation.findAndFollowLink('.shortcuts-wiki');
-      });
-      Mousetrap.bind('g s', function() {
-        return ShortcutsNavigation.findAndFollowLink('.shortcuts-snippets');
-      });
-      Mousetrap.bind('i', function() {
-        return ShortcutsNavigation.findAndFollowLink('.shortcuts-new-issue');
-      });
+      Mousetrap.bind('g p', () => findAndFollowLink('.shortcuts-project'));
+      Mousetrap.bind('g e', () => findAndFollowLink('.shortcuts-project-activity'));
+      Mousetrap.bind('g f', () => findAndFollowLink('.shortcuts-tree'));
+      Mousetrap.bind('g c', () => findAndFollowLink('.shortcuts-commits'));
+      Mousetrap.bind('g j', () => findAndFollowLink('.shortcuts-builds'));
+      Mousetrap.bind('g n', () => findAndFollowLink('.shortcuts-network'));
+      Mousetrap.bind('g d', () => findAndFollowLink('.shortcuts-repository-charts'));
+      Mousetrap.bind('g i', () => findAndFollowLink('.shortcuts-issues'));
+      Mousetrap.bind('g b', () => findAndFollowLink('.shortcuts-issue-boards'));
+      Mousetrap.bind('g m', () => findAndFollowLink('.shortcuts-merge_requests'));
+      Mousetrap.bind('g t', () => findAndFollowLink('.shortcuts-todos'));
+      Mousetrap.bind('g w', () => findAndFollowLink('.shortcuts-wiki'));
+      Mousetrap.bind('g s', () => findAndFollowLink('.shortcuts-snippets'));
+      Mousetrap.bind('i', () => findAndFollowLink('.shortcuts-new-issue'));
       this.enabledHelp.push('.hidden-shortcut.project');
     }
-
-    ShortcutsNavigation.findAndFollowLink = function(selector) {
-      var link;
-      link = $(selector).attr('href');
-      if (link) {
-        return window.location = link;
-      }
-    };
 
     return ShortcutsNavigation;
   })(Shortcuts);
