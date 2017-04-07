@@ -42,7 +42,8 @@ require('vendor/jquery.scrollTo');
     });
 
     afterEach(function () {
-      this.class.destroy();
+      this.class.unbindEvents();
+      this.class.destroyPipelinesView();
     });
 
     describe('#activateTab', function () {
@@ -68,6 +69,7 @@ require('vendor/jquery.scrollTo');
         expect($('#diffs')).toHaveClass('active');
       });
     });
+
     describe('#opensInNewTab', function () {
       var tabUrl;
       var windowTarget = '_blank';
@@ -119,6 +121,7 @@ require('vendor/jquery.scrollTo');
           stopImmediatePropagation: function () {}
         });
       });
+
       it('opens page tab in a new browser tab with Cmd+Click - Mac', function () {
         spyOn(window, 'open').and.callFake(function (url, name) {
           expect(url).toEqual(tabUrl);
@@ -132,6 +135,7 @@ require('vendor/jquery.scrollTo');
           stopImmediatePropagation: function () {}
         });
       });
+
       it('opens page tab in a new browser tab with Middle-click - Mac/PC', function () {
         spyOn(window, 'open').and.callFake(function (url, name) {
           expect(url).toEqual(tabUrl);
@@ -152,6 +156,7 @@ require('vendor/jquery.scrollTo');
         spyOn($, 'ajax').and.callFake(function () {});
         this.subject = this.class.setCurrentAction;
       });
+
       it('changes from commits', function () {
         setLocation({
           pathname: '/foo/bar/merge_requests/1/commits'
@@ -159,13 +164,16 @@ require('vendor/jquery.scrollTo');
         expect(this.subject('notes')).toBe('/foo/bar/merge_requests/1');
         expect(this.subject('diffs')).toBe('/foo/bar/merge_requests/1/diffs');
       });
+
       it('changes from diffs', function () {
         setLocation({
           pathname: '/foo/bar/merge_requests/1/diffs'
         });
+
         expect(this.subject('notes')).toBe('/foo/bar/merge_requests/1');
         expect(this.subject('commits')).toBe('/foo/bar/merge_requests/1/commits');
       });
+
       it('changes from diffs.html', function () {
         setLocation({
           pathname: '/foo/bar/merge_requests/1/diffs.html'
@@ -173,6 +181,7 @@ require('vendor/jquery.scrollTo');
         expect(this.subject('notes')).toBe('/foo/bar/merge_requests/1');
         expect(this.subject('commits')).toBe('/foo/bar/merge_requests/1/commits');
       });
+
       it('changes from notes', function () {
         setLocation({
           pathname: '/foo/bar/merge_requests/1'
@@ -180,6 +189,7 @@ require('vendor/jquery.scrollTo');
         expect(this.subject('diffs')).toBe('/foo/bar/merge_requests/1/diffs');
         expect(this.subject('commits')).toBe('/foo/bar/merge_requests/1/commits');
       });
+
       it('includes search parameters and hash string', function () {
         setLocation({
           pathname: '/foo/bar/merge_requests/1/diffs',
@@ -188,6 +198,7 @@ require('vendor/jquery.scrollTo');
         });
         expect(this.subject('show')).toBe('/foo/bar/merge_requests/1?view=parallel#L15-35');
       });
+
       it('replaces the current history state', function () {
         var newState;
         setLocation({
@@ -200,6 +211,7 @@ require('vendor/jquery.scrollTo');
           }, document.title, newState);
         }
       });
+
       it('treats "show" like "notes"', function () {
         setLocation({
           pathname: '/foo/bar/merge_requests/1/commits'
@@ -210,6 +222,7 @@ require('vendor/jquery.scrollTo');
 
     describe('#tabShown', () => {
       beforeEach(function () {
+        spyOn($, 'ajax').and.callFake(function () {});
         loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
       });
 

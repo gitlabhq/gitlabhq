@@ -88,6 +88,8 @@ module Ci
 
         pipeline.run_after_commit do
           PipelineHooksWorker.perform_async(id)
+          Ci::ExpirePipelineCacheService.new(project, nil)
+            .execute(pipeline)
         end
       end
 
