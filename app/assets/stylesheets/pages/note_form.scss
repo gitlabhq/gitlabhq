@@ -312,11 +312,19 @@
 }
 
 .comment-type-dropdown {
-  .dropdown-toggle .fa {
-    color: $white-light;
-    padding-right: 2px;
-    margin-top: 2px;
-    pointer-events: none;
+  .comment-btn {
+    width: auto;
+  }
+
+  .dropdown-toggle {
+    float: right;
+
+    .toggle-icon {
+      color: $white-light;
+      padding-right: 2px;
+      margin-top: 2px;
+      pointer-events: none;
+    }
   }
 
   .dropdown-menu {
@@ -374,5 +382,22 @@
     margin: 0 8px;
     padding: 0;
     border-top: $gray-darkest;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    display: flex;
+    width: 100%;
+
+    .comment-btn {
+      flex-grow: 1;
+      flex-shrink: 0;
+      width: auto;
+    }
+
+    .dropdown-toggle {
+      flex-grow: 0;
+      flex-shrink: 1;
+      width: auto;
+    }
   }
 }

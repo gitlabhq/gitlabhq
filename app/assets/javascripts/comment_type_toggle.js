@@ -1,5 +1,5 @@
-import DropLab from '~/droplab/drop_lab';
-import InputSetter from '~/droplab/plugins/input_setter';
+import DropLab from './droplab/drop_lab';
+import InputSetter from './droplab/plugins/input_setter';
 
 class CommentTypeToggle {
   constructor(opts = {}) {

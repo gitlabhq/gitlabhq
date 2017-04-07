@@ -791,7 +791,7 @@ require('./task_list');
 
       if (typeof gl.diffNotesCompileComponents !== 'undefined') {
         var $commentBtn = form.find('comment-and-resolve-btn');
-        $commentBtn.attr(':discussion-id', "'" + discussionID + "'");
+        $commentBtn.attr(':discussion-id', `'${discussionID}'`);
 
         gl.diffNotesCompileComponents();
       }
