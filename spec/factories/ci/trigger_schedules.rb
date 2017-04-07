@@ -3,9 +3,11 @@ FactoryGirl.define do
     trigger factory: :ci_trigger_for_trigger_schedule
     cron '0 1 * * *'
     cron_timezone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE
+    ref 'master'
+    active true
 
     after(:build) do |trigger_schedule, evaluator|
-      trigger_schedule.update!(project: trigger_schedule.trigger.project)
+      trigger_schedule.project ||= trigger_schedule.trigger.project
     end
 
     trait :nightly do
