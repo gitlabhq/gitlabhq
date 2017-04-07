@@ -61,7 +61,7 @@ module Ci
 
           update_runner_info
 
-          build.update_attributes(trace: params[:trace]) if params[:trace]
+          build.trace.set(params[:trace]) if params[:trace]
 
           Gitlab::Metrics.add_event(:update_build,
                                     project: build.project.path_with_namespace)
@@ -92,16 +92,14 @@ module Ci
           content_range = request.headers['Content-Range']
           content_range = content_range.split('-')
 
-          current_length = build.trace_length
-          unless current_length == content_range[0].to_i
-            return error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{current_length}" })
+          stream_size = build.trace.append(request.body.read, content_range[0].to_i)
+          if stream_size < 0
+            return error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{-stream_size}" })
           end
-
-          build.append_trace(request.body.read, content_range[0].to_i)
 
           status 202
           header 'Build-Status', build.status
-          header 'Range', "0-#{build.trace_length}"
+          header 'Range', "0-#{stream_size}"
         end
 
         # Authorize artifacts uploading for build - Runners only
