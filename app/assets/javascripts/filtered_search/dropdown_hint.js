@@ -1,13 +1,13 @@
-require('./filtered_search_dropdown');
+import Filter from '~/droplab/plugins/filter';
 
-/* global droplabFilter */
+require('./filtered_search_dropdown');
 
 (() => {
   class DropdownHint extends gl.FilteredSearchDropdown {
     constructor(droplab, dropdown, input, filter) {
       super(droplab, dropdown, input, filter);
       this.config = {
-        droplabFilter: {
+        Filter: {
           template: 'hint',
           filterFunction: gl.DropdownUtils.filterHint.bind(null, input),
         },
@@ -69,12 +69,12 @@ require('./filtered_search_dropdown');
         }
       });
 
-      this.droplab.changeHookList(this.hookId, this.dropdown, [droplabFilter], this.config);
+      this.droplab.changeHookList(this.hookId, this.dropdown, [Filter], this.config);
       this.droplab.setData(this.hookId, dropdownData);
     }
 
     init() {
-      this.droplab.addHook(this.input, this.dropdown, [droplabFilter], this.config).init();
+      this.droplab.addHook(this.input, this.dropdown, [Filter], this.config).init();
     }
   }
 

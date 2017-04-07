@@ -65,7 +65,7 @@ describe 'Dropdown milestone', :feature, :js do
     it 'should load all the milestones when opened' do
       filtered_search.set('milestone:')
 
-      expect(dropdown_milestone_size).to be > 0
+      expect(filter_dropdown).to have_selector('.filter-dropdown .filter-dropdown-item', count: 6)
     end
   end
 
@@ -84,37 +84,37 @@ describe 'Dropdown milestone', :feature, :js do
     it 'filters by name' do
       filtered_search.send_keys('v1')
 
-      expect(dropdown_milestone_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown .filter-dropdown-item', count: 1)
     end
 
     it 'filters by case insensitive name' do
       filtered_search.send_keys('V1')
 
-      expect(dropdown_milestone_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown .filter-dropdown-item', count: 1)
     end
 
     it 'filters by name with symbol' do
       filtered_search.send_keys('%v1')
 
-      expect(dropdown_milestone_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown .filter-dropdown-item', count: 1)
     end
 
     it 'filters by case insensitive name with symbol' do
       filtered_search.send_keys('%V1')
 
-      expect(dropdown_milestone_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown .filter-dropdown-item', count: 1)
     end
 
     it 'filters by special characters' do
       filtered_search.send_keys('(+')
 
-      expect(dropdown_milestone_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown .filter-dropdown-item', count: 1)
     end
 
     it 'filters by special characters with symbol' do
       filtered_search.send_keys('%(+')
 
-      expect(dropdown_milestone_size).to eq(1)
+      expect(filter_dropdown).to have_selector('.filter-dropdown .filter-dropdown-item', count: 1)
     end
   end
 
