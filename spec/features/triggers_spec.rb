@@ -125,6 +125,14 @@ feature 'Triggers', feature: true, js: true do
   describe 'show triggers workflow' do
     scenario 'contains trigger description placeholder' do
       expect(page.find('#trigger_description')['placeholder']).to eq 'Trigger description'
+      expect(page.find('#trigger_trigger_schedule_attributes_cron')['placeholder']).to eq '0 1 * * *'
+      expect(page.find('#trigger_trigger_schedule_attributes_cron_timezone')['placeholder']).to eq 'UTC'
+      expect(page.find('#trigger_ref')['placeholder']).to eq 'master'
+    end
+
+    scenario 'show checkbox for registration of scheduled trigger and checked off defaultly' do
+      expect(page.find('#trigger_trigger_schedule_attributes__destroy')['type']).to eq 'checkbox'
+      expect(page.find('#trigger_trigger_schedule_attributes__destroy')['value']).to eq '0'
     end
 
     scenario 'show "legacy" badge for legacy trigger' do
