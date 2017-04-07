@@ -102,8 +102,8 @@ class Note < ActiveRecord::Base
       ActiveModel::Name.new(self, nil, 'note')
     end
 
-    def discussions(noteable = nil)
-      Discussion.build_collection(fresh, noteable)
+    def discussions(context_noteable = nil)
+      Discussion.build_collection(fresh, context_noteable)
     end
 
     def find_discussion(discussion_id)

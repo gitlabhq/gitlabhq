@@ -4,7 +4,7 @@
 class Discussion
   include ResolvableDiscussion
 
-  attr_reader :notes, :noteable
+  attr_reader :notes, :context_noteable
 
   delegate  :created_at,
             :project,
@@ -16,12 +16,12 @@ class Discussion
 
             to: :first_note
 
-  def self.build(notes, noteable = nil)
-    notes.first.discussion_class(noteable).new(notes, noteable)
+  def self.build(notes, context_noteable = nil)
+    notes.first.discussion_class(context_noteable).new(notes, context_noteable)
   end
 
-  def self.build_collection(notes, noteable = nil)
-    notes.group_by { |n| n.discussion_id(noteable) }.values.map { |notes| build(notes, noteable) }
+  def self.build_collection(notes, context_noteable = nil)
+    notes.group_by { |n| n.discussion_id(context_noteable) }.values.map { |notes| build(notes, context_noteable) }
   end
 
   # Returns an alphanumeric discussion ID based on `build_discussion_id`
@@ -60,14 +60,14 @@ class Discussion
     DiscussionNote
   end
 
-  def initialize(notes, noteable = nil)
+  def initialize(notes, context_noteable = nil)
     @notes = notes
-    @noteable = noteable
+    @context_noteable = context_noteable
   end
 
   def ==(other)
     other.class == self.class &&
-      other.noteable == self.noteable &&
+      other.context_noteable == self.context_noteable &&
       other.id == self.id &&
       other.notes == self.notes
   end
@@ -81,7 +81,7 @@ class Discussion
   end
 
   def id
-    first_note.discussion_id(noteable)
+    first_note.discussion_id(context_noteable)
   end
 
   alias_method :to_param, :id
