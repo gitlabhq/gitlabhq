@@ -149,6 +149,7 @@ export default {
           const parsedAction = {
             name: gl.text.humanize(action.name),
             play_path: action.play_path,
+            playable: action.playable,
           };
           return parsedAction;
         });

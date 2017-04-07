@@ -129,6 +129,9 @@ push_access_levels:
 - group
 create_access_levels:
 - protected_tag
+container_repositories:
+- project
+- name
 project:
 - taggings
 - base_tags
@@ -169,6 +172,8 @@ project:
 - external_wiki_service
 - kubernetes_service
 - mock_ci_service
+- mock_deployment_service
+- mock_monitoring_service
 - forked_project_link
 - forked_from_project
 - forked_project_links
@@ -225,6 +230,7 @@ project:
 - approver_groups
 - route
 - statistics
+- container_repositories
 - uploads
 award_emoji:
 - awardable

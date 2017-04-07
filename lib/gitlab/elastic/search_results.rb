@@ -95,7 +95,7 @@ module Gitlab
 
         data = content.lines[from..to]
 
-        OpenStruct.new(
+        ::Gitlab::SearchResults::FoundBlob.new(
           filename: filename,
           basename: basename,
           ref: ref,

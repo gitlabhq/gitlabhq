@@ -55,6 +55,7 @@ The following Elasticsearch settings are available:
 | Parameter                           | Description |
 | ---------                           | ----------- |
 | `Elasticsearch indexing`            | Enables/disables Elasticsearch indexing. You may want to enable indexing but disable search in order to give the index time to be fully completed, for example. Also keep in mind that this option doesn't have any impact on existing data, this only enables/disables background indexer which tracks data changes. So by enabling this you will not get your existing data indexed, use special rake task for that as explained in [Add GitLab's data to the Elasticsearch index](#add-gitlabs-data-to-the-elasticsearch-index). |
+| `Use experimental repository indexer` | Perform repository indexing using [GitLab Elasticsearch Indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer). |
 | `Search with Elasticsearch enabled` | Enables/disables using Elasticsearch in search. |
 | `URL`                              | The URL to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://host1, https://host2:9200"). |
 | `Using AWS hosted Elasticsearch with IAM credentials` | Sign your Elasticsearch requests using [AWS IAM authorization][aws-iam]. The access key must be allowed to perform `es:*` actions. |
@@ -101,7 +102,7 @@ Indexing is 65.55% complete (6555/10000 projects)
 By default, one job is created for every 300 projects. For large numbers of
 projects, you may wish to increase the batch size, by setting the `BATCH`
 environment variable. You may also wish to consider [throttling](../administration/operations/sidekiq_job_throttling.md)
-the `elastic_batch_project_indexer` queue , as this step can be I/O-intensive.
+the `elastic_batch_project_indexer` queue, as this step can be I/O-intensive.
 
 You can also run the initial indexing synchronously - this is most useful if
 you have a small number of projects, or need finer-grained control over indexing
@@ -121,16 +122,16 @@ If you want to run several tasks in parallel (probably in separate terminal
 windows) you can provide the `ID_FROM` and `ID_TO` parameters:
 
 ```
-ID_FROM=1001 ID_TO=2000 sudo gitlab-rake gitlab:elastic:index_repositories
+sudo gitlab-rake gitlab:elastic:index_repositories ID_FROM=1001 ID_TO=2000
 ```
 
 Where `ID_FROM` and `ID_TO` are project IDs. Both parameters are optional.
 As an example, if you have 3,000 repositories and you want to run three separate indexing tasks, you might run:
 
 ```
-ID_TO=1000 sudo gitlab-rake gitlab:elastic:index_repositories
-ID_FROM=1001 ID_TO=2000 sudo gitlab-rake gitlab:elastic:index_repositories
-ID_FROM=2001 sudo gitlab-rake gitlab:elastic:index_repositories
+sudo gitlab-rake gitlab:elastic:index_repositories ID_TO=1000
+sudo gitlab-rake gitlab:elastic:index_repositories ID_FROM=1001 ID_TO=2000
+sudo gitlab-rake gitlab:elastic:index_repositories ID_FROM=2001
 ```
 
 Sometimes your repository index process `gitlab:elastic:index_repositories` or
@@ -144,7 +145,7 @@ it will check every project repository again to make sure that every commit in
 that repository is indexed, it can be useful in case if your index is outdated:
 
 ```
-UPDATE_INDEX=true ID_TO=1000 sudo gitlab-rake gitlab:elastic:index_repositories
+sudo gitlab-rake gitlab:elastic:index_repositories UPDATE_INDEX=true ID_TO=1000
 ```
 
 You can also use the `gitlab:elastic:clear_index_status` Rake task to force the

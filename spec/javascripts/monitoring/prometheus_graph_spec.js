@@ -37,9 +37,11 @@ describe('PrometheusGraph', () => {
 
   it('transforms the data', () => {
     this.prometheusGraph.init(prometheusMockData.metrics);
-    expect(this.prometheusGraph.data).toBeDefined();
-    expect(this.prometheusGraph.data.cpu_values.length).toBe(121);
-    expect(this.prometheusGraph.data.memory_values.length).toBe(121);
+    Object.keys(this.prometheusGraph.graphSpecificProperties, (key) => {
+      const graphProps = this.prometheusGraph.graphSpecificProperties[key];
+      expect(graphProps.data).toBeDefined();
+      expect(graphProps.data.length).toBe(121);
+    });
   });
 
   it('creates two graphs', () => {
@@ -68,7 +70,7 @@ describe('PrometheusGraph', () => {
       expect($prometheusGraphContents.find('.label-y-axis-line')).toBeDefined();
       expect($prometheusGraphContents.find('.label-axis-text')).toBeDefined();
       expect($prometheusGraphContents.find('.rect-axis-text')).toBeDefined();
-      expect($axisLabelContainer.find('rect').length).toBe(2);
+      expect($axisLabelContainer.find('rect').length).toBe(3);
       expect($axisLabelContainer.find('text').length).toBe(4);
     });
   });

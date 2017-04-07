@@ -1,3 +1,5 @@
+- commit_message = @page.persisted? ? "Update #{@page.title}" : "Create #{@page.title}"
+
 = form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post, html: { class: 'form-horizontal wiki-form common-note-form prepend-top-default js-quick-submit' } do |f|
   = form_errors(@page)
 
@@ -28,7 +30,7 @@
 
   .form-group
     = f.label :commit_message, class: 'control-label'
-    .col-sm-10= f.text_field :message, class: 'form-control', rows: 18
+    .col-sm-10= f.text_field :message, class: 'form-control', rows: 18, value: commit_message
 
   .form-actions
     - if @page && @page.persisted?

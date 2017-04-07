@@ -45,6 +45,7 @@ import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
+import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
 
@@ -91,6 +92,12 @@ const ShortcutsBlob = require('./shortcuts_blob');
           skipResetBindings: true,
           fileBlobPermalinkUrl,
         });
+
+        new BlobForkSuggestion(
+          document.querySelector('.js-edit-blob-link-fork-toggler'),
+          document.querySelector('.js-cancel-fork-suggestion'),
+          document.querySelector('.js-file-fork-suggestion-section'),
+        );
       }
 
       switch (page) {
@@ -232,9 +239,11 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:pipelines:builds':
         case 'projects:pipelines:show':
           const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
+          const pipelineStatusUrl = `${document.querySelector('.js-pipeline-tab-link a').getAttribute('href')}/status.json`;
 
           new gl.Pipelines({
             initTabs: true,
+            pipelineStatusUrl,
             tabsOptions: {
               action: controllerAction,
               defaultAction: 'pipelines',

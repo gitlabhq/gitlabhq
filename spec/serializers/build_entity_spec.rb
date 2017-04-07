@@ -24,6 +24,10 @@ describe BuildEntity do
     expect(subject).not_to include(/variables/)
   end
 
+  it 'contains whether it is playable' do
+    expect(subject[:playable]).to eq build.playable?
+  end
+
   it 'contains timestamps' do
     expect(subject).to include(:created_at, :updated_at)
   end

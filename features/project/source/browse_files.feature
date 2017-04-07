@@ -158,6 +158,8 @@ Feature: Project Source Browse Files
     Given I don't have write access
     And I click on ".gitignore" file in repo
     And I click button "Edit"
+    Then I should see a Fork/Cancel combo
+    And I click button "Fork"
     Then I should see a notice about a new fork having been created
     And I can edit code
 
@@ -180,6 +182,8 @@ Feature: Project Source Browse Files
     Given I don't have write access
     And I click on ".gitignore" file in repo
     And I click button "Edit"
+    Then I should see a Fork/Cancel combo
+    And I click button "Fork"
     And I edit code
     And I fill the commit message
     And I click on "Commit Changes"
