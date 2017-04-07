@@ -68,24 +68,24 @@ class CohortsService
   # Get a hash that looks like:
   #
   #     {
-  #       [created_at_month, current_sign_in_at_month] => count,
-  #       [created_at_month, current_sign_in_at_month_2] => count_2,
+  #       [created_at_month, last_activity_on_month] => count,
+  #       [created_at_month, last_activity_on_month_2] => count_2,
   #       # etc.
   #     }
   #
-  # created_at_month can never be nil, but current_sign_in_at_month can (when a
+  # created_at_month can never be nil, but last_activity_on_month can (when a
   # user has never logged in, just been created). This covers the last
   # MONTHS_INCLUDED months.
   def counts_by_month
     @counts_by_month ||=
       begin
         created_at_month = column_to_date('created_at')
-        current_sign_in_at_month = column_to_date('current_sign_in_at')
+        last_activity_on_month = column_to_date('last_activity_on')
 
         User
           .where('created_at > ?', MONTHS_INCLUDED.months.ago.end_of_month)
-          .group(created_at_month, current_sign_in_at_month)
-          .reorder("#{created_at_month} ASC", "#{current_sign_in_at_month} ASC")
+          .group(created_at_month, last_activity_on_month)
+          .reorder("#{created_at_month} ASC", "#{last_activity_on_month} ASC")
           .count
       end
   end
