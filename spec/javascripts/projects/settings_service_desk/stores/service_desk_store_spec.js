@@ -50,4 +50,22 @@ describe('ServiceDeskStore', () => {
       expect(store.state.fetchError).toEqual(err);
     });
   });
+
+  describe('setIsInstanceAdmin', () => {
+    it('defaults to false', () => {
+      expect(store.state.isInstanceAdmin).toEqual(false);
+    });
+
+    it('set true', () => {
+      store.setIsInstanceAdmin(true);
+
+      expect(store.state.isInstanceAdmin).toEqual(true);
+    });
+
+    it('set false', () => {
+      store.setIsInstanceAdmin(false);
+
+      expect(store.state.isInstanceAdmin).toEqual(false);
+    });
+  });
 });

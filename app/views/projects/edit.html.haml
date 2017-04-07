@@ -131,10 +131,11 @@
           %fieldset.js-service-desk-setting-wrapper.features.append-bottom-default
             %h5.prepend-top-0
               Service Desk
-              = link_to icon('question-circle'), help_page_path("TODO")
+              = link_to icon('question-circle'), help_page_path('user/project/service_desk')
             .js-service-desk-setting-root{ data: { endpoint: namespace_project_service_desk_path(@project.namespace, @project),
               enabled: @project.service_desk_enabled,
-              incoming_email: (@project.service_desk_address if @project.service_desk_enabled) } }
+              incoming_email: (@project.service_desk_address if @project.service_desk_enabled),
+              is_instance_admin: current_user.is_admin? } }
 
         %hr
         %fieldset.features.append-bottom-default

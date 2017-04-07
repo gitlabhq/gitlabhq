@@ -18,6 +18,11 @@ export default {
       required: false,
       default: null,
     },
+    isInstanceAdmin: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   methods: {
@@ -32,15 +37,23 @@ export default {
       <div class="checkbox">
         <label for="service-desk-enabled-checkbox">
           <input
+            ref="enabled-checkbox"
             type="checkbox"
             id="service-desk-enabled-checkbox"
+            :disabled="!isInstanceAdmin"
             :checked="isEnabled"
             @change="onCheckboxToggle($event)">
           <span class="descr">
-            Activate service desk
+            Activate Service Desk
           </span>
         </label>
       </div>
+      <p
+        ref="only-instance-admin-activate-message"
+        v-if="!isInstanceAdmin"
+        class="settings-message">
+        Only instance admins can activate/deactivate Service Desk
+      </p>
       <template v-if="isEnabled">
         <div
           class="panel-slim panel-default">
@@ -55,7 +68,8 @@ export default {
               An error occurred while fetching the incoming email
             </template>
             <template v-else-if="incomingEmail">
-              <span ref="service-desk-incoming-email">
+              <span
+                ref="service-desk-incoming-email">
                 {{ incomingEmail }}
               </span>
               <button
@@ -74,7 +88,9 @@ export default {
             </template>
           </div>
         </div>
-        <p class="settings-message">
+        <p
+          ref="recommend-protect-email-from-spam-message"
+          class="settings-message">
           We recommend you protect the external support email address.
           Unblocked email spam would result in many spam issues being created,
           and may disrupt your GitLab service.
