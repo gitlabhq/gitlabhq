@@ -4,8 +4,6 @@ import DeployKey from './deploy_key';
 
 export default Vue.component('deploy-keys', {
   data() {
-    console.log(this.$options.el);
-
     const el = this.$options.el;
     const path = `${el.dataset.namespace}/${el.dataset.name}`;
 
@@ -36,7 +34,6 @@ export default Vue.component('deploy-keys', {
       this.sections[0].keys = data.enabled_keys;
       this.sections[1].keys = data.available_project_keys;
       this.sections[2].keys = data.public_keys;
-      console.log(response.data);
 
       this.loaded = true;
     });
@@ -44,6 +41,9 @@ export default Vue.component('deploy-keys', {
   methods: {
     enableKeyInSectionIndex(index) {
       return index > 0;
+    },
+    renderSection(section) {
+      return section.alwaysRender || !section.alwaysRender && section.keys.length > 0;
     },
   },
   components: {
@@ -53,7 +53,7 @@ export default Vue.component('deploy-keys', {
     <div>
       <template
         v-for="(section, index) in sections"
-        v-if="section.alwaysRender || !section.alwaysRender && section.keys.length > 0"
+        v-if="renderSection(section)"
       >
         <h5 :class="{'prepend-top-0': index === 0, 'prepend-top-default': index !== 0}">
           {{section.title}}

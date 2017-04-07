@@ -89,7 +89,8 @@ export default {
         </div>
       </div>
       <div class="deploy-key-content prepend-left-default deploy-key-projects">
-        <a v-for="project in projects"
+        <a
+          v-for="project in projects"
           class="label deploy-project-label"
           :href="project.full_path"
         >
