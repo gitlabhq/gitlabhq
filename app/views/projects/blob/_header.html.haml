@@ -1,3 +1,4 @@
+- displaying_blame = local_assigns.fetch(:displaying_blame, false)
 .js-file-title.file-title-flex-parent
   .file-header-content
     = blob_icon blob.mode, blob.name
@@ -12,14 +13,14 @@
 
   .file-actions.hidden-xs
     .btn-group{ role: "group" }<
-      = copy_blob_content_button(blob) if blob_text_viewable?(blob)
+      = copy_blob_content_button(blob) if !displaying_blame && blob_text_viewable?(blob)
       = open_raw_file_button(namespace_project_raw_path(@project.namespace, @project, @id))
       = view_on_environment_button(@commit.sha, @path, @environment) if @environment
 
     .btn-group{ role: "group" }<
       -# only show normal/blame view links for text files
       - if blob_text_viewable?(blob)
-        - if current_page? namespace_project_blame_path(@project.namespace, @project, @id)
+        - if displaying_blame
           = link_to 'Normal view', namespace_project_blob_path(@project.namespace, @project, @id),
               class: 'btn btn-sm'
         - else
