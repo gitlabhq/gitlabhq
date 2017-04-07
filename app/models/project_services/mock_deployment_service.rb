@@ -28,6 +28,7 @@ class MockDeploymentService < DeploymentService
   private
 
   def rollout_status_instances
-    JSON.parse(Rails.root.join('spec', 'fixtures', 'rollout_status_instances.json'))
+    data = File.read(Rails.root.join('spec', 'fixtures', 'rollout_status_instances.json'))
+    JSON.parse(data)
   end
 end

@@ -31,7 +31,7 @@ describe('Store', () => {
       updated_at: '2017-01-31T10:53:46.894Z',
       rollout_status_path: '/path',
       hasDeployBoard: true,
-      isDeployBoardVisible: false,
+      isDeployBoardVisible: true,
       deployBoardData: {},
     };
 
@@ -66,7 +66,7 @@ describe('Store', () => {
 
       store.storeEnvironments([environment]);
       expect(store.state.environments[0].hasDeployBoard).toEqual(true);
-      expect(store.state.environments[0].isDeployBoardVisible).toEqual(false);
+      expect(store.state.environments[0].isDeployBoardVisible).toEqual(true);
       expect(store.state.environments[0].deployBoardData).toEqual({});
     });
 
