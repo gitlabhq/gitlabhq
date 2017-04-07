@@ -73,11 +73,20 @@ These types of merge requests need special consideration:
   and a dedicated team with front-end, back-end, and UX.
 * **Small features**: any other feature request.
 
-**Large features** must be with a maintainer **by the 1st**. It's OK if they
-aren't completely done, but this allows the maintainer enough time to make the
-decision about whether this can make it in before the freeze. If the maintainer
-doesn't think it will make it, they should inform the developers working on it
-and the Product Manager responsible for the feature.
+**Large features** must be with a maintainer **by the 1st**. This means that:
+
+* There is a merge request (even if it's WIP).
+* The person (or people, if it needs a frontend and backend maintainer) who will
+  ultimately be responsible for merging this have been pinged on the MR.
+
+It's OK if merge request isn't completely done, but this allows the maintainer
+enough time to make the decision about whether this can make it in before the
+freeze. If the maintainer doesn't think it will make it, they should inform the
+developers working on it and the Product Manager responsible for the feature.
+
+The maintainer can also choose to assign a reviewer to perform an initial
+review, but this way the maintainer is unlikely to be surprised by receiving an
+MR later in the cycle.
 
 **Small features** must be with a reviewer (not necessarily maintainer) **by the
 3rd**.
