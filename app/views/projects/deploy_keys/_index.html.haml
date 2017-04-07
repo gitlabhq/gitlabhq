@@ -11,7 +11,7 @@
   .col-lg-9.col-lg-offset-3
     %hr
   .col-lg-9.col-lg-offset-3.append-bottom-default.deploy-keys
-    #vue-deploy-keys
+    #vue-deploy-keys{ data: { namespace: @project.namespace.path, name: @project.path } }
     -# %h5.prepend-top-0
     -#   Enabled deploy keys for this project (#{@deploy_keys.enabled_keys_size})
     -# - if @deploy_keys.any_keys_enabled?

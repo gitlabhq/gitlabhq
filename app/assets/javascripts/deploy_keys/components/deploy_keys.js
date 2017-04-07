@@ -2,13 +2,16 @@ import Vue from 'vue';
 import DeployKeysService from '../services/deploy_keys_service';
 import DeployKey from './deploy_key';
 
-//     // TODO: @deploy_keys.key_available?(deploy_key)
-//     // Enable/remove/disable
-
 export default Vue.component('deploy-keys', {
   data() {
+    console.log(this.$options.el);
+
+    const el = this.$options.el;
+    const path = `${el.dataset.namespace}/${el.dataset.name}`;
+
     return {
       loaded: false,
+      path,
       sections: [{
         title: 'Enabled deploy keys for this project',
         keys: [],
@@ -38,6 +41,11 @@ export default Vue.component('deploy-keys', {
       this.loaded = true;
     });
   },
+  methods: {
+    enableKeyInSectionIndex(index) {
+      return index > 0;
+    },
+  },
   components: {
     'deploy-key': DeployKey,
   },
@@ -54,10 +62,14 @@ export default Vue.component('deploy-keys', {
         <ul class="well-list" v-if="loaded && section.keys.length > 0">
           <deploy-key
             v-for="key in section.keys"
+            :id="key.id"
             :title="key.title"
             :fingerprint="key.fingerprint"
             :projects="key.projects"
+            :path="path"
             :canPush="key.can_push"
+            :enable="enableKeyInSectionIndex(index)"
+            :canRemove="key.destroyed_when_orphaned && key.almost_orphaned"
             :createdAt="key.created_at"
           />
         </ul>

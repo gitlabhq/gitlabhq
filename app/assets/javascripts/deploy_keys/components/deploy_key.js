@@ -1,6 +1,10 @@
 export default {
   name: 'DeployKey',
   props: {
+    id: {
+      type: Number,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -14,7 +18,21 @@ export default {
       required: false,
       default: [],
     },
+    path: {
+      type: String,
+      required: true,
+    },
     canPush: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    enable: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    canRemove: {
       type: Boolean,
       required: false,
       default: false,
@@ -30,6 +48,30 @@ export default {
     },
     timeagoTitle() {
       return gl.utils.formatDate(new Date(this.createdAt));
+    },
+    removeMessage() {
+      return this.canRemove ? 'You are going to remove deploy key. Are you sure?' : '';
+    },
+    linkText() {
+      if (this.enable) {
+        return 'Enable';
+      } else if (this.canRemove) {
+        return 'Remove';
+      }
+
+      return 'Disable';
+    },
+    confirmationMessage() {
+      if (!this.enable && this.canRemove) {
+        return 'You are going to remove deploy key. Are you sure?';
+      }
+
+      return '';
+    },
+    href() {
+      const path = `/${this.path}/deploy_keys/${this.id}`;
+
+      return this.enable ? `${path}/enable` : `${path}/disable`;
     },
   },
   template: `
@@ -51,7 +93,7 @@ export default {
           class="label deploy-project-label"
           :href="project.full_path"
         >
-          {{project.name}}
+          {{project.full_name}}
         </a>
       </div>
       <div class="deploy-key-content">
@@ -70,11 +112,12 @@ export default {
         <div class="visible-xs-block visible-sm-block" />
         <a
           class="btn btn-sm prepend-left-10"
-          rel="nofollow"
+          :class="{'btn-warning': !enable}"
           data-method="put"
-          href="#"
+          :data-confirm="confirmationMessage"
+          :href="href"
         >
-          Enable
+          {{linkText}}
         </a>
       </div>
     </li>
