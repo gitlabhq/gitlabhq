@@ -744,7 +744,8 @@ pre.light-well {
   text-align: left;
 }
 
-.protected-branches-list {
+.protected-branches-list,
+.protected-tags-list {
   margin-bottom: 30px;
 
   a {
@@ -773,6 +774,17 @@ pre.light-well {
     td:not(:last-child) {
       border-right: solid 1px transparent;
     }
+  }
+}
+
+.protected-tags-list {
+  .dropdown-menu-toggle {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .flash-container {
+    padding: 0;
   }
 }
 

@@ -135,6 +135,7 @@ class Project < ActiveRecord::Base
   has_many :snippets,           dependent: :destroy, class_name: 'ProjectSnippet'
   has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
   has_many :protected_branches, dependent: :destroy
+  has_many :protected_tags,     dependent: :destroy
 
   has_many :project_authorizations
   has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
@@ -859,14 +860,6 @@ class Project < ActiveRecord::Base
     @repo_exists = false
   end
 
-  # Branches that are not _exactly_ matched by a protected branch.
-  def open_branches
-    exact_protected_branch_names = protected_branches.reject(&:wildcard?).map(&:name)
-    branch_names = repository.branches.map(&:name)
-    non_open_branch_names = Set.new(exact_protected_branch_names).intersection(Set.new(branch_names))
-    repository.branches.reject { |branch| non_open_branch_names.include? branch.name }
-  end
-
   def root_ref?(branch)
     repository.root_ref == branch
   end
@@ -881,16 +874,8 @@ class Project < ActiveRecord::Base
     Gitlab::UrlSanitizer.new("#{web_url}.git", credentials: credentials).full_url
   end
 
-  # Check if current branch name is marked as protected in the system
-  def protected_branch?(branch_name)
-    return true if empty_repo? && default_branch_protected?
-
-    @protected_branches ||= self.protected_branches.to_a
-    ProtectedBranch.matching(branch_name, protected_branches: @protected_branches).present?
-  end
-
   def user_can_push_to_empty_repo?(user)
-    !default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
+    !ProtectedBranch.default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
   end
 
   def forked?
@@ -1351,11 +1336,6 @@ class Project < ActiveRecord::Base
 
   def pushes_since_gc_redis_key
     "projects/#{id}/pushes_since_gc"
-  end
-
-  def default_branch_protected?
-    current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
-      current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
   end
 
   # Similar to the normal callbacks that hook into the life cycle of an

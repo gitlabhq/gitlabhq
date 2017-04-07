@@ -441,7 +441,7 @@ describe MergeRequest, models: true do
     end
 
     it "can't be removed when its a protected branch" do
-      allow(subject.source_project).to receive(:protected_branch?).and_return(true)
+      allow(ProtectedBranch).to receive(:protected?).and_return(true)
       expect(subject.can_remove_source_branch?(user)).to be_falsey
     end
 
