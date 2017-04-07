@@ -8,7 +8,7 @@
         %p
           %strong= 'Step 1.'
           Clone the repository from your secondary node:
-        = clipboard_button(clipboard_target: 'pre#geo-info-1')
+        = clipboard_button(target: 'pre#geo-info-1')
         %pre#geo-info-1.dark
           git clone
           = default_url_to_repo()
@@ -19,7 +19,7 @@
           repository URL as the
           %strong= 'push'
           remote:
-        = clipboard_button(clipboard_target: 'pre#geo-info-2')
+        = clipboard_button(target: 'pre#geo-info-2')
         %pre#geo-info-2.dark
           git remote set-url --push origin &lt;clone url for primary repository&gt;
 

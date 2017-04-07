@@ -2,7 +2,7 @@
   %td
     - if can?(current_user, :admin_trigger, trigger)
       %span= trigger.token
-      = clipboard_button(clipboard_text: trigger.token, title: "Copy trigger token to clipboard")
+      = clipboard_button(text: trigger.token, title: "Copy trigger token to clipboard")
     - else
       %span= trigger.short_token
 
