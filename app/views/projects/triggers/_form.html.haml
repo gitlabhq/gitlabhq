@@ -18,7 +18,7 @@
               = schedule_fields.check_box :active
               %strong Schedule trigger (experimental)
             .help-block
-              If checked, this trigger will be executed periodically according to `Cron` and `Timezone`.
+              If checked, this trigger will be executed periodically according to cron and timezone.
               = link_to icon('question-circle'), help_page_path('ci/triggers', anchor: 'schedule')
         .form-group
           = schedule_fields.label :cron, "Cron", class: "label-light"

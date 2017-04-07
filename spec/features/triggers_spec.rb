@@ -120,6 +120,7 @@ feature 'Triggers', feature: true, js: true do
 
           visit edit_namespace_project_trigger_path(@project.namespace, @project, trigger)
           checkbox = find_field('trigger_trigger_schedule_attributes_active')
+          
           expect(checkbox).not_to be_checked
         end
       end
