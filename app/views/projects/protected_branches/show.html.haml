@@ -1,13 +1,13 @@
-- page_title @protected_branch.name, "Protected Branches"
+- page_title @protected_ref.name, "Protected Branches"
 
 .row.prepend-top-default.append-bottom-default
   .col-lg-3
     %h4.prepend-top-0
-      = @protected_branch.name
+      = @protected_ref.name
 
   .col-lg-9
     %h5 Matching Branches
-    - if @matching_branches.present?
+    - if @matching_refs.present?
       .table-responsive
         %table.table.protected-branches-list
           %colgroup
@@ -18,7 +18,7 @@
               %th Branch
               %th Last commit
           %tbody
-            - @matching_branches.each do |matching_branch|
+            - @matching_refs.each do |matching_branch|
               = render partial: "matching_branch", object: matching_branch
     - else
       %p.settings-message.text-center

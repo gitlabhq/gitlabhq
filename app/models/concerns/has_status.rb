@@ -68,7 +68,7 @@ module HasStatus
     end
 
     scope :created, -> { where(status: 'created') }
-    scope :relevant, -> { where.not(status: 'created') }
+    scope :relevant, -> { where(status: AVAILABLE_STATUSES - ['created']) }
     scope :running, -> { where(status: 'running') }
     scope :pending, -> { where(status: 'pending') }
     scope :success, -> { where(status: 'success') }

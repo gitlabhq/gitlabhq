@@ -10,6 +10,8 @@ module Ci
       store.touch(commit_pipelines_path) if pipeline.commit
       store.touch(new_merge_request_pipelines_path)
       merge_requests_pipelines_paths.each { |path| store.touch(path) }
+
+      Gitlab::Cache::Ci::ProjectPipelineStatus.update_for_pipeline(@pipeline)
     end
 
     private

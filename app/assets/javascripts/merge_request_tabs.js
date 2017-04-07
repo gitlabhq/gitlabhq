@@ -3,9 +3,6 @@
 /* global Flash */
 
 import Cookies from 'js-cookie';
-
-import CommitPipelinesTable from './commit/pipelines/pipelines_table';
-
 import './breakpoints';
 import './flash';
 
@@ -102,10 +99,10 @@ import './flash';
 
     destroyPipelinesView() {
       if (this.commitPipelinesTable) {
-        document.querySelector('#commit-pipeline-table-view')
-          .removeChild(this.commitPipelinesTable.$el);
-
         this.commitPipelinesTable.$destroy();
+        this.commitPipelinesTable = null;
+
+        document.querySelector('#commit-pipeline-table-view').innerHTML = '';
       }
     }
 
@@ -234,7 +231,7 @@ import './flash';
     }
 
     mountPipelinesView() {
-      this.commitPipelinesTable = new CommitPipelinesTable().$mount();
+      this.commitPipelinesTable = new gl.CommitPipelinesTable().$mount();
       // $mount(el) replaces the el with the new rendered component. We need it in order to mount
       // it everytime this tab is clicked - https://vuejs.org/v2/api/#vm-mount
       document.querySelector('#commit-pipeline-table-view')

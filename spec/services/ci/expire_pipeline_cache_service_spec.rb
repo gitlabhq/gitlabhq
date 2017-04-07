@@ -16,5 +16,12 @@ describe Ci::ExpirePipelineCacheService, services: true do
 
       subject.execute(pipeline)
     end
+
+    it 'updates the cached status for a project' do
+      expect(Gitlab::Cache::Ci::ProjectPipelineStatus).to receive(:update_for_pipeline).
+                                                            with(pipeline)
+
+      subject.execute(pipeline)
+    end
   end
 end

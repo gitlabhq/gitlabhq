@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170406115029) do
+ActiveRecord::Schema.define(version: 20170407140450) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_trgm"
@@ -310,8 +310,11 @@ ActiveRecord::Schema.define(version: 20170406115029) do
     t.string "cron"
     t.string "cron_timezone"
     t.datetime "next_run_at"
+    t.string "ref"
+    t.boolean "active"
   end
 
+  add_index "ci_trigger_schedules", ["active", "next_run_at"], name: "index_ci_trigger_schedules_on_active_and_next_run_at", using: :btree
   add_index "ci_trigger_schedules", ["next_run_at"], name: "index_ci_trigger_schedules_on_next_run_at", using: :btree
   add_index "ci_trigger_schedules", ["project_id"], name: "index_ci_trigger_schedules_on_project_id", using: :btree
 
@@ -994,6 +997,27 @@ ActiveRecord::Schema.define(version: 20170406115029) do
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
 
+  create_table "protected_tag_create_access_levels", force: :cascade do |t|
+    t.integer "protected_tag_id", null: false
+    t.integer "access_level", default: 40
+    t.integer "user_id"
+    t.integer "group_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "protected_tag_create_access_levels", ["protected_tag_id"], name: "index_protected_tag_create_access", using: :btree
+  add_index "protected_tag_create_access_levels", ["user_id"], name: "index_protected_tag_create_access_levels_on_user_id", using: :btree
+
+  create_table "protected_tags", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "protected_tags", ["project_id"], name: "index_protected_tags_on_project_id", using: :btree
+
   create_table "releases", force: :cascade do |t|
     t.string "tag"
     t.text "description"
@@ -1352,6 +1376,9 @@ ActiveRecord::Schema.define(version: 20170406115029) do
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
+  add_foreign_key "protected_tag_create_access_levels", "namespaces", column: "group_id"
+  add_foreign_key "protected_tag_create_access_levels", "protected_tags"
+  add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade

@@ -14,6 +14,8 @@ module Ci
 
     before_validation :set_default_values
 
+    accepts_nested_attributes_for :trigger_schedule
+
     def set_default_values
       self.token = SecureRandom.hex(15) if self.token.blank?
     end
@@ -36,6 +38,10 @@ module Ci
 
     def can_access_project?
       self.owner_id.blank? || Ability.allowed?(self.owner, :create_build, project)
+    end
+
+    def trigger_schedule
+      super || build_trigger_schedule(project: project)
     end
   end
 end
