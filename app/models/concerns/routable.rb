@@ -83,6 +83,74 @@ module Routable
                AND members.source_type = r2.source_type").
         where('members.user_id = ?', user_id)
     end
+
+    # Builds a relation to find multiple objects that are nested under user
+    # membership. Includes the parent, as opposed to `#member_descendants`
+    # which only includes the descendants.
+    #
+    # Usage:
+    #
+    #     Klass.member_self_and_descendants(1)
+    #
+    # Returns an ActiveRecord::Relation.
+    def member_self_and_descendants(user_id)
+      joins(:route).
+        joins("INNER JOIN routes r2 ON routes.path LIKE CONCAT(r2.path, '/%')
+               OR routes.path = r2.path
+               INNER JOIN members ON members.source_id = r2.source_id
+               AND members.source_type = r2.source_type").
+        where('members.user_id = ?', user_id)
+    end
+
+    # Returns all objects in a hierarchy, where any node in the hierarchy is
+    # under the user membership.
+    #
+    # Usage:
+    #
+    #     Klass.member_hierarchy(1)
+    #
+    # Examples:
+    #
+    #     Given the following group tree...
+    #
+    #            _______group_1_______
+    #           |                     |
+    #           |                     |
+    #     nested_group_1        nested_group_2
+    #           |                     |
+    #           |                     |
+    #     nested_group_1_1      nested_group_2_1
+    #
+    #
+    #     ... the following results are returned:
+    #
+    #     * the user is a member of group 1
+    #       => 'group_1',
+    #          'nested_group_1', nested_group_1_1',
+    #          'nested_group_2', 'nested_group_2_1'
+    #
+    #     * the user is a member of nested_group_2
+    #       => 'group1',
+    #          'nested_group_2', 'nested_group_2_1'
+    #
+    #     * the user is a member of nested_group_2_1
+    #       => 'group1',
+    #          'nested_group_2', 'nested_group_2_1'
+    #
+    # Returns an ActiveRecord::Relation.
+    def member_hierarchy(user_id)
+      paths = member_self_and_descendants(user_id).pluck('routes.path')
+
+      return none if paths.empty?
+
+      wheres = paths.map do |path|
+        "#{connection.quote(path)} = routes.path
+         OR
+         #{connection.quote(path)} LIKE CONCAT(routes.path, '/%')"
+      end
+
+      joins(:route).where(wheres.join(' OR '))
+    end
   end
 
   def full_name

@@ -5,7 +5,7 @@ module QA
         def prepare_test_namespace
           return if page.has_content?(Runtime::Namespace.name)
 
-          click_on 'New Group'
+          click_on 'New group'
 
           fill_in 'group_path', with: Runtime::Namespace.name
           fill_in 'group_description',

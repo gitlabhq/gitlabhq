@@ -8,10 +8,16 @@ module Gitlab
   module Email
     module Handler
       HANDLERS = [
+<<<<<<< HEAD
         EE::ServiceDeskHandler,
         UnsubscribeHandler,
         CreateNoteHandler,
         CreateIssueHandler,
+=======
+        UnsubscribeHandler,
+        CreateNoteHandler,
+        CreateIssueHandler
+>>>>>>> ce/master
       ].freeze
 
       def self.for(mail, mail_key)

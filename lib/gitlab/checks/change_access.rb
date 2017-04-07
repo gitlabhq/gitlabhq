@@ -62,6 +62,7 @@ module Gitlab
         return if skip_authorization
 
         return unless @tag_name
+<<<<<<< HEAD
 
         if tag_exists? && user_access.cannot_do_action?(:admin_project)
           return "You are not allowed to change existing tags on this project."
@@ -75,6 +76,21 @@ module Gitlab
         return "Protected tags cannot be updated." if update?
         return "Protected tags cannot be deleted." if deletion?
 
+=======
+
+        if tag_exists? && user_access.cannot_do_action?(:admin_project)
+          return "You are not allowed to change existing tags on this project."
+        end
+
+        protected_tag_checks
+      end
+
+      def protected_tag_checks
+        return unless tag_protected?
+        return "Protected tags cannot be updated." if update?
+        return "Protected tags cannot be deleted." if deletion?
+
+>>>>>>> ce/master
         unless user_access.can_create_tag?(@tag_name)
           return "You are not allowed to create this tag as it is protected."
         end

@@ -16,10 +16,13 @@ import eventHub from './event_hub';
       this.tokensContainer = this.container.querySelector('.tokens-container');
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
 
+<<<<<<< HEAD
       if (page === 'issues' || page === 'boards') {
         this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
       }
 
+=======
+>>>>>>> ce/master
       this.recentSearchesStore = new RecentSearchesStore();
       let recentSearchesKey = 'issue-recent-searches';
       if (page === 'merge_requests') {
@@ -160,7 +163,7 @@ import eventHub from './event_hub';
       if (e.keyCode === 13) {
         const dropdown = this.dropdownManager.mapping[this.dropdownManager.currentDropdown];
         const dropdownEl = dropdown.element;
-        const activeElements = dropdownEl.querySelectorAll('.dropdown-active');
+        const activeElements = dropdownEl.querySelectorAll('.droplab-item-active');
 
         e.preventDefault();
 

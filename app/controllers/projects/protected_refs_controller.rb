@@ -30,7 +30,11 @@ class Projects::ProtectedRefsController < Projects::ApplicationController
     @protected_ref = update_service_class.new(@project, current_user, protected_ref_params).execute(@protected_ref)
 
     if @protected_ref.valid?
+<<<<<<< HEAD
       render json: @protected_ref, status: :ok, include: access_levels
+=======
+      render json: @protected_ref, status: :ok
+>>>>>>> ce/master
     else
       render json: @protected_ref.errors, status: :unprocessable_entity
     end

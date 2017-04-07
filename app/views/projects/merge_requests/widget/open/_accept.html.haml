@@ -9,25 +9,35 @@
       .accept-action
         - if @pipeline && @pipeline.active?
           %span.btn-group
+<<<<<<< HEAD
             = button_tag class: "btn btn-info js-merge-when-pipeline-succeeds-button merge-when-pipeline-succeeds", disabled: !@merge_request.approved?, ":disabled" => "disableAcceptance" do
               Merge When Pipeline Succeeds
+=======
+            = button_tag class: "btn btn-info js-merge-when-pipeline-succeeds-button merge-when-pipeline-succeeds" do
+              Merge when pipeline succeeds
+>>>>>>> ce/master
             - unless @project.only_allow_merge_if_pipeline_succeeds?
               = button_tag class: "btn btn-info dropdown-toggle", 'data-toggle' => 'dropdown', disabled: !@merge_request.approved?, ":disabled" => "disableAcceptance" do
                 = icon('caret-down')
                 %span.sr-only
-                  Select Merge Moment
+                  Select merge moment
               %ul.js-merge-dropdown.dropdown-menu.dropdown-menu-right{ role: 'menu' }
                 %li
                   = link_to "#", class: "merge_when_pipeline_succeeds" do
                     = icon('check fw')
-                    Merge When Pipeline Succeeds
+                    Merge when pipeline succeeds
                 %li
                   = link_to "#", class: "accept-merge-request" do
                     = icon('warning fw')
-                    Merge Immediately
+                    Merge immediately
         - else
+<<<<<<< HEAD
           = f.button class: "btn btn-grouped js-merge-button accept-merge-request", disabled: !@merge_request.approved?, ":disabled" => "disableAcceptance" do
             Accept Merge Request
+=======
+          = f.button class: "btn btn-grouped js-merge-button accept-merge-request" do
+            Accept merge request
+>>>>>>> ce/master
       - if @merge_request.force_remove_source_branch?
         .accept-control
           The source branch will be removed.

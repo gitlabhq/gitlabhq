@@ -231,6 +231,18 @@ describe HasStatus do
       end
     end
 
+    describe '.created_or_pending' do
+      subject { CommitStatus.created_or_pending }
+
+      %i[created pending].each do |status|
+        it_behaves_like 'containing the job', status
+      end
+
+      %i[running failed success].each do |status|
+        it_behaves_like 'not containing the job', status
+      end
+    end
+
     describe '.finished' do
       subject { CommitStatus.finished }
 

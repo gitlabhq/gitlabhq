@@ -452,6 +452,21 @@ module Gitlab
         Gitlab::Git::DiffCollection.new(diff_patches(from, to, options, *paths), options)
       end
 
+      # Returns a RefName for a given SHA
+      def ref_name_for_sha(ref_path, sha)
+        Gitlab::GitalyClient.migrate(:find_ref_name) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.find_ref_name(sha, ref_path)
+          else
+            args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
+
+            # Not found -> ["", 0]
+            # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
+            Gitlab::Popen.popen(args, @path).first.split.last
+          end
+        end
+      end
+
       # Returns commits collection
       #
       # Ex.
@@ -953,6 +968,14 @@ module Gitlab
         @attributes.attributes(path)
       end
 
+      def gitaly_repository
+        Gitlab::GitalyClient::Util.repository(@repository_storage, @relative_path)
+      end
+
+      def gitaly_channel
+        Gitlab::GitalyClient.get_channel(@repository_storage)
+      end
+
       private
 
       # Get the content of a blob for a given commit.  If the blob is a commit
@@ -1232,7 +1255,7 @@ module Gitlab
       end
 
       def gitaly_ref_client
-        @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(@repository_storage, @relative_path)
+        @gitaly_ref_client ||= Gitlab::GitalyClient::Ref.new(self)
       end
     end
   end

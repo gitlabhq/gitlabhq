@@ -24,7 +24,6 @@
 /* global Search */
 /* global Admin */
 /* global NamespaceSelects */
-/* global ShortcutsDashboardNavigation */
 /* global Project */
 /* global ProjectAvatar */
 /* global CompareAutocomplete */
@@ -48,9 +47,12 @@ import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
+<<<<<<< HEAD
 
 import GeoNodes from './geo_nodes';
 import ServiceDeskRoot from './projects/settings_service_desk/service_desk_root';
+=======
+>>>>>>> ce/master
 
 const ShortcutsBlob = require('./shortcuts_blob');
 
@@ -354,7 +356,10 @@ const ShortcutsBlob = require('./shortcuts_blob');
           // Initialize Protected Branch Settings
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
+<<<<<<< HEAD
           new UsersSelect();
+=======
+>>>>>>> ce/master
           // Initialize Protected Tag Settings
           new ProtectedTagCreate();
           new ProtectedTagEditList();
@@ -410,7 +415,6 @@ const ShortcutsBlob = require('./shortcuts_blob');
           break;
         case 'dashboard':
         case 'root':
-          shortcut_handler = new ShortcutsDashboardNavigation();
           new UserCallout();
           break;
         case 'groups':

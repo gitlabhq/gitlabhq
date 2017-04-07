@@ -22,6 +22,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:protected_branches).dependent(:destroy) }
     it { is_expected.to have_one(:forked_project_link).dependent(:destroy) }
     it { is_expected.to have_one(:slack_service).dependent(:destroy) }
+    it { is_expected.to have_one(:microsoft_teams_service).dependent(:destroy) }
     it { is_expected.to have_one(:mattermost_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
@@ -57,6 +58,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:builds) }
     it { is_expected.to have_many(:runner_projects) }
     it { is_expected.to have_many(:runners) }
+    it { is_expected.to have_many(:active_runners) }
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
     it { is_expected.to have_many(:pages_domains) }
@@ -1495,6 +1497,7 @@ describe Project, models: true do
     end
   end
 
+<<<<<<< HEAD
   describe 'handling import URL' do
     context 'when project is a mirror' do
       it 'returns the full URL' do
@@ -1517,6 +1520,8 @@ describe Project, models: true do
     end
   end
 
+=======
+>>>>>>> ce/master
   describe '#user_can_push_to_empty_repo?' do
     let(:project) { create(:empty_project) }
     let(:user)    { create(:user) }
@@ -1590,6 +1595,7 @@ describe Project, models: true do
       context 'when tags are present for multi-level registries' do
         before do
           create(:container_repository, project: project, name: 'image')
+<<<<<<< HEAD
 
           stub_container_registry_tags(repository: /image/,
                                        tags: %w[latest rc1])
@@ -1606,11 +1612,32 @@ describe Project, models: true do
                                        tags: %w[latest rc1 pre1])
         end
 
+=======
+
+          stub_container_registry_tags(repository: /image/,
+                                       tags: %w[latest rc1])
+        end
+
+>>>>>>> ce/master
         it 'should have image tags' do
           expect(project).to have_container_registry_tags
         end
       end
 
+<<<<<<< HEAD
+=======
+      context 'when tags are present for root repository' do
+        before do
+          stub_container_registry_tags(repository: project.full_path,
+                                       tags: %w[latest rc1 pre1])
+        end
+
+        it 'should have image tags' do
+          expect(project).to have_container_registry_tags
+        end
+      end
+
+>>>>>>> ce/master
       context 'when there are no tags at all' do
         before do
           stub_container_registry_tags(repository: :any, tags: [])
@@ -1638,6 +1665,7 @@ describe Project, models: true do
         expect(project).to receive(:container_repositories)
         expect(project).not_to have_container_registry_tags
       end
+<<<<<<< HEAD
     end
   end
 
@@ -1676,6 +1704,8 @@ describe Project, models: true do
       project.add_import_job
 
       expect(project.reload.import_status).to eq('finished')
+=======
+>>>>>>> ce/master
     end
   end
 

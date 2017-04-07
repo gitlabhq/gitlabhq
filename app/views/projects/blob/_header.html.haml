@@ -20,7 +20,7 @@
       -# only show normal/blame view links for text files
       - if blob_text_viewable?(blob)
         - if current_page? namespace_project_blame_path(@project.namespace, @project, @id)
-          = link_to 'Normal View', namespace_project_blob_path(@project.namespace, @project, @id),
+          = link_to 'Normal view', namespace_project_blob_path(@project.namespace, @project, @id),
               class: 'btn btn-sm'
         - else
           = link_to 'Blame', namespace_project_blame_path(@project.namespace, @project, @id),
@@ -33,8 +33,11 @@
           tree_join(@commit.sha, @path)), class: 'btn btn-sm js-data-file-blob-permalink-url'
 
     .btn-group{ role: "group" }<
+<<<<<<< HEAD
       - if current_user
         = lock_file_link(html_options: {class: 'btn btn-sm path-lock'})
+=======
+>>>>>>> ce/master
       = edit_blob_link if blob_text_viewable?(blob)
       - if current_user
         = replace_blob_link

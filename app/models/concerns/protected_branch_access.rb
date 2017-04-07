@@ -3,7 +3,10 @@ module ProtectedBranchAccess
 
   included do
     include ProtectedRefAccess
+<<<<<<< HEAD
     include EE::ProtectedBranchAccess
+=======
+>>>>>>> ce/master
 
     belongs_to :protected_branch
 

@@ -154,6 +154,9 @@ gem 'sidekiq-cron', '~> 0.4.4'
 gem 'redis-namespace', '~> 1.5.2'
 gem 'sidekiq-limit_fetch', '~> 3.4'
 
+# Cron Parser
+gem 'rufus-scheduler', '~> 3.1.10'
+
 # HTTP requests
 gem 'httparty', '~> 0.13.3'
 

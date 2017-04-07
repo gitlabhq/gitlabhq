@@ -11,6 +11,7 @@ class ProtectedBranch < ActiveRecord::Base
   accepts_nested_attributes_for :push_access_levels, allow_destroy: true
   accepts_nested_attributes_for :merge_access_levels, allow_destroy: true
 
+<<<<<<< HEAD
   # Returns all merge access levels (for protected branches in scope) that grant merge
   # access to the given user.
   scope :merge_access_by_user, -> (user) { MergeAccessLevel.joins(:protected_branch).where(protected_branch_id: self.ids).merge(MergeAccessLevel.by_user(user)) }
@@ -45,6 +46,8 @@ class ProtectedBranch < ActiveRecord::Base
     end
   end
 
+=======
+>>>>>>> ce/master
   # Check if branch name is marked as protected in the system
   def self.protected?(project, ref_name)
     return true if project.empty_repo? && default_branch_protected?

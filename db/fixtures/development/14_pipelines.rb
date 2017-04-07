@@ -130,7 +130,7 @@ class Gitlab::Seeder::Pipelines
 
   def setup_build_log(build)
     if %w(running success failed).include?(build.status)
-      build.trace = FFaker::Lorem.paragraphs(6).join("\n\n")
+      build.trace.set(FFaker::Lorem.paragraphs(6).join("\n\n"))
     end
   end
 
