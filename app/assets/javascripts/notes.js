@@ -338,7 +338,7 @@ require('./task_list');
      */
 
     Notes.prototype.renderDiscussionNote = function(note, $form) {
-      var discussionContainer, form, note_html, row, lineType, diffAvatarContainer;
+      var discussionContainer, form, row, lineType, diffAvatarContainer;
       if (!this.isNewNote(note)) {
         return;
       }
@@ -347,45 +347,37 @@ require('./task_list');
       row = form.closest("tr");
       lineType = this.isParallelView() ? form.find('#line_type').val() : 'old';
       diffAvatarContainer = row.prevAll('.line_holder').first().find('.js-avatar-container.' + lineType + '_line');
-      note_html = $(note.html);
-      note_html.renderGFM();
       // is this the first note of discussion?
       discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']");
       if (!discussionContainer.length) {
         discussionContainer = form.closest('.discussion').find('.notes');
       }
       if (discussionContainer.length === 0) {
-        if (!this.isParallelView() || row.hasClass('js-temp-notes-holder')) {
-          // insert the note and the reply button after the temp row
-          row.after(note.diff_discussion_html);
+        if (note.diff_discussion_html) {
+          var $discussion = $(note.diff_discussion_html).renderGFM();
 
-          // remove the note (will be added again below)
-          row.next().find(".note").remove();
-        } else {
-          // Merge new discussion HTML in
-          var $discussion = $(note.diff_discussion_html);
-          var $notes = $discussion.find('.notes[data-discussion-id="' + note.discussion_id + '"]');
-          var contentContainerClass = '.' + $notes.closest('.notes_content')
-            .attr('class')
-            .split(' ')
-            .join('.');
+          if (!this.isParallelView() || row.hasClass('js-temp-notes-holder')) {
+            // insert the note and the reply button after the temp row
+            row.after($discussion);
+          } else {
+            // Merge new discussion HTML in
+            var $notes = $discussion.find('.notes[data-discussion-id="' + note.discussion_id + '"]');
+            var contentContainerClass = '.' + $notes.closest('.notes_content')
+              .attr('class')
+              .split(' ')
+              .join('.');
 
-          // remove the note (will be added again below)
-          $notes.find('.note').remove();
-
-          row.find(contentContainerClass + ' .content').append($notes.closest('.content').children());
+            row.find(contentContainerClass + ' .content').append($notes.closest('.content').children());
+          }
         }
-        // Before that, the container didn't exist
-        discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']");
-        // Add note to 'Changes' page discussions
-        discussionContainer.append(note_html);
+
         // Init discussion on 'Discussion' page if it is merge request page
         if ($('body').attr('data-page').indexOf('projects:merge_request') === 0 || !note.diff_discussion_html) {
-          $('ul.main-notes-list').append(note.discussion_html).renderGFM();
+          $('ul.main-notes-list').append($(note.discussion_html).renderGFM());
         }
       } else {
         // append new note to all matching discussions
-        discussionContainer.append(note_html);
+        discussionContainer.append($(note.html).renderGFM());
       }
 
       if (typeof gl.diffNotesCompileComponents !== 'undefined' && note.discussion_resolvable) {
