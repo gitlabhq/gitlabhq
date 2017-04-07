@@ -57,7 +57,7 @@ describe TriggerScheduleWorker do
   end
 
   context 'when next_run_at is nil' do
-    before
+    before do
       schedule = create(:ci_trigger_schedule, :nightly)
       schedule.update_column(:next_run_at, nil)
     end
