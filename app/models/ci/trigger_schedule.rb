@@ -15,11 +15,15 @@ module Ci
     validates :cron_timezone, cron_timezone: true, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
 
+    before_create :set_project
     before_save :set_next_run_at
+
+    def set_project
+      self.project = trigger.project
+    end
 
     def set_next_run_at
       self.next_run_at = Gitlab::Ci::CronParser.new(cron, cron_timezone).next_time_from(Time.now)
-      self.project = trigger.project
     end
 
     def schedule_next_run!
