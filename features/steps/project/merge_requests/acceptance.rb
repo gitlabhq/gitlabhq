@@ -1,6 +1,7 @@
 class Spinach::Features::ProjectMergeRequestsAcceptance < Spinach::FeatureSteps
   include LoginHelpers
   include GitlabRoutingHelper
+  include WaitForAjax
 
   step 'I am on the Merge Request detail page' do
     visit merge_request_path(@merge_request)
