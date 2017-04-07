@@ -124,6 +124,9 @@ push_access_levels:
 - user
 - protected_branch
 - group
+container_repositories:
+- project
+- name
 project:
 - taggings
 - base_tags
@@ -221,6 +224,7 @@ project:
 - approver_groups
 - route
 - statistics
+- container_repositories
 - uploads
 award_emoji:
 - awardable
