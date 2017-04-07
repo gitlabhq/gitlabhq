@@ -276,6 +276,12 @@ span.idiff {
   }
 }
 
+.is-stl-loading {
+  .stl-controls {
+    display: none;
+  }
+}
+
 .file-fork-suggestion {
   display: flex;
   align-items: center;

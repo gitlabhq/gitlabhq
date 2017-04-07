@@ -1,3 +1,4 @@
+# rubocop:disable RemoveIndex
 class AddIndexToMirrorsLastUpdateAtFields < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
