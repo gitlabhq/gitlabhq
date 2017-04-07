@@ -8,11 +8,11 @@ import eventHub from './event_hub';
 class ServiceDeskRoot {
   constructor(wrapperElement) {
     this.wrapperElement = wrapperElement;
-    const isEnabled = this.wrapperElement.dataset.enabled !== undefined &&
+    const isEnabled = typeof this.wrapperElement.dataset.enabled !== 'undefined' &&
       this.wrapperElement.dataset.enabled !== 'false';
     const incomingEmail = this.wrapperElement.dataset.incomingEmail;
     const endpoint = this.wrapperElement.dataset.endpoint;
-    const isInstanceAdmin = this.wrapperElement.dataset.isInstanceAdmin !== undefined &&
+    const isInstanceAdmin = typeof this.wrapperElement.dataset.isInstanceAdmin !== 'undefined' &&
       this.wrapperElement.dataset.isInstanceAdmin !== 'false';
 
     this.store = new ServiceDeskStore({
@@ -40,7 +40,7 @@ class ServiceDeskRoot {
   }
 
   unbindEvents() {
-    eventHub.$on('serviceDeskEnabledCheckboxToggled', this.onEnableToggledWrapper);
+    eventHub.$off('serviceDeskEnabledCheckboxToggled', this.onEnableToggledWrapper);
   }
 
   render() {
