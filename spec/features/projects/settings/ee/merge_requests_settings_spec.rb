@@ -16,6 +16,20 @@ describe 'Project settings > [EE] Merge Requests', feature: true, js: true do
     group.add_developer(user)
   end
 
+  scenario 'adds approver' do
+    visit edit_project_path(project)
+
+    find('#s2id_approver_user_and_group_ids .select2-input').click
+
+    wait_for_ajax
+
+    expect(find('.select2-results')).to have_content(user.name)
+    find('.user-result', text: user.name).click
+    click_button 'Add'
+
+    expect(find('.js-current-approvers')).to have_content(user.name)
+  end
+
   scenario 'adds approver group' do
     visit edit_project_path(project)
 
@@ -23,13 +37,21 @@ describe 'Project settings > [EE] Merge Requests', feature: true, js: true do
 
     wait_for_ajax
 
+    within('.js-current-approvers') do
+      expect(find('.panel-heading .badge')).to have_content('0')
+    end
+
     expect(find('.select2-results')).to have_content(group.name)
-
     find('.select2-results .group-result').click
+    click_button 'Add'
 
-    click_button 'Save changes'
+    expect(find('.approver-list-loader')).to be_visible
+    expect(page).to have_css('.js-current-approvers li.approver-group', count: 1)
 
     expect(page).to have_css('.js-current-approvers li.approver-group', count: 1)
+    within('.js-current-approvers') do
+      expect(find('.panel-heading .badge')).to have_content('2')
+    end
   end
 
   context 'with an approver group' do

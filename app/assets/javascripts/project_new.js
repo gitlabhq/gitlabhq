@@ -3,7 +3,7 @@
 (function() {
   this.ProjectNew = (function() {
     function ProjectNew() {
-      this.$selects = $('.project-feature select');
+      this.$selects = $('.features select');
       this.$repoSelects = this.$selects.filter('.js-repo-select');
       this.$enableApprovers = $('.js-require-approvals-toggle');
 
@@ -17,16 +17,14 @@
       this.initVisibilitySelect();
 
       this.toggleSettings();
-      this.addEvents();
+      this.bindEvents();
       this.toggleRepoVisibility();
     }
 
     ProjectNew.prototype.bindEvents = function() {
       this.toggleSettings = this.toggleSettings.bind(this);
       this.toggleApproverSettingsVisibility = this.toggleApproverSettingsVisibility.bind(this);
-    };
 
-    ProjectNew.prototype.addEvents = function() {
       this.$selects.on('change', this.toggleSettings);
       $('#require_approvals').on('change', this.toggleApproverSettingsVisibility);
     };
