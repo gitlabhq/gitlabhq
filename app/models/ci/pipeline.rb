@@ -228,13 +228,12 @@ module Ci
     end
 
     def cancel_running
-      Gitlab::OptimisticLocking.retry_lock(
-        statuses.cancelable) do |cancelable|
-          cancelable.find_each do |job|
-            yield(job) if block_given?
-            job.cancel
-          end
+      Gitlab::OptimisticLocking.retry_lock(cancelable_statuses) do |cancelable|
+        cancelable.find_each do |job|
+          yield(job) if block_given?
+          job.cancel
         end
+      end
     end
 
     def auto_cancel_running(pipeline)
