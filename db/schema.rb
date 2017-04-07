@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170403141442) do
+ActiveRecord::Schema.define(version: 20170405080720) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -371,6 +371,16 @@ ActiveRecord::Schema.define(version: 20170403141442) do
 
   add_index "ci_variables", ["project_id"], name: "index_ci_variables_on_project_id", using: :btree
 
+  create_table "container_repositories", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "container_repositories", ["project_id", "name"], name: "index_container_repositories_on_project_id_and_name", unique: true, using: :btree
+  add_index "container_repositories", ["project_id"], name: "index_container_repositories_on_project_id", using: :btree
+
   create_table "deploy_keys_projects", force: :cascade do |t|
     t.integer "deploy_key_id", null: false
     t.integer "project_id", null: false
@@ -534,6 +544,7 @@ ActiveRecord::Schema.define(version: 20170403141442) do
     t.integer "time_estimate"
     t.integer "relative_position"
     t.datetime "closed_at"
+    t.string "service_desk_reply_to"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -1073,6 +1084,9 @@ ActiveRecord::Schema.define(version: 20170403141442) do
     t.integer "repository_size_limit", limit: 8
     t.integer "sync_time", default: 60, null: false
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
+    t.string "import_jid"
+    t.boolean "service_desk_enabled"
+    t.string "service_desk_mail_key"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1088,6 +1102,7 @@ ActiveRecord::Schema.define(version: 20170403141442) do
   add_index "projects", ["path"], name: "index_projects_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
   add_index "projects", ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
+  add_index "projects", ["service_desk_mail_key"], name: "index_projects_on_service_desk_mail_key", unique: true, using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["sync_time"], name: "index_projects_on_sync_time", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
@@ -1124,6 +1139,27 @@ ActiveRecord::Schema.define(version: 20170403141442) do
   end
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
+
+  create_table "protected_tag_create_access_levels", force: :cascade do |t|
+    t.integer "protected_tag_id", null: false
+    t.integer "access_level", default: 40
+    t.integer "user_id"
+    t.integer "group_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "protected_tag_create_access_levels", ["protected_tag_id"], name: "index_protected_tag_create_access", using: :btree
+  add_index "protected_tag_create_access_levels", ["user_id"], name: "index_protected_tag_create_access_levels_on_user_id", using: :btree
+
+  create_table "protected_tags", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "protected_tags", ["project_id"], name: "index_protected_tags_on_project_id", using: :btree
 
   create_table "push_rules", force: :cascade do |t|
     t.string "force_push_regex"
@@ -1447,7 +1483,9 @@ ActiveRecord::Schema.define(version: 20170403141442) do
     t.boolean "authorized_projects_populated"
     t.boolean "auditor", default: false, null: false
     t.boolean "ghost"
+    t.date "last_activity_on"
     t.boolean "notified_of_own_activity"
+    t.boolean "support_bot"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1462,6 +1500,7 @@ ActiveRecord::Schema.define(version: 20170403141442) do
   add_index "users", ["name"], name: "index_users_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["state"], name: "index_users_on_state", using: :btree
+  add_index "users", ["support_bot"], name: "index_users_on_support_bot", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree
   add_index "users", ["username"], name: "index_users_on_username_trigram", using: :gin, opclasses: {"username"=>"gin_trgm_ops"}
 
@@ -1502,6 +1541,7 @@ ActiveRecord::Schema.define(version: 20170403141442) do
   add_foreign_key "boards", "projects"
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
+  add_foreign_key "container_repositories", "projects"
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
@@ -1526,6 +1566,9 @@ ActiveRecord::Schema.define(version: 20170403141442) do
   add_foreign_key "protected_branch_push_access_levels", "namespaces", column: "group_id"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "users"
+  add_foreign_key "protected_tag_create_access_levels", "namespaces", column: "group_id"
+  add_foreign_key "protected_tag_create_access_levels", "protected_tags"
+  add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "remote_mirrors", "projects"
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade

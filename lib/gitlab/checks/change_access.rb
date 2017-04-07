@@ -12,6 +12,7 @@ module Gitlab
       )
         @oldrev, @newrev, @ref = change.values_at(:oldrev, :newrev, :ref)
         @branch_name = Gitlab::Git.branch_name(@ref)
+        @tag_name = Gitlab::Git.tag_name(@ref)
         @user_access = user_access
         @project = project
         @env = env
@@ -34,11 +35,11 @@ module Gitlab
       def protected_branch_checks
         return if skip_authorization
         return unless @branch_name
-        return unless project.protected_branch?(@branch_name)
+        return unless ProtectedBranch.protected?(project, @branch_name)
 
         if forced_push?
           return "You are not allowed to force push code to a protected branch on this project."
-        elsif Gitlab::Git.blank_ref?(@newrev)
+        elsif deletion?
           return "You are not allowed to delete protected branches from this project."
         end
 
@@ -60,11 +61,27 @@ module Gitlab
       def tag_checks
         return if skip_authorization
 
-        tag_ref = Gitlab::Git.tag_name(@ref)
+        return unless @tag_name
 
-        if tag_ref && protected_tag?(tag_ref) && user_access.cannot_do_action?(:admin_project)
-          "You are not allowed to change existing tags on this project."
+        if tag_exists? && user_access.cannot_do_action?(:admin_project)
+          return "You are not allowed to change existing tags on this project."
         end
+
+        protected_tag_checks
+      end
+
+      def protected_tag_checks
+        return unless tag_protected?
+        return "Protected tags cannot be updated." if update?
+        return "Protected tags cannot be deleted." if deletion?
+
+        unless user_access.can_create_tag?(@tag_name)
+          return "You are not allowed to create this tag as it is protected."
+        end
+      end
+
+      def tag_protected?
+        ProtectedTag.protected?(project, @tag_name)
       end
 
       def push_checks
@@ -77,12 +94,20 @@ module Gitlab
 
       private
 
-      def protected_tag?(tag_name)
-        project.repository.tag_exists?(tag_name)
+      def tag_exists?
+        project.repository.tag_exists?(@tag_name)
       end
 
       def forced_push?
         Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev, env: @env)
+      end
+
+      def update?
+        !Gitlab::Git.blank_ref?(@oldrev) && !deletion?
+      end
+
+      def deletion?
+        Gitlab::Git.blank_ref?(@newrev)
       end
 
       def matching_merge_request?
@@ -95,7 +120,7 @@ module Gitlab
         push_rule = project.push_rule
 
         # Prevent tag removal
-        if Gitlab::Git.tag_name(@ref)
+        if @tag_name
           if tag_deletion_denied_by_push_rule?(push_rule)
             return 'You cannot delete a tag'
           end
@@ -103,7 +128,7 @@ module Gitlab
           commit_validation = push_rule.try(:commit_validation?)
 
           # if newrev is blank, the branch was deleted
-          return if Gitlab::Git.blank_ref?(@newrev) || !(commit_validation || validate_path_locks?)
+          return if deletion? || !(commit_validation || validate_path_locks?)
 
           commits.each do |commit|
             if commit_validation
@@ -123,8 +148,8 @@ module Gitlab
       def tag_deletion_denied_by_push_rule?(push_rule)
         push_rule.try(:deny_delete_tag) &&
           protocol != 'web' &&
-          Gitlab::Git.blank_ref?(@newrev) &&
-          protected_tag?(Gitlab::Git.tag_name(@ref))
+          deletion? &&
+          tag_exists?
       end
 
       # If commit does not pass push rule validation the whole push should be rejected.

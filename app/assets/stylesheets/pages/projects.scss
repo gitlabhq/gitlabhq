@@ -757,7 +757,8 @@ a.allowed-to-push {
   text-align: left;
 }
 
-.protected-branches-list {
+.protected-branches-list,
+.protected-tags-list {
   margin-bottom: 30px;
 
   a {
@@ -791,6 +792,17 @@ a.allowed-to-push {
 
 .disabled-item {
   @extend .btn.disabled;
+}
+
+.protected-tags-list {
+  .dropdown-menu-toggle {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .flash-container {
+    padding: 0;
+  }
 }
 
 .custom-notifications-form {

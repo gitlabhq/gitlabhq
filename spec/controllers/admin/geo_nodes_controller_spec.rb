@@ -213,6 +213,8 @@ describe Admin::GeoNodesController do
         GeoNodeStatus.new(
           id: 1,
           health: nil,
+          attachments_count: 329,
+          attachments_synced_count: 141,
           lfs_objects_count: 256,
           lfs_objects_synced_count: 123,
           repositories_count: 10,

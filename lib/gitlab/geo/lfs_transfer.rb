@@ -11,7 +11,7 @@ module Gitlab
       private
 
       def lfs_request_data(lfs_object)
-        { sha256: lfs_object.oid }
+        { checksum: lfs_object.oid }
       end
     end
   end

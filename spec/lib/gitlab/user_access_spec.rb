@@ -142,4 +142,73 @@ describe Gitlab::UserAccess, lib: true do
       end
     end
   end
+
+  describe 'can_create_tag?' do
+    describe 'push to none protected tag' do
+      it 'returns true if user is a master' do
+        project.add_user(user, :master)
+
+        expect(access.can_create_tag?('random_tag')).to be_truthy
+      end
+
+      it 'returns true if user is a developer' do
+        project.add_user(user, :developer)
+
+        expect(access.can_create_tag?('random_tag')).to be_truthy
+      end
+
+      it 'returns false if user is a reporter' do
+        project.add_user(user, :reporter)
+
+        expect(access.can_create_tag?('random_tag')).to be_falsey
+      end
+    end
+
+    describe 'push to protected tag' do
+      let(:tag) { create(:protected_tag, project: project, name: "test") }
+      let(:not_existing_tag) { create :protected_tag, project: project }
+
+      it 'returns true if user is a master' do
+        project.add_user(user, :master)
+
+        expect(access.can_create_tag?(tag.name)).to be_truthy
+      end
+
+      it 'returns false if user is a developer' do
+        project.add_user(user, :developer)
+
+        expect(access.can_create_tag?(tag.name)).to be_falsey
+      end
+
+      it 'returns false if user is a reporter' do
+        project.add_user(user, :reporter)
+
+        expect(access.can_create_tag?(tag.name)).to be_falsey
+      end
+    end
+
+    describe 'push to protected tag if allowed for developers' do
+      before do
+        @tag = create(:protected_tag, :developers_can_create, project: project)
+      end
+
+      it 'returns true if user is a master' do
+        project.add_user(user, :master)
+
+        expect(access.can_create_tag?(@tag.name)).to be_truthy
+      end
+
+      it 'returns true if user is a developer' do
+        project.add_user(user, :developer)
+
+        expect(access.can_create_tag?(@tag.name)).to be_truthy
+      end
+
+      it 'returns false if user is a reporter' do
+        project.add_user(user, :reporter)
+
+        expect(access.can_create_tag?(@tag.name)).to be_falsey
+      end
+    end
+  end
 end

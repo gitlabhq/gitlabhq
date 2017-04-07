@@ -32,8 +32,8 @@ module Projects
         project.destroy!
         trash_repositories!
 
-        unless remove_registry_tags
-          raise_error('Failed to remove project container registry. Please try again or contact administrator')
+        unless remove_legacy_registry_tags
+          raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
         end
       end
 
@@ -93,10 +93,16 @@ module Projects
       end
     end
 
-    def remove_registry_tags
+    ##
+    # This method makes sure that we correctly remove registry tags
+    # for legacy image repository (when repository path equals project path).
+    #
+    def remove_legacy_registry_tags
       return true unless Gitlab.config.registry.enabled
 
-      project.container_registry_repository.delete_tags
+      ContainerRepository.build_root_repository(project).tap do |repository|
+        return repository.has_tags? ? repository.delete_tags! : true
+      end
     end
 
     def remove_tracking_entries!
