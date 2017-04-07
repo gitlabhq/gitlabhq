@@ -92,6 +92,38 @@ module API
     end
 
     class Project < Grape::Entity
+      include ::API::Helpers::RelatedResourcesHelpers
+
+      expose :_links do
+        expose :self do |project|
+          expose_url(api_v4_projects_path(id: project.id))
+        end
+
+        expose :issues, if: -> (*args) { issues_available?(*args) } do |project|
+          expose_url(api_v4_projects_issues_path(id: project.id))
+        end
+
+        expose :merge_requests, if: -> (*args) { mrs_available?(*args) } do |project|
+          expose_url(api_v4_projects_merge_requests_path(id: project.id))
+        end
+
+        expose :repo_branches do |project|
+          expose_url(api_v4_projects_repository_branches_path(id: project.id))
+        end
+
+        expose :labels do |project|
+          expose_url(api_v4_projects_labels_path(id: project.id))
+        end
+
+        expose :events do |project|
+          expose_url(api_v4_projects_events_path(id: project.id))
+        end
+
+        expose :members do |project|
+          expose_url(api_v4_projects_members_path(id: project.id))
+        end
+      end
+
       expose :id, :description, :default_branch, :tag_list
       expose :archived?, as: :archived
       expose :visibility, :ssh_url_to_repo, :http_url_to_repo, :web_url
@@ -327,6 +359,26 @@ module API
     end
 
     class Issue < IssueBasic
+      include ::API::Helpers::RelatedResourcesHelpers
+
+      expose :_links do
+        expose :self do |issue|
+          expose_url(api_v4_project_issue_path(id: issue.project_id, issue_iid: issue.iid))
+        end
+
+        expose :notes do |issue|
+          expose_url(api_v4_projects_issues_notes_path(id: issue.project_id, noteable_id: issue.iid))
+        end
+
+        expose :award_emoji do |issue|
+          expose_url(api_v4_projects_issues_award_emoji_path(id: issue.project_id, issue_iid: issue.iid))
+        end
+
+        expose :project do |issue|
+          expose_url(api_v4_projects_path(id: issue.project_id))
+        end
+      end
+
       expose :subscribed do |issue, options|
         issue.subscribed?(options[:current_user], options[:project] || issue.project)
       end
