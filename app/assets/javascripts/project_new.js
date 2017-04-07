@@ -22,11 +22,8 @@
     }
 
     ProjectNew.prototype.bindEvents = function() {
-      this.toggleSettings = this.toggleSettings.bind(this);
-      this.toggleApproverSettingsVisibility = this.toggleApproverSettingsVisibility.bind(this);
-
-      this.$selects.on('change', this.toggleSettings);
-      $('#require_approvals').on('change', this.toggleApproverSettingsVisibility);
+      this.$selects.on('change', () => this.toggleSettings());
+      $('#require_approvals').on('change', e => this.toggleApproverSettingsVisibility(e));
     };
 
     ProjectNew.prototype.initVisibilitySelect = function() {
@@ -36,9 +33,9 @@
       visibilitySelect.init();
     };
 
-    ProjectNew.prototype.toggleApproverSettingsVisibility = function(evt) {
+    ProjectNew.prototype.toggleApproverSettingsVisibility = function(e) {
       this.$requiredApprovals = $('#project_approvals_before_merge');
-      const enabled = $(evt.target).prop('checked');
+      const enabled = $(e.target).prop('checked');
       const val = enabled ? 1 : 0;
       this.$requiredApprovals.val(val);
       this.$requiredApprovals.prop('min', val);

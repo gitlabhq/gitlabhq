@@ -2,88 +2,54 @@
 
 export default class ApproversSelect {
   constructor() {
-    const approverSelect = document.querySelector('.js-select-user-and-group');
-    const name = approverSelect.dataset.name;
+    this.$approverSelect = $('.js-select-user-and-group');
+    const name = this.$approverSelect.data('name');
     this.fieldNames = [`${name}[approver_ids]`, `${name}[approver_group_ids]`];
+    this.$loadWrapper = $('.load-wrapper');
 
     this.bindEvents();
     this.addEvents();
-
-    $('.js-select-user-and-group').select2({
-      placeholder: 'Search for users or groups',
-      multiple: true,
-      minimumInputLength: 0,
-      query: (query) => {
-        const fetchGroups = this.fetchGroups(query.term);
-        const fetchUsers = this.fetchUsers(query.term);
-        return $.when(fetchGroups, fetchUsers).then((groups, users) => {
-          const data = {
-            results: groups[0].concat(users[0]),
-          };
-          return query.callback(data);
-        });
-      },
-      formatResult: ApproversSelect.formatResult,
-      formatSelection: ApproversSelect.formatSelection,
-      dropdownCss() {
-        const $input = $('.js-select-user-and-group .select2-input');
-        const offset = $input.offset();
-        const inputRight = offset.left + $input.outerWidth();
-        const $dropdown = $('.select2-drop-active');
-
-        let left = offset.left;
-        if ($dropdown.outerWidth() > $input.outerWidth()) {
-          left = `${inputRight - $dropdown.width()}px`;
-        }
-        return {
-          left,
-          right: 'auto',
-          width: 'auto',
-        };
-      },
-    })
-    .on('change', this.handleSelectChange);
+    this.initSelect2();
   }
 
   bindEvents() {
-    this.addApprover = this.addApprover.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
     this.fetchGroups = this.fetchGroups.bind(this);
     this.fetchUsers = this.fetchUsers.bind(this);
   }
 
   addEvents() {
-    $(document).on('click', '.js-approvers', this.addApprover);
-    $(document).on('click', '.js-approver-remove', ApproversSelect.removeApprover);
+    $(document).on('click', '.js-add-approvers', () => this.addApprover());
+    $(document).on('click', '.js-approver-remove', e => ApproversSelect.removeApprover(e));
   }
 
-  static getOptions(fieldName, selector, key) {
+  static getApprovers(fieldName, selector, key) {
     const input = $(`[name="${fieldName}"]`);
-    const existingApprovers = [].map.call(
-      document.querySelectorAll(selector),
-      item => parseInt(item.getAttribute('data-id'), 10),
+
+    const existingApprovers = $(selector).map((i, el) =>
+      parseInt($(el).data('id'), 10),
     );
     const selectedApprovers = input.val()
       .split(',')
       .filter(val => val !== '');
-    const options = {
+    const approvers = {
       [key]: [...existingApprovers, ...selectedApprovers],
     };
-    return options;
+    return approvers;
   }
 
   fetchGroups(term) {
-    const options = ApproversSelect.getOptions(this.fieldNames[1], '.js-approver-group', 'skip_groups');
+    const options = ApproversSelect.getApprovers(this.fieldNames[1], '.js-approver-group', 'skip_groups');
     return Api.groups(term, options);
   }
 
   fetchUsers(term) {
-    const options = ApproversSelect.getOptions(this.fieldNames[0], '.js-approver', 'skip_users');
+    const options = ApproversSelect.getApprovers(this.fieldNames[0], '.js-approver', 'skip_users');
     return Api.users(term, options);
   }
 
-  handleSelectChange(evt) {
-    const { added, removed } = evt;
+  handleSelectChange(e) {
+    const { added, removed } = e;
     const userInput = $(`[name="${this.fieldNames[0]}"]`);
     const groupInput = $(`[name="${this.fieldNames[1]}"]`);
 
@@ -104,16 +70,53 @@ export default class ApproversSelect {
     }
   }
 
+  initSelect2() {
+    this.$approverSelect.select2({
+      placeholder: 'Search for users or groups',
+      multiple: true,
+      minimumInputLength: 0,
+      query: (query) => {
+        const fetchGroups = this.fetchGroups(query.term);
+        const fetchUsers = this.fetchUsers(query.term);
+        return $.when(fetchGroups, fetchUsers).then((groups, users) => {
+          const data = {
+            results: groups[0].concat(users[0]),
+          };
+          return query.callback(data);
+        });
+      },
+      formatResult: ApproversSelect.formatResult,
+      formatSelection: ApproversSelect.formatSelection,
+      dropdownCss() {
+        const $input = $('.js-select-user-and-group .select2-input');
+        const offset = $input.offset();
+        const inputRightPosition = offset.left + $input.outerWidth();
+        const $dropdown = $('.select2-drop-active');
+
+        let left = offset.left;
+        if ($dropdown.outerWidth() > $input.outerWidth()) {
+          left = `${inputRightPosition - $dropdown.width()}px`;
+        }
+        return {
+          left,
+          right: 'auto',
+          width: 'auto',
+        };
+      },
+    })
+    .on('change', this.handleSelectChange);
+  }
+
   static formatSelection(group) {
     return group.full_name || group.name;
   }
 
   static formatResult({
+    name,
+    username,
     avatar_url: avatarUrl,
     full_name: fullName,
     full_path: fullPath,
-    name,
-    username,
   }) {
     if (username) {
       const avatar = avatarUrl || gon.default_avatar_url;
@@ -145,13 +148,15 @@ export default class ApproversSelect {
   static saveApprovers(fieldName) {
     const $input = $(`[name="${fieldName}"]`);
     const newValue = $input.val();
+    const $loadWrapper = $('.load-wrapper');
+    const $approverSelect = $('.js-select-user-and-group');
 
     if (!newValue) {
       return;
     }
 
-    const $form = $('.js-approvers').closest('form');
-    $('.load-wrapper').removeClass('hidden');
+    const $form = $('.js-add-approvers').closest('form');
+    $loadWrapper.removeClass('hidden');
     $.ajax({
       url: $form.attr('action'),
       type: 'POST',
@@ -162,20 +167,20 @@ export default class ApproversSelect {
       success: ApproversSelect.updateApproverList,
       complete() {
         $input.val('val', '');
-        $('.js-select-user-and-group').select2('val', '');
-        $('.load-wrapper').addClass('hidden');
+        $approverSelect.select2('val', '');
+        $loadWrapper.addClass('hidden');
       },
       error() {
-        // TODO: scroll into view or toast
         window.Flash('Failed to add Approver', 'alert');
       },
     });
   }
 
-  static removeApprover(evt) {
-    evt.preventDefault();
-    const target = evt.currentTarget;
-    $('.load-wrapper').removeClass('hidden');
+  static removeApprover(e) {
+    e.preventDefault();
+    const target = e.currentTarget;
+    const $loadWrapper = $('.load-wrapper');
+    $loadWrapper.removeClass('hidden');
     $.ajax({
       url: target.getAttribute('href'),
       type: 'POST',
@@ -183,7 +188,7 @@ export default class ApproversSelect {
         _method: 'DELETE',
       },
       success: ApproversSelect.updateApproverList,
-      complete: () => $('.load-wrapper').addClass('hidden'),
+      complete: () => $loadWrapper.addClass('hidden'),
       error() {
         window.Flash('Failed to remove Approver', 'alert');
       },

@@ -46,20 +46,20 @@
 .form-group.reset-approvals-on-push
   .checkbox
     = label_tag :require_approvals do
-      = check_box_tag :require_approvals, nil, project.approvals_before_merge > 0, class: 'js-require-approvals-toggle'
+      = check_box_tag :require_approvals, nil, project.approvals_before_merge.nonzero?, class: 'js-require-approvals-toggle'
       %strong Activate merge request approvals
       = link_to icon('question-circle'), help_page_path("user/project/merge_requests/merge_request_approvals"), target: '_blank'
       .descr Merge request approvals allow you to set the number of necessary approvals and predefine a list of approvers that you will need to approve every merge request in a project.
 
-.nested-settings{ class: project.approvals_before_merge > 0 ? '' : 'hidden' }
+.nested-settings{ class: project.approvals_before_merge.nonzero? ? '' : 'hidden' }
   .form-group
     = form.label :approver_ids, class: 'label-light' do
       Approvers
     = hidden_field_tag "project[approver_ids]"
     = hidden_field_tag "project[approver_group_ids]"
     .input-group.input-btn-group
-      = hidden_field_tag :approver_user_and_group_ids, '', { class: 'js-select-user-and-group input-large', tabindex: 1, data: { name: 'project' }}
-      %button.btn.btn-success.js-approvers{ type: 'button', title: 'Add approvers(s)' }
+      = hidden_field_tag :approver_user_and_group_ids, '', { class: 'js-select-user-and-group input-large', tabindex: 1, 'data-name': 'project' }
+      %button.btn.btn-success.js-add-approvers{ type: 'button', title: 'Add approvers(s)' }
         Add
     .help-block
       Add an approver or group suggestion for each merge request

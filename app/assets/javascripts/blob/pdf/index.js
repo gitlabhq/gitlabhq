@@ -10,7 +10,7 @@ Vue.use(PDFLab, {
 export default () => {
   const el = document.getElementById('js-pdf-viewer');
 
-  return new Vue({
+  new Vue({
     el,
     data() {
       return {
