@@ -29,10 +29,12 @@ $gray-darkest: #c4c4c4;
 $green-light: #3cbd70;
 $green-normal: darken($green-light, $darken-normal-factor);
 $green-dark: darken($green-light, $darken-dark-factor);
+$green-500: #1aaa55;
 
 $blue-light: #2ea8e5;
 $blue-normal: darken($blue-light, $darken-normal-factor);
 $blue-dark: darken($blue-light, $darken-dark-factor);
+$blue-500: #1f78d1;
 
 $blue-medium-light: #3498cb;
 $blue-medium: darken($blue-medium-light, $darken-normal-factor);
@@ -43,6 +45,7 @@ $blue-light-transparent: rgba(44, 159, 216, 0.05);
 $orange-light: #fc8a51;
 $orange-normal: darken($orange-light, $darken-normal-factor);
 $orange-dark: darken($orange-light, $darken-dark-factor);
+$orange-600: #de7e00;
 
 $red-light: #e52c5a;
 $red-normal: darken($red-light, $darken-normal-factor);
