@@ -17,6 +17,8 @@ describe DeployKeyEntity do
       title: deploy_key.title,
       fingerprint: deploy_key.fingerprint,
       can_push: deploy_key.can_push,
+      destroyed_when_orphaned: true,
+      almost_orphaned: false,
       created_at: deploy_key.created_at,
       updated_at: deploy_key.updated_at,
       projects: [
