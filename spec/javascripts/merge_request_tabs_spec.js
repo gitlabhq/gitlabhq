@@ -222,7 +222,9 @@ require('vendor/jquery.scrollTo');
 
     describe('#tabShown', () => {
       beforeEach(function () {
-        spyOn($, 'ajax').and.callFake(function () {});
+        spyOn($, 'ajax').and.callFake(function (options) {
+          options.success({ html: '' });
+        });
         loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
       });
 
@@ -230,9 +232,6 @@ require('vendor/jquery.scrollTo');
         beforeEach(function () {
           this.class.diffViewType = () => 'parallel';
           gl.Diff.prototype.diffViewType = () => 'parallel';
-          spyOn($, 'ajax').and.callFake(function (options) {
-            options.success({ html: '' });
-          });
         });
 
         it('maintains `container-limited` for pipelines tab', function (done) {

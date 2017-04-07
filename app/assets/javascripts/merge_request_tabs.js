@@ -102,10 +102,10 @@ import './flash';
 
     destroyPipelinesView() {
       if (this.commitPipelinesTable) {
-        document.querySelector('#commit-pipeline-table-view')
-          .removeChild(this.commitPipelinesTable.$el);
-
         this.commitPipelinesTable.$destroy();
+        this.commitPipelinesTable = null;
+
+        document.querySelector('#commit-pipeline-table-view').innerHTML = '';
       }
     }
 
