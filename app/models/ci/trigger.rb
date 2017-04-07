@@ -14,7 +14,7 @@ module Ci
 
     before_validation :set_default_values
 
-    accepts_nested_attributes_for :trigger_schedule, allow_destroy: true
+    accepts_nested_attributes_for :trigger_schedule
 
     def set_default_values
       self.token = SecureRandom.hex(15) if self.token.blank?

@@ -31,9 +31,3 @@
           = schedule_fields.text_field :ref, class: "form-control", title: 'Branch or tag is required.', placeholder: "master"
           .help-block Existing branch name, tag
   = f.submit btn_text, class: "btn btn-save"
-
-
-:javascript
-  var availableRefs = #{@project.repository.ref_names.to_json};
-
-  new NewBranchForm($('.js-new-pipeline-form'), availableRefs)
