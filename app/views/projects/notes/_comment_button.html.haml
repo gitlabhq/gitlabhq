@@ -1,5 +1,4 @@
 - noteable_name = @note.noteable.human_class_name
-- noteable_state_action = noteable_name =~ /(merge request|issue)/ && @note.noteable['state'] == 'closed' ? 'reopen' : 'close'
 
 .pull-left.btn-group.append-right-10.comment-type-dropdown.js-comment-type-dropdown
   %input.btn.btn-nr.btn-create.comment-btn.js-comment-button.js-comment-submit-button{ type: 'submit', value: 'Comment' }
@@ -9,7 +8,7 @@
       = icon('caret-down')
 
     %ul#resolvable-comment-menu.dropdown-menu{ data: { dropdown: true } }
-      %li#comment.droplab-item-selected{ data: { value: '', 'button-text' => 'Comment', 'secondary-button-text' => "Comment & #{noteable_state_action} #{noteable_name}" } }
+      %li#comment.droplab-item-selected{ data: { value: '', 'submit-text' => 'Comment', 'close-text' => "Comment & close #{noteable_name}", 'reopen-text' => "Comment & reopen #{noteable_name}" } }
         = icon('check')
         .description
           %strong Comment
@@ -18,7 +17,7 @@
 
       %li.divider
 
-      %li#discussion{ data: { value: 'DiscussionNote', 'button-text' => 'Start discussion', 'secondary-button-text' => "Start discussion & #{noteable_state_action} #{noteable_name}" } }
+      %li#discussion{ data: { value: 'DiscussionNote', 'submit-text' => 'Start discussion', 'close-text' => "Start discussion & close #{noteable_name}", 'reopen-text' => "Start discussion & reopen #{noteable_name}" } }
         = icon('check')
         .description
           %strong Start discussion

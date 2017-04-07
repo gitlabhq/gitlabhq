@@ -11,13 +11,13 @@ describe('CommentTypeToggle', function () {
       this.submitButton = {};
       this.closeButton = {};
 
-      this.commentTypeToggle = new CommentTypeToggle(
-        this.dropdownTrigger,
-        this.dropdownList,
-        this.noteTypeInput,
-        this.submitButton,
-        this.closeButton,
-      );
+      this.commentTypeToggle = new CommentTypeToggle({
+        dropdownTrigger: this.dropdownTrigger,
+        dropdownList: this.dropdownList,
+        noteTypeInput: this.noteTypeInput,
+        submitButton: this.submitButton,
+        closeButton: this.closeButton,
+      });
     });
 
     it('should set .dropdownTrigger', function () {
@@ -39,6 +39,10 @@ describe('CommentTypeToggle', function () {
     it('should set .closeButton', function () {
       expect(this.commentTypeToggle.closeButton).toBe(this.closeButton);
     });
+
+    it('should set .reopenButton', function () {
+      expect(this.commentTypeToggle.reopenButton).toBe(this.reopenButton);
+    });
   });
 
   describe('initDroplab', function () {
@@ -49,13 +53,16 @@ describe('CommentTypeToggle', function () {
         noteTypeInput: {},
         submitButton: {},
         closeButton: {},
+        setConfig: () => {},
       };
+      this.config = {};
 
       this.droplab = jasmine.createSpyObj('droplab', ['init']);
 
       spyOn(dropLabSrc, 'default').and.returnValue(this.droplab);
+      spyOn(this.commentTypeToggle, 'setConfig').and.returnValue(this.config);
 
-      this.initDroplab = CommentTypeToggle.prototype.initDroplab.call(this.commentTypeToggle);
+      CommentTypeToggle.prototype.initDroplab.call(this.commentTypeToggle);
     });
 
     it('should instantiate a DropLab instance', function () {
@@ -66,31 +73,21 @@ describe('CommentTypeToggle', function () {
       expect(this.commentTypeToggle.droplab).toBe(this.droplab);
     });
 
+    it('should call .setConfig', function () {
+      expect(this.commentTypeToggle.setConfig).toHaveBeenCalled();
+    });
+
     it('should call DropLab.prototype.init', function () {
       expect(this.droplab.init).toHaveBeenCalledWith(
         this.commentTypeToggle.dropdownTrigger,
         this.commentTypeToggle.dropdownList,
         [InputSetter],
-        {
-          InputSetter: [{
-            input: this.commentTypeToggle.noteTypeInput,
-            valueAttribute: 'data-value',
-          }, {
-            input: this.commentTypeToggle.submitButton,
-            valueAttribute: 'data-button-text',
-          },
-          {
-            input: this.commentTypeToggle.closeButton,
-            valueAttribute: 'data-secondary-button-text',
-          }, {
-            input: this.commentTypeToggle.closeButton,
-            valueAttribute: 'data-secondary-button-text',
-            inputAttribute: 'data-alternative-text',
-          }],
-        },
+        this.config,
       );
     });
+  });
 
+  describe('setConfig', function () {
     describe('if no .closeButton is provided', function () {
       beforeEach(function () {
         this.commentTypeToggle = {
@@ -98,26 +95,48 @@ describe('CommentTypeToggle', function () {
           dropdownList: {},
           noteTypeInput: {},
           submitButton: {},
+          reopenButton: {},
         };
 
-        this.initDroplab = CommentTypeToggle.prototype.initDroplab.call(this.commentTypeToggle);
+        this.setConfig = CommentTypeToggle.prototype.setConfig.call(this.commentTypeToggle);
       });
 
-      it('should not add .closeButton related InputSetter config', function () {
-        expect(this.droplab.init).toHaveBeenCalledWith(
-          this.commentTypeToggle.dropdownTrigger,
-          this.commentTypeToggle.dropdownList,
-          [InputSetter],
-          {
-            InputSetter: [{
-              input: this.commentTypeToggle.noteTypeInput,
-              valueAttribute: 'data-value',
-            }, {
-              input: this.commentTypeToggle.submitButton,
-              valueAttribute: 'data-button-text',
-            }],
-          },
-        );
+      it('should not add .closeButton or .reopenButton related InputSetter config', function () {
+        expect(this.setConfig).toEqual({
+          InputSetter: [{
+            input: this.commentTypeToggle.noteTypeInput,
+            valueAttribute: 'data-value',
+          }, {
+            input: this.commentTypeToggle.submitButton,
+            valueAttribute: 'data-submit-text',
+          }],
+        });
+      });
+    });
+
+    describe('if no .reopenButton is provided', function () {
+      beforeEach(function () {
+        this.commentTypeToggle = {
+          dropdownTrigger: {},
+          dropdownList: {},
+          noteTypeInput: {},
+          submitButton: {},
+          closeButton: {},
+        };
+
+        this.setConfig = CommentTypeToggle.prototype.setConfig.call(this.commentTypeToggle);
+      });
+
+      it('should not add .closeButton or .reopenButton related InputSetter config', function () {
+        expect(this.setConfig).toEqual({
+          InputSetter: [{
+            input: this.commentTypeToggle.noteTypeInput,
+            valueAttribute: 'data-value',
+          }, {
+            input: this.commentTypeToggle.submitButton,
+            valueAttribute: 'data-submit-text',
+          }],
+        });
       });
     });
   });

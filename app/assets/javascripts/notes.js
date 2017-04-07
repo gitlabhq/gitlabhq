@@ -137,16 +137,24 @@ require('./task_list');
       $(document).off("click", '.system-note-commit-list-toggler');
     };
 
-    Notes.prototype.initCommentTypeToggle = function (form) {
-      this.commentTypeToggle = new CommentTypeToggle(
-        form.querySelector('.js-comment-type-dropdown .dropdown-toggle'),
-        form.querySelector('.js-comment-type-dropdown .dropdown-menu'),
-        form.querySelector('#note_type'),
-        form.querySelector('.js-comment-type-dropdown .js-comment-submit-button'),
-        form.querySelector('.js-note-target-close:not(.hidden)') || form.querySelector('.js-note-target-reopen'),
-      );
+    Notes.initCommentTypeToggle = function (form) {
+      const dropdownTrigger = form.querySelector('.js-comment-type-dropdown .dropdown-toggle');
+      const dropdownList = form.querySelector('.js-comment-type-dropdown .dropdown-menu');
+      const noteTypeInput = form.querySelector('#note_type');
+      const submitButton = form.querySelector('.js-comment-type-dropdown .js-comment-submit-button');
+      const closeButton = form.querySelector('.js-note-target-close');
+      const reopenButton = form.querySelector('.js-note-target-reopen');
 
-      this.commentTypeToggle.initDroplab();
+      const commentTypeToggle = new CommentTypeToggle({
+        dropdownTrigger,
+        dropdownList,
+        noteTypeInput,
+        submitButton,
+        closeButton,
+        reopenButton,
+      });
+
+      commentTypeToggle.initDroplab();
     };
 
     Notes.prototype.keydownNoteText = function(e) {
@@ -470,7 +478,7 @@ require('./task_list');
       this.parentTimeline = form.parents('.timeline');
 
       if (form.length) {
-        this.initCommentTypeToggle(form.get(0));
+        Notes.initCommentTypeToggle(form.get(0));
       }
     };
 
@@ -939,8 +947,9 @@ require('./task_list');
       reopenbtn = form.find('.js-note-target-reopen');
       closebtn = form.find('.js-note-target-close');
       discardbtn = form.find('.js-note-discard');
+
       if (textarea.val().trim().length > 0) {
-        reopentext = reopenbtn.data('alternative-text');
+        reopentext = reopenbtn.attr('data-alternative-text');
         closetext = closebtn.attr('data-alternative-text');
         if (reopenbtn.text() !== reopentext) {
           reopenbtn.text(reopentext);
