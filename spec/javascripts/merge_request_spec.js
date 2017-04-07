@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-return-assign */
+/* eslint-disable space-before-function-paren, no-return-assign, no-new */
 /* global MergeRequest */
 
 require('~/merge_request');
@@ -9,7 +9,7 @@ require('~/merge_request');
       preloadFixtures('merge_requests/merge_request_with_task_list.html.raw');
       beforeEach(function() {
         loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
-        return this.merge = new MergeRequest();
+        this.merge = new MergeRequest();
       });
       it('modifies the Markdown field', function() {
         spyOn(jQuery, 'ajax').and.stub();
@@ -43,7 +43,7 @@ require('~/merge_request');
 
         describe('on success', () => {
           beforeEach(() => {
-            spyOn(jQuery, 'ajax').and.callFake((req) => {
+            spyOn(jQuery, 'ajax').and.callFake(() => {
               const d = $.Deferred();
               d.resolve({
                 id: 1,
@@ -77,7 +77,7 @@ require('~/merge_request');
 
         describe('on error', () => {
           beforeEach(() => {
-            spyOn(jQuery, 'ajax').and.callFake((req) => {
+            spyOn(jQuery, 'ajax').and.callFake(() => {
               const d = $.Deferred();
               d.resolve();
               return d.promise();
@@ -125,7 +125,7 @@ require('~/merge_request');
 
         describe('on success', () => {
           beforeEach(() => {
-            spyOn(jQuery, 'ajax').and.callFake((req) => {
+            spyOn(jQuery, 'ajax').and.callFake(() => {
               const d = $.Deferred();
               d.resolve({
                 id: 1,
@@ -159,7 +159,7 @@ require('~/merge_request');
 
         describe('on error', () => {
           beforeEach(() => {
-            spyOn(jQuery, 'ajax').and.callFake((req) => {
+            spyOn(jQuery, 'ajax').and.callFake(() => {
               const d = $.Deferred();
               d.resolve();
               return d.promise();
