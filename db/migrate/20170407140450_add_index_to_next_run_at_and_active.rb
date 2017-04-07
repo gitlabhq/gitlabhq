@@ -6,7 +6,13 @@ class AddIndexToNextRunAtAndActive < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  def change
-    add_index :ci_trigger_schedules, [:active, :next_run_at]
+  disable_ddl_transaction!
+
+  def up
+    add_concurrent_index :ci_trigger_schedules, [:active, :next_run_at]
+  end
+
+  def down
+    remove_index :ci_trigger_schedules, [:active, :next_run_at]
   end
 end

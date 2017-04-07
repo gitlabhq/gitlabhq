@@ -106,7 +106,7 @@ feature 'Triggers', feature: true, js: true do
         end
       end
 
-      context 'enabling schedule' do
+      context 'disabling schedule' do
         before do
           trigger.create_trigger_schedule(project: trigger.project, active: true)
 
@@ -120,7 +120,7 @@ feature 'Triggers', feature: true, js: true do
 
           visit edit_namespace_project_trigger_path(@project.namespace, @project, trigger)
           checkbox = find_field('trigger_trigger_schedule_attributes_active')
-          
+
           expect(checkbox).not_to be_checked
         end
       end
