@@ -15,8 +15,7 @@ export default {
     },
     projects: {
       type: Array,
-      required: false,
-      default: [],
+      required: true,
     },
     path: {
       type: String,
@@ -48,9 +47,6 @@ export default {
     },
     timeagoTitle() {
       return gl.utils.formatDate(new Date(this.createdAt));
-    },
-    removeMessage() {
-      return this.canRemove ? 'You are going to remove deploy key. Are you sure?' : '';
     },
     linkText() {
       if (this.enable) {
@@ -101,7 +97,6 @@ export default {
         <span class="key-created-at">
           created
           <span
-            class="js-created-at-timeago"
             data-toggle="tooltip"
             data-placement="top"
             :data-original-title="timeagoTitle"
