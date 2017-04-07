@@ -6,11 +6,11 @@ module Ci
     acts_as_paranoid
 
     belongs_to :project
-    belongs_to :trigger
+    belongs_to :trigger, inverse_of: :trigger_schedule
 
     delegate :ref, to: :trigger, allow_nil: true
 
-    validates :trigger, presence: { unless: :importing? }
+    validates_presence_of :trigger
     validates :cron, cron: true, presence: { unless: :importing? }
     validates :cron_timezone, cron_timezone: true, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
@@ -19,6 +19,7 @@ module Ci
 
     def set_next_run_at
       self.next_run_at = Gitlab::Ci::CronParser.new(cron, cron_timezone).next_time_from(Time.now)
+      self.project = trigger.project
     end
 
     def schedule_next_run!

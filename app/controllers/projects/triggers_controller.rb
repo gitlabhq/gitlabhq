@@ -16,6 +16,7 @@ class Projects::TriggersController < Projects::ApplicationController
     if @trigger.valid?
       flash[:notice] = 'Trigger was created successfully.'
     else
+      puts "@trigger.errors: #{@trigger.errors.inspect}"
       flash[:alert] = 'You could not create a new trigger.'
     end
 
@@ -33,6 +34,7 @@ class Projects::TriggersController < Projects::ApplicationController
   end
 
   def edit
+    @trigger.build_trigger_schedule unless @trigger.trigger_schedule.present?
   end
 
   def update
@@ -69,15 +71,15 @@ class Projects::TriggersController < Projects::ApplicationController
 
   def create_params
     params.require(:trigger).permit(
-      :description, :ref, :trigger_schedule_on,
-      trigger_schedule_attributes: [ :cron, :cron_timezone ]
+      :description, :ref,
+      trigger_schedule_attributes: [ :cron, :cron_timezone, :_destroy ]
     )
   end
 
   def update_params
     params.require(:trigger).permit(
-      :description, :ref, :trigger_schedule_on,
-      trigger_schedule_attributes: [ :cron, :cron_timezone ]
+      :description, :ref,
+      trigger_schedule_attributes: [ :cron, :cron_timezone, :_destroy ]
     )
   end
 end

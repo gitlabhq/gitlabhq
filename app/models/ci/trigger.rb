@@ -8,27 +8,16 @@ module Ci
     belongs_to :owner, class_name: "User"
 
     has_many :trigger_requests, dependent: :destroy
-    has_one :trigger_schedule, dependent: :destroy
+    has_one :trigger_schedule, dependent: :destroy, inverse_of: :trigger
 
     validates :token, presence: true, uniqueness: true
 
     before_validation :set_default_values
 
-    accepts_nested_attributes_for :trigger_schedule
-
-    attr_accessor :trigger_schedule_on
+    accepts_nested_attributes_for :trigger_schedule, allow_destroy: true
 
     def set_default_values
       self.token = SecureRandom.hex(15) if self.token.blank?
-
-      if trigger_schedule_on.present?
-        if trigger_schedule_on.to_i == 1
-          self.trigger_schedule.project = project
-          self.trigger_schedule.trigger = self
-        else
-          self.trigger_schedule = nil
-        end
-      end
     end
 
     def last_trigger_request

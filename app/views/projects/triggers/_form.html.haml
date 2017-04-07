@@ -18,13 +18,10 @@
     .form-group
       = f.label :ref, "Ref (For scheduled trigger)", class: "label-light"
       = f.text_field :ref, class: "form-control", title: 'Trigger Schedule Ref is required.', placeholder: "master"
-  - if action_name == 'edit'
-    = f.hidden_field :trigger_schedule_on, :value => @trigger.trigger_schedule.present? ? 1 : 0
-  - else
     .form-group
       .checkbox
-        = f.label :trigger_schedule_on do
-          = f.check_box :trigger_schedule_on
+        = schedule_fields.label :_destroy do
+          = schedule_fields.check_box :_destroy, { checked: (@trigger.trigger_schedule.id.present?) }, 0, 1
           %strong Register as scheduled trigger
         .help-block
           If checked, this trigger will be executed periodically according to `cron`, `cron_timezone` and `ref`
