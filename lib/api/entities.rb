@@ -775,12 +775,16 @@ module API
     end
 
     class GeoNodeStatus < Grape::Entity
+      expose :id
       expose :health
+      expose :healthy?, as: :healthy
       expose :repositories_count
       expose :repositories_synced_count
       expose :repositories_failed_count
       expose :lfs_objects_count
       expose :lfs_objects_synced_count
+      expose :attachments_count
+      expose :attachments_synced_count
     end
 
     class PersonalAccessToken < Grape::Entity
