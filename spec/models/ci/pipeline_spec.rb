@@ -12,10 +12,13 @@ describe Ci::Pipeline, models: true do
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }
+  it { is_expected.to belong_to(:auto_canceled_by) }
 
   it { is_expected.to have_many(:statuses) }
   it { is_expected.to have_many(:trigger_requests) }
   it { is_expected.to have_many(:builds) }
+  it { is_expected.to have_many(:auto_canceled_pipelines) }
+  it { is_expected.to have_many(:auto_canceled_jobs) }
 
   it { is_expected.to validate_presence_of :sha }
   it { is_expected.to validate_presence_of :status }
@@ -131,6 +134,43 @@ describe Ci::Pipeline, models: true do
 
     def create_build(name, status)
       create(:ci_build, name: name, status: status, pipeline: pipeline)
+    end
+  end
+
+  describe '#auto_canceled?' do
+    subject { pipeline.auto_canceled? }
+
+    context 'when it is canceled' do
+      before do
+        pipeline.cancel
+      end
+
+      context 'when there is auto_canceled_by' do
+        before do
+          pipeline.update(auto_canceled_by: create(:ci_empty_pipeline))
+        end
+
+        it 'is auto canceled' do
+          is_expected.to be_truthy
+        end
+      end
+
+      context 'when there is no auto_canceled_by' do
+        it 'is not auto canceled' do
+          is_expected.to be_falsey
+        end
+      end
+
+      context 'when it is retried and canceled manually' do
+        before do
+          pipeline.enqueue
+          pipeline.cancel
+        end
+
+        it 'is not auto canceled' do
+          is_expected.to be_falsey
+        end
+      end
     end
   end
 
@@ -332,6 +372,14 @@ describe Ci::Pipeline, models: true do
         it 'schedules metrics workers' do
           pipeline.succeed
         end
+      end
+    end
+
+    describe 'pipeline ETag caching' do
+      it 'executes ExpirePipelinesCacheService' do
+        expect_any_instance_of(Ci::ExpirePipelineCacheService).to receive(:execute).with(pipeline)
+
+        pipeline.cancel
       end
     end
 

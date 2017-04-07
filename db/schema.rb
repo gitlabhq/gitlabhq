@@ -222,6 +222,7 @@ ActiveRecord::Schema.define(version: 20170405080720) do
     t.string "token"
     t.integer "lock_version"
     t.string "coverage_regex"
+    t.integer "auto_canceled_by_id"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
@@ -250,6 +251,7 @@ ActiveRecord::Schema.define(version: 20170405080720) do
     t.integer "duration"
     t.integer "user_id"
     t.integer "lock_version"
+    t.integer "auto_canceled_by_id"
   end
 
   add_index "ci_pipelines", ["project_id", "ref", "status"], name: "index_ci_pipelines_on_project_id_and_ref_and_status", using: :btree
@@ -945,6 +947,7 @@ ActiveRecord::Schema.define(version: 20170405080720) do
     t.boolean "lfs_enabled"
     t.text "description_html"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
+    t.integer "auto_cancel_pending_pipelines", default: 0, null: false
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
     t.string "import_jid"
   end
@@ -1327,6 +1330,8 @@ ActiveRecord::Schema.define(version: 20170405080720) do
 
   add_foreign_key "boards", "projects"
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
+  add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
+  add_foreign_key "ci_pipelines", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_262d4c2d19", on_delete: :nullify
   add_foreign_key "ci_trigger_schedules", "ci_triggers", column: "trigger_id", name: "fk_90a406cc94", on_delete: :cascade
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"

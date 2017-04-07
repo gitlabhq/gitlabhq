@@ -233,6 +233,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
 
       format.json do
+        Gitlab::PollingInterval.set_header(response, interval: 10_000)
+
         render json: PipelineSerializer
           .new(project: @project, user: @current_user)
           .represent(@pipelines)
@@ -245,6 +247,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       format.html { define_new_vars }
       format.json do
         define_pipelines_vars
+
+        Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
         render json: {
           pipelines: PipelineSerializer

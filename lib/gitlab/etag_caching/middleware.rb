@@ -10,6 +10,22 @@ module Gitlab
         {
           regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/issues/\d+/rendered_title\z),
           name: 'issue_title'
+        },
+        {
+          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/pipelines\.json\z),
+          name: 'project_pipelines'
+        },
+        {
+          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/commit/\s+/pipelines\.json\z),
+          name: 'commit_pipelines'
+        },
+        {
+          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/merge_requests/new\.json\z),
+          name: 'new_merge_request_pipelines'
+        },
+        {
+          regexp: %r(^(?!.*(#{RESERVED_WORDS})).*/merge_requests/\d+/pipelines\.json\z),
+          name: 'merge_request_pipelines'
         }
       ].freeze
 
@@ -65,7 +81,7 @@ module Gitlab
 
         status_code = Gitlab::PollingInterval.polling_enabled? ? 304 : 429
 
-        [status_code, { 'ETag' => etag }, ['']]
+        [status_code, { 'ETag' => etag }, []]
       end
 
       def track_cache_miss(if_none_match, cached_value_present, route)

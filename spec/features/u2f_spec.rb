@@ -6,18 +6,18 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
   before { allow_any_instance_of(U2fHelper).to receive(:inject_u2f_api?).and_return(true) }
 
   def manage_two_factor_authentication
-    click_on 'Manage Two-Factor Authentication'
-    expect(page).to have_content("Setup New U2F Device")
+    click_on 'Manage two-factor authentication'
+    expect(page).to have_content("Setup new U2F device")
     wait_for_ajax
   end
 
   def register_u2f_device(u2f_device = nil, name: 'My device')
     u2f_device ||= FakeU2fDevice.new(page, name)
     u2f_device.respond_to_u2f_registration
-    click_on 'Setup New U2F Device'
+    click_on 'Setup new U2F device'
     expect(page).to have_content('Your device was successfully set up')
     fill_in "Pick a name", with: name
-    click_on 'Register U2F Device'
+    click_on 'Register U2F device'
     u2f_device
   end
 
@@ -34,9 +34,9 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
 
       it 'does not allow registering a new device' do
         visit profile_account_path
-        click_on 'Enable Two-Factor Authentication'
+        click_on 'Enable two-factor authentication'
 
-        expect(page).to have_button('Setup New U2F Device', disabled: true)
+        expect(page).to have_button('Setup new U2F device', disabled: true)
       end
     end
 
@@ -111,9 +111,9 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
 
         # Have the "u2f device" respond with bad data
         page.execute_script("u2f.register = function(_,_,_,callback) { callback('bad response'); };")
-        click_on 'Setup New U2F Device'
+        click_on 'Setup new U2F device'
         expect(page).to have_content('Your device was successfully set up')
-        click_on 'Register U2F Device'
+        click_on 'Register U2F device'
 
         expect(U2fRegistration.count).to eq(0)
         expect(page).to have_content("The form contains the following error")
@@ -126,9 +126,9 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
 
         # Failed registration
         page.execute_script("u2f.register = function(_,_,_,callback) { callback('bad response'); };")
-        click_on 'Setup New U2F Device'
+        click_on 'Setup new U2F device'
         expect(page).to have_content('Your device was successfully set up')
-        click_on 'Register U2F Device'
+        click_on 'Register U2F device'
         expect(page).to have_content("The form contains the following error")
 
         # Successful registration

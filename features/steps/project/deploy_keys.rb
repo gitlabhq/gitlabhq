@@ -26,7 +26,7 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
   end
 
   step 'I click \'New Deploy Key\'' do
-    click_link 'New Deploy Key'
+    click_link 'New deploy key'
   end
 
   step 'I submit new deploy key' do

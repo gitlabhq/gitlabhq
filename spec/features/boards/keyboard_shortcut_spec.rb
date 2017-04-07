@@ -14,7 +14,7 @@ describe 'Issue Boards shortcut', feature: true, js: true do
   end
 
   it 'takes user to issue board index' do
-    find('body').native.send_keys('gl')
+    find('body').native.send_keys('gb')
     expect(page).to have_selector('.boards-list')
 
     wait_for_vue_resource

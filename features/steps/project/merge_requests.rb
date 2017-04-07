@@ -300,10 +300,10 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
       page.within('.current-note-edit-form', visible: true) do
         fill_in 'note_note', with: 'Typo, please fix'
-        click_button 'Save Comment'
+        click_button 'Save comment'
       end
 
-      expect(page).not_to have_button 'Save Comment', disabled: true, visible: true
+      expect(page).not_to have_button 'Save comment', disabled: true, visible: true
     end
   end
 
@@ -381,7 +381,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'merge request is mergeable' do
-    expect(page).to have_button 'Accept Merge Request'
+    expect(page).to have_button 'Accept merge request'
   end
 
   step 'I modify merge commit message' do
@@ -395,7 +395,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I accept this merge request' do
     page.within '.mr-state-widget' do
-      click_button "Accept Merge Request"
+      click_button "Accept merge request"
     end
   end
 

@@ -26,7 +26,7 @@ feature 'Create New Merge Request', feature: true, js: true do
   end
 
   it 'selects the target branch sha when a tag with the same name exists' do
-    visit namespace_project_merge_requests_path(project.namespace, project)
+    visit namespace_project_merge_requests_path(project.namespace, project)    
 
     click_link 'New merge request'
 
