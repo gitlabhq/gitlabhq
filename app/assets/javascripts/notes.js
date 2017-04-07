@@ -143,7 +143,7 @@ require('./task_list');
         form.querySelector('.js-comment-type-dropdown .dropdown-menu'),
         form.querySelector('#note_type'),
         form.querySelector('.js-comment-type-dropdown .js-comment-submit-button'),
-        form.querySelector('.js-note-target-close'),
+        form.querySelector('.js-note-target-close:not(.hidden)') || form.querySelector('.js-note-target-reopen'),
       );
 
       this.commentTypeToggle.initDroplab();

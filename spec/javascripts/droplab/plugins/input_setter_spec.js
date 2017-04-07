@@ -2,7 +2,7 @@
 
 import InputSetter from '~/droplab/plugins/input_setter';
 
-fdescribe('InputSetter', function () {
+describe('InputSetter', function () {
   describe('init', function () {
     beforeEach(function () {
       this.config = { InputSetter: {} };

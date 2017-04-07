@@ -93,9 +93,9 @@ shared_examples 'discussion comments' do |resource_name|
     end
 
     it 'clicking the ul padding should not change the text' do
-      find(menu_selector).click
+      find(menu_selector).trigger 'click'
 
-      expect(find(submit_selector)).to have_content 'Comment'
+      expect(find(dropdown_selector)).to have_content 'Comment'
     end
 
     describe 'when selecting "Start discussion"' do
@@ -109,7 +109,7 @@ shared_examples 'discussion comments' do |resource_name|
       end
 
       it 'updates the submit button text' do
-        expect(find(dropdown_selector)).to have_content "Start discussion"
+        expect(find(dropdown_selector)).to have_content 'Start discussion'
       end
 
       if resource_name =~ /(issue|merge request)/
@@ -181,7 +181,7 @@ shared_examples 'discussion comments' do |resource_name|
           end
 
           it 'updates the submit button text' do
-            expect(find(dropdown_selector)).to have_content "Comment"
+            expect(find(dropdown_selector)).to have_content 'Comment'
           end
 
           if resource_name =~ /(issue|merge request)/
@@ -222,20 +222,22 @@ shared_examples 'discussion comments' do |resource_name|
   if resource_name =~ /(issue|merge request)/
     describe "on a closed #{resource_name}" do
       before do
-        find("#{form_selector} .close-mr-link").click
+        find("#{form_selector} .js-note-target-close").click
+
+        find("#{form_selector} .note-textarea").send_keys('a')
       end
 
-      it 'should show a "Comment & reopen #{resource_name}" button' do
-        expect(find(close_selector)).to have_content "Comment & reopen #{resource_name}"
+      it "should show a 'Comment & reopen #{resource_name}' button" do
+        expect(find("#{form_selector} .js-note-target-reopen")).to have_content "Comment & reopen #{resource_name}"
       end
 
-      it 'should show a "Start discussion & reopen #{resource_name}" button when "Start discussion" is selected' do
+      it "should show a 'Start discussion & reopen #{resource_name}' button when 'Start discussion' is selected" do
         find(toggle_selector).click
 
         find("#{menu_selector} li", match: :first)
         all("#{menu_selector} li").last.click
 
-        expect(find(close_selector)).to have_content "Start discussion & reopen #{resource_name}"
+        expect(find("#{form_selector} .js-note-target-reopen")).to have_content "Start discussion & reopen #{resource_name}"
       end
     end
   end
