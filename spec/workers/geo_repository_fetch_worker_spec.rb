@@ -40,6 +40,12 @@ describe GeoRepositoryFetchWorker do
 
       perform
     end
+
+    it 'does not raise exception when git failures occurs' do
+      expect_any_instance_of(Repository).to receive(:fetch_geo_mirror).and_raise(Gitlab::Shell::Error)
+
+      expect { perform }.not_to raise_error
+    end
   end
 
   def perform
