@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170406115029) do
+ActiveRecord::Schema.define(version: 20170407122426) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -311,6 +311,8 @@ ActiveRecord::Schema.define(version: 20170406115029) do
     t.string "cron"
     t.string "cron_timezone"
     t.datetime "next_run_at"
+    t.string "ref"
+    t.boolean "active"
   end
 
   add_index "ci_trigger_schedules", ["next_run_at"], name: "index_ci_trigger_schedules_on_next_run_at", using: :btree

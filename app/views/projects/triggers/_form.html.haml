@@ -16,24 +16,19 @@
           .checkbox
             = schedule_fields.label :active do
               = schedule_fields.check_box :active
-              %strong Schedule trigger
+              %strong Schedule trigger (experimental)
             .help-block
-              If checked, this trigger will be executed periodically according to `cron`, `cron_timezone` and `ref`
-              = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'visibility-of-pipelines')
+              If checked, this trigger will be executed periodically according to `Cron` and `Timezone`.
+              = link_to icon('question-circle'), help_page_path('ci/triggers', anchor: 'schedule')
         .form-group
           = schedule_fields.label :cron, "Cron", class: "label-light"
-          = schedule_fields.text_field :cron, class: "form-control", title: 'Trigger Schedule cron is required.', placeholder: "0 1 * * *"
+          = schedule_fields.text_field :cron, class: "form-control", title: 'Cron specification is required.', placeholder: "0 1 * * *"
         .form-group
           = schedule_fields.label :cron, "Timezone", class: "label-light"
-          = schedule_fields.text_field :cron_timezone, class: "form-control", title: 'Trigger Schedule cron_timezone is required.', placeholder: "UTC"
+          = schedule_fields.text_field :cron_timezone, class: "form-control", title: 'Timezone is required.', placeholder: "UTC"
         .form-group
-          - schedule_ref = @trigger.trigger_schedule.ref || @project.default_branch
           = schedule_fields.label :ref, "Branch or tag", class: "label-light"
-          = hidden_field_tag 'trigger[trigger_schedule_attributes][ref]', schedule_ref
-          = dropdown_tag(schedule_ref,
-                         options: { toggle_class: 'js-branch-select wide',
-                                    filter: true, dropdown_class: "dropdown-menu-selectable", placeholder: "Search branches",
-                                    data: { selected: schedule_ref, field_name: 'trigger[trigger_schedule_attributes][ref]' } })
+          = schedule_fields.text_field :ref, class: "form-control", title: 'Branch or tag is required.', placeholder: "master"
           .help-block Existing branch name, tag
   = f.submit btn_text, class: "btn btn-save"
 

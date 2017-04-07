@@ -77,6 +77,53 @@ feature 'Triggers', feature: true, js: true do
       expect(page.find('.flash-notice')).to have_content 'Trigger was successfully updated.'
       expect(page.find('.triggers-list')).to have_content new_trigger_title
     end
+
+    context 'scheduled triggers' do
+      let!(:trigger) do
+        create(:ci_trigger, owner: user, project: @project, description: trigger_title)
+      end
+
+      context 'enabling schedule' do
+        before do
+          visit edit_namespace_project_trigger_path(@project.namespace, @project, trigger)
+        end
+
+        scenario 'do fill form with valid data and save' do
+          find('#trigger_trigger_schedule_attributes_active').click
+          fill_in 'trigger_trigger_schedule_attributes_cron', with: '1 * * * *'
+          fill_in 'trigger_trigger_schedule_attributes_cron_timezone', with: 'UTC'
+          fill_in 'trigger_trigger_schedule_attributes_ref', with: 'master'
+          click_button 'Save trigger'
+
+          expect(page.find('.flash-notice')).to have_content 'Trigger was successfully updated.'
+        end
+
+        scenario 'do not fill form with valid data and save' do
+          find('#trigger_trigger_schedule_attributes_active').click
+          click_button 'Save trigger'
+
+          expect(page).to have_content 'The form contains the following errors'
+        end
+      end
+
+      context 'enabling schedule' do
+        before do
+          trigger.create_trigger_schedule(project: trigger.project, active: true)
+
+          visit edit_namespace_project_trigger_path(@project.namespace, @project, trigger)
+        end
+
+        scenario 'disable and save form' do
+          find('#trigger_trigger_schedule_attributes_active').click
+          click_button 'Save trigger'
+          expect(page.find('.flash-notice')).to have_content 'Trigger was successfully updated.'
+
+          visit edit_namespace_project_trigger_path(@project.namespace, @project, trigger)
+          checkbox = find_field('trigger_trigger_schedule_attributes_active')
+          expect(checkbox).not_to be_checked
+        end
+      end
+    end
   end
 
   describe 'trigger "Take ownership" workflow' do
@@ -125,14 +172,6 @@ feature 'Triggers', feature: true, js: true do
   describe 'show triggers workflow' do
     scenario 'contains trigger description placeholder' do
       expect(page.find('#trigger_description')['placeholder']).to eq 'Trigger description'
-      expect(page.find('#trigger_trigger_schedule_attributes_cron')['placeholder']).to eq '0 1 * * *'
-      expect(page.find('#trigger_trigger_schedule_attributes_cron_timezone')['placeholder']).to eq 'UTC'
-      expect(page.find('#trigger_ref')['placeholder']).to eq 'master'
-    end
-
-    scenario 'show checkbox for registration of scheduled trigger and checked off defaultly' do
-      expect(page.find('#trigger_trigger_schedule_attributes__destroy')['type']).to eq 'checkbox'
-      expect(page.find('#trigger_trigger_schedule_attributes__destroy')['value']).to eq '0'
     end
 
     scenario 'show "legacy" badge for legacy trigger' do
