@@ -58,6 +58,10 @@ class Blob < SimpleDelegator
     binary? && extname.downcase.delete('.') == 'sketch'
   end
 
+  def stl?
+    extname.downcase.delete('.') == 'stl'
+  end
+
   def size_within_svg_limits?
     size <= MAXIMUM_SVG_SIZE
   end
@@ -81,6 +85,8 @@ class Blob < SimpleDelegator
       'notebook'
     elsif sketch?
       'sketch'
+    elsif stl?
+      'stl'
     elsif text?
       'text'
     else

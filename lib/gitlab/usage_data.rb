@@ -40,6 +40,7 @@ module Gitlab
             notes: Note.count,
             pages_domains: PagesDomain.count,
             projects: Project.count,
+            projects_prometheus_active: PrometheusService.active.count,
             protected_branches: ProtectedBranch.count,
             releases: Release.count,
             remote_mirrors: RemoteMirror.count,

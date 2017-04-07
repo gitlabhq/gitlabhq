@@ -1,0 +1,4 @@
+---
+title: Give each elasticsearch worker its own sidekiq queue
+merge_request:
+author:

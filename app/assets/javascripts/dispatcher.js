@@ -246,9 +246,11 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'projects:pipelines:builds':
         case 'projects:pipelines:show':
           const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
+          const pipelineStatusUrl = `${document.querySelector('.js-pipeline-tab-link a').getAttribute('href')}/status.json`;
 
           new gl.Pipelines({
             initTabs: true,
+            pipelineStatusUrl,
             tabsOptions: {
               action: controllerAction,
               defaultAction: 'pipelines',

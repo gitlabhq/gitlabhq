@@ -266,6 +266,7 @@ describe Projects::EnvironmentsController do
         get :status, environment_params
 
         expect(response.status).to eq(204)
+        expect(response.headers['Poll-Interval']).to eq("3000")
       end
 
       it 'returns the rollout status when present' do

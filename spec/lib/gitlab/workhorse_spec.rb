@@ -188,10 +188,8 @@ describe Gitlab::Workhorse, lib: true do
 
     context 'when Gitaly is enabled' do
       let(:gitaly_params) do
-        address = Gitlab::GitalyClient.get_address('default')
         {
-          GitalySocketPath: URI(address).path,
-          GitalyAddress: address,
+          GitalyAddress: Gitlab::GitalyClient.get_address('default'),
         }
       end
 
