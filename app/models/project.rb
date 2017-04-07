@@ -1497,7 +1497,7 @@ class Project < ActiveRecord::Base
   end
 
   def repository_and_lfs_size
-    statistics.storage_size + statistics.lfs_objects_size
+    statistics.total_repository_size
   end
 
   def above_size_limit?
