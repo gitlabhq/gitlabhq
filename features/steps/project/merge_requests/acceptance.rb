@@ -20,10 +20,18 @@ class Spinach::Features::ProjectMergeRequestsAcceptance < Spinach::FeatureSteps
 
   step 'I should see the Remove Source Branch button' do
     expect(page).to have_link('Remove source branch')
+
+    # Wait for AJAX requests to complete so they don't blow up if they are
+    # only handled after `DatabaseCleaner` has already run
+    wait_for_ajax
   end
 
   step 'I should not see the Remove Source Branch button' do
     expect(page).not_to have_link('Remove source branch')
+
+    # Wait for AJAX requests to complete so they don't blow up if they are
+    # only handled after `DatabaseCleaner` has already run
+    wait_for_ajax
   end
 
   step 'There is an open Merge Request' do
