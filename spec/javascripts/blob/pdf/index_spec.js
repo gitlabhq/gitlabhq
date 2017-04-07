@@ -3,6 +3,17 @@ import testPDF from './test.pdf';
 
 describe('PDF renderer', () => {
   let viewer;
+  let app;
+
+  const checkLoaded = (done) => {
+    if (app.loading) {
+      setTimeout(() => {
+        checkLoaded(done);
+      }, 100);
+    } else {
+      done();
+    }
+  };
 
   preloadFixtures('static/pdf_viewer.html.raw');
 
@@ -22,11 +33,9 @@ describe('PDF renderer', () => {
 
   describe('successful response', () => {
     beforeEach((done) => {
-      renderPDF();
+      app = renderPDF();
 
-      setTimeout(() => {
-        done();
-      }, 500);
+      checkLoaded(done);
     });
 
     it('does not show loading icon', () => {
@@ -50,11 +59,10 @@ describe('PDF renderer', () => {
 
   describe('error getting file', () => {
     beforeEach((done) => {
-      renderPDF();
+      viewer.dataset.endpoint = 'invalid/endpoint';
+      app = renderPDF();
 
-      setTimeout(() => {
-        done();
-      }, 500);
+      checkLoaded(done);
     });
 
     it('does not show loading icon', () => {
