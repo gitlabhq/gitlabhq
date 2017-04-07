@@ -13,6 +13,6 @@ class AddIndexToNextRunAtAndActive < ActiveRecord::Migration
   end
 
   def down
-    remove_index :ci_trigger_schedules, [:active, :next_run_at]
+    remove_concurrent_index :ci_trigger_schedules, [:active, :next_run_at]
   end
 end

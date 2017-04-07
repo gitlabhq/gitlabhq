@@ -57,7 +57,10 @@ describe TriggerScheduleWorker do
   end
 
   context 'when next_run_at is nil' do
-    let!(:trigger_schedule) { create(:ci_trigger_schedule, :nightly, next_run_at: nil) }
+    before
+      schedule = create(:ci_trigger_schedule, :nightly)
+      schedule.update_column(:next_run_at, nil)
+    end
 
     it 'does not create a new pipeline' do
       expect { worker.perform }.not_to change { Ci::Pipeline.count }
