@@ -333,9 +333,20 @@
   }
 
   li {
-    white-space: nowrap;
-    cursor: pointer;
     padding-top: 6px;
+
+    & > a {
+      margin: 0;
+      padding: 0;
+      color: inherit;
+      border-radius: 0;
+
+      &:hover,
+      &:focus {
+        background-color: inherit;
+        color: inherit;
+      }
+    }
 
     &:hover,
     &:focus {

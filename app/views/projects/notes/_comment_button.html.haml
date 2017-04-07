@@ -9,20 +9,22 @@
 
     %ul#resolvable-comment-menu.dropdown-menu{ data: { dropdown: true } }
       %li#comment.droplab-item-selected{ data: { value: '', 'submit-text' => 'Comment', 'close-text' => "Comment & close #{noteable_name}", 'reopen-text' => "Comment & reopen #{noteable_name}" } }
-        = icon('check')
-        .description
-          %strong Comment
-          %p
-            Add a general comment to this #{noteable_name}.
+        %a{ href: '#' }
+          = icon('check')
+          .description
+            %strong Comment
+            %p
+              Add a general comment to this #{noteable_name}.
 
       %li.divider
 
       %li#discussion{ data: { value: 'DiscussionNote', 'submit-text' => 'Start discussion', 'close-text' => "Start discussion & close #{noteable_name}", 'reopen-text' => "Start discussion & reopen #{noteable_name}" } }
-        = icon('check')
-        .description
-          %strong Start discussion
-          %p
-            = succeed '.' do
-              Discuss a specific suggestion or question
-              - if @note.noteable.supports_resolvable_notes?
-                that needs to be resolved
+        %a{ href: '#' }
+          = icon('check')
+          .description
+            %strong Start discussion
+            %p
+              = succeed '.' do
+                Discuss a specific suggestion or question
+                - if @note.noteable.supports_resolvable_notes?
+                  that needs to be resolved
