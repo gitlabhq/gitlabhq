@@ -108,7 +108,12 @@ feature 'Triggers', feature: true, js: true do
 
       context 'disabling schedule' do
         before do
-          trigger.create_trigger_schedule(project: trigger.project, active: true)
+          trigger.create_trigger_schedule(
+            project: trigger.project,
+            active: true,
+            ref: 'master',
+            cron: '1 * * * *',
+            cron_timezone: 'UTC')
 
           visit edit_namespace_project_trigger_path(@project.namespace, @project, trigger)
         end
