@@ -61,11 +61,9 @@ RSpec.shared_examples "protected branches > access control > EE" do
 
       click_on "Protect"
 
-      within(".js-protected-branch-edit-form") do
-        users.each { |user| set_allowed_to(git_operation, user.name) }
-        groups.each { |group| set_allowed_to(git_operation, group.name) }
-        roles.each { |(_, access_type_name)| set_allowed_to(git_operation, access_type_name) }
-      end
+      users.each { |user| set_allowed_to(git_operation, user.name, form: ".js-protected-branch-edit-form") }
+      groups.each { |group| set_allowed_to(git_operation, group.name, form: ".js-protected-branch-edit-form") }
+      roles.each { |(_, access_type_name)| set_allowed_to(git_operation, access_type_name, form: ".js-protected-branch-edit-form") }
 
       wait_for_ajax
 
@@ -128,9 +126,8 @@ RSpec.shared_examples "protected branches > access control > EE" do
       end
       expect(ProtectedBranch.last.push_access_levels.map(&:access_level)).not_to include(0)
 
-      within(".js-protected-branch-edit-form") do
-        set_allowed_to('push', 'No one')
-      end
+      set_allowed_to('push', 'No one', form: '.js-protected-branch-edit-form')
+
       wait_for_ajax
 
       roles.each do |(access_type_id, _)|
