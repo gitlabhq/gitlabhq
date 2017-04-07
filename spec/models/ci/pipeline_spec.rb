@@ -375,7 +375,7 @@ describe Ci::Pipeline, models: true do
       end
     end
 
-    describe 'pipeline ETag caching' do
+    describe 'pipeline caching' do
       it 'executes ExpirePipelinesCacheService' do
         expect_any_instance_of(Ci::ExpirePipelineCacheService).to receive(:execute).with(pipeline)
 
@@ -1076,17 +1076,6 @@ describe Ci::Pipeline, models: true do
       it 'does not containyaml errors' do
         expect(pipeline).not_to have_yaml_errors
       end
-    end
-  end
-
-  describe 'update project cache when transitioning' do
-    let(:pipeline) { create(:ci_pipeline, sha: '123456') }
-
-    it 'updates the cached status' do
-      expect(Gitlab::Cache::Ci::ProjectPipelineStatus).to receive(:update_for_pipeline).
-                                                         with(pipeline)
-
-      pipeline.block
     end
   end
 

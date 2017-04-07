@@ -98,7 +98,6 @@ module Ci
           PipelineHooksWorker.perform_async(id)
           Ci::ExpirePipelineCacheService.new(project, nil)
             .execute(pipeline)
-          refresh_project_build_status_cache
         end
       end
 
@@ -390,10 +389,6 @@ module Ci
       Gitlab::Ci::Status::Pipeline::Factory
         .new(self, current_user)
         .fabricate!
-    end
-
-    def refresh_project_build_status_cache
-      Gitlab::Cache::Ci::ProjectPipelineStatus.update_for_pipeline(self)
     end
 
     private
