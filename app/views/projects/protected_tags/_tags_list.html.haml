@@ -1,4 +1,4 @@
-.panel.panel-default.protected-tags-list
+.panel.panel-default.protected-tags-list.js-protected-tags-list
   - if @protected_tags.empty?
     .panel-heading
       %h3.panel-title
@@ -21,6 +21,8 @@
           - if can_admin_project
             %th
       %tbody
+        %tr
+          %td.flash-container{ colspan: 4 }
         = render partial: 'projects/protected_tags/protected_tag', collection: @protected_tags, locals: { can_admin_project: can_admin_project}
 
     = paginate @protected_tags, theme: 'gitlab'
