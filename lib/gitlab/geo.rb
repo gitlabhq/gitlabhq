@@ -2,15 +2,15 @@ module Gitlab
   module Geo
     OauthApplicationUndefinedError = Class.new(StandardError)
 
-    CACHE_KEYS = [
-      :geo_primary_node,
-      :geo_secondary_nodes,
-      :geo_node_enabled,
-      :geo_node_primary,
-      :geo_node_secondary,
-      :geo_primary_ssh_path_prefix,
-      :geo_oauth_application
-    ]
+    CACHE_KEYS = %i[
+      geo_primary_node
+      geo_secondary_nodes
+      geo_node_enabled
+      geo_node_primary
+      geo_node_secondary
+      geo_primary_ssh_path_prefix
+      geo_oauth_application
+    ].freeze
 
     def self.current_node
       self.cache_value(:geo_node_current) do
