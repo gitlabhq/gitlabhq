@@ -57,7 +57,7 @@ GET /projects/:id/milestones/:milestone_id
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `milestone_id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user milestone
+- `milestone_id` (required) - The ID of the project's milestone
 
 ## Create new milestone
 
