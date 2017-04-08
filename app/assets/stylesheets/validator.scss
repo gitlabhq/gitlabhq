@@ -1,0 +1,40 @@
+/*
+ *  Validator.scss
+ *  Use CSS colors to help visualize bad HTML
+ *  --------------------------------------------
+ *  DO NOT USE IN PRODUCTION
+ *  --------------------------------------------
+ */
+
+$error-color: red;
+
+// Don't forget to include `type` attribute to button
+button:not([type]),
+
+// Don't forget to include `disabled` attribute when .disabled
+button.disabled:not([disabled]),
+
+// Don't forget to include `type` attribute to input
+input:not([type]),
+
+// Don't forget to include `disabled` attribute when .disabled
+input.disabled:not([disabled]),
+
+// Don't forget to include `alt` attribute to image
+img:not([alt]),
+
+// Don't forget to include `href` attribute to anchor
+a:not([href]),
+
+// Don't forget to include `rel=nofollow` attribute to anchor
+// when it has a `download` attribute
+a[download]:not([rel="nofollow"]),
+
+// Don't forget to include an actual `href` attribute to anchor
+// Otherwise, you should consider using a button instead
+a[href="#"]
+
+// scss-lint:disable SpaceBeforeBrace
+{
+  background-color: $error-color !important;
+}

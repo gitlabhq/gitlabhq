@@ -33,6 +33,9 @@ Rails.application.configure do
   # Raises helpful error messages.
   config.assets.raise_runtime_errors = true
 
+  # Adds CSS that helps highlight invalid HTML during development
+  config.assets.precompile << "validator.css"
+
   # For having correct urls in mails
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
   # Open sent mails in browser
