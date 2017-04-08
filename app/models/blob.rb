@@ -58,6 +58,10 @@ class Blob < SimpleDelegator
     binary? && extname.downcase.delete('.') == 'sketch'
   end
 
+  def balsamiq?
+    binary? && extname.downcase.delete('.') == 'bmpr'
+  end
+
   def stl?
     extname.downcase.delete('.') == 'stl'
   end
@@ -87,6 +91,8 @@ class Blob < SimpleDelegator
       'sketch'
     elsif stl?
       'stl'
+    elsif balsamiq?
+      'bmpr'
     elsif text?
       'text'
     else
