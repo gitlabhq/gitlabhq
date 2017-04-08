@@ -13,7 +13,7 @@ describe MergeRequests::RebaseService do
     project.team << [user, :master]
   end
 
-  describe :execute do
+  describe '#execute' do
     context 'valid params' do
       let(:service) { MergeRequests::RebaseService.new(project, user, {}) }
 
