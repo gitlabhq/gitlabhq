@@ -72,13 +72,14 @@
         = link_to namespace_project_compare_path(@project.namespace, @project, from: @start_version.base_commit_sha, to: @merge_request_diff.base_commit_sha) do
           new commits
         from
-        %code= @merge_request.target_branch
+        = succeed '.' do
+          %code= @merge_request.target_branch
 
     - if @diff_notes_disabled
       .comments-disabled-notif.content-block
         = icon('info-circle')
         - if @start_sha
-          Comment creation is disabled because you're comparing two versions of this merge request.
+          Comments are disabled because you're comparing two versions of this merge request.
         - else
           Discussions on this old version of the merge request are displayed but comment creation is disabled.
 

@@ -26,6 +26,10 @@ module NoteOnDiff
     raise NotImplementedError
   end
 
+  def active?(diff_refs = nil)
+    raise NotImplementedError
+  end
+
   private
 
   def noteable_diff_refs

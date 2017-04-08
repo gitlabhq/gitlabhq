@@ -66,7 +66,7 @@ feature 'Merge Request versions', js: true, feature: true do
     end
 
     it 'show the message about disabled comments' do
-      expect(page).to have_content 'Comment creation is disabled'
+      expect(page).to have_content 'Comments are disabled'
     end
 
     it 'show diff between new and old version' do

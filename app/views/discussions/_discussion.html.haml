@@ -30,6 +30,7 @@
               - else
                 a deleted commit
             - elsif discussion.diff_discussion?
+              on
               = conditional_link_to url.present?, url do
                 - if discussion.active?
                   the diff

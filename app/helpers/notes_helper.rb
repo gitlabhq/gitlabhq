@@ -76,7 +76,7 @@ module NotesHelper
       diffs_namespace_project_merge_request_path(discussion.project.namespace, discussion.project, discussion.noteable, diff_id: diff_id, anchor: discussion.line_code)
     elsif discussion.for_commit?
       anchor = discussion.line_code if discussion.diff_discussion?
-      
+
       namespace_project_commit_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: anchor)
     end
   end

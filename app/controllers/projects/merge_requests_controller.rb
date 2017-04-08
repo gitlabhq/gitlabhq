@@ -576,13 +576,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @comparable_diffs = @merge_request_diffs.select { |diff| diff.id < @merge_request_diff.id }
 
     if params[:start_sha].present?
-      @start_sha = params[:start_sha]
-      @start_version = @comparable_diffs.find { |diff| diff.head_commit_sha == @start_sha }
+      start_sha = params[:start_sha]
+      @start_version = @comparable_diffs.find { |diff| diff.head_commit_sha == start_sha }
 
-      unless @start_version
-        @start_sha = @merge_request_diff.head_commit_sha
-        @start_version = @merge_request_diff
-      end
+      @start_sha = start_sha if @start_version
     end
 
     @diffs =
