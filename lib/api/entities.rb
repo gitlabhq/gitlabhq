@@ -947,6 +947,7 @@ module API
 
     class GeoNodeStatus < Grape::Entity
       expose :id
+      expose :db_replication_lag
       expose :health
       expose :healthy?, as: :healthy
       expose :repositories_count

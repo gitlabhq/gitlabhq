@@ -13,6 +13,7 @@ class GeoNodeStatus {
     this.$el = $(el);
     this.$icon = $('.js-geo-node-icon', this.$el);
     this.$loadingIcon = $('.js-geo-node-loading', this.$el);
+    this.$dbReplicationLag = $('.js-db-replication-lag', this.$status);
     this.$healthStatus = $('.js-health-status', this.$el);
     this.$status = $('.js-geo-node-status', this.$el);
     this.$repositoriesSynced = $('.js-repositories-synced', this.$status);
@@ -36,6 +37,15 @@ class GeoNodeStatus {
     $.getJSON(this.endpoint, (status) => {
       this.setStatusIcon(status.healthy);
       this.setHealthStatus(status.healthy);
+
+      // Replication lag can be nil if the secondary isn't actually streaming
+      if (status.db_replication_lag) {
+        const parsedTime = gl.utils.prettyTime.parseSeconds(status.db_replication_lag);
+        this.$dbReplicationLag.html(gl.utils.prettyTime.stringifyTime(parsedTime));
+      } else {
+        this.$dbReplicationLag.html('UNKNOWN');
+      }
+
       this.$repositoriesSynced.html(`${status.repositories_synced_count}/${status.repositories_count} (${status.repositories_synced_in_percentage})`);
       this.$repositoriesFailed.html(status.repositories_failed_count);
       this.$lfsObjectsSynced.html(`${status.lfs_objects_synced_count}/${status.lfs_objects_count} (${status.lfs_objects_synced_in_percentage})`);

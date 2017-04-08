@@ -5,6 +5,7 @@ module Geo
 
     KEYS = %w(
       health
+      db_replication_lag
       repositories_count
       repositories_synced_count
       repositories_failed_count

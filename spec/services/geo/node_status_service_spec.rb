@@ -25,6 +25,7 @@ describe Geo::NodeStatusService do
 
     it 'parses a 200 response' do
       data = { health: 'OK',
+               db_replication_lag: 0,
                repositories_count: 10,
                repositories_synced_count: 1,
                repositories_failed_count: 2,

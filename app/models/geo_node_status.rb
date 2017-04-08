@@ -14,6 +14,14 @@ class GeoNodeStatus
     health.blank?
   end
 
+  def db_replication_lag
+    @db_replication_lag ||= Gitlab::Geo::HealthCheck.db_replication_lag
+  end
+
+  def db_replication_lag=(value)
+    @db_replication_lag = value
+  end
+
   def repositories_count
     @repositories_count ||= repositories.count
   end
