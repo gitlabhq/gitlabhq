@@ -158,8 +158,8 @@ Parameters:
 
 ### Get single project
 
-Get a specific project, identified by project ID or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding), which is owned by the authenticated user. 
-This endpoint can be accessed without authentication if the project is publicly accessible.
+Get a specific project. This endpoint can be accessed without authentication if
+the project is publicly accessible.
 
 ```
 GET /projects/:id
@@ -169,7 +169,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```json
 {
@@ -295,7 +295,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```json
 [
@@ -497,7 +497,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `name` | string | yes | The name of the project |
 | `path` | string | no | Custom repository name for the project. By default generated based on name |
 | `default_branch` | string | no | `master` by default |
@@ -529,7 +529,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `namespace` | integer/string | yes | The ID or path of the namespace that the project will be forked to |
 
 ### Star a project
@@ -544,7 +544,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [urlencoded NAMESPACE/PROJECT_NAME of the project](README.md#namespaced-path-encoding) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/star"

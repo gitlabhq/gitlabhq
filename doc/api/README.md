@@ -305,10 +305,10 @@ Additional pagination headers are also sent back.
 
 ## Namespaced path encoding
 
-If using namespaced api calls make sure that the `NAMESPACE/PROJECT_NAME` is
+If using namespaced API calls, make sure that the `NAMESPACE/PROJECT_NAME` is
 URL-encoded.
 
-For example,  `/` is represented by `%2F`:
+For example, `/` is represented by `%2F`:
 
 ```
 /api/v4/projects/diaspora%2Fdiaspora
