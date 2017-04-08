@@ -109,6 +109,7 @@ The following guide assumes that:
 
     You may also want to edit the `wal_keep_segments` and `max_wal_senders` to
     match your database replication requirements.
+    See [PostgreSQL - Replication documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html)
 
 1. Check to make sure your firewall rules are set so that the secondary nodes
    can access port 5432 on the primary node.
