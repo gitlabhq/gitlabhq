@@ -15,6 +15,10 @@ var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 
 var config = {
+  // because sqljs requires fs.
+  node: {
+    fs: "empty"
+  },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
     common:               './commons/index.js',
@@ -118,6 +122,7 @@ var config = {
         'merge_conflicts',
         'notebook_viewer',
         'pdf_viewer',
+        'balsamiq_viewer',
         'vue_pipelines',
       ],
       minChunks: function(module, count) {
