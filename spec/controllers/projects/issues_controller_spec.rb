@@ -519,7 +519,7 @@ describe Projects::IssuesController do
     end
 
     context 'resolving discussions in MergeRequest' do
-      let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
+      let(:discussion) { create(:diff_note_on_merge_request).to_discussion }
       let(:merge_request) { discussion.noteable }
       let(:project) { merge_request.source_project }
 
