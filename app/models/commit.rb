@@ -2,6 +2,7 @@ class Commit
   extend ActiveModel::Naming
 
   include ActiveModel::Conversion
+  include Noteable
   include Participable
   include Mentionable
   include Referable
@@ -201,6 +202,10 @@ class Commit
 
   def notes
     project.notes.for_commit_id(self.id)
+  end
+
+  def discussion_notes
+    notes.non_diff_notes
   end
 
   def notes_with_associations

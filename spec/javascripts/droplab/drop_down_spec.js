@@ -130,7 +130,7 @@ describe('DropDown', function () {
     beforeEach(function () {
       this.list = { dispatchEvent: () => {} };
       this.dropdown = { hide: () => {}, list: this.list, addSelectedClass: () => {} };
-      this.event = { preventDefault: () => {}, target: 'target' };
+      this.event = { preventDefault: () => {}, target: {} };
       this.customEvent = {};
       this.closestElement = {};
 
@@ -166,6 +166,21 @@ describe('DropDown', function () {
 
     it('should call .dispatchEvent with the customEvent', function () {
       expect(this.list.dispatchEvent).toHaveBeenCalledWith(this.customEvent);
+    });
+
+    describe('if the target is a UL element', function () {
+      beforeEach(function () {
+        this.event = { preventDefault: () => {}, target: { tagName: 'UL' } };
+
+        spyOn(this.event, 'preventDefault');
+        utils.closest.calls.reset();
+
+        DropDown.prototype.clickEvent.call(this.dropdown, this.event);
+      });
+
+      it('should return immediately', function () {
+        expect(utils.closest).not.toHaveBeenCalled();
+      });
     });
 
     describe('if no selected element exists', function () {

@@ -12,7 +12,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 20170407140450) do
-
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_trgm"
@@ -757,7 +756,6 @@ ActiveRecord::Schema.define(version: 20170407140450) do
     t.datetime "resolved_at"
     t.integer "resolved_by_id"
     t.string "discussion_id"
-    t.string "original_discussion_id"
     t.text "note_html"
   end
 
@@ -1055,6 +1053,7 @@ ActiveRecord::Schema.define(version: 20170407140450) do
     t.string "line_code"
     t.string "note_type"
     t.text "position"
+    t.string "in_reply_to_discussion_id"
   end
 
   add_index "sent_notifications", ["reply_key"], name: "index_sent_notifications_on_reply_key", unique: true, using: :btree

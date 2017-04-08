@@ -4,7 +4,7 @@ describe 'projects/notes/_form' do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project, :repository) }
 
   before do
     project.team << [user, :master]
@@ -20,7 +20,7 @@ describe 'projects/notes/_form' do
     context "with a note on #{noteable}" do
       let(:note) { build(:"note_on_#{noteable}", project: project) }
 
-      it 'says that only markdown is supported, not slash commands' do
+      it 'says that markdown and slash commands are supported' do
         expect(rendered).to have_content('Markdown and slash commands are supported')
       end
     end
