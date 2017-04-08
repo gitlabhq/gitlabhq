@@ -146,7 +146,7 @@
             = link_to admin_projects_path do
               %h1= number_with_delimiter(Project.cached_count)
             %hr
-            = link_to('New Project', new_project_path, class: "btn btn-new")
+            = link_to('New project', new_project_path, class: "btn btn-new")
       .col-sm-4
         .light-well.well-centered
           %h4 Users
@@ -154,7 +154,7 @@
             = link_to admin_users_path do
               %h1= number_with_delimiter(User.count)
             %hr
-            = link_to 'New User', new_admin_user_path, class: "btn btn-new"
+            = link_to 'New user', new_admin_user_path, class: "btn btn-new"
       .col-sm-4
         .light-well.well-centered
           %h4 Groups
@@ -162,7 +162,7 @@
             = link_to admin_groups_path do
               %h1= number_with_delimiter(Group.count)
             %hr
-            = link_to 'New Group', new_admin_group_path, class: "btn btn-new"
+            = link_to 'New group', new_admin_group_path, class: "btn btn-new"
 
     .row.prepend-top-10
       .col-md-4

@@ -102,7 +102,7 @@ def check_type_selector_display(is_visible)
 end
 
 def try_selecting_all_types
-  try_selecting_template_type('LICENSE', 'Apply a License template')
+  try_selecting_template_type('LICENSE', 'Apply a license template')
   try_selecting_template_type('Dockerfile', 'Apply a Dockerfile template')
   try_selecting_template_type('.gitlab-ci.yml', 'Apply a GitLab CI Yaml template')
   try_selecting_template_type('.gitignore', 'Apply a .gitignore template')
@@ -130,6 +130,6 @@ end
 
 def create_and_edit_file(file_name)
   visit namespace_project_new_blob_path(project.namespace, project, 'master', file_name: file_name)
-  click_button "Commit Changes"
+  click_button "Commit changes"
   visit namespace_project_edit_blob_path(project.namespace, project, File.join(project.default_branch, file_name))
 end
