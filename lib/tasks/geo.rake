@@ -44,7 +44,7 @@ namespace :geo do
     end
 
     desc 'Display database encryption key'
-    task :show_encryption_key => :environment do
+    task show_encryption_key: :environment do
       puts Rails.application.secrets.db_key_base
     end
   end
