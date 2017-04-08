@@ -90,7 +90,8 @@ module Gitlab
     def self.cache_value(key, &block)
       return yield unless RequestStore.active?
 
-      RequestStore.fetch(key) { Rails.cache.fetch(key) { yield } }
+      # We need a short expire time as we can't manually expire on a secondary node
+      RequestStore.fetch(key) { Rails.cache.fetch(key, expires_in: 15.seconds) { yield } }
     end
 
     def self.expire_cache!
