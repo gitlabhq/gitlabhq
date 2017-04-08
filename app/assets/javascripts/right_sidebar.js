@@ -1,6 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-unused-vars, consistent-return, one-var, one-var-declaration-per-line, quotes, prefer-template, object-shorthand, comma-dangle, no-else-return, no-param-reassign, max-len */
 
 import Cookies from 'js-cookie';
+import PromMetrics from './prom/prom_metrics';
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
@@ -32,6 +33,8 @@ import Cookies from 'js-cookie';
       $(window).on('resize', () => throttledSetSidebarHeight());
       $document.on('scroll', () => throttledSetSidebarHeight());
       $document.on('click', '.js-sidebar-toggle', function(e, triggered) {
+        PromMetrics.rightSidebar.toggle();
+
         var $allGutterToggleIcons, $this, $thisIcon;
         e.preventDefault();
         $this = $(this);

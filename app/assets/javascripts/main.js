@@ -11,6 +11,8 @@ import Pikaday from 'pikaday';
 import Dropzone from 'dropzone';
 import Sortable from 'vendor/Sortable';
 
+import PromPusher from './prom/prom_pusher';
+
 // libraries with import side-effects
 import 'mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';
@@ -181,6 +183,11 @@ import './visibility_select';
 import './wikis';
 import './zen_mode';
 
+gon.gateway_endpoint = 'https://gatewayEndpoint'; // TEMPORARY
+PromPusher.init({
+  gatewayEndpoint: gon.gateway_endpoint,
+});
+
 // eslint-disable-next-line global-require
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
 
@@ -288,7 +295,15 @@ $(function () {
         return buttons.enable();
     }
   });
+
+  $(document).ajaxSend(function (e, xhrObj, options) {
+    const xhr = xhrObj;
+    xhr.url = options.url;
+  });
+
   $(document).ajaxError(function (e, xhrObj) {
+    if (xhrObj.url === gon.gateway_endpoint) return;
+
     var ref = xhrObj.status;
     if (xhrObj.status === 401) {
       return new Flash('You need to be logged in.', 'alert');
@@ -296,6 +311,7 @@ $(function () {
       return new Flash('Something went wrong on our end.', 'alert');
     }
   });
+
   $('.account-box').hover(function () {
     // Show/Hide the profile menu when hovering the account box
     return $(this).toggleClass('hover');
