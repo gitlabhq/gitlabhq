@@ -160,7 +160,7 @@ import eventHub from './event_hub';
       if (e.keyCode === 13) {
         const dropdown = this.dropdownManager.mapping[this.dropdownManager.currentDropdown];
         const dropdownEl = dropdown.element;
-        const activeElements = dropdownEl.querySelectorAll('.dropdown-active');
+        const activeElements = dropdownEl.querySelectorAll('.droplab-item-active');
 
         e.preventDefault();
 

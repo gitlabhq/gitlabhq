@@ -75,12 +75,6 @@ import './u2f/error';
 import './u2f/register';
 import './u2f/util';
 
-// droplab
-import './droplab/droplab';
-import './droplab/droplab_ajax';
-import './droplab/droplab_ajax_filter';
-import './droplab/droplab_filter';
-
 // everything else
 import './abuse_reports';
 import './activities';
