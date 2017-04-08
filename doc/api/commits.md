@@ -69,7 +69,7 @@ POST /projects/:id/repository/commits
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `branch_name` | string | yes | The name of a branch |
+| `branch` | string | yes | The name of a branch |
 | `commit_message` | string | yes | Commit message |
 | `actions[]` | array | yes | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
 | `author_email` | string | no | Specify the commit author's email address |
