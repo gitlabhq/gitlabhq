@@ -25,7 +25,7 @@ describe 'Comments', feature: true do
     describe 'the note form' do
       it 'is valid' do
         is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
-        expect(find('.js-main-target-form input[type=submit]').value).
+        expect(find('.js-main-target-form .js-comment-button').value).
           to eq('Comment')
         page.within('.js-main-target-form') do
           expect(page).not_to have_link('Cancel')

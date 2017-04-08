@@ -17,29 +17,46 @@ class NotesFinder
     @project = project
     @current_user = current_user
     @params = params
-    init_collection
   end
 
   def execute
-    @notes = since_fetch_at(@params[:last_fetched_at]) if @params[:last_fetched_at]
-    @notes
+    notes = init_collection
+    notes = since_fetch_at(notes)
+    notes.fresh
+  end
+
+  def target
+    return @target if defined?(@target)
+
+    target_type = @params[:target_type]
+    target_id   = @params[:target_id]
+
+    return @target = nil unless target_type && target_id
+
+    @target =
+      if target_type == "commit"
+        if Ability.allowed?(@current_user, :download_code, @project)
+          @project.commit(target_id)
+        end
+      else
+        noteables_for_type(target_type).find(target_id)
+      end
   end
 
   private
 
   def init_collection
-    @notes =
-      if @params[:target_id]
-        on_target(@params[:target_type], @params[:target_id])
-      else
-        notes_of_any_type
-      end
+    if target
+      notes_on_target
+    else
+      notes_of_any_type
+    end
   end
 
   def notes_of_any_type
     types = %w(commit issue merge_request snippet)
     note_relations = types.map { |t| notes_for_type(t) }
-    note_relations.map!{ |notes| search(@params[:search], notes) } if @params[:search]
+    note_relations.map! { |notes| search(notes) }
     UnionFinder.new.find_union(note_relations, Note)
   end
 
@@ -69,17 +86,11 @@ class NotesFinder
     end
   end
 
-  def on_target(target_type, target_id)
-    if target_type == "commit"
-      notes_for_type('commit').for_commit_id(target_id)
+  def notes_on_target
+    if target.respond_to?(:related_notes)
+      target.related_notes
     else
-      target = noteables_for_type(target_type).find(target_id)
-
-      if target.respond_to?(:related_notes)
-        target.related_notes
-      else
-        target.notes
-      end
+      target.notes
     end
   end
 
@@ -87,17 +98,21 @@ class NotesFinder
   #
   # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
   #
-  def search(query, notes_relation = @notes)
+  def search(notes)
+    query = @params[:search]
+    return notes unless query
+
     pattern = "%#{query}%"
-    notes_relation.where(Note.arel_table[:note].matches(pattern))
+    notes.where(Note.arel_table[:note].matches(pattern))
   end
 
   # Notes changed since last fetch
   # Uses overlapping intervals to avoid worrying about race conditions
-  def since_fetch_at(fetch_time)
+  def since_fetch_at(notes)
+    return notes unless @params[:last_fetched_at]
+
     # Default to 0 to remain compatible with old clients
     last_fetched_at = Time.at(@params.fetch(:last_fetched_at, 0).to_i)
-
-    @notes.where('updated_at > ?', last_fetched_at - FETCH_OVERLAP).fresh
+    notes.updated_after(last_fetched_at - FETCH_OVERLAP)
   end
 end

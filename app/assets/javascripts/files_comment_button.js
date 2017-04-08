@@ -55,14 +55,19 @@ window.FilesCommentButton = (function() {
 
     textFileElement = this.getTextFileElement($currentTarget);
     buttonParentElement.append(this.buildButton({
+      discussionID: lineContentElement.attr('data-discussion-id'),
+      lineType: lineContentElement.attr('data-line-type'),
+
       noteableType: textFileElement.attr('data-noteable-type'),
       noteableID: textFileElement.attr('data-noteable-id'),
       commitID: textFileElement.attr('data-commit-id'),
       noteType: lineContentElement.attr('data-note-type'),
-      position: lineContentElement.attr('data-position'),
-      lineType: lineContentElement.attr('data-line-type'),
-      discussionID: lineContentElement.attr('data-discussion-id'),
-      lineCode: lineContentElement.attr('data-line-code')
+
+      // LegacyDiffNote
+      lineCode: lineContentElement.attr('data-line-code'),
+
+      // DiffNote
+      position: lineContentElement.attr('data-position')
     }));
   };
 
@@ -76,14 +81,19 @@ window.FilesCommentButton = (function() {
 
   FilesCommentButton.prototype.buildButton = function(buttonAttributes) {
     return $commentButtonTemplate.clone().attr({
+      'data-discussion-id': buttonAttributes.discussionID,
+      'data-line-type': buttonAttributes.lineType,
+
       'data-noteable-type': buttonAttributes.noteableType,
       'data-noteable-id': buttonAttributes.noteableID,
       'data-commit-id': buttonAttributes.commitID,
       'data-note-type': buttonAttributes.noteType,
+
+      // LegacyDiffNote
       'data-line-code': buttonAttributes.lineCode,
-      'data-position': buttonAttributes.position,
-      'data-discussion-id': buttonAttributes.discussionID,
-      'data-line-type': buttonAttributes.lineType
+
+      // DiffNote
+      'data-position': buttonAttributes.position
     });
   };
 
@@ -121,7 +131,7 @@ window.FilesCommentButton = (function() {
   };
 
   FilesCommentButton.prototype.validateLineContent = function(lineContentElement) {
-    return lineContentElement.attr('data-discussion-id') && lineContentElement.attr('data-discussion-id') !== '';
+    return lineContentElement.attr('data-note-type') && lineContentElement.attr('data-note-type') !== '';
   };
 
   return FilesCommentButton;

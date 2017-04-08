@@ -108,7 +108,7 @@ Style/EmptyMethod:
 Style/ExtraSpacing:
   Enabled: false
 
-# Offense count: 9
+# Offense count: 8
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: format, sprintf, percent
 Style/FormatString:
@@ -226,7 +226,6 @@ Style/PredicateName:
 Style/PreferredHashMethods:
   Enabled: false
 
-
 # Offense count: 62
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
@@ -255,7 +254,7 @@ Style/RedundantReturn:
 Style/RedundantSelf:
   Enabled: false
 
-# Offense count: 111
+# Offense count: 108
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, AllowInnerSlashes.
 # SupportedStyles: slashes, percent_r, mixed
@@ -337,7 +336,7 @@ Style/StringLiteralsInInterpolation:
 Style/SymbolProc:
   Enabled: false
 
-# Offense count: 6
+# Offense count: 5
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, AllowSafeAssignment.
 # SupportedStyles: require_parentheses, require_no_parentheses, require_parentheses_when_complex
