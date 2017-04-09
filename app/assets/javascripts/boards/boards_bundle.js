@@ -81,6 +81,7 @@ $(() => {
 
             if (list.type === 'closed') {
               list.position = Infinity;
+              list.label = { description: 'Shows all closed issues. Moving an issue to this list closes it' };
             }
           });
 
