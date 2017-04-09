@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import xlsx from 'xlsx'
 
 export default class XlsxViewer {
@@ -61,8 +62,18 @@ export default class XlsxViewer {
     // opts.on.wb(wb, sheetidx);
     var sheet = wb.SheetNames[sheetidx || 1];
     var json = this.toJson(wb)[sheet], cols = this.getColumns(wb.Sheets[sheet]);
-    // opts.on.sheet(json, cols, wb.SheetNames, chooseSheet);
-    console.log(sheet)
-    console.log(json)
+    this.loadVue(sheet, json)
+  }
+
+  loadVue(sheet, json) {
+    this.vue = new Vue({
+      el: this.el,
+      data() {
+        return {
+          sheet: sheet,
+          rows: json
+        }
+      }
+    });
   }
 }

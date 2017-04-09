@@ -1,4 +1,14 @@
 - content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('xlsx_viewer')
 
 .file-content#js-xlsx-viewer{ data: { endpoint: namespace_project_raw_path(@project.namespace, @project, @id) } }
+  %table.table
+    %thead
+      %tr
+        %th{"v-for" => "(val, prop) in rows[0]"}
+          {{prop}}
+    %tbody
+      %tr{"v-for" => "row in rows"}
+        %td{"v-for" => "(val, prop) in row"}
+          {{val}}
