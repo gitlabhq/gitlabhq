@@ -24,6 +24,6 @@ class Projects::ServiceDeskController < Projects::ApplicationController
   end
 
   def authorize_admin_instance!
-    return render_404 unless current_user.is_admin?
+    return render_404 unless current_user.admin?
   end
 end

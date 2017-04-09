@@ -135,7 +135,7 @@
             .js-service-desk-setting-root{ data: { endpoint: namespace_project_service_desk_path(@project.namespace, @project),
               enabled: @project.service_desk_enabled,
               incoming_email: (@project.service_desk_address if @project.service_desk_enabled),
-              is_instance_admin: current_user.is_admin? } }
+              is_instance_admin: current_user.admin? } }
 
         %hr
         %fieldset.features.append-bottom-default
