@@ -49,6 +49,7 @@ var config = {
     users:                './users/users_bundle.js',
     vue_pipelines:        './vue_pipelines_index/index.js',
     issue_show:           './issue_show/index.js',
+    group:                './group.js',
   },
 
   output: {

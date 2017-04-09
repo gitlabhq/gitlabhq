@@ -83,7 +83,7 @@ feature 'Group', feature: true do
     end
   end
 
-  describe 'create a nested group' do
+  describe 'create a nested group', js: true do
     let(:group) { create(:group, path: 'foo') }
 
     context 'as admin' do
