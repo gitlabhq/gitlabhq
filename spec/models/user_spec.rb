@@ -315,7 +315,7 @@ describe User, models: true do
   end
 
   describe "Respond to" do
-    it { is_expected.to respond_to(:is_admin?) }
+    it { is_expected.to respond_to(:admin?) }
     it { is_expected.to respond_to(:name) }
     it { is_expected.to respond_to(:private_token) }
     it { is_expected.to respond_to(:external?) }
@@ -586,7 +586,7 @@ describe User, models: true do
     describe 'normal user' do
       let(:user) { create(:user, name: 'John Smith') }
 
-      it { expect(user.is_admin?).to be_falsey }
+      it { expect(user.admin?).to be_falsey }
       it { expect(user.require_ssh_key?).to be_truthy }
       it { expect(user.can_create_group?).to be_truthy }
       it { expect(user.can_create_project?).to be_truthy }
