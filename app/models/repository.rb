@@ -407,8 +407,6 @@ class Repository
   # Runs code after a repository has been forked/imported.
   def after_import
     expire_content_cache
-    expire_tags_cache
-    expire_branches_cache
   end
 
   # Runs code after a new commit has been pushed.
