@@ -1,0 +1,4 @@
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('xlsx_viewer')
+
+.file-content#js-xlsx-viewer{ data: { endpoint: namespace_project_raw_path(@project.namespace, @project, @id) } }

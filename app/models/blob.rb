@@ -50,6 +50,10 @@ class Blob < SimpleDelegator
     name && File.extname(name) == '.pdf'
   end
 
+  def xlsx?
+    binary? && name && File.extname(name) == '.xlsx'
+  end
+
   def ipython_notebook?
     text? && language&.name == 'Jupyter Notebook'
   end
@@ -89,6 +93,8 @@ class Blob < SimpleDelegator
       'stl'
     elsif text?
       'text'
+    elsif xlsx?
+      'xlsx'
     else
       'download'
     end

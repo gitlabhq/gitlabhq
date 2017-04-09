@@ -45,7 +45,8 @@
     "vue": "^2.2.4",
     "vue-resource": "^0.9.3",
     "webpack": "^2.3.3",
-    "webpack-bundle-analyzer": "^2.3.0"
+    "webpack-bundle-analyzer": "^2.3.0",
+    "xlsx": "^0.9.9"
   },
   "devDependencies": {
     "babel-plugin-istanbul": "^4.0.0",

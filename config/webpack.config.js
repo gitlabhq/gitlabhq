@@ -39,6 +39,7 @@ var config = {
     notebook_viewer:      './blob/notebook_viewer.js',
     sketch_viewer:        './blob/sketch_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
+    xlsx_viewer:          './blob/xlsx_viewer.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
     protected_tags:       './protected_tags',
@@ -116,6 +117,7 @@ var config = {
         'merge_conflicts',
         'notebook_viewer',
         'pdf_viewer',
+        'xlsx_viewer',
         'vue_pipelines',
       ],
       minChunks: function(module, count) {
