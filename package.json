@@ -36,6 +36,7 @@
     "pikaday": "^1.5.1",
     "raphael": "^2.2.7",
     "raw-loader": "^0.5.1",
+    "react-dev-utils": "^0.5.2",
     "select2": "3.5.2-browserify",
     "stats-webpack-plugin": "^0.4.3",
     "three": "^0.84.0",
