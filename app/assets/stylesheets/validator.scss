@@ -1,12 +1,14 @@
-/*
- *  Validator.scss
- *  Use CSS colors to help visualize bad HTML
- *  --------------------------------------------
- *  DO NOT USE IN PRODUCTION
- *  --------------------------------------------
- */
+//
+// Validator.scss
+// Use CSS colors to help visualize bad HTML
+// --------------------------------------------
+// DO NOT USE IN PRODUCTION
+// --------------------------------------------
+//
+// scss-lint:disable SpaceBeforeBrace
 
 $error-color: red;
+
 
 // Don't forget to include `type` attribute to button
 button:not([type]),
@@ -32,9 +34,18 @@ a[download]:not([rel="nofollow"]),
 
 // Don't forget to include an actual `href` attribute to anchor
 // Otherwise, you should consider using a button instead
-a[href="#"]
+a[href="#"],
 
-// scss-lint:disable SpaceBeforeBrace
+// Don't forget to include `rel="noopener noreferrer nofollow"`
+// attribute to anchor because of security vulnerability
+// https://www.jitbit.com/alexblog/256-targetblank---the-most-underestimated-vulnerability-ever/
+a[target="_blank"]:not([rel~="noopener"]),
+a[target="_blank"]:not([rel~="noreferrer"]),
+a[target="_blank"]:not([rel~="nofollow"]),
+
+// Don't forget to include `aria-hidden` attribute to <i>
+// Because bootstrap icons should be hidden from screen readers
+i.fa:not([aria-hidden])
 {
   background-color: $error-color !important;
 }
