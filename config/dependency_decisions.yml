@@ -380,3 +380,21 @@
     :why: https://github.com/Tjatse/ansi-html/blob/master/LICENSE
     :versions: []
     :when: 2017-04-10 05:42:12.898178000 Z
+- - :approve
+  - map-stream
+  - :who: Mike Greiling
+    :why: https://github.com/dominictarr/map-stream/blob/master/LICENCE
+    :versions: []
+    :when: 2017-04-10 06:27:52.269085000 Z
+- - :approve
+  - pause-stream
+  - :who: Mike Greiling
+    :why: https://github.com/dominictarr/pause-stream/blob/master/LICENSE
+    :versions: []
+    :when: 2017-04-10 06:28:39.825894000 Z
+- - :approve
+  - undefsafe
+  - :who: Mike Greiling
+    :why: https://github.com/remy/undefsafe/blob/master/LICENSE
+    :versions: []
+    :when: 2017-04-10 06:30:00.002555000 Z
