@@ -200,6 +200,12 @@ milestone with the due date that is next.
 
 ![Update boards milestone](img/issue_board_multiple_milestone.png)
 
+## Focus mode
+
+Click the button at the top right to enter focus mode, where GitLab navigation UI is hidden, allowing you to focus on issues in the board. Click again to go back.
+
+![Board focus mode](img/issue_board_focus_mode.png)
+
 ## Permissions
 
 [Developers and up](../permissions.md) can use all the functionality of the
