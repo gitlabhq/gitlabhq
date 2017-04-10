@@ -1156,6 +1156,8 @@ class Repository
     @project.repository_storage_path
   end
 
+  delegate :gitaly_channel, :gitaly_repository, to: :raw_repository
+
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage, path_with_namespace + '.git')
   end

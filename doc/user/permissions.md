@@ -55,6 +55,7 @@ The following table depicts the various user permission levels in a project.
 | Push to protected branches            |         |            |             | ✓        | ✓      |
 | Enable/disable branch protection      |         |            |             | ✓        | ✓      |
 | Turn on/off protected branch push for devs|         |            |             | ✓        | ✓      |
+| Enable/disable tag protections        |         |            |             | ✓        | ✓      |
 | Rewrite/remove Git tags               |         |            |             | ✓        | ✓      |
 | Edit project                          |         |            |             | ✓        | ✓      |
 | Add deploy keys to project            |         |            |             | ✓        | ✓      |

@@ -41,6 +41,7 @@ var config = {
     pdf_viewer:           './blob/pdf_viewer.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
+    protected_tags:       './protected_tags',
     snippet:              './snippet/snippet_bundle.js',
     stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
@@ -48,6 +49,7 @@ var config = {
     users:                './users/users_bundle.js',
     vue_pipelines:        './vue_pipelines_index/index.js',
     issue_show:           './issue_show/index.js',
+    group:                './group.js',
   },
 
   output: {

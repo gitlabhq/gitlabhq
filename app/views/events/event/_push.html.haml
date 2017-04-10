@@ -7,6 +7,7 @@
     = custom_icon("icon_commit")
 
 .event-title
+  %span.author_name= link_to_author event
   %span.pushed #{event.action_name} #{event.ref_type}
   %strong
     - commits_link = namespace_project_commits_path(project.namespace, project, event.ref_name)

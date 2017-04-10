@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Discussions::ResolveService do
   describe '#execute' do
-    let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
+    let(:discussion) { create(:diff_note_on_merge_request).to_discussion }
     let(:project) { merge_request.project }
     let(:merge_request) { discussion.noteable }
     let(:user) { create(:user) }
@@ -41,7 +41,7 @@ describe Discussions::ResolveService do
     end
 
     it 'can resolve multiple discussions at once' do
-      other_discussion = Discussion.for_diff_notes([create(:diff_note_on_merge_request, noteable: discussion.noteable, project: discussion.noteable.source_project)]).first
+      other_discussion = create(:diff_note_on_merge_request, noteable: discussion.noteable, project: discussion.noteable.source_project).to_discussion
 
       service.execute([discussion, other_discussion])
 

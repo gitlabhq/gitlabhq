@@ -12,20 +12,18 @@ Vue.use(VueResource);
  * Renders Pipelines table in pipelines tab in the commits show view.
  */
 
+// export for use in merge_request_tabs.js (TODO: remove this hack)
+window.gl = window.gl || {};
+window.gl.CommitPipelinesTable = CommitPipelinesTable;
+
 $(() => {
-  window.gl = window.gl || {};
   gl.commits = gl.commits || {};
   gl.commits.pipelines = gl.commits.pipelines || {};
-
-  if (gl.commits.PipelinesTableBundle) {
-    document.querySelector('#commit-pipeline-table-view').removeChild(this.pipelinesTableBundle.$el);
-    gl.commits.PipelinesTableBundle.$destroy(true);
-  }
 
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
 
   if (pipelineTableViewEl && pipelineTableViewEl.dataset.disableInitialization === undefined) {
     gl.commits.pipelines.PipelinesTableBundle = new CommitPipelinesTable().$mount();
-    document.querySelector('#commit-pipeline-table-view').appendChild(gl.commits.pipelines.PipelinesTableBundle.$el);
+    pipelineTableViewEl.appendChild(gl.commits.pipelines.PipelinesTableBundle.$el);
   }
 });

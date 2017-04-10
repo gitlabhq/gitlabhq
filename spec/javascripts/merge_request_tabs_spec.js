@@ -1,6 +1,7 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
 
 require('~/merge_request_tabs');
+require('~/commit/pipelines/pipelines_bundle.js');
 require('~/breakpoints');
 require('~/lib/utils/common_utils');
 require('~/diff');
@@ -222,7 +223,9 @@ require('vendor/jquery.scrollTo');
 
     describe('#tabShown', () => {
       beforeEach(function () {
-        spyOn($, 'ajax').and.callFake(function () {});
+        spyOn($, 'ajax').and.callFake(function (options) {
+          options.success({ html: '' });
+        });
         loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
       });
 
@@ -230,9 +233,6 @@ require('vendor/jquery.scrollTo');
         beforeEach(function () {
           this.class.diffViewType = () => 'parallel';
           gl.Diff.prototype.diffViewType = () => 'parallel';
-          spyOn($, 'ajax').and.callFake(function (options) {
-            options.success({ html: '' });
-          });
         });
 
         it('maintains `container-limited` for pipelines tab', function (done) {

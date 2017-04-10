@@ -89,6 +89,9 @@ pipelines:
 - statuses
 - builds
 - trigger_requests
+- auto_canceled_by
+- auto_canceled_pipelines
+- auto_canceled_jobs
 - pending_builds
 - retryable_builds
 - cancelable_statuses
@@ -98,6 +101,7 @@ statuses:
 - project
 - pipeline
 - user
+- auto_canceled_by
 variables:
 - project
 triggers:
@@ -120,10 +124,15 @@ protected_branches:
 - project
 - merge_access_levels
 - push_access_levels
+protected_tags:
+- project
+- create_access_levels
 merge_access_levels:
 - protected_branch
 push_access_levels:
 - protected_branch
+create_access_levels:
+- protected_tag
 container_repositories:
 - project
 - name
@@ -184,6 +193,7 @@ project:
 - snippets
 - hooks
 - protected_branches
+- protected_tags
 - project_members
 - users
 - requesters

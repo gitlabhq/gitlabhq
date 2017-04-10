@@ -1,0 +1,37 @@
+- discussion = @note.discussion if @note.part_of_discussion?
+- if discussion
+  %p.details
+    = succeed ':' do
+      = link_to @note.author_name, user_url(@note.author)
+
+      - if discussion.diff_discussion?
+        - if discussion.new_discussion?
+          started a new discussion
+        - else
+          commented on a discussion
+
+        on #{link_to discussion.file_path, @target_url}
+      - else
+        - if discussion.new_discussion?
+          started a new discussion
+        - else
+          commented on a #{link_to 'discussion', @target_url}
+
+- elsif current_application_settings.email_author_in_body
+  %p.details
+    #{link_to @note.author_name, user_url(@note.author)} commented:
+
+- if discussion&.diff_discussion?
+  = content_for :head do
+    = stylesheet_link_tag 'mailers/highlighted_diff_email'
+
+  %table
+    = render partial: "projects/diffs/line",
+      collection: discussion.truncated_diff_lines,
+      as: :line,
+      locals: { diff_file: discussion.diff_file,
+        plain: true,
+        email: true }
+
+%div
+  = markdown(@note.note, pipeline: :email, author: @note.author)

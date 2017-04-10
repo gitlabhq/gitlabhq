@@ -1,5 +1,5 @@
 class Projects::IssuesController < Projects::ApplicationController
-  include NotesHelper
+  include RendersNotes
   include ToggleSubscriptionAction
   include IssuableActions
   include ToggleAwardEmoji
@@ -84,15 +84,11 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def show
-    raw_notes = @issue.notes.inc_relations_for_view.fresh
-
-    @notes = Banzai::NoteRenderer.
-      render(raw_notes, @project, current_user, @path, @project_wiki, @ref)
-
-    @note     = @project.notes.new(noteable: @issue)
     @noteable = @issue
+    @note     = @project.notes.new(noteable: @issue)
 
-    preload_max_access_for_authors(@notes, @project)
+    @discussions = @issue.discussions
+    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
 
     respond_to do |format|
       format.html
