@@ -6,6 +6,10 @@ export SETUP_DB=${SETUP_DB:-true}
 export GITLAB_DATABASE=${GITLAB_DATABASE:-postgresql}
 export USE_BUNDLE_INSTALL=${USE_BUNDLE_INSTALL:-true}
 
+if [ "$GITLAB_DATABASE" = 'pg' ]; then
+    export GITLAB_DATABASE='postgresql'
+fi
+
 if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
     cp config/database.yml.$GITLAB_DATABASE config/database.yml
 

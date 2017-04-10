@@ -7,6 +7,7 @@ cache:
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
+  GITLAB_DATABASE: $CI_JOB_NAME[1]
   RAILS_ENV: "test"
   NODE_ENV: "test"
   SIMPLECOV: "true"
@@ -51,15 +52,11 @@ stages:
   services:
     - postgres:latest
     - redis:alpine
-  variables:
-    GITLAB_DATABASE: "postgresql"
 
 .use-mysql: &use-mysql
   services:
     - mysql:latest
     - redis:alpine
-  variables:
-    GITLAB_DATABASE: "mysql"
 
 .only-master-and-ee-or-mysql: &only-master-and-ee-or-mysql
   only:
@@ -288,11 +285,11 @@ rake ee_compat_check:
   script:
     - bundle exec rake db:migrate:reset
 
-pg rake db:migrate:reset:
+rake pg db:migrate:reset:
   <<: *db-migrate-reset
   <<: *use-pg
 
-mysql rake db:migrate:reset:
+rake mysql db:migrate:reset:
   <<: *db-migrate-reset
   <<: *use-mysql
 
@@ -303,18 +300,13 @@ mysql rake db:migrate:reset:
     - bundle exec rake db:rollback STEP=120
     - bundle exec rake db:migrate
 
-pg rake db:rollback:
+rake pg db:rollback:
   <<: *db-rollback
   <<: *use-pg
 
-mysql rake db:rollback:
+rake mysql db:rollback:
   <<: *db-rollback
   <<: *use-mysql
-
-.db-seed_fu-variables: &db-seed_fu-variables
-  SIZE: "1"
-  SETUP_DB: "false"
-  RAILS_ENV: "development"
 
 .db-seed_fu: &db-seed_fu
   stage: test
@@ -323,25 +315,24 @@ mysql rake db:rollback:
     - git clone https://gitlab.com/gitlab-org/gitlab-test.git
        /home/git/repositories/gitlab-org/gitlab-test.git
     - bundle exec rake db:setup db:seed_fu
+  variables:
+    GITLAB_DATABASE: $CI_JOB_NAME[1]
+    SIZE: "1"
+    SETUP_DB: "false"
+    RAILS_ENV: "development"
   artifacts:
     when: on_failure
     expire_in: 1d
     paths:
       - log/development.log
 
-pg rake db:seed_fu:
+rake pg db:seed_fu:
   <<: *db-seed_fu
   <<: *use-pg
-  variables:
-    <<: *db-seed_fu-variables
-    GITLAB_DATABASE: "postgresql"
 
-mysql rake db:seed_fu:
+rake mysql db:seed_fu:
   <<: *db-seed_fu
   <<: *use-mysql
-  variables:
-    <<: *db-seed_fu-variables
-    GITLAB_DATABASE: "mysql"
 
 rake gitlab:assets:compile:
   stage: test
@@ -444,20 +435,17 @@ bundler:audit:
     - bundle install --without production --jobs $(nproc) $FLAGS --retry=3
     - source scripts/prepare_build.sh
     - bundle exec rake db:migrate
+  variables:
+    GITLAB_DATABASE: $CI_JOB_NAME[1]
+    SETUP_DB: "false"
 
-pg migration paths:
+migration pg paths:
   <<: *migration-paths
   <<: *use-pg
-  variables:
-    SETUP_DB: "false"
-    GITLAB_DATABASE: "postgresql"
 
-mysql migration paths:
+migration mysql paths:
   <<: *migration-paths
   <<: *use-mysql
-  variables:
-    SETUP_DB: "false"
-    GITLAB_DATABASE: "mysql"
 
 coverage:
   stage: post-test
