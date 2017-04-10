@@ -46,8 +46,20 @@ class Blob < SimpleDelegator
     text? && language && language.name == 'SVG'
   end
 
+  def pdf?
+    name && File.extname(name) == '.pdf'
+  end
+
   def ipython_notebook?
     text? && language&.name == 'Jupyter Notebook'
+  end
+
+  def sketch?
+    binary? && extname.downcase.delete('.') == 'sketch'
+  end
+
+  def stl?
+    extname.downcase.delete('.') == 'stl'
   end
 
   def size_within_svg_limits?
@@ -67,8 +79,14 @@ class Blob < SimpleDelegator
       end
     elsif image? || svg?
       'image'
+    elsif pdf?
+      'pdf'
     elsif ipython_notebook?
       'notebook'
+    elsif sketch?
+      'sketch'
+    elsif stl?
+      'stl'
     elsif text?
       'text'
     else

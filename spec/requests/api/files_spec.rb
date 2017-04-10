@@ -11,21 +11,8 @@ describe API::Files, api: true  do
       ref: 'master'
     }
   end
-  let(:author_email) { FFaker::Internet.email }
-
-  # I have to remove periods from the end of the name
-  # This happened when the user's name had a suffix (i.e. "Sr.")
-  # This seems to be what git does under the hood. For example, this commit:
-  #
-  # $ git commit --author='Foo Sr. <foo@example.com>' -m 'Where's my trailing period?'
-  #
-  # results in this:
-  #
-  # $ git show --pretty
-  # ...
-  # Author: Foo Sr <foo@example.com>
-  # ...
-  let(:author_name) { FFaker::Name.name.chomp("\.") }
+  let(:author_email) { 'user@example.org' }
+  let(:author_name) { 'John Doe' }
 
   before { project.team << [user, :developer] }
 

@@ -131,8 +131,10 @@ module TestEnv
 
     set_repo_refs(repo_path, branch_sha)
 
-    # We must copy bare repositories because we will push to them.
-    system(git_env, *%W(#{Gitlab.config.git.bin_path} clone -q --bare #{repo_path} #{repo_path_bare}))
+    unless File.directory?(repo_path_bare)
+      # We must copy bare repositories because we will push to them.
+      system(git_env, *%W(#{Gitlab.config.git.bin_path} clone -q --bare #{repo_path} #{repo_path_bare}))
+    end
   end
 
   def copy_repo(project)

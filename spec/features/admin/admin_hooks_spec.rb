@@ -26,14 +26,14 @@ describe "Admin::Hooks", feature: true do
   end
 
   describe "New Hook" do
-    let(:url) { FFaker::Internet.uri('http') }
+    let(:url) { generate(:url) }
 
     it 'adds new hook' do
       visit admin_hooks_path
       fill_in 'hook_url', with: url
       check 'Enable SSL verification'
 
-      expect { click_button 'Add System Hook' }.to change(SystemHook, :count).by(1)
+      expect { click_button 'Add system hook' }.to change(SystemHook, :count).by(1)
       expect(page).to have_content 'SSL Verification: enabled'
       expect(current_path).to eq(admin_hooks_path)
       expect(page).to have_content(url)
@@ -44,7 +44,7 @@ describe "Admin::Hooks", feature: true do
     before do
       WebMock.stub_request(:post, @system_hook.url)
       visit admin_hooks_path
-      click_link "Test Hook"
+      click_link "Test hook"
     end
 
     it { expect(current_path).to eq(admin_hooks_path) }

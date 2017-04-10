@@ -1,6 +1,6 @@
 module BranchesHelper
   def can_remove_branch?(project, branch_name)
-    if project.protected_branch? branch_name
+    if ProtectedBranch.protected?(project, branch_name)
       false
     elsif branch_name == project.repository.root_ref
       false
@@ -28,5 +28,9 @@ module BranchesHelper
 
   def project_branches
     options_for_select(@project.repository.branch_names, @project.default_branch)
+  end
+
+  def protected_branch?(project, branch)
+    ProtectedBranch.protected?(project, branch.name)
   end
 end

@@ -1,17 +1,55 @@
+/* global Flash */
+
 import FilteredSearchContainer from './container';
+import RecentSearchesRoot from './recent_searches_root';
+import RecentSearchesStore from './stores/recent_searches_store';
+import RecentSearchesService from './services/recent_searches_service';
+import eventHub from './event_hub';
 
 (() => {
   class FilteredSearchManager {
     constructor(page) {
       this.container = FilteredSearchContainer.container;
       this.filteredSearchInput = this.container.querySelector('.filtered-search');
+      this.filteredSearchInputForm = this.filteredSearchInput.form;
       this.clearSearchButton = this.container.querySelector('.clear-search');
       this.tokensContainer = this.container.querySelector('.tokens-container');
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
 
+      this.recentSearchesStore = new RecentSearchesStore();
+      let recentSearchesKey = 'issue-recent-searches';
+      if (page === 'merge_requests') {
+        recentSearchesKey = 'merge-request-recent-searches';
+      }
+      this.recentSearchesService = new RecentSearchesService(recentSearchesKey);
+
+      // Fetch recent searches from localStorage
+      this.fetchingRecentSearchesPromise = this.recentSearchesService.fetch()
+        .catch(() => {
+          // eslint-disable-next-line no-new
+          new Flash('An error occured while parsing recent searches');
+          // Gracefully fail to empty array
+          return [];
+        })
+        .then((searches) => {
+          // Put any searches that may have come in before
+          // we fetched the saved searches ahead of the already saved ones
+          const resultantSearches = this.recentSearchesStore.setRecentSearches(
+            this.recentSearchesStore.state.recentSearches.concat(searches),
+          );
+          this.recentSearchesService.save(resultantSearches);
+        });
+
       if (this.filteredSearchInput) {
         this.tokenizer = gl.FilteredSearchTokenizer;
         this.dropdownManager = new gl.FilteredSearchDropdownManager(this.filteredSearchInput.getAttribute('data-base-endpoint') || '', page);
+
+        this.recentSearchesRoot = new RecentSearchesRoot(
+          this.recentSearchesStore,
+          this.recentSearchesService,
+          document.querySelector('.js-filtered-search-history-dropdown'),
+        );
+        this.recentSearchesRoot.init();
 
         this.bindEvents();
         this.loadSearchParamsFromURL();
@@ -25,6 +63,10 @@ import FilteredSearchContainer from './container';
     cleanup() {
       this.unbindEvents();
       document.removeEventListener('beforeunload', this.cleanupWrapper);
+
+      if (this.recentSearchesRoot) {
+        this.recentSearchesRoot.destroy();
+      }
     }
 
     bindEvents() {
@@ -34,7 +76,7 @@ import FilteredSearchContainer from './container';
       this.handleInputPlaceholderWrapper = this.handleInputPlaceholder.bind(this);
       this.handleInputVisualTokenWrapper = this.handleInputVisualToken.bind(this);
       this.checkForEnterWrapper = this.checkForEnter.bind(this);
-      this.clearSearchWrapper = this.clearSearch.bind(this);
+      this.onClearSearchWrapper = this.onClearSearch.bind(this);
       this.checkForBackspaceWrapper = this.checkForBackspace.bind(this);
       this.removeSelectedTokenWrapper = this.removeSelectedToken.bind(this);
       this.unselectEditTokensWrapper = this.unselectEditTokens.bind(this);
@@ -42,8 +84,8 @@ import FilteredSearchContainer from './container';
       this.tokenChange = this.tokenChange.bind(this);
       this.addInputContainerFocusWrapper = this.addInputContainerFocus.bind(this);
       this.removeInputContainerFocusWrapper = this.removeInputContainerFocus.bind(this);
+      this.onrecentSearchesItemSelectedWrapper = this.onrecentSearchesItemSelected.bind(this);
 
-      this.filteredSearchInputForm = this.filteredSearchInput.form;
       this.filteredSearchInputForm.addEventListener('submit', this.handleFormSubmit);
       this.filteredSearchInput.addEventListener('input', this.setDropdownWrapper);
       this.filteredSearchInput.addEventListener('input', this.toggleClearSearchButtonWrapper);
@@ -56,11 +98,12 @@ import FilteredSearchContainer from './container';
       this.filteredSearchInput.addEventListener('focus', this.addInputContainerFocusWrapper);
       this.tokensContainer.addEventListener('click', FilteredSearchManager.selectToken);
       this.tokensContainer.addEventListener('dblclick', this.editTokenWrapper);
-      this.clearSearchButton.addEventListener('click', this.clearSearchWrapper);
+      this.clearSearchButton.addEventListener('click', this.onClearSearchWrapper);
       document.addEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
       document.addEventListener('click', this.unselectEditTokensWrapper);
       document.addEventListener('click', this.removeInputContainerFocusWrapper);
       document.addEventListener('keydown', this.removeSelectedTokenWrapper);
+      eventHub.$on('recentSearchesItemSelected', this.onrecentSearchesItemSelectedWrapper);
     }
 
     unbindEvents() {
@@ -76,11 +119,12 @@ import FilteredSearchContainer from './container';
       this.filteredSearchInput.removeEventListener('focus', this.addInputContainerFocusWrapper);
       this.tokensContainer.removeEventListener('click', FilteredSearchManager.selectToken);
       this.tokensContainer.removeEventListener('dblclick', this.editTokenWrapper);
-      this.clearSearchButton.removeEventListener('click', this.clearSearchWrapper);
+      this.clearSearchButton.removeEventListener('click', this.onClearSearchWrapper);
       document.removeEventListener('click', gl.FilteredSearchVisualTokens.unselectTokens);
       document.removeEventListener('click', this.unselectEditTokensWrapper);
       document.removeEventListener('click', this.removeInputContainerFocusWrapper);
       document.removeEventListener('keydown', this.removeSelectedTokenWrapper);
+      eventHub.$off('recentSearchesItemSelected', this.onrecentSearchesItemSelectedWrapper);
     }
 
     checkForBackspace(e) {
@@ -110,7 +154,7 @@ import FilteredSearchContainer from './container';
       if (e.keyCode === 13) {
         const dropdown = this.dropdownManager.mapping[this.dropdownManager.currentDropdown];
         const dropdownEl = dropdown.element;
-        const activeElements = dropdownEl.querySelectorAll('.dropdown-active');
+        const activeElements = dropdownEl.querySelectorAll('.droplab-item-active');
 
         e.preventDefault();
 
@@ -131,7 +175,7 @@ import FilteredSearchContainer from './container';
     }
 
     addInputContainerFocus() {
-      const inputContainer = this.filteredSearchInput.closest('.filtered-search-input-container');
+      const inputContainer = this.filteredSearchInput.closest('.filtered-search-box');
 
       if (inputContainer) {
         inputContainer.classList.add('focus');
@@ -139,7 +183,7 @@ import FilteredSearchContainer from './container';
     }
 
     removeInputContainerFocus(e) {
-      const inputContainer = this.filteredSearchInput.closest('.filtered-search-input-container');
+      const inputContainer = this.filteredSearchInput.closest('.filtered-search-box');
       const isElementInFilteredSearch = inputContainer && inputContainer.contains(e.target);
       const isElementInDynamicFilterDropdown = e.target.closest('.filter-dropdown') !== null;
       const isElementInStaticFilterDropdown = e.target.closest('ul[data-dropdown]') !== null;
@@ -161,7 +205,7 @@ import FilteredSearchContainer from './container';
     }
 
     unselectEditTokens(e) {
-      const inputContainer = this.container.querySelector('.filtered-search-input-container');
+      const inputContainer = this.container.querySelector('.filtered-search-box');
       const isElementInFilteredSearch = inputContainer && inputContainer.contains(e.target);
       const isElementInFilterDropdown = e.target.closest('.filter-dropdown') !== null;
       const isElementTokensContainer = e.target.classList.contains('tokens-container');
@@ -215,9 +259,12 @@ import FilteredSearchContainer from './container';
       }
     }
 
-    clearSearch(e) {
+    onClearSearch(e) {
       e.preventDefault();
+      this.clearSearch();
+    }
 
+    clearSearch() {
       this.filteredSearchInput.value = '';
 
       const removeElements = [];
@@ -289,6 +336,17 @@ import FilteredSearchContainer from './container';
       this.search();
     }
 
+    saveCurrentSearchQuery() {
+      // Don't save before we have fetched the already saved searches
+      this.fetchingRecentSearchesPromise.then(() => {
+        const searchQuery = gl.DropdownUtils.getSearchQuery();
+        if (searchQuery.length > 0) {
+          const resultantSearches = this.recentSearchesStore.addRecentSearch(searchQuery);
+          this.recentSearchesService.save(resultantSearches);
+        }
+      });
+    }
+
     loadSearchParamsFromURL() {
       const params = gl.utils.getUrlParamsArray();
       const usernameParams = this.getUsernameParams();
@@ -343,6 +401,8 @@ import FilteredSearchContainer from './container';
         }
       });
 
+      this.saveCurrentSearchQuery();
+
       if (hasFilteredSearch) {
         this.clearSearchButton.classList.remove('hidden');
         this.handleInputPlaceholder();
@@ -351,8 +411,12 @@ import FilteredSearchContainer from './container';
 
     search() {
       const paths = [];
+      const searchQuery = gl.DropdownUtils.getSearchQuery();
+
+      this.saveCurrentSearchQuery();
+
       const { tokens, searchToken }
-        = this.tokenizer.processTokens(gl.DropdownUtils.getSearchQuery());
+        = this.tokenizer.processTokens(searchQuery);
       const currentState = gl.utils.getParameterByName('state') || 'opened';
       paths.push(`state=${currentState}`);
 
@@ -415,6 +479,13 @@ import FilteredSearchContainer from './container';
         this.setDropdownWrapper();
         currentDropdownRef.dispatchInputEvent();
       }
+    }
+
+    onrecentSearchesItemSelected(text) {
+      this.clearSearch();
+      this.filteredSearchInput.value = text;
+      this.filteredSearchInput.dispatchEvent(new CustomEvent('input'));
+      this.search();
     }
   }
 

@@ -148,42 +148,62 @@ describe Namespace, models: true do
       expect(@namespace.move_dir).to be_truthy
     end
 
-    context "when any project has container tags" do
+    context "when any project has container images" do
+      let(:container_repository) { create(:container_repository) }
+
       before do
         stub_container_registry_config(enabled: true)
-        stub_container_registry_tags('tag')
+        stub_container_registry_tags(repository: :any, tags: ['tag'])
 
-        create(:empty_project, namespace: @namespace)
+        create(:empty_project, namespace: @namespace, container_repositories: [container_repository])
 
         allow(@namespace).to receive(:path_was).and_return(@namespace.path)
         allow(@namespace).to receive(:path).and_return('new_path')
       end
 
-      it { expect { @namespace.move_dir }.to raise_error('Namespace cannot be moved, because at least one project has tags in container registry') }
+      it 'raises an error about not movable project' do
+        expect { @namespace.move_dir }.to raise_error(/Namespace cannot be moved/)
+      end
     end
 
-    context 'renaming a sub-group' do
+    context 'with subgroups' do
       let(:parent) { create(:group, name: 'parent', path: 'parent') }
       let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
       let!(:project) { create(:project_empty_repo, path: 'the-project', namespace: child) }
-      let(:uploads_dir) { File.join(CarrierWave.root, 'uploads', 'parent') }
-      let(:pages_dir) { File.join(TestEnv.pages_path, 'parent') }
+      let(:uploads_dir) { File.join(CarrierWave.root, 'uploads') }
+      let(:pages_dir) { TestEnv.pages_path }
 
       before do
-        FileUtils.mkdir_p(File.join(uploads_dir, 'child', 'the-project'))
-        FileUtils.mkdir_p(File.join(pages_dir, 'child', 'the-project'))
+        FileUtils.mkdir_p(File.join(uploads_dir, 'parent', 'child', 'the-project'))
+        FileUtils.mkdir_p(File.join(pages_dir, 'parent', 'child', 'the-project'))
       end
 
-      it 'correctly moves the repository, uploads and pages' do
-        expected_repository_path = File.join(TestEnv.repos_path, 'parent', 'renamed', 'the-project.git')
-        expected_upload_path = File.join(uploads_dir, 'renamed', 'the-project')
-        expected_pages_path = File.join(pages_dir, 'renamed', 'the-project')
+      context 'renaming child' do
+        it 'correctly moves the repository, uploads and pages' do
+          expected_repository_path = File.join(TestEnv.repos_path, 'parent', 'renamed', 'the-project.git')
+          expected_upload_path = File.join(uploads_dir, 'parent', 'renamed', 'the-project')
+          expected_pages_path = File.join(pages_dir, 'parent', 'renamed', 'the-project')
 
-        child.update_attributes!(path: 'renamed')
+          child.update_attributes!(path: 'renamed')
 
-        expect(File.directory?(expected_repository_path)).to be(true)
-        expect(File.directory?(expected_upload_path)).to be(true)
-        expect(File.directory?(expected_pages_path)).to be(true)
+          expect(File.directory?(expected_repository_path)).to be(true)
+          expect(File.directory?(expected_upload_path)).to be(true)
+          expect(File.directory?(expected_pages_path)).to be(true)
+        end
+      end
+
+      context 'renaming parent' do
+        it 'correctly moves the repository, uploads and pages' do
+          expected_repository_path = File.join(TestEnv.repos_path, 'renamed', 'child', 'the-project.git')
+          expected_upload_path = File.join(uploads_dir, 'renamed', 'child', 'the-project')
+          expected_pages_path = File.join(pages_dir, 'renamed', 'child', 'the-project')
+
+          parent.update_attributes!(path: 'renamed')
+
+          expect(File.directory?(expected_repository_path)).to be(true)
+          expect(File.directory?(expected_upload_path)).to be(true)
+          expect(File.directory?(expected_pages_path)).to be(true)
+        end
       end
     end
   end
@@ -294,5 +314,14 @@ describe Namespace, models: true do
       expect(namespace.user_ids_for_project_authorizations).
         to eq([namespace.owner_id])
     end
+  end
+
+  describe '#all_projects' do
+    let(:group) { create(:group) }
+    let(:child) { create(:group, parent: group) }
+    let!(:project1) { create(:project_empty_repo, namespace: group) }
+    let!(:project2) { create(:project_empty_repo, namespace: child) }
+
+    it { expect(group.all_projects.to_a).to eq([project2, project1]) }
   end
 end

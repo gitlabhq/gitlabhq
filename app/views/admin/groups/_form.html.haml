@@ -24,7 +24,7 @@
       .form-group.col-xs-12
         = render 'shared/allow_request_access', form: f
 
-      = render 'groups/group_lfs_settings', f: f
+      = render 'groups/group_admin_settings', f: f
 
       = f.submit "#{@group.new_record? ? 'Create group' : 'Save changes'}", class: 'btn btn-create'
       = link_to  'Cancel', @group.new_record? ? admin_groups_path : admin_group_path(@group), class: 'btn btn-cancel'

@@ -46,11 +46,11 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
   end
 
   step 'I click new milestone button' do
-    click_link "New Milestone"
+    click_link "New milestone"
   end
 
   step 'I press create mileston button' do
-    click_button "Create Milestone"
+    click_button "Create milestone"
   end
 
   step 'milestone in each project should be created' do

@@ -144,6 +144,9 @@ gem 'sidekiq-cron', '~> 0.4.4'
 gem 'redis-namespace', '~> 1.5.2'
 gem 'sidekiq-limit_fetch', '~> 3.4'
 
+# Cron Parser
+gem 'rufus-scheduler', '~> 3.1.10'
+
 # HTTP requests
 gem 'httparty', '~> 0.13.3'
 
@@ -223,7 +226,7 @@ gem 'oj', '~> 2.17.4'
 gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
 
-gem 'webpack-rails', '~> 0.9.9'
+gem 'webpack-rails', '~> 0.9.10'
 gem 'rack-proxy', '~> 0.6.0'
 
 gem 'sass-rails', '~> 5.0.6'
@@ -260,7 +263,6 @@ group :development do
   gem 'brakeman', '~> 3.6.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
-  gem 'bullet', '~> 5.5.0', require: false
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
 
   # Better errors handler
@@ -272,6 +274,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'bullet', '~> 5.5.0', require: !!ENV['ENABLE_BULLET']
   gem 'pry-byebug', '~> 3.4.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
 
@@ -301,7 +304,7 @@ group :development, :test do
   gem 'spring-commands-spinach', '~> 1.1.0'
 
   gem 'rubocop', '~> 0.47.1', require: false
-  gem 'rubocop-rspec', '~> 1.12.0', require: false
+  gem 'rubocop-rspec', '~> 1.15.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'haml_lint', '~> 0.21.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
@@ -352,4 +355,6 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.3.0'
+gem 'gitaly', '~> 0.5.0'
+
+gem 'toml-rb', '~> 0.3.15', require: false

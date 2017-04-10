@@ -202,4 +202,45 @@ describe NotesFinder do
       end
     end
   end
+
+  describe '#target' do
+    subject { described_class.new(project, user, params) }
+
+    context 'for a issue target' do
+      let(:issue) { create(:issue, project: project) }
+      let(:params) { { target_type: 'issue', target_id: issue.id } }
+
+      it 'returns the issue' do
+        expect(subject.target).to eq(issue)
+      end
+    end
+
+    context 'for a merge request target' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:params) { { target_type: 'merge_request', target_id: merge_request.id } }
+
+      it 'returns the merge_request' do
+        expect(subject.target).to eq(merge_request)
+      end
+    end
+
+    context 'for a snippet target' do
+      let(:snippet) { create(:project_snippet, project: project) }
+      let(:params) { { target_type: 'snippet', target_id: snippet.id } }
+
+      it 'returns the snippet' do
+        expect(subject.target).to eq(snippet)
+      end
+    end
+
+    context 'for a commit target' do
+      let(:project) { create(:project, :repository) }
+      let(:commit) { project.commit }
+      let(:params) { { target_type: 'commit', target_id: commit.id } }
+
+      it 'returns the commit' do
+        expect(subject.target).to eq(commit)
+      end
+    end
+  end
 end

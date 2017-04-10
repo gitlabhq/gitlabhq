@@ -695,4 +695,21 @@ describe 'Issues', feature: true do
       end
     end
   end
+
+  describe 'title issue#show', js: true do
+    include WaitForVueResource
+
+    it 'updates the title', js: true do
+      issue = create(:issue, author: @user, assignee: @user, project: project, title: 'new title')
+
+      visit namespace_project_issue_path(project.namespace, project, issue)
+
+      expect(page).to have_text("new title")
+
+      issue.update(title: "updated title")
+
+      wait_for_vue_resource
+      expect(page).to have_text("updated title")
+    end
+  end
 end

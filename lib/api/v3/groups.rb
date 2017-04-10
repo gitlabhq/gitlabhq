@@ -54,7 +54,7 @@ module API
           groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
           groups = groups.reorder(params[:order_by] => params[:sort])
 
-          present_groups groups, statistics: params[:statistics] && current_user.is_admin?
+          present_groups groups, statistics: params[:statistics] && current_user.admin?
         end
 
         desc 'Get list of owned groups for authenticated user' do
@@ -151,7 +151,7 @@ module API
         end
         get ":id/projects" do
           group = find_group!(params[:id])
-          projects = GroupProjectsFinder.new(group).execute(current_user)
+          projects = GroupProjectsFinder.new(group: group, current_user: current_user).execute
           projects = filter_projects(projects)
           entity = params[:simple] ? ::API::Entities::BasicProjectDetails : Entities::Project
           present paginate(projects), with: entity, current_user: current_user

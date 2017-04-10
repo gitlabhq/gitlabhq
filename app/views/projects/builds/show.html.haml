@@ -71,6 +71,11 @@
                   = custom_icon('scroll_down_hover_active')
         #up-build-trace
         %pre.build-trace#build-trace
+          .js-truncated-info.truncated-info.hidden
+            %span<
+              Showing last
+              %span.js-truncated-info-size><
+              KiB of log
           %code.bash.js-build-output
           .build-loader-animation.js-build-refresh
 

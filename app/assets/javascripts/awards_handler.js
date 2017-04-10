@@ -51,7 +51,7 @@ function renderCategory(name, emojiList, opts = {}) {
     <h5 class="emoji-menu-title">
       ${name}
     </h5>
-    <ul class="clearfix emoji-menu-list ${opts.menuListClass}">
+    <ul class="clearfix emoji-menu-list ${opts.menuListClass || ''}">
       ${emojiList.map(emojiName => `
         <li class="emoji-menu-list-item">
           <button class="emoji-menu-btn text-center js-emoji-btn" type="button">
@@ -263,7 +263,8 @@ AwardsHandler.prototype.addAward = function addAward(
     this.addAwardToEmojiBar(votesBlock, normalizedEmoji, checkMutuality);
     return typeof callback === 'function' ? callback() : undefined;
   });
-  return $('.emoji-menu').removeClass('is-visible');
+  $('.emoji-menu').removeClass('is-visible');
+  $('.js-add-award.is-active').removeClass('is-active');
 };
 
 AwardsHandler.prototype.addAwardToEmojiBar = function addAwardToEmojiBar(
@@ -476,10 +477,10 @@ AwardsHandler.prototype.setupSearch = function setupSearch() {
   this.registerEventListener('on', $('input.emoji-search'), 'input', (e) => {
     const term = $(e.target).val().trim();
     // Clean previous search results
-    $('ul.emoji-menu-search, h5.emoji-search').remove();
+    $('ul.emoji-menu-search, h5.emoji-search-title').remove();
     if (term.length > 0) {
       // Generate a search result block
-      const h5 = $('<h5 class="emoji-search" />').text('Search results');
+      const h5 = $('<h5 class="emoji-search-title"/>').text('Search results');
       const foundEmojis = this.searchEmojis(term).show();
       const ul = $('<ul>').addClass('emoji-menu-list emoji-menu-search').append(foundEmojis);
       $('.emoji-menu-content ul, .emoji-menu-content h5').hide();

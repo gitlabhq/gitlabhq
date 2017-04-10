@@ -533,6 +533,10 @@ Style/WhileUntilModifier:
 Style/WordArray:
   Enabled: true
 
+# Use `proc` instead of `Proc.new`.
+Style/Proc:
+  Enabled: true
+
 # Metrics #####################################################################
 
 # A calculated magnitude based on number of assignments,
@@ -949,6 +953,10 @@ RSpec/DescribeClass:
 # Use `described_class` for tested class / module.
 RSpec/DescribeMethod:
   Enabled: false
+
+# Avoid describing symbols.
+RSpec/DescribeSymbol:
+  Enabled: true
 
 # Checks that the second argument to top level describe is the tested method
 # name.

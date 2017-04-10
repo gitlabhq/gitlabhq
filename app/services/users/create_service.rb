@@ -11,7 +11,7 @@ module Users
 
       user = User.new(build_user_params)
 
-      if current_user&.is_admin?
+      if current_user&.admin?
         if params[:reset_password]
           @reset_token = user.generate_reset_token
           params[:force_random_password] = true
@@ -47,7 +47,7 @@ module Users
     private
 
     def can_create_user?
-      (current_user.nil? && current_application_settings.signup_enabled?) || current_user&.is_admin?
+      (current_user.nil? && current_application_settings.signup_enabled?) || current_user&.admin?
     end
 
     # Allowed params for creating a user (admins only)
@@ -62,6 +62,7 @@ module Users
         :email,
         :external,
         :force_random_password,
+        :password_automatically_set,
         :hide_no_password,
         :hide_no_ssh_key,
         :key_id,
@@ -85,6 +86,7 @@ module Users
       [
         :email,
         :email_confirmation,
+        :password_automatically_set,
         :name,
         :password,
         :username
@@ -92,7 +94,7 @@ module Users
     end
 
     def build_user_params
-      if current_user&.is_admin?
+      if current_user&.admin?
         user_params = params.slice(*admin_create_params)
         user_params[:created_by_id] = current_user&.id
 

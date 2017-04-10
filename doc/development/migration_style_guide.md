@@ -58,10 +58,22 @@ migration was tested.
 
 ## Removing indices
 
-If you need to remove index, please add a condition like in following example:
+When removing an index make sure to use the method `remove_concurrent_index` instead
+of the regular `remove_index` method. The `remove_concurrent_index` method
+automatically drops concurrent indexes when using PostgreSQL, removing the
+need for downtime. To use this method you must disable transactions by calling
+the method `disable_ddl_transaction!` in the body of your migration class like
+so:
 
 ```ruby
-remove_index :namespaces, column: :name if index_exists?(:namespaces, :name)
+class MyMigration < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+  disable_ddl_transaction!
+
+  def up
+    remove_concurrent_index :table_name, :column_name if index_exists?(:table_name, :column_name)
+  end
+end
 ```
 
 ## Adding indices

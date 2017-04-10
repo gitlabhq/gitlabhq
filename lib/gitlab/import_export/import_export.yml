@@ -39,13 +39,16 @@ project_tree:
       - :author
       - :events
     - :statuses
-  - :triggers
+  - triggers:
+    - :trigger_schedule
   - :deploy_keys
   - :services
   - :hooks
   - protected_branches:
     - :merge_access_levels
     - :push_access_levels
+  - protected_tags:
+    - :create_access_levels
   - :project_feature
 
 # Only include the following attributes for the models specified.
@@ -89,3 +92,5 @@ methods:
     - :type
   merge_request_diff:
     - :utf8_st_diffs
+  merge_requests:
+    - :diff_head_sha

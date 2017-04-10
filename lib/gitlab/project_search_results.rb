@@ -62,7 +62,7 @@ module Gitlab
         data << line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
       end
 
-      OpenStruct.new(
+      FoundBlob.new(
         filename: filename,
         basename: basename,
         ref: ref,

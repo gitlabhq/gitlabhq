@@ -49,7 +49,7 @@ module Banzai
       # Check if project belongs to a group which
       # user can read.
       def can_read_group_reference?(node, user, groups)
-        node_group = groups[node.attr('data-group').to_i]
+        node_group = groups[node]
 
         node_group && can?(user, :read_group, node_group)
       end
@@ -74,8 +74,8 @@ module Banzai
           if project && project_id && project.id == project_id.to_i
             true
           elsif project_id && user_id
-            project = projects[project_id.to_i]
-            user = users[user_id.to_i]
+            project = projects[node]
+            user = users[node]
 
             project && user ? project.team.member?(user) : false
           else

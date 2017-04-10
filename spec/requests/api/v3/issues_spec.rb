@@ -19,7 +19,7 @@ describe API::V3::Issues, api: true  do
            project: project,
            state: :closed,
            milestone: milestone,
-           created_at: generate(:issue_created_at),
+           created_at: generate(:past_time),
            updated_at: 3.hours.ago
   end
   let!(:confidential_issue) do
@@ -28,7 +28,7 @@ describe API::V3::Issues, api: true  do
            project: project,
            author: author,
            assignee: assignee,
-           created_at: generate(:issue_created_at),
+           created_at: generate(:past_time),
            updated_at: 2.hours.ago
   end
   let!(:issue) do
@@ -37,7 +37,7 @@ describe API::V3::Issues, api: true  do
            assignee: user,
            project: project,
            milestone: milestone,
-           created_at: generate(:issue_created_at),
+           created_at: generate(:past_time),
            updated_at: 1.hour.ago
   end
   let!(:label) do
@@ -824,7 +824,7 @@ describe API::V3::Issues, api: true  do
     end
 
     context 'resolving issues in a merge request' do
-      let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
+      let(:discussion) { create(:diff_note_on_merge_request).to_discussion }
       let(:merge_request) { discussion.noteable }
       let(:project) { merge_request.source_project }
       before do

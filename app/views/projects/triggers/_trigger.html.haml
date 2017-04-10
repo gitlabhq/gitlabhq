@@ -2,7 +2,7 @@
   %td
     - if can?(current_user, :admin_trigger, trigger)
       %span= trigger.token
-      = clipboard_button(clipboard_text: trigger.token, title: "Copy trigger token to clipboard")
+      = clipboard_button(text: trigger.token, title: "Copy trigger token to clipboard")
     - else
       %span= trigger.short_token
 
@@ -26,6 +26,12 @@
   %td
     - if trigger.last_used
       #{time_ago_in_words(trigger.last_used)} ago
+    - else
+      Never
+
+  %td
+    - if trigger.trigger_schedule&.active?
+      = trigger.trigger_schedule.real_next_run
     - else
       Never
 
