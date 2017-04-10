@@ -5,6 +5,7 @@ import Vue from 'vue';
 import VueResource from 'vue-resource';
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
+import board from './components/board';
 
 require('./models/issue');
 require('./models/label');
@@ -17,13 +18,26 @@ require('./services/board_service');
 require('./mixins/modal_mixins');
 require('./mixins/sortable_default_options');
 require('./filters/due_date_filters');
-require('./components/board');
 require('./components/board_sidebar');
 require('./components/new_list_dropdown');
 require('./components/modal/index');
 require('../vue_shared/vue_resource_interceptor');
 
 Vue.use(VueResource);
+
+Vue.use((vue) => {
+  vue.mixin({
+    beforeCreate() {
+      const options = this.$options;
+
+      if (options.store) {
+        this.store = options.store;
+      } else if (options.parent && options.parent.store) {
+        this.store = options.parent.store;
+      }
+    },
+  });
+});
 
 $(() => {
   const $boardApp = document.getElementById('board-app');
@@ -45,7 +59,7 @@ $(() => {
   gl.IssueBoardsApp = new Vue({
     el: $boardApp,
     components: {
-      'board': gl.issueBoards.Board,
+      board,
       'board-sidebar': gl.issueBoards.BoardSidebar,
       'board-add-issues-modal': gl.issueBoards.IssuesModal,
     },
@@ -66,6 +80,11 @@ $(() => {
       },
     },
     created () {
+      this.store.canAdminIssue =
+        gl.utils.convertPermissionToBoolean($boardApp.dataset.canAdminIssue);
+      this.store.canAdminList =
+        gl.utils.convertPermissionToBoolean($boardApp.dataset.canAdminList);
+
       gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
 
       this.filterManager = new FilteredSearchBoards(Store.filter, true);
@@ -80,8 +99,8 @@ $(() => {
       Store.disabled = this.disabled;
       gl.boardService.all()
         .then((resp) => {
-          resp.json().forEach((board) => {
-            const list = Store.addList(board);
+          resp.json().forEach((boardObj) => {
+            const list = Store.addList(boardObj);
 
             if (list.type === 'closed') {
               list.position = Infinity;
@@ -99,6 +118,7 @@ $(() => {
         this.filterManager.updateTokens();
       }
     },
+    store: Store,
   });
 
   gl.IssueBoardsSearch = new Vue({

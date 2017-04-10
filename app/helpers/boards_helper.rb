@@ -9,6 +9,8 @@ module BoardsHelper
       issue_link_base: namespace_project_issues_path(@project.namespace, @project),
       root_path: root_path,
       bulk_update_path: bulk_update_namespace_project_issues_path(@project.namespace, @project),
+      can_admin_issue: "#{can?(current_user, :admin_issue, @project)}",
+      can_admin_list: "#{can?(current_user, :admin_list, @project)}"
     }
   end
 end

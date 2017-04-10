@@ -2,8 +2,6 @@ import Vue from 'vue';
 import eventHub from '../eventhub';
 
 (() => {
-  const Store = gl.issueBoards.BoardsStore;
-
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
 
@@ -61,7 +59,7 @@ import eventHub from '../eventhub';
       filterByLabel(label, e) {
         if (!this.updateFilters) return;
 
-        const filterPath = gl.issueBoards.BoardsStore.filter.path.split('&');
+        const filterPath = this.store.filter.path.split('&');
         const labelTitle = encodeURIComponent(label.title);
         const param = `label_name[]=${labelTitle}`;
         const labelIndex = filterPath.indexOf(param);
@@ -73,9 +71,9 @@ import eventHub from '../eventhub';
           filterPath.splice(labelIndex, 1);
         }
 
-        gl.issueBoards.BoardsStore.filter.path = filterPath.join('&');
+        this.store.filter.path = filterPath.join('&');
 
-        Store.updateFiltersUrl();
+        this.store.updateFiltersUrl();
 
         eventHub.$emit('updateTokens');
       },

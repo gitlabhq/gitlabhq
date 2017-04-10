@@ -1,23 +1,32 @@
-/* eslint-disable comma-dangle, space-before-function-paren, no-alert */
-
-import Vue from 'vue';
-
-(() => {
-  window.gl = window.gl || {};
-  window.gl.issueBoards = window.gl.issueBoards || {};
-
-  gl.issueBoards.BoardDelete = Vue.extend({
-    props: {
-      list: Object
+/* eslint-disable no-alert */
+export default {
+  props: {
+    list: {
+      type: Object,
+      required: true,
     },
-    methods: {
-      deleteBoard () {
-        $(this.$el).tooltip('hide');
+  },
+  methods: {
+    deleteBoard() {
+      $(this.$el).tooltip('hide');
 
-        if (confirm('Are you sure you want to delete this list?')) {
-          this.list.destroy();
-        }
+      if (confirm('Are you sure you want to delete this list?')) {
+        this.list.destroy();
       }
-    }
-  });
-})();
+    },
+  },
+  template: `
+    <button
+      class="board-delete has-tooltip pull-right"
+      type="button"
+      title="Delete list"
+      aria-label="Delete list"
+      data-placement="bottom"
+      @click.stop="deleteBoard">
+      <i
+        class="fa fa-trash"
+        ara-hidden="true">
+      </i>
+    </button>
+  `,
+};

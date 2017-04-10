@@ -3,8 +3,6 @@ import boardNewIssue from './board_new_issue';
 import boardCard from './board_card';
 import eventHub from '../eventhub';
 
-const Store = gl.issueBoards.BoardsStore;
-
 export default {
   name: 'BoardList',
   props: {
@@ -36,7 +34,7 @@ export default {
   data() {
     return {
       scrollOffset: 250,
-      filters: Store.state.filters,
+      filters: this.store.state.filters,
       showCount: false,
       showIssueForm: false,
     };
@@ -112,14 +110,14 @@ export default {
         const card = this.$refs.issue[e.oldIndex];
 
         card.showDetail = false;
-        Store.moving.list = card.list;
-        Store.moving.issue = Store.moving.list.findIssue(+e.item.dataset.issueId);
+        this.store.moving.list = card.list;
+        this.store.moving.issue = this.store.moving.list.findIssue(+e.item.dataset.issueId);
 
         gl.issueBoards.onStart();
       },
       onAdd: (e) => {
         gl.issueBoards.BoardsStore
-          .moveIssueToList(Store.moving.list, this.list, Store.moving.issue, e.newIndex);
+          .moveIssueToList(this.store.moving.list, this.list, this.store.moving.issue, e.newIndex);
 
         this.$nextTick(() => {
           e.item.remove();
@@ -128,7 +126,7 @@ export default {
       onUpdate: (e) => {
         const sortedArray = this.sortable.toArray().filter(id => id !== '-1');
         gl.issueBoards.BoardsStore
-          .moveIssueInList(this.list, Store.moving.issue, e.oldIndex, e.newIndex, sortedArray);
+          .moveIssueInList(this.list, this.store.moving.issue, e.oldIndex, e.newIndex, sortedArray);
       },
       onMove(e) {
         return !e.related.classList.contains('board-list-count');

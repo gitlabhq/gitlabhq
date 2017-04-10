@@ -2,8 +2,6 @@
 
 import Cookies from 'js-cookie';
 
-const Store = gl.issueBoards.BoardsStore;
-
 export default {
   template: `
     <div class="board-blank-state">
@@ -49,7 +47,7 @@ export default {
       this.clearBlankState();
 
       this.predefinedLabels.forEach((label, i) => {
-        Store.addList({
+        this.store.addList({
           title: label.title,
           position: i,
           list_type: 'label',
@@ -60,13 +58,13 @@ export default {
         });
       });
 
-      Store.state.lists = _.sortBy(Store.state.lists, 'position');
+      this.store.state.lists = _.sortBy(this.store.state.lists, 'position');
 
       // Save the labels
       gl.boardService.generateDefaultLists()
         .then((resp) => {
           resp.json().forEach((listObj) => {
-            const list = Store.findList('title', listObj.title);
+            const list = this.store.findList('title', listObj.title);
 
             list.id = listObj.id;
             list.label.id = listObj.label.id;
@@ -74,13 +72,15 @@ export default {
           });
         })
         .catch(() => {
-          Store.removeList(undefined, 'label');
+          this.store.removeList(undefined, 'label');
           Cookies.remove('issue_board_welcome_hidden', {
             path: '',
           });
-          Store.addBlankState();
+          this.store.addBlankState();
         });
     },
-    clearBlankState: Store.removeBlankState.bind(Store),
+    clearBlankState() {
+      this.store.removeBlankState();
+    },
   },
 };

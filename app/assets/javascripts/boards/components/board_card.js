@@ -1,7 +1,5 @@
 require('./issue_card_inner');
 
-const Store = gl.issueBoards.BoardsStore;
-
 export default {
   name: 'BoardsIssueCard',
   template: `
@@ -34,7 +32,7 @@ export default {
   data() {
     return {
       showDetail: false,
-      detailIssue: Store.detail,
+      detailIssue: this.store.detail,
     };
   },
   computed: {
@@ -55,11 +53,11 @@ export default {
       if (this.showDetail) {
         this.showDetail = false;
 
-        if (Store.detail.issue && Store.detail.issue.id === this.issue.id) {
-          Store.detail.issue = {};
+        if (this.store.detail.issue && this.store.detail.issue.id === this.issue.id) {
+          this.store.detail.issue = {};
         } else {
-          Store.detail.issue = this.issue;
-          Store.detail.list = this.list;
+          this.store.detail.issue = this.issue;
+          this.store.detail.list = this.list;
         }
       }
     },

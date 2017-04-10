@@ -1,8 +1,6 @@
 /* global ListIssue */
 import eventHub from '../eventhub';
 
-const Store = gl.issueBoards.BoardsStore;
-
 export default {
   name: 'BoardNewIssue',
   props: {
@@ -33,8 +31,8 @@ export default {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions
           $(this.$refs.submitButton).enable();
 
-          Store.detail.issue = issue;
-          Store.detail.list = this.list;
+          this.store.detail.issue = issue;
+          this.store.detail.list = this.list;
         })
         .catch(() => {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions
