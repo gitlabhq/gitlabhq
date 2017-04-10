@@ -35,7 +35,6 @@ import './shortcuts_navigation';
 import './shortcuts_find_file';
 import './shortcuts_issuable';
 import './shortcuts_network';
-import './shortcuts_wiki';
 
 // behaviors
 import './behaviors/';

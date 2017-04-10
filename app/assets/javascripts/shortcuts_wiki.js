@@ -1,14 +1,16 @@
+/* eslint-disable class-methods-use-this */
 /* global Mousetrap */
 /* global ShortcutsNavigation */
+
+import findAndFollowLink from './shortcuts_dashboard_navigation';
 
 export default class ShortcutsWiki extends ShortcutsNavigation {
   constructor() {
     super();
-    this.$wikiEdit = $('.wiki-edit');
-    Mousetrap.bind('e', this.editWiki.bind(this));
+    Mousetrap.bind('e', this.editWiki);
   }
 
   editWiki() {
-    gl.utils.visitUrl(this.$wikiEdit.attr('href'));
+    findAndFollowLink('.wiki-edit');
   }
 }
