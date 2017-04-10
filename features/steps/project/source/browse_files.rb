@@ -377,7 +377,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   step 'I should see a Fork/Cancel combo' do
     expect(page).to have_link 'Fork'
     expect(page).to have_button 'Cancel'
-    expect(page).to have_content 'You don\'t have permission to edit this file. Try forking this project to edit the file.'
   end
 
   step 'I should see a notice about a new fork having been created' do
