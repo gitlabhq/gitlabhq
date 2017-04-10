@@ -291,6 +291,10 @@
     i {
       margin: 2px 0;
       font-size: 20px;
+
+      &.private {
+        color: $red-500;
+      }
     }
 
     .option-title {
@@ -302,10 +306,6 @@
     .option-descr {
       margin-left: 29px;
       color: $project-option-descr-color;
-    }
-
-    .private {
-      color: $red-500;
     }
   }
 }
