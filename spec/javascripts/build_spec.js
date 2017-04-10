@@ -64,7 +64,6 @@ describe('Build', () => {
       });
     });
 
-<<<<<<< HEAD
     describe('initial build trace', () => {
       beforeEach(() => {
         new Build();
@@ -94,8 +93,6 @@ describe('Build', () => {
       });
     });
 
-=======
->>>>>>> 9-1-stable
     describe('running build', () => {
       beforeEach(function () {
         this.build = new Build();

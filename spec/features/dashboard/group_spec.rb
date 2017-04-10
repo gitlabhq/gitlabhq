@@ -8,11 +8,9 @@ RSpec.describe 'Dashboard Group', feature: true do
   it 'creates new group', js: true do
     visit dashboard_groups_path
     click_link 'New group'
-<<<<<<< HEAD
-=======
+
     new_path = 'Samurai'
     new_description = 'Tokugawa Shogunate'
->>>>>>> 9-1-stable
 
     fill_in 'group_path', with: new_path
     fill_in 'group_description', with: new_description

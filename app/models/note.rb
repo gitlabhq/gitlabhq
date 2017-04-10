@@ -130,7 +130,6 @@ class Note < ActiveRecord::Base
     end
   end
 
-<<<<<<< HEAD
   def searchable?
     !system
   end
@@ -139,12 +138,6 @@ class Note < ActiveRecord::Base
     system? && SystemNoteService.cross_reference?(note)
   end
 
-=======
-  def cross_reference?
-    system? && SystemNoteService.cross_reference?(note)
-  end
-
->>>>>>> 9-1-stable
   def diff_note?
     false
   end

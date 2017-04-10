@@ -25,17 +25,14 @@ feature 'Admin Groups', feature: true do
       visit admin_groups_path
 
       click_link "New group"
-<<<<<<< HEAD
-      fill_in 'group_path', with: 'gitlab'
-      fill_in 'group_description', with: 'Group description'
-=======
+
       path_component = 'gitlab'
       group_name = 'GitLab group name'
       group_description = 'Description of group for GitLab'
+
       fill_in 'group_path', with: path_component
       fill_in 'group_name', with: group_name
       fill_in 'group_description', with: group_description
->>>>>>> 9-1-stable
       click_button "Create group"
 
       expect(current_path).to eq admin_group_path(Group.find_by(path: path_component))

@@ -1490,7 +1490,6 @@ describe MergeRequest, models: true do
       end
     end
 
-<<<<<<< HEAD
     context 'on a project with several members' do
       let(:approver_2) { create(:user) }
       let(:developer) { create(:user) }
@@ -1688,8 +1687,6 @@ describe MergeRequest, models: true do
     end
   end
 
-=======
->>>>>>> 9-1-stable
   describe '#conflicts_can_be_resolved_in_ui?' do
     def create_merge_request(source_branch)
       create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start') do |mr|
