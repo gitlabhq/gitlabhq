@@ -1,5 +1,9 @@
-.profile-icon.open-icon
-  = custom_icon("icon_status_open")
+- if current_path?('dashboard#activity')
+  .system-note-image.user-avatar
+    = author_avatar(event, size: 32)
+- else
+  .system-note-image.open-icon
+    = custom_icon("icon_status_open")
 
 .event-title
   %span.author_name= link_to_author event
