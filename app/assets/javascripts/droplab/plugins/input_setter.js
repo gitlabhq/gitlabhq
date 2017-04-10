@@ -35,11 +35,6 @@ const InputSetter = {
     const newValue = selectedItem.getAttribute(config.valueAttribute);
     const inputAttribute = config.inputAttribute;
 
-<<<<<<< HEAD
-    if (!newValue) return;
-
-=======
->>>>>>> origin/master
     if (input.hasAttribute(inputAttribute)) return input.setAttribute(inputAttribute, newValue);
     if (input.tagName === 'INPUT') return input.value = newValue;
     return input.textContent = newValue;

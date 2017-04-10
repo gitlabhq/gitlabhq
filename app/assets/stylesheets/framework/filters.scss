@@ -446,15 +446,8 @@
   }
 }
 
-<<<<<<< HEAD
 .filter-dropdown-item.droplab-item-active .btn {
   @extend %filter-dropdown-item-btn-hover;
-=======
-.filter-dropdown-item.droplab-item-active {
-  .btn {
-    @extend %filter-dropdown-item-btn-hover;
-  }
->>>>>>> origin/master
 }
 
 .filter-dropdown-loading {

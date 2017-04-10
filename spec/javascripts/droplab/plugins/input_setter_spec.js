@@ -140,25 +140,6 @@ describe('InputSetter', function () {
       expect(this.input.value).toBe(this.newValue);
     });
 
-<<<<<<< HEAD
-    describe('if there is no newValue', function () {
-      beforeEach(function () {
-        this.newValue = '';
-        this.inputSetter = { hook: { trigger: {} } };
-        this.config = { valueAttribute: {}, input: this.input };
-        this.input = { value: 'oldValue', tagName: 'INPUT' };
-        this.selectedItem = { getAttribute: () => {} };
-
-        InputSetter.setInput.call(this.inputSetter, this.config, this.selectedItem);
-      });
-
-      it('should not set the value of the input', function () {
-        expect(this.input.value).toBe('oldValue');
-      })
-    });
-
-=======
->>>>>>> origin/master
     describe('if no config.input is provided', function () {
       beforeEach(function () {
         this.config = { valueAttribute: {} };
@@ -184,27 +165,6 @@ describe('InputSetter', function () {
       it('should set the textContent of the input', function () {
         expect(this.input.textContent).toBe(this.newValue);
       });
-<<<<<<< HEAD
-
-      describe('if there is no new value', function () {
-        beforeEach(function () {
-          this.selectedItem = { getAttribute: () => {} };
-          this.input = { textContent: 'oldValue', tagName: 'INPUT', hasAttribute: () => {} };
-          this.config = { valueAttribute: {}, input: this.input };
-          this.inputSetter = { hook: { trigger: {} } };
-          this.newValue = 'newValue';
-
-          spyOn(this.selectedItem, 'getAttribute').and.returnValue(this.newValue);
-
-          InputSetter.setInput.call(this.inputSetter, this.config, this.selectedItem);
-        });
-
-        it('should not set the value of the input', function () {
-          expect(this.input.textContent).toBe('oldValue');
-        });
-      });
-=======
->>>>>>> origin/master
     });
 
     describe('if there is an inputAttribute', function () {
