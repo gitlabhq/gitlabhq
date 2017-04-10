@@ -10,7 +10,7 @@ class Projects::HooksController < Projects::ApplicationController
     @hook = @project.hooks.new(hook_params)
     @hook.save
 
-    unless @hook.valid?      
+    unless @hook.valid?
       @hooks = @project.hooks.select(&:persisted?)
       flash[:alert] = @hook.errors.full_messages.join.html_safe
     end
@@ -49,7 +49,7 @@ class Projects::HooksController < Projects::ApplicationController
 
   def hook_params
     params.require(:hook).permit(
-      :build_events,
+      :job_events,
       :pipeline_events,
       :enable_ssl_verification,
       :issues_events,
