@@ -1,5 +1,6 @@
-import BalsamiqViewer from './balsamiq';
+import BalsamiqViewer from './balsamiq/balsamiq_viewer';
 
 document.addEventListener('DOMContentLoaded', () => {
-  new BalsamiqViewer(document.getElementById('js-balsamiq-viewer'));
+  const balsamiqViewer = new BalsamiqViewer(document.getElementById('js-balsamiq-viewer'));
+  balsamiqViewer.loadFile();
 });
