@@ -36,12 +36,10 @@ class Group < Namespace
 
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
-<<<<<<< HEAD
+  validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
+
   validates :repository_size_limit,
             numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
-=======
-  validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
->>>>>>> 9-1-stable
 
   mount_uploader :avatar, AvatarUploader
   has_many :uploads, as: :model, dependent: :destroy

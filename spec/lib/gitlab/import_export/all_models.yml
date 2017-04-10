@@ -138,10 +138,7 @@ merge_access_levels:
 push_access_levels:
 - user
 - protected_branch
-<<<<<<< HEAD
 - group
-=======
->>>>>>> 9-1-stable
 create_access_levels:
 - protected_tag
 container_repositories:

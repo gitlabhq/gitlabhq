@@ -1497,7 +1497,6 @@ describe Project, models: true do
     end
   end
 
-<<<<<<< HEAD
   describe 'handling import URL' do
     context 'when project is a mirror' do
       it 'returns the full URL' do
@@ -1520,8 +1519,6 @@ describe Project, models: true do
     end
   end
 
-=======
->>>>>>> 9-1-stable
   describe '#user_can_push_to_empty_repo?' do
     let(:project) { create(:empty_project) }
     let(:user)    { create(:user) }
@@ -1610,7 +1607,6 @@ describe Project, models: true do
           stub_container_registry_tags(repository: project.full_path,
                                        tags: %w[latest rc1 pre1])
         end
-<<<<<<< HEAD
 
         it 'should have image tags' do
           expect(project).to have_container_registry_tags
@@ -1622,19 +1618,6 @@ describe Project, models: true do
           stub_container_registry_tags(repository: :any, tags: [])
         end
 
-=======
-
-        it 'should have image tags' do
-          expect(project).to have_container_registry_tags
-        end
-      end
-
-      context 'when there are no tags at all' do
-        before do
-          stub_container_registry_tags(repository: :any, tags: [])
-        end
-
->>>>>>> 9-1-stable
         it 'should not have image tags' do
           expect(project).not_to have_container_registry_tags
         end
@@ -1657,7 +1640,6 @@ describe Project, models: true do
         expect(project).to receive(:container_repositories)
         expect(project).not_to have_container_registry_tags
       end
-<<<<<<< HEAD
     end
   end
 

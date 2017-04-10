@@ -360,11 +360,8 @@ ProtectedBranch::PushAccessLevel:
 - access_level
 - created_at
 - updated_at
-<<<<<<< HEAD
 - user_id
 - group_id
-=======
->>>>>>> 9-1-stable
 ProtectedTag::CreateAccessLevel:
 - id
 - protected_tag_id

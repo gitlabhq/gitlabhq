@@ -7,14 +7,9 @@ module ChatMessage
     attr_reader :title
 
     def initialize(params)
-<<<<<<< HEAD
-      @user_name = params[:user][:username]
-      @project_name = params[:project_name]
-      @project_url = params[:project_url]
-      @action = params[:object_attributes][:action]
-=======
       super
->>>>>>> 9-1-stable
+
+      @action = params[:object_attributes][:action]
 
       obj_attr = params[:object_attributes]
       obj_attr = HashWithIndifferentAccess.new(obj_attr)

@@ -11,12 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20170407140450) do
-
-=======
 ActiveRecord::Schema.define(version: 20170408033905) do
->>>>>>> 9-1-stable
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_trgm"
@@ -848,13 +843,10 @@ ActiveRecord::Schema.define(version: 20170408033905) do
     t.text "description_html"
     t.boolean "lfs_enabled"
     t.integer "parent_id"
-<<<<<<< HEAD
-    t.integer "shared_runners_minutes_limit"
-    t.integer "repository_size_limit", limit: 8
-=======
     t.boolean "require_two_factor_authentication", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false
->>>>>>> 9-1-stable
+    t.integer "shared_runners_minutes_limit"
+    t.integer "repository_size_limit", limit: 8
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -1110,12 +1102,9 @@ ActiveRecord::Schema.define(version: 20170408033905) do
     t.boolean "lfs_enabled"
     t.text "description_html"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
-<<<<<<< HEAD
+    t.integer "auto_cancel_pending_pipelines", default: 0, null: false
     t.integer "repository_size_limit", limit: 8
     t.integer "sync_time", default: 60, null: false
-=======
-    t.integer "auto_cancel_pending_pipelines", default: 0, null: false
->>>>>>> 9-1-stable
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
     t.string "import_jid"
     t.boolean "service_desk_enabled"
@@ -1194,7 +1183,6 @@ ActiveRecord::Schema.define(version: 20170408033905) do
 
   add_index "protected_tags", ["project_id"], name: "index_protected_tags_on_project_id", using: :btree
 
-<<<<<<< HEAD
   create_table "push_rules", force: :cascade do |t|
     t.string "force_push_regex"
     t.string "delete_branch_regex"
@@ -1213,8 +1201,6 @@ ActiveRecord::Schema.define(version: 20170408033905) do
 
   add_index "push_rules", ["project_id"], name: "index_push_rules_on_project_id", using: :btree
 
-=======
->>>>>>> 9-1-stable
   create_table "releases", force: :cascade do |t|
     t.string "tag"
     t.text "description"
@@ -1522,12 +1508,9 @@ ActiveRecord::Schema.define(version: 20170408033905) do
     t.boolean "ghost"
     t.date "last_activity_on"
     t.boolean "notified_of_own_activity"
-<<<<<<< HEAD
-    t.boolean "support_bot"
-=======
     t.boolean "require_two_factor_authentication_from_group", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false
->>>>>>> 9-1-stable
+    t.boolean "support_bot"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1610,17 +1593,11 @@ ActiveRecord::Schema.define(version: 20170408033905) do
   add_foreign_key "protected_branch_merge_access_levels", "users"
   add_foreign_key "protected_branch_push_access_levels", "namespaces", column: "group_id"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
-<<<<<<< HEAD
   add_foreign_key "protected_branch_push_access_levels", "users"
   add_foreign_key "protected_tag_create_access_levels", "namespaces", column: "group_id"
   add_foreign_key "protected_tag_create_access_levels", "protected_tags"
   add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "remote_mirrors", "projects"
-=======
-  add_foreign_key "protected_tag_create_access_levels", "namespaces", column: "group_id"
-  add_foreign_key "protected_tag_create_access_levels", "protected_tags"
-  add_foreign_key "protected_tag_create_access_levels", "users"
->>>>>>> 9-1-stable
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade

@@ -10,15 +10,13 @@ class GroupMember < Member
   validates :source_type, format: { with: /\ANamespace\z/ }
   default_scope { where(source_type: SOURCE_TYPE) }
 
-<<<<<<< HEAD
+  after_create :update_two_factor_requirement, unless: :invite?
+  after_destroy :update_two_factor_requirement, unless: :invite?
+
   scope :with_ldap_dn, -> { joins(user: :identities).where("identities.provider LIKE ?", 'ldap%') }
   scope :with_identity_provider, ->(provider) do
     joins(user: :identities).where(identities: { provider: provider })
   end
-=======
-  after_create :update_two_factor_requirement, unless: :invite?
-  after_destroy :update_two_factor_requirement, unless: :invite?
->>>>>>> 9-1-stable
 
   def self.access_level_roles
     Gitlab::Access.options_with_owner

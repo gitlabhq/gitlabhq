@@ -33,7 +33,6 @@ module BranchesHelper
   def protected_branch?(project, branch)
     ProtectedBranch.protected?(project, branch.name)
   end
-<<<<<<< HEAD
 
   def access_levels_data(access_levels)
     access_levels.map do |level|
@@ -53,6 +52,4 @@ module BranchesHelper
       end
     end
   end
-=======
->>>>>>> 9-1-stable
 end

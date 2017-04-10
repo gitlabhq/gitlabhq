@@ -3,7 +3,6 @@ class Projects::ProtectedBranchesController < Projects::ProtectedRefsController
 
   def project_refs
     @project.repository.branches
-<<<<<<< HEAD
   end
 
   def create_service_class
@@ -20,20 +19,6 @@ class Projects::ProtectedBranchesController < Projects::ProtectedRefsController
 
   def access_levels
     [:merge_access_levels, :push_access_levels]
-=======
-  end
-
-  def create_service_class
-    ::ProtectedBranches::CreateService
-  end
-
-  def update_service_class
-    ::ProtectedBranches::UpdateService
-  end
-
-  def load_protected_ref
-    @protected_ref = @project.protected_branches.find(params[:id])
->>>>>>> 9-1-stable
   end
 
   def protected_ref_params
