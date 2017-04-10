@@ -25,6 +25,10 @@ class MigrateAssignees < ActiveRecord::Migration
 
   def up
     execute <<-EOF
+      UPDATE issues
+      SET assignee_id = NULL
+      WHERE assignee_id NOT IN(SELECT id FROM users);
+
       INSERT INTO issue_assignees(issue_id, user_id)
       SELECT id, assignee_id FROM issues WHERE assignee_id IS NOT NULL
     EOF
