@@ -38,7 +38,7 @@ if Rails.env.test?
     end
   end
 
-  if ENV.has_key?('CI')
+  if ENV.has_key?('CI') && ENV['GITLAB_DATABASE'] == 'postgresql'
     RspecProfiling::VCS::Git.prepend(RspecProfilingExt::Git)
     RspecProfiling::Run.prepend(RspecProfilingExt::Run)
   end
