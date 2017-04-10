@@ -1,3 +1,4 @@
+<script>
 /* eslint-disable no-new, no-alert */
 /* global Flash */
 import '~/flash';
@@ -65,29 +66,31 @@ export default {
       this.isLoading = true;
 
       this.service.postAction(this.endpoint)
-      .then(() => {
-        this.isLoading = false;
-        eventHub.$emit('refreshPipelines');
-      })
-      .catch(() => {
-        this.isLoading = false;
-        new Flash('An error occured while making the request.');
-      });
+        .then(() => {
+          this.isLoading = false;
+          eventHub.$emit('refreshPipelines');
+        })
+        .catch(() => {
+          this.isLoading = false;
+          new Flash('An error occured while making the request.');
+        });
     },
   },
-
-  template: `
-    <button
-      type="button"
-      @click="onClick"
-      :class="buttonClass"
-      :title="title"
-      :aria-label="title"
-      data-container="body"
-      data-placement="top"
-      :disabled="isLoading">
-      <i :class="iconClass" aria-hidden="true"/>
-      <i class="fa fa-spinner fa-spin" aria-hidden="true" v-if="isLoading" />
-    </button>
-  `,
 };
+</script>
+
+<template>
+  <button
+    type="button"
+    @click="onClick"
+    :class="buttonClass"
+    :title="title"
+    :aria-label="title"
+    data-container="body"
+    data-placement="top"
+    :disabled="isLoading"
+  >
+    <i :class="iconClass" aria-hidden="true"></i>
+    <i class="fa fa-spinner fa-spin" aria-hidden="true" v-if="isLoading"></i>
+  </button>
+</template>

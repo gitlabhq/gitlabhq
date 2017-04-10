@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.0.5 (2017-04-10)
+
+- Add shortcuts and counters to MRs and issues in navbar.
+- Disable invalid service templates.
+- Handle SSH keys that have multiple spaces between each marker.
+
 ## 9.0.4 (2017-04-05)
 
 - Don’t show source project name when user does not have access.

@@ -50,6 +50,7 @@ var config = {
     users:                './users/users_bundle.js',
     vue_pipelines:        './vue_pipelines_index/index.js',
     issue_show:           './issue_show/index.js',
+    group:                './group.js',
   },
 
   output: {
@@ -65,13 +66,18 @@ var config = {
       {
         test: /\.js$/,
         exclude: /(node_modules|vendor\/assets)/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+      },
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
       },
       {
         test: /\.svg$/,
-        use: 'raw-loader'
-      }, {
-        test: /\.(worker.js|pdf)$/,
+        loader: 'raw-loader',
+      },
+      {
+        test: /\.(worker\.js|pdf)$/,
         exclude: /node_modules/,
         loader: 'file-loader',
       },
