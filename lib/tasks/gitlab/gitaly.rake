@@ -7,10 +7,10 @@ namespace :gitlab do
         abort %(Please specify the directory where you want to install gitaly:\n  rake "gitlab:gitaly:install[/home/git/gitaly]")
       end
 
-      tag = "v#{Gitlab::GitalyClient.expected_server_version}"
+      version = Gitlab::GitalyClient.expected_server_version
       repo = 'https://gitlab.com/gitlab-org/gitaly.git'
 
-      checkout_or_clone_tag(tag: tag, repo: repo, target_dir: args.dir)
+      checkout_or_clone_version(version: version, repo: repo, target_dir: args.dir)
 
       _, status = Gitlab::Popen.popen(%w[which gmake])
       command = status.zero? ? 'gmake' : 'make'
