@@ -10,7 +10,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
   - [Support for Universal 2nd Factor Authentication - YubiKeys](https://about.gitlab.com/2016/06/22/gitlab-adds-support-for-u2f/)
   - [Security Webcast with Yubico](https://about.gitlab.com/2016/08/31/gitlab-and-yubico-security-webcast/)
 - **Integrations:**
-- [GitLab as OAuth2 authentication service provider](../integration/oauth_provider.md#introduction-to-oauth)
+  - [GitLab as OAuth2 authentication service provider](../../integration/oauth_provider.md#introduction-to-oauth)
 
 ## GitLab administrators
 
@@ -33,7 +33,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
 
 - [OAuth 2 Tokens](../../api/README.md#oauth-2-tokens)
 - [Private Tokens](../../api/README.md#private-tokens)
-- [Impersonation tokens](../api/README.md#impersonation-tokens)
+- [Impersonation tokens](../../api/README.md#impersonation-tokens)
 - [GitLab as an OAuth2 provider](../../api/oauth2.md#gitlab-as-an-oauth2-provider)
 - [GitLab Runner API - Authentication](../../api/ci/runners.md#authentication)
 
