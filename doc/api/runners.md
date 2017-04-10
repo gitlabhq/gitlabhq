@@ -222,7 +222,7 @@ GET /projects/:id/runners
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a project |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/9/runners"
@@ -259,7 +259,7 @@ POST /projects/:id/runners
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `id`        | integer | yes      | The ID of a project |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```
@@ -290,7 +290,7 @@ DELETE /projects/:id/runners/:runner_id
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `id`        | integer | yes      | The ID of a project |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```
