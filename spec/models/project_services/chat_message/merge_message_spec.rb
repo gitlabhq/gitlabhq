@@ -57,8 +57,8 @@ describe ChatMessage::MergeMessage, models: true do
 
     it 'returns a message regarding approval of merge requests' do
       expect(subject.pretext).to eq(
-        'test.user approved <http://somewhere.com/merge_requests/100|merge request !100> '\
-        'in <http://somewhere.com|project_name>: *Issue title*')
+        'test.user approved <http://somewhere.com/merge_requests/100|!100 *Merge Request title*> '\
+        'in <http://somewhere.com|project_name>: *Merge Request title*')
       expect(subject.attachments).to be_empty
     end
   end

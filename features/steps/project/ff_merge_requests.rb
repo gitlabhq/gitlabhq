@@ -18,12 +18,12 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
   end
 
   step 'merge request is mergeable' do
-    expect(page).to have_button 'Accept Merge Request'
+    expect(page).to have_button 'Accept merge request'
   end
 
   step 'I should see ff-only merge button' do
     expect(page).to have_content "Fast-forward merge without a merge commit"
-    expect(page).to have_button 'Accept Merge Request'
+    expect(page).to have_button 'Accept merge request'
   end
 
   step 'merge request "Bug NS-05" is mergeable' do
@@ -32,7 +32,7 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
 
   step 'I accept this merge request' do
     page.within '.mr-state-widget' do
-      click_button "Accept Merge Request"
+      click_button "Accept merge request"
     end
   end
 
