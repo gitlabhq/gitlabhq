@@ -39,18 +39,15 @@ class IssuesFinder < IssuableFinder
   end
 
   def self.not_restricted_by_confidentiality(user)
-    issues = Issue.with_assignees
+    return Issue.where('issues.confidential IS NOT TRUE') if user.blank?
 
-    return issues.where('issues.confidential IS NULL OR issues.confidential IS FALSE') if user.blank?
+    return Issue.all if user.admin_or_auditor?
 
-    return issues.all if user.admin_or_auditor?
-
-    issues.where('
-      issues.confidential IS NULL
-      OR issues.confidential IS FALSE
+    Issue.where('
+      issues.confidential IS NOT TRUE
       OR (issues.confidential = TRUE
         AND (issues.author_id = :user_id
-          OR issue_assignees.user_id = :user_id
+          OR EXISTS (SELECT true FROM issue_assignees WHERE user_id = :user_id AND issue_id = issues.id)
           OR issues.project_id IN(:project_ids)))',
       user_id: user.id,
       project_ids: user.authorized_projects(Gitlab::Access::REPORTER).select(:id))
