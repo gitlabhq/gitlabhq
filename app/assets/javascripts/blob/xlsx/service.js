@@ -52,7 +52,7 @@ export default class XlsxService {
           columns.forEach((col) => {
             const val = row[col];
 
-            if (val) {
+            if (typeof val !== 'undefined') {
               arr.push(val);
             } else {
               arr.push('');
