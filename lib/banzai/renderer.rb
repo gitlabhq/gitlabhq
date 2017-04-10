@@ -33,20 +33,12 @@ module Banzai
     # of HTML. This method is analogous to calling render(object.field), but it
     # can cache the rendered HTML in the object, rather than Redis.
     #
-    # The context to use is learned from the passed-in object by calling
-    # #banzai_render_context(field), and cannot be changed. Use #render, passing
-    # it the field text, if a custom rendering is needed. The generated context
-    # is returned along with the HTML.
+    # The context to use is managed by the object and cannot be changed.
+    # Use #render, passing it the field text, if a custom rendering is needed.
     def self.render_field(object, field)
-      html_field = object.markdown_cache_field_for(field)
+      object.refresh_markdown_cache!(do_update: update_object?(object)) unless object.cached_html_up_to_date?(field)
 
-      html = object.__send__(html_field)
-      return html if html.present?
-
-      html = cacheless_render_field(object, field)
-      update_object(object, html_field, html) unless object.new_record? || object.destroyed?
-
-      html
+      object.cached_html_for(field)
     end
 
     # Same as +render_field+, but without consulting or updating the cache field
@@ -165,8 +157,9 @@ module Banzai
       Rails.cache.send(:expanded_key, full_cache_key(cache_key, pipeline_name))
     end
 
-    def self.update_object(object, html_field, html)
-      object.update_column(html_field, html)
+    # GitLab EE needs to disable updates on GET requests in Geo
+    def self.update_object?(object)
+      true
     end
   end
 end

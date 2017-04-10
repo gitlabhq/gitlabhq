@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20170419001229) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text "message_html"
+    t.integer "cached_markdown_version"
   end
 
   create_table "appearances", force: :cascade do |t|
@@ -34,6 +35,7 @@ ActiveRecord::Schema.define(version: 20170419001229) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "description_html"
+    t.integer "cached_markdown_version"
   end
 
   create_table "application_settings", force: :cascade do |t|
@@ -116,6 +118,7 @@ ActiveRecord::Schema.define(version: 20170419001229) do
     t.integer "unique_ips_limit_time_window"
     t.boolean "unique_ips_limit_enabled", default: false, null: false
     t.decimal "polling_interval_multiplier", default: 1.0, null: false
+    t.integer "cached_markdown_version"
     t.boolean "usage_ping_enabled", default: true, null: false
     t.string "uuid"
   end
@@ -161,6 +164,7 @@ ActiveRecord::Schema.define(version: 20170419001229) do
     t.string "color"
     t.string "font"
     t.text "message_html"
+    t.integer "cached_markdown_version"
   end
 
   create_table "chat_names", force: :cascade do |t|
@@ -479,6 +483,7 @@ ActiveRecord::Schema.define(version: 20170419001229) do
     t.integer "time_estimate"
     t.integer "relative_position"
     t.datetime "closed_at"
+    t.integer "cached_markdown_version"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -543,6 +548,7 @@ ActiveRecord::Schema.define(version: 20170419001229) do
     t.text "description_html"
     t.string "type"
     t.integer "group_id"
+    t.integer "cached_markdown_version"
   end
 
   add_index "labels", ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true, using: :btree
@@ -663,6 +669,7 @@ ActiveRecord::Schema.define(version: 20170419001229) do
     t.text "title_html"
     t.text "description_html"
     t.integer "time_estimate"
+    t.integer "cached_markdown_version"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -700,6 +707,7 @@ ActiveRecord::Schema.define(version: 20170419001229) do
     t.text "title_html"
     t.text "description_html"
     t.date "start_date"
+    t.integer "cached_markdown_version"
   end
 
   add_index "milestones", ["description"], name: "index_milestones_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
@@ -726,6 +734,7 @@ ActiveRecord::Schema.define(version: 20170419001229) do
     t.integer "parent_id"
     t.boolean "require_two_factor_authentication", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false
+    t.integer "cached_markdown_version"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -760,6 +769,7 @@ ActiveRecord::Schema.define(version: 20170419001229) do
     t.integer "resolved_by_id"
     t.string "discussion_id"
     t.text "note_html"
+    t.integer "cached_markdown_version"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -956,6 +966,7 @@ ActiveRecord::Schema.define(version: 20170419001229) do
     t.integer "auto_cancel_pending_pipelines", default: 0, null: false
     t.boolean "printing_merge_request_link_enabled", default: true, null: false
     t.string "import_jid"
+    t.integer "cached_markdown_version"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1028,6 +1039,7 @@ ActiveRecord::Schema.define(version: 20170419001229) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text "description_html"
+    t.integer "cached_markdown_version"
   end
 
   add_index "releases", ["project_id", "tag"], name: "index_releases_on_project_id_and_tag", using: :btree
@@ -1099,6 +1111,7 @@ ActiveRecord::Schema.define(version: 20170419001229) do
     t.integer "visibility_level", default: 0, null: false
     t.text "title_html"
     t.text "content_html"
+    t.integer "cached_markdown_version"
   end
 
   add_index "snippets", ["author_id"], name: "index_snippets_on_author_id", using: :btree
