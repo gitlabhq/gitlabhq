@@ -179,52 +179,9 @@ test includes:
 [picture]: https://twitter.com/withzombies/status/829716565834752000
 [tests-cost]: https://medium.com/table-xi/high-cost-tests-and-high-value-tests-a86e27a54df#.2ulyh3a4e
 
-## Factories
+## Frontend testing
 
-GitLab uses [factory_girl] as a test fixture replacement.
-
-- Factory definitions live in `spec/factories/`, named using the pluralization
-  of their corresponding model (`User` factories are defined in `users.rb`).
-- There should be only one top-level factory definition per file.
-- FactoryGirl methods are mixed in to all RSpec groups. This means you can (and
-  should) call `create(...)` instead of `FactoryGirl.create(...)`.
-- Make use of [traits] to clean up definitions and usages.
-- When defining a factory, don't define attributes that are not required for the
-  resulting record to pass validation.
-- When instantiating from a factory, don't supply attributes that aren't
-  required by the test.
-- Factories don't have to be limited to `ActiveRecord` objects.
-  [See example](https://gitlab.com/gitlab-org/gitlab-ce/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).
-
-[factory_girl]: https://github.com/thoughtbot/factory_girl
-[traits]: http://www.rubydoc.info/gems/factory_girl/file/GETTING_STARTED.md#Traits
-
-## JavaScript
-
-GitLab uses [Karma] to run its [Jasmine] JavaScript specs. They can be run on
-the command line via `bundle exec karma`.
-
-- JavaScript tests live in `spec/javascripts/`, matching the folder structure
-  of `app/assets/javascripts/`: `app/assets/javascripts/behaviors/autosize.js`
-  has a corresponding `spec/javascripts/behaviors/autosize_spec.js` file.
-- Haml fixtures required for JavaScript tests live in
-  `spec/javascripts/fixtures`. They should contain the bare minimum amount of
-  markup necessary for the test.
-
-    > **Warning:** Keep in mind that a Rails view may change and
-    invalidate your test, but everything will still pass because your fixture
-    doesn't reflect the latest view. Because of this we encourage you to
-    generate fixtures from actual rails views whenever possible.
-
-- Keep in mind that in a CI environment, these tests are run in a headless
-  browser and you will not have access to certain APIs, such as
-  [`Notification`](https://developer.mozilla.org/en-US/docs/Web/API/notification),
-  which will have to be stubbed.
-
-[Karma]: https://github.com/karma-runner/karma
-[Jasmine]: https://github.com/jasmine/jasmine
-
-For more information, see the [frontend testing guide](fe_guide/testing.md).
+Please consult the [dedicated "Frontend testing" guide](./fe_guide/testing.md).
 
 ## RSpec
 
@@ -296,61 +253,115 @@ end
 - Avoid scenario titles that add no information, such as "successfully".
 - Avoid scenario titles that repeat the feature title.
 
-## Test speed
+### Matchers
 
-GitLab has a massive test suite that, without [parallelization], can take hours
-to run. It's important that we make an effort to write tests that are accurate
-and effective _as well as_ fast.
+Custom matchers should be created to clarify the intent and/or hide the
+complexity of RSpec expectations.They should be placed under
+`spec/support/matchers/`. Matchers can be placed in subfolder if they apply to
+a certain type of specs only (e.g. features, requests etc.) but shouldn't be if
+they apply to multiple type of specs.
 
-Here are some things to keep in mind regarding test performance:
+### Shared contexts
 
-- `double` and `spy` are faster than `FactoryGirl.build(...)`
-- `FactoryGirl.build(...)` and `.build_stubbed` are faster than `.create`.
-- Don't `create` an object when `build`, `build_stubbed`, `attributes_for`,
-  `spy`, or `double` will do. Database persistence is slow!
-- Use `create(:empty_project)` instead of `create(:project)` when you don't need
-  the underlying Git repository. Filesystem operations are slow!
-- Don't mark a feature as requiring JavaScript (through `@javascript` in
-  Spinach or `:js` in RSpec) unless it's _actually_ required for the test
-  to be valid. Headless browser testing is slow!
+All shared contexts should be be placed under `spec/support/shared_contexts/`.
+Shared contexts can be placed in subfolder if they apply to a certain type of
+specs only (e.g. features, requests etc.) but shouldn't be if they apply to
+multiple type of specs.
 
-[parallelization]: #test-suite-parallelization-on-the-ci
+Each file should include only one context and have a descriptive name, e.g.
+`spec/support/shared_contexts/controllers/githubish_import_controller_shared_context.rb`.
 
-### Monitoring
+### Shared examples
 
-The GitLab test suite is [monitored] and a [public dashboard] is available for
-everyone to see. Feel free to look at the slowest test files and try to improve
-them.
+All shared examples should be be placed under `spec/support/shared_examples/`.
+Shared examples can be placed in subfolder if they apply to a certain type of
+specs only (e.g. features, requests etc.) but shouldn't be if they apply to
+multiple type of specs.
 
-[monitored]: /development/performance.html#rspec-profiling
-[public dashboard]: https://redash.gitlab.com/public/dashboards/l1WhHXaxrCWM5Ai9D7YDqHKehq6OU3bx5gssaiWe?org_slug=default
+Each file should include only one context and have a descriptive name, e.g.
+`spec/support/shared_examples/controllers/githubish_import_controller_shared_example.rb`.
 
-## Test suite parallelization on the CI
+### Helpers
 
-Our current CI parallelization setup is as follows:
+Helpers are usually modules that provide some methods to hide the complexity of
+specific RSpec examples. You can define helpers in RSpec files if they're not
+intended to be shared with other specs. Otherwise, they should be be placed
+under `spec/support/helpers/`. Helpers can be placed in subfolder if they apply
+to a certain type of specs only (e.g. features, requests etc.) but shouldn't be
+if they apply to multiple type of specs.
 
-1. The `knapsack` job in the prepare stage that is supposed to ensure we have a
-  `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file:
-  - The `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file is fetched
-    from S3, if it's not here we initialize the file with `{}`.
-1. Each `rspec x y` job are run with `knapsack rspec` and should have an evenly
-  distributed share of tests:
-  - It works because the jobs have access to the
-    `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` since the "artifacts
-    from all previous stages are passed by default". [^1]
-  - the jobs set their own report path to
-    `KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json`.
-  - if knapsack is doing its job, test files that are run should be listed under
-    `Report specs`, not under `Leftover specs`.
-1. The `update-knapsack` job takes all the
-  `knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json`
-  files from the `rspec x y` jobs and merge them all together into a single
-  `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file that is then
-  uploaded to S3.
+Helpers should follow the Rails naming / namespacing convention. For instance
+`spec/support/helpers/cycle_analytics_helpers.rb` should define:
 
-After that, the next pipeline will use the up-to-date
-`knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file. The same strategy
-is used for Spinach tests as well.
+```ruby
+module Spec
+  module Support
+    module Helpers
+      module CycleAnalyticsHelpers
+        def create_commit_referencing_issue(issue, branch_name: random_git_name)
+          project.repository.add_branch(user, branch_name, 'master')
+          create_commit("Commit for ##{issue.iid}", issue.project, user, branch_name)
+        end
+      end
+    end
+  end
+end
+```
+
+Helpers should not change the RSpec config. For instance, the helpers module
+described above should not include:
+
+```ruby
+RSpec.configure do |config|
+  config.include Spec::Support::Helpers::CycleAnalyticsHelpers
+end
+```
+
+### Factories
+
+GitLab uses [factory_girl] as a test fixture replacement.
+
+- Factory definitions live in `spec/factories/`, named using the pluralization
+  of their corresponding model (`User` factories are defined in `users.rb`).
+- There should be only one top-level factory definition per file.
+- FactoryGirl methods are mixed in to all RSpec groups. This means you can (and
+  should) call `create(...)` instead of `FactoryGirl.create(...)`.
+- Make use of [traits] to clean up definitions and usages.
+- When defining a factory, don't define attributes that are not required for the
+  resulting record to pass validation.
+- When instantiating from a factory, don't supply attributes that aren't
+  required by the test.
+- Factories don't have to be limited to `ActiveRecord` objects.
+  [See example](https://gitlab.com/gitlab-org/gitlab-ce/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).
+
+[factory_girl]: https://github.com/thoughtbot/factory_girl
+[traits]: http://www.rubydoc.info/gems/factory_girl/file/GETTING_STARTED.md#Traits
+
+### Fixtures
+
+All fixtures should be be placed under `spec/fixtures/`.
+
+### Config
+
+RSpec config files are files that change the RSpec config (i.e.
+`RSpec.configure do |config|` blocks). They should be placed under
+`spec/support/config/`.
+
+Each file should be related to a specific domain, e.g.
+`spec/support/config/capybara.rb`, `spec/support/config/carrierwave.rb`, etc.
+
+Helpers can be included in the `spec/support/config/rspec.rb` file. If a
+helpers module applies only to a certain kind of specs, it should add modifiers
+to the `config.include` call. For instance if
+`spec/support/helpers/cycle_analytics_helpers.rb` applies to `:lib` and
+`type: :model` specs only, you would write the following:
+
+```ruby
+RSpec.configure do |config|
+  config.include Spec::Support::Helpers::CycleAnalyticsHelpers, :lib
+  config.include Spec::Support::Helpers::CycleAnalyticsHelpers, type: :model
+end
+```
 
 ## Testing Rake Tasks
 
@@ -387,6 +398,62 @@ describe 'gitlab:shell rake tasks' do
   end
 end
 ```
+
+## Test speed
+
+GitLab has a massive test suite that, without [parallelization], can take hours
+to run. It's important that we make an effort to write tests that are accurate
+and effective _as well as_ fast.
+
+Here are some things to keep in mind regarding test performance:
+
+- `double` and `spy` are faster than `FactoryGirl.build(...)`
+- `FactoryGirl.build(...)` and `.build_stubbed` are faster than `.create`.
+- Don't `create` an object when `build`, `build_stubbed`, `attributes_for`,
+  `spy`, or `double` will do. Database persistence is slow!
+- Use `create(:empty_project)` instead of `create(:project)` when you don't need
+  the underlying Git repository. Filesystem operations are slow!
+- Don't mark a feature as requiring JavaScript (through `@javascript` in
+  Spinach or `:js` in RSpec) unless it's _actually_ required for the test
+  to be valid. Headless browser testing is slow!
+
+[parallelization]: #test-suite-parallelization-on-the-ci
+
+### Test suite parallelization on the CI
+
+Our current CI parallelization setup is as follows:
+
+1. The `knapsack` job in the prepare stage that is supposed to ensure we have a
+  `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file:
+  - The `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file is fetched
+    from S3, if it's not here we initialize the file with `{}`.
+1. Each `rspec x y` job are run with `knapsack rspec` and should have an evenly
+  distributed share of tests:
+  - It works because the jobs have access to the
+    `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` since the "artifacts
+    from all previous stages are passed by default". [^1]
+  - the jobs set their own report path to
+    `KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json`.
+  - if knapsack is doing its job, test files that are run should be listed under
+    `Report specs`, not under `Leftover specs`.
+1. The `update-knapsack` job takes all the
+  `knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json`
+  files from the `rspec x y` jobs and merge them all together into a single
+  `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file that is then
+  uploaded to S3.
+
+After that, the next pipeline will use the up-to-date
+`knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file. The same strategy
+is used for Spinach tests as well.
+
+### Monitoring
+
+The GitLab test suite is [monitored] and a [public dashboard] is available for
+everyone to see. Feel free to look at the slowest test files and try to improve
+them.
+
+[monitored]: /development/performance.html#rspec-profiling
+[public dashboard]: https://redash.gitlab.com/public/dashboards/l1WhHXaxrCWM5Ai9D7YDqHKehq6OU3bx5gssaiWe?org_slug=default
 
 ## Spinach (feature) tests
 

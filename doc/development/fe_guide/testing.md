@@ -13,9 +13,18 @@ for more information on general testing practices at GitLab.
 ## Karma test suite
 
 GitLab uses the [Karma][karma] test runner with [Jasmine][jasmine] as its test
-framework for our JavaScript unit tests.  For tests that rely on DOM
+framework for our JavaScript unit tests. For tests that rely on DOM
 manipulation we use fixtures which are pre-compiled from HAML source files and
 served during testing by the [jasmine-jquery][jasmine-jquery] plugin.
+
+JavaScript tests live in `spec/javascripts/`, matching the folder structure
+of `app/assets/javascripts/`: `app/assets/javascripts/behaviors/autosize.js`
+has a corresponding `spec/javascripts/behaviors/autosize_spec.js` file.
+
+Keep in mind that in a CI environment, these tests are run in a headless
+browser and you will not have access to certain APIs, such as
+[`Notification`](https://developer.mozilla.org/en-US/docs/Web/API/notification),
+which will have to be stubbed.
 
 ### Running frontend tests
 
