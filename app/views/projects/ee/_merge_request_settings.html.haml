@@ -43,54 +43,74 @@
   .hint
     Description parsed with #{link_to "GitLab Flavored Markdown", help_page_path('user/markdown'), target: '_blank'}.
 
-.form-group
-  = form.label :approvals_before_merge, class: 'label-light' do
-    Approvals required
-  = form.number_field :approvals_before_merge, class: "form-control", min: 0
-  .help-block
-    Number of users to approve a merge request before it can be accepted. 0 - approving is disabled
-
 .form-group.reset-approvals-on-push
   .checkbox
-    = form.label :reset_approvals_on_push do
-      = form.check_box :reset_approvals_on_push
-      %span.descr Reset approvals on push
-      .help-block Approvals are reset when new data is pushed to the merge request
+    = label_tag :require_approvals do
+      = check_box_tag :require_approvals, nil, project.approvals_before_merge.nonzero?, class: 'js-require-approvals-toggle'
+      %strong Activate merge request approvals
+      = link_to icon('question-circle'), help_page_path("user/project/merge_requests/merge_request_approvals"), target: '_blank'
+      .descr Merge request approvals allow you to set the number of necessary approvals and predefine a list of approvers that you will need to approve every merge request in a project.
 
-.form-group
-  = form.label :approver_ids, class: 'label-light' do
-    Approvers
-  = users_select_tag("project[approver_ids]", multiple: true, class: 'input-large', scope: :all, email_user: true)
-  .help-block
-    Add an approver suggestion for each merge request
-  = form.label :approver_group_ids, class: 'label-light' do
-    Approver groups
-  - skip_groups = project.approver_groups.pluck(:group_id)
-  = groups_select_tag('project[approver_group_ids]', multiple: true, data: { skip_groups: skip_groups, all_available: true }, class: 'input-large')
-  .help-block
-    Add a group as an approver suggestion for each merge request
-
-  .panel.panel-default.prepend-top-10
-    .panel-heading
+.nested-settings{ class: project.approvals_before_merge.nonzero? ? '' : 'hidden' }
+  .form-group
+    = form.label :approver_ids, class: 'label-light' do
       Approvers
-    %ul.well-list.approver-list
-      - project.approvers.each do |approver|
-        %li.approver
-          = link_to approver.user.name, approver.user
-          .pull-right
-            = link_to namespace_project_approver_path(project.namespace, project, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove approver' do
-              = icon("sign-out")
-              Remove
-      - project.approver_groups.each do |approver_group|
-        %li.approver-group
-          Group:
-          = link_to approver_group.group.name, approver_group.group
-          .pull-right
-            = link_to namespace_project_approver_group_path(project.namespace, project, approver_group), data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}" }, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove group' do
-              = icon("sign-out")
-              Remove
-      - if project.approvers.empty? && project.approver_groups.empty?
-        %li There are no approvers
+    = hidden_field_tag "project[approver_ids]"
+    = hidden_field_tag "project[approver_group_ids]"
+    .input-group.input-btn-group
+      = hidden_field_tag :approver_user_and_group_ids, '', { class: 'js-select-user-and-group input-large', tabindex: 1, 'data-name': 'project' }
+      %button.btn.btn-success.js-add-approvers{ type: 'button', title: 'Add approvers(s)' }
+        Add
+    .help-block
+      Add an approver or group suggestion for each merge request
+
+    .panel.panel-default.prepend-top-10.js-current-approvers
+      .panel-heading
+        Approvers
+        %span.badge
+          - ids = []
+          - project.approvers.each do |user|
+            - ids << user.user_id
+          - project.approver_groups.each do |group|
+            - group.users.each do |user|
+              - unless ids.include?(user.id)
+                - ids << user.id
+          = ids.count
+      %ul.well-list.approver-list
+        .load-wrapper.hidden
+          = icon('spinner spin', class: 'approver-list-loader')
+        - project.approvers.each do |approver|
+          %li.approver.settings-flex-row.js-approver{ data: { id: approver.user_id } }
+            = link_to approver.user.name, approver.user
+            .pull-right
+              %button{ href: namespace_project_approver_path(project.namespace, project, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, class: "btn btn-remove js-approver-remove", title: 'Remove approver' }
+                = icon("trash")
+        - project.approver_groups.each do |approver_group|
+          %li.approver-group.settings-flex-row.js-approver-group{ data: { id: approver_group.group.id } }
+            .span
+              %span.light
+                Group:
+              = link_to approver_group.group.name, approver_group.group
+              %span.badge
+                = approver_group.group.members.count
+            .pull-right
+              %button{ href: namespace_project_approver_group_path(project.namespace, project, approver_group), data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}" }, class: "btn btn-remove js-approver-remove", title: 'Remove group' }
+                = icon("trash")
+        - if project.approvers.empty? && project.approver_groups.empty?
+          %li There are no approvers
+
+  .form-group
+    = form.label :approvals_before_merge, class: 'label-light' do
+      Approvals required
+    = form.number_field :approvals_before_merge, class: "form-control", min: 0
+    .help-block
+
+  .form-group.reset-approvals-on-push
+    .checkbox
+      = form.label :reset_approvals_on_push do
+        = form.check_box :reset_approvals_on_push
+        %strong Reset approvals on push
+        .descr Approvals are reset when new data is pushed to the merge request
 
 :javascript
   new UsersSelect();
