@@ -28,7 +28,10 @@ export default {
   },
   methods: {
     getInitialSheet() {
-      return decodeURIComponent(location.hash.replace('#', '')) || this.sheetNames[0];
+      let hash = location.hash.split('-');
+      hash = decodeURIComponent(hash[0].replace('#', ''));
+
+      return this.sheetNames.find(sheet => sheet === hash) || this.sheetNames[0];
     },
   },
   created() {
