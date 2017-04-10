@@ -31,11 +31,7 @@
               = icon('filter')
               %button.clear-search.hidden{ type: 'button' }
                 = icon('times')
-<<<<<<< HEAD
-            #js-dropdown-hint.filtered-search-input-dropdown-menu.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
-=======
             #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
->>>>>>> 9-1-stable
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { action: 'submit' } }
                   %button.btn.btn-link
@@ -77,7 +73,6 @@
                         {{name}}
                       %span.dropdown-light-content
                         @{{username}}
-<<<<<<< HEAD
             - unless board && board.milestone_id
               #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'clock-o', hint: 'milestone', tag: '%milestone' } }
                 %ul{ data: { dropdown: true } }
@@ -95,24 +90,6 @@
                   %li.filter-dropdown-item
                     %button.btn.btn-link.js-data-value
                       {{title}}
-=======
-            #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'clock-o', hint: 'milestone', tag: '%milestone' } }
-              %ul{ data: { dropdown: true } }
-                %li.filter-dropdown-item{ data: { value: 'none' } }
-                  %button.btn.btn-link
-                    No Milestone
-                %li.filter-dropdown-item{ data: { value: 'upcoming' } }
-                  %button.btn.btn-link
-                    Upcoming
-                %li.filter-dropdown-item{ 'data-value' => 'started' }
-                  %button.btn.btn-link
-                    Started
-                %li.divider
-              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-                %li.filter-dropdown-item
-                  %button.btn.btn-link.js-data-value
-                    {{title}}
->>>>>>> 9-1-stable
             #js-dropdown-label.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'tag', hint: 'label', tag: '~label', type: 'array' } }
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'none' } }
@@ -125,7 +102,6 @@
                     %span.dropdown-label-box{ style: 'background: {{color}}' }
                     %span.label-title.js-data-value
                       {{title}}
-<<<<<<< HEAD
 
             - if type == :issues || type == :boards
               #js-dropdown-weight.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'balance-scale', hint: 'weight', tag: 'weight' } }
@@ -142,8 +118,6 @@
                     %li.filter-dropdown-item{ 'data-value' => "#{weight}" }
                       %button.btn.btn-link= weight
 
-=======
->>>>>>> 9-1-stable
         .filter-dropdown-container
           - if type == :boards
             - if can?(current_user, :admin_list, @project)
