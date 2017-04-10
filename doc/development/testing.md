@@ -17,8 +17,9 @@ Formal definition: https://en.wikipedia.org/wiki/Unit_testing
 
 These kind of tests ensure that a single unit of code (a method) works as
 expected (given an input, it has a predictable output). These tests should be
-isolated as much as possible (for example, model methods that don't do anything
-with the database shouldn't need a DB record).
+isolated as much as possible. For example, model methods that don't do anything
+with the database shouldn't need a DB record. Classes that don't need database
+records should use stubs/doubles as much as possible.
 
 | Code path | Tests path | Testing engine | Notes |
 | --------- | ---------- | -------------- | ----- |
@@ -94,6 +95,29 @@ possible).
 [Poltergeist]: https://github.com/teamcapybara/capybara#poltergeist
 [RackTest]: https://github.com/teamcapybara/capybara#racktest
 
+### Black-box tests or End-to-end tests
+
+GitLab consists of [multiple pieces] such as [GitLab Shell], [GitLab Workhorse],
+[Gitaly], [GitLab Pages], [GitLab Runner], and GitLab Rails. All theses pieces
+are configured and packaged by [GitLab Omnibus].
+
+[GitLab QA] is a tool that allows to test that all these pieces integrate well
+together by building a Docker image for a given version of GitLab Rails and
+running feature tests (i.e. using Capybara) against it.
+
+The actual test scenarios and steps are [part of GitLab Rails] so that they're
+always in-sync with the codebase.
+
+[multiple pieces]: ./architecture.md#components
+[GitLab Shell]: https://gitlab.com/gitlab-org/gitlab-shell
+[GitLab Workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse
+[Gitaly]: https://gitlab.com/gitlab-org/gitaly
+[GitLab Pages]: https://gitlab.com/gitlab-org/gitlab-pages
+[GitLab Runner]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
+[GitLab Omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab
+[GitLab QA]: https://gitlab.com/gitlab-org/gitlab-qa
+[part of GitLab Rails]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa
+
 #### Best practices
 
 - Create only the necessary records in the database
@@ -133,7 +157,7 @@ trade-off:
 
 - Unit tests are usually cheap, and you should consider them like the basement
   of your house: you need them to be confident that your code is behaving
-  correctly. However if you run only unit tests without integration / system tests, you might miss the [big] [picture]!
+  correctly. However if you run only unit tests without integration / system tests, you might [miss] the [big] [picture]!
 - Integration tests are a bit more expensive, but don't abuse them. A feature test
   is often better than an integration test that is stubbing a lot of internals.
 - System tests are expensive (compared to unit tests), even more if they require
@@ -150,6 +174,7 @@ test includes:
 - The time it takes to fix the test if it breaks and the underlying code is OK
 - Maybe, the time it takes to change the code to make the code testable.
 
+[miss]: https://twitter.com/ThePracticalDev/status/850748070698651649
 [big]: https://twitter.com/timbray/status/822470746773409794
 [picture]: https://twitter.com/withzombies/status/829716565834752000
 [tests-cost]: https://medium.com/table-xi/high-cost-tests-and-high-value-tests-a86e27a54df#.2ulyh3a4e
