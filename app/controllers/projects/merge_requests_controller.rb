@@ -122,7 +122,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       build_merge_request
       @diffs = @merge_request.diffs(diff_options)
       @diff_notes_disabled = true
-      @grouped_diff_discussions = {}
     end
 
     define_commit_vars
@@ -576,10 +575,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @comparable_diffs = @merge_request_diffs.select { |diff| diff.id < @merge_request_diff.id }
 
     if params[:start_sha].present?
-      start_sha = params[:start_sha]
-      @start_version = @comparable_diffs.find { |diff| diff.head_commit_sha == start_sha }
+      @start_sha = params[:start_sha]
+      @start_version = @comparable_diffs.find { |diff| diff.head_commit_sha == @start_sha }
 
-      @start_sha = start_sha if @start_version
+      unless @start_version
+        @start_sha = @merge_request_diff.head_commit_sha
+        @start_version = @merge_request_diff
+      end
     end
 
     @diffs =
