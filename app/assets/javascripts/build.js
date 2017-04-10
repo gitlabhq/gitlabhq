@@ -82,15 +82,6 @@ window.Build = (function () {
 
   Build.prototype.getBuildTrace = function () {
     return $.ajax({
-<<<<<<< HEAD
-      url: this.pageUrl + "/trace.json",
-      dataType: 'json',
-      success: function(buildData) {
-        $('.js-build-output').html(buildData.html);
-        gl.utils.setCiStatusFavicon(`${this.pageUrl}/status.json`);
-        if (window.location.hash === DOWN_BUILD_TRACE) {
-          $("html,body").scrollTop(this.$buildTrace.height());
-=======
       url: `${this.pageUrl}/trace.json`,
       dataType: 'json',
       data: {
@@ -101,7 +92,6 @@ window.Build = (function () {
 
         if (log.state) {
           this.state = log.state;
->>>>>>> 9-1-stable
         }
 
         if (log.append) {
