@@ -1,11 +1,13 @@
 /* global Flash */
 
+import Spinner from '../../spinner';
 import sqljs from 'sql.js';
 
 class BalsamiqViewer {
   constructor(viewer) {
     this.viewer = viewer;
     this.endpoint = this.viewer.dataset.endpoint;
+    this.spinner = new Spinner(this.viewer);
   }
 
   loadFile() {
@@ -17,10 +19,14 @@ class BalsamiqViewer {
     xhr.onload = this.renderFile.bind(this);
     xhr.onerror = BalsamiqViewer.onError;
 
+    this.spinner.start();
+
     xhr.send();
   }
 
   renderFile(loadEvent) {
+    this.spinner.stop();
+
     const container = document.createElement('ul');
 
     this.initDatabase(loadEvent.target.response);
@@ -29,7 +35,7 @@ class BalsamiqViewer {
     const renderedPreviews = previews.map(preview => this.renderPreview(preview, container));
 
     container.innerHTML = renderedPreviews.join('');
-    container.classList.add('list-inline');
+    container.classList.add('list-inline', 'previews');
 
     this.viewer.appendChild(container);
   }
@@ -41,14 +47,15 @@ class BalsamiqViewer {
   }
 
   getPreviews() {
-    const thumnails = this.database.exec('SELECT * FROM thumbnails');
+    const thumbnails = this.database.exec('SELECT * FROM thumbnails');
 
-    return thumnails[0].values.map(BalsamiqViewer.parsePreview);
+    return thumbnails[0].values.map(BalsamiqViewer.parsePreview);
   }
 
   renderPreview(preview) {
     const previewElement = document.createElement('li');
 
+    previewElement.classList.add('preview');
     previewElement.innerHTML = this.renderTemplate(preview);
 
     return previewElement.outerHTML;

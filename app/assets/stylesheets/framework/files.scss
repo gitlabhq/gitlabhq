@@ -168,6 +168,17 @@
     &.code {
       padding: 0;
     }
+
+    .list-inline.previews {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: $gl-padding;
+
+      .preview {
+        flex-shrink: 0;
+      }
+    }
   }
 }
 
