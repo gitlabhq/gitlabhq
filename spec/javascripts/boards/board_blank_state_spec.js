@@ -4,7 +4,7 @@ import '~/boards/stores/boards_store';
 import boardBlankState from '~/boards/components/board_blank_state';
 import './mock_data';
 
-describe('Boards blank state', () => {
+fdescribe('Boards blank state', () => {
   let vm;
   let fail = false;
 
@@ -34,7 +34,11 @@ describe('Boards blank state', () => {
       }
     }));
 
-    vm = new Comp();
+    vm = new Comp({
+      propsData: {
+        store: gl.issueBoards.BoardsStore,
+      },
+    });
 
     setTimeout(() => {
       vm.$mount();

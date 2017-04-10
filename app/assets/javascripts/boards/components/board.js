@@ -170,7 +170,8 @@ export default {
           :root-path="rootPath"
           ref="board-list" />
         <board-blank-state
-          v-if="canAdminList && list.id === 'blank'" />
+          v-if="canAdminList && list.id === 'blank'"
+          :store="store" />
       </div>
     </div>
   `,

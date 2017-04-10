@@ -34,6 +34,12 @@ export default {
       </button>
     </div>
   `,
+  props: {
+    store: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       predefinedLabels: [
