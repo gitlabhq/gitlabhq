@@ -43,9 +43,9 @@ a[target="_blank"]:not([rel~="noopener"]),
 a[target="_blank"]:not([rel~="noreferrer"]),
 a[target="_blank"]:not([rel~="nofollow"]),
 
-// Don't forget to include `aria-hidden` attribute to <i>
-// Because bootstrap icons should be hidden from screen readers
-i.fa:not([aria-hidden])
+// Don't forget to include `aria-hidden` or `aria-label` attribute to <i>
+i.fa:not([aria-hidden]):not([aria-label])
+
 {
   background-color: $error-color !important;
 }
