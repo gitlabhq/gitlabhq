@@ -2,11 +2,15 @@
 
 . scripts/utils.sh
 
+echo $CI_JOB_NAME
+job_name=$(echo $CI_JOB_NAME | cut -f2 -d' ')
+echo $job_name
+
 export SETUP_DB=${SETUP_DB:-true}
-export GITLAB_DATABASE=${GITLAB_DATABASE:-postgresql}
+export GITLAB_DATABASE=${GITLAB_DATABASE:-$job_name}
 export USE_BUNDLE_INSTALL=${USE_BUNDLE_INSTALL:-true}
 
-if [ "$GITLAB_DATABASE" = 'pg' ]; then
+if [ "$GITLAB_DATABASE" != 'mysql' ]; then
     export GITLAB_DATABASE='postgresql'
 fi
 

@@ -7,7 +7,6 @@ cache:
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
-  GITLAB_DATABASE: $CI_JOB_NAME[1]
   RAILS_ENV: "test"
   NODE_ENV: "test"
   SIMPLECOV: "true"
