@@ -12,7 +12,7 @@ GET /projects/:id/repository/tags
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 
 ```json
 [
@@ -53,7 +53,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `tag_name` | string | yes | The name of the tag |
 
 ```bash
@@ -93,7 +93,7 @@ POST /projects/:id/repository/tags
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `tag_name` (required) - The name of a tag
 - `ref` (required) - Create tag using commit SHA, another tag name, or branch name.
 - `message` (optional) - Creates annotated tag.
@@ -138,7 +138,7 @@ DELETE /projects/:id/repository/tags/:tag_name
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `tag_name` (required) - The name of a tag
 
 
@@ -153,7 +153,7 @@ POST /projects/:id/repository/tags/:tag_name/release
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `tag_name` (required) - The name of a tag
 - `description` (required) - Release notes with markdown support
 
@@ -174,7 +174,7 @@ PUT /projects/:id/repository/tags/:tag_name/release
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `tag_name` (required) - The name of a tag
 - `description` (required) - Release notes with markdown support
 
