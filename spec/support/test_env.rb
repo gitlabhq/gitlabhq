@@ -126,12 +126,13 @@ module TestEnv
       raise "Can't clone gitaly"
     end
 
-    start_gitaly(gitaly_dir, socket_path)
+    start_gitaly(gitaly_dir)
   end
 
-  def start_gitaly(gitaly_dir, socket_path)
+  def start_gitaly(gitaly_dir)
     gitaly_exec = File.join(gitaly_dir, 'gitaly')
-    @gitaly_pid = spawn({ "GITALY_SOCKET_PATH" => socket_path }, gitaly_exec, [:out, :err] => '/dev/null')
+    gitaly_config = File.join(gitaly_dir, 'config.toml')
+    @gitaly_pid = spawn(gitaly_exec, gitaly_config, [:out, :err] => '/dev/null')
   end
 
   def stop_gitaly
