@@ -29,6 +29,11 @@ import eventHub from '../eventhub';
         required: false,
         default: false,
       },
+      store: {
+        type: Object,
+        required: false,
+        default: () => ({}),
+      },
     },
     computed: {
       cardUrl() {
@@ -57,7 +62,7 @@ import eventHub from '../eventhub';
         return !this.list.label || label.id !== this.list.label.id;
       },
       filterByLabel(label, e) {
-        if (!this.updateFilters) return;
+        if (!this.updateFilters && this.store) return;
 
         const filterPath = this.store.filter.path.split('&');
         const labelTitle = encodeURIComponent(label.title);

@@ -4,7 +4,7 @@ import '~/boards/stores/boards_store';
 import boardBlankState from '~/boards/components/board_blank_state';
 import './mock_data';
 
-fdescribe('Boards blank state', () => {
+describe('Boards blank state', () => {
   let vm;
   let fail = false;
 

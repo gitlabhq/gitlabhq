@@ -11,6 +11,7 @@ export default {
       @mousemove="mouseMove"
       @mouseup="showIssue($event)">
       <issue-card-inner
+        :store="store"
         :list="list"
         :issue="issue"
         :issue-link-base="issueLinkBase"
