@@ -310,14 +310,14 @@ rake mysql db:rollback:
 .db-seed_fu: &db-seed_fu
   stage: test
   <<: *dedicated-runner
-  script:
-    - git clone https://gitlab.com/gitlab-org/gitlab-test.git
-       /home/git/repositories/gitlab-org/gitlab-test.git
-    - bundle exec rake db:setup db:seed_fu
   variables:
     SIZE: "1"
     SETUP_DB: "false"
     RAILS_ENV: "development"
+  script:
+    - git clone https://gitlab.com/gitlab-org/gitlab-test.git
+       /home/git/repositories/gitlab-org/gitlab-test.git
+    - bundle exec rake db:setup db:seed_fu
   artifacts:
     when: on_failure
     expire_in: 1d
@@ -417,6 +417,8 @@ bundler:audit:
 .migration-paths: &migration-paths
   stage: test
   <<: *dedicated-runner
+  variables:
+    SETUP_DB: "false"
   only:
     - master@gitlab-org/gitlab-ce
     - master@gitlab-org/gitlab-ee
@@ -433,8 +435,6 @@ bundler:audit:
     - bundle install --without production --jobs $(nproc) $FLAGS --retry=3
     - source scripts/prepare_build.sh
     - bundle exec rake db:migrate
-  variables:
-    SETUP_DB: "false"
 
 migration pg paths:
   <<: *migration-paths
