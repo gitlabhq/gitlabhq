@@ -112,11 +112,7 @@ GET /groups/:id/issues?search=issue+title+or+description
 
 | Attribute   | Type           | Required | Description                                                                                                                 |
 |-------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------|
-<<<<<<< HEAD
-| `id`        | integer        | yes      | The ID of a group                                                                                                           |
-=======
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user  |
->>>>>>> origin/master
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user               |
 | `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
 | `iids`      | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
@@ -199,11 +195,7 @@ GET /projects/:id/issues?search=issue+title+or+description
 
 | Attribute   | Type           | Required | Description                                                                                                                 |
 |-------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------|
-<<<<<<< HEAD
-| `id`        | integer        | yes      | The ID of a project                                                                                                         |
-=======
 | `id`        | integer/string        | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
->>>>>>> origin/master
 | `iids`      | Array[integer] | no       | Return only the milestone having the given `iid`                                                                            |
 | `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
@@ -277,11 +269,7 @@ GET /projects/:id/issues/:issue_iid
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-<<<<<<< HEAD
-| `id`        | integer | yes      | The ID of a project                  |
-=======
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
->>>>>>> origin/master
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```bash
@@ -409,11 +397,7 @@ PUT /projects/:id/issues/:issue_iid
 
 | Attribute      | Type    | Required | Description                                                                                                |
 |----------------|---------|----------|------------------------------------------------------------------------------------------------------------|
-<<<<<<< HEAD
-| `id`           | integer | yes      | The ID of a project                                                                                        |
-=======
 | `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
->>>>>>> origin/master
 | `issue_iid`    | integer | yes      | The internal ID of a project's issue                                                                       |
 | `title`        | string  | no       | The title of an issue                                                                                      |
 | `description`  | string  | no       | The description of an issue                                                                                |
@@ -474,11 +458,7 @@ DELETE /projects/:id/issues/:issue_iid
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-<<<<<<< HEAD
-| `id`        | integer | yes      | The ID of a project                  |
-=======
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
->>>>>>> origin/master
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```bash
@@ -500,11 +480,7 @@ POST /projects/:id/issues/:issue_iid/move
 
 | Attribute       | Type    | Required | Description                          |
 |-----------------|---------|----------|--------------------------------------|
-<<<<<<< HEAD
-| `id`            | integer | yes      | The ID of a project                  |
-=======
 | `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
->>>>>>> origin/master
 | `issue_iid`     | integer | yes      | The internal ID of a project's issue |
 | `to_project_id` | integer | yes      | The ID of the new project            |
 
@@ -561,11 +537,7 @@ POST /projects/:id/issues/:issue_iid/subscribe
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-<<<<<<< HEAD
-| `id`        | integer | yes      | The ID of a project                  |
-=======
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
->>>>>>> origin/master
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```bash
@@ -621,11 +593,7 @@ POST /projects/:id/issues/:issue_iid/unsubscribe
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-<<<<<<< HEAD
-| `id`        | integer | yes      | The ID of a project                  |
-=======
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
->>>>>>> origin/master
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```bash
@@ -644,11 +612,7 @@ POST /projects/:id/issues/:issue_iid/todo
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-<<<<<<< HEAD
-| `id`        | integer | yes      | The ID of a project                  |
-=======
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
->>>>>>> origin/master
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```bash
@@ -740,11 +704,7 @@ POST /projects/:id/issues/:issue_iid/time_estimate
 
 | Attribute   | Type    | Required | Description                              |
 |-------------|---------|----------|------------------------------------------|
-<<<<<<< HEAD
-| `id`        | integer | yes      | The ID of a project                      |
-=======
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
->>>>>>> origin/master
 | `issue_iid` | integer | yes      | The internal ID of a project's issue     |
 | `duration`  | string  | yes      | The duration in human format. e.g: 3h30m |
 
@@ -773,11 +733,7 @@ POST /projects/:id/issues/:issue_iid/reset_time_estimate
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-<<<<<<< HEAD
-| `id`        | integer | yes      | The ID of a project                  |
-=======
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
->>>>>>> origin/master
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```bash
@@ -805,11 +761,7 @@ POST /projects/:id/issues/:issue_iid/add_spent_time
 
 | Attribute   | Type    | Required | Description                              |
 |-------------|---------|----------|------------------------------------------|
-<<<<<<< HEAD
-| `id`        | integer | yes      | The ID of a project                      |
-=======
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
->>>>>>> origin/master
 | `issue_iid` | integer | yes      | The internal ID of a project's issue     |
 | `duration`  | string  | yes      | The duration in human format. e.g: 3h30m |
 
@@ -838,11 +790,7 @@ POST /projects/:id/issues/:issue_iid/reset_spent_time
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-<<<<<<< HEAD
-| `id`        | integer | yes      | The ID of a project                  |
-=======
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
->>>>>>> origin/master
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```bash
@@ -868,11 +816,7 @@ GET /projects/:id/issues/:issue_iid/time_stats
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-<<<<<<< HEAD
-| `id`        | integer | yes      | The ID of a project                  |
-=======
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
->>>>>>> origin/master
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```bash

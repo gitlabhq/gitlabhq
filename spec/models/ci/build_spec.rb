@@ -250,7 +250,6 @@ describe Ci::Build, :models do
       before do
         build.coverage_regex = '\(\d+.\d+\%\) covered'
         build.trace.set('Coverage 1033 / 1051 LOC (98.29%) covered')
-<<<<<<< HEAD
       end
 
       it "saves the correct extracted coverage value" do
@@ -319,76 +318,6 @@ describe Ci::Build, :models do
         build.project.update(runners_token: 'token')
       end
 
-=======
-      end
-
-      it "saves the correct extracted coverage value" do
-        expect(build.update_coverage).to be(true)
-        expect(build.coverage).to eq(98.29)
-      end
-    end
-  end
-
-  describe '#trace' do
-    subject { build.trace }
-
-    it { is_expected.to be_a(Gitlab::Ci::Trace) }
-  end
-
-  describe '#has_trace?' do
-    subject { build.has_trace? }
-
-    it "expect to call exist? method" do
-      expect_any_instance_of(Gitlab::Ci::Trace).to receive(:exist?)
-        .and_return(true)
-
-      is_expected.to be(true)
-    end
-  end
-
-  describe '#trace=' do
-    it "expect to fail trace=" do
-      expect { build.trace = "new" }.to raise_error(NotImplementedError)
-    end
-  end
-
-  describe '#old_trace' do
-    subject { build.old_trace }
-
-    before do
-      build.update_column(:trace, 'old trace')
-    end
-
-    it "expect to receive data from database" do
-      is_expected.to eq('old trace')
-    end
-  end
-
-  describe '#erase_old_trace!' do
-    subject { build.send(:read_attribute, :trace) }
-
-    before do
-      build.send(:write_attribute, :trace, 'old trace')
-    end
-
-    it "expect to receive data from database" do
-      build.erase_old_trace!
-
-      is_expected.to be_nil
-    end
-  end
-
-  describe '#hide_secrets' do
-    let(:subject) { build.hide_secrets(data) }
-
-    context 'hide runners token' do
-      let(:data) { 'new token data'}
-
-      before do
-        build.project.update(runners_token: 'token')
-      end
-
->>>>>>> origin/master
       it { is_expected.to eq('new xxxxx data') }
     end
 
