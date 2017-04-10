@@ -134,6 +134,18 @@ class MergeRequestDiff < ActiveRecord::Base
     st_commits.map { |commit| commit[:id] }
   end
 
+  def diff_refs=(new_diff_refs)
+    if new_diff_refs
+      self.base_commit_sha = new_diff_refs.base_sha
+      self.start_commit_sha = new_diff_refs.start_sha
+      self.head_commit_sha = new_diff_refs.head_sha
+    else
+      self.base_commit_sha = nil
+      self.start_commit_sha = nil
+      self.head_commit_sha = nil
+    end
+  end
+
   def diff_refs
     return unless start_commit_sha || base_commit_sha
 
