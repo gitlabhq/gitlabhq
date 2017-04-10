@@ -69,21 +69,10 @@ class NamespaceValidator < ActiveModel::EachValidator
   #  without tree as reserved name routing can match 'group/project' as group name,
   #  'tree' as project name and 'deploy_keys' as route.
   #
+
   WILDCARD_ROUTES = Set.new(%w[tree commits wikis new edit create update logs_tree
                                preview blob blame raw files create_dir find_file
-                               artifacts graphs refs badges info git-upload-pack
-                               git-receive-pack gitlab-lfs autocomplete_sources
-                               templates avatar commit pages compare network snippets
-                               services mattermost deploy_keys forks import merge_requests
-                               branches merged_branches tags protected_branches variables
-                               triggers pipelines environments cycle_analytics builds
-                               hooks container_registry milestones labels issues
-                               project_members group_links notes noteable boards todos
-                               uploads runners runner_projects settings repository
-                               transfer remove_fork archive unarchive housekeeping
-                               toggle_star preview_markdown export remove_export
-                               generate_new_export download_export activity
-                               new_issue_address registry])
+                               artifacts graphs refs badges objects folders file])
 
   STRICT_RESERVED = (TOP_LEVEL_ROUTES | WILDCARD_ROUTES)
 
