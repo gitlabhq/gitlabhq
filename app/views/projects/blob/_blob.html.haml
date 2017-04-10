@@ -32,4 +32,10 @@
         = link_to 'Fork', fork_path, method: :post, class: 'btn btn-grouped btn-inverted btn-new'
         %button.js-cancel-fork-suggestion.btn.btn-grouped{ type: 'button' }
           Cancel
-    = render blob.to_partial_path(@project), blob: blob
+
+    - if blob.empty?
+      .file-content.code
+        .nothing-here-block
+          Empty file
+    - else
+      = render blob.to_partial_path(@project), blob: blob
