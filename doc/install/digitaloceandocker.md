@@ -1,4 +1,7 @@
-# Digital Ocean and Docker
+# Digital Ocean and Docker Machine test environment
+
+## Warning. This guide is for quickly testing different versions of GitLab and
+## not recommended for ease of future upgrades or keeping the data you create.
 
 ## Initial setup
 
