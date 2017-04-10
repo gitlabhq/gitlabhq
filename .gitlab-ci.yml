@@ -315,7 +315,6 @@ rake mysql db:rollback:
        /home/git/repositories/gitlab-org/gitlab-test.git
     - bundle exec rake db:setup db:seed_fu
   variables:
-    GITLAB_DATABASE: $CI_JOB_NAME[1]
     SIZE: "1"
     SETUP_DB: "false"
     RAILS_ENV: "development"
@@ -435,7 +434,6 @@ bundler:audit:
     - source scripts/prepare_build.sh
     - bundle exec rake db:migrate
   variables:
-    GITLAB_DATABASE: $CI_JOB_NAME[1]
     SETUP_DB: "false"
 
 migration pg paths:

@@ -2,12 +2,8 @@
 
 . scripts/utils.sh
 
-echo $CI_JOB_NAME
-job_name=$(echo $CI_JOB_NAME | cut -f2 -d' ')
-echo $job_name
-
 export SETUP_DB=${SETUP_DB:-true}
-export GITLAB_DATABASE=${GITLAB_DATABASE:-$job_name}
+export GITLAB_DATABASE=$(echo $CI_JOB_NAME | cut -f2 -d' ')
 export USE_BUNDLE_INSTALL=${USE_BUNDLE_INSTALL:-true}
 
 if [ "$GITLAB_DATABASE" != 'mysql' ]; then
