@@ -91,6 +91,21 @@ describe ContainerRepository do
     end
   end
 
+  describe '#location' do
+    context 'when registry is running on a custom port' do
+      before do
+        stub_container_registry_config(enabled: true,
+                                       api_url: 'http://registry.gitlab:5000',
+                                       host_port: 'registry.gitlab:5000')
+      end
+
+      it 'returns a full location of the repository' do
+        expect(container_repository.location)
+          .to eq 'registry.gitlab:5000/group/test/my_image'
+      end
+    end
+  end
+
   describe '#root_repository?' do
     context 'when repository is a root repository' do
       let(:repository) { create(:container_repository, :root) }
