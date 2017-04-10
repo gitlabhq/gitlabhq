@@ -1678,8 +1678,6 @@ describe Project, models: true do
       project.add_import_job
 
       expect(project.reload.import_status).to eq('finished')
-=======
->>>>>>> 9-1-stable
     end
   end
 
