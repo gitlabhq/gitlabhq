@@ -64,35 +64,6 @@ describe('Build', () => {
       });
     });
 
-    describe('initial build trace', () => {
-      beforeEach(() => {
-        new Build();
-      });
-
-      it('displays the initial build trace', () => {
-        expect($.ajax.calls.count()).toBe(1);
-        const [{ url, dataType, success, context }] = $.ajax.calls.argsFor(0);
-        expect(url).toBe(
-          `${BUILD_URL}/trace.json`,
-        );
-        expect(dataType).toBe('json');
-        expect(success).toEqual(jasmine.any(Function));
-        spyOn(gl.utils, 'setCiStatusFavicon').and.callFake(() => {});
-
-        success.call(context, { html: '<span>Example</span>', status: 'running' });
-
-        expect($('#build-trace .js-build-output').text()).toMatch(/Example/);
-      });
-
-      it('removes the spinner', () => {
-        const [{ success, context }] = $.ajax.calls.argsFor(0);
-        spyOn(gl.utils, 'setCiStatusFavicon').and.callFake(() => {});
-        success.call(context, { trace_html: '<span>Example</span>', status: 'success' });
-
-        expect($('.js-build-refresh').length).toBe(0);
-      });
-    });
-
     describe('running build', () => {
       beforeEach(function () {
         this.build = new Build();
