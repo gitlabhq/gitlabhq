@@ -1283,8 +1283,6 @@ describe Repository, models: true do
   describe '#after_import' do
     it 'flushes and builds the cache' do
       expect(repository).to receive(:expire_content_cache)
-      expect(repository).to receive(:expire_tags_cache)
-      expect(repository).to receive(:expire_branches_cache)
 
       repository.after_import
     end
