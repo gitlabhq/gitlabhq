@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 describe CacheMarkdownField do
-  caching_classes = CacheMarkdownField::CACHING_CLASSES
-  CacheMarkdownField::CACHING_CLASSES = ["ThingWithMarkdownFields"].freeze
-
   # The minimum necessary ActiveModel to test this concern
   class ThingWithMarkdownFields
     include ActiveModel::Model
@@ -55,8 +52,6 @@ describe CacheMarkdownField do
     end
   end
 
-  CacheMarkdownField::CACHING_CLASSES = caching_classes
-
   def thing_subclass(new_attr)
     Class.new(ThingWithMarkdownFields) { add_attr(new_attr) }
   end
@@ -69,15 +64,9 @@ describe CacheMarkdownField do
 
   subject { ThingWithMarkdownFields.new(foo: markdown, foo_html: html) }
 
-  describe ".attributes" do
-    it "excludes cache attributes" do
-      expect(thing_subclass(:qux).new.attributes.keys.sort).to eq(%w[bar baz foo qux])
-    end
-  end
-
-  describe ".cache_markdown_field" do
-    it "refuses to allow untracked classes" do
-      expect { thing_subclass(:qux).__send__(:cache_markdown_field, :qux) }.to raise_error(RuntimeError)
+  describe '.attributes' do
+    it 'excludes cache attributes' do
+      expect(subject.attributes.keys.sort).to eq(%w[bar baz foo])
     end
   end
 

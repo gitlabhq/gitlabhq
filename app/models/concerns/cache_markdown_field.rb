@@ -30,28 +30,6 @@ module CacheMarkdownField
     end
   end
 
-  # Dynamic registries don't really work in Rails as it's not guaranteed that
-  # every class will be loaded, so hardcode the list.
-  CACHING_CLASSES = %w[
-    AbuseReport
-    Appearance
-    ApplicationSetting
-    BroadcastMessage
-    Issue
-    Label
-    MergeRequest
-    Milestone
-    Namespace
-    Note
-    Project
-    Release
-    Snippet
-  ].freeze
-
-  def self.caching_classes
-    CACHING_CLASSES.map(&:constantize)
-  end
-
   def skip_project_check?
     false
   end
@@ -107,9 +85,6 @@ module CacheMarkdownField
     # a corresponding _html field. Any custom rendering options may be provided
     # as a context.
     def cache_markdown_field(markdown_field, context = {})
-      raise "Add #{self} to CacheMarkdownField::CACHING_CLASSES" unless
-        CacheMarkdownField::CACHING_CLASSES.include?(self.to_s)
-
       cached_markdown_fields[markdown_field] = context
 
       html_field = cached_markdown_fields.html_field(markdown_field)
