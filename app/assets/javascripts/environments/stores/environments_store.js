@@ -64,7 +64,7 @@ export default class EnvironmentsStore {
       if (filtered.size === 1 && filtered.rollout_status_path) {
         filtered = Object.assign({}, filtered, {
           hasDeployBoard: true,
-          isDeployBoardVisible: false,
+          isDeployBoardVisible: true,
           deployBoardData: {},
         });
       }

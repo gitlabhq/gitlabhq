@@ -7,7 +7,7 @@ class Admin::ApplicationController < ApplicationController
   layout 'admin'
 
   def authenticate_admin!
-    render_404 unless current_user.is_admin?
+    render_404 unless current_user.admin?
   end
 
   def display_geo_information

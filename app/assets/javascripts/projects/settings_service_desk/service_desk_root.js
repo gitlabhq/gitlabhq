@@ -8,14 +8,17 @@ import eventHub from './event_hub';
 class ServiceDeskRoot {
   constructor(wrapperElement) {
     this.wrapperElement = wrapperElement;
-    const isEnabled = this.wrapperElement.dataset.enabled !== undefined &&
+    const isEnabled = typeof this.wrapperElement.dataset.enabled !== 'undefined' &&
       this.wrapperElement.dataset.enabled !== 'false';
     const incomingEmail = this.wrapperElement.dataset.incomingEmail;
     const endpoint = this.wrapperElement.dataset.endpoint;
+    const isInstanceAdmin = typeof this.wrapperElement.dataset.isInstanceAdmin !== 'undefined' &&
+      this.wrapperElement.dataset.isInstanceAdmin !== 'false';
 
     this.store = new ServiceDeskStore({
       isEnabled,
       incomingEmail,
+      isInstanceAdmin,
     });
     this.service = new ServiceDeskService(endpoint);
   }
@@ -37,7 +40,7 @@ class ServiceDeskRoot {
   }
 
   unbindEvents() {
-    eventHub.$on('serviceDeskEnabledCheckboxToggled', this.onEnableToggledWrapper);
+    eventHub.$off('serviceDeskEnabledCheckboxToggled', this.onEnableToggledWrapper);
   }
 
   render() {
@@ -48,7 +51,8 @@ class ServiceDeskRoot {
         <service-desk-setting
           :isEnabled="isEnabled"
           :incomingEmail="incomingEmail"
-          :fetchError="fetchError" />
+          :fetchError="fetchError"
+          :isInstanceAdmin="isInstanceAdmin" />
       `,
       components: {
         'service-desk-setting': ServiceDeskSetting,

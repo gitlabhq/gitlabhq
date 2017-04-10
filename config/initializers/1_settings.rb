@@ -435,6 +435,11 @@ Settings.cron_jobs['clear_shared_runners_minutes_worker'] ||= Settingslogic.new(
 Settings.cron_jobs['clear_shared_runners_minutes_worker']['cron'] ||= '0 0 1 * *'
 Settings.cron_jobs['clear_shared_runners_minutes_worker']['job_class'] = 'ClearSharedRunnersMinutesWorker'
 
+# Every day at 00:30
+Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['schedule_update_user_activity_worker']['cron'] ||= '30 0 * * *'
+Settings.cron_jobs['schedule_update_user_activity_worker']['job_class'] = 'ScheduleUpdateUserActivityWorker'
+
 #
 # GitLab Shell
 #

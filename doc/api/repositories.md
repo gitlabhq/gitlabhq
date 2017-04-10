@@ -13,7 +13,7 @@ GET /projects/:id/repository/tree
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `path` (optional) - The path inside repository. Used to get contend of subdirectories
 - `ref` (optional) - The name of a repository branch or tag or if not given the default branch
 - `recursive` (optional) - Boolean value used to get a recursive tree (false by default)
@@ -84,7 +84,7 @@ GET /projects/:id/repository/blobs/:sha
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `sha` (required) - The commit or branch name
 
 ## Raw blob content
@@ -98,7 +98,7 @@ GET /projects/:id/repository/blobs/:sha/raw
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `sha` (required) - The blob SHA
 
 ## Get file archive
@@ -112,7 +112,7 @@ GET /projects/:id/repository/archive
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `sha` (optional) - The commit SHA to download defaults to the tip of the default branch
 
 ## Compare branches, tags or commits
@@ -126,7 +126,7 @@ GET /projects/:id/repository/compare
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `from` (required) - the commit SHA or branch name
 - `to` (required) - the commit SHA or branch name
 
@@ -181,7 +181,7 @@ GET /projects/:id/repository/contributors
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 
 Response:
 

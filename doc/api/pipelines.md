@@ -10,7 +10,7 @@ GET /projects/:id/pipelines
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a project |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines"
@@ -45,7 +45,7 @@ GET /projects/:id/pipelines/:pipeline_id
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
-| `id`       | integer | yes      | The ID of a project |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `pipeline_id` | integer | yes      | The ID of a pipeline   |
 
 ```
@@ -91,7 +91,7 @@ POST /projects/:id/pipeline
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
-| `id`       | integer | yes      | The ID of a project |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `ref`       | string | yes      | Reference to commit |
 
 ```
@@ -137,7 +137,7 @@ POST /projects/:id/pipelines/:pipeline_id/retry
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
-| `id`       | integer | yes      | The ID of a project |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `pipeline_id` | integer | yes   | The ID of a pipeline |
 
 ```
@@ -173,7 +173,7 @@ Response:
 }
 ```
 
-## Cancel a pipelines jobs 
+## Cancel a pipelines jobs
 
 > [Introduced][ce-5837] in GitLab 8.11
 
@@ -183,7 +183,7 @@ POST /projects/:id/pipelines/:pipeline_id/cancel
 
 | Attribute  | Type    | Required | Description         |
 |------------|---------|----------|---------------------|
-| `id`       | integer | yes      | The ID of a project |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `pipeline_id` | integer | yes   | The ID of a pipeline |
 
 ```

@@ -23,6 +23,10 @@
   = text_field_tag :project_clone, default_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true
   .input-group-btn
     = clipboard_button(target: '#project_clone', title: "Copy URL to clipboard")
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
     = geo_button(modal_target: '#modal-geo-info') if Gitlab::Geo.secondary?
 
 :javascript

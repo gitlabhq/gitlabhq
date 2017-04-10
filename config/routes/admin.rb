@@ -133,6 +133,8 @@ namespace :admin do
     end
   end
 
+  resources :cohorts, only: :index
+
   resources :builds, only: :index do
     collection do
       post :cancel_all

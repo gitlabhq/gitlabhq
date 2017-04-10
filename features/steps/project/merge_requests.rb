@@ -347,6 +347,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see a discussion by user "John Doe" has started on diff' do
+    # Trigger a refresh of notes
+    execute_script("$(document).trigger('visibilitychange');")
+    wait_for_ajax
     page.within(".notes .discussion") do
       page.should have_content "#{user_exists("John Doe").name} #{user_exists("John Doe").to_reference} started a discussion"
       page.should have_content sample_commit.line_code_path

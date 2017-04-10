@@ -74,7 +74,7 @@ class ProjectPolicy < BasePolicy
     can! :read_deployment
     can! :read_merge_request
 
-    if License.current&.add_on?('GitLab_DeployBoard')
+    if License.current&.add_on?('GitLab_DeployBoard') || Rails.env.development?
       can! :read_deploy_board
     end
   end

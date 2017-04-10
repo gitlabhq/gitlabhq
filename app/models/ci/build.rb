@@ -236,6 +236,7 @@ module Ci
 
     def has_trace?
       trace.exist?
+<<<<<<< HEAD
     end
 
     def trace=(data)
@@ -246,6 +247,18 @@ module Ci
       read_attribute(:trace)
     end
 
+=======
+    end
+
+    def trace=(data)
+      raise NotImplementedError
+    end
+
+    def old_trace
+      read_attribute(:trace)
+    end
+
+>>>>>>> origin/master
     def erase_old_trace!
       write_attribute(:trace, nil)
       save

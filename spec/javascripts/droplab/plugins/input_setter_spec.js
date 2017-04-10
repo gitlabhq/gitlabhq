@@ -140,6 +140,7 @@ describe('InputSetter', function () {
       expect(this.input.value).toBe(this.newValue);
     });
 
+<<<<<<< HEAD
     describe('if there is no newValue', function () {
       beforeEach(function () {
         this.newValue = '';
@@ -156,6 +157,8 @@ describe('InputSetter', function () {
       })
     });
 
+=======
+>>>>>>> origin/master
     describe('if no config.input is provided', function () {
       beforeEach(function () {
         this.config = { valueAttribute: {} };
@@ -181,6 +184,7 @@ describe('InputSetter', function () {
       it('should set the textContent of the input', function () {
         expect(this.input.textContent).toBe(this.newValue);
       });
+<<<<<<< HEAD
 
       describe('if there is no new value', function () {
         beforeEach(function () {
@@ -199,6 +203,8 @@ describe('InputSetter', function () {
           expect(this.input.textContent).toBe('oldValue');
         });
       });
+=======
+>>>>>>> origin/master
     });
 
     describe('if there is an inputAttribute', function () {

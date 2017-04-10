@@ -1,4 +1,3 @@
-
 require 'gitlab/email/handler/base_handler'
 require 'gitlab/email/handler/reply_processing'
 
@@ -42,17 +41,7 @@ module Gitlab
         end
 
         def create_note
-          Notes::CreateService.new(
-            project,
-            author,
-            note:           message,
-            noteable_type:  sent_notification.noteable_type,
-            noteable_id:    sent_notification.noteable_id,
-            commit_id:      sent_notification.commit_id,
-            line_code:      sent_notification.line_code,
-            position:       sent_notification.position,
-            type:           sent_notification.note_type
-          ).execute
+          sent_notification.create_reply(message)
         end
       end
     end

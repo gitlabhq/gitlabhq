@@ -36,21 +36,4 @@ describe NotesHelper do
       expect(helper.note_max_access_for_user(other_note)).to eq('Reporter')
     end
   end
-
-  describe '#preload_max_access_for_authors' do
-    before do
-      # This method reads cache from RequestStore, so make sure it's clean.
-      RequestStore.clear!
-    end
-
-    it 'loads multiple users' do
-      expected_access = {
-        owner.id => Gitlab::Access::OWNER,
-        master.id => Gitlab::Access::MASTER,
-        reporter.id => Gitlab::Access::REPORTER
-      }
-
-      expect(helper.preload_max_access_for_authors(notes, project)).to eq(expected_access)
-    end
-  end
 end

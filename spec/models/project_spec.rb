@@ -2021,6 +2021,19 @@ describe Project, models: true do
     end
   end
 
+  describe '#repository_and_lfs_size' do
+    let(:project) { create(:project) }
+    let(:size) { 50 }
+
+    before do
+      allow(project.statistics).to receive(:total_repository_size).and_return(size)
+    end
+
+    it 'returns the total repository and lfs size' do
+      expect(project.repository_and_lfs_size).to eq(size)
+    end
+  end
+
   describe '#approver_group_ids=' do
     let(:project) { create(:empty_project) }
 
