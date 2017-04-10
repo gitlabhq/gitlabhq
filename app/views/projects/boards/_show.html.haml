@@ -20,8 +20,9 @@
     .boards-app-loading.text-center{ "v-if" => "loading" }
       = icon("spinner spin")
     %board{ "v-cloak" => true,
-      "v-for" => "list in state.lists",
+      "v-for" => "list in store.state.lists",
       "ref" => "board",
+      ":store" => "store",
       ":list" => "list",
       ":disabled" => "disabled",
       ":issue-link-base" => "issueLinkBase",

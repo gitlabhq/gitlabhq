@@ -30,6 +30,10 @@ export default {
       type: String,
       required: true,
     },
+    store: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -97,6 +101,7 @@ export default {
     },
   },
   created() {
+    eventHub.$on(`toggle-issue-form-${this.list.id}`, this.toggleForm);
     eventHub.$on(`hide-issue-form-${this.list.id}`, this.toggleForm);
   },
   mounted() {
@@ -139,6 +144,7 @@ export default {
     this.$refs.list.addEventListener('scroll', this.onScroll);
   },
   beforeDestroy() {
+    eventHub.$off(`toggle-issue-form-${this.list.id}`, this.toggleForm);
     eventHub.$off(`hide-issue-form-${this.list.id}`, this.toggleForm);
     this.$refs.list.removeEventListener('scroll', this.onScroll);
   },
@@ -154,6 +160,7 @@ export default {
         </i>
       </div>
       <board-new-issue
+        :store="store"
         :list="list"
         v-if="list.type !== 'closed' && showIssueForm"/>
       <ul
@@ -165,6 +172,7 @@ export default {
         <board-card
           v-for="(issue, index) in issues"
           ref="issue"
+          :store="store"
           :index="index"
           :list="list"
           :issue="issue"

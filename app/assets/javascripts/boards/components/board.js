@@ -2,6 +2,7 @@
 import boardList from './board_list';
 import boardBlankState from './board_blank_state';
 import boardDelete from './board_delete';
+import eventHub from '../eventhub';
 
 export default {
   name: 'Board',
@@ -22,12 +23,16 @@ export default {
       type: String,
       required: true,
     },
+    store: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
       detailIssue: this.store.detail,
-      canAdminIssue: this.store.canAdminIssue,
-      canAdminList: this.store.canAdminList,
+      canAdminIssue: this.store.state.canAdminIssue,
+      canAdminList: this.store.state.canAdminList,
       filter: this.store.filter,
     };
   },
@@ -38,7 +43,7 @@ export default {
   },
   methods: {
     showNewIssueForm() {
-      this.$refs['board-list'].showIssueForm = !this.$refs['board-list'].showIssueForm;
+      eventHub.$emit(`toggle-issue-form-${this.list.id}`);
     },
   },
   watch: {
@@ -156,6 +161,7 @@ export default {
         </header>
         <board-list
           v-if="list.type !== 'blank'"
+          :store="store"
           :list="list"
           :issues="list.issues"
           :loading="list.loading"
@@ -164,7 +170,7 @@ export default {
           :root-path="rootPath"
           ref="board-list" />
         <board-blank-state
-          v-if="canAdminList && list.id == 'blank'" />
+          v-if="canAdminList && list.id === 'blank'" />
       </div>
     </div>
   `,

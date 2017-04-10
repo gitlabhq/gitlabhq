@@ -5,6 +5,7 @@ export default {
   name: 'BoardNewIssue',
   props: {
     list: Object,
+    store: Object,
   },
   data() {
     return {

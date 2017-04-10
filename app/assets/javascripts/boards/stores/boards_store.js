@@ -12,7 +12,10 @@ import Cookies from 'js-cookie';
     filter: {
       path: '',
     },
-    state: {},
+    state: {
+      canAdminIssue: false,
+      canAdminList: false,
+    },
     detail: {
       issue: {}
     },

@@ -25,20 +25,6 @@ require('../vue_shared/vue_resource_interceptor');
 
 Vue.use(VueResource);
 
-Vue.use((vue) => {
-  vue.mixin({
-    beforeCreate() {
-      const options = this.$options;
-
-      if (options.store) {
-        this.store = options.store;
-      } else if (options.parent && options.parent.store) {
-        this.store = options.parent.store;
-      }
-    },
-  });
-});
-
 $(() => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
@@ -64,7 +50,7 @@ $(() => {
       'board-add-issues-modal': gl.issueBoards.IssuesModal,
     },
     data: {
-      state: Store.state,
+      store: Store,
       loading: true,
       endpoint: $boardApp.dataset.endpoint,
       boardId: $boardApp.dataset.boardId,
@@ -72,17 +58,16 @@ $(() => {
       issueLinkBase: $boardApp.dataset.issueLinkBase,
       rootPath: $boardApp.dataset.rootPath,
       bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
-      detailIssue: Store.detail
     },
     computed: {
       detailIssueVisible () {
-        return Object.keys(this.detailIssue.issue).length;
+        return Object.keys(this.store.detail.issue).length;
       },
     },
     created () {
-      this.store.canAdminIssue =
+      this.store.state.canAdminIssue =
         gl.utils.convertPermissionToBoolean($boardApp.dataset.canAdminIssue);
-      this.store.canAdminList =
+      this.store.state.canAdminList =
         gl.utils.convertPermissionToBoolean($boardApp.dataset.canAdminList);
 
       gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
@@ -107,7 +92,7 @@ $(() => {
             }
           });
 
-          this.state.lists = _.sortBy(this.state.lists, 'position');
+          this.store.state.lists = _.sortBy(this.store.state.lists, 'position');
 
           Store.addBlankState();
           this.loading = false;

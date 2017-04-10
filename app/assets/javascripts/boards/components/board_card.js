@@ -28,6 +28,7 @@ export default {
     disabled: Boolean,
     index: Number,
     rootPath: String,
+    store: Object,
   },
   data() {
     return {
