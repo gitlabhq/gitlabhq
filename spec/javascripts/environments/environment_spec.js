@@ -83,9 +83,10 @@ describe('Environment', () => {
 
       it('should render a table with environments', (done) => {
         setTimeout(() => {
+          expect(component.$el.querySelectorAll('table')).toBeDefined();
           expect(
-            component.$el.querySelectorAll('table tbody tr').length,
-          ).toEqual(1);
+            component.$el.querySelector('.environment-name').textContent.trim(),
+          ).toEqual(environment.name);
           done();
         }, 0);
       });
