@@ -1,7 +1,7 @@
 /* global Flash */
 
-import Spinner from '../../spinner';
 import sqljs from 'sql.js';
+import Spinner from '../../spinner';
 
 class BalsamiqViewer {
   constructor(viewer) {
@@ -32,7 +32,7 @@ class BalsamiqViewer {
     this.initDatabase(loadEvent.target.response);
 
     const previews = this.getPreviews();
-    const renderedPreviews = previews.map(preview => this.renderPreview(preview, container));
+    const renderedPreviews = previews.map(preview => this.renderPreview(preview));
 
     container.innerHTML = renderedPreviews.join('');
     container.classList.add('list-inline', 'previews');
@@ -68,7 +68,7 @@ class BalsamiqViewer {
     const name = JSON.parse(title[0].values[0][2]).name;
     const image = preview.image;
 
-    template = template.replace(/{{name}}/, name).replace(/{{image}}/, image);
+    template = template.replace(/{{name}}/g, name).replace(/{{image}}/g, image);
 
     return template;
   }
