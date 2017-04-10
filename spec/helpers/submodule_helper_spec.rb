@@ -105,6 +105,18 @@ describe SubmoduleHelper do
     end
 
     context 'submodule on unsupported' do
+      it 'sanitizes unsupported protocols' do
+        stub_url('javascript:alert("XSS");')
+
+        expect(helper.submodule_links(submodule_item)).to eq([nil, nil])
+      end
+
+      it 'sanitizes unsupported protocols disguised as a repository URL' do
+        stub_url('javascript:alert("XSS");foo/bar.git')
+
+        expect(helper.submodule_links(submodule_item)).to eq([nil, nil])
+      end
+
       it 'returns original' do
         stub_url('http://mygitserver.com/gitlab-org/gitlab-ce')
         expect(submodule_links(submodule_item)).to eq([repo.submodule_url_for, nil])
