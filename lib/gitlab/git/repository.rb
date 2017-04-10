@@ -8,6 +8,10 @@ module Gitlab
     class Repository
       include Gitlab::Git::Popen
 
+      ALLOWED_OBJECT_DIRECTORIES_VARIABLES = %w[
+        GIT_OBJECT_DIRECTORY
+        GIT_ALTERNATE_OBJECT_DIRECTORIES
+      ].freeze
       SEARCH_CONTEXT_LINES = 3
 
       NoRepository = Class.new(StandardError)
@@ -58,7 +62,7 @@ module Gitlab
       end
 
       def rugged
-        @rugged ||= Rugged::Repository.new(path)
+        @rugged ||= Rugged::Repository.new(path, alternates: alternate_object_directories)
       rescue Rugged::RepositoryError, Rugged::OSError
         raise NoRepository.new('no repository for such path')
       end
@@ -977,6 +981,10 @@ module Gitlab
       end
 
       private
+
+      def alternate_object_directories
+        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES).compact
+      end
 
       # Get the content of a blob for a given commit.  If the blob is a commit
       # (for submodules) then return the blob's OID.

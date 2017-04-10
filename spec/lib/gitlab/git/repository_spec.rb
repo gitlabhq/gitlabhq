@@ -40,6 +40,36 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe "#rugged" do
+    context 'with no Git env stored' do
+      before do
+        expect(Gitlab::Git::Env).to receive(:all).and_return({})
+      end
+
+      it "whitelist some variables and pass them via the alternates keyword argument" do
+        expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: [])
+
+        repository.rugged
+      end
+    end
+
+    context 'with some Git env stored' do
+      before do
+        expect(Gitlab::Git::Env).to receive(:all).and_return({
+          'GIT_OBJECT_DIRECTORY' => 'foo',
+          'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'bar',
+          'GIT_OTHER' => 'another_env'
+        })
+      end
+
+      it "whitelist some variables and pass them via the alternates keyword argument" do
+        expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: %w[foo bar])
+
+        repository.rugged
+      end
+    end
+  end
+
   describe "#discover_default_branch" do
     let(:master) { 'master' }
     let(:feature) { 'feature' }
