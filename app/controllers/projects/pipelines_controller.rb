@@ -92,13 +92,29 @@ class Projects::PipelinesController < Projects::ApplicationController
   def retry
     pipeline.retry_failed(current_user)
 
-    redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+    respond_to do |format|
+      format.html do
+        redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+      end
+
+      format.json do
+        render status: 204
+      end
+    end
   end
 
   def cancel
     pipeline.cancel_running
 
-    redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+    respond_to do |format|
+      format.html do
+        redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
+      end
+
+      format.json do
+        render status: 204
+      end
+    end
   end
 
   def charts
