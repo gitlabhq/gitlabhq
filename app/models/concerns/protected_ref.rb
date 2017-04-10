@@ -9,6 +9,21 @@ module ProtectedRef
 
     delegate :matching, :matches?, :wildcard?, to: :ref_matcher
 
+    def self.protected_ref_access_levels(*types)
+      types.each do |type|
+        has_many :"#{type}_access_levels", dependent: :destroy
+
+        validates :"#{type}_access_levels", length: { minimum: 0 }
+
+        accepts_nested_attributes_for :"#{type}_access_levels", allow_destroy: true
+
+        # Returns access levels that grant the specified access type to the given user / group.
+        access_level_class = const_get("#{type}_access_level".camelize)
+        scope :"#{type}_access_by_user", -> (user) { access_level_class.joins(:protected_branch).where(protected_branch_id: self.ids).merge(access_level_class.by_user(user)) }
+        scope :"#{type}_access_by_group", -> (group) { access_level_class.joins(:protected_branch).where(protected_branch_id: self.ids).merge(access_level_class.by_group(group)) }
+      end
+    end
+
     def self.protected_ref_accessible_to?(ref, user, action:)
       access_levels_for_ref(ref, action: action).any? do |access_level|
         access_level.check_access(user)
