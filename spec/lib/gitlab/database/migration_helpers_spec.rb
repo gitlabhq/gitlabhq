@@ -175,6 +175,50 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
     end
   end
 
+  describe '#true_value' do
+    context 'using PostgreSQL' do
+      before do
+        expect(Gitlab::Database).to receive(:postgresql?).and_return(true)
+      end
+
+      it 'returns the appropriate value' do
+        expect(model.true_value).to eq("'t'")
+      end
+    end
+
+    context 'using MySQL' do
+      before do
+        expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
+      end
+
+      it 'returns the appropriate value' do
+        expect(model.true_value).to eq(1)
+      end
+    end
+  end
+
+  describe '#false_value' do
+    context 'using PostgreSQL' do
+      before do
+        expect(Gitlab::Database).to receive(:postgresql?).and_return(true)
+      end
+
+      it 'returns the appropriate value' do
+        expect(model.false_value).to eq("'f'")
+      end
+    end
+
+    context 'using MySQL' do
+      before do
+        expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
+      end
+
+      it 'returns the appropriate value' do
+        expect(model.false_value).to eq(0)
+      end
+    end
+  end
+
   describe '#update_column_in_batches' do
     before do
       create_list(:empty_project, 5)

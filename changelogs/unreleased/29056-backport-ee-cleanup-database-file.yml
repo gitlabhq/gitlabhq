@@ -1,0 +1,4 @@
+---
+title: Turns true value and false value database methods from instance to class methods
+merge_request: 10583
+author:
