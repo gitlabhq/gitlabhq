@@ -103,7 +103,6 @@ $(() => {
         this.filterManager.updateTokens();
       }
     },
-    store: Store,
   });
 
   gl.IssueBoardsSearch = new Vue({
