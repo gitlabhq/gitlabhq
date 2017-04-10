@@ -104,16 +104,11 @@ module Ci
     end
 
     def playable?
-      project.builds_enabled? && has_commands? &&
-        action? && manual?
+      action? && manual?
     end
 
     def action?
       self.when == 'manual'
-    end
-
-    def has_commands?
-      commands.present?
     end
 
     def play(current_user)
@@ -132,8 +127,7 @@ module Ci
     end
 
     def retryable?
-      project.builds_enabled? && has_commands? &&
-        (success? || failed? || canceled?)
+      success? || failed? || canceled?
     end
 
     def retried?
@@ -242,6 +236,7 @@ module Ci
 
     def has_trace?
       trace.exist?
+<<<<<<< HEAD
     end
 
     def trace=(data)
@@ -252,6 +247,18 @@ module Ci
       read_attribute(:trace)
     end
 
+=======
+    end
+
+    def trace=(data)
+      raise NotImplementedError
+    end
+
+    def old_trace
+      read_attribute(:trace)
+    end
+
+>>>>>>> 9-1-stable
     def erase_old_trace!
       write_attribute(:trace, nil)
       save

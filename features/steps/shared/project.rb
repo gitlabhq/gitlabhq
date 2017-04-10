@@ -251,7 +251,8 @@ module SharedProject
 
   step 'project "Shop" has CI build' do
     project = Project.find_by(name: "Shop")
-    create :ci_pipeline, project: project, sha: project.commit.sha, ref: 'master', status: 'skipped'
+    pipeline = create :ci_pipeline, project: project, sha: project.commit.sha, ref: 'master'
+    pipeline.skip
   end
 
   step 'I should see last commit with CI status' do

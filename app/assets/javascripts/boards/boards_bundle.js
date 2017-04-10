@@ -42,6 +42,10 @@ $(() => {
 
   Store.create();
 
+  // hack to allow sidebar scripts like milestone_select manipulate the BoardsStore
+  gl.issueBoards.boardStoreIssueSet = (...args) => Vue.set(Store.detail.issue, ...args);
+  gl.issueBoards.boardStoreIssueDelete = (...args) => Vue.delete(Store.detail.issue, ...args);
+
   gl.IssueBoardsApp = new Vue({
     el: $boardApp,
     components: {

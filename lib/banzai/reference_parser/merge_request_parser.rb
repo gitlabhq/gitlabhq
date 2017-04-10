@@ -3,6 +3,14 @@ module Banzai
     class MergeRequestParser < BaseParser
       self.reference_type = :merge_request
 
+      def merge_requests_for_nodes(nodes)
+        @merge_requests_for_nodes ||= grouped_objects_for_nodes(
+          nodes,
+          MergeRequest.all,
+          self.class.data_attribute
+        )
+      end
+
       def references_relation
         MergeRequest.includes(:author, :assignee, :target_project)
       end

@@ -156,7 +156,7 @@ module API
         project = Project.find_by_full_path(relative_path.sub(/\.(git|wiki)\z/, ''))
 
         begin
-          Gitlab::GitalyClient::Notifications.new(project.repository_storage, relative_path).post_receive
+          Gitlab::GitalyClient::Notifications.new(project.repository).post_receive
         rescue GRPC::Unavailable => e
           render_api_error(e, 500)
         end

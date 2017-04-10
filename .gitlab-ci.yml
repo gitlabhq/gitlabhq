@@ -333,7 +333,7 @@ migration paths:
     - master@gitlab/gitlabhq
     - master@gitlab/gitlab-ee
   script:
-    - git fetch origin v8.5.9
+    - git fetch origin v8.14.10
     - git checkout -f FETCH_HEAD
     - cp config/resque.yml.example config/resque.yml
     - sed -i 's/localhost/redis/g' config/resque.yml

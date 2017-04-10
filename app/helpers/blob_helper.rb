@@ -102,7 +102,7 @@ module BlobHelper
     if Gitlab::MarkupHelper.previewable?(filename)
       'Preview'
     else
-      'Preview Changes'
+      'Preview changes'
     end
   end
 

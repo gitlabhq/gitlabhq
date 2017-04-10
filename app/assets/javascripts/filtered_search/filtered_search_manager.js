@@ -16,10 +16,13 @@ import eventHub from './event_hub';
       this.tokensContainer = this.container.querySelector('.tokens-container');
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
 
+<<<<<<< HEAD
       if (page === 'issues' || page === 'boards') {
         this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysWithWeights;
       }
 
+=======
+>>>>>>> 9-1-stable
       this.recentSearchesStore = new RecentSearchesStore();
       let recentSearchesKey = 'issue-recent-searches';
       if (page === 'merge_requests') {

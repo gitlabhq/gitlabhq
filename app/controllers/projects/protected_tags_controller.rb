@@ -17,10 +17,13 @@ class Projects::ProtectedTagsController < Projects::ProtectedRefsController
     @protected_ref = @project.protected_tags.find(params[:id])
   end
 
+<<<<<<< HEAD
   def access_levels
     [:create_access_levels]
   end
 
+=======
+>>>>>>> 9-1-stable
   def protected_ref_params
     params.require(:protected_tag).permit(:name, create_access_levels_attributes: [:access_level, :id])
   end

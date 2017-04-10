@@ -53,5 +53,6 @@
 
 :javascript
   var merge_request = new MergeRequest({
-    action: "#{(@show_changes_tab ? 'new/diffs' : 'new')}"
+    action: "#{(@show_changes_tab ? 'new/diffs' : 'new')}",
+    setUrl: false,
   });

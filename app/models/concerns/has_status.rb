@@ -68,7 +68,7 @@ module HasStatus
     end
 
     scope :created, -> { where(status: 'created') }
-    scope :relevant, -> { where.not(status: 'created') }
+    scope :relevant, -> { where(status: AVAILABLE_STATUSES - ['created']) }
     scope :running, -> { where(status: 'running') }
     scope :pending, -> { where(status: 'pending') }
     scope :success, -> { where(status: 'success') }
@@ -76,6 +76,7 @@ module HasStatus
     scope :canceled, -> { where(status: 'canceled')  }
     scope :skipped, -> { where(status: 'skipped')  }
     scope :manual, -> { where(status: 'manual')  }
+    scope :created_or_pending, -> { where(status: [:created, :pending]) }
     scope :running_or_pending, -> { where(status: [:running, :pending]) }
     scope :finished, -> { where(status: [:success, :failed, :canceled]) }
     scope :failed_or_canceled, -> { where(status: [:failed, :canceled]) }

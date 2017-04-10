@@ -90,11 +90,15 @@ class User < ActiveRecord::Base
   has_many :events,                   dependent: :destroy, foreign_key: :author_id
   has_many :subscriptions,            dependent: :destroy
   has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
+<<<<<<< HEAD
   has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
   has_many :oauth_applications,       class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
   has_many :approvals,                dependent: :destroy
   has_many :approvers,                dependent: :destroy
+=======
+  has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
+>>>>>>> 9-1-stable
   has_one  :abuse_report,             dependent: :destroy, foreign_key: :user_id
   has_many :reported_abuse_reports,   dependent: :destroy, foreign_key: :reporter_id, class_name: "AbuseReport"
   has_many :spam_logs,                dependent: :destroy
@@ -510,6 +514,14 @@ class User < ActiveRecord::Base
 
   def nested_groups
     Group.member_descendants(id)
+  end
+
+  def all_expanded_groups
+    Group.member_hierarchy(id)
+  end
+
+  def expanded_groups_requiring_two_factor_authentication
+    all_expanded_groups.where(require_two_factor_authentication: true)
   end
 
   def nested_groups_projects
@@ -984,6 +996,15 @@ class User < ActiveRecord::Base
 
     self.admin = (new_level == 'admin')
     self.auditor = (new_level == 'auditor')
+  end
+
+  def update_two_factor_requirement
+    periods = expanded_groups_requiring_two_factor_authentication.pluck(:two_factor_grace_period)
+
+    self.require_two_factor_authentication_from_group = periods.any?
+    self.two_factor_grace_period = periods.min || User.column_defaults['two_factor_grace_period']
+
+    save
   end
 
   protected

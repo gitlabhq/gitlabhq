@@ -118,6 +118,7 @@ class Project < ActiveRecord::Base
   has_one :mock_ci_service, dependent: :destroy
   has_one :mock_deployment_service, dependent: :destroy
   has_one :mock_monitoring_service, dependent: :destroy
+  has_one :microsoft_teams_service, dependent: :destroy
 
   has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one  :forked_from_project,  through:   :forked_project_link
@@ -178,6 +179,8 @@ class Project < ActiveRecord::Base
   has_many :environments, dependent: :destroy
   has_many :deployments, dependent: :destroy
   has_many :path_locks, dependent: :destroy
+
+  has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :remote_mirrors,
@@ -285,6 +288,8 @@ class Project < ActiveRecord::Base
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
   scope :with_wiki_enabled, -> { with_feature_enabled(:wiki) }
+
+  enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
   # project features may be "disabled", "internal" or "enabled". If "internal",
   # they are only available to team members. This scope returns projects where
@@ -982,11 +987,14 @@ class Project < ActiveRecord::Base
     Gitlab::UrlSanitizer.new("#{web_url}.git", credentials: credentials).full_url
   end
 
+<<<<<<< HEAD
   # No need to have a Kerberos Web url. Kerberos URL will be used only to clone
   def kerberos_url_to_repo
     "#{Gitlab.config.build_gitlab_kerberos_url + Gitlab::Application.routes.url_helpers.namespace_project_path(self.namespace, self)}.git"
   end
 
+=======
+>>>>>>> 9-1-stable
   def user_can_push_to_empty_repo?(user)
     !ProtectedBranch.default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
   end
@@ -1215,23 +1223,19 @@ class Project < ActiveRecord::Base
   end
 
   def shared_runners
-    shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
+    @shared_runners ||= shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
+  end
+
+  def active_shared_runners
+    @active_shared_runners ||= shared_runners.active
   end
 
   def any_runners?(&block)
-    if runners.active.any?(&block)
-      return true
-    end
-
-    shared_runners.active.any?(&block)
+    active_runners.any?(&block) || active_shared_runners.any?(&block)
   end
 
   def valid_runners_token?(token)
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
-  end
-
-  def build_coverage_enabled?
-    build_coverage_regex.present?
   end
 
   def build_timeout_in_minutes
@@ -1386,7 +1390,7 @@ class Project < ActiveRecord::Base
   end
 
   def pipeline_status
-    @pipeline_status ||= Ci::PipelineStatus.load_for_project(self)
+    @pipeline_status ||= Gitlab::Cache::Ci::ProjectPipelineStatus.load_for_project(self)
   end
 
   def mark_import_as_failed(error_message)

@@ -24,7 +24,6 @@
 /* global Search */
 /* global Admin */
 /* global NamespaceSelects */
-/* global ShortcutsDashboardNavigation */
 /* global Project */
 /* global ProjectAvatar */
 /* global CompareAutocomplete */
@@ -40,6 +39,7 @@
 import Issue from './issue';
 
 import BindInOut from './behaviors/bind_in_out';
+import Group from './group';
 import GroupName from './group_name';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
@@ -48,9 +48,12 @@ import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
 import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
+<<<<<<< HEAD
 
 import GeoNodes from './geo_nodes';
 import ServiceDeskRoot from './projects/settings_service_desk/service_desk_root';
+=======
+>>>>>>> 9-1-stable
 
 const ShortcutsBlob = require('./shortcuts_blob');
 
@@ -285,8 +288,9 @@ const ShortcutsBlob = require('./shortcuts_blob');
         case 'groups:create':
         case 'admin:groups:create':
           BindInOut.initAll();
-        case 'groups:new':
-        case 'admin:groups:new':
+          new Group();
+          new GroupAvatar();
+          break;
         case 'groups:edit':
         case 'admin:groups:edit':
           new GroupAvatar();
@@ -354,7 +358,10 @@ const ShortcutsBlob = require('./shortcuts_blob');
           // Initialize Protected Branch Settings
           new gl.ProtectedBranchCreate();
           new gl.ProtectedBranchEditList();
+<<<<<<< HEAD
           new UsersSelect();
+=======
+>>>>>>> 9-1-stable
           // Initialize Protected Tag Settings
           new ProtectedTagCreate();
           new ProtectedTagEditList();
@@ -411,7 +418,6 @@ const ShortcutsBlob = require('./shortcuts_blob');
           break;
         case 'dashboard':
         case 'root':
-          shortcut_handler = new ShortcutsDashboardNavigation();
           new UserCallout();
           break;
         case 'groups':

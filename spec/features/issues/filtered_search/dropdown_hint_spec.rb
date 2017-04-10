@@ -44,7 +44,11 @@ describe 'Dropdown hint', :js, :feature do
 
       hint_dropdown = find(js_dropdown_hint)
 
+<<<<<<< HEAD
       expect(page).to have_css(js_dropdown_hint, text: 'Press Enter or click to search')
+=======
+      expect(hint_dropdown).to have_content('Press Enter or click to search')
+>>>>>>> 9-1-stable
       expect(hint_dropdown).to have_selector('.filter-dropdown .filter-dropdown-item', count: 0)
     end
 

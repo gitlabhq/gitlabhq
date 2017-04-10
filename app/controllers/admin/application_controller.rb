@@ -8,6 +8,7 @@ class Admin::ApplicationController < ApplicationController
 
   def authenticate_admin!
     render_404 unless current_user.admin?
+<<<<<<< HEAD
   end
 
   def display_geo_information
@@ -15,5 +16,7 @@ class Admin::ApplicationController < ApplicationController
 
     primary_node = view_context.link_to('primary node', Gitlab::Geo.primary_node.url)
     flash.now[:notice] = "You are on a secondary (read-only) Geo node. If you want to make any changes, you must visit the #{primary_node}.".html_safe
+=======
+>>>>>>> 9-1-stable
   end
 end
