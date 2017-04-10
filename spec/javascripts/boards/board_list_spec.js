@@ -48,6 +48,7 @@ describe('Board list component', () => {
         loading: false,
         issueLinkBase: '/issues',
         rootPath: '/',
+        store: gl.issueBoards.BoardsStore,
       },
     }).$mount();
 

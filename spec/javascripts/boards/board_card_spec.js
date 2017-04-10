@@ -45,6 +45,7 @@ describe('Issue card', () => {
           disabled: false,
           index: 0,
           rootPath: '/',
+          store: gl.issueBoards.BoardsStore,
         },
       }).$mount();
       done();

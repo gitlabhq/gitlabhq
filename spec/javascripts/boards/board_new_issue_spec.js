@@ -45,6 +45,7 @@ describe('Issue boards new issue form', () => {
       vm = new BoardNewIssueComp({
         propsData: {
           list,
+          store: gl.issueBoards.BoardsStore,
         },
       }).$mount();
 
