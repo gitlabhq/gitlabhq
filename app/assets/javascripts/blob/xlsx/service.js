@@ -87,6 +87,7 @@ export default class XlsxService {
         columnHeaders.push(val.v);
       }
     }
+
     return columnHeaders;
   }
 }
