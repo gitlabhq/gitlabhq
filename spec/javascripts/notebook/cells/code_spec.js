@@ -1,11 +1,15 @@
 import Vue from 'vue';
 import CodeComponent from '~/notebook/cells/code.vue';
-import json from '../../fixtures/notebook/file.json';
 
 const Component = Vue.extend(CodeComponent);
 
 describe('Code component', () => {
   let vm;
+  let json;
+
+  beforeEach(() => {
+    json = getJSONFixture('blob/notebook/basic.json');
+  });
 
   describe('without output', () => {
     beforeEach((done) => {

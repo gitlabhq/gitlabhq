@@ -1,12 +1,17 @@
 import Vue from 'vue';
 import Notebook from '~/notebook/index.vue';
-import json from '../fixtures/notebook/file.json';
-import jsonWithWorksheet from '../fixtures/notebook/worksheets.json';
 
 const Component = Vue.extend(Notebook);
 
 describe('Notebook component', () => {
   let vm;
+  let json;
+  let jsonWithWorksheet;
+
+  beforeEach(() => {
+    json = getJSONFixture('blob/notebook/basic.json');
+    jsonWithWorksheet = getJSONFixture('blob/notebook/worksheets.json');
+  });
 
   describe('without JSON', () => {
     beforeEach((done) => {

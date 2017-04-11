@@ -1,14 +1,18 @@
 import Vue from 'vue';
 import MarkdownComponent from '~/notebook/cells/markdown.vue';
-import json from '../../fixtures/notebook/file.json';
 
-const cell = json.cells[1];
 const Component = Vue.extend(MarkdownComponent);
 
 describe('Markdown component', () => {
   let vm;
+  let cell;
+  let json;
 
   beforeEach((done) => {
+    json = getJSONFixture('blob/notebook/basic.json');
+
+    cell = json.cells[1];
+
     vm = new Component({
       propsData: {
         cell,

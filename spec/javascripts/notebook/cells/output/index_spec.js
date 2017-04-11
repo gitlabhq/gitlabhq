@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import CodeComponent from '~/notebook/cells/output/index.vue';
-import json from '../../../fixtures/notebook/file.json';
 
 const Component = Vue.extend(CodeComponent);
 
 describe('Output component', () => {
   let vm;
+  let json;
 
   const createComponent = (output) => {
     vm = new Component({
@@ -16,6 +16,10 @@ describe('Output component', () => {
     });
     vm.$mount();
   };
+
+  beforeEach(() => {
+    json = getJSONFixture('blob/notebook/basic.json');
+  });
 
   describe('text output', () => {
     beforeEach((done) => {

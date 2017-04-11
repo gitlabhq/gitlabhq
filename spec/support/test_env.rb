@@ -38,7 +38,8 @@ module TestEnv
     'deleted-image-test'                 => '6c17798',
     'wip'                                => 'b9238ee',
     'csv'                                => '3dd0896',
-    'v1.1.0'                             => 'b83d6e3'
+    'v1.1.0'                             => 'b83d6e3',
+    'add-ipython-files'                  => '6d85bb69'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
