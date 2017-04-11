@@ -17,8 +17,8 @@ describe Ci::Trigger, models: true do
       expect(trigger.token).not_to be_nil
     end
 
-    it 'does not set a random token if one provided' do
-      trigger = create(:ci_trigger, project: project, token: 'token')
+    it 'does not set an random token if one provided' do
+      trigger = create(:ci_trigger, project: project)
 
       expect(trigger.token).to eq('token')
     end

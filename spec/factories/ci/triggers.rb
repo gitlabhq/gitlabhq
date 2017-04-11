@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :ci_trigger_without_token, class: Ci::Trigger do
     factory :ci_trigger do
-      sequence(:token) { |n| "token#{n}" }
+      token 'token'
 
       factory :ci_trigger_for_trigger_schedule do
         token { SecureRandom.hex(15) }

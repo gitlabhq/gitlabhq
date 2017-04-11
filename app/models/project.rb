@@ -173,8 +173,6 @@ class Project < ActiveRecord::Base
   has_many :environments, dependent: :destroy
   has_many :deployments, dependent: :destroy
 
-  has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
-
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature
 
@@ -1074,15 +1072,15 @@ class Project < ActiveRecord::Base
   end
 
   def shared_runners
-    @shared_runners ||= shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
-  end
-
-  def active_shared_runners
-    @active_shared_runners ||= shared_runners.active
+    shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
   end
 
   def any_runners?(&block)
-    active_runners.any?(&block) || active_shared_runners.any?(&block)
+    if runners.active.any?(&block)
+      return true
+    end
+
+    shared_runners.active.any?(&block)
   end
 
   def valid_runners_token?(token)

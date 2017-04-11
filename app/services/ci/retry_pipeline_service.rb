@@ -7,7 +7,9 @@ module Ci
         raise Gitlab::Access::AccessDeniedError
       end
 
-      pipeline.retryable_builds.find_each do |build|
+      pipeline.builds.latest.failed_or_canceled.find_each do |build|
+        next unless build.retryable?
+
         Ci::RetryBuildService.new(project, current_user)
           .reprocess(build)
       end
