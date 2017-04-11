@@ -6,7 +6,8 @@ class Spinner {
   }
 
   start() {
-    this.renderable.prepend(this.container);
+    this.renderable.innerHTML = '';
+    this.renderable.appendChild(this.container);
   }
 
   stop() {

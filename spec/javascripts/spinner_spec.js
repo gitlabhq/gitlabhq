@@ -31,7 +31,7 @@ describe('Spinner', () => {
 
   describe('start', () => {
     beforeEach(() => {
-      renderable = jasmine.createSpyObj('renderable', ['prepend']);
+      renderable = jasmine.createSpyObj('renderable', ['appendChild']);
       container = {};
 
       spinner = {
@@ -42,8 +42,12 @@ describe('Spinner', () => {
       Spinner.prototype.start.call(spinner);
     });
 
-    it('should call .prepend', () => {
-      expect(renderable.prepend).toHaveBeenCalledWith(container);
+    it('should set .innerHTML to an empty string', () => {
+      expect(renderable.innerHTML).toEqual('');
+    });
+
+    it('should call .appendChild', () => {
+      expect(renderable.appendChild).toHaveBeenCalledWith(container);
     });
   });
 
