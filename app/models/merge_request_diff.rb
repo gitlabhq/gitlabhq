@@ -135,15 +135,9 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def diff_refs=(new_diff_refs)
-    if new_diff_refs
-      self.base_commit_sha = new_diff_refs.base_sha
-      self.start_commit_sha = new_diff_refs.start_sha
-      self.head_commit_sha = new_diff_refs.head_sha
-    else
-      self.base_commit_sha = nil
-      self.start_commit_sha = nil
-      self.head_commit_sha = nil
-    end
+    self.base_commit_sha = new_diff_refs&.base_sha
+    self.start_commit_sha = new_diff_refs&.start_sha
+    self.head_commit_sha = new_diff_refs&.head_sha
   end
 
   def diff_refs
