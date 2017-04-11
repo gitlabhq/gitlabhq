@@ -617,7 +617,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see the merge button disabled' do
     page.within '.mr-state-widget' do
-      expect(page).to have_button('Accept Merge Request', disabled: true)
+      expect(page).to have_button('Accept merge request', disabled: true)
     end
   end
 
