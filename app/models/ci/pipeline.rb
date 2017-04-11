@@ -236,7 +236,6 @@ module Ci
           yield(job) if block_given?
           job.cancel
         end
-      end
     end
 
     def auto_cancel_running(pipeline)
