@@ -25,7 +25,7 @@ records should use stubs/doubles as much as possible.
 | --------- | ---------- | -------------- | ----- |
 | `app/finders/` | `spec/finders/` | RSpec | |
 | `app/helpers/` | `spec/helpers/` | RSpec | |
-| `app/migrations/` | `spec/migrations/` | RSpec | |
+| `app/db/{post_,}migrate/` | `spec/migrations/` | RSpec | |
 | `app/policies/` | `spec/policies/` | RSpec | |
 | `app/presenters/` | `spec/presenters/` | RSpec | |
 | `app/routing/` | `spec/routing/` | RSpec | |
