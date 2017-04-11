@@ -1,7 +1,8 @@
 module SystemNoteHelper
   ICON_NAMES_BY_ACTION = {
     'commit' => 'icon_commit',
-    'push' => 'icon_commit',
+    'pushed to' => 'icon_commit',
+    'pushed new' => 'icon_commit',
     'merge' => 'icon_merge',
     'merged' => 'icon_merged',
     'opened' => 'icon_status_open',
@@ -27,5 +28,17 @@ module SystemNoteHelper
   def icon_for_system_note(note)
     icon_name = ICON_NAMES_BY_ACTION[note]
     custom_icon(icon_name) if icon_name
+  end
+
+  def icon_for_profile_event(event)
+    if current_path?('users#show')
+      content_tag :div, class: "system-note-image #{event.action_name}-icon" do
+        icon_for_system_note(event.action_name)
+      end
+    else
+      content_tag :div, class: 'system-note-image user-avatar' do
+        author_avatar(event, size: 32)
+      end
+    end
   end
 end

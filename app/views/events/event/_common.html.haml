@@ -1,10 +1,4 @@
-- if current_path?('users#show')
-  - if event.target
-    .system-note-image{ class: "#{event.action_name}-icon" }
-      = icon_for_system_note(event.action_name)
-- else
-  .system-note-image.user-avatar
-    = author_avatar(event, size: 32)
+= icon_for_profile_event(event)
 
 .event-title
   %span.author_name= link_to_author event

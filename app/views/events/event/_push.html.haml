@@ -1,10 +1,6 @@
 - project = event.project
-- if current_path?('users#show')
-  .system-note-image
-    = icon_for_system_note(event.data[:event_name])
-- else
-  .system-note-image.user-avatar
-    = author_avatar(event, size: 32)
+
+= icon_for_profile_event(event)
 
 .event-title
   %span.author_name= link_to_author event
