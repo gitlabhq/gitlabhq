@@ -1,12 +1,14 @@
 import Vue from 'vue';
+import Visibility from 'visibilityjs';
 import PipelinesService from './services/pipelines_service';
 import eventHub from './event_hub';
 import PipelinesTableComponent from '../vue_shared/components/pipelines_table';
 import TablePaginationComponent from '../vue_shared/components/table_pagination';
-import EmptyState from './components/empty_state';
-import ErrorState from './components/error_state';
+import EmptyState from './components/empty_state.vue';
+import ErrorState from './components/error_state.vue';
 import NavigationTabs from './components/navigation_tabs';
 import NavigationControls from './components/nav_controls';
+import Poll from '../lib/utils/poll';
 
 export default {
   props: {
@@ -47,6 +49,7 @@ export default {
       pagenum: 1,
       isLoading: false,
       hasError: false,
+      isMakingRequest: false,
     };
   },
 
@@ -120,18 +123,49 @@ export default {
         tagsPath: this.tagsPath,
       };
     },
+
+    pageParameter() {
+      return gl.utils.getParameterByName('page') || this.pagenum;
+    },
+
+    scopeParameter() {
+      return gl.utils.getParameterByName('scope') || this.apiScope;
+    },
   },
 
   created() {
     this.service = new PipelinesService(this.endpoint);
 
-    this.fetchPipelines();
+    const poll = new Poll({
+      resource: this.service,
+      method: 'getPipelines',
+      data: { page: this.pageParameter, scope: this.scopeParameter },
+      successCallback: this.successCallback,
+      errorCallback: this.errorCallback,
+      notificationCallback: this.setIsMakingRequest,
+    });
+
+    if (!Visibility.hidden()) {
+      this.isLoading = true;
+      poll.makeRequest();
+    }
+
+    Visibility.change(() => {
+      if (!Visibility.hidden()) {
+        poll.restart();
+      } else {
+        poll.stop();
+      }
+    });
 
     eventHub.$on('refreshPipelines', this.fetchPipelines);
   },
 
   beforeUpdate() {
-    if (this.state.pipelines.length && this.$children) {
+    if (this.state.pipelines.length &&
+        this.$children &&
+        !this.isMakingRequest &&
+        !this.isLoading) {
       this.store.startTimeAgoLoops.call(this, Vue);
     }
   },
@@ -154,27 +188,35 @@ export default {
     },
 
     fetchPipelines() {
-      const pageNumber = gl.utils.getParameterByName('page') || this.pagenum;
-      const scope = gl.utils.getParameterByName('scope') || this.apiScope;
+      if (!this.isMakingRequest) {
+        this.isLoading = true;
 
-      this.isLoading = true;
-      return this.service.getPipelines(scope, pageNumber)
-        .then(resp => ({
-          headers: resp.headers,
-          body: resp.json(),
-        }))
-        .then((response) => {
-          this.store.storeCount(response.body.count);
-          this.store.storePipelines(response.body.pipelines);
-          this.store.storePagination(response.headers);
-        })
-        .then(() => {
-          this.isLoading = false;
-        })
-        .catch(() => {
-          this.hasError = true;
-          this.isLoading = false;
-        });
+        this.service.getPipelines({ scope: this.scopeParameter, page: this.pageParameter })
+          .then(response => this.successCallback(response))
+          .catch(() => this.errorCallback());
+      }
+    },
+
+    successCallback(resp) {
+      const response = {
+        headers: resp.headers,
+        body: resp.json(),
+      };
+
+      this.store.storeCount(response.body.count);
+      this.store.storePipelines(response.body.pipelines);
+      this.store.storePagination(response.headers);
+
+      this.isLoading = false;
+    },
+
+    errorCallback() {
+      this.hasError = true;
+      this.isLoading = false;
+    },
+
+    setIsMakingRequest(isMakingRequest) {
+      this.isMakingRequest = isMakingRequest;
     },
   },
 

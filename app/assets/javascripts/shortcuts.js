@@ -1,6 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, prefer-arrow-callback, consistent-return, object-shorthand, no-unused-vars, one-var, one-var-declaration-per-line, no-else-return, comma-dangle, max-len */
 /* global Mousetrap */
 /* global findFileURL */
+import findAndFollowLink from './shortcuts_dashboard_navigation';
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
@@ -14,11 +15,33 @@
       }
       Mousetrap.bind('?', this.onToggleHelp);
       Mousetrap.bind('s', Shortcuts.focusSearch);
-      Mousetrap.bind('f', (function(_this) {
-        return function(e) {
-          return _this.focusFilter(e);
-        };
-      })(this));
+      Mousetrap.bind('f', (e => this.focusFilter(e)));
+
+      const $globalDropdownMenu = $('.global-dropdown-menu');
+      const $globalDropdownToggle = $('.global-dropdown-toggle');
+
+      $('.global-dropdown').on('hide.bs.dropdown', () => {
+        $globalDropdownMenu.removeClass('shortcuts');
+      });
+
+      Mousetrap.bind('n', () => {
+        $globalDropdownMenu.toggleClass('shortcuts');
+        $globalDropdownToggle.trigger('click');
+
+        if (!$globalDropdownMenu.is(':visible')) {
+          $globalDropdownToggle.blur();
+        }
+      });
+
+      Mousetrap.bind('shift+t', () => findAndFollowLink('.shortcuts-todos'));
+      Mousetrap.bind('shift+a', () => findAndFollowLink('.dashboard-shortcuts-activity'));
+      Mousetrap.bind('shift+i', () => findAndFollowLink('.dashboard-shortcuts-issues'));
+      Mousetrap.bind('shift+m', () => findAndFollowLink('.dashboard-shortcuts-merge_requests'));
+      Mousetrap.bind('shift+p', () => findAndFollowLink('.dashboard-shortcuts-projects'));
+      Mousetrap.bind('shift+g', () => findAndFollowLink('.dashboard-shortcuts-groups'));
+      Mousetrap.bind('shift+l', () => findAndFollowLink('.dashboard-shortcuts-milestones'));
+      Mousetrap.bind('shift+s', () => findAndFollowLink('.dashboard-shortcuts-snippets'));
+
       Mousetrap.bind(['ctrl+shift+p', 'command+shift+p'], this.toggleMarkdownPreview);
       if (typeof findFileURL !== "undefined" && findFileURL !== null) {
         Mousetrap.bind('t', function() {

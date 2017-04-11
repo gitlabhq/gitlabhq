@@ -46,6 +46,10 @@ require('~/lib/utils/common_utils');
         spyOn(window.document, 'getElementById').and.callThrough();
       });
 
+      afterEach(() => {
+        window.history.pushState({}, null, '');
+      });
+
       function expectGetElementIdToHaveBeenCalledWith(elementId) {
         expect(window.document.getElementById).toHaveBeenCalledWith(elementId);
       }
@@ -75,9 +79,54 @@ require('~/lib/utils/common_utils');
       });
     });
 
+    describe('gl.utils.setParamInURL', () => {
+      afterEach(() => {
+        window.history.pushState({}, null, '');
+      });
+
+      it('should return the parameter', () => {
+        window.history.replaceState({}, null, '');
+
+        expect(gl.utils.setParamInURL('page', 156)).toBe('?page=156');
+        expect(gl.utils.setParamInURL('page', '156')).toBe('?page=156');
+      });
+
+      it('should update the existing parameter when its a number', () => {
+        window.history.pushState({}, null, '?page=15');
+
+        expect(gl.utils.setParamInURL('page', 16)).toBe('?page=16');
+        expect(gl.utils.setParamInURL('page', '16')).toBe('?page=16');
+        expect(gl.utils.setParamInURL('page', true)).toBe('?page=true');
+      });
+
+      it('should update the existing parameter when its a string', () => {
+        window.history.pushState({}, null, '?scope=all');
+
+        expect(gl.utils.setParamInURL('scope', 'finished')).toBe('?scope=finished');
+      });
+
+      it('should update the existing parameter when more than one parameter exists', () => {
+        window.history.pushState({}, null, '?scope=all&page=15');
+
+        expect(gl.utils.setParamInURL('scope', 'finished')).toBe('?scope=finished&page=15');
+      });
+
+      it('should add a new parameter to the end of the existing ones', () => {
+        window.history.pushState({}, null, '?scope=all');
+
+        expect(gl.utils.setParamInURL('page', 16)).toBe('?scope=all&page=16');
+        expect(gl.utils.setParamInURL('page', '16')).toBe('?scope=all&page=16');
+        expect(gl.utils.setParamInURL('page', true)).toBe('?scope=all&page=true');
+      });
+    });
+
     describe('gl.utils.getParameterByName', () => {
       beforeEach(() => {
         window.history.pushState({}, null, '?scope=all&p=2');
+      });
+
+      afterEach(() => {
+        window.history.replaceState({}, null, null);
       });
 
       it('should return valid parameter', () => {
@@ -260,6 +309,57 @@ require('~/lib/utils/common_utils');
           done();
         });
       }, 10000);
+    });
+
+    describe('gl.utils.setFavicon', () => {
+      it('should set page favicon to provided favicon', () => {
+        const faviconName = 'custom_favicon';
+        const fakeLink = {
+          setAttribute() {},
+        };
+
+        spyOn(window.document, 'getElementById').and.callFake(() => fakeLink);
+        spyOn(fakeLink, 'setAttribute').and.callFake((attr, val) => {
+          expect(attr).toEqual('href');
+          expect(val.indexOf('/assets/custom_favicon.ico') > -1).toBe(true);
+        });
+        gl.utils.setFavicon(faviconName);
+      });
+    });
+
+    describe('gl.utils.resetFavicon', () => {
+      it('should reset page favicon to tanuki', () => {
+        const fakeLink = {
+          setAttribute() {},
+        };
+
+        spyOn(window.document, 'getElementById').and.callFake(() => fakeLink);
+        spyOn(fakeLink, 'setAttribute').and.callFake((attr, val) => {
+          expect(attr).toEqual('href');
+          expect(val).toMatch(/favicon/);
+        });
+        gl.utils.resetFavicon();
+      });
+    });
+
+    describe('gl.utils.setCiStatusFavicon', () => {
+      it('should set page favicon to CI status favicon based on provided status', () => {
+        const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/builds/1/status.json`;
+        const FAVICON_PATH = 'ci_favicons/';
+        const FAVICON = 'icon_status_success';
+        const spySetFavicon = spyOn(gl.utils, 'setFavicon').and.stub();
+        const spyResetFavicon = spyOn(gl.utils, 'resetFavicon').and.stub();
+        spyOn($, 'ajax').and.callFake(function (options) {
+          options.success({ icon: FAVICON });
+          expect(spySetFavicon).toHaveBeenCalledWith(FAVICON_PATH + FAVICON);
+          options.success();
+          expect(spyResetFavicon).toHaveBeenCalled();
+          options.error();
+          expect(spyResetFavicon).toHaveBeenCalled();
+        });
+
+        gl.utils.setCiStatusFavicon(BUILD_URL);
+      });
     });
   });
 })();

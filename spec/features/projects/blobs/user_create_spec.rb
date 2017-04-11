@@ -22,7 +22,7 @@ feature 'New blob creation', feature: true, js: true do
   end
 
   def commit_file
-    click_button 'Commit Changes'
+    click_button 'Commit changes'
   end
 
   context 'with default target branch' do
@@ -88,7 +88,7 @@ feature 'New blob creation', feature: true, js: true do
 
     scenario 'shows error message' do
       expect(page).to have_content('Your changes could not be committed because a file with the same name already exists')
-      expect(page).to have_content('New File')
+      expect(page).to have_content('New file')
       expect(page).to have_content('NextFeature')
     end
   end

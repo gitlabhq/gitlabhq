@@ -26,7 +26,7 @@
 
   .table.ci-table {
     .environments-actions {
-      min-width: 200px;
+      min-width: 300px;
     }
 
     .environments-commit,
@@ -159,6 +159,16 @@
   text {
     fill: $stat-graph-axis-fill;
   }
+
+  .label-axis-text,
+  .text-metric-usage {
+    fill: $black;
+    font-weight: 500;
+  }
+
+  .legend-axis-text {
+    fill: $black;
+  }
 }
 
 .x-axis path,
@@ -221,4 +231,22 @@
 .selected-metric-line {
   stroke: $black;
   stroke-width: 1;
+}
+
+.prometheus-state {
+  margin-top: 10px;
+  display: none;
+
+  .state-button-section {
+    margin-top: 10px;
+  }
+}
+
+.environments-actions {
+  .external-url,
+  .monitoring-url,
+  .terminal-button,
+  .stop-env-link {
+    width: 38px;
+  }
 }

@@ -2,6 +2,37 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.0.5 (2017-04-10)
+
+- Add shortcuts and counters to MRs and issues in navbar.
+- Disable invalid service templates.
+- Handle SSH keys that have multiple spaces between each marker.
+
+## 9.0.4 (2017-04-05)
+
+- Don’t show source project name when user does not have access.
+- Remove the class attribute from the whitelist for HTML generated from Markdown.
+- Fix path disclosure in project import/export.
+- Fix for open redirect vulnerability using continue[to] in URL when requesting project import status.
+- Fix for open redirect vulnerabilities in todos, issues, and MR controllers.
+
+## 9.0.3 (2017-04-05)
+
+- Fix name colision when importing GitHub pull requests from forked repositories. !9719
+- Fix GitHub Importer for PRs of deleted forked repositories. !9992
+- Fix environment folder route when special chars present in environment name. !10250
+- Improve Markdown rendering when a lot of merge requests are referenced. !10252
+- Allow users to import GitHub projects to subgroups.
+- Backport API changes needed to fix sticking in EE.
+- Remove unnecessary ORDER BY clause from `forked_to_project_id` subquery. (mhasbini)
+- Make CI build to use optimistic locking only on status change.
+- Fix race condition where a namespace would be deleted before a project was deleted.
+- Fix linking to new issue with selected template via url parameter.
+- Remove unnecessary ORDER BY clause when updating todos. (mhasbini)
+- API: Make the /notes endpoint work with noteable iid instead of id.
+- Fixes method not replacing URL parameters correctly and breaking pipelines pagination.
+- Move issue, mr, todos next to profile dropdown in top nav.
+
 ## 9.0.2 (2017-03-29)
 
 - Correctly update paths when changing a child group.
@@ -303,6 +334,14 @@ entry.
 - Change development tanuki favicon colors to match logo color order.
 - API issues - support filtering by iids.
 
+## 8.17.5 (2017-04-05)
+
+- Don’t show source project name when user does not have access.
+- Remove the class attribute from the whitelist for HTML generated from Markdown.
+- Fix path disclosure in project import/export.
+- Fix for open redirect vulnerability using continue[to] in URL when requesting project import status.
+- Fix for open redirect vulnerabilities in todos, issues, and MR controllers.
+
 ## 8.17.4 (2017-03-19)
 
 - Only show public emails in atom feeds.
@@ -515,6 +554,14 @@ entry.
 - Upgrade omniauth gem to 1.3.2.
 - Remove deprecated GitlabCiService.
 - Requeue pending deletion projects.
+
+## 8.16.9 (2017-04-05)
+
+- Don’t show source project name when user does not have access.
+- Remove the class attribute from the whitelist for HTML generated from Markdown.
+- Fix path disclosure in project import/export.
+- Fix for open redirect vulnerability using continue[to] in URL when requesting project import status.
+- Fix for open redirect vulnerabilities in todos, issues, and MR controllers.
 
 ## 8.16.8 (2017-03-19)
 

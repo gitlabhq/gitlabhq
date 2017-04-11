@@ -12,7 +12,7 @@ class GroupPolicy < BasePolicy
     can_read ||= globally_viewable
     can_read ||= member
     can_read ||= @user.admin?
-    can_read ||= GroupProjectsFinder.new(@subject).execute(@user).any?
+    can_read ||= GroupProjectsFinder.new(group: @subject, current_user: @user).execute.any?
     can! :read_group if can_read
 
     # Only group masters and group owners can create new projects
@@ -41,6 +41,6 @@ class GroupPolicy < BasePolicy
     return true if @subject.internal? && !@user.external?
     return true if @subject.users.include?(@user)
 
-    GroupProjectsFinder.new(@subject).execute(@user).any?
+    GroupProjectsFinder.new(group: @subject, current_user: @user).execute.any?
   end
 end

@@ -47,7 +47,7 @@ module SharedBuilds
   end
 
   step 'recent build has a build trace' do
-    @build.trace = 'job trace'
+    @build.trace.set('job trace')
   end
 
   step 'download of build artifacts archive starts' do

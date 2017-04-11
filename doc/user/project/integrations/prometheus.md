@@ -160,23 +160,19 @@ The queries utilized by GitLab are shown in the following table.
 
 Once configured, GitLab will attempt to retrieve performance metrics for any
 environment which has had a successful deployment. If monitoring data was
-successfully retrieved, a metrics button will appear on the environment's
+successfully retrieved, a Monitoring button will appear on the environment's
 detail page.
 
 ![Environment Detail with Metrics](img/prometheus_environment_detail_with_metrics.png)
 
-Clicking on the metrics button will display a new page, showing up to the last
+Clicking on the Monitoring button will display a new page, showing up to the last
 8 hours of performance data. It may take a minute or two for data to appear
 after initial deployment.
 
 ## Troubleshooting
 
-If the metrics button is not appearing, then one of a few issues may be
-occurring:
+If the "Attempting to load performance data" screen continues to appear, it could be due to:
 
-- GitLab is not able to reach the Prometheus server. A test request can be sent
-  to the Prometheus server from the [Prometheus Service](#configuration-in-gitlab)
-  configuration screen.
 - No successful deployments have occurred to this environment.
 - Prometheus does not have performance data for this environment, or the metrics
   are not labeled correctly. To test this, connect to the Prometheus server and

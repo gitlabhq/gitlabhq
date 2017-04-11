@@ -11,5 +11,9 @@ module Search
 
       Gitlab::SnippetSearchResults.new(snippets, params[:search])
     end
+
+    def scope
+      @scope ||= %w[snippet_titles].delete(params[:scope]) { 'snippet_blobs' }
+    end
   end
 end

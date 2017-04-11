@@ -251,7 +251,8 @@ module SharedProject
 
   step 'project "Shop" has CI build' do
     project = Project.find_by(name: "Shop")
-    create :ci_pipeline, project: project, sha: project.commit.sha, ref: 'master', status: 'skipped'
+    pipeline = create :ci_pipeline, project: project, sha: project.commit.sha, ref: 'master'
+    pipeline.skip
   end
 
   step 'I should see last commit with CI status' do
@@ -271,6 +272,10 @@ module SharedProject
 
   step 'public access for builds is disabled' do
     @project.update(public_builds: false)
+  end
+
+  step 'project "Shop" has a "Bugfix MR" merge request open' do
+    create(:merge_request, title: "Bugfix MR", target_project: project, source_project: project, author: project.users.first)
   end
 
   def user_owns_project(user_name:, project_name:, visibility: :private)

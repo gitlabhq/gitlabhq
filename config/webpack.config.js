@@ -6,6 +6,7 @@ var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
 var CompressionPlugin = require('compression-webpack-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 
 var ROOT_PATH = path.resolve(__dirname, '..');
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -23,7 +24,6 @@ var config = {
     main:                 './main.js',
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
-    simulate_drag:        './test_utils/simulate_drag.js',
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
@@ -38,13 +38,19 @@ var config = {
     monitoring:           './monitoring/monitoring_bundle.js',
     network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
+    sketch_viewer:        './blob/sketch_viewer.js',
+    pdf_viewer:           './blob/pdf_viewer.js',
     profile:              './profile/profile_bundle.js',
     protected_branches:   './protected_branches/protected_branches_bundle.js',
+    protected_tags:       './protected_tags',
     snippet:              './snippet/snippet_bundle.js',
+    stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
     users:                './users/users_bundle.js',
     vue_pipelines:        './vue_pipelines_index/index.js',
+    issue_show:           './issue_show/index.js',
+    group:                './group.js',
   },
 
   output: {
@@ -53,19 +59,28 @@ var config = {
     filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js'
   },
 
-  devtool: 'inline-source-map',
+  devtool: 'cheap-module-source-map',
 
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /(node_modules|vendor\/assets)/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+      },
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
       },
       {
         test: /\.svg$/,
-        use: 'raw-loader'
-      }
+        loader: 'raw-loader',
+      },
+      {
+        test: /\.(worker\.js|pdf)$/,
+        exclude: /node_modules/,
+        loader: 'file-loader',
+      },
     ]
   },
 
@@ -107,6 +122,7 @@ var config = {
         'issuable',
         'merge_conflicts',
         'notebook_viewer',
+        'pdf_viewer',
         'vue_pipelines',
       ],
       minChunks: function(module, count) {
@@ -164,6 +180,7 @@ if (IS_PRODUCTION) {
 }
 
 if (IS_DEV_SERVER) {
+  config.devtool = 'cheap-module-eval-source-map';
   config.devServer = {
     port: DEV_SERVER_PORT,
     headers: { 'Access-Control-Allow-Origin': '*' },
@@ -171,6 +188,10 @@ if (IS_DEV_SERVER) {
     inline: DEV_SERVER_LIVERELOAD
   };
   config.output.publicPath = '//localhost:' + DEV_SERVER_PORT + config.output.publicPath;
+  config.plugins.push(
+    // watch node_modules for changes if we encounter a missing module compile error
+    new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules'))
+  );
 }
 
 if (WEBPACK_REPORT) {

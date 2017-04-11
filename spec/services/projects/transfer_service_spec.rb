@@ -29,9 +29,12 @@ describe Projects::TransferService, services: true do
   end
 
   context 'disallow transfering of project with tags' do
+    let(:container_repository) { create(:container_repository) }
+
     before do
       stub_container_registry_config(enabled: true)
-      stub_container_registry_tags('tag')
+      stub_container_registry_tags(repository: :any, tags: ['tag'])
+      project.container_repositories << container_repository
     end
 
     subject { transfer_project(project, user, group) }

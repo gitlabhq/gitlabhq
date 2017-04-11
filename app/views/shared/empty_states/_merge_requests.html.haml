@@ -1,0 +1,22 @@
+- button_path = local_assigns.fetch(:button_path, false)
+- project_select_button = local_assigns.fetch(:project_select_button, false)
+- has_button = button_path || project_select_button
+
+.row.empty-state.merge-requests
+  .col-xs-12{ class: "#{'col-sm-6 pull-right' if has_button}" }
+    .svg-content
+      = render 'shared/empty_states/icons/merge_requests.svg'
+  .col-xs-12{ class: "#{'col-sm-6' if has_button}" }
+    .text-content
+      - if has_button
+        %h4
+          Merge requests are a place to propose changes you've made to a project and discuss those changes with others.
+        %p
+          Interested parties can even contribute by pushing commits if they want to.
+        - if project_select_button
+          = render 'shared/new_project_item_select', path: 'merge_requests/new', label: 'New merge request'
+        - else
+          = link_to 'New merge request', button_path, class: 'btn btn-new', title: 'New merge request', id: 'new_merge_request_link'
+      - else
+        %h4.text-center
+          There are no merge requests to show.

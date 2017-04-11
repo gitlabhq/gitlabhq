@@ -326,3 +326,75 @@
     :why: https://github.com/domenic/opener/blob/1.4.3/LICENSE.txt
     :versions: []
     :when: 2017-02-21 22:33:41.729629000 Z
+- - :approve
+  - jszip
+  - :who: Phil Hughes
+    :why: https://github.com/Stuk/jszip/blob/master/LICENSE.markdown
+    :versions: []
+    :when: 2017-04-05 10:38:46.275721000 Z
+- - :approve
+  - jszip-utils
+  - :who: Phil Hughes
+    :why: https://github.com/Stuk/jszip-utils/blob/master/LICENSE.markdown
+    :versions: []
+    :when: 2017-04-05 10:39:32.676232000 Z
+- - :approve
+  - pako
+  - :who: Phil Hughes
+    :why: https://github.com/nodeca/pako/blob/master/LICENSE
+    :versions: []
+    :when: 2017-04-05 10:43:45.897720000 Z
+- - :approve
+  - caniuse-db
+  - :who: Mike Greiling
+    :why: https://github.com/Fyrd/caniuse/blob/master/LICENSE
+    :versions: []
+    :when: 2017-04-07 16:05:14.185549000 Z
+- - :approve
+  - domelementtype
+  - :who: Mike Greiling
+    :why: https://github.com/fb55/domelementtype/blob/master/LICENSE
+    :versions: []
+    :when: 2017-04-07 16:19:17.992640000 Z
+- - :approve
+  - domhandler
+  - :who: Mike Greiling
+    :why: https://github.com/fb55/domhandler/blob/master/LICENSE
+    :versions: []
+    :when: 2017-04-07 16:19:19.628953000 Z
+- - :approve
+  - domutils
+  - :who: Mike Greiling
+    :why: https://github.com/fb55/domutils/blob/master/LICENSE
+    :versions: []
+    :when: 2017-04-07 16:19:21.159356000 Z
+- - :approve
+  - entities
+  - :who: Mike Greiling
+    :why: https://github.com/fb55/entities/blob/master/LICENSE
+    :versions: []
+    :when: 2017-04-07 16:19:23.900571000 Z
+- - :approve
+  - ansi-html
+  - :who: Mike Greiling
+    :why: https://github.com/Tjatse/ansi-html/blob/master/LICENSE
+    :versions: []
+    :when: 2017-04-10 05:42:12.898178000 Z
+- - :approve
+  - map-stream
+  - :who: Mike Greiling
+    :why: https://github.com/dominictarr/map-stream/blob/master/LICENCE
+    :versions: []
+    :when: 2017-04-10 06:27:52.269085000 Z
+- - :approve
+  - pause-stream
+  - :who: Mike Greiling
+    :why: https://github.com/dominictarr/pause-stream/blob/master/LICENSE
+    :versions: []
+    :when: 2017-04-10 06:28:39.825894000 Z
+- - :approve
+  - undefsafe
+  - :who: Mike Greiling
+    :why: https://github.com/remy/undefsafe/blob/master/LICENSE
+    :versions: []
+    :when: 2017-04-10 06:30:00.002555000 Z

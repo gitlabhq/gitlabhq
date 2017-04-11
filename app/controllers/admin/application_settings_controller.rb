@@ -134,6 +134,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :unique_ips_limit_enabled,
       :version_check_enabled,
       :terminal_max_session_time,
+      :polling_interval_multiplier,
 
       disabled_oauth_sign_in_sources: [],
       import_sources: [],

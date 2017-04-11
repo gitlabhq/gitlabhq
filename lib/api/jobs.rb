@@ -118,7 +118,7 @@ module API
         content_type 'text/plain'
         env['api.format'] = :binary
 
-        trace = build.trace
+        trace = build.trace.raw
         body trace
       end
 

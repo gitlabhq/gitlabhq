@@ -4,7 +4,7 @@ describe KubernetesService, models: true, caching: true do
   include KubernetesHelpers
   include ReactiveCachingHelpers
 
-  let(:project) { create(:kubernetes_project) }
+  let(:project) { build_stubbed(:kubernetes_project) }
   let(:service) { project.kubernetes_service }
 
   # We use Kubeclient to interactive with the Kubernetes API. It will
@@ -32,7 +32,8 @@ describe KubernetesService, models: true, caching: true do
   describe 'Validations' do
     context 'when service is active' do
       before { subject.active = true }
-      it { is_expected.to validate_presence_of(:namespace) }
+
+      it { is_expected.not_to validate_presence_of(:namespace) }
       it { is_expected.to validate_presence_of(:api_url) }
       it { is_expected.to validate_presence_of(:token) }
 
@@ -55,7 +56,7 @@ describe KubernetesService, models: true, caching: true do
           'a.b' => false,
           'a*b' => false,
         }.each do |namespace, validity|
-          it "should validate #{namespace} as #{validity ? 'valid' : 'invalid'}" do
+          it "validates #{namespace} as #{validity ? 'valid' : 'invalid'}" do
             subject.namespace = namespace
 
             expect(subject.valid?).to eq(validity)
@@ -66,24 +67,40 @@ describe KubernetesService, models: true, caching: true do
 
     context 'when service is inactive' do
       before { subject.active = false }
-      it { is_expected.not_to validate_presence_of(:namespace) }
+
       it { is_expected.not_to validate_presence_of(:api_url) }
       it { is_expected.not_to validate_presence_of(:token) }
     end
   end
 
   describe '#initialize_properties' do
-    context 'with a project' do
-      let(:namespace_name) { "#{project.path}-#{project.id}" }
-
-      it 'defaults to the project name with ID' do
-        expect(described_class.new(project: project).namespace).to eq(namespace_name)
-      end
-    end
-
     context 'without a project' do
       it 'leaves the namespace unset' do
         expect(described_class.new.namespace).to be_nil
+      end
+    end
+  end
+
+  describe '#fields' do
+    let(:kube_namespace) do
+      subject.fields.find { |h| h[:name] == 'namespace' }
+    end
+
+    context 'as template' do
+      before { subject.template = true }
+
+      it 'sets the namespace to the default' do
+        expect(kube_namespace).not_to be_nil
+        expect(kube_namespace[:placeholder]).to eq(subject.class::TEMPLATE_PLACEHOLDER)
+      end
+    end
+
+    context 'with associated project' do
+      before { subject.project = project }
+
+      it 'sets the namespace to the default' do
+        expect(kube_namespace).not_to be_nil
+        expect(kube_namespace[:placeholder]).to match(/\A#{Gitlab::Regex::PATH_REGEX_STR}-\d+\z/)
       end
     end
   end
@@ -138,38 +155,40 @@ describe KubernetesService, models: true, caching: true do
     before do
       subject.api_url = 'https://kube.domain.com'
       subject.token = 'token'
-      subject.namespace = 'my-project'
       subject.ca_pem = 'CA PEM DATA'
+      subject.project = project
     end
 
-    it 'sets KUBE_URL' do
-      expect(subject.predefined_variables).to include(
-        { key: 'KUBE_URL', value: 'https://kube.domain.com', public: true }
-      )
+    context 'namespace is provided' do
+      before { subject.namespace = 'my-project' }
+
+      it 'sets the variables' do
+        expect(subject.predefined_variables).to include(
+          { key: 'KUBE_URL', value: 'https://kube.domain.com', public: true },
+          { key: 'KUBE_TOKEN', value: 'token', public: false },
+          { key: 'KUBE_NAMESPACE', value: 'my-project', public: true },
+          { key: 'KUBE_CA_PEM', value: 'CA PEM DATA', public: true },
+          { key: 'KUBE_CA_PEM_FILE', value: 'CA PEM DATA', public: true, file: true },
+        )
+      end
     end
 
-    it 'sets KUBE_TOKEN' do
-      expect(subject.predefined_variables).to include(
-        { key: 'KUBE_TOKEN', value: 'token', public: false }
-      )
-    end
+    context 'no namespace provided' do
+      it 'sets the variables' do
+        expect(subject.predefined_variables).to include(
+          { key: 'KUBE_URL', value: 'https://kube.domain.com', public: true },
+          { key: 'KUBE_TOKEN', value: 'token', public: false },
+          { key: 'KUBE_CA_PEM', value: 'CA PEM DATA', public: true },
+          { key: 'KUBE_CA_PEM_FILE', value: 'CA PEM DATA', public: true, file: true },
+        )
+      end
 
-    it 'sets KUBE_NAMESPACE' do
-      expect(subject.predefined_variables).to include(
-        { key: 'KUBE_NAMESPACE', value: 'my-project', public: true }
-      )
-    end
+      it 'sets the KUBE_NAMESPACE' do
+        kube_namespace = subject.predefined_variables.find { |h| h[:key] == 'KUBE_NAMESPACE' }
 
-    it 'sets KUBE_CA_PEM' do
-      expect(subject.predefined_variables).to include(
-        { key: 'KUBE_CA_PEM', value: 'CA PEM DATA', public: true }
-      )
-    end
-
-    it 'sets KUBE_CA_PEM_FILE' do
-      expect(subject.predefined_variables).to include(
-        { key: 'KUBE_CA_PEM_FILE', value: 'CA PEM DATA', public: true, file: true }
-      )
+        expect(kube_namespace).not_to be_nil
+        expect(kube_namespace[:value]).to match(/\A#{Gitlab::Regex::PATH_REGEX_STR}-\d+\z/)
+      end
     end
   end
 

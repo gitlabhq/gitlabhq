@@ -183,7 +183,9 @@ module SystemNoteService
     body = status.dup
     body << " via #{source.gfm_reference(project)}" if source
 
-    create_note(NoteSummary.new(noteable, project, author, body, action: 'status'))
+    action = status == 'reopened' ? 'opened' : status
+
+    create_note(NoteSummary.new(noteable, project, author, body, action: action))
   end
 
   # Called when 'merge when pipeline succeeds' is executed
@@ -226,12 +228,10 @@ module SystemNoteService
 
   def discussion_continued_in_issue(discussion, project, author, issue)
     body = "created #{issue.to_reference} to continue this discussion"
+    note_attributes = discussion.reply_attributes.merge(project: project, author: author, note: body)
 
-    note_params = discussion.reply_attributes.merge(project: project, author: author, note: body)
-    note_params[:type] = note_params.delete(:note_type)
-
-    note = Note.create(note_params.merge(system: true))
-    note.system_note_metadata = SystemNoteMetadata.new({ action: 'discussion' })
+    note = Note.create(note_attributes.merge(system: true))
+    note.system_note_metadata = SystemNoteMetadata.new(action: 'discussion')
 
     note
   end
@@ -273,9 +273,15 @@ module SystemNoteService
   #
   # Returns the created Note object
   def change_issue_confidentiality(issue, project, author)
-    body = issue.confidential ? 'made the issue confidential' : 'made the issue visible to everyone'
+    if issue.confidential
+      body = 'made the issue confidential'
+      action = 'confidential'
+    else
+      body = 'made the issue visible to everyone'
+      action = 'visible'
+    end
 
-    create_note(NoteSummary.new(issue, project, author, body, action: 'confidentiality'))
+    create_note(NoteSummary.new(issue, project, author, body, action: action))
   end
 
   # Called when a branch in Noteable is changed

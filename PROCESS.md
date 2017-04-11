@@ -33,7 +33,7 @@ core team members will mention this person.
 ### Merge request coaching
 
 Several people from the [GitLab team][team] are helping community members to get
-their contributions accepted by meeting our [Definition of done](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#definition-of-done).
+their contributions accepted by meeting our [Definition of done][done].
 
 What you can expect from them is described at https://about.gitlab.com/jobs/merge-request-coach/.
 
@@ -63,6 +63,58 @@ After the 7th (Pacific Standard Time Zone) of each month, RC1 of the upcoming re
 Merge requests may still be merged into master during this period,
 but they will go into the _next_ release, unless they are manually cherry-picked into the stable branch.
 By freezing the stable branches 2 weeks prior to a release, we reduce the risk of a last minute merge request potentially breaking things.
+
+### Between the 1st and the 7th
+
+These types of merge requests need special consideration:
+
+* **Large features**: a large feature is one that is highlighted in the kick-off
+  and the release blogpost; typically this will have its own channel in Slack
+  and a dedicated team with front-end, back-end, and UX.
+* **Small features**: any other feature request.
+
+**Large features** must be with a maintainer **by the 1st**. This means that:
+
+* There is a merge request (even if it's WIP).
+* The person (or people, if it needs a frontend and backend maintainer) who will
+  ultimately be responsible for merging this have been pinged on the MR.
+
+It's OK if merge request isn't completely done, but this allows the maintainer
+enough time to make the decision about whether this can make it in before the
+freeze. If the maintainer doesn't think it will make it, they should inform the
+developers working on it and the Product Manager responsible for the feature.
+
+The maintainer can also choose to assign a reviewer to perform an initial
+review, but this way the maintainer is unlikely to be surprised by receiving an
+MR later in the cycle.
+
+**Small features** must be with a reviewer (not necessarily maintainer) **by the
+3rd**.
+
+Most merge requests from the community do not have a specific release
+target. However, if one does and falls into either of the above categories, it's
+the reviewer's responsibility to manage the above communication and assignment
+on behalf of the community member.
+
+### On the 7th
+
+Merge requests should still be complete, following the
+[definition of done][done]. The single exception is documentation, and this can
+only be left until after the freeze if:
+
+* There is a follow-up issue to add documentation.
+* It is assigned to the person writing documentation for this feature, and they
+  are aware of it.
+* It is in the correct milestone, with the ~Deliverable label.
+
+All Community Edition merge requests from GitLab team members merged on the
+freeze date (the 7th) should have a corresponding Enterprise Edition merge
+request, even if there are no conflicts. This is to reduce the size of the
+subsequent EE merge, as we often merge a lot to CE on the release date. For more
+information, see
+[limit conflicts with EE when developing on CE][limit_ee_conflicts].
+
+### Between the 7th and the 22nd
 
 Once the stable branch is frozen, only fixes for regressions (bugs introduced in that same release)
 and security issues will be cherry-picked into the stable branch.
@@ -158,3 +210,5 @@ still an issue I encourage you to open it on the [GitLab.com issue tracker](http
 [contribution acceptance criteria]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#contribution-acceptance-criteria
 ["Implement design & UI elements" guidelines]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#implement-design-ui-elements
 [Thoughtbot code review guide]: https://github.com/thoughtbot/guides/tree/master/code-review
+[done]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#definition-of-done
+[limit_ee_conflicts]: https://docs.gitlab.com/ce/development/limit_ee_conflicts.html

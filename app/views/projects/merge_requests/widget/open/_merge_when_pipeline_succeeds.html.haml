@@ -26,8 +26,8 @@
       - if remove_source_branch_button
         = link_to merge_namespace_project_merge_request_path(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request, merge_params(@merge_request)), remote: true, method: :post, class: "btn btn-grouped btn-primary btn-sm remove_source_branch" do
           = icon('times')
-          Remove Source Branch When Merged
+          Remove source branch when merged
 
       - if user_can_cancel_automatic_merge
         = link_to cancel_merge_when_pipeline_succeeds_namespace_project_merge_request_path(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request), remote: true, method: :post, class: "btn btn-grouped btn-sm" do
-          Cancel Automatic Merge
+          Cancel automatic merge

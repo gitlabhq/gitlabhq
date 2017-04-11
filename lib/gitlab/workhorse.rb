@@ -16,15 +16,30 @@ module Gitlab
     SECRET_LENGTH = 32
 
     class << self
-      def git_http_ok(repository, user)
+      def git_http_ok(repository, user, action)
+        repo_path = repository.path_to_repo
         params = {
           GL_ID: Gitlab::GlId.gl_id(user),
-          RepoPath: repository.path_to_repo,
+          RepoPath: repo_path,
         }
 
         if Gitlab.config.gitaly.enabled
           address = Gitlab::GitalyClient.get_address(repository.project.repository_storage)
-          params[:GitalySocketPath] = URI(address).path
+          params[:Repository] = repository.gitaly_repository.to_h
+
+          feature_enabled = case action.to_s
+                            when 'git_receive_pack'
+                              # Disabled for now, see https://gitlab.com/gitlab-org/gitaly/issues/172
+                              false
+                            when 'git_upload_pack'
+                              Gitlab::GitalyClient.feature_enabled?(:post_upload_pack)
+                            when 'info_refs'
+                              true
+                            else
+                              raise "Unsupported action: #{action}"
+                            end
+
+          params[:GitalyAddress] = address if feature_enabled
         end
 
         params
