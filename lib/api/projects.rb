@@ -6,7 +6,7 @@ module API
     before { authenticate_non_get! }
 
     helpers do
-      params :optional_params do
+      params :optional_params_ce do
         optional :description, type: String, desc: 'The description of the project'
         optional :issues_enabled, type: Boolean, desc: 'Flag indication if the issue tracker is enabled'
         optional :merge_requests_enabled, type: Boolean, desc: 'Flag indication if merge requests are enabled'
@@ -21,6 +21,10 @@ module API
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
         optional :only_allow_merge_if_pipeline_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
         optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
+      end
+
+      params :optional_params do
+        use :optional_params_ce
       end
     end
 
@@ -198,17 +202,33 @@ module API
         success Entities::Project
       end
       params do
+        # CE
+        at_least_one_of_ce =
+          [
+            :builds_enabled,
+            :container_registry_enabled,
+            :default_branch,
+            :description,
+            :issues_enabled,
+            :lfs_enabled,
+            :merge_requests_enabled,
+            :name,
+            :only_allow_merge_if_all_discussions_are_resolved,
+            :only_allow_merge_if_pipeline_succeeds,
+            :path,
+            :public_builds,
+            :request_access_enabled,
+            :shared_runners_enabled,
+            :snippets_enabled,
+            :visibility,
+            :wiki_enabled,
+          ]
         optional :name, type: String, desc: 'The name of the project'
         optional :default_branch, type: String, desc: 'The default branch of the project'
         optional :path, type: String, desc: 'The path of the repository'
+
         use :optional_params
-        at_least_one_of :name, :description, :issues_enabled, :merge_requests_enabled,
-                        :wiki_enabled, :builds_enabled, :snippets_enabled,
-                        :shared_runners_enabled, :container_registry_enabled,
-                        :lfs_enabled, :visibility, :public_builds,
-                        :request_access_enabled, :only_allow_merge_if_pipeline_succeeds,
-                        :only_allow_merge_if_all_discussions_are_resolved, :path,
-                        :default_branch
+        at_least_one_of(*at_least_one_of_ce)
       end
       put ':id' do
         authorize_admin_project
