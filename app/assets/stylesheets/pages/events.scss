@@ -39,15 +39,18 @@
       fill: $gl-text-color-secondary;
     }
 
-    &.open-icon svg {
-      fill: $green-300;
+    &.opened-icon,
+    &.created-icon {
+      svg {
+        fill: $green-300;
+      }
     }
 
     &.closed-icon svg {
       fill: $red-300;
     }
 
-    &.fork-icon svg {
+    &.accepted-icon svg {
       fill: $blue-300;
     }
   }

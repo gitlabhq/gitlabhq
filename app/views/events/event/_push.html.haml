@@ -1,11 +1,7 @@
 - project = event.project
-
 - if current_path?('users#show')
   .system-note-image
-    - if event.action_name == "deleted"
-      = custom_icon("trash_o")
-    - else
-      = custom_icon("icon_commit")
+    = icon_for_system_note(event.data[:event_name])
 - else
   .system-note-image.user-avatar
     = author_avatar(event, size: 32)

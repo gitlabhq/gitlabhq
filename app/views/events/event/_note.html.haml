@@ -1,6 +1,6 @@
 - if current_path?('users#show')
   .system-note-image
-    = custom_icon("icon_comment_o")
+    = icon_for_system_note(event.action_name)
 - else
   .system-note-image.user-avatar
     = author_avatar(event, size: 32)

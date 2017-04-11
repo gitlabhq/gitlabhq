@@ -1,6 +1,6 @@
 - if current_path?('users#show')
-  .system-note-image.open-icon
-    = custom_icon("icon_status_open")
+  .system-note-image{ class: "#{event.action_name}-icon" }
+    = icon_for_system_note(event.action_name)
 - else
   .system-note-image.user-avatar
     = author_avatar(event, size: 32)

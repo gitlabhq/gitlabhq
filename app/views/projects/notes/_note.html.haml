@@ -6,7 +6,7 @@
   .timeline-entry-inner
     .timeline-icon
       - if note.system
-        = icon_for_system_note(note)
+        = icon_for_system_note(note.system_note_metadata&.action)
       - else
         %a{ href: user_path(note.author) }
           = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
