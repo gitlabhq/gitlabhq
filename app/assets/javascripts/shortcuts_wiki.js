@@ -11,6 +11,6 @@ export default class ShortcutsWiki extends ShortcutsNavigation {
   }
 
   editWiki() {
-    findAndFollowLink('.wiki-edit');
+    findAndFollowLink('.js-wiki-edit');
   }
 }
