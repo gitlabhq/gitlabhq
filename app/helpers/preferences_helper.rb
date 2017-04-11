@@ -63,6 +63,10 @@ module PreferencesHelper
   end
 
   def anonymous_project_view
-    @project.empty_repo? || !can?(current_user, :download_code, @project) ? 'activity' : 'readme'
+    if !@project.empty_repo? && can?(current_user, :download_code, @project)
+      'files'
+    else
+      'activity'
+    end
   end
 end
