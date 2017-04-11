@@ -1,7 +1,29 @@
+<template>
+  <div>
+    <div
+      class="text-center prepend-top-default append-bottom-default"
+      aria-label="Loading Excel file"
+      v-if="loading">
+      <i
+        class="fa fa-spinner fa-spin fa-2x"
+        aria-hidden="true">
+      </i>
+    </div>
+    <xlsx-tabs
+      v-if="!loading && sheetNames"
+      :current-sheet-name="currentSheetName"
+      :sheet-names="sheetNames" />
+    <xlsx-table
+      v-if="!loading && sheet"
+      :sheet="sheet" />
+  </div>
+</template>
+
+<script>
 import eventHub from './eventhub';
 import Service from './service';
-import xlsxTable from './components/table';
-import xlsxTabs from './components/tabs';
+import xlsxTable from './components/table.vue';
+import xlsxTabs from './components/tabs.vue';
 
 export default {
   name: 'XLSXRenderer',
@@ -53,24 +75,5 @@ export default {
     xlsxTabs,
     xlsxTable,
   },
-  template: `
-    <div>
-      <div
-        class="text-center prepend-top-default append-bottom-default"
-        aria-label="Loading Excel file"
-        v-if="loading">
-        <i
-          class="fa fa-spinner fa-spin fa-2x"
-          aria-hidden="true">
-        </i>
-      </div>
-      <xlsx-tabs
-        v-if="!loading && sheetNames"
-        :current-sheet-name="currentSheetName"
-        :sheet-names="sheetNames" />
-      <xlsx-table
-        v-if="!loading && sheet"
-        :sheet="sheet" />
-    </div>
-  `,
 };
+</script>

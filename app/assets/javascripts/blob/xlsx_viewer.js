@@ -1,6 +1,6 @@
 /* eslint-disable no-new */
 import Vue from 'vue';
-import xlsxTable from './xlsx';
+import xlsxTable from './xlsx/index.vue';
 
 document.addEventListener('DOMContentLoaded', () => {
   new Vue({
@@ -13,9 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     components: {
       xlsxTable,
     },
-    template: `
-      <xlsx-table
-        :endpoint="endpoint" />
-    `,
+    render(createElement) {
+      return createElement('xlsx-table', {
+        props: {
+          endpoint: this.endpoint,
+        },
+      });
+    },
   });
 });

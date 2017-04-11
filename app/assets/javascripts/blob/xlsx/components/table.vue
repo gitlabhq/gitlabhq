@@ -1,3 +1,38 @@
+<template>
+  <div class="table-responsive">
+    <table
+      class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th
+            v-for="name in sheet.columns">
+            {{ name }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(row, index) in sheet.rows"
+          :id="index + 1"
+          :class="{ hll: currentLineNumber === index + 1 }">
+          <td>
+            <a
+              :href="linePath(index)"
+              @click="updateCurrentLineNumber(index)">
+              {{ index + 1 }}
+            </a>
+          </td>
+          <td v-for="val in row">
+            {{ val }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<script>
 import 'vendor/jquery.scrollTo';
 
 export default {
@@ -20,9 +55,9 @@ export default {
 
       if (hash !== '') {
         return `#${hash}-L${index + 1}`;
-      } else {
-        return `#L${index + 1}`;
       }
+
+      return `#L${index + 1}`;
     },
     updateCurrentLineNumber(index) {
       this.currentLineNumber = index + 1;
@@ -40,7 +75,7 @@ export default {
         this.getCurrentLineNumberFromUrl();
       },
       deep: true,
-    }
+    },
   },
   created() {
     this.getCurrentLineNumberFromUrl();
@@ -48,37 +83,5 @@ export default {
   mounted() {
     $.scrollTo(`#${this.currentLineNumber}`);
   },
-  template: `
-    <div class="table-responsive">
-      <table
-        class="table">
-        <thead>
-          <tr>
-            <th></th>
-            <th
-              v-for="name in sheet.columns">
-              {{ name }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(row, index) in sheet.rows"
-            :id="index + 1"
-            :class="{ hll: currentLineNumber === index + 1 }">
-            <td>
-              <a
-                :href="linePath(index)"
-                @click="updateCurrentLineNumber(index)">
-                {{ index + 1 }}
-              </a>
-            </td>
-            <td v-for="val in row">
-              {{ val }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  `,
 };
+</script>

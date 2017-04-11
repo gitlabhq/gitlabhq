@@ -1,3 +1,19 @@
+<template>
+  <ul class="nav nav-tabs prepend-top-default">
+    <li
+      class="prepend-left-10"
+      v-for="name in sheetNames"
+      :class="{ 'active': name === currentSheetName }">
+      <a
+        href="#"
+        @click.prevent="changeSheet(name)">
+        {{ name }}
+      </a>
+    </li>
+  </ul>
+</template>
+
+<script>
 import eventHub from '../eventhub';
 
 export default {
@@ -19,18 +35,5 @@ export default {
       eventHub.$emit('update-sheet', name);
     },
   },
-  template: `
-    <ul class="nav nav-tabs prepend-top-default">
-      <li
-        class="prepend-left-10"
-        v-for="name in sheetNames"
-        :class="{ 'active': name === currentSheetName }">
-        <a
-          href="#"
-          @click.prevent="changeSheet(name)">
-          {{ name }}
-        </a>
-      </li>
-    </ul>
-  `,
 };
+</script>
