@@ -29,6 +29,10 @@ module ContainerRegistry
       "#{repository.path}:#{name}"
     end
 
+    def location
+      "#{repository.location}:#{name}"
+    end
+
     def [](key)
       return unless manifest
 
