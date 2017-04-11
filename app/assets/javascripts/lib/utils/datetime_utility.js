@@ -27,6 +27,9 @@ window.dateFormat = require('vendor/date.format');
     };
 
     w.gl.utils.localTimeAgo = function($timeagoEls, setTimeago = true) {
+      if (true) {
+        return;
+      }
       $timeagoEls.each((i, el) => {
         el.setAttribute('title', gl.utils.formatDate(el.getAttribute('datetime')));
 
