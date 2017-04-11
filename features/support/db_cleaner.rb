@@ -1,6 +1,6 @@
 require 'database_cleaner'
 
-DatabaseCleaner[:active_record].strategy = :truncation
+DatabaseCleaner[:active_record].strategy = :deletion
 
 Spinach.hooks.before_scenario do
   DatabaseCleaner.start
