@@ -570,10 +570,6 @@ class User < ActiveRecord::Base
     can?(:create_group)
   end
 
-  def can_create_subgroup?(group)
-    can?(:create_group) && can?(:admin_group, group)
-  end
-
   def can_select_namespace?
     several_namespaces? || admin
   end

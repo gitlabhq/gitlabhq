@@ -464,28 +464,6 @@ describe User, models: true do
     it { expect(@user2.several_namespaces?).to be_truthy }
   end
 
-  describe 'subgroups' do
-    let(:group) { create :group }
-
-    it 'allows if owner' do
-      user = create :user
-      group.add_user(user, GroupMember::OWNER)
-      expect(user.can_create_subgroup?(group)).to be_truthy
-    end
-
-    it 'disallows if missing right' do
-      user = create(:user, can_create_group: false)
-      group.add_user(user, GroupMember::MASTER)
-      expect(user.can_create_subgroup?(group)).to be_falsey
-    end
-
-    it 'disallows if developer' do
-      user = create :user
-      group.add_user(user, GroupMember::DEVELOPER)
-      expect(user.can_create_subgroup?(group)).to be_falsey
-    end
-  end
-
   describe 'namespaced' do
     before do
       @user = create :user
