@@ -47,6 +47,7 @@ describe Namespace, models: true do
   describe "Respond to" do
     it { is_expected.to respond_to(:human_name) }
     it { is_expected.to respond_to(:to_param) }
+    it { is_expected.to respond_to(:has_parent?) }
   end
 
   describe '#to_param' do

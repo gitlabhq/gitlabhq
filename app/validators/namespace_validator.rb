@@ -74,7 +74,7 @@ class NamespaceValidator < ActiveModel::EachValidator
                                preview blob blame raw files create_dir find_file
                                artifacts graphs refs badges objects folders file])
 
-  STRICT_RESERVED = (TOP_LEVEL_ROUTES | WILDCARD_ROUTES)
+  STRICT_RESERVED = (TOP_LEVEL_ROUTES | WILDCARD_ROUTES).freeze
 
   def self.valid_full_path?(full_path)
     path_segments = full_path.split('/')
@@ -120,8 +120,8 @@ class NamespaceValidator < ActiveModel::EachValidator
 
   def validation_type(record)
     case record
-    when Group
-      record.parent_id ? :wildcard : :top_level
+    when Namespace
+      record.has_parent? ? :wildcard : :top_level
     when Project
       :wildcard
     else

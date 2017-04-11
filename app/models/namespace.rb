@@ -220,6 +220,10 @@ class Namespace < ActiveRecord::Base
     Project.inside_path(full_path)
   end
 
+  def has_parent?
+    parent.present?
+  end
+
   private
 
   def repository_storage_paths
