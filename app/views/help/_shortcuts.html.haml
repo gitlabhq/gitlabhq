@@ -17,6 +17,10 @@
                   %th Global Shortcuts
                 %tr
                   %td.shortcut
+                    .key n
+                  %td Main Navigation
+                %tr
+                  %td.shortcut
                     .key s
                   %td Focus Search
                 %tr
@@ -39,24 +43,46 @@
                     .key
                       %i.fa.fa-arrow-up
                   %td Edit last comment (when focused on an empty textarea)
-              %tbody
-                %tr
-                  %th
-                  %th Project Files browsing
                 %tr
                   %td.shortcut
-                    .key
-                      %i.fa.fa-arrow-up
-                  %td Move selection up
+                    .key shift t
+                  %td
+                    Go to todos
                 %tr
                   %td.shortcut
-                    .key
-                      %i.fa.fa-arrow-down
-                  %td Move selection down
+                    .key shift a
+                  %td
+                    Go to the activity feed
                 %tr
                   %td.shortcut
-                    .key enter
-                  %td Open Selection
+                    .key shift p
+                  %td
+                    Go to projects
+                %tr
+                  %td.shortcut
+                    .key shift i
+                  %td
+                    Go to issues
+                %tr
+                  %td.shortcut
+                    .key shift m
+                  %td
+                    Go to merge requests
+                %tr
+                  %td.shortcut
+                    .key shift g
+                  %td
+                    Go to groups
+                %tr
+                  %td.shortcut
+                    .key shift l
+                  %td
+                    Go to milestones
+                %tr
+                  %td.shortcut
+                    .key shift s
+                  %td
+                    Go to snippets
               %tbody
                 %tr
                   %th
@@ -79,51 +105,8 @@
                   %td.shortcut
                     .key esc
                   %td Go back
-              %tbody
-                %tr
-                  %th
-                  %th Project File
-                %tr
-                  %td.shortcut
-                    .key y
-                  %td Go to file permalink
-
           .col-lg-4
             %table.shortcut-mappings
-              %tbody.hidden-shortcut.project{ style: 'display:none' }
-                %tr
-                  %th
-                  %th Global Dashboard
-                %tr
-                  %td.shortcut
-                    .key g
-                    .key a
-                  %td
-                    Go to the activity feed
-                %tr
-                  %td.shortcut
-                    .key g
-                    .key p
-                  %td
-                    Go to projects
-                %tr
-                  %td.shortcut
-                    .key g
-                    .key i
-                  %td
-                    Go to issues
-                %tr
-                  %td.shortcut
-                    .key g
-                    .key m
-                  %td
-                    Go to merge requests
-                %tr
-                  %td.shortcut
-                    .key g
-                    .key t
-                  %td
-                    Go to todos
               %tbody
                 %tr
                   %th
@@ -155,7 +138,7 @@
                 %tr
                   %td.shortcut
                     .key g
-                    .key b
+                    .key j
                   %td
                     Go to jobs
                 %tr
@@ -167,7 +150,7 @@
                 %tr
                   %td.shortcut
                     .key g
-                    .key g
+                    .key d
                   %td
                     Go to repository charts
                 %tr
@@ -179,7 +162,7 @@
                 %tr
                   %td.shortcut
                     .key g
-                    .key l
+                    .key b
                   %td
                     Go to issue boards
                 %tr
@@ -196,12 +179,45 @@
                     Go to snippets
                 %tr
                   %td.shortcut
+                    .key g
+                    .key w
+                  %td
+                    Go to wiki
+                %tr
+                  %td.shortcut
                     .key t
                   %td Go to finding file
                 %tr
                   %td.shortcut
                     .key i
                   %td New issue
+
+              %tbody
+                %tr
+                  %th
+                  %th Project Files browsing
+                %tr
+                  %td.shortcut
+                    .key
+                      %i.fa.fa-arrow-up
+                  %td Move selection up
+                %tr
+                  %td.shortcut
+                    .key
+                      %i.fa.fa-arrow-down
+                  %td Move selection down
+                %tr
+                  %td.shortcut
+                    .key enter
+                  %td Open Selection
+              %tbody
+                %tr
+                  %th
+                  %th Project File
+                %tr
+                  %td.shortcut
+                    .key y
+                  %td Go to file permalink
           .col-lg-4
             %table.shortcut-mappings
               %tbody.hidden-shortcut.network{ style: 'display:none' }

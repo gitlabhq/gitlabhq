@@ -31,7 +31,7 @@ RSpec.shared_examples "protected tags > access control > CE" do
 
       within(".protected-tags-list") do
         find(".js-allowed-to-create").click
-        
+
         within('.js-allowed-to-create-container') do
           expect(first("li")).to have_content("Roles")
           click_on access_type_name

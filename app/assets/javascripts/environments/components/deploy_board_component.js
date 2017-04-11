@@ -67,7 +67,7 @@ export default {
   },
 
   created() {
-    this.getDeployBoard();
+    this.getDeployBoard(true);
   },
 
   updated() {
@@ -80,14 +80,14 @@ export default {
       this.deployBoardData.completion < 100) {
       // let's wait 1s and make the request again
       setTimeout(() => {
-        this.getDeployBoard();
+        this.getDeployBoard(false);
       }, 3000);
     }
   },
 
   methods: {
-    getDeployBoard() {
-      this.isLoading = true;
+    getDeployBoard(showLoading) {
+      this.isLoading = showLoading;
 
       const maxNumberOfRequests = 3;
 

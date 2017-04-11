@@ -112,7 +112,7 @@ GET /groups/:id/issues?search=issue+title+or+description
 
 | Attribute   | Type           | Required | Description                                                                                                                 |
 |-------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user               |
 | `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
 | `iids`      | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
