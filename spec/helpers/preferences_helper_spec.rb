@@ -86,10 +86,10 @@ describe PreferencesHelper do
       context 'when repository is not empty' do
         let(:project) { create(:project, :public, :repository) }
 
-        it 'returns readme if user has repository access' do
+        it 'returns files and readme if user has repository access' do
           allow(helper).to receive(:can?).with(nil, :download_code, project).and_return(true)
 
-          expect(helper.default_project_view).to eq('readme')
+          expect(helper.default_project_view).to eq('files')
         end
 
         it 'returns activity if user does not have repository access' do
