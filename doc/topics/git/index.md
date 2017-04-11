@@ -5,7 +5,7 @@ distributed version control system designed to handle everything from small to
 very large projects with speed and efficiency.
 
 [GitLab](https://about.gitlab.com) is a Git-based fully integrated platform for
-software development. It has all functionalities Git has, plus a lot of
+software development. Besides Git's functionalities, GitLab has a lot of
 powerful [features](https://about.gitlab.com/features/) to enhance your
 [workflow](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
 
@@ -59,4 +59,3 @@ We've gathered some resources to help you to get the best from Git with GitLab.
 
 - **Articles:**
   - [The future of SaaS hosted Git repository pricing](https://about.gitlab.com/2016/05/11/git-repository-pricing/)
-  - [Did you install GitLab from source? Check your Git version](https://about.gitlab.com/2015/06/12/did-you-install-gitlab-from-source-recently-check-your-git-version/)
