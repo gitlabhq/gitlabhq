@@ -62,6 +62,10 @@ class Blob < SimpleDelegator
     binary? && extension == 'sketch'
   end
 
+  def docx?
+    binary? && extension == 'docx'
+  end
+
   def stl?
     extension == 'stl'
   end
@@ -95,6 +99,8 @@ class Blob < SimpleDelegator
       'notebook'
     elsif sketch?
       'sketch'
+    elsif docx?
+      'docx'
     elsif stl?
       'stl'
     elsif markup?
