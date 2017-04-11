@@ -452,7 +452,7 @@ The GitLab test suite is [monitored] and a [public dashboard] is available for
 everyone to see. Feel free to look at the slowest test files and try to improve
 them.
 
-[monitored]: ./development/performance.html#rspec-profiling
+[monitored]: ./performance.md#rspec-profiling
 [public dashboard]: https://redash.gitlab.com/public/dashboards/l1WhHXaxrCWM5Ai9D7YDqHKehq6OU3bx5gssaiWe?org_slug=default
 
 ## Spinach (feature) tests
