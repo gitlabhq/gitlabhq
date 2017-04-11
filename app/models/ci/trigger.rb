@@ -7,7 +7,7 @@ module Ci
     belongs_to :project
     belongs_to :owner, class_name: "User"
 
-    has_many :trigger_requests, dependent: :destroy
+    has_many :trigger_requests
     has_one :trigger_schedule, dependent: :destroy
 
     validates :token, presence: true, uniqueness: true
