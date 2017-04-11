@@ -53,7 +53,6 @@ module API
         ]
       end
 
-<<<<<<< HEAD
       def log_user_activity(actor)
         commands = Gitlab::GitAccess::DOWNLOAD_COMMANDS
 
@@ -63,11 +62,6 @@ module API
       def parse_env
         return {} if params[:env].blank?
 
-=======
-      def parse_env
-        return {} if params[:env].blank?
-
->>>>>>> 19dd138cdd4e551759a2163f5357ae2fc9f73b99
         JSON.parse(params[:env])
       rescue JSON::ParserError
         {}
