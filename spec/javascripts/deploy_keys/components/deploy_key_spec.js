@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import deployKeyComponent from '~/deploy_keys/components/deploy_key';
 
-fdescribe('DeployKey', () => {
+describe('DeployKey', () => {
   const propsData = {
     id: 1,
     title: 'title',

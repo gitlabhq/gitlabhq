@@ -36,6 +36,9 @@ export default Vue.component('deploy-keys', {
       this.sections[2].keys = data.public_keys;
 
       this.loaded = true;
+    }).catch((e) => {
+      this.loaded = true;
+      throw e;
     });
   },
   methods: {
