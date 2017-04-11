@@ -52,11 +52,10 @@
                     ":aria-label" => "buttonText",
                     "@click" => "resolve",
                     ":title" => "buttonText",
-                    "v-show" => "!loading",
                     ":ref" => "'button'" }
-                  = icon("spin spinner", "v-show" => "loading")
 
-                  = render "shared/icons/icon_status_success.svg"
+                  = icon("spin spinner", "v-show" => "loading", class: 'loading')
+                  %div{ 'v-show' => '!loading' }= render "shared/icons/icon_status_success.svg"
 
             - if current_user
               - if note.emoji_awardable?

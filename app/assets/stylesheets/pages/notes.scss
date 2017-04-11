@@ -619,7 +619,6 @@ ul.notes {
   }
 
   &:not(.is-disabled):hover,
-  &:not(.is-disabled):focus,
   &.is-active {
     color: $gl-text-green;
 
