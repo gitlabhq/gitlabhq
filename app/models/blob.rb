@@ -42,12 +42,16 @@ class Blob < SimpleDelegator
     size && truncated?
   end
 
+  def extension
+    extname.downcase.delete('.')
+  end
+
   def svg?
     text? && language && language.name == 'SVG'
   end
 
   def pdf?
-    name && File.extname(name) == '.pdf'
+    extension == 'pdf'
   end
 
   def ipython_notebook?
@@ -55,11 +59,15 @@ class Blob < SimpleDelegator
   end
 
   def sketch?
-    binary? && extname.downcase.delete('.') == 'sketch'
+    binary? && extension == 'sketch'
   end
 
   def stl?
-    extname.downcase.delete('.') == 'stl'
+    extension == 'stl'
+  end
+
+  def markup?
+    text? && Gitlab::MarkupHelper.markup?(name)
   end
 
   def size_within_svg_limits?
@@ -77,8 +85,10 @@ class Blob < SimpleDelegator
       else
         'text'
       end
-    elsif image? || svg?
+    elsif image?
       'image'
+    elsif svg?
+      'svg'
     elsif pdf?
       'pdf'
     elsif ipython_notebook?
@@ -87,8 +97,18 @@ class Blob < SimpleDelegator
       'sketch'
     elsif stl?
       'stl'
+    elsif markup?
+      if only_display_raw?
+        'too_large'
+      else
+        'markup'
+      end
     elsif text?
-      'text'
+      if only_display_raw?
+        'too_large'
+      else
+        'text'
+      end
     else
       'download'
     end

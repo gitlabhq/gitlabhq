@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 
-import AsyncButtonComponent from '../../vue_pipelines_index/components/async_button';
+import AsyncButtonComponent from '../../vue_pipelines_index/components/async_button.vue';
 import PipelinesActionsComponent from '../../vue_pipelines_index/components/pipelines_actions';
 import PipelinesArtifactsComponent from '../../vue_pipelines_index/components/pipelines_artifacts';
 import PipelinesStatusComponent from '../../vue_pipelines_index/components/status';
