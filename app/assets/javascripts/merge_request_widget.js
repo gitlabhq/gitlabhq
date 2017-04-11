@@ -56,21 +56,21 @@ import MiniPipelineGraph from './mini_pipeline_graph_dropdown';
 
       this.initMiniPipelineGraph();
 
-      this.ciStatusInterval = new global.SmartInterval({
-        callback: this.getCIStatus.bind(this, true),
-        startingInterval: 10000,
-        maxInterval: 30000,
-        hiddenInterval: 120000,
-        incrementByFactorOf: 5000,
-      });
-      this.ciEnvironmentStatusInterval = new global.SmartInterval({
-        callback: this.getCIEnvironmentsStatus.bind(this),
-        startingInterval: 30000,
-        maxInterval: 120000,
-        hiddenInterval: 240000,
-        incrementByFactorOf: 15000,
-        immediateExecution: true,
-      });
+      // this.ciStatusInterval = new global.SmartInterval({
+      //   callback: this.getCIStatus.bind(this, true),
+      //   startingInterval: 10000,
+      //   maxInterval: 30000,
+      //   hiddenInterval: 120000,
+      //   incrementByFactorOf: 5000,
+      // });
+      // this.ciEnvironmentStatusInterval = new global.SmartInterval({
+      //   callback: this.getCIEnvironmentsStatus.bind(this),
+      //   startingInterval: 30000,
+      //   maxInterval: 120000,
+      //   hiddenInterval: 240000,
+      //   incrementByFactorOf: 15000,
+      //   immediateExecution: true,
+      // });
 
       notifyPermissions();
     }

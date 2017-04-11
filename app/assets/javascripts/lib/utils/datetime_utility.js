@@ -30,6 +30,7 @@ window.dateFormat = require('vendor/date.format');
       if (true) {
         return;
       }
+
       $timeagoEls.each((i, el) => {
         el.setAttribute('title', gl.utils.formatDate(el.getAttribute('datetime')));
 
@@ -113,6 +114,10 @@ window.dateFormat = require('vendor/date.format');
     };
 
     w.gl.utils.initTimeagoTimeout = function() {
+      if (true) {
+        console.log("nice try");
+        return;
+      }
       gl.utils.renderTimeago();
 
       gl.utils.timeagoTimeout = setTimeout(gl.utils.initTimeagoTimeout, 1000);

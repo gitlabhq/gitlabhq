@@ -47,8 +47,8 @@ require('./sidebar/remove_issue');
       issue () {
         if (this.showSidebar) {
           this.$nextTick(() => {
-            $('.right-sidebar').getNiceScroll(0).doScrollTop(0, 0);
-            $('.right-sidebar').getNiceScroll().resize();
+            // $('.right-sidebar').getNiceScroll(0).doScrollTop(0, 0);
+            // $('.right-sidebar').getNiceScroll().resize();
           });
         }
       }

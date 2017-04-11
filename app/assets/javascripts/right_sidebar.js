@@ -10,7 +10,7 @@ import Cookies from 'js-cookie';
       this.toggleTodo = bind(this.toggleTodo, this);
       this.sidebar = $('aside');
       this.removeListeners();
-      this.addEventListeners();
+      // this.addEventListeners();
     }
 
     Sidebar.prototype.removeListeners = function () {
@@ -30,7 +30,7 @@ import Cookies from 'js-cookie';
       $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
       $('.dropdown').on('loaded.gl.dropdown', this.sidebarDropdownLoaded);
       $(window).on('resize', () => throttledSetSidebarHeight());
-      $document.on('scroll', () => throttledSetSidebarHeight());
+      // $document.on('scroll', () => throttledSetSidebarHeight());
       $document.on('click', '.js-sidebar-toggle', function(e, triggered) {
         var $allGutterToggleIcons, $this, $thisIcon;
         e.preventDefault();

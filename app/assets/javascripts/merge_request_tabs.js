@@ -263,8 +263,7 @@ import './flash';
             this.expandViewContainer();
           }
           this.diffsLoaded = true;
-
-          new gl.Diff();
+          // new gl.Diff();
           this.scrollToElement('#diffs');
         },
       });

@@ -452,26 +452,26 @@ require('./task_list');
      */
 
     Notes.prototype.setupMainTargetNoteForm = function() {
-      var form;
-      // find the form
-      form = $(".js-new-note-form");
-      // Set a global clone of the form for later cloning
-      this.formClone = form.clone();
-      // show the form
-      this.setupNoteForm(form);
-      // fix classes
-      form.removeClass("js-new-note-form");
-      form.addClass("js-main-target-form");
-      form.find("#note_line_code").remove();
-      form.find("#note_position").remove();
-      form.find("#note_type").val('');
-      form.find("#in_reply_to_discussion_id").remove();
-      form.find('.js-comment-resolve-button').closest('comment-and-resolve-btn').remove();
-      this.parentTimeline = form.parents('.timeline');
+      // var form;
+      // // find the form
+      // form = $(".js-new-note-form");
+      // // Set a global clone of the form for later cloning
+      // this.formClone = form.clone();
+      // // show the form
+      // this.setupNoteForm(form);
+      // // fix classes
+      // form.removeClass("js-new-note-form");
+      // form.addClass("js-main-target-form");
+      // form.find("#note_line_code").remove();
+      // form.find("#note_position").remove();
+      // form.find("#note_type").val('');
+      // form.find("#in_reply_to_discussion_id").remove();
+      // form.find('.js-comment-resolve-button').closest('comment-and-resolve-btn').remove();
+      // this.parentTimeline = form.parents('.timeline');
 
-      if (form.length) {
-        Notes.initCommentTypeToggle(form.get(0));
-      }
+      // if (form.length) {
+      //   Notes.initCommentTypeToggle(form.get(0));
+      // }
     };
 
     /*

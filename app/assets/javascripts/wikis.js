@@ -2,7 +2,7 @@
 /* global Breakpoints */
 
 require('./breakpoints');
-require('vendor/jquery.nicescroll');
+// require('vendor/jquery.nicescroll');
 
 ((global) => {
   class Wikis {
@@ -10,7 +10,7 @@ require('vendor/jquery.nicescroll');
       this.bp = Breakpoints.get();
       this.sidebarEl = document.querySelector('.js-wiki-sidebar');
       this.sidebarExpanded = false;
-      $(this.sidebarEl).niceScroll();
+      // $(this.sidebarEl).niceScroll();
 
       const sidebarToggles = document.querySelectorAll('.js-sidebar-wiki-toggle');
       for (let i = 0; i < sidebarToggles.length; i += 1) {

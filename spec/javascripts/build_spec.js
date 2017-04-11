@@ -5,7 +5,7 @@ require('~/lib/utils/datetime_utility');
 require('~/lib/utils/url_utility');
 require('~/build');
 require('~/breakpoints');
-require('vendor/jquery.nicescroll');
+// require('vendor/jquery.nicescroll');
 
 describe('Build', () => {
   const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/builds/1`;

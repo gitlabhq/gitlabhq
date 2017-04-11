@@ -53,7 +53,7 @@ window.Build = (function () {
       .off('click', '.stage-item')
       .on('click', '.stage-item', this.updateDropdown);
 
-    this.$document.on('scroll', this.initScrollMonitor.bind(this));
+    // this.$document.on('scroll', this.initScrollMonitor.bind(this));
 
     $(window)
       .off('resize.build')
@@ -70,7 +70,7 @@ window.Build = (function () {
 
   Build.prototype.initSidebar = function () {
     this.$sidebar = $('.js-build-sidebar');
-    this.$sidebar.niceScroll();
+    // this.$sidebar.niceScroll();
     this.$document
       .off('click', '.js-sidebar-build-toggle')
       .on('click', '.js-sidebar-build-toggle', this.toggleSidebar);

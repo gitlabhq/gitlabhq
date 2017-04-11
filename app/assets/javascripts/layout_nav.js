@@ -19,14 +19,15 @@
     $(window).off('resize.nav').on('resize.nav', function() {
       return hideEndFade($scrollingTabs);
     });
-    $scrollingTabs.off('scroll').on('scroll', function(event) {
-      var $this, currentPosition, maxPosition;
-      $this = $(this);
-      currentPosition = $this.scrollLeft();
-      maxPosition = $this.prop('scrollWidth') - $this.outerWidth();
-      $this.siblings('.fade-left').toggleClass('scrolling', currentPosition > 0);
-      return $this.siblings('.fade-right').toggleClass('scrolling', currentPosition < maxPosition - 1);
-    });
+    // $scrollingTabs.off('scroll').on('scroll', function(event) {
+    //   var $this, currentPosition, maxPosition;
+    //   $this = $(this);
+    //   currentPosition = $this.scrollLeft();
+    //   debugger;
+    //   maxPosition = $this.prop('scrollWidth') - $this.outerWidth();
+    //   $this.siblings('.fade-left').toggleClass('scrolling', currentPosition > 0);
+    //   return $this.siblings('.fade-right').toggleClass('scrolling', currentPosition < maxPosition - 1);
+    // });
 
     $scrollingTabs.each(function () {
       var $this = $(this);

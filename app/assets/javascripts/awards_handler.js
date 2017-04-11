@@ -69,16 +69,16 @@ function AwardsHandler() {
   this.eventListeners = [];
   this.aliases = emojiAliases;
   // If the user shows intent let's pre-build the menu
-  this.registerEventListener('one', $(document), 'mouseenter focus', '.js-add-award', 'mouseenter focus', () => {
-    const $menu = $('.emoji-menu');
-    if ($menu.length === 0) {
-      requestAnimationFrame(() => {
-        this.createEmojiMenu();
-      });
-    }
-    // Prebuild the categoryMap
-    categoryMap = categoryMap || buildCategoryMap();
-  });
+  // this.registerEventListener('one', $(document), 'mouseenter focus', '.js-add-award', 'mouseenter focus', () => {
+  //   const $menu = $('.emoji-menu');
+  //   if ($menu.length === 0) {
+  //     requestAnimationFrame(() => {
+  //       this.createEmojiMenu();
+  //     });
+  //   }
+  //   // Prebuild the categoryMap
+  //   categoryMap = categoryMap || buildCategoryMap();
+  // });
   this.registerEventListener('on', $(document), 'click', '.js-add-award', (e) => {
     e.stopPropagation();
     e.preventDefault();

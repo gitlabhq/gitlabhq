@@ -197,11 +197,11 @@
         if (domImg.complete) {
           return callback.call(this, domImg.naturalWidth, domImg.naturalHeight);
         } else {
-          return img.on('load', (function(_this) {
-            return function() {
-              return callback.call(_this, domImg.naturalWidth, domImg.naturalHeight);
-            };
-          })(this));
+          // return img.on('load', (function(_this) {
+          //   return function() {
+          //     return callback.call(_this, domImg.naturalWidth, domImg.naturalHeight);
+          //   };
+          // })(this));
         }
       }
     };

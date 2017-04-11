@@ -93,10 +93,12 @@ class Diff {
   }
 
   diffViewType() {
+    debugger;
     return $('.inline-parallel-buttons a.active').data('view-type');
   }
 
   lineNumbers(line) {
+    debugger;
     const children = line.find('.diff-line-num').toArray();
     if (children.length !== 2) {
       return [0, 0];
@@ -108,7 +110,7 @@ class Diff {
     const hash = gl.utils.getLocationHash();
     const $diffFiles = $('.diff-file');
     $diffFiles.find('.hll').removeClass('hll');
-
+    debugger;
     if (hash) {
       $diffFiles
         .find(`tr#${hash}:not(.match) td, td#${hash}, td[data-line-code="${hash}"]`)

@@ -5,7 +5,7 @@
 require('~/lib/utils/type_utility');
 require('~/gl_dropdown');
 require('select2');
-require('vendor/jquery.nicescroll');
+// require('vendor/jquery.nicescroll');
 require('~/api');
 require('~/create_label');
 require('~/issuable_context');

@@ -30,8 +30,8 @@ window.FilesCommentButton = (function() {
     this.render = bind(this.render, this);
     this.hideButton = bind(this.hideButton, this);
     this.isParallelView = notes.isParallelView();
-    filesContainerElement.on('mouseover', LINE_COLUMN_CLASSES, this.render)
-      .on('mouseleave', LINE_COLUMN_CLASSES, this.hideButton);
+    // filesContainerElement.on('mouseover', LINE_COLUMN_CLASSES, this.render)
+    //   .on('mouseleave', LINE_COLUMN_CLASSES, this.hideButton);
   }
 
   FilesCommentButton.prototype.render = function(e) {
