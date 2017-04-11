@@ -309,7 +309,7 @@ end
 
 def approve_merge_request
   page.within '.mr-state-widget' do
-    click_button 'Approve Merge Request'
+    click_button 'Approve merge request'
   end
   wait_for_ajax
 end
