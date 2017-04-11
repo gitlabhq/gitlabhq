@@ -202,7 +202,7 @@ milestone with the due date that is next.
 
 ## Focus mode
 
-Click the button at the top right to enter focus mode, where GitLab navigation UI is hidden, allowing you to focus on issues in the board. Click again to go back.
+Click the button at the top right to toggle focus mode on and off. In focus mode, the navigation UI is hidden, allowing you to focus on issues in the board.
 
 ![Board focus mode](img/issue_board_focus_mode.gif)
 
