@@ -18,7 +18,7 @@ feature 'Merge With Push Rules Validation', feature: true, js: true do
     end
 
     it 'displays error message after merge request is clicked' do
-      click_button 'Accept Merge Request'
+      click_button 'Accept merge request'
 
       expect(page).to have_content('Merge in progress')
       expect(page).to have_content('This merge request failed to be merged automatically')
@@ -35,7 +35,7 @@ feature 'Merge With Push Rules Validation', feature: true, js: true do
     end
 
     it 'displays error message after merge request is clicked' do
-      click_button 'Accept Merge Request'
+      click_button 'Accept merge request'
 
       expect(page).to have_content('Merge in progress')
       expect(page).to have_content('This merge request failed to be merged automatically')
