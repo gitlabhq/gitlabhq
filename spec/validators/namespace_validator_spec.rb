@@ -81,6 +81,26 @@ describe NamespaceValidator do
     end
   end
 
+  describe '#valid_full_path' do
+    it "isn't valid when the top level is reserved" do
+      test_path = 'u/should-be-a/reserved-word'
+
+      expect(described_class.valid_full_path?(test_path)).to be(false)
+    end
+
+    it "isn't valid if any of the path segments is reserved" do
+      test_path = 'the-wildcard/wikis/is-a-reserved-path'
+
+      expect(described_class.valid_full_path?(test_path)).to be(false)
+    end
+
+    it "is valid if the path doen't contain reserved words" do
+      test_path = 'there-are/no-wildcards/in-this-path'
+
+      expect(described_class.valid_full_path?(test_path)).to be(true)
+    end
+  end
+
   describe '#validation_type' do
     it 'uses top level validation for groups without parent' do
       group = build(:group)

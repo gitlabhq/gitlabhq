@@ -77,12 +77,14 @@ class NamespaceValidator < ActiveModel::EachValidator
   STRICT_RESERVED = (TOP_LEVEL_ROUTES | WILDCARD_ROUTES)
 
   def self.valid_full_path?(full_path)
-    pieces = full_path.split('/')
-    first_part = pieces.first
-    pieces.all? do |namespace|
-      type = first_part == namespace ? :top_level : :wildcard
-      valid?(namespace, type: type)
-    end
+    path_segments = full_path.split('/')
+    root_segment = path_segments.shift
+
+    valid?(root_segment, type: :top_level) && valid_wildcard_segments?(path_segments)
+  end
+
+  def self.valid_wildcard_segments?(segments)
+    segments.all? { |segment| valid?(segment, type: :wildcard) }
   end
 
   def self.valid?(value, type: :strict)
