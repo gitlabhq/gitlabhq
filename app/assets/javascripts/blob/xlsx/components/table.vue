@@ -1,7 +1,7 @@
 <template>
   <div class="table-responsive">
     <table
-      class="table">
+      class="table table-striped table-bordered xlsx-table">
       <thead>
         <tr>
           <th></th>
@@ -16,7 +16,7 @@
           v-for="(row, index) in sheet.rows"
           :id="index + 1"
           :class="{ hll: currentLineNumber === index + 1 }">
-          <td>
+          <td class="text-right">
             <a
               :href="linePath(index)"
               @click="updateCurrentLineNumber(index)">

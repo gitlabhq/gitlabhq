@@ -398,3 +398,15 @@
     :why: https://github.com/remy/undefsafe/blob/master/LICENSE
     :versions: []
     :when: 2017-04-10 06:30:00.002555000 Z
+- - :approve
+  - printj
+  - :who: Phil Hughes
+    :why: https://github.com/SheetJS/printj/blob/master/LICENSE
+    :versions: []
+    :when: 2017-04-11 15:04:29.316170000 Z
+- - :approve
+  - voc
+  - :who: Phil Hughes
+    :why: https://github.com/SheetJS/voc/blob/master/LICENSE
+    :versions: []
+    :when: 2017-04-11 15:05:17.527393000 Z

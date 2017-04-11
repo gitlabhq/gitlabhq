@@ -1,5 +1,30 @@
+$hll-bg: #f8eec7;
+
 .hll {
   > td {
-    background-color: #f8eec7;
+    background-color: $hll-bg;
+  }
+}
+
+.xlsx-table {
+  border: 0;
+
+  > thead > tr > th {
+    &:first-of-type {
+      border-left: 0;
+    }
+
+    &:last-of-type {
+      border-right: 0;
+    }
+  }
+
+  > tbody > tr > td {
+    &:first-of-type {
+      background-color: $gray-light;
+      border-top: 0;
+      border-bottom: 0;
+      vertical-align: middle;
+    }
   }
 }
