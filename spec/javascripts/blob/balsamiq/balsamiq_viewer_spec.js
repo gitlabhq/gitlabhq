@@ -216,6 +216,35 @@ describe('BalsamiqViewer', () => {
     });
   });
 
+  describe('getTitle', () => {
+    let database;
+    let resourceID;
+    let resource;
+    let getTitle;
+
+    beforeEach(() => {
+      database = jasmine.createSpyObj('database', ['exec']);
+      resourceID = 4;
+      resource = 'resource';
+
+      balsamiqViewer = {
+        database,
+      };
+
+      database.exec.and.returnValue(resource);
+
+      getTitle = BalsamiqViewer.prototype.getTitle.call(balsamiqViewer, resourceID);
+    });
+
+    it('should call database.exec', () => {
+      expect(database.exec).toHaveBeenCalledWith(`SELECT * FROM resources WHERE id = '${resourceID}'`);
+    });
+
+    it('should return the selected resource', () => {
+      expect(getTitle).toBe(resource);
+    });
+  });
+
   describe('renderPreview', () => {
     let previewElement;
     let innerHTML;
@@ -261,45 +290,16 @@ describe('BalsamiqViewer', () => {
 
   describe('renderTemplate', () => {
     let preview;
-    let database;
+    let name;
     let title;
+    let template;
     let renderTemplate;
 
     beforeEach(() => {
-      preview = { reosourceID: 1, image: 'image' };
-      title = [{ values: [['{}', '{}', '{ "name": "name" }']] }];
-      database = jasmine.createSpyObj('database', ['exec']);
-
-      database.exec.and.returnValue(title);
-
-      balsamiqViewer = {
-        database,
-      };
-
-      spyOn(JSON, 'parse').and.callThrough();
-      spyOn(String.prototype, 'replace').and.callThrough();
-
-      renderTemplate = BalsamiqViewer.prototype.renderTemplate.call(balsamiqViewer, preview);
-    });
-
-    it('should call database.exec', () => {
-      expect(database.exec).toHaveBeenCalledWith(`SELECT * FROM resources WHERE id = '${preview.resourceID}'`);
-    });
-
-    it('should call JSON.parse', () => {
-      expect(JSON.parse).toHaveBeenCalledWith(title[0].values[0][2]);
-    });
-
-    it('should call String.prototype.replace', () => {
-      const allArgs = String.prototype.replace.calls.allArgs();
-
-      expect(allArgs.length).toBe(2);
-      expect(allArgs[0]).toEqual([/{{name}}/g, 'name']);
-      expect(allArgs[1]).toEqual([/{{image}}/g, 'image']);
-    });
-
-    it('should return the template string', function () {
-      const template = `
+      preview = { resourceID: 1, image: 'image' };
+      name = 'name';
+      title = 'title';
+      template = `
         <div class="panel panel-default">
           <div class="panel-heading">name</div>
           <div class="panel-body">
@@ -308,7 +308,32 @@ describe('BalsamiqViewer', () => {
         </div>
       `;
 
-      expect(renderTemplate.replace(/\s/g, '')).toEqual(template.replace(/\s/g, ''));
+      balsamiqViewer = jasmine.createSpyObj('balsamiqViewer', ['getTitle']);
+
+      spyOn(BalsamiqViewer, 'parseTitle').and.returnValue(name);
+      spyOn(BalsamiqViewer, 'PREVIEW_TEMPLATE').and.returnValue(template);
+      balsamiqViewer.getTitle.and.returnValue(title);
+
+      renderTemplate = BalsamiqViewer.prototype.renderTemplate.call(balsamiqViewer, preview);
+    });
+
+    it('should call .getTitle', () => {
+      expect(balsamiqViewer.getTitle).toHaveBeenCalledWith(preview.resourceID);
+    });
+
+    it('should call .parseTitle', () => {
+      expect(BalsamiqViewer.parseTitle).toHaveBeenCalledWith(title);
+    });
+
+    it('should call .PREVIEW_TEMPLATE', () => {
+      expect(BalsamiqViewer.PREVIEW_TEMPLATE).toHaveBeenCalledWith({
+        name,
+        image: preview.image,
+      });
+    });
+
+    it('should return the template string', function () {
+      expect(renderTemplate.trim()).toBe(template.trim());
     });
   });
 
@@ -332,6 +357,29 @@ describe('BalsamiqViewer', () => {
 
     it('should return the parsed JSON', () => {
       expect(parsePreview).toEqual(JSON.parse('{ "id": 1 }'));
+    });
+  });
+
+  describe('parseTitle', () => {
+    let title;
+    let parseTitle;
+
+    beforeEach(() => {
+      title = [{ values: [['{}', '{}', '{"name":"name"}']] }];
+
+      spyOn(JSON, 'parse').and.callThrough();
+
+      parseTitle = BalsamiqViewer.parseTitle(title);
+    });
+
+    ClassSpecHelper.itShouldBeAStaticMethod(BalsamiqViewer, 'parsePreview');
+
+    it('should call JSON.parse', () => {
+      expect(JSON.parse).toHaveBeenCalledWith(title[0].values[0][2]);
+    });
+
+    it('should return the name value', () => {
+      expect(parseTitle).toBe('name');
     });
   });
 

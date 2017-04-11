@@ -1,6 +1,7 @@
 /* global Flash */
 
 import sqljs from 'sql.js';
+import _ from 'underscore';
 import Spinner from '../../spinner';
 
 class BalsamiqViewer {
@@ -52,6 +53,10 @@ class BalsamiqViewer {
     return thumbnails[0].values.map(BalsamiqViewer.parsePreview);
   }
 
+  getTitle(resourceID) {
+    return this.database.exec(`SELECT * FROM resources WHERE id = '${resourceID}'`);
+  }
+
   renderPreview(preview) {
     const previewElement = document.createElement('li');
 
@@ -62,19 +67,24 @@ class BalsamiqViewer {
   }
 
   renderTemplate(preview) {
-    let template = BalsamiqViewer.PREVIEW_TEMPLATE;
-
-    const title = this.database.exec(`SELECT * FROM resources WHERE id = '${preview.resourceID}'`);
-    const name = JSON.parse(title[0].values[0][2]).name;
+    const title = this.getTitle(preview.resourceID);
+    const name = BalsamiqViewer.parseTitle(title);
     const image = preview.image;
 
-    template = template.replace(/{{name}}/g, name).replace(/{{image}}/g, image);
+    const template = BalsamiqViewer.PREVIEW_TEMPLATE({
+      name,
+      image,
+    });
 
     return template;
   }
 
   static parsePreview(preview) {
     return JSON.parse(preview[1]);
+  }
+
+  static parseTitle(title) {
+    return JSON.parse(title[0].values[0][2]).name;
   }
 
   static onError() {
@@ -84,13 +94,13 @@ class BalsamiqViewer {
   }
 }
 
-BalsamiqViewer.PREVIEW_TEMPLATE = `
+BalsamiqViewer.PREVIEW_TEMPLATE = _.template(`
   <div class="panel panel-default">
-    <div class="panel-heading">{{name}}</div>
+    <div class="panel-heading"><%- name %></div>
     <div class="panel-body">
-      <img class="img-thumbnail" src="data:image/png;base64,{{image}}"/>
+      <img class="img-thumbnail" src="data:image/png;base64,<%- image %>"/>
     </div>
   </div>
-`;
+`);
 
 export default BalsamiqViewer;
