@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.0.5 (2017-04-10)
+
+- Return 404 instead of a 500 error on API status endpoint if Geo tracking DB is not enabled.
+
 ## 9.0.4 (2017-04-05)
 
 - No changes.

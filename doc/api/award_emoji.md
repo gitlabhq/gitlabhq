@@ -23,7 +23,7 @@ Parameters:
 
 | Attribute      | Type    | Required | Description                                                                 |
 | ---------      | ----    | -------- | -----------                                                                 |
-| `id`           | integer | yes      | The ID of a project                                                         |
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                                                         |
 | `awardable_id` | integer | yes      | The ID (`iid` for merge requests/issues, `id` for snippets) of an awardable |
 
 ```bash
@@ -83,7 +83,7 @@ Parameters:
 
 | Attribute      | Type    | Required | Description                                                                 |
 | ---------      | ----    | -------- | -----------                                                                 |
-| `id`           | integer | yes      | The ID of a project                                                         |
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `awardable_id` | integer | yes      | The ID (`iid` for merge requests/issues, `id` for snippets) of an awardable |
 | `award_id`     | integer | yes      | The ID of the award emoji                                                   |
 
@@ -126,7 +126,7 @@ Parameters:
 
 | Attribute      | Type    | Required | Description                                                                 |
 | ---------      | ----    | -------- | -----------                                                                 |
-| `id`           | integer | yes      | The ID of a project                                                         |
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `awardable_id` | integer | yes      | The ID (`iid` for merge requests/issues, `id` for snippets) of an awardable |
 | `name`         | string  | yes      | The name of the emoji, without colons                                       |
 
@@ -152,7 +152,7 @@ Example Response:
   "updated_at": "2016-06-17T17:47:29.266Z",
   "awardable_id": 80,
   "awardable_type": "Issue"
-}  
+}
 ```
 
 ### Delete an award emoji
@@ -170,7 +170,7 @@ Parameters:
 
 | Attribute   | Type    | Required | Description                 |
 | ---------   | ----    | -------- | -----------                 |
-| `id`        | integer | yes      | The ID of a project         |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of an issue |
 | `award_id`  | integer | yes      | The ID of a award_emoji     |
 
@@ -195,7 +195,7 @@ Parameters:
 
 | Attribute   | Type    | Required | Description                 |
 | ---------   | ----    | -------- | -----------                 |
-| `id`        | integer | yes      | The ID of a project         |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid` | integer | yes      | The internal ID of an issue |
 | `note_id`   | integer | yes      | The ID of an note           |
 
@@ -237,7 +237,7 @@ Parameters:
 
 | Attribute   | Type    | Required | Description                 |
 | ---------   | ----    | -------- | -----------                 |
-| `id`        | integer | yes      | The ID of a project         |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of an issue |
 | `note_id`   | integer | yes      | The ID of a note            |
 | `award_id`  | integer | yes      | The ID of the award emoji   |
@@ -277,7 +277,7 @@ Parameters:
 
 | Attribute   | Type    | Required | Description                           |
 | ---------   | ----    | -------- | -----------                           |
-| `id`        | integer | yes      | The ID of a project                   |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid` | integer | yes      | The internal ID of an issue           |
 | `note_id`   | integer | yes      | The ID of a note                      |
 | `name`      | string  | yes      | The name of the emoji, without colons |
@@ -320,7 +320,7 @@ Parameters:
 
 | Attribute   | Type    | Required | Description                 |
 | ---------   | ----    | -------- | -----------                 |
-| `id`        | integer | yes      | The ID of a project         |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `issue_iid` | integer | yes      | The internal ID of an issue |
 | `note_id`   | integer | yes      | The ID of a note            |
 | `award_id`  | integer | yes      | The ID of a award_emoji     |

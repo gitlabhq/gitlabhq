@@ -35,3 +35,28 @@
     margin-left: 5px;
   }
 }
+
+.nested-settings {
+  padding-left: 20px;
+}
+
+.input-btn-group {
+  display: flex;
+
+  .input-large {
+    flex: 1;
+  }
+
+  .btn {
+    margin-left: 10px;
+  }
+}
+
+.settings-flex-row {
+  display: flex;
+  align-items: center;
+
+  .pull-right {
+    margin-left: auto;
+  }
+}

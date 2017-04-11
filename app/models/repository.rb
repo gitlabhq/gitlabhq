@@ -636,15 +636,6 @@ class Repository
     commit(sha)
   end
 
-  # Returns a list of commits that are not present in any reference
-  def new_commits(newrev)
-    args = %W(#{Gitlab.config.git.bin_path} rev-list #{newrev} --not --all)
-
-    Gitlab::Popen.popen(args, path_to_repo).first.split("\n").map do |sha|
-      commit(sha.strip)
-    end
-  end
-
   def last_commit_id_for_path(sha, path)
     key = path.blank? ? "last_commit_id_for_path:#{sha}" : "last_commit_id_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
 

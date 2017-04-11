@@ -386,7 +386,7 @@
       } else {
         avatar = gon.default_avatar_url;
       }
-      return "<div class='user-result " + (!user.username ? 'no-username' : void 0) + "'> <div class='user-image'><img class='avatar s24' src='" + avatar + "'></div> <div class='user-name'>" + user.name + "</div> <div class='user-username'>" + (user.username || "") + "</div> </div>";
+      return "<div class='user-result " + (!user.username ? 'no-username' : void 0) + "'> <div class='user-image'><img class='avatar s40' src='" + avatar + "'></div> <div><div class='user-name'>" + user.name + "</div> <div class='user-username'>" + (user.username || "") + "</div> </div> </div>";
     };
 
     UsersSelect.prototype.formatSelection = function(user) {

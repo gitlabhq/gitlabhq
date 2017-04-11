@@ -43,7 +43,7 @@ GET /projects/:id/deploy_keys
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of the project |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/deploy_keys"
@@ -82,7 +82,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```bash
@@ -114,7 +114,7 @@ POST /projects/:id/deploy_keys
 
 | Attribute  | Type | Required | Description |
 | ---------  | ---- | -------- | ----------- |
-| `id`       | integer | yes | The ID of the project |
+| `id`       | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `title`    | string  | yes | New deploy key's title |
 | `key`      | string  | yes | New deploy key |
 | `can_push` | boolean | no  | Can deploy key push to the project's repository |
@@ -145,7 +145,7 @@ DELETE /projects/:id/deploy_keys/:key_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```bash
@@ -162,7 +162,7 @@ curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitla
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 Example response:

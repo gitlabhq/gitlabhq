@@ -12,5 +12,14 @@ module EE
       expire_branch_cache
       expire_content_cache
     end
+
+    # Returns a list of commits that are not present in any reference
+    def new_commits(newrev)
+      refs = ::Gitlab::Git::RevList.new(
+        path_to_repo: path_to_repo,
+        newrev: newrev).new_refs
+
+      refs.map { |sha| commit(sha.strip) }
+    end
   end
 end

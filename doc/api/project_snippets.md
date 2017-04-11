@@ -23,7 +23,7 @@ GET /projects/:id/snippets
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 
 ## Single snippet
 
@@ -35,7 +35,7 @@ GET /projects/:id/snippets/:snippet_id
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `snippet_id` (required) - The ID of a project's snippet
 
 ```json
@@ -67,7 +67,7 @@ POST /projects/:id/snippets
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `title` (required) - The title of a snippet
 - `file_name` (required) - The name of a snippet file
 - `code` (required) - The content of a snippet
@@ -83,7 +83,7 @@ PUT /projects/:id/snippets/:snippet_id
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `snippet_id` (required) - The ID of a project's snippet
 - `title` (optional) - The title of a snippet
 - `file_name` (optional) - The name of a snippet file
@@ -101,7 +101,7 @@ DELETE /projects/:id/snippets/:snippet_id
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `snippet_id` (required) - The ID of a project's snippet
 
 ## Snippet content
@@ -114,5 +114,5 @@ GET /projects/:id/snippets/:snippet_id/raw
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `snippet_id` (required) - The ID of a project's snippet
