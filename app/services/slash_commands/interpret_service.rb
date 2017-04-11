@@ -89,17 +89,27 @@ module SlashCommands
       user = extract_references(assignee_param, :user).first
       user ||= User.find_by(username: assignee_param)
 
-      @updates[:assignee_id] = user.id if user
+      next unless user
+
+      if issuable.is_a?(Issue)
+        @updates[:assignee_ids] = [user.id]
+      else
+        @updates[:assignee_id] = user.id
+      end
     end
 
     desc 'Remove assignee'
     condition do
       issuable.persisted? &&
-        issuable.assignee_id? &&
+        issuable.assignees.any? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :unassign do
-      @updates[:assignee_id] = nil
+      if issuable.is_a?(Issue)
+        @updates[:assignee_ids] = []
+      else
+        @updates[:assignee_id] = nil
+      end
     end
 
     desc 'Set milestone'

@@ -66,7 +66,7 @@ describe Notes::SlashCommandsService, services: true do
           expect(content).to eq ''
           expect(note.noteable).to be_closed
           expect(note.noteable.labels).to match_array(labels)
-          expect(note.noteable.assignee).to eq(assignee)
+          expect(note.noteable.assignees).to eq([assignee])
           expect(note.noteable.milestone).to eq(milestone)
         end
       end
@@ -113,7 +113,7 @@ describe Notes::SlashCommandsService, services: true do
           expect(content).to eq "HELLO\nWORLD"
           expect(note.noteable).to be_closed
           expect(note.noteable.labels).to match_array(labels)
-          expect(note.noteable.assignee).to eq(assignee)
+          expect(note.noteable.assignees).to eq([assignee])
           expect(note.noteable.milestone).to eq(milestone)
         end
       end

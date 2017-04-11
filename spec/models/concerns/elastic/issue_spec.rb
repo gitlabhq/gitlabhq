@@ -35,7 +35,9 @@ describe Issue, elastic: true do
 
     expected_hash = issue.attributes.extract!('id', 'iid', 'title', 'description', 'created_at',
                                                 'updated_at', 'state', 'project_id', 'author_id',
-                                                'assignee_id', 'confidential')
+                                                'confidential')
+
+    expected_hash['assignee_id'] = []
 
     expect(issue.as_indexed_json).to eq(expected_hash)
   end

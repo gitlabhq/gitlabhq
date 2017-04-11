@@ -569,7 +569,7 @@ describe NotificationService, services: true do
       end
 
       it 'emails previous assignee even if he has the "on mention" notif level' do
-        issue.assignees =  [@u_mentioned]
+        issue.assignees = [@u_mentioned]
         notification.reassigned_issue(issue, @u_disabled, [@u_watcher])
 
         should_email(@u_mentioned)

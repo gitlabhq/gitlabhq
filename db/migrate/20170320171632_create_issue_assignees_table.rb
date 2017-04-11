@@ -4,6 +4,8 @@
 class CreateIssueAssigneesTable < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
+  INDEX_NAME = 'index_issue_assignees_on_issue_id_and_user_id'
+
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
@@ -23,12 +25,20 @@ class CreateIssueAssigneesTable < ActiveRecord::Migration
   # comments:
   # disable_ddl_transaction!
 
-  def change
+  def up
     create_table :issue_assignees do |t|
       t.references :user, foreign_key: { on_delete: :cascade }, index: true, null: false
       t.references :issue, foreign_key: { on_delete: :cascade }, null: false
     end
 
-    add_index :issue_assignees, [:issue_id, :user_id], unique: true
+    add_index :issue_assignees, [:issue_id, :user_id], unique: true, name: INDEX_NAME
+  end
+
+  def down
+    if index_exists?(:issue_assignees, name: INDEX_NAME)
+      remove_index :issue_assignees, name: INDEX_NAME
+    end
+
+    drop_table :issue_assignees
   end
 end

@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Issue, models: true do
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
+    it { is_expected.to have_many(:assignees) }
   end
 
   describe 'modules' do
@@ -34,6 +35,24 @@ describe Issue, models: true do
     it 'returns ordered list' do
       expect(project.issues.order_by_position_and_priority).
         to match [issue3, issue4, issue1, issue2]
+    end
+  end
+
+  describe '#card_attributes' do
+    it 'includes the author name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignees).and_return([])
+
+      expect(subject.card_attributes).
+        to eq({ 'Author' => 'Robert', 'Assignee' => '' })
+    end
+
+    it 'includes the assignee name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignees).and_return([double(name: 'Douwe')])
+
+      expect(subject.card_attributes).
+        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
     end
   end
 
@@ -150,25 +169,6 @@ describe Issue, models: true do
 
     it 'returns false for a user that is not the assignee or author' do
       expect(issue.assignee_or_author?(user)).to be_falsey
-    end
-  end
-
-  describe '#is_being_reassigned?' do
-    it 'returns true if the issue assignee has changed' do
-      subject.assignee = create(:user)
-      expect(subject.is_being_reassigned?).to be_truthy
-    end
-    it 'returns false if the issue assignee has not changed' do
-      expect(subject.is_being_reassigned?).to be_falsey
-    end
-  end
-
-  describe '#is_being_reassigned?' do
-    it 'returns issues assigned to user' do
-      user = create(:user)
-      create_list(:issue, 2, assignees: [user])
-
-      expect(Issue.open_for(user).count).to eq 2
     end
   end
 
@@ -404,7 +404,7 @@ describe Issue, models: true do
       expect(user1.assigned_open_issues_count).to eq(1)
       expect(user2.assigned_open_issues_count).to eq(0)
 
-      issue.assignee = user2
+      issue.assignees = [user2]
       issue.save
 
       expect(user1.assigned_open_issues_count).to eq(0)

@@ -9,6 +9,7 @@ describe MergeRequest, models: true do
     it { is_expected.to belong_to(:target_project).class_name('Project') }
     it { is_expected.to belong_to(:source_project).class_name('Project') }
     it { is_expected.to belong_to(:merge_user).class_name("User") }
+    it { is_expected.to belong_to(:assignee) }
     it { is_expected.to have_many(:merge_request_diffs).dependent(:destroy) }
     it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
   end
@@ -87,8 +88,26 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#card_attributes' do
+    it 'includes the author name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignee).and_return(nil)
+
+      expect(subject.card_attributes).
+        to eq({ 'Author' => 'Robert', 'Assignee' => nil })
+    end
+
+    it 'includes the assignee name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignee).and_return(double(name: 'Douwe'))
+
+      expect(subject.card_attributes).
+        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
+    end
+  end
+
   describe '#assignee_or_author?' do
-    let(:user) { build(:user) }
+    let(:user) { create(:user) }
 
     it 'returns true for a user that is assigned to a merge request' do
       subject.assignee = user
@@ -295,16 +314,6 @@ describe MergeRequest, models: true do
 
       expect(merge_request.commits).not_to be_empty
       expect(merge_request.related_notes.count).to eq(3)
-    end
-  end
-
-  describe '#is_being_reassigned?' do
-    it 'returns true if the merge_request assignee has changed' do
-      subject.assignee = create(:user)
-      expect(subject.is_being_reassigned?).to be_truthy
-    end
-    it 'returns false if the merge request assignee has not changed' do
-      expect(subject.is_being_reassigned?).to be_falsey
     end
   end
 

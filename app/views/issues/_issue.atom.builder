@@ -26,8 +26,8 @@ xml.entry do
   if issue.assignees.any?
     xml.assignees do
       issue.assignees.each do |assignee|
-        xml.name ssignee.name
-        xml.email assignee.assignee_public_email
+        xml.name assignee.name
+        xml.email assignee.public_email
       end
     end
   end

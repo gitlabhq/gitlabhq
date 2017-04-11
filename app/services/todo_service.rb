@@ -270,7 +270,7 @@ class TodoService
     end
   end
 
-    def create_mention_todos(project, target, author, note = nil)
+  def create_mention_todos(project, target, author, note = nil)
     # Create Todos for directly addressed users
     directly_addressed_users = filter_directly_addressed_users(project, note || target, author)
     attributes = attributes_for_todo(project, target, author, Todo::DIRECTLY_ADDRESSED, note)

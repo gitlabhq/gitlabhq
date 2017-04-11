@@ -7,7 +7,6 @@ describe Issue, "Issuable" do
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:author) }
-    it { is_expected.to belong_to(:assignee) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
 
@@ -58,12 +57,12 @@ describe Issue, "Issuable" do
   end
 
   describe "before_save" do
-    describe "#update_cache_counts" do
+    describe "#update_cache_counts when an issue is reassigned" do
       context "when previous assignee exists" do
         before do
           assignee = create(:user)
           issue.project.team << [assignee, :developer]
-          issue.update(assignee: assignee)
+          issue.assignees << assignee
         end
 
         it "updates cache counts for new assignee" do
@@ -71,26 +70,65 @@ describe Issue, "Issuable" do
 
           expect(user).to receive(:update_cache_counts)
 
-          issue.update(assignee: user)
+          issue.assignees << user
         end
 
         it "updates cache counts for previous assignee" do
-          old_assignee = issue.assignee
-          allow(User).to receive(:find_by_id).with(old_assignee.id).and_return(old_assignee)
+          old_assignee = issue.assignees.first
 
-          expect(old_assignee).to receive(:update_cache_counts)
+          expect_any_instance_of(User).to receive(:update_cache_counts)
 
-          issue.update(assignee: nil)
+          issue.assignees.destroy_all
         end
       end
 
       context "when previous assignee does not exist" do
-        before{ issue.update(assignee: nil) }
+        before{ issue.assignees = [] }
 
         it "updates cache count for the new assignee" do
           expect_any_instance_of(User).to receive(:update_cache_counts)
 
-          issue.update(assignee: user)
+          issue.assignees << user
+        end
+      end
+    end
+
+    describe "#update_cache_counts when a merge request is reassigned" do
+      let(:project) { create :project }
+      let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+      context "when previous assignee exists" do
+        before do
+          assignee = create(:user)
+          project.team << [assignee, :developer]
+          merge_request.update(assignee: assignee)
+        end
+
+        it "updates cache counts for new assignee" do
+          user = create(:user)
+
+          expect(user).to receive(:update_cache_counts)
+
+          merge_request.update(assignee: user)
+        end
+
+        it "updates cache counts for previous assignee" do
+          old_assignee = merge_request.assignee
+          allow(User).to receive(:find_by_id).with(old_assignee.id).and_return(old_assignee)
+
+          expect(old_assignee).to receive(:update_cache_counts)
+
+          merge_request.update(assignee: nil)
+        end
+      end
+
+      context "when previous assignee does not exist" do
+        before { merge_request.update(assignee: nil) }
+
+        it "updates cache count for the new assignee" do
+          expect_any_instance_of(User).to receive(:update_cache_counts)
+
+          merge_request.update(assignee: user)
         end
       end
     end
@@ -300,7 +338,20 @@ describe Issue, "Issuable" do
     end
 
     context "issue is assigned" do
-      before { issue.update_attribute(:assignee, user) }
+      before { issue.assignees << user }
+
+      it "returns correct hook data" do
+        expect(data[:assignees].first).to eq(user.hook_attrs)
+      end
+    end
+
+    context "merge_request is assigned" do
+      let(:merge_request) { create(:merge_request) }
+      let(:data) { merge_request.to_hook_data(user) }
+
+      before do
+        merge_request.update_attribute(:assignee, user)
+      end
 
       it "returns correct hook data" do
         expect(data[:object_attributes]['assignee_id']).to eq(user.id)
@@ -320,24 +371,6 @@ describe Issue, "Issuable" do
 
     include_examples 'project hook data'
     include_examples 'deprecated repository hook data'
-  end
-
-  describe '#card_attributes' do
-    it 'includes the author name' do
-      allow(issue).to receive(:author).and_return(double(name: 'Robert'))
-      allow(issue).to receive(:assignee).and_return(nil)
-
-      expect(issue.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => nil })
-    end
-
-    it 'includes the assignee name' do
-      allow(issue).to receive(:author).and_return(double(name: 'Robert'))
-      allow(issue).to receive(:assignee).and_return(double(name: 'Douwe'))
-
-      expect(issue.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
-    end
   end
 
   describe '#labels_array' do

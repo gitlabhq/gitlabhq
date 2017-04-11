@@ -62,7 +62,7 @@ describe 'Issues', feature: true do
         expect(page).to have_content 'No assignee - assign yourself'
       end
 
-      expect(issue.reload.assignee).to be_nil
+      expect(issue.reload.assignees).to be_empty
     end
   end
 
@@ -363,9 +363,9 @@ describe 'Issues', feature: true do
       let(:user2) { create(:user) }
 
       before do
-        foo.assignee = user2
+        foo.assignees << user2
         foo.save
-        bar.assignee = user2
+        bar.assignees << user2
         bar.save
       end
 
@@ -440,7 +440,7 @@ describe 'Issues', feature: true do
           expect(page).to have_content 'No assignee'
         end
 
-        expect(issue.reload.assignee).to be_nil
+        expect(issue.reload.assignees).to be_empty
       end
 
       it 'allows user to select an assignee', js: true do
@@ -498,7 +498,7 @@ describe 'Issues', feature: true do
         login_with guest
 
         visit namespace_project_issue_path(project.namespace, project, issue)
-        expect(page).to have_content issue.assignee.name
+        expect(page).to have_content issue.assignees.first.name
       end
     end
   end
@@ -590,7 +590,7 @@ describe 'Issues', feature: true do
       let(:user2) { create(:user) }
 
       before do
-        issue.assignee = user2
+        issue.assignees << user2
         issue.save
       end
     end

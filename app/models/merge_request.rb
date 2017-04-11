@@ -189,10 +189,6 @@ class MergeRequest < ActiveRecord::Base
     work_in_progress?(title) ? title : "WIP: #{title}"
   end
 
-  def is_being_reassigned?
-    assignee_id_changed?
-  end
-
   def update_assignee_cache_counts
     # make sure we flush the cache for both the old *and* new assignees(if they exist)
     previous_assignee = User.find_by_id(assignee_id_was) if assignee_id_was
@@ -210,7 +206,7 @@ class MergeRequest < ActiveRecord::Base
 
   # This method is needed for compatibility with issues to not mess view and other code
   def assignees
-    assignee ? [assignee] : []
+    Array(assignee)
   end
 
   def assignee_or_author?(user)

@@ -136,14 +136,6 @@ class Issue < ActiveRecord::Base
               "id DESC")
   end
 
-  def update_assignee_cache_counts
-    return true # TODO implement it properly
-    # make sure we flush the cache for both the old *and* new assignees(if they exist)
-    previous_assignee = User.find_by_id(assignee_id_was) if assignee_id_was
-    previous_assignee&.update_cache_counts
-    assignee&.update_cache_counts
-  end
-
   # Returns a Hash of attributes to be used for Twitter card metadata
   def card_attributes
     {

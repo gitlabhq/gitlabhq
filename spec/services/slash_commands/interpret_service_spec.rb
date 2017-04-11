@@ -42,23 +42,6 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
-    shared_examples 'assign command' do
-      it 'fetches assignee and populates assignee_id if content contains /assign' do
-        _, updates = service.execute(content, issuable)
-
-        expect(updates).to eq(assignee_id: developer.id)
-      end
-    end
-
-    shared_examples 'unassign command' do
-      it 'populates assignee_id: nil if content contains /unassign' do
-        issuable.update(assignee_id: developer.id)
-        _, updates = service.execute(content, issuable)
-
-        expect(updates).to eq(assignee_id: nil)
-      end
-    end
-
     shared_examples 'milestone command' do
       it 'fetches milestone and populates milestone_id if content contains /milestone' do
         milestone # populate the milestone
@@ -385,14 +368,24 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'assign command' do
+    context 'assign command' do
       let(:content) { "/assign @#{developer.username}" }
-      let(:issuable) { issue }
-    end
 
-    it_behaves_like 'assign command' do
-      let(:content) { "/assign @#{developer.username}" }
-      let(:issuable) { merge_request }
+      context 'Issue' do
+        it 'fetches assignee and populates assignee_id if content contains /assign' do
+          _, updates = service.execute(content, issue)
+
+          expect(updates).to eq(assignee_ids: [developer.id])
+        end
+      end
+
+      context 'Merge Request' do
+        it 'fetches assignee and populates assignee_id if content contains /assign' do
+          _, updates = service.execute(content, merge_request)
+
+          expect(updates).to eq(assignee_id: developer.id)
+        end
+      end
     end
 
     it_behaves_like 'empty command' do
@@ -405,14 +398,26 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'unassign command' do
+    context 'unassign command' do
       let(:content) { '/unassign' }
-      let(:issuable) { issue }
-    end
 
-    it_behaves_like 'unassign command' do
-      let(:content) { '/unassign' }
-      let(:issuable) { merge_request }
+      context 'Issue' do
+        it 'populates assignee_ids: [] if content contains /unassign' do
+          issue.update(assignee_ids: [developer.id])
+          _, updates = service.execute(content, issue)
+
+          expect(updates).to eq(assignee_ids: [])
+        end
+      end
+
+      context 'Merge Request' do
+        it 'populates assignee_id: nil if content contains /unassign' do
+          merge_request.update(assignee_id: developer.id)
+          _, updates = service.execute(content, merge_request)
+
+          expect(updates).to eq(assignee_id: nil)
+        end
+      end
     end
 
     it_behaves_like 'milestone command' do

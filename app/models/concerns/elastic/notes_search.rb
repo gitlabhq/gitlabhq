@@ -34,7 +34,7 @@ module Elastic
 
         if noteable.is_a?(Issue)
           data['issue'] = {
-            assignee_id: noteable.assignee_id,
+            assignee_id: noteable.assignee_ids,
             author_id: noteable.author_id,
             confidential: noteable.confidential
           }

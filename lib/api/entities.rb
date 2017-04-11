@@ -279,7 +279,7 @@ module API
     class IssueBasic < ProjectEntity
       expose :label_names, as: :labels
       expose :milestone, using: Entities::Milestone
-      expose :assignee, :author, using: Entities::UserBasic
+      expose :assignees, :author, using: Entities::UserBasic
 
       expose :user_notes_count
       expose :upvotes, :downvotes
