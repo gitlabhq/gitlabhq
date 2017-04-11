@@ -86,18 +86,18 @@ module SlashCommands
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
     command :assign do |assignee_param|
-      users = extract_references(assignee_param, :user)
+      user_ids = extract_references(assignee_param, :user).map(&:id)
 
-      if users.empty?
-        users = User.find_by(username: assignee_param.split(' ').map(&:strip))
+      if user_ids.empty?
+        user_ids = User.where(username: assignee_param.split(' ').map(&:strip)).pluck(:id)
       end
 
-      next if users.empty?
+      next if user_ids.empty?
 
       if issuable.is_a?(Issue)
-        @updates[:assignee_ids] = users.map(&:id)
+        @updates[:assignee_ids] = user_ids
       else
-        @updates[:assignee_id] = users.last.id
+        @updates[:assignee_id] = user_ids.last
       end
     end
 

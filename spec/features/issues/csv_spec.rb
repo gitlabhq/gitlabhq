@@ -80,6 +80,6 @@ describe 'Issues csv', feature: true do
                 author: user,
                 milestone: milestone,
                 labels: [feature_label, idea_label])
-    expect{ request_csv }.not_to exceed_query_limit(control_count + 23)
+    expect{ request_csv }.not_to exceed_query_limit(control_count + 5)
   end
 end

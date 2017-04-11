@@ -47,7 +47,7 @@ class IssuesFinder < IssuableFinder
       issues.confidential IS NOT TRUE
       OR (issues.confidential = TRUE
         AND (issues.author_id = :user_id
-          OR EXISTS (SELECT true FROM issue_assignees WHERE user_id = :user_id AND issue_id = issues.id)
+          OR EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = :user_id AND issue_id = issues.id)
           OR issues.project_id IN(:project_ids)))',
       user_id: user.id,
       project_ids: user.authorized_projects(Gitlab::Access::REPORTER).select(:id))

@@ -35,10 +35,6 @@ class CreateIssueAssigneesTable < ActiveRecord::Migration
   end
 
   def down
-    if index_exists?(:issue_assignees, name: INDEX_NAME)
-      remove_index :issue_assignees, name: INDEX_NAME
-    end
-
     drop_table :issue_assignees
   end
 end

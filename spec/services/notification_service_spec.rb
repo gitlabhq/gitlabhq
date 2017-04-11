@@ -460,7 +460,7 @@ describe NotificationService, services: true do
       it do
         notification.new_issue(issue, @u_disabled)
 
-        should_email(issue.assignees.first)
+        should_email(assignee)
         should_email(@u_watcher)
         should_email(@u_guest_watcher)
         should_email(@u_guest_custom)

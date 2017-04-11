@@ -21,14 +21,24 @@ class MigrateAssignees < ActiveRecord::Migration
   #
   # To disable transactions uncomment the following line and remove these
   # comments:
-  # disable_ddl_transaction!
+  disable_ddl_transaction!
 
   def up
-    execute <<-EOF
-      UPDATE issues
-      SET assignee_id = NULL
-      WHERE assignee_id NOT IN(SELECT id FROM users);
+    # Optimisation: this accounts for most of the invalid assignee IDs on GitLab.com
+    update_column_in_batches(:issues, :assignee_id, nil) do |table, query|
+      query.where(table[:assignee_id].eq(0))
+    end
 
+    users = Arel::Table.new(:users)
+
+    update_column_in_batches(:issues, :assignee_id, nil) do |table, query|
+      query.where(table[:assignee_id].not_eq(nil)\
+        .and(
+          users.project("true").where(users[:id].eq(table[:assignee_id])).exists.not
+        ))
+    end
+
+    execute <<-EOF
       INSERT INTO issue_assignees(issue_id, user_id)
       SELECT id, assignee_id FROM issues WHERE assignee_id IS NOT NULL
     EOF
