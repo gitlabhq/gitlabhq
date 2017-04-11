@@ -32,10 +32,6 @@ a:not([href]),
 // when it has a `download` attribute
 a[download]:not([rel="nofollow"]),
 
-// Don't forget to include an actual `href` attribute to anchor
-// Otherwise, you should consider using a button instead
-a[href="#"],
-
 // Don't forget to include `rel="noopener noreferrer nofollow"`
 // attribute to anchor because of security vulnerability
 // https://www.jitbit.com/alexblog/256-targetblank---the-most-underestimated-vulnerability-ever/
