@@ -1,7 +1,7 @@
 /* global Flash */
 
 import sqljs from 'sql.js';
-import _ from 'underscore';
+import { template as _template } from 'underscore';
 import Spinner from '../../spinner';
 
 class BalsamiqViewer {
@@ -94,7 +94,7 @@ class BalsamiqViewer {
   }
 }
 
-BalsamiqViewer.PREVIEW_TEMPLATE = _.template(`
+BalsamiqViewer.PREVIEW_TEMPLATE = _template(`
   <div class="panel panel-default">
     <div class="panel-heading"><%- name %></div>
     <div class="panel-body">
