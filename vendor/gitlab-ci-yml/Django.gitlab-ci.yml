@@ -26,9 +26,24 @@ before_script:
   # - apt-get update -q && apt-get install nodejs -yqq
   - pip install -r requirements.txt
 
+# To get Django tests to work you may need to create a settings file using
+# the following DATABASES:
+# 
+# DATABASES = {
+#     'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': 'ci',
+#        'USER': 'postgres',
+#        'PASSWORD': 'postgres',
+#        'HOST': 'postgres',
+#        'PORT': '5432',
+#    },
+# }
+#
+# and then adding `--settings app.settings.ci` (or similar) to the test command
+
 test:
   variables:
     DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
   script:
-  - python manage.py migrate
   - python manage.py test
