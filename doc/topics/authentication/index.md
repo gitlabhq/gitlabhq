@@ -37,7 +37,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
 - [GitLab as an OAuth2 provider](../../api/oauth2.md#gitlab-as-an-oauth2-provider)
 - [GitLab Runner API - Authentication](../../api/ci/runners.md#authentication)
 
-## Thirdy-part resources
+## Third-party resources
 
 - [Kabanboard Plugin GitLab Authentication](https://kanboard.net/plugin/gitlab-auth)
 - [Jenkins GitLab OAuth Plugin](https://wiki.jenkins-ci.org/display/JENKINS/GitLab+OAuth+Plugin)
