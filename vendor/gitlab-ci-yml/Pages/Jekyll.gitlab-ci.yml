@@ -1,7 +1,9 @@
 # Template project: https://gitlab.com/pages/jekyll
 # Docs: https://docs.gitlab.com/ce/pages/
-# Jekyll version: 3.4.0
 image: ruby:2.3
+
+variables:
+  JEKYLL_ENV: production
 
 before_script:
 - bundle install
@@ -25,4 +27,4 @@ pages:
     - public
   only:
   - master
-  
+
