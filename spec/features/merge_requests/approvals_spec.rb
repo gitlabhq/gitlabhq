@@ -248,12 +248,12 @@ feature 'Merge request approvals', js: true, feature: true do
 
       it 'I am unable to set Merge When Pipeline Succeeds' do
         # before approval status is loaded
-        expect(page).to have_button('Merge When Pipeline Succeeds', disabled: true)
+        expect(page).to have_button('Merge when pipeline succeeds', disabled: true)
 
         wait_for_ajax
 
         # after approval status is loaded
-        expect(page).to have_button('Merge When Pipeline Succeeds', disabled: true)
+        expect(page).to have_button('Merge when pipeline succeeds', disabled: true)
       end
     end
 
