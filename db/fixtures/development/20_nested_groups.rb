@@ -27,43 +27,49 @@ end
 
 Sidekiq::Testing.inline! do
   Gitlab::Seeder.quiet do
-    project_urls = [
-     'https://android.googlesource.com/platform/hardware/broadcom/libbt.git',
-     'https://android.googlesource.com/platform/hardware/broadcom/wlan.git',
-     'https://android.googlesource.com/platform/hardware/bsp/bootloader/intel/edison-u-boot.git',
-     'https://android.googlesource.com/platform/hardware/bsp/broadcom.git',
-     'https://android.googlesource.com/platform/hardware/bsp/freescale.git',
-     'https://android.googlesource.com/platform/hardware/bsp/imagination.git',
-     'https://android.googlesource.com/platform/hardware/bsp/intel.git',
-     'https://android.googlesource.com/platform/hardware/bsp/kernel/common/v4.1.git',
-     'https://android.googlesource.com/platform/hardware/bsp/kernel/common/v4.4.git'
-    ]
+    flag = 'SEED_NESTED_GROUPS'
 
-    user = User.admins.first
+    if ENV[flag]
+      project_urls = [
+        'https://android.googlesource.com/platform/hardware/broadcom/libbt.git',
+        'https://android.googlesource.com/platform/hardware/broadcom/wlan.git',
+        'https://android.googlesource.com/platform/hardware/bsp/bootloader/intel/edison-u-boot.git',
+        'https://android.googlesource.com/platform/hardware/bsp/broadcom.git',
+        'https://android.googlesource.com/platform/hardware/bsp/freescale.git',
+        'https://android.googlesource.com/platform/hardware/bsp/imagination.git',
+        'https://android.googlesource.com/platform/hardware/bsp/intel.git',
+        'https://android.googlesource.com/platform/hardware/bsp/kernel/common/v4.1.git',
+        'https://android.googlesource.com/platform/hardware/bsp/kernel/common/v4.4.git'
+      ]
 
-    project_urls.each_with_index do |url, i|
-      full_path = url.sub('https://android.googlesource.com/', '')
-      full_path = full_path.sub(/\.git\z/, '')
-      full_path, _, project_path = full_path.rpartition('/')
-      group = Group.find_by_full_path(full_path) || create_group_with_parents(user, full_path)
+      user = User.admins.first
 
-      params = {
-        import_url: url,
-        namespace_id: group.id,
-        path: project_path,
-        name: project_path,
-        description: FFaker::Lorem.sentence,
-        visibility_level: Gitlab::VisibilityLevel.values.sample
-      }
+      project_urls.each_with_index do |url, i|
+        full_path = url.sub('https://android.googlesource.com/', '')
+        full_path = full_path.sub(/\.git\z/, '')
+        full_path, _, project_path = full_path.rpartition('/')
+        group = Group.find_by_full_path(full_path) || create_group_with_parents(user, full_path)
 
-      project = Projects::CreateService.new(user, params).execute
-      project.send(:_run_after_commit_queue)
+        params = {
+          import_url: url,
+          namespace_id: group.id,
+          path: project_path,
+          name: project_path,
+          description: FFaker::Lorem.sentence,
+          visibility_level: Gitlab::VisibilityLevel.values.sample
+        }
 
-      if project.valid?
-        print '.'
-      else
-        print 'F'
+        project = Projects::CreateService.new(user, params).execute
+        project.send(:_run_after_commit_queue)
+
+        if project.valid?
+          print '.'
+        else
+          print 'F'
+        end
       end
+    else
+      puts "Skipped. Use the `#{flag}` environment variable to enable."
     end
   end
 end
