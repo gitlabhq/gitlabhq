@@ -55,13 +55,14 @@ export default {
 
       return this.sheetNames.find(sheet => sheet === hash) || this.sheetNames[0];
     },
+    updateSheetName(name) {
+      this.currentSheetName = name;
+    },
   },
   created() {
     this.service = new Service(this.endpoint);
 
-    eventHub.$on('update-sheet', (name) => {
-      this.currentSheetName = name;
-    });
+    eventHub.$on('update-sheet', this.updateSheetName);
   },
   mounted() {
     this.service.getData()
@@ -70,6 +71,9 @@ export default {
         this.currentSheetName = this.getInitialSheet();
         this.loading = false;
       });
+  },
+  beforeDestroy() {
+    eventHub.$off('update-sheet', this.updateSheetName);
   },
   components: {
     xlsxTabs,

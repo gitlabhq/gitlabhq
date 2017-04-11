@@ -33,8 +33,6 @@
 </template>
 
 <script>
-import 'vendor/jquery.scrollTo';
-
 export default {
   name: 'XLSXTable',
   props: {
@@ -50,8 +48,9 @@ export default {
   },
   methods: {
     linePath(index) {
-      let hash = location.hash.replace('#', '');
-      hash = hash.replace(/-?L(\d+)$/g, '');
+      const hash = location.hash
+        .replace('#', '')
+        .replace(/-?L(\d+)$/g, '');
 
       if (hash !== '') {
         return `#${hash}-L${index + 1}`;
@@ -63,10 +62,12 @@ export default {
       this.currentLineNumber = index + 1;
     },
     getCurrentLineNumberFromUrl() {
-      const hash = location.hash.replace('#', '').split('-');
-      const lineHash = hash[hash.length - 1];
+      const hash = location.hash
+        .replace('#', '')
+        .split('-')
+        .pop();
 
-      this.currentLineNumber = parseInt(lineHash.replace('L', ''), 10);
+      this.currentLineNumber = parseInt(hash.replace('L', ''), 10);
     },
   },
   watch: {

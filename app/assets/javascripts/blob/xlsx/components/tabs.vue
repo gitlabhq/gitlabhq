@@ -3,10 +3,10 @@
     <li
       class="prepend-left-10"
       v-for="name in sheetNames"
-      :class="{ 'active': name === currentSheetName }">
+      :class="{ active: name === currentSheetName }">
       <a
-        href="#"
-        @click.prevent="changeSheet(name)">
+        :href="getTabPath(name)"
+        @click="changeSheet(name)">
         {{ name }}
       </a>
     </li>
@@ -30,9 +30,10 @@ export default {
   },
   methods: {
     changeSheet(name) {
-      location.hash = encodeURIComponent(name);
-
       eventHub.$emit('update-sheet', name);
+    },
+    getTabPath(name) {
+      return `#${encodeURIComponent(name)}`;
     },
   },
 };
