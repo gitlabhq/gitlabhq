@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "dev-server": "webpack-dev-server --config config/webpack.config.js",
+    "dev-server": "nodemon --watch config/webpack.config.js -- ./node_modules/.bin/webpack-dev-server --config config/webpack.config.js",
     "eslint": "eslint --max-warnings 0 --ext .js,.vue .",
     "eslint-fix": "eslint --max-warnings 0 --ext .js,.vue --fix .",
     "eslint-report": "eslint --max-warnings 0 --ext .js,.vue --format html --output-file ./eslint-report.html .",
@@ -36,6 +36,7 @@
     "pikaday": "^1.5.1",
     "raphael": "^2.2.7",
     "raw-loader": "^0.5.1",
+    "react-dev-utils": "^0.5.2",
     "select2": "3.5.2-browserify",
     "stats-webpack-plugin": "^0.4.3",
     "three": "^0.84.0",
@@ -69,6 +70,7 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.2",
+    "nodemon": "^1.11.0",
     "webpack-dev-server": "^2.4.2"
   }
 }
