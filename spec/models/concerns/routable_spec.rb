@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Group, 'Routable' do
-  let!(:group) { create(:group) }
+  let!(:group) { create(:group, name: 'foo') }
 
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:route) }
@@ -79,6 +79,113 @@ describe Group, 'Routable' do
     subject { described_class.member_descendants(user.id) }
 
     it { is_expected.to eq([nested_group]) }
+  end
+
+  describe '.member_self_and_descendants' do
+    let!(:user) { create(:user) }
+    let!(:nested_group) { create(:group, parent: group) }
+
+    before { group.add_owner(user) }
+    subject { described_class.member_self_and_descendants(user.id) }
+
+    it { is_expected.to match_array [group, nested_group] }
+  end
+
+  describe '.member_hierarchy' do
+    # foo/bar would also match foo/barbaz instead of just foo/bar and foo/bar/baz
+    let!(:user) { create(:user) }
+
+    #                group
+    #        _______ (foo) _______
+    #       |                     |
+    #       |                     |
+    # nested_group_1        nested_group_2
+    # (bar)                 (barbaz)
+    #       |                     |
+    #       |                     |
+    # nested_group_1_1      nested_group_2_1
+    # (baz)                 (baz)
+    #
+    let!(:nested_group_1) { create :group, parent: group, name: 'bar' }
+    let!(:nested_group_1_1) { create :group, parent: nested_group_1, name: 'baz' }
+    let!(:nested_group_2) { create :group, parent: group, name: 'barbaz' }
+    let!(:nested_group_2_1) { create :group, parent: nested_group_2, name: 'baz' }
+
+    context 'user is not a member of any group' do
+      subject { described_class.member_hierarchy(user.id) }
+
+      it 'returns an empty array' do
+        is_expected.to eq []
+      end
+    end
+
+    context 'user is member of all groups' do
+      before do
+        group.add_owner(user)
+        nested_group_1.add_owner(user)
+        nested_group_1_1.add_owner(user)
+        nested_group_2.add_owner(user)
+        nested_group_2_1.add_owner(user)
+      end
+      subject { described_class.member_hierarchy(user.id) }
+
+      it 'returns all groups' do
+        is_expected.to match_array [
+          group,
+          nested_group_1, nested_group_1_1,
+          nested_group_2, nested_group_2_1
+        ]
+      end
+    end
+
+    context 'user is member of the top group' do
+      before { group.add_owner(user) }
+      subject { described_class.member_hierarchy(user.id) }
+
+      it 'returns all groups' do
+        is_expected.to match_array [
+          group,
+          nested_group_1, nested_group_1_1,
+          nested_group_2, nested_group_2_1
+        ]
+      end
+    end
+
+    context 'user is member of the first child (internal node), branch 1' do
+      before { nested_group_1.add_owner(user) }
+      subject { described_class.member_hierarchy(user.id) }
+
+      it 'returns the groups in the hierarchy' do
+        is_expected.to match_array [
+          group,
+          nested_group_1, nested_group_1_1
+        ]
+      end
+    end
+
+    context 'user is member of the first child (internal node), branch 2' do
+      before { nested_group_2.add_owner(user) }
+      subject { described_class.member_hierarchy(user.id) }
+
+      it 'returns the groups in the hierarchy' do
+        is_expected.to match_array [
+          group,
+          nested_group_2, nested_group_2_1
+        ]
+      end
+    end
+
+    context 'user is member of the last child (leaf node)' do
+      before { nested_group_1_1.add_owner(user) }
+      subject { described_class.member_hierarchy(user.id) }
+
+      it 'returns the groups in the hierarchy' do
+        is_expected.to match_array [
+          group,
+          nested_group_1, nested_group_1_1
+        ]
+      end
+    end
   end
 
   describe '#full_path' do

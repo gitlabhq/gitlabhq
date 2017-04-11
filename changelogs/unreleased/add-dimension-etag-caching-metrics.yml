@@ -1,0 +1,4 @@
+---
+title: Include endpoint in metrics for ETag caching middleware
+merge_request: 10495
+author:

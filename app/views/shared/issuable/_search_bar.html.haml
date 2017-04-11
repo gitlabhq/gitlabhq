@@ -31,7 +31,7 @@
               = icon('filter')
               %button.clear-search.hidden{ type: 'button' }
                 = icon('times')
-            #js-dropdown-hint.filtered-search-input-dropdown-menu.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
+            #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { action: 'submit' } }
                   %button.btn.btn-link
@@ -73,6 +73,7 @@
                         {{name}}
                       %span.dropdown-light-content
                         @{{username}}
+
             - unless board && board.milestone_id
               #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'clock-o', hint: 'milestone', tag: '%milestone' } }
                 %ul{ data: { dropdown: true } }
@@ -90,6 +91,7 @@
                   %li.filter-dropdown-item
                     %button.btn.btn-link.js-data-value
                       {{title}}
+
             #js-dropdown-label.filtered-search-input-dropdown-menu.dropdown-menu{ data: { icon: 'tag', hint: 'label', tag: '~label', type: 'array' } }
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'none' } }

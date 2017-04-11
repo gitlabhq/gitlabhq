@@ -68,11 +68,11 @@ module Projects
 
     def trash_repositories!
       unless remove_repository(repo_path)
-        raise_error('Failed to remove project repository. Please try again or contact administrator')
+        raise_error('Failed to remove project repository. Please try again or contact administrator.')
       end
 
       unless remove_repository(wiki_path)
-        raise_error('Failed to remove wiki repository. Please try again or contact administrator')
+        raise_error('Failed to remove wiki repository. Please try again or contact administrator.')
       end
     end
 

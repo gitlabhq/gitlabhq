@@ -24,7 +24,6 @@
 /* global Search */
 /* global Admin */
 /* global NamespaceSelects */
-/* global ShortcutsDashboardNavigation */
 /* global Project */
 /* global ProjectAvatar */
 /* global CompareAutocomplete */
@@ -412,7 +411,6 @@ const ShortcutsBlob = require('./shortcuts_blob');
           break;
         case 'dashboard':
         case 'root':
-          shortcut_handler = new ShortcutsDashboardNavigation();
           new UserCallout();
           break;
         case 'groups':

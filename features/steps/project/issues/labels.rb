@@ -31,19 +31,19 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
   step 'I submit new label \'support\'' do
     fill_in 'Title', with: 'support'
     fill_in 'Background color', with: '#F95610'
-    click_button 'Create Label'
+    click_button 'Create label'
   end
 
   step 'I submit new label \'bug\'' do
     fill_in 'Title', with: 'bug'
     fill_in 'Background color', with: '#F95610'
-    click_button 'Create Label'
+    click_button 'Create label'
   end
 
   step 'I submit new label with invalid color' do
     fill_in 'Title', with: 'support'
     fill_in 'Background color', with: '#12'
-    click_button 'Create Label'
+    click_button 'Create label'
   end
 
   step 'I should see label label exist error message' do

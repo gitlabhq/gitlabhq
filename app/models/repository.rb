@@ -10,6 +10,8 @@ class Repository
 
   attr_accessor :path_with_namespace, :project
 
+  delegate :ref_name_for_sha, to: :raw_repository
+
   CommitError = Class.new(StandardError)
   CreateTreeError = Class.new(StandardError)
 
@@ -707,14 +709,6 @@ class Repository
     end
   end
 
-  def ref_name_for_sha(ref_path, sha)
-    args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{ref_path} --contains #{sha})
-
-    # Not found -> ["", 0]
-    # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
-    Gitlab::Popen.popen(args, path_to_repo).first.split.last
-  end
-
   def refs_contains_sha(ref_type, sha)
     args = %W(#{Gitlab.config.git.bin_path} #{ref_type} --contains #{sha})
     names = Gitlab::Popen.popen(args, path_to_repo).first
@@ -1241,6 +1235,8 @@ class Repository
   def repository_storage_path
     @project.repository_storage_path
   end
+
+  delegate :gitaly_channel, :gitaly_repository, to: :raw_repository
 
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage, path_with_namespace + '.git')
