@@ -62,8 +62,7 @@ module API
       end
 
       def log_user_activity(actor)
-        commands = Gitlab::GitAccess::DOWNLOAD_COMMANDS +
-                   Gitlab::GitAccess::GIT_ANNEX_COMMANDS
+        commands = Gitlab::GitAccess::DOWNLOAD_COMMANDS
 
         ::Users::ActivityService.new(actor, 'Git SSH').execute if commands.include?(params[:action])
       end

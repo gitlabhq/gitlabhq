@@ -949,10 +949,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def record_activity
-    Gitlab::UserActivities::ActivitySet.record(self)
-  end
-
   private
 
   def access_level=(new_level)

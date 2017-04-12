@@ -535,7 +535,6 @@ module API
         current_user.update_secondary_emails!
       end
 
-
       desc 'Get a list of user activities'
       params do
         optional :from, type: DateTime, default: 6.months.ago, desc: 'Date string in the format YEAR-MONTH-DAY'

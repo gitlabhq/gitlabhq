@@ -212,8 +212,8 @@ Settings.gitlab['email_from'] ||= ENV['GITLAB_EMAIL_FROM'] || "gitlab@#{Settings
 Settings.gitlab['email_display_name'] ||= ENV['GITLAB_EMAIL_DISPLAY_NAME'] || 'GitLab'
 Settings.gitlab['email_reply_to'] ||= ENV['GITLAB_EMAIL_REPLY_TO'] || "noreply@#{Settings.gitlab.host}"
 Settings.gitlab['email_subject_suffix'] ||= ENV['GITLAB_EMAIL_SUBJECT_SUFFIX'] || ""
-Settings.gitlab['base_url']   ||= Settings.send(:build_base_gitlab_url)
-Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
+Settings.gitlab['base_url']   ||= Settings.__send__(:build_base_gitlab_url)
+Settings.gitlab['url']        ||= Settings.__send__(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
 Settings.gitlab['user_home']  ||= begin
   Etc.getpwnam(Settings.gitlab['user']).dir
