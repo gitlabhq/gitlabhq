@@ -9,7 +9,8 @@ module Ci
       return unless can?(current_user, :create_deployment, project)
 
       environments.each do |environment|
-        next unless environment.can_trigger_stop_action?(current_user)
+        next unless environment.stop_action?
+        next unless can?(current_user, :play_build, environment.stop_action)
 
         environment.stop_with_action!(current_user)
       end

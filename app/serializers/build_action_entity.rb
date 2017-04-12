@@ -19,6 +19,6 @@ class BuildActionEntity < Grape::Entity
   alias_method :build, :object
 
   def playable?
-    build.playable? && build.can_play?(request.user)
+    can?(request.user, :play_build, build) && build.playable?
   end
 end

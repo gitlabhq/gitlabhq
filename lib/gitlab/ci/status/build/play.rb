@@ -10,7 +10,7 @@ module Gitlab
           end
 
           def has_action?
-            can?(user, :update_build, subject) && subject.can_play?(user)
+            can?(user, :play_build, subject)
           end
 
           def action_icon

@@ -115,12 +115,6 @@ module Ci
       commands.present?
     end
 
-    def can_play?(current_user)
-      ::Gitlab::UserAccess
-        .new(current_user, project: project)
-        .can_push_to_branch?(ref)
-    end
-
     def play(current_user)
       Ci::PlayBuildService
         .new(project, current_user)

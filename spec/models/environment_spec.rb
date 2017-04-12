@@ -155,31 +155,6 @@ describe Environment, models: true do
     end
   end
 
-  describe '#can_trigger_stop_action?' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project) }
-
-    let(:environment) do
-      create(:environment, :with_review_app, project: project)
-    end
-
-    context 'when user can trigger stop action' do
-      before do
-        project.add_developer(user)
-      end
-
-      it 'returns value that evaluates to true' do
-        expect(environment.can_trigger_stop_action?(user)).to be_truthy
-      end
-    end
-
-    context 'when user is not allowed to trigger stop action' do
-      it 'returns value that evaluates to false' do
-        expect(environment.can_trigger_stop_action?(user)).to be_falsey
-      end
-    end
-  end
-
   describe '#stop_with_action!' do
     let(:user) { create(:admin) }
 

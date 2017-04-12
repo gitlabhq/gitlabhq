@@ -925,33 +925,6 @@ describe Ci::Build, :models do
     end
   end
 
-  describe '#can_play?' do
-    before do
-      project.add_developer(user)
-    end
-
-    let(:build) do
-      create(:ci_build, ref: 'some-ref', pipeline: pipeline)
-    end
-
-    context 'when branch build is running for is protected' do
-      before do
-        create(:protected_branch, :no_one_can_push,
-               name: 'some-ref', project: project)
-      end
-
-      it 'indicates that user can not trigger an action' do
-        expect(build.can_play?(user)).to be_falsey
-      end
-    end
-
-    context 'when branch build is running for is not protected' do
-      it 'indicates that user can trigger an action' do
-        expect(build.can_play?(user)).to be_truthy
-      end
-    end
-  end
-
   describe '#play' do
     let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
 
