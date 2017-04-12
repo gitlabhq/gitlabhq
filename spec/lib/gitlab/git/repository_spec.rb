@@ -24,20 +24,21 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
-    context 'with gitaly enabled' do
-      before { stub_gitaly }
-
-      it 'gets the branch name from GitalyClient' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
-        repository.root_ref
-      end
-
-      it 'wraps GRPC exceptions' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name).
-          and_raise(GRPC::Unknown)
-        expect { repository.root_ref }.to raise_error(Gitlab::Git::CommandError)
-      end
-    end
+    # TODO: Uncomment when feature is reenabled
+    # context 'with gitaly enabled' do
+    #   before { stub_gitaly }
+    #
+    #   it 'gets the branch name from GitalyClient' do
+    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
+    #     repository.root_ref
+    #   end
+    #
+    #   it 'wraps GRPC exceptions' do
+    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name).
+    #       and_raise(GRPC::Unknown)
+    #     expect { repository.root_ref }.to raise_error(Gitlab::Git::CommandError)
+    #   end
+    # end
   end
 
   describe "#rugged" do
@@ -112,20 +113,21 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.to include("master") }
     it { is_expected.not_to include("branch-from-space") }
 
-    context 'with gitaly enabled' do
-      before { stub_gitaly }
-
-      it 'gets the branch names from GitalyClient' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
-        subject
-      end
-
-      it 'wraps GRPC exceptions' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names).
-          and_raise(GRPC::Unknown)
-        expect { subject }.to raise_error(Gitlab::Git::CommandError)
-      end
-    end
+    # TODO: Uncomment when feature is reenabled
+    # context 'with gitaly enabled' do
+    #   before { stub_gitaly }
+    #
+    #   it 'gets the branch names from GitalyClient' do
+    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
+    #     subject
+    #   end
+    #
+    #   it 'wraps GRPC exceptions' do
+    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names).
+    #       and_raise(GRPC::Unknown)
+    #     expect { subject }.to raise_error(Gitlab::Git::CommandError)
+    #   end
+    # end
   end
 
   describe '#tag_names' do
@@ -143,20 +145,21 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.to include("v1.0.0") }
     it { is_expected.not_to include("v5.0.0") }
 
-    context 'with gitaly enabled' do
-      before { stub_gitaly }
-
-      it 'gets the tag names from GitalyClient' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
-        subject
-      end
-
-      it 'wraps GRPC exceptions' do
-        expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names).
-          and_raise(GRPC::Unknown)
-        expect { subject }.to raise_error(Gitlab::Git::CommandError)
-      end
-    end
+    # TODO: Uncomment when feature is reenabled
+    # context 'with gitaly enabled' do
+    #   before { stub_gitaly }
+    #
+    #   it 'gets the tag names from GitalyClient' do
+    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
+    #     subject
+    #   end
+    #
+    #   it 'wraps GRPC exceptions' do
+    #     expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names).
+    #       and_raise(GRPC::Unknown)
+    #     expect { subject }.to raise_error(Gitlab::Git::CommandError)
+    #   end
+    # end
   end
 
   shared_examples 'archive check' do |extenstion|

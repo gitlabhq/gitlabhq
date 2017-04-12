@@ -963,13 +963,15 @@ class Repository
   end
 
   def is_ancestor?(ancestor_id, descendant_id)
-    Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
-      if is_enabled
-        raw_repository.is_ancestor?(ancestor_id, descendant_id)
-      else
-        merge_base_commit(ancestor_id, descendant_id) == ancestor_id
-      end
-    end
+    # NOTE: This feature is intentionally disabled until
+    # https://gitlab.com/gitlab-org/gitlab-ce/issues/30586 is resolved
+    # Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
+    #   if is_enabled
+    #     raw_repository.is_ancestor?(ancestor_id, descendant_id)
+    #   else
+    merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+    #   end
+    # end
   end
 
   def empty_repo?
