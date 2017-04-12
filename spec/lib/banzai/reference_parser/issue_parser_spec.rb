@@ -67,6 +67,16 @@ describe Banzai::ReferenceParser::IssueParser, lib: true do
           expect(subject.referenced_by([])).to eq([])
         end
       end
+
+      context 'when issue with given ID does not exist' do
+        before do
+          link['data-issue'] = '-1'
+        end
+
+        it 'returns an empty Array' do
+          expect(subject.referenced_by([link])).to eq([])
+        end
+      end
     end
   end
 
@@ -75,7 +85,7 @@ describe Banzai::ReferenceParser::IssueParser, lib: true do
       link['data-issue'] = issue.id.to_s
       nodes = [link]
 
-      expect(subject.issues_for_nodes(nodes)).to eq({ issue.id => issue })
+      expect(subject.issues_for_nodes(nodes)).to eq({ link => issue })
     end
   end
 end

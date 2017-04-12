@@ -130,7 +130,7 @@ describe('DropDown', function () {
     beforeEach(function () {
       this.list = { dispatchEvent: () => {} };
       this.dropdown = { hide: () => {}, list: this.list, addSelectedClass: () => {} };
-      this.event = { preventDefault: () => {}, target: 'target' };
+      this.event = { preventDefault: () => {}, target: {} };
       this.customEvent = {};
       this.closestElement = {};
 

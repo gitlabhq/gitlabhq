@@ -7,7 +7,7 @@ module SystemNoteHelper
     'closed' => 'icon_status_closed',
     'time_tracking' => 'icon_stopwatch',
     'assignee' => 'icon_user',
-    'title' => 'icon_pencil',
+    'title' => 'icon_edit',
     'task' => 'icon_check_square_o',
     'label' => 'icon_tags',
     'cross_reference' => 'icon_random',

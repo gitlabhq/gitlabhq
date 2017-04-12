@@ -1,6 +1,7 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
 
 require('~/merge_request_tabs');
+require('~/commit/pipelines/pipelines_bundle.js');
 require('~/breakpoints');
 require('~/lib/utils/common_utils');
 require('~/diff');

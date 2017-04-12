@@ -611,7 +611,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I click link "Approve"' do
     page.within '.mr-state-widget' do
       wait_for_ajax
-      click_button 'Approve Merge Request'
+      click_button 'Approve merge request'
     end
   end
 
@@ -623,7 +623,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should not see merge button' do
     page.within '.mr-state-widget' do
-      expect(page).not_to have_button('Accept merge request')
+      expect(page).not_to have_button('Accept merge mequest')
     end
   end
 

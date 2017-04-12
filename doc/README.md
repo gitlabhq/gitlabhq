@@ -49,6 +49,10 @@ All technical content published by GitLab lives in the documentation, including:
 - [Email](tools/email.md) Email GitLab users from GitLab
 - [Push Rules](push_rules/push_rules.md) Advanced push rules for your project.
 - [Help message](customization/help_message.md) Set information about administrators of your GitLab instance.
+- [Changing the appearance of the login page](customization/branded_login_page.md) Make the login page branded for your GitLab instance.
+- [Email](tools/email.md) Email GitLab users from GitLab
+- [Push Rules](push_rules/push_rules.md) Advanced push rules for your project.
+- [Help message](customization/help_message.md) Set information about administrators of your GitLab instance.
 - [Container Registry](administration/container_registry.md) Configure Docker Registry with GitLab.
 - [Custom Git hooks](administration/custom_hooks.md) Custom Git hooks (on the filesystem) for when webhooks aren't enough.
 - [Debugging Tips](administration/troubleshooting/debug.md) Tips to debug problems when things go wrong
@@ -69,6 +73,7 @@ All technical content published by GitLab lives in the documentation, including:
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
 - [Monitoring uptime](user/admin_area/monitoring/health_check.md) Check the server status using the health check endpoint.
 - [Operations](administration/operations.md) Keeping GitLab up and running.
+- [Polling](administration/polling.md) Configure how often the GitLab UI polls for updates
 - [Raketasks](raketasks/README.md) Backups, maintenance, automatic webhook setup and the importing of projects.
 - [Reply by email](administration/reply_by_email.md) Allow users to comment on issues and merge requests by replying to notification emails.
 - [Repository checks](administration/repository_checks.md) Periodic Git repository checks.

@@ -85,7 +85,7 @@ Vue.component('approvals-body', {
           :disabled='approving'
           @click='approveMergeRequest'
           class='btn btn-primary approve-btn'>
-          Approve Merge Request
+          Approve merge request
         </button>
       </div>
     </div>

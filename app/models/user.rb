@@ -101,8 +101,8 @@ class User < ActiveRecord::Base
   has_many :award_emoji,              dependent: :destroy
   has_many :path_locks,               dependent: :destroy
 
-  has_many :approvals, dependent: :destroy
-  has_many :approvers, dependent: :destroy
+  has_many :approvals,                dependent: :destroy
+  has_many :approvers,                dependent: :destroy
 
   # Protected Branch Access
   has_many :protected_branch_merge_access_levels, dependent: :destroy, class_name: ProtectedBranch::MergeAccessLevel
