@@ -19,7 +19,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
 - [Enforce Two-factor Authentication (2FA)](../../security/two_factor_authentication.md#enforce-two-factor-authentication-2fa)
 - **Articles:**
   - [Feature Highlight: LDAP Integration](https://about.gitlab.com/2014/07/10/feature-highlight-ldap-sync/)
-  - [Debugging LDAP](https://about.gitlab.com/handbook/support/workflows/ldap/debugging_ldap.md)
+  - [Debugging LDAP](https://about.gitlab.com/handbook/support/workflows/ldap/debugging_ldap.html)
 - **Integrations:**
   - [OmniAuth](../../integration/omniauth.md)
   - [Authentiq OmniAuth Provider](../../administration/auth/authentiq.md#authentiq-omniauth-provider)
