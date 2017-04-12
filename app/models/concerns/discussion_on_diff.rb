@@ -2,9 +2,9 @@
 module DiscussionOnDiff
   extend ActiveSupport::Concern
 
-  included do
-    NUMBER_OF_TRUNCATED_DIFF_LINES = 16
+  NUMBER_OF_TRUNCATED_DIFF_LINES = 16
 
+  included do
     memoized_values << :active
 
     delegate  :line_code,
