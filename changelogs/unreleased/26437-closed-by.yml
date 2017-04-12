@@ -1,0 +1,4 @@
+---
+title: Add issues/:iid/closed_by api endpoint
+merge_request:
+author: mhasbini

@@ -68,7 +68,7 @@ describe 'issuable list', feature: true do
                               source_project: project,
                               source_branch: generate(:branch))
 
-      MergeRequestsClosingIssues.create!(issue: issue, merge_request: merge_request)
+      create(:merge_requests_closing_issues, issue: issue, merge_request: merge_request)
     end
   end
 end
