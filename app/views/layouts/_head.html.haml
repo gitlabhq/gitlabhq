@@ -25,7 +25,7 @@
 
   = favicon_link_tag favicon
 
-  - if Rails.env == 'development'
+  - if Rails.env.development?
     = stylesheet_link_tag "validator", media: 'all'
 
   = stylesheet_link_tag "application", media: "all"
