@@ -57,16 +57,16 @@ module Gitlab
       postgresql? ? "RANDOM()" : "RAND()"
     end
 
-    def true_value
-      if Gitlab::Database.postgresql?
+    def self.true_value
+      if postgresql?
         "'t'"
       else
         1
       end
     end
 
-    def false_value
-      if Gitlab::Database.postgresql?
+    def self.false_value
+      if postgresql?
         "'f'"
       else
         0

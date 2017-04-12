@@ -114,6 +114,14 @@ module Gitlab
         execute('SET statement_timeout TO 0') if Database.postgresql?
       end
 
+      def true_value
+        Database.true_value
+      end
+
+      def false_value
+        Database.false_value
+      end
+
       # Updates the value of a column in batches.
       #
       # This method updates the table in batches of 5% of the total row count.

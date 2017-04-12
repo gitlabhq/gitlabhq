@@ -1,6 +1,6 @@
 # rubocop:disable all
 class MigrateCiHipChatService < ActiveRecord::Migration
-  include Gitlab::Database
+  include Gitlab::Database::MigrationHelpers
 
   def up
     # From properties strip `hipchat_` key
