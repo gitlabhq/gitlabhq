@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe API::Users, api: true  do
+describe API::Users, api: true do
   include ApiHelpers
 
-  let(:user)  { create(:user) }
+  let(:user) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:key)   { create(:key, user: user) }
-  let(:email)   { create(:email, user: user) }
+  let(:key) { create(:key, user: user) }
+  let(:email) { create(:email, user: user) }
   let(:omniauth_user) { create(:omniauth_user) }
   let(:ldap_user) { create(:omniauth_user, provider: 'ldapmain') }
   let(:ldap_blocked_user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
@@ -129,7 +129,7 @@ describe API::Users, api: true  do
   end
 
   describe "POST /users" do
-    before{ admin }
+    before { admin }
 
     it "creates user" do
       expect do
@@ -214,9 +214,9 @@ describe API::Users, api: true  do
 
     it "does not create user with invalid email" do
       post api('/users', admin),
-        email: 'invalid email',
-        password: 'password',
-        name: 'test'
+           email: 'invalid email',
+           password: 'password',
+           name: 'test'
       expect(response).to have_http_status(400)
     end
 
@@ -242,12 +242,12 @@ describe API::Users, api: true  do
 
     it 'returns 400 error if user does not validate' do
       post api('/users', admin),
-        password: 'pass',
-        email: 'test@example.com',
-        username: 'test!',
-        name: 'test',
-        bio: 'g' * 256,
-        projects_limit: -1
+           password: 'pass',
+           email: 'test@example.com',
+           username: 'test!',
+           name: 'test',
+           bio: 'g' * 256,
+           projects_limit: -1
       expect(response).to have_http_status(400)
       expect(json_response['message']['password']).
         to eq(['is too short (minimum is 8 characters)'])
@@ -267,19 +267,19 @@ describe API::Users, api: true  do
     context 'with existing user' do
       before do
         post api('/users', admin),
-          email: 'test@example.com',
-          password: 'password',
-          username: 'test',
-          name: 'foo'
+             email: 'test@example.com',
+             password: 'password',
+             username: 'test',
+             name: 'foo'
       end
 
       it 'returns 409 conflict error if user with same email exists' do
         expect do
           post api('/users', admin),
-            name: 'foo',
-            email: 'test@example.com',
-            password: 'password',
-            username: 'foo'
+               name: 'foo',
+               email: 'test@example.com',
+               password: 'password',
+               username: 'foo'
         end.to change { User.count }.by(0)
         expect(response).to have_http_status(409)
         expect(json_response['message']).to eq('Email has already been taken')
@@ -288,10 +288,10 @@ describe API::Users, api: true  do
       it 'returns 409 conflict error if same username exists' do
         expect do
           post api('/users', admin),
-            name: 'foo',
-            email: 'foo@example.com',
-            password: 'password',
-            username: 'test'
+               name: 'foo',
+               email: 'foo@example.com',
+               password: 'password',
+               username: 'test'
         end.to change { User.count }.by(0)
         expect(response).to have_http_status(409)
         expect(json_response['message']).to eq('Username has already been taken')
@@ -416,12 +416,12 @@ describe API::Users, api: true  do
 
     it 'returns 400 error if user does not validate' do
       put api("/users/#{user.id}", admin),
-        password: 'pass',
-        email: 'test@example.com',
-        username: 'test!',
-        name: 'test',
-        bio: 'g' * 256,
-        projects_limit: -1
+          password: 'pass',
+          email: 'test@example.com',
+          username: 'test!',
+          name: 'test',
+          bio: 'g' * 256,
+          projects_limit: -1
       expect(response).to have_http_status(400)
       expect(json_response['message']['password']).
         to eq(['is too short (minimum is 8 characters)'])
@@ -488,7 +488,7 @@ describe API::Users, api: true  do
       key_attrs = attributes_for :key
       expect do
         post api("/users/#{user.id}/keys", admin), key_attrs
-      end.to change{ user.keys.count }.by(1)
+      end.to change { user.keys.count }.by(1)
     end
 
     it "returns 400 for invalid ID" do
@@ -580,7 +580,7 @@ describe API::Users, api: true  do
       email_attrs = attributes_for :email
       expect do
         post api("/users/#{user.id}/emails", admin), email_attrs
-      end.to change{ user.emails.count }.by(1)
+      end.to change { user.emails.count }.by(1)
     end
 
     it "returns a 400 for invalid ID" do
@@ -842,7 +842,7 @@ describe API::Users, api: true  do
       key_attrs = attributes_for :key
       expect do
         post api("/user/keys", user), key_attrs
-      end.to change{ user.keys.count }.by(1)
+      end.to change { user.keys.count }.by(1)
       expect(response).to have_http_status(201)
     end
 
@@ -880,7 +880,7 @@ describe API::Users, api: true  do
         delete api("/user/keys/#{key.id}", user)
 
         expect(response).to have_http_status(204)
-      end.to change{user.keys.count}.by(-1)
+      end.to change { user.keys.count}.by(-1)
     end
 
     it "returns 404 if key ID not found" do
@@ -963,7 +963,7 @@ describe API::Users, api: true  do
       email_attrs = attributes_for :email
       expect do
         post api("/user/emails", user), email_attrs
-      end.to change{ user.emails.count }.by(1)
+      end.to change { user.emails.count }.by(1)
       expect(response).to have_http_status(201)
     end
 
@@ -989,7 +989,7 @@ describe API::Users, api: true  do
         delete api("/user/emails/#{email.id}", user)
 
         expect(response).to have_http_status(204)
-      end.to change{user.emails.count}.by(-1)
+      end.to change { user.emails.count}.by(-1)
     end
 
     it "returns 404 if email ID not found" do
