@@ -41,7 +41,7 @@ describe Ci::Build, models: true do
     end
   end
 
-  context 'updates build minutes' do
+  context 'updates pipeline minutes' do
     let(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
     %w(success drop cancel).each do |event|

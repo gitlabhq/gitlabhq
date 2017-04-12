@@ -32,12 +32,12 @@ feature 'CI shared runner limits', feature: true do
 
         scenario 'it displays a warning message on project homepage' do
           visit_project_home
-          expect_quota_exceeded_alert("#{group.name} has exceeded their build minutes quota.")
+          expect_quota_exceeded_alert("#{group.name} has exceeded their pipeline minutes quota.")
         end
 
         scenario 'it displays a warning message on pipelines page' do
           visit_project_pipelines
-          expect_quota_exceeded_alert("#{group.name} has exceeded their build minutes quota.")
+          expect_quota_exceeded_alert("#{group.name} has exceeded their pipeline minutes quota.")
         end
       end
 

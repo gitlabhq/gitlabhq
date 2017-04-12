@@ -1,7 +1,7 @@
 - namespace = local_assigns.fetch(:namespace)
 - if namespace.shared_runners_enabled?
   %li
-    %span.light Build minutes quota:
+    %span.light Pipeline minutes quota:
     %strong
       = group_shared_runner_limits_quota(namespace)
       = link_to icon('question-circle'), help_page_path("user/admin_area/settings/continuous_integration", anchor: "shared-runners-build-minutes-quota"), target: '_blank'

@@ -3,7 +3,7 @@
   - quota_limit = project.namespace.actual_shared_runners_minutes_limit
   .bs-callout.bs-callout-warning
     %p
-      You have used all your shared Runners build minutes.
+      You have used all your shared Runners pipeline minutes.
       = "(#{quota_used} of #{quota_limit})."
       - if can?(current_user, :admin_build, @project)
         %br
