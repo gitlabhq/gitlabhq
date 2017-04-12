@@ -15,11 +15,11 @@ This page gathers all the resources for the topic **Authentication** within GitL
 ## GitLab administrators
 
 - [LDAP (Community Edition)](../../administration/auth/ldap.md)
-- [LDAP (Enterprise Edition)](https://docs.gitlab.com/ee/administration/auth/ldap-ee.md)
+- [LDAP (Enterprise Edition)](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html)
 - [Enforce Two-factor Authentication (2FA)](../../security/two_factor_authentication.md#enforce-two-factor-authentication-2fa)
 - **Articles:**
   - [Feature Highlight: LDAP Integration](https://about.gitlab.com/2014/07/10/feature-highlight-ldap-sync/)
-  - [Debugging LDAP](https://about.gitlab.com/handbook/support/workflows/ldap/debugging_ldap.md)
+  - [Debugging LDAP](https://about.gitlab.com/handbook/support/workflows/ldap/debugging_ldap.html)
 - **Integrations:**
   - [OmniAuth](../../integration/omniauth.md)
   - [Authentiq OmniAuth Provider](../../administration/auth/authentiq.md#authentiq-omniauth-provider)
@@ -27,7 +27,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
   - [CAS OmniAuth Provider](../../integration/cas.md)
   - [SAML OmniAuth Provider](../../integration/saml.md)
   - [Okta SSO provider](../../administration/auth/okta.md)
-  - [Kerberos integration (GitLab EE)](https://docs.gitlab.com/ee/integration/kerberos.md)
+  - [Kerberos integration (GitLab EE)](https://docs.gitlab.com/ee/integration/kerberos.html)
 
 ## API
 
