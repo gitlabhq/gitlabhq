@@ -1,6 +1,6 @@
 import JSZip from 'jszip';
 import JSZipUtils from 'jszip-utils';
-import DocX from './docx';
+import Docx from './docx';
 
 export default class DocxRenderer {
   constructor(container) {
@@ -9,7 +9,6 @@ export default class DocxRenderer {
     this.endpoint = this.el.dataset.endpoint;
     this.loadFile();
     this.loader.style = 'display:none;';
-    this
   }
 
   loadFile(file) {
@@ -18,17 +17,17 @@ export default class DocxRenderer {
         return JSZip.loadAsync(data)
       })
       .then(asyncResult => {
+        this.asyncResult = asyncResult;
         return asyncResult.files['word/document.xml'].async('string')
       })
       .then((content) => {
-        const $xml = $($.parseXML(content));
-        const $textNodes = $xml.find('t');
-        $textNodes.each((i, el) => {
-          const p = document.createElement('p');
-          p.innerText = $(el).text();
-          this.el.appendChild(p);
-        })
+        this.docx = new Docx(content);
+        this.asyncResult.files['word/styles.xml'].async('string');
+        this.el.appendChild(this.docx.parseDoc());
       })
+      // .then((content) => {
+      //   this.docx.setStyles(content);
+      // })
       .catch(this.error.bind(this));
   }
 

@@ -2,5 +2,5 @@
   = page_specific_javascript_bundle_tag('docx_viewer')
 
 .file-content.is-docx-loading
-  .text-center#js-docx-viewer{ data: { endpoint: namespace_project_raw_path(@project.namespace, @project, @id) } }
+  #js-docx-viewer{ data: { endpoint: namespace_project_raw_path(@project.namespace, @project, @id) } }
     = icon('spinner spin 2x', class: 'prepend-top-default append-bottom-default', 'aria-hidden' => 'true', 'aria-label' => 'Loading')
