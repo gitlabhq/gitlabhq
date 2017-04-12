@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 shared_examples 'discussion comments' do |resource_name|
   let(:form_selector) { '.js-main-target-form' }
   let(:dropdown_selector) { "#{form_selector} .comment-type-dropdown" }
@@ -211,67 +209,5 @@ shared_examples 'discussion comments' do |resource_name|
         expect(find("#{form_selector} .js-note-target-reopen")).to have_content "Start discussion & reopen #{resource_name}"
       end
     end
-  end
-end
-
-describe 'Discussion Comments', :feature, :js do
-  include RepoHelpers
-
-  let(:user) { create(:user) }
-
-  describe 'on a merge request' do
-    let(:project) { create(:project) }
-    let(:merge_request) { create(:merge_request, source_project: project) }
-
-    before do
-      login
-
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
-    end
-
-    it_behaves_like 'discussion comments', 'merge request'
-  end
-
-  describe 'on an issue' do
-    let(:project) { create(:empty_project) }
-    let(:issue) { create(:issue, project: project) }
-
-    before do
-      login
-
-      visit namespace_project_issue_path(project.namespace, project, issue)
-    end
-
-    it_behaves_like 'discussion comments', 'issue'
-  end
-
-  describe 'on an snippet' do
-    let(:project) { create(:empty_project) }
-    let(:snippet) { create(:project_snippet, :private, project: project, author: user) }
-
-    before do
-      login
-
-      visit namespace_project_snippet_path(project.namespace, project, snippet)
-    end
-
-    it_behaves_like 'discussion comments', 'snippet'
-  end
-
-  describe 'on a commit' do
-    let(:project) { create(:project) }
-
-    before do
-      login
-
-      visit namespace_project_commit_path(project.namespace, project, sample_commit.id)
-    end
-
-    it_behaves_like 'discussion comments', 'commit'
-  end
-
-  def login
-    project.add_master(user)
-    login_as(user)
   end
 end
