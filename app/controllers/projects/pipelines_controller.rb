@@ -97,9 +97,7 @@ class Projects::PipelinesController < Projects::ApplicationController
         redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
       end
 
-      format.json do
-        render status: 204
-      end
+      format.json { head :no_content }
     end
   end
 
@@ -111,9 +109,7 @@ class Projects::PipelinesController < Projects::ApplicationController
         redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
       end
 
-      format.json do
-        render status: 204
-      end
+      format.json { head :no_content }
     end
   end
 
