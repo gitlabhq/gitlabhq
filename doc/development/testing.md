@@ -95,29 +95,6 @@ possible).
 [Poltergeist]: https://github.com/teamcapybara/capybara#poltergeist
 [RackTest]: https://github.com/teamcapybara/capybara#racktest
 
-### Black-box tests or End-to-end tests
-
-GitLab consists of [multiple pieces] such as [GitLab Shell], [GitLab Workhorse],
-[Gitaly], [GitLab Pages], [GitLab Runner], and GitLab Rails. All theses pieces
-are configured and packaged by [GitLab Omnibus].
-
-[GitLab QA] is a tool that allows to test that all these pieces integrate well
-together by building a Docker image for a given version of GitLab Rails and
-running feature tests (i.e. using Capybara) against it.
-
-The actual test scenarios and steps are [part of GitLab Rails] so that they're
-always in-sync with the codebase.
-
-[multiple pieces]: ./architecture.md#components
-[GitLab Shell]: https://gitlab.com/gitlab-org/gitlab-shell
-[GitLab Workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse
-[Gitaly]: https://gitlab.com/gitlab-org/gitaly
-[GitLab Pages]: https://gitlab.com/gitlab-org/gitlab-pages
-[GitLab Runner]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
-[GitLab Omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab
-[GitLab QA]: https://gitlab.com/gitlab-org/gitlab-qa
-[part of GitLab Rails]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa
-
 #### Best practices
 
 - Create only the necessary records in the database
@@ -149,6 +126,29 @@ The reasons why we should follow these best practices are as follows:
   rolling back a transaction (the faster strategy that's in use for other kind
   of tests). This is slower than transactions, however, so we want to use
   truncation only when necessary.
+
+### Black-box tests or End-to-end tests
+
+GitLab consists of [multiple pieces] such as [GitLab Shell], [GitLab Workhorse],
+[Gitaly], [GitLab Pages], [GitLab Runner], and GitLab Rails. All theses pieces
+are configured and packaged by [GitLab Omnibus].
+
+[GitLab QA] is a tool that allows to test that all these pieces integrate well
+together by building a Docker image for a given version of GitLab Rails and
+running feature tests (i.e. using Capybara) against it.
+
+The actual test scenarios and steps are [part of GitLab Rails] so that they're
+always in-sync with the codebase.
+
+[multiple pieces]: ./architecture.md#components
+[GitLab Shell]: https://gitlab.com/gitlab-org/gitlab-shell
+[GitLab Workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse
+[Gitaly]: https://gitlab.com/gitlab-org/gitaly
+[GitLab Pages]: https://gitlab.com/gitlab-org/gitlab-pages
+[GitLab Runner]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
+[GitLab Omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab
+[GitLab QA]: https://gitlab.com/gitlab-org/gitlab-qa
+[part of GitLab Rails]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa
 
 ## How to test at the correct level?
 
