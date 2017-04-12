@@ -5,7 +5,7 @@
   = page_specific_javascript_bundle_tag('monitoring')
 = render "projects/pipelines/head"
 
-%div{ class: container_class }
+#js-metrics{ class: container_class, data: { deployment_endpoint: namespace_project_environment_deployments_path(@project.namespace, @project, @environment, format: :json) } }
   .top-area
     .row
       .col-sm-6

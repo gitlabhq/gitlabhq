@@ -26,7 +26,7 @@ class PrometheusGraph {
     this.width = parentContainerWidth - this.margin.left - this.margin.right;
     this.height = 400 - this.margin.top - this.margin.bottom;
     this.backOffRequestCounter = 0;
-    this.deployments = new Deployments(this.width);
+    this.deployments = new Deployments(this.width, this.height);
 
     this.configureGraph();
     this.init();
@@ -89,6 +89,7 @@ class PrometheusGraph {
         .scale(y)
         .ticks(this.commonGraphProperties.axis_no_ticks)
         .tickSize(-this.width)
+        .outerTickSize(0)
         .orient('left');
 
     this.createAxisLabelContainers(axisLabelContainer, key);
@@ -237,7 +238,7 @@ class PrometheusGraph {
     const rectTextMetric = chart.append('svg')
     .attr('class', 'rect-text-metric')
     .attr('x', currentTimeCoordinate)
-    .attr('y', -1);
+    .attr('y', 0);
 
     rectTextMetric.append('rect')
     .attr('class', 'rect-metric')

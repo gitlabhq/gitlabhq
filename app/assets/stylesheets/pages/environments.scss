@@ -213,6 +213,11 @@
 }
 
 .selected-metric-line {
-  stroke: $black;
+  stroke: #8c8c8c;
   stroke-width: 1;
+}
+
+.deployment-line {
+  stroke: #000;
+  stroke-width: 2;
 }
