@@ -9,11 +9,9 @@ shared_examples 'discussion comments' do |resource_name|
   let(:close_selector) { "#{form_selector} .btn-comment-and-close" }
   let(:comments_selector) { '.timeline > .note.timeline-entry' }
 
-  it 'should show a comment type toggle' do
-    expect(page).to have_selector toggle_selector
-  end
-
   it 'clicking "Comment" will post a comment' do
+    expect(page).to have_selector toggle_selector
+
     find("#{form_selector} .note-textarea").send_keys('a')
 
     find(submit_selector).click
@@ -49,44 +47,29 @@ shared_examples 'discussion comments' do |resource_name|
       find(toggle_selector).click
     end
 
-    it 'opens a comment type dropdown with "Comment" and "Start discussion"' do
+    it 'has a "Comment" item (selected by default) and "Start discussion" item' do
       expect(page).to have_selector menu_selector
-    end
 
-    it 'has a "Comment" item' do
-      menu = find(menu_selector)
-
-      expect(menu).to have_content 'Comment'
-      expect(menu).to have_content "Add a general comment to this #{resource_name}."
-    end
-
-    it 'has a "Start discussion" item' do
-      menu = find(menu_selector)
-
-      expect(menu).to have_content 'Start discussion'
-      expect(menu).to have_content "Discuss a specific suggestion or question#{' that needs to be resolved' if resource_name == 'merge request'}."
-    end
-
-    it 'has the "Comment" item selected by default' do
       find("#{menu_selector} li", match: :first)
       items = all("#{menu_selector} li")
 
       expect(items.first).to have_content 'Comment'
+      expect(items.first).to have_content "Add a general comment to this #{resource_name}."
       expect(items.first).to have_selector '.fa-check'
       expect(items.first['class']).to match 'droplab-item-selected'
 
       expect(items.last).to have_content 'Start discussion'
+      expect(items.last).to have_content "Discuss a specific suggestion or question#{' that needs to be resolved' if resource_name == 'merge request'}."
       expect(items.last).not_to have_selector '.fa-check'
       expect(items.last['class']).not_to match 'droplab-item-selected'
     end
 
-    it 'closes the menu when clicking the toggle' do
+    it 'closes the menu when clicking the toggle or body' do
       find(toggle_selector).click
 
       expect(page).not_to have_selector menu_selector
-    end
 
-    it 'closes the menu when clicking the body' do
+      find(toggle_selector).click
       find('body').click
 
       expect(page).not_to have_selector menu_selector
@@ -104,12 +87,10 @@ shared_examples 'discussion comments' do |resource_name|
         all("#{menu_selector} li").last.click
       end
 
-      it 'updates the note_type input to "DiscussionNote"' do
-        expect(find("#{form_selector} #note_type", visible: false).value).to eq('DiscussionNote')
-      end
-
-      it 'updates the submit button text' do
+      it 'updates the submit button text, note_type input and closes the dropdown' do
         expect(find(dropdown_selector)).to have_content 'Start discussion'
+        expect(find("#{form_selector} #note_type", visible: false).value).to eq('DiscussionNote')
+        expect(page).not_to have_selector menu_selector
       end
 
       if resource_name =~ /(issue|merge request)/
@@ -122,10 +103,6 @@ shared_examples 'discussion comments' do |resource_name|
 
           expect(find(close_selector)).to have_content "Start discussion & close #{resource_name}"
         end
-      end
-
-      it 'closes the dropdown' do
-        expect(page).not_to have_selector menu_selector
       end
 
       it 'clicking "Start discussion" will post a discussion' do
@@ -176,12 +153,10 @@ shared_examples 'discussion comments' do |resource_name|
             find("#{menu_selector} li", match: :first).click
           end
 
-          it 'clears the note_type input"' do
-            expect(find("#{form_selector} #note_type", visible: false).value).to eq('')
-          end
-
-          it 'updates the submit button text' do
+          it 'updates the submit button text, clears the note_type input and closes the dropdown' do
             expect(find(dropdown_selector)).to have_content 'Comment'
+            expect(find("#{form_selector} #note_type", visible: false).value).to eq('')
+            expect(page).not_to have_selector menu_selector
           end
 
           if resource_name =~ /(issue|merge request)/
@@ -194,10 +169,6 @@ shared_examples 'discussion comments' do |resource_name|
 
               expect(find(close_selector)).to have_content "Comment & close #{resource_name}"
             end
-          end
-
-          it 'closes the dropdown' do
-            expect(page).not_to have_selector menu_selector
           end
 
           it 'should have "Comment" selected when opening the menu' do
