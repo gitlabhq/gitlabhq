@@ -2,11 +2,11 @@ import CollapsedAvatar from './avatar';
 
 export default {
   name: 'CollapsedAssignees',
-  data: {
+  data() {
     return {
       defaultRenderCount: 5,
       defaultMaxCounter: 99,
-    }
+    };
   },
   props: {
     users: {

@@ -10,7 +10,6 @@ export default class SidebarAssigneesStore {
     this.users = [];
     this.loading = false;
     this.editable = editable;
-    this.defaultRenderCount = 5;
 
     assignees.forEach(a => this.addUser(this.destructUser(a)));
   }
@@ -24,8 +23,6 @@ export default class SidebarAssigneesStore {
       username,
       avatarUrl,
     });
-    console.log(`addUser()`);
-    console.log(user);
   }
 
   addCurrentUser() {
@@ -33,8 +30,6 @@ export default class SidebarAssigneesStore {
   }
 
   removeUser(id) {
-    console.log(`removeUser()`);
-    console.log(id);
     this.users = this.users.filter(u => u.id !== id);
   }
 
@@ -43,12 +38,8 @@ export default class SidebarAssigneesStore {
   }
 
   getUserIds() {
-    console.log(`getUserIds`);
     const ids = this.users.map(u => u.id);
 
-    if (ids.length > 0 && ids[0] == undefined) {
-      debugger
-    }
     // If there are no ids, that means we have to unassign (which is id = 0)
     return ids.length > 0 ? ids : [0];
   }
