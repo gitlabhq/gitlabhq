@@ -98,7 +98,7 @@ module Gitlab
           'EEP'
         when 'starter'
           'EES'
-        when nil # Older licenses
+        else # Older licenses
           'EE'
         end
       end
