@@ -251,17 +251,17 @@ $(function () {
   });
   // Initialize tooltips
   $.fn.tooltip.Constructor.DEFAULTS.trigger = 'hover';
-  $body.tooltip({
-    selector: '.has-tooltip, [data-toggle="tooltip"]',
-    placement: function (tip, el) {
-      return $(el).data('placement') || 'bottom';
-    }
-  });
+  // $body.tooltip({
+  //   selector: '.has-tooltip, [data-toggle="tooltip"]',
+  //   placement: function (tip, el) {
+  //     return $(el).data('placement') || 'bottom';
+  //   }
+  // });
   $('.trigger-submit').on('change', function () {
     return $(this).parents('form').submit();
   // Form submitter
   });
-  gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), true);
+  // gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), true);
   // Flash
   if ($flash.length > 0) {
     $flash.click(function () {
@@ -361,5 +361,5 @@ $(function () {
 
   gl.utils.initTimeagoTimeout();
 
-  $(document).trigger('init.scrolling-tabs');
+  // $(document).trigger('init.scrolling-tabs');
 });

@@ -580,7 +580,7 @@ require('./task_list');
         var isWidgetVisible = gl.utils.isInViewport($el.get(0));
 
         if (!isWidgetVisible) {
-          gl.utils.scrollToElement($el);
+          // gl.utils.scrollToElement($el);
         }
 
         $el.find('.js-edit-warning').show();

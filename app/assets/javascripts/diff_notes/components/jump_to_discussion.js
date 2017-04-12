@@ -181,9 +181,9 @@ import Vue from 'vue';
           }
         }
 
-        $.scrollTo($target, {
-          offset: 0
-        });
+        // $.scrollTo($target, {
+        //   offset: 0
+        // });
       }
     },
     created() {

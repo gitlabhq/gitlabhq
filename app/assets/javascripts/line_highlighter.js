@@ -57,11 +57,11 @@ require('vendor/jquery.scrollTo');
         range = this.hashToRange(hash);
         if (range[0]) {
           this.highlightRange(range);
-          $.scrollTo("#L" + range[0], {
-            // Scroll to the first highlighted line on initial load
-            // Offset -50 for the sticky top bar, and another -100 for some context
-            offset: -150
-          });
+          // $.scrollTo("#L" + range[0], {
+          //   // Scroll to the first highlighted line on initial load
+          //   // Offset -50 for the sticky top bar, and another -100 for some context
+          //   offset: -150
+          // });
         }
       }
     }

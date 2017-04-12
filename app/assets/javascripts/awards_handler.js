@@ -443,10 +443,10 @@ AwardsHandler.prototype.findEmojiIcon = function findEmojiIcon(votesBlock, emoji
 };
 
 AwardsHandler.prototype.scrollToAwards = function scrollToAwards() {
-  const options = {
-    scrollTop: $('.awards').offset().top - 110,
-  };
-  return $('body, html').animate(options, 200);
+  // const options = {
+  //   scrollTop: $('.awards').offset().top - 110,
+  // };
+  // return $('body, html').animate(options, 200);
 };
 
 AwardsHandler.prototype.normalizeEmojiName = function normalizeEmojiName(emoji) {

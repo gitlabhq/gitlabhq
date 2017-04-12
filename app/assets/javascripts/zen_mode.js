@@ -76,20 +76,20 @@ require('mousetrap/plugins/pause/mousetrap-pause');
     };
 
     ZenMode.prototype.exit = function() {
-      if (this.active_textarea) {
-        Mousetrap.unpause();
-        this.active_textarea.closest('.zen-backdrop').removeClass('fullscreen');
-        this.scrollTo(this.active_textarea);
-        this.active_textarea = null;
-        this.active_backdrop = null;
-        return Dropzone.forElement('.div-dropzone').enable();
-      }
+      // if (this.active_textarea) {
+      //   Mousetrap.unpause();
+      //   this.active_textarea.closest('.zen-backdrop').removeClass('fullscreen');
+      //   this.scrollTo(this.active_textarea);
+      //   this.active_textarea = null;
+      //   this.active_backdrop = null;
+      //   return Dropzone.forElement('.div-dropzone').enable();
+      // }
     };
 
     ZenMode.prototype.scrollTo = function(zen_area) {
-      return $.scrollTo(zen_area, 0, {
-        offset: -150
-      });
+      // return $.scrollTo(zen_area, 0, {
+      //   offset: -150
+      // });
     };
 
     return ZenMode;

@@ -152,13 +152,13 @@ import './flash';
     }
 
     scrollToElement(container) {
-      if (location.hash) {
-        const offset = -$('.js-tabs-affix').outerHeight();
-        const $el = $(`${container} ${location.hash}:not(.match)`);
-        if ($el.length) {
-          $.scrollTo($el[0], { offset });
-        }
-      }
+      // if (location.hash) {
+      //   const offset = -$('.js-tabs-affix').outerHeight();
+      //   const $el = $(`${container} ${location.hash}:not(.match)`);
+      //   if ($el.length) {
+      //     $.scrollTo($el[0], { offset });
+      //   }
+      // }
     }
 
     // Activate a tab based on the current action
