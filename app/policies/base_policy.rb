@@ -97,6 +97,10 @@ class BasePolicy
     rules
   end
 
+  def rules
+    raise NotImplementedError
+  end
+
   def delegate!(new_subject)
     @rule_set.merge(Ability.allowed(@user, new_subject))
   end
