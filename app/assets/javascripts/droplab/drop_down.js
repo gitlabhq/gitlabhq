@@ -93,7 +93,7 @@ Object.assign(DropDown.prototype, {
   },
 
   renderChildren: function(data) {
-    var html = utils.t(this.templateString, data);
+    var html = utils.template(this.templateString, data);
     var template = document.createElement('div');
 
     template.innerHTML = html;
