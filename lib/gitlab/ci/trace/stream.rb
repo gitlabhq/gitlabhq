@@ -30,6 +30,7 @@ module Gitlab
             last_bytes = stream_size
           end
           stream.seek(-last_bytes, IO::SEEK_END)
+          stream.readline
         end
 
         def append(data, offset)
