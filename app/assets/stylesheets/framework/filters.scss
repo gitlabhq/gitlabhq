@@ -82,7 +82,7 @@
   .input-token:last-child {
     flex: 1;
     -webkit-flex: 1;
-    max-width: initial;
+    max-width: inherit;
   }
 }
 
