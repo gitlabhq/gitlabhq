@@ -1,3 +1,5 @@
+/* global Flash */
+
 import Vue from 'vue';
 import eventHub from './event_hub';
 
@@ -23,16 +25,11 @@ export default {
     const path = element.dataset.path;
     const field = element.dataset.field;
     const editable = element.hasAttribute('data-editable');
-    const currentUser = {
-      id: parseInt(element.dataset.userId, 10),
-      name: element.dataset.userName,
-      username: element.dataset.userUserName,
-      avatarUrl: element.dataset.avatar_url,
-    };
+    const currentUserId = parseInt(element.dataset.userId, 10);
 
     const service = new SidebarAssigneesService(path, field);
     const store = new SidebarAssigneesStore({
-      currentUser,
+      currentUserId,
       rootPath,
       editable,
       assignees: gl.sidebarAssigneesData,
@@ -50,14 +47,14 @@ export default {
   },
   created() {
     eventHub.$on('addCurrentUser', this.addCurrentUser);
-    eventHub.$on('addUser', this.store.addUser.bind(this.store));
-    eventHub.$on('removeUser', this.store.removeUser.bind(this.store));
-    eventHub.$on('removeAllUsers', this.store.removeAllUsers.bind(this.store));
+    eventHub.$on('addUser', this.store.addUserId.bind(this.store));
+    eventHub.$on('removeUser', this.store.removeUserId.bind(this.store));
+    eventHub.$on('removeAllUsers', this.store.removeAllUserIds.bind(this.store));
     eventHub.$on('saveUsers', this.saveUsers);
   },
   methods: {
     addCurrentUser() {
-      this.store.addCurrentUser();
+      this.store.addCurrentUserId();
       this.saveUsers();
     },
     saveUsers() {
@@ -65,7 +62,7 @@ export default {
       this.service.update(this.store.getUserIds())
         .then((response) => {
           this.store.loading = false;
-          this.store.saveUsers(response.data.assignees);
+          this.store.setUsers(response.data.assignees);
         }).catch(() => {
           this.store.loading = false;
           return new Flash('An error occured while saving assignees', 'alert');
@@ -82,7 +79,7 @@ export default {
   template: `
     <div>
       <assignee-title
-        :numberOfAssignees="store.users.length"
+        :numberOfAssignees="store.userIds.length"
         :loading="store.loading"
         :editable="store.editable"
       />

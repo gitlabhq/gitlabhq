@@ -727,12 +727,6 @@ GitLabDropdown = (function() {
       $input.attr('id', this.options.inputId);
     }
 
-    if (this.options.saveUserDataToInput) {
-      $input.attr('data-name', selectedObject.name);
-      $input.attr('data-username', selectedObject.username);
-      $input.attr('data-avatar-url', selectedObject.avatar_url);
-    }
-
     return this.dropdown.before($input);
   };
 

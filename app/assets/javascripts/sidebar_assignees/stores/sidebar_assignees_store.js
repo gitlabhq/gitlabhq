@@ -1,61 +1,48 @@
-/* global Flash */
-import '~/flash';
-
 export default class SidebarAssigneesStore {
   constructor(store) {
-    const { currentUser, assignees, rootPath, editable } = store;
+    const { currentUserId, assignees, rootPath, editable } = store;
 
-    this.currentUser = currentUser;
+    this.currentUserId = currentUserId;
     this.rootPath = rootPath;
-    this.users = [];
+    this.userIds = [];
     this.loading = false;
     this.editable = editable;
 
-    assignees.forEach(a => this.addUser(this.destructUser(a)));
+    this.setUsers(assignees);
+    assignees.forEach(a => this.addUserId(a.id));
   }
 
-  addUser(user) {
-    const { id, name, username, avatarUrl } = user;
-
-    this.users.push({
-      id,
-      name,
-      username,
-      avatarUrl,
-    });
+  addUserId(id) {
+    this.userIds.push(id);
   }
 
-  addCurrentUser() {
-    this.addUser(this.currentUser);
+  removeUserId(id) {
+    this.userIds = this.userIds.filter(uid => uid !== id);
   }
 
-  removeUser(id) {
-    this.users = this.users.filter(u => u.id !== id);
+  removeAllUserIds() {
+    this.userIds = [];
   }
 
-  removeAllUsers() {
-    this.users = [];
+  addCurrentUserId() {
+    this.addUserId(this.currentUserId);
   }
 
   getUserIds() {
-    const ids = this.users.map(u => u.id);
-
     // If there are no ids, that means we have to unassign (which is id = 0)
-    return ids.length > 0 ? ids : [0];
+    return this.userIds.length > 0 ? this.userIds : [0];
   }
 
-  destructUser(u) {
-    return {
-      id: u.id,
-      name: u.name,
-      username: u.username,
-      avatarUrl: u.avatar_url,
-    };
-  }
-
-  saveUsers(assignees) {
+  setUsers(users) {
     this.users = [];
 
-    assignees.forEach(a => this.addUser(this.destructUser(a)));
+    users.forEach((u) => {
+      this.users.push({
+        id: u.id,
+        name: u.name,
+        username: u.username,
+        avatarUrl: u.avatar_url,
+      });
+    });
   }
 }

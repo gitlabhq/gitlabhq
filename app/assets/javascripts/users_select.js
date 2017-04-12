@@ -264,7 +264,6 @@ import eventHub from './sidebar_assignees/event_hub';
               return $value.css('display', '');
             },
             multiSelect: $dropdown.hasClass('js-multiselect'),
-            saveUserDataToInput: $dropdown.hasClass('js-save-user-data'),
             vue: $dropdown.hasClass('js-issue-board-sidebar'),
             clicked: function(user, $el, e, isMarking) {
               if ($dropdown.hasClass('js-multiselect')) {
@@ -281,12 +280,7 @@ import eventHub from './sidebar_assignees/event_hub';
                   eventHub.$emit('removeAllUsers');
                 } else if (isActive) {
                   // user selected
-                  eventHub.$emit('addUser', {
-                    id: user.id,
-                    name: user.name,
-                    username: user.username,
-                    avatarUrl: user.avatar_url
-                  });
+                  eventHub.$emit('addUser', user.id);
 
                   // Remove unassigned selection (if it was previously selected)
                   const unassignedSelected = $dropdown.closest('.selectbox')

@@ -24,12 +24,7 @@
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
       .block.assignee
         - if issuable.instance_of?(Issue)
-          #js-vue-sidebar-assignees{ data: { path: issuable_json_path(issuable), field: "#{issuable.to_ability_name}[assignee_ids]",'editable' => can_edit_issuable ? true : false, user: { id: current_user.id }, name: current_user.name, username: current_user.username, avatar_url: current_user.avatar_url, root: { path: root_path } } }
-            .title.hide-collapsed
-              Assignee
-              = icon('spinner spin', class: 'block-loading', 'aria-hidden': 'true')
-              - if can_edit_issuable
-                = link_to 'Edit', '#', class: 'edit-link pull-right'
+          #js-vue-sidebar-assignees{ data: { path: issuable_json_path(issuable), field: "#{issuable.to_ability_name}[assignee_ids]",'editable' => can_edit_issuable ? true : false, user: { id: current_user.id }, root: { path: root_path } } }
           - content_for :page_specific_javascripts do
             = page_specific_javascript_bundle_tag('sidebar_assignees')
           :javascript
