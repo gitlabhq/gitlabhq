@@ -11,9 +11,7 @@ feature 'Balsamiq preview', :feature, :js do
 
   before do
     project.add_master(user)
-
     login_as user
-
     visit namespace_project_blob_path(project.namespace, project, tree_join(branch, path))
   end
 
