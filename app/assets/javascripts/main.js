@@ -346,12 +346,12 @@ $(function () {
     }
   });
   fitSidebarForSize = function () {
-    var oldBootstrapBreakpoint;
-    oldBootstrapBreakpoint = bootstrapBreakpoint;
-    bootstrapBreakpoint = bp.getBreakpointSize();
-    if (bootstrapBreakpoint !== oldBootstrapBreakpoint) {
-      return $document.trigger('breakpoint:change', [bootstrapBreakpoint]);
-    }
+    // var oldBootstrapBreakpoint;
+    // oldBootstrapBreakpoint = bootstrapBreakpoint;
+    // bootstrapBreakpoint = bp.getBreakpointSize();
+    // if (bootstrapBreakpoint !== oldBootstrapBreakpoint) {
+    //   return $document.trigger('breakpoint:change', [bootstrapBreakpoint]);
+    // }
   };
   $window.off('resize.app').on('resize.app', function () {
     return fitSidebarForSize();
