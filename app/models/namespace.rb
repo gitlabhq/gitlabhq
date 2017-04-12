@@ -33,7 +33,7 @@ class Namespace < ActiveRecord::Base
   validates :path,
     presence: true,
     length: { maximum: 255 },
-    namespace: true
+    dynamic_path: true
 
   validate :nesting_level_allowed
 

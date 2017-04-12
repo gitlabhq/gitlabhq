@@ -1,10 +1,11 @@
-# NamespaceValidator
+# DynamicPathValidator
 #
-# Custom validator for GitLab namespace values.
+# Custom validator for GitLab path values.
+# These paths are assigned to `Namespace` (& `Group` as a subclass) & `Project`
 #
 # Values are checked for formatting and exclusion from a list of reserved path
 # names.
-class NamespaceValidator < ActiveModel::EachValidator
+class DynamicPathValidator < ActiveModel::EachValidator
   # All routes that appear on the top level must be listed here.
   # This will make sure that groups cannot be created with these names
   # as these routes would be masked by the paths already in place.
@@ -124,6 +125,8 @@ class NamespaceValidator < ActiveModel::EachValidator
       record.has_parent? ? :wildcard : :top_level
     when Project
       :wildcard
+    when User
+      :top_level
     else
       :strict
     end

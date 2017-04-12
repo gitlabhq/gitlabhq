@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe NamespaceValidator do
+describe DynamicPathValidator do
   let(:validator) { described_class.new(attributes: [:path]) }
 
   # Pass in a full path to remove the format segment:
