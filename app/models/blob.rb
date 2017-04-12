@@ -63,7 +63,7 @@ class Blob < SimpleDelegator
   end
 
   def balsamiq?
-    binary? && extname.downcase.delete('.') == 'bmpr'
+    binary? && extension == 'bmpr'
   end
 
   def stl?

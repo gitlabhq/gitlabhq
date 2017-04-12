@@ -7,7 +7,6 @@ feature 'Balsamiq preview', :feature, :js do
   let(:project) { create(:project) }
   let(:branch) { 'add-balsamiq-file' }
   let(:path) { 'files/images/balsamiq.bmpr' }
-  let(:file_content) { find('.file-content') }
 
   before do
     project.add_master(user)
@@ -16,7 +15,7 @@ feature 'Balsamiq preview', :feature, :js do
   end
 
   it 'should show a loading icon' do
-    expect(file_content).to have_selector('.loading')
+    expect(find('.file-content')).to have_selector('.loading')
   end
 
   it 'should show a viewer container' do
