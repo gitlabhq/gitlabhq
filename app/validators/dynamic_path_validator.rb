@@ -59,6 +59,7 @@ class DynamicPathValidator < ActiveModel::EachValidator
     jwt
     oauth
     sent_notifications
+    -
   ]).freeze
 
   # All project routes with wildcard argument must be listed here.
