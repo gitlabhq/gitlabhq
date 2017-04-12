@@ -25,13 +25,19 @@ logs, and code as it's very hard to read otherwise.)
 
 #### Results of GitLab environment info
 
+<details>
+
 (For installations with omnibus-gitlab package run and paste the output of:
 `sudo gitlab-rake gitlab:env:info`)
 
 (For installations from source run and paste the output of:
 `sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production`)
 
+</details>
+
 #### Results of GitLab application Check
+
+<details>
 
 (For installations with omnibus-gitlab package run and paste the output of:
 `sudo gitlab-rake gitlab:check SANITIZE=true`)
@@ -40,6 +46,8 @@ logs, and code as it's very hard to read otherwise.)
 `sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true`)
 
 (we will only investigate if the tests are passing)
+
+</details>
 
 ### Possible fixes
 
