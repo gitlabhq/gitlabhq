@@ -2,7 +2,8 @@
 
 When working with a database certain operations can be performed without taking
 GitLab offline, others do require a downtime period. This guide describes
-various operations and their impact.
+various operations, their impact, and how to perform them without requiring
+downtime.
 
 ## Adding Columns
 
@@ -41,50 +42,156 @@ information on how to use this method.
 
 ## Dropping Columns
 
-On PostgreSQL you can safely remove an existing column without the need for
-downtime. When you drop a column in PostgreSQL it's not immediately removed,
-instead it is simply disabled. The data is removed on the next vacuum run.
+Removing columns is tricky because running GitLab processes may still be using
+the columns. To work around this you will need two separate merge requests and
+releases: one to ignore and then remove the column, and one to remove the ignore
+rule.
 
-On MySQL this operation requires downtime.
+### Step 1: Ignoring The Column
 
-While database wise dropping a column may be fine on PostgreSQL this operation
-still requires downtime because the application code may still be using the
-column that was removed. For example, consider the following migration:
+The first step is to ignore the column in the application code. This is
+necessary because Rails caches the columns and re-uses this cache in various
+places. This can be done by including the `IgnorableColumn` module into the
+model, followed by defining the columns to ignore. For example, to ignore
+`updated_at` in the User model you'd use the following:
 
 ```ruby
-class MyMigration < ActiveRecord::Migration
-  def change
-    remove_column :projects, :dummy
+class User < ActiveRecord::Base
+  include IgnorableColumn
+
+  ignore_column :updated_at
+end
+```
+
+Once added you should create a _post-deployment_ migration that removes the
+column. Both these changes should be submitted in the same merge request.
+
+### Step 2: Removing The Ignore Rule
+
+Once the changes from step 1 have been released & deployed you can set up a
+separate merge request that removes the ignore rule. This merge request can
+simply remove the `ignore_column` line, and the `include IgnorableColumn` line
+if no other `ignore_column` calls remain.
+
+## Renaming Columns
+
+Renaming columns the normal way requires downtime as an application may continue
+using the old column name during/after a database migration. To rename a column
+without requiring downtime we need two migrations: a regular migration, and a
+post-deployment migration. Both these migration can go in the same release.
+
+### Step 1: Add The Regular Migration
+
+First we need to create the regular migration. This migration should use
+`Gitlab::Database::MigrationHelpers#rename_column_concurrently` to perform the
+renaming. For example
+
+```ruby
+# A regular migration in db/migrate
+class RenameUsersUpdatedAtToUpdatedAtTimestamp < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+
+  disable_ddl_transaction!
+
+  def up
+    rename_column_concurrently :users, :updated_at, :updated_at_timestamp
+  end
+
+  def down
+    cleanup_concurrent_column_rename :users, :updated_at_timestamp, :updated_at
   end
 end
 ```
 
-Now imagine that the GitLab instance is running and actively uses the `dummy`
-column. If we were to run the migration this would result in the GitLab instance
-producing errors whenever it tries to use the `dummy` column.
+This will take care of renaming the column, ensuring data stays in sync, copying
+over indexes and foreign keys, etc.
 
-As a result of the above downtime _is_ required when removing a column, even
-when using PostgreSQL.
+**NOTE:** if a column contains 1 or more indexes that do not contain the name of
+the original column, the above procedure will fail. In this case you will first
+need to rename these indexes.
 
-## Renaming Columns
+### Step 2: Add A Post-Deployment Migration
 
-Renaming columns requires downtime as running GitLab instances will continue
-using the old column name until a new version is deployed. This can result
-in the instance producing errors, which in turn can impact the user experience.
+The renaming procedure requires some cleaning up in a post-deployment migration.
+We can perform this cleanup using
+`Gitlab::Database::MigrationHelpers#cleanup_concurrent_column_rename`:
+
+```ruby
+# A post-deployment migration in db/post_migrate
+class CleanupUsersUpdatedAtRename < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+
+  disable_ddl_transaction!
+
+  def up
+    cleanup_concurrent_column_rename :users, :updated_at, :updated_at_timestamp
+  end
+
+  def down
+    rename_column_concurrently :users, :updated_at_timestamp, :updated_at
+  end
+end
+```
 
 ## Changing Column Constraints
 
-Generally changing column constraints requires checking all rows in the table to
-see if they meet the new constraint, unless a constraint is _removed_. For
-example, changing a column that previously allowed NULL values to not allow NULL
-values requires the database to verify all existing rows.
-
-The specific behaviour varies a bit between databases but in general the safest
-approach is to assume changing constraints requires downtime.
+Adding or removing a NOT NULL clause (or another constraint) can typically be
+done without requiring downtime. However, this does require that any application
+changes are deployed _first_. Thus, changing the constraints of a column should
+happen in a post-deployment migration.
 
 ## Changing Column Types
 
-This operation requires downtime.
+Changing the type of a column can be done using
+`Gitlab::Database::MigrationHelpers#change_column_type_concurrently`. This
+method works similarly to `rename_column_concurrently`. For example, let's say
+we want to change the type of `users.username` from `string` to `text`.
+
+### Step 1: Create A Regular Migration
+
+A regular migration is used to create a new column with a temporary name along
+with setting up some triggers to keep data in sync. Such a migration would look
+as follows:
+
+```ruby
+# A regular migration in db/migrate
+class ChangeUsersUsernameStringToText < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+
+  disable_ddl_transaction!
+
+  def up
+    change_column_type_concurrently :users, :username, :text
+  end
+
+  def down
+    cleanup_concurrent_column_type_change :users, :username
+  end
+end
+```
+
+### Step 2: Create A Post Deployment Migration
+
+Next we need to clean up our changes using a post-deployment migration:
+
+```ruby
+# A post-deployment migration in db/post_migrate
+class ChangeUsersUsernameStringToTextCleanup < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+
+  disable_ddl_transaction!
+
+  def up
+    cleanup_concurrent_column_type_change :users
+  end
+
+  def down
+    change_column_type_concurrently :users, :username, :string
+  end
+end
+```
+
+And that's it, we're done!
 
 ## Adding Indexes
 
@@ -101,11 +208,18 @@ Migrations can take advantage of this by using the method
 
 ```ruby
 class MyMigration < ActiveRecord::Migration
-  def change
+  def up
     add_concurrent_index :projects, :column_name
+  end
+
+  def down
+    remove_index(:projects, :column_name) if index_exists?(:projects, :column_name)
   end
 end
 ```
+
+Note that `add_concurrent_index` can not be reversed automatically, thus you
+need to manually define `up` and `down`.
 
 When running this on PostgreSQL the `CONCURRENTLY` option mentioned above is
 used. On MySQL this method produces a regular `CREATE INDEX` query.
@@ -125,43 +239,54 @@ This operation is safe as there's no code using the table just yet.
 
 ## Dropping Tables
 
-This operation requires downtime as application code may still be using the
-table.
+Dropping tables can be done safely using a post-deployment migration, but only
+if the application no longer uses the table.
 
 ## Adding Foreign Keys
 
-Adding foreign keys acquires an exclusive lock on both the source and target
-tables in PostgreSQL. This requires downtime as otherwise the entire application
-grinds to a halt for the duration of the operation.
+Adding foreign keys usually works in 3 steps:
 
-On MySQL this operation also requires downtime _unless_ foreign key checks are
-disabled. Because this means checks aren't enforced this is not ideal, as such
-one should assume MySQL also requires downtime.
+1. Start a transaction
+1. Run `ALTER TABLE` to add the constraint(s)
+1. Check all existing data
+
+Because `ALTER TABLE` typically acquires an exclusive lock until the end of a
+transaction this means this approach would require downtime.
+
+GitLab allows you to work around this by using
+`Gitlab::Database::MigrationHelpers#add_concurrent_foreign_key`. This method
+ensures that when PostgreSQL is used no downtime is needed.
 
 ## Removing Foreign Keys
 
-This operation should not require downtime on both PostgreSQL and MySQL.
+This operation does not require downtime.
 
-## Updating Data
+## Data Migrations
 
-Updating data should generally be safe. The exception to this is data that's
-being migrated from one version to another while the application still produces
-data in the old version.
+Data migrations can be tricky. The usual approach to migrate data is to take a 3
+step approach:
 
-For example, imagine the application writes the string `'dog'` to a column but
-it really is meant to write `'cat'` instead. One might think that the following
-migration is all that is needed to solve this problem:
+1. Migrate the initial batch of data
+1. Deploy the application code
+1. Migrate any remaining data
 
-```ruby
-class MyMigration < ActiveRecord::Migration
-  def up
-    execute("UPDATE some_table SET column = 'cat' WHERE column = 'dog';")
-  end
-end
-```
+Usually this works, but not always. For example, if a field's format is to be
+changed from JSON to something else we have a bit of a problem. If we were to
+change existing data before deploying application code we'll most likely run
+into errors. On the other hand, if we were to migrate after deploying the
+application code we could run into the same problems.
 
-Unfortunately this is not enough. Because the application is still running and
-using the old value this may result in the table still containing rows where
-`column` is set to `dog`, even after the migration finished.
+If you merely need to correct some invalid data, then a post-deployment
+migration is usually enough. If you need to change the format of data (e.g. from
+JSON to something else) it's typically best to add a new column for the new data
+format, and have the application use that. In such a case the procedure would
+be:
 
-In these cases downtime _is_ required, even for rarely updated tables.
+1. Add a new column in the new format
+1. Copy over existing data to this new column
+1. Deploy the application code
+1. In a post-deployment migration, copy over any remaining data
+
+In general there is no one-size-fits-all solution, therefore it's best to
+discuss these kind of migrations in a merge request to make sure they are
+implemented in the best way possible.
