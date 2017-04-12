@@ -65,6 +65,10 @@ RSpec.configure do |config|
     TestLicense.init
   end
 
+  config.after(:suite) do
+    TestEnv.cleanup
+  end
+
   if ENV['CI']
     # Retry only on feature specs that use JS
     config.around :each, :js do |ex|
