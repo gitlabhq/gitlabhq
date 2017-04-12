@@ -1,6 +1,5 @@
 /* global Flash */
 
-import Vue from 'vue';
 import eventHub from './event_hub';
 
 import AssigneeTitle from './components/assignee_title';

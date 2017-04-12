@@ -4,11 +4,18 @@ export default class SidebarAssigneesStore {
 
     this.currentUserId = currentUserId;
     this.rootPath = rootPath;
+
+    // Tracks the selected users
     this.userIds = [];
+
+    // Tracks the rendered users
+    this.users = [];
+
     this.loading = false;
     this.editable = editable;
 
     this.setUsers(assignees);
+
     assignees.forEach(a => this.addUserId(a.id));
   }
 
