@@ -12,8 +12,8 @@ Thus, we must strike a balance between sending requests and the feeling of realt
 Use the following rules when creating realtime solutions.
 
 1. The server will tell you how much to poll by sending `Poll-Interval` in the header.
-Use that as your polling interval. This way it is easy for system administrators to change the
-polling rate.
+Use that as your polling interval. This way it is [easy for system administrators to change the
+polling rate](../../administration/polling.md).
 A `Poll-Interval: -1` means you should disable polling, and this must be implemented.
 1. A response with HTTP status `4XX` or `5XX` should disable polling as well.
 1. Use a common library for polling.

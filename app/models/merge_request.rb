@@ -104,7 +104,6 @@ class MergeRequest < ActiveRecord::Base
   scope :by_source_or_target_branch, ->(branch_name) do
     where("source_branch = :branch OR target_branch = :branch", branch: branch_name)
   end
-  scope :cared, ->(user) { where('assignee_id = :user OR author_id = :user', user: user.id) }
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
   scope :from_project, ->(project) { where(source_project_id: project.id) }
@@ -365,6 +364,14 @@ class MergeRequest < ActiveRecord::Base
 
   def reload_merge_request_diff
     merge_request_diff(true)
+  end
+
+  def merge_request_diff_for(diff_refs)
+    @merge_request_diffs_by_diff_refs ||= Hash.new do |h, diff_refs|
+      h[diff_refs] = merge_request_diffs.viewable.select_without_diff.find_by_diff_refs(diff_refs)
+    end
+
+    @merge_request_diffs_by_diff_refs[diff_refs]
   end
 
   def reload_diff_if_branch_changed

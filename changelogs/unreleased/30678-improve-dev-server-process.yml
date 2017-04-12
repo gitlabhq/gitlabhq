@@ -1,0 +1,4 @@
+---
+title: Keep webpack-dev-server process functional across branch changes
+merge_request: 10581
+author:

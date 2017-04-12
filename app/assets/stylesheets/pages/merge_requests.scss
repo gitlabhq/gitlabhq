@@ -523,11 +523,12 @@
   }
 
   .content-block {
-    border-top: 1px solid $border-color;
     padding: $gl-padding-top $gl-padding;
   }
 
   .comments-disabled-notif {
+    line-height: 28px;
+
     .btn {
       margin-left: 5px;
     }

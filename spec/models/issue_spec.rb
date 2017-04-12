@@ -134,15 +134,6 @@ describe Issue, models: true do
     end
   end
 
-  describe '#is_being_reassigned?' do
-    it 'returns issues assigned to user' do
-      user = create(:user)
-      create_list(:issue, 2, assignee: user)
-
-      expect(Issue.open_for(user).count).to eq 2
-    end
-  end
-
   describe '#closed_by_merge_requests' do
     let(:project) { create(:project, :repository) }
     let(:issue) { create(:issue, project: project)}

@@ -23,6 +23,10 @@ class ContainerRepository < ActiveRecord::Base
     @path ||= [project.full_path, name].select(&:present?).join('/')
   end
 
+  def location
+    File.join(registry.path, path)
+  end
+
   def tag(tag)
     ContainerRegistry::Tag.new(self, tag)
   end

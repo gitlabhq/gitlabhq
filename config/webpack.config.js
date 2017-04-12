@@ -6,6 +6,7 @@ var webpack = require('webpack');
 var StatsPlugin = require('stats-webpack-plugin');
 var CompressionPlugin = require('compression-webpack-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 
 var ROOT_PATH = path.resolve(__dirname, '..');
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -70,13 +71,18 @@ var config = {
       {
         test: /\.js$/,
         exclude: /(node_modules|vendor\/assets)/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+      },
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
       },
       {
         test: /\.svg$/,
-        use: 'raw-loader'
-      }, {
-        test: /\.(worker.js|pdf)$/,
+        loader: 'raw-loader',
+      },
+      {
+        test: /\.(worker\.js|pdf)$/,
         exclude: /node_modules/,
         loader: 'file-loader',
       },
@@ -188,6 +194,10 @@ if (IS_DEV_SERVER) {
     inline: DEV_SERVER_LIVERELOAD
   };
   config.output.publicPath = '//localhost:' + DEV_SERVER_PORT + config.output.publicPath;
+  config.plugins.push(
+    // watch node_modules for changes if we encounter a missing module compile error
+    new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules'))
+  );
 }
 
 if (WEBPACK_REPORT) {
