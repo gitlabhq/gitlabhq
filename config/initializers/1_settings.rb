@@ -223,7 +223,7 @@ end
 Settings.gitlab['time_zone'] ||= nil
 Settings.gitlab['signup_enabled'] ||= true if Settings.gitlab['signup_enabled'].nil?
 Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].nil?
-Settings.gitlab['restricted_visibility_levels'] = Settings.send(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
+Settings.gitlab['restricted_visibility_levels'] = Settings.__send__(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
 Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing))(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)' if Settings.gitlab['issue_closing_pattern'].nil?
 Settings.gitlab['default_projects_features'] ||= {}
@@ -236,7 +236,7 @@ Settings.gitlab.default_projects_features['wiki']               = true if Settin
 Settings.gitlab.default_projects_features['snippets']           = true if Settings.gitlab.default_projects_features['snippets'].nil?
 Settings.gitlab.default_projects_features['builds']             = true if Settings.gitlab.default_projects_features['builds'].nil?
 Settings.gitlab.default_projects_features['container_registry'] = true if Settings.gitlab.default_projects_features['container_registry'].nil?
-Settings.gitlab.default_projects_features['visibility_level']   = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
+Settings.gitlab.default_projects_features['visibility_level']   = Settings.__send__(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
 Settings.gitlab['domain_whitelist'] ||= []
 Settings.gitlab['import_sources'] ||= %w[github bitbucket gitlab google_code fogbugz git gitlab_project gitea]
 Settings.gitlab['trusted_proxies'] ||= []
@@ -250,7 +250,7 @@ Settings.gitlab_ci['shared_runners_enabled'] = true if Settings.gitlab_ci['share
 Settings.gitlab_ci['all_broken_builds']     = true if Settings.gitlab_ci['all_broken_builds'].nil?
 Settings.gitlab_ci['add_pusher']            = false if Settings.gitlab_ci['add_pusher'].nil?
 Settings.gitlab_ci['builds_path']           = Settings.absolute(Settings.gitlab_ci['builds_path'] || "builds/")
-Settings.gitlab_ci['url']                 ||= Settings.send(:build_gitlab_ci_url)
+Settings.gitlab_ci['url']                 ||= Settings.__send__(:build_gitlab_ci_url)
 
 #
 # Reply by email
@@ -289,7 +289,7 @@ Settings.pages['https']           = false if Settings.pages['https'].nil?
 Settings.pages['host']            ||= "example.com"
 Settings.pages['port']            ||= Settings.pages.https ? 443 : 80
 Settings.pages['protocol']        ||= Settings.pages.https ? "https" : "http"
-Settings.pages['url']             ||= Settings.send(:build_pages_url)
+Settings.pages['url']             ||= Settings.__send__(:build_pages_url)
 Settings.pages['external_http']   ||= false unless Settings.pages['external_http'].present?
 Settings.pages['external_https']  ||= false unless Settings.pages['external_https'].present?
 
@@ -364,7 +364,7 @@ Settings.cron_jobs['stuck_import_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_import_jobs_worker']['cron'] ||= '15 * * * *'
 Settings.cron_jobs['stuck_import_jobs_worker']['job_class'] = 'StuckImportJobsWorker'
 Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.send(:cron_random_weekly_time)
+Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_random_weekly_time)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
 
 # Every day at 00:30
@@ -385,7 +385,7 @@ Settings.gitlab_shell['ssh_host']     ||= Settings.gitlab.ssh_host
 Settings.gitlab_shell['ssh_port']     ||= 22
 Settings.gitlab_shell['ssh_user']     ||= Settings.gitlab.user
 Settings.gitlab_shell['owner_group']  ||= Settings.gitlab.user
-Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_ssh_path_prefix)
+Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.__send__(:build_gitlab_shell_ssh_path_prefix)
 
 #
 # Repositories
