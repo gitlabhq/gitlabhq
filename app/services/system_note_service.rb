@@ -488,13 +488,13 @@ module SystemNoteService
   def approve_mr(noteable, user)
     body = "approved this merge request"
 
-    create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'approvals'))
+    create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'approved'))
   end
 
   def unapprove_mr(noteable, user)
     body = "unapproved this merge request"
 
-    create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'approvals'))
+    create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'unapproved'))
   end
 
   private
