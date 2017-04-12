@@ -1,5 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, max-len */
 
+import '~/lib/utils/url_utility';
+
 (function() {
   this.MergedButtons = (function() {
     function MergedButtons() {
@@ -31,7 +33,7 @@
     };
 
     MergedButtons.prototype.removeBranchSuccess = function() {
-      return location.reload();
+      gl.utils.refreshCurrentPage();
     };
 
     MergedButtons.prototype.removeBranchError = function() {
