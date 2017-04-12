@@ -34,7 +34,6 @@ module Projects
 
         unless remove_legacy_registry_tags
           raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
-<<<<<<< HEAD
         end
 
         unless remove_repository(repo_path)
@@ -43,8 +42,6 @@ module Projects
 
         unless remove_repository(wiki_path)
           raise_error('Failed to remove wiki repository. Please try again or contact administrator.')
-=======
->>>>>>> 57ef7bca47f3cdeedd684779f1b1f825bb778cec
         end
       end
 

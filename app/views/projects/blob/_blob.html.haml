@@ -26,16 +26,6 @@
 #blob-content-holder.blob-content-holder
   %article.file-holder
     = render "projects/blob/header", blob: blob
-<<<<<<< HEAD
-    - if current_user
-      .js-file-fork-suggestion-section.file-fork-suggestion.hidden
-        %span.file-fork-suggestion-note
-          You don't have permission to edit this file. Try forking this project to edit the file.
-        = link_to 'Fork', fork_path, method: :post, class: 'btn btn-grouped btn-inverted btn-new'
-        %button.js-cancel-fork-suggestion.btn.btn-grouped{ type: 'button' }
-          Cancel
-=======
->>>>>>> 57ef7bca47f3cdeedd684779f1b1f825bb778cec
 
     - if blob.empty?
       .file-content.code
