@@ -147,8 +147,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def can_create_branch
     can_create = current_user &&
-      can?(current_user, :push_code, @project) &&
-      @issue.can_be_worked_on?(current_user)
+      Ability.can_create_branch_from_issue?(current_user, project, issuable)
 
     respond_to do |format|
       format.json do

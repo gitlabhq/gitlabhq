@@ -32,6 +32,11 @@ class Ability
       allowed?(user, :edit_note, note)
     end
 
+    def can_create_branch_from_issue?(user, project, issue)
+      allowed?(user, :push_code, project) &&
+        issue.can_be_worked_on?(user)
+    end
+
     def allowed?(user, action, subject = :global, opts = {})
       if subject.is_a?(Hash)
         opts, subject = subject, :global
