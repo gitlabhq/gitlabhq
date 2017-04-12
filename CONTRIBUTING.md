@@ -327,6 +327,7 @@ request is as follows:
      "Description" field.
   1. If you are contributing documentation, choose `Documentation` from the
      "Choose a template" menu and fill in the template.
+1. The MR description should describe how to test the change you want to make.
 1. If the MR changes the UI it should include *Before* and *After* screenshots
 1. If the MR changes CSS classes please include the list of affected pages,
    `grep css-class ./app -R`
