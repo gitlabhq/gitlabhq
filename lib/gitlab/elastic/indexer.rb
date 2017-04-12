@@ -10,6 +10,10 @@ module Gitlab
 
       Error = Class.new(StandardError)
 
+      def self.experimental_indexer_present?
+        Gitlab::Utils.which(EXPERIMENTAL_INDEXER).present?
+      end
+
       attr_reader :project
 
       def initialize(project)
@@ -46,7 +50,7 @@ module Gitlab
       end
 
       def path_to_indexer
-        if current_application_settings.elasticsearch_experimental_indexer?
+        if current_application_settings.elasticsearch_experimental_indexer? && self.class.experimental_indexer_present?
           EXPERIMENTAL_INDEXER
         else
           Rails.root.join('bin', 'elastic_repo_indexer').to_s
