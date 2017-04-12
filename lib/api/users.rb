@@ -37,12 +37,16 @@ module API
         success Entities::UserBasic
       end
       params do
+        # CE
         optional :username, type: String, desc: 'Get a single user with a specific username'
         optional :search, type: String, desc: 'Search for a username'
         optional :active, type: Boolean, default: false, desc: 'Filters only active users'
         optional :external, type: Boolean, default: false, desc: 'Filters only external users'
         optional :blocked, type: Boolean, default: false, desc: 'Filters only blocked users'
+
+        # EE
         optional :skip_ldap, type: Boolean, default: false, desc: 'Skip LDAP users'
+
         use :pagination
       end
       get do

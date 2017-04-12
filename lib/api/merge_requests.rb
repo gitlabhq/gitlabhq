@@ -33,14 +33,22 @@ module API
           end
         end
 
-        params :optional_params do
+        params :optional_params_ce do
           optional :description, type: String, desc: 'The description of the merge request'
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
           optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign the merge request'
           optional :labels, type: String, desc: 'Comma-separated list of label names'
-          optional :approvals_before_merge, type: Integer, desc: 'Number of approvals required before this can be merged'
           optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
+        end
+
+        params :optional_params_ee do
+          optional :approvals_before_merge, type: Integer, desc: 'Number of approvals required before this can be merged'
           optional :squash, type: Boolean, desc: 'Squash commits when merging'
+        end
+
+        params :optional_params do
+          use :optional_params_ce
+          use :optional_params_ee
         end
       end
 
@@ -147,14 +155,29 @@ module API
         success Entities::MergeRequest
       end
       params do
+        # CE
+        at_least_one_of_ce = [
+          :assignee_id,
+          :description,
+          :labels,
+          :milestone_id,
+          :remove_source_branch,
+          :state_event,
+          :target_branch,
+          :title
+        ]
         optional :title, type: String, allow_blank: false, desc: 'The title of the merge request'
         optional :target_branch, type: String, allow_blank: false, desc: 'The target branch'
         optional :state_event, type: String, values: %w[close reopen],
                                desc: 'Status of the merge request'
+
+        # EE
+        at_least_one_of_ee = [
+          :squash
+        ]
+
         use :optional_params
-        at_least_one_of :title, :target_branch, :description, :assignee_id,
-                        :milestone_id, :labels, :state_event,
-                        :remove_source_branch, :squash
+        at_least_one_of(*(at_least_one_of_ce + at_least_one_of_ee))
       end
       put ':id/merge_requests/:merge_request_iid' do
         merge_request = find_merge_request_with_access(params.delete(:merge_request_iid), :update_merge_request)
@@ -175,12 +198,15 @@ module API
         success Entities::MergeRequest
       end
       params do
+        # CE
         optional :merge_commit_message, type: String, desc: 'Custom merge commit message'
         optional :should_remove_source_branch, type: Boolean,
                                                desc: 'When true, the source branch will be deleted if possible'
         optional :merge_when_pipeline_succeeds, type: Boolean,
                                                 desc: 'When true, this merge request will be merged when the pipeline succeeds'
         optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
+
+        # EE
         optional :squash, type: Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'
       end
       put ':id/merge_requests/:merge_request_iid/merge' do

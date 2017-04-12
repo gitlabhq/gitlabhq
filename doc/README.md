@@ -44,11 +44,18 @@ All technical content published by GitLab lives in the documentation, including:
 - [Upload your GitLab License](user/admin_area/license.md) Upload the license you purchased for GitLab Enterprise Edition to unlock its features.
 - [Audit Events](administration/audit_events.md) Check how user access changed in projects and groups.
 - [Access restrictions](user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols) Define which Git access protocols can be used to talk to GitLab
+<<<<<<< HEAD
 - [Changing the appearance of the login page](customization/branded_login_page.md) Make the login page branded for your GitLab instance.
 - [Email](tools/email.md) Email GitLab users from GitLab
 - [Push Rules](push_rules/push_rules.md) Advanced push rules for your project.
 - [Help message](customization/help_message.md) Set information about administrators of your GitLab instance.
+=======
+>>>>>>> 57ef7bca47f3cdeedd684779f1b1f825bb778cec
 - [Authentication/Authorization](administration/auth/README.md) Configure external authentication with LDAP, SAML, CAS and additional Omniauth providers.
+- [Changing the appearance of the login page](customization/branded_login_page.md) Make the login page branded for your GitLab instance.
+- [Email](tools/email.md) Email GitLab users from GitLab
+- [Push Rules](push_rules/push_rules.md) Advanced push rules for your project.
+- [Help message](customization/help_message.md) Set information about administrators of your GitLab instance.
 - [Container Registry](administration/container_registry.md) Configure Docker Registry with GitLab.
 - [Custom Git hooks](administration/custom_hooks.md) Custom Git hooks (on the filesystem) for when webhooks aren't enough.
 - [Debugging Tips](administration/troubleshooting/debug.md) Tips to debug problems when things go wrong

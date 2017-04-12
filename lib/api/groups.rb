@@ -5,19 +5,24 @@ module API
     before { authenticate! }
 
     helpers do
-      params :optional_params do
+      params :optional_params_ce do
         optional :description, type: String, desc: 'The description of the group'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the group'
         optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
-        optional :membership_lock, type: Boolean, desc: 'Prevent adding new members to project membership within this group'
         optional :share_with_group_lock, type: Boolean, desc: 'Prevent sharing a project with another group within this group'
       end
 
       params :optional_params_ee do
+        optional :membership_lock, type: Boolean, desc: 'Prevent adding new members to project membership within this group'
         optional :ldap_cn, type: String, desc: 'LDAP Common Name'
         optional :ldap_access, type: Integer, desc: 'A valid access level'
         all_or_none_of :ldap_cn, :ldap_access
+      end
+
+      params :optional_params do
+        use :optional_params_ce
+        use :optional_params_ee
       end
 
       params :statistics_params do
@@ -75,7 +80,6 @@ module API
         requires :path, type: String, desc: 'The path of the group'
         optional :parent_id, type: Integer, desc: 'The parent group id for creating nested group'
         use :optional_params
-        use :optional_params_ee
       end
       post do
         authorize! :create_group

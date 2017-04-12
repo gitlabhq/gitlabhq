@@ -246,7 +246,7 @@ feature 'Merge request approvals', js: true, feature: true do
         visit namespace_project_merge_request_path(project.namespace, project, merge_request)
       end
 
-      it 'I am unable to set Merge When Pipeline Succeeds' do
+      it 'I am unable to set Merge when pipeline succeeds' do
         # before approval status is loaded
         expect(page).to have_button('Merge when pipeline succeeds', disabled: true)
 

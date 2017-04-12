@@ -155,6 +155,23 @@ describe DiffNote, models: true do
     end
   end
 
+  describe '#latest_merge_request_diff' do
+    context 'when active' do
+      it 'returns the current merge request diff' do
+        expect(subject.latest_merge_request_diff).to eq(merge_request.merge_request_diff)
+      end
+    end
+
+    context 'when outdated' do
+      let!(:old_merge_request_diff) { merge_request.merge_request_diff }
+      let!(:new_merge_request_diff) { merge_request.merge_request_diffs.create(diff_refs: commit.diff_refs) }
+
+      it 'returns the latest merge request diff that this diff note applied to' do
+        expect(subject.latest_merge_request_diff).to eq(old_merge_request_diff)
+      end
+    end
+  end
+
   describe "creation" do
     describe "updating of position" do
       context "when noteable is a commit" do

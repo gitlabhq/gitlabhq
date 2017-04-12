@@ -166,7 +166,10 @@ constraints(ProjectUrlConstrainer.new) do
           resources :push_access_levels, only: [:destroy]
         end
       end
+<<<<<<< HEAD
 
+=======
+>>>>>>> 57ef7bca47f3cdeedd684779f1b1f825bb778cec
       resources :protected_tags, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
 
       resources :variables, only: [:index, :show, :update, :create, :destroy]

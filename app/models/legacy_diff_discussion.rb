@@ -7,12 +7,20 @@
 class LegacyDiffDiscussion < Discussion
   include DiscussionOnDiff
 
+  memoized_values << :active
+
   def legacy_diff_discussion?
     true
   end
 
   def self.note_class
     LegacyDiffNote
+  end
+
+  def active?(*args)
+    return @active if @active.present?
+
+    @active = first_note.active?(*args)
   end
 
   def collapsed?
