@@ -122,18 +122,9 @@ module Ci
     end
 
     def play(current_user)
-      unless can_play?(current_user)
-        raise Gitlab::Access::AccessDeniedError
-      end
-
-      # Try to queue a current build
-      if self.enqueue
-        self.update(user: current_user)
-        self
-      else
-        # Otherwise we need to create a duplicate
-        Ci::Build.retry(self, current_user)
-      end
+      Ci::PlayBuildService
+        .new(project, current_user)
+        .execute(self)
     end
 
     def cancelable?

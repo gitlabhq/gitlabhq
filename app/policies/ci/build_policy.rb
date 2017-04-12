@@ -17,7 +17,7 @@ module Ci
     alias_method :build, :subject
 
     def can_play_action?
-      return false unless build.playable?
+      return false unless build.action?
 
       ::Gitlab::UserAccess
         .new(user, project: build.project)
