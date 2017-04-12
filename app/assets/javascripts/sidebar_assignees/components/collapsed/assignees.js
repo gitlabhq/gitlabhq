@@ -2,20 +2,16 @@ import CollapsedAvatar from './avatar';
 
 export default {
   name: 'CollapsedAssignees',
+  data: {
+    return {
+      defaultRenderCount: 5,
+      defaultMaxCounter: 99,
+    }
+  },
   props: {
     users: {
       type: Array,
       required: true,
-    },
-    defaultRenderCount: {
-      type: Number,
-      required: false,
-      default: 5,
-    },
-    defaultMaxCounter: {
-      type: Number,
-      required: false,
-      default: 99,
     },
   },
   computed: {
