@@ -78,6 +78,11 @@ var config = {
         loader: 'raw-loader',
       },
       {
+        test: /\.gif$/,
+        loader: 'url-loader',
+        query: { mimetype: 'image/gif' },
+      },
+      {
         test: /\.(worker\.js|pdf)$/,
         exclude: /node_modules/,
         loader: 'file-loader',

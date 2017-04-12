@@ -1,11 +1,6 @@
 /* eslint-disable no-new */
 import Vue from 'vue';
-import PDFLab from 'vendor/pdflab';
-import workerSrc from 'vendor/pdf.worker';
-
-Vue.use(PDFLab, {
-  workerSrc,
-});
+import pdfLab from '../../pdf/index.vue';
 
 export default () => {
   const el = document.getElementById('js-pdf-viewer');
@@ -19,6 +14,9 @@ export default () => {
         loading: true,
         pdf: el.dataset.endpoint,
       };
+    },
+    components: {
+      pdfLab,
     },
     methods: {
       onLoad() {
