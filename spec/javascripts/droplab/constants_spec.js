@@ -26,4 +26,10 @@ describe('constants', function () {
       expect(constants.ACTIVE_CLASS).toBe('droplab-item-active');
     });
   });
+
+  describe('TEMPLATE_REGEX', function () {
+    it('should be a handlebars templating syntax regex', function() {
+      expect(constants.TEMPLATE_REGEX).toEqual(/\{\{(.+?)\}\}/g);
+    });
+  });
 });
