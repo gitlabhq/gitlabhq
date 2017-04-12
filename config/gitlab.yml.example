@@ -579,9 +579,9 @@ test:
     storages:
       default:
         path: tmp/tests/repositories/
-        gitaly_address: unix:<%= Rails.root.join('tmp/sockets/private/gitaly.socket') %>
+        gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
   gitaly:
-    enabled: false
+    enabled: true
   backup:
     path: tmp/tests/backups
   gitlab_shell:
