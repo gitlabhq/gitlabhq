@@ -949,8 +949,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  private
-
   def access_level=(new_level)
     new_level = new_level.to_s
     return unless %w(admin regular).include?(new_level)
