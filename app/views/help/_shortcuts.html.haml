@@ -105,23 +105,6 @@
                   %td.shortcut
                     .key esc
                   %td Go back
-              %tbody
-                %tr
-                  %th
-                  %th Project File
-                %tr
-                  %td.shortcut
-                    .key y
-                  %td Go to file permalink
-              %tbody.hidden-shortcut.wiki
-                %tr
-                  %th
-                  %th Wiki pages
-                %tr
-                  %td.shortcut
-                    .key e
-                  %td Edit wiki page
-
           .col-lg-4
             %table.shortcut-mappings
               %tbody
@@ -335,3 +318,11 @@
                   %td.shortcut
                     .key l
                   %td Change Label
+              %tbody.hidden-shortcut.wiki{ style: 'display:none' }
+                %tr
+                  %th
+                  %th Wiki pages
+                %tr
+                  %td.shortcut
+                    .key e
+                  %td Edit wiki page
