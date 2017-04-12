@@ -427,8 +427,7 @@ bundler:audit:
   script:
     - git fetch origin v8.14.10
     - git checkout -f FETCH_HEAD
-    - cp config/resque.yml.example config/resque.yml
-    - sed -i 's/localhost/redis/g' config/resque.yml
+    - bundle install --without production --jobs $(nproc) $FLAGS --retry=3
     - bundle install --without production --jobs $(nproc) $FLAGS --retry=3
     - bundle exec rake db:drop db:create db:schema:load db:seed_fu
     - git checkout $CI_COMMIT_SHA

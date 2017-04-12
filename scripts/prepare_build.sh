@@ -10,29 +10,18 @@ if [ "$GITLAB_DATABASE" != 'mysql' ]; then
     export GITLAB_DATABASE='postgresql'
 fi
 
-if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
-    cp config/database.yml.$GITLAB_DATABASE config/database.yml
+cp config/database.yml.$GITLAB_DATABASE config/database.yml
 
-    if [ "$GITLAB_DATABASE" = 'postgresql' ]; then
-        sed -i 's/# host:.*/host: postgres/g' config/database.yml
-    else # Assume it's mysql
-        sed -i 's/username:.*/username: root/g' config/database.yml
-        sed -i 's/password:.*/password:/g' config/database.yml
-        sed -i 's/# host:.*/host: mysql/g' config/database.yml
-    fi
-
-    cp config/resque.yml.example config/resque.yml
-    sed -i 's/localhost/redis/g' config/resque.yml
-
-    export FLAGS="--path vendor --retry 3 --quiet"
-else
-    rnd=$(awk 'BEGIN { srand() ; printf("%d\n",rand()*5) }')
-    export PATH="$HOME/bin:/usr/local/bin:/usr/bin:/bin"
-    cp config/database.yml.$GITLAB_DATABASE config/database.yml
-    sed "s/username\:.*$/username\: runner/" -i config/database.yml
-    sed "s/password\:.*$/password\: 'password'/" -i config/database.yml
-    sed "s/gitlabhq_test/gitlabhq_test_$rnd/" -i config/database.yml
+if [ "$GITLAB_DATABASE" = 'postgresql' ]; then
+    sed -i 's/# host:.*/host: postgres/g' config/database.yml
+else # Assume it's mysql
+    sed -i 's/username:.*/username: root/g' config/database.yml
+    sed -i 's/password:.*/password:/g' config/database.yml
+    sed -i 's/# host:.*/host: mysql/g' config/database.yml
 fi
+
+cp config/resque.yml.example config/resque.yml
+sed -i 's/localhost/redis/g' config/resque.yml
 
 cp config/gitlab.yml.example config/gitlab.yml
 
@@ -51,3 +40,5 @@ if [ "$SETUP_DB" != "false" ]; then
         bundle exec rake add_limits_mysql
     fi
 fi
+
+export FLAGS="--path vendor --retry 3 --quiet"

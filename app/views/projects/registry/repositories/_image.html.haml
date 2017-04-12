@@ -4,7 +4,7 @@
       = icon('chevron-down', 'aria-hidden': 'true')
       = escape_once(image.path)
 
-    = clipboard_button(clipboard_text: "docker pull #{image.path}")
+    = clipboard_button(clipboard_text: "docker pull #{image.location}")
 
     .controls.hidden-xs.pull-right
       = link_to namespace_project_container_registry_path(@project.namespace, @project, image),

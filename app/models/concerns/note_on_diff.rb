@@ -25,4 +25,18 @@ module NoteOnDiff
   def diff_attributes
     raise NotImplementedError
   end
+
+  def active?(diff_refs = nil)
+    raise NotImplementedError
+  end
+
+  private
+
+  def noteable_diff_refs
+    if noteable.respond_to?(:diff_sha_refs)
+      noteable.diff_sha_refs
+    else
+      noteable.diff_refs
+    end
+  end
 end

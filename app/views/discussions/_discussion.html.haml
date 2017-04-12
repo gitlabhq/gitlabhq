@@ -20,21 +20,22 @@
             = discussion.author.to_reference
             started a discussion
 
+            - url = discussion_diff_path(discussion)
             - if discussion.for_commit? && @noteable != discussion.noteable
               on
               - commit = discussion.noteable
               - if commit
                 commit
-                - anchor = discussion.line_code if discussion.diff_discussion?
-                = link_to commit.short_id, namespace_project_commit_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: anchor), class: 'monospace'
+                = link_to commit.short_id, url, class: 'monospace'
               - else
                 a deleted commit
             - elsif discussion.diff_discussion?
               on
-              - if discussion.active?
-                = link_to 'the diff', discussion_diff_path(discussion)
-              - else
-                an outdated diff
+              = conditional_link_to url.present?, url do
+                - if discussion.active?
+                  the diff
+                - else
+                  an outdated diff
 
             = time_ago_with_tooltip(discussion.created_at, placement: "bottom", html_class: "note-created-ago")
           = render "discussions/headline", discussion: discussion

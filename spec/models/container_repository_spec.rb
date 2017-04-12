@@ -4,7 +4,7 @@ describe ContainerRepository do
   let(:group) { create(:group, name: 'group') }
   let(:project) { create(:project, path: 'test', group: group) }
 
-  let(:container_repository) do
+  let(:repository) do
     create(:container_repository, name: 'my_image', project: project)
   end
 
@@ -23,48 +23,48 @@ describe ContainerRepository do
 
   describe 'associations' do
     it 'belongs to the project' do
-      expect(container_repository).to belong_to(:project)
+      expect(repository).to belong_to(:project)
     end
   end
 
   describe '#tag' do
     it 'has a test tag' do
-      expect(container_repository.tag('test')).not_to be_nil
+      expect(repository.tag('test')).not_to be_nil
     end
   end
 
   describe '#path' do
     it 'returns a full path to the repository' do
-      expect(container_repository.path).to eq('group/test/my_image')
+      expect(repository.path).to eq('group/test/my_image')
     end
   end
 
   describe '#manifest' do
-    subject { container_repository.manifest }
-
-    it { is_expected.not_to be_nil }
+    it 'returns non-empty manifest' do
+      expect(repository.manifest).not_to be_nil
+    end
   end
 
   describe '#valid?' do
-    subject { container_repository.valid? }
-
-    it { is_expected.to be_truthy }
+    it 'is a valid repository' do
+      expect(repository).to be_valid
+    end
   end
 
   describe '#tags' do
-    subject { container_repository.tags }
-
-    it { is_expected.not_to be_empty }
+    it 'returns non-empty tags list' do
+      expect(repository.tags).not_to be_empty
+    end
   end
 
   describe '#has_tags?' do
     it 'has tags' do
-      expect(container_repository).to have_tags
+      expect(repository).to have_tags
     end
   end
 
   describe '#delete_tags!' do
-    let(:container_repository) do
+    let(:repository) do
       create(:container_repository, name: 'my_image',
                                     tags: %w[latest rc1],
                                     project: project)
@@ -72,21 +72,36 @@ describe ContainerRepository do
 
     context 'when action succeeds' do
       it 'returns status that indicates success' do
-        expect(container_repository.client)
+        expect(repository.client)
           .to receive(:delete_repository_tag)
           .and_return(true)
 
-        expect(container_repository.delete_tags!).to be_truthy
+        expect(repository.delete_tags!).to be_truthy
       end
     end
 
     context 'when action fails' do
       it 'returns status that indicates failure' do
-        expect(container_repository.client)
+        expect(repository.client)
           .to receive(:delete_repository_tag)
           .and_return(false)
 
-        expect(container_repository.delete_tags!).to be_falsey
+        expect(repository.delete_tags!).to be_falsey
+      end
+    end
+  end
+
+  describe '#location' do
+    context 'when registry is running on a custom port' do
+      before do
+        stub_container_registry_config(enabled: true,
+                                       api_url: 'http://registry.gitlab:5000',
+                                       host_port: 'registry.gitlab:5000')
+      end
+
+      it 'returns a full location of the repository' do
+        expect(repository.location)
+          .to eq 'registry.gitlab:5000/group/test/my_image'
       end
     end
   end
@@ -102,7 +117,7 @@ describe ContainerRepository do
 
     context 'when repository is not a root repository' do
       it 'returns false' do
-        expect(container_repository).not_to be_root_repository
+        expect(repository).not_to be_root_repository
       end
     end
   end

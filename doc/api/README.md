@@ -303,6 +303,17 @@ Additional pagination headers are also sent back.
 | `X-Next-Page`   | The index of the next page |
 | `X-Prev-Page`   | The index of the previous page |
 
+## Namespaced path encoding
+
+If using namespaced API calls, make sure that the `NAMESPACE/PROJECT_NAME` is
+URL-encoded.
+
+For example, `/` is represented by `%2F`:
+
+```
+/api/v4/projects/diaspora%2Fdiaspora
+```
+
 ## `id` vs `iid`
 
 When you work with the API, you may notice two similar fields in API entities:
@@ -397,7 +408,6 @@ Content-Type: application/json
     "error": "404 Not Found"
 }
 ```
-
 
 ## Clients
 
