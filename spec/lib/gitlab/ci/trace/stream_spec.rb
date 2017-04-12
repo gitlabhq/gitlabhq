@@ -21,7 +21,7 @@ describe Gitlab::Ci::Trace::Stream do
       end
     end
 
-    it 'if size is larger we start from beggining' do
+    it 'if size is larger we start from beginning' do
       stream.limit(10)
 
       expect(stream.tell).to eq(0)
@@ -31,6 +31,26 @@ describe Gitlab::Ci::Trace::Stream do
       stream.limit(2)
 
       expect(stream.tell).to eq(6)
+    end
+
+    context 'when the trace contains ANSI sequence and Unicode' do
+      let(:stream) do
+        described_class.new do
+          File.open(expand_fixture_path('trace/ansi-sequence-and-unicode'))
+        end
+      end
+
+      it 'forwards to the next linefeed, case 1' do
+        stream.limit(7)
+
+        expect(stream.raw).to eq('')
+      end
+
+      it 'forwards to the next linefeed, case 2' do
+        stream.limit(29)
+
+        expect(stream.raw).to eq("\e[01;32m許功蓋\e[0m\n")
+      end
     end
   end
 
