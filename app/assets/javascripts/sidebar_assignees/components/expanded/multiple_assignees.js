@@ -2,21 +2,26 @@ export default {
   name: 'MultipleAssignees',
   data() {
     return {
+      defaultRenderCount: 5,
       showLess: true,
     };
   },
   props: {
-    store: {
-      type: Object,
+    rootPath: {
+      type: String,
+      required: true,
+    },
+    users: {
+      type: Array,
       required: true,
     },
   },
   computed: {
     renderShowMoreSection() {
-      return this.store.users.length > this.store.defaultRenderCount;
+      return this.users.length > this.defaultRenderCount;
     },
     numberOfHiddenAssignees() {
-      return this.store.users.length - this.store.defaultRenderCount;
+      return this.users.length - this.defaultRenderCount;
     },
     isHiddenAssignees() {
       return this.numberOfHiddenAssignees > 0;
@@ -27,10 +32,10 @@ export default {
       this.showLess = !this.showLess;
     },
     renderAssignee(index) {
-      return !this.showLess || (index < this.store.defaultRenderCount && this.showLess);
+      return !this.showLess || (index < this.defaultRenderCount && this.showLess);
     },
     assigneeUrl(username) {
-      return `${this.store.rootPath}${username}`;
+      return `${this.rootPath}${username}`;
     },
     assigneeAlt(name) {
       return `${name}'s avatar`;
@@ -40,7 +45,7 @@ export default {
     <div class="hide-collapsed">
       <div class="hide-collapsed">
         <div class="user-list">
-          <div class="user-item" v-for="(user, index) in store.users"
+          <div class="user-item" v-for="(user, index) in users"
               v-if="renderAssignee(index)" >
             <a class="user-link has-tooltip"
               data-placement="bottom"

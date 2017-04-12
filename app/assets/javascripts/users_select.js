@@ -3,6 +3,7 @@
 /* global ListUser */
 
 import Vue from 'vue';
+import eventHub from './sidebar_assignees/event_hub';
 
 (function() {
   var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
@@ -250,7 +251,8 @@ import Vue from 'vue';
             defaultLabel: defaultLabel,
             hidden: function(e) {
               if ($dropdown.hasClass('js-multiselect')) {
-                gl.sidebarAssigneesOptions.store.saveUsers();
+                // gl.sidebarAssigneesOptions.store.saveUsers();
+                eventHub.$emit('saveUsers');
               }
 
               $selectbox.hide();
@@ -274,12 +276,12 @@ import Vue from 'vue';
                   // Unassigned selected
                   previouslySelected.each((index, element) => {
                     const id = parseInt(element.value, 10);
-                    gl.sidebarAssigneesOptions.store.removeUser(id);
                     element.remove();
                   });
+                  eventHub.$emit('removeAllUsers');
                 } else if (isActive) {
                   // user selected
-                  gl.sidebarAssigneesOptions.store.addUser({
+                  eventHub.$emit('addUser', {
                     id: user.id,
                     name: user.name,
                     username: user.username,
@@ -292,7 +294,6 @@ import Vue from 'vue';
 
                   if (unassignedSelected) {
                     unassignedSelected.remove();
-                    gl.sidebarAssigneesOptions.store.removeUser(unassignedSelected);
                   }
                 } else {
                   if (previouslySelected.length === 0) {
@@ -301,7 +302,7 @@ import Vue from 'vue';
                   }
 
                   // User unselected
-                  gl.sidebarAssigneesOptions.store.removeUser(user.id);
+                  eventHub.$emit('removeUser', user.id);
                 }
               }
 

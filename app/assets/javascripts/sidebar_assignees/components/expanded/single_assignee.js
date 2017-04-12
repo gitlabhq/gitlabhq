@@ -1,17 +1,18 @@
 export default {
   name: 'SingleAssignee',
   props: {
-    store: {
-      type: Object,
+    rootPath: {
+      type: String,
       required: true,
     },
+    user: {
+      type: Object,
+      required: true,
+    }
   },
   computed: {
-    user() {
-      return this.store.users[0];
-    },
     userUrl() {
-      return `${this.store.rootPath}${this.user.username}`;
+      return `${this.rootPath}${this.user.username}`;
     },
     username() {
       return `@${this.user.username}`;

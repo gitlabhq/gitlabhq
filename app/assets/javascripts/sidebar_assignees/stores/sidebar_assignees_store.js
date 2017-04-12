@@ -3,19 +3,19 @@ import '~/flash';
 
 export default class SidebarAssigneesStore {
   constructor(store) {
-    const { currentUserId, service, rootPath, editable } = store;
+    const { currentUser, assignees, rootPath, editable } = store;
 
-    this.currentUserId = currentUserId;
-    this.service = service;
+    this.currentUser = currentUser;
     this.rootPath = rootPath;
     this.users = [];
-    this.saved = true;
     this.loading = false;
     this.editable = editable;
     this.defaultRenderCount = 5;
+
+    assignees.forEach(a => this.addUser(this.destructUser(a)));
   }
 
-  addUser(user, saved = false) {
+  addUser(user) {
     const { id, name, username, avatarUrl } = user;
 
     this.users.push({
@@ -24,48 +24,47 @@ export default class SidebarAssigneesStore {
       username,
       avatarUrl,
     });
-
-    // !saved means that this user was added to UI but not service
-    this.saved = saved;
+    console.log(`addUser()`);
+    console.log(user);
   }
 
   addCurrentUser() {
-    this.addUser({
-      id: this.currentUserId,
-    });
-    this.saveUsers();
+    this.addUser(this.currentUser);
   }
 
   removeUser(id) {
-    this.saved = false;
+    console.log(`removeUser()`);
+    console.log(id);
     this.users = this.users.filter(u => u.id !== id);
   }
 
-  saveUsers() {
+  removeAllUsers() {
+    this.users = [];
+  }
+
+  getUserIds() {
+    console.log(`getUserIds`);
     const ids = this.users.map(u => u.id);
+
+    if (ids.length > 0 && ids[0] == undefined) {
+      debugger
+    }
     // If there are no ids, that means we have to unassign (which is id = 0)
-    const payload = ids.length > 0 ? ids : [0];
+    return ids.length > 0 ? ids : [0];
+  }
 
-    this.loading = true;
-    this.service.update(payload)
-      .then((response) => {
-        const data = response.data;
-        const assignees = data.assignees;
+  destructUser(u) {
+    return {
+      id: u.id,
+      name: u.name,
+      username: u.username,
+      avatarUrl: u.avatar_url,
+    };
+  }
 
-        this.users = [];
+  saveUsers(assignees) {
+    this.users = [];
 
-        assignees.forEach(a => this.addUser({
-          id: a.id,
-          name: a.name,
-          username: a.username,
-          avatarUrl: a.avatar_url,
-        }, true));
-
-        this.saved = true;
-        this.loading = false;
-      }).catch(() => {
-        this.loading = false;
-        return new Flash('An error occured while saving assignees', 'alert');
-      });
+    assignees.forEach(a => this.addUser(this.destructUser(a)));
   }
 }

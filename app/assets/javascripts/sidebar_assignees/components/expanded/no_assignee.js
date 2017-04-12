@@ -1,14 +1,10 @@
+import eventHub from '../../event_hub';
+
 export default {
   name: 'NoAssignee',
-  props: {
-    store: {
-      type: Object,
-      required: true,
-    },
-  },
   methods: {
     assignSelf() {
-      this.store.addCurrentUser();
+      eventHub.$emit('addCurrentUser');
     },
   },
   template: `
