@@ -86,6 +86,7 @@ class Note < ActiveRecord::Base
   before_validation :set_discussion_id
   after_save :keep_around_commit, unless: :for_personal_snippet?
   after_save :expire_etag_cache
+  after_destroy :expire_etag_cache
 
   class << self
     def model_name
