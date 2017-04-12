@@ -1,0 +1,4 @@
+---
+title: "Bugfix: POST /projects/:id/hooks and PUT /projects/:id/hook/:hook_id no longer ignore the the job_events param in the V4 API"
+merge_request: 10586
+author:
