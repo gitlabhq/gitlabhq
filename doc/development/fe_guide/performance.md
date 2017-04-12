@@ -48,8 +48,8 @@ Steps to split page-specific JavaScript from the main `main.js`:
 
 ```haml
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('lib_chart')
-  = page_specific_javascript_bundle_tag('graphs')
+  = webpack_bundle_tag 'lib_chart'
+  = webpack_bundle_tag 'graphs'
 ```
 
 The above loads `chart.js` and `graphs_bundle.js` for this page only. `chart.js`
