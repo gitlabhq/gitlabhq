@@ -157,7 +157,8 @@
 
 .prometheus-graph {
   text {
-    fill: $stat-graph-axis-fill;
+    fill: #525252;
+    stroke-width: 0;
   }
 }
 
@@ -200,22 +201,15 @@
 .rect-text-metric {
   fill: $white-light;
   stroke-width: 1;
-  stroke: $black;
+  stroke: #e1e1e1;
 }
 
 .rect-axis-text {
   fill: $white-light;
 }
 
-.text-metric,
-.text-median-metric,
-.text-metric-usage,
-.text-metric-date {
-  fill: $black;
-}
-
-.text-metric-date {
-  font-weight: 200;
+.text-metric {
+  font-weight: 600;
 }
 
 .selected-metric-line {
