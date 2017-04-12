@@ -959,40 +959,8 @@ describe Ci::Build, :models do
       project.add_developer(user)
     end
 
-    context 'when user does not have ability to trigger action' do
-      before do
-        create(:protected_branch, :no_one_can_push,
-               name: build.ref, project: project)
-      end
-
-      it 'raises an error' do
-        expect { build.play(user) }
-          .to raise_error Gitlab::Access::AccessDeniedError
-      end
-    end
-
-    context 'when user has ability to trigger manual action' do
-      context 'when build is manual' do
-        it 'enqueues a build' do
-          new_build = build.play(user)
-
-          expect(new_build).to be_pending
-          expect(new_build).to eq(build)
-        end
-      end
-
-      context 'when build is not manual' do
-        before do
-          build.update(status: 'success')
-        end
-
-        it 'creates a new build' do
-          new_build = build.play(user)
-
-          expect(new_build).to be_pending
-          expect(new_build).not_to eq(build)
-        end
-      end
+    it 'enqueues the build' do
+      expect(build.play(user)).to be_pending
     end
   end
 
