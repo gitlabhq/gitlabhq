@@ -4,28 +4,53 @@ When writing migrations for GitLab, you have to take into account that
 these will be ran by hundreds of thousands of organizations of all sizes, some with
 many years of data in their database.
 
-In addition, having to take a server offline for a an upgrade small or big is
-a big burden for most organizations. For this reason it is important that your
-migrations are written carefully, can be applied online and adhere to the style guide below.
+In addition, having to take a server offline for a a upgrade small or big is a
+big burden for most organizations. For this reason it is important that your
+migrations are written carefully, can be applied online and adhere to the style
+guide below.
 
-Migrations should not require GitLab installations to be taken offline unless
-_absolutely_ necessary - see the ["What Requires Downtime?"](what_requires_downtime.md)
-page. If a migration requires downtime, this should be clearly mentioned during
-the review process, as well as being documented in the monthly release post. For
-more information, see the "Downtime Tagging" section below.
+Migrations are **not** allowed to require GitLab installations to be taken
+offline unless _absolutely necessary_. Downtime assumptions should be based on
+the behaviour of a migration when performed using PostgreSQL, as various
+operations in MySQL may require downtime without there being alternatives.
+
+When downtime is necessary the migration has to be approved by:
+
+1. The VP of Engineering
+1. A Backend Lead
+1. A Database Specialist
+
+An up-to-date list of people holding these titles can be found at
+<https://about.gitlab.com/team/>.
+
+The document ["What Requires Downtime?"](what_requires_downtime.md) specifies
+various database operations, whether they require downtime and how to
+work around that whenever possible.
 
 When writing your migrations, also consider that databases might have stale data
-or inconsistencies and guard for that. Try to make as little assumptions as possible
-about the state of the database.
+or inconsistencies and guard for that. Try to make as few assumptions as
+possible about the state of the database.
 
-Please don't depend on GitLab specific code since it can change in future versions.
-If needed copy-paste GitLab code into the migration to make it forward compatible.
+Please don't depend on GitLab-specific code since it can change in future
+versions. If needed copy-paste GitLab code into the migration to make it forward
+compatible.
+
+## Commit Guidelines
+
+Each migration **must** be added in its own commit with a descriptive commit
+message. If a commit adds a migration it _should only_ include the migration and
+any corresponding changes to `db/schema.rb`. This makes it easy to revert a
+database migration without accidentally reverting other changes.
 
 ## Downtime Tagging
 
 Every migration must specify if it requires downtime or not, and if it should
-require downtime it must also specify a reason for this. To do so, add the
-following two constants to the migration class' body:
+require downtime it must also specify a reason for this. This is required even
+if 99% of the migrations won't require downtime as this makes it easier to find
+the migrations that _do_ require downtime.
+
+To tag a migration, add the following two constants to the migration class'
+body:
 
 * `DOWNTIME`: a boolean that when set to `true` indicates the migration requires
   downtime.
@@ -50,11 +75,52 @@ from a migration class.
 
 ## Reversibility
 
-Your migration should be reversible. This is very important, as it should
+Your migration **must be** reversible. This is very important, as it should
 be possible to downgrade in case of a vulnerability or bugs.
 
 In your migration, add a comment describing how the reversibility of the
 migration was tested.
+
+## Multi Threading
+
+Sometimes a migration might need to use multiple Ruby threads to speed up a
+migration. For this to work your migration needs to include the module
+`Gitlab::Database::MultiThreadedMigration`:
+
+```ruby
+class MyMigration < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+  include Gitlab::Database::MultiThreadedMigration
+end
+```
+
+You can then use the method `with_multiple_threads` to perform work in separate
+threads. For example:
+
+```ruby
+class MyMigration < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+  include Gitlab::Database::MultiThreadedMigration
+
+  def up
+    with_multiple_threads(4) do
+      disable_statement_timeout
+
+      # ...
+    end
+  end
+end
+```
+
+Here the call to `disable_statement_timeout` will use the connection local to
+the `with_multiple_threads` block, instead of re-using the global connection
+pool.  This ensures each thread has its own connection object, and won't time
+out when trying to obtain one.
+
+**NOTE:** PostgreSQL has a maximum amount of connections that it allows. This
+limit can vary from installation to installation. As a result it's recommended
+you do not use more than 32 threads in a single migration. Usually 4-8 threads
+should be more than enough.
 
 ## Removing indices
 
@@ -78,7 +144,10 @@ end
 
 ## Adding indices
 
-If you need to add an unique index please keep in mind there is possibility of existing duplicates. If it is possible write a separate migration for handling this situation. It can be just removing or removing with overwriting all references to these duplicates depend on situation.
+If you need to add a unique index please keep in mind there is the possibility
+of existing duplicates being present in the database. This means that should
+always _first_ add a migration that removes any duplicates, before adding the
+unique index.
 
 When adding an index make sure to use the method `add_concurrent_index` instead
 of the regular `add_index` method. The `add_concurrent_index` method
@@ -90,17 +159,22 @@ so:
 ```ruby
 class MyMigration < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
+
   disable_ddl_transaction!
 
-  def change
+  def up
+    add_concurrent_index :table, :column
+  end
 
+  def down
+    remove_index :table, :column if index_exists?(:table, :column)
   end
 end
 ```
 
 ## Adding Columns With Default Values
 
-When adding columns with default values you should use the method
+When adding columns with default values you must use the method
 `add_column_with_default`. This method ensures the table is updated without
 requiring downtime. This method is not reversible so you must manually define
 the `up` and `down` methods in your migration class.
@@ -123,6 +197,9 @@ class MyMigration < ActiveRecord::Migration
 end
 ```
 
+Keep in mind that this operation can easily take 10-15 minutes to complete on
+larger installations (e.g. GitLab.com). As a result you should only add default
+values if absolutely necessary.
 
 ## Integer column type
 
@@ -147,13 +224,15 @@ add_column(:projects, :foo, :integer, default: 10, limit: 8)
 
 ## Testing
 
-Make sure that your migration works with MySQL and PostgreSQL with data. An empty database does not guarantee that your migration is correct.
+Make sure that your migration works with MySQL and PostgreSQL with data. An
+empty database does not guarantee that your migration is correct.
 
 Make sure your migration can be reversed.
 
 ## Data migration
 
-Please prefer Arel and plain SQL over usual ActiveRecord syntax. In case of using plain SQL you need to quote all input manually with `quote_string` helper.
+Please prefer Arel and plain SQL over usual ActiveRecord syntax. In case of
+using plain SQL you need to quote all input manually with `quote_string` helper.
 
 Example with Arel:
 
@@ -177,3 +256,17 @@ select_all("SELECT name, COUNT(id) as cnt FROM tags GROUP BY name HAVING COUNT(i
   execute("DELETE FROM tags WHERE id IN(#{duplicate_ids.join(",")})")
 end
 ```
+
+If you need more complex logic you can define and use models local to a
+migration. For example:
+
+```ruby
+class MyMigration < ActiveRecord::Migration
+  class Project < ActiveRecord::Base
+    self.table_name = 'projects'
+  end
+end
+```
+
+When doing so be sure to explicitly set the model's table name so it's not
+derived from the class name or namespace.
