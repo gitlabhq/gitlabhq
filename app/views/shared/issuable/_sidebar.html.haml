@@ -76,11 +76,14 @@
           - options = { toggle_class: 'js-user-search js-author-search', title: 'Assign to', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), author_id: issuable.author_id, field_name: "#{issuable.to_ability_name}[assignee_id]", issue_update: issuable_json_path(issuable), ability_name: issuable.to_ability_name, null_user: true } }
 
           - if issuable.instance_of?(Issue)
+            - if issuable.assignees.length == 0
+              = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", 0, id: nil
             - title = 'Select assignee(s)'
             - options[:toggle_class] += ' js-multiselect js-save-user-data'
             - options[:data][:field_name] = "#{issuable.to_ability_name}[assignee_ids][]"
             - options[:data][:multi_select] = true
-            - options[:data][:dropdown] = { title: 'Select assignee(s)', header: 'Assignee(s)' }
+            - options[:data]['dropdown-title'] = 'Select assignee(s)'
+            - options[:data]['dropdown-header'] = 'Assignee(s)'
           - else
             - title = 'Select assignee'
 
