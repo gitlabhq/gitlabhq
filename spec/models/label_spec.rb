@@ -42,10 +42,26 @@ describe Label, models: true do
     end
   end
 
+  describe '#color' do
+    it 'strips color' do
+      label = described_class.new(color: '   #abcdef   ')
+      label.valid?
+
+      expect(label.color).to eq('#abcdef')
+    end
+  end
+
   describe '#title' do
     it 'sanitizes title' do
       label = described_class.new(title: '<b>foo & bar?</b>')
       expect(label.title).to eq('foo & bar?')
+    end
+
+    it 'strips title' do
+      label = described_class.new(title: '   label   ')
+      label.valid?
+
+      expect(label.title).to eq('label')
     end
   end
 

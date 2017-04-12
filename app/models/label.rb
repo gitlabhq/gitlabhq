@@ -21,6 +21,8 @@ class Label < ActiveRecord::Base
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
 
+  before_validation :strip_whitespace_from_title_and_color
+
   validates :color, color: true, allow_blank: false
 
   # Don't allow ',' for label titles
@@ -192,5 +194,9 @@ class Label < ActiveRecord::Base
 
   def sanitize_title(value)
     CGI.unescapeHTML(Sanitize.clean(value.to_s))
+  end
+
+  def strip_whitespace_from_title_and_color
+    %w(color title).each { |attr| self[attr] = self[attr]&.strip }
   end
 end
