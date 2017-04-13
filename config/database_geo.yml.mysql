@@ -28,6 +28,7 @@ development:
   pool: 5
   username: root
   password: "secure password"
+  # host: localhost
   # socket: /tmp/mysql.sock
 
 # Warning: The database defined as "test" will be erased and
@@ -42,5 +43,6 @@ test: &test
   pool: 5
   username: root
   password:
+  # host: localhost
   # socket: /tmp/mysql.sock
 
