@@ -208,10 +208,10 @@ module BlobHelper
     clipboard_button(text: file_path, gfm: "`#{file_path}`", class: 'btn-clipboard btn-transparent prepend-left-5', title: 'Copy file path to clipboard')
   end
 
-  def copy_blob_content_button(blob)
-    return if markup?(blob.name)
+  def copy_blob_source_button(blob)
+    return unless blob.rendered_as_text?(override_max_size: params[:override_max_size])
 
-    clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm", title: "Copy content to clipboard")
+    clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm js-copy-blob-source-btn", title: "Copy source to clipboard")
   end
 
   def open_raw_file_button(path)
