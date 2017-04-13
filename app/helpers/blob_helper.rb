@@ -217,4 +217,13 @@ module BlobHelper
   def open_raw_file_button(path)
     link_to icon('file-code-o'), path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: 'Open raw', data: { container: 'body' }
   end
+
+  def blob_render_error_reason(viewer, error)
+    case error
+    when :too_large
+      "it is larger than #{number_to_human_size(viewer.relevant_max_size)}"
+    when :server_side_but_stored_in_lfs
+      "it is stored in LFS"
+    end
+  end
 end
