@@ -51,7 +51,7 @@ module Gitlab
       end
 
       def self.database_secondary?
-        raise NotImplemented unless Gitlab::Database.postgresql?
+        raise NotImplementedError unless Gitlab::Database.postgresql?
 
         ActiveRecord::Base.connection.execute('SELECT pg_is_in_recovery()')
           .first

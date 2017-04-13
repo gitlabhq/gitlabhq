@@ -277,6 +277,10 @@ describe API::Geo, api: true do
     let!(:secondary_node) { create(:geo_node) }
     let(:request) { Gitlab::Geo::BaseRequest.new }
 
+    before do
+      skip("Not using PostgreSQL") unless Gitlab::Database.postgresql?
+    end
+
     it 'responds with 401 with invalid auth header' do
       get api('/geo/status'), nil, Authorization: 'Test'
 

@@ -6,6 +6,10 @@ describe Gitlab::Geo::HealthCheck do
   subject { described_class }
 
   describe '.perform_checks' do
+    before do
+      skip("Not using PostgreSQL") unless Gitlab::Database.postgresql?
+    end
+
     it 'returns an empty string when not running on a secondary node' do
       allow(Gitlab::Geo).to receive(:secondary?) { false }
 
@@ -36,6 +40,14 @@ describe Gitlab::Geo::HealthCheck do
       allow(subject).to receive(:get_migration_version) { 1 }
 
       expect(subject.perform_checks).not_to be_blank
+    end
+  end
+
+  describe 'MySQL checks' do
+    it 'raises an error' do
+      allow(Gitlab::Database).to receive(:postgresql?) { false }
+
+      expect { subject.perform_checks }.to raise_error(NotImplementedError)
     end
   end
 end
