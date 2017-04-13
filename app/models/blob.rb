@@ -3,8 +3,10 @@ class Blob < SimpleDelegator
   CACHE_TIME = 60 # Cache raw blobs referred to by a (mutable) ref for 1 minute
   CACHE_TIME_IMMUTABLE = 3600 # Cache blobs referred to by an immutable reference for 1 hour
 
-  # The maximum size of an SVG that can be displayed.
-  MAXIMUM_SVG_SIZE = 2.megabytes
+  MAXIMUM_TEXT_HIGHLIGHT_SIZE = 1.megabyte
+
+  RICH_VIEWERS = [
+  ].freeze
 
   attr_reader :project
 
@@ -43,82 +45,94 @@ class Blob < SimpleDelegator
   end
 
   def no_highlighting?
-    size && size > 1.megabyte
+    size && size > MAXIMUM_TEXT_HIGHLIGHT_SIZE
   end
 
-  def only_display_raw?
+  def too_large?
     size && truncated?
   end
 
+  def raw_size
+    if valid_lfs_pointer?
+      lfs_size
+    else
+      size
+    end
+  end
+
+  def raw_binary?
+    if valid_lfs_pointer?
+      !rich_viewer&.text_based?
+    else
+      binary?
+    end
+  end
+
   def extension
-    extname.downcase.delete('.')
-  end
-
-  def svg?
-    text? && language && language.name == 'SVG'
-  end
-
-  def pdf?
-    extension == 'pdf'
-  end
-
-  def ipython_notebook?
-    text? && language&.name == 'Jupyter Notebook'
-  end
-
-  def sketch?
-    binary? && extension == 'sketch'
-  end
-
-  def stl?
-    extension == 'stl'
-  end
-
-  def markup?
-    text? && Gitlab::MarkupHelper.markup?(name)
-  end
-
-  def size_within_svg_limits?
-    size <= MAXIMUM_SVG_SIZE
+    @extension ||= extname.downcase.delete('.')
   end
 
   def video?
-    UploaderHelper::VIDEO_EXT.include?(extname.downcase.delete('.'))
+    UploaderHelper::VIDEO_EXT.include?(extension)
   end
 
-  def to_partial_path(project)
-    if lfs_pointer?
-      if project.lfs_enabled?
-        'download'
-      else
-        'text'
-      end
-    elsif image?
-      'image'
-    elsif svg?
-      'svg'
-    elsif pdf?
-      'pdf'
-    elsif ipython_notebook?
-      'notebook'
-    elsif sketch?
-      'sketch'
-    elsif stl?
-      'stl'
-    elsif markup?
-      if only_display_raw?
-        'too_large'
-      else
-        'markup'
-      end
-    elsif text?
-      if only_display_raw?
-        'too_large'
-      else
-        'text'
-      end
+  def readable_text?
+    text? && !valid_lfs_pointer? && !too_large?
+  end
+
+  def valid_lfs_pointer?
+    lfs_pointer? && project.lfs_enabled?
+  end
+
+  def invalid_lfs_pointer?
+    lfs_pointer? && !project.lfs_enabled?
+  end
+
+  def simple_viewer_class
+    if empty?
+      BlobViewer::Empty
+    elsif raw_binary?
+      BlobViewer::Download
+    else # text
+      BlobViewer::Text
+    end
+  end
+
+  def rich_viewer_class
+    if invalid_lfs_pointer? || empty?
+      nil
     else
-      'download'
+      rich_viewers_classes.find { |viewer_class| viewer_class.can_render?(self) }
+    end
+  end
+
+  def simple_viewer
+    @simple_viewer ||= simple_viewer_class.new(self)
+  end
+
+  def rich_viewer
+    return @rich_viewer if defined?(@rich_viewer)
+
+    @rich_viewer ||= rich_viewer_class&.new(self)
+  end
+
+  def rendered_as_text?(override_max_size: false)
+    simple_viewer.is_a?(BlobViewer::Text) && !simple_viewer.render_error(override_max_size: override_max_size)
+  end
+
+  def show_viewer_switcher?
+    simple_viewer.is_a?(BlobViewer::Text) && rich_viewer
+  end
+
+  private
+
+  def rich_viewers_classes
+    if valid_lfs_pointer?
+      RICH_VIEWERS
+    elsif binary?
+      RICH_VIEWERS.reject(&:text_based?)
+    else # text
+      RICH_VIEWERS.select(&:text_based?)
     end
   end
 end
