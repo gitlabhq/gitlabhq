@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Gitlab::Database::RenameReservedPathsMigration::Namespaces, :truncate do
-  let(:test_dir) { File.join(Rails.root, 'tmp', 'tests', 'rename_namespaces_test') }
-  let(:uploads_dir) { File.join(test_dir, 'public', 'uploads') }
   let(:subject) do
     ActiveRecord::Migration.new.extend(
       Gitlab::Database::RenameReservedPathsMigration
@@ -10,10 +8,6 @@ describe Gitlab::Database::RenameReservedPathsMigration::Namespaces, :truncate d
   end
 
   before do
-    FileUtils.remove_dir(test_dir) if File.directory?(test_dir)
-    FileUtils.mkdir_p(uploads_dir)
-    FileUtils.remove_dir(TestEnv.repos_path) if File.directory?(TestEnv.repos_path)
-    allow(subject).to receive(:uploads_dir).and_return(uploads_dir)
     allow(subject).to receive(:say)
   end
 
@@ -44,8 +38,8 @@ describe Gitlab::Database::RenameReservedPathsMigration::Namespaces, :truncate d
         root_namespace = create(:namespace, path: 'the-path')
         _other_path = create(:namespace, path: 'other')
         _child_namespace = create(:namespace,
-                           path: 'the-path',
-                           parent: create(:namespace))
+                                  path: 'the-path',
+                                  parent: create(:namespace))
 
         found_ids = subject.namespaces_for_paths(['the-path'], type: :top_level).
                       map(&:id)
@@ -87,32 +81,6 @@ describe Gitlab::Database::RenameReservedPathsMigration::Namespaces, :truncate d
     end
   end
 
-  describe '#move_namespace_folders' do
-    it 'moves a namespace with files' do
-      source = File.join(uploads_dir, 'parent-group', 'sub-group')
-      FileUtils.mkdir_p(source)
-      destination = File.join(uploads_dir, 'parent-group', 'moved-group')
-      FileUtils.touch(File.join(source, 'test.txt'))
-      expected_file = File.join(destination, 'test.txt')
-
-      subject.move_namespace_folders(uploads_dir, File.join('parent-group', 'sub-group'), File.join('parent-group', 'moved-group'))
-
-      expect(File.exist?(expected_file)).to be(true)
-    end
-
-    it 'moves a parent namespace uploads' do
-      source = File.join(uploads_dir, 'parent-group', 'sub-group')
-      FileUtils.mkdir_p(source)
-      destination = File.join(uploads_dir, 'moved-parent', 'sub-group')
-      FileUtils.touch(File.join(source, 'test.txt'))
-      expected_file = File.join(destination, 'test.txt')
-
-      subject.move_namespace_folders(uploads_dir, 'parent-group', 'moved-parent')
-
-      expect(File.exist?(expected_file)).to be(true)
-    end
-  end
-
   describe "#child_ids_for_parent" do
     it "collects child ids for all levels" do
       parent = create(:namespace)
@@ -148,15 +116,13 @@ describe Gitlab::Database::RenameReservedPathsMigration::Namespaces, :truncate d
     end
 
     it "moves the uploads for the namespace" do
-      allow(subject).to receive(:move_namespace_folders).with(Settings.pages.path, "the-path", "the-path0")
-      expect(subject).to receive(:move_namespace_folders).with(uploads_dir, "the-path", "the-path0")
+      expect(subject).to receive(:move_uploads).with("the-path", "the-path0")
 
       subject.rename_namespace(namespace)
     end
 
     it "moves the pages for the namespace" do
-      allow(subject).to receive(:move_namespace_folders).with(uploads_dir, "the-path", "the-path0")
-      expect(subject).to receive(:move_namespace_folders).with(Settings.pages.path, "the-path", "the-path0")
+      expect(subject).to receive(:move_pages).with("the-path", "the-path0")
 
       subject.rename_namespace(namespace)
     end

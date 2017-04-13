@@ -8,6 +8,7 @@ module Gitlab
       def rename_wildcard_paths(one_or_more_paths)
         paths = Array(one_or_more_paths)
         rename_namespaces(paths, type: :wildcard)
+        rename_projects(paths)
       end
 
       def rename_root_paths(paths)
@@ -68,6 +69,36 @@ module Gitlab
 
       def route_exists?(full_path)
         MigrationClasses::Route.where(Route.arel_table[:path].matches(full_path)).any?
+      end
+
+      def move_pages(old_path, new_path)
+        move_folders(pages_dir, old_path, new_path)
+      end
+
+      def move_uploads(old_path, new_path)
+        return unless file_storage?
+
+        move_folders(uploads_dir, old_path, new_path)
+      end
+
+      def move_folders(directory, old_relative_path, new_relative_path)
+        old_path = File.join(directory, old_relative_path)
+        return unless File.directory?(old_path)
+
+        new_path = File.join(directory, new_relative_path)
+        FileUtils.mv(old_path, new_path)
+      end
+
+      def file_storage?
+        CarrierWave::Uploader::Base.storage == CarrierWave::Storage::File
+      end
+
+      def uploads_dir
+        File.join(CarrierWave.root, "uploads")
+      end
+
+      def pages_dir
+        Settings.pages.path
       end
     end
   end

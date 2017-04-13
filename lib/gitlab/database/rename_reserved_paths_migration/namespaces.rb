@@ -16,23 +16,17 @@ module Gitlab
                        elsif type == :top_level
                          MigrationClasses::Namespace.where(parent_id: nil)
                        end
-          namespaces.where('lower(path) in (?)', paths.map(&:downcase))
+          with_paths = MigrationClasses::Namespace.arel_table[:path].
+                        matches_any(paths)
+          namespaces.where(with_paths)
         end
 
         def rename_namespace(namespace)
           old_full_path, new_full_path = rename_path_for_routable(namespace)
 
           move_repositories(namespace, old_full_path, new_full_path)
-          move_namespace_folders(uploads_dir, old_full_path, new_full_path) if file_storage?
-          move_namespace_folders(pages_dir, old_full_path, new_full_path)
-        end
-
-        def move_namespace_folders(directory, old_relative_path, new_relative_path)
-          old_path = File.join(directory, old_relative_path)
-          return unless File.directory?(old_path)
-
-          new_path = File.join(directory, new_relative_path)
-          FileUtils.mv(old_path, new_path)
+          move_uploads(old_full_path, new_full_path)
+          move_pages(old_full_path, new_full_path)
         end
 
         def move_repositories(namespace, old_full_path, new_full_path)
@@ -69,18 +63,6 @@ module Gitlab
             child_ids_for_parent(child, ids: ids) if child.children.any?
           end
           ids
-        end
-
-        def file_storage?
-          CarrierWave::Uploader::Base.storage == CarrierWave::Storage::File
-        end
-
-        def uploads_dir
-          File.join(CarrierWave.root, "uploads")
-        end
-
-        def pages_dir
-          Settings.pages.path
         end
       end
     end

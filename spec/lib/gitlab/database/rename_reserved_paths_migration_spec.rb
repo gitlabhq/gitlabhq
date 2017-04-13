@@ -19,7 +19,11 @@ describe Gitlab::Database::RenameReservedPathsMigration do
       subject.rename_wildcard_paths(['first-path', 'second-path'])
     end
 
-    it 'should rename projects'
+    it 'should rename projects' do
+      expect(subject).to receive(:rename_projects).with(['the-path'])
+
+      subject.rename_wildcard_paths(['the-path'])
+    end
   end
 
   describe '#rename_root_paths' do
@@ -104,6 +108,48 @@ describe Gitlab::Database::RenameReservedPathsMigration do
         expect(old_path).to eq('the-parent/the-path')
         expect(new_path).to eq('the-parent/the-path0')
       end
+    end
+  end
+
+  describe "#move_uploads" do
+    let(:test_dir) { File.join(Rails.root, 'tmp', 'tests', 'rename_reserved_paths') }
+    let(:uploads_dir) { File.join(test_dir, 'public', 'uploads') }
+
+    it 'moves subdirectories in the uploads folder' do
+      expect(subject).to receive(:uploads_dir).and_return(uploads_dir)
+      expect(subject).to receive(:move_folders).with(uploads_dir, 'old_path', 'new_path')
+
+      subject.move_uploads('old_path', 'new_path')
+    end
+
+    it "doesn't move uploads when they are stored in object storage" do
+      expect(subject).to receive(:file_storage?).and_return(false)
+      expect(subject).not_to receive(:move_folders)
+
+      subject.move_uploads('old_path', 'new_path')
+    end
+  end
+
+  describe '#move_folders' do
+    let(:test_dir) { File.join(Rails.root, 'tmp', 'tests', 'rename_reserved_paths') }
+    let(:uploads_dir) { File.join(test_dir, 'public', 'uploads') }
+
+    before do
+      FileUtils.remove_dir(test_dir) if File.directory?(test_dir)
+      FileUtils.mkdir_p(uploads_dir)
+      allow(subject).to receive(:uploads_dir).and_return(uploads_dir)
+    end
+
+    it 'moves a folder with files' do
+      source = File.join(uploads_dir, 'parent-group', 'sub-group')
+      FileUtils.mkdir_p(source)
+      destination = File.join(uploads_dir, 'parent-group', 'moved-group')
+      FileUtils.touch(File.join(source, 'test.txt'))
+      expected_file = File.join(destination, 'test.txt')
+
+      subject.move_folders(uploads_dir, File.join('parent-group', 'sub-group'), File.join('parent-group', 'moved-group'))
+
+      expect(File.exist?(expected_file)).to be(true)
     end
   end
 end
